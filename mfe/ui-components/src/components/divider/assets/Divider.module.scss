@@ -1,0 +1,14 @@
+.dividerBase {
+  border: none;
+  width: 100%;
+}
+
+.horizontal {
+  border-bottom: 1px solid;
+}
+
+.vertical {
+  border-left: 1px solid;
+  height: 100vh;
+  width: 1px;
+}

@@ -1,57 +1,83 @@
-# CGAT-PDE
+  
 
-## Setup
+#  Cgat-pde
 
-git clone https://github.com/mckesson/cgat-pde-app
+  
 
-### Pre-Requisites
+This project is a monorepo structure with micro-frontend (MFE) components and a main React app. The MFE components are built and imported into the main app for rendering.
 
-- Yarn 
-- Node
+  
 
-### Installation
+##  Commands
 
-```bash
-yarn
+  
+
+###  1. Generate MFE Component
+
+  
+
+You can create a new MFE component using the following command:
+
+  
+
+```
+yarn  generate:component  <component_name>
 ```
 
-### Adding workspace dependencies
+  
 
-```bash
-yarn workspace <workspace_name> <command>
+- Replace `<component_name>` with the name of the new component.
+
+- This will generate a new MFE component inside the `mfe` folder.
+
+- The newly created component will be ready for use in the main app.
+
+  
+
+###  2. Run the App
+
+  
+
+To start the development server and run the main React app, use:
+
+  
+
+```
+yarn  start
 ```
 
-This will run the chosen Yarn command in the selected workspace.
+  
 
-Example:
+- This will start the application locally.
 
-```bash
-yarn workspace apps/cgat-pde add react-router-dom --dev
-```
+- Open your browser and go to `http://localhost:3000` to view the app.
 
-This will add `react-router-dom` as `dependencies` in your `apps/cgat-pde/package.json`. To remove dependency use `remove` instead of add
+  
 
-## Usage
+##  Structure
 
-### Starting Project in Workspace
+  
 
-From your project root type start command for desired app
+-  `apps/` contains the main React application.
 
-```bash
-yarn workspace @apps/cgat-pde start
-```
-or 
+-  `mfe/` contains micro-frontend components that can be imported into the main app.
+
+  
+
+##  Getting Started
+
+  
+
+1. Clone the repository.
+
+2. Install dependencies: `yarn install`
+
+3. Create a new MFE component using `yarn generate:component`.
+
+4. Start the app with `yarn start`.
 
 
-```bash
-cd apps/cgat-pde
-npm start
-```
 
-All available `start` scripts
+##  Packages Installation at Root level
 
-```json
-"scripts": {
-    "start:cgat-pde": "yarn workspace @apps/cgat-pde start",
-  }
-```
+- To add dependencies to the workspace root, you can run: `yarn add <package-name> -W`

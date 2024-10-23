@@ -1,0 +1,160 @@
+.tooltipContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltipContents {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  flex: 1 0 0;
+  &-center {
+    text-align: center;
+  }
+  &-end {
+    text-align: end;
+  }
+  &-left {
+    text-align: left;
+  }
+  &-right {
+    text-align: right;
+  }
+}
+
+.tooltip {
+  font-family: Nunito;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 294px;
+  text-align: center;
+  z-index: 1;
+  display: flex;
+  padding: 10px 12px;
+  justify-content: center;
+  align-items: center;
+  align-self: stretch;
+  border-radius: 4px;
+  height: fit-content;
+
+  /* Dark Dropdown Shadow */
+  box-shadow: 0px 2px 8px 0px rgba(38, 44, 54, 0.3);
+
+  &.normal {
+    background-color: #f2f6fa;
+    color: #1e394e;
+  }
+
+  &.warning {
+    background-color: #f9e6cf;
+    color: #1e394e;
+  }
+
+  &.error {
+    background-color: #f9e9e8;
+    color: #1e394e;
+  }
+
+  &.top {
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 12px;
+  }
+
+  /* ... Other placement styles ... */
+
+  &.bottom {
+    top: 100%;
+    bottom: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 12px;
+  }
+
+  &.left {
+    right: 100%;
+    left: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-right: 12px;
+  }
+
+  &.right {
+    left: 100%;
+    right: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 12px;
+  }
+}
+
+.tooltipTitle {
+  margin-bottom: 4px;
+  /* Typography */
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 18px;
+  // text-align: start;
+}
+
+.tooltipBody {
+  /* Typography */
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+  // text-align: start;
+}
+
+.tooltipArrow {
+  width: 50px;
+  height: 25px;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    transform: translateX(-50%) translateY(-50%) rotate(45deg);
+    top: 0;
+    left: 50%;
+    box-shadow: 0px 2px 8px 0px rgba(38, 44, 54, 0.3);
+  }
+
+  &.normal {
+    &::after {
+      background-color: #f2f6fa;
+      color: #1e394e;
+    }
+  }
+
+  &.warning {
+    &::after {
+      background-color: #f9e6cf;
+      color: #1e394e;
+    }
+  }
+
+  &.error {
+    &::after {
+      background-color: #f9e9e8;
+      color: #1e394e;
+    }
+  }
+
+  &.bottom {
+    &::after {
+      transform: translateX(-50%) translateY(-50%) rotate(135deg);
+    }
+  }
+}

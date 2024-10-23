@@ -1,0 +1,61 @@
+@import "../../../../ui-components/src/assets/scss/abstracts/mixins";
+
+.orgContainer {
+  padding: var(--spacing-04);
+  display: grid;
+  gap: var(--spacing-04);
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  padding: 0%;
+}
+
+.orgCardContainer {
+  display: grid;
+  gap: var(--spacing-04);
+}
+
+.filterBox {
+  display: grid;
+  gap: var(--spacing-04);
+  padding: 24px 20px 24px 20px;
+  @include respond(lg) {
+    padding: 24px 40px 24px 40px;
+  }
+}
+
+.LabelBox {
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: var(--spacing-02);
+  gap: var(--spacing-04);
+} 
+
+.actionEditIcon {
+  color: var(--brand-color-primary);
+}
+.actionsBox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-03);
+}
+.addOrgBtn {
+  justify-self: start;
+  @include respond(sm) {
+    justify-self: end;
+  }
+}
+
+.orgList {
+  overflow-x: auto; /* Enable horizontal scrolling */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  overflow-y: hidden;
+
+  // Hide scrollbar on non-mobile devices
+  scrollbar-width: thin;
+  &::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+  }
+}

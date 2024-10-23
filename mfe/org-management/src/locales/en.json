@@ -1,0 +1,12 @@
+{
+  "manage_organization" : "Manage Organization",
+  "select_name_location" : "Select by name and location",
+  "location": "Location",
+  "status" : "Status",
+  "clear_filters" : "CLEAR FILTERS",
+  "organization_name" : "Organization Name",
+  "organization_id" : "Organization ID",
+  "date_added_update" : "Date Added/Updated",
+  "action" : "Actions",
+  "add_organization": "Add Organization"
+ }

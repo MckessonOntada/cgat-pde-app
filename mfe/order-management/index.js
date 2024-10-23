@@ -1,1 +1,3 @@
-export { default as OrderManagement } from './src/OrderManagement';
+
+import App from "./src/App";
+export default App;

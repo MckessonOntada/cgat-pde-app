@@ -1,0 +1,147 @@
+.badgeCommonStyle {
+  font-weight: var(--brand-font-weight-700);
+  text-align: center;
+  text-transform: uppercase;
+  font-family: "Nunito";
+  font-style: normal;
+}
+
+.sizeSm {
+  border-radius: var(--brand-border-radius--3);
+  padding: 1px 10px;
+  font-size: var(--brand-font-size--extra-small);
+  line-height: var(--brand-line-height--medium);
+  letter-spacing: 0.035em;
+}
+
+.sizeMd {
+  border-radius: var(--brand-border-radius--4);
+  padding: 2px 12px;
+  font-size: var(--brand-font-size--small);
+  line-height: var(--brand-line-height--large);
+  letter-spacing: 0.04em;
+}
+
+.sizeLg {
+  border-radius: var(--brand-border-radius--5);
+  padding: 3px 14px;
+  font-size: var(--brand-font-size--default);
+  line-height: var(--brand-line-height--m-large);
+  letter-spacing: 0.045em;
+}
+
+.subtle_info {
+  @extend .badgeCommonStyle;
+  background: var(--brand-color-grey-scale-cool-2);
+  color: var(--brand-color-primary-slate);
+}
+
+.subtle_success {
+  @extend .badgeCommonStyle;
+  background: var(--brand-color-success-green-4);
+  color: var(--brand-color-success-green-1);
+}
+
+.subtle_error {
+  @extend .badgeCommonStyle;
+  background: var(--brand-color-warning-red-4);
+  color: var(--brand-color-warning-red-2);
+}
+
+.subtle_warning {
+  @extend .badgeCommonStyle;
+  background: var(--brand-color-warning-orange-3);
+  color: var(--brand-color-warning-orange-1);
+}
+
+.high_info {
+  @extend .badgeCommonStyle;
+  background: var(--brand-color-primary-background);
+  color: var(--brand-color-background-white);
+}
+
+.high_success {
+  @extend .badgeCommonStyle;
+  background: var(--brand-color-success-green-1);
+  color: var(--brand-color-background-white);
+}
+
+.high_error {
+  @extend .badgeCommonStyle;
+  background: var(--brand-color-warning-coral);
+  color: var(--brand-color-background-white);
+}
+
+.high_warning {
+  @extend .badgeCommonStyle;
+  background: var(--brand-color-warning-orange-1);
+  color: var(--brand-color-background-white);
+}
+
+.info_default {
+  @extend .badgeCommonStyle;
+  color: var(--brand-color-text-light-slate);
+  background: var(--brand-color-background-white);
+  border: 1px solid var(--brand-color-text-light-slate);
+}
+
+.info_high_default {
+  @extend .badgeCommonStyle;
+  color: var(--brand-color-primary-slate);
+  background: var(--brand-color-background-white);
+  border: 1px solid var(--brand-color-primary-slate);
+}
+
+.error_default {
+  @extend .badgeCommonStyle;
+  color: var(--brand-color-warning-red-2);
+  background: var(--brand-color-background-white);
+  border: 1px solid var(--brand-color-warning-red-2);
+}
+
+.success_default {
+  @extend .badgeCommonStyle;
+  color: var(--brand-color-success-green-1);
+  background: var(--brand-color-background-white);
+  border: 1px solid var(--brand-color-success-green-1);
+}
+
+.warning_default {
+  @extend .badgeCommonStyle;
+  color: var(--brand-color-warning-orange-1);
+  background: var(--brand-color-background-white);
+  border: 1px solid var(--brand-color-warning-orange-1);
+}
+
+.error_high_default {
+  @extend .badgeCommonStyle;
+  color: var(--brand-color-warning-dark-coral);
+  background: var(--brand-color-background-white);
+  border: 1px solid var(--brand-color-warning-dark-coral);
+}
+
+.info_high_grey {
+  @extend .badgeCommonStyle;
+  color: var(--brand-color-primary-background);
+  background: var(--brand-color-background-white);
+  border: 1px solid var(--brand-color-primary-background);
+}
+
+.subtle_primary {
+  @extend .badgeCommonStyle;
+  background: var(--brand-color-patient-secondary);
+  color: var(--brand-color-primary-blue);
+}
+
+.high_primary {
+  @extend .badgeCommonStyle;
+  background: var(--brand-color-primary-blue);
+  color: var(--brand-color-background-white);
+}
+
+.primary_default {
+  @extend .badgeCommonStyle;
+  color: var(--brand-color-primary-blue);
+  background: var(--brand-color-background-white);
+  border: 1px solid var(--brand-color-primary-blue);
+}

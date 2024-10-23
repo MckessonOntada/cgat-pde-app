@@ -1,0 +1,14 @@
+.default{
+    font-weight: var(--brand-font-weight-400);
+    font-size: var(--brand-font-size--extra-small);
+    line-height: var(--brand-line-height--medium);
+    letter-spacing: 0.001em;
+    color: var(--brand-color-text-dark-slate);
+}
+.thick{
+    color: var(--brand-color-text-dark-slate);
+    font-size: var(--brand-font-size--default);
+    font-weight:  var(--brand-font-weight-600);
+    line-height: var(--brand-line-height--m-large);
+    letter-spacing: -0.016px;
+}

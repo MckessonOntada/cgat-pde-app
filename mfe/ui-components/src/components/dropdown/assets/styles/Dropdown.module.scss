@@ -1,0 +1,118 @@
+
+
+.labelContainer {
+  margin-bottom: 4px;
+  color: var(--brand-color-text-dark-slate);
+  font-weight: var(--brand-font-weight-400);
+  display: inline-block;
+  position: relative;
+}
+
+.label.size-sm {
+  font-size: var(--brand-font-size--extra-small);
+  line-height: var(--brand-line-height--small);
+  letter-spacing: 0.002em;
+}
+
+.label.size-xs {
+  font-size: var(--brand-font-size--extra-small) !important;
+  line-height: var(--brand-line-height--small);
+  letter-spacing: 0.002em;
+}
+
+.label.size-md {
+  font-size: var(--brand-font-size--extra-small);
+  line-height: var(--brand-line-height--medium);
+  letter-spacing: 0.001em;
+}
+
+.label.size-lg {
+  font-size: var(--brand-font-size--extra-small);
+  line-height: var(--brand-line-height--medium);
+  letter-spacing: 0.001em;
+}
+
+.required {
+  margin-left: 6px;
+  margin-bottom: 2px;
+ 
+}
+
+.showRequiredLabel {
+  flex-direction: row;
+  justify-content: space-between;
+  display:flex;
+}
+
+.hasValue {
+  div {
+    color: var(--brand-color-text-black) !important;
+    font-weight: var(--brand-font-weight-600) !important;
+  }
+
+  svg {
+    color: var(--brand-color-text-black) !important;
+    font-weight: var(--brand-font-weight-600) !important;
+  }
+}
+
+.endLabelContainer {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 8px;
+  .endLabel {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .endLabelSuffix {
+    display: block;
+    font-weight: normal;
+    flex-shrink: 0;
+  }
+}
+.ml5 {
+  margin-left: 4px;
+  position: absolute;
+  bottom: -0.2rem;
+}
+.emptyMenuIcon {
+  height: 44px;
+  width: 44px;
+}
+
+.emptyMenuContainer {
+  .emptyMenuItem {
+    padding: 10px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    .emptyMenuItemMessage {
+      font-weight: var(--brand-font-weight-400);
+      font-size: var(--brand-font-size--default);
+      line-height: var(--brand-line-height--m-large);
+      color: var(--brand-color-text-dark-slate);
+      display: flex;
+      align-items: center;
+      text-align: center;
+      letter-spacing: 0.001em;
+    }
+  }
+}
+
+.helperTextLabel {
+  font-size: var(--brand-font-size--extra-small);
+  font-style: italic;
+  letter-spacing: 0.001em;
+  line-height: var(--brand-line-height--medium);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.parentLabel{
+  margin-bottom: 4px;
+}

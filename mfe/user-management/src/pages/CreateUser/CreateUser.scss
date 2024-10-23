@@ -1,0 +1,38 @@
+.userContainer {
+  padding: var(--spacing-04);
+  display: grid;
+  gap: var(--spacing-04);
+}
+
+.buttonGroup {
+  display: flex;
+  width: 100%;
+  justify-content: end;
+  gap: 20px;
+  padding-top: 20px;
+}
+
+.phoneInput {
+  height: 37px;
+  border-radius: 5px;
+  border: 1px solid rgb(110, 110, 110);
+}
+
+.headingBox {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-04);
+  margin-bottom: var(--spacing-04);
+}
+ 
+
+.line-height{
+  margin-bottom: var(--spacing-04);
+}
+
+.requiredIcon{   
+  color: var(--brand-color-warning-orange-4, #DB3A29);
+  margin-right:  var(--spacing-01); 
+}

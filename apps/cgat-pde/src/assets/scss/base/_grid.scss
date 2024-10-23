@@ -1,0 +1,91 @@
+// Import the mixins file from the abstracts folder
+@import "../abstracts/mixins";
+
+// Usage example of the grid system classes in HTML
+// <div class="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-6 xl:grid-cols-12">
+//   <div class="box">01</div>
+//   <div class="box">02</div>
+//   <div class="box">03</div>
+//   <div class="box">04</div>
+//   <div class="box">05</div>
+//   <div class="box">06</div>
+//   <div class="box">07</div>
+//   <div class="box">08</div>
+//   <div class="box">09</div>
+//   <div class="box">10</div>
+//   <div class="box">11</div>
+//   <div class="box">12</div>
+// </div>
+
+.grid {
+  // Define the grid display for the element
+  display: grid;
+}
+
+.grid-cols-none {
+  // Reset the grid to have no columns
+  grid-template-columns: none;
+}
+
+// Define a list of grid sizes for columns
+$sizes: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12;
+
+@each $size in $sizes {
+  // Create a dynamic class for each grid column size, using repeat() for flexible column layouts
+  .grid-cols-#{$size} {
+    grid-template-columns: repeat($size, minmax(0, 1fr));
+  }
+}
+
+@each $size in $sizes {
+  // Create responsive grid column classes for medium screens (using the 'respond' mixin)
+  @include respond(md) {
+    .md\:grid-cols-#{$size} {
+      grid-template-columns: repeat($size, minmax(0, 1fr));
+    }
+  }
+}
+
+@each $size in $sizes {
+  // Create responsive grid column classes for large screens
+  @include respond(lg) {
+    .lg\:grid-cols-#{$size} {
+      grid-template-columns: repeat($size, minmax(0, 1fr));
+    }
+  }
+}
+
+@each $size in $sizes {
+  // Create responsive grid column classes for extra-large screens
+  @include respond(xl) {
+    .xl\:grid-cols-#{$size} {
+      grid-template-columns: repeat($size, minmax(0, 1fr));
+    }
+  }
+}
+
+@each $size in $sizes {
+  // Create responsive grid column classes for extra-extra-large screens
+  @include respond(xxl) {
+    .xl\:grid-cols-#{$size} {
+      grid-template-columns: repeat($size, minmax(0, 1fr));
+    }
+  }
+}
+
+@each $size in $sizes {
+  // Create dynamic classes for grid rows with repeating rows based on size
+  .grid-rows-#{$size} {
+    grid-template-rows: repeat($size, minmax(0, 1fr));
+  }
+}
+
+// Define a list of gap sizes for the grid
+$gapsize: (6, 7, 8, 9, 10, 12, 16, 20, 24, 32);
+
+@each $gap in $gapsize {
+  // Create dynamic classes for grid gaps based on the provided sizes (in pixels)
+  .grid-gap-#{$gap} {
+    grid-gap: #{$gap}px;
+  }
+}

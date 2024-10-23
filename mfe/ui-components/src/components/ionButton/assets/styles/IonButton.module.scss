@@ -1,0 +1,449 @@
+// Base Styles for Button Component
+.baseStyles {
+  font-family: var(--brand-font-family-buttons);
+  // Layout
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+
+  // Typography
+  font-weight: var(--brand-font-weight-600);
+  text-align: center;
+  text-transform: uppercase;
+
+  .buttonWrapper {
+    display: inline-flex;
+
+    &.xs {
+      gap: 4px;
+    }
+
+    &.sm {
+      gap: 5px;
+    }
+
+    &.md {
+      gap: 6px;
+    }
+
+    &.lg {
+      gap: 7px;
+    }
+  }
+
+  &.xs {
+    letter-spacing: 0.45px;
+    line-height: var(--brand-line-height--small);
+    height: 20px;
+    min-width: 48px;
+    font-size: var(--brand-font-size--10);
+    padding: 3px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  &.xsIconButton {
+    flex-shrink: 0;
+    height: 20px;
+    width: 20px;
+    min-width: 20px;
+    border-radius: 4px;
+  }
+
+  &.sm {
+    letter-spacing: 0.48px;
+    line-height: var(--brand-line-height--medium);
+    height: 26px;
+    min-width: 64px;
+    font-size: var(--brand-font-size--extra-small);
+    padding: 5px 14px;
+    border-radius: 5px;
+    white-space: nowrap;
+  }
+
+  &.smIconButton {
+    flex-shrink: 0;
+    height: 26px;
+    width: 26px;
+    min-width: 26px;
+    border-radius: 5px;
+  }
+
+  &.md {
+    letter-spacing: 0.49px;
+    line-height: var(--brand-line-height--large);
+    height: 32px;
+    min-width: 81px;
+    font-size: var(--brand-font-size--small);
+    padding: 7px 16px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  &.mdIconButton {
+    flex-shrink: 0;
+    height: 32px;
+    width: 32px;
+    min-width: 32px;
+    border-radius: 6px;
+  }
+
+  &.lg {
+    letter-spacing: 0.48px;
+    line-height: var(--brand-line-height--m-large);
+    height: 38px;
+    min-width: 96px;
+    font-size: var(--brand-font-size--default);
+    padding: 9px 18px;
+    border-radius: 7px;
+    white-space: nowrap;
+  }
+
+  &.lgIconButton {
+    flex-shrink: 0;
+    height: 38px;
+    width: 38px;
+    min-width: 38px;
+    border-radius: 7px;
+  }
+
+  // Icon styles
+  &.currentcolor {
+    .icon {
+      svg {
+        path {
+          fill: currentColor;
+        }
+      }
+    }
+  }
+
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // Primary variant
+  &.primary {
+    border: none;
+    background: var(--brand-color-primary-blue, #007cc1);
+    color: var(--brand-color-general-white, #ffffff);
+
+    &:hover {
+      background: var(--brand-color-background-blue-2, #00669e);
+    }
+
+    &:active {
+      background: var(--brand-color-background-blue-3, #005483);
+    }
+
+    &:disabled {
+      background: var(--brand-color-cool-blue, #f2f6fa);
+      color: var(--brand-color-text-skyblue, #79b9de);
+      cursor: not-allowed;
+
+      .icon {
+        svg {
+          color: var(--brand-color-text-skyblue, #79b9de);
+        }
+      }
+    }
+  }
+
+  // Secondary variant
+  &.secondary {
+    background: var(--brand-color-general-white, #ffffff);
+    color: var(--brand-color-primary-blue, #007cc1);
+
+    &.lg {
+      outline: 2px solid var(--brand-color-primary-blue, #007cc1);
+      border: none;
+
+      &:hover {
+        outline: 3px solid var(--brand-color-background-blue-3, #005483);
+        background: var(--brand-color-cool-blue, #f2f6fa);
+        color: var(--brand-color-background-blue-3, #005483);
+
+        .icon {
+          svg {
+            color: var(--brand-color-background-blue-3, #005483);
+          }
+        }
+      }
+
+      &:active {
+        outline: 3px solid var(--brand-color-background-blue-3, #005483);
+        background: var(--brand-color-cool-grey-2, #e5e8ea);
+        color: var(--brand-color-background-blue-3, #005483);
+
+        .icon {
+          svg {
+            color: var(--brand-color-background-blue-3, #005483);
+          }
+        }
+      }
+
+      &:disabled {
+        outline: 2px solid var(--brand-color-text-skyblue, #79b9de);
+        background: var(--brand-color-general-white, #ffffff);
+        color: var(--brand-color-text-skyblue, #79b9de);
+        cursor: not-allowed;
+
+        .icon {
+          svg {
+            color: var(--brand-color-text-skyblue, #79b9de);
+          }
+        }
+      }
+    }
+
+    &.md {
+      outline: 2px solid var(--brand-color-primary-blue, #007cc1);
+      border: none;
+
+      &:hover {
+        outline: 3px solid var(--brand-color-background-blue-3, #005483);
+        background: var(--brand-color-cool-blue, #f2f6fa);
+        color: var(--brand-color-background-blue-3, #005483);
+
+        .icon {
+          svg {
+            color: var(--brand-color-background-blue-3, #005483);
+          }
+        }
+      }
+
+      &:active {
+        outline: 3px solid var(--brand-color-background-blue-3, #005483);
+        background: var(--brand-color-cool-grey-2, #e5e8ea);
+        color: var(--brand-color-background-blue-3, #005483);
+
+        .icon {
+          svg {
+            color: var(--brand-color-background-blue-3, #005483);
+          }
+        }
+      }
+
+      &:disabled {
+        outline: 2px solid var(--brand-color-text-skyblue, #79b9de);
+        background: var(--brand-color-general-white, #ffffff);
+        color: var(--brand-color-text-skyblue, #79b9de);
+        cursor: not-allowed;
+
+        .icon {
+          svg {
+            color: var(--brand-color-text-skyblue, #79b9de);
+          }
+        }
+      }
+    }
+
+    &.sm {
+      outline: 1px solid var(--brand-color-primary-blue, #007cc1);
+      border: none;
+
+      &:hover {
+        outline: 2px solid var(--brand-color-background-blue-3, #005483);
+        background: var(--brand-color-cool-blue, #f2f6fa);
+        color: var(--brand-color-background-blue-3, #005483);
+
+        .icon {
+          svg {
+            color: var(--brand-color-background-blue-3, #005483);
+          }
+        }
+      }
+
+      &:active {
+        outline: 2px solid var(--brand-color-background-blue-3, #005483);
+        background: var(--brand-color-cool-grey-2, #e5e8ea);
+        color: var(--brand-color-background-blue-3, #005483);
+
+        .icon {
+          svg {
+            color: var(--brand-color-background-blue-3, #005483);
+          }
+        }
+      }
+
+      &:disabled {
+        outline: 1px solid var(--brand-color-text-skyblue, #79b9de);
+        background: var(--brand-color-general-white, #ffffff);
+        color: var(--brand-color-text-skyblue, #79b9de);
+        cursor: not-allowed;
+
+        .icon {
+          svg {
+            color: var(--brand-color-text-skyblue, #79b9de);
+          }
+        }
+      }
+    }
+
+    &.xs {
+      outline: 1px solid var(--brand-color-primary-blue, #007cc1);
+      border: none;
+
+      &:hover {
+        outline: 2px solid var(--brand-color-background-blue-3, #005483);
+        background: var(--brand-color-cool-blue, #f2f6fa);
+        color: var(--brand-color-background-blue-3, #005483);
+
+        .icon {
+          svg {
+            color: var(--brand-color-background-blue-3, #005483);
+          }
+        }
+      }
+
+      &:active {
+        outline: 2px solid var(--brand-color-background-blue-3, #005483);
+        background: var(--brand-color-cool-grey-2, #e5e8ea);
+        color: var(--brand-color-background-blue-3, #005483);
+
+        .icon {
+          svg {
+            color: var(--brand-color-background-blue-3, #005483);
+          }
+        }
+      }
+
+      &:disabled {
+        outline: 1px solid var(--brand-color-text-skyblue, #79b9de);
+        background: var(--brand-color-general-white, #ffffff);
+        color: var(--brand-color-text-skyblue, #79b9de);
+        cursor: not-allowed;
+
+        .icon {
+          svg {
+            color: var(--brand-color-text-skyblue, #79b9de);
+          }
+        }
+      }
+    }
+  }
+
+  // Tertiary variant
+  &.tertiary {
+    border: none;
+    background: none;
+    color: var(--brand-color-primary-blue, #007cc1);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--brand-color-background-blue-3, #005483);
+
+      .icon {
+        svg {
+          color: var(--brand-color-background-blue-3, #005483);
+        }
+      }
+    }
+
+    &:active {
+      color: var(--brand-color-background-blue-3, #005483);
+
+      .icon {
+        svg {
+          color: var(--brand-color-background-blue-3, #005483);
+        }
+      }
+    }
+
+    &:disabled {
+      color: var(--brand-color-text-skyblue, #79b9de);
+      cursor: not-allowed;
+
+      .icon {
+        svg {
+          color: var(--brand-color-text-skyblue, #79b9de);
+        }
+      }
+    }
+  }
+
+  &.iconButton {
+    min-width: 0px;
+  }
+}
+
+.textButtonBaseStyles {
+  // Layout
+  display: inline-block;
+  align-items: center;
+  // Visual
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  /* Text color of a typical link */
+  cursor: pointer;
+  // Typography
+  color: var(--brand-color-primary-blue, #007cc1);
+  font-size: var(--brand-font-size--default);
+  font-style: normal;
+  font-weight: var(--brand-font-weight-600);
+  line-height: var(--brand-line-height--m-large);
+  /* 125% */
+  letter-spacing: 0.144px;
+
+  .buttonWrapper {
+    display: inline-flex;
+    gap: 6px;
+  }
+
+  &:hover {
+    text-decoration: underline;
+    color: var(--brand-color-background-blue-2, #00669e);
+    letter-spacing: -0.016px;
+
+    .icon {
+      svg {
+        color: var(--brand-color-background-blue-2, #00669e);
+      }
+    }
+  }
+
+  &:active {
+    text-decoration: underline;
+    color: var(--brand-color-background-blue-3, #005483);
+    letter-spacing: -0.016px;
+
+    .icon {
+      svg {
+        color: var(--brand-color-background-blue-3, #005483);
+      }
+    }
+  }
+
+  &:disabled {
+    text-decoration: none;
+    color: rgba(0, 124, 193, 0.5);
+    letter-spacing: -0.016px;
+    cursor: not-allowed;
+
+    .icon {
+      svg {
+        color: rgba(0, 124, 193, 0.5);
+      }
+    }
+  }
+
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      path {
+        fill: currentColor;
+      }
+    }
+  }
+}
+
+.textButtonUnderlined {
+  text-decoration: underline;
+}

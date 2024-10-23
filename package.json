@@ -1,49 +1,27 @@
 {
   "name": "root",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "mfe/*"
+  ],
   "scripts": {
-    "start:cgat-pde": "yarn workspace @apps/cgat-pde start"
+    "start": "yarn workspace cgat-pde start",
+    "generate:component": "node Generator.js"
   },
-  "workspaces": {
-    "packages": [
-      "apps/*",
-      "mfe/*"
-    ],
-    "nohoist": [
-      "packages/apps/**/webpack-dev-server",
-      "**/babel-loader",
-      "**/babel-jest"
-    ]
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.2.8",
+    "@tanstack/react-query": "^5.59.13",
+    "axios": "^1.7.7",
+    "i18next": "^23.15.1",
+    "i18next-browser-languagedetector": "^8.0.0",
+    "react-i18next": "^15.0.2",
+    "react-icons": "^5.3.0",
+    "react-redux": "^9.1.2",
+    "react-router-dom": "^6.26.2",
+    "sass": "^1.79.4"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.15.0",
-    "@typescript-eslint/parser": "^2.15.0",
-    "babel-eslint": "10.0.3",
-    "eslint": "6.8.0",
-    "eslint-config-prettier": "^6.9.0",
-    "eslint-config-react-app": "^5.1.0",
-    "eslint-plugin-flowtype": "^4.5.3",
-    "eslint-plugin-import": "^2.19.1",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-prettier": "^3.1.2",
-    "eslint-plugin-react": "^7.17.0",
-    "eslint-plugin-react-hooks": "^2.3.0",
-    "husky": "^4.0.6",
-    "jest-prop-type-error": "^1.1.0",
-    "prettier": "^1.19.1"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn test"
-    }
-  },
-  "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx,ts,tsx}",
-      "!src/setupTests.{js,jsx,ts,tsx}",
-      "!src/index.{js,jsx,ts,tsx}",
-      "!src/serviceWorker.{js,jsx,ts,tsx}",
-      "!src/**/*.(spec|test|stories).{js,jsx,ts,tsx}"
-    ]
+    "lerna": "^8.1.8"
   }
 }

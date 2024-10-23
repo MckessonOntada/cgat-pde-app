@@ -1,0 +1,12 @@
+.card_wrap {
+  border-radius: var(--brand-border-radius--8);
+}
+
+.customcard {
+  background-color: var(--brand-color-general-white);
+  border: 1px solid var(--brand-color-text-cool-grey);
+}
+
+.selectedCard {
+  border: 2px solid var(--brand-color-secondary);
+}

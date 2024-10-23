@@ -1,0 +1,65 @@
+@import "../../../../assets/scss/abstracts/_mixins.scss";
+.address_wrap {
+  font-style: normal;
+  .address_header {
+    font-weight: var(--brand-font-weight-600);
+    font-size: 1.8rem;
+    line-height: 2.2rem;
+    color: var(--brand-color-black);
+  }
+
+  .address_phoneNumber {
+    font-weight: var(--brand-font-weight-400);
+    font-size: 1.6rem;
+    line-height: 2rem;
+    letter-spacing: -0.001em;
+    color: var(--brand-color-black-1);
+    margin-left: 4px;
+  }
+  .address_phoneNumber_wrapper {
+    display: flex;
+    align-items: center;
+    padding-top: 12px;
+  }
+  .address_header_directions {
+    font-weight: var(--brand-font-weight-600);
+    font-size: 1.4rem;
+    line-height: 1.8rem;
+    color: var(--brand-color-background-dark-slate);
+    letter-spacing: -0.001em;
+    padding-bottom: 8px;
+    @include respond(sm) {
+      font-size: 1.6rem;
+      line-height: 2rem;
+    }
+  }
+
+  .address_phoneNumber_directions {
+    font-weight: var(--brand-font-weight-400);
+    font-size: 1.2rem;
+    line-height: 1.6rem;
+    display: flex;
+    align-items: center;
+    padding-top: 8px;
+    color: var(--brand-color-background-dark-slate);
+    @include respond(sm) {
+      font-size: 1.4rem;
+      line-height: 1.8rem;
+    }
+  }
+
+  div.address_phoneNumber_directions a {
+    padding-left: 4px;
+  }
+
+  .addressline {
+    font-size: 1.2rem;
+    line-height: 1.6rem;
+    font-weight: var(--brand-font-weight-400);
+    color: var(--brand-color-background-dark-slate);
+    @include respond(sm) {
+      font-size: 1.4rem;
+      line-height: 1.8rem;
+    }
+  }
+}

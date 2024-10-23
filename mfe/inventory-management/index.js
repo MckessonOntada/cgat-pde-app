@@ -1,1 +1,3 @@
-export { default as InventoryManagement } from './src/InventoryManagement';
+
+import App from "./src/App";
+export default App;

@@ -1,33 +1,33 @@
 {
-  "name": "@apps/cgat-pde",
-  "version": "1.0.0",
+  "name": "cgat-pde",
+  "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "lint": "eslint ./src/**/*.js --max-warnings=0 --format=codeframe",
-    "predeploy": "yarn run build",
-    "deploy": "gh-pages -d build",
-    "analyze": "source-map-explorer 'build/static/js/*.js'"
-  },
   "dependencies": {
-    "@mfe/user-management": "1.0.0",
-    "@mfe/order-management": "1.0.0",
     "@mfe/inventory-management": "1.0.0",
-    "@react-workspaces/react-scripts": "^3.3.0-alpha-08",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "@mfe/order-management": "1.0.0",
+    "@mfe/ui-components": "1.0.0",
+    "@mfe/user-management": "1.0.0",
+    "@reduxjs/toolkit": "^2.2.8",
+    "formik": "^2.4.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-redux": "^9.1.2",
+    "react-scripts": "5.0.1",
+    "yup": "^1.4.0",
+    "@mfe/http-client": "1.0.0",
+    "@mfe/org-management": "1.0.0"
   },
-  "devDependencies": {
-    "cross-env": "6.0.3",
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.2",
-    "gh-pages": "^2.2.0",
-    "source-map-explorer": "^2.2.2",
-    "eslint-config-react-app": "^5.1.0",
-    "eslint-config-prettier": "^6.9.0",
-    "eslint-plugin-prettier": "^3.1.2"
+  "scripts": {
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
   "browserslist": {
     "production": [
@@ -41,21 +41,10 @@
       "last 1 safari version"
     ]
   },
-  "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx}",
-      "!src/setupTests.{js,jsx}",
-      "!src/index.{js,jsx}",
-      "!src/serviceWorker.{js,jsx}",
-      "!src/**/*.(spec|test|stories).{js,jsx}"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "statements": 98,
-        "branches": 98,
-        "functions": 98,
-        "lines": 98
-      }
-    }
+  "devDependencies": {
+    "@babel/preset-env": "^7.25.7",
+    "@babel/preset-react": "^7.25.7",
+    "babel-loader": "^9.2.1",
+    "react-app-rewired": "^2.2.1"
   }
 }

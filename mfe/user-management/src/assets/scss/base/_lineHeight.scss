@@ -1,0 +1,13 @@
+// Define a list of height values for line-height classes
+$heightvalues: (14, 16, 18, 20, 22);
+
+// Loop through each value in the $heightvalues list
+@each $height in $heightvalues {
+
+  // Dynamically create a class name for each height value
+  .line-height-#{$height} {
+    
+    // Set the line-height property for the class and append 'px'
+    line-height: #{$height}px !important;
+  }
+}

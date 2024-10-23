@@ -1,0 +1,56 @@
+@import "../../../assets/scss/abstracts/mixins";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px 24px 16px;
+  gap: 24px;
+  z-index: 10;
+  background: var(--brand-color-background-white);
+  width: 100%;
+  align-items: center;
+
+  @include respond(md) {
+    background: transparent;
+    gap: 12px;
+  }
+}
+
+.menuContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+
+  @include respond(md) {
+    flex-direction: row;
+    gap: 40px;
+    width: auto;
+  }
+
+  .label {
+    font-style: normal;
+    font-weight: var(--brand-font-weight-600);
+    font-size: var(--brand-font-size--small);
+    line-height: var(--brand-line-height--large);
+    text-decoration-line: underline;
+    color: var(--brand-color-background-blue-2);
+  }
+
+  .labelUndecorated {
+    text-decoration: none !important;
+  }
+}
+
+.copyrightContainer {
+  font-style: normal;
+  font-weight: var(--brand-font-weight-400);
+  font-size: var(--brand-font-size--small);
+  line-height: var(--brand-line-height--large);
+  text-align: center;
+  color: var(--brand-color-primary-slate);
+}
+
+.formGap {
+  gap: 24px !important;
+}

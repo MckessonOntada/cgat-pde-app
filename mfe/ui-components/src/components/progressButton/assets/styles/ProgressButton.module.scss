@@ -1,0 +1,101 @@
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+.base {
+  border: none;
+  padding: 0;
+  border-radius: 7px;
+  position: relative;
+  height: 38px;
+
+  .iconMargin {
+    margin-right: 1px;
+  }
+
+  .textMargin {
+    margin-top: 1px;
+  }
+}
+
+button:active:before {
+  opacity: 0;
+  transform: translate(0, 0);
+}
+
+button .animationSpan {
+  text-transform: uppercase;
+  transition: all 0.4s ease-in-out;
+}
+
+button:active .animationSpan {
+  opacity: 0;
+  transform: translate(100%, 0);
+}
+
+button:disabled:before {
+  opacity: 1;
+  transform: none;
+}
+
+button:disabled {
+  transform: none;
+  transition: none;
+  cursor: not-allowed;
+}
+
+button:disabled .animationSpan {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.baseStyle {
+  color: var(--brand-color-general-white);
+}
+
+.slideFrom {
+  display: flex;
+  animation: animateFrom 0.4s linear;
+  width: 100%;
+
+  &::before {
+    content: "";
+  }
+}
+
+@keyframes animateFrom {
+  0% {
+    opacity: 1;
+    transform: translateX(0%);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(50%);
+  }
+}
+
+.slideTo {
+  display: flex;
+  animation: animateTo 0.4s linear;
+  width: 100%;
+
+  &::before {
+    content: "";
+  }
+}
+
+@keyframes animateTo {
+  0% {
+    opacity: 1;
+    transform: translateX(-50%);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(0%);
+  }
+}
