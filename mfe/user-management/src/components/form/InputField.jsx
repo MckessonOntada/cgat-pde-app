@@ -1,9 +1,9 @@
-import React from "react";
-import { InputField as BaseInputField } from "@mfe/ui-components";
-import PropTypes from "prop-types";
+import React from 'react';
+import { InputField as BaseInputField } from '@mckesson/mcp-component-library';
+import PropTypes from 'prop-types';
 
 export default function InputField(props) {
-  const { field, form, children, className ,...rest} = props; 
+  const { field, form, children, className, ...rest } = props;
   // Enhance to integrate remaining props
   return (
     <BaseInputField
@@ -18,7 +18,7 @@ export default function InputField(props) {
       errors={form.errors}
       errorMessage={form.errors[field.name]}
       showError={!form.isValid}
-      size="lg" 
+      size="lg"
     />
   );
 }

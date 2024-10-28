@@ -1,5 +1,5 @@
-import React from "react";
-import { TextareaInput } from "@mfe/ui-components";
+import React from 'react';
+import { TextareaInput } from '@mckesson/mcp-component-library';
 
 export default function Textarea(props) {
   const { field, form } = props;
@@ -8,18 +8,16 @@ export default function Textarea(props) {
       <TextareaInput
         {...props}
         {...field}
-        onChangeFn={(value) => form.setFieldValue(field.name, value)}
+        onChangeFn={value => form.setFieldValue(field.name, value)}
         onBlurFn={field.onBlur}
         errors={form.errors}
         errorMessage={form.error}
         showError={!form.isValid}
-        displayType={"outline"}
+        displayType={'outline'}
         maxCharLimit={props.maxCharLimit || 1000}
       />
       {form.errors[field.name] && form.touched[field.name] && (
-        <div style={{ color: "red", fontSize: "20px", fontWeight: "500" }}>
-          {form.errors[field.name]}
-        </div>
+        <div style={{ color: 'red', fontSize: '20px', fontWeight: '500' }}>{form.errors[field.name]}</div>
       )}
     </>
   );

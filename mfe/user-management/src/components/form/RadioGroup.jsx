@@ -1,5 +1,5 @@
-import React from "react";
-import { RadioGroup as BaseRadioGroup } from "@mfe/ui-components";
+import React from 'react';
+import { RadioGroup as BaseRadioGroup } from '@mckesson/mcp-component-library';
 
 // TODO: Handle radio group validations & errors
 export default function RadioGroup(props) {
@@ -9,8 +9,8 @@ export default function RadioGroup(props) {
     <BaseRadioGroup
       {...props}
       error={!!error}
-      errorMessage={error ? form.errors[field.name] : ""}
-      onChangeValue={(value) => form.setFieldValue(field.name, value)}
+      errorMessage={error ? form.errors[field.name] : ''}
+      onChangeValue={value => form.setFieldValue(field.name, value)}
       value={field.value}
     />
   );
