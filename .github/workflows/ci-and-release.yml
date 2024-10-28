@@ -35,10 +35,10 @@ jobs:
           npm config set @mckesson-ontada:registry https://npm.pkg.github.com
           npm config set "//npm.pkg.github.com/:_authToken" ${{ secrets.NPM_TOKEN }}
 
-      - name: Install Dependencies
-        run: |
-          yarn install
-          yarn build
+      # - name: Install Dependencies
+      #   run: |
+      #     yarn install
+      #     yarn build
 
       - name: Generate short SHA
         uses: benjlevesque/short-sha@v1.2
