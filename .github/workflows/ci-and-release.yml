@@ -8,8 +8,8 @@ on:
 env:
   DOCKER_REGISTRY: "mck-ontada-sre.jfrog.io" 
   IMAGE_NAME: "mck-ontada-sre.jfrog.io/cgat-pde-app" 
-  PRISMA_USER: ${{ secrets.PRISMA_USER }}
-  PRISMA_PASSWORD: ${{ secrets.PRISMA_PASSWORD }}
+  PRISMA_USER:  ${{ secrets.PRISMA_USER }}
+  PRISMA_PASSWORD:  ${{ secrets.PRISMA_PASSWORD }}
 
 jobs:
   build_and_push:
@@ -22,23 +22,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
+#       - name: Use Node.js ${{ matrix.node-version }}
+#         uses: actions/setup-node@v1
+#         with:
+#           node-version: ${{ matrix.node-version }}
+#       - run: |
+#          npm config set @mckesson-ontada:registry https://npm.pkg.github.com
+#          npm set "//npm.pkg.github.com/:_authToken" ${{ secrets.AUTH_TOKEN }}
+#          npm install
+#          npm run build
+#          yarn add typescript
+#          yarn && CI=true yarn test --passWithNoTests
+#          yarn build
 
-      - name: Install npm
-        run: npm install -g npm
-
-      - name: Configure npm
-        run: |
-          npm config set @mckesson-ontada:registry https://npm.pkg.github.com
-          npm config set "//npm.pkg.github.com/:_authToken" ${{ secrets.NPM_TOKEN }}
-
-      # - name: Install Dependencies
-      #   run: |
-      #     yarn install
-      #     yarn build
 
       - name: Generate short SHA
         uses: benjlevesque/short-sha@v1.2
@@ -70,10 +66,9 @@ jobs:
           load: true
 
       - id: scan-docker-image
-        name: Scan Docker Image
+        name: Scan docker image
         run: |
-          curl -u $PRISMA_USER:$PRISMA_PASSWORD --output twistcli https://us-east1.cloud.twistlock.com/us-2-158257908/api/v1/util/twistcli
-          chmod +x twistcli && mv twistcli /tmp/
+          curl -u $PRISMA_USER:$PRISMA_PASSWORD --output twistcli https://us-east1.cloud.twistlock.com/us-2-158257908/api/v1/util/twistcli && chmod +x twistcli && mv twistcli /tmp/
           /tmp/twistcli images scan --details --address https://us-east1.cloud.twistlock.com/us-2-158257908 --user $PRISMA_USER --password $PRISMA_PASSWORD $IMAGE_NAME
 
       - if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' 

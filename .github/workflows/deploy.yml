@@ -1,0 +1,123 @@
+
+name: Deploy Workflow
+on:
+  workflow_dispatch:
+    inputs:
+      deploy-environment:
+        type: choice
+        description: 'Environment to deploy to'
+        options:
+        - dev
+        - qa
+        required: true
+        default: 'dev'
+      image-tag:
+        description: 'Docker tag to deploy'
+        required: true
+        default: 'latest'
+
+env:
+  DOCKER_REGISTRY: "mck-ontada-sre.jfrog.io" 
+  IMAGE_TAG: "${{ github.event.inputs.image-tag }}"
+  ENV: "${{ github.event.inputs.deploy-environment }}"
+  WORKFLOW_ID: "${{ github.run_id }}"
+
+jobs:
+  deploy:
+    name: "${{ github.event.inputs.deploy-environment }} deploy tag : ${{ github.event.inputs.image-tag }}"
+    environment: ${{ github.event.inputs.deploy-environment }}
+    runs-on: runners-on-k8s
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: mck-tech-platform-srvs.jfrog.io/kubectl:latest
+      credentials:
+        username: ${{ secrets.DEV_PORTAL_JFROG_USERNAME }}
+        password: ${{ secrets.DEV_PORTAL_JFROG_API_KEY }}
+    steps:
+    - name: Validate Deployment
+      run: |
+        if [ "$ENV" = "prod" ] || [ "$ENV" = "prod-dr" ] && [ "$IMAGE_TAG" = "latest" ]; then
+          echo "Prod deployment with latest tag is not allowed, please select a semantic version"
+          exit 1
+        else
+          echo "Valid deployment"
+        fi
+    -
+      name: Get Manifest File
+      uses: actions/checkout@v2
+    -
+      name: "Deploy to ${{ github.event.inputs.deploy-environment }} cluster"
+      env:
+        KUBERNETES_SERVICE_ACCOUNT: ${{ secrets.DEV_PORTAL_KUBE_SA_US }} # TODO: Change to secrets.name of your Kubernetes SA
+        MANIFEST_NAME: manifest-${{ env.ENV }}.yml
+        CLUSTER_TYPE: "AKS" # Change to AKS for AKS deployments
+        CLUSTER_REGION: "US" # Change to EU for EU deployments
+        REACT_APP_QUEUEMANAGEMENT_MFE: ${{ secrets.REACT_APP_QUEUEMANAGEMENT_MFE }}
+        REACT_APP_USERMANAGEMENT_SERVICE_BASE_URL: ${{ secrets.REACT_APP_USERMANAGEMENT_SERVICE_BASE_URL }}
+        REACT_APP_PUBLIC_PATH: ${{ secrets.REACT_APP_PUBLIC_PATH }}
+        REACT_APP_ENVIRONMENT: ${{ secrets.REACT_APP_ENVIRONMENT }}
+        FAST_REFRESH: ${{ secrets.FAST_REFRESH }}
+        REACT_APP_DATA_ABSTRACTION_SERVICE_BASE_URL: ${{ secrets.REACT_APP_DATA_ABSTRACTION_SERVICE_BASE_URL }}
+        REACT_APP_STUDY_MANAGEMENT_SERVICE_BASE_URL: ${{ secrets.REACT_APP_STUDY_MANAGEMENT_SERVICE_BASE_URL }}
+        REACT_APP_CONTENT_SERVICE_BASE_URL: ${{ secrets.REACT_APP_CONTENT_SERVICE_BASE_URL }}
+        IPV_VIEWER_URL: "${{ secrets.IPV_VIEWER_URL }}"
+        REACT_APP_INACTIVITY_TIMEOUT: "${{ secrets.REACT_APP_INACTIVITY_TIMEOUT }}"
+        SERVICE_NOW_URL: "${{ secrets.SERVICE_NOW_URL }}"
+
+      run: |
+        # Setting up cluster configurations, config files are in the kubectl image
+        # https://github.com/mckesson/pltsrv-kube-apps/tree/master/kubectl
+        source /gke/gke-clusters.config
+        source /aks/aks-clusters.config
+
+        # if [ "$ENV" = "prod" ]; then
+        #   PROD=$(eval "echo \${CLUSTER_TYPE}_\${CLUSTER_REGION}PROD")
+        #   SHARED_CLUSTER="\$${PROD}"
+        # elif [ "$ENV" = "prod-dr" ]; then
+        #   EAST=$(eval "echo \${CLUSTER_TYPE}_\${CLUSTER_REGION}EAST")
+        #   SHARED_CLUSTER="\$${EAST}"
+        # elif [ "$ENV" = "qa-dr" ]; then
+        #   EAST=$(eval "echo \${CLUSTER_TYPE}_\${CLUSTER_REGION}EAST")
+        #   SHARED_CLUSTER="\$${EAST}"
+        # else
+        #   DEV=$(eval "echo  \${CLUSTER_TYPE}_\${CLUSTER_REGION}DEV")
+        #   SHARED_CLUSTER="\$${DEV}"
+        # fi
+
+        if [ "$ENV" = "prod" ]; then
+          PROD=$(eval "echo \${CLUSTER_TYPE}_\${CLUSTER_REGION}PROD")
+          SHARED_CLUSTER="\$${PROD}"
+        elif [ "$ENV" = "prod-dr" ] || [ "$ENV" = "qa-dr" ]; then
+          EAST=$(eval "echo \${CLUSTER_TYPE}_\${CLUSTER_REGION}EAST")
+          SHARED_CLUSTER="\$${EAST}"
+        else
+          DEV=$(eval "echo \${CLUSTER_TYPE}_\${CLUSTER_REGION}DEV")
+          SHARED_CLUSTER="\$${DEV}"
+        fi
+
+
+        # Set shared cluster cert and API
+        eval CLUSTER_CERT="${SHARED_CLUSTER}_CERT"
+        eval CLUSTER_API="${SHARED_CLUSTER}_API"
+
+        # envsubst command will substitute environmental variables available to this step into the
+        # kubernetes manifest file
+        # e.g. ${IMAGE_NAME} in the manifest-dev.yml will be replaced with an actual value
+        # The output i.e. the manifest file with actual values is then piped into the kubectl
+        # apply command to deploy the resources to Kubernetes
+        envsubst < .kube/${MANIFEST_NAME} | \
+        kubectl \
+          --token="$KUBERNETES_SERVICE_ACCOUNT" \
+          --certificate-authority=$CLUSTER_CERT \
+          --server=$CLUSTER_API \
+          apply -f -
+
+    - if: github.event.inputs.deploy-environment == 'prod'
+      name: Mark Release
+      uses: ncipollo/release-action@v1
+      with:
+        allowUpdates: true
+        tag: ${{ env.IMAGE_TAG }}
+        token: ${{ secrets.GITHUB_TOKEN }}
