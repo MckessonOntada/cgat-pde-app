@@ -6,8 +6,8 @@ import "./index.scss";
 import Filters from "./Filters";
 import { UserProvider } from "../../context/PageContext";
 import { PATHS } from "../../routes/constants";
-import   add_circle_bold from '../../assets/images/add_circle_bold.svg';
-import   upload_bottom   from '../../assets/images/upload_bottom.svg';
+import { ReactComponent as AddCirclebold } from '../../assets/images/add_circle_bold.svg';
+import { ReactComponent as upload_bottom } from '../../assets/images/upload_bottom.svg';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -67,7 +67,7 @@ export default function Dashboard() {
       <div className={"header"}>
         <h1>Manage Users</h1>
         <div className="actionsBox">
-          <Button Icon={add_circle_bold}  onClick={handleClick}>Add User</Button>
+          <Button Icon={AddCirclebold} onClick={handleClick}>Add User</Button>
           <Button Icon={upload_bottom} >Upload Users</Button>
         </div>
       </div>
