@@ -16,7 +16,7 @@ module.exports = function override(config, env) {
 
     config.output = {
         ...config.output,
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, 'build'),
     }
 
     config.module.rules[1].oneOf.unshift({
