@@ -1,24 +1,17 @@
-import React, { useState } from "react";
-import { useOrg } from "../../context/PageContext";
-import {
-  AutoSuggestSearch,
-  Button,
-  Divider,
-  SearchableDropdown,
-} from "@mfe/ui-components";
-import { LOCATIONS, STATUS } from "../../mockData/orgData";
-import { Card } from "@mfe/ui-components";
+import React, { useState } from 'react';
+import { useOrg } from '../../context/PageContext';
+import { AutoSuggestSearch, Button, Divider, SearchableDropdown } from '@mckesson/mcp-component-library';
+import { LOCATIONS, STATUS } from '../../mockData/orgData';
+import { Card } from '@mckesson/mcp-component-library';
 // import "./index.scss";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 
 const Filters = () => {
   const { t } = useTranslation();
   const [expandedCard, setExpandedCard] = useState(null);
 
-  const handleExpandCard = (cardId) => {
-    setExpandedCard((prevExpandedCard) =>
-      prevExpandedCard === cardId ? null : cardId
-    );
+  const handleExpandCard = cardId => {
+    setExpandedCard(prevExpandedCard => (prevExpandedCard === cardId ? null : cardId));
   };
 
   const {
@@ -31,16 +24,16 @@ const Filters = () => {
     },
   } = useOrg();
 
-  const handleSearch = (inputValue) => {
+  const handleSearch = inputValue => {
     setSearchQuery(inputValue);
   };
 
   const onSearchableDropdownChange = (type, value) => {
-    const filteredValue = value.filter((item) => item.isChecked);
-    if (type === "location") {
+    const filteredValue = value.filter(item => item.isChecked);
+    if (type === 'location') {
       setLocation(filteredValue);
     }
-    if (type === "status") {
+    if (type === 'status') {
       setStatus(filteredValue);
     }
   };
@@ -57,7 +50,7 @@ const Filters = () => {
           value={searchQuery}
           onChangeInput={handleSearch}
           outline={true}
-          placeHolder={t("select_name_location")}
+          placeHolder={t('select_name_location')}
         />
       }
       type="accordion"
@@ -71,12 +64,10 @@ const Filters = () => {
               id="location"
               isSuccess
               value={location}
-              label={t("location")}
-              name={t("location")}
+              label={t('location')}
+              name={t('location')}
               isRequired={false}
-              onChange={(value) =>
-                onSearchableDropdownChange("location", value)
-              }
+              onChange={value => onSearchableDropdownChange('location', value)}
               options={LOCATIONS}
               clearAllSelectedValues={() => setLocation([])}
             />
@@ -85,22 +76,17 @@ const Filters = () => {
               id="status"
               isSuccess
               value={status}
-              label={t("status")}
-              name={t("status")}
+              label={t('status')}
+              name={t('status')}
               isRequired={false}
-              onChange={(value) => onSearchableDropdownChange("status", value)}
+              onChange={value => onSearchableDropdownChange('status', value)}
               options={STATUS}
               clearAllSelectedValues={() => setStatus([])}
             />
 
             <div className="LabelBox">
-              <Button
-                type="button"
-                textButton
-                className="clearfilterbtn"
-                onClick={handleClear}
-              >
-                {t("clear_filters")}
+              <Button type="button" textButton className="clearfilterbtn" onClick={handleClear}>
+                {t('clear_filters')}
               </Button>
             </div>
           </div>
