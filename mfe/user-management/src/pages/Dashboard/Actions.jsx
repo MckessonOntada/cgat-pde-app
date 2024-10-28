@@ -1,8 +1,8 @@
-import { Switch,DropdownMenu  } from "@mfe/ui-components";
+import { Switch, DropdownMenu } from "@mfe/ui-components";
 import React, { useState, useEffect } from "react";
 import { FaPen } from "react-icons/fa";
-import "./index.scss"; 
-import VerticalIcon from '../../assets/images/Vertical.svg';
+import "./index.scss";
+import { ReactComponent as VerticalIcon } from '../../assets/images/Vertical.svg';
 import { useTranslation } from "react-i18next";
 
 export default function Actions({ status, row, onToggleChange }) {
@@ -23,34 +23,34 @@ export default function Actions({ status, row, onToggleChange }) {
 
     alert(checked ? "The switch is ON!" : "The switch is OFF!");
   };
- 
+
 
   const handleEdit = () => {
-    alert("Handle Edit"); 
+    alert("Handle Edit");
   };
   const handleDelete = () => {
-    alert("Handle Delete"); 
+    alert("Handle Delete");
   };
   const handleOtherAction = () => {
-    alert("Handle Other Action"); 
+    alert("Handle Other Action");
   };
 
 
   return (
-    <div className="actionsBox icon-align"> 
-       <DropdownMenu 
-        anchorEl={<VerticalIcon/>}   
+    <div className="actionsBox icon-align">
+      <DropdownMenu
+        anchorEl={<VerticalIcon />}
         handleSelect={(selectedItem) => {
-            if (selectedItem.value === "Edit") {
+          if (selectedItem.value === "Edit") {
             handleEdit();
-            }
-            if (selectedItem.value === "Delete") {
+          }
+          if (selectedItem.value === "Delete") {
             handleDelete();
-            }
-            if (selectedItem.value === "Inactivate") {
+          }
+          if (selectedItem.value === "Inactivate") {
             handleOtherAction();
-            }
-        } }
+          }
+        }}
         options={[
           {
             label: t("edit"),
@@ -67,7 +67,7 @@ export default function Actions({ status, row, onToggleChange }) {
         ]} />
       {/* <FaPen className="actionEditIcon" />
       <Switch checked={isChecked} size="md" onChange={handleToggle} /> */}
-      
+
     </div>
   );
 }
