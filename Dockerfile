@@ -18,7 +18,7 @@ COPY package.json yarn.lock ./
 # Install build dependencies
 RUN apk add --update python3 make g++ && rm -rf /var/cache/apk/*
 # Install Yarn globally
-RUN npm install -g yarn
+#RUN npm install -g yarn
 
 # Install dependencies using Yarn
 RUN yarn install
