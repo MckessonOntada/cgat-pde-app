@@ -14,6 +14,10 @@ module.exports = function override(config, env) {
             return path.resolve(mfeDir, folder);
         });
 
+    config.output = {
+        ...config.output,
+        path: path.resolve(__dirname, 'dist'),
+    }
 
     config.module.rules[1].oneOf.unshift({
         test: /\.(js|jsx|ts|tsx)$/,
