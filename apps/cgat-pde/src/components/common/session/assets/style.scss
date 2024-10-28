@@ -1,0 +1,107 @@
+.box {
+    max-width: 400px;
+    margin: 20px auto;
+    background-color: var(--brand-color-background-white);
+    border-radius: var(--brand-border-radius--3);
+    border: 1px solid var(--brand-color-grey-scale-cool-2);
+
+    .branding,
+    .okta-lock-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .branding {
+        padding: var(--spacing-05);
+    }
+
+    .form-wrapper {
+        padding: var(--spacing-04);
+    }
+
+    .seperator {
+        position: relative;
+        margin-bottom: var(--spacing-04);
+        display: flex;
+        align-items: center;
+
+        .divider {
+            border-color: var(--brand-color-grey-scale-cool-2);
+        }
+    }
+
+    .okta-lock-wrapper {
+        padding: 2px;
+        border-radius: 100%;
+        background-color: var(--brand-color-grey-scale-cool-2);
+        border: 8px solid var(--brand-color-background-white);
+    }
+
+    .okta-lock {
+        display: inline-flex;
+        width: 85px;
+        height: 85px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 100%;
+        background-color: #DFF4FF;
+        border: 3px solid var(--brand-color-background-white);
+    }
+
+    .box-heading {
+        text-align: center;
+        font-size: var(--brand-font-size--large);
+        font-weight: var(--brand-font-weight-600);
+        margin-bottom: var(--spacing-02);
+    }
+
+    .fields {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-03);
+
+        .field-label {
+            display: block;
+            font-size: var(--brand-font-size--15);
+            font-weight: var(--brand-font-weight-400);
+            margin-bottom: var(--spacing-02);
+        }
+    }
+
+    .help-link{
+        font-size: var(--brand-font-size--small);
+        text-decoration: none;
+        color: var(--brand-color-general-black);
+    }
+
+    .controls {
+        button {
+            width: 100%;
+        }
+    }
+}
+
+
+.session{
+    .branding{
+        width: 400px;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-04);
+        .branding-logo{
+            svg{
+                height: 46px;
+                width: 340px;
+            }
+        }
+        .company-logo-heading{
+            font-size: var(--brand-font-size--28);
+            color: var(--brand-color-text-dark-slate);
+        }
+        p{
+            font-size: var(--brand-font-size--20);
+            color: var(--brand-color-primary-slate);
+        }
+    }
+}

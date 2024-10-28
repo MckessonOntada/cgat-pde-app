@@ -1,3 +1,61 @@
 {
-  "greeting": "Hello"
+  "greeting": "Hello",
+  "aria": {
+    "companyLogo": "Company Logo",
+    "selectTreatmentCenter": "Select Treatment Center",
+    "quickLinks": "Quick Links",
+    "myAccount": "Go to My Account",
+    "help": "Help",
+    "logout": "Logout from your account"
+  },
+  "link": {
+    "myAccount": "My Account",
+    "help": "Help"
+  },
+  "button": {
+    "sally": "Sally",
+    "cancel": "Cancel",
+    "logout": "Logout",
+    "systemAdminView": "System Admin View"
+  },
+  "dashboard": {
+    "manage_order_configuration": "Manage Order Configuration",
+    "manage_users": "Manage Users",
+    "manage_roles": "Manage Roles",
+    "manage_catalog": "Manage Catalog",
+    "view_linked_accounts": "View Linked Accounts",
+    "efficiently_streamline_user_management_for_seamless_experience": "Efficiently streamline user management for seamless experience."
+  },
+  "footer": {
+    "sitemap": "Sitemap",
+    "navigation": "Footer Navigation",
+    "terms": "Terms",
+    "help": "Help",
+    "contact": "Contact",
+    "link": {
+      "privacy": "Privacy",
+      "do not sell my information": "Do Not Sell My Information",
+      "user help": "User Help"
+    },
+    "Contact us at: 1-855-887-6788": "Contact us at: 1-855-887-6788",
+    "copyright": "All rights reserved, {{company}}"
+  },
+  "banner": {
+    "logoAltText": "McKesson Logo",
+    "headline": "Advancing Health Outcomes for All",
+    "subHeadline": "Solutions for your pharmacy, hospital, organization, or biopharma company"
+  },
+  "forms": {
+    "headings": {
+      "newUserRegistration": "Please complete the form to submit your request for registering as a new user.",
+      "organization_details": "Organization Details"
+    },
+    "labels": {
+      "organization": "Organization",
+      "comment": "Comment"
+    },
+    "placeholder": {
+      "max_5000_chars" : "Maximum 5,000 Characters"
+    }
+  }
 }

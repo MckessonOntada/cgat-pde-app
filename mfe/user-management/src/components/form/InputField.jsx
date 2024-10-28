@@ -3,11 +3,12 @@ import { InputField as BaseInputField } from "@mfe/ui-components";
 import PropTypes from "prop-types";
 
 export default function InputField(props) {
-  const { field, form } = props; 
+  const { field, form, children, className ,...rest} = props; 
   // Enhance to integrate remaining props
   return (
     <BaseInputField
-      {...props}
+      {...rest}
+      id={field.name}
       name={field.name}
       value={field.value}
       register={() => ({
@@ -17,7 +18,7 @@ export default function InputField(props) {
       errors={form.errors}
       errorMessage={form.errors[field.name]}
       showError={!form.isValid}
-      size="lg"
+      size="lg" 
     />
   );
 }

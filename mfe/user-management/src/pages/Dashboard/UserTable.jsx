@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import DataTable from '../../components/DataTable';
+import DataTable from "../../components/DataTable";
 import { Badge } from "@mfe/ui-components";
-import { USER_DATA } from '../../mockData/UsersData'; 
+import { USER_DATA } from "../../mockData/UsersData";
 import { useTranslation } from "react-i18next";
 import "./index.scss";
 import Actions from "./Actions";
@@ -13,7 +13,7 @@ function UserTable() {
   const [sortColumn, setSortColumn] = useState("date_updated");
   const [sortDirection, setSortDirection] = useState("desc");
   const [anchorEl, setAnchorEl] = useState(null);
-  
+
   useEffect(() => {
     const sortedData = [...USER_DATA].sort((a, b) => {
       if (sortDirection === "asc") {
@@ -27,7 +27,8 @@ function UserTable() {
 
   const handleSortClick = (selectedColumn) => {
     const columnName = selectedColumn.selector;
-    const newSortDirection = sortColumn === columnName && sortDirection === "asc" ? "desc" : "asc";
+    const newSortDirection =
+      sortColumn === columnName && sortDirection === "asc" ? "desc" : "asc";
     const sortedData = [...filteredData].sort((a, b) => {
       if (newSortDirection === "asc") {
         return a[columnName] > b[columnName] ? 1 : -1;
@@ -51,16 +52,30 @@ function UserTable() {
         <div className="cellEllipse">
           <a href={props.name} style={{ color: "#007bff", fontWeight: "600" }}>
             {props.name}
-          </a></div>
+          </a>
+        </div>
       ),
     },
 
-    { name: t("email"), selector: "Email", sortable: true, width: "25%", cell: (props) => <div className="cellEllipse"> {props.e_mail}</div> },
-    { name: t("role"), selector: "Role", sortable: true, width: "10%", cell: (props) => <div className="cellEllipse">{props.role}</div> },
+    {
+      name: t("email"),
+      selector: "Email",
+      sortable: true, 
+      width: "25%",
+      cell: (props) => <div className="cellEllipse"> {props.e_mail}</div>,
+    },
+    {
+      name: t("role"),
+      selector: "Role",
+      sortable: true,
+      width: "10%",
+      cell: (props) => <div className="cellEllipse">{props.role}</div>,
+    },
     {
       name: t("status"),
       selector: "status",
       sortable: true,
+      center: true,
       width: "10%",
       cell: (props) => (
         <div>
@@ -72,14 +87,37 @@ function UserTable() {
         </div>
       ),
     },
-    { name: <div className="display-block right-aligned">{t("date_added")}</div>, selector: "date_added", sortable: true, width: "10%", cell: (props) => <div className="cellEllipse right-aligned"  >{props.date_added}</div> },
-    { name: <div className="display-block right-aligned">{t("date_updated")}</div>, selector: "date_updated", sortable: true, width: "15%",  cell: (props) => <div className="cellEllipse right-aligned">{props.date_updated}</div> },
-    { id: "action", name: t("action"), cell: Actions,   width: "5%" },
+    {
+      name: <div>{t("date_added")}</div>,
+      selector: "date_added",
+      sortable: true,
+      width: "14%",
+      center: true,
+      cell: (props) => <div>{props.date_added}</div>,
+    },
+    {
+      name: <div className="">{t("date_updated")}</div>,
+      selector: "date_updated",
+      sortable: true,
+      width: "14%",
+      center: true,
+      cell: (props) => <div className="">{props.date_updated}</div>,
+    },
+    {
+      id: "action",
+      center: true,
+      name: t("action"),
+      cell: Actions,
+      width: "7%",
+    },
   ];
-  return ( 
-      <DataTable columns={columns} rows={filteredData} handleSortClick={handleSortClick} /> 
+  return (
+    <DataTable
+      columns={columns}
+      rows={filteredData}
+      handleSortClick={handleSortClick}
+    />
   );
 }
-
 
 export default UserTable;

@@ -3,13 +3,13 @@ import { useUser } from "../../context/PageContext";
 import {
   AutoSuggestSearch,
   Button,
-  Card,
   Divider,
   SearchableDropdown,
 } from "@mfe/ui-components";
 import { useTranslation } from "react-i18next";
 import { ROLES, STATUS } from "../../mockData/UsersData";
-import { FaChevronDown, FaChevronRight } from "react-icons/fa";
+import arrow_right from "../../assets/images/arrow_right.svg";
+import arrow_down from "../../assets/images/arrow_down.svg";
 import "./index.scss";
 
 const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
@@ -68,91 +68,89 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
   };
 
   return (
-    <Card
-      bodyContent={
-        <div className="filterBox">
-          {(showRoleDropdown && ROLES.length > 0) ||
-          (showStatusDropdown && STATUS.length > 0) ? (
+    <div className="filterBox">
+      {(showRoleDropdown && ROLES.length > 0) ||
+      (showStatusDropdown && STATUS.length > 0) ? (
+        <>
+          <div className="toggle-box">
+            <div onClick={handleExpandCard}>
+              {expandedCard ? (
+                <img src={arrow_down} className="icon-align" />
+              ) : (
+                <img src={arrow_right} className="icon-align" />
+              )}
+            </div>
+            <div className="autoSuggestSearch-container">
+              <AutoSuggestSearch
+                label=" "
+                value={searchQuery}
+                onChangeInput={handleSearchChange}
+                outline={true}
+                placeHolder={t("search_by_name_or_email")}
+              />
+            </div>
+          </div>
+
+          {/* Render contents only if expandedCard is true */}
+          {expandedCard && (
             <>
-              <div className="toggle-box">
-                <div onClick={handleExpandCard}>
-                  {expandedCard ? (
-                    <FaChevronRight className="icon-color" />
-                  ) : (
-                    <FaChevronDown className="icon-color" />
+              <Divider color={"#BAC5CC"} />
+
+              <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
+                {showRoleDropdown && ROLES.length > 0 && (
+                  <SearchableDropdown
+                    id="role"
+                    isSuccess
+                    value={role}
+                    label={t("role")}
+                    name={t("role")}
+                    isRequired={false}
+                    onChange={(value) =>
+                      onSearcheableDropdownChange("role", value)
+                    }
+                    options={ROLES}
+                    clearAllSelectedValues={() => setRole([])}
+                  />
+                )}
+
+                {showStatusDropdown && STATUS.length > 0 && (
+                  <SearchableDropdown
+                    id="status"
+                    isSuccess
+                    value={status}
+                    label={t("status")}
+                    name={t("status")}
+                    isRequired={false}
+                    onChange={(value) =>
+                      onSearcheableDropdownChange("status", value)
+                    }
+                    options={STATUS}
+                    clearAllSelectedValues={() => setStatus([])}
+                  />
+                )}
+
+                <div className="LabelBox">
+                  <Button
+                    type="button"
+                    label={t("filter")}
+                    onClick={handleFilter}
+                  />
+                  {isClearFiltersVisible && (
+                    <Button
+                      type="button"
+                      label={t("clear_filters")}
+                      textButton
+                      className="txtbtn"
+                      onClick={handleClearFilters}
+                    />
                   )}
                 </div>
-
-                <AutoSuggestSearch
-                  label=" "
-                  value={searchQuery}
-                  onChangeInput={handleSearchChange}
-                  outline={true}
-                  placeHolder={t("search_by_name_or_email")}
-                />
               </div>
-
-              {!expandedCard && (
-                <>
-                  <Divider className={"search"} />
-
-                  <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
-                    {showRoleDropdown && ROLES.length > 0 && (
-                      <SearchableDropdown
-                        id="role"
-                        isSuccess
-                        value={role}
-                        label={t("role")}
-                        name={t("role")}
-                        isRequired={false}
-                        onChange={(value) =>
-                          onSearcheableDropdownChange("role", value)
-                        }
-                        options={ROLES}
-                        clearAllSelectedValues={() => setRole([])}
-                      />
-                    )}
-
-                    {showStatusDropdown && STATUS.length > 0 && (
-                      <SearchableDropdown
-                        id="status"
-                        isSuccess
-                        value={status}
-                        label={t("status")}
-                        name={t("status")}
-                        isRequired={false}
-                        onChange={(value) =>
-                          onSearcheableDropdownChange("status", value)
-                        }
-                        options={STATUS}
-                        clearAllSelectedValues={() => setStatus([])}
-                      />
-                    )}
-
-                    <div className="LabelBox">
-                      <Button
-                        type="button"
-                        label={t("filter")}
-                        onClick={handleFilter}
-                      />
-                      {isClearFiltersVisible && (
-                        <Button
-                          type="button"
-                          label={t("clear_filters")}
-                          textButton
-                          className="txtbtn"
-                          onClick={handleClearFilters}
-                        />
-                      )}
-                    </div>
-                  </div>
-                </>
-              )}
             </>
-          ) : null}
-        </div>
-      }
-    />
+          )}
+        </>
+      ) : null}
+    </div>
   );
 };
 

@@ -19,19 +19,17 @@ module.exports = {
         },
       },
       {
+        test: /\.(png|svg|jpg|jepg)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'file-loader',
+        },
+      },
+      {
         test: /\.(css|sass|scss)$/i,
         use: [
           "style-loader",
           "css-loader",
-          // {
-          //   loader: "",
-          //   options: {
-          //     modules: {
-          //       auto: true,
-          //       localIdentName: "[name]--[local]--[hash:base64:10]",
-          //     },
-          //   },
-          // },
           "sass-loader",
         ],
       },

@@ -1,0 +1,136 @@
+@import "./../../../../../assets/scss/abstracts/mixins";
+
+.header-wrapper {
+    margin: 0px auto;
+
+    .divider {
+        height: unset;
+        align-self: stretch;
+    }
+
+    .header {
+        padding: 0px 40px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        &.primary {
+            background: var(--brand-color-patient-primary-1);
+        }
+
+        .user-display {
+            display: flex;
+            align-items: center;
+            align-self: stretch;
+            border-right: 1px solid var(--brand-color-patient-primary-3);
+
+            .branding {
+                display: flex;
+                align-items: center;
+                padding-top: var(--spacing-01);
+                padding-bottom: var(--spacing-01);
+                gap: var(--spacing-02);
+                padding-right: var(--spacing-03);
+            }
+
+            .logo {
+                width: 60px;
+                height: 22px;
+            }
+
+            .center-selector {
+                min-width: 80px;
+
+                .MuiSelect-select {
+                    font-size: var(--brand-font-size--default);
+                }
+
+                fieldset {
+                    border: none;
+                }
+            }
+        }
+
+        .controls{
+            position: relative;
+        }
+        .quick-links {
+            background-color: var(--brand-color-background-white);
+            top: 100%;
+            border-radius: var(--brand-border-radius--8);
+            box-shadow: var(--brand-color-grey-scale-warm-2) 0px 8px 24px;
+            right: 0px;
+            padding: var(--spacing-02);
+            position: absolute;
+            z-index: 999;
+            display: none;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--spacing-01);
+
+            
+            &.active{
+                display: flex;
+            }
+
+
+            li {
+                display: flex;
+                align-self: stretch;
+                padding: var(--spacing-02);
+                padding-right: var(--spacing-03);
+                padding-left: var(--spacing-03);
+                border-right: none;
+            }
+
+            .link-wrapper {
+                color: var(--brand-color-text-black);
+            }
+        }
+    }
+
+
+
+    @include respond(md) {
+        .burger-menu {
+            display: none;
+        }
+
+        .header {
+            .quick-links {
+                position: static;
+                background-color: unset;
+                list-style-type: none;
+                padding: unset;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                align-self: stretch;
+                justify-content: center;
+                gap: var(--spacing-01);
+                box-shadow: none;
+                
+                li {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    align-self: stretch;
+                    padding: var(--spacing-02);
+                    padding-right: var(--spacing-03);
+                    padding-left: var(--spacing-03);
+                    border-right: 1px solid var(--brand-color-patient-primary-3);
+                }
+
+                li:last-child {
+                    border-right: none;
+                    padding-right: 0px;
+                }
+
+                .link-wrapper {
+                    color: var(--brand-color-text-black);
+                }
+            }
+        }
+    }
+}

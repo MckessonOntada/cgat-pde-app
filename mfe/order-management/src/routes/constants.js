@@ -1,3 +1,4 @@
 export const PATHS = {
-  home: "/",
+  dashboard: "/", 
+  createorder: "create-order",
 };

@@ -1,5 +1,5 @@
 export const PATHS = {
   dashboard: "/",
-  userDetail: "/:userId",
-  createUser: "/create_user",
+  userDetail: ":userId",
+  createUser: "create-user",
 };

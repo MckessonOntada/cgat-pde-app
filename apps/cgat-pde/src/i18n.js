@@ -3,7 +3,8 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 import en from "./locales/en.json";
 import fr from "./locales/fr.json";
-import { Locales as UserManagementLocales } from "@mfe/user-management";
+import { Locales as UserManagementLocales } from "@mfe/user-management"; 
+import  { Locales as OrderManagementLocales}  from "@mfe/order-management"; 
 
 i18n
   .use(LanguageDetector) // To use default browser language
@@ -13,10 +14,10 @@ i18n
     fallbackLng: "en",
     resources: {
       en: {
-        translation: {...en, ...UserManagementLocales.en},
+        translation: {...en, ...UserManagementLocales.en,...OrderManagementLocales.en},
       },
       fr: {
-        translation: {...fr, ...UserManagementLocales.fr},
+        translation: {...fr, ...UserManagementLocales.fr,...OrderManagementLocales.en},
       },
       // Add new locales
     },
