@@ -6,8 +6,8 @@
     "mfe/*"
   ],
   "scripts": {
-    "start": "npm run start --workspace=cgat-pde",
-    "serve": "npx serve -s apps/cgat-pde/build",
+    "dev": "npm run start --workspace=cgat-pde",
+    "start": "npx serve -s apps/cgat-pde/build",
     "build": "npm install && npm run build --workspace=cgat-pde",
     "generate:component": "node Generator.js"
   },

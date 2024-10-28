@@ -13,7 +13,7 @@ RUN npm config set "//npm.pkg.github.com/:_authToken" ${NPM_TOKEN}
 WORKDIR /usr/src/app
 
 # Copy package.json and yarn.lock files (if using Yarn)
-COPY package.json yarn.lock ./
+COPY package.json package-lock.json ./
 
 # Install build dependencies
 RUN apk add --update python3 make g++ && rm -rf /var/cache/apk/*
@@ -21,13 +21,13 @@ RUN apk add --update python3 make g++ && rm -rf /var/cache/apk/*
 #RUN npm install -g yarn
 
 # Install dependencies using Yarn
-RUN yarn install
+# RUN yarn install¿
 
 # Copy the rest of the application code
 COPY . .
 
 # Build the application
-RUN yarn run build
+RUN npm run build
 
 # Start the application
-CMD ["yarn", "run", "start"]
+CMD ["npm", "run", "start"]
