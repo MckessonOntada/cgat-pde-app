@@ -8,7 +8,7 @@ import {
 } from "@mfe/ui-components";
 import { LOCATIONS, STATUS } from "../../mockData/orgData";
 import { Card } from "@mfe/ui-components";
-import "./index.scss";
+// import "./index.scss";
 import { useTranslation } from "react-i18next";
 
 const Filters = () => {

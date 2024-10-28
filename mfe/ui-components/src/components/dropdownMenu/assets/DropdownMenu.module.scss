@@ -27,7 +27,8 @@
     cursor: pointer;
     padding: 8px 16px;
     border-bottom: 1px solid var(--brand-color-text-cool-grey);
-    background: var(--brand-color-secondary--hover);
+    // background: var(--brand-color-secondary--hover);
+    background: var(--brand-color-background-white);
     color: var(--brand-color-font-black);
     /* Body/SemiBold S */
     font-size: var(--brand-font-size--extra-small) !important;
@@ -39,4 +40,9 @@
     width: 100%;
     white-space: nowrap;
   }
+}
+
+.dropdownContent button:hover,
+.dropdownContent li:hover {
+  background: var(--brand-color-secondary--hover);
 }

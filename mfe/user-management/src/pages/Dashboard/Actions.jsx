@@ -2,7 +2,7 @@ import { Switch,DropdownMenu  } from "@mfe/ui-components";
 import React, { useState, useEffect } from "react";
 import { FaPen } from "react-icons/fa";
 import "./index.scss"; 
-import { ReactComponent as VerticalIcon} from '../../assets/images/Vertical.svg';
+import VerticalIcon from '../../assets/images/Vertical.svg';
 import { useTranslation } from "react-i18next";
 
 export default function Actions({ status, row, onToggleChange }) {

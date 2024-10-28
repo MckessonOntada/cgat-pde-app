@@ -3,4 +3,9 @@
 body {
   height: 100vh;
   overflow: auto;
+  background-color: var(--brand-color-background-warm-grey-3);
+}
+
+.main-container {
+  padding: 34px !important;
 }

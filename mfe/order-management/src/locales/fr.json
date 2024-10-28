@@ -1,0 +1,15 @@
+{ 
+  "orders": "Commandes",
+  "patient_name": "Nom du patient",
+  "order_id": "Numéro de commande",
+  "account_name": "Nom du compte",
+  "order_total": "Total de la commande",
+  "created_date": "Date de création",
+  "last_updated": "Dernière mise à jour",
+  "status": "Status",
+  "submitted": "Soumis",
+  "pending_approval": "En attente d'approbation",
+  "draft": "Brouillon", 
+  "search_by_orderid_patient_name_account": "Rechercher par numéro de commande, nom du patient, compte",
+  "create_new_order": "Créer une nouvelle commande"
+}

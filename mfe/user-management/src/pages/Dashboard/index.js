@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserTable from "./UserTable";
-import { Button, Card, TabList } from "@mfe/ui-components";
+import { Breadcrumb, Button, Card, TabList } from "@mfe/ui-components";
 import "./index.scss";
 import Filters from "./Filters";
 import { UserProvider } from "../../context/PageContext";
+import { PATHS } from "../../routes/constants";
+import   add_circle_bold from '../../assets/images/add_circle_bold.svg';
+import   upload_bottom   from '../../assets/images/upload_bottom.svg';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -15,7 +18,7 @@ export default function Dashboard() {
   };
 
   const handleClick = () => {
-    navigate("create_user");
+    navigate(PATHS.createUser);
   };
   const handleTabClick = (tab) => {
     console.log("tab", tab);
@@ -51,13 +54,21 @@ export default function Dashboard() {
     },
   ];
 
+  const items = [
+    { label: "Home", url: "/home" },
+    { label: "About", url: "/about" },
+    { label: "Services", url: "/services" },
+    { label: "Contact", url: "" },
+  ];
+
   return (
     <div className="userContainer">
+      <Breadcrumb items={items} />
       <div className={"header"}>
         <h1>Manage Users</h1>
         <div className="actionsBox">
-          <Button onClick={handleClick}>Add User</Button>
-          <Button>Upload Users</Button>
+          <Button Icon={add_circle_bold}  onClick={handleClick}>Add User</Button>
+          <Button Icon={upload_bottom} >Upload Users</Button>
         </div>
       </div>
       <UserProvider>
@@ -65,9 +76,15 @@ export default function Dashboard() {
           bodyContent={
             <div className="userCardContainer">
               <Filters showRoleDropdown={true} showStatusDropdown={true} />
-              <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={"text"} />
-              {activeTab === 'ACTIVE USERS' && <UserTable />}
-              {activeTab === 'PENDING REQUESTS' && <UserTable />}
+              <TabList
+                options={tabs}
+                alignment="left"
+                onTabClick={handleTabClick}
+                showShadow={false}
+                variant={"text"}
+              />
+              {activeTab === "ACTIVE USERS" && <UserTable />}
+              {activeTab === "PENDING REQUESTS" && <UserTable />}
             </div>
           }
         />

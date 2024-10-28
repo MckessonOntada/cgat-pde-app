@@ -1,7 +1,7 @@
 import { IconButton, Switch } from "@mfe/ui-components";
 import React, { useState, useEffect } from "react";
 import { FaPen } from "react-icons/fa";
-import "./index.scss";
+// import "./index.scss";
 
 export default function Actions({ status, row, onToggleChange, onEditClick }) {
   const [isChecked, setIsChecked] = useState(status === "ACTIVE");

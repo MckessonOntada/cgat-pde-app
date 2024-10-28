@@ -19,6 +19,21 @@ module.exports = {
           loader: 'babel-loader',
         },
       },
+      {
+        test: /\.(css|sass|scss)$/i,
+        use: [
+          "style-loader",
+          "css-loader",
+          "sass-loader",
+        ],
+      },
+      {
+        test: /\.(png|svg|jpg|jepg)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'file-loader',
+        },
+      }
     ],
   },
   resolve: {

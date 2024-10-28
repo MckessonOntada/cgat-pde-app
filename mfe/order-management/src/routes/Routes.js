@@ -1,13 +1,13 @@
+ 
+ 
 import React from "react";
 import { Route, Routes as ReactRoutes } from "react-router-dom";
 import { PATHS } from "./constants";
-import Home from "../pages/Home";
-
+import Home from "../pages/Dashboard"; 
 const Routes = () => {
   return (
     <ReactRoutes>
-      <Route path={PATHS.home} element={<Home />} />
-      {/* Add new routes here */}
+      <Route path={PATHS.dashboard} element={<Home />} /> 
     </ReactRoutes>
   );
 };

@@ -1,0 +1,38 @@
+// Import the mixins file to enable responsive utilities
+@import "../abstracts/mixins";
+
+// Usage example
+// .d-lg-block : makes an element a block in lg view
+// .d-lg-none : hides the element in lg view
+// .w-100 : sets width to 100%
+
+// Utility class to hide an element regardless of screen size
+.d-none {
+  display: none !important;
+}
+
+// Utility class to show an element as a block regardless of screen size
+.d-block {
+  display: block !important;
+}
+
+// Define a list of responsive sizes (from extra small to extra extra large)
+$sizes: xs, sm, md, lg, xl, xxl;
+
+@each $size in $sizes {
+  // Create responsive block display classes for each size (e.g., .d-lg-block)
+  @include respond($size) {
+    .d-#{$size}-block {
+      display: block !important;
+    }
+  }
+}
+
+@each $size in $sizes {
+  // Create responsive none display classes for each size (e.g., .d-lg-none)
+  @include respond($size) {
+    .d-#{$size}-none {
+      display: none !important;
+    }
+  }
+}
