@@ -1,6 +1,6 @@
 import { useState } from 'react';
-// import { Link } from '@mfe/ui-components';
-import { Link } from 'react-router-dom';
+import { Link } from '@mfe/ui-components';
+// import { Link } from 'react-router-dom';
 import { Dropdown, Button, DropdownMenu, Divider } from '@mckesson/mcp-component-library';
 import './assets/style.scss';
 import { accountOptions, treatmentCenters } from './__mock__';
@@ -21,7 +21,7 @@ export default function PrimaryHeader() {
     <Link to={'my-account'} aria-label={t('aria.myAccount')}>
       {t('link.myAccount')}
     </Link>,
-    <DropdownMenu anchorEl={t('button.sally')} handleSelect={() => {}} options={accountOptions} />,
+    <DropdownMenu anchorEl={t('button.sally')} handleSelect={() => { }} options={accountOptions} />,
     <Link
       to={'help'}
       aria-label={t('aria.help')}
@@ -48,7 +48,7 @@ export default function PrimaryHeader() {
                 id="treatment-center-dropdown"
                 name="treatment-center"
                 aria-label={t('aria.selectTreatmentCenter')}
-                onChange={() => {}}
+                onChange={() => { }}
                 options={treatmentCenters}
                 className="no-border"
               />
