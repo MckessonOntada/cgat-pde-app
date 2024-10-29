@@ -1,5 +1,5 @@
 # pull the Node.js Docker image
-FROM node:18-alpine AS build
+FROM node:20-alpine AS build
 ARG NPM_TOKEN
 RUN npm config set @mckesson-ontada:registry https://npm.pkg.github.com
 RUN npm config set @mckesson:registry https://npm.pkg.github.com/mckesson
