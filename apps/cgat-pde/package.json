@@ -3,11 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@mfe/http-client": "1.0.0",
-    "@mfe/org-management": "1.0.0",
-    "@mfe/inventory-management": "1.0.0",
-    "@mfe/order-management": "1.0.0",
-    "@mfe/ui-components": "1.0.0",
     "@reduxjs/toolkit": "^2.2.8",
     "formik": "^2.4.6",
     "react": "^18.3.1",

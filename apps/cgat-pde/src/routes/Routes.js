@@ -8,9 +8,9 @@ import LoginForm from '../components/common/session/Login.jsx';
 
 // import AdminLayout from '../pages/AdminLayout/index';
 // import UsersEntryPoint from '@mfe/user-management';
-import OrdersEntryPoint from '@mfe/order-management';
-import InventoryEntryPoint from '@mfe/inventory-management';
-import OrganizationEntryPoint from '@mfe/org-management';
+// import OrdersEntryPoint from '@mfe/order-management';
+// import InventoryEntryPoint from '@mfe/inventory-management';
+// import OrganizationEntryPoint from '@mfe/org-management';
 
 // const OrdersEntryPoint = lazy(() => import("@mfe/order-management").then((module) => ({ default: module.App })));
 // const InventoryEntryPoint = lazy(() => import("@mfe/inventory-management").then((module) => ({ default: module.App })));
@@ -22,9 +22,9 @@ const Routes = () => {
     <ReactRoutes>
       <Route element={<Layout />}>
         <Route path={PATHS.home} element={<Home />} />
-        <Route path={PATHS.orders} element={<OrdersEntryPoint />} />
+        {/* <Route path={PATHS.orders} element={<OrdersEntryPoint />} />
         <Route path={PATHS.inventory} element={<InventoryEntryPoint />} />
-        <Route path={PATHS.organization} element={<OrganizationEntryPoint />} />
+        <Route path={PATHS.organization} element={<OrganizationEntryPoint />} /> */}
         {/* <Route path={PATHS.admin} element={<AdminLayout />}>
             <Route path={ADMIN_PATHS.users} element={<UsersEntryPoint />} />
           </Route> */}
