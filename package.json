@@ -25,6 +25,8 @@
     "sass": "^1.79.4"
   },
   "devDependencies": {
-    "lerna": "^8.1.8"
+    "lerna": "^8.1.8",
+    "webpack": "^5.0.0",
+    "webpack-cli": "^4.0.0"
   }
 }
