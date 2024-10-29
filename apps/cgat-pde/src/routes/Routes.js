@@ -24,9 +24,9 @@ const Routes = () => {
           <Route path={PATHS.orders} element={<OrdersEntryPoint />} />
           <Route path={PATHS.inventory} element={<InventoryEntryPoint />} />
           <Route path={PATHS.organization} element={<OrganizationEntryPoint />} />
-          <Route path={PATHS.admin} element={<AdminLayout />}>
+          {/* <Route path={PATHS.admin} element={<AdminLayout />}>
             <Route path={ADMIN_PATHS.users} element={<UsersEntryPoint />} />
-          </Route>
+          </Route> */}
         </Route>
         <Route path={PATHS.session}>
           <Route index element={<Navigate to="login" replace />} />
