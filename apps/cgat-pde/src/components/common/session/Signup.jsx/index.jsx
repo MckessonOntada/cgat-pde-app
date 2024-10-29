@@ -4,12 +4,13 @@ import { Formik, Form, Field } from 'formik';
 import './assets/style.scss';
 import { Card, Button } from '@mckesson/mcp-component-library';
 import { useTranslation } from 'react-i18next';
-import { UserDetailsFormSegment } from '@mfe/user-management/src/pages/CreateUser';
-import Components from '@mfe/user-management/src/components/form/Components';
+// import { UserDetailsFormSegment } from '@mfe/user-management/src/pages/CreateUser';
+// import Components from '@mfe/user-management/src/components/form/Components';
 // import UserDetailsFormSegment from "./CreateUserForm";
 
 const SignUp = () => {
   const { t } = useTranslation();
+  const Components = {};
 
   const initialValues = {
     first_name: '',
@@ -24,7 +25,7 @@ const SignUp = () => {
     phoneInput: '',
     fax: '',
     organization: '',
-    comment: '',
+    comment: ''
   };
 
   const validationSchema = Yup.object({
@@ -42,10 +43,10 @@ const SignUp = () => {
       .required(t('phone_no_required')),
     fax: Yup.string().required(t('fax_required')),
     // organization: Yup.string().required(t("organization_required")),
-    comment: Yup.string().required(t('comment_required')),
+    comment: Yup.string().required(t('comment_required'))
   });
 
-  const handleSubmit = values => {
+  const handleSubmit = (values) => {
     alert(JSON.stringify(values, null, 2));
     console.log(JSON.stringify(values, null, 2));
   };
@@ -58,8 +59,7 @@ const SignUp = () => {
         onSubmit={(values, actions) => {
           handleSubmit(values);
           actions.setSubmitting(false);
-        }}
-      >
+        }}>
         {() => (
           <Form>
             <Card
@@ -68,10 +68,12 @@ const SignUp = () => {
                   <div className="form-heading">
                     <p className="font-bold-title-m"> {t('forms.headings.newUserRegistration')}</p>
                   </div>
-                  <UserDetailsFormSegment />
+                  {/* <UserDetailsFormSegment /> */}
                   <div className="form-segment">
                     <div className="headingBox">
-                      <p className="form-segment-title">{t('forms.headings.organization_details')}</p>
+                      <p className="form-segment-title">
+                        {t('forms.headings.organization_details')}
+                      </p>
                     </div>
                     <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 line-height">
                       <Field
