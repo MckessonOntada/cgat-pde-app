@@ -10,5 +10,7 @@ RUN apk add --update python3 make g++ && rm -rf /var/cache/apk/*
 RUN npm i react-app-rewired
 RUN npm install
 COPY . .
+RUN cd apps/cgat-pde
 RUN npm run build
+#RUN npm run build
 CMD ["npm", "run", "start"]
