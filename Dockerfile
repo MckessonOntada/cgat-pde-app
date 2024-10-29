@@ -12,10 +12,7 @@ RUN npm install
 RUN npm install -D webpack-cli sass-loader sass
 COPY . .
 RUN cd apps/cgat-pde
-RUN npm run build --workspace=@mfe/user-management  
-RUN npm run build --workspace=@mfe/order-management  
-RUN npm run build --workspace=@mfe/inventory-management  
-RUN npm run build --workspace=@mfe/org-management   
+RUN npm run workspaces-build   
 RUN npm run build
 #RUN npm run build
 CMD ["npm", "run", "start"]
