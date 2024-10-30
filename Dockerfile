@@ -11,9 +11,11 @@ RUN npm install
 RUN npm install -D webpack-cli sass-loader sass
 COPY . .
 RUN cd apps/cgat-pde
-RUN npm run workspaces-build
+
 RUN cd /usr/src/app/mfe/user-management
+RUN npm run build
 RUN npm link
+
 RUN cd /usr/src/app
 RUN npm link @mfe/user-management 
 RUN npm run build
