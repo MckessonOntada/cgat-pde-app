@@ -9,14 +9,14 @@ import ErrorBoundary from '../components/ErrorBoundary/index.jsx';
 import { Loader } from '@mckesson/mcp-component-library';
 import ErrorFallback from '../components/ErrorBoundary/ErrorFallback.jsx';
 
-import AdminLayout from '../pages/AdminLayout/index';
+// import AdminLayout from '../pages/AdminLayout/index';
 // import UsersEntryPoint from '@mfe/user-management';
 // import OrdersEntryPoint from '@mfe/order-management';
 // import InventoryEntryPoint from '@mfe/inventory-management';
 // import OrganizationEntryPoint from '@mfe/org-management';
-const UsersEntryPoint = lazy(() =>
-  import('@mfe/user-management').then((module) => ({ default: module.App }))
-);
+// const UsersEntryPoint = lazy(() =>
+//   import('@mfe/user-management').then((module) => ({ default: module.App }))
+// );
 // const OrdersEntryPoint = lazy(() => import("@mfe/order-management").then((module) => ({ default: module.App })));
 // const InventoryEntryPoint = lazy(() => import("@mfe/inventory-management").then((module) => ({ default: module.App })));
 // const OrganizationEntryPoint = lazy(() => import("@mfe/org-management").then((module) => ({ default: module.App })));
@@ -40,9 +40,9 @@ const Routes = () => {
             {/* <Route path={PATHS.orders} element={<OrdersEntryPoint />} />
         <Route path={PATHS.inventory} element={<InventoryEntryPoint />} />
         <Route path={PATHS.organization} element={<OrganizationEntryPoint />} /> */}
-            <Route path={PATHS.admin} element={<AdminLayout />}>
+            {/* <Route path={PATHS.admin} element={<AdminLayout />}>
               <Route path={ADMIN_PATHS.users} element={<UsersEntryPoint />} />
-            </Route>
+            </Route> */}
           </Route>
           <Route path={PATHS.session}>
             <Route index element={<Navigate to="login" replace />} />
