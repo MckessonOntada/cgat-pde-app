@@ -1,4 +1,2 @@
-import * as Breadcrumb from './src/components/breadcrumb';
-import * as Link from './src/components/link';
-
-export { Link, Breadcrumb };
+export * from './src/components/breadcrumb';
+export * from './src/components/link';

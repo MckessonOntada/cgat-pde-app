@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FaAngleRight } from "react-icons/fa6";
 import './assets/style.scss'
-import Link from '../link';
+import { Link } from '../link';
 
-const Breadcrumbs = ({ items }) => {
+export const Breadcrumbs = ({ items }) => {
     return (
         <nav aria-label="breadcrumb">
             <ol className={"breadcrumb"}>
@@ -32,4 +32,3 @@ Breadcrumbs.propTypes = {
     ).isRequired
 };
 
-export default Breadcrumbs;
