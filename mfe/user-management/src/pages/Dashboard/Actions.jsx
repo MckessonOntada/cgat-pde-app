@@ -2,7 +2,7 @@ import { Switch, DropdownMenu } from '@mckesson/mcp-component-library';
 import React, { useState, useEffect } from 'react';
 import { FaPen } from 'react-icons/fa';
 import './index.scss';
-import { ReactComponent as VerticalIcon } from '../../assets/images/Vertical.svg';
+// import { ReactComponent as VerticalIcon } from '../../assets/images/Vertical.svg';
 import { useTranslation } from 'react-i18next';
 
 export default function Actions({ status, row, onToggleChange }) {
@@ -13,7 +13,7 @@ export default function Actions({ status, row, onToggleChange }) {
     setIsChecked(status === 'ACTIVE');
   }, [status]);
 
-  const handleToggle = event => {
+  const handleToggle = (event) => {
     const checked = event.target.checked;
     setIsChecked(checked);
 
@@ -37,8 +37,7 @@ export default function Actions({ status, row, onToggleChange }) {
   return (
     <div className="actionsBox icon-align">
       <DropdownMenu
-        anchorEl={<VerticalIcon />}
-        handleSelect={selectedItem => {
+        handleSelect={(selectedItem) => {
           if (selectedItem.value === 'Edit') {
             handleEdit();
           }
@@ -52,16 +51,16 @@ export default function Actions({ status, row, onToggleChange }) {
         options={[
           {
             label: t('edit'),
-            value: 'Edit',
+            value: 'Edit'
           },
           {
             label: t('delete'),
-            value: 'Delete',
+            value: 'Delete'
           },
           {
             label: t('edit'),
-            value: 'Inactivate',
-          },
+            value: 'Inactivate'
+          }
         ]}
       />
       {/* <FaPen className="actionEditIcon" />

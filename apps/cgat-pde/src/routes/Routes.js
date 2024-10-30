@@ -8,9 +8,8 @@ import LoginForm from '../components/common/session/Login.jsx';
 import ErrorBoundary from '../components/ErrorBoundary/index.jsx';
 import { Loader } from '@mckesson/mcp-component-library';
 import ErrorFallback from '../components/ErrorBoundary/ErrorFallback.jsx';
-
-// import AdminLayout from '../pages/AdminLayout/index';
-// import UsersEntryPoint from '@mfe/user-management';
+import AdminLayout from '../pages/AdminLayout/index';
+import { App as UsersEntryPoint } from '@mfe/user-management';
 // import OrdersEntryPoint from '@mfe/order-management';
 // import InventoryEntryPoint from '@mfe/inventory-management';
 // import OrganizationEntryPoint from '@mfe/org-management';
@@ -40,9 +39,9 @@ const Routes = () => {
             {/* <Route path={PATHS.orders} element={<OrdersEntryPoint />} />
         <Route path={PATHS.inventory} element={<InventoryEntryPoint />} />
         <Route path={PATHS.organization} element={<OrganizationEntryPoint />} /> */}
-            {/* <Route path={PATHS.admin} element={<AdminLayout />}>
+            <Route path={PATHS.admin} element={<AdminLayout />}>
               <Route path={ADMIN_PATHS.users} element={<UsersEntryPoint />} />
-            </Route> */}
+            </Route>
           </Route>
           <Route path={PATHS.session}>
             <Route index element={<Navigate to="login" replace />} />
