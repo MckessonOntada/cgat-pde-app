@@ -10,16 +10,20 @@ const pathPageLoginCallback = '/login/callback';
 
 //TODO: Determine if Routes are cause of pages rerendering multiple times unnecessarily
 
-const pathProjects = '/projects';
-const projectList = React.lazy(() => import('./projects/Projects'));
-const routeProjects = { path: pathProjects, element: projectList };
+const pathAdmin = '/admin';
+const AdminPage = React.lazy(() => import('../pages/Admin'));
+const routeAdmin = { path: pathAdmin, element: AdminPage };
 
+const pathUserManagement = '/user'
+const UserPage = React.lazy(() => import('../mfe/user-management'))
+const routeUserManagement = { path: pathUserManagement, element: UserPage}
 
 const routes = [
   pathAppBase,
   pathPageLogin,
   pathPageLoginCallback,
-  routeProjects,
+  routeAdmin,
+  routeUserManagement
 ];
 
 const AppRoutes = Object.freeze({
@@ -27,7 +31,8 @@ const AppRoutes = Object.freeze({
   pathAppBase,
   pathPageLogin,
   pathPageLoginCallback,
-  pathProjects,
+  pathAdmin,
+  pathUserManagement
 });
 
 export default AppRoutes;

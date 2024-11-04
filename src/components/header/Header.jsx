@@ -17,7 +17,7 @@ import { ReactComponent as InfoIcon } from '../../assets/svg/question_circle.svg
 
 import AuthService from '../../api/authService/AuthService';
 import CommonService from '../../api/commonService/CommonService';
-import AppRoutes from '../../pages/AppRoutes';
+import AppRoutes from '../../routes/AppRoutes';
 import { setUserData } from '../../store/reducer/userReducer';
 import { SERVICE_NOW_URL } from '../../config/AppConfig';
 
@@ -47,7 +47,7 @@ function PageHeaderView({ user, setUserData, debugId }) {
         />
         <Box>
           <Link
-            to={AppRoutes.pathProjects}
+            to={AppRoutes.pathAdmin}
             id={debugIds(ID.HEADER, ID.NAV, ID.LEFT, ID.LOGO, ID.LINK)}>
             {/* <img
               height="100px"
@@ -64,11 +64,11 @@ function PageHeaderView({ user, setUserData, debugId }) {
           role="presentation"
         />
         <Box
-          className={`${isLinkActive(AppRoutes.pathProjects) && styles.navButtonActive} ${
+          className={`${isLinkActive(AppRoutes.pathAdmin) && styles.navButtonActive} ${
             styles.navButtons
           }`}>
           <Link
-            to={AppRoutes.pathProjects}
+            to={AppRoutes.pathAdmin}
             id={debugIds(ID.HEADER, ID.NAV, ID.LEFT, ID.LOGO, ID.LINK)}>
             Projects
           </Link>

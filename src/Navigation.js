@@ -6,7 +6,7 @@ import { useIdleTimer } from 'react-idle-timer';
 
 import OktaHelper from './config/OktaHelper';
 import AuthService from './api/authService/AuthService';
-import AppRoutes from './pages/AppRoutes';
+import AppRoutes from './routes/AppRoutes';
 import { Loader } from '@mckesson/mcp-component-library';
 import Login from './pages/login/Login';
 import MainLayout from './pages/MainLayout';
@@ -94,7 +94,7 @@ const Navigation = () => {
       const redirectTo =
         sessionStorage.getItem('USER_ROLE') === 'SYSTEM_ADMIN'
           ? AppRoutes.pathUserManagement
-          : AppRoutes.pathProjects;
+          : AppRoutes.pathAdmin;
 
       setTimeout(() => {
         navigate(redirectTo);

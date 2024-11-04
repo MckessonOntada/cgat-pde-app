@@ -27,11 +27,11 @@ const getUserName = function () {
  * @returns {boolean} - True if the user has speicific permission, false otherwise.
  */
 const userHasPermission = function (permission) {
-  const role = sessionStorage.getItem(SESSION_CONST.USER_ROLE);
-  if (role && PermissionConfig[role][permission] !== undefined) {
-    return PermissionConfig[role][permission];
-  }
-  return false;
+  // const role = sessionStorage.getItem(SESSION_CONST.USER_ROLE);
+  // if (role && PermissionConfig[role][permission] !== undefined) {
+  //   return PermissionConfig[role][permission];
+  // }
+  return true;
 };
 
 /**

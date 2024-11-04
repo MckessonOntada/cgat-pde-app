@@ -7,7 +7,6 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ThemeProvider } from '@mui/material/styles';
 import muiTheme from './assets/theme/MuiTheme';
 
-import AppRoutes from './pages/AppRoutes';
 import Navigation from './Navigation';
 import OktaConfigLoader from './OktaConfigLoader';
 import Snackbar from './components/snackBar/Snackbar';
@@ -16,6 +15,7 @@ import Modal from './components/modal/Modal';
 import { messages } from './translations/messages';
 import { currentLocale } from './translations/i18n';
 import store from './store/store';
+import AppRoutes from './routes/AppRoutes';
 
 function App() {
   const queryClient = new QueryClient({

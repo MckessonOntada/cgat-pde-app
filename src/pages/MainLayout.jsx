@@ -5,7 +5,6 @@ import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { Button } from '@mckesson/mcp-component-library';
 
-import AppRoutes from './AppRoutes';
 import GlobalNavigation from '../components/header/Header';
 import ErrorComponent from '../components/app/error/ErrorComponent';
 
@@ -14,6 +13,7 @@ import { debugIds, ID } from '../common/constants/id';
 import styles from '../../src/assets/styles/MainLayout.module.scss';
 import AccessDeniedPage from './accessDenied/accessDenied';
 import AuthUtils from '../common/util/AuthUtils';
+import AppRoutes from '../routes/AppRoutes';
 
 function MainLayout() {
   const { pathname } = useLocation();

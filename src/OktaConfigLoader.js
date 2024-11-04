@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 import { Loader } from '@mckesson/mcp-component-library';
 import AuthService from './api/authService/AuthService';
 import { apiLoadingStatus } from './api/HttpResourceService';
-import AppRoutes from './pages/AppRoutes';
+import AppRoutes from './routes/AppRoutes';
 
 import OktaHelper from './config/OktaHelper';
 

@@ -1,0 +1,108 @@
+@import "../../../../ui-components/src/assets/scss/abstracts/mixins";
+.userContainer {
+  padding: 0px !important;
+  display: grid;
+  gap: var(--spacing-04);
+}
+
+.userCardContainer {
+  display: grid;
+  gap: var(--spacing-04);
+}
+
+.filterBox {
+  display: grid;
+  gap: var(--spacing-04) !important;
+  padding: var(--spacing-04) !important;
+  border: 1px solid var(--brand-color-patient-primary-3);
+  border-radius: var(--brand-border-radius--6) !important;
+}
+
+.autoSuggestSearch-container {
+  width: 460px !important;
+}
+
+.LabelBox {
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: var(--spacing-02);
+  gap: var(--spacing-04);
+}
+
+.txtbtn {
+  padding: var(--spacing-01);
+}
+
+.actionEditIcon {
+  color: var(--brand-color-primary);
+}
+
+.actionsBox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-03);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+.headerbuttons {
+  display: flex;
+  gap: var(--spacing-large);
+}
+
+.actionmenu {
+  position: relative;
+  overflow: visible;
+}
+
+.cellEllipse {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important ;
+  display: block !important;
+  width: 100% !important;
+}
+
+.display-block {
+  display: block !important;
+  width: 100% !important;
+}
+
+.right-aligned {
+  text-align: right !important;
+  justify-content: flex-end !important;
+}
+
+.toggle-box {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-03); 
+}
+
+.search-width
+{
+  width: 65rem; 
+}
+.icon-align { 
+  margin-right: var(--spacing-04); 
+}
+
+.icon-color {
+  color: var(--brand-color-primary);
+}
+ 
+
+[class^="DropdownMenu_dropdownContent"] {
+  left: 10px !important;
+}
+
+// It can be removed once the Vishal's changes related to dropdownmenu integrated
+[class^="DropdownMenu_dropdownMenu"] button {
+  border: none !important;
+  background: none !important;
+}

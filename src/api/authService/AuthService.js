@@ -1,6 +1,6 @@
 import HttpResourceService, { httpVerb, defaultHeaders } from '../HttpResourceService';
 import ApiRoutes from '../ApiRoutes';
-import AppRoutes from '../../pages/AppRoutes';
+import AppRoutes from '../../routes/AppRoutes';
 
 const getAppAuthToken = () => sessionStorage.getItem('APP_AUTH_TOKEN');
 
