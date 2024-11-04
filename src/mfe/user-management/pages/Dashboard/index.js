@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import UserTable from "./UserTable";
 import { Button, Card, TabList } from "@mckesson/mcp-component-library";
 import "./index.scss";
 import Filters from "./Filters";
 import { UserProvider } from "../../context/PageContext";
 import { PATHS } from "../../routes/constants";
-import { ReactComponent as AddCirclebold } from "../../assets/images/add_circle_bold.svg";
-import { ReactComponent as upload_bottom } from "../../assets/images/upload_bottom.svg";
+import UserTable from "./UserTable";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -67,10 +65,10 @@ export default function Dashboard() {
       <div className={"header"}>
         <h1>Manage Users</h1>
         <div className="actionsBox">
-          <Button Icon={AddCirclebold} onClick={handleClick}>
+          <Button onClick={handleClick}>
             Add User
           </Button>
-          <Button Icon={upload_bottom}>Upload Users</Button>
+          <Button>Upload Users</Button>
         </div>
       </div>
       <UserProvider>

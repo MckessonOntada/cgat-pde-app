@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DataTable from '../../components/DataTable';
 import { Badge } from '@mckesson/mcp-component-library';
 import { USER_DATA } from '../../mockData/UsersData';
 import { useTranslation } from 'react-i18next';

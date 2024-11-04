@@ -1,8 +1,6 @@
-import { Switch, DropdownMenu } from '@mckesson/mcp-component-library';
+import { DropdownMenu } from '@mckesson/mcp-component-library';
 import React, { useState, useEffect } from 'react';
-import { FaPen } from 'react-icons/fa';
 import './index.scss';
-import { ReactComponent as VerticalIcon } from '../../assets/images/Vertical.svg';
 import { useTranslation } from 'react-i18next';
 
 export default function Actions({ status, row, onToggleChange }) {
@@ -37,7 +35,7 @@ export default function Actions({ status, row, onToggleChange }) {
   return (
     <div className="actionsBox icon-align">
       <DropdownMenu
-        anchorEl={<VerticalIcon />}
+        // anchorEl={<VerticalIcon />}
         handleSelect={selectedItem => {
           if (selectedItem.value === 'Edit') {
             handleEdit();

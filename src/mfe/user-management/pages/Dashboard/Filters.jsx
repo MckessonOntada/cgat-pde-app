@@ -3,8 +3,6 @@ import { useUser } from '../../context/PageContext';
 import { AutoSuggestSearch, Button, Divider, SearchableDropdown } from '@mckesson/mcp-component-library';
 import { useTranslation } from 'react-i18next';
 import { ROLES, STATUS } from '../../mockData/UsersData';
-import arrow_right from '../../assets/images/arrow_right.svg';
-import arrow_down from '../../assets/images/arrow_down.svg';
 import './index.scss';
 
 const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
@@ -66,11 +64,11 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
         <>
           <div className="toggle-box">
             <div onClick={handleExpandCard}>
-              {expandedCard ? (
+              {/* {expandedCard ? (
                 <img src={arrow_down} className="icon-align" />
               ) : (
                 <img src={arrow_right} className="icon-align" />
-              )}
+              )} */}
             </div>
             <div className="autoSuggestSearch-container">
               <AutoSuggestSearch

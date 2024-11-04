@@ -1,12 +1,11 @@
 import React from 'react';
 import * as Yup from 'yup';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form } from 'formik';
 import './CreateUser.scss';
 import { Button } from '@mckesson/mcp-component-library';
 import { Card, Stepper } from '@mckesson/mcp-component-library';
 import { useTranslation } from 'react-i18next';
 import UserDetailsFormSegment from './CreateUserForm';
-import Components from '../../components/form/Components';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 
