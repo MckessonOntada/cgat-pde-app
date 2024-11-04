@@ -1,83 +1,36 @@
-  
+## Introduction
 
-#  Cgat-pde
+Welcome to the frontend repository of CGAT-PDE, a powerful chart abstraction tool designed for internal Mckesson users. This React bassed application offers a streamlined user experience and customizable features.
 
-  
+## Architecture Overview
+ 
+Our app architecture is built with the latest React 18 technology to make it work really smoothly. We are also using Ontada design library to reuse components which helps keep things consistent, makes it easier to grow and simplifies how we maintain the app. 
+ 
+## Getting Started  
 
-This project is a monorepo structure with micro-frontend (MFE) components and a main React app. The MFE components are built and imported into the main app for rendering.
+1. [Getting Started](####Getting-Started)
+2. [Configure GitHub npm Registry](####Configure-GitHub-npm-Registry)
+3. [Running the Application](####Running-the-Application)
+4. [Contributing](####Contributing)
+-----------------------------------------------------------------------------------------------
 
-  
+1. #### Getting Started
 
-##  Commands
+   Prerequisites
+      - Node.js (vXX or later)
+      - npm
 
-  
+2. #### Configure GitHub npm Registry
 
-###  1. Generate MFE Component
+   Configure the GitHub npm Registry for Ontada Design Library using below command and provide git username and personal token:
+   npm login --scope=@McKesson-Ontada --registry=https://npm.pkg.github.com
 
-  
+3. #### Running the Application
+   
+   Run `npm install && npm run dev` to install dependencies and start the frontend instance.
 
-You can create a new MFE component using the following command:
+4. #### Contributing
 
-  
+   Contributions to the CGAT-PDE App are welcome! To contribute, follow these steps:
 
-```
-yarn  generate:component  <component_name>
-```
-
-  
-
-- Replace `<component_name>` with the name of the new component.
-
-- This will generate a new MFE component inside the `mfe` folder.
-
-- The newly created component will be ready for use in the main app.
-
-  
-
-###  2. Run the App
-
-  
-
-To start the development server and run the main React app, use:
-
-  
-
-```
-yarn  start
-```
-
-  
-
-- This will start the application locally.
-
-- Open your browser and go to `http://localhost:3000` to view the app.
-
-  
-
-##  Structure
-
-  
-
--  `apps/` contains the main React application.
-
--  `mfe/` contains micro-frontend components that can be imported into the main app.
-
-  
-
-##  Getting Started
-
-  
-
-1. Clone the repository.
-
-2. Install dependencies: `yarn install`
-
-3. Create a new MFE component using `yarn generate:component`.
-
-4. Start the app with `yarn start`.
-
-
-
-##  Packages Installation at Root level
-
-- To add dependencies to the workspace root, you can run: `yarn add <package-name> -W`
+   We create feature branches and then create a pull request off that branch, after approval the code is merged.

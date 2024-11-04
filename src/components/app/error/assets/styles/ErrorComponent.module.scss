@@ -1,0 +1,52 @@
+.error-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    flex-direction: column;
+
+    .errorContainer {
+        min-width: 300px;
+        width: 400px;
+        border-radius: 8px;
+        outline: 1px solid var(--brand-color-warning-coral);
+        overflow: hidden;
+
+        .headerContainer {
+            text-align: center;
+            padding: 36px;
+            border-bottom: 1px solid var(--brand-color-warning-coral);
+            background-color: var(--brand-color-warning-red-4);
+
+            .headerText {
+                text-align: center;
+                font-size: var(--brand-font-size--large);
+                font-weight: var(--brand-font-weight-600);
+            }
+        }
+
+        .bodyContainer {
+            text-align: center;
+            padding: 18px 36px;
+            display: flex;
+            flex-direction: column;
+            gap:10px;
+
+            .bodyText {
+                text-align: center;
+                font-size: var(--brand-font-size--default);
+                font-weight: var(--brand-font-weight-400);
+            }
+            .bodyFooter {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    }
+}
+
+.access-denied {
+    height: 100%;
+}

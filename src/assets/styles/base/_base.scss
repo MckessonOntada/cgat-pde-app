@@ -1,0 +1,77 @@
+html {
+  font-size: 62.5%;
+  font-family: var(--brand-font-family-primary);
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  color: var(--brand-color-grey) !important;
+}
+
+.to-upper-case {
+  text-transform: uppercase;
+}
+
+.font-display-l {
+  font-size: 8rem;
+  font-weight: var(--brand-font-weight-600);
+  letter-spacing: -0.01rem;
+  line-height: 8.4rem;
+}
+
+.font-display-m {
+  font-size: 6.4rem;
+  font-weight: var(--brand-font-weight-600);
+  letter-spacing: -0.0075rem;
+  line-height: 6.8rem;
+}
+
+.font-display-s {
+  font-size: 4.8rem;
+  font-weight: var(--brand-font-weight-600);
+  letter-spacing: -0.005rem;
+  line-height: 5.2rem;
+}
+
+.font-headline-l {
+  font-size: 3.2rem;
+  font-weight: var(--brand-font-weight-600);
+  letter-spacing: -0.006rem;
+  line-height: 3.6rem;
+}
+
+.font-headline-m {
+  font-size: 2.8rem;
+  font-weight: var(--brand-font-weight-600);
+  letter-spacing: -0.004rem;
+  line-height: 3.2rem;
+}
+
+.font-headline-s {
+  font-size: 2.4rem;
+  font-weight: var(--brand-font-weight-600);
+  letter-spacing: -0.002rem;
+  line-height: 2.8rem;
+}
+
+.font-bold-title-l {
+  font-size: 2.4rem;
+  font-weight: var(--brand-font-weight-700);
+  letter-spacing: -0.001rem;
+  line-height: 2.8rem;
+}
+
+.font-bold-title-m {
+  font-size: 2.2rem;
+  font-weight: var(--brand-font-weight-700);
+  letter-spacing: 0rem;
+  line-height: 2.6rem;
+}
+
+.font-bold-title-s {
+  font-size: 2rem;
+  font-weight: var(--brand-font-weight-700);
+  letter-spacing: -0.001rem;
+  line-height: 2.4rem;
+}

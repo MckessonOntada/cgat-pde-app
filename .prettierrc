@@ -1,21 +1,21 @@
 {
-  "bracketSpacing": true,
-  "semi": true,
-  "tabWidth": 2,
-  "printWidth": 100,
-  "singleQuote": true,
-  "trailingComma": "none",
-  "jsxBracketSameLine": true,
-  "endOfLine":"auto",
-  "parser":"babel",
-  "overrides": [
-  {
-    "files": "*.scss",
-    "options": {
-      "parser": "scss",
-      "singleQuote": false, 
-      "tabWidth": 2
+    "bracketSpacing": true,
+    "semi": true,
+    "tabWidth": 2,
+    "printWidth": 100,
+    "singleQuote": true,
+    "trailingComma": "none",
+    "jsxBracketSameLine": true,
+    "endOfLine":"auto",
+    "parser":"babel",
+    "overrides": [
+    {
+      "files": "*.scss",
+      "options": {
+        "parser": "scss",
+        "singleQuote": false, 
+        "tabWidth": 2
+      }
     }
-  }
-]
+  ]
 }

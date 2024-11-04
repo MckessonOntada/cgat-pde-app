@@ -1,0 +1,55 @@
+{
+    "SYSTEM_ADMIN": {
+        "userManagementRoute": true,
+        "showFilterOptions": true,
+        "showDateFilter": true,
+        "showProjectsTabList": true,
+        "showUploadPatient": true,
+        "showDateAddedFilter": true,
+        "patientUploadRoute": true,
+        "patientTableMenuAction": true,
+        "viewDocuments": true,
+        "viewActiveResponseCheckbox": false,
+        "contentConsoleView": false
+    },
+    "CHART_ABSTRACTOR": {
+        "showGetNextPatientButton": true,
+        "showFilterOptions": false,
+        "showNavAndNextPatient": true,
+        "showProjectsTabList": false,
+        "viewDocuments": true,
+        "viewActiveResponseCheckbox": true,
+        "showEmptyPatient": true
+    },
+    "STUDY_MANAGER": {
+        "userManagementRoute": true,
+        "showFilterOptions": true,
+        "templateManagementIcon": true,
+        "showProjectsTabList": true,
+        "showUploadPatient": true,
+        "patientUploadRoute": true,
+        "patientTableMenuAction": true,
+        "viewActiveResponseCheckbox": false
+    },
+    "DATA_SPECIALIST": {},
+    "MONITOR": {},
+    "ONTADA_QC": {
+        "showFilterOptions": true,
+        "showProjectsTabList": true,
+        "showNavAndNextPatient": true,
+        "showEmptyPatient": true,
+        "viewDocuments": true,
+        "patientTableMenuAction": true,
+        "viewActiveResponseCheckbox": true
+    },
+    "VENDOR_QC": {
+        "showFilterOptions": true,
+        "templateManagementIcon": true,
+        "showProjectsTabList": true,
+        "showNavAndNextPatient": true,
+        "showEmptyPatient": true,
+        "viewDocuments": true,
+        "patientTableMenuAction": true,
+        "viewActiveResponseCheckbox": true
+    }
+}

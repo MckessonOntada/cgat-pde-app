@@ -7,8 +7,13 @@ on:
         type: choice
         description: 'Environment to deploy to'
         options:
+        - uat
         - dev
         - qa
+        - qa2
+        - prod
+        - prod-dr
+        - qa-dr
         required: true
         default: 'dev'
       image-tag:

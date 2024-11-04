@@ -1,0 +1,74 @@
+import { ENVIRONMENT } from '../../config/AppConfig';
+
+const ROOT_ID = 'cgat_pde.appPage';
+
+/**
+ * PLEASE PUT IDs IN ALPHABETICAL ORDER
+ */
+
+export const ID = Object.freeze({
+  ABSTRACTORS: '.abstractors',
+  ACTION_ICON: '.actionIcon',
+  ASSIGN: '.assign',
+  AVATAR: '.avatar',
+  BACK: '.back',
+  BORDER: '.border',
+  BUTTON: '.button',
+  BUTTON_TEXT: '.buttonText',
+  CLEAR: '.clear',
+  CLOSE: '.close',
+  CONTAINER: '.container',
+  DATE: '.date',
+  DEFAULT: '.default',
+  DIALOG: '.dialog',
+  DIVIDER: '.divider',
+  DROPDOWN: '.dropdown',
+  EMAIL: '.email',
+  FILTER_CONTAINER: '.filterContainer',
+  FILTERS: '.filters',
+  FULL_NAME: '.fullName',
+  GLOBAL: '.global',
+  HEADER: '.header',
+  HOME: '.home',
+  ICON: '.icon',
+  INNER_CONTAINER: '.innerContainer',
+  INPUT_TEXT: '.inputText',
+  LABEL: '.label',
+  LEFT: '.left',
+  LINK: '.link',
+  LOADER: '.loader',
+  LOGIN: '.login',
+  LOGO: '.logo',
+  LOGOUT: '.logout',
+  MAIN: '.main',
+  NAME: '.name',
+  NAV: '.nav',
+  NAV_MENUS: '.navMenus',
+  OVERLAY: '.overlay',
+  PATIENT_LIST: '.patientList',
+  PRIMARY: '.primary',
+  PROFILE_IMAGE: '.profileImage',
+  QUERY: '.query',
+  RIGHT: '.right',
+  ROUTE_CONTENT: '.routeContent',
+  ROLES: '.roles',
+  SEARCH: '.search',
+  SIDE_NAVIGATION: '.sideNavigation',
+  SITE: '.site',
+  STATUS: '.status',
+  SUBTITLE: '.subtitle',
+  TABLE: '.table',
+  TITLE: '.title',
+  UPDATE: '.update',
+  UPDATE_ROLE: '.updateRole',
+  UPLOAD: '.upload',
+  USER_FILTER: '.userFilter',
+  USER_INFO: '.userInfo',
+  USER_LIST_TABLE: '.userListTable',
+  USER_MANAGEMENT: '.userManagement',
+  USER_PROFILE: '.userProfile',
+  WIDGET: '.widget'
+});
+
+export const debugIds = (...ids) =>
+  ENVIRONMENT === 'Development' ? `${ROOT_ID}${[...ids].join('')}` : '';

@@ -1,0 +1,26 @@
+.statusContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .indicator {
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+  }
+  .statusText {
+    padding-left: 8px;
+  }
+
+  .svgGreen {
+    background-color: var(--brand-color-success-green-2);
+  }
+
+  .svgYellow {
+    background-color: var(--brand-color-secondary-active-yellow-1);
+  }
+
+  .svgGrey {
+    background-color: var(--brand-color-background-grey);
+  }
+}

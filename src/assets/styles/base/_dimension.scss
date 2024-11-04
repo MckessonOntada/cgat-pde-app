@@ -1,0 +1,61 @@
+// usage
+// h-100 for 100% height
+// w-100 for 100% width
+
+// $spaceamounts: (
+//   25,
+//   50,
+//   75,
+//   100
+// );
+
+// @each $space in $spaceamounts {
+//   .h-#{$space} {
+//     height: #{$space}% !important;
+//   }
+
+//   .w-#{$space} {
+//     width: #{$space}% !important;
+//   }
+// }
+
+
+$sizes: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12;
+
+@each $size in $sizes {
+    .w-100-by-#{$size} {
+        width: calc(100%/$size)
+    }
+}
+
+@each $size in $sizes {
+    @include respond(md) {
+        .md\:w-100-by-#{$size} {
+            width: calc(100%/$size)
+        }
+    }
+}
+
+@each $size in $sizes {
+    @include respond(lg) {
+        .lg\:w-100-by-#{$size} {
+            width: calc(100%/$size)
+        }
+    }
+}
+
+@each $size in $sizes {
+    @include respond(xl) {
+        .xl\:w-100-by-#{$size} {
+            width: calc(100%/$size)
+        }
+    }
+}
+
+@each $size in $sizes {
+    @include respond(xxl) {
+        .xl\:w-100-by-#{$size} {
+            width: calc(100%/$size)
+        }
+    }
+}
