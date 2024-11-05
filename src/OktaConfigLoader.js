@@ -20,7 +20,8 @@ const OktaConfigLoader = (props) => {
           ...res,
           redirectUri: window.location.origin + AppRoutes.pathAppBase + res.redirectUri,
           issuer: [res.baseUrl, res.protocol, res.authServerId].join('/'),
-          scopes: res.scopes.split(',')
+          scopes: res.scopes.split(','),
+          // clientId: "0oai0ea2r7JOHfVud1d7"
         };
         OktaHelper.setConfiguration(finalConfig);
         OktaHelper.initOkta();

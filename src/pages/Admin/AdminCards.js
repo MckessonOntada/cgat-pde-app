@@ -1,4 +1,4 @@
-import { ADMIN_PATHS } from "../../routes/constants"; 
+import AppRoutes from "../../routes/AppRoutes";
 
 const CARDS_DATA = [
   {
@@ -14,7 +14,7 @@ const CARDS_DATA = [
     label: "manage_users",
     icon: "user-icon-url", 
     details: "efficiently_streamline_user_management_for_seamless_experience",
-    path: ADMIN_PATHS.userDashboard,
+    path: AppRoutes.pathUserManagement,
     permission: [] 
   },
   {

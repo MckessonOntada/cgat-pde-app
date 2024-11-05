@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import { Box } from '@mui/material';
 import { Button } from '@mckesson/mcp-component-library';
@@ -14,6 +14,8 @@ import styles from '../../src/assets/styles/MainLayout.module.scss';
 import AccessDeniedPage from './accessDenied/accessDenied';
 import AuthUtils from '../common/util/AuthUtils';
 import AppRoutes from '../routes/AppRoutes';
+
+const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'))
 
 function MainLayout() {
   const { pathname } = useLocation();
@@ -35,7 +37,12 @@ function MainLayout() {
                     <Route key={idx} path={route.path} element={<route.element />} />
                   ) : null;
                 })}
+                <Route path={AppRoutes.pathUserManagement} element={<Outlet />}>
+                  <Route path={"/user"} element={<UsersEntryPoint />} />
+                  <Route path={"/user/*"} element={<UsersEntryPoint />} />
+                </Route>
               </Routes>
+              
             </div>
           ) : (
             <ErrorComponent
