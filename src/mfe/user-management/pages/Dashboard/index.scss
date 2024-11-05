@@ -1,5 +1,6 @@
+@import "../../../../assets/styles/abstracts/mixins";
 .userContainer {
-  padding: 0px !important;
+  padding: var(--spacing-04);
   display: grid;
   gap: var(--spacing-04);
 }
@@ -39,6 +40,7 @@
 .actionsBox {
   display: flex;
   align-items: center;
+  justify-self: flex-end;
   gap: var(--spacing-03);
 }
 
@@ -48,12 +50,7 @@
   align-items: center;
   padding: 10px;
 }
-
-.headerbuttons {
-  display: flex;
-  gap: var(--spacing-large);
-}
-
+ 
 .actionmenu {
   position: relative;
   overflow: visible;
@@ -96,12 +93,43 @@
 }
  
 
-[class^="DropdownMenu_dropdownContent"] {
+.actionsBox>div>ul {
   left: 10px !important;
 }
-
-// It can be removed once the Vishal's changes related to dropdownmenu integrated
-[class^="DropdownMenu_dropdownMenu"] button {
+ 
+.actionsBox>div>button {
   border: none !important;
   background: none !important;
+}
+
+#data-table-C-table>div:nth-child(1) {
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+}
+
+.actionsBox>div>ul>li {
+  background: var(--brand-color-background-white) !important;
+}
+
+.actionsBox>div>ul>li:hover {
+  background: var(--brand-color-secondary--hover) !important;
+}
+
+.userCardContainer>div>nav>ul>li>button {
+  background: none !important;
+  border: none !important;
+}
+ 
+
+@media (max-width: 768px) {
+  .actionsBox {
+    display: flex;
+    flex-direction: row;
+    justify-self: flex-start;
+  }
+
+  .actionsBox button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
 }

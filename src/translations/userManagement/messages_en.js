@@ -1,6 +1,6 @@
 export const UserManagementEN = {
   'userManagement.header.label': 'Manage Users',
-  'userManagement.add.label' : 'Add Users',
+  'userManagement.add.label' : 'Add User',
   'userManagement.upload.label': 'Upload Users',
   'userManagement.clearFilter.label': 'clear filters',
   'userManagement.searchFilter.label': 'Search By Name or Email',

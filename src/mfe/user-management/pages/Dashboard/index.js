@@ -7,6 +7,7 @@ import { UserProvider } from "../../context/PageContext";
 import { PATHS } from "../../routes/constants";
 import UserTable from "./UserTable";
 import { useTranslate  } from '../../../../translations/useTranslation';
+ 
 
 export default function Dashboard() {
   const { t } = useTranslate();
@@ -64,15 +65,16 @@ export default function Dashboard() {
   return (
     <div className="userContainer">
       {/* <Breadcrumb items={items} /> */}
-      <div className={"header"}>
+      <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+      
       <h1>{t('userManagement.header.label')}</h1>
         <div className="actionsBox">
-          <Button onClick={handleClick}>
+          <Button onClick={handleClick} >
            {t("userManagement.add.label")}
           </Button>
-          <Button> {t("userManagement.upload.label")}</Button>
+          <Button>  {t("userManagement.upload.label")}</Button>
         </div>
-      </div>
+      </div> 
       <UserProvider>
         <Card
           bodyContent={
@@ -84,6 +86,7 @@ export default function Dashboard() {
                 onTabClick={handleTabClick}
                 showShadow={false}
                 variant={"text"}
+                useAsButton={true}
               />
               {activeTab === "ACTIVE USERS" && <UserTable />}
               {activeTab === "PENDING REQUESTS" && <UserTable />}
