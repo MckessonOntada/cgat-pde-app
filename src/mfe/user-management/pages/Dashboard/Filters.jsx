@@ -4,6 +4,8 @@ import { AutoSuggestSearch, Button, Divider, SearchableDropdown } from '@mckesso
 import { useTranslate  } from '../../../../translations/useTranslation';
 import { ROLES, STATUS } from '../../mockData/UsersData';
 import './index.scss';
+import arrow_right from '../../../../assets/image/arrow_right.svg';
+import arrow_down from '../../../../assets/image/arrow_down.svg';
 
 const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
   const { t } = useTranslate();
@@ -64,11 +66,11 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
         <>
           <div className="toggle-box">
             <div onClick={handleExpandCard}>
-              {/* {expandedCard ? (
+              {expandedCard ? (
                 <img src={arrow_down} className="icon-align" />
               ) : (
                 <img src={arrow_right} className="icon-align" />
-              )} */}
+              )}
             </div>
             <div className="autoSuggestSearch-container">
               <AutoSuggestSearch
