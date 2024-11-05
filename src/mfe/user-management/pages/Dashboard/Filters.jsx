@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from '../../context/PageContext';
 import { AutoSuggestSearch, Button, Divider, SearchableDropdown } from '@mckesson/mcp-component-library';
-import { useTranslation } from 'react-i18next';
+import { useTranslate  } from '../../../../translations/useTranslation';
 import { ROLES, STATUS } from '../../mockData/UsersData';
 import './index.scss';
 
 const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslate();
   const [expandedCard, setExpandedCard] = useState(false);
   const [isClearFiltersVisible, setIsClearFiltersVisible] = useState(false);
 
@@ -76,7 +76,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
                 value={searchQuery}
                 onChangeInput={handleSearchChange}
                 outline={true}
-                placeHolder={t('search_by_name_or_email')}
+                placeHolder={t('userManagement.searchFilter.label')}
               />
             </div>
           </div>
@@ -92,8 +92,8 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
                     id="role"
                     isSuccess
                     value={role}
-                    label={t('role')}
-                    name={t('role')}
+                    label={t('userManagement.table.role')}
+                    name={t('userManagement.table.role')}
                     isRequired={false}
                     onChange={value => onSearcheableDropdownChange('role', value)}
                     options={ROLES}
@@ -106,8 +106,8 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
                     id="status"
                     isSuccess
                     value={status}
-                    label={t('status')}
-                    name={t('status')}
+                    label={t('userManagement.table.status')}
+                    name={t('userManagement.table.status')}
                     isRequired={false}
                     onChange={value => onSearcheableDropdownChange('status', value)}
                     options={STATUS}
@@ -120,7 +120,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
                   {isClearFiltersVisible && (
                     <Button
                       type="button"
-                      label={t('clear_filters')}
+                      label={t('userManagement.clearFilter.label')}
                       textButton
                       className="txtbtn"
                       onClick={handleClearFilters}

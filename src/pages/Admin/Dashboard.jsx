@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from '@mckesson/mcp-component-library';
-import './Admin.scss';
-import { useTranslation } from 'react-i18next';
+import './Admin.scss'; 
 import CARDS_DATA from './AdminCards';
+import { useTranslate  } from '../../translations/useTranslation';
 
 const Dashboard = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslate();
   return (
     <div className="container">
       <h1>Dashboard</h1>
@@ -16,12 +16,11 @@ const Dashboard = () => {
             bodyContent={
               <div>
                 <p className="font-bold-title-s line-height">
-                  <Link to={card.path} key={index} className="link-style">
-                    {' '}
-                    {t(`dashboard.${card.label}`)}{' '}
+                  <Link to={card.path} key={index} className="link-style">  
+                    {t(`adminDashboard.card.${card.label}`)}
                   </Link>
                 </p>
-                <p>{t(`dashboard.${card.details}`)}</p>
+                <p>{t(`adminDashboard.card.${card.details}`)}</p>
               </div>
             }
           />

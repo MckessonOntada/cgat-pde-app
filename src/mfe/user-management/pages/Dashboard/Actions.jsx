@@ -1,10 +1,10 @@
 import { DropdownMenu } from '@mckesson/mcp-component-library';
 import React, { useState, useEffect } from 'react';
 import './index.scss';
-import { useTranslation } from 'react-i18next';
+import { useTranslate  } from '../../../../translations/useTranslation';
 
 export default function Actions({ status, row, onToggleChange }) {
-  const { t } = useTranslation();
+  const { t } = useTranslate();
   const [isChecked, setIsChecked] = useState(status === 'ACTIVE');
 
   useEffect(() => {
@@ -49,15 +49,15 @@ export default function Actions({ status, row, onToggleChange }) {
         }}
         options={[
           {
-            label: t('edit'),
+            label: t('userManagement.table.action.edit'),
             value: 'Edit',
           },
           {
-            label: t('delete'),
+            label: t('userManagement.table.action.delete'),
             value: 'Delete',
           },
           {
-            label: t('edit'),
+            label: t('userManagement.table.action.edit'),
             value: 'Inactivate',
           },
         ]}

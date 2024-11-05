@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from '../../components/DataTable';
 import { Badge } from '@mckesson/mcp-component-library';
-import { USER_DATA } from '../../mockData/UsersData';
-import { useTranslation } from 'react-i18next';
+import { USER_DATA } from '../../mockData/UsersData'; 
 import './index.scss';
 import Actions from './Actions';
+import { useTranslate  } from '../../../../translations/useTranslation';
 
-function UserTable() {
-  const { t } = useTranslation();
+function UserTable() { 
+  const { t } = useTranslate();
   const [data] = useState(USER_DATA);
   const [filteredData, setFilteredData] = useState(USER_DATA);
   const [sortColumn, setSortColumn] = useState('date_updated');
@@ -43,7 +43,7 @@ function UserTable() {
   const columns = [
     { name: 'ID', selector: 'id', sortable: true, omit: true },
     {
-      name: t('name'),
+      name: t('userManagement.table.name'),
       selector: 'Name',
       sortable: true,
       width: '20%',
@@ -57,21 +57,21 @@ function UserTable() {
     },
 
     {
-      name: t('email'),
+      name: t('userManagement.table.email'),
       selector: 'Email',
       sortable: true,
       width: '25%',
       cell: props => <div className="cellEllipse"> {props.e_mail}</div>,
     },
     {
-      name: t('role'),
+      name: t('userManagement.table.role'),
       selector: 'Role',
       sortable: true,
       width: '10%',
       cell: props => <div className="cellEllipse">{props.role}</div>,
     },
     {
-      name: t('status'),
+      name: t('userManagement.table.status'),
       selector: 'status',
       sortable: true,
       center: true,
@@ -87,7 +87,7 @@ function UserTable() {
       ),
     },
     {
-      name: <div>{t('date_added')}</div>,
+      name: <div>{t('userManagement.table.dateAdded')}</div>,
       selector: 'date_added',
       sortable: true,
       width: '14%',
@@ -95,7 +95,7 @@ function UserTable() {
       cell: props => <div>{props.date_added}</div>,
     },
     {
-      name: <div className="">{t('date_updated')}</div>,
+      name: <div className="">{t('userManagement.table.dateUpdated')}</div>,
       selector: 'date_updated',
       sortable: true,
       width: '14%',
@@ -105,7 +105,7 @@ function UserTable() {
     {
       id: 'action',
       center: true,
-      name: t('action'),
+      name: t('userManagement.table.action'),
       cell: Actions,
       width: '7%',
     },

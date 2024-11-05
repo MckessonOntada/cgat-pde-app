@@ -4,13 +4,13 @@ import { Formik, Form } from 'formik';
 import './CreateUser.scss';
 import { Button } from '@mckesson/mcp-component-library';
 import { Card, Stepper } from '@mckesson/mcp-component-library';
-import { useTranslation } from 'react-i18next';
+import { useTranslate  } from '../../../../translations/useTranslation';
 import UserDetailsFormSegment from './CreateUserForm';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 
 const CreateUser = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslate();
   const navigate = useNavigate();
 
   const goBack = () => {
@@ -32,19 +32,19 @@ const CreateUser = () => {
   };
 
   const validationSchema = Yup.object({
-    first_name: Yup.string().required(t('first_name_required')),
-    middle_name: Yup.string().required(t('middle_name_required')),
-    last_name: Yup.string().required(t('last_name_required')),
-    address_1: Yup.string().required(t('address_1_required')),
+    first_name: Yup.string().required(t('userManagement.create_user.validation.first_name_required')),
+    middle_name: Yup.string().required(t('userManagement.create_user.validation.middle_name_required')),
+    last_name: Yup.string().required(t('userManagement.create_user.validation.last_name_required')),
+    address_1: Yup.string().required(t('userManagement.create_user.validation.address_1_required')),
     address_2: Yup.string(),
-    city: Yup.string().required(t('city_required')),
-    zip: Yup.string().required(t('zip_required')),
-    state: Yup.string().required(t('state_required')),
-    email: Yup.string().email(t('invalid_email')).required(t('email_required')),
+    city: Yup.string().required(t('userManagement.create_user.validation.city_required')),
+    zip: Yup.string().required(t('userManagement.create_user.validation.zip_required')),
+    state: Yup.string().required(t('userManagement.create_user.validation.state_required')),
+    email: Yup.string().email(t('userManagement.create_user.validation.invalid_email')).required(t('userManagement.create_user.validation.email_required')),
     phoneInput: Yup.string()
-      .matches(/^[0-9]{10}$/, t('phone_no_required'))
-      .required(t('phone_no_required')),
-    fax: Yup.string().required(t('fax_required')),
+      .matches(/^[0-9]{10}$/, t('userManagement.create_user.validation.phone_no_required'))
+      .required(t('userManagement.create_user.validation.phone_no_required')),
+    fax: Yup.string().required(t('userManagement.create_user.validation.fax_required')),
   });
 
   const handleSubmit = values => {
@@ -97,7 +97,7 @@ const CreateUser = () => {
                     />
                   </div>
                   <div className="headingBox">
-                    <p className="font-bold-title-m"> {t('details_to_create_user')}</p>
+                    <p className="font-bold-title-m"> {t('userManagement.create_user.details_to_create_user')}</p>
                   </div>
                   <UserDetailsFormSegment />
                 </div>
@@ -105,9 +105,9 @@ const CreateUser = () => {
             />
             <div className={'buttonGroup'}>
               <Button variant="secondary" type="button" onClick={handleGoBack}>
-                {t('back')}
+                {t('userManagement.button.back')}
               </Button>
-              <Button type="submit">{t('next')}</Button>
+              <Button type="submit">{t('userManagement.button.next')}</Button>
             </div>
           </Form>
         )}
