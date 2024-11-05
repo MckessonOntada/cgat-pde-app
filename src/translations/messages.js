@@ -7,10 +7,10 @@ import { UserManagementES } from './userManagement/messages_es';
 export const messages = {
   [LOCALES.ENGLISH]: {
     ...LoginMessagesEN,
-    ...UserManagementEN,
+    ...UserManagementEN
   },
   [LOCALES.SPANISH]: {
     ...LoginMessagesES,
-    ...UserManagementES,
+    ...UserManagementES
   }
 };

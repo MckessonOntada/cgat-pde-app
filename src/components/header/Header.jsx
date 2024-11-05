@@ -19,8 +19,6 @@ import AuthService from '../../api/authService/AuthService';
 import CommonService from '../../api/commonService/CommonService';
 import AppRoutes from '../../routes/AppRoutes';
 import { setUserData } from '../../store/reducer/userReducer';
-import { SERVICE_NOW_URL } from '../../config/AppConfig';
-
 import { debugIds, ID } from '../../common/constants/id';
 import AuthUtils from '../../common/util/AuthUtils';
 
@@ -145,9 +143,6 @@ function PageHeaderView({ user, setUserData, debugId }) {
 
           {AuthUtils.userHasPermission('templateManagementIcon') && <TemplateIcon />}
           <QueryIcon />
-          <Link to={SERVICE_NOW_URL} target="_blank">
-            <InfoIcon />
-          </Link>
         </div>
         <div
           className={styles.profileContainer}
