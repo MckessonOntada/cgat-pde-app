@@ -28,12 +28,12 @@ const UserDetailsFormSegment = () => {
     return (
         <div className='form-container'>
             <div className="headingBox">
-                <p className="form-segment-title">{t("personal_details")}</p>
-                <p className="form-instruction"> <span className="requiredIcon">✱</span>{t("required")}</p>
+                <p className="form-segment-title">{t("userManagement.create_user.personal_details")}</p>
+                <p className="form-instruction"> <span className="requiredIcon">✱</span>{t("userManagement.create_user.required")}</p>
             </div>
             <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
                 <Field
-                    name="first_name"
+                    name="first_name" 
                     label={t("userManagement.create_user.inputLabel.first_name")}
                     placeholder=" "
                     isRequired
@@ -54,7 +54,7 @@ const UserDetailsFormSegment = () => {
                 />
             </div>
             <div className="headingBox">
-                <p className="form-segment-title">{t("contact_details")}</p>
+                <p className="form-segment-title">{t("userManagement.create_user.contact_details")}</p>
             </div>
             <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 line-height">
                 <Field

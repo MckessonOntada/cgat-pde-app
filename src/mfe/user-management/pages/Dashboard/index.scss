@@ -1,13 +1,24 @@
 @import "../../../../assets/styles/abstracts/mixins";
-.userContainer {
+
+.container {
   padding: var(--spacing-04);
   display: grid;
   gap: var(--spacing-04);
 }
 
-.userCardContainer {
-  display: grid;
-  gap: var(--spacing-04);
+.fixedContainer {
+  // @include respond(xs) {
+  //   max-width: 576px !important;
+  //   overflow: hidden !important;
+  // }
+}
+
+.fixedContainer>.innerContainer {
+  // @include respond(xs) {
+  //   max-width: 992px;
+  //   overflow: hidden;
+  //   overflow-x: auto;
+  // }
 }
 
 .filterBox {
@@ -16,10 +27,39 @@
   padding: var(--spacing-04) !important;
   border: 1px solid var(--brand-color-patient-primary-3);
   border-radius: var(--brand-border-radius--6) !important;
+
+  @include respond(xs) {
+    width: auto !important;
+  }
 }
 
+.flexBox{
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-04);
+  flex-wrap: wrap;
+}
+
+.flexBox.spaceBetween{
+   justify-content: space-between;
+}
+
+.py4{
+  padding-top: var(--spacing-04);
+  padding-bottom: var(--spacing-04);
+}
+
+
+.py3{
+  padding-top: var(--spacing-03);
+  padding-bottom: var(--spacing-03);
+}
+
+
 .autoSuggestSearch-container {
-  width: 460px !important;
+  @include respond(lg) {
+    width: 460px !important;
+  }
 }
 
 .LabelBox {
@@ -42,6 +82,14 @@
   align-items: center;
   justify-self: flex-end;
   gap: var(--spacing-03);
+
+  @include respond(xs) {
+    justify-self: flex-start;
+  }
+
+  @include respond(lg) {
+    justify-self: flex-end;
+  }
 }
 
 .header {
@@ -50,7 +98,7 @@
   align-items: center;
   padding: 10px;
 }
- 
+
 .actionmenu {
   position: relative;
   overflow: visible;
@@ -59,7 +107,7 @@
 .cellEllipse {
   white-space: nowrap !important;
   overflow: hidden !important;
-  text-overflow: ellipsis !important ;
+  text-overflow: ellipsis !important;
   display: block !important;
   width: 100% !important;
 }
@@ -77,26 +125,31 @@
 .toggle-box {
   display: flex;
   align-items: center;
-  gap: var(--spacing-03); 
+  gap: var(--spacing-03);
 }
 
-.search-width
-{
-  width: 65rem; 
+.search-width {
+  width: 65rem;
 }
-.icon-align { 
-  margin-right: var(--spacing-04); 
+
+.icon-align {
+  margin-right: var(--spacing-04);
 }
 
 .icon-color {
   color: var(--brand-color-primary);
 }
- 
+
+.button-icon svg {
+  width: 16px; 
+  height: 16px;
+  margin-right: 2px;   
+}
 
 .actionsBox>div>ul {
   left: 10px !important;
 }
- 
+
 .actionsBox>div>button {
   border: none !important;
   background: none !important;
@@ -119,17 +172,8 @@
   background: none !important;
   border: none !important;
 }
- 
 
-@media (max-width: 768px) {
-  .actionsBox {
-    display: flex;
-    flex-direction: row;
-    justify-self: flex-start;
-  }
-
-  .actionsBox button {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-}
+// [class^="CustomDataTable-module--tableContainer"]  {
+//   min-width: 680px; 
+//   overflow-x: auto; 
+// }

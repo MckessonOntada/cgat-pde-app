@@ -6,8 +6,9 @@ import Filters from "./Filters";
 import { UserProvider } from "../../context/PageContext";
 import { PATHS } from "../../routes/constants";
 import UserTable from "./UserTable";
-import { useTranslate  } from '../../../../translations/useTranslation';
- 
+import { useTranslate } from '../../../../translations/useTranslation';
+import PageHeader from "./PageHeader";
+
 
 export default function Dashboard() {
   const { t } = useTranslate();
@@ -63,36 +64,23 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="userContainer">
-      {/* <Breadcrumb items={items} /> */}
-      <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
-      
-      <h1>{t('userManagement.header.label')}</h1>
-        <div className="actionsBox">
-          <Button onClick={handleClick} >
-           {t("userManagement.add.label")}
-          </Button>
-          <Button>  {t("userManagement.upload.label")}</Button>
-        </div>
-      </div> 
+    <div className="container" >
+      <PageHeader />
+
       <UserProvider>
-        <Card
-          bodyContent={
-            <div className="userCardContainer">
-              <Filters showRoleDropdown={true} showStatusDropdown={true} />
-              <TabList
-                options={tabs}
-                alignment="left"
-                onTabClick={handleTabClick}
-                showShadow={false}
-                variant={"text"}
-                useAsButton={true}
-              />
-              {activeTab === "ACTIVE USERS" && <UserTable />}
-              {activeTab === "PENDING REQUESTS" && <UserTable />}
-            </div>
-          }
-        />
+        <div className="filterBox">
+          <Filters showRoleDropdown={true} showStatusDropdown={true} />
+          <TabList
+            options={tabs}
+            alignment="left"
+            onTabClick={handleTabClick}
+            showShadow={false}
+            variant={"text"}
+            useAsButton={true}
+          />
+          {activeTab === "ACTIVE USERS" && <UserTable />}
+          {activeTab === "PENDING REQUESTS" && <UserTable />}
+        </div>
       </UserProvider>
     </div>
   );

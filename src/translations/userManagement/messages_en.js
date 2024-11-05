@@ -68,7 +68,7 @@ export const UserManagementEN = {
   'userManagement.create_user.validation.address_1_required':'Address is required',
   'userManagement.create_user.validation.address_2_required':'Address is required',
   'userManagement.create_user.validation.city_required':'City is required',
-  'userManagement.create_user.validation.validation.zip_required':'Zip is required',
+  'userManagement.create_user.validation.zip_required':'Zip is required',
   'userManagement.create_user.validation.state_required':'State is required',
   'userManagement.create_user.validation.email_required':'Email Id is required',
   'userManagement.create_user.validation.invalid_email':'Invalid Email',

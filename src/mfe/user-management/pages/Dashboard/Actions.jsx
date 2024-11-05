@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import './index.scss';
 import { useTranslate  } from '../../../../translations/useTranslation'; 
 import { ReactComponent as VerticalIcon }  from '../../../../assets/image/Vertical.svg';
-
+ 
 export default function Actions({ status, row, onToggleChange }) {
   const { t } = useTranslate();
   const [isChecked, setIsChecked] = useState(status === 'ACTIVE');
