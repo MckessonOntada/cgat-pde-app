@@ -1,35 +1,107 @@
 {
-  "name": "root",
+  "name": "cgat-pde",
+  "version": "0.1.0",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "mfe/*"
-  ],
-  "scripts": {
-    "dev": "npm run start --workspace=cgat-pde",
-    "start": "npx serve -s apps/cgat-pde/build",
-    "workspaces-build": "npm run build --workspaces",
-    "build": "npm run build --workspace=cgat-pde",
-    "generate:component": "node Generator.js"
-  },
+  "homepage": "/dashboard",
+  "description": "CGAT-PDE Frontend App",
   "dependencies": {
     "@mckesson/mcp-component-library": "2.3.14",
-    "@reduxjs/toolkit": "^2.2.8",
-    "@tanstack/react-query": "^5.59.13",
-    "axios": "^1.7.7",
+    "@okta/okta-auth-js": "^5.11.0",
+    "@okta/okta-react": "^6.7.0",
+    "@okta/okta-signin-widget": "^7.4.1",
+    "@reduxjs/toolkit": "^1.8.3",
+    "axios": "0.27.2",
+    "dayjs": "^1.11.9",
+    "dompurify": "^3.1.5",
     "formik": "^2.4.6",
-    "i18next": "^23.15.1",
-    "i18next-browser-languagedetector": "^8.0.0",
-    "react-i18next": "^15.0.2",
-    "react-icons": "^5.3.0",
-    "react-redux": "^9.1.2",
-    "react-router-dom": "^6.26.2",
-    "sass": "^1.79.4",
+    "html-react-parser": "^5.1.10",
+    "prop-types": "^15.8.1",
+    "react": "^18.1.0",
+    "react-date-range": "^1.4.0",
+    "react-dom": "^18.1.0",
+    "react-error-boundary": "^3.1.4",
+    "react-helmet": "^6.1.0",
+    "react-i18next": "^15.1.0",
+    "react-icons": "4.4.0",
+    "react-idle-timer": "^5.5.3",
+    "react-intl": "6.0.3",
+    "react-query": "^3.39.1",
+    "react-redux": "^8.1.2",
+    "react-router-dom": "^6.3.0",
+    "redux": "^4.2.0",
     "yup": "^1.4.0"
   },
+  "scripts": {
+    "dev": "webpack serve --open /dashboard --config webpack.dev.js",
+    "build": "webpack --config webpack.dev.js",
+    "test": "jest",
+    "coverage": "jest --coverage",
+    "lint": "eslint src",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest",
+      "plugin:jsx-a11y/recommended",
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:prettier/recommended"
+    ],
+    "plugins": [
+      "jsx-a11y"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "devDependencies": {
-    "lerna": "^8.1.8",
-    "webpack": "^5.0.0",
-    "webpack-cli": "^4.0.0"
+    "@babel/core": "^7.23.0",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/preset-env": "^7.18.9",
+    "@babel/preset-react": "^7.18.6",
+    "@svgr/webpack": "^6.5.1",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.2.0",
+    "@testing-library/user-event": "^13.5.0",
+    "babel-jest": "^29.7.0",
+    "babel-loader": "^8.2.5",
+    "copy-webpack-plugin": "11.0.0",
+    "css-loader": "^6.7.1",
+    "dotenv": "^16.0.3",
+    "dotenv-webpack": "^8.0.1",
+    "eslint": "^8.21.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "file-loader": "6.2.0",
+    "html-webpack-plugin": "^5.5.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-transform-stub": "^2.0.0",
+    "prettier": "^2.8.8",
+    "process": "^0.11.10",
+    "react-error-overlay": "^6.0.9",
+    "react-hook-mask": "^1.1.11",
+    "sass": "^1.80.5",
+    "sass-loader": "^13.0.2",
+    "style-loader": "^3.3.1",
+    "stylelint": "^14.9.1",
+    "stylelint-config-standard": "^26.0.0",
+    "webpack": "^5.73.0",
+    "webpack-bundle-analyzer": "^4.5.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.9.3"
   }
 }

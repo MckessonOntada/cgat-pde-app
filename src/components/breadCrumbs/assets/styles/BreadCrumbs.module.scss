@@ -1,0 +1,15 @@
+.navigationBreadcrumb {
+
+    li {
+        line-height: 14px;
+    }
+
+    a {
+        font-size: 14px;
+        color: var(--brand-color-primary);
+        font-weight: var(--brand-font-weight-600);
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}

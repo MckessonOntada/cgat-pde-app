@@ -1,0 +1,13 @@
+$spaceamounts: (
+  14,
+  16,
+  18,
+  20,
+  22
+);
+
+@each $space in $spaceamounts {
+  .line-height-#{$space} {
+    line-height: #{$space}px !important;
+  }
+}

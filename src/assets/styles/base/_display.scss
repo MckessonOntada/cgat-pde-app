@@ -1,0 +1,32 @@
+@import "../abstracts/mixins";
+
+// usage
+// d-lg-block : block element in lg view
+// d-lg-none : hide element in lg view
+// w-100 for 100% width
+
+.d-none {
+  display: none !important;
+}
+
+.d-block {
+  display: block !important;
+}
+
+$sizes: xs, sm, md, lg, xl, xxl;
+
+@each $size in $sizes {
+  @include respond($size) {
+    .d-#{$size}-block {
+      display: block !important;
+    }
+  }
+}
+
+@each $size in $sizes {
+  @include respond($size) {
+    .d-#{$size}-none {
+      display: none !important;
+    }
+  }
+}

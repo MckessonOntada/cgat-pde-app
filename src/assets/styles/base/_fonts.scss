@@ -1,0 +1,15 @@
+// usage
+// font-12 for fontsize 12rem
+
+$sizeamounts: (
+  12,
+  14,
+  16,
+  18
+);
+
+@each $size in $sizeamounts {
+  .font-#{$size} {
+    font-size: #{$size}+'rem';
+  }
+}

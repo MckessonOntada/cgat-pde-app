@@ -1,0 +1,14 @@
+.home {
+    height: calc(100vh - 48px); 
+    display: flex;
+    overflow: auto;
+    background-color: var(--brand-color-background-white);
+}
+
+.routes {
+    flex: 2;
+}
+
+.routeContent {
+    width: 100%;
+}

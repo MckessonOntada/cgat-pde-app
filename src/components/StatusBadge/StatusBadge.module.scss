@@ -1,0 +1,89 @@
+.statusBadge > span {
+  display: block;
+  padding: 4px 4px 2px 4px;
+}
+
+.badge-awaiting-documents > span {
+  font-weight: 700;
+}
+
+.badge-ca > span {
+  background: var(--brand-color-purple-100);
+  color: var(--brand-color-purple-800);
+  width: 136px;
+  padding: 4px 2px 2px 2px;
+}
+
+.badge-ca-with-border > span {
+  background: var(--brand-color-purple-100);
+  color: var(--brand-color-purple-800);
+  border: 1px solid;
+  width: 136px;
+  padding: 4px 2px 2px 2px;
+}
+
+.badge-ca-complete > span {
+  background: var(--brand-color-purple-600);
+  color: var(--brand-color-background-white);
+  border: 1px solid;
+  width: 136px;
+  padding: 4px 2px 2px 2px;
+}
+
+.badge-oqc > span {
+  background: var(--brand-color-cyan-100);
+  color: var(--brand-color-cyan-800);
+  width: 136px;
+  padding: 4px 2px 2px 2px;
+}
+
+.badge-oqc-with-border > span {
+  background: var(--brand-color-cyan-100);
+  color: var(--brand-color-cyan-800);
+  border: 1px solid;
+  width: 136px;
+  padding: 4px 2px 2px 2px;
+}
+
+.badge-oqc-complete > span {
+  background: var(--brand-color-cyan-700);
+  color: var(--brand-color-cyan-100);
+  width: 136px;
+  padding: 4px 2px 2px 2px;
+}
+
+.badge-vqc > span {
+  background: var(--brand-color-mango-100);
+  color: var(--brand-color-mango-800);
+  width: 136px;
+  padding: 4px 2px 2px 2px;
+}
+
+.badge-vqc-with-border > span {
+  background: var(--brand-color-mango-100);
+  color: var(--brand-color-mango-800);
+  border: 1px solid;
+  width: 136px;
+  padding: 4px 2px 2px 2px;
+}
+
+.badge-vqc-complete > span {
+  background: var(--brand-color-mango-600);
+  color: var(--brand-color-background-white);
+  width: 136px;
+  padding: 4px 2px 2px 2px;
+}
+
+.badge-complete > span {
+  background: var(--brand-color-turquoise-700);
+  color: var(--brand-color-background-white);
+  width: 136px;
+  padding: 4px 2px 2px 2px;
+}
+
+.badge-ineligible > span {
+  background: var(--brand-color-warning-red-4);
+  color: var(--brand-color-critical-alert-red-4);
+  width: 136px;
+  padding: 4px 2px 2px 2px;
+}

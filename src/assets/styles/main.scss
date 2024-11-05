@@ -1,0 +1,189 @@
+@import "../design-tokens/index";
+@import "base/base";
+@import "base/utility";
+@import "base/display";
+@import "base/grid";
+@import "base/lineHeight";
+@import "base/dimension";
+@import "base/fonts";
+@import "abstracts/mixins";
+
+/* Scrollbar changes fro firefox*/
+* {
+  scrollbar-color: var(--brand-color-grey-scale-cool-1) transparent;
+  scrollbar-width: thin;
+}
+
+// embed #save {
+//   display: none !important;
+// }
+
+// embed #overflow-right {
+//   display: none !important;
+// }
+
+// embed button, .c0157  {
+//   display: none !important;
+// }
+
+/* width */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--brand-color-text-cool-grey);
+  border-radius: var(--brand-border-radius--4);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-color-text-cool-grey);
+}
+
+// :focus-visible {
+//   outline: 2px solid var(--brand-color-primary-blue) !important;
+//   border-radius: var(--brand-border-radius--0-05) !important
+// }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.content {
+  background-color: var(--brand-color-grey-scale-warm-3);
+  overflow: auto;
+  height: calc(100% - 138px);
+  width: 100%;
+  bottom: 0;
+  position: fixed;
+
+  @include respond(sm) {
+    height: calc(100% - 192px);
+  }
+  @include respond(lg) {
+    height: calc(100% - 228px);
+  }
+
+  @media only screen and (min-width: 200px) and (max-width: 299px) {
+    height: calc(100% - 176px);
+  }
+  @media only screen and (max-width: 199px) {
+    height: calc(100% - 216px);
+  }
+}
+.contentNavShrink {
+  @include respond(md) {
+    height: calc(100% - 160px);
+  }
+
+  @include respond(lg) {
+    height: calc(100% - 172px);
+  }
+}
+
+.contentNoNav {
+  overflow: auto;
+  background-color: var(--brand-color-grey-scale-warm-3);
+  height: calc(100% - 80px);
+  width: 100%;
+  bottom: 0;
+  position: fixed;
+
+  @include respond(sm) {
+    height: calc(100% - 207px);
+  }
+
+  @include respond(md) {
+    height: calc(100% - 175px);
+  }
+
+  @include respond(lg) {
+    height: calc(100% - 193px);
+  }
+}
+.contentDashboard {
+  overflow: auto;
+  background-color: var(--brand-color-grey-scale-warm-3);
+  height: calc(100% - 96px);
+  width: 100%;
+  bottom: 0;
+  position: fixed;
+
+  @include respond(sm) {
+    height: calc(100% - 152px);
+  }
+
+  @include respond(lg) {
+    height: calc(100% - 188px);
+  }
+}
+
+.contentDashboardShrink {
+  @include respond(md) {
+    height: calc(100% - 120px);
+  }
+
+  @include respond(lg) {
+    height: calc(100% - 132px);
+  }
+}
+
+.contentOnlyGlobal {
+  overflow: auto;
+  height: calc(100% - 40px);
+  width: 100%;
+  bottom: 0;
+  position: fixed;
+}
+
+.walkthroughBlur {
+  filter: blur(3px);
+}
+
+button {
+  font-family: var(--brand-font-family-primary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+h4 {
+  display: block;
+  font-size: 1.4em !important;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+  margin-left: 0;
+  margin-right: 0;
+  font-weight: var(--brand-font-weight-600) !important;
+}
+
+h5 {
+  display: block;
+  font-size: 1.4em !important;
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+  margin-left: 0;
+  margin-right: 0;
+  font-weight: bold !important;
+}
+
+h6 {
+  display: block;
+  font-size: 1.2em !important;
+  margin-top: 0.2em;
+  margin-bottom: 0.2em;
+  margin-left: 0;
+  margin-right: 0;
+  font-weight: var(--brand-font-weight-700) !important;
+}

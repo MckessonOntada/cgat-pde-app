@@ -1,0 +1,18 @@
+@import "../../../../assets/styles/abstracts/mixins";
+
+.oktaRoot {
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+  justify-content: center;
+  align-items: center;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.auth-footer {
+  .js-forgot-password {
+    display: none;
+  }
+}

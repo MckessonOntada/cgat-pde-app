@@ -1,0 +1,136 @@
+.container{
+  position: relative;
+  }
+  
+  .inputEle{
+    background-color: #f3f2f1;
+    border-radius: 0.6rem;
+    border: 1px solid grey;
+    padding: 5px;
+    margin-right: 10px;
+    min-width: 50%;
+    font-size: var(--brand-font-size--extra-small);
+    line-height: var(--brand-line-height--medium);
+    letter-spacing: -0.001em;
+    font-weight: var(--brand-font-weight-600);
+    color: var(--brand-color-black);
+  }
+  
+  .result{
+    position: relative;
+    overflow-y: auto;
+    max-height: 250px;
+    padding-right: 10px;
+    margin-top: 10px;
+    ul{
+      //margin-left: 10px;
+      list-style: none;
+    }
+    li{
+      font-weight: var(--brand-font-weight-400);
+    font-size: var(--brand-font-size--small);
+    line-height: var(--brand-line-height--large);
+    padding-left: 9px;
+    }
+  }
+  
+  
+  .buttonStyles{
+      text-align: start;
+      background: none;
+      padding: 5px;
+      margin-top: 5px;
+      border: 1px solid #857e7e;
+      min-width: 250px;
+      border-radius: 0.4rem;
+      max-width: 50%;
+      font-size: var(--brand-font-size--small);
+      line-height: var(--brand-line-height--large);
+      color: var(--brand-color-text-black) !important;
+      font-weight: var(--brand-font-weight-600) !important;
+      height: 3.2rem;
+      &:focus-visible {
+        outline: none !important;
+        border: 0.2rem solid var(--brand-color-secondary-active-yellow-1) !important;
+        border-radius: 4px;
+      }
+    
+      &:focus {
+        outline: none !important;
+        border: 0.2rem solid var(--brand-color-secondary-active-yellow-1) !important;
+        border-radius: 4px;
+      }
+    
+      &:hover {
+        border-color: var(--brand-color-text-dark-slate);
+      }
+  }
+  
+  .selectOptionsContainer {
+    display: block;
+    min-width: 100%;
+    border: 1px solid #1e394e;
+    border-radius: 4px;
+    box-shadow: none;
+    margin-top: 4px;
+    background-color: white;
+    position: absolute;
+    z-index: 99;
+    padding: 10px 0px 10px 10px;
+  }
+
+  .dropDownValueContent{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .dropDownArrow{
+    margin-right: 5px;
+  }
+
+  .dropDownArrowOpen{
+    margin-right: 5px;
+    transform: rotate(270deg);
+  }
+
+  .expandableOption{
+    display: flex;
+    align-items: center;
+    
+    padding: 9px 16px !important;
+    padding-left: 2px !important;
+  }
+
+  .active{
+    background-color: var(--brand-color-secondary-active-yellow-1);
+  }
+
+  .refineBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 8px 0px 8px;
+  
+    .refineMessage {
+      font-family: "Nunito";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 16px;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      letter-spacing: 0.001em;
+    }
+  }
+
+  .listItem{
+    cursor: pointer;
+    .expandableOption:hover {
+      outline: none !important;
+      background: var(--brand-color-secondary-active-yellow-3);
+      color: var(--brand-color-text-black);
+      font-weight: var(--brand-font-weight-600);
+    }
+  }

@@ -1,0 +1,398 @@
+@import "../../../../assets/styles/abstracts/mixins";
+
+.globalHeader {
+  background-color: var(--brand-color-primary-slate);
+  // border-color: var(--brand-color-secondary-background);
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding: 0 12px 0 27px;
+  max-height: 47px;
+
+  @include respond(lg) {
+    padding: 0 12px 0 72px;
+  }
+
+  .headerContainer {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+
+    .navItemsLeft {
+      display: flex;
+      flex: 0 0 auto;
+      justify-content: flex-start;
+      align-items: center;
+
+      div {
+        padding: 13px 26px;
+      }
+      a {
+        height: fit-content;
+      }
+
+      .appLogo {
+        min-width: 70px;
+        width: 70.23px;
+      }
+
+      .navButtonActive {
+        background-color: #599db2;
+      }
+
+      .navButtons {
+        &:hover {
+          background-color: #254050;
+        }
+        a {
+          color: var(--brand-color-general-white);
+          font-size: var(--brand-font-size--small);
+          font-weight: var(--brand-font-weight-600);
+          text-decoration: none;
+        }
+      }
+    }
+
+    .actionAreaSeparator {
+      height: 40px;
+      background-color: var(--brand-color-primary-background);
+    }
+
+    .navItemsRight {
+      display: flex;
+      flex: 0 0 auto;
+      justify-content: flex-end;
+      align-items: center;
+
+      .actionIcon {
+        display: flex;
+        gap: 24px;
+        padding: 0 24px;
+      }
+
+      .profileContainer {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .profileName {
+        font-size: var(--brand-font-size--extra-small);
+        font-weight: var(--brand-font-weight-600);
+        line-height: var(--brand-line-height--medium);
+        letter-spacing: 0.04em;
+        text-align: left;
+        color: var(--brand-color-cool-grey-2);
+      }
+
+      .profileImage {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .actionArea {
+        display: flex;
+        flex-direction: row;
+        height: 100%;
+      }
+
+      .drawerBtnArea {
+        display: flex;
+        align-items: center;
+      }
+
+      .actionAreaButton {
+        font-size: var(--brand-font-size--extra-small);
+        width: 50px;
+        word-break: break-word;
+        font-weight: var(--brand-font-weight-600);
+        line-height: var(--brand-line-height--medium);
+        text-transform: uppercase;
+        color: var(--brand-color-font-black);
+        padding: 4px 6px;
+        margin: 4px;
+
+        .patientName {
+          max-width: 120px;
+          display: block;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+
+          span {
+            display: block;
+            font-weight: var(--brand-font-weight-700);
+          }
+
+          .patientNameItalic {
+            font-style: italic;
+            font-weight: var(--brand-font-weight-600);
+          }
+        }
+
+        @media only screen and (min-width: 1280px) {
+          .patientName {
+            span {
+              display: inline;
+            }
+          }
+        }
+
+        @media only screen and (min-width: 992px) {
+          font-size: var(--brand-font-size--extra-small);
+          width: inherit;
+        }
+      }
+
+      .actionPatientName {
+        width: inherit;
+        display: flex;
+        align-items: center;
+      }
+
+      .textType {
+        color: var(--brand-color-black);
+        font-size: var(--brand-font-size--extra-small);
+        line-height: var(--brand-line-height--small);
+        padding: 0 8px;
+
+        @include respond(md) {
+          font-size: var(--brand-font-size--10);
+          max-width: 170px;
+        }
+      }
+
+      .logoutButtonWrap {
+        padding: 0 16px;
+        display: flex;
+        align-items: center;
+        height: 100%;
+        font-size: var(--brand-font-size--extra-small);
+        font-weight: var(--brand-font-weight-600);
+        line-height: var(--brand-line-height--medium);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+
+        button {
+          height: 26px;
+          width: 98px;
+
+          span {
+            align-self: center;
+          }
+        }
+      }
+    }
+  }
+}
+
+.drawer {
+  .drawerHeader {
+    padding: 14px 16px;
+    background-color: var(--brand-color-background-warm-grey-3);
+    border-color: var(--brand-color-secondary-background);
+    min-height: 40px;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    .title {
+      font-size: var(--brand-font-size--small);
+      line-height: 1.8rem;
+      font-weight: var(--brand-font-weight-600);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+
+  .drawerBody {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+
+    ul {
+      li {
+        font-weight: var(--brand-font-weight-400);
+        font-size: var(--brand-font-size--small);
+        line-height: var(--brand-line-height--24);
+        letter-spacing: 0.02rem;
+        font-size: 18px;
+        color: #181818 !important;
+        font-weight: 600;
+        padding: 18px 22px;
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
+      }
+    }
+  }
+
+  .drawerFooter {
+    padding: 16px 24px;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.layoutPanel {
+  padding: 0 10px;
+
+  &:focus-visible {
+    border: 1px solid var(--brand-color-primary--hover);
+  }
+}
+
+.caregiverTitle {
+  font-weight: var(--brand-font-weight-600);
+}
+
+.textLabel {
+  font-weight: var(--brand-font-weight-600);
+  font-size: var(--brand-font-size--default);
+}
+
+.caregiverTooltipContent {
+  font-size: var(--brand-font-size--extra-small);
+
+  span {
+    font-weight: var(--brand-font-weight-700);
+  }
+
+  @include respond(lg) {
+    font-size: var(--brand-font-size--small);
+  }
+}
+
+.imgIcon {
+  margin-left: 2px;
+  width: 12px;
+  height: 14px;
+}
+
+.fontStyle {
+  font-weight: var(--brand-font-weight-600);
+  font-size: var(--brand-font-size--extra-small);
+  line-height: var(--brand-line-height--medium);
+  color: var(--brand-color-black-1);
+}
+
+.userContextButton {
+  @extend .fontStyle;
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
+  padding: 4px 6px;
+  height: 100%;
+
+  img {
+    padding-left: 7px;
+  }
+}
+
+.menuListHeader {
+  @extend .fontStyle;
+  padding: 8px 16px;
+  background: var(--brand-color-grey-scale-warm-2);
+}
+
+.menuListButton {
+  padding: 8px 16px;
+  color: var(--brand-color-primary--hover);
+  font-size: var(--brand-font-size--small);
+  line-height: var(--brand-line-height--large);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  svg {
+    margin-left: 6px;
+  }
+
+  &:hover {
+    background: var(--brand-color-secondary-active-yellow-3);
+    font-weight: var(--brand-font-weight-600);
+  }
+}
+
+.activeItem {
+  background: var(--brand-color-secondary-active-yellow-3);
+  font-weight: var(--brand-font-weight-600);
+}
+
+.bgOnActive {
+  background-color: var(--brand-color-patient-primary-2);
+}
+
+.fontWeightOnActive {
+  font-weight: var(--brand-font-weight-600);
+}
+
+.walkThrough {
+  padding: 24px;
+  text-align: center;
+
+  .heading {
+    font-weight: var(--brand-font-weight-600);
+    font-size: var(--brand-font-size--24);
+    line-height: var(--brand-line-height--xx-large);
+    margin-bottom: 16px;
+  }
+
+  .content {
+    width: 274px;
+    font-weight: var(--brand-font-weight-400);
+    font-size: var(--brand-font-size--default);
+    line-height: var(--brand-line-height--m-large);
+    color: var(--brand-color-text-dark-slat);
+    margin-bottom: 16px;
+  }
+}
+
+.openHeaderResizer {
+  padding: 0 11px;
+  display: flex;
+  align-items: center;
+}
+
+.drawerHeaderBar {
+  position: relative;
+  width: 100%;
+  margin-top: 16px;
+}
+.appCloseSide {
+  position: absolute;
+  right: 15px;
+  top: 20px;
+}
+.appLogoBar {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #627386;
+}
+.appLogoBarPadding {
+  padding: 0 16px;
+}
+.appLogoText {
+  width: 100%;
+  margin-top: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: -0.001em;
+  color: #181818;
+  padding-bottom: 16px;
+}
+
+.logoutText {
+  color: var(--brand-color-cool-grey-2);
+}

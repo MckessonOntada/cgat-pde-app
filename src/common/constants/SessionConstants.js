@@ -1,0 +1,6 @@
+export const SESSION_CONST = Object.freeze({
+  APP_AUTH_TOKEN: 'APP_AUTH_TOKEN',
+  USER_ROLE: 'USER_ROLE',
+  USER_ID: 'USER_ID',
+  USERNAME: 'USERNAME'
+});

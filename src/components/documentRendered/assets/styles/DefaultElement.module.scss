@@ -1,0 +1,20 @@
+.warningContent {
+  margin-top: 30px;
+  text-align: center;
+  font-size: var(--brand-font-size--default);
+  color: var(--brand-color-text-light-slate);
+  font-weight: var(--brand-font-weight-400);
+}
+
+.warningContainer {
+  flex-direction: column;
+  margin-top: 80px;
+}
+
+.errorContainer {
+  max-width: 450px;
+}
+.textHighlight {
+  font-weight: var(--brand-font-weight-700);
+  color: var(--brand-color-primary);
+}
