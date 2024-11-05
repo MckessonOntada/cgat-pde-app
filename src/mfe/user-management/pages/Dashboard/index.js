@@ -6,8 +6,10 @@ import Filters from "./Filters";
 import { UserProvider } from "../../context/PageContext";
 import { PATHS } from "../../routes/constants";
 import UserTable from "./UserTable";
+import { useTranslate  } from '../../../../translations/useTranslation';
 
 export default function Dashboard() {
+  const { t } = useTranslate();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("ACTIVE USERS");
 
@@ -63,12 +65,12 @@ export default function Dashboard() {
     <div className="userContainer">
       {/* <Breadcrumb items={items} /> */}
       <div className={"header"}>
-        <h1>Manage Users</h1>
+      <h1>{t('userManagement.header.label')}</h1>
         <div className="actionsBox">
           <Button onClick={handleClick}>
-            Add User
+           {t("userManagement.add.label")}
           </Button>
-          <Button>Upload Users</Button>
+          <Button> {t("userManagement.upload.label")}</Button>
         </div>
       </div>
       <UserProvider>
