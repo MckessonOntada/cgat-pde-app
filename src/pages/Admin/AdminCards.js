@@ -1,10 +1,15 @@
 import AppRoutes from "../../routes/AppRoutes";
+import { ReactComponent as OrderIcon} from "../../assets/svg/bag-circle.svg";
+import { ReactComponent as UserIcon } from "../../assets/svg/user-circle.svg";
+import { ReactComponent as ChecklistIcon } from "../../assets/svg/checklist-circle.svg";
+import { ReactComponent as CatalogueIcon } from "../../assets/svg/catalogue-circle.svg";
+import { ReactComponent as LinkIcon } from "../../assets/svg/link-circle.svg";
 
 const CARDS_DATA = [
   {
     name: "ManageOrderConfiguration",
     label: "manage_order_configuration",
-    icon: "order-icon-url", 
+    icon: OrderIcon, 
     details: "efficiently_streamline_user_management_for_seamless_experience",
     path: "/manage-orders",
     permission: [] 
@@ -12,7 +17,7 @@ const CARDS_DATA = [
   {
     name: "ManageUsers",
     label: "manage_users",
-    icon: "user-icon-url", 
+    icon: UserIcon, 
     details: "efficiently_streamline_user_management_for_seamless_experience",
     path: AppRoutes.pathUserManagement,
     permission: [] 
@@ -20,7 +25,7 @@ const CARDS_DATA = [
   {
     name: "ManageRoles",
     label: "manage_roles",
-    icon: "roles-icon-url", 
+    icon: ChecklistIcon, 
     details: "efficiently_streamline_user_management_for_seamless_experience",
     path: "/manage-roles",
     permission: [] 
@@ -28,7 +33,7 @@ const CARDS_DATA = [
   {
     name: "ManageCatalog",
     label: "manage_catalog",
-    icon: "catalog-icon-url", 
+    icon: CatalogueIcon, 
     details: "efficiently_streamline_user_management_for_seamless_experience",
     path: "/manage-catalog",
     permission: [] 
@@ -36,7 +41,7 @@ const CARDS_DATA = [
   {
     name: "ViewLinkedAccounts",
     label: "view_linked_accounts",
-    icon: "linked-accounts-icon-url", 
+    icon: LinkIcon, 
     details: "efficiently_streamline_user_management_for_seamless_experience",
     path: "/linked-accounts",
     permission: [] 
