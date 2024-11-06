@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../../context/PageContext';
 import { AutoSuggestSearch, Button, Divider, SearchableDropdown } from '@mckesson/mcp-component-library';
-import { useTranslate  } from '../../../../translations/useTranslation';
+import { useTranslate } from '../../../../translations/useTranslation';
 import { ROLES, STATUS } from '../../mockData/UsersData';
 import './index.scss';
 import arrow_right from '../../../../assets/image/arrow_right.svg';
@@ -84,10 +84,10 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
           </div>
 
           {/* Render contents only if expandedCard is true */}
-          {expandedCard && (
-            <>
-              <Divider color={'#BAC5CC'} />
 
+          <Collapse in={expandedCard} timeout={400}>
+            <div className="expanded-content">
+              <Divider color={'#BAC5CC'} />
               <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
                 {showRoleDropdown && ROLES.length > 0 && (
                   <SearchableDropdown
@@ -130,12 +130,46 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
                   )}
                 </div>
               </div>
-            </>
-          )}
+            </div>
+          </Collapse>
         </>
       ) : null}
     </div>
   );
 };
+
+const Collapse = ({ children, in: inProp, timeout = 300 }) => {
+  const [height, setHeight] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      setHeight(contentRef.current.scrollHeight + 24);
+    }
+  }, [children]);
+
+  useEffect(() => {
+    if (inProp) {
+      setIsOpen(true);
+    } else {
+      setIsOpen(false);
+    }
+  }, [inProp]);
+
+  return (
+    <div
+      className="collapse-panel"
+      style={{
+        height: isOpen ? `${height}px` : '0px',
+        overflow: 'hidden',
+        transition: `height ${timeout}ms ease-in-out`,
+      }}
+    >
+      <div style={{boxSizing: "content-box"}} ref={contentRef}>{children}</div>
+    </div>
+  );
+};
+
 
 export default Filters;
