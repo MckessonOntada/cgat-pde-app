@@ -12,7 +12,8 @@ module.exports = merge(common, {
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
       'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization'
     },
-    webSocketServer: false
+    webSocketServer: false,
+    hot: true
   },
   devtool: 'inline-source-map'
 });
