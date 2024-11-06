@@ -37,25 +37,24 @@ const DataTable = ({
   };
 
   return (
-    <div className='fixedContainer'>
-      <div className='innerContainer'>
-        <CustomDataTable
-          type={type}
-          columns={columns}
-          data={currentData}
-          onSortIconClick={handleSortClick}
-          handleChangePage={(e, newPage) => onPageChange(newPage)}
-          selectableRows={selectableRows}
-          pagination={pagination}
-          currentPage={currentPage}
-          totalPageCount={totalPageCount}
-          totalRocords={totalRecords}
-          recordsPerPage={recordsPerPage}
-          paginationRecordsPerPageMessage={paginationRecordsPerPageMessage}
-          paginationTotalRecorsMessage={paginationTotalRecordsMessage}
-          isStickyPagination={pagination}
-        />
-      </div> </div>
+    <CustomDataTable
+    type={type}
+    columns={columns}
+    data={currentData}
+    onSortIconClick={handleSortClick}
+    handleChangePage={(e, newPage) => onPageChange(newPage)}
+    selectableRows={selectableRows}
+    pagination={pagination}
+    currentPage={currentPage}
+    totalPageCount={totalPageCount}
+    totalRocords={totalRecords}
+    recordsPerPage={recordsPerPage}
+    paginationRecordsPerPageMessage={paginationRecordsPerPageMessage}
+    paginationTotalRecorsMessage={paginationTotalRecordsMessage}
+    isStickyPagination={pagination}
+    stickyHeader
+    responsive
+  />
   );
 };
 

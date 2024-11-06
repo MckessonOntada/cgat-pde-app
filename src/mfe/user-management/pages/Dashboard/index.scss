@@ -6,30 +6,11 @@
   gap: var(--spacing-04);
 }
 
-.fixedContainer {
-  // @include respond(xs) {
-  //   max-width: 576px !important;
-  //   overflow: hidden !important;
-  // }
-}
-
-.fixedContainer>.innerContainer {
-  // @include respond(xs) {
-  //   max-width: 992px;
-  //   overflow: hidden;
-  //   overflow-x: auto;
-  // }
-}
-
 .filterBox {
   display: grid;
-  padding: var(--spacing-04) !important;
+  padding: var(--spacing-04);
   border: 1px solid var(--brand-color-patient-primary-3);
-  border-radius: var(--brand-border-radius--6) !important;
-
-  @include respond(xs) {
-    width: auto !important;
-  }
+  border-radius: var(--brand-border-radius--6);
 }
 
 .flexBox{
@@ -154,11 +135,6 @@
   background: none !important;
 }
 
-#data-table-C-table>div:nth-child(1) {
-  overflow-x: visible !important;
-  overflow-y: visible !important;
-}
-
 .actionsBox>div>ul>li {
   background: var(--brand-color-background-white) !important;
 }
@@ -171,11 +147,6 @@
   background: none !important;
   border: none !important;
 }
-
-// [class^="CustomDataTable-module--tableContainer"]  {
-//   min-width: 680px; 
-//   overflow-x: auto; 
-// }
 
 .expanded-content{
   display: flex;

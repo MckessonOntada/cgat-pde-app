@@ -36,11 +36,11 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="container" >
-      <PageHeader />
+    <div>
+      {/* <PageHeader /> */}
 
       <UserProvider>
-        <div className="filterBox">
+        <div>
           <Filters showRoleDropdown={true} showStatusDropdown={true} />
           <TabList
             options={tabs}
