@@ -13,6 +13,7 @@ import { Button, Dropdown, DropdownMenu } from '@mckesson/mcp-component-library'
 import styles from './assets/styles/Header.module.scss';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
+import HeaderConfig from './__mock__';
 
 
 const PrimaryHeader = ({ user, setUserData, debugId }) => {
@@ -32,6 +33,7 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
                         className={`${styles.appLogo} ${styles.actionLink}`}
                         to={''}
                         id={''}
+                        aria-label='dashboard'
                     >
                         <AppLogo />
                     </Link>
@@ -40,7 +42,7 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
                     <Dropdown
                         id={''}
                         name={''}
-                        aria-label={''}
+                        aria-label="Select treatment center"
                         options={[]}
                         onChange={() => { }}
                     />
@@ -54,35 +56,27 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
             <Link
                 className={styles.actionLink}
                 to={"notifications"}
-                aria-label={'aria.notifications'}
+                aria-label="View notifications"
             >
                 <span>{intl.formatMessage({ id: 'header.label.notifications' })}</span><IconNotification />
             </Link>,
             <DropdownMenu
-                anchorEl={<button className={styles.actionLink}><span>{user || 'Anonymous'}</span><IconArrowDown /></button>}
+                anchorEl={<button className={styles.actionLink} aria-label="Account options"><span>{user || 'Anonymous'}</span><IconArrowDown /></button>}
                 handleSelect={() => { }}
-                options={[
-                    {
-                        label: 'My Profile',
-                        value: 'my_profile'
-                    },
-                    {
-                        label: 'Payment Method',
-                        value: 'payment_method'
-                    }
-                ]} //accounts options
+                options={HeaderConfig.profileOptions}
+                aria-label="Profile options"
             />,
             <Link
                 className={styles.actionLink}
                 to={"help"}
-                aria-label={'aria.help'}
+                aria-label="Help center"
             >
                 <span>{intl.formatMessage({ id: 'header.label.help' })}</span>
                 <IconHelp />
             </Link>,
             <Button
                 label={'button.logout'}
-                aria-label={'aria.logout'}
+                aria-label="Log out of account"
                 icon={<IconLogout />}
                 iconPosition={"right"}
                 id={debugIds(ID.HEADER, ID.NAV, ID.RIGHT, ID.BUTTON, ID.LOGOUT)}
@@ -99,7 +93,7 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
                 className={styles.navItemsRight}
                 id={''}
             >
-                <ul className={styles.quickLinks} role="navigation" aria-label={'aria.quickLinks'}>
+                <ul className={styles.quickLinks} role="navigation"  aria-label="Quick access links">
                     {
                         quickLinks.map((item, index) => {
                             return <li className={styles.linkWrapper} key={`quick-links-item-${index}`}>{item}</li>;
@@ -123,7 +117,7 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
                 <Box sx={{ display: { xs: 'block', md: 'none' } }}>
                     <button
                         onClick={toggleDrawer}
-                        aria-label="open drawer"
+                        aria-label="Open drawer menu"
                     >
                         <IconMenu />
                     </button>
@@ -132,6 +126,7 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
                         open={drawerOpen}
                         onClose={toggleDrawer}
                         sx={{ '.MuiDrawer-paper': { width: '80vw', p: 2 } }}
+                        aria-label="Drawer menu with quick links"
                     >
                         <Box className={styles.drawerContent} onClick={toggleDrawer}>
                             <RightSideView />

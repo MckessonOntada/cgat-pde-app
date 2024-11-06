@@ -1,12 +1,13 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { connect } from 'react-redux';
 import { setUserData } from '../../store/reducer/userReducer';
 import { debugIds, ID } from '../../common/constants/id';
 import { Button, TabList, DropdownMenu } from '@mckesson/mcp-component-library';
 import styles from './assets/styles/Header.module.scss';
 import { useIntl } from 'react-intl';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import Breadcrumbs from '../breadCrumbs/Breadcrumbs';
 
 
 const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
@@ -29,8 +30,9 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
     const LeftSideView = () => {
         return (
             <Box
-                className={`${styles.navItemsLeft}`}
+                className={`${styles.navItemsLeft} ${styles.secondaryNav}`}
                 id={''}
+                aria-label="Navigation tabs"
             >
                 <TabList
                     className={styles.compactTablist}
@@ -40,6 +42,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
                     alignment={"left"}
                     useAsButton={false}
                     role="tablist"
+                    aria-label="Secondary navigation tabs"
                 />
             </Box>
         )
@@ -51,6 +54,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
             <Box
                 className={styles.navItemsRight}
                 id={''}
+                aria-label="System administration view"
             >
                 <div className={styles.navOptions}>
                     <Button color="secondary">
@@ -62,7 +66,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
     }
 
     return (
-        <Box className={`${styles.navContainer} ${styles.secondary}`}>
+        <Box className={`${styles.navContainer} ${styles.secondary}`} aria-label="Secondary header">
             <Box
                 className={styles.wrapper}
                 id={''}

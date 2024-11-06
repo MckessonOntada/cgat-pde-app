@@ -55,6 +55,16 @@ const HeaderConfig = {
             labelForMobile: 'Admin',
             sequence: 4
         }
+    ],
+    profileOptions: [
+        {
+            label: 'My Profile',
+            value: 'my_profile'
+        },
+        {
+            label: 'Payment Method',
+            value: 'payment_method'
+        }
     ]
 }
 
