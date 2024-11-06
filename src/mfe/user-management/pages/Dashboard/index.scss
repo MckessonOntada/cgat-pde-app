@@ -23,7 +23,6 @@
 
 .filterBox {
   display: grid;
-  gap: var(--spacing-04) !important;
   padding: var(--spacing-04) !important;
   border: 1px solid var(--brand-color-patient-primary-3);
   border-radius: var(--brand-border-radius--6) !important;
@@ -177,3 +176,10 @@
 //   min-width: 680px; 
 //   overflow-x: auto; 
 // }
+
+.expanded-content{
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-04,  32px);
+  margin-top: var(--spacing-04,  32px);
+}
