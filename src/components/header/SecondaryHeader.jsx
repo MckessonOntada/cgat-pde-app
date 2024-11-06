@@ -1,13 +1,10 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
 import { connect } from 'react-redux';
 import { setUserData } from '../../store/reducer/userReducer';
-import { debugIds, ID } from '../../common/constants/id';
-import { Button, TabList, DropdownMenu } from '@mckesson/mcp-component-library';
+import { Button, TabList } from '@mckesson/mcp-component-library';
 import styles from './assets/styles/Header.module.scss';
 import { useIntl } from 'react-intl';
-import { Link, useLocation } from 'react-router-dom';
-import Breadcrumbs from '../breadCrumbs/Breadcrumbs';
+import { useLocation } from 'react-router-dom';
 
 
 const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
@@ -29,9 +26,9 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
 
     const LeftSideView = () => {
         return (
-            <Box
+            <div
                 className={`${styles.navItemsLeft} ${styles.secondaryNav}`}
-                id={''}
+                
                 aria-label="Navigation tabs"
             >
                 <TabList
@@ -44,16 +41,16 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
                     role="tablist"
                     aria-label="Secondary navigation tabs"
                 />
-            </Box>
+            </div>
         )
     }
 
     const RightSideView = () => {
 
         return (
-            <Box
+            <div
                 className={styles.navItemsRight}
-                id={''}
+                
                 aria-label="System administration view"
             >
                 <div className={styles.navOptions}>
@@ -61,20 +58,20 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
                         {intl.formatMessage({ id: 'header.label.systemAdminView' })}
                     </Button>
                 </div>
-            </Box>
+            </div>
         )
     }
 
     return (
-        <Box className={`${styles.navContainer} ${styles.secondary}`} aria-label="Secondary header">
-            <Box
+        <div className={`${styles.navContainer} ${styles.secondary}`} aria-label="Secondary header">
+            <div
                 className={styles.wrapper}
-                id={''}
+                
             >
                 <LeftSideView />
                 <RightSideView />
-            </Box>
-        </Box>
+            </div>
+        </div>
     )
 }
 

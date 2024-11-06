@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Box, Drawer } from '@mui/material';
 import { ReactComponent as AppLogo } from './../../assets/image/app-logo.svg';
 import { ReactComponent as IconNotification } from './../../assets/svg/bell.svg';
 import { ReactComponent as IconLogout } from './../../assets/svg/logout.svg';
@@ -24,11 +23,11 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
 
     const LeftSideView = () => {
         return (
-            <Box
+            <div
                 className={styles.navItemsLeft}
                 id={''}
             >
-                <Box className={styles.branding}>
+                <div className={styles.branding}>
                     <Link
                         className={`${styles.appLogo} ${styles.actionLink}`}
                         to={''}
@@ -37,8 +36,8 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
                     >
                         <AppLogo />
                     </Link>
-                </Box>
-                <Box className={styles.centerSelector}>
+                </div>
+                <div className={styles.centerSelector}>
                     <Dropdown
                         id={''}
                         name={''}
@@ -46,8 +45,8 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
                         options={[]}
                         onChange={() => { }}
                     />
-                </Box>
-            </Box>
+                </div>
+            </div>
         )
     }
 
@@ -89,52 +88,50 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
             </Button>
         ]
         return (
-            <Box
+            <div
                 className={styles.navItemsRight}
                 id={''}
             >
-                <ul className={styles.quickLinks} role="navigation"  aria-label="Quick access links">
+                <ul className={styles.quickLinks} role="navigation" aria-label="Quick access links">
                     {
                         quickLinks.map((item, index) => {
                             return <li className={styles.linkWrapper} key={`quick-links-item-${index}`}>{item}</li>;
                         })
                     }
                 </ul>
-            </Box>
+            </div>
         )
     }
 
     return (
-        <Box className={`${styles.navContainer} ${styles.primary}`}>
-            <Box
+        <div className={`${styles.navContainer} ${styles.primary}`}>
+            <div
                 className={styles.wrapper}
                 id={''}
             >
                 <LeftSideView />
-                <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                <div className={styles.desktopOnly}>
                     <RightSideView />
-                </Box>
-                <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+                </div>
+                <div className={styles.mobileOnly}>
                     <button
                         onClick={toggleDrawer}
                         aria-label="Open drawer menu"
                     >
                         <IconMenu />
                     </button>
-                    <Drawer
-                        anchor="right"
-                        open={drawerOpen}
-                        onClose={toggleDrawer}
-                        sx={{ '.MuiDrawer-paper': { width: '80vw', p: 2 } }}
+                    <div
+                        className={`${styles.drawer} ${drawerOpen ? styles.open : ''}`}
                         aria-label="Drawer menu with quick links"
+                        onClick={toggleDrawer}
                     >
-                        <Box className={styles.drawerContent} onClick={toggleDrawer}>
+                        <div className={styles.drawerContent}>
                             <RightSideView />
-                        </Box>
-                    </Drawer>
-                </Box>
-            </Box>
-        </Box>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     )
 }
 

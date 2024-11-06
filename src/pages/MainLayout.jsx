@@ -2,11 +2,9 @@ import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import { Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
-import { Box } from '@mui/material';
 import { Button } from '@mckesson/mcp-component-library';
 
 import ErrorComponent from '../components/app/error/ErrorComponent';
-
 import { debugIds, ID } from '../common/constants/id';
 
 import styles from '../../src/assets/styles/MainLayout.module.scss';
@@ -23,10 +21,8 @@ function MainLayout() {
   const userHasRoutePermission = AuthUtils.userHasRoutePermission(pathname);
 
   return (
-    <Box id={debugIds(ID.MAIN)}>
-      <header id={debugIds(ID.HEADER, ID.CONTAINER)}>
-        <Header />
-      </header>
+    <div id={debugIds(ID.MAIN)}>
+      <Header />
       <div className={styles.home} id={debugIds(ID.HOME)}>
         <Suspense fallback={<></>}>
           {userHasRoutePermission ? (
@@ -59,7 +55,7 @@ function MainLayout() {
           )}
         </Suspense>
       </div>
-    </Box>
+    </div>
   );
 }
 

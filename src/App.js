@@ -4,8 +4,6 @@ import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
-import { ThemeProvider } from '@mui/material/styles';
-import muiTheme from './assets/theme/MuiTheme';
 
 import Navigation from './Navigation';
 import OktaConfigLoader from './OktaConfigLoader';
@@ -27,21 +25,19 @@ function App() {
   });
 
   return (
-    <ThemeProvider theme={muiTheme}>
-      <Provider store={store}>
-        <QueryClientProvider client={queryClient}>
-          <IntlProvider messages={messages[currentLocale]} locale={currentLocale}>
-            <BrowserRouter basename={AppRoutes.pathAppBase}>
-              <OktaConfigLoader>
-                <Snackbar />
-                <Modal />
-                <Navigation />
-              </OktaConfigLoader>
-            </BrowserRouter>
-          </IntlProvider>
-        </QueryClientProvider>
-      </Provider>
-    </ThemeProvider>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <IntlProvider messages={messages[currentLocale]} locale={currentLocale}>
+          <BrowserRouter basename={AppRoutes.pathAppBase}>
+            <OktaConfigLoader>
+              <Snackbar />
+              <Modal />
+              <Navigation />
+            </OktaConfigLoader>
+          </BrowserRouter>
+        </IntlProvider>
+      </QueryClientProvider>
+    </Provider>
   );
 }
 
