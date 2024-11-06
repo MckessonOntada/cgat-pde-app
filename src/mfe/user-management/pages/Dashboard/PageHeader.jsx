@@ -5,6 +5,7 @@ import { Button  } from "@mckesson/mcp-component-library";
 import { PATHS } from "../../routes/constants";
 import { ReactComponent as add_circle_bold }  from '../../../../assets/image/add_circle_bold.svg';
 import { ReactComponent as upload_bottom }  from '../../../../assets/image/upload_bottom.svg';
+import "./index.scss";
 
 function PageHeader() {
     const { t } = useTranslate();
