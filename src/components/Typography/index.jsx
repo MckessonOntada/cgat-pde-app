@@ -6,7 +6,7 @@ export default function Typography({ children, variant }){
     return <p className={styles[variant]}>{children}</p>
 }
 Typography.prototype = {
-    variant: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4', 'subtitle-01', 'body', 'caption' ])
+    variant: PropTypes.oneOf(['h1', 'h2', 'h3', 'h4', 'subtitle', 'body', 'caption' ])
 }
 
 Typography.defaultProps = {
