@@ -5,7 +5,6 @@ import { Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-do
 import { Box } from '@mui/material';
 import { Button } from '@mckesson/mcp-component-library';
 
-import GlobalNavigation from '../components/header/Header';
 import ErrorComponent from '../components/app/error/ErrorComponent';
 
 import { debugIds, ID } from '../common/constants/id';
@@ -14,6 +13,7 @@ import styles from '../../src/assets/styles/MainLayout.module.scss';
 import AccessDeniedPage from './accessDenied/accessDenied';
 import AuthUtils from '../common/util/AuthUtils';
 import AppRoutes from '../routes/AppRoutes';
+import Header from '../components/header';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'))
 
@@ -25,7 +25,7 @@ function MainLayout() {
   return (
     <Box id={debugIds(ID.MAIN)}>
       <header id={debugIds(ID.HEADER, ID.CONTAINER)}>
-        <GlobalNavigation />
+        <Header />
       </header>
       <div className={styles.home} id={debugIds(ID.HOME)}>
         <Suspense fallback={<></>}>
@@ -42,7 +42,7 @@ function MainLayout() {
                   <Route path={"/user/*"} element={<UsersEntryPoint />} />
                 </Route>
               </Routes>
-              
+
             </div>
           ) : (
             <ErrorComponent

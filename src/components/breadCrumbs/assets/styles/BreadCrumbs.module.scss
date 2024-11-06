@@ -1,15 +1,26 @@
-.navigationBreadcrumb {
+.breadcrumb {
+    list-style: none;
+    padding: 0;
+    font-size: var(--brand-font-size--small);
+    display: flex;
+    align-items: center;
 
-    li {
-        line-height: 14px;
-    }
+    .breadcrumbitem {
+        display: flex;
+        align-items: center;
 
-    a {
-        font-size: 14px;
-        color: var(--brand-color-primary);
-        font-weight: var(--brand-font-weight-600);
-        &:hover {
-            text-decoration: underline;
+        .separator {
+            margin: 0 8px;
+            width: var(--spacing-04);
+            height: var(--spacing-04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .link {
+            text-decoration: none;
         }
     }
+
 }
