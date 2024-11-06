@@ -12,6 +12,13 @@
     padding: var(--spacing-04);
     border: 1px solid var(--brand-color-grey-scale-warm-1);
     border-radius: var(--brand-border-radius--5);
+    h3 {
+        color: var(--brand-color-black);
+    }
+}
+.cardContent{
+    font-size: var(--brand-font-size--15);
+    color: var(--brand-color-primary-slate);
 }
 
 /* To override mcp-components card styling*/
