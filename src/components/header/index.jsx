@@ -1,15 +1,15 @@
 import React from 'react';
-import { Stack } from '@mui/material';
 import PrimaryHeader from "./PrimaryHeader"
 import SecondaryHeader from './SecondaryHeader';
 import  HeaderConfig from './__mock__';
+import { debugIds, ID } from '../../common/constants/id';
 
 const GlobalHeader = () => {
     return (
-        <Stack>
+        <header id={debugIds(ID.HEADER, ID.CONTAINER)}>
             <PrimaryHeader />
             <SecondaryHeader navLinks={HeaderConfig.navLinks} />
-        </Stack>
+        </header>
     )
 }
 
