@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../../context/PageContext';
 import { AutoSuggestSearch, Button, Divider, SearchableDropdown } from '@mckesson/mcp-component-library';
-import { useTranslate  } from '../../../../translations/useTranslation';
+import { useTranslate } from '../../../../translations/useTranslation';
 import { ROLES, STATUS } from '../../mockData/UsersData';
 import './index.scss';
 import arrow_right from '../../../../assets/image/arrow_right.svg';
 import arrow_down from '../../../../assets/image/arrow_down.svg';
+import ToggleUI from '../../../../components/toggleui';
 
 const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
   const { t } = useTranslate();
@@ -84,10 +85,10 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
           </div>
 
           {/* Render contents only if expandedCard is true */}
-          {expandedCard && (
-            <>
-              <Divider color={'#BAC5CC'} />
 
+          <ToggleUI in={expandedCard} timeout={400}>
+            <div className="expanded-content">
+              <Divider color={'#BAC5CC'} />
               <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
                 {showRoleDropdown && ROLES.length > 0 && (
                   <SearchableDropdown
@@ -130,12 +131,13 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
                   )}
                 </div>
               </div>
-            </>
-          )}
+            </div>
+          </ToggleUI>
         </>
       ) : null}
     </div>
   );
 };
+
 
 export default Filters;

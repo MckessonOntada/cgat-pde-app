@@ -123,5 +123,10 @@ module.exports = {
     new Dotenv()
     // Uncomment to run the Bundle Analyzer
     // new BundleAnalyzerPlugin()
-  ]
+  ],
+  resolve: {
+    alias: {
+      '@src': path.resolve(__dirname, 'src/')
+    }
+  }
 };

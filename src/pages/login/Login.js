@@ -1,16 +1,16 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useOktaAuth } from '@okta/okta-react';
 import OktaSignIn from '@okta/okta-signin-widget';
-
-import { debugIds, ID } from '../../common/constants/id';
-import AuthService from '../../api/authService/AuthService';
-import CommonService from '../../api/commonService/CommonService';
-import CommonUtils from '../../common/util/CommonUtils';
-import OktaHelper from '../../config/OktaHelper';
+import { debugIds, ID } from '@src/common/constants/id';
+import AuthService from '@src/api/authService/AuthService';
+import CommonService from '@src/api/commonService/CommonService';
+import CommonUtils from '@src/common/util/CommonUtils';
+import OktaHelper from '@src/config/OktaHelper';
 import '@okta/okta-signin-widget/css/okta-sign-in.min.css';
 import './assets/styles/Login.css';
 import style from './assets/styles/Login.module.scss';
-import useFetchQueryRetry from '../../common/hooks/useFetchQueryRetry';
+import useFetchQueryRetry from '@src/common/hooks/useFetchQueryRetry';
+import AppLogo from '@src/assets/image/app-logo.svg';
 
 const Login = () => {
   const widgetRef = useRef();
@@ -20,7 +20,9 @@ const Login = () => {
   let { oktaAuth } = useOktaAuth();
   const { refetch: onPostUserLogin } = useFetchQueryRetry(
     [`postUserLogin`],
-    () => { /*post login*/ },
+    () => {
+      /*post login*/
+    },
     {
       enabled: false,
       retry: 5
@@ -38,7 +40,7 @@ const Login = () => {
       baseUrl: issuer.split('/oauth2')[0],
       clientId,
       redirectUri,
-      // logo: OrgLogo, our logo
+      logo: AppLogo,
       authParams: {
         issuer,
         scopes
