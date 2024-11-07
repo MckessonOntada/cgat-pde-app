@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../../context/PageContext';
-import { AutoSuggestSearch, Button, Divider, SearchableDropdown } from '@mckesson/mcp-component-library';
+import {
+  AutoSuggestSearch,
+  Button,
+  Divider,
+  SearchableDropdown
+} from '@mckesson/mcp-component-library';
 import { useTranslate } from '../../../../translations/useTranslation';
 import { ROLES, STATUS } from '../../mockData/UsersData';
 import './index.scss';
@@ -24,11 +29,11 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
       update: { setRole, setStatus, setSearchQuery },
       status,
       clearFilters,
-      applyFilters,
-    },
+      applyFilters
+    }
   } = useUser();
 
-  const handleSearchChange = inputValue => {
+  const handleSearchChange = (inputValue) => {
     setSearchQuery(inputValue);
   };
 
@@ -38,21 +43,23 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
 
   useEffect(() => {
     setIsClearFiltersVisible(
-      (searchQuery && searchQuery.length > 0) || (role && role.length > 0) || (status && status.length > 0),
+      (searchQuery && searchQuery.length > 0) ||
+        (role && role.length > 0) ||
+        (status && status.length > 0)
     );
   }, [searchQuery, role, status]);
 
   const handleFilter = () => {
     alert(
-      `Search Query: ${searchQuery}\nFiltered Roles: ${JSON.stringify(role)}\nFiltered Status: ${JSON.stringify(
-        status,
-      )}`,
+      `Search Query: ${searchQuery}\nFiltered Roles: ${JSON.stringify(
+        role
+      )}\nFiltered Status: ${JSON.stringify(status)}`
     );
     applyFilters();
   };
 
   const onSearcheableDropdownChange = (type, value) => {
-    const filteredValue = value.filter(item => item.isChecked);
+    const filteredValue = value.filter((item) => item.isChecked);
     if (type === 'role') {
       setRole(filteredValue);
     }
@@ -98,7 +105,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
                     label={t('userManagement.table.role')}
                     name={t('userManagement.table.role')}
                     isRequired={false}
-                    onChange={value => onSearcheableDropdownChange('role', value)}
+                    onChange={(value) => onSearcheableDropdownChange('role', value)}
                     options={ROLES}
                     clearAllSelectedValues={() => setRole([])}
                   />
@@ -112,7 +119,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
                     label={t('userManagement.table.status')}
                     name={t('userManagement.table.status')}
                     isRequired={false}
-                    onChange={value => onSearcheableDropdownChange('status', value)}
+                    onChange={(value) => onSearcheableDropdownChange('status', value)}
                     options={STATUS}
                     clearAllSelectedValues={() => setStatus([])}
                   />
@@ -138,6 +145,5 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
     </div>
   );
 };
-
 
 export default Filters;

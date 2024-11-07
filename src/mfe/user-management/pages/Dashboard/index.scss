@@ -1,9 +1,7 @@
 @import "../../../../assets/styles/abstracts/mixins";
 
-.container {
-  padding: var(--spacing-04);
-  display: grid;
-  gap: var(--spacing-04);
+.dashboard-container {
+  height: 100vh;
 }
 
 .filterBox {
@@ -13,32 +11,30 @@
   border-radius: var(--brand-border-radius--6);
 }
 
-.flexBox{
+.flexBox {
   display: flex;
   align-items: center;
   gap: var(--spacing-04);
   flex-wrap: wrap;
 }
 
-.flexBox.spaceBetween{
-   justify-content: space-between;
+.flexBox.spaceBetween {
+  justify-content: space-between;
 }
 
-.py4{
+.py4 {
   padding-top: var(--spacing-04);
   padding-bottom: var(--spacing-04);
 }
 
-
-.py3{
+.py3 {
   padding-top: var(--spacing-03);
   padding-bottom: var(--spacing-03);
 }
 
-
 .autoSuggestSearch-container {
   @include respond(lg) {
-    width: 460px !important;
+    width: 460px;
   }
 }
 
@@ -84,28 +80,19 @@
   overflow: visible;
 }
 
-.cellEllipse {
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  display: block !important;
-  width: 100% !important;
-}
-
 .display-block {
-  display: block !important;
-  width: 100% !important;
+  display: block;
+  width: 100%;
 }
 
 .right-aligned {
-  text-align: right !important;
-  justify-content: flex-end !important;
+  text-align: right;
+  justify-content: flex-end;
 }
 
 .toggle-box {
   display: flex;
   align-items: center;
-  gap: var(--spacing-03);
 }
 
 .search-width {
@@ -121,36 +108,43 @@
 }
 
 .button-icon svg {
-  width: 16px; 
+  width: 16px;
   height: 16px;
-  margin-right: 2px;   
+  margin-right: 2px;
 }
 
-.actionsBox>div>ul {
-  left: 10px !important;
+.actionsBox > div > ul {
+  left: 10px;
 }
 
-.actionsBox>div>button {
-  border: none !important;
-  background: none !important;
+.actionsBox > div > button {
+  border: none;
+  background: none;
 }
 
-.actionsBox>div>ul>li {
-  background: var(--brand-color-background-white) !important;
+.actionsBox > div > ul > li {
+  background: var(--brand-color-background-white);
 }
 
-.actionsBox>div>ul>li:hover {
-  background: var(--brand-color-secondary--hover) !important;
+.actionsBox > div > ul > li:hover {
+  background: var(--brand-color-secondary--hover);
 }
 
-.userCardContainer>div>nav>ul>li>button {
-  background: none !important;
-  border: none !important;
+.userCardContainer > div > nav > ul > li > button {
+  background: none;
+  border: none;
 }
 
-.expanded-content{
+.expanded-content {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-04,  32px);
-  margin-top: var(--spacing-04,  32px);
+  gap: var(--spacing-04, 32px);
+  margin-top: var(--spacing-04, 32px);
+}
+
+.cellEllipse {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

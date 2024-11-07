@@ -8,7 +8,7 @@ const DataTable = ({
   handleSortClick,
   handleChangePage,
   selectableRows = false,
-  pagination = true,
+  pagination = true
 }) => {
   const totalRecords = rows.length;
   const recordsPerPage = 5;
@@ -29,7 +29,7 @@ const DataTable = ({
     setCurrentData(rows.slice(indexOfFirstRecord, indexOfLastRecord));
   }, [currentPage, rows]);
 
-  const onPageChange = newPage => {
+  const onPageChange = (newPage) => {
     setCurrentPage(newPage);
     if (handleChangePage) {
       handleChangePage(newPage);
@@ -38,23 +38,23 @@ const DataTable = ({
 
   return (
     <CustomDataTable
-    type={type}
-    columns={columns}
-    data={currentData}
-    onSortIconClick={handleSortClick}
-    handleChangePage={(e, newPage) => onPageChange(newPage)}
-    selectableRows={selectableRows}
-    pagination={pagination}
-    currentPage={currentPage}
-    totalPageCount={totalPageCount}
-    totalRocords={totalRecords}
-    recordsPerPage={recordsPerPage}
-    paginationRecordsPerPageMessage={paginationRecordsPerPageMessage}
-    paginationTotalRecorsMessage={paginationTotalRecordsMessage}
-    isStickyPagination={pagination}
-    stickyHeader
-    responsive
-  />
+      type={type}
+      columns={columns}
+      data={currentData}
+      onSortIconClick={handleSortClick}
+      handleChangePage={(e, newPage) => onPageChange(newPage)}
+      selectableRows={selectableRows}
+      pagination={pagination}
+      currentPage={currentPage}
+      totalPageCount={totalPageCount}
+      totalRocords={totalRecords}
+      recordsPerPage={recordsPerPage}
+      paginationRecordsPerPageMessage={paginationRecordsPerPageMessage}
+      paginationTotalRecorsMessage={paginationTotalRecordsMessage}
+      // isStickyPagination={pagination}
+      stickyHeader
+      responsive
+    />
   );
 };
 
