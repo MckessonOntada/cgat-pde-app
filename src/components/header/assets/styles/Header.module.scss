@@ -16,7 +16,7 @@
     }
 
     &.secondary {
-        border: 1px solid var(--brand-color-grey-scale-cool-1, #bac5cc);
+        border-bottom: 1px solid var(--brand-color-grey-scale-cool-1, #bac5cc);
         overflow-x: auto;
         overflow-y: hidden;
         white-space: nowrap;
