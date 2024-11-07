@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styles from './assets/styles/Breadcrumbs.module.scss'
+import styles from './assets/styles/BreadCrumbs.module.scss';
 import { Link } from 'react-router-dom';
 
 const Breadcrumbs = ({ items }) => {

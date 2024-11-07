@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from '../../components/DataTable';
 import { Badge } from '@mckesson/mcp-component-library';
-import { USER_DATA } from '../../mockData/UsersData'; 
+import { USER_DATA } from '../../mockData/UsersData';
 import './index.scss';
 import Actions from './Actions';
-import { useTranslate  } from '../../../../translations/useTranslation';
+import { useTranslate } from '@src/translations/useTranslation';
 
-function UserTable() { 
+function UserTable() {
   const { t } = useTranslate();
   const [data] = useState(USER_DATA);
   const [filteredData, setFilteredData] = useState(USER_DATA);
@@ -25,7 +25,7 @@ function UserTable() {
     setFilteredData(sortedData);
   }, []);
 
-  const handleSortClick = selectedColumn => {
+  const handleSortClick = (selectedColumn) => {
     const columnName = selectedColumn.selector;
     const newSortDirection = sortColumn === columnName && sortDirection === 'asc' ? 'desc' : 'asc';
     const sortedData = [...filteredData].sort((a, b) => {
@@ -46,37 +46,38 @@ function UserTable() {
       name: t('userManagement.table.name'),
       selector: 'Name',
       sortable: true,
-      width: '20%',
-      cell: props => (
+      wrap: true,
+      // width:'20%',
+      cell: (props) => (
         <div className="cellEllipse">
           <a href={props.name} style={{ color: '#007bff', fontWeight: '600' }}>
             {props.name}
           </a>
         </div>
-      ),
+      )
     },
-
     {
       name: t('userManagement.table.email'),
       selector: 'Email',
       sortable: true,
-      width: '25%',
-      cell: props => <div className="cellEllipse"> {props.e_mail}</div>,
+      wrap: true,
+      width: '20%',
+      cell: (props) => <div className="cellEllipse">{props.e_mail}</div>
     },
     {
       name: t('userManagement.table.role'),
       selector: 'Role',
       sortable: true,
-      width: '10%',
-      cell: props => <div className="cellEllipse">{props.role}</div>,
+      center: true,
+      wrap: true,
+      cell: (props) => <div className="cellEllipse">{props.role}</div>
     },
     {
       name: t('userManagement.table.status'),
       selector: 'status',
       sortable: true,
       center: true,
-      width: '10%',
-      cell: props => (
+      cell: (props) => (
         <div>
           {props.status === 'ACTIVE' ? (
             <Badge text="Active" type="success" />
@@ -84,33 +85,36 @@ function UserTable() {
             <Badge text="Inactive" type="info-default" />
           )}
         </div>
-      ),
+      )
     },
     {
-      name: <div>{t('userManagement.table.dateAdded')}</div>,
+      name: t('userManagement.table.dateAdded'),
       selector: 'date_added',
       sortable: true,
-      width: '14%',
       center: true,
-      cell: props => <div>{props.date_added}</div>,
+      wrap: true,
+      cell: (props) => <div>{props.date_added}</div>
     },
     {
-      name: <div className="">{t('userManagement.table.dateUpdated')}</div>,
+      name: t('userManagement.table.dateUpdated'),
       selector: 'date_updated',
       sortable: true,
-      width: '14%',
       center: true,
-      cell: props => <div className="">{props.date_updated}</div>,
+      wrap: true,
+      cell: (props) => <div>{props.date_updated}</div>
     },
     {
       id: 'action',
       center: true,
       name: t('userManagement.table.action'),
       cell: Actions,
-      width: '7%',
-    },
+      width: '10%'
+    }
   ];
-  return <DataTable columns={columns} rows={filteredData} handleSortClick={handleSortClick} />;
+
+  return (
+    <DataTable columns={columns} rows={filteredData} handleSortClick={handleSortClick} responsive />
+  );
 }
 
 export default UserTable;
