@@ -2,11 +2,16 @@ import React, { useState } from 'react';
 import { TabList } from '@mckesson/mcp-component-library';
 import './index.scss';
 import Filters from './Filters';
+import { PATHS } from '../../routes/constants';
+import { useTranslate } from '@src/translations/useTranslation';
 import { UserProvider } from '../../context/PageContext';
 import UserTable from './UserTable';
 import PageHeader from './PageHeader';
+import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
+import { debugIds, ID } from '@src/common/constants/id';
 
 export default function Dashboard() {
+  const { t } = useTranslate();
   const [activeTab, setActiveTab] = useState('ACTIVE USERS');
 
   const handleTabClick = (tab) => {
@@ -34,12 +39,32 @@ export default function Dashboard() {
     }
   ];
 
+  const breadcrumbItems = [
+    {
+      label: 'Admin',
+      url: '/admin'
+    },
+    {
+      label: 'Manage Users'
+    }
+  ];
+
+  const buttonLabels = {
+    add: t('userManagement.add.label'),
+    upload: t('userManagement.upload.label')
+  };
+
   return (
-    <div className="dashboard-container">
-      <PageHeader />
+    <div className="dashboard-container" id={debugIds(ID.TABLE, ID.CONTAINER)}>
+      <Breadcrumb items={breadcrumbItems} />
+      <PageHeader
+        title={t('userManagement.header.label')}
+        navigateTo={PATHS.createUser}
+        buttonLabels={buttonLabels}
+      />
 
       <UserProvider>
-        <div>
+        <div id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
           <Filters showRoleDropdown={true} showStatusDropdown={true} />
           <TabList
             options={tabs}

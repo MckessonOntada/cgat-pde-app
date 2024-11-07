@@ -6,12 +6,13 @@ import {
   Divider,
   SearchableDropdown
 } from '@mckesson/mcp-component-library';
-import { useTranslate } from '../../../../translations/useTranslation';
+import { useTranslate } from '@src/translations/useTranslation';
 import { ROLES, STATUS } from '../../mockData/UsersData';
 import './index.scss';
-import arrow_right from '../../../../assets/image/arrow_right.svg';
-import arrow_down from '../../../../assets/image/arrow_down.svg';
+import arrow_right from '@src/assets/image/arrow_right.svg';
+import arrow_down from '@src/assets/image/arrow_down.svg';
 import ToggleUI from '../../../../components/toggleui';
+import { debugIds, ID } from '@src/common/constants/id';
 
 const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
   const { t } = useTranslate();
@@ -69,7 +70,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
   };
 
   return (
-    <div className="filterBox">
+    <div className="filterBox line-height" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
       {(showRoleDropdown && ROLES.length > 0) || (showStatusDropdown && STATUS.length > 0) ? (
         <>
           <div className="toggle-box">
@@ -126,7 +127,12 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
                 )}
 
                 <div className="LabelBox">
-                  <Button type="button" label={t('filter')} onClick={handleFilter} />
+                  <Button
+                    type="button"
+                    label={t('filter')}
+                    onClick={handleFilter}
+                    className="filter-btn"
+                  />
                   {isClearFiltersVisible && (
                     <Button
                       type="button"

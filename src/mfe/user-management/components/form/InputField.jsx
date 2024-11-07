@@ -1,19 +1,16 @@
 import React from 'react';
-import { InputField as BaseInputField,Label } from '@mckesson/mcp-component-library';
-import PropTypes from 'prop-types';
-import { useTranslate  } from '../../../../translations/useTranslation';
+import { InputField as BaseInputField, Label } from '@mckesson/mcp-component-library';
+import { useTranslate } from '../../../../translations/useTranslation';
 
 export default function InputField(props) {
-  const { field, form, children, className, ...rest } = props;
-  const { t } = useTranslate(); 
+  const { field, form, children, className, label, ...rest } = props;
+  const { t } = useTranslate();
   return (
     <div style={{ display: 'grid' }}>
-      {/* <Label htmlFor={field.name} className="label-heading">
-         {t(`userManagement.create_user.inputLabel.${field.name}`)}
-         
-        {props.isRequired ?
-          <span className="requiredIcon">✱</span> : null}
-      </Label> */}
+      <Label htmlFor={field.name} className="label-heading">
+        {label}
+        {props.isRequired ? <span className="requiredIcon">✱</span> : null}
+      </Label>
       <BaseInputField
         {...rest}
         id={field.name}
@@ -21,7 +18,7 @@ export default function InputField(props) {
         value={field.value}
         register={() => ({
           onChange: field.onChange,
-          onBlur: field.onBlur,
+          onBlur: field.onBlur
         })}
         errors={form.errors}
         errorMessage={form.errors[field.name]}
@@ -31,7 +28,6 @@ export default function InputField(props) {
       {!form.errors[field.name] && form.touched[field.name] && (
         <TextError className="error-placeholder" />
       )}
-
     </div>
   );
 }

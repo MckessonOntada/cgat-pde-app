@@ -4,7 +4,7 @@ import { Badge } from '@mckesson/mcp-component-library';
 import { USER_DATA } from '../../mockData/UsersData';
 import './index.scss';
 import Actions from './Actions';
-import { useTranslate } from '../../../../translations/useTranslation';
+import { useTranslate } from '@src/translations/useTranslation';
 
 function UserTable() {
   const { t } = useTranslate();

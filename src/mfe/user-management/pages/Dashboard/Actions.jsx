@@ -1,9 +1,10 @@
 import { DropdownMenu } from '@mckesson/mcp-component-library';
 import React, { useState, useEffect } from 'react';
 import './index.scss';
-import { useTranslate  } from '../../../../translations/useTranslation'; 
-import { ReactComponent as VerticalIcon }  from '../../../../assets/image/Vertical.svg';
- 
+import { useTranslate } from '@src/translations/useTranslation';
+import { ReactComponent as VerticalIcon } from '@src/assets/image/Vertical.svg';
+import { debugIds, ID } from '@src/common/constants/id';
+
 export default function Actions({ status, row, onToggleChange }) {
   const { t } = useTranslate();
   const [isChecked, setIsChecked] = useState(status === 'ACTIVE');
@@ -12,7 +13,7 @@ export default function Actions({ status, row, onToggleChange }) {
     setIsChecked(status === 'ACTIVE');
   }, [status]);
 
-  const handleToggle = event => {
+  const handleToggle = (event) => {
     const checked = event.target.checked;
     setIsChecked(checked);
 
@@ -34,10 +35,10 @@ export default function Actions({ status, row, onToggleChange }) {
   };
 
   return (
-    <div className="actionsBox icon-align">
+    <div className="actionsBox icon-align " id={debugIds(ID.ACTION_ICON, ID.CONTAINER)}>
       <DropdownMenu
         anchorEl={<VerticalIcon />}
-        handleSelect={selectedItem => {
+        handleSelect={(selectedItem) => {
           if (selectedItem.value === 'Edit') {
             handleEdit();
           }
@@ -51,16 +52,16 @@ export default function Actions({ status, row, onToggleChange }) {
         options={[
           {
             label: t('userManagement.table.action.edit'),
-            value: 'Edit',
+            value: 'Edit'
           },
           {
             label: t('userManagement.table.action.delete'),
-            value: 'Delete',
+            value: 'Delete'
           },
           {
             label: t('userManagement.table.action.edit'),
-            value: 'Inactivate',
-          },
+            value: 'Inactivate'
+          }
         ]}
       />
       {/* <FaPen className="actionEditIcon" />

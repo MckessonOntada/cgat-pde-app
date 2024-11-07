@@ -33,16 +33,26 @@
 }
 
 .autoSuggestSearch-container {
+  width: 100%;
   @include respond(lg) {
     width: 460px;
   }
 }
 
 .LabelBox {
-  display: flex;
-  align-items: flex-end;
-  padding-bottom: var(--spacing-02);
-  gap: var(--spacing-04);
+  @include respond(md) {
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: var(--spacing-02);
+    gap: var(--spacing-04);
+  }
+}
+
+.filter-btn {
+  width: 100%;
+  @include respond(md) {
+    width: auto;
+  }
 }
 
 .txtbtn {

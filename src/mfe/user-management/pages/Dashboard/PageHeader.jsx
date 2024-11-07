@@ -1,30 +1,29 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslate } from '../../../../translations/useTranslation';
+import { useTranslate } from '@src/translations/useTranslation';
 import { Button } from '@mckesson/mcp-component-library';
-import { PATHS } from '../../routes/constants';
-import { ReactComponent as add_circle_bold } from '../../../../assets/image/add_circle_bold.svg';
-import { ReactComponent as upload_bottom } from '../../../../assets/image/upload_bottom.svg';
+import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
+import { ReactComponent as upload_bottom } from '@src/assets/image/upload_bottom.svg';
 import './index.scss';
 
-function PageHeader() {
+function PageHeader(props) {
   const { t } = useTranslate();
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(PATHS.createUser);
+    navigate(props.navigateTo);
   };
 
   return (
     <div className="flexBox spaceBetween py3">
-      <h1>{t('userManagement.header.label')}</h1>
+      <h1>{props.title}</h1>
       <div className="flexBox">
         <Button Icon={add_circle_bold} className="button-icon" onClick={handleClick} size={'md'}>
-          {t('userManagement.add.label')}
+          {props.buttonLabels.add}
         </Button>
         <Button Icon={upload_bottom} className="button-icon" size={'md'}>
           {' '}
-          {t('userManagement.upload.label')}
+          {props.buttonLabels.upload}
         </Button>
       </div>
     </div>
