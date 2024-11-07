@@ -1,7 +1,7 @@
 import React from 'react';
 import { Field } from "formik";
 import Components from "../../components/form/Components";
-import { useTranslate  } from '../../../../translations/useTranslation';
+import { useTranslate  } from '@src/translations/useTranslation';
 
 const UserDetailsFormSegment = () => {
     const { t } = useTranslate();
@@ -88,7 +88,7 @@ const UserDetailsFormSegment = () => {
                 />
                 <Field
                     name="state"
-                    label={t("userManagement.create_user.inputLabel.state")}
+                    fieldlabel={t("userManagement.create_user.inputLabel.state")}
                     placeholder=" "
                     component={Components["dropdown"]}
                     isRequired

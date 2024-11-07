@@ -1,6 +1,7 @@
 import React from 'react';
-import { InputField as BaseInputField, Label } from '@mckesson/mcp-component-library';
-import { useTranslate } from '../../../../translations/useTranslation';
+import { InputField as BaseInputField, Label, TextError  } from '@mckesson/mcp-component-library';
+import { useTranslate } from '@src/translations/useTranslation';
+import './Components.scss'
 
 export default function InputField(props) {
   const { field, form, children, className, label, ...rest } = props;
@@ -25,7 +26,7 @@ export default function InputField(props) {
         showError={!form.isValid}
         size="lg"
       />
-      {!form.errors[field.name] && form.touched[field.name] && (
+      {!form.errors[field.name] && (
         <TextError className="error-placeholder" />
       )}
     </div>

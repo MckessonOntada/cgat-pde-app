@@ -1,9 +1,9 @@
-.userContainer {
-  padding: var(--spacing-04);
+.container {
   display: grid;
-  gap: var(--spacing-04);
-}
-
+  padding: var(--spacing-03);
+  border: 1px solid var(--brand-color-patient-primary-3);
+  border-radius: var(--brand-border-radius--6);
+} 
 .buttonGroup {
   display: flex;
   width: 100%;
@@ -28,13 +28,15 @@
 }
 
 .line-height {
-  margin-bottom: var(--spacing-04);
+  margin-bottom: var(--spacing-02);
 }
 
-.requiredIcon{   
+.requiredIcon {
   color: var(--brand-color-warning-orange-4, #DB3A29);
-  margin-right:  var(--spacing-01); 
+  margin-right: var(--spacing-02);
+  margin-left: var(--spacing-01);
 }
+
 .back-navigation {
   text-decoration: none;
   color: var(--brand-color-primary);

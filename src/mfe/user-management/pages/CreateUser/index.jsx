@@ -4,7 +4,7 @@ import { Formik, Form } from 'formik';
 import './CreateUser.scss';
 import { Button } from '@mckesson/mcp-component-library';
 import { Card, Stepper } from '@mckesson/mcp-component-library';
-import { useTranslate  } from '../../../../translations/useTranslation';
+import { useTranslate  } from '@src/translations/useTranslation';
 import UserDetailsFormSegment from './CreateUserForm';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
@@ -32,8 +32,7 @@ const CreateUser = () => {
   };
 
   const validationSchema = Yup.object({
-    first_name: Yup.string().required(t('userManagement.create_user.validation.first_name_required')),
-    middle_name: Yup.string().required(t('userManagement.create_user.validation.middle_name_required')),
+    first_name: Yup.string().required(t('userManagement.create_user.validation.first_name_required')), 
     last_name: Yup.string().required(t('userManagement.create_user.validation.last_name_required')),
     address_1: Yup.string().required(t('userManagement.create_user.validation.address_1_required')),
     address_2: Yup.string(),
@@ -57,9 +56,9 @@ const CreateUser = () => {
   };
 
   return (
-    <div className="userContainer">
+    <div>
       <div
-        className="back-navigation"
+        className="back-navigation py3"
         onClick={goBack}
         style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
       >
@@ -76,9 +75,7 @@ const CreateUser = () => {
       >
         {() => (
           <Form>
-            <Card
-              bodyContent={
-                <div>
+             <div  className="container">
                   <div className="line-height">
                     <Stepper
                       activeIndex={1}
@@ -101,13 +98,11 @@ const CreateUser = () => {
                   </div>
                   <UserDetailsFormSegment />
                 </div>
-              }
-            />
             <div className={'buttonGroup'}>
-              <Button variant="secondary" type="button" onClick={handleGoBack}>
+              <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
                 {t('userManagement.button.back')}
               </Button>
-              <Button type="submit">{t('userManagement.button.next')}</Button>
+              <Button type="submit" size={'md'}>{t('userManagement.button.next')}</Button>
             </div>
           </Form>
         )}
