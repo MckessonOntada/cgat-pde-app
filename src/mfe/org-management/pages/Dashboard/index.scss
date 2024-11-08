@@ -1,9 +1,10 @@
-@import "../../../../ui-components/src/assets/scss/abstracts/mixins";
+@import "../../../../assets/styles/abstracts/mixins";
 
 .orgContainer {
-  padding: var(--spacing-04);
+  padding: var(--spacing-02);
   display: grid;
-  gap: var(--spacing-04);
+  gap: var(--spacing-01);
+  max-height: 100vh;
 }
 
 .container {
@@ -15,23 +16,10 @@
 .orgCardContainer {
   display: grid;
   gap: var(--spacing-04);
+  padding: var(--spacing-04);
+  border: 1px solid var(--brand-color-patient-primary-3);
+  border-radius: var(--brand-border-radius--6);
 }
-
-.filterBox {
-  display: grid;
-  gap: var(--spacing-04);
-  padding: 24px 20px 24px 20px;
-  @include respond(lg) {
-    padding: 24px 40px 24px 40px;
-  }
-}
-
-.LabelBox {
-  display: flex;
-  align-items: flex-end;
-  padding-bottom: var(--spacing-02);
-  gap: var(--spacing-04);
-} 
 
 .actionEditIcon {
   color: var(--brand-color-primary);
@@ -58,4 +46,77 @@
   &::-webkit-scrollbar {
     display: none; /* For Chrome, Safari, and Opera */
   }
+}
+
+// Filters scss:
+
+.filterBox {
+  display: grid;
+  padding: var(--spacing-04);
+  border: 1px solid var(--brand-color-patient-primary-3);
+  border-radius: var(--brand-border-radius--6);
+}
+
+.autoSuggestSearch-container {
+  width: 100%;
+  @include respond(lg) {
+    width: 460px;
+  }
+}
+
+.LabelBox {
+  @include respond(md) {
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: var(--spacing-02);
+    gap: var(--spacing-04);
+  }
+}
+
+.filter-btn {
+  width: 100%;
+  @include respond(md) {
+    width: auto;
+  }
+}
+
+.txtbtn {
+  padding: var(--spacing-01);
+}
+
+.toggle-box {
+  display: flex;
+  align-items: center;
+}
+
+.icon-align {
+  margin-right: var(--spacing-04);
+}
+
+.expanded-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-04, 32px);
+  margin-top: var(--spacing-04, 32px);
+}
+
+// PageHeader SCSS:
+.flexBox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-04);
+  flex-wrap: wrap;
+}
+.flexBox.spaceBetween {
+  justify-content: space-between;
+}
+
+.py3 {
+  padding-top: var(--spacing-03);
+  padding-bottom: var(--spacing-03);
+}
+.button-icon svg {
+  width: 16px;
+  height: 16px;
+  margin-right: 2px;
 }

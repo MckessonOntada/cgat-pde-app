@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useOrg } from '../../context/PageContext';
-import { AutoSuggestSearch, Button, Divider, SearchableDropdown } from '@mckesson/mcp-component-library';
+import {
+  AutoSuggestSearch,
+  Button,
+  Divider,
+  SearchableDropdown
+} from '@mckesson/mcp-component-library';
 import { LOCATIONS, STATUS } from '../../mockData/orgData';
-import { Card } from '@mckesson/mcp-component-library';
-// import "./index.scss";
-import { useTranslation } from 'react-i18next';
+import { useTranslate } from '@src/translations/useTranslation';
+import arrow_right from '@src/assets/image/arrow_right.svg';
+import arrow_down from '@src/assets/image/arrow_down.svg';
+import ToggleUI from '../../../../components/toggleui';
+import { debugIds, ID } from '@src/common/constants/id';
 
-const Filters = () => {
-  const { t } = useTranslation();
-  const [expandedCard, setExpandedCard] = useState(null);
+const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) => {
+  const { t } = useTranslate();
+  const [expandedCard, setExpandedCard] = useState(false);
+  const [isClearFiltersVisible, setIsClearFiltersVisible] = useState(false);
 
-  const handleExpandCard = cardId => {
-    setExpandedCard(prevExpandedCard => (prevExpandedCard === cardId ? null : cardId));
+  const handleExpandCard = () => {
+    setExpandedCard((prevExpandedCard) => !prevExpandedCard);
   };
 
   const {
@@ -20,16 +28,33 @@ const Filters = () => {
       location,
       update: { setLocation, setStatus, setSearchQuery },
       status,
-      clearFilters,
-    },
+      clearFilters
+    }
   } = useOrg();
 
-  const handleSearch = inputValue => {
+  const handleSearch = (inputValue) => {
     setSearchQuery(inputValue);
   };
 
+  useEffect(() => {
+    setIsClearFiltersVisible(
+      (searchQuery && searchQuery.length > 0) ||
+        (location && location.length > 0) ||
+        (status && status.length > 0)
+    );
+  }, [searchQuery, location, status]);
+
+  const handleFilter = () => {
+    alert(
+      `Search Query: ${searchQuery}\nFiltered Location: ${JSON.stringify(
+        location
+      )}\nFiltered Status: ${JSON.stringify(status)}`
+    );
+    // Add filter application logic here
+  };
+
   const onSearchableDropdownChange = (type, value) => {
-    const filteredValue = value.filter(item => item.isChecked);
+    const filteredValue = value.filter((item) => item.isChecked);
     if (type === 'location') {
       setLocation(filteredValue);
     }
@@ -38,61 +63,88 @@ const Filters = () => {
     }
   };
 
-  const handleClear = () => {
+  const handleClearFilters = () => {
     clearFilters();
   };
-
+  console.log('locations:', LOCATIONS);
   return (
-    <Card
-      header={
-        <AutoSuggestSearch
-          label=" "
-          value={searchQuery}
-          onChangeInput={handleSearch}
-          outline={true}
-          placeHolder={t('select_name_location')}
-        />
-      }
-      type="accordion"
-      currentExpandedCard={expandedCard}
-      onExpandCard={handleExpandCard}
-      bodyContent={
-        <div className="filterBox">
-          <Divider />
-          <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-            <SearchableDropdown
-              id="location"
-              isSuccess
-              value={location}
-              label={t('location')}
-              name={t('location')}
-              isRequired={false}
-              onChange={value => onSearchableDropdownChange('location', value)}
-              options={LOCATIONS}
-              clearAllSelectedValues={() => setLocation([])}
-            />
-
-            <SearchableDropdown
-              id="status"
-              isSuccess
-              value={status}
-              label={t('status')}
-              name={t('status')}
-              isRequired={false}
-              onChange={value => onSearchableDropdownChange('status', value)}
-              options={STATUS}
-              clearAllSelectedValues={() => setStatus([])}
-            />
-
-            <div className="LabelBox">
-              <Button type="button" textButton className="clearfilterbtn" onClick={handleClear}>
-                {t('clear_filters')}
-              </Button>
+    <div className="filterBox line-height" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
+      {(showLocationDropdown || showStatusDropdown) && (
+        <>
+          <div className="toggle-box">
+            <div onClick={handleExpandCard}>
+              <img
+                src={expandedCard ? arrow_down : arrow_right}
+                className="icon-align"
+                alt="toggle-icon"
+              />
+            </div>
+            <div className="autoSuggestSearch-container">
+              <AutoSuggestSearch
+                label=" "
+                value={searchQuery}
+                onChangeInput={handleSearch}
+                outline={true}
+                placeHolder={t('userManagement.searchFilter.label')}
+              />
             </div>
           </div>
-        </div>
-      }
-    />
+
+          <ToggleUI in={expandedCard} timeout={400}>
+            <div className="expanded-content">
+              <Divider color={'#BAC5CC'} />
+              <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
+                {showLocationDropdown && (
+                  <SearchableDropdown
+                    id="location"
+                    isSuccess
+                    value={location}
+                    label={t('location')}
+                    name={t('location')}
+                    isRequired={false}
+                    onChange={(value) => onSearchableDropdownChange('location', value)}
+                    options={LOCATIONS}
+                    clearAllSelectedValues={() => setLocation([])}
+                  />
+                )}
+
+                {showStatusDropdown && (
+                  <SearchableDropdown
+                    id="status"
+                    isSuccess
+                    value={status}
+                    label={t('userManagement.table.status')}
+                    name={t('userManagement.table.status')}
+                    isRequired={false}
+                    onChange={(value) => onSearchableDropdownChange('status', value)}
+                    options={STATUS}
+                    clearAllSelectedValues={() => setStatus([])}
+                  />
+                )}
+
+                <div className="LabelBox">
+                  <Button
+                    type="button"
+                    label={t('filter')}
+                    className="filter-btn"
+                    onClick={handleFilter}
+                  />
+                  {isClearFiltersVisible && (
+                    <Button
+                      type="button"
+                      label={t('userManagement.clearFilter.label')}
+                      textButton
+                      className="txtbtn"
+                      onClick={handleClearFilters}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+          </ToggleUI>
+        </>
+      )}
+    </div>
   );
 };
 

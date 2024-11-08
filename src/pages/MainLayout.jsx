@@ -8,7 +8,6 @@ import ErrorComponent from '../components/app/error/ErrorComponent';
 import { debugIds, ID } from '../common/constants/id';
 
 import styles from '../../src/assets/styles/MainLayout.module.scss';
-import AccessDeniedPage from './accessDenied/accessDenied';
 import AuthUtils from '../common/util/AuthUtils';
 import AppRoutes from '../routes/AppRoutes';
 import Header from '../components/header';
