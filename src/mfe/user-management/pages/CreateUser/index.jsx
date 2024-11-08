@@ -4,10 +4,11 @@ import { Formik, Form } from 'formik';
 import './CreateUser.scss';
 import { Button } from '@mckesson/mcp-component-library';
 import { Card, Stepper } from '@mckesson/mcp-component-library';
-import { useTranslate  } from '@src/translations/useTranslation';
+import { useTranslate } from '@src/translations/useTranslation';
 import UserDetailsFormSegment from './CreateUserForm';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
+import PageHeader from '../Dashboard/PageHeader'
 
 const CreateUser = () => {
   const { t } = useTranslate();
@@ -32,7 +33,8 @@ const CreateUser = () => {
   };
 
   const validationSchema = Yup.object({
-    first_name: Yup.string().required(t('userManagement.create_user.validation.first_name_required')), 
+    first_name: Yup.string().required(t('userManagement.create_user.validation.first_name_required')),
+    middle_name: Yup.string(),
     last_name: Yup.string().required(t('userManagement.create_user.validation.last_name_required')),
     address_1: Yup.string().required(t('userManagement.create_user.validation.address_1_required')),
     address_2: Yup.string(),
@@ -58,13 +60,15 @@ const CreateUser = () => {
   return (
     <div>
       <div
-        className="back-navigation py3"
+        className="back-navigation py2 capitalize"
         onClick={goBack}
-        style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
       >
-        <MdOutlineKeyboardArrowLeft size="24px" style={{ alignSelf: 'center' }} />
-        <p>Back to Previous Page</p>
+        <MdOutlineKeyboardArrowLeft size="24px" />
+        <p>Back to Manage Users</p>
       </div>
+      <PageHeader
+        title={t('userManagement.create_user')}
+      />
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -72,40 +76,43 @@ const CreateUser = () => {
           handleSubmit(values);
           actions.setSubmitting(false);
         }}
+        validateOnChange={false}
+        validateOnBlur={true}
       >
-        {() => (
-          <Form>
-             <div  className="container">
-                  <div className="line-height">
-                    <Stepper
-                      activeIndex={1}
-                      dividerText="of"
-                      stepHeaders={[
-                        {
-                          label: 'User Details',
-                        },
-                        {
-                          label: 'Roles and Permissions',
-                        },
-                        {
-                          label: 'Associate Accounts',
-                        },
-                      ]}
-                    />
-                  </div>
-                  <div className="headingBox">
-                    <p className="font-bold-title-m"> {t('userManagement.create_user.details_to_create_user')}</p>
-                  </div>
-                  <UserDetailsFormSegment />
+      {() => (
+            <Form>
+              <div className="stepper
+              ">
+                <Stepper
+                  activeIndex={1}
+                  dividerText="of"
+                  stepHeaders={[
+                    {
+                      label: 'User Details',
+                    },
+                    {
+                      label: 'Roles and Permissions',
+                    },
+                    {
+                      label: 'Associate Accounts',
+                    },
+                  ]}
+                />
+              </div>
+              <div className="container">
+                <div className="headingBox">
+                  <p className="font-bold-title-s"> {t('userManagement.create_user.details_to_create_user')}</p>
                 </div>
-            <div className={'buttonGroup'}>
-              <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
-                {t('userManagement.button.back')}
-              </Button>
-              <Button type="submit" size={'md'}>{t('userManagement.button.next')}</Button>
-            </div>
-          </Form>
-        )}
+                <UserDetailsFormSegment />
+              </div>
+              <div className={'buttonGroup'}>
+                <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
+                  {t('userManagement.button.back')}
+                </Button>
+                <Button type="submit" size={'md'}>{t('userManagement.button.next')}</Button>
+              </div>
+            </Form>)
+        } 
       </Formik>
     </div>
   );

@@ -24,7 +24,7 @@ export default function Dropdown(props) {
         }}
         size="lg" 
       />
-      {form.errors[field.name] ? (
+      {form.errors[field.name] && form.touched[field.name] ? (
         <TextError errorMessage={form.errors[field.name]} />
       ) : (
         <div className="error-placeholder"></div>

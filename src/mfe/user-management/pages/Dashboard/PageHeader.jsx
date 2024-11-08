@@ -17,14 +17,17 @@ function PageHeader(props) {
   return (
     <div className="flexBox spaceBetween py3">
       <h1>{props.title}</h1>
-      <div className="flexBox">
-        <Button Icon={add_circle_bold} className="button-icon" onClick={handleClick} size={'md'}>
-          {props.buttonLabels.add}
-        </Button>
-        <Button Icon={upload_bottom} className="button-icon" size={'md'}>
-          {' '}
-          {props.buttonLabels.upload}
-        </Button>
+      <div className="flexBox"> 
+        {props.buttonLabels?.add && (
+          <Button Icon={add_circle_bold} className="button-icon" onClick={handleClick} size={'md'}>
+            {props.buttonLabels.add}
+          </Button>
+        )}
+        {props.buttonLabels?.upload && (
+          <Button Icon={upload_bottom} className="button-icon" size={'md'}>
+            {props.buttonLabels.upload}
+          </Button>
+        )}
       </div>
     </div>
   );

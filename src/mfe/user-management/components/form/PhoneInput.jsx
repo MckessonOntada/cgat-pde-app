@@ -7,7 +7,7 @@ export default function PhoneInput(props) {
   const { field, form ,label } = props;
   const { t } = useTranslate();
   return (
-    <div  className='grid'>
+    <div className='grid'>
       <Label htmlFor="phone_no" className="label-heading">
         {label}
         <Required id="Required">
@@ -23,12 +23,15 @@ export default function PhoneInput(props) {
         value={field.value}
         dataTestId="mobile-input"
         useUnmaskedValue={false} 
+        className={`phoneInput ${form.errors[field.name] && form.touched[field.name] ? 'outline-error' : ''}`} 
       />
-      {form.errors[field.name] ?  (
-        <TextError errorMessage={form.errors[field.name]} id={field.name} />
-      )  : (
-        <div className="error-placeholder"></div>
-      )}
+      {form.errors[field.name] && form.touched[field.name]  &&   (
+        <TextError errorMessage={form.errors[field.name]} id={field.name}/>
+      )   
+      }
+     {(form.errors[field.name] && !form.touched[field.name]) || !form.errors[field.name] ? (
+  <TextError className="error-placeholder" />
+) : null}
     </div>
   );
 }
