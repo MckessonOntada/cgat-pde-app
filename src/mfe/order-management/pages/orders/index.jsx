@@ -9,7 +9,7 @@ import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle.sv
 import { Link, useNavigate } from 'react-router-dom';
 import { routesConfig } from './../../routes/constants';
 import FilterPanel from './FilterPanel';
-import { patientData } from './__mock__';
+import { pendingData, submittedData } from './__mock__';
 
 function getColorByStatus(status) {
     switch (status) {
@@ -42,6 +42,7 @@ function getLinkByStatus({status, id}) {
 
 function OrderIndex() {
     const [activeTab, setActiveTab] = useState("SUBMITTED");
+    const [data, setData] = React.useState([]);
     const { t } = useTranslate();
     const tableTitle = 'Order Listing';
     const navigate = useNavigate();
@@ -127,9 +128,17 @@ function OrderIndex() {
         navigate(routesConfig.createNew);
     }
 
-    const handleOnTabChange = () => {
+    const handleOnTabChange = (tab) => {
         setActiveTab(tab.configName);
     }
+
+    React.useEffect(() => {
+        if(activeTab === "SUBMITTED"){
+            setData(submittedData);
+        }else{
+            setData(pendingData);
+        }
+    }, [activeTab])
 
     return (
         <div className={styles.moduleWrapper}>
@@ -154,7 +163,7 @@ function OrderIndex() {
                 <OrderDataTable
                     title={tableTitle}
                     columns={columns}
-                    data={patientData}
+                    data={data}
                 />
             </Panel>
         </div>
