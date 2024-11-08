@@ -2,10 +2,9 @@ import React from 'react';
 import OrgList from './OrgList';
 import Filters from './Filters';
 import { OrganizationProvider } from '../../context/PageContext';
-import { Button, Card } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { useTranslation } from 'react-i18next';
-import PageHeader from './pageHeader';
+import PageHeader from './PageHeader';
 import { PATHS } from '../../routes/constants';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
 
