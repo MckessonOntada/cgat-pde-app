@@ -14,17 +14,30 @@ const OrderDataTable = ({ title, type = 'normal', columns, data, pagination = tr
             setPageConfig({
                 total: data.length,
                 pageSize: 8,
-                pages: Math.ceil(data.length),
+                pages: Math.ceil(data.length / pageConfig.pageSize),
                 currentPage: 1,
             })
         }
-    }, []);
+    }, [data]);
+
     const handleOnPageSizeChange = (value) => {
         setPageConfig({
             ...pageConfig,
             pageSize: value
         })
     }
+    const handleOnPageChange = (_event, pageIndex) => {
+        setPageConfig({
+            ...pageConfig,
+            currentPage: pageIndex
+        })
+    }
+
+    const { currentPage, pageSize} = pageConfig;
+    const batchEnd = currentPage * pageSize;
+    const batchStart = batchEnd - pageSize;
+    const batch = data.slice(batchStart, batchEnd);
+    
     return (
         <div
             className={styles.dataTableWrapper}
@@ -38,9 +51,9 @@ const OrderDataTable = ({ title, type = 'normal', columns, data, pagination = tr
             <CustomDataTable
                 type={type}
                 columns={columns}
-                data={data}
+                data={batch}
                 // onSortIconClick={handleSortClick}
-                // handleChangePage={(e, newPage) => onPageChange(newPage)}
+                handleChangePage={handleOnPageChange}
                 // selectableRows={selectableRows}
                 pagination={pagination}
                 currentPage={pageConfig.currentPage}

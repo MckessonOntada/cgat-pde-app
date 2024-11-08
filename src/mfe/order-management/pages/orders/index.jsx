@@ -41,7 +41,7 @@ function getLinkByStatus({status, id}) {
 
 
 function OrderIndex() {
-    const [activeTab, setActiveTab] = useState("SUBMITTED");
+    const [activeTab, setActiveTab] = useState("PENDING SUBMISSION");
     const [data, setData] = React.useState([]);
     const { t } = useTranslate();
     const tableTitle = 'Order Listing';
