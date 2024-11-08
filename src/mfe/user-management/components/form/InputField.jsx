@@ -1,5 +1,5 @@
 import React from 'react';
-import { InputField as BaseInputField, Label, TextError  } from '@mckesson/mcp-component-library';
+import { InputField as BaseInputField, Label, TextError, Required } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import './Components.scss'
 
@@ -7,10 +7,12 @@ export default function InputField(props) {
   const { field, form, children, className, label, ...rest } = props;
   const { t } = useTranslate();
   return (
-    <div style={{ display: 'grid' }}>
+    <div className='grid'>
       <Label htmlFor={field.name} className="label-heading">
         {label}
-        {props.isRequired ? <span className="requiredIcon">✱</span> : null}
+        {props.isRequired && <Required id="Required">
+          Required
+        </Required>}
       </Label>
       <BaseInputField
         {...rest}

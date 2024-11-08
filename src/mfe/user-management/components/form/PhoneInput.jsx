@@ -1,5 +1,5 @@
 import React from 'react';
-import { MaskedInput, TextError, Label } from '@mckesson/mcp-component-library';
+import { MaskedInput, TextError, Label, Required } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import './Components.scss'
 
@@ -7,10 +7,12 @@ export default function PhoneInput(props) {
   const { field, form ,label } = props;
   const { t } = useTranslate();
   return (
-    <div style={{ display: 'grid'}}>
+    <div  className='grid'>
       <Label htmlFor="phone_no" className="label-heading">
         {label}
-        <span className="requiredIcon">✱</span>
+        <Required id="Required">
+          Required
+        </Required>
       </Label>
       <MaskedInput
         {...props}

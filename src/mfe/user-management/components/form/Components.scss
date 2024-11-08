@@ -1,20 +1,11 @@
-
 .label-heading {
-    margin-bottom: var(--spacing-01);
-    margin-right: var(--spacing-02);
-    font-size: var(--brand-font-size--small);
-    line-height: var(--brand-line-height--large);
-    letter-spacing: normal;
-  }
-  
-  .error-placeholder {
-    height: var(--spacing-03);
-    visibility: hidden;
-  }
+  margin-bottom: var(--spacing-01); 
+  font-size: var(--brand-font-size--small);
+  line-height: var(--brand-line-height--large);
+  letter-spacing: normal;
+}
 
-  .requiredIcon {
-    color: var(--brand-color-warning-orange-4, #DB3A29);
-    margin-right: var(--spacing-02);
-    margin-left: var(--spacing-01);
-  }
-  
+.error-placeholder {
+  height: var(--spacing-03);
+  visibility: hidden;
+}

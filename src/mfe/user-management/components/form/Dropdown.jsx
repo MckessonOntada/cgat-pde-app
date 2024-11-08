@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dropdown as BaseDropdown, Label, TextError } from '@mckesson/mcp-component-library';
+import { Dropdown as BaseDropdown, Label, TextError, Required } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import './Components.scss'
 
@@ -8,17 +8,17 @@ export default function Dropdown(props) {
   const { field, form, fieldlabel } = props;
   const error = form.errors[field.name] && form.touched[field.name];
   return (
-    <div style={{ display: 'grid'}}>
+    <div className='grid'>
       <Label htmlFor={field.name} className="label-heading">
         {fieldlabel}
-        {props.isRequired ?
-          <span className="requiredIcon">✱</span> : null}
+        {props.isRequired && <Required id="Required">
+          Required
+        </Required>}
       </Label>
       <BaseDropdown
         {...props}
         value={field.value}
-        error={!!error}
-        //errorMessage={error ? form.errors[field.name] : ''}
+        error={!!error} 
         onChange={value => {
           form.setFieldValue(field.name, value);
         }}
