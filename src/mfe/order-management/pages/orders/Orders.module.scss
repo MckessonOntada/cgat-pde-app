@@ -29,11 +29,18 @@
                 }
             }
         }
-        .filterOptions{
+        .filterOptionsWrapper{
             margin-top: var(--spacing-04, 24px);
             display: flex;
             gap: var(--spacing-04, 24px);
             flex-direction: column;
+
+            .filterOptions{
+                display: flex;
+                flex-direction: row;
+                gap: var(--spacing-04, 24px);
+                align-items: center;
+            }
 
             hr{
                 border-bottom-color: var(--brand-color-grey-scale-cool-1, #BAC5CC);

@@ -1,10 +1,11 @@
 import React from 'react';
 import styles from './Orders.module.scss';
 import ToggleUI from '@src/components/toggleui';
-import { AutoSuggestSearch, IconButton, Divider, SearchableDropdown } from '@mckesson/mcp-component-library';
+import { AutoSuggestSearch, Button, Divider, SearchableDropdown } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as ArrowRight } from '@src/assets/image/arrow_right.svg';
 import { ReactComponent as ArrowDown } from '@src/assets/image/arrow_down.svg';
+import { useOrders } from '../../context';
 
 const ROLES = [
     { label: "Admin", value: "Admin" },
@@ -19,27 +20,23 @@ const STATUS = [
 
 const FilterPanel = ({ onApplyFilters }) => {
     const [isExpanded, setIsExpanded] = React.useState(false);
-    const [filters, setFilters] = React.useState({
-        query: '',
-        roles: [],
-        status: []
-    })
+    const { filterState, applyFilters, clearFilters } = useOrders();
     const { t } = useTranslate();
     const handleOnExpandClick = () => {
         setIsExpanded(!isExpanded);
     }
-    const handleOnRoleChange = (value) => {
-        setFilters({
-            ...filters,
-            roles: value.filter(item => item.isChecked)
-        })
-    }
+    
     const handleOnStatusChange = (value) => {
-        setFilters({
-            ...filters,
+        applyFilters({
             status: value.filter(item => item.isChecked)
         })
     }
+
+    const handleOnQueryChange = (value) => {
+        applyFilters({searcgQuery: value});
+    }
+
+
     return (
         <div className={styles.filterPanel}>
             <div className={styles.filterHeader}>
@@ -56,19 +53,19 @@ const FilterPanel = ({ onApplyFilters }) => {
                 </button>
                 <div className={styles.filterAutoSuggest}>
                     <AutoSuggestSearch
-                        label=" "
-                        value={'searchQuery'}
-                        onChangeInput={() => { }}
+                        label=""
+                        value={filterState.searchQuery}
+                        onChangeInput={handleOnQueryChange}
                         outline={true}
                         placeHolder={t('orderManagement.controls.autosearch.label')}
                     />
                 </div>
             </div>
             <ToggleUI in={isExpanded}>
-                <div className={styles.filterOptions}>
+                <div className={styles.filterOptionsWrapper}>
                     <Divider color={'#BAC5CC'} />
-                    <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
-                        <SearchableDropdown
+                    <div className={styles.filterOptions}>
+                        {/* <SearchableDropdown
                             id="role"
                             isSuccess
                             value={filters.roles}
@@ -78,18 +75,26 @@ const FilterPanel = ({ onApplyFilters }) => {
                             onChange={handleOnRoleChange}
                             options={ROLES}
                             clearAllSelectedValues={() => { }}
-                        />
+                        /> */}
 
                         <SearchableDropdown
                             id="status"
                             isSuccess
-                            value={filters.status}
-                            label={t('userManagement.table.status')}
-                            name={t('userManagement.table.status')}
+                            value={filterState.status}
+                            label={t('orderManagement.captions.status')}
+                            name={'status'}
                             isRequired={false}
-                            onChange={handleOnRoleChange}
+                            onChange={handleOnStatusChange}
                             options={STATUS}
                             clearAllSelectedValues={() => { }}
+                        />
+
+                        <Button
+                            type="button"
+                            label={t('orderManagement.captions.clearFilters')}
+                            textButton
+                            className="txtbtn"
+                            onClick={clearFilters}
                         />
                     </div>
                 </div>

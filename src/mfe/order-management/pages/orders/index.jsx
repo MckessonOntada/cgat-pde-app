@@ -10,42 +10,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { routesConfig } from './../../routes/constants';
 import FilterPanel from './FilterPanel';
 import { pendingData, submittedData } from './__mock__';
-
-function getColorByStatus(status) {
-    switch (status) {
-        case 'In Draft':
-            return 'info'; 
-        case 'Approval Pending':
-            return 'info';
-        case 'Submitted':
-            return 'success'; 
-        case 'Cancelled':
-            return 'error'; 
-        default:
-            return 'info'; 
-    }
-}
-
-function getLinkByStatus({status, id}) {
-    switch (status) {
-        case 'In Draft':
-            return <Link to={`create-order/${id}`}>Resume Order</Link>;
-        case 'Approval Pending':
-            return <Link to={`review-order/${id}`}>Review Order</Link>;
-        case 'Submitted':
-            return <Link to={`summary/${id}`}>View Details</Link>;
-        default:
-            return <Link to="#">No Action</Link>;
-    }
-}
-
+import { useOrders } from '../../context';
 
 function OrderIndex() {
     const [activeTab, setActiveTab] = useState("PENDING SUBMISSION");
-    const [data, setData] = React.useState([]);
     const { t } = useTranslate();
     const tableTitle = 'Order Listing';
     const navigate = useNavigate();
+    const {setOrdersData} = useOrders();
 
     const tabs = [
         {
@@ -66,64 +38,6 @@ function OrderIndex() {
         },
     ];
 
-    const columns = [
-        {
-            id: 'patient',
-            name: 'Patient',
-            selector: () => { },
-            sortable: true,
-            cell: props => (
-                <span className={styles.cellWrapper}>{props.patient}</span>
-            ),
-        },
-        {
-            id: 'therapy',
-            name: 'Therapy',
-            selector: () => { },
-            sortable: false,
-            cell: props => <span className={styles.cellWrapper}> {props.therapy}</span>,
-        },
-        {
-            id: 'author',
-            name: 'Author',
-            selector: () => { },
-            sortable: false,
-            cell: props => <span className={styles.cellWrapper}> {props.author}</span>,
-        },
-        {
-            id: 'createdOn',
-            name: 'Created On',
-            selector: () => { },
-            sortable: false,
-            cell: props => <span className={styles.cellWrapper}> {props.createdOn}</span>,
-        },
-        {
-            id: 'status',
-            name: 'Status',
-            selector: () => { },
-            sortable: false,
-            cell: props => <span className={styles.cellWrapper}> <Badge text={props.status} type={getColorByStatus(props.status)} /></span>,
-        },
-        {
-            id: 'price',
-            name: 'Price',
-            selector: () => { },
-            sortable: false,
-            cell: props => <span className={styles.cellWrapper}> {props.price}</span>,
-        },
-        {
-            id: 'actions',
-            name: 'Actions',
-            selector: () => { },
-            sortable: false,
-            cell: props => (
-                <span className={styles.cellWrapper}>
-                    <Link>{getLinkByStatus(props)}</Link>
-                </span>
-            ),
-        }
-    ]
-
     const handleOnClick = () => {
         navigate(routesConfig.createNew);
     }
@@ -134,9 +48,9 @@ function OrderIndex() {
 
     React.useEffect(() => {
         if(activeTab === "SUBMITTED"){
-            setData(submittedData);
+            setOrdersData(submittedData);
         }else{
-            setData(pendingData);
+            setOrdersData(pendingData);
         }
     }, [activeTab])
 
@@ -162,8 +76,6 @@ function OrderIndex() {
                 </Panel>
                 <OrderDataTable
                     title={tableTitle}
-                    columns={columns}
-                    data={data}
                 />
             </Panel>
         </div>
