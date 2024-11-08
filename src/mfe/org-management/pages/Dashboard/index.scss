@@ -27,7 +27,12 @@
 .actionsBox {
   display: flex;
   align-items: center;
-  gap: var(--spacing-03);
+  gap: var(--spacing-02);
+}
+.view-label {
+  font-size: 14px;
+  color: var(--brand-color-primary);
+  font-weight: 800;
 }
 .addOrgBtn {
   justify-self: start;

@@ -1,7 +1,8 @@
 import { IconButton, Switch } from '@mckesson/mcp-component-library';
 import React, { useState, useEffect } from 'react';
-import { FaPen } from 'react-icons/fa';
-// import "./index.scss";
+import { Label } from '@mckesson/mcp-component-library';
+import view from '@src/assets/image/view.svg';
+import './index.scss';
 
 export default function Actions({ status, row, onToggleChange, onEditClick }) {
   const [isChecked, setIsChecked] = useState(status === 'ACTIVE');
@@ -10,7 +11,7 @@ export default function Actions({ status, row, onToggleChange, onEditClick }) {
     setIsChecked(status === 'ACTIVE');
   }, [status]);
 
-  const handleToggle = event => {
+  const handleToggle = (event) => {
     const checked = event.target.checked;
     setIsChecked(checked);
 
@@ -23,10 +24,8 @@ export default function Actions({ status, row, onToggleChange, onEditClick }) {
 
   return (
     <div className="actionsBox">
-      {/* <IconButton onClick={onEditClick}> */}
-      <FaPen className="actionEditIcon" />
-      {/* </IconButton> */}
-      <Switch checked={isChecked} size="md" onChange={handleToggle} />
+      <img src={view} />
+      <Label className="view-label">VIEW</Label>
     </div>
   );
 }

@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CustomDataTable } from '@mckesson/mcp-component-library';
 import { useOrg } from '../../context/PageContext';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import Actions from './Actions';
-import { Badge, CheckBox } from '@mckesson/mcp-component-library';
+import { Badge } from '@mckesson/mcp-component-library';
 
 const OrgList = () => {
   const { t } = useTranslation();
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const onEditClick = () => {
     // TODO: On edit
@@ -21,16 +22,22 @@ const OrgList = () => {
       width: '25%'
     },
     {
+      id: 'orgId',
+      name: t('organization_id'),
+      selector: (row) => row.orgId,
+      width: '15%'
+    },
+    {
       id: 'location',
       name: t('location'),
       selector: (row) => row.location,
       width: '15%'
     },
     {
-      id: 'orgId',
-      name: t('organization_id'),
-      selector: (row) => row.orgId,
-      width: '15%'
+      id: 'date',
+      name: t('date_added_update'),
+      selector: (row) => row.date,
+      format: (row) => new Date(row.date).toLocaleDateString()
     },
     {
       id: 'status',
@@ -42,12 +49,6 @@ const OrgList = () => {
         />
       ),
       width: '15%'
-    },
-    {
-      id: 'date',
-      name: t('date_added_update'),
-      selector: (row) => row.date,
-      format: (row) => new Date(row.date).toLocaleDateString()
     },
     {
       id: 'action',
@@ -79,6 +80,10 @@ const OrgList = () => {
     console.log('Sorted rows:', sortedRows);
   };
 
+  const handleRowSelected = ({ selectedRows }) => {
+    setSelectedRows(selectedRows.map((row) => row.id));
+  };
+
   return (
     <CustomDataTable
       id="my-data-table"
@@ -96,8 +101,8 @@ const OrgList = () => {
       paginationRecordsPerPageMessage={`Records per page: ${recordsPerPage}`}
       isAdmin={true}
       selectableRows
-      handleRowSelected
-      selectedRowId
+      handleRowSelected={handleRowSelected}
+      selectedRowId={selectedRows[0]}
     />
   );
 };
