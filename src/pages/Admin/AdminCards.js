@@ -7,6 +7,14 @@ import { ReactComponent as LinkIcon } from "../../assets/svg/link-circle.svg";
 
 const CARDS_DATA = [
   {
+    name: "ManageOrg",
+    label: "manage org",
+    icon: UserIcon, 
+    details: "ORG management",
+    path: AppRoutes.pathOrgManagement,
+    permission: [] 
+  },
+  {
     name: "ManageOrderConfiguration",
     label: "manage_order_configuration",
     icon: OrderIcon, 
