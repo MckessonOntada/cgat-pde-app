@@ -1,0 +1,53 @@
+@import "../../../../assets/styles/abstracts/mixins";
+
+.moduleWrapper{
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-04, 24px);
+
+    .moduleControls{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+
+        .moduleTitle{
+            font-size: var(--brand-font-size--large, 1.8rem);
+        }
+    }
+
+    .filterPanel{
+        .filterHeader{
+            display:flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: var(--spacing-04, 24px);
+
+            .filterAutoSuggest{
+                @include respond(lg){
+                    min-width: 480px;
+                }
+            }
+        }
+        .filterOptions{
+            margin-top: var(--spacing-04, 24px);
+            display: flex;
+            gap: var(--spacing-04, 24px);
+            flex-direction: column;
+
+            hr{
+                border-bottom-color: var(--brand-color-grey-scale-cool-1, #BAC5CC);
+            }
+        }
+    }
+
+    .dataTableWrapper{
+        .title{
+            font-size: var(--brand-font-size--default, 24px);
+        }
+        .cellWrapper{
+            white-space: nowrap;
+            // Badge-module
+        }
+    }
+}

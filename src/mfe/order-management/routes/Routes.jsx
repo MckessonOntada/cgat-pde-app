@@ -1,0 +1,18 @@
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+import { routesConfig } from './constants';
+import OrderIndex from './../pages/orders';
+import OrderCreate from './../pages/create';
+
+function UserManagementRoutes() {
+  return (
+    <Routes>
+      <Route path={routesConfig.index} element={<OrderIndex />} />
+      <Route path={routesConfig.createNew} element={<OrderCreate />} />
+      <Route path={routesConfig.viewDetails} element={<div>summary</div>} />
+      <Route path={routesConfig.reviewOrder} element={<div></div>} />
+    </Routes>
+  );
+}
+
+export default UserManagementRoutes;
