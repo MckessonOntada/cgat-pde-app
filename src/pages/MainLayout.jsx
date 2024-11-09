@@ -14,12 +14,13 @@ import AppRoutes from '../routes/AppRoutes';
 import Header from '../components/header';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'))
+const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
 
 function MainLayout() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const userHasRoutePermission = AuthUtils.userHasRoutePermission(pathname);
-
+  console.log(UsersEntryPoint);
   return (
     <div id={debugIds(ID.MAIN)}>
       <Header />
@@ -33,6 +34,8 @@ function MainLayout() {
                     <Route key={idx} path={route.path} element={<route.element />} />
                   ) : null;
                 })}
+                <Route path={'orders/*'} element={<OrderManagementEntryPoint />} />
+
                 <Route path={AppRoutes.pathUserManagement} element={<Outlet />}>
                   <Route path={"/user"} element={<UsersEntryPoint />} />
                   <Route path={"/user/*"} element={<UsersEntryPoint />} />
