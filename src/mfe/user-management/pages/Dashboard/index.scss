@@ -32,6 +32,11 @@
   padding-bottom: var(--spacing-03);
 }
 
+.py2 {
+  padding-top: var(--spacing-02);
+  padding-bottom: var(--spacing-02);
+}
+
 .autoSuggestSearch-container {
   width: 100%;
   @include respond(lg) {

@@ -1,7 +1,8 @@
 import React from 'react';
 import { Field } from "formik";
 import Components from "../../components/form/Components";
-import { useTranslate  } from '../../../../translations/useTranslation';
+import { Required } from '@mckesson/mcp-component-library';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const UserDetailsFormSegment = () => {
     const { t } = useTranslate();
@@ -29,11 +30,12 @@ const UserDetailsFormSegment = () => {
         <div className='form-container'>
             <div className="headingBox">
                 <p className="form-segment-title">{t("userManagement.create_user.personal_details")}</p>
-                <p className="form-instruction"> <span className="requiredIcon">✱</span>{t("userManagement.create_user.required")}</p>
+                <p className="form-instruction"> <Required id="Required" >
+                </Required> {t("userManagement.create_user.required")}</p>
             </div>
             <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
                 <Field
-                    name="first_name" 
+                    name="first_name"
                     label={t("userManagement.create_user.inputLabel.first_name")}
                     placeholder=" "
                     isRequired
@@ -88,7 +90,7 @@ const UserDetailsFormSegment = () => {
                 />
                 <Field
                     name="state"
-                    label={t("userManagement.create_user.inputLabel.state")}
+                    fieldlabel={t("userManagement.create_user.inputLabel.state")}
                     placeholder=" "
                     component={Components["dropdown"]}
                     isRequired
