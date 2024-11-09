@@ -12,8 +12,9 @@ import AuthUtils from '../common/util/AuthUtils';
 import AppRoutes from '../routes/AppRoutes';
 import Header from '../components/header';
 
-const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'))
+const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
+const OrgEntryPoint = React.lazy(() => import('@src/mfe/org-management'));
 
 function MainLayout() {
   const { pathname } = useLocation();
@@ -36,15 +37,14 @@ function MainLayout() {
                 <Route path={'orders/*'} element={<OrderManagementEntryPoint />} />
 
                 <Route path={AppRoutes.pathUserManagement} element={<Outlet />}>
-                  <Route path={"/user"} element={<UsersEntryPoint />} />
-                  <Route path={"/user/*"} element={<UsersEntryPoint />} />
+                  <Route path={'/user'} element={<UsersEntryPoint />} />
+                  <Route path={'/user/*'} element={<UsersEntryPoint />} />
                 </Route>
                 <Route path={AppRoutes.pathOrgManagement} element={<Outlet />}>
-                  <Route path={"/organization"} element={<OrgEntryPoint />} />
-                  <Route path={"/organization/*"} element={<OrgEntryPoint />} />
+                  <Route path={'/organization'} element={<OrgEntryPoint />} />
+                  <Route path={'/organization/*'} element={<OrgEntryPoint />} />
                 </Route>
               </Routes>
-
             </div>
           ) : (
             <ErrorComponent
