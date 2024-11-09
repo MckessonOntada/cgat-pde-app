@@ -8,7 +8,6 @@ import ErrorComponent from '../components/app/error/ErrorComponent';
 import { debugIds, ID } from '../common/constants/id';
 
 import styles from '../../src/assets/styles/MainLayout.module.scss';
-import AccessDeniedPage from './accessDenied/accessDenied';
 import AuthUtils from '../common/util/AuthUtils';
 import AppRoutes from '../routes/AppRoutes';
 import Header from '../components/header';
@@ -39,6 +38,10 @@ function MainLayout() {
                 <Route path={AppRoutes.pathUserManagement} element={<Outlet />}>
                   <Route path={"/user"} element={<UsersEntryPoint />} />
                   <Route path={"/user/*"} element={<UsersEntryPoint />} />
+                </Route>
+                <Route path={AppRoutes.pathOrgManagement} element={<Outlet />}>
+                  <Route path={"/organization"} element={<OrgEntryPoint />} />
+                  <Route path={"/organization/*"} element={<OrgEntryPoint />} />
                 </Route>
               </Routes>
 

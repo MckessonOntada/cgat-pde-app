@@ -3,5 +3,6 @@ export const RoutePaths = {
   pathPageLogin: '/login',
   pathPageLoginCallback: '/login/callback',
   pathAdmin: '/admin',
-  pathUserManagement: '/user'
+  pathUserManagement: '/user',
+  pathOrgManagement: '/organization'
 }
