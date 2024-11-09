@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { CustomDataTable } from '@mckesson/mcp-component-library';
+import { CustomDataTable, Button } from '@mckesson/mcp-component-library';
 import { useOrg } from '../../context/PageContext';
-import { useTranslation } from 'react-i18next';
+import { useTranslate } from '@src/translations/useTranslation';
 import { Link } from 'react-router-dom';
 import Actions from './Actions';
 import { Badge } from '@mckesson/mcp-component-library';
 
 const OrgList = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState([]);
 
   const onEditClick = () => {
@@ -17,44 +17,50 @@ const OrgList = () => {
   const columns = [
     {
       id: 'name',
-      name: t('organization_name'),
-      cell: (row) => <Link to={row.url}>{row.name}</Link>,
+      name: t('orgManagement.table.name'),
+      cell: (row) => (
+        <Link to={row.url} className="org-name">
+          {row.name}
+        </Link>
+      ),
+      wrap: true,
       width: '25%'
     },
     {
       id: 'orgId',
-      name: t('organization_id'),
+      name: t('orgManagement.table.id'),
       selector: (row) => row.orgId,
-      width: '15%'
+      wrap: true
     },
     {
       id: 'location',
-      name: t('location'),
+      name: t('orgManagement.table.location'),
       selector: (row) => row.location,
-      width: '15%'
+      wrap: true
     },
     {
       id: 'date',
-      name: t('date_added_update'),
+      name: t('orgManagement.table.dateUpdated'),
       selector: (row) => row.date,
-      format: (row) => new Date(row.date).toLocaleDateString()
+      format: (row) => new Date(row.date).toLocaleDateString(),
+      wrap: true
     },
     {
       id: 'status',
-      name: t('status'),
+      name: t('orgManagement.table.status'),
       cell: (row) => (
         <Badge
           text={row.status === 'ACTIVE' ? 'Active' : 'Inactive'}
           type={row.status === 'ACTIVE' ? 'success' : 'info-default'}
         />
       ),
-      width: '15%'
+      wrap: true
     },
     {
       id: 'action',
-      name: t('action'),
+      name: t('orgManagement.table.action'),
       cell: (props) => <Actions {...props} onEditClick={onEditClick} />,
-      width: '15%'
+      wrap: true
     }
   ];
 
@@ -84,26 +90,41 @@ const OrgList = () => {
     setSelectedRows(selectedRows.map((row) => row.id));
   };
 
+  const handleDeactivate = () => {
+    setSelectedRows([]);
+  };
+
   return (
-    <CustomDataTable
-      id="my-data-table"
-      type="normal"
-      columns={columns}
-      data={data} // Use currentData for pagination
-      onSortIconClick={handleSort}
-      currentPage={currentPage}
-      totalPageCount={totalPageCount}
-      pagination={true}
-      handleChangePage={handleChangePage}
-      totalRocords={totalRecords}
-      recordsPerPage={recordsPerPage}
-      paginationTotalRecorsMessage={`Total records: ${totalRecords}`}
-      paginationRecordsPerPageMessage={`Records per page: ${recordsPerPage}`}
-      isAdmin={true}
-      selectableRows
-      handleRowSelected={handleRowSelected}
-      selectedRowId={selectedRows[0]}
-    />
+    <div>
+      {selectedRows.length > 0 && (
+        <div className="selected-item-alert">
+          <p className="selected-item-text">{selectedRows.length} Item's Selected</p>
+          <Button variant="secondary" onClick={handleDeactivate}>
+            Deactivate
+          </Button>
+        </div>
+      )}
+
+      <CustomDataTable
+        id="my-data-table"
+        type="normal"
+        columns={columns}
+        data={data} // Use currentData for pagination
+        onSortIconClick={handleSort}
+        currentPage={currentPage}
+        totalPageCount={totalPageCount}
+        pagination={true}
+        handleChangePage={handleChangePage}
+        totalRocords={totalRecords} // Corrected typo here
+        recordsPerPage={recordsPerPage}
+        paginationTotalRecorsMessage={`Total records: ${totalRecords}`}
+        paginationRecordsPerPageMessage={`Records per page: ${recordsPerPage}`}
+        isAdmin={true}
+        selectableRows
+        handleRowSelected={handleRowSelected}
+        selectedRowId={selectedRows[0]}
+      />
+    </div>
   );
 };
 
