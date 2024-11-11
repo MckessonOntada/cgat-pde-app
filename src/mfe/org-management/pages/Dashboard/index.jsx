@@ -30,7 +30,7 @@ export default function Dashboard() {
       <Breadcrumb items={breadcrumbItems} />
       <PageHeader
         title={t('orgManagement.header.label')}
-        navigateTo={PATHS.dashboard}
+        navigateTo={PATHS.createOrg}
         buttonLabels={buttonLabels}
       />
       <OrganizationProvider>

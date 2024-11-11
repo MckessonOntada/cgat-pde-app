@@ -13,5 +13,43 @@ export const OrgManagementES = {
   'orgManagement.table.action.edit': 'S_Edit',
   'orgManagement.table.action.delete': 'S_Delete',
   'orgManagement.table.action.inactivate': 'S_Inactivate',
-  'orgManagement.table.action.view': 'S_VIEW'
+  'orgManagement.table.action.view': 'S_VIEW',
+
+  'orgManagement.button.next':'S_Next',
+  'orgManagement.button.back':'S_Back',
+
+  'orgManagement.create_org': 'S_Create Organization',
+  'orgManagement.create_org.details_to_create_org':
+    'S_Please check the details to create a organization Organization',
+  'orgManagement.create_org.org-details': 'S_Organization Details',
+  'orgManagement.create_org.contact_details': 'S_Contact Details',
+  'orgManagement.create_org.address_details': 'S_Address Details',
+  'orgManagement.create_org.required': 'S_Required',
+  'orgManagement.create_org.inputLabel.org_name': 'S_Organization Name',
+  'orgManagement.create_org.inputLabel.first_name': 'S_Contact Person First Name',
+  'orgManagement.create_org.inputLabel.last_name': 'S_Contact Person Last Name',
+  'orgManagement.create_org.inputLabel.middle_name': 'S_Contact Person Middle Name',
+  'orgManagement.create_org.inputLabel.address_1': 'S_Address 1',
+  'orgManagement.create_org.inputLabel.address_2': 'S_Address 2',
+  'orgManagement.create_org.inputLabel.city': 'S_City',
+  'orgManagement.create_org.inputLabel.zip': 'S_Zip',
+  'orgManagement.create_org.inputLabel.state': 'S_State',
+  'orgManagement.create_org.inputLabel.email': 'S_Email ID',
+  'orgManagement.create_org.inputLabel.phone_no': 'S_Phone Number',
+  'orgManagement.create_org.inputLabel.fax': 'S_Fax',
+  'orgManagement.create_org.validation.first_name_required': 'S_First name is required',
+  'orgManagement.create_org.validation.middle_name_required': 'S_Middle name is required',
+  'orgManagement.create_org.validation.last_name_required': 'S_Last Name is required',
+  'orgManagement.create_org.validation.address_1_required': 'S_Address is required',
+  'orgManagement.create_org.validation.address_2_required': 'S_Address is required',
+  'orgManagement.create_org.validation.city_required': 'S_City is required',
+  'orgManagement.create_org.validation.zip_required': 'S_Zip is required',
+  'orgManagement.create_org.validation.state_required': 'S_State is required',
+  'orgManagement.create_org.validation.email_required': 'S_Email Id is required',
+  'orgManagement.create_org.validation.invalid_email': 'S_Invalid Email',
+  'orgManagement.create_org.validation.phone_no_required': 'S_Phone Number is required',
+  'orgManagement.create_org.validation.fax_required': 'S_Fax is required',
+  'orgManagement.create_org.option.please_select': 'S_Please Select'
 };
+
+
