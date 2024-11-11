@@ -1,27 +1,35 @@
-.container{
-    display: grid;
-    gap: var(--spacing-03);
-    a {
-        text-decoration: none;
-    }
+.container {
+  display: grid;
+  gap: var(--spacing-03);
+  a {
+    text-decoration: none;
+  }
 }
 
 .card {
-    display: grid;
-    gap: var(--spacing-02);
-    padding: var(--spacing-04);
-    border: 1px solid var(--brand-color-grey-scale-warm-1);
-    border-radius: var(--brand-border-radius--5);
-    h3 {
-        color: var(--brand-color-black);
-    }
+  display: grid;
+  gap: var(--spacing-02);
+  padding: var(--spacing-04);
+  border: 1px solid var(--brand-color-grey-scale-warm-1);
+  border-radius: var(--brand-border-radius--5);
+  h3 {
+    color: var(--brand-color-black);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }
-.cardContent{
-    font-size: var(--brand-font-size--15);
-    color: var(--brand-color-primary-slate);
+.cardContent {
+  font-size: var(--brand-font-size--15);
+  color: var(--brand-color-primary-slate);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* To override mcp-components card styling*/
-.card_wrap{
-    padding: 0;
+.card_wrap {
+  padding: 0;
 }
