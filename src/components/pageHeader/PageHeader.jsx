@@ -4,7 +4,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import { ReactComponent as upload_bottom } from '@src/assets/image/upload_bottom.svg';
-import './index.scss';
+
 
 function PageHeader(props) {
   const { t } = useTranslate();

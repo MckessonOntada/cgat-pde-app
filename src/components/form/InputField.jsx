@@ -4,12 +4,12 @@ import { useTranslate } from '@src/translations/useTranslation';
 import './Components.scss'
 
 export default function InputField(props) {
-  const { field, form, children, className, label, ...rest } = props;
-
+  const { field, form, children, className, label, maxLength, ...rest } = props; 
+  
   // To set the Value for field. There is no name Present in Input Component
   const handleOnChange = (event) => {
    form.setFieldValue(`${field.name}`,event.target.value); 
-  };
+  };   
   
   return (
     <div className='grid'>
@@ -26,10 +26,11 @@ export default function InputField(props) {
         value={field.value}
         register={() => ({
           onChange: handleOnChange,
-          onBlur: field.onBlur,
+          onBlur: handleOnBlur,
         })}
         showError={!form.isValid}
         size="lg"
+        maxLength={maxLength} 
       />
       {
         // input- is appended to name in ui-components library for touched fields. If submitted then no input- is appended

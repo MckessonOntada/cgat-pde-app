@@ -1,12 +1,12 @@
 import React from 'react';
 import { Field } from "formik";
-import Components from "../../components/form/Components";
+import Components from "@src/components/form/Components";
 import { Required } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 
 const UserDetailsFormSegment = () => {
     const { t } = useTranslate();
-
+    const { touched, errors } = useFormikContext()
     const options = [
         {
             isDisabled: true,
@@ -40,12 +40,14 @@ const UserDetailsFormSegment = () => {
                     placeholder=" "
                     isRequired
                     component={Components["input"]}
+                    maxLength={50} 
                 />
                 <Field
                     name="middle_name"
                     label={t("userManagement.create_user.inputLabel.middle_name")}
-                    placeholder=" "
+                    placeholder=" "                    
                     component={Components["input"]}
+                    maxLength={50} 
                 />
                 <Field
                     name="last_name"
@@ -53,6 +55,7 @@ const UserDetailsFormSegment = () => {
                     placeholder=" "
                     isRequired
                     component={Components["input"]}
+                    maxLength={50} 
                 />
             </div>
             <div className="headingBox">
@@ -65,12 +68,14 @@ const UserDetailsFormSegment = () => {
                     placeholder=" "
                     isRequired
                     component={Components["input"]}
+                    maxLength={100} 
                 />
                 <Field
                     name="address_2"
                     label={t("userManagement.create_user.inputLabel.address_2")}
-                    placeholder=" "
+                    placeholder=" "                    
                     component={Components["input"]}
+                    maxLength={100} 
                 />
             </div>
             <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
@@ -80,6 +85,7 @@ const UserDetailsFormSegment = () => {
                     placeholder=" "
                     isRequired
                     component={Components["input"]}
+                    maxLength={50} 
                 />
                 <Field
                     name="zip"
@@ -87,21 +93,23 @@ const UserDetailsFormSegment = () => {
                     placeholder=" "
                     isRequired
                     component={Components["input"]}
+                    maxLength={10} 
                 />
                 <Field
                     name="state"
                     fieldlabel={t("userManagement.create_user.inputLabel.state")}
                     placeholder=" "
                     component={Components["dropdown"]}
-                    isRequired
+                    isRequired                   
                     options={options}
                 />
                 <Field
                     name="email"
                     label={t("userManagement.create_user.inputLabel.email")}
                     placeholder=" "
-                    isRequired
+                    isRequired                    
                     component={Components["input"]}
+                    maxLength={10} 
                 />
                 <Field
                     name="phoneInput"
@@ -115,8 +123,8 @@ const UserDetailsFormSegment = () => {
                     name="fax"
                     label={t("userManagement.create_user.inputLabel.fax")}
                     placeholder=" "
-                    component={Components["input"]}
-                    isRequired
+                    component={Components["input"]}                    
+                    maxLength={15} 
                 />
             </div>
         </div>
