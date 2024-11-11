@@ -20,7 +20,6 @@ function MainLayout() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const userHasRoutePermission = AuthUtils.userHasRoutePermission(pathname);
-  console.log(UsersEntryPoint);
   return (
     <div id={debugIds(ID.MAIN)}>
       <Header />

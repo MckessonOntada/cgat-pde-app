@@ -75,3 +75,9 @@
   color: var(--brand-color-warning-orange-4);
   font-weight: var(--brand-font-weight-600);
 }
+
+.selected-account {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

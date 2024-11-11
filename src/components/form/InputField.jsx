@@ -31,10 +31,12 @@ export default function InputField(props) {
         showError={!form.isValid}
         size="lg"
       />
+      <div className='error-placeholder'>
       {
         // input- is appended to name in ui-components library for touched fields. If submitted then no input- is appended
         (form.touched[`input-${field.name}`] || form.touched[field.name])  && <TextError errorMessage={form.errors[field.name]} />
       }
+      </div>
     </div>
   );
 }
