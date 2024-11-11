@@ -5,8 +5,7 @@ import { Required } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 
 const UserDetailsFormSegment = () => {
-    const { t } = useTranslate();
-    const { touched, errors } = useFormikContext()
+    const { t } = useTranslate(); 
     const options = [
         {
             isDisabled: true,
@@ -61,7 +60,7 @@ const UserDetailsFormSegment = () => {
             <div className="headingBox">
                 <p className="form-segment-title">{t("userManagement.create_user.contact_details")}</p>
             </div>
-            <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
+            <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 line-height">
                 <Field
                     name="address_1"
                     label={t("userManagement.create_user.inputLabel.address_1")}
@@ -109,7 +108,7 @@ const UserDetailsFormSegment = () => {
                     placeholder=" "
                     isRequired                    
                     component={Components["input"]}
-                    maxLength={10} 
+                    maxLength={100} 
                 />
                 <Field
                     name="phoneInput"
