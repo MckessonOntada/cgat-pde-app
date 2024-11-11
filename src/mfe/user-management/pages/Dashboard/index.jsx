@@ -6,7 +6,7 @@ import { PATHS } from '../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import { UserProvider } from '../../context/PageContext';
 import UserTable from './UserTable';
-import PageHeader from '@src/components/PageHeader/PageHeader'
+import PageHeader from '@src/components/PageHeader'
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
 import { debugIds, ID } from '@src/common/constants/id';
 
