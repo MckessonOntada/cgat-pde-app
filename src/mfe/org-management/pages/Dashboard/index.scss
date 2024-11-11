@@ -15,7 +15,7 @@
 
 .orgCardContainer {
   display: grid;
-  gap: var(--spacing-04);
+  gap: var(--spacing-02);
   padding: var(--spacing-04);
   border: 1px solid var(--brand-color-patient-primary-3);
   border-radius: var(--brand-border-radius--6);
@@ -39,6 +39,36 @@
   @include respond(sm) {
     justify-self: end;
   }
+}
+
+.selected-item-alert {
+  display: flex;
+  margin-block: var(--spacing-02);
+  padding: var(--spacing-01);
+  border-radius: var(--brand-border-radius--3);
+  justify-content: space-between;
+  background-color: var(--brand-color-patient-primary-1);
+  padding: var(--spacing-02);
+  padding-inline: var(--spacing-04);
+  align-items: center;
+}
+
+.selected-item-text {
+  font-size: 18px;
+}
+
+.title-style {
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.org-listing-label {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.org-name {
+  color: var(--brand-color-primary);
 }
 
 .orgList {
@@ -103,6 +133,10 @@
   flex-direction: column;
   gap: var(--spacing-04, 32px);
   margin-top: var(--spacing-04, 32px);
+}
+
+.divider-style {
+  color: var(--brand-color-background-grey);
 }
 
 // PageHeader SCSS:
