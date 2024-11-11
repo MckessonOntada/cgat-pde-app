@@ -5,7 +5,6 @@ import './Components.scss'
 
 export default function PhoneInput(props) {
   const { field, form ,label } = props;
-  const { t } = useTranslate();
   return (
     <div className='grid'>
       <Label htmlFor="phone_no" className="label-heading">
@@ -24,6 +23,7 @@ export default function PhoneInput(props) {
         dataTestId="mobile-input"
         useUnmaskedValue={false} 
         className={`phoneInput ${form.errors[field.name] && form.touched[field.name] ? 'outline-error' : ''}`} 
+        errorMessage={form.errors[field.name] || ''}
       />
       {form.errors[field.name] && form.touched[field.name]  &&   (
         <TextError errorMessage={form.errors[field.name]} id={field.name}/>
