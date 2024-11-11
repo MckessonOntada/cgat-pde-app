@@ -5,10 +5,10 @@ import Filters from './Filters';
 import { PATHS } from '../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import { UserProvider } from '../../context/PageContext';
-import UserTable from './UserTable';
-import PageHeader from '@src/components/PageHeader'
+import UserTable from './UserTable'; 
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
 import { debugIds, ID } from '@src/common/constants/id';
+import PageHeader from '@src/components/pageHeader';
 
 export default function Dashboard() {
   const { t } = useTranslate();
