@@ -26,7 +26,7 @@ export default function InputField(props) {
         value={field.value}
         register={() => ({
           onChange: handleOnChange,
-          onBlur: handleOnBlur,
+          onBlur: field.onBlur,
         })}
         showError={!form.isValid}
         size="lg"
