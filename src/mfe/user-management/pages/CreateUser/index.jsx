@@ -8,7 +8,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import UserDetailsFormSegment from './CreateUserForm';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
-import PageHeader from '@src/components/PageHeader'
+import PageHeader from '@src/components/pageHeader'
 
 const CreateUser = () => {
 	const { t } = useTranslate();
