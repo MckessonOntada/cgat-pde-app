@@ -15,7 +15,7 @@ function PageHeader(props) {
 
   return (
     <div className="flexBox spaceBetween py3">
-      <h1>{props.title}</h1>
+      <h1 className="title-style">{props.title}</h1>
       <div className="flexBox">
         <Button Icon={add_circle_bold} className="button-icon" onClick={handleClick} size={'md'}>
           {props.buttonLabels.add}

@@ -66,7 +66,7 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
   const handleClearFilters = () => {
     clearFilters();
   };
-  console.log('locations:', LOCATIONS);
+
   return (
     <div className="filterBox line-height" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
       {(showLocationDropdown || showStatusDropdown) && (
@@ -85,22 +85,22 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
                 value={searchQuery}
                 onChangeInput={handleSearch}
                 outline={true}
-                placeHolder={t('userManagement.searchFilter.label')}
+                placeHolder={t('orgManagement.searchFilter.label')}
               />
             </div>
           </div>
 
           <ToggleUI in={expandedCard} timeout={400}>
             <div className="expanded-content">
-              <Divider color={'#BAC5CC'} />
+              <Divider className="divider-style" />
               <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
                 {showLocationDropdown && (
                   <SearchableDropdown
                     id="location"
                     isSuccess
                     value={location}
-                    label={t('location')}
-                    name={t('location')}
+                    label={t('orgManagement.table.location')}
+                    name={t('orgManagement.table.location')}
                     isRequired={false}
                     onChange={(value) => onSearchableDropdownChange('location', value)}
                     options={LOCATIONS}
@@ -113,8 +113,8 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
                     id="status"
                     isSuccess
                     value={status}
-                    label={t('userManagement.table.status')}
-                    name={t('userManagement.table.status')}
+                    label={t('orgManagement.table.status')}
+                    name={t('orgManagement.table.status')}
                     isRequired={false}
                     onChange={(value) => onSearchableDropdownChange('status', value)}
                     options={STATUS}
@@ -132,7 +132,7 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
                   {isClearFiltersVisible && (
                     <Button
                       type="button"
-                      label={t('userManagement.clearFilter.label')}
+                      label={t('orgManagement.clearFilter.label')}
                       textButton
                       className="txtbtn"
                       onClick={handleClearFilters}
