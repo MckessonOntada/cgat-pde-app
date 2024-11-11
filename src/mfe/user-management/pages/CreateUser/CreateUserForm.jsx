@@ -58,7 +58,7 @@ const UserDetailsFormSegment = () => {
             <div className="headingBox">
                 <p className="form-segment-title">{t("userManagement.create_user.contact_details")}</p>
             </div>
-            <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 line-height">
+            <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
                 <Field
                     name="address_1"
                     label={t("userManagement.create_user.inputLabel.address_1")}
@@ -73,7 +73,7 @@ const UserDetailsFormSegment = () => {
                     component={Components["input"]}
                 />
             </div>
-            <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 line-height">
+            <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
                 <Field
                     name="city"
                     label={t("userManagement.create_user.inputLabel.city")}

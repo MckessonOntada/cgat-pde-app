@@ -62,6 +62,7 @@ const CreateUser = () => {
       <div
         className="back-navigation py2 capitalize"
         onClick={goBack}
+        style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
       >
         <MdOutlineKeyboardArrowLeft size="24px" />
         <p>Back to Manage Users</p>

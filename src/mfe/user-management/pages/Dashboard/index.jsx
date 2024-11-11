@@ -64,7 +64,7 @@ export default function Dashboard() {
       />
 
       <UserProvider>
-        <div id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
+        <div className="userCardContainer" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
           <Filters showRoleDropdown={true} showStatusDropdown={true} />
           <TabList
             options={tabs}
@@ -74,8 +74,10 @@ export default function Dashboard() {
             variant={'text'}
             useAsButton={true}
           />
+          <div className="userList">
           {activeTab === 'ACTIVE USERS' && <UserTable />}
           {activeTab === 'PENDING REQUESTS' && <UserTable />}
+          </div>
         </div>
       </UserProvider>
     </div>

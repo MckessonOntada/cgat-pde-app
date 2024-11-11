@@ -1,8 +1,33 @@
 @import "../../../../assets/styles/abstracts/mixins";
 
 .dashboard-container {
-  height: 100vh;
+  padding: var(--spacing-02);
+  display: grid;
+  gap: var(--spacing-01);
+  max-height: 100vh;
 }
+
+
+.userCardContainer {
+  display: grid;
+  gap: var(--spacing-04);
+  padding: var(--spacing-04);
+  border: 1px solid var(--brand-color-patient-primary-3);
+  border-radius: var(--brand-border-radius--6);
+}
+
+.userList {
+  overflow-x: auto; /* Enable horizontal scrolling */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  overflow-y: hidden;
+
+  // Hide scrollbar on non-mobile devices
+  scrollbar-width: thin;
+  &::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+  }
+}
+
 
 .filterBox {
   display: grid;
