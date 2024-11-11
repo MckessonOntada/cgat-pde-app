@@ -117,8 +117,8 @@ const OrgList = () => {
         handleChangePage={handleChangePage}
         totalRocords={totalRecords} // Corrected typo here
         recordsPerPage={recordsPerPage}
-        paginationTotalRecorsMessage={`Total records: ${totalRecords}`}
-        paginationRecordsPerPageMessage={`Records per page: ${recordsPerPage}`}
+        paginationTotalRecorsMessage={'results'}
+        paginationRecordsPerPageMessage={`per page`}
         isAdmin={true}
         selectableRows
         handleRowSelected={handleRowSelected}
