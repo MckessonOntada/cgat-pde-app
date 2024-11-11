@@ -1,14 +1,14 @@
 import React from 'react';
 import * as Yup from 'yup';
-import { Formik, Form, useFormik } from 'formik'; 
+import { Formik, Form } from 'formik'; 
 import './CreateUser.scss';
 import { Button } from '@mckesson/mcp-component-library';
-import { Card, Stepper } from '@mckesson/mcp-component-library';
+import {  Stepper } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import UserDetailsFormSegment from './CreateUserForm';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
-import PageHeader from '@src/components/PageHeader/PageHeader'
+import PageHeader from '@src/components/pageHeader/PageHeader'
 
 const CreateUser = () => {
 	const { t } = useTranslate();
