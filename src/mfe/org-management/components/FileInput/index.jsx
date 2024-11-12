@@ -64,11 +64,11 @@ const FileInput = ({ onFileSelect }) => {
           <img src={Upload} alt="Upload Icon" />
         </div>
 
-        <p className='drag-heading'>Drag your file(s) to start uploading</p>
+        <p className="drag-heading">Drag your file(s) to start uploading</p>
 
         <div className="or-box">
           <Divider className="divider-style" />
-          <p style={{fontSize:'12px'}}>OR</p>
+          <p style={{ fontSize: '12px' }}>OR</p>
           <Divider className="divider-style" />
         </div>
 
@@ -77,42 +77,13 @@ const FileInput = ({ onFileSelect }) => {
         </button>
 
         {file && (
-          <div
-            style={{
-              marginTop: '15px',
-              width: '100%',
-              display: 'flex',
-              position: 'relative'
-            }}>
-            <img
-              src={URL.createObjectURL(file)}
-              alt="Preview"
-              style={{
-                maxWidth: '50px',
-                maxHeight: '50px',
-                marginBottom: '10px'
-              }}
-            />
-            <div style={{ textAlign: 'initial' }}>
-              <p
-                style={{
-                  margin: '0px',
-                  paddingBottom: '2px',
-                  fontSize: '18px'
-                }}>
-                {file.name}
-              </p>
-              <p style={{ margin: '0px', padding: '2px', fontSize: '12px' }}>
-                {(file.size / 1024).toFixed(2)} KB
-              </p>
+          <div className="preview-container">
+            <img src={URL.createObjectURL(file)} alt="Preview" />
+            <div className="file-info">
+              <p>{file.name}</p>
+              <p>{(file.size / 1024).toFixed(2)} KB</p>
             </div>
-            <button
-              style={{
-                position: 'absolute',
-                right: '10px',
-                alignSelf: 'center'
-              }}
-              onClick={handleClearLogo}>
+            <button className="remove-button" onClick={handleClearLogo}>
               Remove
             </button>
           </div>
