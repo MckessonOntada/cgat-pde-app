@@ -82,3 +82,20 @@
   justify-content: space-between;
   align-items: center;
 }
+
+// View Component Styling
+
+.view-container {
+  border: 1px solid var(--brand-color-patient-primary-3);
+  padding : var(--spacing-03)
+}
+
+.org-box {
+  display: flex;
+  justify-content: space-between;
+}
+
+.org-logo-box{
+  display: flex;
+  gap:var(--spacing-03)
+}

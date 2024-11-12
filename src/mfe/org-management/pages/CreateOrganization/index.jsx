@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { getValidationSchema, INITIAL_VALUES } from './utils';
 import CreateOrgStep2 from './CreateOrgStep2';
+import View from './View';
 
 const CreateOrganization = () => {
   const [organizationData, setOrganizationData] = useState({
@@ -40,7 +41,7 @@ const CreateOrganization = () => {
     setOrganizationData((prevState) => ({ ...prevState, selectedAccounts }));
   };
 
-  console.log("organizationData.formData", organizationData.formData)
+  // console.log('organizationData.formData', organizationData.formData);
   return (
     <div className="main-container">
       <div className="back-navigation py2 capitalize" onClick={goBack}>
@@ -84,7 +85,7 @@ const CreateOrganization = () => {
       )}
       {currentStep === 2 && (
         <CreateOrgStep2
-          prevStepData={organizationData[1]}
+          prevStepData={organizationData.formData}
           onEditClick={() => setCurrentStep(1)}
           selectedAccounts={organizationData.selectedAccounts}
           setSelectedAccounts={setSelectedAccounts}
