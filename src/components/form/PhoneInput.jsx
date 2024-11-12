@@ -2,9 +2,14 @@ import React from 'react';
 import { MaskedInput, TextError, Label, Required } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import './Components.scss'
+import { getNestedValue } from './util';
 
 export default function PhoneInput(props) {
   const { field, form ,label } = props;
+  // Determine if the field has an error and is touched
+  const errorMessage = getNestedValue(form.errors, field.name);
+  const isFieldTouched = getNestedValue(form.touched, field.name);
+
   return (
     <div className='grid'>
       <Label htmlFor="phone_no" className="label-heading">
@@ -25,13 +30,9 @@ export default function PhoneInput(props) {
         className={`phoneInput ${form.errors[field.name] && form.touched[field.name] ? 'outline-error' : ''}`} 
         errorMessage={form.errors[field.name] || ''}
       />
-      {form.errors[field.name] && form.touched[field.name]  &&   (
-        <TextError errorMessage={form.errors[field.name]} id={field.name}/>
-      )   
-      }
-     {(form.errors[field.name] && !form.touched[field.name]) || !form.errors[field.name] ? (
-  <TextError className="error-placeholder" />
-) : null}
+     {isFieldTouched && errorMessage && (
+        <TextError errorMessage={errorMessage} />
+      )}
     </div>
   );
 }

@@ -4,28 +4,21 @@ import './index.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as VerticalIcon } from '@src/assets/image/Vertical.svg';
 import { debugIds, ID } from '@src/common/constants/id';
+import { useNavigate } from 'react-router-dom';
 
-export default function Actions({ status, row, onToggleChange }) {
+export default function Actions({ status, row }) {
   const { t } = useTranslate();
   const [isChecked, setIsChecked] = useState(status === 'ACTIVE');
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsChecked(status === 'ACTIVE');
   }, [status]);
 
-  const handleToggle = (event) => {
-    const checked = event.target.checked;
-    setIsChecked(checked);
+ 
 
-    if (onToggleChange) {
-      onToggleChange(row.id, checked);
-    }
-
-    alert(checked ? 'The switch is ON!' : 'The switch is OFF!');
-  };
-
-  const handleEdit = () => {
-    alert('Handle Edit');
+  const handleEdit = (userId) => {
+    navigate(`edit-user/${userId}`);
   };
   const handleDelete = () => {
     alert('Handle Delete');
@@ -40,7 +33,7 @@ export default function Actions({ status, row, onToggleChange }) {
         anchorEl={<VerticalIcon />}
         handleSelect={(selectedItem) => {
           if (selectedItem.value === 'Edit') {
-            handleEdit();
+            handleEdit(row.id);
           }
           if (selectedItem.value === 'Delete') {
             handleDelete();
@@ -64,8 +57,7 @@ export default function Actions({ status, row, onToggleChange }) {
           }
         ]}
       />
-      {/* <FaPen className="actionEditIcon" />
-      <Switch checked={isChecked} size="md" onChange={handleToggle} /> */}
+ 
     </div>
   );
 }

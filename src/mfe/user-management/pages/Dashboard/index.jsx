@@ -5,10 +5,10 @@ import Filters from './Filters';
 import { PATHS } from '../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import { UserProvider } from '../../context/PageContext';
-import UserTable from './UserTable';
-import PageHeader from './PageHeader';
+import UserTable from './UserTable'; 
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
 import { debugIds, ID } from '@src/common/constants/id';
+import PageHeader from '@src/components/pageHeader';
 
 export default function Dashboard() {
   const { t } = useTranslate();
@@ -64,7 +64,7 @@ export default function Dashboard() {
       />
 
       <UserProvider>
-        <div id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
+        <div className="userCardContainer" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
           <Filters showRoleDropdown={true} showStatusDropdown={true} />
           <TabList
             options={tabs}
@@ -74,8 +74,10 @@ export default function Dashboard() {
             variant={'text'}
             useAsButton={true}
           />
+          <div className="userList">
           {activeTab === 'ACTIVE USERS' && <UserTable />}
           {activeTab === 'PENDING REQUESTS' && <UserTable />}
+          </div>
         </div>
       </UserProvider>
     </div>
