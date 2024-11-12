@@ -3,9 +3,7 @@ import Upload from '@src/assets/image/upload.svg';
 import { Button } from '@mckesson/mcp-component-library';
 import './CreateOrg.scss';
 
-const View = ({ data }) => {
-//   console.log('viewData:', data);
-
+const View = ({ data, onEditClick}) => {
   return (
     <div className="view-container">
       <div className="org-box">
@@ -13,8 +11,8 @@ const View = ({ data }) => {
           <img src={Upload} alt="Upload Icon" />
           <h2>{data.org_name }</h2>
         </div>
-        <Button>Edit</Button>
-      </div>
+        <Button onClick={onEditClick}>Edit</Button>
+        </div>
         <h2>Contact</h2>
       <div style={{ display: 'flex' }}>
         <div>

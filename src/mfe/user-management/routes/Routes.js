@@ -4,6 +4,7 @@ import { PATHS } from "./constants";
 import Home from "../pages/Dashboard";
 import UserDetail from "../pages/UserDetail";
 import CreateUser from "../pages/CreateUser";
+import EditUser from "../pages/CreateUser"
 
 const Routes = () => {
   return (
@@ -11,6 +12,7 @@ const Routes = () => {
       <Route path={PATHS.dashboard} element={<Home />} />
       <Route path={PATHS.userDetail} element={<UserDetail />} />
       <Route path={PATHS.createUser} element={<CreateUser />} />
+      <Route path={PATHS.editUser} element={<EditUser />} />
     </ReactRoutes>
   );
 };

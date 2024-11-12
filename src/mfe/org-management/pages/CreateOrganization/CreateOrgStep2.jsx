@@ -16,11 +16,9 @@ export default function CreateOrgStep2({
     
   return (
     <div>
-      {/* {JSON.stringify(prevStepData)} */}
       <div>
-            <View data = {prevStepData}/>
+            <View data = {prevStepData} onEditClick={onEditClick}/>
       </div>
-      <Button onClick={onEditClick}>Edit</Button>
       <div>
         <AccountsList selectedRows={selectedAccounts} setSelectedRows={setSelectedAccounts} />
       </div>

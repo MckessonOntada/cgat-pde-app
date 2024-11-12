@@ -1,35 +1,51 @@
-import React, { useEffect, useRef } from 'react';
-import { InputField as BaseInputField, Label, TextError, Required } from '@mckesson/mcp-component-library'; 
-import './Components.scss'
+import React, { useEffect, useMemo, useRef } from 'react';
+import {
+  InputField as BaseInputField,
+  Label,
+  TextError,
+  Required
+} from '@mckesson/mcp-component-library';
+import './Components.scss';
+import { getNestedValue } from './util';
 
 export default function InputField(props) {
-  const { field, form, children, className, label, ...rest } = props;
+  const { field, form, children, className, label, maxLength, ...rest } = props;
+
+
+  // Determine if the field has an error and is touched
+  const errorMessage = getNestedValue(form.errors, field.name);
+  const isFieldTouched = getNestedValue(form.touched, field.name);
 
   const inputDivRef = useRef(null);
 
-  const { initialValues } = form;
-
   // To set the Value for field. There is no name Present in Input Component
   const handleOnChange = (event) => {
-   form.setFieldValue(`${field.name}`,event.target.value); 
+    form.setFieldValue(`${field.name}`, event.target.value);
   };
+  const handleOnBlur = (event) => {
+    form.setFieldTouched(`${field.name}`, true);
+  };
+
+  const { initialValues } = form;
+  const fieldValue = useMemo(
+    () => getNestedValue(initialValues, field.name),
+    [initialValues, field]
+  );
 
   // To set initial value
   useEffect(() => {
-    if(!!initialValues?.[field.name] && inputDivRef){
-      // This is hack, need to replace 
-      inputDivRef.current.querySelectorAll('input')[0].value = initialValues[field.name]; 
-      form.setFieldValue(`${field.name}`,initialValues[field.name]); 
+    if (!!fieldValue && inputDivRef?.current) {
+      // This is hack, need to replace
+      inputDivRef.current.querySelectorAll('input')[0].value = fieldValue;
+      form.setFieldValue(`${field.name}`, fieldValue);
     }
-  },[initialValues])
-  
+  }, [fieldValue]);
+
   return (
-    <div className='grid' ref={inputDivRef}>
+    <div className="grid" ref={inputDivRef}>
       <Label htmlFor={field.name} className="label-heading">
         {label}
-        {props.isRequired && <Required id="Required">
-          Required
-        </Required>}
+        {props.isRequired && <Required id="Required">Required</Required>}
       </Label>
       <BaseInputField
         {...rest}
@@ -38,17 +54,14 @@ export default function InputField(props) {
         onChangeFn={handleOnChange}
         register={() => ({
           onChange: handleOnChange,
-          onBlur: field.onBlur,
+          onBlur: handleOnBlur
         })}
+        errors={form.errors}
         showError={!form.isValid}
         size="lg"
+        maxLength={maxLength}
       />
-      <div className='error-placeholder'>
-      {
-        // input- is appended to name in ui-components library for touched fields. If submitted then no input- is appended
-        (form.touched[`input-${field.name}`] || form.touched[field.name])  && <TextError errorMessage={form.errors[field.name]} />
-      }
-      </div>
+      {isFieldTouched && errorMessage && <TextError errorMessage={errorMessage} />}
     </div>
   );
 }

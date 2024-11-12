@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import DataTable from '../../components/DataTable';
+import DataTable from '@src/components/dataTable/DataTable';
 import { Badge } from '@mckesson/mcp-component-library';
 import { USER_DATA } from '../../mockData/UsersData';
 import './index.scss';
@@ -44,33 +44,32 @@ function UserTable() {
     { name: 'ID', selector: 'id', sortable: true, omit: true },
     {
       name: t('userManagement.table.name'),
-      selector: 'Name',
+      selector: row => `${row.name.firstName} ${row.name.lastName}`,
       sortable: true,
       wrap: true,
       // width:'20%',
       cell: (props) => (
-        <div className="cellEllipse">
-          <a href={props.name} style={{ color: '#007bff', fontWeight: '600' }}>
-            {props.name}
-          </a>
-        </div>
+        <div className="cellEllipse"> 
+        <a  href={`/${props.name.firstName}-${props.name.lastName}`} style={{ color: '#007bff', fontWeight: '600' }}>
+        {`${props.name.firstName} ${props.name.lastName}`}
+        </a>
+      </div>
       )
     },
     {
       name: t('userManagement.table.email'),
-      selector: 'Email',
+      selector:  row =>row.contact.e_mail,
       sortable: true,
       wrap: true,
       width: '20%',
-      cell: (props) => <div className="cellEllipse">{props.e_mail}</div>
+      cell: (props) => <div className="cellEllipse">{props.contact.e_mail}</div>
     },
     {
       name: t('userManagement.table.role'),
-      selector: 'Role',
-      sortable: true,
-      center: true,
+      selector:  row =>row.contact.role.name,
+      sortable: true, 
       wrap: true,
-      cell: (props) => <div className="cellEllipse">{props.role}</div>
+      cell: (props) => <div className="cellEllipse">{props.role.name}</div>
     },
     {
       name: t('userManagement.table.status'),
@@ -79,7 +78,7 @@ function UserTable() {
       center: true,
       cell: (props) => (
         <div>
-          {props.status === 'ACTIVE' ? (
+          {props.isActive ? (
             <Badge text="Active" type="success" />
           ) : (
             <Badge text="Inactive" type="info-default" />
@@ -107,8 +106,8 @@ function UserTable() {
       id: 'action',
       center: true,
       name: t('userManagement.table.action'),
-      cell: Actions,
-      width: '10%'
+      cell: (row) => <Actions status={row.status} row={row} />,  
+      width: '10%',
     }
   ];
 

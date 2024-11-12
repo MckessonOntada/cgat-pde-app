@@ -11,7 +11,7 @@ import { ROLES, STATUS } from '../../mockData/UsersData';
 import './index.scss';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import arrow_down from '@src/assets/image/arrow_down.svg';
-import ToggleUI from '../../../../components/toggleui';
+import ToggleUI from '@src/components/toggleui';
 import { debugIds, ID } from '@src/common/constants/id';
 
 const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
