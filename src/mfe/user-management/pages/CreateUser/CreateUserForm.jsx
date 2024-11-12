@@ -1,11 +1,12 @@
 import React from 'react';
 import { Field } from "formik";
 import Components from "@src/components/form/Components";
-import { Required } from '@mckesson/mcp-component-library';
+import { Required,InputField } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
+import { useForm } from 'react-hook-form';
 
 const UserDetailsFormSegment = () => {
-    const { t } = useTranslate(); 
+    const { t } = useTranslate();
     const options = [
         {
             isDisabled: true,
@@ -24,6 +25,19 @@ const UserDetailsFormSegment = () => {
         },
     ];
 
+    // const { register, setValue, getValues } = useForm();
+    // const defaultArgs = {
+    //     validationFn: (value) => null,
+    //     onBlurFn: () => null,
+    //     onChangeFn: () => {
+    //     //   setData(data.id, { value: getValues()[questionId] });
+    //     },
+    //     register: register,
+    //   };
+
+    //   useEffect(() => {
+    //     setValue(data.id, value.value);
+    //   }, [value.value]);
 
     return (
         <div className='form-container'>
@@ -40,15 +54,32 @@ const UserDetailsFormSegment = () => {
                     placeholder=" "
                     isRequired
                     component={Components["input"]}
-                    maxLength={50} 
+                    maxLength={50}
                 />
+                {/* <InputField
+  errors={{}}
+  id="name.firstName"
+  label={t("userManagement.create_user.inputLabel.first_name")}
+  name="name.firstName"
+  value="santhi"
+  {...defaultArgs}
+  onBlurFn={() => {}}
+  onChangeFn={() => {}}
+  onInputBlur={() => {}}
+  onInputChange={() => {}}
+  preventCharacters={[]}
+  register={() => {}}
+  tooltipText="Enter your first name"
+  useRegister={false}
+  validationFn={() => {}}
+/> */}
                 <Field
                     id="name.middleName"
                     name="name.middleName"
                     label={t("userManagement.create_user.inputLabel.middle_name")}
-                    placeholder=" "                    
+                    placeholder=" "
                     component={Components["input"]}
-                    maxLength={50} 
+                    maxLength={50}
                 />
                 <Field
                     name="name.lastName"
@@ -56,7 +87,7 @@ const UserDetailsFormSegment = () => {
                     placeholder=" "
                     isRequired
                     component={Components["input"]}
-                    maxLength={50} 
+                    maxLength={50}
                 />
             </div>
             <div className="headingBox">
@@ -69,14 +100,14 @@ const UserDetailsFormSegment = () => {
                     placeholder=" "
                     isRequired
                     component={Components["input"]}
-                    maxLength={100} 
+                    maxLength={100}
                 />
                 <Field
                     name="address.address2"
                     label={t("userManagement.create_user.inputLabel.address_2")}
-                    placeholder=" "                    
+                    placeholder=" "
                     component={Components["input"]}
-                    maxLength={100} 
+                    maxLength={100}
                 />
             </div>
             <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
@@ -86,7 +117,7 @@ const UserDetailsFormSegment = () => {
                     placeholder=" "
                     isRequired
                     component={Components["input"]}
-                    maxLength={50} 
+                    maxLength={50}
                 />
                 <Field
                     name="address.zip"
@@ -94,23 +125,23 @@ const UserDetailsFormSegment = () => {
                     placeholder=" "
                     isRequired
                     component={Components["input"]}
-                    maxLength={10} 
+                    maxLength={10}
                 />
                 <Field
                     name="address.state"
                     fieldlabel={t("userManagement.create_user.inputLabel.state")}
                     placeholder=" "
                     component={Components["dropdown"]}
-                    isRequired                   
+                    isRequired
                     options={options}
                 />
                 <Field
                     name="contact.email"
                     label={t("userManagement.create_user.inputLabel.email")}
                     placeholder=" "
-                    isRequired                    
+                    isRequired
                     component={Components["input"]}
-                    maxLength={100} 
+                    maxLength={100}
                 />
                 <Field
                     name="contact.phone"
@@ -124,8 +155,8 @@ const UserDetailsFormSegment = () => {
                     name="contact.fax"
                     label={t("userManagement.create_user.inputLabel.fax")}
                     placeholder=" "
-                    component={Components["input"]}                    
-                    maxLength={15} 
+                    component={Components["input"]}
+                    maxLength={15}
                 />
             </div>
         </div>
