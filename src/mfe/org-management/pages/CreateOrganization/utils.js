@@ -9,7 +9,7 @@ import {
 } from '../../../../components/form/ValidationRegExp';
 
 export const INITIAL_VALUES = {
-  org_name: '',
+  org_name: 'XYZ',
   file: '',
   first_name: '',
   middle_name: '',

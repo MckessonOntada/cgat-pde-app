@@ -10,11 +10,12 @@ export default function CreateOrgStep2({ prevStepData, onEditClick, selectedAcco
 
     return <div>
         { JSON.stringify(prevStepData)}
+        <Button onClick={onEditClick}>Edit</Button>
         <div>
             <AccountsList selectedRows={selectedAccounts} setSelectedRows={setSelectedAccounts}  />
         </div>
         <div>
-            {selectedAccounts.map(item => (
+            {selectedAccounts && selectedAccounts.map(item => (
                 <div className="selected-account">
                     {item.name}
                     <Button onClick={() => onRemoveAccount(item)}>Remove</Button>

@@ -3,7 +3,7 @@ import { Field } from 'formik';
 import Components from '../../../../components/form/Components';
 import { Required } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import FileInput from '../../components/FileInput';
+import FileInput from '../../../../components/FileInput';
 
 const OrgDetailsFormSegment = () => {
   const { t } = useTranslate();
