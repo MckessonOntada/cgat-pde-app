@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { InputField as BaseInputField, Label, TextError, Required } from '@mckesson/mcp-component-library'; 
-import { useTranslate } from '@src/translations/useTranslation';
 import './Components.scss'
 
 export default function InputField(props) {
   const { field, form, children, className, label, ...rest } = props;
+
+  const inputDivRef = useRef(null);
 
   const { initialValues } = form;
 
@@ -15,13 +16,15 @@ export default function InputField(props) {
 
   // To set initial value
   useEffect(() => {
-    if(!!initialValues[field.name]){
-      form.setFieldValue(`${field.name}`,event.target.value); 
+    if(!!initialValues?.[field.name] && inputDivRef){
+      // This is hack, need to replace 
+      inputDivRef.current.querySelectorAll('input')[0].value = initialValues[field.name]; 
+      form.setFieldValue(`${field.name}`,initialValues[field.name]); 
     }
   },[initialValues])
   
   return (
-    <div className='grid'>
+    <div className='grid' ref={inputDivRef}>
       <Label htmlFor={field.name} className="label-heading">
         {label}
         {props.isRequired && <Required id="Required">
