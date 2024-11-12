@@ -3,6 +3,7 @@ import { Field } from 'formik';
 import Components from '../../../../components/form/Components';
 import { Required } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
+import FileInput from '../../components/FileInput';
 
 const OrgDetailsFormSegment = () => {
   const { t } = useTranslate();
@@ -30,9 +31,10 @@ const OrgDetailsFormSegment = () => {
       <div className="headingBox">
         <p className="form-segment-title">{t('orgManagement.create_org.org-details')}</p>
         <p className="form-instruction">
-          <Required id="Required"></Required> {t('orgManagement.create_org.required')}
+          <Required id="Required" /> {t('orgManagement.create_org.required')}
         </p>
       </div>
+
       <Field
         name="org_name"
         label={t('orgManagement.create_org.inputLabel.org_name')}
@@ -41,6 +43,19 @@ const OrgDetailsFormSegment = () => {
         component={Components['input']}
       />
 
+      {/* Use setFieldValue with FileUpload component */}
+
+      <Field name="file">
+        {({ field, form }) => (
+          <FileInput
+            onFileSelect={(file) => {
+              form.setFieldValue(field.name, file)
+            }}
+          />
+        )}
+      </Field>
+
+      {/* Remaining Fields */}
       <div className="headingBox">
         <p className="form-segment-title">{t('orgManagement.create_org.contact_details')}</p>
       </div>
@@ -76,7 +91,7 @@ const OrgDetailsFormSegment = () => {
           name="phoneInput"
           label={t('orgManagement.create_org.inputLabel.phone_no')}
           component={Components['phoneInput']}
-          className={'phoneInput'}
+          className="phoneInput"
           placeholder=" "
           isRequired
         />
