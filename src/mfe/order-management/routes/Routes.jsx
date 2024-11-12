@@ -5,7 +5,7 @@ import OrderIndex from './../pages/orders';
 import OrderCreate from './../pages/create';
 import OrderSummary from '../pages/orders/OrderSummary';
 
-function UserManagementRoutes() {
+function OrderManagementRoutes() {
   return (
     <Routes>
       <Route path={routesConfig.index} element={<OrderIndex />} />
@@ -16,4 +16,4 @@ function UserManagementRoutes() {
   );
 }
 
-export default UserManagementRoutes;
+export default OrderManagementRoutes;

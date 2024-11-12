@@ -13,6 +13,7 @@ import styles from './assets/styles/Header.module.scss';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import HeaderConfig from './__mock__';
+import FloatingDrawer from '../floating-drawer';
 
 
 const PrimaryHeader = ({ user, setUserData, debugId }) => {
@@ -120,15 +121,9 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
                     >
                         <IconMenu />
                     </button>
-                    <div
-                        className={`${styles.drawer} ${drawerOpen ? styles.open : ''}`}
-                        aria-label="Drawer menu with quick links"
-                        onClick={toggleDrawer}
-                    >
-                        <div className={styles.drawerContent}>
-                            <RightSideView />
-                        </div>
-                    </div>
+                    <FloatingDrawer anchor='right' open={drawerOpen} onClose={toggleDrawer}>
+                        <RightSideView />
+                    </FloatingDrawer>
                 </div>
             </div>
         </div>

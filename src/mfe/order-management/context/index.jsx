@@ -9,7 +9,7 @@ const initialPageConfig = {
   total: 0,
   pageSize: 10,
   pages: 0,
-  current: 1,
+  currentPage: 1,
 };
 
 const initialDataState = [];
@@ -42,7 +42,7 @@ export const OrderProvider = ({ children }) => {
   };
 
   const setCurrentPage = (page) => {
-    _setPageConfig((prevState) => ({ ...prevState, current: page }));
+    _setPageConfig((prevState) => ({ ...prevState, currentPage: page }));
   };
 
   const setOrdersData = (data) => {
