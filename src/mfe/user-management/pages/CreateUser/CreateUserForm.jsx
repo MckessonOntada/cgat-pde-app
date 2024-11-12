@@ -34,7 +34,8 @@ const UserDetailsFormSegment = () => {
             </div>
             <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
                 <Field
-                    name="first_name"
+                    id="name.firstName"
+                    name="name.firstName"
                     label={t("userManagement.create_user.inputLabel.first_name")}
                     placeholder=" "
                     isRequired
@@ -42,14 +43,15 @@ const UserDetailsFormSegment = () => {
                     maxLength={50} 
                 />
                 <Field
-                    name="middle_name"
+                    id="name.middleName"
+                    name="name.middleName"
                     label={t("userManagement.create_user.inputLabel.middle_name")}
                     placeholder=" "                    
                     component={Components["input"]}
                     maxLength={50} 
                 />
                 <Field
-                    name="last_name"
+                    name="name.lastName"
                     label={t("userManagement.create_user.inputLabel.last_name")}
                     placeholder=" "
                     isRequired
@@ -62,7 +64,7 @@ const UserDetailsFormSegment = () => {
             </div>
             <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 line-height">
                 <Field
-                    name="address_1"
+                    name="address.address1"
                     label={t("userManagement.create_user.inputLabel.address_1")}
                     placeholder=" "
                     isRequired
@@ -70,7 +72,7 @@ const UserDetailsFormSegment = () => {
                     maxLength={100} 
                 />
                 <Field
-                    name="address_2"
+                    name="address.address2"
                     label={t("userManagement.create_user.inputLabel.address_2")}
                     placeholder=" "                    
                     component={Components["input"]}
@@ -79,7 +81,7 @@ const UserDetailsFormSegment = () => {
             </div>
             <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
                 <Field
-                    name="city"
+                    name="address.city"
                     label={t("userManagement.create_user.inputLabel.city")}
                     placeholder=" "
                     isRequired
@@ -87,7 +89,7 @@ const UserDetailsFormSegment = () => {
                     maxLength={50} 
                 />
                 <Field
-                    name="zip"
+                    name="address.zip"
                     label={t("userManagement.create_user.inputLabel.zip")}
                     placeholder=" "
                     isRequired
@@ -95,7 +97,7 @@ const UserDetailsFormSegment = () => {
                     maxLength={10} 
                 />
                 <Field
-                    name="state"
+                    name="address.state"
                     fieldlabel={t("userManagement.create_user.inputLabel.state")}
                     placeholder=" "
                     component={Components["dropdown"]}
@@ -103,7 +105,7 @@ const UserDetailsFormSegment = () => {
                     options={options}
                 />
                 <Field
-                    name="email"
+                    name="contact.email"
                     label={t("userManagement.create_user.inputLabel.email")}
                     placeholder=" "
                     isRequired                    
@@ -111,7 +113,7 @@ const UserDetailsFormSegment = () => {
                     maxLength={100} 
                 />
                 <Field
-                    name="phoneInput"
+                    name="contact.phone"
                     label={t("userManagement.create_user.inputLabel.phone_no")}
                     component={Components["phoneInput"]}
                     className={"phoneInput"}
@@ -119,7 +121,7 @@ const UserDetailsFormSegment = () => {
                     isRequired
                 />
                 <Field
-                    name="fax"
+                    name="contact.fax"
                     label={t("userManagement.create_user.inputLabel.fax")}
                     placeholder=" "
                     component={Components["input"]}                    

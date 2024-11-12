@@ -1,63 +1,94 @@
 import React from 'react';
 import * as Yup from 'yup';
-import { Formik, Form } from 'formik'; 
+import { Formik, Form } from 'formik';
 import './CreateUser.scss';
 import { Button } from '@mckesson/mcp-component-library';
-import {  Stepper } from '@mckesson/mcp-component-library';
+import { Stepper } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import UserDetailsFormSegment from './CreateUserForm';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import PageHeader from '@src/components/pageHeader'
+import { useParams } from 'react-router-dom';
+import { USER_DATA } from '../../mockData/UsersData';
 
 const CreateUser = () => {
 	const { t } = useTranslate();
 	const navigate = useNavigate();
+	const { userId } = useParams();
 
+	// Fetch user data based on userId 
+	const userData = USER_DATA.find(user => user.id === parseInt(userId));
+	 
 	const goBack = () => {
 		navigate(-1);
 	};
 
 	const initialValues = {
-		first_name: '',
-		middle_name: '',
-		last_name: '',
-		address_1: '',
-		address_2: '',
-		city: '',
-		zip: '',
-		state: '',
-		email: '',
-		phoneInput: '',
-		fax: '',
-	};
-
+		name: {
+			firstName: userData?.name?.firstName || '',
+			middleName: userData?.name?.middleName || '',
+			lastName: userData?.name?.lastName || '',
+		},
+		contact: {
+			email: userData?.contact?.e_mail || '',
+			phone: userData?.contact?.phone || '',
+			fax: userData?.contact?.fax || '',
+		},
+		address: {
+			address1: userData?.address?.address1 || '',
+			address2: userData?.address?.address2 || '',
+			city: userData?.address?.city || '',
+			state: userData?.address?.state || '',
+			zip: userData?.address?.zip || '',
+		},
+	}; 
+	
 	const validationSchema = Yup.object({
-		first_name: Yup.string().matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.first_name')) // Only alphabets
-			.required(t('userManagement.create_user.validation.first_name_required')),
-		middle_name: Yup.string().matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.middle_name')) ,
-		last_name: Yup.string().matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.last_name')) // Only alphabets
-			.required(t('userManagement.create_user.validation.last_name_required')),
-		address_1: Yup.string().required(t('userManagement.create_user.validation.address_1_required')),
-		address_2: Yup.string(),
-		city: Yup.string().matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.city')) // Only alphabets
-			.required(t('userManagement.create_user.validation.city_required')),
-		zip: Yup.string()
-			.matches(/^[0-9]+$/, t('userManagement.create_user.validation.zip')) // Only digits
-			.required(t('userManagement.create_user.validation.zip_required')),
-		state: Yup.string().required(t('userManagement.create_user.validation.state_required')),
-		email: Yup.string().email(t('userManagement.create_user.validation.invalid_email')).required(t('userManagement.create_user.validation.email_required')),
-		phoneInput: Yup.string()
-			.matches(/^[0-9]{10}$/, t('userManagement.create_user.validation.phone_no'))
-			.required(t('userManagement.create_user.validation.phone_no_required')),
-		fax: Yup.string().matches(/^[0-9]{15}$/, (t('userManagement.create_user.validation.fax'))),
+		name: Yup.object({
+			firstName: Yup.string()
+				.matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.first_name')) // Only alphabets
+				.required(t('userManagement.create_user.validation.first_name_required')),
+			middleName: Yup.string()
+				.matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.middle_name')),
+			lastName: Yup.string()
+				.matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.last_name')) // Only alphabets
+				.required(t('userManagement.create_user.validation.last_name_required')),
+		}),
+
+		contact: Yup.object({
+			email: Yup.string()
+				.email(t('userManagement.create_user.validation.invalid_email'))
+				.required(t('userManagement.create_user.validation.email_required')),
+			phone: Yup.string()
+				.matches(/^[0-9]{10}$/, t('userManagement.create_user.validation.phone_no')) // 10 digits only
+				.required(t('userManagement.create_user.validation.phone_no_required')),
+			fax: Yup.string()
+				.matches(/^[0-9]{15}$/, t('userManagement.create_user.validation.fax')),
+		}),
+
+		address: Yup.object({
+			address1: Yup.string()
+				.matches(/^[A-Za-z0-9\s.,#&/-]*$/, t('userManagement.create_user.validation.address_1')) // Alphanumeric and special characters
+				.required(t('userManagement.create_user.validation.address_1_required')),
+			address2: Yup.string().matches(/^[A-Za-z0-9\s.,#&/-]*$/, t('userManagement.create_user.validation.address_1')), // Optional field
+			city: Yup.string()
+				.matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.city')) // Only alphabets
+				.required(t('userManagement.create_user.validation.city_required')),
+			state: Yup.string()
+				.required(t('userManagement.create_user.validation.state_required')),
+			zip: Yup.string()
+				.matches(/^[0-9]+$/, t('userManagement.create_user.validation.zip')) // Only digits
+				.required(t('userManagement.create_user.validation.zip_required')),
+		}),
 
 	});
- 
+
 
 	const handleSubmit = values => {
-		alert(JSON.stringify(values, null, 2));
-		console.log(JSON.stringify(values, null, 2));
+		const { id, isActive, ...rest } = userData;
+  		alert(JSON.stringify({ id, isActive, ...rest }, null, 2)); 
+		console.log(JSON.stringify({ id, isActive, ...rest }, null, 2));
 	};
 
 	const handleGoBack = () => {
@@ -98,6 +129,7 @@ const CreateUser = () => {
 			<Formik
 				initialValues={initialValues}
 				validationSchema={validationSchema}
+				enableReinitialize
 				onSubmit={(values, actions) => {
 					handleSubmit(values);
 					actions.setSubmitting(false);
@@ -106,7 +138,6 @@ const CreateUser = () => {
 			>
 				{() => (
 					<Form>
-
 						<div className="container">
 							<div className="headingBox">
 								<p className="font-bold-title-s"> {t('userManagement.create_user.details_to_create_user')}</p>
