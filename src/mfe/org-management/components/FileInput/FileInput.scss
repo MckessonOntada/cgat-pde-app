@@ -1,0 +1,79 @@
+
+
+.label-input {
+    border: 2px dashed var(--brand-color-primary);
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    display: grid;
+    border-radius: var(--brand-border-radius--4);
+    gap: var(--spacing-02);
+}
+
+.drag-heading{
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.divider-style {
+    color: var(--brand-color-background-grey);
+    width: 80px;
+}
+
+.or-box{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-02);
+}
+
+
+
+
+
+.preview-container {
+    margin-top: 15px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+  
+    img {
+      max-width: 50px;
+      max-height: 50px;
+      margin-bottom: 10px;
+    }
+  
+    .file-info {
+      text-align: initial;
+      padding-left: 10px;
+  
+      p {
+        margin: 0;
+        font-size: 18px;
+  
+        &:last-of-type {
+          font-size: 12px;
+          padding: 2px 0;
+        }
+      }
+    }
+  
+    .remove-button {
+      position: absolute;
+      right: 10px;
+      align-self: center;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: #333;
+      background-color: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  
+      &:hover {
+        background-color: #eee;
+      }
+    }
+  }

@@ -1,0 +1,20 @@
+.drawerBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.drawerModule {
+  position: fixed;
+  width: 80%;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  transition: transform 0.3s ease;
+  display: flex;
+}

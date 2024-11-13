@@ -110,7 +110,7 @@ const OrderDataTable = ({ title, type = 'normal', pagination = true }) => {
     }
     
     const handleOnPageChange = (_event, pageIndex) => {
-        setCurrentPage( pageIndex)
+        setCurrentPage(pageIndex)
     }
 
     const { currentPage, pageSize } = pageConfig;
@@ -140,19 +140,6 @@ const OrderDataTable = ({ title, type = 'normal', pagination = true }) => {
                 totalPageCount={pageConfig.pages}
                 totalRocords={pageConfig.total}
                 recordsPerPage={pageConfig.pageSize}
-                paginationRecordsPerPageMessage={
-                    <Dropdown
-                        label="Page Size"
-                        name="page-size-input"
-                        onChange={handleOnPageSizeChange}
-                        options={[8, 16, 32, 64, 128].map(s => ({ label: s.toString(), value: s }))}
-                        placeholder="select age"
-                        tooltipText=""
-                        value={pageConfig.pageSize}
-                    />
-                }
-                paginationTotalRecorsMessage={`${pageConfig.total} results`}
-                isStickyPagination={pagination}
             />
         </div>
     )

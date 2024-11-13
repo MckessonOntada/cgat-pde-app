@@ -1,0 +1,29 @@
+.iconButton{
+    display: flex;
+    gap: 4px;
+    text-transform: uppercase;
+    align-items: center;
+    font-size: var(--brand-font-size--small, 16px);
+    text-decoration: none;
+    color: var(--brand-color-font-black, #181818);
+}
+
+.wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-04);
+
+    .header{
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-04);
+
+        .title{
+            font-size: var(--brand-font-size--22);
+            font-weight: var(--brand-font-weight-600);
+        }
+    }
+
+    [class*="stepsItemTitle"] {
+    }
+}

@@ -1,3 +1,4 @@
+//Permissions Master Data
 export const PERMISSIONS_ENUM = {
     AUTHENTICATION_FLOW: {
       LOGIN_SCREEN: 'AUTHENTICATION_FLOW.LOGIN_SCREEN',

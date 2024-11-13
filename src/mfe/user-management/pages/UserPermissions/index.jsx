@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Stepper, SearchableDropdown, Switch, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import { PERMISSON_DATA, ROLES } from '../../mockData/PermissionsData';
+import { ROLES } from '../../mockData/PermissionsData';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import PageHeader from '@src/components/pageHeader';
 import { useNavigate } from 'react-router-dom';
@@ -12,8 +12,7 @@ import { USER_DATA } from '../../mockData/UsersData';
 
 const UserPermissions = () => {
     const { t } = useTranslate();
-    const navigate = useNavigate();
-    const [filteredPermissions, setFilteredPermissions] = useState({});
+    const navigate = useNavigate(); 
     const [enabledPermissions, setEnabledPermissions] = useState([]); 
     const { userId } = useParams();
 
@@ -75,30 +74,10 @@ const UserPermissions = () => {
         setEnabledPermissions(rolePermissions);
     };
 
-    useEffect(() => {
-        //This should be api call to get all the permissions
-        const apiResponse = PERMISSON_DATA[0]; // Get the first object from the array 
-        // Filter PERMISSIONS_ENUM based on the API response
-        const newFilteredPermissions = {};
-        Object.keys(apiResponse).forEach(category => {
-            if (PERMISSIONS_ENUM[category]) {
-                newFilteredPermissions[category] = Object.keys(PERMISSIONS_ENUM[category])
-                    .filter(permission => apiResponse[category].includes(permission))
-                    .reduce((acc, permission) => {
-                        acc[permission] = PERMISSIONS_ENUM[category][permission];
-                        return acc;
-                    }, {});
-            }
-        });
-
-        setFilteredPermissions(newFilteredPermissions);
-    }, []); // Empty dependency array to run only once for the first time
-
 
     const isPermissionEnabled = (category, permission) => {
         return enabledPermissions[category]?.includes(permission);
     };
-
 
     return (
         <div>
@@ -154,12 +133,12 @@ const UserPermissions = () => {
 
 
             <div className="container grid grid-gap-16">
-                {Object.keys(filteredPermissions).map((categoryKey, index) => (
+                {Object.keys(PERMISSIONS_ENUM).map((categoryKey, index) => (
                     <React.Fragment key={index}>
                         <div className="subheader-text">{t(`${categoryKey}`)}</div>
                         <div className="permission-category">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 permission-list">
-                                {Object.keys(filteredPermissions[categoryKey]).map((permissionKey, idx) => {
+                                {Object.keys(PERMISSIONS_ENUM[categoryKey]).map((permissionKey, idx) => {
                                     const label = `${categoryKey}.${permissionKey}`;
                                     const description = `${categoryKey}.${permissionKey}.DESCRIPTION`;
                                     return (

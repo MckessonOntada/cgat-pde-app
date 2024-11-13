@@ -1,10 +1,12 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-04, 36px);
+    gap: var(--spacing-04, 24px);
+    padding: var(--spacing-04, 16px);
     border-radius: var(--spacing-02, 8px);
     background-color: #fff;
     width: 100%;
     height: auto;
+    box-sizing: border-box;
   }
   
