@@ -85,7 +85,7 @@ const FloatingDrawer = ({ open, onClose, anchor = 'left', swipeable = false, chi
         aria-labelledby="drawer-title"
         aria-describedby="drawer-content"
       >
-        <div id="drawer-content">{children}</div>
+        {children}
       </aside>
     </>
   );
