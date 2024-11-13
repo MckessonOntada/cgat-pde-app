@@ -17,7 +17,7 @@ function OrderIndex() {
     const { t } = useTranslate();
     const tableTitle = 'Order Listing';
     const navigate = useNavigate();
-    const {setOrdersData} = useOrders();
+    const { setOrdersData } = useOrders();
 
     const tabs = [
         {
@@ -47,9 +47,9 @@ function OrderIndex() {
     }
 
     React.useEffect(() => {
-        if(activeTab === "SUBMITTED"){
+        if (activeTab === "SUBMITTED") {
             setOrdersData(submittedData);
-        }else{
+        } else {
             setOrdersData(pendingData);
         }
     }, [activeTab])
@@ -63,20 +63,22 @@ function OrderIndex() {
                 </Button>
             </div>
             <Panel>
-                <TabList
-                    options={tabs}
-                    alignment="left"
-                    onTabClick={handleOnTabChange}
-                    showShadow={false}
-                    variant={"text"}
-                    useAsButton={true}
-                />
-                <Panel>
-                    <FilterPanel />
-                </Panel>
-                <OrderDataTable
-                    title={tableTitle}
-                />
+                <div className={styles.moduleBody}>
+                    <TabList
+                        options={tabs}
+                        alignment="left"
+                        onTabClick={handleOnTabChange}
+                        showShadow={false}
+                        variant={"text"}
+                        useAsButton={true}
+                    />
+                    <Panel>
+                        <FilterPanel />
+                    </Panel>
+                    <OrderDataTable
+                        title={tableTitle}
+                    />
+                </div>
             </Panel>
         </div>
     );
