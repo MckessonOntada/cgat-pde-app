@@ -3,7 +3,7 @@ import Panel from "../../../components/panel";
 import { Dropdown, RadioGroup, Button } from '@mckesson/mcp-component-library';
 import { Link } from 'react-router-dom';
 import styles from './../CreateOrder.module.scss'
-import { ReactComponent as IconClose } from '@src/assets/svg/closeicon.svg';
+import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
 import FloatingDrawer from '@src/components/floating-drawer';
 import AccountsTable from './AccountTable';
 
