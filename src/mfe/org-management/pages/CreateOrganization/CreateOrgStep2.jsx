@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { Button } from '@mckesson/mcp-component-library';
 import AccountsList from '../../components/AccountsList';
 import './CreateOrg.scss';
-import View from './View';
+import OrgDetails from './OrgDetails';
 
 export default function CreateOrgStep2({
   prevStepData,
@@ -13,11 +13,11 @@ export default function CreateOrgStep2({
   const onRemoveAccount = useCallback((item) => {
     setSelectedAccounts(selectedAccounts.filter((account) => account.id !== item.id));
   }, []);
-    
+
   return (
-    <div>
+    <div className='main-account-container'>
       <div>
-            <View data = {prevStepData} onEditClick={onEditClick}/>
+        <OrgDetails data={prevStepData} onEditClick={onEditClick} />
       </div>
       <div>
         <AccountsList selectedRows={selectedAccounts} setSelectedRows={setSelectedAccounts} />

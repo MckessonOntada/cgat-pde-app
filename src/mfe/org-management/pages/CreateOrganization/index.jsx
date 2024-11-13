@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { getValidationSchema, INITIAL_VALUES } from './utils';
 import CreateOrgStep2 from './CreateOrgStep2';
-import View from './View';
 
 const CreateOrganization = () => {
   const [organizationData, setOrganizationData] = useState({
@@ -49,7 +48,6 @@ const CreateOrganization = () => {
         <p>Back to Manage Users</p>
         {/* Translations  */}
       </div>
-
       {currentStep === 1 && (
         <Formik
           initialValues={organizationData.formData}

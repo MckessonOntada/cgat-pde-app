@@ -1,7 +1,6 @@
 .main-container {
   display: grid;
   gap: var(--spacing-03);
-  height:100vh;
 }
 .container-box {
   display: grid;
@@ -83,11 +82,20 @@
   align-items: center;
 }
 
-// View Component Styling
+// Account comp
+.main-account-container{
+  display: grid;
+  gap: var(--spacing-03);
+}
+
+// OrgDetails Component Styling
 
 .view-container {
   border: 1px solid var(--brand-color-patient-primary-3);
-  padding : var(--spacing-03)
+  padding : var(--spacing-03);
+  display: grid;
+  gap: var(--spacing-03);
+  border-radius: var(--spacing-02);
 }
 
 .org-box {
@@ -97,5 +105,38 @@
 
 .org-logo-box{
   display: flex;
+  align-items: center;
   gap:var(--spacing-03)
+}
+
+.logo-img {
+  width: 56px;
+  height: 56px;
+  border-radius: var( --brand-border-radius--5);
+}
+
+.org-label {
+  font-size: 24px;
+  line-height: 28px;
+}
+
+.contact-box {
+  display: flex;
+  gap: var(--spacing-03);
+}
+
+.contact-label {
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.contact-heading {
+  font-size: 14px;
+  line-height: 18px;
+  color: #767E94;
+}
+
+.contact-details{
+  font-size: 18px;
+  line-height: 20px;
 }
