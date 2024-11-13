@@ -5,7 +5,6 @@ import { useTranslate } from '@src/translations/useTranslation';
 import './CreateOrg.scss';
 
 const OrgDetails = ({ data, onEditClick }) => {
-  console.log('Data:', data);
   const { t } = useTranslate();
 
   const fileUrl = data.file ? URL.createObjectURL(data.file) : null;
