@@ -45,8 +45,7 @@ const CreateOrganization = () => {
     <div className="main-container">
       <div className="back-navigation py2 capitalize" onClick={goBack}>
         <MdOutlineKeyboardArrowLeft size="24px" />
-        <p>Back to Manage Users</p>
-        {/* Translations  */}
+        <p>{t('orgManagement.back.organization')}</p>
       </div>
       {currentStep === 1 && (
         <Formik

@@ -49,7 +49,7 @@ const OrgDetailsFormSegment = () => {
         {({ field, form }) => (
           <FileInput
             onFileSelect={(file) => {
-              form.setFieldValue(field.name, file)
+              form.setFieldValue(field.name, file);
             }}
           />
         )}
@@ -100,7 +100,6 @@ const OrgDetailsFormSegment = () => {
           label={t('orgManagement.create_org.inputLabel.fax')}
           placeholder=" "
           component={Components['input']}
-          isRequired
         />
       </div>
       <div className="headingBox">
