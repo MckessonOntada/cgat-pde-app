@@ -3,8 +3,10 @@ import { Button } from '@mckesson/mcp-component-library';
 import AccountsList from '../../components/AccountsList';
 import './CreateOrg.scss';
 import OrgDetails from './OrgDetails';
+import { useNavigate } from 'react-router-dom';
 import { Divider } from '@mckesson/mcp-component-library';
 import { ReactComponent as delete_icon } from '@src/assets/image/delete.svg';
+import { RoutePaths } from '../../../../routes/constants';
 
 export default function CreateOrgStep2({
   prevStepData,
@@ -12,7 +14,8 @@ export default function CreateOrgStep2({
   selectedAccounts,
   setSelectedAccounts
 }) {
-  // Function to remove an account from selectedAccounts by its id
+  const navigate = useNavigate();
+
   const onRemoveAccount = useCallback(
     (item) => {
       setSelectedAccounts(selectedAccounts.filter((account) => account.id !== item.id));
@@ -22,6 +25,7 @@ export default function CreateOrgStep2({
 
   const handleCreateOrg = () => {
     // Display an alert with prevStepData and selectedAccounts data
+    navigate(RoutePaths.pathOrgManagement);
     alert(
       `Organization Details: ${JSON.stringify(
         prevStepData,
@@ -29,7 +33,10 @@ export default function CreateOrgStep2({
         2
       )}\n\nSelected Accounts: ${JSON.stringify(selectedAccounts, null, 2)}`
     );
+    
   };
+
+  const handleCancel = () => {};
 
   return (
     <div className="main-account-container">
@@ -41,7 +48,7 @@ export default function CreateOrgStep2({
           <AccountsList selectedRows={selectedAccounts} setSelectedRows={setSelectedAccounts} />
         </div>
         <div className="selected-accounts-display">
-          <h2 className="selected-account-heading ">Selected Account</h2>
+          <h2 className="selected-account-heading">Selected Account</h2>
           <Divider className="selected-account-divider" />
 
           {selectedAccounts && (
@@ -49,27 +56,28 @@ export default function CreateOrgStep2({
               {selectedAccounts.map((item) => (
                 <div key={item.id} className="selected-account">
                   <div>
-                    <p className="selected-account-label ">{item.name}</p>
-                    <p className="selected-account-label ">({item.id})</p>
+                    <p className="selected-account-label">{item.name}</p>
+                    <p className="selected-account-label">({item.id})</p>
                   </div>
                   <Button
                     Icon={delete_icon}
                     variant="tertiary"
                     iconButton={true}
                     onClick={() => onRemoveAccount(item)}
-                    size={'md'}
+                    size="md"
                     className="delete-icon"
                   />
                 </div>
               ))}
-              ;
             </div>
           )}
         </div>
       </div>
 
       <div className="btn-box">
-        <Button variant="secondary">cancel</Button>
+        <Button variant="secondary" onClick={handleCancel}>
+          Cancel
+        </Button>
         <Button onClick={handleCreateOrg}>Create organization</Button>
       </div>
     </div>
