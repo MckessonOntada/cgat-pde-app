@@ -36,11 +36,9 @@ const CreateOrganization = () => {
   };
 
   const setSelectedAccounts = (selectedAccounts) => {
-    console.log(selectedAccounts);
     setOrganizationData((prevState) => ({ ...prevState, selectedAccounts }));
   };
 
-  // console.log('organizationData.formData', organizationData.formData);
   return (
     <div className="main-container">
       <div className="back-navigation py2 capitalize" onClick={goBack}>

@@ -3,7 +3,7 @@ import { CustomDataTable } from '@mckesson/mcp-component-library';
 import AccountsData from "./AccountsData";
 import { Link } from "react-router-dom";
 
-const RECORDS_PER_PAGE = 5;
+const RECORDS_PER_PAGE = 8;
 export default function AccountsList({ originalData = AccountsData, selectedRows, setSelectedRows }) {
     const [currentPage, setCurrentPage] = useState(1);
     const totalRecords = useMemo(() => originalData.length, [originalData]);
