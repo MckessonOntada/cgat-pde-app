@@ -1,9 +1,8 @@
 import React from 'react';
 import { Field } from "formik";
 import Components from "@src/components/form/Components";
-import { Required,InputField } from '@mckesson/mcp-component-library';
-import { useTranslate } from '@src/translations/useTranslation';
-import { useForm } from 'react-hook-form';
+import { Required } from '@mckesson/mcp-component-library';
+import { useTranslate } from '@src/translations/useTranslation'; 
 
 const UserDetailsFormSegment = () => {
     const { t } = useTranslate();
@@ -23,22 +22,7 @@ const UserDetailsFormSegment = () => {
             value: "delhi",
             label: "Delhi",
         },
-    ];
-
-    // const { register, setValue, getValues } = useForm();
-    // const defaultArgs = {
-    //     validationFn: (value) => null,
-    //     onBlurFn: () => null,
-    //     onChangeFn: () => {
-    //     //   setData(data.id, { value: getValues()[questionId] });
-    //     },
-    //     register: register,
-    //   };
-
-    //   useEffect(() => {
-    //     setValue(data.id, value.value);
-    //   }, [value.value]);
-
+    ]; 
     return (
         <div className='form-container'>
             <div className="headingBox">
@@ -56,23 +40,7 @@ const UserDetailsFormSegment = () => {
                     component={Components["input"]}
                     maxLength={50}
                 />
-                {/* <InputField
-  errors={{}}
-  id="name.firstName"
-  label={t("userManagement.create_user.inputLabel.first_name")}
-  name="name.firstName"
-  value="santhi"
-  {...defaultArgs}
-  onBlurFn={() => {}}
-  onChangeFn={() => {}}
-  onInputBlur={() => {}}
-  onInputChange={() => {}}
-  preventCharacters={[]}
-  register={() => {}}
-  tooltipText="Enter your first name"
-  useRegister={false}
-  validationFn={() => {}}
-/> */}
+                
                 <Field
                     id="name.middleName"
                     name="name.middleName"
