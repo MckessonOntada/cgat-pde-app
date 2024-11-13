@@ -4,7 +4,8 @@ import { PATHS } from "./constants";
 import Home from "../pages/Dashboard";
 import UserDetail from "../pages/UserDetail";
 import CreateUser from "../pages/CreateUser";
-import EditUser from "../pages/CreateUser"
+import EditUser from "../pages/CreateUser";
+import UserPermissions from "../pages/UserPermissions";
 
 const Routes = () => {
   return (
@@ -13,8 +14,9 @@ const Routes = () => {
       <Route path={PATHS.userDetail} element={<UserDetail />} />
       <Route path={PATHS.createUser} element={<CreateUser />} />
       <Route path={PATHS.editUser} element={<EditUser />} />
+      <Route path={PATHS.userPermissions} element={<UserPermissions />} />
     </ReactRoutes>
   );
 };
 
-export default Routes;
+export default Routes; 
