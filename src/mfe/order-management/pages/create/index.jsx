@@ -1,11 +1,18 @@
 import React from 'react';
 import { Stepper } from '@mckesson/mcp-component-library';
 import styles from './CreateOrder.module.scss';
-import AccountSelection from './form-segments/AccountSelection';
+import AccountSelection from './form-segments/account-selection/AccountSelection';
 import {ReactComponent as IconArrowLeft} from '@src/assets/svg/arrow-left.svg';
+import OrderPlacementStatus from './form-segments/order-status/OrderPlacementStatus';
+import TherapySelection from './form-segments/therapy-selection';
 
 const OrderCreate = () => {
     const forms = [
+        // {
+        //     name: 'accountSelection',
+        //     label: 'Account Selection',
+        //     form: <OrderPlacementStatus />
+        // },
         {
             name: 'accountSelection',
             label: 'Account Selection',
@@ -14,7 +21,7 @@ const OrderCreate = () => {
         {
             name: 'theraphySelection',
             label: 'Theraphy Selection',
-            form: <div>Theraphy Selection</div>
+            form: <TherapySelection />
         },
         {
             name: 'patientDetails',
@@ -32,7 +39,7 @@ const OrderCreate = () => {
             form: <div>summary</div>
         },
     ]
-    const [activeForm, setActiveForm] = React.useState(0);
+    const [activeForm, setActiveForm] = React.useState(1);
     const FormToRender = forms[activeForm].form;
     return (
         <div className={styles.wrapper}>

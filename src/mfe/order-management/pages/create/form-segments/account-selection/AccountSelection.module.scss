@@ -1,0 +1,57 @@
+.wrapper{
+    .account{
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        color: var(--brand-color-text-dark-slate);  
+        .accountDetails, .controls{
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-01, 4px);
+        }
+        .accountDetails{
+            .name{
+                font-size: var(--brand-font-size--small);
+                font-weight: var(--brand-font-weight-400);
+            }
+            .address{
+                font-size: var(--brand-font-size--small);
+            }
+        }
+
+        .controls{
+            align-items: flex-end;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-04);
+            .controlWrapper{
+                width: 240px;
+            }
+        }
+    }
+    .formSegment{
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-04);
+        margin-bottom: var(--spacing-08);
+
+        .formControls{
+            display: flex;
+            direction: row;
+            gap: var(--spacing-03);
+            align-items: center;
+            justify-content: flex-end;
+        }
+    }
+    .sect{
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-03);
+
+        .sectionHeading{
+            font-size: var(--brand-font-size--default);
+            font-weight: var(--brand-font-weight-600);
+        }
+
+    }
+}
