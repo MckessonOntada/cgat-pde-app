@@ -1,0 +1,16 @@
+.account-box {
+  display: flex;
+  gap: var(--spacing-04);
+  border: 1px solid var(--brand-color-patient-primary-3);
+  border-radius: var(--brand-border-radius--6);
+  padding: var(--spacing-03);
+}
+
+.customTable-box {
+  width: 100%;
+}
+
+.selected-account-box {
+  width: 25%;
+  height: 88%;
+}
