@@ -3,11 +3,10 @@ import { Stepper, SearchableDropdown, Switch, Button } from '@mckesson/mcp-compo
 import { useTranslate } from '@src/translations/useTranslation';
 import { ROLES } from '../../mockData/PermissionsData';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
-import PageHeader from '@src/components/pageHeader';
-import { useNavigate } from 'react-router-dom';
+import PageHeader from '@src/components/pageHeader'; 
 import './index.scss';
 import { PERMISSIONS_ENUM } from './permissionsEnum'
-import { useParams } from 'react-router-dom';
+import {  useLocation, useNavigate, useParams } from 'react-router-dom';
 import { USER_DATA } from '../../mockData/UsersData';
 
 const UserPermissions = () => {
@@ -15,7 +14,8 @@ const UserPermissions = () => {
     const navigate = useNavigate(); 
     const [enabledPermissions, setEnabledPermissions] = useState([]); 
     const { userId } = useParams();
-
+    const location = useLocation();
+	const { isEdit } = location.state || {};
 	// Fetch user data based on userId 
 	const userData = userId ? USER_DATA.find(user => user.id === parseInt(userId)) : {};
 
@@ -48,6 +48,11 @@ const UserPermissions = () => {
         
         console.log('updatedUserData: ' ,JSON.stringify(updatedUserData, null, 2));
         alert(JSON.stringify(updatedUserData, null, 2));
+        if (userId) {
+			navigate(isEdit ? -1 : `../add-accounts/${userId}`);
+		  } else {
+			navigate(isEdit ? -1 : `../add-accounts/7`); // Need to Replace `7` with appropriate User id when Creating a user
+		  }
     };
 
 

@@ -34,6 +34,11 @@ function PageHeader(props) {
             {props.buttonLabels.edit}
           </Button>
         )}
+         {props.buttonLabels?.secondaryadd && (
+          <Button Icon={add_circle_bold} variant="secondary" className="button-icon" onClick={handleClick} size={'md'}>
+            {props.buttonLabels.secondaryadd}
+          </Button>
+        )}
       </div>
     </div>
   );

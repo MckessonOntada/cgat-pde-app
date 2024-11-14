@@ -2,14 +2,12 @@ import React from 'react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import './CreateUser.scss';
-import { Button } from '@mckesson/mcp-component-library';
-import { Stepper } from '@mckesson/mcp-component-library';
+import { Button ,Stepper } from '@mckesson/mcp-component-library'; 
 import { useTranslate } from '@src/translations/useTranslation';
 import UserDetailsFormSegment from './CreateUserForm';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate,useParams } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
-import PageHeader from '@src/components/pageHeader'
-import { useParams } from 'react-router-dom';
+import PageHeader from '@src/components/pageHeader' 
 import { USER_DATA } from '../../mockData/UsersData';
 
 const CreateUser = () => {
@@ -80,7 +78,7 @@ const CreateUser = () => {
 			state: Yup.string()
 				.required(t('userManagement.create_user.validation.state_required')),
 			zip: Yup.string()
-				.matches(/^[0-9]+$/, t('userManagement.create_user.validation.zip')) // Only digits
+				.matches(/^\d{5}(-\d{4})?$/, t('userManagement.create_user.validation.zip')) // Only digits
 				.required(t('userManagement.create_user.validation.zip_required')),
 		}),
 
