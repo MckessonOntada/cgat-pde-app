@@ -3,12 +3,6 @@ const common = require('./webpack.common.js');
 
 module.exports = merge(common, {
   mode: 'development',
-  ignoreWarnings: [
-    (warning) => {
-      const msg = warning.message;
-      return msg.includes('Sass');
-    }
-  ],
   devServer: {
     allowedHosts: 'all',
     port: 3000,
