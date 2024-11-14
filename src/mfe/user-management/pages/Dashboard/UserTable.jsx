@@ -5,6 +5,19 @@ import { USER_DATA } from '../../mockData/UsersData';
 import './index.scss';
 import Actions from './Actions';
 import { useTranslate } from '@src/translations/useTranslation';
+import { Link } from 'react-router-dom';
+ 
+
+function getbgColorOnRole(Role) {
+  switch (Role) {
+      case 'ORGANIZATION ADMIN':
+        return 'success';
+      case 'ORGANIZATION USER':
+          return 'primary'; 
+      default:
+          return 'info';
+  }
+}
 
 function UserTable() {
   const { t } = useTranslate();
@@ -13,6 +26,7 @@ function UserTable() {
   const [sortColumn, setSortColumn] = useState('date_updated');
   const [sortDirection, setSortDirection] = useState('desc');
   const [anchorEl, setAnchorEl] = useState(null);
+
 
   useEffect(() => {
     const sortedData = [...USER_DATA].sort((a, b) => {
@@ -50,9 +64,12 @@ function UserTable() {
       // width:'20%',
       cell: (props) => (
         <div className="cellEllipse"> 
-        <a  href={`/${props.name.firstName}-${props.name.lastName}`} style={{ color: '#007bff', fontWeight: '600' }}>
-        {`${props.name.firstName} ${props.name.lastName}`}
-        </a>
+        <Link
+          to={`${props.id}`}  // dynamically constructs the URL with userId
+          style={{ color: '#007bff', fontWeight: '600' }}
+        >
+          {`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`}
+        </Link>
       </div>
       )
     },
@@ -65,12 +82,21 @@ function UserTable() {
       cell: (props) => <div className="cellEllipse">{props.contact.e_mail}</div>
     },
     {
+      name: t('userManagement.table.dateAdded'),
+      selector: 'date_added',
+      sortable: true, 
+      wrap: true,
+      cell: (props) => <div>{props.date_added}</div>
+    },
+    {
       name: t('userManagement.table.role'),
       selector:  row =>row.contact.role.name,
       sortable: true, 
-      wrap: true,
-      cell: (props) => <div className="cellEllipse">{props.role.name}</div>
+      center: true,
+      wrap: true, 
+      cell: props => <span> <Badge text={props.role.name} type={getbgColorOnRole(props.role.name)} /></span>,
     },
+    
     {
       name: t('userManagement.table.status'),
       selector: 'status',
@@ -85,34 +111,15 @@ function UserTable() {
           )}
         </div>
       )
-    },
-    {
-      name: t('userManagement.table.dateAdded'),
-      selector: 'date_added',
-      sortable: true,
-      center: true,
-      wrap: true,
-      cell: (props) => <div>{props.date_added}</div>
-    },
-    {
-      name: t('userManagement.table.dateUpdated'),
-      selector: 'date_updated',
-      sortable: true,
-      center: true,
-      wrap: true,
-      cell: (props) => <div>{props.date_updated}</div>
-    },
-    {
-      id: 'action',
-      center: true,
-      name: t('userManagement.table.action'),
-      cell: (row) => <Actions status={row.status} row={row} />,  
-      width: '10%',
-    }
+    } 
   ];
 
   return (
-    <DataTable columns={columns} rows={filteredData} handleSortClick={handleSortClick} responsive />
+    
+    <div>
+    
+    <DataTable columns={columns} rows={filteredData} handleSortClick={handleSortClick} selectableRows={true} responsive    />
+    </div>
   );
 }
 
