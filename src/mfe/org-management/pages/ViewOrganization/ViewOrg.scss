@@ -17,3 +17,9 @@
   height: 16px;
   margin-right: 2px;
 }
+
+.btn-box {
+  display: flex;
+  justify-content: end;
+  gap: var(--spacing-03);
+}

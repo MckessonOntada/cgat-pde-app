@@ -30,13 +30,14 @@ export default function AccountsList({
           </Link>
         ),
         wrap: true,
-        width: '25%'
+        width: '15%'
       },
       {
         id: 'name',
         name: 'Account Name',
         wrap: true,
-        selector: (row) => row.dcName
+        selector: (row) => row.dcName,
+        width: '25%'
       },
       {
         id: 'org',

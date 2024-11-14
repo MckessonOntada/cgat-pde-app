@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DetailsView from '../../components/DetailsView';
 import OrganizationData from '../../mockData/OrganizationData';
 import AccountsList from '../../../../components/Accounts/AccountsList';
@@ -18,10 +18,23 @@ export default function ViewOrganization() {
 
   const navigate = useNavigate();
   const { t } = useTranslate();
+
+  const [addNewAccounts, setAddNewAccounts] = useState(false);
+  const [selectedAccounts, setSelectedAccounts] = useState([]);
+
   const goBack = () => {
     navigate(RoutePaths.pathOrgManagement);
   };
 
+  const addNewAccountsClick = () => {
+    console.log("selectedAccounts",selectedAccounts);
+    handleCancel();
+  }
+
+  const handleCancel = () => {
+    setSelectedAccounts([]);
+    setAddNewAccounts(false);
+  }
   return (
     <div className="viewOrg-container">
       <div className="back-navigation py2 capitalize" onClick={goBack}>
@@ -31,25 +44,46 @@ export default function ViewOrganization() {
 
       <h2 className="heading">Organization Details</h2>
 
-      <DetailsView data={OrganizationData} onEditClick={() => navigate(`../${InternalPaths.editOrg}/${OrganizationData.id}`,{}, true)} />
+      <DetailsView
+        data={OrganizationData}
+        onEditClick={() => navigate(`../${InternalPaths.editOrg}/${OrganizationData.id}`, {}, true)}
+      />
 
       <div className="link-acc-box">
-        <h2 className="heading">Linked Accounts</h2>
-        <Button
-          Icon={add_circle_bold}
-          variant="secondary"
-          className="button-icon"
-          onClick={goBack}
-          size={'md'}>
-          ADD ACCOUNT
-        </Button>
+        <h2 className="heading">
+          {addNewAccounts
+            ? 'Please select accounts to incorporate into the organization.'
+            : 'Linked Accounts'}
+        </h2>
+        {!addNewAccounts && (
+          <Button
+            Icon={add_circle_bold}
+            variant="secondary"
+            className="button-icon"
+            onClick={() => setAddNewAccounts(true)}
+            size={'md'}>
+            ADD ACCOUNT
+          </Button>
+        )}
       </div>
 
       <AccountsList
         data={SelectedAccountData}
-        selectableRows={false}
-        omitColumns={['distributionChannel']}
+        showSelectedAccounts={addNewAccounts}
+        omitColumns={addNewAccounts ? ['action'] : []}
+        selectableRows={addNewAccounts}
+        selectedRows={selectedAccounts}
+        setSelectedRows ={(newAccounts) => setSelectedAccounts(newAccounts)}
       />
+
+      {
+        addNewAccounts &&       <div className="btn-box">
+        <Button variant="secondary" onClick={handleCancel}>
+          Cancel
+        </Button>
+        <Button onClick={addNewAccountsClick}>Add Accounts</Button>
+      </div>
+      }
     </div>
   );
 }
