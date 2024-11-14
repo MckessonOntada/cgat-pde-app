@@ -18,9 +18,9 @@ const Dashboard = () => {
               <div id={`${card.label}-${card.index}`} className={styles.card}>
                 <Icon />
                 <Heading as="h3" color="brand-color-black">
-                  {t(`adminDashboard.card.${card.label}`)}
+                  {t(`dashboard.card.${card.label}`)}
                 </Heading>
-                <p className={styles.cardContent}>{t(`adminDashboard.card.${card.details}`)}</p>
+                <p className={styles.cardContent}>{t(`dashboard.card.${card.details}`)}</p>
               </div>
             </Link>
           );

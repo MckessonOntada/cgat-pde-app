@@ -91,13 +91,13 @@ const Navigation = () => {
     if (authState?.isAuthenticated) {
       AuthService.setAppAuthToken(authState);
 
-      const redirectTo =
-        sessionStorage.getItem('USER_ROLE') === 'SYSTEM_ADMIN'
-          ? AppRoutes.pathUserManagement
-          : AppRoutes.pathAdmin;
+      // const redirectTo =
+      //   sessionStorage.getItem('USER_ROLE') === 'SYSTEM_ADMIN'
+      //     ? AppRoutes.pathUserManagement
+      //     : AppRoutes.pathAdmin;
 
       setTimeout(() => {
-        navigate(redirectTo);
+        navigate(AppRoutes.pathAppBase);
       }, 1000);
     }
   };

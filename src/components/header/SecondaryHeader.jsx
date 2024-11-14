@@ -15,11 +15,15 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
 
     React.useEffect(() => {
         if (Array.isArray(navLinks) && navLinks.length > 0) {
-            const updatedTabs = navLinks.map(item => ({
-                ...item,
-                isActiveTab: location.pathname.includes(item.path),
-                ariaSelected: location.pathname.includes(item.path) ? 'true' : 'false'
-            }));
+            const updatedTabs = navLinks.map(item =>{
+                const isDashboard = item.configName === 'Dashboard' && location.pathname === '/';
+                const isMatchingPath = item.path !== '/' && location.pathname.includes(item.path);
+                return {
+                    ...item,
+                    isActiveTab: isDashboard || isMatchingPath,
+                    ariaSelected: (isDashboard || isMatchingPath) ? 'true' : 'false'
+                };
+            });
             setTabs(updatedTabs);
         }
     }, [navLinks, location.pathname]);
@@ -28,7 +32,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
         return (
             <div
                 className={`${styles.navItemsLeft} ${styles.secondaryNav}`}
-                
+
                 aria-label="Navigation tabs"
             >
                 <TabList
@@ -50,7 +54,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
         return (
             <div
                 className={styles.navItemsRight}
-                
+
                 aria-label="System administration view"
             >
                 <div className={styles.navOptions}>
@@ -66,7 +70,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
         <div className={`${styles.navContainer} ${styles.secondary}`} aria-label="Secondary header">
             <div
                 className={styles.wrapper}
-                
+
             >
                 <LeftSideView />
                 <RightSideView />
