@@ -4,7 +4,8 @@ import AccountsList from '@src/components/Accounts/AccountsList';
 import './CreateOrg.scss';
 import { useNavigate } from 'react-router-dom';
 import { RoutePaths } from '@src/routes/constants';
-import DetailsView from './DetailsView';
+import DetailsView from '../../components/DetailsView';
+import AllAccountsData from '../../mockData/AllAccounts';
 
 export default function OrgDetails({
   prevStepData,
@@ -41,10 +42,12 @@ export default function OrgDetails({
         <DetailsView data={prevStepData} onEditClick={onEditClick} />
       </div>
       <AccountsList
+        data={AllAccountsData}
         selectedRows={selectedAccounts}
         setSelectedRows={setSelectedAccounts}
         onRemoveAccount={onRemoveAccount}
         showSelectedAccounts
+        omitColumns={['action', 'cgatIdentifier', 'address']}
       />
       <div className="btn-box">
         <Button variant="secondary" onClick={handleCancel}>

@@ -1,0 +1,19 @@
+.viewOrg-container {
+  display: grid;
+  gap: var(--spacing-05);
+}
+
+.heading {
+  font-size: 28px;
+  line-height: 28px;
+  font-weight: 600;
+}
+.link-acc-box {
+  display: flex;
+  justify-content: space-between;
+}
+.button-icon svg {
+  width: 16px;
+  height: 16px;
+  margin-right: 2px;
+}
