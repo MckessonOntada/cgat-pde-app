@@ -66,7 +66,7 @@ export default function Dashboard() {
 
   const breadcrumbItems = [
     {
-      label: 'Admin',
+      label: 'Dashboard',
       url: '/admin'
     },
     {
