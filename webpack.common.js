@@ -28,7 +28,11 @@ module.exports = {
         }
       },
       {
-        test: /\.(css|sass|scss)$/i,
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.module\.(scss|sass)$/i,
         use: [
           'style-loader',
           {
@@ -42,6 +46,11 @@ module.exports = {
           },
           'sass-loader'
         ]
+      },
+      {
+        test: /\.(scss|sass)$/i,
+        exclude: /\.module\.(scss|sass)$/i,
+        use: ['style-loader', 'css-loader', 'sass-loader']
       },
       {
         test: /\.(woff|woff2|ttf|eot|jpg|gif)$/i,
