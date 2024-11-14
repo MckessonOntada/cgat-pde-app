@@ -1,6 +1,7 @@
 export const UserManagementEN = {
   'userManagement.header.label': 'Manage Users',
   'userManagement.add.label' : 'Add User',
+  
   'userManagement.upload.label': 'Upload Users',
   'userManagement.clearFilter.label': 'clear filters',
   'userManagement.searchFilter.label': 'Search By Name or Email',
@@ -9,7 +10,7 @@ export const UserManagementEN = {
   'userManagement.table.email': 'Email',
   'userManagement.table.role': 'Role',
   'userManagement.table.status': 'Status',
-  'userManagement.table.dateAdded': 'Date Added',
+  'userManagement.table.dateAdded': 'Date Added/Updated',
   'userManagement.table.dateUpdated': 'Date Updated',
   'userManagement.table.action': 'Action',
   'userManagement.table.action.edit': 'Edit',
@@ -46,6 +47,7 @@ export const UserManagementEN = {
   'userManagement.button.next':'Next',
   'userManagement.button.back':'Back',
   'userManagement.button.savencontinue':'Save And Continue',
+  'userManagement.button.edit':'Edit',
 
   'userManagement.create_user':'Add User',
   'userManagement.create_user.details_to_create_user' : 'Please check the details to create a organization user',
@@ -85,6 +87,9 @@ export const UserManagementEN = {
   'userManagement.stepper.option.user_details':'User Details', 
   'userManagement.stepper.option.roles_and_permissions':'Roles and Permissions', 
   'userManagement.stepper.option.associate_accounts':'Associate Accounts', 
+
+  'userManagement.header.view.edit_user' : 'User Details',
+  'userManagement.header.view.permissions_granted' : 'Permissions Granted',
 
   'userManagement.user_permissions.managePermissions': 'Manage Permissions',
   'userManagement.user_permissions.button.reset': 'Reset',

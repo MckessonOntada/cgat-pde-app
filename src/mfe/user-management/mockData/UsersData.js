@@ -1,5 +1,5 @@
 export const ROLES = [
-  { label: 'Admin', value: 'Admin' },
+  { label: 'ORGANIZATION ADMIN', value: 'ORGANIZATION ADMIN' },
   { label: 'Supervisor', value: 'Supervisor' },
   { label: 'SuperAdmin', value: 'SuperAdmin' }
 ];
@@ -34,7 +34,7 @@ export const USER_DATA = [
     ],
     role: {
       id: 0,
-      name: "Admin",
+      name: "ORGANIZATION ADMIN",
       description: "string",
       permissions: [
         "ADD_USER"
@@ -68,7 +68,7 @@ export const USER_DATA = [
     ],
     role: {
       id: 0,
-      name: "Admin",
+      name: "ORGANIZATION ADMIN",
       description: "string",
       permissions: [
         "ADD_USER"
@@ -102,7 +102,7 @@ export const USER_DATA = [
     ],
     role: {
       id: 0,
-      name: "Admin",
+      name: "ORGANIZATION USER",
       description: "string",
       permissions: [
         "ADD_USER"
@@ -136,7 +136,7 @@ export const USER_DATA = [
     ],
     role: {
       id: 0,
-      name: "Admin",
+      name: "ORGANIZATION ADMIN",
       description: "string",
       permissions: [
         "ADD_USER"
@@ -170,7 +170,7 @@ export const USER_DATA = [
     ],
     role: {
       id: 0,
-      name: "Admin",
+      name: "ORGANIZATION ADMIN",
       description: "string",
       permissions: [
         "ADD_USER"
@@ -199,7 +199,7 @@ export const USER_DATA = [
       phone: "",
       fax: ""
     },
-    role: "Admin",
+    role: "ORGANIZATION USER",
     status: "ACTIVE",
     date_added: "07/17/2024",
     date_updated: "07/07/2024"
@@ -223,12 +223,24 @@ export const USER_DATA = [
       phone: "2342342423",
       fax: "243424242340987"
     },
-    permissions : [
-      "ADD_USER"
+    permissions : {
+      "USER_MANAGEMENT" : [
+      "ADD_USERS",
+      "ADD_ROLES",
+      "APPROVE_PENDING_USER_REQUEST",
+      "MANAGE_USERS"
     ],
+    "AUTHENTICATION_FLOW": [
+      "LOGIN_SCREEN"
+    ],
+    "ORDER_MANAGEMENT": [
+      "MANAGE_ORDERS",
+      "CREATE_ORDERS"
+    ]
+    },
     role: {
       id: 0,
-      name: "Admin",
+      name: "ORGANIZATION ADMIN",
       description: "string",
       permissions: [
         "ADD_USER"
@@ -262,7 +274,7 @@ export const USER_DATA = [
     ],
     role: {
       id: 0,
-      name: "Admin",
+      name: "ORGANIZATION USER",
       description: "string",
       permissions: [
         "ADD_USER"
@@ -297,7 +309,7 @@ export const USER_DATA = [
     ],
     role: {
       id: 0,
-      name: "Admin",
+      name: "ORGANIZATION ADMIN",
       description: "string",
       permissions: [
         "ADD_USER"
@@ -331,7 +343,7 @@ export const USER_DATA = [
     ],
     role: {
       id: 0,
-      name: "Admin",
+      name: "ORGANIZATION ADMIN",
       description: "string",
       permissions: [
         "ADD_USER"
@@ -365,7 +377,7 @@ export const USER_DATA = [
     ],
     role: {
       id: 0,
-      name: "Admin",
+      name: "ORGANIZATION ADMIN",
       description: "string",
       permissions: [
         "ADD_USER"
@@ -399,7 +411,7 @@ export const USER_DATA = [
     ],
     role: {
       id: 0,
-      name: "Admin",
+      name: "ORGANIZATION ADMIN",
       description: "string",
       permissions: [
         "ADD_USER"

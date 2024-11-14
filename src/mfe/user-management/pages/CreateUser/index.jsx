@@ -6,7 +6,7 @@ import { Button } from '@mckesson/mcp-component-library';
 import { Stepper } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import UserDetailsFormSegment from './CreateUserForm';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import PageHeader from '@src/components/pageHeader'
 import { useParams } from 'react-router-dom';
@@ -16,9 +16,11 @@ const CreateUser = () => {
 	const { t } = useTranslate();
 	const navigate = useNavigate();
 	const { userId } = useParams();
+	const location = useLocation();
+	const { isEdit } = location.state || {};
 
 	// Fetch user data based on userId 
-	const userData = userId ? USER_DATA.find(user => user.id === parseInt(userId)) : {};
+	const userData = USER_DATA.find(user => user.id === parseInt(userId));
 
 	const goBack = () => {
 		navigate(-1);
@@ -95,7 +97,11 @@ const CreateUser = () => {
 			alert(JSON.stringify(values, null, 2));
 			console.log(JSON.stringify(values, null, 2));
 		}
-		navigate(`/user/user-permissions/${userId}`)
+		if (userId) {
+			navigate(isEdit ? -1 : `../user-permissions/${userId}`);
+		  } else {
+			navigate(isEdit ? -1 : `../user-permissions/7`); // Need to Replace `7` with appropriate User id when Creating a user
+		  }
 	};
 
 	const handleGoBack = () => {

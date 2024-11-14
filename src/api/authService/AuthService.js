@@ -50,12 +50,6 @@ const getIDPConfig = async () => {
 };
 
 const userLogout = async (oktaAuth) => {
-  // try {
-  //   await UserManagementService.postUserLogout();
-  // } catch (err) {
-  //   console.error('Error logging out user. Please try again.', err);
-  // }
-
   removeAuthDetails();
   oktaAuth.tokenManager.clear();
   oktaAuth.signOut({
