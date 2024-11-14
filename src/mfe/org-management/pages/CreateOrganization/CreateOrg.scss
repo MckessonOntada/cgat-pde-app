@@ -89,51 +89,6 @@
   gap: var(--spacing-03);
 }
 
-.account-box {
-  display: grid;
-  grid-template-columns: 4fr 1fr;
-  gap: 24px;
-  border: 1px solid var(--brand-color-patient-primary-3);
-  border-radius: var(--brand-border-radius--6);
-  padding: var(--spacing-03);
-}
-
-.selected-accounts-display {
-  border: 1px solid var(--brand-color-patient-primary-3);
-  background-color: #f9f9f9; // Optional styling for visual separation
-  border-radius: 4px;
-}
-
-.selected-account-heading {
-  font-size: 18px;
-  line-height: 22px;
-  padding: var(--spacing-03);
-  color: var(--brand-color-primary-slate);
-}
-
-.selected-account-divider {
-  width: 100%;
-  color: var(--brand-color-background-grey);
-}
-.selected-account-container {
-  padding: var(--spacing-03);
-}
-.selected-account {
-  display: flex;
-  justify-content: space-between;
-  padding-bottom: var(--spacing-03);
-}
-
-.selected-account-label {
-  font-size: 16px;
-  line-height: 20px;
-  color: var(--brand-color-primary--hover);
-}
-
-.delete-icon {
-  padding: 20px;
-}
-
 .btn-box {
   display: flex;
   justify-content: end;
