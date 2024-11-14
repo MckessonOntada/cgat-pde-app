@@ -1,6 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { CustomDataTable } from '@mckesson/mcp-component-library';
-import AccountsData from './AccountsData';
 import { Link } from 'react-router-dom';
 import SelectedAccounts from './SelectedAccounts';
 import './styles.scss';
@@ -9,7 +8,7 @@ const RECORDS_PER_PAGE = 8;
 
 // TODO: Create filter context
 export default function AccountsList({
-  originalData = AccountsData,
+  data,
   selectedRows,
   setSelectedRows,
   onRemoveAccount,
@@ -64,12 +63,12 @@ export default function AccountsList({
           id="my-data-table"
           type="normal"
           columns={columns}
-          data={originalData.content} // Use the sliced data for the current page
+          data={data.content} // Use the sliced data for the current page
           currentPage={currentPage}
-          totalPageCount={originalData.totalPages}
+          totalPageCount={data.totalPages}
           pagination={true}
           handleChangePage={handleChangePage}
-          totalRocords={originalData.totalElements}
+          totalRocords={data.totalElements}
           recordsPerPage={RECORDS_PER_PAGE}
           paginationTotalRecorsMessage={'results'}
           paginationRecordsPerPageMessage={`per page`}
