@@ -19,7 +19,7 @@ import FloatingDrawer from '../floating-drawer';
 const PrimaryHeader = ({ user }) => {
 
     let intl = useIntl();
-    const [drawerOpen, setDrawerOpen] = useState(true);
+    const [drawerOpen, setDrawerOpen] = useState(false);
     const toggleDrawer = () => setDrawerOpen(!drawerOpen);
 
     const LeftSideView = () => {
