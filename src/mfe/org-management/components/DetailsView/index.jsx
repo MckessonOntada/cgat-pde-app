@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as edit_pencil } from '@src/assets/image/edit_pencil.svg';
 import { useTranslate } from '@src/translations/useTranslation';
-import './CreateOrg.scss';
+import './styles.scss';
 
 const DetailsView = ({ data, onEditClick }) => {
   const { t } = useTranslate();

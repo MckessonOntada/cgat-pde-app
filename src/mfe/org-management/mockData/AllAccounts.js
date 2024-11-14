@@ -1,4 +1,4 @@
-const AccountsData = {
+const AllAccountsData = {
   totalElements: 9,
   totalPages: 2,
   content: [
@@ -60,4 +60,4 @@ const AccountsData = {
     }
   ]
 };
-export default AccountsData;
+export default AllAccountsData;
