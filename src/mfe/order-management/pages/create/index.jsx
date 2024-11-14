@@ -1,8 +1,11 @@
 import React from 'react';
 import { Stepper } from '@mckesson/mcp-component-library';
 import styles from './CreateOrder.module.scss';
-import AccountSelection from './form-segments/AccountSelection';
+import AccountSelection from './form-segments/account-selection/AccountSelection';
 import {ReactComponent as IconArrowLeft} from '@src/assets/svg/arrow-left.svg';
+import TherapySelection from './form-segments/therapy-selection';
+import { useParams } from 'react-router-dom';
+import PatientDetails from './form-segments/patient-details';
 
 const OrderCreate = () => {
     const forms = [
@@ -14,12 +17,12 @@ const OrderCreate = () => {
         {
             name: 'theraphySelection',
             label: 'Theraphy Selection',
-            form: <div>Theraphy Selection</div>
+            form: <TherapySelection />
         },
         {
             name: 'patientDetails',
             label: 'Patient Details',
-            form: <div>Patient Details</div>
+            form: <PatientDetails />
         },
         {
             name: 'additionalDetails',
@@ -33,7 +36,16 @@ const OrderCreate = () => {
         },
     ]
     const [activeForm, setActiveForm] = React.useState(0);
-    const FormToRender = forms[activeForm].form;
+    const { accountId, therapyId } = useParams();
+    React.useEffect(() => {
+        if(accountId && therapyId)
+            setActiveForm(2)
+        else if(accountId && !therapyId)
+            setActiveForm(1)
+        else setActiveForm(0)
+    }, []);
+    
+    const FormToRender = forms[activeForm]?.form;
     return (
         <div className={styles.wrapper}>
             <div className={styles.header}>

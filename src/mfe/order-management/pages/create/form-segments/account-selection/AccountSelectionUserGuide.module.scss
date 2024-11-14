@@ -1,0 +1,38 @@
+.wrapper{
+    .drawerContent{
+        height: 100vh;
+        padding: var(--spacing-03, 16px);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: space-between;
+        font-size: 12px;
+        .selectionBlock{
+            // padding: var(--spacing-02, 8px);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-02);
+            [class*="RadioGroup-module"]{
+                margin-bottom: unset;
+            }
+        }
+        .topSect{
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-04);
+            .header{
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+        }
+        .controls{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-end;
+            gap: var(--spacing-03);
+        }
+    }
+}

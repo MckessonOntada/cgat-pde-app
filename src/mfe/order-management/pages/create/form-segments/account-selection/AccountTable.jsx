@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { CustomDataTable, Dropdown, RadioGroup } from '@mckesson/mcp-component-library';
-import styles from './../CreateOrder.module.scss';
-import { AccountsTableProvider, useAccountsTable } from '../../../context/AccountContext';
-import initialAccountsData from '../__mock__';
+import styles from './../../CreateOrder.module.scss';
+import { AccountsTableProvider, useAccountsTable } from '../../../../context/AccountContext';
+import initialAccountsData from '../../__mock__';
 
 const columns = [
     {

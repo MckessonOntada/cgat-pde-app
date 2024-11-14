@@ -81,4 +81,8 @@ export const UserManagementES = {
   'userManagement.create_user.validation.fax':'S_Fax must be a valid format.',
   'userManagement.create_user.option.please_select':'S_Please Select', 
 
+
+
+  'userManagment.user_permissions.login_screen' : 'S_Login Screen'
+
 };

@@ -1,0 +1,80 @@
+.wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-03);
+
+    .actionLink {
+        display: flex;
+        gap: 4px;
+        text-transform: uppercase;
+        align-items: center;
+        font-size: var(--brand-font-size--small, 16px);
+        text-decoration: none;
+        color: var(--brand-color-font-black, #181818);
+    }
+    .lauout{
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+    .row{
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+        .col{
+            flex-grow: 1;
+            display: flex;
+            row-gap: 16px;
+            flex-direction: column;
+            .panelContainer{
+                flex-grow: 1;
+                border: 1px solid red;
+            }
+        }
+    }
+    .sect{
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-03);
+        .header{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--brand-color-grey-scale-warm-1);
+            padding-bottom: var(--spacing-01);
+            .heading{
+                font-size: var(--brand-font-size--default);
+                font-weight: var(--brand-font-weight-600);
+            }
+        }
+        .detailSegment{
+            row-gap: var(--spacing-01);
+        }
+        .pricingDetails{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end;
+            .price{
+                font-weight: var(--brand-font-weight-600);
+                font-size: var(--brand-font-size--32);
+            }
+        }
+        .fieldName{
+            font-size: var(--brand-font-size--small);
+            color: #767E94; //color const missing
+        }
+        .fieldValue{
+            font-size: var(--brand-font-size--default);
+            color: var(--brand-color-text-black);
+        }
+    }
+    .controls{
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: var(--spacing-03);
+        margin-bottom: 100px; //remove it later
+    }
+}

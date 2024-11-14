@@ -1,0 +1,26 @@
+.wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-04, 24px);
+    .summary{
+        display: grid;
+        gap: var(--spacing-02);
+        grid-template-columns: 16% auto;
+        .col{
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-01);
+        }
+        .detailSegment{
+            gap: var(--spacing-01);
+        }
+        .fieldName{
+            color: #767E94; //color const missing
+            font-size: var(--brand-font-size--small);
+        }
+        .fieldValue{
+            font-size: var(--brand-font-size--small);
+            font-weight: var(--brand-font-weight-600);
+        }
+    }
+}
