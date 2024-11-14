@@ -18,8 +18,8 @@ const CreateUser = () => {
 	const { userId } = useParams();
 
 	// Fetch user data based on userId 
-	const userData = USER_DATA.find(user => user.id === parseInt(userId));
-	 
+	const userData = userId ? USER_DATA.find(user => user.id === parseInt(userId)) : {};
+
 	const goBack = () => {
 		navigate(-1);
 	};
@@ -42,8 +42,8 @@ const CreateUser = () => {
 			state: userData?.address?.state || '',
 			zip: userData?.address?.zip || '',
 		},
-	}; 
-	
+	};
+
 	const validationSchema = Yup.object({
 		name: Yup.object({
 			firstName: Yup.string()
@@ -86,9 +86,16 @@ const CreateUser = () => {
 
 
 	const handleSubmit = values => {
-		const { id, isActive, ...rest } = userData;
-  		alert(JSON.stringify({ id, isActive, ...rest }, null, 2)); 
-		console.log(JSON.stringify({ id, isActive, ...rest }, null, 2));
+		if (userData) {
+			const { id, isActive, ...rest } = userData;
+			alert(JSON.stringify({ id, isActive, ...rest }, null, 2));
+			console.log(JSON.stringify({ id, isActive, ...rest }, null, 2));
+		}
+		else {
+			alert(JSON.stringify(values, null, 2));
+			console.log(JSON.stringify(values, null, 2));
+		}
+		navigate(`/user/user-permissions/${userId}`)
 	};
 
 	const handleGoBack = () => {
@@ -114,13 +121,13 @@ const CreateUser = () => {
 					dividerText="of"
 					stepHeaders={[
 						{
-							label: 'User Details',
+							label: t('userManagement.stepper.option.user_details'),
 						},
 						{
-							label: 'Roles and Permissions',
+							label: t('userManagement.stepper.option.roles_and_permissions'),
 						},
 						{
-							label: 'Associate Accounts',
+							label: t('userManagement.stepper.option.associate_accounts'),
 						},
 					]}
 				/>

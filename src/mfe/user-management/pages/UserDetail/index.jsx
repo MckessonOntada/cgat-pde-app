@@ -7,7 +7,7 @@ const UserDetail = () => {
   const user = USER_DATA.find((user) => user.id === parseInt(userId));
 
   if (!user) {
-    return <div>User not found.</div>;
+    return <h1>User not found test.</h1>;
   }
 
   return (
