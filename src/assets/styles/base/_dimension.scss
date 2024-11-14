@@ -1,3 +1,5 @@
+@use "../abstracts/mixins";
+
 // usage
 // h-100 for 100% height
 // w-100 for 100% width
@@ -29,7 +31,7 @@ $sizes: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12;
 }
 
 @each $size in $sizes {
-    @include respond(md) {
+    @include mixins.respond(md) {
         .md\:w-100-by-#{$size} {
             width: calc(100%/$size)
         }
@@ -37,7 +39,7 @@ $sizes: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12;
 }
 
 @each $size in $sizes {
-    @include respond(lg) {
+    @include mixins.respond(lg) {
         .lg\:w-100-by-#{$size} {
             width: calc(100%/$size)
         }
@@ -45,7 +47,7 @@ $sizes: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12;
 }
 
 @each $size in $sizes {
-    @include respond(xl) {
+    @include mixins.respond(xl) {
         .xl\:w-100-by-#{$size} {
             width: calc(100%/$size)
         }
@@ -53,7 +55,7 @@ $sizes: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12;
 }
 
 @each $size in $sizes {
-    @include respond(xxl) {
+    @include mixins.respond(xxl) {
         .xl\:w-100-by-#{$size} {
             width: calc(100%/$size)
         }

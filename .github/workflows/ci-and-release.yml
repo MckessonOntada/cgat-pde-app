@@ -7,7 +7,7 @@ on:
 
 env:
   DOCKER_REGISTRY: "mck-ontada-sre.jfrog.io" 
-  IMAGE_NAME: "mck-ontada-sre.jfrog.io/cgat-pde" 
+  IMAGE_NAME: "mck-ontada-sre.jfrog.io/cgat-pde-app" 
   PRISMA_USER:  ${{ secrets.PRISMA_USER }}
   PRISMA_PASSWORD:  ${{ secrets.PRISMA_PASSWORD }}
 
@@ -21,19 +21,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
-#       - name: Use Node.js ${{ matrix.node-version }}
-#         uses: actions/setup-node@v1
-#         with:
-#           node-version: ${{ matrix.node-version }}
-#       - run: |
-#          npm config set @mckesson-ontada:registry https://npm.pkg.github.com
-#          npm set "//npm.pkg.github.com/:_authToken" ${{ secrets.AUTH_TOKEN }}
-#          npm install
-#          npm run build
-#          yarn add typescript
-#          yarn && CI=true yarn test --passWithNoTests
-#          yarn build
 
 
       - name: Generate short SHA

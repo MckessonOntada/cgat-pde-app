@@ -1,12 +1,12 @@
-@import "../design-tokens/index";
-@import "base/base";
-@import "base/utility";
-@import "base/display";
-@import "base/grid";
-@import "base/lineHeight";
-@import "base/dimension";
-@import "base/fonts";
-@import "abstracts/mixins";
+@use "../design-tokens/index";
+@use "base/base";
+@use "base/utility";
+@use "base/display";
+@use "base/grid";
+@use "base/lineHeight";
+@use "base/dimension";
+@use "base/fonts";
+@use "abstracts/mixins";
 
 /* Scrollbar changes fro firefox*/
 * {
@@ -68,10 +68,10 @@
   bottom: 0;
   position: fixed;
 
-  @include respond(sm) {
+  @include mixins.respond(sm) {
     height: calc(100% - 192px);
   }
-  @include respond(lg) {
+  @include mixins.respond(lg) {
     height: calc(100% - 228px);
   }
 
@@ -83,11 +83,11 @@
   }
 }
 .contentNavShrink {
-  @include respond(md) {
+  @include mixins.respond(md) {
     height: calc(100% - 160px);
   }
 
-  @include respond(lg) {
+  @include mixins.respond(lg) {
     height: calc(100% - 172px);
   }
 }
@@ -100,15 +100,15 @@
   bottom: 0;
   position: fixed;
 
-  @include respond(sm) {
+  @include mixins.respond(sm) {
     height: calc(100% - 207px);
   }
 
-  @include respond(md) {
+  @include mixins.respond(md) {
     height: calc(100% - 175px);
   }
 
-  @include respond(lg) {
+  @include mixins.respond(lg) {
     height: calc(100% - 193px);
   }
 }
@@ -120,21 +120,21 @@
   bottom: 0;
   position: fixed;
 
-  @include respond(sm) {
+  @include mixins.respond(sm) {
     height: calc(100% - 152px);
   }
 
-  @include respond(lg) {
+  @include mixins.respond(lg) {
     height: calc(100% - 188px);
   }
 }
 
 .contentDashboardShrink {
-  @include respond(md) {
+  @include mixins.respond(md) {
     height: calc(100% - 120px);
   }
 
-  @include respond(lg) {
+  @include mixins.respond(lg) {
     height: calc(100% - 132px);
   }
 }
