@@ -10,6 +10,7 @@ import { RoutePaths } from '../../../../routes/constants';
 import { Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
+import { PATHS as InternalPaths } from '../../routes/constants';
 
 export default function ViewOrganization() {
   // Call api to get Org data => /practices/{practiceId}
@@ -21,8 +22,6 @@ export default function ViewOrganization() {
     navigate(RoutePaths.pathOrgManagement);
   };
 
-  const handleClick = () => {};
-
   return (
     <div className="viewOrg-container">
       <div className="back-navigation py2 capitalize" onClick={goBack}>
@@ -32,7 +31,7 @@ export default function ViewOrganization() {
 
       <h2 className="heading">Organization Details</h2>
 
-      <DetailsView data={OrganizationData} />
+      <DetailsView data={OrganizationData} onEditClick={() => navigate(`../${InternalPaths.editOrg}/${OrganizationData.id}`,{}, true)} />
 
       <div className="link-acc-box">
         <h2 className="heading">Linked Accounts</h2>
@@ -40,7 +39,7 @@ export default function ViewOrganization() {
           Icon={add_circle_bold}
           variant="secondary"
           className="button-icon"
-          onClick={handleClick}
+          onClick={goBack}
           size={'md'}>
           ADD ACCOUNT
         </Button>
