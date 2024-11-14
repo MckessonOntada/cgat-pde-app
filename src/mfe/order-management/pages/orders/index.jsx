@@ -18,7 +18,6 @@ function OrderIndex() {
     const tableTitle = 'Order Listing';
     const navigate = useNavigate();
     const { setOrdersData } = useOrders();
-
     const tabs = [
         {
             id: 1,

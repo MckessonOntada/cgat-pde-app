@@ -1,0 +1,50 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-04);
+
+    .row {
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+
+        .col {
+            flex-grow: 1;
+            display: flex;
+            row-gap: 16px;
+            flex-direction: column;
+
+            .panelContainer {
+                flex-grow: 1;
+                border: 1px solid red;
+            }
+        }
+    }
+
+    .sect {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-03);
+
+
+        .detailSegment {
+            row-gap: var(--spacing-01);
+        }
+
+        .fieldName {
+            font-size: var(--brand-font-size--small);
+            color: #767E94; //color const missing
+        }
+
+        .fieldValue {
+            font-size: var(--brand-font-size--default);
+            color: var(--brand-color-text-black);
+        }
+    }
+    .controls{
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: var(--spacing-03)
+    }
+}

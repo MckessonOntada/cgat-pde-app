@@ -3,16 +3,12 @@ import { Stepper } from '@mckesson/mcp-component-library';
 import styles from './CreateOrder.module.scss';
 import AccountSelection from './form-segments/account-selection/AccountSelection';
 import {ReactComponent as IconArrowLeft} from '@src/assets/svg/arrow-left.svg';
-import OrderPlacementStatus from './form-segments/order-status/OrderPlacementStatus';
 import TherapySelection from './form-segments/therapy-selection';
+import { useParams } from 'react-router-dom';
+import PatientDetails from './form-segments/patient-details';
 
 const OrderCreate = () => {
     const forms = [
-        // {
-        //     name: 'accountSelection',
-        //     label: 'Account Selection',
-        //     form: <OrderPlacementStatus />
-        // },
         {
             name: 'accountSelection',
             label: 'Account Selection',
@@ -26,7 +22,7 @@ const OrderCreate = () => {
         {
             name: 'patientDetails',
             label: 'Patient Details',
-            form: <div>Patient Details</div>
+            form: <PatientDetails />
         },
         {
             name: 'additionalDetails',
@@ -39,8 +35,17 @@ const OrderCreate = () => {
             form: <div>summary</div>
         },
     ]
-    const [activeForm, setActiveForm] = React.useState(1);
-    const FormToRender = forms[activeForm].form;
+    const [activeForm, setActiveForm] = React.useState(0);
+    const { accountId, therapyId } = useParams();
+    React.useEffect(() => {
+        if(accountId && therapyId)
+            setActiveForm(2)
+        else if(accountId && !therapyId)
+            setActiveForm(1)
+        else setActiveForm(0)
+    }, []);
+    
+    const FormToRender = forms[activeForm]?.form;
     return (
         <div className={styles.wrapper}>
             <div className={styles.header}>
