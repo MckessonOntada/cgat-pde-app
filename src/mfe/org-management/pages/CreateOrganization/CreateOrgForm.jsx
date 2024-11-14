@@ -3,7 +3,7 @@ import { Field } from 'formik';
 import Components from '../../../../components/form/Components';
 import { Required } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import FileInput from '../../components/FileInput';
+import FileInput from '@src/components/FileInput';
 
 const OrgDetailsFormSegment = () => {
   const { t } = useTranslate();
@@ -49,7 +49,7 @@ const OrgDetailsFormSegment = () => {
         {({ field, form }) => (
           <FileInput
             onFileSelect={(file) => {
-              form.setFieldValue(field.name, file)
+              form.setFieldValue(field.name, file);
             }}
           />
         )}
@@ -100,7 +100,6 @@ const OrgDetailsFormSegment = () => {
           label={t('orgManagement.create_org.inputLabel.fax')}
           placeholder=" "
           component={Components['input']}
-          isRequired
         />
       </div>
       <div className="headingBox">

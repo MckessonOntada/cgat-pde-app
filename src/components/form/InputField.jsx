@@ -11,11 +11,11 @@ import { getNestedValue } from './util';
 export default function InputField(props) {
   const { field, form, children, className, label, maxLength, ...rest } = props;
 
-  const inputDivRef = useRef(null);
-
   // Determine if the field has an error and is touched
   const errorMessage = getNestedValue(form.errors, field.name);
   const isFieldTouched = getNestedValue(form.touched, field.name);
+
+  const inputDivRef = useRef(null);
 
   // To set the Value for field. There is no name Present in Input Component
   const handleOnChange = (event) => {
@@ -50,7 +50,6 @@ export default function InputField(props) {
         {...rest}
         id={field.name}
         name={field.name}
-        value={field.value}
         register={() => ({
           onChange: handleOnChange,
           onBlur: handleOnBlur
@@ -60,7 +59,6 @@ export default function InputField(props) {
         size="lg"
         maxLength={maxLength}
       />
-
       {isFieldTouched && errorMessage && <TextError errorMessage={errorMessage} />}
     </div>
   );

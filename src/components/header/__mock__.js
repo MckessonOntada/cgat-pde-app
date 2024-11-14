@@ -3,7 +3,7 @@ const HeaderConfig = {
     navLinks: [
         {
             label: 'Dashboard',
-            path: 'dashboard',
+            path: '/',
             id: 1,
             configName: "Dashboard",
             isActive: true,
@@ -45,16 +45,16 @@ const HeaderConfig = {
                 }
             ]
         },
-        {
-            label: 'Admin',
-            path: 'admin',
-            id: 4,
-            configName: 'Admin',
-            isActive: true,
-            isActiveTab: false,
-            labelForMobile: 'Admin',
-            sequence: 4
-        }
+        // {
+        //     label: 'Admin',
+        //     path: 'admin',
+        //     id: 4,
+        //     configName: 'Admin',
+        //     isActive: true,
+        //     isActiveTab: false,
+        //     labelForMobile: 'Admin',
+        //     sequence: 4
+        // }
     ],
     profileOptions: [
         {
