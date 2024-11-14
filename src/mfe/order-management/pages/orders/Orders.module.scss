@@ -1,4 +1,4 @@
-@import "../../../../assets/styles/abstracts/mixins";
+@use "../../../../assets/styles/abstracts/mixins";
 
 .moduleWrapper{
     display: flex;
@@ -32,7 +32,7 @@
             gap: var(--spacing-04, 24px);
 
             .filterAutoSuggest{
-                @include respond(lg){
+                @include mixins.respond(lg){
                     min-width: 480px;
                 }
             }
