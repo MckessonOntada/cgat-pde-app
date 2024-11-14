@@ -16,10 +16,10 @@ import HeaderConfig from './__mock__';
 import FloatingDrawer from '../floating-drawer';
 
 
-const PrimaryHeader = ({ user, setUserData, debugId }) => {
+const PrimaryHeader = ({ user }) => {
 
     let intl = useIntl();
-    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [drawerOpen, setDrawerOpen] = useState(true);
     const toggleDrawer = () => setDrawerOpen(!drawerOpen);
 
     const LeftSideView = () => {
