@@ -11,7 +11,6 @@ import { getNestedValue } from './util';
 export default function InputField(props) {
   const { field, form, children, className, label, maxLength, ...rest } = props;
 
-
   // Determine if the field has an error and is touched
   const errorMessage = getNestedValue(form.errors, field.name);
   const isFieldTouched = getNestedValue(form.touched, field.name);
@@ -51,7 +50,6 @@ export default function InputField(props) {
         {...rest}
         id={field.name}
         name={field.name}
-        onChangeFn={handleOnChange}
         register={() => ({
           onChange: handleOnChange,
           onBlur: handleOnBlur
