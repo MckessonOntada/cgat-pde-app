@@ -54,7 +54,7 @@
             li {
                 border-right: unset;
 
-                &:first-child {
+                &:first-of-type {
                     padding-left: 0px;
                 }
             }
