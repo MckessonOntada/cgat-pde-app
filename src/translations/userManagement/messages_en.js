@@ -45,8 +45,9 @@ export const UserManagementEN = {
 
   'userManagement.button.next':'Next',
   'userManagement.button.back':'Back',
+  'userManagement.button.savencontinue':'Save And Continue',
 
-  'userManagement.create_user':'Create User',
+  'userManagement.create_user':'Add User',
   'userManagement.create_user.details_to_create_user' : 'Please check the details to create a organization user',
   'userManagement.create_user.personal_details':'Personal Details',
   'userManagement.create_user.contact_details':'Contact Details',
@@ -80,4 +81,209 @@ export const UserManagementEN = {
   'userManagement.create_user.validation.phone_no':'Enter a valid Phone Number.',
   'userManagement.create_user.validation.fax':'Fax must be a valid format.',
   'userManagement.create_user.option.please_select':'Please Select', 
+
+  'userManagement.stepper.option.user_details':'User Details', 
+  'userManagement.stepper.option.roles_and_permissions':'Roles and Permissions', 
+  'userManagement.stepper.option.associate_accounts':'Associate Accounts', 
+
+  'userManagement.user_permissions.managePermissions': 'Manage Permissions',
+  'userManagement.user_permissions.button.reset': 'Reset',
+  'userManagement.user_permissions.button.applyall': 'Apply All',
+  'userManagement.user_permissions.select_role': 'Select Role',
+
+  'AUTHENTICATION_FLOW': 'Authentication Flow',
+  'USER_MANAGEMENT': 'User Management',
+  'ORGANIZATION_MANAGEMENT': 'Organization Management',
+  'ORDER_MANAGEMENT': 'Order Management',
+  'APPLICATION_SETTING': 'Application Setting',
+
+  'AUTHENTICATION_FLOW.LOGIN_SCREEN': 'Login Screen',
+  'AUTHENTICATION_FLOW.LOGIN_SCREEN.DESCRIPTION': 'Allows user to login',
+  'AUTHENTICATION_FLOW.SYSTEM_ADMIN_LANDING_PAGE': 'System Admin Landing Page',
+  'AUTHENTICATION_FLOW.SYSTEM_ADMIN_LANDING_PAGE.DESCRIPTION': 'Allows system admin to land on the landing page',
+
+  'USER_MANAGEMENT.MANAGE_USERS': 'Manage Users',
+  'USER_MANAGEMENT.MANAGE_USERS.DESCRIPTION': 'Allows deactivating users and enables the deactivate option',
+  'USER_MANAGEMENT.EDIT_USER': 'Edit User',
+  'USER_MANAGEMENT.EDIT_USER.DESCRIPTION': 'Allows editing user information, enabling the edit icon',
+  'USER_MANAGEMENT.APPROVE_PENDING_USER_REQUEST': 'Approve Pending User Request',
+  'USER_MANAGEMENT.APPROVE_PENDING_USER_REQUEST.DESCRIPTION': 'Allows approving new user requests, enabling the approve action',
+  'USER_MANAGEMENT.ADD_SYSTEM_ADMIN': 'Add System Admin',
+  'USER_MANAGEMENT.ADD_SYSTEM_ADMIN.DESCRIPTION': 'Allows adding a system admin, enabling the create system admin button',
+  'USER_MANAGEMENT.ADD_USERS': 'Add Users',
+  'USER_MANAGEMENT.ADD_USERS.DESCRIPTION': 'Allows creating a new user, enabling the create user button',
+  'USER_MANAGEMENT.UPLOAD_USERS': 'Upload Users',
+  'USER_MANAGEMENT.UPLOAD_USERS.DESCRIPTION': 'Allows bulk uploading users, enabling the upload user button',
+  'USER_MANAGEMENT.MANAGE_SYSTEM_ADMIN': 'Manage System Admin',
+  'USER_MANAGEMENT.MANAGE_SYSTEM_ADMIN.DESCRIPTION': 'Allows managing system admins, enabling deactivate options',
+  'USER_MANAGEMENT.EDIT_SYSTEM_ADMIN': 'Edit System Admin',
+  'USER_MANAGEMENT.EDIT_SYSTEM_ADMIN.DESCRIPTION': 'Allows editing system admin information, enabling the edit option',
+  'USER_MANAGEMENT.ADD_ROLES': 'Add Roles',
+  'USER_MANAGEMENT.ADD_ROLES.DESCRIPTION': 'Allows adding roles, enabling the create role button',
+  'USER_MANAGEMENT.MANAGE_ROLES': 'Manage Roles',
+  'USER_MANAGEMENT.MANAGE_ROLES.DESCRIPTION': 'Allows editing and deactivating roles, enabling the edit and deactivate options',
+  'USER_MANAGEMENT.ON_BEHALF_OF_USER': 'On Behalf of User',
+  'USER_MANAGEMENT.ON_BEHALF_OF_USER.DESCRIPTION': 'Allows admin to login on another user\'s behalf, enabling login from another user button',
+
+  'ORGANIZATION_MANAGEMENT.MANAGE_ORGANIZATION': 'Manage Organization',
+  'ORGANIZATION_MANAGEMENT.MANAGE_ORGANIZATION.DESCRIPTION': 'Allows editing and deactivating the organization, enabling edit and deactivate options',
+  'ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION': 'Add Organization',
+  'ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION.DESCRIPTION': 'Allows adding an organization, enabling the create organization button',
+
+  'ORDER_MANAGEMENT.MANAGE_ORDERS': 'Manage Orders',
+  'ORDER_MANAGEMENT.MANAGE_ORDERS.DESCRIPTION': 'Allows viewing details of the order, enabling view details button',
+  'ORDER_MANAGEMENT.APPROVE_ORDERS': 'Approve Orders',
+  'ORDER_MANAGEMENT.APPROVE_ORDERS.DESCRIPTION': 'Allows approval of orders, enabling the approve order button',
+  'ORDER_MANAGEMENT.CREATE_ORDERS': 'Create Orders',
+  'ORDER_MANAGEMENT.CREATE_ORDERS.DESCRIPTION': 'Allows creating orders, enabling the create order button',
+
+  'APPLICATION_SETTING.MANAGE_CATALOG_CONFIGURATIONS': 'Manage Catalog Configurations',
+  'APPLICATION_SETTING.MANAGE_CATALOG_CONFIGURATIONS.DESCRIPTION': 'Allows managing catalog details and configuration, enabling both buttons',
+  'APPLICATION_SETTING.CREATE_QUESTIONNAIRE': 'Create Questionnaire',
+  'APPLICATION_SETTING.CREATE_QUESTIONNAIRE.DESCRIPTION': 'Allows creating a questionnaire, enabling the create button',
+  'APPLICATION_SETTING.MANAGE_SYSTEM_CONFIGURATIONS': 'Manage System Configurations',
+  'APPLICATION_SETTING.MANAGE_SYSTEM_CONFIGURATIONS.DESCRIPTION': 'Allows access to system configuration settings',
+  'APPLICATION_SETTING.VIEW_ACCOUNTS': 'View Accounts',
+  'APPLICATION_SETTING.VIEW_ACCOUNTS.DESCRIPTION': 'Allows viewing linked accounts',
+  'APPLICATION_SETTING.VIEW_INVOICES': 'View Invoices',
+  'APPLICATION_SETTING.VIEW_INVOICES.DESCRIPTION': 'Allows viewing invoices, enabling the view button',
+  'APPLICATION_SETTING.MANAGE_INVOICES': 'Manage Invoices',
+  'APPLICATION_SETTING.MANAGE_INVOICES.DESCRIPTION': 'Allows exporting to PDF and editing invoices, enabling export and edit options',
+  'APPLICATION_SETTING.VIEW_CUSTOMER_STATEMENT': 'View Customer Statement',
+  'APPLICATION_SETTING.VIEW_CUSTOMER_STATEMENT.DESCRIPTION': 'Allows viewing the customer statement, enabling view option',
+  'APPLICATION_SETTING.ADD_PAYMENT_METHOD': 'Add Payment Method',
+  'APPLICATION_SETTING.ADD_PAYMENT_METHOD.DESCRIPTION': 'Allows adding payment methods, enabling the add option',
+  'APPLICATION_SETTING.CREATE_INVOICES': 'Create Invoices',
+  'APPLICATION_SETTING.CREATE_INVOICES.DESCRIPTION': 'Allows creating invoices, enabling the create button',
+  'APPLICATION_SETTING.VIEW_PAYMENT_HISTORY': 'View Payment History',
+  'APPLICATION_SETTING.VIEW_PAYMENT_HISTORY.DESCRIPTION': 'Allows viewing payment history, enabling the view option',
+  'APPLICATION_SETTING.VIEW_PAYMENT_METHOD': 'View Payment Method',
+  'APPLICATION_SETTING.VIEW_PAYMENT_METHOD.DESCRIPTION': 'Allows viewing payment methods, enabling the view option',
+  'APPLICATION_SETTING.MANAGE_PAYMENT_METHODS': 'Manage Payment Methods',
+  'APPLICATION_SETTING.MANAGE_PAYMENT_METHODS.DESCRIPTION': 'Allows editing and deactivating payment methods, enabling edit and deactivate options'
+
+   
+ 
+  // userpermissions: {
+  //  'AUTHENTICATION_FLOW.LOGIN_SCREEN': {
+  //   label: 'Login Screen',
+  //   description: 'Allows user to login',
+  // },
+  // 'AUTHENTICATION_FLOW.SYSTEM_ADMIN_LANDING_PAGE': {
+  //   label: 'System Admin Landing Page',
+  //   description: 'Allows system admin to land on the landing page',
+  // },
+  // 'USER_MANAGEMENT.MANAGE_USERS': {
+  //   label: 'Manage Users',
+  //   description: 'Allows deactivating users and enables the deactivate option',
+  // },
+  // 'USER_MANAGEMENT.EDIT_USER': {
+  //   label: 'Edit User',
+  //   description: 'Allows editing user information, enabling the edit icon',
+  // },
+  // 'USER_MANAGEMENT.APPROVE_PENDING_USER_REQUEST': {
+  //   label: 'Approve Pending User Request',
+  //   description: 'Allows approving new user requests, enabling the approve action',
+  // },
+  // 'USER_MANAGEMENT.ADD_SYSTEM_ADMIN': {
+  //   label: 'Add System Admin',
+  //   description: 'Allows adding a system admin, enabling the create system admin button',
+  // },
+  // 'USER_MANAGEMENT.ADD_USERS': {
+  //   label: 'Add Users',
+  //   description: 'Allows creating a new user, enabling the create user button',
+  // },
+  // 'USER_MANAGEMENT.UPLOAD_USERS': {
+  //   label: 'Upload Users',
+  //   description: 'Allows bulk uploading users, enabling the upload user button',
+  // },
+  // 'USER_MANAGEMENT.MANAGE_SYSTEM_ADMIN': {
+  //   label: 'Manage System Admin',
+  //   description: 'Allows managing system admins, enabling deactivate options',
+  // },
+  // 'USER_MANAGEMENT.EDIT_SYSTEM_ADMIN': {
+  //   label: 'Edit System Admin',
+  //   description: 'Allows editing system admin information, enabling the edit option',
+  // },
+  // 'USER_MANAGEMENT.ADD_ROLES': {
+  //   label: 'Add Roles',
+  //   description: 'Allows adding roles, enabling the create role button',
+  // },
+  // 'USER_MANAGEMENT.MANAGE_ROLES': {
+  //   label: 'Manage Roles',
+  //   description: 'Allows editing and deactivating roles, enabling the edit and deactivate options',
+  // },
+  // 'USER_MANAGEMENT.ON_BEHALF_OF_USER': {
+  //   label: 'On Behalf of User',
+  //   description: 'Allows admin to login on another user\'s behalf, enabling login from another user button',
+  // },
+  // 'ORGANIZATION_MANAGEMENT.MANAGE_ORGANIZATION': {
+  //   label: 'Manage Organization',
+  //   description: 'Allows editing and deactivating the organization, enabling edit and deactivate options',
+  // },
+  // 'ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION': {
+  //   label: 'Add Organization',
+  //   description: 'Allows adding an organization, enabling the create organization button',
+  // },
+  // 'ORDER_MANAGEMENT.MANAGE_ORDERS': {
+  //   label: 'Manage Orders',
+  //   description: 'Allows viewing details of the order, enabling view details button',
+  // },
+  // 'ORDER_MANAGEMENT.APPROVE_ORDERS': {
+  //   label: 'Approve Orders',
+  //   description: 'Allows approval of orders, enabling the approve order button',
+  // },
+  // 'ORDER_MANAGEMENT.CREATE_ORDERS': {
+  //   label: 'Create Orders',
+  //   description: 'Allows creating orders, enabling the create order button',
+  // },
+  // 'APPLICATION_SETTING.MANAGE_CATALOG_CONFIGURATIONS': {
+  //   label: 'Manage Catalog Configurations',
+  //   description: 'Allows managing catalog details and configuration, enabling both buttons',
+  // },
+  // 'APPLICATION_SETTING.CREATE_QUESTIONNAIRE': {
+  //   label: 'Create Questionnaire',
+  //   description: 'Allows creating a questionnaire, enabling the create button',
+  // },
+  // 'APPLICATION_SETTING.MANAGE_SYSTEM_CONFIGURATIONS': {
+  //   label: 'Manage System Configurations',
+  //   description: 'Allows access to system configuration settings',
+  // },
+  // 'APPLICATION_SETTING.VIEW_ACCOUNTS': {
+  //   label: 'View Accounts',
+  //   description: 'Allows viewing linked accounts',
+  // },
+  // 'APPLICATION_SETTING.VIEW_INVOICES': {
+  //   label: 'View Invoices',
+  //   description: 'Allows viewing invoices, enabling the view button',
+  // },
+  // 'APPLICATION_SETTING.MANAGE_INVOICES': {
+  //   label: 'Manage Invoices',
+  //   description: 'Allows exporting to PDF and editing invoices, enabling export and edit options',
+  // },
+  // 'APPLICATION_SETTING.VIEW_CUSTOMER_STATEMENT': {
+  //   label: 'View Customer Statement',
+  //   description: 'Allows viewing the customer statement, enabling view option',
+  // },
+  // 'APPLICATION_SETTING.ADD_PAYMENT_METHOD': {
+  //   label: 'Add Payment Method',
+  //   description: 'Allows adding payment methods, enabling the add option',
+  // },
+  // 'APPLICATION_SETTING.CREATE_INVOICES': {
+  //   label: 'Create Invoices',
+  //   description: 'Allows creating invoices, enabling the create button',
+  // },
+  // 'APPLICATION_SETTING.VIEW_PAYMENT_HISTORY': {
+  //   label: 'View Payment History',
+  //   description: 'Allows viewing payment history, enabling the view option',
+  // },
+  // 'APPLICATION_SETTING.VIEW_PAYMENT_METHOD': {
+  //   label: 'View Payment Method',
+  //   description: 'Allows viewing payment methods, enabling the view option',
+  // },
+  // 'APPLICATION_SETTING.MANAGE_PAYMENT_METHODS': {
+  //   label: 'Manage Payment Methods',
+  //   description: 'Allows editing and deactivating payment methods, enabling edit and deactivate options',
+  // },
+  // }
 };
