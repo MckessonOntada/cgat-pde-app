@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
-import { CustomDataTable, Button } from '@mckesson/mcp-component-library';
+import { CustomDataTable, Button, Badge } from '@mckesson/mcp-component-library';
 import { useOrg } from '../../context/PageContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Link } from 'react-router-dom';
 import Actions from './Actions';
-import { Badge } from '@mckesson/mcp-component-library';
 
 const OrgList = () => {
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState([]);
-
-  const onEditClick = () => {
-    // TODO: On edit
-  };
 
   const columns = [
     {
@@ -59,7 +54,7 @@ const OrgList = () => {
     {
       id: 'action',
       name: t('orgManagement.table.action'),
-      cell: (props) => <Actions {...props} onEditClick={onEditClick} />,
+      cell: (row) => <Actions row={row} />, // Pass row as a named prop
       wrap: true
     }
   ];

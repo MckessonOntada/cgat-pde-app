@@ -47,6 +47,7 @@ export default function OrgDetails({
         setSelectedRows={setSelectedAccounts}
         onRemoveAccount={onRemoveAccount}
         showSelectedAccounts
+        omitColumns={['action', 'cgatIdentifier', 'address']}
       />
       <div className="btn-box">
         <Button variant="secondary" onClick={handleCancel}>
