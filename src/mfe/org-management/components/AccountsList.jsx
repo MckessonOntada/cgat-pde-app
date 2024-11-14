@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo } from 'react';
 import { CustomDataTable } from '@mckesson/mcp-component-library';
-import AccountsData from "./AccountsData";
-import { Link } from "react-router-dom";
+import AccountsData from './AccountsData';
+import { Link } from 'react-router-dom';
 
 const RECORDS_PER_PAGE = 8;
 export default function AccountsList({ originalData = AccountsData, selectedRows, setSelectedRows }) {
@@ -27,46 +27,58 @@ export default function AccountsList({ originalData = AccountsData, selectedRows
     {
       id: 'name',
       name: 'Account Name',
-      wrap: true
+      wrap: true,
+      selector: (row) => row.name
     },
     {
       id: 'org',
       name: 'Sales Org',
+      selector: (row) => row.org,
       wrap: true
     },
     {
       id: 'distributionChannel',
       name: 'Distribution Channel',
+      selector: (row) => row.distributionChannel,
       wrap: true
-    },
-
+    }
   ];
+
+  // Calculate the data slice for the current page
+  const paginatedData = useMemo(() => {
+    const start = (currentPage - 1) * RECORDS_PER_PAGE;
+    const end = start + RECORDS_PER_PAGE;
+    return originalData.slice(start, end);
+  }, [originalData, currentPage]);
 
   const handleChangePage = (e, newPage) => {
     setCurrentPage(newPage);
   };
 
-  const handleRowSelected = (values) => {
-    setSelectedRows(values.selectedRows);
-  }
+  const handleRowSelected = ({ selectedRows }) => {
+    setSelectedRows(selectedRows); // Pass entire row data to CreateOrgStep2
+  };
+
   return (
-    <CustomDataTable
-      id="accounts"
-      type="normal"
-      columns={columns}
-      data={AccountsData} 
-      currentPage={currentPage}
-      totalPageCount={totalPageCount}
-      pagination={true}
-      handleChangePage={handleChangePage}
-      totalRocords={totalRecords} // Corrected typo here
-      recordsPerPage={RECORDS_PER_PAGE}
-      paginationTotalRecorsMessage={'results'}
-      paginationRecordsPerPageMessage={`per page`}
-      isAdmin={true}
-      selectableRows
-      handleRowSelected={handleRowSelected}
-      selectedRows={selectedRows}
-    />
+    <div>
+      <CustomDataTable
+        id="my-data-table"
+        type="normal"
+        columns={columns}
+        data={paginatedData} // Use the sliced data for the current page
+        currentPage={currentPage}
+        totalPageCount={totalPageCount}
+        pagination={true}
+        handleChangePage={handleChangePage}
+        totalRocords={totalRecords}
+        recordsPerPage={RECORDS_PER_PAGE}
+        paginationTotalRecorsMessage={'results'}
+        paginationRecordsPerPageMessage={`per page`}
+        isAdmin={true}
+        selectableRows
+        handleRowSelected={handleRowSelected}
+        selectedRowId={selectedRows}
+      />
+    </div>
   );
 }

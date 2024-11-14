@@ -82,9 +82,61 @@
   align-items: center;
 }
 
-// Account comp
-.main-account-container{
+// CreateOrganizationStep2 component styling:
+
+.main-account-container {
   display: grid;
+  gap: var(--spacing-03);
+}
+
+.account-box {
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  gap: 24px;
+  border: 1px solid var(--brand-color-patient-primary-3);
+  border-radius: var(--brand-border-radius--6);
+  padding: var(--spacing-03);
+}
+
+.selected-accounts-display {
+  border: 1px solid var(--brand-color-patient-primary-3);
+  background-color: #f9f9f9; // Optional styling for visual separation
+  border-radius: 4px;
+}
+
+.selected-account-heading {
+  font-size: 18px;
+  line-height: 22px;
+  padding: var(--spacing-03);
+  color: var(--brand-color-primary-slate);
+}
+
+.selected-account-divider {
+  width: 100%;
+  color: var(--brand-color-background-grey);
+}
+.selected-account-container {
+  padding: var(--spacing-03);
+}
+.selected-account {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: var(--spacing-03);
+}
+
+.selected-account-label {
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--brand-color-primary--hover);
+}
+
+.delete-icon {
+  padding: 20px;
+}
+
+.btn-box {
+  display: flex;
+  justify-content: end;
   gap: var(--spacing-03);
 }
 
@@ -92,7 +144,7 @@
 
 .view-container {
   border: 1px solid var(--brand-color-patient-primary-3);
-  padding : var(--spacing-03);
+  padding: var(--spacing-03);
   display: grid;
   gap: var(--spacing-03);
   border-radius: var(--spacing-02);
@@ -103,16 +155,16 @@
   justify-content: space-between;
 }
 
-.org-logo-box{
+.org-logo-box {
   display: flex;
   align-items: center;
-  gap:var(--spacing-03)
+  gap: var(--spacing-03);
 }
 
 .logo-img {
   width: 56px;
   height: 56px;
-  border-radius: var( --brand-border-radius--5);
+  border-radius: var(--brand-border-radius--5);
 }
 
 .org-label {
@@ -133,10 +185,10 @@
 .contact-heading {
   font-size: 14px;
   line-height: 18px;
-  color: #767E94;
+  color: #767e94;
 }
 
-.contact-details{
+.contact-details {
   font-size: 18px;
   line-height: 20px;
 }
