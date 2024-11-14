@@ -7,7 +7,8 @@ import OrgDetailsFormSegment from './CreateOrgForm';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { getValidationSchema, INITIAL_VALUES } from './utils';
-import CreateOrgStep2 from './CreateOrgStep2';
+import CreateOrgStep2 from './';
+import { RoutePaths } from '../../../../routes/constants';
 
 const CreateOrganization = () => {
   const [organizationData, setOrganizationData] = useState({
@@ -23,7 +24,7 @@ const CreateOrganization = () => {
   const validationSchema = getValidationSchema(t);
 
   const goBack = () => {
-    navigate(-1);
+    navigate(RoutePaths.pathOrgManagement);
   };
 
   const handleFirstStep = (values) => {
