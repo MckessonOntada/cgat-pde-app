@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
 import { Button } from '@mckesson/mcp-component-library';
-import AccountsList from '../../../../components/Accounts/AccountsList';
+import AccountsList from '@src/components/Accounts/AccountsList';
 import './CreateOrg.scss';
 import { useNavigate } from 'react-router-dom';
-import { RoutePaths } from '../../../../routes/constants';
+import { RoutePaths } from '@src/routes/constants';
 import DetailsView from './DetailsView';
 
 export default function OrgDetails({
