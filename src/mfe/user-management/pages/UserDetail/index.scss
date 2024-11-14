@@ -1,0 +1,61 @@
+@import "../../../../assets/styles/abstracts/mixins"; 
+
+.userCardContainer {
+  display: grid;
+  gap: var(--spacing-04);
+  padding: var(--spacing-04);
+  border: 1px solid var(--brand-color-patient-primary-3);
+  border-radius: var(--brand-border-radius--6);
+}
+ 
+.view_label {
+  font-size: 14px;
+  color: #767E94; 
+}
+
+ 
+.user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-02);
+}
+ 
+
+.view_label {
+  font-size: 14px;
+  color: #666;
+  margin-right: 4px;
+  line-height: 18px;
+} 
+
+.label-text {
+  font-size: var(--brand-font-size--default);
+  font-weight: var(--brand-font-weight-500);
+  line-height: 20px;
+}
+
+.py2{
+padding-top: var(--spacing-02);
+}
+
+.user-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.userdetailsContainer {
+  display: grid;
+  gap: var(--spacing-04);
+  padding: var(--spacing-04);
+  border: 1px solid var(--brand-color-patient-primary-3);
+  border-radius: var(--brand-border-radius--6);
+}
+ 
+ 

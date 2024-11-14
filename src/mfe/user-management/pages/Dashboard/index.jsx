@@ -62,10 +62,11 @@ export default function Dashboard() {
         navigateTo={PATHS.createUser}
         buttonLabels={buttonLabels}
       />
-
+      
       <UserProvider>
         <div className="userCardContainer" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
           <Filters showRoleDropdown={true} showStatusDropdown={true} />
+          <h1> User Listing</h1>
           <TabList
             options={tabs}
             alignment="left"

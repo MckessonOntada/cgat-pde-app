@@ -4,14 +4,15 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import { ReactComponent as upload_bottom } from '@src/assets/image/upload_bottom.svg';
-
+import { ReactComponent as pencil_write_edit } from '@src/assets/image/pencil-write-edit.svg';
 
 function PageHeader(props) {
   const { t } = useTranslate();
   const navigate = useNavigate();
-
+  
   const handleClick = () => {
-    navigate(props.navigateTo);
+    const { navigateTo, state } = props;
+    navigate(navigateTo, state ? { state } : {});
   };
 
   return (
@@ -26,6 +27,11 @@ function PageHeader(props) {
         {props.buttonLabels?.upload && (
           <Button Icon={upload_bottom} className="button-icon" size={'md'}>
             {props.buttonLabels.upload}
+          </Button>
+        )}
+        {props.buttonLabels?.edit && (
+          <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" onClick={handleClick} size={'md'}>
+            {props.buttonLabels.edit}
           </Button>
         )}
       </div>
