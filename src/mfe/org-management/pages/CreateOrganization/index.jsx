@@ -7,8 +7,8 @@ import OrgDetailsFormSegment from './CreateOrgForm';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { getValidationSchema, INITIAL_VALUES } from './utils';
-import CreateOrgStep2 from './';
 import { RoutePaths } from '../../../../routes/constants';
+import OrgDetails from './OrgDetails';
 
 const CreateOrganization = () => {
   const [organizationData, setOrganizationData] = useState({
@@ -80,7 +80,7 @@ const CreateOrganization = () => {
         </Formik>
       )}
       {currentStep === 2 && (
-        <CreateOrgStep2
+        <OrgDetails
           prevStepData={organizationData.formData}
           onEditClick={() => setCurrentStep(1)}
           selectedAccounts={organizationData.selectedAccounts}
