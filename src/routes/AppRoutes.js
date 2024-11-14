@@ -9,8 +9,8 @@ import { element } from 'prop-types';
 
 //TODO: Determine if Routes are cause of pages rerendering multiple times unnecessarily
 
-const AdminPage = React.lazy(() => import('../pages/Admin'));
-const routeAdmin = { path: RoutePaths.pathAdmin, element: AdminPage };
+const dashBoardPage = React.lazy(() => import('../pages/Admin'));
+const routeAdmin = { path: RoutePaths.pathAppBase, element: dashBoardPage };
 
 const UserPage = React.lazy(() => import('../mfe/user-management'));
 // const routeUserManagement = { path: RoutePaths.pathUserManagement, element: Outlet, childr}
