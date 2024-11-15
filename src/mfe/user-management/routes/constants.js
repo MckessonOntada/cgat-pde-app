@@ -2,6 +2,7 @@ export const PATHS = {
   dashboard: "/",
   userDetail: ":userId",
   createUser: "create-user",
-  editUser:"edit-user/:userId",
-  userPermissions:"/user-permissions/:userId"
+  editUser:"edit-user",
+  userPermissions:"user-permissions",
+  addAccounts:"add-accounts"
 };
