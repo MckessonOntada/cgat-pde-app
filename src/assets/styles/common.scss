@@ -10,6 +10,19 @@
     width: 100%;
 }
 
+.MCP-Icon-Button{
+    text-decoration: none;
+    color: var(--brand-color-primary);
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-02);
+    padding-top: 0px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
 
 .autoSuggestSearch-container {
     width: 100%;

@@ -127,7 +127,7 @@ const OrderDataTable = ({ title, type = 'normal', pagination = true }) => {
                 gap: '16px'
             }}
         >
-            <p className={styles.title}>{title}</p>
+            <h1 className='font-bold-title-l'>{title}</h1>
             <CustomDataTable
                 type={type}
                 columns={columns}

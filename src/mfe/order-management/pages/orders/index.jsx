@@ -57,8 +57,7 @@ function OrderIndex() {
     return (
         <div className={styles.moduleWrapper}>
             <PageHeader title={t('orderManagement.headings.orders')}>
-
-                <Button Icon={AddCircleFilled} onClick={handleOnClick} >
+                <Button Icon={AddCircleFilled} onClick={handleOnClick} size="md" >
                     {t("orderManagement.captions.createNewUser")}
                 </Button>
             </PageHeader>

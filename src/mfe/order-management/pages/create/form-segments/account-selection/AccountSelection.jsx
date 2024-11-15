@@ -1,7 +1,7 @@
 import React from 'react';
 import Panel from '../../../../components/panel';
 import { Dropdown, Button } from '@mckesson/mcp-component-library';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './AccountSelection.module.scss'
 import FloatingDrawer from '@src/components/floating-drawer';
 import AccountsTable from './AccountTable';
@@ -15,6 +15,7 @@ const options = [
 
 const AccountSelection = () => {
     const [open, setOpen] = React.useState(false);
+    const navigate = useNavigate();
 
     const handleOnClose = () => {
         setOpen(false);
@@ -61,7 +62,7 @@ const AccountSelection = () => {
                 <div className={styles.formControls}>
                     <Button
                         label="Cancel"
-                        onClick={() => { }}
+                        onClick={() => navigate('../')}
                         variant="secondary"
                     >
                         Cancel
