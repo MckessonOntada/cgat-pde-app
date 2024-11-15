@@ -43,6 +43,10 @@ function MainLayout() {
                   <Route path={'/organization'} element={<OrgEntryPoint />} />
                   <Route path={'/organization/*'} element={<OrgEntryPoint />} />
                 </Route>
+                <Route path={AppRoutes.pathSystemAdminManagement} element={<Outlet />}>
+                  <Route path={'/system-admin'} element={<UsersEntryPoint />} />
+                  <Route path={'/system-admin/*'} element={<UsersEntryPoint />} />
+                </Route>
               </Routes>
             </div>
           ) : (
