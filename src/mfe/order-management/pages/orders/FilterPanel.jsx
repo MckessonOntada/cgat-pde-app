@@ -38,67 +38,59 @@ const FilterPanel = ({ onApplyFilters }) => {
 
 
     return (
-        <div className={styles.filterPanel}>
-            <div className={styles.filterHeader}>
-                <button
-                    className={styles.iconButton}
-                    onClick={handleOnExpandClick}
-                >
-                    {
-                        isExpanded ?
-                            <ArrowDown />
-                            :
-                            <ArrowRight />
-                    }
-                </button>
-                <div className={styles.filterAutoSuggest}>
-                    <AutoSuggestSearch
-                        label=""
-                        value={filterState.searchQuery}
-                        onChangeInput={handleOnQueryChange}
-                        outline={true}
-                        placeHolder={t('orderManagement.controls.autosearch.label')}
-                    />
-                </div>
-            </div>
-            <ToggleUI in={isExpanded}>
-                <div className={styles.filterOptionsWrapper}>
-                    <Divider color={'#BAC5CC'} />
-                    <div className={styles.filterOptions}>
-                        {/* <SearchableDropdown
-                            id="role"
-                            isSuccess
-                            value={filters.roles}
-                            label={t('userManagement.table.role')}
-                            name={t('userManagement.table.role')}
-                            isRequired={false}
-                            onChange={handleOnRoleChange}
-                            options={ROLES}
-                            clearAllSelectedValues={() => { }}
-                        /> */}
-
-                        <SearchableDropdown
-                            id="status"
-                            isSuccess
-                            value={filterState.status}
-                            label={t('orderManagement.captions.status')}
-                            name={'status'}
-                            isRequired={false}
-                            onChange={handleOnStatusChange}
-                            options={STATUS}
-                            clearAllSelectedValues={() => { }}
-                        />
-
-                        <Button
-                            type="button"
-                            label={t('orderManagement.captions.clearFilters')}
-                            textButton
-                            className="txtbtn"
-                            onClick={clearFilters}
-                        />
+        <div className="filterBox line-height" >
+            <div className={styles.filterPanel}>
+                <div  className="toggle-box">
+                    <div className={styles.filterHeader}>
+                        <button
+                            className={styles.iconButton}
+                            onClick={handleOnExpandClick}
+                        >
+                            {
+                                isExpanded ?
+                                    <ArrowDown />
+                                    :
+                                    <ArrowRight />
+                            }
+                        </button>
+                        <div className="autoSuggestSearch-container">
+                            <AutoSuggestSearch
+                                label=" "
+                                value={filterState.searchQuery}
+                                onChangeInput={handleOnQueryChange}
+                                outline={true}
+                                placeHolder={t('orderManagement.controls.autosearch.label')}
+                            />
+                        </div>
                     </div>
                 </div>
-            </ToggleUI>
+                <ToggleUI in={isExpanded}>
+                    <div className={styles.filterOptionsWrapper}>
+                        <Divider color={'#BAC5CC'} />
+                        <div className={styles.filterOptions}>
+                            <SearchableDropdown
+                                id="status"
+                                isSuccess
+                                value={filterState.status}
+                                label={t('orderManagement.captions.status')}
+                                name={'status'}
+                                isRequired={false}
+                                onChange={handleOnStatusChange}
+                                options={STATUS}
+                                clearAllSelectedValues={() => { }}
+                            />
+
+                            <Button
+                                type="button"
+                                label={t('orderManagement.captions.clearFilters')}
+                                textButton
+                                className="txtbtn"
+                                onClick={clearFilters}
+                            />
+                        </div>
+                    </div>
+                </ToggleUI>
+            </div>
         </div>
     )
 }
