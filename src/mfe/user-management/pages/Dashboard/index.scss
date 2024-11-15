@@ -34,18 +34,7 @@
   padding: var(--spacing-04);
   border: 1px solid var(--brand-color-patient-primary-3);
   border-radius: var(--brand-border-radius--6);
-}
-
-.flexBox {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-04);
-  flex-wrap: wrap;
-}
-
-.flexBox.spaceBetween {
-  justify-content: space-between;
-}
+} 
 
 .py4 {
   padding-top: var(--spacing-04);
@@ -189,11 +178,3 @@
   white-space: nowrap;
 }
 
-
-.bgcolorRoleAdmin{
-  background: #B3CC51; 
-}
-
-.bgcolorRoleUser{
-  background: #1E394E; 
-}
