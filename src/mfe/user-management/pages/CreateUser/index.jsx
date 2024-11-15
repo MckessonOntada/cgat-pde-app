@@ -9,6 +9,7 @@ import { useLocation, useNavigate,useParams } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import PageHeader from '@src/components/pageHeader' 
 import { USER_DATA } from '../../mockData/UsersData';
+import { PATHS } from "../../routes/constants";
 
 const CreateUser = () => {
 	const { t } = useTranslate();
@@ -96,9 +97,9 @@ const CreateUser = () => {
 			console.log(JSON.stringify(values, null, 2));
 		}
 		if (userId) {
-			navigate(isEdit ? -1 : `../user-permissions/${userId}`);
+			navigate(isEdit ? -1 : `../${PATHS.userPermissions}/${userId}`);
 		  } else {
-			navigate(isEdit ? -1 : `../user-permissions/7`); // Need to Replace `7` with appropriate User id when Creating a user
+			navigate(isEdit ? -1 : `../${PATHS.userPermissions}/7`); // Need to Replace `7` with appropriate User id when Creating a user
 		  }
 	};
 

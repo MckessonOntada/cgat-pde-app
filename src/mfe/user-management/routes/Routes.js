@@ -14,9 +14,9 @@ const Routes = () => {
       <Route path={PATHS.dashboard} element={<Home />} />
       <Route path={PATHS.userDetail} element={<UserDetail />} />
       <Route path={PATHS.createUser} element={<CreateUser />} />
-      <Route path={PATHS.editUser} element={<EditUser />} />
-      <Route path={PATHS.userPermissions} element={<UserPermissions />} />
-      <Route path={PATHS.addAccounts} element={<AddAccounts />} />
+      <Route path={`${PATHS.editUser}/:userId`} element={<EditUser />} /> 
+      <Route path={`${PATHS.userPermissions}/:userId`} element={<UserPermissions />} />
+      <Route path={`${PATHS.addAccounts}/:userId`}  element={<AddAccounts />} />
     </ReactRoutes>
   );
 };

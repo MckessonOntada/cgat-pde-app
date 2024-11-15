@@ -8,6 +8,7 @@ import './index.scss';
 import { PERMISSIONS_ENUM } from './permissionsEnum'
 import {  useLocation, useNavigate, useParams } from 'react-router-dom';
 import { USER_DATA } from '../../mockData/UsersData';
+import { PATHS } from '../../routes/constants';
 
 const UserPermissions = () => {
     const { t } = useTranslate();
@@ -49,9 +50,9 @@ const UserPermissions = () => {
         console.log('updatedUserData: ' ,JSON.stringify(updatedUserData, null, 2));
         alert(JSON.stringify(updatedUserData, null, 2));
         if (userId) {
-			navigate(isEdit ? -1 : `../add-accounts/${userId}`);
+			navigate(isEdit ? -1 :`../${PATHS.addAccounts}/${userId}`);
 		  } else {
-			navigate(isEdit ? -1 : `../add-accounts/7`); // Need to Replace `7` with appropriate User id when Creating a user
+			navigate(isEdit ? -1 :`../${PATHS.addAccounts}/7`); // Need to Replace `7` with appropriate User id when Creating a user
 		  }
     };
 

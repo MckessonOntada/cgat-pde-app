@@ -10,6 +10,7 @@ import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 import SelectedAccountData from '@src/mfe/org-management/mockData/SelectedAccountData';
 import AccountsList from '@src/components/Accounts/AccountsList';
 import arrow_right from '@src/assets/image/arrow_right.svg';
+import { PATHS } from "../../routes/constants";
 
 function getbgColorOnRole(Role) {
   switch (Role) {
@@ -85,11 +86,10 @@ const UserDetail = () => {
       <div>
         <PageHeader
           title={t('userManagement.header.view.edit_user')}
-          navigateTo={`../edit-user/${userId}`}
+          navigateTo={`../${PATHS.editUser}/${userId}`}
           buttonLabels={buttonLabels}
           state={{ isEdit: true }}
-        />
-
+        /> 
         <div className="userCardContainer">
           <div className="user-header">
             <div className="user-info">
@@ -142,8 +142,8 @@ const UserDetail = () => {
           </div>
         </div>
         <PageHeader
-          title={t('userManagement.header.view.permissions_granted')}
-          navigateTo={`../user-permissions/${userId}`}
+          title={t('userManagement.header.view.permissions_granted')} 
+          navigateTo={`../${PATHS.userPermissions}/${userId}`}
           buttonLabels={buttonLabels}
           state={{ isEdit: true }} />
 
@@ -172,8 +172,8 @@ const UserDetail = () => {
           })}
         </div>
         <PageHeader
-          title={t('userManagement.header.view.linked_accounts')}
-          navigateTo={`../add-accounts/${userId}`}
+          title={t('userManagement.header.view.linked_accounts')} 
+          navigateTo={`../${PATHS.addAccounts}/${userId}`}
           buttonLabels={buttonLabelsAccount}
           state={{ isEdit: true }} />
         {isSuccess && isAlertVisible && (
