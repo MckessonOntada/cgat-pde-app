@@ -1,5 +1,5 @@
-const AccountsData = {
-  totalElements: 9,
+const SelectedAccountData = {
+  totalElements: 8,
   totalPages: 2,
   content: [
     {
@@ -60,4 +60,4 @@ const AccountsData = {
     }
   ]
 };
-export default AccountsData;
+export default SelectedAccountData;

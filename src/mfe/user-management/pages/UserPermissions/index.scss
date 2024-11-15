@@ -6,7 +6,7 @@
 } 
 
 .subheader-text {
-  font-size: var(--brand-font-size--large);
+  font-size: var(--brand-font-size--20);
   font-weight: var(--brand-font-weight-700);
 }
 
@@ -44,13 +44,15 @@
   .permission-info h4{
     display: block;
     font-size: 1.6em !important; 
-    font-weight: var(--brand-font-weight-700) !important;
+    font-weight: var(--brand-font-weight-700) !important;   
   }
 
   .permission-info p {
     font-weight: var(--brand-font-weight-400);
     font-size:  var(--brand-font-size--15);
     line-height: 18px;
+    font-size: 14px; 
+    color: #3C5C6E;
   }
   
   

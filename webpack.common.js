@@ -14,6 +14,12 @@ module.exports = {
   entry: {
     remote: './src/index.js'
   },
+  ignoreWarnings: [
+    (warning) => {
+      const msg = warning.message;
+      return msg.includes('Sass');
+    }
+  ],
   module: {
     rules: [
       {
