@@ -11,6 +11,7 @@ import { routesConfig } from './../../routes/constants';
 import FilterPanel from './FilterPanel';
 import { pendingData, submittedData } from './__mock__';
 import { useOrders } from '../../context';
+import PageHeader from '../../../../components/pageHeader';
 
 function OrderIndex() {
     const [activeTab, setActiveTab] = useState("PENDING SUBMISSION");
@@ -55,13 +56,13 @@ function OrderIndex() {
 
     return (
         <div className={styles.moduleWrapper}>
-            <div className={styles.moduleControls}>
-                <p className={styles.moduleTitle}>{t('orderManagement.headings.orders')}</p>
+            <PageHeader title={t('orderManagement.headings.orders')}>
+
                 <Button Icon={AddCircleFilled} onClick={handleOnClick} >
                     {t("orderManagement.captions.createNewUser")}
                 </Button>
-            </div>
-            <Panel>
+            </PageHeader>
+            <div className='MCP-CardContainer'>
                 <div className={styles.moduleBody}>
                     <TabList
                         options={tabs}
@@ -71,14 +72,14 @@ function OrderIndex() {
                         variant={"text"}
                         useAsButton={true}
                     />
-                    <Panel>
+                    <div className='MCP-CardContainer'>
                         <FilterPanel />
-                    </Panel>
+                    </div>
                     <OrderDataTable
                         title={tableTitle}
                     />
                 </div>
-            </Panel>
+            </div>
         </div>
     );
 }
