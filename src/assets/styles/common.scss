@@ -1,3 +1,5 @@
+@use "abstracts/mixins";
+
 .MCP-CardContainer {
     display: grid;
     gap: var(--spacing-04);
@@ -6,4 +8,13 @@
     border-radius: var(--brand-border-radius--6);
     background-color: var(--brand-color-background-white);
     width: 100%;
+}
+
+
+.autoSuggestSearch-container {
+    width: 100%;
+
+    @include mixins.respond(lg) {
+        width: 460px;
+    }
 }

@@ -55,7 +55,7 @@ const FilterPanel = ({ onApplyFilters }) => {
                         </button>
                         <div className="autoSuggestSearch-container">
                             <AutoSuggestSearch
-                                label=""
+                                label=" "
                                 value={filterState.searchQuery}
                                 onChangeInput={handleOnQueryChange}
                                 outline={true}

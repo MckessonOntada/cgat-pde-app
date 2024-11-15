@@ -29,10 +29,6 @@
             align-items: center;
             gap: var(--spacing-04, 24px);
 
-            .filterAutoSuggest{
-                @include mixins.respond(lg){
-                }
-            }
         }
         .filterOptionsWrapper{
             margin-top: var(--spacing-04, 24px);
