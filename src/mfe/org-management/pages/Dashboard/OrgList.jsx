@@ -4,6 +4,7 @@ import { useOrg } from '../../context/PageContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Link } from 'react-router-dom';
 import Actions from './Actions';
+import { PATHS } from '../../routes/constants';
 
 const OrgList = () => {
   const { t } = useTranslate();
@@ -14,7 +15,7 @@ const OrgList = () => {
       id: 'name',
       name: t('orgManagement.table.name'),
       cell: (row) => (
-        <Link to={row.url} className="org-name">
+        <Link to={PATHS.viewOrg.replace(':orgId', row.id)} className="org-name">
           {row.name}
         </Link>
       ),

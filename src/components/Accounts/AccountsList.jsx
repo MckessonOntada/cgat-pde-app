@@ -30,13 +30,15 @@ export default function AccountsList({
           </Link>
         ),
         wrap: true,
-        width: '25%'
+        width: '15%'
       },
       {
         id: 'name',
         name: 'Account Name',
         wrap: true,
-        selector: (row) => row.dcName
+        selector: (row) => row.dcName,
+        width: '25%',
+        cell: (row) => <div className="cellEllipse">{row.dcName}</div>
       },
       {
         id: 'org',
@@ -49,6 +51,7 @@ export default function AccountsList({
         name: 'Distribution Channel',
         selector: (row) => row.distributionChannel,
         wrap: true,
+        cell: (row) => <div className="cellEllipse">{row.distributionChannel}</div>,
         omit: omitColumns.includes('distributionChannel')
       },
       {
@@ -62,7 +65,7 @@ export default function AccountsList({
         id: 'cgatIdentifier',
         center: true,
         name: 'CGAT Identifier', // t('userManagement.table.action'),
-        cell: (row) => row.cgatIdentifier,
+        cell: (row) => <div className="cellEllipse">{row.cgatIdentifier}</div>,
         omit: omitColumns.includes('cgatIdentifier')
       },
       {
