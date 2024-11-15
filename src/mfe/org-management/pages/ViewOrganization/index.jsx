@@ -27,14 +27,14 @@ export default function ViewOrganization() {
   };
 
   const addNewAccountsClick = () => {
-    console.log("selectedAccounts",selectedAccounts);
+    console.log('selectedAccounts', selectedAccounts);
     handleCancel();
-  }
+  };
 
   const handleCancel = () => {
     setSelectedAccounts([]);
     setAddNewAccounts(false);
-  }
+  };
   return (
     <div className="viewOrg-container">
       <div className="back-navigation py2 capitalize" onClick={goBack}>
@@ -70,20 +70,20 @@ export default function ViewOrganization() {
       <AccountsList
         data={SelectedAccountData}
         showSelectedAccounts={addNewAccounts}
-        omitColumns={addNewAccounts ? ['action'] : []}
+        omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']}
         selectableRows={addNewAccounts}
         selectedRows={selectedAccounts}
-        setSelectedRows ={(newAccounts) => setSelectedAccounts(newAccounts)}
+        setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)}
       />
 
-      {
-        addNewAccounts &&       <div className="btn-box">
-        <Button variant="secondary" onClick={handleCancel}>
-          Cancel
-        </Button>
-        <Button onClick={addNewAccountsClick}>Add Accounts</Button>
-      </div>
-      }
+      {addNewAccounts && (
+        <div className="btn-box">
+          <Button variant="secondary" onClick={handleCancel}>
+            Cancel
+          </Button>
+          <Button onClick={addNewAccountsClick}>Add Accounts</Button>
+        </div>
+      )}
     </div>
   );
 }

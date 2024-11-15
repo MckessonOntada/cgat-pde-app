@@ -14,3 +14,10 @@
   width: 25%;
   height: 88%;
 }
+
+.cellEllipse {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
