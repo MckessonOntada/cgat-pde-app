@@ -18,6 +18,8 @@ export const OrgManagementEN = {
   'orgManagement.button.next': 'Next',
   'orgManagement.button.back': 'Back',
   'orgManagement.back.organization': 'BACK TO MANAGE ORGANIZATION PAGE',
+  'orgManagement.button.cancel': 'Cancel',
+  'orgManagement.button.deactivate': 'Deactivate',
 
   'orgManagement.create_org': 'Create Organization',
   'orgManagement.create_org.details_to_create_org':
@@ -86,5 +88,8 @@ export const OrgManagementEN = {
 
   'orgManagement.org_detail.contact': 'Contact',
   'orgManagement.org_detail.person_name': 'Contact Person Name',
-  'orgManagement.org_detail.address': 'Organization Address'
+  'orgManagement.org_detail.address': 'Organization Address',
+
+  'orgManagement.org_list': 'Organization Listing',
+  'orgManagement.add.account': 'ADD ACCOUNT'
 };

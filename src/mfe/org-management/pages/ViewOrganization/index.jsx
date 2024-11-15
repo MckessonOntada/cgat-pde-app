@@ -62,7 +62,7 @@ export default function ViewOrganization() {
             className="button-icon"
             onClick={() => setAddNewAccounts(true)}
             size={'md'}>
-            ADD ACCOUNT
+            {t('orgManagement.add.account')}
           </Button>
         )}
       </div>
@@ -79,9 +79,9 @@ export default function ViewOrganization() {
       {addNewAccounts && (
         <div className="btn-box">
           <Button variant="secondary" onClick={handleCancel}>
-            Cancel
+            {t('orgManagement.button.cancel')}
           </Button>
-          <Button onClick={addNewAccountsClick}>Add Accounts</Button>
+          <Button onClick={addNewAccountsClick}>{t('orgManagement.add.account')}</Button>
         </div>
       )}
     </div>

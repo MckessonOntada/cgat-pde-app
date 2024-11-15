@@ -96,7 +96,7 @@ const OrgList = () => {
         <div className="selected-item-alert">
           <p className="selected-item-text">{selectedRows.length} Item's Selected</p>
           <Button variant="secondary" onClick={handleDeactivate}>
-            Deactivate
+            {t('orgManagement.button.deactivate')}
           </Button>
         </div>
       )}
