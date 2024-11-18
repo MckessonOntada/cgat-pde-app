@@ -1,25 +1,24 @@
 import React, { useState } from 'react';
-import { CustomDataTable, Button } from '@mckesson/mcp-component-library';
+import { CustomDataTable, Button, Badge, Loader } from '@mckesson/mcp-component-library';
 import { useOrg } from '../../context/PageContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Link } from 'react-router-dom';
 import Actions from './Actions';
-import { Badge } from '@mckesson/mcp-component-library';
+import { PATHS } from '../../routes/constants';
+import { useOrganizationQuery } from '../../slices/Organization';
 
 const OrgList = () => {
+  const { isLoading, orgData, error } = useOrganizationQuery();
+
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState([]);
-
-  const onEditClick = () => {
-    // TODO: On edit
-  };
 
   const columns = [
     {
       id: 'name',
       name: t('orgManagement.table.name'),
       cell: (row) => (
-        <Link to={row.url} className="org-name">
+        <Link to={PATHS.viewOrg.replace(':orgId', row.id)} className="org-name">
           {row.name}
         </Link>
       ),
@@ -59,7 +58,7 @@ const OrgList = () => {
     {
       id: 'action',
       name: t('orgManagement.table.action'),
-      cell: (props) => <Actions {...props} onEditClick={onEditClick} />,
+      cell: (row) => <Actions row={row} />, // Pass row as a named prop
       wrap: true
     }
   ];
@@ -94,13 +93,21 @@ const OrgList = () => {
     setSelectedRows([]);
   };
 
+  if (isLoading) {
+    return <Loader type="screen" />;
+  }
+
+  if (error) {
+    return <div className="error-message">{t('orgManagement.error')}</div>;
+  }
+
   return (
     <div>
       {selectedRows.length > 0 && (
         <div className="selected-item-alert">
           <p className="selected-item-text">{selectedRows.length} Item's Selected</p>
           <Button variant="secondary" onClick={handleDeactivate}>
-            Deactivate
+            {t('orgManagement.button.deactivate')}
           </Button>
         </div>
       )}

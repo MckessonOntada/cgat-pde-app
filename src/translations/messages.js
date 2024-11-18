@@ -10,6 +10,8 @@ import { OrgManagementES } from './orgManagement/messages_es';
 import { MessageEn as orderManagementMessagesEn } from './order-management/messages_en';
 import { PaymentInvoicesEN } from './payment-Invoices/messages_en';
 import { PaymentInvoicesES } from './payment-Invoices/messages_es';
+import { AccountEN } from './Accounts/messages_en';
+import { AccountES } from './Accounts/messages_es';
 
 export const messages = {
   [LOCALES.ENGLISH]: {
@@ -19,12 +21,14 @@ export const messages = {
     ...OrgManagementEN,
     ...orderManagementMessagesEn,
     ...PaymentInvoicesES,
-    ...PaymentInvoicesEN
+    ...PaymentInvoicesEN,
+    ...AccountEN
   },
   [LOCALES.SPANISH]: {
     ...LoginMessagesES,
     ...UserManagementES,
     ...DashboardES,
-    ...OrgManagementES
+    ...OrgManagementES,
+    ...AccountES
   }
 };

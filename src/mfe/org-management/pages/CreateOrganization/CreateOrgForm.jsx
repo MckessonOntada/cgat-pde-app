@@ -36,7 +36,7 @@ const OrgDetailsFormSegment = () => {
       </div>
 
       <Field
-        name="org_name"
+        name="name"
         label={t('orgManagement.create_org.inputLabel.org_name')}
         placeholder=" "
         isRequired
@@ -61,34 +61,34 @@ const OrgDetailsFormSegment = () => {
       </div>
       <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
         <Field
-          name="first_name"
+          name="contactPerson.firstName"
           label={t('orgManagement.create_org.inputLabel.first_name')}
           placeholder=" "
           isRequired
           component={Components['input']}
         />
         <Field
-          name="middle_name"
+          name="contactPerson.middleName"
           label={t('orgManagement.create_org.inputLabel.middle_name')}
           placeholder=" "
           component={Components['input']}
         />
         <Field
-          name="last_name"
+          name="contactPerson.lastName"
           label={t('orgManagement.create_org.inputLabel.last_name')}
           placeholder=" "
           isRequired
           component={Components['input']}
         />
         <Field
-          name="email"
+          name="contact.email"
           label={t('orgManagement.create_org.inputLabel.email')}
           placeholder=" "
           isRequired
           component={Components['input']}
         />
         <Field
-          name="phoneInput"
+          name="contact.phone"
           label={t('orgManagement.create_org.inputLabel.phone_no')}
           component={Components['phoneInput']}
           className="phoneInput"
@@ -96,7 +96,7 @@ const OrgDetailsFormSegment = () => {
           isRequired
         />
         <Field
-          name="fax"
+          name="contact.fax"
           label={t('orgManagement.create_org.inputLabel.fax')}
           placeholder=" "
           component={Components['input']}
@@ -108,14 +108,14 @@ const OrgDetailsFormSegment = () => {
       <div>
         <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 line-height">
           <Field
-            name="address_1"
+            name="address.address1"
             label={t('orgManagement.create_org.inputLabel.address_1')}
             placeholder=" "
             isRequired
             component={Components['input']}
           />
           <Field
-            name="address_2"
+            name="address.address2"
             label={t('orgManagement.create_org.inputLabel.address_2')}
             placeholder=" "
             component={Components['input']}
@@ -123,21 +123,21 @@ const OrgDetailsFormSegment = () => {
         </div>
         <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 line-height">
           <Field
-            name="city"
+            name="address.city"
             label={t('orgManagement.create_org.inputLabel.city')}
             placeholder=" "
             isRequired
             component={Components['input']}
           />
           <Field
-            name="zip"
+            name="address.zip"
             label={t('orgManagement.create_org.inputLabel.zip')}
             placeholder=" "
             isRequired
             component={Components['input']}
           />
           <Field
-            name="state"
+            name="address.state"
             fieldlabel={t('orgManagement.create_org.inputLabel.state')}
             placeholder=" "
             component={Components['dropdown']}

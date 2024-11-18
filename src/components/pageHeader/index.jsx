@@ -5,6 +5,7 @@ import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import { ReactComponent as upload_bottom } from '@src/assets/image/upload_bottom.svg';
 import { ReactComponent as pencil_write_edit } from '@src/assets/image/pencil-write-edit.svg';
+import './index.scss';
 
 function PageHeader(props) {
   const { t } = useTranslate();
@@ -17,7 +18,7 @@ function PageHeader(props) {
 
   return (
     <div className="flexBox spaceBetween py3">
-      <h1>{props.title}</h1>
+      <h1 className="title-style">{props.title}</h1>
       <div className="flexBox"> 
         {props.buttonLabels?.add && (
           <Button Icon={add_circle_bold} className="button-icon" onClick={handleClick} size={'md'}>
@@ -34,6 +35,12 @@ function PageHeader(props) {
             {props.buttonLabels.edit}
           </Button>
         )}
+         {props.buttonLabels?.secondaryadd && (
+          <Button Icon={add_circle_bold} variant="secondary" className="button-icon" onClick={handleClick} size={'md'}>
+            {props.buttonLabels.secondaryadd}
+          </Button>
+        )}
+        {props.children}
       </div>
     </div>
   );

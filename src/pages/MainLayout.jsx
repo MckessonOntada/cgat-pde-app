@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import { Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
-import { Button } from '@mckesson/mcp-component-library';
+import { Button, Loader } from '@mckesson/mcp-component-library';
 
 import ErrorComponent from '../components/app/error/ErrorComponent';
 import { debugIds, ID } from '../common/constants/id';
@@ -25,7 +25,7 @@ function MainLayout() {
     <div id={debugIds(ID.MAIN)}>
       <Header />
       <div className={styles.home} id={debugIds(ID.HOME)}>
-        <Suspense fallback={<></>}>
+        <Suspense fallback={<Loader type="screen" />}>
           {userHasRoutePermission ? (
             <div className={styles.routeContent} id={debugIds(ID.HOME, ID.ROUTE_CONTENT)}>
               <Routes className={styles.routes}>
@@ -45,6 +45,10 @@ function MainLayout() {
                   <Route path={'/organization/*'} element={<OrgEntryPoint />} />
                 </Route>
                 <Route path={'/payment-invoices'} element={<PaymentInvoices />} />
+                <Route path={AppRoutes.pathSystemAdminManagement} element={<Outlet />}>
+                  <Route path={'/system-admin'} element={<UsersEntryPoint />} />
+                  <Route path={'/system-admin/*'} element={<UsersEntryPoint />} />
+                </Route>
               </Routes>
             </div>
           ) : (

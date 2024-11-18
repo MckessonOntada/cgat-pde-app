@@ -4,7 +4,9 @@ import AccountsList from '@src/components/Accounts/AccountsList';
 import './CreateOrg.scss';
 import { useNavigate } from 'react-router-dom';
 import { RoutePaths } from '@src/routes/constants';
-import DetailsView from './DetailsView';
+import DetailsView from '../../components/DetailsView';
+import AllAccountsData from '../../mockData/AllAccounts';
+import { useTranslate } from '@src/translations/useTranslation';
 
 export default function OrgDetails({
   prevStepData,
@@ -13,7 +15,7 @@ export default function OrgDetails({
   setSelectedAccounts
 }) {
   const navigate = useNavigate();
-
+  const { t } = useTranslate();
   const onRemoveAccount = useCallback(
     (item) => {
       setSelectedAccounts(selectedAccounts.filter((account) => account.id !== item.id));
@@ -41,16 +43,18 @@ export default function OrgDetails({
         <DetailsView data={prevStepData} onEditClick={onEditClick} />
       </div>
       <AccountsList
+        data={AllAccountsData}
         selectedRows={selectedAccounts}
         setSelectedRows={setSelectedAccounts}
         onRemoveAccount={onRemoveAccount}
         showSelectedAccounts
+        omitColumns={['action', 'cgatIdentifier', 'address']}
       />
       <div className="btn-box">
         <Button variant="secondary" onClick={handleCancel}>
-          Cancel
+          {t('orgManagement.button.cancel')}
         </Button>
-        <Button onClick={handleCreateOrg}>Create organization</Button>
+        <Button onClick={handleCreateOrg}>{t('orgManagement.create_org')}</Button>
       </div>
     </div>
   );

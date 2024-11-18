@@ -36,7 +36,7 @@ export default function Dashboard() {
       <OrganizationProvider>
         <div className="orgCardContainer">
           <Filters showLocationDropdown={true} showStatusDropdown={true} />
-          <h2 className="org-listing-label">Organization Listing</h2>
+          <h2 className="org-listing-label">{t('orgManagement.org_list')}</h2>
           <div className="orgList">
             <OrgList />
           </div>

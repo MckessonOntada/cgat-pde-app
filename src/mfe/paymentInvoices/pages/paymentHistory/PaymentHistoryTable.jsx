@@ -10,7 +10,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 export default function PaymentHistoryTable() {
     const { t } = useTranslate();
     const [filteredData, setFilteredData] = useState(PaymentHistoryData);
-    const [isOpen, setIsOpen] = useState(true)
+    const [isOpen, setIsOpen] = useState(false)
     const columns = [
         {
             name: t('paymentInvoices.history.table.billNumber'),

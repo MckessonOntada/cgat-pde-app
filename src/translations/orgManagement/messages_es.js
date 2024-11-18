@@ -1,7 +1,7 @@
 export const OrgManagementES = {
   'orgManagement.header.label': 'S_Manage Organization',
   'orgManagement.add.label': 'S_Add Organization',
-  'orgManagement.clearFilter.label': 'S_Clear Filters',
+  'orgManagement.clearFilter.label': 'S_clear filters',
   'orgManagement.searchFilter.label': 'S_Search By Name or Email',
 
   'orgManagement.table.name': 'S_Organization Name',
@@ -15,8 +15,11 @@ export const OrgManagementES = {
   'orgManagement.table.action.inactivate': 'S_Inactivate',
   'orgManagement.table.action.view': 'S_VIEW',
 
-  'orgManagement.button.next':'S_Next',
-  'orgManagement.button.back':'S_Back',
+  'orgManagement.button.next': 'S_Next',
+  'orgManagement.button.back': 'S_Back',
+  'orgManagement.back.organization': 'S_BACK TO MANAGE ORGANIZATION PAGE',
+  'orgManagement.button.cancel': 'S_Cancel',
+  'orgManagement.button.deactivate': 'S_Deactivate',
 
   'orgManagement.create_org': 'S_Create Organization',
   'orgManagement.create_org.details_to_create_org':
@@ -37,19 +40,58 @@ export const OrgManagementES = {
   'orgManagement.create_org.inputLabel.email': 'S_Email ID',
   'orgManagement.create_org.inputLabel.phone_no': 'S_Phone Number',
   'orgManagement.create_org.inputLabel.fax': 'S_Fax',
+  'orgManagement.create_org.validation.org_name_required': 'S_Organization name is required',
   'orgManagement.create_org.validation.first_name_required': 'S_First name is required',
   'orgManagement.create_org.validation.middle_name_required': 'S_Middle name is required',
   'orgManagement.create_org.validation.last_name_required': 'S_Last Name is required',
   'orgManagement.create_org.validation.address_1_required': 'S_Address is required',
-  'orgManagement.create_org.validation.address_2_required': 'S_Address is required',
+  'orgManagement.create_org.validation.address_2_required': 'Address is required',
   'orgManagement.create_org.validation.city_required': 'S_City is required',
   'orgManagement.create_org.validation.zip_required': 'S_Zip is required',
   'orgManagement.create_org.validation.state_required': 'S_State is required',
-  'orgManagement.create_org.validation.email_required': 'S_Email Id is required',
+  'orgManagement.create_org.validation.email_required':
+    'S_Email ID is required and must be in a valid format.',
   'orgManagement.create_org.validation.invalid_email': 'S_Invalid Email',
-  'orgManagement.create_org.validation.phone_no_required': 'S_Phone Number is required',
+  'orgManagement.create_org.validation.phone_no_required':
+    'S_Phone Number is required and must be in a valid format.',
   'orgManagement.create_org.validation.fax_required': 'S_Fax is required',
-  'orgManagement.create_org.option.please_select': 'S_Please Select'
+  'orgManagement.create_org.option.please_select': 'S_Please Select',
+
+  'orgManagement.create_org.validation.org_name_invalid': 'S_Invalid Organization name',
+  'orgManagement.create_org.validation.org_name_max':
+    'S_Organization name can be maximum of 100 characters',
+  'orgManagement.create_org.validation.contact_person_first_name_invalid':
+    'S_Special characters not allowed',
+  'orgManagement.create_org.validation.first_name_max':
+    'S_First name can be a maximum of 50 characters',
+  'orgManagement.create_org.validation.middle_name_invalid': 'S_Special characters not allowed',
+  'orgManagement.create_org.validation.middle_name_max':
+    'S_Middle name can be a maximum of 50 characters.',
+  'orgManagement.create_org.validation.contact_person_last_name_invalid':
+    'S_Special characters not allowed',
+  'orgManagement.create_org.validation.last_name_max':
+    'S_Last name can be a maximum of 50 characters',
+  'orgManagement.create_org.validation.address_1_invalid': 'S_Invalid Address',
+  'orgManagement.create_org.validation.address_1_max':
+    'S_Address can be a maximum of 250 characters',
+  'orgManagement.create_org.validation.address_2_invalid': 'S_Invalid Address',
+  'orgManagement.create_org.validation.address_2_max':
+    'S_Address can be a maximum of 150 characters',
+  'orgManagement.create_org.validation.city_invalid': 'S_Invalid City',
+  'orgManagement.create_org.validation.city_max': 'S_can be a maximum of 100 characters',
+  'orgManagement.create_org.validation.zip_invalid': 'S_Invalid Zip',
+  'orgManagement.create_org.validation.state_invalid': 'S_Invalid State',
+  'orgManagement.create_org.validation.state_max': 'S_State can be a maximum of 100 characters',
+  'orgManagement.create_org.validation.invalid_email': 'S_Invalid Email',
+  'orgManagement.create_org.validation.email_max': 'S_Email can be a maximum of 40 characters',
+  'orgManagement.create_org.validation.phone_no_invalid': 'S_Invalid Phone',
+  'orgManagement.create_org.validation.fax_invalid': 'S_Invalid Fax no',
+  'orgManagement.create_org.validation.fax_max': 'S_Fax can be a maximum of 15 characters',
+
+  'orgManagement.org_detail.contact': 'S_Contact',
+  'orgManagement.org_detail.person_name': 'S_Contact Person Name',
+  'orgManagement.org_detail.address': 'S_Organization Address',
+
+  'orgManagement.org_list': 'S_Organization Listing',
+  'orgManagement.add.account': 'S_ADD ACCOUNT'
 };
-
-

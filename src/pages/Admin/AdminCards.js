@@ -7,6 +7,14 @@ import { ReactComponent as LinkIcon } from '../../assets/svg/link-circle.svg';
 
 const CARDS_DATA = [
   {
+    name: 'ManageSystemAdmin',
+    label: 'manage_system_admin',
+    icon: UserIcon,
+    details: 'efficiently_streamline_user_management_for_seamless_experience',
+    path: AppRoutes.pathSystemAdminManagement,
+    permission: []
+  },
+  {
     name: 'manageOrg',
     label: 'manage_organization',
     icon: UserIcon,
