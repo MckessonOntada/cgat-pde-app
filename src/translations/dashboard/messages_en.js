@@ -6,5 +6,6 @@ export const DashboardEN = {
   'dashboard.card.view_linked_accounts': 'View Linked Accounts',
   'dashboard.card.efficiently_streamline_user_management_for_seamless_experience':
     'Efficiently streamline user management for seamless experience.',
-  'dashboard.card.manage_organization': 'Mange Organization'
+  'dashboard.card.manage_organization': 'Mange Organization',
+  'dashboard.card.manage_system_admin': 'Manage System Admin'
 };

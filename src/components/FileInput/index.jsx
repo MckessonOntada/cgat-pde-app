@@ -1,7 +1,9 @@
 import React, { useState, useRef } from 'react';
 import Upload from '@src/assets/image/upload.svg';
-import { Divider } from '@mckesson/mcp-component-library';
+import { Divider, Button } from '@mckesson/mcp-component-library';
 import './FileInput.scss';
+import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
+import { ReactComponent as Close } from '@src/assets/image/close.svg';
 
 const FileInput = ({ onFileSelect }) => {
   const [file, setFile] = useState(null);
@@ -72,9 +74,16 @@ const FileInput = ({ onFileSelect }) => {
           <Divider className="divider-style" />
         </div>
 
-        <button type="button" onClick={handleBrowseClick}>
-          BROWSE LOGO
-        </button>
+        {/* <div> */}
+          <Button
+            Icon={add_circle_bold}
+            className="button-icon"
+            variant="secondary"
+            onClick={handleBrowseClick}
+            size={'md'}>
+            BROWSE LOGO
+          </Button>
+        {/* </div> */}
 
         {file && (
           <div className="preview-container">
@@ -83,9 +92,15 @@ const FileInput = ({ onFileSelect }) => {
               <p>{file.name}</p>
               <p>{(file.size / 1024).toFixed(2)} KB</p>
             </div>
-            <button className="remove-button" onClick={handleClearLogo}>
-              Remove
-            </button>
+
+            <Button
+              Icon={Close}
+              className="remove-button"
+              variant="tertiary"
+              onClick={handleClearLogo}
+              iconButton={true}
+              size={'md'}
+            />
           </div>
         )}
       </label>
