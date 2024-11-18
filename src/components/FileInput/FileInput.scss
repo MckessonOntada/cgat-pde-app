@@ -1,17 +1,17 @@
 .label-input {
   border: 2px dashed var(--brand-color-primary);
-  padding: 20px;
+  padding: var(--spacing-03);
   text-align: center;
   cursor: pointer;
   display: grid;
-  place-items: center; 
+  place-items: center;
   border-radius: var(--brand-border-radius--4);
   gap: var(--spacing-02);
 }
 
 .drag-heading {
-  font-size: 14px;
-  line-height: 20px;
+  font-size: var(--brand-font-size--10);
+  line-height: var(--brand-line-height--small);
 }
 
 .divider-style {
@@ -27,7 +27,7 @@
 }
 
 .preview-container {
-  margin-top: 15px;
+  margin-top: var(--spacing-03);
   border: 2px solid var(--brand-color-background-grey);
   border-radius: var(--brand-border-radius--4);
   width: 100%;
@@ -39,30 +39,25 @@
   img {
     max-width: 50px;
     max-height: 60px;
-    margin-bottom: 10px;
+    margin-bottom: var(--spacing-02);
   }
 
   .file-info {
     text-align: initial;
-    padding-left: 10px;
+    padding-left: var(--spacing-02);
 
     p {
       margin: 0;
-      font-size: 18px;
-
-      &:last-of-type {
-        font-size: 12px;
-        padding: 2px 0;
-      }
+      font-size: var(--brand-font-size--extra-small);
     }
   }
 
   .remove-button {
-    position: absolute; 
+    position: absolute;
     cursor: pointer;
     width: 16px;
     height: 16px;
-    margin-right: 2px;
+    margin-right: var(--spacing-01);
     right: 5px;
   }
 }
@@ -70,5 +65,5 @@
 .button-icon svg {
   width: 16px;
   height: 16px;
-  margin-right: 2px;
+  margin-right: var(--spacing-01);
 }

@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 import Actions from './Actions';
 import { PATHS } from '../../routes/constants';
 import { useOrganizationQuery } from '../../slices/Organization';
+import EmptyDataImage from '@src/assets/image/no_data.svg';
+import EmptyDataTable from '@src/components/EmptyDataTAble';
 
 const OrgList = () => {
   const { isLoading, orgData, error } = useOrganizationQuery();
@@ -73,7 +75,7 @@ const OrgList = () => {
       update: { setCurrentPage }
     }
   } = useOrg();
-
+  console.log('Data:', data);
   const handleChangePage = (e, newPage) => {
     setCurrentPage(newPage);
   };
@@ -93,13 +95,18 @@ const OrgList = () => {
     setSelectedRows([]);
   };
 
+  const NoDataInfo = {
+    heading: 'Add Organization',
+    description: 'You need to add Organization to see data in this table.'
+  };
+
   if (isLoading) {
     return <Loader type="screen" />;
   }
 
-  if (error) {
-    return <div className="error-message">{t('orgManagement.error')}</div>;
-  }
+  // if (error) {
+  //   return <div className="error-message">{t('orgManagement.error')}</div>;
+  // }
 
   return (
     <div>
@@ -128,6 +135,13 @@ const OrgList = () => {
         paginationRecordsPerPageMessage={`per page`}
         isAdmin={true}
         selectableRows
+        noDataComponent={
+          <EmptyDataTable
+            image={EmptyDataImage}
+            heading={'Add Organization'}
+            description={'You need to add Organization to see data in this table.'}
+          />
+        }
         handleRowSelected={handleRowSelected}
         selectedRowId={selectedRows[0]}
       />
