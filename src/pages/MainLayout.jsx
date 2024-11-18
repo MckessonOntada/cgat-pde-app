@@ -15,6 +15,7 @@ import Header from '../components/header';
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
 const OrgEntryPoint = React.lazy(() => import('@src/mfe/org-management'));
+const PaymentInvoices = React.lazy(()=>import('@src/mfe/paymentInvoices'))
 
 function MainLayout() {
   const { pathname } = useLocation();
@@ -43,6 +44,7 @@ function MainLayout() {
                   <Route path={'/organization'} element={<OrgEntryPoint />} />
                   <Route path={'/organization/*'} element={<OrgEntryPoint />} />
                 </Route>
+                <Route path={'/payment-invoices'} element={<PaymentInvoices />} />
               </Routes>
             </div>
           ) : (

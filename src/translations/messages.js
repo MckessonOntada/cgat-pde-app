@@ -8,6 +8,8 @@ import { DashboardES } from './dashboard/messages_es';
 import { OrgManagementEN } from './orgManagement/messages_en';
 import { OrgManagementES } from './orgManagement/messages_es';
 import { MessageEn as orderManagementMessagesEn } from './order-management/messages_en';
+import { PaymentInvoicesEN } from './payment-Invoices/messages_en';
+import { PaymentInvoicesES } from './payment-Invoices/messages_es';
 
 export const messages = {
   [LOCALES.ENGLISH]: {
@@ -16,6 +18,8 @@ export const messages = {
     ...DashboardEN,
     ...OrgManagementEN,
     ...orderManagementMessagesEn,
+    ...PaymentInvoicesES,
+    ...PaymentInvoicesEN
   },
   [LOCALES.SPANISH]: {
     ...LoginMessagesES,

@@ -1,0 +1,221 @@
+@use "../../../../assets/styles/abstracts/mixins";
+
+.dashboard-container {
+  padding: var(--spacing-02);
+  display: grid;
+  gap: var(--spacing-01);
+  max-height: 100vh;
+}
+
+
+.userCardContainer {
+  display: grid;
+  gap: var(--spacing-04);
+  padding: var(--spacing-04);
+  border: 1px solid var(--brand-color-patient-primary-3);
+  border-radius: var(--brand-border-radius--6);
+}
+
+.userList {
+  overflow-x: auto;
+  /* Enable horizontal scrolling */
+  -webkit-overflow-scrolling: touch;
+  /* Smooth scrolling on iOS */
+  overflow-y: hidden;
+
+  // Hide scrollbar on non-mobile devices
+  scrollbar-width: thin;
+
+  &::-webkit-scrollbar {
+    display: none;
+    /* For Chrome, Safari, and Opera */
+  }
+}
+
+
+.filterBox {
+  display: grid;
+  padding: var(--spacing-04);
+  border: 1px solid var(--brand-color-patient-primary-3);
+  border-radius: var(--brand-border-radius--6);
+}
+
+.flexBox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-04);
+  flex-wrap: wrap;
+}
+
+.flexBox.spaceBetween {
+  justify-content: space-between;
+}
+
+.py4 {
+  padding-top: var(--spacing-04);
+  padding-bottom: var(--spacing-04);
+}
+
+.py3 {
+  padding-top: var(--spacing-03);
+  padding-bottom: var(--spacing-03);
+}
+
+.py2 {
+  padding-top: var(--spacing-02);
+  padding-bottom: var(--spacing-02);
+}
+
+.autoSuggestSearch-container {
+  width: 100%;
+
+  .auto-search {
+    width: 100%;
+    @include mixins.respond(md) {
+      width: 460px;
+    }
+  }
+
+  @include mixins.respond(md) {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.LabelBox {
+  @include mixins.respond(md) {
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: var(--spacing-02);
+    gap: var(--spacing-04);
+  }
+}
+
+.filter-btn {
+  width: 100%;
+
+  @include mixins.respond(md) {
+    width: auto;
+  }
+}
+
+.txtbtn {
+  padding: var(--spacing-01);
+}
+
+.actionEditIcon {
+  color: var(--brand-color-primary);
+}
+
+.actionsBox {
+  display: flex;
+  align-items: center;
+  justify-self: flex-end;
+  gap: var(--spacing-03);
+
+  @include mixins.respond(xs) {
+    justify-self: flex-start;
+  }
+
+  @include mixins.respond(lg) {
+    justify-self: flex-end;
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+.actionmenu {
+  position: relative;
+  overflow: visible;
+}
+
+.display-block {
+  display: block;
+  width: 100%;
+}
+
+.right-aligned {
+  text-align: right;
+  justify-content: flex-end;
+}
+
+.toggle-box {
+  display: flex;
+  align-items: center;
+}
+
+.search-width {
+  width: 65rem;
+}
+
+.icon-align {
+  margin-right: var(--spacing-04);
+}
+
+.icon-color {
+  color: var(--brand-color-primary);
+}
+
+.button-icon svg {
+  width: 16px;
+  height: 16px;
+  margin-right: 2px;
+}
+
+.actionsBox>div>ul {
+  left: 10px;
+}
+
+.actionsBox>div>button {
+  border: none;
+  background: none;
+}
+
+.actionsBox>div>ul>li {
+  background: var(--brand-color-background-white);
+}
+
+.actionsBox>div>ul>li:hover {
+  background: var(--brand-color-secondary--hover);
+}
+
+.userCardContainer>div>nav>ul>li>button {
+  background: none;
+  border: none;
+}
+
+.expanded-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-04, 32px);
+  margin-top: var(--spacing-04, 32px);
+}
+
+.cellEllipse {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.bgcolorRoleAdmin {
+  background: #B3CC51;
+}
+
+.bgcolorRoleUser {
+  background: #1E394E;
+}
+
+.status-container {
+  white-space: nowrap !important;
+}
+
+.paymentDetails-cntainer{
+  padding: 10px;
+}
