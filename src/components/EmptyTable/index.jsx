@@ -1,5 +1,5 @@
 import React from 'react';
-import './EmptyDataTable.scss';
+import './EmptyTable.scss';
 
 const EmptyDataTable = ({ image, heading, description }) => {
   return (
