@@ -74,7 +74,7 @@ const FileInput = ({ onFileSelect }) => {
           <Divider className="divider-style" />
         </div>
 
-        <div>
+        {/* <div> */}
           <Button
             Icon={add_circle_bold}
             className="button-icon"
@@ -83,7 +83,7 @@ const FileInput = ({ onFileSelect }) => {
             size={'md'}>
             BROWSE LOGO
           </Button>
-        </div>
+        {/* </div> */}
 
         {file && (
           <div className="preview-container">

@@ -4,6 +4,7 @@
   text-align: center;
   cursor: pointer;
   display: grid;
+  place-items: center; 
   border-radius: var(--brand-border-radius--4);
   gap: var(--spacing-02);
 }
