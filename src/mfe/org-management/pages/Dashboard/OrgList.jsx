@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { CustomDataTable, Button, Badge } from '@mckesson/mcp-component-library';
+import { CustomDataTable, Button, Badge, Loader } from '@mckesson/mcp-component-library';
 import { useOrg } from '../../context/PageContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Link } from 'react-router-dom';
 import Actions from './Actions';
 import { PATHS } from '../../routes/constants';
+import { useOrganizationQuery } from '../../slices/Organization';
 
 const OrgList = () => {
+  const { isLoading, orgData, error } = useOrganizationQuery();
+
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState([]);
 
@@ -89,6 +92,14 @@ const OrgList = () => {
   const handleDeactivate = () => {
     setSelectedRows([]);
   };
+
+  if (isLoading) {
+    return <Loader type="screen" />;
+  }
+
+  if (error) {
+    return <div className="error-message">{t('orgManagement.error')}</div>;
+  }
 
   return (
     <div>
