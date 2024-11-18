@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import Actions from './Actions';
 import { PATHS } from '../../routes/constants';
 import { useOrganizationQuery } from '../../slices/Organization';
-import EmptyDataImage from '@src/assets/image/no_data.svg';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyDataTAble';
 
 const OrgList = () => {
