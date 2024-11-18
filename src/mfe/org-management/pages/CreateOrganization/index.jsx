@@ -40,6 +40,8 @@ const CreateOrganization = () => {
     setOrganizationData((prevState) => ({ ...prevState, selectedAccounts }));
   };
 
+
+
   return (
     <div className="main-container">
       <div className="back-navigation py2 capitalize" onClick={goBack}>
@@ -56,7 +58,7 @@ const CreateOrganization = () => {
           }}
           validateOnChange={false}
           validateOnBlur={true}>
-          {() => (
+          {({ values }) => (
             <Form>
               <div className="container-box">
                 <div className="headingBox">

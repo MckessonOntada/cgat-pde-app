@@ -13,7 +13,7 @@ export default function Actions({ row }) {
 
   return (
     <Button Icon={DeleteIcon} variant="tertiary" size="md" onClick={() => handleClick(row.id)}>
-      UNLINK
+      {t('account.btn.unlink')}
     </Button>
   );
 }

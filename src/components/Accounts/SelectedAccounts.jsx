@@ -1,12 +1,14 @@
 import React from 'react';
 import { ReactComponent as DeleteIcon } from '@src/assets/image/delete.svg';
 import { Divider, Button } from '@mckesson/mcp-component-library';
+import { useTranslate } from '@src/translations/useTranslation';
 import './SelectedAccounts.scss';
 
 export default function SelectedAccounts({ selectedAccounts, onRemoveAccount }) {
+  const { t } = useTranslate();
   return (
     <div className="selected-accounts-display">
-      <h2 className="selected-account-heading">Selected Account</h2>
+      <h2 className="selected-account-heading">{t('account.selected.account')}</h2>
       <Divider className="selected-account-divider" />
       <div className="selected-account-container">
         {selectedAccounts?.map((item) => (

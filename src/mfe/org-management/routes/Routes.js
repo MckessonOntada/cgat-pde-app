@@ -9,6 +9,7 @@ const Routes = () => {
   return (
     <ReactRoutes>
       <Route path={PATHS.dashboard} element={<Home />} />
+      <Route path={`${PATHS.editOrg}/:orgId`} element={<CreateOrganization />} />
       <Route path={PATHS.createOrg} element={<CreateOrganization />} />
       <Route path={PATHS.viewOrg} element={<ViewOrganization />} />
     </ReactRoutes>

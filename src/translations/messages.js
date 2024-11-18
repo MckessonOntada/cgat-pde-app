@@ -8,6 +8,8 @@ import { DashboardES } from './dashboard/messages_es';
 import { OrgManagementEN } from './orgManagement/messages_en';
 import { OrgManagementES } from './orgManagement/messages_es';
 import { MessageEn as orderManagementMessagesEn } from './order-management/messages_en';
+import { AccountEN } from './Accounts/messages_en';
+import { AccountES } from './Accounts/messages_es';
 
 export const messages = {
   [LOCALES.ENGLISH]: {
@@ -16,11 +18,13 @@ export const messages = {
     ...DashboardEN,
     ...OrgManagementEN,
     ...orderManagementMessagesEn,
+    ...AccountEN
   },
   [LOCALES.SPANISH]: {
     ...LoginMessagesES,
     ...UserManagementES,
     ...DashboardES,
-    ...OrgManagementES
+    ...OrgManagementES,
+    ...AccountES
   }
 };

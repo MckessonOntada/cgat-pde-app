@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import SelectedAccounts from './SelectedAccounts';
 import './styles.scss';
 import Actions from './Action';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const RECORDS_PER_PAGE = 8;
 
@@ -18,57 +19,60 @@ export default function AccountsList({
   omitColumns = [] // Pass column ids which you don't want to show in table.
 }) {
   const [currentPage, setCurrentPage] = useState(1);
-
+  const { t } = useTranslate();
   const columns = useMemo(
     () => [
       {
         id: 'id',
-        name: 'Account Number',
+        name: t('account.no'),
         cell: (row) => (
           <Link to={row.url} className="org-name">
             {row.dcId}
           </Link>
         ),
         wrap: true,
-        width: '25%'
+        width: '15%'
       },
       {
         id: 'name',
-        name: 'Account Name',
+        name: t('account.name'),
         wrap: true,
-        selector: (row) => row.dcName
+        selector: (row) => row.dcName,
+        width: '25%',
+        cell: (row) => <div className="cellEllipse">{row.dcName}</div>
       },
       {
         id: 'org',
-        name: 'Sales Org',
+        name: t('account.sales_org'),
         selector: (row) => row.org,
         wrap: true
       },
       {
         id: 'distributionChannel',
-        name: 'Distribution Channel',
+        name: t('account.distribution'),
         selector: (row) => row.distributionChannel,
         wrap: true,
+        cell: (row) => <div className="cellEllipse">{row.distributionChannel}</div>,
         omit: omitColumns.includes('distributionChannel')
       },
       {
         id: 'address',
         center: true,
-        name: 'Address', // t('userManagement.table.action'),
+        name: t('account.address'),
         cell: (row) => row.cgatIdentifier,
         omit: omitColumns.includes('address')
       },
       {
         id: 'cgatIdentifier',
         center: true,
-        name: 'CGAT Identifier', // t('userManagement.table.action'),
-        cell: (row) => row.cgatIdentifier,
+        name: t('account.identifier'),
+        cell: (row) => <div className="cellEllipse">{row.cgatIdentifier}</div>,
         omit: omitColumns.includes('cgatIdentifier')
       },
       {
         id: 'action',
         center: true,
-        name: 'Actions', // t('userManagement.table.action'),
+        name: t('account.action'),
         cell: (row) => <Actions row={row} />,
         width: '10%',
         omit: omitColumns.includes('action')
