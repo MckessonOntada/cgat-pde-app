@@ -7,7 +7,7 @@ import Actions from './Actions';
 import { PATHS } from '../../routes/constants';
 import { useOrganizationQuery } from '../../slices/Organization';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import EmptyDataTable from '@src/components/EmptyTAble';
+import EmptyDataTable from '@src/components/EmptyTable';
 
 const OrgList = () => {
   const { isLoading, orgData, error } = useOrganizationQuery();
