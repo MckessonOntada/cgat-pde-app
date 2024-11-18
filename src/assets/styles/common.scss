@@ -47,4 +47,31 @@
             gap: var(--spacing-03);
         }
     }
+    .controls{
+        display: flex;
+        flex-direction: row;
+        gap: var(--spacing-03);
+        justify-content: flex-end;
+    }
+}
+.MCP-panel-container {
+    display: grid;
+    width: 100%;
+    height: auto;
+    gap: var(--spacing-04);
+    padding: var(--spacing-04);
+    background-color: var(--brand-color-general-white);
+    border: 1px solid var(--brand-color-patient-primary-3);
+    border-radius: var(--brand-border-radius--6);
+    background-color: var(--brand-color-background-white);
+    width: 100%;
+}
+.primaryHeading{
+    font-size: var(--brand-font-size--28);
+}
+.secondaryHeading{
+    font-size: var(--brand-font-size--20);
+}
+.tertiaryHeading{
+    font-size: var(--brand-font-size--small);
 }

@@ -1,63 +1,44 @@
 @use "../../../../assets/styles/abstracts/mixins";
 
-.moduleWrapper{
+.wrapper {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-01, 4px);
 
-    .moduleBody{
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-04);
-    }
- 
-    .moduleControls{
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-
-        .moduleTitle{
-            font-size: var(--brand-font-size--large, 1.8rem);
-        }
-    }
-
-    .filterPanel{
-        .filterHeader{
-            display:flex;
+    .filterPanel {
+        .filterHeader {
+            display: flex;
+            flex-direction: row;
             justify-content: flex-start;
             align-items: center;
             gap: var(--spacing-04, 24px);
-
         }
-        .filterOptionsWrapper{
+
+        .filterOptionsWrapper {
             margin-top: var(--spacing-04, 24px);
             display: flex;
             gap: var(--spacing-04, 24px);
             flex-direction: column;
 
-            .filterOptions{
-                display: flex;
+            .filterOptions {
+                // display: flex;
                 flex-direction: row;
                 gap: var(--spacing-04, 24px);
                 align-items: center;
+
+                .filterAction {
+                    @include mixins.respond(md) {
+                        display: flex;
+                        align-items: flex-end;
+                        padding-bottom: var(--spacing-02);
+                        gap: var(--spacing-04);
+                    }
+                }
             }
 
-            hr{
+            hr {
                 border-bottom-color: var(--brand-color-grey-scale-cool-1, #BAC5CC);
             }
-        }
-    }
-
-    .dataTableWrapper{
-
-        margin-bottom: var(--spacing-08);
-        .title{
-            font-size: var(--brand-font-size--default, 24px);
-        }
-        .cellWrapper{
-            white-space: nowrap;
-            // Badge-module
         }
     }
 }

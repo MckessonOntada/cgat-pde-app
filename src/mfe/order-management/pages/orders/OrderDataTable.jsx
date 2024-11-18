@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './Orders.module.scss';
+import styles from './OrderDataTable.module.scss';
 import { CustomDataTable, Dropdown, Badge } from '@mckesson/mcp-component-library';
 import { useOrders } from '../../context';
 import { Link } from 'react-router-dom';
@@ -22,7 +22,7 @@ function getColorByStatus(status) {
 function getLinkByStatus({ status, id }) {
     switch (status) {
         case 'In Draft':
-            return <Link to={`create-order/${id}`}>Resume Order</Link>;
+            return <Link to={`create-new/${id}`}>Resume Order</Link>;
         case 'Approval Pending':
             return <Link to={`review-order/${id}`}>Review Order</Link>;
         case 'Submitted':
@@ -69,7 +69,7 @@ const columns = [
         name: 'Status',
         selector: () => { },
         sortable: false,
-        cell: props => <span className={styles.cellWrapper}> <Badge text={props.status} type={getColorByStatus(props.status)} /></span>,
+        cell: props => <Badge text={props.status} type={getColorByStatus(props.status)} />
     },
     {
         id: 'price',
@@ -121,13 +121,7 @@ const OrderDataTable = ({ title, type = 'normal', pagination = true }) => {
     return (
         <div
             className={styles.dataTableWrapper}
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '16px'
-            }}
         >
-            <h1 className='font-bold-title-l'>{title}</h1>
             <CustomDataTable
                 type={type}
                 columns={columns}

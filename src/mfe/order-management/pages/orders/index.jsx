@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import Panel from '../../components/panel';
 import { TabList } from "@mckesson/mcp-component-library";
 import OrderDataTable from './OrderDataTable';
-import styles from './Orders.module.scss';
-import { useTranslate } from '../../../../translations/useTranslation';
+import { useTranslate } from '@src/translations/useTranslation';
 import { Button, Badge } from "@mckesson/mcp-component-library";
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle.svg';
 import { Link, useNavigate } from 'react-router-dom';
@@ -11,7 +9,8 @@ import { routesConfig } from './../../routes/constants';
 import FilterPanel from './FilterPanel';
 import { pendingData, submittedData } from './__mock__';
 import { useOrders } from '../../context';
-import PageHeader from '../../../../components/pageHeader';
+import PageHeader from '@src/components/pageHeader';
+import ModuleHeader from '../../../../components/module-header';
 
 function OrderIndex() {
     const [activeTab, setActiveTab] = useState("PENDING SUBMISSION");
@@ -55,14 +54,22 @@ function OrderIndex() {
     }, [activeTab])
 
     return (
-        <div className={styles.moduleWrapper}>
-            <PageHeader title={t('orderManagement.headings.orders')}>
-                <Button Icon={AddCircleFilled} onClick={handleOnClick} size="md" >
-                    {t("orderManagement.captions.createNewUser")}
-                </Button>
-            </PageHeader>
-            <div className='MCP-CardContainer'>
-                <div className={styles.moduleBody}>
+        <div className="MCP-module-wrapper">
+            {/* Breadcrumb */}
+
+            {/* module header */}
+            <ModuleHeader
+                heading={<PageHeader heading={"Orders"} />}
+                controls={
+                    <Button Icon={AddCircleFilled} onClick={handleOnClick} size="md" >
+                        Create New Order
+                    </Button>
+                }
+            />
+
+            {/* module body */}
+            <div className='MCP-module-body'>
+                <div className="MCP-panel-container">
                     <TabList
                         options={tabs}
                         alignment="left"
@@ -74,13 +81,27 @@ function OrderIndex() {
                     <div className='MCP-CardContainer'>
                         <FilterPanel />
                     </div>
-                    <OrderDataTable
-                        title={tableTitle}
-                    />
+                    <div className='MCP-table-wrapper'>
+                        {/* <ModuleHeader
+                            variant={"l2"}
+                            heading={"Order Listing"}
+                        /> */}
+                        <p className='secondaryHeading'>Order Listing</p>
+                        <OrderDataTable />
+                    </div>
                 </div>
             </div>
+
+
+            {/* module footer */}
+            <div className="controls">
+                <Button size="md" variant="secondary">Cancel</Button>
+                <Button size="md">Next</Button>
+            </div>
+
         </div>
     );
 }
+
 
 export default OrderIndex;

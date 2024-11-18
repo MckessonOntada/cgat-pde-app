@@ -8,6 +8,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import PatientDetails from './form-segments/patient-details';
 import PageHeader from '../../../../components/pageHeader';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
+import Summary from './form-segments/summary';
 
 const OrderCreate = () => {
     const forms = [
@@ -34,7 +35,7 @@ const OrderCreate = () => {
         {
             name: 'summary',
             label: 'Summary',
-            form: <div>summary</div>
+            form: <Summary />
         },
     ];
     const navigate = useNavigate();
@@ -45,7 +46,7 @@ const OrderCreate = () => {
             setActiveForm(2)
         else if (accountId && !therapyId)
             setActiveForm(1)
-        else setActiveForm(0)
+        else setActiveForm(4)
     }, []);
 
     const FormToRender = forms[activeForm]?.form;
@@ -53,36 +54,27 @@ const OrderCreate = () => {
         navigate('../')
     }
     return (
-        <div className={styles.wrapper}>
-            <div className={styles.header}>
-                {/* <button className={styles.iconButton} onClick={handleOnBackButtonClick}>
-                    <IconArrowLeft />
-                    <span>
-                        Back to orders
-                    </span>
-                </button> */}
-                <div
+        <div className="MCP-module-wrapper">
+            <div>
+                <button
                     className="MCP-Icon-Button py2"
                     onClick={handleOnBackButtonClick}
                 >
-                    <MdOutlineKeyboardArrowLeft />
+                    <IconArrowLeft />
                     <p>Back to Manage Users</p>
-                </div>
+                </button>
             </div>
-            <PageHeader
-                title={"Create New Order"}
-            />
-            <div className={styles.stepper}>
+
+            <PageHeader heading={"Create New Order"} />
+
+            <div className='MCP-module-body'>
                 <Stepper
                     activeIndex={activeForm + 1}
                     dividerText="of"
                     mobileLabel="Steps"
                     stepHeaders={forms.map(f => ({ label: f.label }))}
                 />
-            </div>
-
-            <div>
-                {FormToRender}
+                <div>{FormToRender}</div>
             </div>
         </div>
     )

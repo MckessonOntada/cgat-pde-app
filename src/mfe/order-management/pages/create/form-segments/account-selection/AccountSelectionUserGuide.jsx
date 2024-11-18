@@ -1,6 +1,5 @@
 import React from 'react';
 import styles from './AccountSelectionUserGuide.module.scss';
-import Panel from '../../../../components/panel';
 import { RadioGroup, Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
 import initialAccountsData from './../../__mock__';
@@ -22,7 +21,7 @@ const AccountSelctionUserGuide = ({ onClose }) => {
               <IconClose />
             </button>
           </div>
-          <Panel>
+          <div className="MCP-panel-container">
             <div className={styles.selectionBlock}>
               <p>Are you here to order through any of the below programs?</p>
               <div>
@@ -41,8 +40,8 @@ const AccountSelctionUserGuide = ({ onClose }) => {
                 />
               </div>
             </div>
-          </Panel>
-          <Panel>
+          </div>
+          <div className="MCP-panel-container">
             <div className={styles.selectionBlock}>
               <p>Are you here to order through any of the below programs?</p>
               <div>
@@ -61,7 +60,7 @@ const AccountSelctionUserGuide = ({ onClose }) => {
                 />
               </div>
             </div>
-          </Panel>
+          </div>
 
           <AccountCard options={options} onChange={handleOnChange} />
         </div>

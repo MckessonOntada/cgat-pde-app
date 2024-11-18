@@ -11,10 +11,6 @@ const PageHeader = ({ heading = '', subheading = '', children }) => {
                 {heading && <h1 className={styles.primaryHeading}>{heading}</h1>}
                 {subheading && <h2 className={styles.subheading}>{subheading}</h2>}
             </div>
-
-            <div className={styles.headerControls}>
-                {children}
-            </div>
         </div>
     );
 };
@@ -22,7 +18,6 @@ const PageHeader = ({ heading = '', subheading = '', children }) => {
 PageHeader.propTypes = {
     heading: PropTypes.string.isRequired,
     subheading: PropTypes.string,
-    children: PropTypes.node,
 };
 
 export default PageHeader;

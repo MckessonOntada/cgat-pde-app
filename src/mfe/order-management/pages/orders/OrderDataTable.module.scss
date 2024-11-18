@@ -1,0 +1,16 @@
+.dataTableWrapper{
+    .title{
+        font-size: var(--brand-font-size--default, 24px);
+    }
+    [class*="Badge-module"]{
+        white-space: nowrap;
+        display: inline-block;
+        max-width: 100%;
+        overflow: hidden; 
+        text-overflow: ellipsis;
+        vertical-align: middle;
+        // Badge-module
+    }
+    .cellWrapper{
+    }
+}
