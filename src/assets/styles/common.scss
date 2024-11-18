@@ -31,3 +31,20 @@
         width: 460px;
     }
 }
+
+// module css
+.MCP-module-wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-03);
+    .MCP-module-body{
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-03);
+        .MCP-table-wrapper{
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-03);
+        }
+    }
+}
