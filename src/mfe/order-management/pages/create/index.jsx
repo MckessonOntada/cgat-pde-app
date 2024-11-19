@@ -2,10 +2,13 @@ import React from 'react';
 import { Stepper } from '@mckesson/mcp-component-library';
 import styles from './CreateOrder.module.scss';
 import AccountSelection from './form-segments/account-selection/AccountSelection';
-import {ReactComponent as IconArrowLeft} from '@src/assets/svg/arrow-left.svg';
+import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import TherapySelection from './form-segments/therapy-selection';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import PatientDetails from './form-segments/patient-details';
+import PageHeader from '../../../../components/pageHeader';
+import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
+import Summary from './form-segments/summary';
 
 const OrderCreate = () => {
     const forms = [
@@ -32,41 +35,46 @@ const OrderCreate = () => {
         {
             name: 'summary',
             label: 'Summary',
-            form: <div>summary</div>
+            form: <Summary />
         },
-    ]
+    ];
+    const navigate = useNavigate();
     const [activeForm, setActiveForm] = React.useState(0);
     const { accountId, therapyId } = useParams();
     React.useEffect(() => {
-        if(accountId && therapyId)
+        if (accountId && therapyId)
             setActiveForm(2)
-        else if(accountId && !therapyId)
+        else if (accountId && !therapyId)
             setActiveForm(1)
-        else setActiveForm(0)
+        else setActiveForm(4)
     }, []);
-    
+
     const FormToRender = forms[activeForm]?.form;
+    const handleOnBackButtonClick = () => {
+        navigate('../')
+    }
     return (
-        <div className={styles.wrapper}>
-            <div className={styles.header}>
-                <div>
-                    <button className={styles.iconButton}>
-                        <IconArrowLeft />
-                        <span>
-                            Back to orders
-                        </span>
-                    </button>
-                </div>
-                <p className={styles.title}>Create New Order</p>
+        <div className="MCP-module-wrapper">
+            <div>
+                <button
+                    className="MCP-Icon-Button py2"
+                    onClick={handleOnBackButtonClick}
+                >
+                    <IconArrowLeft />
+                    <p>Back to Manage Users</p>
+                </button>
             </div>
-            <Stepper
-                activeIndex={activeForm + 1}
-                dividerText="of"
-                mobileLabel="Steps"
-                stepHeaders={forms.map(f => ({ label: f.label }))}
-            />
-            <div className={styles.formWrapper}>
-                {FormToRender}
+
+            <PageHeader heading={"Create New Order"} />
+
+            <div className='MCP-module-body'>
+                <Stepper
+                    activeIndex={activeForm + 1}
+                    dividerText="of"
+                    mobileLabel="Steps"
+                    stepHeaders={forms.map(f => ({ label: f.label }))}
+                />
+                <div>{FormToRender}</div>
             </div>
         </div>
     )

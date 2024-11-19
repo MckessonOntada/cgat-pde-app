@@ -25,7 +25,7 @@ const FilterPanel = ({ onApplyFilters }) => {
     const handleOnExpandClick = () => {
         setIsExpanded(!isExpanded);
     }
-    
+
     const handleOnStatusChange = (value) => {
         applyFilters({
             status: value.filter(item => item.isChecked)
@@ -33,41 +33,39 @@ const FilterPanel = ({ onApplyFilters }) => {
     }
 
     const handleOnQueryChange = (value) => {
-        applyFilters({searcgQuery: value});
+        applyFilters({ searcgQuery: value });
     }
 
 
     return (
-        <div className="filterBox line-height" >
+        <div className={styles.wrapper} >
             <div className={styles.filterPanel}>
-                <div  className="toggle-box">
-                    <div className={styles.filterHeader}>
-                        <button
-                            className={styles.iconButton}
-                            onClick={handleOnExpandClick}
-                        >
-                            {
-                                isExpanded ?
-                                    <ArrowDown />
-                                    :
-                                    <ArrowRight />
-                            }
-                        </button>
-                        <div className="autoSuggestSearch-container">
-                            <AutoSuggestSearch
-                                label=" "
-                                value={filterState.searchQuery}
-                                onChangeInput={handleOnQueryChange}
-                                outline={true}
-                                placeHolder={t('orderManagement.controls.autosearch.label')}
-                            />
-                        </div>
+                <div className={styles.filterHeader}>
+                    <button
+                        className={styles.iconButton}
+                        onClick={handleOnExpandClick}
+                    >
+                        {
+                            isExpanded ?
+                                <ArrowDown />
+                                :
+                                <ArrowRight />
+                        }
+                    </button>
+                    <div className="autoSuggestSearch-container">
+                        <AutoSuggestSearch
+                            label=" "
+                            value={filterState.searchQuery}
+                            onChangeInput={handleOnQueryChange}
+                            outline={true}
+                            placeHolder={t('orderManagement.controls.autosearch.label')}
+                        />
                     </div>
                 </div>
                 <ToggleUI in={isExpanded}>
                     <div className={styles.filterOptionsWrapper}>
-                        <Divider color={'#BAC5CC'} />
-                        <div className={styles.filterOptions}>
+                        <Divider />
+                        <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
                             <SearchableDropdown
                                 id="status"
                                 isSuccess
@@ -80,13 +78,15 @@ const FilterPanel = ({ onApplyFilters }) => {
                                 clearAllSelectedValues={() => { }}
                             />
 
-                            <Button
-                                type="button"
-                                label={t('orderManagement.captions.clearFilters')}
-                                textButton
-                                className="txtbtn"
-                                onClick={clearFilters}
-                            />
+                            <div className={styles.filterAction}>
+                                <Button
+                                    type="button"
+                                    label={t('orderManagement.captions.clearFilters')}
+                                    textButton
+                                    className="txtbtn"
+                                    onClick={clearFilters}
+                                />
+                            </div>
                         </div>
                     </div>
                 </ToggleUI>

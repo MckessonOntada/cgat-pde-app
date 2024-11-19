@@ -1,5 +1,4 @@
 import React from 'react';
-import Panel from '../../../../components/panel';
 import styles from './OrderPlacementStatus.module.scss';
 import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconTick } from '@src/assets/svg/tick-circle-filled.svg';
@@ -19,7 +18,7 @@ const OrderPlacementStatus = () => {
                 </div>
             </div>
             <div className={styles.body}>
-                <Panel>
+                <div className="MCP-panel-container">
                     <div className="grid grid-gap-16 grid-cols-6 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-6">
                         <div>1</div>
                         <div style={{flexGrow: 1}}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Mollitia, exercitationem laborum repudiandae quam ullam quod eos temporibus sed perspiciatis quis non eveniet quae maiores nisi sint eum officia? Dolor, facilis?</div>
@@ -31,15 +30,15 @@ const OrderPlacementStatus = () => {
                         <div>4</div>
                         <div>5</div>
                     </div>
-                </Panel>
-                <Panel>
+                </div>
+                <div className="MCP-panel-container">
                     <div className="grid grid-gap-16 grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
                         <div>What to expect next?</div>
                         <div>
                             <Breadcrumb />
                         </div>
                     </div>
-                </Panel>
+                </div>
             </div>
             <div className={styles.controls}>
                 <Button variant="secondary">Print Summary</Button>

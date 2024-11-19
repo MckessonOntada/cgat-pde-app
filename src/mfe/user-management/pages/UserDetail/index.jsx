@@ -3,7 +3,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { USER_DATA } from "../../mockData/UsersData";
 import { useTranslate } from '@src/translations/useTranslation';
 import PageHeader from "@src/components/pageHeader";
-import { Badge, Switch, AutoSuggestSearch, Alert } from '@mckesson/mcp-component-library';
+import { Badge, Button, Switch, AutoSuggestSearch, Alert } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { PERMISSIONS_ENUM } from "../UserPermissions/permissionsEnum";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
@@ -11,6 +11,7 @@ import SelectedAccountData from '@src/mfe/org-management/mockData/SelectedAccoun
 import AccountsList from '@src/components/Accounts/AccountsList';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import { PATHS } from "../../routes/constants";
+import ModuleHeader from "../../../../components/module-header";
 
 function getbgColorOnRole(Role) {
   switch (Role) {
@@ -67,30 +68,28 @@ const UserDetail = () => {
   if (!userData) {
     return <h1>User not found .</h1>;
   }
-  const buttonLabels = {
-    edit: t('userManagement.button.edit'),
-  };
-  const buttonLabelsAccount = {
-    secondaryadd: t('userManagement.button.add_accounts')
-  };
 
   return (
-    <><div
-      className="back-navigation py2 capitalize"
-      onClick={goBack}
-      style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-    >
-      <MdOutlineKeyboardArrowLeft size="24px" />
-      <p>Back to Manage Users</p>
-    </div>
-      <div>
-        <PageHeader
-          title={t('userManagement.header.view.edit_user')}
-          navigateTo={`../${PATHS.editUser}/${userId}`}
-          buttonLabels={buttonLabels}
-          state={{ isEdit: true }}
-        /> 
-        <div className="userCardContainer">
+    <div className="MCP-module-wrapper">
+      <div
+        className="back-navigation py2 capitalize"
+        onClick={goBack}
+        style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+      >
+        <MdOutlineKeyboardArrowLeft size="24px" />
+        <p>Back to Manage Users</p>
+      </div>
+      <div className="MCP-module-body">
+
+        <ModuleHeader
+          heading={<h1>{t('userManagement.header.view.edit_user')}</h1>}
+          controls={
+            <Button variant="secondary" size="md" onClick={() => navigate(`../${PATHS.editUser}/${userId}`, { state: { isEdit: true } })}>
+              {t('userManagement.button.edit')}
+            </Button>
+          }
+        />
+        <div className="MCP-panel-container">
           <div className="user-header">
             <div className="user-info">
               <div className=" subheader-text">{`${userData.name.lastName} ${userData.name.firstName},${userData.name.middleName} `}
@@ -141,14 +140,19 @@ const UserDetail = () => {
             </div>
           </div>
         </div>
-        <PageHeader
-          title={t('userManagement.header.view.permissions_granted')} 
-          navigateTo={`../${PATHS.userPermissions}/${userId}`}
-          buttonLabels={buttonLabels}
-          state={{ isEdit: true }} />
 
+        <ModuleHeader
+          heading={<h1>{t('userManagement.header.view.permissions_granted')}</h1>}
+          controls={
+            <div className="controls">
+              <Button variant="secondary" size="md" onClick={() => navigate(`../${PATHS.userPermissions}/${userId}`, { state: { isEdit: true } })}>
+                {t('userManagement.button.edit')}
+              </Button>
+            </div>
+          }
+        />
 
-        <div className="userCardContainer">
+        <div className="MCP-panel-container">
           {Object.keys(userData.permissions).map((categoryKey, index) => {
             if (!PERMISSIONS_ENUM[categoryKey]) return null;
             return (
@@ -171,42 +175,51 @@ const UserDetail = () => {
             );
           })}
         </div>
-        <PageHeader
-          title={t('userManagement.header.view.linked_accounts')} 
-          navigateTo={`../${PATHS.addAccounts}/${userId}`}
-          buttonLabels={buttonLabelsAccount}
-          state={{ isEdit: true }} />
-        {isSuccess && isAlertVisible && (
-          <Alert
-            description="2 new accounts have been successfully linked to this user" //Number shoud be dynamic --To Do
-            onClose={handleAlertClose}
-            type="success"
-            duration={10000}
-          />)}
-        <div class="filterBox line-height grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
-          <div className="toggle-box">
-            <div>
-              <img src={arrow_right} className="icon-align" />
+
+        <div className="MCP-module-body">
+          <ModuleHeader
+            heading={<h1>{t('userManagement.header.view.linked_accounts')}</h1>}
+            controls={
+              <div className="controls">
+                <Button variant="secondary" size="md" onClick={() => navigate(`../${PATHS.addAccounts}/${userId}`, { state: { isEdit: true } })}>{t('userManagement.button.add_accounts')}</Button>
+              </div>
+            }
+          />
+          {isSuccess && isAlertVisible && (
+            <Alert
+              description="2 new accounts have been successfully linked to this user" //Number shoud be dynamic --To Do
+              onClose={handleAlertClose}
+              type="success"
+              duration={10000}
+            />)}
+          <div className="MCP-panel-container">
+            <div class="filterBox line-height grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
+              <div className="toggle-box">
+                <div>
+                  <img src={arrow_right} className="icon-align" />
+                </div>
+                <div className="autoSuggestSearch-container">
+                  <AutoSuggestSearch
+                    label=" "
+                    onChangeInput={handleSearchChange}
+                    outline={true}
+                    placeHolder={t('userManagement.searchFilter.addaccount_label')}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="autoSuggestSearch-container">
-              <AutoSuggestSearch
-                label=" "
-                onChangeInput={handleSearchChange}
-                outline={true}
-                placeHolder={t('userManagement.searchFilter.addaccount_label')}
+            <div className="grid grid-gap-16">
+              <AccountsList
+                data={SelectedAccountData}
+                selectableRows={false}
+                omitColumns={['distributionChannel']}
               />
             </div>
           </div>
         </div>
 
-        <div className="grid grid-gap-16">
-          <AccountsList
-            data={SelectedAccountData}
-            selectableRows={false}
-            omitColumns={['distributionChannel']}
-          />
-        </div>
-      </div></>
+
+      </div></div>
   );
 };
 

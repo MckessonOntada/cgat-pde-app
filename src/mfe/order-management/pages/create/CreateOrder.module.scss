@@ -11,19 +11,13 @@
 .wrapper{
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-04);
+    gap: var(--spacing-01);
 
     .header{
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-04);
 
         .title{
             font-size: var(--brand-font-size--22);
             font-weight: var(--brand-font-weight-600);
         }
-    }
-
-    [class*="stepsItemTitle"] {
     }
 }

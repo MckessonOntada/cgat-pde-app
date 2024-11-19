@@ -21,7 +21,7 @@ function MainLayout() {
   const navigate = useNavigate();
   const userHasRoutePermission = AuthUtils.userHasRoutePermission(pathname);
   return (
-    <div id={debugIds(ID.MAIN)}>
+    <div id={debugIds(ID.MAIN)} className={styles.appContainer}>
       <Header />
       <div className={styles.home} id={debugIds(ID.HOME)}>
         <Suspense fallback={<Loader type="screen" />}>

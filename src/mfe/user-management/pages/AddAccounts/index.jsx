@@ -1,4 +1,4 @@
-import React, { useState, useCallback,useEffect } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { Stepper, AutoSuggestSearch, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
@@ -17,10 +17,10 @@ const AddAccounts = () => {
     const { userId } = useParams();
     const [searchText, setSearchText] = useState("");
     const [selectedAccounts, setSelectedAccounts] = useState([]);
-    const { isEdit } = location.state || {}; 
+    const { isEdit } = location.state || {};
     const isSuccess = location.state?.isSuccess || false;
-  
-  
+
+
     const handleGoBack = () => {
         navigate(-1);
     };
@@ -78,7 +78,7 @@ const AddAccounts = () => {
                     ]}
                 />
             </div>
-            <div class="filterBox line-height grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
+            <div class="MCP-panel-container line-height grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
                 <div className="toggle-box">
                     <img src={arrow_right} className="icon-align" />
                     <div className="autoSuggestSearch-container">
@@ -91,16 +91,18 @@ const AddAccounts = () => {
                     </div>
                 </div>
             </div>
-           
-            <div className="grid grid-gap-16">
-                <AccountsList
-                    data={AllAccountsData}
-                    selectedRows={selectedAccounts}
-                    setSelectedRows={setSelectedAccounts}
-                    onRemoveAccount={onRemoveAccount}
-                    showSelectedAccounts
-                    omitColumns={['action', 'cgatIdentifier', 'address']}
-                />
+
+            <div className="">
+                <div className="grid grid-gap-16">
+                    <AccountsList
+                        data={AllAccountsData}
+                        selectedRows={selectedAccounts}
+                        setSelectedRows={setSelectedAccounts}
+                        onRemoveAccount={onRemoveAccount}
+                        showSelectedAccounts
+                        omitColumns={['action', 'cgatIdentifier', 'address']}
+                    />
+                </div>
             </div>
             <div className={'buttonGroup'}>
                 <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>

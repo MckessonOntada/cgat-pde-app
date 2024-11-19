@@ -1,8 +1,8 @@
 import React from 'react';
-import Panel from '../../../../components/panel';
 import styles from './Summary.module.scss';
 import { Button, CheckboxGroup } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg';
+import ModuleHeader from '@src/components/module-header';
 
 const summaryData = {
     accountDetails: {
@@ -43,11 +43,11 @@ const Summary = () => {
     return (
         <div className={styles.wrapper}>
             <div className={styles.lauout}>
-                <Panel>
+                <div className="MCP-panel-container">
                     <div class={styles.sect}>
-                        <div className={styles.header}>
-                            <p className={styles.heading}>Price</p>
-                        </div>
+                        <ModuleHeader 
+                            heading={<p className='tertiaryHeading'>Price</p>}
+                        />
                         <div className={`${styles.pricingDetails}`}>
                             <div className={`${styles.col} ${styles.detailSegment}`}>
                                 <div className={styles.fieldName}>Material Description</div>
@@ -59,16 +59,18 @@ const Summary = () => {
                             </div>
                         </div>
                     </div>
-                </Panel>
-                <Panel>
+                </div>
+                <div className="MCP-panel-container">
                     <div className={styles.sect}>
-                        <div className={styles.header}>
-                            <p className={styles.heading}>Account Details</p>
-                            <button className={styles.actionLink}>
-                                <IconEditField />
-                                <span>Edit</span>
-                            </button>
-                        </div>
+                        <ModuleHeader 
+                            heading={<p className='tertiaryHeading'>Account Details</p>}
+                            controls={
+                                <button className={styles.actionLink}>
+                                    <IconEditField />
+                                    <span>Edit</span>
+                                </button>
+                            }
+                        />
                         <div className={`${styles.details} ${styles.row}`}>
                             <div className={styles.col}>
                                 <div className={styles.row}>
@@ -97,18 +99,20 @@ const Summary = () => {
                             </div>
                         </div>
                     </div>
-                </Panel>
+                </div>
                 <div className={styles.row}>
                     <div className={styles.col}>
-                        <Panel>
+                        <div className="MCP-panel-container">
                             <div class={styles.sect}>
-                                <div className={styles.header}>
-                                    <p className={styles.heading}>Therapy</p>
-                                    <button className={styles.actionLink}>
-                                        <IconEditField />
-                                        <span>Edit</span>
-                                    </button>
-                                </div>
+                                <ModuleHeader 
+                                    heading={<p className="tertiaryHeading">Therapy</p>} 
+                                    controls={
+                                        <button className={styles.actionLink}>
+                                            <IconEditField />
+                                            <span>Edit</span>
+                                        </button>
+                                    }
+                                />
                                 <div className={`${styles.details} ${styles.row}`}>
                                     <div className={styles.col}>
                                         <div className={styles.row}>
@@ -163,18 +167,20 @@ const Summary = () => {
                                 </div>
 
                             </div>
-                        </Panel>
+                        </div>
                     </div>
                     <div className={styles.col}>
-                        <Panel>
+                        <div className="MCP-panel-container">
                             <div class={styles.sect}>
-                                <div className={styles.header}>
-                                    <p className={styles.heading}>Adam Jones</p>
-                                    <button className={styles.actionLink}>
-                                        <IconEditField />
-                                        <span>Edit</span>
-                                    </button>
-                                </div>
+                                <ModuleHeader 
+                                    heading={<p className="tertiaryHeading">Adam Jones</p>}
+                                    controls={
+                                        <button className={styles.actionLink}>
+                                            <IconEditField />
+                                            <span>Edit</span>
+                                        </button>
+                                    }
+                                />
                                 <div className={`${styles.details} ${styles.row}`}>
                                     <div className={styles.col}>
                                         <div className={styles.row}>
@@ -195,16 +201,18 @@ const Summary = () => {
                                 </div>
                             </div>
 
-                        </Panel>
-                        <Panel>
+                        </div>
+                        <div className="MCP-panel-container">
                             <div class={styles.sect}>
-                                <div className={styles.header}>
-                                    <p className={styles.heading}>Additional Details</p>
-                                    <button className={styles.actionLink}>
-                                        <IconEditField />
-                                        <span>Edit</span>
-                                    </button>
-                                </div>
+                                <ModuleHeader 
+                                    heading={<p className='tertiaryHeading'>Additional Details</p>} 
+                                    controls={
+                                        <button className={styles.actionLink}>
+                                            <IconEditField />
+                                            <span>Edit</span>
+                                        </button>
+                                    }    
+                                />
                                 <div className={`${styles.details} ${styles.row}`}>
                                     <div className={styles.col}>
                                         <div className={styles.row}>
@@ -243,20 +251,20 @@ const Summary = () => {
                                 </div>
                             </div>
 
-                        </Panel>
+                        </div>
                     </div>
                 </div>
             </div>
             <div>
-                <CheckboxGroup id={"default"} caption="Select option" items={[{value:"Apple"}].map(item => ({
+                <CheckboxGroup id={"default"} caption="Select option" items={[{ value: "Apple" }].map(item => ({
                     ...item,
                     onChange: () => handleChange(item.value)
-                }))}  />
+                }))} />
             </div>
-            <div className={styles.controls}>
-                <Button variant="secondary">Print Summary</Button>
-                <Button variant="secondary">Cancel</Button>
-                <Button variant="primary">Submit Order</Button>
+            <div className="controls">
+                <Button size="md" variant="secondary">Print Summary</Button>
+                <Button size="md" variant="secondary">Cancel</Button>
+                <Button size="md" variant="primary">Submit Order</Button>
             </div>
         </div>
     )
