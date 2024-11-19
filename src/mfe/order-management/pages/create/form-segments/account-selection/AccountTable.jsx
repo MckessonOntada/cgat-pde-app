@@ -71,7 +71,6 @@ const AccountsTableComponent = () => {
     const batch = dataState.slice(batchStart, batchEnd);
 
     return (
-        <div className={styles.dataTableWrapper}>
             <CustomDataTable
                 columns={columns}
                 data={batch}
@@ -91,7 +90,6 @@ const AccountsTableComponent = () => {
                 }
                 paginationTotalRecordsMessage={`${pageConfig.total} results`}
             />
-        </div>
     );
 };
 

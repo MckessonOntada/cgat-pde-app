@@ -5,7 +5,7 @@ import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
 import initialAccountsData from './../../__mock__';
 import AccountCard from './AccountCard';
 
-const AccountSelctionUserGuide = ({ onClose }) => {
+const AccountSelectionUserGuide = ({ onClose }) => {
   const options = initialAccountsData.slice(0, 2);
   const [account, setAccount] = React.useState(null);
   const handleOnChange = (account) => {
@@ -82,4 +82,4 @@ const AccountSelctionUserGuide = ({ onClose }) => {
   );
 };
 
-export default AccountSelctionUserGuide;
+export default AccountSelectionUserGuide;

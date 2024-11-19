@@ -119,9 +119,6 @@ const OrderDataTable = ({ title, type = 'normal', pagination = true }) => {
     const batch = data.slice(batchStart, batchEnd);
 
     return (
-        <div
-            className={styles.dataTableWrapper}
-        >
             <CustomDataTable
                 type={type}
                 columns={columns}
@@ -132,10 +129,9 @@ const OrderDataTable = ({ title, type = 'normal', pagination = true }) => {
                 pagination={pagination}
                 currentPage={pageConfig.currentPage}
                 totalPageCount={pageConfig.pages}
-                totalRocords={pageConfig.total}
+                totalRecords={pageConfig.total}
                 recordsPerPage={pageConfig.pageSize}
             />
-        </div>
     )
 }
 

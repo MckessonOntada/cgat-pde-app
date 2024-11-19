@@ -19,24 +19,5 @@
             }
         }
 
-        .controls{
-            align-items: flex-end;
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-04);
-            .controlWrapper{
-                width: 240px;
-            }
-        }
-    }
-    .formSegment{
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-04);
-    }
-    .sect{
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-03);
     }
 }

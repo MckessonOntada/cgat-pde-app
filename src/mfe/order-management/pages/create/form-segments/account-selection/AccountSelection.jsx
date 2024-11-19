@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import styles from './AccountSelection.module.scss'
 import FloatingDrawer from '@src/components/floating-drawer';
 import AccountsTable from './AccountTable';
-import AccountSelctionUserGuide from './AccountSelectionUserGuide';
+import AccountSelectionUserGuide from './AccountSelectionUserGuide';
 import ModuleHeader from '@src/components/module-header';
 
 const options = [
@@ -27,12 +27,10 @@ const AccountSelection = () => {
         console.log(account);
     }
     return (
-        <div className={styles.wrapper}>
-            <div className={styles.formSegment}>
+        <div className={`MCP-module-wrapper`}>
                 <div className='MCP-panel-container'>
-                    <div className={styles.sect}>
-                        {/* <ModuleHeader variant={"l2"} heading={'Account Selction'} /> */}
-                        <p className='secondaryHeading'>Account Selection</p>
+                    <div className={`MCP-module-body`}>
+                        <ModuleHeader heading={<p className='secondaryHeading'>Account Selection</p>} />
                         <div className='MCP-panel-container'>
                             <div className={styles.account}>
                                 <div className={styles.accountDetails}>
@@ -48,35 +46,37 @@ const AccountSelection = () => {
                             </div>
                         </div>
                     </div>
-                    <div className={styles.sect}>
-                        {/* <ModuleHeader variant={"l2"} heading={'Shipping Address'} /> */}
-                        <p className='secondaryHeading'>Shipping Address</p>
+                    <div className="MCP-module-body">
+                        <ModuleHeader
+                            heading={<p className='secondaryHeading'>Shipping Address</p>}
+                        />
                         <div className='MCP-panel-container'>
                             filters
                         </div>
-                        <AccountsTable />
+                        <div className="MCP-table-wrapper">
+                            <AccountsTable />
+                        </div>
+                    </div>
+                    <div className='controls'>
+                        <Button
+                            size="md"
+                            onClick={() => navigate('../')}
+                            variant="secondary"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            size="md"
+                            onClick={() => { }}
+                            variant="primary"
+                        >
+                            Save and Continue
+                        </Button>
                     </div>
                 </div>
                 <FloatingDrawer open={open} anchor='right' onClose={handleOnClose}>
-                    <AccountSelctionUserGuide onSubmit={handleOnSubmit} onClose={handleOnClose} />
+                    <AccountSelectionUserGuide onSubmit={handleOnSubmit} onClose={handleOnClose} />
                 </FloatingDrawer>
-                <div className='controls'>
-                    <Button
-                        size="md"
-                        onClick={() => navigate('../')}
-                        variant="secondary"
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        size="md"
-                        onClick={() => { }}
-                        variant="primary"
-                    >
-                        Save and Continue
-                    </Button>
-                </div>
-            </div>
         </div>
     )
 }
