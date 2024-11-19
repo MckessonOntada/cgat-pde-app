@@ -182,7 +182,7 @@
 @media (max-width: 600px) {
   [class^="CustomDataTable-module--d_flex--"] {
       display: flex;
-      gap: 8px;
+      gap: var(--spacing-02);
       flex-direction: row;
       align-items: center;
   }

@@ -113,7 +113,7 @@ const UserDetail = () => {
           <div className="container grid grid-gap-24 grid-cols-1 md:grid-cols-4">
             <div>
               <span className="view_label">User Address</span>
-              <p className="label-text py2">{userData.address.address1}, {userData.address.address2}, {userData.address.city}, {userData.address.state}, {userData.address.zip}</p>
+              <p className="label-text">{userData.address.address1}, {userData.address.address2}, {userData.address.city}, {userData.address.state}, {userData.address.zip}</p>
             </div>
             <div>
               <span className="view_label">Email ID</span>
