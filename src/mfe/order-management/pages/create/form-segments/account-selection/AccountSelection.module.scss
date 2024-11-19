@@ -1,23 +1,23 @@
-.wrapper{
-    .account{
+.account{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    row-gap: var(--spacing-03);
+    color: var(--brand-color-text-dark-slate);  
+    .accountDetails, .controls{
         display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        color: var(--brand-color-text-dark-slate);  
-        .accountDetails, .controls{
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-01, 4px);
+        flex-direction: column;
+        gap: var(--spacing-03);
+    }
+    .accountDetails{
+        .name{
+            font-size: var(--brand-font-size--small);
+            font-weight: var(--brand-font-weight-400);
         }
-        .accountDetails{
-            .name{
-                font-size: var(--brand-font-size--small);
-                font-weight: var(--brand-font-weight-400);
-            }
-            .address{
-                font-size: var(--brand-font-size--small);
-            }
+        .address{
+            font-size: var(--brand-font-size--small);
         }
-
     }
 }

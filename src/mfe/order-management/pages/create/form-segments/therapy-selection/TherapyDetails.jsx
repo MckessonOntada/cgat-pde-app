@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './TherapyDetails.module.scss';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const detailsList = [
   {
@@ -47,10 +48,11 @@ const detailsList = [
 ];
 
 function TherapyDetails({ onClose }) {
+  const { t } = useTranslate();
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
-        <h6>Therapy Details</h6>
+        <h6>{t('labels.therapyDetails')}</h6>
         <button onClick={onClose}>
           <IconClose />
         </button>

@@ -1,81 +1,84 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './AccountSelectionUserGuide.module.scss';
 import { RadioGroup, Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
 import initialAccountsData from './../../__mock__';
 import AccountCard from './AccountCard';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const AccountSelectionUserGuide = ({ onClose }) => {
+  const { t } = useTranslate();
+  const [program1, setProgram1] = useState(null);
+  const [program2, setProgram2] = useState(null);
+  const [account, setAccount] = useState(null);
+
   const options = initialAccountsData.slice(0, 2);
-  const [account, setAccount] = React.useState(null);
-  const handleOnChange = (account) => {
-    setAccount(account);
+
+  const program1Options = ['3PL', 'SD', 'All'];
+  const program2Options = ['WAC', 'GOV', '340B'];
+
+  const handleAccountChange = (selectedAccount) => {
+    setAccount(selectedAccount);
   };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.drawerContent}>
         <div className={styles.topSect}>
           <div className={styles.header}>
-            <h6>Need assistance with selecting an account?</h6>
-            <button onClick={onClose}>
+            <h6>{t('labels.needAssistanceSelectingAccount')}</h6>
+            <button onClick={onClose} aria-label={t('captions.close')}>
               <IconClose />
             </button>
           </div>
+
           <div className="MCP-panel-container">
             <div className={styles.selectionBlock}>
-              <p>Are you here to order through any of the below programs?</p>
-              <div>
-                <RadioGroup
-                  direction="row"
-                  id="radioGroup + 0.4533187688543612 + 0.4823344741009439"
-                  items={['3PL', 'SD', 'All'].map((v) => ({
-                    label: v,
-                    value: v
-                  }))}
-                  onChangeValue={() => {}}
-                  onOtherTextChange={() => {}}
-                  onSubRadioFieldChange={() => {}}
-                  radioBtnWidth="auto"
-                  value="option1"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="MCP-panel-container">
-            <div className={styles.selectionBlock}>
-              <p>Are you here to order through any of the below programs?</p>
-              <div>
-                <RadioGroup
-                  direction="row"
-                  id="radioGroup + 0.4533187688543612 + 0.4823344741009439"
-                  items={['WAC', 'GOV', '340B'].map((v) => ({
-                    label: v,
-                    value: v
-                  }))}
-                  onChangeValue={() => {}}
-                  onOtherTextChange={() => {}}
-                  onSubRadioFieldChange={() => {}}
-                  radioBtnWidth="auto"
-                  value="option1"
-                />
-              </div>
+              <p>{t('labels.orderThroughBelowPrograms')}</p>
+              <RadioGroup
+                direction="row"
+                id="orderProgramOption1"
+                items={program1Options.map((v) => ({ label: v, value: v }))}
+                onChangeValue={setProgram1}
+                value={program1}
+                radioBtnWidth="auto"
+              />
             </div>
           </div>
 
-          <AccountCard options={options} onChange={handleOnChange} />
+          <div className="MCP-panel-container">
+            <div className={styles.selectionBlock}>
+              <p>{t('labels.orderThroughBelowPrograms')}</p>
+              <RadioGroup
+                direction="row"
+                id="orderProgramOption2"
+                items={program2Options.map((v) => ({ label: v, value: v }))}
+                onChangeValue={setProgram2}
+                value={program2}
+                radioBtnWidth="auto"
+              />
+            </div>
+          </div>
+
+          <AccountCard options={options} onChange={handleAccountChange} />
         </div>
 
         <div className={styles.controls}>
-          <Button label="Cancel" onClick={onClose} variant="secondary">
-            Cancel
-          </Button>
           <Button
-            label="Select"
-            onClick={() => onsubmit(account)}
+            label={t('captions.btnCancel')}
+            onClick={onClose}
+            variant="secondary"
+            size="md"
+            aria-label={t('captions.cancel')}
+          />
+          <Button
+            label={t('captions.btnSelect')}
+            onClick={() => onSubmit(account)}
             variant="primary"
-            disabled={!account}>
-            Select
-          </Button>
+            size="md"
+            disabled={!account}
+            aria-label={t('captions.selectAccount')}
+          />
         </div>
       </div>
     </div>

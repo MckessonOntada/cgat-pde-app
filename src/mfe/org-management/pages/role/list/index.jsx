@@ -7,6 +7,7 @@ import Filters from './Filters';
 import { RoleProvider } from '../../../context/RoleContext';
 import RolesDataTable from './RolesDataTable';
 import { useNavigate } from 'react-router-dom';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const breadcrumbItems = [
     {
@@ -19,9 +20,9 @@ const breadcrumbItems = [
 ];
 
 function RolesList() {
+    const { t } = useTranslate();
     const navigate = useNavigate();
-
-    const hanldeOnAddRoleClick = () => {
+    const handleOnAddRoleClick = () => {
         navigate('create-role');
     }
 
@@ -32,10 +33,10 @@ function RolesList() {
 
             {/* module header */}
             <ModuleHeader
-                heading={<p className="primaryHeading">Manage Roles</p>}
+                heading={<p className="primaryHeading">{t('orgManagement.role.headingManageOrder')}</p>}
                 controls={
-                    <Button Icon={AddCircleFilled} size="md" onClick={hanldeOnAddRoleClick} >
-                        Add Role
+                    <Button Icon={AddCircleFilled} size="md" onClick={handleOnAddRoleClick} >
+                        {t('orgManagement.role.labelAddRole')}
                     </Button>
                 }
             />
@@ -48,7 +49,7 @@ function RolesList() {
                     </div>
                     <div className='MCP-table-wrapper'>
                         <ModuleHeader
-                            heading={<p className='secondaryHeading'>Roles Listing</p>}
+                            heading={<p className='secondaryHeading'>{t('orgManagement.role.labelRolesListing')}</p>}
                         />
                         <RoleProvider>
                             <RolesDataTable />

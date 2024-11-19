@@ -1,273 +1,130 @@
 import React from 'react';
 import styles from './Summary.module.scss';
-import { Button, CheckboxGroup } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg';
 import ModuleHeader from '@src/components/module-header';
+import { summaryData } from './__mock__';
+import { useTranslate } from '@src/translations/useTranslation';
 
-const summaryData = {
-    accountDetails: {
-        accountName: 'Revisions Aesthetics Group',
-        accountNumber: '015111',
-        shippingAccountName: 'BMS-WAC MD ANDERSON  CANCER CTR',
-        shippingAccountNumber: '1122332',
-    },
-    adamJones: {
-        patientIdentifier: '5682532',
-        gender: 'Male',
-        dob: '11/19/1997'
-    },
-    additionalDetails: {
-        dateOfAdministration: '11/19/1997',
-        patientConsent: 'Yes',
-        slotNo: 123578,
-        selectVariant: 'Туре А',
-        poNo: 12131,
-        variantDescription: 'HEMLIBRA prevents bl...'
-    },
-    therapyDetails: {
-        "nationalDrugCode": "N5024202201",
-        "uDI": "G07331689",
-        "distributionsChannel": 20,
-        "salesOrganization": 8545,
-        "netPrice": "$117,000.00",
-        "contractPrice": "$100,000.00",
-        "wACPrice": "$117,000.00",
-        "regularPrice": "$200,000.00",
-        "340bPrice": "NA",
-        "priceUnit": 1
-    }
-}
+const DetailField = ({ label, value, className }) => (
+    <div className={className}>
+        <div className={'fieldName'}>{label}</div>
+        <div className={'fieldValue'}>{value}</div>
+    </div>
+);
 
 const Summary = () => {
-    const { accountDetails, adamJones, additionalDetails, therapyDetails } = summaryData;
+    const { t } = useTranslate();
+    const { materialDescription, price, accountDetails, adamJones, additionalDetails, therapyDetails } = summaryData;
     return (
         <div className={styles.wrapper}>
-            <div className={styles.lauout}>
+            <div className={styles.layout}>
+                {/* Pricing Section */}
                 <div className="MCP-panel-container">
-                    <div class={styles.sect}>
-                        <ModuleHeader 
-                            heading={<p className='tertiaryHeading'>Price</p>}
-                        />
-                        <div className={`${styles.pricingDetails}`}>
-                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                <div className={'fieldName'}>Material Description</div>
-                                <div className={'fieldValue'}>VENOFER 20MG/ML 5ML SDV PF NR</div>
-                            </div>
-                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                <div className={'fieldName'}>Order Cost</div>
-                                <div className={`${'fieldValue'} ${styles.price}`}>$45,000.00</div>
-                            </div>
-                        </div>
+                    <ModuleHeader
+                        heading={<p className='tertiaryHeading'>{t('labels.price')}</p>}
+                    />
+                    <div className={`flex justify-between`}>
+                        <DetailField className={"justify-start"} label={t('labels.materialDescription')} value={materialDescription} />
+                        <DetailField className={`${styles.price} justify-end`} label={t('labels.orderCost')} value={price} />
                     </div>
                 </div>
-                <div className="MCP-panel-container">
-                    <div className={styles.sect}>
-                        <ModuleHeader 
-                            heading={<p className='tertiaryHeading'>Account Details</p>}
-                            controls={
-                                <button className={styles.actionLink}>
-                                    <IconEditField />
-                                    <span>Edit</span>
-                                </button>
-                            }
-                        />
-                        <div className={`${styles.details} ${styles.row}`}>
-                            <div className={styles.col}>
-                                <div className={styles.row}>
-                                    <div className={`${styles.col} ${styles.detailSegment}`}>
-                                        <div className={'fieldName'}>Account Name</div>
-                                        <div className={'fieldValue'}>{accountDetails.accountName}</div>
-                                    </div>
-                                    <div className={`${styles.col} ${styles.detailSegment}`}>
-                                        <div className={'fieldName'}>Account No.</div>
-                                        <div className={'fieldValue'}>{accountDetails.accountNumber}</div>
-                                    </div>
-                                </div>
 
-                            </div>
-                            <div className={styles.col}>
-                                <div className={styles.row}>
-                                    <div className={`${styles.col} ${styles.detailSegment}`}>
-                                        <div className={'fieldName'}>Shiping Account Name</div>
-                                        <div className={'fieldValue'}>{accountDetails.shippingAccountName}</div>
-                                    </div>
-                                    <div className={`${styles.col} ${styles.detailSegment}`}>
-                                        <div className={'fieldName'}>Shipping Account No.</div>
-                                        <div className={'fieldValue'}>{accountDetails.shippingAccountNumber}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                {/* Account Details Section */}
+                <div className="MCP-panel-container">
+                    <ModuleHeader
+                        heading={<p className='tertiaryHeading'>{t('labels.accountDetails')}</p>}
+                        controls={
+                            <button className={styles.actionLink}>
+                                <IconEditField />
+                                <span>{t('captions.btnEdit')}</span>
+                            </button>
+                        }
+                    />
+                    <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4`}>
+                        <DetailField label={t('labels.accountName')} value={accountDetails.accountName} />
+                        <DetailField label={t('labels.accountNo')} value={accountDetails.accountNumber} />
+                        <DetailField label={t('labels.shippingAccountName')} value={accountDetails.shippingAccountName} />
+                        <DetailField label={t('labels.shippingAccountNo')} value={accountDetails.shippingAccountNumber} />
                     </div>
                 </div>
+
+                {/* Therapy Details Section */}
                 <div className={styles.row}>
                     <div className={styles.col}>
                         <div className="MCP-panel-container">
-                            <div class={styles.sect}>
-                                <ModuleHeader 
-                                    heading={<p className="tertiaryHeading">Therapy</p>} 
-                                    controls={
-                                        <button className={styles.actionLink}>
-                                            <IconEditField />
-                                            <span>Edit</span>
-                                        </button>
-                                    }
-                                />
-                                <div className={`${styles.details} ${styles.row}`}>
-                                    <div className={styles.col}>
-                                        <div className={styles.row}>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={'fieldName'}>National Drug Code</div>
-                                                <div className={'fieldValue'}>{therapyDetails.nationalDrugCode}</div>
-                                            </div>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={'fieldName'}>UDI</div>
-                                                <div className={'fieldValue'}>{therapyDetails.uDI}</div>
-                                            </div>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={'fieldName'}>Distributions Channel</div>
-                                                <div className={'fieldValue'}>{therapyDetails.distributionsChannel}</div>
-                                            </div>
-                                        </div>
-                                        <div className={styles.row}>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={'fieldName'}>Sales Organization</div>
-                                                <div className={'fieldValue'}>{therapyDetails.salesOrganization}</div>
-                                            </div>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={'fieldName'}>Net Price</div>
-                                                <div className={'fieldValue'}>{therapyDetails.netPrice}</div>
-                                            </div>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={'fieldName'}>Contract Price</div>
-                                                <div className={'fieldValue'}>{therapyDetails.contractPrice}</div>
-                                            </div>
-                                        </div>
-                                        <div className={styles.row}>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={'fieldName'}>WAC Price</div>
-                                                <div className={'fieldValue'}>{therapyDetails.wACPrice}</div>
-                                            </div>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={'fieldName'}>Regular Price</div>
-                                                <div className={'fieldValue'}>{therapyDetails.regularPrice}</div>
-                                            </div>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={'fieldName'}>340b Price</div>
-                                                <div className={'fieldValue'}>{therapyDetails["340bPrice"]}</div>
-                                            </div>
-                                        </div>
-                                        <div className={styles.row}>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={'fieldName'}>Price Unit</div>
-                                                <div className={'fieldValue'}>{therapyDetails.priceUnit}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
+                            <ModuleHeader
+                                heading={<p className="tertiaryHeading">Therapy</p>}
+                                controls={
+                                    <button className={styles.actionLink}>
+                                        <IconEditField />
+                                        <span>{t('captions.btnEdit')}</span>
+                                    </button>
+                                }
+                            />
+                            <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
+                                <DetailField label={t('labels.nationalDrugCode')} value={therapyDetails.nationalDrugCode} />
+                                <DetailField label={t('labels.UDI')} value={therapyDetails.uDI} />
+                                <DetailField label={t('labels.distributionChannel')} value={therapyDetails.distributionsChannel} />
+                                <DetailField label={t('labels.salesOrganization')} value={therapyDetails.salesOrganization} />
+                                <DetailField label={t('labels.netPrice')} value={therapyDetails.netPrice} />
+                                <DetailField label={t('labels.contractPrice')} value={therapyDetails.contractPrice} />
+                                <DetailField label={t('labels.wacPrice')} value={therapyDetails.wACPrice} />
+                                <DetailField label={t('labels.regularPrice')} value={therapyDetails.regularPrice} />
+                                <DetailField label={t('labels.340bPrice')} value={therapyDetails["340bPrice"]} />
+                                <DetailField label={t('labels.priceUnit')} value={therapyDetails.priceUnit} />
                             </div>
                         </div>
                     </div>
+
                     <div className={styles.col}>
-                        <div className="MCP-panel-container">
-                            <div class={styles.sect}>
-                                <ModuleHeader 
-                                    heading={<p className="tertiaryHeading">Adam Jones</p>}
-                                    controls={
-                                        <button className={styles.actionLink}>
-                                            <IconEditField />
-                                            <span>Edit</span>
-                                        </button>
-                                    }
-                                />
-                                <div className={`${styles.details} ${styles.row}`}>
-                                    <div className={styles.col}>
-                                        <div className={styles.row}>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={'fieldName'}>Patient Identifier</div>
-                                                <div className={'fieldValue'}>{adamJones.patientIdentifier}</div>
-                                            </div>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={'fieldName'}>Gender</div>
-                                                <div className={'fieldValue'}>{adamJones.gender}</div>
-                                            </div>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={'fieldName'}>DOB</div>
-                                                <div className={'fieldValue'}>{adamJones.dob}</div>
-                                            </div>
-                                        </div>
+                        <div className={styles.row}>
+                            <div className={styles.col}>
+                                <div className="MCP-panel-container">
+                                    <ModuleHeader
+                                        heading={<p className="tertiaryHeading">Adam Jones</p>}
+                                        controls={
+                                            <button className={styles.actionLink}>
+                                                <IconEditField />
+                                                <span>{t('captions.btnEdit')}</span>
+                                            </button>
+                                        }
+                                    />
+                                    <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
+                                        <DetailField label={t("labels.patientIdentifier")} value={adamJones.patientIdentifier} />
+                                        <DetailField label={t("labels.gender")} value={adamJones.gender} />
+                                        <DetailField label={t("labels.dob")} value={adamJones.dob} />
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-                        <div className="MCP-panel-container">
-                            <div class={styles.sect}>
-                                <ModuleHeader 
-                                    heading={<p className='tertiaryHeading'>Additional Details</p>} 
-                                    controls={
-                                        <button className={styles.actionLink}>
-                                            <IconEditField />
-                                            <span>Edit</span>
-                                        </button>
-                                    }    
-                                />
-                                <div className={`${styles.details} ${styles.row}`}>
-                                    <div className={styles.col}>
-                                        <div className={styles.row}>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={'fieldName'}>Slot No.</div>
-                                                <div className={'fieldValue'}>{additionalDetails.slotNo}</div>
-                                            </div>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={'fieldName'}>PO No.</div>
-                                                <div className={'fieldValue'}>{additionalDetails.poNo}</div>
-                                            </div>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={'fieldName'}>Date of Administration</div>
-                                                <div className={'fieldValue'}>{additionalDetails.dateOfAdministration}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className={`${styles.details} ${styles.row}`}>
-                                    <div className={styles.col}>
-                                        <div className={styles.row}>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={'fieldName'}>Select Variant</div>
-                                                <div className={'fieldValue'}>{additionalDetails.selectVariant}</div>
-                                            </div>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={'fieldName'}>Variant Description</div>
-                                                <div className={'fieldValue'}>{additionalDetails.variantDescription}</div>
-                                            </div>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={'fieldName'}>Patient Concent</div>
-                                                <div className={'fieldValue'}>{additionalDetails.patientConsent}</div>
-                                            </div>
-                                        </div>
+                        <div className={styles.row}>
+                            <div className={styles.col}>
+                                <div className="MCP-panel-container">
+                                    <ModuleHeader
+                                        heading={<p className='tertiaryHeading'>Additional Details</p>}
+                                        controls={
+                                            <button className={styles.actionLink}>
+                                                <IconEditField />
+                                                <span>{t('captions.btnEdit')}</span>
+                                            </button>
+                                        }
+                                    />
+                                    <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3'}>
+                                        <DetailField label={t('labels.slotNo')} value={additionalDetails.slotNo} />
+                                        <DetailField label={t('labels.poNo')} value={additionalDetails.poNo} />
+                                        <DetailField label={t('labels.dateOfAdministration')} value={additionalDetails.dateOfAdministration} />
+                                        <DetailField label={t('labels.patientConsent')} value={additionalDetails.patientConsent} />
+                                        <DetailField label={t('labels.selectVariant')} value={additionalDetails.selectVariant} />
+                                        <DetailField label={t('labels.variantDescription')} value={additionalDetails.variantDescription} />
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
             </div>
-            <div>
-                <CheckboxGroup id={"default"} caption="Select option" items={[{ value: "Apple" }].map(item => ({
-                    ...item,
-                    onChange: () => handleChange(item.value)
-                }))} />
-            </div>
-            <div className="controls">
-                <Button size="md" variant="secondary">Print Summary</Button>
-                <Button size="md" variant="secondary">Cancel</Button>
-                <Button size="md" variant="primary">Submit Order</Button>
-            </div>
         </div>
-    )
-}
+    );
+};
 
 export default Summary;

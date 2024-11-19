@@ -1,62 +1,14 @@
 import React, { useEffect } from 'react';
-import { CustomDataTable, Dropdown, RadioGroup } from '@mckesson/mcp-component-library';
-import styles from './../../CreateOrder.module.scss';
+import { CustomDataTable, Dropdown } from '@mckesson/mcp-component-library';
 import { AccountsTableProvider, useAccountsTable } from '../../../../context/AccountContext';
 import initialAccountsData from '../../__mock__';
-
-const columns = [
-    {
-        id: 'acountId',
-        name: '',
-        selector: () => { },
-        sortable: false,
-        width: '5%',
-        cell: props => <span className={styles.cellWrapper}>
-            {
-                <RadioGroup
-                    caption=""
-                    direction="column"
-                    id="radioGroup + 0.4533187688543612 + 0.44797331210626545"
-                    items={[
-                        {
-                            isDisabled: false,
-                            label: ' ',
-                            value: props.id
-                        }]}
-                    onChangeValue={() => { }}
-                    onOtherTextChange={() => { }}
-                    onSubRadioFieldChange={() => { }}
-                    radioBtnWidth="auto"
-                    value="option1"
-                />
-            }
-        </span>,
-    }, {
-        id: 'accountName',
-        name: 'Account Name',
-        selector: () => { },
-        sortable: false,
-        width: '35%',
-        cell: props => <span className={styles.cellWrapper}> {props.accountName}</span>,
-    }, {
-        id: 'accountNumber',
-        name: 'Account Number',
-        selector: () => { },
-        sortable: false,
-        width: '15%',
-        cell: props => <span className={styles.cellWrapper}> {props.accountNumber}</span>,
-    }, {
-        id: 'address',
-        name: 'Address',
-        selector: () => { },
-        sortable: false,
-        width: '45%',
-        cell: props => <span className={styles.cellWrapper}> {props.address}</span>,
-    },
-]
+import { useTranslate } from '@src/translations/useTranslation';
+import { createColumns } from './Columns';
 
 const AccountsTableComponent = () => {
+    const { t } = useTranslate();
     const { filterState, pageConfig, dataState, setAccountData, setPageSize, setCurrentPage, updatePageConfig } = useAccountsTable();
+    const columns = createColumns(t);
 
     React.useEffect(() => {
         setAccountData(initialAccountsData);

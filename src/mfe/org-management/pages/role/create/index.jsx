@@ -6,17 +6,19 @@ import ModuleHeader from '@src/components/module-header';
 import RoleDetailsForm from './form-segments/details-form';
 import PermissionListForm from './form-segments/permissons-list';
 import PageHeader from '../../../../../components/pageHeader';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const RoleCreate = () => {
+    const { t } = useTranslate();
     const forms = [
         {
-            name: 'roleDetaols',
-            label: 'Role Details',
+            name: 'roleDetails',
+            label: t('orgManagement.role.labelRolesDetails'),
             form: <RoleDetailsForm />
         },
         {
             name: 'addPermissions',
-            label: 'Add Permissions',
+            label: t('orgManagement.role.labelAddPermissions'),
             form: <PermissionListForm />
         },
     ];
@@ -35,17 +37,17 @@ const RoleCreate = () => {
                     onClick={handleOnBackButtonClick}
                 >
                     <IconArrowLeft />
-                    <p>Back to Manage Roles</p>
+                    <p>{t('orgManagement.role.captionsBtnBackToManageRoles')}</p>
                 </button>
             </div>
 
-            <ModuleHeader heading={<PageHeader heading="Add Role"/>} />
+            <ModuleHeader heading={<PageHeader heading={t('orgManagement.role.labelAddRole')}/>} />
 
             <div className='MCP-module-body'>
                 <Stepper
-                    activeIndex={activeForm + 1}
+                    activeIndex={activeForm}
                     dividerText="of"
-                    mobileLabel="Steps"
+                    mobileLabel={t('orgManagement.role.labelStep')}
                     stepHeaders={forms.map(f => ({ label: f.label }))}
                 />
                 <div>{FormToRender}</div>

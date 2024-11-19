@@ -6,14 +6,10 @@ import FloatingDrawer from '@src/components/floating-drawer';
 import AccountsTable from './AccountTable';
 import AccountSelectionUserGuide from './AccountSelectionUserGuide';
 import ModuleHeader from '@src/components/module-header';
-
-const options = [
-    { label: "Option 1", value: "option1", description: "This is option 1" },
-    { label: "Option 2", value: "option2", description: "This is option 2" },
-    { label: "Option 3", value: "option3", description: "This is option 3" },
-];
+import { useTranslate } from '@src/translations/useTranslation';
 
 const AccountSelection = () => {
+    const { t } = useTranslate();
     const [open, setOpen] = React.useState(false);
     const navigate = useNavigate();
 
@@ -30,7 +26,7 @@ const AccountSelection = () => {
         <div className={`MCP-module-wrapper`}>
                 <div className='MCP-panel-container'>
                     <div className={`MCP-module-body`}>
-                        <ModuleHeader heading={<p className='secondaryHeading'>Account Selection</p>} />
+                        <ModuleHeader heading={<p className='secondaryHeading'>{t('labels.accountSelection')}</p>} />
                         <div className='MCP-panel-container'>
                             <div className={styles.account}>
                                 <div className={styles.accountDetails}>
@@ -41,17 +37,17 @@ const AccountSelection = () => {
                                     <div className={styles.controlWrapper}>
                                         <Dropdown />
                                     </div>
-                                    <Link to="#" onClick={handleOnClick}>Need assistance with selecting an account?</Link>
+                                    <Link to="#" onClick={handleOnClick}>{t('labels.needAssistanceSelectingAccount')}</Link>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div className="MCP-module-body">
                         <ModuleHeader
-                            heading={<p className='secondaryHeading'>Shipping Address</p>}
+                            heading={<p className='secondaryHeading'>{t('headings.shippingAddress')}</p>}
                         />
                         <div className='MCP-panel-container'>
-                            filters
+                            
                         </div>
                         <div className="MCP-table-wrapper">
                             <AccountsTable />
@@ -63,14 +59,14 @@ const AccountSelection = () => {
                             onClick={() => navigate('../')}
                             variant="secondary"
                         >
-                            Cancel
+                            {t('captions.btnCancel')}
                         </Button>
                         <Button
                             size="md"
-                            onClick={() => { }}
+                            onClick={() => navigate('32151')}
                             variant="primary"
                         >
-                            Save and Continue
+                            {t('Save and Continue')}
                         </Button>
                     </div>
                 </div>

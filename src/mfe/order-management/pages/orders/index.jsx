@@ -1,112 +1,85 @@
-import React, { useState } from 'react';
-import { TabList } from "@mckesson/mcp-component-library";
-import OrderDataTable from './OrderDataTable';
-import { useTranslate } from '@src/translations/useTranslation';
-import { Button, Badge } from "@mckesson/mcp-component-library";
+import React from 'react';
+import { TabList, Button } from "@mckesson/mcp-component-library";
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle.svg';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { routesConfig } from './../../routes/constants';
-import FilterPanel from './FilterPanel';
-import { pendingData, submittedData } from './__mock__';
 import { useOrders } from '../../context';
+import { pendingData, submittedData } from './__mock__';
+import { useTranslate } from '@src/translations/useTranslation';
 import PageHeader from '@src/components/pageHeader';
 import ModuleHeader from '../../../../components/module-header';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
-function OrderIndex() {
-    const breadcrumbItems = [
-        { label: 'Dashboard', url: '/'},
-        { label: 'Manage Orders' }
-    ]
-    const [activeTab, setActiveTab] = useState("PENDING SUBMISSION");
+import FilterPanel from './FilterPanel';
+import { tabs, breadcrumbItems } from './constants';
+import OrderDataTable from './OrderDataTable';
+
+const OrderIndex = () => {
+    const [tabList, setTabList] = React.useState([...tabs]);
     const { t } = useTranslate();
-    const tableTitle = 'Order Listing';
     const navigate = useNavigate();
     const { setOrdersData } = useOrders();
-    const tabs = [
-        {
-            id: 1,
-            configName: "PENDING SUBMISSION",
-            isActive: true,
-            isActiveTab: activeTab === "PENDING SUBMISSION",
-            sequence: 1,
-            lableForMobile: "PENDING SUBMISSION",
-        },
-        {
-            id: 2,
-            configName: "SUBMITTED",
-            isActiveTab: activeTab === "SUBMITTED",
-            isActive: true,
-            sequence: 2,
-            lableForMobile: "SUBMITTED",
-        },
-    ];
 
-    const handleOnClick = () => {
-        navigate(routesConfig.createNew);
-    }
+    const getTabData = (activeTab) => activeTab === "SUBMITTED" ? submittedData : pendingData;
+    const setActiveTab = (activeTab) => {
+        setTabList(tabList.map(tab => ({
+            ...tab,
+            isActiveTab: tab.configName === activeTab
+        })));
+        setOrdersData(getTabData(activeTab));
+    };
 
     const handleOnTabChange = (tab) => {
-        setActiveTab(tab.configName);
-    }
+        setActiveTab(tab.configName)
+    };
+
+    const handleOnClick = () => navigate(routesConfig.createNew);
 
     React.useEffect(() => {
-        if (activeTab === "SUBMITTED") {
-            setOrdersData(submittedData);
-        } else {
-            setOrdersData(pendingData);
-        }
-    }, [activeTab])
+        setActiveTab(tabs[0].configName);
+    }, []);
 
     return (
         <div className="MCP-module-wrapper">
-            {/* Breadcrumb */}
             <Breadcrumb items={breadcrumbItems} />
-
-            {/* module header */}
             <ModuleHeader
-                heading={<PageHeader heading={"Orders"} />}
+                heading={<PageHeader heading={t('headings.orders')} />}
                 controls={
-                    <Button Icon={AddCircleFilled} onClick={handleOnClick} size="md" >
-                        Create New Order
+                    <Button
+                        Icon={AddCircleFilled}
+                        onClick={handleOnClick}
+                        size="md"
+                        aria-label={t('controls.createNewOrder')}
+                    >
+                        {t('controls.ariaLabels.createNewOrder')}
                     </Button>
                 }
             />
-
-            {/* module body */}
-            <div className='MCP-module-body'>
+            <div className="MCP-module-body">
                 <div className="MCP-panel-container">
                     <TabList
-                        options={tabs}
+                        options={tabList}
                         alignment="left"
                         onTabClick={handleOnTabChange}
                         showShadow={false}
                         variant={"text"}
                         useAsButton={true}
+                        aria-label={t('controls.ariaLabels.orderTabList')}
                     />
-                    <div className='MCP-CardContainer'>
+                    <div className="MCP-CardContainer">
                         <FilterPanel />
                     </div>
-                    <div className='MCP-table-wrapper'>
-                        {/* <ModuleHeader
-                            variant={"l2"}
-                            heading={"Order Listing"}
-                        /> */}
-                        <p className='secondaryHeading'>Order Listing</p>
+                    <div className="MCP-table-wrapper">
+                        <p className="secondaryHeading">{t('headings.orderListing')}</p>
                         <OrderDataTable />
                     </div>
                 </div>
             </div>
-
-
-            {/* module footer */}
             <div className="controls">
-                <Button size="md" variant="secondary">Cancel</Button>
-                <Button size="md">Next</Button>
+                <Button size="md" variant="secondary">{t('captions.btnCancel')}</Button>
+                <Button size="md">{t('captions.btnNext')}</Button>
             </div>
-
         </div>
     );
-}
-
+};
 
 export default OrderIndex;
