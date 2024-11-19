@@ -20,7 +20,7 @@
   overflow-x: auto; /* Enable horizontal scrolling */
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   overflow-y: hidden;
-
+  white-space: nowrap;
   // Hide scrollbar on non-mobile devices
   scrollbar-width: thin;
   &::-webkit-scrollbar {
@@ -176,5 +176,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+
+@media (max-width: 600px) {
+  [class^="CustomDataTable-module--d_flex--"] {
+      display: flex;
+      gap: 8px;
+      flex-direction: row;
+      align-items: center;
+  }
 }
 

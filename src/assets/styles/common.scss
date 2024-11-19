@@ -5,7 +5,7 @@
     gap: var(--spacing-04);
     padding: var(--spacing-04);
     border: 1px solid var(--brand-color-patient-primary-3);
-    border-radius: var(--brand-border-radius--6);
+    border-radius: var(--brand-border-radius--8);
     background-color: var(--brand-color-background-white);
     width: 100%;
 }
@@ -62,16 +62,28 @@
     padding: var(--spacing-04);
     background-color: var(--brand-color-general-white);
     border: 1px solid var(--brand-color-patient-primary-3);
-    border-radius: var(--brand-border-radius--6);
+    border-radius: var(--brand-border-radius--8);
     background-color: var(--brand-color-background-white);
     width: 100%;
 }
 .primaryHeading{
     font-size: var(--brand-font-size--28);
+    font-weight: 600;
+    line-height: 32px;
+    letter-spacing: -0.004em;
 }
 .secondaryHeading{
-    font-size: var(--brand-font-size--20);
+    font-size: var(--brand-font-size--24);
+    font-weight: 700;
+    line-height: 28px;
+    letter-spacing: -0.001em;
 }
 .tertiaryHeading{
-    font-size: var(--brand-font-size--small);
+    font-size: var(--brand-font-size--small); 
+}
+
+.tertiaryHeading-24{
+    font-size: var(--brand-font-size--24); 
+    font-weight: 400;
+    line-height: 28px;  
 }
