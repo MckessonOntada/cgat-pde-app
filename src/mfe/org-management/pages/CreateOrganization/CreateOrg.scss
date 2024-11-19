@@ -1,3 +1,5 @@
+@use "@src/assets/styles/abstracts/mixins";
+
 .main-container {
   display: grid;
   gap: var(--spacing-03);
@@ -95,3 +97,9 @@
   gap: var(--spacing-03);
 }
 
+.details-view-container {
+  // display: none;
+  // @include mixins.respond("lg") {
+  //   display: block;
+  // }
+}

@@ -16,10 +16,13 @@ export const OrgManagementEN = {
   'orgManagement.table.action.view': 'VIEW',
 
   'orgManagement.button.next': 'Next',
+  'orgManagement.button.filter': 'APPLY FILTER',
   'orgManagement.button.back': 'Back',
   'orgManagement.back.organization': 'BACK TO MANAGE ORGANIZATION PAGE',
   'orgManagement.button.cancel': 'Cancel',
   'orgManagement.button.deactivate': 'Deactivate',
+  'orgManagement.button.activate': 'ACTIVE',
+  'orgManagement.button.inactivate': 'INACTIVE',
 
   'orgManagement.create_org': 'Create Organization',
   'orgManagement.create_org.details_to_create_org':
@@ -91,5 +94,11 @@ export const OrgManagementEN = {
   'orgManagement.org_detail.address': 'Organization Address',
 
   'orgManagement.org_list': 'Organization Listing',
-  'orgManagement.add.account': 'ADD ACCOUNT'
+  'orgManagement.add.account': 'ADD ACCOUNT',
+
+  'orgManagement.results': 'results',
+  'orgManagement.per_page': 'per page',
+  'orgManagement.selected_items': `Item's Selected`,
+
+  'orgManagement.empty_table.description': 'You need to add Organization to see data in this table.'
 };

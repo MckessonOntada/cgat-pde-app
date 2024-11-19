@@ -39,7 +39,7 @@ export default function OrgDetails({
 
   return (
     <div className="main-account-container">
-      <div>
+      <div className="details-view-container">
         <DetailsView data={prevStepData} onEditClick={onEditClick} />
       </div>
       <AccountsList

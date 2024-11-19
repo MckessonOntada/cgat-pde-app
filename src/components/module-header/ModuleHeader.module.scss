@@ -1,5 +1,11 @@
-.headerSegment{
+@use "@src/assets/styles/abstracts/mixins";
+
+.headerSegment {
+  display: grid;
+  justify-content: space-between;
+  align-items: center;
+
+  @include mixins.respond("sm") {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+  }
 }

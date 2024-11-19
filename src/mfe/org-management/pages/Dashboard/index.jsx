@@ -3,13 +3,17 @@ import OrgList from './OrgList';
 import Filters from './Filters';
 import { OrganizationProvider } from '../../context/PageContext';
 import './index.scss';
+import { Button } from '@mckesson/mcp-component-library';
+import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import { useTranslate } from '@src/translations/useTranslation';
-import PageHeader from './PageHeader';
 import { PATHS } from '../../routes/constants';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
+import ModuleHeader from '../../../../components/module-header';
+import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
   const { t } = useTranslate();
+  const navigate = useNavigate();
 
   const breadcrumbItems = [
     {
@@ -21,18 +25,26 @@ export default function Dashboard() {
     }
   ];
 
-  const buttonLabels = {
-    add: t('orgManagement.add.label')
-  };
-
   return (
     <div className="orgContainer">
       <Breadcrumb items={breadcrumbItems} />
-      <PageHeader
-        title={t('orgManagement.header.label')}
-        navigateTo={PATHS.createOrg}
-        buttonLabels={buttonLabels}
+
+      <ModuleHeader
+        heading={<p className="primaryHeading">{t('orgManagement.header.label')}</p>}
+        controls={
+          <div className="controls">
+            <Button
+              Icon={add_circle_bold}
+              className="button-icon"
+              variant="primary"
+              size="md"
+              onClick={() => navigate(`${PATHS.createOrg}`)}>
+              {t('orgManagement.add.label')}
+            </Button>
+          </div>
+        }
       />
+
       <OrganizationProvider>
         <div className="orgCardContainer">
           <Filters showLocationDropdown={true} showStatusDropdown={true} />
