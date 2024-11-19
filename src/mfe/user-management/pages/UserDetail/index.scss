@@ -64,6 +64,8 @@ padding-top: var(--spacing-02);
   .user-header {
       flex-direction: column; /* Stack items vertically */
       align-items: flex-start; /* Align items to the start for better readability */
+      gap: 20px;
+      white-space: nowrap;
   }
 
   .user-info {

@@ -32,7 +32,7 @@ const UserDetailsFormSegment = () => {
                         <p className="form-instruction"> <Required id="Required" >
                         </Required> {t("userManagement.create_user.required")}</p>
                     </div>
-                    <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+                    <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start">
                         <Field
                             id="name.firstName"
                             name="name.firstName"
@@ -65,15 +65,17 @@ const UserDetailsFormSegment = () => {
                 <div>
                     <div className="headingBox">
                         <p className="form-segment-title">{t("userManagement.create_user.contact_details")}</p>
+                        <p className="form-instruction"> <Required id="Required" >
+                        </Required> {t("userManagement.create_user.required")}</p>
                     </div>
-                    <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 line-height">
+                    <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 line-height align-items-start">
                         <Field
                             name="address.address1"
                             label={t("userManagement.create_user.inputLabel.address_1")}
                             placeholder=" "
                             isRequired
                             component={Components["input"]}
-                            maxLength={100}
+                            maxLength={100}                        
                         />
                         <Field
                             name="address.address2"
@@ -83,7 +85,7 @@ const UserDetailsFormSegment = () => {
                             maxLength={100}
                         />
                     </div>
-                    <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
+                    <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 align-items-start">
                         <Field
                             name="address.city"
                             label={t("userManagement.create_user.inputLabel.city")}

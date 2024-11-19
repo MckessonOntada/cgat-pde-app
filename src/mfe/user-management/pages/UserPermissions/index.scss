@@ -41,17 +41,18 @@
     padding: 10px 10px 10px 0px; 
   } 
   
-  .permission-info h4{
+  .permission-info-header{
     display: block;
-    font-size: 1.6em !important; 
-    font-weight: var(--brand-font-weight-700) !important;   
+    font-size: 1.6em; 
+    font-weight: var(--brand-font-weight-700);   
+    margin-top: 0.4em;
+    margin-bottom: 0.4em
   }
 
   .permission-info p {
     font-weight: var(--brand-font-weight-400);
     font-size:  var(--brand-font-size--15);
-    line-height: 18px;
-    font-size: 14px; 
+    line-height: 18px; 
     color: #3C5C6E;
   }
   
