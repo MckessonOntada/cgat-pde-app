@@ -51,6 +51,7 @@ const OrgDetailsFormSegment = () => {
             onFileSelect={(file) => {
               form.setFieldValue(field.name, file);
             }}
+            label="Upload file"
           />
         )}
       </Field>

@@ -135,8 +135,8 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
                   />
                 )}
 
-                <div className="LabelBox">
-                  {isClearFiltersVisible && (
+                {isClearFiltersVisible && (
+                  <div className="LabelBox">
                     <Button
                       type="button"
                       label={t('orgManagement.clearFilter.label')}
@@ -144,8 +144,8 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
                       className="txtbtn"
                       onClick={handleClearFilters}
                     />
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </div>
           </ToggleUI>

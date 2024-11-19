@@ -8,6 +8,14 @@
   border-radius: var(--brand-border-radius--4);
   gap: var(--spacing-02);
 }
+.label-box {
+  display: flex;
+  padding-bottom: var(--spacing-01);
+}
+.label {
+  font-size: var(--brand-font-size--small);
+  line-height: var(--brand-line-height--large);
+}
 
 .drag-heading {
   font-size: var(--brand-font-size--10);
