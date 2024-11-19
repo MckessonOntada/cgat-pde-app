@@ -6,10 +6,10 @@ import { Button, Stepper } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import UserDetailsFormSegment from './CreateUserForm';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
-import PageHeader from '@src/components/pageHeader'
+import { MdOutlineKeyboardArrowLeft } from 'react-icons/md'; 
 import { USER_DATA } from '../../mockData/UsersData';
 import { PATHS } from "../../routes/constants";
+import ModuleHeader from '@src/components/module-header';
 
 const CreateUser = () => {
 	const { t } = useTranslate();
@@ -108,7 +108,7 @@ const CreateUser = () => {
 	};
 
 	return (
-		<div>
+		<div className="MCP-module-wrapper">
 			<div
 				className="back-navigation py2 capitalize"
 				onClick={goBack}
@@ -117,8 +117,10 @@ const CreateUser = () => {
 				<MdOutlineKeyboardArrowLeft size="24px" />
 				<p>Back to Manage Users</p>
 			</div>
-			<PageHeader
-				title={t('userManagement.create_user')}
+
+
+			<ModuleHeader
+				heading={<p className='primaryHeading'>{t('userManagement.create_user')}</p>} 
 			/>
 			<div className="stepper">
 				<Stepper
