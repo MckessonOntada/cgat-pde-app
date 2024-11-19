@@ -14,14 +14,14 @@ function TherapySelection(){
     return (
         <div className={styles.wrapper}>
             <div className="MCP-panel-container">
-                <div className={styles.summary}>
+                <div className={styles.row}>
                     <div className={styles.col}>
-                        <p className={styles.fieldName}>Order by Account Number</p>
-                        <p className={styles.fieldValue}>11699387</p>
+                        <p className={'fieldName'}>Order by Account Number</p>
+                        <p className={'fieldValue'}>11699387</p>
                     </div>
                     <div className={styles.col}>
-                        <p className={styles.fieldName}>Ship to Account Number</p>
-                        <p className={styles.fieldValue}>1122332</p>
+                        <p className={'fieldName'}>Ship to Account Number</p>
+                        <p className={'fieldValue'}>1122332</p>
                     </div>
                 </div>
             </div>

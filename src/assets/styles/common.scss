@@ -10,7 +10,7 @@
     width: 100%;
 }
 
-.MCP-Icon-Button{
+.MCP-Icon-Button {
     text-decoration: none;
     color: var(--brand-color-primary);
     font-weight: 600;
@@ -33,15 +33,17 @@
 }
 
 // module css
-.MCP-module-wrapper{
+.MCP-module-wrapper {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-03);
-    .MCP-module-body{
+
+    .MCP-module-body {
         display: flex;
         flex-direction: column;
         gap: var(--spacing-03);
-        .MCP-table-wrapper{
+
+        .MCP-table-wrapper {
             display: flex;
             flex-direction: column;
             gap: var(--spacing-03);
@@ -51,13 +53,15 @@
             scrollbar-width: thin;
         }
     }
-    .controls{
+
+    .controls {
         display: flex;
         flex-direction: row;
         gap: var(--spacing-03);
         justify-content: flex-end;
     }
 }
+
 .MCP-panel-container {
     display: flex;
     flex-direction: column;
@@ -71,12 +75,35 @@
     background-color: var(--brand-color-background-white);
     width: 100%;
 }
-.primaryHeading{
+
+.primaryHeading {
     font-size: var(--brand-font-size--28);
 }
-.secondaryHeading{
+
+.secondaryHeading {
     font-size: var(--brand-font-size--20);
 }
-.tertiaryHeading{
+
+.tertiaryHeading {
     font-size: var(--brand-font-size--small);
+}
+
+.fieldName {
+    color: #767E94;
+    font-size: var(--brand-font-size--default);
+}
+
+.fieldValue {
+    font-size: var(--brand-font-size--default);
+    font-weight: var(--brand-font-weight-600);
+}
+
+[class*="Badge-module"] {
+    white-space: nowrap;
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    // Badge-module
 }

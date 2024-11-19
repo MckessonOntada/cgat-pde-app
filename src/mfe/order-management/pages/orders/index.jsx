@@ -11,8 +11,12 @@ import { pendingData, submittedData } from './__mock__';
 import { useOrders } from '../../context';
 import PageHeader from '@src/components/pageHeader';
 import ModuleHeader from '../../../../components/module-header';
-
+import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
 function OrderIndex() {
+    const breadcrumbItems = [
+        { label: 'Dashboard', url: '/'},
+        { label: 'Manage Orders' }
+    ]
     const [activeTab, setActiveTab] = useState("PENDING SUBMISSION");
     const { t } = useTranslate();
     const tableTitle = 'Order Listing';
@@ -56,6 +60,7 @@ function OrderIndex() {
     return (
         <div className="MCP-module-wrapper">
             {/* Breadcrumb */}
+            <Breadcrumb items={breadcrumbItems} />
 
             {/* module header */}
             <ModuleHeader

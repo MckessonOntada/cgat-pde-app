@@ -21,6 +21,8 @@
         display: flex;
         flex-direction: row;
         gap: var(--spacing-03);
+        flex-wrap: wrap;
+        row-gap: var(--spacing-03);
         .col{
             flex-grow: 1;
             display: flex;

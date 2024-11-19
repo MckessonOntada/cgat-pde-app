@@ -71,8 +71,8 @@ function DetailsPanel(props) {
       <p className={styles.panelHeading}>{title}</p>
       {Object.entries(details).map(([key, value]) => (
         <div className={styles.detailItem}>
-          <p className={styles.fieldName}>{key}</p>
-          <p className={styles.fieldValue}>{value}</p>
+          <p className={'fieldName'}>{key}</p>
+          <p className={'fieldValue'}>{value}</p>
         </div>
       ))}
     </div>

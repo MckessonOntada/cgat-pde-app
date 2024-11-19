@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
 import RoleDetailsForm from './form-segments/details-form';
 import PermissionListForm from './form-segments/permissons-list';
+import PageHeader from '../../../../../components/pageHeader';
 
 const RoleCreate = () => {
     const forms = [
@@ -38,7 +39,7 @@ const RoleCreate = () => {
                 </button>
             </div>
 
-            <ModuleHeader heading={"Add Role"} />
+            <ModuleHeader heading={<PageHeader heading="Add Role"/>} />
 
             <div className='MCP-module-body'>
                 <Stepper

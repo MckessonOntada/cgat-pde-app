@@ -27,7 +27,7 @@ const UserPermissions = () => {
 
 
 
-    const handleSaveandContinue = () => {
+    const handleSaveAndContinue = () => {
         const selectedPermissions = {};
         Object.keys(enabledPermissions).forEach(category => {
             if (enabledPermissions[category]?.length > 0) {
@@ -52,9 +52,6 @@ const UserPermissions = () => {
         }
     };
 
-
-    
-
     return (
         <div className="MCP-module-wrapper">
             <div
@@ -67,7 +64,8 @@ const UserPermissions = () => {
             </div>
             <PageHeader
                 title={t('userManagement.create_user')}
-            /><div className="stepper">
+            />
+            <div className="stepper">
                 <Stepper
                     activeIndex={2}
                     dividerText="of"
@@ -98,7 +96,7 @@ const UserPermissions = () => {
                             <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
                                 {t('userManagement.button.back')}
                             </Button>
-                            <Button variant="primary" type="button" onClick={handleSaveandContinue} size={'md'}>{t('userManagement.button.savencontinue')}</Button>
+                            <Button variant="primary" type="button" onClick={handleSaveAndContinue} size={'md'}>{t('userManagement.button.savencontinue')}</Button>
                         </div>
                     </Form>
                 )}</Formik>

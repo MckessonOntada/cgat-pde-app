@@ -9,8 +9,20 @@ import PatientDetails from './form-segments/patient-details';
 import PageHeader from '../../../../components/pageHeader';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import Summary from './form-segments/summary';
+// import Breadcrumb from '@src/components/breadCrumbs/Breadcrumb';
 
 const OrderCreate = () => {
+
+    const breadcrumbItems = [
+        {
+            label: 'Admin',
+            url: '/'
+        },
+        {
+            label: 'Manage Orders'
+        }
+    ];
+
     const forms = [
         {
             name: 'accountSelection',
@@ -18,8 +30,8 @@ const OrderCreate = () => {
             form: <AccountSelection />
         },
         {
-            name: 'theraphySelection',
-            label: 'Theraphy Selection',
+            name: 'therapySelection',
+            label: 'Therapy Selection',
             form: <TherapySelection />
         },
         {
@@ -46,7 +58,7 @@ const OrderCreate = () => {
             setActiveForm(2)
         else if (accountId && !therapyId)
             setActiveForm(1)
-        else setActiveForm(0)
+        else setActiveForm(4)
     }, []);
 
     const FormToRender = forms[activeForm]?.form;
@@ -61,9 +73,11 @@ const OrderCreate = () => {
                     onClick={handleOnBackButtonClick}
                 >
                     <IconArrowLeft />
-                    <p>Back to Manage Users</p>
+                    <p>Back to Manage Order</p>
                 </button>
             </div>
+
+            {/* <Breadcrumb items={breadcrumbItems} /> */}
 
             <PageHeader heading={"Create New Order"} />
 

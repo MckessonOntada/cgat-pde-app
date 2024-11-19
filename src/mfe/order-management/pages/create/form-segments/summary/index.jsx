@@ -50,12 +50,12 @@ const Summary = () => {
                         />
                         <div className={`${styles.pricingDetails}`}>
                             <div className={`${styles.col} ${styles.detailSegment}`}>
-                                <div className={styles.fieldName}>Material Description</div>
-                                <div className={styles.fieldValue}>VENOFER 20MG/ML 5ML SDV PF NR</div>
+                                <div className={'fieldName'}>Material Description</div>
+                                <div className={'fieldValue'}>VENOFER 20MG/ML 5ML SDV PF NR</div>
                             </div>
                             <div className={`${styles.col} ${styles.detailSegment}`}>
-                                <div className={styles.fieldName}>Order Cost</div>
-                                <div className={`${styles.fieldValue} ${styles.price}`}>$45,000.00</div>
+                                <div className={'fieldName'}>Order Cost</div>
+                                <div className={`${'fieldValue'} ${styles.price}`}>$45,000.00</div>
                             </div>
                         </div>
                     </div>
@@ -75,12 +75,12 @@ const Summary = () => {
                             <div className={styles.col}>
                                 <div className={styles.row}>
                                     <div className={`${styles.col} ${styles.detailSegment}`}>
-                                        <div className={styles.fieldName}>Account Name</div>
-                                        <div className={styles.fieldValue}>{accountDetails.accountName}</div>
+                                        <div className={'fieldName'}>Account Name</div>
+                                        <div className={'fieldValue'}>{accountDetails.accountName}</div>
                                     </div>
                                     <div className={`${styles.col} ${styles.detailSegment}`}>
-                                        <div className={styles.fieldName}>Account No.</div>
-                                        <div className={styles.fieldValue}>{accountDetails.accountNumber}</div>
+                                        <div className={'fieldName'}>Account No.</div>
+                                        <div className={'fieldValue'}>{accountDetails.accountNumber}</div>
                                     </div>
                                 </div>
 
@@ -88,12 +88,12 @@ const Summary = () => {
                             <div className={styles.col}>
                                 <div className={styles.row}>
                                     <div className={`${styles.col} ${styles.detailSegment}`}>
-                                        <div className={styles.fieldName}>Shiping Account Name</div>
-                                        <div className={styles.fieldValue}>{accountDetails.shippingAccountName}</div>
+                                        <div className={'fieldName'}>Shiping Account Name</div>
+                                        <div className={'fieldValue'}>{accountDetails.shippingAccountName}</div>
                                     </div>
                                     <div className={`${styles.col} ${styles.detailSegment}`}>
-                                        <div className={styles.fieldName}>Shipping Account No.</div>
-                                        <div className={styles.fieldValue}>{accountDetails.shippingAccountNumber}</div>
+                                        <div className={'fieldName'}>Shipping Account No.</div>
+                                        <div className={'fieldValue'}>{accountDetails.shippingAccountNumber}</div>
                                     </div>
                                 </div>
                             </div>
@@ -117,50 +117,50 @@ const Summary = () => {
                                     <div className={styles.col}>
                                         <div className={styles.row}>
                                             <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={styles.fieldName}>National Drug Code</div>
-                                                <div className={styles.fieldValue}>{therapyDetails.nationalDrugCode}</div>
+                                                <div className={'fieldName'}>National Drug Code</div>
+                                                <div className={'fieldValue'}>{therapyDetails.nationalDrugCode}</div>
                                             </div>
                                             <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={styles.fieldName}>UDI</div>
-                                                <div className={styles.fieldValue}>{therapyDetails.uDI}</div>
+                                                <div className={'fieldName'}>UDI</div>
+                                                <div className={'fieldValue'}>{therapyDetails.uDI}</div>
                                             </div>
                                             <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={styles.fieldName}>Distributions Channel</div>
-                                                <div className={styles.fieldValue}>{therapyDetails.distributionsChannel}</div>
-                                            </div>
-                                        </div>
-                                        <div className={styles.row}>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={styles.fieldName}>Sales Organization</div>
-                                                <div className={styles.fieldValue}>{therapyDetails.salesOrganization}</div>
-                                            </div>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={styles.fieldName}>Net Price</div>
-                                                <div className={styles.fieldValue}>{therapyDetails.netPrice}</div>
-                                            </div>
-                                            <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={styles.fieldName}>Contract Price</div>
-                                                <div className={styles.fieldValue}>{therapyDetails.contractPrice}</div>
+                                                <div className={'fieldName'}>Distributions Channel</div>
+                                                <div className={'fieldValue'}>{therapyDetails.distributionsChannel}</div>
                                             </div>
                                         </div>
                                         <div className={styles.row}>
                                             <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={styles.fieldName}>WAC Price</div>
-                                                <div className={styles.fieldValue}>{therapyDetails.wACPrice}</div>
+                                                <div className={'fieldName'}>Sales Organization</div>
+                                                <div className={'fieldValue'}>{therapyDetails.salesOrganization}</div>
                                             </div>
                                             <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={styles.fieldName}>Regular Price</div>
-                                                <div className={styles.fieldValue}>{therapyDetails.regularPrice}</div>
+                                                <div className={'fieldName'}>Net Price</div>
+                                                <div className={'fieldValue'}>{therapyDetails.netPrice}</div>
                                             </div>
                                             <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={styles.fieldName}>340b Price</div>
-                                                <div className={styles.fieldValue}>{therapyDetails["340bPrice"]}</div>
+                                                <div className={'fieldName'}>Contract Price</div>
+                                                <div className={'fieldValue'}>{therapyDetails.contractPrice}</div>
                                             </div>
                                         </div>
                                         <div className={styles.row}>
                                             <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={styles.fieldName}>Price Unit</div>
-                                                <div className={styles.fieldValue}>{therapyDetails.priceUnit}</div>
+                                                <div className={'fieldName'}>WAC Price</div>
+                                                <div className={'fieldValue'}>{therapyDetails.wACPrice}</div>
+                                            </div>
+                                            <div className={`${styles.col} ${styles.detailSegment}`}>
+                                                <div className={'fieldName'}>Regular Price</div>
+                                                <div className={'fieldValue'}>{therapyDetails.regularPrice}</div>
+                                            </div>
+                                            <div className={`${styles.col} ${styles.detailSegment}`}>
+                                                <div className={'fieldName'}>340b Price</div>
+                                                <div className={'fieldValue'}>{therapyDetails["340bPrice"]}</div>
+                                            </div>
+                                        </div>
+                                        <div className={styles.row}>
+                                            <div className={`${styles.col} ${styles.detailSegment}`}>
+                                                <div className={'fieldName'}>Price Unit</div>
+                                                <div className={'fieldValue'}>{therapyDetails.priceUnit}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -185,16 +185,16 @@ const Summary = () => {
                                     <div className={styles.col}>
                                         <div className={styles.row}>
                                             <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={styles.fieldName}>Patient Identifier</div>
-                                                <div className={styles.fieldValue}>{adamJones.patientIdentifier}</div>
+                                                <div className={'fieldName'}>Patient Identifier</div>
+                                                <div className={'fieldValue'}>{adamJones.patientIdentifier}</div>
                                             </div>
                                             <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={styles.fieldName}>Gender</div>
-                                                <div className={styles.fieldValue}>{adamJones.gender}</div>
+                                                <div className={'fieldName'}>Gender</div>
+                                                <div className={'fieldValue'}>{adamJones.gender}</div>
                                             </div>
                                             <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={styles.fieldName}>DOB</div>
-                                                <div className={styles.fieldValue}>{adamJones.dob}</div>
+                                                <div className={'fieldName'}>DOB</div>
+                                                <div className={'fieldValue'}>{adamJones.dob}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -217,16 +217,16 @@ const Summary = () => {
                                     <div className={styles.col}>
                                         <div className={styles.row}>
                                             <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={styles.fieldName}>Slot No.</div>
-                                                <div className={styles.fieldValue}>{additionalDetails.slotNo}</div>
+                                                <div className={'fieldName'}>Slot No.</div>
+                                                <div className={'fieldValue'}>{additionalDetails.slotNo}</div>
                                             </div>
                                             <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={styles.fieldName}>PO No.</div>
-                                                <div className={styles.fieldValue}>{additionalDetails.poNo}</div>
+                                                <div className={'fieldName'}>PO No.</div>
+                                                <div className={'fieldValue'}>{additionalDetails.poNo}</div>
                                             </div>
                                             <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={styles.fieldName}>Date of Administration</div>
-                                                <div className={styles.fieldValue}>{additionalDetails.dateOfAdministration}</div>
+                                                <div className={'fieldName'}>Date of Administration</div>
+                                                <div className={'fieldValue'}>{additionalDetails.dateOfAdministration}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -235,16 +235,16 @@ const Summary = () => {
                                     <div className={styles.col}>
                                         <div className={styles.row}>
                                             <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={styles.fieldName}>Select Variant</div>
-                                                <div className={styles.fieldValue}>{additionalDetails.selectVariant}</div>
+                                                <div className={'fieldName'}>Select Variant</div>
+                                                <div className={'fieldValue'}>{additionalDetails.selectVariant}</div>
                                             </div>
                                             <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={styles.fieldName}>Variant Description</div>
-                                                <div className={styles.fieldValue}>{additionalDetails.variantDescription}</div>
+                                                <div className={'fieldName'}>Variant Description</div>
+                                                <div className={'fieldValue'}>{additionalDetails.variantDescription}</div>
                                             </div>
                                             <div className={`${styles.col} ${styles.detailSegment}`}>
-                                                <div className={styles.fieldName}>Patient Concent</div>
-                                                <div className={styles.fieldValue}>{additionalDetails.patientConsent}</div>
+                                                <div className={'fieldName'}>Patient Concent</div>
+                                                <div className={'fieldValue'}>{additionalDetails.patientConsent}</div>
                                             </div>
                                         </div>
                                     </div>
