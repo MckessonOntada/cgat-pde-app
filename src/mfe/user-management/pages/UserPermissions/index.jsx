@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Stepper, SearchableDropdown, Switch, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
-import PageHeader from '@src/components/pageHeader';
+import ModuleHeader from '@src/components/module-header';
 import './index.scss';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { USER_DATA } from '../../mockData/UsersData';
@@ -14,7 +14,7 @@ const UserPermissions = () => {
     const { t } = useTranslate();
     const navigate = useNavigate();
     const [enabledPermissions, setEnabledPermissions] = useState([]);
-    
+
     const { userId } = useParams();
     const location = useLocation();
     const { isEdit } = location.state || {};
@@ -50,8 +50,7 @@ const UserPermissions = () => {
         } else {
             navigate(isEdit ? -1 : `../${PATHS.addAccounts}/7`); // Need to Replace `7` with appropriate User id when Creating a user
         }
-    };
-
+    }; 
     return (
         <div className="MCP-module-wrapper">
             <div

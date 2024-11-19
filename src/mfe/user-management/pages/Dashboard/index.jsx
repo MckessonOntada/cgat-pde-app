@@ -8,7 +8,8 @@ import { UserProvider } from '../../context/PageContext';
 import UserTable from './UserTable'; 
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
 import { debugIds, ID } from '@src/common/constants/id';
-import PageHeader from '@src/components/pageHeader';
+import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
+import { ReactComponent as upload_bottom } from '@src/assets/image/upload_bottom.svg';
 import {  useLocation,useNavigate} from 'react-router-dom';
 import ModuleHeader from '../../../../components/module-header';
 
@@ -89,10 +90,10 @@ export default function Dashboard() {
         heading={<p className='primaryHeading'>{t('userManagement.header.label')}</p>}
         controls={
           <div className="controls">
-            <Button variant="primary" size="md" onClick={() => navigate(`${PATHS.createUser}`)}>Add</Button>
-            <Button variant="primary" size="md" >Upload</Button>
+            <Button Icon={add_circle_bold} className="button-icon"  variant="primary" size="md" onClick={() => navigate(`${PATHS.createUser}`)}>Add User</Button>
+            <Button Icon={upload_bottom} className="button-icon"variant="primary" size="md" >Upload Users</Button>
           </div>
-        }
+        } 
       />
       {isSuccess && isAlertVisible  &&(
       <Alert

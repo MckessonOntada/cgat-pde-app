@@ -2,7 +2,8 @@ import React, { useState, useCallback, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { USER_DATA } from "../../mockData/UsersData";
 import { useTranslate } from '@src/translations/useTranslation';
-import PageHeader from "@src/components/pageHeader";
+import { ReactComponent as pencil_write_edit } from '@src/assets/image/pencil-write-edit.svg';
+import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import { Badge, Button, Switch, AutoSuggestSearch, Alert } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { PERMISSIONS_ENUM } from "../UserPermissions/permissionsEnum";
@@ -82,9 +83,9 @@ const UserDetail = () => {
       <div className="MCP-module-body">
 
         <ModuleHeader
-          heading={<h1>{t('userManagement.header.view.edit_user')}</h1>}
+          heading={<p className='primaryHeading'>{t('userManagement.header.view.edit_user')}</p>}
           controls={
-            <Button variant="secondary" size="md" onClick={() => navigate(`../${PATHS.editUser}/${userId}`, { state: { isEdit: true } })}>
+            <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" onClick={() => navigate(`../${PATHS.editUser}/${userId}`, { state: { isEdit: true } })}>
               {t('userManagement.button.edit')}
             </Button>
           }
@@ -142,12 +143,12 @@ const UserDetail = () => {
         </div>
 
         <ModuleHeader
-          heading={<h1>{t('userManagement.header.view.permissions_granted')}</h1>}
+          heading={<p className='primaryHeading'>{t('userManagement.header.view.permissions_granted')}</p>}
           controls={
             <div className="controls">
-              <Button variant="secondary" size="md" onClick={() => navigate(`../${PATHS.userPermissions}/${userId}`, { state: { isEdit: true } })}>
+              <Button  Icon={pencil_write_edit} variant="secondary"  className="button-icon"  size="md" onClick={() => navigate(`../${PATHS.userPermissions}/${userId}`, { state: { isEdit: true } })}>
                 {t('userManagement.button.edit')}
-              </Button>
+              </Button>              
             </div>
           }
         />
@@ -178,10 +179,10 @@ const UserDetail = () => {
 
         <div className="MCP-module-body">
           <ModuleHeader
-            heading={<h1>{t('userManagement.header.view.linked_accounts')}</h1>}
+            heading={<p className='primaryHeading'>{t('userManagement.header.view.linked_accounts')}</p>}
             controls={
               <div className="controls">
-                <Button variant="secondary" size="md" onClick={() => navigate(`../${PATHS.addAccounts}/${userId}`, { state: { isEdit: true } })}>{t('userManagement.button.add_accounts')}</Button>
+                <Button Icon={add_circle_bold} variant="secondary" className="button-icon"  size="md" onClick={() => navigate(`../${PATHS.addAccounts}/${userId}`, { state: { isEdit: true } })}>{t('userManagement.button.add_accounts')}</Button>
               </div>
             }
           />
