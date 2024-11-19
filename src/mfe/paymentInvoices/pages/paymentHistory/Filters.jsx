@@ -21,8 +21,6 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
     setExpandedCard(!expandedCard);
   };
 
- 
-
   return (
     <div className="filterBox line-height" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
       {true ? (
@@ -37,41 +35,39 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
             </div>
             <div className="autoSuggestSearch-container">
               <div className='auto-search' >
-
                 <AutoSuggestSearch
                   label=" "
                   className="auto-search"
                   outline={true}
-                  placeHolder={"Search by document number, sold to..."}
+                  placeHolder={t('paymentInvoices.history.filters.autoSearch')}
                 />
               </div>
               {expandedCard && <Button
                 type="button"
-                label={t('filter')}
+                label={t('paymentInvoices.history.filters.filterBtn')}
                 className="filter-btn"
               />}
             </div>
           </div>
           <ToggleUI in={expandedCard} timeout={400}>
             <div className="expanded-content">
-              <Divider color={'#BAC5CC'} />
+              <Divider color={'var(--brand-color-grey-scale-cool-1)'} />
               <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5">
                 {showRoleDropdown && (
                   <SearchableDropdown
                     id="role"
                     isSuccess
-                    label={"Payment Status"}
+                    label={t('paymentInvoices.history.filters.status')}
                     name={"Payment Status"}
                     isRequired={false}
                     options={[]}
                   />
                 )}
-
                 {(
                   <SearchableDropdown
                     id="status"
-                    // isSuccess
-                    label={"Payment Method"}
+                    isSuccess
+                    label={t('paymentInvoices.history.filters.method')}
                     name={"Payment Method"}
                     isRequired={false}
                     options={[]}
@@ -79,7 +75,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
                 )}
                 <CustomDatepicker
                   id="eventDate"
-                  label="Start Date"
+                  label={t('paymentInvoices.history.filters.startDate')}
                   name="startDate"
                   onBlur={() => { }}
                   onChangeFn={{}}
@@ -95,7 +91,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
                 />
                 <CustomDatepicker
                   id="eventDate"
-                  label="End Date"
+                  label={t('paymentInvoices.history.filters.endDate')}
                   name="endDate"
                   onBlur={() => { }}
                   onChangeFn={{}}
@@ -109,12 +105,11 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
                     'day'
                   ]}
                 />
-
                 <div className="LabelBox">
                   {(
                     <Button
                       type="button"
-                      label={t('userManagement.clearFilter.label')}
+                      label={t('paymentInvoices.history.filters.clearFilter')}
                       textButton
                       className="txtbtn"
                     />

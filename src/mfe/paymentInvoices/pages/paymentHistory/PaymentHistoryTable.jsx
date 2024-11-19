@@ -26,8 +26,9 @@ export default function PaymentHistoryTable() {
             )
         },
         {
+            id:"purchaseOrderNumber",
             name: t('paymentInvoices.history.table.purchaseOrderNumber'),
-            selector: 'purchaseOrderNumber',
+            selector: ()=>{},
             cell: (props) => <div>{props.purchaseOrderNumber}</div>
         },
         {
@@ -54,16 +55,12 @@ export default function PaymentHistoryTable() {
         {
             name: t('paymentInvoices.history.table.paymentInitiationDate'),
             selector: row => row.paymentInitiationDate,
-            // sortable: true,
-            // wrap: true,
             width: '20%',
             cell: (props) => <div className="cellEllipse">{props.paymentInitiationDate}</div>
         },
         {
             name: t('paymentInvoices.history.table.totalAuthorizedPaymentAmt'),
             selector: row => row.totalAuthorizedPaymentAmt,
-            // sortable: true,
-            // wrap: true,
             width: '20%',
             cell: (props) => <div className="cellEllipse">{props.totalAuthorizedPaymentAmt}</div>
         },
