@@ -3,7 +3,7 @@ import { PERMISSIONS_ENUM } from './permissionsEnum'
 import { ROLES } from '../../mockData/PermissionsData';
 import { SearchableDropdown, Switch, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import ModuleHeader from '../../../../components/module-header';
+import ModuleHeader from '@src/components/module-header';
 import { Field } from 'formik';
 import './PermissionForm.scss';
 
@@ -50,7 +50,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions }) => {
     return (
         <div className='MCP-module-wrapper'>
             <ModuleHeader
-                heading={<p className="secondaryHeading">Select Role</p>}
+                heading={<p className="tertiaryHeading-24">Select Role</p>}
             />
 
             <div className='MCP-panel-container'>
@@ -68,7 +68,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions }) => {
             </div>
             <div className="MCP-module-body">
                 <ModuleHeader
-                    heading={<p className="secondaryHeading">{t('userManagement.user_permissions.managePermissions')}</p>}
+                    heading={<p className="tertiaryHeading-24">{t('userManagement.user_permissions.managePermissions')}</p>}
                     controls={
                         <div className="controls">
                             <Button variant="secondary" onClick={handleReset} size={'md'}>
