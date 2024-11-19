@@ -70,7 +70,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
   };
 
   return (
-    <div className="filterBox line-height" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
+    <div className="filterBox" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
       {(showRoleDropdown && ROLES.length > 0) || (showStatusDropdown && STATUS.length > 0) ? (
         <>
           <div className="toggle-box">

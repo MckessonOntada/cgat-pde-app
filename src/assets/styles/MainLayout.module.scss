@@ -1,8 +1,12 @@
 @use "./main.scss";
 
-.home {
-    height: calc(100vh - 88px); 
+.appContainer{
     display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+.home {
+    flex-grow: 1;
     overflow: auto;
     background-color: var(--brand-color-background-white);
     padding: var(--spacing-04);

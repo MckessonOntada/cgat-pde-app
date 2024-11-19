@@ -1,0 +1,30 @@
+.headerSegment {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .headings {
+        display: flex;
+        flex-direction: column;
+        
+        .primaryHeading {
+            font-size: var(--brand-font-size--28);
+            font-weight: var(--brand-font-weight-600);
+            margin: 0;
+            color: var(--brand-color-text-dark-slate);
+        }
+        
+        .subheading {
+            font-size: var(--brand-font-size--20);
+            font-weight: var(--brand-font-weight-400);
+            color: var(--brand-color-primary-slate);
+            margin: 0;
+        }
+    }
+
+    .headerControls {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-02)
+    }
+}

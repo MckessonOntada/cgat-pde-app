@@ -8,28 +8,24 @@
         gap: 4px;
         text-transform: uppercase;
         align-items: center;
-        font-size: var(--brand-font-size--small, 16px);
+        font-size: var(--brand-font-size--small);
         text-decoration: none;
-        color: var(--brand-color-font-black, #181818);
+        color: var(--brand-color-font-black);
     }
     .lauout{
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: var(--spacing-03);
     }
     .row{
         display: flex;
         flex-direction: row;
-        gap: 16px;
+        gap: var(--spacing-03);
         .col{
             flex-grow: 1;
             display: flex;
-            row-gap: 16px;
+            gap: var(--spacing-03);
             flex-direction: column;
-            .panelContainer{
-                flex-grow: 1;
-                border: 1px solid red;
-            }
         }
     }
     .sect{
@@ -69,12 +65,5 @@
             font-size: var(--brand-font-size--default);
             color: var(--brand-color-text-black);
         }
-    }
-    .controls{
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: var(--spacing-03);
-        margin-bottom: 100px; //remove it later
     }
 }

@@ -1,21 +1,19 @@
 import React from 'react';
-import Panel from '../../../../components/panel';
+import { Button } from '@mckesson/mcp-component-library';
 import styles from './TherapySelection.module.scss';
 import TherapyDetails from './TherapyDetails';
-import FloatingDrawer from '../../../../../../components/floating-drawer';
+import FloatingDrawer from '@src/components/floating-drawer';
+import ModuleHeader from '@src/components/module-header';
 
 function TherapySelection(){
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = React.useState(false);
 
     const handleOnClose = () => {
         setOpen(false);
     }
-    const handleOnClick = () => {
-        setOpen(true);
-    }
     return (
         <div className={styles.wrapper}>
-            <Panel>
+            <div className="MCP-panel-container">
                 <div className={styles.summary}>
                     <div className={styles.col}>
                         <p className={styles.fieldName}>Order by Account Number</p>
@@ -26,15 +24,19 @@ function TherapySelection(){
                         <p className={styles.fieldValue}>1122332</p>
                     </div>
                 </div>
-            </Panel>
-            <Panel>
+            </div>
+            <div className="MCP-panel-container">
                 <div className={styles.l}>
                     <p className={styles.title}>Therapy Selection</p>
-                    <Panel>filterbox</Panel>
+                    <div className="MCP-panel-container">filterbox</div>
                 </div>
-            </Panel>
+            </div>
+            <ModuleHeader>
+                <Button size="md" variant="secondary">Cancel</Button>
+                <Button size="md" variant="primary">Save and Continue</Button>
+            </ModuleHeader>
             <FloatingDrawer open={open} anchor='right' onClose={handleOnClose}>
-                <TherapyDetails />
+                <TherapyDetails onClose={handleOnClose} />
             </FloatingDrawer>
         </div>
     )

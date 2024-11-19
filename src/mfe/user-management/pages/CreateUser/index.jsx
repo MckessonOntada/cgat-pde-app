@@ -2,12 +2,12 @@ import React from 'react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import './CreateUser.scss';
-import { Button ,Stepper } from '@mckesson/mcp-component-library'; 
+import { Button, Stepper } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import UserDetailsFormSegment from './CreateUserForm';
-import { useLocation, useNavigate,useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
-import PageHeader from '@src/components/pageHeader' 
+import PageHeader from '@src/components/pageHeader'
 import { USER_DATA } from '../../mockData/UsersData';
 import { PATHS } from "../../routes/constants";
 
@@ -98,9 +98,9 @@ const CreateUser = () => {
 		}
 		if (userId) {
 			navigate(isEdit ? -1 : `../${PATHS.userPermissions}/${userId}`);
-		  } else {
+		} else {
 			navigate(isEdit ? -1 : `../${PATHS.userPermissions}/7`); // Need to Replace `7` with appropriate User id when Creating a user
-		  }
+		}
 	};
 
 	const handleGoBack = () => {
@@ -150,10 +150,8 @@ const CreateUser = () => {
 			>
 				{() => (
 					<Form>
-						<div className="container">
-							<div className="headingBox">
-								<p className="font-bold-title-s"> {t('userManagement.create_user.details_to_create_user')}</p>
-							</div>
+						<div className="MCP-panel-container">
+							<p className="font-bold-title-s"> {t('userManagement.create_user.details_to_create_user')}</p>
 							<UserDetailsFormSegment />
 						</div>
 						<div className={'buttonGroup'}>

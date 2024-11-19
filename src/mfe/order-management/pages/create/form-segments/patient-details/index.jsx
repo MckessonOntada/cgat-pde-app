@@ -1,12 +1,12 @@
 import React from 'react';
 import styles from './PatientDetails.module.scss';
-import Panel from '../../../../components/panel';
 import { Button } from '@mckesson/mcp-component-library';
+import ModuleHeader from '@src/components/module-header';
 
 const PatientDetails = () => {
     return (
         <div className={styles.wrapper}>
-            <Panel>
+            <div className="MCP-panel-container">
                 <div className={styles.sect}>
                     <div className={`${styles.row}`}>
                         <div className={`${styles.col} ${styles.detailSegment}`}>
@@ -23,14 +23,14 @@ const PatientDetails = () => {
                         </div>
                     </div>
                 </div>
-            </Panel>
-            <Panel>
-                Details form
-            </Panel>
-            <div className={styles.controls}>
-                <Button variant="secondary">Cancel</Button>
-                <Button variant="primary">Save and Continue</Button>
             </div>
+            <div className="MCP-panel-container">
+                Details form
+            </div>
+            <ModuleHeader>
+                <Button size="md" variant="secondary">Cancel</Button>
+                <Button size="md" variant="primary">Save and Continue</Button>
+            </ModuleHeader>
         </div>
     )
 }

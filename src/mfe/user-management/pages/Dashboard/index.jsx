@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { TabList,Alert } from '@mckesson/mcp-component-library';
+import { TabList,Alert, Button } from '@mckesson/mcp-component-library';
 import './index.scss';
 import Filters from './Filters';
 import { PATHS } from '../../routes/constants';
@@ -10,6 +10,7 @@ import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
 import { debugIds, ID } from '@src/common/constants/id';
 import PageHeader from '@src/components/pageHeader';
 import {  useLocation,useNavigate} from 'react-router-dom';
+import ModuleHeader from '../../../../components/module-header';
 
 export default function Dashboard() {
   const { t } = useTranslate();
@@ -78,14 +79,20 @@ export default function Dashboard() {
     add: t('userManagement.add.label'),
     upload: t('userManagement.upload.label')
   };
+  const handlOnClick = () => {
 
+  }
   return (
-    <div className="dashboard-container" id={debugIds(ID.TABLE, ID.CONTAINER)}>
+    <div className="MCP-module-wrapper" id={debugIds(ID.TABLE, ID.CONTAINER)}>
       <Breadcrumb items={breadcrumbItems} />
-      <PageHeader
-        title={t('userManagement.header.label')}
-        navigateTo={PATHS.createUser}
-        buttonLabels={buttonLabels}
+      <ModuleHeader
+        heading={<p className='primaryHeading'>{t('userManagement.header.label')}</p>}
+        controls={
+          <div className="controls">
+            <Button variant="primary" size="md" onClick={() => navigate(`${PATHS.createUser}`)}>Add</Button>
+            <Button variant="primary" size="md" >Upload</Button>
+          </div>
+        }
       />
       {isSuccess && isAlertVisible  &&(
       <Alert
@@ -95,9 +102,9 @@ export default function Dashboard() {
         duration={10000}
       />)}
       <UserProvider>
-        <div className="userCardContainer" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
+        <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
           <Filters showRoleDropdown={true} showStatusDropdown={true} />
-          <h1> User Listing</h1>
+          <p className='secondaryHeading'> User Listing</p>
           <TabList
             options={tabs}
             alignment="left"
