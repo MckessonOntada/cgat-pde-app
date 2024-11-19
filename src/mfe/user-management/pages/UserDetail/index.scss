@@ -59,3 +59,14 @@ padding-top: var(--spacing-02);
 }
  
  
+
+@media (max-width: 600px) {
+  .user-header {
+      flex-direction: column; /* Stack items vertically */
+      align-items: flex-start; /* Align items to the start for better readability */
+  }
+
+  .user-info {
+      width: 100%; /* Ensure items take full width if needed */
+  }
+}
