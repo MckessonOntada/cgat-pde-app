@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import styles from './AccountCard.module.scss';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const AccountCard = ({ options, onChange }) => {
+  const { t } = useTranslate();
   const [selected, setSelected] = useState(null);
 
   const handleSelect = (value) => {
@@ -12,8 +14,8 @@ const AccountCard = ({ options, onChange }) => {
   return (
     <div className={styles.cardContainer}>
       <div className={styles.header}>
-        <p className={styles.title}>Account Listing</p>
-        <p className={styles.subtitle}>Select the account you want to update</p>
+        <p className={styles.title}>{t('headings.accountListing')}</p>
+        <p className={styles.subtitle}>{t('headings.selectAccountToUpdate')}</p>
       </div>
       {options.map((option, index) => (
         <label

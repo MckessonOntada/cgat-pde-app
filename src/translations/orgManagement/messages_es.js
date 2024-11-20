@@ -93,5 +93,20 @@ export const OrgManagementES = {
   'orgManagement.org_detail.address': 'S_Organization Address',
 
   'orgManagement.org_list': 'S_Organization Listing',
-  'orgManagement.add.account': 'S_ADD ACCOUNT'
+  'orgManagement.add.account': 'S_ADD ACCOUNT',
+
+  'orgManagement.role.headingManageOrder': 'S_Manage Roles',
+  'orgManagement.role.headingPermissionDetails': 'S_Permission Details',
+  'orgManagement.role.labelAddRole': 'S_Add Role',
+  'orgManagement.role.labelStep': 'S_Step',
+  'orgManagement.role.labelRolesListing': 'S_Roles Listing',
+  'orgManagement.role.labelRolesDetails': 'S_Role Details',
+  'orgManagement.role.labelAddPermissions': 'S_Add Permissions',
+  'orgManagement.role.labelDateCreated': 'S_Date Created',
+  'orgManagement.role.labelRoleName': 'S_Role Name',
+  'orgManagement.role.labelRoleDescription': 'S_Role Description',
+  'orgManagement.role.tableHeadingCreatedOn': 'S_Created On',
+  'orgManagement.role.captionsBtnBackToManageRoles': 'S_Back to Manage Roles',
+  'orgManagement.role.captionsBtnSaveAndCancel': 'S_Save and Continue',
+  'orgManagement.role.labelMaxChar1000': 'S_Maximum 1,000 Characters'
 };

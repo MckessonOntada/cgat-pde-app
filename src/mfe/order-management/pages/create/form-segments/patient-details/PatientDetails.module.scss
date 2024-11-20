@@ -6,12 +6,13 @@
     .row {
         display: flex;
         flex-direction: row;
-        gap: 16px;
+        gap: var(--spacing-03);
+        flex-wrap: wrap;
 
         .col {
             flex-grow: 1;
             display: flex;
-            row-gap: 16px;
+            row-gap: var(--spacing-03);
             flex-direction: column;
 
             .panelContainer {
@@ -29,16 +30,6 @@
 
         .detailSegment {
             row-gap: var(--spacing-01);
-        }
-
-        .fieldName {
-            font-size: var(--brand-font-size--small);
-            color: #767E94; //color const missing
-        }
-
-        .fieldValue {
-            font-size: var(--brand-font-size--default);
-            color: var(--brand-color-text-black);
         }
     }
     .controls{

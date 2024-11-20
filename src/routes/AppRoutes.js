@@ -9,13 +9,14 @@ import { RoutePaths } from './constants';
 //TODO: Determine if Routes are cause of pages rerendering multiple times unnecessarily
 
 const dashBoardPage = React.lazy(() => import('../pages/Admin'));
-const routeAdmin = { path: RoutePaths.pathAppBase, element: dashBoardPage };
+const routeDashBoard = { path: RoutePaths.pathAppBase, element: dashBoardPage };
 
 const routes = [
   RoutePaths.pathAppBase,
   RoutePaths.pathPageLogin,
   RoutePaths.pathPageLoginCallback,
-  routeAdmin
+  routeDashBoard
+  // routeUserManagement
 ];
 
 const AppRoutes = Object.freeze({
