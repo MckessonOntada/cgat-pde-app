@@ -2,17 +2,17 @@
 
 .navContainer {
     &.primary {
-        background-color: var(--brand-color-patient-primary-1, #c6d7df);
+        background-color: var(--brand-color-patient-primary-1);
 
         .navItemsLeft {
-            padding: var(--spacing-02, 8px) 0px;
-            padding-right: var(--spacing-02, 16px);
-            border-right: 1px solid var(--brand-color-patient-primary-3, #B3C2C9);
+            padding: var(--spacing-02) 0px;
+            padding-right: var(--spacing-02);
+            border-right: 1px solid var(--brand-color-patient-primary-3);
         }
     }
 
     &.secondary {
-        border-bottom: 1px solid var(--brand-color-grey-scale-cool-1, #bac5cc);
+        border-bottom: 1px solid var(--brand-color-grey-scale-cool-1);
         overflow-x: auto;
         overflow-y: hidden;
         white-space: nowrap;
@@ -24,7 +24,7 @@
         }
 
         .navItemsLeft {
-            margin-right: var(--spacing-04, 24px);
+            margin-right: var(--spacing-04);
         }
 
         margin: 0px;
@@ -73,12 +73,12 @@
             }
 
             [class*="TabList_tab--active"] {
-                font-weight: var(--brand-font-weight-600, 600);
+                font-weight: var(--brand-font-weight-600);
             }
 
             [class*="TabList_tab"] {
                 margin: 0px;
-                font-weight: var(--brand-font-weight-400, 400);
+                font-weight: var(--brand-font-weight-400);
             }
         }
     }
@@ -88,7 +88,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 0px var(--spacing-04, 36px);
+    margin: 0px var(--spacing-04);
 
     .branding {
         .appLogo {
@@ -106,7 +106,7 @@
         display: flex;
         flex: 0 0 auto;
         justify-content: flex-start;
-        gap: 12px;
+        gap: var(--spacing-02);
         align-items: center;
         align-self: stretch;
     }
@@ -123,8 +123,8 @@
         justify-content: center;
         align-self: stretch;
         padding: var(--spacing-02);
-        padding-right: var(--spacing-03, 16px);
-        padding-left: var(--spacing-03, 16px);
+        padding-right: var(--spacing-03);
+        padding-left: var(--spacing-03);
         border-right: 1px solid var(--brand-color-patient-primary-3, #B3C2C9);
     }
 
@@ -200,11 +200,11 @@
 
     .actionLink {
         display: flex;
-        gap: 4px;
+        gap: var(--spacing-01);
         text-transform: uppercase;
         align-items: center;
-        font-size: var(--brand-font-size--small, 16px);
+        font-size: var(--brand-font-size--small);
         text-decoration: none;
-        color: var(--brand-color-font-black, #181818);
+        color: var(--brand-color-font-black);
     }
 }
