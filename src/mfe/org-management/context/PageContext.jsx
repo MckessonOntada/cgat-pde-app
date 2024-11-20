@@ -2,10 +2,10 @@ import React, {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from "react";
+import { useOrganizationQuery } from '../slices/Organization';
 import { ORG_DATA } from "../mockData/orgData";
 import { RECORDS_PER_PAGE } from "./utils";
 
@@ -33,8 +33,9 @@ const INITIAL_STATE = {
 
 export const OrganizationProvider = ({ children }) => {
   const [filterState, setFilterState] = useState(INITIAL_STATE);
-  const [originalData, setOriginalData] = useState(ORG_DATA);
-  const [filteredData, setFilteredData] = useState(ORG_DATA);
+  // We don't need this state after api integration
+  const [originalData] = useState(ORG_DATA);
+  const [filteredData] = useState(ORG_DATA);
   const [currentPage, setCurrentPage] = useState(1);
 
   const updateFilterState = useCallback((field, value) => {
@@ -49,25 +50,10 @@ export const OrganizationProvider = ({ children }) => {
     console.log("Filter Cleared.");
   };
 
-  // useEffect(() => {
-  //   // On filter state change, give api call
+  // Fetch data from server
+  const { isLoading, data, error } = useOrganizationQuery();
 
-  // }, [filterState])
-
-  //  Apply filters = user rtk to call api
-
-  // This is not needed if we do it on server side
-  useEffect(() => {
-    if (originalData.length > 0) {
-      const indexOfLastRecord = currentPage * RECORDS_PER_PAGE;
-      const indexOfFirstRecord = indexOfLastRecord - RECORDS_PER_PAGE;
-      setFilteredData(
-        originalData.slice(indexOfFirstRecord, indexOfLastRecord)
-      );
-    } else {
-      setFilteredData([]);
-    }
-  }, [originalData, currentPage]);
+  console.log("data", isLoading, data, error)
 
   const totalRecords = useMemo(() => originalData.length, [originalData]);
   const totalPageCount = useMemo(
@@ -75,6 +61,42 @@ export const OrganizationProvider = ({ children }) => {
     [totalRecords]
   );
 
+  
+  // const ctxValue = useMemo(
+  //   () => ({
+  //     data: data.content,
+  //     filters: {
+  //       ...filterState,
+  //       update: {
+  //         setSearchQuery: (value) => updateFilterState("searchQuery", value),
+  //         setLocation: (value) => updateFilterState("location", value),
+  //         setStatus: (value) => updateFilterState("status", value),
+  //       },
+  //       clearFilters,
+  //     },
+  //     pagination: {
+  //       currentPage: data.pageable.pageNumber,
+  //       totalRecords: data.totalElements,
+  //       totalPageCount: data.totalPages,
+  //       recordsPerPage: RECORDS_PER_PAGE,
+  //       update: {
+  //         setCurrentPage,
+  //       },
+  //     },
+  //     isLoading
+  //   }),
+  //   [
+  //     filteredData,
+  //     updateFilterState,
+  //     clearFilters,
+  //     currentPage,
+  //     totalPageCount,
+  //     totalRecords,
+  //     isLoading
+  //   ]
+  // );
+
+  // Until API starts working
   const ctxValue = useMemo(
     () => ({
       data: filteredData,
@@ -96,6 +118,7 @@ export const OrganizationProvider = ({ children }) => {
           setCurrentPage,
         },
       },
+      isLoading
     }),
     [
       filteredData,
@@ -104,6 +127,7 @@ export const OrganizationProvider = ({ children }) => {
       currentPage,
       totalPageCount,
       totalRecords,
+      isLoading
     ]
   );
 

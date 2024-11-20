@@ -5,13 +5,11 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { Link } from 'react-router-dom';
 import Actions from './Actions';
 import { PATHS } from '../../routes/constants';
-import { useOrganizationQuery } from '../../slices/Organization';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 
 const OrgList = () => {
-  const { isLoading, orgData, error } = useOrganizationQuery();
-
+  const { isLoading } = useOrg();
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState([]);
 
@@ -50,18 +48,26 @@ const OrgList = () => {
       id: 'status',
       name: t('orgManagement.table.status'),
       cell: (row) => (
-        <Badge
-          text={row.status === 'ACTIVE' ? 'Active' : 'Inactive'}
-          type={row.status === 'ACTIVE' ? 'success' : 'info-default'}
-        />
+        <div className="cellEllipse">
+          <Badge
+            text={
+              row.status === 'ACTIVE'
+                ? t('orgManagement.button.activate')
+                : t('orgManagement.button.inactivate')
+            }
+            type={row.status === 'ACTIVE' ? 'success' : 'info-default'}
+          />
+        </div>
       ),
-      wrap: true
+      wrap: true,
+      center: true
     },
     {
       id: 'action',
       name: t('orgManagement.table.action'),
       cell: (row) => <Actions row={row} />, // Pass row as a named prop
-      wrap: true
+      wrap: true,
+      center: true
     }
   ];
 
@@ -95,11 +101,6 @@ const OrgList = () => {
     setSelectedRows([]);
   };
 
-  const NoDataInfo = {
-    heading: 'Add Organization',
-    description: 'You need to add Organization to see data in this table.'
-  };
-
   if (isLoading) {
     return <Loader type="screen" />;
   }
@@ -112,7 +113,9 @@ const OrgList = () => {
     <div>
       {selectedRows.length > 0 && (
         <div className="selected-item-alert">
-          <p className="selected-item-text">{selectedRows.length} Item's Selected</p>
+          <p className="selected-item-text">
+            {selectedRows.length} {t('orgManagement.selected_items')}
+          </p>
           <Button variant="secondary" onClick={handleDeactivate}>
             {t('orgManagement.button.deactivate')}
           </Button>
@@ -131,15 +134,15 @@ const OrgList = () => {
         handleChangePage={handleChangePage}
         totalRocords={totalRecords} // Corrected typo here
         recordsPerPage={recordsPerPage}
-        paginationTotalRecorsMessage={'results'}
-        paginationRecordsPerPageMessage={`per page`}
+        paginationTotalRecorsMessage={t('orgManagement.results')}
+        paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         isAdmin={true}
         selectableRows
         noDataComponent={
           <EmptyDataTable
             image={EmptyDataImage}
-            heading={'Add Organization'}
-            description={'You need to add Organization to see data in this table.'}
+            heading={t('orgManagement.add.label')}
+            description={t('orgManagement.empty_table.description')}
           />
         }
         handleRowSelected={handleRowSelected}

@@ -1,11 +1,11 @@
 import React, { useState, useRef } from 'react';
 import Upload from '@src/assets/image/upload.svg';
-import { Divider, Button } from '@mckesson/mcp-component-library';
+import { Divider, Button, Required } from '@mckesson/mcp-component-library';
 import './FileInput.scss';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import { ReactComponent as Close } from '@src/assets/image/close.svg';
 
-const FileInput = ({ onFileSelect }) => {
+const FileInput = ({ onFileSelect, label }) => {
   const [file, setFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
@@ -49,6 +49,11 @@ const FileInput = ({ onFileSelect }) => {
 
   return (
     <div>
+      <div className="label-box">
+        <p className="label">{label}</p>
+        <Required />
+      </div>
+
       <input
         type="file"
         onChange={handleFileChange}
@@ -75,14 +80,14 @@ const FileInput = ({ onFileSelect }) => {
         </div>
 
         {/* <div> */}
-          <Button
-            Icon={add_circle_bold}
-            className="button-icon"
-            variant="secondary"
-            onClick={handleBrowseClick}
-            size={'md'}>
-            BROWSE LOGO
-          </Button>
+        <Button
+          Icon={add_circle_bold}
+          className="button-icon"
+          variant="secondary"
+          onClick={handleBrowseClick}
+          size={'md'}>
+          BROWSE LOGO
+        </Button>
         {/* </div> */}
 
         {file && (

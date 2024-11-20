@@ -1,7 +1,16 @@
-.headerSegment{
+@use "@src/assets/styles/abstracts/mixins";
+
+.headerSegment {
+  display: grid;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-03);
+
+  @include mixins.respond("sm") {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap:  var(--spacing-03);
-} 
+    gap: var(--spacing-03);
+  }
+}

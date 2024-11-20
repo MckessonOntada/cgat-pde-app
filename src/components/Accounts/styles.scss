@@ -1,22 +1,35 @@
+@use "@src/assets/styles/abstracts/mixins";
+
 .account-box {
   display: flex;
   gap: var(--spacing-04);
   border: 1px solid var(--brand-color-patient-primary-3);
   border-radius: var(--brand-border-radius--6);
   padding: var(--spacing-03);
+  height: 100%;
 }
 
 .customTable-box {
   width: 100%;
 }
 
+.selected-account-chips {
+  display: block;
+  @include mixins.respond("lg") {
+    display: none;
+  }
+}
 .selected-account-box {
-  width: 25%;
-  height: 88%;
+  display: none;
+
+  @include mixins.respond("lg") {
+    width: 25%;
+    height: 100%;
+    display: block;
+  }
 }
 
 .cellEllipse {
-  width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

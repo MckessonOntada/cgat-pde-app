@@ -5,6 +5,7 @@ import SelectedAccounts from './SelectedAccounts';
 import './styles.scss';
 import Actions from './Action';
 import { useTranslate } from '@src/translations/useTranslation';
+import SelectedAccountChips from './SelectedAccountChips';
 
 const RECORDS_PER_PAGE = 8;
 
@@ -53,13 +54,14 @@ export default function AccountsList({
         selector: (row) => row.distributionChannel,
         wrap: true,
         cell: (row) => <div className="cellEllipse">{row.distributionChannel}</div>,
-        omit: omitColumns.includes('distributionChannel')
+        omit: omitColumns.includes('distributionChannel'),
+        center: false
       },
       {
         id: 'address',
         center: true,
         name: t('account.address'),
-        cell: (row) => row.cgatIdentifier,
+        cell: (row) => <div className="cellEllipse">{row.address}</div>,
         omit: omitColumns.includes('address')
       },
       {
@@ -90,32 +92,39 @@ export default function AccountsList({
   };
 
   return (
-    <div className="account-box">
-      <div className="customTable-box">
-        <CustomDataTable
-          id="my-data-table"
-          type="normal"
-          columns={columns}
-          data={data.content} // Use the sliced data for the current page
-          currentPage={currentPage}
-          totalPageCount={data.totalPages}
-          pagination={true}
-          handleChangePage={handleChangePage}
-          totalRocords={data.totalElements}
-          recordsPerPage={RECORDS_PER_PAGE}
-          paginationTotalRecorsMessage={'results'}
-          paginationRecordsPerPageMessage={`per page`}
-          isAdmin={true}
-          selectableRows={selectableRows}
-          handleRowSelected={handleRowSelected}
-          selectedRowId={selectedRows}
-        />
-      </div>
+    <>
       {showSelectedAccounts && (
-        <div className="selected-account-box">
-          <SelectedAccounts selectedAccounts={selectedRows} onRemoveAccount={onRemoveAccount} />
+        <div className="selected-account-chips">
+          <SelectedAccountChips selectedAccounts={selectedRows} onRemoveAccount={onRemoveAccount} />
         </div>
       )}
-    </div>
+      <div className="account-box">
+        <div className="customTable-box">
+          <CustomDataTable
+            id="my-data-table"
+            type="normal"
+            columns={columns}
+            data={data.content} // Use the sliced data for the current page
+            currentPage={currentPage}
+            totalPageCount={data.totalPages}
+            pagination={true}
+            handleChangePage={handleChangePage}
+            totalRocords={data.totalElements}
+            recordsPerPage={RECORDS_PER_PAGE}
+            paginationTotalRecorsMessage={'results'}
+            paginationRecordsPerPageMessage={`per page`}
+            isAdmin={true}
+            selectableRows={selectableRows}
+            handleRowSelected={handleRowSelected}
+            selectedRowId={selectedRows}
+          />
+        </div>
+        {showSelectedAccounts && (
+          <div className="selected-account-box">
+            <SelectedAccounts selectedAccounts={selectedRows} onRemoveAccount={onRemoveAccount} />
+          </div>
+        )}
+      </div>
+    </>
   );
 }

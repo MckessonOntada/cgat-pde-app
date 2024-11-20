@@ -10,8 +10,9 @@ import { LOCATIONS, STATUS } from '../../mockData/orgData';
 import { useTranslate } from '@src/translations/useTranslation';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import arrow_down from '@src/assets/image/arrow_down.svg';
-import ToggleUI from '../../../../components/toggleui';
+import ToggleUI from '@src/components/toggleui';
 import { debugIds, ID } from '@src/common/constants/id';
+import './index.scss';
 
 const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) => {
   const { t } = useTranslate();
@@ -71,28 +72,40 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
     <div className="filterBox line-height" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
       {(showLocationDropdown || showStatusDropdown) && (
         <>
-          <div className="toggle-box">
-            <div onClick={handleExpandCard}>
-              <img
-                src={expandedCard ? arrow_down : arrow_right}
-                className="icon-align"
-                alt="toggle-icon"
-              />
+          <div className="toggle-container">
+            <div className="toggle-box">
+              <div onClick={handleExpandCard}>
+                <img
+                  src={expandedCard ? arrow_down : arrow_right}
+                  className="icon-align"
+                  alt="toggle-icon"
+                />
+              </div>
+              <div className="autoSuggestSearch-container">
+                <AutoSuggestSearch
+                  label=" "
+                  value={searchQuery}
+                  onChangeInput={handleSearch}
+                  outline={true}
+                  placeHolder={t('orgManagement.searchFilter.label')}
+                />
+              </div>
             </div>
-            <div className="autoSuggestSearch-container">
-              <AutoSuggestSearch
-                label=" "
-                value={searchQuery}
-                onChangeInput={handleSearch}
-                outline={true}
-                placeHolder={t('orgManagement.searchFilter.label')}
-              />
-            </div>
-          </div>
 
+            {expandedCard && (
+              <Button
+                type="button"
+                variant="secondary"
+                label={t('orgManagement.button.filter')}
+                className="filter-btn"
+                onClick={handleFilter}
+                size="md"
+              />
+            )}
+          </div>
           <ToggleUI in={expandedCard} timeout={400}>
             <div className="expanded-content">
-              <Divider className="divider-style" />
+              <Divider />
               <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
                 {showLocationDropdown && (
                   <SearchableDropdown
@@ -122,14 +135,8 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
                   />
                 )}
 
-                <div className="LabelBox">
-                  <Button
-                    type="button"
-                    label={t('filter')}
-                    className="filter-btn"
-                    onClick={handleFilter}
-                  />
-                  {isClearFiltersVisible && (
+                {isClearFiltersVisible && (
+                  <div className="LabelBox">
                     <Button
                       type="button"
                       label={t('orgManagement.clearFilter.label')}
@@ -137,8 +144,8 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
                       className="txtbtn"
                       onClick={handleClearFilters}
                     />
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </div>
           </ToggleUI>
