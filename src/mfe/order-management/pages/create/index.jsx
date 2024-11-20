@@ -1,58 +1,64 @@
 import React from 'react';
 import { Stepper } from '@mckesson/mcp-component-library';
-import styles from './CreateOrder.module.scss';
 import AccountSelection from './form-segments/account-selection/AccountSelection';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import TherapySelection from './form-segments/therapy-selection';
 import { useParams, useNavigate } from 'react-router-dom';
 import PatientDetails from './form-segments/patient-details';
-import PageHeader from '../../../../components/pageHeader';
-import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
+import PageHeader from '@src/components/pageHeader';
 import Summary from './form-segments/summary';
+import { useTranslate } from '@src/translations/useTranslation';
+
+const formsConfig = (t) => [
+    {
+        name: 'accountSelection',
+        label: t('labels.accountSelection'),
+        form: <AccountSelection />
+    },
+    {
+        name: 'therapySelection',
+        label: t('labels.therapySelection'),
+        form: <TherapySelection />
+    },
+    {
+        name: 'patientDetails',
+        label: t('labels.patientDetails'),
+        form: <PatientDetails />
+    },
+    {
+        name: 'additionalDetails',
+        label: t('labels.additionalDetails'),
+        form: <div>Additional Details</div>
+    },
+    {
+        name: 'summary',
+        label: t('labels.summary'),
+        form: <Summary />
+    },
+];
 
 const OrderCreate = () => {
-    const forms = [
-        {
-            name: 'accountSelection',
-            label: 'Account Selection',
-            form: <AccountSelection />
-        },
-        {
-            name: 'theraphySelection',
-            label: 'Theraphy Selection',
-            form: <TherapySelection />
-        },
-        {
-            name: 'patientDetails',
-            label: 'Patient Details',
-            form: <PatientDetails />
-        },
-        {
-            name: 'additionalDetails',
-            label: 'Additional Details',
-            form: <div>Additional Details</div>
-        },
-        {
-            name: 'summary',
-            label: 'Summary',
-            form: <Summary />
-        },
-    ];
+    const { t } = useTranslate();
+    const forms = formsConfig(t);
     const navigate = useNavigate();
     const [activeForm, setActiveForm] = React.useState(0);
     const { accountId, therapyId } = useParams();
+
     React.useEffect(() => {
         if (accountId && therapyId)
             setActiveForm(2)
         else if (accountId && !therapyId)
             setActiveForm(1)
-        else setActiveForm(4)
-    }, []);
+        else setActiveForm(0)
+    }, [accountId, therapyId]);
 
-    const FormToRender = forms[activeForm]?.form;
     const handleOnBackButtonClick = () => {
-        navigate('../')
-    }
+        navigate('../');
+    };
+
+    const FormToRender = forms[activeForm]?.form || (
+        <div>{t('messages.formNotFound')}</div>
+    );
     return (
         <div className="MCP-module-wrapper">
             <div>
@@ -61,17 +67,17 @@ const OrderCreate = () => {
                     onClick={handleOnBackButtonClick}
                 >
                     <IconArrowLeft />
-                    <p>Back to Manage Users</p>
+                    <p>{t('captions.btnBackToManageOrder')}</p>
                 </button>
             </div>
 
-            <PageHeader heading={"Create New Order"} />
+            <PageHeader heading={t("headings.createNewOrder")} />
 
             <div className='MCP-module-body'>
                 <Stepper
                     activeIndex={activeForm + 1}
                     dividerText="of"
-                    mobileLabel="Steps"
+                    mobileLabel={t('labels.steps')}
                     stepHeaders={forms.map(f => ({ label: f.label }))}
                 />
                 <div>{FormToRender}</div>

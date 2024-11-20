@@ -100,5 +100,20 @@ export const OrgManagementEN = {
   'orgManagement.per_page': 'per page',
   'orgManagement.selected_items': `Item's Selected`,
 
-  'orgManagement.empty_table.description': 'You need to add Organization to see data in this table.'
+  'orgManagement.empty_table.description':
+    'You need to add Organization to see data in this table.',
+  'orgManagement.role.headingManageOrder': 'Manage Roles',
+  'orgManagement.role.headingPermissionDetails': 'Permission Details',
+  'orgManagement.role.labelAddRole': 'Add Role',
+  'orgManagement.role.labelStep': 'Step',
+  'orgManagement.role.labelRolesListing': 'Roles Listing',
+  'orgManagement.role.labelRolesDetails': 'Role Details',
+  'orgManagement.role.labelAddPermissions': 'Add Permissions',
+  'orgManagement.role.labelDateCreated': 'Date Created',
+  'orgManagement.role.labelRoleName': 'Role Name',
+  'orgManagement.role.labelRoleDescription': 'Role Description',
+  'orgManagement.role.tableHeadingCreatedOn': 'Created On',
+  'orgManagement.role.captionsBtnBackToManageRoles': 'Back to Manage Roles',
+  'orgManagement.role.captionsBtnSaveAndCancel': 'Save and Continue',
+  'orgManagement.role.labelMaxChar1000': 'Maximum 1,000 Characters'
 };

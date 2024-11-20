@@ -1,0 +1,18 @@
+export const PaymentInvoicesES = {
+  'paymentInvoices.history.table.billNumber': 'S_Bill Number',
+  'paymentInvoices.history.table.purchaseOrderNumber': 'S_Purchase Order Number',
+  'paymentInvoices.history.table.paymentMethod': 'S_Payment Method',
+  'paymentInvoices.history.table.paymentStatus': 'S_Payment Status',
+  'paymentInvoices.history.table.paymentInitiationDate': 'S_Payment Initiation Date',
+  'paymentInvoices.history.table.totalAuthorizedPaymentAmt': 'S_Total Authorization Amt',
+  'paymentInvoices.history.filters.autoSearch': 'S_Search by document number, sold to',
+  'paymentInvoices.history.filters.filterBtn': 'S_Filter',
+  'paymentInvoices.history.filters.status': 'S_Payment Status',
+  'paymentInvoices.history.filters.method': 'S_Payment Method',
+  'paymentInvoices.history.filters.startDate': 'S_Start Date',
+  'paymentInvoices.history.filters.endDate': 'S_End Date',
+  'paymentInvoices.history.filters.clearFilter': 'S_Clear Filter',
+  'paymentInvoices.history.filters.printSummary': 'S_Print Summary',
+  'paymentInvoices.history.filters.downloadExcel': 'S_Download Excel',
+  'paymentInvoices.history.filters.paymentDetails': 'S_Payment Details',
+};

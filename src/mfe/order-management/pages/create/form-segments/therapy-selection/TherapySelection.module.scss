@@ -1,11 +1,13 @@
 .wrapper{
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-04, 24px);
-    .summary{
-        display: grid;
-        gap: var(--spacing-02);
-        grid-template-columns: 16% auto;
+    gap: var(--spacing-04);
+    .row{
+        display: flex;
+        flex-direction: row;
+        gap: var(--spacing-03);
+        flex-wrap: wrap;
+        row-gap: var(--spacing-03);
         .col{
             display: flex;
             flex-direction: column;

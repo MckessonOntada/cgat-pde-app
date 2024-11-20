@@ -27,7 +27,7 @@ const UserPermissions = () => {
 
 
 
-    const handleSaveandContinue = () => {
+    const handleSaveAndContinue = () => {
         const selectedPermissions = {};
         Object.keys(enabledPermissions).forEach(category => {
             if (enabledPermissions[category]?.length > 0) {
@@ -61,8 +61,8 @@ const UserPermissions = () => {
                 <MdOutlineKeyboardArrowLeft size="24px" />
                 <p>Back to Manage Users</p>
             </div>
-            <ModuleHeader
-                heading={<p className='primaryHeading'>{t('userManagement.create_user')}</p>}
+            <PageHeader
+                title={t('userManagement.create_user')}
             />
             <div className="stepper">
                 <Stepper
@@ -95,7 +95,7 @@ const UserPermissions = () => {
                             <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
                                 {t('userManagement.button.back')}
                             </Button>
-                            <Button variant="primary" type="button" onClick={handleSaveandContinue} size={'md'}>{t('userManagement.button.savencontinue')}</Button>
+                            <Button variant="primary" type="button" onClick={handleSaveAndContinue} size={'md'}>{t('userManagement.button.savencontinue')}</Button>
                         </div>
                     </Form>
                 )}</Formik>
