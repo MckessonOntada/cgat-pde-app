@@ -100,6 +100,7 @@ export const UserManagementEN = {
   'userManagement.user_permissions.select_role': 'Select Role',
 
   'userManagement.searchFilter.addaccount_label': 'Search By Name or location',
+  'userManagement.add_accounts.labelheader':'Please select accounts to incorporate into the organization',
 
 
   'AUTHENTICATION_FLOW': 'Authentication Flow',

@@ -1,68 +1,68 @@
+@use "../../../../assets/styles/abstracts/mixins";
 
 .permission-category {
-    margin-bottom: var(--spacing-01);
+  margin-bottom: var(--spacing-01);
+}
+
+.permission-list {
+  display: grid;
+  grid-template-columns: 1fr ;
+  /* Two items with a divider in the middle */
+  gap: var(--spacing-03);
+  align-items: center;
+}
+
+.permission-list {
+  @include mixins.respond(md) {
+    grid-template-columns: 1fr auto 1fr; // Single-column layout on medium screens
   }
-  
-  .permission-list {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    /* Two items with a divider in the middle */
-    gap: var(--spacing-03);
-    align-items: center;
-  }
-  
-  @media (max-width: 768px) {
-    .permission-list {
-      grid-template-columns: 1fr;
-      /* Single-column layout on small screens */
-    }
-  }
-  
-  .permission-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 10px 10px 0px;
-  }
-  
-  .permission-info-header {
-    display: block;
-    font-size: var(--brand-font-size--default);
-    font-weight: var(--brand-font-weight-700); 
-    margin-bottom:  var(--spacing-01);
-  }
-  
-  .permission-info p {
-    font-weight: var(--brand-font-weight-400);
-    font-size: var(--brand-font-size--15);
-    line-height: var(--spacing-04);
-    color:var( --brand-color-primary-slate);
-  }
-  
-  
-  .permission-toggle {
-    display: flex;
-    align-items: center;
-  }
-  
-  .toggle-switch {
-    display: flex;
-    align-items: center;
-  }
-  
-  .divider {
-    width: 1px;
-    height: 100%;
-    align-self: stretch;
-    display: block;
-    background-color: var(--brand-color-background-grey);
-  }
-  
-  .buttonGroup {
-    display: flex;
-    width: 100%;
-    justify-content: end;
-    gap: var(--spacing-04);
-    padding-top: var(--spacing-04);
-    padding-bottom: var(--spacing-04);
-  }
+}
+
+.permission-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-02) var(--spacing-02) var(--spacing-02) 0px;
+}
+
+.permission-info-header {
+  display: block;
+  font-size: var(--brand-font-size--default);
+  font-weight: var(--brand-font-weight-700);
+  margin-bottom: var(--spacing-01);
+}
+
+.permission-info p {
+  font-weight: var(--brand-font-weight-400);
+  font-size: var(--brand-font-size--15);
+  line-height: var(--spacing-04);
+  color: var(--brand-color-primary-slate);
+}
+
+
+.permission-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-switch {
+  display: flex;
+  align-items: center;
+}
+
+.divider {
+  width: 1px;
+  height: 100%;
+  align-self: stretch;
+  display: block;
+  background-color: var(--brand-color-background-grey);
+}
+
+.buttonGroup {
+  display: flex;
+  width: 100%;
+  justify-content: end;
+  gap: var(--spacing-04);
+  padding-top: var(--spacing-04);
+  padding-bottom: var(--spacing-04);
+}
