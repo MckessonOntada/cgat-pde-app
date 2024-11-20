@@ -6,6 +6,8 @@ import './styles.scss';
 import Actions from './Action';
 import { useTranslate } from '@src/translations/useTranslation';
 import SelectedAccountChips from './SelectedAccountChips';
+import EmptyDataTable from '../EmptyTable';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 
 const RECORDS_PER_PAGE = 8;
 
@@ -117,6 +119,13 @@ export default function AccountsList({
             selectableRows={selectableRows}
             handleRowSelected={handleRowSelected}
             selectedRowId={selectedRows}
+            noDataComponent={
+              <EmptyDataTable
+                image={EmptyDataImage}
+                heading={t('account.add.label')}
+                description={t('account.empty_table.description')}
+              />
+            }
           />
         </div>
         {showSelectedAccounts && (

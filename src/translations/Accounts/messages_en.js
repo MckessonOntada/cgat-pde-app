@@ -10,6 +10,9 @@ export const AccountEN = {
 
   'account.btn.unlink': 'UNLINK',
 
+  'account.add.label': 'Add Accounts',
+  'account.empty_table.description': 'You need to add Accounts to see data in this table.',
+
   'file.drag.label': 'Drag your file(s) to start uploading',
   'file.browse.logo': 'BROWSE LOGO'
 };
