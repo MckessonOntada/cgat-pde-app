@@ -20,7 +20,8 @@ export const apiLoadingStatus = {
 
 export const defaultHeaders = {
   'Content-Type': 'application/json;charset=utf-8',
-  'Accept-Language': 'en'
+  'Accept-Language': 'en',
+  userId: 1
 };
 
 export const authToken = (noHeader, noSidHeader) => {
