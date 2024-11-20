@@ -28,7 +28,11 @@
 }
 
 .line-height {
-  margin-bottom: var(--spacing-03); 
+  margin-bottom: var(--spacing-04); 
+}
+
+.align-items-start { 
+  align-items: flex-start;  
 }
 
 .stepper {
@@ -71,3 +75,10 @@
     color: var(--brand-color-warning-orange-4);
     font-weight: var(--brand-font-weight-600);
 }
+
+
+div[data-testid^="dropdown-container-"] {
+  transform: translateY(-4px);
+}
+
+ 

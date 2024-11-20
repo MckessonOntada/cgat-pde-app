@@ -94,7 +94,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions }) => {
                                             <React.Fragment key={idx}>
                                                 <div className="flex items-center justify-between permission-item">
                                                     <div className="permission-info">
-                                                        <h4>{t(label)}</h4>
+                                                        <div className='permission-info-header'>{t(label)}</div>
                                                         <p>{t(description)}</p>
                                                     </div>
 

@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react'
 import { Stepper, AutoSuggestSearch, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
-import PageHeader from '@src/components/pageHeader';
+import ModuleHeader from '@src/components/module-header';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import AccountsList from '@src/components/Accounts/AccountsList';
@@ -50,7 +50,7 @@ const AddAccounts = () => {
     };
 
     return (
-        <div>
+        <div className="MCP-module-wrapper">
             <div
                 className="back-navigation py2 capitalize"
                 onClick={handleGoBack}
@@ -59,9 +59,14 @@ const AddAccounts = () => {
                 <MdOutlineKeyboardArrowLeft size="24px" />
                 <p>Back to Manage Users</p>
             </div>
-            <PageHeader
-                title={t('userManagement.create_user')}
-            /><div className="stepper">
+            <ModuleHeader
+                heading={
+                    <p className="primaryHeading">
+                        {isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}
+                    </p>
+                }
+            />
+            <div className="stepper">
                 <Stepper
                     activeIndex={3}
                     dividerText="of"
@@ -79,15 +84,19 @@ const AddAccounts = () => {
                 />
             </div>
             <div class="MCP-panel-container line-height grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
-                <div className="toggle-box">
-                    <img src={arrow_right} className="icon-align" />
-                    <div className="autoSuggestSearch-container">
-                        <AutoSuggestSearch
-                            label=" "
-                            onChangeInput={handleSearchChange}
-                            outline={true}
-                            placeHolder={t('userManagement.searchFilter.addaccount_label')}
-                        />
+                <div className="MCP-module-body">
+                    {!isEdit && <p className="secondaryHeading"> {t('userManagement.add_accounts.labelheader')}</p>}
+                    <div className='MCP-panel-container'>
+                        <div className="toggle-box">
+                            <img src={arrow_right} className="icon-align" />
+                            <div className="autoSuggestSearch-container">
+                                <AutoSuggestSearch
+                                    label=" "
+                                    onChangeInput={handleSearchChange}
+                                    outline={true}
+                                    placeHolder={t('userManagement.searchFilter.addaccount_label')}
+                                />
+                            </div></div>
                     </div>
                 </div>
             </div>

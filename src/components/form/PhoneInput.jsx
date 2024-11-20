@@ -11,7 +11,7 @@ export default function PhoneInput(props) {
   const isFieldTouched = getNestedValue(form.touched, field.name);
 
   return (
-    <div className='grid'>
+    <div className='grid align-PhoneInput'>
       <Label htmlFor="phone_no" className="label-heading">
         {label}
         <Required id="Required">

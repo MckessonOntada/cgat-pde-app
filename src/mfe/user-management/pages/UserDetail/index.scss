@@ -9,8 +9,9 @@
 }
  
 .view_label {
-  font-size: 14px;
-  color: #767E94; 
+  font-size: var( --brand-font-size--small);
+  line-height: var(--spacing-04);
+  color: #767E94;  // Color is missing in Design System
 }
 
  
@@ -27,17 +28,10 @@
 }
  
 
-.view_label {
-  font-size: 14px;
-  color: #666;
-  margin-right: 4px;
-  line-height: 18px;
-} 
-
 .label-text {
   font-size: var(--brand-font-size--default);
   font-weight: var(--brand-font-weight-500);
-  line-height: 20px;
+  line-height: var(--brand-line-height--medium);
 }
 
 .py2{
@@ -64,6 +58,8 @@ padding-top: var(--spacing-02);
   .user-header {
       flex-direction: column; /* Stack items vertically */
       align-items: flex-start; /* Align items to the start for better readability */
+      gap: var(--spacing-03);
+      white-space: nowrap;
   }
 
   .user-info {
