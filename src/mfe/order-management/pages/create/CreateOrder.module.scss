@@ -1,6 +1,6 @@
 .iconButton{
     display: flex;
-    gap: 4px;
+    gap: var(--spacing-01);
     text-transform: uppercase;
     align-items: center;
     font-size: var(--brand-font-size--small, 16px);

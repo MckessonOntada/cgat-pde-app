@@ -4,16 +4,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import styles from './AccountSelection.module.scss'
 import FloatingDrawer from '@src/components/floating-drawer';
 import AccountsTable from './AccountTable';
-import AccountSelctionUserGuide from './AccountSelectionUserGuide';
+import AccountSelectionUserGuide from './AccountSelectionUserGuide';
 import ModuleHeader from '@src/components/module-header';
-
-const options = [
-    { label: "Option 1", value: "option1", description: "This is option 1" },
-    { label: "Option 2", value: "option2", description: "This is option 2" },
-    { label: "Option 3", value: "option3", description: "This is option 3" },
-];
+import { useTranslate } from '@src/translations/useTranslation';
 
 const AccountSelection = () => {
+    const { t } = useTranslate();
     const [open, setOpen] = React.useState(false);
     const navigate = useNavigate();
 
@@ -27,12 +23,10 @@ const AccountSelection = () => {
         console.log(account);
     }
     return (
-        <div className={styles.wrapper}>
-            <div className={styles.formSegment}>
+        <div className={`MCP-module-wrapper`}>
                 <div className='MCP-panel-container'>
-                    <div className={styles.sect}>
-                        {/* <ModuleHeader variant={"l2"} heading={'Account Selction'} /> */}
-                        <p className='secondaryHeading'>Account Selection</p>
+                    <div className={`MCP-module-body`}>
+                        <ModuleHeader heading={<p className='secondaryHeading'>{t('labels.accountSelection')}</p>} />
                         <div className='MCP-panel-container'>
                             <div className={styles.account}>
                                 <div className={styles.accountDetails}>
@@ -43,40 +37,42 @@ const AccountSelection = () => {
                                     <div className={styles.controlWrapper}>
                                         <Dropdown />
                                     </div>
-                                    <Link to="#" onClick={handleOnClick}>Need assistance with selecting an account?</Link>
+                                    <Link to="#" onClick={handleOnClick}>{t('labels.needAssistanceSelectingAccount')}</Link>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className={styles.sect}>
-                        {/* <ModuleHeader variant={"l2"} heading={'Shipping Address'} /> */}
-                        <p className='secondaryHeading'>Shipping Address</p>
+                    <div className="MCP-module-body">
+                        <ModuleHeader
+                            heading={<p className='secondaryHeading'>{t('headings.shippingAddress')}</p>}
+                        />
                         <div className='MCP-panel-container'>
-                            filters
+                            
                         </div>
-                        <AccountsTable />
+                        <div className="MCP-table-wrapper">
+                            <AccountsTable />
+                        </div>
+                    </div>
+                    <div className='controls'>
+                        <Button
+                            size="md"
+                            onClick={() => navigate('../')}
+                            variant="secondary"
+                        >
+                            {t('captions.btnCancel')}
+                        </Button>
+                        <Button
+                            size="md"
+                            onClick={() => navigate('32151')}
+                            variant="primary"
+                        >
+                            {t('Save and Continue')}
+                        </Button>
                     </div>
                 </div>
                 <FloatingDrawer open={open} anchor='right' onClose={handleOnClose}>
-                    <AccountSelctionUserGuide onSubmit={handleOnSubmit} onClose={handleOnClose} />
+                    <AccountSelectionUserGuide onSubmit={handleOnSubmit} onClose={handleOnClose} />
                 </FloatingDrawer>
-                <div className='controls'>
-                    <Button
-                        size="md"
-                        onClick={() => navigate('../')}
-                        variant="secondary"
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        size="md"
-                        onClick={() => { }}
-                        variant="primary"
-                    >
-                        Save and Continue
-                    </Button>
-                </div>
-            </div>
         </div>
     )
 }

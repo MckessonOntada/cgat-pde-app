@@ -4,9 +4,11 @@ import { ROLES } from '../../mockData/PermissionsData';
 import { SearchableDropdown, Switch, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
+import { Field } from 'formik';
+import './PermissionForm.scss';
 
 
-const PermissionForm = ({enabledPermissions, setEnabledPermissions}) => {
+const PermissionForm = ({ enabledPermissions, setEnabledPermissions }) => {
     const { t } = useTranslate();
     //hoist enabledPermissions to parent component
 
@@ -97,6 +99,15 @@ const PermissionForm = ({enabledPermissions, setEnabledPermissions}) => {
                                                     </div>
 
                                                     <div className="permission-toggle">
+                                                        {/* <Field
+                                                            id="name.firstName"
+                                                            name="name.firstName"
+                                                            label={t("userManagement.create_user.inputLabel.first_name")}
+                                                            placeholder=" "
+                                                            isRequired
+                                                            component={}
+                                                            maxLength={50}
+                                                        />
                                                         <Switch
                                                             onChange={() => handleToggle(categoryKey, permissionKey)}
                                                             id={`toggle-${label}`}
@@ -105,6 +116,19 @@ const PermissionForm = ({enabledPermissions, setEnabledPermissions}) => {
                                                             name={t(label)}
                                                             size="lg"
                                                             value={isPermissionEnabled(categoryKey, permissionKey)}
+                                                        /> */}
+                                                        <Field
+                                                            name={`permissions.${categoryKey}.${permissionKey}`}
+                                                            as={Switch}
+                                                            id={`toggle-${label}`}
+                                                            label={
+                                                                isPermissionEnabled(categoryKey, permissionKey) ? "Enabled" : "Disabled"
+                                                            }
+                                                            labelPosition="right"
+                                                            size="lg"
+                                                            // name={t(label)}
+                                                            value={isPermissionEnabled(categoryKey, permissionKey)}
+                                                            onChange={() => handleToggle(categoryKey, permissionKey)}
                                                         />
                                                     </div>
                                                 </div>

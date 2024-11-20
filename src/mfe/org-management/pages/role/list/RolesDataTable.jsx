@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CustomDataTable, Button, Badge } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useRole } from '../../../context/RoleContext';
+import { createColumns } from './Columns';
 
 function getColorByStatus(status) {
     switch (status) {
@@ -18,32 +19,7 @@ const RolesDataTable = () => {
     const { t } = useTranslate();
     const [selectedRows, setSelectedRows] = useState([]);
 
-    const columns = [
-        {
-            id: 'name',
-            name: 'Role Name',
-            selector: (row) => row.roleName,
-            wrap: true,
-            width: '25%'
-        },
-        {
-            id: 'createOn',
-            name: 'Created On',
-            selector: (row) => row.createdOn,
-            wrap: true
-        },
-        {
-            id: 'status',
-            name: 'Status',
-            cell: (row) => (
-                <Badge
-                    text={row.status}
-                    type={getColorByStatus(row.status)}
-                />
-            ),
-            wrap: true
-        }
-    ];
+    const columns = createColumns(t)
 
     const {
         data,

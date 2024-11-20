@@ -1,7 +1,7 @@
 export const routesConfig = {
     index: "",
-    resume: "create-new/:id",
+    resume: "create-new",
     createNew: "create-new",
-    reviewOrder: '/review-order/:id',
-    viewDetails: '/summary',
+    reviewOrder: 'review-order',
+    summary: 'summary',
 };

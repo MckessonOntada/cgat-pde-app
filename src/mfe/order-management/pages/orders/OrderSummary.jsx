@@ -1,8 +1,10 @@
 import React from 'react';
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom";
+import { useTranslate } from '@src/translations/useTranslation';
 
 const OrderSummary = () => {
     const { id } = useParams();
+    const { t } = useTranslate
     const navigate = useNavigate();
 
     React.useEffect(() => {
@@ -13,7 +15,7 @@ const OrderSummary = () => {
 
     return (
         <div>
-            <p>Order Summary for {id}</p>
+            <p>{t('headings.orderSummary')} {id}</p>
         </div>
     )
 }

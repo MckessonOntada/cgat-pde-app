@@ -5,7 +5,6 @@ import {
   Divider,
   SearchableDropdown
 } from '@mckesson/mcp-component-library';
-
 import { useTranslate } from '@src/translations/useTranslation';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import arrow_down from '@src/assets/image/arrow_down.svg';
@@ -84,7 +83,7 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
               id="date_created"
               isSuccess
               value={location}
-              label={'Date Created'}
+              label={t('orgManagement.role.labelDateCreated')}
               name={'date_created'}
               isRequired={false}
               onChange={(value) => {}}
