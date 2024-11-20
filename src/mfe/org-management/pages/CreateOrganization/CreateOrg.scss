@@ -98,8 +98,8 @@
 }
 
 .details-view-container {
-  // display: none;
-  // @include mixins.respond("lg") {
-  //   display: block;
-  // }
+  display: none;
+  @include mixins.respond("lg") {
+    display: block;
+  }
 }

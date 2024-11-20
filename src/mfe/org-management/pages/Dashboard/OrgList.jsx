@@ -81,7 +81,7 @@ const OrgList = () => {
       update: { setCurrentPage }
     }
   } = useOrg();
-  console.log('Data:', data);
+
   const handleChangePage = (e, newPage) => {
     setCurrentPage(newPage);
   };

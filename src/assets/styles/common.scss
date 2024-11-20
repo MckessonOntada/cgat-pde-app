@@ -1,121 +1,126 @@
 @use "abstracts/mixins";
 
 .MCP-CardContainer {
-    display: grid;
-    gap: var(--spacing-04);
-    padding: var(--spacing-04);
-    border: 1px solid var(--brand-color-patient-primary-3);
-    border-radius: var(--brand-border-radius--8);
-    background-color: var(--brand-color-background-white);
-    width: 100%;
+  display: grid;
+  gap: var(--spacing-04);
+  padding: var(--spacing-04);
+  border: 1px solid var(--brand-color-patient-primary-3);
+  border-radius: var(--brand-border-radius--8);
+  background-color: var(--brand-color-background-white);
+  width: 100%;
 }
 
 .MCP-Icon-Button {
-    text-decoration: none;
-    color: var(--brand-color-primary);
-    font-weight: 600;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-02);
-    padding-top: 0px;
-    text-transform: uppercase;
-    cursor: pointer;
+  text-decoration: none;
+  color: var(--brand-color-primary);
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-02);
+  padding-top: 0px;
+  text-transform: uppercase;
+  cursor: pointer;
 }
 
-
 .autoSuggestSearch-container {
-    width: 100%;
+  width: 100%;
 
-    @include mixins.respond(lg) {
-        width: 460px;
-    }
+  @include mixins.respond(lg) {
+    width: 460px;
+  }
 }
 
 // module css
 .MCP-module-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-03);
+
+  .MCP-module-body {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-03);
 
-    .MCP-module-body {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-03);
-
-        .MCP-table-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-03);
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            overflow-y: hidden;
-            scrollbar-width: thin;
-        }
+    .MCP-table-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-03);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      overflow-y: hidden;
+      scrollbar-width: thin;
     }
+  }
 
-    .controls {
-        display: flex;
-        flex-direction: row;
-        gap: var(--spacing-03);
-        justify-content: flex-end;
-    }
+  .controls {
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-03);
+    justify-content: flex-end;
+  }
 }
 
 .MCP-panel-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: auto;
-    gap: var(--spacing-04);
-    padding: var(--spacing-04);
-    background-color: var(--brand-color-general-white);
-    border: 1px solid var(--brand-color-patient-primary-3);
-    border-radius: var(--brand-border-radius--8);
-    background-color: var(--brand-color-background-white);
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  gap: var(--spacing-04);
+  padding: var(--spacing-04);
+  background-color: var(--brand-color-general-white);
+  border: 1px solid var(--brand-color-patient-primary-3);
+  border-radius: var(--brand-border-radius--8);
+  background-color: var(--brand-color-background-white);
+  width: 100%;
 }
 
 .primaryHeading {
-    font-size: var(--brand-font-size--28);
-    font-weight: 600;
-    line-height: 32px;
-    letter-spacing: -0.004em;
+  font-size: var(--brand-font-size--28);
+  font-weight: 600;
+  line-height: 32px;
+  letter-spacing: -0.004em;
 }
 
-.secondaryHeading{
-    font-size: var(--brand-font-size--24);
-    font-weight: 700;
-    line-height: 28px;
-    letter-spacing: -0.001em;
+.secondaryHeading {
+  font-size: var(--brand-font-size--24);
+  font-weight: 700;
+  line-height: 28px;
+  letter-spacing: -0.001em;
 }
 
-.tertiaryHeading{
-    font-size: var(--brand-font-size--small); 
+.tertiaryHeading {
+  font-size: var(--brand-font-size--small);
 }
 
-.tertiaryHeading-24{
-    font-size: var(--brand-font-size--24); 
-    font-weight: 400;
-    line-height: 28px;  
+.tertiaryHeading-24 {
+  font-size: var(--brand-font-size--24);
+  font-weight: 400;
+  line-height: 28px;
 }
 
 .fieldName {
-    color: #767E94; //color const missing
-    font-size: var(--brand-font-size--default);
+  color: #767e94; //color const missing
+  font-size: var(--brand-font-size--default);
 }
 
 .fieldValue {
-    font-size: var(--brand-font-size--default);
-    font-weight: var(--brand-font-weight-600);
+  font-size: var(--brand-font-size--default);
+  font-weight: var(--brand-font-weight-600);
 }
 
 [class*="Badge-module"] {
-    white-space: nowrap;
-    display: inline-block;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    vertical-align: middle;
-    // Badge-module
+  white-space: nowrap;
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  // Badge-module
+}
+
+.cellEllipse {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

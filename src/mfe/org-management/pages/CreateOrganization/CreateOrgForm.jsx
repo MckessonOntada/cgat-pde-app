@@ -48,6 +48,7 @@ const OrgDetailsFormSegment = () => {
       <Field name="file">
         {({ field, form }) => (
           <FileInput
+            initialLogo={field.value}
             onFileSelect={(file) => {
               form.setFieldValue(field.name, file);
             }}

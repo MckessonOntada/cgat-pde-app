@@ -1,3 +1,5 @@
+@use "@src/assets/styles/abstracts/mixins";
+
 .viewOrg-container {
   display: grid;
   gap: var(--spacing-05);
@@ -22,4 +24,11 @@
   display: flex;
   justify-content: end;
   gap: var(--spacing-03);
+}
+
+.details-view-container {
+  display: none;
+  @include mixins.respond("lg") {
+    display: block;
+  }
 }

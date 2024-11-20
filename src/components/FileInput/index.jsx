@@ -1,14 +1,22 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Upload from '@src/assets/image/upload.svg';
 import { Divider, Button, Required } from '@mckesson/mcp-component-library';
 import './FileInput.scss';
-import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
+import { useTranslate } from '@src/translations/useTranslation';
+import { ReactComponent as AddCircleBold } from '@src/assets/image/add_circle_bold.svg';
 import { ReactComponent as Close } from '@src/assets/image/close.svg';
 
-const FileInput = ({ onFileSelect, label }) => {
-  const [file, setFile] = useState(null);
+const FileInput = ({ onFileSelect, label, initialLogo }) => {
+  const [file, setFile] = useState(initialLogo || null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
+  const { t } = useTranslate();
+
+  useEffect(() => {
+    if (initialLogo) {
+      setFile(initialLogo);
+    }
+  }, [initialLogo]);
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -71,7 +79,7 @@ const FileInput = ({ onFileSelect, label }) => {
           <img src={Upload} alt="Upload Icon" />
         </div>
 
-        <p className="drag-heading">Drag your file(s) to start uploading</p>
+        <p className="drag-heading">{t('file.drag.label')}</p>
 
         <div className="or-box">
           <Divider className="divider-style" />
@@ -79,20 +87,20 @@ const FileInput = ({ onFileSelect, label }) => {
           <Divider className="divider-style" />
         </div>
 
-        {/* <div> */}
         <Button
-          Icon={add_circle_bold}
+          Icon={AddCircleBold}
           className="button-icon"
           variant="secondary"
           onClick={handleBrowseClick}
           size={'md'}>
-          BROWSE LOGO
+          {t('file.browse.logo')}
         </Button>
-        {/* </div> */}
 
         {file && (
           <div className="preview-container">
-            <img src={URL.createObjectURL(file)} alt="Preview" />
+            {file.type.startsWith('image/') && (
+              <img src={URL.createObjectURL(file)} alt="Preview" className="image-preview" />
+            )}
             <div className="file-info">
               <p>{file.name}</p>
               <p>{(file.size / 1024).toFixed(2)} KB</p>
