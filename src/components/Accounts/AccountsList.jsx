@@ -61,7 +61,7 @@ export default function AccountsList({
         id: 'address',
         center: true,
         name: t('account.address'),
-        cell: (row) => row.address,
+        cell: (row) => <div className="cellEllipse">{row.address}</div>,
         omit: omitColumns.includes('address')
       },
       {

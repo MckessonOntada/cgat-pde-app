@@ -1,7 +1,6 @@
 @use "@src/assets/styles/abstracts/mixins";
 
 .orgContainer {
-  padding: var(--spacing-02);
   display: grid;
   gap: var(--spacing-03);
   max-height: 100vh;
