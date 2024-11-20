@@ -1,4 +1,4 @@
-import React from 'react';
+import React ,{useState} from 'react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import './CreateUser.scss';
@@ -17,7 +17,7 @@ const CreateUser = () => {
 	const { userId } = useParams();
 	const location = useLocation();
 	const { isEdit } = location.state || {};
-
+	const { isPending } = location.state || {}; 
 	// Fetch user data based on userId 
 	const userData = USER_DATA.find(user => user.id === parseInt(userId));
 
@@ -84,7 +84,10 @@ const CreateUser = () => {
 		}),
 
 	});
-
+   
+	const handleRejectRequest = () => {
+		navigate(-1);
+	};
 
 	const handleSubmit = values => {
 		if (userData) {
@@ -160,7 +163,11 @@ const CreateUser = () => {
 							<Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
 								{t('userManagement.button.back')}
 							</Button>
-							<Button type="submit" size={'md'}>{t('userManagement.button.next')}</Button>
+							{isPending && <Button variant="secondary" type="button" onClick={handleRejectRequest} size={'md'}>
+								{t('userManagement.button.rejectrequest')}
+							</Button>}
+							<Button type="submit" size={'md'}>{t('userManagement.button.savencontinue')}</Button>
+							
 						</div>
 					</Form>)
 				}

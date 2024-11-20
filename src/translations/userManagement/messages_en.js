@@ -5,6 +5,9 @@ export const UserManagementEN = {
   'userManagement.upload.label': 'Upload Users',
   'userManagement.clearFilter.label': 'clear filters',
   'userManagement.searchFilter.label': 'Search By Name or Email',
+
+  'userManagement.results': 'results',
+  'userManagement.per_page': 'per page',
   
   'userManagement.table.name': 'Name',
   'userManagement.table.email': 'Email',
@@ -16,6 +19,9 @@ export const UserManagementEN = {
   'userManagement.table.action.edit': 'Edit',
   'userManagement.table.action.delete': 'Delete',
   'userManagement.table.action.inactivate': 'Inactivate',
+  'userManagement.table.action.reject': 'Reject',
+  'userManagement.button.rejectrequest': 'Reject Request',
+  'userManagement.table.action.view': 'VIEW',
  
   'userManagement.filter.label': 'Filter By',
   'userManagement.table.warning': 'Warning',

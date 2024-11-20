@@ -422,5 +422,113 @@ export const USER_DATA = [
     date_updated: "07/13/2024"
   }
 ];
+
+
+export const PENDING_USER_DATA = [
+  {
+    id: 1,
+    name: {
+      firstName: "John",
+      middleName: "",
+      lastName: "Smithtest"
+    },
+    address: {
+      address1: "",
+      address2: "",
+      city: "",
+      state: "",
+      zip: "123456"
+    },
+    contact: {
+      e_mail: "john.smith@companydomain.com",
+      phone: "",
+      fax: ""
+    },
+    permissions : [
+      "ADD_USER"
+    ],
+    role: {
+      id: 0,
+      name: "",
+      description: "string",
+      permissions: [
+        "ADD_USER"
+      ]
+    },
+    "isActive": false,
+    date_added: "07/17/2024",
+    date_updated: "07/17/2024"
+  },
+  {
+    id: 2,
+    name: {
+      firstName: "Johns",
+      middleName: "",
+      lastName: "Smitest"
+    },
+    address: {
+      address1: "",
+      address2: "",
+      city: "",
+      state: "",
+      zip: "123456"
+    },
+    contact: {
+      e_mail: "john.smith@companydomain.com",
+      phone: "",
+      fax: ""
+    },
+    permissions : [
+      "ADD_USER"
+    ],
+    role: {
+      id: 0,
+      name: "",
+      description: "string",
+      permissions: [
+        "ADD_USER"
+      ]
+    },
+    "isActive": false,
+    date_added: "07/17/2024",
+    date_updated: "07/17/2024"
+  },
+ 
+  {
+    id: 12,
+    name: {
+      firstName: "Jerome",
+      middleName: "",
+      lastName: "Bell"
+    },
+    address: {
+      address1: "",
+      address2: "",
+      city: "",
+      state: "",
+      zip: ""
+    },
+    contact: {
+      e_mail: "jerome.bell@companydomain.com",
+      phone: "",
+      fax: ""
+    },
+    permissions : [
+      "ADD_USER"
+    ],
+    role: {
+      id: 0,
+      name: "",
+      description: "string",
+      permissions: [
+        "ADD_USER"
+      ]
+    },
+    "isActive": false,
+    date_added: "07/17/2024",
+    date_updated: "07/13/2024"
+  }
+];
+
  
 

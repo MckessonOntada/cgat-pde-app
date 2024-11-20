@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CustomDataTable } from '@mckesson/mcp-component-library';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const DataTable = ({
   type = 'normal',
@@ -10,13 +11,14 @@ const DataTable = ({
   selectableRows = false,
   pagination = true
 }) => {
+  const { t } = useTranslate();
   const totalRecords = rows.length;
   const recordsPerPage = 8;
   const totalPageCount = Math.ceil(totalRecords / recordsPerPage); 
   const [currentPage, setCurrentPage] = useState(1);
   const [currentData, setCurrentData] = useState([]); 
-  const paginationRecordsPerPageMessage = `per page`;
-  const paginationTotalRecordsMessage = `results`;
+  const paginationRecordsPerPageMessage =t('userManagement.results');
+  const paginationTotalRecordsMessage = t('userManagement.results');
 
   useEffect(() => {
     const indexOfLastRecord = currentPage * recordsPerPage;

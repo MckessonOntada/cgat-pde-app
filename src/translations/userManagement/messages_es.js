@@ -15,6 +15,9 @@ export const UserManagementES = {
   'userManagement.table.action.edit': 'S_Edit',
   'userManagement.table.action.delete': 'S_Delete',
   'userManagement.table.action.inactivate': 'S_Inactivate',
+  'userManagement.table.action.reject': 'S_Reject',
+  'userManagement.button.rejectrequest': 'S_Reject Request',
+  'userManagement.table.action.view': 'S_VIEW',
  
 
   'userManagement.filter.label': 'S_Filter By',

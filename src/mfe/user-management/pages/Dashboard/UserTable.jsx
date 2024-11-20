@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from '@src/components/dataTable/DataTable';
 import { Badge } from '@mckesson/mcp-component-library';
-import { USER_DATA } from '../../mockData/UsersData';
+import { USER_DATA,PENDING_USER_DATA } from '../../mockData/UsersData';
 import './index.scss';
 import Actions from './Actions';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -19,17 +19,22 @@ function getbgColorOnRole(Role) {
   }
 }
 
-function UserTable() {
+function UserTable({
+  isPendingRequest = false,
+  selectableRows = false,
+  omitColumns = []
+}) {
   const { t } = useTranslate();
-  const [data] = useState(USER_DATA);
-  const [filteredData, setFilteredData] = useState(USER_DATA);
+  const datatoLoad = isPendingRequest ? PENDING_USER_DATA : USER_DATA;
+  const [data] = useState(datatoLoad);
+  const [filteredData, setFilteredData] = useState(datatoLoad);
   const [sortColumn, setSortColumn] = useState('date_updated');
-  const [sortDirection, setSortDirection] = useState('desc');
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [sortDirection, setSortDirection] = useState('desc'); 
+  const [pendingData] = useState(PENDING_USER_DATA);
 
 
   useEffect(() => {
-    const sortedData = [...USER_DATA].sort((a, b) => {
+    const sortedData = [...datatoLoad].sort((a, b) => {
       if (sortDirection === 'asc') {
         return a[sortColumn] > b[sortColumn] ? 1 : -1;
       } else {
@@ -57,68 +62,87 @@ function UserTable() {
   const columns = [
     { name: 'ID', selector: 'id', sortable: true, omit: true },
     {
+      id: 'name',
       name: t('userManagement.table.name'),
       selector: row => `${row.name.firstName} ${row.name.lastName}`,
       sortable: true,
       wrap: true,
-      // width:'20%',
       cell: (props) => (
-        <div className="cellEllipse"> 
-        <Link
-          to={`${props.id}`}  // dynamically constructs the URL with userId
-          style={{ color: '#007bff', fontWeight: '600' }}
-        >
-          {`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`}
-        </Link>
-      </div>
+        <div className="cellEllipse">
+          {isPendingRequest ? (
+          `${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`
+          ) : (
+          <Link
+            to={`${props.id}`} // dynamically constructs the URL with userId
+            style={{ color: '#007bff', fontWeight: '600' }}
+          >
+            {`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`}
+          </Link>
+          )}
+        </div>
       )
     },
     {
+      id: 'email',
       name: t('userManagement.table.email'),
-      selector:  row =>row.contact.e_mail,
+      selector: row => row.contact.e_mail,
       sortable: true,
       wrap: true,
       width: '20%',
       cell: (props) => <div className="cellEllipse">{props.contact.e_mail}</div>
     },
     {
-      name: t('userManagement.table.dateAdded'),
-      selector: 'date_added',
-      sortable: true, 
-      wrap: true,
-      cell: (props) => <div>{props.date_added}</div>
-    },
-    {
+      id: 'role',
       name: t('userManagement.table.role'),
-      selector:  row =>row.contact.role.name,
-      sortable: true, 
+      selector: row => row.contact.role.name || '',
+      sortable: true,
       center: true,
-      wrap: true, 
+      wrap: true,
       cell: props => <span> <Badge text={props.role.name} type={getbgColorOnRole(props.role.name)} /></span>,
+      omit: omitColumns.includes('role')
     },
-    
     {
+      id: 'status',
       name: t('userManagement.table.status'),
       selector: 'status',
       sortable: true,
       center: true,
       cell: (props) => (
         <div>
-          {props.isActive ? (
+          {isPendingRequest ? (
+            <Badge text="Pending" type="info-default" />
+          ) : props.isActive ? (
             <Badge text="Active" type="success" />
           ) : (
             <Badge text="Inactive" type="info-default" />
           )}
         </div>
       )
-    } 
+    },
+    {
+      id: 'dataAdded',
+      name: t('userManagement.table.dateAdded'),
+      selector: 'date_added',
+      sortable: true,
+      wrap: true,
+      cell: (props) => <div>{props.date_added}</div>
+    },
+    {
+      id: 'action',
+      center: true,
+      name: t('userManagement.table.action'),
+      cell: (row) =>
+        isPendingRequest ? (
+          <Actions row={row} showEditButton={true} />
+        ) : (
+          <Actions row={row} showViewButton={true} />
+        )
+    }
   ];
 
   return (
-    
     <div>
-    
-    <DataTable columns={columns} rows={filteredData} handleSortClick={handleSortClick} selectableRows={true} responsive    />
+      <DataTable columns={columns} rows={filteredData} handleSortClick={handleSortClick} selectableRows={selectableRows} responsive />
     </div>
   );
 }

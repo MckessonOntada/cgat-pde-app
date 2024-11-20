@@ -1,46 +1,48 @@
-import { DropdownMenu } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import React, { useState, useEffect } from 'react';
 import './index.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as VerticalIcon } from '@src/assets/image/Vertical.svg';
+import { ReactComponent as View } from '@src/assets/image/view.svg';
+import { ReactComponent as Edit } from '@src/assets/image/edit_pencil.svg';
 import { debugIds, ID } from '@src/common/constants/id';
 import { useNavigate } from 'react-router-dom';
+import { PATHS } from '../../routes/constants';
 
-export default function Actions({ status, row }) {
+export default function Actions({ row, showEditButton, showViewButton }) {
   const { t } = useTranslate();
-  const [isChecked, setIsChecked] = useState(status === 'ACTIVE');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    setIsChecked(status === 'ACTIVE');
-  }, [status]);
-
- 
-
   const handleEdit = (userId) => {
-    navigate(`edit-user/${userId}`);
+    navigate(`../${PATHS.editUser}/${userId}`,  { state: { isPending: true } })
+    //navigate(`edit-user/${userId}`);
   };
-  const handleDelete = () => {
-    alert('Handle Delete');
+
+  const handleView = (userId) => {
+    const path = PATHS.userDetail.replace(':userId', userId);
+    navigate(path);
   };
+
+  const handleReject = () => {
+    alert('Handle Reject');
+  };
+
   const handleOtherAction = () => {
     alert('Handle Other Action');
   };
 
   return (
-    <div className="actionsBox icon-align " id={debugIds(ID.ACTION_ICON, ID.CONTAINER)}>
-      <DropdownMenu
+    <div className="actionsBox" id={debugIds(ID.ACTION_ICON, ID.CONTAINER)}>
+      {/* <DropdownMenu
         anchorEl={<VerticalIcon />}
         handleSelect={(selectedItem) => {
           if (selectedItem.value === 'Edit') {
             handleEdit(row.id);
           }
-          if (selectedItem.value === 'Delete') {
-            handleDelete();
+          if (selectedItem.value === 'Reject') {
+            handleReject();
           }
-          if (selectedItem.value === 'Inactivate') {
-            handleOtherAction();
-          }
+
         }}
         options={[
           {
@@ -48,16 +50,31 @@ export default function Actions({ status, row }) {
             value: 'Edit'
           },
           {
-            label: t('userManagement.table.action.delete'),
-            value: 'Delete'
-          },
-          {
-            label: t('userManagement.table.action.edit'),
-            value: 'Inactivate'
+            label: t('userManagement.table.action.reject'),
+            value: 'Reject'
           }
         ]}
-      />
- 
+      /> */}
+      {showViewButton && (
+        <Button
+          Icon={View}
+          variant="tertiary"
+          size="md"
+          className="button-icon"
+          onClick={() => handleView(row.id)}>
+          {t('userManagement.table.action.view')}
+        </Button>
+      )}
+      {showEditButton && (
+        <Button 
+          Icon={Edit}
+          variant="tertiary"
+          size="md"
+          className="button-icon"
+          onClick={() => handleEdit(row.id)}>
+          {t('userManagement.table.action.edit')}
+        </Button>
+      )}
     </div>
   );
 }

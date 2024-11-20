@@ -1,21 +1,21 @@
-import React, { useState,useEffect } from 'react';
-import { TabList,Alert, Button } from '@mckesson/mcp-component-library';
+import React, { useState, useEffect } from 'react';
+import { TabList, Alert, Button } from '@mckesson/mcp-component-library';
 import './index.scss';
 import Filters from './Filters';
 import { PATHS } from '../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import { UserProvider } from '../../context/PageContext';
-import UserTable from './UserTable'; 
+import UserTable from './UserTable';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
 import { debugIds, ID } from '@src/common/constants/id';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import { ReactComponent as upload_bottom } from '@src/assets/image/upload_bottom.svg';
-import {  useLocation,useNavigate} from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ModuleHeader from '../../../../components/module-header';
 
 export default function Dashboard() {
   const { t } = useTranslate();
-  
+
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('ACTIVE USERS');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
@@ -37,9 +37,9 @@ export default function Dashboard() {
   }, [isSuccess, location.pathname, location.state, navigate]);
 
   const handleAlertClose = () => {
-    setIsAlertVisible(false); 
+    setIsAlertVisible(false);
     navigate(location.pathname, { replace: true, state: { ...location.state, isSuccess: false } });
-  }; 
+  };
 
   const handleTabClick = (tab) => {
     console.log('tab', tab);
@@ -90,18 +90,18 @@ export default function Dashboard() {
         heading={<p className='primaryHeading'>{t('userManagement.header.label')}</p>}
         controls={
           <div className="controls">
-            <Button Icon={add_circle_bold} className="button-icon"  variant="primary" size="md" onClick={() => navigate(`${PATHS.createUser}`)}>Add User</Button>
-            <Button Icon={upload_bottom} className="button-icon"variant="primary" size="md" >Upload Users</Button>
+            <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createUser}`)}>Add User</Button>
+            <Button Icon={upload_bottom} className="button-icon" variant="primary" size="md" >Upload Users</Button>
           </div>
-        } 
+        }
       />
-      {isSuccess && isAlertVisible  &&(
-      <Alert
-        description="Organization User has been successfully created."
-        onClose={handleAlertClose}
-        type="success" 
-        duration={10000}
-      />)}
+      {isSuccess && isAlertVisible && (
+        <Alert
+          description="Organization User has been successfully created."
+          onClose={handleAlertClose}
+          type="success"
+          duration={10000}
+        />)}
       <UserProvider>
         <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
           <Filters showRoleDropdown={true} showStatusDropdown={true} />
@@ -115,8 +115,8 @@ export default function Dashboard() {
             useAsButton={true}
           />
           <div className="userList">
-          {activeTab === 'ACTIVE USERS' && <UserTable />}
-          {activeTab === 'PENDING REQUESTS' && <UserTable />}
+            {activeTab === 'ACTIVE USERS' && <UserTable selectableRows={true} />}
+            {activeTab === 'PENDING REQUESTS' && <UserTable selectableRows={false} omitColumns={['role']} isPendingRequest={true} />}
           </div>
         </div>
       </UserProvider>
