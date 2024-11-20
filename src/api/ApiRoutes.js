@@ -1,7 +1,7 @@
 import { MAIN_BASE_URL, USERMANAGEMENT_SERVICE_BASE_URL } from '../config/AppConfig';
 
 const constructMainAppUrl = (uri) => `${MAIN_BASE_URL}${uri}`;
-const constructUserManagementServiceUrl = (uri) => `${USERMANAGEMENT_SERVICE_BASE_URL}${uri}`;
+const constructUserManagementServiceUrl = (uri) => `${USERMANAGEMENT_SERVICE_BASE_URL}/api/${uri}`;
 
 const ApiRoutes = Object.freeze({
   GET_CGAT_PDE_OKTA_CONFIG: constructUserManagementServiceUrl('public/idpConfig'),
