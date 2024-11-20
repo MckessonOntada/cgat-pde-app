@@ -61,8 +61,8 @@ const UserPermissions = () => {
                 <MdOutlineKeyboardArrowLeft size="24px" />
                 <p>Back to Manage Users</p>
             </div>
-            <PageHeader
-                title={t('userManagement.create_user')}
+            <ModuleHeader
+                heading={<p className='primaryHeading'>{t('userManagement.create_user')}</p>}
             />
             <div className="stepper">
                 <Stepper
