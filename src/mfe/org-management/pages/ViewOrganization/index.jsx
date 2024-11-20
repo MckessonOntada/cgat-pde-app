@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import DetailsView from '../../components/DetailsView';
 import OrganizationData from '../../mockData/OrganizationData';
-import AccountsList from '../../../../components/Accounts/AccountsList';
+import AccountsList from '@src/components/Accounts/AccountsList';
 import SelectedAccountData from '../../mockData/SelectedAccountData';
 import './ViewOrg.scss';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
-import { RoutePaths } from '../../../../routes/constants';
+import { RoutePaths } from '@src/routes/constants';
 import { Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import { PATHS as InternalPaths } from '../../routes/constants';
+import ModuleHeader from '@src/components/module-header';
 
 export default function ViewOrganization() {
   // Call api to get Org data => /practices/{practiceId}
@@ -42,30 +43,40 @@ export default function ViewOrganization() {
         <p>{t('orgManagement.back.organization')}</p>
       </div>
 
-      <h2 className="heading">Organization Details</h2>
-
-      <DetailsView
-        data={OrganizationData}
-        onEditClick={() => navigate(`../${InternalPaths.editOrg}/${OrganizationData.id}`, {}, true)}
+      <ModuleHeader
+        heading={<p className="primaryHeading">{t('orgManagement.create_org.org-details')}</p>}
       />
 
-      <div className="link-acc-box">
-        <h2 className="heading">
-          {addNewAccounts
-            ? 'Please select accounts to incorporate into the organization.'
-            : 'Linked Accounts'}
-        </h2>
-        {!addNewAccounts && (
-          <Button
-            Icon={add_circle_bold}
-            variant="secondary"
-            className="button-icon"
-            onClick={() => setAddNewAccounts(true)}
-            size={'md'}>
-            {t('orgManagement.add.account')}
-          </Button>
-        )}
+      <div className="details-view-container">
+        <DetailsView
+          data={OrganizationData}
+          onEditClick={() =>
+            navigate(`../${InternalPaths.editOrg}/${OrganizationData.id}`, {}, true)
+          }
+        />
       </div>
+
+      <ModuleHeader
+        heading={
+          <p className="primaryHeading">
+            {addNewAccounts ? t('orgManagement.select_account') : t('orgManagement.link')}
+          </p>
+        }
+        controls={
+          !addNewAccounts && (
+            <div className="controls">
+              <Button
+                Icon={add_circle_bold}
+                variant="secondary"
+                className="button-icon"
+                onClick={() => setAddNewAccounts(true)}
+                size={'md'}>
+                {t('orgManagement.add.account')}
+              </Button>
+            </div>
+          )
+        }
+      />
 
       <AccountsList
         data={SelectedAccountData}

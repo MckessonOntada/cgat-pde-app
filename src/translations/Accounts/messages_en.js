@@ -8,5 +8,8 @@ export const AccountEN = {
   'account.action': 'Action',
   'account.selected.account': 'Selected Account',
 
-  'account.btn.unlink': 'UNLINK'
+  'account.btn.unlink': 'UNLINK',
+
+  'file.drag.label': 'Drag your file(s) to start uploading',
+  'file.browse.logo': 'BROWSE LOGO'
 };

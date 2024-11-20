@@ -27,7 +27,7 @@ export default function AccountsList({
         id: 'id',
         name: t('account.no'),
         cell: (row) => (
-          <Link to={row.url} className="org-name">
+          <Link to={row.url} className="account-ID">
             {row.dcId}
           </Link>
         ),
