@@ -4,9 +4,11 @@ import { CustomDataTable } from '@mckesson/mcp-component-library';
 import { useOrders } from '../../context';
 import { useTranslate } from '@src/translations/useTranslation';
 import { createColumns } from './Columns';
+import { useNavigate } from 'react-router-dom';
 
 const OrderDataTable = ({ type = 'normal', pagination = true }) => {
     const { t } = useTranslate();
+    const navigate = useNavigate();
     const {
         dataState: data,
         pageConfig,
@@ -19,7 +21,7 @@ const OrderDataTable = ({ type = 'normal', pagination = true }) => {
         direction: null,
     })
 
-    const columns = createColumns(t);
+    const columns = createColumns(t, navigate);
 
     useEffect(() => {
         if (data && Array.isArray(data)) {
