@@ -74,10 +74,6 @@ const OrderIndex = () => {
                     </div>
                 </div>
             </div>
-            <div className="controls">
-                <Button size="md" variant="secondary">{t('captions.btnCancel')}</Button>
-                <Button size="md">{t('captions.btnNext')}</Button>
-            </div>
         </div>
     );
 };

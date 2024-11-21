@@ -5,6 +5,8 @@ import { useOrders } from '../../context';
 import { useTranslate } from '@src/translations/useTranslation';
 import { createColumns } from './Columns';
 import { useNavigate } from 'react-router-dom';
+import EmptyDataTable from '@src/components/EmptyTable';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 
 const OrderDataTable = ({ type = 'normal', pagination = true }) => {
     const { t } = useTranslate();
@@ -72,7 +74,8 @@ const OrderDataTable = ({ type = 'normal', pagination = true }) => {
 
     return (
         <CustomDataTable
-            type={type}
+            id="order-management-order-listing"
+            type={'normal'}
             columns={columns}
             data={batch}
             handleChangePage={handleOnPageChange}
@@ -80,9 +83,18 @@ const OrderDataTable = ({ type = 'normal', pagination = true }) => {
             pagination={pagination}
             currentPage={currentPage}
             totalPageCount={pageConfig.pages}
-            totalRecords={pageConfig.total}
+            totalRocords={pageConfig.total}
             recordsPerPage={pageSize}
             aria-label={t('table.ariaLabel.orderList')}
+            paginationRecordsPerPageMessage={'per page'}
+            paginationTotalRecorsMessage={'result'}
+            noDataComponent={
+                <EmptyDataTable
+                  image={EmptyDataImage}
+                  heading={t('orgManagement.add.label')}
+                  description={t('orgManagement.empty_table.description')}
+                />
+              }
         />
     );
 };
