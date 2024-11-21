@@ -7,6 +7,7 @@ export const MessageEn = {
     "headings.shippingAddress": "Shipping Address",
     "headings.selectAccountToUpdate": "Select the account you want to update",
     "headings.orderSubmitted": "Order Submitted!",
+    "headings.addShippingAddress": "Add Shipping Address",
     "captions.status": "Status",
     "captions.clearFilters": "Clear Filters",
     "controls.createNewOrder": "Create New Order",
@@ -19,6 +20,7 @@ export const MessageEn = {
     "captions.btnSaveAndContinue": "Save and Continue",
     "captions.btnBackToManageOrder": "Back to Manage Order",
     "captions.btnEdit": "Edit",
+    "captions.btnInventorySelection": "Inventory Selections",
     "labels.accountSelection": "Account Selection",
     "labels.customerIndicator": "Customer Indicator",
     "labels.salesOrganization": "Sales Organization",
@@ -69,7 +71,7 @@ export const MessageEn = {
     "labels.variantDescription": "Variant Description",
     "labels.actions.view": "View",
     "labels.actions.edit": "Edit",
-
+    "labels.therapyDescription": "Therapy Description",
     "labels.accountDetails": "Account Details",
     "controls.placeholders.autoSearch": "Search by Order ID, Patient name, Account",
     "controls.ariaLabels.searchOrders": "Search Orders",
@@ -109,10 +111,15 @@ export const MessageEn = {
     "table.columns.captions.cgatTherapyType": "CGAT Therapy Type",
     "table.columns.captions.productLevelPricing": "Product Level Pricing",
     "table.columns.captions.minimumOrderQuantity": "Minimum Order Quantity",
+    "table.columns.captions.shippingAddress": "Shipping Address",
+    "table.columns.captions.shippingAccountNumber": "Shipping Account Number",
+    "table.columns.captions.shippingAccountName": "Shipping Account Name",
     "table.badge.yes": "Yes",
     "table.badge.no": "No",
 
 
     "messages.formNotFound": "Form Not Found",
     "messages.orderSuccessApprovalPending": "Your order has been submitted successfully and is now pending for approval.",
+    "messages.accountSelect": "Please select the account to buy the therapy for",
+    "messages.selectAnAccountForShippingAddress": "Select an account to view the list of shipping addresses",
 }

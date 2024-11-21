@@ -7,6 +7,7 @@ export const MessageEn = {
     "headings.shippingAddress": "[es]Shipping Address",
     "headings.selectAccountToUpdate": "[es]Select the account you want to update",
     "headings.orderSubmitted": "[es]Order Submitted!",
+    "headings.addShippingAddress": "[es]Add Shipping Address",
     "captions.status": "[es]Status",
     "captions.clearFilters": "[es]Clear Filters",
     "controls.createNewOrder": "[es]Create New Order",
@@ -19,6 +20,7 @@ export const MessageEn = {
     "captions.btnSaveAndContinue": "[es]Save and Continue",
     "captions.btnBackToManageOrder": "[es]Back to Manage Order",
     "captions.btnEdit": "[es]Edit",
+    "captions.btnInventorySelection": "[es]Inventory Selections",
     "labels.accountSelection": "[es]Account Selection",
     "labels.customerIndicator": "[es]Customer Indicator",
     "labels.salesOrganization": "[es]Sales Organization",
@@ -69,7 +71,7 @@ export const MessageEn = {
     "labels.variantDescription": "[es]Variant Description",
     "labels.actions.view": "[es]View",
     "labels.actions.edit": "[es]Edit",
-
+    "labels.therapyDescription": "[es]Therapy Description",
     "labels.accountDetails": "[es]Account Details",
     "controls.placeholders.autoSearch": "[es]Search by Order ID, Patient name, Account",
     "controls.ariaLabels.searchOrders": "[es]Search Orders",
@@ -109,10 +111,15 @@ export const MessageEn = {
     "table.columns.captions.cgatTherapyType": "[es]CGAT Therapy Type",
     "table.columns.captions.productLevelPricing": "[es]Product Level Pricing",
     "table.columns.captions.minimumOrderQuantity": "[es]Minimum Order Quantity",
+    "table.columns.captions.shippingAddress": "[es]Shipping Address",
+    "table.columns.captions.shippingAccountNumber": "[es]Shipping Account Number",
+    "table.columns.captions.shippingAccountName": "[es]Shipping Account Name",
     "table.badge.yes": "[es]Yes",
     "table.badge.no": "[es]No",
 
 
     "messages.formNotFound": "[es]Form Not Found",
     "messages.orderSuccessApprovalPending": "[es]Your order has been submitted successfully and is now pending for approval.",
+    "messages.accountSelect": "[es]Please select the account to buy the therapy for",
+    "messages.selectAnAccountForShippingAddress": "[es]Select an account to view the list of shipping addresses",
 }
