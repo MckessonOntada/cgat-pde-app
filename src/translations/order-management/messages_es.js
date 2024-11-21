@@ -89,6 +89,26 @@ export const MessageEn = {
     "table.actions.reviewOrder": "[es]Review Order",
     "table.actions.resumeOrder": "[es]Resume Order",
     "table.actions.viewDetail": "[es]View Detail",
+
+    "table.columns.captions.therapyDescription": "[es]Therapy Description",
+    "table.columns.captions.therapyNumber": "[es]Therapy Number",
+    "table.columns.captions.nationalDrugCode": "[es]National Drug Code",
+    "table.columns.captions.strength": "[es]Strength",
+    "table.columns.captions.dosage": "[es]Dosage",
+    "table.columns.captions.sellingUnitCode": "[es]Selling Unit Code",
+    "table.columns.captions.vendorName": "[es]Vendor Name",
+    "table.columns.captions.upcCode": "[es]UPC Code",
+    "table.columns.captions.dropshipIndicator": "[es]Dropship Indicator",
+    "table.columns.captions.baseUnitsOfMeasure": "[es]Base Units of Measure",
+    "table.columns.captions.cgatIdentifier": "[es]CGAT Identifier",
+    "table.columns.captions.salesOrganization": "[es]Sales Organization",
+    "table.columns.captions.cgatTherapyType": "[es]CGAT Therapy Type",
+    "table.columns.captions.productLevelPricing": "[es]Product Level Pricing",
+    "table.columns.captions.minimumOrderQuantity": "[es]Minimum Order Quantity",
+    "table.badge.yes": "[es]Yes",
+    "table.badge.no": "[es]No",
+
+
     "messages.formNotFound": "[es]Form Not Found",
     "messages.orderSuccessApprovalPending": "[es]Your order has been submitted successfully and is now pending for approval.",
 }

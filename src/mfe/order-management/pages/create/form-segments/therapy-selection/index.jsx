@@ -6,6 +6,8 @@ import FloatingDrawer from '@src/components/floating-drawer';
 import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useNavigate } from 'react-router-dom';
+import TherapyDataTable from './TherapyDataTable';
+import { TherapyProvider } from '../../../../context/TherapyContext';
 
 const DetailField = ({ label, value, className }) => (
     <div className={className}>
@@ -25,20 +27,12 @@ function TherapySelection(){
     return (
         <div className={styles.wrapper}>
             <div className="MCP-panel-container">
-                <div className={styles.row}>
-                    <div className={styles.col}>
-                        <p className={'fieldName'}>{t('labels.orderByAccountNumber')}</p>
-                        <p className={'fieldValue'}></p>
-                    </div>
-                    <div className={styles.col}>
-                        <p className={'fieldName'}>{t('labels.shipToAccountNumber')}</p>
-                        <p className={'fieldValue'}></p>
-                    </div>
-                </div>
-            </div>
-            <div className="MCP-panel-container">
-                    <p className={styles.title}>{t('labels.therapySelection')}</p>
-                    <div className="MCP-panel-container"></div>
+                    <ModuleHeader
+                        heading={<p className='secondaryHeading'>{t('labels.therapySelection')}</p>}
+                    />
+                    <TherapyProvider>
+                        <TherapyDataTable />
+                    </TherapyProvider>
             </div>
             <ModuleHeader
                 controls={

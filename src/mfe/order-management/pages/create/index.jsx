@@ -11,14 +11,14 @@ import { useTranslate } from '@src/translations/useTranslation';
 
 const formsConfig = (t) => [
     {
-        name: 'accountSelection',
-        label: t('labels.accountSelection'),
-        form: <AccountSelection />
-    },
-    {
         name: 'therapySelection',
         label: t('labels.therapySelection'),
         form: <TherapySelection />
+    },
+    {
+        name: 'accountSelection',
+        label: t('labels.accountSelection'),
+        form: <AccountSelection />
     },
     {
         name: 'patientDetails',

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { CustomDataTable } from '@mckesson/mcp-component-library';
-import { useOrders } from '../../context';
+import { useOrders } from '../../context/OrderContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { createColumns } from './Columns';
 import { useNavigate } from 'react-router-dom';

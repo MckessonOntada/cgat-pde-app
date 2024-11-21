@@ -5,7 +5,7 @@ import { AutoSuggestSearch, Button, Divider, SearchableDropdown } from '@mckesso
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as ArrowRight } from '@src/assets/image/arrow_right.svg';
 import { ReactComponent as ArrowDown } from '@src/assets/image/arrow_down.svg';
-import { useOrders } from '../../context';
+import { useOrders } from '../../context/OrderContext';
 
 const ROLES = [
     { label: "Admin", value: "Admin" },

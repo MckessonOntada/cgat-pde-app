@@ -89,6 +89,26 @@ export const MessageEn = {
     "table.actions.reviewOrder": "Review Order",
     "table.actions.resumeOrder": "Resume Order",
     "table.actions.viewDetail": "View Detail",
+
+    "table.columns.captions.therapyDescription": "Therapy Description",
+    "table.columns.captions.therapyNumber": "Therapy Number",
+    "table.columns.captions.nationalDrugCode": "National Drug Code",
+    "table.columns.captions.strength": "Strength",
+    "table.columns.captions.dosage": "Dosage",
+    "table.columns.captions.sellingUnitCode": "Selling Unit Code",
+    "table.columns.captions.vendorName": "Vendor Name",
+    "table.columns.captions.upcCode": "UPC Code",
+    "table.columns.captions.dropshipIndicator": "Dropship Indicator",
+    "table.columns.captions.baseUnitsOfMeasure": "Base Units of Measure",
+    "table.columns.captions.cgatIdentifier": "CGAT Identifier",
+    "table.columns.captions.salesOrganization": "Sales Organization",
+    "table.columns.captions.cgatTherapyType": "CGAT Therapy Type",
+    "table.columns.captions.productLevelPricing": "Product Level Pricing",
+    "table.columns.captions.minimumOrderQuantity": "Minimum Order Quantity",
+    "table.badge.yes": "Yes",
+    "table.badge.no": "No",
+
+
     "messages.formNotFound": "Form Not Found",
     "messages.orderSuccessApprovalPending": "Your order has been submitted successfully and is now pending for approval.",
 }
