@@ -2,25 +2,40 @@ import React, { useState } from 'react';
 import { CustomDataTable, Button, Badge, Loader } from '@mckesson/mcp-component-library';
 import { useOrg } from '../../context/PageContext';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Actions from './Actions';
 import { PATHS } from '../../routes/constants';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
+import useSessionFeatures from '@src/common/hooks/useSessionFeatures';
 
 const OrgList = () => {
   const { isLoading } = useOrg();
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState([]);
+  const navigate = useNavigate();
+
+  const {
+    organization: { setOrganization }
+  } = useSessionFeatures();
+
+  const handleClick = (org) => {
+    setOrganization(org);
+    navigate(PATHS.dashboard);
+  };
 
   const columns = [
     {
       id: 'name',
       name: t('orgManagement.table.name'),
       cell: (row) => (
-        <Link to={PATHS.viewOrg.replace(':orgId', row.id)} className="org-name">
+        <div
+          onClick={() => {
+            handleClick(row);
+          }}
+          className="org-name">
           {row.name}
-        </Link>
+        </div>
       ),
       wrap: true,
       width: '25%'
