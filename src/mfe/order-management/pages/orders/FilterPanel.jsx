@@ -58,7 +58,7 @@ const FilterPanel = ({ onApplyFilters }) => {
                             value={filterState.searchQuery}
                             onChangeInput={handleOnQueryChange}
                             outline
-                            placeholder={t('controls.placeholders.autoSearch')}
+                            placeHolder={t('controls.placeholders.autoSearch')}
                             aria-label={t('controls.ariaLabels.searchOrders')}
                         />
                     </div>
