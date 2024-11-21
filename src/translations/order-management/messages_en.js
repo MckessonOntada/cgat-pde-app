@@ -63,6 +63,8 @@ export const MessageEn = {
     "labels.selectVariant": "Select Variant",
     "labels.poNo": "PO No",
     "labels.variantDescription": "Variant Description",
+    "labels.actions.view": "View",
+    "labels.actions.edit": "Edit",
 
     "labels.accountDetails": "Account Details",
     "controls.placeholders.autoSearch": "Search by Order ID, Patient name, Account",

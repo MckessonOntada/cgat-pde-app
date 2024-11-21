@@ -127,7 +127,7 @@ export const createColumns = (t, navigate) => [
                     }
                 }}
                 options={props.actions.split('/').map(action => ({
-                    label: action,
+                    label: t(`labels.actions.${action}`),
                     value: action.toLowerCase()
                 }))}
                 aria-label="Profile options"
