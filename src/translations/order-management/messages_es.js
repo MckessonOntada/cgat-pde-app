@@ -22,6 +22,8 @@ export const MessageEn = {
     "labels.accountSelection": "[es]Account Selection",
     "labels.customerIndicator": "[es]Customer Indicator",
     "labels.salesOrganization": "[es]Sales Organization",
+    "labels.results": "[es]results",
+    "labels.perPage": "[es]Per page",
     "labels.needAssistanceSelectingAccount": "[es]Need assistance with selecting an account?",
     "labels.orderThroughBelowPrograms": "[es]Are you here to order through any of the below programs?",
     "labels.therapySelection": "[es]Therapy Selection",
