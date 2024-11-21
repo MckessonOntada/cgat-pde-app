@@ -27,12 +27,24 @@ const getLinkByStatus = ({ status, id }, t) => {
 
 export const createColumns = (t) => [
     {
+        id: 'id',
+        name: t('table.columns.captions.orderId'),
+        selector: () => {},
+        sortable: true,
+        width: '10%',
+        cell: (props) => (
+            <span className={'MCP-table-cell'} aria-label={t('table.columns.captions.orderId')}>
+                {props.id}
+            </span>
+        ),
+    },
+    {
         id: 'patient',
-        name: t('table.columns.captions.patient'),
+        name: t('table.columns.captions.patientName'),
         selector: () => {},
         sortable: true,
         cell: (props) => (
-            <span className={'MCP-table-cell'} aria-label={t('table.columns.captions.patient')}>
+            <span className={'MCP-table-cell'} aria-label={t('table.columns.captions.patientName')}>
                 {props.patient}
             </span>
         ),
@@ -41,7 +53,7 @@ export const createColumns = (t) => [
         id: 'therapy',
         name: t('table.columns.captions.therapy'),
         selector: () => {},
-        sortable: false,
+        sortable: true,
         cell: (props) => (
             <span className={'MCP-table-cell'} aria-label={t('table.columns.captions.therapy')}>
                 {props.therapy}
@@ -52,7 +64,7 @@ export const createColumns = (t) => [
         id: 'author',
         name: t('table.columns.captions.author'),
         selector: () => {},
-        sortable: false,
+        sortable: true,
         cell: (props) => (
             <span className={'MCP-table-cell'} aria-label={t('table.columns.captions.author')}>
                 {props.author}
@@ -66,7 +78,7 @@ export const createColumns = (t) => [
         sortable: false,
         cell: (props) => (
             <span className={'MCP-table-cell'} aria-label={t('table.columns.captions.createdOn')}>
-                {props.createdOn}
+                {new Date(props.createdOn).toLocaleDateString()}
             </span>
         ),
     },
@@ -75,6 +87,7 @@ export const createColumns = (t) => [
         name: t('table.columns.captions.status'),
         selector: () => {},
         sortable: false,
+        center: true,
         cell: (props) => (
             <Badge
                 text={props.status}

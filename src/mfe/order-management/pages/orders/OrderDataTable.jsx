@@ -12,7 +12,12 @@ const OrderDataTable = ({ type = 'normal', pagination = true }) => {
         pageConfig,
         setPageConfig,
         setCurrentPage,
+        setOrdersData,
     } = useOrders();
+    const [sortConfig, setSortConfig] = React.useState({
+        columnName: null,
+        direction: null,
+    })
 
     const columns = createColumns(t);
 
@@ -25,10 +30,37 @@ const OrderDataTable = ({ type = 'normal', pagination = true }) => {
                 currentPage: 1,
             });
         }
-    }, [data, setPageConfig]);
+    }, [data]);
 
     const handleOnPageChange = (_event, pageIndex) => {
         setCurrentPage(pageIndex);
+    };
+
+    const handleOnSort = (selectedColumn, sortDirection, sortedRows) => {
+        const targetColumnName = selectedColumn.id;
+        console.log(selectedColumn, sortDirection, sortedRows);
+        const { columnName, direction } = sortConfig;
+
+        if (columnName && columnName === targetColumnName) {
+            setSortConfig(prevConfig => ({
+                ...prevConfig,
+                direction: prevConfig.direction === "asc" ? "desc" : "asc"
+            }));
+        } else {
+            setSortConfig({
+                columnName: targetColumnName,
+                direction: 'asc',
+            })
+        }
+
+        const sortedData = data.sort((a, b) => {
+            if (direction === 'asc') {
+                return a[targetColumnName] > b[targetColumnName] ? 1 : -1;
+            } else {
+                return a[targetColumnName] < b[targetColumnName] ? 1 : -1;
+            }
+        });
+        setOrdersData(sortedData);
     };
 
     const { currentPage, pageSize } = pageConfig;
@@ -42,6 +74,7 @@ const OrderDataTable = ({ type = 'normal', pagination = true }) => {
             columns={columns}
             data={batch}
             handleChangePage={handleOnPageChange}
+            onSortIconClick={handleOnSort}
             pagination={pagination}
             currentPage={currentPage}
             totalPageCount={pageConfig.pages}
