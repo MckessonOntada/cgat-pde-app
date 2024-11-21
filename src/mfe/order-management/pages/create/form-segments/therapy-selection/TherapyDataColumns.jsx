@@ -14,20 +14,19 @@ const getColorByStatus = (status) => {
 
 export const createColumns = (t, navigate) => [
     {
-        id: 'therapyDescription',
-        name: t('table.columns.captions.therapyDescription'),
+        id: 'id',
         selector: () => {},
-        width: "16%",
-        sortable: true,
+        width: "2%",
+        sortable: false,
         cell: (props) => (
-            <span className="MCP-table-cell" aria-label={t('table.columns.captions.therapyDescription')}>
+            <span className="MCP-table-cell">
                 <RadioGroup
                     direction="column"
                     id={`radio-button-order-therapy`}
                     items={[
                         {
                             isDisabled: false,
-                            label: props.therapyDescription,
+                            label: ' ',
                             value: props.id
                         }]}
                     onChangeValue={() => { }}
@@ -36,6 +35,18 @@ export const createColumns = (t, navigate) => [
                     radioBtnWidth="auto"
                     value="option1"
                 />
+            </span>
+        ),
+    },
+    {
+        id: 'therapyDescription',
+        name: t('table.columns.captions.therapyDescription'),
+        selector: () => {},
+        width: "16%",
+        sortable: true,
+        cell: (props) => (
+            <span className="MCP-table-cell" aria-label={t('table.columns.captions.therapyDescription')}>
+                <Link to={`?therapy-details=${props.id}`}>{props.therapyDescription}</Link>
             </span>
         ),
     },

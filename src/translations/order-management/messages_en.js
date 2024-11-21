@@ -20,6 +20,8 @@ export const MessageEn = {
     "captions.btnBackToManageOrder": "Back to Manage Order",
     "captions.btnEdit": "Edit",
     "labels.accountSelection": "Account Selection",
+    "labels.customerIndicator": "Customer Indicator",
+    "labels.salesOrganization": "Sales Organization",
     "labels.needAssistanceSelectingAccount": "Need assistance with selecting an account?",
     "labels.orderThroughBelowPrograms": "Are you here to order through any of the below programs?",
     "labels.therapySelection": "Therapy Selection",
