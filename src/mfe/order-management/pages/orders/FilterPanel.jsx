@@ -5,7 +5,7 @@ import { AutoSuggestSearch, Button, Divider, SearchableDropdown } from '@mckesso
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as ArrowRight } from '@src/assets/image/arrow_right.svg';
 import { ReactComponent as ArrowDown } from '@src/assets/image/arrow_down.svg';
-import { useOrders } from '../../context';
+import { useOrders } from '../../context/OrderContext';
 
 const ROLES = [
     { label: "Admin", value: "Admin" },
@@ -19,65 +19,83 @@ const STATUS = [
 ];
 
 const FilterPanel = ({ onApplyFilters }) => {
+    const { t } = useTranslate();
     const [isExpanded, setIsExpanded] = React.useState(false);
     const { filterState, applyFilters, clearFilters } = useOrders();
-    const { t } = useTranslate();
-
+    const [filters, setFilters] = React.useState({...filterState});
+    
     const handleOnExpandClick = () => {
         setIsExpanded((prevState) => !prevState);
     };
 
     const handleOnStatusChange = (value) => {
-        applyFilters({
-            status: value.filter((item) => item.isChecked),
-        });
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            status: value
+        }));
     };
 
     const handleOnQueryChange = (value) => {
-        applyFilters({ searchQuery: value });
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            searchQuery: value
+        }));
     };
+
+    const handleOnApplyFilters = () => {
+        applyFilters(filters)
+        setFilters({})
+    }
 
     return (
         <div className={styles.wrapper}>
             <div className={styles.filterPanel}>
                 <div className={styles.filterHeader}>
-                    <button
-                        className={styles.iconButton}
-                        onClick={handleOnExpandClick}
-                        aria-expanded={isExpanded}
-                        aria-label={isExpanded 
-                            ? t('controls.ariaLabels.collapseFilters') 
-                            : t('controls.ariaLabels.expandFilters')}
-                    >
-                        {isExpanded ? <ArrowDown /> : <ArrowRight />}
-                    </button>
-
-                    <div className="autoSuggestSearch-container">
-                        <AutoSuggestSearch
-                            label=" " 
-                            value={filterState.searchQuery}
-                            onChangeInput={handleOnQueryChange}
-                            outline
-                            placeholder={t('controls.placeholders.autoSearch')}
-                            aria-label={t('controls.ariaLabels.searchOrders')}
-                        />
+                    <div className={styles.flex}>
+                        <button
+                            className={styles.iconButton}
+                            onClick={handleOnExpandClick}
+                            aria-expanded={isExpanded}
+                            aria-label={isExpanded
+                                ? t('controls.ariaLabels.collapseFilters')
+                                : t('controls.ariaLabels.expandFilters')}
+                        >
+                            {isExpanded ? <ArrowDown /> : <ArrowRight />}
+                        </button>
+                        <div className="autoSuggestSearch-container">
+                            <AutoSuggestSearch
+                                label=" "
+                                value={filterState.searchQuery}
+                                onChangeInput={handleOnQueryChange}
+                                outline
+                                placeHolder={t('controls.placeholders.autoSearch')}
+                                aria-label={t('controls.ariaLabels.searchOrders')}
+                            />
+                        </div>
+                    </div>
+                    <div>
+                        <Button
+                            size="md"
+                            variant="secondary"
+                            onClick={handleOnApplyFilters}
+                        >Apply Filters</Button>
                     </div>
                 </div>
 
                 <ToggleUI in={isExpanded}>
                     <div className={styles.filterOptionsWrapper}>
                         <Divider />
-                        <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
+                        <div className={`${styles.customSearchableDropdown} grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3`}>
                             <SearchableDropdown
                                 id="order-management-status"
                                 isSuccess
-                                value={filterState.status}
+                                value={filters.status}
                                 label={t('captions.status')}
                                 name="status"
                                 isRequired={false}
                                 onChange={handleOnStatusChange}
                                 options={STATUS}
-                                clearAllSelectedValues={() => {}}
+                                clearAllSelectedValues={() => { }}
                                 aria-labelledby={t("controls.ariaLabels.orderManagementStatue")}
                             />
 

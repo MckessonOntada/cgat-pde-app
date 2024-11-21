@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Routes from './routes/Routes';
 import { Outlet } from 'react-router-dom';
-import { OrderProvider } from './context';
+import { OrderProvider } from './context/OrderContext';
 
 const OrderManagement = () => {
     return (

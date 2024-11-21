@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './TherapyDetails.module.scss';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
 import { useTranslate } from '@src/translations/useTranslation';
+import { useNavigate } from 'react-router-dom';
 
 const detailsList = [
   {
@@ -47,13 +48,13 @@ const detailsList = [
   }
 ];
 
-function TherapyDetails({ onClose }) {
+function TherapyDetails({therapyId, handleOnClose}) {
   const { t } = useTranslate();
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
         <h6>{t('labels.therapyDetails')}</h6>
-        <button onClick={onClose}>
+        <button onClick={handleOnClose}>
           <IconClose />
         </button>
       </div>

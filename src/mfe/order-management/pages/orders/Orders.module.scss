@@ -9,9 +9,15 @@
         .filterHeader {
             display: flex;
             flex-direction: row;
-            justify-content: flex-start;
+            justify-content: space-between;
             align-items: center;
-            gap: var(--spacing-04, 24px);
+            gap: var(--spacing-03);
+            .flex{
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                gap: var(--spacing-03);
+            }
         }
 
         .filterOptionsWrapper {
@@ -25,14 +31,14 @@
                 flex-direction: row;
                 gap: var(--spacing-04, 24px);
                 align-items: center;
-
-                .filterAction {
-                    @include mixins.respond(md) {
-                        display: flex;
-                        align-items: flex-end;
-                        padding-bottom: var(--spacing-02);
-                        gap: var(--spacing-04);
-                    }
+            }
+            .filterAction {
+                margin-top: var(--spacing-03);
+                @include mixins.respond(md) {
+                    display: flex;
+                    align-items: flex-end;
+                    padding-bottom: var(--spacing-02);
+                    gap: var(--spacing-04);
                 }
             }
 
@@ -40,5 +46,11 @@
                 border-bottom-color: var(--brand-color-grey-scale-cool-1, #BAC5CC);
             }
         }
+    }
+}
+
+.customSearchableDropdown{
+    >div{
+        position: static !important;
     }
 }

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Badge } from '@mckesson/mcp-component-library';
+import { Badge, DropdownMenu } from '@mckesson/mcp-component-library';
 import { StatusEnum } from './constants';
 import { routesConfig } from '../../routes/constants';
+import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 
 const getColorByStatus = (status) => {
     const statusColors = {
@@ -25,14 +26,26 @@ const getLinkByStatus = ({ status, id }, t) => {
     return <Link to={path}>{label}</Link>;
 };
 
-export const createColumns = (t) => [
+export const createColumns = (t, navigate) => [
+    {
+        id: 'id',
+        name: t('table.columns.captions.orderId'),
+        selector: () => { },
+        sortable: true,
+        width: '10%',
+        cell: (props) => (
+            <span className={'MCP-table-cell'} aria-label={t('table.columns.captions.orderId')}>
+                {props.id}
+            </span>
+        ),
+    },
     {
         id: 'patient',
-        name: t('table.columns.captions.patient'),
-        selector: () => {},
+        name: t('table.columns.captions.patientName'),
+        selector: () => { },
         sortable: true,
         cell: (props) => (
-            <span className={'MCP-table-cell'} aria-label={t('table.columns.captions.patient')}>
+            <span className={'MCP-table-cell'} aria-label={t('table.columns.captions.patientName')}>
                 {props.patient}
             </span>
         ),
@@ -40,8 +53,8 @@ export const createColumns = (t) => [
     {
         id: 'therapy',
         name: t('table.columns.captions.therapy'),
-        selector: () => {},
-        sortable: false,
+        selector: () => { },
+        sortable: true,
         cell: (props) => (
             <span className={'MCP-table-cell'} aria-label={t('table.columns.captions.therapy')}>
                 {props.therapy}
@@ -51,8 +64,8 @@ export const createColumns = (t) => [
     {
         id: 'author',
         name: t('table.columns.captions.author'),
-        selector: () => {},
-        sortable: false,
+        selector: () => { },
+        sortable: true,
         cell: (props) => (
             <span className={'MCP-table-cell'} aria-label={t('table.columns.captions.author')}>
                 {props.author}
@@ -62,19 +75,20 @@ export const createColumns = (t) => [
     {
         id: 'createdOn',
         name: t('table.columns.captions.createdOn'),
-        selector: () => {},
+        selector: () => { },
         sortable: false,
         cell: (props) => (
             <span className={'MCP-table-cell'} aria-label={t('table.columns.captions.createdOn')}>
-                {props.createdOn}
+                {new Date(props.createdOn).toLocaleDateString()}
             </span>
         ),
     },
     {
         id: 'status',
         name: t('table.columns.captions.status'),
-        selector: () => {},
+        selector: () => { },
         sortable: false,
+        center: true,
         cell: (props) => (
             <Badge
                 text={props.status}
@@ -85,7 +99,7 @@ export const createColumns = (t) => [
     {
         id: 'price',
         name: t('table.columns.captions.price'),
-        selector: () => {},
+        selector: () => { },
         sortable: false,
         cell: (props) => (
             <span className={'MCP-table-cell'} aria-label={t('table.columns.captions.price')}>
@@ -96,12 +110,29 @@ export const createColumns = (t) => [
     {
         id: 'actions',
         name: t('table.columns.captions.actions'),
-        selector: () => {},
+        selector: () => { },
         sortable: false,
-        cell: (props) => (
-            <span className={'MCP-table-cell'} aria-label={t('table.columns.captions.actions')}>
-                {getLinkByStatus(props, t)}
-            </span>
-        ),
+        cell: (props) =>
+        {
+            return (<DropdownMenu
+                anchorEl={<button>
+                    <IconEllipsis />
+                </button>}
+                handleSelect={({value}) => {
+                    alert(value)
+                    if(value === "view"){
+                        navigate(`view-order/${props.id}`);
+                    }if(value === "edit"){
+                        navigate(`edit-order/${props.id}`);
+                    }
+                }}
+                options={props.actions.split('/').map(action => ({
+                    label: t(`labels.actions.${action.toLowerCase()}`),
+                    value: action.toLowerCase()
+                }))}
+                aria-label="Profile options"
+            />)
+        }
+        ,
     },
 ];

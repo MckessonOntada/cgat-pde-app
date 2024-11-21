@@ -1,20 +1,29 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { CustomDataTable } from '@mckesson/mcp-component-library';
-import { useOrders } from '../../context';
+import { useOrders } from '../../context/OrderContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { createColumns } from './Columns';
+import { useNavigate } from 'react-router-dom';
+import EmptyDataTable from '@src/components/EmptyTable';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 
 const OrderDataTable = ({ type = 'normal', pagination = true }) => {
     const { t } = useTranslate();
+    const navigate = useNavigate();
     const {
         dataState: data,
         pageConfig,
         setPageConfig,
         setCurrentPage,
+        setOrdersData,
     } = useOrders();
+    const [sortConfig, setSortConfig] = React.useState({
+        columnName: null,
+        direction: null,
+    })
 
-    const columns = createColumns(t);
+    const columns = createColumns(t, navigate);
 
     useEffect(() => {
         if (data && Array.isArray(data)) {
@@ -25,10 +34,37 @@ const OrderDataTable = ({ type = 'normal', pagination = true }) => {
                 currentPage: 1,
             });
         }
-    }, [data, setPageConfig]);
+    }, [data]);
 
     const handleOnPageChange = (_event, pageIndex) => {
         setCurrentPage(pageIndex);
+    };
+
+    const handleOnSort = (selectedColumn, sortDirection, sortedRows) => {
+        const targetColumnName = selectedColumn.id;
+        console.log(selectedColumn, sortDirection, sortedRows);
+        const { columnName, direction } = sortConfig;
+
+        if (columnName && columnName === targetColumnName) {
+            setSortConfig(prevConfig => ({
+                ...prevConfig,
+                direction: prevConfig.direction === "asc" ? "desc" : "asc"
+            }));
+        } else {
+            setSortConfig({
+                columnName: targetColumnName,
+                direction: 'asc',
+            })
+        }
+
+        const sortedData = data.sort((a, b) => {
+            if (direction === 'asc') {
+                return a[targetColumnName] > b[targetColumnName] ? 1 : -1;
+            } else {
+                return a[targetColumnName] < b[targetColumnName] ? 1 : -1;
+            }
+        });
+        setOrdersData(sortedData);
     };
 
     const { currentPage, pageSize } = pageConfig;
@@ -38,16 +74,27 @@ const OrderDataTable = ({ type = 'normal', pagination = true }) => {
 
     return (
         <CustomDataTable
-            type={type}
+            id="order-management-order-listing"
+            type={'normal'}
             columns={columns}
             data={batch}
             handleChangePage={handleOnPageChange}
+            onSortIconClick={handleOnSort}
             pagination={pagination}
             currentPage={currentPage}
             totalPageCount={pageConfig.pages}
-            totalRecords={pageConfig.total}
+            totalRocords={pageConfig.total}
             recordsPerPage={pageSize}
             aria-label={t('table.ariaLabel.orderList')}
+            paginationRecordsPerPageMessage={'per page'}
+            paginationTotalRecorsMessage={'result'}
+            noDataComponent={
+                <EmptyDataTable
+                  image={EmptyDataImage}
+                  heading={t('orgManagement.add.label')}
+                  description={t('orgManagement.empty_table.description')}
+                />
+              }
         />
     );
 };
