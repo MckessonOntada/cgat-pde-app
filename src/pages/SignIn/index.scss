@@ -1,0 +1,92 @@
+@use "@src/assets/styles/abstracts/mixins";
+
+// .page-container {
+//     display: grid;
+//    // grid-template-rows: 53% 47%; // Define row heights as percentages
+//     height: 100vh; 
+//     .header
+//     { 
+//         .header-left{
+//             margin-left: 10px;
+//             margin-top: 10px;
+
+//             @include mixins.respond(sm) {
+//                 margin-left: 155px;
+//             margin-top: 134px;
+
+//             }
+
+//         }
+//         .header-right {  
+//             position: absolute;
+//             right: 157px;
+//             top: 111px;
+//             width: 500px;
+//         }  
+//     }
+//     .footer {     
+//         display: flex;    
+//         background-color: #1B3150;
+//         justify-content: flex-end;  
+//         flex-direction: column; 
+//         padding: var(--spacing-04); 
+//         height: '47%';
+//     }
+
+
+// }
+.signincontainer {
+    height: 100vh;
+    overflow: auto;
+}
+
+.page-container {
+    @include mixins.respond(md) {
+        display: grid;
+        grid-template-rows: 53% 47%;
+        height: 100vh;
+    }
+
+    .header {
+        flex: 1;
+        padding-left: var(--spacing-04);
+        padding-top: var(--spacing-06);
+
+        @include mixins.respond(md) {
+            display: flex;
+        }
+
+        .header-left {
+            // padding-left: 2px;
+            padding-top: var(--spacing-05);
+
+            @include mixins.respond(md) {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+
+        .header-right {
+            justify-content: left;
+            padding-top: var(--spacing-05);
+            padding-bottom: var(--spacing-05);
+            @include mixins.respond(md) {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+    }
+
+    .footer {
+        background-color: #1B3150; //color not available in designtoken
+        justify-content: flex-end;
+        display: flex;
+        flex-direction: column;
+        padding: var(--spacing-04); 
+    }
+
+}

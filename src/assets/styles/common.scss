@@ -54,10 +54,14 @@
   }
 
   .controls {
+    justify-content: flex-start;
     display: flex;
-    flex-direction: row;
     gap: var(--spacing-03);
-    justify-content: flex-end;
+    flex-direction: row;
+
+    @include mixins.respond(sm) {
+      justify-content: flex-end;
+    }
   }
 }
 
@@ -123,4 +127,23 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+
+
+[class^="OktaFooter-module--copyrightContainer-"] {
+  color: var(--brand-color-patient-primary-1);
+  font-size: var(--brand-font-size--large) !important;
+  font-weight: var(--brand-font-weight-600) !important;
+  line-height: var(--brand-line-height--24) !important;
+  letter-spacing: 0.001em !important;
+}
+
+
+[class*="OktaFooter-module--label--"] {
+  color: var(--brand-color-patient-primary-1) !important;
+  font-size: var(--brand-font-size--large) !important;
+  font-weight: var(--brand-font-weight-600) !important;
+  line-height: var(--brand-line-height--24) !important;
+  letter-spacing: 0.001em !important;
 }

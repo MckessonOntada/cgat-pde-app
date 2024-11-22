@@ -1,0 +1,21 @@
+.session{
+    .branding{
+        width: 400px;
+        display: flex;
+        flex-direction: column; 
+       
+        .company-logo-heading{
+            font-size: var(--brand-font-size--32);
+            font-weight: var(--brand-font-weight-700); 
+            padding-top:var(--spacing-05);
+            line-height: 44px; // not present in design tokens
+        }
+        p{
+            font-size: var(--brand-font-size--large);
+            color: var(--brand-color-primary-slate);
+            font-weight: var(--brand-font-weight-400); 
+            line-height: var(--brand-line-height-24);
+            padding-top:var(--spacing-04);
+        }
+    }
+}
