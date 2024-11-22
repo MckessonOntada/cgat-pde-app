@@ -29,13 +29,7 @@ const OrgList = () => {
       id: 'name',
       name: t('orgManagement.table.name'),
       cell: (row) => (
-        <div
-          onClick={() => {
-            handleClick(row);
-          }}
-          className="org-name">
-          {row.name}
-        </div>
+        <Button variant='tertiary' onClick={handleClick}>{row.name}</Button>
       ),
       wrap: true,
       width: '25%'

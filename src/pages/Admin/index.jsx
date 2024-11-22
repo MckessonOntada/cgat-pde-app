@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Heading } from '@mckesson/mcp-component-library';
 import styles from './Admin.module.scss';
@@ -7,6 +7,9 @@ import { useTranslate } from '../../translations/useTranslation';
 
 const Dashboard = () => {
   const { t } = useTranslate();
+
+  const filteredCards = useMemo(() => {},[]);
+  
   return (
     <div className={styles.container}>
       <Heading as="h1">Admin</Heading>

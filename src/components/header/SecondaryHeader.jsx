@@ -1,23 +1,23 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { connect } from 'react-redux';
 import { setUserData } from '@src/store/reducer/userReducer';
 import { Button, TabList } from '@mckesson/mcp-component-library';
 import styles from './assets/styles/Header.module.scss';
 import { useIntl } from 'react-intl';
 import { useLocation } from 'react-router-dom';
-import useSessionFeatures from '../../common/hooks/useSessionFeatures';
+import useSessionFeatures from '@src/common/hooks/useSessionFeatures';
 
 const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
   let intl = useIntl();
-  const [tabs, setTabs] = React.useState([]);
   const location = useLocation();
   const {
     organization: { selectedOrganization }
   } = useSessionFeatures();
 
-  React.useEffect(() => {
+  const tabs = useMemo(() => {
+    let updatedTabs = [];
     if (Array.isArray(navLinks) && navLinks.length > 0) {
-      const updatedTabs = navLinks.map((item) => {
+      updatedTabs = navLinks.map((item) => {
         const isDashboard = item.configName === 'Dashboard' && location.pathname === '/';
         const isMatchingPath = item.path !== '/' && location.pathname.includes(item.path);
         return {
@@ -26,9 +26,10 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
           ariaSelected: isDashboard || isMatchingPath ? 'true' : 'false'
         };
       });
-      setTabs(updatedTabs);
-    }
+    };
+    return updatedTabs;
   }, [navLinks, location.pathname]);
+
 
   const LeftSideView = () => {
     return (

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 const useSessionFeatures = () => {
   const [selectedOrganization, setSelectedOrganization] = useState(() => {
@@ -13,12 +13,13 @@ const useSessionFeatures = () => {
     sessionStorage.setItem('selectedOrganization', JSON.stringify(org));
   };
 
-  return {
+  return useMemo(() => ({
     organization: {
       selectedOrganization,
-      setOrganization
+      setOrganization,
+      isSelectedOrg: !!selectedOrganization
     }
-  };
+  }),[selectedOrganization, setOrganization]);
 };
 
 export default useSessionFeatures;
