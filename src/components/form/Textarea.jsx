@@ -1,10 +1,15 @@
 import React from 'react';
-import { TextareaInput } from '@mckesson/mcp-component-library';
+import { TextareaInput,Label,TextError,Required } from '@mckesson/mcp-component-library';
 
 export default function Textarea(props) {
-  const { field, form } = props;
+  const { field, form, fieldlabel } = props;
+  console.log('form',form);
   return (
-    <>
+    <div className="grid">
+      <Label htmlFor={field.name} className="label-heading">
+        {fieldlabel}
+        {props.isRequired && <Required id="Required">Required</Required>}
+      </Label>
       <TextareaInput
         {...props}
         {...field}
@@ -17,8 +22,9 @@ export default function Textarea(props) {
         maxCharLimit={props.maxCharLimit || 1000}
       />
       {form.errors[field.name] && form.touched[field.name] && (
-        <div style={{ color: 'red', fontSize: '20px', fontWeight: '500' }}>{form.errors[field.name]}</div>
+         <TextError errorMessage={form.error}></TextError> 
       )}
-    </>
+     
+    </div>
   );
 }
