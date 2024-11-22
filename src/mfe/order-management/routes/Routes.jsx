@@ -12,6 +12,7 @@ function OrderManagementRoutes() {
       <Route path={`${routesConfig.createNew}/:accountId?/:therapyId?`} element={<OrderCreate />} />
       <Route path={routesConfig.viewDetails} element={<OrderSummary />} />
       <Route path={routesConfig.reviewOrder} element={<div></div>} />
+      <Route path={`${routesConfig.status}/:orderId`} element={<div>Order Status</div>} />
     </Routes>
   );
 }
