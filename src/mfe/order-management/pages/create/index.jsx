@@ -49,7 +49,7 @@ const OrderCreate = () => {
             setActiveForm(2)
         else if (accountId && !therapyId)
             setActiveForm(1)
-        else setActiveForm(0)
+        else setActiveForm(4)
     }, [accountId, therapyId]);
 
     const handleOnBackButtonClick = () => {

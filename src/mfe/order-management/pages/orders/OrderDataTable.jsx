@@ -86,8 +86,8 @@ const OrderDataTable = ({ type = 'normal', pagination = true }) => {
             totalRocords={pageConfig.total}
             recordsPerPage={pageSize}
             aria-label={t('table.ariaLabel.orderList')}
-            paginationRecordsPerPageMessage={'per page'}
-            paginationTotalRecorsMessage={'result'}
+            paginationRecordsPerPageMessage={t('labels.perPage')}
+            paginationTotalRecorsMessage={t('labels.results')}
             noDataComponent={
                 <EmptyDataTable
                   image={EmptyDataImage}

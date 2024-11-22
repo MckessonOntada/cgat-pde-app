@@ -7,7 +7,8 @@ export const summaryData = {
         shippingAccountName: 'BMS-WAC MD ANDERSON  CANCER CTR',
         shippingAccountNumber: '1122332',
     },
-    adamJones: {
+    patientDetails: {
+        name: "Adam Jones",
         patientIdentifier: '5682532',
         gender: 'Male',
         dob: '11/19/1997'

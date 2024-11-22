@@ -13,26 +13,27 @@ const ROLES = [
     { label: "SuperAdmin", value: "SuperAdmin" },
 ];
 
-const STATUS = [
+const getStatusFilters = () => [
     { label: "Active", value: "active" },
     { label: "Inactive", value: "inactive" },
-];
+].map(s => ({ ...s, isChecked: false }));
 
 const FilterPanel = ({ onApplyFilters }) => {
     const { t } = useTranslate();
     const [isExpanded, setIsExpanded] = React.useState(false);
     const { filterState, applyFilters, clearFilters } = useOrders();
-    const [filters, setFilters] = React.useState({...filterState});
-    
+    const [filters, setFilters] = React.useState(getStatusFilters());
+
+    React.useEffect(() => {
+        applyFilters({status: getStatusFilters()})
+    }, [])
+
     const handleOnExpandClick = () => {
         setIsExpanded((prevState) => !prevState);
     };
 
     const handleOnStatusChange = (value) => {
-        setFilters(prevFilters => ({
-            ...prevFilters,
-            status: value
-        }));
+        setFilters(value);
     };
 
     const handleOnQueryChange = (value) => {
@@ -44,8 +45,14 @@ const FilterPanel = ({ onApplyFilters }) => {
 
     const handleOnApplyFilters = () => {
         applyFilters(filters)
-        setFilters({})
     }
+
+    const handleOnClearFilters = () => {
+        setFilters(getStatusFilters());
+        applyFilters(filters);
+    }
+
+    const isFilterChanged = deepEqualWithSpecialCase(filterState.status, filters);
 
     return (
         <div className={styles.wrapper}>
@@ -77,6 +84,7 @@ const FilterPanel = ({ onApplyFilters }) => {
                         <Button
                             size="md"
                             variant="secondary"
+                            disabled={isFilterChanged}
                             onClick={handleOnApplyFilters}
                         >Apply Filters</Button>
                     </div>
@@ -85,7 +93,7 @@ const FilterPanel = ({ onApplyFilters }) => {
                 <ToggleUI in={isExpanded}>
                     <div className={styles.filterOptionsWrapper}>
                         <Divider />
-                        <div className={`${styles.customSearchableDropdown} grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3`}>
+                        <div className={` grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3`}>
                             <SearchableDropdown
                                 id="order-management-status"
                                 isSuccess
@@ -94,7 +102,7 @@ const FilterPanel = ({ onApplyFilters }) => {
                                 name="status"
                                 isRequired={false}
                                 onChange={handleOnStatusChange}
-                                options={STATUS}
+                                options={filters}
                                 clearAllSelectedValues={() => { }}
                                 aria-labelledby={t("controls.ariaLabels.orderManagementStatue")}
                             />
@@ -104,7 +112,8 @@ const FilterPanel = ({ onApplyFilters }) => {
                                     type="button"
                                     label={t('captions.clearFilters')}
                                     textButton
-                                    onClick={clearFilters}
+                                    disabled={!filters.some(x => x.isChecked)}
+                                    onClick={handleOnClearFilters}
                                     aria-label={t('captions.clearFilters')}
                                 />
                             </div>
@@ -115,5 +124,15 @@ const FilterPanel = ({ onApplyFilters }) => {
         </div>
     );
 };
+
+function deepEqualWithSpecialCase(obj1, obj2) {
+    for(let i = 0; i < obj1.length; i++){
+        if(Boolean(obj1[i]?.isChecked) != Boolean(obj2[i]?.isChecked))
+            return false;
+    }
+    return true;
+}
+
+
 
 export default FilterPanel;
