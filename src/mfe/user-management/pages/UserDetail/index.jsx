@@ -35,7 +35,7 @@ const UserDetail = () => {
   const { userId } = useParams();
   const [searchText, setSearchText] = useState("");
   const [selectedAccounts, setSelectedAccounts] = useState([]); 
-  const [userData ,setUserData] = useState();
+  
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const location = useLocation();
   const isSuccess = location.state?.isSuccess || false;
@@ -45,7 +45,7 @@ const UserDetail = () => {
   };
 
   const { isLoading, isError, data } = useQuery({
-    queryKey: ['users'],
+    queryKey: [`users/${userId}`],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(
         `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, // Use practice id from organization
@@ -56,14 +56,8 @@ const UserDetail = () => {
     },
     refetchOnWindowFocus: false
   });
-  useEffect(() => {
-    if (data?.content) {
-      setUserData(data.content[0]);  
-    }
-  },[data])
-
-  console.log("data", isLoading, isError, data)
-
+//  console.log("data", isLoading, isError, data)
+   
   useEffect(() => {
     if (isSuccess) {
       setIsAlertVisible(true);
@@ -113,7 +107,7 @@ const UserDetail = () => {
   
     return groupedPermissions;
   };
-  const groupedPermissions = groupPermissionsByCategory(userData?.permissions || [], PERMISSIONS_ENUM);
+  const groupedPermissions = groupPermissionsByCategory(data?.permissions || [], PERMISSIONS_ENUM);
 
 
   return (
@@ -139,13 +133,13 @@ const UserDetail = () => {
         <div className="MCP-panel-container">
           <div className="user-header">
             <div className="user-info">
-              <div className=" subheader-text">{`${userData?.name.lastName} ${userData?.name.firstName},${userData?.name.middleName} `}
+              <div className=" subheader-text">{`${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName} `}
               </div>
-              <Badge text={userData?.role.name} type={getbgColorOnRole(userData?.role.name)} />
+              <Badge text={data?.role.name} type={getbgColorOnRole(data?.role.name)} />
             </div>
             <div className="user-status">
               <span className="view_label">Last Updated On:</span>
-              <span className="label-text">{userData?.date_added}</span>
+              <span className="label-text">{data?.date_added}</span>
               <Switch
                 handleToggle={() => { }}
                 id="id"
@@ -159,31 +153,31 @@ const UserDetail = () => {
           <div className="container grid grid-gap-24 grid-cols-1 md:grid-cols-4">
             <div>
               <span className="view_label">User Address</span>
-              <p className="label-text">{userData?.address.address1}, {userData?.address.address2}, {userData?.address.city}, {userData?.address.state}, {userData?.address.zip}</p>
+              <p className="label-text">{data?.address.address1}, {data?.address.address2}, {data?.address.city}, {data?.address.state}, {data?.address.zip}</p>
             </div>
             <div>
               <span className="view_label">Email ID</span>
-              <p className="label-text">{userData?.contact.email}</p>
+              <p className="label-text">{data?.contact.email}</p>
             </div>
             <div>
               <span className="view_label">Phone Number</span>
-              <p className="label-text">{userData?.contact.phone}</p>
+              <p className="label-text">{data?.contact.phone}</p>
             </div>
             <div>
               <span className="view_label">Fax</span>
-              <p className="label-text">{userData?.contact.fax}</p>
+              <p className="label-text">{data?.contact.fax}</p>
             </div>
             <div>
               <span className="view_label">City</span>
-              <p className="label-text">{userData?.address.city}</p>
+              <p className="label-text">{data?.address.city}</p>
             </div>
             <div>
               <span className="view_label">Zip</span>
-              <p className="label-text"> {userData?.address.zip}</p>
+              <p className="label-text"> {data?.address.zip}</p>
             </div>
             <div>
               <span className="view_label">State</span>
-              <p className="label-text">{userData?.address.state}</p>
+              <p className="label-text">{data?.address.state}</p>
             </div>
           </div>
         </div>
