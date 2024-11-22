@@ -4,4 +4,5 @@ export const routesConfig = {
     createNew: "create-new",
     reviewOrder: 'review-order',
     summary: 'summary',
+    status: 'status',
 };

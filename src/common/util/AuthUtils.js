@@ -28,6 +28,15 @@ const getPracticeId = function () {
   return sessionStorage.getItem(SESSION_CONST.SELECTED_PRACTICE_ID);
 }
 
+const isSystemAdmin = function (){
+  const userRole = getUserRole();
+  return userRole === 'SYSTEM_ADMIN';
+}
+
+const isSystemAdminView = function (){
+  return isSystemAdmin() && !getPracticeId();
+}
+
 /**
  * @description - Check if the user has a specific permission
  * @param {any} permission - The input to check.
@@ -70,7 +79,9 @@ const AuthUtils = Object.freeze({
   getUserId,
   getUserName,
   getUserPermissions,
-  getPracticeId
+  getPracticeId,
+  isSystemAdmin,
+  isSystemAdminView
 });
 
 export default AuthUtils;

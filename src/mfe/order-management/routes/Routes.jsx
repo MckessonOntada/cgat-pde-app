@@ -4,6 +4,7 @@ import { routesConfig } from './constants';
 import OrderIndex from './../pages/orders';
 import OrderCreate from './../pages/create';
 import OrderSummary from '../pages/orders/OrderSummary';
+import OrderStatus from '../pages/orders/status/OrderStatus';
 
 function OrderManagementRoutes() {
   return (
@@ -12,6 +13,7 @@ function OrderManagementRoutes() {
       <Route path={`${routesConfig.createNew}/:accountId?/:therapyId?`} element={<OrderCreate />} />
       <Route path={routesConfig.viewDetails} element={<OrderSummary />} />
       <Route path={routesConfig.reviewOrder} element={<div></div>} />
+      <Route path={`${routesConfig.status}/:orderId`} element={<OrderStatus />} />
     </Routes>
   );
 }
