@@ -61,7 +61,7 @@ export default function CustomerStatementTable() {
                 columns={columns}
                 rows={filteredData}
                 responsive
-                handleSortClick={(event) => { console.log('event...', event) }}
+                handleSortClick={(event) => {  }}
             />
         </React.Fragment>
     )
