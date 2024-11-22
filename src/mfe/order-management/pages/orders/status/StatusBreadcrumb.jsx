@@ -1,8 +1,8 @@
 import React from 'react';
-import styles from './Breadcrumb.module.scss';
+import './StatusBreadcrumb.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 
-const Breadcrumb = () => {
+const StatusBreadcrumb = () => {
   const { t } = useTranslate();
   const items = [
     {
@@ -23,14 +23,14 @@ const Breadcrumb = () => {
     }
   ];
   return (
-    <div className={styles.breadcrumb}>
+    <ol className={'status-breadcrumb'}>
       {items.map((item, index) => (
-        <div key={index} className={styles.breadcrumbItem}>
-          {item}
-        </div>
+        <li key={index} className={'item'}>
+          <span className='caption'>{item.label}</span>
+        </li>
       ))}
-    </div>
+    </ol>
   );
 };
 
-export default Breadcrumb;
+export default StatusBreadcrumb;

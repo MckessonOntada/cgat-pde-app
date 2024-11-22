@@ -29,23 +29,23 @@ const getLinkByStatus = ({ status, id }, t) => {
 export const createColumns = (t, navigate) => [
     {
         id: 'id',
-        name: t('table.columns.captions.orderId'),
+        name: t('labels.orderId'),
         selector: () => { },
         sortable: true,
         width: '10%',
         cell: (props) => (
-            <span className={'MCP-table-cell'} aria-label={t('table.columns.captions.orderId')}>
+            <span className={'MCP-table-cell'} aria-label={t('labels.orderId')}>
                 {props.id}
             </span>
         ),
     },
     {
         id: 'patient',
-        name: t('table.columns.captions.patientName'),
+        name: t('labels.patientName'),
         selector: () => { },
         sortable: true,
         cell: (props) => (
-            <span className={'MCP-table-cell'} aria-label={t('table.columns.captions.patientName')}>
+            <span className={'MCP-table-cell'} aria-label={t('labels.patientName')}>
                 {props.patient}
             </span>
         ),
