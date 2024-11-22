@@ -20,8 +20,11 @@ const INITIAL_STATE = {
   status: []
 };
 
+const RECORDS_PER_PAGE = 8;
+
 export const UserProvider = ({ children }) => {
   const [filterState, setFilterState] = useState(INITIAL_STATE);
+  const [currentPage, setCurrentPage] = useState(0);
 
   const updateFilterState = useCallback((field, value) => {
     setFilterState((prevState) => ({
@@ -36,8 +39,8 @@ export const UserProvider = ({ children }) => {
 
   // Use from context
   const requestParams = {
-    pageNo: 0,
-    pageSize: 20,
+    pageNo: currentPage,
+    pageSize: RECORDS_PER_PAGE,
     sortBy: 'first_name',
     sortOrder: 'asc',
     userType: 'ADMIN'
@@ -56,12 +59,23 @@ export const UserProvider = ({ children }) => {
     refetchOnWindowFocus: false
   });
 
+  console.log("data", data)
+
   const applyFilters = useCallback(() => console.log('Apply filters'), []);
+
+  const onPageChange = useCallback((newPage) => { setCurrentPage(newPage)},[])
   const ctxValue = useMemo(
     () => ({
       isLoading,
       isError,
       data: data?.content || [],
+      pagination: {
+        currentPage,
+        totalPageCount: data?.totalPages || 0,
+        totalRecords: data?.totalElements || 0,
+        recordsPerPage: RECORDS_PER_PAGE,
+        onPageChange
+      },
       filters: {
         ...filterState,
         update: {
@@ -73,8 +87,7 @@ export const UserProvider = ({ children }) => {
         applyFilters
       }
     }),
-    [updateFilterState, clearFilters, applyFilters, isLoading, isError, data]
+    [updateFilterState, clearFilters, applyFilters, isLoading, isError, data, currentPage, onPageChange]
   );
-  console.log('FilterState:', filterState);
   return <UserContext.Provider value={ctxValue}>{children}</UserContext.Provider>;
 };

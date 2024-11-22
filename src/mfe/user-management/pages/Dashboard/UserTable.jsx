@@ -1,5 +1,5 @@
 import React from 'react';
-import DataTable from '@src/components/dataTable/DataTable';
+import { CustomDataTable } from '@mckesson/mcp-component-library';
 import { Badge, Loader } from '@mckesson/mcp-component-library';
 import './index.scss';
 import Actions from './Actions';
@@ -22,7 +22,12 @@ function UserTable({ isPendingRequest = false, selectableRows = false, omitColum
   // Move pagination to context
   const { t } = useTranslate();
 
-  const { isLoading, isError, data } = useUser();
+  const {
+    isLoading,
+    isError,
+    data,
+    pagination: { currentPage, totalPageCount, totalRecords, recordsPerPage, onPageChange }
+  } = useUser();
 
   const columns = [
     { name: 'ID', selector: 'id', sortable: true, omit: true },
@@ -111,12 +116,23 @@ function UserTable({ isPendingRequest = false, selectableRows = false, omitColum
   return (
     <div>
       {isLoading && <Loader type={'screen'} />}
-      <DataTable
+
+      <CustomDataTable
+        type={'normal'}
         columns={columns}
-        rows={data}
-        handleSortClick={(value) => {console.log(value)}}
+        data={data}
+        onSortIconClick={(value) => console.log(value)}
+        handleChangePage={(e, newPage) => onPageChange(newPage)}
         selectableRows={selectableRows}
+        currentPage={currentPage}
+        totalPageCount={totalPageCount}
+        totalRocords={totalRecords}
+        recordsPerPage={recordsPerPage}
+        paginationRecordsPerPageMessage={t('userManagement.results')}
+        paginationTotalRecordsMessage={'userManagement.results'}
+        stickyHeader
         responsive
+        pagination
       />
     </div>
   );
