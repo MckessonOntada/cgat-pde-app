@@ -52,11 +52,11 @@ export const createColumns = (t, navigate) => [
     },
     {
         id: 'therapy',
-        name: t('table.columns.captions.therapy'),
+        name: t('labels.therapy'),
         selector: () => { },
         sortable: true,
         cell: (props) => (
-            <span className={'MCP-table-cell'} aria-label={t('table.columns.captions.therapy')}>
+            <span className={'MCP-table-cell'} aria-label={t('labels.therapy')}>
                 {props.therapy}
             </span>
         ),

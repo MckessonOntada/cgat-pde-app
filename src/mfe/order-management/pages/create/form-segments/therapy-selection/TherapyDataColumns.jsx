@@ -40,24 +40,24 @@ export const createColumns = (t, navigate) => [
     },
     {
         id: 'therapyDescription',
-        name: t('table.columns.captions.therapyDescription'),
+        name: t('labels.therapyDescription'),
         selector: () => {},
         width: "16%",
         sortable: true,
         cell: (props) => (
-            <span className="MCP-table-cell" aria-label={t('table.columns.captions.therapyDescription')}>
+            <span className="MCP-table-cell" aria-label={t('labels.therapyDescription')}>
                 <Link to={`?therapy-details=${props.id}`}>{props.therapyDescription}</Link>
             </span>
         ),
     },
     {
         id: 'therapyNumber',
-        name: t('table.columns.captions.therapyNumber'),
+        name: t('labels.therapyNumber'),
         width: "8%",
         selector: () => {},
         sortable: true,
         cell: (props) => (
-            <span className="MCP-table-cell" aria-label={t('table.columns.captions.therapyNumber')}>
+            <span className="MCP-table-cell" aria-label={t('labels.therapyNumber')}>
                 {props.therapyNumber}
             </span>
         ),

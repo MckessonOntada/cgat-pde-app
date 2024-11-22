@@ -1,71 +1,25 @@
-.wrapper{
+.panelHeader{
+    padding-bottom: var(--spacing-01);
+    font-size: var(--brand-font-size--20);
+    font-weight: var(--brand-font-weight-600);
+    border-bottom: 1px solid var(--brand-color-grey-scale-warm-1);
+}
+.actionLink {
     display: flex;
-    flex-direction: column;
-    gap: var(--spacing-03);
+    gap: var(--spacing-01);
+    text-transform: uppercase;
+    align-items: center;
+    font-size: var(--brand-font-size--small);
+    text-decoration: none;
+    color: var(--brand-color-font-black);
+}
 
-    .actionLink {
-        display: flex;
-        gap: var(--spacing-01);
-        text-transform: uppercase;
-        align-items: center;
-        font-size: var(--brand-font-size--small);
-        text-decoration: none;
-        color: var(--brand-color-font-black);
-    }
-    .layout{
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-03);
-    }
-    .row{
-        display: flex;
-        flex-direction: row;
-        gap: var(--spacing-03);
-        flex-wrap: wrap;
-        row-gap: var(--spacing-03);
-        .col{
-            flex-grow: 1;
-            display: flex;
-            gap: var(--spacing-03);
-            flex-direction: column;
-        }
-    }
-    .sect{
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-03);
-        .header{
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--brand-color-grey-scale-warm-1);
-            padding-bottom: var(--spacing-01);
-            .heading{
-                font-size: var(--brand-font-size--default);
-                font-weight: var(--brand-font-weight-600);
-            }
-        }
-        .detailSegment{
-            row-gap: var(--spacing-01);
-        }
-        .pricingDetails{
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: flex-end;
-            .price{
-                font-weight: var(--brand-font-weight-600);
-                font-size: var(--brand-font-size--32);
-            }
-        }
-        .fieldName{
-            font-size: var(--brand-font-size--small);
-            color: #767E94; //color const missing
-        }
-        .fieldValue{
-            font-size: var(--brand-font-size--default);
-            color: var(--brand-color-text-black);
-        }
-    }
+.flexPanel{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.price{
+    font-size: var(--brand-font-size--32);
+    font-weight: var(--brand-font-weight-600);
 }
