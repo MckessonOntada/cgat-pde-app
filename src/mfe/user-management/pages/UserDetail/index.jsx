@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { USER_DATA } from "../../mockData/UsersData";
+import { useParams, useNavigate, useLocation } from "react-router-dom"; 
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as pencil_write_edit } from '@src/assets/image/pencil-write-edit.svg';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
@@ -35,8 +34,8 @@ const UserDetail = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
   const [searchText, setSearchText] = useState("");
-  const [selectedAccounts, setSelectedAccounts] = useState([]);
-  const userData = USER_DATA.find((user) => user.id === parseInt(userId));
+  const [selectedAccounts, setSelectedAccounts] = useState([]); 
+  
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const location = useLocation();
   const isSuccess = location.state?.isSuccess || false;
@@ -44,8 +43,9 @@ const UserDetail = () => {
   const requestParams = {
     userType: AuthUtils.getUserRole() === 'SYSTEM_ADMIN' ? 'ADMIN' : 'GENERAL'
   };
+
   const { isLoading, isError, data } = useQuery({
-    queryKey: ['users'],
+    queryKey: [`users/${userId}`],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(
         `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, // Use practice id from organization
@@ -56,9 +56,8 @@ const UserDetail = () => {
     },
     refetchOnWindowFocus: false
   });
-
-  console.log("data", isLoading, isError, data)
-
+//  console.log("data", isLoading, isError, data)
+   
   useEffect(() => {
     if (isSuccess) {
       setIsAlertVisible(true);
@@ -90,9 +89,26 @@ const UserDetail = () => {
   const handleSearchChange = (inputValue) => {
     setSearchText(inputValue);
   };
-  if (!userData) {
-    return <h1>User not found .</h1>;
-  }
+   
+
+  const groupPermissionsByCategory = (userPermissions, permissionsEnum) => {
+    const groupedPermissions = {}; 
+    userPermissions.forEach((permission) => { 
+      Object.keys(permissionsEnum).forEach((category) => {
+        const categoryPermissions = permissionsEnum[category]; 
+        if (Object.values(categoryPermissions).includes(permission)) { 
+          if (!groupedPermissions[category]) {
+            groupedPermissions[category] = [];
+          }
+          groupedPermissions[category].push(permission);
+        }
+      });
+    });
+  
+    return groupedPermissions;
+  };
+  const groupedPermissions = groupPermissionsByCategory(data?.permissions || [], PERMISSIONS_ENUM);
+
 
   return (
     <div className="MCP-module-wrapper">
@@ -117,13 +133,13 @@ const UserDetail = () => {
         <div className="MCP-panel-container">
           <div className="user-header">
             <div className="user-info">
-              <div className=" subheader-text">{`${userData.name.lastName} ${userData.name.firstName},${userData.name.middleName} `}
+              <div className=" subheader-text">{`${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName} `}
               </div>
-              <Badge text={userData.role.name} type={getbgColorOnRole(userData.role.name)} />
+              <Badge text={data?.role.name} type={getbgColorOnRole(data?.role.name)} />
             </div>
             <div className="user-status">
               <span className="view_label">Last Updated On:</span>
-              <span className="label-text">{userData.date_added}</span>
+              <span className="label-text">{data?.date_added}</span>
               <Switch
                 handleToggle={() => { }}
                 id="id"
@@ -137,31 +153,31 @@ const UserDetail = () => {
           <div className="container grid grid-gap-24 grid-cols-1 md:grid-cols-4">
             <div>
               <span className="view_label">User Address</span>
-              <p className="label-text">{userData.address.address1}, {userData.address.address2}, {userData.address.city}, {userData.address.state}, {userData.address.zip}</p>
+              <p className="label-text">{data?.address.address1}, {data?.address.address2}, {data?.address.city}, {data?.address.state}, {data?.address.zip}</p>
             </div>
             <div>
               <span className="view_label">Email ID</span>
-              <p className="label-text">{userData.contact.e_mail}</p>
+              <p className="label-text">{data?.contact.email}</p>
             </div>
             <div>
               <span className="view_label">Phone Number</span>
-              <p className="label-text">{userData.contact.phone}</p>
+              <p className="label-text">{data?.contact.phone}</p>
             </div>
             <div>
               <span className="view_label">Fax</span>
-              <p className="label-text">{userData.contact.fax}</p>
+              <p className="label-text">{data?.contact.fax}</p>
             </div>
             <div>
               <span className="view_label">City</span>
-              <p className="label-text">{userData.address.city}</p>
+              <p className="label-text">{data?.address.city}</p>
             </div>
             <div>
               <span className="view_label">Zip</span>
-              <p className="label-text"> {userData.address.zip}</p>
+              <p className="label-text"> {data?.address.zip}</p>
             </div>
             <div>
               <span className="view_label">State</span>
-              <p className="label-text">{userData.address.state}</p>
+              <p className="label-text">{data?.address.state}</p>
             </div>
           </div>
         </div>
@@ -175,16 +191,15 @@ const UserDetail = () => {
               </Button>              
             </div>
           }
-        />
+        /> 
 
         <div className="MCP-panel-container">
-          {Object.keys(userData.permissions).map((categoryKey, index) => {
-            if (!PERMISSIONS_ENUM[categoryKey]) return null;
+          {Object.keys(groupedPermissions).map((categoryKey, index) => {         
             return (
               <div key={index}>
                 <h2 className="subheader-text">{t(`${categoryKey}`)}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {userData.permissions[categoryKey].map((permissionKey, idx) => {
+                  {groupedPermissions[categoryKey].map((permissionKey, idx) => {
                     if (!PERMISSIONS_ENUM[categoryKey][permissionKey]) return null;
                     return (
                       <div key={idx} className="permission-item">
@@ -200,6 +215,7 @@ const UserDetail = () => {
             );
           })}
         </div>
+ 
 
         <div className="MCP-module-body">
           <ModuleHeader
