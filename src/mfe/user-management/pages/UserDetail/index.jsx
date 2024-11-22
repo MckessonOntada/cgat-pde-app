@@ -13,6 +13,12 @@ import AccountsList from '@src/components/Accounts/AccountsList';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import { PATHS } from "../../routes/constants";
 import ModuleHeader from "../../../../components/module-header";
+import { useQuery } from "react-query";
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
+import { serializeParams } from '@src/common/util/ApiUtils';
+import AuthUtils from '@src/common/util/AuthUtils';
+
 
 function getbgColorOnRole(Role) {
   switch (Role) {
@@ -34,6 +40,24 @@ const UserDetail = () => {
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const location = useLocation();
   const isSuccess = location.state?.isSuccess || false;
+
+  const requestParams = {
+    userType: AuthUtils.getUserRole() === 'SYSTEM_ADMIN' ? 'ADMIN' : 'GENERAL'
+  };
+  const { isLoading, isError, data } = useQuery({
+    queryKey: ['users'],
+    queryFn: async () => {
+      const res = await HttpResourceService.callRest(
+        `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, // Use practice id from organization
+        httpVerb.GET,
+        {}
+      );
+      return res.data;
+    },
+    refetchOnWindowFocus: false
+  });
+
+  console.log("data", isLoading, isError, data)
 
   useEffect(() => {
     if (isSuccess) {

@@ -1,4 +1,3 @@
-import PermissionConfig from '../../config/PermissionConfig.json';
 import { SESSION_CONST } from '../constants/SessionConstants';
 /**
  * @description - Check if the user has a specific role
@@ -20,6 +19,14 @@ const getUserId = function () {
 const getUserName = function () {
   return sessionStorage.getItem(SESSION_CONST.USERNAME);
 };
+
+const getUserPermissions = function () {
+  return sessionStorage.getItem(SESSION_CONST.USER_PERMISSIONS);
+};
+
+const getPracticeId = function () {
+  return sessionStorage.getItem(SESSION_CONST.SELECTED_PRACTICE_ID);
+}
 
 /**
  * @description - Check if the user has a specific permission
@@ -61,7 +68,9 @@ const AuthUtils = Object.freeze({
   userHasRoutePermission,
   getUserRole,
   getUserId,
-  getUserName
+  getUserName,
+  getUserPermissions,
+  getPracticeId
 });
 
 export default AuthUtils;

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { SESSION_CONST } from '../constants/SessionConstants';
 
 const useSessionFeatures = () => {
   const [selectedOrganization, setSelectedOrganization] = useState(() => {
@@ -11,6 +12,7 @@ const useSessionFeatures = () => {
   const setOrganization = (org) => {
     setSelectedOrganization(org);
     sessionStorage.setItem('selectedOrganization', JSON.stringify(org));
+    sessionStorage.setItem(SESSION_CONST.SELECTED_PRACTICE_ID, org?.id)
   };
 
   return useMemo(() => ({
