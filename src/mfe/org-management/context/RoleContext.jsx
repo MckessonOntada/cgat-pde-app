@@ -6,7 +6,6 @@ import React, {
     useMemo,
     useState,
   } from "react";
-import { ROLE_DATA } from "../mockData/roleData";
 import HttpResourceService, { httpVerb } from "../../../api/HttpResourceService";
 import ApiRoutes from "../../../api/ApiRoutes";
 import { useQuery } from "react-query";
@@ -56,7 +55,7 @@ import { useQuery } from "react-query";
               totalElements,
               totalPages,
               pageable
-            } = ROLE_DATA;
+            } = res.data;
 
             setPaginationConfig({
               totalElements,
@@ -64,7 +63,6 @@ import { useQuery } from "react-query";
               pageSize: pageable.pageSize,
               pageNumber: (pageable.pageNumber + 1),
             })
-            console.log(res.data)
             setOriginalData(data);
           }
       },

@@ -117,5 +117,14 @@ export const OrgManagementEN = {
   'orgManagement.role.tableHeadingCreatedOn': 'Created On',
   'orgManagement.role.captionsBtnBackToManageRoles': 'Back to Manage Roles',
   'orgManagement.role.captionsBtnSaveAndCancel': 'Save and Continue',
-  'orgManagement.role.labelMaxChar1000': 'Maximum 1,000 Characters'
+  'orgManagement.role.labelMaxChar1000': 'Maximum 1,000 Characters',
+
+  'orgManagement.label.associateAccount': 'Associate Account',
+
+  'orgManagement.form.errors.roleNameRequired': 'Role Name is required',
+  'orgManagement.form.errors.roleDescriptionRequired': 'Role Description is required',
+  'orgManagement.form.errors.roleNameMinLength': 'Role Name must be at least 3 characters long',
+  'orgManagement.form.errors.roleNameMaxLength': 'Role Name must be at least 3 characters long',
+  'orgManagement.form.errors.roleDescriptionMinLength': 'Role Description must be at least 10 characters long',
+  'orgManagement.form.errors.roleDescriptionMaxLength': 'Role Description cannot exceed 1,000 characters'
 };

@@ -1,10 +1,11 @@
 import React from 'react';
 import { Badge } from '@mckesson/mcp-component-library';
 import { RoleStatusEnum } from './Constants';
+import { Link } from 'react-router-dom';
 
 
 const getColorByStatus = (status) => {
-    if(status)
+    if(!status)
         return null;
 
     const statusColors = {
@@ -13,19 +14,24 @@ const getColorByStatus = (status) => {
     };
     return statusColors[status.toLowerCase()] || 'info';
 };
+const getFormattedDate = (date) => new Intl.DateTimeFormat('en-US', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  }).format(new Date(date));
 
 export const createColumns = (t) => [
     {
         id: 'name',
         name: t('orgManagement.role.labelRoleName'),
-        selector: (row) => row.name,
+        selector: (row) => <Link className="MCP-table-link" to={`details/${row.id}`}>{row.name}</Link>,
         wrap: true,
         width: '25%'
     },
     {
         id: 'createAt',
         name: t('orgManagement.role.tableHeadingCreatedOn'),
-        selector: (row) => row.createdAt ? new Date(row.createdAt).toLocaleDateString() : '-',
+        selector: (row) => row.createdAt ? getFormattedDate(row.createdAt) : '-',
         wrap: true
     },
     {

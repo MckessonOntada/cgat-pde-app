@@ -17,7 +17,13 @@ const ApiRoutes = Object.freeze({
   GET_JWT_DECODE: constructUserManagementServiceUrl('public/jwt'),
   POST_USER_BULK_UPLOAD: constructUserManagementServiceUrl('users/roles'),
   POST_USER_LOGIN: constructUserManagementServiceUrl('users/postLogin'),
-  POST_USER_LOGOUT: constructUserManagementServiceUrl('users/postLogout')
+  POST_USER_LOGOUT: constructUserManagementServiceUrl('users/postLogout'),
+  getRoles: () => {
+    const userRole = AuthUtils.getUserRole();
+    const isSystemAdmin = userRole === 'SYSTEM_ADMIN';
+    const practiceId = AuthUtils.getPracticeId();
+    return constructUserManagementServiceUrl(`practices/${isSystemAdmin ? 1 : practiceId}/roles`)
+  }
 });
 
 export default ApiRoutes;
