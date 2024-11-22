@@ -5,14 +5,14 @@ import { ReactComponent as ChecklistIcon } from '../../assets/svg/checklist-circ
 import { ReactComponent as CatalogueIcon } from '../../assets/svg/catalogue-circle.svg';
 import { ReactComponent as LinkIcon } from '../../assets/svg/link-circle.svg';
 
-const CARDS_DATA = [
+const SYSTEM_ADMIN_CARDS_DATA = [
   {
     name: 'ManageSystemAdmin',
     label: 'manage_system_admin',
     icon: UserIcon,
     details: 'efficiently_streamline_user_management_for_seamless_experience',
     path: AppRoutes.pathSystemAdminManagement,
-    permission: []
+    permissions: []
   },
   {
     name: 'manageOrg',
@@ -20,15 +20,18 @@ const CARDS_DATA = [
     icon: UserIcon,
     details: 'efficiently_streamline_user_management_for_seamless_experience',
     path: AppRoutes.pathOrgManagement,
-    permission: []
+    permissions: []
   },
+];
+
+const CARDS_DATA = [
   {
     name: 'ManageOrderConfiguration',
     label: 'manage_order_configuration',
     icon: OrderIcon,
     details: 'efficiently_streamline_user_management_for_seamless_experience',
     path: '/manage-orders',
-    permission: []
+    permissions: []
   },
   {
     name: 'ManageUsers',
@@ -36,7 +39,7 @@ const CARDS_DATA = [
     icon: UserIcon,
     details: 'efficiently_streamline_user_management_for_seamless_experience',
     path: AppRoutes.pathUserManagement,
-    permission: []
+    permissions: []
   },
   {
     name: 'ManageRoles',
@@ -44,7 +47,7 @@ const CARDS_DATA = [
     icon: ChecklistIcon,
     details: 'efficiently_streamline_user_management_for_seamless_experience',
     path: '/manage-roles',
-    permission: []
+    permissions: []
   },
   {
     name: 'ManageCatalog',
@@ -52,7 +55,7 @@ const CARDS_DATA = [
     icon: CatalogueIcon,
     details: 'efficiently_streamline_user_management_for_seamless_experience',
     path: '/manage-catalog',
-    permission: []
+    permissions: []
   },
   {
     name: 'ViewLinkedAccounts',
@@ -60,8 +63,11 @@ const CARDS_DATA = [
     icon: LinkIcon,
     details: 'efficiently_streamline_user_management_for_seamless_experience',
     path: '/linked-accounts',
-    permission: []
+    permissions: []
   }
 ];
 
-export default CARDS_DATA;
+export {
+  SYSTEM_ADMIN_CARDS_DATA, 
+  CARDS_DATA
+};
