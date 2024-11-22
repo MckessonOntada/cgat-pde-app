@@ -1,83 +1,47 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import DataTable from '@src/components/dataTable/DataTable';
-import { Badge } from '@mckesson/mcp-component-library';
-import { USER_DATA,PENDING_USER_DATA } from '../../mockData/UsersData';
+import { Badge, Loader } from '@mckesson/mcp-component-library';
 import './index.scss';
 import Actions from './Actions';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Link } from 'react-router-dom';
- 
+import { useUser } from '../../context/UserContext';
 
 function getbgColorOnRole(Role) {
   switch (Role) {
-      case 'ORGANIZATION ADMIN':
-        return 'success';
-      case 'ORGANIZATION USER':
-          return 'primary'; 
-      default:
-          return 'info';
+    case 'ORGANIZATION ADMIN':
+      return 'success';
+    case 'ORGANIZATION USER':
+      return 'primary';
+    default:
+      return 'info';
   }
 }
 
-function UserTable({
-  isPendingRequest = false,
-  selectableRows = false,
-  omitColumns = []
-}) {
+function UserTable({ isPendingRequest = false, selectableRows = false, omitColumns = [] }) {
+  // Move pagination to context
   const { t } = useTranslate();
-  const datatoLoad = isPendingRequest ? PENDING_USER_DATA : USER_DATA;
-  const [data] = useState(datatoLoad);
-  const [filteredData, setFilteredData] = useState(datatoLoad);
-  const [sortColumn, setSortColumn] = useState('date_updated');
-  const [sortDirection, setSortDirection] = useState('desc'); 
-  const [pendingData] = useState(PENDING_USER_DATA);
 
-
-  useEffect(() => {
-    const sortedData = [...datatoLoad].sort((a, b) => {
-      if (sortDirection === 'asc') {
-        return a[sortColumn] > b[sortColumn] ? 1 : -1;
-      } else {
-        return a[sortColumn] < b[sortColumn] ? 1 : -1;
-      }
-    });
-    setFilteredData(sortedData);
-  }, []);
-
-  const handleSortClick = (selectedColumn) => {
-    const columnName = selectedColumn.selector;
-    const newSortDirection = sortColumn === columnName && sortDirection === 'asc' ? 'desc' : 'asc';
-    const sortedData = [...filteredData].sort((a, b) => {
-      if (newSortDirection === 'asc') {
-        return a[columnName] > b[columnName] ? 1 : -1;
-      } else {
-        return a[columnName] < b[columnName] ? 1 : -1;
-      }
-    });
-    setSortColumn(columnName);
-    setSortDirection(newSortDirection);
-    setFilteredData(sortedData);
-  };
+  const { isLoading, isError, data } = useUser();
 
   const columns = [
     { name: 'ID', selector: 'id', sortable: true, omit: true },
     {
       id: 'name',
       name: t('userManagement.table.name'),
-      selector: row => `${row.name.firstName} ${row.name.lastName}`,
+      selector: (row) => `${row.name.firstName} ${row.name.lastName}`,
       sortable: true,
       wrap: true,
       cell: (props) => (
         <div className="cellEllipse">
           {isPendingRequest ? (
-          `${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`
+            `${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`
           ) : (
-          <Link
-            to={`${props.id}`} // dynamically constructs the URL with userId
-            style={{ color: '#007bff', fontWeight: '600' }}
-          >
-            {`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`}
-          </Link>
+            <Link
+              to={`${props.id}`} // dynamically constructs the URL with userId
+              style={{ color: '#007bff', fontWeight: '600' }}>
+              {`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`}
+            </Link>
           )}
         </div>
       )
@@ -85,20 +49,24 @@ function UserTable({
     {
       id: 'email',
       name: t('userManagement.table.email'),
-      selector: row => row.contact.e_mail,
+      selector: (row) => row.contact.email,
       sortable: true,
       wrap: true,
       width: '20%',
-      cell: (props) => <div className="cellEllipse">{props.contact.e_mail}</div>
+      cell: (props) => <div className="cellEllipse">{props.contact.email}</div>
     },
     {
       id: 'role',
       name: t('userManagement.table.role'),
-      selector: row => row.contact.role.name || '',
+      selector: (row) => row.contact.role.name || '',
       sortable: true,
       center: true,
       wrap: true,
-      cell: props => <span> <Badge text={props.role.name} type={getbgColorOnRole(props.role.name)} /></span>,
+      cell: (props) => (
+        <span>
+          <Badge text={props.role.name} type={getbgColorOnRole(props.role.name)} />
+        </span>
+      ),
       omit: omitColumns.includes('role')
     },
     {
@@ -125,7 +93,7 @@ function UserTable({
       selector: 'date_added',
       sortable: true,
       wrap: true,
-      cell: (props) => <div>{props.date_added}</div>
+      cell: (props) => <div>{props.updatedAt || props.createdAt}</div>
     },
     {
       id: 'action',
@@ -142,7 +110,14 @@ function UserTable({
 
   return (
     <div>
-      <DataTable columns={columns} rows={filteredData} handleSortClick={handleSortClick} selectableRows={selectableRows} responsive />
+      {isLoading && <Loader type={'screen'} />}
+      <DataTable
+        columns={columns}
+        rows={data}
+        handleSortClick={(value) => {console.log(value)}}
+        selectableRows={selectableRows}
+        responsive
+      />
     </div>
   );
 }

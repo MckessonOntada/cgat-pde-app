@@ -4,7 +4,7 @@ import './index.scss';
 import Filters from './Filters';
 import { PATHS } from '../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
-import { UserProvider } from '../../context/PageContext';
+import { UserProvider } from '../../context/UserContext';
 import UserTable from './UserTable';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
 import { debugIds, ID } from '@src/common/constants/id';
@@ -76,13 +76,6 @@ export default function Dashboard() {
     }
   ];
 
-  const buttonLabels = {
-    add: t('userManagement.add.label'),
-    upload: t('userManagement.upload.label')
-  };
-  const handlOnClick = () => {
-
-  }
   return (
     <div className="MCP-module-wrapper" id={debugIds(ID.TABLE, ID.CONTAINER)}>
       <Breadcrumb items={breadcrumbItems} />
