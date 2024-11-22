@@ -1,20 +1,28 @@
 import React from "react";
-import { PaymentHistoryProvider } from "../../context/PaymentContext";
+import { PaymentInvoiceProvider } from "../../context/PaymentContext";
 import { debugIds, ID } from '@src/common/constants/id';
 import Filters from "./Filters";
 import PaymentHistoryTable from "./PaymentHistoryTable";
 import "./index.scss"
+import { Button } from '@mckesson/mcp-component-library';
 
 export default function PaymentHistory(params) {
-    return (<div className="payment-history-container" >
-        <PaymentHistoryProvider>
-            <div className="userCardContainer" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
-                <Filters showRoleDropdown={true} showStatusDropdown={true} />
+    return (<React.Fragment >
+        <div className="MCP-CardContainer">
+            <Filters showRoleDropdown={true} showStatusDropdown={true} />
+        </div>
+        <div className="MCP-table-wrapper">
+            <div className="table-header" >
                 <h1> Payment Listing</h1>
-                <div className="userList">
-                    <PaymentHistoryTable />
-                </div>
+                <Button
+                    variant="secondary"
+                    onClick={() => { }}
+                    size="sm"
+                >
+                    Export Excel
+                </Button>
             </div>
-        </PaymentHistoryProvider>
-    </div>)
+            <PaymentHistoryTable />
+        </div>
+    </React.Fragment>)
 }

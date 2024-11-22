@@ -12,7 +12,7 @@ const PaymentInvoiceContext = createContext();
 export const usePaymentHistory = () => {
   const context = useContext(PaymentInvoiceContext);
   if (!context) {
-    throw new Error("usePaymentHistory must be used within a PaymentHistoryProvider.");
+    throw new Error("usePaymentHistory must be used within a PaymentInvoiceProvider.");
   }
   return context;
 };
@@ -23,7 +23,7 @@ const INITIAL_STATE = {
   status: [],
 };
 
-export const PaymentHistoryProvider = ({ children }) => {
+export const PaymentInvoiceProvider = ({ children }) => {
   const [originalData, setOriginalData] = useState(PaymentHistoryData);
   const [filterState, setFilterState] = useState(INITIAL_STATE);
   const [filteredData, setFilteredData] = useState(PaymentHistoryData);
