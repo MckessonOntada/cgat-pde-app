@@ -1,19 +1,31 @@
 import React, { useState } from 'react';
 import { CustomDataTable, Button, Badge, Loader } from '@mckesson/mcp-component-library';
-import { useOrg } from '../../context/PageContext';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Actions from './Actions';
 import { PATHS } from '../../routes/constants';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import useSessionFeatures from '@src/common/hooks/useSessionFeatures';
+import { useOrg } from '../../context/OrgContext';
 
 const OrgList = () => {
-  const { isLoading } = useOrg();
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState([]);
   const navigate = useNavigate();
+
+  const {
+    data,
+    pagination: {
+      currentPage,
+      totalPageCount,
+      totalRecords,
+      recordsPerPage,
+      update: { setCurrentPage }
+    },
+    isLoading, 
+    isError
+  } = useOrg();
 
   const {
     organization: { setOrganization }
@@ -80,17 +92,6 @@ const OrgList = () => {
     }
   ];
 
-  const {
-    data,
-    pagination: {
-      currentPage,
-      totalPageCount,
-      totalRecords,
-      recordsPerPage,
-      update: { setCurrentPage }
-    }
-  } = useOrg();
-
   const handleChangePage = (e, newPage) => {
     setCurrentPage(newPage);
   };
@@ -110,16 +111,11 @@ const OrgList = () => {
     setSelectedRows([]);
   };
 
-  if (isLoading) {
-    return <Loader type="screen" />;
-  }
-
-  // if (error) {
-  //   return <div className="error-message">{t('orgManagement.error')}</div>;
-  // }
-
   return (
     <div>
+      {
+        isLoading && <Loader type="screen" />
+      }
       {selectedRows.length > 0 && (
         <div className="selected-item-alert">
           <p className="selected-item-text">
@@ -148,6 +144,7 @@ const OrgList = () => {
         isAdmin={true}
         selectableRows
         noDataComponent={
+          isError ? <div>Something went wrong! Please try again</div> : 
           <EmptyDataTable
             image={EmptyDataImage}
             heading={t('orgManagement.add.label')}

@@ -1,7 +1,7 @@
 import React from 'react';
 import OrgList from './OrgList';
 import Filters from './Filters';
-import { OrganizationProvider } from '../../context/PageContext';
+import { OrganizationProvider } from '../../context/OrgContext';
 import './index.scss';
 import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';

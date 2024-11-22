@@ -1,8 +1,9 @@
 import AuthUtils from '../common/util/AuthUtils';
-import { MAIN_BASE_URL, USERMANAGEMENT_SERVICE_BASE_URL } from '../config/AppConfig';
+import { MAIN_BASE_URL, ORGMANAGEMENT_SERVICE_BASE_URL, USERMANAGEMENT_SERVICE_BASE_URL } from '../config/AppConfig';
 
 const constructMainAppUrl = (uri) => `${MAIN_BASE_URL}${uri}`;
 const constructUserManagementServiceUrl = (uri) => `${USERMANAGEMENT_SERVICE_BASE_URL}api/${uri}`;
+
 
 const ApiRoutes = Object.freeze({
   GET_CGAT_PDE_OKTA_CONFIG: constructUserManagementServiceUrl('public/idpConfig'),
@@ -23,7 +24,8 @@ const ApiRoutes = Object.freeze({
     const isSystemAdmin = userRole === 'SYSTEM_ADMIN';
     const practiceId = AuthUtils.getPracticeId();
     return constructUserManagementServiceUrl(`practices/${isSystemAdmin ? 1 : practiceId}/roles`)
-  }
+  },
+  ORGANIZATIONS: constructUserManagementServiceUrl('practices')
 });
 
 export default ApiRoutes;
