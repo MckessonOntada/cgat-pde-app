@@ -7,6 +7,9 @@ import React, {
     useState,
   } from "react";
 import { ROLE_DATA } from "../mockData/roleData";
+import HttpResourceService, { httpVerb } from "../../../api/HttpResourceService";
+import ApiRoutes from "../../../api/ApiRoutes";
+import { useQuery } from "react-query";
   
   const RoleContext = createContext();
   
@@ -14,7 +17,7 @@ import { ROLE_DATA } from "../mockData/roleData";
     
     const context = useContext(RoleContext);
     if (!context) {
-      throw new Error("useRole must be used within an RoleanizationProvider.");
+      throw new Error("useRole must be used within an RoleProvider.");
     }
     return context;
   };
@@ -24,13 +27,49 @@ import { ROLE_DATA } from "../mockData/roleData";
     location: [],
     status: [],
   };
+
+  const initialPageConfig = {
+    totalElements: 0, 
+    pageSize: 8, 
+    totalPages: 0, 
+    pageNumber: 1, 
+  };
   
   export const RoleProvider = ({ children }) => {
     const [filterState, setFilterState] = useState(INITIAL_STATE);
-    const [originalData] = useState(ROLE_DATA);
-    const [filteredData, setFilteredData] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const RECORDS_PER_PAGE = 8;
+    const [originalData, setOriginalData] = useState([]);
+    const [currentPageData, setCurrentPageData] = useState([]);
+    const [paginationConfig, setPaginationConfig] = useState(initialPageConfig);
+
+    const { isLoading, isError, data: responseData } = useQuery({
+      queryKey: [`users/getAll}`],
+      queryFn: async () => {
+          const res = await HttpResourceService.callRest(
+              `${ApiRoutes.getRoles()}`,
+              httpVerb.GET,
+              {}
+          );
+
+          if(res.data){
+            const {
+              content: data,
+              totalElements,
+              totalPages,
+              pageable
+            } = ROLE_DATA;
+
+            setPaginationConfig({
+              totalElements,
+              totalPages,
+              pageSize: pageable.pageSize,
+              pageNumber: (pageable.pageNumber + 1),
+            })
+            console.log(res.data)
+            setOriginalData(data);
+          }
+      },
+      refetchOnWindowFocus: false
+  });
     
     const updateFilterState = useCallback((field, value) => {
       setFilterState((prevState) => ({
@@ -45,19 +84,15 @@ import { ROLE_DATA } from "../mockData/roleData";
     }, []);
 
     useEffect(() => {
-      const indexOfLastRecord = currentPage * RECORDS_PER_PAGE;
-      const indexOfFirstRecord = indexOfLastRecord - RECORDS_PER_PAGE;
-  
-      setFilteredData(
+      const indexOfLastRecord = paginationConfig?.pageNumber * paginationConfig?.pageSize;
+      const indexOfFirstRecord = indexOfLastRecord - paginationConfig?.pageSize;
+      setCurrentPageData(
         originalData.slice(indexOfFirstRecord, indexOfLastRecord)
       );
-    }, [originalData, currentPage]);
-  
-    const totalRecords = originalData.length;
-    const totalPageCount = Math.ceil(totalRecords / RECORDS_PER_PAGE);
-  
+    }, [originalData, paginationConfig.pageNumber]);
+    
     const ctxValue = useMemo(() => ({
-      data: filteredData,
+      currentPageData,
       filters: {
         ...filterState,
         update: {
@@ -67,23 +102,16 @@ import { ROLE_DATA } from "../mockData/roleData";
         },
         clearFilters,
       },
-      pagination: {
-        currentPage,
-        totalRecords,
-        totalPageCount,
-        recordsPerPage: RECORDS_PER_PAGE,
-        update: {
-          setCurrentPage,
-        },
-      },
+      paginationConfig:{
+        ...paginationConfig,
+        setCurrentPage: (pageNumber) => setPaginationConfig({...paginationConfig, pageNumber})
+      }
     }), [
-      filteredData,
+      currentPageData,
       filterState,
       clearFilters,
-      currentPage,
-      totalPageCount,
-      totalRecords,
       updateFilterState,
+      paginationConfig
     ]);
   
     return (

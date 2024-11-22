@@ -3,7 +3,7 @@ import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle.svg';
 import ModuleHeader from "@src/components/module-header";
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
-import Filters from './Filters';
+import FilterPanel from './FilterPanel';
 import { RoleProvider } from '../../../context/RoleContext';
 import RolesDataTable from './RolesDataTable';
 import { useNavigate } from 'react-router-dom';
@@ -45,7 +45,7 @@ function RolesList() {
             <div className='MCP-module-body'>
                 <div className="MCP-panel-container">
                     <div className='MCP-CardContainer'>
-                        <Filters />
+                        <FilterPanel />
                     </div>
                     <div className='MCP-table-wrapper'>
                         <ModuleHeader
