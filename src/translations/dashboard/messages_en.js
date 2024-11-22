@@ -1,4 +1,5 @@
 export const DashboardEN = {
+  'dashboard.card.manage_system_admin': "System Admin",
   'dashboard.card.manage_order_configuration': 'Manage Order Configuration',
   'dashboard.card.manage_users': 'Manage Users',
   'dashboard.card.manage_roles': 'Manage Roles',
