@@ -11,7 +11,7 @@ const store = configureStore({
     modalState: modalReducer,
     snackbarState: snackbarReducer,
     userState: userReducer,
-    [OrganizationApi.reducerPath]: OrganizationApi.reducer // The reducer for the organization API slice
+    [OrganizationApi.reducerPath]: OrganizationApi.reducer, // The reducer for the organization API slice
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
