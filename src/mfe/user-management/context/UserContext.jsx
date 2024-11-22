@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/common/util/ApiUtils';
+import AuthUtils from '@src/common/util/AuthUtils';
 
 const UserContext = createContext();
 
@@ -38,19 +39,19 @@ export const UserProvider = ({ children }) => {
   };
 
   // Use from context
-  const requestParams = {
+  const requestParams = useMemo(() => ({
     pageNo: currentPage,
     pageSize: RECORDS_PER_PAGE,
     sortBy: 'first_name',
     sortOrder: 'asc',
-    userType: 'ADMIN'
-  };
+    userType: AuthUtils.getUserRole() === 'SYSTEM_ADMIN' ? 'ADMIN' : 'GENERAL'
+  }),[currentPage]);
 
   const { isLoading, isError, data } = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(
-        `${ApiRoutes.GET_USERS_LIST}/1/users?${serializeParams(requestParams)}`, // Use practice id from organization
+        `${ApiRoutes.USERS()}?${serializeParams(requestParams)}`, // Use practice id from organization
         httpVerb.GET,
         {}
       );

@@ -11,6 +11,7 @@ import './assets/styles/Login.css';
 import style from './assets/styles/Login.module.scss';
 import useFetchQueryRetry from '@src/common/hooks/useFetchQueryRetry';
 import AppLogo from '@src/assets/image/app-logo.svg';
+import { SESSION_CONST } from '../../common/constants/SessionConstants';
 
 const Login = () => {
   const widgetRef = useRef();
@@ -123,14 +124,17 @@ const Login = () => {
         );
 
         const decodedResponse = await CommonService.getJwtDecode();
+        console.log("decodedResponse", decodedResponse)
         const roles = decodedResponse['roles'];
         const username = decodedResponse['userName'];
         const userId = decodedResponse['userId'];
+        const permissions = decodedResponse['permissions'];
 
         if (CommonUtils.isNonEmptyArray(roles) && username) {
-          sessionStorage.setItem('USER_ROLE', roles[0]);
-          sessionStorage.setItem('USERNAME', username);
-          sessionStorage.setItem('USER_ID', userId);
+          sessionStorage.setItem(SESSION_CONST.USER_ROLE, roles[0]);
+          sessionStorage.setItem(SESSION_CONST.USERNAME, username);
+          sessionStorage.setItem(SESSION_CONST.USER_ID, userId);
+          sessionStorage.setItem(SESSION_CONST.USER_PERMISSIONS, permissions);
           return true;
         } else {
           return false;
