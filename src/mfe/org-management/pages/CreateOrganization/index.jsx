@@ -3,12 +3,15 @@ import { Formik, Form } from 'formik';
 import './CreateOrg.scss';
 import { Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import OrgDetailsFormSegment from './CreateOrgForm';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { getValidationSchema, INITIAL_VALUES } from './utils';
 import { RoutePaths } from '../../../../routes/constants';
 import OrgDetails from './OrgDetails';
+import { useMutation } from 'react-query';
+import ApiRoutes from '../../../../api/ApiRoutes';
 
 const CreateOrganization = () => {
   const [organizationData, setOrganizationData] = useState({
@@ -27,9 +30,33 @@ const CreateOrganization = () => {
     navigate(RoutePaths.pathOrgManagement);
   };
 
+  const createOrg = async (orgData) => {
+    // Perform the mutation logic, e.g., make an API request to update the user
+    const res = await HttpResourceService.callRest(
+      `${ApiRoutes.ORGANIZATIONS}`,
+      httpVerb.POST,
+      {
+        practiceStr: JSON.stringify(orgData)
+      },
+      {
+        'Content-Type': 'multipart/form-data'
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error('Failed to update user');
+    }
+
+    return res.json();
+  };
+
+  // Fetch data from server
+  const { mutate, isLoading, isError } = useMutation(createOrg);
+
   const handleFirstStep = (values) => {
     setOrganizationData({ formData: values });
-    setCurrentStep(2);
+    mutate(values);
+    // setCurrentStep(2);
   };
 
   const handleGoBack = () => {
@@ -39,8 +66,6 @@ const CreateOrganization = () => {
   const setSelectedAccounts = (selectedAccounts) => {
     setOrganizationData((prevState) => ({ ...prevState, selectedAccounts }));
   };
-
-
 
   return (
     <div className="main-container">

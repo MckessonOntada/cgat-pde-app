@@ -15,7 +15,6 @@ export const INITIAL_VALUES = {
     firstName: '',
     middleName: '',
     lastName: '',
-    suffix: ''
   },
   address: {
     address1: '',
