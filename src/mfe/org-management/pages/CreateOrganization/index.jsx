@@ -42,18 +42,18 @@ const CreateOrganization = () => {
       }
     );
 
-    if (!res.ok) {
-      throw new Error('Failed to update user');
+    if (![201, 200].includes(res.status)) {
+      throw new Error('Failed to create user');
     }
 
-    return res.json();
+    return res;
   };
 
   const onOrgCreateSuccess = () => {
     setCurrentStep(2)
   };
 
-  const onOrgCreateError = () => {
+  const onOrgCreateError = (error) => {
     goBack();
   }
 
