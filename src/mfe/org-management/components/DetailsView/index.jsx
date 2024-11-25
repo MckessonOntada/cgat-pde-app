@@ -7,14 +7,13 @@ import './styles.scss';
 const DetailsView = ({ data, onEditClick }) => {
   const { t } = useTranslate();
 
-  const fileUrl = data.file ? URL.createObjectURL(data.file) : data.logoUrl;
-
+  console.log(data)
   return (
     <div className="view-container">
       <div className="org-box">
         <div className="org-logo-box">
-          {fileUrl ? (
-            <img src={fileUrl} alt="Organization Logo" className="logo-img" />
+          {data?.logoUrl ? (
+            <img src={data?.logoUrl} alt="Organization Logo" className="logo-img" />
           ) : (
             <p>No logo uploaded</p>
           )}

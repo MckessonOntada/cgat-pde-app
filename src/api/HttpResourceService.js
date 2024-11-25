@@ -47,7 +47,7 @@ const callRest = function (
   endpoint,
   httpVerb = 'get',
   data,
-  headers = null,
+  headers,
   noHeader = false,
   noSidHeader = false,
   responseType = 'json',
@@ -56,11 +56,14 @@ const callRest = function (
     console.log(err);
   }
 ) {
+  const customHeaders = {...headers};
   headers = {
-    ...headers,
     ...defaultHeaders,
+    ...customHeaders,
     ...authToken(noHeader, noSidHeader)
   };
+  console.log("headers2", headers)
+
 
   const response = axios.request({
     method: httpVerb,

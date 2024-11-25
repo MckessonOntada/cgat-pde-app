@@ -15,7 +15,6 @@ export const INITIAL_VALUES = {
     firstName: '',
     middleName: '',
     lastName: '',
-    suffix: ''
   },
   address: {
     address1: '',
@@ -27,7 +26,8 @@ export const INITIAL_VALUES = {
   contact: {
     email: '',
     phone: '',
-    fax: ''
+    fax: '',
+    countryCode: '91' // Until we fetch from backend
   }
 };
 

@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
+import { useQuery } from 'react-query';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
 import DetailsView from '../../components/DetailsView';
-import OrganizationData from '../../mockData/OrganizationData';
 import AccountsList from '@src/components/Accounts/AccountsList';
 import SelectedAccountData from '../../mockData/SelectedAccountData';
 import './ViewOrg.scss';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { RoutePaths } from '@src/routes/constants';
-import { Button } from '@mckesson/mcp-component-library';
+import { Button, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import { PATHS as InternalPaths } from '../../routes/constants';
 import ModuleHeader from '@src/components/module-header';
 
 export default function ViewOrganization() {
-  // Call api to get Org data => /practices/{practiceId}
   // Call api to get linked accounts => /practice/{practiceId}/accounts
+
+  const { orgId } = useParams();
 
   const navigate = useNavigate();
   const { t } = useTranslate();
@@ -23,12 +26,26 @@ export default function ViewOrganization() {
   const [addNewAccounts, setAddNewAccounts] = useState(false);
   const [selectedAccounts, setSelectedAccounts] = useState([]);
 
+  // Fetch practice details
+  const { isLoading, data, isError } = useQuery({
+    queryKey: [`practices/${orgId}`],
+    queryFn: async () => {
+      const res = await HttpResourceService.callRest(
+        `${ApiRoutes.ORGANIZATIONS}/${orgId}`, // Use practice id from organization
+        httpVerb.GET,
+        {}
+      );
+
+      return res.data;
+    },
+    refetchOnWindowFocus: false
+  });
+  
   const goBack = () => {
     navigate(RoutePaths.pathOrgManagement);
   };
 
   const addNewAccountsClick = () => {
-    console.log('selectedAccounts', selectedAccounts);
     handleCancel();
   };
 
@@ -38,6 +55,7 @@ export default function ViewOrganization() {
   };
   return (
     <div className="viewOrg-container">
+      { isLoading &&  <Loader type={'screen'} />}
       <div className="back-navigation py2 capitalize" onClick={goBack}>
         <MdOutlineKeyboardArrowLeft size="24px" />
         <p>{t('orgManagement.back.organization')}</p>
@@ -47,14 +65,16 @@ export default function ViewOrganization() {
         heading={<p className="primaryHeading">{t('orgManagement.create_org.org-details')}</p>}
       />
 
-      <div className="details-view-container">
+      {
+        data &&       <div className="details-view-container">
         <DetailsView
-          data={OrganizationData}
+          data={data}
           onEditClick={() =>
-            navigate(`../${InternalPaths.editOrg}/${OrganizationData.id}`, {}, true)
+            navigate(`../${InternalPaths.editOrg}/${orgId}`, {}, true)
           }
         />
       </div>
+      }
 
       <ModuleHeader
         heading={
