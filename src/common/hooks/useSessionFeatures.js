@@ -15,11 +15,16 @@ const useSessionFeatures = () => {
     sessionStorage.setItem(SESSION_CONST.SELECTED_PRACTICE_ID, org?.id)
   };
 
+  const removeOrganization = () => {
+    sessionStorage.setItem('selectedOrganization', null);
+  }
+
   return useMemo(() => ({
     organization: {
       selectedOrganization,
       setOrganization,
-      isSelectedOrg: !!selectedOrganization
+      isSelectedOrg: !!selectedOrganization,
+      removeOrganization
     }
   }),[selectedOrganization, setOrganization]);
 };

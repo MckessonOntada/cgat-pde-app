@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
@@ -30,7 +30,7 @@ const INITIAL_STATE = {
 
 export const OrganizationProvider = ({ children }) => {
   const [filterState, setFilterState] = useState(INITIAL_STATE);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const updateFilterState = useCallback((field, value) => {
     setFilterState((prevState) => ({
@@ -47,7 +47,7 @@ export const OrganizationProvider = ({ children }) => {
   // use from context
   const requestParams = useMemo(
     () => ({
-      pageNo: currentPage,
+      pageNo: currentPage - 1,
       pageSize: RECORDS_PER_PAGE,
       sortBy: 'name',
       sortOrder: 'asc'
@@ -56,7 +56,7 @@ export const OrganizationProvider = ({ children }) => {
   );
 
   // Fetch data from server
-  const { isLoading, data, isError } = useQuery({
+  const { isLoading, data, isError, refetch } = useQuery({
     queryKey: ['organizations'],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(
@@ -70,7 +70,11 @@ export const OrganizationProvider = ({ children }) => {
     },
     refetchOnWindowFocus: false
   });
-  console.log("Data:", data)
+
+  useEffect(() => {
+    // Refetch on pagination/filters/sorting
+    refetch(requestParams)
+  },[currentPage, filterState])
 
   const ctxValue = useMemo(
     () => ({
@@ -85,7 +89,7 @@ export const OrganizationProvider = ({ children }) => {
         clearFilters
       },
       pagination: {
-        currentPage: data?.pageable?.pageNumber,
+        currentPage: currentPage,
         totalRecords: data?.totalElements,
         totalPageCount: data?.totalPages,
         recordsPerPage: RECORDS_PER_PAGE,
