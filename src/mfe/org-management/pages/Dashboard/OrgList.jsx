@@ -14,6 +14,12 @@ const OrgList = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const navigate = useNavigate();
 
+  const location = (address) => {
+    return `${address.address1 || ''}, ${address.city || ''}, ${address.state || ''}, ${
+      address.pin || ''
+    }`;
+  };
+
   const {
     data,
     pagination: {
@@ -23,7 +29,7 @@ const OrgList = () => {
       recordsPerPage,
       update: { setCurrentPage }
     },
-    isLoading, 
+    isLoading,
     isError
   } = useOrg();
 
@@ -41,7 +47,9 @@ const OrgList = () => {
       id: 'name',
       name: t('orgManagement.table.name'),
       cell: (row) => (
-        <Button variant='tertiary' onClick={handleClick}>{row.name}</Button>
+        <Button variant="tertiary" onClick={handleClick}>
+          {row.name}
+        </Button>
       ),
       wrap: true,
       width: '25%'
@@ -49,20 +57,20 @@ const OrgList = () => {
     {
       id: 'orgId',
       name: t('orgManagement.table.id'),
-      selector: (row) => row.orgId,
+      selector: (row) => row.id,
       wrap: true
     },
     {
       id: 'location',
       name: t('orgManagement.table.location'),
-      selector: (row) => row.location,
+      cell: (row) => <div className="cellEllipse">{location(row.address)}</div>,
       wrap: true
     },
     {
       id: 'date',
       name: t('orgManagement.table.dateUpdated'),
-      selector: (row) => row.date,
-      format: (row) => new Date(row.date).toLocaleDateString(),
+      selector: (row) => row.updatedAt,
+      format: (row) => new Date(row.updatedAt).toLocaleDateString(),
       wrap: true
     },
     {
@@ -113,9 +121,7 @@ const OrgList = () => {
 
   return (
     <div>
-      {
-        isLoading && <Loader type="screen" />
-      }
+      {isLoading && <Loader type="screen" />}
       {selectedRows.length > 0 && (
         <div className="selected-item-alert">
           <p className="selected-item-text">
@@ -144,12 +150,15 @@ const OrgList = () => {
         isAdmin={true}
         selectableRows
         noDataComponent={
-          isError ? <div>Something went wrong! Please try again</div> : 
-          <EmptyDataTable
-            image={EmptyDataImage}
-            heading={t('orgManagement.add.label')}
-            description={t('orgManagement.empty_table.description')}
-          />
+          isError ? (
+            <div>Something went wrong! Please try again</div>
+          ) : (
+            <EmptyDataTable
+              image={EmptyDataImage}
+              heading={t('orgManagement.add.label')}
+              description={t('orgManagement.empty_table.description')}
+            />
+          )
         }
         handleRowSelected={handleRowSelected}
         selectedRowId={selectedRows[0]}
