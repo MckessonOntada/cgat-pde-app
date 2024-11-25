@@ -57,12 +57,11 @@ import { useQuery } from "react-query";
               pageable
             } = res.data;
 
-            setPaginationConfig({
+            setPaginationConfig(prevPaginationConfig => ({
+              ...prevPaginationConfig,
               totalElements,
-              totalPages,
-              pageSize: pageable.pageSize,
-              pageNumber: (pageable.pageNumber + 1),
-            })
+              totalPages: Math.ceil(totalElements / paginationConfig.pageSize)
+            }))
             setOriginalData(data);
           }
       },

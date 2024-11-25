@@ -70,7 +70,7 @@ const FilterPanel = ({ showLocationDropdown = false, showStatusDropdown = false 
             value={searchQuery}
             onChangeInput={handleSearch}
             outline={true}
-            placeHolder={t('orgManagement.searchFilter.label')}
+            placeHolder={t('orgManagement.role.placeholder')}
           />
         </div>
       </div>

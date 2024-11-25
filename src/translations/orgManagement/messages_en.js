@@ -118,6 +118,7 @@ export const OrgManagementEN = {
   'orgManagement.role.captionsBtnBackToManageRoles': 'Back to Manage Roles',
   'orgManagement.role.captionsBtnSaveAndCancel': 'Save and Continue',
   'orgManagement.role.labelMaxChar1000': 'Maximum 1,000 Characters',
+  'orgManagement.role.placeholder': 'Select by name and location',
 
   'orgManagement.label.associateAccount': 'Associate Account',
 
