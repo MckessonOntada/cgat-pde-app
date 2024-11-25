@@ -6,16 +6,34 @@ import styles from './assets/styles/Header.module.scss';
 import { useIntl } from 'react-intl';
 import { useLocation } from 'react-router-dom';
 import useSessionFeatures from '@src/common/hooks/useSessionFeatures';
+import AuthUtils from '@src/common/util/AuthUtils';
 
 const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
   let intl = useIntl();
+  const isSystemAdminView = AuthUtils.isSystemAdminView();
+
   const location = useLocation();
   const {
     organization: { selectedOrganization }
   } = useSessionFeatures();
 
-  const tabs = useMemo(() => {
+  const tabs = useMemo(() => {    
+    if (isSystemAdminView) {
+      return [{
+        label: 'System Administrator',
+        path: '/',
+        id: 1,
+        configName: "System Administrator",
+        isActive: true,
+        isActiveTab: true,
+        labelForMobile: 'System Administrator',
+        sequence: 1,
+        ariaSelected: true
+      }];
+    };
+
     let updatedTabs = [];
+
     if (Array.isArray(navLinks) && navLinks.length > 0) {
       updatedTabs = navLinks.map((item) => {
         const isDashboard = item.configName === 'Dashboard' && location.pathname === '/';
@@ -66,7 +84,9 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
     <div className={`${styles.navContainer} ${styles.secondary}`} aria-label="Secondary header">
       <div className={styles.wrapper}>
         <LeftSideView />
-        <RightSideView />
+        {
+          !isSystemAdminView && <RightSideView />
+        }
       </div>
     </div>
   );
