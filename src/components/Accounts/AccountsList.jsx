@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { CustomDataTable } from '@mckesson/mcp-component-library';
-import { Link } from 'react-router-dom';
+import { Link, Loader } from 'react-router-dom';
 import SelectedAccounts from './SelectedAccounts';
 import './styles.scss';
 import Actions from './Action';
@@ -137,6 +137,7 @@ export default function AccountsList({
 
   return (
     <>
+      {isLoading && <Loader type={'screen'} />}
       {showSelectedAccounts && (
         <div className="selected-account-chips">
           <SelectedAccountChips selectedAccounts={selectedRows} onRemoveAccount={onRemoveAccount} />
