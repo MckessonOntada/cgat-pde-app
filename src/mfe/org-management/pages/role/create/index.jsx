@@ -21,15 +21,6 @@ const RoleCreate = () => {
 
     const [activeForm, setActiveForm] = React.useState(0);
 
-    const handleOnSavePermissionDetails = ({ roleName, roleDescription }) => {
-        setFormData({
-            ...formData,
-            roleName,
-            roleDescription,
-        });
-        setActiveForm(1);
-    };
-
     const handleOnSavePermissionList = (permissionList) => {
         setFormData({
             ...formData,
@@ -49,17 +40,12 @@ const RoleCreate = () => {
         {
             name: 'roleDetails',
             label: t('orgManagement.role.labelRolesDetails'),
-            form: <RoleDetailsForm onSubmit={handleOnSavePermissionDetails} />,
+            form: <RoleDetailsForm />,
         },
         {
             name: 'addPermissions',
             label: t('orgManagement.role.labelAddPermissions'),
             form: <PermissionListForm onSubmit={handleOnSavePermissionList} />,
-        },
-        {
-            name: 'associateAccount',
-            label: t('orgManagement.label.associateAccount'),
-            form: <AssociateAccountForm onSubmit={handleOnAssociateAccount} />,
         },
     ], [t]);
 

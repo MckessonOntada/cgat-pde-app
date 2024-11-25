@@ -5,6 +5,9 @@ import { Required, Button } from '@mckesson/mcp-component-library';
 import Components from '@src/components/form/Components';
 import { Field, Formik, Form } from 'formik';
 import { useTranslate } from '@src/translations/useTranslation';
+import ApiRoutes from '../../../../../../../api/ApiRoutes';
+import HttpResourceService, { httpVerb } from '../../../../../../../api/HttpResourceService';
+import { useMutation } from 'react-query';
 
 const getRoleValidationSchema = (t) => Yup.object({
     roleName: Yup.string()
@@ -17,9 +20,34 @@ const getRoleValidationSchema = (t) => Yup.object({
         .max(200, 'orgManagement.form.errors.roleDescriptionMaxLength'),
 });
 
-const RoleDetailsForm = ({onSubmit}) => {
+const RoleDetailsForm = () => {
     const { t } = useTranslate();
     const roleValidationSchema = getRoleValidationSchema(t);
+
+    const mutation = useMutation(
+        (data) => {
+            HttpResourceService.callRest(
+                `${ApiRoutes.getRoles()}`,
+                httpVerb.POST,
+                data
+            );
+        }, 
+        {
+            onSuccess: (data) => {
+
+                console.log('Data posted successfully:', data);
+            },
+            onError: (error) => {
+                console.error('Error posting data:', error);
+            },
+        }
+    );
+
+    const handleOnSubmit = (values, _action) => {
+        alert('ok')
+        console.log(mutation);
+        mutation.mutate({name: values.roleName, description: values.roleDescription});
+    }
     return (
         <Formik
             initialValues={{
@@ -27,9 +55,7 @@ const RoleDetailsForm = ({onSubmit}) => {
                 roleDescription: '',
             }}
             validationSchema={roleValidationSchema}
-            onSubmit={(values) => {
-                onSubmit(values);
-            }}
+            onSubmit={handleOnSubmit}
         >
             <Form>
                 <div className='MCP-module-wrapper'>

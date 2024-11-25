@@ -9,13 +9,16 @@ const PermissionListForm = () => {
     const { t } = useTranslate();
     const [enabledPermissions, setEnabledPermissions] = React.useState([]);
     const handleGoBack = () => { }
-    const handleSaveAndContinue = () => { }
+    const handleSaveAndContinue = () => { 
+        alert(JSON.stringify(value));
+    }
     return (
         <div>
             <Formik
                 initialValues={{}}
                 onSubmit={(values, actions) => {
-                    alert(JSON.stringify(values));
+                    alert('ok')
+                    handleSaveAndContinue(values);
                 }}
                 validateOnChange={false}
                 validateOnBlur={true}
