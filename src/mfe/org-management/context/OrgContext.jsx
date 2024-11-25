@@ -73,8 +73,8 @@ export const OrganizationProvider = ({ children }) => {
 
   useEffect(() => {
     // Refetch on pagination/filters/sorting
-    refetch(requestParams)
-  },[currentPage, filterState])
+    refetch(requestParams);
+  }, [currentPage, filterState]);
 
   const ctxValue = useMemo(
     () => ({
