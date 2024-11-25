@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
-import DetailsView from '../../components/DetailsView';
+import DetailsView from '@src/components/DetailsView';
 import AccountsList from '@src/components/Accounts/AccountsList';
-import SelectedAccountData from '../../mockData/SelectedAccountData';
 import './ViewOrg.scss';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
@@ -40,7 +39,7 @@ export default function ViewOrganization() {
     },
     refetchOnWindowFocus: false
   });
-  
+
   const goBack = () => {
     navigate(RoutePaths.pathOrgManagement);
   };
@@ -55,7 +54,7 @@ export default function ViewOrganization() {
   };
   return (
     <div className="viewOrg-container">
-      { isLoading &&  <Loader type={'screen'} />}
+      {isLoading && <Loader type={'screen'} />}
       <div className="back-navigation py2 capitalize" onClick={goBack}>
         <MdOutlineKeyboardArrowLeft size="24px" />
         <p>{t('orgManagement.back.organization')}</p>
@@ -65,16 +64,14 @@ export default function ViewOrganization() {
         heading={<p className="primaryHeading">{t('orgManagement.create_org.org-details')}</p>}
       />
 
-      {
-        data &&       <div className="details-view-container">
-        <DetailsView
-          data={data}
-          onEditClick={() =>
-            navigate(`../${InternalPaths.editOrg}/${orgId}`, {}, true)
-          }
-        />
-      </div>
-      }
+      {data && (
+        <div className="details-view-container">
+          <DetailsView
+            data={data}
+            onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, {}, true)}
+          />
+        </div>
+      )}
 
       <ModuleHeader
         heading={
@@ -99,12 +96,12 @@ export default function ViewOrganization() {
       />
 
       <AccountsList
-        data={SelectedAccountData}
         showSelectedAccounts={addNewAccounts}
         omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']}
         selectableRows={addNewAccounts}
         selectedRows={selectedAccounts}
         setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)}
+        practiceId={orgId}
       />
 
       {addNewAccounts && (
