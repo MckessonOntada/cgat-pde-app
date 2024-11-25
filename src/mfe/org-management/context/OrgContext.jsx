@@ -1,11 +1,5 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
-import { useQuery } from "react-query";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/common/util/ApiUtils';
@@ -17,49 +11,52 @@ const OrgContext = createContext();
 export const useOrg = () => {
   const context = useContext(OrgContext);
   if (!context) {
-    throw new Error("useOrg must be used within a OrganizationProvider.");
+    throw new Error('useOrg must be used within a OrganizationProvider.');
   }
   return context;
 };
 
 const INITIAL_STATE = {
-  searchQuery: "",
+  searchQuery: '',
   location: [],
   status: [],
   pagination: {
     currentPage: 0,
     totalRecords: 0,
     totalPageCount: 0,
-    recordsPerPage: 0,
-  },
+    recordsPerPage: 0
+  }
 };
 
 export const OrganizationProvider = ({ children }) => {
   const [filterState, setFilterState] = useState(INITIAL_STATE);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const updateFilterState = useCallback((field, value) => {
     setFilterState((prevState) => ({
       ...prevState,
-      [field]: value,
+      [field]: value
     }));
   }, []);
 
   const clearFilters = () => {
     setFilterState(INITIAL_STATE);
-    console.log("Filter Cleared.");
+    console.log('Filter Cleared.');
   };
 
   // use from context
-  const requestParams = useMemo(() => ({
-    pageNo: currentPage,
-    pageSize: RECORDS_PER_PAGE,
-    sortBy: 'name',
-    sortOrder: 'asc',
-  }),[currentPage]);
+  const requestParams = useMemo(
+    () => ({
+      pageNo: currentPage - 1,
+      pageSize: RECORDS_PER_PAGE,
+      sortBy: 'name',
+      sortOrder: 'asc'
+    }),
+    [currentPage]
+  );
 
   // Fetch data from server
-  const { isLoading, data, isError } = useQuery({
+  const { isLoading, data, isError, refetch } = useQuery({
     queryKey: ['organizations'],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(
@@ -68,44 +65,42 @@ export const OrganizationProvider = ({ children }) => {
         {}
       );
 
-      console.log("res", res);
+      // console.log("res", res);
       return res.data;
     },
     refetchOnWindowFocus: false
   });
-  
+
+  useEffect(() => {
+    // Refetch on pagination/filters/sorting
+    refetch(requestParams);
+  }, [currentPage, filterState]);
+
   const ctxValue = useMemo(
     () => ({
       data: data?.content,
       filters: {
         ...filterState,
         update: {
-          setSearchQuery: (value) => updateFilterState("searchQuery", value),
-          setLocation: (value) => updateFilterState("location", value),
-          setStatus: (value) => updateFilterState("status", value),
+          setSearchQuery: (value) => updateFilterState('searchQuery', value),
+          setLocation: (value) => updateFilterState('location', value),
+          setStatus: (value) => updateFilterState('status', value)
         },
-        clearFilters,
+        clearFilters
       },
       pagination: {
-        currentPage: data?.pageable?.pageNumber,
+        currentPage: currentPage,
         totalRecords: data?.totalElements,
         totalPageCount: data?.totalPages,
         recordsPerPage: RECORDS_PER_PAGE,
         update: {
-          setCurrentPage,
-        },
+          setCurrentPage
+        }
       },
       isLoading,
       isError
     }),
-    [
-      data,
-      updateFilterState,
-      clearFilters,
-      currentPage,
-      isLoading,
-      isError
-    ]
+    [data, updateFilterState, clearFilters, currentPage, isLoading, isError]
   );
 
   return <OrgContext.Provider value={ctxValue}>{children}</OrgContext.Provider>;

@@ -3,6 +3,6 @@ export const PATHS = {
   createOrg: 'create-org',
   editOrg: 'edit-org',
   viewOrg: 'view-org/:orgId',
-  roles: 'manage-roles',
-  createRole: 'manage-roles/create-role'
+  roles: 'roles',
+  createRole: 'role-details'
 };

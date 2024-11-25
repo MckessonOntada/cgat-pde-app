@@ -39,12 +39,13 @@ import { useQuery } from "react-query";
     const [originalData, setOriginalData] = useState([]);
     const [currentPageData, setCurrentPageData] = useState([]);
     const [paginationConfig, setPaginationConfig] = useState(initialPageConfig);
+    const [moduleMessage, setModuleMessage] = useState(null);
 
     const { isLoading, isError, data: responseData } = useQuery({
       queryKey: [`users/getAll}`],
       queryFn: async () => {
           const res = await HttpResourceService.callRest(
-              `${ApiRoutes.getRoles()}`,
+              `${ApiRoutes.GET_ROLES()}`,
               httpVerb.GET,
               {}
           );
@@ -87,6 +88,16 @@ import { useQuery } from "react-query";
         originalData.slice(indexOfFirstRecord, indexOfLastRecord)
       );
     }, [originalData, paginationConfig.pageNumber]);
+
+    const showModuleMessageMessage = (message, timeout) => {
+      setMessage(message);
+      setTimeout(() => {
+        setMessage(null);
+      }, timeout);
+    };
+    const clearModuleMessage = () => {
+      setMessage(null);
+    };
     
     const ctxValue = useMemo(() => ({
       currentPageData,
@@ -108,7 +119,10 @@ import { useQuery } from "react-query";
       filterState,
       clearFilters,
       updateFilterState,
-      paginationConfig
+      paginationConfig,
+      moduleMessage, 
+      showModuleMessageMessage,
+      clearModuleMessage,
     ]);
   
     return (
