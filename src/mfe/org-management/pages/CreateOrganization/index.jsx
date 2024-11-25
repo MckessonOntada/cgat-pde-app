@@ -66,7 +66,7 @@ const CreateOrganization = () => {
 
   const createNewOrg = (values) => {
     const formData = new FormData();
-    formData.append("logo", values.file);
+    formData.append("logo", "test");
     formData.append("practiceStr", JSON.stringify({
       name: values.name,
       address: values.address,
