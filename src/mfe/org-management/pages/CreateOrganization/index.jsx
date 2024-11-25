@@ -9,18 +9,13 @@ import { useNavigate } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { getValidationSchema, INITIAL_VALUES } from './utils';
 import { RoutePaths } from '../../../../routes/constants';
-import OrgDetails from './OrgDetails';
 import { useMutation } from 'react-query';
 import ApiRoutes from '../../../../api/ApiRoutes';
 import './CreateOrg.scss';
+import { PATHS } from '../../routes/constants';
 
 const CreateOrganization = () => {
-  const [organizationData, setOrganizationData] = useState({
-    formData: INITIAL_VALUES,
-    selectedAccounts: []
-  });
-
-  const [currentStep, setCurrentStep] = useState(1);
+  const [organizationData] = useState(INITIAL_VALUES);
 
   const { t } = useTranslate();
   const navigate = useNavigate();
@@ -45,12 +40,15 @@ const CreateOrganization = () => {
     if (![201, 200].includes(res.status)) {
       throw new Error('Failed to create user');
     }
-
+    console.log('response:', res)
     return res;
   };
 
-  const onOrgCreateSuccess = () => {
-    setCurrentStep(2)
+  
+
+  const onOrgCreateSuccess = (res) => {
+    const path = PATHS.viewOrg.replace(':orgId', res.data.id);
+    navigate(`../${path}`);
   };
 
   const onOrgCreateError = (error) => {
@@ -80,9 +78,9 @@ const CreateOrganization = () => {
     navigate(-1);
   };
 
-  const setSelectedAccounts = (selectedAccounts) => {
-    setOrganizationData((prevState) => ({ ...prevState, selectedAccounts }));
-  };
+  // const setSelectedAccounts = (selectedAccounts) => {
+  //   setOrganizationData((prevState) => ({ ...prevState, selectedAccounts }));
+  // };
 
   return (
     <div className="main-container">
@@ -91,9 +89,8 @@ const CreateOrganization = () => {
         <MdOutlineKeyboardArrowLeft size="24px" />
         <p>{t('orgManagement.back.organization')}</p>
       </div>
-      {currentStep === 1 && (
-        <Formik
-          initialValues={organizationData.formData}
+      <Formik
+          initialValues={organizationData}
           validationSchema={validationSchema}
           onSubmit={(values, actions) => {
             createNewOrg(values);
@@ -116,22 +113,13 @@ const CreateOrganization = () => {
                 <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
                   {t('orgManagement.button.back')}
                 </Button>
-                <Button type="submit" size={'md'}>
+                <Button type="submit" size={'md'} >
                   {t('orgManagement.button.next')}
                 </Button>
               </div>
             </Form>
           )}
         </Formik>
-      )}
-      {currentStep === 2 && (
-        <OrgDetails
-          prevStepData={organizationData.formData}
-          onEditClick={() => setCurrentStep(1)}
-          selectedAccounts={organizationData.selectedAccounts}
-          setSelectedAccounts={setSelectedAccounts}
-        />
-      )}
     </div>
   );
 };
