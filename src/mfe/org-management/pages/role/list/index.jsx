@@ -24,7 +24,6 @@ function RolesList() {
     const { t } = useTranslate();
     const navigate = useNavigate();
     const { moduleMessage, clearModuleMessage } = useRole();
-
     const handleOnAddRoleClick = () => {
         navigate(PATHS.createRole);
     }
