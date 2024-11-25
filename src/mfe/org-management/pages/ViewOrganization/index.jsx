@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
-import DetailsView from '@src/components/DetailsView';
+import DetailsView from '../../components/DetailsView';
 import AccountsList from '@src/components/Accounts/AccountsList';
 import './ViewOrg.scss';
 import { useNavigate, useParams } from 'react-router-dom';

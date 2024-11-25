@@ -53,7 +53,7 @@ export default function AccountsList({
     queryKey: [apiUrl],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(
-        `${apiUrl}?${serializeParams(requestParams)}`, // Use practice id from organization
+        `${apiUrl}?${serializeParams(requestParams)}`,
         httpVerb.GET,
         {}
       );
@@ -63,7 +63,7 @@ export default function AccountsList({
     },
     refetchOnWindowFocus: false
   });
-  console.log('Account-Data:', data);
+  // console.log('Account-Data:', data);
 
   const columns = useMemo(
     () => [
@@ -137,7 +137,7 @@ export default function AccountsList({
 
   return (
     <>
-      {isLoading && <Loader type={'screen'} />}
+      {/* {isLoading && <Loader type={'screen'} />} */}
       {showSelectedAccounts && (
         <div className="selected-account-chips">
           <SelectedAccountChips selectedAccounts={selectedRows} onRemoveAccount={onRemoveAccount} />
