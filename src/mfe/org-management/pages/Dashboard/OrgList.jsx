@@ -162,7 +162,7 @@ const OrgList = () => {
         }
         handleRowSelected={handleRowSelected}
         selectedRowId={selectedRows[0]}
-      />
+        />
     </div>
   );
 };

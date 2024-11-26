@@ -12,6 +12,7 @@ import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/common/util/ApiUtils';
+import AuthUtils from '../../common/util/AuthUtils';
 
 const RECORDS_PER_PAGE = 8;
 
@@ -35,7 +36,7 @@ export default function AccountsList({
       sortBy: practiceId ? 'name_1' : 'name', // handle based on column
       sortOrder: 'asc'
     };
-    if (practiceId) {
+    if (AuthUtils.isSystemAdminView()) {
       params = {
         ...params,
         practiceId,
@@ -54,7 +55,7 @@ export default function AccountsList({
     queryKey: ['accounts', practiceId],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(
-        `${ApiRoutes.ACCOUNTS}?${serializeParams(requestParams)}`,
+        `${ApiRoutes.PUBLIC_ACCOUNTS}?${serializeParams(requestParams)}`,
         httpVerb.GET,
         {}
       );

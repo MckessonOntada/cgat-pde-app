@@ -8,6 +8,7 @@ export const UserManagementEN = {
 
   'userManagement.results': 'results',
   'userManagement.per_page': 'per page',
+  'userManagement.selected_items': `Item's Selected`,
   
   'userManagement.table.name': 'Name',
   'userManagement.table.email': 'Email',
@@ -22,6 +23,7 @@ export const UserManagementEN = {
   'userManagement.table.action.reject': 'Reject',
   'userManagement.button.rejectrequest': 'Reject Request',
   'userManagement.table.action.view': 'VIEW',
+
  
   'userManagement.filter.label': 'Filter By',
   'userManagement.table.warning': 'Warning',
@@ -56,6 +58,8 @@ export const UserManagementEN = {
   'userManagement.button.edit':'Edit',
   'userManagement.button.adduser':'Add User',
   'userManagement.button.add_accounts' : 'Add Accounts',
+  'userManagement.button.deactivate': 'Deactivate',
+  'userManagement.button.activate': 'Activate',
 
   'userManagement.create_user':'Add User',
   'userManagement.create_user.details_to_create_user' : 'Please check the details to create a organization user',

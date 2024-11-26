@@ -60,14 +60,6 @@ export const OrganizationProvider = ({ children }) => {
   const { isLoading, data, isError, refetch } = useQuery({
     queryKey: ['organizations'],
     queryFn: async () => {
-      // const res = await HttpResourceService.callRest(
-      //   `${ApiRoutes.ORGANIZATIONS}?${serializeParams(requestParams)}`, // Use practice id from organization
-      //   httpVerb.GET,
-      //   {}
-      // );
-
-      // // console.log("res", res);
-      // return res.data;
       return CommonDataService.getOrganizationList(requestParams)
     },
     refetchOnWindowFocus: false

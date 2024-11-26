@@ -19,8 +19,6 @@ const CreateOrganization = () => {
   const { orgId } = useParams();
   const location = useLocation();
 
-  console.log('params....', useParams(), useLocation(), organizationData)
-
   useEffect(() => {
     if (orgId > 0 && location.state) {
       setOrganizationData(location.state)
@@ -39,7 +37,7 @@ const CreateOrganization = () => {
   const createOrg = async (orgData) => {
     // Perform the mutation logic, e.g., make an API request to update the user
     const res = await HttpResourceService.callRest(
-      `${ApiRoutes.ORGANIZATIONS}`,
+      `${ApiRoutes.PUBLIC_ORGANIZATIONS}`,
       httpVerb.POST,
       orgData,
       {
@@ -56,7 +54,7 @@ const CreateOrganization = () => {
 
   const updateOrgDetails = async (payload) => {
     const res = await HttpResourceService.callRest(
-      `${ApiRoutes.ORGANIZATIONS}/${orgId}`,
+      `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${orgId}`,
       httpVerb.PUT,
       payload,
       {
@@ -87,7 +85,6 @@ const CreateOrganization = () => {
   });
 
   const createNewOrg = (values) => {
-    // if (!orgId) { // Create Organization
     const formData = new FormData();
     formData.append('logo', 'test');
     formData.append(
@@ -100,19 +97,6 @@ const CreateOrganization = () => {
       })
     );
     mutate(formData);
-    // } else {
-    //   // update organization payload 
-    //   let payload = new Object();
-    //   console.log('_values...', payload)
-    //   payload.logo = values.logo
-    //   payload.practiceStr = JSON.stringify({
-    //     name: values.name,
-    //     address: values.address,
-    //     contact: values.contact,
-    //     contactPerson: values.contactPerson
-    //   })
-    //   updateOrgDetails(payload)
-    // }
   };
 
   const handleGoBack = () => {
