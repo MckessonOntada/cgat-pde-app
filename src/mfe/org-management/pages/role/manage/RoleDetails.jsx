@@ -29,38 +29,50 @@ const RoleDetails = () => {
     const { roleId } = useParams();
 
     const location = useLocation();
-    const {row} = location.state;
+    const { row = null } = location.state ?? {};
 
-
-    const [formData, setFormData] = React.useState({
+    const [initialData, setInitialData] = React.useState({
         roleName: '',
         roleDescription: '',
     });
 
-    React.useState(() => {
-        if(roleId && row){
-            const { name, description} = row;
+    const [formData, setFormData] = React.useState({...initialData});
+
+    React.useEffect(() => {
+        if (roleId && row) {
+            const { name, description } = row;
             setFormData({
                 roleName: name,
                 roleDescription: description
-            })
+            });
+            setInitialData({
+                roleName: name,
+                roleDescription: description
+            });
         }
-    }, []);
+    }, [roleId, row]);
 
     const handleOnBackButtonClick = () => {
-        navigate('/organization/roles');
+        debugger;
+        if (JSON.stringify(formData) !== JSON.stringify(initialData)) {
+            const userConfirmed = window.confirm(t('orgManagement.confirmLeaveWithoutSaving'));
+            if (userConfirmed) {
+                navigate('/organization/roles');
+            }
+        } else {
+            navigate('/organization/roles');
+        }
     };
 
     const roleValidationSchema = getRoleValidationSchema(t);
 
     const mutation = useMutation(
-        
         (data) => {
             let apiUrl = ApiRoutes.GET_ROLES();
             let actionSpecificHttpVerb = httpVerb.POST;
 
-            if(roleId){
-                apiUrl += `/${roleId}`
+            if (roleId) {
+                apiUrl += `/${roleId}`;
                 actionSpecificHttpVerb = httpVerb.PUT;
             }
             HttpResourceService.callRest(
@@ -68,16 +80,12 @@ const RoleDetails = () => {
                 actionSpecificHttpVerb,
                 data
             );
-        }, 
+        },
         {
             onSuccess: (data) => {
                 const id = data && data.id || roleId;
-                const permissions = {
-                    "USER_MANAGEMENT":
-                    ["ADD_USERS"]
-                } //row;
+                const { permissions } = row;
                 navigate(`/organization/roles/${id}/permissions`, { state: { permissions } });
-
             },
             onError: (error) => {
                 console.error('Error posting data:', error);
@@ -87,10 +95,10 @@ const RoleDetails = () => {
 
     const handleOnSubmit = (values, _action) => {
         const payload = {
-            name: values.roleName, 
+            name: values.roleName,
             description: values.roleDescription
         }
-        if(roleId){
+        if (roleId) {
             payload.id = roleId;
         }
         mutation.mutate(payload);
@@ -133,44 +141,61 @@ const RoleDetails = () => {
                         initialValues={formData}
                         validationSchema={roleValidationSchema}
                         onSubmit={handleOnSubmit}
+                        enableReinitialize 
                     >
-                        <Form>
-                            <div className='MCP-module-wrapper'>
-                                <div className="MCP-panel-container">
-                                    <ModuleHeader
-                                        heading={<p className="secondaryHeading">{t('orgManagement.role.headingPermissionDetails')}</p>}
-                                        controls={<p><Required /> {t('orgManagement.create_org.required')}</p>}
-                                    />
+                        {({ isValid, dirty }) => (
+                            <Form>
+                                <div className='MCP-module-wrapper'>
+                                    <div className="MCP-panel-container">
+                                        <ModuleHeader
+                                            heading={<p className="secondaryHeading">{t('orgManagement.role.headingPermissionDetails')}</p>}
+                                            controls={<p><Required /> {t('orgManagement.create_org.required')}</p>}
+                                        />
 
-                                    <div className='MCP-module-body'>
-                                        <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-                                            <Field
-                                                name="roleName"
-                                                label={t('orgManagement.role.labelRoleName')}
-                                                placeholder=" "
-                                                isRequired
-                                                component={Components['input']}
-                                            />
-                                        </div>
-                                        <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
-                                            <Field
-                                                name="roleDescription"
-                                                placeholder=" "
-                                                isRequired
-                                                maxCharHelperText={t('orgManagement.role.labelMaxChar1000')}
-                                                component={Components['textarea']}
-                                                fieldlabel={t("orgManagement.role.labelRoleDescription")}
-                                                maxCharLimit={1000}
-                                            />
+                                        <div className='MCP-module-body'>
+                                            <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+                                                <Field
+                                                    name="roleName"
+                                                    label={t('orgManagement.role.labelRoleName')}
+                                                    placeholder=" "
+                                                    isRequired
+                                                    component={Components['input']}
+                                                />
+                                            </div>
+                                            <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
+                                                <Field
+                                                    name="roleDescription"
+                                                    placeholder=" "
+                                                    isRequired
+                                                    maxCharHelperText={t('orgManagement.role.labelMaxChar1000')}
+                                                    onChange={(e) => {
+                                                        const { name, value } = e.target;
+                                                        setFormData(prevState => ({
+                                                            ...prevState,
+                                                            [name]: value,
+                                                        }));
+                                                    }}
+                                                    component={Components['textarea']}
+                                                    fieldlabel={t("orgManagement.role.labelRoleDescription")}
+                                                    maxCharLimit={1000}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
+                                    <div className='controls'>
+                                        <Button size="md" variant="secondary">{t('orgManagement.button.cancel')}</Button>
+                                        <Button 
+                                            size="md" 
+                                            variant="primary" 
+                                            type="submit" 
+                                            disabled={!(isValid && dirty)}
+                                        >
+                                            {t('orgManagement.role.captionsBtnSaveAndCancel')}
+                                        </Button>
+                                    </div>
                                 </div>
-                                <div className='controls'>
-                                    <Button size="md" variant="secondary">{t('orgManagement.button.cancel')}</Button>
-                                    <Button size="md" variant="primary" type="submit">{t('orgManagement.role.captionsBtnSaveAndCancel')}</Button>
-                                </div>
-                            </div>
-                        </Form>
+                            </Form>
+                        )}
                     </Formik>
                 </div>
             </div>

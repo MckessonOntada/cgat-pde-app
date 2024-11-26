@@ -13,7 +13,6 @@ import { useQuery } from "react-query";
 const RoleContext = createContext();
 
 export const useRole = () => {
-
   const context = useContext(RoleContext);
   if (!context) {
     throw new Error("useRole must be used within an RoleProvider.");
@@ -41,7 +40,7 @@ export const RoleProvider = ({ children }) => {
   const [paginationConfig, setPaginationConfig] = useState(initialPageConfig);
   const [moduleMessage, setModuleMessage] = useState(null);
 
-  const { isLoading, isError, data: responseData } = useQuery({
+  const { isLoading, isError, data: responseData, refetch } = useQuery({
     queryKey: [`users/getAll}`],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(
@@ -90,13 +89,17 @@ export const RoleProvider = ({ children }) => {
   }, [originalData, paginationConfig.pageNumber]);
 
   const showModuleMessage = (message, timeout) => {
-    setModuleMessage({...message});
+    setModuleMessage({ ...message });
     setTimeout(() => {
       setModuleMessage(null);
     }, timeout);
   };
   const clearModuleMessage = () => {
     setModuleMessage(null);
+  };
+
+  const refreshData = () => {
+    refetch();
   };
 
   const ctxValue = useMemo(() => ({
@@ -117,6 +120,7 @@ export const RoleProvider = ({ children }) => {
     moduleMessage,
     showModuleMessage,
     clearModuleMessage,
+    refreshData,
   }), [
     currentPageData,
     filterState,

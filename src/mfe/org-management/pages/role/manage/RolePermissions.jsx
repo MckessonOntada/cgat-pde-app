@@ -21,11 +21,11 @@ const RolePermissions = () => {
     const {roleId} = useParams();
     const location = useLocation();
     const permissions = location.state?.permissions || null;
-    alert(JSON.stringify(permissions));
     const { showModuleMessage } = useRole();
-
+    
     const [enabledPermissions, setEnabledPermissions] = React.useState(permissions || []);
     const [inheritedRole, setInheritedRole] = React.useState(null);
+    const { refreshData } = useRole();
 
     const handleOnBackButtonClick = () => {
         navigate(`/organization/${PATHS.roles}`);
@@ -41,10 +41,18 @@ const RolePermissions = () => {
         }, 
         {
             onSuccess: (data) => {
-                showModuleMessage({
-                    text: t('orgManagement.messages.newRoleCreation'),
-                    kind: 'success'
-                }, 10000);
+                if(permissions){
+                    showModuleMessage({
+                        text: t('orgManagement.messages.roleUpdate'),
+                        kind: 'success'
+                    }, 10000);
+                }else{
+                    showModuleMessage({
+                        text: t('orgManagement.messages.newRoleCreation'),
+                        kind: 'success'
+                    }, 10000);
+                }
+                refreshData();
                 navigate(`/organization/${PATHS.roles}`);
             },
             onError: (error) => {
@@ -64,7 +72,9 @@ const RolePermissions = () => {
         },
     ], [t]);
 
-    const handleGoBack = () => { }
+    const handleGoBack = () => {
+        navigate(`../${roleId}/edit-role`);
+    }
     const handleSaveAndContinue = (values) => { 
         const permissions = Object.values(enabledPermissions).flat();
         mutation.mutate(permissions);
