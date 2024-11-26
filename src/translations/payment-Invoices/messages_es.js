@@ -15,4 +15,19 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.filters.printSummary': 'S_Print Summary',
   'paymentInvoices.history.filters.downloadExcel': 'S_Download Excel',
   'paymentInvoices.history.filters.paymentDetails': 'S_Payment Details',
+
+  // Customer Statements
+  'paymentInvoices.CS.filters.autoSearch': 'S_Search by document number, sold to',
+  'paymentInvoices.CS.filters.filterBtn': 'S_Apply Filter',
+  'paymentInvoices.CS.filters.startDate': 'S_Start Date',
+  'paymentInvoices.CS.filters.endDate': 'S_End Date',
+  'paymentInvoices.CS.filters.clearFilter': 'S_Clear Filter',
+  'paymentInvoices.CS.StatementListing': 'S_Statement Listing',
+  'paymentInvoices.CS.ExportExcel': 'S_Export Excel',
+  'paymentInvoices.CS.table.billNumber': 'S_Bill No.',
+  'paymentInvoices.CS.table.accountnumber': 'S_Account No.',
+  'paymentInvoices.CS.table.date': 'S_Date',
+  'paymentInvoices.CS.table.statementBalance': 'S_Statement Balance',
+  'paymentInvoices.CS.table.actions': 'S_Action(s)',
+
 };
