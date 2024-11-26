@@ -8,10 +8,9 @@ import { Field } from 'formik';
 import './PermissionForm.scss';
 
 
-const PermissionForm = ({ enabledPermissions, setEnabledPermissions }) => {
-    const { t } = useTranslate();
-    //hoist enabledPermissions to parent component
-
+const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleSelect }) => {
+    const { t } = useTranslate();  
+    const [role, setRole] = useState();
     const handleReset = () => {
 
     };
@@ -32,14 +31,17 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions }) => {
         });
     };
 
-    const handleRoleChange = (role) => {
+    const handleRoleChange = (value) => {
+        const filteredValue = value.filter((item) => item.isChecked); 
+        setRole(filteredValue);
         const rolePermissions = {
             "USER_MANAGEMENT":
-                ["ADD_USERS", "ADD_ROLES"],
-            "AUTHENTICATION_FLOW":
-                ["LOGIN_SCREEN"]
+                ["ADD_USERS", "ADD_ROLES"]
         };
         setEnabledPermissions(rolePermissions);
+        if (filteredValue) {
+            handleRoleSelect(filteredValue.find(item => item.isChecked)?.value);
+        }
     };
 
 
@@ -60,8 +62,9 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions }) => {
                         isSuccess
                         label={t('userManagement.user_permissions.select_role')}
                         name={t('userManagement.user_permissions.select_role')}
-                        isRequired={false}
-                        onChange={(role) => handleRoleChange(role)}
+                        value={role}
+                        isRequired={false} 
+                        onChange={(value) => handleRoleChange(value)}
                         options={ROLES}
                     />
                 </div>
@@ -98,25 +101,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions }) => {
                                                         <p>{t(description)}</p>
                                                     </div>
 
-                                                    <div className="permission-toggle">
-                                                        {/* <Field
-                                                            id="name.firstName"
-                                                            name="name.firstName"
-                                                            label={t("userManagement.create_user.inputLabel.first_name")}
-                                                            placeholder=" "
-                                                            isRequired
-                                                            component={}
-                                                            maxLength={50}
-                                                        />
-                                                        <Switch
-                                                            onChange={() => handleToggle(categoryKey, permissionKey)}
-                                                            id={`toggle-${label}`}
-                                                            label={isPermissionEnabled(categoryKey, permissionKey) ? "Enabled" : "Disabled"}
-                                                            labelPosition="right"
-                                                            name={t(label)}
-                                                            size="lg"
-                                                            value={isPermissionEnabled(categoryKey, permissionKey)}
-                                                        /> */}
+                                                    <div className="permission-toggle">                                                      
                                                         <Field
                                                             name={`permissions.${categoryKey}.${permissionKey}`}
                                                             as={Switch}
@@ -125,8 +110,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions }) => {
                                                                 isPermissionEnabled(categoryKey, permissionKey) ? "Enabled" : "Disabled"
                                                             }
                                                             labelPosition="right"
-                                                            size="lg"
-                                                            // name={t(label)}
+                                                            size="lg" 
                                                             value={isPermissionEnabled(categoryKey, permissionKey)}
                                                             onChange={() => handleToggle(categoryKey, permissionKey)}
                                                         />

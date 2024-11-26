@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext,useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
@@ -18,14 +18,19 @@ export const useUser = () => {
 const INITIAL_STATE = {
   searchQuery: '',
   location: [],
-  status: []
+  status: [],  pagination: {
+    currentPage: 0,
+    totalRecords: 0,
+    totalPageCount: 0,
+    recordsPerPage: 0
+  }
 };
 
 const RECORDS_PER_PAGE = 8;
 
 export const UserProvider = ({ children }) => {
   const [filterState, setFilterState] = useState(INITIAL_STATE);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const updateFilterState = useCallback((field, value) => {
     setFilterState((prevState) => ({
@@ -40,14 +45,14 @@ export const UserProvider = ({ children }) => {
 
   // Use from context
   const requestParams = useMemo(() => ({
-    pageNo: currentPage,
+    pageNo: currentPage-1,
     pageSize: RECORDS_PER_PAGE,
     sortBy: 'first_name',
     sortOrder: 'asc',
-    userType: AuthUtils.getUserRole() === 'SYSTEM_ADMIN' ? 'ADMIN' : 'GENERAL'
+    userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
   }),[currentPage]);
 
-  const { isLoading, isError, data } = useQuery({
+  const { isLoading, isError, data,refetch } = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(
@@ -60,11 +65,14 @@ export const UserProvider = ({ children }) => {
     refetchOnWindowFocus: false
   });
 
-  console.log("data", data)
+  useEffect(() => {
+    // Refetch on pagination/filters/sorting
+    refetch(requestParams)
+  },[currentPage, filterState])
 
-  const applyFilters = useCallback(() => console.log('Apply filters'), []);
+  // const applyFilters = useCallback(() => console.log('Apply filters'), []);
 
-  const onPageChange = useCallback((newPage) => { setCurrentPage(newPage)},[])
+  // const onPageChange = useCallback((newPage) => { setCurrentPage(newPage)},[])
   const ctxValue = useMemo(
     () => ({
       isLoading,
@@ -75,20 +83,24 @@ export const UserProvider = ({ children }) => {
         totalPageCount: data?.totalPages || 0,
         totalRecords: data?.totalElements || 0,
         recordsPerPage: RECORDS_PER_PAGE,
-        onPageChange
+        update: {
+          setCurrentPage,
+        },
       },
       filters: {
         ...filterState,
         update: {
           setSearchQuery: (value) => updateFilterState('searchQuery', value),
           setRole: (value) => updateFilterState('role', value),
-          setStatus: (value) => updateFilterState('status', value)
+          setStatus: (value) => updateFilterState('status', value),
         },
         clearFilters,
-        applyFilters
-      }
+      },
+      refetch, // Add refetch to context value to reload data
     }),
-    [updateFilterState, clearFilters, applyFilters, isLoading, isError, data, currentPage, onPageChange]
+    [updateFilterState, clearFilters, isLoading, isError, data, currentPage, refetch]
   );
+  
   return <UserContext.Provider value={ctxValue}>{children}</UserContext.Provider>;
+  
 };

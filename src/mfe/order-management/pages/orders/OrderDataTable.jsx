@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { CustomDataTable } from '@mckesson/mcp-component-library';
 import { useOrders } from '../../context/OrderContext';
 import { useTranslate } from '@src/translations/useTranslation';
-import { createColumns } from './Columns';
+import { createColumns } from './OrderTableColumns';
 import { useNavigate } from 'react-router-dom';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';

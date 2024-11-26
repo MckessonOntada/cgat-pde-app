@@ -14,12 +14,12 @@ const UserDetailsFormSegment = () => {
         },
         {
             isDisabled: false,
-            value: "maharashtra",
+            value: "MH",
             label: "Maharashtra",
         },
         {
             isDisabled: false,
-            value: "delhi",
+            value: "DL",
             label: "Delhi",
         },
     ];

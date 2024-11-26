@@ -23,7 +23,7 @@ const HeaderConfig = {
         },
         {
             label: 'Payment and Invoices',
-            path: '/payment-invoices',
+            path: '/record',
             id: 3,
             configName: 'Payment Invoices',
             isActive: true,

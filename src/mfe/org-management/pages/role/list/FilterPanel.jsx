@@ -10,7 +10,7 @@ import arrow_right from '@src/assets/image/arrow_right.svg';
 import arrow_down from '@src/assets/image/arrow_down.svg';
 import ToggleUI from '@src/components/toggleui';
 
-const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) => {
+const FilterPanel = ({ showLocationDropdown = false, showStatusDropdown = false }) => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const { t } = useTranslate();
   const [expandedCard, setExpandedCard] = useState(false);
@@ -70,7 +70,7 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
             value={searchQuery}
             onChangeInput={handleSearch}
             outline={true}
-            placeHolder={t('orgManagement.searchFilter.label')}
+            placeHolder={t('orgManagement.role.placeholder')}
           />
         </div>
       </div>
@@ -94,7 +94,7 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
             <div className="LabelBox">
               <Button
                 type="button"
-                label={t('filter')}
+                label={t('orgManagement.button.filter')}
                 className="filter-btn"
                 onClick={handleFilter}
               />
@@ -115,4 +115,4 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
   );
 };
 
-export default Filters;
+export default FilterPanel;

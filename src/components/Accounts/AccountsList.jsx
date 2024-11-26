@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { CustomDataTable } from '@mckesson/mcp-component-library';
-import { Link } from 'react-router-dom';
+import { Link, Loader } from 'react-router-dom';
 import SelectedAccounts from './SelectedAccounts';
 import './styles.scss';
 import Actions from './Action';
@@ -8,21 +8,65 @@ import { useTranslate } from '@src/translations/useTranslation';
 import SelectedAccountChips from './SelectedAccountChips';
 import EmptyDataTable from '../EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import { useQuery } from 'react-query';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
+import { serializeParams } from '@src/common/util/ApiUtils';
+import AuthUtils from '../../common/util/AuthUtils';
 
 const RECORDS_PER_PAGE = 8;
 
 // TODO: Create filter context
 export default function AccountsList({
-  data,
   selectedRows,
   setSelectedRows,
   onRemoveAccount,
   showSelectedAccounts = false, // This is to show selected accounts in right rail
   selectableRows = true, // To enable or disable row selection
-  omitColumns = [] // Pass column ids which you don't want to show in table.
+  omitColumns = [], // Pass column ids which you don't want to show in table.
+  practiceId
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const { t } = useTranslate();
+
+  const requestParams = useMemo(() => {
+    let params = {
+      pageNo: currentPage - 1,
+      pageSize: RECORDS_PER_PAGE,
+      sortBy: practiceId ? 'name_1' : 'name', // handle based on column
+      sortOrder: 'asc'
+    };
+    if (AuthUtils.isSystemAdminView()) {
+      params = {
+        ...params,
+        practiceId,
+        partnerFunction: 'SOLD_TO' // Check with Mayuresh which one to use from list
+      };
+    }
+    return params;
+  }, [currentPage, practiceId]);
+
+  // const apiUrl = useMemo(
+  //   () => (practiceId ? `${ApiRoutes.ORGANIZATIONS}/${practiceId}/accounts` : ApiRoutes.ACCOUNTS),
+  //   [practiceId]
+  // );
+  
+  const { isLoading, data, isError } = useQuery({
+    queryKey: ['accounts', practiceId],
+    queryFn: async () => {
+      const res = await HttpResourceService.callRest(
+        `${ApiRoutes.PUBLIC_ACCOUNTS}?${serializeParams(requestParams)}`,
+        httpVerb.GET,
+        {}
+      );
+
+      console.log('res', res);
+      return res.data;
+    },
+    refetchOnWindowFocus: false
+  });
+  // console.log('Account-Data:', data);
+
   const columns = useMemo(
     () => [
       {
@@ -63,7 +107,7 @@ export default function AccountsList({
         id: 'address',
         center: true,
         name: t('account.address'),
-        cell: (row) => <div className="cellEllipse">{row.address}</div>,
+        cell: (row) => <div className="cellEllipse">{row.address.address1}</div>,
         omit: omitColumns.includes('address')
       },
       {
@@ -95,6 +139,7 @@ export default function AccountsList({
 
   return (
     <>
+      {/* {isLoading && <Loader type={'screen'} />} */}
       {showSelectedAccounts && (
         <div className="selected-account-chips">
           <SelectedAccountChips selectedAccounts={selectedRows} onRemoveAccount={onRemoveAccount} />
@@ -106,12 +151,12 @@ export default function AccountsList({
             id="my-data-table"
             type="normal"
             columns={columns}
-            data={data.content} // Use the sliced data for the current page
+            data={data?.content || []} // Use the sliced data for the current page
             currentPage={currentPage}
-            totalPageCount={data.totalPages}
+            totalPageCount={data?.totalPages}
             pagination={true}
             handleChangePage={handleChangePage}
-            totalRocords={data.totalElements}
+            totalRocords={data?.totalElements}
             recordsPerPage={RECORDS_PER_PAGE}
             paginationTotalRecorsMessage={'results'}
             paginationRecordsPerPageMessage={`per page`}

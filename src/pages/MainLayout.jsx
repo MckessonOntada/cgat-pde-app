@@ -44,7 +44,7 @@ function MainLayout() {
                   <Route path={'/organization'} element={<OrgEntryPoint />} />
                   <Route path={'/organization/*'} element={<OrgEntryPoint />} />
                 </Route>
-                <Route path={'/payment-invoices'} element={<PaymentInvoices />} />
+                <Route path={'/record/*'} element={<PaymentInvoices />} />
                 <Route path={AppRoutes.pathSystemAdminManagement} element={<Outlet />}>
                   <Route path={'/system-admin'} element={<UsersEntryPoint />} />
                   <Route path={'/system-admin/*'} element={<UsersEntryPoint />} />

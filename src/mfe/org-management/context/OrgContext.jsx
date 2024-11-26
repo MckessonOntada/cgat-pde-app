@@ -60,7 +60,7 @@ export const OrganizationProvider = ({ children }) => {
     queryKey: ['organizations'],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(
-        `${ApiRoutes.ORGANIZATIONS}?${serializeParams(requestParams)}`, // Use practice id from organization
+        `${ApiRoutes.PUBLIC_ORGANIZATIONS}?${serializeParams(requestParams)}`, // Use practice id from organization
         httpVerb.GET,
         {}
       );
@@ -73,8 +73,8 @@ export const OrganizationProvider = ({ children }) => {
 
   useEffect(() => {
     // Refetch on pagination/filters/sorting
-    refetch(requestParams)
-  },[currentPage, filterState])
+    refetch(requestParams);
+  }, [currentPage, filterState]);
 
   const ctxValue = useMemo(
     () => ({

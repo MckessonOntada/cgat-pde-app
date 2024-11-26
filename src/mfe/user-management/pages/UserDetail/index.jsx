@@ -7,11 +7,14 @@ import { Badge, Button, Switch, AutoSuggestSearch, Alert } from '@mckesson/mcp-c
 import './index.scss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
-import SelectedAccountData from '@src/mfe/org-management/mockData/SelectedAccountData';
 import AccountsList from '@src/components/Accounts/AccountsList';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import { PATHS } from '../../routes/constants';
 import ModuleHeader from '@src/components/module-header';
+import AccountsList from '@src/components/Accounts/AccountsList';
+import arrow_right from '@src/assets/image/arrow_right.svg';
+import { PATHS } from '../../routes/constants';
+import ModuleHeader from '../../../../components/module-header';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
@@ -40,7 +43,7 @@ const UserDetail = () => {
   const isSuccess = location.state?.isSuccess || false;
 
   const requestParams = {
-    userType: AuthUtils.getUserRole() === 'SYSTEM_ADMIN' ? 'ADMIN' : 'GENERAL'
+    userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
   };
 
   const { isLoading, isError, data } = useQuery({
@@ -138,7 +141,7 @@ const UserDetail = () => {
               <div className=" subheader-text">
                 {`${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName} `}
               </div>
-              <Badge text={data?.role.name} type={getbgColorOnRole(data?.role.name)} />
+              <Badge text={data?.role?.name} type={getbgColorOnRole(data?.role?.name)} />
             </div>
             <div className="user-status">
               <span className="view_label">Last Updated On:</span>
@@ -277,11 +280,7 @@ const UserDetail = () => {
               </div>
             </div>
             <div className="grid grid-gap-16">
-              <AccountsList
-                data={SelectedAccountData}
-                selectableRows={false}
-                omitColumns={['distributionChannel']}
-              />
+              <AccountsList selectableRows={false} omitColumns={['distributionChannel']} />
             </div>
           </div>
         </div>

@@ -1,15 +1,19 @@
-import React ,{useState} from 'react';
+import React, { useState,useEffect } from 'react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import './CreateUser.scss';
-import { Button, Stepper } from '@mckesson/mcp-component-library';
+import { Button, Stepper,Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import UserDetailsFormSegment from './CreateUserForm';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { MdOutlineKeyboardArrowLeft } from 'react-icons/md'; 
-import { USER_DATA } from '../../mockData/UsersData';
+import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { PATHS } from "../../routes/constants";
 import ModuleHeader from '@src/components/module-header';
+import { useQuery, useMutation } from 'react-query';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
+import { serializeParams } from '@src/common/util/ApiUtils';
+import AuthUtils from '@src/common/util/AuthUtils';
 
 const CreateUser = () => {
 	const { t } = useTranslate();
@@ -17,13 +21,75 @@ const CreateUser = () => {
 	const { userId } = useParams();
 	const location = useLocation();
 	const { isEdit } = location.state || {};
-	const { isPending } = location.state || {}; 
-	// Fetch user data based on userId 
-	const userData = USER_DATA.find(user => user.id === parseInt(userId));
+	const { isPending } = location.state || {};
+	const [ isAlertVisible, setIsAlertVisible] = useState(false); 
+	const [alert, setAlert] = useState(null)
+
+	useEffect(() => {
+		if (isAlertVisible) {
+		  const timer = setTimeout(() => {
+			setIsAlertVisible(false);
+		  }, 10000);
+	
+		  return () => clearTimeout(timer); // Cleanup timer on unmount
+		}
+	  }, [isAlertVisible]);
+
+	  const handleAlertClose = () => {
+		setIsAlertVisible(false); 
+	  };
+
+	const requestParams = {
+		userType: AuthUtils.isSystemAdminView()? 'ADMIN' : 'GENERAL'
+	};
+	const practiceId = AuthUtils.getPracticeId() ?? 1 ;
+
+	const { isLoading: isGetUserdetails, isError: isGetUserError, data: userData } = useQuery({
+		queryKey: [`users/${userId}`],
+		queryFn: async () => {
+			const res = await HttpResourceService.callRest(
+				`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, // Use practice id from organization
+				httpVerb.GET,
+				{}
+			); 
+			return res.data;
+		},
+		refetchOnWindowFocus: false
+	});
+
+
+	const { mutate, isLoading, isError, data } = useMutation(async ({ payload }) => {
+		if (isEdit) {
+			const res = await HttpResourceService.callRest(
+				`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`,
+				httpVerb.PUT,
+				payload
+			);
+			return res.data;
+		} else {
+			const res = await HttpResourceService.callRest(
+				`${ApiRoutes.USERS()}?${serializeParams(requestParams)}`,
+				httpVerb.POST,
+				payload
+			);
+			return res.data;
+		}
+	});
 
 	const goBack = () => {
 		navigate(-1);
 	};
+
+	const formatPhoneNumber = (phoneNumber) => {
+		if (!phoneNumber) return ""; 
+		const cleaned = phoneNumber.replace(/\D/g, "");  
+		const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+		if (match) {
+		  return `(${match[1]}) ${match[2]}-${match[3]}`;
+		}
+	  
+		return phoneNumber;  
+	  };
 
 	const initialValues = {
 		name: {
@@ -32,8 +98,9 @@ const CreateUser = () => {
 			lastName: userData?.name?.lastName || '',
 		},
 		contact: {
-			email: userData?.contact?.e_mail || '',
-			phone: userData?.contact?.phone || '',
+			email: userData?.contact?.email || '',
+			phone:  userData?.contact?.phone || '',
+			countryCode: "91",
 			fax: userData?.contact?.fax || '',
 		},
 		address: {
@@ -51,7 +118,7 @@ const CreateUser = () => {
 				.matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.first_name')) // Only alphabets
 				.required(t('userManagement.create_user.validation.first_name_required')),
 			middleName: Yup.string()
-				.matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.middle_name')),
+				.matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.middle_name')).nullable(),
 			lastName: Yup.string()
 				.matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.last_name')) // Only alphabets
 				.required(t('userManagement.create_user.validation.last_name_required')),
@@ -84,26 +151,35 @@ const CreateUser = () => {
 		}),
 
 	});
-   
+
 	const handleRejectRequest = () => {
 		navigate(-1);
 	};
 
+
 	const handleSubmit = values => {
-		if (userData) {
-			const { id, isActive, ...rest } = userData;
-			alert(JSON.stringify({ id, isActive, ...rest }, null, 2));
-			console.log(JSON.stringify({ id, isActive, ...rest }, null, 2));
-		}
-		else {
-			alert(JSON.stringify(values, null, 2));
-			console.log(JSON.stringify(values, null, 2));
-		}
-		if (userId) {
-			navigate(isEdit ? -1 : `../${PATHS.userPermissions}/${userId}`);
-		} else {
-			navigate(isEdit ? -1 : `../${PATHS.userPermissions}/7`); // Need to Replace `7` with appropriate User id when Creating a user
-		}
+		const payload = {
+			practiceId, // Append the practiceId
+			...values, // Spread the existing form values
+			"isActive": true
+		};
+
+		mutate(
+			{
+				payload
+			},
+			{
+				onSuccess: (response) => {
+					console.log('User created/updated successfully:', response);
+					navigate(isEdit ? -1 : `../${PATHS.userPermissions}/${response.id || userId}`);
+				},
+				onError: (error) => {
+					//console.log('Failed to create/update user:', error);
+					setAlert({ type: "error", message: "Failed to create/update user" });
+					setIsAlertVisible(true); 
+				},
+			}
+		); 
 	};
 
 	const handleGoBack = () => {
@@ -123,7 +199,7 @@ const CreateUser = () => {
 
 
 			<ModuleHeader
-				heading={<p className='primaryHeading'>{t('userManagement.create_user')}</p>} 
+				heading={<p className='primaryHeading'>{t('userManagement.create_user')}</p>}
 			/>
 			<div className="stepper">
 				<Stepper
@@ -142,7 +218,13 @@ const CreateUser = () => {
 					]}
 				/>
 			</div>
-
+			{isAlertVisible && (
+				<Alert
+				description={alert.message}
+				onClose={handleAlertClose}
+				type={alert.type}
+				duration={10000} 
+        	/>)}
 			<Formik
 				initialValues={initialValues}
 				validationSchema={validationSchema}
@@ -167,7 +249,7 @@ const CreateUser = () => {
 								{t('userManagement.button.rejectrequest')}
 							</Button>}
 							<Button type="submit" size={'md'}>{t('userManagement.button.savencontinue')}</Button>
-							
+
 						</div>
 					</Form>)
 				}

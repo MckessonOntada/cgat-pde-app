@@ -46,7 +46,7 @@ export const createColumns = (t, navigate) => [
         sortable: true,
         cell: (props) => (
             <span className="MCP-table-cell" aria-label={t('labels.therapyDescription')}>
-                <Link to={`?therapy-details=${props.id}`}>{props.therapyDescription}</Link>
+                <Link className="MCP-table-link" to={`?therapy-details=${props.id}`}>{props.therapyDescription}</Link>
             </span>
         ),
     },
