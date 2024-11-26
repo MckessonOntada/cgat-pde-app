@@ -1,11 +1,11 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Formik, Form } from 'formik';
 import { Loader } from '@mckesson/mcp-component-library';
 import { Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import OrgDetailsFormSegment from './CreateOrgForm';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { getValidationSchema, INITIAL_VALUES } from './utils';
 import { RoutePaths } from '@src/routes/constants';
@@ -15,7 +15,15 @@ import './CreateOrg.scss';
 import { PATHS } from '../../routes/constants';
 
 const CreateOrganization = () => {
-  const [organizationData] = useState(INITIAL_VALUES);
+  const [organizationData, setOrganizationData] = useState(INITIAL_VALUES);
+  const { orgId } = useParams();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (orgId > 0 && location.state) {
+      setOrganizationData(location.state)
+    }
+  }, [])
 
   const { t } = useTranslate();
   const navigate = useNavigate();
@@ -29,7 +37,7 @@ const CreateOrganization = () => {
   const createOrg = async (orgData) => {
     // Perform the mutation logic, e.g., make an API request to update the user
     const res = await HttpResourceService.callRest(
-      `${ApiRoutes.ORGANIZATIONS}`,
+      `${ApiRoutes.PUBLIC_ORGANIZATIONS}`,
       httpVerb.POST,
       orgData,
       {
@@ -44,18 +52,34 @@ const CreateOrganization = () => {
     return res;
   };
 
+  const updateOrgDetails = async (payload) => {
+    const res = await HttpResourceService.callRest(
+      `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${orgId}`,
+      httpVerb.PUT,
+      payload,
+      {
+        'Content-Type': 'multipart/form-data'
+      }
+    );
+
+    if (![201, 200].includes(res.status)) {
+      throw new Error('Failed to create user');
+    }
+    return res;
+  }
+
   const onOrgCreateSuccess = (res) => {
     const path = PATHS.viewOrg.replace(':orgId', res.data.id);
     navigate(`../${path}`);
   };
 
   const onOrgCreateError = (error) => {
-    goBack();
+    // goBack();
   };
 
   // Fetch data from server
   const { mutate, isLoading } = useMutation({
-    mutationFn: createOrg,
+    mutationFn: orgId ? updateOrgDetails : createOrg,
     onError: onOrgCreateError,
     onSuccess: onOrgCreateSuccess
   });
@@ -91,6 +115,7 @@ const CreateOrganization = () => {
         <p>{t('orgManagement.back.organization')}</p>
       </div>
       <Formik
+        enableReinitialize
         initialValues={organizationData}
         validationSchema={validationSchema}
         onSubmit={(values, actions) => {
@@ -99,15 +124,16 @@ const CreateOrganization = () => {
         }}
         validateOnChange={false}
         validateOnBlur={true}>
-        {() => (
+        {(formik) => (
           <Form>
+            <>{console.log('formik....', formik)}</>
             <div className="container-box">
               <div className="headingBox">
                 <p className="font-bold-title-s">
                   Please complete the form to create a new organization
                 </p>
               </div>
-              <OrgDetailsFormSegment />
+              <OrgDetailsFormSegment formik={formik} />
             </div>
 
             <div className={'buttonGroup'}>

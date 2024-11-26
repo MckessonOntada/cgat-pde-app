@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/common/util/ApiUtils';
+import CommonDataService from '../../../api/commonService/CommonDataService';
 
 const RECORDS_PER_PAGE = 8;
 
@@ -59,14 +60,7 @@ export const OrganizationProvider = ({ children }) => {
   const { isLoading, data, isError, refetch } = useQuery({
     queryKey: ['organizations'],
     queryFn: async () => {
-      const res = await HttpResourceService.callRest(
-        `${ApiRoutes.PUBLIC_ORGANIZATIONS}?${serializeParams(requestParams)}`, // Use practice id from organization
-        httpVerb.GET,
-        {}
-      );
-
-      // console.log("res", res);
-      return res.data;
+      return CommonDataService.getOrganizationList(requestParams)
     },
     refetchOnWindowFocus: false
   });
