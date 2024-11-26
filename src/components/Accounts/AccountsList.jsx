@@ -45,15 +45,16 @@ export default function AccountsList({
     return params;
   }, [currentPage, practiceId]);
 
-  const apiUrl = useMemo(
-    () => (practiceId ? `${ApiRoutes.ORGANIZATIONS}/${practiceId}/accounts` : ApiRoutes.ACCOUNTS),
-    [practiceId]
-  );
+  // const apiUrl = useMemo(
+  //   () => (practiceId ? `${ApiRoutes.ORGANIZATIONS}/${practiceId}/accounts` : ApiRoutes.ACCOUNTS),
+  //   [practiceId]
+  // );
+  
   const { isLoading, data, isError } = useQuery({
-    queryKey: [apiUrl],
+    queryKey: ['accounts', practiceId],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(
-        `${apiUrl}?${serializeParams(requestParams)}`,
+        `${ApiRoutes.ACCOUNTS}?${serializeParams(requestParams)}`,
         httpVerb.GET,
         {}
       );
