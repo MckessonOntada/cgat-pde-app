@@ -60,7 +60,7 @@ export const OrganizationProvider = ({ children }) => {
     queryKey: ['organizations'],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(
-        `${ApiRoutes.ORGANIZATIONS}?${serializeParams(requestParams)}`, // Use practice id from organization
+        `${ApiRoutes.PUBLIC_ORGANIZATIONS}?${serializeParams(requestParams)}`, // Use practice id from organization
         httpVerb.GET,
         {}
       );
