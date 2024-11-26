@@ -2,7 +2,7 @@ import React from 'react';
 import * as Yup from "yup";
 import { Stepper, Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
 import PageHeader from '@src/components/pageHeader';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -19,13 +19,16 @@ const RolePermissions = () => {
     const { t } = useTranslate();
     const navigate = useNavigate();
     const {roleId} = useParams();
+    const location = useLocation();
+    const permissions = location.state?.permissions || null;
+    alert(JSON.stringify(permissions));
     const { showModuleMessage } = useRole();
 
-    const [enabledPermissions, setEnabledPermissions] = React.useState([]);
+    const [enabledPermissions, setEnabledPermissions] = React.useState(permissions || []);
     const [inheritedRole, setInheritedRole] = React.useState(null);
 
     const handleOnBackButtonClick = () => {
-        navigate(`../${PATHS.roles}`);
+        navigate(`/organization/${PATHS.roles}`);
     };
 
     const mutation = useMutation(
@@ -104,6 +107,7 @@ const RolePermissions = () => {
                             enabledPermissions={enabledPermissions} 
                             setEnabledPermissions={setEnabledPermissions} 
                             onRoleChange={setInheritedRole}
+                            handleRoleSelect={() => {}}
                         />
 
                         <div className={'buttonGroup'}>

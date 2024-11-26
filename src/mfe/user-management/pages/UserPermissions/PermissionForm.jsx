@@ -9,8 +9,9 @@ import './PermissionForm.scss';
 
 
 const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleSelect }) => {
-    const { t } = useTranslate();  
+    const { t } = useTranslate();
     const [role, setRole] = useState();
+
     const handleReset = () => {
 
     };
@@ -32,7 +33,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
     };
 
     const handleRoleChange = (value) => {
-        const filteredValue = value.filter((item) => item.isChecked); 
+        const filteredValue = value.filter((item) => item.isChecked);
         setRole(filteredValue);
         const rolePermissions = {
             "USER_MANAGEMENT":
@@ -43,6 +44,24 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
             handleRoleSelect(filteredValue.find(item => item.isChecked)?.value);
         }
     };
+
+    const groupPermissionsByCategory = (userPermissions, permissionsEnum) => {
+        const groupedPermissions = {};
+        userPermissions.forEach((permission) => {
+            Object.keys(permissionsEnum).forEach((category) => {
+                const categoryPermissions = permissionsEnum[category];
+                if (Object.values(categoryPermissions).includes(permission)) {
+                    if (!groupedPermissions[category]) {
+                        groupedPermissions[category] = [];
+                    }
+                    groupedPermissions[category].push(permission);
+                }
+            });
+        });
+
+        return groupedPermissions;
+    };
+    const groupedPermissions = groupPermissionsByCategory(enabledPermissions , PERMISSIONS_ENUM);
 
 
     const isPermissionEnabled = (category, permission) => {
@@ -63,7 +82,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
                         label={t('userManagement.user_permissions.select_role')}
                         name={t('userManagement.user_permissions.select_role')}
                         value={role}
-                        isRequired={false} 
+                        isRequired={false}
                         onChange={(value) => handleRoleChange(value)}
                         options={ROLES}
                     />
@@ -85,12 +104,12 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
                 />
 
                 <div className="MCP-panel-container grid grid-gap-16">
-                    {Object.keys(PERMISSIONS_ENUM).map((categoryKey, index) => (
+                    {Object.keys(groupedPermissions).map((categoryKey, index) => (
                         <React.Fragment key={index}>
                             <div className="subheader-text">{t(`${categoryKey}`)}</div>
                             <div className="permission-category">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 permission-list">
-                                    {Object.keys(PERMISSIONS_ENUM[categoryKey]).map((permissionKey, idx) => {
+                                    {Object.keys(groupedPermissions[categoryKey]).map((permissionKey, idx) => {
                                         const label = `${categoryKey}.${permissionKey}`;
                                         const description = `${categoryKey}.${permissionKey}.DESCRIPTION`;
                                         return (
@@ -101,7 +120,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
                                                         <p>{t(description)}</p>
                                                     </div>
 
-                                                    <div className="permission-toggle">                                                      
+                                                    <div className="permission-toggle">
                                                         <Field
                                                             name={`permissions.${categoryKey}.${permissionKey}`}
                                                             as={Switch}
@@ -110,7 +129,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
                                                                 isPermissionEnabled(categoryKey, permissionKey) ? "Enabled" : "Disabled"
                                                             }
                                                             labelPosition="right"
-                                                            size="lg" 
+                                                            size="lg"
                                                             value={isPermissionEnabled(categoryKey, permissionKey)}
                                                             onChange={() => handleToggle(categoryKey, permissionKey)}
                                                         />

@@ -2,7 +2,7 @@ import React from 'react';
 import * as Yup from "yup";
 import { Stepper, Required, Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
 import PageHeader from '@src/components/pageHeader';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -28,22 +28,24 @@ const RoleDetails = () => {
     const navigate = useNavigate();
     const { roleId } = useParams();
 
+    const location = useLocation();
+    const {row} = location.state;
 
 
     const [formData, setFormData] = React.useState({
         roleName: '',
         roleDescription: '',
-        permissionList: [],
     });
 
-    const [activeForm, setActiveForm] = React.useState(0);
-
-    const handleOnSavePermissionList = (permissionList) => {
-        setFormData({
-            ...formData,
-            permissionList,
-        });
-    };
+    React.useState(() => {
+        if(roleId && row){
+            const { name, description} = row;
+            setFormData({
+                roleName: name,
+                roleDescription: description
+            })
+        }
+    }, []);
 
     const handleOnBackButtonClick = () => {
         navigate('/organization/roles');
@@ -52,18 +54,29 @@ const RoleDetails = () => {
     const roleValidationSchema = getRoleValidationSchema(t);
 
     const mutation = useMutation(
+        
         (data) => {
+            let apiUrl = ApiRoutes.GET_ROLES();
+            let actionSpecificHttpVerb = httpVerb.POST;
+
+            if(roleId){
+                apiUrl += `/${roleId}`
+                actionSpecificHttpVerb = httpVerb.PUT;
+            }
             HttpResourceService.callRest(
-                `${ApiRoutes.GET_ROLES()}`,
-                httpVerb.POST,
+                apiUrl,
+                actionSpecificHttpVerb,
                 data
             );
         }, 
         {
             onSuccess: (data) => {
-                debugger;
-                const {id} = data;
-                navigate(`/organization/roles/${id}/permissions`);
+                const id = data && data.id || roleId;
+                const permissions = {
+                    "USER_MANAGEMENT":
+                    ["ADD_USERS"]
+                } //row;
+                navigate(`/organization/roles/${id}/permissions`, { state: { permissions } });
 
             },
             onError: (error) => {
@@ -73,7 +86,14 @@ const RoleDetails = () => {
     );
 
     const handleOnSubmit = (values, _action) => {
-        mutation.mutate({name: values.roleName, description: values.roleDescription});
+        const payload = {
+            name: values.roleName, 
+            description: values.roleDescription
+        }
+        if(roleId){
+            payload.id = roleId;
+        }
+        mutation.mutate(payload);
     }
 
     const forms = React.useMemo(() => [
@@ -110,10 +130,7 @@ const RoleDetails = () => {
                 />
                 <div>
                     <Formik
-                        initialValues={{
-                            roleName: '',
-                            roleDescription: '',
-                        }}
+                        initialValues={formData}
                         validationSchema={roleValidationSchema}
                         onSubmit={handleOnSubmit}
                     >
