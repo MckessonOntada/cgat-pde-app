@@ -5,7 +5,7 @@ import { ReactComponent as IconLogout } from '@src/assets/svg/logout.svg';
 import { ReactComponent as IconMenu } from '@src/assets/svg/burger-menu.svg';
 import { ReactComponent as IconArrowDown } from '@src/assets/svg/arrow-down-filled.svg';
 import { ReactComponent as IconHelp } from '@src/assets/svg/help-circle-filled.svg';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { setUserData } from '@src/store/reducer/userReducer';
 import { debugIds, ID } from '@src/common/constants/id';
 import { Button, Dropdown, DropdownMenu } from '@mckesson/mcp-component-library';
@@ -16,12 +16,28 @@ import HeaderConfig from './__mock__';
 import FloatingDrawer from '../floating-drawer';
 import AuthService from '@src/api/authService/AuthService';
 import { useOktaAuth } from '@okta/okta-react';
+import { useQuery } from 'react-query';
+import CommonDataService from '../../api/commonService/CommonDataService';
 
 const PrimaryHeader = ({ user, setUserData, debugId }) => {
   const intl = useIntl();
-  const { oktaAuth,authState } = useOktaAuth();  
+  const { oktaAuth, authState } = useOktaAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const toggleDrawer = () => setDrawerOpen(!drawerOpen); 
+  const toggleDrawer = () => setDrawerOpen(!drawerOpen);
+
+  // const { isLoading, data, isError, refetch } = useQuery({
+  //   queryKey: ['organizations'],
+  //   queryFn: async () => {
+  //     const orgList = await CommonDataService.getOrganizationList({})
+  //     return orgList?.content?.map((item) => {
+  //       console.log('item....', item, { ...item, label: item.name, value: item.id })
+  //       return { ...item, label: item.name, value: item.id }
+  //     })
+  //     // console.log('_orgList..', _orgList)
+
+  //   },
+  //   refetchOnWindowFocus: false
+  // });
 
   const logout = () => {
     AuthService.userLogout(oktaAuth);
@@ -39,15 +55,15 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
             {props.children}
           </Link>
         </div>
-        <div className={styles.centerSelector}>
+        {/* <div className={styles.centerSelector}>
           <Dropdown
             id={''}
             name={''}
             aria-label="Select treatment center"
-            options={[]}
+            options={data?.content || []}
             onChange={() => { }}
           />
-        </div>
+        </div> */}
       </div>
     );
   };

@@ -7,7 +7,9 @@ const constructUserManagementServiceUrl = (uri) => {
   const practiceId = AuthUtils.getPracticeId();
   return `${USERMANAGEMENT_SERVICE_BASE_URL}api/practices/${isSystemAdminView ? 1 : practiceId}/${uri}`;
 }
-
+const constructOrganizationURL = (uri) => {
+  return `${USERMANAGEMENT_SERVICE_BASE_URL}api/${uri}`;
+}
 const constructUserManagementServicePublicUrl = (uri) => {
   return `${USERMANAGEMENT_SERVICE_BASE_URL}api/${uri}`;
 } 
