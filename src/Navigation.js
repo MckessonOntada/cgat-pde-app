@@ -11,8 +11,8 @@ import { Loader } from '@mckesson/mcp-component-library';
 import Login from './pages/login/Login';
 import MainLayout from './pages/MainLayout';
 
-import { debugIds, ID } from './common/constants/id';
-import { DEFAULT_INACTIVE_TIMEOUT } from './config/AppConfig';
+import { debugIds, ID } from '@src/constants/id';
+import { DEFAULT_INACTIVE_TIMEOUT } from '@src/config/AppConfig';
 import LoginCallback from './pages/LoginCallback/LoginCallback';
 import SignUp from "./pages/SignUp"; 
 import SignIn from './pages/SignIn';

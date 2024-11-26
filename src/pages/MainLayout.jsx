@@ -5,10 +5,10 @@ import { Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-do
 import { Button, Loader } from '@mckesson/mcp-component-library';
 
 import ErrorComponent from '../components/app/error/ErrorComponent';
-import { debugIds, ID } from '../common/constants/id';
+import { debugIds, ID } from '@src/constants/id';
 
 import styles from '../../src/assets/styles/MainLayout.module.scss';
-import AuthUtils from '../common/util/AuthUtils';
+import AuthUtils from '@src/util/AuthUtils';
 import AppRoutes from '../routes/AppRoutes';
 import Header from '../components/header';
 

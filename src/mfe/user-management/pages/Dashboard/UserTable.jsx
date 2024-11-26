@@ -10,8 +10,8 @@ import { useUser } from '../../context/UserContext';
 import { useQuery, useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
-import { serializeParams } from '@src/common/util/ApiUtils';
-import AuthUtils from '@src/common/util/AuthUtils';
+import { serializeParams } from '@src/util/ApiUtils';
+import AuthUtils from '@src/util/AuthUtils';
 
 
 function getbgColorOnRole(Role) {

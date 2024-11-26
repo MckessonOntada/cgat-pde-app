@@ -1,9 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import ApiRoutes from '@src/api/ApiRoutes';
-import { serializeParams } from '@src/common/util/ApiUtils';
-import CommonDataService from '../../../api/commonService/CommonDataService';
+import CommonDataService from '@src/api/commonService/CommonDataService';
 
 const RECORDS_PER_PAGE = 8;
 

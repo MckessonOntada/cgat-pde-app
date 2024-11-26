@@ -6,7 +6,7 @@ import Actions from './Actions';
 import { PATHS } from '../../routes/constants';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
-import useSessionFeatures from '@src/common/hooks/useSessionFeatures';
+import useSessionFeatures from '@src/hooks/useSessionFeatures';
 import { useOrg } from '../../context/OrgContext';
 
 const OrgList = () => {

@@ -7,7 +7,7 @@ import { ReactComponent as IconArrowDown } from '@src/assets/svg/arrow-down-fill
 import { ReactComponent as IconHelp } from '@src/assets/svg/help-circle-filled.svg';
 import { connect, useSelector } from 'react-redux';
 import { setUserData } from '@src/store/reducer/userReducer';
-import { debugIds, ID } from '@src/common/constants/id';
+import { debugIds, ID } from '@src/constants/id';
 import { Button, Dropdown, DropdownMenu } from '@mckesson/mcp-component-library';
 import styles from './assets/styles/Header.module.scss';
 import { useIntl } from 'react-intl';

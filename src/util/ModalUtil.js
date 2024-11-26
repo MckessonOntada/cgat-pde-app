@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button } from '@mckesson/mcp-component-library';
 
-import { openModal, closeModal } from '../../store/reducer/modalReducer';
-import store from '../../store/store';
+import { openModal, closeModal } from '../store/reducer/modalReducer';
+import store from '../store/store';
 
 export function renderModal({ title, bodyContent, footerActions, modalClose }) {
   const modalBody = <div>{bodyContent}</div>;

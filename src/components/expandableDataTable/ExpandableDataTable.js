@@ -12,7 +12,7 @@ import {
 } from './assets/DataTableCutomStyle.js';
 import { CUSTOM_TABLE_TYPE } from './assets/constants/CustomTableConstants.js';
 import DataTableEmptyView from './assets/DataTableEmptyView.js';
-import CommonUtils from '../../common/util/CommonUtils.js';
+import CommonUtils from '@src/util/CommonUtils.js';
 import { Paginate, Loader } from '@mckesson/mcp-component-library';
 
 export const ExpandableDataTable = (props) => {

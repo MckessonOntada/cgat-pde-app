@@ -9,7 +9,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { ReactComponent as MenuIcon } from '../../assets/svg/menu.svg';
 import styles from './assets/styles/MenuDrawer.module.scss';
-import CommonUtils from '../../common/util/CommonUtils';
+import CommonUtils from '@src/util/CommonUtils';
 
 function MenuDrawer({
   id,

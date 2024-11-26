@@ -1,8 +1,5 @@
 import React from "react";
-// import { PaymentInvoiceProvider } from "../../context/PaymentContext";
-// import { debugIds, ID } from '@src/common/constants/id';
 import Filters from "./Filters";
-// import PaymentHistoryTable from "./PaymentHistoryTable";
 import "./index.scss"
 import { Button } from '@mckesson/mcp-component-library';
 import CustomerStatementTable from "./CustomerStatementTable";

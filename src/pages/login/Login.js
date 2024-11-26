@@ -1,17 +1,17 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useOktaAuth } from '@okta/okta-react';
 import OktaSignIn from '@okta/okta-signin-widget';
-import { debugIds, ID } from '@src/common/constants/id';
+import { debugIds, ID } from '@src/constants/id';
 import AuthService from '@src/api/authService/AuthService';
 import CommonService from '@src/api/commonService/CommonService';
-import CommonUtils from '@src/common/util/CommonUtils';
+import CommonUtils from '@src/util/CommonUtils';
 import OktaHelper from '@src/config/OktaHelper';
 import '@okta/okta-signin-widget/css/okta-sign-in.min.css';
 import './assets/styles/Login.css';
 import style from './assets/styles/Login.module.scss';
-import useFetchQueryRetry from '@src/common/hooks/useFetchQueryRetry';
+import useFetchQueryRetry from '@src/hooks/useFetchQueryRetry';
 import AppLogo from '@src/assets/image/app-logo.svg';
-import { SESSION_CONST } from '../../common/constants/SessionConstants';
+import { SESSION_CONST } from '@src/constants/SessionConstants';
 
 const Login = () => {
   const widgetRef = useRef();
