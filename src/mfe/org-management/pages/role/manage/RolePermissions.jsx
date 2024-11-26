@@ -2,7 +2,7 @@ import React from 'react';
 import * as Yup from "yup";
 import { Stepper, Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
 import PageHeader from '@src/components/pageHeader';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -19,13 +19,16 @@ const RolePermissions = () => {
     const { t } = useTranslate();
     const navigate = useNavigate();
     const {roleId} = useParams();
+    const location = useLocation();
+    const permissions = location.state?.permissions || null;
     const { showModuleMessage } = useRole();
-
-    const [enabledPermissions, setEnabledPermissions] = React.useState([]);
+    
+    const [enabledPermissions, setEnabledPermissions] = React.useState(permissions || []);
     const [inheritedRole, setInheritedRole] = React.useState(null);
+    const { refreshData } = useRole();
 
     const handleOnBackButtonClick = () => {
-        navigate(`../${PATHS.roles}`);
+        navigate(`/organization/${PATHS.roles}`);
     };
 
     const mutation = useMutation(
@@ -38,10 +41,18 @@ const RolePermissions = () => {
         }, 
         {
             onSuccess: (data) => {
-                showModuleMessage({
-                    text: t('orgManagement.messages.newRoleCreation'),
-                    kind: 'success'
-                }, 10000);
+                if(permissions){
+                    showModuleMessage({
+                        text: t('orgManagement.messages.roleUpdate'),
+                        kind: 'success'
+                    }, 10000);
+                }else{
+                    showModuleMessage({
+                        text: t('orgManagement.messages.newRoleCreation'),
+                        kind: 'success'
+                    }, 10000);
+                }
+                refreshData();
                 navigate(`/organization/${PATHS.roles}`);
             },
             onError: (error) => {
@@ -61,7 +72,9 @@ const RolePermissions = () => {
         },
     ], [t]);
 
-    const handleGoBack = () => { }
+    const handleGoBack = () => {
+        navigate(`../${roleId}/edit-role`);
+    }
     const handleSaveAndContinue = (values) => { 
         const permissions = Object.values(enabledPermissions).flat();
         mutation.mutate(permissions);
@@ -104,6 +117,7 @@ const RolePermissions = () => {
                             enabledPermissions={enabledPermissions} 
                             setEnabledPermissions={setEnabledPermissions} 
                             onRoleChange={setInheritedRole}
+                            handleRoleSelect={() => {}}
                         />
 
                         <div className={'buttonGroup'}>
