@@ -7,16 +7,12 @@ import './styles.scss';
 const DetailsView = ({ data, onEditClick }) => {
   const { t } = useTranslate();
 
-  console.log(data)
+  console.log(data);
   return (
     <div className="view-container">
       <div className="org-box">
         <div className="org-logo-box">
-          {data?.logoUrl ? (
-            <img src={data?.logoUrl} alt="Organization Logo" className="logo-img" />
-          ) : (
-            <p>No logo uploaded</p>
-          )}
+          <img src={data?.logoUrl} alt="Logo" className="logo-img" />
           <h2 className="org-label">{data.name}</h2>
         </div>
         <Button Icon={EditPencil} variant="tertiary" onClick={onEditClick} size="md">

@@ -8,7 +8,7 @@ import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_
 import { useTranslate } from '@src/translations/useTranslation';
 import { PATHS } from '../../routes/constants';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
-import ModuleHeader from '../../../../components/module-header';
+import ModuleHeader from '@AuthService/components/module-header';
 import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {

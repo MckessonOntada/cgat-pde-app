@@ -8,7 +8,7 @@ import { ReactComponent as IconHelp } from '@src/assets/svg/help-circle-filled.s
 import { connect } from 'react-redux';
 import { setUserData } from '@src/store/reducer/userReducer';
 import { debugIds, ID } from '@src/common/constants/id';
-import { Button, Dropdown, DropdownMenu } from '@mckesson/mcp-component-library';
+import { Button, Dropdown, DropdownMenu, Loader } from '@mckesson/mcp-component-library';
 import styles from './assets/styles/Header.module.scss';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
@@ -16,15 +16,53 @@ import HeaderConfig from './__mock__';
 import FloatingDrawer from '../floating-drawer';
 import AuthService from '@src/api/authService/AuthService';
 import { useOktaAuth } from '@okta/okta-react';
+import { useQuery } from 'react-query';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
+import { serializeParams } from '@src/common/util/ApiUtils';
+import useSessionFeatures from '../../common/hooks/useSessionFeatures';
 
 const PrimaryHeader = ({ user, setUserData, debugId }) => {
   const intl = useIntl();
-  const { oktaAuth,authState } = useOktaAuth();  
+  const { oktaAuth, authState } = useOktaAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const toggleDrawer = () => setDrawerOpen(!drawerOpen); 
+  const toggleDrawer = () => setDrawerOpen(!drawerOpen);
 
   const logout = () => {
     AuthService.userLogout(oktaAuth);
+  };
+
+  const {
+    organization: { setOrganization }
+  } = useSessionFeatures();
+
+  const requestParams = {
+    pageNo: 0,
+    pageSize: 8,
+    sortBy: 'name',
+    sortOrder: 'asc'
+  };
+
+  const { isLoading, data, isError } = useQuery({
+    queryKey: ['organizations'],
+    queryFn: async () => {
+      const res = await HttpResourceService.callRest(
+        `${ApiRoutes.ORGANIZATIONS}?${serializeParams(requestParams)}`,
+        httpVerb.GET,
+        {}
+      );
+      return res.data;
+    },
+    refetchOnWindowFocus: false
+  });
+
+  const dropdownOptions = Array.isArray(data?.content)
+    ? data.content.map((item) => ({ value: item, label: item.name }))
+    : [];
+
+  const handleChange = (selectedOption) => {
+    console.log('Selected value:', selectedOption);
+    setOrganization(selectedOption);
   };
 
   const LeftSideView = (props) => {
@@ -40,13 +78,19 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
           </Link>
         </div>
         <div className={styles.centerSelector}>
-          <Dropdown
-            id={''}
-            name={''}
-            aria-label="Select treatment center"
-            options={[]}
-            onChange={() => { }}
-          />
+          {isLoading ? (
+            <Loader />
+          ) : isError ? (
+            <div className="error-message">Failed to load organizations.</div>
+          ) : (
+            <Dropdown
+              id="Select"
+              name="select"
+              aria-label="Select treatment center"
+              options={dropdownOptions}
+              onChange={handleChange}
+            />
+          )}
         </div>
       </div>
     );
@@ -65,7 +109,7 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
             <IconArrowDown />
           </button>
         }
-        handleSelect={() => { }}
+        handleSelect={() => {}}
         options={HeaderConfig.profileOptions}
         aria-label="Profile options"
       />,
@@ -106,13 +150,24 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
   return (
     <div className={`${styles.navContainer} ${styles.primary}`}>
       <div className={styles.wrapper} id={''}>
-        {authState?.isAuthenticated ? <LeftSideView><AppLogo /></LeftSideView> :
-          <div className={styles.navItemsLeft} id={''}> <div className={styles.branding}> <AppLogo /> </div></div>}
+        {authState?.isAuthenticated ? (
+          <LeftSideView>
+            <AppLogo />
+          </LeftSideView>
+        ) : (
+          <div className={styles.navItemsLeft} id={''}>
+            {' '}
+            <div className={styles.branding}>
+              {' '}
+              <AppLogo />{' '}
+            </div>
+          </div>
+        )}
         {authState?.isAuthenticated && (
           <div className={styles.desktopOnly}>
             <RightSideView />
-          </div>)
-        }
+          </div>
+        )}
         <div className={styles.mobileOnly}>
           <button onClick={toggleDrawer} aria-label="Open drawer menu">
             <IconMenu />
