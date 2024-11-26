@@ -18,7 +18,7 @@ export const createColumns = (t) => [
         id: 'name',
         name: t('orgManagement.role.labelRoleName'),
         selector: (row) => (
-            <Link className="MCP-table-link" to={`details/${row.id}`}>
+            <Link className="MCP-table-link" to={`${row.id}/edit-role`}>
                 {row.name}
             </Link>
         ),
