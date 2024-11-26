@@ -17,23 +17,27 @@ import FloatingDrawer from '../floating-drawer';
 import AuthService from '@src/api/authService/AuthService';
 import { useOktaAuth } from '@okta/okta-react';
 import { useOrg } from '../../mfe/org-management/context/OrgContext';
+import useSessionFeatures from '../../common/hooks/useSessionFeatures';
 
 const PrimaryHeader = ({ user, setUserData, debugId }) => {
   const intl = useIntl();
-  const { oktaAuth,authState } = useOktaAuth();  
+  const { oktaAuth, authState } = useOktaAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const toggleDrawer = () => setDrawerOpen(!drawerOpen); 
+  const toggleDrawer = () => setDrawerOpen(!drawerOpen);
+
+  const {
+    organization: { setOrganization }
+  } = useSessionFeatures();
 
   const { data, isLoading, isError } = useOrg();
 
   const dropdownOptions = Array.isArray(data)
-  ? data.map((item) => ({ value: item, label: item.name }))
-  : [];
+    ? data.map((item) => ({ value: item, label: item.name }))
+    : [];
 
-const handleChange = (selectedOption) => {
-  console.log('Selected value:', selectedOption);
-  setOrganization(selectedOption);
-};
+  const handleChange = (selectedOption) => {
+    setOrganization(selectedOption);
+  };
 
   const logout = () => {
     AuthService.userLogout(oktaAuth);
@@ -77,7 +81,7 @@ const handleChange = (selectedOption) => {
             <IconArrowDown />
           </button>
         }
-        handleSelect={() => { }}
+        handleSelect={() => {}}
         options={HeaderConfig.profileOptions}
         aria-label="Profile options"
       />,
@@ -118,13 +122,24 @@ const handleChange = (selectedOption) => {
   return (
     <div className={`${styles.navContainer} ${styles.primary}`}>
       <div className={styles.wrapper} id={''}>
-        {authState?.isAuthenticated ? <LeftSideView><AppLogo /></LeftSideView> :
-          <div className={styles.navItemsLeft} id={''}> <div className={styles.branding}> <AppLogo /> </div></div>}
+        {authState?.isAuthenticated ? (
+          <LeftSideView>
+            <AppLogo />
+          </LeftSideView>
+        ) : (
+          <div className={styles.navItemsLeft} id={''}>
+            {' '}
+            <div className={styles.branding}>
+              {' '}
+              <AppLogo />{' '}
+            </div>
+          </div>
+        )}
         {authState?.isAuthenticated && (
           <div className={styles.desktopOnly}>
             <RightSideView />
-          </div>)
-        }
+          </div>
+        )}
         <div className={styles.mobileOnly}>
           <button onClick={toggleDrawer} aria-label="Open drawer menu">
             <IconMenu />
