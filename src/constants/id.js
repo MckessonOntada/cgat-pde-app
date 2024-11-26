@@ -1,4 +1,4 @@
-import { ENVIRONMENT } from '../../config/AppConfig';
+import { ENVIRONMENT } from '@src/config/AppConfig';
 
 const ROOT_ID = 'cgat_pde.appPage';
 

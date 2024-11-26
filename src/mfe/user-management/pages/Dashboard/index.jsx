@@ -7,7 +7,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { UserProvider } from '../../context/UserContext';
 import UserTable from './UserTable';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
-import { debugIds, ID } from '@src/common/constants/id';
+import { debugIds, ID } from '@src/constants/id';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import { ReactComponent as upload_bottom } from '@src/assets/image/upload_bottom.svg';
 import { useLocation, useNavigate } from 'react-router-dom';

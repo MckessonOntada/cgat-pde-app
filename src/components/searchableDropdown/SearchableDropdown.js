@@ -17,9 +17,9 @@ import { styled } from '@mui/material/styles';
 import { ReactComponent as InfoIcon } from '../../assets/svg/info.svg';
 import { ReactComponent as NoResult } from './assets/svg/NoResult_copy.svg';
 
-import CommonUtils from '../../common/util/CommonUtils';
+import CommonUtils from '@src/util/CommonUtils';
 
-import TooltipText from '../../common/hooks/useTooltipText';
+import TooltipText from '@src/hooks/useTooltipText';
 
 const CssTextField = styled(TextField)({
   '& .MuiOutlinedInput-root': {

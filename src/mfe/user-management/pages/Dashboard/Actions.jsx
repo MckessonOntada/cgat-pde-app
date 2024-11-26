@@ -5,7 +5,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as VerticalIcon } from '@src/assets/image/Vertical.svg';
 import { ReactComponent as View } from '@src/assets/image/view.svg';
 import { ReactComponent as Edit } from '@src/assets/image/edit_pencil.svg';
-import { debugIds, ID } from '@src/common/constants/id';
+import { debugIds, ID } from '@src/constants/id';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from '../../routes/constants';
 

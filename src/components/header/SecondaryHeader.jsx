@@ -5,8 +5,8 @@ import { Button, TabList } from '@mckesson/mcp-component-library';
 import styles from './assets/styles/Header.module.scss';
 import { useIntl } from 'react-intl';
 import { useLocation, useNavigate } from 'react-router-dom';
-import useSessionFeatures from '@src/common/hooks/useSessionFeatures';
-import AuthUtils from '@src/common/util/AuthUtils';
+import useSessionFeatures from '@src/hooks/useSessionFeatures';
+import AuthUtils from '@src/util/AuthUtils';
 
 const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
   let intl = useIntl();

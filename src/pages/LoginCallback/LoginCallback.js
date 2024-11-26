@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useOktaAuth } from '@okta/okta-react';
 import CommonService from '../../api/commonService/CommonService';
-import CommonUtils from '../../common/util/CommonUtils';
+import CommonUtils from '@src/util/CommonUtils';
 import AuthService from '../../api/authService/AuthService';
 import { Loader, Button } from '@mckesson/mcp-component-library';
 import ErrorComponent from '../../components/app/error/ErrorComponent';
-import useFetchQueryRetry from '../../common/hooks/useFetchQueryRetry';
+import useFetchQueryRetry from '@src/hooks/useFetchQueryRetry';
 
 const LoginCallback = () => {
   let { oktaAuth } = useOktaAuth();

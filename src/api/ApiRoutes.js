@@ -1,16 +1,17 @@
-import AuthUtils from '../common/util/AuthUtils';
-import { MAIN_BASE_URL, USERMANAGEMENT_SERVICE_BASE_URL } from '../config/AppConfig';
+import AuthUtils from '@src/util/AuthUtils';
+import { MAIN_BASE_URL, USERMANAGEMENT_SERVICE_BASE_URL } from '@src/config/AppConfig';
 
 const constructMainAppUrl = (uri) => `${MAIN_BASE_URL}${uri}`;
+
 const constructUserManagementServiceUrl = (uri) => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const practiceId = AuthUtils.getPracticeId();
   return `${USERMANAGEMENT_SERVICE_BASE_URL}api/practices/${isSystemAdminView ? 1 : practiceId}/${uri}`;
-}
+};
 
 const constructUserManagementServicePublicUrl = (uri) => {
   return `${USERMANAGEMENT_SERVICE_BASE_URL}api/${uri}`;
-} 
+};
 
 const ApiRoutes = Object.freeze({
   GET_CGAT_PDE_OKTA_CONFIG: constructUserManagementServicePublicUrl('public/idpConfig'),

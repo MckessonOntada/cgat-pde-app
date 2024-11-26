@@ -1,5 +1,5 @@
 import React from 'react';
-import { Badge } from '@mckesson/mcp-component-library';
+import { Badge, Tooltip } from '@mckesson/mcp-component-library';
 import { Link } from 'react-router-dom';
 
 const getBadgeType = (isActive) => {
@@ -18,19 +18,19 @@ export const createColumns = (t) => [
         id: 'name',
         name: t('orgManagement.role.labelRoleName'),
         selector: (row) => (
-            <Link className="MCP-table-link" to={`${row.id}/edit-role`}>
+            <Tooltip body={`${row.name}/${row.id}`}><Link className="MCP-table-link" to={`${row.id}/edit-role`} state={row}>
                 {row.name}
-            </Link>
+            </Link></Tooltip>
         ),
         wrap: true,
-        width: '35%',
+        width: '34%',
     },
     {
         id: 'createAt',
         name: t('orgManagement.role.tableHeadingCreatedOn'),
         selector: (row) => (row.createdAt ? getFormattedDate(row.createdAt) : '-'),
         wrap: true,
-        width: "35%",
+        width: "34%",
     },
     {
         id: 'status',
@@ -45,6 +45,6 @@ export const createColumns = (t) => [
         ),
         wrap: true,
         center: true,
-        width: "35%"
+        width: "27%"
     },
 ];

@@ -5,7 +5,8 @@ import { Required } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import FileInput from '@src/components/FileInput';
 
-const OrgDetailsFormSegment = () => {
+const OrgDetailsFormSegment = (props) => {
+  const { formik } = props;
   const { t } = useTranslate();
 
   const options = [
@@ -91,8 +92,10 @@ const OrgDetailsFormSegment = () => {
         />
         <Field
           name="contact.phone"
+          // type="number"
+          // onChange={formik.handleChange}
           label={t('orgManagement.create_org.inputLabel.phone_no')}
-          component={Components['phoneInput']}
+          component={Components['input']}
           className="phoneInput"
           placeholder=" "
           isRequired

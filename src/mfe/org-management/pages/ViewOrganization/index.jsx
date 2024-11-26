@@ -30,7 +30,7 @@ export default function ViewOrganization() {
     queryKey: [`practices/${orgId}`],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(
-        `${ApiRoutes.ORGANIZATIONS}/${orgId}`, // Use practice id from organization
+        `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${orgId}`, // Use practice id from organization
         httpVerb.GET,
         {}
       );
@@ -52,6 +52,7 @@ export default function ViewOrganization() {
     setSelectedAccounts([]);
     setAddNewAccounts(false);
   };
+  console.log('data....1', data)
   return (
     <div className="viewOrg-container">
       {isLoading && <Loader type={'screen'} />}
@@ -68,7 +69,7 @@ export default function ViewOrganization() {
         <div className="details-view-container">
           <DetailsView
             data={data}
-            onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, {}, true)}
+            onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: data }, true)}
           />
         </div>
       )}

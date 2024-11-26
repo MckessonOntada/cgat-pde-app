@@ -13,14 +13,14 @@ import ClickAwayListener from '@mui/material/ClickAwayListener';
 import 'react-date-range/dist/styles.css'; // main css file
 import './assets/styles/DateRangePickerTheme.scss'; // theme css file
 import styles from './assets/styles/DateRangePicker.module.scss';
-import { DateUtils } from '../../common/util/DateUtil';
+import { DateUtils } from '@src/util/DateUtil';
 import { ReactComponent as CalendarIcon } from './assets/svgs/calendarIcon.svg';
 import { ReactComponent as CloseIcon } from './assets/svgs/closeIcon.svg';
 import { ReactComponent as ClearIcon } from './assets/svgs/clearIcon.svg';
 import { ReactComponent as RightIcon } from './assets/svgs/rightIcon.svg';
 import { ReactComponent as WarningIcon } from './assets/svgs/warningIcon.svg';
 import { dateTypes } from './assets/const/datePickerConst';
-import useWindowSize from '../../common/hooks/UseWindowSize';
+import useWindowSize from '@src/hooks/UseWindowSize';
 // import { Required, Label, TextError } from '../../';
 
 dayjs.extend(customParseFormat);

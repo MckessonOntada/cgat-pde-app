@@ -4,7 +4,7 @@ import { Heading } from '@mckesson/mcp-component-library';
 import styles from './Dashboard.module.scss';
 import { SYSTEM_ADMIN_CARDS_DATA, CARDS_DATA } from './DashboardCards';
 import { useTranslate } from '@src/translations/useTranslation';
-import AuthUtils from '@src/common/util/AuthUtils';
+import AuthUtils from '@src/util/AuthUtils';
 
 const Dashboard = () => {
   const { t } = useTranslate();

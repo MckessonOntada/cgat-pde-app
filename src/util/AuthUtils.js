@@ -1,4 +1,4 @@
-import { SESSION_CONST } from '../constants/SessionConstants';
+import { SESSION_CONST } from '@src/constants/SessionConstants';
 /**
  * @description - Check if the user has a specific role
  * @param {any} role - The input to check.

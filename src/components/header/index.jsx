@@ -2,7 +2,7 @@ import React from 'react';
 import PrimaryHeader from './PrimaryHeader';
 import SecondaryHeader from './SecondaryHeader';
 import HeaderConfig from './__mock__';
-import { debugIds, ID } from '@src/common/constants/id';
+import { debugIds, ID } from '../../constants/id';
 import { OrganizationProvider } from '../../mfe/org-management/context/OrgContext';
 
 const GlobalHeader = () => {

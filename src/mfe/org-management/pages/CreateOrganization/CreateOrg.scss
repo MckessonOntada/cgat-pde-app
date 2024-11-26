@@ -99,7 +99,7 @@
 
 .details-view-container {
   display: none;
-  @include mixins.respond("lg") {
+  @include mixins.respond("sm") {
     display: block;
   }
 }

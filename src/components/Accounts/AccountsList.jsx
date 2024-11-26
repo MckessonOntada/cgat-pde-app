@@ -11,8 +11,8 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
-import { serializeParams } from '@src/common/util/ApiUtils';
-import AuthUtils from '../../common/util/AuthUtils';
+import AuthUtils from '@src/util/AuthUtils';
+import { serializeParams } from '@src/util/ApiUtils';
 
 const RECORDS_PER_PAGE = 8;
 

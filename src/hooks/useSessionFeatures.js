@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { SESSION_CONST } from '../constants/SessionConstants';
+import { SESSION_CONST } from '@src/constants/SessionConstants';
 
 const useSessionFeatures = () => {
   const [selectedOrganization, setSelectedOrganization] = useState(() => {
