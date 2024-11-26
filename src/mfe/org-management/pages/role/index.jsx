@@ -12,7 +12,8 @@ const Role = () => {
           <Routes>
             <Route path="/" index element={<RolesList />} />
             <Route path={PATHS.createRole} element={<RoleDetails />} />
-            <Route path=":roleId/permissions" element={<RolePermissions />} />
+            <Route path={PATHS.editRole} element={<RoleDetails />} />
+            <Route path={PATHS.permissions} element={<RolePermissions />} />
           </Routes>
         </RoleProvider>
     )

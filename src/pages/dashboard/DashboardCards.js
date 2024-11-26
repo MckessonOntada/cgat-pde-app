@@ -46,7 +46,7 @@ const CARDS_DATA = [
     label: 'manage_roles',
     icon: ChecklistIcon,
     details: 'efficiently_streamline_user_management_for_seamless_experience',
-    path: '/manage-roles',
+    path: '/organization/roles',
     permissions: []
   },
   {

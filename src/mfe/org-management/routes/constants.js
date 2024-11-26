@@ -4,5 +4,7 @@ export const PATHS = {
   editOrg: 'edit-org',
   viewOrg: 'view-org/:orgId',
   roles: 'roles',
-  createRole: 'role-details'
+  createRole: 'create-role',
+  editRole: ':roleId/edit-role',
+  permissions: ':roleId/permissions'
 };

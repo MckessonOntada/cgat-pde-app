@@ -63,7 +63,8 @@ const RoleDetails = () => {
             onSuccess: (data) => {
                 debugger;
                 const {id} = data;
-                navigate(`../${PATHS.roles}/${id}/permissions`);
+                navigate(`/organization/roles/${id}/permissions`);
+
             },
             onError: (error) => {
                 console.error('Error posting data:', error);
