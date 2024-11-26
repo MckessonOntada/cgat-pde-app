@@ -4,20 +4,26 @@ import { setUserData } from '@src/store/reducer/userReducer';
 import { Button, TabList } from '@mckesson/mcp-component-library';
 import styles from './assets/styles/Header.module.scss';
 import { useIntl } from 'react-intl';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useSessionFeatures from '@src/common/hooks/useSessionFeatures';
 import AuthUtils from '@src/common/util/AuthUtils';
 
 const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
   let intl = useIntl();
+  const navigate=useNavigate();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
 
   const location = useLocation();
   const {
-    organization: { selectedOrganization }
+    organization: { selectedOrganization, removeOrganization }
   } = useSessionFeatures();
 
-  const tabs = useMemo(() => {    
+  const handleSystemAdminViewClick = () => {
+    removeOrganization();
+    navigate("/");
+  }
+
+  const tabs = useMemo(() => {
     if (isSystemAdminView) {
       return [{
         label: 'System Administrator',
@@ -70,8 +76,8 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
     return (
       <div className={styles.navItemsRight} aria-label="System administration view">
         <div className={styles.navOptions}>
-          {!selectedOrganization && (
-            <Button color="secondary">
+          {!AuthUtils.isSystemAdminView() && (
+            <Button color="secondary" onClick={handleSystemAdminViewClick}>
               {intl.formatMessage({ id: 'header.label.systemAdminView' })}
             </Button>
           )}

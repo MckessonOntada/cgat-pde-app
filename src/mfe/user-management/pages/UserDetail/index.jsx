@@ -39,7 +39,7 @@ const UserDetail = () => {
   const isSuccess = location.state?.isSuccess || false;
 
   const requestParams = {
-    userType: AuthUtils.getUserRole() === 'SYSTEM_ADMIN' ? 'ADMIN' : 'GENERAL'
+    userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
   };
 
   const { isLoading, isError, data } = useQuery({

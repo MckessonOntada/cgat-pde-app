@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import './CreateUser.scss';
-import { Button, Stepper } from '@mckesson/mcp-component-library';
+import { Button, Stepper,Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import UserDetailsFormSegment from './CreateUserForm';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -22,13 +22,27 @@ const CreateUser = () => {
 	const location = useLocation();
 	const { isEdit } = location.state || {};
 	const { isPending } = location.state || {};
-	// Fetch user data based on userId 
-	//const userData = USER_DATA.find(user => user.id === parseInt(userId));
+	const [ isAlertVisible, setIsAlertVisible] = useState(false); 
+	const [alert, setAlert] = useState(null)
+
+	useEffect(() => {
+		if (isAlertVisible) {
+		  const timer = setTimeout(() => {
+			setIsAlertVisible(false);
+		  }, 10000);
+	
+		  return () => clearTimeout(timer); // Cleanup timer on unmount
+		}
+	  }, [isAlertVisible]);
+
+	  const handleAlertClose = () => {
+		setIsAlertVisible(false); 
+	  };
 
 	const requestParams = {
-		userType: AuthUtils.getUserRole() === 'SYSTEM_ADMIN' ? 'ADMIN' : 'GENERAL'
+		userType: AuthUtils.isSystemAdminView()? 'ADMIN' : 'GENERAL'
 	};
-	const practiceId = AuthUtils.getPracticeId() ? 1 : AuthUtils.getPracticeId();
+	const practiceId = AuthUtils.getPracticeId() ?? 1 ;
 
 	const { isLoading: isGetUserdetails, isError: isGetUserError, data: userData } = useQuery({
 		queryKey: [`users/${userId}`],
@@ -37,8 +51,7 @@ const CreateUser = () => {
 				`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, // Use practice id from organization
 				httpVerb.GET,
 				{}
-			);
-			//userData = res.data;
+			); 
 			return res.data;
 		},
 		refetchOnWindowFocus: false
@@ -67,6 +80,17 @@ const CreateUser = () => {
 		navigate(-1);
 	};
 
+	const formatPhoneNumber = (phoneNumber) => {
+		if (!phoneNumber) return ""; 
+		const cleaned = phoneNumber.replace(/\D/g, "");  
+		const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+		if (match) {
+		  return `(${match[1]}) ${match[2]}-${match[3]}`;
+		}
+	  
+		return phoneNumber;  
+	  };
+
 	const initialValues = {
 		name: {
 			firstName: userData?.name?.firstName || '',
@@ -75,7 +99,7 @@ const CreateUser = () => {
 		},
 		contact: {
 			email: userData?.contact?.email || '',
-			phone: userData?.contact?.phone || '',
+			phone:  userData?.contact?.phone || '',
 			countryCode: "91",
 			fax: userData?.contact?.fax || '',
 		},
@@ -150,24 +174,12 @@ const CreateUser = () => {
 					navigate(isEdit ? -1 : `../${PATHS.userPermissions}/${response.id || userId}`);
 				},
 				onError: (error) => {
-					console.log('Failed to create/update user:', error);
-					alert('An error occurred. Please try again.');
+					//console.log('Failed to create/update user:', error);
+					setAlert({ type: "error", message: "Failed to create/update user" });
+					setIsAlertVisible(true); 
 				},
 			}
-		);
-		if (isLoading) {
-			console.log('Submitting user...');
-		}
-
-		if (isError) {
-			console.log('Error occurred while submitting the user');
-		}
-
-		if (data) {
-			console.log('Submission successful:', data);
-			navigate(isEdit ? -1 : `../${PATHS.userPermissions}/${data.id || userId}`);
-		}
-
+		); 
 	};
 
 	const handleGoBack = () => {
@@ -206,7 +218,13 @@ const CreateUser = () => {
 					]}
 				/>
 			</div>
-
+			{isAlertVisible && (
+				<Alert
+				description={alert.message}
+				onClose={handleAlertClose}
+				type={alert.type}
+				duration={10000} 
+        	/>)}
 			<Formik
 				initialValues={initialValues}
 				validationSchema={validationSchema}
