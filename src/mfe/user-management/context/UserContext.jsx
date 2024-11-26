@@ -49,7 +49,7 @@ export const UserProvider = ({ children }) => {
     pageSize: RECORDS_PER_PAGE,
     sortBy: 'first_name',
     sortOrder: 'asc',
-    userType: AuthUtils.getUserRole() === 'SYSTEM_ADMIN' ? 'ADMIN' : 'GENERAL'
+    userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
   }),[currentPage]);
 
   const { isLoading, isError, data,refetch } = useQuery({
@@ -84,20 +84,23 @@ export const UserProvider = ({ children }) => {
         totalRecords: data?.totalElements || 0,
         recordsPerPage: RECORDS_PER_PAGE,
         update: {
-          setCurrentPage
-        }
+          setCurrentPage,
+        },
       },
       filters: {
         ...filterState,
         update: {
           setSearchQuery: (value) => updateFilterState('searchQuery', value),
           setRole: (value) => updateFilterState('role', value),
-          setStatus: (value) => updateFilterState('status', value)
+          setStatus: (value) => updateFilterState('status', value),
         },
-        clearFilters  
-      }
+        clearFilters,
+      },
+      refetch, // Add refetch to context value to reload data
     }),
-    [updateFilterState, clearFilters,  isLoading, isError, data, currentPage]
+    [updateFilterState, clearFilters, isLoading, isError, data, currentPage, refetch]
   );
+  
   return <UserContext.Provider value={ctxValue}>{children}</UserContext.Provider>;
+  
 };

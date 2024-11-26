@@ -25,7 +25,7 @@ const UserPermissions = () => {
     // Fetch user data based on userId 
     //const userData = userId ? USER_DATA.find(user => user.id === parseInt(userId)) : {};
     const requestParams = {
-		userType: AuthUtils.getUserRole() === 'SYSTEM_ADMIN' ? 'ADMIN' : 'GENERAL'
+		userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
 	};
 
     const handleRoleSelect = (value) => {

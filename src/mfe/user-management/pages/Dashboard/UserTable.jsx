@@ -7,6 +7,12 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import { Link } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
+import { useQuery, useMutation } from 'react-query';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
+import { serializeParams } from '@src/common/util/ApiUtils';
+import AuthUtils from '@src/common/util/AuthUtils';
+
 
 function getbgColorOnRole(Role) {
   switch (Role) {
@@ -23,7 +29,7 @@ function UserTable({ isPendingRequest = false, selectableRows = false, omitColum
   // Move pagination to context
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState([]);
- 
+  
   const {
     isLoading,
     isError,
@@ -33,15 +39,54 @@ function UserTable({ isPendingRequest = false, selectableRows = false, omitColum
   } = useUser();
 
   const handleRowSelected = ({ selectedRows }) => {
-    setSelectedRows(selectedRows.map((row) => row.id));
+    // setSelectedRows(selectedRows.map((row) => row.id));
+    setSelectedRows(selectedRows);
   };
 
+  const requestParams = {
+		userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
+	};
+  
+
+  const { mutate } = useMutation(async (userId) => {
+    const res = await HttpResourceService.callRest(
+      `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`,
+      httpVerb.DELETE,
+      null
+    );
+    return res.data;
+  });
+
   const handleDeactivate = () => {
-    setSelectedRows([]);
+    const ids = selectedRows.map(row => row.id);  
+    Promise.all(
+      ids.map((userId) =>
+        mutate(userId, {
+          onSuccess: (response) => {
+            console.log(`User ${userId} deactivated successfully:`, response);
+          },
+          onError: (error) => {
+            console.error(`Failed to deactivate user ${userId}:`, error);
+          },
+        })
+      )
+    ).then(() => {
+      // Refetch data after all users are deactivated
+      refetch();
+    });
   };
 
   const handleChangePage = (e, newPage) => {
     setCurrentPage(newPage);
+  };
+
+  const allInactive = selectedRows.every(row => !row.isActive);
+  const buttonLabel = allInactive
+  ? t('userManagement.button.activate')
+  : t('userManagement.button.deactivate');
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-GB').replace(/\//g, '-');
   };
 
   const columns = [
@@ -113,7 +158,7 @@ function UserTable({ isPendingRequest = false, selectableRows = false, omitColum
       selector: 'date_added',
       sortable: true,
       wrap: true,
-      format: (props) => new Date(props.createdAt).toLocaleDateString() 
+      cell: (props) => formatDate(props.createdAt) 
     },
     {
       id: 'action',
@@ -134,10 +179,10 @@ function UserTable({ isPendingRequest = false, selectableRows = false, omitColum
       {selectedRows.length > 0 && (
         <div className="selected-item-alert">
           <p className="selected-item-text">
-            {selectedRows.length} {t('orgManagement.selected_items')}
+            {selectedRows.length} {t('userManagement.selected_items')}
           </p>
           <Button variant="secondary" onClick={handleDeactivate}>
-            {t('orgManagement.button.deactivate')}
+          {buttonLabel}
           </Button>
         </div>
       )}
@@ -149,6 +194,7 @@ function UserTable({ isPendingRequest = false, selectableRows = false, omitColum
         onSortIconClick={(value) => console.log(value)}
         handleChangePage={handleChangePage}
         selectableRows={selectableRows}
+        selectableRowsHeader={false} 
         currentPage={currentPage}
         totalPageCount={totalPageCount}
         totalRocords={totalRecords}
