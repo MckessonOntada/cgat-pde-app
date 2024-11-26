@@ -1,13 +1,14 @@
 import React from 'react';
-import { Button } from '@mckesson/mcp-component-library';
+import { Button, Alert } from '@mckesson/mcp-component-library';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle.svg';
 import ModuleHeader from "@src/components/module-header";
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
-import Filters from './Filters';
-import { RoleProvider } from '../../../context/RoleContext';
+import FilterPanel from './FilterPanel';
+import { useRole } from '../../../context/RoleContext';
 import RolesDataTable from './RolesDataTable';
 import { useNavigate } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
+import { PATHS } from '../../../routes/constants';
 
 const breadcrumbItems = [
     {
@@ -22,8 +23,9 @@ const breadcrumbItems = [
 function RolesList() {
     const { t } = useTranslate();
     const navigate = useNavigate();
+    const { moduleMessage, clearModuleMessage } = useRole();
     const handleOnAddRoleClick = () => {
-        navigate('create-role');
+        navigate(PATHS.createRole);
     }
 
     return (
@@ -41,19 +43,27 @@ function RolesList() {
                 }
             />
 
+            {
+                moduleMessage &&
+                <Alert
+                    onClose={clearModuleMessage}
+                    showTitle
+                    title={moduleMessage.text}
+                    type={moduleMessage.kind}
+                />
+            }
+
             {/* module body */}
             <div className='MCP-module-body'>
                 <div className="MCP-panel-container">
                     <div className='MCP-CardContainer'>
-                        <Filters />
+                        <FilterPanel />
                     </div>
                     <div className='MCP-table-wrapper'>
                         <ModuleHeader
                             heading={<p className='secondaryHeading'>{t('orgManagement.role.labelRolesListing')}</p>}
                         />
-                        <RoleProvider>
                             <RolesDataTable />
-                        </RoleProvider>
                     </div>
                 </div>
             </div>

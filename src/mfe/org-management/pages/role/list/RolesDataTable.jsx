@@ -2,39 +2,17 @@ import React, { useState } from 'react';
 import { CustomDataTable, Button, Badge } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useRole } from '../../../context/RoleContext';
-import { createColumns } from './Columns';
-
-function getColorByStatus(status) {
-    switch (status) {
-        case 'Active':
-            return 'success';
-        case 'Inactive':
-            return 'error';
-        default:
-            return 'info';
-    }
-}
+import { createColumns } from './RoleTableColumns';
 
 const RolesDataTable = () => {
     const { t } = useTranslate();
     const [selectedRows, setSelectedRows] = useState([]);
-
     const columns = createColumns(t)
 
     const {
-        data,
-        pagination: {
-            currentPage,
-            totalPageCount,
-            totalRecords,
-            recordsPerPage,
-            update: { setCurrentPage }
-        }
+        currentPageData,
+        paginationConfig
     } = useRole();
-
-    const handleChangePage = (e, newPage) => {
-        setCurrentPage(newPage);
-    };
 
     const handleSort = (selectedColumn, sortDirection, sortedRows) => {
         // TODO
@@ -66,14 +44,14 @@ const RolesDataTable = () => {
                 id="my-data-table"
                 type="normal"
                 columns={columns}
-                data={data} // Use currentData for pagination
+                data={currentPageData}
                 onSortIconClick={handleSort}
-                currentPage={currentPage}
-                totalPageCount={totalPageCount}
+                currentPage={paginationConfig.pageNumber}
+                totalPageCount={paginationConfig.totalPages}
                 pagination={true}
-                handleChangePage={handleChangePage}
-                totalRocords={totalRecords} // Corrected typo here
-                recordsPerPage={recordsPerPage}
+                handleChangePage={(_event, newPageIndex) => paginationConfig.setCurrentPage(newPageIndex)}
+                totalRocords={paginationConfig.totalElements} // Corrected typo here
+                recordsPerPage={paginationConfig.pageSize}
                 paginationTotalRecorsMessage={'results'}
                 paginationRecordsPerPageMessage={`per page`}
                 isAdmin={true}

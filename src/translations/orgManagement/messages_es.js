@@ -95,6 +95,7 @@ export const OrgManagementES = {
   'orgManagement.org_list': 'S_Organization Listing',
   'orgManagement.add.account': 'S_ADD ACCOUNT',
 
+  'orgManagement.role.placeholder': 'S_Select by name and location',
   'orgManagement.role.headingManageOrder': 'S_Manage Roles',
   'orgManagement.role.headingPermissionDetails': 'S_Permission Details',
   'orgManagement.role.labelAddRole': 'S_Add Role',

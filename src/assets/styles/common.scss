@@ -79,6 +79,13 @@
   width: 100%;
 }
 
+.MCP-table-link{
+  text-decoration: none;
+  color: var(--brand-color-text-blue);
+  font-size: var(--brand-font-size--default);
+  font-weight: var(--brand-font-weight-700);
+}
+
 .primaryHeading {
   font-size: var(--brand-font-size--28);
   font-weight: 600;

@@ -137,7 +137,7 @@ const UserDetail = () => {
               <div className=" subheader-text">
                 {`${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName} `}
               </div>
-              <Badge text={data?.role.name} type={getbgColorOnRole(data?.role.name)} />
+              <Badge text={data?.role?.name} type={getbgColorOnRole(data?.role?.name)} />
             </div>
             <div className="user-status">
               <span className="view_label">Last Updated On:</span>

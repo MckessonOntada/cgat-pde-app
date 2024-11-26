@@ -1,56 +1,85 @@
 import React, { useState } from 'react'
-import { Stepper, SearchableDropdown, Switch, Button } from '@mckesson/mcp-component-library';
+import { Stepper, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import ModuleHeader from '@src/components/module-header';
 import './index.scss';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { USER_DATA } from '../../mockData/UsersData';
 import { PATHS } from '../../routes/constants';
 import { Form, Formik } from 'formik';
 import PermissionForm from './PermissionForm';
+import {  useMutation } from "react-query";
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
+import { serializeParams } from '@src/common/util/ApiUtils';
+import AuthUtils from '@src/common/util/AuthUtils';
 
 const UserPermissions = () => {
     const { t } = useTranslate();
     const navigate = useNavigate();
     const [enabledPermissions, setEnabledPermissions] = useState([]);
-
+    const [selectedValue, setSelectedValue] = useState("");
     const { userId } = useParams();
     const location = useLocation();
     const { isEdit } = location.state || {};
     // Fetch user data based on userId 
-    const userData = userId ? USER_DATA.find(user => user.id === parseInt(userId)) : {};
+    //const userData = userId ? USER_DATA.find(user => user.id === parseInt(userId)) : {};
+    const requestParams = {
+		userType: AuthUtils.getUserRole() === 'SYSTEM_ADMIN' ? 'ADMIN' : 'GENERAL'
+	};
+
+    const handleRoleSelect = (value) => {
+        setSelectedValue(value);
+        console.log("Selected Value in Parent:", value);
+      }; 
+ 
+    const { mutate, isLoading: isSavingUserPermission, isError: isSaveUserPermissionError, data: saveUserPermissionResponse } = useMutation(async ({ payload }) => {
+        const res = await HttpResourceService.callRest(              
+            `${ApiRoutes.USERS()}/${userId}/roles-permissions?${serializeParams(requestParams)}`,
+            httpVerb.PATCH,
+            payload
+        );
+        return res.data;
+    });
+
 
     const handleGoBack = () => {
         navigate(-1);
     };
 
-
-
-    const handleSaveAndContinue = () => {
+    const handleSaveAndContinue = () => {  
         const selectedPermissions = {};
         Object.keys(enabledPermissions).forEach(category => {
             if (enabledPermissions[category]?.length > 0) {
                 selectedPermissions[category] = enabledPermissions[category];
             }
         });
-        const updatedUserData = {
-            ...userData, // To Spread existing user data
-            permissions: selectedPermissions, // Update the top-level permissions
-            role: {
-                ...userData.role, // To Spread existing role data
-                permissions: selectedPermissions // Add permissions to role.permissions
-            }
+        const payload = {   
+            roleId : selectedValue,
+                permissions: Object.values(selectedPermissions).flat() // Add permissions to role.permissions
+           
         };
 
-        console.log('updatedUserData: ', JSON.stringify(updatedUserData, null, 2));
-        alert(JSON.stringify(updatedUserData, null, 2));
-        if (userId) {
-            navigate(isEdit ? -1 : `../${PATHS.addAccounts}/${userId}`);
-        } else {
-            navigate(isEdit ? -1 : `../${PATHS.addAccounts}/7`); // Need to Replace `7` with appropriate User id when Creating a user
-        }
-    }; 
+        console.log('payload: ', JSON.stringify(payload, null, 2));
+       
+        mutate(
+			{
+				payload
+			},
+			{
+			  onSuccess: (response) => {
+				console.log('User created/updated successfully:', response);
+                navigate(isEdit ? -1 : `../${PATHS.addAccounts}/${userId}`);
+			  },
+			  onError: (error) => {
+				console.log('Failed to create/update user:', error);
+				alert('An error occurred. Please try again.');
+			  },
+			}
+		  );
+		 
+		 
+    };
     return (
         <div className="MCP-module-wrapper">
             <div
@@ -89,7 +118,7 @@ const UserPermissions = () => {
                 validateOnBlur={true}>
                 {({ values }) => (
                     <Form>
-                        <PermissionForm enabledPermissions={enabledPermissions} setEnabledPermissions={setEnabledPermissions} />
+                        <PermissionForm enabledPermissions={enabledPermissions} setEnabledPermissions={setEnabledPermissions} handleRoleSelect={handleRoleSelect}  />
 
                         <div className={'buttonGroup'}>
                             <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
