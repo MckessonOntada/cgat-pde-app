@@ -1,137 +1,99 @@
-import React, { useState } from 'react'
-import { PERMISSIONS_ENUM } from './permissionsEnum'
+import React, { useState } from 'react';
+import { PERMISSIONS_ENUM } from './permissionsEnum';
 import { ROLES } from '../../mockData/PermissionsData';
 import { SearchableDropdown, Switch, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
-import { Field } from 'formik';
 import './PermissionForm.scss';
 
-
 const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleSelect }) => {
-    const { t } = useTranslate();  
-    const [role, setRole] = useState();
-    const handleReset = () => {
+    const { t } = useTranslate();
+    const [selectedRole, setSelectedRole] = useState();
 
-    };
-    const handleApplyall = () => {
+    const getAllPermissions = () =>
+        Object.values(PERMISSIONS_ENUM).flatMap((permissions) => Object.values(permissions));
 
-    };
-
-    const handleToggle = (category, permission) => {
-        setEnabledPermissions(prevPermissions => {
-            const updatedCategoryPermissions = prevPermissions[category]?.includes(permission)
-                ? prevPermissions[category].filter(item => item !== permission)
-                : [...(prevPermissions[category] || []), permission];
-
-            return {
-                ...prevPermissions,
-                [category]: updatedCategoryPermissions,
-            };
-        });
+    const enableAllPermissions = () => {
+        const allPermissions = getAllPermissions();
+        setEnabledPermissions(allPermissions);
     };
 
+    const resetPermissions = () => {
+        setEnabledPermissions([]);
+    };
+    
     const handleRoleChange = (value) => {
-        const filteredValue = value.filter((item) => item.isChecked); 
-        setRole(filteredValue);
-        const rolePermissions = {
-            "USER_MANAGEMENT":
-                ["ADD_USERS", "ADD_ROLES"]
-        };
-        setEnabledPermissions(rolePermissions);
-        if (filteredValue) {
-            handleRoleSelect(filteredValue.find(item => item.isChecked)?.value);
+        const selected = value.find((item) => item.isChecked);
+        if (selected) {
+            setSelectedRole(selected);
+            setEnabledPermissions(['ADD_USERS', 'ADD_ROLES']);
+            handleRoleSelect(selected.value);
         }
     };
 
-
-    const isPermissionEnabled = (category, permission) => {
-        return enabledPermissions[category]?.includes(permission);
+    const togglePermission = (permission) => {
+        setEnabledPermissions((prev) =>
+            prev.includes(permission)
+                ? prev.filter((item) => item !== permission)
+                : [...prev, permission]
+        );
     };
 
-    return (
-        <div className='MCP-module-wrapper'>
-            <ModuleHeader
-                heading={<p className="tertiaryHeading-24">Select Role</p>}
-            />
+    const isPermissionEnabled = (permission) => enabledPermissions.includes(permission);
 
-            <div className='MCP-panel-container'>
-                <div class=" grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
+    return (
+        <div className="MCP-module-wrapper">
+            <ModuleHeader heading={<p className="tertiaryHeading-24">{t('userManagement.user_permissions.select_role')}</p>} />
+            <div className="MCP-panel-container">
+                <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
                     <SearchableDropdown
                         id="role"
-                        isSuccess
                         label={t('userManagement.user_permissions.select_role')}
-                        name={t('userManagement.user_permissions.select_role')}
-                        value={role}
-                        isRequired={false} 
-                        onChange={(value) => handleRoleChange(value)}
+                        value={selectedRole}
+                        onChange={handleRoleChange}
                         options={ROLES}
                     />
                 </div>
             </div>
-            <div className="MCP-module-body">
-                <ModuleHeader
-                    heading={<p className="tertiaryHeading-24">{t('userManagement.user_permissions.managePermissions')}</p>}
-                    controls={
-                        <div className="controls">
-                            <Button variant="secondary" onClick={handleReset} size={'md'}>
-                                {t('userManagement.user_permissions.button.reset')}
-                            </Button>
-                            <Button variant="secondary" size={'md'} onClick={handleApplyall} >
-                                {t('userManagement.user_permissions.button.applyall')}
-                            </Button>
-                        </div>
-                    }
-                />
 
-                <div className="MCP-panel-container grid grid-gap-16">
-                    {Object.keys(PERMISSIONS_ENUM).map((categoryKey, index) => (
-                        <React.Fragment key={index}>
-                            <div className="subheader-text">{t(`${categoryKey}`)}</div>
-                            <div className="permission-category">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 permission-list">
-                                    {Object.keys(PERMISSIONS_ENUM[categoryKey]).map((permissionKey, idx) => {
-                                        const label = `${categoryKey}.${permissionKey}`;
-                                        const description = `${categoryKey}.${permissionKey}.DESCRIPTION`;
-                                        return (
-                                            <React.Fragment key={idx}>
-                                                <div className="flex items-center justify-between permission-item">
-                                                    <div className="permission-info">
-                                                        <div className='permission-info-header'>{t(label)}</div>
-                                                        <p>{t(description)}</p>
-                                                    </div>
-
-                                                    <div className="permission-toggle">                                                      
-                                                        <Field
-                                                            name={`permissions.${categoryKey}.${permissionKey}`}
-                                                            as={Switch}
-                                                            id={`toggle-${label}`}
-                                                            label={
-                                                                isPermissionEnabled(categoryKey, permissionKey) ? "Enabled" : "Disabled"
-                                                            }
-                                                            labelPosition="right"
-                                                            size="lg" 
-                                                            value={isPermissionEnabled(categoryKey, permissionKey)}
-                                                            onChange={() => handleToggle(categoryKey, permissionKey)}
-                                                        />
-                                                    </div>
-                                                </div>
-
-                                                {/* Divider for every second item */}
-                                                {idx % 2 === 0 && idx !== Object.keys(PERMISSIONS_ENUM[categoryKey]).length - 1 && (
-                                                    <div className="divider"></div>
-                                                )}
-                                            </React.Fragment>
-                                        );
-                                    })}
+            <ModuleHeader
+                heading={<p className="tertiaryHeading-24">{t('userManagement.user_permissions.managePermissions')}</p>}
+                controls={
+                    <div className="controls">
+                        <Button size="md" variant="secondary" onClick={resetPermissions}>
+                            {t('userManagement.user_permissions.button.reset')}
+                        </Button>
+                        <Button size="md" variant="secondary" onClick={enableAllPermissions}>{t('userManagement.user_permissions.button.applyall')}</Button>
+                    </div>
+                }
+            />
+            <div className="MCP-panel-container grid grid-gap-16">
+                {Object.entries(PERMISSIONS_ENUM).map(([category, permissions]) => (
+                    <div key={category} className="MCP-module-body permission-category">
+                        <div className="secondaryHeading">{t(category)}</div>
+                        <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+                            {Object.entries(permissions).map(([key, permission]) => (
+                                <div key={key} className="permission-item flex items-center justify-between">
+                                    <div className="permission-info">
+                                        <div className="permission-info-header">{t(`${category}.${key}`)}</div>
+                                        <p>{t(`${category}.${key}.DESCRIPTION`)}</p>
+                                    </div>
+                                    <Switch
+                                        id={`toggle-${category}-${key}`}
+                                        label={isPermissionEnabled(permission) ? 'Enabled' : 'Disabled'}
+                                        labelPosition="right"
+                                        size="lg"
+                                        checked={isPermissionEnabled(permission)}
+                                        onChange={() => togglePermission(permission)}
+                                    />
                                 </div>
-                            </div>
-                        </React.Fragment>
-                    ))}
-                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default PermissionForm;

@@ -122,6 +122,7 @@ export const OrgManagementEN = {
 
   'orgManagement.label.associateAccount': 'Associate Account',
   'orgManagement.messages.newRoleCreation': 'New role has been successfully created.',
+  'orgManagement.messages.roleUpdate': 'Role has been successfully updated.',
   'orgManagement.form.errors.roleNameRequired': 'Role Name is required',
   'orgManagement.form.errors.roleDescriptionRequired': 'Role Description is required',
   'orgManagement.form.errors.roleNameMinLength': 'Role Name must be at least 3 characters long',
