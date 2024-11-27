@@ -33,11 +33,11 @@ const FilterPanel = ({ showLocationDropdown = false, showStatusDropdown = false 
   }, [searchQuery, location, status]);
 
   const handleFilter = () => {
-    alert(
-      `Search Query: ${searchQuery}\nFiltered Location: ${JSON.stringify(
-        location
-      )}\nFiltered Status: ${JSON.stringify(status)}`
-    );
+    // alert(
+    //   `Search Query: ${searchQuery}\nFiltered Location: ${JSON.stringify(
+    //     location
+    //   )}\nFiltered Status: ${JSON.stringify(status)}`
+    // );
   };
 
   const onSearchableDropdownChange = (type, value) => {

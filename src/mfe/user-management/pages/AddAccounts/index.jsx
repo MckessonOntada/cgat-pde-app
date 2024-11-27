@@ -37,16 +37,16 @@ const AddAccounts = () => {
 
     const handleSaveandContinue = () => {
         navigate(RoutePaths.pathUserManagement, { state: { isSuccess: true } });
-        alert(
-            `Selected Accounts: ${JSON.stringify(selectedAccounts, null, 2)}`
-        );
+        // alert(
+        //     `Selected Accounts: ${JSON.stringify(selectedAccounts, null, 2)}`
+        // );
     };
 
     const handleAddAccounts = () => {
         navigate(`../${userId}`, { state: { isSuccess: true } });
-        alert(
-            `Selected Accounts: ${JSON.stringify(selectedAccounts, null, 2)}`
-        );
+        // alert(
+        //     `Selected Accounts: ${JSON.stringify(selectedAccounts, null, 2)}`
+        // );
     };
 
     return (

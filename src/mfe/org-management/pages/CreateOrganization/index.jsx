@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Formik, Form } from 'formik';
-import { Loader } from '@mckesson/mcp-component-library';
+import { Loader, Alert } from '@mckesson/mcp-component-library';
 import { Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
@@ -18,6 +18,16 @@ const CreateOrganization = () => {
   const [organizationData, setOrganizationData] = useState(INITIAL_VALUES);
   const { orgId } = useParams();
   const location = useLocation();
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+
+  useEffect(() => {
+    if (isAlertVisible) {
+      const timer = setTimeout(() => {
+        setIsAlertVisible(false);
+      }, 10000);
+      return () => clearTimeout(timer); // Cleanup timer on unmount
+    }
+  }, [isAlertVisible]);
 
   useEffect(() => {
     if (orgId > 0 && location.state) {
@@ -74,8 +84,7 @@ const CreateOrganization = () => {
   };
 
   const onOrgCreateError = (error) => {
-    const errorMessage = typeof error === 'string' ? error : JSON.stringify(error);
-    window.alert(`Error: ${errorMessage}`);
+    setIsAlertVisible(true)
   };
 
   // Fetch data from server
@@ -111,6 +120,13 @@ const CreateOrganization = () => {
         <MdOutlineKeyboardArrowLeft size="24px" />
         <p>{t('orgManagement.back.organization')}</p>
       </div>
+      {isAlertVisible && <Alert
+        description="Error while creating organization"
+        onClose={() => { }}
+        showTitle
+        title="Something went wrong...!"
+        type="error"
+      />}
       <Formik
         enableReinitialize
         initialValues={organizationData}
@@ -123,7 +139,6 @@ const CreateOrganization = () => {
         validateOnBlur={true}>
         {(formik) => (
           <Form>
-            <>{console.log('formik....', formik)}</>
             <div className="container-box">
               <div className="headingBox">
                 <p className="font-bold-title-s">

@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import CommonDataService from '@src/api/commonService/CommonDataService';
+import { useDispatch } from 'react-redux';
 
 const RECORDS_PER_PAGE = 8;
 
@@ -27,6 +28,7 @@ const INITIAL_STATE = {
 };
 
 export const OrganizationProvider = ({ children }) => {
+  const dispatch = useDispatch();
   const [filterState, setFilterState] = useState(INITIAL_STATE);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -57,10 +59,14 @@ export const OrganizationProvider = ({ children }) => {
   const { isLoading, data, isError, refetch } = useQuery({
     queryKey: ['organizations'],
     queryFn: async () => {
-      return CommonDataService.getOrganizationList(requestParams)
+      return await dispatch(CommonDataService.getOrganizationList(requestParams))
     },
     refetchOnWindowFocus: false
   });
+
+const reFetchOrganizationList =()=>{
+  refetch(requestParams)
+}
 
   useEffect(() => {
     // Refetch on pagination/filters/sorting
@@ -89,7 +95,8 @@ export const OrganizationProvider = ({ children }) => {
         }
       },
       isLoading,
-      isError
+      isError,
+      reFetchOrganizationList
     }),
     [data, updateFilterState, clearFilters, currentPage, isLoading, isError]
   );
