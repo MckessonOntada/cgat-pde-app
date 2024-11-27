@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CustomDataTable, Button, Badge, Loader } from '@mckesson/mcp-component-library';
+import { CustomDataTable, Button, Badge, Loader, CheckboxGroup } from '@mckesson/mcp-component-library';
 import './index.scss';
 import Actions from './Actions';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -28,14 +28,16 @@ function getbgColorOnRole(Role) {
 function UserTable({ selectableRows = false }) {
   // Move pagination to context
   const { t } = useTranslate();
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRows, setSelectedRows] = useState(null);
+
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const {
     isLoading,
     isError,
     data, activeTab,
     pagination: { currentPage, totalPageCount, totalRecords, recordsPerPage,
-      update: { setCurrentPage } }
+      update: { setCurrentPage } },
+    refetchUsersData
   } = useUser();
 
   const handleRowSelected = ({ selectedRows }) => {
@@ -58,38 +60,46 @@ function UserTable({ selectableRows = false }) {
   });
 
   const handleDeactivate = () => {
-    const ids = selectedRows.map(row => row.id);
-    Promise.all(
-      ids.map((userId) =>
-        mutate(userId, {
-          onSuccess: (response) => {
-            console.log(`User ${userId} deactivated successfully:`, response);
-          },
-          onError: (error) => {
-            console.error(`Failed to deactivate user ${userId}:`, error);
-          },
-        })
-      )
-    ).then(() => {
-      // Refetch data after all users are deactivated
-      refetch();
-    });
+    mutate(selectedRows, {
+      onSuccess: (response) => {
+        console.log(`User ${selectedRows} deactivated successfully:`, response);
+        refetchUsersData()
+        setSelectedRows(null)
+      },
+      onError: (error) => {
+        console.error(`Failed to deactivate user ${selectedRows}:`, error);
+      },
+    })
   };
 
   const handleChangePage = (e, newPage) => {
     setCurrentPage(newPage);
   };
 
-  const allInactive = selectedRows.every(row => !row.isActive);
-  const buttonLabel = allInactive
-    ? t('userManagement.button.activate')
-    : t('userManagement.button.deactivate');
-
+ 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-GB').replace(/\//g, '-');
   };
 
   const columns = [
+    {
+      id: 'checkbox',
+      name: "",
+      cell: (row) => (
+        <CheckboxGroup
+          id={"default"}
+          caption=""
+          items={[{
+            onChange: (event) => setSelectedRows(event.target.checked ? row.id : null),
+            value: row.id,
+            isChecked: selectedRows === row.id,
+            isDisabled: !row.isActive
+          }]}
+        />
+      ),
+      wrap: true,
+      width: '5%'
+    },
     { name: 'ID', selector: 'id', sortable: true, omit: true },
     {
       id: 'name',
@@ -177,13 +187,13 @@ function UserTable({ selectableRows = false }) {
   return (
     <div>
       {isLoading && <Loader type={'screen'} />}
-      {selectedRows.length > 0 && (
+      {selectedRows && (
         <div className="selected-item-alert">
           <p className="selected-item-text">
-            {selectedRows.length} {t('userManagement.selected_items')}
+            {1} {t('userManagement.selected_items')}
           </p>
           <Button variant="secondary" onClick={handleDeactivate}>
-            {buttonLabel}
+            {t('userManagement.button.deactivate')}
           </Button>
         </div>
       )}
@@ -194,7 +204,7 @@ function UserTable({ selectableRows = false }) {
         data={data}
         onSortIconClick={(value) => console.log(value)}
         handleChangePage={handleChangePage}
-        selectableRows={selectableRows}
+        // selectableRows={selectableRows}
         selectableRowsHeader={false}
         currentPage={currentPage}
         totalPageCount={totalPageCount}
@@ -205,8 +215,8 @@ function UserTable({ selectableRows = false }) {
         stickyHeader
         responsive
         pagination={true}
-        handleRowSelected={handleRowSelected}
-        selectedRowId={selectedRows[0]}
+        // handleRowSelected={handleRowSelected}
+        // selectedRowId={selectedRows[0]}
         noDataComponent={
           isError ? (
             <div>Something went wrong! Please try again</div>

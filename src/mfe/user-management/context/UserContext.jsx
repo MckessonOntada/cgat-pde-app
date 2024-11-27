@@ -57,7 +57,7 @@ export const UserProvider = ({ children }) => {
     queryFn: async () => {
       const url = activeTab === "ACTIVE USERS"
         ? `${ApiRoutes.USERS()}?${serializeParams(requestParams)}`
-        : `${ApiRoutes.USERS_PROVISIONING}`; 
+        : `${ApiRoutes.USERS_PROVISIONING}`;
       const res = await HttpResourceService.callRest(
         url,
         httpVerb.GET,
@@ -67,6 +67,10 @@ export const UserProvider = ({ children }) => {
     },
     refetchOnWindowFocus: false
   });
+
+  const refetchUsersData = () => {
+    refetch(requestParams)
+  }
 
   useEffect(() => {
     refetch(requestParams)
@@ -98,7 +102,7 @@ export const UserProvider = ({ children }) => {
         },
         clearFilters,
       },
-      refetch, // Add refetch to context value to reload data
+      refetchUsersData, // Add refetch to context value to reload data
     }),
     [updateFilterState, clearFilters, isLoading, isError, data, currentPage, activeTab, setActiveTab, refetch]
   );
