@@ -98,7 +98,7 @@ export const OrgManagementEN = {
 
   'orgManagement.results': 'results',
   'orgManagement.per_page': 'per page',
-  'orgManagement.selected_items': `Item's Selected`,
+  'orgManagement.selected_items': `Item Selected`,
   'orgManagement.link': 'Linked Accounts',
   'orgManagement.select_account': 'Please select accounts to incorporate into the organization.',
 

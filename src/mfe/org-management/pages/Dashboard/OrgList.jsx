@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CustomDataTable, Button, Badge, Loader } from '@mckesson/mcp-component-library';
+import { CustomDataTable, Button, Badge, Loader, CheckboxGroup } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useNavigate } from 'react-router-dom';
 import Actions from './Actions';
@@ -8,16 +8,18 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import useSessionFeatures from '@src/hooks/useSessionFeatures';
 import { useOrg } from '../../context/OrgContext';
+import { useMutation } from 'react-query';
+import HttpResourceService, { httpVerb } from '../../../../api/HttpResourceService';
+import ApiRoutes from '../../../../api/ApiRoutes';
 
 const OrgList = () => {
   const { t } = useTranslate();
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRows, setSelectedRows] = useState(null);
   const navigate = useNavigate();
 
   const location = (address) => {
-    return `${address.address1 || ''}, ${address.city || ''}, ${address.state || ''}, ${
-      address.pin || ''
-    }`;
+    return `${address.address1 || ''}, ${address.city || ''}, ${address.state || ''}, ${address.pin || ''
+      }`;
   };
 
   const {
@@ -33,6 +35,27 @@ const OrgList = () => {
     isError
   } = useOrg();
 
+  const handleDeActivateOrg = async (orgId) => {
+    const res = await HttpResourceService.callRest(
+      `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${orgId}`,
+      httpVerb.DELETE,
+    );
+
+    if (![201, 200].includes(res.status)) {
+      throw new Error('Failed to create user');
+    }
+    return res;
+  }
+
+  const { mutate } = useMutation({
+    mutationFn: handleDeActivateOrg,
+    onError: () => { },
+    onSuccess: () => {
+      setSelectedRows(null)
+      setCurrentPage(1)
+    }
+  });
+
   const {
     organization: { setOrganization }
   } = useSessionFeatures();
@@ -42,7 +65,26 @@ const OrgList = () => {
     navigate(PATHS.dashboard);
   };
 
+
   const columns = [
+    // The DeActive organization is been made as a single de-active
+    {
+      id: 'checkbox',
+      name: "",
+      cell: (row) => (
+        <CheckboxGroup
+          id={"default"}
+          caption=""
+          items={[{
+            onChange: (event) => setSelectedRows(event.target.checked ? row.id : null),
+            value: row.id,
+            isChecked: selectedRows === row.id
+          }]}
+        />
+      ),
+      wrap: true,
+      width: '5%'
+    },
     {
       id: 'name',
       name: t('orgManagement.table.name'),
@@ -52,7 +94,7 @@ const OrgList = () => {
         </Button>
       ),
       wrap: true,
-      width: '25%'
+      width: '20%'
     },
     {
       id: 'orgId',
@@ -116,16 +158,17 @@ const OrgList = () => {
   };
 
   const handleDeactivate = () => {
-    setSelectedRows([]);
+    // setSelectedRows([]);
+    mutate(selectedRows)
   };
 
   return (
     <div>
       {isLoading && <Loader type="screen" />}
-      {selectedRows.length > 0 && (
+      {selectedRows && (
         <div className="selected-item-alert">
           <p className="selected-item-text">
-            {selectedRows.length} {t('orgManagement.selected_items')}
+            {/* selectedRows.length */ 1} {t('orgManagement.selected_items')}
           </p>
           <Button variant="secondary" onClick={handleDeactivate}>
             {t('orgManagement.button.deactivate')}
@@ -148,7 +191,7 @@ const OrgList = () => {
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         isAdmin={true}
-        selectableRows
+        // selectableRows
         noDataComponent={
           isError ? (
             <div>Something went wrong! Please try again</div>
@@ -160,9 +203,9 @@ const OrgList = () => {
             />
           )
         }
-        handleRowSelected={handleRowSelected}
-        selectedRowId={selectedRows[0]}
-        />
+      // handleRowSelected={handleRowSelected}
+      // selectedRowId={selectedRows[0]}
+      />
     </div>
   );
 };

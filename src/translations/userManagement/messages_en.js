@@ -8,7 +8,7 @@ export const UserManagementEN = {
 
   'userManagement.results': 'results',
   'userManagement.per_page': 'per page',
-  'userManagement.selected_items': `Item's Selected`,
+  'userManagement.selected_items': `Item Selected`,
   
   'userManagement.table.name': 'Name',
   'userManagement.table.email': 'Email',
