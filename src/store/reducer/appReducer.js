@@ -7,7 +7,9 @@ const appSlice = createSlice({
       errorObject: null
     },
     pageTitleKey: '',
-    isScrolled: false
+    isScrolled: false,
+    organizationList: [],
+    organizationListOptions: [],
   },
   reducers: {
     showSystemError(state, action) {
@@ -18,9 +20,15 @@ const appSlice = createSlice({
     },
     setIsScrolled(state, action) {
       state.isScrolled = action.payload;
+    },
+    updateOrganizationList(state, action) {
+      state.organizationList = action.payload
+    },
+    updateOrganizationListOptions(state, action) {
+      state.organizationListOptions = action.payload.content.map((i) => ({ label: i.name, value: i.id, isChecked: false }))
     }
   }
 });
 
-export const { showSystemError, setPageTitleKey, setIsScrolled } = appSlice.actions;
+export const { showSystemError, setPageTitleKey, setIsScrolled, updateOrganizationList, updateOrganizationListOptions } = appSlice.actions;
 export default appSlice.reducer;

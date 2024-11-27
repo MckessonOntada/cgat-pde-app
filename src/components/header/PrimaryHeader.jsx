@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ReactComponent as AppLogo } from '@src/assets/image/app-logo.svg';
 import { ReactComponent as IconNotification } from '@src/assets/svg/bell.svg';
 import { ReactComponent as IconLogout } from '@src/assets/svg/logout.svg';
 import { ReactComponent as IconMenu } from '@src/assets/svg/burger-menu.svg';
 import { ReactComponent as IconArrowDown } from '@src/assets/svg/arrow-down-filled.svg';
 import { ReactComponent as IconHelp } from '@src/assets/svg/help-circle-filled.svg';
-import { connect, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { setUserData } from '@src/store/reducer/userReducer';
 import { debugIds, ID } from '@src/constants/id';
-import { Button, Dropdown, DropdownMenu } from '@mckesson/mcp-component-library';
+import { Button, Dropdown, DropdownMenu, SearchableDropdown } from '@mckesson/mcp-component-library';
 import styles from './assets/styles/Header.module.scss';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
@@ -16,7 +16,6 @@ import HeaderConfig from './__mock__';
 import FloatingDrawer from '../floating-drawer';
 import AuthService from '@src/api/authService/AuthService';
 import { useOktaAuth } from '@okta/okta-react';
-import { useOrg } from '../../mfe/org-management/context/OrgContext';
 import useSessionFeatures from '../../hooks/useSessionFeatures';
 import { useQuery } from 'react-query';
 import CommonDataService from '../../api/commonService/CommonDataService';
@@ -27,36 +26,39 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const toggleDrawer = () => setDrawerOpen(!drawerOpen);
 
+
+  const requestParams = useMemo(() => ({
+    pageNo: 0,
+    pageSize: 12,
+    sortBy: 'name',
+    sortOrder: 'asc'
+  }), []);
+
+  const { isLoading, data, isError, refetch } = useQuery({
+    queryKey: ['organizationListOptions'],
+    queryFn: async () => {
+      const res = await CommonDataService.getOrganizationListAsOptions(requestParams)
+      return res.content
+    },
+    refetchOnWindowFocus: false
+  })
+
   const {
     organization: { setOrganization }
   } = useSessionFeatures();
 
-  const { data, isLoading, isError } = useOrg();
 
-  const dropdownOptions = Array.isArray(data)
-    ? data.map((item) => ({ value: item, label: item.name }))
-    : [];
 
   const handleChange = (selectedOption) => {
     setOrganization(selectedOption);
   };
-  // const { isLoading, data, isError, refetch } = useQuery({
-  //   queryKey: ['organizations'],
-  //   queryFn: async () => {
-  //     const orgList = await CommonDataService.getOrganizationList({})
-  //     return orgList?.content?.map((item) => {
-  //       console.log('item....', item, { ...item, label: item.name, value: item.id })
-  //       return { ...item, label: item.name, value: item.id }
-  //     })
-  //     // console.log('_orgList..', _orgList)
-
-  //   },
-  //   refetchOnWindowFocus: false
-  // });
+  
 
   const logout = () => {
     AuthService.userLogout(oktaAuth);
   };
+
+  const handleOrganizationChange = (event) => { }
 
   const LeftSideView = (props) => {
     return (
@@ -71,13 +73,29 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
           </Link>
         </div>
         <div className={styles.centerSelector}>
-          <Dropdown
+          {/* <Dropdown
             id={'Organization'}
             name={'Organization'}
             aria-label="Select treatment center"
-            options={dropdownOptions}
+            options={organizationList?.content || []}
             onChange={handleChange}
-          />
+          /> */}
+
+          {/* <SearchableDropdown
+            id="provider"
+            isSuccess
+            // label="Provider"
+            variant="async"
+            name="provider-input"
+            onChange={handleOrganizationChange}
+            options={data ||[]}
+            refineFilterMessage={[
+              'More records exist.',
+              'Search to refine.'
+            ]}
+            asyncHandleSearch={(e)=>{console.log(e)}}
+          /> */}
+
         </div>
       </div>
     );
@@ -96,7 +114,7 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
             <IconArrowDown />
           </button>
         }
-        handleSelect={() => {}}
+        handleSelect={() => { }}
         options={HeaderConfig.profileOptions}
         aria-label="Profile options"
       />,

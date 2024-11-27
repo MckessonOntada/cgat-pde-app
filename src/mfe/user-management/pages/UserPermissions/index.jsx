@@ -72,7 +72,7 @@ const UserPermissions = () => {
                 },
                 onError: (error) => {
                     console.log('Failed to create/update user:', error);
-                    alert('An error occurred. Please try again.');
+                    // alert('An error occurred. Please try again.');
                 },
             }
         );

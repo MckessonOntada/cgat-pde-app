@@ -51,11 +51,11 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
   }, [searchQuery, role, status]);
 
   const handleFilter = () => {
-    alert(
-      `Search Query: ${searchQuery}\nFiltered Roles: ${JSON.stringify(
-        role
-      )}\nFiltered Status: ${JSON.stringify(status)}`
-    );
+    // alert(
+    //   `Search Query: ${searchQuery}\nFiltered Roles: ${JSON.stringify(
+    //     role
+    //   )}\nFiltered Status: ${JSON.stringify(status)}`
+    // );
     applyFilters();
   };
 

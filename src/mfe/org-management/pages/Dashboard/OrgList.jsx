@@ -32,7 +32,8 @@ const OrgList = () => {
       update: { setCurrentPage }
     },
     isLoading,
-    isError
+    isError,
+    reFetchOrganizationList
   } = useOrg();
 
   const handleDeActivateOrg = async (orgId) => {
@@ -50,9 +51,9 @@ const OrgList = () => {
   const { mutate } = useMutation({
     mutationFn: handleDeActivateOrg,
     onError: () => { },
-    onSuccess: () => {
+    onSuccess: async () => {
       setSelectedRows(null)
-      setCurrentPage(1)
+      await reFetchOrganizationList()
     }
   });
 

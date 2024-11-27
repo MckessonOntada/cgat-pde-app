@@ -24,11 +24,11 @@ export default function Actions({ row, showEditButton, showViewButton }) {
   };
 
   const handleReject = () => {
-    alert('Handle Reject');
+    // alert('Handle Reject');
   };
 
   const handleOtherAction = () => {
-    alert('Handle Other Action');
+    // alert('Handle Other Action');
   };
 
   return (
