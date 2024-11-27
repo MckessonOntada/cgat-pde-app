@@ -6,13 +6,11 @@ import './styles.scss';
 
 const DetailsView = ({ data, onEditClick }) => {
   const { t } = useTranslate();
-
-  console.log(data);
   return (
     <div className="view-container">
       <div className="org-box">
         <div className="org-logo-box">
-          <img src={data?.logoUrl} alt="Logo" className="logo-img" />
+          {data?.logoUrl && <img src={data?.logoUrl} alt="Logo" className="logo-img" />}
           <h2 className="org-label">{data.name}</h2>
         </div>
         <Button Icon={EditPencil} variant="tertiary" onClick={onEditClick} size="md">
@@ -25,9 +23,8 @@ const DetailsView = ({ data, onEditClick }) => {
         <div>
           <p className="contact-heading">{t('orgManagement.org_detail.person_name')}</p>
           <p className="contact-details">
-            {`${data.contactPerson.firstName || ''} ${data.contactPerson.middleName || ''} ${
-              data.contactPerson.lastName || ''
-            }`.trim() || 'N/A'}
+            {`${data.contactPerson.firstName || ''} ${data.contactPerson.middleName || ''} ${data.contactPerson.lastName || ''
+              }`.trim() || 'N/A'}
           </p>
         </div>
         <div>

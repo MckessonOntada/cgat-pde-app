@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
@@ -52,7 +52,14 @@ export default function ViewOrganization() {
     setSelectedAccounts([]);
     setAddNewAccounts(false);
   };
-  console.log('data....1', data)
+
+  const onRemoveAccount = useCallback(
+    (item) => {
+      setSelectedAccounts(selectedAccounts.filter((account) => account.id !== item.id));
+    },
+    [selectedAccounts, setSelectedAccounts]
+  );
+   
   return (
     <div className="viewOrg-container">
       {isLoading && <Loader type={'screen'} />}
@@ -95,7 +102,7 @@ export default function ViewOrganization() {
           )
         }
       />
-
+      
       <AccountsList
         showSelectedAccounts={addNewAccounts}
         omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']}
@@ -103,6 +110,7 @@ export default function ViewOrganization() {
         selectedRows={selectedAccounts}
         setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)}
         practiceId={orgId}
+        onRemoveAccount={onRemoveAccount}
       />
 
       {addNewAccounts && (
