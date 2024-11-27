@@ -1,5 +1,5 @@
-import React ,{ useState } from 'react'; 
-import { CustomDataTable,Button,Badge, Loader } from '@mckesson/mcp-component-library';
+import React, { useState } from 'react';
+import { CustomDataTable, Button, Badge, Loader } from '@mckesson/mcp-component-library';
 import './index.scss';
 import Actions from './Actions';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -25,27 +25,28 @@ function getbgColorOnRole(Role) {
   }
 }
 
-function UserTable({ isPendingRequest = false, selectableRows = false }) {
+function UserTable({ selectableRows = false }) {
   // Move pagination to context
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState([]);
-  const isSystemAdminView= AuthUtils.isSystemAdminView();
+  const isSystemAdminView = AuthUtils.isSystemAdminView();
   const {
     isLoading,
     isError,
-    data,
-    pagination: { currentPage, totalPageCount, totalRecords, recordsPerPage, 
+    data, activeTab,
+    pagination: { currentPage, totalPageCount, totalRecords, recordsPerPage,
       update: { setCurrentPage } }
   } = useUser();
 
-  const handleRowSelected = ({ selectedRows }) => { 
+  const handleRowSelected = ({ selectedRows }) => {
     setSelectedRows(selectedRows);
   };
 
+
   const requestParams = {
-		userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
-	};
-  
+    userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
+  };
+
 
   const { mutate } = useMutation(async (userId) => {
     const res = await HttpResourceService.callRest(
@@ -57,7 +58,7 @@ function UserTable({ isPendingRequest = false, selectableRows = false }) {
   });
 
   const handleDeactivate = () => {
-    const ids = selectedRows.map(row => row.id);  
+    const ids = selectedRows.map(row => row.id);
     Promise.all(
       ids.map((userId) =>
         mutate(userId, {
@@ -81,8 +82,8 @@ function UserTable({ isPendingRequest = false, selectableRows = false }) {
 
   const allInactive = selectedRows.every(row => !row.isActive);
   const buttonLabel = allInactive
-  ? t('userManagement.button.activate')
-  : t('userManagement.button.deactivate');
+    ? t('userManagement.button.activate')
+    : t('userManagement.button.deactivate');
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-GB').replace(/\//g, '-');
@@ -98,7 +99,7 @@ function UserTable({ isPendingRequest = false, selectableRows = false }) {
       wrap: true,
       cell: (props) => (
         <div className="cellEllipses">
-          {isPendingRequest ? (
+          {activeTab === "PENDING REQUESTS" ? (
             `${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`
           ) : (
             <Link
@@ -131,7 +132,7 @@ function UserTable({ isPendingRequest = false, selectableRows = false }) {
           <Badge text={props.role?.name} type={getbgColorOnRole(props.role?.name)} />
         </span>
       ),
-      omit: isSystemAdminView
+      omit: isSystemAdminView || activeTab === "PENDING REQUESTS"
     },
     {
       id: 'status',
@@ -141,7 +142,7 @@ function UserTable({ isPendingRequest = false, selectableRows = false }) {
       center: true,
       cell: (props) => (
         <div>
-          {isPendingRequest ? (
+          {activeTab === "PENDING REQUESTS" ? (
             <Badge text="Pending" type="info-default" />
           ) : props.isActive ? (
             <Badge text="Active" type="success" />
@@ -153,22 +154,22 @@ function UserTable({ isPendingRequest = false, selectableRows = false }) {
     },
     {
       id: 'dataAdded',
-      name: t('userManagement.table.dateAdded'),     
+      name: t('userManagement.table.dateAdded'),
       selector: 'date_added',
       sortable: true,
       wrap: true,
-      cell: (props) => formatDate(props.createdAt) 
+      cell: (props) => formatDate(props.createdAt)
     },
     {
       id: 'action',
       center: true,
       name: t('userManagement.table.action'),
       cell: (row) =>
-        isPendingRequest ? (
-          <Actions row={row} showEditButton={true} />
-        ) : (
-          <Actions row={row} showViewButton={true} />
-        ),        
+        <Actions
+          row={row}
+          showEditButton={activeTab === "PENDING REQUESTS"}
+          showViewButton={activeTab !== "PENDING REQUESTS"}
+        />,
       omit: isSystemAdminView
     }
   ];
@@ -182,7 +183,7 @@ function UserTable({ isPendingRequest = false, selectableRows = false }) {
             {selectedRows.length} {t('userManagement.selected_items')}
           </p>
           <Button variant="secondary" onClick={handleDeactivate}>
-          {buttonLabel}
+            {buttonLabel}
           </Button>
         </div>
       )}
@@ -194,11 +195,11 @@ function UserTable({ isPendingRequest = false, selectableRows = false }) {
         onSortIconClick={(value) => console.log(value)}
         handleChangePage={handleChangePage}
         selectableRows={selectableRows}
-        selectableRowsHeader={false} 
+        selectableRowsHeader={false}
         currentPage={currentPage}
         totalPageCount={totalPageCount}
         totalRocords={totalRecords}
-        recordsPerPage={recordsPerPage} 
+        recordsPerPage={recordsPerPage}
         paginationTotalRecorsMessage={t('userManagement.results')}
         paginationRecordsPerPageMessage={t('userManagement.per_page')}
         stickyHeader
