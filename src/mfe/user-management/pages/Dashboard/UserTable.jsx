@@ -7,7 +7,7 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import { Link } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
-import { useQuery, useMutation } from 'react-query';
+import { useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
@@ -25,11 +25,11 @@ function getbgColorOnRole(Role) {
   }
 }
 
-function UserTable({ isPendingRequest = false, selectableRows = false, omitColumns = [] }) {
+function UserTable({ isPendingRequest = false, selectableRows = false }) {
   // Move pagination to context
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState([]);
-  
+  const isSystemAdminView= AuthUtils.isSystemAdminView();
   const {
     isLoading,
     isError,
@@ -38,13 +38,12 @@ function UserTable({ isPendingRequest = false, selectableRows = false, omitColum
       update: { setCurrentPage } }
   } = useUser();
 
-  const handleRowSelected = ({ selectedRows }) => {
-    // setSelectedRows(selectedRows.map((row) => row.id));
+  const handleRowSelected = ({ selectedRows }) => { 
     setSelectedRows(selectedRows);
   };
 
   const requestParams = {
-		userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
+		userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
 	};
   
 
@@ -132,7 +131,7 @@ function UserTable({ isPendingRequest = false, selectableRows = false, omitColum
           <Badge text={props.role?.name} type={getbgColorOnRole(props.role?.name)} />
         </span>
       ),
-      omit: omitColumns.includes('role')
+      omit: isSystemAdminView
     },
     {
       id: 'status',
@@ -169,7 +168,8 @@ function UserTable({ isPendingRequest = false, selectableRows = false, omitColum
           <Actions row={row} showEditButton={true} />
         ) : (
           <Actions row={row} showViewButton={true} />
-        )
+        ),        
+      omit: isSystemAdminView
     }
   ];
 

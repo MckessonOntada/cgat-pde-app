@@ -1,7 +1,7 @@
 export const UserManagementEN = {
   'userManagement.header.label': 'Manage Users',
   'userManagement.add.label' : 'Add User',
-  
+  'userManagement.header.systemadmin.label': 'Manage System Admins',
   'userManagement.upload.label': 'Upload Users',
   'userManagement.clearFilter.label': 'clear filters',
   'userManagement.searchFilter.label': 'Search By Name or Email',
@@ -9,6 +9,9 @@ export const UserManagementEN = {
   'userManagement.results': 'results',
   'userManagement.per_page': 'per page',
   'userManagement.selected_items': `Item's Selected`,
+
+  'userManagement.header.listing.label': 'Manage Users',
+  'userManagement.header.systemadminlisting.label': 'Manage System Admins',
   
   'userManagement.table.name': 'Name',
   'userManagement.table.email': 'Email',

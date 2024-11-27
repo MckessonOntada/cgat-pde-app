@@ -11,7 +11,8 @@ import { debugIds, ID } from '@src/constants/id';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import { ReactComponent as upload_bottom } from '@src/assets/image/upload_bottom.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
-import ModuleHeader from '../../../../components/module-header';
+import ModuleHeader from '@src/components/module-header';
+import AuthUtils from '@src/util/AuthUtils';
 
 export default function Dashboard() {
   const { t } = useTranslate();
@@ -21,6 +22,7 @@ export default function Dashboard() {
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const location = useLocation();
   const isSuccess = location.state?.isSuccess || false;
+  const isSystemAdminView= AuthUtils.isSystemAdminView()
 
   useEffect(() => {
     if (isSuccess) {
@@ -72,7 +74,7 @@ export default function Dashboard() {
       url: '/'
     },
     {
-      label: 'Manage Users'
+      label: isSystemAdminView ? 'Manage System Admins' : 'Manage Users'
     }
   ];
 
@@ -80,7 +82,7 @@ export default function Dashboard() {
     <div className="MCP-module-wrapper" id={debugIds(ID.TABLE, ID.CONTAINER)}>
       <Breadcrumb items={breadcrumbItems} />
       <ModuleHeader
-        heading={<p className='primaryHeading'>{t('userManagement.header.label')}</p>}
+        heading={<p className='primaryHeading'>{t(isSystemAdminView ? 'userManagement.header.systemadmin.label' : 'userManagement.header.label')}</p>}
         controls={
           <div className="controls">
             <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createUser}`)}>Add User</Button>
@@ -98,7 +100,8 @@ export default function Dashboard() {
       <UserProvider>
         <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
           <Filters showRoleDropdown={true} showStatusDropdown={true} />
-          <p className='secondaryHeading'> User Listing</p>
+          <p className='secondaryHeading'> {t(isSystemAdminView ? 'userManagement.header.systemadminlisting.label' : 'userManagement.header.listing.label')}</p> 
+          {!isSystemAdminView &&  
           <TabList
             options={tabs}
             alignment="left"
@@ -106,7 +109,7 @@ export default function Dashboard() {
             showShadow={false}
             variant={'text'}
             useAsButton={true}
-          />
+          />}
           <div className="userList">
             {activeTab === 'ACTIVE USERS' && <UserTable selectableRows={true} />}
             {activeTab === 'PENDING REQUESTS' && <UserTable selectableRows={false} omitColumns={['role']} isPendingRequest={true} />}
