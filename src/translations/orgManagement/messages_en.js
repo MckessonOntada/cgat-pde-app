@@ -15,6 +15,7 @@ export const OrgManagementEN = {
   'orgManagement.table.action.inactivate': 'Inactivate',
   'orgManagement.table.action.view': 'VIEW',
 
+  'orgManagement.button.save': 'SAVE',
   'orgManagement.button.next': 'Next',
   'orgManagement.button.filter': 'APPLY FILTER',
   'orgManagement.button.back': 'Back',

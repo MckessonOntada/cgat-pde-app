@@ -74,7 +74,8 @@ const CreateOrganization = () => {
   };
 
   const onOrgCreateError = (error) => {
-    // goBack();
+    const errorMessage = typeof error === 'string' ? error : JSON.stringify(error);
+    window.alert(`Error: ${errorMessage}`);
   };
 
   // Fetch data from server
@@ -102,10 +103,6 @@ const CreateOrganization = () => {
   const handleGoBack = () => {
     navigate(-1);
   };
-
-  // const setSelectedAccounts = (selectedAccounts) => {
-  //   setOrganizationData((prevState) => ({ ...prevState, selectedAccounts }));
-  // };
 
   return (
     <div className="main-container">
@@ -141,7 +138,7 @@ const CreateOrganization = () => {
                 {t('orgManagement.button.back')}
               </Button>
               <Button type="submit" size={'md'}>
-                {t('orgManagement.button.next')}
+                {t('orgManagement.button.save')}
               </Button>
             </div>
           </Form>

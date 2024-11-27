@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Yup from "yup";
-import { Stepper, Required, Button } from '@mckesson/mcp-component-library';
+import { Stepper, Required, Button, Modal } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
@@ -29,14 +29,15 @@ const RoleDetails = () => {
     const { roleId } = useParams();
 
     const location = useLocation();
-    const { row = null } = location.state ?? {};
+    const row = location.state ?? {};
+    const [isModalVisible, setIsModalVisible] = React.useState(false);
 
     const [initialData, setInitialData] = React.useState({
         roleName: '',
         roleDescription: '',
     });
 
-    const [formData, setFormData] = React.useState({...initialData});
+    const [formData, setFormData] = React.useState({ ...initialData });
 
     React.useEffect(() => {
         if (roleId && row) {
@@ -50,15 +51,11 @@ const RoleDetails = () => {
                 roleDescription: description
             });
         }
-    }, [roleId, row]);
+    }, [roleId]);
 
     const handleOnBackButtonClick = () => {
-        debugger;
         if (JSON.stringify(formData) !== JSON.stringify(initialData)) {
-            const userConfirmed = window.confirm(t('orgManagement.confirmLeaveWithoutSaving'));
-            if (userConfirmed) {
-                navigate('/organization/roles');
-            }
+            setIsModalVisible(true);
         } else {
             navigate('/organization/roles');
         }
@@ -84,14 +81,21 @@ const RoleDetails = () => {
         {
             onSuccess: (data) => {
                 const id = data && data.id || roleId;
-                const { permissions } = row;
-                navigate(`/organization/roles/${id}/permissions`, { state: { permissions } });
+                navigate(`/organization/roles/${id}/permissions`, { state: row });
             },
             onError: (error) => {
                 console.error('Error posting data:', error);
             },
         }
     );
+
+    const handleOnChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value,
+        }));
+    }
 
     const handleOnSubmit = (values, _action) => {
         const payload = {
@@ -141,7 +145,7 @@ const RoleDetails = () => {
                         initialValues={formData}
                         validationSchema={roleValidationSchema}
                         onSubmit={handleOnSubmit}
-                        enableReinitialize 
+                        enableReinitialize
                     >
                         {({ isValid, dirty }) => (
                             <Form>
@@ -160,6 +164,7 @@ const RoleDetails = () => {
                                                     placeholder=" "
                                                     isRequired
                                                     component={Components['input']}
+                                                    onChange={handleOnChange}
                                                 />
                                             </div>
                                             <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
@@ -168,13 +173,7 @@ const RoleDetails = () => {
                                                     placeholder=" "
                                                     isRequired
                                                     maxCharHelperText={t('orgManagement.role.labelMaxChar1000')}
-                                                    onChange={(e) => {
-                                                        const { name, value } = e.target;
-                                                        setFormData(prevState => ({
-                                                            ...prevState,
-                                                            [name]: value,
-                                                        }));
-                                                    }}
+                                                    onChange={handleOnChange}
                                                     component={Components['textarea']}
                                                     fieldlabel={t("orgManagement.role.labelRoleDescription")}
                                                     maxCharLimit={1000}
@@ -184,10 +183,10 @@ const RoleDetails = () => {
                                     </div>
                                     <div className='controls'>
                                         <Button size="md" variant="secondary">{t('orgManagement.button.cancel')}</Button>
-                                        <Button 
-                                            size="md" 
-                                            variant="primary" 
-                                            type="submit" 
+                                        <Button
+                                            size="md"
+                                            variant="primary"
+                                            type="submit"
                                             disabled={!(isValid && dirty)}
                                         >
                                             {t('orgManagement.role.captionsBtnSaveAndCancel')}
@@ -199,6 +198,25 @@ const RoleDetails = () => {
                     </Formik>
                 </div>
             </div>
+            
+                <Modal {...{
+                    id: "discard-role-details-modal",
+                    isOpen: isModalVisible,
+                    onClose: () => setIsModalVisible(false),
+                    modalTitle: "Discard Changes?",
+                    modalBody: <div className='tertiaryHeading'>You have changed role details, still you want to return to list? Your changes will be discarded!</div>,
+                    modalFooter: <div style={{display: 'flex', gap: '16px'}} className='controls'>
+                        <Button size="md" variant="secondary" onClick={() => setIsModalVisible(false)}>
+                            Cancel
+                        </Button>
+                        <Button size="md" variant="primary" onClick={() => navigate('/organization/roles')}>
+                            Okay
+                        </Button>
+                    </div>,
+                    modalSize: "md"
+                }}
+                />
+            
         </div>
     );
 };

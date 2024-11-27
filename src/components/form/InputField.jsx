@@ -19,6 +19,10 @@ export default function InputField(props) {
 
   // To set the Value for field. There is no name Present in Input Component
   const handleOnChange = (event) => {
+    if(typeof props.onChange === "function"){
+      props.onChange(event);
+    }
+
     form.setFieldValue(`${field.name}`, event.target.value);
   };
   const handleOnBlur = (event) => {
