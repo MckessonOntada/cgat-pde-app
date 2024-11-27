@@ -24,38 +24,37 @@ export default function AccountsList({
   showSelectedAccounts = false, // This is to show selected accounts in right rail
   selectableRows = true, // To enable or disable row selection
   omitColumns = [], // Pass column ids which you don't want to show in table.
-  practiceId
+  practiceId,
+  userId
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const { t } = useTranslate();
 
-  const requestParams = useMemo(() => {
+  const apiUrl = useMemo(() => {
     let params = {
       pageNo: currentPage - 1,
       pageSize: RECORDS_PER_PAGE,
       sortBy: practiceId ? 'name_1' : 'name_1', // handle based on column
-      sortOrder: 'asc'
+      sortOrder: 'asc',
+      practiceId,
+      partnerFunction: 'SOLD_TO'
     };
-    if (practiceId) {
-      params = {
-        ...params,
-        practiceId,
-        partnerFunction: 'SOLD_TO' // Check with Mayuresh which one to use from list
-      };
-    }
-    return params;
-  }, [currentPage, practiceId]);
 
-  const apiUrl = useMemo(
-    () => (practiceId ? `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts` : ApiRoutes.ACCOUNTS),
-    [practiceId]
-  );
-  
+    if (userId) {
+      return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/users/${userId}/accounts?${serializeParams(params)}`
+    } else if (practiceId) {
+      return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts?${serializeParams(params)}`
+    } else {
+      return `${ApiRoutes.ACCOUNTS}?${serializeParams(params)}`
+    }
+
+  }, [currentPage, practiceId, userId]);
+
   const { isLoading, data, isError } = useQuery({
     queryKey: ['accounts', practiceId],
     queryFn: async () => {
-      const res = await HttpResourceService.callRest( 
-       `${apiUrl}?${serializeParams(requestParams)}`,
+      const res = await HttpResourceService.callRest(
+        `${apiUrl}`,
         httpVerb.GET,
         {}
       );
@@ -104,9 +103,9 @@ export default function AccountsList({
         center: false
       },
       {
-        id: 'address', 
+        id: 'address',
         name: t('account.address'),
-        cell: (row) => <div className="cellEllipse">{`${row.address.houseNumber} ${row.address.street} ${row.address.street2} ${row.address.street3} ${row.address.city} ${row.address.district} ${row.address.state} ${row.address.country}  ${row.address.zipCode}` }</div>,
+        cell: (row) => <div className="cellEllipse">{`${row.address.houseNumber} ${row.address.street} ${row.address.street2} ${row.address.street3} ${row.address.city} ${row.address.district} ${row.address.state} ${row.address.country}  ${row.address.zipCode}`}</div>,
         omit: omitColumns.includes('address')
       },
       {

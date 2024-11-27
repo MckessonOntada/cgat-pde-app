@@ -267,7 +267,7 @@ const UserDetail = () => {
           />
           {isSuccess && isAlertVisible && (
             <Alert
-              description="2 new accounts have been successfully linked to this user" //Number should be dynamic --To Do
+              description="new accounts have been successfully linked to this user" //Number should be dynamic --To Do
               onClose={handleAlertClose}
               type="success"
               duration={10000}
@@ -290,7 +290,7 @@ const UserDetail = () => {
               </div>
             </div>
             <div className="grid grid-gap-16">
-              <AccountsList selectableRows={false} omitColumns={['distributionChannel']} />
+              <AccountsList selectableRows={false} omitColumns={['distributionChannel']} practiceId={data?.practiceId} userId={data?.id}/> 
             </div>
           </div>
         </div>

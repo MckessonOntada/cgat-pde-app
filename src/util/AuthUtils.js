@@ -30,7 +30,7 @@ const getPracticeId = function () {
 
 const isSystemAdmin = function (){
   const userRole = getUserRole();
-  return userRole === 'SYSTEM_ADMIN';
+  return userRole === 'System Admin';
 }
 
 const isSystemAdminView = function (){
