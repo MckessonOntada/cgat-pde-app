@@ -93,7 +93,7 @@ const SignUp = () => {
    
 
     const handleSubmit = (values) => {
-        alert(JSON.stringify(values, null, 2));
+        // alert(JSON.stringify(values, null, 2));
         console.log(JSON.stringify(values, null, 2));
         const payload = {			
 			...values,

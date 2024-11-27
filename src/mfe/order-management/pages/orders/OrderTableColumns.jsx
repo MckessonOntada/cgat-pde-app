@@ -119,7 +119,6 @@ export const createColumns = (t, navigate) => [
                     <IconEllipsis />
                 </button>}
                 handleSelect={({value}) => {
-                    alert(value)
                     if(value === "view"){
                         navigate(`view-order/${props.id}`);
                     }if(value === "edit"){

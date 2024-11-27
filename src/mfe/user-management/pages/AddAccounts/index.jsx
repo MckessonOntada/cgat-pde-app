@@ -41,9 +41,9 @@ const AddAccounts = () => {
 
     const handleSaveandContinue = () => {
         navigate(RoutePaths.pathUserManagement, { state: { isSuccess: true } });
-        alert(
-            `Selected Accounts: ${JSON.stringify(selectedAccounts, null, 2)}`
-        );
+        // alert(
+        //     `Selected Accounts: ${JSON.stringify(selectedAccounts, null, 2)}`
+        // );
     };
     const requestParams = {
         userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
@@ -75,16 +75,12 @@ const AddAccounts = () => {
                 },
                 onError: (error) => {
                     console.log('Failed to add accounts:', error);
+                    alert("Failed to update accounts");
                     // setAlert({ type: "error", message: "Failed to update accounts" });
                     // setIsAlertVisible(true);
                 },
             }
         );
-
-
-        // alert(
-        //     `Selected Accounts: ${JSON.stringify(selectedAccounts, null, 2)}`
-        // );
     };
 
     return (
