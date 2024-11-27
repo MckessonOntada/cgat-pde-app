@@ -11,10 +11,22 @@ import mainLayoutStyles from '@src/assets/styles/MainLayout.module.scss';
 import AppRoutes from '@src/routes/AppRoutes';
 import { useNavigate } from "react-router-dom";
 import PrimaryHeader from "@src/components/header/PrimaryHeader";
+import { useMutation } from 'react-query';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
+
 
 const SignUp = () => {
     const { t } = useTranslate();
     const navigate = useNavigate();
+    const { mutate, isLoading, isError, data } = useMutation(async ({ payload }) => {
+		const res = await HttpResourceService.callRest(
+            `${ApiRoutes.POST_SIGNUP_USER}`,
+            httpVerb.POST,
+            payload
+        );
+        return res.data;
+	});
     const initialValues = {
         name: {
             firstName: '',
@@ -23,6 +35,7 @@ const SignUp = () => {
         },
         contact: {
             email: '',
+            countryCode: "91",
             phone: '',
             fax: '',
         },
@@ -33,7 +46,7 @@ const SignUp = () => {
             state: '',
             zip: '',
         },
-        organization: '',
+        practiceId: '',
         comment: ''
     };
 
@@ -74,13 +87,34 @@ const SignUp = () => {
                 .matches(/^\d{5}(-\d{4})?$/, t('userManagement.create_user.validation.zip')) // Only digits
                 .required(t('userManagement.create_user.validation.zip_required')),
         }),
-        organization: Yup.string().required(t("form.organization_required"))
+        practiceId: Yup.string().required(t("form.organization_required"))
     });
+
+   
 
     const handleSubmit = (values) => {
         // alert(JSON.stringify(values, null, 2));
         console.log(JSON.stringify(values, null, 2));
-        navigate(`../${AppRoutes.pathSignin}`);
+        const payload = {			
+			...values,
+            "isActive": true
+		};
+
+		mutate(
+			{
+				payload
+			},
+			{
+				onSuccess: (response) => {
+					console.log('User created/updated successfully:', response);
+					navigate(`../${AppRoutes.pathSignin}`);
+				},
+				onError: (error) => { 
+					setAlert({ type: "error", message: "Failed to create/update user" });
+					setIsAlertVisible(true); 
+				},
+			}
+		); 
     };
 
     return (
@@ -108,15 +142,19 @@ const SignUp = () => {
                                     <div className="form-segment">
                                         <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 line-height">
                                             <Field
-                                                name="organization"
+                                                name="practiceId"
                                                 fieldlabel={t("forms.labels.organization")}
                                                 placeholder=" "
                                                 component={Components["dropdown"]}
-                                                // isRequired
+                                                 isRequired
                                                 options={[{
-                                                    label: 'TXO',
+                                                    label: 'ten', 
                                                     value: 10
-                                                }]} />
+                                                  },
+                                                  {
+                                                    label: 'TXO',
+                                                    value: 261
+                                                  }, ]} />
                                         </div>
                                         <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
                                             <Field

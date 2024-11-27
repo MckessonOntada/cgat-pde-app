@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext,useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
@@ -6,6 +6,7 @@ import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 
 const UserContext = createContext();
+const RECORDS_PER_PAGE = 8;
 
 export const useUser = () => {
   const context = useContext(UserContext);
@@ -18,7 +19,7 @@ export const useUser = () => {
 const INITIAL_STATE = {
   searchQuery: '',
   location: [],
-  status: [],  pagination: {
+  status: [], pagination: {
     currentPage: 0,
     totalRecords: 0,
     totalPageCount: 0,
@@ -26,11 +27,10 @@ const INITIAL_STATE = {
   }
 };
 
-const RECORDS_PER_PAGE = 8;
-
 export const UserProvider = ({ children }) => {
   const [filterState, setFilterState] = useState(INITIAL_STATE);
   const [currentPage, setCurrentPage] = useState(1);
+  const [activeTab, setActiveTab] = useState('ACTIVE USERS');
 
   const updateFilterState = useCallback((field, value) => {
     setFilterState((prevState) => ({
@@ -45,18 +45,21 @@ export const UserProvider = ({ children }) => {
 
   // Use from context
   const requestParams = useMemo(() => ({
-    pageNo: currentPage-1,
+    pageNo: currentPage - 1,
     pageSize: RECORDS_PER_PAGE,
     sortBy: 'first_name',
     sortOrder: 'asc',
     userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
-  }),[currentPage]);
+  }), [currentPage]);
 
-  const { isLoading, isError, data,refetch } = useQuery({
-    queryKey: ['users'],
+  const { isLoading, isError, data, refetch } = useQuery({
+    queryKey: ['users', activeTab],
     queryFn: async () => {
+      const url = activeTab === "ACTIVE USERS"
+        ? `${ApiRoutes.USERS()}?${serializeParams(requestParams)}`
+        : `${ApiRoutes.USERS_PROVISIONING}`; 
       const res = await HttpResourceService.callRest(
-        `${ApiRoutes.USERS()}?${serializeParams(requestParams)}`, // Use practice id from organization
+        url,
         httpVerb.GET,
         {}
       );
@@ -66,18 +69,17 @@ export const UserProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    // Refetch on pagination/filters/sorting
     refetch(requestParams)
-  },[currentPage, filterState])
+  }, [currentPage, filterState])
 
-  // const applyFilters = useCallback(() => console.log('Apply filters'), []);
 
-  // const onPageChange = useCallback((newPage) => { setCurrentPage(newPage)},[])
   const ctxValue = useMemo(
     () => ({
       isLoading,
       isError,
       data: data?.content || [],
+      activeTab,
+      setActiveTab,
       pagination: {
         currentPage,
         totalPageCount: data?.totalPages || 0,
@@ -98,9 +100,7 @@ export const UserProvider = ({ children }) => {
       },
       refetch, // Add refetch to context value to reload data
     }),
-    [updateFilterState, clearFilters, isLoading, isError, data, currentPage, refetch]
+    [updateFilterState, clearFilters, isLoading, isError, data, currentPage, activeTab, setActiveTab, refetch]
   );
-  
   return <UserContext.Provider value={ctxValue}>{children}</UserContext.Provider>;
-  
 };
