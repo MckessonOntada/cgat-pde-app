@@ -1,8 +1,8 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import './CreateUser.scss';
-import { Button, Stepper,Alert } from '@mckesson/mcp-component-library';
+import { Button, Stepper, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import UserDetailsFormSegment from './CreateUserForm';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -22,49 +22,51 @@ const CreateUser = () => {
 	const location = useLocation();
 	const { isEdit } = location.state || {};
 	const { isPending } = location.state || {};
-	const [ isAlertVisible, setIsAlertVisible] = useState(false); 
+	const [isAlertVisible, setIsAlertVisible] = useState(false);
 	const [alert, setAlert] = useState(null)
 
 	useEffect(() => {
 		if (isAlertVisible) {
-		  const timer = setTimeout(() => {
-			setIsAlertVisible(false);
-		  }, 10000);
-	
-		  return () => clearTimeout(timer); // Cleanup timer on unmount
-		}
-	  }, [isAlertVisible]);
+			const timer = setTimeout(() => {
+				setIsAlertVisible(false);
+			}, 10000);
 
-	  const handleAlertClose = () => {
-		setIsAlertVisible(false); 
-	  };
+			return () => clearTimeout(timer); // Cleanup timer on unmount
+		}
+	}, [isAlertVisible]);
+
+	const handleAlertClose = () => {
+		setIsAlertVisible(false);
+	};
 
 	const requestParams = {
-		userType: AuthUtils.isSystemAdminView()? 'ADMIN' : 'GENERAL'
+		userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
 	};
-	const practiceId = AuthUtils.getPracticeId() ?? 1 ;
+	const practiceId = AuthUtils.getPracticeId() ?? 1;
 
 	const { isLoading: isGetUserdetails, isError: isGetUserError, data: userData } = useQuery({
 		queryKey: [`users/${userId}`],
 		queryFn: async () => {
+			const url = !isPending
+				? `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`
+				: `${ApiRoutes.USERS_PROVISIONING}/${userId}`;
 			const res = await HttpResourceService.callRest(
-				`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, // Use practice id from organization
+				url,
 				httpVerb.GET,
 				{}
-			); 
+			);
 			return res.data;
 		},
 		refetchOnWindowFocus: false
 	});
-
-
+ 
 	const { mutate, isLoading, isError, data } = useMutation(async ({ payload }) => {
-		if (isEdit) {
+		if (isEdit) {			 
 			const updatedPayload = {
 				...payload,
 				permissions: userData?.permissions || [], // Include permissions from userData
 				role: userData?.role || [], // Include roles from userData
-			  };
+			};
 			const res = await HttpResourceService.callRest(
 				`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`,
 				httpVerb.PUT,
@@ -85,8 +87,6 @@ const CreateUser = () => {
 		navigate(-1);
 	};
 
-	
-
 	const initialValues = {
 		name: {
 			firstName: userData?.name?.firstName || '',
@@ -95,7 +95,7 @@ const CreateUser = () => {
 		},
 		contact: {
 			email: userData?.contact?.email || '',
-			phone:  userData?.contact?.phone || '',
+			phone: userData?.contact?.phone || '',
 			countryCode: "91",
 			fax: userData?.contact?.fax || '',
 		},
@@ -172,10 +172,10 @@ const CreateUser = () => {
 				onError: (error) => {
 					//console.log('Failed to create/update user:', error);
 					setAlert({ type: "error", message: "Failed to create/update user" });
-					setIsAlertVisible(true); 
+					setIsAlertVisible(true);
 				},
 			}
-		); 
+		);
 	};
 
 	const handleGoBack = () => {
@@ -216,11 +216,11 @@ const CreateUser = () => {
 			</div>
 			{isAlertVisible && (
 				<Alert
-				description={alert.message}
-				onClose={handleAlertClose}
-				type={alert.type}
-				duration={10000} 
-        	/>)}
+					description={alert.message}
+					onClose={handleAlertClose}
+					type={alert.type}
+					duration={10000}
+				/>)}
 			<Formik
 				initialValues={initialValues}
 				validationSchema={validationSchema}

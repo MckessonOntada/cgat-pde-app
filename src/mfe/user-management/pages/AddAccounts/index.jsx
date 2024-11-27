@@ -8,7 +8,11 @@ import arrow_right from '@src/assets/image/arrow_right.svg';
 import AccountsList from '@src/components/Accounts/AccountsList';
 import AllAccountsData from '@src/mfe/org-management/mockData/AllAccounts';
 import { RoutePaths } from '@src/routes/constants';
-import { PATHS } from '../../routes/constants';
+import { useMutation } from 'react-query';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
+import { serializeParams } from '@src/util/ApiUtils';
+import AuthUtils from '@src/util/AuthUtils';
 
 const AddAccounts = () => {
     const { t } = useTranslate();
@@ -41,12 +45,42 @@ const AddAccounts = () => {
         //     `Selected Accounts: ${JSON.stringify(selectedAccounts, null, 2)}`
         // );
     };
+    const requestParams = {
+        userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
+    };
+
+
+    const { mutate, isLoading, isError, data } = useMutation(async ({ payload }) => {
+        const url = `${ApiRoutes.USERS()}/${userId}/accounts?${serializeParams(requestParams)}`
+        const res = await HttpResourceService.callRest(
+            url,
+            httpVerb.PATCH,
+            payload
+        );
+        return res.data;
+    });
+
+
 
     const handleAddAccounts = () => {
-        navigate(`../${userId}`, { state: { isSuccess: true } });
-        // alert(
-        //     `Selected Accounts: ${JSON.stringify(selectedAccounts, null, 2)}`
-        // );
+        const payload = selectedAccounts.map((account) => account.id);
+        mutate(
+            {
+                payload
+            },
+            {
+                onSuccess: (response) => {
+                    console.log('User created/updated successfully:', response);
+                    navigate(`../${userId}`, { state: { isSuccess: true } });
+                },
+                onError: (error) => {
+                    console.log('Failed to add accounts:', error);
+                    alert("Failed to update accounts");
+                    // setAlert({ type: "error", message: "Failed to update accounts" });
+                    // setIsAlertVisible(true);
+                },
+            }
+        );
     };
 
     return (
@@ -109,6 +143,7 @@ const AddAccounts = () => {
                         setSelectedRows={setSelectedAccounts}
                         onRemoveAccount={onRemoveAccount}
                         showSelectedAccounts
+
                         omitColumns={['action', 'cgatIdentifier', 'address']}
                     />
                 </div>
