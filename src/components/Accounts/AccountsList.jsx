@@ -36,7 +36,7 @@ export default function AccountsList({
       sortBy: practiceId ? 'name_1' : 'name_1', // handle based on column
       sortOrder: 'asc'
     };
-    if (AuthUtils.isSystemAdminView()) {
+    if (practiceId) {
       params = {
         ...params,
         practiceId,
@@ -46,16 +46,16 @@ export default function AccountsList({
     return params;
   }, [currentPage, practiceId]);
 
-  // const apiUrl = useMemo(
-  //   () => (practiceId ? `${ApiRoutes.ORGANIZATIONS}/${practiceId}/accounts` : ApiRoutes.ACCOUNTS),
-  //   [practiceId]
-  // );
+  const apiUrl = useMemo(
+    () => (practiceId ? `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts` : ApiRoutes.ACCOUNTS),
+    [practiceId]
+  );
   
   const { isLoading, data, isError } = useQuery({
     queryKey: ['accounts', practiceId],
     queryFn: async () => {
-      const res = await HttpResourceService.callRest(
-        `${ApiRoutes.PUBLIC_ACCOUNTS}?${serializeParams(requestParams)}`,
+      const res = await HttpResourceService.callRest( 
+       `${apiUrl}?${serializeParams(requestParams)}`,
         httpVerb.GET,
         {}
       );
@@ -74,24 +74,24 @@ export default function AccountsList({
         name: t('account.no'),
         cell: (row) => (
           <Link to={row.url} className="account-ID">
-            {row.dcId}
+            {row.accountNumber}
           </Link>
         ),
         wrap: true,
         width: '15%'
       },
       {
-        id: 'name',
+        id: 'accountName',
         name: t('account.name'),
         wrap: true,
-        selector: (row) => row.dcName,
+        selector: (row) => row.accountName,
         width: '25%',
-        cell: (row) => <div className="cellEllipse">{row.dcName}</div>
+        cell: (row) => <div className="cellEllipse">{row.accountName}</div>
       },
       {
-        id: 'org',
+        id: 'salesOrg',
         name: t('account.sales_org'),
-        selector: (row) => row.org,
+        selector: (row) => row.salesOrg,
         wrap: true
       },
       {
@@ -104,17 +104,16 @@ export default function AccountsList({
         center: false
       },
       {
-        id: 'address',
-        center: true,
+        id: 'address', 
         name: t('account.address'),
-        cell: (row) => <div className="cellEllipse">{row.address.address1}</div>,
+        cell: (row) => <div className="cellEllipse">{`${row.address.houseNumber} ${row.address.street} ${row.address.street2} ${row.address.street3} ${row.address.city} ${row.address.district} ${row.address.state} ${row.address.country}  ${row.address.zipCode}` }</div>,
         omit: omitColumns.includes('address')
       },
       {
         id: 'cgatIdentifier',
         center: true,
         name: t('account.identifier'),
-        cell: (row) => <div className="cellEllipse">{row.cgatIdentifier}</div>,
+        cell: (row) => <div className="cellEllipse">{row.companyCode}</div>,
         omit: omitColumns.includes('cgatIdentifier')
       },
       {

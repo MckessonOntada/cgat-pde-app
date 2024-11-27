@@ -14,8 +14,8 @@ export default function SelectedAccounts({ selectedAccounts, onRemoveAccount }) 
         {selectedAccounts?.map((item) => (
           <div key={item.id} className="selected-account">
             <div>
-              <p className="selected-account-label">{item.dcName}</p>
-              <p className="selected-account-label">({item.dcId})</p>
+              <p className="selected-account-label">{item.accountName}</p>
+              <p className="selected-account-label">({item.accountNumber})</p>
             </div>
             <Button
               Icon={DeleteIcon}
