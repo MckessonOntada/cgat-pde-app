@@ -86,7 +86,7 @@ export default function Dashboard() {
         controls={
           <div className="controls">
             <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createUser}`)}>Add User</Button>
-            <Button Icon={upload_bottom} className="button-icon" variant="primary" size="md" >Upload Users</Button>
+            {!isSystemAdminView &&  <Button Icon={upload_bottom} className="button-icon" variant="primary" size="md" >Upload Users</Button>}
           </div>
         }
       />

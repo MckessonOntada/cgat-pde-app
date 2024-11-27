@@ -97,7 +97,7 @@ function UserTable({ isPendingRequest = false, selectableRows = false }) {
       sortable: true,
       wrap: true,
       cell: (props) => (
-        <div className="cellEllipse">
+        <div className="cellEllipses">
           {isPendingRequest ? (
             `${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`
           ) : (
@@ -117,7 +117,7 @@ function UserTable({ isPendingRequest = false, selectableRows = false }) {
       sortable: true,
       wrap: true,
       width: '20%',
-      cell: (props) => <div className="cellEllipse">{props.contact.email}</div>
+      cell: (props) => <div className="cellEllipses">{props.contact.email}</div>
     },
     {
       id: 'role',
