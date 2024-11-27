@@ -33,7 +33,7 @@ export default function AccountsList({
     let params = {
       pageNo: currentPage - 1,
       pageSize: RECORDS_PER_PAGE,
-      sortBy: practiceId ? 'name_1' : 'name', // handle based on column
+      sortBy: practiceId ? 'name_1' : 'name_1', // handle based on column
       sortOrder: 'asc'
     };
     if (AuthUtils.isSystemAdminView()) {

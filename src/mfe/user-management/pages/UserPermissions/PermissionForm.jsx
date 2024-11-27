@@ -1,14 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PERMISSIONS_ENUM } from './permissionsEnum';
-import { ROLES } from '../../mockData/PermissionsData';
-import { SearchableDropdown, Switch, Button } from '@mckesson/mcp-component-library';
+import { SearchableDropdown, Switch, Button,Dropdown } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import './PermissionForm.scss';
+import { useQuery } from 'react-query';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
+// import Dropdown from '../../../../components/form/Dropdown';
 
-const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleSelect }) => {
+const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleSelect, editRoleId }) => {
     const { t } = useTranslate();
-    const [selectedRole, setSelectedRole] = useState();
+    const [selectedRole, setSelectedRole] = useState(editRoleId || '');
+
+    const { isLoading, isError, data: roleData, refetch } = useQuery({
+        queryKey: [`users/getAll}`],
+        queryFn: async () => {
+            const res = await HttpResourceService.callRest(
+                `${ApiRoutes.GET_ROLES()}`,
+                httpVerb.GET,
+                {}
+            );
+
+            if (res.data?.content) {
+                const roles = res.data?.content?.map((role) => ({
+                    ...role,
+                    label: role.name, //  `role.name` for the label
+                    value: role.id,   //  `role.id` for the value
+                }));
+                return roles;
+            }
+            return [];
+        },
+        refetchOnWindowFocus: false
+    });
+
+
 
     const getAllPermissions = () =>
         Object.values(PERMISSIONS_ENUM).flatMap((permissions) => Object.values(permissions));
@@ -21,13 +48,15 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
     const resetPermissions = () => {
         setEnabledPermissions([]);
     };
-    
+
     const handleRoleChange = (value) => {
-        const selected = value.find((item) => item.isChecked);
+        const selected = value;
+        const roleId = roleData?.find(item => item.id == value);
+        const permissions = roleId?.permissions ?? [];
         if (selected) {
             setSelectedRole(selected);
-            setEnabledPermissions(['ADD_USERS', 'ADD_ROLES']);
-            handleRoleSelect(selected.value);
+            setEnabledPermissions(permissions)
+            handleRoleSelect(selected);
         }
     };
 
@@ -46,12 +75,13 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
             <ModuleHeader heading={<p className="tertiaryHeading-24">{t('userManagement.user_permissions.select_role')}</p>} />
             <div className="MCP-panel-container">
                 <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
-                    <SearchableDropdown
+                    <Dropdown
                         id="role"
                         label={t('userManagement.user_permissions.select_role')}
                         value={selectedRole}
                         onChange={handleRoleChange}
-                        options={ROLES}
+                        options={roleData || []} 
+                        size="lg" 
                     />
                 </div>
             </div>
@@ -70,25 +100,33 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
             <div className="MCP-panel-container grid grid-gap-16">
                 {Object.entries(PERMISSIONS_ENUM).map(([category, permissions]) => (
                     <div key={category} className="MCP-module-body permission-category">
-                        <div className="secondaryHeading">{t(category)}</div>
-                        <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
-                            {Object.entries(permissions).map(([key, permission]) => (
-                                <div key={key} className="permission-item flex items-center justify-between">
-                                    <div className="permission-info">
-                                        <div className="permission-info-header">{t(`${category}.${key}`)}</div>
-                                        <p>{t(`${category}.${key}.DESCRIPTION`)}</p>
-                                    </div>
-                                    <Switch
-                                        id={`toggle-${category}-${key}`}
-                                        label={isPermissionEnabled(permission) ? 'Enabled' : 'Disabled'}
-                                        labelPosition="right"
-                                        size="lg"
-                                        checked={isPermissionEnabled(permission)}
-                                        onChange={() => togglePermission(permission)}
-                                    />
-                                </div>
-                            ))}
-                        </div>
+                        <div className="subheader-text">{t(category)}</div>
+                        <div className="permission-category">
+                            <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 permission-list">
+                                {Object.entries(permissions).map(([key, permission], idx) => (
+                                    <React.Fragment key={idx}>
+                                        <div key={key} className="flex items-center justify-between permission-item">
+                                            <div className="permission-info">
+                                                <div className="permission-info-header">{t(`${category}.${key}`)}</div>
+                                                <p>{t(`${category}.${key}.DESCRIPTION`)}</p>
+                                            </div>
+                                            <div className="permission-toggle">
+                                                <Switch
+                                                    id={`toggle-${category}-${key}`}
+                                                    label={isPermissionEnabled(permission) ? 'Enabled' : 'Disabled'}
+                                                    labelPosition="right"
+                                                    size="lg"
+                                                    checked={isPermissionEnabled(permission)}
+                                                    onChange={() => togglePermission(permission)}
+                                                />
+                                            </div>
+                                        </div>
+                                        {idx % 2 === 0 && idx !== Object.keys(PERMISSIONS_ENUM[category]).length - 1 && (
+                                            <div className="divider"></div>
+                                        )}
+                                    </React.Fragment>
+                                ))}
+                            </div></div>
                     </div>
                 ))}
             </div>

@@ -87,6 +87,19 @@ const UserDetail = () => {
   const handleSearchChange = (inputValue) => {
     setSearchText(inputValue);
   };
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-GB').replace(/\//g, '-');
+  };
+  const formatPhoneNumber = (phoneNumber) => {
+		if (!phoneNumber) return ""; 
+		const cleaned = phoneNumber.replace(/\D/g, "");  
+		const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+		if (match) {
+		  return `(${match[1]}) ${match[2]}-${match[3]}`;
+		}
+	  
+		return phoneNumber;  
+	  };
 
   const groupPermissionsByCategory = (userPermissions, permissionsEnum) => {
     const groupedPermissions = {};
@@ -141,11 +154,12 @@ const UserDetail = () => {
             </div>
             <div className="user-status">
               <span className="view_label">Last Updated On:</span>
-              <span className="label-text">{data?.date_added}</span>
+              <span className="label-text">  {data?.createdAt ? formatDate(data.createdAt) : "N/A"}</span>
               <Switch
                 handleToggle={() => {}}
                 id="id"
-                label="Active"
+                disabled={!data?.isActive}
+                label={data?.isActive ? "Active" : ""} 
                 labelPosition="right"
                 name="Toggle"
                 size="lg"
@@ -167,7 +181,7 @@ const UserDetail = () => {
             </div>
             <div>
               <span className="view_label">Phone Number</span>
-              <p className="label-text">{data?.contact.phone}</p>
+              <p className="label-text"> {data?.contact.phone ? formatPhoneNumber(data.contact.phone) : "N/A"} </p>
             </div>
             <div>
               <span className="view_label">Fax</span>
@@ -187,7 +201,7 @@ const UserDetail = () => {
             </div>
           </div>
         </div>
-
+        
         <ModuleHeader
           heading={
             <p className="primaryHeading">{t('userManagement.header.view.permissions_granted')}</p>
@@ -200,7 +214,7 @@ const UserDetail = () => {
                 className="button-icon"
                 size="md"
                 onClick={() =>
-                  navigate(`../${PATHS.userPermissions}/${userId}`, { state: { isEdit: true } })
+                  navigate(`../${PATHS.userPermissions}/${userId}`, { state: { isEdit: true,  permissionsData: data } })
                 }>
                 {t('userManagement.button.edit')}
               </Button>
