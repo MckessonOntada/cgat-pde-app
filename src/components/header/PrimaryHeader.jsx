@@ -16,6 +16,8 @@ import HeaderConfig from './__mock__';
 import FloatingDrawer from '../floating-drawer';
 import AuthService from '@src/api/authService/AuthService';
 import { useOktaAuth } from '@okta/okta-react';
+import { useOrg } from '../../mfe/org-management/context/OrgContext';
+import useSessionFeatures from '../../hooks/useSessionFeatures';
 import { useQuery } from 'react-query';
 import CommonDataService from '../../api/commonService/CommonDataService';
 
@@ -25,6 +27,19 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const toggleDrawer = () => setDrawerOpen(!drawerOpen);
 
+  const {
+    organization: { setOrganization }
+  } = useSessionFeatures();
+
+  const { data, isLoading, isError } = useOrg();
+
+  const dropdownOptions = Array.isArray(data)
+    ? data.map((item) => ({ value: item, label: item.name }))
+    : [];
+
+  const handleChange = (selectedOption) => {
+    setOrganization(selectedOption);
+  };
   // const { isLoading, data, isError, refetch } = useQuery({
   //   queryKey: ['organizations'],
   //   queryFn: async () => {
@@ -55,15 +70,15 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
             {props.children}
           </Link>
         </div>
-        {/* <div className={styles.centerSelector}>
+        <div className={styles.centerSelector}>
           <Dropdown
-            id={''}
-            name={''}
+            id={'Organization'}
+            name={'Organization'}
             aria-label="Select treatment center"
-            options={data?.content || []}
-            onChange={() => { }}
+            options={dropdownOptions}
+            onChange={handleChange}
           />
-        </div> */}
+        </div>
       </div>
     );
   };
@@ -81,7 +96,7 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
             <IconArrowDown />
           </button>
         }
-        handleSelect={() => { }}
+        handleSelect={() => {}}
         options={HeaderConfig.profileOptions}
         aria-label="Profile options"
       />,
@@ -122,13 +137,24 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
   return (
     <div className={`${styles.navContainer} ${styles.primary}`}>
       <div className={styles.wrapper} id={''}>
-        {authState?.isAuthenticated ? <LeftSideView><AppLogo /></LeftSideView> :
-          <div className={styles.navItemsLeft} id={''}> <div className={styles.branding}> <AppLogo /> </div></div>}
+        {authState?.isAuthenticated ? (
+          <LeftSideView>
+            <AppLogo />
+          </LeftSideView>
+        ) : (
+          <div className={styles.navItemsLeft} id={''}>
+            {' '}
+            <div className={styles.branding}>
+              {' '}
+              <AppLogo />{' '}
+            </div>
+          </div>
+        )}
         {authState?.isAuthenticated && (
           <div className={styles.desktopOnly}>
             <RightSideView />
-          </div>)
-        }
+          </div>
+        )}
         <div className={styles.mobileOnly}>
           <button onClick={toggleDrawer} aria-label="Open drawer menu">
             <IconMenu />

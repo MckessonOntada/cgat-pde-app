@@ -10,7 +10,7 @@ import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import AccountsList from '@src/components/Accounts/AccountsList';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import { PATHS } from '../../routes/constants';
-import ModuleHeader from '../../../../components/module-header';
+import ModuleHeader from '@src/components/module-header';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
@@ -253,7 +253,7 @@ const UserDetail = () => {
           />
           {isSuccess && isAlertVisible && (
             <Alert
-              description="2 new accounts have been successfully linked to this user" //Number shoud be dynamic --To Do
+              description="2 new accounts have been successfully linked to this user" //Number should be dynamic --To Do
               onClose={handleAlertClose}
               type="success"
               duration={10000}

@@ -47,7 +47,11 @@ const OrgList = () => {
       id: 'name',
       name: t('orgManagement.table.name'),
       cell: (row) => (
-        <Button variant="tertiary" onClick={() => handleClick(row)}>
+        <Button
+          variant="tertiary"
+          onClick={() => {
+            handleClick(row);
+          }}>
           {row.name}
         </Button>
       ),
