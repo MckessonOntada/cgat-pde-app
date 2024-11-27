@@ -60,10 +60,15 @@ const CreateUser = () => {
 
 	const { mutate, isLoading, isError, data } = useMutation(async ({ payload }) => {
 		if (isEdit) {
+			const updatedPayload = {
+				...payload,
+				permissions: userData?.permissions || [], // Include permissions from userData
+				role: userData?.role || [], // Include roles from userData
+			  };
 			const res = await HttpResourceService.callRest(
 				`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`,
 				httpVerb.PUT,
-				payload
+				updatedPayload
 			);
 			return res.data;
 		} else {
@@ -80,16 +85,7 @@ const CreateUser = () => {
 		navigate(-1);
 	};
 
-	const formatPhoneNumber = (phoneNumber) => {
-		if (!phoneNumber) return ""; 
-		const cleaned = phoneNumber.replace(/\D/g, "");  
-		const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
-		if (match) {
-		  return `(${match[1]}) ${match[2]}-${match[3]}`;
-		}
-	  
-		return phoneNumber;  
-	  };
+	
 
 	const initialValues = {
 		name: {
