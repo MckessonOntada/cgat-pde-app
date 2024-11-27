@@ -10,33 +10,40 @@ import AuthUtils from '@src/util/AuthUtils';
 
 const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
   let intl = useIntl();
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
 
   const location = useLocation();
   const {
-    organization: { selectedOrganization, removeOrganization }
+    organization: { removeOrganization }
   } = useSessionFeatures();
 
   const handleSystemAdminViewClick = () => {
     removeOrganization();
-    navigate("/");
-  }
+
+    if (location.pathname === '/') {
+      window.location.reload();
+    } else {
+      navigate('/');
+    }
+  };
 
   const tabs = useMemo(() => {
     if (isSystemAdminView) {
-      return [{
-        label: 'System Administrator',
-        path: '/',
-        id: 1,
-        configName: "System Administrator",
-        isActive: true,
-        isActiveTab: true,
-        labelForMobile: 'System Administrator',
-        sequence: 1,
-        ariaSelected: true
-      }];
-    };
+      return [
+        {
+          label: 'System Administrator',
+          path: '/',
+          id: 1,
+          configName: 'System Administrator',
+          isActive: true,
+          isActiveTab: true,
+          labelForMobile: 'System Administrator',
+          sequence: 1,
+          ariaSelected: true
+        }
+      ];
+    }
 
     let updatedTabs = [];
 
@@ -50,24 +57,14 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
           ariaSelected: isDashboard || isMatchingPath ? 'true' : 'false'
         };
       });
-    };
+    }
     return updatedTabs;
   }, [navLinks, location.pathname]);
-
 
   const LeftSideView = () => {
     return (
       <div className={`${styles.navItemsLeft} ${styles.secondaryNav}`} aria-label="Navigation tabs">
-        <TabList
-          className={styles.compactTablist}
-          type="link"
-          options={tabs}
-          showShadow={false}
-          alignment={'left'}
-          useAsButton={false}
-          role="tablist"
-          aria-label="Secondary navigation tabs"
-        />
+        <TabList className={styles.compactTablist} type="link" options={tabs} showShadow={false} alignment={'left'} useAsButton={false} role="tablist" aria-label="Secondary navigation tabs" />
       </div>
     );
   };
@@ -90,9 +87,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
     <div className={`${styles.navContainer} ${styles.secondary}`} aria-label="Secondary header">
       <div className={styles.wrapper}>
         <LeftSideView />
-        {
-          !isSystemAdminView && <RightSideView />
-        }
+        {!isSystemAdminView && <RightSideView />}
       </div>
     </div>
   );
