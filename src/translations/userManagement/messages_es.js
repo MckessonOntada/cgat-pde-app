@@ -1,9 +1,17 @@
 export const UserManagementES = {
   'userManagement.header.label': 'S_Manage Users',
-  'userManagement.add.label' : 'S_Add Users',
+  'userManagement.add.label' : 'S_Add User',
+  'userManagement.header.systemadmin.label': 'S_Manage System Admins',
   'userManagement.upload.label': 'S_Upload Users',
-  'userManagement.clearFilter.label': 'S_Clear Filters',   
+  'userManagement.clearFilter.label': 'S_clear filters',
   'userManagement.searchFilter.label': 'S_Search By Name or Email',
+
+  'userManagement.results': 'S_results',
+  'userManagement.per_page': 'S_per page',
+  'userManagement.selected_items': `S_Item's Selected`,
+
+  'userManagement.header.listing.label': 'S_Manage Users',
+  'userManagement.header.systemadminlisting.label': 'S_Manage System Admins',
 
   'userManagement.table.name': 'S_Name',
   'userManagement.table.email': 'S_Email',
