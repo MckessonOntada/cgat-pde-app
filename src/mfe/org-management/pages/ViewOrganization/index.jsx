@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import DetailsView from '../../components/DetailsView';
@@ -44,8 +44,35 @@ export default function ViewOrganization() {
     navigate(RoutePaths.pathOrgManagement);
   };
 
+  const {
+    mutate,
+    isLoading: isAddAccountsLoading,
+    isError: isAddAccountsError,
+    data: isAddAccountsData
+  } = useMutation(async ({ payload }) => {
+    const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${orgId}/accounts`;
+    const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+    return res.data;
+  });
+
   const addNewAccountsClick = () => {
-    handleCancel();
+    const payload = selectedAccounts.map((account) => account.id);
+    mutate(
+      {
+        payload
+      },
+      {
+        onSuccess: (response) => {
+          console.log('Accounts updated successfully:', response);
+          //alert('Accounts updated successfully');
+          handleCancel();
+        },
+        onError: (error) => {
+          console.log('Failed to add accounts:', error);
+          alert('Failed to update accounts');
+        }
+      }
+    );
   };
 
   const handleCancel = () => {
@@ -59,7 +86,7 @@ export default function ViewOrganization() {
     },
     [selectedAccounts, setSelectedAccounts]
   );
-   
+
   return (
     <div className="viewOrg-container">
       {isLoading && <Loader type={'screen'} />}
@@ -68,41 +95,27 @@ export default function ViewOrganization() {
         <p>{t('orgManagement.back.organization')}</p>
       </div>
 
-      <ModuleHeader
-        heading={<p className="primaryHeading">{t('orgManagement.create_org.org-details')}</p>}
-      />
+      <ModuleHeader heading={<p className="primaryHeading">{t('orgManagement.create_org.org-details')}</p>} />
 
       {data && (
         <div className="details-view-container">
-          <DetailsView
-            data={data}
-            onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: data }, true)}
-          />
+          <DetailsView data={data} onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: data }, true)} />
         </div>
       )}
 
       <ModuleHeader
-        heading={
-          <p className="primaryHeading">
-            {addNewAccounts ? t('orgManagement.select_account') : t('orgManagement.link')}
-          </p>
-        }
+        heading={<p className="primaryHeading">{addNewAccounts ? t('orgManagement.select_account') : t('orgManagement.link')}</p>}
         controls={
           !addNewAccounts && (
             <div className="controls">
-              <Button
-                Icon={add_circle_bold}
-                variant="secondary"
-                className="button-icon"
-                onClick={() => setAddNewAccounts(true)}
-                size={'md'}>
+              <Button Icon={add_circle_bold} variant="secondary" className="button-icon" onClick={() => setAddNewAccounts(true)} size={'md'}>
                 {t('orgManagement.add.account')}
               </Button>
             </div>
           )
         }
       />
-      
+
       <AccountsList
         showSelectedAccounts={addNewAccounts}
         omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']}
@@ -111,6 +124,7 @@ export default function ViewOrganization() {
         setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)}
         practiceId={orgId}
         onRemoveAccount={onRemoveAccount}
+        addNewAccounts={addNewAccounts}
       />
 
       {addNewAccounts && (

@@ -19,7 +19,8 @@ export const useUser = () => {
 const INITIAL_STATE = {
   searchQuery: '',
   location: [],
-  status: [], pagination: {
+  status: [],
+  pagination: {
     currentPage: 0,
     totalRecords: 0,
     totalPageCount: 0,
@@ -44,38 +45,34 @@ export const UserProvider = ({ children }) => {
   };
 
   // Use from context
-  const requestParams = useMemo(() => ({
-    pageNo: currentPage - 1,
-    pageSize: RECORDS_PER_PAGE,
-    sortBy: 'first_name',
-    sortOrder: 'asc',
-    userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
-  }), [currentPage]);
+  const requestParams = useMemo(
+    () => ({
+      pageNo: currentPage - 1,
+      pageSize: RECORDS_PER_PAGE,
+      sortBy: 'first_name',
+      sortOrder: 'asc',
+      userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
+    }),
+    [currentPage]
+  );
 
   const { isLoading, isError, data, refetch } = useQuery({
     queryKey: ['users', activeTab],
     queryFn: async () => {
-      const url = activeTab === "ACTIVE USERS"
-        ? `${ApiRoutes.USERS()}?${serializeParams(requestParams)}`
-        : `${ApiRoutes.USERS_PROVISIONING}`;
-      const res = await HttpResourceService.callRest(
-        url,
-        httpVerb.GET,
-        {}
-      );
+      const url = activeTab === 'ACTIVE USERS' ? `${ApiRoutes.USERS()}?${serializeParams(requestParams)}` : `${ApiRoutes.USERS_PROVISIONING()}`;
+      const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       return res.data;
     },
     refetchOnWindowFocus: false
   });
 
   const refetchUsersData = () => {
-    refetch(requestParams)
-  }
+    refetch(requestParams);
+  };
 
   useEffect(() => {
-    refetch(requestParams)
-  }, [currentPage, filterState])
-
+    refetch(requestParams);
+  }, [currentPage, filterState]);
 
   const ctxValue = useMemo(
     () => ({
@@ -90,19 +87,19 @@ export const UserProvider = ({ children }) => {
         totalRecords: data?.totalElements || 0,
         recordsPerPage: RECORDS_PER_PAGE,
         update: {
-          setCurrentPage,
-        },
+          setCurrentPage
+        }
       },
       filters: {
         ...filterState,
         update: {
           setSearchQuery: (value) => updateFilterState('searchQuery', value),
           setRole: (value) => updateFilterState('role', value),
-          setStatus: (value) => updateFilterState('status', value),
+          setStatus: (value) => updateFilterState('status', value)
         },
-        clearFilters,
+        clearFilters
       },
-      refetchUsersData, // Add refetch to context value to reload data
+      refetchUsersData // Add refetch to context value to reload data
     }),
     [updateFilterState, clearFilters, isLoading, isError, data, currentPage, activeTab, setActiveTab, refetch]
   );
