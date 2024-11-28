@@ -16,12 +16,12 @@ import { useRole } from '../../../context/RoleContext';
 
 function arePermissionsEqual(arr1, arr2) {
     if (arr1.length !== arr2.length) {
-      return false;
+        return false;
     }
-  
+
     const sortedArr1 = [...arr1].sort();
     const sortedArr2 = [...arr2].sort();
-  
+
     return sortedArr1.every((value, index) => value === sortedArr2[index]);
 }
 
@@ -37,11 +37,11 @@ const RolePermissions = () => {
     const [inheritedRole, setInheritedRole] = React.useState(null);
     const { refreshData } = useRole();
 
-    
+
 
     const handleOnBackButtonClick = () => {
-        if(row?.permissions && row?.permissions.length > 0){
-            if(!arePermissionsEqual(row.permissions, enabledPermissions)){
+        if (row?.permissions && row?.permissions.length > 0) {
+            if (!arePermissionsEqual(row.permissions, enabledPermissions)) {
                 setIsModalVisible(true);
             }
         }
@@ -50,28 +50,33 @@ const RolePermissions = () => {
     };
 
     const mutation = useMutation(
-        (data) => {
-            HttpResourceService.callRest(
+        async (data) => {
+            const res = await HttpResourceService.callRest(
                 `${ApiRoutes.GET_ROLE_PERMISSIONS(roleId)}`,
                 httpVerb.PATCH,
                 data
             );
+
+            return res;
         },
         {
-            onSuccess: (data) => {
-                if (row?.permissions) {
-                    showModuleMessage({
-                        text: t('orgManagement.messages.roleUpdate'),
-                        kind: 'success'
-                    }, 10000);
-                } else {
-                    showModuleMessage({
-                        text: t('orgManagement.messages.newRoleCreation'),
-                        kind: 'success'
-                    }, 10000);
+            onSuccess: (res) => {
+                const data = res?.data;
+                if (data) {
+                    if (row?.permissions) {
+                        showModuleMessage({
+                            text: t('orgManagement.messages.roleUpdate'),
+                            kind: 'success'
+                        }, 10000);
+                    } else {
+                        showModuleMessage({
+                            text: t('orgManagement.messages.newRoleCreation'),
+                            kind: 'success'
+                        }, 10000);
+                    }
+                    refreshData();
+                    navigate(`/organization/${PATHS.roles}`);
                 }
-                refreshData();
-                navigate(`/organization/${PATHS.roles}`);
             },
             onError: (error) => {
                 console.error('Error posting data:', error);
@@ -91,8 +96,8 @@ const RolePermissions = () => {
     ], [t]);
 
     const handleGoBack = () => {
-        if(row?.permissions && row?.permissions.length > 0){
-            if(!arePermissionsEqual(row.permissions, enabledPermissions)){
+        if (row?.permissions && row?.permissions.length > 0) {
+            if (!arePermissionsEqual(row.permissions, enabledPermissions)) {
                 setIsModalVisible(true);
             }
         }
@@ -154,22 +159,22 @@ const RolePermissions = () => {
                 </div>
             </div>
             <Modal {...{
-                    id: "discard-role-permissions-modal",
-                    isOpen: isModalVisible,
-                    onClose: () => setIsModalVisible(false),
-                    modalTitle: "Discard Changes?",
-                    modalBody: <div className='tertiaryHeading'>You have changed role permissions, still you want to return to go back? Your changes will be discarded!</div>,
-                    modalFooter: <div style={{display: 'flex', gap: '16px'}} className='controls'>
-                        <Button size="md" variant="secondary" onClick={() => setIsModalVisible(false)}>
-                            Cancel
-                        </Button>
-                        <Button size="md" variant="primary" onClick={() => navigate(`../${roleId}/edit-role`, { state: row })}>
-                            Okay
-                        </Button>
-                    </div>,
-                    modalSize: "md"
-                }}
-                />
+                id: "discard-role-permissions-modal",
+                isOpen: isModalVisible,
+                onClose: () => setIsModalVisible(false),
+                modalTitle: "Discard Changes?",
+                modalBody: <div className='tertiaryHeading'>You have changed role permissions, still you want to return to go back? Your changes will be discarded!</div>,
+                modalFooter: <div style={{ display: 'flex', gap: '16px' }} className='controls'>
+                    <Button size="md" variant="secondary" onClick={() => setIsModalVisible(false)}>
+                        Cancel
+                    </Button>
+                    <Button size="md" variant="primary" onClick={() => navigate(`../${roleId}/edit-role`, { state: row })}>
+                        Okay
+                    </Button>
+                </div>,
+                modalSize: "md"
+            }}
+            />
         </div>
     );
 };

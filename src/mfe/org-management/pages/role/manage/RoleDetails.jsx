@@ -64,7 +64,7 @@ const RoleDetails = () => {
     const roleValidationSchema = getRoleValidationSchema(t);
 
     const mutation = useMutation(
-        (data) => {
+        async (data) => {
             let apiUrl = ApiRoutes.GET_ROLES();
             let actionSpecificHttpVerb = httpVerb.POST;
 
@@ -72,16 +72,20 @@ const RoleDetails = () => {
                 apiUrl += `/${roleId}`;
                 actionSpecificHttpVerb = httpVerb.PUT;
             }
-            HttpResourceService.callRest(
+            const res = await HttpResourceService.callRest(
                 apiUrl,
                 actionSpecificHttpVerb,
                 data
             );
+            return res;
         },
         {
-            onSuccess: (data) => {
-                const id = data && data.id || roleId;
-                navigate(`/organization/roles/${id}/permissions`, { state: row });
+            onSuccess: (res) => {
+                const data = res?.data;
+                if (data) {
+                    const id = data && data.id || roleId;
+                    navigate(`/organization/roles/${id}/permissions`, { state: row });
+                }
             },
             onError: (error) => {
                 console.error('Error posting data:', error);
@@ -147,7 +151,7 @@ const RoleDetails = () => {
                         onSubmit={handleOnSubmit}
                         enableReinitialize
                     >
-                        {({ isValid, dirty }) => (
+                        {({ isValid, setFieldValue }) => (
                             <Form>
                                 <div className='MCP-module-wrapper'>
                                     <div className="MCP-panel-container">
@@ -164,7 +168,7 @@ const RoleDetails = () => {
                                                     placeholder=" "
                                                     isRequired
                                                     component={Components['input']}
-                                                    onChange={handleOnChange}
+                                                // onChange={(e) => handleOnChange(e, setFieldValue)}
                                                 />
                                             </div>
                                             <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
@@ -187,7 +191,7 @@ const RoleDetails = () => {
                                             size="md"
                                             variant="primary"
                                             type="submit"
-                                            disabled={!(isValid && dirty)}
+                                            disabled={!(isValid)}
                                         >
                                             {t('orgManagement.role.captionsBtnSaveAndCancel')}
                                         </Button>
@@ -198,25 +202,25 @@ const RoleDetails = () => {
                     </Formik>
                 </div>
             </div>
-            
-                <Modal {...{
-                    id: "discard-role-details-modal",
-                    isOpen: isModalVisible,
-                    onClose: () => setIsModalVisible(false),
-                    modalTitle: "Discard Changes?",
-                    modalBody: <div className='tertiaryHeading'>You have changed role details, still you want to return to list? Your changes will be discarded!</div>,
-                    modalFooter: <div style={{display: 'flex', gap: '16px'}} className='controls'>
-                        <Button size="md" variant="secondary" onClick={() => setIsModalVisible(false)}>
-                            Cancel
-                        </Button>
-                        <Button size="md" variant="primary" onClick={() => navigate('/organization/roles')}>
-                            Okay
-                        </Button>
-                    </div>,
-                    modalSize: "md"
-                }}
-                />
-            
+
+            <Modal {...{
+                id: "discard-role-details-modal",
+                isOpen: isModalVisible,
+                onClose: () => setIsModalVisible(false),
+                modalTitle: "Discard Changes?",
+                modalBody: <div className='tertiaryHeading'>You have changed role details, still you want to return to list? Your changes will be discarded!</div>,
+                modalFooter: <div style={{ display: 'flex', gap: '16px' }} className='controls'>
+                    <Button size="md" variant="secondary" onClick={() => setIsModalVisible(false)}>
+                        Cancel
+                    </Button>
+                    <Button size="md" variant="primary" onClick={() => navigate('/organization/roles')}>
+                        Okay
+                    </Button>
+                </div>,
+                modalSize: "md"
+            }}
+            />
+
         </div>
     );
 };
