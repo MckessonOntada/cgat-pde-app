@@ -93,14 +93,6 @@ const RoleDetails = () => {
         }
     );
 
-    const handleOnChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: value,
-        }));
-    }
-
     const handleOnSubmit = (values, _action) => {
         const payload = {
             name: values.roleName,
@@ -151,54 +143,66 @@ const RoleDetails = () => {
                         onSubmit={handleOnSubmit}
                         enableReinitialize
                     >
-                        {({ isValid, setFieldValue }) => (
-                            <Form>
-                                <div className='MCP-module-wrapper'>
-                                    <div className="MCP-panel-container">
-                                        <ModuleHeader
-                                            heading={<p className="secondaryHeading">{t('orgManagement.role.headingPermissionDetails')}</p>}
-                                            controls={<p><Required /> {t('orgManagement.create_org.required')}</p>}
-                                        />
+                        {({ values, isValid }) => {
+                            React.useEffect(() => {
+                                const changes = Object.keys(values).reduce((acc, key) => {
+                                    if (values[key] !== initialData[key]) {
+                                        acc[key] = values[key];
+                                    }
+                                    return acc;
+                                }, {});
+                                setFormData({
+                                    ...formData, ...changes
+                                });
+                            }, [values]);
 
-                                        <div className='MCP-module-body'>
-                                            <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-                                                <Field
-                                                    name="roleName"
-                                                    label={t('orgManagement.role.labelRoleName')}
-                                                    placeholder=" "
-                                                    isRequired
-                                                    component={Components['input']}
-                                                // onChange={(e) => handleOnChange(e, setFieldValue)}
-                                                />
-                                            </div>
-                                            <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
-                                                <Field
-                                                    name="roleDescription"
-                                                    placeholder=" "
-                                                    isRequired
-                                                    maxCharHelperText={t('orgManagement.role.labelMaxChar1000')}
-                                                    onChange={handleOnChange}
-                                                    component={Components['textarea']}
-                                                    fieldlabel={t("orgManagement.role.labelRoleDescription")}
-                                                    maxCharLimit={1000}
-                                                />
+                            return (
+                                <Form>
+                                    <div className='MCP-module-wrapper'>
+                                        <div className="MCP-panel-container">
+                                            <ModuleHeader
+                                                heading={<p className="secondaryHeading">{t('orgManagement.role.headingPermissionDetails')}</p>}
+                                                controls={<p><Required /> {t('orgManagement.create_org.required')}</p>}
+                                            />
+
+                                            <div className='MCP-module-body'>
+                                                <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+                                                    <Field
+                                                        name="roleName"
+                                                        label={t('orgManagement.role.labelRoleName')}
+                                                        placeholder=" "
+                                                        isRequired
+                                                        component={Components['input']}
+                                                    />
+                                                </div>
+                                                <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
+                                                    <Field
+                                                        name="roleDescription"
+                                                        placeholder=" "
+                                                        isRequired
+                                                        maxCharHelperText={t('orgManagement.role.labelMaxChar1000')}
+                                                        component={Components['textarea']}
+                                                        fieldlabel={t("orgManagement.role.labelRoleDescription")}
+                                                        maxCharLimit={1000}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
+                                        <div className='controls'>
+                                            <Button size="md" variant="secondary">{t('orgManagement.button.cancel')}</Button>
+                                            <Button
+                                                size="md"
+                                                variant="primary"
+                                                type="submit"
+                                                disabled={!(isValid)}
+                                            >
+                                                {t('orgManagement.role.captionsBtnSaveAndCancel')}
+                                            </Button>
+                                        </div>
                                     </div>
-                                    <div className='controls'>
-                                        <Button size="md" variant="secondary">{t('orgManagement.button.cancel')}</Button>
-                                        <Button
-                                            size="md"
-                                            variant="primary"
-                                            type="submit"
-                                            disabled={!(isValid)}
-                                        >
-                                            {t('orgManagement.role.captionsBtnSaveAndCancel')}
-                                        </Button>
-                                    </div>
-                                </div>
-                            </Form>
-                        )}
+                                </Form>
+                            )
+                        }}
                     </Formik>
                 </div>
             </div>
