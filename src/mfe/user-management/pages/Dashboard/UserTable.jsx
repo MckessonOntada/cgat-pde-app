@@ -13,7 +13,6 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 
-
 function getbgColorOnRole(Role) {
   switch (Role) {
     case 'ORGANIZATION ADMIN':
@@ -34,9 +33,15 @@ function UserTable({ selectableRows = false }) {
   const {
     isLoading,
     isError,
-    data, activeTab,
-    pagination: { currentPage, totalPageCount, totalRecords, recordsPerPage,
-      update: { setCurrentPage } },
+    data,
+    activeTab,
+    pagination: {
+      currentPage,
+      totalPageCount,
+      totalRecords,
+      recordsPerPage,
+      update: { setCurrentPage }
+    },
     refetchUsersData
   } = useUser();
 
@@ -44,18 +49,12 @@ function UserTable({ selectableRows = false }) {
     setSelectedRows(selectedRows);
   };
 
-
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
 
-
   const { mutate } = useMutation(async (userId) => {
-    const res = await HttpResourceService.callRest(
-      `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`,
-      httpVerb.DELETE,
-      null
-    );
+    const res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.DELETE, null);
     return res.data;
   });
 
@@ -63,20 +62,19 @@ function UserTable({ selectableRows = false }) {
     mutate(selectedRows, {
       onSuccess: (response) => {
         console.log(`User ${selectedRows} deactivated successfully:`, response);
-        refetchUsersData()
-        setSelectedRows(null)
+        refetchUsersData();
+        setSelectedRows(null);
       },
       onError: (error) => {
         console.error(`Failed to deactivate user ${selectedRows}:`, error);
-      },
-    })
+      }
+    });
   };
 
   const handleChangePage = (e, newPage) => {
     setCurrentPage(newPage);
   };
 
- 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-GB').replace(/\//g, '-');
   };
@@ -84,22 +82,24 @@ function UserTable({ selectableRows = false }) {
   const columns = [
     {
       id: 'checkbox',
-      name: "",
+      name: '',
       cell: (row) => (
         <CheckboxGroup
-          id={"default"}
+          id={'default'}
           caption=""
-          items={[{
-            onChange: (event) => setSelectedRows(event.target.checked ? row.id : null),
-            value: row.id,
-            isChecked: selectedRows === row.id,
-            isDisabled: !row.isActive
-          }]}
+          items={[
+            {
+              onChange: (event) => setSelectedRows(event.target.checked ? row.id : null),
+              value: row.id,
+              isChecked: selectedRows === row.id,
+              isDisabled: !row.isActive
+            }
+          ]}
         />
       ),
       wrap: true,
       width: '3%',
-      omit: activeTab === "PENDING REQUESTS"
+      omit: activeTab === 'PENDING REQUESTS'
     },
     { name: 'ID', selector: 'id', sortable: true, omit: true },
     {
@@ -110,7 +110,7 @@ function UserTable({ selectableRows = false }) {
       wrap: true,
       cell: (props) => (
         <div className="cellEllipses">
-          {activeTab === "PENDING REQUESTS" ? (
+          {activeTab === 'PENDING REQUESTS' ? (
             `${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`
           ) : (
             <Link
@@ -143,7 +143,7 @@ function UserTable({ selectableRows = false }) {
           <Badge text={props.role?.name} type={getbgColorOnRole(props.role?.name)} />
         </span>
       ),
-      omit: isSystemAdminView || activeTab === "PENDING REQUESTS"
+      omit: isSystemAdminView || activeTab === 'PENDING REQUESTS'
     },
     {
       id: 'status',
@@ -151,17 +151,7 @@ function UserTable({ selectableRows = false }) {
       selector: 'status',
       sortable: true,
       center: true,
-      cell: (props) => (
-        <div>
-          {activeTab === "PENDING REQUESTS" ? (
-            <Badge text="Pending" type="info-default" />
-          ) : props.isActive ? (
-            <Badge text="Active" type="success" />
-          ) : (
-            <Badge text="Inactive" type="info-default" />
-          )}
-        </div>
-      )
+      cell: (props) => <div>{activeTab === 'PENDING REQUESTS' ? <Badge text="Pending" type="info-default" /> : props.isActive ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />}</div>
     },
     {
       id: 'dataAdded',
@@ -169,18 +159,13 @@ function UserTable({ selectableRows = false }) {
       selector: 'date_added',
       sortable: true,
       wrap: true,
-      cell: (props) => formatDate(props.createdAt)
+      cell: (props) => formatDate(props.updatedAt)
     },
     {
       id: 'action',
       center: true,
       name: t('userManagement.table.action'),
-      cell: (row) =>
-        <Actions
-          row={row}
-          showEditButton={activeTab === "PENDING REQUESTS"}
-          showViewButton={activeTab !== "PENDING REQUESTS"}
-        />,
+      cell: (row) => <Actions row={row} showEditButton={activeTab === 'PENDING REQUESTS'} showViewButton={activeTab !== 'PENDING REQUESTS'} />,
       omit: isSystemAdminView
     }
   ];
@@ -218,17 +203,7 @@ function UserTable({ selectableRows = false }) {
         pagination={true}
         // handleRowSelected={handleRowSelected}
         // selectedRowId={selectedRows[0]}
-        noDataComponent={
-          isError ? (
-            <div>Something went wrong! Please try again</div>
-          ) : (
-            <EmptyDataTable
-              image={EmptyDataImage}
-              heading={t('orgManagement.add.label')}
-              description={t('orgManagement.empty_table.description')}
-            />
-          )
-        }
+        noDataComponent={isError ? <div>Something went wrong! Please try again</div> : <EmptyDataTable image={EmptyDataImage} heading={t('orgManagement.add.label')} description={t('orgManagement.empty_table.description')} />}
       />
     </div>
   );

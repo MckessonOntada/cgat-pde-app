@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { CustomDataTable } from '@mckesson/mcp-component-library';
-import { Link, Loader } from 'react-router-dom';
+import { Link, Loader, redirect } from 'react-router-dom';
 import SelectedAccounts from './SelectedAccounts';
 import './styles.scss';
 import Actions from './Action';
@@ -25,7 +25,8 @@ export default function AccountsList({
   selectableRows = true, // To enable or disable row selection
   omitColumns = [], // Pass column ids which you don't want to show in table.
   practiceId,
-  userId
+  userId,
+  addNewAccounts
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const { t } = useTranslate();
@@ -40,24 +41,19 @@ export default function AccountsList({
       partnerFunction: 'SOLD_TO'
     };
 
-    if (userId) {
-      return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/users/${userId}/accounts?${serializeParams(params)}`
-    } else if (practiceId) {
-      return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts?${serializeParams(params)}`
-    } else {
-      return `${ApiRoutes.ACCOUNTS}?${serializeParams(params)}`
+    if (userId && !addNewAccounts) {
+      return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/users/${userId}/accounts?${serializeParams(params)}`;
+    } else if ((practiceId && !addNewAccounts) || (userId && addNewAccounts)) {
+      return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts?${serializeParams(params)}`;
+    } else if (practiceId && addNewAccounts) {
+      return `${ApiRoutes.PUBLIC_ACCOUNTS}?${serializeParams(params)}`;
     }
+  }, [currentPage, practiceId, userId, addNewAccounts]);
 
-  }, [currentPage, practiceId, userId]);
-
-  const { isLoading, data, isError } = useQuery({
+  const { isLoading, data, isError, refetch } = useQuery({
     queryKey: ['accounts', practiceId],
     queryFn: async () => {
-      const res = await HttpResourceService.callRest(
-        `${apiUrl}`,
-        httpVerb.GET,
-        {}
-      );
+      const res = await HttpResourceService.callRest(`${apiUrl}`, httpVerb.GET, {});
 
       console.log('res', res);
       return res.data;
@@ -65,6 +61,9 @@ export default function AccountsList({
     refetchOnWindowFocus: false
   });
   // console.log('Account-Data:', data);
+  useEffect(() => {
+    refetch();
+  }, [addNewAccounts, userId]);
 
   const columns = useMemo(
     () => [
@@ -162,13 +161,7 @@ export default function AccountsList({
             selectableRows={selectableRows}
             handleRowSelected={handleRowSelected}
             selectedRowId={selectedRows}
-            noDataComponent={
-              <EmptyDataTable
-                image={EmptyDataImage}
-                heading={t('account.add.label')}
-                description={t('account.empty_table.description')}
-              />
-            }
+            noDataComponent={<EmptyDataTable image={EmptyDataImage} heading={t('account.add.label')} description={t('account.empty_table.description')} />}
           />
         </div>
         {showSelectedAccounts && (

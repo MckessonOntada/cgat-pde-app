@@ -37,9 +37,10 @@ const UserDetail = () => {
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const location = useLocation();
   const isSuccess = location.state?.isSuccess || false;
-
+  const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const practiceId = AuthUtils.practiceId;
   const requestParams = {
-    userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
+    userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
 
   const { isLoading, isError, data } = useQuery({
@@ -91,15 +92,15 @@ const UserDetail = () => {
     return new Date(dateString).toLocaleDateString('en-GB').replace(/\//g, '-');
   };
   const formatPhoneNumber = (phoneNumber) => {
-		if (!phoneNumber) return ""; 
-		const cleaned = phoneNumber.replace(/\D/g, "");  
-		const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
-		if (match) {
-		  return `(${match[1]}) ${match[2]}-${match[3]}`;
-		}
-	  
-		return phoneNumber;  
-	  };
+    if (!phoneNumber) return '';
+    const cleaned = phoneNumber.replace(/\D/g, '');
+    const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+      return `(${match[1]}) ${match[2]}-${match[3]}`;
+    }
+
+    return phoneNumber;
+  };
 
   const groupPermissionsByCategory = (userPermissions, permissionsEnum) => {
     const groupedPermissions = {};
@@ -121,25 +122,15 @@ const UserDetail = () => {
 
   return (
     <div className="MCP-module-wrapper">
-      <div
-        className="back-navigation py2 capitalize"
-        onClick={goBack}
-        style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+      <div className="back-navigation py2 capitalize" onClick={goBack} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
         <MdOutlineKeyboardArrowLeft size="24px" />
-        <p>Back to Manage Users</p>
+        <p>{t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}</p>
       </div>
       <div className="MCP-module-body">
         <ModuleHeader
           heading={<p className="primaryHeading">{t('userManagement.header.view.edit_user')}</p>}
           controls={
-            <Button
-              Icon={pencil_write_edit}
-              variant="secondary"
-              className="button-icon"
-              size="md"
-              onClick={() =>
-                navigate(`../${PATHS.editUser}/${userId}`, { state: { isEdit: true } })
-              }>
+            <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`../${PATHS.editUser}/${userId}`, { state: { isEdit: true } })}>
               {t('userManagement.button.edit')}
             </Button>
           }
@@ -147,32 +138,20 @@ const UserDetail = () => {
         <div className="MCP-panel-container">
           <div className="user-header">
             <div className="user-info">
-              <div className=" subheader-text">
-                {`${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName} `}
-              </div>
+              <div className=" subheader-text">{`${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName} `}</div>
               <Badge text={data?.role?.name} type={getbgColorOnRole(data?.role?.name)} />
             </div>
             <div className="user-status">
               <span className="view_label">Last Updated On:</span>
-              <span className="label-text">  {data?.createdAt ? formatDate(data.createdAt) : "N/A"}</span>
-              <Switch
-                handleToggle={() => {}}
-                id="id"
-                disabled={!data?.isActive}
-                label={data?.isActive ? "Active" : ""} 
-                labelPosition="right"
-                name="Toggle"
-                size="lg"
-                value
-              />
+              <span className="label-text"> {data?.createdAt ? formatDate(data.updatedAt) : 'N/A'}</span>
+              <Switch handleToggle={() => {}} id="id" disabled={!data?.isActive} label={data?.isActive ? 'Active' : ''} labelPosition="right" name="Toggle" size="lg" value />
             </div>
           </div>
           <div className="userCardContainer grid grid-gap-24 grid-cols-1 md:grid-cols-4">
             <div>
               <span className="view_label">User Address</span>
               <p className="label-text">
-                {data?.address.address1}, {data?.address.address2}, {data?.address.city},{' '}
-                {data?.address.state}, {data?.address.zip}
+                {data?.address.address1}, {data?.address.address2}, {data?.address.city}, {data?.address.state}, {data?.address.zip}
               </p>
             </div>
             <div>
@@ -181,7 +160,7 @@ const UserDetail = () => {
             </div>
             <div>
               <span className="view_label">Phone Number</span>
-              <p className="label-text"> {data?.contact.phone ? formatPhoneNumber(data.contact.phone) : "N/A"} </p>
+              <p className="label-text"> {data?.contact.phone ? formatPhoneNumber(data.contact.phone) : 'N/A'} </p>
             </div>
             <div>
               <span className="view_label">Fax</span>
@@ -201,21 +180,12 @@ const UserDetail = () => {
             </div>
           </div>
         </div>
-        
+
         <ModuleHeader
-          heading={
-            <p className="primaryHeading">{t('userManagement.header.view.permissions_granted')}</p>
-          }
+          heading={<p className="primaryHeading">{t('userManagement.header.view.permissions_granted')}</p>}
           controls={
             <div className="controls">
-              <Button
-                Icon={pencil_write_edit}
-                variant="secondary"
-                className="button-icon"
-                size="md"
-                onClick={() =>
-                  navigate(`../${PATHS.userPermissions}/${userId}`, { state: { isEdit: true,  permissionsData: data } })
-                }>
+              <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`../${PATHS.userPermissions}/${userId}`, { state: { isEdit: true, permissionsData: data } })}>
                 {t('userManagement.button.edit')}
               </Button>
             </div>
@@ -247,19 +217,10 @@ const UserDetail = () => {
 
         <div className="MCP-module-body">
           <ModuleHeader
-            heading={
-              <p className="primaryHeading">{t('userManagement.header.view.linked_accounts')}</p>
-            }
+            heading={<p className="primaryHeading">{t('userManagement.header.view.linked_accounts')}</p>}
             controls={
               <div className="controls">
-                <Button
-                  Icon={add_circle_bold}
-                  variant="secondary"
-                  className="button-icon"
-                  size="md"
-                  onClick={() =>
-                    navigate(`../${PATHS.addAccounts}/${userId}`, { state: { isEdit: true } })
-                  }>
+                <Button Icon={add_circle_bold} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`../${PATHS.addAccounts}/${userId}`, { state: { isEdit: true } })}>
                   {t('userManagement.button.add_accounts')}
                 </Button>
               </div>
@@ -280,17 +241,12 @@ const UserDetail = () => {
                   <img src={arrow_right} className="icon-align" />
                 </div>
                 <div className="autoSuggestSearch-container">
-                  <AutoSuggestSearch
-                    label=" "
-                    onChangeInput={handleSearchChange}
-                    outline={true}
-                    placeHolder={t('userManagement.searchFilter.addaccount_label')}
-                  />
+                  <AutoSuggestSearch label=" " onChangeInput={handleSearchChange} outline={true} placeHolder={t('userManagement.searchFilter.addaccount_label')} />
                 </div>
               </div>
             </div>
             <div className="grid grid-gap-16">
-              <AccountsList selectableRows={false} omitColumns={['distributionChannel']} practiceId={data?.practiceId} userId={data?.id}/> 
+              <AccountsList selectableRows={false} omitColumns={['distributionChannel']} practiceId={data?.practiceId} userId={data?.id} />
             </div>
           </div>
         </div>

@@ -16,8 +16,8 @@ const constructUserManagementServicePublicUrl = (uri) => {
 const ApiRoutes = Object.freeze({
   GET_CGAT_PDE_OKTA_CONFIG: constructUserManagementServicePublicUrl('public/idpConfig'),
   USERS: () => constructUserManagementServiceUrl(`users`),
-  POST_SIGNUP_USER:  `${USERMANAGEMENT_SERVICE_BASE_URL}api/users-provisioning-requests`,
-  USERS_PROVISIONING: constructUserManagementServiceUrl('users-provisioning-requests'),
+  POST_SIGNUP_USER: `${USERMANAGEMENT_SERVICE_BASE_URL}api/users-provisioning-requests`,
+  USERS_PROVISIONING: () => constructUserManagementServiceUrl('users-provisioning-requests'),
   GET_REFERENCE_LIST: constructUserManagementServiceUrl('reference'),
   GET_JWT_DECODE: constructUserManagementServicePublicUrl('public/jwt'),
   POST_USER_BULK_UPLOAD: constructUserManagementServiceUrl('users/roles'),

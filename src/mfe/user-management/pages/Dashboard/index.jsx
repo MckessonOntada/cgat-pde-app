@@ -16,36 +16,38 @@ import AuthUtils from '@src/util/AuthUtils';
 
 export default function Dashboard() {
   const { t } = useTranslate();
-  const navigate = useNavigate(); 
-  const { activeTab, setActiveTab, refetch} = useUser();
+  const navigate = useNavigate();
+  const { activeTab, setActiveTab, refetch } = useUser();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const location = useLocation();
   const isSuccess = location.state?.isSuccess || false;
-  const isSystemAdminView = AuthUtils.isSystemAdminView()
+  const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const isReject = location.state?.isReject || false;
+  const [alertDescription, setAlertDescription] = useState('');
 
   useEffect(() => {
     if (isSuccess) {
       setIsAlertVisible(true);
-
+      setAlertDescription(isReject ? 'Organization User Rejected Successfully' : 'Organization User Created Successfully');
       // Set a timeout to auto-close the alert after 10 seconds
       const timer = setTimeout(() => {
-        handleAlertClose
-      }, 10000);   //This should be as same as duration that mentioed in Alert
+        handleAlertClose;
+      }, 10000); //This should be as same as duration that mentioed in Alert
 
       // Clear timeout if component unmounts or if isSuccess changes
       return () => clearTimeout(timer);
     }
-  }, [isSuccess, location.pathname, location.state, navigate]);
+  }, [isSuccess, isReject, location.pathname, location.state, navigate]);
 
   const handleAlertClose = () => {
     setIsAlertVisible(false);
-    navigate(location.pathname, { replace: true, state: { ...location.state, isSuccess: false } });
+    navigate(location.pathname, { replace: true, state: { ...location.state, isSuccess: false, isReject: false } });
   };
 
-  const handleTabClick = (tab) => {  
-    setActiveTab(tab.configName);    
+  const handleTabClick = (tab) => {
+    setActiveTab(tab.configName);
   };
- 
+
   const tabs = [
     {
       id: 1,
@@ -79,40 +81,31 @@ export default function Dashboard() {
     <div className="MCP-module-wrapper" id={debugIds(ID.TABLE, ID.CONTAINER)}>
       <Breadcrumb items={breadcrumbItems} />
       <ModuleHeader
-        heading={<p className='primaryHeading'>{t(isSystemAdminView ? 'userManagement.header.systemadmin.label' : 'userManagement.header.label')}</p>}
+        heading={<p className="primaryHeading">{t(isSystemAdminView ? 'userManagement.header.systemadmin.label' : 'userManagement.header.label')}</p>}
         controls={
           <div className="controls">
-            <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createUser}`)}>Add User</Button>
-            {!isSystemAdminView && <Button Icon={upload_bottom} className="button-icon" variant="primary" size="md" >Upload Users</Button>}
+            <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createUser}`)}>
+              {t(isSystemAdminView ? 'userManagement.button.addsystemadmin' : 'userManagement.button.adduser')}
+            </Button>
+            {!isSystemAdminView && (
+              <Button Icon={upload_bottom} className="button-icon" variant="primary" size="md">
+                {t('uploadusers')}
+              </Button>
+            )}
           </div>
         }
       />
-      {isSuccess && isAlertVisible && (
-        <Alert
-          description="Organization User has been successfully created."
-          onClose={handleAlertClose}
-          type="success"
-          duration={10000}
-        />)}
-       
-        <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
-          <Filters showRoleDropdown={true} showStatusDropdown={true} />
-          <p className='secondaryHeading'> {t(isSystemAdminView ? 'userManagement.header.systemadminlisting.label' : 'userManagement.header.listing.label')}</p>
-          {!isSystemAdminView &&
-            <TabList
-              options={tabs}
-              alignment="left"
-              onTabClick={handleTabClick}
-              showShadow={false}
-              variant={'text'}
-              useAsButton={true}
-            />}
-          <div className="userList">
-            {activeTab === 'ACTIVE USERS' && <UserTable selectableRows={true} />}
-            {activeTab === 'PENDING REQUESTS' && <UserTable selectableRows={false} />}
-          </div>
+      {isSuccess && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
+
+      <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
+        <Filters showRoleDropdown={true} showStatusDropdown={true} />
+        <p className="secondaryHeading"> {t(isSystemAdminView ? 'userManagement.header.systemadminlisting.label' : 'userManagement.header.listing.label')}</p>
+        {!isSystemAdminView && <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />}
+        <div className="userList">
+          {activeTab === 'ACTIVE USERS' && <UserTable selectableRows={true} />}
+          {activeTab === 'PENDING REQUESTS' && <UserTable selectableRows={false} />}
         </div>
-     
+      </div>
     </div>
   );
 }
