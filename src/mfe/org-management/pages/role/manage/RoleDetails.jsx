@@ -54,6 +54,7 @@ const RoleDetails = () => {
     }, [roleId]);
 
     const handleOnBackButtonClick = () => {
+        debugger;
         if (JSON.stringify(formData) !== JSON.stringify(initialData)) {
             setIsModalVisible(true);
         } else {
@@ -84,7 +85,9 @@ const RoleDetails = () => {
                 const data = res?.data;
                 if (data) {
                     const id = data && data.id || roleId;
-                    navigate(`/organization/roles/${id}/permissions`, { state: row });
+                    console.log(data);
+                    const { name, description } = data;
+                    navigate(`/organization/roles/${id}/permissions`, { state: { ...row, name, description } });
                 }
             },
             onError: (error) => {
@@ -92,6 +95,10 @@ const RoleDetails = () => {
             },
         }
     );
+
+    const handleOnSkip = () => {
+        navigate(`/organization/roles/${roleId}/permissions`, { state: row })
+    }
 
     const handleOnSubmit = (values, _action) => {
         const payload = {
@@ -145,15 +152,7 @@ const RoleDetails = () => {
                     >
                         {({ values, isValid }) => {
                             React.useEffect(() => {
-                                const changes = Object.keys(values).reduce((acc, key) => {
-                                    if (values[key] !== initialData[key]) {
-                                        acc[key] = values[key];
-                                    }
-                                    return acc;
-                                }, {});
-                                setFormData({
-                                    ...formData, ...changes
-                                });
+                                setFormData({ ...values });
                             }, [values]);
 
                             return (
@@ -188,17 +187,24 @@ const RoleDetails = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className='controls'>
-                                            <Button size="md" variant="secondary">{t('orgManagement.button.cancel')}</Button>
-                                            <Button
-                                                size="md"
-                                                variant="primary"
-                                                type="submit"
-                                                disabled={!(isValid)}
-                                            >
-                                                {t('orgManagement.role.captionsBtnSaveAndCancel')}
-                                            </Button>
-                                        </div>
+                                        <ModuleHeader
+                                            heading={
+                                                <Button size="md" variant="secondary" onClick={handleOnSkip}>{t('orgManagement.button.skipToPermission')}</Button>
+                                            }
+                                            controls={
+                                                <div className='controls'>
+                                                    <Button size="md" variant="secondary" onClick={handleOnBackButtonClick}>{t('orgManagement.button.cancel')}</Button>
+                                                    <Button
+                                                        size="md"
+                                                        variant="primary"
+                                                        type="submit"
+                                                        disabled={!(isValid)}
+                                                    >
+                                                        {t('orgManagement.role.captionsBtnSaveAndCancel')}
+                                                    </Button>
+                                                </div>
+                                            }
+                                        />
                                     </div>
                                 </Form>
                             )

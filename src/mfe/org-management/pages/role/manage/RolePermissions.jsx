@@ -32,18 +32,16 @@ const RolePermissions = () => {
     const location = useLocation();
     const row = location.state || null;
     const { showModuleMessage } = useRole();
-    const [isModalVisible, setIsModalVisible] = React.useState(false);
-    const [enabledPermissions, setEnabledPermissions] = React.useState(row?.permissions || []);
+    const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
+    const [enabledPermissions, setEnabledPermissions] = React.useState(row?.permissions ? [...row.permissions] : []);
     const [inheritedRole, setInheritedRole] = React.useState(null);
     const { refreshData } = useRole();
 
 
 
-    const handleOnBackButtonClick = () => {
-        if (row?.permissions && row?.permissions.length > 0) {
-            if (!arePermissionsEqual(row.permissions, enabledPermissions)) {
-                setIsModalVisible(true);
-            }
+    const handleOnCancelButtonClick = () => {
+        if (!arePermissionsEqual(row.permissions, enabledPermissions)) {
+            setModalSuccessCallback("list");
         }
         else
             navigate(`/organization/${PATHS.roles}`);
@@ -96,14 +94,22 @@ const RolePermissions = () => {
     ], [t]);
 
     const handleGoBack = () => {
-        if (row?.permissions && row?.permissions.length > 0) {
-            if (!arePermissionsEqual(row.permissions, enabledPermissions)) {
-                setIsModalVisible(true);
-            }
+
+        if (!arePermissionsEqual(row?.permissions, enabledPermissions)) {
+            setModalSuccessCallback("back");
         }
         else
             navigate(`../${roleId}/edit-role`, { state: row });
     }
+
+    const handleNavigate = () => {
+        if (modalSuccessCallback === "back")
+            navigate(`../${roleId}/edit-role`, { state: row });
+        else if (modalSuccessCallback === "list") {
+            navigate('/organization/roles');
+        }
+    }
+
     const handleSaveAndContinue = (values) => {
         const permissions = Object.values(enabledPermissions).flat();
         mutation.mutate(permissions);
@@ -114,7 +120,7 @@ const RolePermissions = () => {
             <div>
                 <button
                     className="MCP-Icon-Button py2"
-                    onClick={handleOnBackButtonClick}
+                    onClick={handleGoBack}
                 >
                     <IconArrowLeft />
                     <p>{t('orgManagement.role.captionsBtnBackToManageRoles')}</p>
@@ -149,8 +155,8 @@ const RolePermissions = () => {
                                 />
 
                                 <div className={'buttonGroup'}>
-                                    <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
-                                        {t('orgManagement.button.back')}
+                                    <Button variant="secondary" type="button" onClick={handleOnCancelButtonClick} size={'md'}>
+                                        {t('orgManagement.button.cancel')}
                                     </Button>
                                     <Button variant="primary" type="submit" size={'md'}>{t('orgManagement.role.captionsBtnSaveAndCancel')}</Button>
                                 </div>
@@ -160,15 +166,15 @@ const RolePermissions = () => {
             </div>
             <Modal {...{
                 id: "discard-role-permissions-modal",
-                isOpen: isModalVisible,
-                onClose: () => setIsModalVisible(false),
+                isOpen: Boolean(modalSuccessCallback),
+                onClose: () => setModalSuccessCallback(null),
                 modalTitle: "Discard Changes?",
                 modalBody: <div className='tertiaryHeading'>You have changed role permissions, still you want to return to go back? Your changes will be discarded!</div>,
                 modalFooter: <div style={{ display: 'flex', gap: '16px' }} className='controls'>
-                    <Button size="md" variant="secondary" onClick={() => setIsModalVisible(false)}>
+                    <Button size="md" variant="secondary" onClick={() => setModalSuccessCallback(null)}>
                         Cancel
                     </Button>
-                    <Button size="md" variant="primary" onClick={() => navigate(`../${roleId}/edit-role`, { state: row })}>
+                    <Button size="md" variant="primary" onClick={handleNavigate}>
                         Okay
                     </Button>
                 </div>,
