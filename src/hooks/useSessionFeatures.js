@@ -1,34 +1,38 @@
 import { useMemo, useState } from 'react';
 import { SESSION_CONST } from '@src/constants/SessionConstants';
+import AuthUtils from '../util/AuthUtils';
 
 const useSessionFeatures = () => {
   const [selectedOrganization, setSelectedOrganization] = useState(() => {
     // Retrieve data from sessionStorage on initial load
     const storedOrg = sessionStorage.getItem('selectedOrganization');
-    return storedOrg ? (storedOrg) : null; // Parse the stored string to an object
+    return storedOrg ? storedOrg : null; // Parse the stored string to an object
   });
 
   // Function to set the organization data
   const setOrganization = (org) => {
     setSelectedOrganization(org);
-    sessionStorage.setItem('selectedOrganization', (org));
-    sessionStorage.setItem(SESSION_CONST.SELECTED_PRACTICE_ID, org?.id)
+    sessionStorage.setItem('selectedOrganization', org);
+    AuthUtils.setPracticeId(org?.id);
   };
 
   const removeOrganization = () => {
     setSelectedOrganization(null);
     sessionStorage.removeItem('selectedOrganization');
-    sessionStorage.removeItem(SESSION_CONST.SELECTED_PRACTICE_ID);
-  }
+    AuthUtils.removePracticeId(SESSION_CONST.SELECTED_PRACTICE_ID);
+  };
 
-  return useMemo(() => ({
-    organization: {
-      selectedOrganization,
-      setOrganization,
-      isSelectedOrg: !!selectedOrganization,
-      removeOrganization
-    }
-  }),[selectedOrganization, setOrganization]);
+  return useMemo(
+    () => ({
+      organization: {
+        selectedOrganization,
+        setOrganization,
+        isSelectedOrg: !!selectedOrganization,
+        removeOrganization
+      }
+    }),
+    [selectedOrganization, setOrganization]
+  );
 };
 
 export default useSessionFeatures;

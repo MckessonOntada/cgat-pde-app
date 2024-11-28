@@ -26,16 +26,24 @@ const getUserPermissions = function () {
 
 const getPracticeId = function () {
   return sessionStorage.getItem(SESSION_CONST.SELECTED_PRACTICE_ID);
-}
+};
 
-const isSystemAdmin = function (){
+const setPracticeId = function (practiceId) {
+  return sessionStorage.setItem(SESSION_CONST.SELECTED_PRACTICE_ID, practiceId);
+};
+
+const removePracticeId = function () {
+  return sessionStorage.removeItem(SESSION_CONST.SELECTED_PRACTICE_ID);
+};
+
+const isSystemAdmin = function () {
   const userRole = getUserRole();
   return userRole === 'System Admin';
-}
+};
 
-const isSystemAdminView = function (){
+const isSystemAdminView = function () {
   return isSystemAdmin() && !getPracticeId();
-}
+};
 
 /**
  * @description - Check if the user has a specific permission
@@ -80,6 +88,8 @@ const AuthUtils = Object.freeze({
   getUserName,
   getUserPermissions,
   getPracticeId,
+  setPracticeId,
+  removePracticeId,
   isSystemAdmin,
   isSystemAdminView
 });
