@@ -11,11 +11,12 @@ import styles from '../../src/assets/styles/MainLayout.module.scss';
 import AuthUtils from '@src/util/AuthUtils';
 import AppRoutes from '../routes/AppRoutes';
 import Header from '../components/header';
+import NotFound from './error-pages/NotFound';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
 const OrgEntryPoint = React.lazy(() => import('@src/mfe/org-management'));
-const PaymentInvoices = React.lazy(()=>import('@src/mfe/paymentInvoices'))
+const PaymentInvoices = React.lazy(() => import('@src/mfe/paymentInvoices'))
 
 function MainLayout() {
   const { pathname } = useLocation();
@@ -49,6 +50,7 @@ function MainLayout() {
                   <Route path={'/system-admin'} element={<UsersEntryPoint />} />
                   <Route path={'/system-admin/*'} element={<UsersEntryPoint />} />
                 </Route>
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </div>
           ) : (
