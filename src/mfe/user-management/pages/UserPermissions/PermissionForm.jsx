@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { PERMISSIONS_ENUM } from './permissionsEnum';
-import { SearchableDropdown, Switch, Button,Dropdown } from '@mckesson/mcp-component-library';
+import {  Switch, Button, Dropdown } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import './PermissionForm.scss';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
-// import Dropdown from '../../../../components/form/Dropdown';
 
 const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleSelect, editRoleId }) => {
     const { t } = useTranslate();
@@ -59,16 +58,18 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
             handleRoleSelect(selected);
         }
     };
-
+ 
     const togglePermission = (permission) => {
-        setEnabledPermissions((prev) =>
-            prev.includes(permission)
-                ? prev.filter((item) => item !== permission)
-                : [...prev, permission]
-        );
+        const updatedPermissions = isPermissionEnabled(permission)
+            ? enabledPermissions.filter((perm) => perm !== permission)
+            : [...enabledPermissions, permission];
+
+        setEnabledPermissions(updatedPermissions);
     };
 
-    const isPermissionEnabled = (permission) => enabledPermissions.includes(permission);
+    const isPermissionEnabled = (permission) => {
+        return Array.isArray(enabledPermissions) && enabledPermissions.includes(permission);
+    };
 
     return (
         <div className="MCP-module-wrapper">
@@ -80,8 +81,9 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
                         label={t('userManagement.user_permissions.select_role')}
                         value={selectedRole}
                         onChange={handleRoleChange}
-                        options={roleData || []} 
-                        size="lg" 
+                        options={roleData || []}
+                        isRequired
+                        size="lg"
                     />
                 </div>
             </div>

@@ -1,9 +1,8 @@
-import React, { useState} from 'react'
-import { Stepper, Button } from '@mckesson/mcp-component-library';
+import React, { useState } from 'react'
+import { Stepper, Button, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import ModuleHeader from '@src/components/module-header';
-import * as Yup from 'yup';
 import './index.scss';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { PATHS } from '../../routes/constants';
@@ -17,19 +16,29 @@ import AuthUtils from '@src/util/AuthUtils';
 
 const UserPermissions = () => {
     const { t } = useTranslate();
-    const navigate = useNavigate();    
+    const navigate = useNavigate();
     const { userId } = useParams();
     const location = useLocation();
-    const { isEdit,permissionsData } = location.state || {};
-    const [enabledPermissions, setEnabledPermissions] = useState(permissionsData?.permissions || []);
-    const [selectedValue, setSelectedValue] = useState(permissionsData?.role?.id || '');
-    
+    const { isEdit, permissionsData } = location.state || {};
+    const [isAlertVisible, setIsAlertVisible] = useState(false);
+    const [alert, setAlert] = useState(null)
+
     const requestParams = {
         userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
     };
 
-    const handleRoleSelect = (value) => {
-        setSelectedValue(value); 
+    const handleAlertClose = () => {
+        setIsAlertVisible(false);
+    };
+
+    const handleGoBack = () => {
+        navigate(-1);
+    };
+
+    const isFormValuesChanged = (initialValues, currentValues) => {
+        const isRoleChanged = initialValues.roleId !== currentValues.roleId;
+        const arePermissionsChanged = JSON.stringify(initialValues.permissions) !== JSON.stringify(currentValues.permissions);
+        return isRoleChanged;
     };
 
     const { mutate, isLoading: isSavingUserPermission, isError: isSaveUserPermissionError, data: saveUserPermissionResponse } = useMutation(async ({ payload }) => {
@@ -41,46 +50,27 @@ const UserPermissions = () => {
         return res.data;
     });
 
-
-    const handleGoBack = () => {
-        navigate(-1);
-    };
-
-    const handleSaveAndContinue = () => {
-        const selectedPermissions = {};
-        Object.keys(enabledPermissions).forEach(category => {
-            if (enabledPermissions[category]?.length > 0) {
-                selectedPermissions[category] = enabledPermissions[category];
-            }
-        });
+    const handleSaveAndContinue = (values) => {
         const payload = {
-            roleId: selectedValue,
-            permissions: Object.values(selectedPermissions).flat() // Add permissions to role.permissions
-
+            roleId: values.roleId,
+            permissions: values.permissions,
         };
-
         console.log('payload: ', JSON.stringify(payload, null, 2));
-
         mutate(
-            {
-                payload
-            },
+            { payload },
             {
                 onSuccess: (response) => {
                     console.log('User created/updated successfully:', response);
                     navigate(isEdit ? -1 : `../${PATHS.addAccounts}/${userId}`);
                 },
                 onError: (error) => {
-                    console.log('Failed to create/update user:', error);
-                    // alert('An error occurred. Please try again.');
+                    setAlert({ type: "error", message: "Failed to create/update Permissions" });
+                    setIsAlertVisible(true);
                 },
             }
         );
     };
-    const validationSchema = Yup.object({
-        role: Yup.number()
-            .required(t('userManagement.create_user.validation.state_required')),
-    });
+
     return (
         <div className="MCP-module-wrapper">
             <div
@@ -111,26 +101,49 @@ const UserPermissions = () => {
                     ]}
                 />
             </div>
+            {isAlertVisible && (
+                <Alert
+                    description={alert.message}
+                    onClose={handleAlertClose}
+                    type={alert.type}
+                    duration={10000}
+                />)}
+
             <Formik
-                initialValues={{}}
-                validationSchema={validationSchema}
-                onSubmit={(values, actions) => {
+                initialValues={{
+                    permissions: permissionsData?.permissions || [],
+                    roleId: permissionsData?.role?.id || '',
+                }}
+                onSubmit={(values) => {
                     handleSaveAndContinue(values);
                 }}
                 validateOnChange={false}
                 validateOnBlur={true}>
-                {({ values }) => (
-                    <Form>
-                        <PermissionForm enabledPermissions={enabledPermissions} setEnabledPermissions={setEnabledPermissions} handleRoleSelect={handleRoleSelect}  editRoleId={selectedValue} />
 
-                        <div className={'buttonGroup'}>
-                            <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
-                                {t('userManagement.button.back')}
-                            </Button>
-                            <Button variant="primary" type="button" onClick={handleSaveAndContinue} size={'md'}>{t('userManagement.button.savencontinue')}</Button>
-                        </div>
-                    </Form>
-                )}</Formik>
+                {({ values, setFieldValue, initialValues, isValid }) => {
+                    const isDirty = isFormValuesChanged(initialValues, values);
+
+                    return (
+                        <Form>
+                            <PermissionForm
+                                enabledPermissions={values.permissions}
+                                setEnabledPermissions={(permissions) =>
+                                    setFieldValue('permissions', permissions)
+                                }
+                                handleRoleSelect={(value) => setFieldValue('roleId', value)}
+                                editRoleId={values.roleId}
+                            />
+                            <div className={'buttonGroup'}>
+                                <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
+                                    {t('userManagement.button.back')}
+                                </Button>
+                                <Button variant="primary" type="submit" size={'md'} disabled={!(isValid && isDirty)}>{t('userManagement.button.savencontinue')}</Button>
+
+                            </div>
+                        </Form>
+                    );
+                }}
+            </Formik>
 
         </div>
 
