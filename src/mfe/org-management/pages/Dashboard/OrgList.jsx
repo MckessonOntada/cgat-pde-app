@@ -18,8 +18,7 @@ const OrgList = () => {
   const navigate = useNavigate();
 
   const location = (address) => {
-    return `${address.address1 || ''}, ${address.city || ''}, ${address.state || ''}, ${address.pin || ''
-      }`;
+    return `${address.address1 || ''}, ${address.city || ''}, ${address.state || ''}, ${address.pin || ''}`;
   };
 
   const {
@@ -37,23 +36,20 @@ const OrgList = () => {
   } = useOrg();
 
   const handleDeActivateOrg = async (orgId) => {
-    const res = await HttpResourceService.callRest(
-      `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${orgId}`,
-      httpVerb.DELETE,
-    );
+    const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}/${orgId}`, httpVerb.DELETE);
 
     if (![201, 200].includes(res.status)) {
       throw new Error('Failed to create user');
     }
     return res;
-  }
+  };
 
   const { mutate } = useMutation({
     mutationFn: handleDeActivateOrg,
-    onError: () => { },
+    onError: () => {},
     onSuccess: async () => {
-      setSelectedRows(null)
-      await reFetchOrganizationList()
+      setSelectedRows(null);
+      await reFetchOrganizationList();
     }
   });
 
@@ -66,25 +62,26 @@ const OrgList = () => {
     navigate(PATHS.dashboard);
   };
 
-
   const columns = [
     // The DeActive organization is been made as a single de-active
     {
       id: 'checkbox',
-      name: "",
+      name: '',
       cell: (row) => (
         <CheckboxGroup
-          id={"default"}
+          id={'default'}
           caption=""
-          items={[{
-            onChange: (event) => setSelectedRows(event.target.checked ? row.id : null),
-            value: row.id,
-            isChecked: selectedRows === row.id
-          }]}
+          items={[
+            {
+              onChange: (event) => setSelectedRows(event.target.checked ? row.id : null),
+              value: row.id,
+              isChecked: selectedRows === row.id
+            }
+          ]}
         />
       ),
       wrap: true,
-      width: '5%'
+      width: '4%'
     },
     {
       id: 'name',
@@ -125,14 +122,7 @@ const OrgList = () => {
       name: t('orgManagement.table.status'),
       cell: (row) => (
         <div className="cellEllipse">
-          <Badge
-            text={
-              row.status === 'ACTIVE'
-                ? t('orgManagement.button.activate')
-                : t('orgManagement.button.inactivate')
-            }
-            type={row.status === 'ACTIVE' ? 'success' : 'info-default'}
-          />
+          <Badge text={row.status === 'ACTIVE' ? t('orgManagement.button.activate') : t('orgManagement.button.inactivate')} type={row.status === 'ACTIVE' ? 'success' : 'info-default'} />
         </div>
       ),
       wrap: true,
@@ -164,7 +154,7 @@ const OrgList = () => {
 
   const handleDeactivate = () => {
     // setSelectedRows([]);
-    mutate(selectedRows)
+    mutate(selectedRows);
   };
 
   return (
@@ -197,19 +187,9 @@ const OrgList = () => {
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         isAdmin={true}
         // selectableRows
-        noDataComponent={
-          isError ? (
-            <div>Something went wrong! Please try again</div>
-          ) : (
-            <EmptyDataTable
-              image={EmptyDataImage}
-              heading={t('orgManagement.add.label')}
-              description={t('orgManagement.empty_table.description')}
-            />
-          )
-        }
-      // handleRowSelected={handleRowSelected}
-      // selectedRowId={selectedRows[0]}
+        noDataComponent={isError ? <div>Something went wrong! Please try again</div> : <EmptyDataTable image={EmptyDataImage} heading={t('orgManagement.add.label')} description={t('orgManagement.empty_table.description')} />}
+        // handleRowSelected={handleRowSelected}
+        // selectedRowId={selectedRows[0]}
       />
     </div>
   );
