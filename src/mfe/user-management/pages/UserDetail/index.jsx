@@ -167,7 +167,7 @@ const UserDetail = () => {
               />
             </div>
           </div>
-          <div className="container grid grid-gap-24 grid-cols-1 md:grid-cols-4">
+          <div className="userCardContainer grid grid-gap-24 grid-cols-1 md:grid-cols-4">
             <div>
               <span className="view_label">User Address</span>
               <p className="label-text">

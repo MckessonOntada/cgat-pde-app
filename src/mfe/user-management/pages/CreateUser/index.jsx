@@ -22,7 +22,7 @@ const CreateUser = () => {
 	const location = useLocation();
 	const { isEdit } = location.state || {};
 	const { isPending } = location.state || {};
-	const [isAlertVisible, setIsAlertVisible] = useState(false);
+	const [ isAlertVisible, setIsAlertVisible ] = useState(false);
 	const [alert, setAlert] = useState(null)
 
 	useEffect(() => {

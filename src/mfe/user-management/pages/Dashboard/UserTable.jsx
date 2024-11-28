@@ -98,7 +98,8 @@ function UserTable({ selectableRows = false }) {
         />
       ),
       wrap: true,
-      width: '5%'
+      width: '3%',
+      omit: activeTab === "PENDING REQUESTS"
     },
     { name: 'ID', selector: 'id', sortable: true, omit: true },
     {

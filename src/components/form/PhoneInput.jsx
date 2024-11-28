@@ -8,13 +8,11 @@ export default function PhoneInput(props) {
 
   // Determine if the field has an error and is touched
   const errorMessage = getNestedValue(form.errors, field.name);
-  const isFieldTouched = getNestedValue(form.touched, field.name);
-  console.log('field.value', field.value);
+  const isFieldTouched = getNestedValue(form.touched, field.name); 
 
   const formatPhoneNumber = (phoneNumber) => {
     if (phoneNumber) {
-      const match = phoneNumber.match(/^(\d{3})(\d{3})(\d{4})$/);
-      console.log('match', match)
+      const match = phoneNumber.match(/^(\d{3})(\d{3})(\d{4})$/); 
       return match ? `(${match[1]}) ${match[2]}-${match[3]}` : phoneNumber; 
     }
     return "";
