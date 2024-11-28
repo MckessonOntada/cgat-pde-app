@@ -212,25 +212,11 @@ const RoleDetails = () => {
                     </Formik>
                 </div>
             </div>
-
-            <Modal {...{
-                id: "discard-role-details-modal",
-                isOpen: isModalVisible,
-                onClose: () => setIsModalVisible(false),
-                modalTitle: "Discard Changes?",
-                modalBody: <div className='tertiaryHeading'>You have changed role details, still you want to return to list? Your changes will be discarded!</div>,
-                modalFooter: <div style={{ display: 'flex', gap: '16px' }} className='controls'>
-                    <Button size="md" variant="secondary" onClick={() => setIsModalVisible(false)}>
-                        Cancel
-                    </Button>
-                    <Button size="md" variant="primary" onClick={() => navigate('/organization/roles')}>
-                        Okay
-                    </Button>
-                </div>,
-                modalSize: "md"
-            }}
+            <DiscardChangesModal
+                isOpen={Boolean(modalSuccessCallback)}
+                onClose={() => setModalSuccessCallback(null)}
+                onConfirm={handleNavigate}
             />
-
         </div>
     );
 };
