@@ -19,6 +19,7 @@ import { useOktaAuth } from '@okta/okta-react';
 import useSessionFeatures from '../../hooks/useSessionFeatures';
 import { useQuery } from 'react-query';
 import CommonDataService from '../../api/commonService/CommonDataService';
+import AuthUtils from '../../util/AuthUtils';
 
 const PrimaryHeader = ({ user, setUserData, debugId }) => {
   const intl = useIntl();
@@ -29,6 +30,8 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState(null);
+  const isSystemAdmin = AuthUtils.isSystemAdmin();
+
   const requestParams = useMemo(
     () => ({
       pageNo: 0,
@@ -42,6 +45,7 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
   const { isLoading, data, isError, refetch } = useQuery({
     queryKey: ['organizationListOptions'],
     queryFn: async () => {
+      if (!isSystemAdmin) return {};
       const res = await CommonDataService.getOrganizationListAsPublic(requestParams);
       return res.content;
     },
@@ -85,10 +89,11 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
             {props.children}
           </Link>
         </div>
-        <div className={styles.centerSelector}>
-          <Dropdown id={'Organization'} name={'Organization'} aria-label="Select treatment center" options={data || []} value={selectedOrganization?.id || ''} onChange={handleChange} />
+        {isSystemAdmin && (
+          <div className={styles.centerSelector}>
+            <Dropdown id={'Organization'} name={'Organization'} aria-label="Select treatment center" options={data || []} value={selectedOrganization?.id || ''} onChange={handleChange} />
 
-          {/* <SearchableDropdown
+            {/* <SearchableDropdown
             id="provider"
             isSuccess
             // label="Provider"
@@ -101,7 +106,8 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
               console.log(e);
             }}
           /> */}
-        </div>
+          </div>
+        )}
       </div>
     );
   };
