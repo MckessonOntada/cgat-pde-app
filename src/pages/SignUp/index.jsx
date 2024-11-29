@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import * as Yup from 'yup';
 import { Formik, Form, Field } from 'formik';
-import { Button } from '@mckesson/mcp-component-library';
+import { Button, AutoSuggestDropdown, Label, Required } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { UserDetailsFormSegment } from '@src/mfe/user-management/pages/CreateUser';
 import Components from '@src/components/form/Components';
@@ -24,7 +24,9 @@ const SignUp = () => {
     return res.data;
   });
 
-  const requestParams = useMemo(() => ({ pageNo: 0, pageSize: 12, sortBy: 'name', sortOrder: 'asc' }), []);
+  // const requestParams = useMemo(() => ({ pageNo: 0, pageSize: 12, sortBy: 'name', sortOrder: 'asc' }), []);
+
+  const [requestParams, setRequestParams] = useState({ pageNo: 0, pageSize: 5, sortBy: 'name', sortOrder: 'asc' });
 
   const {
     isLoading: loadingOrg,
@@ -34,11 +36,18 @@ const SignUp = () => {
   } = useQuery({
     queryKey: ['organizationListPublic'],
     queryFn: async () => {
-      const res = await CommonDataService.getOrganizationListAsPublic();
+      const res = await CommonDataService.getOrganizationListAsPublic(requestParams);
       return res.content;
     },
     refetchOnWindowFocus: false
   });
+
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      refetch(requestParams);
+    }, 1500);
+    return () => clearTimeout(getData);
+  }, [requestParams]);
 
   const initialValues = {
     name: {
@@ -123,6 +132,11 @@ const SignUp = () => {
     );
   };
 
+  const onSearchOrganization = (event) => {
+    const payload = { ...requestParams, query: event };
+    setRequestParams(payload);
+  };
+
   return (
     <div className={mainLayoutStyles.appContainer}>
       <PrimaryHeader />
@@ -137,7 +151,7 @@ const SignUp = () => {
               handleSubmit(values);
               actions.setSubmitting(false);
             }}>
-            {() => (
+            {({ values, errors, setFieldValue }) => (
               <Form>
                 <div className="MCP-panel-container">
                   <UserDetailsFormSegment />
@@ -145,8 +159,30 @@ const SignUp = () => {
                     <p className="form-segment-title">{t('forms.headings.organization_details')}</p>
                   </div>
                   <div className="form-segment">
+                    <Label className="label-heading">
+                      {t('forms.labels.organization')}
+                      <Required id="Required">Required</Required>
+                    </Label>
                     <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 line-height">
-                      <Field name="practiceId" fieldlabel={t('forms.labels.organization')} placeholder=" " component={Components['dropdown']} isRequired options={organizationList || []} />
+                      {/* <Field name="practiceId" 
+                      fieldlabel={t('forms.labels.organization')}
+                       placeholder=" " 
+                       component={Components['dropdown']} 
+                       isRequired options={organizationList || []} 
+                       /> */}
+
+                      <AutoSuggestDropdown
+                        getselectedValue={(e) => {
+                          setFieldValue('practiceId', e.value);
+                        }}
+                        isRequired
+                        labelTemplate="Select a condition"
+                        onChangeInput={onSearchOrganization}
+                        placeHolder=""
+                        refineFilterMessage="Refine your search criteria"
+                        // selectedVal={values.practiceId}
+                        suggestionList={organizationList || []}
+                      />
                     </div>
                     <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
                       <Field name="comment" fieldlabel={t('forms.labels.comment')} placeholder=" " component={Components['textarea']} maxCharHelperText={t('forms.placeholder.max_5000_chars')} maxCharLimit={5000} />

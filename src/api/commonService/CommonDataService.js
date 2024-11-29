@@ -26,8 +26,8 @@ async function getOrganizationListAsOptions(requestParams) {
   return res.data;
 }
 
-async function getOrganizationListAsPublic() {
-  const res = await HttpResourceService.callRest(`${ApiRoutes.USERS_PROVISIONING_ORGLIST_PUBLIC}`, httpVerb.GET, {});
+async function getOrganizationListAsPublic(requestParams) {
+  const res = await HttpResourceService.callRest(`${ApiRoutes.USERS_PROVISIONING_ORGLIST_PUBLIC}?${serializeParams(requestParams)}`, httpVerb.GET, {});
   res.data.content = res.data?.content?.map((item) => ({ ...item, label: item.name, value: item.id, isChecked: false }));
   return res.data;
 }
