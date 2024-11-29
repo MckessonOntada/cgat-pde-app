@@ -125,15 +125,15 @@ const CreateUser = () => {
     name: Yup.object({
       firstName: Yup.string()
         .matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.first_name')) // Only alphabets
-        .min(2, t('userManagement.create_user.validation.first_name'))
+        .min(2, t('userManagement.create_user.validation.first_name_min_max'))
         .required(t('userManagement.create_user.validation.first_name_required')),
       middleName: Yup.string()
         .matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.middle_name'))
-        .min(2, t('userManagement.create_user.validation.middle_name'))
+        .min(2, t('userManagement.create_user.validation.middle_name_min_max'))
         .nullable(),
       lastName: Yup.string()
         .matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.last_name')) // Only alphabets
-        .min(2, t('userManagement.create_user.validation.last_name'))
+        .min(2, t('userManagement.create_user.validation.last_name_min_max'))
         .required(t('userManagement.create_user.validation.last_name_required'))
     }),
 
@@ -153,7 +153,7 @@ const CreateUser = () => {
       address2: Yup.string().matches(/^[A-Za-z0-9\s.,#&/-]*$/, t('userManagement.create_user.validation.address_1')), // Optional field
       city: Yup.string()
         .matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.city')) // Only alphabets
-        .min(2, t('userManagement.create_user.validation.city'))
+        .min(2, t('userManagement.create_user.validation.city_min_max'))
         .required(t('userManagement.create_user.validation.city_required')),
       state: Yup.string().required(t('userManagement.create_user.validation.state_required')),
       zip: Yup.string()

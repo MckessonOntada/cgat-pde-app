@@ -187,7 +187,6 @@ function UserTable({ selectableRows = false }) {
         data={data}
         onSortIconClick={(value) => console.log(value)}
         handleChangePage={handleChangePage}
-        // selectableRows={selectableRows}
         selectableRowsHeader={false}
         currentPage={currentPage}
         totalPageCount={totalPageCount}
@@ -198,9 +197,7 @@ function UserTable({ selectableRows = false }) {
         stickyHeader
         responsive
         pagination={true}
-        // handleRowSelected={handleRowSelected}
-        // selectedRowId={selectedRows[0]}
-        noDataComponent={isError ? <div>Something went wrong! Please try again</div> : <EmptyDataTable image={EmptyDataImage} heading={t('orgManagement.add.label')} description={t('orgManagement.empty_table.description')} />}
+        noDataComponent={isError ? <div>Something went wrong! Please try again</div> : <EmptyDataTable image={EmptyDataImage} heading={t('userManagement.add.label')} description={t('userManagement.empty_table.description')} />}
       />
     </div>
   );
