@@ -8,8 +8,8 @@ const SelectedAccountChips = ({ selectedAccounts, onRemoveAccount }) => {
 
   const createLabelData = (account) => [
     {
-      id: account.id,
-      labelText: account.dcName
+      id: account.accountNumber,
+      labelText: account.accountName
     }
   ];
 
@@ -18,13 +18,7 @@ const SelectedAccountChips = ({ selectedAccounts, onRemoveAccount }) => {
       <h2 className="title">{t('account.selected.account')} - </h2>
       <div className="pills-container">
         {selectedAccounts?.map((item) => (
-          <Pills
-            key={item.id}
-            labels={createLabelData(item)}
-            variant="secondary"
-            hasDeleteIcon={true}
-            onDelete={() => onRemoveAccount(item)}
-          />
+          <Pills key={item.id} labels={createLabelData(item)} variant="secondary" hasDeleteIcon={true} onDelete={() => onRemoveAccount(item)} />
         ))}
       </div>
     </div>

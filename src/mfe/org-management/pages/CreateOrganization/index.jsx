@@ -31,9 +31,9 @@ const CreateOrganization = () => {
 
   useEffect(() => {
     if (orgId > 0 && location.state) {
-      setOrganizationData(location.state)
+      setOrganizationData(location.state);
     }
-  }, [])
+  }, []);
 
   const { t } = useTranslate();
   const navigate = useNavigate();
@@ -46,14 +46,9 @@ const CreateOrganization = () => {
 
   const createOrg = async (orgData) => {
     // Perform the mutation logic, e.g., make an API request to update the user
-    const res = await HttpResourceService.callRest(
-      `${ApiRoutes.PUBLIC_ORGANIZATIONS}`,
-      httpVerb.POST,
-      orgData,
-      {
-        'Content-Type': 'multipart/form-data'
-      }
-    );
+    const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}`, httpVerb.POST, orgData, {
+      'Content-Type': 'multipart/form-data'
+    });
 
     if (![201, 200].includes(res.status)) {
       throw new Error('Failed to create user');
@@ -63,20 +58,15 @@ const CreateOrganization = () => {
   };
 
   const updateOrgDetails = async (payload) => {
-    const res = await HttpResourceService.callRest(
-      `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${orgId}`,
-      httpVerb.PUT,
-      payload,
-      {
-        'Content-Type': 'multipart/form-data'
-      }
-    );
+    const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}/${orgId}`, httpVerb.PUT, payload, {
+      'Content-Type': 'multipart/form-data'
+    });
 
     if (![201, 200].includes(res.status)) {
       throw new Error('Failed to create user');
     }
     return res;
-  }
+  };
 
   const onOrgCreateSuccess = (res) => {
     const path = PATHS.viewOrg.replace(':orgId', res.data.id);
@@ -84,7 +74,7 @@ const CreateOrganization = () => {
   };
 
   const onOrgCreateError = (error) => {
-    setIsAlertVisible(true)
+    setIsAlertVisible(true);
   };
 
   // Fetch data from server
@@ -120,13 +110,7 @@ const CreateOrganization = () => {
         <MdOutlineKeyboardArrowLeft size="24px" />
         <p>{t('orgManagement.back.organization')}</p>
       </div>
-      {isAlertVisible && <Alert
-        description="Error while creating organization"
-        onClose={() => { }}
-        showTitle
-        title="Something went wrong...!"
-        type="error"
-      />}
+      {isAlertVisible && <Alert description="Error while creating organization" onClose={() => {}} showTitle title="Something went wrong...!" type="error" />}
       <Formik
         enableReinitialize
         initialValues={organizationData}
@@ -141,9 +125,7 @@ const CreateOrganization = () => {
           <Form>
             <div className="container-box">
               <div className="headingBox">
-                <p className="font-bold-title-s">
-                  Please complete the form to create a new organization
-                </p>
+                <p className="font-bold-title-s">Please complete the form to create a new organization</p>
               </div>
               <OrgDetailsFormSegment formik={formik} />
             </div>
@@ -153,7 +135,7 @@ const CreateOrganization = () => {
                 {t('orgManagement.button.back')}
               </Button>
               <Button type="submit" size={'md'}>
-                {t('orgManagement.button.save')}
+                {t('orgManagement.button.next')}
               </Button>
             </div>
           </Form>
