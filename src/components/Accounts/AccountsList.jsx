@@ -11,7 +11,6 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
-import AuthUtils from '@src/util/AuthUtils';
 import { serializeParams } from '@src/util/ApiUtils';
 
 const RECORDS_PER_PAGE = 8;
@@ -58,12 +57,14 @@ export default function AccountsList({
       console.log('res', res);
       return res.data;
     },
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
   });
-  // console.log('Account-Data:', data);
+
   useEffect(() => {
+    setSelectedRows(data?.content);
     refetch();
-  }, [addNewAccounts, userId]);
+  }, [addNewAccounts, userId, currentPage]);
 
   const columns = useMemo(
     () => [
@@ -131,7 +132,7 @@ export default function AccountsList({
   };
 
   const handleRowSelected = ({ selectedRows }) => {
-    setSelectedRows(selectedRows); // Pass entire row data to CreateOrgStep2
+    setSelectedRows(selectedRows);
   };
 
   return (
@@ -155,8 +156,8 @@ export default function AccountsList({
             handleChangePage={handleChangePage}
             totalRocords={data?.totalElements}
             recordsPerPage={RECORDS_PER_PAGE}
-            paginationTotalRecorsMessage={'results'}
-            paginationRecordsPerPageMessage={`per page`}
+            paginationTotalRecorsMessage={t('orgManagement.results')}
+            paginationRecordsPerPageMessage={t('orgManagement.per_page')}
             isAdmin={true}
             selectableRows={selectableRows}
             handleRowSelected={handleRowSelected}

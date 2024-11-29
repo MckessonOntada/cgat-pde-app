@@ -12,6 +12,7 @@
 .customTable-box {
   flex: 1;
   overflow-x: auto;
+  overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -26,7 +27,7 @@
   display: none;
   @include mixins.respond("lg") {
     width: 25%;
-    height: 100%;
+    height: 98%;
     display: block;
   }
 }
