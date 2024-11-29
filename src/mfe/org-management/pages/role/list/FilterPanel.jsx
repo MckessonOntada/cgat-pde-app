@@ -12,7 +12,7 @@ import ToggleUI from '@src/components/toggleui';
 import { useRole } from '../../../context/RoleContext';
 
 const FilterPanel = () => {
-  const { filterState: { searchQuery, dateRange }, clearFilters, applyFilters } = useRole();
+  const { filterConfig: { searchQuery, dateRange }, clearFilters, applyFilters } = useRole();
   const [filters, setFilters] = React.useState({});
   const { t } = useTranslate();
 

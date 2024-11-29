@@ -10,7 +10,7 @@ const RolesDataTable = () => {
     const { t } = useTranslate();
     const [selectedRows, setSelectedRows] = useState([]);
     const columns = createColumns(t);
-
+    const { applySort } = useRole();
     const {
         data,
         paginationConfig,
@@ -18,11 +18,8 @@ const RolesDataTable = () => {
     } = useRole();
 
 
-    const handleSort = (selectedColumn, sortDirection, sortedRows) => {
-        // TODO
-        console.log('Column sorted:', selectedColumn);
-        console.log('Sort direction:', sortDirection);
-        console.log('Sorted rows:', sortedRows);
+    const handleSort = (selectedColumn, sortDirection) => {
+        applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection })
     };
 
     const handleRowSelected = ({ selectedRows }) => {

@@ -70,6 +70,11 @@ const INITIAL_FILTER_STATE = {
   dateRange: [],
 };
 
+const INITIAL_SORT_STATE = {
+  sortBy: null,
+  sortOrder: null,
+}
+
 const INITIAL_PAGINATION_CONFIG = {
   totalElements: 0,
   pageSize: 8,
@@ -78,21 +83,23 @@ const INITIAL_PAGINATION_CONFIG = {
 };
 
 export const RoleProvider = ({ children }) => {
-  const [filterState, setFilterState] = useState(INITIAL_FILTER_STATE);
+  const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
-
+  const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE)
   const requestParams = useMemo(() => {
+    debugger;
     const params = {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
-      sortBy: "name",
-      sortOrder: "asc",
+      sortBy: sortConfig.sortBy || "name",
+      sortOrder: sortConfig.sortOrder || "asc",
     };
-    if (filterState.searchQuery) params.query = filterState.searchQuery;
-    if (filterState.dateRange?.[0]) params.startDate = formatDate(filterState.dateRange[0], 'dd/mm/yyyy');
-    if (filterState.dateRange?.[1]) params.endDate = formatDate(filterState.dateRange[1], 'dd/mm/yyyy');
+
+    if (filterConfig.searchQuery) params.query = filterConfig.searchQuery;
+    if (filterConfig.dateRange?.[0]) params.startDate = formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy');
+    if (filterConfig.dateRange?.[1]) params.endDate = formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy');
     return params;
-  }, [filterState, paginationConfig.pageNumber]);
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["roles", requestParams],
@@ -104,6 +111,7 @@ export const RoleProvider = ({ children }) => {
       );
       if (response.data) {
         const { content: data, totalElements, totalPages } = response.data;
+
         setPaginationConfig((prevConfig) => ({
           ...prevConfig,
           totalElements,
@@ -119,17 +127,19 @@ export const RoleProvider = ({ children }) => {
 
   useEffect(() => {
     refetch();
-  }, [filterState, paginationConfig.pageNumber]);
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
+
+  const applySort = (sortConfig) => setSortConfig({ ...sortConfig })
 
   const applyFilters = (filters) => {
     setPageNumber(1);
-    setFilterState(prevFilters => ({
+    setFilterConfig(prevFilters => ({
       ...prevFilters,
       ...filters
     }));
   }
 
-  const clearFilters = () => setFilterState(INITIAL_FILTER_STATE);
+  const clearFilters = () => setFilterConfig(INITIAL_FILTER_STATE);
 
   const setPageNumber = (pageNumber) => {
     setPaginationConfig((prevConfig) => ({
@@ -138,15 +148,17 @@ export const RoleProvider = ({ children }) => {
     }));
   };
 
+
   const contextValue = {
     data: data || [],
     isLoading,
     isError,
-    filterState,
+    filterConfig,
     paginationConfig,
-    setFilterState,
+    setFilterConfig,
     clearFilters,
     applyFilters,
+    applySort,
     setPageNumber,
   };
 
