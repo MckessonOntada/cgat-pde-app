@@ -18,6 +18,7 @@ const ApiRoutes = Object.freeze({
   USERS: () => constructUserManagementServiceUrl(`users`),
   POST_SIGNUP_USER: `${USERMANAGEMENT_SERVICE_BASE_URL}api/users-provisioning-requests`,
   USERS_PROVISIONING: () => constructUserManagementServiceUrl('users-provisioning-requests'),
+  USERS_PROVISIONING_ORGLIST_PUBLIC: constructUserManagementServicePublicUrl('users-provisioning-requests/practices'),
   GET_REFERENCE_LIST: constructUserManagementServiceUrl('reference'),
   GET_JWT_DECODE: constructUserManagementServicePublicUrl('public/jwt'),
   POST_USER_BULK_UPLOAD: constructUserManagementServiceUrl('users/roles'),

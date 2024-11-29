@@ -8,10 +8,10 @@ import { ReactComponent as IconHelp } from '@src/assets/svg/help-circle-filled.s
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { setUserData } from '@src/store/reducer/userReducer';
 import { debugIds, ID } from '@src/constants/id';
-import { Button, Dropdown, DropdownMenu, SearchableDropdown } from '@mckesson/mcp-component-library';
+import { Button, Dropdown, DropdownMenu, SearchableDropdown, Modal } from '@mckesson/mcp-component-library';
 import styles from './assets/styles/Header.module.scss';
 import { useIntl } from 'react-intl';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import HeaderConfig from './__mock__';
 import FloatingDrawer from '../floating-drawer';
 import AuthService from '@src/api/authService/AuthService';
@@ -19,84 +19,95 @@ import { useOktaAuth } from '@okta/okta-react';
 import useSessionFeatures from '../../hooks/useSessionFeatures';
 import { useQuery } from 'react-query';
 import CommonDataService from '../../api/commonService/CommonDataService';
+import AuthUtils from '../../util/AuthUtils';
 
 const PrimaryHeader = ({ user, setUserData, debugId }) => {
   const intl = useIntl();
   const { oktaAuth, authState } = useOktaAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const toggleDrawer = () => setDrawerOpen(!drawerOpen);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedOrg, setSelectedOrg] = useState(null);
+  const isSystemAdmin = AuthUtils.isSystemAdmin();
 
-
-  const requestParams = useMemo(() => ({
-    pageNo: 0,
-    pageSize: 12,
-    sortBy: 'name',
-    sortOrder: 'asc'
-  }), []);
+  const requestParams = useMemo(
+    () => ({
+      pageNo: 0,
+      pageSize: 12,
+      sortBy: 'name',
+      sortOrder: 'asc'
+    }),
+    []
+  );
 
   const { isLoading, data, isError, refetch } = useQuery({
     queryKey: ['organizationListOptions'],
     queryFn: async () => {
-      const res = await CommonDataService.getOrganizationListAsOptions(requestParams)
-      return res.content
+      if (!isSystemAdmin) return {};
+      const res = await CommonDataService.getOrganizationListAsPublic(requestParams);
+      return res.content;
     },
     refetchOnWindowFocus: false
-  })
+  });
 
   const {
-    organization: { setOrganization }
+    organization: { setOrganization, selectedOrganization }
   } = useSessionFeatures();
 
-
-
-  const handleChange = (selectedOption) => {
-    setOrganization(selectedOption);
+  const handleChange = (value) => {
+    setSelectedOrg(value);
+    setIsOpen(true);
   };
-  
+
+  const confirmChangeOrganization = () => {
+    setIsOpen(false);
+    const _selectedOrg = data.find((i) => i.id == selectedOrg);
+    setOrganization(_selectedOrg || {});
+    if (location.pathname === '/') {
+      window.location.reload();
+    } else {
+      navigate('/');
+    }
+  };
+
+  const onCancelOrganizationChange = () => {
+    setIsOpen(false);
+    setSelectedOrg(null);
+  };
 
   const logout = () => {
     AuthService.userLogout(oktaAuth);
   };
 
-  const handleOrganizationChange = (event) => { }
-
   const LeftSideView = (props) => {
     return (
       <div className={`${styles.navItemsLeft} ${styles.navItemsborder}`} id={''}>
         <div className={styles.branding}>
-          <Link
-            className={`${styles.appLogo} ${styles.actionLink}`}
-            to={''}
-            id={''}
-            aria-label="dashboard">
+          <Link className={`${styles.appLogo} ${styles.actionLink}`} to={''} id={''} aria-label="dashboard">
             {props.children}
           </Link>
         </div>
-        <div className={styles.centerSelector}>
-          {/* <Dropdown
-            id={'Organization'}
-            name={'Organization'}
-            aria-label="Select treatment center"
-            options={organizationList?.content || []}
-            onChange={handleChange}
-          /> */}
+        {/* {isSystemAdmin && (
+          <div className={styles.centerSelector}>
+            <Dropdown id={'Organization'} name={'Organization'} aria-label="Select treatment center" options={data || []} value={selectedOrganization?.id || ''} onChange={handleChange} />
 
-          {/* <SearchableDropdown
+            <SearchableDropdown
             id="provider"
             isSuccess
             // label="Provider"
             variant="async"
             name="provider-input"
             onChange={handleOrganizationChange}
-            options={data ||[]}
-            refineFilterMessage={[
-              'More records exist.',
-              'Search to refine.'
-            ]}
-            asyncHandleSearch={(e)=>{console.log(e)}}
-          /> */}
-
-        </div>
+            options={data || []}
+            refineFilterMessage={['More records exist.', 'Search to refine.']}
+            asyncHandleSearch={(e) => {
+              console.log(e);
+            }}
+          />
+          </div>
+        )} */}
       </div>
     );
   };
@@ -114,7 +125,7 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
             <IconArrowDown />
           </button>
         }
-        handleSelect={() => { }}
+        handleSelect={() => {}}
         options={HeaderConfig.profileOptions}
         aria-label="Profile options"
       />,
@@ -182,6 +193,22 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
           </FloatingDrawer>
         </div>
       </div>
+      <Modal
+        {...{
+          id: 'xxxs-modal',
+          isOpen,
+          onClose: () => setIsOpen(false),
+          modalTitle: 'Confirmation message',
+          modalBody: <div>Are you sure want to change organization view ?</div>,
+          modalFooter: (
+            <React.Fragment>
+              <Button onClick={onCancelOrganizationChange}>Cancel</Button>
+              <Button onClick={confirmChangeOrganization}>Confirm</Button>
+            </React.Fragment>
+          ),
+          modalSize: 'xxxs'
+        }}
+      />
     </div>
   );
 };
