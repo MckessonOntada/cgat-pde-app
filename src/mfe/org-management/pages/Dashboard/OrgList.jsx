@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CustomDataTable, Button, Badge, Loader, CheckboxGroup } from '@mckesson/mcp-component-library';
+import { CustomDataTable, Button, Badge, Loader, CheckboxGroup, Modal } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useNavigate } from 'react-router-dom';
 import Actions from './Actions';
@@ -16,6 +16,7 @@ const OrgList = () => {
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState(null);
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
 
   const location = (address) => {
     return `${address.address1 || ''}, ${address.city || ''}, ${address.state || ''}, ${address.pin || ''}`;
@@ -154,7 +155,19 @@ const OrgList = () => {
 
   const handleDeactivate = () => {
     // setSelectedRows([]);
+    // mutate(selectedRows);
+    setIsOpen(true);
+  };
+
+  const confirmChangeOrganization = () => {
+    setIsOpen(false);
     mutate(selectedRows);
+  };
+
+  const onCancelOrganizationChange = () => {
+    setIsOpen(false);
+    // setSelectedOrg(null);
+    setSelectedRows(null);
   };
 
   return (
@@ -190,6 +203,22 @@ const OrgList = () => {
         noDataComponent={isError ? <div>Something went wrong! Please try again</div> : <EmptyDataTable image={EmptyDataImage} heading={t('orgManagement.add.label')} description={t('orgManagement.empty_table.description')} />}
         // handleRowSelected={handleRowSelected}
         // selectedRowId={selectedRows[0]}
+      />
+      <Modal
+        {...{
+          id: 'xxxs-modal',
+          isOpen,
+          onClose: () => setIsOpen(false),
+          modalTitle: 'Confirmation message',
+          modalBody: <div>Are you sure you wish to Deactivate this Organization ?</div>,
+          modalFooter: (
+            <React.Fragment>
+              <Button onClick={onCancelOrganizationChange}>Cancel</Button>
+              <Button onClick={confirmChangeOrganization}>Deactivate</Button>
+            </React.Fragment>
+          ),
+          modalSize: 'xxxs'
+        }}
       />
     </div>
   );
