@@ -13,6 +13,7 @@ import HttpResourceService, { httpVerb } from '../../../../../api/HttpResourceSe
 import ApiRoutes from '../../../../../api/ApiRoutes';
 import { PATHS } from '../../../routes/constants';
 import { useRole } from '../../../context/RoleContext';
+import DiscardChangesModal from './DiscardChangesModel';
 
 function arePermissionsEqual(arr1, arr2) {
     if (arr1.length !== arr2.length) {

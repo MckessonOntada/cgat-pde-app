@@ -11,6 +11,7 @@ import { useMutation } from 'react-query';
 import Components from '@src/components/form/Components';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
+import DiscardChangesModal from './DiscardChangesModel';
 
 const getRoleValidationSchema = (t) => Yup.object({
     roleName: Yup.string()
@@ -30,7 +31,7 @@ const RoleDetails = () => {
 
     const location = useLocation();
     const row = location.state ?? {};
-    const [isModalVisible, setIsModalVisible] = React.useState(false);
+    const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
 
     const [initialData, setInitialData] = React.useState({
         roleName: '',
@@ -54,9 +55,8 @@ const RoleDetails = () => {
     }, [roleId]);
 
     const handleOnBackButtonClick = () => {
-        debugger;
         if (JSON.stringify(formData) !== JSON.stringify(initialData)) {
-            setIsModalVisible(true);
+            setModalSuccessCallback("list");
         } else {
             navigate('/organization/roles');
         }
@@ -109,6 +109,12 @@ const RoleDetails = () => {
             payload.id = roleId;
         }
         mutation.mutate(payload);
+    }
+
+    const handleNavigate = () => {
+        if (modalSuccessCallback === "list") {
+            navigate('/organization/roles');
+        }
     }
 
     const forms = React.useMemo(() => [
