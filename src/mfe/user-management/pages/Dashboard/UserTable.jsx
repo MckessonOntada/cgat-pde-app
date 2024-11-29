@@ -12,6 +12,7 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
+import CommonUtils from '@src/util/CommonUtils';
 
 function getbgColorOnRole(Role) {
   switch (Role) {
@@ -73,10 +74,6 @@ function UserTable({ selectableRows = false }) {
 
   const handleChangePage = (e, newPage) => {
     setCurrentPage(newPage);
-  };
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-GB').replace(/\//g, '-');
   };
 
   const columns = [
@@ -159,7 +156,7 @@ function UserTable({ selectableRows = false }) {
       selector: 'date_added',
       sortable: true,
       wrap: true,
-      cell: (props) => formatDate(props.updatedAt)
+      cell: (props) => (props.updatedAt ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM-DD-YYYY') : props.createdAt ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY') : 'N/A')
     },
     {
       id: 'action',

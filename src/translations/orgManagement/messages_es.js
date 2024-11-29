@@ -1,8 +1,11 @@
-export const OrgManagementES = {
+export const OrgManagementEN = {
   'orgManagement.header.label': 'S_Manage Organization',
   'orgManagement.add.label': 'S_Add Organization',
   'orgManagement.clearFilter.label': 'S_clear filters',
   'orgManagement.searchFilter.label': 'S_Search By Name or Email',
+
+  'orgManagement.stepper.option.org_details': 'S_Organization Details',
+  'orgManagement.stepper.option.acct_details': 'S_Link Accounts',
 
   'orgManagement.table.name': 'S_Organization Name',
   'orgManagement.table.id': 'S_Organization ID',
@@ -15,15 +18,19 @@ export const OrgManagementES = {
   'orgManagement.table.action.inactivate': 'S_Inactivate',
   'orgManagement.table.action.view': 'S_VIEW',
 
+  'orgManagement.button.save': 'S_SAVE',
   'orgManagement.button.next': 'S_Next',
+  'orgManagement.button.filter': 'S_APPLY FILTER',
   'orgManagement.button.back': 'S_Back',
   'orgManagement.back.organization': 'S_BACK TO MANAGE ORGANIZATION PAGE',
   'orgManagement.button.cancel': 'S_Cancel',
+  'orgManagement.button.skipToPermission': 'S_Skip to Set Permissions',
   'orgManagement.button.deactivate': 'S_Deactivate',
+  'orgManagement.button.activate': 'S_ACTIVE',
+  'orgManagement.button.inactivate': 'S_INACTIVE',
 
   'orgManagement.create_org': 'S_Create Organization',
-  'orgManagement.create_org.details_to_create_org':
-    'S_Please check the details to create a organization Organization',
+  'orgManagement.create_org.details_to_create_org': 'S_Please check the details to create a organization Organization',
   'orgManagement.create_org.org-details': 'S_Organization Details',
   'orgManagement.create_org.contact_details': 'S_Contact Details',
   'orgManagement.create_org.address_details': 'S_Address Details',
@@ -45,38 +52,28 @@ export const OrgManagementES = {
   'orgManagement.create_org.validation.middle_name_required': 'S_Middle name is required',
   'orgManagement.create_org.validation.last_name_required': 'S_Last Name is required',
   'orgManagement.create_org.validation.address_1_required': 'S_Address is required',
-  'orgManagement.create_org.validation.address_2_required': 'Address is required',
+  'orgManagement.create_org.validation.address_2_required': 'S_Address is required',
   'orgManagement.create_org.validation.city_required': 'S_City is required',
   'orgManagement.create_org.validation.zip_required': 'S_Zip is required',
   'orgManagement.create_org.validation.state_required': 'S_State is required',
-  'orgManagement.create_org.validation.email_required':
-    'S_Email ID is required and must be in a valid format.',
+  'orgManagement.create_org.validation.email_required': 'S_Email ID is required and must be in a valid format.',
   'orgManagement.create_org.validation.invalid_email': 'S_Invalid Email',
-  'orgManagement.create_org.validation.phone_no_required':
-    'S_Phone Number is required and must be in a valid format.',
+  'orgManagement.create_org.validation.phone_no_required': 'S_Phone Number is required and must be in a valid format.',
   'orgManagement.create_org.validation.fax_required': 'S_Fax is required',
   'orgManagement.create_org.option.please_select': 'S_Please Select',
 
   'orgManagement.create_org.validation.org_name_invalid': 'S_Invalid Organization name',
-  'orgManagement.create_org.validation.org_name_max':
-    'S_Organization name can be maximum of 100 characters',
-  'orgManagement.create_org.validation.contact_person_first_name_invalid':
-    'S_Special characters not allowed',
-  'orgManagement.create_org.validation.first_name_max':
-    'S_First name can be a maximum of 50 characters',
+  'orgManagement.create_org.validation.org_name_max': 'S_Organization name can be maximum of 100 characters',
+  'orgManagement.create_org.validation.contact_person_first_name_invalid': 'S_Special characters not allowed',
+  'orgManagement.create_org.validation.first_name_max': 'S_First name can be a maximum of 50 characters',
   'orgManagement.create_org.validation.middle_name_invalid': 'S_Special characters not allowed',
-  'orgManagement.create_org.validation.middle_name_max':
-    'S_Middle name can be a maximum of 50 characters.',
-  'orgManagement.create_org.validation.contact_person_last_name_invalid':
-    'S_Special characters not allowed',
-  'orgManagement.create_org.validation.last_name_max':
-    'S_Last name can be a maximum of 50 characters',
+  'orgManagement.create_org.validation.middle_name_max': 'S_Middle name can be a maximum of 50 characters.',
+  'orgManagement.create_org.validation.contact_person_last_name_invalid': 'S_Special characters not allowed',
+  'orgManagement.create_org.validation.last_name_max': 'S_Last name can be a maximum of 50 characters',
   'orgManagement.create_org.validation.address_1_invalid': 'S_Invalid Address',
-  'orgManagement.create_org.validation.address_1_max':
-    'S_Address can be a maximum of 250 characters',
+  'orgManagement.create_org.validation.address_1_max': 'S_Address can be a maximum of 250 characters',
   'orgManagement.create_org.validation.address_2_invalid': 'S_Invalid Address',
-  'orgManagement.create_org.validation.address_2_max':
-    'S_Address can be a maximum of 150 characters',
+  'orgManagement.create_org.validation.address_2_max': 'S_Address can be a maximum of 150 characters',
   'orgManagement.create_org.validation.city_invalid': 'S_Invalid City',
   'orgManagement.create_org.validation.city_max': 'S_can be a maximum of 100 characters',
   'orgManagement.create_org.validation.zip_invalid': 'S_Invalid Zip',
@@ -93,9 +90,17 @@ export const OrgManagementES = {
   'orgManagement.org_detail.address': 'S_Organization Address',
 
   'orgManagement.org_list': 'S_Organization Listing',
-  'orgManagement.add.account': 'S_ADD ACCOUNT',
+  'orgManagement.add.account': 'S_ADD ACCOUNTS',
+  'orgManagement.update.account': 'S_UPDATE ACCOUNTS',
+  'orgManagement.add.viewsummary': 'S_VIEW SUMMARY',
 
-  'orgManagement.role.placeholder': 'S_Select by name and location',
+  'orgManagement.results': 'S_results',
+  'orgManagement.per_page': 'S_per page',
+  'orgManagement.selected_items': `Item Selected`,
+  'orgManagement.link': 'S_Linked Accounts',
+  'orgManagement.select_account': 'S_Please select accounts to incorporate into the organization.',
+
+  'orgManagement.empty_table.description': 'S_You need to add Organization to see data in this table.',
   'orgManagement.role.headingManageOrder': 'S_Manage Roles',
   'orgManagement.role.headingPermissionDetails': 'S_Permission Details',
   'orgManagement.role.labelAddRole': 'S_Add Role',
@@ -109,5 +114,16 @@ export const OrgManagementES = {
   'orgManagement.role.tableHeadingCreatedOn': 'S_Created On',
   'orgManagement.role.captionsBtnBackToManageRoles': 'S_Back to Manage Roles',
   'orgManagement.role.captionsBtnSaveAndCancel': 'S_Save and Continue',
-  'orgManagement.role.labelMaxChar1000': 'S_Maximum 1,000 Characters'
+  'orgManagement.role.labelMaxChar1000': 'S_Maximum 1,000 Characters',
+  'orgManagement.role.placeholder': 'S_Select by name and location',
+
+  'orgManagement.label.associateAccount': 'S_Associate Account',
+  'orgManagement.messages.newRoleCreation': 'S_New role has been successfully created.',
+  'orgManagement.messages.roleUpdate': 'S_Role has been successfully updated.',
+  'orgManagement.form.errors.roleNameRequired': 'S_Role Name is required',
+  'orgManagement.form.errors.roleDescriptionRequired': 'S_Role Description is required',
+  'orgManagement.form.errors.roleNameMinLength': 'S_Role Name must be at least 3 characters long',
+  'orgManagement.form.errors.roleNameMaxLength': 'S_Role Name must be at least 3 characters long',
+  'orgManagement.form.errors.roleDescriptionMinLength': 'S_Role Description must be at least 10 characters long',
+  'orgManagement.form.errors.roleDescriptionMaxLength': 'S_Role Description cannot exceed 1,000 characters'
 };

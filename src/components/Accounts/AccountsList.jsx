@@ -53,8 +53,6 @@ export default function AccountsList({
     queryKey: ['accounts', practiceId],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(`${apiUrl}`, httpVerb.GET, {});
-
-      console.log('res', res);
       return res.data;
     },
     refetchOnWindowFocus: false,
