@@ -30,9 +30,7 @@ export const authToken = (noHeader, noSidHeader) => {
   }
 
   const headers = {
-    Authorization: sessionStorage.getItem('APP_AUTH_TOKEN')
-      ? `${sessionStorage.getItem('APP_AUTH_TOKEN')}`
-      : ''
+    Authorization: sessionStorage.getItem('APP_AUTH_TOKEN') ? `${sessionStorage.getItem('APP_AUTH_TOKEN')}` : ''
   };
 
   const sessionId = sessionStorage.getItem('sid');
@@ -56,14 +54,13 @@ const callRest = function (
     console.log(err);
   }
 ) {
-  const customHeaders = {...headers};
+  const customHeaders = { ...headers };
+
   headers = {
     ...defaultHeaders,
     ...customHeaders,
     ...authToken(noHeader, noSidHeader)
   };
-  console.log("headers2", headers)
-
 
   const response = axios.request({
     method: httpVerb,

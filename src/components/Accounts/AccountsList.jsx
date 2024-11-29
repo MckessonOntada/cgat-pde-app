@@ -62,8 +62,10 @@ export default function AccountsList({
   });
 
   useEffect(() => {
-    setSelectedRows(data?.content);
-    refetch();
+    if (typeof setSelectedRows === 'function') {
+      setSelectedRows(data?.content);
+      refetch();
+    }
   }, [addNewAccounts, userId, currentPage]);
 
   const columns = useMemo(
