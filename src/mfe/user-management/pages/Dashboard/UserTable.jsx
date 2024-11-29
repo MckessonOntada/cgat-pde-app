@@ -115,7 +115,8 @@ function UserTable({ selectableRows = false }) {
           ) : (
             <Link
               to={`${props.id}`} // dynamically constructs the URL with userId
-              style={{ color: '#007bff', fontWeight: '600' }}>
+              className="MCP-table-link"
+            >
               {`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`}
             </Link>
           )}
