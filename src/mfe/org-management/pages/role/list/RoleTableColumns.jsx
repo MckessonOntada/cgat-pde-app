@@ -45,6 +45,6 @@ export const createColumns = (t) => [
         ),
         wrap: true,
         center: true,
-        width: "27%"
+        width: "22%"
     },
 ];

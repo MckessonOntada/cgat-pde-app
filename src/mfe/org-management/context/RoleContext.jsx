@@ -1,32 +1,76 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { useQuery } from "react-query";
 import HttpResourceService, { httpVerb } from "../../../api/HttpResourceService";
 import ApiRoutes from "../../../api/ApiRoutes";
-import { useQuery } from "react-query";
+import { serializeParams } from "@src/util/ApiUtils";
+
+
+function formatDate(dateStr, format = 'MM/DD/YYYY') {
+  if (!dateStr) {
+    throw new Error("No date value");
+  }
+
+  const parts = dateStr.split('/');
+
+  if (parts.length !== 3) {
+    throw new Error("Not a valid date string");
+  }
+
+  let [part1, part2, part3] = parts.map(Number);
+
+  let month, day, year;
+
+  if (part1 > 12) {
+    day = part1;
+    month = part2;
+    year = part3;
+  } else if (part2 > 12) {
+    day = part2;
+    month = part1;
+    year = part3;
+  } else {
+    month = part1;
+    day = part2;
+    year = part3;
+  }
+
+  const date = new Date(year, month - 1, day);
+
+  if (isNaN(date.getTime())) {
+    throw new Error("Not a valid date string");
+  }
+
+  const pad = (value) => String(value).padStart(2, '0');
+
+  const formattedDay = pad(date.getDate());
+  const formattedMonth = pad(date.getMonth() + 1);
+  const formattedYear = date.getFullYear();
+
+  if (format.toUpperCase() === 'MM/DD/YYYY') {
+    return `${formattedMonth}/${formattedDay}/${formattedYear}`;
+  } else if (format.toUpperCase() === 'DD/MM/YYYY') {
+    return `${formattedDay}/${formattedMonth}/${formattedYear}`;
+  } else {
+    throw new Error("Unsupported format");
+  }
+}
 
 const RoleContext = createContext();
 
 export const useRole = () => {
   const context = useContext(RoleContext);
   if (!context) {
-    throw new Error("useRole must be used within an RoleProvider.");
+    throw new Error("useRole must be used within a RoleProvider.");
   }
   return context;
 };
 
-const INITIAL_STATE = {
+const INITIAL_FILTER_STATE = {
   searchQuery: "",
-  location: [],
-  status: [],
+  dateRange: [],
 };
 
-const initialPageConfig = {
+const INITIAL_PAGINATION_CONFIG = {
   totalElements: 0,
   pageSize: 8,
   totalPages: 0,
@@ -34,103 +78,80 @@ const initialPageConfig = {
 };
 
 export const RoleProvider = ({ children }) => {
-  const [filterState, setFilterState] = useState(INITIAL_STATE);
-  const [originalData, setOriginalData] = useState([]);
-  const [currentPageData, setCurrentPageData] = useState([]);
-  const [paginationConfig, setPaginationConfig] = useState(initialPageConfig);
-  const [moduleMessage, setModuleMessage] = useState(null);
+  const [filterState, setFilterState] = useState(INITIAL_FILTER_STATE);
+  const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
 
-  const { isLoading, isError, data: responseData, refetch } = useQuery({
-    queryKey: [`users/getAll}`],
+  const requestParams = useMemo(() => {
+    const params = {
+      pageNo: paginationConfig.pageNumber - 1,
+      pageSize: paginationConfig.pageSize,
+      sortBy: "name",
+      sortOrder: "asc",
+    };
+    if (filterState.searchQuery) params.query = filterState.searchQuery;
+    if (filterState.dateRange?.[0]) params.startDate = formatDate(filterState.dateRange[0], 'dd/mm/yyyy');
+    if (filterState.dateRange?.[1]) params.endDate = formatDate(filterState.dateRange[1], 'dd/mm/yyyy');
+    return params;
+  }, [filterState, paginationConfig.pageNumber]);
+
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["roles", requestParams],
     queryFn: async () => {
-      const res = await HttpResourceService.callRest(
-        `${ApiRoutes.GET_ROLES()}`,
+      const response = await HttpResourceService.callRest(
+        `${ApiRoutes.GET_ROLES()}?${serializeParams(requestParams)}`,
         httpVerb.GET,
         {}
       );
-
-      if (res.data) {
-        const {
-          content: data,
+      if (response.data) {
+        const { content: data, totalElements, totalPages } = response.data;
+        setPaginationConfig((prevConfig) => ({
+          ...prevConfig,
           totalElements,
           totalPages,
-          pageable
-        } = res.data;
+        }));
 
-        setPaginationConfig(prevPaginationConfig => ({
-          ...prevPaginationConfig,
-          totalElements,
-          totalPages: Math.ceil(totalElements / paginationConfig.pageSize)
-        }))
-        setOriginalData(data);
+        return data;
       }
+      return [];
     },
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
   });
 
-  const updateFilterState = useCallback((field, value) => {
-    setFilterState((prevState) => ({
-      ...prevState,
-      [field]: value,
-    }));
-  }, []);
-
-  const clearFilters = useCallback(() => {
-    setFilterState(INITIAL_STATE);
-    console.log("Filters cleared.");
-  }, []);
-
   useEffect(() => {
-    const indexOfLastRecord = paginationConfig?.pageNumber * paginationConfig?.pageSize;
-    const indexOfFirstRecord = indexOfLastRecord - paginationConfig?.pageSize;
-    setCurrentPageData(
-      originalData.slice(indexOfFirstRecord, indexOfLastRecord)
-    );
-  }, [originalData, paginationConfig.pageNumber]);
-
-  const showModuleMessage = (message, timeout) => {
-    setModuleMessage({ ...message });
-    setTimeout(() => {
-      setModuleMessage(null);
-    }, timeout);
-  };
-  const clearModuleMessage = () => {
-    setModuleMessage(null);
-  };
-
-  const refreshData = () => {
     refetch();
+  }, [filterState, paginationConfig.pageNumber]);
+
+  const applyFilters = (filters) => {
+    setPageNumber(1);
+    setFilterState(prevFilters => ({
+      ...prevFilters,
+      ...filters
+    }));
+  }
+
+  const clearFilters = () => setFilterState(INITIAL_FILTER_STATE);
+
+  const setPageNumber = (pageNumber) => {
+    setPaginationConfig((prevConfig) => ({
+      ...prevConfig,
+      pageNumber,
+    }));
   };
 
-  const ctxValue = useMemo(() => ({
-    currentPageData,
-    filters: {
-      ...filterState,
-      update: {
-        setSearchQuery: (value) => updateFilterState("searchQuery", value),
-        setLocation: (value) => updateFilterState("location", value),
-        setStatus: (value) => updateFilterState("status", value),
-      },
-      clearFilters,
-    },
-    paginationConfig: {
-      ...paginationConfig,
-      setCurrentPage: (pageNumber) => setPaginationConfig({ ...paginationConfig, pageNumber })
-    },
-    moduleMessage,
-    showModuleMessage,
-    clearModuleMessage,
-    refreshData,
-  }), [
-    currentPageData,
+  const contextValue = {
+    data: data || [],
+    isLoading,
+    isError,
     filterState,
-    clearFilters,
-    updateFilterState,
     paginationConfig,
-    moduleMessage
-  ]);
+    setFilterState,
+    clearFilters,
+    applyFilters,
+    setPageNumber,
+  };
+
   return (
-    <RoleContext.Provider value={ctxValue}>
+    <RoleContext.Provider value={contextValue}>
       {children}
     </RoleContext.Provider>
   );

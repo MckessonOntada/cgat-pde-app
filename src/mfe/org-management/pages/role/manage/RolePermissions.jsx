@@ -16,6 +16,9 @@ import { useRole } from '../../../context/RoleContext';
 import DiscardChangesModal from './DiscardChangesModel';
 
 function arePermissionsEqual(arr1, arr2) {
+    if (Array.isArray(arr1) && !arr2 || Array.isArray(arr2) && !arr1)
+        return false;
+
     if (arr1.length !== arr2.length) {
         return false;
     }
