@@ -58,10 +58,10 @@ export const UserProvider = ({ children }) => {
         sortOrder: sortConfig.sortOrder || "asc",
         userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
       }
-      debugger;
+
       if (filterConfig.searchQuery) params.query = filterConfig.searchQuery;
-      if (filterConfig.status && filterConfig.status > 0) params.status = filterConfig.status;
-      if (filterConfig.role && filterConfig.status > 0) params.role = filterConfig.role;
+      if (filterConfig.status && filterConfig.status.length > 0) params.status = filterConfig.status;
+      if (filterConfig.role && filterConfig.role.length > 0) params.role = filterConfig.role;
 
       return params;
     },

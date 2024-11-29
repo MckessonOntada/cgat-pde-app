@@ -52,7 +52,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
 
   const onSearchableDropdownChange = (type, value) => {
     const filteredValue = value.filter((item) => item.isChecked);
-    applyFilters({ [type]: filteredValue });
+    applyFilters({ [type]: filteredValue.map(item => item.value) });
   };
 
   return (
@@ -81,7 +81,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
           {/* Render contents only if expandedCard is true */}
 
           <ToggleUI in={expandedCard} timeout={400}>
-            <div className="expanded-content">
+            <div className="expanded-content" style={{ paddingBottom: '200px' }}>
               <Divider color={'#BAC5CC'} />
               <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
                 {showRoleDropdown && ROLES.length > 0 && (
