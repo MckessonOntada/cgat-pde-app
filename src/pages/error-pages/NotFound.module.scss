@@ -1,0 +1,22 @@
+.notFoundContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.notFoundCard {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: var(--spacing-03);
+}
+
+.notFoundCard {
+  p {
+    font-size: var(--brand-font-size--large);
+  }
+  .heading {
+    font-size: var(--brand-font-size--54);
+  }
+}

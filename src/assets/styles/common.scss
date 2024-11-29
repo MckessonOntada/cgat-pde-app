@@ -52,16 +52,15 @@
       scrollbar-width: thin;
     }
   }
+}
+.controls {
+  justify-content: flex-start;
+  display: flex;
+  gap: var(--spacing-03);
+  flex-direction: row;
 
-  .controls {
-    justify-content: flex-start;
-    display: flex;
-    gap: var(--spacing-03);
-    flex-direction: row;
-
-    @include mixins.respond(sm) {
-      justify-content: flex-end;
-    }
+  @include mixins.respond(sm) {
+    justify-content: flex-end;
   }
 }
 
@@ -79,7 +78,7 @@
   width: 100%;
 }
 
-.MCP-table-link{
+.MCP-table-link {
   text-decoration: none;
   color: var(--brand-color-text-blue);
   font-size: var(--brand-font-size--default);
@@ -136,8 +135,6 @@
   white-space: nowrap;
 }
 
-
-
 [class^="OktaFooter-module--copyrightContainer-"] {
   color: var(--brand-color-patient-primary-1);
   font-size: var(--brand-font-size--large) !important;
@@ -145,7 +142,6 @@
   line-height: var(--brand-line-height--24) !important;
   letter-spacing: 0.001em !important;
 }
-
 
 [class*="OktaFooter-module--label--"] {
   color: var(--brand-color-patient-primary-1) !important;

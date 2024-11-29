@@ -21,6 +21,7 @@ export const OrgManagementEN = {
   'orgManagement.button.back': 'Back',
   'orgManagement.back.organization': 'BACK TO MANAGE ORGANIZATION PAGE',
   'orgManagement.button.cancel': 'Cancel',
+  'orgManagement.button.skipToPermission': 'Skip to Set Permissions',
   'orgManagement.button.deactivate': 'Deactivate',
   'orgManagement.button.activate': 'ACTIVE',
   'orgManagement.button.inactivate': 'INACTIVE',

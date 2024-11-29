@@ -7,12 +7,17 @@ import { createColumns } from './RoleTableColumns';
 const RolesDataTable = () => {
     const { t } = useTranslate();
     const [selectedRows, setSelectedRows] = useState([]);
-    const columns = createColumns(t)
+    const columns = createColumns(t);
 
     const {
         currentPageData,
-        paginationConfig
+        paginationConfig,
+        refreshData
     } = useRole();
+
+    React.useState(() => {
+        refreshData();
+    })
 
     const handleSort = (selectedColumn, sortDirection, sortedRows) => {
         // TODO
