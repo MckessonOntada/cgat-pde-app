@@ -6,7 +6,6 @@ import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 
 const UserContext = createContext();
-const RECORDS_PER_PAGE = 8;
 
 export const useUser = () => {
   const context = useContext(UserContext);
@@ -16,21 +15,28 @@ export const useUser = () => {
   return context;
 };
 
-const INITIAL_STATE = {
-  searchQuery: '',
-  location: [],
+const INITIAL_FILTER_STATE = {
+  searchQuery: "",
   status: [],
-  pagination: {
-    currentPage: 0,
-    totalRecords: 0,
-    totalPageCount: 0,
-    recordsPerPage: 0
-  }
+  role: null
+};
+
+const INITIAL_SORT_STATE = {
+  sortBy: null,
+  sortOrder: null,
+}
+
+const INITIAL_PAGINATION_CONFIG = {
+  totalElements: 0,
+  pageSize: 8,
+  totalPages: 0,
+  pageNumber: 1,
 };
 
 export const UserProvider = ({ children }) => {
-  const [filterState, setFilterState] = useState(INITIAL_STATE);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
+  const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
+  const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE)
   const [activeTab, setActiveTab] = useState('ACTIVE USERS');
 
   const updateFilterState = useCallback((field, value) => {
@@ -40,20 +46,26 @@ export const UserProvider = ({ children }) => {
     }));
   }, []);
 
-  const clearFilters = () => {
-    setFilterState(INITIAL_STATE);
-  };
+  const clearFilters = () => setFilterConfig(INITIAL_FILTER_STATE);
 
   // Use from context
   const requestParams = useMemo(
-    () => ({
-      pageNo: currentPage - 1,
-      pageSize: RECORDS_PER_PAGE,
-      sortBy: 'first_name',
-      sortOrder: 'asc',
-      userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
-    }),
-    [currentPage]
+    () => {
+      const params = {
+        pageNo: paginationConfig.pageNumber - 1,
+        pageSize: paginationConfig.pageSize,
+        sortBy: sortConfig.sortBy || "first_name",
+        sortOrder: sortConfig.sortOrder || "asc",
+        userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
+      }
+      debugger;
+      if (filterConfig.searchQuery) params.query = filterConfig.searchQuery;
+      if (filterConfig.status && filterConfig.status > 0) params.status = filterConfig.status;
+      if (filterConfig.role && filterConfig.status > 0) params.role = filterConfig.role;
+
+      return params;
+    },
+    [filterConfig, paginationConfig.pageNumber, sortConfig]
   );
 
   const { isLoading, isError, data, refetch } = useQuery({
@@ -61,47 +73,60 @@ export const UserProvider = ({ children }) => {
     queryFn: async () => {
       const url = activeTab === 'ACTIVE USERS' ? `${ApiRoutes.USERS()}?${serializeParams(requestParams)}` : `${ApiRoutes.USERS_PROVISIONING()}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-      return res.data;
+      if (res.data) {
+        const { content: data, totalElements, totalPages } = res.data;
+
+        setPaginationConfig((prevConfig) => ({
+          ...prevConfig,
+          totalElements,
+          totalPages,
+        }));
+
+        return data;
+      }
+
+      return [];
     },
     refetchOnWindowFocus: false
   });
 
-  const refetchUsersData = () => {
-    refetch(requestParams);
-  };
-
   useEffect(() => {
-    refetch(requestParams);
-  }, [currentPage, filterState]);
+    refetch();
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
+
+  const applySort = (sortConfig) => setSortConfig({ ...sortConfig })
+
+  const applyFilters = (filters) => {
+    setPageNumber(1);
+    setFilterConfig(prevFilters => ({
+      ...prevFilters,
+      ...filters
+    }));
+  }
+
+  const setPageNumber = (pageNumber) => {
+    setPaginationConfig((prevConfig) => ({
+      ...prevConfig,
+      pageNumber,
+    }));
+  };
 
   const ctxValue = useMemo(
     () => ({
+      data: data || [],
       isLoading,
       isError,
-      data: data?.content || [],
+      filterConfig,
+      paginationConfig,
+      setFilterConfig,
+      clearFilters,
+      applyFilters,
+      applySort,
+      setPageNumber,
       activeTab,
       setActiveTab,
-      pagination: {
-        currentPage,
-        totalPageCount: data?.totalPages || 0,
-        totalRecords: data?.totalElements || 0,
-        recordsPerPage: RECORDS_PER_PAGE,
-        update: {
-          setCurrentPage
-        }
-      },
-      filters: {
-        ...filterState,
-        update: {
-          setSearchQuery: (value) => updateFilterState('searchQuery', value),
-          setRole: (value) => updateFilterState('role', value),
-          setStatus: (value) => updateFilterState('status', value)
-        },
-        clearFilters
-      },
-      refetchUsersData // Add refetch to context value to reload data
     }),
-    [updateFilterState, clearFilters, isLoading, isError, data, currentPage, activeTab, setActiveTab, refetch]
+    [updateFilterState, clearFilters, isLoading, isError, data, activeTab, setActiveTab, refetch]
   );
   return <UserContext.Provider value={ctxValue}>{children}</UserContext.Provider>;
 };

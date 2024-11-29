@@ -35,14 +35,10 @@ function UserTable({ selectableRows = false }) {
     isError,
     data,
     activeTab,
-    pagination: {
-      currentPage,
-      totalPageCount,
-      totalRecords,
-      recordsPerPage,
-      update: { setCurrentPage }
-    },
-    refetchUsersData
+    filterConfig,
+    paginationConfig,
+    applySort,
+    setFilterConfig,
   } = useUser();
 
   const handleRowSelected = ({ selectedRows }) => {
@@ -79,6 +75,10 @@ function UserTable({ selectableRows = false }) {
     return new Date(dateString).toLocaleDateString('en-GB').replace(/\//g, '-');
   };
 
+  const handleOnSortIconClick = (selectedColumn, sortDirection) => {
+    applySort({ sortBy: selectedColumn.sortName, sortOrder: sortDirection })
+  };
+
   const columns = [
     {
       id: 'checkbox',
@@ -107,6 +107,7 @@ function UserTable({ selectableRows = false }) {
       name: t('userManagement.table.name'),
       selector: (row) => `${row.name.firstName} ${row.name.lastName}`,
       sortable: true,
+      sortName: 'first_name',
       wrap: true,
       cell: (props) => (
         <div className="cellEllipses">
@@ -189,14 +190,14 @@ function UserTable({ selectableRows = false }) {
         type={'normal'}
         columns={columns}
         data={data}
-        onSortIconClick={(value) => console.log(value)}
+        onSortIconClick={handleOnSortIconClick}
         handleChangePage={handleChangePage}
         // selectableRows={selectableRows}
         selectableRowsHeader={false}
-        currentPage={currentPage}
-        totalPageCount={totalPageCount}
-        totalRocords={totalRecords}
-        recordsPerPage={recordsPerPage}
+        currentPage={filterConfig.pageNumber}
+        totalPageCount={paginationConfig.totalPages}
+        totalRocords={paginationConfig.totalElements}
+        recordsPerPage={paginationConfig.pageSize}
         paginationTotalRecorsMessage={t('userManagement.results')}
         paginationRecordsPerPageMessage={t('userManagement.per_page')}
         stickyHeader
