@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { SESSION_CONST } from '@src/constants/SessionConstants';
+import AuthUtils from '../util/AuthUtils';
 
 const useSessionFeatures = () => {
   const [selectedOrganization, setSelectedOrganization] = useState(() => {
@@ -12,13 +13,13 @@ const useSessionFeatures = () => {
   const setOrganization = (org) => {
     setSelectedOrganization(org);
     sessionStorage.setItem('selectedOrganization', JSON.stringify(org));
-    sessionStorage.setItem(SESSION_CONST.SELECTED_PRACTICE_ID, org?.id);
+    AuthUtils.setPracticeId(org?.id);
   };
 
   const removeOrganization = () => {
     setSelectedOrganization(null);
     sessionStorage.removeItem('selectedOrganization');
-    sessionStorage.removeItem(SESSION_CONST.SELECTED_PRACTICE_ID);
+    AuthUtils.removePracticeId(SESSION_CONST.SELECTED_PRACTICE_ID);
   };
 
   return useMemo(

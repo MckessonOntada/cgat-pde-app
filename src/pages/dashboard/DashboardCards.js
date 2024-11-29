@@ -30,7 +30,7 @@ const CARDS_DATA = [
     label: 'manage_order_configuration',
     icon: OrderIcon,
     details: 'efficiently_streamline_user_management_for_seamless_experience',
-    path: '/manage-orders',
+    path: '/orders',
     permissions: []
   },
   {
@@ -68,6 +68,6 @@ const CARDS_DATA = [
 ];
 
 export {
-  SYSTEM_ADMIN_CARDS_DATA, 
+  SYSTEM_ADMIN_CARDS_DATA,
   CARDS_DATA
 };

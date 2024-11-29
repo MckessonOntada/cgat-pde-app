@@ -49,8 +49,9 @@ const Login = () => {
       helpLinks: {
         custom: [
           {
-            text: "Don't have an account ? SignUp",
-            href: '/signup'
+            text: 'Sign Up',
+            href: '/signup',
+            className: 'signup-link'
           }
         ]
       },

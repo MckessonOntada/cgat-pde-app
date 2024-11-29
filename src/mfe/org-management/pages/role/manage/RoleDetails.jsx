@@ -11,6 +11,7 @@ import { useMutation } from 'react-query';
 import Components from '@src/components/form/Components';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
+import DiscardChangesModal from './DiscardChangesModel';
 
 const getRoleValidationSchema = (t) => Yup.object({
     roleName: Yup.string()
@@ -30,7 +31,7 @@ const RoleDetails = () => {
 
     const location = useLocation();
     const row = location.state ?? {};
-    const [isModalVisible, setIsModalVisible] = React.useState(false);
+    const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
 
     const [initialData, setInitialData] = React.useState({
         roleName: '',
@@ -55,7 +56,7 @@ const RoleDetails = () => {
 
     const handleOnBackButtonClick = () => {
         if (JSON.stringify(formData) !== JSON.stringify(initialData)) {
-            setIsModalVisible(true);
+            setModalSuccessCallback("list");
         } else {
             navigate('/organization/roles');
         }
@@ -64,7 +65,7 @@ const RoleDetails = () => {
     const roleValidationSchema = getRoleValidationSchema(t);
 
     const mutation = useMutation(
-        (data) => {
+        async (data) => {
             let apiUrl = ApiRoutes.GET_ROLES();
             let actionSpecificHttpVerb = httpVerb.POST;
 
@@ -72,16 +73,22 @@ const RoleDetails = () => {
                 apiUrl += `/${roleId}`;
                 actionSpecificHttpVerb = httpVerb.PUT;
             }
-            HttpResourceService.callRest(
+            const res = await HttpResourceService.callRest(
                 apiUrl,
                 actionSpecificHttpVerb,
                 data
             );
+            return res;
         },
         {
-            onSuccess: (data) => {
-                const id = data && data.id || roleId;
-                navigate(`/organization/roles/${id}/permissions`, { state: row });
+            onSuccess: (res) => {
+                const data = res?.data;
+                if (data) {
+                    const id = data && data.id || roleId;
+                    console.log(data);
+                    const { name, description } = data;
+                    navigate(`/organization/roles/${id}/permissions`, { state: { ...row, name, description } });
+                }
             },
             onError: (error) => {
                 console.error('Error posting data:', error);
@@ -89,12 +96,8 @@ const RoleDetails = () => {
         }
     );
 
-    const handleOnChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: value,
-        }));
+    const handleOnSkip = () => {
+        navigate(`/organization/roles/${roleId}/permissions`, { state: row })
     }
 
     const handleOnSubmit = (values, _action) => {
@@ -106,6 +109,12 @@ const RoleDetails = () => {
             payload.id = roleId;
         }
         mutation.mutate(payload);
+    }
+
+    const handleNavigate = () => {
+        if (modalSuccessCallback === "list") {
+            navigate('/organization/roles');
+        }
     }
 
     const forms = React.useMemo(() => [
@@ -147,76 +156,73 @@ const RoleDetails = () => {
                         onSubmit={handleOnSubmit}
                         enableReinitialize
                     >
-                        {({ isValid, dirty }) => (
-                            <Form>
-                                <div className='MCP-module-wrapper'>
-                                    <div className="MCP-panel-container">
-                                        <ModuleHeader
-                                            heading={<p className="secondaryHeading">{t('orgManagement.role.headingPermissionDetails')}</p>}
-                                            controls={<p><Required /> {t('orgManagement.create_org.required')}</p>}
-                                        />
+                        {({ values, isValid }) => {
+                            React.useEffect(() => {
+                                setFormData({ ...values });
+                            }, [values]);
 
-                                        <div className='MCP-module-body'>
-                                            <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-                                                <Field
-                                                    name="roleName"
-                                                    label={t('orgManagement.role.labelRoleName')}
-                                                    placeholder=" "
-                                                    isRequired
-                                                    component={Components['input']}
-                                                    onChange={handleOnChange}
-                                                />
-                                            </div>
-                                            <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
-                                                <Field
-                                                    name="roleDescription"
-                                                    placeholder=" "
-                                                    isRequired
-                                                    maxCharHelperText={t('orgManagement.role.labelMaxChar1000')}
-                                                    onChange={handleOnChange}
-                                                    component={Components['textarea']}
-                                                    fieldlabel={t("orgManagement.role.labelRoleDescription")}
-                                                    maxCharLimit={1000}
-                                                />
+                            return (
+                                <Form>
+                                    <div className='MCP-module-wrapper'>
+                                        <div className="MCP-panel-container">
+                                            <ModuleHeader
+                                                heading={<p className="secondaryHeading">{t('orgManagement.role.headingPermissionDetails')}</p>}
+                                                controls={<p><Required /> {t('orgManagement.create_org.required')}</p>}
+                                            />
+
+                                            <div className='MCP-module-body'>
+                                                <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+                                                    <Field
+                                                        name="roleName"
+                                                        label={t('orgManagement.role.labelRoleName')}
+                                                        placeholder=" "
+                                                        isRequired
+                                                        component={Components['input']}
+                                                    />
+                                                </div>
+                                                <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
+                                                    <Field
+                                                        name="roleDescription"
+                                                        placeholder=" "
+                                                        isRequired
+                                                        maxCharHelperText={t('orgManagement.role.labelMaxChar1000')}
+                                                        component={Components['textarea']}
+                                                        fieldlabel={t("orgManagement.role.labelRoleDescription")}
+                                                        maxCharLimit={1000}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
+                                        <ModuleHeader
+                                            heading={
+                                                <Button size="md" variant="secondary" onClick={handleOnSkip}>{t('orgManagement.button.skipToPermission')}</Button>
+                                            }
+                                            controls={
+                                                <div className='controls'>
+                                                    <Button size="md" variant="secondary" onClick={handleOnBackButtonClick}>{t('orgManagement.button.cancel')}</Button>
+                                                    <Button
+                                                        size="md"
+                                                        variant="primary"
+                                                        type="submit"
+                                                        disabled={!(isValid)}
+                                                    >
+                                                        {t('orgManagement.role.captionsBtnSaveAndCancel')}
+                                                    </Button>
+                                                </div>
+                                            }
+                                        />
                                     </div>
-                                    <div className='controls'>
-                                        <Button size="md" variant="secondary">{t('orgManagement.button.cancel')}</Button>
-                                        <Button
-                                            size="md"
-                                            variant="primary"
-                                            type="submit"
-                                            disabled={!(isValid && dirty)}
-                                        >
-                                            {t('orgManagement.role.captionsBtnSaveAndCancel')}
-                                        </Button>
-                                    </div>
-                                </div>
-                            </Form>
-                        )}
+                                </Form>
+                            )
+                        }}
                     </Formik>
                 </div>
             </div>
-            
-                <Modal {...{
-                    id: "discard-role-details-modal",
-                    isOpen: isModalVisible,
-                    onClose: () => setIsModalVisible(false),
-                    modalTitle: "Discard Changes?",
-                    modalBody: <div className='tertiaryHeading'>You have changed role details, still you want to return to list? Your changes will be discarded!</div>,
-                    modalFooter: <div style={{display: 'flex', gap: '16px'}} className='controls'>
-                        <Button size="md" variant="secondary" onClick={() => setIsModalVisible(false)}>
-                            Cancel
-                        </Button>
-                        <Button size="md" variant="primary" onClick={() => navigate('/organization/roles')}>
-                            Okay
-                        </Button>
-                    </div>,
-                    modalSize: "md"
-                }}
-                />
-            
+            <DiscardChangesModal
+                isOpen={Boolean(modalSuccessCallback)}
+                onClose={() => setModalSuccessCallback(null)}
+                onConfirm={handleNavigate}
+            />
         </div>
     );
 };

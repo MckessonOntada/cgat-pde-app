@@ -89,11 +89,11 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
             {props.children}
           </Link>
         </div>
-        {isSystemAdmin && (
+        {/* {isSystemAdmin && (
           <div className={styles.centerSelector}>
             <Dropdown id={'Organization'} name={'Organization'} aria-label="Select treatment center" options={data || []} value={selectedOrganization?.id || ''} onChange={handleChange} />
 
-            {/* <SearchableDropdown
+            <SearchableDropdown
             id="provider"
             isSuccess
             // label="Provider"
@@ -105,9 +105,9 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
             asyncHandleSearch={(e) => {
               console.log(e);
             }}
-          /> */}
+          />
           </div>
-        )}
+        )} */}
       </div>
     );
   };
