@@ -16,6 +16,9 @@ import { useRole } from '../../../context/RoleContext';
 import DiscardChangesModal from './DiscardChangesModel';
 
 function arePermissionsEqual(arr1, arr2) {
+    if (Array.isArray(arr1) && !arr2 || Array.isArray(arr2) && !arr1)
+        return false;
+
     if (arr1.length !== arr2.length) {
         return false;
     }
@@ -32,7 +35,7 @@ const RolePermissions = () => {
     const { roleId } = useParams();
     const location = useLocation();
     const row = location.state || null;
-    const { showModuleMessage } = useRole();
+    const { setMessage } = useRole();
     const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
     const [enabledPermissions, setEnabledPermissions] = React.useState(row?.permissions ? [...row.permissions] : []);
     const [inheritedRole, setInheritedRole] = React.useState(null);
@@ -63,14 +66,14 @@ const RolePermissions = () => {
                 const data = res?.data;
                 if (data) {
                     if (row?.permissions) {
-                        showModuleMessage({
-                            text: t('orgManagement.messages.roleUpdate'),
-                            kind: 'success'
+                        setMessage({
+                            primaryMessage: t('orgManagement.messages.roleUpdate'),
+                            messageKind: 'success'
                         }, 10000);
                     } else {
-                        showModuleMessage({
-                            text: t('orgManagement.messages.newRoleCreation'),
-                            kind: 'success'
+                        setMessage({
+                            primaryMessage: t('orgManagement.messages.newRoleCreation'),
+                            messageKind: 'success'
                         }, 10000);
                     }
                     refreshData();
