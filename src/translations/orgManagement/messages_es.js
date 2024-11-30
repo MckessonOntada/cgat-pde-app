@@ -1,4 +1,4 @@
-export const OrgManagementEN = {
+export const OrgManagementES = {
   'orgManagement.header.label': 'S_Manage Organization',
   'orgManagement.add.label': 'S_Add Organization',
   'orgManagement.clearFilter.label': 'S_clear filters',
