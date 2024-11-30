@@ -1,7 +1,6 @@
+import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { serializeParams } from '@src/util/ApiUtils';
-import ApiRoutes from '@src/api/ApiRoutes';
-import { updateOrganizationList, updateOrganizationListOptions } from '../../store/reducer/appReducer';
 
 function getOrganizationList(requestParams) {
   return async (dispatch) => {
