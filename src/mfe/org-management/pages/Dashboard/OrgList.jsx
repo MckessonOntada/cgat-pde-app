@@ -88,13 +88,14 @@ const OrgList = () => {
       id: 'name',
       name: t('orgManagement.table.name'),
       cell: (row) => (
-        <Button
+        <button
           variant="tertiary"
+          className="MCP-table-link"
           onClick={() => {
             handleClick(row);
           }}>
           {row.name}
-        </Button>
+        </button>
       ),
       wrap: true,
       width: '20%'

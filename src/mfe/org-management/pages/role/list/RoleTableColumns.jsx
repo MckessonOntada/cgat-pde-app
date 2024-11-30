@@ -23,6 +23,7 @@ export const createColumns = (t) => [
             </Link></Tooltip>
         ),
         wrap: true,
+        sortable: true,
         width: '34%',
     },
     {
@@ -45,6 +46,6 @@ export const createColumns = (t) => [
         ),
         wrap: true,
         center: true,
-        width: "27%"
+        width: "22%"
     },
 ];

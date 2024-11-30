@@ -27,15 +27,15 @@ export const createColumns = (t) => [
                 />
             }
         </span>,
-    }, 
+    },
     {
         id: 'shippingAddress',
         name: t('table.columns.captions.shippingAddress'),
         selector: () => { },
         sortable: false,
-        width: '50%',
+        width: '45%',
         cell: props => <span className={'MCP-table-cell'}> {props.shippingAddress}</span>,
-    }, 
+    },
     {
         id: 'shippingAccountNumber',
         name: t('table.columns.captions.shippingAccountNumber'),
@@ -43,7 +43,7 @@ export const createColumns = (t) => [
         sortable: false,
         width: '25%',
         cell: props => <span className={'MCP-table-cell'}> {props.shippingAccountNumber}</span>,
-    }, 
+    },
     {
         id: 'shippingAccountName',
         name: t('table.columns.captions.shippingAccountName'),

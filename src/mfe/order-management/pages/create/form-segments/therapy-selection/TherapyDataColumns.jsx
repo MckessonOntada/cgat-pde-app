@@ -15,7 +15,7 @@ const getColorByStatus = (status) => {
 export const createColumns = (t, navigate) => [
     {
         id: 'id',
-        selector: () => {},
+        selector: () => { },
         width: "2%",
         sortable: false,
         cell: (props) => (
@@ -41,8 +41,8 @@ export const createColumns = (t, navigate) => [
     {
         id: 'therapyDescription',
         name: t('labels.therapyDescription'),
-        selector: () => {},
-        width: "16%",
+        selector: () => { },
+        width: "13%",
         sortable: true,
         cell: (props) => (
             <span className="MCP-table-cell" aria-label={t('labels.therapyDescription')}>
@@ -54,7 +54,7 @@ export const createColumns = (t, navigate) => [
         id: 'therapyNumber',
         name: t('labels.therapyNumber'),
         width: "8%",
-        selector: () => {},
+        selector: () => { },
         sortable: true,
         cell: (props) => (
             <span className="MCP-table-cell" aria-label={t('labels.therapyNumber')}>
@@ -65,8 +65,8 @@ export const createColumns = (t, navigate) => [
     {
         id: 'nationalDrugCode',
         name: t('table.columns.captions.nationalDrugCode'),
-        selector: () => {},
-        width: "8%",
+        selector: () => { },
+        width: "7%",
         sortable: true,
         cell: (props) => (
             <span className="MCP-table-cell" aria-label={t('table.columns.captions.nationalDrugCode')}>
@@ -77,7 +77,7 @@ export const createColumns = (t, navigate) => [
     {
         id: 'strength',
         name: t('table.columns.captions.strength'),
-        selector: () => {},
+        selector: () => { },
         width: "4%",
         sortable: true,
         cell: (props) => (
@@ -89,7 +89,7 @@ export const createColumns = (t, navigate) => [
     {
         id: 'dosage',
         name: t('table.columns.captions.dosage'),
-        selector: () => {},
+        selector: () => { },
         width: "4%",
         sortable: true,
         cell: (props) => (
@@ -101,8 +101,8 @@ export const createColumns = (t, navigate) => [
     {
         id: 'sellingUnitCode',
         name: t('table.columns.captions.sellingUnitCode'),
-        selector: () => {},
-        width: "8%",
+        selector: () => { },
+        width: "7%",
         sortable: true,
         cell: (props) => (
             <span className="MCP-table-cell" aria-label={t('table.columns.captions.sellingUnitCode')}>
@@ -113,8 +113,8 @@ export const createColumns = (t, navigate) => [
     {
         id: 'vendorName',
         name: t('table.columns.captions.vendorName'),
-        selector: () => {},
-        width: "8%",
+        selector: () => { },
+        width: "7%",
         sortable: true,
         cell: (props) => (
             <span className="MCP-table-cell" aria-label={t('table.columns.captions.vendorName')}>
@@ -125,7 +125,7 @@ export const createColumns = (t, navigate) => [
     {
         id: 'upcCode',
         name: t('table.columns.captions.upcCode'),
-        selector: () => {},
+        selector: () => { },
         width: "6%",
         sortable: true,
         cell: (props) => (
@@ -137,8 +137,8 @@ export const createColumns = (t, navigate) => [
     {
         id: 'dropshipIndicator',
         name: t('table.columns.captions.dropshipIndicator'),
-        width: "8%",
-        selector: () => {},
+        width: "7%",
+        selector: () => { },
         sortable: false,
         cell: (props) => (
             <Badge
@@ -150,7 +150,7 @@ export const createColumns = (t, navigate) => [
     {
         id: 'status',
         name: t('table.columns.captions.status'),
-        selector: () => {},
+        selector: () => { },
         width: "4%",
         sortable: false,
         cell: (props) => (
@@ -163,8 +163,8 @@ export const createColumns = (t, navigate) => [
     {
         id: 'baseUnitsOfMeasure',
         name: t('table.columns.captions.baseUnitsOfMeasure'),
-        selector: () => {},
-        width: "8%",
+        selector: () => { },
+        width: "7%",
         sortable: true,
         cell: (props) => (
             <span className="MCP-table-cell" aria-label={t('table.columns.captions.baseUnitsOfMeasure')}>
@@ -175,7 +175,7 @@ export const createColumns = (t, navigate) => [
     {
         id: 'cgatIdentifier',
         name: t('table.columns.captions.cgatIdentifier'),
-        selector: () => {},
+        selector: () => { },
         width: "4%",
         sortable: false,
         cell: (props) => (
@@ -188,7 +188,7 @@ export const createColumns = (t, navigate) => [
     {
         id: 'salesOrganization',
         name: t('table.columns.captions.salesOrganization'),
-        selector: () => {},
+        selector: () => { },
         sortable: true,
         cell: (props) => (
             <span className="MCP-table-cell" aria-label={t('table.columns.captions.salesOrganization')}>
@@ -199,7 +199,7 @@ export const createColumns = (t, navigate) => [
     {
         id: 'cgatTherapyType',
         name: t('table.columns.captions.cgatTherapyType'),
-        selector: () => {},
+        selector: () => { },
         sortable: true,
         cell: (props) => (
             <span className="MCP-table-cell" aria-label={t('table.columns.captions.cgatTherapyType')}>
@@ -210,7 +210,7 @@ export const createColumns = (t, navigate) => [
     {
         id: 'productLevelPricing',
         name: t('table.columns.captions.productLevelPricing'),
-        selector: () => {},
+        selector: () => { },
         sortable: false,
         cell: (props) => (
             <Badge
@@ -222,7 +222,7 @@ export const createColumns = (t, navigate) => [
     {
         id: 'minimumOrderQuantity',
         name: t('table.columns.captions.minimumOrderQuantity'),
-        selector: () => {},
+        selector: () => { },
         sortable: true,
         cell: (props) => (
             <span className="MCP-table-cell" aria-label={t('table.columns.captions.minimumOrderQuantity')}>
@@ -233,7 +233,7 @@ export const createColumns = (t, navigate) => [
     {
         id: 'actions',
         name: t('table.columns.captions.actions'),
-        selector: () => {},
+        selector: () => { },
         sortable: false,
         cell: (props) => (
             <DropdownMenu

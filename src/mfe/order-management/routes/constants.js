@@ -1,7 +1,8 @@
 export const routesConfig = {
     index: "",
-    resume: "create-new",
-    createNew: "create-new",
+    resume: "create-order",
+    createOrder: "create-order",
+    editOrder: ':orderId/edit-order',
     reviewOrder: 'review-order',
     summary: 'summary',
     status: 'status',
