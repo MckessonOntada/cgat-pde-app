@@ -4,11 +4,12 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import DetailsView from '../../components/DetailsView';
 import AccountsList from '@src/components/Accounts/AccountsList';
+import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
 import './ViewOrg.scss';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { RoutePaths } from '@src/routes/constants';
-import { Button, Loader, Alert } from '@mckesson/mcp-component-library';
+import { Button, Loader, Alert, Stepper } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import { PATHS as InternalPaths } from '../../routes/constants';
@@ -76,7 +77,7 @@ export default function ViewOrganization() {
   });
 
   const addNewAccountsClick = () => {
-    const payload = selectedAccounts.map((account) => account.id);
+    const payload = selectedAccounts?.map((account) => account.id);
     mutate(
       {
         payload
@@ -115,12 +116,28 @@ export default function ViewOrganization() {
   return (
     <div className="viewOrg-container">
       {isLoading && <Loader type={'screen'} />}
-      <div className="back-navigation py2 capitalize" onClick={goBack}>
+      <div className="back-navigation py2 capitalize" onClick={goBack} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
         <MdOutlineKeyboardArrowLeft size="24px" />
         <p>{t('orgManagement.back.organization')}</p>
       </div>
-      <ModuleHeader heading={<p className="primaryHeading">{t('orgManagement.create_org.org-details')}</p>} />
-      {data && (
+      {!addNewAccounts && <ModuleHeader heading={<p className="primaryHeading">{t('orgManagement.create_org.org-details')}</p>} />}
+      {!isView && (
+        <div className="stepper">
+          <Stepper
+            activeIndex={2}
+            dividerText="of"
+            stepHeaders={[
+              {
+                label: t('orgManagement.stepper.option.org_details')
+              },
+              {
+                label: t('orgManagement.stepper.option.acct_details')
+              }
+            ]}
+          />
+        </div>
+      )}
+      {isView && !addNewAccounts && data && (
         <div className="details-view-container">
           <DetailsView data={data} onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: data }, true)} />
         </div>
@@ -130,8 +147,8 @@ export default function ViewOrganization() {
         controls={
           !addNewAccounts && (
             <div className="controls">
-              <Button Icon={add_circle_bold} variant="secondary" className="button-icon" onClick={() => setAddNewAccounts(true)} size={'md'}>
-                {t(isView ? 'orgManagement.update.account' : 'orgManagement.add.viewsummary')}
+              <Button Icon={EditPencil} variant="tertiary" className="button-icon" onClick={() => setAddNewAccounts(true)} size={'md'}>
+                {t(isView ? 'orgManagement.table.action.edit' : 'orgManagement.add.account')}
               </Button>
             </div>
           )
@@ -148,7 +165,6 @@ export default function ViewOrganization() {
         onRemoveAccount={onRemoveAccount}
         addNewAccounts={addNewAccounts}
       />
-
       {addNewAccounts && (
         <div className="btn-box">
           <Button variant="secondary" onClick={handleCancel}>

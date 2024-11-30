@@ -16,6 +16,7 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
+import CommonUtils from '@src/util/CommonUtils.js';
 
 function getbgColorOnRole(Role) {
   switch (Role) {
@@ -33,7 +34,7 @@ const UserDetail = () => {
   const { userId } = useParams();
   const [searchText, setSearchText] = useState('');
   const [selectedAccounts, setSelectedAccounts] = useState([]);
-
+  const [alertDescription, setAlertDescription] = useState('');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const location = useLocation();
   const isSuccess = location.state?.isSuccess || false;
@@ -55,18 +56,14 @@ const UserDetail = () => {
     },
     refetchOnWindowFocus: false
   });
-  //  console.log("data", isLoading, isError, data)
 
   useEffect(() => {
     if (isSuccess) {
       setIsAlertVisible(true);
-
-      // Set a timeout to auto-close the alert after 10 seconds
+      setAlertDescription(`${location.state.recCount} new accounts have been successfully linked to this user.`);
       const timer = setTimeout(() => {
         handleAlertClose;
-      }, 10000); //This should be as same as duration that mentioed in Alert
-
-      // Clear timeout if component unmounts or if isSuccess changes
+      }, 10000);
       return () => clearTimeout(timer);
     }
   }, [isSuccess, location.pathname, location.state, navigate]);
@@ -88,9 +85,7 @@ const UserDetail = () => {
   const handleSearchChange = (inputValue) => {
     setSearchText(inputValue);
   };
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-GB').replace(/\//g, '-');
-  };
+
   const formatPhoneNumber = (phoneNumber) => {
     if (!phoneNumber) return '';
     const cleaned = phoneNumber.replace(/\D/g, '');
@@ -143,7 +138,8 @@ const UserDetail = () => {
             </div>
             <div className="user-status">
               <span className="view_label">Last Updated On:</span>
-              <span className="label-text"> {data?.createdAt ? formatDate(data.updatedAt) : 'N/A'}</span>
+
+              <span className="label-text"> {data?.updatedAt ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM-DD-YYYY') : data?.createdAt ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY') : 'N/A'}</span>
               <Switch handleToggle={() => {}} id="id" disabled={!data?.isActive} label={data?.isActive ? 'Active' : ''} labelPosition="right" name="Toggle" size="lg" value />
             </div>
           </div>
@@ -220,15 +216,15 @@ const UserDetail = () => {
             heading={<p className="primaryHeading">{t('userManagement.header.view.linked_accounts')}</p>}
             controls={
               <div className="controls">
-                <Button Icon={add_circle_bold} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`../${PATHS.addAccounts}/${userId}`, { state: { isEdit: true } })}>
-                  {t('userManagement.button.add_accounts')}
+                <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`../${PATHS.addAccounts}/${userId}`, { state: { isEdit: true } })}>
+                  {t('userManagement.button.edit')}
                 </Button>
               </div>
             }
           />
           {isSuccess && isAlertVisible && (
             <Alert
-              description="new accounts have been successfully linked to this user" //Number should be dynamic --To Do
+              description={alertDescription} //Number should be dynamic --To Do
               onClose={handleAlertClose}
               type="success"
               duration={10000}

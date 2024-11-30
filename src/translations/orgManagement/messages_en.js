@@ -4,6 +4,9 @@ export const OrgManagementEN = {
   'orgManagement.clearFilter.label': 'clear filters',
   'orgManagement.searchFilter.label': 'Search By Name or Email',
 
+  'orgManagement.stepper.option.org_details': 'Organization Details',
+  'orgManagement.stepper.option.acct_details': 'Link Accounts',
+
   'orgManagement.table.name': 'Organization Name',
   'orgManagement.table.id': 'Organization ID',
   'orgManagement.table.location': 'Location',

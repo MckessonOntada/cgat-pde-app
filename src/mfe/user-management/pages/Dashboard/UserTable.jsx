@@ -12,6 +12,7 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
+import CommonUtils from '@src/util/CommonUtils';
 
 function getbgColorOnRole(Role) {
   switch (Role) {
@@ -71,13 +72,10 @@ function UserTable({ selectableRows = false }) {
     setCurrentPage(newPage);
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-GB').replace(/\//g, '-');
-  };
-
   const handleOnSortIconClick = (selectedColumn, sortDirection) => {
     applySort({ sortBy: selectedColumn.sortName, sortOrder: sortDirection })
   };
+
 
   const columns = [
     {
@@ -111,16 +109,7 @@ function UserTable({ selectableRows = false }) {
       wrap: true,
       cell: (props) => (
         <div className="cellEllipses">
-          {activeTab === 'PENDING REQUESTS' ? (
-            `${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`
-          ) : (
-            <Link
-              to={`${props.id}`} // dynamically constructs the URL with userId
-              className="MCP-table-link"
-            >
-              {`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`}
-            </Link>
-          )}
+             {`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`}
         </div>
       )
     },
@@ -161,7 +150,7 @@ function UserTable({ selectableRows = false }) {
       selector: 'date_added',
       sortable: true,
       wrap: true,
-      cell: (props) => formatDate(props.updatedAt)
+      cell: (props) => (props.updatedAt ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM-DD-YYYY') : props.createdAt ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY') : 'N/A')
     },
     {
       id: 'action',
@@ -192,7 +181,6 @@ function UserTable({ selectableRows = false }) {
         data={data}
         onSortIconClick={handleOnSortIconClick}
         handleChangePage={handleChangePage}
-        // selectableRows={selectableRows}
         selectableRowsHeader={false}
         currentPage={filterConfig.pageNumber}
         totalPageCount={paginationConfig.totalPages}
@@ -203,9 +191,7 @@ function UserTable({ selectableRows = false }) {
         stickyHeader
         responsive
         pagination={true}
-        // handleRowSelected={handleRowSelected}
-        // selectedRowId={selectedRows[0]}
-        noDataComponent={isError ? <div>Something went wrong! Please try again</div> : <EmptyDataTable image={EmptyDataImage} heading={t('orgManagement.add.label')} description={t('orgManagement.empty_table.description')} />}
+        noDataComponent={isError ? <div>Something went wrong! Please try again</div> : <EmptyDataTable image={EmptyDataImage} heading={t('userManagement.add.label')} description={t('userManagement.empty_table.description')} />}
       />
     </div>
   );

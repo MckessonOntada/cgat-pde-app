@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Formik, Form } from 'formik';
-import { Loader, Alert } from '@mckesson/mcp-component-library';
-import { Button } from '@mckesson/mcp-component-library';
+import { Loader, Alert, Stepper, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import OrgDetailsFormSegment from './CreateOrgForm';
@@ -69,8 +68,12 @@ const CreateOrganization = () => {
   };
 
   const onOrgCreateSuccess = (res) => {
-    const path = PATHS.viewOrg.replace(':orgId', res.data.id);
-    navigate(`../${path}`);
+    if (location.state) {
+      navigate(-1);
+    } else {
+      const path = PATHS.viewOrg.replace(':orgId', res.data.id);
+      navigate(`../${path}`);
+    }
   };
 
   const onOrgCreateError = (error) => {
@@ -106,11 +109,25 @@ const CreateOrganization = () => {
   return (
     <div className="main-container">
       {isLoading && <Loader type={'screen'} />}
-      <div className="back-navigation py2 capitalize" onClick={goBack}>
+      <div className="back-navigation py2 capitalize" onClick={goBack} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
         <MdOutlineKeyboardArrowLeft size="24px" />
         <p>{t('orgManagement.back.organization')}</p>
       </div>
       {isAlertVisible && <Alert description="Error while creating organization" onClose={() => {}} showTitle title="Something went wrong...!" type="error" />}
+      <div className="stepper">
+        <Stepper
+          activeIndex={1}
+          dividerText="of"
+          stepHeaders={[
+            {
+              label: t('orgManagement.stepper.option.org_details')
+            },
+            {
+              label: t('orgManagement.stepper.option.acct_details')
+            }
+          ]}
+        />
+      </div>
       <Formik
         enableReinitialize
         initialValues={organizationData}
@@ -135,7 +152,7 @@ const CreateOrganization = () => {
                 {t('orgManagement.button.back')}
               </Button>
               <Button type="submit" size={'md'}>
-                {t('orgManagement.button.next')}
+                {t('orgManagement.button.save')}
               </Button>
             </div>
           </Form>
