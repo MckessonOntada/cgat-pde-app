@@ -119,12 +119,12 @@ export default function AccountsList({
         id: 'action',
         center: true,
         name: t('account.action'),
-        cell: (row) => <Actions row={row} />,
+        cell: (row) => <Actions row={row} userId={userId} practiceId={practiceId} refetch={refetch} />,
         width: '10%',
         omit: omitColumns.includes('action')
       }
     ],
-    [omitColumns]
+    [omitColumns, refetch]
   );
 
   const handleChangePage = (e, newPage) => {

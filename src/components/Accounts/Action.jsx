@@ -6,29 +6,38 @@ import { useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import AuthUtils from '@src/util/AuthUtils';
+import { serializeParams } from '@src/util/ApiUtils';
 
-export default function Actions({ row }) {
+export default function Actions({ row, userId, practiceId, refetch }) {
   const { t } = useTranslate();
-
-  const practiceId = AuthUtils.getPracticeId() ?? 1;
-  const handleUnlinkAccount = async (accid) => {
-    const accid1 = String(accid).trim();
-    console.log('accid', practiceId);
-    const apiUrl = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts/${accid1}`;
-    const res = await HttpResourceService.callRest(apiUrl, httpVerb.DELETE, {});
-    return res;
+  const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const requestParams = {
+    userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
 
-  const { mutate } = useMutation({
-    mutationFn: handleUnlinkAccount,
-    onSuccess: (response) => {
-      console.log('Account Unlinked successfully:', response);
-      alert('Account Unlinked successfully:');
+  const handleUnlinkAccount = (accid) => {
+    mutate({ accid }); // Pass accid as an object
+  };
+
+  const { mutate, isLoading, isError, data } = useMutation(
+    async ({ accid }) => {
+      const apiUrl = userId ? `${ApiRoutes.USERS()}/${userId}/accounts/${accid}?${serializeParams(requestParams)}` : `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts/${accid}`;
+
+      const res = await HttpResourceService.callRest(apiUrl, httpVerb.DELETE, {});
+      return res;
     },
-    onError: (error) => {
-      alert('Failed to Unlinked Account', error);
+    {
+      onSuccess: (response) => {
+        console.log('Account Unlinked successfully:', response);
+        if (refetch) {
+          refetch(); // Reload the account list
+        }
+      },
+      onError: (error) => {
+        console.error('Failed to unlink account:', error);
+      }
     }
-  });
+  );
 
   return (
     <Button Icon={DeleteIcon} variant="tertiary" size="md" onClick={() => handleUnlinkAccount(row.id)}>
