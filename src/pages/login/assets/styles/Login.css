@@ -4,3 +4,9 @@
     max-height: 40px;
     max-width: 160px;
 }
+
+.signup-link{
+    text-decoration: none;
+    color: #4646aa !important;
+    font-weight: 500 !important;
+}

@@ -27,8 +27,7 @@ export const OrgManagementEN = {
   'orgManagement.button.inactivate': 'INACTIVE',
 
   'orgManagement.create_org': 'Create Organization',
-  'orgManagement.create_org.details_to_create_org':
-    'Please check the details to create a organization Organization',
+  'orgManagement.create_org.details_to_create_org': 'Please check the details to create a organization Organization',
   'orgManagement.create_org.org-details': 'Organization Details',
   'orgManagement.create_org.contact_details': 'Contact Details',
   'orgManagement.create_org.address_details': 'Address Details',
@@ -54,28 +53,20 @@ export const OrgManagementEN = {
   'orgManagement.create_org.validation.city_required': 'City is required',
   'orgManagement.create_org.validation.zip_required': 'Zip is required',
   'orgManagement.create_org.validation.state_required': 'State is required',
-  'orgManagement.create_org.validation.email_required':
-    'Email ID is required and must be in a valid format.',
+  'orgManagement.create_org.validation.email_required': 'Email ID is required and must be in a valid format.',
   'orgManagement.create_org.validation.invalid_email': 'Invalid Email',
-  'orgManagement.create_org.validation.phone_no_required':
-    'Phone Number is required and must be in a valid format.',
+  'orgManagement.create_org.validation.phone_no_required': 'Phone Number is required and must be in a valid format.',
   'orgManagement.create_org.validation.fax_required': 'Fax is required',
   'orgManagement.create_org.option.please_select': 'Please Select',
 
   'orgManagement.create_org.validation.org_name_invalid': 'Invalid Organization name',
-  'orgManagement.create_org.validation.org_name_max':
-    'Organization name can be maximum of 100 characters',
-  'orgManagement.create_org.validation.contact_person_first_name_invalid':
-    'Special characters not allowed',
-  'orgManagement.create_org.validation.first_name_max':
-    'First name can be a maximum of 50 characters',
+  'orgManagement.create_org.validation.org_name_max': 'Organization name can be maximum of 100 characters',
+  'orgManagement.create_org.validation.contact_person_first_name_invalid': 'Special characters not allowed',
+  'orgManagement.create_org.validation.first_name_max': 'First name can be a maximum of 50 characters',
   'orgManagement.create_org.validation.middle_name_invalid': 'Special characters not allowed',
-  'orgManagement.create_org.validation.middle_name_max':
-    'Middle name can be a maximum of 50 characters.',
-  'orgManagement.create_org.validation.contact_person_last_name_invalid':
-    'Special characters not allowed',
-  'orgManagement.create_org.validation.last_name_max':
-    'Last name can be a maximum of 50 characters',
+  'orgManagement.create_org.validation.middle_name_max': 'Middle name can be a maximum of 50 characters.',
+  'orgManagement.create_org.validation.contact_person_last_name_invalid': 'Special characters not allowed',
+  'orgManagement.create_org.validation.last_name_max': 'Last name can be a maximum of 50 characters',
   'orgManagement.create_org.validation.address_1_invalid': 'Invalid Address',
   'orgManagement.create_org.validation.address_1_max': 'Address can be a maximum of 250 characters',
   'orgManagement.create_org.validation.address_2_invalid': 'Invalid Address',
@@ -96,7 +87,9 @@ export const OrgManagementEN = {
   'orgManagement.org_detail.address': 'Organization Address',
 
   'orgManagement.org_list': 'Organization Listing',
-  'orgManagement.add.account': 'ADD ACCOUNT',
+  'orgManagement.add.account': 'ADD ACCOUNTS',
+  'orgManagement.update.account': 'UPDATE ACCOUNTS',
+  'orgManagement.add.viewsummary': 'VIEW SUMMARY',
 
   'orgManagement.results': 'results',
   'orgManagement.per_page': 'per page',
@@ -104,8 +97,7 @@ export const OrgManagementEN = {
   'orgManagement.link': 'Linked Accounts',
   'orgManagement.select_account': 'Please select accounts to incorporate into the organization.',
 
-  'orgManagement.empty_table.description':
-    'You need to add Organization to see data in this table.',
+  'orgManagement.empty_table.description': 'You need to add Organization to see data in this table.',
   'orgManagement.role.headingManageOrder': 'Manage Roles',
   'orgManagement.role.headingPermissionDetails': 'Permission Details',
   'orgManagement.role.labelAddRole': 'Add Role',

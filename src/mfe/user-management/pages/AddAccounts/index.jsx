@@ -122,7 +122,7 @@ const AddAccounts = () => {
             showSelectedAccounts
             omitColumns={['action', 'cgatIdentifier', 'address']}
             practiceId={practiceId}
-            userId={`${userId}`}
+            userId={userId}
             addNewAccounts={true}
           />
         </div>

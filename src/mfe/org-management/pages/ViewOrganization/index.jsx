@@ -1,14 +1,14 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import DetailsView from '../../components/DetailsView';
 import AccountsList from '@src/components/Accounts/AccountsList';
 import './ViewOrg.scss';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { RoutePaths } from '@src/routes/constants';
-import { Button, Loader } from '@mckesson/mcp-component-library';
+import { Button, Loader, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import { PATHS as InternalPaths } from '../../routes/constants';
@@ -16,15 +16,19 @@ import ModuleHeader from '@src/components/module-header';
 
 export default function ViewOrganization() {
   // Call api to get linked accounts => /practice/{practiceId}/accounts
-
+  const location = useLocation();
+  const isView = location.state?.isView || false;
+  const [isRemoveClicked, setIsRemoveClicked] = useState();
   const { orgId } = useParams();
 
   const navigate = useNavigate();
   const { t } = useTranslate();
-
-  const [addNewAccounts, setAddNewAccounts] = useState(false);
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [updateState, setUpdateState] = useState({ isSuccess: false });
+  const [alertDescription, setAlertDescription] = useState('');
+  const [addNewAccounts, setAddNewAccounts] = useState(!isView);
   const [selectedAccounts, setSelectedAccounts] = useState([]);
-
+  const selectedCount = selectedAccounts?.length || 0;
   // Fetch practice details
   const { isLoading, data, isError } = useQuery({
     queryKey: [`practices/${orgId}`],
@@ -42,6 +46,22 @@ export default function ViewOrganization() {
 
   const goBack = () => {
     navigate(RoutePaths.pathOrgManagement);
+  };
+
+  useEffect(() => {
+    if (updateState.isSuccess) {
+      setIsAlertVisible(true);
+      setAlertDescription(`${updateState.recCount} new acounts has been successfully added to the organziation`);
+      const timer = setTimeout(() => {
+        handleAlertClose;
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [updateState.isSuccess, location.pathname, location.state]);
+
+  const handleAlertClose = () => {
+    setIsAlertVisible(false);
+    setUpdateState({ isSuccess: false });
   };
 
   const {
@@ -64,8 +84,12 @@ export default function ViewOrganization() {
       {
         onSuccess: (response) => {
           console.log('Accounts updated successfully:', response);
-          //alert('Accounts updated successfully');
-          handleCancel();
+          if (!isView) {
+            navigate(RoutePaths.pathOrgManagement, { state: { isSuccess: true } });
+          } else {
+            setUpdateState({ isSuccess: isView ? true : false, recCount: selectedCount });
+            handleCancel();
+          }
         },
         onError: (error) => {
           console.log('Failed to add accounts:', error);
@@ -87,6 +111,7 @@ export default function ViewOrganization() {
     [selectedAccounts, setSelectedAccounts]
   );
 
+  console.log('selectedAccounts', selectedAccounts);
   return (
     <div className="viewOrg-container">
       {isLoading && <Loader type={'screen'} />}
@@ -94,28 +119,25 @@ export default function ViewOrganization() {
         <MdOutlineKeyboardArrowLeft size="24px" />
         <p>{t('orgManagement.back.organization')}</p>
       </div>
-
       <ModuleHeader heading={<p className="primaryHeading">{t('orgManagement.create_org.org-details')}</p>} />
-
       {data && (
         <div className="details-view-container">
           <DetailsView data={data} onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: data }, true)} />
         </div>
       )}
-
       <ModuleHeader
         heading={<p className="primaryHeading">{addNewAccounts ? t('orgManagement.select_account') : t('orgManagement.link')}</p>}
         controls={
           !addNewAccounts && (
             <div className="controls">
               <Button Icon={add_circle_bold} variant="secondary" className="button-icon" onClick={() => setAddNewAccounts(true)} size={'md'}>
-                {t('orgManagement.add.account')}
+                {t(isView ? 'orgManagement.update.account' : 'orgManagement.add.viewsummary')}
               </Button>
             </div>
           )
         }
       />
-
+      {updateState.isSuccess && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
       <AccountsList
         showSelectedAccounts={addNewAccounts}
         omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']}
@@ -132,7 +154,7 @@ export default function ViewOrganization() {
           <Button variant="secondary" onClick={handleCancel}>
             {t('orgManagement.button.cancel')}
           </Button>
-          <Button onClick={addNewAccountsClick}>{t('orgManagement.add.account')}</Button>
+          <Button onClick={addNewAccountsClick}>{t(isView ? 'orgManagement.add.account' : selectedCount > 0 ? 'orgManagement.create_org' : 'orgManagement.add.viewsummary')}</Button>
         </div>
       )}
     </div>

@@ -13,16 +13,11 @@ export default function Actions({ row }) {
 
   const handleClick = (id) => {
     const path = PATHS.viewOrg.replace(':orgId', id);
-    navigate(path);
+    navigate(path, { state: { isView: true } });
   };
 
   return (
-    <Button
-      Icon={View}
-      variant="tertiary"
-      size="md"
-      className="button-icon"
-      onClick={() => handleClick(row.id)}>
+    <Button Icon={View} variant="tertiary" size="md" className="button-icon" onClick={() => handleClick(row.id)}>
       {t('orgManagement.table.action.view')}
     </Button>
   );

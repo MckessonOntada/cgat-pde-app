@@ -46,9 +46,18 @@ const Login = () => {
         issuer,
         scopes
       },
+      helpLinks: {
+        custom: [
+          {
+            text: 'Sign Up',
+            href: '/signup',
+            className: 'signup-link'
+          }
+        ]
+      },
       features: {
         showPasswordToggleOnSignInPage: true,
-        registration: false,
+        registration: true,
         rememberMe: true
       },
       i18n: {
@@ -118,13 +127,10 @@ const Login = () => {
     const checkUserRole = async (response) => {
       try {
         const accessToken = response.tokens.accessToken;
-        sessionStorage.setItem(
-          'APP_AUTH_TOKEN',
-          `${accessToken.tokenType} ${accessToken.accessToken}`
-        );
+        sessionStorage.setItem('APP_AUTH_TOKEN', `${accessToken.tokenType} ${accessToken.accessToken}`);
 
         const decodedResponse = await CommonService.getJwtDecode();
-        console.log("decodedResponse", decodedResponse)
+        console.log('decodedResponse', decodedResponse);
         const roles = decodedResponse['roles'];
         const username = decodedResponse['userName'];
         const userId = decodedResponse['userId'];
