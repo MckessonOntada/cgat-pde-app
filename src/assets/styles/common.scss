@@ -63,6 +63,21 @@
     justify-content: flex-end;
   }
 }
+.filter-panel-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-03);
+
+  .filter-main-search-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-03);
+  }
+}
 
 .MCP-panel-container {
   display: flex;

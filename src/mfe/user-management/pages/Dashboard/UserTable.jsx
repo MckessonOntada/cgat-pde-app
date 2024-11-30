@@ -12,6 +12,7 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
+import CommonUtils from '@src/util/CommonUtils';
 
 function getbgColorOnRole(Role) {
   switch (Role) {
@@ -30,20 +31,7 @@ function UserTable({ selectableRows = false }) {
   const [selectedRows, setSelectedRows] = useState(null);
 
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const {
-    isLoading,
-    isError,
-    data,
-    activeTab,
-    pagination: {
-      currentPage,
-      totalPageCount,
-      totalRecords,
-      recordsPerPage,
-      update: { setCurrentPage }
-    },
-    refetchUsersData
-  } = useUser();
+  const { isLoading, isError, data, activeTab, filterConfig, paginationConfig, applySort, setFilterConfig } = useUser();
 
   const handleRowSelected = ({ selectedRows }) => {
     setSelectedRows(selectedRows);
@@ -75,8 +63,8 @@ function UserTable({ selectableRows = false }) {
     setCurrentPage(newPage);
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-GB').replace(/\//g, '-');
+  const handleOnSortIconClick = (selectedColumn, sortDirection) => {
+    applySort({ sortBy: selectedColumn.sortName, sortOrder: sortDirection });
   };
 
   const columns = [
@@ -107,6 +95,7 @@ function UserTable({ selectableRows = false }) {
       name: t('userManagement.table.name'),
       selector: (row) => `${row.name.firstName} ${row.name.lastName}`,
       sortable: true,
+      sortName: 'first_name',
       wrap: true,
       cell: (props) => (
         <div className="cellEllipses">
@@ -115,7 +104,7 @@ function UserTable({ selectableRows = false }) {
           ) : (
             <Link
               to={`${props.id}`} // dynamically constructs the URL with userId
-              style={{ color: '#007bff', fontWeight: '600' }}>
+              className="MCP-table-link">
               {`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`}
             </Link>
           )}
@@ -159,7 +148,7 @@ function UserTable({ selectableRows = false }) {
       selector: 'date_added',
       sortable: true,
       wrap: true,
-      cell: (props) => formatDate(props.updatedAt)
+      cell: (props) => (props.updatedAt ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM-DD-YYYY') : props.createdAt ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY') : 'N/A')
     },
     {
       id: 'action',
@@ -188,22 +177,19 @@ function UserTable({ selectableRows = false }) {
         type={'normal'}
         columns={columns}
         data={data}
-        onSortIconClick={(value) => console.log(value)}
+        onSortIconClick={handleOnSortIconClick}
         handleChangePage={handleChangePage}
-        // selectableRows={selectableRows}
         selectableRowsHeader={false}
-        currentPage={currentPage}
-        totalPageCount={totalPageCount}
-        totalRocords={totalRecords}
-        recordsPerPage={recordsPerPage}
+        currentPage={filterConfig.pageNumber}
+        totalPageCount={paginationConfig.totalPages}
+        totalRocords={paginationConfig.totalElements}
+        recordsPerPage={paginationConfig.pageSize}
         paginationTotalRecorsMessage={t('userManagement.results')}
         paginationRecordsPerPageMessage={t('userManagement.per_page')}
         stickyHeader
         responsive
         pagination={true}
-        // handleRowSelected={handleRowSelected}
-        // selectedRowId={selectedRows[0]}
-        noDataComponent={isError ? <div>Something went wrong! Please try again</div> : <EmptyDataTable image={EmptyDataImage} heading={t('orgManagement.add.label')} description={t('orgManagement.empty_table.description')} />}
+        noDataComponent={isError ? <div>Something went wrong! Please try again</div> : <EmptyDataTable image={EmptyDataImage} heading={t('userManagement.add.label')} description={t('userManagement.empty_table.description')} />}
       />
     </div>
   );

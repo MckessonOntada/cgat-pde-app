@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Formik, Form } from 'formik';
-import { Loader, Alert } from '@mckesson/mcp-component-library';
-import { Button } from '@mckesson/mcp-component-library';
+import { Loader, Alert, Stepper, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import OrgDetailsFormSegment from './CreateOrgForm';
@@ -31,9 +30,9 @@ const CreateOrganization = () => {
 
   useEffect(() => {
     if (orgId > 0 && location.state) {
-      setOrganizationData(location.state)
+      setOrganizationData(location.state);
     }
-  }, [])
+  }, []);
 
   const { t } = useTranslate();
   const navigate = useNavigate();
@@ -46,14 +45,9 @@ const CreateOrganization = () => {
 
   const createOrg = async (orgData) => {
     // Perform the mutation logic, e.g., make an API request to update the user
-    const res = await HttpResourceService.callRest(
-      `${ApiRoutes.PUBLIC_ORGANIZATIONS}`,
-      httpVerb.POST,
-      orgData,
-      {
-        'Content-Type': 'multipart/form-data'
-      }
-    );
+    const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}`, httpVerb.POST, orgData, {
+      'Content-Type': 'multipart/form-data'
+    });
 
     if (![201, 200].includes(res.status)) {
       throw new Error('Failed to create user');
@@ -63,28 +57,27 @@ const CreateOrganization = () => {
   };
 
   const updateOrgDetails = async (payload) => {
-    const res = await HttpResourceService.callRest(
-      `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${orgId}`,
-      httpVerb.PUT,
-      payload,
-      {
-        'Content-Type': 'multipart/form-data'
-      }
-    );
+    const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}/${orgId}`, httpVerb.PUT, payload, {
+      'Content-Type': 'multipart/form-data'
+    });
 
     if (![201, 200].includes(res.status)) {
       throw new Error('Failed to create user');
     }
     return res;
-  }
+  };
 
   const onOrgCreateSuccess = (res) => {
-    const path = PATHS.viewOrg.replace(':orgId', res.data.id);
-    navigate(`../${path}`);
+    if (location.state) {
+      navigate(-1);
+    } else {
+      const path = PATHS.viewOrg.replace(':orgId', res.data.id);
+      navigate(`../${path}`);
+    }
   };
 
   const onOrgCreateError = (error) => {
-    setIsAlertVisible(true)
+    setIsAlertVisible(true);
   };
 
   // Fetch data from server
@@ -116,17 +109,25 @@ const CreateOrganization = () => {
   return (
     <div className="main-container">
       {isLoading && <Loader type={'screen'} />}
-      <div className="back-navigation py2 capitalize" onClick={goBack}>
+      <div className="back-navigation py2 capitalize" onClick={goBack} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
         <MdOutlineKeyboardArrowLeft size="24px" />
         <p>{t('orgManagement.back.organization')}</p>
       </div>
-      {isAlertVisible && <Alert
-        description="Error while creating organization"
-        onClose={() => { }}
-        showTitle
-        title="Something went wrong...!"
-        type="error"
-      />}
+      {isAlertVisible && <Alert description="Error while creating organization" onClose={() => {}} showTitle title="Something went wrong...!" type="error" />}
+      <div className="stepper">
+        <Stepper
+          activeIndex={1}
+          dividerText="of"
+          stepHeaders={[
+            {
+              label: t('orgManagement.stepper.option.org_details')
+            },
+            {
+              label: t('orgManagement.stepper.option.acct_details')
+            }
+          ]}
+        />
+      </div>
       <Formik
         enableReinitialize
         initialValues={organizationData}
@@ -141,9 +142,7 @@ const CreateOrganization = () => {
           <Form>
             <div className="container-box">
               <div className="headingBox">
-                <p className="font-bold-title-s">
-                  Please complete the form to create a new organization
-                </p>
+                <p className="font-bold-title-s">Please complete the form to create a new organization</p>
               </div>
               <OrgDetailsFormSegment formik={formik} />
             </div>

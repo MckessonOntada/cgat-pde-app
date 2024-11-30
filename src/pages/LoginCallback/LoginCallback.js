@@ -4,7 +4,7 @@ import CommonService from '../../api/commonService/CommonService';
 import CommonUtils from '@src/util/CommonUtils';
 import AuthService from '../../api/authService/AuthService';
 import { Loader, Button } from '@mckesson/mcp-component-library';
-import ErrorComponent from '../../components/app/error/ErrorComponent';
+import ErrorComponent from '../../components/error/ErrorComponent';
 import useFetchQueryRetry from '@src/hooks/useFetchQueryRetry';
 
 const LoginCallback = () => {
@@ -18,7 +18,7 @@ const LoginCallback = () => {
 
   const { refetch: onPostUserLogin } = useFetchQueryRetry(
     [`postUserLogin`],
-    () => { /* Post login */},
+    () => { /* Post login */ },
     {
       enabled: false,
       retry: 5

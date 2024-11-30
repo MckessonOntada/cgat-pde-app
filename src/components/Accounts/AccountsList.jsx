@@ -11,7 +11,6 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
-import AuthUtils from '@src/util/AuthUtils';
 import { serializeParams } from '@src/util/ApiUtils';
 
 const RECORDS_PER_PAGE = 8;
@@ -54,16 +53,18 @@ export default function AccountsList({
     queryKey: ['accounts', practiceId],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(`${apiUrl}`, httpVerb.GET, {});
-
-      console.log('res', res);
       return res.data;
     },
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
   });
-  // console.log('Account-Data:', data);
+
   useEffect(() => {
-    refetch();
-  }, [addNewAccounts, userId]);
+    if (typeof setSelectedRows === 'function') {
+      setSelectedRows(data?.content);
+      refetch();
+    }
+  }, [addNewAccounts, userId, currentPage]);
 
   const columns = useMemo(() => {
     const _columns = [
@@ -118,15 +119,15 @@ export default function AccountsList({
         id: 'action',
         center: true,
         name: t('account.action'),
-        cell: (row) => <Actions row={row} />,
+        cell: (row) => <Actions row={row} userId={userId} practiceId={practiceId} refetch={refetch} />,
         width: '10%',
         omit: omitColumns.includes('action')
       }
     ];
-    if (selectableRows) {
+    if (selectableRows && data?.content?.length > 0) {
       _columns.unshift({
         id: 'checkbox',
-        name: (
+        name: data.content.length > 0 && (
           <CheckboxGroup
             id={'default'}
             caption=""
@@ -134,9 +135,9 @@ export default function AccountsList({
               {
                 onChange: (event) => {
                   if (event.target.checked) {
-                    setSelectedRows([]);
-                  } else {
                     setSelectedRows(data.content);
+                  } else {
+                    setSelectedRows([]);
                   }
                 },
                 value: '',
@@ -157,12 +158,12 @@ export default function AccountsList({
                     _selected = [...selectedRows];
                     _selected.push(row);
                   } else {
-                    _selected = selectedRows.filter((item) => item.id !== row.id);
+                    _selected = selectedRows?.filter((item) => item.id !== row.id);
                   }
                   setSelectedRows(_selected);
                 },
                 value: row.id,
-                isChecked: selectedRows.find((item) => item.id == row.id) ? true : false
+                isChecked: selectedRows?.find((item) => item.id == row.id) ? true : false
               }
             ]}
           />
@@ -172,14 +173,14 @@ export default function AccountsList({
       });
     }
     return _columns;
-  }, [omitColumns]);
+  }, [omitColumns, refetch]);
 
   const handleChangePage = (e, newPage) => {
     setCurrentPage(newPage);
   };
 
   const handleRowSelected = ({ selectedRows }) => {
-    setSelectedRows(selectedRows); // Pass entire row data to CreateOrgStep2
+    setSelectedRows(selectedRows);
   };
 
   return (
@@ -203,8 +204,8 @@ export default function AccountsList({
             handleChangePage={handleChangePage}
             totalRocords={data?.totalElements}
             recordsPerPage={RECORDS_PER_PAGE}
-            paginationTotalRecorsMessage={'results'}
-            paginationRecordsPerPageMessage={`per page`}
+            paginationTotalRecorsMessage={t('orgManagement.results')}
+            paginationRecordsPerPageMessage={t('orgManagement.per_page')}
             isAdmin={true}
             // selectableRows={selectableRows}
             // handleRowSelected={handleRowSelected}

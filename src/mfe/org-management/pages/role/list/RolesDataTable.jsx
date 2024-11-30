@@ -3,27 +3,23 @@ import { CustomDataTable, Button, Badge } from '@mckesson/mcp-component-library'
 import { useTranslate } from '@src/translations/useTranslation';
 import { useRole } from '../../../context/RoleContext';
 import { createColumns } from './RoleTableColumns';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import EmptyDataTable from '@src/components/EmptyTable';
 
 const RolesDataTable = () => {
     const { t } = useTranslate();
     const [selectedRows, setSelectedRows] = useState([]);
     const columns = createColumns(t);
-
+    const { applySort } = useRole();
     const {
-        currentPageData,
+        data,
         paginationConfig,
-        refreshData
+        setPageNumber
     } = useRole();
 
-    React.useState(() => {
-        refreshData();
-    })
 
-    const handleSort = (selectedColumn, sortDirection, sortedRows) => {
-        // TODO
-        console.log('Column sorted:', selectedColumn);
-        console.log('Sort direction:', sortDirection);
-        console.log('Sorted rows:', sortedRows);
+    const handleSort = (selectedColumn, sortDirection) => {
+        applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection })
     };
 
     const handleRowSelected = ({ selectedRows }) => {
@@ -49,12 +45,12 @@ const RolesDataTable = () => {
                 id="my-data-table"
                 type="normal"
                 columns={columns}
-                data={currentPageData}
+                data={data}
                 onSortIconClick={handleSort}
                 currentPage={paginationConfig.pageNumber}
                 totalPageCount={paginationConfig.totalPages}
                 pagination={true}
-                handleChangePage={(_event, newPageIndex) => paginationConfig.setCurrentPage(newPageIndex)}
+                handleChangePage={(_event, newPageIndex) => setPageNumber(newPageIndex)}
                 totalRocords={paginationConfig.totalElements} // Corrected typo here
                 recordsPerPage={paginationConfig.pageSize}
                 paginationTotalRecorsMessage={'results'}
@@ -62,7 +58,14 @@ const RolesDataTable = () => {
                 isAdmin={true}
                 selectableRows
                 handleRowSelected={handleRowSelected}
-                selectedRowId={selectedRows[0]}
+                selectedRowId={selectedRows?.[0]}
+                noDataComponent={
+                    <EmptyDataTable
+                        image={EmptyDataImage}
+                        heading={t('orgManagement.messages.roleEmptyTableTitle')}
+                        description={t('orgManagement.messages.roleEmptyTableSubtitle')}
+                    />
+                }
             />
         </div>
     );

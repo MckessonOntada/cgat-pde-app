@@ -32,7 +32,7 @@ const OrderIndex = () => {
         setActiveTab(tab.configName)
     };
 
-    const handleOnClick = () => navigate(routesConfig.createNew);
+    const handleOnClick = () => navigate(routesConfig.createOrder);
 
     React.useEffect(() => {
         setActiveTab(tabs[0].configName);

@@ -5,17 +5,19 @@ import RoleDetails from './manage/RoleDetails';
 import RolePermissions from './manage/RolePermissions';
 import { Route, Routes } from 'react-router-dom';
 import { PATHS } from '../../routes/constants';
+import NotFound from '../../../../pages/error-pages/NotFound';
 
 const Role = () => {
-    return (
-        <RoleProvider>
-          <Routes>
-            <Route path="/" index element={<RolesList />} />
-            <Route path={PATHS.createRole} element={<RoleDetails />} />
-            <Route path={PATHS.editRole} element={<RoleDetails />} />
-            <Route path={PATHS.permissions} element={<RolePermissions />} />
-          </Routes>
-        </RoleProvider>
-    )
+  return (
+    <RoleProvider>
+      <Routes>
+        <Route path="/" index element={<RolesList />} />
+        <Route path={PATHS.createRole} element={<RoleDetails />} />
+        <Route path={PATHS.editRole} element={<RoleDetails />} />
+        <Route path={PATHS.permissions} element={<RolePermissions />} />
+        <Route path={'*'} element={<NotFound />} />
+      </Routes>
+    </RoleProvider>
+  )
 }
 export default Role;

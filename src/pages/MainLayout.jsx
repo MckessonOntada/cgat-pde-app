@@ -4,7 +4,7 @@ import { Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-do
 
 import { Button, Loader } from '@mckesson/mcp-component-library';
 
-import ErrorComponent from '../components/app/error/ErrorComponent';
+import ErrorComponent from '../components/error/ErrorComponent';
 import { debugIds, ID } from '@src/constants/id';
 
 import styles from '../../src/assets/styles/MainLayout.module.scss';

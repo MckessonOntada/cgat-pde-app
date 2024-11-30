@@ -14,9 +14,10 @@ import MainLayout from './pages/MainLayout';
 import { debugIds, ID } from '@src/constants/id';
 import { DEFAULT_INACTIVE_TIMEOUT } from '@src/config/AppConfig';
 import LoginCallback from './pages/LoginCallback/LoginCallback';
-import SignUp from "./pages/SignUp"; 
+import SignUp from "./pages/SignUp";
 import SignIn from './pages/SignIn';
-  
+import NotFound from './pages/error-pages/NotFound';
+
 
 function AuthorizedRoute({ children }) {
   let { authState } = useOktaAuth();
@@ -116,8 +117,8 @@ const Navigation = () => {
         <Routes>
           <Route exact path={`${AppRoutes.pathPageLogin}`} element={<Login />} />
           <Route exact path={AppRoutes.pathPageLoginCallback} element={<LoginCallback />} />
-          <Route path={AppRoutes.pathSignup}  element={<SignUp />} />
-          <Route path={`${AppRoutes.pathSignin}`} element={<SignIn />} />           
+          <Route path={AppRoutes.pathSignup} element={<SignUp />} />
+          <Route path={`${AppRoutes.pathSignin}`} element={<SignIn />} />
           <Route
             exact
             path="*"

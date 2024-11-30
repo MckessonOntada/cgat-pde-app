@@ -23,7 +23,7 @@ const breadcrumbItems = [
 function RolesList() {
     const { t } = useTranslate();
     const navigate = useNavigate();
-    const { moduleMessage, clearModuleMessage } = useRole();
+    const { messageConfig, clearMessage } = useRole();
     const handleOnAddRoleClick = () => {
         navigate(PATHS.createRole);
     }
@@ -44,12 +44,12 @@ function RolesList() {
             />
 
             {
-                moduleMessage &&
+                messageConfig.kind && messageConfig.primaryMessage &&
                 <Alert
-                    onClose={clearModuleMessage}
+                    onClose={clearMessage}
                     showTitle
-                    title={moduleMessage.text}
-                    type={moduleMessage.kind}
+                    title={messageConfig.primaryMessage}
+                    type={messageConfig.secondaryMessage}
                 />
             }
 
@@ -63,7 +63,7 @@ function RolesList() {
                         <ModuleHeader
                             heading={<p className='secondaryHeading'>{t('orgManagement.role.labelRolesListing')}</p>}
                         />
-                            <RolesDataTable />
+                        <RolesDataTable />
                     </div>
                 </div>
             </div>

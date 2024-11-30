@@ -1,137 +1,135 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import HttpResourceService, { httpVerb } from "../../../api/HttpResourceService";
-import ApiRoutes from "../../../api/ApiRoutes";
-import { useQuery } from "react-query";
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { useQuery } from 'react-query';
+import HttpResourceService, { httpVerb } from '../../../api/HttpResourceService';
+import ApiRoutes from '../../../api/ApiRoutes';
+import { serializeParams } from '@src/util/ApiUtils';
+import { DateUtils } from '@src/util/DateUtil';
 
 const RoleContext = createContext();
 
 export const useRole = () => {
   const context = useContext(RoleContext);
   if (!context) {
-    throw new Error("useRole must be used within an RoleProvider.");
+    throw new Error('useRole must be used within a RoleProvider.');
   }
   return context;
 };
 
-const INITIAL_STATE = {
-  searchQuery: "",
-  location: [],
-  status: [],
+const INITIAL_FILTER_STATE = {
+  searchQuery: '',
+  dateRange: []
 };
 
-const initialPageConfig = {
+const INITIAL_SORT_STATE = {
+  sortBy: null,
+  sortOrder: null
+};
+
+const INITIAL_MESSAGE_STATE = {
+  messageKind: null,
+  primaryMessage: null,
+  secondaryMessage: null
+};
+
+const INITIAL_PAGINATION_CONFIG = {
   totalElements: 0,
   pageSize: 8,
   totalPages: 0,
-  pageNumber: 1,
+  pageNumber: 1
 };
 
 export const RoleProvider = ({ children }) => {
-  const [filterState, setFilterState] = useState(INITIAL_STATE);
-  const [originalData, setOriginalData] = useState([]);
-  const [currentPageData, setCurrentPageData] = useState([]);
-  const [paginationConfig, setPaginationConfig] = useState(initialPageConfig);
-  const [moduleMessage, setModuleMessage] = useState(null);
+  const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
+  const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
+  const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
+  const [messageConfig, setMessageConfig] = useState(INITIAL_MESSAGE_STATE);
 
-  const { isLoading, isError, data: responseData, refetch } = useQuery({
-    queryKey: [`users/getAll}`],
+  const requestParams = useMemo(() => {
+    const params = {
+      pageNo: paginationConfig.pageNumber - 1,
+      pageSize: paginationConfig.pageSize,
+      sortBy: sortConfig.sortBy || 'name',
+      sortOrder: sortConfig.sortOrder || 'asc'
+    };
+
+    if (filterConfig.searchQuery) params.query = filterConfig.searchQuery;
+    if (filterConfig.dateRange?.[0]) params.startDate = DateUtils.formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy');
+    if (filterConfig.dateRange?.[1]) params.endDate = DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy');
+
+    return params;
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
+
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ['roles', requestParams],
     queryFn: async () => {
-      const res = await HttpResourceService.callRest(
-        `${ApiRoutes.GET_ROLES()}`,
-        httpVerb.GET,
-        {}
-      );
+      const response = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}?${serializeParams(requestParams)}`, httpVerb.GET, {});
+      if (response.data) {
+        const { content: data, totalElements, totalPages } = response.data;
 
-      if (res.data) {
-        const {
-          content: data,
+        setPaginationConfig((prevConfig) => ({
+          ...prevConfig,
           totalElements,
-          totalPages,
-          pageable
-        } = res.data;
+          totalPages
+        }));
 
-        setPaginationConfig(prevPaginationConfig => ({
-          ...prevPaginationConfig,
-          totalElements,
-          totalPages: Math.ceil(totalElements / paginationConfig.pageSize)
-        }))
-        setOriginalData(data);
+        return data;
       }
+      return [];
     },
     refetchOnWindowFocus: false
   });
 
-  const updateFilterState = useCallback((field, value) => {
-    setFilterState((prevState) => ({
-      ...prevState,
-      [field]: value,
-    }));
-  }, []);
-
-  const clearFilters = useCallback(() => {
-    setFilterState(INITIAL_STATE);
-    console.log("Filters cleared.");
-  }, []);
-
   useEffect(() => {
-    const indexOfLastRecord = paginationConfig?.pageNumber * paginationConfig?.pageSize;
-    const indexOfFirstRecord = indexOfLastRecord - paginationConfig?.pageSize;
-    setCurrentPageData(
-      originalData.slice(indexOfFirstRecord, indexOfLastRecord)
-    );
-  }, [originalData, paginationConfig.pageNumber]);
-
-  const showModuleMessage = (message, timeout) => {
-    setModuleMessage({ ...message });
-    setTimeout(() => {
-      setModuleMessage(null);
-    }, timeout);
-  };
-  const clearModuleMessage = () => {
-    setModuleMessage(null);
-  };
+    refetch();
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
 
   const refreshData = () => {
     refetch();
   };
 
-  const ctxValue = useMemo(() => ({
-    currentPageData,
-    filters: {
-      ...filterState,
-      update: {
-        setSearchQuery: (value) => updateFilterState("searchQuery", value),
-        setLocation: (value) => updateFilterState("location", value),
-        setStatus: (value) => updateFilterState("status", value),
-      },
-      clearFilters,
-    },
-    paginationConfig: {
-      ...paginationConfig,
-      setCurrentPage: (pageNumber) => setPaginationConfig({ ...paginationConfig, pageNumber })
-    },
-    moduleMessage,
-    showModuleMessage,
-    clearModuleMessage,
-    refreshData,
-  }), [
-    currentPageData,
-    filterState,
-    clearFilters,
-    updateFilterState,
+  const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
+
+  const applyFilters = (filters) => {
+    setPageNumber(1);
+    setFilterConfig((prevFilters) => ({
+      ...prevFilters,
+      ...filters
+    }));
+  };
+
+  const clearFilters = () => setFilterConfig(INITIAL_FILTER_STATE);
+
+  const setPageNumber = (pageNumber) => {
+    setPaginationConfig((prevConfig) => ({
+      ...prevConfig,
+      pageNumber
+    }));
+  };
+
+  const setMessage = (message) => {
+    setMessageConfig({ ...message });
+  };
+
+  const clearMessage = () => {
+    setMessageConfig(INITIAL_MESSAGE_STATE);
+  };
+
+  const contextValue = {
+    data: data || [],
+    isLoading,
+    isError,
+    filterConfig,
     paginationConfig,
-    moduleMessage
-  ]);
-  return (
-    <RoleContext.Provider value={ctxValue}>
-      {children}
-    </RoleContext.Provider>
-  );
+    messageConfig,
+    refreshData,
+    setFilterConfig,
+    clearFilters,
+    applyFilters,
+    applySort,
+    setPageNumber,
+    setMessage,
+    clearMessage
+  };
+
+  return <RoleContext.Provider value={contextValue}>{children}</RoleContext.Provider>;
 };

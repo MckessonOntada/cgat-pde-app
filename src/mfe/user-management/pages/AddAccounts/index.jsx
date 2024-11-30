@@ -24,6 +24,7 @@ const AddAccounts = () => {
   const { isEdit } = location.state || {};
   const isSuccess = location.state?.isSuccess || false;
   const practiceId = AuthUtils.getPracticeId() ?? 1;
+  const selectedCount = selectedAccounts?.length || 0;
 
   const handleGoBack = () => {
     navigate(-1);
@@ -54,7 +55,7 @@ const AddAccounts = () => {
   });
 
   const handleAddAccounts = () => {
-    const payload = selectedAccounts.map((account) => account.id);
+    const payload = selectedAccounts?.map((account) => account.id);
     mutate(
       {
         payload
@@ -62,7 +63,7 @@ const AddAccounts = () => {
       {
         onSuccess: (response) => {
           console.log('User created/updated successfully:', response);
-          navigate(`../${userId}`, { state: { isSuccess: true } });
+          navigate(`../${userId}`, { state: { isSuccess: true, recCount: selectedCount } });
         },
         onError: (error) => {
           console.log('Failed to add accounts:', error);
@@ -122,7 +123,7 @@ const AddAccounts = () => {
             showSelectedAccounts
             omitColumns={['action', 'cgatIdentifier', 'address']}
             practiceId={practiceId}
-            userId={`${userId}`}
+            userId={userId}
             addNewAccounts={true}
           />
         </div>

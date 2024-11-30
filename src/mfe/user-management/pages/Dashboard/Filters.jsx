@@ -16,6 +16,14 @@ import { debugIds, ID } from '@src/constants/id';
 
 const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
   const { t } = useTranslate();
+  const {
+    filterConfig,
+    paginationConfig,
+    setFilterConfig,
+    applyFilters,
+    clearFilters
+  } = useUser();
+  const [filters, setFilters] = React.useState({});
   const [expandedCard, setExpandedCard] = useState(false);
   const [isClearFiltersVisible, setIsClearFiltersVisible] = useState(false);
 
@@ -23,16 +31,6 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
     setExpandedCard(!expandedCard);
   };
 
-  const {
-    filters: {
-      searchQuery,
-      role,
-      update: { setRole, setStatus, setSearchQuery },
-      status,
-      clearFilters,
-      applyFilters
-    }
-  } = useUser();
 
   const handleSearchChange = (inputValue) => {
     setSearchQuery(inputValue);
@@ -42,31 +40,19 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
     clearFilters();
   };
 
-  useEffect(() => {
-    setIsClearFiltersVisible(
-      (searchQuery && searchQuery.length > 0) ||
-        (role && role.length > 0) ||
-        (status && status.length > 0)
-    );
-  }, [searchQuery, role, status]);
+  const isClearFiltersButtonVisible = !!(
+    filterConfig.searchQuery ||
+    filterConfig.role ||
+    (Array.isArray(filterConfig.status) && filterConfig.status.length > 0)
+  );
 
   const handleFilter = () => {
-    // alert(
-    //   `Search Query: ${searchQuery}\nFiltered Roles: ${JSON.stringify(
-    //     role
-    //   )}\nFiltered Status: ${JSON.stringify(status)}`
-    // );
-    applyFilters();
+    applyFilters(filters);
   };
 
-  const onSearcheableDropdownChange = (type, value) => {
+  const onSearchableDropdownChange = (type, value) => {
     const filteredValue = value.filter((item) => item.isChecked);
-    if (type === 'role') {
-      setRole(filteredValue);
-    }
-    if (type === 'status') {
-      setStatus(filteredValue);
-    }
+    applyFilters({ [type]: filteredValue.map(item => item.value) });
   };
 
   return (
@@ -74,17 +60,17 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
       {(showRoleDropdown && ROLES.length > 0) || (showStatusDropdown && STATUS.length > 0) ? (
         <>
           <div className="toggle-box">
-            <div onClick={handleExpandCard}>
+            <button onClick={handleExpandCard}>
               {expandedCard ? (
                 <img src={arrow_down} className="icon-align" />
               ) : (
                 <img src={arrow_right} className="icon-align" />
               )}
-            </div>
+            </button>
             <div className="autoSuggestSearch-container">
               <AutoSuggestSearch
                 label=" "
-                value={searchQuery}
+                value={filters.searchQuery}
                 onChangeInput={handleSearchChange}
                 outline={true}
                 placeHolder={t('userManagement.searchFilter.label')}
@@ -95,18 +81,18 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
           {/* Render contents only if expandedCard is true */}
 
           <ToggleUI in={expandedCard} timeout={400}>
-            <div className="expanded-content">
+            <div className="expanded-content" style={{ paddingBottom: '200px' }}>
               <Divider color={'#BAC5CC'} />
               <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
                 {showRoleDropdown && ROLES.length > 0 && (
                   <SearchableDropdown
                     id="role"
                     isSuccess
-                    value={role}
+                    value={filterConfig.role}
                     label={t('userManagement.table.role')}
                     name={t('userManagement.table.role')}
                     isRequired={false}
-                    onChange={(value) => onSearcheableDropdownChange('role', value)}
+                    onChange={(value) => onSearchableDropdownChange('role', value)}
                     options={ROLES}
                     clearAllSelectedValues={() => setRole([])}
                   />
@@ -120,7 +106,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
                     label={t('userManagement.table.status')}
                     name={t('userManagement.table.status')}
                     isRequired={false}
-                    onChange={(value) => onSearcheableDropdownChange('status', value)}
+                    onChange={(value) => onSearchableDropdownChange('status', value)}
                     options={STATUS}
                     clearAllSelectedValues={() => setStatus([])}
                   />
@@ -133,7 +119,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
                     onClick={handleFilter}
                     className="filter-btn"
                   />
-                  {isClearFiltersVisible && (
+                  {isClearFiltersButtonVisible && (
                     <Button
                       type="button"
                       label={t('userManagement.clearFilter.label')}

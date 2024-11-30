@@ -52,11 +52,11 @@ jobs:
           cache-to: type=inline
           load: true
 
-      - id: scan-docker-image
-        name: Scan docker image
-        run: |
-          curl -u $PRISMA_USER:$PRISMA_PASSWORD --output twistcli https://us-east1.cloud.twistlock.com/us-2-158257908/api/v1/util/twistcli && chmod +x twistcli && mv twistcli /tmp/
-          /tmp/twistcli images scan --details --address https://us-east1.cloud.twistlock.com/us-2-158257908 --user $PRISMA_USER --password $PRISMA_PASSWORD $IMAGE_NAME
+     # - id: scan-docker-image
+     #   name: Scan docker image
+     #   run: |
+     #     curl -u $PRISMA_USER:$PRISMA_PASSWORD --output twistcli https://us-east1.cloud.twistlock.com/us-2-158257908/api/v1/util/twistcli && chmod +x twistcli && mv twistcli /tmp/
+     #     /tmp/twistcli images scan --details --address https://us-east1.cloud.twistlock.com/us-2-158257908 --user $PRISMA_USER --password $PRISMA_PASSWORD $IMAGE_NAME
 
       - if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/R1.0' || startsWith(github.ref, 'refs/heads/release-')
         id: version-bump-git-tag

@@ -9,8 +9,9 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import useSessionFeatures from '@src/hooks/useSessionFeatures';
 import { useOrg } from '../../context/OrgContext';
 import { useMutation } from 'react-query';
-import HttpResourceService, { httpVerb } from '../../../../api/HttpResourceService';
-import ApiRoutes from '../../../../api/ApiRoutes';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
+import CommonUtils from '@src/util/CommonUtils';
 
 const OrgList = () => {
   const { t } = useTranslate();
@@ -82,22 +83,22 @@ const OrgList = () => {
         />
       ),
       wrap: true,
-      width: '4%'
+      width: '2%'
     },
     {
       id: 'name',
       name: t('orgManagement.table.name'),
       cell: (row) => (
-        <Button
+        <button
           variant="tertiary"
+          className="MCP-table-link"
           onClick={() => {
             handleClick(row);
           }}>
           {row.name}
-        </Button>
+        </button>
       ),
-      wrap: true,
-      width: '20%'
+      wrap: true
     },
     {
       id: 'orgId',
@@ -115,7 +116,7 @@ const OrgList = () => {
       id: 'date',
       name: t('orgManagement.table.dateUpdated'),
       selector: (row) => row.updatedAt,
-      format: (row) => new Date(row.updatedAt).toLocaleDateString(),
+      cell: (row) => (row.updatedAt ? CommonUtils.convertDateStringFormat(row.updatedAt, 'MM-DD-YYYY') : row.createdAt ? CommonUtils.convertDateStringFormat(drowata.createdAt, 'MM-DD-YYYY') : 'N/A'),
       wrap: true
     },
     {
