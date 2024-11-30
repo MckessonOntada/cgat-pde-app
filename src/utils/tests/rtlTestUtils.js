@@ -8,8 +8,6 @@ const currentLocale = 'en';
 
 import { Provider } from 'react-redux';
 import store from '../../store/store';
-import { ThemeProvider } from '@mui/material/styles';
-import muiTheme from '../../assets/theme/MuiTheme';
 
 let originalError;
 
@@ -67,15 +65,13 @@ const AllTheProviders = ({ children }) => {
   });
 
   return (
-    <ThemeProvider theme={muiTheme}>
-      <Provider store={store}>
-        <QueryClientProvider client={queryClient}>
-          <IntlProvider messages={messages[currentLocale]} locale={currentLocale}>
-            {children}
-          </IntlProvider>
-        </QueryClientProvider>
-      </Provider>
-    </ThemeProvider>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <IntlProvider messages={messages[currentLocale]} locale={currentLocale}>
+          {children}
+        </IntlProvider>
+      </QueryClientProvider>
+    </Provider>
   );
 };
 

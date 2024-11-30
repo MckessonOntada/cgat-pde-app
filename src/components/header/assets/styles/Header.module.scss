@@ -7,8 +7,9 @@
         .navItemsLeft {
             padding: var(--spacing-02) 0px;
             padding-right: var(--spacing-02);
-            
+
         }
+
         .navItemsborder {
             border-right: 1px solid var(--brand-color-patient-primary-3);
         }
@@ -147,10 +148,6 @@
 
         >div {
             margin-top: 0px !important;
-        }
-
-        .MuiSelect-select {
-            font-size: var(--brand-font-size--default);
         }
 
         fieldset {
