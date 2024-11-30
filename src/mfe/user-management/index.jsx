@@ -5,7 +5,8 @@ import { UserProvider } from './context/UserContext';
 const UserManagement = () => {
   return (
     <UserProvider>
-    <Routes /></UserProvider>
+      <Routes />
+    </UserProvider>
   );
 };
 

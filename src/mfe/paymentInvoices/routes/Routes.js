@@ -3,6 +3,7 @@ import { Route, Routes as ReactRoutes, Navigate } from 'react-router-dom';
 import { PATHS } from './constants';
 import PaymentHistory from '../pages/paymentHistory';
 import CustomerSatements from '../pages/customerStatements';
+import NotFound from '../../../pages/error-pages/NotFound';
 
 
 const Routes = () => {
@@ -15,7 +16,7 @@ const Routes = () => {
       <Route path={PATHS.paymentHistory} element={<PaymentHistory />} />
       <Route path={PATHS.customerStatements} element={<CustomerSatements />} />
       <Route path={PATHS.paymentMethods} element={<h6>Payment Methods</h6>} />
-
+      <Route path={'*'} element={<NotFound />} />
     </ReactRoutes>
   );
 };

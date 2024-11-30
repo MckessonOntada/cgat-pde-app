@@ -9,6 +9,7 @@ import AccountSelection from '../pages/create/form-segments/account-selection/Ac
 import PatientDetails from '../pages/create/form-segments/patient-details';
 import Summary from '../pages/create/form-segments/summary';
 import AdditionalDetails from '../pages/create/form-segments/additional-details';
+import NotFound from '../../../pages/error-pages/NotFound';
 
 function OrderManagementRoutes() {
   return (
@@ -24,6 +25,7 @@ function OrderManagementRoutes() {
       <Route path={routesConfig.viewDetails} element={<OrderSummary />} />
       <Route path={routesConfig.reviewOrder} element={<div></div>} />
       <Route path={`${routesConfig.status}/:orderId`} element={<OrderStatus />} />
+      <Route path={'*'} element={<NotFound />} />
     </Routes>
   );
 }
