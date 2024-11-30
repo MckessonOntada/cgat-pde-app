@@ -27,6 +27,7 @@ const RoleDetails = () => {
   const location = useLocation();
   const row = location.state ?? {};
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
+  const isEdit = !!roleId;
 
   const [initialData, setInitialData] = React.useState({
     roleName: '',
@@ -134,7 +135,8 @@ const RoleDetails = () => {
       <ModuleHeader heading={<PageHeader heading={t('orgManagement.role.labelAddRole')} />} />
 
       <div className="MCP-module-body">
-        <Stepper activeIndex={1} dividerText="of" mobileLabel={t('orgManagement.role.labelStep')} stepHeaders={forms.map((f) => ({ label: f.label }))} />
+        {!isEdit && <Stepper activeIndex={1} dividerText="of" mobileLabel={t('orgManagement.role.labelStep')} stepHeaders={forms.map((f) => ({ label: f.label }))} />}
+
         <div>
           <Formik initialValues={formData} validationSchema={roleValidationSchema} onSubmit={handleOnSubmit} enableReinitialize>
             {({ values, isValid }) => {

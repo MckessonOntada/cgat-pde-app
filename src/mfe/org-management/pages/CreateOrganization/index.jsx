@@ -18,6 +18,7 @@ const CreateOrganization = () => {
   const { orgId } = useParams();
   const location = useLocation();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const isEdit = !!orgId;
 
   useEffect(() => {
     if (isAlertVisible) {
@@ -109,25 +110,31 @@ const CreateOrganization = () => {
   return (
     <div className="main-container">
       {isLoading && <Loader type={'screen'} />}
+
       <div className="back-navigation py2 capitalize" onClick={goBack} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
         <MdOutlineKeyboardArrowLeft size="24px" />
         <p>{t('orgManagement.back.organization')}</p>
       </div>
+
       {isAlertVisible && <Alert description="Error while creating organization" onClose={() => {}} showTitle title="Something went wrong...!" type="error" />}
-      <div className="stepper">
-        <Stepper
-          activeIndex={1}
-          dividerText="of"
-          stepHeaders={[
-            {
-              label: t('orgManagement.stepper.option.org_details')
-            },
-            {
-              label: t('orgManagement.stepper.option.acct_details')
-            }
-          ]}
-        />
-      </div>
+
+      {!isEdit && (
+        <div className="stepper">
+          <Stepper
+            activeIndex={1}
+            dividerText="of"
+            stepHeaders={[
+              {
+                label: t('orgManagement.stepper.option.org_details')
+              },
+              {
+                label: t('orgManagement.stepper.option.acct_details')
+              }
+            ]}
+          />
+        </div>
+      )}
+
       <Formik
         enableReinitialize
         initialValues={organizationData}

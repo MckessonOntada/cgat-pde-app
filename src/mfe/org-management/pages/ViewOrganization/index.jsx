@@ -120,7 +120,9 @@ export default function ViewOrganization() {
         <MdOutlineKeyboardArrowLeft size="24px" />
         <p>{t('orgManagement.back.organization')}</p>
       </div>
+
       {!addNewAccounts && <ModuleHeader heading={<p className="primaryHeading">{t('orgManagement.create_org.org-details')}</p>} />}
+
       {!isView && (
         <div className="stepper">
           <Stepper
