@@ -31,16 +31,7 @@ function UserTable({ selectableRows = false }) {
   const [selectedRows, setSelectedRows] = useState(null);
 
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const {
-    isLoading,
-    isError,
-    data,
-    activeTab,
-    filterConfig,
-    paginationConfig,
-    applySort,
-    setFilterConfig,
-  } = useUser();
+  const { isLoading, isError, data, activeTab, filterConfig, paginationConfig, applySort, setFilterConfig } = useUser();
 
   const handleRowSelected = ({ selectedRows }) => {
     setSelectedRows(selectedRows);
@@ -73,9 +64,8 @@ function UserTable({ selectableRows = false }) {
   };
 
   const handleOnSortIconClick = (selectedColumn, sortDirection) => {
-    applySort({ sortBy: selectedColumn.sortName, sortOrder: sortDirection })
+    applySort({ sortBy: selectedColumn.sortName, sortOrder: sortDirection });
   };
-
 
   const columns = [
     {
@@ -109,7 +99,15 @@ function UserTable({ selectableRows = false }) {
       wrap: true,
       cell: (props) => (
         <div className="cellEllipses">
-             {`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`}
+          {activeTab === 'PENDING REQUESTS' ? (
+            `${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`
+          ) : (
+            <Link
+              to={`${props.id}`} // dynamically constructs the URL with userId
+              className="MCP-table-link">
+              {`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`}
+            </Link>
+          )}
         </div>
       )
     },

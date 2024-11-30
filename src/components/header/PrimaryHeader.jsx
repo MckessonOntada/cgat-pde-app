@@ -83,31 +83,12 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
 
   const LeftSideView = (props) => {
     return (
-      <div className={`${styles.navItemsLeft} ${styles.navItemsborder}`} id={''}>
+      <div className={`${styles.navItemsLeft}`} id={''}>
         <div className={styles.branding}>
           <Link className={`${styles.appLogo} ${styles.actionLink}`} to={''} id={''} aria-label="dashboard">
             {props.children}
           </Link>
         </div>
-        {/* {isSystemAdmin && (
-          <div className={styles.centerSelector}>
-            <Dropdown id={'Organization'} name={'Organization'} aria-label="Select treatment center" options={data || []} value={selectedOrganization?.id || ''} onChange={handleChange} />
-
-            <SearchableDropdown
-            id="provider"
-            isSuccess
-            // label="Provider"
-            variant="async"
-            name="provider-input"
-            onChange={handleOrganizationChange}
-            options={data || []}
-            refineFilterMessage={['More records exist.', 'Search to refine.']}
-            asyncHandleSearch={(e) => {
-              console.log(e);
-            }}
-          />
-          </div>
-        )} */}
       </div>
     );
   };
