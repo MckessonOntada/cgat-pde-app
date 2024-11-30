@@ -109,16 +109,7 @@ function UserTable({ selectableRows = false }) {
       wrap: true,
       cell: (props) => (
         <div className="cellEllipses">
-//           {activeTab === 'PENDING REQUESTS' ? (
-//             `${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`
-//           ) : (
-//             <Link
-//               to={`${props.id}`} 
-//               className="MCP-table-link"
-//             >
-//               {`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`}
-//             </Link>
-//           )}
+             {`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`}
         </div>
       )
     },
