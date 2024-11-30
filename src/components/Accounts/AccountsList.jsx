@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { CustomDataTable } from '@mckesson/mcp-component-library';
+import { CustomDataTable, CheckboxGroup } from '@mckesson/mcp-component-library';
 import { Link, Loader, redirect } from 'react-router-dom';
 import SelectedAccounts from './SelectedAccounts';
 import './styles.scss';
@@ -66,8 +66,8 @@ export default function AccountsList({
     }
   }, [addNewAccounts, userId, currentPage]);
 
-  const columns = useMemo(
-    () => [
+  const columns = useMemo(() => {
+    const _columns = [
       {
         id: 'id',
         name: t('account.no'),
@@ -123,9 +123,57 @@ export default function AccountsList({
         width: '10%',
         omit: omitColumns.includes('action')
       }
-    ],
-    [omitColumns, refetch]
-  );
+    ];
+    if (selectableRows && data?.content?.length > 0) {
+      _columns.unshift({
+        id: 'checkbox',
+        name: data.content.length > 0 && (
+          <CheckboxGroup
+            id={'default'}
+            caption=""
+            items={[
+              {
+                onChange: (event) => {
+                  if (event.target.checked) {
+                    setSelectedRows(data.content);
+                  } else {
+                    setSelectedRows([]);
+                  }
+                },
+                value: '',
+                isChecked: data?.content?.length == selectedRows?.length
+              }
+            ]}
+          />
+        ),
+        cell: (row) => (
+          <CheckboxGroup
+            id={'default'}
+            caption=""
+            items={[
+              {
+                onChange: (event) => {
+                  let _selected;
+                  if (event.target.checked) {
+                    _selected = [...selectedRows];
+                    _selected.push(row);
+                  } else {
+                    _selected = selectedRows?.filter((item) => item.id !== row.id);
+                  }
+                  setSelectedRows(_selected);
+                },
+                value: row.id,
+                isChecked: selectedRows?.find((item) => item.id == row.id) ? true : false
+              }
+            ]}
+          />
+        ),
+        wrap: true,
+        width: '4%'
+      });
+    }
+    return _columns;
+  }, [omitColumns, refetch]);
 
   const handleChangePage = (e, newPage) => {
     setCurrentPage(newPage);
@@ -159,9 +207,9 @@ export default function AccountsList({
             paginationTotalRecorsMessage={t('orgManagement.results')}
             paginationRecordsPerPageMessage={t('orgManagement.per_page')}
             isAdmin={true}
-            selectableRows={selectableRows}
-            handleRowSelected={handleRowSelected}
-            selectedRowId={selectedRows}
+            // selectableRows={selectableRows}
+            // handleRowSelected={handleRowSelected}
+            // selectedRowId={selectedRows}
             noDataComponent={<EmptyDataTable image={EmptyDataImage} heading={t('account.add.label')} description={t('account.empty_table.description')} />}
           />
         </div>
