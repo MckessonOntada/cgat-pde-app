@@ -7,15 +7,15 @@ import { Route, Routes } from 'react-router-dom';
 import { PATHS } from '../../routes/constants';
 
 const Role = () => {
-    return (
-        <RoleProvider>
-          <Routes>
-            <Route path="/" index element={<RolesList />} />
-            <Route path={PATHS.createRole} element={<RoleDetails />} />
-            <Route path={PATHS.editRole} element={<RoleDetails />} />
-            <Route path={PATHS.permissions} element={<RolePermissions />} />
-          </Routes>
-        </RoleProvider>
-    )
+  return (
+    <RoleProvider>
+      <Routes>
+        <Route path="/" index element={<RolesList />} />
+        <Route path={PATHS.createRole} element={<RoleDetails />} />
+        <Route path={PATHS.editRole} element={<RoleDetails />} />
+        <Route path={PATHS.permissions} element={<RolePermissions />} />
+      </Routes>
+    </RoleProvider>
+  )
 }
 export default Role;
