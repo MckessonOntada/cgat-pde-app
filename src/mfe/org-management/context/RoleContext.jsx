@@ -75,6 +75,12 @@ const INITIAL_SORT_STATE = {
   sortOrder: null,
 }
 
+const INITIAL_MESSAGE_STATE = {
+  messageKind: null,
+  primaryMessage: null,
+  secondaryMessage: null
+}
+
 const INITIAL_PAGINATION_CONFIG = {
   totalElements: 0,
   pageSize: 8,
@@ -85,7 +91,9 @@ const INITIAL_PAGINATION_CONFIG = {
 export const RoleProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
-  const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE)
+  const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
+  const [messageConfig, setMessageConfig] = useState(INITIAL_MESSAGE_STATE);
+
   const requestParams = useMemo(() => {
     const params = {
       pageNo: paginationConfig.pageNumber - 1,
@@ -97,6 +105,7 @@ export const RoleProvider = ({ children }) => {
     if (filterConfig.searchQuery) params.query = filterConfig.searchQuery;
     if (filterConfig.dateRange?.[0]) params.startDate = formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy');
     if (filterConfig.dateRange?.[1]) params.endDate = formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy');
+
     return params;
   }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
 
@@ -128,6 +137,10 @@ export const RoleProvider = ({ children }) => {
     refetch();
   }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
 
+  const refreshData = () => {
+    refetch();
+  }
+
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig })
 
   const applyFilters = (filters) => {
@@ -147,6 +160,12 @@ export const RoleProvider = ({ children }) => {
     }));
   };
 
+  const setMessage = (message) => {
+    setMessageConfig({ ...message });
+  }
+  const clearMessage = () => {
+    setMessageConfig(INITIAL_MESSAGE_STATE);
+  }
 
   const contextValue = {
     data: data || [],
@@ -154,11 +173,15 @@ export const RoleProvider = ({ children }) => {
     isError,
     filterConfig,
     paginationConfig,
+    messageConfig,
+    refreshData,
     setFilterConfig,
     clearFilters,
     applyFilters,
     applySort,
     setPageNumber,
+    setMessage,
+    clearMessage,
   };
 
   return (
