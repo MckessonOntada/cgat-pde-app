@@ -139,11 +139,13 @@ export default function ViewOrganization() {
           />
         </div>
       )}
+
       {isView && !addNewAccounts && data && (
         <div className="details-view-container">
           <DetailsView data={data} onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: data }, true)} />
         </div>
       )}
+
       <ModuleHeader
         heading={<p className="primaryHeading">{addNewAccounts ? t('orgManagement.select_account') : t('orgManagement.link')}</p>}
         controls={

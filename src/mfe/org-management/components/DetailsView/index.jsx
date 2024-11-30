@@ -6,6 +6,7 @@ import './styles.scss';
 
 const DetailsView = ({ data, onEditClick }) => {
   const { t } = useTranslate();
+
   return (
     <div className="view-container">
       <div className="org-box">
@@ -22,10 +23,7 @@ const DetailsView = ({ data, onEditClick }) => {
       <div className="grid grid-gap-24 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         <div>
           <p className="contact-heading">{t('orgManagement.org_detail.person_name')}</p>
-          <p className="contact-details">
-            {`${data.contactPerson.firstName || ''} ${data.contactPerson.middleName || ''} ${data.contactPerson.lastName || ''
-              }`.trim() || 'N/A'}
-          </p>
+          <p className="contact-details">{`${data.contactPerson.firstName || ''} ${data.contactPerson.middleName || ''} ${data.contactPerson.lastName || ''}`.trim() || 'N/A'}</p>
         </div>
         <div>
           <p className="contact-heading">{t('orgManagement.create_org.inputLabel.email')}</p>
@@ -43,9 +41,7 @@ const DetailsView = ({ data, onEditClick }) => {
 
       <div>
         <p className="contact-heading">{t('orgManagement.org_detail.address')}</p>
-        <p className="contact-details">
-          {[data.address.address1, data.address.address2].filter(Boolean).join(', ') || 'N/A'}
-        </p>
+        <p className="contact-details">{[data.address.address1, data.address.address2].filter(Boolean).join(', ') || 'N/A'}</p>
       </div>
     </div>
   );
