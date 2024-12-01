@@ -1,37 +1,20 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Field } from 'formik';
 import Components from '@src/components/form/Components';
 import { Required } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import FileInput from '@src/components/FileInput';
-import US_STATE_CITY from '@src/assets/data/US_States_and_Cities.json';
+import { US_STATES } from '@src/components/form/util';
 
 const OrgDetailsFormSegment = () => {
   const { t } = useTranslate();
 
-  const options = useMemo(() => {
-    const _options = [
-      {
-        isDisabled: true,
-        value: '',
-        label: t('orgManagement.create_org.option.please_select')
-      }
-    ];
-
-    for (let s in US_STATE_CITY) {
-      let state = US_STATE_CITY[s];
-
-      for (let city of state) {
-        _options.push({
-          isDisabled: false,
-          value: city,
-          label: city
-        });
-      }
-    }
-
-    return _options.splice(0, 10);
-  }, []);
+  const usStates = US_STATES();
+  usStates.unshift({
+    isDisabled: true,
+    value: '',
+    label: t('orgManagement.create_org.option.please_select')
+  });
 
   return (
     <div className="form-container">
@@ -86,7 +69,7 @@ const OrgDetailsFormSegment = () => {
         <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3  align-items-start line-height">
           <Field name="address.city" label={t('orgManagement.create_org.inputLabel.city')} placeholder=" " isRequired component={Components['input']} />
           <Field name="address.zip" label={t('orgManagement.create_org.inputLabel.zip')} placeholder=" " isRequired component={Components['input']} />
-          <Field name="address.state" fieldlabel={t('orgManagement.create_org.inputLabel.state')} placeholder=" " component={Components['dropdown']} isRequired options={options} />
+          <Field name="address.state" fieldlabel={t('orgManagement.create_org.inputLabel.state')} placeholder=" " component={Components['dropdown']} isRequired options={usStates} />
         </div>
       </div>
     </div>
