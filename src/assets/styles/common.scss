@@ -69,14 +69,17 @@
   justify-content: space-between;
   align-items: center;
   gap: var(--spacing-03);
+}
 
-  .filter-main-search-box {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--spacing-03);
-  }
+.filter-main-search-box {
+  display: inline-flex;
+  align-items: center;
+}
+.filter-controls {
+  align-self: flex-end;
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-03);
 }
 
 .MCP-panel-container {
