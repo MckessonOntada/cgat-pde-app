@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useOrg } from '../../context/OrgContext';
-import { AutoSuggestSearch, Button, Divider, SearchableDropdown } from '@mckesson/mcp-component-library';
+import { InputField, Button, Divider, SearchableDropdown } from '@mckesson/mcp-component-library';
 import { LOCATIONS, STATUS } from '../../mockData/orgData';
 import { useTranslate } from '@src/translations/useTranslation';
 import arrow_right from '@src/assets/image/arrow_right.svg';
@@ -50,10 +50,10 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
     setIsCardExpanded((prevExpandedCard) => !prevExpandedCard);
   };
 
-  const handleSearch = (value) => {
+  const handleSearch = (event) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
-      searchQuery: value
+      searchQuery: event.target.value
     }));
   };
 
@@ -74,7 +74,7 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
     if (filteredValue && filteredValue.length > 0) {
       setFilters((prevFilters) => ({
         ...prevFilters,
-        [type]: value
+        [type]: filteredValue.map(item => item.value)
       }));
     }
   };
@@ -100,7 +100,15 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
                 <img src={isCardExpanded ? arrow_down : arrow_right} className="icon-align" alt="toggle-icon" />
               </div>
               <div className="autoSuggestSearch-container">
-                <AutoSuggestSearch label=" " value={filterConfig.searchQuery} onChangeInput={handleSearch} outline={true} placeHolder={t('orgManagement.searchFilter.label')} />
+                <InputField 
+                  id="search-box"
+                  name="org-grid-search-query"
+                  value={filters.searchQuery}
+                  onInputChange={handleSearch}
+                  tooltipText={null}
+                  useRegister={false}
+                  placeHolder={t('orgManagement.role.placeholder')}
+                />
               </div>
             </div>
             {!isCardExpanded && (
@@ -113,7 +121,7 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
             )}
           </div>
           <ToggleUI in={isCardExpanded} timeout={400}>
-            <div className="expanded-content">
+            <div className="expanded-content" style={{paddingBottom: '300px'}}>
               <Divider />
               <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
                 {showLocationDropdown && (

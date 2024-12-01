@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../../context/UserContext';
-import { AutoSuggestSearch, Button, Divider, SearchableDropdown } from '@mckesson/mcp-component-library';
+import { InputField, Button, Divider, SearchableDropdown } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ROLES, STATUS } from '../../mockData/UsersData';
 import './index.scss';
@@ -48,10 +48,10 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
     setIsCardExpanded(!isCardExpanded);
   };
 
-  const handleSearchChange = (value) => {
+  const handleSearchChange = (event) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
-      searchQuery: value
+      searchQuery: event.target.value
     }));
   };
 
@@ -72,7 +72,10 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
 
   const onSearchableDropdownChange = (type, value) => {
     const filteredValue = value.filter((item) => item.isChecked);
-    applyFilters({ [type]: filteredValue.map((item) => item.value) });
+    setFilters(prevFilters => ({ 
+      ...prevFilters,
+      [type]: filteredValue.map((item) => item.value)
+    }));
   };
 
   const isButtonPanelVisible = deepEqual(filterConfig, filters);
@@ -85,7 +88,13 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
             <div className="filter-controls">
               <button onClick={handleExpandCard}>{isCardExpanded ? <img src={arrow_down} className="icon-align" /> : <img src={arrow_right} className="icon-align" />}</button>
               <div className="autoSuggestSearch-container">
-                <AutoSuggestSearch label=" " value={filters.searchQuery} onChangeInput={handleSearchChange} outline={true} placeHolder={t('userManagement.searchFilter.label')} />
+                <InputField
+                 id="user-grid-search-box"
+                 name="searchQuery" 
+                 value={filters.searchQuery} 
+                 useRegister={false} 
+                 onInputChange={handleSearchChange} 
+                />
               </div>
             </div>
             {!isCardExpanded && (
@@ -108,7 +117,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
                   <SearchableDropdown
                     id="role"
                     isSuccess
-                    value={filterConfig.role}
+                    value={filters.role}
                     label={t('userManagement.table.role')}
                     name={t('userManagement.table.role')}
                     isRequired={false}
@@ -122,7 +131,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
                   <SearchableDropdown
                     id="status"
                     isSuccess
-                    value={status}
+                    value={filters.status}
                     label={t('userManagement.table.status')}
                     name={t('userManagement.table.status')}
                     isRequired={false}

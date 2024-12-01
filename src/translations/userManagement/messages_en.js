@@ -61,7 +61,7 @@ export const UserManagementEN = {
   'userManagement.button.savencontinue': 'Save And Continue',
   'userManagement.button.edit': 'Edit',
   'userManagement.button.adduser': 'Add User',
-  'userManagement.button.uploadusers': 'Upload Users',
+  'userManagement.button.uploadUsers': 'Upload Users',
   'userManagement.button.addsystemadmin': 'Add System Administrator',
 
   'userManagement.button.add_accounts': 'Add Accounts',

@@ -89,7 +89,7 @@ export default function Dashboard() {
             </Button>
             {!isSystemAdminView && (
               <Button Icon={upload_bottom} className="button-icon" variant="primary" size="md">
-                {t('uploadusers')}
+                {t('userManagement.button.uploadUsers')}
               </Button>
             )}
           </div>

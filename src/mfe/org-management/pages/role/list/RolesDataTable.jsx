@@ -62,7 +62,7 @@ const RolesDataTable = () => {
                 noDataComponent={
                     <EmptyDataTable
                         image={EmptyDataImage}
-                        heading={t('orgManagement.messages.roleEmptyTableTitle')}
+                        heading={t('message.emptyTableTitle')}
                         description={t('orgManagement.messages.roleEmptyTableSubtitle')}
                     />
                 }

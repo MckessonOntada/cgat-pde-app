@@ -160,8 +160,6 @@ const OrgList = () => {
     setSelectedRows(null);
   };
 
-  console.log(data);
-
   return (
     <div>
       {isLoading && <Loader type="screen" />}

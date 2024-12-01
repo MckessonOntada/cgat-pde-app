@@ -56,7 +56,7 @@ export const OrgProvider = ({ children }) => {
     queryKey: ['organizations', requestParams],
     queryFn: async () => {
       const response = await dispatch(CommonDataService.getOrganizationList(requestParams));
-      debugger;
+      
       if (response) {
         const { content, totalElements, totalPages } = response;
 

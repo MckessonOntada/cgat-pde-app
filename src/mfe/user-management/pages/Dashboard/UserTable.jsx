@@ -14,7 +14,7 @@ import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import CommonUtils from '@src/util/CommonUtils';
 
-function getbgColorOnRole(Role) {
+function getBackgroundColorByRole(Role) {
   switch (Role) {
     case 'ORGANIZATION ADMIN':
       return 'success';
@@ -127,11 +127,14 @@ function UserTable({ selectableRows = false }) {
       sortable: true,
       center: true,
       wrap: true,
-      cell: (props) => (
-        <span>
-          <Badge text={props.role?.name} type={getbgColorOnRole(props.role?.name)} />
-        </span>
-      ),
+      cell: (props) =>
+        props.role?.name ? (
+          <span>
+            <Badge text={props.role?.name} type={getBackgroundColorByRole(props.role?.name)} />
+          </span>
+        ) : (
+          '-'
+        ),
       omit: isSystemAdminView || activeTab === 'PENDING REQUESTS'
     },
     {
@@ -189,7 +192,7 @@ function UserTable({ selectableRows = false }) {
         stickyHeader
         responsive
         pagination={true}
-        noDataComponent={isError ? <div>Something went wrong! Please try again</div> : <EmptyDataTable image={EmptyDataImage} heading={t('userManagement.add.label')} description={t('userManagement.empty_table.description')} />}
+        noDataComponent={<EmptyDataTable image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('orgManagement.messages.userEmptyTableSubtitle')} />}
       />
     </div>
   );
