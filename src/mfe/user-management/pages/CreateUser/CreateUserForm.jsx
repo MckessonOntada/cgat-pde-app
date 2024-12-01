@@ -22,13 +22,11 @@ const UserDetailsFormSegment = () => {
           <div className="headingBox">
             <p className="form-segment-title">{t('userManagement.create_user.personal_details')}</p>
             <p className="form-instruction">
-              {' '}
               <Required id="Required"></Required> {t('userManagement.create_user.required')}
             </p>
           </div>
           <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start">
             <Field id="name.firstName" name="name.firstName" label={t('userManagement.create_user.inputLabel.first_name')} placeholder=" " isRequired component={Components['input']} maxLength={50} />
-
             <Field id="name.middleName" name="name.middleName" label={t('userManagement.create_user.inputLabel.middle_name')} placeholder=" " component={Components['input']} maxLength={50} />
             <Field name="name.lastName" label={t('userManagement.create_user.inputLabel.last_name')} placeholder=" " isRequired component={Components['input']} maxLength={50} />
           </div>
@@ -38,7 +36,6 @@ const UserDetailsFormSegment = () => {
           <div className="headingBox">
             <p className="form-segment-title">{t('userManagement.create_user.contact_details')}</p>
             <p className="form-instruction">
-              {' '}
               <Required id="Required"></Required> {t('userManagement.create_user.required')}
             </p>
           </div>

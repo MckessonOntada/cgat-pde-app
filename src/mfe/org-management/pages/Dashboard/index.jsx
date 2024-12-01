@@ -32,9 +32,7 @@ export default function Dashboard() {
     if (isSuccess) {
       setIsAlertVisible(true);
       setAlertDescription('Organization Created Successfully');
-      const timer = setTimeout(() => {
-        handleAlertClose;
-      }, 10000);
+      const timer = setTimeout(handleAlertClose, 10000);
       return () => clearTimeout(timer);
     }
   }, [isSuccess, location.pathname, location.state]);

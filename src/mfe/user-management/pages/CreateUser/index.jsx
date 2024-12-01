@@ -190,7 +190,7 @@ const CreateUser = () => {
       {
         onSuccess: (response) => {
           console.log('User created/updated successfully:', response);
-          navigate(isEdit ? -1 : `../${PATHS.userPermissions}/${response.createUser.id || userId}`);
+          navigate(isEdit ? `/${isSystemAdminView ? 'system-admin' : 'user'}/${response.createUser.id || userId}` : `../${PATHS.userPermissions}/${response.createUser.id || userId}`);
         },
         onError: (error) => {
           const actionType = isPending ? 'Approve' : isEdit ? 'Update' : 'Create';
