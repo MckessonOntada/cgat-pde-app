@@ -121,7 +121,10 @@
     }
   }
   .filter-segment{
-    min-width: 320px;
+    min-width: unset;
+    @include mixins.respond(sm) {
+      min-width: 320px;
+    }
   }
   .filter-body{
     padding-top: var(--spacing-04);
