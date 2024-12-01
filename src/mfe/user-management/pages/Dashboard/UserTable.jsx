@@ -31,7 +31,7 @@ function UserTable({ selectableRows = false }) {
   const [selectedRows, setSelectedRows] = useState(null);
 
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const { isLoading, isError, data, activeTab, filterConfig, paginationConfig, applySort, setFilterConfig } = useUser();
+  const { isLoading, isError, data, activeTab, filterConfig, paginationConfig, applySort, setFilterConfig, refreshData } = useUser();
 
   const handleRowSelected = ({ selectedRows }) => {
     setSelectedRows(selectedRows);
@@ -50,7 +50,7 @@ function UserTable({ selectableRows = false }) {
     mutate(selectedRows, {
       onSuccess: (response) => {
         console.log(`User ${selectedRows} deactivated successfully:`, response);
-        refetchUsersData();
+        refreshData();
         setSelectedRows(null);
       },
       onError: (error) => {
@@ -95,7 +95,7 @@ function UserTable({ selectableRows = false }) {
       name: t('userManagement.table.name'),
       selector: (row) => `${row.name.firstName} ${row.name.lastName}`,
       sortable: true,
-      sortName: 'first_name',
+      sortName: 'last_name',
       wrap: true,
       cell: (props) => (
         <div className="cellEllipses">

@@ -94,6 +94,10 @@ export const UserProvider = ({ children }) => {
     refetch();
   }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
 
+  const refreshData = () => {
+    refetch();
+  }
+
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig })
 
   const applyFilters = (filters) => {
@@ -125,6 +129,7 @@ export const UserProvider = ({ children }) => {
       setPageNumber,
       activeTab,
       setActiveTab,
+      refreshData
     }),
     [updateFilterState, clearFilters, isLoading, isError, data, activeTab, setActiveTab, refetch]
   );
