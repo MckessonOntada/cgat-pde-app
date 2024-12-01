@@ -19,7 +19,7 @@ const RolesDataTable = () => {
 
 
     const handleSort = (selectedColumn, sortDirection) => {
-        applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection })
+        applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection })
     };
 
     const handleRowSelected = ({ selectedRows }) => {

@@ -64,7 +64,7 @@ function UserTable({ selectableRows = false }) {
   };
 
   const handleOnSortIconClick = (selectedColumn, sortDirection) => {
-    applySort({ sortBy: selectedColumn.sortName, sortOrder: sortDirection });
+    applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
   const columns = [
@@ -95,7 +95,7 @@ function UserTable({ selectableRows = false }) {
       name: t('userManagement.table.name'),
       selector: (row) => `${row.name.firstName} ${row.name.lastName}`,
       sortable: true,
-      sortName: 'last_name',
+      sortKey: 'last_name',
       wrap: true,
       cell: (props) => (
         <div className="cellEllipses">

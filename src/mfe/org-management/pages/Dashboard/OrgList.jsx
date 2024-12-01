@@ -1,41 +1,28 @@
-import React, { useState } from 'react';
-import { CustomDataTable, Button, Badge, Loader, CheckboxGroup, Modal } from '@mckesson/mcp-component-library';
-import { useTranslate } from '@src/translations/useTranslation';
-import { useNavigate } from 'react-router-dom';
-import Actions from './Actions';
-import { PATHS } from '../../routes/constants';
+import { Badge, Button, CheckboxGroup, CustomDataTable, Loader, Modal } from '@mckesson/mcp-component-library';
+import ApiRoutes from '@src/api/ApiRoutes';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import useSessionFeatures from '@src/hooks/useSessionFeatures';
-import { useOrg } from '../../context/OrgContext';
-import { useMutation } from 'react-query';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import ApiRoutes from '@src/api/ApiRoutes';
+import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
+import React, { useState } from 'react';
+import { useMutation } from 'react-query';
+import { useNavigate } from 'react-router-dom';
+import { useOrg } from '../../context/OrgContext';
+import { PATHS } from '../../routes/constants';
+import Actions from './Actions';
 
 const OrgList = () => {
   const { t } = useTranslate();
-  const [selectedRows, setSelectedRows] = useState(null);
+  const [selectedRows, setSelectedRows] = useState([]);
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const { data, paginationConfig, isLoading, isError, refreshData, setPageNumber, applySort } = useOrg();
 
   const location = (address) => {
     return `${address.address1 || ''}, ${address.city || ''}, ${address.state || ''}, ${address.pin || ''}`;
   };
-
-  const {
-    data,
-    pagination: {
-      currentPage,
-      totalPageCount,
-      totalRecords,
-      recordsPerPage,
-      update: { setCurrentPage }
-    },
-    isLoading,
-    isError,
-    reFetchOrganizationList
-  } = useOrg();
 
   const handleDeActivateOrg = async (orgId) => {
     const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}/${orgId}`, httpVerb.DELETE);
@@ -51,7 +38,7 @@ const OrgList = () => {
     onError: () => {},
     onSuccess: async () => {
       setSelectedRows(null);
-      await reFetchOrganizationList();
+      await refreshData();
     }
   });
 
@@ -98,18 +85,23 @@ const OrgList = () => {
           {row.name}
         </button>
       ),
+      sortable: true,
       wrap: true
     },
     {
       id: 'orgId',
       name: t('orgManagement.table.id'),
       selector: (row) => row.id,
+      sortable: true,
+      sortKey: 'id', 
       wrap: true
     },
     {
       id: 'location',
       name: t('orgManagement.table.location'),
       cell: (row) => <div className="cellEllipse">{location(row.address)}</div>,
+      sortable: true,
+      sortKey: 'id', 
       wrap: true
     },
     {
@@ -140,14 +132,11 @@ const OrgList = () => {
   ];
 
   const handleChangePage = (e, newPage) => {
-    setCurrentPage(newPage);
+    setPageNumber(newPage);
   };
 
   const handleSort = (selectedColumn, sortDirection, sortedRows) => {
-    // TODO
-    console.log('Column sorted:', selectedColumn);
-    console.log('Sort direction:', sortDirection);
-    console.log('Sorted rows:', sortedRows);
+    applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection })
   };
 
   const handleRowSelected = ({ selectedRows }) => {
@@ -171,14 +160,16 @@ const OrgList = () => {
     setSelectedRows(null);
   };
 
+  console.log(data);
+
   return (
     <div>
       {isLoading && <Loader type="screen" />}
-      {selectedRows && (
+      {selectedRows && selectedRows.length === 1 && (
         <div className="selected-item-alert">
-          <p className="selected-item-text">
-            {/* selectedRows.length */ 1} {t('orgManagement.selected_items')}
-          </p>
+            <p className="selected-item-text">
+              {selectedRows.length} {t('orgManagement.selected_items')}
+            </p>
           <Button variant="secondary" onClick={handleDeactivate}>
             {t('orgManagement.button.deactivate')}
           </Button>
@@ -191,12 +182,12 @@ const OrgList = () => {
         columns={columns}
         data={data} // Use currentData for pagination
         onSortIconClick={handleSort}
-        currentPage={currentPage}
-        totalPageCount={totalPageCount}
+        currentPage={paginationConfig.pageNumber}
+        totalPageCount={paginationConfig.totalPages}
         pagination={true}
         handleChangePage={handleChangePage}
-        totalRocords={totalRecords} // Corrected typo here
-        recordsPerPage={recordsPerPage}
+        totalRocords={paginationConfig.totalElements} // Corrected typo here
+        recordsPerPage={paginationConfig.pageSize}
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         isAdmin={true}

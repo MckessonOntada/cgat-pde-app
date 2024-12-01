@@ -1,6 +1,7 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useQuery } from 'react-query';
 import CommonDataService from '@src/api/commonService/CommonDataService';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { useQuery } from 'react-query';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 
 const RECORDS_PER_PAGE = 8;
@@ -10,96 +11,106 @@ const OrgContext = createContext();
 export const useOrg = () => {
   const context = useContext(OrgContext);
   if (!context) {
-    throw new Error('useOrg must be used within a OrganizationProvider.');
+    throw new Error('useOrg must be used within an OrgProvider.');
   }
   return context;
 };
 
-const INITIAL_STATE = {
+const INITIAL_FILTER_STATE = {
   searchQuery: '',
   location: [],
-  status: [],
-  pagination: {
-    currentPage: 0,
-    totalRecords: 0,
-    totalPageCount: 0,
-    recordsPerPage: 0
-  }
+  status: []
 };
 
-export const OrganizationProvider = ({ children }) => {
+const INITIAL_SORT_STATE = {
+  sortBy: 'name',
+  sortOrder: 'asc'
+};
+
+const INITIAL_PAGINATION_STATE = {
+  totalElements: 0,
+  pageSize: RECORDS_PER_PAGE,
+  totalPages: 0,
+  pageNumber: 1
+};
+
+export const OrgProvider = ({ children }) => {
+  const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
+  const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
+  const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const dispatch = useDispatch();
-  const [filterState, setFilterState] = useState(INITIAL_STATE);
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const updateFilterState = useCallback((field, value) => {
-    setFilterState((prevState) => ({
-      ...prevState,
-      [field]: value
-    }));
-  }, []);
-
-  const clearFilters = () => {
-    setFilterState(INITIAL_STATE);
-    console.log('Filter Cleared.');
-  };
-
-  // use from context
   const requestParams = useMemo(
     () => ({
-      pageNo: currentPage - 1,
-      pageSize: RECORDS_PER_PAGE,
-      sortBy: 'name',
-      sortOrder: 'asc'
+      pageNo: paginationConfig.pageNumber - 1,
+      pageSize: paginationConfig.pageSize,
+      sortBy: sortConfig.sortBy,
+      sortOrder: sortConfig.sortOrder,
+      ...(filterConfig.searchQuery && { query: filterConfig.searchQuery }),
+      ...(filterConfig.location?.length && { location: filterConfig.location }),
+      ...(filterConfig.status?.length && { status: filterConfig.status })
     }),
-    [currentPage]
+    [filterConfig, paginationConfig.pageNumber, sortConfig]
   );
 
-  // Fetch data from server
-  const { isLoading, data, isError, refetch } = useQuery({
-    queryKey: ['organizations'],
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ['organizations', requestParams],
     queryFn: async () => {
-      return await dispatch(CommonDataService.getOrganizationList(requestParams))
+      const response = await dispatch(CommonDataService.getOrganizationList(requestParams));
+      debugger;
+      if (response) {
+        const { content, totalElements, totalPages } = response;
+
+        setPaginationConfig((prevConfig) => ({
+          ...prevConfig,
+          totalElements,
+          totalPages
+        }));
+
+        return content;
+      }
+      return [];
     },
     refetchOnWindowFocus: false
   });
 
-const reFetchOrganizationList =()=>{
-  refetch(requestParams)
-}
-
   useEffect(() => {
-    // Refetch on pagination/filters/sorting
-    refetch(requestParams);
-  }, [currentPage, filterState]);
+    refetch();
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
 
-  const ctxValue = useMemo(
-    () => ({
-      data: data?.content,
-      filters: {
-        ...filterState,
-        update: {
-          setSearchQuery: (value) => updateFilterState('searchQuery', value),
-          setLocation: (value) => updateFilterState('location', value),
-          setStatus: (value) => updateFilterState('status', value)
-        },
-        clearFilters
-      },
-      pagination: {
-        currentPage: currentPage,
-        totalRecords: data?.totalElements,
-        totalPageCount: data?.totalPages,
-        recordsPerPage: RECORDS_PER_PAGE,
-        update: {
-          setCurrentPage
-        }
-      },
-      isLoading,
-      isError,
-      reFetchOrganizationList
-    }),
-    [data, updateFilterState, clearFilters, currentPage, isLoading, isError]
-  );
+  const refreshData = () => refetch();
 
-  return <OrgContext.Provider value={ctxValue}>{children}</OrgContext.Provider>;
+  const applyFilters = (filters) => {
+    setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
+    setFilterConfig((prevFilters) => ({
+      ...prevFilters,
+      ...filters
+    }));
+  };
+
+  const clearFilters = () => setFilterConfig(INITIAL_FILTER_STATE);
+
+  const applySort = (newSortConfig) => setSortConfig(newSortConfig);
+
+  const setPageNumber = (pageNumber) => {
+    setPaginationConfig((prevConfig) => ({
+      ...prevConfig,
+      pageNumber
+    }));
+  };
+
+  const contextValue = {
+    data: data || [],
+    isLoading,
+    isError,
+    filterConfig,
+    paginationConfig,
+    sortConfig,
+    refreshData,
+    applyFilters,
+    clearFilters,
+    applySort,
+    setPageNumber
+  };
+
+  return <OrgContext.Provider value={contextValue}>{children}</OrgContext.Provider>;
 };

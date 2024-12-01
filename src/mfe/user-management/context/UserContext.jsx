@@ -18,7 +18,7 @@ export const useUser = () => {
 const INITIAL_FILTER_STATE = {
   searchQuery: "",
   status: [],
-  role: null
+  role: []
 };
 
 const INITIAL_SORT_STATE = {
