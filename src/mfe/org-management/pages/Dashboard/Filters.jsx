@@ -33,7 +33,6 @@ function deepEqual(obj1, obj2) {
 const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) => {
   const { t } = useTranslate();
   const [isCardExpanded, setIsCardExpanded] = useState(false);
-  const [isClearFiltersVisible, setIsClearFiltersVisible] = useState(false);
   const {
     filterConfig,
     filterConfig: { searchQuery, location, status },
@@ -65,7 +64,8 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
   //   );
   // }, [searchQuery, location, status]);
 
-  const handleOnApplyFilter = () => {
+  const handleOnSubmit = (event) => {
+    event.preventDefault();
     applyFilters({ ...filters });
   };
 
@@ -88,19 +88,19 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
     });
   };
 
-  const isButtonPanelVisible = deepEqual(filterConfig, filters);
+  const isFilterChanged = deepEqual(filterConfig, filters);
+  const isClearFiltersButtonVisible = (searchQuery || location.length > 0 || status.length > 0)
 
   return (
-    <div className="filterBox line-height" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
-      {(showLocationDropdown || showStatusDropdown) && (
-        <>
-          <div className="toggle-container">
-            <div className="toggle-box">
-              <div onClick={handleExpandCard}>
-                <img src={isCardExpanded ? arrow_down : arrow_right} className="icon-align" alt="toggle-icon" />
-              </div>
-              <div className="autoSuggestSearch-container">
-                <InputField 
+    <form onSubmit={handleOnSubmit}>
+      <div className="filter-panel">
+        <div className="header">
+          <div className="header-segment">
+            <button type="button" onClick={handleExpandCard}>
+              <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
+            </button>
+            <div className={'ctrl-search-box'}>
+            <InputField 
                   id="search-box"
                   name="org-grid-search-query"
                   value={filters.searchQuery}
@@ -109,26 +109,25 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
                   useRegister={false}
                   placeHolder={t('orgManagement.role.placeholder')}
                 />
-              </div>
             </div>
+          </div>
+          <div>
             {!isCardExpanded && (
-              <div className="filter-main-search-box">
-                <div className="filter-controls">
-                  {(searchQuery || location.length > 0 || status.length > 0) && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
-                  <Button type="button" disabled={isButtonPanelVisible} size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" onClick={handleOnApplyFilter} />
-                </div>
+              <div className="filter-controls">
+                {isClearFiltersButtonVisible && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
+                <Button type="button" disabled={isFilterChanged} size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />
               </div>
             )}
           </div>
-          <ToggleUI in={isCardExpanded} timeout={400}>
-            <div className="expanded-content" style={{paddingBottom: '300px'}}>
-              <Divider />
-              <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
-                {showLocationDropdown && (
-                  <SearchableDropdown
+        </div>
+        <ToggleUI in={isCardExpanded} timeout={400}>
+          <div className="filter-body">
+            <div className="filter-controls">
+              <div className="filter-segment">
+              <SearchableDropdown
                     id="location"
                     isSuccess
-                    value={location}
+                    value={filters.location}
                     label={t('orgManagement.table.location')}
                     name={t('orgManagement.table.location')}
                     isRequired={false}
@@ -136,13 +135,12 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
                     options={LOCATIONS}
                     clearAllSelectedValues={() => setLocation([])}
                   />
-                )}
-
-                {showStatusDropdown && (
-                  <SearchableDropdown
+              </div>
+              <div className="filter-segment">
+              <SearchableDropdown
                     id="status"
                     isSuccess
-                    value={status}
+                    value={filters.status}
                     label={t('orgManagement.table.status')}
                     name={t('orgManagement.table.status')}
                     isRequired={false}
@@ -150,22 +148,18 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
                     options={STATUS}
                     clearAllSelectedValues={() => setStatus([])}
                   />
-                )}
-
-                {isCardExpanded && (
-                  <div className="filter-main-search-box">
-                    <div className="filter-controls">
-                      {(searchQuery || location.length > 0 || status.length > 0) && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
-                      <Button type="button" disabled={isButtonPanelVisible} size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" onClick={handleOnApplyFilter} />
-                    </div>
-                  </div>
-                )}
               </div>
+              {isCardExpanded && (
+                <div className="filter-controls">
+                  {isClearFiltersButtonVisible && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
+                  <Button type="submit" disabled={isFilterChanged} size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />
+                </div>
+              )}
             </div>
-          </ToggleUI>
-        </>
-      )}
-    </div>
+          </div>
+        </ToggleUI>
+      </div>
+    </form>
   );
 };
 

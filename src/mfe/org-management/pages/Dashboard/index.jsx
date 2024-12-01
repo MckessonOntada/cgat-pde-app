@@ -62,7 +62,9 @@ export default function Dashboard() {
 
       <OrgProvider>
         <div className="MCP-panel-container">
-          <Filters showLocationDropdown={true} showStatusDropdown={true} />
+          <div className='MCP-panel-container'>
+            <Filters showLocationDropdown={true} showStatusDropdown={true} />
+          </div>
           <h2 className="org-listing-label">{t('orgManagement.org_list')}</h2>
           <div className="orgList"><OrgList /></div>
         </div>

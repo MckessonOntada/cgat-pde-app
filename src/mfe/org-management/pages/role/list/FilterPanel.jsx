@@ -67,52 +67,51 @@ const FilterPanel = () => {
     });
   };
 
-  const handleOnApplyFilter = () => {
+  const handleOnApplyFilter = (event) => {
+    event.preventDefault();
     applyFilters({ ...filters });
   };
 
   const isButtonPanelVisible = deepEqual(filterConfig, filters);
 
-  console.log(filters);
-
   return (
-    <div>
-      <div className="filter-panel-header">
-        <div className="filter-controls">
-          <button onClick={handleExpandCard}>
-            <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
-          </button>
-          <div className="autoSuggestSearch-container">
-            <InputField errors={{}} id="search-box" name="firstName" value={filters.searchQuery} onInputChange={handleSearch} tooltipText={null} useRegister={false} placeHolder={t('orgManagement.role.placeholder')} />
-          </div>
-        </div>
-        {!isCardExpanded && (
-          <div className="filter-main-search-box">
-            <div className="filter-controls">
-              {(searchQuery || dateRange.length > 0) && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
-              <Button type="button" disabled={isButtonPanelVisible} size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" onClick={handleOnApplyFilter} />
+    <form onSubmit={handleOnApplyFilter}>
+      <div className="filter-panel">
+        <div className="header">
+          <div className="header-segment">
+            <button type="button" onClick={handleExpandCard}>
+              <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
+            </button>
+            <div className={"ctrl-search-box"}>
+              <InputField errors={{}} id="search-box" name="firstName" value={filters.searchQuery} onInputChange={handleSearch} tooltipText={null} useRegister={false} placeHolder={t('orgManagement.role.placeholder')} />
             </div>
           </div>
-        )}
-      </div>
-
-      <ToggleUI in={isCardExpanded} timeout={400}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '16px' }}>
-          <Divider />
-          <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-            <DateRangePicker dateRange={filters?.dateRange || []} onChange={handleOnDateRangeChange} />
-            {isCardExpanded && (
-              <div className="filter-main-search-box">
-                <div className="filter-controls">
-                  {(searchQuery || dateRange.length > 0) && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
-                  <Button type="button" disabled={isButtonPanelVisible} size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" onClick={handleOnApplyFilter} />
-                </div>
+          <div>
+            {!isCardExpanded && (
+              <div className="filter-controls">
+                {(searchQuery || dateRange.length > 0) && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
+                <Button type="submit" disabled={isButtonPanelVisible} size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />
               </div>
             )}
           </div>
         </div>
-      </ToggleUI>
-    </div>
+        <ToggleUI in={isCardExpanded} timeout={400}>
+          <div className='filter-body'>
+            <div className="filter-controls">
+              <div className='filter-segment'>
+                <DateRangePicker dateRange={filters?.dateRange || []} onChange={handleOnDateRangeChange} />
+              </div>
+              {isCardExpanded && (
+                <div className="filter-controls">
+                    {(searchQuery || dateRange.length > 0) && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
+                    <Button type="button" disabled={isButtonPanelVisible} size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" onClick={handleOnApplyFilter} />
+                </div>
+              )}
+            </div>
+          </div>
+        </ToggleUI>
+      </div>
+    </form>
   );
 };
 
