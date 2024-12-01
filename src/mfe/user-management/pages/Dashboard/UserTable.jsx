@@ -64,7 +64,8 @@ function UserTable({ selectableRows = false }) {
   };
 
   const handleOnSortIconClick = (selectedColumn, sortDirection) => {
-    applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    if(selectedColumn.sortKey)
+      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
   const columns = [

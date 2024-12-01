@@ -86,6 +86,7 @@ const OrgList = () => {
         </button>
       ),
       sortable: true,
+      sortKey: 'name', 
       wrap: true
     },
     {
@@ -136,7 +137,8 @@ const OrgList = () => {
   };
 
   const handleSort = (selectedColumn, sortDirection, sortedRows) => {
-    applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection })
+    if(selectedColumn.sortKey)
+      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection })
   };
 
   const handleRowSelected = ({ selectedRows }) => {
