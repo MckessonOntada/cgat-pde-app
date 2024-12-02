@@ -61,7 +61,7 @@ const OrgList = () => {
 
   const handleClick = (org) => {
     setOrganization(org);
-    navigate(PATHS.dashboard);
+    window.location.href = PATHS.dashboard;
   };
 
   const columns = [

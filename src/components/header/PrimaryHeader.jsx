@@ -31,6 +31,7 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState(null);
   const isSystemAdmin = AuthUtils.isSystemAdmin();
+  const isSystemAdminView = AuthUtils.isSystemAdminView();
 
   const requestParams = useMemo(
     () => ({
@@ -85,9 +86,13 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
     return (
       <div className={`${styles.navItemsLeft}`} id={''}>
         <div className={styles.branding}>
-          <Link className={`${styles.appLogo} ${styles.actionLink}`} to={''} id={''} aria-label="dashboard">
-            {props.children}
-          </Link>
+          {isSystemAdminView ? (
+            <Link className={`${styles.appLogo} ${styles.actionLink}`} to={''} id={''} aria-label="dashboard">
+              {props.children}
+            </Link>
+          ) : (
+            <h1>{selectedOrganization.name}</h1>
+          )}
         </div>
       </div>
     );

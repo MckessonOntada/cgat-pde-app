@@ -54,8 +54,12 @@ const RoleDetails = () => {
     if (JSON.stringify(formData) !== JSON.stringify(initialData)) {
       setModalSuccessCallback('list');
     } else {
-      navigate('/organization/roles');
+      navigate(isEdit ? `/organization/roles/${roleId}` : '/organization/roles');
     }
+  };
+
+  const handleGoBack = () => {
+    navigate('/organization/roles');
   };
 
   const roleValidationSchema = getRoleValidationSchema(t);
@@ -79,7 +83,7 @@ const RoleDetails = () => {
           const id = (data && data.id) || roleId;
           console.log(data);
           const { name, description } = data;
-          navigate(`/organization/roles/${id}/permissions`, { state: { ...row, name, description } });
+          navigate(isEdit ? `/organization/roles/${roleId}` : `/organization/roles/${id}/permissions`, { state: { ...row, name, description } });
         }
       },
       onError: (error) => {
@@ -87,10 +91,6 @@ const RoleDetails = () => {
       }
     }
   );
-
-  const handleOnSkip = () => {
-    navigate(`/organization/roles/${roleId}/permissions`, { state: row });
-  };
 
   const handleOnSubmit = (values, _action) => {
     const payload = {
@@ -126,7 +126,7 @@ const RoleDetails = () => {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <button className="MCP-Icon-Button py2" onClick={handleOnBackButtonClick}>
+        <button className="MCP-Icon-Button py2" onClick={handleGoBack}>
           <IconArrowLeft />
           <p>{t('orgManagement.role.captionsBtnBackToManageRoles')}</p>
         </button>
@@ -167,11 +167,6 @@ const RoleDetails = () => {
                       </div>
                     </div>
                     <ModuleHeader
-                      heading={
-                        <Button size="md" variant="secondary" onClick={handleOnSkip}>
-                          {t('orgManagement.button.skipToPermission')}
-                        </Button>
-                      }
                       controls={
                         <div className="controls">
                           <Button size="md" variant="secondary" onClick={handleOnBackButtonClick}>

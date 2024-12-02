@@ -28,7 +28,7 @@ const AddAccounts = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate(RoutePaths.pathUserManagement);
   };
 
   const handleSearchChange = (inputValue) => {
