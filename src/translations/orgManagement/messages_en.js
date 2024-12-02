@@ -21,6 +21,7 @@ export const OrgManagementEN = {
   'orgManagement.button.save': 'SAVE',
   'orgManagement.button.next': 'Next',
   'orgManagement.button.filter': 'APPLY FILTER',
+  'orgManagement.button.filterApplying': 'APPLYING FILTER',
   'orgManagement.button.back': 'Back',
   'orgManagement.back.organization': 'BACK TO MANAGE ORGANIZATION PAGE',
   'orgManagement.button.cancel': 'Cancel',
@@ -115,7 +116,7 @@ export const OrgManagementEN = {
   'orgManagement.role.captionsBtnBackToManageRoles': 'Back to Manage Roles',
   'orgManagement.role.captionsBtnSaveAndCancel': 'Save and Continue',
   'orgManagement.role.labelMaxChar1000': 'Maximum 1,000 Characters',
-  'orgManagement.role.placeholder': 'Select by name and location',
+  'orgManagement.role.placeholder': 'Search by name and location',
 
   'orgManagement.label.associateAccount': 'Associate Account',
   'orgManagement.messages.newRoleCreation': 'New role has been successfully created.',

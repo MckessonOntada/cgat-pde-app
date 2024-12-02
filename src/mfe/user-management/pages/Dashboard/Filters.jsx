@@ -6,26 +6,7 @@ import { ROLES, STATUS } from '../../mockData/UsersData';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import arrow_down from '@src/assets/image/arrow_down.svg';
 import ToggleUI from '@src/components/toggleui';
-
-function deepEqual(obj1, obj2) {
-  if (obj1 === obj2) return true;
-
-  if (obj1 === null || obj2 === null || typeof obj1 !== 'object' || typeof obj2 !== 'object') {
-    return false;
-  }
-
-  const keys1 = Object.keys(obj1);
-  const keys2 = Object.keys(obj2);
-
-  if (keys1.length !== keys2.length) return false;
-
-  for (const key of keys1) {
-    if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
-      return false;
-    }
-  }
-  return true;
-}
+import CommonUtils from '@src/util/CommonUtils';
 
 const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
   const { t } = useTranslate();
@@ -76,7 +57,14 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
   };
 
   const isClearFiltersButtonVisible = searchQuery || role.length > 0 || status.length > 0;
-  const isFilterChanged = deepEqual(filterConfig, filters);
+  const areFiltersEqual = CommonUtils.deepEqual(filterConfig, filters);
+
+  const controlButtons = (
+    <div className="filter-controls">
+      {isClearFiltersButtonVisible && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
+      {!areFiltersEqual && <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" /> }
+    </div>
+  )
 
   return (
     <form onSubmit={handleOnSubmit}>
@@ -87,16 +75,11 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
               <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
             </button>
             <div className={'ctrl-search-box'}>
-              <InputField id="user-grid-search-box" name="searchQuery" value={filters.searchQuery} useRegister={false} onInputChange={handleSearchChange} placeHolder={''} />
+              <InputField id="user-grid-search-box" name="searchQuery" value={filters.searchQuery} useRegister={false} onInputChange={handleSearchChange} placeholder={t('userManagement.placeholder.searchByNameAndLocation')} />
             </div>
           </div>
           <div>
-            {!isCardExpanded && (
-              <div className="filter-controls">
-                {isClearFiltersButtonVisible && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
-                <Button type="submit" disabled={isFilterChanged} size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />
-              </div>
-            )}
+            {!isCardExpanded && controlButtons}
           </div>
         </div>
         <ToggleUI in={isCardExpanded} timeout={400}>
@@ -128,12 +111,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
                   clearAllSelectedValues={() => setStatus([])}
                 />
               </div>
-              {isCardExpanded && (
-                <div className="filter-controls">
-                  {isClearFiltersButtonVisible && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
-                  <Button type="submit" disabled={isFilterChanged} size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />
-                </div>
-              )}
+              {isCardExpanded && controlButtons}
             </div>
           </div>
         </ToggleUI>

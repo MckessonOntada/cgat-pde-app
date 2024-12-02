@@ -28,7 +28,7 @@ export const UserManagementEN = {
   'userManagement.table.action.view': 'VIEW',
   'userManagement.empty_table.description': 'You need to add Users to see data in this table.',
   'userManagement.add.label': 'Add User',
-
+  'userManagement.placeholder.searchByNameAndLocation': 'Select by name and location',
   'userManagement.filter.label': 'Filter By',
   'userManagement.table.warning': 'Warning',
   'userManagement.snackbar.fileWarning': 'File has warning. Please check the file and re-upload',

@@ -109,7 +109,7 @@ export const RoleProvider = ({ children }) => {
     return params;
   }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
 
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["roles", requestParams],
     queryFn: async () => {
       const response = await HttpResourceService.callRest(
@@ -170,6 +170,7 @@ export const RoleProvider = ({ children }) => {
   const contextValue = {
     data: data || [],
     isLoading,
+    isFetching,
     isError,
     filterConfig,
     paginationConfig,

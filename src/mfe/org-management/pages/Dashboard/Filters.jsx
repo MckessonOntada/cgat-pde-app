@@ -6,29 +6,8 @@ import { useTranslate } from '@src/translations/useTranslation';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import arrow_down from '@src/assets/image/arrow_down.svg';
 import ToggleUI from '@src/components/toggleui';
-import { debugIds, ID } from '@src/constants/id';
+import CommonUtils from '@src/util/CommonUtils';
 import './index.scss';
-
-function deepEqual(obj1, obj2) {
-  if (obj1 === obj2) return true;
-
-  if (obj1 === null || obj2 === null || typeof obj1 !== 'object' || typeof obj2 !== 'object') {
-    return false;
-  }
-
-  const keys1 = Object.keys(obj1);
-  const keys2 = Object.keys(obj2);
-
-  if (keys1.length !== keys2.length) return false;
-
-  for (const key of keys1) {
-    if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
-      return false;
-    }
-  }
-
-  return true;
-}
 
 const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) => {
   const { t } = useTranslate();
@@ -88,28 +67,30 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
     });
   };
 
-  const isFilterChanged = deepEqual(filterConfig, filters);
+  const areFiltersEqual = CommonUtils.deepEqual(filterConfig, filters);
   const isClearFiltersButtonVisible = searchQuery || location.length > 0 || status.length > 0;
+
+  const controlButtons = (
+    <div className="filter-controls">
+      { isClearFiltersButtonVisible && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
+      { !areFiltersEqual && <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" /> }
+    </div>
+  )
 
   return (
     <form onSubmit={handleOnSubmit}>
       <div className="filter-panel">
         <div className="header">
           <div className="header-segment">
-            <button type="button" onClick={handleExpandCard}>
+            <button type="button" onClick={handleExpandCard} disabled={true}>
               <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
             </button>
             <div className={'ctrl-search-box'}>
-              <InputField id="search-box" name="org-grid-search-query" value={filters.searchQuery} onInputChange={handleSearch} tooltipText={null} useRegister={false} placeHolder={t('orgManagement.role.placeholder')} />
+              <InputField id="search-box" name="org-grid-search-query" value={filters.searchQuery} onInputChange={handleSearch} tooltipText={null} useRegister={false} placeholder={t('orgManagement.role.placeholder')} />
             </div>
           </div>
           <div>
-            {!isCardExpanded && (
-              <div className="filter-controls">
-                {isClearFiltersButtonVisible && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
-                <Button type="submit" disabled={isFilterChanged} size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />
-              </div>
-            )}
+            {!isCardExpanded && controlButtons}
           </div>
         </div>
         <ToggleUI in={isCardExpanded} timeout={400}>
@@ -141,12 +122,7 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
                   clearAllSelectedValues={() => setStatus([])}
                 />
               </div>
-              {isCardExpanded && (
-                <div className="filter-controls">
-                  {isClearFiltersButtonVisible && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
-                  <Button type="submit" disabled={isFilterChanged} size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />
-                </div>
-              )}
+              {isCardExpanded && controlButtons}
             </div>
           </div>
         </ToggleUI>

@@ -1,31 +1,12 @@
-import { Button, DateRangePicker, Divider, InputField } from '@mckesson/mcp-component-library';
+import { Button, ProgressButton, DateRangePicker, Divider, InputField } from '@mckesson/mcp-component-library';
 import arrow_down from '@src/assets/image/arrow_down.svg';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import ToggleUI from '@src/components/toggleui';
 import { useTranslate } from '@src/translations/useTranslation';
 import React, { useState } from 'react';
 import { useRole } from '../../../context/RoleContext';
+import CommonUtils from '@src/util/CommonUtils';
 
-function deepEqual(obj1, obj2) {
-  if (obj1 === obj2) return true;
-
-  if (obj1 === null || obj2 === null || typeof obj1 !== 'object' || typeof obj2 !== 'object') {
-    return false;
-  }
-
-  const keys1 = Object.keys(obj1);
-  const keys2 = Object.keys(obj2);
-
-  if (keys1.length !== keys2.length) return false;
-
-  for (const key of keys1) {
-    if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
-      return false;
-    }
-  }
-
-  return true;
-}
 
 const FilterPanel = () => {
   const {
@@ -72,7 +53,15 @@ const FilterPanel = () => {
     applyFilters({ ...filters });
   };
 
-  const isButtonPanelVisible = deepEqual(filterConfig, filters);
+  const isClearFiltersButtonVisible = (searchQuery || dateRange.length > 0);
+  const areFiltersEqual = CommonUtils.deepEqual(filterConfig, filters);
+
+  const controlButtons = (
+    <div className="filter-controls">
+      {isClearFiltersButtonVisible && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
+      {!areFiltersEqual && <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />}
+    </div>
+  )
 
   return (
     <form onSubmit={handleOnApplyFilter}>
@@ -83,16 +72,11 @@ const FilterPanel = () => {
               <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
             </button>
             <div className={"ctrl-search-box"}>
-              <InputField errors={{}} id="search-box" name="firstName" value={filters.searchQuery} onInputChange={handleSearch} tooltipText={null} useRegister={false} placeHolder={t('orgManagement.role.placeholder')} />
+              <InputField errors={{}} id="search-box" name="firstName" value={filters.searchQuery} onInputChange={handleSearch} tooltipText={null} useRegister={false} placeholder={t('orgManagement.role.placeholder')} />
             </div>
           </div>
           <div>
-            {!isCardExpanded && (
-              <div className="filter-controls">
-                {(searchQuery || dateRange.length > 0) && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
-                <Button type="submit" disabled={isButtonPanelVisible} size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />
-              </div>
-            )}
+            {!isCardExpanded && controlButtons}
           </div>
         </div>
         <ToggleUI in={isCardExpanded} timeout={400}>
@@ -101,12 +85,7 @@ const FilterPanel = () => {
               <div className='filter-segment'>
                 <DateRangePicker dateRange={filters?.dateRange || []} onChange={handleOnDateRangeChange} />
               </div>
-              {isCardExpanded && (
-                <div className="filter-controls">
-                    {(searchQuery || dateRange.length > 0) && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
-                    <Button type="button" disabled={isButtonPanelVisible} size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" onClick={handleOnApplyFilter} />
-                </div>
-              )}
+              {isCardExpanded && controlButtons}
             </div>
           </div>
         </ToggleUI>
