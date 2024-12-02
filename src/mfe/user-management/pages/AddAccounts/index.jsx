@@ -25,6 +25,7 @@ const AddAccounts = () => {
   const isSuccess = location.state?.isSuccess || false;
   const practiceId = AuthUtils.getPracticeId() ?? 1;
   const selectedCount = selectedAccounts?.length || 0;
+  const isSystemAdminView = AuthUtils.isSystemAdminView();
 
   const handleGoBack = () => {
     navigate(-1);
@@ -44,6 +45,7 @@ const AddAccounts = () => {
     handleAddAccounts();
     navigate(RoutePaths.pathUserManagement, { state: { isSuccess: true } });
   };
+
   const requestParams = {
     userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
   };
@@ -81,27 +83,33 @@ const AddAccounts = () => {
         <MdOutlineKeyboardArrowLeft size="24px" />
         <p>Back to Manage Users</p>
       </div>
+
       <ModuleHeader heading={<p className="primaryHeading">{isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}</p>} />
-      <div className="stepper">
-        <Stepper
-          activeIndex={3}
-          dividerText="of"
-          stepHeaders={[
-            {
-              label: t('userManagement.stepper.option.user_details')
-            },
-            {
-              label: t('userManagement.stepper.option.roles_and_permissions')
-            },
-            {
-              label: t('userManagement.stepper.option.associate_accounts')
-            }
-          ]}
-        />
-      </div>
+
+      {!isEdit && (
+        <div className="stepper">
+          <Stepper
+            activeIndex={3}
+            dividerText="of"
+            stepHeaders={[
+              {
+                label: t('userManagement.stepper.option.user_details')
+              },
+              {
+                label: t('userManagement.stepper.option.roles_and_permissions')
+              },
+              {
+                label: t('userManagement.stepper.option.associate_accounts')
+              }
+            ]}
+          />
+        </div>
+      )}
+
       <div class="MCP-panel-container line-height grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
         <div className="MCP-module-body">
           {!isEdit && <p className="secondaryHeading"> {t('userManagement.add_accounts.labelheader')}</p>}
+
           <div className="MCP-panel-container">
             <div className="toggle-box">
               <img src={arrow_right} className="icon-align" />

@@ -120,7 +120,9 @@ export default function ViewOrganization() {
         <MdOutlineKeyboardArrowLeft size="24px" />
         <p>{t('orgManagement.back.organization')}</p>
       </div>
+
       {!addNewAccounts && <ModuleHeader heading={<p className="primaryHeading">{t('orgManagement.create_org.org-details')}</p>} />}
+
       {!isView && (
         <div className="stepper">
           <Stepper
@@ -137,11 +139,13 @@ export default function ViewOrganization() {
           />
         </div>
       )}
+
       {isView && !addNewAccounts && data && (
         <div className="details-view-container">
           <DetailsView data={data} onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: data }, true)} />
         </div>
       )}
+
       <ModuleHeader
         heading={<p className="primaryHeading">{addNewAccounts ? t('orgManagement.select_account') : t('orgManagement.link')}</p>}
         controls={

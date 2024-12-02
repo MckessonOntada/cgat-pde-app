@@ -19,10 +19,12 @@ const UserPermissions = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
   const location = useLocation();
-  const { isEdit, permissionsData } = location.state || {};
+  const { permissionsData } = location.state || {};
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alert, setAlert] = useState(null);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const isEdit = !!userId;
+
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
@@ -79,23 +81,27 @@ const UserPermissions = () => {
         <p>Back to Manage Users</p>
       </div>
       <ModuleHeader heading={<p className="primaryHeading">{t('userManagement.create_user')}</p>} />
-      <div className="stepper">
-        <Stepper
-          activeIndex={2}
-          dividerText="of"
-          stepHeaders={[
-            {
-              label: t('userManagement.stepper.option.user_details')
-            },
-            {
-              label: t('userManagement.stepper.option.roles_and_permissions')
-            },
-            {
-              label: t('userManagement.stepper.option.associate_accounts')
-            }
-          ]}
-        />
-      </div>
+
+      {!isEdit && (
+        <div className="stepper">
+          <Stepper
+            activeIndex={2}
+            dividerText="of"
+            stepHeaders={[
+              {
+                label: t('userManagement.stepper.option.user_details')
+              },
+              {
+                label: t('userManagement.stepper.option.roles_and_permissions')
+              },
+              {
+                label: t('userManagement.stepper.option.associate_accounts')
+              }
+            ]}
+          />
+        </div>
+      )}
+
       {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
 
       <Formik

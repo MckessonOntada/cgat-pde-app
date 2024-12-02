@@ -30,9 +30,7 @@ export default function Dashboard() {
       setIsAlertVisible(true);
       setAlertDescription(isReject ? 'Organization User Rejected Successfully' : 'Organization User Created Successfully');
       // Set a timeout to auto-close the alert after 10 seconds
-      const timer = setTimeout(() => {
-        handleAlertClose;
-      }, 10000); //This should be as same as duration that mentioed in Alert
+      const timer = setTimeout(handleAlertClose, 10000); //This should be as same as duration that mentioed in Alert
 
       // Clear timeout if component unmounts or if isSuccess changes
       return () => clearTimeout(timer);

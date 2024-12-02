@@ -190,7 +190,7 @@ const CreateUser = () => {
       {
         onSuccess: (response) => {
           console.log('User created/updated successfully:', response);
-          navigate(isEdit ? -1 : `../${PATHS.userPermissions}/${response.createUser.id || userId}`);
+          navigate(isEdit ? `/${isSystemAdminView ? 'system-admin' : 'user'}/${response.createUser.id || userId}` : `../${PATHS.userPermissions}/${response.createUser.id || userId}`);
         },
         onError: (error) => {
           const actionType = isPending ? 'Approve' : isEdit ? 'Update' : 'Create';
@@ -213,24 +213,29 @@ const CreateUser = () => {
       </div>
 
       <ModuleHeader heading={<p className="primaryHeading">{t(isSystemAdminView ? 'userManagement.create_sysadmin' : 'userManagement.create_user')}</p>} />
-      <div className="stepper">
-        <Stepper
-          activeIndex={1}
-          dividerText="of"
-          stepHeaders={[
-            {
-              label: t('userManagement.stepper.option.user_details')
-            },
-            {
-              label: t('userManagement.stepper.option.roles_and_permissions')
-            },
-            {
-              label: t('userManagement.stepper.option.associate_accounts')
-            }
-          ]}
-        />
-      </div>
+
+      {!isEdit && (
+        <div className="stepper">
+          <Stepper
+            activeIndex={1}
+            dividerText="of"
+            stepHeaders={[
+              {
+                label: t('userManagement.stepper.option.user_details')
+              },
+              {
+                label: t('userManagement.stepper.option.roles_and_permissions')
+              },
+              {
+                label: t('userManagement.stepper.option.associate_accounts')
+              }
+            ]}
+          />
+        </div>
+      )}
+
       {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
+
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}

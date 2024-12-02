@@ -1,5 +1,5 @@
 import React from 'react';
-import * as Yup from "yup";
+import * as Yup from 'yup';
 import { Stepper, Button, Modal } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -16,165 +16,148 @@ import { useRole } from '../../../context/RoleContext';
 import DiscardChangesModal from './DiscardChangesModel';
 
 function arePermissionsEqual(arr1, arr2) {
-    if (Array.isArray(arr1) && !arr2 || Array.isArray(arr2) && !arr1)
-        return false;
+  if ((Array.isArray(arr1) && !arr2) || (Array.isArray(arr2) && !arr1)) return false;
 
-    if (arr1.length !== arr2.length) {
-        return false;
-    }
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
 
-    const sortedArr1 = [...arr1].sort();
-    const sortedArr2 = [...arr2].sort();
+  const sortedArr1 = [...arr1].sort();
+  const sortedArr2 = [...arr2].sort();
 
-    return sortedArr1.every((value, index) => value === sortedArr2[index]);
+  return sortedArr1.every((value, index) => value === sortedArr2[index]);
 }
 
 const RolePermissions = () => {
-    const { t } = useTranslate();
-    const navigate = useNavigate();
-    const { roleId } = useParams();
-    const location = useLocation();
-    const row = location.state || null;
-    const { setMessage } = useRole();
-    const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-    const [enabledPermissions, setEnabledPermissions] = React.useState(row?.permissions ? [...row.permissions] : []);
-    const [inheritedRole, setInheritedRole] = React.useState(null);
-    const { refreshData } = useRole();
+  const { t } = useTranslate();
+  const navigate = useNavigate();
+  const { roleId } = useParams();
+  const location = useLocation();
+  const row = location.state || null;
+  const { setMessage } = useRole();
+  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
+  const [enabledPermissions, setEnabledPermissions] = React.useState(row?.permissions ? [...row.permissions] : []);
+  const [inheritedRole, setInheritedRole] = React.useState(null);
+  const { refreshData } = useRole();
+  const isEdit = !!roleId;
 
+  const handleOnCancelButtonClick = () => {
+    if (!arePermissionsEqual(row.permissions, enabledPermissions)) {
+      setModalSuccessCallback('list');
+    } else navigate(`/organization/${PATHS.roles}`);
+  };
 
+  const mutation = useMutation(
+    async (data) => {
+      const res = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLE_PERMISSIONS(roleId)}`, httpVerb.PATCH, data);
 
-    const handleOnCancelButtonClick = () => {
-        if (!arePermissionsEqual(row.permissions, enabledPermissions)) {
-            setModalSuccessCallback("list");
-        }
-        else
-            navigate(`/organization/${PATHS.roles}`);
-    };
-
-    const mutation = useMutation(
-        async (data) => {
-            const res = await HttpResourceService.callRest(
-                `${ApiRoutes.GET_ROLE_PERMISSIONS(roleId)}`,
-                httpVerb.PATCH,
-                data
+      return res;
+    },
+    {
+      onSuccess: (res) => {
+        const data = res?.data;
+        if (data) {
+          if (row?.permissions) {
+            setMessage(
+              {
+                primaryMessage: t('orgManagement.messages.roleUpdate'),
+                messageKind: 'success'
+              },
+              10000
             );
-
-            return res;
-        },
-        {
-            onSuccess: (res) => {
-                const data = res?.data;
-                if (data) {
-                    if (row?.permissions) {
-                        setMessage({
-                            primaryMessage: t('orgManagement.messages.roleUpdate'),
-                            messageKind: 'success'
-                        }, 10000);
-                    } else {
-                        setMessage({
-                            primaryMessage: t('orgManagement.messages.newRoleCreation'),
-                            messageKind: 'success'
-                        }, 10000);
-                    }
-                    refreshData();
-                    navigate(`/organization/${PATHS.roles}`);
-                }
-            },
-            onError: (error) => {
-                console.error('Error posting data:', error);
-            },
+          } else {
+            setMessage(
+              {
+                primaryMessage: t('orgManagement.messages.newRoleCreation'),
+                messageKind: 'success'
+              },
+              10000
+            );
+          }
+          refreshData();
+          navigate(`/organization/${PATHS.roles}`);
         }
-    );
-
-    const forms = React.useMemo(() => [
-        {
-            name: 'roleDetails',
-            label: t('orgManagement.role.labelRolesDetails'),
-        },
-        {
-            name: 'addPermissions',
-            label: t('orgManagement.role.labelAddPermissions'),
-        },
-    ], [t]);
-
-    const handleGoBack = () => {
-
-        if (!arePermissionsEqual(row?.permissions, enabledPermissions)) {
-            setModalSuccessCallback("back");
-        }
-        else
-            navigate(`../${roleId}/edit-role`, { state: row });
+      },
+      onError: (error) => {
+        console.error('Error posting data:', error);
+      }
     }
+  );
 
-    const handleNavigate = () => {
-        if (modalSuccessCallback === "back")
-            navigate(`../${roleId}/edit-role`, { state: row });
-        else if (modalSuccessCallback === "list") {
-            navigate('/organization/roles');
-        }
+  const forms = React.useMemo(
+    () => [
+      {
+        name: 'roleDetails',
+        label: t('orgManagement.role.labelRolesDetails')
+      },
+      {
+        name: 'addPermissions',
+        label: t('orgManagement.role.labelAddPermissions')
+      }
+    ],
+    [t]
+  );
+
+  const handleGoBack = () => {
+    if (!arePermissionsEqual(row?.permissions, enabledPermissions)) {
+      setModalSuccessCallback('back');
+    } else navigate(`../${roleId}/edit-role`, { state: row });
+  };
+
+  const handleNavigate = () => {
+    if (modalSuccessCallback === 'back') navigate(`../${roleId}/edit-role`, { state: row });
+    else if (modalSuccessCallback === 'list') {
+      navigate('/organization/roles');
     }
+  };
 
-    const handleSaveAndContinue = (values) => {
-        const permissions = Object.values(enabledPermissions).flat();
-        mutation.mutate(permissions);
-    }
+  const handleSaveAndContinue = (values) => {
+    const permissions = Object.values(enabledPermissions).flat();
+    mutation.mutate(permissions);
+  };
 
-    return (
-        <div className="MCP-module-wrapper">
-            <div>
-                <button
-                    className="MCP-Icon-Button py2"
-                    onClick={handleGoBack}
-                >
-                    <IconArrowLeft />
-                    <p>{t('orgManagement.role.captionsBtnBackToManageRoles')}</p>
-                </button>
-            </div>
+  return (
+    <div className="MCP-module-wrapper">
+      <div>
+        <button className="MCP-Icon-Button py2" onClick={handleGoBack}>
+          <IconArrowLeft />
+          <p>{t('orgManagement.role.captionsBtnBackToManageRoles')}</p>
+        </button>
+      </div>
 
-            <ModuleHeader heading={<PageHeader heading={t('orgManagement.role.labelAddRole')} />} />
+      <ModuleHeader heading={<PageHeader heading={t('orgManagement.role.labelAddRole')} />} />
 
-            <div className="MCP-module-body">
-                <Stepper
-                    activeIndex={2}
-                    dividerText="of"
-                    mobileLabel={t('orgManagement.role.labelStep')}
-                    stepHeaders={forms.map((f) => ({ label: f.label }))}
-                />
-                <div>
-                    <Formik
-                        initialValues={{}}
-                        onSubmit={(values, actions) => {
-                            handleSaveAndContinue(values);
-                        }}
-                        validateOnChange={false}
-                        validateOnBlur={true}
-                    >
-                        {({ values }) => (
-                            <Form>
-                                <PermissionForm
-                                    enabledPermissions={enabledPermissions}
-                                    setEnabledPermissions={setEnabledPermissions}
-                                    onRoleChange={setInheritedRole}
-                                    handleRoleSelect={() => { }}
-                                />
+      <div className="MCP-module-body">
+        {!isEdit && <Stepper activeIndex={2} dividerText="of" mobileLabel={t('orgManagement.role.labelStep')} stepHeaders={forms.map((f) => ({ label: f.label }))} />}
 
-                                <div className={'buttonGroup'}>
-                                    <Button variant="secondary" type="button" onClick={handleOnCancelButtonClick} size={'md'}>
-                                        {t('orgManagement.button.cancel')}
-                                    </Button>
-                                    <Button variant="primary" type="submit" size={'md'}>{t('orgManagement.role.captionsBtnSaveAndCancel')}</Button>
-                                </div>
-                            </Form>
-                        )}</Formik>
+        <div>
+          <Formik
+            initialValues={{}}
+            onSubmit={(values, actions) => {
+              handleSaveAndContinue(values);
+            }}
+            validateOnChange={false}
+            validateOnBlur={true}>
+            {({ values }) => (
+              <Form>
+                <PermissionForm enabledPermissions={enabledPermissions} setEnabledPermissions={setEnabledPermissions} onRoleChange={setInheritedRole} handleRoleSelect={() => {}} />
+
+                <div className={'buttonGroup'}>
+                  <Button variant="secondary" type="button" onClick={handleOnCancelButtonClick} size={'md'}>
+                    {t('orgManagement.button.cancel')}
+                  </Button>
+                  <Button variant="primary" type="submit" size={'md'}>
+                    {t('orgManagement.role.captionsBtnSaveAndCancel')}
+                  </Button>
                 </div>
-            </div>
-            <DiscardChangesModal
-                isOpen={Boolean(modalSuccessCallback)}
-                onClose={() => setModalSuccessCallback(null)}
-                onConfirm={handleNavigate}
-            />
+              </Form>
+            )}
+          </Formik>
         </div>
-    );
+      </div>
+      <DiscardChangesModal isOpen={Boolean(modalSuccessCallback)} onClose={() => setModalSuccessCallback(null)} onConfirm={handleNavigate} />
+    </div>
+  );
 };
 
 export default RolePermissions;

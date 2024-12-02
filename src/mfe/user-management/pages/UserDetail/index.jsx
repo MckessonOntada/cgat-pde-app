@@ -2,7 +2,6 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as pencil_write_edit } from '@src/assets/image/pencil-write-edit.svg';
-import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import { Badge, Button, Switch, AutoSuggestSearch, Alert } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
@@ -28,6 +27,7 @@ function getbgColorOnRole(Role) {
       return 'info';
   }
 }
+
 const UserDetail = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ const UserDetail = () => {
   const location = useLocation();
   const isSuccess = location.state?.isSuccess || false;
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const practiceId = AuthUtils.practiceId;
+
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
@@ -47,6 +47,8 @@ const UserDetail = () => {
   const { isLoading, isError, data } = useQuery({
     queryKey: [`users/${userId}`],
     queryFn: async () => {
+      if (!userId) return {};
+
       const res = await HttpResourceService.callRest(
         `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, // Use practice id from organization
         httpVerb.GET,
@@ -58,14 +60,14 @@ const UserDetail = () => {
   });
 
   useEffect(() => {
-    if (isSuccess) {
-      setIsAlertVisible(true);
-      setAlertDescription(`${location.state.recCount} new accounts have been successfully linked to this user.`);
-      const timer = setTimeout(() => {
-        handleAlertClose;
-      }, 10000);
-      return () => clearTimeout(timer);
-    }
+    if (!isSuccess) return;
+
+    setIsAlertVisible(true);
+    setAlertDescription(`${location.state.recCount} new accounts have been successfully linked to this user.`);
+
+    const timer = setTimeout(handleAlertClose, 10000);
+
+    return () => clearTimeout(timer);
   }, [isSuccess, location.pathname, location.state, navigate]);
 
   const handleAlertClose = () => {
@@ -76,20 +78,24 @@ const UserDetail = () => {
   const goBack = () => {
     navigate(-1);
   };
+
   const onRemoveAccount = useCallback(
     (item) => {
       setSelectedAccounts(selectedAccounts.filter((account) => account.id !== item.id));
     },
     [selectedAccounts, setSelectedAccounts]
   );
+
   const handleSearchChange = (inputValue) => {
     setSearchText(inputValue);
   };
 
   const formatPhoneNumber = (phoneNumber) => {
     if (!phoneNumber) return '';
+
     const cleaned = phoneNumber.replace(/\D/g, '');
     const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+
     if (match) {
       return `(${match[1]}) ${match[2]}-${match[3]}`;
     }
@@ -99,9 +105,11 @@ const UserDetail = () => {
 
   const groupPermissionsByCategory = (userPermissions, permissionsEnum) => {
     const groupedPermissions = {};
+
     userPermissions.forEach((permission) => {
       Object.keys(permissionsEnum).forEach((category) => {
         const categoryPermissions = permissionsEnum[category];
+
         if (Object.values(categoryPermissions).includes(permission)) {
           if (!groupedPermissions[category]) {
             groupedPermissions[category] = [];
@@ -113,6 +121,7 @@ const UserDetail = () => {
 
     return groupedPermissions;
   };
+
   const groupedPermissions = groupPermissionsByCategory(data?.permissions || [], PERMISSIONS_ENUM);
 
   return (
@@ -121,6 +130,7 @@ const UserDetail = () => {
         <MdOutlineKeyboardArrowLeft size="24px" />
         <p>{t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}</p>
       </div>
+
       <div className="MCP-module-body">
         <ModuleHeader
           heading={<p className="primaryHeading">{t('userManagement.header.view.edit_user')}</p>}
@@ -130,6 +140,7 @@ const UserDetail = () => {
             </Button>
           }
         />
+
         <div className="MCP-panel-container">
           <div className="user-header">
             <div className="user-info">
@@ -143,6 +154,7 @@ const UserDetail = () => {
               <Switch handleToggle={() => {}} id="id" disabled={!data?.isActive} label={data?.isActive ? 'Active' : ''} labelPosition="right" name="Toggle" size="lg" value />
             </div>
           </div>
+
           <div className="userCardContainer grid grid-gap-24 grid-cols-1 md:grid-cols-4">
             <div>
               <span className="view_label">User Address</span>
@@ -150,26 +162,32 @@ const UserDetail = () => {
                 {data?.address.address1}, {data?.address.address2}, {data?.address.city}, {data?.address.state}, {data?.address.zip}
               </p>
             </div>
+
             <div>
               <span className="view_label">Email ID</span>
               <p className="label-text">{data?.contact.email}</p>
             </div>
+
             <div>
               <span className="view_label">Phone Number</span>
               <p className="label-text"> {data?.contact.phone ? formatPhoneNumber(data.contact.phone) : 'N/A'} </p>
             </div>
+
             <div>
               <span className="view_label">Fax</span>
               <p className="label-text">{data?.contact.fax}</p>
             </div>
+
             <div>
               <span className="view_label">City</span>
               <p className="label-text">{data?.address.city}</p>
             </div>
+
             <div>
               <span className="view_label">Zip</span>
               <p className="label-text"> {data?.address.zip}</p>
             </div>
+
             <div>
               <span className="view_label">State</span>
               <p className="label-text">{data?.address.state}</p>
@@ -222,6 +240,7 @@ const UserDetail = () => {
               </div>
             }
           />
+
           {isSuccess && isAlertVisible && (
             <Alert
               description={alertDescription} //Number should be dynamic --To Do
@@ -230,6 +249,7 @@ const UserDetail = () => {
               duration={10000}
             />
           )}
+
           <div className="MCP-panel-container">
             <div class="filterBox line-height grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
               <div className="toggle-box">
@@ -241,6 +261,7 @@ const UserDetail = () => {
                 </div>
               </div>
             </div>
+
             <div className="grid grid-gap-16">
               <AccountsList selectableRows={false} omitColumns={['distributionChannel']} practiceId={data?.practiceId} userId={data?.id} />
             </div>
