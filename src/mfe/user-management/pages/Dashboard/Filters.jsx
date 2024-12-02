@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../../context/UserContext';
-import { InputField, Button, Divider, SearchableDropdown } from '@mckesson/mcp-component-library';
+import { InputField, Button, AutoSuggestDropdown, SearchableDropdown } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ROLES, STATUS } from '../../mockData/UsersData';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import arrow_down from '@src/assets/image/arrow_down.svg';
 import ToggleUI from '@src/components/toggleui';
 import CommonUtils from '@src/util/CommonUtils';
+import { availableMemory } from 'process';
 
 const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
   const { t } = useTranslate();
   const {
+    roleList,
     filterConfig,
     filterConfig: { searchQuery, role, status },
     clearFilters,
@@ -22,6 +24,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
     status: []
   });
   const [isCardExpanded, setIsCardExpanded] = useState(false);
+  const [value, setValue] = React.useState('');
 
   const handleExpandCard = () => {
     setIsCardExpanded(!isCardExpanded);
@@ -36,6 +39,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
 
   const handleClearFilters = () => {
     clearFilters();
+    setValue('');
     setFilters({
       searchQuery: '',
       role: [],
@@ -56,15 +60,24 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
     }));
   };
 
+  const handleOnSelectedValue = (e) => {
+    setValue(e.value)
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      'role': e.value
+    }))
+  }
+
   const isClearFiltersButtonVisible = searchQuery || role.length > 0 || status.length > 0;
   const areFiltersEqual = CommonUtils.deepEqual(filterConfig, filters);
+  // const availableOptions = roleList ? roleList.map(item => ({label: item.name, value: item.name})) : [];
 
   const controlButtons = (
     <div className="filter-controls">
       {isClearFiltersButtonVisible && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
       {!areFiltersEqual && <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" /> }
     </div>
-  )
+  );
 
   return (
     <form onSubmit={handleOnSubmit}>
@@ -86,17 +99,15 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
           <div className="filter-body" style={{paddingBottom: '300px'}}>
             <div className="filter-controls">
               <div className="filter-segment">
-                <SearchableDropdown
-                  id="role"
-                  isSuccess
-                  value={filters.role}
-                  label={t('userManagement.table.role')}
-                  name={t('userManagement.table.role')}
-                  isRequired={false}
-                  onChange={(value) => onSearchableDropdownChange('role', value)}
-                  options={ROLES}
-                  clearAllSelectedValues={() => setRole([])}
-                />
+              <AutoSuggestDropdown
+                getselectedValue={handleOnSelectedValue} 
+                onChangeInput={() => {}}
+                label={t('userManagement.label.role')} 
+                selectedVal={value} 
+                key={value} 
+                suggestionList={roleList}
+              />
+
               </div>
               <div className="filter-segment">
                 <SearchableDropdown
