@@ -24,6 +24,7 @@ export const createColumns = (t) => [
         ),
         wrap: true,
         sortable: true,
+        sortKey: 'name',
         width: '34%',
     },
     {

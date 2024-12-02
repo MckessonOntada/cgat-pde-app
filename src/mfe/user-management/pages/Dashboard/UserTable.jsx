@@ -14,7 +14,7 @@ import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import CommonUtils from '@src/util/CommonUtils';
 
-function getbgColorOnRole(Role) {
+function getBackgroundColorByRole(Role) {
   switch (Role) {
     case 'ORGANIZATION ADMIN':
       return 'success';
@@ -31,7 +31,7 @@ function UserTable({ selectableRows = false }) {
   const [selectedRows, setSelectedRows] = useState(null);
 
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const { isLoading, isError, data, activeTab, filterConfig, paginationConfig, applySort, setFilterConfig } = useUser();
+  const { isLoading, isError, data, activeTab, filterConfig, paginationConfig, applySort, setFilterConfig, refreshData, setPageNumber } = useUser();
 
   const handleRowSelected = ({ selectedRows }) => {
     setSelectedRows(selectedRows);
@@ -50,7 +50,7 @@ function UserTable({ selectableRows = false }) {
     mutate(selectedRows, {
       onSuccess: (response) => {
         console.log(`User ${selectedRows} deactivated successfully:`, response);
-        refetchUsersData();
+        refreshData();
         setSelectedRows(null);
       },
       onError: (error) => {
@@ -60,11 +60,12 @@ function UserTable({ selectableRows = false }) {
   };
 
   const handleChangePage = (e, newPage) => {
-    setCurrentPage(newPage);
+    setPageNumber(newPage);
   };
 
   const handleOnSortIconClick = (selectedColumn, sortDirection) => {
-    applySort({ sortBy: selectedColumn.sortName, sortOrder: sortDirection });
+    if(selectedColumn.sortKey)
+      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
   const columns = [
@@ -95,7 +96,7 @@ function UserTable({ selectableRows = false }) {
       name: t('userManagement.table.name'),
       selector: (row) => `${row.name.firstName} ${row.name.lastName}`,
       sortable: true,
-      sortName: 'first_name',
+      sortKey: 'last_name',
       wrap: true,
       cell: (props) => (
         <div className="cellEllipses">
@@ -116,6 +117,7 @@ function UserTable({ selectableRows = false }) {
       name: t('userManagement.table.email'),
       selector: (row) => row.contact.email,
       sortable: true,
+      sortKey: 'email',
       wrap: true,
       width: '20%',
       cell: (props) => <div className="cellEllipses">{props.contact.email}</div>
@@ -127,11 +129,14 @@ function UserTable({ selectableRows = false }) {
       sortable: true,
       center: true,
       wrap: true,
-      cell: (props) => (
-        <span>
-          <Badge text={props.role?.name} type={getbgColorOnRole(props.role?.name)} />
-        </span>
-      ),
+      cell: (props) =>
+        props.role?.name ? (
+          <span>
+            <Badge text={props.role?.name} type={getBackgroundColorByRole(props.role?.name)} />
+          </span>
+        ) : (
+          '-'
+        ),
       omit: isSystemAdminView || activeTab === 'PENDING REQUESTS'
     },
     {
@@ -147,6 +152,7 @@ function UserTable({ selectableRows = false }) {
       name: t('userManagement.table.dateAdded'),
       selector: 'date_added',
       sortable: true,
+      sortBy: (props) => props.updatedAt ? props.updatedAt : props.createdAt,
       wrap: true,
       cell: (props) => (props.updatedAt ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM-DD-YYYY') : props.createdAt ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY') : 'N/A')
     },
@@ -189,7 +195,7 @@ function UserTable({ selectableRows = false }) {
         stickyHeader
         responsive
         pagination={true}
-        noDataComponent={isError ? <div>Something went wrong! Please try again</div> : <EmptyDataTable image={EmptyDataImage} heading={t('userManagement.add.label')} description={t('userManagement.empty_table.description')} />}
+        noDataComponent={<EmptyDataTable image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('orgManagement.messages.userEmptyTableSubtitle')} />}
       />
     </div>
   );
