@@ -87,7 +87,7 @@ export default function Dashboard() {
             </Button>
             {!isSystemAdminView && (
               <Button Icon={upload_bottom} className="button-icon" variant="primary" size="md">
-                {t('uploadusers')}
+                {t('userManagement.button.uploadUsers')}
               </Button>
             )}
           </div>
@@ -96,7 +96,9 @@ export default function Dashboard() {
       {isSuccess && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
 
       <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
-        <Filters showRoleDropdown={true} showStatusDropdown={true} />
+        <div className="MCP-panel-container">
+          <Filters showRoleDropdown={true} showStatusDropdown={true} />
+        </div>
         <p className="secondaryHeading"> {t(isSystemAdminView ? 'userManagement.header.systemadminlisting.label' : 'userManagement.header.listing.label')}</p>
         {!isSystemAdminView && <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />}
         <div className="userList">

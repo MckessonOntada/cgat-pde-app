@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import OrgList from './OrgList';
-import Filters from './Filters';
-import { OrganizationProvider } from '../../context/OrgContext';
-import './index.scss';
-import { Button, Alert } from '@mckesson/mcp-component-library';
+import { Alert, Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
-import { useTranslate } from '@src/translations/useTranslation';
-import { PATHS } from '../../routes/constants';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
 import ModuleHeader from '@src/components/module-header';
+import { useTranslate } from '@src/translations/useTranslation';
+import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { PATHS } from '../../routes/constants';
+import Filters from './Filters';
+import './index.scss';
+import { OrgProvider } from '../../context/OrgContext';
+import OrgList from './OrgList';
 
 export default function Dashboard() {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [isAlertVisible, setIsAlertVisible] = React.useState(false);
   const isSuccess = location.state?.isSuccess || false;
-  const [alertDescription, setAlertDescription] = useState('');
+  const [alertDescription, setAlertDescription] = React.useState('');
   const breadcrumbItems = [
     {
       label: 'System administrator',
@@ -28,7 +28,7 @@ export default function Dashboard() {
     }
   ];
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isSuccess) {
       setIsAlertVisible(true);
       setAlertDescription('Organization Created Successfully');
@@ -58,15 +58,15 @@ export default function Dashboard() {
       />
       {isSuccess && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
 
-      <OrganizationProvider>
-        <div className="orgCardContainer">
-          <Filters showLocationDropdown={true} showStatusDropdown={true} />
-          <h2 className="org-listing-label">{t('orgManagement.org_list')}</h2>
-          <div className="orgList">
-            <OrgList />
+      <OrgProvider>
+        <div className="MCP-panel-container">
+          <div className='MCP-panel-container'>
+            <Filters showLocationDropdown={true} showStatusDropdown={true} />
           </div>
+          <h2 className="org-listing-label">{t('orgManagement.org_list')}</h2>
+          <div className="orgList"><OrgList /></div>
         </div>
-      </OrganizationProvider>
+      </OrgProvider>
     </div>
   );
 }

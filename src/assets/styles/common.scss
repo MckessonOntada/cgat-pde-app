@@ -69,13 +69,69 @@
   justify-content: space-between;
   align-items: center;
   gap: var(--spacing-03);
+}
 
-  .filter-main-search-box {
+.filter-main-search-box {
+  display: inline-flex;
+  align-items: center;
+}
+.filter-controls {
+  align-self: flex-end;
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-03);
+}
+.additional-filters{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--spacing-04);
+}
+
+.filter-panel{
+  .header{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    gap: var(--spacing-04);
+    align-items: stretch;
     justify-content: space-between;
-    align-items: center;
-    gap: var(--spacing-03);
+    @include mixins.respond(sm) {
+      flex-direction: row;
+      align-items: center;
+    }
+    .header-segment{
+      display: inline-flex;
+      flex-direction: row;
+      gap: var(--spacing-04);
+      align-items: center;
+    }
+  }
+  .ctrl-search-box{
+    flex-grow: 1;
+  }
+  .filter-controls{
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    @include mixins.respond(sm) {
+      display: inline-flex;
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+  .filter-segment{
+    min-width: unset;
+    @include mixins.respond(sm) {
+      min-width: 320px;
+    }
+  }
+  .filter-body{
+    padding-top: var(--spacing-04);
+    border-top: 1px solid var(--brand-color-grey-scale-cool-2);
+    @include mixins.respond(sm) {
+      margin-top: var(--spacing-04);
+    }
   }
 }
 

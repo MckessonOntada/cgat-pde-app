@@ -19,7 +19,8 @@ const RolesDataTable = () => {
 
 
     const handleSort = (selectedColumn, sortDirection) => {
-        applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection })
+        if(selectedColumn.sortKey)
+            applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection })
     };
 
     const handleRowSelected = ({ selectedRows }) => {
@@ -62,7 +63,7 @@ const RolesDataTable = () => {
                 noDataComponent={
                     <EmptyDataTable
                         image={EmptyDataImage}
-                        heading={t('orgManagement.messages.roleEmptyTableTitle')}
+                        heading={t('message.emptyTableTitle')}
                         description={t('orgManagement.messages.roleEmptyTableSubtitle')}
                     />
                 }
