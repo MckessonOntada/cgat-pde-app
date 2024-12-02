@@ -31,7 +31,7 @@ function UserTable({ selectableRows = false }) {
   const [selectedRows, setSelectedRows] = useState(null);
 
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const { isLoading, isError, data, activeTab, filterConfig, paginationConfig, applySort, setFilterConfig, refreshData } = useUser();
+  const { isLoading, isError, data, activeTab, filterConfig, paginationConfig, applySort, setFilterConfig, refreshData, setPageNumber } = useUser();
 
   const handleRowSelected = ({ selectedRows }) => {
     setSelectedRows(selectedRows);
@@ -60,7 +60,7 @@ function UserTable({ selectableRows = false }) {
   };
 
   const handleChangePage = (e, newPage) => {
-    setCurrentPage(newPage);
+    setPageNumber(newPage);
   };
 
   const handleOnSortIconClick = (selectedColumn, sortDirection) => {
@@ -117,6 +117,7 @@ function UserTable({ selectableRows = false }) {
       name: t('userManagement.table.email'),
       selector: (row) => row.contact.email,
       sortable: true,
+      sortKey: 'email',
       wrap: true,
       width: '20%',
       cell: (props) => <div className="cellEllipses">{props.contact.email}</div>
@@ -151,6 +152,7 @@ function UserTable({ selectableRows = false }) {
       name: t('userManagement.table.dateAdded'),
       selector: 'date_added',
       sortable: true,
+      sortBy: (props) => props.updatedAt ? props.updatedAt : props.createdAt,
       wrap: true,
       cell: (props) => (props.updatedAt ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM-DD-YYYY') : props.createdAt ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY') : 'N/A')
     },

@@ -100,7 +100,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
           </div>
         </div>
         <ToggleUI in={isCardExpanded} timeout={400}>
-          <div className="filter-body">
+          <div className="filter-body" style={{paddingBottom: '300px'}}>
             <div className="filter-controls">
               <div className="filter-segment">
                 <SearchableDropdown

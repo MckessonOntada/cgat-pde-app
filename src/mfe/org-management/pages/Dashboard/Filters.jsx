@@ -74,7 +74,7 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
     if (filteredValue && filteredValue.length > 0) {
       setFilters((prevFilters) => ({
         ...prevFilters,
-        [type]: filteredValue.map(item => item.value)
+        [type]: filteredValue.map((item) => item.value)
       }));
     }
   };
@@ -89,7 +89,7 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
   };
 
   const isFilterChanged = deepEqual(filterConfig, filters);
-  const isClearFiltersButtonVisible = (searchQuery || location.length > 0 || status.length > 0)
+  const isClearFiltersButtonVisible = searchQuery || location.length > 0 || status.length > 0;
 
   return (
     <form onSubmit={handleOnSubmit}>
@@ -100,54 +100,46 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
               <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
             </button>
             <div className={'ctrl-search-box'}>
-            <InputField 
-                  id="search-box"
-                  name="org-grid-search-query"
-                  value={filters.searchQuery}
-                  onInputChange={handleSearch}
-                  tooltipText={null}
-                  useRegister={false}
-                  placeHolder={t('orgManagement.role.placeholder')}
-                />
+              <InputField id="search-box" name="org-grid-search-query" value={filters.searchQuery} onInputChange={handleSearch} tooltipText={null} useRegister={false} placeHolder={t('orgManagement.role.placeholder')} />
             </div>
           </div>
           <div>
             {!isCardExpanded && (
               <div className="filter-controls">
                 {isClearFiltersButtonVisible && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
-                <Button type="button" disabled={isFilterChanged} size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />
+                <Button type="submit" disabled={isFilterChanged} size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />
               </div>
             )}
           </div>
         </div>
         <ToggleUI in={isCardExpanded} timeout={400}>
-          <div className="filter-body">
+          <div className="filter-body" style={{paddingBottom: '300px'}}>
             <div className="filter-controls">
               <div className="filter-segment">
-              <SearchableDropdown
-                    id="location"
-                    isSuccess
-                    value={filters.location}
-                    label={t('orgManagement.table.location')}
-                    name={t('orgManagement.table.location')}
-                    isRequired={false}
-                    onChange={(value) => onSearchableDropdownChange('location', value)}
-                    options={LOCATIONS}
-                    clearAllSelectedValues={() => setLocation([])}
-                  />
+                <SearchableDropdown
+                  id="location"
+                  isSuccess
+                  value={filters.location}
+                  label={t('orgManagement.table.location')}
+                  name={t('orgManagement.table.location')}
+                  isRequired={false}
+                  onChange={(value) => onSearchableDropdownChange('location', value)}
+                  options={LOCATIONS}
+                  clearAllSelectedValues={() => setLocation([])}
+                />
               </div>
               <div className="filter-segment">
-              <SearchableDropdown
-                    id="status"
-                    isSuccess
-                    value={filters.status}
-                    label={t('orgManagement.table.status')}
-                    name={t('orgManagement.table.status')}
-                    isRequired={false}
-                    onChange={(value) => onSearchableDropdownChange('status', value)}
-                    options={STATUS}
-                    clearAllSelectedValues={() => setStatus([])}
-                  />
+                <SearchableDropdown
+                  id="status"
+                  isSuccess
+                  value={filters.status}
+                  label={t('orgManagement.table.status')}
+                  name={t('orgManagement.table.status')}
+                  isRequired={false}
+                  onChange={(value) => onSearchableDropdownChange('status', value)}
+                  options={STATUS}
+                  clearAllSelectedValues={() => setStatus([])}
+                />
               </div>
               {isCardExpanded && (
                 <div className="filter-controls">
