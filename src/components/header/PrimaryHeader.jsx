@@ -30,7 +30,6 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState(null);
-  const isSystemAdmin = AuthUtils.isSystemAdmin();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
 
   const requestParams = useMemo(
@@ -46,7 +45,7 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
   const { isLoading, data, isError, refetch } = useQuery({
     queryKey: ['organizationListOptions'],
     queryFn: async () => {
-      if (!isSystemAdmin) return {};
+      if (!isSystemAdminView) return {};
       const res = await CommonDataService.getOrganizationListAsPublic(requestParams);
       return res.content;
     },
