@@ -42,7 +42,7 @@ const RolePermissions = () => {
   const { isEdit } = location.state || {};
 
   const handleOnCancelButtonClick = () => {
-    if (!arePermissionsEqual(row.permissions, enabledPermissions)) {
+    if (!arePermissionsEqual(row?.permissions, enabledPermissions)) {
       setModalSuccessCallback('list');
     } else navigate(isEdit ? `/organization/roles/${roleId}` : `/organization/${PATHS.roles}`);
   };
