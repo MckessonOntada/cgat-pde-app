@@ -344,6 +344,14 @@ function deepEqual(obj1, obj2) {
   return true;
 }
 
+function getDateRange(gapYear){
+  const date = new Date();
+  const intYear = date.getFullYear() - gapYear;
+  const prevDate = new Date(new Date().setFullYear(intYear));
+
+  return [convertDate(prevDate), convertDate(date)];
+}
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -368,7 +376,8 @@ const CommonUtils = Object.freeze({
   sanitizeContent,
   searchAndRankOnPrefixFirst,
   areArraysEqual,
-  deepEqual
+  deepEqual,
+  getDateRange
 });
 
 export default CommonUtils;

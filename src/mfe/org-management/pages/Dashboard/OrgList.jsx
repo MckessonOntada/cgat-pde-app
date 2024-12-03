@@ -8,7 +8,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useOrg } from '../../context/OrgContext';
 import { PATHS } from '../../routes/constants';
 import Actions from './Actions';
@@ -70,20 +70,22 @@ const OrgList = () => {
         />
       ),
       wrap: true,
-      width: '2%'
+      width: '40px'
     },
     {
       id: 'name',
       name: t('orgManagement.table.name'),
       cell: (row) => (
-        <button
-          variant="tertiary"
-          className="MCP-table-link"
-          onClick={() => {
-            handleClick(row);
-          }}>
-          {row.name}
-        </button>
+        <div className="cellEllipse">
+          <Link
+            variant="tertiary"
+            className="MCP-table-link"
+            onClick={() => {
+              handleClick(row);
+            }}>
+            {row.name}
+          </Link>
+        </div>
       ),
       sortable: true,
       sortKey: 'name',
@@ -109,7 +111,7 @@ const OrgList = () => {
       id: 'date',
       name: t('orgManagement.table.dateUpdated'),
       selector: (row) => row.updatedAt,
-      cell: (row) => (row.updatedAt ? CommonUtils.convertDateStringFormat(row.updatedAt, 'MM-DD-YYYY') : row.createdAt ? CommonUtils.convertDateStringFormat(drowata.createdAt, 'MM-DD-YYYY') : 'N/A'),
+      cell: (row) => (row.updatedAt ? CommonUtils.convertDateStringFormat(row.updatedAt, 'MM-DD-YYYY') : row.createdAt ? CommonUtils.convertDateStringFormat(row.createdAt, 'MM-DD-YYYY') : 'N/A'),
       wrap: true
     },
     {
