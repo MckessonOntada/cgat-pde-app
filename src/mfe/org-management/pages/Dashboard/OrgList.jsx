@@ -86,7 +86,7 @@ const OrgList = () => {
         </button>
       ),
       sortable: true,
-      sortKey: 'name', 
+      sortKey: 'name',
       wrap: true
     },
     {
@@ -94,7 +94,7 @@ const OrgList = () => {
       name: t('orgManagement.table.id'),
       selector: (row) => row.id,
       sortable: true,
-      sortKey: 'id', 
+      sortKey: 'id',
       wrap: true
     },
     {
@@ -102,7 +102,7 @@ const OrgList = () => {
       name: t('orgManagement.table.location'),
       cell: (row) => <div className="cellEllipse">{location(row.address)}</div>,
       sortable: true,
-      sortKey: 'id', 
+      sortKey: 'id',
       wrap: true
     },
     {
@@ -137,8 +137,7 @@ const OrgList = () => {
   };
 
   const handleSort = (selectedColumn, sortDirection, sortedRows) => {
-    if(selectedColumn.sortKey)
-      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection })
+    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
   const handleRowSelected = ({ selectedRows }) => {
@@ -167,9 +166,9 @@ const OrgList = () => {
       {isLoading && <Loader type="screen" />}
       {selectedRows && selectedRows.length === 1 && (
         <div className="selected-item-alert">
-            <p className="selected-item-text">
-              {selectedRows.length} {t('orgManagement.selected_items')}
-            </p>
+          <p className="selected-item-text">
+            {selectedRows.length} {t('orgManagement.selected_items')}
+          </p>
           <Button variant="secondary" onClick={handleDeactivate}>
             {t('orgManagement.button.deactivate')}
           </Button>
