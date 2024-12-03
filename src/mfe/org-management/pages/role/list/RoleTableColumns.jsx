@@ -13,20 +13,19 @@ export const createColumns = (t) => [
     id: 'name',
     name: t('orgManagement.role.labelRoleName'),
     selector: (row) => (
-      <Tooltip body={`${row.name}/${row.id}`}>
-        <Link className="MCP-table-link" to={`${row.id}`} state={row}>
-          {row.name}
-        </Link>
-      </Tooltip>
+      <Link className="MCP-table-link" to={`${row.id}`} state={row}>
+        {row.name}
+      </Link>
     ),
     wrap: true,
     sortable: true,
+    sortKey: 'name',
     width: '34%'
   },
   {
     id: 'createAt',
     name: t('orgManagement.role.tableHeadingCreatedOn'),
-    selector: (row) => (row.createdAt ? CommonUtils.convertDateStringFormat(row.updatedAt, 'MM-DD-YYYY') : '-'),
+    selector: (row) => CommonUtils.convertDateStringFormat(row.createdAt ? row.createdAt : row.updatedAt, 'MM-DD-YYYY'),
     wrap: true,
     width: '34%'
   },

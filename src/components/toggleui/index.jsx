@@ -24,8 +24,7 @@ const ToggleUI = ({ children, in: inProp, timeout = 300 }) => {
         <div
             className="collapse-panel"
             style={{
-                height: isOpen ? `${height}px` : '0px',
-                overflow: 'hidden',
+                display: isOpen ? `initial` : 'none',
                 transition: `height ${timeout}ms ease-in-out`,
             }}
         >
