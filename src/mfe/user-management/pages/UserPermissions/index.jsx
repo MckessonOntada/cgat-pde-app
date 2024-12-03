@@ -13,17 +13,17 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
+import { RoutePaths } from '@src/routes/constants';
 
 const UserPermissions = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { userId } = useParams();
   const location = useLocation();
-  const { permissionsData } = location.state || {};
+  const { permissionsData, isEdit } = location.state || {};
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alert, setAlert] = useState(null);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const isEdit = !!userId;
 
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
@@ -34,13 +34,20 @@ const UserPermissions = () => {
   };
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate(RoutePaths.pathUserManagement);
+  };
+
+  const handleBack = () => {
+    navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.editUser}/${userId}`);
   };
 
   const isFormValuesChanged = (initialValues, currentValues) => {
+    if (isSystemAdminView) {
+      return true; // Return true always if it is a system admin view
+    }
     const isRoleChanged = initialValues.roleId !== currentValues.roleId;
     const arePermissionsChanged = JSON.stringify(initialValues.permissions) !== JSON.stringify(currentValues.permissions);
-    return isSystemAdminView ? arePermissionsChanged : isRoleChanged;
+    return isRoleChanged;
   };
 
   const {
@@ -58,13 +65,13 @@ const UserPermissions = () => {
       roleId: isSystemAdminView ? 1 : values.roleId,
       permissions: values.permissions
     };
-    console.log('payload: ', JSON.stringify(payload, null, 2));
+
     mutate(
       { payload },
       {
         onSuccess: (response) => {
           console.log('User created/updated successfully:', response);
-          navigate(isEdit ? -1 : `../${PATHS.addAccounts}/${userId}`);
+          navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.addAccounts}/${userId}`);
         },
         onError: (error) => {
           setAlert({ type: 'error', message: 'Failed to create/update Permissions' });
@@ -121,7 +128,7 @@ const UserPermissions = () => {
             <Form>
               <PermissionForm enabledPermissions={values.permissions} setEnabledPermissions={(permissions) => setFieldValue('permissions', permissions)} handleRoleSelect={(value) => setFieldValue('roleId', value)} editRoleId={values.roleId} />
               <div className={'buttonGroup'}>
-                <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
+                <Button variant="secondary" type="button" onClick={handleBack} size={'md'}>
                   {t('userManagement.button.back')}
                 </Button>
                 <Button variant="primary" type="submit" size={'md'} disabled={!(isValid && isDirty)}>

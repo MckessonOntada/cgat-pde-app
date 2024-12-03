@@ -1,0 +1,136 @@
+import React, { useState, useCallback, useEffect } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useTranslate } from '@src/translations/useTranslation';
+import { ReactComponent as pencil_write_edit } from '@src/assets/image/pencil-write-edit.svg';
+import { Button } from '@mckesson/mcp-component-library';
+import './index.scss';
+import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
+import ModuleHeader from '@src/components/module-header';
+import { useQuery } from 'react-query';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
+import CommonUtils from '@src/util/CommonUtils.js';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+
+const roleDetail = () => {
+  const { t } = useTranslate();
+  const navigate = useNavigate();
+  const { roleId } = useParams();
+  const location = useLocation();
+
+  const { isLoading, isError, data } = useQuery({
+    queryKey: [`roles/${roleId}`],
+    queryFn: async () => {
+      const res = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}/${roleId}`, httpVerb.GET, {});
+      return res.data;
+    },
+    enabled: !!roleId,
+    refetchOnWindowFocus: false
+  });
+
+  const handleGoBack = () => {
+    navigate('/organization/roles');
+  };
+
+  const groupPermissionsByCategory = (rolePermissions, permissionsEnum) => {
+    const groupedPermissions = {};
+
+    rolePermissions.forEach((permission) => {
+      Object.keys(permissionsEnum).forEach((category) => {
+        const categoryPermissions = permissionsEnum[category];
+        if (Object.values(categoryPermissions).includes(permission)) {
+          if (!groupedPermissions[category]) {
+            groupedPermissions[category] = [];
+          }
+          groupedPermissions[category].push(permission);
+        }
+      });
+    });
+
+    return groupedPermissions;
+  };
+
+  const groupedPermissions = groupPermissionsByCategory(data?.permissions || [], PERMISSIONS_ENUM);
+
+  return (
+    <div className="MCP-module-wrapper">
+      <div className="MCP-module-wrapper">
+        <div className="back-navigation py2 capitalize" onClick={handleGoBack} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+          <MdOutlineKeyboardArrowLeft size="24px" />
+          <p>{t('orgManagement.role.captionsBtnBackToManageRoles')}</p>
+        </div>
+
+        <div className="MCP-module-body">
+          <ModuleHeader
+            heading={<p className="primaryHeading">{t('orgManagement.role.labelRolesDetails')}</p>}
+            controls={
+              <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`edit-role`, { state: data })}>
+                {t('userManagement.button.edit')}
+              </Button>
+            }
+          />
+
+          <div className="MCP-panel-container">
+            <div className="role-header">
+              <div className="role-info">
+                <div className="secondaryHeading">{data?.name}</div>
+              </div>
+              <div className="user-status">
+                <span className="view_label">Created On:</span>
+                <span className="label-text">{CommonUtils.convertDateStringFormat(data?.createdAt ? data?.createdAt : data?.updatedAt, 'MM-DD-YYYY')}</span>
+              </div>
+            </div>
+
+            <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-2">
+              <div>
+                <span className="view_label">Description</span>
+                <p className="label-text">{data?.description}</p>
+              </div>
+            </div>
+          </div>
+
+          <ModuleHeader
+            heading={<p className="primaryHeading">{t('userManagement.header.view.permissions_granted')}</p>}
+            controls={
+              <div className="controls">
+                <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`permissions`, { state: { data, isEdit: true } })}>
+                  {t('userManagement.button.edit')}
+                </Button>
+              </div>
+            }
+          />
+
+          <div className="MCP-panel-container grid grid-gap-16">
+            {Object.entries(groupedPermissions).map(([categoryKey, permissions]) => (
+              <div key={categoryKey} className="MCP-module-body permission-category">
+                <div className="subheader-text">{t(categoryKey)}</div>
+                <div className="permission-category">
+                  <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 permission-list">
+                    {permissions.map((permissionKey, idx) => {
+                      if (!PERMISSIONS_ENUM[categoryKey][permissionKey]) return null; // Validate if permission exists
+
+                      return (
+                        <React.Fragment key={idx}>
+                          <div className="flex items-center justify-between permission-item">
+                            <div className="permission-info">
+                              <h4>{t(`${categoryKey}.${permissionKey}`)}</h4>
+                              <p>{t(`${categoryKey}.${permissionKey}.DESCRIPTION`)}</p>
+                            </div>
+                          </div>
+                          {/* Add a divider dynamically */}
+                          {idx % 2 === 0 && idx !== permissions.length - 1 && <div className="divider"></div>}
+                        </React.Fragment>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default roleDetail;
