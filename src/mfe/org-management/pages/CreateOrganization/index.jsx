@@ -104,7 +104,7 @@ const CreateOrganization = () => {
   };
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate(RoutePaths.pathOrgManagement);
   };
 
   return (

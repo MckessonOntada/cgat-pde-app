@@ -7,7 +7,6 @@ import React, { useState } from 'react';
 import { useRole } from '../../../context/RoleContext';
 import CommonUtils from '@src/util/CommonUtils';
 
-
 const FilterPanel = () => {
   const {
     filterConfig,
@@ -53,7 +52,7 @@ const FilterPanel = () => {
     applyFilters({ ...filters });
   };
 
-  const isClearFiltersButtonVisible = (searchQuery || dateRange.length > 0);
+  const isClearFiltersButtonVisible = searchQuery || dateRange.length > 0;
   const areFiltersEqual = CommonUtils.deepEqual(filterConfig, filters);
 
   const controlButtons = (
@@ -61,7 +60,7 @@ const FilterPanel = () => {
       {isClearFiltersButtonVisible && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
       {!areFiltersEqual && <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />}
     </div>
-  )
+  );
 
   return (
     <form onSubmit={handleOnApplyFilter}>
@@ -71,18 +70,16 @@ const FilterPanel = () => {
             <button type="button" onClick={handleExpandCard}>
               <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
             </button>
-            <div className={"ctrl-search-box"}>
+            <div className={'ctrl-search-box autoSuggestSearch-container'}>
               <InputField errors={{}} id="search-box" name="firstName" value={filters.searchQuery} onInputChange={handleSearch} tooltipText={null} useRegister={false} placeholder={t('orgManagement.role.placeholder')} />
             </div>
           </div>
-          <div>
-            {!isCardExpanded && controlButtons}
-          </div>
+          <div>{!isCardExpanded && controlButtons}</div>
         </div>
         <ToggleUI in={isCardExpanded} timeout={400}>
-          <div className='filter-body'>
+          <div className="filter-body">
             <div className="filter-controls">
-              <div className='filter-segment'>
+              <div className="filter-segment">
                 <DateRangePicker dateRange={filters?.dateRange || []} onChange={handleOnDateRangeChange} />
               </div>
               {isCardExpanded && controlButtons}

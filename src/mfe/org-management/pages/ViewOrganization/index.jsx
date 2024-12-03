@@ -186,7 +186,9 @@ export default function ViewOrganization() {
           <Button variant="secondary" onClick={handleCancel}>
             {t('orgManagement.button.cancel')}
           </Button>
-          <Button onClick={addNewAccountsClick}>{t(isView ? 'orgManagement.add.account' : selectedCount > 0 ? 'orgManagement.create_org' : 'orgManagement.add.viewsummary')}</Button>
+          <Button disabled={selectedAccounts?.length <= 0} onClick={addNewAccountsClick}>
+            {t(isView ? 'orgManagement.add.account' : selectedCount > 0 ? 'orgManagement.create_org' : 'orgManagement.add.viewsummary')}
+          </Button>
         </div>
       )}
     </div>

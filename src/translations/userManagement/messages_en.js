@@ -113,6 +113,9 @@ export const UserManagementEN = {
   'userManagement.create_user.validation.fax': 'Fax must be a valid format.',
   'userManagement.create_user.option.please_select': 'Please Select',
 
+  'userManagement.userdetails.addressdetails': 'User Address',
+  'userManagement.userdetails.lastupdatedon': 'Last Updated On:',
+
   'userManagement.stepper.option.user_details': 'User Details',
   'userManagement.stepper.option.roles_and_permissions': 'Roles and Permissions',
   'userManagement.stepper.option.associate_accounts': 'Associate Accounts',

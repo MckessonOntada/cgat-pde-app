@@ -167,7 +167,7 @@ export default function AccountsList(props) {
       });
     }
     return _columns;
-  }, [omitColumns, refetch]);
+  }, [omitColumns, data, refetch]);
 
   const handleChangePage = (e, newPage) => {
     setCurrentPage(newPage);
