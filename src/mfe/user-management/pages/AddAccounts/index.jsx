@@ -15,6 +15,7 @@ import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import { UserAccountsProvider } from '../../context/UserAccountsContext';
 import UserAccounts from '../UserDetail/UserAccounts';
+import { PATHS } from '../../routes';
 
 const AddAccounts = () => {
   const { t } = useTranslate();
@@ -31,6 +32,10 @@ const AddAccounts = () => {
 
   const handleGoBack = () => {
     navigate(RoutePaths.pathUserManagement);
+  };
+
+  const handleBackButton = () => {
+    navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.userPermissions}/${userId}`);
   };
 
   const handleSearchChange = (inputValue) => {
@@ -71,9 +76,6 @@ const AddAccounts = () => {
         },
         onError: (error) => {
           console.log('Failed to add accounts:', error);
-          alert('Failed to update accounts');
-          // setAlert({ type: "error", message: "Failed to update accounts" });
-          // setIsAlertVisible(true);
         }
       }
     );
@@ -154,11 +156,11 @@ const AddAccounts = () => {
       </UserAccountsProvider>
 
       <div className={'buttonGroup'}>
-        <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
+        <Button variant="secondary" type="button" onClick={handleBackButton} size={'md'}>
           {t('userManagement.button.back')}
         </Button>
         {!isEdit && (
-          <Button variant="primary" type="button" onClick={handleSaveandContinue} size={'md'}>
+          <Button variant="primary" type="button" onClick={handleSaveandContinue} size={'md'} disabled={selectedAccounts?.length <= 0}>
             {t('userManagement.button.adduser')}
           </Button>
         )}

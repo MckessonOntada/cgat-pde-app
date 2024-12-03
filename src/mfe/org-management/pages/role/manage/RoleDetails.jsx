@@ -15,8 +15,12 @@ import DiscardChangesModal from './DiscardChangesModel';
 
 const getRoleValidationSchema = (t) =>
   Yup.object({
-    roleName: Yup.string().required(t('orgManagement.form.errors.roleNameRequired')).min(3, t('orgManagement.form.errors.roleNameMinLength')).max(50, t('orgManagement.form.errors.roleNameMaxLength')),
-    roleDescription: Yup.string().required('orgManagement.form.errors.roleDescriptionRequired').min(10, 'orgManagement.form.errors.roleDescriptionMinLength').max(200, 'orgManagement.form.errors.roleDescriptionMaxLength')
+    roleName: Yup.string()
+      .required(t('orgManagement.form.errors.roleNameRequired'))
+      .min(2, t('orgManagement.form.errors.roleNameMinLength'))
+      .max(50, t('orgManagement.form.errors.roleNameMaxLength'))
+      .matches(/^[A-Za-z\s]+$/, t('orgManagement.form.errors.roleNamevalidation')),
+    roleDescription: Yup.string().min(10, 'orgManagement.form.errors.roleDescriptionMinLength').max(100, 'orgManagement.form.errors.roleDescriptionMaxLength')
   });
 
 const RoleDetails = () => {
@@ -162,7 +166,7 @@ const RoleDetails = () => {
                           <Field name="roleName" label={t('orgManagement.role.labelRoleName')} placeholder=" " isRequired component={Components['input']} />
                         </div>
                         <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
-                          <Field name="roleDescription" placeholder=" " isRequired component={Components['textarea']} fieldlabel={t('orgManagement.role.labelRoleDescription')} />
+                          <Field name="roleDescription" placeholder=" " component={Components['textarea']} fieldlabel={t('orgManagement.role.labelRoleDescription')} maxCharLimit="100" />
                         </div>
                       </div>
                     </div>

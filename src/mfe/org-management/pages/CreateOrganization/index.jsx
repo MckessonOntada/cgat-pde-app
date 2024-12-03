@@ -12,11 +12,14 @@ import { useMutation } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
 import './CreateOrg.scss';
 import { PATHS } from '../../routes/constants';
+import { handleApiError } from '@src/util/ApiUtils';
 
 const CreateOrganization = () => {
   const [organizationData, setOrganizationData] = useState(INITIAL_VALUES);
   const { orgId } = useParams();
   const location = useLocation();
+  const [alert, setAlert] = useState(null);
+
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const isEdit = !!orgId;
 
@@ -53,7 +56,6 @@ const CreateOrganization = () => {
     if (![201, 200].includes(res.status)) {
       throw new Error('Failed to create user');
     }
-    console.log('response:', res);
     return res;
   };
 
@@ -78,6 +80,11 @@ const CreateOrganization = () => {
   };
 
   const onOrgCreateError = (error) => {
+    const errorKey = handleApiError(error);
+    setAlert({
+      type: 'error',
+      description: t(errorKey)
+    });
     setIsAlertVisible(true);
   };
 
@@ -116,7 +123,7 @@ const CreateOrganization = () => {
         <p>{t('orgManagement.back.organization')}</p>
       </div>
 
-      {isAlertVisible && <Alert description="Error while creating organization" onClose={() => {}} showTitle title="Something went wrong...!" type="error" />}
+      {isAlertVisible && <Alert type={alert.type} title={alert.title} description={alert.description} />}
 
       {!isEdit && (
         <div className="stepper">

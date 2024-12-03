@@ -12,7 +12,7 @@ import ModuleHeader from '@src/components/module-header';
 import { useQuery, useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
-import { serializeParams } from '@src/util/ApiUtils';
+import { handleApiError, serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import { RoutePaths } from '@src/routes/constants';
 
@@ -62,12 +62,7 @@ const CreateUser = () => {
 
   const { mutate, isLoading, isError, data } = useMutation(async ({ payload, isReject }) => {
     if (isEdit) {
-      const updatedPayload = {
-        ...payload,
-        permissions: userData?.permissions || [], // Include permissions from userData
-        role: userData?.role || [] // Include roles from userData
-      };
-      const updateUser = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.PUT, updatedPayload);
+      const updateUser = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.PATCH, payload);
       return updateUser.data;
     } else if (isPending) {
       const reqParams = {
@@ -192,8 +187,10 @@ const CreateUser = () => {
           navigate(isEdit ? `/${isSystemAdminView ? 'system-admin' : 'user'}/${response.createUser?.id ? response.createUser?.id : userId}` : `../${PATHS.userPermissions}/${response.createUser.id || userId}`);
         },
         onError: (error) => {
+          const errorKey = handleApiError(error);
           const actionType = isPending ? 'Approve' : isEdit ? 'Update' : 'Create';
-          setAlert({ type: 'error', message: `Failed to ${actionType}  user` });
+          setAlert({ type: 'error', message: t(errorKey) });
+          // setAlert({ type: 'error', message: `Failed to ${actionType}  user` });
           setIsAlertVisible(true);
         }
       }

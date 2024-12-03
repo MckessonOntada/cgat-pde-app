@@ -64,8 +64,7 @@ function UserTable({ selectableRows = false }) {
   };
 
   const handleOnSortIconClick = (selectedColumn, sortDirection) => {
-    if(selectedColumn.sortKey)
-      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
   const columns = [
@@ -87,7 +86,7 @@ function UserTable({ selectableRows = false }) {
         />
       ),
       wrap: true,
-      width: '3%',
+      width: '40px',
       omit: activeTab === 'PENDING REQUESTS'
     },
     { name: 'ID', selector: 'id', sortable: true, omit: true },
@@ -152,7 +151,7 @@ function UserTable({ selectableRows = false }) {
       name: t('userManagement.table.dateAdded'),
       selector: 'date_added',
       sortable: true,
-      sortBy: (props) => props.updatedAt ? props.updatedAt : props.createdAt,
+      sortBy: (props) => (props.updatedAt ? props.updatedAt : props.createdAt),
       wrap: true,
       cell: (props) => (props.updatedAt ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM-DD-YYYY') : props.createdAt ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY') : 'N/A')
     },

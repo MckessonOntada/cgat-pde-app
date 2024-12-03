@@ -121,9 +121,15 @@ export const OrgManagementES = {
   'orgManagement.messages.newRoleCreation': 'S_New role has been successfully created.',
   'orgManagement.messages.roleUpdate': 'S_Role has been successfully updated.',
   'orgManagement.form.errors.roleNameRequired': 'S_Role Name is required',
+  'orgManagement.form.errors.roleNamevalidation': 'S_Invalid Role Name',
   'orgManagement.form.errors.roleDescriptionRequired': 'S_Role Description is required',
   'orgManagement.form.errors.roleNameMinLength': 'S_Role Name must be at least 3 characters long',
   'orgManagement.form.errors.roleNameMaxLength': 'S_Role Name must be at least 3 characters long',
   'orgManagement.form.errors.roleDescriptionMinLength': 'S_Role Description must be at least 10 characters long',
-  'orgManagement.form.errors.roleDescriptionMaxLength': 'S_Role Description cannot exceed 1,000 characters'
+  'orgManagement.form.errors.roleDescriptionMaxLength': 'S_Role Description cannot exceed 100 characters',
+
+  'errors.practice_name_key': 'S_Organization name already exists.',
+  'errors.practice_email_key': 'S_Email ID already exists.',
+  'errors.practice_phone_key': 'S_Phone number already exists.',
+  'errors.default': 'S_An unexpected error occurred.'
 };
