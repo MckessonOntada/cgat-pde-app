@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../../context/UserContext';
 import { InputField, Button, AutoSuggestDropdown, SearchableDropdown } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import { ROLES, STATUS } from '../../mockData/UsersData';
+import { STATUS } from '../../mockData/UsersData';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import arrow_down from '@src/assets/image/arrow_down.svg';
 import ToggleUI from '@src/components/toggleui';
 import CommonUtils from '@src/util/CommonUtils';
+import AuthUtils from '@src/util/AuthUtils';
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
@@ -27,6 +28,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
   const [appliedFilters, setAppliedFilters] = React.useState(INITIAL_FILTER_STATE);
   const [isCardExpanded, setIsCardExpanded] = useState(false);
   const [value, setValue] = React.useState('');
+  const isSystemAdminView = AuthUtils.isSystemAdminView();
 
   const handleExpandCard = () => {
     setIsCardExpanded(!isCardExpanded);
@@ -94,9 +96,12 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
         <ToggleUI in={isCardExpanded} timeout={400}>
           <div className="additional-filters">
             <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-              <div className="custom-autosuggest-dropdown">
-                <AutoSuggestDropdown getselectedValue={handleOnSelectedValue} onChangeInput={() => {}} label={t('userManagement.label.role')} selectedVal={value} key={value} suggestionList={roleList} />
-              </div>
+              {!isSystemAdminView && (
+                <div className="custom-autosuggest-dropdown">
+                  <AutoSuggestDropdown getselectedValue={handleOnSelectedValue} onChangeInput={() => {}} label={t('userManagement.label.role')} selectedVal={value} key={value} suggestionList={roleList} />
+                </div>
+              )}
+
               <SearchableDropdown
                 id="status"
                 isSuccess

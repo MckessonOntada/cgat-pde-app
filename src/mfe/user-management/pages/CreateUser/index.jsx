@@ -62,12 +62,7 @@ const CreateUser = () => {
 
   const { mutate, isLoading, isError, data } = useMutation(async ({ payload, isReject }) => {
     if (isEdit) {
-      const updatedPayload = {
-        ...payload,
-        permissions: userData?.permissions || [], // Include permissions from userData
-        role: userData?.role || [] // Include roles from userData
-      };
-      const updateUser = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.PUT, updatedPayload);
+      const updateUser = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.PATCH, payload);
       return updateUser.data;
     } else if (isPending) {
       const reqParams = {
