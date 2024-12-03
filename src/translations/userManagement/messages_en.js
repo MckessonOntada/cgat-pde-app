@@ -43,6 +43,7 @@ export const UserManagementEN = {
   'userManagement.upload.cancel.label': 'Cancel Upload',
   'userManagement.upload.error.uploadError': 'Error uploading the file. Please try again later.',
   'userManagement.upload.error.fileError': 'File error/s. Please correct and upload again.',
+  'userManagement.label.role': 'Role',
   'userManagement.label.cancel': 'Cancel',
   'userManagement.label.save': 'Save',
   'userManagement.label.status': 'Status',

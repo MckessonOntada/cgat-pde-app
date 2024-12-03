@@ -1,0 +1,42 @@
+.wrapper {
+    .controlWrapper {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-04);
+        flex-wrap: nowrap;
+
+        .control {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: stretch;
+
+            label {
+                font-weight: var(--brand-font-weight-400);
+                font-size: var(--brand-font-size--extra-small);
+                line-height: var(--brand-line-height--medium);
+                letter-spacing: .002em;
+                color: var(--brand-color-black);
+                margin-bottom: 4px;
+            }
+
+            input[type="date"] {
+                height: 36px;
+                padding: 9px 10px;
+                min-width: 160px;
+                font-family: inherit;
+                font-size: var(--brand-font-size--small);
+                line-height: var(--brand-line-height--m-large);
+                background: var(--brand-color-background-white);
+                border: 1px solid var(--brand-color-primary-background);
+                border-radius: 4px !important;
+                font-style: normal;
+                font-weight: var(--brand-font-weight-500);
+                letter-spacing: .001em;
+                color: var(--brand-color-font-black);
+                margin-bottom: 2px;
+                width: 100%;
+            }
+        }
+    }
+}

@@ -91,10 +91,7 @@ export const RoleProvider = ({ children }) => {
 
   const applyFilters = (filters) => {
     setPageNumber(1);
-    setFilterConfig((prevFilters) => ({
-      ...prevFilters,
-      ...filters
-    }));
+    setFilterConfig({...filters});
   };
 
   const clearFilters = () => setFilterConfig(INITIAL_FILTER_STATE);

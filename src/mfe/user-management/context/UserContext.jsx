@@ -90,6 +90,22 @@ export const UserProvider = ({ children }) => {
     refetchOnWindowFocus: false
   });
 
+  const {data: roleList} = useQuery({
+    queryKey: ["user", "roles-list", requestParams], 
+    queryFn: async () => {
+      const response = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}`, httpVerb.GET, {});
+      if (response.data) {
+        const { content: data } = response.data;
+        return data.map(item => ({
+          label: item.name,
+          value: item.name,
+        }));
+      }
+      return [];
+    },
+    refetchOnWindowFocus: false
+  })
+
   useEffect(() => {
     refetch();
   }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
@@ -102,10 +118,7 @@ export const UserProvider = ({ children }) => {
 
   const applyFilters = (filters) => {
     setPageNumber(1);
-    setFilterConfig(prevFilters => ({
-      ...prevFilters,
-      ...filters
-    }));
+    setFilterConfig({...filters});
   }
 
   const setPageNumber = (pageNumber) => {
@@ -118,6 +131,7 @@ export const UserProvider = ({ children }) => {
   const ctxValue = useMemo(
     () => ({
       data: data || [],
+      roleList,
       isLoading,
       isError,
       filterConfig,
