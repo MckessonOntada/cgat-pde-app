@@ -5,7 +5,8 @@ import RoleDetails from './manage/RoleDetails';
 import RolePermissions from './manage/RolePermissions';
 import { Route, Routes } from 'react-router-dom';
 import { PATHS } from '../../routes/constants';
-import NotFound from '../../../../pages/error-pages/NotFound';
+import NotFound from '@src/pages/error-pages/NotFound';
+import RoleDetail from '../role/detail';
 
 const Role = () => {
   return (
@@ -15,9 +16,10 @@ const Role = () => {
         <Route path={PATHS.createRole} element={<RoleDetails />} />
         <Route path={PATHS.editRole} element={<RoleDetails />} />
         <Route path={PATHS.permissions} element={<RolePermissions />} />
+        <Route path={':roleId'} element={<RoleDetail />} />
         <Route path={'*'} element={<NotFound />} />
       </Routes>
     </RoleProvider>
-  )
-}
+  );
+};
 export default Role;

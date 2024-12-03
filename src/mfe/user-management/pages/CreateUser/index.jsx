@@ -21,8 +21,7 @@ const CreateUser = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
   const location = useLocation();
-  const { isEdit = false } = location.state || {};
-  const { isPending } = location.state || {};
+  const { isEdit = false, isPending = false } = location.state || {};
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alert, setAlert] = useState(null);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -96,8 +95,8 @@ const CreateUser = () => {
     }
   });
 
-  const goBack = () => {
-    navigate(-1);
+  const handleGoBack = () => {
+    navigate(RoutePaths.pathUserManagement);
   };
 
   const initialValues = {
@@ -190,7 +189,7 @@ const CreateUser = () => {
       {
         onSuccess: (response) => {
           console.log('User created/updated successfully:', response);
-          navigate(isEdit ? `/${isSystemAdminView ? 'system-admin' : 'user'}/${response.createUser.id || userId}` : `../${PATHS.userPermissions}/${response.createUser.id || userId}`);
+          navigate(isEdit ? `/${isSystemAdminView ? 'system-admin' : 'user'}/${response.createUser?.id ? response.createUser?.id : userId}` : `../${PATHS.userPermissions}/${response.createUser.id || userId}`);
         },
         onError: (error) => {
           const actionType = isPending ? 'Approve' : isEdit ? 'Update' : 'Create';
@@ -201,13 +200,13 @@ const CreateUser = () => {
     );
   };
 
-  const handleGoBack = () => {
-    navigate(-1);
+  const handleCancel = () => {
+    navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : RoutePaths.pathUserManagement);
   };
 
   return (
     <div className="MCP-module-wrapper">
-      <div className="back-navigation py2 capitalize" onClick={goBack} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+      <div className="back-navigation py2 capitalize" onClick={handleGoBack} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
         <MdOutlineKeyboardArrowLeft size="24px" />
         <p>{t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}</p>
       </div>
@@ -251,7 +250,7 @@ const CreateUser = () => {
               <UserDetailsFormSegment />
             </div>
             <div className={'buttonGroup'}>
-              <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
+              <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>
                 {t('userManagement.button.back')}
               </Button>
               {isPending && (

@@ -14,7 +14,6 @@ const INITIAL_FILTER_STATE = {
   searchQuery: ''
 };
 
-
 const FilterPanel = () => {
   const {
     filterConfig,

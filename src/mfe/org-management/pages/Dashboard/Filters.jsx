@@ -83,7 +83,7 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
             <button type="button" onClick={handleExpandCard}>
               <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
             </button>
-            <div className={'ctrl-search-box'}>
+            <div className="ctrl-search-box autoSuggestSearch-container">
               <InputField id="search-box" name="org-grid-search-query" value={filters.searchQuery} onInputChange={handleSearch} tooltipText={null} useRegister={false} placeholder={t('orgManagement.role.placeholder')} />
             </div>
           </div>

@@ -16,6 +16,7 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import CommonUtils from '@src/util/CommonUtils.js';
+import { RoutePaths } from '@src/routes/constants';
 
 function getbgColorOnRole(Role) {
   switch (Role) {
@@ -47,15 +48,10 @@ const UserDetail = () => {
   const { isLoading, isError, data } = useQuery({
     queryKey: [`users/${userId}`],
     queryFn: async () => {
-      if (!userId) return {};
-
-      const res = await HttpResourceService.callRest(
-        `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, // Use practice id from organization
-        httpVerb.GET,
-        {}
-      );
+      const res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.GET, {});
       return res.data;
     },
+    enabled: !!userId,
     refetchOnWindowFocus: false
   });
 
@@ -76,7 +72,7 @@ const UserDetail = () => {
   };
 
   const goBack = () => {
-    navigate(-1);
+    navigate(RoutePaths.pathUserManagement);
   };
 
   const onRemoveAccount = useCallback(
@@ -148,7 +144,7 @@ const UserDetail = () => {
               <Badge text={data?.role?.name} type={getbgColorOnRole(data?.role?.name)} />
             </div>
             <div className="user-status">
-              <span className="view_label">Last Updated On:</span>
+              <span className="view_label">{t('userManagement.userdetails.lastupdatedon')}</span>
 
               <span className="label-text"> {data?.updatedAt ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM-DD-YYYY') : data?.createdAt ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY') : 'N/A'}</span>
               <Switch handleToggle={() => {}} id="id" disabled={!data?.isActive} label={data?.isActive ? 'Active' : ''} labelPosition="right" name="Toggle" size="lg" value />
@@ -157,39 +153,39 @@ const UserDetail = () => {
 
           <div className="userCardContainer grid grid-gap-24 grid-cols-1 md:grid-cols-4">
             <div>
-              <span className="view_label">User Address</span>
+              <span className="view_label">{t('userManagement.userdetails.addressdetails')}</span>
               <p className="label-text">
                 {data?.address.address1}, {data?.address.address2}, {data?.address.city}, {data?.address.state}, {data?.address.zip}
               </p>
             </div>
 
             <div>
-              <span className="view_label">Email ID</span>
+              <span className="view_label">{t('userManagement.create_user.inputLabel.email')}</span>
               <p className="label-text">{data?.contact.email}</p>
             </div>
 
             <div>
-              <span className="view_label">Phone Number</span>
+              <span className="view_label">{t('userManagement.create_user.inputLabel.phone_no')}</span>
               <p className="label-text"> {data?.contact.phone ? formatPhoneNumber(data.contact.phone) : 'N/A'} </p>
             </div>
 
             <div>
-              <span className="view_label">Fax</span>
+              <span className="view_label">{t('userManagement.create_user.inputLabel.fax')}</span>
               <p className="label-text">{data?.contact.fax}</p>
             </div>
 
             <div>
-              <span className="view_label">City</span>
+              <span className="view_label">{t('userManagement.create_user.inputLabel.city')}</span>
               <p className="label-text">{data?.address.city}</p>
             </div>
 
             <div>
-              <span className="view_label">Zip</span>
+              <span className="view_label">{t('userManagement.create_user.inputLabel.zip')}</span>
               <p className="label-text"> {data?.address.zip}</p>
             </div>
 
             <div>
-              <span className="view_label">State</span>
+              <span className="view_label">{t('userManagement.create_user.inputLabel.state')}</span>
               <p className="label-text">{data?.address.state}</p>
             </div>
           </div>
@@ -206,67 +202,74 @@ const UserDetail = () => {
           }
         />
 
-        <div className="MCP-panel-container">
-          {Object.keys(groupedPermissions).map((categoryKey, index) => {
-            return (
-              <div key={index}>
-                <h2 className="subheader-text">{t(`${categoryKey}`)}</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {groupedPermissions[categoryKey].map((permissionKey, idx) => {
-                    if (!PERMISSIONS_ENUM[categoryKey][permissionKey]) return null;
+        <div className="MCP-panel-container grid grid-gap-16">
+          {Object.entries(groupedPermissions).map(([categoryKey, permissions]) => (
+            <div key={categoryKey} className="MCP-module-body permission-category">
+              <div className="subheader-text">{t(categoryKey)}</div>
+              <div className="permission-category">
+                <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 permission-list">
+                  {permissions.map((permissionKey, idx) => {
+                    if (!PERMISSIONS_ENUM[categoryKey][permissionKey]) return null; // Validate if permission exists
+
                     return (
-                      <div key={idx} className="permission-item">
-                        <div className="permission-info">
-                          <h4>{t(`${categoryKey}.${permissionKey}`)}</h4>
-                          <p>{t(`${categoryKey}.${permissionKey}.DESCRIPTION`)}</p>
+                      <React.Fragment key={idx}>
+                        <div className="flex items-center justify-between permission-item">
+                          <div className="permission-info">
+                            <h4>{t(`${categoryKey}.${permissionKey}`)}</h4>
+                            <p>{t(`${categoryKey}.${permissionKey}.DESCRIPTION`)}</p>
+                          </div>
                         </div>
-                      </div>
+                        {/* Add a divider dynamically */}
+                        {idx % 2 === 0 && idx !== permissions.length - 1 && <div className="divider"></div>}
+                      </React.Fragment>
                     );
                   })}
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
 
-        <div className="MCP-module-body">
-          <ModuleHeader
-            heading={<p className="primaryHeading">{t('userManagement.header.view.linked_accounts')}</p>}
-            controls={
-              <div className="controls">
-                <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`../${PATHS.addAccounts}/${userId}`, { state: { isEdit: true } })}>
-                  {t('userManagement.button.edit')}
-                </Button>
-              </div>
-            }
-          />
-
-          {isSuccess && isAlertVisible && (
-            <Alert
-              description={alertDescription} //Number should be dynamic --To Do
-              onClose={handleAlertClose}
-              type="success"
-              duration={10000}
+        {!isSystemAdminView && (
+          <div className="MCP-module-body">
+            <ModuleHeader
+              heading={<p className="primaryHeading">{t('userManagement.header.view.linked_accounts')}</p>}
+              controls={
+                <div className="controls">
+                  <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`../${PATHS.addAccounts}/${userId}`, { state: { isEdit: true } })}>
+                    {t('userManagement.button.edit')}
+                  </Button>
+                </div>
+              }
             />
-          )}
 
-          <div className="MCP-panel-container">
-            <div class="filterBox line-height grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
-              <div className="toggle-box">
-                <div>
-                  <img src={arrow_right} className="icon-align" />
-                </div>
-                <div className="autoSuggestSearch-container">
-                  <AutoSuggestSearch label=" " onChangeInput={handleSearchChange} outline={true} placeHolder={t('userManagement.searchFilter.addaccount_label')} />
+            {isSuccess && isAlertVisible && (
+              <Alert
+                description={alertDescription} //Number should be dynamic --To Do
+                onClose={handleAlertClose}
+                type="success"
+                duration={10000}
+              />
+            )}
+
+            <div className="MCP-panel-container">
+              <div class="filterBox line-height grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
+                <div className="toggle-box">
+                  <div>
+                    <img src={arrow_right} className="icon-align" />
+                  </div>
+                  <div className="autoSuggestSearch-container">
+                    <AutoSuggestSearch label=" " onChangeInput={handleSearchChange} outline={true} placeHolder={t('userManagement.searchFilter.addaccount_label')} />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="grid grid-gap-16">
-              <AccountsList selectableRows={false} omitColumns={['distributionChannel']} practiceId={data?.practiceId} userId={data?.id} />
+              <div className="grid grid-gap-16">
+                <AccountsList selectableRows={false} omitColumns={['distributionChannel']} practiceId={data?.practiceId} userId={data?.id} />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

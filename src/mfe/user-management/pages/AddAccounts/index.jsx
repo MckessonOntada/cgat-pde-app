@@ -28,7 +28,7 @@ const AddAccounts = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate(RoutePaths.pathUserManagement);
   };
 
   const handleSearchChange = (inputValue) => {
@@ -146,7 +146,7 @@ const AddAccounts = () => {
           </Button>
         )}
         {isEdit && (
-          <Button variant="primary" type="button" onClick={handleAddAccounts} size={'md'}>
+          <Button variant="primary" type="button" onClick={handleAddAccounts} size={'md'} disabled={selectedAccounts?.length <= 0}>
             {t('userManagement.button.add_accounts')}
           </Button>
         )}

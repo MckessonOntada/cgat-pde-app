@@ -61,7 +61,7 @@ export default function AccountsList({
 
   useEffect(() => {
     if (typeof setSelectedRows === 'function') {
-      setSelectedRows(data?.content);
+      //setSelectedRows(data?.content);
       refetch();
     }
   }, [addNewAccounts, userId, currentPage]);
@@ -173,7 +173,7 @@ export default function AccountsList({
       });
     }
     return _columns;
-  }, [omitColumns, refetch]);
+  }, [omitColumns, data, refetch]);
 
   const handleChangePage = (e, newPage) => {
     setCurrentPage(newPage);

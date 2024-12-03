@@ -9,7 +9,7 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import AuthUtils from '@src/util/AuthUtils';
 
-const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleSelect, editRoleId }) => {
+const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleSelect, editRoleId, isRolePage }) => {
   const { t } = useTranslate();
   const [selectedRole, setSelectedRole] = useState(editRoleId || '');
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -79,7 +79,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
 
           <div className="MCP-panel-container">
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
-              <Dropdown id="role" label={t('userManagement.user_permissions.select_role')} value={selectedRole} onChange={handleRoleChange} options={roleData || []} isRequired size="lg" />
+              <Dropdown id="role" label={t('userManagement.user_permissions.select_role')} value={selectedRole} onChange={handleRoleChange} options={roleData || []} isRequired={!isRolePage} size="lg" />
             </div>
           </div>
         </Fragment>

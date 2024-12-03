@@ -33,18 +33,18 @@ const RolePermissions = () => {
   const navigate = useNavigate();
   const { roleId } = useParams();
   const location = useLocation();
-  const row = location.state || null;
+  const row = location.state.data || null;
   const { setMessage } = useRole();
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [enabledPermissions, setEnabledPermissions] = React.useState(row?.permissions ? [...row.permissions] : []);
   const [inheritedRole, setInheritedRole] = React.useState(null);
   const { refreshData } = useRole();
-  const isEdit = !!roleId;
+  const { isEdit } = location.state || {};
 
   const handleOnCancelButtonClick = () => {
-    if (!arePermissionsEqual(row.permissions, enabledPermissions)) {
+    if (!arePermissionsEqual(row?.permissions, enabledPermissions)) {
       setModalSuccessCallback('list');
-    } else navigate(`/organization/${PATHS.roles}`);
+    } else navigate(isEdit ? `/organization/roles/${roleId}` : `/organization/${PATHS.roles}`);
   };
 
   const mutation = useMutation(
@@ -75,7 +75,7 @@ const RolePermissions = () => {
             );
           }
           refreshData();
-          navigate(`/organization/${PATHS.roles}`);
+          navigate(isEdit ? `/organization/roles/${roleId}` : `/organization/${PATHS.roles}`);
         }
       },
       onError: (error) => {
@@ -100,13 +100,15 @@ const RolePermissions = () => {
 
   const handleGoBack = () => {
     if (!arePermissionsEqual(row?.permissions, enabledPermissions)) {
-      setModalSuccessCallback('back');
-    } else navigate(`../${roleId}/edit-role`, { state: row });
+      setModalSuccessCallback('mainlist');
+    } else navigate('/organization/roles');
   };
 
   const handleNavigate = () => {
     if (modalSuccessCallback === 'back') navigate(`../${roleId}/edit-role`, { state: row });
     else if (modalSuccessCallback === 'list') {
+      navigate(isEdit ? `/organization/roles/${roleId}` : '/organization/roles');
+    } else if (modalSuccessCallback === 'mainlist') {
       navigate('/organization/roles');
     }
   };
@@ -140,7 +142,7 @@ const RolePermissions = () => {
             validateOnBlur={true}>
             {({ values }) => (
               <Form>
-                <PermissionForm enabledPermissions={enabledPermissions} setEnabledPermissions={setEnabledPermissions} onRoleChange={setInheritedRole} handleRoleSelect={() => {}} />
+                <PermissionForm enabledPermissions={enabledPermissions} setEnabledPermissions={setEnabledPermissions} onRoleChange={setInheritedRole} handleRoleSelect={() => {}} editRoleId={roleId} isRolePage={true} />
 
                 <div className={'buttonGroup'}>
                   <Button variant="secondary" type="button" onClick={handleOnCancelButtonClick} size={'md'}>
