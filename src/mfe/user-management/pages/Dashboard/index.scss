@@ -7,7 +7,6 @@
   max-height: 100vh;
 }
 
-
 .userCardContainer {
   display: grid;
   gap: var(--spacing-04);
@@ -28,13 +27,22 @@
   }
 }
 
-
 .filterBox {
   display: grid;
   padding: var(--spacing-04);
   border: 1px solid var(--brand-color-patient-primary-3);
   border-radius: var(--brand-border-radius--6);
-} 
+}
+.toggle-container {
+  display: grid;
+  justify-content: space-between;
+  gap: var(--spacing-03);
+  align-items: center;
+
+  @include mixins.respond("sm") {
+    display: flex;
+  }
+}
 
 .py4 {
   padding-top: var(--spacing-04);
@@ -95,7 +103,7 @@
   @include mixins.respond(lg) {
     justify-self: flex-end;
   }
-} 
+}
 
 .actionmenu {
   position: relative;
@@ -172,13 +180,12 @@
   text-align: left;
 }
 
-
 @media (max-width: 600px) {
   [class^="CustomDataTable-module--d_flex--"] {
-      display: flex;
-      gap: var(--spacing-02);
-      flex-direction: row;
-      align-items: center;
+    display: flex;
+    gap: var(--spacing-02);
+    flex-direction: row;
+    align-items: center;
   }
 }
 

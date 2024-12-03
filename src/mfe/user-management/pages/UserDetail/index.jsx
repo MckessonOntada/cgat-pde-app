@@ -16,6 +16,8 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import CommonUtils from '@src/util/CommonUtils.js';
+import { UserAccountsProvider } from '../../context/UserAccountsContext';
+import UserAccounts from './UserAccounts';
 import { RoutePaths } from '@src/routes/constants';
 
 function getbgColorOnRole(Role) {
@@ -242,7 +244,6 @@ const UserDetail = () => {
                 </div>
               }
             />
-
             {isSuccess && isAlertVisible && (
               <Alert
                 description={alertDescription} //Number should be dynamic --To Do
@@ -251,23 +252,14 @@ const UserDetail = () => {
                 duration={10000}
               />
             )}
-
-            <div className="MCP-panel-container">
-              <div class="filterBox line-height grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
-                <div className="toggle-box">
-                  <div>
-                    <img src={arrow_right} className="icon-align" />
-                  </div>
-                  <div className="autoSuggestSearch-container">
-                    <AutoSuggestSearch label=" " onChangeInput={handleSearchChange} outline={true} placeHolder={t('userManagement.searchFilter.addaccount_label')} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-gap-16">
-                <AccountsList selectableRows={false} omitColumns={['distributionChannel']} practiceId={data?.practiceId} userId={data?.id} />
-              </div>
-            </div>
+            <UserAccountsProvider addNewAccounts={false} practiceId={data?.practiceId} userId={data?.id}>
+              <UserAccounts
+                selectableRows={false} //
+                omitColumns={['distributionChannel']}
+                practiceId={data?.practiceId}
+                userId={data?.id}
+              />
+            </UserAccountsProvider>
           </div>
         )}
       </div>
