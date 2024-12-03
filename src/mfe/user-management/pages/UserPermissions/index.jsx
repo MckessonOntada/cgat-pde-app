@@ -71,7 +71,11 @@ const UserPermissions = () => {
       {
         onSuccess: (response) => {
           console.log('User created/updated successfully:', response);
-          navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.addAccounts}/${userId}`);
+          if (isSystemAdminView) {
+            navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : RoutePaths.pathUserManagement, { state: { isSuccess: true } });
+          } else {
+            navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.addAccounts}/${userId}`);
+          }
         },
         onError: (error) => {
           setAlert({ type: 'error', message: 'Failed to create/update Permissions' });
