@@ -70,7 +70,7 @@ const OrgList = () => {
         />
       ),
       wrap: true,
-      width: '2%'
+      width: '40px'
     },
     {
       id: 'name',

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Badge, Tooltip } from '@mckesson/mcp-component-library';
 import { Link } from 'react-router-dom';
+import { ro } from 'react-date-range/dist/locale';
 
 const getBadgeType = (isActive) => {
     if (isActive === undefined || isActive === null) return null; // Handle null or undefined
@@ -30,8 +31,10 @@ export const createColumns = (t) => [
     {
         id: 'createAt',
         name: t('orgManagement.role.tableHeadingCreatedOn'),
-        selector: (row) => (row.createdAt ? getFormattedDate(row.createdAt) : '-'),
+        selector: (row) => getFormattedDate(row.createdAt ? row.createdAt : row.updatedAt),
         wrap: true,
+        sortable: true,
+        sortBy: (props) => props.updatedAt ? props.updatedAt : props.createdAt,
         width: "34%",
     },
     {

@@ -118,10 +118,7 @@ export const UserProvider = ({ children }) => {
 
   const applyFilters = (filters) => {
     setPageNumber(1);
-    setFilterConfig(prevFilters => ({
-      ...prevFilters,
-      ...filters
-    }));
+    setFilterConfig({...filters});
   }
 
   const setPageNumber = (pageNumber) => {
