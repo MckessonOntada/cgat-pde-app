@@ -62,9 +62,9 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
   const controlButtons = (
     <div className="filter-controls">
       {isClearFiltersButtonVisible && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
-      {!areFiltersEqual && <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" /> }
+      {!areFiltersEqual && <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />}
     </div>
-  )
+  );
 
   return (
     <form onSubmit={handleOnSubmit}>
@@ -74,16 +74,14 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
             <button type="button" onClick={handleExpandCard}>
               <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
             </button>
-            <div className={'ctrl-search-box'}>
+            <div className={'ctrl-search-box autoSuggestSearch-container'}>
               <InputField id="user-grid-search-box" name="searchQuery" value={filters.searchQuery} useRegister={false} onInputChange={handleSearchChange} placeholder={t('userManagement.placeholder.searchByNameAndLocation')} />
             </div>
           </div>
-          <div>
-            {!isCardExpanded && controlButtons}
-          </div>
+          <div>{!isCardExpanded && controlButtons}</div>
         </div>
         <ToggleUI in={isCardExpanded} timeout={400}>
-          <div className="filter-body" style={{paddingBottom: '300px'}}>
+          <div className="filter-body" style={{ paddingBottom: '300px' }}>
             <div className="filter-controls">
               <div className="filter-segment">
                 <SearchableDropdown

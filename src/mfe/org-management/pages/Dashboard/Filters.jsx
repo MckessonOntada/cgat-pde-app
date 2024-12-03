@@ -72,10 +72,10 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
 
   const controlButtons = (
     <div className="filter-controls">
-      { isClearFiltersButtonVisible && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
-      { !areFiltersEqual && <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" /> }
+      {isClearFiltersButtonVisible && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
+      {!areFiltersEqual && <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />}
     </div>
-  )
+  );
 
   return (
     <form onSubmit={handleOnSubmit}>
@@ -85,16 +85,14 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
             <button type="button" onClick={handleExpandCard} disabled={true}>
               <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
             </button>
-            <div className={'ctrl-search-box'}>
+            <div className="ctrl-search-box autoSuggestSearch-container">
               <InputField id="search-box" name="org-grid-search-query" value={filters.searchQuery} onInputChange={handleSearch} tooltipText={null} useRegister={false} placeholder={t('orgManagement.role.placeholder')} />
             </div>
           </div>
-          <div>
-            {!isCardExpanded && controlButtons}
-          </div>
+          <div>{!isCardExpanded && controlButtons}</div>
         </div>
         <ToggleUI in={isCardExpanded} timeout={400}>
-          <div className="filter-body" style={{paddingBottom: '300px'}}>
+          <div className="filter-body" style={{ paddingBottom: '300px' }}>
             <div className="filter-controls">
               <div className="filter-segment">
                 <SearchableDropdown

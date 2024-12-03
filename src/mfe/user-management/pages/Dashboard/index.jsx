@@ -17,7 +17,7 @@ import AuthUtils from '@src/util/AuthUtils';
 export default function Dashboard() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { activeTab, setActiveTab, refetch } = useUser();
+  const { activeTab, setActiveTab, refreshData } = useUser();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const location = useLocation();
   const isSuccess = location.state?.isSuccess || false;
@@ -27,6 +27,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (isSuccess) {
+      refreshData();
       setIsAlertVisible(true);
       setAlertDescription(isReject ? 'Organization User Rejected Successfully' : 'Organization User Created Successfully');
       // Set a timeout to auto-close the alert after 10 seconds
