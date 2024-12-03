@@ -1,7 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
-import CommonDataService from '@src/api/commonService/CommonDataService';
-import { useDispatch } from 'react-redux';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
@@ -47,9 +45,6 @@ export const OrgAccountsProvider = ({ children, addNewAccounts, practiceId }) =>
 
   const clearFilters = () => {
     setFilterState(INITIAL_STATE);
-    // Promise.resolve().then(() => {
-    // refetch();
-    // });
   };
   // use from context
   const apiUrl = useMemo(() => {

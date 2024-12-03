@@ -60,7 +60,6 @@ export const UserAccountsProvider = ({ children, addNewAccounts, practiceId, use
       params.query = filterState.searchQuery;
     }
     if (userId && !addNewAccounts) {
-      console.log('response.....', addNewAccounts, userId, practiceId);
       return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/users/${userId}/accounts?${serializeParams(params)}`;
     } else if (userId && addNewAccounts) {
       return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts?${serializeParams(params)}`;
@@ -73,7 +72,6 @@ export const UserAccountsProvider = ({ children, addNewAccounts, practiceId, use
     queryFn: async () => {
       if (userId || practiceId) {
         const res = await HttpResourceService.callRest(`${apiUrl}`, httpVerb.GET, {});
-        console.log('response...', res);
         return res.data;
       }
     },
