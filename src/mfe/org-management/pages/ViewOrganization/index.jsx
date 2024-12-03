@@ -14,6 +14,8 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import { PATHS as InternalPaths } from '../../routes/constants';
 import ModuleHeader from '@src/components/module-header';
+import { OrgAccountsProvider } from '../../context/OrgAccountsContext';
+import OrganizationAccounts from './OrganizationAccounts';
 
 export default function ViewOrganization() {
   // Call api to get linked accounts => /practice/{practiceId}/accounts
@@ -120,9 +122,7 @@ export default function ViewOrganization() {
         <MdOutlineKeyboardArrowLeft size="24px" />
         <p>{t('orgManagement.back.organization')}</p>
       </div>
-
       {!addNewAccounts && <ModuleHeader heading={<p className="primaryHeading">{t('orgManagement.create_org.org-details')}</p>} />}
-
       {!isView && (
         <div className="stepper">
           <Stepper
@@ -139,13 +139,11 @@ export default function ViewOrganization() {
           />
         </div>
       )}
-
       {isView && !addNewAccounts && data && (
         <div className="details-view-container">
           <DetailsView data={data} onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: data }, true)} />
         </div>
       )}
-
       <ModuleHeader
         heading={<p className="primaryHeading">{addNewAccounts ? t('orgManagement.select_account') : t('orgManagement.link')}</p>}
         controls={
@@ -159,16 +157,30 @@ export default function ViewOrganization() {
         }
       />
       {updateState.isSuccess && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
-      <AccountsList
-        showSelectedAccounts={addNewAccounts}
-        omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']}
-        selectableRows={addNewAccounts}
-        selectedRows={selectedAccounts}
-        setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)}
-        practiceId={orgId}
-        onRemoveAccount={onRemoveAccount}
-        addNewAccounts={addNewAccounts}
-      />
+      <OrgAccountsProvider addNewAccounts={addNewAccounts} practiceId={orgId}>
+        {/* <AccountFilters />
+        <AccountsList
+          showSelectedAccounts={addNewAccounts}
+          omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']}
+          selectableRows={addNewAccounts}
+          selectedRows={selectedAccounts}
+          setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)}
+          practiceId={orgId}
+          onRemoveAccount={onRemoveAccount}
+          addNewAccounts={addNewAccounts}
+        /> */}
+
+        <OrganizationAccounts
+          showSelectedAccounts={addNewAccounts}
+          omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']}
+          selectableRows={addNewAccounts}
+          selectedRows={selectedAccounts}
+          setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)}
+          practiceId={orgId}
+          onRemoveAccount={onRemoveAccount}
+          addNewAccounts={addNewAccounts}
+        />
+      </OrgAccountsProvider>
       {addNewAccounts && (
         <div className="btn-box">
           <Button variant="secondary" onClick={handleCancel}>

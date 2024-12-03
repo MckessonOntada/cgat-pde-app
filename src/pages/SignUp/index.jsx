@@ -164,24 +164,15 @@ const SignUp = () => {
                       <Required id="Required">Required</Required>
                     </Label>
                     <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 line-height">
-                      {/* <Field name="practiceId" 
-                      fieldlabel={t('forms.labels.organization')}
-                       placeholder=" " 
-                       component={Components['dropdown']} 
-                       isRequired options={organizationList || []} 
-                       /> */}
-
                       <AutoSuggestDropdown
+                        eregVariant
                         getselectedValue={(e) => {
-                          setFieldValue('practiceId', e.value);
+                          setFieldValue('practiceId', e.id);
                         }}
-                        isRequired
-                        labelTemplate="Select a condition"
                         onChangeInput={onSearchOrganization}
                         placeHolder=""
-                        refineFilterMessage="Refine your search criteria"
-                        // selectedVal={values.practiceId}
                         suggestionList={organizationList || []}
+                        isShowRefineQueryMessage
                       />
                     </div>
                     <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">

@@ -16,17 +16,18 @@ import { serializeParams } from '@src/util/ApiUtils';
 const RECORDS_PER_PAGE = 8;
 
 // TODO: Create filter context
-export default function AccountsList({
-  selectedRows,
-  setSelectedRows,
-  onRemoveAccount,
-  showSelectedAccounts = false, // This is to show selected accounts in right rail
-  selectableRows = true, // To enable or disable row selection
-  omitColumns = [], // Pass column ids which you don't want to show in table.
-  practiceId,
-  userId,
-  addNewAccounts
-}) {
+export default function AccountsList(props) {
+  const {
+    selectedRows,
+    setSelectedRows,
+    onRemoveAccount,
+    showSelectedAccounts = false, // This is to show selected accounts in right rail
+    selectableRows = true, // To enable or disable row selection
+    omitColumns = [], // Pass column ids which you don't want to show in table.
+    practiceId,
+    userId,
+    addNewAccounts
+  } = props;
   const [currentPage, setCurrentPage] = useState(1);
   const { t } = useTranslate();
 
@@ -58,13 +59,6 @@ export default function AccountsList({
     refetchOnWindowFocus: false,
     keepPreviousData: true
   });
-
-  useEffect(() => {
-    if (typeof setSelectedRows === 'function') {
-      setSelectedRows(data?.content);
-      refetch();
-    }
-  }, [addNewAccounts, userId, currentPage]);
 
   const columns = useMemo(() => {
     const _columns = [
@@ -196,17 +190,18 @@ export default function AccountsList({
           <CustomDataTable
             id="my-data-table"
             type="normal"
-            columns={columns}
-            data={data?.content || []} // Use the sliced data for the current page
-            currentPage={currentPage}
-            totalPageCount={data?.totalPages}
+            columns={props.columns}
+            data={props.data?.content || []} // Use the sliced data for the current page
+            currentPage={props.currentPage}
+            totalPageCount={props.data?.totalPages}
             pagination={true}
-            handleChangePage={handleChangePage}
-            totalRocords={data?.totalElements}
-            recordsPerPage={RECORDS_PER_PAGE}
+            handleChangePage={props.handleChangePage}
+            totalRocords={props.data?.totalElements}
+            recordsPerPage={props.recordsPerPage}
             paginationTotalRecorsMessage={t('orgManagement.results')}
             paginationRecordsPerPageMessage={t('orgManagement.per_page')}
             isAdmin={true}
+            onSortIconClick={props.handleSort}
             // selectableRows={selectableRows}
             // handleRowSelected={handleRowSelected}
             // selectedRowId={selectedRows}

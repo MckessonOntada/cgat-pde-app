@@ -13,6 +13,8 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
+import { UserAccountsProvider } from '../../context/UserAccountsContext';
+import UserAccounts from '../UserDetail/UserAccounts';
 
 const AddAccounts = () => {
   const { t } = useTranslate();
@@ -106,7 +108,7 @@ const AddAccounts = () => {
         </div>
       )}
 
-      <div class="MCP-panel-container line-height grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
+      {/* <div class="MCP-panel-container line-height grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
         <div className="MCP-module-body">
           {!isEdit && <p className="secondaryHeading"> {t('userManagement.add_accounts.labelheader')}</p>}
 
@@ -135,7 +137,22 @@ const AddAccounts = () => {
             addNewAccounts={true}
           />
         </div>
-      </div>
+      </div> */}
+      <UserAccountsProvider addNewAccounts={true} practiceId={practiceId} userId={userId}>
+        <UserAccounts
+          data={AllAccountsData}
+          selectedRows={selectedAccounts}
+          setSelectedRows={setSelectedAccounts}
+          onRemoveAccount={onRemoveAccount}
+          showSelectedAccounts
+          omitColumns={['action', 'cgatIdentifier', 'address']}
+          practiceId={practiceId}
+          userId={userId}
+          addNewAccounts={true}
+          selectableRows={true}
+        />
+      </UserAccountsProvider>
+
       <div className={'buttonGroup'}>
         <Button variant="secondary" type="button" onClick={handleGoBack} size={'md'}>
           {t('userManagement.button.back')}
