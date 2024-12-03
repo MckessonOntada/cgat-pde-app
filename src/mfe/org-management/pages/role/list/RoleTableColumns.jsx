@@ -25,7 +25,7 @@ export const createColumns = (t) => [
   {
     id: 'createAt',
     name: t('orgManagement.role.tableHeadingCreatedOn'),
-    selector: (row) => CommonUtils.convertDateStringFormat(row.createdAt ? row.createdAt : row.updatedA, 'MM-DD-YYYY'),
+    selector: (row) => CommonUtils.convertDateStringFormat(row.createdAt ? row.createdAt : row.updatedAt, 'MM-DD-YYYY'),
     wrap: true,
     width: '34%'
   },
