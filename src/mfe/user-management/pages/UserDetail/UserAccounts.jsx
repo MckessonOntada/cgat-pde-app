@@ -10,7 +10,7 @@ import arrow_down from '@src/assets/image/arrow_down.svg';
 
 export default function UserAccounts(props) {
   const { omitColumns = [], selectableRows, selectedRows, setSelectedRows, practiceId } = props;
-  const { data, pagination, refetch, setSortCriteria, filters } = useUserAccounts();
+  const { data, pagination, refetch, setSortCriteria, filters, isLoading } = useUserAccounts();
   const [expandedCard, setExpandedCard] = useState(false);
   const { t } = useTranslate();
   const handleChangePage = (e, newPage) => {
@@ -159,7 +159,7 @@ export default function UserAccounts(props) {
           {<Button type="button" variant="secondary" label={'Apply Filter'} className="filter-btn" onClick={onApplyFilters} size="md" />}
         </div>
       </div>
-      <AccountsList {...props} data={data} columns={columns} currentPage={pagination.currentPage} recordsPerPage={pagination.recordsPerPage} handleChangePage={handleChangePage} handleSort={handleSort} />
+      <AccountsList {...props} isLoading={isLoading} data={data} columns={columns} currentPage={pagination.currentPage} recordsPerPage={pagination.recordsPerPage} handleChangePage={handleChangePage} handleSort={handleSort} />
     </React.Fragment>
   );
 }

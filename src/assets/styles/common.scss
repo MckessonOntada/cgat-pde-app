@@ -81,7 +81,7 @@
   flex-direction: row;
   gap: var(--spacing-03);
 }
-.additional-filters{
+.additional-filters {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -89,8 +89,8 @@
   gap: var(--spacing-04);
 }
 
-.filter-panel{
-  .header{
+.filter-panel {
+  .header {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-04);
@@ -100,17 +100,17 @@
       flex-direction: row;
       align-items: center;
     }
-    .header-segment{
+    .header-segment {
       display: inline-flex;
       flex-direction: row;
       gap: var(--spacing-04);
       align-items: center;
     }
   }
-  .ctrl-search-box{
+  .ctrl-search-box {
     flex-grow: 1;
   }
-  .filter-controls{
+  .filter-controls {
     display: flex;
     flex-direction: column;
     align-self: stretch;
@@ -120,13 +120,13 @@
       align-items: center;
     }
   }
-  .filter-segment{
+  .filter-segment {
     min-width: unset;
     @include mixins.respond(sm) {
       min-width: 320px;
     }
   }
-  .filter-body{
+  .filter-body {
     padding-top: var(--spacing-04);
     border-top: 1px solid var(--brand-color-grey-scale-cool-2);
     @include mixins.respond(sm) {
@@ -220,4 +220,9 @@
   font-weight: var(--brand-font-weight-600) !important;
   line-height: var(--brand-line-height--24) !important;
   letter-spacing: 0.001em !important;
+}
+
+.dashboard-loader {
+  height: 190px;
+  padding-top: 20px;
 }

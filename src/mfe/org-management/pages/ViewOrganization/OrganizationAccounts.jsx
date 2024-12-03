@@ -9,8 +9,10 @@ import Actions from '@src/components/Accounts/Action';
 
 export default function OrganizationAccounts(props) {
   const { omitColumns = [], selectableRows, selectedRows, setSelectedRows, practiceId } = props;
-  const { data, pagination, refetch, setSortCriteria } = useOrgAccounts();
+  const { data, pagination, refetch, setSortCriteria, isLoading } = useOrgAccounts();
   const { t } = useTranslate();
+
+  console.log('isLoading...', isLoading);
 
   const handleChangePage = (e, newPage) => {
     pagination.setCurrentPage(newPage);
@@ -134,7 +136,7 @@ export default function OrganizationAccounts(props) {
   return (
     <React.Fragment>
       <AccountFilters />
-      <AccountsList {...props} data={data} columns={columns} currentPage={pagination.currentPage} recordsPerPage={pagination.recordsPerPage} handleChangePage={handleChangePage} handleSort={handleSort} />
+      <AccountsList {...props} isLoading={isLoading} data={data} columns={columns} currentPage={pagination.currentPage} recordsPerPage={pagination.recordsPerPage} handleChangePage={handleChangePage} handleSort={handleSort} />
     </React.Fragment>
   );
 }
