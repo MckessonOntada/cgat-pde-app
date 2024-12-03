@@ -230,44 +230,46 @@ const UserDetail = () => {
           ))}
         </div>
 
-        <div className="MCP-module-body">
-          <ModuleHeader
-            heading={<p className="primaryHeading">{t('userManagement.header.view.linked_accounts')}</p>}
-            controls={
-              <div className="controls">
-                <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`../${PATHS.addAccounts}/${userId}`, { state: { isEdit: true } })}>
-                  {t('userManagement.button.edit')}
-                </Button>
-              </div>
-            }
-          />
-
-          {isSuccess && isAlertVisible && (
-            <Alert
-              description={alertDescription} //Number should be dynamic --To Do
-              onClose={handleAlertClose}
-              type="success"
-              duration={10000}
+        {!isSystemAdminView && (
+          <div className="MCP-module-body">
+            <ModuleHeader
+              heading={<p className="primaryHeading">{t('userManagement.header.view.linked_accounts')}</p>}
+              controls={
+                <div className="controls">
+                  <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`../${PATHS.addAccounts}/${userId}`, { state: { isEdit: true } })}>
+                    {t('userManagement.button.edit')}
+                  </Button>
+                </div>
+              }
             />
-          )}
 
-          <div className="MCP-panel-container">
-            <div class="filterBox line-height grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
-              <div className="toggle-box">
-                <div>
-                  <img src={arrow_right} className="icon-align" />
-                </div>
-                <div className="autoSuggestSearch-container">
-                  <AutoSuggestSearch label=" " onChangeInput={handleSearchChange} outline={true} placeHolder={t('userManagement.searchFilter.addaccount_label')} />
+            {isSuccess && isAlertVisible && (
+              <Alert
+                description={alertDescription} //Number should be dynamic --To Do
+                onClose={handleAlertClose}
+                type="success"
+                duration={10000}
+              />
+            )}
+
+            <div className="MCP-panel-container">
+              <div class="filterBox line-height grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
+                <div className="toggle-box">
+                  <div>
+                    <img src={arrow_right} className="icon-align" />
+                  </div>
+                  <div className="autoSuggestSearch-container">
+                    <AutoSuggestSearch label=" " onChangeInput={handleSearchChange} outline={true} placeHolder={t('userManagement.searchFilter.addaccount_label')} />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="grid grid-gap-16">
-              <AccountsList selectableRows={false} omitColumns={['distributionChannel']} practiceId={data?.practiceId} userId={data?.id} />
+              <div className="grid grid-gap-16">
+                <AccountsList selectableRows={false} omitColumns={['distributionChannel']} practiceId={data?.practiceId} userId={data?.id} />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

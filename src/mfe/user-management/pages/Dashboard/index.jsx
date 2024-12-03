@@ -29,7 +29,7 @@ export default function Dashboard() {
     if (isSuccess) {
       refreshData();
       setIsAlertVisible(true);
-      setAlertDescription(isReject ? 'Organization User Rejected Successfully' : 'Organization User Created Successfully');
+      setAlertDescription(isReject ? 'Organization User Rejected Successfully' : isSystemAdminView ? 'System Admin Created Successfully' : 'Organization User Created Successfully');
       // Set a timeout to auto-close the alert after 10 seconds
       const timer = setTimeout(handleAlertClose, 10000); //This should be as same as duration that mentioed in Alert
 
