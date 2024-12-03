@@ -12,7 +12,7 @@ import ModuleHeader from '@src/components/module-header';
 import { useQuery, useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
-import { serializeParams } from '@src/util/ApiUtils';
+import { handleApiError, serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import { RoutePaths } from '@src/routes/constants';
 
@@ -192,8 +192,10 @@ const CreateUser = () => {
           navigate(isEdit ? `/${isSystemAdminView ? 'system-admin' : 'user'}/${response.createUser?.id ? response.createUser?.id : userId}` : `../${PATHS.userPermissions}/${response.createUser.id || userId}`);
         },
         onError: (error) => {
+          const errorKey = handleApiError(error);
           const actionType = isPending ? 'Approve' : isEdit ? 'Update' : 'Create';
-          setAlert({ type: 'error', message: `Failed to ${actionType}  user` });
+          setAlert({ type: 'error', message: t(errorKey) });
+          // setAlert({ type: 'error', message: `Failed to ${actionType}  user` });
           setIsAlertVisible(true);
         }
       }

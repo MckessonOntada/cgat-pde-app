@@ -218,5 +218,8 @@ export const UserManagementES = {
   'APPLICATION_SETTING.VIEW_PAYMENT_METHOD': 'S_View Payment Method',
   'APPLICATION_SETTING.VIEW_PAYMENT_METHOD.DESCRIPTION': 'S_Allows viewing payment methods, enabling the view option',
   'APPLICATION_SETTING.MANAGE_PAYMENT_METHODS': 'S_Manage Payment Methods',
-  'APPLICATION_SETTING.MANAGE_PAYMENT_METHODS.DESCRIPTION': 'S_Allows editing and deactivating payment methods, enabling edit and deactivate options'
+  'APPLICATION_SETTING.MANAGE_PAYMENT_METHODS.DESCRIPTION': 'S_Allows editing and deactivating payment methods, enabling edit and deactivate options',
+  'errors.user_email_key': 'Email ID already exists.',
+  'errors.user_phone_key': 'Phone number already exists.',
+  'errors.default': 'An unexpected error occurred.'
 };

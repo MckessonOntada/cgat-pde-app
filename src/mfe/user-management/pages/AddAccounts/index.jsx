@@ -69,9 +69,6 @@ const AddAccounts = () => {
         },
         onError: (error) => {
           console.log('Failed to add accounts:', error);
-          alert('Failed to update accounts');
-          // setAlert({ type: "error", message: "Failed to update accounts" });
-          // setIsAlertVisible(true);
         }
       }
     );
@@ -141,7 +138,7 @@ const AddAccounts = () => {
           {t('userManagement.button.back')}
         </Button>
         {!isEdit && (
-          <Button variant="primary" type="button" onClick={handleSaveandContinue} size={'md'}>
+          <Button variant="primary" type="button" onClick={handleSaveandContinue} size={'md'} disabled={selectedAccounts?.length <= 0}>
             {t('userManagement.button.adduser')}
           </Button>
         )}
