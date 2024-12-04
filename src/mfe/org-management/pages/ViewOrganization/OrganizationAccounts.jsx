@@ -12,8 +12,6 @@ export default function OrganizationAccounts(props) {
   const { data, pagination, refetch, setSortCriteria, isLoading } = useOrgAccounts();
   const { t } = useTranslate();
 
-  console.log('isLoading...', isLoading);
-
   const handleChangePage = (e, newPage) => {
     pagination.setCurrentPage(newPage);
   };
@@ -135,9 +133,17 @@ export default function OrganizationAccounts(props) {
 
   return (
     <React.Fragment>
-      <div className="accounts-container">
-        <AccountFilters />
-        <AccountsList {...props} isLoading={isLoading} data={data} columns={columns} currentPage={pagination.currentPage} recordsPerPage={pagination.recordsPerPage} handleChangePage={handleChangePage} handleSort={handleSort} />
+      <div className="accounts-wrapper">
+        <div className="MCP-module-body">
+          <div className="MCP-panel-container">
+            <div className="MCP-CardContainer">
+              <AccountFilters />
+            </div>
+            <div className="MCP-table-wrapper">
+              <AccountsList {...props} isLoading={isLoading} data={data} columns={columns} currentPage={pagination.currentPage} recordsPerPage={pagination.recordsPerPage} handleChangePage={handleChangePage} handleSort={handleSort} />
+            </div>
+          </div>
+        </div>
       </div>
     </React.Fragment>
   );

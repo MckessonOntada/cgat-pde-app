@@ -20,7 +20,6 @@ const INITIAL_STATE = {
   searchQuery: '',
   salesOrg: '',
   distributionChannel: '',
-  partnerFunction: 'SOLD_TO',
   pagination: {
     currentPage: 0,
     totalRecords: 0,
@@ -60,7 +59,7 @@ export const OrgAccountsProvider = ({ children, addNewAccounts, practiceId }) =>
       sortBy: sortCriteria.sortBy,
       sortOrder: sortCriteria.sortOrder,
       practiceId,
-      partnerFunction: filterState.partnerFunction || 'SOLD_TO'
+      partnerFunction: 'SOLD_TO'
     };
     if (filterState.searchQuery) {
       params.query = filterState.searchQuery;
@@ -92,7 +91,7 @@ export const OrgAccountsProvider = ({ children, addNewAccounts, practiceId }) =>
 
   useEffect(() => {
     refetch();
-  }, [currentPage, addNewAccounts, sortCriteria]);
+  }, [currentPage, addNewAccounts, filterState]);
 
   const ctxValue = useMemo(
     () => ({
@@ -115,7 +114,8 @@ export const OrgAccountsProvider = ({ children, addNewAccounts, practiceId }) =>
       isLoading,
       isError,
       refetch,
-      setSortCriteria
+      setSortCriteria,
+      setFilterState
     }),
     [data, updateFilterState, clearFilters, currentPage, isLoading, isError]
   );

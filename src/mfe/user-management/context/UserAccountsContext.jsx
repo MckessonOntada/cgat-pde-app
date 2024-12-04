@@ -94,7 +94,7 @@ export const UserAccountsProvider = ({ children, addNewAccounts, practiceId, use
 
   useEffect(() => {
     refetch();
-  }, [currentPage, addNewAccounts, sortCriteria, userId]);
+  }, [currentPage, addNewAccounts, filterState, userId]);
 
   const ctxValue = useMemo(
     () => ({
@@ -117,7 +117,8 @@ export const UserAccountsProvider = ({ children, addNewAccounts, practiceId, use
       isLoading,
       isError,
       refetch,
-      setSortCriteria
+      setSortCriteria,
+      setFilterState
     }),
     [data, updateFilterState, clearFilters, currentPage, isLoading, isError]
   );
