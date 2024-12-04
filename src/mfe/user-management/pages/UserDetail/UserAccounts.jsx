@@ -30,7 +30,7 @@ const INITIAL_FILTER_STATE = {
 
 export default function UserAccounts(props) {
   const { omitColumns = [], selectableRows, selectedRows, setSelectedRows, practiceId } = props;
-  const { data, pagination, refetch, setSortCriteria, isLoading, setFilterState } = useUserAccounts();
+  const { data, pagination, refetch, setSortCriteria, isLoading, setFilterState, clearFilters } = useUserAccounts();
   const [isCardExpanded, setIsCardExpanded] = useState(false);
   const [filters, setFilters] = React.useState(INITIAL_FILTER_STATE);
   const [appliedFilters, setAppliedFilters] = React.useState(INITIAL_FILTER_STATE);
@@ -183,46 +183,22 @@ export default function UserAccounts(props) {
   const handleClearFilters = () => {
     setAppliedFilters(INITIAL_FILTER_STATE);
     setFilters(INITIAL_FILTER_STATE);
+    clearFilters();
   };
 
   const areFiltersEqual = CommonUtils.deepEqual(appliedFilters, filters);
+  const anyFilterIsApplied = Object.values(appliedFilters).some((filter) => filter && filter.length > 0);
 
-  const controlButtons = !areFiltersEqual ? (
-    <div className="filter-control-buttons">
-      <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />
-      <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />
-    </div>
-  ) : null;
+  const controlButtons =
+    anyFilterIsApplied || !areFiltersEqual ? (
+      <div className="filter-control-buttons">
+        {anyFilterIsApplied && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
+        {!areFiltersEqual && <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />}
+      </div>
+    ) : null;
 
   return (
     <React.Fragment>
-      {/* <div className="accounts-container">
-        <div className="filterBox line-height">
-          <div className="toggle-container">
-            <div className="toggle-box">
-              <div onClick={handleExpandCard}>
-                <img src={expandedCard ? arrow_down : arrow_right} className="icon-align" alt="toggle-icon" />
-              </div>
-              <div className="autoSuggestSearch-container">
-                <InputField errors={{}} id="search-box" name="firstName" value={filters.searchQuery} onInputChange={onSearchChange} tooltipText={null} useRegister={false} placeholder={''} />
-              </div>
-            </div>
-            {<Button type="button" variant="secondary" label={'Apply Filter'} className="filter-btn" onClick={onApplyFilters} size="md" />}
-          </div>
-          <ToggleUI in={expandedCard} timeout={400}>
-            <div className="expanded-content">
-              <Divider color={'var(--brand-color-grey-scale-cool-1)'} />
-              <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5">
-                <AutoSuggestDropdown eregVariant getselectedValue={(e) => handleChangeAutoSuggest('salesOrg', e)} onChangeInput={() => {}} label={'Sales Org'} selectedVal={filters.salesOrg} key={'salesOrg'} suggestionList={salesOrgOptions} />
-                <AutoSuggestDropdown eregVariant getselectedValue={(e) => handleChangeAutoSuggest('distributionChannel', e)} onChangeInput={() => {}} label={'Distribution Channel'} selectedVal={''} key={'dc_Filter'} suggestionList={distributionChannelOptions} />
-                <div className="LabelBox">{<Button type="button" label="Clear filter" textButton className="txtbtn" onClick={() => filters.clearFilters()} />}</div>
-              </div>
-            </div>
-          </ToggleUI>
-        </div>
-        <AccountsList {...props} isLoading={isLoading} data={data} columns={columns} currentPage={pagination.currentPage} recordsPerPage={pagination.recordsPerPage} handleChangePage={handleChangePage} handleSort={handleSort} />
-      </div> */}
-
       <div className="MCP-module-body">
         <div className="MCP-panel-container">
           <div className="MCP-CardContainer">
@@ -237,14 +213,14 @@ export default function UserAccounts(props) {
                       <InputField errors={{}} id="search-box" name="searchQuery" value={filters.searchQuery} onInputChange={(e) => handleChangeAutoSuggest('searchQuery', e.target.value)} tooltipText={null} useRegister={false} placeholder={t('account.no')} />
                     </div>
                   </div>
-                  {!isCardExpanded && controlButtons ? controlButtons : null}
+                  {controlButtons}
                 </div>
                 <ToggleUI in={isCardExpanded} timeout={400}>
                   <div className="additional-filters">
                     <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
                       <AutoSuggestDropdown eregVariant getselectedValue={(e) => handleChangeAutoSuggest('salesOrg', e.value)} onChangeInput={() => {}} label={'Sales Org'} selectedVal={filters.salesOrg} key={'salesOrg'} suggestionList={salesOrgOptions} />
                       <AutoSuggestDropdown eregVariant getselectedValue={(e) => handleChangeAutoSuggest('distributionChannel', e.value)} onChangeInput={() => {}} label={'Distribution Channel'} selectedVal={''} key={'dc_Filter'} suggestionList={distributionChannelOptions} />
-                      {isCardExpanded && controlButtons ? <div className="expanded">{controlButtons}</div> : null}
+                      {/* {isCardExpanded && controlButtons ? <div className="expanded">{controlButtons}</div> : null} */}
                     </div>
                   </div>
                 </ToggleUI>

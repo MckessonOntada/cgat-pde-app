@@ -27,7 +27,7 @@ const INITIAL_FILTER_STATE = {
 
 export default function AccountFilters(props) {
   const [isCardExpanded, setIsCardExpanded] = useState(false);
-  const { data, pagination, refetch, setFilterState } = useOrgAccounts();
+  const { data, pagination, refetch, setFilterState, clearFilters } = useOrgAccounts();
   const [filters, setFilters] = React.useState(INITIAL_FILTER_STATE);
   const [appliedFilters, setAppliedFilters] = React.useState(INITIAL_FILTER_STATE);
   const { t } = useTranslate();
@@ -36,20 +36,12 @@ export default function AccountFilters(props) {
     setIsCardExpanded((prevExpandedCard) => !prevExpandedCard);
   };
 
-  const onSearchChange = (event) => {
-    filters.update.setSearchQuery(event.target.value);
-  };
-
   const handleChangeAutoSuggest = (name, value) => {
     // filters.update.updateQuery(name, event.value);
     setFilters((prevState) => ({
       ...prevState,
       [name]: value
     }));
-  };
-
-  const onApplyFilters = () => {
-    refetch();
   };
 
   const handleOnApplyFilter = (event) => {
@@ -61,18 +53,20 @@ export default function AccountFilters(props) {
   const handleClearFilters = () => {
     setAppliedFilters(INITIAL_FILTER_STATE);
     setFilters(INITIAL_FILTER_STATE);
+    clearFilters();
   };
 
   const areFiltersEqual = CommonUtils.deepEqual(appliedFilters, filters);
+  const anyFilterIsApplied = Object.values(appliedFilters).some((filter) => filter && filter.length > 0);
 
-  const controlButtons = !areFiltersEqual ? (
-    <div className="filter-control-buttons">
-      <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />
-      <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />
-    </div>
-  ) : null;
+  const controlButtons =
+    anyFilterIsApplied || !areFiltersEqual ? (
+      <div className="filter-control-buttons">
+        {anyFilterIsApplied && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
+        {!areFiltersEqual && <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />}
+      </div>
+    ) : null;
 
-  console.log('filters', filters, appliedFilters);
   return (
     <form onSubmit={handleOnApplyFilter}>
       <div className="MCP-filter-panel">
@@ -85,14 +79,14 @@ export default function AccountFilters(props) {
               <InputField errors={{}} id="search-box" name="searchQuery" value={filters.searchQuery} onInputChange={(e) => handleChangeAutoSuggest('searchQuery', e.target.value)} tooltipText={null} useRegister={false} placeholder={t('account.no')} />
             </div>
           </div>
-          {!isCardExpanded && controlButtons ? controlButtons : null}
+          {controlButtons}
         </div>
         <ToggleUI in={isCardExpanded} timeout={400}>
           <div className="additional-filters">
             <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
               <AutoSuggestDropdown eregVariant getselectedValue={(e) => handleChangeAutoSuggest('salesOrg', e.value)} onChangeInput={() => {}} label={'Sales Org'} selectedVal={filters.salesOrg} key={'salesOrg'} suggestionList={salesOrgOptions} />
               <AutoSuggestDropdown eregVariant getselectedValue={(e) => handleChangeAutoSuggest('distributionChannel', e.value)} onChangeInput={() => {}} label={'Distribution Channel'} selectedVal={''} key={'dc_Filter'} suggestionList={distributionChannelOptions} />
-              {isCardExpanded && controlButtons ? <div className="expanded">{controlButtons}</div> : null}
+              {/* {isCardExpanded && controlButtons ? <div className="expanded">{controlButtons}</div> : null} */}
             </div>
           </div>
         </ToggleUI>

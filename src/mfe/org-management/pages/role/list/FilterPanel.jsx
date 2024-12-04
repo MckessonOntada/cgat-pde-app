@@ -8,17 +8,16 @@ import { useRole } from '../../../context/RoleContext';
 import CommonUtils from '@src/util/CommonUtils';
 import { RoleStatusEnum } from './Constants';
 
-
 const INITIAL_FILTER_STATE = {
   dateRange: [],
   searchQuery: '',
-  status: [],
+  status: []
 };
 
-const statusOptions = Object.values(RoleStatusEnum).map(item => ({
+const statusOptions = Object.values(RoleStatusEnum).map((item) => ({
   label: item,
-  value: item,
-}))
+  value: item
+}));
 
 const FilterPanel = () => {
   const {
@@ -58,42 +57,45 @@ const FilterPanel = () => {
       ...prevFilters,
       status: filteredValue.map((item) => item.value)
     }));
-  }
+  };
 
   const handleClearFilters = () => {
     setAppliedFilters(INITIAL_FILTER_STATE);
     setFilters(INITIAL_FILTER_STATE);
+    clearFilters();
   };
 
   const handleOnApplyFilter = (event) => {
     event.preventDefault();
 
-    if(filters.dateRange[0] && !filters.dateRange[1]){
-      dateErrors[1] = "Please select end date";
+    if (filters.dateRange[0] && !filters.dateRange[1]) {
+      dateErrors[1] = 'Please select end date';
       setDateErrors([...dateErrors]);
       return;
-    }else if(!filters.dateRange[0] && filters.dateRange[1]){
-      dateErrors[0] = "Please select start date";
+    } else if (!filters.dateRange[0] && filters.dateRange[1]) {
+      dateErrors[0] = 'Please select start date';
       setDateErrors([...dateErrors]);
       return;
     }
 
     const updatedFilter = {
       ...filters,
-      dateRange: filters.dateRange.map(item => CommonUtils.convertDate(item)),
-    }
+      dateRange: filters.dateRange.map((item) => CommonUtils.convertDate(item))
+    };
     setAppliedFilters({ ...updatedFilter });
     applyFilters(updatedFilter);
   };
 
   const areFiltersEqual = CommonUtils.deepEqual(appliedFilters, filters);
+  const anyFilterIsApplied = Object.values(appliedFilters).some((filter) => filter && filter.length > 0);
 
-  const controlButtons = !areFiltersEqual ? (
-    <div className="filter-control-buttons">
-      <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />
-      <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />
-    </div>
-  ) : null;
+  const controlButtons =
+    anyFilterIsApplied || !areFiltersEqual ? (
+      <div className="filter-control-buttons">
+        {anyFilterIsApplied && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
+        {!areFiltersEqual && <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />}
+      </div>
+    ) : null;
 
   return (
     <form onSubmit={handleOnApplyFilter}>
@@ -107,15 +109,15 @@ const FilterPanel = () => {
               <InputField errors={{}} id="search-box" name="firstName" value={filters.searchQuery} onInputChange={handleSearch} tooltipText={null} useRegister={false} placeholder={t('orgManagement.role.placeholder')} />
             </div>
           </div>
-          {!isCardExpanded && controlButtons ? controlButtons : null}
+          {controlButtons}
         </div>
         <ToggleUI in={isCardExpanded} timeout={400}>
           <div className="additional-filters">
             <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
               <div className="custom-date-range-picker">
-                <DateRangePicker 
-                  dateRange={filters.dateRange || []} 
-                  onChange={handleOnDateRangeChange} 
+                <DateRangePicker
+                  dateRange={filters.dateRange || []}
+                  onChange={handleOnDateRangeChange}
                   size="lg"
                   minDate={new Date('-1')}
                   isStartDateError={Boolean(dateErrors[0])}
@@ -136,7 +138,7 @@ const FilterPanel = () => {
                 options={statusOptions}
                 clearAllSelectedValues={() => setStatus([])}
               />
-              {isCardExpanded && controlButtons ? <div className="expanded">{controlButtons}</div> : null}
+              {/* {isCardExpanded && controlButtons ? <div className="expanded">{controlButtons}</div> : null} */}
             </div>
           </div>
         </ToggleUI>

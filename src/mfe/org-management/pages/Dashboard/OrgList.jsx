@@ -166,7 +166,7 @@ const OrgList = () => {
 
   return (
     <div>
-      {isLoading && <Loader type="screen" />}
+      {/* {isLoading && <Loader type="screen" />} */}
       {selectedRows && (
         <div className="selected-item-alert">
           <p className="selected-item-text">
@@ -178,23 +178,29 @@ const OrgList = () => {
         </div>
       )}
 
-      <CustomDataTable
-        id="my-data-table"
-        type="normal"
-        columns={columns}
-        data={data} // Use currentData for pagination
-        onSortIconClick={handleSort}
-        currentPage={paginationConfig.pageNumber}
-        totalPageCount={paginationConfig.totalPages}
-        pagination={true}
-        handleChangePage={handleChangePage}
-        totalRocords={paginationConfig.totalElements} // Corrected typo here
-        recordsPerPage={paginationConfig.pageSize}
-        paginationTotalRecorsMessage={t('orgManagement.results')}
-        paginationRecordsPerPageMessage={t('orgManagement.per_page')}
-        isAdmin={true}
-        noDataComponent={isError ? <div>Something went wrong! Please try again</div> : <EmptyDataTable image={EmptyDataImage} heading={t('orgManagement.add.label')} description={t('orgManagement.empty_table.description')} />}
-      />
+      {isLoading ? (
+        <div className="dashboard-loader">
+          <Loader variant="circular" />
+        </div>
+      ) : (
+        <CustomDataTable
+          id="my-data-table"
+          type="normal"
+          columns={columns}
+          data={data} // Use currentData for pagination
+          onSortIconClick={handleSort}
+          currentPage={paginationConfig.pageNumber}
+          totalPageCount={paginationConfig.totalPages}
+          pagination={true}
+          handleChangePage={handleChangePage}
+          totalRocords={paginationConfig.totalElements} // Corrected typo here
+          recordsPerPage={paginationConfig.pageSize}
+          paginationTotalRecorsMessage={t('orgManagement.results')}
+          paginationRecordsPerPageMessage={t('orgManagement.per_page')}
+          isAdmin={true}
+          noDataComponent={isError ? <div>Something went wrong! Please try again</div> : <EmptyDataTable image={EmptyDataImage} heading={t('orgManagement.add.label')} description={t('orgManagement.empty_table.description')} />}
+        />
+      )}
       <Modal
         {...{
           id: 'xxxs-modal',
