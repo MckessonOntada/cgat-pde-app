@@ -226,5 +226,12 @@ export const UserManagementEN = {
 
   'errors.user_email_key': 'Email ID already exists in the System.',
   'errors.user_phone_key': 'Phone number already exists.',
-  'errors.default': 'An unexpected error occurred.'
+  'errors.default': 'An unexpected error occurred.',
+
+  'messages.user_deactivate_success': 'User has been Deactivated successfully.',
+  'messages.user_deactivate_failure': 'Failed to Deactivate the User.',
+  'messages.user_create_success': 'User has been created successfully.',
+  'messages.pending_user_reject_success': 'Pending User has been rejected.',
+  'messages.user_self_register_success': 'User has been registered successfully.',
+  'messages.sysadmin_create_success': 'System Admin has been created successfully.'
 };
