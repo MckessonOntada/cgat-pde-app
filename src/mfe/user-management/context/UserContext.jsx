@@ -4,6 +4,7 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
+import { DateUtils } from '@src/util/DateUtil';
 
 const UserContext = createContext();
 
@@ -18,7 +19,8 @@ export const useUser = () => {
 const INITIAL_FILTER_STATE = {
   searchQuery: "",
   status: [],
-  role: []
+  role: [],
+  dateRange: [],
 };
 
 const INITIAL_SORT_STATE = {
@@ -46,8 +48,6 @@ export const UserProvider = ({ children }) => {
     }));
   }, []);
 
-  const clearFilters = () => setFilterConfig(INITIAL_FILTER_STATE);
-
   // Use from context
   const requestParams = useMemo(
     () => {
@@ -62,6 +62,9 @@ export const UserProvider = ({ children }) => {
       if (filterConfig.searchQuery) params.query = filterConfig.searchQuery;
       if (filterConfig.status && filterConfig.status.length > 0) params.status = filterConfig.status;
       if (filterConfig.role && filterConfig.role.length > 0) params.role = filterConfig.role;
+      if (filterConfig.dateRange?.[0]) params.startDate = DateUtils.formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy');
+      if (filterConfig.dateRange?.[1]) params.endDate = DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy');
+
 
       return params;
     },
@@ -90,7 +93,7 @@ export const UserProvider = ({ children }) => {
     refetchOnWindowFocus: false
   });
 
-  const {data: roleList} = useQuery({
+  const {data: roleList = []} = useQuery({
     queryKey: ["user", "roles-list", requestParams], 
     queryFn: async () => {
       const response = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}`, httpVerb.GET, {});
@@ -105,6 +108,10 @@ export const UserProvider = ({ children }) => {
     },
     refetchOnWindowFocus: false
   })
+
+  const clearFilters = () => {
+    setFilterConfig(INITIAL_FILTER_STATE)
+  };
 
   useEffect(() => {
     refetch();

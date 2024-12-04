@@ -3,6 +3,9 @@ export const LOCATIONS = [
   { label: "Florida", value: "Florida" },
   { label: "RiverDale", value: "RiverDale" },
   { label: "New York", value: "New York" },
+  { label: "Illinois", value: "Illinois" },
+  { label: "Maharashtra", value: "Maharashtra" },
+  
 ];
 
 export const STATUS = [

@@ -352,6 +352,7 @@ function getDateRange(gapYear){
   return [convertDate(prevDate), convertDate(date)];
 }
 
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -377,7 +378,7 @@ const CommonUtils = Object.freeze({
   searchAndRankOnPrefixFirst,
   areArraysEqual,
   deepEqual,
-  getDateRange
+  getDateRange,
 });
 
 export default CommonUtils;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Badge, Tooltip } from '@mckesson/mcp-component-library';
+import { Badge, CheckboxGroup } from '@mckesson/mcp-component-library';
 import { Link } from 'react-router-dom';
 import CommonUtils from '@src/util/CommonUtils';
 
@@ -8,7 +8,26 @@ const getBadgeType = (isActive) => {
   return isActive ? 'success' : 'error'; // 'success' for green, 'error' for red
 };
 
-export const createColumns = (t) => [
+export const createColumns = (t, selectedRows, setSelectedRows) => [
+  {
+    id: 'checkbox',
+    name: '',
+    cell: (row) => (
+      <CheckboxGroup
+        id={'default'}
+        caption=""
+        items={[
+          {
+            onChange: (event) => setSelectedRows(event.target.checked ? row.id : null),
+            value: row.id,
+            isChecked: selectedRows === row.id,
+            isDisabled: !row.isActive
+          }
+        ]}
+      />
+    ),
+    width: '40px',
+  },
   {
     id: 'name',
     name: t('orgManagement.role.labelRoleName'),

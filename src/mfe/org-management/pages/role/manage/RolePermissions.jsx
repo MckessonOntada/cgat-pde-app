@@ -56,6 +56,7 @@ const RolePermissions = () => {
     {
       onSuccess: (res) => {
         const data = res?.data;
+        refreshData();
         if (data) {
           if (row?.permissions) {
             setMessage(

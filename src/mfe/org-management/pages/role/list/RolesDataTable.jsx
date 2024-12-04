@@ -8,15 +8,14 @@ import EmptyDataTable from '@src/components/EmptyTable';
 
 const RolesDataTable = () => {
     const { t } = useTranslate();
-    const [selectedRows, setSelectedRows] = useState([]);
-    const columns = createColumns(t);
+    const [selectedRows, setSelectedRows] = useState(null);
+    const columns = createColumns(t, selectedRows, setSelectedRows);
     const { applySort } = useRole();
     const {
         data,
         paginationConfig,
         setPageNumber
     } = useRole();
-
 
     const handleSort = (selectedColumn, sortDirection) => {
         if(selectedColumn.sortKey)
@@ -33,9 +32,9 @@ const RolesDataTable = () => {
 
     return (
         <div>
-            {selectedRows.length > 0 && (
+            {selectedRows && (
                 <div className="selected-item-alert">
-                    <p className="selected-item-text">{selectedRows.length} Item's Selected</p>
+                    <p className="selected-item-text">1 Item's Selected</p>
                     <Button variant="secondary" onClick={handleDeactivate}>
                         Deactivate
                     </Button>
@@ -56,10 +55,8 @@ const RolesDataTable = () => {
                 recordsPerPage={paginationConfig.pageSize}
                 paginationTotalRecorsMessage={'results'}
                 paginationRecordsPerPageMessage={`per page`}
-                isAdmin={true}
-                selectableRows
-                handleRowSelected={handleRowSelected}
-                selectedRowId={selectedRows?.[0]}
+                selectableRowsHeader={false}
+                selectedRowId={selectedRows}
                 noDataComponent={
                     <EmptyDataTable
                         image={EmptyDataImage}
@@ -67,6 +64,8 @@ const RolesDataTable = () => {
                         description={t('orgManagement.messages.roleEmptyTableSubtitle')}
                     />
                 }
+                stickyHeader
+                responsive
             />
         </div>
     );
