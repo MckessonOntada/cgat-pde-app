@@ -23,6 +23,8 @@ const Login = () => {
     [`postUserLogin`],
     () => {
       /*post login*/
+      // Clear all the session storage data
+      // we get the Practice Id for User
     },
     {
       enabled: false,
