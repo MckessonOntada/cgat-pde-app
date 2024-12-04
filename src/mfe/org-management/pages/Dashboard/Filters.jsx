@@ -64,16 +64,19 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
   const handleClearFilters = () => {
     setFilters(INITIAL_FILTER_STATE);
     setAppliedFilters(INITIAL_FILTER_STATE);
+    clearFilters();
   };
 
-  const areFiltersEqual = CommonUtils.deepEqual(filters, appliedFilters);
+  const areFiltersEqual = CommonUtils.deepEqual(appliedFilters, filters);
+  const anyFilterIsApplied = Object.values(appliedFilters).some((filter) => filter && filter.length > 0);
 
-  const controlButtons = !areFiltersEqual ? (
-    <div className="filter-control-buttons">
-      <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />
-      <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />
-    </div>
-  ) : null;
+  const controlButtons =
+    anyFilterIsApplied || !areFiltersEqual ? (
+      <div className="filter-control-buttons">
+        {anyFilterIsApplied && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
+        {!areFiltersEqual && <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />}
+      </div>
+    ) : null;
 
   return (
     <form onSubmit={handleOnSubmit}>
@@ -87,7 +90,7 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
               <InputField id="search-box" name="org-grid-search-query" value={filters.searchQuery} onInputChange={handleSearch} tooltipText={null} useRegister={false} placeholder={t('orgManagement.role.placeholder')} />
             </div>
           </div>
-          {!isCardExpanded && controlButtons}
+          {controlButtons}
         </div>
         <ToggleUI in={isCardExpanded} timeout={400}>
           <div className="additional-filters">
@@ -115,7 +118,7 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
                 options={STATUS}
                 clearAllSelectedValues={() => setStatus([])}
               />
-              {isCardExpanded && controlButtons ? <div className="expanded">{controlButtons}</div> : null}
+              {/* {isCardExpanded && controlButtons ? <div className="expanded">{controlButtons}</div> : null} */}
             </div>
           </div>
         </ToggleUI>

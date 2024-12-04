@@ -104,8 +104,7 @@ export const UserAccountsProvider = ({ children, addNewAccounts, practiceId, use
         update: {
           setSearchQuery: (value) => updateFilterState('searchQuery', value),
           updateQuery: updateFilterState
-        },
-        clearFilters
+        }
       },
       pagination: {
         currentPage: currentPage,
@@ -118,7 +117,8 @@ export const UserAccountsProvider = ({ children, addNewAccounts, practiceId, use
       isError,
       refetch,
       setSortCriteria,
-      setFilterState
+      setFilterState,
+      clearFilters
     }),
     [data, updateFilterState, clearFilters, currentPage, isLoading, isError]
   );

@@ -101,8 +101,7 @@ export const OrgAccountsProvider = ({ children, addNewAccounts, practiceId }) =>
         update: {
           setSearchQuery: (value) => updateFilterState('searchQuery', value),
           updateQuery: updateFilterState
-        },
-        clearFilters
+        }
       },
       pagination: {
         currentPage: currentPage,
@@ -115,7 +114,8 @@ export const OrgAccountsProvider = ({ children, addNewAccounts, practiceId }) =>
       isError,
       refetch,
       setSortCriteria,
-      setFilterState
+      setFilterState,
+      clearFilters
     }),
     [data, updateFilterState, clearFilters, currentPage, isLoading, isError]
   );
