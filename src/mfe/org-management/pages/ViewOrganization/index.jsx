@@ -16,6 +16,7 @@ import { PATHS as InternalPaths } from '../../routes/constants';
 import ModuleHeader from '@src/components/module-header';
 import { OrgAccountsProvider } from '../../context/OrgAccountsContext';
 import OrganizationAccounts from './OrganizationAccounts';
+import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 
 export default function ViewOrganization() {
   // Call api to get linked accounts => /practice/{practiceId}/accounts
