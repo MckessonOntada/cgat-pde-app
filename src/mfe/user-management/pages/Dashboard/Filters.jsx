@@ -108,6 +108,10 @@ const handleOnRoleFilterQueryChange = (query) => {
   const handleOnSelectedValue = (changedOptions) => {
     const filteredOptions = changedOptions.filter(item => item.isChecked);
     setValue(filteredOptions.map(item => item.value));
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      ["role"]: filteredOptions.map((item) => item.value)
+    }));
   };
 
   const areFiltersEqual = CommonUtils.deepEqual(appliedFilters, filters);
