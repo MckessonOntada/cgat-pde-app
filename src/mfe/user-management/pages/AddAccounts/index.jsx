@@ -110,36 +110,6 @@ const AddAccounts = () => {
         </div>
       )}
 
-      {/* <div class="MCP-panel-container line-height grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
-        <div className="MCP-module-body">
-          {!isEdit && <p className="secondaryHeading"> {t('userManagement.add_accounts.labelheader')}</p>}
-
-          <div className="MCP-panel-container">
-            <div className="toggle-box">
-              <img src={arrow_right} className="icon-align" />
-              <div className="autoSuggestSearch-container">
-                <AutoSuggestSearch label=" " onChangeInput={handleSearchChange} outline={true} placeHolder={t('userManagement.searchFilter.addaccount_label')} />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="">
-        <div className="grid grid-gap-16">
-          <AccountsList
-            data={AllAccountsData}
-            selectedRows={selectedAccounts}
-            setSelectedRows={setSelectedAccounts}
-            onRemoveAccount={onRemoveAccount}
-            showSelectedAccounts
-            omitColumns={['action', 'cgatIdentifier', 'address']}
-            practiceId={practiceId}
-            userId={userId}
-            addNewAccounts={true}
-          />
-        </div>
-      </div> */}
       <UserAccountsProvider addNewAccounts={true} practiceId={practiceId} userId={userId}>
         <UserAccounts
           data={AllAccountsData}

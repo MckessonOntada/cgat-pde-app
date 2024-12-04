@@ -9,7 +9,7 @@ import Actions from '@src/components/Accounts/Action';
 
 export default function OrganizationAccounts(props) {
   const { omitColumns = [], selectableRows, selectedRows, setSelectedRows, practiceId } = props;
-  const { data, pagination, refetch, setSortCriteria } = useOrgAccounts();
+  const { data, pagination, refetch, setSortCriteria, isLoading } = useOrgAccounts();
   const { t } = useTranslate();
 
   const handleChangePage = (e, newPage) => {
@@ -133,8 +133,18 @@ export default function OrganizationAccounts(props) {
 
   return (
     <React.Fragment>
-      <AccountFilters />
-      <AccountsList {...props} data={data} columns={columns} currentPage={pagination.currentPage} recordsPerPage={pagination.recordsPerPage} handleChangePage={handleChangePage} handleSort={handleSort} />
+      <div className="accounts-wrapper">
+        <div className="MCP-module-body">
+          <div className="MCP-panel-container">
+            <div className="MCP-CardContainer">
+              <AccountFilters />
+            </div>
+            <div className="MCP-table-wrapper">
+              <AccountsList {...props} isLoading={isLoading} data={data} columns={columns} currentPage={pagination.currentPage} recordsPerPage={pagination.recordsPerPage} handleChangePage={handleChangePage} handleSort={handleSort} />
+            </div>
+          </div>
+        </div>
+      </div>
     </React.Fragment>
   );
 }

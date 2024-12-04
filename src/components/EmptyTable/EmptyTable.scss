@@ -2,22 +2,25 @@
   display: grid;
   place-items: center;
   text-align: center;
-  gap: var(--spacing-03);
+  // gap: var(--spacing-03);
 }
 
 .emptyDataTableImage {
   width: 150px;
   height: auto;
+  padding-bottom: var(--spacing-03);
 }
 
 .emptyDataTableHeading {
   font-size: var(--brand-font-size--15);
   color: var(--brand-color-background-light-slate);
   line-height: var(--brand-line-height--m-large);
+  padding-bottom: 12px;
 }
 
 .emptyDataTableDescription {
-  font-size: var(--brand-font-size--10);
+  font-size: var(--brand-font-size--extra-small);
   color: var(--brand-color-background-light-slate);
   line-height: var(--brand-line-height--small);
+  padding-bottom: var(--spacing-03);
 }

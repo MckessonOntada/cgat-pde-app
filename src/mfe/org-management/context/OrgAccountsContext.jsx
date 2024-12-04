@@ -1,7 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
-import CommonDataService from '@src/api/commonService/CommonDataService';
-import { useDispatch } from 'react-redux';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
@@ -20,6 +18,8 @@ export const useOrgAccounts = () => {
 
 const INITIAL_STATE = {
   searchQuery: '',
+  salesOrg: '',
+  distributionChannel: '',
   pagination: {
     currentPage: 0,
     totalRecords: 0,
@@ -47,9 +47,9 @@ export const OrgAccountsProvider = ({ children, addNewAccounts, practiceId }) =>
 
   const clearFilters = () => {
     setFilterState(INITIAL_STATE);
-    // Promise.resolve().then(() => {
-    // refetch();
-    // });
+    setTimeout(() => {
+      refetch();
+    }, 500);
   };
   // use from context
   const apiUrl = useMemo(() => {
@@ -64,6 +64,13 @@ export const OrgAccountsProvider = ({ children, addNewAccounts, practiceId }) =>
     if (filterState.searchQuery) {
       params.query = filterState.searchQuery;
     }
+    if (filterState.distributionChannel) {
+      params.distributionChannel = filterState.distributionChannel;
+    }
+    if (filterState.salesOrg) {
+      params.salesOrg = filterState.salesOrg;
+    }
+
     if (practiceId && !addNewAccounts) {
       return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts?${serializeParams(params)}`;
     } else if (practiceId && addNewAccounts) {
@@ -84,7 +91,7 @@ export const OrgAccountsProvider = ({ children, addNewAccounts, practiceId }) =>
 
   useEffect(() => {
     refetch();
-  }, [currentPage, addNewAccounts, sortCriteria]);
+  }, [currentPage, addNewAccounts, filterState]);
 
   const ctxValue = useMemo(
     () => ({
@@ -92,7 +99,8 @@ export const OrgAccountsProvider = ({ children, addNewAccounts, practiceId }) =>
       filters: {
         ...filterState,
         update: {
-          setSearchQuery: (value) => updateFilterState('searchQuery', value)
+          setSearchQuery: (value) => updateFilterState('searchQuery', value),
+          updateQuery: updateFilterState
         },
         clearFilters
       },
@@ -106,7 +114,8 @@ export const OrgAccountsProvider = ({ children, addNewAccounts, practiceId }) =>
       isLoading,
       isError,
       refetch,
-      setSortCriteria
+      setSortCriteria,
+      setFilterState
     }),
     [data, updateFilterState, clearFilters, currentPage, isLoading, isError]
   );
