@@ -29,13 +29,9 @@ const OrderStatus = () => {
     return (
         <div className={'MCP-module-wrapper'}>
             <div>
-                <button
-                    className="MCP-Icon-Button py2"
-                    onClick={() => {}}
-                >
-                    <IconArrowLeft />
-                    <p>{t('captions.btnBackToManageOrder')}</p>
-                </button>
+                <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={() => {}} size="md">
+                    {t('captions.btnBackToManageOrder')}
+                </Button>
             </div>
             <ModuleHeader
                 className={styles.customModuleHeader}

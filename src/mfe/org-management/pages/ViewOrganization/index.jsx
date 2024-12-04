@@ -118,9 +118,11 @@ export default function ViewOrganization() {
   return (
     <div className="viewOrg-container">
       {isLoading && <Loader type={'screen'} />}
-      <div className="back-navigation py2 capitalize" onClick={goBack} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-        <MdOutlineKeyboardArrowLeft size="24px" />
-        <p>{t('orgManagement.back.organization')}</p>
+
+      <div>
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={goBack} size="md">
+          {t('orgManagement.back.organization')}
+        </Button>
       </div>
       {!addNewAccounts && <ModuleHeader heading={<p className="primaryHeading">{t('orgManagement.create_org.org-details')}</p>} />}
       {!isView && (

@@ -126,10 +126,9 @@ const RoleDetails = () => {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <button className="MCP-Icon-Button py2" onClick={handleGoBack}>
-          <IconArrowLeft />
-          <p>{t('orgManagement.role.captionsBtnBackToManageRoles')}</p>
-        </button>
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
+            {t('orgManagement.role.captionsBtnBackToManageRoles')}
+        </Button>
       </div>
 
       <ModuleHeader heading={<PageHeader heading={t('orgManagement.role.labelAddRole')} />} />

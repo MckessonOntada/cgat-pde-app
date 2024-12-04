@@ -31,6 +31,10 @@
   }
 }
 
+.back-button-control{
+  padding: 0px !important; //remove important after component change
+}
+
 // module css
 .MCP-module-wrapper {
   display: flex;

@@ -36,13 +36,9 @@ const PatientDetails = () => {
     return (
         <div className="MCP-module-wrapper">
             <div>
-                <button
-                    className="MCP-Icon-Button py2"
-                    onClick={handleOnBackButtonClick}
-                >
-                    <IconArrowLeft />
-                    <p>{t('captions.btnBackToManageOrder')}</p>
-                </button>
+                <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackButtonClick} size="md">
+                    {t('captions.btnBackToManageOrder')}
+                </Button>
             </div>
 
             <PageHeader heading={t("headings.createNewOrder")} />

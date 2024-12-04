@@ -1,4 +1,4 @@
-import { Button, InputField } from '@mckesson/mcp-component-library';
+import { Button, DateRangePicker, InputField } from '@mckesson/mcp-component-library';
 import arrow_down from '@src/assets/image/arrow_down.svg';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import ToggleUI from '@src/components/toggleui';
@@ -6,7 +6,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import React, { useState } from 'react';
 import { useRole } from '../../../context/RoleContext';
 import CommonUtils from '@src/util/CommonUtils';
-import DateRangePicker from '../../../../../components/date-picker';
+// import DateRangePicker from '../../../../../components/date-picker';
 
 
 const INITIAL_FILTER_STATE = {
@@ -50,7 +50,6 @@ const FilterPanel = () => {
   };
 
   const handleOnApplyFilter = (event) => {
-    debugger;
     event.preventDefault();
     const updatedFilter = {
       ...filters,
@@ -86,7 +85,12 @@ const FilterPanel = () => {
         <ToggleUI in={isCardExpanded} timeout={400}>
           <div className="additional-filters">
             <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-              <DateRangePicker dateRange={filters.dateRange || []} onRangeChange={handleOnDateRangeChange} />
+              <DateRangePicker 
+                dateRange={filters.dateRange || []} 
+                onChange={handleOnDateRangeChange} 
+                minDate={new Date('-1')}
+                maxDate={new Date()}
+              />
               {isCardExpanded && controlButtons ? <div className="expanded">{controlButtons}</div> : null}
             </div>
           </div>
