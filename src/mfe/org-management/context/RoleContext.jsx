@@ -17,7 +17,8 @@ export const useRole = () => {
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
-  dateRange: []
+  dateRange: [],
+  status: [],
 };
 
 const INITIAL_SORT_STATE = {
@@ -53,6 +54,7 @@ export const RoleProvider = ({ children }) => {
     };
 
     if (filterConfig.searchQuery) params.query = filterConfig.searchQuery;
+    if (filterConfig.status) params.status = filterConfig.status;
     if (filterConfig.dateRange?.[0]) params.startDate = DateUtils.formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy');
     if (filterConfig.dateRange?.[1]) params.endDate = DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy');
 

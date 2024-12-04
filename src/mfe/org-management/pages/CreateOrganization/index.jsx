@@ -12,6 +12,7 @@ import { useMutation } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
 import './CreateOrg.scss';
 import { PATHS } from '../../routes/constants';
+import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { handleApiError } from '@src/util/ApiUtils';
 
 const CreateOrganization = () => {
@@ -118,9 +119,10 @@ const CreateOrganization = () => {
     <div className="main-container">
       {isLoading && <Loader type={'screen'} />}
 
-      <div className="back-navigation py2 capitalize" onClick={goBack} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-        <MdOutlineKeyboardArrowLeft size="24px" />
-        <p>{t('orgManagement.back.organization')}</p>
+      <div>
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={goBack} size="md">
+          {t('orgManagement.back.organization')}
+        </Button>
       </div>
 
       {isAlertVisible && <Alert type={alert.type} title={alert.title} description={alert.description} />}

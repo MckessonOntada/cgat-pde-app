@@ -12,6 +12,7 @@ import Components from '@src/components/form/Components';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import DiscardChangesModal from './DiscardChangesModel';
+import { useRole } from '@src/mfe/org-management/context/RoleContext';
 
 const getRoleValidationSchema = (t) =>
   Yup.object({
@@ -27,6 +28,7 @@ const RoleDetails = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { roleId } = useParams();
+  const { refreshData } = useRole();
 
   const location = useLocation();
   const row = location.state ?? {};
@@ -87,6 +89,8 @@ const RoleDetails = () => {
           const id = (data && data.id) || roleId;
           console.log(data);
           const { name, description } = data;
+          
+          refreshData();
           navigate(isEdit ? `/organization/roles/${roleId}` : `/organization/roles/${id}/permissions`, { state: { ...row, name, description } });
         }
       },
@@ -130,10 +134,9 @@ const RoleDetails = () => {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <button className="MCP-Icon-Button py2" onClick={handleGoBack}>
-          <IconArrowLeft />
-          <p>{t('orgManagement.role.captionsBtnBackToManageRoles')}</p>
-        </button>
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
+            {t('orgManagement.role.captionsBtnBackToManageRoles')}
+        </Button>
       </div>
 
       <ModuleHeader heading={<PageHeader heading={t('orgManagement.role.labelAddRole')} />} />

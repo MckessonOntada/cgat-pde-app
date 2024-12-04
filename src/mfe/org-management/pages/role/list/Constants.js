@@ -1,4 +1,5 @@
 export const RoleStatusEnum = {
-    ACTIVE: "active",
-    INACTIVE: "inactive",
+    ACTIVE: "Active",
+    INACTIVE: "Inactive",
+    DRAFT: 'Draft'
 }

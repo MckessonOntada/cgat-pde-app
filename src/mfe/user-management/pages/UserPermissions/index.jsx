@@ -14,6 +14,7 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import { RoutePaths } from '@src/routes/constants';
+import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 
 const UserPermissions = () => {
   const { t } = useTranslate();
@@ -87,9 +88,10 @@ const UserPermissions = () => {
 
   return (
     <div className="MCP-module-wrapper">
-      <div className="back-navigation py2 capitalize" onClick={handleGoBack} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-        <MdOutlineKeyboardArrowLeft size="24px" />
-        <p>{t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}</p>
+      <div>
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
+          {t('userManagement.user.backmessage')}
+        </Button>
       </div>
       <ModuleHeader heading={<p className="primaryHeading">{t('userManagement.create_user')}</p>} />
 

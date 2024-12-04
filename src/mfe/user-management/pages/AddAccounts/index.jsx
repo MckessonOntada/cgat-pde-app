@@ -6,6 +6,7 @@ import ModuleHeader from '@src/components/module-header';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import AccountsList from '@src/components/Accounts/AccountsList';
+import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import AllAccountsData from '@src/mfe/org-management/mockData/AllAccounts';
 import { RoutePaths } from '@src/routes/constants';
 import { useMutation } from 'react-query';
@@ -83,9 +84,10 @@ const AddAccounts = () => {
 
   return (
     <div className="MCP-module-wrapper">
-      <div className="back-navigation py2 capitalize" onClick={handleGoBack} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-        <MdOutlineKeyboardArrowLeft size="24px" />
-        <p>Back to Manage Users</p>
+      <div>
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
+          {t('captions.btnBackToManageOrder')}
+        </Button>
       </div>
 
       <ModuleHeader heading={<p className="primaryHeading">{isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}</p>} />

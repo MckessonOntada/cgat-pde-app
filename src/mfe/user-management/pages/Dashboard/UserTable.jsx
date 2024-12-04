@@ -144,7 +144,7 @@ function UserTable({ selectableRows = false }) {
       cell: (props) =>
         props.role?.name ? (
           <span className="cellEllipse">
-            <Badge text={props.role?.name} type={getBackgroundColorByRole(props.role?.name)} />
+            <Badge text={CommonUtils.truncateString(props.role?.name, 10)} type={getBackgroundColorByRole(props.role?.name)} />
           </span>
         ) : (
           '-'

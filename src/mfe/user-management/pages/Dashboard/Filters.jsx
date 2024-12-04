@@ -1,24 +1,28 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useUser } from '../../context/UserContext';
-import { InputField, Button, AutoSuggestDropdown, SearchableDropdown } from '@mckesson/mcp-component-library';
+import { InputField, Button, DateRangePicker, SearchableDropdown } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { STATUS } from '../../mockData/UsersData';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import arrow_down from '@src/assets/image/arrow_down.svg';
 import ToggleUI from '@src/components/toggleui';
 import CommonUtils from '@src/util/CommonUtils';
+import { useQuery } from 'react-query';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
+import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
   role: [],
-  status: []
+  status: [],
+  dateRange: []
 };
 
 const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
   const { t } = useTranslate();
   const {
-    roleList,
     filterConfig,
     filterConfig: { searchQuery, role, status },
     clearFilters,
@@ -27,8 +31,33 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
   const [filters, setFilters] = React.useState(INITIAL_FILTER_STATE);
   const [appliedFilters, setAppliedFilters] = React.useState(INITIAL_FILTER_STATE);
   const [isCardExpanded, setIsCardExpanded] = useState(false);
+  const [roleFilterQuery, setRoleFilterQuery] = React.useState(null);
   const [value, setValue] = React.useState('');
   const isSystemAdminView = AuthUtils.isSystemAdminView();
+
+  const { data: roleList = [], refetch: refreshRoleList } = useQuery({
+    queryKey: ['user', 'roles-list', 'role-query'],
+    queryFn: async () => {
+      let params = {};
+      if(roleFilterQuery){
+        params.query = roleFilterQuery
+      }
+      const response = await HttpResourceService.callRest(
+        `${ApiRoutes.GET_ROLES()}?${serializeParams(params)}`,
+        httpVerb.GET,
+        {}
+      );
+      if (response.data) {
+        const { content: data } = response.data;
+        return data.map((item) => ({
+          label: item.name,
+          value: item.name
+        }));
+      }
+      return [];
+    },
+    refetchOnWindowFocus: false
+  });
 
   const handleExpandCard = () => {
     setIsCardExpanded(!isCardExpanded);
@@ -45,6 +74,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
     setValue('');
     setFilters(INITIAL_FILTER_STATE);
     setAppliedFilters(INITIAL_FILTER_STATE);
+    clearFilters();
   };
 
   const handleOnSubmit = (event) => {
@@ -61,21 +91,32 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
     }));
   };
 
-  const handleOnSelectedValue = (e) => {
-    setValue(e.value);
+  const handleOnDateRangeChange = (value) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
-      role: e.value
+      dateRange: value
     }));
+  };
+  React.useEffect(() => {
+    refreshRoleList()
+  }, [roleFilterQuery])
+
+const handleOnRoleFilterQueryChange = (query) => {
+      setRoleFilterQuery(query)
+  }
+
+  const handleOnSelectedValue = (changedOptions) => {
+    const filteredOptions = changedOptions.filter(item => item.isChecked);
+    setValue(filteredOptions.map(item => item.value));
   };
 
   const areFiltersEqual = CommonUtils.deepEqual(appliedFilters, filters);
-  // const availableOptions = roleList ? roleList.map(item => ({label: item.name, value: item.name})) : [];
+  const anyFilterIsApplied = Object.values(appliedFilters).some(filter => filter && filter.length > 0);
 
-  const controlButtons = !areFiltersEqual ? (
+  const controlButtons = anyFilterIsApplied || !areFiltersEqual ? (
     <div className="filter-control-buttons">
-      <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />
-      <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />
+      {anyFilterIsApplied && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
+      {!areFiltersEqual && <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />}
     </div>
   ) : null;
 
@@ -91,17 +132,22 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
               <InputField id="user-grid-search-box" name="searchQuery" value={filters.searchQuery} useRegister={false} onInputChange={handleSearchChange} placeholder={t('userManagement.placeholder.searchByNameAndLocation')} />
             </div>
           </div>
-          {!isCardExpanded ? controlButtons : null}
+          {controlButtons}
         </div>
         <ToggleUI in={isCardExpanded} timeout={400}>
           <div className="additional-filters">
             <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-              {!isSystemAdminView && (
-                <div className="custom-autosuggest-dropdown">
-                  <AutoSuggestDropdown getselectedValue={handleOnSelectedValue} onChangeInput={() => {}} label={t('userManagement.label.role')} selectedVal={value} key={value} suggestionList={roleList} />
-                </div>
-              )}
-
+              {
+                !isSystemAdminView &&
+                <SearchableDropdown
+                  selectedVal={value}
+                  onChange={handleOnSelectedValue}
+                  variant="async"
+                  label={t('userManagement.label.role')}
+                  asyncHandleSearch={handleOnRoleFilterQueryChange}
+                  options={roleList}
+                />
+              }
               <SearchableDropdown
                 id="status"
                 isSuccess
@@ -111,9 +157,11 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
                 isRequired={false}
                 onChange={(value) => onSearchableDropdownChange('status', value)}
                 options={STATUS}
-                clearAllSelectedValues={() => setStatus([])}
+                clearAllSelectedValues={() => setFilters((prev) => ({ ...prev, status: [] }))}
               />
-              {isCardExpanded && controlButtons ? <div className="expanded">{controlButtons}</div> : null}
+              <div className="custom-date-range-picker">
+                <DateRangePicker dateRange={filters.dateRange || []} onChange={handleOnDateRangeChange} size="lg" minDate={new Date('-1')} maxDate={new Date()} />
+              </div>
             </div>
           </div>
         </ToggleUI>
