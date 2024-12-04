@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CustomDataTable, Button, Badge, Loader, CheckboxGroup } from '@mckesson/mcp-component-library';
+import { CustomDataTable, Button, Badge, Loader, CheckboxGroup, Modal } from '@mckesson/mcp-component-library';
 import './index.scss';
 import Actions from './Actions';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -29,7 +29,7 @@ function UserTable({ selectableRows = false }) {
   // Move pagination to context
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState(null);
-
+  const [isOpen, setIsOpen] = useState(false);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const { isLoading, isError, data, activeTab, filterConfig, paginationConfig, applySort, setFilterConfig, refreshData, setPageNumber } = useUser();
 
@@ -41,23 +41,22 @@ function UserTable({ selectableRows = false }) {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
 
-  const { mutate } = useMutation(async (userId) => {
+  const handleDeactivateUser = async (userId) => {
     const res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.DELETE, null);
     return res.data;
-  });
-
-  const handleDeactivate = () => {
-    mutate(selectedRows, {
-      onSuccess: (response) => {
-        console.log(`User ${selectedRows} deactivated successfully:`, response);
-        refreshData();
-        setSelectedRows(null);
-      },
-      onError: (error) => {
-        console.error(`Failed to deactivate user ${selectedRows}:`, error);
-      }
-    });
   };
+
+  const { mutate } = useMutation({
+    mutationFn: handleDeactivateUser,
+    onSuccess: (response) => {
+      console.log(`User ${selectedRows} deactivated successfully:`, response);
+      refreshData();
+      setSelectedRows(null);
+    },
+    onError: (error) => {
+      console.error(`Failed to deactivate user ${selectedRows}:`, error);
+    }
+  });
 
   const handleChangePage = (e, newPage) => {
     setPageNumber(newPage);
@@ -65,6 +64,20 @@ function UserTable({ selectableRows = false }) {
 
   const handleOnSortIconClick = (selectedColumn, sortDirection) => {
     if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+  };
+
+  const handleDeactivate = () => {
+    setIsOpen(true);
+  };
+
+  const handleConfirmDeactivate = () => {
+    setIsOpen(false);
+    mutate(selectedRows);
+  };
+
+  const handleConfirmCancel = () => {
+    setIsOpen(false);
+    setSelectedRows(null);
   };
 
   const columns = [
@@ -130,7 +143,7 @@ function UserTable({ selectableRows = false }) {
       wrap: true,
       cell: (props) =>
         props.role?.name ? (
-          <span>
+          <span className="cellEllipse">
             <Badge text={props.role?.name} type={getBackgroundColorByRole(props.role?.name)} />
           </span>
         ) : (
@@ -195,6 +208,22 @@ function UserTable({ selectableRows = false }) {
         responsive
         pagination={true}
         noDataComponent={<EmptyDataTable image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('orgManagement.messages.userEmptyTableSubtitle')} />}
+      />
+      <Modal
+        {...{
+          id: 'xxxs-modal',
+          isOpen,
+          onClose: () => setIsOpen(false),
+          modalTitle: 'Confirmation message',
+          modalBody: <h3>Are you sure you wish to Deactivate this User ?</h3>,
+          modalFooter: (
+            <React.Fragment>
+              <Button onClick={handleConfirmCancel}>Cancel</Button>
+              <Button onClick={handleConfirmDeactivate}>Deactivate</Button>
+            </React.Fragment>
+          ),
+          modalSize: 'xxxs'
+        }}
       />
     </div>
   );

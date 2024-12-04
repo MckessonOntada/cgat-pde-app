@@ -15,6 +15,7 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { handleApiError, serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import { RoutePaths } from '@src/routes/constants';
+import { ALPHABETIC_WITH_SPECIAL, ALPHABETIC_WITH_SPACE, ADDRESS_REGEX, ZIP_REGEX, PHONE_REGEX, FAX_REGEX } from '@src/components/form/ValidationRegExp';
 
 const CreateUser = () => {
   const { t } = useTranslate();
@@ -118,15 +119,12 @@ const CreateUser = () => {
   const validationSchema = Yup.object({
     name: Yup.object({
       firstName: Yup.string()
-        .matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.first_name')) // Only alphabets
+        .matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.first_name')) // Only alphabets
         .min(2, t('userManagement.create_user.validation.first_name_min_max'))
         .required(t('userManagement.create_user.validation.first_name_required')),
-      middleName: Yup.string()
-        .matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.middle_name'))
-        .min(2, t('userManagement.create_user.validation.middle_name_min_max'))
-        .nullable(),
+      middleName: Yup.string().matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.middle_name')).min(2, t('userManagement.create_user.validation.middle_name_min_max')).nullable(),
       lastName: Yup.string()
-        .matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.last_name')) // Only alphabets
+        .matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.last_name')) // Only alphabets
         .min(2, t('userManagement.create_user.validation.last_name_min_max'))
         .required(t('userManagement.create_user.validation.last_name_required'))
     }),
@@ -134,24 +132,24 @@ const CreateUser = () => {
     contact: Yup.object({
       email: Yup.string().email(t('userManagement.create_user.validation.invalid_email')).required(t('userManagement.create_user.validation.email_required')),
       phone: Yup.string()
-        .matches(/^[0-9]{10}$/, t('userManagement.create_user.validation.phone_no')) // 10 digits only
+        .matches(PHONE_REGEX, t('userManagement.create_user.validation.phone_no')) // 10 digits only
         .required(t('userManagement.create_user.validation.phone_no_required')),
-      fax: Yup.string().matches(/^[0-9]{15}$/, t('userManagement.create_user.validation.fax'))
+      fax: Yup.string().matches(FAX_REGEX, t('userManagement.create_user.validation.fax'))
     }),
 
     address: Yup.object({
       address1: Yup.string()
-        .matches(/^[A-Za-z0-9\s.,#&/-]*$/, t('userManagement.create_user.validation.address_1')) // Alphanumeric and special characters
+        .matches(ADDRESS_REGEX, t('userManagement.create_user.validation.address_1')) // Alphanumeric and special characters
         .min(2, t('userManagement.create_user.validation.address_1'))
         .required(t('userManagement.create_user.validation.address_1_required')),
-      address2: Yup.string().matches(/^[A-Za-z0-9\s.,#&/-]*$/, t('userManagement.create_user.validation.address_1')), // Optional field
+      address2: Yup.string().matches(ADDRESS_REGEX, t('userManagement.create_user.validation.address_1')), // Optional field
       city: Yup.string()
-        .matches(/^[A-Za-z]+$/, t('userManagement.create_user.validation.city')) // Only alphabets
+        .matches(ALPHABETIC_WITH_SPACE, t('userManagement.create_user.validation.city')) // Only alphabets
         .min(2, t('userManagement.create_user.validation.city_min_max'))
         .required(t('userManagement.create_user.validation.city_required')),
       state: Yup.string().required(t('userManagement.create_user.validation.state_required')),
       zip: Yup.string()
-        .matches(/^\d{5}(-\d{4})?$/, t('userManagement.create_user.validation.zip')) // Only digits
+        .matches(ZIP_REGEX, t('userManagement.create_user.validation.zip')) // Only digits
         .required(t('userManagement.create_user.validation.zip_required'))
     })
   });
@@ -207,9 +205,7 @@ const CreateUser = () => {
         <MdOutlineKeyboardArrowLeft size="24px" />
         <p>{t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}</p>
       </div>
-
       <ModuleHeader heading={<p className="primaryHeading">{t(isSystemAdminView ? 'userManagement.create_sysadmin' : 'userManagement.create_user')}</p>} />
-
       {!isEdit && (
         <div className="stepper">
           <Stepper

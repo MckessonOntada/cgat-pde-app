@@ -129,7 +129,7 @@ export const OrgManagementES = {
   'orgManagement.form.errors.roleDescriptionMaxLength': 'S_Role Description cannot exceed 100 characters',
 
   'errors.practice_name_key': 'S_Organization name already exists.',
-  'errors.practice_email_key': 'S_Email ID already exists.',
+  'errors.practice_email_key': 'S_Email ID already exists in the System.',
   'errors.practice_phone_key': 'S_Phone number already exists.',
   'errors.default': 'S_An unexpected error occurred.'
 };
