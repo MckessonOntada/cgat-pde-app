@@ -130,7 +130,7 @@ const handleOnRoleFilterQueryChange = (query) => {
         <div className="filter-header">
           <div className="search-box">
             <button type="button" onClick={handleExpandCard}>
-              <img src={isCardExpanded && controlButtons ? arrow_down : arrow_right} alt="toggle-icon" />
+              <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
             </button>
             <div className={'ctrl-search-box autoSuggestSearch-container'}>
               <InputField id="user-grid-search-box" name="searchQuery" value={filters.searchQuery} useRegister={false} onInputChange={handleSearchChange} placeholder={t('userManagement.placeholder.searchByNameAndLocation')} />
