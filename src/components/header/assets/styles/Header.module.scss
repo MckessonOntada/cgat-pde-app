@@ -7,7 +7,6 @@
     .navItemsLeft {
       padding: var(--spacing-02) 0px;
       padding-right: var(--spacing-02);
-
     }
 
     .navItemsborder {
@@ -73,7 +72,6 @@
         text-transform: uppercase;
         line-height: unset;
         background-color: unset;
-
       }
 
       [class*="TabList_tab--active"] {
@@ -129,7 +127,7 @@
     padding: var(--spacing-02);
     padding-right: var(--spacing-03);
     padding-left: var(--spacing-03);
-    border-right: 1px solid var(--brand-color-patient-primary-3, #B3C2C9);
+    border-right: 1px solid var(--brand-color-patient-primary-3, #b3c2c9);
   }
 
   li:last-child {
@@ -146,7 +144,7 @@
   .centerSelector {
     min-width: 80px;
 
-    >div {
+    > div {
       margin-top: 0px !important;
     }
 
@@ -211,4 +209,10 @@
     text-decoration: none;
     color: var(--brand-color-font-black);
   }
+}
+
+.customheader {
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--brand-color-grey) !important;
 }

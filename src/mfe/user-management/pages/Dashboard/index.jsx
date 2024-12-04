@@ -24,19 +24,37 @@ export default function Dashboard() {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isReject = location.state?.isReject || false;
   const [alertDescription, setAlertDescription] = useState('');
+  const [alert, setAlert] = useState(null);
+
+  const showAlert = (type, message) => {
+    setAlert({ type });
+    setIsAlertVisible(true);
+    setAlertDescription(message);
+    const timer = setTimeout(() => {
+      setIsAlertVisible(false);
+      setAlert({ type: '', description: '' });
+    }, 10000);
+
+    // Cleanup the timer to prevent memory leaks
+    return () => clearTimeout(timer);
+  };
 
   useEffect(() => {
     if (isSuccess) {
       refreshData();
-      setIsAlertVisible(true);
-      setAlertDescription(isReject ? 'Organization User Rejected Successfully' : isSystemAdminView ? 'System Admin Created Successfully' : 'Organization User Created Successfully');
-      // Set a timeout to auto-close the alert after 10 seconds
-      const timer = setTimeout(handleAlertClose, 10000); //This should be as same as duration that mentioed in Alert
-
-      // Clear timeout if component unmounts or if isSuccess changes
-      return () => clearTimeout(timer);
+      let message = isReject ? t('messages.pending_user_reject_success') : isSystemAdminView ? t('messages.sysadmin_create_success') : t('messages.user_create_success');
+      showAlert('success', message);
     }
   }, [isSuccess, isReject, location.pathname, location.state, navigate]);
+
+  const handleSuccess = (success, message) => {
+    if (success) {
+      setAlert({ type: 'success' });
+      showAlert('success', message);
+    } else {
+      setAlert({ type: 'error', message });
+    }
+  };
 
   const handleAlertClose = () => {
     setIsAlertVisible(false);
@@ -72,7 +90,7 @@ export default function Dashboard() {
       url: '/'
     },
     {
-      label: isSystemAdminView ? 'Manage System Admins' : 'Manage Users'
+      label: isSystemAdminView ? t('userManagement.header.systemadminlisting.label') : t('userManagement.header.listing.label')
     }
   ];
 
@@ -94,7 +112,7 @@ export default function Dashboard() {
           </div>
         }
       />
-      {isSuccess && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
+      {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
 
       <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
         <div className="MCP-panel-container">
@@ -103,7 +121,7 @@ export default function Dashboard() {
         <p className="secondaryHeading"> {t(isSystemAdminView ? 'userManagement.header.systemadminlisting.label' : 'userManagement.header.listing.label')}</p>
         {!isSystemAdminView && <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />}
         <div className="userList">
-          {activeTab === 'ACTIVE USERS' && <UserTable selectableRows={true} />}
+          {activeTab === 'ACTIVE USERS' && <UserTable selectableRows={true} onActionSuccess={handleSuccess} />}
           {activeTab === 'PENDING REQUESTS' && <UserTable selectableRows={false} />}
         </div>
       </div>

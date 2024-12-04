@@ -26,16 +26,36 @@ export const INITIAL_VALUES = {
 
 export const getValidationSchema = (t) => {
   return Yup.object({
-    name: Yup.string().required(t('orgManagement.create_org.validation.org_name_required')).matches(ALPHA_NUMERIC_WITH_SPECIAL, t('orgManagement.create_org.validation.org_name_invalid')).max(100, t('orgManagement.create_org.validation.org_name_max')),
+    name: Yup.string()
+      .required(t('orgManagement.create_org.validation.org_name_required'))
+      .matches(ALPHA_NUMERIC_WITH_SPECIAL, t('orgManagement.create_org.validation.org_name_invalid'))
+      .min(2, t('orgManagement.create_org.validation.org_name_min'))
+      .max(100, t('orgManagement.create_org.validation.org_name_max')),
     contactPerson: Yup.object({
-      firstName: Yup.string().required(t('orgManagement.create_org.validation.first_name_required')).matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.contact_person_first_name_invalid')).max(50, t('orgManagement.create_org.validation.first_name_max')),
-      middleName: Yup.string().matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.middle_name_invalid')).max(50, t('orgManagement.create_org.validation.middle_name_max')),
-      lastName: Yup.string().required(t('orgManagement.create_org.validation.last_name_required')).matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.contact_person_last_name_invalid')).max(50, t('orgManagement.create_org.validation.last_name_max'))
+      firstName: Yup.string()
+        .required(t('orgManagement.create_org.validation.first_name_required'))
+        .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.contact_person_first_name_invalid'))
+        .min(2, t('orgManagement.create_org.validation.first_name_min'))
+        .max(50, t('orgManagement.create_org.validation.first_name_max')),
+      middleName: Yup.string().matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.middle_name_invalid')).min(2, t('orgManagement.create_org.validation.middle_name_min')).max(50, t('orgManagement.create_org.validation.middle_name_max')),
+      lastName: Yup.string()
+        .required(t('orgManagement.create_org.validation.last_name_required'))
+        .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.contact_person_last_name_invalid'))
+        .min(2, t('orgManagement.create_org.validation.last_name_min'))
+        .max(50, t('orgManagement.create_org.validation.last_name_max'))
     }),
     address: Yup.object({
-      address1: Yup.string().required(t('orgManagement.create_org.validation.address_1_required')).matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_1_invalid')).max(100, t('orgManagement.create_org.validation.address_1_max')),
-      address2: Yup.string().matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_2_invalid')).max(250, t('orgManagement.create_org.validation.address_2_max')),
-      city: Yup.string().required(t('orgManagement.create_org.validation.city_required')).matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.city_invalid')).max(100, t('orgManagement.create_org.validation.city_max')),
+      address1: Yup.string()
+        .required(t('orgManagement.create_org.validation.address_1_required'))
+        .matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_1_invalid'))
+        .min(2, t('orgManagement.create_org.validation.address_1_min'))
+        .max(100, t('orgManagement.create_org.validation.address_1_max')),
+      address2: Yup.string().matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_2_invalid')).min(2, t('orgManagement.create_org.validation.address_2_min')).max(250, t('orgManagement.create_org.validation.address_2_max')),
+      city: Yup.string()
+        .required(t('orgManagement.create_org.validation.city_required'))
+        .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.city_invalid'))
+        .min(2, t('orgManagement.create_org.validation.city_min'))
+        .max(100, t('orgManagement.create_org.validation.city_max')),
       state: Yup.string().required(t('orgManagement.create_org.validation.state_required')),
       zip: Yup.string().required(t('orgManagement.create_org.validation.zip_required')).matches(ZIP_REGEX, t('orgManagement.create_org.validation.zip_invalid'))
     }),

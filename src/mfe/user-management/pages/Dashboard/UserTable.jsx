@@ -25,8 +25,7 @@ function getBackgroundColorByRole(Role) {
   }
 }
 
-function UserTable({ selectableRows = false }) {
-  // Move pagination to context
+function UserTable({ selectableRows = false, onActionSuccess }) {
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -49,12 +48,17 @@ function UserTable({ selectableRows = false }) {
   const { mutate } = useMutation({
     mutationFn: handleDeactivateUser,
     onSuccess: (response) => {
-      console.log(`User ${selectedRows} deactivated successfully:`, response);
       refreshData();
       setSelectedRows(null);
+      const isSuccess = true;
+      const message = t('messages.user_deactivate_success');
+      onActionSuccess(isSuccess, message); // callback
     },
     onError: (error) => {
-      console.error(`Failed to deactivate user ${selectedRows}:`, error);
+      console.error(`Failed to deactivate user:`, error);
+      const isSuccess = false;
+      const message = t('messages.user_deactivate_failure');
+      onActionSuccess(isSuccess, message);
     }
   });
 

@@ -90,7 +90,9 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
               {props.children}
             </Link>
           ) : (
-            <h1>{selectedOrganization.name}</h1>
+            <Link to={''} id={''} className={`${styles.customheader}`}>
+              <h1>{selectedOrganization.name}</h1>
+            </Link>
           )}
         </div>
       </div>
