@@ -321,6 +321,10 @@
 }
 
 .dashboard-loader {
-  height: 190px;
-  padding-top: 20px;
+  height: 150px;
+  // padding-top: 20px;
+  border-radius: 8px;
+  border: 1px solid #bac5cc;
+  display: flex;
+  align-items: center;
 }

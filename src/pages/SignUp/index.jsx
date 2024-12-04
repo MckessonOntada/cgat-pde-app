@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import * as Yup from 'yup';
 import { Formik, Form, Field } from 'formik';
-import { Button, AutoSuggestDropdown, Label, Required } from '@mckesson/mcp-component-library';
+import { Button, AutoSuggestDropdown, Label, Required, TextError } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { UserDetailsFormSegment } from '@src/mfe/user-management/pages/CreateUser';
 import Components from '@src/components/form/Components';
@@ -45,7 +45,7 @@ const SignUp = () => {
   useEffect(() => {
     const getData = setTimeout(() => {
       refetch(requestParams);
-    }, 1500);
+    }, 500);
     return () => clearTimeout(getData);
   }, [requestParams]);
 
@@ -104,7 +104,7 @@ const SignUp = () => {
         .matches(/^\d{5}(-\d{4})?$/, t('userManagement.create_user.validation.zip')) // Only digits
         .required(t('userManagement.create_user.validation.zip_required'))
     }),
-    practiceId: Yup.string().required(t('form.organization_required'))
+    practiceId: Yup.number().required(t('form.organization_required')).nullable()
   });
 
   const handleSubmit = (values) => {
@@ -151,7 +151,7 @@ const SignUp = () => {
               handleSubmit(values);
               actions.setSubmitting(false);
             }}>
-            {({ values, errors, setFieldValue }) => (
+            {({ values, errors, touched, setFieldValue, setFieldTouched }) => (
               <Form>
                 <div className="MCP-panel-container">
                   <UserDetailsFormSegment />
@@ -159,21 +159,25 @@ const SignUp = () => {
                     <p className="form-segment-title">{t('forms.headings.organization_details')}</p>
                   </div>
                   <div className="form-segment">
-                    <Label className="label-heading">
-                      {t('forms.labels.organization')}
-                      <Required id="Required">Required</Required>
-                    </Label>
-                    <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 line-height">
-                      <AutoSuggestDropdown
-                        eregVariant
-                        getselectedValue={(e) => {
-                          setFieldValue('practiceId', e.id);
-                        }}
-                        onChangeInput={onSearchOrganization}
-                        placeHolder=""
-                        suggestionList={organizationList || []}
-                        isShowRefineQueryMessage
-                      />
+                    <div className="line-height">
+                      <Label className="label-heading">
+                        {t('forms.labels.organization')}
+                        <Required id="Required">Required</Required>
+                      </Label>
+                      <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 ">
+                        <AutoSuggestDropdown
+                          eregVariant
+                          getselectedValue={(e) => {
+                            setFieldValue('practiceId', e.id);
+                            setFieldTouched('practiceId', true);
+                          }}
+                          onChangeInput={onSearchOrganization}
+                          placeHolder=""
+                          suggestionList={organizationList || []}
+                          isShowRefineQueryMessage
+                        />
+                      </div>
+                      {errors.practiceId && touched.practiceId && !values.practiceId && <TextError errorMessage={errors.practiceId} />}
                     </div>
                     <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
                       <Field name="comment" fieldlabel={t('forms.labels.comment')} placeholder=" " component={Components['textarea']} maxCharHelperText={t('forms.placeholder.max_5000_chars')} maxCharLimit={5000} />

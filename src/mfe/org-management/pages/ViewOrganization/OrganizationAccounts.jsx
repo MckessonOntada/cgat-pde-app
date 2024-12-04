@@ -135,8 +135,10 @@ export default function OrganizationAccounts(props) {
 
   return (
     <React.Fragment>
-      <AccountFilters />
-      <AccountsList {...props} isLoading={isLoading} data={data} columns={columns} currentPage={pagination.currentPage} recordsPerPage={pagination.recordsPerPage} handleChangePage={handleChangePage} handleSort={handleSort} />
+      <div className="accounts-container">
+        <AccountFilters />
+        <AccountsList {...props} isLoading={isLoading} data={data} columns={columns} currentPage={pagination.currentPage} recordsPerPage={pagination.recordsPerPage} handleChangePage={handleChangePage} handleSort={handleSort} />
+      </div>
     </React.Fragment>
   );
 }

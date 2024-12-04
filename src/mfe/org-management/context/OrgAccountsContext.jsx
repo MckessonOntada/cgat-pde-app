@@ -18,6 +18,9 @@ export const useOrgAccounts = () => {
 
 const INITIAL_STATE = {
   searchQuery: '',
+  salesOrg: '',
+  distributionChannel: '',
+  partnerFunction: 'SOLD_TO',
   pagination: {
     currentPage: 0,
     totalRecords: 0,
@@ -45,6 +48,9 @@ export const OrgAccountsProvider = ({ children, addNewAccounts, practiceId }) =>
 
   const clearFilters = () => {
     setFilterState(INITIAL_STATE);
+    setTimeout(() => {
+      refetch();
+    }, 500);
   };
   // use from context
   const apiUrl = useMemo(() => {
@@ -54,11 +60,18 @@ export const OrgAccountsProvider = ({ children, addNewAccounts, practiceId }) =>
       sortBy: sortCriteria.sortBy,
       sortOrder: sortCriteria.sortOrder,
       practiceId,
-      partnerFunction: 'SOLD_TO'
+      partnerFunction: filterState.partnerFunction || 'SOLD_TO'
     };
     if (filterState.searchQuery) {
       params.query = filterState.searchQuery;
     }
+    if (filterState.distributionChannel) {
+      params.distributionChannel = filterState.distributionChannel;
+    }
+    if (filterState.salesOrg) {
+      params.salesOrg = filterState.salesOrg;
+    }
+
     if (practiceId && !addNewAccounts) {
       return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts?${serializeParams(params)}`;
     } else if (practiceId && addNewAccounts) {
@@ -87,7 +100,8 @@ export const OrgAccountsProvider = ({ children, addNewAccounts, practiceId }) =>
       filters: {
         ...filterState,
         update: {
-          setSearchQuery: (value) => updateFilterState('searchQuery', value)
+          setSearchQuery: (value) => updateFilterState('searchQuery', value),
+          updateQuery: updateFilterState
         },
         clearFilters
       },

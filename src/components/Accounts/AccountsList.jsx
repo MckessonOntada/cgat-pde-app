@@ -44,7 +44,7 @@ export default function AccountsList(props) {
         <div className="customTable-box">
           {isLoading ? (
             <div className="dashboard-loader">
-              <LoadingComponent />
+              <LoadingComponent variant="circular" />
             </div>
           ) : (
             <CustomDataTable
