@@ -49,7 +49,7 @@ function RolesList() {
                     onClose={clearMessage}
                     showTitle
                     title={messageConfig.primaryMessage}
-                    type={messageConfig.secondaryMessage}
+                    type={messageConfig.kind}
                 />
             }
 
