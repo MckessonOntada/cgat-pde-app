@@ -11,6 +11,7 @@ import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
+import AuthUtils from '@src/util/AuthUtils';
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
@@ -32,6 +33,7 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
   const [isCardExpanded, setIsCardExpanded] = useState(false);
   const [roleFilterQuery, setRoleFilterQuery] = React.useState(null);
   const [value, setValue] = React.useState('');
+  const isSystemAdminView = AuthUtils.isSystemAdminView();
 
   const { data: roleList = [], refetch: refreshRoleList } = useQuery({
     queryKey: ['user', 'roles-list', 'role-query'],
@@ -135,7 +137,8 @@ const handleOnRoleFilterQueryChange = (query) => {
         <ToggleUI in={isCardExpanded} timeout={400}>
           <div className="additional-filters">
             <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-              <div>
+              {
+                !isSystemAdminView &&
                 <SearchableDropdown
                   selectedVal={value}
                   onChange={handleOnSelectedValue}
@@ -144,7 +147,7 @@ const handleOnRoleFilterQueryChange = (query) => {
                   asyncHandleSearch={handleOnRoleFilterQueryChange}
                   options={roleList}
                 />
-              </div>
+              }
               <SearchableDropdown
                 id="status"
                 isSuccess

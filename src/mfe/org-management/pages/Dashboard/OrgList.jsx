@@ -8,14 +8,14 @@ import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useOrg } from '../../context/OrgContext';
 import { PATHS } from '../../routes/constants';
 import Actions from './Actions';
 
 const OrgList = () => {
   const { t } = useTranslate();
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRows, setSelectedRows] = useState(null);
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const { data, paginationConfig, isLoading, isError, refreshData, setPageNumber, applySort } = useOrg();
@@ -64,7 +64,8 @@ const OrgList = () => {
             {
               onChange: (event) => setSelectedRows(event.target.checked ? row.id : null),
               value: row.id,
-              isChecked: selectedRows === row.id
+              isChecked: selectedRows === row.id,
+              isDisabled: !row.isActive
             }
           ]}
         />
@@ -76,14 +77,16 @@ const OrgList = () => {
       id: 'name',
       name: t('orgManagement.table.name'),
       cell: (row) => (
-        <button
-          variant="tertiary"
-          className="MCP-table-link"
-          onClick={() => {
-            handleClick(row);
-          }}>
-          {row.name}
-        </button>
+        <div className="cellEllipse">
+          <Link
+            variant="tertiary"
+            className="MCP-table-link"
+            onClick={() => {
+              handleClick(row);
+            }}>
+            {row.name}
+          </Link>
+        </div>
       ),
       sortable: true,
       sortKey: 'name',
@@ -109,7 +112,7 @@ const OrgList = () => {
       id: 'date',
       name: t('orgManagement.table.dateUpdated'),
       selector: (row) => row.updatedAt,
-      cell: (row) => (row.updatedAt ? CommonUtils.convertDateStringFormat(row.updatedAt, 'MM-DD-YYYY') : row.createdAt ? CommonUtils.convertDateStringFormat(drowata.createdAt, 'MM-DD-YYYY') : 'N/A'),
+      cell: (row) => (row.updatedAt ? CommonUtils.convertDateStringFormat(row.updatedAt, 'MM-DD-YYYY') : row.createdAt ? CommonUtils.convertDateStringFormat(row.createdAt, 'MM-DD-YYYY') : 'N/A'),
       wrap: true
     },
     {
@@ -117,7 +120,7 @@ const OrgList = () => {
       name: t('orgManagement.table.status'),
       cell: (row) => (
         <div className="cellEllipse">
-          <Badge text={row.status === 'ACTIVE' ? t('orgManagement.button.activate') : t('orgManagement.button.inactivate')} type={row.status === 'ACTIVE' ? 'success' : 'info-default'} />
+          <Badge text={row.isActive ? t('orgManagement.button.activate') : t('orgManagement.button.inactivate')} type={row.isActive ? 'success' : 'info-default'} />
         </div>
       ),
       wrap: true,
@@ -164,10 +167,10 @@ const OrgList = () => {
   return (
     <div>
       {isLoading && <Loader type="screen" />}
-      {selectedRows && selectedRows.length === 1 && (
+      {selectedRows && (
         <div className="selected-item-alert">
           <p className="selected-item-text">
-            {selectedRows.length} {t('orgManagement.selected_items')}
+            {1} {t('orgManagement.selected_items')}
           </p>
           <Button variant="secondary" onClick={handleDeactivate}>
             {t('orgManagement.button.deactivate')}
@@ -190,10 +193,7 @@ const OrgList = () => {
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         isAdmin={true}
-        // selectableRows
         noDataComponent={isError ? <div>Something went wrong! Please try again</div> : <EmptyDataTable image={EmptyDataImage} heading={t('orgManagement.add.label')} description={t('orgManagement.empty_table.description')} />}
-        // handleRowSelected={handleRowSelected}
-        // selectedRowId={selectedRows[0]}
       />
       <Modal
         {...{
@@ -201,7 +201,7 @@ const OrgList = () => {
           isOpen,
           onClose: () => setIsOpen(false),
           modalTitle: 'Confirmation message',
-          modalBody: <div>Are you sure you wish to Deactivate this Organization ?</div>,
+          modalBody: <h3>Are you sure you wish to Deactivate this Organization ?</h3>,
           modalFooter: (
             <React.Fragment>
               <Button onClick={onCancelOrganizationChange}>Cancel</Button>

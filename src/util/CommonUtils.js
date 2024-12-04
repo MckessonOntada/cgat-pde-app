@@ -352,6 +352,10 @@ function getDateRange(gapYear){
   return [convertDate(prevDate), convertDate(date)];
 }
 
+function truncateString(str, maxLength){
+  return str.length > maxLength ? str.slice(0, maxLength) + "..." : str;
+} 
+
 
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
@@ -379,6 +383,7 @@ const CommonUtils = Object.freeze({
   areArraysEqual,
   deepEqual,
   getDateRange,
+  truncateString,
 });
 
 export default CommonUtils;

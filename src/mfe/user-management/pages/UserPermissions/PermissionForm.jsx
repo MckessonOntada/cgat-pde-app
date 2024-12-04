@@ -88,14 +88,16 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
       <ModuleHeader
         heading={<p className="tertiaryHeading-24">{t('userManagement.user_permissions.managePermissions')}</p>}
         controls={
-          <div className="controls">
-            <Button size="md" variant="secondary" onClick={resetPermissions}>
-              {t('userManagement.user_permissions.button.reset')}
-            </Button>
-            <Button size="md" variant="secondary" onClick={enableAllPermissions}>
-              {t('userManagement.user_permissions.button.applyall')}
-            </Button>
-          </div>
+          !isSystemAdminView && (
+            <div className="controls">
+              <Button size="md" variant="secondary" onClick={resetPermissions}>
+                {t('userManagement.user_permissions.button.reset')}
+              </Button>
+              <Button size="md" variant="secondary" onClick={enableAllPermissions}>
+                {t('userManagement.user_permissions.button.applyall')}
+              </Button>
+            </div>
+          )
         }
       />
 
@@ -113,7 +115,15 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
                         <p>{t(`${category}.${key}.DESCRIPTION`)}</p>
                       </div>
                       <div className="permission-toggle">
-                        <Switch id={`toggle-${category}-${key}`} label={isPermissionEnabled(permission) ? 'Enabled' : 'Disabled'} labelPosition="right" size="lg" checked={isPermissionEnabled(permission)} onChange={() => togglePermission(permission)} />
+                        <Switch
+                          id={`toggle-${category}-${key}`}
+                          label={!isSystemAdminView ? (isPermissionEnabled(permission) ? 'Enabled' : 'Disabled') : undefined}
+                          disabled={isSystemAdminView}
+                          labelPosition="right"
+                          size="lg"
+                          checked={isPermissionEnabled(permission)}
+                          onChange={() => togglePermission(permission)}
+                        />
                       </div>
                     </div>
                     {idx % 2 === 0 && idx !== Object.keys(PERMISSIONS_ENUM[category]).length - 1 && <div className="divider"></div>}

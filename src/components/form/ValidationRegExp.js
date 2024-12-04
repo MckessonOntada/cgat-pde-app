@@ -1,5 +1,8 @@
-export const ALPHA_NUMERIC_WITH_SPECIAL = /^[a-zA-Z0-9-_ ]*$/;
+export const ALPHA_NUMERIC = /^[a-zA-Z0-9-_ ]*$/;
+export const ALPHA_NUMERIC_WITH_SPECIAL = /^[a-zA-Z0-9\u00C0-\u017F-_ ]*$/;
+export const ALPHABETIC_WITH_SPECIAL = /^[a-zA-Z\u00C0-\u017F\s]+$/;
 export const ALPHABETIC_ONLY = /^[a-zA-Z]+$/;
+export const ALPHABETIC_WITH_SPACE = /^[a-zA-Z\s]+$/;
 export const ADDRESS_REGEX = /^[a-zA-Z0-9\s,.'-]*$/;
 export const ZIP_REGEX = /^\d{5}(-\d{4})?$/;
 export const PHONE_REGEX = /^[0-9]{10}$/;

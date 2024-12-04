@@ -138,7 +138,7 @@ const UserPermissions = () => {
                   {t('userManagement.button.back')}
                 </Button>
                 <Button variant="primary" type="submit" size={'md'} disabled={!(isValid && isDirty)}>
-                  {t('userManagement.button.savencontinue')}
+                  {t(isSystemAdminView ? 'userManagement.label.save' : 'userManagement.button.savencontinue')}
                 </Button>
               </div>
             </Form>

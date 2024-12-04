@@ -125,9 +125,15 @@ export const OrgManagementEN = {
   'orgManagement.messages.roleEmptyTableSubtitle': 'Data is unavailable. Please add an organization to view the table content.',
   'orgManagement.messages.userEmptyTableSubtitle': 'Data is unavailable. Please add an user to view the table content.',
   'orgManagement.form.errors.roleNameRequired': 'Role Name is required',
+  'orgManagement.form.errors.roleNamevalidation': 'Invalid Role Name',
   'orgManagement.form.errors.roleDescriptionRequired': 'Role Description is required',
   'orgManagement.form.errors.roleNameMinLength': 'Role Name must be at least 3 characters long',
   'orgManagement.form.errors.roleNameMaxLength': 'Role Name must be at least 3 characters long',
   'orgManagement.form.errors.roleDescriptionMinLength': 'Role Description must be at least 10 characters long',
-  'orgManagement.form.errors.roleDescriptionMaxLength': 'Role Description cannot exceed 1,000 characters'
+  'orgManagement.form.errors.roleDescriptionMaxLength': 'Role Description cannot exceed 100 characters',
+
+  'errors.practice_name_key': 'Organization name already exists.',
+  'errors.practice_email_key': 'Email ID already exists in the System.',
+  'errors.practice_phone_key': 'Phone number already exists.',
+  'errors.default': 'An unexpected error occurred.'
 };

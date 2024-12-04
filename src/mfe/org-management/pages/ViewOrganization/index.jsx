@@ -160,18 +160,6 @@ export default function ViewOrganization() {
       />
       {updateState.isSuccess && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
       <OrgAccountsProvider addNewAccounts={addNewAccounts} practiceId={orgId}>
-        {/* <AccountFilters />
-        <AccountsList
-          showSelectedAccounts={addNewAccounts}
-          omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']}
-          selectableRows={addNewAccounts}
-          selectedRows={selectedAccounts}
-          setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)}
-          practiceId={orgId}
-          onRemoveAccount={onRemoveAccount}
-          addNewAccounts={addNewAccounts}
-        /> */}
-
         <OrganizationAccounts
           showSelectedAccounts={addNewAccounts}
           omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']}

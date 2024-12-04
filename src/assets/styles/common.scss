@@ -99,7 +99,7 @@
   flex-direction: row;
   gap: var(--spacing-03);
 }
-.additional-filters{
+.additional-filters {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -107,39 +107,38 @@
   gap: var(--spacing-04);
 }
 
-
-.custom-autosuggest-dropdown{
-  div{
-    div:first-of-type{
+.custom-autosuggest-dropdown {
+  div {
+    div:first-of-type {
       height: 3.8rem;
-      div:first-of-type{
+      div:first-of-type {
         padding: 14px 7px 8px 0;
       }
     }
   }
 }
 
-.MCP-filter-panel{
-  .ctrl-search-box{
+.MCP-filter-panel {
+  .ctrl-search-box {
     flex-grow: 1;
-    @include mixins.respond(sm){
+    @include mixins.respond(sm) {
       width: 460px;
     }
   }
-  .filter-control-buttons{
+  .filter-control-buttons {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-04);
-    @include mixins.respond(md){
+    @include mixins.respond(md) {
       flex-direction: row;
       align-items: center;
     }
   }
-  .expanded{
+  .expanded {
     display: flex;
     flex-direction: column;
-    .filter-control-buttons{
-      @include mixins.respond(md){
+    .filter-control-buttons {
+      @include mixins.respond(md) {
         align-self: flex-start;
         align-items: flex-end;
         margin-top: auto;
@@ -148,28 +147,28 @@
       align-items: stretch;
     }
   }
-  .search-box{
+  .search-box {
     display: flex;
     gap: var(--spacing-03);
   }
-  .filter-header{
+  .filter-header {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-04);
-    @include mixins.respond(md){
+    @include mixins.respond(md) {
       flex-direction: row;
       justify-content: space-between;
     }
   }
-  .additional-filters{
+  .additional-filters {
     margin-top: var(--spacing-04);
     padding-top: var(--spacing-04);
     border-top: 1px solid var(--brand-color-grey-scale-cool-2);
   }
 }
 
-.filter-panel{
-  .header{
+.filter-panel {
+  .header {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-04);
@@ -180,59 +179,58 @@
       align-items: center;
     }
   }
-  .header-segment{
+  .header-segment {
     display: flex;
     flex-direction: row;
     gap: var(--spacing-04);
     align-items: stretch;
-    @include mixins.respond(md){
+    @include mixins.respond(md) {
       display: inline-flex;
       flex-direction: row;
       gap: var(--spacing-04);
       align-items: center;
     }
-    &.controls{
+    &.controls {
       flex-direction: column;
       margin-bottom: 0px;
-      @include mixins.respond(md){
+      @include mixins.respond(md) {
         margin-bottom: 10px;
       }
-      @include mixins.respond(lg){
+      @include mixins.respond(lg) {
         margin-bottom: 8px;
       }
-      &.expanded{
+      &.expanded {
       }
     }
-    @include mixins.respond(sm){
-      &.controls{
+    @include mixins.respond(sm) {
+      &.controls {
         flex-direction: row;
         align-items: flex-end;
       }
     }
   }
-  .ctrl-search-box{
+  .ctrl-search-box {
     flex-grow: 1;
-    @include mixins.respond(sm){
+    @include mixins.respond(sm) {
       width: 460px;
     }
   }
-  .filter-controls{
+  .filter-controls {
     display: flex;
     flex-direction: column;
     align-self: stretch;
     margin-top: auto;
     margin-bottom: var(--spacing-01);
-    
+
     @include mixins.respond(sm) {
       display: inline-flex;
       flex-direction: row;
       align-items: center;
     }
   }
-  .filter-segment{
-    
+  .filter-segment {
   }
-  .filter-body{
+  .filter-body {
     display: flex;
     align-self: flex-end;
     gap: var(--spacing-04);
@@ -243,7 +241,7 @@
     }
   }
 }
-.additional-filters{
+.additional-filters {
   margin-top: var(--spacing-04);
   padding-top: var(--spacing-04);
   border-top: 1px solid var(--brand-color-grey-scale-cool-2);
@@ -338,4 +336,13 @@
   font-weight: var(--brand-font-weight-600) !important;
   line-height: var(--brand-line-height--24) !important;
   letter-spacing: 0.001em !important;
+}
+
+.dashboard-loader {
+  height: 150px;
+  // padding-top: 20px;
+  border-radius: 8px;
+  border: 1px solid #bac5cc;
+  display: flex;
+  align-items: center;
 }

@@ -18,6 +18,9 @@ export const useUserAccounts = () => {
 
 const INITIAL_STATE = {
   searchQuery: '',
+  salesOrg: '',
+  distributionChannel: '',
+  partnerFunction: 'SOLD_TO',
   pagination: {
     currentPage: 0,
     totalRecords: 0,
@@ -45,6 +48,9 @@ export const UserAccountsProvider = ({ children, addNewAccounts, practiceId, use
 
   const clearFilters = () => {
     setFilterState(INITIAL_STATE);
+    setTimeout(() => {
+      refetch();
+    }, 500);
   };
   // use from context
   const apiUrl = useMemo(() => {
@@ -54,13 +60,19 @@ export const UserAccountsProvider = ({ children, addNewAccounts, practiceId, use
       sortBy: sortCriteria.sortBy,
       sortOrder: sortCriteria.sortOrder,
       practiceId,
-      partnerFunction: 'SOLD_TO'
+      partnerFunction: filterState.partnerFunction || 'SOLD_TO'
     };
     if (filterState.searchQuery) {
       params.query = filterState.searchQuery;
     }
+    if (filterState.distributionChannel) {
+      params.distributionChannel = filterState.distributionChannel;
+    }
+    if (filterState.salesOrg) {
+      params.salesOrg = filterState.salesOrg;
+    }
+
     if (userId && !addNewAccounts) {
-      console.log('response.....', addNewAccounts, userId, practiceId);
       return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/users/${userId}/accounts?${serializeParams(params)}`;
     } else if (userId && addNewAccounts) {
       return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts?${serializeParams(params)}`;
@@ -73,7 +85,6 @@ export const UserAccountsProvider = ({ children, addNewAccounts, practiceId, use
     queryFn: async () => {
       if (userId || practiceId) {
         const res = await HttpResourceService.callRest(`${apiUrl}`, httpVerb.GET, {});
-        console.log('response...', res);
         return res.data;
       }
     },
@@ -83,7 +94,7 @@ export const UserAccountsProvider = ({ children, addNewAccounts, practiceId, use
 
   useEffect(() => {
     refetch();
-  }, [currentPage, addNewAccounts, sortCriteria, userId]);
+  }, [currentPage, addNewAccounts, filterState, userId]);
 
   const ctxValue = useMemo(
     () => ({
@@ -91,7 +102,8 @@ export const UserAccountsProvider = ({ children, addNewAccounts, practiceId, use
       filters: {
         ...filterState,
         update: {
-          setSearchQuery: (value) => updateFilterState('searchQuery', value)
+          setSearchQuery: (value) => updateFilterState('searchQuery', value),
+          updateQuery: updateFilterState
         },
         clearFilters
       },
@@ -105,7 +117,8 @@ export const UserAccountsProvider = ({ children, addNewAccounts, practiceId, use
       isLoading,
       isError,
       refetch,
-      setSortCriteria
+      setSortCriteria,
+      setFilterState
     }),
     [data, updateFilterState, clearFilters, currentPage, isLoading, isError]
   );
