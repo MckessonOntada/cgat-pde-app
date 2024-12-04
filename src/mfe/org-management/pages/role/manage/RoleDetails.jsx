@@ -75,7 +75,7 @@ const RoleDetails = () => {
 
       if (roleId) {
         apiUrl += `/${roleId}`;
-        actionSpecificHttpVerb = httpVerb.PUT;
+        actionSpecificHttpVerb = httpVerb.PATCH;
       }
       const res = await HttpResourceService.callRest(apiUrl, actionSpecificHttpVerb, data);
       return res;

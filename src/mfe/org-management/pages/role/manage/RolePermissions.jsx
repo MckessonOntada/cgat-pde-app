@@ -114,8 +114,11 @@ const RolePermissions = () => {
   };
 
   const handleSaveAndContinue = (values) => {
-    const permissions = Object.values(enabledPermissions).flat();
-    mutation.mutate(permissions);
+    const payload = {
+      permissions: enabledPermissions
+    };
+    const permissions = Object.values(payload).flat();
+    mutation.mutate(payload);
   };
 
   return (

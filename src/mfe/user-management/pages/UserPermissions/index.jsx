@@ -89,7 +89,7 @@ const UserPermissions = () => {
     <div className="MCP-module-wrapper">
       <div className="back-navigation py2 capitalize" onClick={handleGoBack} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
         <MdOutlineKeyboardArrowLeft size="24px" />
-        <p>Back to Manage Users</p>
+        <p>{t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}</p>
       </div>
       <ModuleHeader heading={<p className="primaryHeading">{t('userManagement.create_user')}</p>} />
 
