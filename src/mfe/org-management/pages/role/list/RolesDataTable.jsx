@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CustomDataTable, Button, Badge } from '@mckesson/mcp-component-library';
+import { CustomDataTable, Button, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useRole } from '../../../context/RoleContext';
 import { createColumns } from './RoleTableColumns';
@@ -7,68 +7,63 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 
 const RolesDataTable = () => {
-    const { t } = useTranslate();
-    const [selectedRows, setSelectedRows] = useState(null);
-    const columns = createColumns(t, selectedRows, setSelectedRows);
-    const { applySort } = useRole();
-    const {
-        data,
-        paginationConfig,
-        setPageNumber
-    } = useRole();
+  const { t } = useTranslate();
+  const [selectedRows, setSelectedRows] = useState(null);
+  const columns = createColumns(t, selectedRows, setSelectedRows);
+  const { applySort } = useRole();
+  const { data, paginationConfig, setPageNumber, isLoading } = useRole();
 
-    const handleSort = (selectedColumn, sortDirection) => {
-        if(selectedColumn.sortKey)
-            applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection })
-    };
+  const handleSort = (selectedColumn, sortDirection) => {
+    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+  };
 
-    const handleRowSelected = ({ selectedRows }) => {
-        setSelectedRows(selectedRows.map((row) => row.id));
-    };
+  const handleRowSelected = ({ selectedRows }) => {
+    setSelectedRows(selectedRows.map((row) => row.id));
+  };
 
-    const handleDeactivate = () => {
-        setSelectedRows([]);
-    };
+  const handleDeactivate = () => {
+    setSelectedRows([]);
+  };
 
-    return (
-        <div>
-            {selectedRows && (
-                <div className="selected-item-alert">
-                    <p className="selected-item-text">1 Item's Selected</p>
-                    <Button variant="secondary" onClick={handleDeactivate}>
-                        Deactivate
-                    </Button>
-                </div>
-            )}
-
-            <CustomDataTable
-                id="my-data-table"
-                type="normal"
-                columns={columns}
-                data={data}
-                onSortIconClick={handleSort}
-                currentPage={paginationConfig.pageNumber}
-                totalPageCount={paginationConfig.totalPages}
-                pagination={true}
-                handleChangePage={(_event, newPageIndex) => setPageNumber(newPageIndex)}
-                totalRocords={paginationConfig.totalElements} // Corrected typo here
-                recordsPerPage={paginationConfig.pageSize}
-                paginationTotalRecorsMessage={'results'}
-                paginationRecordsPerPageMessage={`per page`}
-                selectableRowsHeader={false}
-                selectedRowId={selectedRows}
-                noDataComponent={
-                    <EmptyDataTable
-                        image={EmptyDataImage}
-                        heading={t('message.emptyTableTitle')}
-                        description={t('orgManagement.messages.roleEmptyTableSubtitle')}
-                    />
-                }
-                stickyHeader
-                responsive
-            />
+  return (
+    <div>
+      {selectedRows && (
+        <div className="selected-item-alert">
+          <p className="selected-item-text">1 Item's Selected</p>
+          <Button variant="secondary" onClick={handleDeactivate}>
+            Deactivate
+          </Button>
         </div>
-    );
+      )}
+
+      {isLoading ? (
+        <div className="dashboard-loader">
+          <Loader variant="circular" />
+        </div>
+      ) : (
+        <CustomDataTable
+          id="my-data-table"
+          type="normal"
+          columns={columns}
+          data={data}
+          onSortIconClick={handleSort}
+          currentPage={paginationConfig.pageNumber}
+          totalPageCount={paginationConfig.totalPages}
+          pagination={true}
+          handleChangePage={(_event, newPageIndex) => setPageNumber(newPageIndex)}
+          totalRocords={paginationConfig.totalElements} // Corrected typo here
+          recordsPerPage={paginationConfig.pageSize}
+          paginationTotalRecorsMessage={'results'}
+          paginationRecordsPerPageMessage={`per page`}
+          selectableRowsHeader={false}
+          selectedRowId={selectedRows}
+          noDataComponent={<EmptyDataTable image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('orgManagement.messages.roleEmptyTableSubtitle')} />}
+          stickyHeader
+          responsive
+        />
+      )}
+    </div>
+  );
 };
 
 export default RolesDataTable;

@@ -183,7 +183,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
 
   return (
     <div>
-      {isLoading && <Loader type={'screen'} />}
+      {/* {isLoading && <Loader type={'screen'} />} */}
       {selectedRows && (
         <div className="selected-item-alert">
           <p className="selected-item-text">
@@ -195,24 +195,30 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
         </div>
       )}
 
-      <CustomDataTable
-        type={'normal'}
-        columns={columns}
-        data={data}
-        onSortIconClick={handleOnSortIconClick}
-        handleChangePage={handleChangePage}
-        selectableRowsHeader={false}
-        currentPage={filterConfig.pageNumber}
-        totalPageCount={paginationConfig.totalPages}
-        totalRocords={paginationConfig.totalElements}
-        recordsPerPage={paginationConfig.pageSize}
-        paginationTotalRecorsMessage={t('userManagement.results')}
-        paginationRecordsPerPageMessage={t('userManagement.per_page')}
-        stickyHeader
-        responsive
-        pagination={true}
-        noDataComponent={<EmptyDataTable image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('orgManagement.messages.userEmptyTableSubtitle')} />}
-      />
+      {isLoading ? (
+        <div className="dashboard-loader">
+          <Loader variant="circular" />
+        </div>
+      ) : (
+        <CustomDataTable
+          type={'normal'}
+          columns={columns}
+          data={data}
+          onSortIconClick={handleOnSortIconClick}
+          handleChangePage={handleChangePage}
+          selectableRowsHeader={false}
+          currentPage={filterConfig.pageNumber}
+          totalPageCount={paginationConfig.totalPages}
+          totalRocords={paginationConfig.totalElements}
+          recordsPerPage={paginationConfig.pageSize}
+          paginationTotalRecorsMessage={t('userManagement.results')}
+          paginationRecordsPerPageMessage={t('userManagement.per_page')}
+          stickyHeader
+          responsive
+          pagination={true}
+          noDataComponent={<EmptyDataTable image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('orgManagement.messages.userEmptyTableSubtitle')} />}
+        />
+      )}
       <Modal
         {...{
           id: 'xxxs-modal',
