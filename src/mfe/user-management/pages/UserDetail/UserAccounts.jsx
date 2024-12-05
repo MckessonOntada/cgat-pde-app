@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import AccountsList from '@src/components/Accounts/AccountsList';
 import { useTranslate } from '@src/translations/useTranslation';
-import { CheckboxGroup, InputField, Button, Divider, AutoSuggestDropdown } from '@mckesson/mcp-component-library';
+import { CheckboxGroup, InputField, Button, Divider, Dropdown } from '@mckesson/mcp-component-library';
 import { Link, Loader, redirect } from 'react-router-dom';
 import Actions from '@src/components/Accounts/Action';
 import { useUserAccounts } from '../../context/UserAccountsContext';
@@ -11,11 +11,19 @@ import ToggleUI from '@src/components/toggleui';
 import CommonUtils from '@src/util/CommonUtils';
 
 const salesOrgOptions = [
-  { label: 'so36', value: 'so36' },
-  { label: 'so37', value: 'so37' },
-  { label: 'so38', value: 'so38' }
+  { label: 'MPB', value: 8545 },
+  { label: 'Speciality', value: 1000 },
+  { label: '3PL', value: 1100 }
 ];
-const distributionChannelOptions = [{ label: 'dc', value: 'dc' }];
+const distributionChannelOptions = [
+  { label: '10', value: 10 },
+  { label: '20', value: 20 },
+  { label: '30', value: 30 },
+  { label: '40', value: 40 },
+  { label: '50', value: 50 },
+  { label: '60', value: 60 }
+];
+
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
   salesOrg: '',
@@ -218,9 +226,16 @@ export default function UserAccounts(props) {
                 <ToggleUI in={isCardExpanded} timeout={400}>
                   <div className="additional-filters">
                     <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-                      <AutoSuggestDropdown eregVariant getselectedValue={(e) => handleChangeAutoSuggest('salesOrg', e.value)} onChangeInput={() => {}} label={'Sales Org'} selectedVal={filters.salesOrg} key={'salesOrg'} suggestionList={salesOrgOptions} />
-                      <AutoSuggestDropdown eregVariant getselectedValue={(e) => handleChangeAutoSuggest('distributionChannel', e.value)} onChangeInput={() => {}} label={'Distribution Channel'} selectedVal={''} key={'dc_Filter'} suggestionList={distributionChannelOptions} />
-                      {/* {isCardExpanded && controlButtons ? <div className="expanded">{controlButtons}</div> : null} */}
+                      <Dropdown id="sales-org" label={t('account.filter.salesOrg')} name="sales-org" onChange={(e) => handleChangeAutoSuggest('salesOrg', e)} options={salesOrgOptions || []} size="lg" value={filters.salesOrg} />
+                      <Dropdown
+                        id="distribution-channel"
+                        label={t('account.filter.distributionChannel')}
+                        name="distribution-channel"
+                        onChange={(e) => handleChangeAutoSuggest('distributionChannel', e)}
+                        options={distributionChannelOptions || []}
+                        size="lg"
+                        value={filters.distributionChannel}
+                      />
                     </div>
                   </div>
                 </ToggleUI>
