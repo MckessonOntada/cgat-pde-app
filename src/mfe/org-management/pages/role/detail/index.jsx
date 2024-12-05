@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as pencil_write_edit } from '@src/assets/image/pencil-write-edit.svg';
-import { Button } from '@mckesson/mcp-component-library';
+import { Button, Heading } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import ModuleHeader from '@src/components/module-header';
@@ -13,6 +13,7 @@ import CommonUtils from '@src/util/CommonUtils.js';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
+import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 
 const roleDetail = () => {
   const { t } = useTranslate();
@@ -57,14 +58,15 @@ const roleDetail = () => {
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-wrapper">
-        <div className="back-navigation py2 capitalize" onClick={handleGoBack} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-          <MdOutlineKeyboardArrowLeft size="24px" />
-          <p>{t('orgManagement.role.captionsBtnBackToManageRoles')}</p>
+        <div>
+          <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
+            {t('orgManagement.role.captionsBtnBackToManageRoles')}
+          </Button>
         </div>
 
         <div className="MCP-module-body">
           <ModuleHeader
-            heading={<h1 className="primaryHeading">{t('orgManagement.role.labelRolesDetails')}</h1>}
+            heading={<Heading as="h1">{t('orgManagement.role.labelRolesDetails')}</Heading>}
             controls={
               <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`edit-role`, { state: data })}>
                 {t('userManagement.button.edit')}
@@ -75,7 +77,7 @@ const roleDetail = () => {
           <div className="MCP-panel-container">
             <div className="role-header">
               <div className="role-info">
-                <h2 className="secondaryHeading">{data?.name}</h2>
+                <Heading as="h2">{data?.name}</Heading>
               </div>
               <div className="user-status">
                 <span className="view_label">Created On:</span>
@@ -92,7 +94,7 @@ const roleDetail = () => {
           </div>
 
           <ModuleHeader
-            heading={<h1 className="primaryHeading">{t('userManagement.header.view.permissions_granted')}</h1>}
+            heading={<Heading as="h1">{t('userManagement.header.view.permissions_granted')}</Heading>}
             controls={
               <div className="controls">
                 <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`permissions`, { state: { data, isEdit: true } })}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Alert } from '@mckesson/mcp-component-library';
+import { Button, Alert, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle.svg';
 import ModuleHeader from '@src/components/module-header';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
@@ -35,7 +35,7 @@ function RolesList() {
 
       {/* module header */}
       <ModuleHeader
-        heading={<h1 className="primaryHeading">{t('orgManagement.role.headingManageOrder')}</h1>}
+        heading={<Heading as="h1">{t('orgManagement.role.headingManageOrder')}</Heading>}
         controls={
           <Button Icon={AddCircleFilled} size="md" onClick={handleOnAddRoleClick}>
             {t('orgManagement.role.labelAddRole')}
@@ -52,7 +52,7 @@ function RolesList() {
             <FilterPanel />
           </div>
           <div className="MCP-table-wrapper">
-            <ModuleHeader heading={<h2 className="secondaryHeading">{t('orgManagement.role.labelRolesListing')}</h2>} />
+            <ModuleHeader heading={<Heading as="h2">{t('orgManagement.role.labelRolesListing')}</Heading>} />
             <RolesDataTable />
           </div>
         </div>

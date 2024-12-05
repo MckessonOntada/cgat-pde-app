@@ -1,7 +1,7 @@
 import React from 'react';
 import { Field } from 'formik';
 import Components from '@src/components/form/Components';
-import { Required } from '@mckesson/mcp-component-library';
+import { Required, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { US_STATES } from '@src/components/form/util';
 
@@ -20,7 +20,7 @@ const UserDetailsFormSegment = () => {
       <div className="MCP-module-body form-container">
         <div>
           <div className="headingBox">
-            <p className="form-segment-title">{t('userManagement.create_user.personal_details')}</p>
+            <Heading as="h3">{t('userManagement.create_user.personal_details')}</Heading>
             <p className="form-instruction">
               <Required id="Required"></Required> {t('userManagement.create_user.required')}
             </p>
@@ -34,7 +34,7 @@ const UserDetailsFormSegment = () => {
 
         <div>
           <div className="headingBox">
-            <p className="form-segment-title">{t('userManagement.create_user.contact_details')}</p>
+            <Heading as="h3">{t('userManagement.create_user.contact_details')}</Heading>
             <p className="form-instruction">
               <Required id="Required"></Required> {t('userManagement.create_user.required')}
             </p>

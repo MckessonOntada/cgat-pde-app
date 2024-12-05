@@ -8,7 +8,7 @@ import { pendingData, submittedData } from './__mock__';
 import { useTranslate } from '@src/translations/useTranslation';
 import PageHeader from '@src/components/pageHeader';
 import ModuleHeader from '../../../../components/module-header';
-import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
+import { Breadcrumb, Heading} from '@src/components/breadCrumbs/Breadcrumbs';
 import FilterPanel from './FilterPanel';
 import { tabs, breadcrumbItems } from './constants';
 import OrderDataTable from './OrderDataTable';
@@ -69,7 +69,7 @@ const OrderIndex = () => {
                         <FilterPanel />
                     </div>
                     <div className="MCP-table-wrapper">
-                        <h2 className="secondaryHeading">{t('headings.orderListing')}</h2>
+                        <Heading as="h2">{t('headings.orderListing')}</Heading>
                         <OrderDataTable />
                     </div>
                 </div>

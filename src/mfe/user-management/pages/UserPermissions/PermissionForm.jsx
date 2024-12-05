@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { PERMISSIONS_ENUM } from './permissionsEnum';
-import { Switch, Button, Dropdown } from '@mckesson/mcp-component-library';
+import { Switch, Button, Dropdown, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import './PermissionForm.scss';
@@ -75,7 +75,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
     <div className="MCP-module-wrapper">
       {!isSystemAdminView && (
         <Fragment>
-          <ModuleHeader heading={<p className="tertiaryHeading-24">{t('userManagement.user_permissions.select_role')}</p>} />
+          <ModuleHeader heading={<Heading as="h3">{t('userManagement.user_permissions.select_role')}</Heading>} />
 
           <div className="MCP-panel-container">
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
@@ -86,7 +86,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
       )}
 
       <ModuleHeader
-        heading={<h3 className="tertiaryHeading-24">{t('userManagement.user_permissions.managePermissions')}</h3>}
+        heading={<Heading as="h3">{t('userManagement.user_permissions.managePermissions')}</Heading>}
         controls={
           !isSystemAdminView && (
             <div className="controls">
@@ -104,7 +104,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
       <div className="MCP-panel-container grid grid-gap-16">
         {Object.entries(PERMISSIONS_ENUM).map(([category, permissions]) => (
           <div key={category} className="MCP-module-body permission-category">
-            <div className="subheader-text">{t(category)}</div>
+            <Heading as="h3">{t(category)}</Heading>
             <div className="permission-category">
               <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 permission-list">
                 {Object.entries(permissions).map(([key, permission], idx) => (

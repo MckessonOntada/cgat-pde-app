@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dropdown, Button, Stepper } from '@mckesson/mcp-component-library';
+import { Dropdown, Heading, Button, Stepper } from '@mckesson/mcp-component-library';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import styles from './AccountSelection.module.scss';
 import FloatingDrawer from '@src/components/floating-drawer';
@@ -68,8 +68,8 @@ const AccountSelection = () => {
           <div className="MCP-panel-container">
             <div>
               <div>
-                <h3 className="tertiaryHeading">{t('labels.therapyDescription')}</h3>
-                <h3 className="tertiaryHeading">{t('labels.accountSelection')}</h3>
+                <Heading as="h3">{t('labels.therapyDescription')}</Heading>
+                <Heading as="h3">{t('labels.accountSelection')}</Heading>
               </div>
             </div>
           </div>
@@ -78,8 +78,8 @@ const AccountSelection = () => {
               <ModuleHeader
                 heading={
                   <div>
-                    <h2 className="secondaryHeading">{t('labels.accountSelection')}</h2>
-                    <h3 className="tertiaryHeading">{t('messages.accountSelect')}</h3>
+                    <Heading as="h2">{t('labels.accountSelection')}</Heading>
+                    <Heading as="h3">{t('messages.accountSelect')}</Heading>
                   </div>
                 }
               />
@@ -104,7 +104,7 @@ const AccountSelection = () => {
             </div>
             <ShippingAddressProvider>
               <div className="MCP-module-body">
-                <ModuleHeader heading={<h2 className="secondaryHeading">{t('headings.shippingAddress')}</h2>} />
+                <ModuleHeader heading={<Heading as="h2">{t('headings.shippingAddress')}</Heading>} />
                 <div className="MCP-panel-container"></div>
                 <div className="MCP-table-wrapper">
                   <ShippingAddressDataTable />

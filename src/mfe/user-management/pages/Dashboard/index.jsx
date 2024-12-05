@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TabList, Alert, Button } from '@mckesson/mcp-component-library';
+import { TabList, Alert, Button, Heading } from '@mckesson/mcp-component-library';
 import './index.scss';
 import Filters from './Filters';
 import { PATHS } from '../../routes/constants';
@@ -98,7 +98,7 @@ export default function Dashboard() {
     <div className="MCP-module-wrapper" id={debugIds(ID.TABLE, ID.CONTAINER)}>
       <Breadcrumb items={breadcrumbItems} />
       <ModuleHeader
-        heading={<h1 className="primaryHeading">{t(isSystemAdminView ? 'userManagement.header.systemadmin.label' : 'userManagement.header.label')}</h1>}
+        heading={<Heading as="h1">{t(isSystemAdminView ? 'userManagement.header.systemadmin.label' : 'userManagement.header.label')}</Heading>}
         controls={
           <div className="controls">
             <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createUser}`)}>
@@ -118,7 +118,7 @@ export default function Dashboard() {
         <div className="MCP-panel-container">
           <Filters showRoleDropdown={true} showStatusDropdown={true} />
         </div>
-        <h2 className="secondaryHeading"> {t(isSystemAdminView ? 'userManagement.header.systemadminlisting.label' : 'userManagement.header.listing.label')}</h2>
+        <Heading as="h2"> {t(isSystemAdminView ? 'userManagement.header.systemadminlisting.label' : 'userManagement.header.listing.label')}</Heading>
         {!isSystemAdminView && <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />}
         <div className="userList">
           {activeTab === 'ACTIVE USERS' && <UserTable selectableRows={true} onActionSuccess={handleSuccess} />}

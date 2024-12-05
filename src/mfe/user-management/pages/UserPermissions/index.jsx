@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Stepper, Button, Alert } from '@mckesson/mcp-component-library';
+import { Stepper, Heading, Button, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import ModuleHeader from '@src/components/module-header';
@@ -93,7 +93,7 @@ const UserPermissions = () => {
           {t('userManagement.user.backmessage')}
         </Button>
       </div>
-      <ModuleHeader heading={<h1 className="primaryHeading">{t('userManagement.create_user')}</h1>} />
+      <ModuleHeader heading={<Heading as="h1">{t('userManagement.create_user')}</Heading>} />
 
       {!isEdit && (
         <div className="stepper">

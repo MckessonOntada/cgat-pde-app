@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import * as Yup from 'yup';
 import { Formik, Form, Field } from 'formik';
-import { Button, AutoSuggestDropdown, Label, Required, TextError } from '@mckesson/mcp-component-library';
+import { Button, Heading, AutoSuggestDropdown, Label, Required, TextError } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { UserDetailsFormSegment } from '@src/mfe/user-management/pages/CreateUser';
 import Components from '@src/components/form/Components';
@@ -147,7 +147,7 @@ const SignUp = () => {
       <PrimaryHeader />
       <div className={mainLayoutStyles.home}>
         <div className="MCP-module-wrapper py3">
-          <ModuleHeader heading={<h1 className="primaryHeading">{t('forms.headings.newUserRegistration')}</h1>} />
+          <ModuleHeader heading={<Heading as="h1">{t('forms.headings.newUserRegistration')}</Heading>} />
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
@@ -161,7 +161,7 @@ const SignUp = () => {
                 <div className="MCP-panel-container">
                   <UserDetailsFormSegment />
                   <div>
-                    <p className="form-segment-title">{t('forms.headings.organization_details')}</p>
+                    <Heading as="h3">{t('forms.headings.organization_details')}</Heading>
                   </div>
                   <div className="form-segment">
                     <div className="line-height">

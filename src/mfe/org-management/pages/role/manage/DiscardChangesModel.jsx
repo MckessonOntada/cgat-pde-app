@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Modal } from "@mckesson/mcp-component-library";
+import { Button, Modal, Heading } from "@mckesson/mcp-component-library";
 
 const DiscardChangesModal = ({ isOpen, onClose, onConfirm }) => {
     return (
@@ -9,9 +9,9 @@ const DiscardChangesModal = ({ isOpen, onClose, onConfirm }) => {
             onClose={onClose}
             modalTitle="Discard Changes?"
             modalBody={
-                <h3 className="tertiaryHeading">
+                <Heading as="h3">
                     You have changed role permissions. Do you still want to go back? Your changes will be discarded!
-                </h3>
+                </Heading>
             }
             modalFooter={
                 <div className="controls">
