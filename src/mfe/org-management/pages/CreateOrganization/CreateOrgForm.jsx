@@ -1,7 +1,7 @@
 import React from 'react';
 import { Field } from 'formik';
 import Components from '@src/components/form/Components';
-import { Required } from '@mckesson/mcp-component-library';
+import { Required, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import FileInput from '@src/components/FileInput';
 import { US_STATES } from '@src/components/form/util';
@@ -19,7 +19,7 @@ const OrgDetailsFormSegment = () => {
   return (
     <div className="form-container">
       <div className="headingBox">
-        <p className="form-segment-title">{t('orgManagement.create_org.org-details')}</p>
+        <Heading as="h3">{t('orgManagement.create_org.org-details')}</Heading>
 
         <p className="form-instruction">
           <Required id="Required" /> {t('orgManagement.create_org.required')}
@@ -44,7 +44,7 @@ const OrgDetailsFormSegment = () => {
 
       {/* Remaining Fields */}
       <div className="headingBox">
-        <p className="form-segment-title">{t('orgManagement.create_org.contact_details')}</p>
+        <Heading as="h3">{t('orgManagement.create_org.contact_details')}</Heading>
       </div>
 
       <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start">
@@ -57,7 +57,7 @@ const OrgDetailsFormSegment = () => {
       </div>
 
       <div className="headingBox">
-        <p className="form-segment-title">{t('orgManagement.create_org.address_details')}</p>
+        <Heading as="h3">{t('orgManagement.create_org.address_details')}</Heading>
       </div>
 
       <div>

@@ -124,7 +124,7 @@ export const OrgManagementEN = {
   'orgManagement.role.captionsBtnSaveAndCancel': 'Save and Continue',
   'orgManagement.role.labelMaxChar1000': 'Maximum 1,000 Characters',
   'orgManagement.role.placeholder': 'Search by name and location',
-
+  'orgManagement.createOrg.headerMessage':'Please complete the form to create a new organization',
   'orgManagement.label.associateAccount': 'Associate Account',
   'orgManagement.messages.newRoleCreation': 'New role has been successfully created.',
   'orgManagement.messages.roleUpdate': 'Role has been successfully updated.',

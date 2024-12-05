@@ -1,7 +1,7 @@
 import React from 'react';
-import { Dropdown, Button, Stepper } from '@mckesson/mcp-component-library';
+import { Dropdown, Heading, Button, Stepper } from '@mckesson/mcp-component-library';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import styles from './AccountSelection.module.scss'
+import styles from './AccountSelection.module.scss';
 import FloatingDrawer from '@src/components/floating-drawer';
 import AccountsTable from './AccountTable';
 import AccountSelectionUserGuide from './AccountSelectionUserGuide';
@@ -15,141 +15,121 @@ import { FormList } from '../Constants';
 import { useMutation } from 'react-query';
 
 const AccountSelection = () => {
-    const { t } = useTranslate();
-    const [open, setOpen] = React.useState(false);
-    const navigate = useNavigate();
-    const { therapyId } = useParams();
+  const { t } = useTranslate();
+  const [open, setOpen] = React.useState(false);
+  const navigate = useNavigate();
+  const { therapyId } = useParams();
 
-    const { mutate } = useMutation(
-        async (data) => {
-            const res = await Promise.resolve({ id: Math.floor(Math.random() * (1000 - 100 + 1)) + 100 });
-            return res;
-        },
-        {
-            onSuccess: ({ id }) => navigate(`../${therapyId}/${id}/patient-details`),
-            onError: console.log
-        }
-    )
+  const { mutate } = useMutation(
+    async (data) => {
+      const res = await Promise.resolve({ id: Math.floor(Math.random() * (1000 - 100 + 1)) + 100 });
+      return res;
+    },
+    {
+      onSuccess: ({ id }) => navigate(`../${therapyId}/${id}/patient-details`),
+      onError: console.log
+    }
+  );
 
-    const handleOnClose = () => {
-        setOpen(false);
-    }
-    const handleOnClick = () => {
-        setOpen(true);
-    }
-    const handleOnSubmit = (account) => {
-        mutate();
-    }
-    const handleOnBackButtonClick = () => {
-        //compare data change, display modal for confirmation
-        navigate(`../edit-order/${therapyId}`);
-    };
-    const handleOnCancel = () => {
-        //compare data change, display modal for confirmation
-        navigate('/orders');
-    }
+  const handleOnClose = () => {
+    setOpen(false);
+  };
+  const handleOnClick = () => {
+    setOpen(true);
+  };
+  const handleOnSubmit = (account) => {
+    mutate();
+  };
+  const handleOnBackButtonClick = () => {
+    //compare data change, display modal for confirmation
+    navigate(`../edit-order/${therapyId}`);
+  };
+  const handleOnCancel = () => {
+    //compare data change, display modal for confirmation
+    navigate('/orders');
+  };
 
-    const forms = FormList(t);
+  const forms = FormList(t);
 
-    return (
-        <div className="MCP-module-wrapper">
+  return (
+    <div className="MCP-module-wrapper">
+      <div>
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackButtonClick} size="md">
+          {t('captions.btnBackToManageOrder')}
+        </Button>
+      </div>
+
+      <PageHeader heading={t('headings.createNewOrder')} />
+
+      <div className="MCP-module-body">
+        <Stepper activeIndex={2} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} />
+
+        <div className={`MCP-module-wrapper`}>
+          <div className="MCP-panel-container">
             <div>
-                <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackButtonClick} size="md">
-                {t('captions.btnBackToManageOrder')}
-                </Button>
+              <div>
+                <Heading as="h3">{t('labels.therapyDescription')}</Heading>
+                <Heading as="h3">{t('labels.accountSelection')}</Heading>
+              </div>
             </div>
-
-            <PageHeader heading={t("headings.createNewOrder")} />
-
-            <div className='MCP-module-body'>
-                <Stepper
-                    activeIndex={2}
-                    dividerText="of"
-                    mobileLabel={t('labels.steps')}
-                    stepHeaders={forms.map(f => ({ label: f.label }))}
-                />
-
-                <div className={`MCP-module-wrapper`}>
-                    <div className="MCP-panel-container">
-                        <div>
-                            <div>
-                                <p className='tertiaryHeading'>{t('labels.therapyDescription')}</p>
-                                <p className='tertiaryHeading'>{t('labels.accountSelection')}</p>
-
-                            </div>
-                        </div>
+          </div>
+          <div className="MCP-panel-container">
+            <div className={`MCP-module-body`}>
+              <ModuleHeader
+                heading={
+                  <div>
+                    <Heading as="h2">{t('labels.accountSelection')}</Heading>
+                    <Heading as="h3">{t('messages.accountSelect')}</Heading>
+                  </div>
+                }
+              />
+              <div className="MCP-panel-container">
+                <div className={styles.account}>
+                  <div className={styles.accountDetails}>
+                    <p className={styles.name}>
+                      <b>Revisions Aesthetics Group</b>
+                    </p>
+                    <p className={styles.address}>6567 S Elizabeth Way, Centennial, CO, 80121</p>
+                  </div>
+                  <div className={styles.controls}>
+                    <div className={styles.controlWrapper}>
+                      <Dropdown />
                     </div>
-                    <div className='MCP-panel-container'>
-                        <div className={`MCP-module-body`}>
-
-                            <ModuleHeader
-                                heading={
-                                    <div>
-                                        <p className='secondaryHeading'>{t('labels.accountSelection')}</p>
-                                        <p className='tertiaryHeading'>{t('messages.accountSelect')}</p>
-                                    </div>
-                                }
-                            />
-                            <div className='MCP-panel-container'>
-                                <div className={styles.account}>
-                                    <div className={styles.accountDetails}>
-                                        <p className={styles.name}><b>Revisions Aesthetics Group</b></p>
-                                        <p className={styles.address}>6567 S Elizabeth Way, Centennial, CO, 80121</p>
-                                    </div>
-                                    <div className={styles.controls}>
-                                        <div className={styles.controlWrapper}>
-                                            <Dropdown />
-                                        </div>
-                                        <Link to="#" onClick={handleOnClick}>{t('labels.needAssistanceSelectingAccount')}</Link>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <ShippingAddressProvider>
-                            <div className="MCP-module-body">
-                                <ModuleHeader
-                                    heading={<p className='secondaryHeading'>{t('headings.shippingAddress')}</p>}
-                                />
-                                <div className='MCP-panel-container'>
-
-                                </div>
-                                <div className="MCP-table-wrapper">
-                                    <ShippingAddressDataTable />
-                                </div>
-                            </div>
-                        </ShippingAddressProvider>
-                    </div>
-                    <div className='controls'>
-                        <Button
-                            size="md"
-                            onClick={() => navigate('../')}
-                            variant="secondary"
-                        >
-                            {t('captions.btnCancel')}
-                        </Button>
-                        <Button
-                            size="md"
-                            onClick={handleOnCancel}
-                            variant="secondary"
-                        >
-                            {t('captions.btnInventorySelection')}
-                        </Button>
-                        <Button
-                            size="md"
-                            onClick={handleOnSubmit}
-                            variant="primary"
-                            type="submit"
-                        >
-                            {t('Save and Continue')}
-                        </Button>
-                    </div>
-                    <FloatingDrawer open={open} anchor='right' onClose={handleOnClose}>
-                        <AccountSelectionUserGuide onClose={handleOnClose} />
-                    </FloatingDrawer>
+                    <Link to="#" onClick={handleOnClick}>
+                      {t('labels.needAssistanceSelectingAccount')}
+                    </Link>
+                  </div>
                 </div>
+              </div>
             </div>
+            <ShippingAddressProvider>
+              <div className="MCP-module-body">
+                <ModuleHeader heading={<Heading as="h2">{t('headings.shippingAddress')}</Heading>} />
+                <div className="MCP-panel-container"></div>
+                <div className="MCP-table-wrapper">
+                  <ShippingAddressDataTable />
+                </div>
+              </div>
+            </ShippingAddressProvider>
+          </div>
+          <div className="controls">
+            <Button size="md" onClick={() => navigate('../')} variant="secondary">
+              {t('captions.btnCancel')}
+            </Button>
+            <Button size="md" onClick={handleOnCancel} variant="secondary">
+              {t('captions.btnInventorySelection')}
+            </Button>
+            <Button size="md" onClick={handleOnSubmit} variant="primary" type="submit">
+              {t('Save and Continue')}
+            </Button>
+          </div>
+          <FloatingDrawer open={open} anchor="right" onClose={handleOnClose}>
+            <AccountSelectionUserGuide onClose={handleOnClose} />
+          </FloatingDrawer>
         </div>
-    )
-}
+      </div>
+    </div>
+  );
+};
 
-export default AccountSelection
+export default AccountSelection;

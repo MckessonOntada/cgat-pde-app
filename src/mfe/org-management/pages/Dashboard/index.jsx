@@ -1,4 +1,4 @@
-import { Alert, Button } from '@mckesson/mcp-component-library';
+import { Alert, Button, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
 import ModuleHeader from '@src/components/module-header';
@@ -47,7 +47,7 @@ export default function Dashboard() {
         <Breadcrumb items={breadcrumbItems} />
 
         <ModuleHeader
-          heading={<p className="primaryHeading">{t('orgManagement.header.label')}</p>}
+          heading={<Heading as="h1">{t('orgManagement.header.label')}</Heading>}
           controls={
             <div className="controls">
               <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createOrg}`)}>
@@ -64,7 +64,7 @@ export default function Dashboard() {
               <div className="MCP-panel-container">
                 <Filters showLocationDropdown={true} showStatusDropdown={true} />
               </div>
-              <h2 className="org-listing-label">{t('orgManagement.org_list')}</h2>
+              <Heading as="h2">{t('orgManagement.org_list')}</Heading>
               <OrgList />
             </div>
           </OrgProvider>

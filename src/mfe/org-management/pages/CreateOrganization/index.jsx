@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Formik, Form } from 'formik';
-import { Loader, Alert, Stepper, Button } from '@mckesson/mcp-component-library';
+import { Loader, Alert, Stepper, Button, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import OrgDetailsFormSegment from './CreateOrgForm';
@@ -158,7 +158,7 @@ const CreateOrganization = () => {
           <Form>
             <div className="container-box">
               <div className="headingBox">
-                <p className="font-bold-title-s">Please complete the form to create a new organization</p>
+                <Heading as="h2">{t('orgManagement.createOrg.headerMessage')}</Heading>
               </div>
               <OrgDetailsFormSegment formik={formik} />
             </div>

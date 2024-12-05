@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './OrderStatus.module.scss';
-import { Button } from '@mckesson/mcp-component-library';
+import { Button, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { ReactComponent as IconTick } from '@src/assets/svg/tick-circle-filled.svg';
 import StatusBreadcrumb from './StatusBreadcrumb';
@@ -41,8 +41,8 @@ const OrderStatus = () => {
                             <IconTick />
                         </div>
                         <div className={styles.content}>
-                            <p className={'primaryHeading'}>{t('headings.orderSubmitted')}</p>
-                            <p className={'tertiaryHeading'}>{t('messages.orderSuccessApprovalPending')}</p>
+                            <Heading as={'h1'}>{t('headings.orderSubmitted')}</Heading>
+                            <Heading as={'h3'}>{t('messages.orderSuccessApprovalPending')}</Heading>
                         </div>
                     </div>
                 }
@@ -63,7 +63,7 @@ const OrderStatus = () => {
                 </div>
                 <div className="MCP-panel-container">
                     <div className={styles.flex}>
-                        <p className={styles.customSecondaryHeading}>{t('labels.whatToExpect')}</p>
+                        <h4 className={styles.customSecondaryHeading}>{t('labels.whatToExpect')}</h4>
                         <div className={styles.statusBreadcrumb}>
                             <StatusBreadcrumb />
                         </div>

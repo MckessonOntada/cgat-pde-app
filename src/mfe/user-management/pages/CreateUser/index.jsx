@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import './CreateUser.scss';
-import { Button, Stepper, Alert } from '@mckesson/mcp-component-library';
+import { Button, Heading, Stepper, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import UserDetailsFormSegment from './CreateUserForm';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -207,7 +207,7 @@ const CreateUser = () => {
         </Button>
       </div>
 
-      <ModuleHeader heading={<p className="primaryHeading">{t(isSystemAdminView ? 'userManagement.create_sysadmin' : 'userManagement.create_user')}</p>} />
+      <ModuleHeader heading={<Heading as="h1">{t(isSystemAdminView ? 'userManagement.create_sysadmin' : 'userManagement.create_user')}</Heading>} />
       {!isEdit && (
         <div className="stepper">
           <Stepper
@@ -241,7 +241,7 @@ const CreateUser = () => {
         {() => (
           <Form>
             <div className="MCP-panel-container">
-              <p className="font-bold-title-s">{t(isSystemAdminView ? 'userManagement.create_user.details_to_create_sysadmin' : 'userManagement.create_user.details_to_create_user')}</p>
+              <Heading as="h2">{t(isSystemAdminView ? 'userManagement.create_user.details_to_create_sysadmin' : 'userManagement.create_user.details_to_create_user')}</Heading>
               <UserDetailsFormSegment />
             </div>
             <div className={'buttonGroup'}>
