@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Divider, InputField, AutoSuggestDropdown } from '@mckesson/mcp-component-library';
+import { Button, Divider, InputField, AutoSuggestDropdown, Dropdown } from '@mckesson/mcp-component-library';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import arrow_down from '@src/assets/image/arrow_down.svg';
 import { useOrgAccounts } from '../../context/OrgAccountsContext';
@@ -8,11 +8,19 @@ import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 
 const salesOrgOptions = [
-  { label: 'so36', value: 'so36' },
-  { label: 'so37', value: 'so37' },
-  { label: 'so38', value: 'so38' }
+  { label: 'MPB', value: 8545 },
+  { label: 'Speciality', value: 1000 },
+  { label: '3PL', value: 1100 }
 ];
-const distributionChannelOptions = [{ label: 'dc', value: 'dc' }];
+const distributionChannelOptions = [
+  { label: '10', value: 10 },
+  { label: '20', value: 20 },
+  { label: '30', value: 30 },
+  { label: '40', value: 40 },
+  { label: '50', value: 50 },
+  { label: '60', value: 60 }
+];
+
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
   salesOrg: '',
@@ -37,7 +45,6 @@ export default function AccountFilters(props) {
   };
 
   const handleChangeAutoSuggest = (name, value) => {
-    // filters.update.updateQuery(name, event.value);
     setFilters((prevState) => ({
       ...prevState,
       [name]: value
@@ -76,7 +83,7 @@ export default function AccountFilters(props) {
               <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
             </button>
             <div className={'ctrl-search-box'}>
-              <InputField errors={{}} id="search-box" name="searchQuery" value={filters.searchQuery} onInputChange={(e) => handleChangeAutoSuggest('searchQuery', e.target.value)} tooltipText={null} useRegister={false} placeholder={t('account.no')} />
+              <InputField errors={{}} id="search-box" name="searchQuery" value={filters.searchQuery} onInputChange={(e) => handleChangeAutoSuggest('searchQuery', e.target.value)} tooltipText={null} useRegister={false} placeholder={t('account.filter.search')} />
             </div>
           </div>
           {controlButtons}
@@ -84,9 +91,8 @@ export default function AccountFilters(props) {
         <ToggleUI in={isCardExpanded} timeout={400}>
           <div className="additional-filters">
             <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-              <AutoSuggestDropdown eregVariant getselectedValue={(e) => handleChangeAutoSuggest('salesOrg', e.value)} onChangeInput={() => {}} label={'Sales Org'} selectedVal={filters.salesOrg} key={'salesOrg'} suggestionList={salesOrgOptions} />
-              <AutoSuggestDropdown eregVariant getselectedValue={(e) => handleChangeAutoSuggest('distributionChannel', e.value)} onChangeInput={() => {}} label={'Distribution Channel'} selectedVal={''} key={'dc_Filter'} suggestionList={distributionChannelOptions} />
-              {/* {isCardExpanded && controlButtons ? <div className="expanded">{controlButtons}</div> : null} */}
+              <Dropdown id="demo-dropdown" label={t('account.filter.salesOrg')} name="sales-org" onChange={(e) => handleChangeAutoSuggest('salesOrg', e)} options={salesOrgOptions || []} size="lg" value={filters.salesOrg} />
+              <Dropdown id="demo-dropdown" label={t('account.filter.distributionChannel')} name="distribution-channel" onChange={(e) => handleChangeAutoSuggest('distributionChannel', e)} options={distributionChannelOptions || []} size="lg" value={filters.distributionChannel} />
             </div>
           </div>
         </ToggleUI>

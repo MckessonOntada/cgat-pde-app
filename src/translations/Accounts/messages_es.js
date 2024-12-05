@@ -8,6 +8,10 @@ export const AccountES = {
   'account.action': 'S_Action',
   'account.selected.account': 'S_Selected Account',
 
+  'account.filter.search': 'S_Search by Account Number, Name',
+  'account.filter.salesOrg': 'S_Sales Org',
+  'account.filter.distributionChannel': 'S_Distribution Channel',
+
   'account.btn.unlink': 'S_UNLINK',
 
   'account.add.label': 'S_Add Accounts',
