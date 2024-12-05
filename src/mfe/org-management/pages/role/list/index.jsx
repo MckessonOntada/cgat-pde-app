@@ -43,7 +43,7 @@ function RolesList() {
         }
       />
 
-      {messageConfig.kind && messageConfig.primaryMessage && <Alert onClose={clearMessage} showTitle title={messageConfig.primaryMessage} type={messageConfig.secondaryMessage} />}
+      {messageConfig.kind && messageConfig.primaryMessage && <Alert onClose={clearMessage} description={messageConfig.primaryMessage} type={messageConfig.kind} />}
 
       {/* module body */}
       <div className="MCP-module-body">
