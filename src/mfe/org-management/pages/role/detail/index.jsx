@@ -11,6 +11,8 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import CommonUtils from '@src/util/CommonUtils.js';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import EmptyDataTable from '@src/components/EmptyTable';
 
 const roleDetail = () => {
   const { t } = useTranslate();
@@ -101,31 +103,35 @@ const roleDetail = () => {
           />
 
           <div className="MCP-panel-container grid grid-gap-16">
-            {Object.entries(groupedPermissions).map(([categoryKey, permissions]) => (
-              <div key={categoryKey} className="MCP-module-body permission-category">
-                <div className="subheader-text">{t(categoryKey)}</div>
-                <div className="permission-category">
-                  <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 permission-list">
-                    {permissions.map((permissionKey, idx) => {
-                      if (!PERMISSIONS_ENUM[categoryKey][permissionKey]) return null; // Validate if permission exists
+            {data?.permissions?.length > 0 ? (
+              Object.entries(groupedPermissions).map(([categoryKey, permissions]) => (
+                <div key={categoryKey} className="MCP-module-body permission-category">
+                  <div className="subheader-text">{t(categoryKey)}</div>
+                  <div className="permission-category">
+                    <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 permission-list">
+                      {permissions.map((permissionKey, idx) => {
+                        if (!PERMISSIONS_ENUM[categoryKey][permissionKey]) return null; // Validate if permission exists
 
-                      return (
-                        <React.Fragment key={idx}>
-                          <div className="flex items-center justify-between permission-item">
-                            <div className="permission-info">
-                              <h4>{t(`${categoryKey}.${permissionKey}`)}</h4>
-                              <p>{t(`${categoryKey}.${permissionKey}.DESCRIPTION`)}</p>
+                        return (
+                          <React.Fragment key={idx}>
+                            <div className="flex items-center justify-between permission-item">
+                              <div className="permission-info">
+                                <h4>{t(`${categoryKey}.${permissionKey}`)}</h4>
+                                <p>{t(`${categoryKey}.${permissionKey}.DESCRIPTION`)}</p>
+                              </div>
                             </div>
-                          </div>
-                          {/* Add a divider dynamically */}
-                          {idx % 2 === 0 && idx !== permissions.length - 1 && <div className="divider"></div>}
-                        </React.Fragment>
-                      );
-                    })}
+                            {/* Add a divider dynamically */}
+                            {idx % 2 === 0 && idx !== permissions.length - 1 && <div className="divider"></div>}
+                          </React.Fragment>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <EmptyDataTable image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('userManagement.messages.emptysubtitle')} />
+            )}
           </div>
         </div>
       </div>
