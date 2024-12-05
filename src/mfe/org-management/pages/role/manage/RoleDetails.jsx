@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Yup from 'yup';
-import { Stepper, Required, Button, Modal } from '@mckesson/mcp-component-library';
+import { Stepper, Required, Button, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
