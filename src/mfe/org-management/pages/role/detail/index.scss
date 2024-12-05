@@ -84,4 +84,7 @@
 .subheader-text {
   font-size: var(--brand-font-size--20);
   font-weight: var(--brand-font-weight-700);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

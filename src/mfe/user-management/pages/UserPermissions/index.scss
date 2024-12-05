@@ -1,4 +1,4 @@
- .container {
+.container {
   display: grid;
   padding: var(--spacing-03);
   border: 1px solid var(--brand-color-patient-primary-3);
@@ -9,7 +9,7 @@
   font-size: var(--brand-font-size--20);
   font-weight: var(--brand-font-weight-700);
 }
- 
+
 .buttonGroup {
   display: flex;
   width: 100%;
