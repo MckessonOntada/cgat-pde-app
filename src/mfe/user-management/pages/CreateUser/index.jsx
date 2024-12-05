@@ -28,8 +28,7 @@ const CreateUser = () => {
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alert, setAlert] = useState(null);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const [originalState, setOriginalState] = React.useState({});
-  const [formValues, setFormValues] = React.useState({});
+  const [isDirty, setIsDirty] = React.useState(false);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
 
   useEffect(() => {
@@ -60,12 +59,7 @@ const CreateUser = () => {
     queryFn: async () => {
       const url = !isPending ? `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}` : `${ApiRoutes.USERS_PROVISIONING()}/${userId}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-      const {name, address, contact} = res.data;
-      setOriginalState({
-        name,
-        address,
-        contact
-      })
+      
       return res.data;
     },
     enabled: isEdit || isPending || isBack,
@@ -207,8 +201,7 @@ const CreateUser = () => {
   };
 
   const handleCancel = () => {
-    const isSame = CommonUtils.deepEqual(formValues, originalState);
-    if (!isSame) {
+    if (isDirty) {
       if(isEdit){
         setModalSuccessCallback("details")
       }else {
@@ -270,10 +263,10 @@ const CreateUser = () => {
           handleSubmit(values);
           actions.setSubmitting(false);
         }}>
-        {({ values, isValid }) => {
+        {({ values, isValid, dirty }) => {
           React.useEffect(() => {
-            setFormValues({ ...values });
-          }, [values]);
+            setIsDirty(dirty);
+          }, [dirty]);
 
           return (
             <Form>
