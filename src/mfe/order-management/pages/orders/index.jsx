@@ -1,5 +1,5 @@
 import React from 'react';
-import { TabList, Button } from "@mckesson/mcp-component-library";
+import { TabList, Button, Heading } from "@mckesson/mcp-component-library";
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle.svg';
 import { useNavigate } from 'react-router-dom';
 import { routesConfig } from './../../routes/constants';
@@ -8,7 +8,7 @@ import { pendingData, submittedData } from './__mock__';
 import { useTranslate } from '@src/translations/useTranslation';
 import PageHeader from '@src/components/pageHeader';
 import ModuleHeader from '../../../../components/module-header';
-import { Breadcrumb, Heading} from '@src/components/breadCrumbs/Breadcrumbs';
+import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
 import FilterPanel from './FilterPanel';
 import { tabs, breadcrumbItems } from './constants';
 import OrderDataTable from './OrderDataTable';
