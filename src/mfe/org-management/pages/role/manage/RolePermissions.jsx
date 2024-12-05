@@ -160,7 +160,13 @@ const RolePermissions = () => {
           </Formik>
         </div>
       </div>
-      <DiscardChangesModal isOpen={Boolean(modalSuccessCallback)} onClose={() => setModalSuccessCallback(null)} onConfirm={handleNavigate} />
+      <DiscardChangesModal 
+        heading="Discard Changes"
+        description='You have changed role permissions. Do you still want to go back? Your changes will be discarded!'
+        isOpen={Boolean(modalSuccessCallback)} 
+        onClose={() => setModalSuccessCallback(null)} 
+        onConfirm={handleNavigate}
+      />
     </div>
   );
 };
