@@ -1,6 +1,5 @@
-import React from 'react';
-import * as Yup from 'yup';
-import { Stepper, Button, Modal } from '@mckesson/mcp-component-library';
+import React, { useEffect, useState } from 'react';
+import { Stepper, Button, Modal, Alert } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
@@ -34,7 +33,9 @@ const RolePermissions = () => {
   const { roleId } = useParams();
   const location = useLocation();
   const row = location.state.data || null;
-  const { setMessage } = useRole();
+  const { setMessage, messageConfig, clearMessage } = useRole();
+  const [alert, setAlert] = useState(null);
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [enabledPermissions, setEnabledPermissions] = React.useState(row?.permissions ? [...row.permissions] : []);
   const [inheritedRole, setInheritedRole] = React.useState(null);
@@ -46,6 +47,15 @@ const RolePermissions = () => {
       setModalSuccessCallback('list');
     } else navigate(isEdit ? `/organization/roles/${roleId}` : `/organization/${PATHS.roles}`);
   };
+
+  useEffect(() => {
+    if (isAlertVisible) {
+      const timer = setTimeout(() => {
+        setIsAlertVisible(false);
+      }, 10000);
+      return () => clearTimeout(timer); // Cleanup timer on unmount
+    }
+  }, [isAlertVisible]);
 
   const mutation = useMutation(
     async (data) => {
@@ -62,7 +72,7 @@ const RolePermissions = () => {
             setMessage(
               {
                 primaryMessage: t('orgManagement.messages.roleUpdate'),
-                messageKind: 'success'
+                kind: 'success'
               },
               10000
             );
@@ -70,7 +80,7 @@ const RolePermissions = () => {
             setMessage(
               {
                 primaryMessage: t('orgManagement.messages.newRoleCreation'),
-                messageKind: 'success'
+                kind: 'success'
               },
               10000
             );
@@ -81,6 +91,12 @@ const RolePermissions = () => {
       },
       onError: (error) => {
         console.error('Error posting data:', error);
+
+        setAlert({
+          type: 'error',
+          description: t('errors.default')
+        });
+        setIsAlertVisible(true);
       }
     }
   );
@@ -131,6 +147,8 @@ const RolePermissions = () => {
       </div>
 
       <ModuleHeader heading={<PageHeader heading={t('orgManagement.role.labelAddRole')} />} />
+      {/* {messageConfig.messageKind && messageConfig.primaryMessage && <Alert onClose={clearMessage} description={messageConfig.primaryMessage} type={messageConfig.messageKind} />} */}
+      {isAlertVisible && <Alert type={alert.type} title={alert.title} description={alert.description} />}
 
       <div className="MCP-module-body">
         {!isEdit && <Stepper activeIndex={2} dividerText="of" mobileLabel={t('orgManagement.role.labelStep')} stepHeaders={forms.map((f) => ({ label: f.label }))} />}
