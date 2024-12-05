@@ -59,22 +59,11 @@ const FileInput = ({ onFileSelect, label, initialLogo }) => {
     <div>
       <div className="label-box">
         <p className="label">{label}</p>
-        <Required />
       </div>
 
-      <input
-        type="file"
-        onChange={handleFileChange}
-        style={{ display: 'none' }}
-        ref={fileInputRef}
-      />
+      <input type="file" onChange={handleFileChange} style={{ display: 'none' }} ref={fileInputRef} />
 
-      <label
-        htmlFor="fileInput"
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        className="label-input">
+      <label htmlFor="fileInput" onDrop={handleDrop} onDragOver={handleDragOver} onDragLeave={handleDragLeave} className="label-input">
         <div>
           <img src={Upload} alt="Upload Icon" />
         </div>
@@ -87,33 +76,19 @@ const FileInput = ({ onFileSelect, label, initialLogo }) => {
           <Divider className="divider-style" />
         </div>
 
-        <Button
-          Icon={AddCircleBold}
-          className="button-icon"
-          variant="secondary"
-          onClick={handleBrowseClick}
-          size={'md'}>
+        <Button Icon={AddCircleBold} className="button-icon" variant="secondary" onClick={handleBrowseClick} size={'md'}>
           {t('file.browse.logo')}
         </Button>
 
         {file && (
           <div className="preview-container">
-            {file.type.startsWith('image/') && (
-              <img src={URL.createObjectURL(file)} alt="Preview" className="image-preview" />
-            )}
+            {file.type.startsWith('image/') && <img src={URL.createObjectURL(file)} alt="Preview" className="image-preview" />}
             <div className="file-info">
               <p>{file.name}</p>
               <p>{(file.size / 1024).toFixed(2)} KB</p>
             </div>
 
-            <Button
-              Icon={Close}
-              className="remove-button"
-              variant="tertiary"
-              onClick={handleClearLogo}
-              iconButton={true}
-              size={'md'}
-            />
+            <Button Icon={Close} className="remove-button" variant="tertiary" onClick={handleClearLogo} iconButton={true} size={'md'} />
           </div>
         )}
       </label>

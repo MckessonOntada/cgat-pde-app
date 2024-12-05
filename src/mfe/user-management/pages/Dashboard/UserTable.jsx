@@ -142,7 +142,6 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       id: 'role',
       name: t('userManagement.table.role'),
       selector: (row) => row.contact.role.name || '',
-      sortable: true,
       center: true,
       wrap: true,
       cell: (props) =>
@@ -159,7 +158,6 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       id: 'status',
       name: t('userManagement.table.status'),
       selector: 'status',
-      sortable: true,
       center: true,
       cell: (props) => <div>{activeTab === 'PENDING REQUESTS' ? <Badge text="Pending" type="info-default" /> : props.isActive ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />}</div>
     },
@@ -167,7 +165,6 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       id: 'dataAdded',
       name: t('userManagement.table.dateAdded'),
       selector: 'date_added',
-      sortable: true,
       sortBy: (props) => (props.updatedAt ? props.updatedAt : props.createdAt),
       wrap: true,
       cell: (props) => (props.updatedAt ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM-DD-YYYY') : props.createdAt ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY') : 'N/A')
