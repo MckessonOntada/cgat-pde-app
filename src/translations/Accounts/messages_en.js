@@ -7,6 +7,10 @@ export const AccountEN = {
   'account.identifier': 'CGAT Identifier',
   'account.action': 'Action',
   'account.selected.account': 'Selected Account',
+  // filters
+  'account.filter.search': 'Search by Account Number, Name',
+  'account.filter.salesOrg': 'Sales Org',
+  'account.filter.distributionChannel': 'Distribution Channel',
 
   'account.btn.unlink': 'UNLINK',
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CustomDataTable, Button, Badge } from '@mckesson/mcp-component-library';
+import { CustomDataTable, Button, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useRole } from '../../../context/RoleContext';
 import { createColumns } from './RoleTableColumns';
@@ -14,8 +14,7 @@ const RolesDataTable = () => {
   const [selectedRows, setSelectedRows] = useState(null);
   const columns = createColumns(t, selectedRows, setSelectedRows);
   const { applySort } = useRole();
-  const { data, paginationConfig, setPageNumber, refreshData, setMessage } = useRole();
-
+  const { data, paginationConfig, setPageNumber, isLoading, refreshData, setMessage } = useRole();
   const {mutate: deleteRole} = useMutation({
     mutationFn: async (id) => {
         const response = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}/${id}`, httpVerb.DELETE);
@@ -60,7 +59,11 @@ const RolesDataTable = () => {
         </div>
       )}
 
-      <CustomDataTable
+      {isLoading ? (
+        <div className="dashboard-loader">
+          <Loader variant="circular" />
+        </div>
+      ) : (<CustomDataTable
         id="my-data-table"
         type="normal"
         columns={columns}
@@ -79,7 +82,7 @@ const RolesDataTable = () => {
         noDataComponent={<EmptyDataTable image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('orgManagement.messages.roleEmptyTableSubtitle')} />}
         stickyHeader
         responsive
-      />
+      />)}
     </div>
   );
 };

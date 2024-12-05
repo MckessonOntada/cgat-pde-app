@@ -2,12 +2,10 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as pencil_write_edit } from '@src/assets/image/pencil-write-edit.svg';
-import { Badge, Button, Switch, AutoSuggestSearch, Alert } from '@mckesson/mcp-component-library';
+import { Badge, Button, Switch, Alert } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
-import AccountsList from '@src/components/Accounts/AccountsList';
-import arrow_right from '@src/assets/image/arrow_right.svg';
 import { PATHS } from '../../routes/constants';
 import ModuleHeader from '@src/components/module-header';
 import { useQuery } from 'react-query';
@@ -19,6 +17,8 @@ import CommonUtils from '@src/util/CommonUtils.js';
 import { UserAccountsProvider } from '../../context/UserAccountsContext';
 import UserAccounts from './UserAccounts';
 import { RoutePaths } from '@src/routes/constants';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import EmptyDataTable from '@src/components/EmptyTable';
 
 function getbgColorOnRole(Role) {
   switch (Role) {
@@ -205,31 +205,35 @@ const UserDetail = () => {
         />
 
         <div className="MCP-panel-container grid grid-gap-16">
-          {Object.entries(groupedPermissions).map(([categoryKey, permissions]) => (
-            <div key={categoryKey} className="MCP-module-body permission-category">
-              <div className="subheader-text">{t(categoryKey)}</div>
-              <div className="permission-category">
-                <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 permission-list">
-                  {permissions.map((permissionKey, idx) => {
-                    if (!PERMISSIONS_ENUM[categoryKey][permissionKey]) return null; // Validate if permission exists
+          {data?.permissions?.length > 0 ? (
+            Object.entries(groupedPermissions).map(([categoryKey, permissions]) => (
+              <div key={categoryKey} className="MCP-module-body permission-category">
+                <div className="subheader-text">{t(categoryKey)}</div>
+                <div className="permission-category">
+                  <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 permission-list">
+                    {permissions.map((permissionKey, idx) => {
+                      if (!PERMISSIONS_ENUM[categoryKey][permissionKey]) return null; // Validate if permission exists
 
-                    return (
-                      <React.Fragment key={idx}>
-                        <div className="flex items-center justify-between permission-item">
-                          <div className="permission-info">
-                            <h4>{t(`${categoryKey}.${permissionKey}`)}</h4>
-                            <p>{t(`${categoryKey}.${permissionKey}.DESCRIPTION`)}</p>
+                      return (
+                        <React.Fragment key={idx}>
+                          <div className="flex items-center justify-between permission-item">
+                            <div className="permission-info">
+                              <h4>{t(`${categoryKey}.${permissionKey}`)}</h4>
+                              <p>{t(`${categoryKey}.${permissionKey}.DESCRIPTION`)}</p>
+                            </div>
                           </div>
-                        </div>
-                        {/* Add a divider dynamically */}
-                        {idx % 2 === 0 && idx !== permissions.length - 1 && <div className="divider"></div>}
-                      </React.Fragment>
-                    );
-                  })}
+                          {/* Add a divider dynamically */}
+                          {idx % 2 === 0 && idx !== permissions.length - 1 && <div className="divider"></div>}
+                        </React.Fragment>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <EmptyDataTable image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('userManagement.messages.emptysubtitle')} />
+          )}
         </div>
 
         {!isSystemAdminView && (
