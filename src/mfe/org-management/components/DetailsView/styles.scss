@@ -1,53 +1,55 @@
 // OrgDetails Component Styling
 
 .view-container {
-    border: 1px solid var(--brand-color-patient-primary-3);
-    padding: var(--spacing-03);
-    display: grid;
-    gap: var(--spacing-03);
-    border-radius: var(--spacing-02);
-  }
-  
-  .org-box {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .org-logo-box {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-03);
-  }
-  
-  .logo-img {
-    width: 56px;
-    height: 56px;
-    border-radius: var(--brand-border-radius--5);
-  }
-  
-  .org-label {
-    font-size: 24px;
-    line-height: 28px;
-  }
-  
-  .contact-box {
-    display: flex;
-    gap: var(--spacing-03);
-  }
-  
-  .contact-label {
-    font-size: 18px;
-    line-height: 22px;
-  }
-  
-  .contact-heading {
-    font-size: 14px;
-    line-height: 18px;
-    color: #767e94;
-  }
-  
-  .contact-details {
-    font-size: 18px;
-    line-height: 20px;
-  }
-  
+  border: 1px solid var(--brand-color-patient-primary-3);
+  padding: var(--spacing-03);
+  display: grid;
+  gap: var(--spacing-03);
+  border-radius: var(--spacing-02);
+}
+
+.org-box {
+  display: flex;
+  justify-content: space-between;
+}
+
+.org-logo-box {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-03);
+}
+
+.logo-img {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--brand-border-radius--5);
+}
+
+.org-label {
+  font-size: 24px;
+  line-height: 28px;
+}
+
+.contact-box {
+  display: flex;
+  gap: var(--spacing-03);
+}
+
+.contact-label {
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.contact-heading {
+  font-size: 14px;
+  line-height: 18px;
+  color: #767e94;
+}
+
+.contact-details {
+  font-size: 18px;
+  line-height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

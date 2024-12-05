@@ -1,4 +1,4 @@
-@use "../../../../assets/styles/abstracts/mixins"; 
+@use "../../../../assets/styles/abstracts/mixins";
 
 .userCardContainer {
   display: grid;
@@ -7,14 +7,13 @@
   border: 1px solid var(--brand-color-patient-primary-3);
   border-radius: var(--brand-border-radius--6);
 }
- 
+
 .view_label {
-  font-size: var( --brand-font-size--small);
+  font-size: var(--brand-font-size--small);
   line-height: var(--spacing-04);
-  color: #767E94;  // Color is missing in Design System
+  color: #767e94; // Color is missing in Design System
 }
 
- 
 .user-header {
   display: flex;
   justify-content: space-between;
@@ -26,16 +25,18 @@
   align-items: center;
   gap: var(--spacing-02);
 }
- 
 
 .label-text {
   font-size: var(--brand-font-size--default);
   font-weight: var(--brand-font-weight-500);
   line-height: var(--brand-line-height--medium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.py2{
-padding-top: var(--spacing-02);
+.py2 {
+  padding-top: var(--spacing-02);
 }
 
 .user-status {
@@ -51,18 +52,16 @@ padding-top: var(--spacing-02);
   border: 1px solid var(--brand-color-patient-primary-3);
   border-radius: var(--brand-border-radius--6);
 }
- 
- 
 
 @media (max-width: 600px) {
   .user-header {
-      flex-direction: column; /* Stack items vertically */
-      align-items: flex-start; /* Align items to the start for better readability */
-      gap: var(--spacing-03);
-      white-space: nowrap;
+    flex-direction: column; /* Stack items vertically */
+    align-items: flex-start; /* Align items to the start for better readability */
+    gap: var(--spacing-03);
+    white-space: nowrap;
   }
 
   .user-info {
-      width: 100%; /* Ensure items take full width if needed */
+    width: 100%; /* Ensure items take full width if needed */
   }
 }

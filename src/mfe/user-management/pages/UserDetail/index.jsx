@@ -142,7 +142,7 @@ const UserDetail = () => {
         <div className="MCP-panel-container">
           <div className="user-header">
             <div className="user-info">
-              <div className=" subheader-text">{`${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName} `}</div>
+              <div className="subheader-text">{`${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName} `}</div>
               <Badge text={data?.role?.name} type={getbgColorOnRole(data?.role?.name)} />
             </div>
             <div className="user-status">
