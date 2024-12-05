@@ -104,8 +104,12 @@ export default function ViewOrganization() {
   };
 
   const handleCancel = () => {
-    setSelectedAccounts([]);
-    setAddNewAccounts(false);
+    if (isView) {
+      setSelectedAccounts([]);
+      setAddNewAccounts(false);
+    } else {
+      navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: data }, true);
+    }
   };
 
   const onRemoveAccount = useCallback(
@@ -175,7 +179,7 @@ export default function ViewOrganization() {
       {addNewAccounts && (
         <div className="btn-box">
           <Button variant="secondary" onClick={handleCancel}>
-            {t('orgManagement.button.cancel')}
+            {t('orgManagement.button.back')}
           </Button>
           <Button disabled={selectedAccounts?.length <= 0} onClick={addNewAccountsClick}>
             {t(isView ? 'orgManagement.add.account' : selectedCount > 0 ? 'orgManagement.create_org' : 'orgManagement.add.viewsummary')}

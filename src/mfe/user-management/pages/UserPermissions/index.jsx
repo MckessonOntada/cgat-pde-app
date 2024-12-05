@@ -132,7 +132,7 @@ const UserPermissions = () => {
         validateOnChange={false}
         validateOnBlur={true}>
         {({ values, setFieldValue, initialValues, isValid }) => {
-          const isDirty = isEdit || isFormValuesChanged(initialValues, values);
+          const isDirty = (isEdit && values.roleId) || isFormValuesChanged(initialValues, values);
 
           return (
             <Form>
