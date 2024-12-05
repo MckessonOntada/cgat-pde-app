@@ -98,7 +98,7 @@ export default function Dashboard() {
     <div className="MCP-module-wrapper" id={debugIds(ID.TABLE, ID.CONTAINER)}>
       <Breadcrumb items={breadcrumbItems} />
       <ModuleHeader
-        heading={<p className="primaryHeading">{t(isSystemAdminView ? 'userManagement.header.systemadmin.label' : 'userManagement.header.label')}</p>}
+        heading={<h1 className="primaryHeading">{t(isSystemAdminView ? 'userManagement.header.systemadmin.label' : 'userManagement.header.label')}</h1>}
         controls={
           <div className="controls">
             <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createUser}`)}>
@@ -118,7 +118,7 @@ export default function Dashboard() {
         <div className="MCP-panel-container">
           <Filters showRoleDropdown={true} showStatusDropdown={true} />
         </div>
-        <p className="secondaryHeading"> {t(isSystemAdminView ? 'userManagement.header.systemadminlisting.label' : 'userManagement.header.listing.label')}</p>
+        <h2 className="secondaryHeading"> {t(isSystemAdminView ? 'userManagement.header.systemadminlisting.label' : 'userManagement.header.listing.label')}</h2>
         {!isSystemAdminView && <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />}
         <div className="userList">
           {activeTab === 'ACTIVE USERS' && <UserTable selectableRows={true} onActionSuccess={handleSuccess} />}

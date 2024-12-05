@@ -9,9 +9,9 @@ const DiscardChangesModal = ({ isOpen, onClose, onConfirm }) => {
             onClose={onClose}
             modalTitle="Discard Changes?"
             modalBody={
-                <div className="tertiaryHeading">
+                <h3 className="tertiaryHeading">
                     You have changed role permissions. Do you still want to go back? Your changes will be discarded!
-                </div>
+                </h3>
             }
             modalFooter={
                 <div className="controls">

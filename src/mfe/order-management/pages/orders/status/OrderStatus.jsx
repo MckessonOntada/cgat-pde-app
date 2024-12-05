@@ -41,8 +41,8 @@ const OrderStatus = () => {
                             <IconTick />
                         </div>
                         <div className={styles.content}>
-                            <p className={'primaryHeading'}>{t('headings.orderSubmitted')}</p>
-                            <p className={'tertiaryHeading'}>{t('messages.orderSuccessApprovalPending')}</p>
+                            <h3 className={'primaryHeading'}>{t('headings.orderSubmitted')}</h3>
+                            <h5 className={'tertiaryHeading'}>{t('messages.orderSuccessApprovalPending')}</h5>
                         </div>
                     </div>
                 }
@@ -63,7 +63,7 @@ const OrderStatus = () => {
                 </div>
                 <div className="MCP-panel-container">
                     <div className={styles.flex}>
-                        <p className={styles.customSecondaryHeading}>{t('labels.whatToExpect')}</p>
+                        <h4 className={styles.customSecondaryHeading}>{t('labels.whatToExpect')}</h4>
                         <div className={styles.statusBreadcrumb}>
                             <StatusBreadcrumb />
                         </div>

@@ -147,7 +147,7 @@ const SignUp = () => {
       <PrimaryHeader />
       <div className={mainLayoutStyles.home}>
         <div className="MCP-module-wrapper py3">
-          <ModuleHeader heading={<p className="primaryHeading">{t('forms.headings.newUserRegistration')}</p>} />
+          <ModuleHeader heading={<h1 className="primaryHeading">{t('forms.headings.newUserRegistration')}</h1>} />
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}

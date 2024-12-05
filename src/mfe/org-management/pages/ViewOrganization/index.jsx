@@ -125,7 +125,7 @@ export default function ViewOrganization() {
           {t('orgManagement.back.organization')}
         </Button>
       </div>
-      {!addNewAccounts && <ModuleHeader heading={<p className="primaryHeading">{t('orgManagement.create_org.org-details')}</p>} />}
+      {!addNewAccounts && <ModuleHeader heading={<h1 className="primaryHeading">{t('orgManagement.create_org.org-details')}</h1>} />}
       {!isView && (
         <div className="stepper">
           <Stepper
@@ -148,7 +148,7 @@ export default function ViewOrganization() {
         </div>
       )}
       <ModuleHeader
-        heading={<p className="primaryHeading">{addNewAccounts ? t('orgManagement.select_account') : t('orgManagement.link')}</p>}
+        heading={<h1 className="primaryHeading">{addNewAccounts ? t('orgManagement.select_account') : t('orgManagement.link')}</h1>}
         controls={
           !addNewAccounts && (
             <div className="controls">

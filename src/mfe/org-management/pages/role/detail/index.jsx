@@ -64,7 +64,7 @@ const roleDetail = () => {
 
         <div className="MCP-module-body">
           <ModuleHeader
-            heading={<p className="primaryHeading">{t('orgManagement.role.labelRolesDetails')}</p>}
+            heading={<h1 className="primaryHeading">{t('orgManagement.role.labelRolesDetails')}</h1>}
             controls={
               <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`edit-role`, { state: data })}>
                 {t('userManagement.button.edit')}
@@ -75,7 +75,7 @@ const roleDetail = () => {
           <div className="MCP-panel-container">
             <div className="role-header">
               <div className="role-info">
-                <div className="secondaryHeading">{data?.name}</div>
+                <h2 className="secondaryHeading">{data?.name}</h2>
               </div>
               <div className="user-status">
                 <span className="view_label">Created On:</span>
@@ -92,7 +92,7 @@ const roleDetail = () => {
           </div>
 
           <ModuleHeader
-            heading={<p className="primaryHeading">{t('userManagement.header.view.permissions_granted')}</p>}
+            heading={<h1 className="primaryHeading">{t('userManagement.header.view.permissions_granted')}</h1>}
             controls={
               <div className="controls">
                 <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`permissions`, { state: { data, isEdit: true } })}>

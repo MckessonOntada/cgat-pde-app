@@ -131,7 +131,7 @@ const UserDetail = () => {
 
       <div className="MCP-module-body">
         <ModuleHeader
-          heading={<p className="primaryHeading">{t('userManagement.header.view.edit_user')}</p>}
+          heading={<h1 className="primaryHeading">{t('userManagement.header.view.edit_user')}</h1>}
           controls={
             <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`../${PATHS.editUser}/${userId}`, { state: { isEdit: true } })}>
               {t('userManagement.button.edit')}
@@ -194,7 +194,7 @@ const UserDetail = () => {
         </div>
 
         <ModuleHeader
-          heading={<p className="primaryHeading">{t('userManagement.header.view.permissions_granted')}</p>}
+          heading={<h1 className="primaryHeading">{t('userManagement.header.view.permissions_granted')}</h1>}
           controls={
             <div className="controls">
               <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`../${PATHS.userPermissions}/${userId}`, { state: { isEdit: true, permissionsData: data } })}>
@@ -239,7 +239,7 @@ const UserDetail = () => {
         {!isSystemAdminView && (
           <div className="MCP-module-body">
             <ModuleHeader
-              heading={<p className="primaryHeading">{t('userManagement.header.view.linked_accounts')}</p>}
+              heading={<h1 className="primaryHeading">{t('userManagement.header.view.linked_accounts')}</h1>}
               controls={
                 <div className="controls">
                   <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`../${PATHS.addAccounts}/${userId}`, { state: { isEdit: true } })}>

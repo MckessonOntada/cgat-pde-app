@@ -69,7 +69,7 @@ const OrderIndex = () => {
                         <FilterPanel />
                     </div>
                     <div className="MCP-table-wrapper">
-                        <p className="secondaryHeading">{t('headings.orderListing')}</p>
+                        <h2 className="secondaryHeading">{t('headings.orderListing')}</h2>
                         <OrderDataTable />
                     </div>
                 </div>

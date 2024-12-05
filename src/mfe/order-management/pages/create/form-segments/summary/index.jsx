@@ -70,7 +70,7 @@ const Summary = () => {
                 />
                 <div className={'MCP-module-wrapper'}>
                     <ModuleHeader
-                        heading={<p className='secondaryHeading'>{t('labels.summary')}</p>}
+                        heading={<h4 className='secondaryHeading'>{t('labels.summary')}</h4>}
                     />
                     <div className={"MCP-module-body"}>
                         <div className="MCP-panel-container">

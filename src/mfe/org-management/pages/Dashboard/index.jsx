@@ -47,7 +47,7 @@ export default function Dashboard() {
         <Breadcrumb items={breadcrumbItems} />
 
         <ModuleHeader
-          heading={<p className="primaryHeading">{t('orgManagement.header.label')}</p>}
+          heading={<h1 className="primaryHeading">{t('orgManagement.header.label')}</h1>}
           controls={
             <div className="controls">
               <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createOrg}`)}>

@@ -35,7 +35,7 @@ function RolesList() {
 
       {/* module header */}
       <ModuleHeader
-        heading={<p className="primaryHeading">{t('orgManagement.role.headingManageOrder')}</p>}
+        heading={<h1 className="primaryHeading">{t('orgManagement.role.headingManageOrder')}</h1>}
         controls={
           <Button Icon={AddCircleFilled} size="md" onClick={handleOnAddRoleClick}>
             {t('orgManagement.role.labelAddRole')}
@@ -52,7 +52,7 @@ function RolesList() {
             <FilterPanel />
           </div>
           <div className="MCP-table-wrapper">
-            <ModuleHeader heading={<p className="secondaryHeading">{t('orgManagement.role.labelRolesListing')}</p>} />
+            <ModuleHeader heading={<h2 className="secondaryHeading">{t('orgManagement.role.labelRolesListing')}</h2>} />
             <RolesDataTable />
           </div>
         </div>

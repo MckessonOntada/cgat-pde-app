@@ -84,7 +84,7 @@ function TherapySelection() {
                     <div className={styles.wrapper}>
                         <div className="MCP-panel-container">
                             <ModuleHeader
-                                heading={<p className='secondaryHeading'>{t('labels.therapySelection')}</p>}
+                                heading={<h4 className='secondaryHeading'>{t('labels.therapySelection')}</h4>}
                             />
                             <FilterPanel />
                             <TherapyDataTable />

@@ -90,7 +90,7 @@ const AddAccounts = () => {
         </Button>
       </div>
 
-      <ModuleHeader heading={<p className="primaryHeading">{isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}</p>} />
+      <ModuleHeader heading={<h1 className="primaryHeading">{isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}</h1>} />
 
       {!isEdit && (
         <div className="stepper">

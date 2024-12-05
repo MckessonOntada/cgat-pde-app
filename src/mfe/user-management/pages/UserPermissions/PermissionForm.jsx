@@ -86,7 +86,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
       )}
 
       <ModuleHeader
-        heading={<p className="tertiaryHeading-24">{t('userManagement.user_permissions.managePermissions')}</p>}
+        heading={<h3 className="tertiaryHeading-24">{t('userManagement.user_permissions.managePermissions')}</h3>}
         controls={
           !isSystemAdminView && (
             <div className="controls">

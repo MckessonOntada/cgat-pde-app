@@ -156,7 +156,7 @@ const RoleDetails = () => {
                   <div className="MCP-module-wrapper">
                     <div className="MCP-panel-container">
                       <ModuleHeader
-                        heading={<p className="secondaryHeading">{t('orgManagement.role.headingPermissionDetails')}</p>}
+                        heading={<h2 className="secondaryHeading">{t('orgManagement.role.headingPermissionDetails')}</h2>}
                         controls={
                           <p>
                             <Required /> {t('orgManagement.create_org.required')}

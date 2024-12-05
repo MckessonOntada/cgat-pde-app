@@ -93,7 +93,7 @@ const UserPermissions = () => {
           {t('userManagement.user.backmessage')}
         </Button>
       </div>
-      <ModuleHeader heading={<p className="primaryHeading">{t('userManagement.create_user')}</p>} />
+      <ModuleHeader heading={<h1 className="primaryHeading">{t('userManagement.create_user')}</h1>} />
 
       {!isEdit && (
         <div className="stepper">
