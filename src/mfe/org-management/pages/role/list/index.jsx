@@ -47,8 +47,7 @@ function RolesList() {
                 messageConfig.kind && messageConfig.primaryMessage &&
                 <Alert
                     onClose={clearMessage}
-                    showTitle
-                    title={messageConfig.primaryMessage}
+                    description={messageConfig.primaryMessage}
                     type={messageConfig.kind}
                 />
             }
