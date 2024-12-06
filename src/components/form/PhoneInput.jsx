@@ -1,14 +1,14 @@
 import React from 'react';
-import { MaskedInput, TextError, Label, Required } from '@mckesson/mcp-component-library'; 
-import './Components.scss'
+import { MaskedInput, TextError, Label, Required } from '@mckesson/mcp-component-library';  
+import './Components.scss';
 import { getNestedValue } from './util';
 
 export default function PhoneInput(props) {
-  const { field, form, label } = props;
+  const { field, form, label, ...rest } = props;
 
   // Determine if the field has an error and is touched
   const errorMessage = getNestedValue(form.errors, field.name);
-  const isFieldTouched = getNestedValue(form.touched, field.name); 
+  const isFieldTouched = getNestedValue(form.touched, field.name);
 
   const formatPhoneNumber = (phoneNumber) => {
     if (phoneNumber) {
@@ -17,24 +17,23 @@ export default function PhoneInput(props) {
     }
     return "";
   };
-  //useeffect delay
   return (
     <div className='grid align-PhoneInput'>
-      <Label htmlFor="phone_no" className="label-heading">
+      <Label htmlFor={`${field.name}`} className="label-heading">
         {label}
         <Required id="Required">
           Required
         </Required>
       </Label>
       <MaskedInput
-        {...props}
-        id="phone_no"
-        mask="(XXX) XXX-XXXX"
-        onChangeFn={value => form.setFieldValue(field.name, value)}
-        onBlurFn={() => form.setFieldTouched(field.name, true)}
-        value={formatPhoneNumber(field.value)}
+        {...rest}
+        id={`${field.name}`}
+        mask="(XXX) XXX-XXXX" 
+        onChangeFn={value => form.setFieldValue(field.name, value)} 
+        onBlurFn={() => form.setFieldTouched(field.name, true)} 
+        value={formatPhoneNumber(field.value)}  
         dataTestId="mobile-input"
-        useUnmaskedValue={false}
+        useUnmaskedValue={false} 
         className={`phoneInput ${form.errors[field.name] && form.touched[field.name] ? 'outline-error' : ''}`}
         errorMessage={form.errors[field.name] || ''}
       />
