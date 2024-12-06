@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Alert, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle.svg';
 import ModuleHeader from '@src/components/module-header';
@@ -23,11 +23,13 @@ const breadcrumbItems = [
 function RolesList() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { messageConfig, clearMessage } = useRole();
+  const { messageConfig, clearMessage, clearFilters } = useRole();
   const handleOnAddRoleClick = () => {
     navigate(PATHS.createRole);
   };
-
+  useEffect(() => {
+    clearFilters();
+  }, []);
   return (
     <div className="MCP-module-wrapper">
       {/* Breadcrumb */}
