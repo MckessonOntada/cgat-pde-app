@@ -32,9 +32,7 @@ const Login = () => {
       //Fetching organization details if the loggedin user is not system admin.
       if (!AuthUtils.isSystemAdmin()) {
         const _practiceId = AuthUtils.getPracticeId();
-        console.log('post login method..', _practiceId);
         const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}/${_practiceId}`, httpVerb.GET, {});
-        console.log('get response...', res);
         if (res?.data) {
           setOrganization(res.data);
         }
@@ -146,7 +144,6 @@ const Login = () => {
         sessionStorage.setItem('APP_AUTH_TOKEN', `${accessToken.tokenType} ${accessToken.accessToken}`);
 
         const decodedResponse = await CommonService.getJwtDecode();
-        console.log('decodedResponse', decodedResponse);
         const roles = decodedResponse['roles'];
         const username = decodedResponse['userName'];
         const userId = decodedResponse['userId'];

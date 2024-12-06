@@ -4,8 +4,9 @@ import React from 'react';
 import { Button } from '@mckesson/mcp-component-library';
 
 const ProtectedRoute = (props) => {
-  console.log('userPermissions.....1PR', props);
-  if (!AuthUtils.userHasRoutePermission(props.permissions)) {
+  const { isDashboard = false, permissions } = props;
+
+  if (!isDashboard && !AuthUtils.userHasRoutePermission(permissions)) {
     return (
       <ErrorComponent
         variant="center"

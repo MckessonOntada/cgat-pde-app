@@ -32,9 +32,26 @@ function MainLayout() {
           <div className={styles.routeContent} id={debugIds(ID.HOME, ID.ROUTE_CONTENT)}>
             <Routes className={styles.routes}>
               {AppRoutes.routes.map((route, idx) => {
-                return route.element ? <Route key={idx} path={route.path} element={<route.element />} /> : null;
+                return route.element ? (
+                  <Route
+                    key={idx}
+                    path={route.path}
+                    element={
+                      <ProtectedRoute isDashboard={route.isDashboard}>
+                        <route.element />
+                      </ProtectedRoute>
+                    }
+                  />
+                ) : null;
               })}
-              <Route path={'orders/*'} element={<OrderManagementEntryPoint />} />
+              <Route
+                path={'orders/*'}
+                element={
+                  <ProtectedRoute permissions={routePermissionConfig.orders}>
+                    <OrderManagementEntryPoint />
+                  </ProtectedRoute>
+                }
+              />
 
               <Route
                 path={AppRoutes.pathUserManagement}
@@ -61,7 +78,7 @@ function MainLayout() {
                 />
               </Route>
               <Route
-                path={AppRoutes.pathOrgManagement}
+                path={'/organization'}
                 element={
                   <ProtectedRoute permissions={routePermissionConfig.organization}>
                     <Outlet />
@@ -84,9 +101,16 @@ function MainLayout() {
                   }
                 />
               </Route>
-              <Route path={'/record/*'} element={<PaymentInvoices />} />
               <Route
-                path={AppRoutes.pathSystemAdminManagement}
+                path={'/record/*'}
+                element={
+                  <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
+                    <PaymentInvoices />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path={'/system-admin'}
                 element={
                   <ProtectedRoute permissions={routePermissionConfig.systemAdmin}>
                     <Outlet />
