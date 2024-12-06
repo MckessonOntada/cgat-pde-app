@@ -210,11 +210,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
         </div>
       )}
 
-      {isLoading ? (
-        <div className="dashboard-loader">
-          <Loader variant="circular" />
-        </div>
-      ) : (
+      
         <CustomDataTable
           type={'normal'}
           columns={columns}
@@ -231,9 +227,8 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
           stickyHeader
           responsive
           pagination={true}
-          noDataComponent={<EmptyDataTable image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('orgManagement.messages.userEmptyTableSubtitle')} />}
+          noDataComponent={<EmptyDataTable isLoading={isLoading} image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('orgManagement.messages.userEmptyTableSubtitle')} />}
         />
-      )}
       <Modal
         {...{
           id: 'xxxs-modal',

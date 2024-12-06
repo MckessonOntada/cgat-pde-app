@@ -47,26 +47,28 @@ const RolesDataTable = () => {
     setSelectedRows(selectedRows.map((row) => row.id));
   };
 
-
   const handleOnUserConfirmation = () => {
-    const state = {}
+    const state = {};
     state.title = 'Deactivate role?';
     state.body = 'Do you want to deactivate this role?';
     state.footer = (
       <div className="controls">
         <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
-            Cancel
+          Cancel
         </Button>
-        <Button size="md" variant="primary" onClick={() => {
-          deleteRole(selectedRows);
-          dispatch(closeModal())
-        }}>
-            Okay
+        <Button
+          size="md"
+          variant="primary"
+          onClick={() => {
+            deleteRole(selectedRows);
+            dispatch(closeModal());
+          }}>
+          Okay
         </Button>
       </div>
-    )
+    );
     dispatch(openModal(state));
-  }
+  };
 
   return (
     <div>
@@ -79,32 +81,26 @@ const RolesDataTable = () => {
         </div>
       )}
 
-      {isLoading ? (
-        <div className="dashboard-loader">
-          <Loader variant="circular" />
-        </div>
-      ) : (
-        <CustomDataTable
-          id="my-data-table"
-          type="normal"
-          columns={columns}
-          data={data}
-          onSortIconClick={handleSort}
-          currentPage={paginationConfig.pageNumber}
-          totalPageCount={paginationConfig.totalPages}
-          pagination={true}
-          handleChangePage={(_event, newPageIndex) => setPageNumber(newPageIndex)}
-          totalRocords={paginationConfig.totalElements} // Corrected typo here
-          recordsPerPage={paginationConfig.pageSize}
-          paginationTotalRecorsMessage={'results'}
-          paginationRecordsPerPageMessage={`per page`}
-          selectableRowsHeader={false}
-          selectedRowId={selectedRows}
-          noDataComponent={<EmptyDataTable image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('orgManagement.messages.roleEmptyTableSubtitle')} />}
-          stickyHeader
-          responsive
-        />
-      )}
+      <CustomDataTable
+        id="my-data-table"
+        type="normal"
+        columns={columns}
+        data={data}
+        onSortIconClick={handleSort}
+        currentPage={paginationConfig.pageNumber}
+        totalPageCount={paginationConfig.totalPages}
+        pagination={true}
+        handleChangePage={(_event, newPageIndex) => setPageNumber(newPageIndex)}
+        totalRocords={paginationConfig.totalElements} // Corrected typo here
+        recordsPerPage={paginationConfig.pageSize}
+        paginationTotalRecorsMessage={'results'}
+        paginationRecordsPerPageMessage={`per page`}
+        selectableRowsHeader={false}
+        selectedRowId={selectedRows}
+        noDataComponent={<EmptyDataTable isLoading={isLoading} image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('orgManagement.messages.roleEmptyTableSubtitle')} />}
+        stickyHeader
+        responsive
+      />
     </div>
   );
 };

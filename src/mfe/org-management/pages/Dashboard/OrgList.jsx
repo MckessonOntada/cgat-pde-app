@@ -85,7 +85,7 @@ const OrgList = () => {
             onClick={() => {
               handleClick(row);
             }}>
-              <EclipsesTextcss str={row.name} maxWidth={240} />
+            <EclipsesTextcss str={row.name} maxWidth={240} />
           </Link>
         </div>
       ),
@@ -106,9 +106,11 @@ const OrgList = () => {
     {
       id: 'location',
       name: t('orgManagement.table.location'),
-      cell: (row) => (<div>
-        <EclipsesTextcss str={location(row.address)} maxWidth={240} />
-      </div>),
+      cell: (row) => (
+        <div>
+          <EclipsesTextcss str={location(row.address)} maxWidth={240} />
+        </div>
+      ),
       sortable: true,
       sortKey: 'id',
       width: '280px',
@@ -187,29 +189,23 @@ const OrgList = () => {
         </div>
       )}
 
-      {isLoading ? (
-        <div className="dashboard-loader">
-          <Loader variant="circular" />
-        </div>
-      ) : (
-        <CustomDataTable
-          id="my-data-table"
-          type="normal"
-          columns={columns}
-          data={data} // Use currentData for pagination
-          onSortIconClick={handleSort}
-          currentPage={paginationConfig.pageNumber}
-          totalPageCount={paginationConfig.totalPages}
-          pagination={true}
-          handleChangePage={handleChangePage}
-          totalRocords={paginationConfig.totalElements} // Corrected typo here
-          recordsPerPage={paginationConfig.pageSize}
-          paginationTotalRecorsMessage={t('orgManagement.results')}
-          paginationRecordsPerPageMessage={t('orgManagement.per_page')}
-          isAdmin={true}
-          noDataComponent={isError ? <div>Something went wrong! Please try again</div> : <EmptyDataTable image={EmptyDataImage} heading={t('orgManagement.add.label')} description={t('orgManagement.empty_table.description')} />}
-        />
-      )}
+      <CustomDataTable
+        id="my-data-table"
+        type="normal"
+        columns={columns}
+        data={data} // Use currentData for pagination
+        onSortIconClick={handleSort}
+        currentPage={paginationConfig.pageNumber}
+        totalPageCount={paginationConfig.totalPages}
+        pagination={true}
+        handleChangePage={handleChangePage}
+        totalRocords={paginationConfig.totalElements} // Corrected typo here
+        recordsPerPage={paginationConfig.pageSize}
+        paginationTotalRecorsMessage={t('orgManagement.results')}
+        paginationRecordsPerPageMessage={t('orgManagement.per_page')}
+        isAdmin={true}
+        noDataComponent={<EmptyDataTable isLoading={isLoading} error={isError ? 'Something went wrong! Please try again' : null} image={EmptyDataImage} heading={t('orgManagement.add.label')} description={t('orgManagement.empty_table.description')} />}
+      />
       <Modal
         {...{
           id: 'xxxs-modal',

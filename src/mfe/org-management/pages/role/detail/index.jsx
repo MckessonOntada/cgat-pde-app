@@ -132,7 +132,7 @@ const roleDetail = () => {
                 </div>
               ))
             ) : (
-              <EmptyDataTable image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('userManagement.messages.emptysubtitle')} />
+              <EmptyDataTable isLoading={false} image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('userManagement.messages.emptysubtitle')} />
             )}
           </div>
         </div>
