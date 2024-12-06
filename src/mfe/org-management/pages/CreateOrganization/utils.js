@@ -55,9 +55,9 @@ export const getValidationSchema = (t) => {
         .required(t('orgManagement.create_org.validation.city_required'))
         .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.city_invalid'))
         .min(2, t('orgManagement.create_org.validation.city_min'))
-        .max(100, t('orgManagement.create_org.validation.city_max')),
+        .max(50, t('orgManagement.create_org.validation.city_max')),
       state: Yup.string().required(t('orgManagement.create_org.validation.state_required')),
-      zip: Yup.string().required(t('orgManagement.create_org.validation.zip_required')).matches(ZIP_REGEX, t('orgManagement.create_org.validation.zip_invalid'))
+      zip: Yup.string().required(t('orgManagement.create_org.validation.zip_required')).matches(ZIP_REGEX, t('orgManagement.create_org.validation.zip_invalid')).max(10, t('orgManagement.create_account.validation.zip_max'))
     }),
 
     contact: Yup.object({

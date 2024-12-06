@@ -126,11 +126,13 @@ const CreateUser = () => {
       firstName: Yup.string()
         .matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.first_name')) // Only alphabets
         .min(2, t('userManagement.create_user.validation.first_name_min_max'))
-        .required(t('userManagement.create_user.validation.first_name_required')),
-      middleName: Yup.string().matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.middle_name')).min(2, t('userManagement.create_user.validation.middle_name_min_max')).nullable(),
+        .required(t('userManagement.create_user.validation.first_name_required'))
+        .max(50, t('userManagement.create_user.validation.first_name_min_max')),
+      middleName: Yup.string().matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.middle_name')).min(2, t('userManagement.create_user.validation.middle_name_min_max')).max(50, t('userManagement.create_user.validation.middle_name_min_max')).nullable(),
       lastName: Yup.string()
         .matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.last_name')) // Only alphabets
         .min(2, t('userManagement.create_user.validation.last_name_min_max'))
+        .max(50, t('userManagement.create_user.validation.last_name_min_max'))
         .required(t('userManagement.create_user.validation.last_name_required'))
     }),
 
@@ -139,23 +141,26 @@ const CreateUser = () => {
       phone: Yup.string()
         .matches(PHONE_REGEX, t('userManagement.create_user.validation.phone_no')) // 10 digits only
         .required(t('userManagement.create_user.validation.phone_no_required')),
-      fax: Yup.string().matches(FAX_REGEX, t('userManagement.create_user.validation.fax'))
+      fax: Yup.string().matches(FAX_REGEX, t('userManagement.create_user.validation.fax')).max(15, t('userManagement.create_user.validation.fax_max'))
     }),
 
     address: Yup.object({
       address1: Yup.string()
         .matches(ADDRESS_REGEX, t('userManagement.create_user.validation.address_1')) // Alphanumeric and special characters
         .min(2, t('userManagement.create_user.validation.address_1'))
+        .max(100, t('userManagement.create_user.validation.address_1'))
         .required(t('userManagement.create_user.validation.address_1_required')),
       address2: Yup.string().matches(ADDRESS_REGEX, t('userManagement.create_user.validation.address_1')), // Optional field
       city: Yup.string()
         .matches(ALPHABETIC_WITH_SPACE, t('userManagement.create_user.validation.city')) // Only alphabets
         .min(2, t('userManagement.create_user.validation.city_min_max'))
+        .max(50, t('userManagement.create_user.validation.city_min_max'))
         .required(t('userManagement.create_user.validation.city_required')),
       state: Yup.string().required(t('userManagement.create_user.validation.state_required')),
       zip: Yup.string()
         .matches(ZIP_REGEX, t('userManagement.create_user.validation.zip')) // Only digits
         .required(t('userManagement.create_user.validation.zip_required'))
+        .max(10, t('userManagement.create_account.validation.zip_max'))
     })
   });
 
