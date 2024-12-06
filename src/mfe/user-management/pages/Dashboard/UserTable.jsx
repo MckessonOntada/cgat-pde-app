@@ -13,7 +13,6 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import CommonUtils from '@src/util/CommonUtils';
-import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 function getBackgroundColorByRole(Role) {
@@ -121,18 +120,22 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       sortKey: 'last_name',
       //  width: '25%',
       wrap: true,
+      width: '380px',
       cell: (props) => (
         <div>
           {activeTab === 'PENDING REQUESTS' ? (
-            `${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`
+            <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`} maxWidth={300} />
           ) : (
-            <Link to={`${props.id}`} className="MCP-table-link">
-              <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`} maxWidth={250}></EclipsesTextcss>
+            <Link
+              to={`${props.id}`} // dynamically constructs the URL with userId
+              className="MCP-table-link">
+              <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`} maxWidth={300} />
             </Link>
           )}
         </div>
       )
     },
+
     {
       id: 'email',
       name: t('userManagement.table.email'),
@@ -140,12 +143,11 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       sortable: true,
       sortKey: 'email',
       wrap: true,
-      //   width: '20%',
+      width: '320px',
       cell: (props) => (
-        // <Tooltip body={props.contact.email}>
-        //   <div className="cellEllipses">{props.contact.email}</div>
-        // </Tooltip>
-        <EclipsesTextcss str={props.contact.email} maxWidth={250} />
+        <div>
+          <EclipsesTextcss str={props.contact.email} maxWidth={280} />
+        </div>
       )
     },
     {
@@ -154,10 +156,10 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       selector: (row) => row.contact.role.name || '',
       center: true,
       wrap: true,
-      //  width: '15%',
+      width: '200px',
       cell: (props) =>
         props.role?.name ? (
-          <span>
+          <span className="cellEllipse">
             <Badge text={props.role?.name} type={getBackgroundColorByRole(props.role?.name)} />
           </span>
         ) : (
@@ -170,7 +172,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       name: t('userManagement.table.status'),
       selector: 'status',
       center: true,
-      // width: '10%',
+      width: '200px',
       cell: (props) => <div>{activeTab === 'PENDING REQUESTS' ? <Badge text="Pending" type="info-default" /> : props.isActive ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />}</div>
     },
     {
@@ -178,8 +180,8 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       name: t('userManagement.table.dateAdded'),
       selector: 'date_added',
       wrap: true,
-      // width: '15%',
-      cell: (props) => (props.updatedAt ? CommonUtils.convertDateStringFormat(props.updatedAt, 'MM-DD-YYYY') : props.createdAt ? CommonUtils.convertDateStringFormat(props.createdAt, 'MM-DD-YYYY') : 'N/A')
+      width: '180px',
+      cell: (props) => (props.updatedAt ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM-DD-YYYY') : props.createdAt ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY') : 'N/A')
     },
     {
       id: 'action',
@@ -187,7 +189,8 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       name: t('userManagement.table.action'),
       //  width: '10%',
       cell: (row) => <Actions row={row} showEditButton={activeTab === 'PENDING REQUESTS'} showViewButton={activeTab !== 'PENDING REQUESTS'} />,
-      omit: isSystemAdminView
+      omit: isSystemAdminView,
+      width: '180px'
     }
   ];
 

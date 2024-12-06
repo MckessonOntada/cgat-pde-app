@@ -2,6 +2,7 @@ import React from 'react';
 import { Badge, CheckboxGroup } from '@mckesson/mcp-component-library';
 import { Link } from 'react-router-dom';
 import CommonUtils from '@src/util/CommonUtils';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 const getBadgeType = (isActive) => {
   if (isActive === undefined || isActive === null) return null; // Handle null or undefined
@@ -33,20 +34,23 @@ export const createColumns = (t, selectedRows, setSelectedRows) => [
     name: t('orgManagement.role.labelRoleName'),
     selector: (row) => (
       <Link className="MCP-table-link" to={`${row.id}`} state={row}>
-        {row.name}
+        
+        <EclipsesTextcss
+          str={row.name}
+          maxWidth={420} />
       </Link>
     ),
     wrap: true,
     sortable: true,
     sortKey: 'name',
-    width: '34%'
+    width: '460px'
   },
   {
     id: 'createAt',
     name: t('orgManagement.role.tableHeadingCreatedOn'),
     selector: (row) => CommonUtils.convertDateStringFormat(row.createdAt ? row.createdAt : row.updatedAt, 'MM-DD-YYYY'),
     wrap: true,
-    width: '34%'
+    width: '460px'
   },
   {
     id: 'status',
@@ -54,6 +58,6 @@ export const createColumns = (t, selectedRows, setSelectedRows) => [
     cell: (row) => (row.isActive !== undefined && row.isActive !== null ? <Badge text={row.isActive ? 'Active' : 'Inactive'} type={getBadgeType(row.isActive)} /> : null),
     wrap: true,
     center: true,
-    width: '22%'
+    width: '280xp'
   }
 ];
