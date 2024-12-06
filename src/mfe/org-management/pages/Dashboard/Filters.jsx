@@ -8,6 +8,7 @@ import arrow_down from '@src/assets/image/arrow_down.svg';
 import ToggleUI from '@src/components/toggleui';
 import CommonUtils from '@src/util/CommonUtils';
 import './index.scss';
+import { US_STATES } from '@src/components/form/util';
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
@@ -25,6 +26,12 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
   } = useOrg();
   const [filters, setFilters] = React.useState(INITIAL_FILTER_STATE);
   const [appliedFilters, setAppliedFilters] = React.useState(INITIAL_FILTER_STATE);
+  const usStates = US_STATES();
+  usStates.unshift({
+    isDisabled: true,
+    value: '',
+    label: t('orgManagement.create_org.option.please_select')
+  });
 
   const handleExpandCard = () => {
     setIsCardExpanded((prevExpandedCard) => !prevExpandedCard);
@@ -103,7 +110,7 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
                 name={t('orgManagement.table.location')}
                 isRequired={false}
                 onChange={(value) => onSearchableDropdownChange('location', value)}
-                options={LOCATIONS}
+                options={usStates}
                 clearAllSelectedValues={() => setLocation([])}
               />
 
