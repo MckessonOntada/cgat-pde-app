@@ -9,6 +9,7 @@ import arrow_right from '@src/assets/image/arrow_right.svg';
 import arrow_down from '@src/assets/image/arrow_down.svg';
 import ToggleUI from '@src/components/toggleui';
 import CommonUtils from '@src/util/CommonUtils';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 const salesOrgOptions = [
   { label: 'MPB', value: 8545 },
@@ -92,7 +93,13 @@ export default function UserAccounts(props) {
         wrap: true,
         selector: (row) => row.accountName,
         width: '280px',
-        cell: (row) => <div className="cellEllipse">{row.accountName}</div>
+        cell: (row) => (
+          <div>
+            <EclipsesTextcss 
+            str={row.accountName}
+            maxWidth={240} />
+          </div>
+        )
       },
       {
         id: 'salesOrg',
@@ -114,7 +121,11 @@ export default function UserAccounts(props) {
       {
         id: 'address',
         name: t('account.address'),
-        cell: (row) => <div className="cellEllipse">{`${row.address.houseNumber} ${row.address.street} ${row.address.street2} ${row.address.street3} ${row.address.city} ${row.address.district} ${row.address.state} ${row.address.country}  ${row.address.zipCode}`}</div>,
+        cell: (row) => (<div>
+          <EclipsesTextcss 
+            str={`${row.address.houseNumber} ${row.address.street} ${row.address.street2} ${row.address.street3} ${row.address.city} ${row.address.district} ${row.address.state} ${row.address.country}  ${row.address.zipCode}`}
+            maxWidth={240} />
+          </div>),
         width: '280px',
         omit: omitColumns.includes('address')
       },

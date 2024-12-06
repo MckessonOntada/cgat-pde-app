@@ -12,6 +12,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useOrg } from '../../context/OrgContext';
 import { PATHS } from '../../routes/constants';
 import Actions from './Actions';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 const OrgList = () => {
   const { t } = useTranslate();
@@ -84,7 +85,7 @@ const OrgList = () => {
             onClick={() => {
               handleClick(row);
             }}>
-            {row.name}
+              <EclipsesTextcss str={row.name} maxWidth={240} />
           </Link>
         </div>
       ),
@@ -105,7 +106,9 @@ const OrgList = () => {
     {
       id: 'location',
       name: t('orgManagement.table.location'),
-      cell: (row) => <div className="cellEllipse">{location(row.address)}</div>,
+      cell: (row) => (<div>
+        <EclipsesTextcss str={location(row.address)} maxWidth={240} />
+      </div>),
       sortable: true,
       sortKey: 'id',
       width: '280px',

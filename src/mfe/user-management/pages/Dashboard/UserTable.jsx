@@ -13,6 +13,7 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import CommonUtils from '@src/util/CommonUtils';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 function getBackgroundColorByRole(Role) {
   switch (Role) {
@@ -116,19 +117,20 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       wrap: true,
       width: '380px',
       cell: (props) => (
-        <div className="cellEllipses">
+        <div>
           {activeTab === 'PENDING REQUESTS' ? (
-            `${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`
+            <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`} maxWidth={300} />
           ) : (
             <Link
               to={`${props.id}`} // dynamically constructs the URL with userId
               className="MCP-table-link">
-              {`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`}
+              <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`} maxWidth={300} />
             </Link>
           )}
         </div>
       )
     },
+
     {
       id: 'email',
       name: t('userManagement.table.email'),
@@ -137,7 +139,11 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       sortKey: 'email',
       wrap: true,
       width: '320px',
-      cell: (props) => <div className="cellEllipses">{props.contact.email}</div>
+      cell: (props) => (
+        <div className="cellEllipses">
+          <EclipsesTextcss str={props.contact.email} maxWidth={280} />
+        </div>
+      )
     },
     {
       id: 'role',
@@ -149,7 +155,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       cell: (props) =>
         props.role?.name ? (
           <span className="cellEllipse">
-            <Badge text={CommonUtils.truncateString(props.role?.name, 10)} type={getBackgroundColorByRole(props.role?.name)} />
+            <Badge text={props.role?.name} type={getBackgroundColorByRole(props.role?.name)} />
           </span>
         ) : (
           '-'
@@ -179,7 +185,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       name: t('userManagement.table.action'),
       cell: (row) => <Actions row={row} showEditButton={activeTab === 'PENDING REQUESTS'} showViewButton={activeTab !== 'PENDING REQUESTS'} />,
       omit: isSystemAdminView,
-      width: '180px',
+      width: '180px'
     }
   ];
 

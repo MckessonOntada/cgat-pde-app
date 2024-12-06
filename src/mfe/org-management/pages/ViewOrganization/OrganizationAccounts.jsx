@@ -6,6 +6,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { CustomDataTable, CheckboxGroup } from '@mckesson/mcp-component-library';
 import { Link, Loader, redirect } from 'react-router-dom';
 import Actions from '@src/components/Accounts/Action';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 export default function OrganizationAccounts(props) {
   const { omitColumns = [], selectableRows, selectedRows, setSelectedRows, practiceId } = props;
@@ -41,7 +42,14 @@ export default function OrganizationAccounts(props) {
         wrap: true,
         selector: (row) => row.accountName,
         width: '280px',
-        cell: (row) => <div className="cellEllipse">{row.accountName}</div>
+        cell: (row) => (
+          <div>
+            <EclipsesTextcss 
+              str={row.accountName}
+              maxWidth={240}
+            />
+          </div>
+        )
       },
       {
         id: 'salesOrg',
@@ -63,7 +71,14 @@ export default function OrganizationAccounts(props) {
       {
         id: 'address',
         name: t('account.address'),
-        cell: (row) => <div className="cellEllipse">{`${row.address.houseNumber} ${row.address.street} ${row.address.street2} ${row.address.street3} ${row.address.city} ${row.address.district} ${row.address.state} ${row.address.country}  ${row.address.zipCode}`}</div>,
+        cell: (row) => (
+          <div>
+            <EclipsesTextcss
+              str={`${row.address.houseNumber} ${row.address.street} ${row.address.street2} ${row.address.street3} ${row.address.city} ${row.address.district} ${row.address.state} ${row.address.country}  ${row.address.zipCode}`}
+              maxWidth={240}
+            />
+          </div>
+        ),
         omit: omitColumns.includes('address'),
         width: '280px',
       },
