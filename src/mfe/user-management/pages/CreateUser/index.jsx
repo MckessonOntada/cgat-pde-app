@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import './CreateUser.scss';
-import { Button, Stepper, Alert } from '@mckesson/mcp-component-library';
+import { Button, Heading, Stepper, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import UserDetailsFormSegment from './CreateUserForm';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -16,16 +16,20 @@ import { handleApiError, serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import { RoutePaths } from '@src/routes/constants';
 import { ALPHABETIC_WITH_SPECIAL, ALPHABETIC_WITH_SPACE, ADDRESS_REGEX, ZIP_REGEX, PHONE_REGEX, FAX_REGEX } from '@src/components/form/ValidationRegExp';
+import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
+import CommonUtils from '@src/util/CommonUtils';
 
 const CreateUser = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { userId } = useParams();
   const location = useLocation();
-  const { isEdit = false, isPending = false } = location.state || {};
+  const { isEdit = false, isPending = false, isBack = false } = location.state || {};
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alert, setAlert] = useState(null);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const [isDirty, setIsDirty] = React.useState(false);
+  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
 
   useEffect(() => {
     if (isAlertVisible) {
@@ -55,9 +59,10 @@ const CreateUser = () => {
     queryFn: async () => {
       const url = !isPending ? `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}` : `${ApiRoutes.USERS_PROVISIONING()}/${userId}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+      
       return res.data;
     },
-    enabled: isEdit || isPending,
+    enabled: isEdit || isPending || isBack,
     refetchOnWindowFocus: false
   });
 
@@ -196,7 +201,27 @@ const CreateUser = () => {
   };
 
   const handleCancel = () => {
-    navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : RoutePaths.pathUserManagement);
+    if (isDirty) {
+      if(isEdit){
+        setModalSuccessCallback("details")
+      }else {
+        setModalSuccessCallback("list")
+      }
+    } else {
+      if(isEdit){
+        navigate(`../${PATHS.userDetail.replace(':userId', userId)}`)
+      }else {
+        navigate(RoutePaths.pathUserManagement);
+      }
+    }
+  };
+
+  const handleNavigate = () => {
+    if (modalSuccessCallback === 'list') {
+      navigate(RoutePaths.pathUserManagement);
+    } else if(modalSuccessCallback === "details"){
+      navigate(`../${PATHS.userDetail.replace(':userId', userId)}`)
+    }
   };
 
   return (
@@ -207,7 +232,7 @@ const CreateUser = () => {
         </Button>
       </div>
 
-      <ModuleHeader heading={<p className="primaryHeading">{t(isSystemAdminView ? 'userManagement.create_sysadmin' : 'userManagement.create_user')}</p>} />
+      <ModuleHeader heading={<Heading as="h1">{t(isSystemAdminView ? 'userManagement.create_sysadmin' : 'userManagement.create_user')}</Heading>} />
       {!isEdit && (
         <div className="stepper">
           <Stepper
@@ -238,28 +263,41 @@ const CreateUser = () => {
           handleSubmit(values);
           actions.setSubmitting(false);
         }}>
-        {() => (
-          <Form>
-            <div className="MCP-panel-container">
-              <p className="font-bold-title-s">{t(isSystemAdminView ? 'userManagement.create_user.details_to_create_sysadmin' : 'userManagement.create_user.details_to_create_user')}</p>
-              <UserDetailsFormSegment />
-            </div>
-            <div className={'buttonGroup'}>
-              <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>
-                {t('userManagement.button.back')}
-              </Button>
-              {isPending && (
-                <Button variant="secondary" type="button" onClick={handleRejectRequest} size={'md'}>
-                  {t('userManagement.button.rejectrequest')}
+        {({ values, isValid, dirty }) => {
+          React.useEffect(() => {
+            setIsDirty(dirty);
+          }, [dirty]);
+
+          return (
+            <Form>
+              <div className="MCP-panel-container">
+                <Heading as="h2">{t(isSystemAdminView ? 'userManagement.create_user.details_to_create_sysadmin' : 'userManagement.create_user.details_to_create_user')}</Heading>
+                <UserDetailsFormSegment />
+              </div>
+              <div className={'buttonGroup'}>
+                <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>
+                  {t('userManagement.button.back')}
                 </Button>
-              )}
-              <Button type="submit" size={'md'}>
-                {t('userManagement.button.savencontinue')}
-              </Button>
-            </div>
-          </Form>
-        )}
+                {isPending && (
+                  <Button variant="secondary" type="button" onClick={handleRejectRequest} size={'md'}>
+                    {t('userManagement.button.rejectrequest')}
+                  </Button>
+                )}
+                <Button type="submit" size={'md'}>
+                  {t('userManagement.button.savencontinue')}
+                </Button>
+              </div>
+            </Form>
+          );
+        }}
       </Formik>
+      <DiscardChangesModal
+        heading="Discard Changes"
+        description='You have changed user details. Do you still want to go back? Your changes will be discarded!'
+        isOpen={Boolean(modalSuccessCallback)}
+        onClose={() => setModalSuccessCallback(null)}
+        onConfirm={handleNavigate}
+      />
     </div>
   );
 };

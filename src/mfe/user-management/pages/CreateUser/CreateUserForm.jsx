@@ -1,7 +1,7 @@
 import React from 'react';
 import { Field } from 'formik';
 import Components from '@src/components/form/Components';
-import { Required } from '@mckesson/mcp-component-library';
+import { Required, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { US_STATES } from '@src/components/form/util';
 
@@ -20,7 +20,7 @@ const UserDetailsFormSegment = () => {
       <div className="MCP-module-body form-container">
         <div>
           <div className="headingBox">
-            <p className="form-segment-title">{t('userManagement.create_user.personal_details')}</p>
+            <Heading as="h3">{t('userManagement.create_user.personal_details')}</Heading>
             <p className="form-instruction">
               <Required id="Required"></Required> {t('userManagement.create_user.required')}
             </p>
@@ -34,7 +34,7 @@ const UserDetailsFormSegment = () => {
 
         <div>
           <div className="headingBox">
-            <p className="form-segment-title">{t('userManagement.create_user.contact_details')}</p>
+            <Heading as="h3">{t('userManagement.create_user.contact_details')}</Heading>
             <p className="form-instruction">
               <Required id="Required"></Required> {t('userManagement.create_user.required')}
             </p>
@@ -45,7 +45,7 @@ const UserDetailsFormSegment = () => {
           </div>
           <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 align-items-start">
             <Field name="address.city" label={t('userManagement.create_user.inputLabel.city')} placeholder=" " isRequired component={Components['input']} maxLength={50} />
-            <Field name="address.zip" label={t('userManagement.create_user.inputLabel.zip')} placeholder=" " isRequired component={Components['input']} maxLength={10} />
+            <Field name="address.zip" label={t('userManagement.create_user.inputLabel.zip')} placeholder=" " isRequired component={Components['zipInput']} maxLength={10} />
             <Field name="address.state" fieldlabel={t('userManagement.create_user.inputLabel.state')} placeholder=" " component={Components['dropdown']} isRequired options={options} />
             <Field name="contact.email" label={t('userManagement.create_user.inputLabel.email')} placeholder=" " isRequired component={Components['input']} maxLength={100} />
             <Field name="contact.phone" label={t('userManagement.create_user.inputLabel.phone_no')} component={Components['phoneInput']} className={'phoneInput'} placeholder=" " isRequired />

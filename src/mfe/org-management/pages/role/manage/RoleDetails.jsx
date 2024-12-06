@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Yup from 'yup';
-import { Stepper, Required, Button, Modal } from '@mckesson/mcp-component-library';
+import { Stepper, Required, Button, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
@@ -156,7 +156,7 @@ const RoleDetails = () => {
                   <div className="MCP-module-wrapper">
                     <div className="MCP-panel-container">
                       <ModuleHeader
-                        heading={<p className="secondaryHeading">{t('orgManagement.role.headingPermissionDetails')}</p>}
+                        heading={<Heading as="h2">{t('orgManagement.role.headingPermissionDetails')}</Heading>}
                         controls={
                           <p>
                             <Required /> {t('orgManagement.create_org.required')}
@@ -192,7 +192,13 @@ const RoleDetails = () => {
           </Formik>
         </div>
       </div>
-      <DiscardChangesModal isOpen={Boolean(modalSuccessCallback)} onClose={() => setModalSuccessCallback(null)} onConfirm={handleNavigate} />
+      <DiscardChangesModal 
+        heading="Discard Changes"
+        description='You have changed role details. Do you still want to go back? Your changes will be discarded!'
+        isOpen={Boolean(modalSuccessCallback)} 
+        onClose={() => setModalSuccessCallback(null)} 
+        onConfirm={handleNavigate} 
+      />
     </div>
   );
 };

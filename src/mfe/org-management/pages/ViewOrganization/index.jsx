@@ -9,7 +9,7 @@ import './ViewOrg.scss';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { RoutePaths } from '@src/routes/constants';
-import { Button, Loader, Alert, Stepper } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader, Alert, Stepper } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import { PATHS as InternalPaths } from '../../routes/constants';
@@ -104,8 +104,12 @@ export default function ViewOrganization() {
   };
 
   const handleCancel = () => {
-    setSelectedAccounts([]);
-    setAddNewAccounts(false);
+    if (isView) {
+      setSelectedAccounts([]);
+      setAddNewAccounts(false);
+    } else {
+      navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: data }, true);
+    }
   };
 
   const onRemoveAccount = useCallback(
@@ -125,7 +129,7 @@ export default function ViewOrganization() {
           {t('orgManagement.back.organization')}
         </Button>
       </div>
-      {!addNewAccounts && <ModuleHeader heading={<p className="primaryHeading">{t('orgManagement.create_org.org-details')}</p>} />}
+      {!addNewAccounts && <ModuleHeader heading={<Heading as="h1">{t('orgManagement.create_org.org-details')}</Heading>} />}
       {!isView && (
         <div className="stepper">
           <Stepper
@@ -148,7 +152,7 @@ export default function ViewOrganization() {
         </div>
       )}
       <ModuleHeader
-        heading={<p className="primaryHeading">{addNewAccounts ? t('orgManagement.select_account') : t('orgManagement.link')}</p>}
+        heading={<Heading as="h1">{addNewAccounts ? t('orgManagement.select_account') : t('orgManagement.link')}</Heading>}
         controls={
           !addNewAccounts && (
             <div className="controls">
@@ -175,7 +179,7 @@ export default function ViewOrganization() {
       {addNewAccounts && (
         <div className="btn-box">
           <Button variant="secondary" onClick={handleCancel}>
-            {t('orgManagement.button.cancel')}
+            {t('orgManagement.button.back')}
           </Button>
           <Button disabled={selectedAccounts?.length <= 0} onClick={addNewAccountsClick}>
             {t(isView ? 'orgManagement.add.account' : selectedCount > 0 ? 'orgManagement.create_org' : 'orgManagement.add.viewsummary')}

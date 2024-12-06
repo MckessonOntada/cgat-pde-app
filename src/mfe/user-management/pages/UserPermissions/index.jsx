@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Stepper, Button, Alert } from '@mckesson/mcp-component-library';
+import { Stepper, Heading, Button, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import ModuleHeader from '@src/components/module-header';
@@ -39,7 +39,11 @@ const UserPermissions = () => {
   };
 
   const handleBack = () => {
-    navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.editUser}/${userId}`);
+    if(isEdit){
+      navigate( `../${PATHS.userDetail.replace(':userId', userId)}`)
+    } else{
+      navigate(`../${PATHS.editUser}/${userId}`, {state: {isBack: true}});
+    }
   };
 
   const isFormValuesChanged = (initialValues, currentValues) => {
@@ -93,7 +97,7 @@ const UserPermissions = () => {
           {t('userManagement.user.backmessage')}
         </Button>
       </div>
-      <ModuleHeader heading={<p className="primaryHeading">{t('userManagement.create_user')}</p>} />
+      <ModuleHeader heading={<Heading as="h1">{t('userManagement.create_user')}</Heading>} />
 
       {!isEdit && (
         <div className="stepper">
@@ -128,7 +132,7 @@ const UserPermissions = () => {
         validateOnChange={false}
         validateOnBlur={true}>
         {({ values, setFieldValue, initialValues, isValid }) => {
-          const isDirty = isEdit || isFormValuesChanged(initialValues, values);
+          const isDirty = (isEdit && values.roleId) || isFormValuesChanged(initialValues, values);
 
           return (
             <Form>

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Stepper, AutoSuggestSearch, Button } from '@mckesson/mcp-component-library';
+import { Stepper, Heading, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import ModuleHeader from '@src/components/module-header';
@@ -90,7 +90,7 @@ const AddAccounts = () => {
         </Button>
       </div>
 
-      <ModuleHeader heading={<p className="primaryHeading">{isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}</p>} />
+      <ModuleHeader heading={<Heading as="h1">{isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}</Heading>} />
 
       {!isEdit && (
         <div className="stepper">

@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as pencil_write_edit } from '@src/assets/image/pencil-write-edit.svg';
-import { Badge, Button, Switch, Alert } from '@mckesson/mcp-component-library';
+import { Badge, Button, Heading, Switch, Alert } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
@@ -131,7 +131,7 @@ const UserDetail = () => {
 
       <div className="MCP-module-body">
         <ModuleHeader
-          heading={<p className="primaryHeading">{t('userManagement.header.view.edit_user')}</p>}
+          heading={<Heading as="h1">{t('userManagement.header.view.edit_user')}</Heading>}
           controls={
             <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`../${PATHS.editUser}/${userId}`, { state: { isEdit: true } })}>
               {t('userManagement.button.edit')}
@@ -142,7 +142,7 @@ const UserDetail = () => {
         <div className="MCP-panel-container">
           <div className="user-header">
             <div className="user-info">
-              <div className=" subheader-text">{`${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName} `}</div>
+              <div className="subheader-text">{`${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName} `}</div>
               <Badge text={data?.role?.name} type={getbgColorOnRole(data?.role?.name)} />
             </div>
             <div className="user-status">
@@ -194,7 +194,7 @@ const UserDetail = () => {
         </div>
 
         <ModuleHeader
-          heading={<p className="primaryHeading">{t('userManagement.header.view.permissions_granted')}</p>}
+          heading={<Heading as="h1">{t('userManagement.header.view.permissions_granted')}</Heading>}
           controls={
             <div className="controls">
               <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`../${PATHS.userPermissions}/${userId}`, { state: { isEdit: true, permissionsData: data } })}>
@@ -239,7 +239,7 @@ const UserDetail = () => {
         {!isSystemAdminView && (
           <div className="MCP-module-body">
             <ModuleHeader
-              heading={<p className="primaryHeading">{t('userManagement.header.view.linked_accounts')}</p>}
+              heading={<Heading as="h1">{t('userManagement.header.view.linked_accounts')}</Heading>}
               controls={
                 <div className="controls">
                   <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`../${PATHS.addAccounts}/${userId}`, { state: { isEdit: true } })}>

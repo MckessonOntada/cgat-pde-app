@@ -1,5 +1,5 @@
 import React from 'react';
-import { TabList, Button } from "@mckesson/mcp-component-library";
+import { TabList, Button, Heading } from "@mckesson/mcp-component-library";
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle.svg';
 import { useNavigate } from 'react-router-dom';
 import { routesConfig } from './../../routes/constants';
@@ -69,7 +69,7 @@ const OrderIndex = () => {
                         <FilterPanel />
                     </div>
                     <div className="MCP-table-wrapper">
-                        <p className="secondaryHeading">{t('headings.orderListing')}</p>
+                        <Heading as="h2">{t('headings.orderListing')}</Heading>
                         <OrderDataTable />
                     </div>
                 </div>
