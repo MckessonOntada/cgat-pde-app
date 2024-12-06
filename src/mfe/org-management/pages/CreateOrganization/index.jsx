@@ -5,7 +5,6 @@ import { useTranslate } from '@src/translations/useTranslation';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import OrgDetailsFormSegment from './CreateOrgForm';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { getValidationSchema, INITIAL_VALUES } from './utils';
 import { RoutePaths } from '@src/routes/constants';
 import { useMutation } from 'react-query';
@@ -112,7 +111,12 @@ const CreateOrganization = () => {
   };
 
   const handleGoBack = () => {
-    navigate(RoutePaths.pathOrgManagement);
+    if (!isEdit) {
+      navigate(RoutePaths.pathOrgManagement);
+    } else {
+      const path = PATHS.viewOrg.replace(':orgId', orgId);
+      navigate(`../${path}`, { state: { isView: true } });
+    }
   };
 
   return (
