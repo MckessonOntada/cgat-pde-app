@@ -260,7 +260,7 @@ const UserDetail = () => {
               </div>
             ))
           ) : (
-            <EmptyDataTable image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('userManagement.messages.emptysubtitle')} />
+            <EmptyDataTable isLoading={isLoading} image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('userManagement.messages.emptysubtitle')} />
           )}
         </div>
 

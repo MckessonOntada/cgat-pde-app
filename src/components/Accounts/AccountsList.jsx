@@ -42,32 +42,26 @@ export default function AccountsList(props) {
       )}
       <div className="account-box">
         <div className="customTable-box">
-          {isLoading ? (
-            <div className="dashboard-loader">
-              <LoadingComponent variant="circular" />
-            </div>
-          ) : (
-            <CustomDataTable
-              id="my-data-table"
-              type="normal"
-              columns={props.columns}
-              data={props.data?.content || []} // Use the sliced data for the current page
-              currentPage={props.currentPage}
-              totalPageCount={props.data?.totalPages}
-              pagination={true}
-              handleChangePage={props.handleChangePage}
-              totalRocords={props.data?.totalElements}
-              recordsPerPage={props.recordsPerPage}
-              paginationTotalRecorsMessage={t('orgManagement.results')}
-              paginationRecordsPerPageMessage={t('orgManagement.per_page')}
-              isAdmin={true}
-              onSortIconClick={props.handleSort}
-              // selectableRows={selectableRows}
-              // handleRowSelected={handleRowSelected}
-              // selectedRowId={selectedRows}
-              noDataComponent={<EmptyDataTable image={EmptyDataImage} heading={t('account.add.label')} description={t('account.empty_table.description')} />}
-            />
-          )}
+          <CustomDataTable
+            id="my-data-table"
+            type="normal"
+            columns={props.columns}
+            data={props.data?.content || []} // Use the sliced data for the current page
+            currentPage={props.currentPage}
+            totalPageCount={props.data?.totalPages}
+            pagination={true}
+            handleChangePage={props.handleChangePage}
+            totalRocords={props.data?.totalElements}
+            recordsPerPage={props.recordsPerPage}
+            paginationTotalRecorsMessage={t('orgManagement.results')}
+            paginationRecordsPerPageMessage={t('orgManagement.per_page')}
+            isAdmin={true}
+            onSortIconClick={props.handleSort}
+            // selectableRows={selectableRows}
+            // handleRowSelected={handleRowSelected}
+            // selectedRowId={selectedRows}
+            noDataComponent={<EmptyDataTable isLoading={isLoading} image={EmptyDataImage} heading={t('account.add.label')} description={t('account.empty_table.description')} />}
+          />
         </div>
         {showSelectedAccounts && (
           <div className="selected-account-box">

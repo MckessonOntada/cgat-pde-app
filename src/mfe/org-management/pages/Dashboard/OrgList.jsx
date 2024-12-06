@@ -13,6 +13,8 @@ import { useOrg } from '../../context/OrgContext';
 import { PATHS } from '../../routes/constants';
 import Actions from './Actions';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+import { useDispatch } from 'react-redux';
 
 const OrgList = () => {
   const { t } = useTranslate();
@@ -20,7 +22,7 @@ const OrgList = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const { data, paginationConfig, isLoading, isError, refreshData, setPageNumber, applySort } = useOrg();
-
+  const dispatch = useDispatch();
   const location = (address) => {
     return `${address.address1 || ''}, ${address.city || ''}, ${address.state || ''}, ${address.pin || ''}`;
   };
@@ -47,9 +49,30 @@ const OrgList = () => {
     organization: { setOrganization }
   } = useSessionFeatures();
 
-  const handleClick = (org) => {
-    setOrganization(org);
-    window.location.href = PATHS.dashboard;
+  const handleClick = (e, org) => {
+    e.preventDefault();
+
+    const state = {};
+    state.title = t('orgManagement.message.accountSelectionConfirmationTitle');
+    state.body = t('orgManagement.message.accountSelectionConfirmationDescription');
+    state.footer = (
+      <div className="controls">
+        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+          Cancel
+        </Button>
+        <Button
+          size="md"
+          variant="primary"
+          onClick={() => {
+            setOrganization(org);
+            dispatch(closeModal());
+            window.location.href = PATHS.dashboard;
+          }}>
+          Okay
+        </Button>
+      </div>
+    );
+    dispatch(openModal(state));
   };
 
   const columns = [
@@ -82,10 +105,10 @@ const OrgList = () => {
           <Link
             variant="tertiary"
             className="MCP-table-link"
-            onClick={() => {
-              handleClick(row);
+            onClick={(e) => {
+              handleClick(e, row);
             }}>
-              <EclipsesTextcss str={row.name} maxWidth={240} />
+            <EclipsesTextcss str={row.name} maxWidth={240} />
           </Link>
         </div>
       ),
@@ -106,9 +129,11 @@ const OrgList = () => {
     {
       id: 'location',
       name: t('orgManagement.table.location'),
-      cell: (row) => (<div>
-        <EclipsesTextcss str={location(row.address)} maxWidth={240} />
-      </div>),
+      cell: (row) => (
+        <div>
+          <EclipsesTextcss str={location(row.address)} maxWidth={240} />
+        </div>
+      ),
       sortable: true,
       sortKey: 'id',
       width: '280px',
@@ -187,29 +212,23 @@ const OrgList = () => {
         </div>
       )}
 
-      {isLoading ? (
-        <div className="dashboard-loader">
-          <Loader variant="circular" />
-        </div>
-      ) : (
-        <CustomDataTable
-          id="my-data-table"
-          type="normal"
-          columns={columns}
-          data={data} // Use currentData for pagination
-          onSortIconClick={handleSort}
-          currentPage={paginationConfig.pageNumber}
-          totalPageCount={paginationConfig.totalPages}
-          pagination={true}
-          handleChangePage={handleChangePage}
-          totalRocords={paginationConfig.totalElements} // Corrected typo here
-          recordsPerPage={paginationConfig.pageSize}
-          paginationTotalRecorsMessage={t('orgManagement.results')}
-          paginationRecordsPerPageMessage={t('orgManagement.per_page')}
-          isAdmin={true}
-          noDataComponent={isError ? <div>Something went wrong! Please try again</div> : <EmptyDataTable image={EmptyDataImage} heading={t('orgManagement.add.label')} description={t('orgManagement.empty_table.description')} />}
-        />
-      )}
+      <CustomDataTable
+        id="my-data-table"
+        type="normal"
+        columns={columns}
+        data={data} // Use currentData for pagination
+        onSortIconClick={handleSort}
+        currentPage={paginationConfig.pageNumber}
+        totalPageCount={paginationConfig.totalPages}
+        pagination={true}
+        handleChangePage={handleChangePage}
+        totalRocords={paginationConfig.totalElements} // Corrected typo here
+        recordsPerPage={paginationConfig.pageSize}
+        paginationTotalRecorsMessage={t('orgManagement.results')}
+        paginationRecordsPerPageMessage={t('orgManagement.per_page')}
+        isAdmin={true}
+        noDataComponent={<EmptyDataTable isLoading={isLoading} error={isError ? 'Something went wrong! Please try again' : null} image={EmptyDataImage} heading={t('orgManagement.add.label')} description={t('orgManagement.empty_table.description')} />}
+      />
       <Modal
         {...{
           id: 'xxxs-modal',

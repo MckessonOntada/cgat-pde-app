@@ -321,6 +321,12 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.corrected-dropdown{
+  span{
+    font-size: var(--brand-font-size--small);
+  }
+
+}
 
 [class^="OktaFooter-module--copyrightContainer-"] {
   color: var(--brand-color-patient-primary-1);

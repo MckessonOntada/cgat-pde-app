@@ -23,6 +23,7 @@ export const AccountsTableProvider = ({ children, initialData = [] }) => {
   const [dataState, setAccountData] = useState(initialData);
 
   const applyFilters = (filters) => {
+    setCurrentPage(1);
     setFilterState((prevFilters) => ({ ...prevFilters, ...filters }));
   };
 
