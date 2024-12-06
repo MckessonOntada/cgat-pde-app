@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Yup from 'yup';
-import { Stepper, Required, Button, Modal } from '@mckesson/mcp-component-library';
+import { Stepper, Required, Button, Modal, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
@@ -89,7 +89,7 @@ const RoleDetails = () => {
           const id = (data && data.id) || roleId;
           console.log(data);
           const { name, description } = data;
-          
+
           refreshData();
           navigate(isEdit ? `/organization/roles/${roleId}` : `/organization/roles/${id}/permissions`, { state: { ...row, name, description } });
         }
@@ -135,7 +135,7 @@ const RoleDetails = () => {
     <div className="MCP-module-wrapper">
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
-            {t('orgManagement.role.captionsBtnBackToManageRoles')}
+          {t('orgManagement.role.captionsBtnBackToManageRoles')}
         </Button>
       </div>
 

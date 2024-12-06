@@ -20,7 +20,8 @@ const DetailsView = ({ data, onEditClick }) => {
       </div>
 
       <h2 className="contact-label">{t('orgManagement.org_detail.contact')}</h2>
-      <div className="grid grid-gap-24 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+
+      <div className="view-container grid grid-gap-24 grid-cols-1 md:grid-cols-4">
         <div>
           <p className="contact-heading">{t('orgManagement.org_detail.person_name')}</p>
           <p className="contact-details">{`${data.contactPerson.firstName || ''} ${data.contactPerson.middleName || ''} ${data.contactPerson.lastName || ''}`.trim() || 'N/A'}</p>
@@ -37,11 +38,10 @@ const DetailsView = ({ data, onEditClick }) => {
           <p className="contact-heading">{t('orgManagement.create_org.inputLabel.fax')}</p>
           <p className="contact-details">{data.contact.fax || 'N/A'}</p>
         </div>
-      </div>
-
-      <div>
-        <p className="contact-heading">{t('orgManagement.org_detail.address')}</p>
-        <p className="contact-details">{[data.address.address1, data.address.address2].filter(Boolean).join(', ') || 'N/A'}</p>
+        <div>
+          <p className="contact-heading">{t('orgManagement.org_detail.address')}</p>
+          <p className="contact-details">{[data.address.address1, data.address.address2].filter(Boolean).join(', ') || 'N/A'}</p>
+        </div>
       </div>
     </div>
   );

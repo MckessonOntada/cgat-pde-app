@@ -2,13 +2,13 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as pencil_write_edit } from '@src/assets/image/pencil-write-edit.svg';
-import { Badge, Button, Heading, Switch, Alert } from '@mckesson/mcp-component-library';
+import { Badge, Button, Heading, Switch, Alert, Modal } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { PATHS } from '../../routes/constants';
 import ModuleHeader from '@src/components/module-header';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
@@ -19,6 +19,8 @@ import UserAccounts from './UserAccounts';
 import { RoutePaths } from '@src/routes/constants';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
+import EclipsesText from '@src/components/EclipsesText/EclipsesText';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 function getbgColorOnRole(Role) {
   switch (Role) {
@@ -42,12 +44,14 @@ const UserDetail = () => {
   const location = useLocation();
   const isSuccess = location.state?.isSuccess || false;
   const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isDeactivate, setIsDeactivate] = useState(false);
 
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
 
-  const { isLoading, isError, data } = useQuery({
+  const { isLoading, isError, data, refetch } = useQuery({
     queryKey: [`users/${userId}`],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.GET, {});
@@ -101,6 +105,40 @@ const UserDetail = () => {
     return phoneNumber;
   };
 
+  const handleDeactivateUser = async (userId) => {
+    const res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.DELETE, null);
+    return res.data;
+  };
+
+  const { mutate } = useMutation({
+    mutationFn: handleDeactivateUser,
+    onSuccess: (response) => {
+      refetch();
+      setIsDeactivate(true);
+      setIsAlertVisible(true);
+      setAlertDescription(t('messages.user_deactivate_success'));
+    },
+    onError: (error) => {
+      console.error(`Failed to deactivate user:`, error);
+      setIsDeactivate(true);
+      setIsAlertVisible(true);
+      setAlertDescription(t('messages.user_deactivate_failure'));
+    }
+  });
+
+  const handleDeactivate = () => {
+    setIsOpen(true);
+  };
+
+  const handleConfirmDeactivate = () => {
+    setIsOpen(false);
+    mutate(userId);
+  };
+
+  const handleConfirmCancel = () => {
+    setIsOpen(false);
+  };
+
   const groupPermissionsByCategory = (userPermissions, permissionsEnum) => {
     const groupedPermissions = {};
 
@@ -129,6 +167,7 @@ const UserDetail = () => {
         <p>{t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}</p>
       </div>
 
+      {isDeactivate && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
       <div className="MCP-module-body">
         <ModuleHeader
           heading={<Heading as="h1">{t('userManagement.header.view.edit_user')}</Heading>}
@@ -142,14 +181,16 @@ const UserDetail = () => {
         <div className="MCP-panel-container">
           <div className="user-header">
             <div className="user-info">
-              <div className="subheader-text">{`${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName} `}</div>
+              <div className="subheader-text">
+                <EclipsesTextcss str={`${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName}`} maxWidth={500} />
+              </div>
               <Badge text={data?.role?.name} type={getbgColorOnRole(data?.role?.name)} />
             </div>
             <div className="user-status">
               <span className="view_label">{t('userManagement.userdetails.lastupdatedon')}</span>
 
               <span className="label-text"> {data?.updatedAt ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM-DD-YYYY') : data?.createdAt ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY') : 'N/A'}</span>
-              <Switch handleToggle={() => {}} id="id" disabled={!data?.isActive} label={data?.isActive ? 'Active' : ''} labelPosition="right" name="Toggle" size="lg" value />
+              <Switch handleToggle={handleDeactivate} id="id" disabled={!data?.isActive} label={data?.isActive ? 'Active' : ''} labelPosition="right" name="Toggle" size="lg" value={data?.isActive} />
             </div>
           </div>
 
@@ -267,6 +308,25 @@ const UserDetail = () => {
           </div>
         )}
       </div>
+
+      <Modal
+        {...{
+          id: 'xxxs-modal',
+          isOpen,
+          onClose: () => setIsOpen(false),
+          modalTitle: 'Confirmation message',
+          modalBody: <h3>Are you sure you wish to Deactivate this User ?</h3>,
+          modalFooter: (
+            <React.Fragment>
+              <Button onClick={handleConfirmCancel} variant="secondary">
+                {t('userManagement.label.cancel')}
+              </Button>
+              <Button onClick={handleConfirmDeactivate}>{t('userManagement.button.deactivate')}</Button>
+            </React.Fragment>
+          ),
+          modalSize: 'xxxs'
+        }}
+      />
     </div>
   );
 };

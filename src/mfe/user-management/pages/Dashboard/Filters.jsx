@@ -39,14 +39,10 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
     queryKey: ['user', 'roles-list', 'role-query'],
     queryFn: async () => {
       let params = {};
-      if(roleFilterQuery){
-        params.query = roleFilterQuery
+      if (roleFilterQuery) {
+        params.query = roleFilterQuery;
       }
-      const response = await HttpResourceService.callRest(
-        `${ApiRoutes.GET_ROLES()}?${serializeParams(params)}`,
-        httpVerb.GET,
-        {}
-      );
+      const response = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}?${serializeParams(params)}`, httpVerb.GET, {});
       if (response.data) {
         const { content: data } = response.data;
         return data.map((item) => ({
@@ -98,31 +94,32 @@ const Filters = ({ showRoleDropdown = false, showStatusDropdown = false }) => {
     }));
   };
   React.useEffect(() => {
-    refreshRoleList()
-  }, [roleFilterQuery])
+    refreshRoleList();
+  }, [roleFilterQuery]);
 
-const handleOnRoleFilterQueryChange = (query) => {
-      setRoleFilterQuery(query)
-  }
+  const handleOnRoleFilterQueryChange = (query) => {
+    setRoleFilterQuery(query);
+  };
 
   const handleOnSelectedValue = (changedOptions) => {
-    const filteredOptions = changedOptions.filter(item => item.isChecked);
-    setValue(filteredOptions.map(item => item.value));
+    const filteredOptions = changedOptions.filter((item) => item.isChecked);
+    setValue(filteredOptions.map((item) => item.value));
     setFilters((prevFilters) => ({
       ...prevFilters,
-      ["role"]: filteredOptions.map((item) => item.value)
+      ['role']: filteredOptions.map((item) => item.value)
     }));
   };
 
   const areFiltersEqual = CommonUtils.deepEqual(appliedFilters, filters);
-  const anyFilterIsApplied = Object.values(appliedFilters).some(filter => filter && filter.length > 0);
+  const anyFilterIsApplied = Object.values(appliedFilters).some((filter) => filter && filter.length > 0);
 
-  const controlButtons = anyFilterIsApplied || !areFiltersEqual ? (
-    <div className="filter-control-buttons">
-      {anyFilterIsApplied && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
-      {!areFiltersEqual && <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />}
-    </div>
-  ) : null;
+  const controlButtons =
+    anyFilterIsApplied || !areFiltersEqual ? (
+      <div className="filter-control-buttons">
+        {anyFilterIsApplied && <Button type="button" size="md" label={t('orgManagement.clearFilter.label')} textButton className="txtbtn" onClick={handleClearFilters} />}
+        {!areFiltersEqual && <Button type="submit" size="md" variant="secondary" label={t('orgManagement.button.filter')} className="filter-btn" />}
+      </div>
+    ) : null;
 
   return (
     <form onSubmit={handleOnSubmit}>
@@ -133,7 +130,7 @@ const handleOnRoleFilterQueryChange = (query) => {
               <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
             </button>
             <div className={'ctrl-search-box autoSuggestSearch-container'}>
-              <InputField id="user-grid-search-box" name="searchQuery" value={filters.searchQuery} useRegister={false} onInputChange={handleSearchChange} placeholder={t('userManagement.placeholder.searchByNameAndLocation')} />
+              <InputField id="user-grid-search-box" name="searchQuery" value={filters.searchQuery} useRegister={false} onInputChange={handleSearchChange} placeholder={t('userManagement.placeholder.searchByNameAndemail')} />
             </div>
           </div>
           {controlButtons}
@@ -141,17 +138,7 @@ const handleOnRoleFilterQueryChange = (query) => {
         <ToggleUI in={isCardExpanded} timeout={400}>
           <div className="additional-filters">
             <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-              {
-                !isSystemAdminView &&
-                <SearchableDropdown
-                  selectedVal={value}
-                  onChange={handleOnSelectedValue}
-                  variant="async"
-                  label={t('userManagement.label.role')}
-                  asyncHandleSearch={handleOnRoleFilterQueryChange}
-                  options={roleList}
-                />
-              }
+              {!isSystemAdminView && <SearchableDropdown selectedVal={value} onChange={handleOnSelectedValue} variant="async" label={t('userManagement.label.role')} asyncHandleSearch={handleOnRoleFilterQueryChange} options={roleList} />}
               <SearchableDropdown
                 id="status"
                 isSuccess

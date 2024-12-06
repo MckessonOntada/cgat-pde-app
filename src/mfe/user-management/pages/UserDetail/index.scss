@@ -29,10 +29,11 @@
 .label-text {
   font-size: var(--brand-font-size--default);
   font-weight: var(--brand-font-weight-500);
-  line-height: var(--brand-line-height--medium);
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: var(--brand-line-height--large);
+
   white-space: nowrap;
+  text-wrap: wrap;
+  word-break: break-word;
 }
 
 .py2 {
