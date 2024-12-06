@@ -181,7 +181,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       selector: 'date_added',
       wrap: true,
       width: '180px',
-      cell: (props) => (props.updatedAt ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM-DD-YYYY') : props.createdAt ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY') : 'N/A')
+      cell: (props) => (props.updatedAt ? CommonUtils.convertDateStringFormat(props.updatedAt, 'MM-DD-YYYY') : props.createdAt ? CommonUtils.convertDateStringFormat(props.createdAt, 'MM-DD-YYYY') : 'N/A')
     },
     {
       id: 'action',

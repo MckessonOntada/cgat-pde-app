@@ -122,7 +122,7 @@ export default function Dashboard() {
         <div className="MCP-panel-container">
           <Filters showRoleDropdown={true} showStatusDropdown={true} />
         </div>
-        <Heading as="h2"> {t(isSystemAdminView ? 'userManagement.header.systemadminlisting.label' : 'userManagement.header.listing.label')}</Heading>
+        <Heading as="h2"> {t(isSystemAdminView ? 'userManagement.table.systemadminlisting.label' : 'userManagement.table.userlisting.label')}</Heading>
         {!isSystemAdminView && <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />}
         <div className="userList">
           {activeTab === 'ACTIVE USERS' && <UserTable selectableRows={true} onActionSuccess={handleSuccess} />}
