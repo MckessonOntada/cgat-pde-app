@@ -114,6 +114,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       sortable: true,
       sortKey: 'last_name',
       wrap: true,
+      width: '380px',
       cell: (props) => (
         <div className="cellEllipses">
           {activeTab === 'PENDING REQUESTS' ? (
@@ -135,7 +136,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       sortable: true,
       sortKey: 'email',
       wrap: true,
-      width: '20%',
+      width: '320px',
       cell: (props) => <div className="cellEllipses">{props.contact.email}</div>
     },
     {
@@ -144,6 +145,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       selector: (row) => row.contact.role.name || '',
       center: true,
       wrap: true,
+      width: '200px',
       cell: (props) =>
         props.role?.name ? (
           <span className="cellEllipse">
@@ -159,6 +161,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       name: t('userManagement.table.status'),
       selector: 'status',
       center: true,
+      width: '200px',
       cell: (props) => <div>{activeTab === 'PENDING REQUESTS' ? <Badge text="Pending" type="info-default" /> : props.isActive ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />}</div>
     },
     {
@@ -167,6 +170,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       selector: 'date_added',
       sortBy: (props) => (props.updatedAt ? props.updatedAt : props.createdAt),
       wrap: true,
+      width: '180px',
       cell: (props) => (props.updatedAt ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM-DD-YYYY') : props.createdAt ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY') : 'N/A')
     },
     {
@@ -174,7 +178,8 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       center: true,
       name: t('userManagement.table.action'),
       cell: (row) => <Actions row={row} showEditButton={activeTab === 'PENDING REQUESTS'} showViewButton={activeTab !== 'PENDING REQUESTS'} />,
-      omit: isSystemAdminView
+      omit: isSystemAdminView,
+      width: '180px',
     }
   ];
 
