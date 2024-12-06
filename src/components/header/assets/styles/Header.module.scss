@@ -111,6 +111,14 @@
     gap: var(--spacing-02);
     align-items: center;
     align-self: stretch;
+    .languageSelect {
+      ul {
+        li {
+          display: flex;
+          justify-content: start;
+        }
+      }
+    }
   }
 
   .quickLinks {

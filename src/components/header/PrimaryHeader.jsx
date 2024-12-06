@@ -21,6 +21,7 @@ import { useQuery } from 'react-query';
 import CommonDataService from '../../api/commonService/CommonDataService';
 import AuthUtils from '../../util/AuthUtils';
 import { useTranslate } from '@src/translations/useTranslation';
+import { currentLocale } from '@src/translations/i18n';
 
 const PrimaryHeader = ({ user, setUserData, debugId }) => {
   const intl = useIntl();
@@ -102,6 +103,7 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
   };
 
   const RightSideView = () => {
+    const currentLanguage = HeaderConfig.languages.find((lang) => lang.value == currentLocale);
     const quickLinks = [
       <Link className={styles.actionLink} to={'notifications'} aria-label="View notifications">
         <span>{intl.formatMessage({ id: 'header.label.notifications' })}</span>
@@ -118,6 +120,22 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
         options={HeaderConfig.profileOptions}
         aria-label="Profile options"
       />,
+      <div className={styles.languageSelect}>
+        <DropdownMenu
+          anchorEl={
+            <button className={styles.actionLink} aria-label="language options">
+              <span>{currentLanguage?.label || 'English'}</span>
+              <IconArrowDown />
+            </button>
+          }
+          handleSelect={(e) => {
+            localStorage.setItem('APP_LOCALE', e.value);
+            window.location.reload();
+          }}
+          options={HeaderConfig.languages}
+          aria-label="language options"
+        />
+      </div>,
       <Link className={styles.actionLink} to={'help'} aria-label="Help center">
         <span>{intl.formatMessage({ id: 'header.label.help' })}</span>
         <IconHelp />
