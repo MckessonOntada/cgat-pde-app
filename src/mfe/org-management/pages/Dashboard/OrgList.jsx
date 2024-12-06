@@ -13,6 +13,8 @@ import { useOrg } from '../../context/OrgContext';
 import { PATHS } from '../../routes/constants';
 import Actions from './Actions';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+import { useDispatch } from 'react-redux';
 
 const OrgList = () => {
   const { t } = useTranslate();
@@ -20,7 +22,7 @@ const OrgList = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const { data, paginationConfig, isLoading, isError, refreshData, setPageNumber, applySort } = useOrg();
-
+  const dispatch = useDispatch();
   const location = (address) => {
     return `${address.address1 || ''}, ${address.city || ''}, ${address.state || ''}, ${address.pin || ''}`;
   };
@@ -47,9 +49,30 @@ const OrgList = () => {
     organization: { setOrganization }
   } = useSessionFeatures();
 
-  const handleClick = (org) => {
-    setOrganization(org);
-    window.location.href = PATHS.dashboard;
+  const handleClick = (e, org) => {
+    e.preventDefault();
+
+    const state = {};
+    state.title = t('orgManagement.message.accountSelectionConfirmationTitle');
+    state.body = t('orgManagement.message.accountSelectionConfirmationDescription');
+    state.footer = (
+      <div className="controls">
+        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+          Cancel
+        </Button>
+        <Button
+          size="md"
+          variant="primary"
+          onClick={() => {
+            setOrganization(org);
+            dispatch(closeModal());
+            window.location.href = PATHS.dashboard;
+          }}>
+          Okay
+        </Button>
+      </div>
+    );
+    dispatch(openModal(state));
   };
 
   const columns = [
@@ -82,8 +105,8 @@ const OrgList = () => {
           <Link
             variant="tertiary"
             className="MCP-table-link"
-            onClick={() => {
-              handleClick(row);
+            onClick={(e) => {
+              handleClick(e, row);
             }}>
             <EclipsesTextcss str={row.name} maxWidth={240} />
           </Link>

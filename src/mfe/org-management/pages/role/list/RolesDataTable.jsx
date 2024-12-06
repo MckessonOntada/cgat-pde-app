@@ -49,8 +49,8 @@ const RolesDataTable = () => {
 
   const handleOnUserConfirmation = () => {
     const state = {};
-    state.title = 'Deactivate role?';
-    state.body = 'Do you want to deactivate this role?';
+    state.title = t('orgManagement.message.roleDeactivateConfirmationTitle');
+    state.body = t('orgManagement.message.roleDeactivateConfirmationDescription');
     state.footer = (
       <div className="controls">
         <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
