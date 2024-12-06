@@ -9,6 +9,7 @@ import arrow_right from '@src/assets/image/arrow_right.svg';
 import arrow_down from '@src/assets/image/arrow_down.svg';
 import ToggleUI from '@src/components/toggleui';
 import CommonUtils from '@src/util/CommonUtils';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 const salesOrgOptions = [
   { label: 'MPB', value: 8545 },
@@ -79,25 +80,32 @@ export default function UserAccounts(props) {
         id: 'id',
         name: t('account.no'),
         cell: (row) => (
-          <Link to={row.url} className="account-ID">
+          <Link to={row.url} className="MCP-table-link">
             {row.accountNumber}
           </Link>
         ),
         wrap: true,
-        width: '15%'
+        width: '180px'
       },
       {
         id: 'accountName',
         name: t('account.name'),
         wrap: true,
         selector: (row) => row.accountName,
-        width: '25%',
-        cell: (row) => <div className="cellEllipse">{row.accountName}</div>
+        width: '280px',
+        cell: (row) => (
+          <div>
+            <EclipsesTextcss 
+            str={row.accountName}
+            maxWidth={240} />
+          </div>
+        )
       },
       {
         id: 'salesOrg',
         name: t('account.sales_org'),
         selector: (row) => row.salesOrg,
+        width: '160px',
         wrap: true
       },
       {
@@ -107,12 +115,18 @@ export default function UserAccounts(props) {
         wrap: true,
         cell: (row) => <div className="cellEllipse">{row.distributionChannel}</div>,
         omit: omitColumns.includes('distributionChannel'),
+        width: '220px',
         center: false
       },
       {
         id: 'address',
         name: t('account.address'),
-        cell: (row) => <div className="cellEllipse">{`${row.address.houseNumber} ${row.address.street} ${row.address.street2} ${row.address.street3} ${row.address.city} ${row.address.district} ${row.address.state} ${row.address.country}  ${row.address.zipCode}`}</div>,
+        cell: (row) => (<div>
+          <EclipsesTextcss 
+            str={`${row.address.houseNumber} ${row.address.street} ${row.address.street2} ${row.address.street3} ${row.address.city} ${row.address.district} ${row.address.state} ${row.address.country}  ${row.address.zipCode}`}
+            maxWidth={240} />
+          </div>),
+        width: '280px',
         omit: omitColumns.includes('address')
       },
       {
@@ -120,14 +134,15 @@ export default function UserAccounts(props) {
         center: true,
         name: t('account.identifier'),
         cell: (row) => <div className="cellEllipse">{row.companyCode}</div>,
-        omit: omitColumns.includes('cgatIdentifier')
+        omit: omitColumns.includes('cgatIdentifier'),
+        width: '240px',
       },
       {
         id: 'action',
         center: true,
         name: t('account.action'),
         cell: (row) => <Actions row={row} userId={null} practiceId={practiceId} refetch={refetch} />,
-        width: '10%',
+        width: '180px',
         omit: omitColumns.includes('action')
       }
     ];
@@ -176,7 +191,7 @@ export default function UserAccounts(props) {
           />
         ),
         wrap: true,
-        width: '4%'
+        width: '40px'
       });
     }
     return _columns;

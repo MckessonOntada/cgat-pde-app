@@ -41,15 +41,17 @@
 }
 
 .contact-heading {
-  font-size: 14px;
-  line-height: 18px;
+  font-size: var(--brand-font-size--small);
+  line-height: var(--spacing-04);
   color: #767e94;
 }
 
 .contact-details {
-  font-size: 18px;
-  line-height: 20px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: var(--brand-font-size--default);
+  font-weight: var(--brand-font-weight-500);
+  line-height: var(--brand-line-height--large);
+
   white-space: nowrap;
+  text-wrap: wrap;
+  word-break: break-word;
 }

@@ -69,8 +69,10 @@ export default function Actions({ row, userId, practiceId, refetch }) {
           modalBody: <h3>Are you sure you wish to unlink this account ?</h3>,
           modalFooter: (
             <React.Fragment>
-              <Button onClick={handleClosePopup}>Cancel</Button>
-              <Button onClick={handleConfirmUnlink}>Unlink Account</Button>
+              <Button onClick={handleClosePopup} variant="secondary">
+                {t('userManagement.label.cancel')}
+              </Button>
+              <Button onClick={handleConfirmUnlink}>{t('userManagement.button.unlink')}</Button>
             </React.Fragment>
           ),
           modalSize: 'xxxs'

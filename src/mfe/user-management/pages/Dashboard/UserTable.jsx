@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { CustomDataTable, Button, Badge, Loader, CheckboxGroup, Modal } from '@mckesson/mcp-component-library';
+import React, { useState, useEffect } from 'react';
+import { CustomDataTable, Button, Badge, Loader, CheckboxGroup, Modal, Tooltip } from '@mckesson/mcp-component-library';
 import './index.scss';
 import Actions from './Actions';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -13,6 +13,7 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import CommonUtils from '@src/util/CommonUtils';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 function getBackgroundColorByRole(Role) {
   switch (Role) {
@@ -84,6 +85,10 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
     setSelectedRows(null);
   };
 
+  useEffect(() => {
+    refreshData();
+  }, []);
+
   const columns = [
     {
       id: 'checkbox',
@@ -113,21 +118,24 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       selector: (row) => `${row.name.firstName} ${row.name.lastName}`,
       sortable: true,
       sortKey: 'last_name',
+      //  width: '25%',
       wrap: true,
+      width: '380px',
       cell: (props) => (
-        <div className="cellEllipses">
+        <div>
           {activeTab === 'PENDING REQUESTS' ? (
-            `${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`
+            <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`} maxWidth={300} />
           ) : (
             <Link
               to={`${props.id}`} // dynamically constructs the URL with userId
               className="MCP-table-link">
-              {`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`}
+              <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`} maxWidth={300} />
             </Link>
           )}
         </div>
       )
     },
+
     {
       id: 'email',
       name: t('userManagement.table.email'),
@@ -135,8 +143,12 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       sortable: true,
       sortKey: 'email',
       wrap: true,
-      width: '20%',
-      cell: (props) => <div className="cellEllipses">{props.contact.email}</div>
+      width: '320px',
+      cell: (props) => (
+        <div>
+          <EclipsesTextcss str={props.contact.email} maxWidth={280} />
+        </div>
+      )
     },
     {
       id: 'role',
@@ -144,10 +156,11 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       selector: (row) => row.contact.role.name || '',
       center: true,
       wrap: true,
+      width: '200px',
       cell: (props) =>
         props.role?.name ? (
           <span className="cellEllipse">
-            <Badge text={CommonUtils.truncateString(props.role?.name, 10)} type={getBackgroundColorByRole(props.role?.name)} />
+            <Badge text={props.role?.name} type={getBackgroundColorByRole(props.role?.name)} />
           </span>
         ) : (
           '-'
@@ -159,22 +172,25 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       name: t('userManagement.table.status'),
       selector: 'status',
       center: true,
+      width: '200px',
       cell: (props) => <div>{activeTab === 'PENDING REQUESTS' ? <Badge text="Pending" type="info-default" /> : props.isActive ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />}</div>
     },
     {
       id: 'dataAdded',
       name: t('userManagement.table.dateAdded'),
       selector: 'date_added',
-      sortBy: (props) => (props.updatedAt ? props.updatedAt : props.createdAt),
       wrap: true,
+      width: '180px',
       cell: (props) => (props.updatedAt ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM-DD-YYYY') : props.createdAt ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY') : 'N/A')
     },
     {
       id: 'action',
       center: true,
       name: t('userManagement.table.action'),
+      //  width: '10%',
       cell: (row) => <Actions row={row} showEditButton={activeTab === 'PENDING REQUESTS'} showViewButton={activeTab !== 'PENDING REQUESTS'} />,
-      omit: isSystemAdminView
+      omit: isSystemAdminView,
+      width: '180px'
     }
   ];
 
@@ -225,8 +241,10 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
           modalBody: <h3>Are you sure you wish to Deactivate this User ?</h3>,
           modalFooter: (
             <React.Fragment>
-              <Button onClick={handleConfirmCancel}>Cancel</Button>
-              <Button onClick={handleConfirmDeactivate}>Deactivate</Button>
+              <Button onClick={handleConfirmCancel} variant="secondary">
+                {t('userManagement.label.cancel')}
+              </Button>
+              <Button onClick={handleConfirmDeactivate}>{t('userManagement.button.deactivate')}</Button>
             </React.Fragment>
           ),
           modalSize: 'xxxs'

@@ -12,6 +12,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useOrg } from '../../context/OrgContext';
 import { PATHS } from '../../routes/constants';
 import Actions from './Actions';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 const OrgList = () => {
   const { t } = useTranslate();
@@ -84,12 +85,13 @@ const OrgList = () => {
             onClick={() => {
               handleClick(row);
             }}>
-            {row.name}
+              <EclipsesTextcss str={row.name} maxWidth={240} />
           </Link>
         </div>
       ),
       sortable: true,
       sortKey: 'name',
+      width: '280px',
       wrap: true
     },
     {
@@ -98,14 +100,18 @@ const OrgList = () => {
       selector: (row) => row.id,
       sortable: true,
       sortKey: 'id',
+      width: '180px',
       wrap: true
     },
     {
       id: 'location',
       name: t('orgManagement.table.location'),
-      cell: (row) => <div className="cellEllipse">{location(row.address)}</div>,
+      cell: (row) => (<div>
+        <EclipsesTextcss str={location(row.address)} maxWidth={240} />
+      </div>),
       sortable: true,
       sortKey: 'id',
+      width: '280px',
       wrap: true
     },
     {
@@ -113,6 +119,7 @@ const OrgList = () => {
       name: t('orgManagement.table.dateUpdated'),
       selector: (row) => row.updatedAt,
       cell: (row) => (row.updatedAt ? CommonUtils.convertDateStringFormat(row.updatedAt, 'MM-DD-YYYY') : row.createdAt ? CommonUtils.convertDateStringFormat(row.createdAt, 'MM-DD-YYYY') : 'N/A'),
+      width: '180px',
       wrap: true
     },
     {
@@ -123,6 +130,7 @@ const OrgList = () => {
           <Badge text={row.isActive ? t('orgManagement.button.activate') : t('orgManagement.button.inactivate')} type={row.isActive ? 'success' : 'info-default'} />
         </div>
       ),
+      width: '200px',
       wrap: true,
       center: true
     },
@@ -130,6 +138,7 @@ const OrgList = () => {
       id: 'action',
       name: t('orgManagement.table.action'),
       cell: (row) => <Actions row={row} />, // Pass row as a named prop
+      width: '180px',
       wrap: true,
       center: true
     }
@@ -210,8 +219,10 @@ const OrgList = () => {
           modalBody: <h3>Are you sure you wish to Deactivate this Organization ?</h3>,
           modalFooter: (
             <React.Fragment>
-              <Button onClick={onCancelOrganizationChange}>Cancel</Button>
-              <Button onClick={confirmChangeOrganization}>Deactivate</Button>
+              <Button onClick={onCancelOrganizationChange} variant="secondary">
+                {t('orgManagement.button.cancel')}
+              </Button>
+              <Button onClick={confirmChangeOrganization}>{t('orgManagement.button.deactivate')}</Button>
             </React.Fragment>
           ),
           modalSize: 'xxxs'

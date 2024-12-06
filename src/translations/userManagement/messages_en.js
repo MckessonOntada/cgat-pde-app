@@ -28,7 +28,7 @@ export const UserManagementEN = {
   'userManagement.table.action.view': 'VIEW',
   'userManagement.empty_table.description': 'You need to add Users to see data in this table.',
   'userManagement.add.label': 'Add User',
-  'userManagement.placeholder.searchByNameAndLocation': 'Select by name and location',
+  'userManagement.placeholder.searchByNameAndemail': 'Select by Name and Email',
   'userManagement.filter.label': 'Filter By',
   'userManagement.table.warning': 'Warning',
   'userManagement.snackbar.fileWarning': 'File has warning. Please check the file and re-upload',
@@ -68,7 +68,7 @@ export const UserManagementEN = {
   'userManagement.button.add_accounts': 'Add Accounts',
   'userManagement.button.deactivate': 'Deactivate',
   'userManagement.button.activate': 'Activate',
-
+  'userManagement.button.unlink': 'Unlink Account',
   'userManagement.user.backmessage': 'Back to Manage Users',
   'userManagement.sysadmin.backmessage': 'Back to Manage System Admin Page',
 
