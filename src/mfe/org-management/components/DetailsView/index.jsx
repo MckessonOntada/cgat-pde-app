@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
 import { useTranslate } from '@src/translations/useTranslation';
+import CommonUtils from '@src/util/CommonUtils';
 import './styles.scss';
 
 const DetailsView = ({ data, onEditClick }) => {
@@ -32,7 +33,7 @@ const DetailsView = ({ data, onEditClick }) => {
         </div>
         <div>
           <p className="contact-heading">{t('orgManagement.create_org.inputLabel.phone_no')}</p>
-          <p className="contact-details">{data.contact.phone || 'N/A'}</p>
+          <p className="contact-details">{data?.contact.phone ? CommonUtils.formatPhoneNumber(data.contact.phone) : 'N/A'}</p>
         </div>
         <div>
           <p className="contact-heading">{t('orgManagement.create_org.inputLabel.fax')}</p>
@@ -40,7 +41,7 @@ const DetailsView = ({ data, onEditClick }) => {
         </div>
         <div>
           <p className="contact-heading">{t('orgManagement.org_detail.address')}</p>
-          <p className="contact-details">{[data.address.address1, data.address.address2].filter(Boolean).join(', ') || 'N/A'}</p>
+          <p className="contact-details">{[data.address.address1, data.address.address2, data.address.city, data.address.state, data.address.zip].filter(Boolean).join(', ') || 'N/A'}</p>
         </div>
       </div>
     </div>

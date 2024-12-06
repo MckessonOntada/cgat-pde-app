@@ -92,19 +92,6 @@ const UserDetail = () => {
     setSearchText(inputValue);
   };
 
-  const formatPhoneNumber = (phoneNumber) => {
-    if (!phoneNumber) return '';
-
-    const cleaned = phoneNumber.replace(/\D/g, '');
-    const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
-
-    if (match) {
-      return `(${match[1]}) ${match[2]}-${match[3]}`;
-    }
-
-    return phoneNumber;
-  };
-
   const handleDeactivateUser = async (userId) => {
     const res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.DELETE, null);
     return res.data;
@@ -209,7 +196,7 @@ const UserDetail = () => {
 
             <div>
               <span className="view_label">{t('userManagement.create_user.inputLabel.phone_no')}</span>
-              <p className="label-text"> {data?.contact.phone ? formatPhoneNumber(data.contact.phone) : 'N/A'} </p>
+              <p className="label-text"> {data?.contact.phone ? CommonUtils.formatPhoneNumber(data.contact.phone) : 'N/A'} </p>
             </div>
 
             <div>
