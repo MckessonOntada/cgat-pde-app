@@ -39,7 +39,11 @@ const UserPermissions = () => {
   };
 
   const handleBack = () => {
-    navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.editUser}/${userId}`);
+    if(isEdit){
+      navigate( `../${PATHS.userDetail.replace(':userId', userId)}`)
+    } else{
+      navigate(`../${PATHS.editUser}/${userId}`, {state: {isBack: true}});
+    }
   };
 
   const isFormValuesChanged = (initialValues, currentValues) => {
