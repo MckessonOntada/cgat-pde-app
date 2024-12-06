@@ -159,9 +159,11 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       width: '200px',
       cell: (props) =>
         props.role?.name ? (
-          <span className="cellEllipse">
-            <Badge text={props.role?.name} type={getBackgroundColorByRole(props.role?.name)} />
-          </span>
+          <Tooltip body={props.role?.name}>
+            <span className="cellEllipse">
+              <Badge text={props.role?.name} type={getBackgroundColorByRole(props.role?.name)} />
+            </span>
+          </Tooltip>
         ) : (
           '-'
         ),
