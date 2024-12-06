@@ -15,24 +15,29 @@ import { SESSION_CONST } from '@src/constants/SessionConstants';
 import AuthUtils from '@src/util/AuthUtils';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import useSessionFeatures from '@src/hooks/useSessionFeatures';
 
 const Login = () => {
   const widgetRef = useRef();
   const [widgetReady, setWidgetReady] = useState(false); // TODO: What does this accomplish if state isn't being used?
-
+  const {
+    organization: { setOrganization, selectedOrganization }
+  } = useSessionFeatures();
   let oktaConfig = OktaHelper.getConfiguration();
   let { oktaAuth } = useOktaAuth();
   const { refetch: onPostUserLogin } = useFetchQueryRetry(
     [`postUserLogin`],
     async () => {
       /*post login*/
-      // Clear all the session storage data
-      // we get the Practice Id for User
+      //Fetching organization details if the loggedin user is not system admin.
       if (!AuthUtils.isSystemAdmin()) {
         const _practiceId = AuthUtils.getPracticeId();
         console.log('post login method..', _practiceId);
         const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}/${_practiceId}`, httpVerb.GET, {});
         console.log('get response...', res);
+        if (res?.data) {
+          setOrganization(res.data);
+        }
       }
     },
     {
