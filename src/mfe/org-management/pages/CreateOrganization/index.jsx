@@ -5,7 +5,6 @@ import { useTranslate } from '@src/translations/useTranslation';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import OrgDetailsFormSegment from './CreateOrgForm';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { getValidationSchema, INITIAL_VALUES } from './utils';
 import { RoutePaths } from '@src/routes/constants';
 import { useMutation } from 'react-query';
@@ -22,7 +21,14 @@ const CreateOrganization = () => {
   const [alert, setAlert] = useState(null);
 
   const [isAlertVisible, setIsAlertVisible] = useState(false);
-  const isEdit = !!orgId;
+
+  const isEdit = useMemo(() => {
+    if (orgId > 0 && location.state) {
+      setOrganizationData(location.state);
+      return true;
+    }
+    return false;
+  }, [orgId, location]);
 
   useEffect(() => {
     if (isAlertVisible) {
@@ -33,12 +39,6 @@ const CreateOrganization = () => {
     }
   }, [isAlertVisible]);
 
-  useEffect(() => {
-    if (orgId > 0 && location.state) {
-      setOrganizationData(location.state);
-    }
-  }, []);
-
   const { t } = useTranslate();
   const navigate = useNavigate();
 
@@ -48,28 +48,22 @@ const CreateOrganization = () => {
     navigate(RoutePaths.pathOrgManagement);
   };
 
-  const createOrg = async (orgData) => {
-    // Perform the mutation logic, e.g., make an API request to update the user
-    const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}`, httpVerb.POST, orgData, {
-      'Content-Type': 'multipart/form-data'
-    });
+  const mutateOrg = useCallback(
+    async (orgData) => {
+      // Perform the mutation logic, e.g., make an API request to update the user
+      const url = isEdit ? `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${orgId}` : `${ApiRoutes.PUBLIC_ORGANIZATIONS}`;
 
-    if (![201, 200].includes(res.status)) {
-      throw new Error('Failed to create user');
-    }
-    return res;
-  };
+      const res = await HttpResourceService.callRest(`${url}`, isEdit ? httpVerb.PUT : httpVerb.POST, orgData, {
+        'Content-Type': 'multipart/form-data'
+      });
 
-  const updateOrgDetails = async (payload) => {
-    const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}/${orgId}`, httpVerb.PUT, payload, {
-      'Content-Type': 'multipart/form-data'
-    });
-
-    if (![201, 200].includes(res.status)) {
-      throw new Error('Failed to create user');
-    }
-    return res;
-  };
+      if (![201, 200].includes(res.status)) {
+        throw new Error(isEdit ? 'Failed to update organization' : 'Failed to create organization');
+      }
+      return res;
+    },
+    [isEdit, orgId]
+  );
 
   const onOrgCreateSuccess = (res) => {
     if (location.state) {
@@ -91,7 +85,7 @@ const CreateOrganization = () => {
 
   // Fetch data from server
   const { mutate, isLoading } = useMutation({
-    mutationFn: orgId ? updateOrgDetails : createOrg,
+    mutationFn: mutateOrg,
     onError: onOrgCreateError,
     onSuccess: onOrgCreateSuccess
   });
@@ -112,7 +106,12 @@ const CreateOrganization = () => {
   };
 
   const handleGoBack = () => {
-    navigate(RoutePaths.pathOrgManagement);
+    if (!isEdit) {
+      navigate(RoutePaths.pathOrgManagement);
+    } else {
+      const path = PATHS.viewOrg.replace(':orgId', orgId);
+      navigate(`../${path}`, { state: { isView: true } });
+    }
   };
 
   return (

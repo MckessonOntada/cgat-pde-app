@@ -17,7 +17,7 @@ import AuthUtils from '@src/util/AuthUtils';
 export default function Dashboard() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { activeTab, setActiveTab, refreshData } = useUser();
+  const { activeTab, setActiveTab, refreshData, clearFilters } = useUser();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const location = useLocation();
   const isSuccess = location.state?.isSuccess || false;
@@ -46,6 +46,10 @@ export default function Dashboard() {
       showAlert('success', message);
     }
   }, [isSuccess, isReject, location.pathname, location.state, navigate]);
+
+  useEffect(() => {
+    clearFilters();
+  }, []);
 
   const handleSuccess = (success, message) => {
     if (success) {

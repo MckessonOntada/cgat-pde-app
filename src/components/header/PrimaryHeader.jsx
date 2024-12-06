@@ -20,9 +20,11 @@ import useSessionFeatures from '../../hooks/useSessionFeatures';
 import { useQuery } from 'react-query';
 import CommonDataService from '../../api/commonService/CommonDataService';
 import AuthUtils from '../../util/AuthUtils';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const PrimaryHeader = ({ user, setUserData, debugId }) => {
   const intl = useIntl();
+  const { t } = useTranslate();
   const { oktaAuth, authState } = useOktaAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const toggleDrawer = () => setDrawerOpen(!drawerOpen);
@@ -189,8 +191,10 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
           modalBody: <div>Are you sure want to change organization view ?</div>,
           modalFooter: (
             <React.Fragment>
-              <Button onClick={onCancelOrganizationChange}>Cancel</Button>
-              <Button onClick={confirmChangeOrganization}>Confirm</Button>
+              <Button onClick={onCancelOrganizationChange} variant="secondary">
+                {t('orgManagement.button.cancel')}
+              </Button>
+              <Button onClick={confirmChangeOrganization}> {t('orgManagement.button.confirm')}</Button>
             </React.Fragment>
           ),
           modalSize: 'xxxs'

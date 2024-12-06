@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { CustomDataTable, Button, Badge, Loader, CheckboxGroup, Modal } from '@mckesson/mcp-component-library';
+import React, { useState, useEffect } from 'react';
+import { CustomDataTable, Button, Badge, Loader, CheckboxGroup, Modal, Tooltip } from '@mckesson/mcp-component-library';
 import './index.scss';
 import Actions from './Actions';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -85,6 +85,10 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
     setSelectedRows(null);
   };
 
+  useEffect(() => {
+    refreshData();
+  }, []);
+
   const columns = [
     {
       id: 'checkbox',
@@ -114,6 +118,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       selector: (row) => `${row.name.firstName} ${row.name.lastName}`,
       sortable: true,
       sortKey: 'last_name',
+      //  width: '25%',
       wrap: true,
       width: '380px',
       cell: (props) => (
@@ -140,7 +145,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       wrap: true,
       width: '320px',
       cell: (props) => (
-        <div className="cellEllipses">
+        <div>
           <EclipsesTextcss str={props.contact.email} maxWidth={280} />
         </div>
       )
@@ -174,7 +179,6 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       id: 'dataAdded',
       name: t('userManagement.table.dateAdded'),
       selector: 'date_added',
-      sortBy: (props) => (props.updatedAt ? props.updatedAt : props.createdAt),
       wrap: true,
       width: '180px',
       cell: (props) => (props.updatedAt ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM-DD-YYYY') : props.createdAt ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY') : 'N/A')
@@ -183,6 +187,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       id: 'action',
       center: true,
       name: t('userManagement.table.action'),
+      //  width: '10%',
       cell: (row) => <Actions row={row} showEditButton={activeTab === 'PENDING REQUESTS'} showViewButton={activeTab !== 'PENDING REQUESTS'} />,
       omit: isSystemAdminView,
       width: '180px'
@@ -236,8 +241,10 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
           modalBody: <h3>Are you sure you wish to Deactivate this User ?</h3>,
           modalFooter: (
             <React.Fragment>
-              <Button onClick={handleConfirmCancel}>Cancel</Button>
-              <Button onClick={handleConfirmDeactivate}>Deactivate</Button>
+              <Button onClick={handleConfirmCancel} variant="secondary">
+                {t('userManagement.label.cancel')}
+              </Button>
+              <Button onClick={handleConfirmDeactivate}>{t('userManagement.button.deactivate')}</Button>
             </React.Fragment>
           ),
           modalSize: 'xxxs'

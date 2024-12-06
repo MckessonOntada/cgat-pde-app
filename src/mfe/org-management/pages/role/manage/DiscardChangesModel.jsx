@@ -1,7 +1,9 @@
 import React from 'react';
 import { Button, Modal, Heading } from '@mckesson/mcp-component-library';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const DiscardChangesModal = ({ heading = '', description = '', isOpen, onClose, onConfirm }) => {
+  const { t } = useTranslate();
   return (
     <Modal
       id="discard-role-permissions-modal"
@@ -12,10 +14,10 @@ const DiscardChangesModal = ({ heading = '', description = '', isOpen, onClose, 
       modalFooter={
         <div className="controls">
           <Button size="md" variant="secondary" onClick={onClose}>
-            Cancel
+            {t('orgManagement.button.cancel')}
           </Button>
           <Button size="md" variant="primary" onClick={onConfirm}>
-            Okay
+            {t('orgManagement.button.okay')}
           </Button>
         </div>
       }

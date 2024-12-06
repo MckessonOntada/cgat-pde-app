@@ -148,7 +148,7 @@ export default function ViewOrganization() {
       )}
       {isView && !addNewAccounts && data && (
         <div className="details-view-container">
-          <DetailsView data={data} onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: data }, true)} />
+          <DetailsView data={data} onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: { ...data, isEdit: true } }, true)} />
         </div>
       )}
       <ModuleHeader
