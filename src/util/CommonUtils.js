@@ -83,8 +83,7 @@ const convertDate = function (date) {
   return null;
 };
 
-const getCurrentDate = () =>
-  new Date().toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: '2-digit' });
+const getCurrentDate = () => new Date().toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: '2-digit' });
 
 const objectToQueryString = function (obj) {
   return objectToQueryStringWithCustomSeparator(obj, ',');
@@ -344,7 +343,7 @@ function deepEqual(obj1, obj2) {
   return true;
 }
 
-function getDateRange(gapYear){
+function getDateRange(gapYear) {
   const date = new Date();
   const intYear = date.getFullYear() - gapYear;
   const prevDate = new Date(new Date().setFullYear(intYear));
@@ -352,10 +351,22 @@ function getDateRange(gapYear){
   return [convertDate(prevDate), convertDate(date)];
 }
 
-function truncateString(str, maxLength){
-  return str.length > maxLength ? str.slice(0, maxLength) + "..." : str;
-} 
+function truncateString(str, maxLength) {
+  return str.length > maxLength ? str.slice(0, maxLength) + '...' : str;
+}
 
+const formatPhoneNumber = (phoneNumber) => {
+  if (!phoneNumber) return '';
+
+  const cleaned = phoneNumber.replace(/\D/g, '');
+  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+
+  if (match) {
+    return `(${match[1]}) ${match[2]}-${match[3]}`;
+  }
+
+  return phoneNumber;
+};
 
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
@@ -384,6 +395,7 @@ const CommonUtils = Object.freeze({
   deepEqual,
   getDateRange,
   truncateString,
+  formatPhoneNumber
 });
 
 export default CommonUtils;

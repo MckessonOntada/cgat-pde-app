@@ -106,7 +106,12 @@ const CreateOrganization = () => {
   };
 
   const handleGoBack = () => {
-    navigate(RoutePaths.pathOrgManagement);
+    if (!isEdit) {
+      navigate(RoutePaths.pathOrgManagement);
+    } else {
+      const path = PATHS.viewOrg.replace(':orgId', orgId);
+      navigate(`../${path}`, { state: { isView: true } });
+    }
   };
 
   return (

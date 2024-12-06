@@ -28,6 +28,7 @@ export const UserManagementES = {
   'userManagement.table.action.view': 'S_VIEW',
   'userManagement.empty_table.description': 'S_You need to add Users to see data in this table.',
   'userManagement.add.label': 'S_Add User',
+  'userManagement.placeholder.searchByNameAndemail': 'S_Select by name and email',
 
   'userManagement.filter.label': 'S_Filter By',
   'userManagement.table.warning': 'S_Warning',
@@ -67,7 +68,7 @@ export const UserManagementES = {
   'userManagement.button.add_accounts': 'S_Add Accounts',
   'userManagement.button.deactivate': 'S_Deactivate',
   'userManagement.button.activate': 'S_Activate',
-
+  'userManagement.button.unlink': 'S_Unlink Account',
   'userManagement.user.backmessage': 'S_Back to Manage Users',
   'userManagement.sysadmin.backmessage': 'S_Back to Manage System Admin Page',
 

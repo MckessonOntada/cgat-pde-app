@@ -28,7 +28,7 @@ export const OrgManagementES = {
   'orgManagement.button.deactivate': 'S_Deactivate',
   'orgManagement.button.activate': 'S_ACTIVE',
   'orgManagement.button.inactivate': 'S_INACTIVE',
-
+  'orgManagement.button.confirm': 'S_Confirm',
   'orgManagement.create_org': 'S_Create Organization',
   'orgManagement.create_org.details_to_create_org': 'S_Please check the details to create a organization Organization',
   'orgManagement.create_org.org-details': 'S_Organization Details',
@@ -99,7 +99,7 @@ export const OrgManagementES = {
   'orgManagement.selected_items': `Item Selected`,
   'orgManagement.link': 'S_Linked Accounts',
   'orgManagement.select_account': 'S_Please select accounts to incorporate into the organization.',
-
+  'orgManagement.org.placeholder': 'S_Search by Organization Name',
   'orgManagement.empty_table.description': 'S_You need to add Organization to see data in this table.',
   'orgManagement.role.headingManageOrder': 'S_Manage Roles',
   'orgManagement.role.headingPermissionDetails': 'S_Permission Details',
@@ -115,7 +115,7 @@ export const OrgManagementES = {
   'orgManagement.role.captionsBtnBackToManageRoles': 'S_Back to Manage Roles',
   'orgManagement.role.captionsBtnSaveAndCancel': 'S_Save and Continue',
   'orgManagement.role.labelMaxChar1000': 'S_Maximum 1,000 Characters',
-  'orgManagement.role.placeholder': 'S_Select by name and location',
+  'orgManagement.role.placeholder': 'S_Search by Role Name',
 
   'orgManagement.label.associateAccount': 'S_Associate Account',
   'orgManagement.messages.newRoleCreation': 'S_New role has been successfully created.',

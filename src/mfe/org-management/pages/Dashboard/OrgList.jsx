@@ -210,8 +210,10 @@ const OrgList = () => {
           modalBody: <h3>Are you sure you wish to Deactivate this Organization ?</h3>,
           modalFooter: (
             <React.Fragment>
-              <Button onClick={onCancelOrganizationChange}>Cancel</Button>
-              <Button onClick={confirmChangeOrganization}>Deactivate</Button>
+              <Button onClick={onCancelOrganizationChange} variant="secondary">
+                {t('orgManagement.button.cancel')}
+              </Button>
+              <Button onClick={confirmChangeOrganization}>{t('orgManagement.button.deactivate')}</Button>
             </React.Fragment>
           ),
           modalSize: 'xxxs'

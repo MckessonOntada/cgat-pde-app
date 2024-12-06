@@ -59,7 +59,7 @@ const CreateUser = () => {
     queryFn: async () => {
       const url = !isPending ? `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}` : `${ApiRoutes.USERS_PROVISIONING()}/${userId}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-      
+
       return res.data;
     },
     enabled: isEdit || isPending || isBack,
@@ -67,7 +67,7 @@ const CreateUser = () => {
   });
 
   const { mutate, isLoading, isError, data } = useMutation(async ({ payload, isReject }) => {
-    if (isEdit) {
+    if (isEdit || isBack) {
       const updateUser = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.PATCH, payload);
       return updateUser.data;
     } else if (isPending) {
@@ -187,7 +187,7 @@ const CreateUser = () => {
       {
         onSuccess: (response) => {
           console.log('User created/updated successfully:', response);
-          navigate(isEdit ? `/${isSystemAdminView ? 'system-admin' : 'user'}/${response.createUser?.id ? response.createUser?.id : userId}` : `../${PATHS.userPermissions}/${response.createUser.id || userId}`);
+          navigate(isEdit ? `/${isSystemAdminView ? 'system-admin' : 'user'}/${response?.createUser?.id ? response.createUser?.id : userId}` : `../${PATHS.userPermissions}/${response?.createUser?.id ? response.createUser?.id : userId}`);
         },
         onError: (error) => {
           const errorKey = handleApiError(error);
@@ -202,15 +202,15 @@ const CreateUser = () => {
 
   const handleCancel = () => {
     if (isDirty) {
-      if(isEdit){
-        setModalSuccessCallback("details")
-      }else {
-        setModalSuccessCallback("list")
+      if (isEdit) {
+        setModalSuccessCallback('details');
+      } else {
+        setModalSuccessCallback('list');
       }
     } else {
-      if(isEdit){
-        navigate(`../${PATHS.userDetail.replace(':userId', userId)}`)
-      }else {
+      if (isEdit) {
+        navigate(`../${PATHS.userDetail.replace(':userId', userId)}`);
+      } else {
         navigate(RoutePaths.pathUserManagement);
       }
     }
@@ -219,8 +219,8 @@ const CreateUser = () => {
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathUserManagement);
-    } else if(modalSuccessCallback === "details"){
-      navigate(`../${PATHS.userDetail.replace(':userId', userId)}`)
+    } else if (modalSuccessCallback === 'details') {
+      navigate(`../${PATHS.userDetail.replace(':userId', userId)}`);
     }
   };
 
@@ -291,13 +291,7 @@ const CreateUser = () => {
           );
         }}
       </Formik>
-      <DiscardChangesModal
-        heading="Discard Changes"
-        description='You have changed user details. Do you still want to go back? Your changes will be discarded!'
-        isOpen={Boolean(modalSuccessCallback)}
-        onClose={() => setModalSuccessCallback(null)}
-        onConfirm={handleNavigate}
-      />
+      <DiscardChangesModal heading="Discard Changes" description="You have changed user details. Do you still want to go back? Your changes will be discarded!" isOpen={Boolean(modalSuccessCallback)} onClose={() => setModalSuccessCallback(null)} onConfirm={handleNavigate} />
     </div>
   );
 };
