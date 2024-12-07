@@ -53,6 +53,7 @@ export default function AccountFilters(props) {
 
   const handleOnApplyFilter = (event) => {
     event.preventDefault();
+    pagination.setCurrentPage(1);
     const updatedFilter = { ...filters };
     setAppliedFilters({ ...updatedFilter });
     setFilterState(updatedFilter);

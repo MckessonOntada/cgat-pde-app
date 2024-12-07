@@ -25,7 +25,7 @@ function DashboardPage() {
   } = useOrg();
   const breadcrumbItems = [
     {
-      label: 'System administrator',
+      label: 'Dashboard',
       url: '/'
     },
     {

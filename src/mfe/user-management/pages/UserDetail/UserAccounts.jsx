@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import AccountsList from '@src/components/Accounts/AccountsList';
 import { useTranslate } from '@src/translations/useTranslation';
 import { CheckboxGroup, InputField, Button, Divider, Dropdown } from '@mckesson/mcp-component-library';
@@ -44,6 +44,11 @@ export default function UserAccounts(props) {
   const [filters, setFilters] = React.useState(INITIAL_FILTER_STATE);
   const [appliedFilters, setAppliedFilters] = React.useState(INITIAL_FILTER_STATE);
   const { t } = useTranslate();
+
+  useEffect(() => {
+    pagination.setCurrentPage(1);
+  }, [selectableRows]);
+
   const handleChangePage = (e, newPage) => {
     pagination.setCurrentPage(newPage);
   };
@@ -95,9 +100,7 @@ export default function UserAccounts(props) {
         width: '280px',
         cell: (row) => (
           <div>
-            <EclipsesTextcss 
-            str={row.accountName}
-            maxWidth={240} />
+            <EclipsesTextcss str={row.accountName} maxWidth={240} />
           </div>
         )
       },
@@ -121,11 +124,11 @@ export default function UserAccounts(props) {
       {
         id: 'address',
         name: t('account.address'),
-        cell: (row) => (<div>
-          <EclipsesTextcss 
-            str={`${row.address.houseNumber} ${row.address.street} ${row.address.street2} ${row.address.street3} ${row.address.city} ${row.address.district} ${row.address.state} ${row.address.country}  ${row.address.zipCode}`}
-            maxWidth={240} />
-          </div>),
+        cell: (row) => (
+          <div>
+            <EclipsesTextcss str={`${row.address.houseNumber} ${row.address.street} ${row.address.street2} ${row.address.street3} ${row.address.city} ${row.address.district} ${row.address.state} ${row.address.country}  ${row.address.zipCode}`} maxWidth={240} />
+          </div>
+        ),
         width: '280px',
         omit: omitColumns.includes('address')
       },
@@ -135,7 +138,7 @@ export default function UserAccounts(props) {
         name: t('account.identifier'),
         cell: (row) => <div className="cellEllipse">{row.companyCode}</div>,
         omit: omitColumns.includes('cgatIdentifier'),
-        width: '240px',
+        width: '240px'
       },
       {
         id: 'action',
@@ -199,6 +202,7 @@ export default function UserAccounts(props) {
 
   const handleOnApplyFilter = (event) => {
     event.preventDefault();
+    pagination.setCurrentPage(1);
     const updatedFilter = { ...filters };
     setAppliedFilters({ ...updatedFilter });
     setFilterState(updatedFilter);
