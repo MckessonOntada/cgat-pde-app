@@ -15,6 +15,7 @@ import NotFound from './error-pages/NotFound';
 import ProtectedRoute from '@src/routes/ProtectedRoute';
 import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 import Role from '@src/mfe/org-management/pages/role';
+import ScrollToTop from '@src/components/scrollToTop/ScrollToTop';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
@@ -29,6 +30,7 @@ function MainLayout() {
     <div id={debugIds(ID.MAIN)} className={styles.appContainer}>
       <Header />
       <div className={styles.home} id={debugIds(ID.HOME)}>
+        <ScrollToTop containerId={debugIds(ID.HOME)} />
         <Suspense fallback={<Loader type="screen" />}>
           <div className={styles.routeContent} id={debugIds(ID.HOME, ID.ROUTE_CONTENT)}>
             <Routes className={styles.routes}>
