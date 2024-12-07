@@ -8,6 +8,8 @@ import { DateUtils } from '@src/util/DateUtil';
 
 const UserContext = createContext();
 
+const ACTIVE_USERS = "ACTIVE USERS";
+
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {
@@ -39,7 +41,7 @@ export const UserProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE)
-  const [activeTab, setActiveTab] = useState('ACTIVE USERS');
+  const [activeTab, setActiveTab] = useState(ACTIVE_USERS);
 
   const updateFilterState = useCallback((field, value) => {
     setFilterState((prevState) => ({
@@ -50,29 +52,23 @@ export const UserProvider = ({ children }) => {
 
   // Use from context
   const requestParams = useMemo(
-    () => {
-      const params = {
-        pageNo: paginationConfig.pageNumber - 1,
-        pageSize: paginationConfig.pageSize,
-        sortBy: sortConfig.sortBy || "first_name",
-        sortOrder: sortConfig.sortOrder || "asc",
-        userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
-      }
-
-      if (filterConfig.searchQuery) params.query = filterConfig.searchQuery;
-      if (filterConfig.status && filterConfig.status.length > 0) params.status = filterConfig.status;
-      if (filterConfig.role && filterConfig.role.length > 0) params.role = filterConfig.role;
-      if (filterConfig.dateRange?.[0]) params.startDate = DateUtils.formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy');
-      if (filterConfig.dateRange?.[1]) params.endDate = DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy');
-
-
-      return params;
-    },
+    () => ({
+      pageNo: paginationConfig.pageNumber - 1,
+      pageSize: paginationConfig.pageSize,
+      sortBy: sortConfig.sortBy || "first_name",
+      sortOrder: sortConfig.sortOrder || "asc",
+      userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL',
+      ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
+      ...(filterConfig?.status?.length && { status: [filterConfig.status] }), // Until add multiselect
+      ...(filterConfig?.role?.length && { roleIds: [filterConfig.role] }),// Until add multiselect
+      ...(filterConfig?.dateRange?.[0] && { startDate: DateUtils.formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy') }),
+      ...(filterConfig?.dateRange?.[0] && { endDate: DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy') })
+    }),
     [filterConfig, paginationConfig.pageNumber, sortConfig]
   );
 
   const { isLoading, isError, data, refetch } = useQuery({
-    queryKey: ['users', activeTab],
+    queryKey: ['users', activeTab, requestParams],
     queryFn: async () => {
       const url = activeTab === 'ACTIVE USERS' ? `${ApiRoutes.USERS()}?${serializeParams(requestParams)}` : `${ApiRoutes.USERS_PROVISIONING()}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
@@ -94,7 +90,7 @@ export const UserProvider = ({ children }) => {
   });
 
   const {data: roleList = []} = useQuery({
-    queryKey: ["user", "roles-list", requestParams], 
+    queryKey: ["user", "roles-list"], 
     queryFn: async () => {
       const response = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}`, httpVerb.GET, {});
       if (response.data) {
@@ -116,10 +112,6 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     refetch();
   }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
-
-  const refreshData = () => {
-    refetch();
-  }
 
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig })
 
@@ -150,7 +142,7 @@ export const UserProvider = ({ children }) => {
       setPageNumber,
       activeTab,
       setActiveTab,
-      refreshData
+      refreshData: refetch
     }),
     [updateFilterState, clearFilters, isLoading, isError, data, activeTab, setActiveTab, refetch]
   );
