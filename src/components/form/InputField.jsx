@@ -31,7 +31,8 @@ export default function InputField(props) {
 
   const { initialValues } = form;
   const fieldValue = useMemo(
-    () => getNestedValue(initialValues, field.name),
+    () => {
+      return getNestedValue(initialValues, field.name)},
     [initialValues, field]
   );
 
