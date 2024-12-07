@@ -6,6 +6,8 @@ import CreateOrganization from '../pages/CreateOrganization';
 import ViewOrganization from '../pages/ViewOrganization';
 import Role from '../pages/role';
 import NotFound from '../../../pages/error-pages/NotFound';
+import ProtectedRoute from '@src/routes/ProtectedRoute';
+import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 
 const Routes = () => {
   return (
@@ -16,7 +18,11 @@ const Routes = () => {
       <Route path={PATHS.viewOrg} element={<ViewOrganization />} />
       <Route
         path={`${PATHS.roles}/*`}
-        element={<Role />}
+        element={
+          <ProtectedRoute permissions={routePermissionConfig.roles}>
+            <Role />
+          </ProtectedRoute>
+        }
       />
       <Route path="*" element={<NotFound />} />
     </ReactRoutes>

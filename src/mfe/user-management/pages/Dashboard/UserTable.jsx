@@ -118,9 +118,8 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       selector: (row) => `${row.name.firstName} ${row.name.lastName}`,
       sortable: true,
       sortKey: 'last_name',
-      //  width: '25%',
       wrap: true,
-      width: '380px',
+      minWidth: '340px',
       cell: (props) => (
         <div>
           {activeTab === 'PENDING REQUESTS' ? (
@@ -143,7 +142,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       sortable: true,
       sortKey: 'email',
       wrap: true,
-      width: '320px',
+      minWidth: '360px',
       cell: (props) => (
         <div>
           <EclipsesTextcss str={props.contact.email} maxWidth={280} />
@@ -156,7 +155,8 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       selector: (row) => row.contact.role.name || '',
       center: true,
       wrap: true,
-      width: '200px',
+      minWidth: '120px',
+      maxWidth: '180px',
       cell: (props) =>
         props.role?.name ? (
           <Tooltip body={props.role?.name}>
@@ -174,7 +174,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       name: t('userManagement.table.status'),
       selector: 'status',
       center: true,
-      width: '200px',
+      minWidth: '80px',
       cell: (props) => <div>{activeTab === 'PENDING REQUESTS' ? <Badge text="Pending" type="info-default" /> : props.isActive ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />}</div>
     },
     {
@@ -182,17 +182,16 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
       name: t('userManagement.table.dateAdded'),
       selector: 'date_added',
       wrap: true,
-      width: '180px',
+      minWidth: '160px',
       cell: (props) => (props.updatedAt ? CommonUtils.convertDateStringFormat(props.updatedAt, 'MM-DD-YYYY') : props.createdAt ? CommonUtils.convertDateStringFormat(props.createdAt, 'MM-DD-YYYY') : 'N/A')
     },
     {
       id: 'action',
       center: true,
       name: t('userManagement.table.action'),
-      //  width: '10%',
       cell: (row) => <Actions row={row} showEditButton={activeTab === 'PENDING REQUESTS'} showViewButton={activeTab !== 'PENDING REQUESTS'} />,
       omit: isSystemAdminView,
-      width: '180px'
+      width: '120px'
     }
   ];
 
@@ -210,25 +209,24 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
         </div>
       )}
 
-      
-        <CustomDataTable
-          type={'normal'}
-          columns={columns}
-          data={data}
-          onSortIconClick={handleOnSortIconClick}
-          handleChangePage={handleChangePage}
-          selectableRowsHeader={false}
-          currentPage={filterConfig.pageNumber}
-          totalPageCount={paginationConfig.totalPages}
-          totalRocords={paginationConfig.totalElements}
-          recordsPerPage={paginationConfig.pageSize}
-          paginationTotalRecorsMessage={t('userManagement.results')}
-          paginationRecordsPerPageMessage={t('userManagement.per_page')}
-          stickyHeader
-          responsive
-          pagination={true}
-          noDataComponent={<EmptyDataTable isLoading={isLoading} image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('orgManagement.messages.userEmptyTableSubtitle')} />}
-        />
+      <CustomDataTable
+        type={'normal'}
+        columns={columns}
+        data={data}
+        onSortIconClick={handleOnSortIconClick}
+        handleChangePage={handleChangePage}
+        selectableRowsHeader={false}
+        currentPage={filterConfig.pageNumber}
+        totalPageCount={paginationConfig.totalPages}
+        totalRocords={paginationConfig.totalElements}
+        recordsPerPage={paginationConfig.pageSize}
+        paginationTotalRecorsMessage={t('userManagement.results')}
+        paginationRecordsPerPageMessage={t('userManagement.per_page')}
+        stickyHeader
+        responsive
+        pagination={true}
+        noDataComponent={<EmptyDataTable isLoading={isLoading} image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('orgManagement.messages.userEmptyTableSubtitle')} />}
+      />
       <Modal
         {...{
           id: 'xxxs-modal',

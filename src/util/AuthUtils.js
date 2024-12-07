@@ -21,7 +21,7 @@ const getUserName = function () {
 };
 
 const getUserPermissions = function () {
-  return sessionStorage.getItem(SESSION_CONST.USER_PERMISSIONS);
+  return sessionStorage.getItem(SESSION_CONST.USER_PERMISSIONS)?.split(',');
 };
 
 const getPracticeId = function () {
@@ -63,20 +63,10 @@ const userHasPermission = function (permission) {
  * @param {any} pathname - The input to check.
  * @returns {boolean} - True if the user has speicific permission, false otherwise.
  */
-const userHasRoutePermission = function (pathname) {
-  switch (pathname) {
-    case '/userManagement':
-    case '/userManagement/userUpload':
-      return userHasPermission('userManagementRoute');
-
-    case pathname.match(/^\/projects\/\w+\/patientUpload$/)?.[0]: // Regular expression for the path '/projects/:studyId/patientUpload
-      return userHasPermission('patientUploadRoute');
-
-    case '/admin':
-    case '/admin/content':
-      return userHasPermission('contentConsoleView');
-  }
-  return true;
+const userHasRoutePermission = function (routePermissions) {
+  const userPermissions = getUserPermissions() || [];
+  const hasAccess = routePermissions.some((permission) => userPermissions.includes(permission));
+  return hasAccess;
 };
 
 const AuthUtils = Object.freeze({

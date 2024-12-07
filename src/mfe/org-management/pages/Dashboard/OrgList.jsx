@@ -114,7 +114,7 @@ const OrgList = () => {
       ),
       sortable: true,
       sortKey: 'name',
-      width: '280px',
+      minWidth: '280px',
       wrap: true
     },
     {
@@ -136,7 +136,7 @@ const OrgList = () => {
       ),
       sortable: true,
       sortKey: 'id',
-      width: '280px',
+      minWidth: '280px',
       wrap: true
     },
     {
