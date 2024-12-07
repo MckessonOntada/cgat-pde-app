@@ -97,7 +97,7 @@ const CreateUser = () => {
   });
 
   const handleGoBack = () => {
-    navigate(RoutePaths.pathUserManagement);
+    navigate(isSystemAdminView ? RoutePaths.pathSystemAdminManagement : RoutePaths.pathUserManagement);
   };
 
   const initialValues = {

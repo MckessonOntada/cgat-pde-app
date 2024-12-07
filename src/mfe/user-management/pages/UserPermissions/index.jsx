@@ -35,14 +35,14 @@ const UserPermissions = () => {
   };
 
   const handleGoBack = () => {
-    navigate(RoutePaths.pathUserManagement);
+    navigate(isSystemAdminView ? RoutePaths.pathSystemAdminManagement : RoutePaths.pathUserManagement);
   };
 
   const handleBack = () => {
-    if(isEdit){
-      navigate( `../${PATHS.userDetail.replace(':userId', userId)}`)
-    } else{
-      navigate(`../${PATHS.editUser}/${userId}`, {state: {isBack: true}});
+    if (isEdit) {
+      navigate(`../${PATHS.userDetail.replace(':userId', userId)}`);
+    } else {
+      navigate(`../${PATHS.editUser}/${userId}`, { state: { isBack: true } });
     }
   };
 
@@ -94,7 +94,7 @@ const UserPermissions = () => {
     <div className="MCP-module-wrapper">
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
-          {t('userManagement.user.backmessage')}
+          {t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}
         </Button>
       </div>
       <ModuleHeader heading={<Heading as="h1">{t('userManagement.create_user')}</Heading>} />
