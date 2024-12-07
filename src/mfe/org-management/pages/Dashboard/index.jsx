@@ -6,20 +6,23 @@ import { useTranslate } from '@src/translations/useTranslation';
 import React, { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { PATHS } from '../../routes/constants';
-import Filters from './Filters';
 import './index.scss';
-import { OrgProvider } from '../../context/OrgContext';
+import { OrgProvider, useOrg } from '../../context/OrgContext';
 import OrgList from './OrgList';
 import CommonFilters from './../../../../components/Filters';
 import { US_STATES } from '@src/components/form/util';
 
-export default function Dashboard() {
+function DashboardPage() {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
   const [isAlertVisible, setIsAlertVisible] = React.useState(false);
   const isSuccess = location.state?.isSuccess || false;
   const [alertDescription, setAlertDescription] = React.useState('');
+  const {
+    applyFilters,
+    clearFilters
+  } = useOrg();
   const breadcrumbItems = [
     {
       label: 'System administrator',
@@ -83,21 +86,22 @@ export default function Dashboard() {
       {isSuccess && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
 
       <div className="MCP-module-body">
-        <OrgProvider>
           <div className="MCP-panel-container">
             <div className="MCP-panel-container">
               <CommonFilters 
-                initialFilters={{ searchQuery: "" }} 
-                onApplyFilters={(value) => console.log(value)} 
-                onClearFilters={() => console.log('On clear filters')} 
+                onApplyFilters={applyFilters} 
+                onClearFilters={clearFilters} 
                 additionalFilters={AdditionalFiltersConfig}
               />
             </div>
             <Heading as="h2">{t('orgManagement.org_list')}</Heading>
             <OrgList />
           </div>
-        </OrgProvider>
       </div>
     </div>
   );
+}
+
+export default function Dashboard(){
+  return <OrgProvider><DashboardPage/></OrgProvider>
 }

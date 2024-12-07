@@ -14,6 +14,7 @@ export default function Dropdown(props) {
   //  const error = form.errors[field.name] && form.touched[field.name];
   
   const error = errorMessage && isFieldTouched;
+
   return (
     <div className='grid'>
       <Label htmlFor={field.name} className="label-heading">
