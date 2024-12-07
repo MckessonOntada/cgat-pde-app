@@ -56,6 +56,8 @@ const Filters = ({ showLocationDropdown = false, showStatusDropdown = false }) =
     event.preventDefault();
     setAppliedFilters({ ...filters });
     applyFilters({ ...filters });
+
+    console.log('event: ', event)
   };
 
   const onSearchableDropdownChange = (type, value) => {
