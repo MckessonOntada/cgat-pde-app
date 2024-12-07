@@ -1,11 +1,11 @@
 export const RoutePaths = {
-  pathAppBase : '',
+  pathAppBase: '',
   pathPageLogin: '/login',
   pathPageLoginCallback: '/login/callback',
   pathAdmin: '/admin',
   pathUserManagement: '/user',
   pathOrgManagement: '/organization',
-  pathSystemAdminManagement:'/system-admin',
+  pathSystemAdminManagement: '/system-admin',
   pathSignup: '/signup',
   pathSignin: '/signin'
-}
+};

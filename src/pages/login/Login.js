@@ -12,19 +12,31 @@ import style from './assets/styles/Login.module.scss';
 import useFetchQueryRetry from '@src/hooks/useFetchQueryRetry';
 import AppLogo from '@src/assets/image/app-logo.svg';
 import { SESSION_CONST } from '@src/constants/SessionConstants';
+import AuthUtils from '@src/util/AuthUtils';
+import ApiRoutes from '@src/api/ApiRoutes';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import useSessionFeatures from '@src/hooks/useSessionFeatures';
 
 const Login = () => {
   const widgetRef = useRef();
   const [widgetReady, setWidgetReady] = useState(false); // TODO: What does this accomplish if state isn't being used?
-
+  const {
+    organization: { setOrganization, selectedOrganization }
+  } = useSessionFeatures();
   let oktaConfig = OktaHelper.getConfiguration();
   let { oktaAuth } = useOktaAuth();
   const { refetch: onPostUserLogin } = useFetchQueryRetry(
     [`postUserLogin`],
-    () => {
+    async () => {
       /*post login*/
-      // Clear all the session storage data
-      // we get the Practice Id for User
+      //Fetching organization details if the loggedin user is not system admin.
+      if (!AuthUtils.isSystemAdmin()) {
+        const _practiceId = AuthUtils.getPracticeId();
+        const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}/${_practiceId}`, httpVerb.GET, {});
+        if (res?.data) {
+          setOrganization(res.data);
+        }
+      }
     },
     {
       enabled: false,
@@ -87,12 +99,12 @@ const Login = () => {
     widget.renderEl(
       { el: widgetRef.current },
       async (response) => {
-        const hasRole = await checkUserRole(response);
+        const userData = await checkUserRole(response);
         if (response.status === 'SUCCESS') {
-          if (hasRole) {
+          if (userData.roleExist) {
             sessionStorage.setItem('sid', response.tokens.idToken.idToken);
             oktaAuth.handleLoginRedirect(response.tokens);
-            onPostUserLogin();
+            onPostUserLogin(userData);
           } else {
             const customErrorMessage = 'Please reach out to IT team for access.';
             let formTag = document.getElementsByTagName('form');
@@ -132,18 +144,21 @@ const Login = () => {
         sessionStorage.setItem('APP_AUTH_TOKEN', `${accessToken.tokenType} ${accessToken.accessToken}`);
 
         const decodedResponse = await CommonService.getJwtDecode();
-        console.log('decodedResponse', decodedResponse);
         const roles = decodedResponse['roles'];
         const username = decodedResponse['userName'];
         const userId = decodedResponse['userId'];
         const permissions = decodedResponse['permissions'];
+        const practiceId = decodedResponse['practiceId'];
 
         if (CommonUtils.isNonEmptyArray(roles) && username) {
           sessionStorage.setItem(SESSION_CONST.USER_ROLE, roles[0]);
           sessionStorage.setItem(SESSION_CONST.USERNAME, username);
           sessionStorage.setItem(SESSION_CONST.USER_ID, userId);
           sessionStorage.setItem(SESSION_CONST.USER_PERMISSIONS, permissions);
-          return true;
+          if (roles[0] !== 'System Admin') {
+            AuthUtils.setPracticeId(practiceId);
+          }
+          return { practiceId, userId, username, roleExist: true };
         } else {
           return false;
         }
