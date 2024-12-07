@@ -47,6 +47,7 @@ export const OrgAccountsProvider = ({ children, addNewAccounts, practiceId }) =>
 
   const clearFilters = () => {
     setFilterState(INITIAL_STATE);
+    setCurrentPage(1);
     setTimeout(() => {
       refetch();
     }, 500);
@@ -90,7 +91,7 @@ export const OrgAccountsProvider = ({ children, addNewAccounts, practiceId }) =>
   });
 
   useEffect(() => {
-    refetch();
+    setTimeout(() => refetch(), 150);
   }, [currentPage, addNewAccounts, filterState]);
 
   const ctxValue = useMemo(

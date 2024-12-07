@@ -21,18 +21,18 @@ const SYSTEM_ADMIN_CARDS_DATA = [
     details: 'efficiently_streamline_user_management_for_seamless_experience',
     path: AppRoutes.pathOrgManagement,
     permissions: []
-  },
+  }
 ];
 
 const CARDS_DATA = [
-  {
-    name: 'ManageOrderConfiguration',
-    label: 'manage_order_configuration',
-    icon: OrderIcon,
-    details: 'efficiently_streamline_user_management_for_seamless_experience',
-    path: '/orders',
-    permissions: []
-  },
+  // {
+  //   name: 'ManageOrderConfiguration',
+  //   label: 'manage_order_configuration',
+  //   icon: OrderIcon,
+  //   details: 'efficiently_streamline_user_management_for_seamless_experience',
+  //   path: '/orders',
+  //   permissions: []
+  // },
   {
     name: 'ManageUsers',
     label: 'manage_users',
@@ -48,26 +48,23 @@ const CARDS_DATA = [
     details: 'efficiently_streamline_user_management_for_seamless_experience',
     path: '/organization/roles',
     permissions: []
-  },
-  {
-    name: 'ManageCatalog',
-    label: 'manage_catalog',
-    icon: CatalogueIcon,
-    details: 'efficiently_streamline_user_management_for_seamless_experience',
-    path: '/manage-catalog',
-    permissions: []
-  },
-  {
-    name: 'ViewLinkedAccounts',
-    label: 'view_linked_accounts',
-    icon: LinkIcon,
-    details: 'efficiently_streamline_user_management_for_seamless_experience',
-    path: '/linked-accounts',
-    permissions: []
   }
+  // {
+  //   name: 'ManageCatalog',
+  //   label: 'manage_catalog',
+  //   icon: CatalogueIcon,
+  //   details: 'efficiently_streamline_user_management_for_seamless_experience',
+  //   path: '/manage-catalog',
+  //   permissions: []
+  // },
+  // {
+  //   name: 'ViewLinkedAccounts',
+  //   label: 'view_linked_accounts',
+  //   icon: LinkIcon,
+  //   details: 'efficiently_streamline_user_management_for_seamless_experience',
+  //   path: '/linked-accounts',
+  //   permissions: []
+  // }
 ];
 
-export {
-  SYSTEM_ADMIN_CARDS_DATA,
-  CARDS_DATA
-};
+export { SYSTEM_ADMIN_CARDS_DATA, CARDS_DATA };

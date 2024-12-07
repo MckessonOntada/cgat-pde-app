@@ -78,7 +78,7 @@ const UserDetail = () => {
   };
 
   const goBack = () => {
-    navigate(RoutePaths.pathUserManagement);
+    navigate(isSystemAdminView ? RoutePaths.pathSystemAdminManagement : RoutePaths.pathUserManagement);
   };
 
   const onRemoveAccount = useCallback(
@@ -171,7 +171,7 @@ const UserDetail = () => {
               <div className="subheader-text">
                 <EclipsesTextcss str={`${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName}`} maxWidth={500} />
               </div>
-              <Badge text={data?.role?.name} type={getbgColorOnRole(data?.role?.name)} />
+              {data?.role?.name && <Badge text={data?.role?.name} type={getbgColorOnRole(data?.role?.name)} />}
             </div>
             <div className="user-status">
               <span className="view_label">{t('userManagement.userdetails.lastupdatedon')}</span>

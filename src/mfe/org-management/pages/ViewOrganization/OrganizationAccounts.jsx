@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { OrgAccountsProvider, useOrgAccounts } from '../../context/OrgAccountsContext';
 import AccountFilters from './AccountFilters';
 import AccountsList from '@src/components/Accounts/AccountsList';
@@ -12,6 +12,10 @@ export default function OrganizationAccounts(props) {
   const { omitColumns = [], selectableRows, selectedRows, setSelectedRows, practiceId } = props;
   const { data, pagination, refetch, setSortCriteria, isLoading } = useOrgAccounts();
   const { t } = useTranslate();
+
+  useEffect(() => {
+    pagination.setCurrentPage(1);
+  }, [selectableRows]);
 
   const handleChangePage = (e, newPage) => {
     pagination.setCurrentPage(newPage);
@@ -44,10 +48,7 @@ export default function OrganizationAccounts(props) {
         width: '280px',
         cell: (row) => (
           <div>
-            <EclipsesTextcss 
-              str={row.accountName}
-              maxWidth={240}
-            />
+            <EclipsesTextcss str={row.accountName} maxWidth={240} />
           </div>
         )
       },
@@ -73,14 +74,11 @@ export default function OrganizationAccounts(props) {
         name: t('account.address'),
         cell: (row) => (
           <div>
-            <EclipsesTextcss
-              str={`${row.address.houseNumber} ${row.address.street} ${row.address.street2} ${row.address.street3} ${row.address.city} ${row.address.district} ${row.address.state} ${row.address.country}  ${row.address.zipCode}`}
-              maxWidth={240}
-            />
+            <EclipsesTextcss str={`${row.address.houseNumber} ${row.address.street} ${row.address.street2} ${row.address.street3} ${row.address.city} ${row.address.district} ${row.address.state} ${row.address.country}  ${row.address.zipCode}`} maxWidth={240} />
           </div>
         ),
         omit: omitColumns.includes('address'),
-        width: '280px',
+        width: '280px'
       },
       {
         id: 'cgatIdentifier',
@@ -88,7 +86,7 @@ export default function OrganizationAccounts(props) {
         name: t('account.identifier'),
         cell: (row) => <div className="cellEllipse">{row.companyCode}</div>,
         omit: omitColumns.includes('cgatIdentifier'),
-        width: '240px',
+        width: '240px'
       },
       {
         id: 'action',

@@ -20,7 +20,7 @@ export default function Dashboard() {
   const [alertDescription, setAlertDescription] = React.useState('');
   const breadcrumbItems = [
     {
-      label: 'System administrator',
+      label: 'Dashboard',
       url: '/'
     },
     {
@@ -44,31 +44,31 @@ export default function Dashboard() {
 
   return (
     <div className="MCP-module-wrapper">
-        <Breadcrumb items={breadcrumbItems} />
+      <Breadcrumb items={breadcrumbItems} />
 
-        <ModuleHeader
-          heading={<Heading as="h1">{t('orgManagement.header.label')}</Heading>}
-          controls={
-            <div className="controls">
-              <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createOrg}`)}>
-                {t('orgManagement.add.label')}
-              </Button>
-            </div>
-          }
-        />
-        {isSuccess && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
+      <ModuleHeader
+        heading={<Heading as="h1">{t('orgManagement.header.label')}</Heading>}
+        controls={
+          <div className="controls">
+            <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createOrg}`)}>
+              {t('orgManagement.add.label')}
+            </Button>
+          </div>
+        }
+      />
+      {isSuccess && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
 
-        <div className="MCP-module-body">
-          <OrgProvider>
+      <div className="MCP-module-body">
+        <OrgProvider>
+          <div className="MCP-panel-container">
             <div className="MCP-panel-container">
-              <div className="MCP-panel-container">
-                <Filters showLocationDropdown={true} showStatusDropdown={true} />
-              </div>
-              <Heading as="h2">{t('orgManagement.org_list')}</Heading>
-              <OrgList />
+              <Filters showLocationDropdown={true} showStatusDropdown={true} />
             </div>
-          </OrgProvider>
-        </div>
+            <Heading as="h2">{t('orgManagement.org_list')}</Heading>
+            <OrgList />
+          </div>
+        </OrgProvider>
+      </div>
     </div>
   );
 }
