@@ -4,6 +4,9 @@ import { ReactComponent as UserIcon } from '../../assets/svg/user-circle.svg';
 import { ReactComponent as ChecklistIcon } from '../../assets/svg/checklist-circle.svg';
 import { ReactComponent as CatalogueIcon } from '../../assets/svg/catalogue-circle.svg';
 import { ReactComponent as LinkIcon } from '../../assets/svg/link-circle.svg';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+
+const { USER_MANAGEMENT, ORGANIZATION_MANAGEMENT } = PERMISSIONS_ENUM;
 
 const SYSTEM_ADMIN_CARDS_DATA = [
   {
@@ -12,7 +15,7 @@ const SYSTEM_ADMIN_CARDS_DATA = [
     icon: UserIcon,
     details: 'efficiently_streamline_user_management_for_seamless_experience',
     path: AppRoutes.pathSystemAdminManagement,
-    permissions: []
+    permissions: USER_MANAGEMENT.MANAGE_SYSTEM_ADMINISTRATOR_SCREEN
   },
   {
     name: 'manageOrg',
@@ -20,7 +23,7 @@ const SYSTEM_ADMIN_CARDS_DATA = [
     icon: UserIcon,
     details: 'efficiently_streamline_user_management_for_seamless_experience',
     path: AppRoutes.pathOrgManagement,
-    permissions: []
+    permissions: ORGANIZATION_MANAGEMENT.MANAGE_ORGANIZATION_SCREEN
   }
 ];
 
@@ -39,7 +42,7 @@ const CARDS_DATA = [
     icon: UserIcon,
     details: 'efficiently_streamline_user_management_for_seamless_experience',
     path: AppRoutes.pathUserManagement,
-    permissions: []
+    permissions: USER_MANAGEMENT.MANAGE_USERS_SCREEN
   },
   {
     name: 'ManageRoles',
@@ -47,7 +50,7 @@ const CARDS_DATA = [
     icon: ChecklistIcon,
     details: 'efficiently_streamline_user_management_for_seamless_experience',
     path: '/organization/roles',
-    permissions: []
+    permissions: USER_MANAGEMENT.MANAGE_ROLES_SCREEN
   }
   // {
   //   name: 'ManageCatalog',

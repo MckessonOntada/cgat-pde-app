@@ -9,26 +9,19 @@ import AuthUtils from '@src/util/AuthUtils';
 const Dashboard = () => {
   const { t } = useTranslate();
 
-
   const userRole = AuthUtils.getUserRole();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const userPermissions = AuthUtils.getUserPermissions();
 
   // const cards = isSystemAdminView ? SYSTEM_ADMIN_CARDS_DATA : CARDS_DATA;
   const cards = useMemo(() => {
-    if (isSystemAdminView)
-      return SYSTEM_ADMIN_CARDS_DATA;
+    if (isSystemAdminView) return SYSTEM_ADMIN_CARDS_DATA;
 
-    return CARDS_DATA.filter(card => {
-      if (card.permissions.length === 0)
-        return true;
-
-      card.permissions.forEach(p => {
-        return userPermissions.indexOf(p) > -1
-      });
-
-      return false;
-    })
+    let _cards = CARDS_DATA.filter((card) => {
+      let _hasAccess = userPermissions.includes(card.permissions);
+      return _hasAccess;
+    });
+    return _cards;
   }, []);
 
   return (

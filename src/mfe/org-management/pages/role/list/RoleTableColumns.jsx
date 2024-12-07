@@ -27,17 +27,14 @@ export const createColumns = (t, selectedRows, setSelectedRows) => [
         ]}
       />
     ),
-    width: '40px',
+    width: '40px'
   },
   {
     id: 'name',
     name: t('orgManagement.role.labelRoleName'),
     selector: (row) => (
       <Link className="MCP-table-link" to={`${row.id}`} state={row}>
-        
-        <EclipsesTextcss
-          str={row.name}
-          maxWidth={420} />
+        <EclipsesTextcss str={row.name} maxWidth={420} />
       </Link>
     ),
     wrap: true,

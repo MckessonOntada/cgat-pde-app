@@ -73,6 +73,10 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
     return (
       <div className={styles.navItemsRight} aria-label="System administration view">
         <div className={styles.navOptions}>
+          {/* 
+            The button is only visible for system admin.
+            The isSystemAdminView return false for non-admin user.
+          */}
           {AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() && (
             <Button color="secondary" onClick={handleSystemAdminViewClick}>
               {intl.formatMessage({ id: 'header.label.systemAdminView' })}

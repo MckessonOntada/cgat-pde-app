@@ -14,6 +14,7 @@ import Header from '../components/header';
 import NotFound from './error-pages/NotFound';
 import ProtectedRoute from '@src/routes/ProtectedRoute';
 import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
+import Role from '@src/mfe/org-management/pages/role';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
@@ -77,6 +78,14 @@ function MainLayout() {
                   }
                 />
               </Route>
+              <Route
+                path={`/organization/roles/*`}
+                element={
+                  <ProtectedRoute permissions={routePermissionConfig.roles}>
+                    <Role />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path={'/organization'}
                 element={

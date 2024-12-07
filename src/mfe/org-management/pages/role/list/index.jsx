@@ -9,6 +9,8 @@ import RolesDataTable from './RolesDataTable';
 import { useNavigate } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { PATHS } from '../../../routes/constants';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import AuthUtils from '@src/util/AuthUtils';
 
 const breadcrumbItems = [
   {
@@ -24,6 +26,8 @@ function RolesList() {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { messageConfig, clearMessage, clearFilters } = useRole();
+  const userPermissions = AuthUtils.getUserPermissions();
+
   const handleOnAddRoleClick = () => {
     navigate(PATHS.createRole);
   };
@@ -39,9 +43,11 @@ function RolesList() {
       <ModuleHeader
         heading={<Heading as="h1">{t('orgManagement.role.headingManageOrder')}</Heading>}
         controls={
-          <Button Icon={AddCircleFilled} size="md" onClick={handleOnAddRoleClick}>
-            {t('orgManagement.role.labelAddRole')}
-          </Button>
+          userPermissions.includes(PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_ROLES) && (
+            <Button Icon={AddCircleFilled} size="md" onClick={handleOnAddRoleClick}>
+              {t('orgManagement.role.labelAddRole')}
+            </Button>
+          )
         }
       />
 
