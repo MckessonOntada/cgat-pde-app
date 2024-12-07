@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from '@mckesson/mcp-component-library';
 import arrow_right from '@src/assets/image/arrow_right.svg';
@@ -8,18 +8,29 @@ import AdditionalFilters from './AdditionalFilters';
 import { generateInitialFilterState } from './utils';
 import { Field, Formik, Form } from 'formik';
 import Components from '../form/Components';
-import "./Filters.scss";
+import './Filters.scss';
 
 const Filters = ({ onApplyFilters, onClearFilters, showControls = true, additionalFilters }) => {
-  const initialFilters = useMemo(() => generateInitialFilterState(additionalFilters),[additionalFilters]);
+  const initialFilters = useMemo(() => generateInitialFilterState(additionalFilters), [additionalFilters]);
   const [isCardExpanded, setIsCardExpanded] = useState(false);
+  const searchRef = useRef(null);
 
   const handleExpandCard = () => {
     setIsCardExpanded(!isCardExpanded);
   };
 
+  const cleardSearchBox = () => {
+    //const inputElement = document.getElementById('input-searchQuery');
+    const inputElement = searchRef.current.querySelector('input');
+
+    if (inputElement) {
+      inputElement.value = '';
+    }
+  };
+
   const handleClearFilters = (resetForm) => {
     resetForm({ values: initialFilters });
+    cleardSearchBox();
     onClearFilters?.();
   };
 
@@ -44,22 +55,13 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
                   <button type="button" onClick={handleExpandCard}>
                     <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
                   </button>
-                  <div className="searchContainer">
+                  <div ref={searchRef} className="searchContainer">
                     <Field name={'searchQuery'} label={''} placeholder={'Search...'} component={Components['input']} />
                   </div>
                 </div>
                 {showControls && (
                   <div className="filter-control-buttons filterControls">
-                    {isAnyFilterApplied && (
-                      <Button
-                        type="button"
-                        size="md"
-                        label="Clear Filters"
-                        textButton
-                        className="txtbtn"
-                        onClick={() => handleClearFilters(formik.resetForm)}
-                      />
-                    )}
+                    {isAnyFilterApplied && <Button type="button" size="md" label="Clear Filters" textButton className="txtbtn" onClick={() => handleClearFilters(formik.resetForm)} />}
                     <Button type="submit" size="md" variant="secondary" label="Apply Filters" className="filter-btn" onClick={(values) => onApplyFilters(values)} />
                   </div>
                 )}
