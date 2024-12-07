@@ -90,7 +90,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
     refreshData();
   }, []);
   const columns = useMemo(() => {
-    const _columns = [
+    return [
       {
         id: 'checkbox',
         name: '',
@@ -185,19 +185,16 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
         wrap: true,
         minWidth: '160px',
         cell: (props) => (props.updatedAt ? CommonUtils.convertDateStringFormat(props.updatedAt, 'MM-DD-YYYY') : props.createdAt ? CommonUtils.convertDateStringFormat(props.createdAt, 'MM-DD-YYYY') : 'N/A')
-      }
-    ];
-    if (userPermissions.includes(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS)) {
-      _columns.push({
+      },
+      {
         id: 'action',
         center: true,
         name: t('userManagement.table.action'),
         cell: (row) => <Actions row={row} showEditButton={activeTab === 'PENDING REQUESTS'} showViewButton={activeTab !== 'PENDING REQUESTS'} />,
-        omit: isSystemAdminView,
+        omit: isSystemAdminView || userPermissions.includes(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS),
         width: '120px'
-      });
-    }
-    return _columns;
+      }
+    ];
   }, [data, userPermissions]);
 
   return (

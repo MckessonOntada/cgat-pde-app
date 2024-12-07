@@ -5,7 +5,6 @@ import { LOCALES } from './locales';
 // Function to detect browser language
 const getBrowserLocale = () => {
   const browserLocale = navigator.language || navigator.userLanguage;
-  console.log('browserLocale....', navigator);
   // Extract base language (e.g., 'en' from 'en-US')
   return browserLocale.split('-')[0];
 };

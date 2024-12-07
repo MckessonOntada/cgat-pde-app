@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Loader } from '@mckesson/mcp-component-library';
 
@@ -89,9 +89,13 @@ function MainLayout() {
               <Route
                 path={'/organization'}
                 element={
-                  <ProtectedRoute permissions={routePermissionConfig.organization}>
-                    <Outlet />
-                  </ProtectedRoute>
+                  AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() ? (
+                    <Navigate to={'/'} />
+                  ) : (
+                    <ProtectedRoute permissions={routePermissionConfig.organization}>
+                      <Outlet />
+                    </ProtectedRoute>
+                  )
                 }>
                 <Route
                   path={'/organization'}
@@ -121,9 +125,13 @@ function MainLayout() {
               <Route
                 path={'/system-admin'}
                 element={
-                  <ProtectedRoute permissions={routePermissionConfig.systemAdmin}>
-                    <Outlet />
-                  </ProtectedRoute>
+                  AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() ? (
+                    <Navigate to={'/'} />
+                  ) : (
+                    <ProtectedRoute permissions={routePermissionConfig.systemAdmin}>
+                      <Outlet />
+                    </ProtectedRoute>
+                  )
                 }>
                 <Route
                   path={'/system-admin'}
