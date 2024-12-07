@@ -185,7 +185,7 @@ const UserDetail = () => {
             <div>
               <span className="view_label">{t('userManagement.userdetails.addressdetails')}</span>
               <p className="label-text">
-                {data?.address.address1}, {data?.address.address2}, {data?.address.city}, {data?.address.state}, {data?.address.zip}
+                {data?.address.address1}, {data?.address.address2}
               </p>
             </div>
 
@@ -260,7 +260,7 @@ const UserDetail = () => {
               </div>
             ))
           ) : (
-            <EmptyDataTable image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('userManagement.messages.emptysubtitle')} />
+            <EmptyDataTable isLoading={isLoading} image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('userManagement.messages.emptysubtitle')} />
           )}
         </div>
 

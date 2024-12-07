@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import * as Yup from 'yup';
 import { Formik, Form, Field } from 'formik';
-import { Button, Heading, AutoSuggestDropdown, Label, Required, TextError } from '@mckesson/mcp-component-library';
+import { Button, Heading, AutoSuggestDropdown, Label, Required, TextError, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { UserDetailsFormSegment } from '@src/mfe/user-management/pages/CreateUser';
 import Components from '@src/components/form/Components';
@@ -20,12 +20,27 @@ import { ADDRESS_REGEX, ALPHABETIC_WITH_SPACE, ALPHABETIC_WITH_SPECIAL, FAX_REGE
 const SignUp = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alert, setAlert] = useState(null);
+
+  useEffect(() => {
+    if (isAlertVisible) {
+      const timer = setTimeout(() => {
+        setIsAlertVisible(false);
+      }, 10000);
+
+      return () => clearTimeout(timer); // Cleanup timer on unmount
+    }
+  }, [isAlertVisible]);
+
+  const handleAlertClose = () => {
+    setIsAlertVisible(false);
+  };
+
   const { mutate, isLoading, isError, data } = useMutation(async ({ payload }) => {
     const res = await HttpResourceService.callRest(`${ApiRoutes.POST_SIGNUP_USER}`, httpVerb.POST, payload);
     return res.data;
   });
-
-  // const requestParams = useMemo(() => ({ pageNo: 0, pageSize: 12, sortBy: 'name', sortOrder: 'asc' }), []);
 
   const [requestParams, setRequestParams] = useState({ pageNo: 0, pageSize: 5, sortBy: 'name', sortOrder: 'asc' });
 
@@ -113,7 +128,6 @@ const SignUp = () => {
   });
 
   const handleSubmit = (values) => {
-    // alert(JSON.stringify(values, null, 2));
     console.log(JSON.stringify(values, null, 2));
     const payload = {
       ...values,
@@ -126,11 +140,11 @@ const SignUp = () => {
       },
       {
         onSuccess: (response) => {
-          console.log('User created/updated successfully:', response);
+          console.log('User request created/updated successfully:', response);
           navigate(`../${AppRoutes.pathSignin}`);
         },
         onError: (error) => {
-          setAlert({ type: 'error', message: 'Failed to create/update user' });
+          setAlert({ type: 'error', message: 'Failed to create a user request' });
           setIsAlertVisible(true);
         }
       }
@@ -148,6 +162,7 @@ const SignUp = () => {
       <div className={mainLayoutStyles.home}>
         <div className="MCP-module-wrapper py3">
           <ModuleHeader heading={<Heading as="h1">{t('forms.headings.newUserRegistration')}</Heading>} />
+          {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}

@@ -86,7 +86,7 @@ const AddAccounts = () => {
     <div className="MCP-module-wrapper">
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
-          {t('captions.btnBackToManageOrder')}
+          {t('userManagement.user.backmessage')}
         </Button>
       </div>
 

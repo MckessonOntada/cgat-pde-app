@@ -27,7 +27,8 @@
   display: none;
   @include mixins.respond("lg") {
     width: 25%;
-    height: 98%;
+    align-self: stretch;
+    margin-bottom: 9px;
     display: block;
   }
 }

@@ -69,7 +69,7 @@ const OrgDetailsFormSegment = () => {
         <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3  align-items-start line-height">
           <Field name="address.city" label={t('orgManagement.create_org.inputLabel.city')} placeholder=" " isRequired component={Components['input']} maxLength={50} />
           <Field name="address.zip" label={t('orgManagement.create_org.inputLabel.zip')} placeholder=" " isRequired component={Components['zipInput']} maxLength={10} />
-          <Field name="address.state" fieldlabel={t('orgManagement.create_org.inputLabel.state')} placeholder=" " component={Components['dropdown']} isRequired options={usStates} />
+          <div className="corrected-dropdown"><Field name="address.state" fieldlabel={t('orgManagement.create_org.inputLabel.state')} placeholder=" " component={Components['dropdown']} isRequired options={usStates} /></div>
         </div>
       </div>
     </div>

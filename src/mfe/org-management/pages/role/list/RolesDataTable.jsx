@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CustomDataTable, Button, Loader, Modal, Heading } from '@mckesson/mcp-component-library';
+import { CustomDataTable, Button, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useRole } from '../../../context/RoleContext';
 import { createColumns } from './RoleTableColumns';
@@ -17,7 +17,7 @@ const RolesDataTable = () => {
   const columns = createColumns(t, selectedRows, setSelectedRows);
   const { applySort } = useRole();
   const { data, paginationConfig, setPageNumber, isLoading, refreshData, setMessage } = useRole();
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const dispatch = useDispatch();
   const { mutate: deleteRole } = useMutation({
     mutationFn: async (id) => {
       const response = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}/${id}`, httpVerb.DELETE);
@@ -47,75 +47,60 @@ const RolesDataTable = () => {
     setSelectedRows(selectedRows.map((row) => row.id));
   };
 
-  const handleDeactivate = () => {
-    setIsModalOpen(true);
-  };
-
   const handleOnUserConfirmation = () => {
-    deleteRole(selectedRows);
-    setIsModalOpen(false);
-  }
+    const state = {};
+    state.title = t('orgManagement.message.roleDeactivateConfirmationTitle');
+    state.body = t('orgManagement.message.roleDeactivateConfirmationDescription');
+    state.footer = (
+      <div className="controls">
+        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+          Cancel
+        </Button>
+        <Button
+          size="md"
+          variant="primary"
+          onClick={() => {
+            deleteRole(selectedRows);
+            dispatch(closeModal());
+          }}>
+          Okay
+        </Button>
+      </div>
+    );
+    dispatch(openModal(state));
+  };
 
   return (
     <div>
       {selectedRows && (
         <div className="selected-item-alert">
           <p className="selected-item-text">1 Item's Selected</p>
-          <Button variant="secondary" onClick={handleDeactivate}>
+          <Button variant="secondary" onClick={handleOnUserConfirmation}>
             Deactivate
           </Button>
         </div>
       )}
 
-      {isLoading ? (
-        <div className="dashboard-loader">
-          <Loader variant="circular" />
-        </div>
-      ) : (
-        <CustomDataTable
-          id="my-data-table"
-          type="normal"
-          columns={columns}
-          data={data}
-          onSortIconClick={handleSort}
-          currentPage={paginationConfig.pageNumber}
-          totalPageCount={paginationConfig.totalPages}
-          pagination={true}
-          handleChangePage={(_event, newPageIndex) => setPageNumber(newPageIndex)}
-          totalRocords={paginationConfig.totalElements} // Corrected typo here
-          recordsPerPage={paginationConfig.pageSize}
-          paginationTotalRecorsMessage={'results'}
-          paginationRecordsPerPageMessage={`per page`}
-          selectableRowsHeader={false}
-          selectedRowId={selectedRows}
-          noDataComponent={<EmptyDataTable image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('orgManagement.messages.roleEmptyTableSubtitle')} />}
-          stickyHeader
-          responsive
-        />
-      )}
-
-          <Modal
-            id="discard-role-deactivate-modal"
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            modalTitle="Deactivate role?"
-            modalBody={
-                <Heading as="h3">
-                    Do you want to deactivate this role?
-                </Heading>
-            }
-            modalFooter={
-                <div className="controls">
-                    <Button size="md" variant="secondary" onClick={() => setIsModalOpen(false)}>
-                        Cancel
-                    </Button>
-                    <Button size="md" variant="primary" onClick={handleOnUserConfirmation}>
-                        Okay
-                    </Button>
-                </div>
-            }
-            modalSize="md"
-        />
+      <CustomDataTable
+        id="my-data-table"
+        type="normal"
+        columns={columns}
+        data={data}
+        onSortIconClick={handleSort}
+        currentPage={paginationConfig.pageNumber}
+        totalPageCount={paginationConfig.totalPages}
+        pagination={true}
+        handleChangePage={(_event, newPageIndex) => setPageNumber(newPageIndex)}
+        totalRocords={paginationConfig.totalElements} // Corrected typo here
+        recordsPerPage={paginationConfig.pageSize}
+        paginationTotalRecorsMessage={'results'}
+        paginationRecordsPerPageMessage={`per page`}
+        selectableRowsHeader={false}
+        selectedRowId={selectedRows}
+        noDataComponent={<EmptyDataTable isLoading={isLoading} image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('orgManagement.messages.roleEmptyTableSubtitle')} />}
+        stickyHeader
+        responsive
+      />
     </div>
   );
 };
