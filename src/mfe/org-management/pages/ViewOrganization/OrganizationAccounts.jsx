@@ -45,7 +45,8 @@ export default function OrganizationAccounts(props) {
         name: t('account.name'),
         wrap: true,
         selector: (row) => row.accountName,
-        width: '280px',
+        minWidth: '280px',
+        maxWidth: '360px',
         cell: (row) => (
           <div>
             <EclipsesTextcss str={row.accountName} maxWidth={240} />
@@ -66,7 +67,7 @@ export default function OrganizationAccounts(props) {
         wrap: true,
         cell: (row) => <div className="cellEllipse">{row.distributionChannel}</div>,
         omit: omitColumns.includes('distributionChannel'),
-        width: '220px',
+        minWidth: '280px',
         center: false
       },
       {
@@ -74,11 +75,11 @@ export default function OrganizationAccounts(props) {
         name: t('account.address'),
         cell: (row) => (
           <div>
-            <EclipsesTextcss str={`${row.address.houseNumber} ${row.address.street} ${row.address.street2} ${row.address.street3} ${row.address.city} ${row.address.district} ${row.address.state} ${row.address.country}  ${row.address.zipCode}`} maxWidth={240} />
+            <EclipsesTextcss str={`${row.address.houseNumber} ${row.address.street} ${row.address.street2} ${row.address.street3} ${row.address.city} ${row.address.district} ${row.address.state} ${row.address.country}  ${row.address.zipCode}`} maxWidth={320} />
           </div>
         ),
         omit: omitColumns.includes('address'),
-        width: '280px'
+        minWidth: '280px'
       },
       {
         id: 'cgatIdentifier',
