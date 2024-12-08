@@ -5,6 +5,7 @@ import CheckBox from './CheckBox';
 import Dropdown from './Dropdown';
 import PhoneInput from './PhoneInput';
 import ZipInput from './ZipInput';
+import DateRangePicker from './DateRangePicker';
 
 const Components = {
   input: InputField,
@@ -13,7 +14,8 @@ const Components = {
   dropdown: Dropdown,
   checkBox: CheckBox,
   phoneInput: PhoneInput,
-  zipInput: ZipInput
+  zipInput: ZipInput,
+  dateRangePicker: DateRangePicker
 };
 
 export default Components;

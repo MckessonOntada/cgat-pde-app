@@ -9,7 +9,7 @@ import { PATHS } from '../../routes/constants';
 import './index.scss';
 import { OrgProvider, useOrg } from '../../context/OrgContext';
 import OrgList from './OrgList';
-import CommonFilters from './../../../../components/Filters';
+import CommonFilters from '@src/components/Filters';
 import { US_STATES } from '@src/components/form/util';
 
 function DashboardPage() {

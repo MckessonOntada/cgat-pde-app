@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { TabList, Alert, Button, Heading } from '@mckesson/mcp-component-library';
 import './index.scss';
-import Filters from './Filters';
 import { PATHS } from '../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useUser } from '../../context/UserContext';
@@ -14,11 +13,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
 import AuthUtils from '@src/util/AuthUtils';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
+import CommonFilters from '@src/components/Filters';
+import { ROLES } from '../../mockData/UsersData';
 
 export default function Dashboard() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { activeTab, setActiveTab, refreshData, clearFilters } = useUser();
+  const { activeTab, setActiveTab, refreshData, clearFilters, applyFilters } = useUser();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const location = useLocation();
   const isSuccess = location.state?.isSuccess || false;
@@ -99,6 +100,35 @@ export default function Dashboard() {
     }
   ];
 
+  const AdditionalFiltersConfig = useMemo(() => {
+    let config = [];
+    if(!!isSystemAdminView){
+      config.push(      {
+        type: 'dropdown',
+        name: 'role',
+        label: t('userManagement.table.role'),
+        options: ROLES
+      })
+    }
+    return [
+      ...config,
+      {
+        type: 'dropdown',
+        name: 'status',
+        label: t('userManagement.table.status'),
+        options: [
+          { label: 'All', value: 'all' },
+          { label: 'Inactive', value: 'inactive' },
+          { label: 'Active', value: 'active' }
+        ]
+      },
+      {
+        type: 'dateRangePicker',
+        name: 'dateRange',
+      }
+    ];
+  }, [isSystemAdminView]);
+
   return (
     <div className="MCP-module-wrapper" id={debugIds(ID.TABLE, ID.CONTAINER)}>
       <Breadcrumb items={breadcrumbItems} />
@@ -123,7 +153,7 @@ export default function Dashboard() {
 
       <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
         <div className="MCP-panel-container">
-          <Filters showRoleDropdown={true} showStatusDropdown={true} />
+          <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} />
         </div>
         <Heading as="h2"> {t(isSystemAdminView ? 'userManagement.table.systemadminlisting.label' : 'userManagement.table.userlisting.label')}</Heading>
         {!isSystemAdminView && <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />}
