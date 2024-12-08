@@ -14,13 +14,11 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import CommonUtils from '@src/util/CommonUtils.js';
-import { UserAccountsProvider } from '../../context/UserAccountsContext';
-import UserAccounts from './UserAccounts';
 import { RoutePaths } from '@src/routes/constants';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
-import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import UserAccounts from '@src/components/Accounts/Accounts';
 
 function getbgColorOnRole(Role) {
   switch (Role) {
@@ -284,14 +282,12 @@ const UserDetail = () => {
                 duration={10000}
               />
             )}
-            <UserAccountsProvider addNewAccounts={false} practiceId={data?.practiceId} userId={data?.id}>
               <UserAccounts
-                selectableRows={false} //
-                omitColumns={['distributionChannel']}
+                selectableRows={false}
+                omitColumns={['distributionChannel']} 
                 practiceId={data?.practiceId}
-                userId={data?.id}
+                showSelectedAccounts={false} 
               />
-            </UserAccountsProvider>
           </div>
         )}
       </div>
