@@ -17,6 +17,7 @@ import ModuleHeader from '@src/components/module-header';
 import { OrgAccountsProvider } from '../../context/OrgAccountsContext';
 import OrganizationAccounts from './OrganizationAccounts';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
+import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
 
 export default function ViewOrganization() {
   // Call api to get linked accounts => /practice/{practiceId}/accounts
@@ -107,6 +108,7 @@ export default function ViewOrganization() {
     if (isView) {
       setSelectedAccounts([]);
       setAddNewAccounts(false);
+      scrollToTopUtil();
     } else {
       navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: data }, true);
     }
@@ -119,7 +121,10 @@ export default function ViewOrganization() {
     [selectedAccounts, setSelectedAccounts]
   );
 
-  console.log('selectedAccounts', selectedAccounts);
+  const onEditAccounts = () => {
+    setAddNewAccounts(true);
+    scrollToTopUtil();
+  };
   return (
     <div className="viewOrg-container">
       {isLoading && <Loader type={'screen'} />}
@@ -156,7 +161,7 @@ export default function ViewOrganization() {
         controls={
           !addNewAccounts && (
             <div className="controls">
-              <Button Icon={EditPencil} variant="tertiary" className="button-icon" onClick={() => setAddNewAccounts(true)} size={'md'}>
+              <Button Icon={EditPencil} variant="tertiary" className="button-icon" onClick={onEditAccounts} size={'md'}>
                 {t(isView ? 'orgManagement.table.action.edit' : 'orgManagement.add.account')}
               </Button>
             </div>

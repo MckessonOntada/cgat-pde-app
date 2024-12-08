@@ -12,6 +12,7 @@ import { ReactComponent as upload_bottom } from '@src/assets/image/upload_bottom
 import { useLocation, useNavigate } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
 import AuthUtils from '@src/util/AuthUtils';
+import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import CommonFilters from '@src/components/Filters';
 import { ROLES } from '../../mockData/UsersData';
 
@@ -26,7 +27,7 @@ export default function Dashboard() {
   const isReject = location.state?.isReject || false;
   const [alertDescription, setAlertDescription] = useState('');
   const [alert, setAlert] = useState(null);
-
+  const userPermissions = AuthUtils.getUserPermissions();
   const showAlert = (type, message) => {
     setAlert({ type });
     setIsAlertVisible(true);
@@ -135,10 +136,12 @@ export default function Dashboard() {
         heading={<Heading as="h1">{t(isSystemAdminView ? 'userManagement.header.systemadmin.label' : 'userManagement.header.label')}</Heading>}
         controls={
           <div className="controls">
-            <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createUser}`)}>
-              {t(isSystemAdminView ? 'userManagement.button.addsystemadmin' : 'userManagement.button.adduser')}
-            </Button>
-            {!isSystemAdminView && (
+            {userPermissions.includes(PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_USERS) && (
+              <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createUser}`)}>
+                {t(isSystemAdminView ? 'userManagement.button.addsystemadmin' : 'userManagement.button.adduser')}
+              </Button>
+            )}
+            {!isSystemAdminView && userPermissions.includes(PERMISSIONS_ENUM.USER_MANAGEMENT.UPLOAD_USERS) && (
               <Button Icon={upload_bottom} className="button-icon" variant="primary" size="md">
                 {t('userManagement.button.uploadUsers')}
               </Button>

@@ -2,10 +2,11 @@ import ErrorComponent from '@src/components/error/ErrorComponent';
 import AuthUtils from '@src/util/AuthUtils';
 import React from 'react';
 import { Button } from '@mckesson/mcp-component-library';
+import { useNavigate } from 'react-router-dom';
 
 const ProtectedRoute = (props) => {
   const { isDashboard = false, permissions } = props;
-
+  const navigate = useNavigate();
   if (!isDashboard && !AuthUtils.userHasRoutePermission(permissions)) {
     return (
       <ErrorComponent
@@ -14,7 +15,7 @@ const ProtectedRoute = (props) => {
         header="Access Denied"
         body="You do not have permission to access this page. "
         bodyFooter={
-          <Button data-testid="deny-back-button" variant="text" onClick={() => navigate(-1)}>
+          <Button data-testid="deny-back-button" variant="text" onClick={() => navigate('/')}>
             Go Back
           </Button>
         }

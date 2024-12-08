@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Loader } from '@mckesson/mcp-component-library';
 
@@ -14,6 +14,8 @@ import Header from '../components/header';
 import NotFound from './error-pages/NotFound';
 import ProtectedRoute from '@src/routes/ProtectedRoute';
 import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
+import Role from '@src/mfe/org-management/pages/role';
+import ScrollToTop from '@src/components/scrollToTop/ScrollToTop';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
@@ -28,6 +30,7 @@ function MainLayout() {
     <div id={debugIds(ID.MAIN)} className={styles.appContainer}>
       <Header />
       <div className={styles.home} id={debugIds(ID.HOME)}>
+        <ScrollToTop containerId={debugIds(ID.HOME)} />
         <Suspense fallback={<Loader type="screen" />}>
           <div className={styles.routeContent} id={debugIds(ID.HOME, ID.ROUTE_CONTENT)}>
             <Routes className={styles.routes}>
@@ -78,11 +81,23 @@ function MainLayout() {
                 />
               </Route>
               <Route
+                path={`/organization/roles/*`}
+                element={
+                  <ProtectedRoute permissions={routePermissionConfig.roles}>
+                    <Role />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path={'/organization'}
                 element={
-                  <ProtectedRoute permissions={routePermissionConfig.organization}>
-                    <Outlet />
-                  </ProtectedRoute>
+                  AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() ? (
+                    <Navigate to={'/'} />
+                  ) : (
+                    <ProtectedRoute permissions={routePermissionConfig.organization}>
+                      <Outlet />
+                    </ProtectedRoute>
+                  )
                 }>
                 <Route
                   path={'/organization'}
@@ -112,9 +127,13 @@ function MainLayout() {
               <Route
                 path={'/system-admin'}
                 element={
-                  <ProtectedRoute permissions={routePermissionConfig.systemAdmin}>
-                    <Outlet />
-                  </ProtectedRoute>
+                  AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() ? (
+                    <Navigate to={'/'} />
+                  ) : (
+                    <ProtectedRoute permissions={routePermissionConfig.systemAdmin}>
+                      <Outlet />
+                    </ProtectedRoute>
+                  )
                 }>
                 <Route
                   path={'/system-admin'}
