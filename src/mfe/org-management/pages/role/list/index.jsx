@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Button, Alert, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle.svg';
 import ModuleHeader from '@src/components/module-header';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
-import FilterPanel from './FilterPanel';
 import { useRole } from '../../../context/RoleContext';
 import RolesDataTable from './RolesDataTable';
 import { useNavigate } from 'react-router-dom';
@@ -11,6 +10,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { PATHS } from '../../../routes/constants';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import AuthUtils from '@src/util/AuthUtils';
+import CommonFilters from '@src/components/Filters';
 
 const breadcrumbItems = [
   {
@@ -25,7 +25,7 @@ const breadcrumbItems = [
 function RolesList() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { messageConfig, clearMessage, clearFilters } = useRole();
+  const { messageConfig, clearMessage, clearFilters, applyFilters } = useRole();
   const userPermissions = AuthUtils.getUserPermissions();
 
   const handleOnAddRoleClick = () => {
@@ -34,6 +34,26 @@ function RolesList() {
   useEffect(() => {
     clearFilters();
   }, []);
+
+  const AdditionalFiltersConfig = useMemo(() => {
+    return [
+      {
+        type: 'dateRangePicker',
+        name: 'dateRange',
+      },
+      {
+        type: 'dropdown',
+        name: 'status',
+        label: t('userManagement.table.status'),
+        options: [
+          { label: 'All', value: 'all' },
+          { label: 'Inactive', value: 'inactive' },
+          { label: 'Active', value: 'active' }
+        ]
+      }
+    ];
+  }, []);
+
   return (
     <div className="MCP-module-wrapper">
       {/* Breadcrumb */}
@@ -57,7 +77,12 @@ function RolesList() {
       <div className="MCP-module-body">
         <div className="MCP-panel-container">
           <div className="MCP-CardContainer">
-            <FilterPanel />
+            <CommonFilters
+              onApplyFilters={applyFilters} 
+              onClearFilters={clearFilters} 
+              additionalFilters={AdditionalFiltersConfig}
+              searchPlaceholder={t('orgManagement.role.placeholder')} 
+            />
           </div>
           <div className="MCP-table-wrapper">
             <ModuleHeader heading={<Heading as="h2">{t('orgManagement.role.labelRolesListing')}</Heading>} />

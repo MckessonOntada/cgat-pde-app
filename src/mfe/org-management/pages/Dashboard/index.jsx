@@ -92,6 +92,7 @@ function DashboardPage() {
                 onApplyFilters={applyFilters} 
                 onClearFilters={clearFilters} 
                 additionalFilters={AdditionalFiltersConfig}
+                searchPlaceholder={t('orgManagement.filters.status.label')}
               />
             </div>
             <Heading as="h2">{t('orgManagement.org_list')}</Heading>

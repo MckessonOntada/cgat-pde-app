@@ -10,7 +10,7 @@ import { Field, Formik, Form } from 'formik';
 import Components from '../form/Components';
 import './Filters.scss';
 
-const Filters = ({ onApplyFilters, onClearFilters, showControls = true, additionalFilters }) => {
+const Filters = ({ onApplyFilters, onClearFilters, showControls = true, additionalFilters, searchPlaceholder = "Search..." }) => {
   const initialFilters = useMemo(() => generateInitialFilterState(additionalFilters), [additionalFilters]);
   const [isCardExpanded, setIsCardExpanded] = useState(false);
   const searchRef = useRef(null);
@@ -19,8 +19,7 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
     setIsCardExpanded(!isCardExpanded);
   };
 
-  const cleardSearchBox = () => {
-    //const inputElement = document.getElementById('input-searchQuery');
+  const clearSearchBox = () => {
     const inputElement = searchRef.current.querySelector('input');
 
     if (inputElement) {
@@ -30,7 +29,7 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
 
   const handleClearFilters = (resetForm) => {
     resetForm({ values: initialFilters });
-    cleardSearchBox();
+    clearSearchBox();
     onClearFilters?.();
   };
 
@@ -56,7 +55,7 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
                     <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
                   </button>
                   <div ref={searchRef} className="searchContainer">
-                    <Field name={'searchQuery'} label={''} placeholder={'Search...'} component={Components['input']} />
+                    <Field name={'searchQuery'} label={''} placeholder={searchPlaceholder} component={Components['input']} />
                   </div>
                 </div>
                 {showControls && (
