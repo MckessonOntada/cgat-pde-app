@@ -151,5 +151,7 @@ export const OrgManagementEN = {
   'errors.practice_name_key': 'Organization name already exists.',
   'errors.practice_email_key': 'Email ID already exists in the System.',
   'errors.practice_phone_key': 'Phone number already exists.',
-  'errors.default': 'An unexpected error occurred.'
+  'errors.default': 'An unexpected error occurred.',
+
+  'orgManagement.filters.status.label': 'Select by name & location'
 };
