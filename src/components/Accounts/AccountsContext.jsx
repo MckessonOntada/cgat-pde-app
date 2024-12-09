@@ -98,6 +98,7 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
               prevConfig.totalPages = totalPages;
             }
             
+            return prevConfig;
         });
 
         return content;
