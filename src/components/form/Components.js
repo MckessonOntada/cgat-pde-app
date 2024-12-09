@@ -6,6 +6,7 @@ import Dropdown from './Dropdown';
 import PhoneInput from './PhoneInput';
 import ZipInput from './ZipInput';
 import DateRangePicker from './DateRangePicker';
+import MultiSelectDropdown from './MultiSelectDropdown';
 
 const Components = {
   input: InputField,
@@ -15,7 +16,8 @@ const Components = {
   checkBox: CheckBox,
   phoneInput: PhoneInput,
   zipInput: ZipInput,
-  dateRangePicker: DateRangePicker
+  dateRangePicker: DateRangePicker,
+  multiSelectDropdown: MultiSelectDropdown 
 };
 
 export default Components;

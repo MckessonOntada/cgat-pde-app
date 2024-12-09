@@ -3,21 +3,17 @@ import { useMutation, useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import DetailsView from '../../components/DetailsView';
-import AccountsList from '@src/components/Accounts/AccountsList';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
 import './ViewOrg.scss';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { RoutePaths } from '@src/routes/constants';
 import { Button, Heading, Loader, Alert, Stepper } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import { PATHS as InternalPaths } from '../../routes/constants';
 import ModuleHeader from '@src/components/module-header';
-import { OrgAccountsProvider } from '../../context/OrgAccountsContext';
-import OrganizationAccounts from './OrganizationAccounts';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
+import OrganizationAccounts from '@src/components/Accounts/Accounts';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
 
@@ -25,7 +21,6 @@ export default function ViewOrganization() {
   // Call api to get linked accounts => /practice/{practiceId}/accounts
   const location = useLocation();
   const isView = location.state?.isView || false;
-  const [isRemoveClicked, setIsRemoveClicked] = useState();
   const { orgId } = useParams();
 
   const navigate = useNavigate();
@@ -72,12 +67,7 @@ export default function ViewOrganization() {
     setUpdateState({ isSuccess: false });
   };
 
-  const {
-    mutate,
-    isLoading: isAddAccountsLoading,
-    isError: isAddAccountsError,
-    data: isAddAccountsData
-  } = useMutation(async ({ payload }) => {
+  const { mutate } = useMutation(async ({ payload }) => {
     const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${orgId}/accounts`;
     const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
     return res.data;
@@ -174,18 +164,8 @@ export default function ViewOrganization() {
         }
       />
       {updateState.isSuccess && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
-      <OrgAccountsProvider addNewAccounts={addNewAccounts} practiceId={orgId}>
-        <OrganizationAccounts
-          showSelectedAccounts={addNewAccounts}
-          omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']}
-          selectableRows={addNewAccounts}
-          selectedRows={selectedAccounts}
-          setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)}
-          practiceId={orgId}
-          onRemoveAccount={onRemoveAccount}
-          addNewAccounts={addNewAccounts}
-        />
-      </OrgAccountsProvider>
+      <OrganizationAccounts showSelectedAccounts={addNewAccounts} omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']} selectedRows={selectedAccounts} setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)} practiceId={orgId} />
+
       {addNewAccounts && (
         <div className="btn-box">
           <Button variant="secondary" onClick={handleCancel}>

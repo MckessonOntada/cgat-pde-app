@@ -1,11 +1,8 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Stepper, Heading, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import ModuleHeader from '@src/components/module-header';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import arrow_right from '@src/assets/image/arrow_right.svg';
-import AccountsList from '@src/components/Accounts/AccountsList';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import AllAccountsData from '@src/mfe/org-management/mockData/AllAccounts';
 import { RoutePaths } from '@src/routes/constants';
@@ -14,8 +11,7 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
-import { UserAccountsProvider } from '../../context/UserAccountsContext';
-import UserAccounts from '../UserDetail/UserAccounts';
+import UserAccounts from '@src/components/Accounts/Accounts';
 import { PATHS } from '../../routes';
 
 const AddAccounts = () => {
@@ -112,21 +108,14 @@ const AddAccounts = () => {
         </div>
       )}
 
-      <UserAccountsProvider addNewAccounts={true} practiceId={practiceId} userId={userId}>
-        <UserAccounts
-          data={AllAccountsData}
-          selectedRows={selectedAccounts}
-          setSelectedRows={setSelectedAccounts}
-          onRemoveAccount={onRemoveAccount}
-          showSelectedAccounts
-          omitColumns={['action', 'cgatIdentifier', 'address']}
-          practiceId={practiceId}
-          userId={userId}
-          addNewAccounts={true}
-          selectableRows={true}
-        />
-      </UserAccountsProvider>
-
+      <UserAccounts
+        selectedRows={selectedAccounts}
+        setSelectedRows={setSelectedAccounts}
+        showSelectedAccounts={true}
+        omitColumns={['action', 'cgatIdentifier', 'address']}
+        practiceId={practiceId}
+        selectableRows={true}
+      />
       <div className={'buttonGroup'}>
         <Button variant="secondary" type="button" onClick={handleBackButton} size={'md'}>
           {t('userManagement.button.back')}

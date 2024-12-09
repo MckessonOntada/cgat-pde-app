@@ -17,7 +17,6 @@ import AuthUtils from '@src/util/AuthUtils';
 import { RoutePaths } from '@src/routes/constants';
 import { ALPHABETIC_WITH_SPECIAL, ALPHABETIC_WITH_SPACE, ADDRESS_REGEX, ZIP_REGEX, PHONE_REGEX, FAX_REGEX } from '@src/components/form/ValidationRegExp';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
-import CommonUtils from '@src/util/CommonUtils';
 
 const CreateUser = () => {
   const { t } = useTranslate();

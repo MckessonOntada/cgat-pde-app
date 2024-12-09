@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CustomDataTable, Button, Loader } from '@mckesson/mcp-component-library';
+import { CustomDataTable, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useRole } from '../../../context/RoleContext';
 import { createColumns } from './RoleTableColumns';
@@ -10,6 +10,7 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+import './Role.scss';
 
 const RolesDataTable = () => {
   const { t } = useTranslate();
@@ -73,7 +74,7 @@ const RolesDataTable = () => {
   return (
     <div>
       {selectedRows && (
-        <div className="selected-item-alert">
+         <div className="selected-item-alert">
           <p className="selected-item-text">1 Item's Selected</p>
           <Button variant="secondary" onClick={handleOnUserConfirmation}>
             Deactivate

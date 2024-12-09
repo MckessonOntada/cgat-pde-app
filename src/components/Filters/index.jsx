@@ -61,7 +61,7 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
                 {showControls && (
                   <div className="filter-control-buttons filterControls">
                     {isAnyFilterApplied && <Button type="button" size="md" label="Clear Filters" textButton className="txtbtn" onClick={() => handleClearFilters(formik.resetForm)} />}
-                    <Button type="submit" size="md" variant="secondary" label="Apply Filters" className="filter-btn" onClick={(values) => onApplyFilters(values)} />
+                    <Button type="submit" size="md" variant="secondary" label="Apply Filters" className="filter-btn" />
                   </div>
                 )}
               </div>

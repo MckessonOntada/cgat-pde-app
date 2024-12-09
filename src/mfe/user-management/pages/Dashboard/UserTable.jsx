@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { CustomDataTable, Button, Badge, Loader, CheckboxGroup, Modal, Tooltip } from '@mckesson/mcp-component-library';
+import { CustomDataTable, Button, Badge, CheckboxGroup, Modal, Tooltip } from '@mckesson/mcp-component-library';
 import './index.scss';
 import Actions from './Actions';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -28,14 +28,15 @@ function getBackgroundColorByRole(Role) {
   }
 }
 
-function UserTable({ selectableRows = false, onActionSuccess }) {
+function UserTable({ onActionSuccess }) {
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const { isLoading, isError, data, activeTab, filterConfig, paginationConfig, applySort, setFilterConfig, refreshData, setPageNumber } = useUser();
+  const { isLoading, data, activeTab, paginationConfig, applySort, refreshData, setPageNumber } = useUser();
   const userPermissions = AuthUtils.getUserPermissions();
   const { hasPermission } = usePermission();
+
   const handleRowSelected = ({ selectedRows }) => {
     setSelectedRows(selectedRows);
   };
@@ -207,7 +208,6 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
 
   return (
     <div>
-      {/* {isLoading && <Loader type={'screen'} />} */}
       {selectedRows && (
         <div className="selected-item-alert">
           <p className="selected-item-text">
@@ -226,7 +226,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
         onSortIconClick={handleOnSortIconClick}
         handleChangePage={handleChangePage}
         selectableRowsHeader={false}
-        currentPage={filterConfig.pageNumber}
+        currentPage={paginationConfig.pageNumber}
         totalPageCount={paginationConfig.totalPages}
         totalRocords={paginationConfig.totalElements}
         recordsPerPage={paginationConfig.pageSize}

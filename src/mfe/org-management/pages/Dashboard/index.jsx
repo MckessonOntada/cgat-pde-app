@@ -58,14 +58,15 @@ function DashboardPage() {
   });
 
   const AdditionalFiltersConfig = useMemo(() => {
-    return [{
-      type: 'dropdown',
+    return [
+    {
+      type: 'multiSelectDropdown',
       name: 'location',
       label: 'Location', // Use translation
       options: usStates
     },
     {
-      type: 'dropdown',
+      type: 'multiSelectDropdown',
       name: 'status',
       label: 'Status', // Use translation
       options: [{label: 'All', value: "all"}, { label: 'Inactive', value: "inactive"}, { label: "Active", value: 'active'}]

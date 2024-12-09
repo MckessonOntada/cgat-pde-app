@@ -77,8 +77,8 @@ export const UserProvider = ({ children }) => {
 
         setPaginationConfig((prevConfig) => ({
           ...prevConfig,
-          totalElements,
-          totalPages,
+          ...(totalElements && {totalElements}),
+          ...(totalPages && {totalPages}),
         }));
 
         return data;
@@ -116,7 +116,7 @@ export const UserProvider = ({ children }) => {
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig })
 
   const applyFilters = (filters) => {
-    setPageNumber(1);
+    setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig({...filters});
   }
 
