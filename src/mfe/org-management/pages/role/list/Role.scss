@@ -1,0 +1,15 @@
+.selected-item-alert {
+  display: flex;
+  margin-block: var(--spacing-02);
+  padding: var(--spacing-01);
+  border-radius: var(--brand-border-radius--3);
+  justify-content: space-between;
+  background-color: var(--brand-color-patient-primary-1);
+  padding: var(--spacing-02);
+  padding-inline: var(--spacing-04);
+  align-items: center;
+}
+
+.selected-item-text {
+  font-size: var(--brand-font-size--10);
+}

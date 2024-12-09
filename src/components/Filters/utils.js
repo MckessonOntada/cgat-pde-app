@@ -1,6 +1,6 @@
 const FIELD_INITIAL_STATE = {
     'dropdown': "", 
-    'multiselectDropdown': [],
+    'multiSelectDropdown': [],
     'datepicker': null,
     'dateRange': {
         start: null,
