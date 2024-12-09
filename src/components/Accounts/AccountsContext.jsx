@@ -89,11 +89,16 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
       if (response) {
         const { content, totalElements, totalPages } = response.data;
 
-        setPaginationConfig((prevConfig) => ({
-          ...prevConfig,
-          ...(totalElements && {totalElements}),
-          ...(totalPages && {totalPages}),
-        }));
+        setPaginationConfig((prevConfig) => {
+          
+            if(totalElements){
+              prevConfig.totalElements = totalElements;
+            }
+            if(totalPages){
+              prevConfig.totalPages = totalPages;
+            }
+            
+        });
 
         return content;
       }
@@ -102,7 +107,6 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
   });
 
   const applyFilters = useCallback((values)=>{
-    console.log("values",values)
     setFilterConfig(values)
   },[]);
 

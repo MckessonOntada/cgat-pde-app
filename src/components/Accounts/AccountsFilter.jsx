@@ -7,8 +7,7 @@ export default function AccountsFilter() {
   const { applyFilters, clearFilters } = useAccounts();
   const { t } = useTranslate();
 
-  const AdditionalFiltersConfig = useMemo(() => {
-    return [
+  const AdditionalFiltersConfig =[
       {
         type: 'dropdown',
         name: 'status',
@@ -43,7 +42,6 @@ export default function AccountsFilter() {
           ]        
       }
     ];
-  }, []);
 
   return <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={t('orgManagement.filters.status.label')} />;
 }
