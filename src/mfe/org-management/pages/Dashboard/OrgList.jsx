@@ -54,7 +54,7 @@ const OrgList = () => {
 
     const state = {};
     state.title = t('orgManagement.message.accountSelectionConfirmationTitle');
-    state.body = t('orgManagement.message.accountSelectionConfirmationDescription');
+    state.body = <h3>{t('orgManagement.message.accountSelectionConfirmationDescription')}</h3>;
     state.footer = (
       <div className="controls">
         <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>

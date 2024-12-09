@@ -21,7 +21,7 @@ const UserPermissions = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
   const location = useLocation();
-  const { permissionsData, isEdit } = location.state || {};
+  const { permissionsData, isEdit = false, isBack = false } = location.state || {};
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alert, setAlert] = useState(null);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -42,7 +42,7 @@ const UserPermissions = () => {
     if (isEdit) {
       navigate(`../${PATHS.userDetail.replace(':userId', userId)}`);
     } else {
-      navigate(`../${PATHS.editUser}/${userId}`, { state: { isBack: true } });
+      navigate(`../${PATHS.editUser}/${userId}`, { state: { isBack: true, permissionsData: permissionsData } });
     }
   };
 
@@ -67,7 +67,7 @@ const UserPermissions = () => {
 
   const handleSaveAndContinue = (values) => {
     const payload = {
-      roleId: isSystemAdminView ? 1 : values.roleId,
+      roleId: isSystemAdminView ? 1 : permissionsData?.roleId ? permissionsData?.roleId : values.roleId,
       permissions: values.permissions
     };
 
@@ -79,7 +79,7 @@ const UserPermissions = () => {
           if (isSystemAdminView) {
             navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : RoutePaths.pathUserManagement, { state: { isSuccess: true } });
           } else {
-            navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.addAccounts}/${userId}`);
+            navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.addAccounts}/${userId}`, { state: { permissionsData: payload } });
           }
         },
         onError: (error) => {
@@ -98,7 +98,6 @@ const UserPermissions = () => {
         </Button>
       </div>
       <ModuleHeader heading={<Heading as="h1">{t('userManagement.create_user')}</Heading>} />
-
       {!isEdit && (
         <div className="stepper">
           <Stepper
@@ -118,13 +117,11 @@ const UserPermissions = () => {
           />
         </div>
       )}
-
       {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
-
       <Formik
         initialValues={{
           permissions: permissionsData?.permissions || [],
-          roleId: permissionsData?.role?.id || ''
+          roleId: isBack ? permissionsData.roleid : permissionsData?.role?.id || ''
         }}
         onSubmit={(values) => {
           handleSaveAndContinue(values);
@@ -132,11 +129,16 @@ const UserPermissions = () => {
         validateOnChange={false}
         validateOnBlur={true}>
         {({ values, setFieldValue, initialValues, isValid }) => {
-          const isDirty = (isEdit && values.roleId) || isFormValuesChanged(initialValues, values);
+          const isDirty = (isEdit && values.roleId) || isBack || permissionsData?.roleId || isFormValuesChanged(initialValues, values);
 
           return (
             <Form>
-              <PermissionForm enabledPermissions={values.permissions} setEnabledPermissions={(permissions) => setFieldValue('permissions', permissions)} handleRoleSelect={(value) => setFieldValue('roleId', value)} editRoleId={values.roleId} />
+              <PermissionForm
+                enabledPermissions={values.permissions}
+                setEnabledPermissions={(permissions) => setFieldValue('permissions', permissions)}
+                handleRoleSelect={(value) => setFieldValue('roleId', value)}
+                editRoleId={values.roleId ? values.roleId : permissionsData?.roleId}
+              />
               <div className={'buttonGroup'}>
                 <Button variant="secondary" type="button" onClick={handleBack} size={'md'}>
                   {t('userManagement.button.back')}
