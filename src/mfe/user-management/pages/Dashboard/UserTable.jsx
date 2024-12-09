@@ -128,11 +128,17 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
             {activeTab === 'PENDING REQUESTS' ? (
               <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`} maxWidth={300} />
             ) : (
-              <Link
-                to={`${props.id}`} // dynamically constructs the URL with userId
-                className="MCP-table-link">
-                <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`} maxWidth={300} />
-              </Link>
+              <React.Fragment>
+                {hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS) ? (
+                  <Link
+                    to={`${props.id}`} // dynamically constructs the URL with userId
+                    className="MCP-table-link">
+                    <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`} maxWidth={300} />
+                  </Link>
+                ) : (
+                  <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`} maxWidth={300} />
+                )}
+              </React.Fragment>
             )}
           </div>
         )
@@ -192,8 +198,8 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
         id: 'action',
         center: true,
         name: t('userManagement.table.action'),
-        cell: (row) => <Actions row={row} showEditButton={activeTab === 'PENDING REQUESTS'} showViewButton={activeTab !== 'PENDING REQUESTS'} />,
-        omit: isSystemAdminView || hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS),
+        cell: (row) => <Actions row={row} showEditButton={activeTab === 'PENDING REQUESTS' && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS)} showViewButton={activeTab !== 'PENDING REQUESTS' && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS)} />,
+        omit: isSystemAdminView,
         width: '120px'
       }
     ];
