@@ -54,12 +54,12 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
                   <button type="button" onClick={handleExpandCard}>
                     <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
                   </button>
-                  <div ref={searchRef} className="searchContainer">
+                  <div ref={searchRef} className={'ctrl-search-box'}>
                     <Field name={'searchQuery'} label={''} placeholder={searchPlaceholder} component={Components['input']} />
                   </div>
                 </div>
                 {showControls && (
-                  <div className="filter-control-buttons filterControls">
+                  <div className="filter-control-buttons">
                     {isAnyFilterApplied && <Button type="button" size="md" label="Clear Filters" textButton className="txtbtn" onClick={() => handleClearFilters(formik.resetForm)} />}
                     <Button type="submit" size="md" variant="secondary" label="Apply Filters" className="filter-btn" />
                   </div>
