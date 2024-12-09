@@ -285,8 +285,9 @@ const UserDetail = () => {
               <UserAccounts
                 selectableRows={false}
                 omitColumns={['distributionChannel']} 
-                practiceId={data?.practiceId}
+                practiceId={data?.practiceId || 1}
                 showSelectedAccounts={false} 
+                userId = {userId}
               />
           </div>
         )}

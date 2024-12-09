@@ -17,9 +17,10 @@ export default function AccountsList(props) {
     setSelectedRows,
     showSelectedAccounts = false, // This is to show selected accounts in right rail
     isLoading = false,
-    omitColumns = []
+    omitColumns = [],
+    practiceId,
   } = props;
-  const { data, paginationConfig } = useAccounts();
+  const { data, paginationConfig, refetch } = useAccounts();
   const { t } = useTranslate();
 
   const columns = useMemo(() => {
@@ -88,7 +89,7 @@ export default function AccountsList(props) {
         id: 'action',
         center: true,
         name: t('account.action'),
-        cell: (row) => <Actions row={row} userId={null} />,
+        cell: (row) => <Actions row={row} userId={null} practiceId={practiceId} refetch={refetch} />,
         width: '180px',
         omit: omitColumns.includes('action')
       }

@@ -37,7 +37,7 @@ const INITIAL_PAGINATION_STATE = {
   };
   
 
-export const AccountsProvider = ({ children, showSelectedAccounts, practiceId }) => {
+export const AccountsProvider = ({ children, practiceId, userId }) => {
     const [filterConfig, setFilterConfig] = useState(INITIAL_STATE);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortCriteria, setSortCriteria] = useState(INITIAL_SORT_PARAMS);
@@ -64,19 +64,22 @@ export const AccountsProvider = ({ children, showSelectedAccounts, practiceId })
         sortOrder: sortCriteria.sortOrder,
         practiceId,
         partnerFunction: 'SOLD_TO',
-        ...(filterConfig.searchQuery && { query: filterConfig.searchQuery }),
+        ...(filterConfig.searchQuery.length && { query: filterConfig.searchQuery }),
         // TODO : Add multi select support
-        ...(filterConfig.status && { status: filterConfig.status }),
-        ...(filterConfig.distChannels && { distChannels: filterConfig.distChannels }),
-        ...(filterConfig.salesOrg && { salesOrg: filterConfig.salesOrg }),
+        ...(filterConfig.status.length && { status: filterConfig.status }),
+        ...(filterConfig.distChannels.length && { distChannels: filterConfig.distChannels }),
+        ...(filterConfig.salesOrg.length && { salesOrg: filterConfig.salesOrg }),
         // TODO : Use below after Adding multi select support
         // ...(filterConfig.status?.length && { status: filterConfig.status.join(",") }),
         // ...(filterConfig.distChannels?.length && { distChannels: filterConfig.distChannels.join(",") }),
         // ...(filterConfig.salesOrg?.length && { salesOrg: filterConfig.salesOrg.join(",") }),
       }
 
-    return showSelectedAccounts ? `${ApiRoutes.PUBLIC_ACCOUNTS}?${serializeParams(params)}` : `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts?${serializeParams(params)}`;
-  }, [filterConfig, paginationConfig, sortCriteria, showSelectedAccounts, practiceId]);
+      if(userId){
+        return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/users/${userId}/accounts?${serializeParams(params)}`
+      }
+    return practiceId ? `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts?${serializeParams(params)}` : `${ApiRoutes.PUBLIC_ACCOUNTS}?${serializeParams(params)}` ;
+  }, [filterConfig, paginationConfig, sortCriteria, practiceId]);
 
   // Fetch data from server
   const { isLoading, data, isError, refetch } = useQuery({
@@ -127,7 +130,7 @@ export const AccountsProvider = ({ children, showSelectedAccounts, practiceId })
       clearFilters,
       applyFilters
     }),
-    [data, updateFilterState, clearFilters, currentPage, isLoading, isError, filterConfig, paginationConfig, applyFilters]
+    [data, updateFilterState, clearFilters, currentPage, isLoading, isError, filterConfig, paginationConfig, applyFilters, refetch]
   );
 
   return <AccountsContext.Provider value={ctxValue}>{children}</AccountsContext.Provider>;
