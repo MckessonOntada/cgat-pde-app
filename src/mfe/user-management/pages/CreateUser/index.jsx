@@ -23,7 +23,7 @@ const CreateUser = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
   const location = useLocation();
-  const { isEdit = false, isPending = false, isBack = false } = location.state || {};
+  const { isEdit = false, isPending = false, isBack = false, permissionsData } = location.state || {};
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alert, setAlert] = useState(null);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -191,13 +191,14 @@ const CreateUser = () => {
       {
         onSuccess: (response) => {
           console.log('User created/updated successfully:', response);
-          navigate(isEdit ? `/${isSystemAdminView ? 'system-admin' : 'user'}/${response?.createUser?.id ? response.createUser?.id : userId}` : `../${PATHS.userPermissions}/${response?.createUser?.id ? response.createUser?.id : userId}`);
+          navigate(isEdit ? `/${isSystemAdminView ? 'system-admin' : 'user'}/${response?.createUser?.id ? response.createUser?.id : userId}` : `../${PATHS.userPermissions}/${response?.createUser?.id ? response.createUser?.id : userId}`, {
+            state: { permissionsData: permissionsData }
+          });
         },
         onError: (error) => {
           const errorKey = handleApiError(error);
           const actionType = isPending ? 'Approve' : isEdit ? 'Update' : 'Create';
           setAlert({ type: 'error', message: t(errorKey) });
-          // setAlert({ type: 'error', message: `Failed to ${actionType}  user` });
           setIsAlertVisible(true);
         }
       }

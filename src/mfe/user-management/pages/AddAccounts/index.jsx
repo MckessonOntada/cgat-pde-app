@@ -21,7 +21,7 @@ const AddAccounts = () => {
   const { userId } = useParams();
   const [searchText, setSearchText] = useState('');
   const [selectedAccounts, setSelectedAccounts] = useState([]);
-  const { isEdit } = location.state || {};
+  const { permissionsData, isEdit } = location.state || {};
   const isSuccess = location.state?.isSuccess || false;
   const practiceId = AuthUtils.getPracticeId() ?? 1;
   const selectedCount = selectedAccounts?.length || 0;
@@ -32,7 +32,7 @@ const AddAccounts = () => {
   };
 
   const handleBackButton = () => {
-    navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.userPermissions}/${userId}`);
+    navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.userPermissions}/${userId}`, { state: { isBack: true, permissionsData: permissionsData } });
   };
 
   const handleSearchChange = (inputValue) => {
@@ -108,14 +108,7 @@ const AddAccounts = () => {
         </div>
       )}
 
-      <UserAccounts
-        selectedRows={selectedAccounts}
-        setSelectedRows={setSelectedAccounts}
-        showSelectedAccounts={true}
-        omitColumns={['action', 'cgatIdentifier', 'address']}
-        practiceId={practiceId}
-        selectableRows={true}
-      />
+      <UserAccounts selectedRows={selectedAccounts} setSelectedRows={setSelectedAccounts} showSelectedAccounts={true} omitColumns={['action', 'cgatIdentifier', 'address']} practiceId={practiceId} selectableRows={true} />
       <div className={'buttonGroup'}>
         <Button variant="secondary" type="button" onClick={handleBackButton} size={'md'}>
           {t('userManagement.button.back')}

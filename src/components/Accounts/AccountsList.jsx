@@ -19,6 +19,7 @@ export default function AccountsList(props) {
     isLoading = false,
     omitColumns = [],
     practiceId,
+    userId
   } = props;
   const { data, paginationConfig, refetch } = useAccounts();
   const { t } = useTranslate();
@@ -89,7 +90,7 @@ export default function AccountsList(props) {
         id: 'action',
         center: true,
         name: t('account.action'),
-        cell: (row) => <Actions row={row} userId={null} practiceId={practiceId} refetch={refetch} />,
+        cell: (row) => <Actions row={row} userId={userId} practiceId={practiceId} refetch={refetch} />,
         width: '180px',
         omit: omitColumns.includes('action')
       }
@@ -107,11 +108,11 @@ export default function AccountsList(props) {
                   if (event.target.checked) {
                     setSelectedRows([...selectedRows, row]);
                   } else {
-                    setSelectedRows(selectedRows.filter(item => item.id !== row.id));
+                    setSelectedRows(selectedRows.filter((item) => item.id !== row.id));
                   }
                 },
                 value: '',
-                isChecked: !!selectedRows.filter(item => item.id === row.id).length
+                isChecked: !!selectedRows.filter((item) => item.id === row.id).length
               }
             ]}
           />
