@@ -4,9 +4,12 @@ import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg'
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import './styles.scss';
+import usePermission from '@src/hooks/usePermissions';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 
 const DetailsView = ({ data, onEditClick }) => {
   const { t } = useTranslate();
+  const { hasPermission } = usePermission();
 
   return (
     <div className="view-container">
@@ -15,9 +18,12 @@ const DetailsView = ({ data, onEditClick }) => {
           {data?.logoUrl && <img src={data?.logoUrl} alt="Logo" className="logo-img" />}
           <h2 className="org-label">{data.name}</h2>
         </div>
-        <Button Icon={EditPencil} variant="tertiary" onClick={onEditClick} size="md">
-          Edit
-        </Button>
+        {
+          hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.EDIT_ORGANIZATION) && (
+          <Button Icon={EditPencil} variant="tertiary" onClick={onEditClick} size="md">
+            Edit
+          </Button>
+        )}
       </div>
 
       <h2 className="contact-label">{t('orgManagement.org_detail.contact')}</h2>
