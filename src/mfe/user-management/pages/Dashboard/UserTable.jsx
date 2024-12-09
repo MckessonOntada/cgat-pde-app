@@ -15,6 +15,7 @@ import AuthUtils from '@src/util/AuthUtils';
 import CommonUtils from '@src/util/CommonUtils';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
+import usePermission from '@src/hooks/usePermissions';
 
 function getBackgroundColorByRole(Role) {
   switch (Role) {
@@ -34,6 +35,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const { isLoading, isError, data, activeTab, filterConfig, paginationConfig, applySort, setFilterConfig, refreshData, setPageNumber } = useUser();
   const userPermissions = AuthUtils.getUserPermissions();
+  const { hasPermission } = usePermission();
   const handleRowSelected = ({ selectedRows }) => {
     setSelectedRows(selectedRows);
   };
@@ -191,7 +193,7 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
         center: true,
         name: t('userManagement.table.action'),
         cell: (row) => <Actions row={row} showEditButton={activeTab === 'PENDING REQUESTS'} showViewButton={activeTab !== 'PENDING REQUESTS'} />,
-        omit: isSystemAdminView || userPermissions.includes(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS),
+        omit: isSystemAdminView || hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS),
         width: '120px'
       }
     ];
