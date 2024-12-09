@@ -54,7 +54,7 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
                   <button type="button" onClick={handleExpandCard}>
                     <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
                   </button>
-                  <div ref={searchRef} className="searchContainer">
+                  <div ref={searchRef} className={'ctrl-search-box'}>
                     <Field name={'searchQuery'} label={''} placeholder={searchPlaceholder} component={Components['input']} />
                   </div>
                 </div>
