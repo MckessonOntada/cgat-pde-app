@@ -122,11 +122,13 @@
   .ctrl-search-box {
     flex-grow: 1;
     @include mixins.respond(sm) {
-      width: 460px;
+      max-width: 460px;
     }
   }
   .filter-control-buttons {
     display: flex;
+    flex-grow: 1;
+    flex-shrink: 0;
     flex-direction: column;
     gap: var(--spacing-04);
     @include mixins.respond(md) {
