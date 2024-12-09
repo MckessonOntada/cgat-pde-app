@@ -30,12 +30,12 @@ function getBackgroundColorByRole(Role) {
 
 function UserTable({ selectableRows = false, onActionSuccess }) {
   const { t } = useTranslate();
-  const { hasPermission } = usePermission();
   const [selectedRows, setSelectedRows] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const { isLoading, isError, data, activeTab, filterConfig, paginationConfig, applySort, setFilterConfig, refreshData, setPageNumber } = useUser();
   const userPermissions = AuthUtils.getUserPermissions();
+  const { hasPermission } = usePermission();
   const handleRowSelected = ({ selectedRows }) => {
     setSelectedRows(selectedRows);
   };
@@ -128,11 +128,17 @@ function UserTable({ selectableRows = false, onActionSuccess }) {
             {activeTab === 'PENDING REQUESTS' ? (
               <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`} maxWidth={300} />
             ) : (
-              <Link
-                to={`${props.id}`} // dynamically constructs the URL with userId
-                className="MCP-table-link">
-                <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`} maxWidth={300} />
-              </Link>
+              <React.Fragment>
+                {hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS) ? (
+                  <Link
+                    to={`${props.id}`} // dynamically constructs the URL with userId
+                    className="MCP-table-link">
+                    <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`} maxWidth={300} />
+                  </Link>
+                ) : (
+                  <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`} maxWidth={300} />
+                )}
+              </React.Fragment>
             )}
           </div>
         )

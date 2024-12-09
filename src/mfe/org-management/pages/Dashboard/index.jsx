@@ -11,6 +11,8 @@ import { OrgProvider, useOrg } from '../../context/OrgContext';
 import OrgList from './OrgList';
 import CommonFilters from '@src/components/Filters';
 import { US_STATES } from '@src/components/form/util';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import usePermission from '@src/hooks/usePermissions';
 
 function DashboardPage() {
   const { t } = useTranslate();
@@ -19,6 +21,7 @@ function DashboardPage() {
   const [isAlertVisible, setIsAlertVisible] = React.useState(false);
   const isSuccess = location.state?.isSuccess || false;
   const [alertDescription, setAlertDescription] = React.useState('');
+  const {hasPermission} = usePermission();
   const {
     applyFilters,
     clearFilters
@@ -77,9 +80,12 @@ function DashboardPage() {
         heading={<Heading as="h1">{t('orgManagement.header.label')}</Heading>}
         controls={
           <div className="controls">
-            <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createOrg}`)}>
+            {
+              hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION) &&
+              <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createOrg}`)}>
               {t('orgManagement.add.label')}
             </Button>
+            }
           </div>
         }
       />
