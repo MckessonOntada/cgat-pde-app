@@ -14,6 +14,8 @@ import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
 import OrganizationAccounts from '@src/components/Accounts/Accounts';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import usePermission from '@src/hooks/usePermissions';
 
 export default function ViewOrganization() {
   // Call api to get linked accounts => /practice/{practiceId}/accounts
@@ -29,6 +31,7 @@ export default function ViewOrganization() {
   const [addNewAccounts, setAddNewAccounts] = useState(!isView);
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const selectedCount = selectedAccounts?.length || 0;
+  const { hasPermission } = usePermission();
   // Fetch practice details
   const { isLoading, data, isError } = useQuery({
     queryKey: [`practices/${orgId}`],
@@ -151,9 +154,11 @@ export default function ViewOrganization() {
         controls={
           !addNewAccounts && (
             <div className="controls">
-              <Button Icon={EditPencil} variant="tertiary" className="button-icon" onClick={onEditAccounts} size={'md'}>
-                {t(isView ? 'orgManagement.table.action.edit' : 'orgManagement.add.account')}
-              </Button>
+              {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.EDIT_ORGANIZATION) && (
+                <Button Icon={EditPencil} variant="tertiary" className="button-icon" onClick={onEditAccounts} size={'md'}>
+                  {t(isView ? 'orgManagement.table.action.edit' : 'orgManagement.add.account')}
+                </Button>
+              )}
             </div>
           )
         }

@@ -15,11 +15,12 @@ import AuthUtils from '@src/util/AuthUtils';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import CommonFilters from '@src/components/Filters';
 import { ROLES } from '../../mockData/UsersData';
+import usePermission from '@src/hooks/usePermissions';
 
 export default function Dashboard() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { activeTab, setActiveTab, refreshData, clearFilters, applyFilters } = useUser();
+  const { activeTab, setActiveTab, refreshData, clearFilters, applyFilters, roleList } = useUser();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const location = useLocation();
   const isSuccess = location.state?.isSuccess || false;
@@ -27,7 +28,8 @@ export default function Dashboard() {
   const isReject = location.state?.isReject || false;
   const [alertDescription, setAlertDescription] = useState('');
   const [alert, setAlert] = useState(null);
-  const userPermissions = AuthUtils.getUserPermissions();
+  const { hasPermission } = usePermission();
+  
   const showAlert = (type, message) => {
     setAlert({ type });
     setIsAlertVisible(true);
@@ -102,13 +104,13 @@ export default function Dashboard() {
 
   const AdditionalFiltersConfig = useMemo(() => {
     let config = [];
-    if(!!isSystemAdminView){
-      config.push(      {
+    if (!isSystemAdminView) {
+      config.push({
         type: 'dropdown',
         name: 'role',
         label: t('userManagement.table.role'),
-        options: ROLES
-      })
+        options: roleList
+      });
     }
     return [
       ...config,
@@ -124,10 +126,10 @@ export default function Dashboard() {
       },
       {
         type: 'dateRangePicker',
-        name: 'dateRange',
+        name: 'dateRange'
       }
     ];
-  }, [isSystemAdminView]);
+  }, [isSystemAdminView, roleList]);
 
   return (
     <div className="MCP-module-wrapper" id={debugIds(ID.TABLE, ID.CONTAINER)}>
@@ -136,12 +138,12 @@ export default function Dashboard() {
         heading={<Heading as="h1">{t(isSystemAdminView ? 'userManagement.header.systemadmin.label' : 'userManagement.header.label')}</Heading>}
         controls={
           <div className="controls">
-            {userPermissions.includes(PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_USERS) && (
+            {hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_USERS) && (
               <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createUser}`)}>
                 {t(isSystemAdminView ? 'userManagement.button.addsystemadmin' : 'userManagement.button.adduser')}
               </Button>
             )}
-            {!isSystemAdminView && userPermissions.includes(PERMISSIONS_ENUM.USER_MANAGEMENT.UPLOAD_USERS) && (
+            {!isSystemAdminView && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.UPLOAD_USERS) && (
               <Button Icon={upload_bottom} className="button-icon" variant="primary" size="md">
                 {t('userManagement.button.uploadUsers')}
               </Button>
@@ -153,12 +155,7 @@ export default function Dashboard() {
 
       <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
         <div className="MCP-panel-container">
-          <CommonFilters 
-            onApplyFilters={applyFilters} 
-            onClearFilters={clearFilters} 
-            additionalFilters={AdditionalFiltersConfig} 
-            searchPlaceholder={t('userManagement.searchFilter.addaccount_label')}
-          />
+          <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={t('userManagement.searchFilter.addaccount_label')} />
         </div>
         <Heading as="h2"> {t(isSystemAdminView ? 'userManagement.table.systemadminlisting.label' : 'userManagement.table.userlisting.label')}</Heading>
         {!isSystemAdminView && <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />}

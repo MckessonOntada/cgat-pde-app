@@ -5,6 +5,7 @@ import styles from './Dashboard.module.scss';
 import { SYSTEM_ADMIN_CARDS_DATA, CARDS_DATA } from './DashboardCards';
 import { useTranslate } from '@src/translations/useTranslation';
 import AuthUtils from '@src/util/AuthUtils';
+import usePermission from '@src/hooks/usePermissions';
 
 const Dashboard = () => {
   const { t } = useTranslate();
@@ -12,13 +13,14 @@ const Dashboard = () => {
   const userRole = AuthUtils.getUserRole();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const userPermissions = AuthUtils.getUserPermissions();
+  const { hasPermission } = usePermission();
 
   // const cards = isSystemAdminView ? SYSTEM_ADMIN_CARDS_DATA : CARDS_DATA;
   const cards = useMemo(() => {
     if (isSystemAdminView) return SYSTEM_ADMIN_CARDS_DATA;
 
     let _cards = CARDS_DATA.filter((card) => {
-      let _hasAccess = userPermissions.includes(card.permissions);
+      let _hasAccess = hasPermission(card.permissions);
       return _hasAccess;
     });
     return _cards;
