@@ -29,7 +29,7 @@ export default function Dashboard() {
   const [alertDescription, setAlertDescription] = useState('');
   const [alert, setAlert] = useState(null);
   const { hasPermission } = usePermission();
-  
+
   const showAlert = (type, message) => {
     setAlert({ type });
     setIsAlertVisible(true);
@@ -155,7 +155,7 @@ export default function Dashboard() {
 
       <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
         <div className="MCP-panel-container">
-          <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={t('userManagement.searchFilter.addaccount_label')} />
+          <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={t('userManagement.searchFilter.label')} />
         </div>
         <Heading as="h2"> {t(isSystemAdminView ? 'userManagement.table.systemadminlisting.label' : 'userManagement.table.userlisting.label')}</Heading>
         {!isSystemAdminView && <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />}
