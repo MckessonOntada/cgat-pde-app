@@ -19,7 +19,7 @@ import { ROLES } from '../../mockData/UsersData';
 export default function Dashboard() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { activeTab, setActiveTab, refreshData, clearFilters, applyFilters } = useUser();
+  const { activeTab, setActiveTab, refreshData, clearFilters, applyFilters, roleList } = useUser();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const location = useLocation();
   const isSuccess = location.state?.isSuccess || false;
@@ -102,13 +102,13 @@ export default function Dashboard() {
 
   const AdditionalFiltersConfig = useMemo(() => {
     let config = [];
-    if(!!isSystemAdminView){
-      config.push(      {
+    if (!isSystemAdminView) {
+      config.push({
         type: 'dropdown',
         name: 'role',
         label: t('userManagement.table.role'),
-        options: ROLES
-      })
+        options: roleList
+      });
     }
     return [
       ...config,
@@ -124,10 +124,10 @@ export default function Dashboard() {
       },
       {
         type: 'dateRangePicker',
-        name: 'dateRange',
+        name: 'dateRange'
       }
     ];
-  }, [isSystemAdminView]);
+  }, [isSystemAdminView, roleList]);
 
   return (
     <div className="MCP-module-wrapper" id={debugIds(ID.TABLE, ID.CONTAINER)}>
@@ -153,12 +153,7 @@ export default function Dashboard() {
 
       <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
         <div className="MCP-panel-container">
-          <CommonFilters 
-            onApplyFilters={applyFilters} 
-            onClearFilters={clearFilters} 
-            additionalFilters={AdditionalFiltersConfig} 
-            searchPlaceholder={t('userManagement.searchFilter.addaccount_label')}
-          />
+          <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={t('userManagement.searchFilter.addaccount_label')} />
         </div>
         <Heading as="h2"> {t(isSystemAdminView ? 'userManagement.table.systemadminlisting.label' : 'userManagement.table.userlisting.label')}</Heading>
         {!isSystemAdminView && <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />}
