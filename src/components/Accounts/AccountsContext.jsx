@@ -20,7 +20,7 @@ const INITIAL_STATE = {
   searchQuery: '',
   status: [],
   salesOrg: [],
-  distChannels: [],
+  distChannels: []
 };
 
 const INITIAL_SORT_PARAMS = {
@@ -28,17 +28,15 @@ const INITIAL_SORT_PARAMS = {
   sortOrder: 'asc'
 };
 
-
 const INITIAL_PAGINATION_STATE = {
-    totalElements: 0,
-    pageSize: RECORDS_PER_PAGE,
-    totalPages: 0,
-    pageNumber: 1
-  };
-  
+  totalElements: 0,
+  pageSize: RECORDS_PER_PAGE,
+  totalPages: 0,
+  pageNumber: 1
+};
 
 export const AccountsProvider = ({ children, practiceId, userId }) => {
-    const [filterConfig, setFilterConfig] = useState(INITIAL_STATE);
+  const [filterConfig, setFilterConfig] = useState(INITIAL_STATE);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortCriteria, setSortCriteria] = useState(INITIAL_SORT_PARAMS);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
@@ -58,27 +56,27 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
   // use from context
   const apiUrl = useMemo(() => {
     let params = {
-        pageNo: paginationConfig.pageNumber - 1,
-        pageSize: paginationConfig.pageSize,
-        sortBy: sortCriteria.sortBy,
-        sortOrder: sortCriteria.sortOrder,
-        practiceId,
-        partnerFunction: 'SOLD_TO',
-        ...(filterConfig.searchQuery.length && { query: filterConfig.searchQuery }),
-        // TODO : Add multi select support
-        ...(filterConfig.status.length && { status: filterConfig.status }),
-        ...(filterConfig.distChannels.length && { distChannels: filterConfig.distChannels }),
-        ...(filterConfig.salesOrg.length && { salesOrg: filterConfig.salesOrg }),
-        // TODO : Use below after Adding multi select support
-        // ...(filterConfig.status?.length && { status: filterConfig.status.join(",") }),
-        // ...(filterConfig.distChannels?.length && { distChannels: filterConfig.distChannels.join(",") }),
-        // ...(filterConfig.salesOrg?.length && { salesOrg: filterConfig.salesOrg.join(",") }),
-      }
+      pageNo: paginationConfig.pageNumber - 1,
+      pageSize: paginationConfig.pageSize,
+      sortBy: sortCriteria.sortBy,
+      sortOrder: sortCriteria.sortOrder,
+      practiceId,
+      partnerFunction: 'SOLD_TO',
+      ...(filterConfig.searchQuery.length && { query: filterConfig.searchQuery }),
+      // TODO : Add multi select support
+      ...(filterConfig.status.length && { status: filterConfig.status }),
+      ...(filterConfig.distChannels.length && { distChannels: filterConfig.distChannels }),
+      ...(filterConfig.salesOrg.length && { salesOrg: filterConfig.salesOrg })
+      // TODO : Use below after Adding multi select support
+      // ...(filterConfig.status?.length && { status: filterConfig.status.join(",") }),
+      // ...(filterConfig.distChannels?.length && { distChannels: filterConfig.distChannels.join(",") }),
+      // ...(filterConfig.salesOrg?.length && { salesOrg: filterConfig.salesOrg.join(",") }),
+    };
 
-      if(userId){
-        return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/users/${userId}/accounts?${serializeParams(params)}`
-      }
-    return practiceId ? `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts?${serializeParams(params)}` : `${ApiRoutes.PUBLIC_ACCOUNTS}?${serializeParams(params)}` ;
+    if (userId) {
+      return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/users/${userId}/accounts?${serializeParams(params)}`;
+    }
+    return practiceId ? `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts?${serializeParams(params)}` : `${ApiRoutes.PUBLIC_ACCOUNTS}?${serializeParams(params)}`;
   }, [filterConfig, paginationConfig, sortCriteria, practiceId]);
 
   // Fetch data from server
@@ -90,31 +88,36 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
         const { content, totalElements, totalPages } = response.data;
 
         setPaginationConfig((prevConfig) => {
-          
-            if(totalElements){
-              prevConfig.totalElements = totalElements;
-            }
-            if(totalPages){
-              prevConfig.totalPages = totalPages;
-            }
-            
-            return prevConfig;
+          if (totalElements) {
+            prevConfig.totalElements = totalElements;
+          }
+          if (totalPages) {
+            prevConfig.totalPages = totalPages;
+          }
+
+          return prevConfig;
         });
 
         return content;
       }
       return [];
-    },
+    }
   });
 
-  const applyFilters = useCallback((values)=>{
-    setFilterConfig(values)
-  },[]);
+  const applyFilters = useCallback((values) => {
+    setFilterConfig(values);
+  }, []);
+
+  const setPageNumber = (pageNumber) => {
+    setPaginationConfig((prevConfig) => ({
+      ...prevConfig,
+      pageNumber
+    }));
+  };
 
   useEffect(() => {
     refetch();
   }, [filterConfig, paginationConfig.pageNumber, sortCriteria]);
-
 
   const ctxValue = useMemo(
     () => ({
@@ -133,9 +136,10 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
       setSortCriteria,
       setFilterConfig,
       clearFilters,
+      setPageNumber,
       applyFilters
     }),
-    [data, updateFilterState, clearFilters, currentPage, isLoading, isError, filterConfig, paginationConfig, applyFilters, refetch]
+    [data, updateFilterState, clearFilters, currentPage, setPageNumber, isLoading, isError, filterConfig, paginationConfig, applyFilters, refetch]
   );
 
   return <AccountsContext.Provider value={ctxValue}>{children}</AccountsContext.Provider>;

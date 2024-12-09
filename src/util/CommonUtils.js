@@ -217,6 +217,10 @@ const timezoneAbbreviations = {
 };
 
 const convertDateStringToUserTimezone = (dateString) => {
+  if (!dateString) {
+    return dateString;
+  }
+
   let formattedDate = dayjs.utc(dateString).tz();
   const timeZoneOffset = formattedDate.format('Z');
   const timezone = timezoneAbbreviations[timeZoneOffset] || timeZoneOffset;
@@ -227,6 +231,10 @@ const convertDateStringToUserTimezone = (dateString) => {
 };
 
 const convertDateStringFormat = (dateString, format) => {
+  if (!dateString) {
+    return dateString;
+  }
+
   const formattedDate = dayjs(dateString).format(format);
 
   return formattedDate;

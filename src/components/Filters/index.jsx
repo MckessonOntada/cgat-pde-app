@@ -10,26 +10,34 @@ import { Field, Formik, Form } from 'formik';
 import Components from '../form/Components';
 import './Filters.scss';
 
-const Filters = ({ onApplyFilters, onClearFilters, showControls = true, additionalFilters, searchPlaceholder = "Search..." }) => {
+const Filters = ({ onApplyFilters, onClearFilters, showControls = true, additionalFilters, searchPlaceholder = 'Search...' }) => {
   const initialFilters = useMemo(() => generateInitialFilterState(additionalFilters), [additionalFilters]);
   const [isCardExpanded, setIsCardExpanded] = useState(false);
-  const searchRef = useRef(null);
+  const formRef = useRef(null);
 
   const handleExpandCard = () => {
     setIsCardExpanded(!isCardExpanded);
   };
 
-  const clearSearchBox = () => {
-    const inputElement = searchRef.current.querySelector('input');
+  const clearInputs = () => {
+    const inputElements = formRef.current.querySelectorAll('input');
 
-    if (inputElement) {
-      inputElement.value = '';
+    if (inputElements && Array.isArray(inputElements)) {
+      setTimeout(() => {
+        inputElements.forEach((inputElement) => {
+          try {
+            if (inputElement.value) {
+              inputElement.value = '';
+            }
+          } catch (e) {}
+        });
+      }, 100);
     }
   };
 
   const handleClearFilters = (resetForm) => {
     resetForm({ values: initialFilters });
-    clearSearchBox();
+    clearInputs();
     onClearFilters?.();
   };
 
@@ -47,14 +55,14 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
         const isAnyFilterApplied = Object.values(formik.values).some((value) => value && value.length > 0);
 
         return (
-          <Form>
+          <Form ref={formRef}>
             <div className="MCP-filter-panel">
               <div className="filter-header">
                 <div className="search-box">
                   <button type="button" onClick={handleExpandCard}>
                     <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
                   </button>
-                  <div ref={searchRef} className={'ctrl-search-box'}>
+                  <div className={'ctrl-search-box'}>
                     <Field name={'searchQuery'} label={''} placeholder={searchPlaceholder} component={Components['input']} />
                   </div>
                 </div>

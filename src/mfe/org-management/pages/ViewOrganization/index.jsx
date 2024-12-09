@@ -155,7 +155,7 @@ export default function ViewOrganization() {
           !addNewAccounts && (
             <div className="controls">
               {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.EDIT_ORGANIZATION) && (
-                <Button Icon={EditPencil} variant="tertiary" className="button-icon" onClick={onEditAccounts} size={'md'}>
+                <Button Icon={EditPencil} variant="secondary" className="button-icon" onClick={onEditAccounts} size={'md'}>
                   {t(isView ? 'orgManagement.table.action.edit' : 'orgManagement.add.account')}
                 </Button>
               )}

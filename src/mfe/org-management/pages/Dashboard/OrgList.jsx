@@ -1,4 +1,4 @@
-import { Badge, Button, CheckboxGroup, CustomDataTable, Loader, Modal } from '@mckesson/mcp-component-library';
+import { Badge, Button, CheckboxGroup, CustomDataTable, Modal } from '@mckesson/mcp-component-library';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
@@ -8,7 +8,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import React, { useState } from 'react';
 import { useMutation } from 'react-query';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useOrg } from '../../context/OrgContext';
 import { PATHS } from '../../routes/constants';
 import Actions from './Actions';
@@ -19,7 +19,6 @@ import { useDispatch } from 'react-redux';
 const OrgList = () => {
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState(null);
-  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const { data, paginationConfig, isLoading, isError, refreshData, setPageNumber, applySort } = useOrg();
   const dispatch = useDispatch();

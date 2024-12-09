@@ -1,10 +1,9 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import React from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
-import { ReactComponent as pencil_write_edit } from '@src/assets/image/pencil-write-edit.svg';
+import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
 import { Button, Heading } from '@mckesson/mcp-component-library';
 import './index.scss';
-import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import ModuleHeader from '@src/components/module-header';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
@@ -19,7 +18,6 @@ const roleDetail = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { roleId } = useParams();
-  const location = useLocation();
 
   const { isLoading, isError, data } = useQuery({
     queryKey: [`roles/${roleId}`],
@@ -68,7 +66,7 @@ const roleDetail = () => {
           <ModuleHeader
             heading={<Heading as="h1">{t('orgManagement.role.labelRolesDetails')}</Heading>}
             controls={
-              <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`edit-role`, { state: data })}>
+              <Button Icon={EditPencil} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`edit-role`, { state: data })}>
                 {t('userManagement.button.edit')}
               </Button>
             }
@@ -88,7 +86,7 @@ const roleDetail = () => {
             <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-2">
               <div>
                 <span className="view_label">Description</span>
-                <p className="label-text">{data?.description}</p>
+                <p className="label-text">{data?.description || '-'}</p>
               </div>
             </div>
           </div>
@@ -97,7 +95,7 @@ const roleDetail = () => {
             heading={<Heading as="h1">{t('userManagement.header.view.permissions_granted')}</Heading>}
             controls={
               <div className="controls">
-                <Button Icon={pencil_write_edit} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`permissions`, { state: { data, isEdit: true } })}>
+                <Button Icon={EditPencil} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`permissions`, { state: { data, isEdit: true } })}>
                   {t('userManagement.button.edit')}
                 </Button>
               </div>
