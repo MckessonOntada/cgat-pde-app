@@ -21,11 +21,8 @@ function DashboardPage() {
   const [isAlertVisible, setIsAlertVisible] = React.useState(false);
   const isSuccess = location.state?.isSuccess || false;
   const [alertDescription, setAlertDescription] = React.useState('');
-  const {hasPermission} = usePermission();
-  const {
-    applyFilters,
-    clearFilters
-  } = useOrg();
+  const { hasPermission } = usePermission();
+  const { applyFilters, clearFilters } = useOrg();
   const breadcrumbItems = [
     {
       label: 'Dashboard',
@@ -59,19 +56,24 @@ function DashboardPage() {
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
-    {
-      type: 'multiSelectDropdown',
-      name: 'location',
-      label: 'Location', // Use translation
-      options: usStates
-    },
-    {
-      type: 'multiSelectDropdown',
-      name: 'status',
-      label: 'Status', // Use translation
-      options: [{label: 'All', value: "all"}, { label: 'Inactive', value: "inactive"}, { label: "Active", value: 'active'}]
-    }]
-  },[usStates]);
+      {
+        type: 'multiSelectDropdown',
+        name: 'location',
+        label: 'Location', // Use translation
+        options: usStates
+      },
+      {
+        type: 'multiSelectDropdown',
+        name: 'status',
+        label: 'Status', // Use translation
+        options: [
+          { label: 'All', value: 'all' },
+          { label: 'Inactive', value: 'inactive' },
+          { label: 'Active', value: 'active' }
+        ]
+      }
+    ];
+  }, [usStates]);
 
   return (
     <div className="MCP-module-wrapper">
@@ -81,35 +83,33 @@ function DashboardPage() {
         heading={<Heading as="h1">{t('orgManagement.header.label')}</Heading>}
         controls={
           <div className="controls">
-            {
-              hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION) &&
+            {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION) && (
               <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createOrg}`)}>
-              {t('orgManagement.add.label')}
-            </Button>
-            }
+                {t('orgManagement.add.label')}
+              </Button>
+            )}
           </div>
         }
       />
       {isSuccess && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
 
       <div className="MCP-module-body">
+        <div className="MCP-panel-container">
           <div className="MCP-panel-container">
-            <div className="MCP-panel-container">
-              <CommonFilters 
-                onApplyFilters={applyFilters} 
-                onClearFilters={clearFilters} 
-                additionalFilters={AdditionalFiltersConfig}
-                searchPlaceholder={t('orgManagement.filters.status.label')}
-              />
-            </div>
-            <Heading as="h2">{t('orgManagement.org_list')}</Heading>
-            <OrgList />
+            <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={t('orgManagement.org.placeholder')} />
           </div>
+          <Heading as="h2">{t('orgManagement.org_list')}</Heading>
+          <OrgList />
+        </div>
       </div>
     </div>
   );
 }
 
-export default function Dashboard(){
-  return <OrgProvider><DashboardPage/></OrgProvider>
+export default function Dashboard() {
+  return (
+    <OrgProvider>
+      <DashboardPage />
+    </OrgProvider>
+  );
 }
