@@ -3,7 +3,6 @@ import { TabList, Button, Heading } from "@mckesson/mcp-component-library";
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle.svg';
 import { useNavigate } from 'react-router-dom';
 import { routesConfig } from './../../routes/constants';
-import { useOrders } from '../../context/OrderContext';
 import { pendingData, submittedData } from './__mock__';
 import { useTranslate } from '@src/translations/useTranslation';
 import PageHeader from '@src/components/pageHeader';
@@ -13,13 +12,13 @@ import FilterPanel from './FilterPanel';
 import { tabs, breadcrumbItems } from './constants';
 import OrderDataTable from './OrderDataTable';
 import CommonFilters from '@src/components/Filters';
+import { useOrders } from '../../context/OrderContext';
 
 const OrderIndex = () => {
     const [tabList, setTabList] = React.useState([...tabs]);
     const { t } = useTranslate();
-    const { applyFilters, clearFilters } = useOrders();
+    const { applyFilters, clearFilters, setOrdersData } = useOrders();
     const navigate = useNavigate();
-    const { setOrdersData } = useOrders();
 
     const AdditionalFiltersConfig = [];
 
@@ -42,12 +41,15 @@ const OrderIndex = () => {
         setActiveTab(tabs[0].configName);
     }, []);
 
+    const activeTab = tabList.find(tab => tab.isActiveTab)
+
     return (
         <div className="MCP-module-wrapper">
             <Breadcrumb items={breadcrumbItems} />
             <ModuleHeader
-                heading={<PageHeader heading={t('headings.orders')} />}
+                heading={<Heading as="h1">{t('headings.orders')}</Heading>}
                 controls={
+                    <div className="controls">
                     <Button
                         Icon={AddCircleFilled}
                         onClick={handleOnClick}
@@ -56,8 +58,12 @@ const OrderIndex = () => {
                     >
                         {t('controls.ariaLabels.createNewOrder')}
                     </Button>
+                    </div>
                 }
             />
+
+            {/* add alert here */}
+
             <div className="MCP-module-body">
                 <div className="MCP-panel-container">
                     <TabList
@@ -79,7 +85,7 @@ const OrderIndex = () => {
                     </div>
                     <div className="MCP-table-wrapper">
                         <Heading as="h2">{t('headings.orderListing')}</Heading>
-                        <OrderDataTable />
+                        <OrderDataTable tab={activeTab && activeTab.configName.toLocaleLowerCase()} />
                     </div>
                 </div>
             </div>
