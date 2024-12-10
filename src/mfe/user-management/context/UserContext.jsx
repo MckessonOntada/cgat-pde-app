@@ -8,7 +8,7 @@ import { DateUtils } from '@src/util/DateUtil';
 
 const UserContext = createContext();
 
-const ACTIVE_USERS = "ACTIVE USERS";
+const ACTIVE_USERS = 'ACTIVE USERS';
 
 export const useUser = () => {
   const context = useContext(UserContext);
@@ -19,28 +19,28 @@ export const useUser = () => {
 };
 
 const INITIAL_FILTER_STATE = {
-  searchQuery: "",
+  searchQuery: '',
   status: [],
   role: [],
-  dateRange: [],
+  dateRange: []
 };
 
 const INITIAL_SORT_STATE = {
   sortBy: null,
-  sortOrder: null,
-}
+  sortOrder: null
+};
 
 const INITIAL_PAGINATION_CONFIG = {
   totalElements: 0,
   pageSize: 8,
   totalPages: 0,
-  pageNumber: 1,
+  pageNumber: 1
 };
 
 export const UserProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
-  const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE)
+  const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const [activeTab, setActiveTab] = useState(ACTIVE_USERS);
 
   const updateFilterState = useCallback((field, value) => {
@@ -55,14 +55,14 @@ export const UserProvider = ({ children }) => {
     () => ({
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
-      sortBy: sortConfig.sortBy || "first_name",
-      sortOrder: sortConfig.sortOrder || "asc",
+      sortBy: sortConfig.sortBy || 'first_name',
+      sortOrder: sortConfig.sortOrder || 'asc',
       userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL',
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       ...(filterConfig?.status?.length && { status: [filterConfig.status] }), // Until add multiselect
-      ...(filterConfig?.role?.length && { roleIds: [filterConfig.role] }),// Until add multiselect
+      ...(filterConfig?.role && { roleIds: [filterConfig.role] }), // Until add multiselect
       ...(filterConfig?.dateRange?.[0] && { startDate: DateUtils.formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy') }),
-      ...(filterConfig?.dateRange?.[0] && { endDate: DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy') })
+      ...(filterConfig?.dateRange?.[1] && { endDate: DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy') })
     }),
     [filterConfig, paginationConfig.pageNumber, sortConfig]
   );
@@ -70,6 +70,7 @@ export const UserProvider = ({ children }) => {
   const { isLoading, isError, data, refetch } = useQuery({
     queryKey: ['users', activeTab, requestParams],
     queryFn: async () => {
+      console.log('reqpara', requestParams);
       const url = activeTab === 'ACTIVE USERS' ? `${ApiRoutes.USERS()}?${serializeParams(requestParams)}` : `${ApiRoutes.USERS_PROVISIONING()}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       if (res.data) {
@@ -77,8 +78,8 @@ export const UserProvider = ({ children }) => {
 
         setPaginationConfig((prevConfig) => ({
           ...prevConfig,
-          ...(totalElements && {totalElements}),
-          ...(totalPages && {totalPages}),
+          ...(totalElements && { totalElements }),
+          ...(totalPages && { totalPages })
         }));
 
         return data;
@@ -89,41 +90,41 @@ export const UserProvider = ({ children }) => {
     refetchOnWindowFocus: false
   });
 
-  const {data: roleList = []} = useQuery({
-    queryKey: ["user", "roles-list"], 
+  const { data: roleList = [] } = useQuery({
+    queryKey: ['user', 'roles-list'],
     queryFn: async () => {
       const response = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}`, httpVerb.GET, {});
       if (response.data) {
         const { content: data } = response.data;
-        return data.map(item => ({
+        return data.map((item) => ({
           label: item.name,
-          value: item.name,
+          value: item.id
         }));
       }
       return [];
     },
     refetchOnWindowFocus: false
-  })
+  });
 
   const clearFilters = () => {
-    setFilterConfig(INITIAL_FILTER_STATE)
+    setFilterConfig(INITIAL_FILTER_STATE);
   };
 
   useEffect(() => {
     refetch();
   }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
 
-  const applySort = (sortConfig) => setSortConfig({ ...sortConfig })
+  const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
-    setFilterConfig({...filters});
-  }
+    setFilterConfig({ ...filters });
+  };
 
   const setPageNumber = (pageNumber) => {
     setPaginationConfig((prevConfig) => ({
       ...prevConfig,
-      pageNumber,
+      pageNumber
     }));
   };
 

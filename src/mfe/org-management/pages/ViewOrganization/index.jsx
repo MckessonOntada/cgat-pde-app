@@ -164,7 +164,7 @@ export default function ViewOrganization() {
         }
       />
       {updateState.isSuccess && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
-      <OrganizationAccounts showSelectedAccounts={addNewAccounts} omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']} selectedRows={selectedAccounts} setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)} practiceId={orgId} />
+      <OrganizationAccounts showSelectedAccounts={addNewAccounts} omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']} selectedRows={selectedAccounts} setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)} practiceId={addNewAccounts ? null : orgId} />
 
       {addNewAccounts && (
         <div className="btn-box">
