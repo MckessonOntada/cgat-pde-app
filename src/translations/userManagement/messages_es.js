@@ -14,7 +14,7 @@ export const UserManagementES = {
   'userManagement.header.systemadminlisting.label': 'S_Manage System Admins',
   'userManagement.table.userlisting.label': 'S_Users Listing',
   'userManagement.table.systemadminlisting.label': 'S_System Admin Listing',
-
+  'userManagement.breadcrumb.labeldashboard': 'S_Dashboard',
   'userManagement.table.name': 'S_Name',
   'userManagement.table.email': 'S_Email',
   'userManagement.table.role': 'S_Role',
