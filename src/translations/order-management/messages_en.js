@@ -77,6 +77,7 @@ export const MessageEn = {
     "labels.actions.edit": "Edit",
     "labels.therapyDescription": "Therapy Description",
     "labels.accountDetails": "Account Details",
+    "controls.placeholder.searchOrderPlaceholder": "Search by order id, patient name or account",
     "controls.placeholders.autoSearch": "Search by Order ID, Patient name, Account",
     "controls.ariaLabels.searchOrders": "Search Orders",
     "controls.ariaLabels.expandFilters": "Expand Filters",

@@ -17,6 +17,7 @@ function OrderManagementRoutes() {
       <Route path={routesConfig.index} element={<OrderIndex />} />
       <Route path={`create-order`} element={<TherapySelection />} />
       <Route path={`edit-order/:orderId`} element={<TherapySelection />} />
+      
       <Route path={`:orderId/:therapyId/account-selection`} element={<AccountSelection />} />
       <Route path={`:orderId/:therapyId/:accountId/patient-details`} element={<PatientDetails />} />
       <Route path={`:orderId/:therapyId/:accountId/additional-details`} element={<AdditionalDetails />} />

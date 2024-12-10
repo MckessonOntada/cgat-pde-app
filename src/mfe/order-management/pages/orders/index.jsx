@@ -12,12 +12,16 @@ import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
 import FilterPanel from './FilterPanel';
 import { tabs, breadcrumbItems } from './constants';
 import OrderDataTable from './OrderDataTable';
+import CommonFilters from '@src/components/Filters';
 
 const OrderIndex = () => {
     const [tabList, setTabList] = React.useState([...tabs]);
     const { t } = useTranslate();
+    const { applyFilters, clearFilters } = useOrders();
     const navigate = useNavigate();
     const { setOrdersData } = useOrders();
+
+    const AdditionalFiltersConfig = [];
 
     const getTabData = (activeTab) => activeTab === "SUBMITTED" ? submittedData : pendingData;
     const setActiveTab = (activeTab) => {
@@ -66,7 +70,12 @@ const OrderIndex = () => {
                         aria-label={t('controls.ariaLabels.orderTabList')}
                     />
                     <div className="MCP-CardContainer">
-                        <FilterPanel />
+                        <CommonFilters
+                            onApplyFilters={applyFilters} 
+                            onClearFilters={clearFilters}
+                            additionalFilters={AdditionalFiltersConfig}
+                            searchPlaceholder={t('controls.placeholder.searchOrderPlaceholder')} 
+                        />
                     </div>
                     <div className="MCP-table-wrapper">
                         <Heading as="h2">{t('headings.orderListing')}</Heading>
