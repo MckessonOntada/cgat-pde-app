@@ -250,9 +250,13 @@ const CreateUser = () => {
               {
                 label: t('userManagement.stepper.option.roles_and_permissions')
               },
-              {
-                label: t('userManagement.stepper.option.associate_accounts')
-              }
+              ...(isSystemAdminView
+                ? [] // Exclude the third step
+                : [
+                    {
+                      label: t('userManagement.stepper.option.associate_accounts')
+                    }
+                  ])
             ]}
           />
         </div>

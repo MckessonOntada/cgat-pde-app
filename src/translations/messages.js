@@ -14,6 +14,8 @@ import { AccountEN } from './Accounts/messages_en';
 import { AccountES } from './Accounts/messages_es';
 import { SignupEN } from './signup/messages_en';
 import { SignupES } from './signup/messages_es';
+import { filtersEN } from './filters/messages_en';
+import { filtersES } from './filters/messages_es';
 
 export const messages = {
   [LOCALES.ENGLISH]: {
@@ -25,7 +27,8 @@ export const messages = {
     ...PaymentInvoicesES,
     ...PaymentInvoicesEN,
     ...AccountEN,
-    ...SignupEN
+    ...SignupEN,
+    ...filtersEN
   },
   [LOCALES.SPANISH]: {
     ...LoginMessagesES,
@@ -33,6 +36,7 @@ export const messages = {
     ...DashboardES,
     ...OrgManagementES,
     ...AccountES,
-    ...SignupES
+    ...SignupES,
+    ...filtersES
   }
 };

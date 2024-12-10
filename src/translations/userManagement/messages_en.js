@@ -15,6 +15,7 @@ export const UserManagementEN = {
   'userManagement.table.userlisting.label': 'Users Listing',
   'userManagement.table.systemadminlisting.label': 'System Admin Listing',
 
+  'userManagement.breadcrumb.labeldashboard': 'Dashboard',
   'userManagement.table.name': 'Name',
   'userManagement.table.email': 'Email',
   'userManagement.table.role': 'Role',

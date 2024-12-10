@@ -46,8 +46,8 @@ export const OrgProvider = ({ children }) => {
       sortBy: sortConfig.sortBy,
       sortOrder: sortConfig.sortOrder,
       ...(filterConfig.searchQuery && { query: filterConfig.searchQuery }),
-      ...(filterConfig.location?.length && { location: filterConfig.location }),
-      ...(filterConfig.status?.length && { status: filterConfig.status })
+      ...(filterConfig.location && { location: filterConfig.location }),
+      ...(filterConfig.status && { status: filterConfig.status })
     }),
     [filterConfig, paginationConfig.pageNumber, sortConfig]
   );
@@ -56,14 +56,14 @@ export const OrgProvider = ({ children }) => {
     queryKey: ['organizations', requestParams],
     queryFn: async () => {
       const response = await dispatch(CommonDataService.getOrganizationList(requestParams));
-      
+
       if (response) {
         const { content, totalElements, totalPages } = response;
 
         setPaginationConfig((prevConfig) => ({
           ...prevConfig,
-          ...(totalElements && {totalElements}),
-          ...(totalPages && {totalPages}),
+          ...(totalElements && { totalElements }),
+          ...(totalPages && { totalPages })
         }));
 
         return content;
