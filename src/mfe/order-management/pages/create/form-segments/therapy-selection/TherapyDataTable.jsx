@@ -9,7 +9,7 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { therapyData } from './__mock__';
 
-const TherapyDataTable = ({ type = 'normal', pagination = true }) => {
+const TherapyDataTable = ({ type = 'normal', pagination = true, onSelect }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { dataState: data, pageConfig, setPageConfig, setCurrentPage, setTherapyData } = useTherapy();
@@ -18,7 +18,7 @@ const TherapyDataTable = ({ type = 'normal', pagination = true }) => {
     direction: null
   });
 
-  const columns = createColumns(t, navigate);
+  const columns = createColumns(t, navigate, onSelect);
 
   React.useEffect(() => {
     setTherapyData(therapyData);

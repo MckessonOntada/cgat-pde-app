@@ -12,28 +12,28 @@ const getColorByStatus = (status) => {
     return statusColors[status.toLowerCase()] || 'info';
 };
 
-export const createColumns = (t, navigate) => [
+export const createColumns = (t, navigate, onSelect) => [
     {
         id: 'id',
         selector: () => { },
-        width: "2%",
+        width: "40px",
         sortable: false,
         cell: (props) => (
             <span className="MCP-table-cell">
                 <RadioGroup
                     direction="column"
                     id={`radio-button-order-therapy`}
+                    name="therapy-selection-option"
                     items={[
                         {
                             isDisabled: false,
                             label: ' ',
                             value: props.id
                         }]}
-                    onChangeValue={() => { }}
+                    onChangeValue={onSelect}
                     onOtherTextChange={() => { }}
                     onSubRadioFieldChange={() => { }}
                     radioBtnWidth="auto"
-                    value="option1"
                 />
             </span>
         ),
