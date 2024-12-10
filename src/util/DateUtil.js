@@ -6,7 +6,8 @@ const isValidDate = (date, dateFormat) => {
 
 function formatDate(dateStr, format = 'MM/DD/YYYY') {
   if (!dateStr) {
-    throw new Error('No date value');
+    //throw new Error('No date value');
+    return dateStr;
   }
 
   const parts = dateStr.split('/');

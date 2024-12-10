@@ -107,6 +107,14 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
   const applyFilters = useCallback((values) => {
     setFilterConfig(values);
   }, []);
+ 
+  const setPageNumber = (pageNumber) => {
+    setPaginationConfig((prevConfig) => ({
+      ...prevConfig,
+      pageNumber
+    }));
+  };
+ 
 
   useEffect(() => {
     refetch();
@@ -129,9 +137,10 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
       setSortCriteria,
       setFilterConfig,
       clearFilters,
+      setPageNumber,
       applyFilters
     }),
-    [data, updateFilterState, clearFilters, currentPage, isLoading, isError, filterConfig, paginationConfig, applyFilters, refetch]
+    [data, updateFilterState, clearFilters, currentPage, setPageNumber, isLoading, isError, filterConfig, paginationConfig, applyFilters, refetch]
   );
 
   return <AccountsContext.Provider value={ctxValue}>{children}</AccountsContext.Provider>;

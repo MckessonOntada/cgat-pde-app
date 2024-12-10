@@ -21,7 +21,7 @@ export default function AccountsList(props) {
     practiceId,
     userId
   } = props;
-  const { data, paginationConfig, refetch } = useAccounts();
+  const { data, paginationConfig, refetch, setPageNumber } = useAccounts();
   const { t } = useTranslate();
 
   const columns = useMemo(() => {
@@ -130,6 +130,11 @@ export default function AccountsList(props) {
     },
     [selectedRows]
   );
+
+  const handleChangePage = (e, newPage) => {
+    setPageNumber(newPage);
+  };
+
   return (
     <>
       {/* {true && <Loader type={'screen'} />} */}
@@ -148,7 +153,7 @@ export default function AccountsList(props) {
             currentPage={paginationConfig?.pageNumber}
             totalPageCount={paginationConfig?.totalPages}
             pagination={true}
-            handleChangePage={props.handleChangePage}
+            handleChangePage={handleChangePage}
             totalRocords={paginationConfig?.totalElements}
             recordsPerPage={paginationConfig?.pageSize}
             paginationTotalRecorsMessage={t('orgManagement.results')}

@@ -127,17 +127,17 @@ function UserTable({ onActionSuccess }) {
         cell: (props) => (
           <div>
             {activeTab === 'PENDING REQUESTS' ? (
-              <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`} maxWidth={300} />
+              <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName || ''}`} maxWidth={300} />
             ) : (
               <React.Fragment>
                 {hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS) ? (
                   <Link
                     to={`${props.id}`} // dynamically constructs the URL with userId
                     className="MCP-table-link">
-                    <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`} maxWidth={300} />
+                    <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName || ''}`} maxWidth={300} />
                   </Link>
                 ) : (
-                  <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName}`} maxWidth={300} />
+                  <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName || ''}`} maxWidth={300} />
                 )}
               </React.Fragment>
             )}
@@ -193,7 +193,7 @@ function UserTable({ onActionSuccess }) {
         selector: 'date_added',
         wrap: true,
         minWidth: '160px',
-        cell: (props) => (props.updatedAt ? CommonUtils.convertDateStringFormat(props.updatedAt, 'MM-DD-YYYY') : props.createdAt ? CommonUtils.convertDateStringFormat(props.createdAt, 'MM-DD-YYYY') : 'N/A')
+        cell: (props) => CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')
       },
       {
         id: 'action',
