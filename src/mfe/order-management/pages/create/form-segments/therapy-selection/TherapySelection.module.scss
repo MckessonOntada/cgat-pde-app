@@ -1,28 +1,28 @@
-.wrapper{
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-04);
+  .row {
     display: flex;
-    flex-direction: column;
-    gap: var(--spacing-04);
-    .row{
-        display: flex;
-        flex-direction: row;
-        gap: var(--spacing-03);
-        flex-wrap: wrap;
-        row-gap: var(--spacing-03);
-        .col{
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-01);
-        }
-        .detailSegment{
-            gap: var(--spacing-01);
-        }
-        .fieldName{
-            color: #767E94; //color const missing
-            font-size: var(--brand-font-size--small);
-        }
-        .fieldValue{
-            font-size: var(--brand-font-size--small);
-            font-weight: var(--brand-font-weight-600);
-        }
+    flex-direction: row;
+    gap: var(--spacing-03);
+    flex-wrap: wrap;
+    row-gap: var(--spacing-03);
+    .col {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-01);
     }
+    .detailSegment {
+      gap: var(--spacing-01);
+    }
+    .fieldName {
+      // color: #767E94; //color const missing
+      font-size: var(--brand-font-size--small);
+    }
+    .fieldValue {
+      font-size: var(--brand-font-size--small);
+      font-weight: var(--brand-font-weight-600);
+    }
+  }
 }
