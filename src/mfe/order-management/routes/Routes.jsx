@@ -10,14 +10,22 @@ import PatientDetails from '../pages/create/form-segments/patient-details';
 import Summary from '../pages/create/form-segments/summary';
 import AdditionalDetails from '../pages/create/form-segments/additional-details';
 import NotFound from '../../../pages/error-pages/NotFound';
+import { TherapyProvider } from '../context/TherapyContext';
 
 function OrderManagementRoutes() {
   return (
     <Routes>
       <Route path={routesConfig.index} element={<OrderIndex />} />
-      <Route path={`create-order`} element={<TherapySelection />} />
+      <Route
+        path={`create-order`}
+        element={
+          <TherapyProvider>
+            <TherapySelection />
+          </TherapyProvider>
+        }
+      />
       <Route path={`edit-order/:orderId`} element={<TherapySelection />} />
-      
+
       <Route path={`:orderId/:therapyId/account-selection`} element={<AccountSelection />} />
       <Route path={`:orderId/:therapyId/:accountId/patient-details`} element={<PatientDetails />} />
       <Route path={`:orderId/:therapyId/:accountId/additional-details`} element={<AdditionalDetails />} />

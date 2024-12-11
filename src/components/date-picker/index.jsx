@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './DateRangePicker.module.scss';
 
 const DateRangePicker = ({ onRangeChange, dateRange }) => {
+  const { t } = useTranslate();
   const [startDate, setStartDate] = React.useState(dateRange?.[0] || '');
   const [endDate, setEndDate] = React.useState(dateRange?.[0] || '');
 

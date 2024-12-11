@@ -64,9 +64,9 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
       partnerFunction: 'SOLD_TO',
       ...(filterConfig.searchQuery.length && { query: filterConfig.searchQuery }),
       // TODO : Add multi select support
-      ...(filterConfig.status.length && { status: filterConfig.status }),
-      ...(filterConfig.distChannels.length && { distChannels: filterConfig.distChannels }),
-      ...(filterConfig.salesOrg.length && { salesOrg: filterConfig.salesOrg })
+      ...(filterConfig.status && { status: filterConfig.status }),
+      ...(filterConfig.distChannels && { distChannels: filterConfig.distChannels }),
+      ...(filterConfig.salesOrg && { salesOrg: filterConfig.salesOrg })
       // TODO : Use below after Adding multi select support
       // ...(filterConfig.status?.length && { status: filterConfig.status.join(",") }),
       // ...(filterConfig.distChannels?.length && { distChannels: filterConfig.distChannels.join(",") }),
@@ -107,13 +107,14 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
   const applyFilters = useCallback((values) => {
     setFilterConfig(values);
   }, []);
-
+ 
   const setPageNumber = (pageNumber) => {
     setPaginationConfig((prevConfig) => ({
       ...prevConfig,
       pageNumber
     }));
   };
+ 
 
   useEffect(() => {
     refetch();

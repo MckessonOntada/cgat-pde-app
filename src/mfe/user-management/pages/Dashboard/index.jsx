@@ -94,7 +94,7 @@ export default function Dashboard() {
 
   const breadcrumbItems = [
     {
-      label: 'Dashboard',
+      label: t('userManagement.breadcrumb.labeldashboard'),
       url: '/'
     },
     {

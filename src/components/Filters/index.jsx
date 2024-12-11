@@ -9,8 +9,10 @@ import { generateInitialFilterState } from './utils';
 import { Field, Formik, Form } from 'formik';
 import Components from '../form/Components';
 import './Filters.scss';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const Filters = ({ onApplyFilters, onClearFilters, showControls = true, additionalFilters, searchPlaceholder = 'Search...' }) => {
+  const { t } = useTranslate();
   const initialFilters = useMemo(() => generateInitialFilterState(additionalFilters), [additionalFilters]);
   const [isCardExpanded, setIsCardExpanded] = useState(false);
   const formRef = useRef(null);
@@ -66,10 +68,16 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
                     <Field name={'searchQuery'} label={''} placeholder={searchPlaceholder} component={Components['input']} />
                   </div>
                 </div>
-                {showControls && (
-                  <div className="filter-control-buttons">
-                    {isAnyFilterApplied && <Button type="button" size="md" label="Clear Filters" textButton className="txtbtn" onClick={() => handleClearFilters(formik.resetForm)} />}
-                    <Button type="submit" size="md" variant="secondary" label="Apply Filters" className="filter-btn" />
+                {showControls && ( 
+                  <div className="filter-control-buttons filterControls">
+                    {isAnyFilterApplied && (
+                      <Button type="button" size="md" textButton className="txtbtn" onClick={() => handleClearFilters(formik.resetForm)}>
+                        {t('filters.clearfilters')}
+                      </Button>
+                    )}
+                    <Button type="submit" size="md" variant="secondary" className="filter-btn">
+                      {t('filters.applyfilters')}
+                    </Button> 
                   </div>
                 )}
               </div>

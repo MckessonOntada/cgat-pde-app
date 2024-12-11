@@ -3,57 +3,35 @@ import styles from './TherapyDetails.module.scss';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useNavigate } from 'react-router-dom';
+import { Heading } from '@mckesson/mcp-component-library';
 
 const detailsList = [
   {
     title: 'Material Details',
     details: {
+      'Material Number': '00000000000003742657',
       'Material Description': 'MPB HEMLIBRA 105MG/0.7ML SDV',
       NDC: 'N50242092201',
-      UDI: 'NA',
-      'Sales Org': 'MPB'
-    }
-  },
-  {
-    title: 'Variant Details',
-    details: {
-      Variant: 'Type A',
-      'Variant Description': 'One to One'
-    }
-  },
-  {
-    title: 'Contract Details',
-    details: {
-      'Contract Number': 630673,
-      'Contract Type': 5,
-      'Contract Type Description': 'Individual',
-      'Contract Valid Form': '1/5/2024',
-      'Contract Valid Till': '12/32/2025',
-      Division: 10,
-      '340b Identifier': 'No'
-    }
-  },
-  {
-    title: 'Pricing Details',
-    details: {
-      'Price Date': '9/23/2024',
-      'Net Price ($)': 850,
-      'Regular Price ($)': '11,754.60',
-      'Contract Price ($)': '$1,000.00',
-      'WAC Price ($)': '11,754.60',
-      'Discounts ($)': 150,
-      '340b Price': 'NA',
-      'Price Unit': 1
+      Strength: '105 MG/0.7',
+      Dosage: 'VIAL',
+      'Selling Unit Code': 'EA',
+      'Vendor Name': 'GENENTECH/MCK SP/MPB',
+      'UPC Code': '35024292201',
+      'Drop Ship Indicator': 'Y',
+      'Base Unit of Measure': 'EA',
+      'CGAT Identifier': 'One to One',
+      'Product Level Pricing': 'Yes',
+      'Minimum Order Quantity': '1'
     }
   }
 ];
 
-function TherapyDetails({therapyId, handleOnClose}) {
+function TherapyDetails({ therapyId, handleOnClose }) {
   const { t } = useTranslate();
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
-        <h6>{t('labels.therapyDetails')}</h6>
+        <Heading as="h2">{t('labels.therapyDetails')}</Heading>
         <button onClick={handleOnClose}>
           <IconClose />
         </button>

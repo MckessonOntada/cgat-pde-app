@@ -31,21 +31,21 @@
   }
 }
 
-.back-button-control{
+.back-button-control {
   padding: 0px !important; //remove important after component change
 }
 
-.custom-date-range-picker{
-  >div{
-  >div{
-  >div{
-  >div{
-    width: unset;
-    min-width: 160px;
-    flex-grow: 1;
-  }
-  }
-  }
+.custom-date-range-picker {
+  > div {
+    > div {
+      > div {
+        > div {
+          width: unset;
+          min-width: 160px;
+          flex-grow: 1;
+        }
+      }
+    }
   }
 }
 
@@ -152,7 +152,7 @@
   .search-box {
     display: flex;
     gap: var(--spacing-03);
-    width:100%
+    width: 100%;
   }
   .filter-header {
     display: flex;
@@ -300,12 +300,14 @@
 }
 
 .fieldName {
-  color: #767e94; //color const missing
-  font-size: var(--brand-font-size--default);
+  //color: #767e94; //color const missing
+  font-size: var(--brand-font-size--small);
+  font-weight: var(--brand-font-weight-400);
+  line-height: 24px;
 }
 
 .fieldValue {
-  font-size: var(--brand-font-size--default);
+  font-size: var(--brand-font-size--small);
   font-weight: var(--brand-font-weight-600);
 }
 
@@ -324,11 +326,10 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.corrected-dropdown{
-  span{
+.corrected-dropdown {
+  span {
     font-size: var(--brand-font-size--small);
   }
-
 }
 
 [class^="OktaFooter-module--copyrightContainer-"] {

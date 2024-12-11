@@ -5,6 +5,7 @@ export const RoutePaths = {
   pathAdmin: '/admin',
   pathUserManagement: '/user',
   pathOrgManagement: '/organization',
+  pathOrderManagement: '/orders',
   pathSystemAdminManagement: '/system-admin',
   pathSignup: '/signup',
   pathSignin: '/signin'
