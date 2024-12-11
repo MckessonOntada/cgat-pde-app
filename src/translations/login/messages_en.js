@@ -4,6 +4,5 @@ export const LoginMessagesEN = {
   'header.label.notifications': 'Notifications',
   'header.label.help': 'Help',
   'header.label.systemAdminView': 'System Admin View',
-  'widget.footer.contextmessage':
-    'If you need further assistance, please contact support at help@mckesson.com'
+  'widget.footer.contextmessage': 'If you need further assistance, please contact support at help@mckesson.com'
 };

@@ -12,16 +12,6 @@ import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions
 import AuthUtils from '@src/util/AuthUtils';
 import CommonFilters from '@src/components/Filters';
 
-const breadcrumbItems = [
-  {
-    label: 'Dashboard',
-    url: '/'
-  },
-  {
-    label: 'Manage Roles'
-  }
-];
-
 function RolesList() {
   const { t } = useTranslate();
   const navigate = useNavigate();
@@ -53,6 +43,16 @@ function RolesList() {
       }
     ];
   }, []);
+
+  const breadcrumbItems = [
+    {
+      label: t('orgManagement.header.dashboard'),
+      url: '/'
+    },
+    {
+      label: t('orgManagement.role.headingManageOrder')
+    }
+  ];
 
   return (
     <div className="MCP-module-wrapper">
