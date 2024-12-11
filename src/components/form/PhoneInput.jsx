@@ -1,45 +1,37 @@
 import React from 'react';
-import { MaskedInput, TextError, Label, Required } from '@mckesson/mcp-component-library';  
+import { MaskedInput, TextError, Label, Required } from '@mckesson/mcp-component-library';
 import './Components.scss';
-import { getNestedValue } from './util';
 
 export default function PhoneInput(props) {
-  const { field, form, label, ...rest } = props;
+  const { id, value, isRequired, error = '', onChange, onBlur, label, ...rest } = props;
 
-  // Determine if the field has an error and is touched
-  const errorMessage = getNestedValue(form.errors, field.name);
-  const isFieldTouched = getNestedValue(form.touched, field.name);
-
+  console.log(rest, '❤');
   const formatPhoneNumber = (phoneNumber) => {
     if (phoneNumber) {
-      const match = phoneNumber.match(/^(\d{3})(\d{3})(\d{4})$/); 
-      return match ? `(${match[1]}) ${match[2]}-${match[3]}` : phoneNumber; 
+      const match = phoneNumber.match(/^(\d{3})(\d{3})(\d{4})$/);
+      return match ? `(${match[1]}) ${match[2]}-${match[3]}` : phoneNumber;
     }
-    return "";
+    return '';
   };
   return (
-    <div className='grid align-PhoneInput'>
-      <Label htmlFor={`${field.name}`} className="label-heading">
+    <div className="grid align-PhoneInput">
+      <Label htmlFor={`${id}`} className="label-heading">
         {label}
-        <Required id="Required">
-          Required
-        </Required>
+        {isRequired && <Required id="Required">Required</Required>}
       </Label>
       <MaskedInput
-        {...rest}
-        id={`${field.name}`}
-        mask="(XXX) XXX-XXXX" 
-        onChangeFn={value => form.setFieldValue(field.name, value)} 
-        onBlurFn={() => form.setFieldTouched(field.name, true)} 
-        value={formatPhoneNumber(field.value)}  
+        id={`${id}`}
+        name={id}
+        mask="(XXX) XXX-XXXX"
+        onChangeFn={onChange}
+        onBlurFn={onBlur}
+        value={formatPhoneNumber(value)}
         dataTestId="mobile-input"
-        useUnmaskedValue={false} 
-        className={`phoneInput ${form.errors[field.name] && form.touched[field.name] ? 'outline-error' : ''}`}
-        errorMessage={form.errors[field.name] || ''}
+        useUnmaskedValue={false}
+        error={error}
+        {...rest}
       />
-      {isFieldTouched && errorMessage && (
-        <TextError errorMessage={errorMessage} />
-      )}
+      {error && <TextError errorMessage={error} />}
     </div>
   );
 }
