@@ -8,6 +8,7 @@ import { DashboardES } from './dashboard/messages_es';
 import { OrgManagementEN } from './orgManagement/messages_en';
 import { OrgManagementES } from './orgManagement/messages_es';
 import { MessageEn as orderManagementMessagesEn } from './order-management/messages_en';
+import { MessageEs as orderManagementMessagesEs } from './order-management/messages_es';
 import { PaymentInvoicesEN } from './payment-Invoices/messages_en';
 import { PaymentInvoicesES } from './payment-Invoices/messages_es';
 import { AccountEN } from './Accounts/messages_en';
@@ -35,6 +36,7 @@ export const messages = {
     ...UserManagementES,
     ...DashboardES,
     ...OrgManagementES,
+    ...orderManagementMessagesEs,
     ...AccountES,
     ...SignupES,
     ...filtersES
