@@ -1,10 +1,10 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { PATHS } from './constants';
-import NotFound from '../../../pages/error-pages/NotFound';
-import Home from './pages/Dashboard';
-import CreateApproverGroup from './pages/CreateApproverGroup';
-import ApproverGroupDetails from './pages/ApproverGroupDetail';
+import NotFound from '@src/pages/error-pages/NotFound';
+import Home from '../pages/Dashboard';
+import CreateApproverGroup from '../pages/CreateApproverGroup';
+import ApproverGroupDetails from '../pages/ApproverGroupDetail';
 
 function ManageApproverRoute() {
   return (

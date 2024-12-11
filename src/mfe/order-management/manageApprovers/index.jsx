@@ -1,5 +1,5 @@
 import React from 'react';
-import ManageApproverRoute from './routes';
+import ManageApproverRoute from './routes/Routes';
 
 const ManageApprovers = () => {
   return (
