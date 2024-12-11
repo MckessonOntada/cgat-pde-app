@@ -46,24 +46,24 @@ function TherapySelection() {
     value: i.replace(' ', '_').toLowerCase()
   }));
 
-  const AdditionalFiltersConfig = useMemo(() => {
+  const additionalFiltersConfig = useMemo(() => {
     let config = [];
-    config.push({
-      type: 'multiSelectDropdown',
-      name: 'customerind',
-      label: t('labels.customerIndicator'),
-      options: CUSTOMER_INDICATORS
-    });
-
-    return [
-      ...config,
+    config.push(
+      {
+        type: 'multiSelectDropdown',
+        name: 'customerind',
+        label: t('labels.customerIndicator'),
+        options: CUSTOMER_INDICATORS
+      },
       {
         type: 'multiSelectDropdown',
         name: 'salesOrg',
         label: t('labels.salesOrganization'),
         options: SALES_ORGANIZATIONS
       }
-    ];
+    );
+
+    return config;
   }, []);
 
   const { mutate } = useMutation(
@@ -110,7 +110,7 @@ function TherapySelection() {
           <div className="MCP-panel-container">
             <ModuleHeader heading={<Heading as="h2">{t('labels.therapySelection')}</Heading>} />
             <div className="MCP-panel-container">
-              <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={t('userManagement.searchFilter.label')} />
+              <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={additionalFiltersConfig} searchPlaceholder={t('userManagement.searchFilter.label')} />
             </div>
             <TherapyDataTable selectedRowId={selectedRowId} setSelectedRowId={setSelectedRowId} />
           </div>

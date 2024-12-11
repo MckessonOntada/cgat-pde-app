@@ -7,20 +7,23 @@ import AuthUtils from '@src/util/AuthUtils';
 
 const TherapyContext = createContext();
 
-const initialFilterState = {
+const INITIAL_FILTER_STATE = {
   searchQuery: '',
   salesOrg: [],
   customerInd: [] //Todo
 };
 
-const initialPageConfig = {
+const INITIAL_SORT_STATE = {
+  sortBy: null,
+  sortOrder: null
+};
+
+const INITIAL_PAGINATION_CONFIG = {
   total: 0,
   pageSize: 8,
   pages: 0,
   pageNumber: 1
 };
-
-const initialDataState = [];
 
 export const useTherapy = () => {
   const context = useContext(TherapyContext);
@@ -31,39 +34,45 @@ export const useTherapy = () => {
 };
 
 export const TherapyProvider = ({ children }) => {
-  const [filterState, setFilterState] = useState(initialFilterState);
-  const [pageConfig, _setPageConfig] = useState(initialPageConfig);
-  const [dataState, setDataState] = useState(initialDataState);
+  const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
+  const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
+  const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
+
+  const requestParams = useMemo(
+    () => ({
+      pageNumber: paginationConfig.pageNumber - 1,
+      pageSize: paginationConfig.pageSize,
+      ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
+      ...(filterConfig?.salesOrg && { salesOrg: [filterConfig.salesOrg] }) //,
+    }),
+    [filterConfig, paginationConfig.pageNumber]
+  );
+
   const userId = AuthUtils.getUserId();
   const updateFilterState = useCallback((field, value) => {
-    setFilterState((prevState) => ({
+    setFilterConfig((prevState) => ({
       ...prevState,
       [field]: value
     }));
   }, []);
 
-  const requestParams = useMemo(
-    () => ({
-      pageNo: pageConfig.pageNumber - 1,
-      pageSize: pageConfig.pageSize,
-      ...(filterState?.searchQuery && { query: filterState.searchQuery }),
-      ...(filterState?.salesOrg && { salesOrg: [filterState.salesOrg] }) //,
-      // ...(filterState?.customerInd && { customerInd: [filterState.customerInd] })
-    }),
-    [filterState, pageConfig.pageNumber]
-  );
-
-  const { isLoading, isError, data, refetch } = useQuery({
+  const {
+    isLoading,
+    isError,
+    data = [],
+    refetch: refreshData
+  } = useQuery({
     queryKey: ['Therapy', requestParams],
     queryFn: async () => {
       const url = `${ApiRoutes.THERAPY(userId)}?${serializeParams(requestParams)}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       if (res.data) {
-        const { content: data, total, pages } = res.data;
-        _setPageConfig((prevConfig) => ({
+        const { content: data, totalElements, totalPages } = res.data;
+
+        setPaginationConfig((prevConfig) => ({
           ...prevConfig,
-          ...(total && { total }),
-          ...(pages && { pages })
+          ...(totalElements && { totalElements }),
+          ...(totalPages && { totalPages })
         }));
 
         return data;
@@ -74,43 +83,39 @@ export const TherapyProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    refetch();
-  }, [filterState, pageConfig.pageNumber]);
+    refreshData();
+  }, [filterConfig, paginationConfig.pageNumber]);
+
+  const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
 
   const applyFilters = (filters) => {
-    _setPageConfig((prev) => ({ ...prev, pageNumber: 1 }));
-    setFilterState({ ...filters });
+    setPageNumber(1);
+    setFilterConfig({ ...filters });
   };
 
   const setPageNumber = (pageNumber) => {
-    _setPageConfig((prevConfig) => ({
+    setPaginationConfig((prevConfig) => ({
       ...prevConfig,
       pageNumber
     }));
   };
 
-  const clearFilters = () => {
-    setFilterState(initialFilterState);
-  };
-
-  const setPageConfig = (state) => {
-    _setPageConfig({ ...state });
-  };
+  const clearFilters = () => setFilterConfig(INITIAL_FILTER_STATE);
 
   const ctxValue = useMemo(
     () => ({
-      data: data || [],
+      data,
       isLoading,
       isError,
-      filterState,
-      setFilterState,
-      pageConfig,
+      filterConfig,
+      paginationConfig,
+      setPageNumber,
+      applySort,
       applyFilters,
       clearFilters,
-      setPageConfig,
-      refreshData: refetch
+      refreshData
     }),
-    [updateFilterState, clearFilters, isLoading, isError, data, refetch]
+    [updateFilterState, clearFilters, isLoading, isError, data]
   );
   return <TherapyContext.Provider value={ctxValue}>{children}</TherapyContext.Provider>;
 };

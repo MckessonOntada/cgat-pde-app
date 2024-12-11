@@ -67,10 +67,8 @@ const AccountSelection = () => {
         <div className={`MCP-module-wrapper`}>
           <div className="MCP-panel-container">
             <div>
-              <div>
-                <Heading as="h3">{t('labels.therapyDescription')}</Heading>
-                <Heading as="h3">{t('labels.accountSelection')}</Heading>
-              </div>
+              <p className="fieldName">{t('labels.therapyDescription')}</p>
+              <p className="fieldValue">{t('labels.accountSelection')}</p>
             </div>
           </div>
           <div className="MCP-panel-container">

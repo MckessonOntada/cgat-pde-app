@@ -300,15 +300,25 @@
 }
 
 .fieldName {
-  //color: #767e94; //color const missing
+  color: #767e94; //color const missing
   font-size: var(--brand-font-size--small);
   font-weight: var(--brand-font-weight-400);
-  line-height: 24px;
 }
 
 .fieldValue {
   font-size: var(--brand-font-size--small);
   font-weight: var(--brand-font-weight-600);
+}
+
+.dull-text {
+  color: var(--brand-color-primary-slate);
+  font-size: var(--brand-font-size--small);
+}
+
+.row-space-between-center {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 [class*="Badge-module"] {

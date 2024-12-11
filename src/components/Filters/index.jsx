@@ -61,14 +61,14 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
             <div className="MCP-filter-panel">
               <div className="filter-header">
                 <div className="search-box">
-                  <button type="button" onClick={handleExpandCard} disabled={Boolean(additionalFilters)}>
+                  <button type="button" onClick={handleExpandCard}>
                     <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
                   </button>
                   <div className={'ctrl-search-box'}>
                     <Field name={'searchQuery'} label={''} placeholder={searchPlaceholder} component={Components['input']} />
                   </div>
                 </div>
-                {showControls && ( 
+                {showControls && (
                   <div className="filter-control-buttons filterControls">
                     {isAnyFilterApplied && (
                       <Button type="button" size="md" textButton className="txtbtn" onClick={() => handleClearFilters(formik.resetForm)}>
@@ -77,18 +77,16 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
                     )}
                     <Button type="submit" size="md" variant="secondary" className="filter-btn">
                       {t('filters.applyfilters')}
-                    </Button> 
+                    </Button>
                   </div>
                 )}
               </div>
-              {
-                additionalFilters && 
-                <ToggleUI in={isCardExpanded} timeout={400}>
-                  <div className="additional-filters">
-                    <AdditionalFilters filtersConfig={additionalFilters} />
-                  </div>
-                </ToggleUI>
-              }
+
+              <ToggleUI in={isCardExpanded} timeout={400}>
+                <div className="additional-filters">
+                  <AdditionalFilters filtersConfig={additionalFilters} />
+                </div>
+              </ToggleUI>
             </div>
           </Form>
         );
