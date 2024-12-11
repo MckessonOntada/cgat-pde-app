@@ -18,7 +18,7 @@ const AccountSelection = () => {
   const { t } = useTranslate();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
-  const { therapyId } = useParams();
+  const { orderId, therapyId } = useParams();
 
   const { mutate } = useMutation(
     async (data) => {
@@ -26,7 +26,7 @@ const AccountSelection = () => {
       return res;
     },
     {
-      onSuccess: ({ id }) => navigate(`../${therapyId}/${id}/patient-details`),
+      onSuccess: ({ id }) => navigate(`../${orderId}/${therapyId}/${id}/patient-details`),
       onError: console.log
     }
   );
