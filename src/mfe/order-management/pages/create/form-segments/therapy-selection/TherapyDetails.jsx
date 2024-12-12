@@ -7,7 +7,6 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { Loader, Heading } from '@mckesson/mcp-component-library';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import AuthUtils from '@src/util/AuthUtils';
-import { Link } from 'react-router-dom';
 
 function TherapyDetails({ therapyId, onClose }) {
   const { t } = useTranslate();
@@ -67,13 +66,13 @@ function DetailsPanel({ details }) {
         <Heading as="h4">{t('labels.therapy.generalDetails')}</Heading>
         <div>{renderDetails(generalDetails)}</div>
       </div>
-      <div>
+      {/* <div>
         <div className="row-space-between-center">
           <Heading as="h4">{t('labels.therapy.configuration')}</Heading>
           <Link className="MCP-table-link">{t('labels.therapy.preview')}</Link>
         </div>
         <div>{renderDetails(configurationDetails)}</div>
-      </div>
+      </div> */}
     </div>
   );
 }

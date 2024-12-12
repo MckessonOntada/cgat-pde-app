@@ -21,7 +21,7 @@ function AdditionalDetails() {
     navigate(`../${orderId}/summary`);
   };
 
-  const handleOnCancel = () => {
+  const handleOnBack = () => {
     //compare data change, display modal for confirmation
     navigate('/orders');
   };
@@ -44,8 +44,8 @@ function AdditionalDetails() {
         <ModuleHeader
           controls={
             <div className="controls">
-              <Button size="md" variant="secondary" onClick={handleOnCancel}>
-                {t('captions.btnCancel')}
+              <Button size="md" variant="secondary" onClick={handleOnBack}>
+                {t('captions.btnBack')}
               </Button>
               <Button size="md" variant="primary" onClick={handleOnSubmit} type="submit">
                 {t('captions.btnSaveAndContinue')}
