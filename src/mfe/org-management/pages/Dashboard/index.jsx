@@ -25,11 +25,11 @@ function DashboardPage() {
   const { applyFilters, clearFilters } = useOrg();
   const breadcrumbItems = [
     {
-      label: 'Dashboard',
+      label: `${t('orgManagement.header.dashboard')}`,
       url: '/'
     },
     {
-      label: 'Manage Organization'
+      label: `${t('orgManagement.header.label')}`
     }
   ];
 
@@ -59,13 +59,13 @@ function DashboardPage() {
       {
         type: 'multiSelectDropdown',
         name: 'location',
-        label: 'Location', // Use translation
+        label: `${t('orgManagement.table.location')}`,
         options: usStates
       },
       {
         type: 'multiSelectDropdown',
         name: 'status',
-        label: 'Status', // Use translation
+        label: `${t('orgManagement.table.status')}`,
         options: [
           { label: 'All', value: 'all' },
           { label: 'Inactive', value: 'inactive' },

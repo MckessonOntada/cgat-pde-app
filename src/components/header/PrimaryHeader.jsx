@@ -34,6 +34,7 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState(null);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const userName = AuthUtils.getUserName();
 
   const requestParams = useMemo(
     () => ({
@@ -112,7 +113,7 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
       <DropdownMenu
         anchorEl={
           <button className={styles.actionLink} aria-label="Account options">
-            <span>{user || 'Anonymous'}</span>
+            <span>{userName || 'Anonymous'}</span>
             <IconArrowDown />
           </button>
         }
