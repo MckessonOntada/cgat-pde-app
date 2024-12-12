@@ -40,7 +40,7 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
   const handleClearFilters = (resetForm) => {
     resetForm({ values: initialFilters });
     clearInputs();
-    onClearFilters?.();
+    onClearFilters();
   };
 
   return (
@@ -68,7 +68,7 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
                     <Field name={'searchQuery'} label={''} placeholder={searchPlaceholder} component={Components['input']} />
                   </div>
                 </div>
-                {showControls && ( 
+                {showControls && (
                   <div className="filter-control-buttons filterControls">
                     {isAnyFilterApplied && (
                       <Button type="button" size="md" textButton className="txtbtn" onClick={() => handleClearFilters(formik.resetForm)}>
@@ -77,7 +77,7 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
                     )}
                     <Button type="submit" size="md" variant="secondary" className="filter-btn">
                       {t('filters.applyfilters')}
-                    </Button> 
+                    </Button>
                   </div>
                 )}
               </div>

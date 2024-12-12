@@ -1,5 +1,142 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import * as Yup from 'yup';
+import { Formik, Form, Field } from 'formik';
+import { Button, Heading, Alert, Required, SearchableDropdown, Dropdown } from '@mckesson/mcp-component-library';
+import { useTranslate } from '@src/translations/useTranslation';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
+import { PATHS } from '../../routes/constants';
+import ModuleHeader from '@src/components/module-header';
+import { useQuery, useMutation } from 'react-query';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
+import { handleApiError, serializeParams } from '@src/util/ApiUtils';
+import AuthUtils from '@src/util/AuthUtils';
+import { RoutePaths } from '@src/routes/constants';
+import { ALPHABETIC_WITH_SPECIAL, ALPHABETIC_WITH_SPACE, ADDRESS_REGEX, ZIP_REGEX, PHONE_REGEX, FAX_REGEX } from '@src/components/form/ValidationRegExp';
+import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
+import Components from '@src/components/form/Components';
+import Attributes from './Attribute';
 
-export default function CreateApproverGroup() {
-  return <div>Create Approver Group</div>;
-}
+const CreateApproverGroup = () => {
+  const { t } = useTranslate();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isEdit = location.state || null;
+
+  const handleGoBack = () => {};
+
+  const initialValues = { groupName: '', attributes: [{ attributeType: 'Price', value: '' }], userSearch: '' };
+
+  const validationSchema = Yup.object({
+    name: Yup.object({
+      firstName: Yup.string()
+        .matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.first_name')) // Only alphabets
+        .min(2, t('userManagement.create_user.validation.first_name_min_max'))
+        .required(t('userManagement.create_user.validation.first_name_required'))
+        .max(50, t('userManagement.create_user.validation.first_name_min_max')),
+      middleName: Yup.string().matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.middle_name')).min(2, t('userManagement.create_user.validation.middle_name_min_max')).max(50, t('userManagement.create_user.validation.middle_name_min_max')).nullable(),
+      lastName: Yup.string()
+        .matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.last_name')) // Only alphabets
+        .min(2, t('userManagement.create_user.validation.last_name_min_max'))
+        .max(50, t('userManagement.create_user.validation.last_name_min_max'))
+        .required(t('userManagement.create_user.validation.last_name_required'))
+    })
+  });
+
+  const handleSubmit = (values) => {
+    const payload = {
+      isActive: true
+    };
+
+    mutate(
+      { payload },
+      {
+        onSuccess: (response) => {
+          console.log('  created/updated successfully:', response);
+        },
+        onError: (error) => {
+          const errorKey = handleApiError(error);
+          const actionType = isPending ? 'Approve' : isEdit ? 'Update' : 'Create';
+          setAlert({ type: 'error', message: t(errorKey) });
+          setIsAlertVisible(true);
+        }
+      }
+    );
+  };
+
+  const handleCancel = () => {};
+
+  const handleNavigate = () => {};
+
+  return (
+    <div className="MCP-module-wrapper">
+      <div>
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
+          {t('approvergroup.header.backmessage')}
+        </Button>
+      </div>
+
+      <ModuleHeader heading={<Heading as="h1">{t('approvergroup.create_approvergroup')}</Heading>} />
+
+      {/* {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />} */}
+
+      <Formik
+        initialValues={initialValues}
+        //validationSchema={validationSchema}
+        enableReinitialize
+        onSubmit={(values, actions) => {
+          handleSubmit(values);
+          actions.setSubmitting(false);
+        }}>
+        {({ values, isValid, handleChange, errors, touched }) => {
+          return (
+            <Form>
+              <div className="MCP-panel-container">
+                <Heading as="h2">{t('approvergroup.approvergroupdetails')}</Heading>
+                <div className="MCP-module-wrapper">
+                  <div className="MCP-module-body form-container">
+                    <div>
+                      <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start">
+                        <Field id="name.firstName" name="name.firstName" label={t('approvergroup.approvergroupname')} placeholder=" " isRequired component={Components['input']} maxLength={50} />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="headingBox">
+                        <Heading as="h2">{t('approvergroup.attributes')}</Heading>
+                      </div>
+                      <div>
+                        <Attributes values={values} errors={errors} touched={touched} handleChange={handleChange} />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="headingBox">
+                        <Heading as="h2">{t('approvergroup.approveuserlist')}</Heading>
+                      </div>
+                      <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5">
+                        <Field name="attribute1" fieldlabel={t('approvergroup.selectuser')} placeholder=" " component={Components['multiSelectDropdown']} isRequired options={[]} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className={'buttonGroup'}>
+                <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>
+                  {t(isEdit ? 'approvergroup.button.back' : 'approvergroup.button.cancel')}
+                </Button>
+
+                <Button type="submit" size={'md'}>
+                  {t(isEdit ? 'approvergroup.button.updategroup' : 'approvergroup.button.creategroup')}
+                </Button>
+              </div>
+            </Form>
+          );
+        }}
+      </Formik>
+    </div>
+  );
+};
+
+export default CreateApproverGroup;

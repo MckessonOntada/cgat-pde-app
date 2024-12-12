@@ -4,7 +4,6 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
-import { DateUtils } from '@src/util/DateUtil';
 
 const ApproverContext = createContext();
 
@@ -35,11 +34,28 @@ const INITIAL_PAGINATION_CONFIG = {
   pageNumber: 1
 };
 
+export const GROUP_DATA = [
+  {
+    id: 1,
+    groupName: 'TXO Approver Group_1',
+    createdBy: 'Sally Thyer',
+    createdOn: '01-01-2024',
+    isActive: true
+  },
+  {
+    id: 2,
+    groupName: 'TXO Approver Group_2',
+    createdBy: 'Sally Thyer',
+    createdOn: '11/11/2024',
+    isActive: true
+  }
+];
+
 export const ApproverProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
-
+  const [data, setData] = useState(GROUP_DATA);
   const updateFilterState = useCallback((field, value) => {
     setFilterState((prevState) => ({
       ...prevState,
@@ -86,7 +102,7 @@ export const ApproverProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    refetch();
+    //refetch();
   }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
 
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
@@ -105,19 +121,18 @@ export const ApproverProvider = ({ children }) => {
 
   const ctxValue = useMemo(
     () => ({
-      // data: data || [],
-      isLoading,
-      isError,
+      data: data || [],
+      //   isLoading,
+      //   isError,
       filterConfig,
       paginationConfig,
       setFilterConfig,
       clearFilters,
       applyFilters,
       applySort,
-      setPageNumber,
-      refreshData: refetch
+      setPageNumber
     }),
-    [updateFilterState, clearFilters, isLoading, isError, refetch]
+    [updateFilterState, clearFilters]
   );
   return <ApproverContext.Provider value={ctxValue}>{children}</ApproverContext.Provider>;
 };

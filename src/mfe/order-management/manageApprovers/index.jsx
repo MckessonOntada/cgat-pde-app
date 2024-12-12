@@ -1,10 +1,13 @@
 import React from 'react';
 import ManageApproverRoute from './routes/Routes';
+import { ApproverProvider } from './context/ApproverContext';
 
 const ManageApprovers = () => {
   return (
     <div>
-      <ManageApproverRoute />
+      <ApproverProvider>
+        <ManageApproverRoute />
+      </ApproverProvider>
     </div>
   );
 };
