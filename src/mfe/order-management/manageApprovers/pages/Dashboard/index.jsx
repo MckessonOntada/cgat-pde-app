@@ -75,17 +75,41 @@ export default function Dashboard() {
     }
   ];
 
+  // const AdditionalFiltersConfig = useMemo(() => {
+  //   return [
+  //     {
+  //       type: 'multiSelectDropdown',
+  //       name: 'status',
+  //       label: t('approvergroup.table.status'),
+  //       options: [
+  //         { label: 'All', value: 'all' },
+  //         { label: 'Active', value: 'active' },
+  //         { label: 'Inactive', value: 'inactive' }
+  //       ]
+  //     },
+  //     {
+  //       type: 'dateRangePicker',
+  //       name: 'dateRange'
+  //     }
+  //   ];
+  // }, []);
+
   const AdditionalFiltersConfig = useMemo(() => {
+    let config = [];
     return [
       {
-        type: 'multiSelectDropdown',
+        type: 'dropdown',
         name: 'status',
-        label: t('approvergroup.table.status'),
+        label: t('userManagement.table.status'),
         options: [
           { label: 'All', value: 'all' },
-          { label: 'Active', value: 'active' },
-          { label: 'Inactive', value: 'inactive' }
+          { label: 'Inactive', value: 'inactive' },
+          { label: 'Active', value: 'active' }
         ]
+      },
+      {
+        type: 'dateRangePicker',
+        name: 'dateRange'
       }
     ];
   }, []);

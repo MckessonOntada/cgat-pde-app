@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import { Formik, Form, Field } from 'formik';
-import { Button, Heading, Alert, Required, SearchableDropdown, Dropdown } from '@mckesson/mcp-component-library';
+import { Button, Heading, Alert, Required, SearchableDropdown, Dropdown, Pills } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -17,18 +17,20 @@ import { ALPHABETIC_WITH_SPECIAL, ALPHABETIC_WITH_SPACE, ADDRESS_REGEX, ZIP_REGE
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import Components from '@src/components/form/Components';
 import Attributes from './Attribute';
+import { useApprover } from '../../context/ApproverContext';
 
 const CreateApproverGroup = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
   const isEdit = location.state || null;
+  const { refreshData, usersData } = useApprover();
 
   const handleGoBack = () => {
     navigate(RoutePaths.pathApproverManagement);
   };
 
-  const initialValues = { groupName: '', attributes: [{ attributeType: 'Price', value: '' }], userSearch: '' };
+  const initialValues = { groupName: '', attributes: [{ attributeType: 'Price', value: '' }], userSearch: '', attribute1: [] };
 
   const validationSchema = Yup.object({
     name: Yup.object({
@@ -66,6 +68,12 @@ const CreateApproverGroup = () => {
       }
     );
   };
+  const createLabelData = (userID) => [
+    {
+      // id: account.accountNumber,
+      // labelText: account.accountName
+    }
+  ];
 
   const handleCancel = () => {};
 
@@ -117,8 +125,9 @@ const CreateApproverGroup = () => {
                       <div className="headingBox">
                         <Heading as="h2">{t('approvergroup.approveuserlist')}</Heading>
                       </div>
+
                       <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5">
-                        <Field name="attribute1" fieldlabel={t('approvergroup.selectuser')} placeholder=" " component={Components['multiSelectDropdown']} isRequired options={[]} />
+                        <Field name="attribute1" fieldlabel={t('approvergroup.selectuser')} placeholder=" " component={Components['multiSelectDropdown']} isRequired options={usersData || []} />
                       </div>
                     </div>
                   </div>

@@ -6,6 +6,8 @@ import { RadioGroup, Button, Divider } from '@mckesson/mcp-component-library';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
 import './index.scss';
 
+import RenderControls from './RenderControls';
+
 const Attributes = ({ values, errors, touched, handleChange }) => {
   const { t } = useTranslate();
   const attrOptions = [
@@ -43,13 +45,13 @@ const Attributes = ({ values, errors, touched, handleChange }) => {
       case 'Catalog':
         return (
           <div>
-            <Field name="attribute1" fieldlabel={t('approvergroup.selecttherapy')} placeholder=" " component={Components['multiSelectDropdown']} isRequired options={[]} />
+            <Field name="attribute1" fieldlabel={t('approvergroup.selecttherapy')} placeholder=" " component={Components['multiSelectDropdown']} isRequired options={data} />
           </div>
         );
       case 'Account':
         return (
           <div>
-            <Field name="attribute1" fieldlabel={t('approvergroup.selectaccount')} placeholder=" " component={Components['multiSelectDropdown']} isRequired options={[]} />
+            <Field name="attribute1" fieldlabel={t('approvergroup.selectaccount')} placeholder=" " component={Components['multiSelectDropdown']} isRequired options={data} />
           </div>
         );
 
@@ -84,7 +86,7 @@ const Attributes = ({ values, errors, touched, handleChange }) => {
               />
             </div>
             <div>
-              <Field name="attributeuser" fieldlabel={t('approvergroup.selectuser')} placeholder=" " component={Components['multiSelectDropdown']} isRequired options={[]} />
+              <Field name="attributeuser" fieldlabel={t('approvergroup.selectuser')} placeholder=" " component={Components['multiSelectDropdown']} isRequired options={data} />
             </div>
           </div>
         );
@@ -104,7 +106,9 @@ const Attributes = ({ values, errors, touched, handleChange }) => {
                 <div className="attributeBox">
                   <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
                     <Field name={`attributes[${index}].attributeType`} fieldlabel={t(`${t('approvergroup.attribute')} ${index + 1}`)} placeholder=" " component={Components['dropdown']} isRequired options={getAvailableOptions(index)} />
-                    <div>{renderControl(attribute.attributeType, index)}</div>
+                    <div>
+                      <RenderControls attributeType={attribute.attributeType} index={index} />
+                    </div>
                     <div className="remove"> {index !== 0 && <Button Icon={DeleteIcon} variant="tertiary" size="md" label="REMOVE" className="btnRemove" onClick={() => remove(index)}></Button>}</div>
                   </div>
                 </div>

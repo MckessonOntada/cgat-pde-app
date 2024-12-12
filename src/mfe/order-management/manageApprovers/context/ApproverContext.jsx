@@ -97,6 +97,32 @@ export const ApproverProvider = ({ children }) => {
   //     refetchOnWindowFocus: false
   //   });
 
+  let userParams = {
+    userType: 'GENERAL',
+    status: 'active'
+  };
+
+  const {
+    isLoading,
+    data: usersData,
+    isError,
+    refetch
+  } = useQuery({
+    queryKey: ['data'],
+    queryFn: async () => {
+      const apiUrl = `${ApiRoutes.USERS()}?${serializeParams(userParams)}`;
+      const res = await HttpResourceService.callRest(`${apiUrl}`, httpVerb.GET, {});
+      if (res.data?.content) {
+        return res.data?.content?.map((item) => ({
+          label: `${item.name.lastName}, ${item.name.firstName} ${item.name.middleName || ''}`.trim(),
+          value: item.id
+        }));
+      }
+    },
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
+  });
+
   const clearFilters = () => {
     setFilterConfig(INITIAL_FILTER_STATE);
   };
@@ -130,9 +156,10 @@ export const ApproverProvider = ({ children }) => {
       clearFilters,
       applyFilters,
       applySort,
-      setPageNumber
+      setPageNumber,
+      usersData
     }),
-    [updateFilterState, clearFilters]
+    [updateFilterState, clearFilters, usersData]
   );
   return <ApproverContext.Provider value={ctxValue}>{children}</ApproverContext.Provider>;
 };

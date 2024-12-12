@@ -1,5 +1,5 @@
 export const PATHS = {
   dashboard: '/',
   approvergroupDetail: ':approvergrpId',
-  createapprovergroup: 'createapprovergroup'
+  createapprovergroup: 'create-approver-group'
 };
