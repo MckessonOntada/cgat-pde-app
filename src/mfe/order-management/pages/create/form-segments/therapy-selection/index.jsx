@@ -63,9 +63,12 @@ function TherapySelection() {
 
   const { mutate } = useMutation(
     async (data) => {
-      const payload = {};
-      const url = `${ApiRoutes.ORDER}/POST_URL`;
-      const res = await HttpResourceService.callRest(`${url}`, httpVerb.POST, payload);
+      // const payload = {};
+      // const url = `${ApiRoutes.ORDER}/POST_URL`;
+      // const res = await HttpResourceService.callRest(`${url}`, httpVerb.POST, payload);
+      // return res;
+
+      const res = await Promise.resolve({ orderId: 2345 });
       return res;
     },
     {

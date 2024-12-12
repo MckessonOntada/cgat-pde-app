@@ -375,6 +375,10 @@
   color: var(--brand-color-primary-blue);
 }
 
+.agreement-checkbox-control {
+  font-size: var(--brand-font-size--default);
+}
+
 [class*="Badge-module"] {
   white-space: nowrap;
   display: inline-block;

@@ -19,6 +19,7 @@ export const MessageEn = {
   'captions.btnGoToOrders': 'Go to orders',
   'captions.btnSaveAndContinue': 'Save and Continue',
   'captions.btnBackToManageOrder': 'Back to Manage Order',
+  'captions.btnBack': 'Back',
   'captions.btnEdit': 'Edit',
   'captions.btnSubmitOrder': 'Submit Order',
   'captions.btnInventorySelection': 'Inventory Selections',
@@ -113,6 +114,8 @@ export const MessageEn = {
   'labels.orderActions.assignToMe': 'Assign to me',
   'labels.orderActions.approve': 'Approve Order',
 
+  'labels.therapy.generalDetails': 'Details',
+  'labels.therapy.configuration': 'Configuration',
   'labels.therapy.materialNumber': 'Material Number',
   'labels.therapy.materialDescription': 'Material Description',
   'labels.therapy.ndc': 'NDC',

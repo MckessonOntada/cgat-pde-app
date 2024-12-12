@@ -19,6 +19,7 @@ export const MessageEs = {
   'captions.btnGoToOrders': '[es]Go to orders',
   'captions.btnSaveAndContinue': '[es]Save and Continue',
   'captions.btnBackToManageOrder': '[es]Back to Manage Order',
+  'captions.btnBack': 'Back',
   'captions.btnEdit': '[es]Edit',
   'captions.btnSubmitOrder': '[es]Submit Order',
   'captions.btnInventorySelection': '[es]Inventory Selections',

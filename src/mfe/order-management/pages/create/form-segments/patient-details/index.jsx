@@ -24,7 +24,7 @@ const PatientDetails = () => {
   };
 
   const handleOnSubmit = () => {
-    navigate(`../${orderId}/additionalDetails`);
+    navigate(`../${orderId}/additional-details`);
   };
 
   const handleOnCancel = () => {
