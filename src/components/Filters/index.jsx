@@ -61,7 +61,7 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
             <div className="MCP-filter-panel">
               <div className="filter-header">
                 <div className="search-box">
-                  <button type="button" onClick={handleExpandCard} disabled={Boolean(additionalFilters)}>
+                  <button type="button" onClick={handleExpandCard}>
                     <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
                   </button>
                   <div className={'ctrl-search-box'}>
@@ -81,14 +81,12 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
                   </div>
                 )}
               </div>
-              {
-                additionalFilters && 
-                <ToggleUI in={isCardExpanded} timeout={400}>
-                  <div className="additional-filters">
-                    <AdditionalFilters filtersConfig={additionalFilters} />
-                  </div>
-                </ToggleUI>
-              }
+
+              <ToggleUI in={isCardExpanded} timeout={400}>
+                <div className="additional-filters">
+                  <AdditionalFilters filtersConfig={additionalFilters} />
+                </div>
+              </ToggleUI>
             </div>
           </Form>
         );

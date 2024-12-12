@@ -9,19 +9,21 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { therapyData } from './__mock__';
 
-const TherapyDataTable = ({ type = 'normal', pagination = true, selectedRowId, setSelectedRowId }) => {
+const TherapyDataTable = ({ selectedRowId, setSelectedRowId }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { data, pageConfig } = useTherapy();
+  const { data, paginationConfig, setPageNumber, applySort } = useTherapy();
 
   const columns = createColumns(t, navigate, selectedRowId, setSelectedRowId);
 
   const handleOnPageChange = (_event, pageIndex) => {
-    // setCurrentPage(pageIndex);
+    setPageNumber(pageIndex);
   };
 
-  const handleOnSort = (_event, pageIndex) => {
-    // setCurrentPage(pageIndex);
+  const handleOnSort = (selectedColumn, sortDirection) => {
+    if (selectedColumn.sortKey) {
+      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    }
   };
 
   return (
@@ -32,10 +34,10 @@ const TherapyDataTable = ({ type = 'normal', pagination = true, selectedRowId, s
       data={data}
       handleChangePage={handleOnPageChange}
       onSortIconClick={handleOnSort}
-      pagination={pagination}
+      pagination={true}
       currentPage={1}
-      totalPageCount={pageConfig.pages}
-      totalRocords={pageConfig.total}
+      totalPageCount={paginationConfig.pages}
+      totalRocords={paginationConfig.total}
       recordsPerPage={1}
       aria-label={t('table.ariaLabel.orderList')}
       paginationRecordsPerPageMessage={'per page'}
