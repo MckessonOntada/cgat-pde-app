@@ -42,7 +42,6 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
     clearInputs();
     onClearFilters();
   };
-
   return (
     <Formik
       enableReinitialize
