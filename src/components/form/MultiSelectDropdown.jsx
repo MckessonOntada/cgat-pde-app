@@ -1,6 +1,5 @@
 import React from 'react';
-import { Label, SearchableDropdown, Required } from '@mckesson/mcp-component-library';
-import { getNestedValue } from './util';
+import { Label, SearchableDropdown, Required, TextError } from '@mckesson/mcp-component-library';
 
 const MultiSelectDropdown = (props) => {
   const { id, label, value, isRequired, onChange, error, ...rest } = props;
@@ -11,21 +10,8 @@ const MultiSelectDropdown = (props) => {
         {label}
         {isRequired && <Required id="Required">Required</Required>}
       </Label>
-      <SearchableDropdown
-        {...props}
-        id=""
-        isSuccess
-        value={field.value}
-        error={!!error}
-        isRequired={false}
-        onChange={(values) => {
-          form.setFieldValue(
-            `${field.name}`,
-            values.filter((item) => item.isChecked).map((item) => item.value)
-          );
-        }}
-      />
-      {isFieldTouched && errorMessage && <TextError errorMessage={errorMessage} />}
+      <SearchableDropdown id={id} name={id} value={value} error={!!error} onChange={onChange} {...rest} />
+      {error && <TextError errorMessage={error} />}
     </div>
   );
 };
