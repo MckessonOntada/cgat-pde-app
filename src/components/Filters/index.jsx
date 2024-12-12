@@ -42,7 +42,6 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
     clearInputs();
     onClearFilters();
   };
-  console.log('Boolean(additionalFilters)...', Boolean(additionalFilters));
   return (
     <Formik
       enableReinitialize

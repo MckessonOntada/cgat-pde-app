@@ -10,7 +10,6 @@ import { useTranslate } from '@src/translations/useTranslation';
 export default function PaymentHistory(params) {
   const { t } = useTranslate();
   const { applyFilters, filterConfig, sortConfig, clearFilters } = usePaymentHistory();
-  console.log('filterConfig..', filterConfig, sortConfig);
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
