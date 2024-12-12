@@ -3,21 +3,15 @@ import styles from './TherapyDetails.module.scss';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useQuery } from 'react-query';
-import ApiRoutes from '@src/api/ApiRoutes';
 import { Loader, Heading } from '@mckesson/mcp-component-library';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import AuthUtils from '@src/util/AuthUtils';
+import OrderService from '@src/api/commonService/OrderService';
 
 function TherapyDetails({ therapyId, onClose }) {
   const { t } = useTranslate();
   const { isLoading, data: therapyDetails = {} } = useQuery({
     queryKey: ['order', 'therapy', therapyId],
-    queryFn: async () => {
-      const userId = AuthUtils.getUserId();
-      const url = `${ApiRoutes.ORDER(userId)}/therapies/${therapyId}`;
-      const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-      return res.data || {};
-    },
+    queryFn: async () => OrderService.getTherapyDetailsById(therapyId),
+    enabled: Boolean(therapyId),
     refetchOnWindowFocus: false
   });
 
@@ -36,7 +30,6 @@ function TherapyDetails({ therapyId, onClose }) {
 
 function DetailsPanel({ details }) {
   const { t } = useTranslate();
-
   const renderDetails = (fields) => fields.map(({ label, value }) => <DetailItem key={label} label={t(label)} value={value} />);
 
   const generalDetails = [

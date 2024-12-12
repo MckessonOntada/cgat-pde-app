@@ -157,6 +157,7 @@ export const createColumns = (t, navigate, activeTab) => [
     name: t('table.columns.captions.submittedBy'),
     selector: () => {},
     sortable: true,
+    sortKey: 'submittedBy',
     minWidth: '180px',
     maxWidth: '340px',
     cell: (props) => <span>{props.submittedBy}</span>,
@@ -167,6 +168,7 @@ export const createColumns = (t, navigate, activeTab) => [
     name: t('table.columns.captions.submittedOn'),
     selector: () => {},
     sortable: true,
+    sortKey: 'submittedOn',
     width: '180px',
     cell: (props) => <span>{CommonUtils.convertDateStringFormat(props.submittedOn, 'MM-DD-YYYY')}</span>,
     omit: activeTab !== 'submitted'

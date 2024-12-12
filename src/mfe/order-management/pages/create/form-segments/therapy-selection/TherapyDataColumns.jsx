@@ -19,7 +19,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     width: '40px',
     sortable: false,
     cell: (props) => (
-      <span className=" radio-button-wrapper">
+      <span className="MCP-table-cell radio-button-wrapper">
         <RadioGroup
           direction="column"
           id={`radio-button-order-therapy-${props.therapyId}`}
@@ -47,7 +47,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     selector: () => {},
     minWidth: '220px',
     maxWidth: '280px',
-    sortable: true,
+    sortable: false,
     cell: (props) => (
       <span aria-label={t('labels.therapyDescription')}>
         <Link className="MCP-table-link" to={`?therapy-details=${props.therapyId}`}>
@@ -61,7 +61,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     name: t('labels.therapyNumber'),
     width: '8%',
     selector: () => {},
-    sortable: true,
+    sortable: false,
     cell: (props) => <span aria-label={t('labels.therapyNumber')}>{props.therapyId}</span>
   },
   {
@@ -70,7 +70,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     selector: () => {},
     minWidth: '200px',
     maxWidth: '220px',
-    sortable: true,
+    sortable: false,
     cell: (props) => (
       <span aria-label={t('table.columns.captions.nationalDrugCode')}>
         <EclipsesTextcss str={props.ndc} maxWidth={180} />
@@ -82,7 +82,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     name: t('table.columns.captions.strength'),
     selector: () => {},
     width: '120px',
-    sortable: true,
+    sortable: false,
     cell: (props) => <span aria-label={t('table.columns.captions.strength')}>{props.strength}</span>
   },
   {
@@ -90,7 +90,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     name: t('table.columns.captions.dosage'),
     selector: () => {},
     width: '4%',
-    sortable: true,
+    sortable: false,
     cell: (props) => <span aria-label={t('table.columns.captions.dosage')}>{props.dosage}</span>
   },
   {
@@ -98,7 +98,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     name: t('table.columns.captions.sellingUnitCode'),
     selector: () => {},
     width: '7%',
-    sortable: true,
+    sortable: false,
     cell: (props) => <span aria-label={t('table.columns.captions.sellingUnitCode')}>{props.sellingUnitCode}</span>
   },
   {
@@ -106,7 +106,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     name: t('table.columns.captions.vendorName'),
     selector: () => {},
     width: '7%',
-    sortable: true,
+    sortable: false,
     cell: (props) => <span aria-label={t('table.columns.captions.vendorName')}>{props.vendorName}</span>
   },
   {
@@ -114,7 +114,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     name: t('table.columns.captions.upcCode'),
     selector: () => {},
     width: '6%',
-    sortable: true,
+    sortable: false,
     cell: (props) => <span aria-label={t('table.columns.captions.upcCode')}>{props.upcCode}</span>
   },
   {
@@ -123,7 +123,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     width: '7%',
     selector: () => {},
     sortable: false,
-    cell: (props) => <Badge text={props.dropshipIndicator === 'Y' ? t('table.badge.yes') : t('table.badge.no')} type={props.dropshipIndicator === 'Y' ? 'success' : 'info'} />
+    cell: (props) => <Badge text={props.dropshipIndicator === 'Y' ? t('label.yes') : t('label.no')} type={props.dropshipIndicator === 'Y' ? 'success' : 'info'} />
   },
   {
     id: 'status',
@@ -138,7 +138,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     name: t('table.columns.captions.baseUnitsOfMeasure'),
     selector: () => {},
     width: '7%',
-    sortable: true,
+    sortable: false,
     cell: (props) => <span aria-label={t('table.columns.captions.baseUnitsOfMeasure')}>{props.baseUnitOfMeasure}</span>
   },
   {
@@ -147,20 +147,20 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     selector: () => {},
     width: '4%',
     sortable: false,
-    cell: (props) => <Badge text={props.cgatIdentifier === 'Y' ? t('table.badge.yes') : t('table.badge.no')} type={props.cgatIdentifier === 'Y' ? 'success' : 'info'} />
+    cell: (props) => <Badge text={props.cgatIdentifier === 'Y' ? t('label.yes') : t('label.no')} type={props.cgatIdentifier === 'Y' ? 'success' : 'info'} />
   },
   {
     id: 'salesOrganization',
     name: t('table.columns.captions.salesOrganization'),
     selector: () => {},
-    sortable: true,
+    sortable: false,
     cell: (props) => <span aria-label={t('table.columns.captions.salesOrganization')}>{props.salesOrganization}</span>
   },
   {
     id: 'cgatType',
     name: t('table.columns.captions.cgatTherapyType'),
     selector: () => {},
-    sortable: true,
+    sortable: false,
     cell: (props) => <span aria-label={t('table.columns.captions.cgatTherapyType')}>{props.cgatType}</span>
   },
   {
@@ -168,13 +168,13 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     name: t('table.columns.captions.productLevelPricing'),
     selector: () => {},
     sortable: false,
-    cell: (props) => <Badge text={props.productLevelPricing === 'Yes' ? t('table.badge.yes') : t('table.badge.no')} type={props.productLevelPricing === 'Yes' ? 'success' : 'info'} />
+    cell: (props) => <Badge text={props.productLevelPricing === 'Yes' ? t('label.yes') : t('label.no')} type={props.productLevelPricing === 'Yes' ? 'success' : 'info'} />
   },
   {
     id: 'minimumOrderQuantity',
     name: t('table.columns.captions.minimumOrderQuantity'),
     selector: () => {},
-    sortable: true,
+    sortable: false,
     cell: (props) => <span aria-label={t('table.columns.captions.minimumOrderQuantity')}>{props.minimumOrderQuantity}</span>
   }
 ];

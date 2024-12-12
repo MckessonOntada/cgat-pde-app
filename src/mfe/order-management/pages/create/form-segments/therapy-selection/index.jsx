@@ -31,8 +31,6 @@ function TherapySelection() {
     });
   };
 
-  const SALES_ORGANIZATIONS = ['ORG1', 'MPB', 'US East', 'US West', 'Global Health', 'EMEA', 'APAC', 'LATAM', 'Canada', 'Retail Division', 'Wholesale Division'].map((i) => ({ label: i, value: i.replace(' ', '_').toLowerCase() }));
-
   const CUSTOMER_INDICATORS = ['Preferred Customer', 'New Customer', 'VIP Customer', 'Loyalty Member', 'Inactive Customer', 'High-Value Customer', 'Discount Eligible', 'First-Time Buyer', 'Recurring Buyer', 'Potential Lead'].map((i) => ({
     label: i,
     value: i.replace(' ', '_').toLowerCase()
@@ -51,7 +49,11 @@ function TherapySelection() {
         type: 'multiSelectDropdown',
         name: 'salesOrg',
         label: t('labels.salesOrganization'),
-        options: SALES_ORGANIZATIONS
+        options: [
+          { label: 'MPB', value: 'so76' },
+          { label: 'Specialty', value: 1000 },
+          { label: '3PL', value: 1100 }
+        ]
       }
     );
 
