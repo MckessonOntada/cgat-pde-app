@@ -10,7 +10,8 @@ const HeaderConfig = {
       isActive: true,
       isActiveTab: false,
       labelForMobile: 'Dashboard',
-      sequence: 1
+      sequence: 1,
+      translationName: 'header.tabs.dashboard'
     }
     // {
     //   label: 'Orders',

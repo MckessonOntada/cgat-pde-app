@@ -46,7 +46,9 @@ const UserDetailsFormSegment = () => {
           <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 align-items-start">
             <Field name="address.city" label={t('userManagement.create_user.inputLabel.city')} placeholder=" " isRequired component={Components['input']} maxLength={50} />
             <Field name="address.zip" label={t('userManagement.create_user.inputLabel.zip')} placeholder=" " isRequired component={Components['zipInput']} maxLength={10} />
-            <div className="corrected-dropdown"><Field name="address.state" fieldlabel={t('userManagement.create_user.inputLabel.state')} placeholder=" " component={Components['dropdown']} isRequired options={options} /></div>
+            <div className="corrected-dropdown">
+              <Field name="address.state" fieldlabel={t('userManagement.create_user.inputLabel.state')} placeholder=" " component={Components['dropdown']} isRequired options={options} />
+            </div>
             <Field name="contact.email" label={t('userManagement.create_user.inputLabel.email')} placeholder=" " isRequired component={Components['input']} maxLength={100} />
             <Field name="contact.phone" label={t('userManagement.create_user.inputLabel.phone_no')} component={Components['phoneInput']} className={'phoneInput'} placeholder=" " isRequired />
             <Field name="contact.fax" label={t('userManagement.create_user.inputLabel.fax')} placeholder=" " component={Components['input']} maxLength={15} />

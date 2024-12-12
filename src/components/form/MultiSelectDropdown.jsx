@@ -3,16 +3,13 @@ import { Label, SearchableDropdown, Required } from '@mckesson/mcp-component-lib
 import { getNestedValue } from './util';
 
 const MultiSelectDropdown = (props) => {
-  const { field, form, fieldlabel } = props;
+  const { id, label, value, isRequired, onChange, error, ...rest } = props;
 
-  const errorMessage = getNestedValue(form.errors, field.name);
-  const isFieldTouched = getNestedValue(form.touched, field.name);
-  const error = errorMessage && isFieldTouched;
   return (
     <div className="grid">
-      <Label htmlFor={field.name} className="label-heading">
-        {fieldlabel}
-        {props.isRequired && <Required id="Required">Required</Required>}
+      <Label htmlFor={id} className="label-heading">
+        {label}
+        {isRequired && <Required id="Required">Required</Required>}
       </Label>
       <SearchableDropdown
         {...props}
