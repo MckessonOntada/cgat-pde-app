@@ -30,7 +30,7 @@ const ApiRoutes = Object.freeze({
   PUBLIC_ORGANIZATIONS: constructUserManagementServicePublicUrl('practices'),
   ACCOUNTS: constructUserManagementServiceUrl('accounts'),
   PUBLIC_ACCOUNTS: constructUserManagementServicePublicUrl('accounts'),
-  THERAPY: (userId) => constructUserManagementServiceUrl(`users/${userId}/therapies`)
+  ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`)
 });
 
 export default ApiRoutes;
