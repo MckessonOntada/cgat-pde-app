@@ -24,7 +24,9 @@ const CreateApproverGroup = () => {
   const location = useLocation();
   const isEdit = location.state || null;
 
-  const handleGoBack = () => {};
+  const handleGoBack = () => {
+    navigate(RoutePaths.pathApproverManagement);
+  };
 
   const initialValues = { groupName: '', attributes: [{ attributeType: 'Price', value: '' }], userSearch: '' };
 

@@ -37,14 +37,19 @@ const Attributes = ({ values, errors, touched, handleChange }) => {
       case 'Price':
         return (
           <div>
-            <Field id="price" name="price" label={t('approvergroup.value.price')} placeholder=" " isRequired component={Components['input']} maxLength={50} />
+            <Field id="price" name="price" label={t('approvergroup.price')} placeholder=" " isRequired component={Components['input']} maxLength={50} />
           </div>
         );
       case 'Catalog':
+        return (
+          <div>
+            <Field name="attribute1" fieldlabel={t('approvergroup.selecttherapy')} placeholder=" " component={Components['multiSelectDropdown']} isRequired options={[]} />
+          </div>
+        );
       case 'Account':
         return (
           <div>
-            <Field name="attribute1" fieldlabel={t('approvergroup.selectuser')} placeholder=" " component={Components['multiSelectDropdown']} isRequired options={[]} />
+            <Field name="attribute1" fieldlabel={t('approvergroup.selectaccount')} placeholder=" " component={Components['multiSelectDropdown']} isRequired options={[]} />
           </div>
         );
 
@@ -52,7 +57,7 @@ const Attributes = ({ values, errors, touched, handleChange }) => {
         return (
           <div>
             <label htmlFor={`attributes[${index}].value`} style={{ display: 'block', marginBottom: '0.5rem' }}>
-              {t('approvergroup.value.user')} *
+              {t('approvergroup.user')} *
             </label>
             <div>
               <RadioGroup
@@ -105,11 +110,8 @@ const Attributes = ({ values, errors, touched, handleChange }) => {
                 </div>
               </div>
             ))}
-
-            <div style={{ paddingTop: '10px' }}>
-              <Divider />
-            </div>
-            <div style={{ paddingTop: '20px' }}>
+            <div className="separator-line"></div>
+            <div className="addAttribute">
               <Button variant="tertiary" size="md" label="+ ADD ATTRIBUTE" onClick={() => push({ attributeType: '', value: '' })} disabled={isAddDisabled}></Button>
             </div>
           </>

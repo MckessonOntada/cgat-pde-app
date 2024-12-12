@@ -3,8 +3,14 @@
   margin-bottom: var(--spacing-03);
 }
 
-.line-height {
+.addAttribute {
+  margin-top: var(--spacing-04);
   margin-bottom: var(--spacing-04);
+}
+
+.separator-line {
+  border-top: 1px solid var(--brand-color-grey-scale-cool-2);
+  margin: 1rem 0;
 }
 
 .align-items-start {
@@ -19,10 +25,10 @@
 }
 
 .btnRemove {
-  color: red !important;
+  color: var(--brand-color-warning-dark-coral) !important;
 
   svg {
-    fill: red !important;
-    color: red !important;
+    fill: var(--brand-color-warning-dark-coral) !important;
+    color: var(--brand-color-warning-dark-coral) !important;
   }
 }
