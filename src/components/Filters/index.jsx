@@ -81,22 +81,12 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
                   </div>
                 )}
               </div>
-<<<<<<< HEAD
-              {additionalFilters && (
-                <ToggleUI in={isCardExpanded} timeout={400}>
-                  <div className="additional-filters">
-                    <AdditionalFilters filtersConfig={additionalFilters} />
-                  </div>
-                </ToggleUI>
-              )}
-=======
 
               <ToggleUI in={isCardExpanded} timeout={400}>
                 <div className="additional-filters">
                   <AdditionalFilters filtersConfig={additionalFilters} />
                 </div>
               </ToggleUI>
->>>>>>> a0c570415650c4dc0737cc9e86a9302f1315d189
             </div>
           </Form>
         );
