@@ -11,7 +11,7 @@ const HeaderConfig = {
       isActiveTab: false,
       labelForMobile: 'Dashboard',
       sequence: 1
-    }
+    },
     // {
     //   label: 'Orders',
     //   id: 2,
@@ -22,30 +22,30 @@ const HeaderConfig = {
     //   labelForMobile: 'Orders',
     //   sequence: 2
     // },
-    // {
-    //   label: 'Payment and Invoices',
-    //   path: '/record',
-    //   id: 3,
-    //   configName: 'Payment Invoices',
-    //   isActive: true,
-    //   isActiveTab: false,
-    //   labelForMobile: 'Payment and Invoices',
-    //   sequence: 3,
-    //   submenu: [
-    //     {
-    //       label: 'Invoices',
-    //       target: 'invoices'
-    //     },
-    //     {
-    //       label: 'Payment History',
-    //       target: 'payment-history'
-    //     },
-    //     {
-    //       label: 'Customer Statement',
-    //       target: 'customer-statement'
-    //     }
-    //   ]
-    // }
+    {
+      label: 'Payment and Invoices',
+      path: '/record',
+      id: 3,
+      configName: 'Payment Invoices',
+      isActive: true,
+      isActiveTab: false,
+      labelForMobile: 'Payment and Invoices',
+      sequence: 3,
+      submenu: [
+        {
+          label: 'Invoices',
+          target: 'invoices'
+        },
+        {
+          label: 'Payment History',
+          target: 'payment-history'
+        },
+        {
+          label: 'Customer Statement',
+          target: 'customer-statement'
+        }
+      ]
+    }
     // {
     //     label: 'Admin',
     //     path: 'admin',
