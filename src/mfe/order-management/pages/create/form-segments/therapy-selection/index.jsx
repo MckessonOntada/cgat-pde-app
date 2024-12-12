@@ -5,7 +5,7 @@ import TherapyDetails from './TherapyDetails';
 import FloatingDrawer from '@src/components/floating-drawer';
 import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import TherapyDataTable from './TherapyDataTable';
 import { useTherapy } from '../../../../context/TherapyContext';
 import { FormList } from '../Constants';
@@ -13,9 +13,6 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 import PageHeader from '@src/components/pageHeader';
 import CommonFilters from '@src/components/Filters';
 import { useMutation } from 'react-query';
-import { routesConfig } from '@src/mfe/order-management/routes/constants';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import ApiRoutes from '@src/api/ApiRoutes';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -110,7 +107,7 @@ function TherapySelection() {
           <div className="MCP-panel-container">
             <ModuleHeader heading={<Heading as="h2">{t('labels.therapySelection')}</Heading>} />
             <div className="MCP-panel-container">
-              <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={additionalFiltersConfig} searchPlaceholder={t('userManagement.searchFilter.label')} />
+              <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={additionalFiltersConfig} searchPlaceholder={t('controls.placeholder.therepySelection.search')} />
             </div>
             <TherapyDataTable selectedRowId={selectedRowId} setSelectedRowId={setSelectedRowId} />
           </div>

@@ -44,7 +44,10 @@ export const TherapyProvider = ({ children }) => {
       pageSize: paginationConfig.pageSize,
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       ...(filterConfig?.salesOrg && filterConfig?.salesOrg.length > 0 && { salesOrg: [...filterConfig.salesOrg] }),
-      ...(filterConfig?.customerIdentifier && filterConfig?.customerIdentifier.length > 0 && { customerIdentifier: [...filterConfig.customerIdentifier] }) //,
+      ...(filterConfig?.customerIdentifier && filterConfig?.customerIdentifier.length > 0 && { customerIdentifier: [...filterConfig.customerIdentifier] }),
+
+      ...(sortConfig?.sortBy && { sortBy: sortConfig.sortBy }),
+      ...(sortConfig?.sortOrder && { sortBy: sortConfig.sortOrder })
     }),
     [filterConfig, paginationConfig.pageNumber]
   );
@@ -86,7 +89,7 @@ export const TherapyProvider = ({ children }) => {
 
   useEffect(() => {
     refreshData();
-  }, [filterConfig, paginationConfig.pageNumber]);
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
 
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
 

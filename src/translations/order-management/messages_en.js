@@ -81,6 +81,7 @@ export const MessageEn = {
   'controls.placeholder.searchOrderPlaceholder': 'Search by order id, patient name or account',
   'controls.placeholders.autoSearch': 'Search by Order ID, Patient name, Account',
   'controls.placeholder.shippingAddress.search': 'Search by Account name or Number',
+  'controls.placeholder.therepySelection.search': 'Search Therapy by Name, NDC, UDI...',
   'controls.ariaLabels.searchOrders': 'Search Orders',
   'controls.ariaLabels.expandFilters': 'Expand Filters',
   'controls.ariaLabels.collapseFilters': 'Collapse Filters',

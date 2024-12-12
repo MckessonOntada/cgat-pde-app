@@ -80,6 +80,7 @@ export const MessageEs = {
   'labels.accountDetails': '[es]Account Details',
   'controls.placeholders.autoSearch': '[es]Search by Order ID, Patient name, Account',
   'controls.ariaLabels.searchOrders': '[es]Search Orders',
+  'controls.placeholder.therepySelection.search': '[es]Search Therapy by Name, NDC, UDI...',
   'controls.ariaLabels.expandFilters': '[es]Expand Filters',
   'controls.ariaLabels.collapseFilters': '[es]Collapse Filters',
   'controls.ariaLabels.orderManagementStatue': '[es]Order Management Status',

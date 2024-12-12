@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Badge, DropdownMenu, RadioGroup } from '@mckesson/mcp-component-library';
-import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
+import { Badge, RadioGroup } from '@mckesson/mcp-component-library';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 const getColorByStatus = (status) => {
@@ -17,10 +16,10 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
   {
     id: 'id',
     selector: () => {},
-    width: '2%',
+    width: '40px',
     sortable: false,
     cell: (props) => (
-      <span className="MCP-table-cell radio-button-wrapper">
+      <span className=" radio-button-wrapper">
         <RadioGroup
           direction="column"
           id={`radio-button-order-therapy-${props.therapyId}`}
@@ -50,7 +49,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     maxWidth: '280px',
     sortable: true,
     cell: (props) => (
-      <span className="MCP-table-cell" aria-label={t('labels.therapyDescription')}>
+      <span aria-label={t('labels.therapyDescription')}>
         <Link className="MCP-table-link" to={`?therapy-details=${props.therapyId}`}>
           <EclipsesTextcss str={props.therapyDescription} maxWidth={240} />
         </Link>
@@ -63,11 +62,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     width: '8%',
     selector: () => {},
     sortable: true,
-    cell: (props) => (
-      <span className="MCP-table-cell" aria-label={t('labels.therapyNumber')}>
-        {props.therapyNumber}
-      </span>
-    )
+    cell: (props) => <span aria-label={t('labels.therapyNumber')}>{props.therapyId}</span>
   },
   {
     id: 'ndc',
@@ -77,7 +72,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     maxWidth: '220px',
     sortable: true,
     cell: (props) => (
-      <span className="MCP-table-cell" aria-label={t('table.columns.captions.nationalDrugCode')}>
+      <span aria-label={t('table.columns.captions.nationalDrugCode')}>
         <EclipsesTextcss str={props.ndc} maxWidth={180} />
       </span>
     )
@@ -88,11 +83,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     selector: () => {},
     width: '120px',
     sortable: true,
-    cell: (props) => (
-      <span className="MCP-table-cell" aria-label={t('table.columns.captions.strength')}>
-        {props.strength}
-      </span>
-    )
+    cell: (props) => <span aria-label={t('table.columns.captions.strength')}>{props.strength}</span>
   },
   {
     id: 'dosage',
@@ -100,11 +91,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     selector: () => {},
     width: '4%',
     sortable: true,
-    cell: (props) => (
-      <span className="MCP-table-cell" aria-label={t('table.columns.captions.dosage')}>
-        {props.dosage}
-      </span>
-    )
+    cell: (props) => <span aria-label={t('table.columns.captions.dosage')}>{props.dosage}</span>
   },
   {
     id: 'sellingUnitCode',
@@ -112,11 +99,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     selector: () => {},
     width: '7%',
     sortable: true,
-    cell: (props) => (
-      <span className="MCP-table-cell" aria-label={t('table.columns.captions.sellingUnitCode')}>
-        {props.sellingUnitCode}
-      </span>
-    )
+    cell: (props) => <span aria-label={t('table.columns.captions.sellingUnitCode')}>{props.sellingUnitCode}</span>
   },
   {
     id: 'vendorName',
@@ -124,11 +107,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     selector: () => {},
     width: '7%',
     sortable: true,
-    cell: (props) => (
-      <span className="MCP-table-cell" aria-label={t('table.columns.captions.vendorName')}>
-        {props.vendorName}
-      </span>
-    )
+    cell: (props) => <span aria-label={t('table.columns.captions.vendorName')}>{props.vendorName}</span>
   },
   {
     id: 'upcCode',
@@ -136,11 +115,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     selector: () => {},
     width: '6%',
     sortable: true,
-    cell: (props) => (
-      <span className="MCP-table-cell" aria-label={t('table.columns.captions.upcCode')}>
-        {props.upcCode}
-      </span>
-    )
+    cell: (props) => <span aria-label={t('table.columns.captions.upcCode')}>{props.upcCode}</span>
   },
   {
     id: 'dropshipIndicator',
@@ -164,11 +139,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     selector: () => {},
     width: '7%',
     sortable: true,
-    cell: (props) => (
-      <span className="MCP-table-cell" aria-label={t('table.columns.captions.baseUnitsOfMeasure')}>
-        {props.baseUnitOfMeasure}
-      </span>
-    )
+    cell: (props) => <span aria-label={t('table.columns.captions.baseUnitsOfMeasure')}>{props.baseUnitOfMeasure}</span>
   },
   {
     id: 'cgatIdentifier',
@@ -183,22 +154,14 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     name: t('table.columns.captions.salesOrganization'),
     selector: () => {},
     sortable: true,
-    cell: (props) => (
-      <span className="MCP-table-cell" aria-label={t('table.columns.captions.salesOrganization')}>
-        {props.salesOrganization}
-      </span>
-    )
+    cell: (props) => <span aria-label={t('table.columns.captions.salesOrganization')}>{props.salesOrganization}</span>
   },
   {
     id: 'cgatType',
     name: t('table.columns.captions.cgatTherapyType'),
     selector: () => {},
     sortable: true,
-    cell: (props) => (
-      <span className="MCP-table-cell" aria-label={t('table.columns.captions.cgatTherapyType')}>
-        {props.cgatType}
-      </span>
-    )
+    cell: (props) => <span aria-label={t('table.columns.captions.cgatTherapyType')}>{props.cgatType}</span>
   },
   {
     id: 'productLevelPricing',
@@ -212,10 +175,6 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     name: t('table.columns.captions.minimumOrderQuantity'),
     selector: () => {},
     sortable: true,
-    cell: (props) => (
-      <span className="MCP-table-cell" aria-label={t('table.columns.captions.minimumOrderQuantity')}>
-        {props.minimumOrderQuantity}
-      </span>
-    )
+    cell: (props) => <span aria-label={t('table.columns.captions.minimumOrderQuantity')}>{props.minimumOrderQuantity}</span>
   }
 ];
