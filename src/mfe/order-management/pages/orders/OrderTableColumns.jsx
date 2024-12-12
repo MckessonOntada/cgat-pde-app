@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Badge, DropdownMenu, Button } from '@mckesson/mcp-component-library';
+import { Badge, DropdownMenu, Button, Tooltip } from '@mckesson/mcp-component-library';
 import { StatusEnum } from './constants';
 import { routesConfig } from '../../routes/constants';
 import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
@@ -100,10 +100,12 @@ export const createColumns = (t, navigate, activeTab) => [
     name: t('labels.orderId'),
     selector: () => {},
     sortable: true,
-    minWidth: '40px',
+    minWidth: '120px',
+    maxWidth: '180px',
+    sortable: true,
     cell: (props) => (
       <Link className="MCP-table-link" to={`${props.id}`} state={props} aria-label={t('labels.orderId')}>
-        <EclipsesTextcss str={props.id} maxWidth={420} />
+        <EclipsesTextcss str={props.id} maxWidth={140} />
       </Link>
     )
   },
@@ -113,17 +115,18 @@ export const createColumns = (t, navigate, activeTab) => [
     selector: () => {},
     sortable: true,
     minWidth: '240px',
-    cell: (props) => <EclipsesTextcss aria-label={t('labels.patientName')} str={`${props.name?.lastName}, ${props.name?.firstName} ${props.name?.middleName || ''}`} maxWidth={300} />
+    maxWidth: '380px',
+    cell: (props) => <EclipsesTextcss aria-label={t('labels.patientName')} str={`${props.name?.lastName}, ${props.name?.firstName} ${props.name?.middleName || ''}`} maxWidth={200} />
   },
   {
     id: 'therapy',
     name: t('labels.therapy'),
     selector: () => {},
     sortable: true,
+    minWidth: '240px',
+    maxWidth: '380px',
     cell: (props) => (
-      <span className={'MCP-table-cell'} aria-label={t('labels.therapy')}>
-        {props.therapy}
-      </span>
+      <EclipsesTextcss str={props.therapy} maxWidth={200} className={'MCP-table-cell'} aria-label={t('labels.therapy')} />
     )
   },
   {
@@ -131,10 +134,10 @@ export const createColumns = (t, navigate, activeTab) => [
     name: t('table.columns.captions.author'),
     selector: () => {},
     sortable: true,
+    minWidth: '240px',
+    maxWidth: '380px',
     cell: (props) => (
-      <span className={'MCP-table-cell'} aria-label={t('table.columns.captions.author')}>
-        {props.author}
-      </span>
+      <EclipsesTextcss str={props.author} maxWidth={200} className={'MCP-table-cell'} aria-label={t('table.columns.captions.author')} />
     ),
     omit: activeTab !== 'pending submission'
   },
@@ -142,7 +145,8 @@ export const createColumns = (t, navigate, activeTab) => [
     id: 'createdOn',
     name: t('table.columns.captions.createdOn'),
     selector: () => {},
-    sortable: false,
+    sortable: true,
+    width: '180px',
     cell: (props) => <span aria-label={t('table.columns.captions.createdOn')}>{CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')}</span>,
     omit: activeTab !== 'pending submission'
   },
@@ -151,7 +155,9 @@ export const createColumns = (t, navigate, activeTab) => [
     id: 'submittedBy',
     name: t('table.columns.captions.submittedBy'),
     selector: () => {},
-    sortable: false,
+    sortable: true,
+    minWidth: '180px',
+    maxWidth: '340px',
     cell: (props) => <span>{props.submittedBy}</span>,
     omit: activeTab !== 'submitted'
   },
@@ -159,7 +165,8 @@ export const createColumns = (t, navigate, activeTab) => [
     id: 'submittedOn',
     name: t('table.columns.captions.submittedOn'),
     selector: () => {},
-    sortable: false,
+    sortable: true,
+    width: '180px',
     cell: (props) => <span>{CommonUtils.convertDateStringFormat(props.submittedOn, 'MM-DD-YYYY')}</span>,
     omit: activeTab !== 'submitted'
   },
@@ -169,14 +176,16 @@ export const createColumns = (t, navigate, activeTab) => [
     name: t('table.columns.captions.status'),
     selector: () => {},
     sortable: false,
+    width: '180px',
     center: true,
-    cell: (props) => <Badge text={props.status} type={getColorByStatus(props.status.toLowerCase())} />
+    cell: (props) => <Tooltip body={props.status}><span><Badge text={props.status} type={getColorByStatus(props.status.toLowerCase())} /></span></Tooltip>
   },
   {
     id: 'price',
     name: t('table.columns.captions.price'),
     selector: () => {},
     sortable: false,
+    width: '120px',
     cell: (props) => <span aria-label={t('table.columns.captions.price')}>{props.price}</span>
   },
   {
@@ -184,6 +193,8 @@ export const createColumns = (t, navigate, activeTab) => [
     name: t('table.columns.captions.actions'),
     selector: () => {},
     sortable: false,
+    width: '120px',
+    center: true,
     cell: (props) => getOptionsByStatus(props.status, t, activeTab)
   }
 ];

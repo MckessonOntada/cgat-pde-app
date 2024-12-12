@@ -43,7 +43,8 @@ export const TherapyProvider = ({ children }) => {
       pageNumber: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      ...(filterConfig?.salesOrg && { salesOrg: [filterConfig.salesOrg] }) //,
+      ...(filterConfig?.salesOrg && filterConfig?.salesOrg.length > 0 && { salesOrg: [...filterConfig.salesOrg] }),
+      ...(filterConfig?.customerIdentifier && filterConfig?.customerIdentifier.length > 0 && { customerIdentifier: [...filterConfig.customerIdentifier] }) //,
     }),
     [filterConfig, paginationConfig.pageNumber]
   );
@@ -64,7 +65,7 @@ export const TherapyProvider = ({ children }) => {
   } = useQuery({
     queryKey: ['Therapy', requestParams],
     queryFn: async () => {
-      const url = `${ApiRoutes.THERAPY(userId)}?${serializeParams(requestParams)}`;
+      const url = `${ApiRoutes.ORDER(userId)}/therapies?${serializeParams(requestParams)}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       if (res.data) {
         const { content: data, totalElements, totalPages } = res.data;
@@ -77,6 +78,7 @@ export const TherapyProvider = ({ children }) => {
 
         return data;
       }
+
       return [];
     },
     refetchOnWindowFocus: false
