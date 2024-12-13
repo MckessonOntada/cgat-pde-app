@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { SearchableDropdown } from '../searchableDropdown';
-import React from 'react';
-import { Label, SearchableDropdown, Required } from '@mckesson/mcp-component-library';
+import { Label, Required, TextError } from '@mckesson/mcp-component-library';
 
 const MultiSelectDropdown = (props) => {
   const { id, label, value, isRequired, onChange, onSearch, error, variant, options, recordsCountToEnableSearch, ...rest } = props;
