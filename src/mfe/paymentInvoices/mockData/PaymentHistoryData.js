@@ -42,7 +42,7 @@ export const PaymentHistoryData = [
   {
     ConfirmationNumber: 'WEB08444612AI',
     PurchaseOrderNumber: 28192,
-    PaymentMethod: '4600-FIRST CITIZEN',
+    PaymentMethod: '4600-FIRST CITIZEN CARD',
     PaymentStatus: 'IN PROCESS',
     PaymentInitiationDate: '11/06/2024',
     TotalAuthorizedPaymentAmt: 80870.0
@@ -74,7 +74,7 @@ export const PaymentHistoryData = [
   {
     ConfirmationNumber: 'WEB08444701AI',
     PurchaseOrderNumber: 28456,
-    PaymentMethod: '4600-FIRST CITIZEN',
+    PaymentMethod: '4600-FIRST CITIZEN CARD',
     PaymentStatus: 'IN PROCESS',
     PaymentInitiationDate: '11/10/2024',
     TotalAuthorizedPaymentAmt: 7500.0
@@ -106,7 +106,7 @@ export const PaymentHistoryData = [
   {
     ConfirmationNumber: 'WEB08444705AI',
     PurchaseOrderNumber: 28890,
-    PaymentMethod: '4600-FIRST CITIZEN',
+    PaymentMethod: '4600-FIRST CITIZEN CARD',
     PaymentStatus: 'IN PROCESS',
     PaymentInitiationDate: '11/14/2024',
     TotalAuthorizedPaymentAmt: 4500.0
@@ -146,7 +146,7 @@ export const PaymentHistoryData = [
   {
     ConfirmationNumber: 'WEB08444710AI',
     PurchaseOrderNumber: 29345,
-    PaymentMethod: '4600-FIRST CITIZEN',
+    PaymentMethod: '4600-FIRST CITIZEN CARD',
     PaymentStatus: 'COMPLETED',
     PaymentInitiationDate: '11/19/2024',
     TotalAuthorizedPaymentAmt: 12500.0
@@ -178,7 +178,7 @@ export const PaymentHistoryData = [
   {
     ConfirmationNumber: 'WEB08444714AI',
     PurchaseOrderNumber: 29789,
-    PaymentMethod: '4600-FIRST CITIZEN',
+    PaymentMethod: '4600-FIRST CITIZEN CARD',
     PaymentStatus: 'COMPLETED',
     PaymentInitiationDate: '11/23/2024',
     TotalAuthorizedPaymentAmt: 31870.0
@@ -202,7 +202,7 @@ export const PaymentHistoryData = [
   {
     ConfirmationNumber: 'WEB08444717AI',
     PurchaseOrderNumber: 30012,
-    PaymentMethod: '4600-FIRST CITIZEN',
+    PaymentMethod: '4600-FIRST CITIZEN CARD',
     PaymentStatus: 'IN PROCESS',
     PaymentInitiationDate: '11/26/2024',
     TotalAuthorizedPaymentAmt: 60870.0
