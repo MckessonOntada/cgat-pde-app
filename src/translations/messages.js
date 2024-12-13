@@ -9,6 +9,8 @@ import { OrgManagementEN } from './orgManagement/messages_en';
 import { OrgManagementES } from './orgManagement/messages_es';
 import { MessageEn as orderManagementMessagesEn } from './order-management/messages_en';
 import { MessageEs as orderManagementMessagesEs } from './order-management/messages_es';
+import { ApproverManagementEN as approverGroupMessagesEn } from './order-management/approver-group/messages_en';
+import { ApproverManagementES as approverGroupMessagesEs } from './order-management/approver-group/messages_es';
 import { PaymentInvoicesEN } from './payment-Invoices/messages_en';
 import { PaymentInvoicesES } from './payment-Invoices/messages_es';
 import { AccountEN } from './Accounts/messages_en';
@@ -29,7 +31,8 @@ export const messages = {
     ...PaymentInvoicesEN,
     ...AccountEN,
     ...SignupEN,
-    ...filtersEN
+    ...filtersEN,
+    ...approverGroupMessagesEn
   },
   [LOCALES.SPANISH]: {
     ...LoginMessagesES,
@@ -39,6 +42,7 @@ export const messages = {
     ...orderManagementMessagesEs,
     ...AccountES,
     ...SignupES,
-    ...filtersES
+    ...filtersES,
+    ...approverGroupMessagesEs
   }
 };
