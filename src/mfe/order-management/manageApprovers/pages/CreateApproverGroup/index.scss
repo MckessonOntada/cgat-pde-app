@@ -1,0 +1,28 @@
+.attributeBox {
+  margin-top: var(--spacing-02);
+  margin-bottom: var(--spacing-03);
+}
+
+.line-height {
+  margin-bottom: var(--spacing-04);
+}
+
+.align-items-start {
+  align-items: flex-start;
+}
+
+.remove {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: var(--spacing-04);
+}
+
+.btnRemove {
+  color: red !important;
+
+  svg {
+    fill: red !important;
+    color: red !important;
+  }
+}

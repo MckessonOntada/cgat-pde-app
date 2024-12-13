@@ -35,7 +35,7 @@ function OrderManagementRoutes() {
 
       <Route path={`:orderId/accounts`} element={<AccountSelection />} />
       <Route path={`:orderId/patient`} element={<PatientDetails />} />
-      <Route path={`:orderId/additionalDetails`} element={<AdditionalDetails />} />
+      <Route path={`:orderId/additional-details`} element={<AdditionalDetails />} />
       <Route path={`:orderId/summary`} element={<Summary />} />
 
       <Route path={routesConfig.viewDetails} element={<OrderSummary />} />

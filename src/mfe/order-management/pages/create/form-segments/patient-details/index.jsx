@@ -24,10 +24,10 @@ const PatientDetails = () => {
   };
 
   const handleOnSubmit = () => {
-    navigate(`../${orderId}/additionalDetails`);
+    navigate(`../${orderId}/additional-details`);
   };
 
-  const handleOnCancel = () => {
+  const handleOnBack = () => {
     //compare data change, display modal for confirmation
     navigate('/orders');
   };
@@ -69,8 +69,8 @@ const PatientDetails = () => {
           <ModuleHeader
             controls={
               <div className="controls">
-                <Button size="md" variant="secondary" onClick={handleOnCancel}>
-                  {t('captions.btnCancel')}
+                <Button size="md" variant="secondary" onClick={handleOnBack}>
+                  {t('captions.btnBack')}
                 </Button>
                 <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit}>
                   {t('captions.btnSaveAndContinue')}

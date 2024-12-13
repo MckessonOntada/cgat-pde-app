@@ -40,9 +40,8 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
   const handleClearFilters = (resetForm) => {
     resetForm({ values: initialFilters });
     clearInputs();
-    onClearFilters?.();
+    onClearFilters();
   };
-
   return (
     <Formik
       enableReinitialize

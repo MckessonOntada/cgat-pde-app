@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { CustomDataTable } from '@mckesson/mcp-component-library';
 import { useTherapy } from '../../../../context/TherapyContext';
@@ -7,7 +7,6 @@ import { createColumns } from './TherapyDataColumns';
 import { useNavigate } from 'react-router-dom';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import { therapyData } from './__mock__';
 
 const TherapyDataTable = ({ selectedRowId, setSelectedRowId }) => {
   const { t } = useTranslate();

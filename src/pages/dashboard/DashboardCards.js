@@ -3,6 +3,7 @@ import { ReactComponent as OrderIcon } from '../../assets/svg/bag-circle.svg';
 import { ReactComponent as UserIcon } from '../../assets/svg/user-circle.svg';
 import { ReactComponent as organizationIcon } from '../../assets/svg/organizationIcon.svg';
 import { ReactComponent as ChecklistIcon } from '../../assets/svg/checklist-circle.svg';
+import { ReactComponent as ApproverGroupIcon } from '../../assets/svg/approvergroup_icon.svg';
 import { ReactComponent as CatalogueIcon } from '../../assets/svg/catalogue-circle.svg';
 import { ReactComponent as LinkIcon } from '../../assets/svg/link-circle.svg';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
@@ -14,7 +15,7 @@ const SYSTEM_ADMIN_CARDS_DATA = [
     name: 'ManageSystemAdmin',
     label: 'manage_system_admin',
     icon: UserIcon,
-    details: 'efficiently_streamline_user_management_for_seamless_experience',
+    details: 'systemAdmin_card_description',
     path: AppRoutes.pathSystemAdminManagement,
     permissions: USER_MANAGEMENT.MANAGE_SYSTEM_ADMINISTRATOR_SCREEN
   },
@@ -49,9 +50,17 @@ const CARDS_DATA = [
     name: 'ManageRoles',
     label: 'manage_roles',
     icon: ChecklistIcon,
-    details: 'efficiently_streamline_user_management_for_seamless_experience',
+    details: 'role_card_description',
     path: '/organization/roles',
     permissions: USER_MANAGEMENT.MANAGE_ROLES_SCREEN
+  },
+  {
+    name: 'ManageApproverGroups',
+    label: 'manage_approver_groups',
+    icon: ApproverGroupIcon,
+    details: 'approver_management_description',
+    path: AppRoutes.pathApproverManagement,
+    permissions: ORDER_MANAGEMENT.MANAGE_ORDERS // To do - it should be View/Add Approver Group
   }
   // {
   //   name: 'ManageCatalog',

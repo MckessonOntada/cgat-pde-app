@@ -1,9 +1,8 @@
-import React from 'react';
-import { Dropdown, Heading, Button, Stepper } from '@mckesson/mcp-component-library';
+import React, { useMemo } from 'react';
+import { Heading, Button, Stepper } from '@mckesson/mcp-component-library';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import styles from './AccountSelection.module.scss';
 import FloatingDrawer from '@src/components/floating-drawer';
-import AccountsTable from './AccountTable';
 import AccountSelectionUserGuide from './AccountSelectionUserGuide';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import ModuleHeader from '@src/components/module-header';
@@ -12,13 +11,14 @@ import ShippingAddressDataTable from './ShippingAddressDataTable';
 import { ShippingAddressProvider } from '../../../../context/ShippingAddressContext';
 import PageHeader from '@src/components/pageHeader';
 import { FormList } from '../Constants';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { ReactComponent as TickIcon } from '@src/assets/svg/yes_tick_circle_filled.svg';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
-import Components from '@src/components/form/Components';
-import { Field, Form, Formik } from 'formik';
 import CommonFilters from '@src/components/Filters';
 import AuthUtils from '@src/util/AuthUtils';
+import ApiRoutes from '@src/api/ApiRoutes';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import CommonUtils from '@src/util/CommonUtils';
 
 const DetailField = ({ label, value, className }) => (
   <div className={className}>
@@ -33,21 +33,39 @@ const AccountSelection = () => {
   const navigate = useNavigate();
   const { orderId } = useParams();
   const [selectedAccount, setSelectedAccount] = React.useState(null);
-  const [accountList, setAccountList] = React.useState([]);
-  const therapyId = 1; //temp
-  const { isLoading, data = {} } = useQuery({
-    queryKey: ['order', 'therapy', therapyId],
+  const [accountSearchString, setAccountSearchString] = React.useState('');
+  const [selectedShippingAddress, setSelectedShippingAddress] = React.useState('');
+  const therapyId = 3; //temp
+
+  const { isLoading, data: accountsListData = {} } = useQuery({
+    queryKey: ['order', 'therapy', therapyId, accountSearchString],
     queryFn: async () => {
       const userId = AuthUtils.getUserId();
-      const url = `${ApiRoutes.ORDER(userId)}/therapies/${therapyId}/soldtoaccounts`;
+      const url = `${ApiRoutes.ORDER(userId)}/therapies/${therapyId}/soldtoaccounts?query=${accountSearchString}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       if (res.data) {
         return res.data;
       }
       return {};
     },
+    enabled: !!therapyId,
     refetchOnWindowFocus: false
   });
+
+  const accountListOptions = useMemo(() => {
+    if (!CommonUtils.isNonEmptyObject(accountsListData)) {
+      return;
+    }
+    const accArr = [];
+    accountsListData.content?.forEach((acc) => {
+      const label = `(${acc.accountNumber}) ` + acc.accountName;
+      const value = acc.accountNumber;
+      const subLabel = [acc.houseNumber, acc.street, acc.city, acc.state, acc.zipCode].join(', ');
+      accArr.push({ label, value, subLabel });
+    });
+
+    return accArr;
+  }, [accountsListData]);
 
   const { mutate } = useMutation(
     async (data) => {
@@ -78,12 +96,21 @@ const AccountSelection = () => {
     navigate('/orders');
   };
 
+  const getAddress = (acc) => {
+    return [acc.houseNumber, acc.street, acc.district, acc.city, acc.state, acc.zipCode].join(', ');
+  };
+
   const forms = FormList(t);
 
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackButtonClick} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={handleOnBackButtonClick}
+          size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
@@ -105,7 +132,7 @@ const AccountSelection = () => {
                   </React.Fragment>
                 }
               />
-              <DetailField label={t('labels.price')} value={'price_value'} />
+              <DetailField label={t('labels.price')} value={'$----'} />
             </div>
           </div>
           <div className="MCP-panel-container">
@@ -124,9 +151,9 @@ const AccountSelection = () => {
                     {selectedAccount ? (
                       <React.Fragment>
                         <p className={styles.name}>
-                          <b>Revisions Aesthetics Group</b>
+                          <b>{selectedAccount.accountName}</b>
                         </p>
-                        <p className={styles.address}>6567 S Elizabeth Way, Centennial, CO, 80121</p>
+                        <p className={styles.address}>{getAddress(selectedAccount)}</p>
                       </React.Fragment>
                     ) : (
                       <React.Fragment>
@@ -136,22 +163,20 @@ const AccountSelection = () => {
                   </div>
                   <div className={styles.controls}>
                     <div className={styles.controlWrapper}>
-                      <Formik
-                        enableReinitialize
-                        initialValues={{ targetAccount: '' }}
-                        onSubmit={(values, actions) => {
-                          console.log(values, action);
+                      <MultiSelectDropdown
+                        id={'targetAccount'}
+                        label={' '}
+                        isMultiSelect={false}
+                        placeholder={'Select Account'}
+                        onChange={(val) => setSelectedAccount(accountsListData.content?.filter((acc) => acc.accountNumber === val)[0])}
+                        options={accountListOptions}
+                        variant={'async'}
+                        onSearch={(e) => {
+                          setAccountSearchString(() => e);
                         }}
-                        validateOnChange={false}
-                        validateOnBlur={false}>
-                        {() => {
-                          return (
-                            <Form>
-                              <Field name={'targetAccount'} label={' '} placeholder={' '} component={Components['multiSelectDropdown']} options={[]} />
-                            </Form>
-                          );
-                        }}
-                      </Formik>
+                        recordsCountToEnableSearch={5}
+                        size="lg"
+                      />
                     </div>
                     <Link to="#" onClick={handleOnClick} className="action-link">
                       {t('labels.needAssistanceSelectingAccount')}
@@ -160,14 +185,22 @@ const AccountSelection = () => {
                 </div>
               </div>
             </div>
-            <ShippingAddressProvider>
+            <ShippingAddressProvider accountDetails={{ therapyId, selectedAccount }}>
               <div className="MCP-module-body">
                 <ModuleHeader heading={<Heading as="h2">{t('headings.shippingAddress')}</Heading>} />
                 <div className="MCP-panel-container">
-                  <CommonFilters onApplyFilters={() => {}} onClearFilters={() => {}} additionalFilters={[]} searchPlaceholder={t('controls.placeholder.shippingAddress.search')} />
+                  <CommonFilters
+                    onApplyFilters={() => {}}
+                    onClearFilters={() => {}}
+                    additionalFilters={[]}
+                    searchPlaceholder={t('controls.placeholder.shippingAddress.search')}
+                  />
                 </div>
                 <div className="MCP-table-wrapper">
-                  <ShippingAddressDataTable />
+                  <ShippingAddressDataTable
+                    selectedShippingAddress={selectedShippingAddress}
+                    setSelectedShippingAddress={setSelectedShippingAddress}
+                  />
                 </div>
               </div>
             </ShippingAddressProvider>

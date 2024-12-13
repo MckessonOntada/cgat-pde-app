@@ -1,23 +1,19 @@
-import InputField from './InputField';
-import Textarea from './Textarea';
-import RadioGroup from './RadioGroup';
-import CheckBox from './CheckBox';
-import Dropdown from './Dropdown';
-import PhoneInput from './PhoneInput';
+import InputFieldFormik from './formik/InputFieldFormik';
+import TextareaFormik from './formik/TextareaFormik';
+import DropdownFormik from './formik/DropdownFormik';
+import PhoneInputFormik from './formik/PhoneInputFormik';
 import ZipInput from './ZipInput';
-import DateRangePicker from './DateRangePicker';
-import MultiSelectDropdown from './MultiSelectDropdown';
+import DateRangePickerFormik from './formik/DateRangePickerFormik';
+import MultiSelectDropdownFormik from './formik/MultiSelectDropdownFormik';
 
 const Components = {
-  input: InputField,
-  textarea: Textarea,
-  radioGroup: RadioGroup,
-  dropdown: Dropdown,
-  checkBox: CheckBox,
-  phoneInput: PhoneInput,
+  input: InputFieldFormik,
+  textarea: TextareaFormik,
+  dropdown: DropdownFormik,
+  phoneInput: PhoneInputFormik,
   zipInput: ZipInput,
-  dateRangePicker: DateRangePicker,
-  multiSelectDropdown: MultiSelectDropdown 
+  dateRangePicker: DateRangePickerFormik,
+  multiSelectDropdown: MultiSelectDropdownFormik
 };
 
 export default Components;

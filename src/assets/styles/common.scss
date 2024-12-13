@@ -301,11 +301,16 @@
   height: auto;
   gap: var(--spacing-04);
   padding: var(--spacing-04);
-  background-color: var(--brand-color-general-white);
   border: 1px solid var(--brand-color-patient-primary-3);
   border-radius: var(--brand-border-radius--8);
   background-color: var(--brand-color-background-white);
-  width: 100%;
+}
+
+.MCP-sect {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacing-04);
 }
 
 .MCP-table-link {
@@ -373,6 +378,10 @@
 .action-link {
   font-size: var(--brand-font-size--default);
   color: var(--brand-color-primary-blue);
+}
+
+.agreement-checkbox-control {
+  font-size: var(--brand-font-size--default);
 }
 
 [class*="Badge-module"] {
