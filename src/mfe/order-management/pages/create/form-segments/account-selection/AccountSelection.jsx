@@ -12,13 +12,11 @@ import { ShippingAddressProvider } from '../../../../context/ShippingAddressCont
 import PageHeader from '@src/components/pageHeader';
 import { FormList } from '../Constants';
 import { useMutation, useQuery } from 'react-query';
-import { ReactComponent as TickIcon } from '@src/assets/svg/yes_tick_circle_filled.svg';
+import { ReactComponent as TickIcon } from '@src/assets/svg/tick-circle-filled.svg';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import CommonFilters from '@src/components/Filters';
-import AuthUtils from '@src/util/AuthUtils';
-import ApiRoutes from '@src/api/ApiRoutes';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import CommonUtils from '@src/util/CommonUtils';
+import OrderService from '@src/api/commonService/OrderService';
 
 const DetailField = ({ label, value, className }) => (
   <div className={className}>
@@ -39,15 +37,7 @@ const AccountSelection = () => {
 
   const { isLoading, data: accountsListData = {} } = useQuery({
     queryKey: ['order', 'therapy', therapyId, accountSearchString],
-    queryFn: async () => {
-      const userId = AuthUtils.getUserId();
-      const url = `${ApiRoutes.ORDER(userId)}/therapies/${therapyId}/soldtoaccounts?query=${accountSearchString}`;
-      const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-      if (res.data) {
-        return res.data;
-      }
-      return {};
-    },
+    queryFn: async () => OrderService.getSoldToAccounts(therapyId, accountSearchString),
     enabled: !!therapyId,
     refetchOnWindowFocus: false
   });
@@ -128,7 +118,7 @@ const AccountSelection = () => {
                 value={
                   <React.Fragment>
                     <span>Therapy value</span>
-                    <TickIcon />
+                    <TickIcon width="16px" height="16px" />
                   </React.Fragment>
                 }
               />
@@ -141,7 +131,7 @@ const AccountSelection = () => {
                 heading={
                   <div>
                     <Heading as="h2">{t('labels.accountSelection')}</Heading>
-                    <p className="dull-text">Please select the account to buy the therapy for</p>
+                    <p className="dull-text">{t('messages.selectAccountToBuyTherapy')}</p>
                   </div>
                 }
               />
@@ -157,7 +147,7 @@ const AccountSelection = () => {
                       </React.Fragment>
                     ) : (
                       <React.Fragment>
-                        <Heading as="h3">Please Select Account</Heading>
+                        <Heading as="h3">{t('labels.pleaseSelectAccount')}</Heading>
                       </React.Fragment>
                     )}
                   </div>
@@ -212,8 +202,8 @@ const AccountSelection = () => {
             <Button size="md" onClick={handleOnCancel} variant="secondary">
               {t('captions.btnInventorySelection')}
             </Button>
-            <Button size="md" onClick={handleOnSubmit} variant="primary" type="submit">
-              {t('Save and Continue')}
+            <Button size="md" onClick={handleOnSubmit} disabled={!selectedShippingAddress} variant="primary" type="submit">
+              {t('captions.btnSaveAndContinue')}
             </Button>
           </div>
           <FloatingDrawer open={open} anchor="right" onClose={handleOnClose}>

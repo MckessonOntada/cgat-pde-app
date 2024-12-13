@@ -20,9 +20,37 @@ async function getTherapyDetailsById(therapyId) {
   return res.data || {};
 }
 
+async function getSoldToAccounts(therapyId, query) {
+  const userId = AuthUtils.getUserId();
+  let url = `${ApiRoutes.ORDER(userId)}/therapies/${therapyId}/soldtoaccounts`;
+  if (query) {
+    url += `?query=${query}`;
+  }
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
+
+async function getShippingAddressForTherapyByAccountId(therapyId, accountId, requestParams) {
+  const userId = AuthUtils.getUserId();
+  const url = `${ApiRoutes.ORDER(userId)}/therapies/${therapyId}/soldtoaccount/${accountId}/shiptoaccounts?${serializeParams(
+    requestParams
+  )}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
 const OrderService = Object.freeze({
   getTherapies,
-  getTherapyDetailsById
+  getTherapyDetailsById,
+  getSoldToAccounts,
+  getShippingAddressForTherapyByAccountId
 });
 
 export default OrderService;

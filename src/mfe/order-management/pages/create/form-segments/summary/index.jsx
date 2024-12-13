@@ -55,7 +55,12 @@ const Summary = () => {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackButtonClick} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={handleOnBackButtonClick}
+          size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
@@ -63,7 +68,7 @@ const Summary = () => {
       <PageHeader heading={<Heading as="h1">{t('headings.createNewOrder')}</Heading>} />
 
       <div className="MCP-module-body">
-        <Stepper activeIndex={4} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} />
+        <Stepper activeIndex={5} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} />
         <div className={'MCP-module-wrapper'}>
           <ModuleHeader heading={<Heading as="h2">{t('labels.summary')}</Heading>} />
           <div className={'MCP-module-body'}>
@@ -81,7 +86,11 @@ const Summary = () => {
                   className={styles.panelHeader}
                   heading={<Heading as="h3">{t('labels.therapy')}</Heading>}
                   controls={
-                    <Button size="md" variant="tertiary" onClick={() => navigate(`../edit-order/${orderId}`)} Icon={() => <IconEditField />}>
+                    <Button
+                      size="md"
+                      variant="tertiary"
+                      onClick={() => navigate(`../edit-order/${orderId}`)}
+                      Icon={() => <IconEditField />}>
                       {t('captions.btnEdit')}
                     </Button>
                   }
@@ -105,7 +114,11 @@ const Summary = () => {
                     className={styles.panelHeader}
                     heading={<Heading as="h3">{t('labels.accountDetails')}</Heading>}
                     controls={
-                      <Button size="md" variant="tertiary" onClick={() => navigate(`../${orderId}/accounts`)} Icon={() => <IconEditField />}>
+                      <Button
+                        size="md"
+                        variant="tertiary"
+                        onClick={() => navigate(`../${orderId}/accounts`)}
+                        Icon={() => <IconEditField />}>
                         {t('captions.btnEdit')}
                       </Button>
                     }
@@ -141,7 +154,11 @@ const Summary = () => {
                 className={styles.panelHeader}
                 heading={<Heading as="h3">{t('labels.additionalDetails')}</Heading>}
                 controls={
-                  <Button size="md" variant="tertiary" onClick={() => navigate(`../${orderId}/additional-details`)} Icon={() => <IconEditField />}>
+                  <Button
+                    size="md"
+                    variant="tertiary"
+                    onClick={() => navigate(`../${orderId}/additional-details`)}
+                    Icon={() => <IconEditField />}>
                     {t('captions.btnEdit')}
                   </Button>
                 }

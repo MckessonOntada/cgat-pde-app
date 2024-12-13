@@ -9,14 +9,10 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { shippingAddressData } from './__mock__';
 
-const ShippingAddressDataTable = ({ type = 'normal', pagination = true, selectedShippingAddress, setSelectedShippingAddress }) => {
+const ShippingAddressDataTable = ({ pagination = true, selectedShippingAddress, setSelectedShippingAddress }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { dataState: data, pageConfig, setPageConfig, setCurrentPage } = useShippingAddress();
-  const [sortConfig, setSortConfig] = React.useState({
-    columnName: null,
-    direction: null
-  });
+  const { dataState: data, pageConfig, setPageNumber } = useShippingAddress();
 
   const columns = createColumns(t, navigate, selectedShippingAddress, setSelectedShippingAddress);
 
@@ -35,7 +31,7 @@ const ShippingAddressDataTable = ({ type = 'normal', pagination = true, selected
   // }, [data]);
 
   const handleOnPageChange = (_event, pageIndex) => {
-    setCurrentPage(pageIndex);
+    setPageNumber(pageIndex);
   };
 
   // const handleOnSort = (selectedColumn, sortDirection, sortedRows) => {
