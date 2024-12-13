@@ -76,7 +76,7 @@ export default function Dashboard() {
   const tabs = [
     {
       id: 1,
-      configName: 'ACTIVE USERS',
+      configName: t('Table.Tabs.ActiveUser'),
       isActive: true,
       isActiveTab: activeTab === 'ACTIVE USERS',
       sequence: 1,
@@ -84,7 +84,7 @@ export default function Dashboard() {
     },
     {
       id: 2,
-      configName: 'PENDING REQUESTS',
+      configName: t('Table.Tabs.pendingRequest'),
       isActiveTab: activeTab === 'PENDING REQUESTS',
       isActive: true,
       sequence: 2,

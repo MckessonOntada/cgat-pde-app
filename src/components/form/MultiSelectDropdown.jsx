@@ -1,31 +1,49 @@
-import React from 'react';
-import { Label, SearchableDropdown } from '@mckesson/mcp-component-library';
-import { getNestedValue } from './util';
+import React, { useState } from 'react';
+import { Label } from '@mckesson/mcp-component-library';
+import { SearchableDropdown } from '../searchableDropdown';
 
 const MultiSelectDropdown = (props) => {
-  const { field, form, fieldlabel } = props;
+  const { id, label, value, isRequired, onChange, onSearch, error, variant, options, recordsCountToEnableSearch, ...rest } = props;
+  const [startSearchStringTimer, setStartSearchStringTimer] = useState(null);
+  const [searchString, setSearchString] = useState('');
 
-  const errorMessage = getNestedValue(form.errors, field.name);
-  const isFieldTouched = getNestedValue(form.touched, field.name);
-  const error = errorMessage && isFieldTouched;
+  const debouncedSearch = () => {
+    clearTimeout(startSearchStringTimer);
+    const timeout = setTimeout(() => onSearch(searchString), 500);
+    setStartSearchStringTimer(timeout);
+  };
+
+  React.useEffect(() => {
+    if (variant !== 'async') {
+      return;
+    }
+
+    debouncedSearch();
+    return () => {
+      clearTimeout(startSearchStringTimer);
+    };
+  }, [searchString]);
+
   return (
     <div className="grid">
-      <Label htmlFor={field.name} className="label-heading">
-        {fieldlabel}
-        {props.isRequired && <Required id="Required">Required</Required>}
+      <Label htmlFor={id} className="label-heading">
+        {label}
+        {isRequired && <Required id="Required">Required</Required>}
       </Label>
       <SearchableDropdown
-        {...props}
-        id=""
-        isSuccess
-        value={field.value}
+        id={id}
+        name={id}
+        value={value}
         error={!!error}
-        isRequired={false}
-        onChange={(values) => {
-          form.setFieldValue(`${field.name}`, values.filter(item => item.isChecked).map(item => item.value));
-        }}
+        options={options}
+        onChange={onChange}
+        asyncHandleSearch={(e) => setSearchString(e)}
+        asyncRecordsFound={options?.length}
+        variant={variant}
+        recordsCountToEnableSearch={recordsCountToEnableSearch}
+        {...rest}
       />
-      {isFieldTouched && errorMessage && <TextError errorMessage={errorMessage} />}
+      {error && <TextError errorMessage={error} />}
     </div>
   );
 };

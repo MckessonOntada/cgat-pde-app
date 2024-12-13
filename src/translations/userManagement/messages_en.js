@@ -240,5 +240,8 @@ export const UserManagementEN = {
   'messages.user_create_success': 'User has been created successfully.',
   'messages.pending_user_reject_success': 'Pending User has been rejected.',
   'messages.user_self_register_success': 'User has been registered successfully.',
-  'messages.sysadmin_create_success': 'System Admin has been created successfully.'
+  'messages.sysadmin_create_success': 'System Admin has been created successfully.',
+
+  'Table.Tabs.ActiveUser': 'ACTIVE USERS',
+  'Table.Tabs.pendingRequest': 'PENDING REQUESTS'
 };
