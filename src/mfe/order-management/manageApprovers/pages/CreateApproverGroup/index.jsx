@@ -13,6 +13,7 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { handleApiError, serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import { RoutePaths } from '@src/routes/constants';
+
 import {
   ALPHABETIC_WITH_SPECIAL,
   ALPHABETIC_WITH_SPACE,
@@ -46,59 +47,84 @@ const CreateApproverGroup = () => {
   };
 
   const initialValues = {
+    // name: '',
+    // rules: {
+    //   price: 0,
+    //   accounts: [{ accountId: '', accountName: '' }],
+    //   therapies: [{ therapyId: '', therapyName: '' }],
+    //   roles: [{ roleId: '', roleName: '' }],
+    //   users: [{ userId: '', userName: '' }]
+    // },
+    // approverUsers: [],
+    // approverUsers_augmented: [],
+    // attributes: [{ attributeType: 'Price', value: '' }]
     name: '',
-    rules: {
-      price: 0,
-      accounts: [{ accountId: '', accountName: '' }],
-      therapies: [{ therapyId: '', therapyName: '' }],
-      roles: [{ roleId: '', roleName: '' }],
-      users: [{ userId: '', userName: '' }]
-    },
-    approverUsers: [],
-    approverUsers_augmented: [],
-    attributes: [{ attributeType: 'Price', value: '' }]
+    rules: [{ attributeType: 'Price', value: '' }],
+    approverUsers: []
   };
 
-  //const initialValues = { groupName: '', attributes: [{ attributeType: 'Price', value: '' }], userSearch: '', attribute1: [] };
-
-  // const initialValues = {
-  //   name: '',
-  //   rules: {
-  //     price: 0,
-  //     accounts: [],
-  //     therapies: [],
-  //     roles: [],
-  //     users: []
-  //   },
-
-  //   approverUsers: [{}]
-  // };
+  // const validationSchema = Yup.object({
+  //   name: Yup.string().required('Name is required'),
+  //   attributes: Yup.array()
+  //     .of(
+  //       Yup.object({
+  //         attributeType: Yup.string()
+  //           .required('Attribute type is required')
+  //           .oneOf(['Price', 'Account', 'Catalog', 'User'], 'Invalid attribute type'),
+  //         value: Yup.string()
+  //           .required('Value is required')
+  //           .test('dynamic-validation', 'Invalid value for the selected attribute type', function (value) {
+  //             const { attributeType } = this.parent; // Access the current object's parent
+  //             if (attributeType === 'Price') {
+  //               return Yup.number().min(0, 'Price must be greater than or equal to 0').isValidSync(value);
+  //             }
+  //             if (['Account', 'Catalog', 'User'].includes(attributeType)) {
+  //               return value !== '';
+  //             }
+  //             return true;
+  //           })
+  //       })
+  //     )
+  //     .min(1, 'At least one attribute is required')
+  //     .optional(),
+  //   approverUsers: Yup.array().of(Yup.string().required('Approver user is required')).min(1, 'At least one approver user must be selected')
+  // });
 
   const validationSchema = Yup.object({
     name: Yup.string().required('Name is required'),
-    attributes: Yup.array()
+    rules: Yup.array()
       .of(
         Yup.object({
           attributeType: Yup.string()
             .required('Attribute type is required')
-            .oneOf(['Price', 'Account', 'Catelog', 'User'], 'Invalid attribute type'),
-          value: Yup.string()
+            .oneOf(['Price', 'Account', 'Catalog', 'User'], 'Invalid attribute type'),
+          value: Yup.mixed()
             .required('Value is required')
             .test('dynamic-validation', 'Invalid value for the selected attribute type', function (value) {
               const { attributeType } = this.parent;
-              alert(attributeType);
+
+              if (Array.isArray(value)) {
+                // If array is empty, make it required
+                if (value.length === 0) {
+                  return this.createError({ message: 'Array cannot be empty' });
+                }
+                // If array has at least one value, validation passes
+                return true;
+              }
+
               if (attributeType === 'Price') {
                 return Yup.number().min(0, 'Price must be greater than or equal to 0').isValidSync(value);
               }
+
               if (['Account', 'Catelog', 'User'].includes(attributeType)) {
                 return value !== '';
               }
+
               return true;
             })
         })
       )
-      .min(1, 'At least one attribute is required')
-      .optional(),
+      .required('Required'),
     approverUsers: Yup.array().required('Approver Users is required').min(1, 'At least one approver user must be selected')
   });
 
@@ -122,13 +148,14 @@ const CreateApproverGroup = () => {
       }
     );
   };
-  const createLabelData = (userID) => [
-    {
-      id: userID.value,
-      labelText: userID.name
-    }
-  ];
 
+  const createLabelData = (values) => {
+    let val = values.approverUsers_augmented?.map(({ name, value }) => ({
+      labelText: name,
+      id: value
+    }));
+    return val;
+  };
   const handleCancel = () => {};
 
   const handleNavigate = () => {};
@@ -154,37 +181,21 @@ const CreateApproverGroup = () => {
           actions.setSubmitting(false);
         }}>
         {({ values, setFieldValue, isValid, handleChange, errors, touched }) => {
-          React.useEffect(() => {
-            if (!usersData) return;
-
-            const updatedLocalUsersData = usersData.map((user) => ({
-              ...user,
-              isChecked: values.approverUsers.includes(user.value) // Mark checked based on Formik values
-            }));
-
-            // // Only update localUsersData if it has changed
-            // if (JSON.stringify(updatedLocalUsersData) !== JSON.stringify(localUserData)) {
-            //   setLocalUsersData(updatedLocalUsersData);
-            // }
-          }, [values.approverUsers]);
-
           const onRemoveUser = (itemToRemove) => {
-            const updatedUsers = values.approverUsers.filter((userId) => userId !== itemToRemove.value);
-            const updatedAugmentedUsers = values.approverUsers_augmented.filter((user) => user.value !== itemToRemove.value);
-
+            const updatedUsers = values.approverUsers.filter((userId) => userId !== itemToRemove);
+            const updatedAugmentedUsers = values.approverUsers_augmented.filter((user) => user.value !== itemToRemove);
             setFieldValue('approverUsers', updatedUsers);
             setFieldValue('approverUsers_augmented', updatedAugmentedUsers);
 
             const updatedOptions = localUserData.map((option) => {
-              if (option.value === itemToRemove.value) {
+              if (option.value === itemToRemove) {
                 return { ...option, isChecked: false };
               }
               return option;
             });
 
-            setLocalUsersData(updatedOptions);
+            setLocalUsersData(() => updatedOptions);
           };
-          //   console.log('localuser', localUsersData);
           return (
             <Form>
               <div className="MCP-panel-container">
@@ -219,19 +230,17 @@ const CreateApproverGroup = () => {
                         <Heading as="h2">{t('approvergroup.approveuserlist')}</Heading>
                       </div>
                       <div className="pills-container">
-                        {values.approverUsers_augmented?.map((item) => (
-                          <Pills
-                            id={item.id}
-                            key={item.id}
-                            labels={createLabelData(item)}
-                            variant="secondary"
-                            size="lg"
-                            hasDeleteIcon={true}
-                            onDelete={() => onRemoveUser(item)}
-                          />
-                        ))}
+                        <Pills
+                          id={'pill-id'}
+                          key={'pills'}
+                          labels={createLabelData(values)}
+                          variant="secondary"
+                          size="lg"
+                          hasDeleteIcon={true}
+                          onDelete={(item) => onRemoveUser(item)}
+                        />
                       </div>
-                      <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5">
+                      <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
                         <Field
                           id="approverUsers"
                           name="approverUsers"
@@ -241,8 +250,9 @@ const CreateApproverGroup = () => {
                           isRequired
                           options={localUserData || []}
                           value={[...values.approverUsers]}
-
-                          //key={dropdownKey}
+                          getUpdatedOptions={(values) => {
+                            setLocalUsersData(() => values);
+                          }}
                         />
                       </div>
                     </div>

@@ -29,34 +29,34 @@ const Attributes = ({ values, errors, touched, handleChange }) => {
       value: 'User'
     }
   ];
-  const isAddDisabled = values.attributes.length >= attrOptions.length - 1;
+  const isAddDisabled = values.rules.length >= attrOptions.length - 1;
   const getAvailableOptions = (index) => {
-    const selectedValues = values.attributes.map((attr) => attr.attributeType);
+    const selectedValues = values.rules.map((attr) => attr.attributeType);
     return attrOptions.filter(
-      (option) => option.value === '' || !selectedValues.includes(option.value) || values.attributes[index]?.attributeType === option.value
+      (option) => option.value === '' || !selectedValues.includes(option.value) || values.rules[index]?.attributeType === option.value
     );
   };
 
   return (
     <div>
-      <FieldArray name="attributes">
+      <FieldArray name="rules">
         {({ push, remove }) => (
           <>
-            {values.attributes?.map((attribute, index) => (
+            {values.rules?.map((attribute, index) => (
               <div key={index}>
                 <div className="attributeBox">
                   <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
                     <Field
-                      id={`attributes[${index}].attributeType`}
-                      name={`attributes[${index}].attributeType`}
-                      fieldlabel={t(`${t('approvergroup.attribute')} ${index + 1}`)}
+                      id={`rules[${index}].attributeType`}
+                      name={`rules[${index}].attributeType`}
+                      fieldlabel={t(`${t('approvergroup.attribute')}`)}
                       placeholder=" "
                       component={Components['dropdown']}
                       isRequired
                       options={getAvailableOptions(index)}
                     />
                     <div className={`${attribute.attributeType === 'User' ? 'grid-column-4-by-1 sm:grid-column-1-by-1' : ''}`}>
-                      <RenderControls attributeType={attribute.attributeType} index={index} />
+                      <RenderControls attributeType={attribute.attributeType} index={index} name={`rules[${index}].value`} />
                     </div>
                     <div
                       className={`remove ${attribute.attributeType === 'User' ? 'grid-column-3-by-3 grid-row-1-by-1' : ''}}`}
