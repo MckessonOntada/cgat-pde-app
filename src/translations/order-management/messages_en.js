@@ -37,6 +37,7 @@ export const MessageEn = {
   'labels.perPage': 'Per page',
   'labels.needAssistanceSelectingAccount': 'Need assistance with selecting an account?',
   'labels.orderThroughBelowPrograms': 'Are you here to order through any of the below programs?',
+  'labels.orderThroughBelowChannel': 'Please select channel to place the order.',
   'labels.therapySelection': 'Therapy Selection',
   'labels.patientDetails': 'Patient Details',
   'labels.additionalDetails': 'Additional Details',

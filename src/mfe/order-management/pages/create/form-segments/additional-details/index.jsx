@@ -3,17 +3,34 @@ import { CustomDataTable, RadioGroup, Button, Stepper, Heading, Required, Checkb
 import { useTranslate } from '@src/translations/useTranslation';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormList } from '../Constants';
+import { ReactComponent as InfoIcon } from '@src/assets/svg/info_icon_circle_filled.svg';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
-import ModuleHeader from '../../../../../../components/module-header';
 import DetailSegment from '@src/components/DetailSegment';
-import { Field, Formik } from 'formik';
+import { Field, Form, Formik } from 'formik';
 import FileInput from '@src/components/FileInput';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
-import Components from '@src/components/form/Components';
+import { getFormFields } from './fields';
+import * as Yup from 'yup';
+
+const getValidationSchema = (t) =>
+  Yup.object({
+    coiId: Yup.number().required(t('COI Id is required')).min(1, ''),
+    orderQuantity: Yup.number().required('Order Quantity is required').min(1, ''),
+    slotNumber: Yup.string().required('Slot number is required').min(1, '').max(20, 'Slot Number can not be greater than 20'),
+    poNumber: Yup.number().required('PO number is required').min(1, '').max(35, 'PO Number can not be greater than 20')
+  });
 
 function AdditionalDetails() {
+  const initialValues = {
+    coiId: '',
+    orderQuantity: '',
+    slotNumber: '',
+    poNumber: '',
+    dateOfAdministration: ''
+  };
   const { t } = useTranslate();
+  const formFields = getFormFields(t);
   const navigate = useNavigate();
   const { orderId } = useParams();
   const [checkboxOptions, setCheckboxOptions] = React.useState([
@@ -24,123 +41,184 @@ function AdditionalDetails() {
       value: false
     }
   ]);
+  const [consentStatus, setConsentStatus] = React.useState('');
+  const [variant, setVariant] = React.useState();
   const handleOnBackButtonClick = () => {
     //compare data change, display modal for confirmation
     navigate(`../${orderId}/patient`);
   };
 
-  const handleOnSubmit = () => {
-    navigate(`../${orderId}/summary`);
+  const handleOnSubmit = (values) => {
+    let isValid = true;
+    if (values) {
+      if (!variant) {
+        console.log('select variant');
+      }
+      if (consentStatus === 'yes' && !values['patient-concent-document']) {
+        console.log('missing consent document');
+      }
+      if (checkboxOptions[0].isChecked === true && !values['variantAcknowledgementDocument']) {
+        console.log('missing acknowledge');
+      }
+    }
+  };
+
+  const handleOnAcknowledgmentChange = (value) => {
+    const updatedOptions = checkboxOptions.map((item) =>
+      item.value === value
+        ? {
+            ...item,
+            isChecked: !item.isChecked
+          }
+        : item
+    );
+    setCheckboxOptions(updatedOptions);
   };
 
   const handleOnBack = () => {
     //compare data change, display modal for confirmation
     navigate('/orders');
   };
+  const handleOnVariantChange = (variant) => {
+    setVariant(variant);
+  };
 
   const forms = FormList(t);
+  const validationSchema = getValidationSchema(t);
 
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackButtonClick} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={handleOnBackButtonClick}
+          size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
 
       <PageHeader heading={t('headings.createNewOrder')} />
 
-      <Formik>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={(values) => {
+          handleOnSubmit(values);
+        }}>
         {() => {
           return (
-            <div className="MCP-module-body">
-              <Stepper activeIndex={4} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} />
-              <div className="MCP-panel-container">
-                <div className={`grid grid-gap-24 grid-cols-1 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5`}>
-                  <DetailSegment label={t('labels.therapyDescription')} value={'Therapy Description'} />
-                  <DetailSegment label={t('labels.orderByAccountNumber')} value={'Order by Account Number'} />
-                  <DetailSegment label={t('labels.shipToAccountNumber')} value={'Ship to Account Number'} />
-                  <DetailSegment label={t('labels.patientName')} value={'Patient Name'} />
-                  <DetailSegment label={t('labels.price')} value={'Price'} />
-                </div>
-              </div>
-              <div className="MCP-panel-container">
-                <div className="row-space-between-center">
-                  <Heading as="h3">{t('labels.additionalDetails')}</Heading>
-                  <p className="form-instruction">
-                    <Required id="Required" /> {t('labels.required')}
-                  </p>
-                </div>
-                <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-                  <Field name="contactPerson.firstName" label={t('labels.coiId')} placeholder=" " isRequired component={Components['input']} maxLength={50} />
-                  <Field name="contactPerson.middleName" label={t('labels.orderQuantity')} placeholder=" " isRequired component={Components['input']} maxLength={50} />
-                  <Field name="contactPerson.lastName" label={t('labels.provideSlotNumber')} placeholder=" " isRequired component={Components['input']} maxLength={50} />
-                  <Field name="contact.email" label={t('labels.providePONumber')} placeholder=" " isRequired component={Components['input']} maxLength={40} />
-                  <Field name="contact.phone" label={t('labels.provideDateOfAdministration')} component={Components['input']} placeholder=" " isRequired />
-                </div>
-                <div className="MCP-sect">
-                  <Heading as="h3">{t('labels.selectVariant')}</Heading>
-                  <VariantTable />
-                </div>
-
-                <div className="agreement-checkbox-control">
-                  <CheckboxGroup
-                    id={'default'}
-                    name="variant-acknowledgement"
-                    items={checkboxOptions.map((item) => ({
-                      ...item,
-                      onChange: () => {}
-                    }))}
-                    size="md"
-                  />
-                </div>
-                <div>
-                  <Field name="file">
-                    {({ field, form }) => (
-                      <FileInput
-                        initialLogo={field.value}
-                        onFileSelect={(file) => {
-                          form.setFieldValue(field.name, file);
-                        }}
-                        label={t('labels.uploadDocument')}
-                      />
-                    )}
-                  </Field>
-                </div>
-                <div>
-                  <Heading as="h5">{t('labels.patientConsent')}</Heading>
-                  <RadioGroup direction="row" id="patientConcent" items={['yes', 'no'].map((v) => ({ label: t(`label.${v}`), value: v.toLowerCase() }))} onChangeValue={() => {}} value={'yes'} radioBtnWidth="auto" />
-                </div>
-                <div>
-                  <Field name="file">
-                    {({ field, form }) => (
-                      <FileInput
-                        initialLogo={field.value}
-                        onFileSelect={(file) => {
-                          form.setFieldValue(field.name, file);
-                        }}
-                        label=<p className="form-instruction">
-                          {t('labels.uploadDocument')}
-                          <Required id="Required" />
-                        </p>
-                      />
-                    )}
-                  </Field>
-                </div>
-              </div>
-              <ModuleHeader
-                controls={
-                  <div className="controls">
-                    <Button size="md" variant="secondary" onClick={handleOnBack}>
-                      {t('captions.btnBack')}
-                    </Button>
-                    <Button size="md" variant="primary" onClick={handleOnSubmit} type="submit">
-                      {t('captions.btnSaveAndContinue')}
-                    </Button>
+            <Form>
+              <div className="MCP-module-body">
+                <Stepper
+                  activeIndex={4}
+                  dividerText="of"
+                  mobileLabel={t('labels.steps')}
+                  stepHeaders={forms.map((f) => ({ label: f.label }))}
+                />
+                <div className="MCP-panel-container">
+                  <div className={`grid grid-gap-24 grid-cols-1 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5`}>
+                    <DetailSegment label={t('labels.therapyDescription')} value={'Therapy Description'} />
+                    <DetailSegment label={t('labels.orderByAccountNumber')} value={'Order by Account Number'} />
+                    <DetailSegment label={t('labels.shipToAccountNumber')} value={'Ship to Account Number'} />
+                    <DetailSegment label={t('labels.patientName')} value={'Patient Name'} />
+                    <DetailSegment label={t('labels.price')} value={'Price'} />
                   </div>
-                }
-              />
-            </div>
+                </div>
+                <div className="MCP-panel-container">
+                  <div className="row-space-between-center">
+                    <Heading as="h3">{t('labels.additionalDetails')}</Heading>
+                    <p className="form-instruction">
+                      <Required id="Required" /> {t('labels.required')}
+                    </p>
+                  </div>
+                  <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+                    {formFields.map((field, index) => (
+                      <Field
+                        key={index}
+                        name={field.name}
+                        label={field.label}
+                        placeholder={field.placeholder}
+                        isRequired={field.isRequired}
+                        component={field.component}
+                        maxLength={field.maxLength}
+                      />
+                    ))}
+                  </div>
+                  <div className="MCP-sect">
+                    <Heading as="h3">{t('labels.selectVariant')}</Heading>
+                    <VariantTable variant={variant} onChange={handleOnVariantChange} />
+                  </div>
+
+                  <div className="agreement-checkbox-control">
+                    <Field name="variant-acknowledgement">
+                      {({ field, form }) => (
+                        <CheckboxGroup
+                          id={'default'}
+                          name="variant-acknowledgement"
+                          items={checkboxOptions.map((item) => ({
+                            ...item,
+                            onChange: () => handleOnAcknowledgmentChange(item.value)
+                          }))}
+                          size="md"
+                        />
+                      )}
+                    </Field>
+                  </div>
+                  <div>
+                    <Field name="file" isRequired={checkboxOptions[0].isChecked}>
+                      {({ field, form }) => (
+                        <FileInput
+                          name="variantAcknowledgementDocument"
+                          initialLogo={field.value}
+                          onFileSelect={(file) => {
+                            form.setFieldValue(field.name, file);
+                          }}
+                          label={t('labels.uploadDocument')}
+                        />
+                      )}
+                    </Field>
+                  </div>
+                  <div className="agreement-checkbox-control">
+                    <p>{t('messages.patientConcent')}</p>
+                    <RadioGroup
+                      direction="row"
+                      id="patientConcent"
+                      items={['yes', 'no'].map((v) => ({ label: t(`label.${v}`), value: v.toLowerCase() }))}
+                      onChangeValue={setConsentStatus}
+                      value={consentStatus}
+                      radioBtnWidth="auto"
+                    />
+                  </div>
+                  <div>
+                    <Field name="file">
+                      {({ field, form }) => (
+                        <FileInput
+                          name="patient-concent-document"
+                          initialLogo={field.value}
+                          onFileSelect={(file) => {
+                            form.setFieldValue(field.name, file);
+                          }}
+                          label=<p className="form-instruction">
+                            {t('labels.uploadDocument')}
+                            <Required id="Required" />
+                          </p>
+                        />
+                      )}
+                    </Field>
+                  </div>
+                </div>
+                <div className="controls">
+                  <Button size="md" variant="secondary" onClick={handleOnBack}>
+                    {t('captions.btnBack')}
+                  </Button>
+                  <Button size="md" variant="primary" type="submit">
+                    {t('captions.btnSaveAndContinue')}
+                  </Button>
+                </div>
+              </div>
+            </Form>
           );
         }}
       </Formik>
@@ -148,16 +226,16 @@ function AdditionalDetails() {
   );
 }
 
-const VariantTable = () => {
+const VariantTable = ({ variant, onChange }) => {
   const { t } = useTranslate();
   const data = [
     {
-      id: 1,
+      variantId: 68,
       variant: 'Type A',
       variantDescription: 'One to One'
     },
     {
-      id: 1,
+      variantId: 2,
       variant: 'Type B',
       variantDescription: 'One to Many'
     }
@@ -172,7 +250,7 @@ const VariantTable = () => {
         <span className="MCP-table-cell radio-button-wrapper">
           <RadioGroup
             direction="column"
-            id={`radio-button-variant-${props.therapyId}`}
+            id={`radio-button-variant-${props.variantId}`}
             items={[
               {
                 isDisabled: false,
@@ -180,18 +258,23 @@ const VariantTable = () => {
                 value: props.variantId
               }
             ]}
-            onChangeValue={() => {}}
-            onOtherTextChange={() => {}}
-            onSubRadioFieldChange={() => {}}
+            onChangeValue={() => {
+              onChange(props.variantId);
+            }}
             radioBtnWidth="auto"
-            value={'1'}
+            value={variant === props.variantId ? props.variantId : ''}
           />
         </span>
       )
     },
     {
       id: 'variant',
-      name: t('labels.variant'),
+      name: (
+        <div className="variant-table-cell icon">
+          <span>{t('labels.variant')}</span>
+          <InfoIcon />
+        </div>
+      ),
       selector: () => {},
       minWidth: '220px',
       maxWidth: '280px',
@@ -204,7 +287,7 @@ const VariantTable = () => {
     },
     {
       id: 'variantDescription',
-      name: t('labels.variantDescription'),
+      name: <div className="variant-table-cell">{t('labels.variantDescription')}</div>,
       minWidth: '300px',
       selector: () => {},
       sortable: false,
