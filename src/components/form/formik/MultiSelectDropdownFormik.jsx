@@ -18,6 +18,15 @@ const MultiSelectDropdownFormik = (props) => {
       error={isFieldTouched && errorMessage}
       isRequired={isRequired}
       onChange={(values) => {
+        const augmentedData = values
+          .filter((item) => item.isChecked)
+          .map((item) => ({
+            name: item.label,
+            value: item.value
+          }));
+
+        setFieldValue(`${name}_augmented`, augmentedData);
+
         setFieldValue(
           `${name}`,
           values.filter((item) => item.isChecked).map((item) => item.value)

@@ -2,7 +2,7 @@ import React from 'react';
 import { Field, FieldArray } from 'formik';
 import { useTranslate } from '@src/translations/useTranslation';
 import Components from '@src/components/form/Components';
-import { RadioGroup, Button } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
 import './index.scss';
 
@@ -36,99 +36,6 @@ const Attributes = ({ values, errors, touched, handleChange }) => {
       (option) => option.value === '' || !selectedValues.includes(option.value) || values.attributes[index]?.attributeType === option.value
     );
   };
-  const renderControl = (attributeType, index) => {
-    const getRadioItemStyles = () => {
-      let styles = { fontSize: '16px', marginRight: '24px' };
-
-      return styles;
-    };
-
-    switch (attributeType) {
-      case 'Price':
-        return (
-          <div>
-            <Field
-              id="price"
-              name="price"
-              label={t('approvergroup.price')}
-              placeholder=" "
-              isRequired
-              component={Components['input']}
-              maxLength={50}
-            />
-          </div>
-        );
-      case 'Catalog':
-        return (
-          <div>
-            <Field
-              name="attribute1"
-              fieldlabel={t('approvergroup.selecttherapy')}
-              placeholder=" "
-              component={Components['multiSelectDropdown']}
-              isRequired
-              options={data}
-            />
-          </div>
-        );
-      case 'Account':
-        return (
-          <div>
-            <Field
-              name="attribute1"
-              fieldlabel={t('approvergroup.selectaccount')}
-              placeholder=" "
-              component={Components['multiSelectDropdown']}
-              isRequired
-              options={data}
-            />
-          </div>
-        );
-
-      case 'User':
-        return (
-          <div className="grid grid-gap-24">
-            <div>
-              <Field
-                name="attributeuseroption"
-                caption={t('approvergroup.selectuserradio')}
-                placeholder=" "
-                component={Components['radioGroup']}
-                isRequired
-                items={[
-                  {
-                    isDisabled: false,
-                    label: 'User Role',
-                    value: 'user_role'
-                  },
-                  {
-                    isDisabled: false,
-                    label: 'User Name',
-                    value: 'user_name'
-                  }
-                ]}
-                breakItemLabel={false}
-                itemCustomStyles={{ fontSize: '16px', marginRight: '24px' }}
-                labelCustomStyles={{ marginBottom: '8px', fontSize: '16px' }}
-              />
-            </div>
-            <div>
-              <Field
-                name="attributeuser"
-                fieldlabel={t('approvergroup.selectuser')}
-                placeholder=" "
-                component={Components['multiSelectDropdown']}
-                isRequired
-                options={[]}
-              />
-            </div>
-          </div>
-        );
-
-      default:
-        return null;
-    }
-  };
 
   return (
     <div>
@@ -140,6 +47,7 @@ const Attributes = ({ values, errors, touched, handleChange }) => {
                 <div className="attributeBox">
                   <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
                     <Field
+                      id={`attributes[${index}].attributeType`}
                       name={`attributes[${index}].attributeType`}
                       fieldlabel={t(`${t('approvergroup.attribute')} ${index + 1}`)}
                       placeholder=" "

@@ -32,3 +32,8 @@
     color: var(--brand-color-warning-dark-coral) !important;
   }
 }
+.pills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-02);
+}
