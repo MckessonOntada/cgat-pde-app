@@ -20,8 +20,7 @@ export default function Dashboard() {
   const { clearFilters, applyFilters } = useApprover();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const location = useLocation();
-  const isSuccess = location.state?.isSuccess || false;
-  const isReject = location.state?.isReject || false;
+  const { isSuccess = false } = location.state || {};
   const [alertDescription, setAlertDescription] = useState('');
   const [alert, setAlert] = useState(null);
   const { hasPermission } = usePermission();
@@ -45,7 +44,7 @@ export default function Dashboard() {
       let message = t('approvergroup.messages.approvergroup_create_success');
       showAlert('success', message);
     }
-  }, [isSuccess, isReject, location.pathname, location.state, navigate]);
+  }, [isSuccess, location.pathname, location.state, navigate]);
 
   useEffect(() => {
     clearFilters();
@@ -75,25 +74,6 @@ export default function Dashboard() {
     }
   ];
 
-  // const AdditionalFiltersConfig = useMemo(() => {
-  //   return [
-  //     {
-  //       type: 'multiSelectDropdown',
-  //       name: 'status',
-  //       label: t('approvergroup.table.status'),
-  //       options: [
-  //         { label: 'All', value: 'all' },
-  //         { label: 'Active', value: 'active' },
-  //         { label: 'Inactive', value: 'inactive' }
-  //       ]
-  //     },
-  //     {
-  //       type: 'dateRangePicker',
-  //       name: 'dateRange'
-  //     }
-  //   ];
-  // }, []);
-
   const AdditionalFiltersConfig = useMemo(() => {
     let config = [];
     return [
@@ -122,7 +102,12 @@ export default function Dashboard() {
         controls={
           <div className="controls">
             {hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.MANAGE_ORDERS) && (
-              <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createapprovergroup}`)}>
+              <Button
+                Icon={add_circle_bold}
+                className="button-icon"
+                variant="primary"
+                size="md"
+                onClick={() => navigate(`${PATHS.createapprovergroup}`)}>
                 {t('approvergroup.create_approvergroup')}
               </Button>
             )}
@@ -133,7 +118,12 @@ export default function Dashboard() {
 
       <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
         <div className="MCP-panel-container">
-          <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={t('approvergroup.searchFilter.label')} />
+          <CommonFilters
+            onApplyFilters={applyFilters}
+            onClearFilters={clearFilters}
+            additionalFilters={AdditionalFiltersConfig}
+            searchPlaceholder={t('approvergroup.searchFilter.label')}
+          />
         </div>
         <Heading as="h2"> {t('approvergroup.table.listing.label')}</Heading>
 

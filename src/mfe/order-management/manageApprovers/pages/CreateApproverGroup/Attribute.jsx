@@ -45,11 +45,11 @@ const Attributes = ({ values, errors, touched, handleChange }) => {
             {values.rules?.map((attribute, index) => (
               <div key={index}>
                 <div className="attributeBox">
-                  <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+                  <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start">
                     <Field
                       id={`rules[${index}].attributeType`}
                       name={`rules[${index}].attributeType`}
-                      fieldlabel={t(`${t('approvergroup.attribute')}`)}
+                      fieldlabel={t('approvergroup.attribute')}
                       placeholder=" "
                       component={Components['dropdown']}
                       isRequired

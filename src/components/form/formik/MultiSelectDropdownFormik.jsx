@@ -6,7 +6,7 @@ const MultiSelectDropdownFormik = (props) => {
   const { field, form, fieldlabel, isRequired, getUpdatedOptions = () => {} } = props;
   const { name, value } = field;
   const { setFieldValue, errors, touched } = form;
-  console.log('form.errors', form.values, form.errors);
+
   const errorMessage = getNestedValue(errors, name);
   const isFieldTouched = getNestedValue(touched, name);
   return (

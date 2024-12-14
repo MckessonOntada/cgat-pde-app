@@ -50,7 +50,12 @@ function RenderControls({ attributeType, index, name }) {
       case 'Account':
         return accountQuery;
       case 'User':
-        return userRoleQuery;
+        if (!values.attributeuseroption || values.attributeuseroption === 'user_role') {
+          return userRoleQuery;
+        } else if (values.attributeuseroption === 'user_name') {
+          return userQuery;
+        }
+        return { isLoading: false, data: [], isError: false }; // Fallback
       default:
         return { isLoading: false, data: [], isError: false }; // Default empty state
     }
@@ -63,45 +68,6 @@ function RenderControls({ attributeType, index, name }) {
       setLocalData(data);
     }
   }, [data]);
-
-  useEffect(() => {
-    if (attributeType == 'User') {
-      const rule = values.rules.find((rule) => rule.attributeType === 'User'); // Find the User rule
-      const selectedOption = rule?.value || []; // Get the value (user_role or user_name)
-
-      if (selectedOption.length == 0) {
-        setFieldValue('attributeuseroption', 'user_role');
-      }
-
-      // Update the dropdown options based on selected value
-      if (selectedOption === 'user_role' && userRoleQuery.data) {
-        // setSelectedData(userRoleQuery.data);
-        setLocalData(userRoleQuery.data);
-      } else if (selectedOption === 'user_name' && userQuery.data) {
-        // setSelectedData(userQuery.data);
-        setLocalData(userQuery.data);
-      }
-    }
-  }, [values, userRoleQuery.data, userQuery.data]);
-
-  // useEffect(() => {
-  //   if (attributeType == 'User') {
-  //     if (!values.attributeuseroption) {
-  //       setFieldValue('attributeuseroption', 'user_role');
-  //     }
-  //     if (values.attributeuseroption === 'user_role') {
-  //       if (userRoleQuery.data) {
-  //         setSelectedData(userRoleQuery.data);
-  //         setLocalData(userRoleQuery.data);
-  //       }
-  //     } else if (values.attributeuseroption === 'user_name') {
-  //       if (userQuery.data) {
-  //         setSelectedData(userQuery.data);
-  //         setLocalData(userQuery.data);
-  //       }
-  //     }
-  //   }
-  // }, [values.attributeuseroption, userRoleQuery.data, userQuery.data, setFieldValue, attributeType]);
 
   const getAugmentedValues = (rules, attributeType) => {
     return rules.filter((rule) => rule.attributeType === attributeType).flatMap((rule) => rule.value_augmented || []);
@@ -157,13 +123,13 @@ function RenderControls({ attributeType, index, name }) {
               placeholder=" "
               isRequired
               component={Components['input']}
-              maxLength={50}
+              maxLength={8}
             />
           </div>
         );
       case 'Catalog':
         return (
-          <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+          <div className="grid grid-gap-16 grid-cols-1">
             <Field
               id="catalog"
               name={name}
@@ -193,7 +159,7 @@ function RenderControls({ attributeType, index, name }) {
         );
       case 'Account':
         return (
-          <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+          <div className="grid grid-gap-16 grid-cols-1">
             <Field
               id="Account"
               name={name}
@@ -228,7 +194,7 @@ function RenderControls({ attributeType, index, name }) {
             <div>
               <Field
                 id="User"
-                name={name}
+                name="attributeuseroption"
                 caption={t('approvergroup.selectuserradio')}
                 placeholder=" "
                 component={Components['radioGroup']}

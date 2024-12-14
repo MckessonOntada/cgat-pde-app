@@ -43,11 +43,20 @@ export const ApproverManagementEN = {
   'approvergroup.userrole': 'User Role',
 
   'approvergroup.create.validation.approvergroupname_required': 'Approver Group Name is required',
-  'approvergroup.create.validation.approverattributre_required': 'Attribute details are required.',
+  'approvergroup.create.validation.approvergroupname': 'Approver Group must only contain alphabets.',
+
+  'approvergroup.create.validation.approverattribute_required': 'Attribute is required.',
   'approvergroup.create.validation.approveruser_required': 'User is required.',
   'approvergroup.create.validation.approvergroupname_min_max': 'Approver Group Name  must be between 2 and 50 characters.',
+  'approvergroup.create.validation.therapy_required': 'Therapy is required.',
+  'approvergroup.create.validation.price_required': 'Amount greater than is required.',
+  'approvergroup.create.validation.price': 'Amount greater than must only containe numbers and greater than 0.',
+  'approvergroup.create.validation.account_required': 'Account is required.',
+  'approvergroup.create.validation.approveruser_required': 'Approver Users required.',
+  'approvergroup.create.validation.user_required': 'User Names or Roles required.',
 
   'approvergroup.create.option.please_select': 'Please Select',
+  'approvergroup.selectuserradio': 'Please select one option',
 
   'errors.user_email_key': 'Email ID already exists in the System.',
   'errors.user_phone_key': 'Phone number already exists.',

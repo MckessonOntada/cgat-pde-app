@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
-import { Formik, Form, Field, useFormikContext } from 'formik';
-import { Button, Heading, Alert, Required, SearchableDropdown, Dropdown, Pills } from '@mckesson/mcp-component-library';
+import { Formik, Form, Field } from 'formik';
+import { Button, Heading, Alert, Pills } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -13,19 +13,13 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { handleApiError, serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import { RoutePaths } from '@src/routes/constants';
-
-import {
-  ALPHABETIC_WITH_SPECIAL,
-  ALPHABETIC_WITH_SPACE,
-  ADDRESS_REGEX,
-  ZIP_REGEX,
-  PHONE_REGEX,
-  FAX_REGEX
-} from '@src/components/form/ValidationRegExp';
+import { ALPHABETIC_WITH_SPECIAL } from '@src/components/form/ValidationRegExp';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import Components from '@src/components/form/Components';
 import Attributes from './Attribute';
 import { useApprover } from '../../context/ApproverContext';
+import { transformAttributesToRules } from './formUtils';
+import './index.scss';
 
 const CreateApproverGroup = () => {
   const { t } = useTranslate();
@@ -34,86 +28,56 @@ const CreateApproverGroup = () => {
   const isEdit = location.state || null;
   const { refreshData, usersData } = useApprover();
   const [localUserData, setLocalUsersData] = useState(usersData || []);
-
+  const practiceId = AuthUtils.getPracticeId();
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
   useEffect(() => {
     if (usersData) {
       setLocalUsersData(usersData);
     }
   }, [usersData]);
 
-  console.log('locauserData', localUserData);
   const handleGoBack = () => {
     navigate(RoutePaths.pathApproverManagement);
   };
 
   const initialValues = {
-    // name: '',
-    // rules: {
-    //   price: 0,
-    //   accounts: [{ accountId: '', accountName: '' }],
-    //   therapies: [{ therapyId: '', therapyName: '' }],
-    //   roles: [{ roleId: '', roleName: '' }],
-    //   users: [{ userId: '', userName: '' }]
-    // },
-    // approverUsers: [],
-    // approverUsers_augmented: [],
-    // attributes: [{ attributeType: 'Price', value: '' }]
     name: '',
     rules: [{ attributeType: 'Price', value: '' }],
-    approverUsers: []
+    approverUsers: [],
+    attributeuseroption: 'user_role' // Default value
   };
 
-  // const validationSchema = Yup.object({
-  //   name: Yup.string().required('Name is required'),
-  //   attributes: Yup.array()
-  //     .of(
-  //       Yup.object({
-  //         attributeType: Yup.string()
-  //           .required('Attribute type is required')
-  //           .oneOf(['Price', 'Account', 'Catalog', 'User'], 'Invalid attribute type'),
-  //         value: Yup.string()
-  //           .required('Value is required')
-  //           .test('dynamic-validation', 'Invalid value for the selected attribute type', function (value) {
-  //             const { attributeType } = this.parent; // Access the current object's parent
-  //             if (attributeType === 'Price') {
-  //               return Yup.number().min(0, 'Price must be greater than or equal to 0').isValidSync(value);
-  //             }
-  //             if (['Account', 'Catalog', 'User'].includes(attributeType)) {
-  //               return value !== '';
-  //             }
-  //             return true;
-  //           })
-  //       })
-  //     )
-  //     .min(1, 'At least one attribute is required')
-  //     .optional(),
-  //   approverUsers: Yup.array().of(Yup.string().required('Approver user is required')).min(1, 'At least one approver user must be selected')
-  // });
-
   const validationSchema = Yup.object({
-    name: Yup.string().required('Name is required'),
+    name: Yup.string()
+      .required(t('approvergroup.create.validation.approvergroupname_required'))
+      .matches(ALPHABETIC_WITH_SPECIAL, t('approvergroup.create.validation.approvergroupname')) // Only alphabets
+      .min(2, t('approvergroup.create.validation.approvergroupname_min_max'))
+      .max(50, t('approvergroup.create.validation.approvergroupname_min_max')),
     rules: Yup.array()
       .of(
         Yup.object({
           attributeType: Yup.string()
-            .required('Attribute type is required')
-            .oneOf(['Price', 'Account', 'Catalog', 'User'], 'Invalid attribute type'),
+            .required(t('approvergroup.create.validation.approverattribute_required'))
+            .oneOf(['Price', 'Account', 'Catalog', 'User'], t('approvergroup.create.validation.approverattribute_required')),
           value: Yup.mixed()
-            .required('Value is required')
-            .test('dynamic-validation', 'Invalid value for the selected attribute type', function (value) {
+            .required(t('approvergroup.create.validation.price_required'))
+            .test('dynamic-validation', t('approvergroup.create.validation.price'), function (value) {
               const { attributeType } = this.parent;
 
               if (Array.isArray(value)) {
-                // If array is empty, make it required
                 if (value.length === 0) {
-                  return this.createError({ message: 'Array cannot be empty' });
+                  if (attributeType === 'Catalog') {
+                    return this.createError({ message: t('approvergroup.create.validation.therapy_required') });
+                  } else if (attributeType === 'Account') {
+                    return this.createError({ message: t('approvergroup.create.validation.account_required') });
+                  } else if (attributeType === 'User') {
+                    return this.createError({ message: t('approvergroup.create.validation.user_required') });
+                  }
                 }
-                // If array has at least one value, validation passes
                 return true;
               }
-
               if (attributeType === 'Price') {
-                return Yup.number().min(0, 'Price must be greater than or equal to 0').isValidSync(value);
+                return Yup.number().min(0.001, t('approvergroup.create.validation.price')).isValidSync(value);
               }
 
               if (['Account', 'Catelog', 'User'].includes(attributeType)) {
@@ -125,10 +89,17 @@ const CreateApproverGroup = () => {
         })
       )
       .required('Required'),
-    approverUsers: Yup.array().required('Approver Users is required').min(1, 'At least one approver user must be selected')
+    approverUsers: Yup.array()
+      .required(t('approvergroup.create.validation.approveruser_required'))
+      .min(1, t('approvergroup.create.validation.approveruser_required'))
   });
 
-  const handleSubmit = (values) => {
+  const handleSubmit = (values, practiceId) => {
+    console.log('Practice ID before submission: ', practiceId);
+    console.log(JSON.stringify(transformAttributesToRules(values, practiceId), null, 2));
+    alert(JSON.stringify(transformAttributesToRules(values, practiceId), null, 2));
+    navigate(RoutePaths.pathApproverManagement, { state: { isSuccess: true } });
+
     const payload = {
       isActive: true
     };
@@ -138,10 +109,10 @@ const CreateApproverGroup = () => {
       {
         onSuccess: (response) => {
           console.log('  created/updated successfully:', response);
+          navigate(RoutePaths.pathApproverManagement, { state: { isSuccess: true } });
         },
         onError: (error) => {
           const errorKey = handleApiError(error);
-          const actionType = isPending ? 'Approve' : isEdit ? 'Update' : 'Create';
           setAlert({ type: 'error', message: t(errorKey) });
           setIsAlertVisible(true);
         }
@@ -156,9 +127,9 @@ const CreateApproverGroup = () => {
     }));
     return val;
   };
-  const handleCancel = () => {};
-
-  const handleNavigate = () => {};
+  const handleCancel = () => {
+    navigate(RoutePaths.pathApproverManagement);
+  };
 
   return (
     <div className="MCP-module-wrapper">
@@ -170,7 +141,7 @@ const CreateApproverGroup = () => {
 
       <ModuleHeader heading={<Heading as="h1">{t('approvergroup.create_approvergroup')}</Heading>} />
 
-      {/* {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />} */}
+      {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
 
       <Formik
         initialValues={initialValues}
@@ -203,7 +174,7 @@ const CreateApproverGroup = () => {
                 <div className="MCP-module-wrapper">
                   <div className="MCP-module-body form-container">
                     <div>
-                      <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start">
+                      <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
                         <Field
                           id="name"
                           name="name"
@@ -235,7 +206,6 @@ const CreateApproverGroup = () => {
                           key={'pills'}
                           labels={createLabelData(values)}
                           variant="secondary"
-                          size="lg"
                           hasDeleteIcon={true}
                           onDelete={(item) => onRemoveUser(item)}
                         />
