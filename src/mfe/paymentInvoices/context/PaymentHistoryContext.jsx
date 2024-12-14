@@ -34,6 +34,7 @@ const INITIAL_PAGINATION_STATE = {
 export const PaymentHistoryProvider = ({ children }) => {
   const [paymentHistoryData, setPaymentHistoryData] = useState(PaymentHistoryData);
   const [data, setData] = useState([]);
+  const [unSlicedData, setUnSlicedData] = useState([]);
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
@@ -65,6 +66,7 @@ export const PaymentHistoryProvider = ({ children }) => {
     // Updating the page count and total records
     setPaginationConfig((state) => ({ ...state, totalPages: Math.ceil(_modifiedData.length / paginationConfig.pageSize), totalElements: _modifiedData.length }));
     setIsLoading(false);
+    setUnSlicedData(_modifiedData);
     setData(_modifiedData.slice(startIndex, endIndex));
   };
 
@@ -84,26 +86,28 @@ export const PaymentHistoryProvider = ({ children }) => {
 
   const sortData = (newSortConfig) => {
     let _data = [...[], ...data];
-    console.log('_data...', newSortConfig);
 
-    // const ascendingByName = data.sort((a, b) => a.name.localeCompare(b.name));
-    // console.log('Ascending:', ascendingByName);
-    // // Descending order
-    // const descendingByName = data.sort((a, b) => b.name.localeCompare(a.name));
-    // //number
-    // const ascendingByScore = data.sort((a, b) => a.score - b.score);
-    // console.log('Ascending:', ascendingByScore);
-    // // Descending order
-    // const descendingByScore = data.sort((a, b) => b.score - a.score);
-    // // Ascending order
-    // const ascendingByDate = data.sort((a, b) => new Date(a.date) - new Date(b.date));
-    // console.log('Ascending:', ascendingByDate);
-    // // Descending order
-    // const descendingByDate = data.sort((a, b) => new Date(b.date) - new Date(a.date));
-    // console.log('Descending:', descendingByDate);
+    let _modifiedData = _data.sort((a, b) => {
+      const valA = a[newSortConfig.sortBy];
+      const valB = b[newSortConfig.sortBy];
 
-    // _data.sort((a,b)=>getSortLogic())
+      if (typeof valA === 'string' && typeof valB === 'string') {
+        return newSortConfig.sortOrder === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      } else if (typeof valA === 'number' && typeof valB === 'number') {
+        return newSortConfig.sortOrder === 'asc' ? valA - valB : valB - valA;
+      } else if (valA instanceof Date && valB instanceof Date) {
+        return newSortConfig.sortOrder === 'asc' ? new Date(valA) - new Date(valB) : new Date(valB) - new Date(valA);
+      } else {
+        return 0;
+      }
+    });
+    const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
+    const endIndex = startIndex + paginationConfig.pageSize;
+
+    setData(_modifiedData.slice(startIndex, endIndex));
   };
+
+  const getSortLogic = () => {};
 
   const setPageNumber = (pageNumber) => {
     setPaginationConfig((prevConfig) => ({

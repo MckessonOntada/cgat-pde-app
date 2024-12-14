@@ -71,7 +71,6 @@ export default function PaymentHistoryTable() {
   ];
 
   const handleSort = (selectedColumn, sortDirection) => {
-    console.log('event...');
     if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
