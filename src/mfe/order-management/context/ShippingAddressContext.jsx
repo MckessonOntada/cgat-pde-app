@@ -1,6 +1,4 @@
-import ApiRoutes from '@src/api/ApiRoutes';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import { serializeParams } from '@src/util/ApiUtils';
+import OrderService from '@src/api/commonService/OrderService';
 import AuthUtils from '@src/util/AuthUtils';
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
@@ -26,10 +24,9 @@ export const useShippingAddress = () => {
 
 export const ShippingAddressProvider = ({ children, accountDetails }) => {
   const [filterState, setFilterState] = useState(initialFilterState);
-  const [pageConfig, _setPageConfig] = useState(initialPageConfig);
+  const [pageConfig, setPageConfig] = useState(initialPageConfig);
   const [dataState, setDataState] = useState([]);
   const { therapyId, selectedAccount } = accountDetails;
-  const userId = AuthUtils.getUserId();
 
   const prepareDataForTable = (_data) => {
     const tableData = [];
@@ -42,7 +39,7 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
       tableData.push({ shippingAccountName, shippingAccountNumber, shippingAddress });
     });
 
-    setDataState(tableData);
+    return tableData;
   };
 
   const requestParams = useMemo(
@@ -59,29 +56,24 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
   const {
     isLoading,
     isError,
-    data = [],
     refetch: refreshData
   } = useQuery({
     queryKey: ['Shipping', requestParams, selectedAccount?.accountNumber],
-    queryFn: async () => {
-      const url = `${ApiRoutes.ORDER(userId)}/therapies/${therapyId}/soldtoaccount/${
-        selectedAccount?.accountNumber
-      }/shiptoaccounts?${serializeParams(requestParams)}`;
-      const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-      if (res.data) {
-        const { content: data, totalElements, totalPages, size, pageable } = res.data;
+    queryFn: async () => OrderService.getShippingAddressForTherapyByAccountId(therapyId, selectedAccount?.accountNumber, requestParams),
+    onSuccess: (result) => {
+      if (result.content) {
+        const { content: data, totalElements, totalPages, size, pageable } = result;
 
-        _setPageConfig((prevConfig) => ({
+        setPageConfig(() => ({
           totalElements,
           totalPages,
           pageSize: size,
           currentPage: pageable.pageNumber
         }));
 
-        prepareDataForTable(data);
+        const formattedData = prepareDataForTable(data);
+        setDataState(formattedData);
       }
-
-      return [];
     },
     enabled: !!selectedAccount?.accountNumber,
     refetchOnWindowFocus: false
@@ -95,16 +87,11 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
     setFilterState({ ...initialFilterState });
   };
 
-  const setPageConfig = (state) => {
-    _setPageConfig({ ...state });
-  };
-
-  const setPageSize = (size) => {
-    _setPageConfig((prevState) => ({ ...prevState, pageSize: size }));
-  };
-
-  const setCurrentPage = (page) => {
-    _setPageConfig((prevState) => ({ ...prevState, currentPage: page }));
+  const setPageNumber = (pageIndex) => {
+    setPageConfig((prevConfig) => ({
+      ...prevConfig,
+      currentPage: pageIndex
+    }));
   };
 
   const setShippingAddressData = (data) => {
@@ -116,16 +103,13 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
       value={{
         isLoading,
         isError,
-        data,
         refreshData,
         filterState,
         pageConfig,
         dataState,
         applyFilters,
         clearFilters,
-        setPageConfig,
-        setPageSize,
-        setCurrentPage,
+        setPageNumber,
         setShippingAddressData
       }}>
       {children}

@@ -11,7 +11,7 @@ export const createColumns = (t, navigate, selectedShippingAddress, setSelectedS
       <span className="MCP-table-cell radio-button-wrapper">
         <RadioGroup
           direction="column"
-          id={`radio-button-order-shippingAddress-${props.shippingAccountNumber}`}
+          id={`radio-button-variant`}
           items={[
             {
               isDisabled: false,
@@ -36,6 +36,7 @@ export const createColumns = (t, navigate, selectedShippingAddress, setSelectedS
     selector: () => {},
     sortable: false,
     width: '45%',
+    minWidth: '240px',
     cell: (props) => <span className={'MCP-table-cell'}> {props.shippingAddress}</span>
   },
   {

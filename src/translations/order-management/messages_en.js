@@ -37,6 +37,7 @@ export const MessageEn = {
   'labels.perPage': 'Per page',
   'labels.needAssistanceSelectingAccount': 'Need assistance with selecting an account?',
   'labels.orderThroughBelowPrograms': 'Are you here to order through any of the below programs?',
+  'labels.orderThroughBelowChannel': 'Please select channel to place the order.',
   'labels.therapySelection': 'Therapy Selection',
   'labels.patientDetails': 'Patient Details',
   'labels.additionalDetails': 'Additional Details',
@@ -77,7 +78,6 @@ export const MessageEn = {
   'labels.gender': 'Gender',
   'labels.dob': 'Date of Birth',
   'labels.dateOfAdministration': 'Date of Administration',
-  'labels.patientConsent': 'Please acknowledge if Patient Consent has been taken ',
   'labels.slotNo': 'Slot No',
   'labels.selectVariant': 'Select Variant',
   'labels.poNo': 'PO No',
@@ -145,7 +145,8 @@ export const MessageEn = {
   'labels.therapy.preview': 'Preview',
   'labels.therapy.slotNumber': 'Slot Number',
   'labels.therapy.patientConsent': 'Patient Consent',
-
+  'labels.patientConsent': 'Patient Consent',
+  'labels.pleaseSelectAccount': 'Please Select Account',
   'labels.therapyDescription': 'Therapy Description',
   'labels.therapyNumber': 'Therapy Number',
   'table.columns.captions.nationalDrugCode': 'National Drug Code',
@@ -173,8 +174,8 @@ export const MessageEn = {
   'messages.orderPlacementAcknowledgement':
     'I hereby acknowledge that the information mentioned above is correct. All details provided are accurate.',
   'messages.variantAcknowledgement': 'Please acknowledge that you have verified and selected the correct Variant.',
+  'messages.selectAccountToBuyTherapy': 'Please select the account to buy the therapy for',
   'messages.patientConcent': 'Please acknowledge if Patient Consent has been taken',
-
   // order management patient details screen
 
   'orderManagement.patientDetails.inputLabel.email': 'Email',

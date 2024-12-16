@@ -8,12 +8,12 @@ import { useNavigate } from 'react-router-dom';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 
-const TherapyDataTable = ({ selectedRowId, setSelectedRowId }) => {
+const TherapyDataTable = ({ therapy, onChange }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { data, paginationConfig, setPageNumber, applySort } = useTherapy();
 
-  const columns = createColumns(t, navigate, selectedRowId, setSelectedRowId);
+  const columns = createColumns(t, navigate, therapy, onChange);
 
   const handleOnPageChange = (_event, pageIndex) => {
     setPageNumber(pageIndex);
@@ -41,7 +41,14 @@ const TherapyDataTable = ({ selectedRowId, setSelectedRowId }) => {
       aria-label={t('table.ariaLabel.orderList')}
       paginationRecordsPerPageMessage={'per page'}
       paginationTotalRecorsMessage={'result'}
-      noDataComponent={<EmptyDataTable isLoading={false} image={EmptyDataImage} heading={t('table.add.label')} description={t('table.empty_table_description')} />}
+      noDataComponent={
+        <EmptyDataTable
+          isLoading={false}
+          image={EmptyDataImage}
+          heading={t('table.add.label')}
+          description={t('table.empty_table_description')}
+        />
+      }
     />
   );
 };

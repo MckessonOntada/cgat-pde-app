@@ -38,6 +38,7 @@ export const MessageEs = {
   'labels.perPage': '[es]Per page',
   'labels.needAssistanceSelectingAccount': '[es]Need assistance with selecting an account?',
   'labels.orderThroughBelowPrograms': '[es]Are you here to order through any of the below programs?',
+  'labels.orderThroughBelowChannel': '[es]Please select channel to place the order.',
   'labels.therapySelection': '[es]Therapy Selection',
   'labels.patientDetails': '[es]Patient Details',
   'labels.additionalDetails': '[es]Additional Details',
@@ -77,7 +78,6 @@ export const MessageEs = {
   'labels.gender': '[es]Gender',
   'labels.dob': '[es]Date of Birth',
   'labels.dateOfAdministration': '[es]Date of Administration',
-  'labels.patientConsent': '[es]Please acknowledge if Patient Consent has been taken ',
   'labels.slotNo': '[es]Slot No',
   'labels.selectVariant': '[es]Select Variant',
   'labels.poNo': '[es]PO No',
@@ -117,6 +117,7 @@ export const MessageEs = {
   'labels.therapy.preview': '[es]Preview',
   'labels.therapy.slotNumber': '[es]Slot Number',
   'labels.therapy.patientConsent': '[es]Patient Consent',
+  'labels.patientConsent': '[es]Patient Consent',
 
   'table.columns.captions.author': '[es]Author',
   'table.columns.captions.createdOn': '[es]CreatedOn',
@@ -130,7 +131,7 @@ export const MessageEs = {
   'table.actions.reviewOrder': '[es]Review Order',
   'table.actions.resumeOrder': '[es]Resume Order',
   'table.actions.viewDetail': '[es]View Detail',
-
+  'labels.pleaseSelectAccount': '[es]Please Select Account',
   'labels.therapyDescription': '[es]Therapy Description',
   'labels.therapyNumber': '[es]Therapy Number',
   'table.columns.captions.nationalDrugCode': '[es]National Drug Code',
@@ -176,7 +177,9 @@ export const MessageEs = {
   'messages.orderSuccessApprovalPending': '[es]Your order has been submitted successfully and is now pending for approval.',
   'messages.accountSelect': '[es]Please select the account to buy the therapy for',
   'messages.selectAnAccountForShippingAddress': '[es]Select an account to view the list of shipping addresses',
-  'messages.orderPlacementAcknowledgement': '[es]I hereby acknowledge that the information mentioned above is correct. All details provided are accurate.',
+  'messages.orderPlacementAcknowledgement':
+    '[es]I hereby acknowledge that the information mentioned above is correct. All details provided are accurate.',
   'messages.variantAcknowledgement': '[es]Please acknowledge that you have verified and selected the correct Variant.',
-  'messages.patientConcent': '[es]Please acknowledge if Patient Consent has been taken'
+  'messages.patientConcent': '[es]Please acknowledge if Patient Consent has been taken',
+  'messages.selectAccountToBuyTherapy': '[es]Please select the account to buy the therapy for'
 };

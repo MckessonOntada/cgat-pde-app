@@ -12,14 +12,14 @@ const getColorByStatus = (status) => {
   return statusColors[status.toLowerCase()] || 'info';
 };
 
-export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
+export const createColumns = (t, navigate, therapy, onChange) => [
   {
     id: 'id',
     selector: () => {},
     width: '40px',
     sortable: false,
     cell: (props) => (
-      <span className="MCP-table-cell radio-button-wrapper">
+      <div className="MCP-table-cell radio-button-wrapper">
         <RadioGroup
           direction="column"
           id={`radio-button-order-therapy-${props.therapyId}`}
@@ -31,14 +31,14 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
             }
           ]}
           onChangeValue={() => {
-            setSelectedRowId(props.therapyId);
+            onChange(props.therapyId);
           }}
           onOtherTextChange={() => {}}
           onSubRadioFieldChange={() => {}}
           radioBtnWidth="auto"
-          value={selectedRowId === props.therapyId ? props.therapyId : ''}
+          value={therapy === props.therapyId ? props.therapyId : ''}
         />
-      </span>
+      </div>
     )
   },
   {
@@ -49,11 +49,9 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     maxWidth: '280px',
     sortable: false,
     cell: (props) => (
-      <span aria-label={t('labels.therapyDescription')}>
-        <Link className="MCP-table-link" to={`?therapy-details=${props.therapyId}`}>
-          <EclipsesTextcss str={props.therapyDescription} maxWidth={240} />
-        </Link>
-      </span>
+      <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?therapy-details=${props.therapyId}`}>
+        <EclipsesTextcss str={props.therapyDescription} maxWidth={240} />
+      </Link>
     )
   },
   {
@@ -123,7 +121,12 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     width: '7%',
     selector: () => {},
     sortable: false,
-    cell: (props) => <Badge text={props.dropshipIndicator === 'Y' ? t('label.yes') : t('label.no')} type={props.dropshipIndicator === 'Y' ? 'success' : 'info'} />
+    cell: (props) => (
+      <Badge
+        text={props.dropshipIndicator === 'Y' ? t('label.yes') : t('label.no')}
+        type={props.dropshipIndicator === 'Y' ? 'success' : 'info'}
+      />
+    )
   },
   {
     id: 'status',
@@ -147,7 +150,12 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     selector: () => {},
     width: '4%',
     sortable: false,
-    cell: (props) => <Badge text={props.cgatIdentifier === 'Y' ? t('label.yes') : t('label.no')} type={props.cgatIdentifier === 'Y' ? 'success' : 'info'} />
+    cell: (props) => (
+      <Badge
+        text={props.cgatIdentifier === 'Y' ? t('label.yes') : t('label.no')}
+        type={props.cgatIdentifier === 'Y' ? 'success' : 'info'}
+      />
+    )
   },
   {
     id: 'salesOrganization',
@@ -168,7 +176,12 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     name: t('table.columns.captions.productLevelPricing'),
     selector: () => {},
     sortable: false,
-    cell: (props) => <Badge text={props.productLevelPricing === 'Yes' ? t('label.yes') : t('label.no')} type={props.productLevelPricing === 'Yes' ? 'success' : 'info'} />
+    cell: (props) => (
+      <Badge
+        text={props.productLevelPricing === 'Yes' ? t('label.yes') : t('label.no')}
+        type={props.productLevelPricing === 'Yes' ? 'success' : 'info'}
+      />
+    )
   },
   {
     id: 'minimumOrderQuantity',

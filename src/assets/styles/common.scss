@@ -84,6 +84,18 @@
   }
 }
 
+.variant-table-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-02);
+  color: var(--brand-color-black);
+
+  &.icon {
+    fill: var(--brand-color-black)
+  }
+}
+
 .controls {
   justify-content: flex-start;
   display: flex;
@@ -314,6 +326,7 @@
 }
 
 .MCP-table-link {
+  display: inline-flex;
   text-decoration: none;
   color: var(--brand-color-text-blue);
   font-size: var(--brand-font-size--default);
@@ -380,7 +393,8 @@
   color: var(--brand-color-primary-blue);
 }
 
-.agreement-checkbox-control {
+.agreement-checkbox-control,
+.agreement-checkbox-control legend {
   font-size: var(--brand-font-size--default);
 }
 
