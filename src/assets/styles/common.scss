@@ -326,6 +326,7 @@
 }
 
 .MCP-table-link {
+  display: inline-flex;
   text-decoration: none;
   color: var(--brand-color-text-blue);
   font-size: var(--brand-font-size--default);

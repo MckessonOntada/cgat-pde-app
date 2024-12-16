@@ -3,6 +3,15 @@ import ApiRoutes from '../ApiRoutes';
 import HttpResourceService, { httpVerb } from '../HttpResourceService';
 import AuthUtils from '@src/util/AuthUtils';
 
+async function createOrder(payload) {
+  const url = `${ApiRoutes.ORDERS}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
+
 async function getOrders(requestParams) {
   const url = `${ApiRoutes.ORDERS}?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET);
@@ -106,6 +115,7 @@ async function getShippingAddressForTherapyByAccountId(therapyId, accountId, req
 }
 
 const OrderService = Object.freeze({
+  createOrder,
   getOrders,
   getOrderById,
   getTherapies,
