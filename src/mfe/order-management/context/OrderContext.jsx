@@ -1,15 +1,17 @@
+import OrderService from '@src/api/commonService/OrderService';
 import React, { createContext, useContext, useState } from 'react';
+import { useQuery } from 'react-query';
 
 const initialFilterState = {
   searchQuery: '',
-  status: [],
+  status: []
 };
 
 const initialPageConfig = {
   total: 0,
   pageSize: 10,
   pages: 0,
-  currentPage: 1,
+  currentPage: 1
 };
 
 const initialDataState = [];
@@ -25,17 +27,25 @@ export const OrderProvider = ({ children }) => {
   const [pageConfig, _setPageConfig] = useState(initialPageConfig);
   const [dataState, setDataState] = useState(initialDataState);
 
+  const { isLoading } = useQuery({
+    queryKey: ['orders'],
+    queryFn: async () => OrderService.getOrders(),
+    onSuccess: (result) => {
+      console.log(result);
+    }
+  });
+
   const applyFilters = (filters) => {
-    setFilterState((prevFilters) => ({...prevFilters, ...filters}));
+    setFilterState((prevFilters) => ({ ...prevFilters, ...filters }));
   };
 
   const clearFilters = () => {
-    setFilterState({...initialFilterState});
-  }
+    setFilterState({ ...initialFilterState });
+  };
 
   const setPageConfig = (state) => {
-    _setPageConfig({...state})
-  }
+    _setPageConfig({ ...state });
+  };
 
   const setPageSize = (size) => {
     _setPageConfig((prevState) => ({ ...prevState, pageSize: size }));
@@ -46,7 +56,7 @@ export const OrderProvider = ({ children }) => {
   };
 
   const setOrdersData = (data) => {
-    setDataState((prevState) => ([...data]));
+    setDataState((prevState) => [...data]);
   };
 
   return (
@@ -60,9 +70,8 @@ export const OrderProvider = ({ children }) => {
         setPageConfig,
         setPageSize,
         setCurrentPage,
-        setOrdersData,
-      }}
-    >
+        setOrdersData
+      }}>
       {children}
     </OrderContext.Provider>
   );

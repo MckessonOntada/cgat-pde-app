@@ -16,16 +16,16 @@ export const createColumns = (t, navigate, selectedShippingAddress, setSelectedS
             {
               isDisabled: false,
               label: ' ',
-              value: props.variantId
+              value: props.shippingAccountNumber
             }
           ]}
           onChangeValue={() => {
-            onChange(props);
+            setSelectedShippingAddress(props.shippingAccountNumber);
           }}
           onOtherTextChange={() => {}}
           onSubRadioFieldChange={() => {}}
           radioBtnWidth="auto"
-          value={variant?.variantId == props.variantId ? props.variantId : ''}
+          value={selectedShippingAddress === props.shippingAccountNumber ? props.shippingAccountNumber : ''}
         />
       </span>
     )
@@ -36,6 +36,7 @@ export const createColumns = (t, navigate, selectedShippingAddress, setSelectedS
     selector: () => {},
     sortable: false,
     width: '45%',
+    minWidth: '240px',
     cell: (props) => <span className={'MCP-table-cell'}> {props.shippingAddress}</span>
   },
   {

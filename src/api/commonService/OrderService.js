@@ -3,6 +3,65 @@ import ApiRoutes from '../ApiRoutes';
 import HttpResourceService, { httpVerb } from '../HttpResourceService';
 import AuthUtils from '@src/util/AuthUtils';
 
+async function getOrders(requestParams) {
+  const url = `${ApiRoutes.ORDERS}?${serializeParams(requestParams)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET);
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
+
+async function getOrderById(orderId) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+
+  const url = `${ApiRoutes.ORDERS}/${orderId}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET);
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
+
+async function setPatientDetails(orderId, payload) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+
+  const url = `${ApiRoutes.ORDERS}/${orderId}/patient`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
+async function setAdditionalDetails(orderId, payload) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+
+  const url = `${ApiRoutes.ORDERS}/${orderId}/additional-details`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
+async function setAccount(orderId, payload) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+
+  const url = `${ApiRoutes.ORDERS}/${orderId}/account`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
 async function getTherapies(requestParams) {
   const userId = AuthUtils.getUserId();
   const url = `${ApiRoutes.ORDER(userId)}/therapies?${serializeParams(requestParams)}`;
@@ -47,10 +106,15 @@ async function getShippingAddressForTherapyByAccountId(therapyId, accountId, req
 }
 
 const OrderService = Object.freeze({
+  getOrders,
+  getOrderById,
   getTherapies,
   getTherapyDetailsById,
   getSoldToAccounts,
-  getShippingAddressForTherapyByAccountId
+  getShippingAddressForTherapyByAccountId,
+  setPatientDetails,
+  setAdditionalDetails,
+  setAccount
 });
 
 export default OrderService;
