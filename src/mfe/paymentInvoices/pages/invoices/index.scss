@@ -93,10 +93,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  z-index: 99;
-  &>div{
-    position: static !important;
-  }
+}
+.actionIcon{
+  overflow: visible !important;
 }
 
 .table-header {

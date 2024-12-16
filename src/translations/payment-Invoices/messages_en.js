@@ -40,6 +40,18 @@ export const PaymentInvoicesEN = {
 'paymentInvoices.history.table.OpenAmount': 'Open Amount',
 'paymentInvoices.history.table.BillAmount': 'Bill Amount',
 'paymentInvoices.history.table.Actions': 'Actions',
-"paymentInvoices.history.table.addnewcard": "add new card",
+//Credits
+'paymentInvoices.credits.table.description': 'Description',
+'paymentInvoices.credits.table.validfrom': ' Valid From',
+'paymentInvoices.credits.table.amount': ' Amount',
+'paymentInvoices.credits.table.downloadPdf': ' download pdf',
+
+//payment methods - bank account
+"paymentInvoices.paymentMethods.table.bankAccount.addnewcard": "add new card",
+"paymentInvoices.paymentMethods.table.bankAccount.bankName": "Bank Name",
+"paymentInvoices.paymentMethods.table.bankAccount.routingNumber": "Routing Number",
+"paymentInvoices.paymentMethods.table.bankAccount.bankAccNumber": "Bank Account Number",
+"paymentInvoices.paymentMethods.table.bankAccount.bankCountry": "Bank Country",
+"paymentInvoices.paymentMethods.table.bankAccount.companyCode": "Company Code",
 
 };

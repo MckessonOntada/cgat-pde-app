@@ -12,8 +12,8 @@ export default function InputField(props) {
   const { field, form, children, className, label, maxLength, ...rest } = props;
 
   // Determine if the field has an error and is touched
-  const errorMessage = getNestedValue(form.errors, field.name);
-  const isFieldTouched = getNestedValue(form.touched, field.name);
+  const errorMessage = getNestedValue(form?.errors, field?.name);
+  const isFieldTouched = getNestedValue(form?.touched, field?.name);
 
   const inputDivRef = useRef(null);
 
@@ -59,8 +59,8 @@ export default function InputField(props) {
           onChange: handleOnChange,
           onBlur: handleOnBlur
         })}
-        errors={form.errors}
-        showError={!form.isValid}
+        errors={form?.errors}
+        showError={!form?.isValid}
         size="lg"
         maxLength={maxLength}
       />

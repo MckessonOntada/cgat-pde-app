@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import DataTable from '@src/components/dataTable/DataTable';
 import { Badge, CustomDataTable, Loader } from '@mckesson/mcp-component-library';
-import { PaymentHistoryData } from '../../mockData/PaymentHistoryData';
+import { PaymentHistoryData } from '@src/mfe/paymentInvoices/mockData/PaymentHistoryData';
 import { Link } from 'react-router-dom';
-import FloatingDrawer from '../../../../components/floating-drawer';
-import PaymentDetails from './PaymentDetails';
 import { useTranslate } from '@src/translations/useTranslation';
-import { usePaymentMethods } from '../../context/PaymentMethodsContext';
+import { usePaymentHistory } from '@src/mfe/paymentInvoices/context/PaymentHistoryContext';
 
-export default function PaymentMethodsTable() {
+export default function CreditCardsTable() {
   const { t } = useTranslate();
   const [filteredData, setFilteredData] = useState(PaymentHistoryData);
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data, isLoading, paginationConfig, setPageNumber, applySort } = usePaymentMethods();
+  const { data, isLoading, paginationConfig, setPageNumber, applySort } = usePaymentHistory();
   const columns = [
     {
       name: t('paymentInvoices.history.table.confirmationNumber'),
@@ -110,7 +108,9 @@ export default function PaymentMethodsTable() {
         // isAdmin={true}
         // noDataComponent={<EmptyDataTable isLoading={isLoading} error={isError ? 'Something went wrong! Please try again' : null} image={EmptyDataImage} heading={t('orgManagement.add.label')} description={t('orgManagement.empty_table.description')} />}
       />
-
+      {/* <FloatingDrawer open={isOpen} anchor="right" onClose={() => setIsOpen(false)}>
+        <PaymentDetails />
+      </FloatingDrawer> */}
     </React.Fragment>
   );
 }

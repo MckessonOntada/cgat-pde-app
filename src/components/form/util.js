@@ -1,7 +1,7 @@
 import US_STATE_CITY from '@src/assets/data/US_States_and_Cities.json';
 
 export const getNestedValue = (obj, fieldName) => {
-  const keys = fieldName.split('.');
+  const keys = fieldName?.split('.');
   return keys.reduce((acc, key) => (acc ? acc[key] : undefined), obj);
 };
 

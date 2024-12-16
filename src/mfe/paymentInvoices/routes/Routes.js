@@ -9,6 +9,7 @@ import NotFound from '../../../pages/error-pages/NotFound';
 import { PaymentHistoryProvider } from '../context/PaymentHistoryContext';
 import { PaymentsInvoiceProvider } from '../context/PaymentsInvoicesContext';
 import { PaymentMethodsProvider } from '../context/PaymentMethodsContext';
+import Credits from '../pages/credits';
 
 const Routes = () => {
   return (
@@ -22,7 +23,7 @@ const Routes = () => {
           </PaymentsInvoiceProvider>
         }
       />
-      <Route path={PATHS.credits} element={<h6>Credits</h6>} />
+      <Route path={PATHS.credits} element={<Credits/>} />
       <Route path={PATHS.pendingPayments} element={<h6>Pending Payments</h6>} />
       <Route
         path={PATHS.paymentHistory}
