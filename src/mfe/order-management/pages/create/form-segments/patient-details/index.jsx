@@ -8,7 +8,6 @@ import PageHeader from '@src/components/pageHeader';
 import { FormList } from '../Constants';
 import { useNavigate, useParams } from 'react-router-dom';
 import PatientDetailsForm from './PatientDetailsForm';
-import useSnackbar from '@src/hooks/useSnackbar';
 import { Form, Formik } from 'formik';
 import { getValidationSchema } from './PatientDetailsFormUtils';
 import { ReactComponent as TickIcon } from '@src/assets/svg/yes_tick_circle_filled.svg';
@@ -23,8 +22,6 @@ const PatientDetails = () => {
     therapyDescription: 'MPB HEMLIBRA 105MG/0.7ML SDV',
     price: '$45,000'
   };
-
-  const { showSnackbar } = useSnackbar();
 
   const handleOnBackButtonClick = () => {
     //compare data change, display modal for confirmation
