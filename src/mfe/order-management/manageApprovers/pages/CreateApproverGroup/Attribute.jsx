@@ -5,10 +5,10 @@ import Components from '@src/components/form/Components';
 import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
 import './index.scss';
-
 import RenderControls from './RenderControls';
+import { RuleKeys, RuleLabels } from '../ApproverGroupDetail/RulesConfig';
 
-const Attributes = ({ values, errors, touched, handleChange }) => {
+const Attributes = ({ values }) => {
   const { t } = useTranslate();
   const attrOptions = [
     { label: t('orgManagement.create_org.option.please_select'), value: '' },
@@ -55,20 +55,21 @@ const Attributes = ({ values, errors, touched, handleChange }) => {
                       isRequired
                       options={getAvailableOptions(index)}
                     />
-                    <div className={`${attribute.attributeType === 'User' ? 'grid-column-4-by-1 sm:grid-column-1-by-1' : ''}`}>
+                    <div
+                      className={`${
+                        attribute.attributeType === RuleLabels[RuleKeys.USERS] ? 'grid-column-4-by-1 sm:grid-column-1-by-1' : ''
+                      }`}>
                       <RenderControls attributeType={attribute.attributeType} index={index} name={`rules[${index}].value`} />
                     </div>
                     <div
-                      className={`remove ${attribute.attributeType === 'User' ? 'grid-column-3-by-3 grid-row-1-by-1' : ''}}`}
-                      style={attribute.attributeType === 'User' ? { gridRow: '1' } : {}}>
+                      className={`remove ${
+                        attribute.attributeType === RuleLabels[RuleKeys.USERS] ? 'grid-column-3-by-3 grid-row-1-by-1' : ''
+                      }}`}
+                      style={attribute.attributeType === RuleLabels[RuleKeys.USERS] ? { gridRow: '1' } : {}}>
                       {index !== 0 && (
-                        <Button
-                          Icon={DeleteIcon}
-                          variant="tertiary"
-                          size="md"
-                          label="REMOVE"
-                          className="btnRemove"
-                          onClick={() => remove(index)}></Button>
+                        <Button Icon={DeleteIcon} variant="tertiary" size="md" className="btnRemove" onClick={() => remove(index)}>
+                          {t('approvergroup.button.remove')}
+                        </Button>
                       )}
                     </div>
                   </div>
@@ -77,12 +78,9 @@ const Attributes = ({ values, errors, touched, handleChange }) => {
             ))}
             <div className="separator-line"></div>
             <div className="addAttribute">
-              <Button
-                variant="tertiary"
-                size="md"
-                label="+ ADD ATTRIBUTE"
-                onClick={() => push({ attributeType: '', value: '' })}
-                disabled={isAddDisabled}></Button>
+              <Button variant="tertiary" size="md" onClick={() => push({ attributeType: '', value: '' })} disabled={isAddDisabled}>
+                + {t('approvergroup.addattribute')}
+              </Button>
             </div>
           </>
         )}

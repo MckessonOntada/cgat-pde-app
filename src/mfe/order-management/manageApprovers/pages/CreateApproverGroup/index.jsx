@@ -19,6 +19,7 @@ import { useApprover } from '../../context/ApproverContext';
 import { getValidationSchema, transformAttributesToRules } from './formUtils';
 import './index.scss';
 import { useFormContext } from '../../context/FormContext';
+import { RuleKeys, RuleLabels, RuleValueKeys } from '../ApproverGroupDetail/RulesConfig';
 
 const CreateApproverGroup = () => {
   const { t } = useTranslate();
@@ -26,12 +27,14 @@ const CreateApproverGroup = () => {
   const location = useLocation();
   const { grpId } = useParams();
   const { initialValues, setInitialValues, isEditMode, setIsEditMode, setLocationState } = useFormContext();
-  const { refreshData, usersData } = useApprover();
+  const { usersData } = useApprover();
   const [alert, setAlert] = useState(null);
   const [localUserData, setLocalUsersData] = useState([]);
   const practiceId = AuthUtils.getPracticeId();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const dataBinded = useRef(false);
+  const [isDirty, setIsDirty] = React.useState(false);
+  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
 
   useEffect(() => {
     if (!dataBinded.current) {
@@ -53,7 +56,11 @@ const CreateApproverGroup = () => {
 
   //console.log('initialvlaues1', initialValues, location.state?.data);
   const handleGoBack = () => {
-    navigate(RoutePaths.pathApproverManagement);
+    if (isDirty) {
+      setModalSuccessCallback('details');
+    } else {
+      navigate(RoutePaths.pathApproverManagement);
+    }
   };
 
   const handleAlertClose = () => {
@@ -70,48 +77,20 @@ const CreateApproverGroup = () => {
         if (!value || (Array.isArray(value) && value.length === 0)) {
           return null;
         }
-        if (key === 'price') {
-          return { attributeType: 'Price', value };
+        if (key === RuleKeys.PRICE) {
+          return { attributeType: RuleLabels[key], value };
         }
-        if (key === 'accounts') {
+
+        if ([RuleKeys.ACCOUNTS, RuleKeys.THERAPIES, RuleKeys.USERS, RuleKeys.ROLES].includes(key)) {
+          const valueKey = RuleValueKeys[key];
+          if (key === RuleKeys.USERS && rules[RuleKeys.ROLES]?.length > 0) return null;
+          if (key === RuleKeys.ROLES && rules[RuleKeys.USERS]?.length > 0) return null;
+
           return {
-            attributeType: 'Account',
-            value: value.map((item) => item.accountId)
+            attributeType: RuleLabels[key],
+            value: value.map((item) => item[valueKey])
           };
         }
-        if (key === 'therapies') {
-          return {
-            attributeType: 'Catalog',
-            value: value.map((item) => item.therapyId)
-          };
-        }
-        if (key === 'users') {
-          if (!rules.roles || rules.roles.length === 0) {
-            return {
-              attributeType: 'User',
-              value: value.map((item) => item.userId)
-            };
-          }
-          return null;
-        }
-        if (key === 'roles') {
-          if (!rules.users || rules.users.length === 0) {
-            return {
-              attributeType: 'User',
-              value: value.map((item) => item.roleId)
-            };
-          }
-          return null;
-        }
-        // return {
-        //   attributeType: key.charAt(0).toUpperCase() + key.slice(1),
-        //   value: Array.isArray(value)
-        //     ? value.map((item) => ({
-        //         id: item[`${key.slice(0, -1)}Id`],
-        //         name: item[`${key.slice(0, -1)}Name`]
-        //       }))
-        //     : []
-        // };
       });
       const hasRoles = rules.roles && rules.roles.length > 0;
       const hasUsers = rules.users && rules.users.length > 0;
@@ -175,10 +154,26 @@ const CreateApproverGroup = () => {
     return val;
   };
   const handleCancel = () => {
-    if (isEditMode) {
-      navigate(`../${PATHS.approvergroupDetail.replace(':grpId', grpId)}`);
+    if (isDirty) {
+      if (isEditMode) {
+        setModalSuccessCallback('details');
+      } else {
+        setModalSuccessCallback('list');
+      }
     } else {
+      if (isEditMode) {
+        navigate(`../${PATHS.approvergroupDetail.replace(':grpId', grpId)}`);
+      } else {
+        navigate(RoutePaths.pathApproverManagement);
+      }
+    }
+  };
+
+  const handleNavigate = () => {
+    if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathApproverManagement);
+    } else if (modalSuccessCallback === 'details') {
+      navigate(`../${PATHS.approvergroupDetail.replace(':grpId', grpId)}`);
     }
   };
 
@@ -202,8 +197,10 @@ const CreateApproverGroup = () => {
           handleSubmit(values);
           actions.setSubmitting(false);
         }}>
-        {({ values, setFieldValue, isValid, handleChange, errors, touched }) => {
-          console.log('values,', values);
+        {({ values, setFieldValue, isValid, handleChange, errors, touched, dirty }) => {
+          useEffect(() => {
+            setIsDirty(Object.keys(touched).length > 0);
+          }, [touched]);
           const onRemoveUser = (itemToRemove) => {
             const updatedUsers = values.approverUsers.filter((userId) => userId !== itemToRemove);
             const updatedAugmentedUsers = values.approverUsers_augmented.filter((user) => user.value !== itemToRemove);
@@ -295,6 +292,13 @@ const CreateApproverGroup = () => {
           );
         }}
       </Formik>
+      <DiscardChangesModal
+        heading="Discard Changes"
+        description="You have changed Approve Group details. Do you still want to go back? Your changes will be discarded!"
+        isOpen={Boolean(modalSuccessCallback)}
+        onClose={() => setModalSuccessCallback(null)}
+        onConfirm={handleNavigate}
+      />
     </div>
   );
 };

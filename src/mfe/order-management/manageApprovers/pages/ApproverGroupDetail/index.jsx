@@ -6,7 +6,7 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 // Constants
 import { PATHS } from '../../routes/constants';
 import { RoutePaths } from '@src/routes/constants';
-import { RulesConfig } from './RulesConfig';
+import { RuleKeys, RulesConfig } from './RulesConfig';
 
 // Components
 import ModuleHeader from '@src/components/module-header';
@@ -113,14 +113,16 @@ function ApproverGroupDetails() {
               groupData.rules[key] !== undefined &&
               (Array.isArray(groupData.rules[key]) ? groupData.rules[key].length > 0 : groupData.rules[key]) ? (
                 <div key={key} className="MCP-module-body attribute-category">
-                  <div className="subheader-text">{t(label)}</div>
+                  <div className="subheader-text">{label}</div>
                   <div className="attribute-category">
                     <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 attribute-list">
                       {Array.isArray(groupData.rules[key])
                         ? groupData.rules[key].map((item, idx) => (
                             <div key={idx} className="flex items-center justify-between attribute-item">
                               <div>
-                                <h4 className={key === 'users' || key === 'roles' ? '' : 'to-upper-case'}>{item[valueKey]}</h4>
+                                <h4 className={key === RuleKeys.USERS || key === RuleKeys.ROLES ? '' : 'to-upper-case'}>
+                                  {item[valueKey]}
+                                </h4>
                               </div>
                             </div>
                           ))

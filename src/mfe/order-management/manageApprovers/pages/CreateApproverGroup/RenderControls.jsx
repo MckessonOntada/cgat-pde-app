@@ -11,35 +11,13 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import { useAccountData, useCatalogData, useUserData, useUserRoleData } from './apiService';
 import { useFormContext } from '../../context/FormContext';
+import { RuleKeys, RuleLabels } from '../ApproverGroupDetail/RulesConfig';
 
 function RenderControls({ attributeType, index, name }) {
   const { t } = useTranslate();
-  const [options, setOptions] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+
   const { values, setFieldValue } = useFormikContext();
-  const [selectedData, setSelectedData] = useState([]);
   const { initialValues, isEditMode, locationState } = useFormContext();
-  console.log('initialValues3', initialValues);
-  const attrOptions = [
-    { label: t('orgManagement.create_org.option.please_select'), value: '' },
-    {
-      label: 'Catalog',
-      value: 'Catalog'
-    },
-    {
-      label: 'Account',
-      value: 'Account'
-    },
-    {
-      label: 'Price',
-      value: 'Price'
-    },
-    {
-      label: 'User',
-      value: 'User'
-    }
-  ];
 
   const queryMap = {
     Catalog: useCatalogData(),
@@ -50,11 +28,11 @@ function RenderControls({ attributeType, index, name }) {
 
   const { isLoading, data, isError } = (() => {
     switch (attributeType) {
-      case 'Catalog':
+      case RuleLabels[RuleKeys.THERAPIES]:
         return queryMap.Catalog;
-      case 'Account':
+      case RuleLabels[RuleKeys.ACCOUNTS]:
         return queryMap.Account;
-      case 'User':
+      case RuleLabels[RuleKeys.USERS]:
         if (!values.attributeuseroption || values.attributeuseroption === 'user_role') {
           return queryMap.UserRole;
         } else if (values.attributeuseroption === 'user_name') {
@@ -70,17 +48,13 @@ function RenderControls({ attributeType, index, name }) {
   const isDataBinded = useRef(false);
 
   useEffect(() => {
-    // returing here to avoid unnecessary execution
-    if (isDataBinded.current && values.attributeuseroption) {
-      isDataBinded.current = false;
-    }
-    if (data?.length > 0 && attributeType && initialValues?.rules) {
-      // Find the rule corresponding to the current attributeType
+    if (data?.length > 0 && attributeType && initialValues?.rules && attributeType !== RuleLabels[RuleKeys.USERS]) {
       const currentRule = initialValues.rules.find((rule) => rule.attributeType === attributeType);
+
       const transformedData = data.map((item) => ({
         value: item.value,
         label: item.label,
-        isChecked: currentRule?.value?.includes(item.value) || false // To Pre-select based on rule values
+        isChecked: currentRule?.value?.includes(item.value) || false
       }));
 
       setLocalData(transformedData);
@@ -89,7 +63,25 @@ function RenderControls({ attributeType, index, name }) {
       setLocalData(data);
       isDataBinded.current = true;
     }
-  }, [data, attributeType, initialValues.rules, isEditMode, values.attributeuseroption]);
+  }, [data, attributeType, initialValues.rules, isEditMode]);
+
+  // Separate useEffect for User options, handles radio button changes dynamically
+  useEffect(() => {
+    if (attributeType === RuleLabels[RuleKeys.USERS]) {
+      const fetchData = values.attributeuseroption === 'user_role' ? queryMap.UserRole?.data || [] : queryMap.UserData?.data || [];
+
+      // Reset state and bind the new User Role/User Name values
+      const currentRule = initialValues.rules.find((rule) => rule.attributeType === RuleLabels[RuleKeys.USERS]);
+      const transformedUserData = fetchData.map((item) => ({
+        value: item.value,
+        label: item.label,
+        isChecked: currentRule?.value?.includes(item.value) || false
+      }));
+
+      setLocalData(transformedUserData);
+      isDataBinded.current = true;
+    }
+  }, [attributeType, values.attributeuseroption, queryMap.UserRole?.data, queryMap.UserData?.data, initialValues.rules]);
 
   const getAugmentedValues = (rules, attributeType) => {
     return rules.filter((rule) => rule.attributeType === attributeType).flatMap((rule) => rule.value_augmented || []);
@@ -158,7 +150,7 @@ function RenderControls({ attributeType, index, name }) {
 
   const renderswitch = () => {
     switch (attributeType) {
-      case 'Price':
+      case RuleLabels[RuleKeys.PRICE]:
         return (
           <div>
             <Field
@@ -172,12 +164,20 @@ function RenderControls({ attributeType, index, name }) {
             />
           </div>
         );
-      case 'Catalog':
-        return <div className="grid grid-gap-16 grid-cols-1">{renderFieldWithPills('catalog', 'approvergroup.selecttherapy')}</div>;
-      case 'Account':
-        return <div className="grid grid-gap-16 grid-cols-1">{renderFieldWithPills('Account', 'approvergroup.selectaccount')}</div>;
+      case RuleLabels[RuleKeys.THERAPIES]:
+        return (
+          <div className="grid grid-gap-16 grid-cols-1">
+            {renderFieldWithPills(RuleLabels[RuleKeys.THERAPIES], 'approvergroup.selecttherapy')}
+          </div>
+        );
+      case RuleLabels[RuleKeys.ACCOUNTS]:
+        return (
+          <div className="grid grid-gap-16 grid-cols-1">
+            {renderFieldWithPills(RuleLabels[RuleKeys.ACCOUNTS], 'approvergroup.selectaccount')}
+          </div>
+        );
 
-      case 'User':
+      case RuleLabels[RuleKeys.USERS]:
         return (
           <div className="grid grid-gap-24">
             <Field

@@ -50,10 +50,10 @@ export const ApproverManagementES = {
   'approvergroup.create.validation.approvergroupname_min_max': 'S_Approver Group Name  must be between 2 and 50 characters.',
   'approvergroup.create.validation.therapy_required': 'S_Therapy is required.',
   'approvergroup.create.validation.price_required': 'S_Amount greater than is required.',
-  'approvergroup.create.validation.price': 'S_Amount greater than must only containe numbers and greater than 0.',
+  'approvergroup.create.validation.price': 'S_Amount greater than must only contain numbers and greater than 0.',
   'approvergroup.create.validation.account_required': 'S_Account is required.',
   'approvergroup.create.validation.approveruser_required': 'S_Approver Users required.',
-  'approvergroup.create.validation.user_required': 'S_User Names or Roles required.',
+  'approvergroup.create.validation.user_required': 'S_User Name or User Role required.',
 
   'approvergroup.create.option.please_select': 'S_Please Select',
   'approvergroup.selectuserradio': 'S_Please select one option',

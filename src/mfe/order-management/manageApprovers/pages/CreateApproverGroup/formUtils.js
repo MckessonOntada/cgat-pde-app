@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import { ALPHA_NUMERIC_WITH_SPECIAL, ALPHABETIC_WITH_SPECIAL } from '@src/components/form/ValidationRegExp';
+import { RuleKeys, RuleLabels } from '../ApproverGroupDetail/RulesConfig';
 
 export const transformAttributesToRules = (values, practiceId) => {
   const { name, approverUsers, approverUsers_augmented, rules } = values;
@@ -21,10 +22,10 @@ export const transformAttributesToRules = (values, practiceId) => {
   // Process rules
   rules.forEach((rule) => {
     switch (rule.attributeType) {
-      case 'Price':
+      case RuleLabels[RuleKeys.PRICE]:
         result.rules.price = parseInt(rule.value, 10);
         break;
-      case 'Catalog': // Therapies
+      case RuleLabels[RuleKeys.THERAPIES]: // Therapies
         rule.value_augmented.forEach((therapy) => {
           result.rules.therapies.push({
             therapyId: therapy.value,
@@ -32,7 +33,7 @@ export const transformAttributesToRules = (values, practiceId) => {
           });
         });
         break;
-      case 'Account':
+      case RuleLabels[RuleKeys.ACCOUNTS]:
         rule.value_augmented.forEach((account) => {
           result.rules.accounts.push({
             accountId: account.value,
@@ -40,7 +41,7 @@ export const transformAttributesToRules = (values, practiceId) => {
           });
         });
         break;
-      case 'User':
+      case RuleLabels[RuleKeys.USERS]:
         if (values.attributeuseroption == 'user_role') {
           rule.value_augmented.forEach((role) => {
             result.rules.roles.push({
@@ -89,7 +90,10 @@ export const getValidationSchema = (t) => {
         Yup.object({
           attributeType: Yup.string()
             .required(t('approvergroup.create.validation.approverattribute_required'))
-            .oneOf(['Price', 'Account', 'Catalog', 'User'], t('approvergroup.create.validation.approverattribute_required')),
+            .oneOf(
+              [RuleLabels[RuleKeys.PRICE], RuleLabels[RuleKeys.ACCOUNTS], RuleLabels[RuleKeys.THERAPIES], RuleLabels[RuleKeys.USERS]],
+              t('approvergroup.create.validation.approverattribute_required')
+            ),
           value: Yup.mixed()
             .required(t('approvergroup.create.validation.price_required'))
             .test('dynamic-validation', t('approvergroup.create.validation.price'), function (value) {
@@ -97,21 +101,21 @@ export const getValidationSchema = (t) => {
 
               if (Array.isArray(value)) {
                 if (value.length === 0) {
-                  if (attributeType === 'Catalog') {
+                  if (attributeType === RuleLabels[RuleKeys.THERAPIES]) {
                     return this.createError({ message: t('approvergroup.create.validation.therapy_required') });
-                  } else if (attributeType === 'Account') {
+                  } else if (attributeType === RuleLabels[RuleKeys.ACCOUNTS]) {
                     return this.createError({ message: t('approvergroup.create.validation.account_required') });
-                  } else if (attributeType === 'User') {
+                  } else if (attributeType === RuleLabels[RuleKeys.USERS]) {
                     return this.createError({ message: t('approvergroup.create.validation.user_required') });
                   }
                 }
                 return true;
               }
-              if (attributeType === 'Price') {
+              if (attributeType === RuleLabels[RuleKeys.PRICE]) {
                 return Yup.number().min(0.001, t('approvergroup.create.validation.price')).isValidSync(value);
               }
 
-              if (['Account', 'Catelog', 'User'].includes(attributeType)) {
+              if ([RuleLabels[RuleKeys.ACCOUNTS], RuleLabels[RuleKeys.THERAPIES], RuleLabels[RuleKeys.USERS]].includes(attributeType)) {
                 return value !== '';
               }
 
