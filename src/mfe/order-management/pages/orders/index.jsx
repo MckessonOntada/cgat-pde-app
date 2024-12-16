@@ -3,7 +3,6 @@ import { TabList, Button, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle.svg';
 import { useNavigate } from 'react-router-dom';
 import { routesConfig } from './../../routes/constants';
-import { pendingData, submittedData } from './__mock__';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '../../../../components/module-header';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
@@ -15,7 +14,7 @@ import { useOrders } from '../../context/OrderContext';
 const OrderIndex = () => {
   const { t } = useTranslate();
   const [tabList, setTabList] = React.useState(getTabs(t));
-  const { applyFilters, clearFilters, setOrdersData } = useOrders();
+  const { applyFilters, clearFilters } = useOrders();
   const navigate = useNavigate();
 
   const additionalFiltersConfig = React.useMemo(() => {
@@ -32,7 +31,6 @@ const OrderIndex = () => {
     ];
   }, []);
 
-  const getTabData = (activeTab) => (activeTab === 'SUBMITTED' ? submittedData : pendingData);
   const setActiveTab = (activeTab) => {
     setTabList(
       tabList.map((tab) => ({
@@ -40,7 +38,6 @@ const OrderIndex = () => {
         isActiveTab: tab.configName === activeTab
       }))
     );
-    setOrdersData(getTabData(activeTab));
   };
 
   const handleOnTabChange = (tab) => {
@@ -73,9 +70,22 @@ const OrderIndex = () => {
 
       <div className="MCP-module-body">
         <div className="MCP-panel-container">
-          <TabList options={tabList} alignment="left" onTabClick={handleOnTabChange} showShadow={false} variant={'text'} useAsButton={true} aria-label={t('controls.ariaLabels.orderTabList')} />
+          <TabList
+            options={tabList}
+            alignment="left"
+            onTabClick={handleOnTabChange}
+            showShadow={false}
+            variant={'text'}
+            useAsButton={true}
+            aria-label={t('controls.ariaLabels.orderTabList')}
+          />
           <div className="MCP-CardContainer">
-            <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={additionalFiltersConfig} searchPlaceholder={t('controls.placeholder.searchOrderPlaceholder')} />
+            <CommonFilters
+              onApplyFilters={applyFilters}
+              onClearFilters={clearFilters}
+              additionalFilters={additionalFiltersConfig}
+              searchPlaceholder={t('controls.placeholder.searchOrderPlaceholder')}
+            />
           </div>
           <div className="MCP-table-wrapper">
             <Heading as="h2">{t('headings.orderListing')}</Heading>

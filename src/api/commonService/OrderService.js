@@ -32,7 +32,7 @@ async function getOrderById(orderId) {
   return {};
 }
 
-async function setPatientDetails(orderId, payload) {
+async function savePatientDetails(orderId, payload) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
   const url = `${ApiRoutes.ORDERS}/${orderId}/patient`;
@@ -45,7 +45,7 @@ async function setPatientDetails(orderId, payload) {
   return {};
 }
 
-async function setAdditionalDetails(orderId, payload) {
+async function saveAdditionalDetails(orderId, payload) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
   const url = `${ApiRoutes.ORDERS}/${orderId}/additional-details`;
@@ -58,7 +58,7 @@ async function setAdditionalDetails(orderId, payload) {
   return {};
 }
 
-async function setAccount(orderId, payload) {
+async function saveAccount(orderId, payload) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
   const url = `${ApiRoutes.ORDERS}/${orderId}/account`;
@@ -122,9 +122,9 @@ const OrderService = Object.freeze({
   getTherapyDetailsById,
   getSoldToAccounts,
   getShippingAddressForTherapyByAccountId,
-  setPatientDetails,
-  setAdditionalDetails,
-  setAccount
+  savePatientDetails,
+  saveAdditionalDetails,
+  saveAccount
 });
 
 export default OrderService;

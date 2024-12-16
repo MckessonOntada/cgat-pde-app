@@ -12,6 +12,21 @@ import FileInput from '@src/components/FileInput';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { getFormFields } from './fields';
 import * as Yup from 'yup';
+import OrderService from '@src/api/commonService/OrderService';
+import { useMutation } from 'react-query';
+
+const data = [
+  {
+    variantId: 68,
+    variant: 'Type A',
+    variantDescription: 'One to One'
+  },
+  {
+    variantId: 2,
+    variant: 'Type B',
+    variantDescription: 'One to Many'
+  }
+];
 
 const getValidationSchema = (t) =>
   Yup.object({
@@ -43,6 +58,20 @@ function AdditionalDetails() {
   ]);
   const [consentStatus, setConsentStatus] = React.useState('');
   const [variant, setVariant] = React.useState();
+
+  const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(
+    async (data) => OrderService.saveAdditionalDetails(orderId, data),
+    {
+      onSuccess: ({ id }) => navigate(`../${id}/summary`),
+      onError: console.log
+    }
+  );
+
+  React.useEffect(() => {
+    const defaultVariant = data && data[0];
+    setVariant(defaultVariant || {});
+  }, []);
+
   const handleOnBackButtonClick = () => {
     //compare data change, display modal for confirmation
     navigate(`../${orderId}/patient`);
@@ -53,14 +82,32 @@ function AdditionalDetails() {
     if (values) {
       if (!variant) {
         console.log('select variant');
+        return;
       }
-      if (consentStatus === 'yes' && !values['patient-concent-document']) {
+      if (consentStatus !== 'yes') {
         console.log('missing consent document');
+        return;
       }
-      if (checkboxOptions[0].isChecked === true && !values['variantAcknowledgementDocument']) {
+      if (checkboxOptions[0].isChecked !== true) {
         console.log('missing acknowledge');
+        return;
       }
     }
+
+    const payload = {
+      orderQuantity: values.orderQuantity,
+      slotNumber: values.slotNumber,
+      poNumber: values.poNumber,
+      dateOfAdministration: values.dateOfAdministration,
+      variant: {
+        variant: variant.variant,
+        variantDescription: variant.variantDescription,
+        variantAcknowledgment: checkboxOptions[0].isChecked
+      },
+      patientConsentTaken: consentStatus
+    };
+
+    saveAdditionalDetails(payload);
   };
 
   const handleOnAcknowledgmentChange = (value) => {
@@ -213,8 +260,8 @@ function AdditionalDetails() {
                   <Button size="md" variant="secondary" onClick={handleOnBack}>
                     {t('captions.btnBack')}
                   </Button>
-                  <Button size="md" variant="primary" type="submit">
-                    {t('captions.btnSaveAndContinue')}
+                  <Button size="md" variant="primary" type="submit" disabled={isSaving}>
+                    {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
                   </Button>
                 </div>
               </div>
@@ -228,18 +275,7 @@ function AdditionalDetails() {
 
 const VariantTable = ({ variant, onChange }) => {
   const { t } = useTranslate();
-  const data = [
-    {
-      variantId: 68,
-      variant: 'Type A',
-      variantDescription: 'One to One'
-    },
-    {
-      variantId: 2,
-      variant: 'Type B',
-      variantDescription: 'One to Many'
-    }
-  ];
+
   const columns = [
     {
       id: 'id',
@@ -259,10 +295,10 @@ const VariantTable = ({ variant, onChange }) => {
               }
             ]}
             onChangeValue={() => {
-              onChange(props.variantId);
+              onChange(props);
             }}
             radioBtnWidth="auto"
-            value={variant === props.variantId ? props.variantId : ''}
+            value={variant?.variantId === props.variantId ? props.variantId : ''}
           />
         </span>
       )

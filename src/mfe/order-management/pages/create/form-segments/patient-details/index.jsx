@@ -12,6 +12,8 @@ import { Form, Formik } from 'formik';
 import { getValidationSchema } from './PatientDetailsFormUtils';
 import { ReactComponent as TickIcon } from '@src/assets/svg/yes_tick_circle_filled.svg';
 import OrderService from '@src/api/commonService/OrderService';
+import { useMutation } from 'react-query';
+import CommonUtils from '@src/util/CommonUtils';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
@@ -24,6 +26,11 @@ const PatientDetails = () => {
     price: '$45,000'
   };
 
+  const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(async (data) => OrderService.savePatientDetails(orderId, data), {
+    onSuccess: () => navigate(`../${orderId}/additional-details`),
+    onError: console.log
+  });
+
   const handleOnBackButtonClick = () => {
     //compare data change, display modal for confirmation
     navigate(`../${orderId}/accounts`);
@@ -32,8 +39,17 @@ const PatientDetails = () => {
   const initialValues = {};
 
   const handleSubmit = (form) => {
-    OrderService.setPatientDetails(orderId, form);
-    navigate(`../${orderId}/additional-details`);
+    const { patientInfo, ...rest } = form;
+
+    if (patientInfo.dateOfBirth) {
+      patientInfo.dateOfBirth = CommonUtils.convertDateStringFormat(patientInfo.dateOfBirth, 'MM-DD-YYYY');
+    }
+
+    const payload = {
+      ...rest,
+      patientInfo
+    };
+    savePatientDetails(payload);
   };
 
   const handleOnBack = () => {
@@ -111,8 +127,8 @@ const PatientDetails = () => {
                           <Button size="md" variant="secondary" onClick={handleOnBack}>
                             {t('captions.btnBack')}
                           </Button>
-                          <Button size="md" variant="primary" disabled={isButtonDisabled} type="submit">
-                            {t('captions.btnSaveAndContinue')}
+                          <Button size="md" variant="primary" disabled={isButtonDisabled || isSaving} type="submit">
+                            {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
                           </Button>
                         </div>
                       }

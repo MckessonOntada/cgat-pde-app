@@ -38,6 +38,6 @@ export const getFormFields = (t) => [
     label: t('labels.provideDateOfAdministration'),
     placeholder: ' ',
     isRequired: true,
-    component: Components['input']
+    component: Components['datePicker']
   }
 ];

@@ -72,8 +72,8 @@ function TherapySelection() {
     return config;
   }, []);
 
-  const { mutate } = useMutation(async (data) => OrderService.createOrder(data), {
-    onSuccess: ({ orderId }) => navigate(`../${orderId}/accounts`),
+  const { isLoading: isSaving, mutate: createNewOrder } = useMutation(async (data) => OrderService.createOrder(data), {
+    onSuccess: ({ id }) => navigate(`../${id}/accounts`),
     onError: console.log
   });
 
@@ -82,7 +82,8 @@ function TherapySelection() {
       const payload = {
         id: therapy
       };
-      mutate(payload);
+
+      createNewOrder(payload);
     }
   };
 
@@ -135,8 +136,8 @@ function TherapySelection() {
                 <Button size="md" variant="secondary" onClick={handleOnCancel}>
                   {t('captions.btnCancel')}
                 </Button>
-                <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit} disabled={!therapy}>
-                  {t('captions.btnSaveAndContinue')}
+                <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit} disabled={!therapy || isSaving}>
+                  {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
                 </Button>
               </div>
             }

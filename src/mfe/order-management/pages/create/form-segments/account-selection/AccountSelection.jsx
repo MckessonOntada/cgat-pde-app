@@ -7,14 +7,12 @@ import AccountSelectionUserGuide from './AccountSelectionUserGuide';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
-import ShippingAddressDataTable from './ShippingAddressDataTable';
 import { ShippingAddressProvider } from '../../../../context/ShippingAddressContext';
 import PageHeader from '@src/components/pageHeader';
 import { FormList } from '../Constants';
 import { useMutation, useQuery } from 'react-query';
 import { ReactComponent as TickIcon } from '@src/assets/svg/tick-circle-filled.svg';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
-import CommonFilters from '@src/components/Filters';
 import CommonUtils from '@src/util/CommonUtils';
 import OrderService from '@src/api/commonService/OrderService';
 import ShippingAddress from './ShippingAddress';
@@ -58,7 +56,7 @@ const AccountSelection = () => {
     return accArr;
   }, [accountsListData]);
 
-  const { isLoading: isSavingAccount, mutate } = useMutation(async (data) => OrderService.setAccount(orderId, data), {
+  const { isLoading: isSaving, mutate: saveAccount } = useMutation(async (data) => OrderService.saveAccount(orderId, data), {
     onSuccess: ({ id }) => navigate(`../${orderId}/patient`),
     onError: console.log
   });
@@ -75,7 +73,7 @@ const AccountSelection = () => {
         soldToAccountId: selectedAccount.accountNumber,
         shipToAccountId: selectedShippingAddress
       };
-      mutate(payload);
+      saveAccount(payload);
     }
   };
   const handleOnBackButtonClick = () => {
@@ -187,13 +185,8 @@ const AccountSelection = () => {
             <Button size="md" onClick={handleOnCancel} variant="secondary">
               {t('captions.btnInventorySelection')}
             </Button>
-            <Button
-              size="md"
-              onClick={handleOnSubmit}
-              disabled={!selectedShippingAddress || isSavingAccount}
-              variant="primary"
-              type="submit">
-              {isSavingAccount ? 'Saving' : t('captions.btnSaveAndContinue')}
+            <Button size="md" onClick={handleOnSubmit} disabled={!selectedShippingAddress || isSaving} variant="primary" type="submit">
+              {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
             </Button>
           </div>
           <FloatingDrawer open={open} anchor="right" onClose={handleOnClose}>

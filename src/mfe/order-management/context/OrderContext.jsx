@@ -2,19 +2,28 @@ import OrderService from '@src/api/commonService/OrderService';
 import React, { createContext, useContext, useState } from 'react';
 import { useQuery } from 'react-query';
 
-const initialFilterState = {
+const TAB_VARIANT = {
+  PENDING_SUBMISSION: 'pending submission',
+  SUBMITTED: 'submitted'
+};
+const INITIAL_FILTER_STATE = {
   searchQuery: '',
   status: []
 };
 
-const initialPageConfig = {
-  total: 0,
-  pageSize: 10,
-  pages: 0,
-  currentPage: 1
+const INITIAL_PAGINATION_CONFIG = {
+  totalElements: 0,
+  pageSize: 8,
+  totalPages: 0,
+  pageNumber: 1
 };
 
-const initialDataState = [];
+const INITIAL_SORT_STATE = {
+  sortBy: null,
+  sortOrder: null
+};
+
+const INITIAL_DATA_STATE = [];
 
 const OrderContext = createContext();
 
@@ -23,17 +32,23 @@ export const useOrders = () => {
 };
 
 export const OrderProvider = ({ children }) => {
-  const [filterState, setFilterState] = useState(initialFilterState);
-  const [pageConfig, _setPageConfig] = useState(initialPageConfig);
-  const [dataState, setDataState] = useState(initialDataState);
+  const [filterState, setFilterState] = React.useState(INITIAL_FILTER_STATE);
+  const [pageConfig, setPageConfig] = React.useState(INITIAL_PAGINATION_CONFIG);
+  const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);
+  const [dataState, setDataState] = React.useState(INITIAL_DATA_STATE);
+  const [tabVariant, setTabVariant] = React.useState(TAB_VARIANT.PENDING_SUBMISSION);
 
   const { isLoading } = useQuery({
     queryKey: ['orders'],
     queryFn: async () => OrderService.getOrders(),
     onSuccess: (result) => {
-      console.log(result);
+      if (result.content) {
+        setDataState(result.content);
+      }
     }
   });
+
+  const changeTabVariant = (newVariant) => {};
 
   const applyFilters = (filters) => {
     setFilterState((prevFilters) => ({ ...prevFilters, ...filters }));
@@ -43,20 +58,8 @@ export const OrderProvider = ({ children }) => {
     setFilterState({ ...initialFilterState });
   };
 
-  const setPageConfig = (state) => {
-    _setPageConfig({ ...state });
-  };
-
-  const setPageSize = (size) => {
-    _setPageConfig((prevState) => ({ ...prevState, pageSize: size }));
-  };
-
   const setCurrentPage = (page) => {
     _setPageConfig((prevState) => ({ ...prevState, currentPage: page }));
-  };
-
-  const setOrdersData = (data) => {
-    setDataState((prevState) => [...data]);
   };
 
   return (
@@ -67,10 +70,7 @@ export const OrderProvider = ({ children }) => {
         dataState,
         applyFilters,
         clearFilters,
-        setPageConfig,
-        setPageSize,
-        setCurrentPage,
-        setOrdersData
+        setCurrentPage
       }}>
       {children}
     </OrderContext.Provider>

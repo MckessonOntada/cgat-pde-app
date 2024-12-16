@@ -23,6 +23,8 @@ export const MessageEs = {
   'captions.btnEdit': '[es]Edit',
   'captions.btnSubmitOrder': '[es]Submit Order',
   'captions.btnInventorySelection': '[es]Inventory Selections',
+  'captions.emptyTableTitle': '[es]No Order found',
+  'captions.emptyTableSubtitle': '[es]You need to add Order to see data in this table.',
   'labels.uploadDocument': '[es]Upload Document',
   'labels.variant': '[es]Variant',
   'labels.coiId': '[es]COI ID',
