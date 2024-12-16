@@ -10,32 +10,32 @@ export const formConfig = [
     grid: { base: 1, md: 3, lg: 3, xl: 3 },
     fields: [
       {
-        id: 'name.firstName',
-        name: 'name.firstName',
+        id: 'patientInfo.firstName',
+        name: 'patientInfo.firstName',
         label: 'orderManagement.patientDetails.inputLabel.first_name',
         placeholder: ' ',
         component: 'input',
         maxLength: 50
       },
       {
-        id: 'name.middleName',
-        name: 'name.middleName',
+        id: 'patientInfo.middleName',
+        name: 'patientInfo.middleName',
         label: 'orderManagement.patientDetails.inputLabel.middle_name',
         placeholder: ' ',
         component: 'input',
         maxLength: 50
       },
       {
-        id: 'name.lastName',
-        name: 'name.lastName',
+        id: 'patientInfo.lastName',
+        name: 'patientInfo.lastName',
         label: 'orderManagement.patientDetails.inputLabel.last_name',
         placeholder: ' ',
         component: 'input',
         maxLength: 50
       },
       {
-        id: 'name.gender',
-        name: 'name.gender',
+        id: 'patientInfo.gender',
+        name: 'patientInfo.gender',
         label: 'orderManagement.patientDetails.inputLabel.gender',
         placeholder: ' ',
         component: 'dropdown',
@@ -46,16 +46,16 @@ export const formConfig = [
         ]
       },
       {
-        id: 'name.DateOfBirth',
-        name: 'name.DateOfBirth',
+        id: 'patientInfo.dateOfBirth',
+        name: 'patientInfo.dateOfBirth',
         label: 'orderManagement.patientDetails.inputLabel.date_of_birth',
         placeholder: ' ',
-        component: 'input',
+        component: 'datePicker',
         maxLength: 50
       },
       {
-        id: 'name.patientIdentifier',
-        name: 'name.patientIdentifier',
+        id: 'patientIdentifier',
+        name: 'patientIdentifier',
         label: 'orderManagement.patientDetails.inputLabel.patientIdentifier',
         placeholder: ' ',
         isRequired: true,
@@ -69,14 +69,14 @@ export const formConfig = [
     grid: { base: 1, md: 3, lg: 2, xl: 3 },
     fields: [
       {
-        name: 'contact.email',
+        name: 'contact.emailId',
         label: 'orderManagement.patientDetails.inputLabel.email',
         placeholder: ' ',
         component: 'input',
         maxLength: 100
       },
       {
-        name: 'contact.phone',
+        name: 'contact.phoneNumber',
         label: 'orderManagement.patientDetails.inputLabel.phone_no',
         placeholder: ' ',
         component: 'phoneInput',
@@ -90,14 +90,14 @@ export const formConfig = [
     grid: { base: 1, md: 1, lg: 2, xl: 2 },
     fields: [
       {
-        name: 'address.address1',
+        name: 'patientAddress.addressLine1',
         label: 'orderManagement.patientDetails.inputLabel.address_1',
         placeholder: ' ',
         component: 'input',
         maxLength: 100
       },
       {
-        name: 'address.address2',
+        name: 'patientAddress.addressLine2',
         label: 'orderManagement.patientDetails.inputLabel.address_2',
         placeholder: ' ',
         component: 'input',
@@ -110,21 +110,21 @@ export const formConfig = [
     grid: { base: 1, md: 2, lg: 3, xl: 3 },
     fields: [
       {
-        name: 'address.city',
+        name: 'patientAddress.city',
         label: 'orderManagement.patientDetails.inputLabel.city',
         placeholder: ' ',
         component: 'input',
         maxLength: 15
       },
       {
-        name: 'address.zip',
+        name: 'patientAddress.zipCode',
         label: 'orderManagement.patientDetails.inputLabel.zip',
         placeholder: ' ',
         component: 'zipInput',
         maxLength: 8
       },
       {
-        name: 'address.state',
+        name: 'patientAddress.state',
         label: 'orderManagement.patientDetails.inputLabel.state',
         placeholder: ' ',
         component: 'dropdown',
@@ -136,7 +136,7 @@ export const formConfig = [
 
 export const getValidationSchema = (t) => {
   return Yup.object({
-    name: Yup.object({
+    patientInfo: Yup.object({
       firstName: Yup.string()
         .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.contact_person_first_name_invalid'))
         .min(2, t('orgManagement.create_org.validation.first_name_min'))
@@ -150,25 +150,22 @@ export const getValidationSchema = (t) => {
         .min(2, t('orgManagement.create_org.validation.last_name_min'))
         .max(50, t('orgManagement.create_org.validation.last_name_max')),
       gender: Yup.string(),
-      dateOfBirth: Yup.string(),
-      patientIdentifier: Yup.string()
-        .required(t('orderManagement.patientDetails.validation.patient_identifier_required'))
-        .max(20, t('orderManagement.patientDetails.validation.patient_identifier_max'))
+      dateOfBirth: Yup.string()
     }),
     contact: Yup.object({
-      email: Yup.string()
+      emailId: Yup.string()
         .email(t('orderManagement.patientDetails.validation.invalid_email'))
         .max(50, t('orderManagement.patientDetails.validation.email_max')),
-      phone: Yup.string()
+      phoneNumber: Yup.string()
         .matches(PHONE_REGEX, t('orderManagement.patientDetails.validation.phone_invalid'))
         .max(15, t('orderManagement.patientDetails.validation.phone_max'))
     }),
-    address: Yup.object({
-      address1: Yup.string()
+    patientAddress: Yup.object({
+      addressLine1: Yup.string()
         .matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_1_invalid'))
         .min(2, t('orgManagement.create_org.validation.address_1_min'))
         .max(100, t('orgManagement.create_org.validation.address_1_max')),
-      address2: Yup.string()
+      addressLine2: Yup.string()
         .matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_2_invalid'))
         .min(2, t('orgManagement.create_org.validation.address_2_min'))
         .max(250, t('orgManagement.create_org.validation.address_2_max')),
@@ -176,10 +173,13 @@ export const getValidationSchema = (t) => {
         .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.city_invalid'))
         .min(2, t('orgManagement.create_org.validation.city_min'))
         .max(50, t('orgManagement.create_org.validation.city_max')),
-      zip: Yup.string()
+      zipCode: Yup.string()
         .matches(ZIP_REGEX, t('orgManagement.create_org.validation.zip_invalid'))
         .max(10, t('orgManagement.create_account.validation.zip_max')),
       state: Yup.string()
-    })
+    }),
+    patientIdentifier: Yup.string()
+      .required(t('orderManagement.patientDetails.validation.patient_identifier_required'))
+      .max(20, t('orderManagement.patientDetails.validation.patient_identifier_max'))
   });
 };

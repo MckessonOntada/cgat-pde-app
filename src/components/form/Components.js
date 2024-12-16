@@ -5,6 +5,7 @@ import PhoneInputFormik from './formik/PhoneInputFormik';
 import ZipInput from './ZipInput';
 import DateRangePickerFormik from './formik/DateRangePickerFormik';
 import MultiSelectDropdownFormik from './formik/MultiSelectDropdownFormik';
+import DatePickerFormik from './formik/DatePickerFormik';
 
 const Components = {
   input: InputFieldFormik,
@@ -13,7 +14,8 @@ const Components = {
   phoneInput: PhoneInputFormik,
   zipInput: ZipInput,
   dateRangePicker: DateRangePickerFormik,
-  multiSelectDropdown: MultiSelectDropdownFormik
+  multiSelectDropdown: MultiSelectDropdownFormik,
+  datePicker: DatePickerFormik
 };
 
 export default Components;

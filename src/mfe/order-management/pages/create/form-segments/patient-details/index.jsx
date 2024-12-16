@@ -11,6 +11,7 @@ import PatientDetailsForm from './PatientDetailsForm';
 import { Form, Formik } from 'formik';
 import { getValidationSchema } from './PatientDetailsFormUtils';
 import { ReactComponent as TickIcon } from '@src/assets/svg/yes_tick_circle_filled.svg';
+import OrderService from '@src/api/commonService/OrderService';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
@@ -31,7 +32,7 @@ const PatientDetails = () => {
   const initialValues = {};
 
   const handleSubmit = (form) => {
-    console.log(form, '❤');
+    OrderService.setPatientDetails(orderId, form);
     navigate(`../${orderId}/additional-details`);
   };
 
