@@ -5,7 +5,6 @@ import './Components.scss';
 export default function PhoneInput(props) {
   const { id, value, isRequired, error = '', onChange, onBlur, label, ...rest } = props;
 
-  console.log(rest, '❤');
   const formatPhoneNumber = (phoneNumber) => {
     if (phoneNumber) {
       const match = phoneNumber.match(/^(\d{3})(\d{3})(\d{4})$/);

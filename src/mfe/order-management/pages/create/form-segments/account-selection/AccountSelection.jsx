@@ -212,7 +212,7 @@ const AccountSelection = () => {
             <Button size="md" onClick={handleOnCancel} variant="secondary">
               {t('captions.btnInventorySelection')}
             </Button>
-            <Button size="md" onClick={handleOnSubmit} variant="primary" type="submit">
+            <Button size="md" onClick={handleOnSubmit} variant="primary" type="submit" disabled={!selectedShippingAddress}>
               {t('Save and Continue')}
             </Button>
           </div>
