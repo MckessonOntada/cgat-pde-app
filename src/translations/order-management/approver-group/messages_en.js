@@ -58,6 +58,14 @@ export const ApproverManagementEN = {
   'approvergroup.create.option.please_select': 'Please Select',
   'approvergroup.selectuserradio': 'Please select one option',
 
+  'approvergroup.view.header': 'Approver Group View Page',
+  'approvergroup.view.subheader.group_details': 'Group Details',
+  'approvergroup.view.subheader.group_name': 'Group Name:',
+  'approvergroup.view.subheader.group_created_by': 'Created By:',
+  'approvergroup.view.subheader.group_created_on': 'Created On:',
+  'approvergroup.view.subheader.attributes': 'Attributes',
+  'approvergroup.view.subheader.manage_treatment_center': 'Approver User List',
+
   'errors.user_email_key': 'Email ID already exists in the System.',
   'errors.user_phone_key': 'Phone number already exists.',
   'errors.default': 'An unexpected error occurred.',

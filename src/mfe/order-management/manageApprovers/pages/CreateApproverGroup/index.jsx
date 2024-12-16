@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import * as Yup from 'yup';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Button, Heading, Alert, Pills } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -13,88 +12,118 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { handleApiError, serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import { RoutePaths } from '@src/routes/constants';
-import { ALPHABETIC_WITH_SPECIAL } from '@src/components/form/ValidationRegExp';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import Components from '@src/components/form/Components';
 import Attributes from './Attribute';
 import { useApprover } from '../../context/ApproverContext';
-import { transformAttributesToRules } from './formUtils';
+import { getValidationSchema, transformAttributesToRules } from './formUtils';
 import './index.scss';
+import { useFormContext } from '../../context/FormContext';
 
 const CreateApproverGroup = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const isEdit = location.state || null;
+  const { grpId } = useParams();
+  const { initialValues, setInitialValues, isEditMode, setIsEditMode, setLocationState } = useFormContext();
   const { refreshData, usersData } = useApprover();
-  const [localUserData, setLocalUsersData] = useState(usersData || []);
+  const [localUserData, setLocalUsersData] = useState([]);
   const practiceId = AuthUtils.getPracticeId();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
-  useEffect(() => {
-    if (usersData) {
-      setLocalUsersData(usersData);
-    }
-  }, [usersData]);
+  const dataBinded = useRef(false);
 
+  useEffect(() => {
+    if (!dataBinded.current) {
+      if (location.state?.data && usersData && initialValues.id) {
+        const selectedUserData = usersData.map((user) => ({
+          value: user.value,
+          label: user.label,
+          isChecked: initialValues.approverUsers.includes(user.value)
+        }));
+        setLocalUsersData(selectedUserData);
+        dataBinded.current = true;
+      } else if (!location.state && usersData) {
+        setLocalUsersData(usersData);
+        setIsEditMode(false);
+        dataBinded.current = true;
+      }
+    }
+  }, [usersData, initialValues, isEditMode, location.state]);
+
+  console.log('initialvlaues1', initialValues, location.state?.data);
   const handleGoBack = () => {
     navigate(RoutePaths.pathApproverManagement);
   };
 
-  const initialValues = {
-    name: '',
-    rules: [{ attributeType: 'Price', value: '' }],
-    approverUsers: [],
-    attributeuseroption: 'user_role' // Default value
-  };
+  useEffect(() => {
+    if (location.state && location.state?.data) {
+      setIsEditMode(true);
+      setLocationState(location.state);
 
-  const validationSchema = Yup.object({
-    name: Yup.string()
-      .required(t('approvergroup.create.validation.approvergroupname_required'))
-      .matches(ALPHABETIC_WITH_SPECIAL, t('approvergroup.create.validation.approvergroupname')) // Only alphabets
-      .min(2, t('approvergroup.create.validation.approvergroupname_min_max'))
-      .max(50, t('approvergroup.create.validation.approvergroupname_min_max')),
-    rules: Yup.array()
-      .of(
-        Yup.object({
-          attributeType: Yup.string()
-            .required(t('approvergroup.create.validation.approverattribute_required'))
-            .oneOf(['Price', 'Account', 'Catalog', 'User'], t('approvergroup.create.validation.approverattribute_required')),
-          value: Yup.mixed()
-            .required(t('approvergroup.create.validation.price_required'))
-            .test('dynamic-validation', t('approvergroup.create.validation.price'), function (value) {
-              const { attributeType } = this.parent;
+      const { name, rules, approverUsers } = location.state.data;
+      const transformedRules = Object.entries(rules).map(([key, value]) => {
+        if (key === 'price') {
+          return { attributeType: 'Price', value };
+        }
+        if (key === 'accounts') {
+          return {
+            attributeType: 'Account',
+            value: value.map((item) => item.accountId)
+          };
+        }
+        if (key === 'therapies') {
+          return {
+            attributeType: 'Catalog',
+            value: value.map((item) => item.therapyId)
+          };
+        }
+        if (key === 'users') {
+          if (!rules.roles || rules.roles.length === 0) {
+            return {
+              attributeType: 'User',
+              value: value.map((item) => item.userId)
+            };
+          }
+          return null;
+        }
+        if (key === 'roles') {
+          if (!rules.users || rules.users.length === 0) {
+            return {
+              attributeType: 'User',
+              value: value.map((item) => item.roleId)
+            };
+          }
+          return null;
+        }
+        // return {
+        //   attributeType: key.charAt(0).toUpperCase() + key.slice(1),
+        //   value: Array.isArray(value)
+        //     ? value.map((item) => ({
+        //         id: item[`${key.slice(0, -1)}Id`],
+        //         name: item[`${key.slice(0, -1)}Name`]
+        //       }))
+        //     : []
+        // };
+      });
+      const hasRoles = rules.roles && rules.roles.length > 0;
+      const hasUsers = rules.users && rules.users.length > 0;
 
-              if (Array.isArray(value)) {
-                if (value.length === 0) {
-                  if (attributeType === 'Catalog') {
-                    return this.createError({ message: t('approvergroup.create.validation.therapy_required') });
-                  } else if (attributeType === 'Account') {
-                    return this.createError({ message: t('approvergroup.create.validation.account_required') });
-                  } else if (attributeType === 'User') {
-                    return this.createError({ message: t('approvergroup.create.validation.user_required') });
-                  }
-                }
-                return true;
-              }
-              if (attributeType === 'Price') {
-                return Yup.number().min(0.001, t('approvergroup.create.validation.price')).isValidSync(value);
-              }
+      const dynamicAttributeUserOption = hasRoles ? 'user_role' : hasUsers ? 'user_name' : 'user_role';
+      const transformedApproverUsers = approverUsers.map((user) => user.userId);
 
-              if (['Account', 'Catelog', 'User'].includes(attributeType)) {
-                return value !== '';
-              }
+      setInitialValues({
+        id: grpId,
+        name: name || '',
+        rules: (transformedRules || []).filter((transformedRules) => transformedRules && transformedRules.attributeType),
+        approverUsers: transformedApproverUsers,
+        attributeuseroption: dynamicAttributeUserOption
+      });
+    }
+  }, [location.state, setInitialValues, setIsEditMode, setLocationState]);
 
-              return true;
-            })
-        })
-      )
-      .required('Required'),
-    approverUsers: Yup.array()
-      .required(t('approvergroup.create.validation.approveruser_required'))
-      .min(1, t('approvergroup.create.validation.approveruser_required'))
-  });
+  const validationSchema = getValidationSchema(t);
 
-  const handleSubmit = (values, practiceId) => {
+  const handleSubmit = (values) => {
     console.log('Practice ID before submission: ', practiceId);
     console.log(JSON.stringify(transformAttributesToRules(values, practiceId), null, 2));
     alert(JSON.stringify(transformAttributesToRules(values, practiceId), null, 2));
@@ -128,7 +157,11 @@ const CreateApproverGroup = () => {
     return val;
   };
   const handleCancel = () => {
-    navigate(RoutePaths.pathApproverManagement);
+    if (isEditMode) {
+      navigate(`../${PATHS.approvergroupDetail.replace(':grpId', grpId)}`);
+    } else {
+      navigate(RoutePaths.pathApproverManagement);
+    }
   };
 
   return (
@@ -152,6 +185,7 @@ const CreateApproverGroup = () => {
           actions.setSubmitting(false);
         }}>
         {({ values, setFieldValue, isValid, handleChange, errors, touched }) => {
+          console.log('values,', values);
           const onRemoveUser = (itemToRemove) => {
             const updatedUsers = values.approverUsers.filter((userId) => userId !== itemToRemove);
             const updatedAugmentedUsers = values.approverUsers_augmented.filter((user) => user.value !== itemToRemove);
@@ -167,6 +201,7 @@ const CreateApproverGroup = () => {
 
             setLocalUsersData(() => updatedOptions);
           };
+
           return (
             <Form>
               <div className="MCP-panel-container">
@@ -219,7 +254,7 @@ const CreateApproverGroup = () => {
                           component={Components['multiSelectDropdown']}
                           isRequired
                           options={localUserData || []}
-                          value={[...values.approverUsers]}
+                          value={values.approverUsers}
                           getUpdatedOptions={(values) => {
                             setLocalUsersData(() => values);
                           }}
@@ -231,11 +266,11 @@ const CreateApproverGroup = () => {
               </div>
               <div className={'buttonGroup'}>
                 <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>
-                  {t(isEdit ? 'approvergroup.button.back' : 'approvergroup.button.cancel')}
+                  {t(isEditMode ? 'approvergroup.button.back' : 'approvergroup.button.cancel')}
                 </Button>
 
                 <Button type="submit" size={'md'}>
-                  {t(isEdit ? 'approvergroup.button.updategroup' : 'approvergroup.button.creategroup')}
+                  {t(isEditMode ? 'approvergroup.button.updategroup' : 'approvergroup.button.creategroup')}
                 </Button>
               </div>
             </Form>

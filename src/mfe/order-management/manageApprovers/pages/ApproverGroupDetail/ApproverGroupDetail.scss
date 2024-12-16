@@ -1,0 +1,127 @@
+@use "@src/assets/styles/abstracts/mixins";
+
+.approver-group-labelWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.attribute-category {
+  margin-bottom: var(--spacing-01);
+}
+
+.attribute-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  column-gap: var(--spacing-03);
+  row-gap: 0;
+  align-items: center;
+  @include mixins.respond(md) {
+    grid-template-columns: repeat(2, 1fr); // Medium screens
+  }
+
+  @include mixins.respond(lg) {
+    grid-template-columns: repeat(3, 1fr); // Large screens
+  }
+}
+
+.attribute-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-02) var(--spacing-02) var(--spacing-02) 0px;
+  position: relative;
+  padding: var(--spacing-02);
+
+  // Add border as divider
+  @include mixins.respond(md) {
+    &:not(:nth-child(2n)):after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background-color: #ccc; // Divider color
+    }
+  }
+
+  @include mixins.respond(lg) {
+    &:not(:nth-child(3n)):after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background-color: #ccc; // Divider color
+    }
+    &:nth-child(3n):after {
+      background-color: var(--brand-color-background-white);
+    }
+  }
+}
+
+.approver-user-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: var(--spacing-03);
+  row-gap: 0;
+  align-items: center;
+  @include mixins.respond(md) {
+    grid-template-columns: repeat(4, 1fr); // Medium screens
+  }
+
+  @include mixins.respond(lg) {
+    grid-template-columns: repeat(6, 1fr); // Large screens
+  }
+}
+
+.approver-user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-02) var(--spacing-02) var(--spacing-02) 0px;
+  position: relative;
+  padding: var(--spacing-02);
+
+  @include mixins.respond(sm) {
+    &:not(:nth-child(2n)):after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background-color: #ccc; // Divider color
+    }
+  }
+
+  // Add border as divider
+  @include mixins.respond(md) {
+    &:not(:nth-child(4n)):after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background-color: #ccc; // Divider color
+    }
+  }
+
+  @include mixins.respond(lg) {
+    &:not(:nth-child(6n)):after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background-color: #ccc; // Divider color
+    }
+    &:nth-child(6n):after {
+      background-color: var(--brand-color-background-white);
+    }
+  }
+}

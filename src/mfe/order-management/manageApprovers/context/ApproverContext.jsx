@@ -36,18 +36,90 @@ const INITIAL_PAGINATION_CONFIG = {
 
 export const GROUP_DATA = [
   {
-    id: 1,
-    groupName: 'TXO Approver Group_1',
-    createdBy: 'Sally Thyer',
-    createdOn: '01-01-2024',
-    isActive: true
+    createdAt: '2024-12-14T11:35:02.540Z',
+    createdBy: 'string',
+    updatedAt: '2024-12-14T11:35:02.540Z',
+    updatedBy: 'string',
+    id: 'grp1',
+    name: 'TXO Approver Group_1',
+    practiceId: 0,
+    rules: {
+      price: 100,
+      accounts: [
+        {
+          accountId: 77,
+          accountName: 'account 77'
+        }
+      ],
+      therapies: [
+        {
+          therapyId: 77,
+          therapyName: 'account 77'
+        }
+      ],
+      roles: [
+        {
+          roleId: 0,
+          roleName: 'string'
+        }
+      ],
+      users: [
+        {
+          userId: 1,
+          userName: 'string'
+        }
+      ]
+    },
+    approverUsers: [
+      {
+        userId: 1,
+        userName: 'string'
+      }
+    ],
+    active: true
   },
   {
-    id: 2,
-    groupName: 'TXO Approver Group_2',
-    createdBy: 'Sally Thyer',
-    createdOn: '11/11/2024',
-    isActive: true
+    createdAt: '2024-12-14T11:35:02.540Z',
+    createdBy: 'string',
+    updatedAt: '2024-12-14T11:35:02.540Z',
+    updatedBy: 'string',
+    id: 'grp2',
+    name: 'TXO Approver Group_2',
+    practiceId: 0,
+    rules: {
+      price: 100,
+      accounts: [
+        {
+          accountId: 77,
+          accountName: 'account 77'
+        }
+      ],
+      therapies: [
+        {
+          therapyId: 77,
+          therapyName: 'account 77'
+        }
+      ],
+      roles: [
+        {
+          roleId: 0,
+          roleName: 'string'
+        }
+      ],
+      users: [
+        {
+          userId: 1,
+          userName: 'string'
+        }
+      ]
+    },
+    approverUsers: [
+      {
+        userId: 1,
+        userName: 'string'
+      }
+    ],
+    active: true
   }
 ];
 

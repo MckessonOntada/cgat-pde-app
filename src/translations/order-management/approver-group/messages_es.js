@@ -8,7 +8,7 @@ export const ApproverManagementES = {
   'approvergroup.breadcrumb.labeldashboard': 'S_Dashboard',
   'approvergroup.results': 'S_results',
   'approvergroup.per_page': 'S_per page',
-  'approvergroup.selected_items': `S_Item's Selected`,
+  'approvergroup.selected_items': `Item's Selected`,
 
   'approvergroup.table.groupname': 'S_Group Name',
   'approvergroup.table.status': 'S_Status',
@@ -19,7 +19,7 @@ export const ApproverManagementES = {
   'approvergroup.table.action.delete': 'S_Delete',
   'approvergroup.button.deactivate': 'S_Deactivate',
   'approvergroup.empty_table.description': 'S_You need to add Approver Groups to see data in this table.',
-
+  'approvergroup.confirmationmessage': 'S_Confirmation message',
   'approvergroup.button.edit': 'S_Edit',
   'approvergroup.button.next': 'S_Next',
   'approvergroup.button.cancel': 'S_Cancel',
@@ -38,16 +38,33 @@ export const ApproverManagementES = {
   'approvergroup.price': 'S_Amount Greater Than',
   'approvergroup.addattribute': 'S_Add Attribute',
   'approvergroup.approveuserlist': 'S_Approve user list',
-  'approvergroup.selectuser': 'S_Select User',
+  'approvergroup.selectuser': 'S_Select Users',
   'approvergroup.username': 'S_User Name',
   'approvergroup.userrole': 'S_User Role',
 
   'approvergroup.create.validation.approvergroupname_required': 'S_Approver Group Name is required',
-  'approvergroup.create.validation.approverattributre_required': 'S_Attribute details are required.',
+  'approvergroup.create.validation.approvergroupname': 'S_Approver Group must only contain alphabets.',
+
+  'approvergroup.create.validation.approverattribute_required': 'S_Attribute is required.',
   'approvergroup.create.validation.approveruser_required': 'S_User is required.',
   'approvergroup.create.validation.approvergroupname_min_max': 'S_Approver Group Name  must be between 2 and 50 characters.',
+  'approvergroup.create.validation.therapy_required': 'S_Therapy is required.',
+  'approvergroup.create.validation.price_required': 'S_Amount greater than is required.',
+  'approvergroup.create.validation.price': 'S_Amount greater than must only containe numbers and greater than 0.',
+  'approvergroup.create.validation.account_required': 'S_Account is required.',
+  'approvergroup.create.validation.approveruser_required': 'S_Approver Users required.',
+  'approvergroup.create.validation.user_required': 'S_User Names or Roles required.',
 
   'approvergroup.create.option.please_select': 'S_Please Select',
+  'approvergroup.selectuserradio': 'S_Please select one option',
+
+  'approvergroup.view.header': 'S_Approver Group View Page',
+  'approvergroup.view.subheader.group_details': 'S_Group Details',
+  'approvergroup.view.subheader.group_name': 'S_Group Name:',
+  'approvergroup.view.subheader.group_created_by': 'S_Created By:',
+  'approvergroup.view.subheader.group_created_on': 'S_Created On:',
+  'approvergroup.view.subheader.attributes': 'S_Attributes',
+  'approvergroup.view.subheader.manage_treatment_center': 'S_Approver User List',
 
   'errors.user_email_key': 'S_Email ID already exists in the System.',
   'errors.user_phone_key': 'S_Phone number already exists.',

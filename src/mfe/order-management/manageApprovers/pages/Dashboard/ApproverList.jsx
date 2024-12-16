@@ -11,9 +11,10 @@ import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import CommonUtils from '@src/util/CommonUtils';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
-import { ReactComponent as View } from '@src/assets/image/view.svg';
-import usePermission from '@src/hooks/usePermissions';
 import { useApprover } from '../../context/ApproverContext';
+import Actions from './Actions';
+import { PERMISSIONS_ENUM } from '../../../../user-management/pages/UserPermissions/permissionsEnum';
+import usePermission from '@src/hooks/usePermissions';
 
 function ApproverList({ onActionSuccess }) {
   const { t } = useTranslate();
@@ -90,7 +91,7 @@ function ApproverList({ onActionSuccess }) {
                 onChange: (event) => setSelectedRows(event.target.checked ? row.id : null),
                 value: row.id,
                 isChecked: selectedRows === row.id,
-                isDisabled: !row.isActive
+                isDisabled: !row.active
               }
             ]}
           />
@@ -100,16 +101,16 @@ function ApproverList({ onActionSuccess }) {
       },
       { name: 'ID', selector: 'id', sortable: true, omit: true },
       {
-        id: 'groupName',
+        id: 'name',
         name: t('approvergroup.table.groupname'),
-        selector: (row) => `${row.name.firstName} ${row.name.lastName}`,
+        selector: (row) => `${row.name}`,
         sortable: true,
-        sortKey: 'groupName',
+        sortKey: 'name',
         wrap: true,
         minWidth: '340px',
         cell: (props) => (
           <div>
-            <EclipsesTextcss str={props.groupName} maxWidth={300} />
+            <EclipsesTextcss str={props.name} maxWidth={300} />
           </div>
         )
       },
@@ -126,12 +127,12 @@ function ApproverList({ onActionSuccess }) {
         )
       },
       {
-        id: 'createdon',
+        id: 'createdAt',
         name: t('approvergroup.table.createdon'),
-        selector: 'date_added',
+        selector: 'createdAt',
         wrap: true,
         minWidth: '160px',
-        cell: (props) => CommonUtils.convertDateStringFormat(props.createdBy, 'MM-DD-YYYY')
+        cell: (props) => CommonUtils.convertDateStringFormat(props.createdAt, 'MM-DD-YYYY')
       },
       {
         id: 'status',
@@ -139,20 +140,15 @@ function ApproverList({ onActionSuccess }) {
         selector: 'status',
         center: true,
         minWidth: '80px',
-        cell: (props) => <div>{props.isActive ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />}</div>
+        cell: (props) => <div>{props.active ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />}</div>
       },
       {
         id: 'action',
         center: true,
         name: t('approvergroup.table.action'),
-        cell: (row) => (
-          <div>
-            <Button Icon={View} variant="tertiary" size="md" className="button-icon" onClick={() => handleView(row.id)}>
-              {t('approvergroup.table.action.view')}
-            </Button>
-          </div>
-        ),
-        width: '120px'
+        cell: (row) => <Actions row={row} />,
+        width: '120px',
+        omit: !hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.MANAGE_ORDERS)
       }
     ];
   }, [data, userPermissions]);
@@ -186,7 +182,13 @@ function ApproverList({ onActionSuccess }) {
         stickyHeader
         responsive
         pagination={true}
-        noDataComponent={<EmptyDataTable image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('approvergroup.empty_table.description')} />}
+        noDataComponent={
+          <EmptyDataTable
+            image={EmptyDataImage}
+            heading={t('message.emptyTableTitle')}
+            description={t('approvergroup.empty_table.description')}
+          />
+        }
       />
       <Modal
         {...{
