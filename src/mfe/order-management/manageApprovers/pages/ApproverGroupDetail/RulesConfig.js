@@ -6,22 +6,22 @@ export const RulesConfig = [
   },
   {
     key: 'accounts',
-    label: 'Accounts',
+    label: 'Account',
     valueKey: 'accountName'
   },
   {
     key: 'therapies',
-    label: 'Therapies',
+    label: 'Catalog',
     valueKey: 'therapyName'
   },
   {
     key: 'roles',
-    label: 'Roles',
+    label: 'Role',
     valueKey: 'roleName'
   },
   {
     key: 'users',
-    label: 'Users',
+    label: 'User',
     valueKey: 'userName'
   }
 ];

@@ -1,8 +1,8 @@
 import * as Yup from 'yup';
-import { ALPHABETIC_WITH_SPECIAL } from '@src/components/form/ValidationRegExp';
+import { ALPHA_NUMERIC_WITH_SPECIAL, ALPHABETIC_WITH_SPECIAL } from '@src/components/form/ValidationRegExp';
 
 export const transformAttributesToRules = (values, practiceId) => {
-  const { name, approverUsers, rules } = values;
+  const { name, approverUsers, approverUsers_augmented, rules } = values;
 
   // Initialize the result object
   const result = {
@@ -41,13 +41,23 @@ export const transformAttributesToRules = (values, practiceId) => {
         });
         break;
       case 'User':
-        rule.value_augmented.forEach((user) => {
-          result.rules.users.push({
-            userId: user.value,
-            userName: user.name
+        if (values.attributeuseroption == 'user_role') {
+          rule.value_augmented.forEach((role) => {
+            result.rules.roles.push({
+              roleId: role.value,
+              roleName: role.name
+            });
           });
-        });
+        } else {
+          rule.value_augmented.forEach((user) => {
+            result.rules.users.push({
+              userId: user.value,
+              userName: user.name
+            });
+          });
+        }
         break;
+
       default:
         break;
     }
@@ -55,9 +65,7 @@ export const transformAttributesToRules = (values, practiceId) => {
 
   if (approverUsers) {
     approverUsers.forEach((userId) => {
-      const userName =
-        rules.find((rule) => rule.attributeType === 'User')?.value_augmented.find((user) => user.value === userId)?.name ||
-        `User ${userId}`;
+      const userName = approverUsers_augmented.find((user) => user.value === userId)?.name || `User ${userId}`;
 
       result.approverUsers.push({
         userId,
@@ -73,7 +81,7 @@ export const getValidationSchema = (t) => {
   return Yup.object({
     name: Yup.string()
       .required(t('approvergroup.create.validation.approvergroupname_required'))
-      .matches(ALPHABETIC_WITH_SPECIAL, t('approvergroup.create.validation.approvergroupname')) // Only alphabets
+      .matches(ALPHA_NUMERIC_WITH_SPECIAL, t('approvergroup.create.validation.approvergroupname')) // Only alphabets
       .min(2, t('approvergroup.create.validation.approvergroupname_min_max'))
       .max(50, t('approvergroup.create.validation.approvergroupname_min_max')),
     rules: Yup.array()

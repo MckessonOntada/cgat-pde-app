@@ -2,9 +2,7 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 
-// Contexts
-import { useApprover } from '../../context/ApproverContext';
-
+import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 // Constants
 import { PATHS } from '../../routes/constants';
 import { RoutePaths } from '@src/routes/constants';
@@ -29,8 +27,8 @@ import './ApproverGroupDetail.scss';
 // API
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import CommonUtils from '@src/util/CommonUtils';
 
-import { APPROVER_GROUP_DATA as resData } from '../../mockData/_mock_';
 function ApproverGroupDetails() {
   const navigate = useNavigate();
   const { grpId } = useParams();
@@ -41,20 +39,16 @@ function ApproverGroupDetails() {
     data: groupData,
     isError
   } = useQuery({
-    queryKey: [`practices/${grpId}`],
+    queryKey: [`approver-group/${grpId}`],
     queryFn: async () => {
-      // const res = await HttpResourceService.callRest(
-      //   `${ApiRoutes.GET_APPROVER_GROUP_DATA(grpId)}`, // Use practice id from organization
-      //   httpVerb.GET,
-      //   {}
-      // );
-
-      return resData;
+      const res = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}/${grpId}`, httpVerb.GET, {});
+      if (res.data) {
+        return res.data;
+      }
     },
+    enabled: !!grpId,
     refetchOnWindowFocus: false
   });
-
-  // const groupData = data?.[id - 1];
 
   const handleGoBack = () => {
     navigate(RoutePaths.pathApproverManagement);
@@ -62,14 +56,10 @@ function ApproverGroupDetails() {
 
   return (
     <div className="MCP-module-wrapper">
-      <div
-        className="back-navigation py2 capitalize"
-        onClick={() => {
-          handleGoBack();
-        }}
-        style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-        <MdOutlineKeyboardArrowLeft size="24px" />
-        <p>{t('approvergroup.header.backmessage')}</p>
+      <div>
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
+          {t('approvergroup.header.backmessage')}
+        </Button>
       </div>
 
       <div className="MCP-module-body">
@@ -81,8 +71,8 @@ function ApproverGroupDetails() {
               variant="secondary"
               className="button-icon"
               size="md"
-              disabled={false}
-              onClick={() => navigate(`../${PATHS.editapprovergroup}/${grpId}`, { state: { data: resData } })}>
+              disabled={!groupData?.active}
+              onClick={() => navigate(`../${PATHS.editapprovergroup}/${grpId}`, { state: { data: groupData } })}>
               {t('approvergroup.button.edit')}
             </Button>
           }
@@ -93,7 +83,7 @@ function ApproverGroupDetails() {
           <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3">
             <div className="approver-group-labelWrap">
               <span className="view_label">{t('approvergroup.view.subheader.group_name')}</span>
-              <p className="label-text">{groupData?.groupName || 'N/A'}</p>
+              <p className="label-text">{groupData?.name || 'N/A'}</p>
             </div>
 
             <div className="approver-group-labelWrap">
@@ -103,7 +93,9 @@ function ApproverGroupDetails() {
 
             <div className="approver-group-labelWrap">
               <span className="view_label">{t('approvergroup.view.subheader.group_created_on')}</span>
-              <p className="label-text">{groupData?.createdOn || 'N/A'}</p>
+              <p className="label-text">
+                {groupData?.createdAt ? CommonUtils.convertDateStringFormat(groupData.createdAt, 'MM-DD-YYYY') : 'N/A'}
+              </p>
             </div>
           </div>
         </div>
@@ -114,7 +106,7 @@ function ApproverGroupDetails() {
             <EmptyDataTable
               image={EmptyDataImage}
               heading={t('message.emptyTableTitle')}
-              description={t('approvergroup.messages.emptysubtitle')}
+              description={t('approvergroup.empty_table.description')}
             />
           ) : (
             RulesConfig.map(({ key, label, valueKey }) =>
@@ -128,7 +120,7 @@ function ApproverGroupDetails() {
                         ? groupData.rules[key].map((item, idx) => (
                             <div key={idx} className="flex items-center justify-between attribute-item">
                               <div>
-                                <h4>{item[valueKey]}</h4>
+                                <h4 className={key === 'users' || key === 'roles' ? '' : 'to-upper-case'}>{item[valueKey]}</h4>
                               </div>
                             </div>
                           ))
@@ -165,7 +157,7 @@ function ApproverGroupDetails() {
             <EmptyDataTable
               image={EmptyDataImage}
               heading={t('message.emptyTableTitle')}
-              description={t('approvergroup.messages.emptysubtitle')}
+              description={t('approvergroup.empty_table.description')}
             />
           )}
         </div>

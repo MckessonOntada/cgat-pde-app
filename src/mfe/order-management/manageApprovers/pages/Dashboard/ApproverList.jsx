@@ -20,7 +20,7 @@ function ApproverList({ onActionSuccess }) {
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const { data, paginationConfig, applySort, setPageNumber } = useApprover();
+  const { data, paginationConfig, applySort, setPageNumber, refreshData } = useApprover();
   const userPermissions = AuthUtils.getUserPermissions();
   const { hasPermission } = usePermission();
 
@@ -28,15 +28,15 @@ function ApproverList({ onActionSuccess }) {
     setSelectedRows(selectedRows);
   };
 
-  const handleDeactivateApproverGroup = async (userId) => {
-    // const res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.DELETE, null);
-    // return res.data;
+  const handleDeactivateApproverGroup = async (grpId) => {
+    const res = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}/${grpId}`, httpVerb.DELETE, null);
+    return res.data;
   };
 
   const { mutate } = useMutation({
     mutationFn: handleDeactivateApproverGroup,
     onSuccess: (response) => {
-      //   refreshData();
+      refreshData();
       setSelectedRows(null);
       const isSuccess = true;
       const message = t('approvergroup.messages.approvergroup_deactivate_success');
@@ -58,8 +58,6 @@ function ApproverList({ onActionSuccess }) {
     if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
-  const handleView = (userId) => {};
-
   const handleDeactivate = () => {
     setIsOpen(true);
   };
@@ -75,7 +73,7 @@ function ApproverList({ onActionSuccess }) {
   };
 
   useEffect(() => {
-    // refreshData();
+    refreshData();
   }, []);
   const columns = useMemo(() => {
     return [

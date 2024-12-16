@@ -127,7 +127,7 @@ export const ApproverProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
-  const [data, setData] = useState(GROUP_DATA);
+  //const [data, setData] = useState(GROUP_DATA);
   const updateFilterState = useCallback((field, value) => {
     setFilterState((prevState) => ({
       ...prevState,
@@ -148,26 +148,31 @@ export const ApproverProvider = ({ children }) => {
     [filterConfig, paginationConfig.pageNumber, sortConfig]
   );
 
-  //   const { isLoading, isError, data, refetch } = useQuery({
-  //     queryKey: ['approvers', requestParams],
-  //     queryFn: async () => {
-  //       const url = `${ApiRoutes.ApproverS()}?${serializeParams(requestParams)}`;
-  //       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-  //       if (res.data) {
-  //         const { content: data, totalElements, totalPages } = res.data;
+  const {
+    isLoading: isLoadingApprovers,
+    isError: isErrorApprovers,
+    data: approverData,
+    refetch: refetchApprovers
+  } = useQuery({
+    queryKey: ['approvers', requestParams],
+    queryFn: async () => {
+      const url = `${ApiRoutes.APPROVER_GROUP()}?${serializeParams(requestParams)}`;
+      const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+      if (res.data) {
+        const { content: data, totalElements, totalPages } = res.data;
 
-  //         setPaginationConfig((prevConfig) => ({
-  //           ...prevConfig,
-  //           ...(totalElements && { totalElements }),
-  //           ...(totalPages && { totalPages })
-  //         }));
-  //         return data;
-  //       }
+        setPaginationConfig((prevConfig) => ({
+          ...prevConfig,
+          ...(totalElements && { totalElements }),
+          ...(totalPages && { totalPages })
+        }));
+        return data;
+      }
 
-  //       return [];
-  //     },
-  //     refetchOnWindowFocus: false
-  //   });
+      return [];
+    },
+    refetchOnWindowFocus: false
+  });
 
   let userParams = {
     userType: 'GENERAL',
@@ -175,10 +180,10 @@ export const ApproverProvider = ({ children }) => {
   };
 
   const {
-    isLoading,
+    isLoading: isLoadingUsers,
+    isError: isErrorUsers,
     data: usersData,
-    isError,
-    refetch
+    refetch: refetchUsers
   } = useQuery({
     queryKey: ['data'],
     queryFn: async () => {
@@ -200,7 +205,7 @@ export const ApproverProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    //refetch();
+    refetchApprovers();
   }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
 
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
@@ -219,7 +224,7 @@ export const ApproverProvider = ({ children }) => {
 
   const ctxValue = useMemo(
     () => ({
-      data: data || [],
+      data: approverData || [],
       //   isLoading,
       //   isError,
       filterConfig,
@@ -229,9 +234,21 @@ export const ApproverProvider = ({ children }) => {
       applyFilters,
       applySort,
       setPageNumber,
-      usersData
+      usersData,
+      refreshData: refetchApprovers
     }),
-    [updateFilterState, clearFilters, usersData]
+    [
+      approverData,
+      filterConfig,
+      paginationConfig,
+      setFilterConfig,
+      clearFilters,
+      applyFilters,
+      applySort,
+      setPageNumber,
+      usersData,
+      refetchApprovers
+    ]
   );
   return <ApproverContext.Provider value={ctxValue}>{children}</ApproverContext.Provider>;
 };

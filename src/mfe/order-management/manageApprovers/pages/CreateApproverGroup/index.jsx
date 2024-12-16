@@ -27,6 +27,7 @@ const CreateApproverGroup = () => {
   const { grpId } = useParams();
   const { initialValues, setInitialValues, isEditMode, setIsEditMode, setLocationState } = useFormContext();
   const { refreshData, usersData } = useApprover();
+  const [alert, setAlert] = useState(null);
   const [localUserData, setLocalUsersData] = useState([]);
   const practiceId = AuthUtils.getPracticeId();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
@@ -50,9 +51,13 @@ const CreateApproverGroup = () => {
     }
   }, [usersData, initialValues, isEditMode, location.state]);
 
-  console.log('initialvlaues1', initialValues, location.state?.data);
+  //console.log('initialvlaues1', initialValues, location.state?.data);
   const handleGoBack = () => {
     navigate(RoutePaths.pathApproverManagement);
+  };
+
+  const handleAlertClose = () => {
+    setIsAlertVisible(false);
   };
 
   useEffect(() => {
@@ -62,6 +67,9 @@ const CreateApproverGroup = () => {
 
       const { name, rules, approverUsers } = location.state.data;
       const transformedRules = Object.entries(rules).map(([key, value]) => {
+        if (!value || (Array.isArray(value) && value.length === 0)) {
+          return null;
+        }
         if (key === 'price') {
           return { attributeType: 'Price', value };
         }
@@ -123,15 +131,25 @@ const CreateApproverGroup = () => {
 
   const validationSchema = getValidationSchema(t);
 
-  const handleSubmit = (values) => {
-    console.log('Practice ID before submission: ', practiceId);
-    console.log(JSON.stringify(transformAttributesToRules(values, practiceId), null, 2));
-    alert(JSON.stringify(transformAttributesToRules(values, practiceId), null, 2));
-    navigate(RoutePaths.pathApproverManagement, { state: { isSuccess: true } });
+  const { mutate, isLoading, isError, data } = useMutation(async ({ payload }) => {
+    if (isEditMode) {
+      const updateUser = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}/${grpId}`, httpVerb.PUT, payload);
+      return updateUser.data;
+    } else {
+      const createResponse = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}`, httpVerb.POST, payload);
+      return {
+        createUser: createResponse.data
+      };
+    }
+  });
 
-    const payload = {
-      isActive: true
-    };
+  const handleSubmit = (values) => {
+    // console.log('Practice ID before submission: ', practiceId);
+    //console.log(JSON.stringify(transformAttributesToRules(values, practiceId), null, 2));
+    // alert(JSON.stringify(transformAttributesToRules(values, practiceId), null, 2));
+    // navigate(RoutePaths.pathApproverManagement, { state: { isSuccess: true } });
+
+    const payload = transformAttributesToRules(values, practiceId);
 
     mutate(
       { payload },
@@ -141,8 +159,8 @@ const CreateApproverGroup = () => {
           navigate(RoutePaths.pathApproverManagement, { state: { isSuccess: true } });
         },
         onError: (error) => {
-          const errorKey = handleApiError(error);
-          setAlert({ type: 'error', message: t(errorKey) });
+          // const errorKey = handleApiError(error);
+          setAlert({ type: 'error', message: t('errors.default') });
           setIsAlertVisible(true);
         }
       }

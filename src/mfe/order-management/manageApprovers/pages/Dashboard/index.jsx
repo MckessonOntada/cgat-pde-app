@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Alert, Button, Heading } from '@mckesson/mcp-component-library';
-
+import './index.scss';
 import { PATHS } from '../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
@@ -78,13 +78,13 @@ export default function Dashboard() {
     let config = [];
     return [
       {
-        type: 'dropdown',
+        type: 'multiSelectDropdown',
         name: 'status',
         label: t('userManagement.table.status'),
         options: [
           { label: 'All', value: 'all' },
-          { label: 'Inactive', value: 'inactive' },
-          { label: 'Active', value: 'active' }
+          { label: 'Active', value: 'active' },
+          { label: 'Inactive', value: 'inactive' }
         ]
       },
       {

@@ -133,7 +133,7 @@ function RenderControls({ attributeType, index, name }) {
   };
 
   const renderFieldWithPills = (fieldId, fieldLabel) => (
-    <React.Fragment>
+    <div>
       <Field
         id={fieldId}
         name={name}
@@ -153,7 +153,7 @@ function RenderControls({ attributeType, index, name }) {
           onDelete={onRemoveClick}
         />
       </div>
-    </React.Fragment>
+    </div>
   );
 
   const renderswitch = () => {
