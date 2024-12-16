@@ -29,5 +29,17 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.CS.table.accountnumber': 'Account No.',
   'paymentInvoices.CS.table.date': 'Date',
   'paymentInvoices.CS.table.statementBalance': 'Statement Balance',
-  'paymentInvoices.CS.table.actions': 'Action(s)'
+  'paymentInvoices.CS.table.actions': 'Action(s)',
+
+// Invoices
+'paymentInvoices.history.table.billNumber': 'Bill Number',
+'paymentInvoices.history.table.SoldToSite': 'Sold To Site',
+'paymentInvoices.history.table.PostingDate': 'Posting Date',
+'paymentInvoices.history.table.PaymentTerm': 'Payment Term',
+'paymentInvoices.history.table.DueDate': 'Due Date',
+'paymentInvoices.history.table.OpenAmount': 'Open Amount',
+'paymentInvoices.history.table.BillAmount': 'Bill Amount',
+'paymentInvoices.history.table.Actions': 'Actions',
+"paymentInvoices.history.table.addnewcard": "add new card",
+
 };

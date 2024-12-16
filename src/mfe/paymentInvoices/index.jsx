@@ -4,11 +4,10 @@ import './index.scss';
 import RecordDetails from './RecordDetails';
 import BalanceDetails from './BalanceDetails';
 import Routes from './routes/Routes';
-import { TabList, Button } from '@mckesson/mcp-component-library';
+import { TabList } from '@mckesson/mcp-component-library';
 import { PATHS, tabListData } from './routes/constants';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ModuleHeader from '../../components/module-header';
-import { PaymentInvoiceProvider } from './context/PaymentHistoryContext';
 import { PaymentsInvoiceProvider } from './context/PaymentsInvoicesContext';
 
 const PaymentsInvoices = () => {

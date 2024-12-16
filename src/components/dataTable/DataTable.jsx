@@ -2,22 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { CustomDataTable } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 
-const DataTable = ({
-  type = 'normal',
-  rows,
-  columns,
-  handleSortClick,
-  handleChangePage,
-  selectableRows = false,
-  pagination = true
-}) => {
+const DataTable = ({ type = 'normal', rows, columns, handleSortClick, handleChangePage, selectableRows = false, pagination = true }) => {
   const { t } = useTranslate();
   const totalRecords = rows.length;
   const recordsPerPage = 8;
-  const totalPageCount = Math.ceil(totalRecords / recordsPerPage); 
+  const totalPageCount = Math.ceil(totalRecords / recordsPerPage);
   const [currentPage, setCurrentPage] = useState(1);
-  const [currentData, setCurrentData] = useState([]); 
-  const paginationRecordsPerPageMessage =t('userManagement.results');
+  const [currentData, setCurrentData] = useState([]);
+  const paginationRecordsPerPageMessage = t('userManagement.results');
   const paginationTotalRecordsMessage = t('userManagement.results');
 
   useEffect(() => {
@@ -38,7 +30,10 @@ const DataTable = ({
       type={type}
       columns={columns}
       data={currentData}
-      onSortIconClick={handleSortClick}
+      onSortIconClick={(column, sortDirection) => {
+        setCurrentPage(1);
+        handleSortClick(column, sortDirection);
+      }}
       handleChangePage={(e, newPage) => onPageChange(newPage)}
       selectableRows={selectableRows}
       pagination={pagination}
