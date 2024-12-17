@@ -36,13 +36,14 @@ async function setPatientDetails(orderId, payload) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
   const url = `${ApiRoutes.ORDERS}/${orderId}/patient`;
-  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
-
-  if (res.data) {
-    return res.data;
+  try {
+    const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+    if (res.data) {
+      return res.data;
+    }
+  } catch (err) {
+    throw new Error('Unable to set patient details. Please try later.', err.status, err.code);
   }
-
-  return {};
 }
 
 async function setAdditionalDetails(orderId, payload) {
