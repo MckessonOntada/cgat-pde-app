@@ -136,21 +136,24 @@ const AccountSelection = () => {
                 }
               />
               <div className="MCP-panel-container">
-                <div className={styles.account}>
-                  <div className={styles.accountDetails}>
-                    {selectedAccount ? (
-                      <React.Fragment>
-                        <p className={styles.name}>
-                          <b>{selectedAccount.accountName}</b>
-                        </p>
-                        <p className={styles.address}>{getAddress(selectedAccount)}</p>
-                      </React.Fragment>
-                    ) : (
-                      <React.Fragment>
-                        <Heading as="h3">{t('labels.pleaseSelectAccount')}</Heading>
-                      </React.Fragment>
-                    )}
+                <div className={'grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3'}>
+                  <div className={styles.account}>
+                    <div className={styles.accountDetails}>
+                      {selectedAccount ? (
+                        <React.Fragment>
+                          <p className={styles.name}>
+                            <b>{selectedAccount.accountName}</b>
+                          </p>
+                          <p className={styles.address}>{getAddress(selectedAccount)}</p>
+                        </React.Fragment>
+                      ) : (
+                        <React.Fragment>
+                          <Heading as="h3">{t('labels.pleaseSelectAccount')}</Heading>
+                        </React.Fragment>
+                      )}
+                    </div>
                   </div>
+                  <div></div>
                   <div className={styles.controls}>
                     <div className={styles.controlWrapper}>
                       <MultiSelectDropdown
