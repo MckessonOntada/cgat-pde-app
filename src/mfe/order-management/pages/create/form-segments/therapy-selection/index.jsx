@@ -87,12 +87,7 @@ function TherapySelection() {
     }
   };
 
-  const handleOnBackButtonClick = () => {
-    //compare data change, display modal for confirmation
-    navigate('/orders');
-  };
-
-  const handleOnCancel = () => {
+  const handleOnBackToOrders = () => {
     //compare data change, display modal for confirmation
     navigate('/orders');
   };
@@ -102,12 +97,7 @@ function TherapySelection() {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={handleOnBackButtonClick}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
@@ -133,7 +123,7 @@ function TherapySelection() {
           <ModuleHeader
             controls={
               <div className="controls">
-                <Button size="md" variant="secondary" onClick={handleOnCancel}>
+                <Button size="md" variant="secondary" onClick={handleOnBackToOrders}>
                   {t('captions.btnCancel')}
                 </Button>
                 <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit} disabled={!therapy || isSaving}>

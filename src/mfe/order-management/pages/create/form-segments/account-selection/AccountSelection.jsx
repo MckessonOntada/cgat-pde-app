@@ -67,6 +67,12 @@ const AccountSelection = () => {
   const handleOnClick = () => {
     setOpen(true);
   };
+
+  const handleOnBack = () => {
+    //check for data change
+    navigate(`../edit-order/${orderId}`);
+  };
+
   const handleOnSubmit = () => {
     if (selectedAccount) {
       const payload = {
@@ -80,7 +86,7 @@ const AccountSelection = () => {
     //compare data change, display modal for confirmation
     navigate(`../edit-order/${orderId}`);
   };
-  const handleOnCancel = () => {
+  const handleOnBackToOrders = () => {
     //compare data change, display modal for confirmation
     navigate('/orders');
   };
@@ -94,12 +100,7 @@ const AccountSelection = () => {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={handleOnBackButtonClick}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
@@ -179,10 +180,10 @@ const AccountSelection = () => {
             </ShippingAddressProvider>
           </div>
           <div className="controls">
-            <Button size="md" onClick={() => navigate('../')} variant="secondary">
-              {t('captions.btnCancel')}
+            <Button size="md" onClick={handleOnBack} variant="secondary">
+              {t('captions.btnBack')}
             </Button>
-            <Button size="md" onClick={handleOnCancel} variant="secondary">
+            <Button size="md" onClick={() => {}} variant="secondary">
               {t('captions.btnInventorySelection')}
             </Button>
             <Button size="md" onClick={handleOnSubmit} disabled={!selectedShippingAddress || isSaving} variant="primary" type="submit">

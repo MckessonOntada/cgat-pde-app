@@ -44,7 +44,7 @@ const Summary = () => {
     navigate('/orders');
   };
 
-  const handleOnCancel = () => {
+  const handleOnBackToOrders = () => {
     //compare data change, display modal for confirmation
     navigate('/orders');
   };
@@ -55,12 +55,7 @@ const Summary = () => {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={handleOnBackButtonClick}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
@@ -79,7 +74,6 @@ const Summary = () => {
                 <DetailSegment label={t('labels.orderCost')} value={<p className={styles.price}>{price}</p>} />
               </div>
             </div>
-
             <div className={'grid grid-gap-16 grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'}>
               <div className="MCP-panel-container">
                 <ModuleHeader
@@ -188,7 +182,7 @@ const Summary = () => {
             <Button size={'md'} variant="secondary">
               {t('captions.btnPrintSummary')}
             </Button>
-            <Button size={'md'} variant="secondary" onClick={handleOnCancel}>
+            <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
               {t('captions.btnBack')}
             </Button>
             <Button size={'md'} variant="primary" type="submit" disabled={!isAgreed} onClick={handleOnSubmit}>

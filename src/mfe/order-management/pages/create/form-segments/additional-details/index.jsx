@@ -41,7 +41,7 @@ function AdditionalDetails() {
     }
   );
 
-  const handleOnBackButtonClick = () => {
+  const handleOnBack = () => {
     //compare data change, display modal for confirmation
     navigate(`../${orderId}/patient`);
   };
@@ -57,7 +57,7 @@ function AdditionalDetails() {
     saveAdditionalDetails(payload);
   };
 
-  const handleOnBack = () => {
+  const handleOnBackToOrders = () => {
     //compare data change, display modal for confirmation
     navigate('/orders');
   };
@@ -68,12 +68,7 @@ function AdditionalDetails() {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={handleOnBackButtonClick}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>

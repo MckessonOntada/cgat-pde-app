@@ -31,7 +31,7 @@ const PatientDetails = () => {
     onError: console.log
   });
 
-  const handleOnBackButtonClick = () => {
+  const handleOnBack = () => {
     //compare data change, display modal for confirmation
     navigate(`../${orderId}/accounts`);
   };
@@ -52,7 +52,7 @@ const PatientDetails = () => {
     savePatientDetails(payload);
   };
 
-  const handleOnBack = () => {
+  const handleOnBackToOrders = () => {
     //compare data change, display modal for confirmation
     navigate('/orders');
   };
@@ -61,12 +61,7 @@ const PatientDetails = () => {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={handleOnBackButtonClick}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
