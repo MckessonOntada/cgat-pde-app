@@ -16,7 +16,7 @@ const constructUserManagementServicePublicUrl = (uri) => {
 const constructOrderManagementServiceUrl = (uri) => {
   const practiceId = AuthUtils.getPracticeId();
   return `${ORDER_MANAGEMENT_SERVICE_BASE_URL}api/practices/${practiceId}/${uri}`;
-}
+};
 
 const ApiRoutes = Object.freeze({
   GET_CGAT_PDE_OKTA_CONFIG: constructUserManagementServicePublicUrl('public/idpConfig'),
@@ -35,7 +35,8 @@ const ApiRoutes = Object.freeze({
   PUBLIC_ORGANIZATIONS: constructUserManagementServicePublicUrl('practices'),
   ACCOUNTS: constructUserManagementServiceUrl('accounts'),
   PUBLIC_ACCOUNTS: constructUserManagementServicePublicUrl('accounts'),
-  ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`)
+  ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`),
+  INVOICES_CREDITS_LISTING: (accountNumber, filterCredits) => constructOrderManagementServiceUrl(`account/${accountNumber}/open-invoices?filterCredits=${filterCredits}`)
 });
 
 export default ApiRoutes;

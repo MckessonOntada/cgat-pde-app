@@ -5,24 +5,12 @@ import { PaymentInvoicesData } from '../../mockData/PaymentInvoicesData';
 import { Link } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
-import { ReactComponent as PDFicon } from "../../../../assets/svg/office-file-pdf.svg"
+import { ReactComponent as PDFicon } from '../../../../assets/svg/office-file-pdf.svg';
 
 export default function CreditsTable() {
   const { t } = useTranslate();
   const [filteredData, setFilteredData] = useState(PaymentInvoicesData);
-  const [showDropdown, setshowDropdown] = useState(null);
-  // let dataElement = [{ label: 'Payment' }, { label: 'Export PDF' }];
-  let dataElement = [{ label: 'Payment' }, { label: 'Export PDF' }];
-  // let dataElement = ['Payment', 'Export PDF'];
 
-  const onClickIcon = (key) => {
-    console.log('onClickIcon', key);
-    if (showDropdown == key.id) {
-      setshowDropdown(null);
-    } else {
-      setshowDropdown(key.id);
-    }
-  };
   const columns = [
     {
       name: t('paymentInvoices.history.table.billNumber'),
@@ -78,9 +66,9 @@ export default function CreditsTable() {
       wrap: true,
 
       cell: (props) => (
-         <Button className="back-button-control" variant="tertiary" Icon={() => <PDFicon />} onClick={()=>{}} size="md">
-         {t('paymentInvoices.credits.table.downloadPdf')}
-       </Button>
+        <Button className="back-button-control" variant="tertiary" Icon={() => <PDFicon />} onClick={() => {}} size="md">
+          {t('paymentInvoices.credits.table.downloadPdf')}
+        </Button>
       )
     }
   ];
