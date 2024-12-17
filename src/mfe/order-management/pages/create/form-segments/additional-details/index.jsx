@@ -1,32 +1,16 @@
 import React from 'react';
-import { CustomDataTable, RadioGroup, Button, Stepper, Heading, Required, CheckboxGroup } from '@mckesson/mcp-component-library';
+import { Button, Stepper, Heading, Required } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormList } from '../Constants';
-import { ReactComponent as InfoIcon } from '@src/assets/svg/info_icon_circle_filled.svg';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
 import DetailSegment from '@src/components/DetailSegment';
 import { Field, Form, Formik } from 'formik';
-import FileInput from '@src/components/FileInput';
-import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { getFormFields } from './fields';
 import * as Yup from 'yup';
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation } from 'react-query';
-
-const data = [
-  {
-    variantId: 68,
-    variant: 'Type A',
-    variantDescription: 'One to One'
-  },
-  {
-    variantId: 2,
-    variant: 'Type B',
-    variantDescription: 'One to Many'
-  }
-];
 
 const getValidationSchema = (t) =>
   Yup.object({
@@ -48,16 +32,6 @@ function AdditionalDetails() {
   const formFields = getFormFields(t);
   const navigate = useNavigate();
   const { orderId } = useParams();
-  const [checkboxOptions, setCheckboxOptions] = React.useState([
-    {
-      isDisabled: false,
-      isChecked: false,
-      label: t('messages.variantAcknowledgement'),
-      value: false
-    }
-  ]);
-  const [consentStatus, setConsentStatus] = React.useState('');
-  const [variant, setVariant] = React.useState();
 
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(
     async (data) => OrderService.saveAdditionalDetails(orderId, data),
@@ -67,67 +41,25 @@ function AdditionalDetails() {
     }
   );
 
-  React.useEffect(() => {
-    const defaultVariant = data && data[0];
-    setVariant(defaultVariant || {});
-  }, []);
-
   const handleOnBackButtonClick = () => {
     //compare data change, display modal for confirmation
     navigate(`../${orderId}/patient`);
   };
 
   const handleOnSubmit = (values) => {
-    let isValid = true;
-    if (values) {
-      if (!variant) {
-        console.log('select variant');
-        return;
-      }
-      if (consentStatus !== 'yes') {
-        console.log('missing consent document');
-        return;
-      }
-      if (checkboxOptions[0].isChecked !== true) {
-        console.log('missing acknowledge');
-        return;
-      }
-    }
-
     const payload = {
       orderQuantity: values.orderQuantity,
       slotNumber: values.slotNumber,
       poNumber: values.poNumber,
-      dateOfAdministration: values.dateOfAdministration,
-      variant: {
-        variant: variant.variant,
-        variantDescription: variant.variantDescription,
-        variantAcknowledgment: checkboxOptions[0].isChecked
-      },
-      patientConsentTaken: consentStatus
+      dateOfAdministration: values.dateOfAdministration
     };
 
     saveAdditionalDetails(payload);
   };
 
-  const handleOnAcknowledgmentChange = (value) => {
-    const updatedOptions = checkboxOptions.map((item) =>
-      item.value === value
-        ? {
-            ...item,
-            isChecked: !item.isChecked
-          }
-        : item
-    );
-    setCheckboxOptions(updatedOptions);
-  };
-
   const handleOnBack = () => {
     //compare data change, display modal for confirmation
     navigate('/orders');
-  };
-  const handleOnVariantChange = (variant) => {
-    setVariant(variant);
   };
 
   const forms = FormList(t);
@@ -180,7 +112,7 @@ function AdditionalDetails() {
                       <Required id="Required" /> {t('labels.required')}
                     </p>
                   </div>
-                  <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+                  <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
                     {formFields.map((field, index) => (
                       <Field
                         key={index}
@@ -192,68 +124,6 @@ function AdditionalDetails() {
                         maxLength={field.maxLength}
                       />
                     ))}
-                  </div>
-                  <div className="MCP-sect">
-                    <Heading as="h3">{t('labels.selectVariant')}</Heading>
-                    <VariantTable variant={variant} onChange={handleOnVariantChange} />
-                  </div>
-
-                  <div className="agreement-checkbox-control">
-                    <Field name="variant-acknowledgement">
-                      {({ field, form }) => (
-                        <CheckboxGroup
-                          id={'default'}
-                          name="variant-acknowledgement"
-                          items={checkboxOptions.map((item) => ({
-                            ...item,
-                            onChange: () => handleOnAcknowledgmentChange(item.value)
-                          }))}
-                          size="md"
-                        />
-                      )}
-                    </Field>
-                  </div>
-                  <div>
-                    <Field name="file" isRequired={checkboxOptions[0].isChecked}>
-                      {({ field, form }) => (
-                        <FileInput
-                          name="variantAcknowledgementDocument"
-                          initialLogo={field.value}
-                          onFileSelect={(file) => {
-                            form.setFieldValue(field.name, file);
-                          }}
-                          label={t('labels.uploadDocument')}
-                        />
-                      )}
-                    </Field>
-                  </div>
-                  <div className="agreement-checkbox-control">
-                    <p>{t('messages.patientConcent')}</p>
-                    <RadioGroup
-                      direction="row"
-                      id="patientConcent"
-                      items={['yes', 'no'].map((v) => ({ label: t(`label.${v}`), value: v.toLowerCase() }))}
-                      onChangeValue={setConsentStatus}
-                      value={consentStatus}
-                      radioBtnWidth="auto"
-                    />
-                  </div>
-                  <div>
-                    <Field name="file">
-                      {({ field, form }) => (
-                        <FileInput
-                          name="patient-concent-document"
-                          initialLogo={field.value}
-                          onFileSelect={(file) => {
-                            form.setFieldValue(field.name, file);
-                          }}
-                          label=<p className="form-instruction">
-                            {t('labels.uploadDocument')}
-                            <Required id="Required" />
-                          </p>
-                        />
-                      )}
-                    </Field>
                   </div>
                 </div>
                 <div className="controls">
@@ -272,65 +142,5 @@ function AdditionalDetails() {
     </div>
   );
 }
-
-const VariantTable = ({ variant, onChange }) => {
-  const { t } = useTranslate();
-
-  const columns = [
-    {
-      id: 'id',
-      selector: () => {},
-      width: '40px',
-      sortable: false,
-      cell: (props) => (
-        <span className="MCP-table-cell radio-button-wrapper">
-          <RadioGroup
-            direction="column"
-            id={`radio-button-variant-${props.variantId}`}
-            items={[
-              {
-                isDisabled: false,
-                label: ' ',
-                value: props.variantId
-              }
-            ]}
-            onChangeValue={() => {
-              onChange(props);
-            }}
-            radioBtnWidth="auto"
-            value={variant?.variantId === props.variantId ? props.variantId : ''}
-          />
-        </span>
-      )
-    },
-    {
-      id: 'variant',
-      name: (
-        <div className="variant-table-cell icon">
-          <span>{t('labels.variant')}</span>
-          <InfoIcon />
-        </div>
-      ),
-      selector: () => {},
-      minWidth: '220px',
-      maxWidth: '280px',
-      sortable: false,
-      cell: (props) => (
-        <span aria-label={t('labels.variant')}>
-          <EclipsesTextcss str={props.variant} maxWidth={240} />
-        </span>
-      )
-    },
-    {
-      id: 'variantDescription',
-      name: <div className="variant-table-cell">{t('labels.variantDescription')}</div>,
-      minWidth: '300px',
-      selector: () => {},
-      sortable: false,
-      cell: (props) => <span>{props.variantDescription}</span>
-    }
-  ];
-  return <CustomDataTable id="order-management-therapy-listing" type={'normal'} columns={columns} data={data} />;
-};
 
 export default AdditionalDetails;
