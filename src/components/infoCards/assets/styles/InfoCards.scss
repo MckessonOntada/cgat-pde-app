@@ -1,0 +1,43 @@
+.info-card {
+    display: flex;
+    flex-direction: column;
+    width: 194px;
+    height: 58px;
+    align-items: start;
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 4px;
+
+        .info-title {
+            color: #1E394E;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 18px;
+        }
+
+        .info-icon {
+            cursor: pointer;
+            color: #6c757d;
+            height: 18px;
+            width: 18px;
+
+            path {
+                height: 18px;
+                width: 18px;
+            }
+        }
+    }
+
+    .card-value {
+        color: #3C5C6E;
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 28px;
+        letter-spacing: -0.024px;
+    }
+}
