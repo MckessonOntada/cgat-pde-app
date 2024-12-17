@@ -72,8 +72,7 @@ async function saveAccount(orderId, payload) {
 }
 
 async function getTherapies(requestParams) {
-  const userId = AuthUtils.getUserId();
-  const url = `${ApiRoutes.ORDER(userId)}/therapies?${serializeParams(requestParams)}`;
+  const url = `${ApiRoutes.USERS()}/current/therapies?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {
     return res.data;
@@ -82,15 +81,13 @@ async function getTherapies(requestParams) {
 }
 
 async function getTherapyDetailsById(therapyId) {
-  const userId = AuthUtils.getUserId();
-  const url = `${ApiRoutes.ORDER(userId)}/therapies/${therapyId}`;
+  const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   return res.data || {};
 }
 
 async function getSoldToAccounts(therapyId, query) {
-  const userId = AuthUtils.getUserId();
-  let url = `${ApiRoutes.ORDER(userId)}/therapies/${therapyId}/soldtoaccounts`;
+  let url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccounts`;
   if (query) {
     url += `?query=${query}`;
   }
@@ -102,8 +99,7 @@ async function getSoldToAccounts(therapyId, query) {
 }
 
 async function getShippingAddressForTherapyByAccountId(therapyId, accountId, requestParams) {
-  const userId = AuthUtils.getUserId();
-  const url = `${ApiRoutes.ORDER(userId)}/therapies/${therapyId}/soldtoaccount/${accountId}/shiptoaccounts?${serializeParams(
+  const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccount/${accountId}/shiptoaccounts?${serializeParams(
     requestParams
   )}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});

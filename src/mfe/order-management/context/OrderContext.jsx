@@ -1,5 +1,6 @@
 import OrderService from '@src/api/commonService/OrderService';
 import React, { createContext, useContext, useState } from 'react';
+import { MdViewArray } from 'react-icons/md';
 import { useQuery } from 'react-query';
 
 const TAB_VARIANT = {
@@ -11,7 +12,7 @@ const INITIAL_FILTER_STATE = {
   status: []
 };
 
-const INITIAL_PAGINATION_CONFIG = {
+const INITIAL_PAGINATION_STATE = {
   totalElements: 0,
   pageSize: 8,
   totalPages: 0,
@@ -32,45 +33,81 @@ export const useOrders = () => {
 };
 
 export const OrderProvider = ({ children }) => {
-  const [filterState, setFilterState] = React.useState(INITIAL_FILTER_STATE);
-  const [pageConfig, setPageConfig] = React.useState(INITIAL_PAGINATION_CONFIG);
+  const [filterConfig, setFilterConfig] = React.useState(INITIAL_FILTER_STATE);
+  const [paginationConfig, setPaginationConfig] = React.useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);
   const [dataState, setDataState] = React.useState(INITIAL_DATA_STATE);
   const [tabVariant, setTabVariant] = React.useState(TAB_VARIANT.PENDING_SUBMISSION);
 
-  const { isLoading } = useQuery({
+  const requestParams = React.useMemo(() => {
+    const params = {
+      pageNo: paginationConfig.pageNumber - 1,
+      pageSize: paginationConfig.pageSize,
+      sortBy: sortConfig.sortBy || 'name',
+      sortOrder: sortConfig.sortOrder || 'asc'
+    };
+
+    if (filterConfig.searchQuery) params.query = filterConfig.searchQuery;
+    if (tabVariant === 'submitted') {
+      params.status = 'submitted';
+    } else {
+      const allStatus = ['in_draft', 'approval_pending'];
+      if (filterConfig.status && filterConfig.status.length > 0) {
+        params.status = filterConfig.status;
+      } else {
+        params.status = allStatus;
+      }
+    }
+    return params;
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig, tabVariant]);
+
+  const { isLoading, refetch: refreshData } = useQuery({
     queryKey: ['orders'],
-    queryFn: async () => OrderService.getOrders(),
+    queryFn: async () => OrderService.getOrders(requestParams),
     onSuccess: (result) => {
+      const { totalElements, totalPages } = result;
+      setPaginationConfig((prevState) => ({ ...prevState, totalElements, totalPages }));
+
       if (result.content) {
         setDataState(result.content);
       }
     }
   });
 
-  const changeTabVariant = (newVariant) => {};
+  React.useEffect(() => {
+    refreshData();
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig, tabVariant]);
 
   const applyFilters = (filters) => {
-    setFilterState((prevFilters) => ({ ...prevFilters, ...filters }));
+    setFilterConfig((prevFilters) => ({ ...prevFilters, ...filters }));
   };
 
   const clearFilters = () => {
-    setFilterState({ ...initialFilterState });
+    setFilterConfig({ ...INITIAL_FILTER_STATE });
   };
 
-  const setCurrentPage = (page) => {
-    _setPageConfig((prevState) => ({ ...prevState, currentPage: page }));
+  const setCurrentPage = (pageNumber) => {
+    setPaginationConfig((prevState) => ({ ...prevState, pageNumber: pageNumber }));
+  };
+
+  const changeTab = (tabType = '') => {
+    setCurrentPage(1);
+    if (tabType.toLowerCase() === 'submitted') setTabVariant('submitted');
+    else {
+      setTabVariant('pending_submission');
+    }
   };
 
   return (
     <OrderContext.Provider
       value={{
-        filterState,
-        pageConfig,
+        filterConfig,
+        paginationConfig,
         dataState,
         applyFilters,
         clearFilters,
-        setCurrentPage
+        setCurrentPage,
+        changeTab
       }}>
       {children}
     </OrderContext.Provider>

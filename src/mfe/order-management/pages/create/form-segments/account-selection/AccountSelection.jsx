@@ -16,6 +16,8 @@ import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import CommonUtils from '@src/util/CommonUtils';
 import OrderService from '@src/api/commonService/OrderService';
 import ShippingAddress from './ShippingAddress';
+import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
+import OrderHeaderDetails from '../OrderHeaderDetails';
 
 const DetailField = ({ label, value, className }) => (
   <div className={className}>
@@ -33,6 +35,7 @@ const AccountSelection = () => {
   const [accountSearchString, setAccountSearchString] = React.useState('');
   const [selectedShippingAddress, setSelectedShippingAddress] = React.useState('');
   const therapyId = 3; //temp
+  const { formState, setActiveRecord } = useManageOrder();
 
   const { isLoading, data: accountsListData = {} } = useQuery({
     queryKey: ['order', 'therapy', therapyId, accountSearchString],
@@ -57,7 +60,11 @@ const AccountSelection = () => {
   }, [accountsListData]);
 
   const { isLoading: isSaving, mutate: saveAccount } = useMutation(async (data) => OrderService.saveAccount(orderId, data), {
-    onSuccess: ({ id }) => navigate(`../${orderId}/patient`),
+    onSuccess: (result) => {
+      const { id } = result;
+      setActiveRecord(result);
+      navigate(`../${id}/patient`);
+    },
     onError: console.log
   });
 
@@ -97,6 +104,8 @@ const AccountSelection = () => {
 
   const forms = FormList(t);
 
+  const { therapy } = formState.activeRecord || {};
+
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -111,20 +120,21 @@ const AccountSelection = () => {
         <Stepper activeIndex={2} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} />
 
         <div className={`MCP-module-wrapper`}>
-          <div className="MCP-panel-container">
+          <OrderHeaderDetails />
+          {/* <div className="MCP-panel-container">
             <div className="row-space-between-center">
               <DetailField
                 label={t('labels.therapyDescription')}
                 value={
                   <React.Fragment>
-                    <span>Therapy value</span>
+                    <span>{therapy?.materialDescription || '-'}</span>
                     <TickIcon width="16px" height="16px" />
                   </React.Fragment>
                 }
               />
               <DetailField label={t('labels.price')} value={'$----'} />
             </div>
-          </div>
+          </div> */}
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>
               <ModuleHeader

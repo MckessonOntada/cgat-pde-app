@@ -11,6 +11,8 @@ import { getFormFields } from './fields';
 import * as Yup from 'yup';
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation } from 'react-query';
+import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
+import OrderHeaderDetails from '../OrderHeaderDetails';
 
 const getValidationSchema = (t) =>
   Yup.object({
@@ -32,11 +34,16 @@ function AdditionalDetails() {
   const formFields = getFormFields(t);
   const navigate = useNavigate();
   const { orderId } = useParams();
+  const { formState, setActiveRecord } = useManageOrder();
 
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(
     async (data) => OrderService.saveAdditionalDetails(orderId, data),
     {
-      onSuccess: ({ id }) => navigate(`../${id}/summary`),
+      onSuccess: (result) => {
+        const { id } = result;
+        setActiveRecord(result);
+        navigate(`../${id}/summary`);
+      },
       onError: console.log
     }
   );
@@ -51,7 +58,8 @@ function AdditionalDetails() {
       orderQuantity: values.orderQuantity,
       slotNumber: values.slotNumber,
       poNumber: values.poNumber,
-      dateOfAdministration: values.dateOfAdministration
+      dateOfAdministration: values.dateOfAdministration,
+      patientConsentTaken: true
     };
 
     saveAdditionalDetails(payload);
@@ -63,6 +71,7 @@ function AdditionalDetails() {
   };
 
   const forms = FormList(t);
+  const { therapy, accountDetails, patient, orderCost } = formState.activeRecord || {};
   const validationSchema = getValidationSchema(t);
 
   return (
@@ -91,15 +100,16 @@ function AdditionalDetails() {
                   mobileLabel={t('labels.steps')}
                   stepHeaders={forms.map((f) => ({ label: f.label }))}
                 />
-                <div className="MCP-panel-container">
+                {/* <div className="MCP-panel-container">
                   <div className={`grid grid-gap-24 grid-cols-1 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5`}>
-                    <DetailSegment label={t('labels.therapyDescription')} value={'Therapy Description'} />
+                    <DetailSegment label={t('labels.therapyDescription')} value={therapy?.materialDescription} />
                     <DetailSegment label={t('labels.orderByAccountNumber')} value={'Order by Account Number'} />
-                    <DetailSegment label={t('labels.shipToAccountNumber')} value={'Ship to Account Number'} />
-                    <DetailSegment label={t('labels.patientName')} value={'Patient Name'} />
-                    <DetailSegment label={t('labels.price')} value={'Price'} />
+                    <DetailSegment label={t('labels.shipToAccountNumber')} value={accountDetails?.shipToAccount?.accountNumber} />
+                    <DetailSegment label={t('labels.patientName')} value={patient?.firstName} />
+                    <DetailSegment label={t('labels.price')} value={orderCost || '--'} />
                   </div>
-                </div>
+                </div> */}
+                <OrderHeaderDetails />
                 <div className="MCP-panel-container">
                   <div className="row-space-between-center">
                     <Heading as="h3">{t('labels.additionalDetails')}</Heading>

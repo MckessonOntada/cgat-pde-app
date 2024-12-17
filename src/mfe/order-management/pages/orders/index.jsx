@@ -14,10 +14,13 @@ import { useOrders } from '../../context/OrderContext';
 const OrderIndex = () => {
   const { t } = useTranslate();
   const [tabList, setTabList] = React.useState(getTabs(t));
-  const { applyFilters, clearFilters } = useOrders();
+  const { applyFilters, clearFilters, changeTab } = useOrders();
   const navigate = useNavigate();
+  const activeTab = tabList.find((tab) => tab.isActiveTab);
 
   const additionalFiltersConfig = React.useMemo(() => {
+    if (activeTab?.configName === 'Submitted') return [];
+
     return [
       {
         type: 'dropdown',
@@ -29,7 +32,7 @@ const OrderIndex = () => {
         ]
       }
     ];
-  }, []);
+  }, [activeTab]);
 
   const setActiveTab = (activeTab) => {
     setTabList(
@@ -42,6 +45,7 @@ const OrderIndex = () => {
 
   const handleOnTabChange = (tab) => {
     setActiveTab(tab.configName);
+    changeTab(tab.configName);
   };
 
   const handleOnClick = () => navigate(routesConfig.createOrder);
@@ -49,8 +53,6 @@ const OrderIndex = () => {
   React.useEffect(() => {
     setActiveTab(tabList?.[0].configName);
   }, []);
-
-  const activeTab = tabList.find((tab) => tab.isActiveTab);
 
   return (
     <div className="MCP-module-wrapper">

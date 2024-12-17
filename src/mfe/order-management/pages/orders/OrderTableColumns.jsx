@@ -91,7 +91,37 @@ const getOptionsByStatus = (status, t, tab) => {
     );
   }
 
-  return <DropdownMenu anchorEl={<Button Icon={() => <IconEllipsis />} iconButton variant="tertiary" label="Icon Button" />} handleSelect={handleOnOptionSelection} options={options} aria-label="Order options" />;
+  return (
+    <DropdownMenu
+      anchorEl={<Button Icon={() => <IconEllipsis />} iconButton variant="tertiary" label="Icon Button" />}
+      handleSelect={handleOnOptionSelection}
+      options={options}
+      aria-label="Order options"
+    />
+  );
+};
+
+const getPathByOrderStage = ({ currentStage, id }) => {
+  switch (currentStage) {
+    case 'ACCOUNT_DETAILS':
+      return `${id}/accounts`;
+    case 'PATIENT_DETAILS':
+      return `${id}/patient`;
+    case 'ADDITIONAL_DETAILS':
+      return `${id}/additional-details`;
+    case 'ORDER_SUMMARY':
+      return `${id}/summary`;
+    default:
+      return `${id}/accounts`;
+  }
+};
+
+const getPatientName = (patientInfo) => {
+  let lastName = '';
+
+  if (patientInfo?.name?.lastName) fullName += ',';
+
+  return [lastName, patientInfo?.name?.firstName, patientInfo?.name?.middleName].join(' ');
 };
 
 export const createColumns = (t, navigate, activeTab) => [
@@ -100,13 +130,13 @@ export const createColumns = (t, navigate, activeTab) => [
     name: t('labels.orderId'),
     selector: () => {},
     sortable: true,
-    minWidth: '120px',
-    maxWidth: '180px',
+    minWidth: '240px',
+    maxWidth: '320px',
     sortable: true,
     sortKey: 'orderId',
     cell: (props) => (
-      <Link className="MCP-table-link" to={`${props.id}`} state={props} aria-label={t('labels.orderId')}>
-        <EclipsesTextcss str={props.id} maxWidth={140} />
+      <Link className="MCP-table-link" to={getPathByOrderStage(props)} state={props} aria-label={t('labels.orderId')}>
+        <EclipsesTextcss str={props.id} maxWidth={220} />
       </Link>
     )
   },
@@ -118,7 +148,10 @@ export const createColumns = (t, navigate, activeTab) => [
     sortKey: 'patientName',
     minWidth: '240px',
     maxWidth: '380px',
-    cell: (props) => <EclipsesTextcss aria-label={t('labels.patientName')} str={`${props.name?.lastName}, ${props.name?.firstName} ${props.name?.middleName || ''}`} maxWidth={200} />
+    cell: (props) => {
+      const patientInfo = props.patient && props.patient.patientInfo;
+      return <EclipsesTextcss aria-label={t('labels.patientName')} str={getPatientName(patientInfo)} maxWidth={200} />;
+    }
   },
   {
     id: 'therapyId',
@@ -128,7 +161,14 @@ export const createColumns = (t, navigate, activeTab) => [
     sortKey: 'therapyId',
     minWidth: '240px',
     maxWidth: '380px',
-    cell: (props) => <EclipsesTextcss str={props.therapy} maxWidth={200} className={'MCP-table-cell'} aria-label={t('labels.therapy')} />
+    cell: (props) => (
+      <EclipsesTextcss
+        str={props.therapy?.materialDescription}
+        maxWidth={200}
+        className={'MCP-table-cell'}
+        aria-label={t('labels.therapy')}
+      />
+    )
   },
   {
     id: 'author',
@@ -138,7 +178,9 @@ export const createColumns = (t, navigate, activeTab) => [
     sortKey: 'author',
     minWidth: '240px',
     maxWidth: '380px',
-    cell: (props) => <EclipsesTextcss str={props.author} maxWidth={200} className={'MCP-table-cell'} aria-label={t('table.columns.captions.author')} />,
+    cell: (props) => (
+      <EclipsesTextcss str={props.author?.id} maxWidth={200} className={'MCP-table-cell'} aria-label={t('table.columns.captions.author')} />
+    ),
     omit: activeTab !== 'pending submission'
   },
   {
@@ -148,7 +190,11 @@ export const createColumns = (t, navigate, activeTab) => [
     sortable: true,
     sortKey: 'createdOn',
     width: '180px',
-    cell: (props) => <span aria-label={t('table.columns.captions.createdOn')}>{CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')}</span>,
+    cell: (props) => (
+      <span aria-label={t('table.columns.captions.createdOn')}>
+        {CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')}
+      </span>
+    ),
     omit: activeTab !== 'pending submission'
   },
 
@@ -160,7 +206,7 @@ export const createColumns = (t, navigate, activeTab) => [
     sortKey: 'submittedBy',
     minWidth: '180px',
     maxWidth: '340px',
-    cell: (props) => <span>{props.submittedBy}</span>,
+    cell: (props) => <span>{props.submittedBy?.id}</span>,
     omit: activeTab !== 'submitted'
   },
   {
@@ -170,7 +216,7 @@ export const createColumns = (t, navigate, activeTab) => [
     sortable: true,
     sortKey: 'submittedOn',
     width: '180px',
-    cell: (props) => <span>{CommonUtils.convertDateStringFormat(props.submittedOn, 'MM-DD-YYYY')}</span>,
+    cell: (props) => <span>{props.submittedOn ? CommonUtils.convertDateStringFormat(props.submittedOn, 'MM-DD-YYYY') : '-'}</span>,
     omit: activeTab !== 'submitted'
   },
 
@@ -184,7 +230,7 @@ export const createColumns = (t, navigate, activeTab) => [
     cell: (props) => (
       <Tooltip body={props.status}>
         <span>
-          <Badge text={props.status} type={getColorByStatus(props.status.toLowerCase())} />
+          <Badge text={props.status?.replace('_', ' ')} type={getColorByStatus(props.status.toLowerCase())} />
         </span>
       </Tooltip>
     )
@@ -195,7 +241,7 @@ export const createColumns = (t, navigate, activeTab) => [
     selector: () => {},
     sortable: false,
     width: '120px',
-    cell: (props) => <span aria-label={t('table.columns.captions.price')}>{props.price}</span>
+    cell: (props) => <span aria-label={t('table.columns.captions.price')}>{props.orderCost}</span>
   },
   {
     id: 'actions',

@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './PatientDetails.module.scss';
-import { Button, Stepper } from '@mckesson/mcp-component-library';
+import { Button, Stepper, Alert } from '@mckesson/mcp-component-library';
 import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -10,24 +10,26 @@ import { useNavigate, useParams } from 'react-router-dom';
 import PatientDetailsForm from './PatientDetailsForm';
 import { Form, Formik } from 'formik';
 import { getValidationSchema } from './PatientDetailsFormUtils';
-import { ReactComponent as TickIcon } from '@src/assets/svg/yes_tick_circle_filled.svg';
+import { ReactComponent as TickIcon } from '@src/assets/svg/tick-circle-filled.svg';
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation } from 'react-query';
 import CommonUtils from '@src/util/CommonUtils';
+import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
+import OrderHeaderDetails from '../OrderHeaderDetails';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
   const { orderId } = useParams();
   const navigate = useNavigate();
-  const accountDetails = {
-    accountNumber: '11699387',
-    shipToAccountNumber: '1122332',
-    therapyDescription: 'MPB HEMLIBRA 105MG/0.7ML SDV',
-    price: '$45,000'
-  };
+  const { messageConfig, clearMessage } = useManageOrder();
+  const { formState, setActiveRecord } = useManageOrder();
 
   const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(async (data) => OrderService.savePatientDetails(orderId, data), {
-    onSuccess: () => navigate(`../${orderId}/additional-details`),
+    onSuccess: (result) => {
+      const { id } = result;
+      setActiveRecord(result);
+      navigate(`../${id}/additional-details`);
+    },
     onError: console.log
   });
 
@@ -41,14 +43,13 @@ const PatientDetails = () => {
   const handleSubmit = (form) => {
     const { patientInfo, ...rest } = form;
 
-    if (patientInfo.dateOfBirth) {
-      patientInfo.dateOfBirth = CommonUtils.convertDateStringFormat(patientInfo.dateOfBirth, 'MM-DD-YYYY');
+    const payload = {
+      ...rest
+    };
+    if (patientInfo && patientInfo.dateOfBirth) {
+      payload.dateOfBirth = CommonUtils.convertDateStringFormat(patientInfo.dateOfBirth, 'MM-DD-YYYY');
     }
 
-    const payload = {
-      ...rest,
-      patientInfo
-    };
     savePatientDetails(payload);
   };
 
@@ -58,6 +59,7 @@ const PatientDetails = () => {
   };
 
   const forms = FormList(t);
+  const { therapy, accountDetails, orderCost } = formState.activeRecord || {};
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -72,33 +74,40 @@ const PatientDetails = () => {
         <Stepper activeIndex={3} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} />
 
         <div className={styles.wrapper}>
-          <div className="MCP-panel-container">
+          {/* <div className="MCP-panel-container">
             <div className={styles.sect}>
               <div className={`row-space-between-center`}>
                 <div className={styles.row}>
                   <div className={`${styles.col} ${styles.detailSegment}`}>
                     <div className={'fieldName'}>{t('labels.therapyDescription')}</div>
                     <div className={`${'fieldValue'} ${styles.price}`}>
-                      {accountDetails.therapyDescription}
-                      <TickIcon />
+                      {therapy?.materialDescription}
+                      <TickIcon width="16px" height="16px" />
                     </div>
                   </div>
                   <div className={`${styles.col} ${styles.detailSegment}`}>
                     <div className={'fieldName'}>{t('labels.orderByAccountNumber')}</div>
-                    <div className={'fieldValue'}>{accountDetails.accountNumber}</div>
+                    <div className={'fieldValue'}>{accountDetails?.accountNumber}</div>
                   </div>
                 </div>
                 <div className={`${styles.col} ${styles.detailSegment}`}>
                   <div className={'fieldName'}>{t('labels.shipToAccountNumber')}</div>
-                  <div className={`${'fieldValue'} ${styles.price}`}>{accountDetails.shipToAccountNumber}</div>
+                  <div className={`${'fieldValue'} ${styles.price}`}>{accountDetails?.shipToAccount?.accountNumber}</div>
                 </div>
                 <div className={`${styles.col} ${styles.detailSegment}`}>
                   <div className={'fieldName'}>{t('labels.priceDetails')}</div>
-                  <div className={`${'fieldValue'} ${styles.price}`}>{accountDetails.price}</div>
+                  <div className={`${'fieldValue'} ${styles.price}`}>{orderCost || '--'}</div>
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
+
+          <OrderHeaderDetails />
+
+          {messageConfig && messageConfig.primaryMessage && (
+            <Alert onClose={clearMessage} showTitle title={messageConfig.primaryMessage} type={messageConfig.messageKind} />
+          )}
+
           <Formik
             initialValues={initialValues}
             validationSchema={getValidationSchema(t)}

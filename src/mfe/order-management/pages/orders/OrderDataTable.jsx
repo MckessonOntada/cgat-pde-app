@@ -11,7 +11,7 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 const OrderDataTable = ({ tab }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { dataState: data, pageConfig, setPageConfig, setCurrentPage, setOrdersData } = useOrders();
+  const { dataState: data, paginationConfig, setpaginationConfig, setCurrentPage, setOrdersData } = useOrders();
 
   const columns = createColumns(t, navigate, tab);
 
@@ -30,10 +30,10 @@ const OrderDataTable = ({ tab }) => {
       handleChangePage={handleOnPageChange}
       onSortIconClick={handleOnSort}
       pagination={true}
-      currentPage={pageConfig.currentPage}
-      totalPageCount={pageConfig.pages}
-      totalRocords={pageConfig.total}
-      recordsPerPage={pageConfig.pageSize}
+      currentPage={paginationConfig.pageNumber}
+      totalPageCount={paginationConfig.totalPages}
+      totalRocords={paginationConfig.totalElements}
+      recordsPerPage={paginationConfig.pageSize}
       aria-label={t('table.ariaLabel.orderList')}
       paginationRecordsPerPageMessage={t('labels.perPage')}
       paginationTotalRecorsMessage={t('labels.results')}

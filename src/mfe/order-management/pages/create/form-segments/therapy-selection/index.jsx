@@ -14,6 +14,7 @@ import PageHeader from '@src/components/pageHeader';
 import CommonFilters from '@src/components/Filters';
 import { useMutation } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
+import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -71,9 +72,14 @@ function TherapySelection() {
 
     return config;
   }, []);
+  const { setActiveRecord } = useManageOrder();
 
   const { isLoading: isSaving, mutate: createNewOrder } = useMutation(async (data) => OrderService.createOrder(data), {
-    onSuccess: ({ id }) => navigate(`../${id}/accounts`),
+    onSuccess: (result) => {
+      setActiveRecord(result);
+      const { id } = result;
+      navigate(`../${id}/accounts`);
+    },
     onError: console.log
   });
 
