@@ -4,11 +4,6 @@ import { Pills } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Field, useFormikContext } from 'formik';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import { useQuery } from 'react-query';
-import AuthUtils from '@src/util/AuthUtils';
-import ApiRoutes from '@src/api/ApiRoutes';
-import { serializeParams } from '@src/util/ApiUtils';
 import { useAccountData, useCatalogData, useUserData, useUserRoleData } from './apiService';
 import { useFormContext } from '../../context/FormContext';
 import { RuleKeys, RuleLabels } from '../ApproverGroupDetail/RulesConfig';
@@ -18,70 +13,75 @@ function RenderControls({ attributeType, index, name }) {
 
   const { values, setFieldValue } = useFormikContext();
   const { initialValues, isEditMode, locationState } = useFormContext();
-
-  const queryMap = {
-    Catalog: useCatalogData(),
-    Account: useAccountData(),
-    UserRole: useUserRoleData(),
-    UserData: useUserData()
-  };
-
-  const { isLoading, data, isError } = (() => {
-    switch (attributeType) {
-      case RuleLabels[RuleKeys.THERAPIES]:
-        return queryMap.Catalog;
-      case RuleLabels[RuleKeys.ACCOUNTS]:
-        return queryMap.Account;
-      case RuleLabels[RuleKeys.USERS]:
-        if (!values.attributeuseroption || values.attributeuseroption === 'user_role') {
-          return queryMap.UserRole;
-        } else if (values.attributeuseroption === 'user_name') {
-          return queryMap.UserData;
-        }
-        return { isLoading: false, data: [], isError: false }; // Fallback
-      default:
-        return { isLoading: false, data: [], isError: false }; // Default empty state
-    }
-  })();
-
   const [localData, setLocalData] = useState([]);
   const isDataBinded = useRef(false);
+  const isUserDataBinded = useRef(false);
+
+  const shouldFetchCatalog = attributeType === RuleLabels[RuleKeys.THERAPIES];
+  const shouldFetchAccounts = attributeType === RuleLabels[RuleKeys.ACCOUNTS];
+  const shouldFetchUsers = attributeType === RuleLabels[RuleKeys.USERS];
+
+  // API hooks with enabled option
+  const catalogQuery = useCatalogData(shouldFetchCatalog);
+  const accountQuery = useAccountData(shouldFetchAccounts);
+  const userRoleQuery = useUserRoleData(shouldFetchUsers && values.attributeuseroption === 'user_role');
+  const userDataQuery = useUserData(shouldFetchUsers && values.attributeuseroption === 'user_name');
+
+  // Memoize the query result
+  const queryResult = useMemo(() => {
+    if (shouldFetchCatalog) return catalogQuery;
+    if (shouldFetchAccounts) return accountQuery;
+    if (shouldFetchUsers) {
+      return values.attributeuseroption === 'user_role' ? userRoleQuery : userDataQuery;
+    }
+    return { isLoading: false, data: [] };
+  }, [attributeType, values.attributeuseroption, catalogQuery, accountQuery, userRoleQuery, userDataQuery]);
 
   useEffect(() => {
-    if (data?.length > 0 && attributeType && initialValues?.rules && attributeType !== RuleLabels[RuleKeys.USERS]) {
-      const currentRule = initialValues.rules.find((rule) => rule.attributeType === attributeType);
+    if (queryResult.data?.length > 0) {
+      setLocalData(queryResult.data);
+    }
+  }, [queryResult.data]);
 
-      const transformedData = data.map((item) => ({
+  useEffect(() => {
+    if (!isDataBinded.current) {
+      if (queryResult.data?.length > 0 && attributeType && initialValues?.rules && attributeType !== RuleLabels[RuleKeys.USERS]) {
+        const currentRule = initialValues.rules.find((rule) => rule.attributeType === attributeType);
+
+        const transformedData = queryResult.data.map((item) => ({
+          value: item.value,
+          label: item.label,
+          isChecked: currentRule?.value?.includes(item.value) || false
+        }));
+
+        setLocalData(transformedData);
+        isDataBinded.current = true;
+      } else if (!isEditMode && queryResult.data?.length > 0) {
+        setLocalData(queryResult.data);
+        isDataBinded.current = true;
+      }
+    }
+  }, [queryResult.data, attributeType, initialValues.rules, isEditMode]);
+
+  useEffect(() => {
+    if (!isUserDataBinded.current && queryResult.data?.length > 0) {
+      let fetchData = [];
+      if (attributeType === RuleLabels[RuleKeys.USERS]) {
+        fetchData = values.attributeuseroption === 'user_role' ? userRoleQuery.data || [] : userDataQuery.data || [];
+      } else {
+        fetchData = queryResult.data || [];
+      }
+      const currentRule = initialValues?.rules?.find((rule) => rule.attributeType === attributeType);
+
+      const transformedData = fetchData.map((item) => ({
         value: item.value,
         label: item.label,
         isChecked: currentRule?.value?.includes(item.value) || false
       }));
-
       setLocalData(transformedData);
-      isDataBinded.current = true;
-    } else if (!isEditMode && data?.length > 0) {
-      setLocalData(data);
-      isDataBinded.current = true;
+      isUserDataBinded.current = true;
     }
-  }, [data, attributeType, initialValues.rules, isEditMode]);
-
-  // Separate useEffect for User options, handles radio button changes dynamically
-  useEffect(() => {
-    if (attributeType === RuleLabels[RuleKeys.USERS]) {
-      const fetchData = values.attributeuseroption === 'user_role' ? queryMap.UserRole?.data || [] : queryMap.UserData?.data || [];
-
-      // Reset state and bind the new User Role/User Name values
-      const currentRule = initialValues.rules.find((rule) => rule.attributeType === RuleLabels[RuleKeys.USERS]);
-      const transformedUserData = fetchData.map((item) => ({
-        value: item.value,
-        label: item.label,
-        isChecked: currentRule?.value?.includes(item.value) || false
-      }));
-
-      setLocalData(transformedUserData);
-      isDataBinded.current = true;
-    }
-  }, [attributeType, values.attributeuseroption, queryMap.UserRole?.data, queryMap.UserData?.data, initialValues.rules]);
+  }, [attributeType, values.attributeuseroption, userRoleQuery.data, userDataQuery.data, queryResult.data, initialValues.rules]);
 
   const getAugmentedValues = (rules, attributeType) => {
     return rules.filter((rule) => rule.attributeType === attributeType).flatMap((rule) => rule.value_augmented || []);
@@ -124,7 +124,7 @@ function RenderControls({ attributeType, index, name }) {
     return val;
   };
 
-  const renderFieldWithPills = (fieldId, fieldLabel) => (
+  const renderFieldWithPills = (fieldId, fieldLabel, pillsCount) => (
     <div>
       <Field
         id={fieldId}
@@ -134,6 +134,7 @@ function RenderControls({ attributeType, index, name }) {
         component={Components['multiSelectDropdown']}
         isRequired
         options={localData}
+        noSelectedCountMessage={t('approvergroup.create.option.please_select')}
         getUpdatedOptions={setLocalData}
       />
       <div className="pills-container">
@@ -143,6 +144,7 @@ function RenderControls({ attributeType, index, name }) {
           variant="secondary"
           hasDeleteIcon
           onDelete={onRemoveClick}
+          showPillsCount={pillsCount}
         />
       </div>
     </div>
@@ -167,13 +169,13 @@ function RenderControls({ attributeType, index, name }) {
       case RuleLabels[RuleKeys.THERAPIES]:
         return (
           <div className="grid grid-gap-16 grid-cols-1">
-            {renderFieldWithPills(RuleLabels[RuleKeys.THERAPIES], 'approvergroup.selecttherapy')}
+            {renderFieldWithPills(RuleLabels[RuleKeys.THERAPIES], 'approvergroup.selecttherapy', 5)}
           </div>
         );
       case RuleLabels[RuleKeys.ACCOUNTS]:
         return (
           <div className="grid grid-gap-16 grid-cols-1">
-            {renderFieldWithPills(RuleLabels[RuleKeys.ACCOUNTS], 'approvergroup.selectaccount')}
+            {renderFieldWithPills(RuleLabels[RuleKeys.ACCOUNTS], 'approvergroup.selectaccount', 5)}
           </div>
         );
 
@@ -205,7 +207,7 @@ function RenderControls({ attributeType, index, name }) {
               value={values.attributeuseroption}
             />
 
-            {renderFieldWithPills('user', 'approvergroup.selectuser')}
+            {renderFieldWithPills('user', 'approvergroup.selectuser', 7)}
           </div>
         );
 

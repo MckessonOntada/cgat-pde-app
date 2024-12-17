@@ -1,4 +1,13 @@
 @use "@src/assets/styles/abstracts/mixins";
+.label-text {
+  font-size: var(--brand-font-size--default);
+  font-weight: var(--brand-font-weight-600);
+  line-height: var(--brand-line-height--x-large);
+
+  white-space: nowrap;
+  text-wrap: wrap;
+  word-break: break-word;
+}
 
 .approver-group-labelWrap {
   display: flex;
@@ -31,7 +40,6 @@
   align-items: center;
   padding: var(--spacing-02) var(--spacing-02) var(--spacing-02) 0px;
   position: relative;
-  padding: var(--spacing-02);
 
   // Add border as divider
   @include mixins.respond(md) {
@@ -42,7 +50,7 @@
       top: 0;
       bottom: 0;
       width: 1px;
-      background-color: #ccc; // Divider color
+      background-color: var(--brand-color-background-grey);
     }
   }
 
@@ -54,11 +62,14 @@
       top: 0;
       bottom: 0;
       width: 1px;
-      background-color: #ccc; // Divider color
+      background-color: var(--brand-color-background-grey);
     }
     &:nth-child(3n):after {
       background-color: var(--brand-color-background-white);
     }
+  }
+  &:last-child::after {
+    display: none;
   }
 }
 
@@ -83,7 +94,7 @@
   align-items: center;
   padding: var(--spacing-02) var(--spacing-02) var(--spacing-02) 0px;
   position: relative;
-  padding: var(--spacing-02);
+  margin-bottom: var(--spacing-04);
 
   @include mixins.respond(sm) {
     &:not(:nth-child(2n)):after {
@@ -93,7 +104,7 @@
       top: 0;
       bottom: 0;
       width: 1px;
-      background-color: #ccc; // Divider color
+      background-color: var(--brand-color-background-grey);
     }
   }
 
@@ -106,7 +117,7 @@
       top: 0;
       bottom: 0;
       width: 1px;
-      background-color: #ccc; // Divider color
+      background-color: var(--brand-color-background-grey);
     }
   }
 
@@ -118,7 +129,7 @@
       top: 0;
       bottom: 0;
       width: 1px;
-      background-color: #ccc; // Divider color
+      background-color: var(--brand-color-background-grey);
     }
     &:nth-child(6n):after {
       background-color: var(--brand-color-background-white);

@@ -78,7 +78,7 @@ export default function Dashboard() {
     let config = [];
     return [
       {
-        type: 'multiSelectDropdown',
+        type: 'dropdown',
         name: 'status',
         label: t('userManagement.table.status'),
         options: [
@@ -101,7 +101,7 @@ export default function Dashboard() {
         heading={<Heading as="h1">{t('approvergroup.header.label')}</Heading>}
         controls={
           <div className="controls">
-            {hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.MANAGE_ORDERS) && (
+            {hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CREATE_ORDERS) && (
               <Button
                 Icon={add_circle_bold}
                 className="button-icon"

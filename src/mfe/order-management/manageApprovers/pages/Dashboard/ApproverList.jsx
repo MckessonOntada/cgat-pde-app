@@ -1,19 +1,17 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { CustomDataTable, Button, Badge, CheckboxGroup, Modal } from '@mckesson/mcp-component-library';
-
 import { useTranslate } from '@src/translations/useTranslation';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import { useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
-import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import CommonUtils from '@src/util/CommonUtils';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { useApprover } from '../../context/ApproverContext';
 import Actions from './Actions';
-import { PERMISSIONS_ENUM } from '../../../../user-management/pages/UserPermissions/permissionsEnum';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
 
 function ApproverList({ onActionSuccess }) {
@@ -23,10 +21,6 @@ function ApproverList({ onActionSuccess }) {
   const { data, paginationConfig, applySort, setPageNumber, refreshData } = useApprover();
   const userPermissions = AuthUtils.getUserPermissions();
   const { hasPermission } = usePermission();
-
-  const handleRowSelected = ({ selectedRows }) => {
-    setSelectedRows(selectedRows);
-  };
 
   const handleDeactivateApproverGroup = async (grpId) => {
     const res = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}/${grpId}`, httpVerb.DELETE, null);
@@ -105,10 +99,10 @@ function ApproverList({ onActionSuccess }) {
         sortable: true,
         sortKey: 'name',
         wrap: true,
-        minWidth: '340px',
+        minWidth: '440px',
         cell: (props) => (
           <div>
-            <EclipsesTextcss str={props.name} maxWidth={300} />
+            <EclipsesTextcss str={props.name} maxWidth={400} />
           </div>
         )
       },
@@ -120,7 +114,7 @@ function ApproverList({ onActionSuccess }) {
         minWidth: '160px',
         cell: (props) => (
           <div>
-            <EclipsesTextcss str={props.createdBy} maxWidth={300} />
+            <EclipsesTextcss str={props.createdBy} maxWidth={200} />
           </div>
         )
       },
@@ -137,7 +131,7 @@ function ApproverList({ onActionSuccess }) {
         name: t('approvergroup.table.status'),
         selector: 'status',
         center: true,
-        minWidth: '80px',
+        minWidth: '200px',
         cell: (props) => <div>{props.active ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />}</div>
       },
       {
@@ -145,8 +139,9 @@ function ApproverList({ onActionSuccess }) {
         center: true,
         name: t('approvergroup.table.action'),
         cell: (row) => <Actions row={row} />,
-        width: '120px',
-        omit: !hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.MANAGE_ORDERS)
+        width: '200px',
+        minWidth: '200px',
+        omit: !hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS) // To do - Change to approvergroup permissions
       }
     ];
   }, [data, userPermissions]);
@@ -158,7 +153,10 @@ function ApproverList({ onActionSuccess }) {
           <p className="selected-item-text">
             {1} {t('approvergroup.selected_items')}
           </p>
-          <Button variant="secondary" onClick={handleDeactivate}>
+          <Button
+            variant="secondary"
+            onClick={handleDeactivate}
+            isDisabled={!hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.MANAGE_ORDERS)}>
             {t('approvergroup.button.deactivate')}
           </Button>
         </div>
@@ -194,7 +192,7 @@ function ApproverList({ onActionSuccess }) {
           isOpen,
           onClose: () => setIsOpen(false),
           modalTitle: t('approvergroup.confirmationmessage'),
-          modalBody: <h3>Are you sure you wish to Deactivate this Approver Group ?</h3>,
+          modalBody: <h3>t('approvergroup.confirmationmessage.message')</h3>,
           modalFooter: (
             <React.Fragment>
               <Button onClick={handleConfirmCancel} variant="secondary">

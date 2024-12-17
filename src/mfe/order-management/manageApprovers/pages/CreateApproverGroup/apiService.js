@@ -9,34 +9,33 @@ let params = {
   partnerFunction: 'SOLD_TO'
 };
 
-let roleParam = {
+let statusParam = {
   status: 'active'
 };
 const practiceId = AuthUtils.getPracticeId();
-const userId = AuthUtils.getUserId();
 
-export const useCatalogData = () => {
+export const useCatalogData = (shouldFetch) => {
   return useQuery(
     ['catalogData'],
     async () => {
-      const apiUrl = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts?${serializeParams(params)}`;
+      const apiUrl = `${ApiRoutes.USERS()}/current/therapies`;
       const res = await HttpResourceService.callRest(apiUrl, httpVerb.GET, {});
       return (
         res.data?.content?.map((item) => ({
-          label: item.accountName,
-          value: item.id
+          label: item.therapyDescription,
+          value: item.therapyId
         })) || []
       );
     },
     {
-      enabled: !!practiceId,
       refetchOnWindowFocus: false,
-      keepPreviousData: true
+      keepPreviousData: true,
+      enabled: shouldFetch // Only fetch when shouldFetch is true
     }
   );
 };
 
-export const useAccountData = () => {
+export const useAccountData = (shouldFetch) => {
   return useQuery(
     ['accountData'],
     async () => {
@@ -51,16 +50,17 @@ export const useAccountData = () => {
     },
     {
       refetchOnWindowFocus: false,
-      keepPreviousData: true
+      keepPreviousData: true,
+      enabled: shouldFetch // Only fetch when shouldFetch is true
     }
   );
 };
 
-export const useUserRoleData = () => {
+export const useUserRoleData = (shouldFetch) => {
   return useQuery(
     ['userRoleData'],
     async () => {
-      const apiUrl = `${ApiRoutes.GET_ROLES()}?${serializeParams(roleParam)}`;
+      const apiUrl = `${ApiRoutes.GET_ROLES()}?${serializeParams(statusParam)}`;
       const res = await HttpResourceService.callRest(apiUrl, httpVerb.GET, {});
       return (
         res.data?.content?.map((item) => ({
@@ -71,7 +71,8 @@ export const useUserRoleData = () => {
     },
     {
       refetchOnWindowFocus: false,
-      keepPreviousData: true
+      keepPreviousData: true,
+      enabled: shouldFetch // Only fetch when shouldFetch is true
     }
   );
 };
@@ -81,7 +82,7 @@ let userParams = {
   status: 'active'
 };
 
-export const useUserData = () => {
+export const useUserData = (shouldFetch) => {
   return useQuery(
     ['userData'],
     async () => {
@@ -96,7 +97,8 @@ export const useUserData = () => {
     },
     {
       refetchOnWindowFocus: false,
-      keepPreviousData: true
+      keepPreviousData: true,
+      enabled: shouldFetch // Only fetch when shouldFetch is true
     }
   );
 };

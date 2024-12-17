@@ -4,6 +4,7 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
+import { DateUtils } from '@src/util/DateUtil';
 
 const ApproverContext = createContext();
 
@@ -143,7 +144,9 @@ export const ApproverProvider = ({ children }) => {
       sortBy: sortConfig.sortBy || 'group_name',
       sortOrder: sortConfig.sortOrder || 'asc',
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      ...(filterConfig?.status?.length && { status: [filterConfig.status] })
+      ...(filterConfig?.status?.length && { status: [filterConfig.status] }),
+      ...(filterConfig?.dateRange?.[0] && { startDate: DateUtils.formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy') }),
+      ...(filterConfig?.dateRange?.[1] && { endDate: DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy') })
     }),
     [filterConfig, paginationConfig.pageNumber, sortConfig]
   );

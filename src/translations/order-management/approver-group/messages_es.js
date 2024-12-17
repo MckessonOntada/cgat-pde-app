@@ -20,6 +20,7 @@ export const ApproverManagementES = {
   'approvergroup.button.deactivate': 'S_Deactivate',
   'approvergroup.empty_table.description': 'S_You need to add Approver Groups to see data in this table.',
   'approvergroup.confirmationmessage': 'S_Confirmation message',
+  'approvergroup.confirmationmessage.message': 'S_Are you sure you wish to Deactivate this Approver Group ?',
   'approvergroup.button.edit': 'S_Edit',
   'approvergroup.button.next': 'S_Next',
   'approvergroup.button.cancel': 'S_Cancel',

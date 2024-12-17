@@ -2,7 +2,7 @@ import React from 'react';
 import { Field, FieldArray } from 'formik';
 import { useTranslate } from '@src/translations/useTranslation';
 import Components from '@src/components/form/Components';
-import { Button } from '@mckesson/mcp-component-library';
+import { Button, Pills } from '@mckesson/mcp-component-library';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
 import './index.scss';
 import RenderControls from './RenderControls';
@@ -43,39 +43,40 @@ const Attributes = ({ values }) => {
         {({ push, remove }) => (
           <>
             {values.rules?.map((attribute, index) => (
-              <div key={index}>
-                <div className="attributeBox">
-                  <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start">
-                    <Field
-                      id={`rules[${index}].attributeType`}
-                      name={`rules[${index}].attributeType`}
-                      fieldlabel={t('approvergroup.attribute')}
-                      placeholder=" "
-                      component={Components['dropdown']}
-                      isRequired
-                      options={getAvailableOptions(index)}
-                    />
-                    <div
-                      className={`${
-                        attribute.attributeType === RuleLabels[RuleKeys.USERS] ? 'grid-column-4-by-1 sm:grid-column-1-by-1' : ''
-                      }`}>
-                      <RenderControls attributeType={attribute.attributeType} index={index} name={`rules[${index}].value`} />
-                    </div>
-                    <div
-                      className={`remove ${
-                        attribute.attributeType === RuleLabels[RuleKeys.USERS] ? 'grid-column-3-by-3 grid-row-1-by-1' : ''
-                      }}`}
-                      style={attribute.attributeType === RuleLabels[RuleKeys.USERS] ? { gridRow: '1' } : {}}>
-                      {index !== 0 && (
-                        <Button Icon={DeleteIcon} variant="tertiary" size="md" className="btnRemove" onClick={() => remove(index)}>
-                          {t('approvergroup.button.remove')}
-                        </Button>
-                      )}
+              <div key={index} className="attributeBox grid grid-gap-24 grid-cols-12 gap-4 align-items-start">
+                <div className="col-span-4">
+                  <Field
+                    id={`rules[${index}].attributeType`}
+                    name={`rules[${index}].attributeType`}
+                    fieldlabel={t('approvergroup.attribute')}
+                    placeholder=" "
+                    component={Components['dropdown']}
+                    isRequired
+                    options={getAvailableOptions(index)}
+                  />
+                </div>
+                <div
+                  className={`${attribute.attributeType === RuleLabels[RuleKeys.USERS] ? 'col-span-12 grid-row-start-new' : 'col-span-8'}`}>
+                  <div className="dropdown-with-button">
+                    <div className="dropdown-row">
+                      <div className="dropdown-wrapper">
+                        <RenderControls attributeType={attribute.attributeType} index={index} name={`rules[${index}].value`} />
+                      </div>
+
+                      <div className="remove-button">
+                        {index !== 0 && (
+                          <Button Icon={DeleteIcon} variant="tertiary" size="md" className="btnRemove" onClick={() => remove(index)}>
+                            {t('approvergroup.button.remove')}
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             ))}
+
+            {/* Add Attribute Button */}
             <div className="separator-line"></div>
             <div className="addAttribute">
               <Button variant="tertiary" size="md" onClick={() => push({ attributeType: '', value: '' })} disabled={isAddDisabled}>

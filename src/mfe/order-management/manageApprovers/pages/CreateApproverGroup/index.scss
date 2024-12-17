@@ -1,3 +1,50 @@
+@use "@src/assets/styles/abstracts/mixins";
+.grid-cols-12 {
+  grid-template-columns: repeat(12, 1fr); /* 12 equal grid columns */
+}
+.col-span-4 {
+  grid-column: span 4;
+
+  @include mixins.respond("sm") {
+    grid-column: span 12;
+  }
+  @include mixins.respond("md") {
+    grid-column: span 6;
+  }
+  @include mixins.respond("lg") {
+    grid-column: span 4;
+  }
+}
+
+.col-span-8 {
+  grid-column: span 8;
+
+  @include mixins.respond("sm") {
+    grid-column: span 12;
+  }
+  @include mixins.respond("md") {
+    grid-column: span 6;
+  }
+  @include mixins.respond("lg") {
+    grid-column: span 8;
+  }
+}
+
+.col-span-12 {
+  grid-column: span 12;
+
+  @include mixins.respond("sm") {
+    grid-column: span 12;
+  }
+  @include mixins.respond("md") {
+    grid-column: span 12;
+  }
+}
+
+.grid-row-start-new {
+  margin-top: 12px;
+}
+
 .attributeBox {
   margin-top: var(--spacing-02);
   margin-bottom: var(--spacing-03);
@@ -17,36 +64,39 @@
   align-items: flex-start;
 }
 
-.remove {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin-top: var(--spacing-04);
-}
-
 .btnRemove {
   color: var(--brand-color-warning-dark-coral) !important;
-
   svg {
     fill: var(--brand-color-warning-dark-coral) !important;
     color: var(--brand-color-warning-dark-coral) !important;
   }
 }
+
+.dropdown-with-button {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dropdown-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.dropdown-wrapper {
+  flex: 1;
+}
+
+.remove-button {
+  margin-top: var(--spacing-04);
+  display: flex;
+  align-items: flex-start;
+}
+
 .pills-container {
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-02);
-  padding-bottom: var(--spacing-02);
-}
-
-.col-span-1 {
-  grid-column: span 1 / span 1;
-}
-
-.col-span-2 {
-  grid-column: span 2 / span 2;
-}
-
-.col-span-3 {
-  grid-column: span 3 / span 3;
+  padding-top: var(--spacing-02);
 }

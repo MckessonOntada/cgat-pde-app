@@ -54,10 +54,10 @@ const CreateApproverGroup = () => {
     }
   }, [usersData, initialValues, isEditMode, location.state]);
 
-  //console.log('initialvlaues1', initialValues, location.state?.data);
+  console.log('initialvlaues1', initialValues, location.state?.data);
   const handleGoBack = () => {
     if (isDirty) {
-      setModalSuccessCallback('details');
+      setModalSuccessCallback('list');
     } else {
       navigate(RoutePaths.pathApproverManagement);
     }
@@ -135,7 +135,11 @@ const CreateApproverGroup = () => {
       {
         onSuccess: (response) => {
           console.log('  created/updated successfully:', response);
-          navigate(RoutePaths.pathApproverManagement, { state: { isSuccess: true } });
+          if (!isEditMode) {
+            navigate(RoutePaths.pathApproverManagement, { state: { isSuccess: true } });
+          } else {
+            navigate(`../${PATHS.approvergroupDetail.replace(':grpId', grpId)}`);
+          }
         },
         onError: (error) => {
           // const errorKey = handleApiError(error);
@@ -250,6 +254,23 @@ const CreateApproverGroup = () => {
                       <div className="headingBox">
                         <Heading as="h2">{t('approvergroup.approveuserlist')}</Heading>
                       </div>
+
+                      <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
+                        <Field
+                          id="approverUsers"
+                          name="approverUsers"
+                          fieldlabel={t('approvergroup.selectuser')}
+                          placeholder=" "
+                          component={Components['multiSelectDropdown']}
+                          isRequired
+                          noSelectedCountMessage={t('approvergroup.create.option.please_select')}
+                          options={localUserData || []}
+                          value={values.approverUsers}
+                          getUpdatedOptions={(values) => {
+                            setLocalUsersData(() => values);
+                          }}
+                        />
+                      </div>
                       <div className="pills-container">
                         <Pills
                           id={'pill-id'}
@@ -258,21 +279,7 @@ const CreateApproverGroup = () => {
                           variant="secondary"
                           hasDeleteIcon={true}
                           onDelete={(item) => onRemoveUser(item)}
-                        />
-                      </div>
-                      <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
-                        <Field
-                          id="approverUsers"
-                          name="approverUsers"
-                          fieldlabel={t('approvergroup.selectuser')}
-                          placeholder=" "
-                          component={Components['multiSelectDropdown']}
-                          isRequired
-                          options={localUserData || []}
-                          value={values.approverUsers}
-                          getUpdatedOptions={(values) => {
-                            setLocalUsersData(() => values);
-                          }}
+                          showPillsCount={7}
                         />
                       </div>
                     </div>

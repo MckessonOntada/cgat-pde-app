@@ -20,7 +20,8 @@ import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 
 // Translations
 import { useTranslate } from '@src/translations/useTranslation';
-
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import usePermission from '@src/hooks/usePermissions';
 // Styles
 import './ApproverGroupDetail.scss';
 
@@ -34,6 +35,7 @@ function ApproverGroupDetails() {
   const { grpId } = useParams();
   const { t } = useTranslate();
 
+  const { hasPermission } = usePermission();
   const {
     isLoading,
     data: groupData,
@@ -66,15 +68,17 @@ function ApproverGroupDetails() {
         <ModuleHeader
           heading={<Heading as="h1">{t('approvergroup.view.header')}</Heading>}
           controls={
-            <Button
-              Icon={EditPencil}
-              variant="secondary"
-              className="button-icon"
-              size="md"
-              disabled={!groupData?.active}
-              onClick={() => navigate(`../${PATHS.editapprovergroup}/${grpId}`, { state: { data: groupData } })}>
-              {t('approvergroup.button.edit')}
-            </Button>
+            hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS) && (
+              <Button
+                Icon={EditPencil}
+                variant="secondary"
+                className="button-icon"
+                size="md"
+                disabled={!groupData?.active}
+                onClick={() => navigate(`../${PATHS.editapprovergroup}/${grpId}`, { state: { data: groupData } })}>
+                {t('approvergroup.button.edit')}
+              </Button>
+            )
           }
         />
 
@@ -120,9 +124,9 @@ function ApproverGroupDetails() {
                         ? groupData.rules[key].map((item, idx) => (
                             <div key={idx} className="flex items-center justify-between attribute-item">
                               <div>
-                                <h4 className={key === RuleKeys.USERS || key === RuleKeys.ROLES ? '' : 'to-upper-case'}>
+                                <p className={`${key === RuleKeys.USERS || key === RuleKeys.ROLES ? '' : 'to-upper-case'} label-text`}>
                                   {item[valueKey]}
-                                </h4>
+                                </p>
                               </div>
                             </div>
                           ))
@@ -149,7 +153,7 @@ function ApproverGroupDetails() {
                 <React.Fragment key={userId}>
                   <div className="flex items-center justify-between attribute-item approver-user-item">
                     <div>
-                      <h4>{userName}</h4>
+                      <p className="label-text">{userName}</p>
                     </div>
                   </div>
                 </React.Fragment>
