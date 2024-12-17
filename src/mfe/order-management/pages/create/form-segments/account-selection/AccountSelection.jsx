@@ -70,8 +70,8 @@ const AccountSelection = () => {
   const handleOnSubmit = () => {
     if (selectedAccount) {
       const payload = {
-        soldToAccountId: selectedAccount.accountNumber,
-        shipToAccountId: selectedShippingAddress
+        soldToAccountId: selectedAccount.id,
+        shipToAccountId: selectedShippingAddress.id
       };
       saveAccount(payload);
     }

@@ -35,8 +35,9 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
       const shippingAddress = [d.houseNumber, d.street, d.street2, d.street3, d.district, d.city, d.state, d.country, d.zipCode].join(', ');
       const shippingAccountNumber = d.accountNumber;
       const shippingAccountName = d.accountName;
+      const id = d.id;
 
-      tableData.push({ shippingAccountName, shippingAccountNumber, shippingAddress });
+      tableData.push({ id, shippingAccountName, shippingAccountNumber, shippingAddress });
     });
 
     return tableData;

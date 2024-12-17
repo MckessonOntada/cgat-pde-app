@@ -16,16 +16,16 @@ export const createColumns = (t, navigate, selectedShippingAddress, setSelectedS
             {
               isDisabled: false,
               label: ' ',
-              value: props.shippingAccountNumber
+              value: props.id
             }
           ]}
           onChangeValue={() => {
-            setSelectedShippingAddress(props.shippingAccountNumber);
+            setSelectedShippingAddress(props);
           }}
           onOtherTextChange={() => {}}
           onSubRadioFieldChange={() => {}}
           radioBtnWidth="auto"
-          value={selectedShippingAddress === props.shippingAccountNumber ? props.shippingAccountNumber : ''}
+          value={selectedShippingAddress.id === props.id ? props.id : ''}
         />
       </span>
     )
