@@ -167,9 +167,9 @@ const AccountSelection = () => {
                         size="lg"
                       />
                     </div>
-                    <Link to="#" onClick={handleOnClick} className="action-link">
+                    {/* <Link to="#" onClick={handleOnClick} className="action-link">
                       {t('labels.needAssistanceSelectingAccount')}
-                    </Link>
+                    </Link> */}
                   </div>
                 </div>
               </div>
