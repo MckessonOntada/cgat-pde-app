@@ -33,13 +33,15 @@ export const ManageOrderProvider = (props) => {
   const [activeOrderId, setActiveOrderId] = React.useState(null);
   const [messageConfig, setMessageConfig] = React.useState(INITIAL_MESSAGE_STATE);
 
-  const { refetch: refreshData } = useQuery({
+  const { isFetching, refetch: refreshData } = useQuery({
     queryKey: ['summary', activeOrderId],
     queryFn: async () => OrderService.getOrderById(activeOrderId),
     onSuccess: (result) => {
       setFormState((prevState) => ({
         ...prevState,
-        activeRecord: result
+        activeRecord: {
+          ...result
+        }
       }));
     },
     enabled: !!activeOrderId
@@ -96,6 +98,7 @@ export const ManageOrderProvider = (props) => {
     formState,
     messageConfig,
     setMode,
+    isFetching,
     setActiveRecord,
     resetActiveRecord,
     setCurrentOrder: setActiveOrderId,

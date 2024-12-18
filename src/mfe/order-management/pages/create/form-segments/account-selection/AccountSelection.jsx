@@ -18,13 +18,6 @@ import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderCon
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
 
-const DetailField = ({ label, value, className }) => (
-  <div className={className}>
-    <div className={'fieldName'}>{label}</div>
-    <div className={'fieldValue'}>{value}</div>
-  </div>
-);
-
 const AccountSelection = () => {
   const { t } = useTranslate();
   const [open, setOpen] = React.useState(false);
@@ -103,20 +96,24 @@ const AccountSelection = () => {
   };
 
   React.useEffect(() => {
-    const { accountDetails } = formState.activeRecord || {};
-    if (accountDetails) {
-      const { soldToAccount, shipToAccount } = accountDetails;
-      if (soldToAccount) {
-        const originalSelectedAccount = accountsListData.content?.filter((acc) => acc.accountNumber === soldToAccount.accountNumber)[0];
-        if (originalSelectedAccount) setSelectedAccount(originalSelectedAccount);
+    if (CommonUtils.isNonEmptyObject(accountsListData) && formState.activeRecord) {
+      const { accountDetails } = formState.activeRecord;
+      if (accountDetails) {
+        const { soldToAccount, shipToAccount } = accountDetails;
+        if (soldToAccount) {
+          const originalSelectedAccount = accountsListData.content?.filter((acc) => acc.accountNumber === soldToAccount.accountNumber)[0];
+          if (originalSelectedAccount) setSelectedAccount(originalSelectedAccount);
+        }
+        if (shipToAccount) {
+          setSelectedShippingAddress(shipToAccount);
+        }
+      } else {
+        console.log('Could not set account');
       }
-      if (shipToAccount) {
-        setSelectedShippingAddress(shipToAccount);
-      }
-    } else {
-      console.log('Could not set account');
     }
-  }, [formState?.activeRecord]);
+  }, [formState?.activeRecord, accountsListData]);
+
+  console.log(accountsListData);
 
   return (
     <div className="MCP-module-wrapper">

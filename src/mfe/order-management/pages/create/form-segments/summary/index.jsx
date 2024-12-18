@@ -17,18 +17,12 @@ import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 const Summary = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { editByStage } = useManageOrder();
+  const { isFetching, formState, editByStage, setCurrentOrder } = useManageOrder();
   const { orderId } = useParams();
 
-  const {
-    isLoading,
-    data,
-    refetch: refreshData
-  } = useQuery({
-    queryKey: ['summary', orderId],
-    queryFn: async () => OrderService.getOrderById(orderId),
-    onSuccess: (result) => {}
-  });
+  React.useEffect(() => {
+    orderId && setCurrentOrder(orderId);
+  }, []);
 
   const [checkboxOptions, setCheckboxOptions] = React.useState([
     {
@@ -90,12 +84,19 @@ const Summary = () => {
     }
   };
 
-  if (isLoading || !data) {
+  if (isFetching) {
     return <Loader />;
   }
 
   const forms = FormList(t);
-  const { therapy, orderCost, accountDetails, patient, additionalDetails, patientDetailsRequired } = data;
+  const {
+    therapy = {},
+    orderCost,
+    accountDetails = {},
+    patient,
+    additionalDetails = {},
+    patientDetailsRequired = false
+  } = formState.activeRecord || {};
   const isAgreed = checkboxOptions[0].isChecked;
 
   return (
@@ -116,7 +117,7 @@ const Summary = () => {
             <div className="MCP-panel-container">
               <ModuleHeader className={styles.panelHeader} heading={<Heading as="h3">{t('labels.price')}</Heading>} />
               <div class={styles.flexPanel}>
-                <DetailSegment label={t('labels.materialDescription')} value={therapy.materialDescription} />
+                <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
                 <DetailSegment label={t('labels.orderCost')} value={<p className={styles.price}>{orderCost}</p>} />
               </div>
             </div>

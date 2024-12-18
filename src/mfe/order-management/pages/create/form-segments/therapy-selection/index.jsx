@@ -30,9 +30,7 @@ function TherapySelection() {
   const { orderId } = useParams();
 
   React.useEffect(() => {
-    if (orderId) {
-      setCurrentOrder(orderId);
-    }
+    orderId && setCurrentOrder(orderId);
   }, []);
 
   React.useEffect(() => {
