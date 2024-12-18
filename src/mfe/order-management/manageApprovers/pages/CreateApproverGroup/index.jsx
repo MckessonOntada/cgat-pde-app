@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Formik, Form, Field } from 'formik';
-import { Button, Heading, Alert, Pills } from '@mckesson/mcp-component-library';
+import { Button, Heading, Alert, Pills, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -24,7 +24,7 @@ const CreateApproverGroup = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { grpId } = useParams();
-  const { initialValues, setInitialValues, isEditMode, setIsEditMode, initializeFormFromLocation } = useFormContext();
+  const { initialValues, isEditMode, setIsEditMode, initializeFormFromLocation } = useFormContext();
   const { usersData } = useApprover();
   const [alert, setAlert] = useState(null);
   const [localUserData, setLocalUsersData] = useState([]);
@@ -66,9 +66,10 @@ const CreateApproverGroup = () => {
 
   useEffect(() => {
     if (location.state?.data && grpId) {
+      setIsEditMode(true);
       initializeFormFromLocation(grpId, location.state.data);
     }
-  }, [location.state, grpId]);
+  }, [location.state, grpId, isEditMode]);
 
   const validationSchema = getValidationSchema(t);
 
@@ -140,6 +141,7 @@ const CreateApproverGroup = () => {
 
   return (
     <div className="MCP-module-wrapper">
+      {isLoading && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
           {t('approvergroup.header.backmessage')}

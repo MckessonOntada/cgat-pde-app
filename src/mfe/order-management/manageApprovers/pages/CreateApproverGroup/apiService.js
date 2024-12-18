@@ -12,8 +12,6 @@ let params = {
 let statusParam = {
   status: 'active'
 };
-const practiceId = AuthUtils.getPracticeId();
-const userId = AuthUtils.getUserId();
 
 export const useCatalogData = (shouldFetch) => {
   return useQuery(
@@ -37,6 +35,8 @@ export const useCatalogData = (shouldFetch) => {
 };
 
 export const useAccountData = (shouldFetch) => {
+  const practiceId = AuthUtils.getPracticeId();
+  const userId = AuthUtils.getUserId();
   return useQuery(
     ['accountData'],
     async () => {
