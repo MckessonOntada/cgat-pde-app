@@ -1,6 +1,8 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { PaymentInvoicesData } from '../mockData/PaymentInvoicesData';
-import { useDispatch } from 'react-redux';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
+import ApiRoutes from '@src/api/ApiRoutes';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import useSnackbar from '@src/hooks/useSnackbar';
 
 const PaymentsInvoicesContext = createContext();
 
@@ -32,14 +34,15 @@ const INITIAL_PAGINATION_STATE = {
 };
 
 export const PaymentsInvoiceProvider = ({ children }) => {
-  const [paymentHistoryData, setPaymentHistoryData] = useState(PaymentInvoicesData);
+  
   const [data, setData] = useState([]);
   const [unSlicedData, setUnSlicedData] = useState([]);
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
+const { showSnackbar } = useSnackbar();
+
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
@@ -50,12 +53,20 @@ export const PaymentsInvoiceProvider = ({ children }) => {
   };
 
   const filterData = (filters) => {
-    let _data = [...[], ...PaymentInvoicesData];
+    let _data = [...[], ...data];
     setIsLoading(true);
     let _modifiedData = _data.filter((item) => {
-      const matchesSearchQuery = filters?.searchQuery ? item.billNumber.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) || item.soldToSite.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||  item.billDate.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) || item.paymentTerm.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||item.dueDate.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) || item.openAmount.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) || item.billAmount.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()): true;
-      const matchesPaymentStatus = filters?.billNumber?.length > 0 ? filters.billNumber.includes(item.billNumber.toString()) : true;
-      const matchesPaymentMethod = filters?.soldToSite?.length > 0 ? filters.soldToSite.includes(item.soldToSite.toString()) : true;
+      const matchesSearchQuery = filters?.searchQuery
+        ? item.billNumber?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
+          item.soldToSite?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
+          item.billDate?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
+          item.paymentTerm?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
+          item.dueDate?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
+          item.openAmount.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
+          item.billAmount?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase())
+        : true;
+      const matchesPaymentStatus = filters?.billNumber?.length > 0 ? filters.billNumber.includes(item.billNumber?.toString()) : true;
+      const matchesPaymentMethod = filters?.soldToSite?.length > 0 ? filters.soldToSite.includes(item.soldToSite?.toString()) : true;
       const matchesDateRange = filters.dateRange?.length === 2 ? new Date(item.dueDate) >= new Date(filters.dateRange[0]) && new Date(item.dueDate) <= new Date(filters.dateRange[1]) : true;
 
       return matchesSearchQuery && matchesPaymentStatus && matchesPaymentMethod && matchesDateRange;
@@ -69,6 +80,26 @@ export const PaymentsInvoiceProvider = ({ children }) => {
     setUnSlicedData(_modifiedData);
     setData(_modifiedData.slice(startIndex, endIndex));
   };
+
+  const { isFetching} = useQuery({
+    queryKey: ['invoiceListing'],
+    queryFn: async () => {
+      const url = `${ApiRoutes.INVOICES_CREDITS_LISTING('123', false)}`;
+      const payload = {
+        companyCode: 'string',
+        salesOrg: 'string',
+        payerAccountNumber: 'string'
+      };
+      const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+      if (res.data) {
+        setData(res.data?.openInvoices);
+        setPaginationConfig((state) => ({ ...state, totalPages: Math.ceil(res.data?.openInvoices.length / paginationConfig.pageSize), totalElements: res.data?.openInvoices.length }));
+      }
+    },
+    onError: (error) => {
+      showSnackbar({ description: 'Error fetching invoice listing', type: 'error' });
+    }
+  });
 
   useEffect(() => {
     filterData(filterConfig);
@@ -118,7 +149,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
 
   const contextValue = {
     data: data || [],
-    isLoading,
+    isFetching,
     // isError,
     filterConfig,
     paginationConfig,
@@ -127,7 +158,8 @@ export const PaymentsInvoiceProvider = ({ children }) => {
     applyFilters,
     clearFilters,
     applySort,
-    setPageNumber
+    setPageNumber,
+
   };
   return <PaymentsInvoicesContext.Provider value={contextValue}>{children}</PaymentsInvoicesContext.Provider>;
 };

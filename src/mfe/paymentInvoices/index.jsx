@@ -4,11 +4,10 @@ import './index.scss';
 import RecordDetails from './RecordDetails';
 import BalanceDetails from './BalanceDetails';
 import Routes from './routes/Routes';
-import { TabList } from '@mckesson/mcp-component-library';
+import { TabList, Alert } from '@mckesson/mcp-component-library';
 import { PATHS, tabListData } from './routes/constants';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ModuleHeader from '../../components/module-header';
-import { PaymentsInvoiceProvider } from './context/PaymentsInvoicesContext';
 
 const PaymentsInvoices = () => {
   const location = useLocation();
@@ -18,8 +17,6 @@ const PaymentsInvoices = () => {
   React.useEffect(() => {
     if (Array.isArray(tabListData) && tabListData.length > 0) {
       const updatedTabs = tabListData.map((item) => {
-        const isDashboard = item.configName === 'INVOICES' && location.pathname === '/';
-        const isMatchingPath = item.path !== PATHS.invoices && location.pathname.includes(item.path);
         return {
           ...item,
           isActiveTab: location.pathname.includes(item.path),
@@ -32,29 +29,27 @@ const PaymentsInvoices = () => {
 
   return (
     <React.Fragment>
-      <PaymentsInvoiceProvider>
-        <div className="MCP-module-wrapper">
-          <ModuleHeader heading={<PageHeader heading={'Payment Invoices'} />} />
-          <RecordDetails />
-          <BalanceDetails />
-          <div className="MCP-module-body">
-            <div id="tablist-container" className="MCP-panel-container">
-              <TabList
-                options={tabs}
-                alignment="left"
-                onTabClick={(e) => {
-                  navigate(e.path);
-                }}
-                showShadow={false}
-                variant={'text'}
-                useAsButton={true}
-                aria-label={'record-tab-list'}
-              />
-              <Routes />
-            </div>
+      <div className="MCP-module-wrapper">
+        <ModuleHeader heading={<PageHeader heading={'Payment Invoices'} />} />
+        <RecordDetails />
+        <BalanceDetails />
+        <div className="MCP-module-body">
+          <div id="tablist-container" className="MCP-panel-container">
+            <TabList
+              options={tabs}
+              alignment="left"
+              onTabClick={(e) => {
+                navigate(e.path);
+              }}
+              showShadow={false}
+              variant={'text'}
+              useAsButton={true}
+              aria-label={'record-tab-list'}
+            />
+            <Routes />
           </div>
         </div>
-      </PaymentsInvoiceProvider>
+      </div>
     </React.Fragment>
   );
 };

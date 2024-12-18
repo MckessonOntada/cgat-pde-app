@@ -9,7 +9,10 @@ import NotFound from '../../../pages/error-pages/NotFound';
 import { PaymentHistoryProvider } from '../context/PaymentHistoryContext';
 import { PaymentsInvoiceProvider } from '../context/PaymentsInvoicesContext';
 import { PaymentMethodsProvider } from '../context/PaymentMethodsContext';
+import { PaymentsCreditsProvider } from '../context/PaymentsCreditsContext';
 import Credits from '../pages/credits';
+import { PendingPaymentsProvider } from '../context/PendingPaymentsContext';
+import PendingPayments from '../pages/pendingPayments';
 
 const Routes = () => {
   return (
@@ -23,8 +26,22 @@ const Routes = () => {
           </PaymentsInvoiceProvider>
         }
       />
-      <Route path={PATHS.credits} element={<Credits/>} />
-      <Route path={PATHS.pendingPayments} element={<h6>Pending Payments</h6>} />
+      <Route
+        path={PATHS.credits}
+        element={
+          <PaymentsCreditsProvider>
+            <Credits />
+          </PaymentsCreditsProvider>
+        }
+      />
+      <Route
+        path={PATHS.pendingPayments}
+        element={
+          <PendingPaymentsProvider>
+            <PendingPayments />
+          </PendingPaymentsProvider>
+        }
+      />
       <Route
         path={PATHS.paymentHistory}
         element={

@@ -5,25 +5,24 @@ import './index.scss';
 import { usePaymentInvoices } from '../../context/PaymentsInvoicesContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Button } from '@mckesson/mcp-component-library';
-import { PaymentInvoicesData } from '../../mockData/PaymentInvoicesData';
 
 export default function Invoices(params) {
   const { t } = useTranslate();
-  const { applyFilters, filterConfig, sortConfig, clearFilters } = usePaymentInvoices();
+  const { applyFilters, clearFilters, data } = usePaymentInvoices();
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
       {
         type: 'multiSelectDropdown',
         name: 'billNumber',
-        id:'billNumber',
+        id: 'billNumber',
         label: t('paymentInvoices.history.table.billNumber'),
         options: []
       },
       {
         type: 'multiSelectDropdown',
         name: 'soldToSite',
-        id:'soldToSite',
+        id: 'soldToSite',
         label: t('paymentInvoices.history.table.SoldToSite'),
         options: []
       },
@@ -36,7 +35,7 @@ export default function Invoices(params) {
   return (
     <React.Fragment>
       <div className="MCP-CardContainer">
-        <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={"Search by document number, sold to..."} filterData={PaymentInvoicesData}/>
+        <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={'Search by document number, sold to...'} filterData={data} />
       </div>
       <div className="MCP-table-wrapper">
         <div className="table-header">

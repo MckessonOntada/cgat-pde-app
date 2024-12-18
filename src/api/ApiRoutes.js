@@ -36,7 +36,9 @@ const ApiRoutes = Object.freeze({
   ACCOUNTS: constructUserManagementServiceUrl('accounts'),
   PUBLIC_ACCOUNTS: constructUserManagementServicePublicUrl('accounts'),
   ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`),
-  INVOICES_CREDITS_LISTING: (accountNumber, filterCredits) => constructOrderManagementServiceUrl(`account/${accountNumber}/open-invoices?filterCredits=${filterCredits}`)
+  INVOICES_CREDITS_LISTING: (accountNumber, filterCredits) => constructOrderManagementServiceUrl(`account/${accountNumber}/open-invoices?filterCredits=${filterCredits}`),
+  PENDING_PAYMENTS_LISTING: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/payments/pending`)
+
 });
 
 export default ApiRoutes;

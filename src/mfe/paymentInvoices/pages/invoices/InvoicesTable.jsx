@@ -12,7 +12,7 @@ export default function InvoicesTable() {
   // let dataElement = [{ label: 'Payment' }, { label: 'Export PDF' }];
   let dataElement = [{ label: 'Payment' }, { label: 'Export PDF' }];
   // let dataElement = ['Payment', 'Export PDF'];
-  const { data, isLoading, paginationConfig, setPageNumber, applySort } = usePaymentInvoices();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort } = usePaymentInvoices();
 
   const columns = [
     {
@@ -125,7 +125,7 @@ export default function InvoicesTable() {
         recordsPerPage={paginationConfig.pageSize}
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
-        progressPending={isLoading}
+        progressPending={isFetching}
         progressComponent={
           <div
             style={{
@@ -138,8 +138,6 @@ export default function InvoicesTable() {
             <Loader variant="circular" />
           </div>
         }
-        // isAdmin={true}
-        // noDataComponent={<EmptyDataTable isLoading={isLoading} error={isError ? 'Something went wrong! Please try again' : null} image={EmptyDataImage} heading={t('orgManagement.add.label')} description={t('orgManagement.empty_table.description')} />}
       />
     </React.Fragment>
   );

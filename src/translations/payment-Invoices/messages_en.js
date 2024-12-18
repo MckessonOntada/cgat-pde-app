@@ -53,5 +53,10 @@ export const PaymentInvoicesEN = {
 "paymentInvoices.paymentMethods.table.bankAccount.bankAccNumber": "Bank Account Number",
 "paymentInvoices.paymentMethods.table.bankAccount.bankCountry": "Bank Country",
 "paymentInvoices.paymentMethods.table.bankAccount.companyCode": "Company Code",
+  
+//Pending Payments
+'pendingPayments.table.confirmationNumber': 'Confirmation Number',
+'pendingPayments.table.totalAuthorizedPaymentAmt': 'Total Authorized Payment Amount',
+'pendingPayments.table.cancelPayment': 'CANCEL PAYMENT',
 
 };
