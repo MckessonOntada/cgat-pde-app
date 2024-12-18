@@ -65,7 +65,16 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
   const LeftSideView = () => {
     return (
       <div className={`${styles.navItemsLeft} ${styles.secondaryNav}`} aria-label="Navigation tabs">
-        <TabList className={styles.compactTablist} type="link" options={tabs} showShadow={false} alignment={'left'} useAsButton={false} role="tablist" aria-label="Secondary navigation tabs" />
+        <TabList
+          className={styles.compactTablist}
+          type="link"
+          options={tabs}
+          showShadow={false}
+          alignment={'left'}
+          useAsButton={false}
+          role="tablist"
+          aria-label="Secondary navigation tabs"
+        />
       </div>
     );
   };

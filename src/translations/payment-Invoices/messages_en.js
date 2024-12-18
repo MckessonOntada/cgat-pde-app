@@ -1,6 +1,6 @@
 export const PaymentInvoicesEN = {
   // Payment History
-  'paymentInvoices.history.table.billNumber': 'Bill Number',
+  'paymentInvoices.history.table.confirmationNumber': 'Confirmation No.',
   'paymentInvoices.history.table.purchaseOrderNumber': 'Purchase Order Number',
   'paymentInvoices.history.table.paymentMethod': 'Payment Method',
   'paymentInvoices.history.table.paymentStatus': 'Payment Status',
@@ -29,7 +29,5 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.CS.table.accountnumber': 'Account No.',
   'paymentInvoices.CS.table.date': 'Date',
   'paymentInvoices.CS.table.statementBalance': 'Statement Balance',
-  'paymentInvoices.CS.table.actions': 'Action(s)',
-
-
+  'paymentInvoices.CS.table.actions': 'Action(s)'
 };

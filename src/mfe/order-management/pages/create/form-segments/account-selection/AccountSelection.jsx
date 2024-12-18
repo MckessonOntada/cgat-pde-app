@@ -13,12 +13,41 @@ import { ShippingAddressProvider } from '../../../../context/ShippingAddressCont
 import PageHeader from '@src/components/pageHeader';
 import { FormList } from '../Constants';
 import { useMutation } from 'react-query';
+import { ReactComponent as TickIcon } from '@src/assets/svg/yes_tick_circle_filled.svg';
+import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
+import Components from '@src/components/form/Components';
+import { Field, Form, Formik } from 'formik';
+import CommonFilters from '@src/components/Filters';
+import AuthUtils from '@src/util/AuthUtils';
+
+const DetailField = ({ label, value, className }) => (
+  <div className={className}>
+    <div className={'fieldName'}>{label}</div>
+    <div className={'fieldValue'}>{value}</div>
+  </div>
+);
 
 const AccountSelection = () => {
   const { t } = useTranslate();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
-  const { therapyId } = useParams();
+  const { orderId } = useParams();
+  const [selectedAccount, setSelectedAccount] = React.useState(null);
+  const [accountList, setAccountList] = React.useState([]);
+  const therapyId = 1; //temp
+  const { isLoading, data = {} } = useQuery({
+    queryKey: ['order', 'therapy', therapyId],
+    queryFn: async () => {
+      const userId = AuthUtils.getUserId();
+      const url = `${ApiRoutes.ORDER(userId)}/therapies/${therapyId}/soldtoaccounts`;
+      const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+      if (res.data) {
+        return res.data;
+      }
+      return {};
+    },
+    refetchOnWindowFocus: false
+  });
 
   const { mutate } = useMutation(
     async (data) => {
@@ -26,7 +55,7 @@ const AccountSelection = () => {
       return res;
     },
     {
-      onSuccess: ({ id }) => navigate(`../${therapyId}/${id}/patient-details`),
+      onSuccess: ({ id }) => navigate(`../${orderId}/patient`),
       onError: console.log
     }
   );
@@ -42,7 +71,7 @@ const AccountSelection = () => {
   };
   const handleOnBackButtonClick = () => {
     //compare data change, display modal for confirmation
-    navigate(`../edit-order/${therapyId}`);
+    navigate(`../edit-order/${orderId}`);
   };
   const handleOnCancel = () => {
     //compare data change, display modal for confirmation
@@ -66,11 +95,17 @@ const AccountSelection = () => {
 
         <div className={`MCP-module-wrapper`}>
           <div className="MCP-panel-container">
-            <div>
-              <div>
-                <Heading as="h3">{t('labels.therapyDescription')}</Heading>
-                <Heading as="h3">{t('labels.accountSelection')}</Heading>
-              </div>
+            <div className="row-space-between-center">
+              <DetailField
+                label={t('labels.therapyDescription')}
+                value={
+                  <React.Fragment>
+                    <span>Therapy value</span>
+                    <TickIcon />
+                  </React.Fragment>
+                }
+              />
+              <DetailField label={t('labels.price')} value={'price_value'} />
             </div>
           </div>
           <div className="MCP-panel-container">
@@ -79,23 +114,46 @@ const AccountSelection = () => {
                 heading={
                   <div>
                     <Heading as="h2">{t('labels.accountSelection')}</Heading>
-                    <Heading as="h3">{t('messages.accountSelect')}</Heading>
+                    <p className="dull-text">Please select the account to buy the therapy for</p>
                   </div>
                 }
               />
               <div className="MCP-panel-container">
                 <div className={styles.account}>
                   <div className={styles.accountDetails}>
-                    <p className={styles.name}>
-                      <b>Revisions Aesthetics Group</b>
-                    </p>
-                    <p className={styles.address}>6567 S Elizabeth Way, Centennial, CO, 80121</p>
+                    {selectedAccount ? (
+                      <React.Fragment>
+                        <p className={styles.name}>
+                          <b>Revisions Aesthetics Group</b>
+                        </p>
+                        <p className={styles.address}>6567 S Elizabeth Way, Centennial, CO, 80121</p>
+                      </React.Fragment>
+                    ) : (
+                      <React.Fragment>
+                        <Heading as="h3">Please Select Account</Heading>
+                      </React.Fragment>
+                    )}
                   </div>
                   <div className={styles.controls}>
                     <div className={styles.controlWrapper}>
-                      <Dropdown />
+                      <Formik
+                        enableReinitialize
+                        initialValues={{ targetAccount: '' }}
+                        onSubmit={(values, actions) => {
+                          console.log(values, action);
+                        }}
+                        validateOnChange={false}
+                        validateOnBlur={false}>
+                        {() => {
+                          return (
+                            <Form>
+                              <Field name={'targetAccount'} label={' '} placeholder={' '} component={Components['multiSelectDropdown']} options={[]} />
+                            </Form>
+                          );
+                        }}
+                      </Formik>
                     </div>
-                    <Link to="#" onClick={handleOnClick}>
+                    <Link to="#" onClick={handleOnClick} className="action-link">
                       {t('labels.needAssistanceSelectingAccount')}
                     </Link>
                   </div>
@@ -105,7 +163,9 @@ const AccountSelection = () => {
             <ShippingAddressProvider>
               <div className="MCP-module-body">
                 <ModuleHeader heading={<Heading as="h2">{t('headings.shippingAddress')}</Heading>} />
-                <div className="MCP-panel-container"></div>
+                <div className="MCP-panel-container">
+                  <CommonFilters onApplyFilters={() => {}} onClearFilters={() => {}} additionalFilters={[]} searchPlaceholder={t('controls.placeholder.shippingAddress.search')} />
+                </div>
                 <div className="MCP-table-wrapper">
                   <ShippingAddressDataTable />
                 </div>

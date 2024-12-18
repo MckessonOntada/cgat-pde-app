@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 
-const OrderDataTable = ({ type = 'normal', pagination = true }) => {
+const OrderDataTable = ({ pagination = true, tab}) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { dataState: data, pageConfig, setPageConfig, setCurrentPage, setOrdersData } = useOrders();
@@ -17,7 +17,7 @@ const OrderDataTable = ({ type = 'normal', pagination = true }) => {
     direction: null
   });
 
-  const columns = createColumns(t, navigate);
+  const columns = createColumns(t, navigate, tab);
 
   useEffect(() => {
     if (data && Array.isArray(data)) {

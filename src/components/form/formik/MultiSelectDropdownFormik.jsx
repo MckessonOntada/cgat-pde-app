@@ -2,11 +2,10 @@ import React from 'react';
 import { getNestedValue } from '../util';
 import MultiSelectDropdown from '../MultiSelectDropdown';
 
-const MultiSelectDropdownFormik = (props) => {
+const MultiSelectDropdownFormik = (props) => { 
   const { field, form, fieldlabel, isRequired, getUpdatedOptions = () => {} } = props;
   const { name, value } = field;
   const { setFieldValue, errors, touched } = form;
-
   const errorMessage = getNestedValue(errors, name);
   const isFieldTouched = getNestedValue(touched, name);
   return (
@@ -18,6 +17,7 @@ const MultiSelectDropdownFormik = (props) => {
       error={isFieldTouched && errorMessage}
       isRequired={isRequired}
       onChange={(values) => {
+ 
         const augmentedData = values
           .filter((item) => item.isChecked)
           .map((item) => ({
@@ -31,6 +31,7 @@ const MultiSelectDropdownFormik = (props) => {
           `${name}`,
           values.filter((item) => item.isChecked).map((item) => item.value)
         );
+
 
         getUpdatedOptions(values);
       }}

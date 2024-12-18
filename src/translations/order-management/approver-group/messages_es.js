@@ -67,8 +67,7 @@ export const ApproverManagementES = {
   'approvergroup.view.subheader.attributes': 'S_Attributes',
   'approvergroup.view.subheader.manage_treatment_center': 'S_Approver User List',
 
-  'errors.user_email_key': 'S_Email ID already exists in the System.',
-  'errors.user_phone_key': 'S_Phone number already exists.',
+  'errors.approverGroup_index_name_1_practiceId_1': 'S_Approver group name already exists in the System.',
   'errors.default': 'S_An unexpected error occurred.',
 
   'approvergroup.messages.approvergroup_deactivate_success': 'S_Approver Group has been Deactivated successfully.',

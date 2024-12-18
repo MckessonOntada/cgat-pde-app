@@ -18,6 +18,7 @@ import { useApprover } from '../../context/ApproverContext';
 import { getValidationSchema, transformAttributesToRules } from './formUtils';
 import './index.scss';
 import { useFormContext } from '../../context/FormContext';
+import { handleApiError } from '@src/util/ApiUtils';
 
 const CreateApproverGroup = () => {
   const { t } = useTranslate();
@@ -100,8 +101,8 @@ const CreateApproverGroup = () => {
           }
         },
         onError: (error) => {
-          // const errorKey = handleApiError(error);
-          setAlert({ type: 'error', message: t('errors.default') });
+          const errorKey = handleApiError(error);
+          setAlert({ type: 'error', message: t(errorKey) });
           setIsAlertVisible(true);
         }
       }

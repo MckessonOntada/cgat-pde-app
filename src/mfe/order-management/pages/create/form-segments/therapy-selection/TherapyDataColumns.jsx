@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Badge, DropdownMenu, RadioGroup } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 const getColorByStatus = (status) => {
   const statusColors = {
@@ -19,24 +20,24 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     width: '2%',
     sortable: false,
     cell: (props) => (
-      <span className="MCP-table-cell">
+      <span className="MCP-table-cell radio-button-wrapper">
         <RadioGroup
           direction="column"
-          id={`radio-button-order-therapy-${props.id}`}
+          id={`radio-button-order-therapy-${props.therapyId}`}
           items={[
             {
               isDisabled: false,
               label: ' ',
-              value: props.id
+              value: props.therapyId
             }
           ]}
           onChangeValue={() => {
-            setSelectedRowId(props.id);
+            setSelectedRowId(props.therapyId);
           }}
           onOtherTextChange={() => {}}
           onSubRadioFieldChange={() => {}}
           radioBtnWidth="auto"
-          value={selectedRowId === props.id ? props.id : ''}
+          value={selectedRowId === props.therapyId ? props.therapyId : ''}
         />
       </span>
     )
@@ -45,12 +46,13 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     id: 'therapyDescription',
     name: t('labels.therapyDescription'),
     selector: () => {},
-    width: '13%',
+    minWidth: '220px',
+    maxWidth: '280px',
     sortable: true,
     cell: (props) => (
       <span className="MCP-table-cell" aria-label={t('labels.therapyDescription')}>
-        <Link className="MCP-table-link" to={`?therapy-details=${props.id}`}>
-          {props.therapyDescription}
+        <Link className="MCP-table-link" to={`?therapy-details=${props.therapyId}`}>
+          <EclipsesTextcss str={props.therapyDescription} maxWidth={240} />
         </Link>
       </span>
     )
@@ -68,14 +70,15 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     )
   },
   {
-    id: 'nationalDrugCode',
+    id: 'ndc',
     name: t('table.columns.captions.nationalDrugCode'),
     selector: () => {},
-    width: '7%',
+    minWidth: '200px',
+    maxWidth: '220px',
     sortable: true,
     cell: (props) => (
       <span className="MCP-table-cell" aria-label={t('table.columns.captions.nationalDrugCode')}>
-        {props.nationalDrugCode}
+        <EclipsesTextcss str={props.ndc} maxWidth={180} />
       </span>
     )
   },
@@ -83,7 +86,7 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     id: 'strength',
     name: t('table.columns.captions.strength'),
     selector: () => {},
-    width: '4%',
+    width: '120px',
     sortable: true,
     cell: (props) => (
       <span className="MCP-table-cell" aria-label={t('table.columns.captions.strength')}>
@@ -156,14 +159,14 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     cell: (props) => <Badge text={props.status} type={getColorByStatus(props.status)} />
   },
   {
-    id: 'baseUnitsOfMeasure',
+    id: 'baseUnitOfMeasure',
     name: t('table.columns.captions.baseUnitsOfMeasure'),
     selector: () => {},
     width: '7%',
     sortable: true,
     cell: (props) => (
       <span className="MCP-table-cell" aria-label={t('table.columns.captions.baseUnitsOfMeasure')}>
-        {props.baseUnitsOfMeasure}
+        {props.baseUnitOfMeasure}
       </span>
     )
   },
@@ -187,13 +190,13 @@ export const createColumns = (t, navigate, selectedRowId, setSelectedRowId) => [
     )
   },
   {
-    id: 'cgatTherapyType',
+    id: 'cgatType',
     name: t('table.columns.captions.cgatTherapyType'),
     selector: () => {},
     sortable: true,
     cell: (props) => (
       <span className="MCP-table-cell" aria-label={t('table.columns.captions.cgatTherapyType')}>
-        {props.cgatTherapyType}
+        {props.cgatType}
       </span>
     )
   },
