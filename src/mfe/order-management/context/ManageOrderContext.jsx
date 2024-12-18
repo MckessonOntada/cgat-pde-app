@@ -37,6 +37,9 @@ export const ManageOrderProvider = (props) => {
     queryKey: ['summary', activeOrderId],
     queryFn: async () => OrderService.getOrderById(activeOrderId),
     onSuccess: (result) => {
+      if (!result.patientDetailsRequired && ORDER_STAGES[result.currentStage] === ORDER_STAGES.PATIENT_DETAILS) {
+        result.currentStage = 'ADDITIONAL_DETAILS';
+      }
       setFormState((prevState) => ({
         ...prevState,
         activeRecord: {

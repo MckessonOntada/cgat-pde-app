@@ -101,12 +101,12 @@ const getOptionsByStatus = (status, t, tab) => {
   );
 };
 
-const getPathByOrderStage = ({ currentStage, id }) => {
+const getPathByOrderStage = ({ currentStage, id, patientDetailsRequired }) => {
   switch (currentStage) {
     case 'ACCOUNT_DETAILS':
       return `${id}/accounts`;
     case 'PATIENT_DETAILS':
-      return `${id}/patient`;
+      return patientDetailsRequired ? `${id}/patient` : `${id}/additional-details`;
     case 'ADDITIONAL_DETAILS':
       return `${id}/additional-details`;
     case 'ORDER_SUMMARY':

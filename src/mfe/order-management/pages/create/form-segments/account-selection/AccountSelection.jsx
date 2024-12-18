@@ -17,6 +17,7 @@ import ShippingAddress from './ShippingAddress';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
+import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 
 const AccountSelection = () => {
   const { t } = useTranslate();
@@ -26,7 +27,7 @@ const AccountSelection = () => {
   const [selectedAccount, setSelectedAccount] = React.useState(null);
   const [accountSearchString, setAccountSearchString] = React.useState('');
   const [selectedShippingAddress, setSelectedShippingAddress] = React.useState('');
-  const { formState, setActiveRecord, setCurrentOrder } = useManageOrder();
+  const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
   const therapyId = formState.activeRecord?.therapy?.id;
 
   React.useEffect(() => {
@@ -73,6 +74,7 @@ const AccountSelection = () => {
 
   const handleOnBack = () => {
     //check for data change
+    editByStage(ORDER_STAGES.THERAPY_SELECTION);
     navigate(`../edit-order/${orderId}`);
   };
 
@@ -112,8 +114,6 @@ const AccountSelection = () => {
       }
     }
   }, [formState?.activeRecord, accountsListData]);
-
-  console.log(accountsListData);
 
   return (
     <div className="MCP-module-wrapper">

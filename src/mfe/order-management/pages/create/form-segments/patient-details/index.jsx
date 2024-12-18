@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import styles from './PatientDetails.module.scss';
 import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
 import ModuleHeader from '@src/components/module-header';
@@ -16,12 +16,22 @@ import CommonUtils from '@src/util/CommonUtils';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
+import useAlert from '@src/hooks/useAlert';
+import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
   const { orderId } = useParams();
   const navigate = useNavigate();
-  const { formState, setActiveRecord, setCurrentOrder, messageConfig } = useManageOrder();
+  const { formState, setActiveRecord, setCurrentOrder, messageConfig, editByStage } = useManageOrder();
+  const alertContainerRef = useRef(null);
+  const { showAlert } = useAlert();
+
+  React.useEffect(() => {
+    if (!formState.activeRecord?.patientDetailsRequired) {
+      navigate(`../${orderId}/additional-details`);
+    }
+  }, [formState.activeRecord]);
 
   const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(async (data) => OrderService.savePatientDetails(orderId, data), {
     onSuccess: (result) => {
@@ -29,7 +39,9 @@ const PatientDetails = () => {
       setActiveRecord(result);
       navigate(`../${id}/additional-details`);
     },
-    onError: console.log
+    onError: () => {
+      showAlert({ description: err.message, type: 'error', anchorEl: alertContainerRef });
+    }
   });
 
   React.useEffect(() => {
@@ -38,6 +50,7 @@ const PatientDetails = () => {
 
   const handleOnBack = () => {
     //compare data change, display modal for confirmation
+    editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
     navigate(`../${orderId}/accounts`);
   };
 
@@ -111,42 +124,42 @@ const PatientDetails = () => {
           {messageConfig && messageConfig.primaryMessage && (
             <Alert onClose={clearMessage} showTitle title={messageConfig.primaryMessage} type={messageConfig.messageKind} />
           )}
-
-          <Formik
-            initialValues={initialValues}
-            validationSchema={getValidationSchema(t)}
-            enableReinitialize
-            onSubmit={(values, actions) => {
-              handleSubmit(values);
-              actions.setSubmitting(false);
-            }}>
-            {({ values, isValid, dirty }) => {
-              const isButtonDisabled = !(dirty && isValid);
-
-              return (
-                <Form>
-                  <div className={styles.wrapper}>
-                    <div className="MCP-panel-container">
-                      <PatientDetailsForm />
-                    </div>
-                    <ModuleHeader
-                      controls={
-                        <div className="controls">
-                          <Button size="md" variant="secondary" onClick={handleOnBack}>
-                            {t('captions.btnBack')}
-                          </Button>
-                          <Button size="md" variant="primary" disabled={isButtonDisabled || isSaving} type="submit">
-                            {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
-                          </Button>
-                        </div>
-                      }
-                    />
-                  </div>
-                </Form>
-              );
-            }}
-          </Formik>
         </div>
+        <div ref={alertContainerRef} />
+        <Formik
+          initialValues={initialValues}
+          validationSchema={getValidationSchema(t)}
+          enableReinitialize
+          onSubmit={(values, actions) => {
+            handleSubmit(values);
+            actions.setSubmitting(false);
+          }}>
+          {({ values, isValid, dirty }) => {
+            const isButtonDisabled = !(dirty && isValid);
+
+            return (
+              <Form>
+                <div className={styles.wrapper}>
+                  <div className="MCP-panel-container">
+                    <PatientDetailsForm />
+                  </div>
+                  <ModuleHeader
+                    controls={
+                      <div className="controls">
+                        <Button size="md" variant="secondary" onClick={handleOnBack}>
+                          {t('captions.btnBack')}
+                        </Button>
+                        <Button size="md" variant="primary" disabled={isButtonDisabled || isSaving} type="submit">
+                          {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
+                        </Button>
+                      </div>
+                    }
+                  />
+                </div>
+              </Form>
+            );
+          }}
+        </Formik>
       </div>
     </div>
   );

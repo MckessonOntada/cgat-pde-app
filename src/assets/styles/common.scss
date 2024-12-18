@@ -341,7 +341,21 @@
   .fieldValue {
     font-size: var(--brand-font-size--large);
   }
+
+  &.col-span-4 {
+    grid-column: span 4;
+  }
+
+  &.col-span-3 {
+    grid-column: span 3;
+  }
+
+  &.col-span-2 {
+    grid-column: span 2;
+  }
 }
+
+
 
 .primaryHeading {
   font-size: var(--brand-font-size--28);

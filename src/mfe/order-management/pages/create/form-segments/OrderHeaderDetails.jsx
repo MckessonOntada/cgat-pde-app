@@ -35,7 +35,7 @@ function OrderHeaderDetails() {
     }
 
     detailsSegments.push(
-      <div className="price-wrapper">
+      <div className={`md:col-span-${5 - detailsSegments.length} price-wrapper`}>
         <DetailSegment label={t('labels.price')} value={orderCost || '$----'} />
       </div>
     );

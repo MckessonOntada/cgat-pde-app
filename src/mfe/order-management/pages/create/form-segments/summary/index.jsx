@@ -13,12 +13,16 @@ import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderCon
 import OrderService from '@src/api/commonService/OrderService';
 import { useQuery } from 'react-query';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
+import useAlert from '@src/hooks/useAlert';
 
 const Summary = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { isFetching, formState, editByStage, setCurrentOrder } = useManageOrder();
   const { orderId } = useParams();
+  const alertRef = React.useRef(null);
+
+  const { showAlert } = useAlert();
 
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId);
@@ -46,11 +50,13 @@ const Summary = () => {
 
   const handleOnBackButtonClick = () => {
     //compare data change, display modal for confirmation
+    editByStage(ORDER_STAGES.ADDITIONAL_DETAILS);
     navigate(`../${orderId}/additional-details`);
   };
 
   const handleOnSubmit = () => {
-    navigate('/orders');
+    // navigate('/orders');
+    if (alertRef?.current) showAlert({ description: 'err.message', type: 'error', anchorEl: alertRef });
   };
 
   const handleOnBackToOrders = () => {
@@ -108,7 +114,7 @@ const Summary = () => {
       </div>
 
       <PageHeader heading={<Heading as="h1">{t('headings.createNewOrder')}</Heading>} />
-
+      <div ref={alertRef} />
       <div className="MCP-module-body">
         <Stepper activeIndex={5} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} />
         <div className={'MCP-module-wrapper'}>
@@ -241,7 +247,7 @@ const Summary = () => {
             <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
               {t('captions.btnBack')}
             </Button>
-            <Button size={'md'} variant="primary" type="submit" disabled={!isAgreed} onClick={handleOnSubmit}>
+            <Button size={'md'} variant="primary" type="submit" onClick={handleOnSubmit}>
               {t('captions.btnSubmitOrder')}
             </Button>
           </div>

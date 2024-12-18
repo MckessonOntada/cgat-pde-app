@@ -12,13 +12,15 @@ import { useMutation } from 'react-query';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
+import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 
 const getValidationSchema = (t) =>
   Yup.object({
-    coiId: Yup.number().required(t('COI Id is required')).min(1, ''),
-    orderQuantity: Yup.number().required('Order Quantity is required').min(1, ''),
-    slotNumber: Yup.string().required('Slot number is required').min(1, '').max(20, 'Slot Number can not be greater than 20'),
-    poNumber: Yup.number().required('PO number is required').min(1, '').max(35, 'PO Number can not be greater than 20')
+    coiId: Yup.number().required(t('labels.COIIdRequired')).min(1, ''),
+    orderQuantity: Yup.number().required('labels.orderQuantityRequired').min(1, ''),
+    slotNumber: Yup.string().required('labels.slotNumberRequired').min(1, '').max(20, 'labels.slotNumberLengthError'),
+    poNumber: Yup.number().required('labels.PONumberRequired').min(1, '').max(35, 'labels.PONumberLengthError'),
+    dateOfAdministration: Yup.date().required('labels.DateOfAdministrationRequired')
   });
 
 const INITIAL_VALUES = {
@@ -35,7 +37,7 @@ function AdditionalDetails() {
   const navigate = useNavigate();
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
-  const { formState, setActiveRecord, setCurrentOrder } = useManageOrder();
+  const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
 
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(
     async (data) => OrderService.saveAdditionalDetails(orderId, data),
@@ -70,7 +72,13 @@ function AdditionalDetails() {
 
   const handleOnBack = () => {
     //compare data change, display modal for confirmation
-    navigate(`../${orderId}/patient`);
+    if (formState.activeRecord?.patientDetailsRequired) {
+      editByStage(ORDER_STAGES.PATIENT_DETAILS);
+      navigate(`../${orderId}/patient`);
+    } else {
+      editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
+      navigate(`../${orderId}/account`);
+    }
   };
 
   const handleOnSubmit = (values) => {
