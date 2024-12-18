@@ -51,7 +51,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
   };
 
   const filterData = (filters) => {
-    let _data = [...[], ...data];
+    let _data = [...[], ...unSlicedData];
     setIsLoading(true);
     let _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery
@@ -75,7 +75,6 @@ export const PaymentsInvoiceProvider = ({ children }) => {
     // Updating the page count and total records
     setPaginationConfig((state) => ({ ...state, totalPages: Math.ceil(_modifiedData.length / paginationConfig.pageSize), totalElements: _modifiedData.length }));
     setIsLoading(false);
-    setUnSlicedData(_modifiedData);
     setData(_modifiedData.slice(startIndex, endIndex));
   };
 
@@ -91,6 +90,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
       if (res.data) {
         setData(res.data?.openInvoices);
+        setUnSlicedData(res.data?.openInvoices);
         setPaginationConfig((state) => ({ ...state, totalPages: Math.ceil(res.data?.openInvoices.length / paginationConfig.pageSize), totalElements: res.data?.openInvoices.length }));
       }
     },
@@ -147,6 +147,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
 
   const contextValue = {
     data: data || [],
+    actualData: unSlicedData || [],
     isFetching,
     // isError,
     filterConfig,

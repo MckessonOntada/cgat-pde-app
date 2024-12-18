@@ -51,7 +51,7 @@ export const PendingPaymentsProvider = ({ children }) => {
   };
 
   const filterData = (filters) => {
-    let _data = [...[], ...data];
+    let _data = [...[], ...unSlicedData];
     setIsLoading(true);
     let _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery
@@ -71,7 +71,6 @@ export const PendingPaymentsProvider = ({ children }) => {
     // Updating the page count and total records
     setPaginationConfig((state) => ({ ...state, totalPages: Math.ceil(_modifiedData.length / paginationConfig.pageSize), totalElements: _modifiedData.length }));
     setIsLoading(false);
-    setUnSlicedData(_modifiedData);
     setData(_modifiedData.slice(startIndex, endIndex));
   };
 
@@ -101,6 +100,7 @@ export const PendingPaymentsProvider = ({ children }) => {
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
       if (res.data) {
         setData(res.data?.pendingPayments);
+        setUnSlicedData(res.data?.pendingPayments);
         setPaginationConfig((state) => ({ ...state, totalPages: Math.ceil(res.data?.pendingPayments.length / paginationConfig.pageSize), totalElements: res.data?.pendingPayments.length }));
       }
     },
@@ -143,6 +143,7 @@ export const PendingPaymentsProvider = ({ children }) => {
 
   const contextValue = {
     data: data || [],
+    actualData: unSlicedData || [],
     isFetching,
     // isError,
     filterConfig,

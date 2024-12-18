@@ -8,22 +8,22 @@ import { usePaymentCredits } from '../../context/PaymentsCreditsContext';
 
 export default function Credits(params) {
   const { t } = useTranslate();
-  const { applyFilters, clearFilters,data } = usePaymentCredits();
+  const { applyFilters, clearFilters, actualData } = usePaymentCredits();
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
       {
         type: 'multiSelectDropdown',
-        name: "billNumber",
+        name: 'billNumber',
         label: t('paymentInvoices.history.table.billNumber'),
-        id:'billNumber',
+        id: 'billNumber',
         options: []
       },
       {
         type: 'multiSelectDropdown',
         label: t('paymentInvoices.history.table.SoldToSite'),
         name: 'soldToSite',
-        id:'soldToSite',
+        id: 'soldToSite',
         options: []
       },
       {
@@ -35,7 +35,7 @@ export default function Credits(params) {
   return (
     <React.Fragment>
       <div className="MCP-CardContainer">
-        <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={"Search by document number, sold to..."} filterData={data} />
+        <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={'Search by document number, sold to...'} filterData={actualData} />
       </div>
       <div className="MCP-table-wrapper">
         <div className="table-header">

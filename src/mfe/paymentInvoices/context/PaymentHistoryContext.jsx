@@ -52,7 +52,7 @@ export const PaymentHistoryProvider = ({ children }) => {
   };
 
   const filterData = (filters) => {
-    let _data = [...[], ...data];
+    let _data = [...[], ...unSlicedData];
     let _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery ? item.confirmationNo?.toLowerCase().includes(filters.searchQuery.toLowerCase()) || item.PurchaseOrderNumber?.toString().includes(filters.searchQuery.toLowerCase()) : true;
       const matchesPaymentStatus = filters?.paymentStatus?.length > 0 ? filters.paymentStatus.includes(item.paymentStatus) : true;
@@ -66,7 +66,6 @@ export const PaymentHistoryProvider = ({ children }) => {
     const endIndex = startIndex + paginationConfig.pageSize;
     // Updating the page count and total records
     setPaginationConfig((state) => ({ ...state, totalPages: Math.ceil(_modifiedData.length / paginationConfig.pageSize), totalElements: _modifiedData.length }));
-    setUnSlicedData(_modifiedData);
     setData(_modifiedData.slice(startIndex, endIndex));
   };
 
@@ -90,6 +89,7 @@ export const PaymentHistoryProvider = ({ children }) => {
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
       if (res.data) {
         setData(res.data?.paymentDetails);
+        setUnSlicedData(res.data?.paymentDetails);
         setPaginationConfig((state) => ({ ...state, totalPages: Math.ceil(res.data?.paymentDetails.length / paginationConfig.pageSize), totalElements: res.data?.paymentDetails.length }));
       }
     },
@@ -137,6 +137,7 @@ export const PaymentHistoryProvider = ({ children }) => {
 
   const contextValue = {
     data: data || [],
+    actualData: unSlicedData || [],
     isFetching,
     // isError,
     filterConfig,

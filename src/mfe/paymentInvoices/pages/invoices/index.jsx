@@ -8,7 +8,7 @@ import { Button } from '@mckesson/mcp-component-library';
 
 export default function Invoices(params) {
   const { t } = useTranslate();
-  const { applyFilters, clearFilters, data } = usePaymentInvoices();
+  const { applyFilters, clearFilters, actualData } = usePaymentInvoices();
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
@@ -35,7 +35,7 @@ export default function Invoices(params) {
   return (
     <React.Fragment>
       <div className="MCP-CardContainer">
-        <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={'Search by document number, sold to...'} filterData={data} />
+        <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={'Search by document number, sold to...'} filterData={actualData} />
       </div>
       <div className="MCP-table-wrapper">
         <div className="table-header">

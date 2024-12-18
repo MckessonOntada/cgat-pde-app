@@ -8,21 +8,21 @@ import { Button } from '@mckesson/mcp-component-library';
 
 export default function PendingPayments(params) {
   const { t } = useTranslate();
-  const { data,applyFilters, clearFilters } = usePendingPayments();
+  const { actualData, applyFilters, clearFilters } = usePendingPayments();
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
       {
         type: 'multiSelectDropdown',
         name: 'confirmationNo',
-        id:'confirmationNo',
+        id: 'confirmationNo',
         label: t('pendingPayments.table.confirmationNumber'),
         options: []
       },
       {
         type: 'multiSelectDropdown',
         name: 'paymentMethod',
-        id:'paymentMethod', 
+        id: 'paymentMethod',
         label: t('paymentInvoices.history.table.paymentMethod'),
         options: []
       },
@@ -35,7 +35,7 @@ export default function PendingPayments(params) {
   return (
     <React.Fragment>
       <div className="MCP-CardContainer">
-        <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={"Search by document number, sold to..."} filterData={data}/>
+        <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={'Search by document number, sold to...'} filterData={actualData} />
       </div>
       <div className="MCP-table-wrapper">
         <div className="table-header">
