@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Button, Heading, Alert, Pills } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -6,10 +6,9 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { PATHS } from '../../routes/constants';
 import ModuleHeader from '@src/components/module-header';
-import { useQuery, useMutation } from 'react-query';
+import { useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
-import { handleApiError, serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
@@ -19,14 +18,13 @@ import { useApprover } from '../../context/ApproverContext';
 import { getValidationSchema, transformAttributesToRules } from './formUtils';
 import './index.scss';
 import { useFormContext } from '../../context/FormContext';
-import { RuleKeys, RuleLabels, RuleValueKeys } from '../ApproverGroupDetail/RulesConfig';
 
 const CreateApproverGroup = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
   const { grpId } = useParams();
-  const { initialValues, setInitialValues, isEditMode, setIsEditMode, setLocationState } = useFormContext();
+  const { initialValues, setInitialValues, isEditMode, setIsEditMode, initializeFormFromLocation } = useFormContext();
   const { usersData } = useApprover();
   const [alert, setAlert] = useState(null);
   const [localUserData, setLocalUsersData] = useState([]);
@@ -54,7 +52,6 @@ const CreateApproverGroup = () => {
     }
   }, [usersData, initialValues, isEditMode, location.state]);
 
-  console.log('initialvlaues1', initialValues, location.state?.data);
   const handleGoBack = () => {
     if (isDirty) {
       setModalSuccessCallback('list');
@@ -68,51 +65,17 @@ const CreateApproverGroup = () => {
   };
 
   useEffect(() => {
-    if (location.state && location.state?.data) {
-      setIsEditMode(true);
-      setLocationState(location.state);
-
-      const { name, rules, approverUsers } = location.state.data;
-      const transformedRules = Object.entries(rules).map(([key, value]) => {
-        if (!value || (Array.isArray(value) && value.length === 0)) {
-          return null;
-        }
-        if (key === RuleKeys.PRICE) {
-          return { attributeType: RuleLabels[key], value };
-        }
-
-        if ([RuleKeys.ACCOUNTS, RuleKeys.THERAPIES, RuleKeys.USERS, RuleKeys.ROLES].includes(key)) {
-          const valueKey = RuleValueKeys[key];
-          if (key === RuleKeys.USERS && rules[RuleKeys.ROLES]?.length > 0) return null;
-          if (key === RuleKeys.ROLES && rules[RuleKeys.USERS]?.length > 0) return null;
-
-          return {
-            attributeType: RuleLabels[key],
-            value: value.map((item) => item[valueKey])
-          };
-        }
-      });
-      const hasRoles = rules.roles && rules.roles.length > 0;
-      const hasUsers = rules.users && rules.users.length > 0;
-
-      const dynamicAttributeUserOption = hasRoles ? 'user_role' : hasUsers ? 'user_name' : 'user_role';
-      const transformedApproverUsers = approverUsers.map((user) => user.userId);
-
-      setInitialValues({
-        id: grpId,
-        name: name || '',
-        rules: (transformedRules || []).filter((transformedRules) => transformedRules && transformedRules.attributeType),
-        approverUsers: transformedApproverUsers,
-        attributeuseroption: dynamicAttributeUserOption
-      });
+    if (location.state?.data && grpId) {
+      initializeFormFromLocation(grpId, location.state.data);
     }
-  }, [location.state, setInitialValues, setIsEditMode, setLocationState]);
+  }, [location.state, grpId]);
 
   const validationSchema = getValidationSchema(t);
 
   const { mutate, isLoading, isError, data } = useMutation(async ({ payload }) => {
     if (isEditMode) {
       const updateUser = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}/${grpId}`, httpVerb.PUT, payload);
+      setIsEditMode(false);
       return updateUser.data;
     } else {
       const createResponse = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}`, httpVerb.POST, payload);
@@ -123,18 +86,12 @@ const CreateApproverGroup = () => {
   });
 
   const handleSubmit = (values) => {
-    // console.log('Practice ID before submission: ', practiceId);
-    //console.log(JSON.stringify(transformAttributesToRules(values, practiceId), null, 2));
-    // alert(JSON.stringify(transformAttributesToRules(values, practiceId), null, 2));
-    // navigate(RoutePaths.pathApproverManagement, { state: { isSuccess: true } });
-
     const payload = transformAttributesToRules(values, practiceId);
 
     mutate(
       { payload },
       {
         onSuccess: (response) => {
-          console.log('  created/updated successfully:', response);
           if (!isEditMode) {
             navigate(RoutePaths.pathApproverManagement, { state: { isSuccess: true } });
           } else {

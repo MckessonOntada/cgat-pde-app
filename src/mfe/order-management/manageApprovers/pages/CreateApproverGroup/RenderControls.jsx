@@ -12,7 +12,7 @@ function RenderControls({ attributeType, index, name }) {
   const { t } = useTranslate();
 
   const { values, setFieldValue } = useFormikContext();
-  const { initialValues, isEditMode, locationState } = useFormContext();
+  const { initialValues, isEditMode } = useFormContext();
   const [localData, setLocalData] = useState([]);
   const isDataBinded = useRef(false);
   const isUserDataBinded = useRef(false);
@@ -32,16 +32,12 @@ function RenderControls({ attributeType, index, name }) {
     if (shouldFetchCatalog) return catalogQuery;
     if (shouldFetchAccounts) return accountQuery;
     if (shouldFetchUsers) {
+      isUserDataBinded.current = false;
       return values.attributeuseroption === 'user_role' ? userRoleQuery : userDataQuery;
     }
+
     return { isLoading: false, data: [] };
   }, [attributeType, values.attributeuseroption, catalogQuery, accountQuery, userRoleQuery, userDataQuery]);
-
-  useEffect(() => {
-    if (queryResult.data?.length > 0) {
-      setLocalData(queryResult.data);
-    }
-  }, [queryResult.data]);
 
   useEffect(() => {
     if (!isDataBinded.current) {
@@ -51,7 +47,7 @@ function RenderControls({ attributeType, index, name }) {
         const transformedData = queryResult.data.map((item) => ({
           value: item.value,
           label: item.label,
-          isChecked: currentRule?.value?.includes(item.value) || false
+          isChecked: currentRule?.value?.map(String).includes(String(item.value)) || false
         }));
 
         setLocalData(transformedData);
@@ -64,7 +60,7 @@ function RenderControls({ attributeType, index, name }) {
   }, [queryResult.data, attributeType, initialValues.rules, isEditMode]);
 
   useEffect(() => {
-    if (!isUserDataBinded.current && queryResult.data?.length > 0) {
+    if (!isUserDataBinded.current && queryResult.data?.length > 0 && attributeType === RuleLabels[RuleKeys.USERS]) {
       let fetchData = [];
       if (attributeType === RuleLabels[RuleKeys.USERS]) {
         fetchData = values.attributeuseroption === 'user_role' ? userRoleQuery.data || [] : userDataQuery.data || [];

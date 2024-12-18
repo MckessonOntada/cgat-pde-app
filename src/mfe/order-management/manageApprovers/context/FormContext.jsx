@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { RuleKeys, RuleLabels, RuleValueKeys } from '../pages/ApproverGroupDetail/RulesConfig';
 
 const FormContext = createContext();
 
@@ -29,6 +30,47 @@ export const FormProvider = ({ children }) => {
     }
   }, [isEditMode]);
 
+  const initializeFormFromLocation = (grpId, locationData) => {
+    if (locationData) {
+      setIsEditMode(true);
+      setLocationState(locationData);
+
+      const { name, rules = {}, approverUsers = [] } = locationData;
+
+      const transformedRules = Object.entries(rules).map(([key, value]) => {
+        if (!value || (Array.isArray(value) && value.length === 0)) {
+          return null;
+        }
+        if (key === RuleKeys.PRICE) {
+          return { attributeType: RuleLabels[key], value };
+        }
+
+        if ([RuleKeys.ACCOUNTS, RuleKeys.THERAPIES, RuleKeys.USERS, RuleKeys.ROLES].includes(key)) {
+          const valueKey = RuleValueKeys[key];
+          if (key === RuleKeys.USERS && rules[RuleKeys.ROLES]?.length > 0) return null;
+          if (key === RuleKeys.ROLES && rules[RuleKeys.USERS]?.length > 0) return null;
+
+          return {
+            attributeType: RuleLabels[key],
+            value: value.map((item) => item[valueKey])
+          };
+        }
+      });
+      const hasRoles = rules.roles && rules.roles.length > 0;
+      const hasUsers = rules.users && rules.users.length > 0;
+
+      const dynamicAttributeUserOption = hasRoles ? 'user_role' : hasUsers ? 'user_name' : 'user_role';
+      const transformedApproverUsers = approverUsers.map((user) => user.userId);
+
+      setInitialValues({
+        id: grpId,
+        name: name || '',
+        rules: (transformedRules || []).filter((transformedRules) => transformedRules && transformedRules.attributeType),
+        approverUsers: transformedApproverUsers,
+        attributeuseroption: dynamicAttributeUserOption
+      });
+    }
+  };
   return (
     <FormContext.Provider
       value={{
@@ -37,7 +79,8 @@ export const FormProvider = ({ children }) => {
         isEditMode,
         setIsEditMode,
         locationState,
-        setLocationState
+        setLocationState,
+        initializeFormFromLocation
       }}>
       {children}
     </FormContext.Provider>

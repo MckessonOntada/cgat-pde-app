@@ -192,7 +192,7 @@ function ApproverList({ onActionSuccess }) {
           isOpen,
           onClose: () => setIsOpen(false),
           modalTitle: t('approvergroup.confirmationmessage'),
-          modalBody: <h3>t('approvergroup.confirmationmessage.message')</h3>,
+          modalBody: <h3>{t('approvergroup.confirmationmessage.message')}</h3>,
           modalFooter: (
             <React.Fragment>
               <Button onClick={handleConfirmCancel} variant="secondary">

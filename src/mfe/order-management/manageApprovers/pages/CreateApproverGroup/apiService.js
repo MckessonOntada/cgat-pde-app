@@ -13,6 +13,7 @@ let statusParam = {
   status: 'active'
 };
 const practiceId = AuthUtils.getPracticeId();
+const userId = AuthUtils.getUserId();
 
 export const useCatalogData = (shouldFetch) => {
   return useQuery(
@@ -23,7 +24,7 @@ export const useCatalogData = (shouldFetch) => {
       return (
         res.data?.content?.map((item) => ({
           label: item.therapyDescription,
-          value: item.therapyId
+          value: item.id
         })) || []
       );
     },
@@ -39,7 +40,7 @@ export const useAccountData = (shouldFetch) => {
   return useQuery(
     ['accountData'],
     async () => {
-      const apiUrl = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts?${serializeParams(params)}`;
+      const apiUrl = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/users/${userId}/accounts?${serializeParams(params)}`;
       const res = await HttpResourceService.callRest(apiUrl, httpVerb.GET, {});
       return (
         res.data?.content?.map((item) => ({
