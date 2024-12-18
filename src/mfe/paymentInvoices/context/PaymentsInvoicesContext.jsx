@@ -34,15 +34,13 @@ const INITIAL_PAGINATION_STATE = {
 };
 
 export const PaymentsInvoiceProvider = ({ children }) => {
-  
   const [data, setData] = useState([]);
   const [unSlicedData, setUnSlicedData] = useState([]);
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const [isLoading, setIsLoading] = useState(false);
-const { showSnackbar } = useSnackbar();
-
+  const { showSnackbar } = useSnackbar();
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
@@ -81,7 +79,7 @@ const { showSnackbar } = useSnackbar();
     setData(_modifiedData.slice(startIndex, endIndex));
   };
 
-  const { isFetching} = useQuery({
+  const { isFetching } = useQuery({
     queryKey: ['invoiceListing'],
     queryFn: async () => {
       const url = `${ApiRoutes.INVOICES_CREDITS_LISTING('123', false)}`;
@@ -158,8 +156,7 @@ const { showSnackbar } = useSnackbar();
     applyFilters,
     clearFilters,
     applySort,
-    setPageNumber,
-
+    setPageNumber
   };
   return <PaymentsInvoicesContext.Provider value={contextValue}>{children}</PaymentsInvoicesContext.Provider>;
 };

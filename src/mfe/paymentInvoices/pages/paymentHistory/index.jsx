@@ -35,21 +35,23 @@ const paymentMethodOptions = [
 
 export default function PaymentHistory(params) {
   const { t } = useTranslate();
-  const { applyFilters, filterConfig, sortConfig, clearFilters } = usePaymentHistory();
+  const { applyFilters, clearFilters, data } = usePaymentHistory();
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
       {
         type: 'multiSelectDropdown',
         name: 'paymentStatus',
+        id:'paymentStatus',
         label: t('paymentInvoices.history.filters.status'),
-        options: paymentStatus
+        options: []
       },
       {
         type: 'multiSelectDropdown',
         name: 'paymentMethod',
+        id:'paymentMethod',
         label: t('paymentInvoices.history.filters.method'),
-        options: paymentMethodOptions
+        options: []
       },
       {
         type: 'dateRangePicker',
@@ -61,7 +63,7 @@ export default function PaymentHistory(params) {
   return (
     <React.Fragment>
       <div className="MCP-panel-container">
-        <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={t('paymentInvoices.history.filters.autoSearch')} />
+        <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={t('paymentInvoices.history.filters.autoSearch')} filterData={data}/>
       </div>
       <div className="table-header">
         <h1> Payment Listing</h1>

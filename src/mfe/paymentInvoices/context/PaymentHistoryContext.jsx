@@ -1,6 +1,9 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { PaymentHistoryData } from '../mockData/PaymentHistoryData';
-import { useDispatch } from 'react-redux';
+import { useQuery } from 'react-query';
+import ApiRoutes from '@src/api/ApiRoutes';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import useSnackbar from '@src/hooks/useSnackbar';
 
 const PaymentHistoryContext = createContext();
 
@@ -32,14 +35,13 @@ const INITIAL_PAGINATION_STATE = {
 };
 
 export const PaymentHistoryProvider = ({ children }) => {
-  const [paymentHistoryData, setPaymentHistoryData] = useState(PaymentHistoryData);
   const [data, setData] = useState([]);
   const [unSlicedData, setUnSlicedData] = useState([]);
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
+  const { showSnackbar } = useSnackbar();
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
@@ -50,13 +52,12 @@ export const PaymentHistoryProvider = ({ children }) => {
   };
 
   const filterData = (filters) => {
-    let _data = [...[], ...paymentHistoryData];
-    setIsLoading(true);
+    let _data = [...[], ...data];
     let _modifiedData = _data.filter((item) => {
-      const matchesSearchQuery = filters?.searchQuery ? item.ConfirmationNumber.toLowerCase().includes(filters.searchQuery.toLowerCase()) || item.PurchaseOrderNumber.toString().includes(filters.searchQuery.toLowerCase()) : true;
-      const matchesPaymentStatus = filters?.paymentStatus?.length > 0 ? filters.paymentStatus.includes(item.PaymentStatus) : true;
-      const matchesPaymentMethod = filters?.paymentMethod?.length > 0 ? filters.paymentMethod.includes(item.PaymentMethod) : true;
-      const matchesDateRange = filters.dateRange?.length === 2 ? new Date(item.date) >= new Date(filters.dateRange[0]) && new Date(item.date) <= new Date(filters.dateRange[1]) : true;
+      const matchesSearchQuery = filters?.searchQuery ? item.confirmationNo?.toLowerCase().includes(filters.searchQuery.toLowerCase()) || item.PurchaseOrderNumber?.toString().includes(filters.searchQuery.toLowerCase()) : true;
+      const matchesPaymentStatus = filters?.paymentStatus?.length > 0 ? filters.paymentStatus.includes(item.paymentStatus) : true;
+      const matchesPaymentMethod = filters?.paymentMethod?.length > 0 ? filters.paymentMethod.includes(item.paymentMethod) : true;
+      const matchesDateRange = filters.dateRange?.length === 2 ? new Date(item.paymentInitiationDate) >= new Date(filters.dateRange[0]) && new Date(item.paymentInitiationDate) <= new Date(filters.dateRange[1]) : true;
 
       return matchesSearchQuery && matchesPaymentStatus && matchesPaymentMethod && matchesDateRange;
     });
@@ -65,7 +66,6 @@ export const PaymentHistoryProvider = ({ children }) => {
     const endIndex = startIndex + paginationConfig.pageSize;
     // Updating the page count and total records
     setPaginationConfig((state) => ({ ...state, totalPages: Math.ceil(_modifiedData.length / paginationConfig.pageSize), totalElements: _modifiedData.length }));
-    setIsLoading(false);
     setUnSlicedData(_modifiedData);
     setData(_modifiedData.slice(startIndex, endIndex));
   };
@@ -78,6 +78,25 @@ export const PaymentHistoryProvider = ({ children }) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig(INITIAL_FILTER_STATE);
   };
+  const { isFetching } = useQuery({
+    queryKey: ['invoiceListing'],
+    queryFn: async () => {
+      const url = `${ApiRoutes.PAYMENT_HISTORY_LISTING('123', false)}`;
+      const payload = {
+        companyCode: 'string',
+        salesOrg: 'string',
+        payerAccountNumber: 'string'
+      };
+      const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+      if (res.data) {
+        setData(res.data?.paymentDetails);
+        setPaginationConfig((state) => ({ ...state, totalPages: Math.ceil(res.data?.paymentDetails.length / paginationConfig.pageSize), totalElements: res.data?.paymentDetails.length }));
+      }
+    },
+    onError: (error) => {
+      showSnackbar({ description: 'Error fetching invoice listing', type: 'error' });
+    }
+  });
 
   const applySort = (newSortConfig) => {
     setSortConfig(newSortConfig);
@@ -118,7 +137,7 @@ export const PaymentHistoryProvider = ({ children }) => {
 
   const contextValue = {
     data: data || [],
-    isLoading,
+    isFetching,
     // isError,
     filterConfig,
     paginationConfig,
