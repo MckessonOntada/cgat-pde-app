@@ -118,7 +118,6 @@ const getPathByOrderStage = ({ currentStage, id }) => {
 
 const getPatientName = (patientInfo) => {
   let lastName = '';
-
   if (patientInfo?.name?.lastName) fullName += ',';
 
   return [lastName, patientInfo?.name?.firstName, patientInfo?.name?.middleName].join(' ');
@@ -146,11 +145,15 @@ export const createColumns = (t, navigate, activeTab) => [
     selector: () => {},
     sortable: true,
     sortKey: 'patientName',
-    minWidth: '240px',
-    maxWidth: '380px',
+    minWidth: '140px',
+    maxWidth: '200px',
     cell: (props) => {
       const patientInfo = props.patient && props.patient.patientInfo;
-      return <EclipsesTextcss aria-label={t('labels.patientName')} str={getPatientName(patientInfo)} maxWidth={200} />;
+      return !patientInfo ? (
+        'N/A'
+      ) : (
+        <EclipsesTextcss aria-label={t('labels.patientName')} str={getPatientName(patientInfo)} maxWidth={170} />
+      );
     }
   },
   {
@@ -159,12 +162,11 @@ export const createColumns = (t, navigate, activeTab) => [
     selector: () => {},
     sortable: true,
     sortKey: 'therapyId',
-    minWidth: '240px',
-    maxWidth: '380px',
+    minWidth: '140px',
     cell: (props) => (
       <EclipsesTextcss
         str={props.therapy?.materialDescription}
-        maxWidth={200}
+        maxWidth={100}
         className={'MCP-table-cell'}
         aria-label={t('labels.therapy')}
       />
@@ -176,10 +178,15 @@ export const createColumns = (t, navigate, activeTab) => [
     selector: () => {},
     sortable: true,
     sortKey: 'author',
-    minWidth: '240px',
-    maxWidth: '380px',
+    minWidth: '140px',
+    maxWidth: '200px',
     cell: (props) => (
-      <EclipsesTextcss str={props.author?.id} maxWidth={200} className={'MCP-table-cell'} aria-label={t('table.columns.captions.author')} />
+      <EclipsesTextcss
+        str={props.author?.name}
+        maxWidth={170}
+        className={'MCP-table-cell'}
+        aria-label={t('table.columns.captions.author')}
+      />
     ),
     omit: activeTab !== 'pending submission'
   },
@@ -189,7 +196,7 @@ export const createColumns = (t, navigate, activeTab) => [
     selector: () => {},
     sortable: true,
     sortKey: 'createdOn',
-    width: '180px',
+    width: '100px',
     cell: (props) => (
       <span aria-label={t('table.columns.captions.createdOn')}>
         {CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')}
@@ -240,7 +247,7 @@ export const createColumns = (t, navigate, activeTab) => [
     name: t('table.columns.captions.price'),
     selector: () => {},
     sortable: false,
-    width: '120px',
+    width: '100px',
     cell: (props) => <span aria-label={t('table.columns.captions.price')}>{props.orderCost}</span>
   },
   {

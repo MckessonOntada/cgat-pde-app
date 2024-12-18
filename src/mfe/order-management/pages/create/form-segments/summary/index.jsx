@@ -12,10 +12,12 @@ import DetailSegment from '@src/components/DetailSegment';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import OrderService from '@src/api/commonService/OrderService';
 import { useQuery } from 'react-query';
+import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 
 const Summary = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
+  const { editByStage } = useManageOrder();
   const { orderId } = useParams();
 
   const {
@@ -62,6 +64,32 @@ const Summary = () => {
     navigate('/orders');
   };
 
+  const handleOnEditSection = (stage) => {
+    editByStage(stage);
+    switch (stage) {
+      case ORDER_STAGES.THERAPY_SELECTION: {
+        navigate(`../edit-order/${orderId}`);
+        break;
+      }
+      case ORDER_STAGES.ACCOUNT_DETAILS: {
+        navigate(`../${orderId}/accounts`);
+        break;
+      }
+      case ORDER_STAGES.PATIENT_DETAILS: {
+        navigate(`../${orderId}/patient`);
+        break;
+      }
+      case ORDER_STAGES.ADDITIONAL_DETAILS: {
+        navigate(`../${orderId}/additional-details`);
+        break;
+      }
+      default: {
+        navigate('/orders');
+        break;
+      }
+    }
+  };
+
   if (isLoading || !data) {
     return <Loader />;
   }
@@ -101,7 +129,7 @@ const Summary = () => {
                     <Button
                       size="md"
                       variant="tertiary"
-                      onClick={() => navigate(`../edit-order/${orderId}`)}
+                      onClick={() => handleOnEditSection(ORDER_STAGES.THERAPY_SELECTION)}
                       Icon={() => <IconEditField />}>
                       {t('captions.btnEdit')}
                     </Button>
@@ -129,7 +157,7 @@ const Summary = () => {
                       <Button
                         size="md"
                         variant="tertiary"
-                        onClick={() => navigate(`../${orderId}/accounts`)}
+                        onClick={() => handleOnEditSection(ORDER_STAGES.ACCOUNT_DETAILS)}
                         Icon={() => <IconEditField />}>
                         {t('captions.btnEdit')}
                       </Button>
@@ -151,7 +179,7 @@ const Summary = () => {
                         <Button
                           size="md"
                           variant="tertiary"
-                          onClick={() => navigate(`../${orderId}/patient`)}
+                          onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
                           Icon={() => <IconEditField />}>
                           {t('captions.btnEdit')}
                         </Button>
@@ -175,7 +203,7 @@ const Summary = () => {
                   <Button
                     size="md"
                     variant="tertiary"
-                    onClick={() => navigate(`../${orderId}/additional-details`)}
+                    onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
                     Icon={() => <IconEditField />}>
                     {t('captions.btnEdit')}
                   </Button>

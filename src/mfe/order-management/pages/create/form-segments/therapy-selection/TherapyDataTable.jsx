@@ -11,7 +11,7 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 const TherapyDataTable = ({ therapy, onChange }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { data, paginationConfig, setPageNumber, applySort } = useTherapy();
+  const { data, paginationConfig, setPageNumber, isFetching, error, applySort } = useTherapy();
 
   const columns = createColumns(t, navigate, therapy, onChange);
 
@@ -43,7 +43,8 @@ const TherapyDataTable = ({ therapy, onChange }) => {
       paginationTotalRecorsMessage={'result'}
       noDataComponent={
         <EmptyDataTable
-          isLoading={false}
+          isLoading={isFetching}
+          error={error && error.message}
           image={EmptyDataImage}
           heading={t('table.add.label')}
           description={t('table.empty_table_description')}

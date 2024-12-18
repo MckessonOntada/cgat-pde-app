@@ -5,7 +5,7 @@ import TherapyDetails from './TherapyDetails';
 import FloatingDrawer from '@src/components/floating-drawer';
 import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import TherapyDataTable from './TherapyDataTable';
 import { useTherapy } from '../../../../context/TherapyContext';
 import { FormList } from '../Constants';
@@ -15,6 +15,7 @@ import CommonFilters from '@src/components/Filters';
 import { useMutation } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
+import OrderStepper from '../OrderStepper';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -22,8 +23,26 @@ function TherapySelection() {
   const location = useLocation();
   const [therapy, setTherapy] = useState(null);
   const { clearFilters, applyFilters } = useTherapy();
+  const { formState } = useManageOrder();
   const searchParams = new URLSearchParams(location.search);
   const therapyDetails = searchParams.get('therapy-details');
+
+  const { orderId } = useParams();
+
+  React.useEffect(() => {
+    if (orderId) {
+      setCurrentOrder(orderId);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    const { therapy } = formState.activeRecord || {};
+    if (therapy) {
+      setTherapy(therapy);
+    } else {
+      console.log('Could not set therapy');
+    }
+  }, [formState?.activeRecord]);
 
   const handleOnClose = () => {
     searchParams.delete('therapy-details');
@@ -72,7 +91,7 @@ function TherapySelection() {
 
     return config;
   }, []);
-  const { setActiveRecord } = useManageOrder();
+  const { setActiveRecord, setCurrentOrder } = useManageOrder();
 
   const { isLoading: isSaving, mutate: createNewOrder } = useMutation(async (data) => OrderService.createOrder(data), {
     onSuccess: (result) => {
@@ -86,7 +105,7 @@ function TherapySelection() {
   const handleOnSubmit = () => {
     if (therapy) {
       const payload = {
-        id: therapy
+        id: therapy.id
       };
 
       createNewOrder(payload);
@@ -111,8 +130,7 @@ function TherapySelection() {
       <PageHeader heading={<Heading as="h1">{t('headings.createNewOrder')}</Heading>} />
 
       <div className="MCP-module-body">
-        <Stepper activeIndex={1} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} />
-
+        <OrderStepper />
         <div className={styles.wrapper}>
           <div className="MCP-panel-container">
             <ModuleHeader heading={<Heading as="h2">{t('labels.therapySelection')}</Heading>} />

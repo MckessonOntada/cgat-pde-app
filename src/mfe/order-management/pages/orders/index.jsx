@@ -10,11 +10,13 @@ import { getTabs, breadcrumbItems } from './constants';
 import OrderDataTable from './OrderDataTable';
 import CommonFilters from '@src/components/Filters';
 import { useOrders } from '../../context/OrderContext';
+import { useManageOrder } from '../../context/ManageOrderContext';
 
 const OrderIndex = () => {
   const { t } = useTranslate();
   const [tabList, setTabList] = React.useState(getTabs(t));
   const { applyFilters, clearFilters, changeTab } = useOrders();
+  const { resetActiveRecord } = useManageOrder();
   const navigate = useNavigate();
   const activeTab = tabList.find((tab) => tab.isActiveTab);
 
@@ -48,7 +50,10 @@ const OrderIndex = () => {
     changeTab(tab.configName);
   };
 
-  const handleOnClick = () => navigate(routesConfig.createOrder);
+  const handleOnClick = () => {
+    resetActiveRecord();
+    navigate(routesConfig.createOrder);
+  };
 
   React.useEffect(() => {
     setActiveTab(tabList?.[0].configName);

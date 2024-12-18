@@ -333,6 +333,16 @@
   font-weight: var(--brand-font-weight-700);
 }
 
+.price-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .fieldValue {
+    font-size: var(--brand-font-size--large);
+  }
+}
+
 .primaryHeading {
   font-size: var(--brand-font-size--28);
   font-weight: 600;

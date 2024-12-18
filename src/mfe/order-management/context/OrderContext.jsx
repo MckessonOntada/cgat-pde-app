@@ -61,7 +61,11 @@ export const OrderProvider = ({ children }) => {
     return params;
   }, [filterConfig, paginationConfig.pageNumber, sortConfig, tabVariant]);
 
-  const { isLoading, refetch: refreshData } = useQuery({
+  const {
+    isFetching,
+    refetch: refreshData,
+    error
+  } = useQuery({
     queryKey: ['orders'],
     queryFn: async () => OrderService.getOrders(requestParams),
     onSuccess: (result) => {
@@ -104,6 +108,8 @@ export const OrderProvider = ({ children }) => {
         filterConfig,
         paginationConfig,
         dataState,
+        isFetching,
+        error,
         applyFilters,
         clearFilters,
         setCurrentPage,

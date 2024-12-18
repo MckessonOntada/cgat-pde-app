@@ -1,11 +1,9 @@
 import React from 'react';
-import { Button, Stepper, Heading, Required } from '@mckesson/mcp-component-library';
+import { Button, Heading, Required } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FormList } from '../Constants';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
-import DetailSegment from '@src/components/DetailSegment';
 import { Field, Form, Formik } from 'formik';
 import { getFormFields } from './fields';
 import * as Yup from 'yup';
@@ -13,6 +11,7 @@ import OrderService from '@src/api/commonService/OrderService';
 import { useMutation } from 'react-query';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import OrderHeaderDetails from '../OrderHeaderDetails';
+import OrderStepper from '../OrderStepper';
 
 const getValidationSchema = (t) =>
   Yup.object({
@@ -22,19 +21,21 @@ const getValidationSchema = (t) =>
     poNumber: Yup.number().required('PO number is required').min(1, '').max(35, 'PO Number can not be greater than 20')
   });
 
+const INITIAL_VALUES = {
+  coiId: '',
+  orderQuantity: '',
+  slotNumber: '',
+  poNumber: '',
+  dateOfAdministration: ''
+};
+
 function AdditionalDetails() {
-  const initialValues = {
-    coiId: '',
-    orderQuantity: '',
-    slotNumber: '',
-    poNumber: '',
-    dateOfAdministration: ''
-  };
   const { t } = useTranslate();
   const formFields = getFormFields(t);
   const navigate = useNavigate();
   const { orderId } = useParams();
-  const { formState, setActiveRecord } = useManageOrder();
+  const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
+  const { formState, setActiveRecord, setCurrentOrder } = useManageOrder();
 
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(
     async (data) => OrderService.saveAdditionalDetails(orderId, data),
@@ -47,6 +48,25 @@ function AdditionalDetails() {
       onError: console.log
     }
   );
+
+  React.useEffect(() => {
+    orderId && setCurrentOrder(orderId);
+  }, []);
+
+  React.useEffect(() => {
+    const { additionalDetails } = formState.activeRecord || {};
+    if (additionalDetails) {
+      const { dateOfAdministration, id, orderQuantity, patientConsentTaken, poNumber, slotNumber } = additionalDetails;
+
+      setInitialFormValues({
+        coiId: id,
+        orderQuantity: orderQuantity,
+        slotNumber: slotNumber,
+        poNumber: poNumber,
+        dateOfAdministration: dateOfAdministration
+      });
+    }
+  }, [formState.activeRecord]);
 
   const handleOnBack = () => {
     //compare data change, display modal for confirmation
@@ -70,8 +90,6 @@ function AdditionalDetails() {
     navigate('/orders');
   };
 
-  const forms = FormList(t);
-  const { therapy, accountDetails, patient, orderCost } = formState.activeRecord || {};
   const validationSchema = getValidationSchema(t);
 
   return (
@@ -82,10 +100,11 @@ function AdditionalDetails() {
         </Button>
       </div>
 
-      <PageHeader heading={t('headings.createNewOrder')} />
+      <PageHeader heading={<Heading as="h1">{t('headings.createNewOrder')}</Heading>} />
 
       <Formik
-        initialValues={initialValues}
+        initialValues={initialFormValues}
+        enableReinitialize={true}
         validationSchema={validationSchema}
         onSubmit={(values) => {
           handleOnSubmit(values);
@@ -94,21 +113,8 @@ function AdditionalDetails() {
           return (
             <Form>
               <div className="MCP-module-body">
-                <Stepper
-                  activeIndex={4}
-                  dividerText="of"
-                  mobileLabel={t('labels.steps')}
-                  stepHeaders={forms.map((f) => ({ label: f.label }))}
-                />
-                {/* <div className="MCP-panel-container">
-                  <div className={`grid grid-gap-24 grid-cols-1 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5`}>
-                    <DetailSegment label={t('labels.therapyDescription')} value={therapy?.materialDescription} />
-                    <DetailSegment label={t('labels.orderByAccountNumber')} value={'Order by Account Number'} />
-                    <DetailSegment label={t('labels.shipToAccountNumber')} value={accountDetails?.shipToAccount?.accountNumber} />
-                    <DetailSegment label={t('labels.patientName')} value={patient?.firstName} />
-                    <DetailSegment label={t('labels.price')} value={orderCost || '--'} />
-                  </div>
-                </div> */}
+                <OrderStepper />
+
                 <OrderHeaderDetails />
                 <div className="MCP-panel-container">
                   <div className="row-space-between-center">

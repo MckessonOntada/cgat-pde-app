@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './PatientDetails.module.scss';
-import { Button, Stepper, Alert } from '@mckesson/mcp-component-library';
+import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
 import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -10,19 +10,18 @@ import { useNavigate, useParams } from 'react-router-dom';
 import PatientDetailsForm from './PatientDetailsForm';
 import { Form, Formik } from 'formik';
 import { getValidationSchema } from './PatientDetailsFormUtils';
-import { ReactComponent as TickIcon } from '@src/assets/svg/tick-circle-filled.svg';
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation } from 'react-query';
 import CommonUtils from '@src/util/CommonUtils';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import OrderHeaderDetails from '../OrderHeaderDetails';
+import OrderStepper from '../OrderStepper';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
   const { orderId } = useParams();
   const navigate = useNavigate();
-  const { messageConfig, clearMessage } = useManageOrder();
-  const { formState, setActiveRecord } = useManageOrder();
+  const { formState, setActiveRecord, setCurrentOrder, messageConfig } = useManageOrder();
 
   const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(async (data) => OrderService.savePatientDetails(orderId, data), {
     onSuccess: (result) => {
@@ -32,6 +31,10 @@ const PatientDetails = () => {
     },
     onError: console.log
   });
+
+  React.useEffect(() => {
+    orderId && setCurrentOrder(orderId);
+  }, []);
 
   const handleOnBack = () => {
     //compare data change, display modal for confirmation
@@ -68,10 +71,11 @@ const PatientDetails = () => {
         </Button>
       </div>
 
-      <PageHeader heading={t('headings.createNewOrder')} />
+      <PageHeader heading={<Heading as="h1">{t('headings.createNewOrder')}</Heading>} />
 
       <div className="MCP-module-body">
-        <Stepper activeIndex={3} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} />
+        {/* <Stepper activeIndex={3} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} /> */}
+        <OrderStepper />
 
         <div className={styles.wrapper}>
           {/* <div className="MCP-panel-container">

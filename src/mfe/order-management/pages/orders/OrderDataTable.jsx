@@ -11,8 +11,7 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 const OrderDataTable = ({ tab }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { dataState: data, paginationConfig, setpaginationConfig, setCurrentPage, setOrdersData } = useOrders();
-
+  const { dataState: data, paginationConfig, isFetching, error, setCurrentPage } = useOrders();
   const columns = createColumns(t, navigate, tab);
 
   const handleOnPageChange = (_event, pageIndex) => {
@@ -39,7 +38,8 @@ const OrderDataTable = ({ tab }) => {
       paginationTotalRecorsMessage={t('labels.results')}
       noDataComponent={
         <EmptyDataTable
-          isLoading={false}
+          isLoading={isFetching}
+          error={error && error.message}
           image={EmptyDataImage}
           heading={t('captions.emptyTableTitle')}
           description={t('captions.emptyTableSubtitle')}

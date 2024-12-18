@@ -25,7 +25,7 @@ export const createColumns = (t, navigate, selectedShippingAddress, setSelectedS
           onOtherTextChange={() => {}}
           onSubRadioFieldChange={() => {}}
           radioBtnWidth="auto"
-          value={selectedShippingAddress.id === props.id ? props.id : ''}
+          value={selectedShippingAddress.id && selectedShippingAddress.id == props.id ? props.id : ''}
         />
       </span>
     )

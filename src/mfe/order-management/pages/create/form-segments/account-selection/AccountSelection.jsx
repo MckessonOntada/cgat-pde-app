@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import { Heading, Button, Stepper } from '@mckesson/mcp-component-library';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Heading, Button } from '@mckesson/mcp-component-library';
+import { useNavigate, useParams } from 'react-router-dom';
 import styles from './AccountSelection.module.scss';
 import FloatingDrawer from '@src/components/floating-drawer';
 import AccountSelectionUserGuide from './AccountSelectionUserGuide';
@@ -9,15 +9,14 @@ import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ShippingAddressProvider } from '../../../../context/ShippingAddressContext';
 import PageHeader from '@src/components/pageHeader';
-import { FormList } from '../Constants';
 import { useMutation, useQuery } from 'react-query';
-import { ReactComponent as TickIcon } from '@src/assets/svg/tick-circle-filled.svg';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import CommonUtils from '@src/util/CommonUtils';
 import OrderService from '@src/api/commonService/OrderService';
 import ShippingAddress from './ShippingAddress';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import OrderHeaderDetails from '../OrderHeaderDetails';
+import OrderStepper from '../OrderStepper';
 
 const DetailField = ({ label, value, className }) => (
   <div className={className}>
@@ -34,8 +33,12 @@ const AccountSelection = () => {
   const [selectedAccount, setSelectedAccount] = React.useState(null);
   const [accountSearchString, setAccountSearchString] = React.useState('');
   const [selectedShippingAddress, setSelectedShippingAddress] = React.useState('');
-  const therapyId = 3; //temp
-  const { formState, setActiveRecord } = useManageOrder();
+  const { formState, setActiveRecord, setCurrentOrder } = useManageOrder();
+  const therapyId = formState.activeRecord?.therapy?.id;
+
+  React.useEffect(() => {
+    orderId && setCurrentOrder(orderId);
+  }, []);
 
   const { isLoading, data: accountsListData = {} } = useQuery({
     queryKey: ['order', 'therapy', therapyId, accountSearchString],
@@ -57,7 +60,7 @@ const AccountSelection = () => {
     });
 
     return accArr;
-  }, [accountsListData]);
+  }, [accountsListData, formState.activeRecord]);
 
   const { isLoading: isSaving, mutate: saveAccount } = useMutation(async (data) => OrderService.saveAccount(orderId, data), {
     onSuccess: (result) => {
@@ -89,10 +92,7 @@ const AccountSelection = () => {
       saveAccount(payload);
     }
   };
-  const handleOnBackButtonClick = () => {
-    //compare data change, display modal for confirmation
-    navigate(`../edit-order/${orderId}`);
-  };
+
   const handleOnBackToOrders = () => {
     //compare data change, display modal for confirmation
     navigate('/orders');
@@ -102,9 +102,21 @@ const AccountSelection = () => {
     return [acc.houseNumber, acc.street, acc.district, acc.city, acc.state, acc.zipCode].join(', ');
   };
 
-  const forms = FormList(t);
-
-  const { therapy } = formState.activeRecord || {};
+  React.useEffect(() => {
+    const { accountDetails } = formState.activeRecord || {};
+    if (accountDetails) {
+      const { soldToAccount, shipToAccount } = accountDetails;
+      if (soldToAccount) {
+        const originalSelectedAccount = accountsListData.content?.filter((acc) => acc.accountNumber === soldToAccount.accountNumber)[0];
+        if (originalSelectedAccount) setSelectedAccount(originalSelectedAccount);
+      }
+      if (shipToAccount) {
+        setSelectedShippingAddress(shipToAccount);
+      }
+    } else {
+      console.log('Could not set account');
+    }
+  }, [formState?.activeRecord]);
 
   return (
     <div className="MCP-module-wrapper">
@@ -114,11 +126,10 @@ const AccountSelection = () => {
         </Button>
       </div>
 
-      <PageHeader heading={t('headings.createNewOrder')} />
+      <PageHeader heading={<Heading as="h1">{t('headings.createNewOrder')}</Heading>} />
 
       <div className="MCP-module-body">
-        <Stepper activeIndex={2} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} />
-
+        <OrderStepper />
         <div className={`MCP-module-wrapper`}>
           <OrderHeaderDetails />
           {/* <div className="MCP-panel-container">
