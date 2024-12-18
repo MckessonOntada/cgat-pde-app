@@ -24,11 +24,20 @@ function OrderManagementRoutes() {
           </TherapyProvider>
         }
       />
-      <Route path={`edit-order/:orderId`} element={<TherapySelection />} />
-      <Route path={`:therapyId/account-selection`} element={<AccountSelection />} />
-      <Route path={`:therapyId/:accountId/patient-details`} element={<PatientDetails />} />
-      <Route path={`:therapyId/:accountId/additional-details`} element={<AdditionalDetails />} />
-      <Route path={`:therapyId/:accountId/summary`} element={<Summary />} />
+      <Route
+        path={`edit-order/:orderId`}
+        element={
+          <TherapyProvider>
+            <TherapySelection />
+          </TherapyProvider>
+        }
+      />
+
+      <Route path={`:orderId/accounts`} element={<AccountSelection />} />
+      <Route path={`:orderId/patient`} element={<PatientDetails />} />
+      <Route path={`:orderId/additionalDetails`} element={<AdditionalDetails />} />
+      <Route path={`:orderId/summary`} element={<Summary />} />
+
       <Route path={routesConfig.viewDetails} element={<OrderSummary />} />
       <Route path={routesConfig.reviewOrder} element={<div></div>} />
       <Route path={`${routesConfig.status}/:orderId`} element={<OrderStatus />} />

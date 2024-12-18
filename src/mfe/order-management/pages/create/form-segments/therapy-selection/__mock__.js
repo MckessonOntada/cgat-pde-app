@@ -1,6 +1,6 @@
 export const therapyData = [
   {
-    id: "79196b74-6e9c-4b30-9aca-225f67442c68",
+    id: "7919",
     therapyDescription: "MPB HEMLIBRA 105MG/0.7ML SDV",
     therapyNumber: "000000000003742657",
     nationalDrugCode: "61953000201",
@@ -20,7 +20,7 @@ export const therapyData = [
     actions: "view/edit",
   },
   {
-    id: "6ed7c49d-e511-4291-96ce-5681e0be6f5c",
+    id: "4291",
     therapyDescription: "MPB KADCYLA 100MG/5ML INJ",
     therapyNumber: "000000000003742658",
     nationalDrugCode: "50242000201",
@@ -40,7 +40,7 @@ export const therapyData = [
     actions: "view/edit",
   },
   {
-    id: "304418fe-4001-4577-8b43-818791ecc926",
+    id: "4577",
     therapyDescription: "MPB PERJETA 420MG/14ML IV",
     therapyNumber: "000000000003742659",
     nationalDrugCode: "50242000501",
@@ -60,7 +60,7 @@ export const therapyData = [
     actions: "view/edit",
   },
   {
-    id: "7db3b14f-42f3-4d59-9ec0-db57141f6b2d",
+    id: "4659",
     therapyDescription: "MPB TECENTRIQ 1200MG/20ML VIAL",
     therapyNumber: "000000000003742660",
     nationalDrugCode: "61953001001",
@@ -80,7 +80,7 @@ export const therapyData = [
     actions: "view/edit",
   },
   {
-    id: "0bee1cc2-09dd-484e-80aa-2ebb493351f6",
+    id: "8022",
     therapyDescription: "MPB RITUXAN 500MG/50ML IV",
     therapyNumber: "000000000003742661",
     nationalDrugCode: "50242000202",
@@ -100,7 +100,7 @@ export const therapyData = [
     actions: "view/edit",
   },
   {
-    id: "2f25ee20-e801-48f4-b910-c57db57376d0",
+    id: "7910",
     therapyDescription: "MPB AVASTIN 100MG/4ML INJ",
     therapyNumber: "000000000003742662",
     nationalDrugCode: "61953001102",
@@ -120,7 +120,7 @@ export const therapyData = [
     actions: "view/edit",
   },
   {
-    id: "69a12776-bc72-4149-b952-73f00b42d906",
+    id: "-4149",
     therapyDescription: "MPB OCREVUS 300MG/10ML IV",
     therapyNumber: "000000000003742663",
     nationalDrugCode: "50242000303",
@@ -140,7 +140,7 @@ export const therapyData = [
     actions: "view/edit",
   },
   {
-    id: "7e5047d8-766a-4317-96e6-cd7b427a9725",
+    id: "9606",
     therapyDescription: "MPB GAZYVA 1000MG/40ML INJ",
     therapyNumber: "000000000003742664",
     nationalDrugCode: "61953000403",
@@ -160,7 +160,7 @@ export const therapyData = [
     actions: "view/edit",
   },
   {
-    id: "490bb981-9cf3-4012-8655-67388ffb0934",
+    id: "8655",
     therapyDescription: "MPB POLIVY 140MG/7ML VIAL",
     therapyNumber: "000000000003742665",
     nationalDrugCode: "50242000401",
@@ -180,7 +180,7 @@ export const therapyData = [
     actions: "view/edit",
   },
   {
-    id: "8a31b1e9-f98c-4099-b594-73310d671707",
+    id: "1b594",
     therapyDescription: "MPB ACTEMRA 200MG/10ML VIAL",
     therapyNumber: "000000000003742666",
     nationalDrugCode: "61953002005",

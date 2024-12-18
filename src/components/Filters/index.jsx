@@ -42,7 +42,6 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
     clearInputs();
     onClearFilters();
   };
-
   return (
     <Formik
       enableReinitialize
@@ -81,6 +80,7 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
                   </div>
                 )}
               </div>
+
               <ToggleUI in={isCardExpanded} timeout={400}>
                 <div className="additional-filters">
                   <AdditionalFilters filtersConfig={additionalFilters} />

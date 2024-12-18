@@ -81,7 +81,7 @@
 }
 
 .bgcolorRoleUser {
-  background: #1E394E;
+  background: #1e394e;
 }
 
 .status-container {
@@ -102,7 +102,14 @@
     justify-content: space-between;
     align-items: center;
   }
-  button{
+  button {
     margin: 2px;
   }
+}
+
+.align-items-right {
+  display: flex;
+  width: 100%;
+  justify-content: end;
+  padding-right: 16px;
 }
