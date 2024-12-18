@@ -28,5 +28,34 @@ export const PaymentInvoicesES = {
   'paymentInvoices.CS.table.accountnumber': 'S_Account No.',
   'paymentInvoices.CS.table.date': 'S_Date',
   'paymentInvoices.CS.table.statementBalance': 'S_Statement Balance',
-  'paymentInvoices.CS.table.actions': 'S_Action(s)'
+  'paymentInvoices.CS.table.actions': 'S_Action(s)',
+
+  // Invoices
+'paymentInvoices.history.table.billNumber': 'S_Bill Number',
+'paymentInvoices.history.table.SoldToSite': 'S_Sold To Site',
+'paymentInvoices.history.table.PostingDate': 'S_Posting Date',
+'paymentInvoices.history.table.PaymentTerm': 'S_Payment Term',
+'paymentInvoices.history.table.DueDate': 'S_Due Date',
+'paymentInvoices.history.table.OpenAmount': 'S_Open Amount',
+'paymentInvoices.history.table.BillAmount': 'S_Bill Amount',
+'paymentInvoices.history.table.Actions': 'S_Actions',
+//Credits
+'paymentInvoices.credits.table.description': 'S_Description',
+'paymentInvoices.credits.table.validfrom': ' S_Valid From',
+'paymentInvoices.credits.table.amount': 'S_Amount',
+'paymentInvoices.credits.table.downloadPdf': 'S_download pdf',
+
+//payment methods - bank account
+"paymentInvoices.paymentMethods.table.bankAccount.addnewcard": "S_add new card",
+"paymentInvoices.paymentMethods.table.bankAccount.bankName": "S_Bank Name",
+"paymentInvoices.paymentMethods.table.bankAccount.routingNumber": "S_Routing Number",
+"paymentInvoices.paymentMethods.table.bankAccount.bankAccNumber": "S_Bank Account Number",
+"paymentInvoices.paymentMethods.table.bankAccount.bankCountry": "S_Bank Country",
+"paymentInvoices.paymentMethods.table.bankAccount.companyCode": "S_Company Code",
+  
+//Pending Payments
+'pendingPayments.table.confirmationNumber': 'S_Confirmation Number',
+'pendingPayments.table.totalAuthorizedPaymentAmt': 'S_Total Authorized Payment Amount',
+'pendingPayments.table.cancelPayment': 'S_CANCEL PAYMENT',
+
 };
