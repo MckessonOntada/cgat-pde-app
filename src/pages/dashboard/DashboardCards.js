@@ -15,7 +15,7 @@ const SYSTEM_ADMIN_CARDS_DATA = [
     name: 'ManageSystemAdmin',
     label: 'manage_system_admin',
     icon: UserIcon,
-    details: 'efficiently_streamline_user_management_for_seamless_experience',
+    details: 'systemAdmin_card_description',
     path: AppRoutes.pathSystemAdminManagement,
     permissions: USER_MANAGEMENT.MANAGE_SYSTEM_ADMINISTRATOR_SCREEN
   },
@@ -50,7 +50,7 @@ const CARDS_DATA = [
     name: 'ManageRoles',
     label: 'manage_roles',
     icon: ChecklistIcon,
-    details: 'efficiently_streamline_user_management_for_seamless_experience',
+    details: 'role_card_description',
     path: '/organization/roles',
     permissions: USER_MANAGEMENT.MANAGE_ROLES_SCREEN
   },
