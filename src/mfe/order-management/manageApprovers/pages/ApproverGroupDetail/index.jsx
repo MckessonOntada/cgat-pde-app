@@ -232,31 +232,27 @@ function ApproverGroupDetails() {
         </div>
       </div>
       <Modal
-        {...{
-          id: 'xxxs-modal',
-          isOpen,
-          onClose: () => setIsOpen(false),
-          modalTitle: t('approvergroup.confirmationmessage'),
-          modalBody: (
-            <h3>
-              {groupData?.active ? t('approvergroup.confirmationmessage.message') : t('approvergroup.confirmationmessage.activatemessage')}
-            </h3>
-          ),
-          modalFooter: (
-            <React.Fragment>
-              <Button onClick={handleConfirmCancel} variant="secondary">
-                {t('approvergroup.button.cancel')}
-              </Button>
-              <Button
-                onClick={() =>
-                  handleConfirm(groupData?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate'))
-                }>
-                {groupData?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
-              </Button>{' '}
-            </React.Fragment>
-          ),
-          modalSize: 'xxxs'
-        }}
+        id="xxxs-modal"
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        modalTitle={t('approvergroup.confirmationmessage')}
+        modalBody={
+          <h3>
+            {groupData?.active ? t('approvergroup.confirmationmessage.message') : t('approvergroup.confirmationmessage.activatemessage')}
+          </h3>
+        }
+        modalFooter={
+          <React.Fragment>
+            <Button onClick={handleConfirmCancel} variant="secondary">
+              {t('approvergroup.button.cancel')}
+            </Button>
+            <Button
+              onClick={() => handleConfirm(groupData?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate'))}>
+              {groupData?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
+            </Button>{' '}
+          </React.Fragment>
+        }
+        modalSize="xxxs"
       />
     </div>
   );

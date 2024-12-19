@@ -55,7 +55,6 @@ export const FormProvider = ({ children }) => {
 
       const dynamicAttributeUserOption = hasRoles ? 'user_role' : hasUsers ? 'user_name' : 'user_role';
       const transformedApproverUsers = approverUsers.map((user) => user.userId);
-      console.log('transformedRules', transformedRules);
 
       setInitialValues({
         id: grpId,
