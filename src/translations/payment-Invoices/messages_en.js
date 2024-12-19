@@ -16,6 +16,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.filters.printSummary': 'Print Summary',
   'paymentInvoices.history.filters.downloadExcel': 'Download Excel',
   'paymentInvoices.history.filters.paymentDetails': 'Payment Details',
+  'paymentInvoices.history.table.heading': 'Payment History',
 
   // Customer Statements
   'paymentInvoices.CS.filters.autoSearch': 'Search by document number, sold to',
@@ -31,32 +32,36 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.CS.table.statementBalance': 'Statement Balance',
   'paymentInvoices.CS.table.actions': 'Action(s)',
 
-// Invoices
-'paymentInvoices.history.table.billNumber': 'Bill Number',
-'paymentInvoices.history.table.SoldToSite': 'Sold To Site',
-'paymentInvoices.history.table.PostingDate': 'Posting Date',
-'paymentInvoices.history.table.PaymentTerm': 'Payment Term',
-'paymentInvoices.history.table.DueDate': 'Due Date',
-'paymentInvoices.history.table.OpenAmount': 'Open Amount',
-'paymentInvoices.history.table.BillAmount': 'Bill Amount',
-'paymentInvoices.history.table.Actions': 'Actions',
-//Credits
-'paymentInvoices.credits.table.description': 'Description',
-'paymentInvoices.credits.table.validfrom': ' Valid From',
-'paymentInvoices.credits.table.amount': ' Amount',
-'paymentInvoices.credits.table.downloadPdf': ' download pdf',
+  // Invoices
+  'paymentInvoices.history.table.billNumber': 'Bill Number',
+  'paymentInvoices.history.table.SoldToSite': 'Sold To Site',
+  'paymentInvoices.history.table.PostingDate': 'Bill Date',
+  'paymentInvoices.history.table.PaymentTerm': 'Payment Term',
+  'paymentInvoices.history.table.DueDate': 'Due Date',
+  'paymentInvoices.history.table.OpenAmount': 'Open Amount',
+  'paymentInvoices.history.table.BillAmount': 'Bill Amount',
+  'paymentInvoices.history.table.Actions': 'Actions',
+  'paymentInvoices.history.table.heading': 'Invoice Listing',
+  'paymentInvoices.history.table.status': 'Status',
+  //Credits
+  'paymentInvoices.credits.table.description': 'Description',
+  'paymentInvoices.credits.table.validfrom': ' Valid From',
+  'paymentInvoices.credits.table.amount': ' Amount',
+  'paymentInvoices.credits.table.downloadPdf': ' download pdf',
+  'paymentInvoices.credits.table.heading': 'Credits Listing',
+  //payment methods - bank account
+  'paymentInvoices.paymentMethods.table.bankAccount.addnewcard': 'add new card',
+  'paymentInvoices.paymentMethods.table.bankAccount.bankName': 'Bank Name',
+  'paymentInvoices.paymentMethods.table.bankAccount.routingNumber': 'Routing Number',
+  'paymentInvoices.paymentMethods.table.bankAccount.bankAccNumber': 'Bank Account Number',
+  'paymentInvoices.paymentMethods.table.bankAccount.bankCountry': 'Bank Country',
+  'paymentInvoices.paymentMethods.table.bankAccount.companyCode': 'Company Code',
 
-//payment methods - bank account
-"paymentInvoices.paymentMethods.table.bankAccount.addnewcard": "add new card",
-"paymentInvoices.paymentMethods.table.bankAccount.bankName": "Bank Name",
-"paymentInvoices.paymentMethods.table.bankAccount.routingNumber": "Routing Number",
-"paymentInvoices.paymentMethods.table.bankAccount.bankAccNumber": "Bank Account Number",
-"paymentInvoices.paymentMethods.table.bankAccount.bankCountry": "Bank Country",
-"paymentInvoices.paymentMethods.table.bankAccount.companyCode": "Company Code",
-  
-//Pending Payments
-'pendingPayments.table.confirmationNumber': 'Confirmation Number',
-'pendingPayments.table.totalAuthorizedPaymentAmt': 'Total Authorized Payment Amount',
-'pendingPayments.table.cancelPayment': 'CANCEL PAYMENT',
+  //Pending Payments
+  'pendingPayments.table.confirmationNumber': 'Confirmation Number',
+  'pendingPayments.table.totalAuthorizedPaymentAmt': 'Total Authorized Payment Amount',
+  'pendingPayments.table.cancelPayment': 'CANCEL PAYMENT',
+  'pendingPayments.table.heading': 'Pending Payments',
+  'pendingPayments.table.paymentMethod.subHeader': `To view all payments, navigate to the 'Payment History'.`,
 
 };

@@ -91,6 +91,7 @@ export const PendingPaymentsProvider = ({ children }) => {
   const { isFetching } = useQuery({
     queryKey: ['pendingPaymentsListing'],
     queryFn: async () => {
+      //TODO "123" is hardcoded, need to replace with actual value
       const url = `${ApiRoutes.PENDING_PAYMENTS_LISTING('123')}`;
       const payload = {
         companyCode: 'string',
@@ -99,8 +100,8 @@ export const PendingPaymentsProvider = ({ children }) => {
       };
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
       if (res.data) {
-        setData(res.data?.pendingPayments);
-        setUnSlicedData(res.data?.pendingPayments);
+        setData(res.data.pendingPayments);
+        setUnSlicedData(res.data.pendingPayments);
         setPaginationConfig((state) => ({ ...state, totalPages: Math.ceil(res.data?.pendingPayments.length / paginationConfig.pageSize), totalElements: res.data?.pendingPayments.length }));
       }
     },

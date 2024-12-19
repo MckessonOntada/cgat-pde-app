@@ -13,5 +13,5 @@ export default function DateRangePicker({ minDate = new Date('-1'), maxDate = ne
       form.setFieldValue(field.name, [min || prevMin, max || prevMax])
     };
 
-  return <BaseDateRangePicker dateRange={field.value || []} onChange={onChange} size="lg" minDate={minDate} maxDate={maxDate} />;
+  return <BaseDateRangePicker dateRange={field.value || []} onChange={onChange} size="lg" minDate={minDate} maxDate={maxDate} {...props}/>;
 }

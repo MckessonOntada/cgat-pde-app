@@ -12,7 +12,7 @@ export default function PaymentHistoryTable() {
   const { t } = useTranslate();
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data, isLoading, paginationConfig, setPageNumber, applySort } = usePaymentHistory();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort } = usePaymentHistory();
   const columns = [
     {
       name: t('paymentInvoices.history.table.confirmationNumber'),
@@ -43,7 +43,7 @@ export default function PaymentHistoryTable() {
       width: '20%',
       cell: (props) => <div className="cellEllipse">{props.paymentMethod}</div>
     },
- 
+
     {
       name: t('paymentInvoices.history.table.paymentInitiationDate'),
       selector: (row) => `${row.paymentInitiationDate}`,
@@ -93,7 +93,7 @@ export default function PaymentHistoryTable() {
         recordsPerPage={paginationConfig.pageSize}
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
-        progressPending={isLoading}
+        progressPending={isFetching}
         progressComponent={
           <div
             style={{
@@ -106,8 +106,6 @@ export default function PaymentHistoryTable() {
             <Loader variant="circular" />
           </div>
         }
-        // isAdmin={true}
-        // noDataComponent={<EmptyDataTable isLoading={isLoading} error={isError ? 'Something went wrong! Please try again' : null} image={EmptyDataImage} heading={t('orgManagement.add.label')} description={t('orgManagement.empty_table.description')} />}
       />
       <FloatingDrawer open={isOpen} anchor="right" onClose={() => setIsOpen(false)}>
         <PaymentDetails />

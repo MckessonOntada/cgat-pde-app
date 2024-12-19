@@ -13,18 +13,21 @@ import { useTranslate } from '@src/translations/useTranslation';
 
 const Filters = ({ onApplyFilters, onClearFilters, showControls = true, additionalFilters, searchPlaceholder = 'Search...', filterData = [] }) => {
   const { t } = useTranslate();
+  //TODO: This useEffect is not needed. It can be removed.
+  
   useEffect(() => {
-    if (filterData.length > 0 && additionalFilters.length > 0) {
-      additionalFilters.forEach((filter, index) => {
-        if (filter.id) {
-          let currentFilterData = [...new Set(filterData.map((e) => e[filter.id]).filter((e) => e))];
-          additionalFilters[index].options = currentFilterData.map((item) => {
-            return { value: '' + item, label: '' + item };
-          });
-        }
-      });
-    }
+    if (filterData.length === 0 && additionalFilters.length === 0) return;
+
+    additionalFilters.forEach((filter, index) => {
+      if (filter.tableColumnId) {
+        let currentFilterData = [...new Set(filterData.map((e) => e[filter.tableColumnId]).filter((e) => e))];
+        additionalFilters[index].options = currentFilterData.map((item) => {
+          return { value: '' + item, label: '' + item };
+        });
+      }
+    });
   }, [filterData]);
+
   const initialFilters = useMemo(() => generateInitialFilterState(additionalFilters), [additionalFilters]);
   const [isCardExpanded, setIsCardExpanded] = useState(false);
   const formRef = useRef(null);

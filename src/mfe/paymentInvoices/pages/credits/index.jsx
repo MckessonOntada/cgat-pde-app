@@ -39,9 +39,9 @@ export default function Credits(params) {
       </div>
       <div className="MCP-table-wrapper">
         <div className="table-header">
-          <h1> Credits Listing</h1>
+          <h1>{t('paymentInvoices.credits.table.heading')}</h1>
           <Button variant="secondary" onClick={() => {}} size="sm">
-            Export Excel
+           {t('paymentInvoices.CS.ExportExcel')}
           </Button>
         </div>
         <CreditsTable />

@@ -15,6 +15,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.filters.printSummary': 'S_Print Summary',
   'paymentInvoices.history.filters.downloadExcel': 'S_Download Excel',
   'paymentInvoices.history.filters.paymentDetails': 'S_Payment Details',
+  'paymentInvoices.history.table.heading': 'S_Payment History',
 
   // Customer Statements
   'paymentInvoices.CS.filters.autoSearch': 'S_Search by document number, sold to',
@@ -31,31 +32,37 @@ export const PaymentInvoicesES = {
   'paymentInvoices.CS.table.actions': 'S_Action(s)',
 
   // Invoices
-'paymentInvoices.history.table.billNumber': 'S_Bill Number',
-'paymentInvoices.history.table.SoldToSite': 'S_Sold To Site',
-'paymentInvoices.history.table.PostingDate': 'S_Posting Date',
-'paymentInvoices.history.table.PaymentTerm': 'S_Payment Term',
-'paymentInvoices.history.table.DueDate': 'S_Due Date',
-'paymentInvoices.history.table.OpenAmount': 'S_Open Amount',
-'paymentInvoices.history.table.BillAmount': 'S_Bill Amount',
-'paymentInvoices.history.table.Actions': 'S_Actions',
-//Credits
-'paymentInvoices.credits.table.description': 'S_Description',
-'paymentInvoices.credits.table.validfrom': ' S_Valid From',
-'paymentInvoices.credits.table.amount': 'S_Amount',
-'paymentInvoices.credits.table.downloadPdf': 'S_download pdf',
+  'paymentInvoices.history.table.billNumber': 'S_Bill Number',
+  'paymentInvoices.history.table.SoldToSite': 'S_Sold To Site',
+  'paymentInvoices.history.table.PostingDate': 'S_Bill Date',
+  'paymentInvoices.history.table.PaymentTerm': 'S_Payment Term',
+  'paymentInvoices.history.table.DueDate': 'S_Due Date',
+  'paymentInvoices.history.table.OpenAmount': 'S_Open Amount',
+  'paymentInvoices.history.table.BillAmount': 'S_Bill Amount',
+  'paymentInvoices.history.table.Actions': 'S_Actions',
+  'paymentInvoices.history.table.heading': 'S_Payment Listing',
+  'paymentInvoices.history.table.status': 'Status',
 
-//payment methods - bank account
-"paymentInvoices.paymentMethods.table.bankAccount.addnewcard": "S_add new card",
-"paymentInvoices.paymentMethods.table.bankAccount.bankName": "S_Bank Name",
-"paymentInvoices.paymentMethods.table.bankAccount.routingNumber": "S_Routing Number",
-"paymentInvoices.paymentMethods.table.bankAccount.bankAccNumber": "S_Bank Account Number",
-"paymentInvoices.paymentMethods.table.bankAccount.bankCountry": "S_Bank Country",
-"paymentInvoices.paymentMethods.table.bankAccount.companyCode": "S_Company Code",
-  
-//Pending Payments
-'pendingPayments.table.confirmationNumber': 'S_Confirmation Number',
-'pendingPayments.table.totalAuthorizedPaymentAmt': 'S_Total Authorized Payment Amount',
-'pendingPayments.table.cancelPayment': 'S_CANCEL PAYMENT',
+  //Credits
+  'paymentInvoices.credits.table.description': 'S_Description',
+  'paymentInvoices.credits.table.validfrom': ' S_Valid From',
+  'paymentInvoices.credits.table.amount': 'S_Amount',
+  'paymentInvoices.credits.table.downloadPdf': 'S_download pdf',
+  'paymentInvoices.credits.table.heading': 'S_Credits Listing',
+
+  //payment methods - bank account
+  'paymentInvoices.paymentMethods.table.bankAccount.addnewcard': 'S_add new card',
+  'paymentInvoices.paymentMethods.table.bankAccount.bankName': 'S_Bank Name',
+  'paymentInvoices.paymentMethods.table.bankAccount.routingNumber': 'S_Routing Number',
+  'paymentInvoices.paymentMethods.table.bankAccount.bankAccNumber': 'S_Bank Account Number',
+  'paymentInvoices.paymentMethods.table.bankAccount.bankCountry': 'S_Bank Country',
+  'paymentInvoices.paymentMethods.table.bankAccount.companyCode': 'S_Company Code',
+
+  //Pending Payments
+  'pendingPayments.table.confirmationNumber': 'S_Confirmation Number',
+  'pendingPayments.table.totalAuthorizedPaymentAmt': 'S_Total Authorized Payment Amount',
+  'pendingPayments.table.cancelPayment': 'S_CANCEL PAYMENT',
+  'pendingPayments.table.heading': 'S_Pending Payments',
+  'pendingPayments.table.paymentMethod.subHeader': `S_To view all payments, navigate to the 'Payment History'.`,
 
 };

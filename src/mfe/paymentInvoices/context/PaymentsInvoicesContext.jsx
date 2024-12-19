@@ -56,12 +56,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
     let _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery
         ? item.billNumber?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item.soldToSite?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item.billDate?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item.paymentTerm?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item.dueDate?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item.openAmount.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item.billAmount?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase())
+          item.soldToSite?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase())
         : true;
       const matchesPaymentStatus = filters?.billNumber?.length > 0 ? filters.billNumber.includes(item.billNumber?.toString()) : true;
       const matchesPaymentMethod = filters?.soldToSite?.length > 0 ? filters.soldToSite.includes(item.soldToSite?.toString()) : true;
@@ -89,7 +84,9 @@ export const PaymentsInvoiceProvider = ({ children }) => {
       };
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
       if (res.data) {
-        setData(res.data?.openInvoices);
+        const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
+        const endIndex = startIndex + paginationConfig.pageSize;
+        setData(res.data?.openInvoices?.slice(startIndex, endIndex));
         setUnSlicedData(res.data?.openInvoices);
         setPaginationConfig((state) => ({ ...state, totalPages: Math.ceil(res.data?.openInvoices.length / paginationConfig.pageSize), totalElements: res.data?.openInvoices.length }));
       }

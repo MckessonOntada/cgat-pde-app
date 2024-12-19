@@ -13,22 +13,24 @@ export default function Invoices(params) {
   const AdditionalFiltersConfig = useMemo(() => {
     return [
       {
-        type: 'multiSelectDropdown',
-        name: 'billNumber',
-        id: 'billNumber',
-        label: t('paymentInvoices.history.table.billNumber'),
+        type: 'dropdown',
+        name: 'paymentTerm',
+        tableColumnId: 'paymentTerm',
+        label: t('paymentInvoices.history.table.PaymentTerm'),
         options: []
       },
       {
-        type: 'multiSelectDropdown',
-        name: 'soldToSite',
-        id: 'soldToSite',
-        label: t('paymentInvoices.history.table.SoldToSite'),
+        type: 'dropdown',
+        name: 'status',
+        tableColumnId: 'status',
+        label: t('paymentInvoices.history.table.status'),
         options: []
       },
       {
         type: 'dateRangePicker',
-        name: 'dateRange'
+        startDateLabel: t('paymentInvoices.history.table.PostingDate'),
+        endDateLabel: t('paymentInvoices.history.table.DueDate'),
+
       }
     ];
   }, []);
@@ -39,9 +41,9 @@ export default function Invoices(params) {
       </div>
       <div className="MCP-table-wrapper">
         <div className="table-header">
-          <h1> invoice Listing</h1>
+          <h1>{t('paymentInvoices.history.table.heading')}</h1>
           <Button variant="secondary" onClick={() => {}} size="sm">
-            Export Excel
+           {t('paymentInvoices.CS.ExportExcel')}
           </Button>
         </div>
         <InvoicesTable />
