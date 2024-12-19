@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { SnackBar } from '@mckesson/mcp-component-library';
-import { closeSnackbar } from '../../store/reducer/snackbarReducer';
+import { closeSnackbar } from '@src/store/reducer/snackbarReducer';
 
 function Snackbar() {
   const dispatch = useDispatch();
@@ -11,19 +11,7 @@ function Snackbar() {
   const handleClose = () => {
     dispatch(closeSnackbar());
   };
-  return (
-    <>
-      {isOpen && (
-        <SnackBar
-          description={description}
-          type={type}
-          duration={15000}
-          position="top-center"
-          onClose={handleClose}
-        />
-      )}
-    </>
-  );
+  return <>{isOpen && <SnackBar description={description} type={type} duration={15000} position="top-center" onClose={handleClose} />}</>;
 }
 
 export default Snackbar;

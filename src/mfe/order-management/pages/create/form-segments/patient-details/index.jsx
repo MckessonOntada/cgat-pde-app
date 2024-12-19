@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import styles from './PatientDetails.module.scss';
 import { Button, Stepper } from '@mckesson/mcp-component-library';
 import ModuleHeader from '@src/components/module-header';
@@ -7,15 +7,24 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 import PageHeader from '@src/components/pageHeader';
 import { FormList } from '../Constants';
 import { useNavigate, useParams } from 'react-router-dom';
+import PatientDetailsForm from './PatientDetailsForm';
+import { Form, Formik } from 'formik';
+import { getValidationSchema } from './PatientDetailsFormUtils';
+import { ReactComponent as TickIcon } from '@src/assets/svg/yes_tick_circle_filled.svg';
+import OrderService from '@src/api/commonService/OrderService';
+import useAlert from '@src/hooks/useAlert';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
   const { orderId } = useParams();
   const navigate = useNavigate();
+  const alertContainerRef = useRef(null);
+  const { showAlert } = useAlert();
   const accountDetails = {
     accountNumber: '11699387',
     shipToAccountNumber: '1122332',
-    therapyDescription: 'MPB HEMLIBRA 105MG/0.7ML SDV'
+    therapyDescription: 'MPB HEMLIBRA 105MG/0.7ML SDV',
+    price: '$45,000'
   };
 
   const handleOnBackButtonClick = () => {
@@ -23,11 +32,18 @@ const PatientDetails = () => {
     navigate(`../${orderId}/accounts`);
   };
 
-  const handleOnSubmit = () => {
-    navigate(`../${orderId}/additionalDetails`);
+  const initialValues = {};
+
+  const handleSubmit = async (form) => {
+    try {
+      await OrderService.setPatientDetails(orderId, form);
+      navigate(`../${orderId}/additional-details`);
+    } catch (err) {
+      showAlert({ description: err.message, type: 'error', anchorEl: alertContainerRef });
+    }
   };
 
-  const handleOnCancel = () => {
+  const handleOnBack = () => {
     //compare data change, display modal for confirmation
     navigate('/orders');
   };
@@ -36,7 +52,12 @@ const PatientDetails = () => {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackButtonClick} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={handleOnBackButtonClick}
+          size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
@@ -49,35 +70,66 @@ const PatientDetails = () => {
         <div className={styles.wrapper}>
           <div className="MCP-panel-container">
             <div className={styles.sect}>
-              <div className={`${styles.row}`}>
-                <div className={`${styles.col} ${styles.detailSegment}`}>
-                  <div className={'fieldName'}>{t('labels.orderByAccountNumber')}</div>
-                  <div className={'fieldValue'}>{accountDetails.accountNumber}</div>
+              <div className={`row-space-between-center`}>
+                <div className={styles.row}>
+                  <div className={`${styles.col} ${styles.detailSegment}`}>
+                    <div className={'fieldName'}>{t('labels.therapyDescription')}</div>
+                    <div className={`${'fieldValue'} ${styles.price}`}>
+                      {accountDetails.therapyDescription}
+                      <TickIcon />
+                    </div>
+                  </div>
+                  <div className={`${styles.col} ${styles.detailSegment}`}>
+                    <div className={'fieldName'}>{t('labels.orderByAccountNumber')}</div>
+                    <div className={'fieldValue'}>{accountDetails.accountNumber}</div>
+                  </div>
                 </div>
                 <div className={`${styles.col} ${styles.detailSegment}`}>
                   <div className={'fieldName'}>{t('labels.shipToAccountNumber')}</div>
                   <div className={`${'fieldValue'} ${styles.price}`}>{accountDetails.shipToAccountNumber}</div>
                 </div>
                 <div className={`${styles.col} ${styles.detailSegment}`}>
-                  <div className={'fieldName'}>{t('labels.therapyDescription')}</div>
-                  <div className={`${'fieldValue'} ${styles.price}`}>{accountDetails.therapyDescription}</div>
+                  <div className={'fieldName'}>{t('labels.priceDetails')}</div>
+                  <div className={`${'fieldValue'} ${styles.price}`}>{accountDetails.price}</div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="MCP-panel-container"></div>
-          <ModuleHeader
-            controls={
-              <div className="controls">
-                <Button size="md" variant="secondary" onClick={handleOnCancel}>
-                  {t('captions.btnCancel')}
-                </Button>
-                <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit}>
-                  {t('captions.btnSaveAndContinue')}
-                </Button>
-              </div>
-            }
-          />
+          <div ref={alertContainerRef} />
+          <Formik
+            initialValues={initialValues}
+            validationSchema={getValidationSchema(t)}
+            enableReinitialize
+            onSubmit={(values, actions) => {
+              handleSubmit(values);
+              actions.setSubmitting(false);
+            }}>
+            {({ values, isValid, dirty }) => {
+              const isButtonDisabled = !(dirty && isValid);
+
+              return (
+                <Form>
+                  <div className={styles.wrapper}>
+                    <div className="MCP-panel-container">
+                      <PatientDetailsForm />
+                    </div>
+                    <ModuleHeader
+                      controls={
+                        <div className="controls">
+                          <Button size="md" variant="secondary" onClick={handleOnBack}>
+                            {t('captions.btnBack')}
+                          </Button>
+                          <Button size="md" variant="primary" disabled={isButtonDisabled} type="submit">
+                            {t('captions.btnSaveAndContinue')}
+                          </Button>
+                        </div>
+                      }
+                    />
+                  </div>
+                </Form>
+              );
+            }}
+          </Formik>
         </div>
       </div>
     </div>
