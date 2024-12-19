@@ -1,5 +1,6 @@
 import AuthUtils from '@src/util/AuthUtils';
 import { MAIN_BASE_URL, USERMANAGEMENT_SERVICE_BASE_URL, ORDERMANAGEMENT_SERVICE_BASE_URL } from '@src/config/AppConfig';
+//import { MAIN_BASE_URL, ORDERMANAGEMENT_SERVICE_BASE_URL, USERMANAGEMENT_SERVICE_BASE_URL } from '@src/config/AppConfig';
 
 const constructMainAppUrl = (uri) => `${MAIN_BASE_URL}${uri}`;
 
@@ -38,6 +39,8 @@ const ApiRoutes = Object.freeze({
   PUBLIC_ACCOUNTS: constructUserManagementServicePublicUrl('accounts'),
   ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`),
   ORDERS: constructOrderManagementServiceUrl('orders')
+  APPROVER_GROUP: () => constructOrderManagementServiceUrl(`approver-group`),
+  ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`)
 });
 
 export default ApiRoutes;

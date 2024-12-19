@@ -22,7 +22,7 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
   };
 
   const clearInputs = () => {
-    const inputElements = formRef.current.querySelectorAll('input');
+    const inputElements = [...formRef.current.querySelectorAll('input')];
 
     if (inputElements && Array.isArray(inputElements)) {
       setTimeout(() => {

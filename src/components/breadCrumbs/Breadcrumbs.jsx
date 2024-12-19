@@ -11,7 +11,9 @@ const Breadcrumbs = ({ items }) => {
           <li key={index} className={styles.breadcrumbitem}>
             {index !== 0 && <span className={styles.separator}> / </span>}
             {item.url ? (
-              <Link to={item.url}>{item.label}</Link>
+              <Link className={styles.linkItem} to={item.url}>
+                {item.label}
+              </Link>
             ) : (
               <span>{item.label}</span>
             )}

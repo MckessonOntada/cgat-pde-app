@@ -13,6 +13,7 @@ const HeaderConfig = {
       sequence: 1,
       translationName: 'header.tabs.dashboard'
     },
+
     // {
     //   label: 'Orders',
     //   id: 2,

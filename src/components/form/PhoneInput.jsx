@@ -14,12 +14,12 @@ export default function PhoneInput(props) {
   };
   return (
     <div className="grid align-PhoneInput">
-      <Label htmlFor={`${id}`} className="label-heading">
+      <Label htmlFor={id} className="label-heading">
         {label}
         {isRequired && <Required id="Required">Required</Required>}
       </Label>
       <MaskedInput
-        id={`${id}`}
+        id={id}
         name={id}
         mask="(XXX) XXX-XXXX"
         onChangeFn={onChange}

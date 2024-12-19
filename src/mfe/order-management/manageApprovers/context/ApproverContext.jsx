@@ -3,7 +3,8 @@ import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
-import AuthUtils from '@src/util/AuthUtils';
+import { DateUtils } from '@src/util/DateUtil';
+import { getFullName } from '@src/util/CommonUtils';
 
 const ApproverContext = createContext();
 
@@ -34,28 +35,10 @@ const INITIAL_PAGINATION_CONFIG = {
   pageNumber: 1
 };
 
-export const GROUP_DATA = [
-  {
-    id: 1,
-    groupName: 'TXO Approver Group_1',
-    createdBy: 'Sally Thyer',
-    createdOn: '01-01-2024',
-    isActive: true
-  },
-  {
-    id: 2,
-    groupName: 'TXO Approver Group_2',
-    createdBy: 'Sally Thyer',
-    createdOn: '11/11/2024',
-    isActive: true
-  }
-];
-
 export const ApproverProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
-  const [data, setData] = useState(GROUP_DATA);
   const updateFilterState = useCallback((field, value) => {
     setFilterState((prevState) => ({
       ...prevState,
@@ -63,53 +46,84 @@ export const ApproverProvider = ({ children }) => {
     }));
   }, []);
 
-  // Use from context
   const requestParams = useMemo(
     () => ({
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
-      sortBy: sortConfig.sortBy || 'group_name',
+      sortBy: sortConfig.sortBy || 'name',
       sortOrder: sortConfig.sortOrder || 'asc',
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      ...(filterConfig?.status?.length && { status: [filterConfig.status] })
+      ...(filterConfig?.status?.length && { status: [filterConfig.status] }),
+      ...(filterConfig?.dateRange?.[0] && { startDate: DateUtils.formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy') }),
+      ...(filterConfig?.dateRange?.[1] && { endDate: DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy') })
     }),
     [filterConfig, paginationConfig.pageNumber, sortConfig]
   );
 
-  //   const { isLoading, isError, data, refetch } = useQuery({
-  //     queryKey: ['approvers', requestParams],
-  //     queryFn: async () => {
-  //       const url = `${ApiRoutes.ApproverS()}?${serializeParams(requestParams)}`;
-  //       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-  //       if (res.data) {
-  //         const { content: data, totalElements, totalPages } = res.data;
+  const {
+    isLoading: isLoadingApprovers,
+    isError: isErrorApprovers,
+    data: approverData,
+    refetch: refetchApprovers
+  } = useQuery({
+    queryKey: ['approvers', requestParams],
+    queryFn: async () => {
+      const url = `${ApiRoutes.APPROVER_GROUP()}?${serializeParams(requestParams)}`;
+      const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+      if (!res.data) {
+        return [];
+      }
+      const { content: data, totalElements, totalPages } = res.data;
+      setPaginationConfig((prevConfig) => ({
+        ...prevConfig,
+        ...(totalElements && { totalElements }),
+        ...(totalPages && { totalPages })
+      }));
+      return data;
+    },
+    refetchOnWindowFocus: false
+  });
 
-  //         setPaginationConfig((prevConfig) => ({
-  //           ...prevConfig,
-  //           ...(totalElements && { totalElements }),
-  //           ...(totalPages && { totalPages })
-  //         }));
-  //         return data;
-  //       }
+  let userParams = {
+    userType: 'GENERAL',
+    status: 'active'
+  };
 
-  //       return [];
-  //     },
-  //     refetchOnWindowFocus: false
-  //   });
+  const {
+    isLoading: isLoadingUsers,
+    isError: isErrorUsers,
+    data: usersData,
+    refetch: refetchUsers
+  } = useQuery({
+    queryKey: ['usersData'],
+    queryFn: async () => {
+      const apiUrl = `${ApiRoutes.USERS()}?${serializeParams(userParams)}`;
+      const res = await HttpResourceService.callRest(`${apiUrl}`, httpVerb.GET, {});
+      if (!res.data?.content) {
+        return [];
+      }
+      return res.data.content.map((item) => ({
+        label: getFullName(item.name),
+        value: item.id
+      }));
+    },
+    refetchOnWindowFocus: false,
+    keepPreviousData: true
+  });
 
   const clearFilters = () => {
     setFilterConfig(INITIAL_FILTER_STATE);
   };
 
-  useEffect(() => {
-    //refetch();
-  }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
-
-  const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
+  const applySort = (newSortConfig) => {
+    setSortConfig(newSortConfig);
+    refetchApprovers();
+  };
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig({ ...filters });
+    refetchApprovers;
   };
 
   const setPageNumber = (pageNumber) => {
@@ -117,22 +131,34 @@ export const ApproverProvider = ({ children }) => {
       ...prevConfig,
       pageNumber
     }));
+    refetchApprovers();
   };
 
   const ctxValue = useMemo(
     () => ({
-      data: data || [],
-      //   isLoading,
-      //   isError,
+      data: approverData || [],
       filterConfig,
       paginationConfig,
       setFilterConfig,
       clearFilters,
       applyFilters,
       applySort,
-      setPageNumber
+      setPageNumber,
+      usersData,
+      refreshData: refetchApprovers
     }),
-    [updateFilterState, clearFilters]
+    [
+      approverData,
+      filterConfig,
+      paginationConfig,
+      setFilterConfig,
+      clearFilters,
+      applyFilters,
+      applySort,
+      setPageNumber,
+      usersData,
+      refetchApprovers
+    ]
   );
   return <ApproverContext.Provider value={ctxValue}>{children}</ApproverContext.Provider>;
 };
