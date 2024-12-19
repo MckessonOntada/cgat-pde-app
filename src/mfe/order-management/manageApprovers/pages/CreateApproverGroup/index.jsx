@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Formik, Form, Field } from 'formik';
-import { Button, Heading, Alert, Pills, Loader } from '@mckesson/mcp-component-library';
+import { Button, Heading, Alert, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -15,7 +15,7 @@ import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/Disca
 import Components from '@src/components/form/Components';
 import Attributes from './Attribute';
 import { useApprover } from '../../context/ApproverContext';
-import { getValidationSchema, transformAttributesToRules } from './formUtils';
+import { createLabelData, getValidationSchema, transformAttributesToRules } from './formUtils';
 import './index.scss';
 import { useFormContext } from '../../context/FormContext';
 import { handleApiError } from '@src/util/ApiUtils';
@@ -109,26 +109,12 @@ const CreateApproverGroup = () => {
     );
   };
 
-  const createLabelData = (values) => {
-    let val = values.approverUsers_augmented?.map(({ name, value }) => ({
-      labelText: name,
-      id: value
-    }));
-    return val;
-  };
   const handleCancel = () => {
     if (isDirty) {
-      if (isEditMode) {
-        setModalSuccessCallback('details');
-      } else {
-        setModalSuccessCallback('list');
-      }
+      setModalSuccessCallback(isEditMode ? 'details' : 'list');
     } else {
-      if (isEditMode) {
-        navigate(`../${PATHS.approvergroupDetail.replace(':grpId', grpId)}`);
-      } else {
-        navigate(RoutePaths.pathApproverManagement);
-      }
+      const targetPath = isEditMode ? `../${PATHS.approvergroupDetail.replace(':grpId', grpId)}` : RoutePaths.pathApproverManagement;
+      navigate(targetPath);
     }
   };
 
@@ -140,9 +126,26 @@ const CreateApproverGroup = () => {
     }
   };
 
+  const onRemoveUser = (itemToRemove, approverUsers, approverUsers_augmented, setFieldValue) => {
+    const updatedUsers = approverUsers.filter((userId) => userId !== itemToRemove);
+    const updatedAugmentedUsers = approverUsers_augmented.filter((user) => user.value !== itemToRemove);
+    setFieldValue('approverUsers', updatedUsers);
+    setFieldValue('approverUsers_augmented', updatedAugmentedUsers);
+
+    const updatedOptions = localUserData.map((option) => {
+      if (option.value === itemToRemove) {
+        return { ...option, isChecked: false };
+      }
+      return option;
+    });
+
+    setLocalUsersData(() => updatedOptions);
+  };
+  {
+    isLoading && <Loader type={'screen'} />;
+  }
   return (
     <div className="MCP-module-wrapper">
-      {isLoading && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
           {t('approvergroup.header.backmessage')}
@@ -161,24 +164,13 @@ const CreateApproverGroup = () => {
           handleSubmit(values);
           actions.setSubmitting(false);
         }}>
-        {({ values, setFieldValue, isValid, handleChange, errors, touched, dirty }) => {
+        {({ values, setFieldValue, handleChange, errors, touched }) => {
           useEffect(() => {
             setIsDirty(Object.keys(touched).length > 0);
           }, [touched]);
-          const onRemoveUser = (itemToRemove) => {
-            const updatedUsers = values.approverUsers.filter((userId) => userId !== itemToRemove);
-            const updatedAugmentedUsers = values.approverUsers_augmented.filter((user) => user.value !== itemToRemove);
-            setFieldValue('approverUsers', updatedUsers);
-            setFieldValue('approverUsers_augmented', updatedAugmentedUsers);
 
-            const updatedOptions = localUserData.map((option) => {
-              if (option.value === itemToRemove) {
-                return { ...option, isChecked: false };
-              }
-              return option;
-            });
-
-            setLocalUsersData(() => updatedOptions);
+          const onRemoveUserClick = (itemToRemove) => {
+            onRemoveUser(itemToRemove, values.approverUsers, values.approverUsers_augmented, setFieldValue);
           };
 
           return (
@@ -219,27 +211,17 @@ const CreateApproverGroup = () => {
                         <Field
                           id="approverUsers"
                           name="approverUsers"
-                          fieldlabel={t('approvergroup.selectuser')}
+                          label={t('approvergroup.selectaccount')}
                           placeholder=" "
-                          component={Components['multiSelectDropdown']}
                           isRequired
-                          noSelectedCountMessage={t('approvergroup.create.option.please_select')}
+                          component={Components['multiSelectDropdown']}
                           options={localUserData || []}
-                          value={values.approverUsers}
-                          getUpdatedOptions={(values) => {
-                            setLocalUsersData(() => values);
-                          }}
-                        />
-                      </div>
-                      <div className="pills-container">
-                        <Pills
-                          id={'pill-id'}
-                          key={'pills'}
-                          labels={createLabelData(values)}
-                          variant="secondary"
-                          hasDeleteIcon={true}
-                          onDelete={(item) => onRemoveUser(item)}
-                          showPillsCount={7}
+                          getUpdatedOptions={setLocalUsersData}
+                          onRemoveClick={onRemoveUserClick}
+                          noSelectedCountMessage={t('approvergroup.create.option.please_select')}
+                          pillsLabels={createLabelData(values.approverUsers_augmented)}
+                          pillsCount={5}
+                          ispillsVisible={true}
                         />
                       </div>
                     </div>

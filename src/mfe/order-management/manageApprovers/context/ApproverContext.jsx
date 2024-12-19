@@ -3,8 +3,8 @@ import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
-import AuthUtils from '@src/util/AuthUtils';
 import { DateUtils } from '@src/util/DateUtil';
+import { getFullName } from '@src/util/CommonUtils';
 
 const ApproverContext = createContext();
 
@@ -35,100 +35,10 @@ const INITIAL_PAGINATION_CONFIG = {
   pageNumber: 1
 };
 
-export const GROUP_DATA = [
-  {
-    createdAt: '2024-12-14T11:35:02.540Z',
-    createdBy: 'string',
-    updatedAt: '2024-12-14T11:35:02.540Z',
-    updatedBy: 'string',
-    id: 'grp1',
-    name: 'TXO Approver Group_1',
-    practiceId: 0,
-    rules: {
-      price: 100,
-      accounts: [
-        {
-          accountId: 77,
-          accountName: 'account 77'
-        }
-      ],
-      therapies: [
-        {
-          therapyId: 77,
-          therapyName: 'account 77'
-        }
-      ],
-      roles: [
-        {
-          roleId: 0,
-          roleName: 'string'
-        }
-      ],
-      users: [
-        {
-          userId: 1,
-          userName: 'string'
-        }
-      ]
-    },
-    approverUsers: [
-      {
-        userId: 1,
-        userName: 'string'
-      }
-    ],
-    active: true
-  },
-  {
-    createdAt: '2024-12-14T11:35:02.540Z',
-    createdBy: 'string',
-    updatedAt: '2024-12-14T11:35:02.540Z',
-    updatedBy: 'string',
-    id: 'grp2',
-    name: 'TXO Approver Group_2',
-    practiceId: 0,
-    rules: {
-      price: 100,
-      accounts: [
-        {
-          accountId: 77,
-          accountName: 'account 77'
-        }
-      ],
-      therapies: [
-        {
-          therapyId: 77,
-          therapyName: 'account 77'
-        }
-      ],
-      roles: [
-        {
-          roleId: 0,
-          roleName: 'string'
-        }
-      ],
-      users: [
-        {
-          userId: 1,
-          userName: 'string'
-        }
-      ]
-    },
-    approverUsers: [
-      {
-        userId: 1,
-        userName: 'string'
-      }
-    ],
-    active: true
-  }
-];
-
 export const ApproverProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
-  //const [data, setData] = useState(GROUP_DATA);
   const updateFilterState = useCallback((field, value) => {
     setFilterState((prevState) => ({
       ...prevState,
@@ -136,20 +46,25 @@ export const ApproverProvider = ({ children }) => {
     }));
   }, []);
 
+  const generateRequestParams = () => {
+    const { pageNumber, pageSize } = paginationConfig;
+    const { sortBy = 'group_name', sortOrder = 'asc' } = sortConfig || {};
+    const { searchQuery, status, dateRange = [] } = filterConfig || {};
+
+    return {
+      pageNo: pageNumber - 1,
+      pageSize,
+      sortBy,
+      sortOrder,
+      ...(searchQuery && { query: searchQuery }),
+      ...(status?.length && { status: [status] }),
+      ...(dateRange[0] && { startDate: DateUtils.formatDate(dateRange[0], 'dd/mm/yyyy') }),
+      ...(dateRange[1] && { endDate: DateUtils.formatDate(dateRange[1], 'dd/mm/yyyy') })
+    };
+  };
+
   // Use from context
-  const requestParams = useMemo(
-    () => ({
-      pageNo: paginationConfig.pageNumber - 1,
-      pageSize: paginationConfig.pageSize,
-      sortBy: sortConfig.sortBy || 'group_name',
-      sortOrder: sortConfig.sortOrder || 'asc',
-      ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      ...(filterConfig?.status?.length && { status: [filterConfig.status] }),
-      ...(filterConfig?.dateRange?.[0] && { startDate: DateUtils.formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy') }),
-      ...(filterConfig?.dateRange?.[1] && { endDate: DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy') })
-    }),
-    [filterConfig, paginationConfig.pageNumber, sortConfig]
-  );
+  const requestParams = useMemo(() => generateRequestParams(), [filterConfig, paginationConfig.pageNumber, sortConfig]);
 
   const {
     isLoading: isLoadingApprovers,
@@ -161,18 +76,16 @@ export const ApproverProvider = ({ children }) => {
     queryFn: async () => {
       const url = `${ApiRoutes.APPROVER_GROUP()}?${serializeParams(requestParams)}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-      if (res.data) {
-        const { content: data, totalElements, totalPages } = res.data;
-
-        setPaginationConfig((prevConfig) => ({
-          ...prevConfig,
-          ...(totalElements && { totalElements }),
-          ...(totalPages && { totalPages })
-        }));
-        return data;
+      if (!res.data) {
+        return [];
       }
-
-      return [];
+      const { content: data, totalElements, totalPages } = res.data;
+      setPaginationConfig((prevConfig) => ({
+        ...prevConfig,
+        ...(totalElements && { totalElements }),
+        ...(totalPages && { totalPages })
+      }));
+      return data;
     },
     refetchOnWindowFocus: false
   });
@@ -188,16 +101,17 @@ export const ApproverProvider = ({ children }) => {
     data: usersData,
     refetch: refetchUsers
   } = useQuery({
-    queryKey: ['data'],
+    queryKey: ['usersData'],
     queryFn: async () => {
       const apiUrl = `${ApiRoutes.USERS()}?${serializeParams(userParams)}`;
       const res = await HttpResourceService.callRest(`${apiUrl}`, httpVerb.GET, {});
-      if (res.data?.content) {
-        return res.data?.content?.map((item) => ({
-          label: `${item.name.lastName}, ${item.name.firstName} ${item.name.middleName || ''}`.trim(),
-          value: item.id
-        }));
+      if (!res.data?.content) {
+        return [];
       }
+      return res.data.content.map((item) => ({
+        label: getFullName(item.name),
+        value: item.id
+      }));
     },
     refetchOnWindowFocus: false,
     keepPreviousData: true
@@ -207,15 +121,15 @@ export const ApproverProvider = ({ children }) => {
     setFilterConfig(INITIAL_FILTER_STATE);
   };
 
-  useEffect(() => {
+  const applySort = (newSortConfig) => {
+    setSortConfig(newSortConfig);
     refetchApprovers();
-  }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
-
-  const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
+  };
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig({ ...filters });
+    refetchApprovers;
   };
 
   const setPageNumber = (pageNumber) => {
@@ -223,13 +137,12 @@ export const ApproverProvider = ({ children }) => {
       ...prevConfig,
       pageNumber
     }));
+    refetchApprovers();
   };
 
   const ctxValue = useMemo(
     () => ({
       data: approverData || [],
-      //   isLoading,
-      //   isError,
       filterConfig,
       paginationConfig,
       setFilterConfig,

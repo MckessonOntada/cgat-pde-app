@@ -41,26 +41,21 @@ export const FormProvider = ({ children }) => {
         if (!value || (Array.isArray(value) && value.length === 0)) {
           return null;
         }
-        if (key === RuleKeys.PRICE) {
-          return { attributeType: RuleLabels[key], value };
-        }
 
         if ([RuleKeys.ACCOUNTS, RuleKeys.THERAPIES, RuleKeys.USERS, RuleKeys.ROLES].includes(key)) {
           const valueKey = RuleValueKeys[key];
           if (key === RuleKeys.USERS && rules[RuleKeys.ROLES]?.length > 0) return null;
           if (key === RuleKeys.ROLES && rules[RuleKeys.USERS]?.length > 0) return null;
-
-          return {
-            attributeType: RuleLabels[key],
-            value: value.map((item) => item[valueKey])
-          };
+          value = value.map((item) => item[valueKey]);
         }
+        return { attributeType: RuleLabels[key], value };
       });
       const hasRoles = rules.roles && rules.roles.length > 0;
       const hasUsers = rules.users && rules.users.length > 0;
 
       const dynamicAttributeUserOption = hasRoles ? 'user_role' : hasUsers ? 'user_name' : 'user_role';
       const transformedApproverUsers = approverUsers.map((user) => user.userId);
+      console.log('transformedRules', transformedRules);
 
       setInitialValues({
         id: grpId,

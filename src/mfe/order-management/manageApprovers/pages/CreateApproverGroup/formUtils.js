@@ -129,3 +129,14 @@ export const getValidationSchema = (t) => {
       .min(1, t('approvergroup.create.validation.approveruser_required'))
   });
 };
+
+export const createLabelData = (values = []) => {
+  if (!Array.isArray(values)) {
+    return [];
+  }
+
+  return values.map(({ name, value }) => ({
+    labelText: name,
+    id: value
+  }));
+};

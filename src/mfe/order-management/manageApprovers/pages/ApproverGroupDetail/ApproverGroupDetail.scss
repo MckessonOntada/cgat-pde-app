@@ -12,7 +12,7 @@
 .approver-group-labelWrap {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-03);
 }
 
 .attribute-category {

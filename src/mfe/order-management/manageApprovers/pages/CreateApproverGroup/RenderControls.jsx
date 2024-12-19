@@ -7,15 +7,15 @@ import { Field, useFormikContext } from 'formik';
 import { useAccountData, useCatalogData, useUserData, useUserRoleData } from './apiService';
 import { useFormContext } from '../../context/FormContext';
 import { RuleKeys, RuleLabels } from '../ApproverGroupDetail/RulesConfig';
+import AttributeFieldRenderer from './AttributeFieldRenderer';
 
-function RenderControls({ attributeType, index, name }) {
+function RenderControls({ attributeType, name }) {
   const { t } = useTranslate();
 
   const { values, setFieldValue } = useFormikContext();
   const { initialValues, isEditMode } = useFormContext();
   const [localData, setLocalData] = useState([]);
   const isDataBinded = useRef(false);
-  const isUserDataBinded = useRef(false);
 
   const shouldFetchCatalog = attributeType === RuleLabels[RuleKeys.THERAPIES];
   const shouldFetchAccounts = attributeType === RuleLabels[RuleKeys.ACCOUNTS];
@@ -32,7 +32,7 @@ function RenderControls({ attributeType, index, name }) {
     if (shouldFetchCatalog) return catalogQuery;
     if (shouldFetchAccounts) return accountQuery;
     if (shouldFetchUsers) {
-      isUserDataBinded.current = false;
+      isDataBinded.current = false;
       return values.attributeuseroption === 'user_role' ? userRoleQuery : userDataQuery;
     }
 
@@ -41,10 +41,20 @@ function RenderControls({ attributeType, index, name }) {
 
   useEffect(() => {
     if (!isDataBinded.current) {
-      if (queryResult.data?.length > 0 && attributeType && initialValues?.rules && attributeType !== RuleLabels[RuleKeys.USERS]) {
-        const currentRule = initialValues.rules.find((rule) => rule.attributeType === attributeType);
+      let fetchData = [];
 
-        const transformedData = queryResult.data.map((item) => ({
+      // Check if data is available and attributeType is USERS or other
+      if (attributeType === RuleLabels[RuleKeys.USERS] && queryResult.data?.length > 0) {
+        fetchData = values.attributeuseroption === 'user_role' ? userRoleQuery.data || [] : userDataQuery.data || [];
+      } else if (queryResult.data?.length > 0) {
+        fetchData = queryResult.data || [];
+      }
+
+      // Process and transform data if available
+      if (fetchData.length > 0) {
+        const currentRule = initialValues?.rules?.find((rule) => rule.attributeType === attributeType);
+
+        const transformedData = fetchData.map((item) => ({
           value: item.value,
           label: item.label,
           isChecked: currentRule?.value?.map(String).includes(String(item.value)) || false
@@ -52,32 +62,17 @@ function RenderControls({ attributeType, index, name }) {
 
         setLocalData(transformedData);
         isDataBinded.current = true;
-      } else if (!isEditMode && queryResult.data?.length > 0) {
-        setLocalData(queryResult.data);
-        isDataBinded.current = true;
       }
     }
-  }, [queryResult.data, attributeType, initialValues.rules, isEditMode]);
-
-  useEffect(() => {
-    if (!isUserDataBinded.current && queryResult.data?.length > 0 && attributeType === RuleLabels[RuleKeys.USERS]) {
-      let fetchData = [];
-      if (attributeType === RuleLabels[RuleKeys.USERS]) {
-        fetchData = values.attributeuseroption === 'user_role' ? userRoleQuery.data || [] : userDataQuery.data || [];
-      } else {
-        fetchData = queryResult.data || [];
-      }
-      const currentRule = initialValues?.rules?.find((rule) => rule.attributeType === attributeType);
-
-      const transformedData = fetchData.map((item) => ({
-        value: item.value,
-        label: item.label,
-        isChecked: currentRule?.value?.includes(item.value) || false
-      }));
-      setLocalData(transformedData);
-      isUserDataBinded.current = true;
-    }
-  }, [attributeType, values.attributeuseroption, userRoleQuery.data, userDataQuery.data, queryResult.data, initialValues.rules]);
+  }, [
+    attributeType,
+    queryResult.data,
+    values.attributeuseroption,
+    userRoleQuery.data,
+    userDataQuery.data,
+    initialValues.rules,
+    isEditMode
+  ]);
 
   const getAugmentedValues = (rules, attributeType) => {
     return rules.filter((rule) => rule.attributeType === attributeType).flatMap((rule) => rule.value_augmented || []);
@@ -112,106 +107,17 @@ function RenderControls({ attributeType, index, name }) {
     setLocalData(() => updatedOptions);
   };
 
-  const createLabelData = (values) => {
-    let val = values.map(({ name, value }) => ({
-      labelText: name,
-      id: value
-    }));
-    return val;
-  };
-
-  const renderFieldWithPills = (fieldId, fieldLabel, pillsCount) => (
-    <div>
-      <Field
-        id={fieldId}
-        name={name}
-        fieldlabel={t(fieldLabel)}
-        placeholder=" "
-        component={Components['multiSelectDropdown']}
-        isRequired
-        options={localData}
-        noSelectedCountMessage={t('approvergroup.create.option.please_select')}
-        getUpdatedOptions={setLocalData}
-      />
-      <div className="pills-container">
-        <Pills
-          id={fieldId}
-          labels={createLabelData(getAugmentedValues(values.rules, attributeType))}
-          variant="secondary"
-          hasDeleteIcon
-          onDelete={onRemoveClick}
-          showPillsCount={pillsCount}
-        />
-      </div>
-    </div>
+  return (
+    <AttributeFieldRenderer
+      attributeType={attributeType}
+      name={name}
+      localData={localData}
+      setLocalData={setLocalData}
+      onRemoveClick={onRemoveClick}
+      t={t}
+      values={values}
+    />
   );
-
-  const renderswitch = () => {
-    switch (attributeType) {
-      case RuleLabels[RuleKeys.PRICE]:
-        return (
-          <div>
-            <Field
-              id="price"
-              name={name}
-              label={t('approvergroup.price')}
-              placeholder=" "
-              isRequired
-              component={Components['input']}
-              maxLength={8}
-            />
-          </div>
-        );
-      case RuleLabels[RuleKeys.THERAPIES]:
-        return (
-          <div className="grid grid-gap-16 grid-cols-1">
-            {renderFieldWithPills(RuleLabels[RuleKeys.THERAPIES], 'approvergroup.selecttherapy', 5)}
-          </div>
-        );
-      case RuleLabels[RuleKeys.ACCOUNTS]:
-        return (
-          <div className="grid grid-gap-16 grid-cols-1">
-            {renderFieldWithPills(RuleLabels[RuleKeys.ACCOUNTS], 'approvergroup.selectaccount', 5)}
-          </div>
-        );
-
-      case RuleLabels[RuleKeys.USERS]:
-        return (
-          <div className="grid grid-gap-24">
-            <Field
-              id="User"
-              name="attributeuseroption"
-              caption={t('approvergroup.selectuserradio')}
-              placeholder=" "
-              component={Components['radioGroup']}
-              isRequired
-              items={[
-                {
-                  isDisabled: false,
-                  label: 'User Role',
-                  value: 'user_role'
-                },
-                {
-                  isDisabled: false,
-                  label: 'User Name',
-                  value: 'user_name'
-                }
-              ]}
-              breakItemLabel={false}
-              itemCustomStyles={{ fontSize: '16px', marginRight: '24px' }}
-              labelCustomStyles={{ marginBottom: '8px', fontSize: '16px' }}
-              value={values.attributeuseroption}
-            />
-
-            {renderFieldWithPills('user', 'approvergroup.selectuser', 7)}
-          </div>
-        );
-
-      default:
-        return null;
-    }
-  };
-  return <>{renderswitch()}</>;
 }
 
 export default RenderControls;

@@ -12,23 +12,14 @@ const Attributes = ({ values }) => {
   const { t } = useTranslate();
   const attrOptions = [
     { label: t('orgManagement.create_org.option.please_select'), value: '' },
-    {
-      label: 'Catalog',
-      value: 'Catalog'
-    },
-    {
-      label: 'Account',
-      value: 'Account'
-    },
-    {
-      label: 'Price',
-      value: 'Price'
-    },
-    {
-      label: 'User',
-      value: 'User'
-    }
+    ...Object.entries(RuleLabels)
+      .filter(([key]) => key !== RuleKeys.ROLES)
+      .map(([, label]) => ({
+        label,
+        value: label
+      }))
   ];
+
   const isAddDisabled = values.rules.length >= attrOptions.length - 1;
   const getAvailableOptions = (index) => {
     const selectedValues = values.rules.map((attr) => attr.attributeType);
@@ -60,7 +51,7 @@ const Attributes = ({ values }) => {
                   <div className="dropdown-with-button">
                     <div className="dropdown-row">
                       <div className="dropdown-wrapper">
-                        <RenderControls attributeType={attribute.attributeType} index={index} name={`rules[${index}].value`} />
+                        <RenderControls attributeType={attribute.attributeType} name={`rules[${index}].value`} />
                       </div>
 
                       <div className="remove-button">

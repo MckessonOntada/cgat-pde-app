@@ -22,24 +22,37 @@ function ApproverList({ onActionSuccess }) {
   const userPermissions = AuthUtils.getUserPermissions();
   const { hasPermission } = usePermission();
 
-  const handleDeactivateApproverGroup = async (grpId) => {
-    const res = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}/${grpId}`, httpVerb.DELETE, null);
-    return res.data;
+  const handleActivateDeactivateApproverGroup = async ({ grpId, actionName }) => {
+    if (actionName === t('approvergroup.button.activate')) {
+      const resActivate = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}/${grpId}/activate`, httpVerb.PATCH, null);
+      return resActivate.data;
+    } else {
+      const resDeactivate = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}/${grpId}`, httpVerb.DELETE, null);
+      return resDeactivate.data;
+    }
   };
 
   const { mutate } = useMutation({
-    mutationFn: handleDeactivateApproverGroup,
-    onSuccess: (response) => {
+    mutationFn: handleActivateDeactivateApproverGroup,
+    onSuccess: (response, variables) => {
+      const { actionName } = variables;
       refreshData();
       setSelectedRows(null);
       const isSuccess = true;
-      const message = t('approvergroup.messages.approvergroup_deactivate_success');
-      onActionSuccess(isSuccess, message); // callback
+      const message =
+        actionName === t('approvergroup.button.deactivate')
+          ? t('approvergroup.messages.approvergroup_deactivate_success')
+          : t('approvergroup.messages.approvergroup_activate_success');
+      onActionSuccess(isSuccess, message);
     },
-    onError: (error) => {
+    onError: (error, variables) => {
+      const { actionName } = variables;
       console.error(`Failed to deactivate user:`, error);
       const isSuccess = false;
-      const message = t('approvergroup.messages.approvergroup_deactivate_failure');
+      const message =
+        actionName === t('approvergroup.button.deactivate')
+          ? t('approvergroup.messages.approvergroup_deactivate_failure')
+          : t('approvergroup.messages.approvergroup_activate_failure');
       onActionSuccess(isSuccess, message);
     }
   });
@@ -52,13 +65,13 @@ function ApproverList({ onActionSuccess }) {
     if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
-  const handleDeactivate = () => {
+  const handleActivateDeactivate = () => {
     setIsOpen(true);
   };
 
-  const handleConfirmDeactivate = () => {
+  const handleConfirm = (actionName) => {
     setIsOpen(false);
-    mutate(selectedRows);
+    mutate({ grpId: selectedRows?.id, actionName });
   };
 
   const handleConfirmCancel = () => {
@@ -69,6 +82,7 @@ function ApproverList({ onActionSuccess }) {
   useEffect(() => {
     refreshData();
   }, []);
+
   const columns = useMemo(() => {
     return [
       {
@@ -80,10 +94,9 @@ function ApproverList({ onActionSuccess }) {
             caption=""
             items={[
               {
-                onChange: (event) => setSelectedRows(event.target.checked ? row.id : null),
+                onChange: (event) => setSelectedRows(event.target.checked ? row : null),
                 value: row.id,
-                isChecked: selectedRows === row.id,
-                isDisabled: !row.active
+                isChecked: selectedRows?.id === row.id
               }
             ]}
           />
@@ -100,11 +113,7 @@ function ApproverList({ onActionSuccess }) {
         sortKey: 'name',
         wrap: true,
         minWidth: '440px',
-        cell: (props) => (
-          <div>
-            <EclipsesTextcss str={props.name} maxWidth={400} />
-          </div>
-        )
+        cell: (props) => <EclipsesTextcss str={props.name} maxWidth={400} />
       },
       {
         id: 'createdBy',
@@ -112,11 +121,7 @@ function ApproverList({ onActionSuccess }) {
         selector: 'createdBy',
         wrap: true,
         minWidth: '160px',
-        cell: (props) => (
-          <div>
-            <EclipsesTextcss str={props.createdBy} maxWidth={200} />
-          </div>
-        )
+        cell: (props) => <EclipsesTextcss str={props.createdBy} maxWidth={200} />
       },
       {
         id: 'createdAt',
@@ -155,9 +160,9 @@ function ApproverList({ onActionSuccess }) {
           </p>
           <Button
             variant="secondary"
-            onClick={handleDeactivate}
+            onClick={handleActivateDeactivate}
             isDisabled={!hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.MANAGE_ORDERS)}>
-            {t('approvergroup.button.deactivate')}
+            {selectedRows.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
           </Button>
         </div>
       )}
@@ -192,13 +197,24 @@ function ApproverList({ onActionSuccess }) {
           isOpen,
           onClose: () => setIsOpen(false),
           modalTitle: t('approvergroup.confirmationmessage'),
-          modalBody: <h3>{t('approvergroup.confirmationmessage.message')}</h3>,
+          modalBody: (
+            <h3>
+              {selectedRows?.active
+                ? t('approvergroup.confirmationmessage.message')
+                : t('approvergroup.confirmationmessage.activatemessage')}
+            </h3>
+          ),
           modalFooter: (
             <React.Fragment>
               <Button onClick={handleConfirmCancel} variant="secondary">
                 {t('approvergroup.button.cancel')}
               </Button>
-              <Button onClick={handleConfirmDeactivate}>{t('approvergroup.button.deactivate')}</Button>
+              <Button
+                onClick={() =>
+                  handleConfirm(selectedRows?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate'))
+                }>
+                {selectedRows?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
+              </Button>
             </React.Fragment>
           ),
           modalSize: 'xxxs'

@@ -55,23 +55,39 @@ function ApproverGroupDetails() {
     refetchOnWindowFocus: false
   });
 
-  const handleDeactivateApproverGroup = async (userId) => {
-    const res = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}/${grpId}`, httpVerb.DELETE, null);
-    return res.data;
+  const handleActivateDeactivateApproverGroup = async ({ grpId, actionName }) => {
+    if (actionName === t('approvergroup.button.activate')) {
+      const resActivate = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}/${grpId}/activate`, httpVerb.PATCH, null);
+      return resActivate.data;
+    } else {
+      const resDeactivate = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}/${grpId}`, httpVerb.DELETE, null);
+      return resDeactivate.data;
+    }
   };
 
   const { mutate } = useMutation({
-    mutationFn: handleDeactivateApproverGroup,
-    onSuccess: (response) => {
+    mutationFn: handleActivateDeactivateApproverGroup,
+    onSuccess: (response, variables) => {
+      const { actionName } = variables;
       refetch();
       setIsDeactivate(true);
       setIsAlertVisible(true);
-      setAlertDescription(t('approvergroup.messages.approvergroup_deactivate_success'));
+      const message =
+        actionName === t('approvergroup.button.deactivate')
+          ? t('approvergroup.messages.approvergroup_deactivate_success')
+          : t('approvergroup.messages.approvergroup_activate_success');
+      setAlertDescription(message);
     },
-    onError: (error) => {
+    onError: (error, variables) => {
+      const { actionName } = variables;
+      console.error(`Failed to deactivate user:`, error);
       setIsDeactivate(true);
       setIsAlertVisible(true);
-      setAlertDescription(t('approvergroup.messages.approvergroup_deactivate_failure'));
+      const message =
+        actionName === t('approvergroup.button.deactivate')
+          ? t('approvergroup.messages.approvergroup_deactivate_failure')
+          : t('approvergroup.messages.approvergroup_activate_failure');
+      setAlertDescription(message);
     }
   });
 
@@ -79,13 +95,13 @@ function ApproverGroupDetails() {
     navigate(RoutePaths.pathApproverManagement);
   };
 
-  const handleDeactivate = () => {
+  const handleActivateDeactivate = () => {
     setIsOpen(true);
   };
 
-  const handleConfirmDeactivate = () => {
+  const handleConfirm = (actionName) => {
     setIsOpen(false);
-    mutate(grpId);
+    mutate({ grpId: grpId, actionName });
   };
 
   const handleConfirmCancel = () => {
@@ -127,17 +143,7 @@ function ApproverGroupDetails() {
         />
         <ModuleHeader
           heading={<Heading as="h3">{t('approvergroup.view.subheader.group_details')}</Heading>}
-          controls={
-            <Switch
-              handleToggle={handleDeactivate}
-              id="id"
-              labelPosition="right"
-              name="Toggle"
-              size="lg"
-              disabled={!groupData?.active}
-              value={groupData?.active}
-            />
-          }
+          controls={<Switch handleToggle={handleActivateDeactivate} id="id" name="Toggle" size="lg" value={groupData?.active} />}
         />
 
         <div className="MCP-panel-container">
@@ -231,13 +237,22 @@ function ApproverGroupDetails() {
           isOpen,
           onClose: () => setIsOpen(false),
           modalTitle: t('approvergroup.confirmationmessage'),
-          modalBody: <h3>{t('approvergroup.confirmationmessage.message')}</h3>,
+          modalBody: (
+            <h3>
+              {groupData?.active ? t('approvergroup.confirmationmessage.message') : t('approvergroup.confirmationmessage.activatemessage')}
+            </h3>
+          ),
           modalFooter: (
             <React.Fragment>
               <Button onClick={handleConfirmCancel} variant="secondary">
                 {t('approvergroup.button.cancel')}
               </Button>
-              <Button onClick={handleConfirmDeactivate}>{t('approvergroup.button.deactivate')}</Button>
+              <Button
+                onClick={() =>
+                  handleConfirm(groupData?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate'))
+                }>
+                {groupData?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
+              </Button>{' '}
             </React.Fragment>
           ),
           modalSize: 'xxxs'

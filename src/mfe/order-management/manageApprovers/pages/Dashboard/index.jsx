@@ -101,16 +101,16 @@ export default function Dashboard() {
         heading={<Heading as="h1">{t('approvergroup.header.label')}</Heading>}
         controls={
           <div className="controls">
-            {hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CREATE_ORDERS) && (
-              <Button
-                Icon={add_circle_bold}
-                className="button-icon"
-                variant="primary"
-                size="md"
-                onClick={() => navigate(`${PATHS.createapprovergroup}`)}>
-                {t('approvergroup.create_approvergroup')}
-              </Button>
-            )}
+            {/* {hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CREATE_ORDERS) && ( */}
+            <Button
+              Icon={add_circle_bold}
+              className="button-icon"
+              variant="primary"
+              size="md"
+              onClick={() => navigate(`${PATHS.createapprovergroup}`)}>
+              {t('approvergroup.create_approvergroup')}
+            </Button>
+            {/* )} */}
           </div>
         }
       />

@@ -4,6 +4,7 @@ import { useQuery } from 'react-query';
 import AuthUtils from '@src/util/AuthUtils';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
+import { getFullName } from '@src/util/CommonUtils';
 let params = {
   status: 'active',
   partnerFunction: 'SOLD_TO'
@@ -91,7 +92,7 @@ export const useUserData = (shouldFetch) => {
       const res = await HttpResourceService.callRest(apiUrl, httpVerb.GET, {});
       return (
         res.data?.content?.map((item) => ({
-          label: `${item.name.lastName}, ${item.name.firstName} ${item.name.middleName || ''}`.trim(),
+          label: getFullName(item.name),
           value: item.id
         })) || []
       );

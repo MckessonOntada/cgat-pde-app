@@ -74,13 +74,13 @@
 .dropdown-with-button {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-04);
 }
 
 .dropdown-row {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: var(--spacing-04);
 }
 
 .dropdown-wrapper {
@@ -98,4 +98,14 @@
   flex-wrap: wrap;
   gap: var(--spacing-02);
   padding-top: var(--spacing-02);
+}
+
+.radioitemCustomStyles {
+  font-size: var(--brand-font-size--default);
+  margin-right: var(--spacing-04);
+}
+
+.radiolabelCustomStyles {
+  margin-bottom: var(--spacing-04);
+  font-size: var(--brand-font-size--default);
 }

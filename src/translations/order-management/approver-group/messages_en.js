@@ -18,9 +18,11 @@ export const ApproverManagementEN = {
   'approvergroup.table.action': 'Action',
   'approvergroup.table.action.delete': 'Delete',
   'approvergroup.button.deactivate': 'Deactivate',
+  'approvergroup.button.activate': 'Activate',
   'approvergroup.empty_table.description': 'You need to add Approver Groups to see data in this table.',
   'approvergroup.confirmationmessage': 'Confirmation message',
   'approvergroup.confirmationmessage.message': 'Are you sure you wish to Deactivate this Approver Group ?',
+  'approvergroup.confirmationmessage.activatemessage': 'Are you sure you wish to Activate this Approver Group ?',
   'approvergroup.button.edit': 'Edit',
   'approvergroup.button.next': 'Next',
   'approvergroup.button.cancel': 'Cancel',
@@ -72,5 +74,7 @@ export const ApproverManagementEN = {
 
   'approvergroup.messages.approvergroup_deactivate_success': 'Approver Group has been Deactivated successfully.',
   'approvergroup.messages.approvergroup_deactivate_failure': 'Failed to Deactivate the Approver Group.',
+  'approvergroup.messages.approvergroup_activate_success': 'Approver Group has been Activated successfully.',
+  'approvergroup.messages.approvergroup_activate_failure': 'Failed to Activate the Approver Group.',
   'approvergroup.messages.approvergroup_create_success': 'Approver Group has been created successfully.'
 };
