@@ -1,6 +1,7 @@
 export const MessageEn = {
   'headings.orders': 'Orders',
   'headings.createNewOrder': 'Create New Order',
+  'headings.editOrder': 'Edit Order',
   'headings.orderListing': 'Order Listing',
   'headings.orderSummary': 'Order Summary',
   'headings.accountListing': 'Account Listing',

@@ -17,7 +17,7 @@ import { NUMBER_REGEX } from '@src/components/form/ValidationRegExp';
 
 const getValidationSchema = (t) =>
   Yup.object({
-    coiId: Yup.string
+    coiId: Yup.string()
       .matches(NUMBER_REGEX, t('labels.COI_IdMustValidNumber'))
       .max(20, t('labels.COI_IdExceedDigits'))
       .required(t('labels.COIIdRequired')),
@@ -31,12 +31,10 @@ const getValidationSchema = (t) =>
       .required(t('labels.slotNumberRequired'))
       .max(20, t('labels.slotNumberLengthError'))
       .trim(t('labels.slotNumberExtraSpaceError')),
-
     poNumber: Yup.string()
       .required(t('labels.PONumberRequired'))
       .max(35, t('labels.PONumberLengthError'))
       .trim(t('labels.poNumberExtraSpaceError')),
-
     dateOfAdministration: Yup.date()
       .required(t('labels.DateOfAdministrationRequired'))
       .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))

@@ -43,8 +43,8 @@ export const OrderProvider = ({ children }) => {
     const params = {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
-      sortBy: sortConfig.sortBy || 'id',
-      sortOrder: sortConfig.sortOrder || 'asc'
+      sortBy: sortConfig.sortBy || 'createdAt',
+      sortOrder: sortConfig.sortOrder || 'desc'
     };
 
     if (filterConfig.searchQuery) params.query = filterConfig.searchQuery;
@@ -52,7 +52,7 @@ export const OrderProvider = ({ children }) => {
       params.status = 'submitted';
     } else {
       const allStatus = ['in_draft', 'approval_pending'];
-      if (filterConfig.status && filterConfig.status.length > 0) {
+      if (filterConfig.status && filterConfig.status != 'all') {
         params.status = filterConfig.status;
       } else {
         params.status = allStatus;

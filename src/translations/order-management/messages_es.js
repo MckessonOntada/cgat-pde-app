@@ -1,6 +1,7 @@
 export const MessageEs = {
   'headings.orders': '[es]Orders',
   'headings.createNewOrder': '[es]Create New Order',
+  'headings.editOrder': '[es]Edit Order',
   'headings.orderListing': '[es]Order Listing',
   'headings.orderSummary': '[es]Order Summary',
   'headings.accountListing': '[es]Account Listing',

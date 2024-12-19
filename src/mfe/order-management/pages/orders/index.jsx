@@ -23,7 +23,7 @@ const OrderIndex = () => {
   const activeTab = tabList.find((tab) => tab.isActiveTab);
 
   const additionalFiltersConfig = React.useMemo(() => {
-    if (activeTab?.configName === 'Submitted') return [];
+    if (activeTab?.configName === 'SUBMITTED') return [];
 
     return [
       {
@@ -31,6 +31,7 @@ const OrderIndex = () => {
         name: 'status',
         label: t('userManagement.table.status'),
         options: [
+          { label: 'All', value: 'all' },
           { label: 'Pending', value: 'pending' },
           { label: 'Approval Pending', value: 'approval pending' }
         ]

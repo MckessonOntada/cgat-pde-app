@@ -33,7 +33,12 @@ export const ManageOrderProvider = (props) => {
   const [currentStage, setCurrentStage] = React.useState(ORDER_STAGES.THERAPY_SELECTION);
   const [messageConfig, setMessageConfig] = React.useState(INITIAL_MESSAGE_STATE);
 
-  const { isFetching, refetch: refreshData } = useQuery({
+  const {
+    isFetching,
+    refetch: refreshData,
+    isError,
+    error
+  } = useQuery({
     queryKey: ['summary', activeOrderId],
     queryFn: async () => OrderService.getOrderById(activeOrderId),
     onSuccess: (result) => {
@@ -113,6 +118,8 @@ export const ManageOrderProvider = (props) => {
     formState,
     currentStage,
     messageConfig,
+    isError,
+    error,
     setMode,
     isFetching,
     setActiveRecord,
