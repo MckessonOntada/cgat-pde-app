@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Button, SAHeading } from '@mckesson/mcp-component-library';
+import { Button, Heading } from '@mckesson/mcp-component-library';
 import styles from './TherapySelection.module.scss';
 import TherapyDetails from './TherapyDetails';
 import FloatingDrawer from '@src/components/floating-drawer';
@@ -16,6 +16,7 @@ import { useMutation } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import OrderStepper from '../OrderStepper';
+import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -30,7 +31,7 @@ function TherapySelection() {
   const { orderId } = useParams();
 
   React.useEffect(() => {
-    orderId && setCurrentOrder(orderId);
+    orderId && setCurrentOrder(orderId, ORDER_STAGES.THERAPY_SELECTION);
   }, []);
 
   React.useEffect(() => {

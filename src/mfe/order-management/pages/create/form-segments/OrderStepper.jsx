@@ -7,7 +7,7 @@ import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 
 function OrderStepper() {
   const { t } = useTranslate();
-  const { formState } = useManageOrder();
+  const { formState, currentStage } = useManageOrder();
   const forms = FormList(t);
 
   React.useEffect(() => {
@@ -18,7 +18,7 @@ function OrderStepper() {
 
   return (
     <Stepper
-      activeIndex={currentOrderStage + 1}
+      activeIndex={currentStage + 1}
       dividerText="of"
       mobileLabel={t('labels.steps')}
       stepHeaders={forms.map((f) => ({ label: f.label }))}

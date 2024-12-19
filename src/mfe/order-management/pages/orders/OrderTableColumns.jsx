@@ -135,7 +135,7 @@ export const createColumns = (t, navigate, activeTab) => [
     sortKey: 'orderId',
     cell: (props) => (
       <Link className="MCP-table-link" to={getPathByOrderStage(props)} state={props} aria-label={t('labels.orderId')}>
-        <EclipsesTextcss str={props.id} maxWidth={220} />
+        <EclipsesTextcss str={props.id} maxWidth={200} />
       </Link>
     )
   },
@@ -180,14 +180,7 @@ export const createColumns = (t, navigate, activeTab) => [
     sortKey: 'author',
     minWidth: '140px',
     maxWidth: '200px',
-    cell: (props) => (
-      <EclipsesTextcss
-        str={props.author?.name}
-        maxWidth={170}
-        className={'MCP-table-cell'}
-        aria-label={t('table.columns.captions.author')}
-      />
-    ),
+    cell: (props) => <EclipsesTextcss str={props.author?.name} maxWidth={170} className={'MCP-table-cell'} />,
     omit: activeTab !== 'pending submission'
   },
   {

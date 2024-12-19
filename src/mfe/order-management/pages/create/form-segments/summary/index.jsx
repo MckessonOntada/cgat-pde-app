@@ -25,7 +25,7 @@ const Summary = () => {
   const { showAlert } = useAlert();
 
   React.useEffect(() => {
-    orderId && setCurrentOrder(orderId);
+    orderId && setCurrentOrder(orderId, ORDER_STAGES.ORDER_SUMMARY);
   }, []);
 
   const [checkboxOptions, setCheckboxOptions] = React.useState([
@@ -55,8 +55,11 @@ const Summary = () => {
   };
 
   const handleOnSubmit = () => {
-    navigate('/orders');
-    // if (alertRef?.current) showAlert({ description: 'err.message', type: 'error', anchorEl: alertRef });
+    if (checkboxOptions[0].isChecked) {
+      navigate('/orders');
+    } else {
+      if (alertRef?.current) showAlert({ description: t('messages.selectAcknowledgementError'), type: 'error', anchorEl: alertRef });
+    }
   };
 
   const handleOnBackToOrders = () => {

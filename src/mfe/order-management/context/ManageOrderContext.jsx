@@ -18,7 +18,6 @@ export const useManageOrder = () => {
 
 const INITIAL_STATE = {
   mode: ORDER_MODE.CREATE,
-  currentStage: ORDER_STAGES.THERAPY_SELECTION,
   activeRecord: null
 };
 
@@ -31,6 +30,7 @@ const INITIAL_MESSAGE_STATE = {
 export const ManageOrderProvider = (props) => {
   const [formState, setFormState] = React.useState(INITIAL_STATE);
   const [activeOrderId, setActiveOrderId] = React.useState(null);
+  const [currentStage, setCurrentStage] = React.useState(ORDER_STAGES.THERAPY_SELECTION);
   const [messageConfig, setMessageConfig] = React.useState(INITIAL_MESSAGE_STATE);
 
   const { isFetching, refetch: refreshData } = useQuery({
@@ -39,6 +39,7 @@ export const ManageOrderProvider = (props) => {
     onSuccess: (result) => {
       if (!result.patientDetailsRequired && ORDER_STAGES[result.currentStage] === ORDER_STAGES.PATIENT_DETAILS) {
         result.currentStage = 'ADDITIONAL_DETAILS';
+        setCurrentStage(ORDER_STAGES.ADDITIONAL_DETAILS);
       }
       setFormState((prevState) => ({
         ...prevState,
@@ -64,14 +65,15 @@ export const ManageOrderProvider = (props) => {
   };
 
   const editByStage = (stage) => {
-    setFormState((prevState) => ({
-      ...prevState,
-      mode: ORDER_MODE.EDIT,
-      activeRecord: {
-        ...prevState.activeRecord,
-        currentStage: Object.keys(ORDER_STAGES)[stage]
-      }
-    }));
+    // setFormState((prevState) => ({
+    //   ...prevState,
+    //   mode: ORDER_MODE.EDIT,
+    //   activeRecord: {
+    //     ...prevState.activeRecord,
+    //     currentStage: Object.keys(ORDER_STAGES)[stage]
+    //   }
+    // }));
+    setCurrentStage(stage);
   };
 
   const setActiveRecord = (activeRecord) => {
@@ -80,9 +82,9 @@ export const ManageOrderProvider = (props) => {
       activeRecord.currentStage = 'ADDITIONAL_DETAILS';
     }
     setActiveOrderId(id);
+    setCurrentStage(ORDER_STAGES[currentStage]);
     setFormState((prevState) => ({
       ...prevState,
-      currentStage: ORDER_STAGES[currentStage],
       activeRecord
     }));
   };
@@ -90,6 +92,7 @@ export const ManageOrderProvider = (props) => {
   const resetActiveRecord = () => {
     setFormState(INITIAL_STATE);
     setActiveOrderId(null);
+    setCurrentStage(ORDER_STAGES.THERAPY_SELECTION);
   };
 
   const setMessage = (message) => {
@@ -100,14 +103,21 @@ export const ManageOrderProvider = (props) => {
     setMessageConfig(INITIAL_MESSAGE_STATE);
   };
 
+  const setCurrentOrder = (orderId, stage) => {
+    if (orderId) setActiveOrderId(orderId);
+
+    setCurrentStage(stage);
+  };
+
   const contextValue = {
     formState,
+    currentStage,
     messageConfig,
     setMode,
     isFetching,
     setActiveRecord,
     resetActiveRecord,
-    setCurrentOrder: setActiveOrderId,
+    setCurrentOrder,
     editByStage,
     setMessage,
     clearMessage

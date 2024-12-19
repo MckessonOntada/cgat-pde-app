@@ -90,7 +90,7 @@ async function getTherapyDetailsById(therapyId) {
 async function getSoldToAccounts(therapyId, query) {
   let url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccounts`;
   if (query) {
-    url += `?query=${query}`;
+    url += `?${query}`;
   }
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {

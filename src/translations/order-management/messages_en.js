@@ -186,6 +186,7 @@ export const MessageEn = {
   'messages.variantAcknowledgement': 'Please acknowledge that you have verified and selected the correct Variant.',
   'messages.selectAccountToBuyTherapy': 'Please select the account to buy the therapy for',
   'messages.patientConcent': 'Please acknowledge if Patient Consent has been taken',
+  'messages.selectAcknowledgementError': 'Please select checkbox to acknowledge the order',
   // order management patient details screen
 
   'orderManagement.patientDetails.inputLabel.email': 'Email',

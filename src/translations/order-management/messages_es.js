@@ -106,6 +106,7 @@ export const MessageEs = {
   'controls.ariaLabels.orderManagementStatue': '[es]Order Management Status',
   'controls.ariaLabels.createNewOrder': '[es]Create a new order',
   'controls.ariaLabels.orderTabList': '[es]Order Status Tablist',
+  'controls.placeholder.shippingAddress.search': '[es]Search by Account name or Number',
   'labels.patientName': '[es]Patient Name',
   'labels.orderId': '[es]Order ID',
   'labels.therapy': '[es]Therapy',
@@ -128,6 +129,7 @@ export const MessageEs = {
   'labels.therapy.slotNumber': '[es]Slot Number',
   'labels.therapy.patientConsent': '[es]Patient Consent',
   'labels.patientConsent': '[es]Patient Consent',
+  'labels.therapy.generalDetails': '[es]Details',
 
   'table.columns.captions.author': '[es]Author',
   'table.columns.captions.createdOn': '[es]CreatedOn',
@@ -191,5 +193,6 @@ export const MessageEs = {
     '[es]I hereby acknowledge that the information mentioned above is correct. All details provided are accurate.',
   'messages.variantAcknowledgement': '[es]Please acknowledge that you have verified and selected the correct Variant.',
   'messages.patientConcent': '[es]Please acknowledge if Patient Consent has been taken',
-  'messages.selectAccountToBuyTherapy': '[es]Please select the account to buy the therapy for'
+  'messages.selectAccountToBuyTherapy': '[es]Please select the account to buy the therapy for',
+  'messages.selectAcknowledgementError': '[es]Please select checkbox to acknowledge the order'
 };

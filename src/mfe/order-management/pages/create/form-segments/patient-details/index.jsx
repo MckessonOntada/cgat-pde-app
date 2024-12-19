@@ -45,7 +45,7 @@ const PatientDetails = () => {
   });
 
   React.useEffect(() => {
-    orderId && setCurrentOrder(orderId);
+    orderId && setCurrentOrder(orderId, ORDER_STAGES.PATIENT_DETAILS);
   }, []);
 
   const handleOnBack = () => {

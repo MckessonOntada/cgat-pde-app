@@ -54,7 +54,7 @@ function AdditionalDetails() {
   );
 
   React.useEffect(() => {
-    orderId && setCurrentOrder(orderId);
+    orderId && setCurrentOrder(orderId, ORDER_STAGES.ADDITIONAL_DETAILS);
   }, []);
 
   React.useEffect(() => {

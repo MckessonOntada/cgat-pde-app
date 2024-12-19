@@ -18,6 +18,7 @@ import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderCon
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
+import { serializeParams } from '@src/util/ApiUtils';
 
 const AccountSelection = () => {
   const { t } = useTranslate();
@@ -31,12 +32,12 @@ const AccountSelection = () => {
   const therapyId = formState.activeRecord?.therapy?.id;
 
   React.useEffect(() => {
-    orderId && setCurrentOrder(orderId);
+    orderId && setCurrentOrder(orderId, ORDER_STAGES.ACCOUNT_DETAILS);
   }, []);
 
   const { isLoading, data: accountsListData = {} } = useQuery({
     queryKey: ['order', 'therapy', therapyId, accountSearchString],
-    queryFn: async () => OrderService.getSoldToAccounts(therapyId, accountSearchString),
+    queryFn: async () => OrderService.getSoldToAccounts(therapyId, serializeParams({ query: accountSearchString })),
     enabled: !!therapyId,
     refetchOnWindowFocus: false
   });
@@ -98,6 +99,11 @@ const AccountSelection = () => {
     return [acc.houseNumber, acc.street, acc.district, acc.city, acc.state, acc.zipCode].join(', ');
   };
 
+  const handleOnAccountSelection = (selectedAccount) => {
+    setSelectedAccount(selectedAccount);
+    setOpen(false);
+  };
+
   React.useEffect(() => {
     if (CommonUtils.isNonEmptyObject(accountsListData) && formState.activeRecord) {
       const { accountDetails } = formState.activeRecord;
@@ -130,20 +136,6 @@ const AccountSelection = () => {
         <OrderStepper />
         <div className={`MCP-module-wrapper`}>
           <OrderHeaderDetails />
-          {/* <div className="MCP-panel-container">
-            <div className="row-space-between-center">
-              <DetailField
-                label={t('labels.therapyDescription')}
-                value={
-                  <React.Fragment>
-                    <span>{therapy?.materialDescription || '-'}</span>
-                    <TickIcon width="16px" height="16px" />
-                  </React.Fragment>
-                }
-              />
-              <DetailField label={t('labels.price')} value={'$----'} />
-            </div>
-          </div> */}
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>
               <ModuleHeader
@@ -214,7 +206,7 @@ const AccountSelection = () => {
           </div>
           {open && (
             <FloatingDrawer open={open} anchor="right" onClose={handleOnClose}>
-              <AccountSelectionUserGuide therapyId={therapyId} onClose={handleOnClose} />
+              <AccountSelectionUserGuide therapyId={therapyId} onSubmit={handleOnAccountSelection} onClose={handleOnClose} />
             </FloatingDrawer>
           )}
         </div>
