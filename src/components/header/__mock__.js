@@ -10,8 +10,10 @@ const HeaderConfig = {
       isActive: true,
       isActiveTab: false,
       labelForMobile: 'Dashboard',
-      sequence: 1
+      sequence: 1,
+      translationName: 'header.tabs.dashboard'
     },
+
     // {
     //   label: 'Orders',
     //   id: 2,
@@ -31,6 +33,7 @@ const HeaderConfig = {
       isActiveTab: false,
       labelForMobile: 'Payment and Invoices',
       sequence: 3,
+      translationName: 'Payment Invoices',
       submenu: [
         {
           label: 'Invoices',

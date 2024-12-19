@@ -64,7 +64,7 @@ export const UserManagementES = {
   'userManagement.button.savencontinue': 'S_Save And Continue',
   'userManagement.button.edit': 'S_Edit',
   'userManagement.button.adduser': 'S_Add User',
-  'userManagement.button.uploadusers': 'S_Upload Users',
+  'userManagement.button.uploadUsers': 'S_Upload Users',
   'userManagement.button.addsystemadmin': 'S_Add System Administrator',
 
   'userManagement.button.add_accounts': 'S_Add Accounts',
@@ -224,5 +224,8 @@ export const UserManagementES = {
   'APPLICATION_SETTING.MANAGE_PAYMENT_METHODS.DESCRIPTION': 'S_Allows editing and deactivating payment methods, enabling edit and deactivate options',
   'errors.user_email_key': 'Email ID already exists in the System.',
   'errors.user_phone_key': 'Phone number already exists.',
-  'errors.default': 'An unexpected error occurred.'
+  'errors.default': 'An unexpected error occurred.',
+
+  'Table.Tabs.ActiveUser': 'S_ACTIVE USERS',
+  'Table.Tabs.pendingRequest': 'S_PENDING REQUESTS'
 };

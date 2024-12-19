@@ -1,50 +1,58 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { CustomDataTable, Button, Badge, CheckboxGroup, Modal } from '@mckesson/mcp-component-library';
-
 import { useTranslate } from '@src/translations/useTranslation';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import { useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
-import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import CommonUtils from '@src/util/CommonUtils';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
-import { ReactComponent as View } from '@src/assets/image/view.svg';
-import usePermission from '@src/hooks/usePermissions';
 import { useApprover } from '../../context/ApproverContext';
+import Actions from './Actions';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import usePermission from '@src/hooks/usePermissions';
 
 function ApproverList({ onActionSuccess }) {
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const { data, paginationConfig, applySort, setPageNumber } = useApprover();
+  const { data, paginationConfig, applySort, setPageNumber, refreshData } = useApprover();
   const userPermissions = AuthUtils.getUserPermissions();
   const { hasPermission } = usePermission();
 
-  const handleRowSelected = ({ selectedRows }) => {
-    setSelectedRows(selectedRows);
-  };
-
-  const handleDeactivateApproverGroup = async (userId) => {
-    // const res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.DELETE, null);
-    // return res.data;
+  const handleActivateDeactivateApproverGroup = async ({ grpId, actionName }) => {
+    if (actionName === t('approvergroup.button.activate')) {
+      const resActivate = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}/${grpId}/activate`, httpVerb.PATCH, null);
+      return resActivate.data;
+    } else {
+      const resDeactivate = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}/${grpId}`, httpVerb.DELETE, null);
+      return resDeactivate.data;
+    }
   };
 
   const { mutate } = useMutation({
-    mutationFn: handleDeactivateApproverGroup,
-    onSuccess: (response) => {
-      //   refreshData();
+    mutationFn: handleActivateDeactivateApproverGroup,
+    onSuccess: (response, variables) => {
+      const { actionName } = variables;
+      refreshData();
       setSelectedRows(null);
       const isSuccess = true;
-      const message = t('approvergroup.messages.approvergroup_deactivate_success');
-      onActionSuccess(isSuccess, message); // callback
+      const message =
+        actionName === t('approvergroup.button.deactivate')
+          ? t('approvergroup.messages.approvergroup_deactivate_success')
+          : t('approvergroup.messages.approvergroup_activate_success');
+      onActionSuccess(isSuccess, message);
     },
-    onError: (error) => {
+    onError: (error, variables) => {
+      const { actionName } = variables;
       console.error(`Failed to deactivate user:`, error);
       const isSuccess = false;
-      const message = t('approvergroup.messages.approvergroup_deactivate_failure');
+      const message =
+        actionName === t('approvergroup.button.deactivate')
+          ? t('approvergroup.messages.approvergroup_deactivate_failure')
+          : t('approvergroup.messages.approvergroup_activate_failure');
       onActionSuccess(isSuccess, message);
     }
   });
@@ -57,15 +65,13 @@ function ApproverList({ onActionSuccess }) {
     if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
-  const handleView = (userId) => {};
-
-  const handleDeactivate = () => {
+  const handleActivateDeactivate = () => {
     setIsOpen(true);
   };
 
-  const handleConfirmDeactivate = () => {
+  const handleConfirm = (actionName) => {
     setIsOpen(false);
-    mutate(selectedRows);
+    mutate({ grpId: selectedRows?.id, actionName });
   };
 
   const handleConfirmCancel = () => {
@@ -74,8 +80,9 @@ function ApproverList({ onActionSuccess }) {
   };
 
   useEffect(() => {
-    // refreshData();
+    refreshData();
   }, []);
+
   const columns = useMemo(() => {
     return [
       {
@@ -87,10 +94,9 @@ function ApproverList({ onActionSuccess }) {
             caption=""
             items={[
               {
-                onChange: (event) => setSelectedRows(event.target.checked ? row.id : null),
+                onChange: (event) => setSelectedRows(event.target.checked ? row : null),
                 value: row.id,
-                isChecked: selectedRows === row.id,
-                isDisabled: !row.isActive
+                isChecked: selectedRows?.id === row.id
               }
             ]}
           />
@@ -100,18 +106,14 @@ function ApproverList({ onActionSuccess }) {
       },
       { name: 'ID', selector: 'id', sortable: true, omit: true },
       {
-        id: 'groupName',
+        id: 'name',
         name: t('approvergroup.table.groupname'),
-        selector: (row) => `${row.name.firstName} ${row.name.lastName}`,
+        selector: (row) => `${row.name}`,
         sortable: true,
-        sortKey: 'groupName',
+        sortKey: 'name',
         wrap: true,
-        minWidth: '340px',
-        cell: (props) => (
-          <div>
-            <EclipsesTextcss str={props.groupName} maxWidth={300} />
-          </div>
-        )
+        minWidth: '440px',
+        cell: (props) => <EclipsesTextcss str={props.name} maxWidth={400} />
       },
       {
         id: 'createdBy',
@@ -119,40 +121,32 @@ function ApproverList({ onActionSuccess }) {
         selector: 'createdBy',
         wrap: true,
         minWidth: '160px',
-        cell: (props) => (
-          <div>
-            <EclipsesTextcss str={props.createdBy} maxWidth={300} />
-          </div>
-        )
+        cell: (props) => <EclipsesTextcss str={props.createdBy} maxWidth={200} />
       },
       {
-        id: 'createdon',
+        id: 'createdAt',
         name: t('approvergroup.table.createdon'),
-        selector: 'date_added',
+        selector: 'createdAt',
         wrap: true,
         minWidth: '160px',
-        cell: (props) => CommonUtils.convertDateStringFormat(props.createdBy, 'MM-DD-YYYY')
+        cell: (props) => CommonUtils.convertDateStringFormat(props.createdAt, 'MM-DD-YYYY')
       },
       {
         id: 'status',
         name: t('approvergroup.table.status'),
         selector: 'status',
         center: true,
-        minWidth: '80px',
-        cell: (props) => <div>{props.isActive ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />}</div>
+        minWidth: '200px',
+        cell: (props) => <div>{props.active ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />}</div>
       },
       {
         id: 'action',
         center: true,
         name: t('approvergroup.table.action'),
-        cell: (row) => (
-          <div>
-            <Button Icon={View} variant="tertiary" size="md" className="button-icon" onClick={() => handleView(row.id)}>
-              {t('approvergroup.table.action.view')}
-            </Button>
-          </div>
-        ),
-        width: '120px'
+        cell: (row) => <Actions row={row} />,
+        width: '200px',
+        minWidth: '200px',
+        omit: !hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS) // To do - Change to approvergroup permissions
       }
     ];
   }, [data, userPermissions]);
@@ -164,8 +158,11 @@ function ApproverList({ onActionSuccess }) {
           <p className="selected-item-text">
             {1} {t('approvergroup.selected_items')}
           </p>
-          <Button variant="secondary" onClick={handleDeactivate}>
-            {t('approvergroup.button.deactivate')}
+          <Button
+            variant="secondary"
+            onClick={handleActivateDeactivate}
+            isDisabled={!hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.MANAGE_ORDERS)}>
+            {selectedRows.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
           </Button>
         </div>
       )}
@@ -186,7 +183,13 @@ function ApproverList({ onActionSuccess }) {
         stickyHeader
         responsive
         pagination={true}
-        noDataComponent={<EmptyDataTable image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('approvergroup.empty_table.description')} />}
+        noDataComponent={
+          <EmptyDataTable
+            image={EmptyDataImage}
+            heading={t('message.emptyTableTitle')}
+            description={t('approvergroup.empty_table.description')}
+          />
+        }
       />
       <Modal
         {...{
@@ -194,13 +197,24 @@ function ApproverList({ onActionSuccess }) {
           isOpen,
           onClose: () => setIsOpen(false),
           modalTitle: t('approvergroup.confirmationmessage'),
-          modalBody: <h3>Are you sure you wish to Deactivate this Approver Group ?</h3>,
+          modalBody: (
+            <h3>
+              {selectedRows?.active
+                ? t('approvergroup.confirmationmessage.message')
+                : t('approvergroup.confirmationmessage.activatemessage')}
+            </h3>
+          ),
           modalFooter: (
             <React.Fragment>
               <Button onClick={handleConfirmCancel} variant="secondary">
                 {t('approvergroup.button.cancel')}
               </Button>
-              <Button onClick={handleConfirmDeactivate}>{t('approvergroup.button.deactivate')}</Button>
+              <Button
+                onClick={() =>
+                  handleConfirm(selectedRows?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate'))
+                }>
+                {selectedRows?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
+              </Button>
             </React.Fragment>
           ),
           modalSize: 'xxxs'

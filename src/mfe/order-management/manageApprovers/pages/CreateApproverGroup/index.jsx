@@ -1,63 +1,107 @@
-import React, { useState, useEffect } from 'react';
-import * as Yup from 'yup';
+import React, { useState, useEffect, useRef } from 'react';
 import { Formik, Form, Field } from 'formik';
-import { Button, Heading, Alert, Required, SearchableDropdown, Dropdown } from '@mckesson/mcp-component-library';
+import { Button, Heading, Alert, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { PATHS } from '../../routes/constants';
 import ModuleHeader from '@src/components/module-header';
-import { useQuery, useMutation } from 'react-query';
+import { useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
-import { handleApiError, serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import { RoutePaths } from '@src/routes/constants';
-import { ALPHABETIC_WITH_SPECIAL, ALPHABETIC_WITH_SPACE, ADDRESS_REGEX, ZIP_REGEX, PHONE_REGEX, FAX_REGEX } from '@src/components/form/ValidationRegExp';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import Components from '@src/components/form/Components';
 import Attributes from './Attribute';
+import { useApprover } from '../../context/ApproverContext';
+import { createLabelData, getValidationSchema, transformAttributesToRules } from './formUtils';
+import './index.scss';
+import { useFormContext } from '../../context/FormContext';
+import { handleApiError } from '@src/util/ApiUtils';
 
 const CreateApproverGroup = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const isEdit = location.state || null;
+  const { grpId } = useParams();
+  const { initialValues, isEditMode, setIsEditMode, initializeFormFromLocation } = useFormContext();
+  const { usersData } = useApprover();
+  const [alert, setAlert] = useState(null);
+  const [localUserData, setLocalUsersData] = useState([]);
+  const practiceId = AuthUtils.getPracticeId();
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const dataBinded = useRef(false);
+  const [isDirty, setIsDirty] = React.useState(false);
+  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
 
-  const handleGoBack = () => {};
+  useEffect(() => {
+    if (!dataBinded.current) {
+      if (location.state?.data && usersData && initialValues.id) {
+        const selectedUserData = usersData.map((user) => ({
+          value: user.value,
+          label: user.label,
+          isChecked: initialValues.approverUsers.includes(user.value)
+        }));
+        setLocalUsersData(selectedUserData);
+        dataBinded.current = true;
+      } else if (!location.state && usersData) {
+        setLocalUsersData(usersData);
+        setIsEditMode(false);
+        dataBinded.current = true;
+      }
+    }
+  }, [usersData, initialValues, isEditMode, location.state]);
 
-  const initialValues = { groupName: '', attributes: [{ attributeType: 'Price', value: '' }], userSearch: '' };
+  const handleGoBack = () => {
+    if (isDirty) {
+      setModalSuccessCallback('list');
+    } else {
+      navigate(RoutePaths.pathApproverManagement);
+    }
+  };
 
-  const validationSchema = Yup.object({
-    name: Yup.object({
-      firstName: Yup.string()
-        .matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.first_name')) // Only alphabets
-        .min(2, t('userManagement.create_user.validation.first_name_min_max'))
-        .required(t('userManagement.create_user.validation.first_name_required'))
-        .max(50, t('userManagement.create_user.validation.first_name_min_max')),
-      middleName: Yup.string().matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.middle_name')).min(2, t('userManagement.create_user.validation.middle_name_min_max')).max(50, t('userManagement.create_user.validation.middle_name_min_max')).nullable(),
-      lastName: Yup.string()
-        .matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.last_name')) // Only alphabets
-        .min(2, t('userManagement.create_user.validation.last_name_min_max'))
-        .max(50, t('userManagement.create_user.validation.last_name_min_max'))
-        .required(t('userManagement.create_user.validation.last_name_required'))
-    })
+  const handleAlertClose = () => {
+    setIsAlertVisible(false);
+  };
+
+  useEffect(() => {
+    if (location.state?.data && grpId) {
+      setIsEditMode(true);
+      initializeFormFromLocation(grpId, location.state.data);
+    }
+  }, [location.state, grpId, isEditMode]);
+
+  const validationSchema = getValidationSchema(t);
+
+  const { mutate, isLoading, isError, data } = useMutation(async ({ payload }) => {
+    if (isEditMode) {
+      const updateUser = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}/${grpId}`, httpVerb.PUT, payload);
+      setIsEditMode(false);
+      return updateUser.data;
+    } else {
+      const createResponse = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}`, httpVerb.POST, payload);
+      return {
+        createUser: createResponse.data
+      };
+    }
   });
 
   const handleSubmit = (values) => {
-    const payload = {
-      isActive: true
-    };
+    const payload = transformAttributesToRules(values, practiceId);
 
     mutate(
       { payload },
       {
         onSuccess: (response) => {
-          console.log('  created/updated successfully:', response);
+          if (!isEditMode) {
+            navigate(RoutePaths.pathApproverManagement, { state: { isSuccess: true } });
+          } else {
+            navigate(`../${PATHS.approvergroupDetail.replace(':grpId', grpId)}`);
+          }
         },
         onError: (error) => {
           const errorKey = handleApiError(error);
-          const actionType = isPending ? 'Approve' : isEdit ? 'Update' : 'Create';
           setAlert({ type: 'error', message: t(errorKey) });
           setIsAlertVisible(true);
         }
@@ -65,10 +109,41 @@ const CreateApproverGroup = () => {
     );
   };
 
-  const handleCancel = () => {};
+  const handleCancel = () => {
+    if (isDirty) {
+      setModalSuccessCallback(isEditMode ? 'details' : 'list');
+    } else {
+      const targetPath = isEditMode ? `../${PATHS.approvergroupDetail.replace(':grpId', grpId)}` : RoutePaths.pathApproverManagement;
+      navigate(targetPath);
+    }
+  };
 
-  const handleNavigate = () => {};
+  const handleNavigate = () => {
+    if (modalSuccessCallback === 'list') {
+      navigate(RoutePaths.pathApproverManagement);
+    } else if (modalSuccessCallback === 'details') {
+      navigate(`../${PATHS.approvergroupDetail.replace(':grpId', grpId)}`);
+    }
+  };
 
+  const onRemoveUser = (itemToRemove, approverUsers, approverUsers_augmented, setFieldValue) => {
+    const updatedUsers = approverUsers.filter((userId) => userId !== itemToRemove);
+    const updatedAugmentedUsers = approverUsers_augmented.filter((user) => user.value !== itemToRemove);
+    setFieldValue('approverUsers', updatedUsers);
+    setFieldValue('approverUsers_augmented', updatedAugmentedUsers);
+
+    const updatedOptions = localUserData.map((option) => {
+      if (option.value === itemToRemove) {
+        return { ...option, isChecked: false };
+      }
+      return option;
+    });
+
+    setLocalUsersData(() => updatedOptions);
+  };
+  {
+    isLoading && <Loader type={'screen'} />;
+  }
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -79,17 +154,25 @@ const CreateApproverGroup = () => {
 
       <ModuleHeader heading={<Heading as="h1">{t('approvergroup.create_approvergroup')}</Heading>} />
 
-      {/* {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />} */}
+      {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
 
       <Formik
         initialValues={initialValues}
-        //validationSchema={validationSchema}
+        validationSchema={validationSchema}
         enableReinitialize
         onSubmit={(values, actions) => {
           handleSubmit(values);
           actions.setSubmitting(false);
         }}>
-        {({ values, isValid, handleChange, errors, touched }) => {
+        {({ values, setFieldValue, handleChange, errors, touched }) => {
+          useEffect(() => {
+            setIsDirty(Object.keys(touched).length > 0);
+          }, [touched]);
+
+          const onRemoveUserClick = (itemToRemove) => {
+            onRemoveUser(itemToRemove, values.approverUsers, values.approverUsers_augmented, setFieldValue);
+          };
+
           return (
             <Form>
               <div className="MCP-panel-container">
@@ -97,8 +180,16 @@ const CreateApproverGroup = () => {
                 <div className="MCP-module-wrapper">
                   <div className="MCP-module-body form-container">
                     <div>
-                      <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start">
-                        <Field id="name.firstName" name="name.firstName" label={t('approvergroup.approvergroupname')} placeholder=" " isRequired component={Components['input']} maxLength={50} />
+                      <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+                        <Field
+                          id="name"
+                          name="name"
+                          label={t('approvergroup.approvergroupname')}
+                          placeholder=" "
+                          isRequired
+                          component={Components['input']}
+                          maxLength={50}
+                        />
                       </div>
                     </div>
 
@@ -115,8 +206,23 @@ const CreateApproverGroup = () => {
                       <div className="headingBox">
                         <Heading as="h2">{t('approvergroup.approveuserlist')}</Heading>
                       </div>
-                      <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5">
-                        <Field name="attribute1" fieldlabel={t('approvergroup.selectuser')} placeholder=" " component={Components['multiSelectDropdown']} isRequired options={[]} />
+
+                      <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
+                        <Field
+                          id="approverUsers"
+                          name="approverUsers"
+                          label={t('approvergroup.selectaccount')}
+                          placeholder=" "
+                          isRequired
+                          component={Components['multiSelectDropdown']}
+                          options={localUserData || []}
+                          getUpdatedOptions={setLocalUsersData}
+                          onRemoveClick={onRemoveUserClick}
+                          noSelectedCountMessage={t('approvergroup.create.option.please_select')}
+                          pillsLabels={createLabelData(values.approverUsers_augmented)}
+                          pillsCount={5}
+                          ispillsVisible={true}
+                        />
                       </div>
                     </div>
                   </div>
@@ -124,17 +230,24 @@ const CreateApproverGroup = () => {
               </div>
               <div className={'buttonGroup'}>
                 <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>
-                  {t(isEdit ? 'approvergroup.button.back' : 'approvergroup.button.cancel')}
+                  {t(isEditMode ? 'approvergroup.button.back' : 'approvergroup.button.cancel')}
                 </Button>
 
                 <Button type="submit" size={'md'}>
-                  {t(isEdit ? 'approvergroup.button.updategroup' : 'approvergroup.button.creategroup')}
+                  {t(isEditMode ? 'approvergroup.button.updategroup' : 'approvergroup.button.creategroup')}
                 </Button>
               </div>
             </Form>
           );
         }}
       </Formik>
+      <DiscardChangesModal
+        heading="Discard Changes"
+        description="You have changed Approve Group details. Do you still want to go back? Your changes will be discarded!"
+        isOpen={Boolean(modalSuccessCallback)}
+        onClose={() => setModalSuccessCallback(null)}
+        onConfirm={handleNavigate}
+      />
     </div>
   );
 };

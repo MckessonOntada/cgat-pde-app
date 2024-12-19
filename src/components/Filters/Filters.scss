@@ -1,9 +1,13 @@
-.searchContainer{
-    width: 60%;
-    max-width: 460px;;
+.searchContainer {
+  width: 60%;
+  max-width: 460px;
 }
 
-.filterControls{
-    width: 40%;
-    justify-content: end;
+.filterControls {
+  width: 40%;
+  justify-content: end;
+}
+
+.additional-filters [data-testid="date-range-component"] {
+  margin-top: 5px;
 }

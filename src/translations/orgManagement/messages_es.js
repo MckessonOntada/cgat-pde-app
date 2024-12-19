@@ -1,5 +1,6 @@
 export const OrgManagementES = {
   'orgManagement.header.label': 'S_Manage Organization',
+  'orgManagement.header.dashboard': 'S_Dashboard',
   'orgManagement.add.label': 'S_Add Organization',
   'orgManagement.clearFilter.label': 'S_clear filters',
   'orgManagement.searchFilter.label': 'S_Search By Name or Email',
@@ -29,6 +30,11 @@ export const OrgManagementES = {
   'orgManagement.button.activate': 'S_ACTIVE',
   'orgManagement.button.inactivate': 'S_INACTIVE',
   'orgManagement.button.confirm': 'S_Confirm',
+  'orgManagement.message.accountSelectionConfirmationTitle': 'S_Select this org?',
+  'orgManagement.message.accountSelectionConfirmationDescription': 'S_Do you want to continue with selected organization',
+  'orgManagement.message.roleDeactivateConfirmationTitle': 'S_Deactivate role?',
+  'orgManagement.message.roleDeactivateConfirmationDescription': 'S_Do you want to deactivate this role?',
+
   'orgManagement.create_org': 'S_Create Organization',
   'orgManagement.create_org.details_to_create_org': 'S_Please check the details to create a organization Organization',
   'orgManagement.create_org.org-details': 'S_Organization Details',

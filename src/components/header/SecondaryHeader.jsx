@@ -9,7 +9,7 @@ import useSessionFeatures from '@src/hooks/useSessionFeatures';
 import AuthUtils from '@src/util/AuthUtils';
 
 const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
-  let intl = useIntl();
+  const intl = useIntl();
   const navigate = useNavigate();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
 
@@ -35,7 +35,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
           label: 'System Administrator',
           path: '/',
           id: 1,
-          configName: 'System Administrator',
+          configName: `${intl.formatMessage({ id: 'dashboard.card.systemAdministrator' })}`,
           isActive: true,
           isActiveTab: true,
           labelForMobile: 'System Administrator',
@@ -54,7 +54,8 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
         return {
           ...item,
           isActiveTab: isDashboard || isMatchingPath,
-          ariaSelected: isDashboard || isMatchingPath ? 'true' : 'false'
+          ariaSelected: isDashboard || isMatchingPath ? 'true' : 'false',
+          configName: `${intl.formatMessage({ id: item.translationName })}`
         };
       });
     }
@@ -64,7 +65,16 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
   const LeftSideView = () => {
     return (
       <div className={`${styles.navItemsLeft} ${styles.secondaryNav}`} aria-label="Navigation tabs">
-        <TabList className={styles.compactTablist} type="link" options={tabs} showShadow={false} alignment={'left'} useAsButton={false} role="tablist" aria-label="Secondary navigation tabs" />
+        <TabList
+          className={styles.compactTablist}
+          type="link"
+          options={tabs}
+          showShadow={false}
+          alignment={'left'}
+          useAsButton={false}
+          role="tablist"
+          aria-label="Secondary navigation tabs"
+        />
       </div>
     );
   };
