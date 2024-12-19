@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import styles from './PatientDetails.module.scss';
 import { Button, Stepper } from '@mckesson/mcp-component-library';
 import ModuleHeader from '@src/components/module-header';
@@ -12,11 +12,14 @@ import { Form, Formik } from 'formik';
 import { getValidationSchema } from './PatientDetailsFormUtils';
 import { ReactComponent as TickIcon } from '@src/assets/svg/yes_tick_circle_filled.svg';
 import OrderService from '@src/api/commonService/OrderService';
+import useAlert from '@src/hooks/useAlert';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
   const { orderId } = useParams();
   const navigate = useNavigate();
+  const alertContainerRef = useRef(null);
+  const { showAlert } = useAlert();
   const accountDetails = {
     accountNumber: '11699387',
     shipToAccountNumber: '1122332',
@@ -31,9 +34,13 @@ const PatientDetails = () => {
 
   const initialValues = {};
 
-  const handleSubmit = (form) => {
-    OrderService.setPatientDetails(orderId, form);
-    navigate(`../${orderId}/additional-details`);
+  const handleSubmit = async (form) => {
+    try {
+      await OrderService.setPatientDetails(orderId, form);
+      navigate(`../${orderId}/additional-details`);
+    } catch (err) {
+      showAlert({ description: err.message, type: 'error', anchorEl: alertContainerRef });
+    }
   };
 
   const handleOnBack = () => {
@@ -88,6 +95,7 @@ const PatientDetails = () => {
               </div>
             </div>
           </div>
+          <div ref={alertContainerRef} />
           <Formik
             initialValues={initialValues}
             validationSchema={getValidationSchema(t)}
