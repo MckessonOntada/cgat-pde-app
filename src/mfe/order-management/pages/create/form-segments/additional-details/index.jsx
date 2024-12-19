@@ -13,13 +13,30 @@ import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderCon
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
+import { NUMBER_REGEX } from '@src/components/form/ValidationRegExp';
 
 const getValidationSchema = (t) =>
   Yup.object({
-    coiId: Yup.number().required(t('labels.COIIdRequired')).min(1, ''),
-    orderQuantity: Yup.number().required(t('labels.orderQuantityRequired')).min(1, ''),
-    slotNumber: Yup.string().required(t('labels.slotNumberRequired')).min(1, '').max(20, t('labels.slotNumberLengthError')),
-    poNumber: Yup.number().required(t('labels.PONumberRequired')).min(1, '').max(35, t('labels.PONumberLengthError')),
+    coiId: Yup.string
+      .matches(NUMBER_REGEX, t('labels.COI_IdMustValidNumber'))
+      .max(20, t('labels.COI_IdExceedDigits'))
+      .required(t('labels.COIIdRequired')),
+    orderQuantity: Yup.number()
+      .typeError(t('OrderQuantityShouldPositive'))
+      .required(t('labels.orderQuantityRequired'))
+      .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
+      .integer(t('OrderQuantityMustBeInteger')),
+
+    slotNumber: Yup.string()
+      .required(t('labels.slotNumberRequired'))
+      .max(20, t('labels.slotNumberLengthError'))
+      .trim(t('labels.slotNumberExtraSpaceError')),
+
+    poNumber: Yup.string()
+      .required(t('labels.PONumberRequired'))
+      .max(35, t('labels.PONumberLengthError'))
+      .trim(t('labels.poNumberExtraSpaceError')),
+
     dateOfAdministration: Yup.date()
       .required(t('labels.DateOfAdministrationRequired'))
       .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))

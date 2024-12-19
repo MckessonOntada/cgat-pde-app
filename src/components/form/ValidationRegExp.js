@@ -7,3 +7,4 @@ export const ADDRESS_REGEX = /^[a-zA-Z0-9\s,.'-]*$/;
 export const ZIP_REGEX = /^\d{5}(-\d{4})?$/;
 export const PHONE_REGEX = /^[0-9]{10}$/;
 export const FAX_REGEX = /[\+? *[1-9]+]?[0-9 ]+/;
+export const NUMBER_REGEX = /^\d+$/;
