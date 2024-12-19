@@ -16,9 +16,9 @@ const INITIAL_SORT_STATE = {
 };
 
 const INITIAL_PAGINATION_CONFIG = {
-  total: 0,
+  totalElements: 0,
   pageSize: 8,
-  pages: 0,
+  totalPages: 0,
   pageNumber: 1
 };
 

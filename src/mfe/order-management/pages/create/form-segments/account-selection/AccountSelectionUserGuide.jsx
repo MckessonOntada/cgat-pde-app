@@ -1,18 +1,31 @@
 import React, { useState } from 'react';
 import styles from './AccountSelectionUserGuide.module.scss';
-import { RadioGroup, Button } from '@mckesson/mcp-component-library';
+import { RadioGroup, Button, Loader } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
-import initialAccountsData from './../../__mock__';
 import AccountCard from './AccountCard';
 import { useTranslate } from '@src/translations/useTranslation';
+import { useQuery } from 'react-query';
+import OrderService from '@src/api/commonService/OrderService';
 
-const AccountSelectionUserGuide = ({ onClose }) => {
+const AccountSelectionUserGuide = ({ therapyId, onClose }) => {
   const { t } = useTranslate();
   const [program1, setProgram1] = useState(null);
   const [program2, setProgram2] = useState(null);
   const [account, setAccount] = useState(null);
 
-  const options = initialAccountsData.slice(0, 2);
+  const options = [];
+
+  const {
+    isFetching: isFetchingConfig,
+    data: programChannelConfig,
+    isError,
+    error
+  } = useQuery({
+    queryKey: ['order', 'therapy', therapyId, 'program-channel-config'],
+    queryFn: async () => OrderService.getProgramAndChannelConfig(therapyId, {}),
+    enabled: !!therapyId,
+    refetchOnWindowFocus: false
+  });
 
   const program1Options = ['3PL', 'SD', 'All'];
   const program2Options = ['WAC', 'GOV', '340B'];
@@ -20,6 +33,30 @@ const AccountSelectionUserGuide = ({ onClose }) => {
   const handleAccountChange = (selectedAccount) => {
     setAccount(selectedAccount);
   };
+
+  if (!therapyId) {
+    return (
+      <div className={styles.wrapper}>
+        <div>Error: therapy id is not available</div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className={styles.wrapper}>
+        <div>Error: {error.message}</div>
+      </div>
+    );
+  }
+
+  if (isFetchingConfig) {
+    return (
+      <div className={styles.wrapper}>
+        <Loader variant="circular" />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -64,13 +101,7 @@ const AccountSelectionUserGuide = ({ onClose }) => {
         </div>
 
         <div className={styles.controls}>
-          <Button
-            label={t('captions.btnCancel')}
-            onClick={onClose}
-            variant="secondary"
-            size="md"
-            aria-label={t('captions.cancel')}
-          />
+          <Button label={t('captions.btnCancel')} onClick={onClose} variant="secondary" size="md" aria-label={t('captions.cancel')} />
           <Button
             label={t('captions.btnSelect')}
             onClick={() => onSubmit(account)}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import styles from './AccountCard.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 
@@ -21,15 +21,14 @@ const AccountCard = ({ options, onChange }) => {
         <label
           key={index}
           className={`${styles.card} ${selected === option.id ? styles.selected : null}`}
-          onClick={() => handleSelect(option.id)}
-        >
+          onClick={() => handleSelect(option.id)}>
           <input
             type="radio"
             name="card-radio"
             value={option.id}
             checked={selected === option.id}
             onChange={() => handleSelect(option.id)}
-            style={{ display: "none" }}
+            style={{ display: 'none' }}
           />
           <div className={styles.cardContent}>
             <h3>{option.accountNumber}</h3>

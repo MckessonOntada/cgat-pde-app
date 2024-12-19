@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Button, Stepper, Heading } from '@mckesson/mcp-component-library';
+import { Button, SAHeading } from '@mckesson/mcp-component-library';
 import styles from './TherapySelection.module.scss';
 import TherapyDetails from './TherapyDetails';
 import FloatingDrawer from '@src/components/floating-drawer';

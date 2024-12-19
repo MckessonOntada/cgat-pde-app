@@ -10,10 +10,10 @@ const initialFilterState = {
 };
 
 const initialPageConfig = {
-  total: 0,
-  pageSize: 10,
-  pages: 0,
-  currentPage: 1
+  totalElements: 0,
+  pageSize: 8,
+  totalPages: 0,
+  pageNumber: 1
 };
 
 const ShippingAddressContext = createContext();
@@ -45,7 +45,7 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
 
   const requestParams = useMemo(
     () => ({
-      pageNumber: pageConfig.currentPage - 1,
+      pageNumber: pageConfig.pageNumber - 1,
       pageSize: pageConfig.pageSize,
       ...(filterState?.searchQuery && { query: filterState.searchQuery }),
       ...(filterState?.accNum && filterState?.accNum.length > 0 && { accNum: [...filterState.accNum] }),
@@ -55,21 +55,20 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
   );
 
   const {
-    isLoading,
+    isFetching,
     isError,
+    error,
     refetch: refreshData
   } = useQuery({
     queryKey: ['Shipping', requestParams, selectedAccount?.accountNumber],
     queryFn: async () => OrderService.getShippingAddressForTherapyByAccountId(therapyId, selectedAccount?.accountNumber, requestParams),
     onSuccess: (result) => {
       if (result.content) {
-        const { content: data, totalElements, totalPages, size, pageable } = result;
+        const { content: data, totalElements, totalPages } = result;
 
         setPageConfig(() => ({
           totalElements,
-          totalPages,
-          pageSize: size,
-          currentPage: pageable.pageNumber
+          totalPages
         }));
 
         const formattedData = prepareDataForTable(data);
@@ -102,8 +101,9 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
   return (
     <ShippingAddressContext.Provider
       value={{
-        isLoading,
+        isFetching,
         isError,
+        error,
         refreshData,
         filterState,
         pageConfig,

@@ -34,10 +34,10 @@ const TherapyDataTable = ({ therapy, onChange }) => {
       handleChangePage={handleOnPageChange}
       onSortIconClick={handleOnSort}
       pagination={true}
-      currentPage={1}
-      totalPageCount={paginationConfig.pages}
-      totalRocords={paginationConfig.total}
-      recordsPerPage={1}
+      currentPage={paginationConfig.pageNumber}
+      totalPageCount={paginationConfig.totalPages}
+      totalRocords={paginationConfig.totalElements}
+      recordsPerPage={paginationConfig.pageSize}
       aria-label={t('table.ariaLabel.orderList')}
       paginationRecordsPerPageMessage={'per page'}
       paginationTotalRecorsMessage={'result'}

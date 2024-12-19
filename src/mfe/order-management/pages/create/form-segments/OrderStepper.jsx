@@ -14,9 +14,11 @@ function OrderStepper() {
     const { patientDetailsRequired = false } = formState.activeRecord || {};
   }, [formState.activeRecord]);
 
+  const currentOrderStage = ORDER_STAGES[formState.activeRecord?.currentStage] || 0;
+
   return (
     <Stepper
-      activeIndex={ORDER_STAGES[formState.activeRecord?.currentStage] + 1}
+      activeIndex={currentOrderStage + 1}
       dividerText="of"
       mobileLabel={t('labels.steps')}
       stepHeaders={forms.map((f) => ({ label: f.label }))}

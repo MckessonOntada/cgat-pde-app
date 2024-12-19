@@ -17,10 +17,12 @@ import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 const getValidationSchema = (t) =>
   Yup.object({
     coiId: Yup.number().required(t('labels.COIIdRequired')).min(1, ''),
-    orderQuantity: Yup.number().required('labels.orderQuantityRequired').min(1, ''),
-    slotNumber: Yup.string().required('labels.slotNumberRequired').min(1, '').max(20, 'labels.slotNumberLengthError'),
-    poNumber: Yup.number().required('labels.PONumberRequired').min(1, '').max(35, 'labels.PONumberLengthError'),
-    dateOfAdministration: Yup.date().required('labels.DateOfAdministrationRequired')
+    orderQuantity: Yup.number().required(t('labels.orderQuantityRequired')).min(1, ''),
+    slotNumber: Yup.string().required(t('labels.slotNumberRequired')).min(1, '').max(20, t('labels.slotNumberLengthError')),
+    poNumber: Yup.number().required(t('labels.PONumberRequired')).min(1, '').max(35, t('labels.PONumberLengthError')),
+    dateOfAdministration: Yup.date()
+      .required(t('labels.DateOfAdministrationRequired'))
+      .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
   });
 
 const INITIAL_VALUES = {
@@ -77,7 +79,7 @@ function AdditionalDetails() {
       navigate(`../${orderId}/patient`);
     } else {
       editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-      navigate(`../${orderId}/account`);
+      navigate(`../${orderId}/accounts`);
     }
   };
 

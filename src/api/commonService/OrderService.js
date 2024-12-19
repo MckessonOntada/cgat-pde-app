@@ -111,6 +111,16 @@ async function getShippingAddressForTherapyByAccountId(therapyId, accountId, req
   return {};
 }
 
+async function getProgramAndChannelConfig(therapyId, requestParams) {
+  const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/programs-channels?${serializeParams(requestParams)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -121,7 +131,8 @@ const OrderService = Object.freeze({
   getShippingAddressForTherapyByAccountId,
   savePatientDetails,
   saveAdditionalDetails,
-  saveAccount
+  saveAccount,
+  getProgramAndChannelConfig
 });
 
 export default OrderService;

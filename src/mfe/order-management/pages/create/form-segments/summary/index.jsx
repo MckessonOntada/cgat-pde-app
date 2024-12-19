@@ -10,10 +10,10 @@ import { FormList } from '../Constants';
 import { useNavigate, useParams } from 'react-router-dom';
 import DetailSegment from '@src/components/DetailSegment';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
-import OrderService from '@src/api/commonService/OrderService';
-import { useQuery } from 'react-query';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import useAlert from '@src/hooks/useAlert';
+import PermittedComponent from '@src/components/permitted-component';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 
 const Summary = () => {
   const { t } = useTranslate();
@@ -55,8 +55,8 @@ const Summary = () => {
   };
 
   const handleOnSubmit = () => {
-    // navigate('/orders');
-    if (alertRef?.current) showAlert({ description: 'err.message', type: 'error', anchorEl: alertRef });
+    navigate('/orders');
+    // if (alertRef?.current) showAlert({ description: 'err.message', type: 'error', anchorEl: alertRef });
   };
 
   const handleOnBackToOrders = () => {
@@ -133,26 +133,31 @@ const Summary = () => {
                   className={styles.panelHeader}
                   heading={<Heading as="h3">{t('labels.therapy')}</Heading>}
                   controls={
-                    <Button
-                      size="md"
-                      variant="tertiary"
-                      onClick={() => handleOnEditSection(ORDER_STAGES.THERAPY_SELECTION)}
-                      Icon={() => <IconEditField />}>
-                      {t('captions.btnEdit')}
-                    </Button>
+                    <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                      <Button
+                        size="md"
+                        variant="tertiary"
+                        onClick={() => handleOnEditSection(ORDER_STAGES.THERAPY_SELECTION)}
+                        Icon={() => <IconEditField />}>
+                        {t('captions.btnEdit')}
+                      </Button>
+                    </PermittedComponent>
                   }
                 />
                 <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
                   <DetailSegment label={t('labels.nationalDrugCode')} value={therapy.ndcNumber} />
-                  <DetailSegment label={t('labels.UDI')} value={'therapy.uDI'} />
-                  <DetailSegment label={t('labels.distributionChannel')} value={accountDetails?.shipToAccount?.distributionChannel} />
-                  <DetailSegment label={t('labels.salesOrganization')} value={accountDetails?.shipToAccount?.saleOrg} />
-                  <DetailSegment label={t('labels.netPrice')} value={'therapy.netPrice'} />
-                  <DetailSegment label={t('labels.contractPrice')} value={'therapy.contractPrice'} />
-                  <DetailSegment label={t('labels.wacPrice')} value={'therapy.wACPrice'} />
-                  <DetailSegment label={t('labels.regularPrice')} value={'therapy.regularPrice'} />
-                  <DetailSegment label={t('labels.340bPrice')} value={"therapy['340bPrice']"} />
-                  <DetailSegment label={t('labels.priceUnit')} value={'therapy.priceUnit'} />
+                  <DetailSegment label={t('labels.UDI')} value={therapy?.uDI || '-'} />
+                  <DetailSegment
+                    label={t('labels.distributionChannel')}
+                    value={accountDetails?.shipToAccount?.distributionChannel || '-'}
+                  />
+                  <DetailSegment label={t('labels.salesOrganization')} value={accountDetails?.shipToAccount?.accountName} />
+                  <DetailSegment label={t('labels.netPrice')} value={therapy.netPrice || '-'} />
+                  <DetailSegment label={t('labels.contractPrice')} value={therapy.contractPrice || '-'} />
+                  <DetailSegment label={t('labels.wacPrice')} value={therapy?.wACPrice || '-'} />
+                  <DetailSegment label={t('labels.regularPrice')} value={therapy?.regularPrice || '-'} />
+                  <DetailSegment label={t('labels.340bPrice')} value={therapy?.['340bPrice'] || '-'} />
+                  <DetailSegment label={t('labels.priceUnit')} value={therapy?.priceUnit || '-'} />
                 </div>
               </div>
               <div className="MCP-module-body">
@@ -161,13 +166,15 @@ const Summary = () => {
                     className={styles.panelHeader}
                     heading={<Heading as="h3">{t('labels.accountDetails')}</Heading>}
                     controls={
-                      <Button
-                        size="md"
-                        variant="tertiary"
-                        onClick={() => handleOnEditSection(ORDER_STAGES.ACCOUNT_DETAILS)}
-                        Icon={() => <IconEditField />}>
-                        {t('captions.btnEdit')}
-                      </Button>
+                      <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                        <Button
+                          size="md"
+                          variant="tertiary"
+                          onClick={() => handleOnEditSection(ORDER_STAGES.ACCOUNT_DETAILS)}
+                          Icon={() => <IconEditField />}>
+                          {t('captions.btnEdit')}
+                        </Button>
+                      </PermittedComponent>
                     }
                   />
                   <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2`}>
@@ -183,13 +190,15 @@ const Summary = () => {
                       className={styles.panelHeader}
                       heading={<Heading as="h3">{patient?.patientInfo?.firstName}</Heading>}
                       controls={
-                        <Button
-                          size="md"
-                          variant="tertiary"
-                          onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
-                          Icon={() => <IconEditField />}>
-                          {t('captions.btnEdit')}
-                        </Button>
+                        <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                          <Button
+                            size="md"
+                            variant="tertiary"
+                            onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
+                            Icon={() => <IconEditField />}>
+                            {t('captions.btnEdit')}
+                          </Button>
+                        </PermittedComponent>
                       }
                     />
                     <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
@@ -207,20 +216,22 @@ const Summary = () => {
                 className={styles.panelHeader}
                 heading={<Heading as="h3">{t('labels.additionalDetails')}</Heading>}
                 controls={
-                  <Button
-                    size="md"
-                    variant="tertiary"
-                    onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
-                    Icon={() => <IconEditField />}>
-                    {t('captions.btnEdit')}
-                  </Button>
+                  <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                    <Button
+                      size="md"
+                      variant="tertiary"
+                      onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
+                      Icon={() => <IconEditField />}>
+                      {t('captions.btnEdit')}
+                    </Button>
+                  </PermittedComponent>
                 }
               />
               <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-6'}>
                 <DetailSegment label={t('labels.slotNo')} value={additionalDetails?.slotNumber} />
                 <DetailSegment label={t('labels.poNo')} value={additionalDetails?.poNumber} />
                 <DetailSegment label={t('labels.dateOfAdministration')} value={additionalDetails?.dateOfAdministration} />
-                <DetailSegment label={t('labels.selectVariant')} value={'additionalDetails.selectVariant'} />
+                <DetailSegment label={t('labels.selectVariant')} value={additionalDetails?.selectVariant || '-'} />
                 <DetailSegment
                   label={t('labels.variantDescription')}
                   value={additionalDetails?.variant && additionalDetails.variant?.variantDescription}

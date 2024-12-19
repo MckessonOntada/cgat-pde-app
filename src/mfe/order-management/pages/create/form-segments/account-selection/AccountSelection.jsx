@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Heading, Button } from '@mckesson/mcp-component-library';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import styles from './AccountSelection.module.scss';
 import FloatingDrawer from '@src/components/floating-drawer';
 import AccountSelectionUserGuide from './AccountSelectionUserGuide';
@@ -43,7 +43,7 @@ const AccountSelection = () => {
 
   const accountListOptions = useMemo(() => {
     if (!CommonUtils.isNonEmptyObject(accountsListData)) {
-      return;
+      return [];
     }
     const accArr = [];
     accountsListData.content?.forEach((acc) => {
@@ -60,7 +60,8 @@ const AccountSelection = () => {
     onSuccess: (result) => {
       const { id } = result;
       setActiveRecord(result);
-      navigate(`../${id}/patient`);
+      if (result.patientDetailsRequired) navigate(`../${id}/patient`);
+      else navigate(`../${id}/additional-details`);
     },
     onError: console.log
   });
@@ -189,9 +190,9 @@ const AccountSelection = () => {
                         size="lg"
                       />
                     </div>
-                    {/* <Link to="#" onClick={handleOnClick} className="action-link">
+                    <Link to="#" onClick={handleOnClick} className="action-link">
                       {t('labels.needAssistanceSelectingAccount')}
-                    </Link> */}
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -211,9 +212,11 @@ const AccountSelection = () => {
               {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
             </Button>
           </div>
-          <FloatingDrawer open={open} anchor="right" onClose={handleOnClose}>
-            <AccountSelectionUserGuide onClose={handleOnClose} />
-          </FloatingDrawer>
+          {open && (
+            <FloatingDrawer open={open} anchor="right" onClose={handleOnClose}>
+              <AccountSelectionUserGuide therapyId={therapyId} onClose={handleOnClose} />
+            </FloatingDrawer>
+          )}
         </div>
       </div>
     </div>

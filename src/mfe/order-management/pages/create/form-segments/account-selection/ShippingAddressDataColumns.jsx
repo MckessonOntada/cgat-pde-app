@@ -11,7 +11,7 @@ export const createColumns = (t, navigate, selectedShippingAddress, setSelectedS
       <span className="MCP-table-cell radio-button-wrapper">
         <RadioGroup
           direction="column"
-          id={`radio-button-variant`}
+          id={`radio-button-shipping-address`}
           items={[
             {
               isDisabled: false,

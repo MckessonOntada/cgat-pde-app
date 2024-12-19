@@ -11,6 +11,8 @@ import OrderDataTable from './OrderDataTable';
 import CommonFilters from '@src/components/Filters';
 import { useOrders } from '../../context/OrderContext';
 import { useManageOrder } from '../../context/ManageOrderContext';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import PermittedComponent from '@src/components/permitted-component';
 
 const OrderIndex = () => {
   const { t } = useTranslate();
@@ -66,9 +68,11 @@ const OrderIndex = () => {
         heading={<Heading as="h1">{t('headings.orders')}</Heading>}
         controls={
           <div className="controls">
-            <Button Icon={AddCircleFilled} onClick={handleOnClick} size="md" aria-label={t('controls.createNewOrder')}>
-              {t('controls.ariaLabels.createNewOrder')}
-            </Button>
+            <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS}>
+              <Button Icon={AddCircleFilled} onClick={handleOnClick} size="md" aria-label={t('controls.createNewOrder')}>
+                {t('controls.ariaLabels.createNewOrder')}
+              </Button>
+            </PermittedComponent>
           </div>
         }
       />

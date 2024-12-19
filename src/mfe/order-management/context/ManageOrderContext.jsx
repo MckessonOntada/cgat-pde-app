@@ -75,7 +75,10 @@ export const ManageOrderProvider = (props) => {
   };
 
   const setActiveRecord = (activeRecord) => {
-    const { id, currentStage, orderStage } = activeRecord;
+    const { id, currentStage } = activeRecord;
+    if (currentStage === 'PATIENT_DETAILS') {
+      activeRecord.currentStage = 'ADDITIONAL_DETAILS';
+    }
     setActiveOrderId(id);
     setFormState((prevState) => ({
       ...prevState,

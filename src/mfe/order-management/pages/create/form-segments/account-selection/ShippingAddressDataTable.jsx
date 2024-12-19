@@ -7,14 +7,12 @@ import { createColumns } from './ShippingAddressDataColumns';
 import { useNavigate } from 'react-router-dom';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import { shippingAddressData } from './__mock__';
 
 const ShippingAddressDataTable = ({ pagination = true, selectedShippingAddress, setSelectedShippingAddress }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { dataState: data, pageConfig, setPageNumber } = useShippingAddress();
+  const { dataState: data, pageConfig, isFetching, isError, error, setPageNumber } = useShippingAddress();
   const columns = createColumns(t, navigate, selectedShippingAddress, setSelectedShippingAddress);
-  const { currentPage, pageSize } = pageConfig;
 
   const handleOnPageChange = (_event, pageIndex) => {
     setPageNumber(pageIndex);
@@ -28,17 +26,18 @@ const ShippingAddressDataTable = ({ pagination = true, selectedShippingAddress, 
       data={data}
       handleChangePage={handleOnPageChange}
       // onSortIconClick={handleOnSort}
-      pagination={pagination}
-      currentPage={currentPage}
-      totalPageCount={pageConfig.pages}
-      totalRocords={pageConfig.total}
-      recordsPerPage={pageSize}
+      pagination={true}
+      currentPage={pageConfig.pageNumber}
+      totalPageCount={pageConfig.totalPages}
+      totalRocords={pageConfig.totalElements}
+      recordsPerPage={pageConfig.pageSize}
       aria-label={t('table.ariaLabel.orderList')}
       paginationRecordsPerPageMessage={'per page'}
       paginationTotalRecorsMessage={'result'}
       noDataComponent={
         <EmptyDataTable
-          isLoading={false}
+          isLoading={isFetching}
+          error={isError && error.message}
           image={EmptyDataImage}
           heading={t('messages.selectAnAccountForShippingAddress')}
           description={''}

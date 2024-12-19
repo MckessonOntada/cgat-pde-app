@@ -43,7 +43,7 @@ export const OrderProvider = ({ children }) => {
     const params = {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
-      sortBy: sortConfig.sortBy || 'name',
+      sortBy: sortConfig.sortBy || 'id',
       sortOrder: sortConfig.sortOrder || 'asc'
     };
 
