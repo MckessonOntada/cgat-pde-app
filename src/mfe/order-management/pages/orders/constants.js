@@ -3,14 +3,14 @@ export const breadcrumbItems = [{ label: 'Dashboard', url: '/' }, { label: 'Mana
 export const getTabs = (t) => [
   {
     id: 1,
-    configName: t('labels.tabs.pendingSubmission'),
+    configName: 'PENDING SUBMISSION',
     isActive: true,
     sequence: 1,
     labelForMobile: 'PENDING SUBMISSION'
   },
   {
     id: 2,
-    configName: t('labels.tabs.submitted'),
+    configName: 'SUBMITTED',
     isActive: false,
     sequence: 2,
     labelForMobile: 'SUBMITTED'

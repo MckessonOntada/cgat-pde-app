@@ -16,9 +16,9 @@ const INITIAL_SORT_STATE = {
 };
 
 const INITIAL_PAGINATION_CONFIG = {
-  total: 0,
+  totalElements: 0,
   pageSize: 8,
-  pages: 0,
+  totalPages: 0,
   pageNumber: 1
 };
 
@@ -41,7 +41,8 @@ export const TherapyProvider = ({ children }) => {
       pageSize: paginationConfig.pageSize,
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       ...(filterConfig?.salesOrg && filterConfig?.salesOrg.length > 0 && { salesOrg: [...filterConfig.salesOrg] }),
-      ...(filterConfig?.customerIdentifier && filterConfig?.customerIdentifier.length > 0 && { customerIdentifier: [...filterConfig.customerIdentifier] }),
+      ...(filterConfig?.customerIdentifier &&
+        filterConfig?.customerIdentifier.length > 0 && { customerIdentifier: [...filterConfig.customerIdentifier] }),
 
       ...(sortConfig?.sortBy && { sortBy: sortConfig.sortBy }),
       ...(sortConfig?.sortOrder && { sortBy: sortConfig.sortOrder })
@@ -57,8 +58,8 @@ export const TherapyProvider = ({ children }) => {
   }, []);
 
   const {
-    isLoading,
-    isError,
+    isFetching,
+    error,
     data = {},
     refetch: refreshData
   } = useQuery({
@@ -99,8 +100,8 @@ export const TherapyProvider = ({ children }) => {
   const ctxValue = React.useMemo(
     () => ({
       data: data.content || [],
-      isLoading,
-      isError,
+      isFetching,
+      error,
       filterConfig,
       paginationConfig,
       setPageNumber,
@@ -109,7 +110,7 @@ export const TherapyProvider = ({ children }) => {
       clearFilters,
       refreshData
     }),
-    [updateFilterState, clearFilters, isLoading, isError, data]
+    [updateFilterState, clearFilters, isFetching, error, data]
   );
   return <TherapyContext.Provider value={ctxValue}>{children}</TherapyContext.Provider>;
 };
