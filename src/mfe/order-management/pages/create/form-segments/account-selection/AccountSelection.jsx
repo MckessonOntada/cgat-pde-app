@@ -172,6 +172,7 @@ const AccountSelection = () => {
                         label={' '}
                         isMultiSelect={false}
                         placeholder={'Select Account'}
+                        value={selectedAccount?.accountNumber || ''}
                         onChange={(val) => setSelectedAccount(accountsListData.content?.filter((acc) => acc.accountNumber === val)[0])}
                         options={accountListOptions}
                         variant={'async'}
