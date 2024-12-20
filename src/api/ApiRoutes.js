@@ -1,6 +1,9 @@
 import AuthUtils from '@src/util/AuthUtils';
+
+//import { MAIN_BASE_URL, USERMANAGEMENT_SERVICE_BASE_URL, ORDER_MANAGEMENT_SERVICE_BASE_URL } from '@src/config/AppConfig';
+
 import { MAIN_BASE_URL, USERMANAGEMENT_SERVICE_BASE_URL, ORDERMANAGEMENT_SERVICE_BASE_URL } from '@src/config/AppConfig';
-//import { MAIN_BASE_URL, ORDERMANAGEMENT_SERVICE_BASE_URL, USERMANAGEMENT_SERVICE_BASE_URL } from '@src/config/AppConfig';
+
 
 const constructMainAppUrl = (uri) => `${MAIN_BASE_URL}${uri}`;
 
@@ -15,6 +18,9 @@ const constructUserManagementServicePublicUrl = (uri) => {
 };
 
 const constructOrderManagementServiceUrl = (uri) => {
+  //const practiceId = AuthUtils.getPracticeId();
+  //return `${ORDER_MANAGEMENT_SERVICE_BASE_URL}api/practices/${practiceId}/${uri}`;
+
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const practiceId = AuthUtils.getPracticeId();
   return `${ORDERMANAGEMENT_SERVICE_BASE_URL}api/practices/${isSystemAdminView ? 1 : practiceId}/${uri}`;
@@ -39,6 +45,9 @@ const ApiRoutes = Object.freeze({
   PAY_TO_ACCOUNTS: constructUserManagementServiceUrl('users/current/paytoaccounts'),
   PUBLIC_ACCOUNTS: constructUserManagementServicePublicUrl('accounts'),
   ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`),
+  INVOICES_CREDITS_LISTING: (accountNumber, filterCredits) => constructOrderManagementServiceUrl(`account/${accountNumber}/open-invoices?filterCredits=${filterCredits}`),
+  PENDING_PAYMENTS_LISTING: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/payments/pending`),
+  PAYMENT_HISTORY_LISTING: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/payments/history`),
   ORDERS: constructOrderManagementServiceUrl('orders'),
   APPROVER_GROUP: () => constructOrderManagementServiceUrl(`approver-group`),
   GET_OPEN_INVOICE_BALANCES: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/open-invoices/balances`),

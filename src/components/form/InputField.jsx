@@ -2,6 +2,7 @@ import React from 'react';
 import { InputField as BaseInputField, Label, TextError, Required } from '@mckesson/mcp-component-library';
 
 export default function InputField(props) {
+
   const { name, value = '', label, placeholder, onChange, error, onBlur = () => {}, isRequired, ...rest } = props;
 
   return (

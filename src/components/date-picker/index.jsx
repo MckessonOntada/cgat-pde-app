@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './DateRangePicker.module.scss';
 
-const DateRangePicker = ({ onRangeChange, dateRange }) => {
+const DateRangePicker = ({ onRangeChange, dateRange, fieldlabel }) => {
   const { t } = useTranslate();
   const [startDate, setStartDate] = React.useState(dateRange?.[0] || '');
   const [endDate, setEndDate] = React.useState(dateRange?.[0] || '');
@@ -29,11 +29,11 @@ const DateRangePicker = ({ onRangeChange, dateRange }) => {
         <legend></legend>
         <div className={styles.controlWrapper}>
           <div className={styles.control}>
-            <label htmlFor="start-date">Start Date:</label>
+            <label htmlFor="start-date">{fieldlabel.startDate ? `${fieldlabel.startDate}:` :'not Date:'}</label>
             <input id="start-date" type="date" value={startDate} onChange={handleStartDateChange} max={endDate || undefined} />
           </div>
           <div className={styles.control}>
-            <label htmlFor="end-date">End Date:</label>
+            <label htmlFor="end-date">{fieldlabel.endDate ? `${fieldlabel.startDate}:` :'End Date:'}</label>
             <input id="end-date" type="date" value={endDate} onChange={handleEndDateChange} min={startDate || undefined} />
           </div>
         </div>
