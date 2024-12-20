@@ -5,7 +5,7 @@ import TherapyDetails from './TherapyDetails';
 import FloatingDrawer from '@src/components/floating-drawer';
 import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import TherapyDataTable from './TherapyDataTable';
 import { useTherapy } from '../../../../context/TherapyContext';
 import { FormList } from '../Constants';
@@ -13,15 +13,13 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 import PageHeader from '@src/components/pageHeader';
 import CommonFilters from '@src/components/Filters';
 import { useMutation } from 'react-query';
-import { routesConfig } from '@src/mfe/order-management/routes/constants';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import ApiRoutes from '@src/api/ApiRoutes';
+import OrderService from '@src/api/commonService/OrderService';
 
 function TherapySelection() {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const [selectedRowId, setSelectedRowId] = useState(null);
+  const [therapy, setTherapy] = useState(null);
   const { clearFilters, applyFilters } = useTherapy();
   const searchParams = new URLSearchParams(location.search);
   const therapyDetails = searchParams.get('therapy-details');
@@ -34,9 +32,18 @@ function TherapySelection() {
     });
   };
 
-  const SALES_ORGANIZATIONS = ['ORG1', 'MPB', 'US East', 'US West', 'Global Health', 'EMEA', 'APAC', 'LATAM', 'Canada', 'Retail Division', 'Wholesale Division'].map((i) => ({ label: i, value: i.replace(' ', '_').toLowerCase() }));
-
-  const CUSTOMER_INDICATORS = ['Preferred Customer', 'New Customer', 'VIP Customer', 'Loyalty Member', 'Inactive Customer', 'High-Value Customer', 'Discount Eligible', 'First-Time Buyer', 'Recurring Buyer', 'Potential Lead'].map((i) => ({
+  const CUSTOMER_INDICATORS = [
+    'Preferred Customer',
+    'New Customer',
+    'VIP Customer',
+    'Loyalty Member',
+    'Inactive Customer',
+    'High-Value Customer',
+    'Discount Eligible',
+    'First-Time Buyer',
+    'Recurring Buyer',
+    'Potential Lead'
+  ].map((i) => ({
     label: i,
     value: i.replace(' ', '_').toLowerCase()
   }));
@@ -54,28 +61,29 @@ function TherapySelection() {
         type: 'multiSelectDropdown',
         name: 'salesOrg',
         label: t('labels.salesOrganization'),
-        options: SALES_ORGANIZATIONS
+        options: [
+          { label: 'MPB', value: 'so76' },
+          { label: 'Specialty', value: 1000 },
+          { label: '3PL', value: 1100 }
+        ]
       }
     );
 
     return config;
   }, []);
 
-  const { mutate } = useMutation(
-    async (data) => {
-      const payload = {};
-      const url = `${ApiRoutes.ORDER}/POST_URL`;
-      const res = await HttpResourceService.callRest(`${url}`, httpVerb.POST, payload);
-      return res;
-    },
-    {
-      onSuccess: ({ orderId }) => navigate(`../${orderId}/accounts`),
-      onError: console.log
-    }
-  );
+  const { mutate } = useMutation(async (data) => OrderService.createOrder(data), {
+    onSuccess: ({ orderId }) => navigate(`../${orderId}/accounts`),
+    onError: console.log
+  });
 
   const handleOnSubmit = () => {
-    mutate();
+    if (therapy) {
+      const payload = {
+        id: therapy
+      };
+      mutate(payload);
+    }
   };
 
   const handleOnBackButtonClick = () => {
@@ -93,7 +101,12 @@ function TherapySelection() {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackButtonClick} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={handleOnBackButtonClick}
+          size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
@@ -107,9 +120,14 @@ function TherapySelection() {
           <div className="MCP-panel-container">
             <ModuleHeader heading={<Heading as="h2">{t('labels.therapySelection')}</Heading>} />
             <div className="MCP-panel-container">
-              <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={additionalFiltersConfig} searchPlaceholder={t('userManagement.searchFilter.label')} />
+              <CommonFilters
+                onApplyFilters={applyFilters}
+                onClearFilters={clearFilters}
+                additionalFilters={additionalFiltersConfig}
+                searchPlaceholder={t('controls.placeholder.therepySelection.search')}
+              />
             </div>
-            <TherapyDataTable selectedRowId={selectedRowId} setSelectedRowId={setSelectedRowId} />
+            <TherapyDataTable therapy={therapy} onChange={setTherapy} />
           </div>
           <ModuleHeader
             controls={
@@ -117,7 +135,7 @@ function TherapySelection() {
                 <Button size="md" variant="secondary" onClick={handleOnCancel}>
                   {t('captions.btnCancel')}
                 </Button>
-                <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit} disabled={!selectedRowId}>
+                <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit} disabled={!therapy}>
                   {t('captions.btnSaveAndContinue')}
                 </Button>
               </div>

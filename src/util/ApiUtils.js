@@ -15,7 +15,7 @@ export const handleApiError = (errorData, setAlert) => {
   if (!message) {
     return 'errors.default';
   }
-
-  const keyMatch = message.match(/'(.+?)'/);
-  return keyMatch ? `errors.${keyMatch[1]}` : 'errors.default';
+  const hasSpecialChars = /[:']/g.test(message);
+  const keyMatch = hasSpecialChars ? message.match(/'(.+?)'/) : message;
+  return keyMatch ? (hasSpecialChars ? `errors.${keyMatch[1]}` : `errors.${keyMatch}`) : 'errors.default';
 };

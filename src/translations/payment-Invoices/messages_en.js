@@ -1,4 +1,26 @@
 export const PaymentInvoicesEN = {
+  // Account Search
+  'paymentInvoices.accountSearch.applyBtn': 'Apply',
+  'paymentInvoices.accountSearch.setAsDefaultBtn': 'Set as Default',
+  'paymentInvoices.getAccountsAPI.error': 'Error fetching accounts list.',
+  'paymentInvoices.setDefaultAccountAPI.success': 'Default account set successfully.',
+  'paymentInvoices.setDefaultAccountAPI.error': 'Error setting default account.',
+  // Metrics Card
+  'paymentInvoices.metrics.totalDebitBalance': 'Total Debit Balance',
+  'paymentInvoices.metrics.totalCreditBalance': 'Total Credit Balance',
+  'paymentInvoices.metrics.pastDueBalance': 'Past Due Balance',
+  'paymentInvoices.metrics.totalDebitBalance.tooltipText':
+    'Summation of all past due & future due invoices, basically the summation of all the outstanding invoices as of today.',
+  'paymentInvoices.metrics.totalCreditBalance.tooltipText':
+    'Summation of all open credits currently available to use towards open invoices.',
+  'paymentInvoices.metrics.pastDueBalance.tooltipText': 'Summation of all past due invoices (debit only) as of current date.',
+  // Balance Card
+  'paymentInvoices.balanceCard.1_30_DAYS_OVERDUE': '1-30 days over',
+  'paymentInvoices.balanceCard.31_60_DAYS_OVERDUE': '31-60 days over',
+  'paymentInvoices.balanceCard.61_90_DAYS_OVERDUE': '61-90 days over',
+  'paymentInvoices.balanceCard.PLUS_91_DAYS_OVERDUE': '91+ days over',
+  'paymentInvoices.balanceCard.payNowBtn': 'Pay Now',
+  'paymentInvoices.balanceAPI.error': 'Error fetching open invoices balance.',
   // Payment History
   'paymentInvoices.history.table.confirmationNumber': 'Confirmation No.',
   'paymentInvoices.history.table.purchaseOrderNumber': 'Purchase Order Number',

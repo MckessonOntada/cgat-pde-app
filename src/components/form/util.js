@@ -1,9 +1,22 @@
 import US_STATE_CITY from '@src/assets/data/US_States_and_Cities.json';
 
-export const getNestedValue = (obj, fieldName) => {
+
+//TODO: fix me - EKTA
+export const getNestedValuePayment = (obj, fieldName) => {
   const keys = fieldName?.split('.');
   return keys.reduce((acc, key) => (acc ? acc[key] : undefined), obj);
 };
+
+export function getNestedValue(obj, path, defaultValue = undefined) {
+  // the regex will de structure the error format (Ex: name.address.line1 or name[0].value)
+  const pathArray = path.replace(/\[(\w+)\]/g, '.$1').split('.');
+  return pathArray.reduce((acc, key) => {
+    if (acc && acc[key] !== undefined) {
+      return acc[key];
+    }
+    return defaultValue;
+  }, obj);
+}
 
 export const US_STATES_CITIES = () => {
   const _options = [];

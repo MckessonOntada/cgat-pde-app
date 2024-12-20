@@ -84,6 +84,18 @@
   }
 }
 
+.variant-table-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-02);
+  color: var(--brand-color-black);
+
+  &.icon {
+    fill: var(--brand-color-black)
+  }
+}
+
 .controls {
   justify-content: flex-start;
   display: flex;
@@ -301,14 +313,20 @@
   height: auto;
   gap: var(--spacing-04);
   padding: var(--spacing-04);
-  background-color: var(--brand-color-general-white);
   border: 1px solid var(--brand-color-patient-primary-3);
   border-radius: var(--brand-border-radius--8);
   background-color: var(--brand-color-background-white);
-  width: 100%;
+}
+
+.MCP-sect {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacing-04);
 }
 
 .MCP-table-link {
+  display: inline-flex;
   text-decoration: none;
   color: var(--brand-color-text-blue);
   font-size: var(--brand-font-size--default);
@@ -375,6 +393,11 @@
   color: var(--brand-color-primary-blue);
 }
 
+.agreement-checkbox-control,
+.agreement-checkbox-control legend {
+  font-size: var(--brand-font-size--default);
+}
+
 [class*="Badge-module"] {
   white-space: nowrap;
   display: inline-block;
@@ -419,5 +442,23 @@
   border-radius: 8px;
   border: 1px solid #bac5cc;
   display: flex;
+  align-items: center; 
+}
+
+.selected-item-alert {
+  display: flex;
+  margin-block: var(--spacing-02);
+  padding: var(--spacing-01);
+  border-radius: var(--brand-border-radius--3);
+  justify-content: space-between;
+  background-color: var(--brand-color-patient-primary-1);
+  padding: var(--spacing-02);
+  padding-inline: var(--spacing-04);
   align-items: center;
 }
+
+.selected-item-text {
+  font-size: var(--brand-font-size--large) !important;
+}
+
+ 

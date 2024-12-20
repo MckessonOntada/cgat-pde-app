@@ -52,7 +52,7 @@ const OrgDetailsFormSegment = () => {
         <Field name="contactPerson.middleName" label={t('orgManagement.create_org.inputLabel.middle_name')} placeholder=" " component={Components['input']} maxLength={50} />
         <Field name="contactPerson.lastName" label={t('orgManagement.create_org.inputLabel.last_name')} placeholder=" " isRequired component={Components['input']} maxLength={50} />
         <Field name="contact.email" label={t('orgManagement.create_org.inputLabel.email')} placeholder=" " isRequired component={Components['input']} maxLength={40} />
-        <Field name="contact.phone" label={t('orgManagement.create_org.inputLabel.phone_no')} component={Components['phoneInput']} className="phoneInput" placeholder=" " isRequired />
+        <Field name="contact.phone" label={t('orgManagement.create_org.inputLabel.phone_no')} component={Components['phoneInput']} placeholder=" " isRequired />
         <Field name="contact.fax" label={t('orgManagement.create_org.inputLabel.fax')} placeholder=" " component={Components['input']} maxLength={15} />
       </div>
 

@@ -1,0 +1,138 @@
+@use "@src/assets/styles/abstracts/mixins";
+.label-text {
+  font-size: var(--brand-font-size--default);
+  font-weight: var(--brand-font-weight-600);
+  line-height: var(--brand-line-height--x-large);
+
+  white-space: nowrap;
+  text-wrap: wrap;
+  word-break: break-word;
+}
+
+.approver-group-labelWrap {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-03);
+}
+
+.attribute-category {
+  margin-bottom: var(--spacing-01);
+}
+
+.attribute-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  column-gap: var(--spacing-03);
+  row-gap: 0;
+  align-items: center;
+  @include mixins.respond(md) {
+    grid-template-columns: repeat(2, 1fr); // Medium screens
+  }
+
+  @include mixins.respond(lg) {
+    grid-template-columns: repeat(3, 1fr); // Large screens
+  }
+}
+
+.attribute-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-02) var(--spacing-02) var(--spacing-02) 0px;
+  position: relative;
+
+  // Add border as divider
+  @include mixins.respond(md) {
+    &:not(:nth-child(2n)):after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background-color: var(--brand-color-background-grey);
+    }
+  }
+
+  @include mixins.respond(lg) {
+    &:not(:nth-child(3n)):after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background-color: var(--brand-color-background-grey);
+    }
+    &:nth-child(3n):after {
+      background-color: var(--brand-color-background-white);
+    }
+  }
+  &:last-child::after {
+    display: none;
+  }
+}
+
+.approver-user-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: var(--spacing-03);
+  row-gap: 0;
+  align-items: center;
+  @include mixins.respond(md) {
+    grid-template-columns: repeat(4, 1fr); // Medium screens
+  }
+
+  @include mixins.respond(lg) {
+    grid-template-columns: repeat(6, 1fr); // Large screens
+  }
+}
+
+.approver-user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-02) var(--spacing-02) var(--spacing-02) 0px;
+  position: relative;
+  margin-bottom: var(--spacing-04);
+
+  @include mixins.respond(sm) {
+    &:not(:nth-child(2n)):after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background-color: var(--brand-color-background-grey);
+    }
+  }
+
+  // Add border as divider
+  @include mixins.respond(md) {
+    &:not(:nth-child(4n)):after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background-color: var(--brand-color-background-grey);
+    }
+  }
+
+  @include mixins.respond(lg) {
+    &:not(:nth-child(6n)):after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background-color: var(--brand-color-background-grey);
+    }
+    &:nth-child(6n):after {
+      background-color: var(--brand-color-background-white);
+    }
+  }
+}

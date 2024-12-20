@@ -1,21 +1,14 @@
 import React, { useState } from 'react';
 import Routes from './routes/Routes';
 import { Outlet } from 'react-router-dom';
-import { OrderProvider } from './context/OrderContext';
 
 const OrderManagement = () => {
-    return (
-        <div>
-            <OrderProvider>
-                <Routes />
-                <Outlet />
-            </OrderProvider>
-        </div>
-    )
-}
+  return (
+    <div>
+      <Routes />
+      <Outlet />
+    </div>
+  );
+};
 
 export default OrderManagement;
-
-
-
-

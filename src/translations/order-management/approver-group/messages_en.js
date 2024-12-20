@@ -18,8 +18,11 @@ export const ApproverManagementEN = {
   'approvergroup.table.action': 'Action',
   'approvergroup.table.action.delete': 'Delete',
   'approvergroup.button.deactivate': 'Deactivate',
+  'approvergroup.button.activate': 'Activate',
   'approvergroup.empty_table.description': 'You need to add Approver Groups to see data in this table.',
   'approvergroup.confirmationmessage': 'Confirmation message',
+  'approvergroup.confirmationmessage.message': 'Are you sure you wish to Deactivate this Approver Group ?',
+  'approvergroup.confirmationmessage.activatemessage': 'Are you sure you wish to Activate this Approver Group ?',
   'approvergroup.button.edit': 'Edit',
   'approvergroup.button.next': 'Next',
   'approvergroup.button.cancel': 'Cancel',
@@ -43,17 +46,35 @@ export const ApproverManagementEN = {
   'approvergroup.userrole': 'User Role',
 
   'approvergroup.create.validation.approvergroupname_required': 'Approver Group Name is required',
-  'approvergroup.create.validation.approverattributre_required': 'Attribute details are required.',
+  'approvergroup.create.validation.approvergroupname': 'Approver Group must only contain alphabets.',
+
+  'approvergroup.create.validation.approverattribute_required': 'Attribute is required.',
   'approvergroup.create.validation.approveruser_required': 'User is required.',
   'approvergroup.create.validation.approvergroupname_min_max': 'Approver Group Name  must be between 2 and 50 characters.',
+  'approvergroup.create.validation.therapy_required': 'Therapy is required.',
+  'approvergroup.create.validation.price_required': 'Amount greater than is required.',
+  'approvergroup.create.validation.price': 'Amount greater than must only contain numbers and greater than 0.',
+  'approvergroup.create.validation.account_required': 'Account is required.',
+  'approvergroup.create.validation.approveruser_required': 'Approver Users required.',
+  'approvergroup.create.validation.user_required': 'User Name or User Role required.',
 
   'approvergroup.create.option.please_select': 'Please Select',
+  'approvergroup.selectuserradio': 'Please select one option',
 
-  'errors.user_email_key': 'Email ID already exists in the System.',
-  'errors.user_phone_key': 'Phone number already exists.',
+  'approvergroup.view.header': 'Approver Group View Page',
+  'approvergroup.view.subheader.group_details': 'Group Details',
+  'approvergroup.view.subheader.group_name': 'Group Name:',
+  'approvergroup.view.subheader.group_created_by': 'Created By:',
+  'approvergroup.view.subheader.group_created_on': 'Created On:',
+  'approvergroup.view.subheader.attributes': 'Attributes',
+  'approvergroup.view.subheader.manage_treatment_center': 'Approver User List',
+
+  'errors.approverGroup_index_name_1_practiceId_1': 'Approver group name already exists in the System.',
   'errors.default': 'An unexpected error occurred.',
 
   'approvergroup.messages.approvergroup_deactivate_success': 'Approver Group has been Deactivated successfully.',
   'approvergroup.messages.approvergroup_deactivate_failure': 'Failed to Deactivate the Approver Group.',
+  'approvergroup.messages.approvergroup_activate_success': 'Approver Group has been Activated successfully.',
+  'approvergroup.messages.approvergroup_activate_failure': 'Failed to Activate the Approver Group.',
   'approvergroup.messages.approvergroup_create_success': 'Approver Group has been created successfully.'
 };
