@@ -45,6 +45,7 @@ export const PaymentHistoryProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { showSnackbar } = useSnackbar();
   const { selectedAccount } = useAccountContext();
+  const [actualData, setActualData] = useState([]);
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
@@ -55,7 +56,7 @@ export const PaymentHistoryProvider = ({ children }) => {
   };
 
   const filterData = (filters) => {
-    let _data = [...[], ...unSlicedData];
+    let _data = [...[], ...actualData];
     let _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery
         ? item.confirmationNo?.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
@@ -80,10 +81,14 @@ export const PaymentHistoryProvider = ({ children }) => {
       totalElements: _modifiedData.length
     }));
     setData(_modifiedData.slice(startIndex, endIndex));
+    setUnSlicedData(_modifiedData);
   };
 
   useEffect(() => {
     filterData(filterConfig);
+    if (JSON.stringify(sortConfig) !== JSON.stringify(INITIAL_SORT_STATE)) {
+      sortData(sortConfig);
+    }
   }, [filterConfig, paginationConfig.pageNumber]);
 
   const clearFilters = () => {
@@ -94,7 +99,7 @@ export const PaymentHistoryProvider = ({ children }) => {
     queryKey: ['paymentHistorylisting', selectedAccount?.id],
     queryFn: async () => {
       if (!selectedAccount?.id) return;
-      const url = `${ApiRoutes.PAYMENT_HISTORY_LISTING(selectedAccount?.id, false)}`;
+      const url = `${ApiRoutes.PAYMENT_HISTORY_LISTING(selectedAccount?.id)}`;
       const payload = {
         companyCode: selectedAccount?.companyCode,
         salesOrg: selectedAccount?.salesOrg,
@@ -108,6 +113,7 @@ export const PaymentHistoryProvider = ({ children }) => {
         const endIndex = startIndex + paginationConfig.pageSize;
         setData(res.data?.paymentDetails.slice(startIndex, endIndex));
         setUnSlicedData(res.data?.paymentDetails);
+        setActualData(res.data?.paymentDetails);
         setPaginationConfig((state) => ({
           ...state,
           totalPages: Math.ceil(res.data?.paymentDetails.length / paginationConfig.pageSize),
@@ -124,11 +130,14 @@ export const PaymentHistoryProvider = ({ children }) => {
 
   const applySort = (newSortConfig) => {
     setSortConfig(newSortConfig);
-    sortData(newSortConfig);
+    setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
+    if (paginationConfig.pageNumber === 1) {
+      sortData(newSortConfig);
+    }
   };
 
   const sortData = (newSortConfig) => {
-    let _data = [...[], ...data];
+    let _data = [...[], ...unSlicedData];
 
     let _modifiedData = _data.sort((a, b) => {
       const valA = a[newSortConfig.sortBy];
@@ -161,7 +170,7 @@ export const PaymentHistoryProvider = ({ children }) => {
 
   const contextValue = {
     data: data || [],
-    actualData: unSlicedData || [],
+    actualData: actualData || [],
     isFetching,
     isError,
     filterConfig,

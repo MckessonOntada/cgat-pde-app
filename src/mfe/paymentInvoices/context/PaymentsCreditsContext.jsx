@@ -38,6 +38,7 @@ const INITIAL_PAGINATION_STATE = {
 export const PaymentsCreditsProvider = ({ children }) => {
   const [data, setData] = useState([]);
   const [unSlicedData, setUnSlicedData] = useState([]);
+  const [actualData, setActualData] = useState([]);
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
@@ -59,7 +60,7 @@ export const PaymentsCreditsProvider = ({ children }) => {
       await refetch();
       setPreviousFilterConfig(filters);
     }
-    let _data = [...[], ...unSlicedData];
+    let _data = [...[], ...actualData];
     let _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery
         ? item.billNumber?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase())
@@ -76,6 +77,7 @@ export const PaymentsCreditsProvider = ({ children }) => {
       totalElements: _modifiedData.length
     }));
     setData(_modifiedData.slice(startIndex, endIndex));
+    setUnSlicedData(_modifiedData);
   };
 
   const { isFetching, isError, refetch } = useQuery(
@@ -97,6 +99,7 @@ export const PaymentsCreditsProvider = ({ children }) => {
         const endIndex = startIndex + paginationConfig.pageSize;
         setData(res.data?.openInvoices.slice(startIndex, endIndex));
         setUnSlicedData(res.data?.openInvoices);
+        setActualData(res.data?.openInvoices);
         setPaginationConfig((state) => ({
           ...state,
           totalPages: Math.ceil(res.data?.openInvoices.length / paginationConfig.pageSize),
@@ -113,6 +116,9 @@ export const PaymentsCreditsProvider = ({ children }) => {
   );
   useEffect(() => {
     filterData(filterConfig);
+    if (JSON.stringify(sortConfig) !== JSON.stringify(INITIAL_SORT_STATE)) {
+      sortData(sortConfig);
+    }
   }, [filterConfig, paginationConfig.pageNumber]);
 
   const clearFilters = () => {
@@ -122,11 +128,14 @@ export const PaymentsCreditsProvider = ({ children }) => {
 
   const applySort = (newSortConfig) => {
     setSortConfig(newSortConfig);
-    sortData(newSortConfig);
+    setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
+    if (paginationConfig.pageNumber === 1) {
+      sortData(newSortConfig);
+    }
   };
 
   const sortData = (newSortConfig) => {
-    let _data = [...[], ...data];
+    let _data = [...[], ...unSlicedData];
 
     let _modifiedData = _data.sort((a, b) => {
       const valA = a[newSortConfig.sortBy];
@@ -159,7 +168,7 @@ export const PaymentsCreditsProvider = ({ children }) => {
 
   const contextValue = {
     data: data || [],
-    actualData: unSlicedData || [],
+    actualData: actualData || [],
     isFetching,
     isError,
     filterConfig,

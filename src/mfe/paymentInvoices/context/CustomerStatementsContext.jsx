@@ -45,6 +45,7 @@ export const CustomerStatementsProvider = ({ children }) => {
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const { showSnackbar } = useSnackbar();
   const { selectedAccount } = useAccountContext();
+  const [actualData, setActualData] = useState([]);
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
@@ -59,7 +60,7 @@ export const CustomerStatementsProvider = ({ children }) => {
       await refetch();
       setPreviousFilterConfig(filters);
     }
-    let _data = [...[], ...unSlicedData];
+    let _data = [...[], ...actualData];
     let _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery
         ? item.docNo?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
@@ -79,6 +80,7 @@ export const CustomerStatementsProvider = ({ children }) => {
       totalElements: _modifiedData.length
     }));
     setData(_modifiedData.slice(startIndex, endIndex));
+    setUnSlicedData(_modifiedData);
   };
 
   const { isFetching, isError, data1, refetch } = useQuery({
@@ -90,10 +92,10 @@ export const CustomerStatementsProvider = ({ children }) => {
         companyCode: selectedAccount?.companyCode,
         salesOrg: selectedAccount?.salesOrg,
         payerAccountNumber: selectedAccount?.accountNumber,
-        // dateFrom: '2024-12-20',
-        // dateTo: '2024-12-20',
-        dateFrom: dayjs().subtract(180, 'day').format('DD/MM/YYYY'),
-        dateTo: dayjs().format('DD/MM/YYYY'),
+        dateFrom: '2024-12-20',
+        dateTo: '2024-12-20',
+        // dateFrom: dayjs().subtract(180, 'day').format('DD/MM/YYYY'),
+        // dateTo: dayjs().format('DD/MM/YYYY'),
         validDateRange: true
       };
 
@@ -103,6 +105,7 @@ export const CustomerStatementsProvider = ({ children }) => {
         const endIndex = startIndex + paginationConfig.pageSize;
         setData(res.data?.statements.slice(startIndex, endIndex));
         setUnSlicedData(res.data?.statements);
+        setActualData(res.data?.statements);
         setPaginationConfig((state) => ({
           ...state,
           totalPages: Math.ceil(res.data?.statements.length / paginationConfig.pageSize),
@@ -117,6 +120,9 @@ export const CustomerStatementsProvider = ({ children }) => {
   });
   useEffect(() => {
     filterData(filterConfig);
+    if (JSON.stringify(sortConfig) !== JSON.stringify(INITIAL_SORT_STATE)) {
+      sortData(sortConfig);
+    }
   }, [filterConfig, paginationConfig.pageNumber]);
 
   const clearFilters = () => {
@@ -126,11 +132,14 @@ export const CustomerStatementsProvider = ({ children }) => {
 
   const applySort = (newSortConfig) => {
     setSortConfig(newSortConfig);
-    sortData(newSortConfig);
+    setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
+    if (paginationConfig.pageNumber === 1) {
+      sortData(newSortConfig);
+    }
   };
 
   const sortData = (newSortConfig) => {
-    let _data = [...[], ...data];
+    let _data = [...[], ...unSlicedData];
 
     let _modifiedData = _data.sort((a, b) => {
       const valA = a[newSortConfig.sortBy];
@@ -163,7 +172,7 @@ export const CustomerStatementsProvider = ({ children }) => {
 
   const contextValue = {
     data: data || [],
-    actualData: unSlicedData || [],
+    actualData: actualData || [],
     isFetching,
     isError,
     filterConfig,
