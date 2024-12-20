@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import useSnackbar from '@src/hooks/useSnackbar';
+import { useAccountContext } from './AccountContext';
 
 const PaymentsInvoicesContext = createContext();
 
@@ -42,6 +43,9 @@ export const PaymentsInvoiceProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { showSnackbar } = useSnackbar();
 
+  const { selectedAccount } = useAccountContext();
+  console.log('🚀 ~ PaymentsInvoiceProvider ~ selectedAccount:', selectedAccount);
+
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig((prevFilters) => ({
@@ -60,7 +64,10 @@ export const PaymentsInvoiceProvider = ({ children }) => {
         : true;
       const matchesPaymentStatus = filters?.billNumber?.length > 0 ? filters.billNumber.includes(item.billNumber?.toString()) : true;
       const matchesPaymentMethod = filters?.soldToSite?.length > 0 ? filters.soldToSite.includes(item.soldToSite?.toString()) : true;
-      const matchesDateRange = filters.dateRange?.length === 2 ? new Date(item.dueDate) >= new Date(filters.dateRange[0]) && new Date(item.dueDate) <= new Date(filters.dateRange[1]) : true;
+      const matchesDateRange =
+        filters.dateRange?.length === 2
+          ? new Date(item.dueDate) >= new Date(filters.dateRange[0]) && new Date(item.dueDate) <= new Date(filters.dateRange[1])
+          : true;
 
       return matchesSearchQuery && matchesPaymentStatus && matchesPaymentMethod && matchesDateRange;
     });
@@ -68,19 +75,24 @@ export const PaymentsInvoiceProvider = ({ children }) => {
     const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
     const endIndex = startIndex + paginationConfig.pageSize;
     // Updating the page count and total records
-    setPaginationConfig((state) => ({ ...state, totalPages: Math.ceil(_modifiedData.length / paginationConfig.pageSize), totalElements: _modifiedData.length }));
+    setPaginationConfig((state) => ({
+      ...state,
+      totalPages: Math.ceil(_modifiedData.length / paginationConfig.pageSize),
+      totalElements: _modifiedData.length
+    }));
     setIsLoading(false);
     setData(_modifiedData.slice(startIndex, endIndex));
   };
 
-  const { isFetching } = useQuery({
-    queryKey: ['invoiceListing'],
-    queryFn: async () => {
-      const url = `${ApiRoutes.INVOICES_CREDITS_LISTING('123', false)}`;
+  const { isFetching } = useQuery(
+    ['invoiceListing', selectedAccount?.id],
+    async () => {
+      if (!selectedAccount?.id) return;
+      const url = `${ApiRoutes.INVOICES_CREDITS_LISTING(selectedAccount?.id, false)}`;
       const payload = {
-        companyCode: 'string',
-        salesOrg: 'string',
-        payerAccountNumber: 'string'
+        companyCode: selectedAccount?.companyCode,
+        salesOrg: selectedAccount?.salesOrg,
+        payerAccountNumber: selectedAccount?.accountNumber
       };
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
       if (res.data) {
@@ -88,13 +100,20 @@ export const PaymentsInvoiceProvider = ({ children }) => {
         const endIndex = startIndex + paginationConfig.pageSize;
         setData(res.data?.openInvoices?.slice(startIndex, endIndex));
         setUnSlicedData(res.data?.openInvoices);
-        setPaginationConfig((state) => ({ ...state, totalPages: Math.ceil(res.data?.openInvoices.length / paginationConfig.pageSize), totalElements: res.data?.openInvoices.length }));
+        setPaginationConfig((state) => ({
+          ...state,
+          totalPages: Math.ceil(res.data?.openInvoices.length / paginationConfig.pageSize),
+          totalElements: res.data?.openInvoices.length
+        }));
       }
     },
-    onError: (error) => {
-      showSnackbar({ description: 'Error fetching invoice listing', type: 'error' });
+    {
+      enabled: !!selectedAccount?.id,
+      onError: (error) => {
+        showSnackbar({ description: 'Error fetching invoice listing', type: 'error' });
+      }
     }
-  });
+  );
 
   useEffect(() => {
     filterData(filterConfig);

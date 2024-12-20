@@ -12,7 +12,6 @@ import { PaymentsInvoiceProvider } from './context/PaymentsInvoicesContext';
 import { AccountProvider } from './context/AccountContext';
 import { BalanceProvider } from './context/BalanceContext';
 
-
 const PaymentsInvoices = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -32,33 +31,33 @@ const PaymentsInvoices = () => {
   }, [location.pathname]);
 
   return (
-      <AccountProvider>
-        <PaymentsInvoiceProvider>
-          <div className="MCP-module-wrapper">
-            <ModuleHeader heading={<PageHeader heading={'Payment Invoices'} />} />
-            <RecordDetails />
-            <BalanceProvider>
-              <BalanceDetails />
-            </BalanceProvider>
-            <div className="MCP-module-body">
-              <div id="tablist-container" className="MCP-panel-container">
-                <TabList
-                  options={tabs}
-                  alignment="left"
-                  onTabClick={(e) => {
-                    navigate(e.path);
-                  }}
-                  showShadow={false}
-                  variant={'text'}
-                  useAsButton={true}
-                  aria-label={'record-tab-list'}
-                />
-                <Routes />
-              </div>
+    <AccountProvider>
+      <PaymentsInvoiceProvider>
+        <div className="MCP-module-wrapper">
+          <ModuleHeader heading={<PageHeader heading={'Payment Invoices'} />} />
+          <RecordDetails />
+          <BalanceProvider>
+            <BalanceDetails />
+          </BalanceProvider>
+          <div className="MCP-module-body">
+            <div id="tablist-container" className="MCP-panel-container">
+              <TabList
+                options={tabs}
+                alignment="left"
+                onTabClick={(e) => {
+                  navigate(e.path);
+                }}
+                showShadow={false}
+                variant={'text'}
+                useAsButton={true}
+                aria-label={'record-tab-list'}
+              />
+              <Routes />
             </div>
           </div>
-        </PaymentsInvoiceProvider>
-      </AccountProvider>
+        </div>
+      </PaymentsInvoiceProvider>
+    </AccountProvider>
   );
 };
 

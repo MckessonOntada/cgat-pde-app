@@ -13,9 +13,12 @@ import { PaymentsCreditsProvider } from '../context/PaymentsCreditsContext';
 import Credits from '../pages/credits';
 import { PendingPaymentsProvider } from '../context/PendingPaymentsContext';
 import PendingPayments from '../pages/pendingPayments';
+import { useAccountContext } from '../context/AccountContext';
+import CommonUtils from '@src/util/CommonUtils';
 
 const Routes = () => {
-  return (
+  const { selectedAccount } = useAccountContext();
+  return CommonUtils.isNonEmptyObject(selectedAccount) ? (
     <ReactRoutes>
       <Route index element={<Navigate to={PATHS.invoices}></Navigate>} />
       <Route
@@ -61,7 +64,7 @@ const Routes = () => {
       />
       <Route path={'*'} element={<NotFound />} />
     </ReactRoutes>
-  );
+  ) : null;
 };
 
 export default Routes;
