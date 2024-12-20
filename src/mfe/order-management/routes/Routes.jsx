@@ -10,17 +10,41 @@ import PatientDetails from '../pages/create/form-segments/patient-details';
 import Summary from '../pages/create/form-segments/summary';
 import AdditionalDetails from '../pages/create/form-segments/additional-details';
 import NotFound from '../../../pages/error-pages/NotFound';
+import { TherapyProvider } from '../context/TherapyContext';
+import { OrderProvider } from '../context/OrderContext';
 
 function OrderManagementRoutes() {
   return (
     <Routes>
-      <Route path={routesConfig.index} element={<OrderIndex />} />
-      <Route path={`create-order`} element={<TherapySelection />} />
-      <Route path={`edit-order/:orderId`} element={<TherapySelection />} />
-      <Route path={`:therapyId/account-selection`} element={<AccountSelection />} />
-      <Route path={`:therapyId/:accountId/patient-details`} element={<PatientDetails />} />
-      <Route path={`:therapyId/:accountId/additional-details`} element={<AdditionalDetails />} />
-      <Route path={`:therapyId/:accountId/summary`} element={<Summary />} />
+      <Route
+        path={routesConfig.index}
+        element={
+          <OrderProvider>
+            <OrderIndex />
+          </OrderProvider>
+        }
+      />
+      <Route
+        path={`create-order`}
+        element={
+          <TherapyProvider>
+            <TherapySelection />
+          </TherapyProvider>
+        }
+      />
+      <Route
+        path={`edit-order/:orderId`}
+        element={
+          <TherapyProvider>
+            <TherapySelection />
+          </TherapyProvider>
+        }
+      />
+
+      <Route path={`:orderId/accounts`} element={<AccountSelection />} />
+      <Route path={`:orderId/patient`} element={<PatientDetails />} />
+      <Route path={`:orderId/additional-details`} element={<AdditionalDetails />} />
+      <Route path={`:orderId/summary`} element={<Summary />} />
 
       <Route path={routesConfig.viewDetails} element={<OrderSummary />} />
       <Route path={routesConfig.reviewOrder} element={<div></div>} />

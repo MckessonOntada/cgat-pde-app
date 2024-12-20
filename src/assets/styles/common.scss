@@ -31,21 +31,21 @@
   }
 }
 
-.back-button-control{
+.back-button-control {
   padding: 0px !important; //remove important after component change
 }
 
-.custom-date-range-picker{
-  >div{
-  >div{
-  >div{
-  >div{
-    width: unset;
-    min-width: 160px;
-    flex-grow: 1;
-  }
-  }
-  }
+.custom-date-range-picker {
+  >div {
+    >div {
+      >div {
+        >div {
+          width: unset;
+          min-width: 160px;
+          flex-grow: 1;
+        }
+      }
+    }
   }
 }
 
@@ -71,6 +71,31 @@
     }
   }
 }
+
+.MCP-table-cell {
+  &.radio-button-wrapper {
+    fieldset {
+      div {
+        div {
+          margin-bottom: var(--spacing-04);
+        }
+      }
+    }
+  }
+}
+
+.variant-table-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-02);
+  color: var(--brand-color-black);
+
+  &.icon {
+    fill: var(--brand-color-black)
+  }
+}
+
 .controls {
   justify-content: flex-start;
   display: flex;
@@ -81,6 +106,7 @@
     justify-content: flex-end;
   }
 }
+
 .filter-panel-header {
   display: flex;
   flex-direction: row;
@@ -93,12 +119,14 @@
   display: inline-flex;
   align-items: center;
 }
+
 .filter-controls {
   align-self: flex-end;
   display: flex;
   flex-direction: row;
   gap: var(--spacing-03);
 }
+
 .additional-filters {
   display: flex;
   flex-direction: row;
@@ -111,6 +139,7 @@
   div {
     div:first-of-type {
       height: 3.8rem;
+
       div:first-of-type {
         padding: 14px 7px 8px 0;
       }
@@ -121,24 +150,29 @@
 .MCP-filter-panel {
   .ctrl-search-box {
     flex-grow: 1;
+
     @include mixins.respond(sm) {
       max-width: 460px;
     }
   }
+
   .filter-control-buttons {
     display: flex;
     flex-grow: 1;
     flex-shrink: 0;
     flex-direction: column;
     gap: var(--spacing-04);
+
     @include mixins.respond(md) {
       flex-direction: row;
       align-items: center;
     }
   }
+
   .expanded {
     display: flex;
     flex-direction: column;
+
     .filter-control-buttons {
       @include mixins.respond(md) {
         align-self: flex-start;
@@ -146,23 +180,28 @@
         margin-top: auto;
         margin-bottom: 8px;
       }
+
       align-items: stretch;
     }
   }
+
   .search-box {
     display: flex;
     gap: var(--spacing-03);
-    width:100%
+    width: 100%;
   }
+
   .filter-header {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-04);
+
     @include mixins.respond(md) {
       flex-direction: row;
       justify-content: space-between;
     }
   }
+
   .additional-filters {
     margin-top: var(--spacing-04);
     padding-top: var(--spacing-04);
@@ -177,34 +216,41 @@
     gap: var(--spacing-04);
     align-items: stretch;
     justify-content: space-between;
+
     @include mixins.respond(sm) {
       flex-direction: row;
       align-items: center;
     }
   }
+
   .header-segment {
     display: flex;
     flex-direction: row;
     gap: var(--spacing-04);
     align-items: stretch;
+
     @include mixins.respond(md) {
       display: inline-flex;
       flex-direction: row;
       gap: var(--spacing-04);
       align-items: center;
     }
+
     &.controls {
       flex-direction: column;
       margin-bottom: 0px;
+
       @include mixins.respond(md) {
         margin-bottom: 10px;
       }
+
       @include mixins.respond(lg) {
         margin-bottom: 8px;
       }
-      &.expanded {
-      }
+
+      &.expanded {}
     }
+
     @include mixins.respond(sm) {
       &.controls {
         flex-direction: row;
@@ -212,12 +258,15 @@
       }
     }
   }
+
   .ctrl-search-box {
     flex-grow: 1;
+
     @include mixins.respond(sm) {
       width: 460px;
     }
   }
+
   .filter-controls {
     display: flex;
     flex-direction: column;
@@ -231,19 +280,22 @@
       align-items: center;
     }
   }
-  .filter-segment {
-  }
+
+  .filter-segment {}
+
   .filter-body {
     display: flex;
     align-self: flex-end;
     gap: var(--spacing-04);
     padding-top: var(--spacing-04);
     border-top: 1px solid var(--brand-color-grey-scale-cool-2);
+
     @include mixins.respond(sm) {
       margin-top: var(--spacing-04);
     }
   }
 }
+
 .additional-filters {
   margin-top: var(--spacing-04);
   padding-top: var(--spacing-04);
@@ -261,14 +313,20 @@
   height: auto;
   gap: var(--spacing-04);
   padding: var(--spacing-04);
-  background-color: var(--brand-color-general-white);
   border: 1px solid var(--brand-color-patient-primary-3);
   border-radius: var(--brand-border-radius--8);
   background-color: var(--brand-color-background-white);
-  width: 100%;
+}
+
+.MCP-sect {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacing-04);
 }
 
 .MCP-table-link {
+  display: inline-flex;
   text-decoration: none;
   color: var(--brand-color-text-blue);
   font-size: var(--brand-font-size--default);
@@ -301,12 +359,43 @@
 
 .fieldName {
   color: #767e94; //color const missing
-  font-size: var(--brand-font-size--default);
+  font-size: var(--brand-font-size--small);
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--spacing-02);
 }
 
 .fieldValue {
   font-size: var(--brand-font-size--default);
   font-weight: var(--brand-font-weight-600);
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--spacing-02);
+}
+
+.row-space-between-center {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dull-text {
+  color: var(--brand-color-primary-slate);
+  font-size: var(--brand-font-size--default);
+}
+
+.action-link {
+  font-size: var(--brand-font-size--default);
+  color: var(--brand-color-primary-blue);
+}
+
+.agreement-checkbox-control,
+.agreement-checkbox-control legend {
+  font-size: var(--brand-font-size--default);
 }
 
 [class*="Badge-module"] {
@@ -324,11 +413,11 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.corrected-dropdown{
-  span{
+
+.corrected-dropdown {
+  span {
     font-size: var(--brand-font-size--small);
   }
-
 }
 
 [class^="OktaFooter-module--copyrightContainer-"] {
@@ -353,5 +442,23 @@
   border-radius: 8px;
   border: 1px solid #bac5cc;
   display: flex;
+  align-items: center; 
+}
+
+.selected-item-alert {
+  display: flex;
+  margin-block: var(--spacing-02);
+  padding: var(--spacing-01);
+  border-radius: var(--brand-border-radius--3);
+  justify-content: space-between;
+  background-color: var(--brand-color-patient-primary-1);
+  padding: var(--spacing-02);
+  padding-inline: var(--spacing-04);
   align-items: center;
 }
+
+.selected-item-text {
+  font-size: var(--brand-font-size--large) !important;
+}
+
+ 

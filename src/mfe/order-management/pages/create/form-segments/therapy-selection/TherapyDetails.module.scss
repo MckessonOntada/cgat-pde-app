@@ -25,6 +25,12 @@
         padding: var(--spacing-03);
 
         .detailsPanel {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: var(--spacing-04);
+
             .panelHeading {
                 font-size: var(--brand-font-size--default);
                 font-weight: var(--brand-font-weight-600);

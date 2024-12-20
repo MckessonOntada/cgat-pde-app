@@ -3,11 +3,12 @@ import { ReactComponent as OrderIcon } from '../../assets/svg/bag-circle.svg';
 import { ReactComponent as UserIcon } from '../../assets/svg/user-circle.svg';
 import { ReactComponent as organizationIcon } from '../../assets/svg/organizationIcon.svg';
 import { ReactComponent as ChecklistIcon } from '../../assets/svg/checklist-circle.svg';
+import { ReactComponent as ApproverGroupIcon } from '../../assets/svg/approvergroup_icon.svg';
 import { ReactComponent as CatalogueIcon } from '../../assets/svg/catalogue-circle.svg';
 import { ReactComponent as LinkIcon } from '../../assets/svg/link-circle.svg';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 
-const { USER_MANAGEMENT, ORGANIZATION_MANAGEMENT } = PERMISSIONS_ENUM;
+const { USER_MANAGEMENT, ORGANIZATION_MANAGEMENT, ORDER_MANAGEMENT } = PERMISSIONS_ENUM;
 
 const SYSTEM_ADMIN_CARDS_DATA = [
   {
@@ -29,14 +30,14 @@ const SYSTEM_ADMIN_CARDS_DATA = [
 ];
 
 const CARDS_DATA = [
-  // {
-  //   name: 'ManageOrderConfiguration',
-  //   label: 'manage_order_configuration',
-  //   icon: OrderIcon,
-  //   details: 'efficiently_streamline_user_management_for_seamless_experience',
-  //   path: '/orders',
-  //   permissions: []
-  // },
+  {
+    name: 'ManageOrders',
+    label: 'manage_order_configuration',
+    icon: OrderIcon,
+    details: 'efficiently_streamline_user_management_for_seamless_experience',
+    path: AppRoutes.pathOrderManagement,
+    permissions: ORDER_MANAGEMENT.MANAGE_ORDERS
+  },
   {
     name: 'ManageUsers',
     label: 'manage_users',
@@ -52,6 +53,14 @@ const CARDS_DATA = [
     details: 'role_card_description',
     path: '/organization/roles',
     permissions: USER_MANAGEMENT.MANAGE_ROLES_SCREEN
+  },
+  {
+    name: 'ManageApproverGroups',
+    label: 'manage_approver_groups',
+    icon: ApproverGroupIcon,
+    details: 'approver_management_description',
+    path: AppRoutes.pathApproverManagement,
+    permissions: ORDER_MANAGEMENT.MANAGE_ORDERS // To do - it should be View/Add Approver Group
   }
   // {
   //   name: 'ManageCatalog',

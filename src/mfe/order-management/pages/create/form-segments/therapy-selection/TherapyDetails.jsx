@@ -2,82 +2,79 @@ import React from 'react';
 import styles from './TherapyDetails.module.scss';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useNavigate } from 'react-router-dom';
+import { useQuery } from 'react-query';
+import { Loader, Heading } from '@mckesson/mcp-component-library';
+import OrderService from '@src/api/commonService/OrderService';
 
-const detailsList = [
-  {
-    title: 'Material Details',
-    details: {
-      'Material Description': 'MPB HEMLIBRA 105MG/0.7ML SDV',
-      NDC: 'N50242092201',
-      UDI: 'NA',
-      'Sales Org': 'MPB'
-    }
-  },
-  {
-    title: 'Variant Details',
-    details: {
-      Variant: 'Type A',
-      'Variant Description': 'One to One'
-    }
-  },
-  {
-    title: 'Contract Details',
-    details: {
-      'Contract Number': 630673,
-      'Contract Type': 5,
-      'Contract Type Description': 'Individual',
-      'Contract Valid Form': '1/5/2024',
-      'Contract Valid Till': '12/32/2025',
-      Division: 10,
-      '340b Identifier': 'No'
-    }
-  },
-  {
-    title: 'Pricing Details',
-    details: {
-      'Price Date': '9/23/2024',
-      'Net Price ($)': 850,
-      'Regular Price ($)': '11,754.60',
-      'Contract Price ($)': '$1,000.00',
-      'WAC Price ($)': '11,754.60',
-      'Discounts ($)': 150,
-      '340b Price': 'NA',
-      'Price Unit': 1
-    }
-  }
-];
-
-function TherapyDetails({therapyId, handleOnClose}) {
+function TherapyDetails({ therapyId, onClose }) {
   const { t } = useTranslate();
+  const { isLoading, data: therapyDetails = {} } = useQuery({
+    queryKey: ['order', 'therapy', therapyId],
+    queryFn: async () => OrderService.getTherapyDetailsById(therapyId),
+    enabled: Boolean(therapyId),
+    refetchOnWindowFocus: false
+  });
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
-        <h6>{t('labels.therapyDetails')}</h6>
-        <button onClick={handleOnClose}>
+        <Heading as="h2">{t('labels.therapyDetails')}</Heading>
+        <button onClick={onClose}>
           <IconClose />
         </button>
       </div>
-      <div className={styles.body}>
-        {detailsList.map((detailItem, index) => {
-          return <DetailsPanel {...detailItem} />;
-        })}
-      </div>
+      {isLoading ? <Loader variant="circular" /> : <div className={styles.body}>{therapyDetails && <DetailsPanel details={therapyDetails} />}</div>}
     </div>
   );
 }
 
-function DetailsPanel(props) {
-  const { title, details } = props;
+function DetailsPanel({ details }) {
+  const { t } = useTranslate();
+  const renderDetails = (fields) => fields.map(({ label, value }) => <DetailItem key={label} label={t(label)} value={value} />);
+
+  const generalDetails = [
+    { label: 'labels.therapy.materialNumber', value: details.materialNumber },
+    { label: 'labels.therapy.materialDescription', value: details.materialDescription },
+    { label: 'labels.therapy.ndc', value: details.ndc },
+    { label: 'labels.therapy.strength', value: details.strength },
+    { label: 'labels.therapy.dosage', value: details.dosage },
+    { label: 'labels.therapy.sellingUnitCode', value: details.sellingUnitCode },
+    { label: 'labels.therapy.vendorName', value: details.vendorName },
+    { label: 'labels.therapy.upcCode', value: details.upcCode },
+    { label: 'labels.therapy.dropshipIndicator', value: details.dropshipIndicator },
+    { label: 'labels.therapy.baseUnitOfMeasure', value: details.baseUnitOfMeasure },
+    { label: 'labels.therapy.cgatIdentifier', value: details.cgatIdentifier },
+    { label: 'labels.therapy.productLevelPricing', value: details.productLevelPricing },
+    { label: 'labels.therapy.minimumOrderQuantity', value: details.minimumOrderQuantity }
+  ];
+
+  const configurationDetails = [
+    { label: 'labels.therapy.slotNumber', value: details.slotNumber },
+    { label: 'labels.therapy.patientConsent', value: details.patientConsent }
+  ];
+
   return (
     <div className={styles.detailsPanel}>
-      <p className={styles.panelHeading}>{title}</p>
-      {Object.entries(details).map(([key, value]) => (
-        <div className={styles.detailItem}>
-          <p className={'fieldName'}>{key}</p>
-          <p className={'fieldValue'}>{value}</p>
+      <div>
+        <Heading as="h4">{t('labels.therapy.generalDetails')}</Heading>
+        <div>{renderDetails(generalDetails)}</div>
+      </div>
+      {/* <div>
+        <div className="row-space-between-center">
+          <Heading as="h4">{t('labels.therapy.configuration')}</Heading>
+          <Link className="MCP-table-link">{t('labels.therapy.preview')}</Link>
         </div>
-      ))}
+        <div>{renderDetails(configurationDetails)}</div>
+      </div> */}
+    </div>
+  );
+}
+
+function DetailItem({ label, value }) {
+  return (
+    <div className={styles.detailItem}>
+      <p className="fieldName">{label}</p>
+      <p className="fieldValue">{value}</p>
     </div>
   );
 }

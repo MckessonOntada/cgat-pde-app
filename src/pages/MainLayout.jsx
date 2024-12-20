@@ -16,6 +16,7 @@ import ProtectedRoute from '@src/routes/ProtectedRoute';
 import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 import Role from '@src/mfe/org-management/pages/role';
 import ScrollToTop from '@src/components/scrollToTop/ScrollToTop';
+import ManageApprovers from '@src/mfe/order-management/manageApprovers';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
@@ -85,6 +86,15 @@ function MainLayout() {
                 element={
                   <ProtectedRoute permissions={routePermissionConfig.roles}>
                     <Role />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path={`/approver-group/*`}
+                element={
+                  // To do - permissions should be View/Add Approver Group
+                  <ProtectedRoute permissions={routePermissionConfig.orders}>
+                    <ManageApprovers />
                   </ProtectedRoute>
                 }
               />

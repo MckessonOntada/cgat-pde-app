@@ -1,6 +1,6 @@
 .label-input {
   border: 2px dashed var(--brand-color-primary);
-  padding: var(--spacing-03);
+  padding: var(--spacing-04);
   text-align: center;
   cursor: pointer;
   display: grid;
@@ -8,10 +8,12 @@
   border-radius: var(--brand-border-radius--4);
   gap: var(--spacing-02);
 }
+
 .label-box {
   display: flex;
   padding-bottom: var(--spacing-01);
 }
+
 .label {
   font-size: var(--brand-font-size--small);
   line-height: var(--brand-line-height--large);

@@ -4,10 +4,10 @@ import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
-
 import Navigation from './Navigation';
 import OktaConfigLoader from './OktaConfigLoader';
 import Snackbar from './components/snackBar/Snackbar';
+import Alert from './components/alert/Alert';
 import Modal from './components/modal/Modal';
 
 import { messages } from './translations/messages';
@@ -31,6 +31,7 @@ function App() {
           <BrowserRouter basename={AppRoutes.pathAppBase}>
             <OktaConfigLoader>
               <Snackbar />
+              <Alert />
               <Modal />
               <Navigation />
             </OktaConfigLoader>

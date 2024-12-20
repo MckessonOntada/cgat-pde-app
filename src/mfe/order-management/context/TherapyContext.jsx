@@ -1,70 +1,115 @@
-import React, { createContext, useContext, useState } from 'react';
+import React from 'react';
+import { useQuery } from 'react-query';
+import OrderService from '@src/api/commonService/OrderService';
 
-const initialFilterState = {
+const TherapyContext = React.createContext();
+
+const INITIAL_FILTER_STATE = {
   searchQuery: '',
-  customerIndicators: [],
-  salesOrganization: []
+  salesOrg: [],
+  customerInd: [] //Todo
 };
 
-const initialPageConfig = {
+const INITIAL_SORT_STATE = {
+  sortBy: null,
+  sortOrder: null
+};
+
+const INITIAL_PAGINATION_CONFIG = {
   total: 0,
-  pageSize: 10,
+  pageSize: 8,
   pages: 0,
-  currentPage: 1,
+  pageNumber: 1
 };
-
-const initialDataState = [];
-
-const TherapyContext = createContext();
 
 export const useTherapy = () => {
-  return useContext(TherapyContext);
+  const context = React.useContext(TherapyContext);
+  if (!context) {
+    throw new Error('useTherapy must be used within a Therapy Provider.');
+  }
+  return context;
 };
 
 export const TherapyProvider = ({ children }) => {
-  const [filterState, setFilterState] = useState(initialFilterState);
-  const [pageConfig, _setPageConfig] = useState(initialPageConfig);
-  const [dataState, setDataState] = useState(initialDataState);
+  const [filterConfig, setFilterConfig] = React.useState(INITIAL_FILTER_STATE);
+  const [paginationConfig, setPaginationConfig] = React.useState(INITIAL_PAGINATION_CONFIG);
+  const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);
+
+  const requestParams = React.useMemo(
+    () => ({
+      pageNumber: paginationConfig.pageNumber - 1,
+      pageSize: paginationConfig.pageSize,
+      ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
+      ...(filterConfig?.salesOrg && filterConfig?.salesOrg.length > 0 && { salesOrg: [...filterConfig.salesOrg] }),
+      ...(filterConfig?.customerIdentifier && filterConfig?.customerIdentifier.length > 0 && { customerIdentifier: [...filterConfig.customerIdentifier] }),
+
+      ...(sortConfig?.sortBy && { sortBy: sortConfig.sortBy }),
+      ...(sortConfig?.sortOrder && { sortBy: sortConfig.sortOrder })
+    }),
+    [filterConfig, paginationConfig.pageNumber]
+  );
+
+  const updateFilterState = React.useCallback((field, value) => {
+    setFilterConfig((prevState) => ({
+      ...prevState,
+      [field]: value
+    }));
+  }, []);
+
+  const {
+    isLoading,
+    isError,
+    data = {},
+    refetch: refreshData
+  } = useQuery({
+    queryKey: ['Therapy', requestParams],
+    queryFn: async () => OrderService.getTherapies(requestParams),
+    onSuccess: (result) => {
+      const { totalElements, totalPages } = result;
+
+      setPaginationConfig((prevConfig) => ({
+        ...prevConfig,
+        ...(totalElements && { totalElements }),
+        ...(totalPages && { totalPages })
+      }));
+    },
+    refetchOnWindowFocus: false
+  });
+
+  React.useEffect(() => {
+    refreshData();
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
+
+  const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
 
   const applyFilters = (filters) => {
-    setFilterState((prevFilters) => ({...prevFilters, ...filters}));
+    setPageNumber(1);
+    setFilterConfig({ ...filters });
   };
 
-  const clearFilters = () => {
-    setFilterState({...initialFilterState});
-  }
-
-  const setPageConfig = (state) => {
-    _setPageConfig({...state})
-  }
-
-  const setPageSize = (size) => {
-    _setPageConfig((prevState) => ({ ...prevState, pageSize: size }));
+  const setPageNumber = (pageNumber) => {
+    setPaginationConfig((prevConfig) => ({
+      ...prevConfig,
+      pageNumber
+    }));
   };
 
-  const setCurrentPage = (page) => {
-    _setPageConfig((prevState) => ({ ...prevState, currentPage: page }));
-  };
+  const clearFilters = () => setFilterConfig(INITIAL_FILTER_STATE);
 
-  const setTherapyData = (data) => {
-    setDataState((prevState) => ([...data]));
-  };
-
-  return (
-    <TherapyContext.Provider
-      value={{
-        filterState,
-        pageConfig,
-        dataState,
-        applyFilters,
-        clearFilters,
-        setPageConfig,
-        setPageSize,
-        setCurrentPage,
-        setTherapyData,
-      }}
-    >
-      {children}
-    </TherapyContext.Provider>
+  const ctxValue = React.useMemo(
+    () => ({
+      data: data.content || [],
+      isLoading,
+      isError,
+      filterConfig,
+      paginationConfig,
+      setPageNumber,
+      applySort,
+      applyFilters,
+      clearFilters,
+      refreshData
+    }),
+    [updateFilterState, clearFilters, isLoading, isError, data]
   );
+  return <TherapyContext.Provider value={ctxValue}>{children}</TherapyContext.Provider>;
 };

@@ -1,5 +1,6 @@
 import AuthUtils from '@src/util/AuthUtils';
-import { MAIN_BASE_URL, USERMANAGEMENT_SERVICE_BASE_URL } from '@src/config/AppConfig';
+import { MAIN_BASE_URL, USERMANAGEMENT_SERVICE_BASE_URL, ORDERMANAGEMENT_SERVICE_BASE_URL } from '@src/config/AppConfig';
+//import { MAIN_BASE_URL, ORDERMANAGEMENT_SERVICE_BASE_URL, USERMANAGEMENT_SERVICE_BASE_URL } from '@src/config/AppConfig';
 
 const constructMainAppUrl = (uri) => `${MAIN_BASE_URL}${uri}`;
 
@@ -11,6 +12,12 @@ const constructUserManagementServiceUrl = (uri) => {
 
 const constructUserManagementServicePublicUrl = (uri) => {
   return `${USERMANAGEMENT_SERVICE_BASE_URL}api/${uri}`;
+};
+
+const constructOrderManagementServiceUrl = (uri) => {
+  const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const practiceId = AuthUtils.getPracticeId();
+  return `${ORDERMANAGEMENT_SERVICE_BASE_URL}api/practices/${isSystemAdminView ? 1 : practiceId}/${uri}`;
 };
 
 const ApiRoutes = Object.freeze({
@@ -29,7 +36,11 @@ const ApiRoutes = Object.freeze({
   ORGANIZATIONS: constructUserManagementServiceUrl('practices'),
   PUBLIC_ORGANIZATIONS: constructUserManagementServicePublicUrl('practices'),
   ACCOUNTS: constructUserManagementServiceUrl('accounts'),
-  PUBLIC_ACCOUNTS: constructUserManagementServicePublicUrl('accounts')
+  PUBLIC_ACCOUNTS: constructUserManagementServicePublicUrl('accounts'),
+  ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`),
+  ORDERS: constructOrderManagementServiceUrl('orders'),
+  APPROVER_GROUP: () => constructOrderManagementServiceUrl(`approver-group`),
+  ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`)
 });
 
 export default ApiRoutes;
