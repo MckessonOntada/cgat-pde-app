@@ -216,7 +216,11 @@ const CreateApproverGroup = () => {
                           isRequired
                           component={Components['multiSelectDropdown']}
                           options={localUserData || []}
-                          getUpdatedOptions={setLocalUsersData}
+                          getUpdatedOptions={(values) => {
+                            if (values.length > 0) {
+                              setLocalUsersData(values);
+                            }
+                          }}
                           onRemoveClick={onRemoveUserClick}
                           noSelectedCountMessage={t('approvergroup.create.option.please_select')}
                           pillsLabels={createLabelData(values.approverUsers_augmented)}
