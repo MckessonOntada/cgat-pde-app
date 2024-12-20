@@ -180,16 +180,14 @@ function ApproverGroupDetails() {
               groupData.rules[key] !== undefined &&
               (Array.isArray(groupData.rules[key]) ? groupData.rules[key].length > 0 : groupData.rules[key]) ? (
                 <div key={key} className="MCP-module-body attribute-category">
-                  <div className="subheader-text">{label}</div>
+                  <div className="subheader-text">{t(`rules.${key}`)}</div>
                   <div className="attribute-category">
                     <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 attribute-list">
                       {Array.isArray(groupData.rules[key])
                         ? groupData.rules[key].map((item, idx) => (
                             <div key={idx} className="flex items-center justify-between attribute-item">
                               <div>
-                                <p className={`${key === RuleKeys.USERS || key === RuleKeys.ROLES ? '' : 'to-upper-case'} label-text`}>
-                                  {item[valueKey]}
-                                </p>
+                                <p className="to-upper-case label-text">{item[valueKey]}</p>
                               </div>
                             </div>
                           ))

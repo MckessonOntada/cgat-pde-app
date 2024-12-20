@@ -152,7 +152,9 @@ const CreateApproverGroup = () => {
         </Button>
       </div>
 
-      <ModuleHeader heading={<Heading as="h1">{t('approvergroup.create_approvergroup')}</Heading>} />
+      <ModuleHeader
+        heading={<Heading as="h1">{t(isEditMode ? 'approvergroup.edit.label' : 'approvergroup.create_approvergroup')}</Heading>}
+      />
 
       {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
 
@@ -211,7 +213,7 @@ const CreateApproverGroup = () => {
                         <Field
                           id="approverUsers"
                           name="approverUsers"
-                          label={t('approvergroup.selectaccount')}
+                          label={t('approvergroup.selectuser')}
                           placeholder=" "
                           isRequired
                           component={Components['multiSelectDropdown']}
@@ -230,7 +232,7 @@ const CreateApproverGroup = () => {
               </div>
               <div className={'buttonGroup'}>
                 <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>
-                  {t(isEditMode ? 'approvergroup.button.back' : 'approvergroup.button.cancel')}
+                  {t('approvergroup.button.cancel')}
                 </Button>
 
                 <Button type="submit" size={'md'}>
