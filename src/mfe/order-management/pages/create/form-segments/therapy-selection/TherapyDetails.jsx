@@ -3,25 +3,15 @@ import styles from './TherapyDetails.module.scss';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useQuery } from 'react-query';
-import ApiRoutes from '@src/api/ApiRoutes';
 import { Loader, Heading } from '@mckesson/mcp-component-library';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import AuthUtils from '@src/util/AuthUtils';
-import { Link } from 'react-router-dom';
+import OrderService from '@src/api/commonService/OrderService';
 
 function TherapyDetails({ therapyId, onClose }) {
   const { t } = useTranslate();
   const { isLoading, data: therapyDetails = {} } = useQuery({
     queryKey: ['order', 'therapy', therapyId],
-    queryFn: async () => {
-      const userId = AuthUtils.getUserId();
-      const url = `${ApiRoutes.ORDER(userId)}/therapies/${therapyId}`;
-      const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-      if (res.data) {
-        return res.data;
-      }
-      return {};
-    },
+    queryFn: async () => OrderService.getTherapyDetailsById(therapyId),
+    enabled: Boolean(therapyId),
     refetchOnWindowFocus: false
   });
 
@@ -38,83 +28,53 @@ function TherapyDetails({ therapyId, onClose }) {
   );
 }
 
-function DetailsPanel(props) {
-  const { details } = props;
+function DetailsPanel({ details }) {
   const { t } = useTranslate();
-  console.log(details);
+  const renderDetails = (fields) => fields.map(({ label, value }) => <DetailItem key={label} label={t(label)} value={value} />);
+
+  const generalDetails = [
+    { label: 'labels.therapy.materialNumber', value: details.materialNumber },
+    { label: 'labels.therapy.materialDescription', value: details.materialDescription },
+    { label: 'labels.therapy.ndc', value: details.ndc },
+    { label: 'labels.therapy.strength', value: details.strength },
+    { label: 'labels.therapy.dosage', value: details.dosage },
+    { label: 'labels.therapy.sellingUnitCode', value: details.sellingUnitCode },
+    { label: 'labels.therapy.vendorName', value: details.vendorName },
+    { label: 'labels.therapy.upcCode', value: details.upcCode },
+    { label: 'labels.therapy.dropshipIndicator', value: details.dropshipIndicator },
+    { label: 'labels.therapy.baseUnitOfMeasure', value: details.baseUnitOfMeasure },
+    { label: 'labels.therapy.cgatIdentifier', value: details.cgatIdentifier },
+    { label: 'labels.therapy.productLevelPricing', value: details.productLevelPricing },
+    { label: 'labels.therapy.minimumOrderQuantity', value: details.minimumOrderQuantity }
+  ];
+
+  const configurationDetails = [
+    { label: 'labels.therapy.slotNumber', value: details.slotNumber },
+    { label: 'labels.therapy.patientConsent', value: details.patientConsent }
+  ];
+
   return (
     <div className={styles.detailsPanel}>
-      <Heading as={'h4'}>Details</Heading>
-
       <div>
-        <div className={styles.detailItem}>
-          <p className={'fieldName'}>{t('labels.therapy.materialNumber')}</p>
-          <p className={'fieldValue'}>{details.materialNumber}</p>
-        </div>
-        <div className={styles.detailItem}>
-          <p className={'fieldName'}>{t('labels.therapy.materialDescription')}</p>
-          <p className={'fieldValue'}>{details.materialDescription}</p>
-        </div>
-        <div className={styles.detailItem}>
-          <p className={'fieldName'}>{t('labels.therapy.ndc')}</p>
-          <p className={'fieldValue'}>{details.ndc}</p>
-        </div>
-        <div className={styles.detailItem}>
-          <p className={'fieldName'}>{t('labels.therapy.strength')}</p>
-          <p className={'fieldValue'}>{details.strength}</p>
-        </div>
-        <div className={styles.detailItem}>
-          <p className={'fieldName'}>{t('labels.therapy.dosage')}</p>
-          <p className={'fieldValue'}>{details.dosage}</p>
-        </div>
-        <div className={styles.detailItem}>
-          <p className={'fieldName'}>{t('labels.therapy.sellingUnitCode')}</p>
-          <p className={'fieldValue'}>{details.sellingUnitCode}</p>
-        </div>
-        <div className={styles.detailItem}>
-          <p className={'fieldName'}>{t('labels.therapy.vendorName')}</p>
-          <p className={'fieldValue'}>{details.vendorName}</p>
-        </div>
-        <div className={styles.detailItem}>
-          <p className={'fieldName'}>{t('labels.therapy.upcCode')}</p>
-          <p className={'fieldValue'}>{details.upcCode}</p>
-        </div>
-        <div className={styles.detailItem}>
-          <p className={'fieldName'}>{t('labels.therapy.dropshipIndicator')}</p>
-          <p className={'fieldValue'}>{details.dropshipIndicator}</p>
-        </div>
-        <div className={styles.detailItem}>
-          <p className={'fieldName'}>{t('labels.therapy.baseUnitOfMeasure')}</p>
-          <p className={'fieldValue'}>{details.baseUnitOfMeasure}</p>
-        </div>
-        <div className={styles.detailItem}>
-          <p className={'fieldName'}>{t('labels.therapy.cgatIdentifier')}</p>
-          <p className={'fieldValue'}>{details.cgatIdentifier}</p>
-        </div>
-        <div className={styles.detailItem}>
-          <p className={'fieldName'}>{t('labels.therapy.productLevelPricing')}</p>
-          <p className={'fieldValue'}>{details.productLevelPricing}</p>
-        </div>
-        <div className={styles.detailItem}>
-          <p className={'fieldName'}>{t('labels.therapy.minimumOrderQuantity')}</p>
-          <p className={'fieldValue'}>{details.minimumOrderQuantity}</p>
-        </div>
+        <Heading as="h4">{t('labels.therapy.generalDetails')}</Heading>
+        <div>{renderDetails(generalDetails)}</div>
       </div>
-
-      <div>
+      {/* <div>
         <div className="row-space-between-center">
-          <Heading as={'h4'}>Configuraion</Heading>
-          <Link className="MCP-table-link">Preview</Link>
+          <Heading as="h4">{t('labels.therapy.configuration')}</Heading>
+          <Link className="MCP-table-link">{t('labels.therapy.preview')}</Link>
         </div>
-        <div className={styles.detailItem}>
-          <p className={'fieldName'}>{t('labels.therapy.slotNumber')}</p>
-          <p className={'fieldValue'}>{details.slotNumber}</p>
-        </div>
-        <div className={styles.detailItem}>
-          <p className={'fieldName'}>{t('labels.therapy.patientConsent')}</p>
-          <p className={'fieldValue'}>{details.patientConsent}</p>
-        </div>
-      </div>
+        <div>{renderDetails(configurationDetails)}</div>
+      </div> */}
+    </div>
+  );
+}
+
+function DetailItem({ label, value }) {
+  return (
+    <div className={styles.detailItem}>
+      <p className="fieldName">{label}</p>
+      <p className="fieldValue">{value}</p>
     </div>
   );
 }

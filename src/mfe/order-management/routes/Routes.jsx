@@ -11,11 +11,19 @@ import Summary from '../pages/create/form-segments/summary';
 import AdditionalDetails from '../pages/create/form-segments/additional-details';
 import NotFound from '../../../pages/error-pages/NotFound';
 import { TherapyProvider } from '../context/TherapyContext';
+import { OrderProvider } from '../context/OrderContext';
 
 function OrderManagementRoutes() {
   return (
     <Routes>
-      <Route path={routesConfig.index} element={<OrderIndex />} />
+      <Route
+        path={routesConfig.index}
+        element={
+          <OrderProvider>
+            <OrderIndex />
+          </OrderProvider>
+        }
+      />
       <Route
         path={`create-order`}
         element={
@@ -35,7 +43,7 @@ function OrderManagementRoutes() {
 
       <Route path={`:orderId/accounts`} element={<AccountSelection />} />
       <Route path={`:orderId/patient`} element={<PatientDetails />} />
-      <Route path={`:orderId/additionalDetails`} element={<AdditionalDetails />} />
+      <Route path={`:orderId/additional-details`} element={<AdditionalDetails />} />
       <Route path={`:orderId/summary`} element={<Summary />} />
 
       <Route path={routesConfig.viewDetails} element={<OrderSummary />} />

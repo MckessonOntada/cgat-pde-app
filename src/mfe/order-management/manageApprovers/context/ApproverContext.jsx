@@ -46,25 +46,19 @@ export const ApproverProvider = ({ children }) => {
     }));
   }, []);
 
-  const generateRequestParams = () => {
-    const { pageNumber, pageSize } = paginationConfig;
-    const { sortBy = 'group_name', sortOrder = 'asc' } = sortConfig || {};
-    const { searchQuery, status, dateRange = [] } = filterConfig || {};
-
-    return {
-      pageNo: pageNumber - 1,
-      pageSize,
-      sortBy,
-      sortOrder,
-      ...(searchQuery && { query: searchQuery }),
-      ...(status?.length && { status: [status] }),
-      ...(dateRange[0] && { startDate: DateUtils.formatDate(dateRange[0], 'dd/mm/yyyy') }),
-      ...(dateRange[1] && { endDate: DateUtils.formatDate(dateRange[1], 'dd/mm/yyyy') })
-    };
-  };
-
-  // Use from context
-  const requestParams = useMemo(() => generateRequestParams(), [filterConfig, paginationConfig.pageNumber, sortConfig]);
+  const requestParams = useMemo(
+    () => ({
+      pageNo: paginationConfig.pageNumber - 1,
+      pageSize: paginationConfig.pageSize,
+      sortBy: sortConfig.sortBy || 'name',
+      sortOrder: sortConfig.sortOrder || 'asc',
+      ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
+      ...(filterConfig?.status?.length && { status: [filterConfig.status] }),
+      ...(filterConfig?.dateRange?.[0] && { startDate: DateUtils.formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy') }),
+      ...(filterConfig?.dateRange?.[1] && { endDate: DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy') })
+    }),
+    [filterConfig, paginationConfig.pageNumber, sortConfig]
+  );
 
   const {
     isLoading: isLoadingApprovers,

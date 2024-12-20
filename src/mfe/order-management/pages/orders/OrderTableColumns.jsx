@@ -30,7 +30,7 @@ const getLinkByStatus = ({ status, id }, t) => {
 
 const getOptionsByStatus = (status, t, tab) => {
   const options = [];
-  
+
   const handleOnOptionSelection = ({ value }) => {
     if (value === 'view') {
       navigate(`view-order/${props.id}`);
@@ -48,47 +48,47 @@ const getOptionsByStatus = (status, t, tab) => {
     }
 
     if (status?.toLowerCase() === 'in draft') {
-        options.unshift(
-          {
-            label: t(`labels.orderActions.resume`),
-            value: 'resume'
-          },
-          {
-            label: t(`labels.orderActions.delete`),
-            value: 'delete'
-          }
-        );
-      } else if (status?.toLowerCase() === 'approval pending') {
-        options.push(
-          {
-            label: t(`labels.orderActions.review`),
-            value: 'review'
-          },
-          {
-            label: t(`labels.orderActions.assignToMe`),
-            value: 'assign to me'
-          },
-          {
-            label: t(`labels.orderActions.approve`),
-            value: 'approve'
-          }
-        );
-      }
-  } else if(tab?.toLowerCase() === "submitted"){
-    options.push(
+      options.unshift(
         {
-          label: t(`labels.orderActions.view`),
-          value: 'view'
-        },
-        {
-          label: t(`labels.orderActions.edit`),
-          value: 'edit order'
+          label: t(`labels.orderActions.resume`),
+          value: 'resume'
         },
         {
           label: t(`labels.orderActions.delete`),
-          value: 'delete order'
+          value: 'delete'
         }
       );
+    } else if (status?.toLowerCase() === 'approval pending') {
+      options.push(
+        {
+          label: t(`labels.orderActions.review`),
+          value: 'review'
+        },
+        {
+          label: t(`labels.orderActions.assignToMe`),
+          value: 'assign to me'
+        },
+        {
+          label: t(`labels.orderActions.approve`),
+          value: 'approve'
+        }
+      );
+    }
+  } else if (tab?.toLowerCase() === 'submitted') {
+    options.push(
+      {
+        label: t(`labels.orderActions.view`),
+        value: 'view'
+      },
+      {
+        label: t(`labels.orderActions.edit`),
+        value: 'edit order'
+      },
+      {
+        label: t(`labels.orderActions.delete`),
+        value: 'delete order'
+      }
+    );
   }
 
   return <DropdownMenu anchorEl={<Button Icon={() => <IconEllipsis />} iconButton variant="tertiary" label="Icon Button" />} handleSelect={handleOnOptionSelection} options={options} aria-label="Order options" />;
@@ -103,6 +103,7 @@ export const createColumns = (t, navigate, activeTab) => [
     minWidth: '120px',
     maxWidth: '180px',
     sortable: true,
+    sortKey: 'orderId',
     cell: (props) => (
       <Link className="MCP-table-link" to={`${props.id}`} state={props} aria-label={t('labels.orderId')}>
         <EclipsesTextcss str={props.id} maxWidth={140} />
@@ -114,31 +115,30 @@ export const createColumns = (t, navigate, activeTab) => [
     name: t('labels.patientName'),
     selector: () => {},
     sortable: true,
+    sortKey: 'patientName',
     minWidth: '240px',
     maxWidth: '380px',
     cell: (props) => <EclipsesTextcss aria-label={t('labels.patientName')} str={`${props.name?.lastName}, ${props.name?.firstName} ${props.name?.middleName || ''}`} maxWidth={200} />
   },
   {
-    id: 'therapy',
+    id: 'therapyId',
     name: t('labels.therapy'),
     selector: () => {},
     sortable: true,
+    sortKey: 'therapyId',
     minWidth: '240px',
     maxWidth: '380px',
-    cell: (props) => (
-      <EclipsesTextcss str={props.therapy} maxWidth={200} className={'MCP-table-cell'} aria-label={t('labels.therapy')} />
-    )
+    cell: (props) => <EclipsesTextcss str={props.therapy} maxWidth={200} className={'MCP-table-cell'} aria-label={t('labels.therapy')} />
   },
   {
     id: 'author',
     name: t('table.columns.captions.author'),
     selector: () => {},
     sortable: true,
+    sortKey: 'author',
     minWidth: '240px',
     maxWidth: '380px',
-    cell: (props) => (
-      <EclipsesTextcss str={props.author} maxWidth={200} className={'MCP-table-cell'} aria-label={t('table.columns.captions.author')} />
-    ),
+    cell: (props) => <EclipsesTextcss str={props.author} maxWidth={200} className={'MCP-table-cell'} aria-label={t('table.columns.captions.author')} />,
     omit: activeTab !== 'pending submission'
   },
   {
@@ -146,6 +146,7 @@ export const createColumns = (t, navigate, activeTab) => [
     name: t('table.columns.captions.createdOn'),
     selector: () => {},
     sortable: true,
+    sortKey: 'createdOn',
     width: '180px',
     cell: (props) => <span aria-label={t('table.columns.captions.createdOn')}>{CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')}</span>,
     omit: activeTab !== 'pending submission'
@@ -156,6 +157,7 @@ export const createColumns = (t, navigate, activeTab) => [
     name: t('table.columns.captions.submittedBy'),
     selector: () => {},
     sortable: true,
+    sortKey: 'submittedBy',
     minWidth: '180px',
     maxWidth: '340px',
     cell: (props) => <span>{props.submittedBy}</span>,
@@ -166,6 +168,7 @@ export const createColumns = (t, navigate, activeTab) => [
     name: t('table.columns.captions.submittedOn'),
     selector: () => {},
     sortable: true,
+    sortKey: 'submittedOn',
     width: '180px',
     cell: (props) => <span>{CommonUtils.convertDateStringFormat(props.submittedOn, 'MM-DD-YYYY')}</span>,
     omit: activeTab !== 'submitted'
@@ -178,7 +181,13 @@ export const createColumns = (t, navigate, activeTab) => [
     sortable: false,
     width: '180px',
     center: true,
-    cell: (props) => <Tooltip body={props.status}><span><Badge text={props.status} type={getColorByStatus(props.status.toLowerCase())} /></span></Tooltip>
+    cell: (props) => (
+      <Tooltip body={props.status}>
+        <span>
+          <Badge text={props.status} type={getColorByStatus(props.status.toLowerCase())} />
+        </span>
+      </Tooltip>
+    )
   },
   {
     id: 'price',
