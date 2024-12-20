@@ -23,7 +23,11 @@ function TherapyDetails({ therapyId, onClose }) {
           <IconClose />
         </button>
       </div>
-      {isLoading ? <Loader variant="circular" /> : <div className={styles.body}>{therapyDetails && <DetailsPanel details={therapyDetails} />}</div>}
+      {isLoading ? (
+        <Loader variant="circular" />
+      ) : (
+        <div className={styles.body}>{therapyDetails && <DetailsPanel details={therapyDetails} />}</div>
+      )}
     </div>
   );
 }

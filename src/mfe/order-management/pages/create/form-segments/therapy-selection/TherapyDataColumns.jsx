@@ -22,21 +22,21 @@ export const createColumns = (t, navigate, therapy, onChange) => [
       <div className="MCP-table-cell radio-button-wrapper">
         <RadioGroup
           direction="column"
-          id={`radio-button-order-therapy-${props.therapyId}`}
+          id={`radio-button-order-therapy-${props.id}`}
           items={[
             {
               isDisabled: false,
               label: ' ',
-              value: props.therapyId
+              value: props.id
             }
           ]}
           onChangeValue={() => {
-            onChange(props.therapyId);
+            onChange(props);
           }}
           onOtherTextChange={() => {}}
           onSubRadioFieldChange={() => {}}
           radioBtnWidth="auto"
-          value={therapy === props.therapyId ? props.therapyId : ''}
+          value={therapy?.id == props.id ? props.id : ''}
         />
       </div>
     )

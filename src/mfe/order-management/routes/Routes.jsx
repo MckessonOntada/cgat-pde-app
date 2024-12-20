@@ -12,8 +12,11 @@ import AdditionalDetails from '../pages/create/form-segments/additional-details'
 import NotFound from '../../../pages/error-pages/NotFound';
 import { TherapyProvider } from '../context/TherapyContext';
 import { OrderProvider } from '../context/OrderContext';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import ProtectedRoute from '@src/routes/ProtectedRoute';
 
 function OrderManagementRoutes() {
+  const addEditPermission = [PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS];
   return (
     <Routes>
       <Route
@@ -27,24 +30,57 @@ function OrderManagementRoutes() {
       <Route
         path={`create-order`}
         element={
-          <TherapyProvider>
-            <TherapySelection />
-          </TherapyProvider>
+          <ProtectedRoute permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS]}>
+            <TherapyProvider>
+              <TherapySelection />
+            </TherapyProvider>
+          </ProtectedRoute>
         }
       />
       <Route
         path={`edit-order/:orderId`}
         element={
-          <TherapyProvider>
-            <TherapySelection />
-          </TherapyProvider>
+          <ProtectedRoute permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS]}>
+            <TherapyProvider>
+              <TherapySelection />
+            </TherapyProvider>
+          </ProtectedRoute>
         }
       />
 
-      <Route path={`:orderId/accounts`} element={<AccountSelection />} />
-      <Route path={`:orderId/patient`} element={<PatientDetails />} />
-      <Route path={`:orderId/additional-details`} element={<AdditionalDetails />} />
-      <Route path={`:orderId/summary`} element={<Summary />} />
+      <Route
+        path={`:orderId/accounts`}
+        element={
+          <ProtectedRoute permissions={addEditPermission}>
+            <AccountSelection />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path={`:orderId/patient`}
+        element={
+          <ProtectedRoute permissions={addEditPermission}>
+            <PatientDetails />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={`:orderId/additional-details`}
+        element={
+          <ProtectedRoute permissions={addEditPermission}>
+            <AdditionalDetails />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={`:orderId/summary`}
+        element={
+          <ProtectedRoute permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS]}>
+            <Summary />
+          </ProtectedRoute>
+        }
+      />
 
       <Route path={routesConfig.viewDetails} element={<OrderSummary />} />
       <Route path={routesConfig.reviewOrder} element={<div></div>} />
