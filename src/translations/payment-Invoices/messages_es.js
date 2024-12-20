@@ -9,8 +9,10 @@ export const PaymentInvoicesES = {
   'paymentInvoices.metrics.totalDebitBalance': 'S_Total Debit Balance',
   'paymentInvoices.metrics.totalCreditBalance': 'S_Total Credit Balance',
   'paymentInvoices.metrics.pastDueBalance': 'S_Past Due Balance',
-  'paymentInvoices.metrics.totalDebitBalance.tooltipText': 'S_Summation of all past due & future due invoices, basically the summation of all the outstanding invoices as of today.',
-  'paymentInvoices.metrics.totalCreditBalance.tooltipText': 'S_Summation of all open credits currently available to use towards open invoices.',
+  'paymentInvoices.metrics.totalDebitBalance.tooltipText':
+    'S_Summation of all past due & future due invoices, basically the summation of all the outstanding invoices as of today.',
+  'paymentInvoices.metrics.totalCreditBalance.tooltipText':
+    'S_Summation of all open credits currently available to use towards open invoices.',
   'paymentInvoices.metrics.pastDueBalance.tooltipText': 'S_Summation of all past due invoices (debit only) as of current date.',
   // Balance Card
   'paymentInvoices.balanceCard.1_30_DAYS_OVERDUE': 'S_1-30 days over',
@@ -66,9 +68,10 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.BillAmount': 'S_Bill Amount',
   'paymentInvoices.history.table.Actions': 'S_Actions',
   'paymentInvoices.history.table.heading': 'S_Payment Listing',
-  'paymentInvoices.history.table.status': 'Status',
+  'paymentInvoices.history.table.status': 'S_Status',
+  'paymentInvoices.paymentMethods.filter.search.label': 'S_Search bank accounts',
+  'paymentInvoices.paymentMethods.filter.search.placeholder': 'S_Select by name or number',
   'paymentInvoices.invoice.table.emptyData': 'S_No Invoice Found',
-
 
   //Credits
   'paymentInvoices.credits.table.description': 'S_Description',
@@ -79,6 +82,10 @@ export const PaymentInvoicesES = {
   'paymentInvoices.credits.table.emptyData': 'S_No Credits Found',
 
   //payment methods - bank account
+  'paymentInvoices.paymentMethods.filter.search.label': 'S_Search bank accounts',
+  'paymentInvoices.paymentMethods.filter.search.placeholder': 'S_Select by name or number',
+  'paymentInvoices.paymentMethods.table.cards.heading': 'S_Saved Cards',
+  'paymentInvoices.paymentMethods.table.bankAccounts.heading': 'S_Saved Bank Accounts',
   'paymentInvoices.paymentMethods.table.bankAccount.addnewcard': 'S_add new card',
   'paymentInvoices.paymentMethods.table.bankAccount.bankName': 'S_Bank Name',
   'paymentInvoices.paymentMethods.table.bankAccount.routingNumber': 'S_Routing Number',
@@ -86,6 +93,15 @@ export const PaymentInvoicesES = {
   'paymentInvoices.paymentMethods.table.bankAccount.bankCountry': 'S_Bank Country',
   'paymentInvoices.paymentMethods.table.bankAccount.companyCode': 'S_Company Code',
   'paymentInvoices.paymentMethods.table.bankAccount.emptyData': 'S_No Payment Methods Found',
+  'paymentInvoices.paymentMethods.filter.search.label': 'S_Search bank accounts',
+  'paymentInvoices.paymentMethods.filter.search.placeholder': 'S_Select by name or number',
+  'paymentInvoices.paymentMethods.api.error': 'S_Error fetching payment methods',
+  'paymentInvoices.paymentMethods.table.cards.cardType': 'S_Card Type',
+  'paymentInvoices.paymentMethods.table.cards.nameOnCard': 'S_Name on Card',
+  'paymentInvoices.paymentMethods.table.cards.cardNumber': 'S_Card Number',
+  'paymentInvoices.paymentMethods.table.cards.cardValidity': 'S_Card Validity',
+  'paymentInvoices.paymentMethods.table.cards.zipCode': 'S_Zip Code',
+  'paymentInvoices.paymentMethods.table.cards.action': 'S_Action',
 
   //Pending Payments
   'pendingPayments.table.confirmationNumber': 'S_Confirmation Number',

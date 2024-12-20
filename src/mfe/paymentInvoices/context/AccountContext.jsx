@@ -122,7 +122,7 @@ export const AccountProvider = ({ children }) => {
   );
 
   const defaultSetEvent = () => {
-    CommonUtils.isNonEmptyObject(selectedAccount) && setDefaultAccount(selectedAccount.id);
+    CommonUtils.isNonEmptyObject(selectedAccount) && setDefaultAccount(selectedAccount.accountNumber);
   };
 
   return (

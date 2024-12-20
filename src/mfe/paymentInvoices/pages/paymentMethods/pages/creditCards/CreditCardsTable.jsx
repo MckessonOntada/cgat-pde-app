@@ -1,116 +1,96 @@
 import React, { useState } from 'react';
 import DataTable from '@src/components/dataTable/DataTable';
-import { Badge, CustomDataTable, Loader } from '@mckesson/mcp-component-library';
-import { PaymentHistoryData } from '@src/mfe/paymentInvoices/mockData/PaymentHistoryData';
-import { Link } from 'react-router-dom';
+import { ReactComponent as MasterCardLogo } from '@src/assets/svg/master_card_logo.svg';
+import { ReactComponent as VisaLogo } from '@src/assets/svg/visa_logo.svg';
 import { useTranslate } from '@src/translations/useTranslation';
-import { usePaymentHistory } from '@src/mfe/paymentInvoices/context/PaymentHistoryContext';
+import { usePaymentMethods } from '@src/mfe/paymentInvoices/context/PaymentMethodsContext';
+import { FinanceUtils } from '@src/util/FinanceUtil';
+
+const CARD_TYPES = {
+  VISA: 'VISA',
+  MASTER_CARD: 'MASTER_CARD',
+};
 
 export default function CreditCardsTable() {
   const { t } = useTranslate();
-  const [filteredData, setFilteredData] = useState(PaymentHistoryData);
-  const [isOpen, setIsOpen] = useState(false);
+  const { cardsData } = usePaymentMethods();
 
-  const { data, isLoading, paginationConfig, setPageNumber, applySort } = usePaymentHistory();
   const columns = [
     {
-      name: t('paymentInvoices.history.table.confirmationNumber'),
-      selector: (row) => `${row.ConfirmationNumber}`,
+      name: t('paymentInvoices.paymentMethods.table.cards.cardType'),
+      selector: (row) => row.type,
       sortable: true,
-      sortKey: 'ConfirmationNumber',
       wrap: true,
-      cell: (props) => (
-        <div className="cellEllipse" onClick={() => setIsOpen(true)}>
-          <Link style={{ color: '#007bff', fontWeight: '600' }}>{`${props.ConfirmationNumber}`}</Link>
-        </div>
-      )
+      minWidth: '112px',
+      cell: (props) => <div>{props.type === CARD_TYPES.VISA ? <VisaLogo /> : <MasterCardLogo />}</div>
     },
     {
-      id: 'PurchaseOrderNumber',
-      name: t('paymentInvoices.history.table.purchaseOrderNumber'),
+      name: t('paymentInvoices.paymentMethods.table.cards.nameOnCard'),
+      selector: (row) => row.holderName,
       sortable: true,
-      sortKey: 'PurchaseOrderNumber',
-      selector: () => {},
-      cell: (props) => <div>{props.PurchaseOrderNumber}</div>
-    },
-    {
-      name: t('paymentInvoices.history.table.paymentMethod'),
-      selector: (row) => {},
       wrap: true,
-      sortable: true,
-      sortKey: 'PaymentMethod',
-      width: '20%',
-      cell: (props) => <div className="cellEllipse">{props.PaymentMethod}</div>
-    },
-
-    {
-      name: t('paymentInvoices.history.table.paymentInitiationDate'),
-      selector: (row) => {},
-      width: '20%',
-      sortable: true,
-      sortKey: 'PaymentInitiationDate',
-      cell: (props) => <div className="cellEllipse">{props.PaymentInitiationDate}</div>
+      minWidth: '160px',
+      cell: (props) => <div>{props.holderName}</div>
     },
     {
-      name: t('paymentInvoices.history.table.paymentStatus'),
-      selector: 'paymentStatus',
+      name: t('paymentInvoices.paymentMethods.table.cards.cardNumber'),
+      selector: (row) => row.number,
       sortable: true,
-      sortKey: 'PaymentStatus',
-      cell: (props) => <div className="status-container">{props.PaymentStatus == 'COMPLETED' ? <Badge text="COMPLETED" type="success" /> : <Badge text="IN PROCESS" type="info-default" />}</div>
+      wrap: true,
+      minWidth: '160px',
+      cell: (props) => <div className="cellEllipse">{FinanceUtils.maskCardNumber(props.number)}</div>
     },
     {
-      name: <div className="align-items-right">{t('paymentInvoices.history.table.totalAuthorizedPaymentAmt')}</div>,
-      selector: (row) => {},
-      width: '20%',
+      name: t('paymentInvoices.paymentMethods.table.cards.cardValidity'),
+      selector: (row) => row.expirationDate,
       sortable: true,
-      sortKey: 'TotalAuthorizedPaymentAmt',
-      cell: (props) => <div className="align-items-right">${props.TotalAuthorizedPaymentAmt}</div>
+      wrap: true,
+      minWidth: '144px',
+      cell: (props) => <div>{props.expirationDate}</div>
+    },
+    {
+      name: t('paymentInvoices.paymentMethods.table.cards.zipCode'),
+      selector: (row) => row.postalCode,
+      sortable: true,
+      wrap: true,
+      minWidth: '168px',
+      cell: (props) => <div>{props.postalCode}</div>
     }
+    // {
+    //   name: t('paymentInvoices.paymentMethods.table.cards.action'),
+    //   selector: () => {},
+    //   minWidth: '80px',
+    //   cell: () => (
+    //     <div>
+    //       <button style={{ background: 'transparent', border: 'none' }}>
+    //         <i className="more-icon" />
+    //       </button>
+    //     </div>
+    //   )
+    // }
   ];
 
-  const handleSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+  const handleSortClick = (column, sortDirection) => {
+    console.log('column', filteredData, column);
+    const sortedData = filteredData.sort((a, b) => {
+      if (sortDirection === 'asc') {
+        return a[column.selector] > b[column.selector] ? 1 : -1;
+      } else {
+        return a[column.selector] < b[column.selector] ? 1 : -1;
+      }
+    });
+    // setFilteredData([...sortedData]);
   };
 
-  const handleChangePage = (e, newPage) => {
-    setPageNumber(newPage);
-  };
   return (
     <React.Fragment>
-      {/* <DataTable columns={columns} rows={filteredData} responsive /> */}
-      <CustomDataTable
-        id="my-data-table"
-        type="normal"
+      <DataTable
         columns={columns}
-        data={data || []}
-        onSortIconClick={handleSort}
-        currentPage={paginationConfig.pageNumber}
-        totalPageCount={paginationConfig.totalPages}
-        pagination={true}
-        totalRocords={paginationConfig.totalElements}
-        handleChangePage={handleChangePage}
-        recordsPerPage={paginationConfig.pageSize}
-        paginationTotalRecorsMessage={t('orgManagement.results')}
-        paginationRecordsPerPageMessage={t('orgManagement.per_page')}
-        progressPending={isLoading}
-        progressComponent={
-          <div
-            style={{
-              alignItems: 'center',
-              border: '1px solid #ccc',
-              display: 'flex',
-              height: '350px',
-              justifyContent: 'center'
-            }}>
-            <Loader variant="circular" />
-          </div>
-        }
-        // isAdmin={true}
-        // noDataComponent={<EmptyDataTable isLoading={isLoading} error={isError ? 'Something went wrong! Please try again' : null} image={EmptyDataImage} heading={t('orgManagement.add.label')} description={t('orgManagement.empty_table.description')} />}
+        rows={cardsData}
+        responsive
+        handleSortClick={handleSortClick}
+        noDataComponent={t('message.emptyTableTitle')}
       />
-      {/* <FloatingDrawer open={isOpen} anchor="right" onClose={() => setIsOpen(false)}>
-        <PaymentDetails />
-      </FloatingDrawer> */}
     </React.Fragment>
   );
 }

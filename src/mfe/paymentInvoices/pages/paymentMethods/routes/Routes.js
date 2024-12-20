@@ -4,14 +4,13 @@ import { PATHS } from './constants';
 import NotFound from '@src/pages/error-pages/NotFound';
 import BankAccounts from '../pages/bankAccounts';
 import CreditCards from '../pages/creditCards';
-import { PaymentHistoryProvider } from '@src/mfe/paymentInvoices/context/PaymentHistoryContext';
 
 const Routes = () => {
   return (
     <ReactRoutes>
       <Route index element={<Navigate to={PATHS.bankAccounts}></Navigate>} />
       <Route path={PATHS.bankAccounts} element={<BankAccounts/>} />
-      <Route path={PATHS.creditCards} element={<PaymentHistoryProvider><CreditCards/></PaymentHistoryProvider>} />
+      <Route path={PATHS.creditCards} element={<CreditCards/>} />
       <Route path={'*'} element={<NotFound />} />
     </ReactRoutes>
   );

@@ -21,6 +21,7 @@ export default function RecordDetails() {
 
   const onApplyClick = () => {
     CommonUtils.isNonEmptyObject(selectedPayToAccount) && applyEvent(selectedPayToAccount);
+    // setIsValueSelected(!isValueSelected);
   };
 
   const onDefaultSetClick = () => {

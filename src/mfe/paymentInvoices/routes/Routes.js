@@ -1,9 +1,9 @@
-import React from 'react';
-import { Route, Routes as ReactRoutes, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Route, Routes as ReactRoutes, Navigate, useNavigate } from 'react-router-dom';
 import { PATHS } from './constants';
 import PaymentHistory from '../pages/paymentHistory';
 import Invoices from '../pages/invoices';
-import CustomerSatements from '../pages/customerStatements';
+import CustomerStatements from '../pages/customerStatements';
 import PaymentMethods from '../pages/paymentMethods';
 import NotFound from '../../../pages/error-pages/NotFound';
 import { PaymentHistoryProvider } from '../context/PaymentHistoryContext';
@@ -19,6 +19,12 @@ import { CustomerStatementsProvider } from '../context/CustomerStatementsContext
 
 const Routes = () => {
   const { selectedAccount } = useAccountContext();
+  // const navigate = useNavigate();
+  // useEffect(() => {
+  //   if (CommonUtils.isNonEmptyObject(selectedAccount)) {
+  //     navigate('/record/invoice');
+  //   }
+  // }, [selectedAccount]);
   return CommonUtils.isNonEmptyObject(selectedAccount) ? (
     <ReactRoutes>
       <Route index element={<Navigate to={PATHS.invoices}></Navigate>} />
@@ -58,7 +64,7 @@ const Routes = () => {
         path={PATHS.customerStatements}
         element={
           <CustomerStatementsProvider>
-            <CustomerSatements />
+            <CustomerStatements />
           </CustomerStatementsProvider>
         }
       />

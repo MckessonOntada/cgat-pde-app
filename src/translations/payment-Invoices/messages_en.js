@@ -77,6 +77,10 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.credits.table.heading': 'Credits Listing',
   'paymentInvoices.credits.table.emptyData': 'No Credits Found',
   //payment methods - bank account
+  'paymentInvoices.paymentMethods.filter.search.label': 'Search bank accounts',
+  'paymentInvoices.paymentMethods.filter.search.placeholder': 'Select by name or number',
+  'paymentInvoices.paymentMethods.table.cards.heading': 'Saved Cards',
+  'paymentInvoices.paymentMethods.table.bankAccounts.heading': 'Saved Bank Accounts',
   'paymentInvoices.paymentMethods.table.bankAccount.addnewcard': 'add new card',
   'paymentInvoices.paymentMethods.table.bankAccount.bankName': 'Bank Name',
   'paymentInvoices.paymentMethods.table.bankAccount.ro  utingNumber': 'Routing Number',
@@ -85,6 +89,15 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.paymentMethods.table.bankAccount.companyCode': 'Company Code',
   'paymentInvoices.paymentMethods.table.bankAccount.emptyData': 'No Payment Methods Found',
 
+  'paymentInvoices.paymentMethods.filter.search.label': 'Search bank accounts',
+  'paymentInvoices.paymentMethods.filter.search.placeholder': 'Select by name or number',
+  'paymentInvoices.paymentMethods.api.error': 'Error fetching payment methods',
+  'paymentInvoices.paymentMethods.table.cards.cardType': 'Card Type',
+  'paymentInvoices.paymentMethods.table.cards.nameOnCard': 'Name on Card',
+  'paymentInvoices.paymentMethods.table.cards.cardNumber': 'Card Number',
+  'paymentInvoices.paymentMethods.table.cards.cardValidity': 'Card Validity',
+  'paymentInvoices.paymentMethods.table.cards.zipCode': 'Zip Code',
+  'paymentInvoices.paymentMethods.table.cards.action': 'Action',
 
   //Pending Payments
   'pendingPayments.table.confirmationNumber': 'Confirmation Number',

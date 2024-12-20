@@ -8,14 +8,11 @@ import { PaymentMethodsProvider } from '../../context/PaymentMethodsContext';
 import { ReactComponent as AddCircle } from '@src/assets/svg/add-circle.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 
-
-
 const PaymentMethods = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [tabs, setTabs] = useState();
   const { t } = useTranslate();
-
 
   React.useEffect(() => {
     if (Array.isArray(tabListData) && tabListData.length > 0) {
@@ -34,27 +31,25 @@ const PaymentMethods = () => {
 
   return (
     <React.Fragment>
-      <PaymentMethodsProvider>
-        <div className="MCP-module-body">
-          <div id="tablist-container" className="tablist-container">
-            <TabList
-              options={tabs}
-              alignment="left"
-              onTabClick={(e) => {
-                navigate(e.path);
-              }}
-              showShadow={false}
-              variant={'text'}
-              useAsButton={true}
-              aria-label={'record-tab-list'}
-            />
-            <Button Icon={AddCircle} size="md" onClick={() => {}}>
-              {t('paymentInvoices.paymentMethods.table.bankAccount.addnewcard')}
-            </Button>
-          </div>
-          <Routes />
+      <div className="MCP-module-body">
+        <div id="tablist-container" className="tablist-container">
+          <TabList
+            options={tabs}
+            alignment="left"
+            onTabClick={(e) => {
+              navigate(e.path);
+            }}
+            showShadow={false}
+            variant={'text'}
+            useAsButton={true}
+            aria-label={'record-tab-list'}
+          />
+          <Button Icon={AddCircle} size="md" onClick={() => {}} disabled={true}>
+            {t('paymentInvoices.paymentMethods.table.bankAccount.addnewcard')}
+          </Button>
         </div>
-      </PaymentMethodsProvider>
+        <Routes />
+      </div>
     </React.Fragment>
   );
 };
