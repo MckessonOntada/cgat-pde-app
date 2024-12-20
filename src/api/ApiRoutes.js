@@ -36,10 +36,14 @@ const ApiRoutes = Object.freeze({
   ORGANIZATIONS: constructUserManagementServiceUrl('practices'),
   PUBLIC_ORGANIZATIONS: constructUserManagementServicePublicUrl('practices'),
   ACCOUNTS: constructUserManagementServiceUrl('accounts'),
+  PAY_TO_ACCOUNTS: constructUserManagementServiceUrl('users/current/paytoaccounts'),
   PUBLIC_ACCOUNTS: constructUserManagementServicePublicUrl('accounts'),
   ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`),
-  ORDERS: constructOrderManagementServiceUrl('orders')
+  ORDERS: constructOrderManagementServiceUrl('orders'),
   APPROVER_GROUP: () => constructOrderManagementServiceUrl(`approver-group`),
+  GET_OPEN_INVOICE_BALANCES: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/open-invoices/balances`),
+  SET_DEFAULT_PAY_TO_ACCOUNT: (payToAccountId) =>
+    constructUserManagementServiceUrl(`users/current/preference/defaultpayto/${payToAccountId}`),
   ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`)
 });
 
