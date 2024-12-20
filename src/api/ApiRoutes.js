@@ -4,7 +4,6 @@ import AuthUtils from '@src/util/AuthUtils';
 
 import { MAIN_BASE_URL, USERMANAGEMENT_SERVICE_BASE_URL, ORDERMANAGEMENT_SERVICE_BASE_URL } from '@src/config/AppConfig';
 
-
 const constructMainAppUrl = (uri) => `${MAIN_BASE_URL}${uri}`;
 
 const constructUserManagementServiceUrl = (uri) => {
@@ -45,7 +44,8 @@ const ApiRoutes = Object.freeze({
   PAY_TO_ACCOUNTS: constructUserManagementServiceUrl('users/current/paytoaccounts'),
   PUBLIC_ACCOUNTS: constructUserManagementServicePublicUrl('accounts'),
   ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`),
-  INVOICES_CREDITS_LISTING: (accountNumber, filterCredits) => constructOrderManagementServiceUrl(`account/${accountNumber}/open-invoices?filterCredits=${filterCredits}`),
+  INVOICES_CREDITS_LISTING: (accountNumber, filterCredits) =>
+    constructOrderManagementServiceUrl(`account/${accountNumber}/open-invoices?filterCredits=${filterCredits}`),
   PENDING_PAYMENTS_LISTING: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/payments/pending`),
   PAYMENT_HISTORY_LISTING: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/payments/history`),
   ORDERS: constructOrderManagementServiceUrl('orders'),
@@ -53,7 +53,8 @@ const ApiRoutes = Object.freeze({
   GET_OPEN_INVOICE_BALANCES: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/open-invoices/balances`),
   SET_DEFAULT_PAY_TO_ACCOUNT: (payToAccountId) =>
     constructUserManagementServiceUrl(`users/current/preference/defaultpayto/${payToAccountId}`),
-  ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`)
+  ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`),
+  CUSTOMER_STATEMENTS_LISTING: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/statements`)
 });
 
 export default ApiRoutes;

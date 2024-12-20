@@ -19,7 +19,8 @@ const RECORDS_PER_PAGE = 8;
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
   billNumber: [],
-  soldToSite: []
+  soldToSite: [],
+  dateRange: ''
 };
 
 const INITIAL_SORT_STATE = {
@@ -42,9 +43,9 @@ export const PaymentsInvoiceProvider = ({ children }) => {
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const [isLoading, setIsLoading] = useState(false);
   const { showSnackbar } = useSnackbar();
+  const [previousFilterConfig, setPreviousFilterConfig] = useState(INITIAL_FILTER_STATE);
 
   const { selectedAccount } = useAccountContext();
-  console.log('🚀 ~ PaymentsInvoiceProvider ~ selectedAccount:', selectedAccount);
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
@@ -54,7 +55,11 @@ export const PaymentsInvoiceProvider = ({ children }) => {
     }));
   };
 
-  const filterData = (filters) => {
+  const filterData = async (filters) => {
+    if (JSON.stringify(filters.dateRange) !== JSON.stringify(previousFilterConfig.dateRange)) {
+      await refetch();
+      setPreviousFilterConfig(filters);
+    }
     let _data = [...[], ...unSlicedData];
     setIsLoading(true);
     let _modifiedData = _data.filter((item) => {
@@ -62,14 +67,11 @@ export const PaymentsInvoiceProvider = ({ children }) => {
         ? item.billNumber?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
           item.soldToSite?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase())
         : true;
-      const matchesPaymentStatus = filters?.billNumber?.length > 0 ? filters.billNumber.includes(item.billNumber?.toString()) : true;
-      const matchesPaymentMethod = filters?.soldToSite?.length > 0 ? filters.soldToSite.includes(item.soldToSite?.toString()) : true;
-      const matchesDateRange =
-        filters.dateRange?.length === 2
-          ? new Date(item.dueDate) >= new Date(filters.dateRange[0]) && new Date(item.dueDate) <= new Date(filters.dateRange[1])
-          : true;
 
-      return matchesSearchQuery && matchesPaymentStatus && matchesPaymentMethod && matchesDateRange;
+      const matchesPaymentStatus = filters?.paymentTerm?.length > 0 ? filters.paymentTerm.includes(item.paymentTerm?.toString()) : true;
+      const matchesPaymentMethod = filters?.status?.length > 0 ? filters.status.includes(item.status?.toString()) : true;
+
+      return matchesSearchQuery && matchesPaymentStatus && matchesPaymentMethod;
     });
 
     const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
@@ -84,16 +86,19 @@ export const PaymentsInvoiceProvider = ({ children }) => {
     setData(_modifiedData.slice(startIndex, endIndex));
   };
 
-  const { isFetching } = useQuery(
+  const { isFetching, isError, refetch } = useQuery(
     ['invoiceListing', selectedAccount?.id],
     async () => {
       if (!selectedAccount?.id) return;
       const url = `${ApiRoutes.INVOICES_CREDITS_LISTING(selectedAccount?.id, false)}`;
-      const payload = {
+      let payload = {
         companyCode: selectedAccount?.companyCode,
         salesOrg: selectedAccount?.salesOrg,
         payerAccountNumber: selectedAccount?.accountNumber
       };
+      //  if(filterConfig.dateRange?.length>0 && JSON.stringify(filterConfig.dateRange) !== JSON.stringify(previousFilterConfig.dateRange)){
+      //   payload={...payload,...{dateFrom:filterConfig.dateRange[0]??"",dateTo:filterConfig.dateRange[1]??""}}
+      //  }
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
       if (res.data) {
         const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
@@ -165,7 +170,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
     data: data || [],
     actualData: unSlicedData || [],
     isFetching,
-    // isError,
+    isError,
     filterConfig,
     paginationConfig,
     sortConfig,

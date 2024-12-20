@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import { Button,CustomDataTable,Loader } from '@mckesson/mcp-component-library';
+import { Button, CustomDataTable, Loader } from '@mckesson/mcp-component-library';
 import { Link } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
-import { ReactComponent as CrossIcon } from "../../../../assets/svg/cross-red.svg"
+import { ReactComponent as CrossIcon } from '../../../../assets/svg/cross-red.svg';
 import { usePendingPayments } from '../../context/PendingPaymentsContext';
-
+import EmptyDataTable from '@src/components/EmptyTable';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import { FormattedNumber } from 'react-intl';  
 
 export default function PendingPaymentTable() {
   const { t } = useTranslate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort } = usePendingPayments();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError } = usePendingPayments();
 
   const columns = [
-    {
+    { id:'confirmationNo',
       name: t('pendingPayments.table.confirmationNumber'),
       selector: (row) => `${row.confirmationNo}`,
       sortable: true,
@@ -24,7 +26,7 @@ export default function PendingPaymentTable() {
         </div>
       )
     },
-    {
+    { id:'paymentMethod',
       name: t('paymentInvoices.history.table.paymentMethod'),
       selector: (row) => row.paymentMethod,
       minWidth: '160px',
@@ -32,7 +34,7 @@ export default function PendingPaymentTable() {
       wrap: true,
       cell: (props) => <div>{props.paymentMethod}</div>
     },
-    {
+    {id:'paymentInitiationDate',
       name: t('paymentInvoices.history.table.paymentInitiationDate'),
       selector: (row) => row.paymentInitiationDate,
       sortable: true,
@@ -40,13 +42,13 @@ export default function PendingPaymentTable() {
       minWidth: '160px',
       cell: (props) => <EclipsesTextcss className="cellEllipse" str={props.paymentInitiationDate} maxWidth={240} />
     },
-    {
+    { id:'authorizedAmt',
       name: t('pendingPayments.table.totalAuthorizedPaymentAmt'),
       selector: (row) => row.authorizedAmt,
       minWidth: '200px',
       sortable: true,
       wrap: true,
-      cell: (props) => <div className="cellEllipse">{props.authorizedAmt}</div>
+      cell: (props) => <div className="cellEllipse"><FormattedNumber value={props?.authorizedAmt} style="currency" currency="USD" /></div>
     },
     {
       name: t('paymentInvoices.history.table.Actions'),
@@ -61,7 +63,7 @@ export default function PendingPaymentTable() {
     }
   ];
   const handleSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
   };
 
   const handleChangePage = (e, newPage) => {
@@ -85,6 +87,15 @@ export default function PendingPaymentTable() {
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         progressPending={isFetching}
+        noDataComponent={
+          <EmptyDataTable
+            isLoading={isFetching}
+            error={isError ? 'Something went wrong! Please try again' : null}
+            image={EmptyDataImage}
+            heading={t('pendingPayments.table.bankAccount.emptyData')}
+            description={t('paymentInvoices.history.table.emptyDataDescription')}
+          />
+        }
         progressComponent={
           <div
             style={{

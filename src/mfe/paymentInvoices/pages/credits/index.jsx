@@ -13,20 +13,6 @@ export default function Credits(params) {
   const AdditionalFiltersConfig = useMemo(() => {
     return [
       {
-        type: 'multiSelectDropdown',
-        name: 'billNumber',
-        label: t('paymentInvoices.history.table.billNumber'),
-        id: 'billNumber',
-        options: []
-      },
-      {
-        type: 'multiSelectDropdown',
-        label: t('paymentInvoices.history.table.SoldToSite'),
-        name: 'soldToSite',
-        id: 'soldToSite',
-        options: []
-      },
-      {
         type: 'dateRangePicker',
         name: 'dateRange'
       }
@@ -35,7 +21,7 @@ export default function Credits(params) {
   return (
     <React.Fragment>
       <div className="MCP-CardContainer">
-        <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={'Search by document number, sold to...'} filterData={actualData} />
+        <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={'Search by document number, sold to...'} actualData={actualData} />
       </div>
       <div className="MCP-table-wrapper">
         <div className="table-header">

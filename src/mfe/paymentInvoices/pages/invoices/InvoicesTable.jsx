@@ -7,11 +7,13 @@ import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { usePaymentInvoices } from '../../context/PaymentsInvoicesContext';
 import { IntlProvider, FormattedNumber } from 'react-intl';
 import { ReactComponent as ActionIcon } from '@src/assets/image/actionIcon.svg';
+import EmptyDataTable from '@src/components/EmptyTable';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 
 export default function InvoicesTable() {
   const { t } = useTranslate();
   let dataElement = [{ label: 'Payment' }, { label: 'Export PDF' }];
-  const { data, isFetching, paginationConfig, setPageNumber, applySort } = usePaymentInvoices();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError } = usePaymentInvoices();
 
   const columns = [
     {
@@ -85,7 +87,15 @@ export default function InvoicesTable() {
       center: true,
       wrap: true,
       id: 'status',
-      cell: (props) => <div className="status-container">{props.status == 'PLUS_91_DAYS_OVERDUE' ? <Badge text="+91 DAYS OVERDUE" type="error-default" /> : <Badge text={`${props.status.match(/\d+/)[0]} DAYS OVERDUE`} type="warning-default" />}</div>
+      cell: (props) => (
+        <div className="status-container">
+          {props.status == 'PLUS_91_DAYS_OVERDUE' ? (
+            <Badge text="+91 DAYS OVERDUE" type="error-default" />
+          ) : (
+            <Badge text={`${props.status.match(/\d+/)[0]} DAYS OVERDUE`} type="warning-default" />
+          )}
+        </div>
+      )
     },
     {
       name: t('paymentInvoices.history.table.BillAmount'),
@@ -109,7 +119,13 @@ export default function InvoicesTable() {
       wrap: true,
       cell: (props) => (
         <div className="cellEllipse actionIcon">
-          <DropdownMenu anchorEl={<ActionIcon />} handleSelect={() => {}} options={dataElement} optionsAlign="left" aria-label="Profile options" />
+          <DropdownMenu
+            anchorEl={<ActionIcon />}
+            handleSelect={() => {}}
+            options={dataElement}
+            optionsAlign="left"
+            aria-label="Profile options"
+          />
         </div>
       )
     }
@@ -138,6 +154,15 @@ export default function InvoicesTable() {
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         progressPending={isFetching}
+        noDataComponent={
+          <EmptyDataTable
+            isLoading={isFetching}
+            error={isError ? 'Something went wrong! Please try again' : null}
+            image={EmptyDataImage}
+            heading={t('paymentInvoices.invoice.table.emptyData')}
+            description={t('paymentInvoices.history.table.emptyDataDescription')}
+          />
+        }
         progressComponent={
           <div
             style={{

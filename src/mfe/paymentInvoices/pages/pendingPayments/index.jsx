@@ -14,16 +14,16 @@ export default function PendingPayments(params) {
     return [
       {
         type: 'multiSelectDropdown',
-        name: 'confirmationNo',
-        id: 'confirmationNo',
-        label: t('pendingPayments.table.confirmationNumber'),
+        name: 'paymentStatus',
+        tableColumnId: 'paymentStatus',
+        label: t('pendingPayments.table.paymentStatus'),
         options: []
       },
       {
-        type: 'multiSelectDropdown',
-        name: 'paymentMethod',
-        id: 'paymentMethod',
-        label: t('paymentInvoices.history.table.paymentMethod'),
+        type: 'dropdown',
+        name: 'billDate',
+        tableColumnId: 'billDate',
+        label: t('pendingPayments.table.billDate'),
         options: []
       },
       {
@@ -35,7 +35,7 @@ export default function PendingPayments(params) {
   return (
     <React.Fragment>
       <div className="MCP-CardContainer">
-        <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={'Search by document number, sold to...'} filterData={actualData} />
+        <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={'Search by document number, sold to...'} actualData={actualData} />
       </div>
       <div className="MCP-table-wrapper">
         <div className="table-header">

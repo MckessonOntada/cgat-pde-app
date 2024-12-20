@@ -5,13 +5,16 @@ import { useTranslate } from '@src/translations/useTranslation';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as PDFicon } from '../../../../assets/svg/office-file-pdf.svg';
 import { usePaymentCredits } from '../../context/PaymentsCreditsContext';
+import EmptyDataTable from '@src/components/EmptyTable';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import { FormattedNumber } from 'react-intl';
 
 export default function CreditsTable() {
   const { t } = useTranslate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort } = usePaymentCredits();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError } = usePaymentCredits();
 
   const columns = [
-    {
+    { id:'billNumber',
       name: t('paymentInvoices.history.table.billNumber'),
       selector: (row) => `${row.billNumber}`,
       sortable: true,
@@ -32,47 +35,30 @@ export default function CreditsTable() {
       wrap: true,
       cell: (props) => <div>{props.soldToSite}</div>
     },
-    {
-      name: t('paymentInvoices.history.table.PostingDate'),
+    { id:'discription',
+      name: t('paymentInvoices.credits.table.description'),
+      selector: (row) => row.discription,
+      minWidth: '144px',
+      sortable: true,
+      wrap: true,
+      cell: (props) => props.discription
+    },
+    { id:'billDate',
+      name: t('paymentInvoices.credits.table.validfrom'),
       selector: (row) => row.billDate,
       sortable: true,
       wrap: true,
       minWidth: '160px',
       cell: (props) => <EclipsesTextcss className="cellEllipse" str={props.billDate} maxWidth={240} />
     },
-
-    {
-      name: t('paymentInvoices.history.table.PaymentTerm'),
-      selector: 'paymentTerm',
+ 
+    {id:'billAmount',
+      name: t('paymentInvoices.credits.table.amount'),
+      selector: (row) => row.billAmount,
       minWidth: '144px',
       sortable: true,
       wrap: true,
-      cell: (props) => <div className="status-container">{props.paymentTerm == 'COMPLETED' ? <Badge text="COMPLETED" type="success" /> : <Badge text="IN PROCESS" type="info-default" />}</div>
-    },
-    {
-      name: t('paymentInvoices.history.table.DueDate'),
-      selector: (row) => row.dueDate,
-      sortable: true,
-      wrap: true,
-      minWidth: '160px',
-      cell: (props) => <EclipsesTextcss className="cellEllipse" str={props.dueDate} maxWidth={240} />
-    },
-
-    {
-      name: t('paymentInvoices.history.table.OpenAmount'),
-      selector: (row) => row.openAmount,
-      minWidth: '144px',
-      sortable: true,
-      wrap: true,
-      cell: (props) => <div className="status-container">{props.openAmount}</div>
-    },
-    {
-      name: t('paymentInvoices.history.table.BillAmount'),
-      selector: (row) => row.BillAmount,
-      minWidth: '168px',
-      sortable: true,
-      wrap: true,
-      cell: (props) => <div className="cellEllipse">{props.billAmount}</div>
+      cell: (props) => <div className="status-container"><FormattedNumber value={props?.billAmount} style="currency" currency="USD" /></div>
     },
     {
       name: t('paymentInvoices.history.table.Actions'),
@@ -80,7 +66,7 @@ export default function CreditsTable() {
       minWidth: '144px',
       sortable: true,
       wrap: true,
-
+ 
       cell: (props) => (
         <Button className="back-button-control" variant="tertiary" Icon={() => <PDFicon />} onClick={() => {}} size="md">
           {t('paymentInvoices.credits.table.downloadPdf')}
@@ -89,7 +75,7 @@ export default function CreditsTable() {
     }
   ];
   const handleSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
   };
 
   const handleChangePage = (e, newPage) => {
@@ -112,6 +98,15 @@ export default function CreditsTable() {
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         progressPending={isFetching}
+        noDataComponent={
+          <EmptyDataTable
+            isLoading={isFetching}
+            error={isError ? 'Something went wrong! Please try again' : null}
+            image={EmptyDataImage}
+            heading={t('paymentInvoices.credits.table.emptyData')}
+            description={t('paymentInvoices.history.table.emptyDataDescription')}
+          />
+        }
         progressComponent={
           <div
             style={{

@@ -11,22 +11,29 @@ import Components from '../form/Components';
 import './Filters.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 
-const Filters = ({ onApplyFilters, onClearFilters, showControls = true, additionalFilters, searchPlaceholder = 'Search...', filterData = [] }) => {
+const Filters = ({
+  onApplyFilters,
+  onClearFilters,
+  showControls = true,
+  additionalFilters,
+  searchPlaceholder = 'Search...',
+  actualData = []
+}) => {
   const { t } = useTranslate();
   //TODO: This useEffect is not needed. It can be removed.
-  
+
   useEffect(() => {
-    if (filterData.length === 0 && additionalFilters.length === 0) return;
+    if (actualData.length === 0 && additionalFilters.length === 0) return;
 
     additionalFilters.forEach((filter, index) => {
       if (filter.tableColumnId) {
-        let currentFilterData = [...new Set(filterData.map((e) => e[filter.tableColumnId]).filter((e) => e))];
+        let currentFilterData = [...new Set(actualData.map((e) => e[filter.tableColumnId]).filter((e) => e))];
         additionalFilters[index].options = currentFilterData.map((item) => {
-          return { value: '' + item, label: '' + item };
+          return { value: '' + item, label: filter.customLabel ? filter.customLabel(item) : '' + item };
         });
       }
     });
-  }, [filterData]);
+  }, [actualData]);
 
   const initialFilters = useMemo(() => generateInitialFilterState(additionalFilters), [additionalFilters]);
   const [isCardExpanded, setIsCardExpanded] = useState(false);

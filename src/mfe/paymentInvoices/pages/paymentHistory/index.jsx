@@ -17,20 +17,16 @@ export default function PaymentHistory(params) {
       {
         type: 'multiSelectDropdown',
         name: 'paymentStatus',
-        id:'paymentStatus',
+        tableColumnId:'paymentStatus',
         label: t('paymentInvoices.history.filters.status'),
         options: []
       },
       {
         type: 'multiSelectDropdown',
         name: 'paymentMethod',
-        id:'paymentMethod',
+        tableColumnId:'paymentMethod',
         label: t('paymentInvoices.history.filters.method'),
         options: []
-      },
-      {
-        type: 'dateRangePicker',
-        name: 'dateRange'
       }
     ];
   }, []);
@@ -38,7 +34,7 @@ export default function PaymentHistory(params) {
   return (
     <React.Fragment>
       <div className="MCP-panel-container">
-        <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={t('paymentInvoices.history.filters.autoSearch')} filterData={actualData}/>
+        <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={t('paymentInvoices.history.filters.autoSearch')} actualData={actualData}/>
       </div>
       <div className="table-header">
         <h1>{t('paymentInvoices.history.table.heading')}</h1>

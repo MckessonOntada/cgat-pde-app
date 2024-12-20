@@ -37,6 +37,8 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.filters.downloadExcel': 'S_Download Excel',
   'paymentInvoices.history.filters.paymentDetails': 'S_Payment Details',
   'paymentInvoices.history.table.heading': 'S_Payment History',
+  'paymentInvoices.history.table.emptyData': 'S_No Payment History Found',
+  "paymentInvoices.history.table.emptyDataDescription": "S_Please try again later",
 
   // Customer Statements
   'paymentInvoices.CS.filters.autoSearch': 'S_Search by document number, sold to',
@@ -46,11 +48,13 @@ export const PaymentInvoicesES = {
   'paymentInvoices.CS.filters.clearFilter': 'S_Clear Filter',
   'paymentInvoices.CS.StatementListing': 'S_Statement Listing',
   'paymentInvoices.CS.ExportExcel': 'S_Export Excel',
-  'paymentInvoices.CS.table.billNumber': 'S_Bill No.',
-  'paymentInvoices.CS.table.accountnumber': 'S_Account No.',
+  'paymentInvoices.CS.table.billNumber': 'S_Bill No',
+  'paymentInvoices.CS.table.accountnumber': 'S_Account Number',
   'paymentInvoices.CS.table.date': 'S_Date',
   'paymentInvoices.CS.table.statementBalance': 'S_Statement Balance',
   'paymentInvoices.CS.table.actions': 'S_Action(s)',
+  'paymentInvoices.CS.table.exportPdf': 'S_Export PDF',
+  'paymentInvoices.CS.table.emptyData': 'S_No Customer Statement Found',
 
   // Invoices
   'paymentInvoices.history.table.billNumber': 'S_Bill Number',
@@ -63,6 +67,8 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.Actions': 'S_Actions',
   'paymentInvoices.history.table.heading': 'S_Payment Listing',
   'paymentInvoices.history.table.status': 'Status',
+  'paymentInvoices.invoice.table.emptyData': 'S_No Invoice Found',
+
 
   //Credits
   'paymentInvoices.credits.table.description': 'S_Description',
@@ -70,6 +76,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.credits.table.amount': 'S_Amount',
   'paymentInvoices.credits.table.downloadPdf': 'S_download pdf',
   'paymentInvoices.credits.table.heading': 'S_Credits Listing',
+  'paymentInvoices.credits.table.emptyData': 'S_No Credits Found',
 
   //payment methods - bank account
   'paymentInvoices.paymentMethods.table.bankAccount.addnewcard': 'S_add new card',
@@ -78,6 +85,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.paymentMethods.table.bankAccount.bankAccNumber': 'S_Bank Account Number',
   'paymentInvoices.paymentMethods.table.bankAccount.bankCountry': 'S_Bank Country',
   'paymentInvoices.paymentMethods.table.bankAccount.companyCode': 'S_Company Code',
+  'paymentInvoices.paymentMethods.table.bankAccount.emptyData': 'S_No Payment Methods Found',
 
   //Pending Payments
   'pendingPayments.table.confirmationNumber': 'S_Confirmation Number',
@@ -85,5 +93,8 @@ export const PaymentInvoicesES = {
   'pendingPayments.table.cancelPayment': 'S_CANCEL PAYMENT',
   'pendingPayments.table.heading': 'S_Pending Payments',
   'pendingPayments.table.paymentMethod.subHeader': `S_To view all payments, navigate to the 'Payment History'.`,
+  'pendingPayments.table.bankAccount.emptyData': 'S_No Pending Payments Found',
+  'pendingPayments.table.paymentStatus':'S_Payment Status',
+  'pendingPayments.table.billDate':'S_Bill Date',
 
 };

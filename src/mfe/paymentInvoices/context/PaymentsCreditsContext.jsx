@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import useSnackbar from '@src/hooks/useSnackbar';
+import { useAccountContext } from './AccountContext';
 
 const PaymentsCreditsContext = createContext();
 
@@ -18,7 +19,8 @@ const RECORDS_PER_PAGE = 8;
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
   billNumber: [],
-  soldToSite: []
+  soldToSite: [],
+  dateRange: ''
 };
 
 const INITIAL_SORT_STATE = {
@@ -40,6 +42,9 @@ export const PaymentsCreditsProvider = ({ children }) => {
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const { showSnackbar } = useSnackbar();
+  const [previousFilterConfig, setPreviousFilterConfig] = useState(INITIAL_FILTER_STATE);
+
+  const { selectedAccount } = useAccountContext();
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
@@ -49,52 +54,63 @@ export const PaymentsCreditsProvider = ({ children }) => {
     }));
   };
 
-  const filterData = (filters) => {
+  const filterData = async (filters) => {
+    if (JSON.stringify(filters.dateRange) !== JSON.stringify(previousFilterConfig.dateRange)) {
+      await refetch();
+      setPreviousFilterConfig(filters);
+    }
     let _data = [...[], ...unSlicedData];
     let _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery
-        ? item.billNumber?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item.soldToSite?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item.billDate?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item.paymentTerm?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item.dueDate?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item.openAmount.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item.billAmount?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase())
+        ? item.billNumber?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase())
         : true;
-      const matchesPaymentStatus = filters?.billNumber?.length > 0 ? filters.billNumber.includes(item.billNumber?.toString()) : true;
-      const matchesPaymentMethod = filters?.soldToSite?.length > 0 ? filters.soldToSite.includes(item.soldToSite?.toString()) : true;
-      const matchesDateRange = filters.dateRange?.length === 2 ? new Date(item.dueDate) >= new Date(filters.dateRange[0]) && new Date(item.dueDate) <= new Date(filters.dateRange[1]) : true;
-
-      return matchesSearchQuery && matchesPaymentStatus && matchesPaymentMethod && matchesDateRange;
+      return matchesSearchQuery;
     });
 
     const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
     const endIndex = startIndex + paginationConfig.pageSize;
     // Updating the page count and total records
-    setPaginationConfig((state) => ({ ...state, totalPages: Math.ceil(_modifiedData.length / paginationConfig.pageSize), totalElements: _modifiedData.length }));
+    setPaginationConfig((state) => ({
+      ...state,
+      totalPages: Math.ceil(_modifiedData.length / paginationConfig.pageSize),
+      totalElements: _modifiedData.length
+    }));
     setData(_modifiedData.slice(startIndex, endIndex));
   };
 
-  const { isFetching, isError, data1, refetch } = useQuery({
-    queryKey: ['invoiceListing'],
-    queryFn: async () => {
-      const url = `${ApiRoutes.INVOICES_CREDITS_LISTING('123', true)}`;
-      const payload = {
-        companyCode: 'string',
-        salesOrg: 'string',
-        payerAccountNumber: 'string'
+  const { isFetching, isError, refetch } = useQuery(
+    ['creditListing', selectedAccount?.id],
+    async () => {
+      if (!selectedAccount?.id) return;
+      const url = `${ApiRoutes.INVOICES_CREDITS_LISTING(selectedAccount?.id, true)}`;
+      let payload = {
+        companyCode: selectedAccount?.companyCode,
+        salesOrg: selectedAccount?.salesOrg,
+        payerAccountNumber: selectedAccount?.accountNumber
       };
+      //  if(filterConfig.dateRange?.length>0 && JSON.stringify(filterConfig.dateRange) !== JSON.stringify(previousFilterConfig.dateRange)){
+      //   payload={...payload,...{dateFrom:filterConfig.dateRange[0]??"",dateTo:filterConfig.dateRange[1]??""}}
+      //  }
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
       if (res.data) {
-        setData(res.data?.openInvoices);
+        const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
+        const endIndex = startIndex + paginationConfig.pageSize;
+        setData(res.data?.openInvoices.slice(startIndex, endIndex));
         setUnSlicedData(res.data?.openInvoices);
-        setPaginationConfig((state) => ({ ...state, totalPages: Math.ceil(res.data?.openInvoices.length / paginationConfig.pageSize), totalElements: res.data?.openInvoices.length }));
+        setPaginationConfig((state) => ({
+          ...state,
+          totalPages: Math.ceil(res.data?.openInvoices.length / paginationConfig.pageSize),
+          totalElements: res.data?.openInvoices.length
+        }));
       }
     },
-    onError: (error) => {
-      showSnackbar({ description: 'Error fetching invoice listing', type: 'error' });
+    {
+      enabled: !!selectedAccount?.id,
+      onError: (error) => {
+        showSnackbar({ description: 'Error fetching invoice listing', type: 'error' });
+      }
     }
-  });
+  );
   useEffect(() => {
     filterData(filterConfig);
   }, [filterConfig, paginationConfig.pageNumber]);
@@ -145,7 +161,7 @@ export const PaymentsCreditsProvider = ({ children }) => {
     data: data || [],
     actualData: unSlicedData || [],
     isFetching,
-    // isError,
+    isError,
     filterConfig,
     paginationConfig,
     sortConfig,

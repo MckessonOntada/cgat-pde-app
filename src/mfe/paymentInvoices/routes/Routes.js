@@ -15,6 +15,7 @@ import { PendingPaymentsProvider } from '../context/PendingPaymentsContext';
 import PendingPayments from '../pages/pendingPayments';
 import { useAccountContext } from '../context/AccountContext';
 import CommonUtils from '@src/util/CommonUtils';
+import { CustomerStatementsProvider } from '../context/CustomerStatementsContext';
 
 const Routes = () => {
   const { selectedAccount } = useAccountContext();
@@ -53,7 +54,14 @@ const Routes = () => {
           </PaymentHistoryProvider>
         }
       />
-      <Route path={PATHS.customerStatements} element={<CustomerSatements />} />
+      <Route
+        path={PATHS.customerStatements}
+        element={
+          <CustomerStatementsProvider>
+            <CustomerSatements />
+          </CustomerStatementsProvider>
+        }
+      />
       <Route
         path={PATHS.paymentMethods + '/*'}
         element={

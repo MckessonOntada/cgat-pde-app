@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import useSnackbar from '@src/hooks/useSnackbar';
+import { useAccountContext } from './AccountContext';
 
 const PaymentsInvoicesContext = createContext();
 
@@ -41,6 +42,8 @@ export const PendingPaymentsProvider = ({ children }) => {
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const [isLoading, setIsLoading] = useState(false);
   const { showSnackbar } = useSnackbar();
+  const { selectedAccount } = useAccountContext();
+
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
@@ -57,13 +60,13 @@ export const PendingPaymentsProvider = ({ children }) => {
       const matchesSearchQuery = filters?.searchQuery
         ? item?.confirmationNo?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
           item?.paymentMethod?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item?.paymentInitiationDate?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase())
+          item?.paymentInitiationDate?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) || item?.authorizedAmt?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase())
         : true;
-      const matchesPaymentStatus = filters?.confirmationNo?.length > 0 ? filters.confirmationNo.includes(item.confirmationNo.toString()) : true;
-      const matchesPaymentMethod = filters?.paymentMethod?.length > 0 ? filters.paymentMethod.includes(item.paymentMethod.toString()) : true;
-      const matchesDateRange = filters.dateRange?.length === 2 ? new Date(item.paymentInitiationDate) >= new Date(filters.dateRange[0]) && new Date(item.paymentInitiationDate) <= new Date(filters.dateRange[1]) : true;
-
-      return matchesSearchQuery && matchesPaymentStatus && matchesPaymentMethod && matchesDateRange;
+      const matchesPaymentStatus = filters?.paymentStatus?.length > 0 ? filters.paymentStatus.includes(item.paymentStatus.toString()) : true;
+ 
+      const matchesBillDate = filters?.billDate?.length > 0 ? filters.billDate.includes(item.billDate.toString()) : true;
+ 
+      return matchesSearchQuery && matchesPaymentStatus && matchesBillDate;
     });
 
     const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
@@ -88,23 +91,26 @@ export const PendingPaymentsProvider = ({ children }) => {
     sortData(newSortConfig);
   };
 
-  const { isFetching } = useQuery({
-    queryKey: ['pendingPaymentsListing'],
+  const { isFetching,isError } = useQuery({
+    queryKey: ['pendingPaymentsListing', selectedAccount?.id],
     queryFn: async () => {
-      //TODO "123" is hardcoded, need to replace with actual value
+      if (!selectedAccount) return;
       const url = `${ApiRoutes.PENDING_PAYMENTS_LISTING('123')}`;
       const payload = {
-        companyCode: 'string',
-        salesOrg: 'string',
-        payerAccountNumber: 'string'
+        companyCode: selectedAccount?.companyCode,
+        salesOrg: selectedAccount?.salesOrg,
+        payerAccountNumber: selectedAccount?.accountNumber
       };
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
       if (res.data) {
-        setData(res.data.pendingPayments);
+        const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
+        const endIndex = startIndex + paginationConfig.pageSize;
+        setData(res.data.pendingPayments.slice(startIndex, endIndex));
         setUnSlicedData(res.data.pendingPayments);
         setPaginationConfig((state) => ({ ...state, totalPages: Math.ceil(res.data?.pendingPayments.length / paginationConfig.pageSize), totalElements: res.data?.pendingPayments.length }));
       }
     },
+    enabled: !!selectedAccount,
     onError: (error) => {
       showSnackbar({ description: 'Error fetching Pending payments listing', type: 'error' });
     }
@@ -146,7 +152,7 @@ export const PendingPaymentsProvider = ({ children }) => {
     data: data || [],
     actualData: unSlicedData || [],
     isFetching,
-    // isError,
+    isError,
     filterConfig,
     paginationConfig,
     sortConfig,
