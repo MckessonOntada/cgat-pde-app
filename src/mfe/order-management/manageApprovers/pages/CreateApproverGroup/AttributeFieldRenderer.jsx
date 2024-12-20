@@ -41,7 +41,11 @@ const AttributeFieldRenderer = ({ attributeType, name, localData, setLocalData, 
             isRequired
             component={Components['multiSelectDropdown']}
             options={localData}
-            getUpdatedOptions={setLocalData}
+            getUpdatedOptions={(values) => {
+              if (values.length > 0) {
+                setLocalData(values);
+              }
+            }}
             onRemoveClick={onRemoveClick}
             noSelectedCountMessage={t('approvergroup.create.option.please_select')}
             pillsLabels={createLabelData(getAugmentedValues(values.rules, attributeType))}
@@ -62,7 +66,11 @@ const AttributeFieldRenderer = ({ attributeType, name, localData, setLocalData, 
             isRequired
             component={Components['multiSelectDropdown']}
             options={localData}
-            getUpdatedOptions={setLocalData}
+            getUpdatedOptions={(values) => {
+              if (values.length > 0) {
+                setLocalData(values);
+              }
+            }}
             onRemoveClick={onRemoveClick}
             noSelectedCountMessage={t('approvergroup.create.option.please_select')}
             pillsLabels={createLabelData(getAugmentedValues(values.rules, attributeType))}
@@ -96,7 +104,11 @@ const AttributeFieldRenderer = ({ attributeType, name, localData, setLocalData, 
             isRequired
             component={Components['multiSelectDropdown']}
             options={localData}
-            getUpdatedOptions={setLocalData}
+            getUpdatedOptions={(values) => {
+              if (values.length > 0) {
+                setLocalData(values);
+              }
+            }}
             onRemoveClick={onRemoveClick}
             noSelectedCountMessage={t('approvergroup.create.option.please_select')}
             pillsLabels={createLabelData(getAugmentedValues(values.rules, attributeType))}
