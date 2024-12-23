@@ -7,71 +7,80 @@ import FloatingDrawer from '../../../../components/floating-drawer';
 import PaymentDetails from './PaymentDetails';
 import { useTranslate } from '@src/translations/useTranslation';
 import { usePaymentHistory } from '../../context/PaymentHistoryContext';
+import EmptyDataTable from '@src/components/EmptyTable';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import { FormattedNumber } from 'react-intl';
 
 export default function PaymentHistoryTable() {
   const { t } = useTranslate();
-  const [filteredData, setFilteredData] = useState(PaymentHistoryData);
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data, isLoading, paginationConfig, setPageNumber, applySort } = usePaymentHistory();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError } = usePaymentHistory();
   const columns = [
     {
+      id: 'confirmationNo',
       name: t('paymentInvoices.history.table.confirmationNumber'),
-      selector: (row) => `${row.ConfirmationNumber}`,
+      selector: (row) => `${row.confirmationNo}`,
       sortable: true,
-      sortKey: 'ConfirmationNumber',
       wrap: true,
       cell: (props) => (
         <div className="cellEllipse" onClick={() => setIsOpen(true)}>
-          <Link style={{ color: '#007bff', fontWeight: '600' }}>{`${props.ConfirmationNumber}`}</Link>
+          <Link style={{ color: '#007bff', fontWeight: '600' }}>{`${props.confirmationNo}`}</Link>
         </div>
       )
     },
     {
-      id: 'PurchaseOrderNumber',
+      id: 'purchaseOrderNo',
       name: t('paymentInvoices.history.table.purchaseOrderNumber'),
       sortable: true,
-      sortKey: 'PurchaseOrderNumber',
-      selector: () => {},
-      cell: (props) => <div>{props.PurchaseOrderNumber}</div>
+      selector: (row) => `${row.purchaseOrderNo}`,
+      cell: (props) => <div>{props.purchaseOrderNo}</div>
     },
     {
+      id: 'paymentMethod',
       name: t('paymentInvoices.history.table.paymentMethod'),
-      selector: (row) => {},
+      selector: (row) => `${row.paymentMethod}`,
       wrap: true,
       sortable: true,
-      sortKey: 'PaymentMethod',
       width: '20%',
-      cell: (props) => <div className="cellEllipse">{props.PaymentMethod}</div>
+      cell: (props) => <div className="cellEllipse">{props.paymentMethod}</div>
     },
 
     {
+      id: 'paymentInitiationDate',
       name: t('paymentInvoices.history.table.paymentInitiationDate'),
-      selector: (row) => {},
+      selector: (row) => `${row.paymentInitiationDate}`,
       width: '20%',
       sortable: true,
-      sortKey: 'PaymentInitiationDate',
-      cell: (props) => <div className="cellEllipse">{props.PaymentInitiationDate}</div>
+      cell: (props) => <div className="cellEllipse">{props.paymentInitiationDate}</div>
     },
     {
+      id: 'paymentStatus',
       name: t('paymentInvoices.history.table.paymentStatus'),
-      selector: 'paymentStatus',
+      selector: (row) => `${row.paymentStatus}`,
       sortable: true,
-      sortKey: 'PaymentStatus',
-      cell: (props) => <div className="status-container">{props.PaymentStatus == 'COMPLETED' ? <Badge text="COMPLETED" type="success" /> : <Badge text="IN PROCESS" type="info-default" />}</div>
+      cell: (props) => (
+        <div className="status-container">
+          {props.paymentStatus == 'COMPLETED' ? <Badge text="COMPLETED" type="success" /> : <Badge text="IN PROCESS" type="info-default" />}
+        </div>
+      )
     },
     {
+      id: 'totalAuthorizedPaymentAmount',
       name: <div className="align-items-right">{t('paymentInvoices.history.table.totalAuthorizedPaymentAmt')}</div>,
-      selector: (row) => {},
+      selector: (row) => `${row.totalAuthorizedPaymentAmount}`,
       width: '20%',
       sortable: true,
-      sortKey: 'TotalAuthorizedPaymentAmt',
-      cell: (props) => <div className="align-items-right">${props.TotalAuthorizedPaymentAmt}</div>
+      cell: (props) => (
+        <div className="align-items-right">
+          <FormattedNumber value={props?.totalAuthorizedPaymentAmount} style="currency" currency="USD" />
+        </div>
+      )
     }
   ];
 
   const handleSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
   };
 
   const handleChangePage = (e, newPage) => {
@@ -94,7 +103,16 @@ export default function PaymentHistoryTable() {
         recordsPerPage={paginationConfig.pageSize}
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
-        progressPending={isLoading}
+        progressPending={isFetching}
+        noDataComponent={
+          <EmptyDataTable
+            isLoading={isFetching}
+            error={isError ? 'Something went wrong! Please try again' : null}
+            image={EmptyDataImage}
+            heading={t('paymentInvoices.history.table.emptyData')}
+            description={t('paymentInvoices.history.table.emptyDataDescription')}
+          />
+        }
         progressComponent={
           <div
             style={{
@@ -107,8 +125,6 @@ export default function PaymentHistoryTable() {
             <Loader variant="circular" />
           </div>
         }
-        // isAdmin={true}
-        // noDataComponent={<EmptyDataTable isLoading={isLoading} error={isError ? 'Something went wrong! Please try again' : null} image={EmptyDataImage} heading={t('orgManagement.add.label')} description={t('orgManagement.empty_table.description')} />}
       />
       <FloatingDrawer open={isOpen} anchor="right" onClose={() => setIsOpen(false)}>
         <PaymentDetails />

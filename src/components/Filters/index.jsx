@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from '@mckesson/mcp-component-library';
 import arrow_right from '@src/assets/image/arrow_right.svg';
@@ -12,8 +12,30 @@ import './Filters.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 
-const Filters = ({ onApplyFilters, onClearFilters, showControls = true, additionalFilters, searchPlaceholder = 'Search...' }) => {
+const Filters = ({
+  onApplyFilters,
+  onClearFilters,
+  showControls = true,
+  additionalFilters,
+  searchPlaceholder = 'Search...',
+  actualData = []
+}) => {
   const { t } = useTranslate();
+  //TODO: This useEffect is not needed. It can be removed.
+
+  useEffect(() => {
+    if (actualData.length === 0 && additionalFilters.length === 0) return;
+
+    additionalFilters.forEach((filter, index) => {
+      if (filter.tableColumnId) {
+        let currentFilterData = [...new Set(actualData.map((e) => e[filter.tableColumnId]).filter((e) => e))];
+        additionalFilters[index].options = currentFilterData.map((item) => {
+          return { value: '' + item, label: filter.customLabel ? filter.customLabel(item) : '' + item };
+        });
+      }
+    });
+  }, [actualData]);
+
   const initialFilters = useMemo(() => generateInitialFilterState(additionalFilters), [additionalFilters]);
   const [isCardExpanded, setIsCardExpanded] = useState(false);
   const formRef = useRef(null);
