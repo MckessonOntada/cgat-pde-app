@@ -5,6 +5,7 @@ import useWindowSize from '@src/hooks/UseWindowSize';
 import { useAccountContext } from '../context/AccountContext';
 import { GeographicUtils } from '@src/util/GeographicUtil';
 import CommonUtils from '@src/util/CommonUtils';
+import { useNavigate } from 'react-router-dom';
 
 const TABLET_BREAKPOINT = 768;
 
@@ -13,7 +14,7 @@ export default function RecordDetails() {
   const windowSize = useWindowSize();
   const isMobileView = windowSize.width < TABLET_BREAKPOINT;
   const buttonSize = isMobileView ? 'md' : 'lg';
-
+  const navigate = useNavigate();
   const { selectedAccount, searchPayToAccounts, payToAccountsList, applyEvent, searchText, defaultSetEvent } = useAccountContext();
   const [selectedPayToAccount, setSelectedPayToAccount] = useState(null);
 
@@ -31,6 +32,7 @@ export default function RecordDetails() {
   const getSelectedValueData = (selectedValue) => {
     setSelectedPayToAccount(selectedValue);
     setIsValueSelected(true);
+    navigate('invoice');
   };
 
   return CommonUtils.isNonEmptyObject(selectedAccount) ? (

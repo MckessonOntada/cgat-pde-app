@@ -24,8 +24,8 @@ const INITIAL_FILTER_STATE = {
 };
 
 const INITIAL_SORT_STATE = {
-  sortBy: 'name',
-  sortOrder: 'asc'
+  sortBy: '',
+  sortOrder: ''
 };
 
 const INITIAL_PAGINATION_STATE = {
@@ -145,7 +145,6 @@ export const PaymentsInvoiceProvider = ({ children }) => {
 
   const sortData = (newSortConfig) => {
     let _data = [...[], ...unSlicedData];
-
     let _modifiedData = _data.sort((a, b) => {
       const valA = a[newSortConfig.sortBy];
       const valB = b[newSortConfig.sortBy];
@@ -162,7 +161,6 @@ export const PaymentsInvoiceProvider = ({ children }) => {
     });
     const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
     const endIndex = startIndex + paginationConfig.pageSize;
-
     setData(_modifiedData.slice(startIndex, endIndex));
   };
 
@@ -174,7 +172,6 @@ export const PaymentsInvoiceProvider = ({ children }) => {
       pageNumber
     }));
   };
-
   const contextValue = {
     data: data || [],
     actualData: actualData || [],

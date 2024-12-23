@@ -9,13 +9,15 @@ import { PATHS, tabListData } from './routes/constants';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ModuleHeader from '../../components/module-header';
 import { PaymentsInvoiceProvider } from './context/PaymentsInvoicesContext';
-import { AccountProvider } from './context/AccountContext';
+import { useAccountContext } from './context/AccountContext';
 import { BalanceProvider } from './context/BalanceContext';
+import CommonUtils from '@src/util/CommonUtils';
 
 const PaymentsInvoices = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [tabs, setTabs] = useState();
+  const { selectedAccount } = useAccountContext();
 
   useEffect(() => {
     if (Array.isArray(tabListData) && tabListData.length > 0) {
@@ -31,10 +33,10 @@ const PaymentsInvoices = () => {
   }, [location.pathname]);
 
   return (
-    <AccountProvider>
-      <PaymentsInvoiceProvider>
-        <div className="MCP-module-wrapper">
-          <ModuleHeader heading={<PageHeader heading={'Payment Invoices'} />} />
+    <div className="MCP-module-wrapper">
+      <ModuleHeader heading={<PageHeader heading={'Payment Invoices'} />} />
+      {CommonUtils.isNonEmptyObject(selectedAccount) ? (
+        <React.Fragment>
           <RecordDetails />
           <BalanceProvider>
             <BalanceDetails />
@@ -55,9 +57,14 @@ const PaymentsInvoices = () => {
               <Routes />
             </div>
           </div>
+        </React.Fragment>
+      ) : (
+        <div className="emptyDataContainer">
+          <h2 className="emptyDataHeading">No Data Found</h2>
+          <p className="emptyDataDescription">No account data available to display !</p>
         </div>
-      </PaymentsInvoiceProvider>
-    </AccountProvider>
+      )}
+    </div>
   );
 };
 
