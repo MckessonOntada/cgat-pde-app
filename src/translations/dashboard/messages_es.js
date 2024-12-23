@@ -19,5 +19,6 @@ export const DashboardES = {
   'dashboard.card.approver_management_description': 'S_Enables you to efficiently create, review and manage approver groups.',
 
   // Secondary Header routing tabs
-  'header.tabs.dashboard': 'S_Dashboard'
+  'header.tabs.dashboard': 'S_Dashboard',
+  'header.tabs.payment_invoices': 'S_Payment and Invoices'
 };

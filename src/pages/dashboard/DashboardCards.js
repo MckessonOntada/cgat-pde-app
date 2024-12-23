@@ -60,7 +60,7 @@ const CARDS_DATA = [
     icon: ApproverGroupIcon,
     details: 'approver_management_description',
     path: AppRoutes.pathApproverManagement,
-    permissions: ORDER_MANAGEMENT.MANAGE_ORDERS // To do - it should be View/Add Approver Group
+    permissions: ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP
   }
   // {
   //   name: 'ManageCatalog',

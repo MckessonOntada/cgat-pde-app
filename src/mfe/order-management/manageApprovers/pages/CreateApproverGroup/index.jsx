@@ -19,6 +19,8 @@ import { createLabelData, getValidationSchema, transformAttributesToRules } from
 import './index.scss';
 import { useFormContext } from '../../context/FormContext';
 import { handleApiError } from '@src/util/ApiUtils';
+import usePermission from '@src/hooks/usePermissions';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 
 const CreateApproverGroup = () => {
   const { t } = useTranslate();
@@ -34,6 +36,8 @@ const CreateApproverGroup = () => {
   const dataBinded = useRef(false);
   const [isDirty, setIsDirty] = React.useState(false);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
+  const userPermissions = AuthUtils.getUserPermissions();
+  const { hasPermission } = usePermission();
 
   useEffect(() => {
     if (!dataBinded.current) {
@@ -200,7 +204,7 @@ const CreateApproverGroup = () => {
                         <Heading as="h2">{t('approvergroup.attributes')}</Heading>
                       </div>
                       <div>
-                        <Attributes values={values} errors={errors} touched={touched} handleChange={handleChange} />
+                        <Attributes values={values} setFieldValue={setFieldValue} />
                       </div>
                     </div>
 
@@ -218,7 +222,11 @@ const CreateApproverGroup = () => {
                           isRequired
                           component={Components['multiSelectDropdown']}
                           options={localUserData || []}
-                          getUpdatedOptions={setLocalUsersData}
+                          getUpdatedOptions={(values) => {
+                            if (values.length > 0) {
+                              setLocalUsersData(values);
+                            }
+                          }}
                           onRemoveClick={onRemoveUserClick}
                           noSelectedCountMessage={t('approvergroup.create.option.please_select')}
                           pillsLabels={createLabelData(values.approverUsers_augmented)}
@@ -234,10 +242,13 @@ const CreateApproverGroup = () => {
                 <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>
                   {t('approvergroup.button.cancel')}
                 </Button>
-
-                <Button type="submit" size={'md'}>
-                  {t(isEditMode ? 'approvergroup.button.updategroup' : 'approvergroup.button.creategroup')}
-                </Button>
+                {hasPermission(
+                  isEditMode ? PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_APPROVER_GROUP : PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_APPROVER_GROUP
+                ) && (
+                  <Button type="submit" size="md">
+                    {t(isEditMode ? 'approvergroup.button.updategroup' : 'approvergroup.button.creategroup')}
+                  </Button>
+                )}
               </div>
             </Form>
           );

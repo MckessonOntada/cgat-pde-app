@@ -128,7 +128,7 @@ function ApproverGroupDetails() {
         <ModuleHeader
           heading={<Heading as="h1">{t('approvergroup.view.header')}</Heading>}
           controls={
-            hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS) && (
+            hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_APPROVER_GROUP) && (
               <Button
                 Icon={EditPencil}
                 variant="secondary"
@@ -143,7 +143,11 @@ function ApproverGroupDetails() {
         />
         <ModuleHeader
           heading={<Heading as="h3">{t('approvergroup.view.subheader.group_details')}</Heading>}
-          controls={<Switch handleToggle={handleActivateDeactivate} id="id" name="Toggle" size="lg" value={groupData?.active} />}
+          controls={
+            hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_APPROVER_GROUP) && (
+              <Switch handleToggle={handleActivateDeactivate} id="id" name="Toggle" size="lg" value={groupData?.active} />
+            )
+          }
         />
 
         <div className="MCP-panel-container">

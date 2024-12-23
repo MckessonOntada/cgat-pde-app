@@ -33,7 +33,7 @@ const HeaderConfig = {
       isActiveTab: false,
       labelForMobile: 'Payment and Invoices',
       sequence: 3,
-      translationName: 'Payment Invoices',
+      translationName: 'header.tabs.payment_invoices',
       submenu: [
         {
           label: 'Invoices',

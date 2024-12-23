@@ -1,11 +1,8 @@
-import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from 'react';
+import React from 'react';
 import { useQuery } from 'react-query';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import ApiRoutes from '@src/api/ApiRoutes';
-import { serializeParams } from '@src/util/ApiUtils';
-import AuthUtils from '@src/util/AuthUtils';
+import OrderService from '@src/api/commonService/OrderService';
 
-const TherapyContext = createContext();
+const TherapyContext = React.createContext();
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
@@ -26,7 +23,7 @@ const INITIAL_PAGINATION_CONFIG = {
 };
 
 export const useTherapy = () => {
-  const context = useContext(TherapyContext);
+  const context = React.useContext(TherapyContext);
   if (!context) {
     throw new Error('useTherapy must be used within a Therapy Provider.');
   }
@@ -34,23 +31,25 @@ export const useTherapy = () => {
 };
 
 export const TherapyProvider = ({ children }) => {
-  const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
-  const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
-  const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
+  const [filterConfig, setFilterConfig] = React.useState(INITIAL_FILTER_STATE);
+  const [paginationConfig, setPaginationConfig] = React.useState(INITIAL_PAGINATION_CONFIG);
+  const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);
 
-  const requestParams = useMemo(
+  const requestParams = React.useMemo(
     () => ({
       pageNumber: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       ...(filterConfig?.salesOrg && filterConfig?.salesOrg.length > 0 && { salesOrg: [...filterConfig.salesOrg] }),
-      ...(filterConfig?.customerIdentifier && filterConfig?.customerIdentifier.length > 0 && { customerIdentifier: [...filterConfig.customerIdentifier] }) //,
+      ...(filterConfig?.customerIdentifier && filterConfig?.customerIdentifier.length > 0 && { customerIdentifier: [...filterConfig.customerIdentifier] }),
+
+      ...(sortConfig?.sortBy && { sortBy: sortConfig.sortBy }),
+      ...(sortConfig?.sortOrder && { sortBy: sortConfig.sortOrder })
     }),
     [filterConfig, paginationConfig.pageNumber]
   );
 
-  const userId = AuthUtils.getUserId();
-  const updateFilterState = useCallback((field, value) => {
+  const updateFilterState = React.useCallback((field, value) => {
     setFilterConfig((prevState) => ({
       ...prevState,
       [field]: value
@@ -60,33 +59,26 @@ export const TherapyProvider = ({ children }) => {
   const {
     isLoading,
     isError,
-    data = [],
+    data = {},
     refetch: refreshData
   } = useQuery({
     queryKey: ['Therapy', requestParams],
-    queryFn: async () => {
-      const url = `${ApiRoutes.ORDER(userId)}/therapies?${serializeParams(requestParams)}`;
-      const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-      if (res.data) {
-        const { content: data, totalElements, totalPages } = res.data;
+    queryFn: async () => OrderService.getTherapies(requestParams),
+    onSuccess: (result) => {
+      const { totalElements, totalPages } = result;
 
-        setPaginationConfig((prevConfig) => ({
-          ...prevConfig,
-          ...(totalElements && { totalElements }),
-          ...(totalPages && { totalPages })
-        }));
-
-        return data;
-      }
-
-      return [];
+      setPaginationConfig((prevConfig) => ({
+        ...prevConfig,
+        ...(totalElements && { totalElements }),
+        ...(totalPages && { totalPages })
+      }));
     },
     refetchOnWindowFocus: false
   });
 
-  useEffect(() => {
+  React.useEffect(() => {
     refreshData();
-  }, [filterConfig, paginationConfig.pageNumber]);
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
 
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
 
@@ -104,9 +96,9 @@ export const TherapyProvider = ({ children }) => {
 
   const clearFilters = () => setFilterConfig(INITIAL_FILTER_STATE);
 
-  const ctxValue = useMemo(
+  const ctxValue = React.useMemo(
     () => ({
-      data,
+      data: data.content || [],
       isLoading,
       isError,
       filterConfig,

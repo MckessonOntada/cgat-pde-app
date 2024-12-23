@@ -150,7 +150,7 @@ function ApproverList({ onActionSuccess }) {
         cell: (row) => <Actions row={row} />,
         width: '200px',
         minWidth: '200px',
-        omit: !hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS) // To do - Change to approvergroup permissions
+        omit: !hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_APPROVER_GROUP)
       }
     ];
   }, [data, userPermissions]);
@@ -165,7 +165,7 @@ function ApproverList({ onActionSuccess }) {
           <Button
             variant="secondary"
             onClick={handleActivateDeactivate}
-            disabled={!hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.MANAGE_ORDERS)}>
+            disabled={!hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP)}>
             {selectedRows.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
           </Button>
         </div>
