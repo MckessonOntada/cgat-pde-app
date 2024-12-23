@@ -26,7 +26,7 @@ const PatientDetails = () => {
   const { formState, setActiveRecord, setCurrentOrder, messageConfig, editByStage } = useManageOrder();
   const alertContainerRef = useRef(null);
   const { showAlert } = useAlert();
-
+  const isEdit = !!orderId;
   React.useEffect(() => {
     if (!formState.activeRecord?.patientDetailsRequired) {
       navigate(`../${orderId}/additional-details`);
@@ -84,7 +84,7 @@ const PatientDetails = () => {
         </Button>
       </div>
 
-      <PageHeader heading={<Heading as="h1">{t('headings.createNewOrder')}</Heading>} />
+      <PageHeader heading={<Heading as="h1">{isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}</Heading>} />
 
       <div className="MCP-module-body">
         {/* <Stepper activeIndex={3} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} /> */}

@@ -30,7 +30,7 @@ const AccountSelection = () => {
   const [selectedShippingAddress, setSelectedShippingAddress] = React.useState('');
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
   const therapyId = formState.activeRecord?.therapy?.id;
-
+  const isEdit = !!orderId;
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ACCOUNT_DETAILS);
   }, []);
@@ -76,8 +76,12 @@ const AccountSelection = () => {
 
   const handleOnBack = () => {
     //check for data change
-    editByStage(ORDER_STAGES.THERAPY_SELECTION);
-    navigate(`../edit-order/${orderId}`);
+    if (isEdit) {
+      navigate(`../${orderId}/summary`);
+    } else {
+      editByStage(ORDER_STAGES.THERAPY_SELECTION);
+      navigate(`../edit-order/${orderId}`);
+    }
   };
 
   const handleOnSubmit = () => {
@@ -130,7 +134,7 @@ const AccountSelection = () => {
         </Button>
       </div>
 
-      <PageHeader heading={<Heading as="h1">{t('headings.createNewOrder')}</Heading>} />
+      <PageHeader heading={<Heading as="h1">{isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}</Heading>} />
 
       <div className="MCP-module-body">
         <OrderStepper />

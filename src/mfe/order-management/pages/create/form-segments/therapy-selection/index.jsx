@@ -29,7 +29,7 @@ function TherapySelection() {
   const therapyDetails = searchParams.get('therapy-details');
 
   const { orderId } = useParams();
-
+  const isEdit = !!orderId;
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.THERAPY_SELECTION);
   }, []);
@@ -116,6 +116,14 @@ function TherapySelection() {
     navigate('/orders');
   };
 
+  const handleCancel = () => {
+    if (isEdit) {
+      navigate(`../${orderId}/summary`);
+    } else {
+      navigate('/orders');
+    }
+  };
+
   const forms = FormList(t);
 
   return (
@@ -126,7 +134,7 @@ function TherapySelection() {
         </Button>
       </div>
 
-      <PageHeader heading={<Heading as="h1">{t('headings.createNewOrder')}</Heading>} />
+      <PageHeader heading={<Heading as="h1">{isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}</Heading>} />
 
       <div className="MCP-module-body">
         <OrderStepper />
@@ -146,7 +154,7 @@ function TherapySelection() {
           <ModuleHeader
             controls={
               <div className="controls">
-                <Button size="md" variant="secondary" onClick={handleOnBackToOrders}>
+                <Button size="md" variant="secondary" onClick={handleCancel}>
                   {t('captions.btnCancel')}
                 </Button>
                 <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit} disabled={!therapy || isSaving}>
