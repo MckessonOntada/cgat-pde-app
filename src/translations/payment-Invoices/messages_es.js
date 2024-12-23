@@ -40,7 +40,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.filters.paymentDetails': 'S_Payment Details',
   'paymentInvoices.history.table.heading': 'S_Payment History',
   'paymentInvoices.history.table.emptyData': 'S_No Payment History Found',
-  "paymentInvoices.history.table.emptyDataDescription": "S_Please try again later",
+  'paymentInvoices.history.table.emptyDataDescription': 'S_Please try again later',
 
   // Customer Statements
   'paymentInvoices.CS.filters.autoSearch': 'S_Search by document number, sold to',
@@ -69,7 +69,6 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.Actions': 'S_Actions',
   'paymentInvoices.history.table.heading': 'S_Payment Listing',
   'paymentInvoices.history.table.status': 'S_Status',
-  'paymentInvoices.paymentMethods.filter.search.label': 'S_Search bank accounts',
   'paymentInvoices.paymentMethods.filter.search.placeholder': 'S_Select by name or number',
   'paymentInvoices.invoice.table.emptyData': 'S_No Invoice Found',
 
@@ -82,7 +81,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.credits.table.emptyData': 'S_No Credits Found',
 
   //payment methods - bank account
-  'paymentInvoices.paymentMethods.filter.search.label': 'S_Search bank accounts',
+  'paymentInvoices.paymentMethods.banks.filter.search.label': 'S_Search bank accounts',
   'paymentInvoices.paymentMethods.filter.search.placeholder': 'S_Select by name or number',
   'paymentInvoices.paymentMethods.table.cards.heading': 'S_Saved Cards',
   'paymentInvoices.paymentMethods.table.bankAccounts.heading': 'S_Saved Bank Accounts',
@@ -92,8 +91,8 @@ export const PaymentInvoicesES = {
   'paymentInvoices.paymentMethods.table.bankAccount.bankAccNumber': 'S_Bank Account Number',
   'paymentInvoices.paymentMethods.table.bankAccount.bankCountry': 'S_Bank Country',
   'paymentInvoices.paymentMethods.table.bankAccount.companyCode': 'S_Company Code',
-  'paymentInvoices.paymentMethods.table.bankAccount.emptyData': 'S_No Payment Methods Found',
-  'paymentInvoices.paymentMethods.filter.search.label': 'S_Search bank accounts',
+  'paymentInvoices.paymentMethods.table.bankAccount.emptyData': 'S_No Bank Accounts Found',
+  'paymentInvoices.paymentMethods.cards.filter.search.label': 'S_Search Credit Cards',
   'paymentInvoices.paymentMethods.filter.search.placeholder': 'S_Select by name or number',
   'paymentInvoices.paymentMethods.api.error': 'S_Error fetching payment methods',
   'paymentInvoices.paymentMethods.table.cards.cardType': 'S_Card Type',
@@ -102,6 +101,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.paymentMethods.table.cards.cardValidity': 'S_Card Validity',
   'paymentInvoices.paymentMethods.table.cards.zipCode': 'S_Zip Code',
   'paymentInvoices.paymentMethods.table.cards.action': 'S_Action',
+  'paymentInvoices.paymentMethods.table.cards.emptyData': 'S_No Credit Cards Found',
 
   //Pending Payments
   'pendingPayments.table.confirmationNumber': 'S_Confirmation Number',
@@ -110,7 +110,6 @@ export const PaymentInvoicesES = {
   'pendingPayments.table.heading': 'S_Pending Payments',
   'pendingPayments.table.paymentMethod.subHeader': `S_To view all payments, navigate to the 'Payment History'.`,
   'pendingPayments.table.bankAccount.emptyData': 'S_No Pending Payments Found',
-  'pendingPayments.table.paymentStatus':'S_Payment Status',
-  'pendingPayments.table.billDate':'S_Bill Date',
-
+  'pendingPayments.table.paymentStatus': 'S_Payment Status',
+  'pendingPayments.table.billDate': 'S_Bill Date'
 };
