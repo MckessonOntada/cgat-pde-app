@@ -33,10 +33,13 @@ const getOptionsByStatus = (status, t, tab, id) => {
   const navigate = useNavigate();
   const handleOnOptionSelection = ({ value }) => {
     if (value === 'view') {
-      navigate(`view-order/${id}`);
+      navigate(`${id}/summary`);
     }
     if (value === 'edit') {
       navigate(`edit-order/${id}`);
+    }
+    if (value === 'delete') {
+      alert('handle delete');
     }
   };
 
@@ -47,7 +50,7 @@ const getOptionsByStatus = (status, t, tab, id) => {
       return null;
     }
 
-    if (status?.toLowerCase() === 'in draft') {
+    if (status?.toLowerCase() === 'in_draft') {
       options.unshift(
         {
           label: t(`labels.orderActions.resume`),
@@ -82,11 +85,11 @@ const getOptionsByStatus = (status, t, tab, id) => {
       },
       {
         label: t(`labels.orderActions.edit`),
-        value: 'edit order'
+        value: 'edit'
       },
       {
         label: t(`labels.orderActions.delete`),
-        value: 'delete order'
+        value: 'delete'
       }
     );
   }

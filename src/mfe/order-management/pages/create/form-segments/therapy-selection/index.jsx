@@ -29,7 +29,8 @@ function TherapySelection() {
   const therapyDetails = searchParams.get('therapy-details');
 
   const { orderId } = useParams();
-  const isEdit = !!orderId;
+  const { isEdit = false } = location.state || {};
+
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.THERAPY_SELECTION);
   }, []);

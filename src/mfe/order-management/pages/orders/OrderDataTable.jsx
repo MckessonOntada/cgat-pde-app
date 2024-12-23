@@ -7,6 +7,7 @@ import { createColumns } from './OrderTableColumns';
 import { useNavigate } from 'react-router-dom';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import './OrderDataTable.module.scss';
 
 const OrderDataTable = ({ tab }) => {
   const { t } = useTranslate();

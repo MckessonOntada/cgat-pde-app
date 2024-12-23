@@ -6,7 +6,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
 import { FormList } from '../Constants';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import PatientDetailsForm from './PatientDetailsForm';
 import { Form, Formik } from 'formik';
 import { getValidationSchema } from './PatientDetailsFormUtils';
@@ -26,7 +26,9 @@ const PatientDetails = () => {
   const { formState, setActiveRecord, setCurrentOrder, messageConfig, editByStage } = useManageOrder();
   const alertContainerRef = useRef(null);
   const { showAlert } = useAlert();
-  const isEdit = !!orderId;
+  const location = useLocation();
+  const { isEdit = false } = location.state || {};
+
   React.useEffect(() => {
     if (!formState.activeRecord?.patientDetailsRequired) {
       navigate(`../${orderId}/additional-details`);

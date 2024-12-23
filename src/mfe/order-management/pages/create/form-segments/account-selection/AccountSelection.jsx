@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Heading, Button } from '@mckesson/mcp-component-library';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from './AccountSelection.module.scss';
 import FloatingDrawer from '@src/components/floating-drawer';
 import AccountSelectionUserGuide from './AccountSelectionUserGuide';
@@ -25,12 +25,14 @@ const AccountSelection = () => {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const { orderId } = useParams();
+  const location = useLocation();
+  const { isEdit = false } = location.state || {};
   const [selectedAccount, setSelectedAccount] = React.useState(null);
   const [accountSearchString, setAccountSearchString] = React.useState('');
   const [selectedShippingAddress, setSelectedShippingAddress] = React.useState('');
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
-  const therapyId = formState.activeRecord?.therapy?.id;
-  const isEdit = !!orderId;
+  const therapyId = formState.activeRecord?.therapy?.materialNumber;
+
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ACCOUNT_DETAILS);
   }, []);
