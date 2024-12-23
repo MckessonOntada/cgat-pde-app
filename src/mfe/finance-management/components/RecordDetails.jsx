@@ -6,6 +6,7 @@ import { useAccountContext } from '../context/AccountContext';
 import { GeographicUtils } from '@src/util/GeographicUtil';
 import CommonUtils from '@src/util/CommonUtils';
 import { useNavigate } from 'react-router-dom';
+import { PATHS } from '../routes';
 
 const TABLET_BREAKPOINT = 768;
 
@@ -21,7 +22,10 @@ export default function RecordDetails() {
   const [isValueSelected, setIsValueSelected] = useState(false);
 
   const onApplyClick = () => {
-    CommonUtils.isNonEmptyObject(selectedPayToAccount) && applyEvent(selectedPayToAccount);
+    if (CommonUtils.isNonEmptyObject(selectedPayToAccount)) {
+      applyEvent(selectedPayToAccount);
+      navigate(PATHS.invoices);
+    }
     // setIsValueSelected(!isValueSelected);
   };
 
@@ -32,7 +36,6 @@ export default function RecordDetails() {
   const getSelectedValueData = (selectedValue) => {
     setSelectedPayToAccount(selectedValue);
     setIsValueSelected(true);
-    navigate('invoice');
   };
 
   return CommonUtils.isNonEmptyObject(selectedAccount) ? (
@@ -70,8 +73,7 @@ export default function RecordDetails() {
                 !isValueSelected ||
                 !CommonUtils.isNonEmptyString(searchText) ||
                 !CommonUtils.isNonEmptyArray(payToAccountsList)
-              }
-            >
+              }>
               {t('paymentInvoices.accountSearch.applyBtn')}
             </Button>
             <Button
@@ -79,8 +81,7 @@ export default function RecordDetails() {
               variant={'secondary'}
               size={buttonSize}
               onClick={onDefaultSetClick}
-              disabled={!CommonUtils.isNonEmptyObject(selectedAccount) || !isValueSelected}
-            >
+              disabled={!CommonUtils.isNonEmptyObject(selectedAccount) || !isValueSelected}>
               {t('paymentInvoices.accountSearch.setAsDefaultBtn')}
             </Button>
           </div>
