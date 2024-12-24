@@ -2,6 +2,7 @@ export const ApproverManagementEN = {
   'approvergroup.header.backmessage': 'Back to Approver Group',
   'approvergroup.header.label': 'Manage Approver Groups',
   'approvergroup.add.label': 'Add New Group',
+  'approvergroup.edit.label': 'Edit New Group',
   'approvergroup.table.listing.label': 'Approver Group Listing',
   'approvergroup.searchFilter.label': 'Search By Group Name',
   'approvergroup.clearFilter.label': 'clear filters',
@@ -29,7 +30,7 @@ export const ApproverManagementEN = {
   'approvergroup.button.remove': 'Remove',
   'approvergroup.button.back': 'Back',
   'approvergroup.button.creategroup': 'Create Group',
-  'approvergroup.button.updategroup': 'Update Group',
+  'approvergroup.button.updategroup': 'Save Changes',
 
   'approvergroup.create_approvergroup': 'Add New Group',
   'approvergroup.approvergroupdetails': 'Group Details',
@@ -40,7 +41,7 @@ export const ApproverManagementEN = {
   'approvergroup.selectaccount': 'Select Account',
   'approvergroup.price': 'Amount Greater Than',
   'approvergroup.addattribute': 'Add Attribute',
-  'approvergroup.approveuserlist': 'Approve user list',
+  'approvergroup.approveuserlist': 'Approver user list',
   'approvergroup.selectuser': 'Select Users',
   'approvergroup.username': 'User Name',
   'approvergroup.userrole': 'User Role',
@@ -76,5 +77,10 @@ export const ApproverManagementEN = {
   'approvergroup.messages.approvergroup_deactivate_failure': 'Failed to Deactivate the Approver Group.',
   'approvergroup.messages.approvergroup_activate_success': 'Approver Group has been Activated successfully.',
   'approvergroup.messages.approvergroup_activate_failure': 'Failed to Activate the Approver Group.',
-  'approvergroup.messages.approvergroup_create_success': 'Approver Group has been created successfully.'
+  'approvergroup.messages.approvergroup_create_success': 'Approver Group has been created successfully.',
+  'rules.price': 'Price',
+  'rules.accounts': 'Account',
+  'rules.therapies': 'Catalog',
+  'rules.users': 'User',
+  'rules.roles': 'Roles'
 };

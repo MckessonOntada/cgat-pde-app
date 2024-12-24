@@ -40,7 +40,9 @@
   align-items: center;
   padding: var(--spacing-02) var(--spacing-02) var(--spacing-02) 0px;
   position: relative;
-
+  &:not(:last-child) {
+    margin-bottom: var(--spacing-03);
+  }
   // Add border as divider
   @include mixins.respond(md) {
     &:not(:nth-child(2n)):after {
@@ -94,7 +96,10 @@
   align-items: center;
   padding: var(--spacing-02) var(--spacing-02) var(--spacing-02) 0px;
   position: relative;
-  margin-bottom: var(--spacing-04);
+
+  &:not(:last-child) {
+    margin-bottom: var(--spacing-04);
+  }
 
   @include mixins.respond(sm) {
     &:not(:nth-child(2n)):after {

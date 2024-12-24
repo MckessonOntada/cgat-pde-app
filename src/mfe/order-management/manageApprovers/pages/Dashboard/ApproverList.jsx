@@ -104,7 +104,7 @@ function ApproverList({ onActionSuccess }) {
         wrap: true,
         width: '40px'
       },
-      { name: 'ID', selector: 'id', sortable: true, omit: true },
+      { name: 'ID', selector: (row) => row.ID, sortable: true, omit: true },
       {
         id: 'name',
         name: t('approvergroup.table.groupname'),
@@ -128,7 +128,9 @@ function ApproverList({ onActionSuccess }) {
       {
         id: 'createdAt',
         name: t('approvergroup.table.createdon'),
-        selector: 'createdAt',
+        selector: (row) => row.createdAt,
+        sortable: true,
+        sortKey: 'createdAt',
         wrap: true,
         minWidth: '160px',
         cell: (props) => CommonUtils.convertDateStringFormat(props.createdAt, 'MM-DD-YYYY')
@@ -136,7 +138,7 @@ function ApproverList({ onActionSuccess }) {
       {
         id: 'status',
         name: t('approvergroup.table.status'),
-        selector: 'status',
+        selector: (row) => row.status,
         center: true,
         minWidth: '200px',
         cell: (props) => <div>{props.active ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />}</div>
@@ -148,7 +150,7 @@ function ApproverList({ onActionSuccess }) {
         cell: (row) => <Actions row={row} />,
         width: '200px',
         minWidth: '200px',
-        omit: !hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS) // To do - Change to approvergroup permissions
+        omit: !hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_APPROVER_GROUP)
       }
     ];
   }, [data, userPermissions]);
@@ -163,7 +165,7 @@ function ApproverList({ onActionSuccess }) {
           <Button
             variant="secondary"
             onClick={handleActivateDeactivate}
-            isDisabled={!hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.MANAGE_ORDERS)}>
+            disabled={!hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP)}>
             {selectedRows.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
           </Button>
         </div>
