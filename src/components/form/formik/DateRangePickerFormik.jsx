@@ -13,7 +13,5 @@ export default function DateRangePickerFormik({ minDate = new Date('-1'), maxDat
     form.setFieldValue(field.name, [min || prevMin, max || prevMax]);
   };
 
-  return (
-    <DateRangePicker value={field.value || []} onChange={onChange} size="lg" minDate={minDate} maxDate={maxDate} />
-  );
+  return <DateRangePicker value={field.value || []} onChange={onChange} size="lg" minDate={minDate} maxDate={maxDate} />;
 }
