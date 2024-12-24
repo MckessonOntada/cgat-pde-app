@@ -53,8 +53,6 @@ const Attributes = ({ values, setFieldValue }) => {
                         setFieldValue(`rules[${index}].value`, '');
                         setFieldValue(`rules[${index}].value_augmented`, '');
                       }
-                      // setFieldValue(`rules[${index}].value`, value === 'Price' ? '' : []);
-                      // setFieldValue(`rules[${index}].value_augmented`, value === 'Price' ? '' : []);
                     }}
                   />
                 </div>

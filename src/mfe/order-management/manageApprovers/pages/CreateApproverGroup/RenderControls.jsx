@@ -72,12 +72,16 @@ function RenderControls({ attributeType, name, isAttributeRemoved }) {
       if (!queryResult?.data || queryResult.data.length === 0) return;
 
       let sourceData = useInitialValues.current ? initialValues : values;
-      sourceData.rules = sourceData.rules
-        .filter((item) => ['Account', 'User', 'Catalog'].includes(item.attributeType))
-        .map((item) => ({
-          ...item,
-          value: item.value === '' ? [] : item.value
-        }));
+      sourceData.rules = sourceData.rules.map((item) => {
+        if (item.attributeType !== 'Price' && item.value === '') {
+          return {
+            ...item,
+            value: []
+          };
+        }
+        return item;
+      });
+
       // Transform fetched data
       const fetchData = queryResult.data.map((item) => ({
         value: item.value,
@@ -99,7 +103,7 @@ function RenderControls({ attributeType, name, isAttributeRemoved }) {
         if (shouldFetchCatalog) updatedState.categories = fetchData;
         return updatedState;
       });
-      // useInitialValues.current = false;
+
       useInitialValues.current = false;
       isDataBinded.current = true;
     }
