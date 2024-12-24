@@ -1,20 +1,30 @@
 import OrderService from '@src/api/commonService/OrderService';
 import React, { createContext, useContext, useState } from 'react';
+import { MdViewArray } from 'react-icons/md';
 import { useQuery } from 'react-query';
 
-const initialFilterState = {
+const TAB_VARIANT = {
+  PENDING_SUBMISSION: 'pending submission',
+  SUBMITTED: 'submitted'
+};
+const INITIAL_FILTER_STATE = {
   searchQuery: '',
   status: []
 };
 
-const initialPageConfig = {
-  total: 0,
-  pageSize: 10,
-  pages: 0,
-  currentPage: 1
+const INITIAL_PAGINATION_STATE = {
+  totalElements: 0,
+  pageSize: 8,
+  totalPages: 0,
+  pageNumber: 1
 };
 
-const initialDataState = [];
+const INITIAL_SORT_STATE = {
+  sortBy: null,
+  sortOrder: null
+};
+
+const INITIAL_DATA_STATE = [];
 
 const OrderContext = createContext();
 
@@ -23,54 +33,87 @@ export const useOrders = () => {
 };
 
 export const OrderProvider = ({ children }) => {
-  const [filterState, setFilterState] = useState(initialFilterState);
-  const [pageConfig, _setPageConfig] = useState(initialPageConfig);
-  const [dataState, setDataState] = useState(initialDataState);
+  const [filterConfig, setFilterConfig] = React.useState(INITIAL_FILTER_STATE);
+  const [paginationConfig, setPaginationConfig] = React.useState(INITIAL_PAGINATION_STATE);
+  const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);
+  const [dataState, setDataState] = React.useState(INITIAL_DATA_STATE);
+  const [tabVariant, setTabVariant] = React.useState(TAB_VARIANT.PENDING_SUBMISSION);
 
-  const { isLoading } = useQuery({
+  const requestParams = React.useMemo(() => {
+    const params = {
+      pageNo: paginationConfig.pageNumber - 1,
+      pageSize: paginationConfig.pageSize,
+      sortBy: sortConfig.sortBy || 'createdAt',
+      sortOrder: sortConfig.sortOrder || 'desc'
+    };
+
+    if (filterConfig.searchQuery) params.query = filterConfig.searchQuery;
+    if (tabVariant === 'submitted') {
+      params.status = 'submitted';
+    } else {
+      const allStatus = ['in_draft', 'approval_pending'];
+      if (filterConfig.status && filterConfig.status != 'all') {
+        params.status = filterConfig.status;
+      } else {
+        params.status = allStatus;
+      }
+    }
+    return params;
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig, tabVariant]);
+
+  const {
+    isFetching,
+    refetch: refreshData,
+    error
+  } = useQuery({
     queryKey: ['orders'],
-    queryFn: async () => OrderService.getOrders(),
+    queryFn: async () => OrderService.getOrders(requestParams),
     onSuccess: (result) => {
-      console.log(result);
+      const { totalElements, totalPages } = result;
+      setPaginationConfig((prevState) => ({ ...prevState, totalElements, totalPages }));
+
+      if (result.content) {
+        setDataState(result.content);
+      }
     }
   });
 
+  React.useEffect(() => {
+    refreshData();
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig, tabVariant]);
+
   const applyFilters = (filters) => {
-    setFilterState((prevFilters) => ({ ...prevFilters, ...filters }));
+    setFilterConfig((prevFilters) => ({ ...prevFilters, ...filters }));
   };
 
   const clearFilters = () => {
-    setFilterState({ ...initialFilterState });
+    setFilterConfig({ ...INITIAL_FILTER_STATE });
   };
 
-  const setPageConfig = (state) => {
-    _setPageConfig({ ...state });
+  const setCurrentPage = (pageNumber) => {
+    setPaginationConfig((prevState) => ({ ...prevState, pageNumber: pageNumber }));
   };
 
-  const setPageSize = (size) => {
-    _setPageConfig((prevState) => ({ ...prevState, pageSize: size }));
-  };
-
-  const setCurrentPage = (page) => {
-    _setPageConfig((prevState) => ({ ...prevState, currentPage: page }));
-  };
-
-  const setOrdersData = (data) => {
-    setDataState((prevState) => [...data]);
+  const changeTab = (tabType = '') => {
+    setCurrentPage(1);
+    if (tabType.toLowerCase() === 'submitted') setTabVariant('submitted');
+    else {
+      setTabVariant('pending_submission');
+    }
   };
 
   return (
     <OrderContext.Provider
       value={{
-        filterState,
-        pageConfig,
+        filterConfig,
+        paginationConfig,
         dataState,
+        isFetching,
+        error,
         applyFilters,
         clearFilters,
-        setPageConfig,
-        setPageSize,
         setCurrentPage,
-        setOrdersData
+        changeTab
       }}>
       {children}
     </OrderContext.Provider>

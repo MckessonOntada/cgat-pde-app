@@ -11,8 +11,8 @@ import { MessageEn as orderManagementMessagesEn } from './order-management/messa
 import { MessageEs as orderManagementMessagesEs } from './order-management/messages_es';
 import { ApproverManagementEN as approverGroupMessagesEn } from './order-management/approver-group/messages_en';
 import { ApproverManagementES as approverGroupMessagesEs } from './order-management/approver-group/messages_es';
-import { PaymentInvoicesEN } from './payment-Invoices/messages_en';
-import { PaymentInvoicesES } from './payment-Invoices/messages_es';
+import { PaymentInvoicesEN } from './finance-management/messages_en';
+import { PaymentInvoicesES } from './finance-management/messages_es';
 import { AccountEN } from './Accounts/messages_en';
 import { AccountES } from './Accounts/messages_es';
 import { SignupEN } from './signup/messages_en';

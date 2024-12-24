@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Badge, DropdownMenu, Button, Tooltip } from '@mckesson/mcp-component-library';
 import { StatusEnum } from './constants';
 import { routesConfig } from '../../routes/constants';
@@ -28,15 +28,18 @@ const getLinkByStatus = ({ status, id }, t) => {
   return <Link to={path}>{label}</Link>;
 };
 
-const getOptionsByStatus = (status, t, tab) => {
+const getOptionsByStatus = (status, t, tab, id) => {
   const options = [];
-
+  const navigate = useNavigate();
   const handleOnOptionSelection = ({ value }) => {
     if (value === 'view') {
-      navigate(`view-order/${props.id}`);
+      navigate(`${id}/summary`);
     }
     if (value === 'edit') {
-      navigate(`edit-order/${props.id}`);
+      navigate(`edit-order/${id}`);
+    }
+    if (value === 'delete') {
+      alert('handle delete');
     }
   };
 
@@ -47,7 +50,7 @@ const getOptionsByStatus = (status, t, tab) => {
       return null;
     }
 
-    if (status?.toLowerCase() === 'in draft') {
+    if (status?.toLowerCase() === 'in_draft') {
       options.unshift(
         {
           label: t(`labels.orderActions.resume`),
@@ -82,16 +85,45 @@ const getOptionsByStatus = (status, t, tab) => {
       },
       {
         label: t(`labels.orderActions.edit`),
-        value: 'edit order'
+        value: 'edit'
       },
       {
         label: t(`labels.orderActions.delete`),
-        value: 'delete order'
+        value: 'delete'
       }
     );
   }
 
-  return <DropdownMenu anchorEl={<Button Icon={() => <IconEllipsis />} iconButton variant="tertiary" label="Icon Button" />} handleSelect={handleOnOptionSelection} options={options} aria-label="Order options" />;
+  return (
+    <DropdownMenu
+      anchorEl={<Button Icon={() => <IconEllipsis />} iconButton variant="tertiary" label="Icon Button" />}
+      handleSelect={handleOnOptionSelection}
+      options={options}
+      aria-label="Order options"
+    />
+  );
+};
+
+const getPathByOrderStage = ({ currentStage, id, patientDetailsRequired }) => {
+  switch (currentStage) {
+    case 'ACCOUNT_DETAILS':
+      return `${id}/accounts`;
+    case 'PATIENT_DETAILS':
+      return patientDetailsRequired ? `${id}/patient` : `${id}/additional-details`;
+    case 'ADDITIONAL_DETAILS':
+      return `${id}/additional-details`;
+    case 'ORDER_SUMMARY':
+      return `${id}/summary`;
+    default:
+      return `${id}/accounts`;
+  }
+};
+
+const getPatientName = (patientInfo) => {
+  let lastName = '';
+  if (patientInfo?.name?.lastName) fullName += ',';
+
+  return [lastName, patientInfo?.name?.firstName, patientInfo?.name?.middleName].join(' ');
 };
 
 export const createColumns = (t, navigate, activeTab) => [
@@ -100,13 +132,13 @@ export const createColumns = (t, navigate, activeTab) => [
     name: t('labels.orderId'),
     selector: () => {},
     sortable: true,
-    minWidth: '120px',
-    maxWidth: '180px',
+    minWidth: '240px',
+    maxWidth: '320px',
     sortable: true,
     sortKey: 'orderId',
     cell: (props) => (
-      <Link className="MCP-table-link" to={`${props.id}`} state={props} aria-label={t('labels.orderId')}>
-        <EclipsesTextcss str={props.id} maxWidth={140} />
+      <Link className="MCP-table-link" to={getPathByOrderStage(props)} state={props} aria-label={t('labels.orderId')}>
+        <EclipsesTextcss str={props.id} maxWidth={200} />
       </Link>
     )
   },
@@ -116,9 +148,16 @@ export const createColumns = (t, navigate, activeTab) => [
     selector: () => {},
     sortable: true,
     sortKey: 'patientName',
-    minWidth: '240px',
-    maxWidth: '380px',
-    cell: (props) => <EclipsesTextcss aria-label={t('labels.patientName')} str={`${props.name?.lastName}, ${props.name?.firstName} ${props.name?.middleName || ''}`} maxWidth={200} />
+    minWidth: '140px',
+    maxWidth: '200px',
+    cell: (props) => {
+      const patientInfo = props.patient && props.patient.patientInfo;
+      return !patientInfo ? (
+        'N/A'
+      ) : (
+        <EclipsesTextcss aria-label={t('labels.patientName')} str={getPatientName(patientInfo)} maxWidth={170} />
+      );
+    }
   },
   {
     id: 'therapyId',
@@ -126,9 +165,15 @@ export const createColumns = (t, navigate, activeTab) => [
     selector: () => {},
     sortable: true,
     sortKey: 'therapyId',
-    minWidth: '240px',
-    maxWidth: '380px',
-    cell: (props) => <EclipsesTextcss str={props.therapy} maxWidth={200} className={'MCP-table-cell'} aria-label={t('labels.therapy')} />
+    minWidth: '140px',
+    cell: (props) => (
+      <EclipsesTextcss
+        str={props.therapy?.materialDescription}
+        maxWidth={100}
+        className={'MCP-table-cell'}
+        aria-label={t('labels.therapy')}
+      />
+    )
   },
   {
     id: 'author',
@@ -136,9 +181,9 @@ export const createColumns = (t, navigate, activeTab) => [
     selector: () => {},
     sortable: true,
     sortKey: 'author',
-    minWidth: '240px',
-    maxWidth: '380px',
-    cell: (props) => <EclipsesTextcss str={props.author} maxWidth={200} className={'MCP-table-cell'} aria-label={t('table.columns.captions.author')} />,
+    minWidth: '140px',
+    maxWidth: '200px',
+    cell: (props) => <EclipsesTextcss str={props.author?.name} maxWidth={170} className={'MCP-table-cell'} />,
     omit: activeTab !== 'pending submission'
   },
   {
@@ -147,8 +192,12 @@ export const createColumns = (t, navigate, activeTab) => [
     selector: () => {},
     sortable: true,
     sortKey: 'createdOn',
-    width: '180px',
-    cell: (props) => <span aria-label={t('table.columns.captions.createdOn')}>{CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')}</span>,
+    width: '100px',
+    cell: (props) => (
+      <span aria-label={t('table.columns.captions.createdOn')}>
+        {CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')}
+      </span>
+    ),
     omit: activeTab !== 'pending submission'
   },
 
@@ -160,7 +209,7 @@ export const createColumns = (t, navigate, activeTab) => [
     sortKey: 'submittedBy',
     minWidth: '180px',
     maxWidth: '340px',
-    cell: (props) => <span>{props.submittedBy}</span>,
+    cell: (props) => <span>{props.submittedBy?.id}</span>,
     omit: activeTab !== 'submitted'
   },
   {
@@ -170,7 +219,7 @@ export const createColumns = (t, navigate, activeTab) => [
     sortable: true,
     sortKey: 'submittedOn',
     width: '180px',
-    cell: (props) => <span>{CommonUtils.convertDateStringFormat(props.submittedOn, 'MM-DD-YYYY')}</span>,
+    cell: (props) => <span>{props.submittedOn ? CommonUtils.convertDateStringFormat(props.submittedOn, 'MM-DD-YYYY') : '-'}</span>,
     omit: activeTab !== 'submitted'
   },
 
@@ -184,7 +233,7 @@ export const createColumns = (t, navigate, activeTab) => [
     cell: (props) => (
       <Tooltip body={props.status}>
         <span>
-          <Badge text={props.status} type={getColorByStatus(props.status.toLowerCase())} />
+          <Badge text={props.status?.replace('_', ' ')} type={getColorByStatus(props.status.toLowerCase())} />
         </span>
       </Tooltip>
     )
@@ -194,8 +243,8 @@ export const createColumns = (t, navigate, activeTab) => [
     name: t('table.columns.captions.price'),
     selector: () => {},
     sortable: false,
-    width: '120px',
-    cell: (props) => <span aria-label={t('table.columns.captions.price')}>{props.price}</span>
+    width: '100px',
+    cell: (props) => <span aria-label={t('table.columns.captions.price')}>{props.orderCost}</span>
   },
   {
     id: 'actions',
@@ -204,6 +253,6 @@ export const createColumns = (t, navigate, activeTab) => [
     sortable: false,
     width: '120px',
     center: true,
-    cell: (props) => getOptionsByStatus(props.status, t, activeTab)
+    cell: (props) => getOptionsByStatus(props.status, t, activeTab, props.id)
   }
 ];

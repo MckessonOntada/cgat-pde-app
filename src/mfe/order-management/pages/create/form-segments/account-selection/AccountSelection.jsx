@@ -1,51 +1,52 @@
 import React, { useMemo } from 'react';
-import { Heading, Button, Stepper } from '@mckesson/mcp-component-library';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Heading, Button } from '@mckesson/mcp-component-library';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from './AccountSelection.module.scss';
 import FloatingDrawer from '@src/components/floating-drawer';
 import AccountSelectionUserGuide from './AccountSelectionUserGuide';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
-import ShippingAddressDataTable from './ShippingAddressDataTable';
 import { ShippingAddressProvider } from '../../../../context/ShippingAddressContext';
 import PageHeader from '@src/components/pageHeader';
-import { FormList } from '../Constants';
 import { useMutation, useQuery } from 'react-query';
-import { ReactComponent as TickIcon } from '@src/assets/svg/tick-circle-filled.svg';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
-import CommonFilters from '@src/components/Filters';
 import CommonUtils from '@src/util/CommonUtils';
 import OrderService from '@src/api/commonService/OrderService';
 import ShippingAddress from './ShippingAddress';
-
-const DetailField = ({ label, value, className }) => (
-  <div className={className}>
-    <div className={'fieldName'}>{label}</div>
-    <div className={'fieldValue'}>{value}</div>
-  </div>
-);
+import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
+import OrderHeaderDetails from '../OrderHeaderDetails';
+import OrderStepper from '../OrderStepper';
+import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
+import { serializeParams } from '@src/util/ApiUtils';
 
 const AccountSelection = () => {
   const { t } = useTranslate();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const { orderId } = useParams();
+  const location = useLocation();
+  const { isEdit = false } = location.state || {};
   const [selectedAccount, setSelectedAccount] = React.useState(null);
   const [accountSearchString, setAccountSearchString] = React.useState('');
   const [selectedShippingAddress, setSelectedShippingAddress] = React.useState('');
-  const therapyId = 3; //temp
+  const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
+  const therapyId = formState.activeRecord?.therapy?.materialNumber;
+
+  React.useEffect(() => {
+    orderId && setCurrentOrder(orderId, ORDER_STAGES.ACCOUNT_DETAILS);
+  }, []);
 
   const { isLoading, data: accountsListData = {} } = useQuery({
     queryKey: ['order', 'therapy', therapyId, accountSearchString],
-    queryFn: async () => OrderService.getSoldToAccounts(therapyId, accountSearchString),
+    queryFn: async () => OrderService.getSoldToAccounts(therapyId, serializeParams({ query: accountSearchString })),
     enabled: !!therapyId,
     refetchOnWindowFocus: false
   });
 
   const accountListOptions = useMemo(() => {
     if (!CommonUtils.isNonEmptyObject(accountsListData)) {
-      return;
+      return [];
     }
     const accArr = [];
     accountsListData.content?.forEach((acc) => {
@@ -56,10 +57,15 @@ const AccountSelection = () => {
     });
 
     return accArr;
-  }, [accountsListData]);
+  }, [accountsListData, formState.activeRecord]);
 
-  const { isLoading: isSavingAccount, mutate } = useMutation(async (data) => OrderService.setAccount(orderId, data), {
-    onSuccess: ({ id }) => navigate(`../${orderId}/patient`),
+  const { isLoading: isSaving, mutate: saveAccount } = useMutation(async (data) => OrderService.saveAccount(orderId, data), {
+    onSuccess: (result) => {
+      const { id } = result;
+      setActiveRecord(result);
+      if (result.patientDetailsRequired) navigate(`../${id}/patient`);
+      else navigate(`../${id}/additional-details`);
+    },
     onError: console.log
   });
 
@@ -69,20 +75,28 @@ const AccountSelection = () => {
   const handleOnClick = () => {
     setOpen(true);
   };
+
+  const handleOnBack = () => {
+    //check for data change
+    if (isEdit) {
+      navigate(`../${orderId}/summary`);
+    } else {
+      editByStage(ORDER_STAGES.THERAPY_SELECTION);
+      navigate(`../edit-order/${orderId}`);
+    }
+  };
+
   const handleOnSubmit = () => {
     if (selectedAccount) {
       const payload = {
-        soldToAccountId: selectedAccount.accountNumber,
-        shipToAccountId: selectedShippingAddress
+        soldToAccountId: selectedAccount.id,
+        shipToAccountId: selectedShippingAddress.id
       };
-      mutate(payload);
+      saveAccount(payload);
     }
   };
-  const handleOnBackButtonClick = () => {
-    //compare data change, display modal for confirmation
-    navigate(`../edit-order/${orderId}`);
-  };
-  const handleOnCancel = () => {
+
+  const handleOnBackToOrders = () => {
     //compare data change, display modal for confirmation
     navigate('/orders');
   };
@@ -91,41 +105,43 @@ const AccountSelection = () => {
     return [acc.houseNumber, acc.street, acc.district, acc.city, acc.state, acc.zipCode].join(', ');
   };
 
-  const forms = FormList(t);
+  const handleOnAccountSelection = (selectedAccount) => {
+    setSelectedAccount(selectedAccount);
+    setOpen(false);
+  };
+
+  React.useEffect(() => {
+    if (CommonUtils.isNonEmptyObject(accountsListData) && formState.activeRecord) {
+      const { accountDetails } = formState.activeRecord;
+      if (accountDetails) {
+        const { soldToAccount, shipToAccount } = accountDetails;
+        if (soldToAccount) {
+          const originalSelectedAccount = accountsListData.content?.filter((acc) => acc.accountNumber === soldToAccount.accountNumber)[0];
+          if (originalSelectedAccount) setSelectedAccount(originalSelectedAccount);
+        }
+        if (shipToAccount) {
+          setSelectedShippingAddress(shipToAccount);
+        }
+      } else {
+        console.log('Could not set account');
+      }
+    }
+  }, [formState?.activeRecord, accountsListData]);
 
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={handleOnBackButtonClick}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
 
-      <PageHeader heading={t('headings.createNewOrder')} />
+      <PageHeader heading={<Heading as="h1">{isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}</Heading>} />
 
       <div className="MCP-module-body">
-        <Stepper activeIndex={2} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} />
-
+        <OrderStepper />
         <div className={`MCP-module-wrapper`}>
-          <div className="MCP-panel-container">
-            <div className="row-space-between-center">
-              <DetailField
-                label={t('labels.therapyDescription')}
-                value={
-                  <React.Fragment>
-                    <span>Therapy value</span>
-                    <TickIcon width="16px" height="16px" />
-                  </React.Fragment>
-                }
-              />
-              <DetailField label={t('labels.price')} value={'$----'} />
-            </div>
-          </div>
+          <OrderHeaderDetails />
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>
               <ModuleHeader
@@ -137,21 +153,24 @@ const AccountSelection = () => {
                 }
               />
               <div className="MCP-panel-container">
-                <div className={styles.account}>
-                  <div className={styles.accountDetails}>
-                    {selectedAccount ? (
-                      <React.Fragment>
-                        <p className={styles.name}>
-                          <b>{selectedAccount.accountName}</b>
-                        </p>
-                        <p className={styles.address}>{getAddress(selectedAccount)}</p>
-                      </React.Fragment>
-                    ) : (
-                      <React.Fragment>
-                        <Heading as="h3">{t('labels.pleaseSelectAccount')}</Heading>
-                      </React.Fragment>
-                    )}
+                <div className={'grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3'}>
+                  <div className={styles.account}>
+                    <div className={styles.accountDetails}>
+                      {selectedAccount ? (
+                        <React.Fragment>
+                          <p className={styles.name}>
+                            <b>{selectedAccount.accountName}</b>
+                          </p>
+                          <p className={styles.address}>{getAddress(selectedAccount)}</p>
+                        </React.Fragment>
+                      ) : (
+                        <React.Fragment>
+                          <Heading as="h3">{t('labels.pleaseSelectAccount')}</Heading>
+                        </React.Fragment>
+                      )}
+                    </div>
                   </div>
+                  <div></div>
                   <div className={styles.controls}>
                     <div className={styles.controlWrapper}>
                       <MultiSelectDropdown
@@ -181,24 +200,21 @@ const AccountSelection = () => {
             </ShippingAddressProvider>
           </div>
           <div className="controls">
-            <Button size="md" onClick={() => navigate('../')} variant="secondary">
-              {t('captions.btnCancel')}
+            <Button size="md" onClick={handleOnBack} variant="secondary">
+              {t('captions.btnBack')}
             </Button>
-            <Button size="md" onClick={handleOnCancel} variant="secondary">
+            <Button size="md" onClick={() => {}} variant="secondary">
               {t('captions.btnInventorySelection')}
             </Button>
-            <Button
-              size="md"
-              onClick={handleOnSubmit}
-              disabled={!selectedShippingAddress || isSavingAccount}
-              variant="primary"
-              type="submit">
-              {isSavingAccount ? 'Saving' : t('captions.btnSaveAndContinue')}
+            <Button size="md" onClick={handleOnSubmit} disabled={!selectedShippingAddress || isSaving} variant="primary" type="submit">
+              {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
             </Button>
           </div>
-          <FloatingDrawer open={open} anchor="right" onClose={handleOnClose}>
-            <AccountSelectionUserGuide onClose={handleOnClose} />
-          </FloatingDrawer>
+          {open && (
+            <FloatingDrawer open={open} anchor="right" onClose={handleOnClose}>
+              <AccountSelectionUserGuide therapyId={therapyId} onSubmit={handleOnAccountSelection} onClose={handleOnClose} />
+            </FloatingDrawer>
+          )}
         </div>
       </div>
     </div>

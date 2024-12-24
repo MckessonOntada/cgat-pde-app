@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from '@mckesson/mcp-component-library';
 import arrow_right from '@src/assets/image/arrow_right.svg';
@@ -10,9 +10,32 @@ import { Field, Formik, Form } from 'formik';
 import Components from '../form/Components';
 import './Filters.scss';
 import { useTranslate } from '@src/translations/useTranslation';
+import CommonUtils from '@src/util/CommonUtils';
 
-const Filters = ({ onApplyFilters, onClearFilters, showControls = true, additionalFilters, searchPlaceholder = 'Search...' }) => {
+const Filters = ({
+  onApplyFilters,
+  onClearFilters,
+  showControls = true,
+  additionalFilters,
+  searchPlaceholder = 'Search...',
+  actualData = []
+}) => {
   const { t } = useTranslate();
+  //TODO: This useEffect is not needed. It can be removed.
+
+  useEffect(() => {
+    if (actualData.length === 0 && additionalFilters.length === 0) return;
+
+    additionalFilters.forEach((filter, index) => {
+      if (filter.tableColumnId) {
+        let currentFilterData = [...new Set(actualData.map((e) => e[filter.tableColumnId]).filter((e) => e))];
+        additionalFilters[index].options = currentFilterData.map((item) => {
+          return { value: '' + item, label: filter.customLabel ? filter.customLabel(item) : '' + item };
+        });
+      }
+    });
+  }, [actualData]);
+
   const initialFilters = useMemo(() => generateInitialFilterState(additionalFilters), [additionalFilters]);
   const [isCardExpanded, setIsCardExpanded] = useState(false);
   const formRef = useRef(null);
@@ -42,6 +65,9 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
     clearInputs();
     onClearFilters();
   };
+
+  const isAdditionalFiltersAdded = additionalFilters && CommonUtils.isNonEmptyObject(additionalFilters);
+
   return (
     <Formik
       enableReinitialize
@@ -60,7 +86,7 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
             <div className="MCP-filter-panel">
               <div className="filter-header">
                 <div className="search-box">
-                  <button type="button" onClick={handleExpandCard}>
+                  <button type="button" onClick={handleExpandCard} disabled={!isAdditionalFiltersAdded}>
                     <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
                   </button>
                   <div className={'ctrl-search-box'}>
@@ -80,12 +106,13 @@ const Filters = ({ onApplyFilters, onClearFilters, showControls = true, addition
                   </div>
                 )}
               </div>
-
-              <ToggleUI in={isCardExpanded} timeout={400}>
-                <div className="additional-filters">
-                  <AdditionalFilters filtersConfig={additionalFilters} />
-                </div>
-              </ToggleUI>
+              {isAdditionalFiltersAdded && (
+                <ToggleUI in={isCardExpanded} timeout={400}>
+                  <div className="additional-filters">
+                    <AdditionalFilters filtersConfig={additionalFilters} />
+                  </div>
+                </ToggleUI>
+              )}
             </div>
           </Form>
         );

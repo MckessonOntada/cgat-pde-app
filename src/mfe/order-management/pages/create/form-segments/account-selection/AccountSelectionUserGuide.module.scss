@@ -1,5 +1,7 @@
-.wrapper{
-    .drawerContent{
+.wrapper {
+    min-width: 420px;
+
+    .drawerContent {
         height: 100vh;
         padding: var(--spacing-03, 16px);
         display: flex;
@@ -7,26 +9,33 @@
         align-items: flex-start;
         justify-content: space-between;
         font-size: var(--brand-font-size--extra-small);
-        .selectionBlock{
+
+        .selectionBlock {
             display: flex;
             flex-direction: column;
             gap: var(--spacing-02);
-            [class*="RadioGroup-module"]{
+            font-size: var(--brand-font-size--default);
+
+            [class*="RadioGroup-module"] {
                 margin-bottom: unset;
             }
         }
-        .topSect{
+
+        .topSect {
             display: flex;
             flex-direction: column;
             gap: var(--spacing-04);
-            .header{
+
+            .header {
                 display: flex;
                 flex-direction: row;
                 align-items: center;
+                gap: var(--spacing-04);
                 justify-content: space-between;
             }
         }
-        .controls{
+
+        .controls {
             display: flex;
             flex-direction: row;
             align-items: center;

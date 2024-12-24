@@ -333,6 +333,54 @@
   font-weight: var(--brand-font-weight-700);
 }
 
+.price-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  .fieldValue {
+    font-size: var(--brand-font-size--large);
+  }
+
+  &.col-span-4 {
+    grid-column: span 4;
+
+    @include mixins.respond("sm") {
+      grid-column: span 12;
+    }
+
+    @include mixins.respond("md") {
+      grid-column: span 4;
+    }
+  }
+
+  &.col-span-3 {
+    grid-column: span 3;
+
+    @include mixins.respond("sm") {
+      grid-column: span 12;
+    }
+
+    @include mixins.respond("md") {
+      grid-column: span 3;
+    }
+  }
+
+  &.col-span-2 {
+    grid-column: span 2;
+
+    @include mixins.respond("sm") {
+      grid-column: span 12;
+    }
+
+    @include mixins.respond("md") {
+      grid-column: span 2;
+    }
+  }
+}
+
+
+
 .primaryHeading {
   font-size: var(--brand-font-size--28);
   font-weight: 600;

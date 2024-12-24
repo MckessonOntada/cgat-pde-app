@@ -8,12 +8,14 @@ const FIELD_INITIAL_STATE = {
     }
 }
 
-export function generateInitialFilterState(additionalFilters){
-    let initialState = {
-        searchQuery: ""
+export const generateInitialFilterState = (filters) => {
+    if (!filters || !Array.isArray(filters)) {
+      return {}; // Return an empty object if filters is undefined or not an array
     }
-    additionalFilters.forEach(item => {
-        initialState[item.name] = FIELD_INITIAL_STATE[item.type]
+  
+    const initialState = {};
+    filters.forEach((filter) => {
+      initialState[filter.name] = filter.defaultValue || '';
     });
     return initialState;
-}
+  };
