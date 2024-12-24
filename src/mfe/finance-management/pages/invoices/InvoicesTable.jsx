@@ -8,6 +8,7 @@ import { FormattedNumber } from 'react-intl';
 import { ReactComponent as ActionIcon } from '@src/assets/image/actionIcon.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import dayjs from 'dayjs';
 
 export default function InvoicesTable() {
   const { t } = useTranslate();
@@ -35,7 +36,7 @@ export default function InvoicesTable() {
       minWidth: '160px',
       sortable: true,
       wrap: true,
-      cell: (props) => <div>{props.soldToSite}</div>
+      cell: (props) => <div>{props.soldToSite || '-'}</div>
     },
     {
       name: t('paymentInvoices.history.table.PostingDate'),
@@ -44,7 +45,9 @@ export default function InvoicesTable() {
       id: 'billDate',
       wrap: true,
       minWidth: '160px',
-      cell: (props) => <EclipsesTextcss className="cellEllipse" str={props.billDate} maxWidth={240} />
+      cell: (props) => (
+        <EclipsesTextcss className="cellEllipse" str={dayjs(props.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'} maxWidth={240} />
+      )
     },
 
     {
@@ -62,7 +65,7 @@ export default function InvoicesTable() {
       sortable: true,
       wrap: true,
       id: 'dueDate',
-      cell: (props) => <div className="cellEllipse">{props.dueDate}</div>
+      cell: (props) => <div className="cellEllipse">{dayjs(props.dueDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
     },
     {
       name: t('paymentInvoices.history.table.OpenAmount'),
@@ -170,8 +173,7 @@ export default function InvoicesTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}
-          >
+            }}>
             <Loader variant="circular" />
           </div>
         }

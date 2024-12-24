@@ -10,6 +10,7 @@ import { usePaymentHistory } from '../../context/PaymentHistoryContext';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FormattedNumber } from 'react-intl';
+import dayjs from 'dayjs';
 
 export default function PaymentHistoryTable() {
   const { t } = useTranslate();
@@ -52,7 +53,7 @@ export default function PaymentHistoryTable() {
       selector: (row) => `${row.paymentInitiationDate}`,
       width: '20%',
       sortable: true,
-      cell: (props) => <div className="cellEllipse">{props.paymentInitiationDate}</div>
+      cell: (props) => <div className="cellEllipse">{dayjs(props.paymentInitiationDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
     },
     {
       id: 'paymentStatus',
@@ -121,8 +122,7 @@ export default function PaymentHistoryTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}
-          >
+            }}>
             <Loader variant="circular" />
           </div>
         }

@@ -7,6 +7,7 @@ import { useCustomerStatements } from '../../context/CustomerStatementsContext';
 import { FormattedNumber } from 'react-intl';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import dayjs from 'dayjs';
 
 export default function CustomerStatementTable() {
   const { t } = useTranslate();
@@ -41,7 +42,7 @@ export default function CustomerStatementTable() {
       minWidth: '144px',
       sortable: true,
       wrap: true,
-      cell: (props) => props.date
+      cell: (props) => dayjs(props.date, 'YYYY-MM-DD')?.format('MM/DD/YYYY') || '-'
     },
     {
       id: 'statementBalance',
@@ -111,8 +112,7 @@ export default function CustomerStatementTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}
-          >
+            }}>
             <Loader variant="circular" />
           </div>
         }

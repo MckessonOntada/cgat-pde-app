@@ -8,6 +8,7 @@ import { usePendingPayments } from '../../context/PendingPaymentsContext';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FormattedNumber } from 'react-intl';
+import dayjs from 'dayjs';
 
 export default function PendingPaymentTable() {
   const { t } = useTranslate();
@@ -43,7 +44,13 @@ export default function PendingPaymentTable() {
       sortable: true,
       wrap: true,
       minWidth: '160px',
-      cell: (props) => <EclipsesTextcss className="cellEllipse" str={props.paymentInitiationDate} maxWidth={240} />
+      cell: (props) => (
+        <EclipsesTextcss
+          className="cellEllipse"
+          str={dayjs(props.paymentInitiationDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}
+          maxWidth={240}
+        />
+      )
     },
     {
       id: 'authorizedAmt',
@@ -112,8 +119,7 @@ export default function PendingPaymentTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}
-          >
+            }}>
             <Loader variant="circular" />
           </div>
         }
