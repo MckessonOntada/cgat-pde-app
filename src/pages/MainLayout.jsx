@@ -17,11 +17,12 @@ import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 import Role from '@src/mfe/org-management/pages/role';
 import ScrollToTop from '@src/components/scrollToTop/ScrollToTop';
 import ManageApprovers from '@src/mfe/order-management/manageApprovers';
+import { AccountProvider } from '@src/mfe/finance-management/context/AccountContext';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
 const OrgEntryPoint = React.lazy(() => import('@src/mfe/org-management'));
-const PaymentInvoices = React.lazy(() => import('@src/mfe/paymentInvoices'));
+const PaymentInvoices = React.lazy(() => import('@src/mfe/finance-management'));
 
 function MainLayout() {
   const { pathname } = useLocation();
@@ -130,7 +131,9 @@ function MainLayout() {
                 path={'/record/*'}
                 element={
                   <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
-                    <PaymentInvoices />
+                    <AccountProvider>
+                      <PaymentInvoices />
+                    </AccountProvider>
                   </ProtectedRoute>
                 }
               />
