@@ -69,7 +69,7 @@ function RenderControls({ attributeType, name, isAttributeRemoved }) {
 
   useEffect(() => {
     if (!isDataBinded.current) {
-      if (!queryResult?.data || queryResult.data.length === 0) return;
+      if (!queryResult?.data) return;
 
       let sourceData = useInitialValues.current ? initialValues : values;
       sourceData.rules = sourceData.rules.map((item) => {
@@ -83,15 +83,14 @@ function RenderControls({ attributeType, name, isAttributeRemoved }) {
       });
 
       // Transform fetched data
-      const fetchData = queryResult.data.map((item) => ({
+      const fetchData = queryResult?.data?.map((item) => ({
         value: item.value,
         label: item.label,
-        isChecked: isEditMode
-          ? sourceData?.rules
-              ?.find((rule) => rule.attributeType === attributeType)
-              ?.value?.map(String)
-              .includes(String(item.value)) || false
-          : false
+        isChecked:
+          sourceData?.rules
+            ?.find((rule) => rule.attributeType === attributeType)
+            ?.value?.map(String)
+            .includes(String(item.value)) || false
       }));
 
       // Update selectedData based on the attribute type
