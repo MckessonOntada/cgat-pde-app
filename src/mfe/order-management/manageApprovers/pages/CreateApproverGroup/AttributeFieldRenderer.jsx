@@ -1,5 +1,5 @@
 import Components from '@src/components/form/Components';
-import React from 'react';
+import React, { useEffect } from 'react';
 import './index.scss';
 import { Field } from 'formik';
 import { RuleKeys, RuleLabels } from '../ApproverGroupDetail/RulesConfig';
@@ -14,6 +14,7 @@ const AttributeFieldRenderer = ({ attributeType, name, localData, setLocalData, 
     { isDisabled: false, label: t('approvergroup.userrole'), value: 'user_role' },
     { isDisabled: false, label: t('approvergroup.username'), value: 'user_name' }
   ];
+
   switch (attributeType) {
     case RuleLabels[RuleKeys.PRICE]:
       return (

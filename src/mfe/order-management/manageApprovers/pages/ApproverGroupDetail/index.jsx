@@ -128,7 +128,7 @@ function ApproverGroupDetails() {
         <ModuleHeader
           heading={<Heading as="h1">{t('approvergroup.view.header')}</Heading>}
           controls={
-            hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS) && (
+            hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_APPROVER_GROUP) && (
               <Button
                 Icon={EditPencil}
                 variant="secondary"
@@ -143,7 +143,11 @@ function ApproverGroupDetails() {
         />
         <ModuleHeader
           heading={<Heading as="h3">{t('approvergroup.view.subheader.group_details')}</Heading>}
-          controls={<Switch handleToggle={handleActivateDeactivate} id="id" name="Toggle" size="lg" value={groupData?.active} />}
+          controls={
+            hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_APPROVER_GROUP) && (
+              <Switch handleToggle={handleActivateDeactivate} id="id" name="Toggle" size="lg" value={groupData?.active} />
+            )
+          }
         />
 
         <div className="MCP-panel-container">
@@ -155,7 +159,7 @@ function ApproverGroupDetails() {
 
             <div className="approver-group-labelWrap">
               <span className="view_label">{t('approvergroup.view.subheader.group_created_by')}</span>
-              <p className="label-text">{groupData?.createdBy || 'N/A'}</p>
+              <p className="label-text">{groupData?.createdBy.name || 'N/A'}</p>
             </div>
 
             <div className="approver-group-labelWrap">
@@ -180,16 +184,14 @@ function ApproverGroupDetails() {
               groupData.rules[key] !== undefined &&
               (Array.isArray(groupData.rules[key]) ? groupData.rules[key].length > 0 : groupData.rules[key]) ? (
                 <div key={key} className="MCP-module-body attribute-category">
-                  <div className="subheader-text">{label}</div>
+                  <div className="subheader-text">{t(`rules.${key}`)}</div>
                   <div className="attribute-category">
                     <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 attribute-list">
                       {Array.isArray(groupData.rules[key])
                         ? groupData.rules[key].map((item, idx) => (
                             <div key={idx} className="flex items-center justify-between attribute-item">
                               <div>
-                                <p className={`${key === RuleKeys.USERS || key === RuleKeys.ROLES ? '' : 'to-upper-case'} label-text`}>
-                                  {item[valueKey]}
-                                </p>
+                                <p className="to-upper-case label-text">{item[valueKey]}</p>
                               </div>
                             </div>
                           ))

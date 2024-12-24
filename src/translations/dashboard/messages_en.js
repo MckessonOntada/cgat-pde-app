@@ -23,5 +23,5 @@ export const DashboardEN = {
 
   // Secondary Header routing tabs
   'header.tabs.dashboard': 'Dashboard',
-  'header.tabs.paymentAndInvoices': 'Payments and Invoices',
+  'header.tabs.paymentAndInvoices': 'Payments and Invoices'
 };

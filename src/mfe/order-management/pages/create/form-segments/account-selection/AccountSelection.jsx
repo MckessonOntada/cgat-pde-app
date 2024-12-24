@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Heading, Button } from '@mckesson/mcp-component-library';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from './AccountSelection.module.scss';
 import FloatingDrawer from '@src/components/floating-drawer';
 import AccountSelectionUserGuide from './AccountSelectionUserGuide';
@@ -25,11 +25,13 @@ const AccountSelection = () => {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
   const { orderId } = useParams();
+  const location = useLocation();
+  const { isEdit = false } = location.state || {};
   const [selectedAccount, setSelectedAccount] = React.useState(null);
   const [accountSearchString, setAccountSearchString] = React.useState('');
   const [selectedShippingAddress, setSelectedShippingAddress] = React.useState('');
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
-  const therapyId = formState.activeRecord?.therapy?.id;
+  const therapyId = formState.activeRecord?.therapy?.materialNumber;
 
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ACCOUNT_DETAILS);
@@ -76,8 +78,12 @@ const AccountSelection = () => {
 
   const handleOnBack = () => {
     //check for data change
-    editByStage(ORDER_STAGES.THERAPY_SELECTION);
-    navigate(`../edit-order/${orderId}`);
+    if (isEdit) {
+      navigate(`../${orderId}/summary`);
+    } else {
+      editByStage(ORDER_STAGES.THERAPY_SELECTION);
+      navigate(`../edit-order/${orderId}`);
+    }
   };
 
   const handleOnSubmit = () => {
@@ -130,7 +136,7 @@ const AccountSelection = () => {
         </Button>
       </div>
 
-      <PageHeader heading={<Heading as="h1">{t('headings.createNewOrder')}</Heading>} />
+      <PageHeader heading={<Heading as="h1">{isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}</Heading>} />
 
       <div className="MCP-module-body">
         <OrderStepper />

@@ -17,7 +17,7 @@ import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions
 export default function Dashboard() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { clearFilters, applyFilters } = useApprover();
+  const { clearFilters, applyFilters, refreshData } = useApprover();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const location = useLocation();
   const { isSuccess = false } = location.state || {};
@@ -40,7 +40,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (isSuccess) {
-      // refreshData();
+      refreshData();
       let message = t('approvergroup.messages.approvergroup_create_success');
       showAlert('success', message);
     }
@@ -101,16 +101,16 @@ export default function Dashboard() {
         heading={<Heading as="h1">{t('approvergroup.header.label')}</Heading>}
         controls={
           <div className="controls">
-            {/* {hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CREATE_ORDERS) && ( */}
-            <Button
-              Icon={add_circle_bold}
-              className="button-icon"
-              variant="primary"
-              size="md"
-              onClick={() => navigate(`${PATHS.createapprovergroup}`)}>
-              {t('approvergroup.create_approvergroup')}
-            </Button>
-            {/* )} */}
+            {hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_APPROVER_GROUP) && (
+              <Button
+                Icon={add_circle_bold}
+                className="button-icon"
+                variant="primary"
+                size="md"
+                onClick={() => navigate(`${PATHS.createapprovergroup}`)}>
+                {t('approvergroup.create_approvergroup')}
+              </Button>
+            )}
           </div>
         }
       />

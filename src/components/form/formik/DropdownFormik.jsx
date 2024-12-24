@@ -5,7 +5,7 @@ import Dropdown from '../Dropdown';
 
 export default function DropdownFormik(props) {
   const { t } = useTranslate();
-  const { field, form, fieldlabel, isRequired } = props;
+  const { field, form, fieldlabel, isRequired, onChangeHandler = () => {} } = props;
   const { name, value } = field;
   const { setFieldValue, errors, touched } = form;
   const errorMessage = getNestedValue(errors, name);
@@ -20,6 +20,7 @@ export default function DropdownFormik(props) {
       error={isFieldTouched && errorMessage}
       onChange={(value) => {
         setFieldValue(name, value);
+        onChangeHandler(value);
       }}
       size="lg"
       {...props}

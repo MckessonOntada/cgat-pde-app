@@ -8,7 +8,7 @@ import './index.scss';
 import RenderControls from './RenderControls';
 import { RuleKeys, RuleLabels } from '../ApproverGroupDetail/RulesConfig';
 
-const Attributes = ({ values }) => {
+const Attributes = ({ values, setFieldValue }) => {
   const { t } = useTranslate();
   const attrOptions = [
     { label: t('orgManagement.create_org.option.please_select'), value: '' },
@@ -44,6 +44,11 @@ const Attributes = ({ values }) => {
                     component={Components['dropdown']}
                     isRequired
                     options={getAvailableOptions(index)}
+                    onChangeHandler={(value) => {
+                      setFieldValue('attributeuseroption', 'user_role');
+                      setFieldValue(`rules[${index}].value`, value === 'Price' ? '' : []);
+                      setFieldValue(`rules[${index}].value_augmented`, value === 'Price' ? '' : []);
+                    }}
                   />
                 </div>
                 <div

@@ -56,6 +56,7 @@ function AdditionalDetails() {
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
 
+  const { isEdit = false } = location.state || {};
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(
     async (data) => OrderService.saveAdditionalDetails(orderId, data),
     {
@@ -89,12 +90,16 @@ function AdditionalDetails() {
 
   const handleOnBack = () => {
     //compare data change, display modal for confirmation
-    if (formState.activeRecord?.patientDetailsRequired) {
-      editByStage(ORDER_STAGES.PATIENT_DETAILS);
-      navigate(`../${orderId}/patient`);
+    if (isEdit) {
+      navigate(`../${orderId}/summary`);
     } else {
-      editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-      navigate(`../${orderId}/accounts`);
+      if (formState.activeRecord?.patientDetailsRequired) {
+        editByStage(ORDER_STAGES.PATIENT_DETAILS);
+        navigate(`../${orderId}/patient`);
+      } else {
+        editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
+        navigate(`../${orderId}/accounts`);
+      }
     }
   };
 
@@ -125,7 +130,7 @@ function AdditionalDetails() {
         </Button>
       </div>
 
-      <PageHeader heading={<Heading as="h1">{t('headings.createNewOrder')}</Heading>} />
+      <PageHeader heading={<Heading as="h1">{isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}</Heading>} />
 
       <Formik
         initialValues={initialFormValues}
