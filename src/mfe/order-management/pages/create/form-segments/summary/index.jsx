@@ -71,19 +71,19 @@ const Summary = () => {
     editByStage(stage);
     switch (stage) {
       case ORDER_STAGES.THERAPY_SELECTION: {
-        navigate(`../edit-order/${orderId}`);
+        navigate(`../edit-order/${orderId}`, { state: { isEdit: true } });
         break;
       }
       case ORDER_STAGES.ACCOUNT_DETAILS: {
-        navigate(`../${orderId}/accounts`);
+        navigate(`../${orderId}/accounts`, { state: { isEdit: true } });
         break;
       }
       case ORDER_STAGES.PATIENT_DETAILS: {
-        navigate(`../${orderId}/patient`);
+        navigate(`../${orderId}/patient`, { state: { isEdit: true } });
         break;
       }
       case ORDER_STAGES.ADDITIONAL_DETAILS: {
-        navigate(`../${orderId}/additional-details`);
+        navigate(`../${orderId}/additional-details`, { state: { isEdit: true } });
         break;
       }
       default: {
@@ -231,6 +231,7 @@ const Summary = () => {
                 }
               />
               <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-6'}>
+                <DetailSegment label={t('labels.coiId')} value={additionalDetails?.coiId} />
                 <DetailSegment label={t('labels.slotNo')} value={additionalDetails?.slotNumber} />
                 <DetailSegment label={t('labels.poNo')} value={additionalDetails?.poNumber} />
                 <DetailSegment label={t('labels.dateOfAdministration')} value={additionalDetails?.dateOfAdministration} />

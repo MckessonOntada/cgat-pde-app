@@ -6,7 +6,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
 import { FormList } from '../Constants';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import PatientDetailsForm from './PatientDetailsForm';
 import { Form, Formik } from 'formik';
 import { getValidationSchema } from './PatientDetailsFormUtils';
@@ -26,6 +26,8 @@ const PatientDetails = () => {
   const { formState, setActiveRecord, setCurrentOrder, messageConfig, editByStage } = useManageOrder();
   const alertContainerRef = useRef(null);
   const { showAlert } = useAlert();
+  const location = useLocation();
+  const { isEdit = false } = location.state || {};
 
   React.useEffect(() => {
     if (!formState.activeRecord?.patientDetailsRequired) {
@@ -84,7 +86,7 @@ const PatientDetails = () => {
         </Button>
       </div>
 
-      <PageHeader heading={<Heading as="h1">{t('headings.createNewOrder')}</Heading>} />
+      <PageHeader heading={<Heading as="h1">{isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}</Heading>} />
 
       <div className="MCP-module-body">
         {/* <Stepper activeIndex={3} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} /> */}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Badge, DropdownMenu, Button, Tooltip } from '@mckesson/mcp-component-library';
 import { StatusEnum } from './constants';
 import { routesConfig } from '../../routes/constants';
@@ -28,15 +28,18 @@ const getLinkByStatus = ({ status, id }, t) => {
   return <Link to={path}>{label}</Link>;
 };
 
-const getOptionsByStatus = (status, t, tab) => {
+const getOptionsByStatus = (status, t, tab, id) => {
   const options = [];
-
+  const navigate = useNavigate();
   const handleOnOptionSelection = ({ value }) => {
     if (value === 'view') {
-      navigate(`view-order/${props.id}`);
+      navigate(`${id}/summary`);
     }
     if (value === 'edit') {
-      navigate(`edit-order/${props.id}`);
+      navigate(`edit-order/${id}`);
+    }
+    if (value === 'delete') {
+      alert('handle delete');
     }
   };
 
@@ -47,7 +50,7 @@ const getOptionsByStatus = (status, t, tab) => {
       return null;
     }
 
-    if (status?.toLowerCase() === 'in draft') {
+    if (status?.toLowerCase() === 'in_draft') {
       options.unshift(
         {
           label: t(`labels.orderActions.resume`),
@@ -82,11 +85,11 @@ const getOptionsByStatus = (status, t, tab) => {
       },
       {
         label: t(`labels.orderActions.edit`),
-        value: 'edit order'
+        value: 'edit'
       },
       {
         label: t(`labels.orderActions.delete`),
-        value: 'delete order'
+        value: 'delete'
       }
     );
   }
@@ -250,6 +253,6 @@ export const createColumns = (t, navigate, activeTab) => [
     sortable: false,
     width: '120px',
     center: true,
-    cell: (props) => getOptionsByStatus(props.status, t, activeTab)
+    cell: (props) => getOptionsByStatus(props.status, t, activeTab, props.id)
   }
 ];
