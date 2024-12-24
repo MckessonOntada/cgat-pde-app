@@ -6,21 +6,25 @@
   flex-wrap: wrap;
   row-gap: var(--spacing-03);
   color: var(--brand-color-text-dark-slate);
-  .controls {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-03);
-  }
+
   .accountDetails {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-02);
+
     .name {
       font-size: var(--brand-font-size--large);
       font-weight: var(--brand-font-weight-700);
     }
+
     .address {
       font-size: var(--brand-font-size--small);
     }
   }
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-03);
 }

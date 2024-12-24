@@ -159,7 +159,7 @@ function ApproverGroupDetails() {
 
             <div className="approver-group-labelWrap">
               <span className="view_label">{t('approvergroup.view.subheader.group_created_by')}</span>
-              <p className="label-text">{groupData?.createdBy || 'N/A'}</p>
+              <p className="label-text">{groupData?.createdBy.name || 'N/A'}</p>
             </div>
 
             <div className="approver-group-labelWrap">

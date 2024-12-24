@@ -11,21 +11,21 @@ export const createColumns = (t, navigate, selectedShippingAddress, setSelectedS
       <span className="MCP-table-cell radio-button-wrapper">
         <RadioGroup
           direction="column"
-          id={`radio-button-variant`}
+          id={`radio-button-shipping-address`}
           items={[
             {
               isDisabled: false,
               label: ' ',
-              value: props.shippingAccountNumber
+              value: props.id
             }
           ]}
           onChangeValue={() => {
-            setSelectedShippingAddress(props.shippingAccountNumber);
+            setSelectedShippingAddress(props);
           }}
           onOtherTextChange={() => {}}
           onSubRadioFieldChange={() => {}}
           radioBtnWidth="auto"
-          value={selectedShippingAddress === props.shippingAccountNumber ? props.shippingAccountNumber : ''}
+          value={selectedShippingAddress.id && selectedShippingAddress.id == props.id ? props.id : ''}
         />
       </span>
     )

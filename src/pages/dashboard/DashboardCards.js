@@ -32,9 +32,9 @@ const SYSTEM_ADMIN_CARDS_DATA = [
 const CARDS_DATA = [
   {
     name: 'ManageOrders',
-    label: 'manage_order_configuration',
+    label: 'manage_orders',
     icon: OrderIcon,
-    details: 'efficiently_streamline_user_management_for_seamless_experience',
+    details: 'order_card_description',
     path: AppRoutes.pathOrderManagement,
     permissions: ORDER_MANAGEMENT.MANAGE_ORDERS
   },

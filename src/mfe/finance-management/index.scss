@@ -1,0 +1,178 @@
+@use "@src/assets/styles/abstracts/mixins";
+
+.card-container {
+  background: var(--brand-color-background-white, #fff);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid var(--brand-color-patient-primary-3, #b3c2c9);
+  margin-bottom: 24px;
+  padding: 16px;
+  gap: 16px;
+
+  @include mixins.respond("md") {
+    padding: 24px;
+    gap: 24px;
+  }
+
+  @include mixins.respond("xl") {
+    flex-direction: row;
+  }
+
+  .account-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    @include mixins.respond("md") {
+      gap: 8px;
+    }
+
+    .account-name {
+      color: var(--text-dark-slate-body-hover-state, #1e394e);
+      font-size: 24px;
+      font-style: normal;
+      font-weight: var(--brand-font-weight-700, 700);
+      line-height: var(--brand-line-height--xx-large, 28px);
+      letter-spacing: -0.024px;
+    }
+
+    .account-address {
+      color: var(--text-dark-slate-body-hover-state, #1e394e);
+      font-size: 16px;
+      font-style: normal;
+      font-weight: var(--brand-font-weight-600, 600);
+      line-height: var(--brand-line-height--m-large, 20px);
+      /* 125% */
+      letter-spacing: -0.016px;
+    }
+  }
+
+  .account-search {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    @include mixins.respond("md") {
+      flex-direction: row;
+      align-self: flex-start;
+    }
+
+    .search-form {
+      width: 100%;
+      display: block;
+    }
+
+    .search-form-actions {
+      display: flex;
+      justify-content: left;
+      align-items: center;
+      gap: 12px;
+    }
+  }
+
+  .flex-switch {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 16px;
+
+    @include mixins.respond("md") {
+      gap: 24px;
+    }
+
+    @include mixins.respond("xl") {
+      gap: 0px;
+    }
+
+    .metrics-container {
+      display: flex;
+      width: 100%;
+      flex-direction: column;
+      gap: 18px;
+
+      @include mixins.respond("sm") {
+        align-items: end;
+      }
+
+      @include mixins.respond("xl") {
+        flex-direction: row;
+      }
+
+      .metrics {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 22px;
+
+        @include mixins.respond("md") {
+          flex-direction: row;
+          justify-content: space-between;
+        }
+
+        @include mixins.respond("xl") {
+          justify-content: flex-start;
+        }
+
+        .info-cards-container {
+          @include mixins.respond("xl") {
+            min-width: 343px;
+          }
+        }
+      }
+    }
+
+    .metrics-chart {
+      width: 100%;
+      height: 100%;
+    }
+
+    .divider-style {
+      color: var(--brand-color-background-grey, #c3d1d7);
+
+      @include mixins.respond("xl") {
+        margin-top: 33px;
+        margin-bottom: 24px;
+      }
+    }
+  }
+}
+
+#tablist-container {
+  position: relative;
+
+  #secondaryNavPanel {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  #rightScrollButton {
+    display: none;
+  }
+}
+
+.emptyDataContainer {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border: 1px solid var(--brand-color-grey-scale-warm-1);
+  border-radius: var(--brand-border-radius--5);
+  .emptyDataHeading {
+    padding: var(--spacing-04);
+    font-size: var(--brand-font-size--15);
+    color: var(--brand-color-background-light-slate);
+    line-height: var(--brand-line-height--m-large);
+    padding-bottom: 12px;
+  }
+  .emptyDataDescription {
+    font-size: var(--brand-font-size--extra-small);
+    color: var(--brand-color-background-light-slate);
+    line-height: var(--brand-line-height--small);
+    padding-bottom: var(--spacing-03);
+  }
+}

@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { Button, Stepper, Heading } from '@mckesson/mcp-component-library';
+import { Button, Heading } from '@mckesson/mcp-component-library';
 import styles from './TherapySelection.module.scss';
 import TherapyDetails from './TherapyDetails';
 import FloatingDrawer from '@src/components/floating-drawer';
 import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import TherapyDataTable from './TherapyDataTable';
 import { useTherapy } from '../../../../context/TherapyContext';
 import { FormList } from '../Constants';
@@ -14,6 +14,9 @@ import PageHeader from '@src/components/pageHeader';
 import CommonFilters from '@src/components/Filters';
 import { useMutation } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
+import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
+import OrderStepper from '../OrderStepper';
+import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -21,8 +24,25 @@ function TherapySelection() {
   const location = useLocation();
   const [therapy, setTherapy] = useState(null);
   const { clearFilters, applyFilters } = useTherapy();
+  const { formState } = useManageOrder();
   const searchParams = new URLSearchParams(location.search);
   const therapyDetails = searchParams.get('therapy-details');
+
+  const { orderId } = useParams();
+  const { isEdit = false } = location.state || {};
+
+  React.useEffect(() => {
+    orderId && setCurrentOrder(orderId, ORDER_STAGES.THERAPY_SELECTION);
+  }, []);
+
+  React.useEffect(() => {
+    const { therapy } = formState.activeRecord || {};
+    if (therapy) {
+      setTherapy(therapy);
+    } else {
+      console.log('Could not set therapy');
+    }
+  }, [formState?.activeRecord]);
 
   const handleOnClose = () => {
     searchParams.delete('therapy-details');
@@ -71,29 +91,38 @@ function TherapySelection() {
 
     return config;
   }, []);
+  const { setActiveRecord, setCurrentOrder } = useManageOrder();
 
-  const { mutate } = useMutation(async (data) => OrderService.createOrder(data), {
-    onSuccess: ({ orderId }) => navigate(`../${orderId}/accounts`),
+  const { isLoading: isSaving, mutate: createNewOrder } = useMutation(async (data) => OrderService.createOrder(data), {
+    onSuccess: (result) => {
+      setActiveRecord(result);
+      const { id } = result;
+      navigate(`../${id}/accounts`);
+    },
     onError: console.log
   });
 
   const handleOnSubmit = () => {
     if (therapy) {
       const payload = {
-        id: therapy
+        id: therapy.id
       };
-      mutate(payload);
+
+      createNewOrder(payload);
     }
   };
 
-  const handleOnBackButtonClick = () => {
+  const handleOnBackToOrders = () => {
     //compare data change, display modal for confirmation
     navigate('/orders');
   };
 
-  const handleOnCancel = () => {
-    //compare data change, display modal for confirmation
-    navigate('/orders');
+  const handleCancel = () => {
+    if (isEdit) {
+      navigate(`../${orderId}/summary`);
+    } else {
+      navigate('/orders');
+    }
   };
 
   const forms = FormList(t);
@@ -101,21 +130,15 @@ function TherapySelection() {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={handleOnBackButtonClick}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
 
-      <PageHeader heading={<Heading as="h1">{t('headings.createNewOrder')}</Heading>} />
+      <PageHeader heading={<Heading as="h1">{isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}</Heading>} />
 
       <div className="MCP-module-body">
-        <Stepper activeIndex={1} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} />
-
+        <OrderStepper />
         <div className={styles.wrapper}>
           <div className="MCP-panel-container">
             <ModuleHeader heading={<Heading as="h2">{t('labels.therapySelection')}</Heading>} />
@@ -132,11 +155,11 @@ function TherapySelection() {
           <ModuleHeader
             controls={
               <div className="controls">
-                <Button size="md" variant="secondary" onClick={handleOnCancel}>
+                <Button size="md" variant="secondary" onClick={handleCancel}>
                   {t('captions.btnCancel')}
                 </Button>
-                <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit} disabled={!therapy}>
-                  {t('captions.btnSaveAndContinue')}
+                <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit} disabled={!therapy || isSaving}>
+                  {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
                 </Button>
               </div>
             }

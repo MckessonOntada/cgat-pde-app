@@ -118,12 +118,12 @@ function ApproverList({ onActionSuccess }) {
       {
         id: 'createdBy',
         name: t('approvergroup.table.createdby'),
-        selector: (row) => row.createdBy,
+        selector: (row) => row.createdBy.name,
         sortable: true,
         sortKey: 'createdBy',
         wrap: true,
         minWidth: '160px',
-        cell: (props) => <EclipsesTextcss str={props.createdBy} maxWidth={200} />
+        cell: (props) => <EclipsesTextcss str={props.createdBy.name} maxWidth={200} />
       },
       {
         id: 'createdAt',
