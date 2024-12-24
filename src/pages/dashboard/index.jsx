@@ -18,7 +18,6 @@ const Dashboard = () => {
   // const cards = isSystemAdminView ? SYSTEM_ADMIN_CARDS_DATA : CARDS_DATA;
   const cards = useMemo(() => {
     if (isSystemAdminView) return SYSTEM_ADMIN_CARDS_DATA;
-    console.log('CARDS_DATA', CARDS_DATA);
     let _cards = CARDS_DATA.filter((card) => {
       let _hasAccess = hasPermission(card.permissions);
       return _hasAccess;

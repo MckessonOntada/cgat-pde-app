@@ -92,8 +92,7 @@ function MainLayout() {
               <Route
                 path={`/approver-group/*`}
                 element={
-                  // To do - permissions should be View/Add Approver Group
-                  <ProtectedRoute permissions={routePermissionConfig.orders}>
+                  <ProtectedRoute permissions={routePermissionConfig.approvergroups}>
                     <ManageApprovers />
                   </ProtectedRoute>
                 }
