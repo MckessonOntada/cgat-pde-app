@@ -5,6 +5,7 @@ import { Button } from '@mckesson/mcp-component-library';
 import CustomerStatementTable from './CustomerStatementTable';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useCustomerStatements } from '../../context/CustomerStatementsContext';
+import dayjs from 'dayjs';
 
 export default function CustomerSatements(params) {
   const { t } = useTranslate();
@@ -13,7 +14,11 @@ export default function CustomerSatements(params) {
     return [
       {
         type: 'dateRangePicker',
-        name: 'dateRange'
+        name: 'dateRange',
+        startDateLabel: t('paymentInvoices.history.table.PostingDate'),
+        endDateLabel: t('paymentInvoices.history.table.DueDate'),
+        minDate: dayjs().subtract(180, 'days').toDate(),
+        maxDate: new Date()
       }
     ];
   }, []);

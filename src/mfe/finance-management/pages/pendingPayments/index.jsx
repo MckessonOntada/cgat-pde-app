@@ -39,7 +39,7 @@ export default function PendingPayments(params) {
           onApplyFilters={applyFilters}
           onClearFilters={clearFilters}
           additionalFilters={AdditionalFiltersConfig}
-          searchPlaceholder={t('paymentInvoices.filters.autoSearch')}
+          searchPlaceholder={t('pendingPayments.filters.autoSearch')}
           actualData={actualData}
         />
       </div>

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
@@ -21,7 +21,7 @@ const INITIAL_FILTER_STATE = {
   searchQuery: '',
   billNumber: [],
   soldToSite: [],
-  dateRange: ''
+  dateRange: [dayjs().subtract(180, 'day').format('YYYY-MM-DD'), dayjs().format('YYYY-MM-DD')]
 };
 
 const INITIAL_SORT_STATE = {
@@ -48,10 +48,13 @@ export const CustomerStatementsProvider = ({ children }) => {
   const [actualData, setActualData] = useState([]);
 
   const applyFilters = (filters) => {
+    const formattedStartDate = dayjs(filters.dateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD');
+    const formattedEndDate = dayjs(filters.dateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD');
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig((prevFilters) => ({
       ...prevFilters,
-      ...filters
+      ...filters,
+      dateRange: [formattedStartDate, formattedEndDate]
     }));
   };
 
@@ -83,8 +86,8 @@ export const CustomerStatementsProvider = ({ children }) => {
     setUnSlicedData(_modifiedData);
   };
 
-  const { isFetching, isError, data1, refetch } = useQuery({
-    queryKey: ['CustomerStatements', selectedAccount?.id],
+  const { isFetching, isError, refetch } = useQuery({
+    queryKey: ['CustomerStatements', selectedAccount?.id, filterConfig],
     queryFn: async () => {
       if (!selectedAccount?.id) return;
       const url = `${ApiRoutes.CUSTOMER_STATEMENTS_LISTING(selectedAccount?.id)}`;
@@ -92,10 +95,8 @@ export const CustomerStatementsProvider = ({ children }) => {
         companyCode: selectedAccount?.companyCode,
         salesOrg: selectedAccount?.salesOrg,
         payerAccountNumber: selectedAccount?.accountNumber,
-        dateFrom: '2024-12-20',
-        dateTo: '2024-12-20',
-        // dateFrom: dayjs().subtract(180, 'day').format('DD/MM/YYYY'),
-        // dateTo: dayjs().format('DD/MM/YYYY'),
+        dateFrom: filterConfig.dateRange[0],
+        dateTo: filterConfig.dateRange[1],
         validDateRange: true
       };
 
@@ -118,6 +119,7 @@ export const CustomerStatementsProvider = ({ children }) => {
       showSnackbar({ description: 'Error fetching customer statements listing', type: 'error' });
     }
   });
+
   useEffect(() => {
     filterData(filterConfig);
     if (JSON.stringify(sortConfig) !== JSON.stringify(INITIAL_SORT_STATE)) {
@@ -161,8 +163,6 @@ export const CustomerStatementsProvider = ({ children }) => {
     setData(_modifiedData.slice(startIndex, endIndex));
   };
 
-  const getSortLogic = () => {};
-
   const setPageNumber = (pageNumber) => {
     setPaginationConfig((prevConfig) => ({
       ...prevConfig,
@@ -178,7 +178,6 @@ export const CustomerStatementsProvider = ({ children }) => {
     filterConfig,
     paginationConfig,
     sortConfig,
-    // refreshData,
     applyFilters,
     clearFilters,
     applySort,
