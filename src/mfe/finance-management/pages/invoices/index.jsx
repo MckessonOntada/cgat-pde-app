@@ -24,7 +24,7 @@ export default function Invoices(params) {
         name: 'status',
         tableColumnId: 'status',
         customLabel: (data) => {
-          return data == 'PLUS_91_DAYS_OVERDUE' ? '+91 DAYS OVERDUE' : `${data.match(/\d+/)[0]} DAYS OVERDUE`;
+          return data == 'PLUS_91_DAYS_OVERDUE' ? '+91 DAYS OVERDUE' : data.match(/\d+/) ? `${data.match(/\d+/)[0]} DAYS OVERDUE` : data;
         },
         label: t('paymentInvoices.history.table.status'),
         options: []
