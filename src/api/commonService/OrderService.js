@@ -4,7 +4,7 @@ import HttpResourceService, { httpVerb } from '../HttpResourceService';
 import AuthUtils from '@src/util/AuthUtils';
 
 async function createOrder(payload) {
-  const url = `${ApiRoutes.ORDERS}`;
+  const url = `${ApiRoutes.ORDERS()}`;
   const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
   if (res.data) {
     return res.data;
@@ -13,7 +13,7 @@ async function createOrder(payload) {
 }
 
 async function getOrders(requestParams) {
-  const url = `${ApiRoutes.ORDERS}?${serializeParams(requestParams)}`;
+  const url = `${ApiRoutes.ORDERS()}?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET);
   if (res.data) {
     return res.data;
@@ -24,7 +24,7 @@ async function getOrders(requestParams) {
 async function getOrderById(orderId) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
-  const url = `${ApiRoutes.ORDERS}/${orderId}`;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET);
   if (res.data) {
     return res.data;
@@ -35,7 +35,7 @@ async function getOrderById(orderId) {
 async function savePatientDetails(orderId, payload) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
-  const url = `${ApiRoutes.ORDERS}/${orderId}/patient`;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/patient`;
   try {
     const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
     if (res.data) {
@@ -49,7 +49,7 @@ async function savePatientDetails(orderId, payload) {
 async function saveAdditionalDetails(orderId, payload) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
-  const url = `${ApiRoutes.ORDERS}/${orderId}/additional-details`;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/additional-details`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
 
   if (res.data) {
@@ -62,7 +62,7 @@ async function saveAdditionalDetails(orderId, payload) {
 async function saveAccount(orderId, payload) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
-  const url = `${ApiRoutes.ORDERS}/${orderId}/account`;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/account`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
 
   if (res.data) {
