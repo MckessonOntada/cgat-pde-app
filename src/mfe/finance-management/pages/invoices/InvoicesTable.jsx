@@ -93,8 +93,10 @@ export default function InvoicesTable() {
         <div className="status-container">
           {props.status == 'PLUS_91_DAYS_OVERDUE' ? (
             <Badge text="+91 DAYS OVERDUE" type="error-default" />
-          ) : (
+          ) : props.status.match(/\d+/) && props.status.match(/\d+/)[0] ? (
             <Badge text={`${props.status.match(/\d+/)[0]} DAYS OVERDUE`} type="warning-default" />
+          ) : (
+            <Badge text={`${props.status}`} type="warning-default" />
           )}
         </div>
       )

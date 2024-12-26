@@ -247,9 +247,6 @@
       @include mixins.respond(lg) {
         margin-bottom: 8px;
       }
-
-      &.expanded {
-      }
     }
 
     @include mixins.respond(sm) {
@@ -280,9 +277,6 @@
       flex-direction: row;
       align-items: center;
     }
-  }
-
-  .filter-segment {
   }
 
   .filter-body {

@@ -13,7 +13,7 @@ import { useAccountContext } from './context/AccountContext';
 import { BalanceProvider } from './context/BalanceContext';
 import CommonUtils from '@src/util/CommonUtils';
 import EmptyDataContainer from '@src/components/EmptyData';
-import Upload from '@src/assets/image/EmptyDataTable.svg';
+import { ReactComponent as EmptyDataSVG } from '@src/assets/image/EmptyDataTable.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 
 const PaymentsInvoices = () => {
@@ -73,7 +73,7 @@ const PaymentsInvoices = () => {
         </React.Fragment>
       ) : (
         <EmptyDataContainer
-          image={Upload}
+          image={''}
           heading={t('paymentInvoices.EmptyData.heading')}
           description={t('paymentInvoices.EmptyData.description')}
         />
