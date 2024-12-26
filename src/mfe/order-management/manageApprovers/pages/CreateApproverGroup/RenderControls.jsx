@@ -8,13 +8,16 @@ import { useAccountData, useCatalogData, useUserData, useUserRoleData } from './
 import { useFormContext } from '../../context/FormContext';
 import { RuleKeys, RuleLabels, RuleValueKeys } from '../ApproverGroupDetail/RulesConfig';
 import AttributeFieldRenderer from './AttributeFieldRenderer';
+import { use } from 'react';
 
-function RenderControls({ attributeType, name }) {
+function RenderControls({ attributeType, name, isAttributeRemoved }) {
   const { t } = useTranslate();
   const { values, setFieldValue } = useFormikContext();
   const { initialValues, isEditMode } = useFormContext();
   const [localData, setLocalData] = useState([]);
   const isDataBinded = useRef(false);
+  const useInitialValues = useRef(true);
+
   const shouldFetchCatalog = attributeType === RuleLabels[RuleKeys.THERAPIES];
   const shouldFetchAccounts = attributeType === RuleLabels[RuleKeys.ACCOUNTS];
   const shouldFetchUsers = attributeType === RuleLabels[RuleKeys.USERS];
@@ -59,19 +62,35 @@ function RenderControls({ attributeType, name }) {
   ]);
 
   useEffect(() => {
+    if (isAttributeRemoved.current) {
+      useInitialValues.current = false;
+    }
+  }, [isAttributeRemoved.current]);
+
+  useEffect(() => {
     if (!isDataBinded.current) {
-      if (!queryResult?.data || queryResult.data.length === 0) return;
+      if (!queryResult?.data) return;
+
+      let sourceData = useInitialValues.current ? initialValues : values;
+      sourceData.rules = sourceData.rules.map((item) => {
+        if (item.attributeType !== 'Price' && item.value === '') {
+          return {
+            ...item,
+            value: []
+          };
+        }
+        return item;
+      });
 
       // Transform fetched data
-      const fetchData = queryResult.data.map((item) => ({
+      const fetchData = queryResult?.data?.map((item) => ({
         value: item.value,
         label: item.label,
-        isChecked: isEditMode
-          ? initialValues?.rules
-              ?.find((rule) => rule.attributeType === attributeType)
-              ?.value?.map(String)
-              .includes(String(item.value)) || false
-          : false
+        isChecked:
+          sourceData?.rules
+            ?.find((rule) => rule.attributeType === attributeType)
+            ?.value?.map(String)
+            .includes(String(item.value)) || false
       }));
 
       // Update selectedData based on the attribute type
@@ -84,18 +103,10 @@ function RenderControls({ attributeType, name }) {
         return updatedState;
       });
 
+      useInitialValues.current = false;
       isDataBinded.current = true;
     }
-  }, [
-    queryResult.data,
-    shouldFetchAccounts,
-    shouldFetchUsers,
-    shouldFetchCatalog,
-    shouldFetchPrice,
-    attributeType,
-    isEditMode,
-    initialValues.rules
-  ]);
+  }, [queryResult.data, shouldFetchAccounts, shouldFetchUsers, shouldFetchCatalog, shouldFetchPrice, attributeType, isEditMode]);
 
   useEffect(() => {
     if (!isDataBinded.current) {

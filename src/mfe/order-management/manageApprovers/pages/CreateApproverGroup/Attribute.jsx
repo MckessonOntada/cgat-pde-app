@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Field, FieldArray } from 'formik';
 import { useTranslate } from '@src/translations/useTranslation';
 import Components from '@src/components/form/Components';
@@ -9,6 +9,7 @@ import RenderControls from './RenderControls';
 import { RuleKeys, RuleLabels } from '../ApproverGroupDetail/RulesConfig';
 
 const Attributes = ({ values, setFieldValue }) => {
+  const initRef = useRef(false);
   const { t } = useTranslate();
   const attrOptions = [
     { label: t('orgManagement.create_org.option.please_select'), value: '' },
@@ -45,9 +46,13 @@ const Attributes = ({ values, setFieldValue }) => {
                     isRequired
                     options={getAvailableOptions(index)}
                     onChangeHandler={(value) => {
-                      setFieldValue('attributeuseroption', 'user_role');
-                      setFieldValue(`rules[${index}].value`, value === 'Price' ? '' : []);
-                      setFieldValue(`rules[${index}].value_augmented`, value === 'Price' ? '' : []);
+                      if (value === 'Users') {
+                        setFieldValue('attributeuseroption', 'user_role');
+                      }
+                      if (value === 'Price') {
+                        setFieldValue(`rules[${index}].value`, '');
+                        setFieldValue(`rules[${index}].value_augmented`, '');
+                      }
                     }}
                   />
                 </div>
@@ -56,12 +61,24 @@ const Attributes = ({ values, setFieldValue }) => {
                   <div className="dropdown-with-button">
                     <div className="dropdown-row">
                       <div className="dropdown-wrapper">
-                        <RenderControls attributeType={attribute.attributeType} name={`rules[${index}].value`} />
+                        <RenderControls
+                          attributeType={attribute.attributeType}
+                          name={`rules[${index}].value`}
+                          isAttributeRemoved={initRef}
+                        />
                       </div>
 
                       <div className="remove-button">
                         {index !== 0 && (
-                          <Button Icon={DeleteIcon} variant="tertiary" size="md" className="btnRemove" onClick={() => remove(index)}>
+                          <Button
+                            Icon={DeleteIcon}
+                            variant="tertiary"
+                            size="md"
+                            className="btnRemove"
+                            onClick={() => {
+                              remove(index);
+                              initRef.current = true;
+                            }}>
                             {t('approvergroup.button.remove')}
                           </Button>
                         )}
@@ -75,7 +92,14 @@ const Attributes = ({ values, setFieldValue }) => {
             {/* Add Attribute Button */}
             <div className="separator-line"></div>
             <div className="addAttribute">
-              <Button variant="tertiary" size="md" onClick={() => push({ attributeType: '', value: '' })} disabled={isAddDisabled}>
+              <Button
+                variant="tertiary"
+                size="md"
+                onClick={() => {
+                  push({ attributeType: '', value: '' });
+                  // initRef.current = true;
+                }}
+                disabled={isAddDisabled}>
                 + {t('approvergroup.addattribute')}
               </Button>
             </div>

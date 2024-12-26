@@ -45,7 +45,7 @@ const CreateApproverGroup = () => {
         const selectedUserData = usersData.map((user) => ({
           value: user.value,
           label: user.label,
-          isChecked: initialValues.approverUsers.includes(user.value)
+          isChecked: initialValues.approverUsers.map(String).includes(String(user.value))
         }));
         setLocalUsersData(selectedUserData);
         dataBinded.current = true;
