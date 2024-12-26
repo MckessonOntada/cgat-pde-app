@@ -6,6 +6,7 @@ import { Button } from '@mckesson/mcp-component-library';
 import CommonFilters from '@src/components/Filters';
 import { usePaymentHistory } from '../../context/PaymentHistoryContext';
 import { useTranslate } from '@src/translations/useTranslation';
+import dayjs from 'dayjs';
 
 export default function PaymentHistory(params) {
   const { t } = useTranslate();
@@ -26,6 +27,14 @@ export default function PaymentHistory(params) {
         tableColumnId: 'paymentMethod',
         label: t('paymentInvoices.history.filters.method'),
         options: []
+      },
+      {
+        type: 'dateRangePicker',
+        name: 'dateRange',
+        startDateLabel: t('paymentInvoices.history.table.PostingDate'),
+        endDateLabel: t('paymentInvoices.history.table.DueDate'),
+        minDate: dayjs().subtract(180, 'days').toDate(),
+        maxDate: new Date()
       }
     ];
   }, []);

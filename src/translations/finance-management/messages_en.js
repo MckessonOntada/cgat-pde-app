@@ -103,6 +103,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.paymentMethods.table.cards.emptyData': 'No Credit Cards Found',
 
   //Pending Payments
+  'pendingPayments.filters.autoSearch': 'Search by document number, sold to',
   'pendingPayments.table.confirmationNumber': 'Confirmation Number',
   'pendingPayments.table.totalAuthorizedPaymentAmt': 'Total Authorized Payment Amount',
   'pendingPayments.table.cancelPayment': 'CANCEL PAYMENT',

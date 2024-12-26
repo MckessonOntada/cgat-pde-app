@@ -21,7 +21,7 @@ export const useCatalogData = (shouldFetch) => {
       const apiUrl = `${ApiRoutes.USERS()}/current/therapies`;
       const res = await HttpResourceService.callRest(apiUrl, httpVerb.GET, {});
       return (
-        staticTherapyData.map((item) => ({
+        res.data?.content?.map((item) => ({
           label: item.therapyDescription,
           value: item.id
         })) || []

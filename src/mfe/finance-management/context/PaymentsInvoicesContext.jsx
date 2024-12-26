@@ -102,18 +102,23 @@ export const PaymentsInvoiceProvider = ({ children }) => {
       //   payload={...payload,...{dateFrom:filterConfig.dateRange[0]??"",dateTo:filterConfig.dateRange[1]??""}}
       //  }
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
-      if (res.data) {
-        const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
-        const endIndex = startIndex + paginationConfig.pageSize;
-        setData(res.data?.openInvoices?.slice(startIndex, endIndex));
-        setUnSlicedData(res.data?.openInvoices);
-        setActualData(res.data?.openInvoices);
-        setPaginationConfig((state) => ({
-          ...state,
-          totalPages: Math.ceil(res.data?.openInvoices.length / paginationConfig.pageSize),
-          totalElements: res.data?.openInvoices.length
-        }));
+
+      if (!res.data || !res.data.openInvoices) {
+        showSnackbar({ description: 'Error fetching invoice listing', type: 'error' });
+        return;
       }
+
+      const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
+      const endIndex = startIndex + paginationConfig.pageSize;
+      setData(res.data.openInvoices.slice(startIndex, endIndex));
+      setUnSlicedData(res.data.openInvoices);
+      setActualData(res.data.openInvoices);
+      
+      setPaginationConfig((state) => ({
+        ...state,
+        totalPages: Math.ceil(res.data.openInvoices.length / paginationConfig.pageSize),
+        totalElements: res.data.openInvoices.length
+      }));
     },
     {
       enabled: !!selectedAccount?.id,

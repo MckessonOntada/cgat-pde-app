@@ -21,7 +21,8 @@ const RECORDS_PER_PAGE = 8;
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
   paymentMethod: [],
-  paymentStatus: []
+  paymentStatus: [],
+  dateRange: [dayjs().subtract(180, 'day').format('DD/MM/YYYY'), dayjs().format('DD/MM/YYYY')]
 };
 
 const INITIAL_SORT_STATE = {
@@ -40,27 +41,33 @@ export const PaymentHistoryProvider = ({ children }) => {
   const [data, setData] = useState([]);
   const [unSlicedData, setUnSlicedData] = useState([]);
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
+  const [previousFilterConfig, setPreviousFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
-  const [isLoading, setIsLoading] = useState(false);
   const { showSnackbar } = useSnackbar();
   const { selectedAccount } = useAccountContext();
   const [actualData, setActualData] = useState([]);
 
   const applyFilters = (filters) => {
+    const formattedStartDate = dayjs(filters.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY');
+    const formattedEndDate = dayjs(filters.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY');
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig((prevFilters) => ({
       ...prevFilters,
-      ...filters
+      ...filters,
+      dateRange: [formattedStartDate, formattedEndDate]
     }));
   };
 
-  const filterData = (filters) => {
+  const filterData = async (filters) => {
+    if (JSON.stringify(filters.dateRange) !== JSON.stringify(previousFilterConfig.dateRange)) {
+      await refetch();
+      setPreviousFilterConfig(filters);
+    }
     let _data = [...[], ...actualData];
     let _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery
         ? item.confirmationNo?.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item.purchaseOrderNo?.toString().includes(filters.searchQuery.toLowerCase()) ||
           item.paymentMethod?.toString().includes(filters.searchQuery.toLowerCase()) ||
           item.paymentInitiationDate?.toString().includes(filters.searchQuery.toLowerCase()) ||
           item.paymentStatus?.toString().includes(filters.searchQuery.toLowerCase()) ||
@@ -70,6 +77,7 @@ export const PaymentHistoryProvider = ({ children }) => {
       const matchesPaymentMethod = filters?.paymentMethod?.length > 0 ? filters.paymentMethod.includes(item.paymentMethod) : true;
 
       return matchesSearchQuery && matchesPaymentStatus && matchesPaymentMethod;
+      // return matchesSearchQuery;
     });
 
     const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
@@ -84,19 +92,8 @@ export const PaymentHistoryProvider = ({ children }) => {
     setUnSlicedData(_modifiedData);
   };
 
-  useEffect(() => {
-    filterData(filterConfig);
-    if (JSON.stringify(sortConfig) !== JSON.stringify(INITIAL_SORT_STATE)) {
-      sortData(sortConfig);
-    }
-  }, [filterConfig, paginationConfig.pageNumber]);
-
-  const clearFilters = () => {
-    setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
-    setFilterConfig(INITIAL_FILTER_STATE);
-  };
-  const { isFetching, isError } = useQuery({
-    queryKey: ['paymentHistorylisting', selectedAccount?.id],
+  const { isFetching, isError, refetch } = useQuery({
+    queryKey: ['paymentHistorylisting', selectedAccount?.id, filterConfig],
     queryFn: async () => {
       if (!selectedAccount?.id) return;
       const url = `${ApiRoutes.PAYMENT_HISTORY_LISTING(selectedAccount?.id)}`;
@@ -104,8 +101,8 @@ export const PaymentHistoryProvider = ({ children }) => {
         companyCode: selectedAccount?.companyCode,
         salesOrg: selectedAccount?.salesOrg,
         payerAccountNumber: selectedAccount?.accountNumber,
-        dateFrom: dayjs().subtract(180, 'day').format('DD/MM/YYYY'),
-        dateTo: dayjs().format('DD/MM/YYYY')
+        dateFrom: filterConfig.dateRange[0],
+        dateTo: filterConfig.dateRange[1]
       };
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
       if (res.data) {
@@ -121,12 +118,23 @@ export const PaymentHistoryProvider = ({ children }) => {
         }));
       }
     },
-
     onError: (error) => {
       showSnackbar({ description: 'Error fetching invoice listing', type: 'error' });
     },
     enabled: !!selectedAccount?.id
   });
+
+  useEffect(() => {
+    filterData(filterConfig);
+    if (JSON.stringify(sortConfig) !== JSON.stringify(INITIAL_SORT_STATE)) {
+      sortData(sortConfig);
+    }
+  }, [filterConfig, paginationConfig.pageNumber]);
+
+  const clearFilters = () => {
+    setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
+    setFilterConfig(INITIAL_FILTER_STATE);
+  };
 
   const applySort = (newSortConfig) => {
     setSortConfig(newSortConfig);
@@ -159,8 +167,6 @@ export const PaymentHistoryProvider = ({ children }) => {
     setData(_modifiedData.slice(startIndex, endIndex));
   };
 
-  const getSortLogic = () => {};
-
   const setPageNumber = (pageNumber) => {
     setPaginationConfig((prevConfig) => ({
       ...prevConfig,
@@ -176,7 +182,6 @@ export const PaymentHistoryProvider = ({ children }) => {
     filterConfig,
     paginationConfig,
     sortConfig,
-    // refreshData,
     applyFilters,
     clearFilters,
     applySort,

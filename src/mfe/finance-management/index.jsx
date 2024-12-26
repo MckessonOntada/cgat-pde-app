@@ -24,17 +24,23 @@ const PaymentsInvoices = () => {
   const { t } = useTranslate();
 
   useEffect(() => {
-    if (Array.isArray(tabListData) && tabListData.length > 0) {
-      const updatedTabs = tabListData.map((item) => {
-        return {
-          ...item,
-          isActiveTab: location.pathname.includes(item.path),
-          ariaSelected: location.pathname.includes(item.path) ? 'true' : 'false'
-        };
-      });
-      setTabs(updatedTabs);
+    if (!Array.isArray(tabListData) || tabListData.length === 0) {
+      console.error('Tab list data is not available');
+      return;
     }
+
+    const updatedTabs = tabListData.map((item) => {
+      return {
+        ...item,
+        isActiveTab: location.pathname.includes(item.path),
+        ariaSelected: location.pathname.includes(item.path) ? 'true' : 'false'
+      };
+    });
+
+    setTabs(updatedTabs);
   }, [location.pathname]);
+
+  console.log('PaymentsInvoices', selectedAccount);
 
   return (
     <div className="MCP-module-wrapper">
@@ -42,9 +48,11 @@ const PaymentsInvoices = () => {
       {CommonUtils.isNonEmptyObject(selectedAccount) ? (
         <React.Fragment>
           <RecordDetails />
+
           <BalanceProvider>
             <BalanceDetails />
           </BalanceProvider>
+
           <div className="MCP-module-body">
             <div id="tablist-container" className="MCP-panel-container">
               <TabList
