@@ -1,5 +1,12 @@
 export const PaymentInvoicesES = {
   'paymentInvoices.header': 'S_Payment Invoices',
+  'paymentInvoices.tabs.INVOICES': 'S_INVOICES',
+  'paymentInvoices.tabs.CREDITS': 'S_CREDITS',
+  'paymentInvoices.tabs.PENDING PAYMENTS': 'S_PENDING PAYMENTS',
+  'paymentInvoices.tabs.PAYMENT HISTORY': 'S_PAYMENT HISTORY',
+  'paymentInvoices.tabs.CUSTOMER STATEMENTS': 'S_CUSTOMER STATEMENTS',
+  'paymentInvoices.tabs.PAYMENT METHODS': 'S_PAYMENT METHODS',
+
   // Account Search
   'paymentInvoices.accountSearch.applyBtn': 'S_Apply',
   'paymentInvoices.accountSearch.setAsDefaultBtn': 'S_Set as Default',
@@ -114,7 +121,7 @@ export const PaymentInvoicesES = {
   'pendingPayments.table.bankAccount.emptyData': 'S_No Pending Payments Found',
   'pendingPayments.table.paymentStatus': 'S_Payment Status',
   'pendingPayments.table.billDate': 'S_Bill Date',
-  'pendingPayments.filters.autoSearch': 'Search by document number, sold to',
+  'pendingPayments.filters.autoSearch': 'S_Search by document number, sold to',
 
   // No data found
   'paymentInvoices.EmptyData.heading': 'S_No Data Found',

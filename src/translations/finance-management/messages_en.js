@@ -1,5 +1,12 @@
 export const PaymentInvoicesEN = {
   'paymentInvoices.header': 'Payment Invoices',
+  'paymentInvoices.tabs.INVOICES': 'INVOICES',
+  'paymentInvoices.tabs.CREDITS': 'CREDITS',
+  'paymentInvoices.tabs.PENDING PAYMENTS': 'PENDING PAYMENTS',
+  'paymentInvoices.tabs.PAYMENT HISTORY': 'PAYMENT HISTORY',
+  'paymentInvoices.tabs.CUSTOMER STATEMENTS': 'CUSTOMER STATEMENTS',
+  'paymentInvoices.tabs.PAYMENT METHODS': 'PAYMENT METHODS',
+
   // Account Search
   'paymentInvoices.accountSearch.applyBtn': 'Apply',
   'paymentInvoices.accountSearch.setAsDefaultBtn': 'Set as Default',

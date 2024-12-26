@@ -44,7 +44,7 @@ export default function Invoices(params) {
           onApplyFilters={applyFilters}
           onClearFilters={clearFilters}
           additionalFilters={AdditionalFiltersConfig}
-          searchPlaceholder={'Search by document number, sold to...'}
+          searchPlaceholder={t('pendingPayments.filters.autoSearch')}
           actualData={actualData}
         />
       </div>

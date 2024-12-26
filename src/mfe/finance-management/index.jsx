@@ -33,7 +33,8 @@ const PaymentsInvoices = () => {
       return {
         ...item,
         isActiveTab: location.pathname.includes(item.path),
-        ariaSelected: location.pathname.includes(item.path) ? 'true' : 'false'
+        ariaSelected: location.pathname.includes(item.path) ? 'true' : 'false',
+        configName: t('paymentInvoices.tabs.' + item.configName)
       };
     });
 
