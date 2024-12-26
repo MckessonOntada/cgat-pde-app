@@ -1,4 +1,12 @@
 export const PaymentInvoicesEN = {
+  'paymentInvoices.header': 'Payment Invoices',
+  'paymentInvoices.tabs.INVOICES': 'INVOICES',
+  'paymentInvoices.tabs.CREDITS': 'CREDITS',
+  'paymentInvoices.tabs.PENDING PAYMENTS': 'PENDING PAYMENTS',
+  'paymentInvoices.tabs.PAYMENT HISTORY': 'PAYMENT HISTORY',
+  'paymentInvoices.tabs.CUSTOMER STATEMENTS': 'CUSTOMER STATEMENTS',
+  'paymentInvoices.tabs.PAYMENT METHODS': 'PAYMENT METHODS',
+
   // Account Search
   'paymentInvoices.accountSearch.applyBtn': 'Apply',
   'paymentInvoices.accountSearch.setAsDefaultBtn': 'Set as Default',
@@ -21,6 +29,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.balanceCard.PLUS_91_DAYS_OVERDUE': '91+ days over',
   'paymentInvoices.balanceCard.payNowBtn': 'Pay Now',
   'paymentInvoices.balanceAPI.error': 'Error fetching open invoices balance.',
+
   // Payment History
   'paymentInvoices.history.table.confirmationNumber': 'Confirmation No.',
   'paymentInvoices.history.table.purchaseOrderNumber': 'Purchase Order Number',
@@ -109,5 +118,10 @@ export const PaymentInvoicesEN = {
   'pendingPayments.table.paymentMethod.subHeader': `To view all payments, navigate to the 'Payment History'.`,
   'pendingPayments.table.bankAccount.emptyData': 'No Pending Payments Found',
   'pendingPayments.table.paymentStatus': 'Payment Status',
-  'pendingPayments.table.billDate': 'Bill Date'
+  'pendingPayments.table.billDate': 'Bill Date',
+  'pendingPayments.filters.autoSearch': 'Search by document number, sold to',
+
+  // No data found
+  'paymentInvoices.EmptyData.heading': 'No Data Found',
+  'paymentInvoices.EmptyData.description': 'No accounts found linked with user'
 };
