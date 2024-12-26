@@ -39,6 +39,7 @@ export const getFormFields = (t) => [
     placeholder: ' ',
     isRequired: true,
     component: Components['datePicker'],
-    minDate: new Date()
+    disableDateTill: new Date(),
+    disablePast: true
   }
 ];
