@@ -216,7 +216,7 @@ function ApproverGroupDetails() {
             <div className="grid grid-gap-16 grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 approver-user-list">
               {groupData.approverUsers.map(({ userId, userName }, idx) => (
                 <React.Fragment key={userId}>
-                  <div className="flex items-center justify-between attribute-item approver-user-item">
+                  <div className="flex items-center justify-between approver-user-item">
                     <div>
                       <p className="label-text">{userName}</p>
                     </div>
