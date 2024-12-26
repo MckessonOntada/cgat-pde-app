@@ -6,77 +6,121 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { Field, useFormikContext } from 'formik';
 import { useAccountData, useCatalogData, useUserData, useUserRoleData } from './apiService';
 import { useFormContext } from '../../context/FormContext';
-import { RuleKeys, RuleLabels } from '../ApproverGroupDetail/RulesConfig';
+import { RuleKeys, RuleLabels, RuleValueKeys } from '../ApproverGroupDetail/RulesConfig';
 import AttributeFieldRenderer from './AttributeFieldRenderer';
+import { use } from 'react';
 
-function RenderControls({ attributeType, name }) {
+function RenderControls({ attributeType, name, isAttributeRemoved }) {
   const { t } = useTranslate();
-
   const { values, setFieldValue } = useFormikContext();
   const { initialValues, isEditMode } = useFormContext();
   const [localData, setLocalData] = useState([]);
   const isDataBinded = useRef(false);
+  const useInitialValues = useRef(true);
 
   const shouldFetchCatalog = attributeType === RuleLabels[RuleKeys.THERAPIES];
   const shouldFetchAccounts = attributeType === RuleLabels[RuleKeys.ACCOUNTS];
   const shouldFetchUsers = attributeType === RuleLabels[RuleKeys.USERS];
+  const shouldFetchPrice = attributeType === RuleLabels[RuleKeys.PRICE];
 
-  // API hooks with enabled option
   const catalogQuery = useCatalogData(shouldFetchCatalog);
   const accountQuery = useAccountData(shouldFetchAccounts);
   const userRoleQuery = useUserRoleData(shouldFetchUsers && values.attributeuseroption === 'user_role');
   const userDataQuery = useUserData(shouldFetchUsers && values.attributeuseroption === 'user_name');
 
-  // Memoize the query result
+  const [selectedData, setSelectedData] = useState({
+    price: '',
+    accounts: [],
+    users: [],
+    categories: []
+  });
+
   const queryResult = useMemo(() => {
-    if (shouldFetchCatalog) return catalogQuery;
-    if (shouldFetchAccounts) return accountQuery;
+    if (shouldFetchCatalog) {
+      isDataBinded.current = false;
+      return catalogQuery;
+    }
+    if (shouldFetchAccounts) {
+      isDataBinded.current = false;
+      return accountQuery;
+    }
     if (shouldFetchUsers) {
       isDataBinded.current = false;
       return values.attributeuseroption === 'user_role' ? userRoleQuery : userDataQuery;
     }
 
     return { isLoading: false, data: [] };
-  }, [attributeType, values.attributeuseroption, catalogQuery, accountQuery, userRoleQuery, userDataQuery]);
+  }, [
+    shouldFetchCatalog,
+    shouldFetchAccounts,
+    shouldFetchUsers,
+    values.attributeuseroption,
+    catalogQuery,
+    accountQuery,
+    userRoleQuery,
+    userDataQuery
+  ]);
+
+  useEffect(() => {
+    if (isAttributeRemoved.current) {
+      useInitialValues.current = false;
+    }
+  }, [isAttributeRemoved.current]);
 
   useEffect(() => {
     if (!isDataBinded.current) {
-      let fetchData = [];
+      if (!queryResult?.data) return;
 
-      // Check if data is available and attributeType is USERS or other
-      if (attributeType === RuleLabels[RuleKeys.USERS] && queryResult.data?.length > 0) {
-        fetchData = values.attributeuseroption === 'user_role' ? userRoleQuery.data || [] : userDataQuery.data || [];
-      } else if (queryResult.data?.length > 0) {
-        fetchData = queryResult.data || [];
-      }
+      let sourceData = useInitialValues.current ? initialValues : values;
+      sourceData.rules = sourceData.rules.map((item) => {
+        if (item.attributeType !== 'Price' && item.value === '') {
+          return {
+            ...item,
+            value: []
+          };
+        }
+        return item;
+      });
 
-      // Process and transform data if available
-      if (fetchData.length > 0) {
-        const currentRule = initialValues?.rules?.find((rule) => rule.attributeType === attributeType);
+      // Transform fetched data
+      const fetchData = queryResult?.data?.map((item) => ({
+        value: item.value,
+        label: item.label,
+        isChecked:
+          sourceData?.rules
+            ?.find((rule) => rule.attributeType === attributeType)
+            ?.value?.map(String)
+            .includes(String(item.value)) || false
+      }));
 
-        const transformedData = fetchData.map((item) => ({
-          value: item.value,
-          label: item.label,
-          isChecked: currentRule?.value?.map(String).includes(String(item.value)) || false
-        }));
+      // Update selectedData based on the attribute type
+      setSelectedData((prevState) => {
+        const updatedState = { ...prevState };
+        if (shouldFetchPrice) updatedState.price = '';
+        if (shouldFetchAccounts) updatedState.accounts = fetchData;
+        if (shouldFetchUsers) updatedState.users = fetchData;
+        if (shouldFetchCatalog) updatedState.categories = fetchData;
+        return updatedState;
+      });
 
-        setLocalData(transformedData);
-        isDataBinded.current = true;
-      }
+      useInitialValues.current = false;
+      isDataBinded.current = true;
     }
-  }, [
-    attributeType,
-    queryResult.data,
-    values.attributeuseroption,
-    userRoleQuery.data,
-    userDataQuery.data,
-    initialValues.rules,
-    isEditMode
-  ]);
+  }, [queryResult.data, shouldFetchAccounts, shouldFetchUsers, shouldFetchCatalog, shouldFetchPrice, attributeType, isEditMode]);
 
-  const getAugmentedValues = (rules, attributeType) => {
-    return rules.filter((rule) => rule.attributeType === attributeType).flatMap((rule) => rule.value_augmented || []);
-  };
+  useEffect(() => {
+    if (!isDataBinded.current) {
+      const updatedLocalData = (() => {
+        if (shouldFetchAccounts) return selectedData.accounts;
+        if (shouldFetchUsers) return selectedData.users;
+        if (shouldFetchCatalog) return selectedData.categories;
+        if (shouldFetchPrice) return [];
+        return [];
+      })();
+      isDataBinded.current = true;
+      setLocalData(updatedLocalData);
+    }
+  }, [selectedData, shouldFetchAccounts, shouldFetchUsers, shouldFetchCatalog, shouldFetchPrice]);
 
   const onRemoveClick = (itemToRemove) => {
     const updatedValues = values.rules.find((rule) => rule.attributeType === attributeType)?.value.filter((id) => id !== itemToRemove);
@@ -96,15 +140,16 @@ function RenderControls({ attributeType, name }) {
       return rule;
     });
 
-    // Set the updated rules back to the form state
     setFieldValue('rules', updatedRules);
+
+    // Update localData to uncheck the removed item
     const updatedOptions = localData.map((option) => {
       if (option.value === itemToRemove) {
         return { ...option, isChecked: false };
       }
       return option;
     });
-    setLocalData(() => updatedOptions);
+    setLocalData(updatedOptions);
   };
 
   return (

@@ -2,6 +2,7 @@ export const ApproverManagementES = {
   'approvergroup.header.backmessage': 'S_Back to Approver Group',
   'approvergroup.header.label': 'S_Manage Approver Groups',
   'approvergroup.add.label': 'S_Add New Group',
+  'approvergroup.edit.label': 'S_Edit New Group',
   'approvergroup.table.listing.label': 'S_Approver Group Listing',
   'approvergroup.searchFilter.label': 'S_Search By Group Name',
   'approvergroup.clearFilter.label': 'S_clear filters',
@@ -39,7 +40,7 @@ export const ApproverManagementES = {
   'approvergroup.selectaccount': 'S_Select Account',
   'approvergroup.price': 'S_Amount Greater Than',
   'approvergroup.addattribute': 'S_Add Attribute',
-  'approvergroup.approveuserlist': 'S_Approve user list',
+  'approvergroup.approveuserlist': 'S_Approver user list',
   'approvergroup.selectuser': 'S_Select Users',
   'approvergroup.username': 'S_User Name',
   'approvergroup.userrole': 'S_User Role',
@@ -73,5 +74,10 @@ export const ApproverManagementES = {
 
   'approvergroup.messages.approvergroup_deactivate_success': 'S_Approver Group has been Deactivated successfully.',
   'approvergroup.messages.approvergroup_deactivate_failure': 'S_Failed to Deactivate the Approver Group.',
-  'approvergroup.messages.approvergroup_create_success': 'S_Approver Group has been created successfully.'
+  'approvergroup.messages.approvergroup_create_success': 'S_Approver Group has been created successfully.',
+  'rules.price': 'S_Price',
+  'rules.accounts': 'S_Account',
+  'rules.therapies': 'S_Catalog',
+  'rules.users': 'S_User',
+  'rules.roles': 'S_Roles'
 };
