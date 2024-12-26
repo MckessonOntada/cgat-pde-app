@@ -8,6 +8,7 @@ import { usePaymentCredits } from '../../context/PaymentsCreditsContext';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FormattedNumber } from 'react-intl';
+import dayjs from 'dayjs';
 
 export default function CreditsTable() {
   const { t } = useTranslate();
@@ -34,7 +35,7 @@ export default function CreditsTable() {
       minWidth: '160px',
       sortable: true,
       wrap: true,
-      cell: (props) => <div>{props.soldToSite}</div>
+      cell: (props) => <div>{props.soldToSite || '-'}</div>
     },
     {
       id: 'description',
@@ -43,7 +44,7 @@ export default function CreditsTable() {
       minWidth: '144px',
       sortable: true,
       wrap: true,
-      cell: (props) => props.description
+      cell: (props) => props.description || '-'
     },
     {
       id: 'billDate',
@@ -52,7 +53,9 @@ export default function CreditsTable() {
       sortable: true,
       wrap: true,
       minWidth: '160px',
-      cell: (props) => <EclipsesTextcss className="cellEllipse" str={props.billDate} maxWidth={240} />
+      cell: (props) => (
+        <EclipsesTextcss className="cellEllipse" str={dayjs(props.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'} maxWidth={240} />
+      )
     },
 
     {
@@ -123,8 +126,7 @@ export default function CreditsTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}
-          >
+            }}>
             <Loader variant="circular" />
           </div>
         }
