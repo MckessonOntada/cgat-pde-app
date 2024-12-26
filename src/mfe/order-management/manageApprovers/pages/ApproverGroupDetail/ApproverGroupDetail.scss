@@ -18,40 +18,41 @@
 .attribute-category {
   margin-bottom: var(--spacing-01);
 }
-
 .attribute-list {
   display: grid;
   grid-template-columns: 1fr;
   column-gap: var(--spacing-03);
-  row-gap: 0;
-  align-items: center;
+  row-gap: var(--spacing-02);
+  align-items: start;
+
   @include mixins.respond(md) {
-    grid-template-columns: repeat(2, 1fr); // Medium screens
+    grid-template-columns: repeat(2, 1fr);
   }
 
   @include mixins.respond(lg) {
-    grid-template-columns: repeat(3, 1fr); // Large screens
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
 .attribute-item {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: var(--spacing-02) var(--spacing-02) var(--spacing-02) 0px;
+  align-items: flex-start;
+  padding: var(--spacing-02);
   position: relative;
+
   &:not(:last-child) {
     margin-bottom: var(--spacing-03);
   }
-  // Add border as divider
+
   @include mixins.respond(md) {
     &:not(:nth-child(2n)):after {
       content: "";
       position: absolute;
+      top: 0; // Aligns divider to the top
       right: 0;
-      top: 0;
-      bottom: 0;
       width: 1px;
+      height: var(--spacing-06); // Fixed divider height
       background-color: var(--brand-color-background-grey);
     }
   }
@@ -60,84 +61,74 @@
     &:not(:nth-child(3n)):after {
       content: "";
       position: absolute;
+      top: 0; // Aligns divider to the top
       right: 0;
-      top: 0;
-      bottom: 0;
       width: 1px;
+      height: var(--spacing-06); // Fixed divider height
       background-color: var(--brand-color-background-grey);
     }
+
+    // Remove divider for the last column in each row
     &:nth-child(3n):after {
-      background-color: var(--brand-color-background-white);
+      display: none;
     }
   }
+
+  // Remove divider for the very last item
   &:last-child::after {
     display: none;
+  }
+
+  .text {
+    white-space: normal;
+    word-break: break-word;
+    max-width: 100%;
   }
 }
 
 .approver-user-list {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   column-gap: var(--spacing-03);
-  row-gap: 0;
-  align-items: center;
+  row-gap: var(--spacing-02);
+  align-items: start;
+
+  @include mixins.respond(sm) {
+    grid-template-columns: repeat(2, 1fr); // 2 columns for small screens
+  }
+
   @include mixins.respond(md) {
-    grid-template-columns: repeat(4, 1fr); // Medium screens
+    grid-template-columns: repeat(4, 1fr); // 4 columns for medium screens
   }
 
   @include mixins.respond(lg) {
-    grid-template-columns: repeat(6, 1fr); // Large screens
+    grid-template-columns: repeat(6, 1fr); // 6 columns for large screens
   }
 }
 
 .approver-user-item {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: var(--spacing-02) var(--spacing-02) var(--spacing-02) 0px;
+  align-items: flex-start;
+  padding: var(--spacing-02);
   position: relative;
 
   &:not(:last-child) {
-    margin-bottom: var(--spacing-04);
+    margin-bottom: var(--spacing-03);
+  }
+  &:not(:last-child):after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 1px;
+    height: var(--spacing-06);
+    background-color: var(--brand-color-background-grey);
   }
 
-  @include mixins.respond(sm) {
-    &:not(:nth-child(2n)):after {
-      content: "";
-      position: absolute;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      width: 1px;
-      background-color: var(--brand-color-background-grey);
-    }
-  }
-
-  // Add border as divider
-  @include mixins.respond(md) {
-    &:not(:nth-child(4n)):after {
-      content: "";
-      position: absolute;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      width: 1px;
-      background-color: var(--brand-color-background-grey);
-    }
-  }
-
-  @include mixins.respond(lg) {
-    &:not(:nth-child(6n)):after {
-      content: "";
-      position: absolute;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      width: 1px;
-      background-color: var(--brand-color-background-grey);
-    }
-    &:nth-child(6n):after {
-      background-color: var(--brand-color-background-white);
-    }
+  .text {
+    white-space: normal;
+    word-break: break-word;
+    max-width: 100%;
   }
 }
