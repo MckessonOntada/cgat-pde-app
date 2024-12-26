@@ -12,12 +12,16 @@ import { PaymentsInvoiceProvider } from './context/PaymentsInvoicesContext';
 import { useAccountContext } from './context/AccountContext';
 import { BalanceProvider } from './context/BalanceContext';
 import CommonUtils from '@src/util/CommonUtils';
+import EmptyDataContainer from '@src/components/EmptyData';
+import Upload from '@src/assets/image/EmptyDataTable.svg';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const PaymentsInvoices = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [tabs, setTabs] = useState();
   const { selectedAccount } = useAccountContext();
+  const { t } = useTranslate();
 
   useEffect(() => {
     if (Array.isArray(tabListData) && tabListData.length > 0) {
@@ -34,7 +38,7 @@ const PaymentsInvoices = () => {
 
   return (
     <div className="MCP-module-wrapper">
-      <ModuleHeader heading={<PageHeader heading={'Payment Invoices'} />} />
+      <ModuleHeader heading={<PageHeader heading={t('paymentInvoices.header')} />} />
       {CommonUtils.isNonEmptyObject(selectedAccount) ? (
         <React.Fragment>
           <RecordDetails />
@@ -59,10 +63,11 @@ const PaymentsInvoices = () => {
           </div>
         </React.Fragment>
       ) : (
-        <div className="emptyDataContainer">
-          <h2 className="emptyDataHeading">No Data Found</h2>
-          <p className="emptyDataDescription">No account data available to display !</p>
-        </div>
+        <EmptyDataContainer
+          image={Upload}
+          heading={t('paymentInvoices.EmptyData.heading')}
+          description={t('paymentInvoices.EmptyData.description')}
+        />
       )}
     </div>
   );

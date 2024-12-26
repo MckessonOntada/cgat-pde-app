@@ -36,10 +36,10 @@
 }
 
 .custom-date-range-picker {
-  >div {
-    >div {
-      >div {
-        >div {
+  > div {
+    > div {
+      > div {
+        > div {
           width: unset;
           min-width: 160px;
           flex-grow: 1;
@@ -54,7 +54,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-03);
-
+  height: 100%;
   .MCP-module-body {
     display: flex;
     flex-direction: column;
@@ -92,7 +92,7 @@
   color: var(--brand-color-black);
 
   &.icon {
-    fill: var(--brand-color-black)
+    fill: var(--brand-color-black);
   }
 }
 
@@ -248,7 +248,8 @@
         margin-bottom: 8px;
       }
 
-      &.expanded {}
+      &.expanded {
+      }
     }
 
     @include mixins.respond(sm) {
@@ -281,7 +282,8 @@
     }
   }
 
-  .filter-segment {}
+  .filter-segment {
+  }
 
   .filter-body {
     display: flex;
@@ -378,8 +380,6 @@
     }
   }
 }
-
-
 
 .primaryHeading {
   font-size: var(--brand-font-size--28);
@@ -490,7 +490,7 @@
   border-radius: 8px;
   border: 1px solid #bac5cc;
   display: flex;
-  align-items: center; 
+  align-items: center;
 }
 
 .selected-item-alert {
@@ -508,5 +508,3 @@
 .selected-item-text {
   font-size: var(--brand-font-size--large) !important;
 }
-
- 

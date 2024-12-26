@@ -1,4 +1,5 @@
 export const PaymentInvoicesES = {
+  'paymentInvoices.header': 'S_Payment Invoices',
   // Account Search
   'paymentInvoices.accountSearch.applyBtn': 'S_Apply',
   'paymentInvoices.accountSearch.setAsDefaultBtn': 'S_Set as Default',
@@ -111,5 +112,10 @@ export const PaymentInvoicesES = {
   'pendingPayments.table.paymentMethod.subHeader': `S_To view all payments, navigate to the 'Payment History'.`,
   'pendingPayments.table.bankAccount.emptyData': 'S_No Pending Payments Found',
   'pendingPayments.table.paymentStatus': 'S_Payment Status',
-  'pendingPayments.table.billDate': 'S_Bill Date'
+  'pendingPayments.table.billDate': 'S_Bill Date',
+  'pendingPayments.filters.autoSearch': 'Search by document number, sold to',
+
+  // No data found
+  'paymentInvoices.EmptyData.heading': 'S_No Data Found',
+  'paymentInvoices.EmptyData.description': 'S_No accounts found linked with user'
 };
