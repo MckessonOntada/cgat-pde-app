@@ -19,7 +19,7 @@ export const MessageEn = {
   'captions.btnPrintSummary': 'Print Summary',
   'captions.btnGoToOrders': 'Go to orders',
   'captions.btnSaveAndContinue': 'Save and Continue',
-  'captions.btnBackToManageOrder': 'Back to Manage Order',
+  'captions.btnBackToManageOrder': 'Back to Orders',
   'captions.btnBack': 'Back',
   'captions.btnEdit': 'Edit',
   'captions.btnSubmitOrder': 'Submit Order',

@@ -98,7 +98,7 @@ const AccountSelection = () => {
 
   const handleOnBackToOrders = () => {
     //compare data change, display modal for confirmation
-    navigate('/orders');
+    navigate(-1);
   };
 
   const getAddress = (acc) => {
@@ -186,6 +186,7 @@ const AccountSelection = () => {
                         }}
                         recordsCountToEnableSearch={5}
                         size="lg"
+                        value={selectedAccount?.accountNumber || ''}
                       />
                     </div>
                     <Link to="#" onClick={handleOnClick} className="action-link">
