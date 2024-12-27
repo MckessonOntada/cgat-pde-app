@@ -3,10 +3,10 @@ import styles from './TherapyDetails.module.scss';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useQuery } from 'react-query';
-import { Loader, Heading } from '@mckesson/mcp-component-library';
+import { Loader, Heading, Button } from '@mckesson/mcp-component-library';
 import OrderService from '@src/api/commonService/OrderService';
 
-function TherapyDetails({ therapyId, onClose }) {
+function TherapyDetails({ therapyId, onClose, onSelect }) {
   const { t } = useTranslate();
   const { isLoading, data: therapyDetails = {} } = useQuery({
     queryKey: ['order', 'therapy', therapyId],
@@ -14,7 +14,12 @@ function TherapyDetails({ therapyId, onClose }) {
     enabled: Boolean(therapyId),
     refetchOnWindowFocus: false
   });
-
+  const handleSelect = () => {
+    if (onSelect && therapyDetails) {
+      onSelect(therapyDetails);
+      onClose();
+    }
+  };
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
@@ -26,13 +31,15 @@ function TherapyDetails({ therapyId, onClose }) {
       {isLoading ? (
         <Loader variant="circular" />
       ) : (
-        <div className={styles.body}>{therapyDetails && <DetailsPanel details={therapyDetails} />}</div>
+        <div className={styles.body}>
+          {therapyDetails && <DetailsPanel details={therapyDetails} handleSelect={handleSelect} onClose={onClose} />}
+        </div>
       )}
     </div>
   );
 }
 
-function DetailsPanel({ details }) {
+function DetailsPanel({ details, handleSelect, onClose }) {
   const { t } = useTranslate();
   const renderDetails = (fields) => fields.map(({ label, value }) => <DetailItem key={label} label={t(label)} value={value} />);
 
@@ -63,6 +70,16 @@ function DetailsPanel({ details }) {
         <Heading as="h4">{t('labels.therapy.generalDetails')}</Heading>
         <div>{renderDetails(generalDetails)}</div>
       </div>
+      <div className={styles.controls}>
+        <Button label={t('captions.btnCancel')} onClick={onClose} variant="secondary" size="md" aria-label={t('captions.cancel')} />
+        <Button
+          label={t('captions.btnSelecttherapy')}
+          onClick={handleSelect}
+          variant="primary"
+          size="md"
+          aria-label={t('captions.selectAccount')}
+        />
+      </div>
       {/* <div>
         <div className="row-space-between-center">
           <Heading as="h4">{t('labels.therapy.configuration')}</Heading>
@@ -75,11 +92,14 @@ function DetailsPanel({ details }) {
 }
 
 function DetailItem({ label, value }) {
+  const { t } = useTranslate();
   return (
-    <div className={styles.detailItem}>
-      <p className="fieldName">{label}</p>
-      <p className="fieldValue">{value}</p>
-    </div>
+    <>
+      <div className={styles.detailItem}>
+        <p className="fieldName">{label}</p>
+        <p className="fieldValue">{value}</p>
+      </div>
+    </>
   );
 }
 

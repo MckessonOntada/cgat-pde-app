@@ -16,10 +16,12 @@ export const MessageEs = {
   'captions.btnCancel': '[es]Cancel',
   'captions.btnNext': '[es]Next',
   'captions.btnSelect': '[es]Select',
+  'captions.btnSelecttherapy': '[es]Select Therapy',
   'captions.btnPrintSummary': '[es]Print Summary',
   'captions.btnGoToOrders': '[es]Go to orders',
   'captions.btnSaveAndContinue': '[es]Save and Continue',
   'captions.btnBackToManageOrder': '[es]Back to Manage Order',
+  'captions.btnBackToOrders': '[es]Back to Orders',
   'captions.btnBack': '[es]Back',
   'captions.btnEdit': '[es]Edit',
   'captions.btnSubmitOrder': '[es]Submit Order',
@@ -202,5 +204,10 @@ export const MessageEs = {
   'messages.variantAcknowledgement': '[es]Please acknowledge that you have verified and selected the correct Variant.',
   'messages.patientConcent': '[es]Please acknowledge if Patient Consent has been taken',
   'messages.selectAccountToBuyTherapy': '[es]Please select the account to buy the therapy for',
-  'messages.selectAcknowledgementError': '[es]Please select checkbox to acknowledge the order'
+  'messages.selectAcknowledgementError': '[es]Please select checkbox to acknowledge the order',
+
+  'labels.description.approval': '[es]Order is reviewed and confirmed for accuracy and payment',
+  'labels.description.fulfillment': '[es]Items are picked, packed, and prepared for shipment',
+  'labels.description.shipment': '[es]Order is dispatched and tracked during transit',
+  'labels.description.finalDelivery': '[es]Order is delivered to your specified address'
 };

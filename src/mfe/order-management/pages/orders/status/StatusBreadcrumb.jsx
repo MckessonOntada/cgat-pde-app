@@ -26,7 +26,7 @@ const StatusBreadcrumb = () => {
     <ol className={'status-breadcrumb'}>
       {items.map((item, index) => (
         <li key={index} className={'item'}>
-          <span className='caption'>{item.label}</span>
+          <span className="caption">{item.label}</span>
         </li>
       ))}
     </ol>

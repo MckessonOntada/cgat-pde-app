@@ -5,6 +5,7 @@ export const routesConfig = {
   editOrder: ':orderId/edit-order',
   reviewOrder: 'review-order',
   summary: 'summary',
+  confirmation: 'order-confirmed',
   status: 'status'
 };
 

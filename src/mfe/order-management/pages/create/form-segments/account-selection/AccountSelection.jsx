@@ -98,7 +98,7 @@ const AccountSelection = () => {
 
   const handleOnBackToOrders = () => {
     //compare data change, display modal for confirmation
-    navigate('/orders');
+    navigate(-1);
   };
 
   const getAddress = (acc) => {
@@ -178,6 +178,7 @@ const AccountSelection = () => {
                         label={' '}
                         isMultiSelect={false}
                         placeholder={'Select Account'}
+                        value={selectedAccount?.accountNumber || ''}
                         onChange={(val) => setSelectedAccount(accountsListData.content?.filter((acc) => acc.accountNumber === val)[0])}
                         options={accountListOptions}
                         variant={'async'}

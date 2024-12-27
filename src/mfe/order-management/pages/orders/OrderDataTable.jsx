@@ -12,14 +12,16 @@ import './OrderDataTable.module.scss';
 const OrderDataTable = ({ tab }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { dataState: data, paginationConfig, isFetching, error, setCurrentPage } = useOrders();
+  const { dataState: data, paginationConfig, isFetching, error, setCurrentPage, applySort, refreshData } = useOrders();
   const columns = createColumns(t, navigate, tab);
 
   const handleOnPageChange = (_event, pageIndex) => {
     setCurrentPage(pageIndex);
   };
 
-  const handleOnSort = (selectedColumn, sortDirection, sortedRows) => {};
+  const handleOnSort = (selectedColumn, sortDirection) => {
+    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+  };
 
   return (
     <CustomDataTable

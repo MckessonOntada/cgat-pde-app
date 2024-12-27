@@ -16,10 +16,12 @@ export const MessageEn = {
   'captions.btnCancel': 'Cancel',
   'captions.btnNext': 'Next',
   'captions.btnSelect': 'Select',
+  'captions.btnSelecttherapy': 'Select Therapy',
   'captions.btnPrintSummary': 'Print Summary',
   'captions.btnGoToOrders': 'Go to orders',
   'captions.btnSaveAndContinue': 'Save and Continue',
   'captions.btnBackToManageOrder': 'Back to Manage Order',
+  'captions.btnBackToOrders': 'Back to Orders',
   'captions.btnBack': 'Back',
   'captions.btnEdit': 'Edit',
   'captions.btnSubmitOrder': 'Submit Order',
@@ -227,5 +229,10 @@ export const MessageEn = {
   'orderManagement.patientDetails.validation.patient_identifier_required': 'Patient identifier is required.',
   'orderManagement.patientDetails.validation.patient_identifier_max': 'Patient identifier cannot exceed 20 characters.',
   'orderManagement.patientDetails.inputLabel.date_of_birth': 'Date of birth',
-  'orderManagement.patientDetails.option.please_select': 'Please select'
+  'orderManagement.patientDetails.option.please_select': 'Please select',
+
+  'labels.description.approval': 'Order is reviewed and confirmed for accuracy and payment',
+  'labels.description.fulfillment': 'Items are picked, packed, and prepared for shipment',
+  'labels.description.shipment': 'Order is dispatched and tracked during transit',
+  'labels.description.finalDelivery': 'Order is delivered to your specified address'
 };
