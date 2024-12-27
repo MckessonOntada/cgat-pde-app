@@ -65,7 +65,7 @@ const Summary = () => {
 
   const handleOnBackToOrders = () => {
     //compare data change, display modal for confirmation
-    navigate('/orders');
+    navigate(-1);
   };
 
   const handleOnEditSection = (stage) => {
