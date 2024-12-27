@@ -1,25 +1,15 @@
 import React from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import styles from './OrderStatus.module.scss';
-import { Button, Heading } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { ReactComponent as IconTick } from '@src/assets/svg/tick-circle-success.svg';
-import StatusBreadcrumb from './StatusBreadcrumb';
+import OrderFlowSteps from './orderFlowSteps/OrderFlowSteps';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
-import { useNavigate, useParams } from 'react-router-dom';
 import DetailSegment from '@src/components/DetailSegment';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
-
-const details = {
-  orderId: '12345',
-  materialDescription: 'VENOFER 20MG/ML 5ML SDV PF NR',
-  patientName: 'Adam Jones',
-  patientIdentifier: '5682532',
-  dateOfBirth: '11/19/1997',
-  gender: 'Male',
-  orderCost: '45,000'
-};
 
 const OrderStatus = () => {
   const { t } = useTranslate();
@@ -36,6 +26,10 @@ const OrderStatus = () => {
   const backToOrders = () => {
     navigate('/orders');
   };
+
+  if (isFetching) {
+    return <Loader />;
+  }
 
   return (
     <div className={'MCP-module-wrapper'}>
@@ -98,7 +92,7 @@ const OrderStatus = () => {
         <div className="MCP-panel-container">
           <div className={`${styles.orderFlow}`}>
             <h4 className={styles.customSecondaryHeading}>{t('labels.whatToExpect')}</h4>
-            <StatusBreadcrumb />
+            <OrderFlowSteps />
           </div>
         </div>
       </div>
