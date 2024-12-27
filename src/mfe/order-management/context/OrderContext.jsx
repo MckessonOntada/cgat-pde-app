@@ -40,24 +40,20 @@ export const OrderProvider = ({ children }) => {
   const [tabVariant, setTabVariant] = React.useState(TAB_VARIANT.PENDING_SUBMISSION);
 
   const requestParams = React.useMemo(() => {
+    const validStatuses = ['in_draft', 'approval_pending', 'submitted', 'all'];
+    const isStatusValid = validStatuses.includes(filterConfig.status);
     const params = {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
       sortBy: sortConfig.sortBy || 'createdAt',
-      sortOrder: sortConfig.sortOrder || 'desc'
+      sortOrder: sortConfig.sortOrder || 'desc',
+      ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
+      ...(tabVariant === 'submitted'
+        ? { status: 'submitted' }
+        : {
+            status: isStatusValid && filterConfig.status !== 'all' ? filterConfig.status : ['in_draft', 'approval_pending']
+          })
     };
-
-    if (filterConfig.searchQuery) params.query = filterConfig.searchQuery;
-    if (tabVariant === 'submitted') {
-      params.status = 'submitted';
-    } else {
-      const allStatus = ['in_draft', 'approval_pending'];
-      if (filterConfig.status && filterConfig.status != 'all') {
-        params.status = filterConfig.status;
-      } else {
-        params.status = allStatus;
-      }
-    }
     return params;
   }, [filterConfig, paginationConfig.pageNumber, sortConfig, tabVariant]);
 
@@ -70,8 +66,11 @@ export const OrderProvider = ({ children }) => {
     queryFn: async () => OrderService.getOrders(requestParams),
     onSuccess: (result) => {
       const { totalElements, totalPages } = result;
-      setPaginationConfig((prevState) => ({ ...prevState, totalElements, totalPages }));
-
+      setPaginationConfig((prevConfig) => ({
+        ...prevConfig,
+        ...(totalElements && { totalElements }),
+        ...(totalPages && { totalPages })
+      }));
       if (result.content) {
         setDataState(result.content);
       }
@@ -82,8 +81,11 @@ export const OrderProvider = ({ children }) => {
     refreshData();
   }, [filterConfig, paginationConfig.pageNumber, sortConfig, tabVariant]);
 
+  const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
+
   const applyFilters = (filters) => {
-    setFilterConfig((prevFilters) => ({ ...prevFilters, ...filters }));
+    setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
+    setFilterConfig({ ...filters });
   };
 
   const clearFilters = () => {
@@ -113,7 +115,9 @@ export const OrderProvider = ({ children }) => {
         applyFilters,
         clearFilters,
         setCurrentPage,
-        changeTab
+        applySort,
+        changeTab,
+        refreshData
       }}>
       {children}
     </OrderContext.Provider>

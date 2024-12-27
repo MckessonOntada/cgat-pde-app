@@ -50,7 +50,7 @@ export const ApproverProvider = ({ children }) => {
     () => ({
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
-      sortBy: sortConfig.sortBy || 'name',
+      sortBy: sortConfig.sortBy || 'createdAt',
       sortOrder: sortConfig.sortOrder || 'asc',
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       ...(filterConfig?.status?.length && { status: [filterConfig.status] }),

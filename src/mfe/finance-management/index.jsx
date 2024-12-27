@@ -12,12 +12,16 @@ import { PaymentsInvoiceProvider } from './context/PaymentsInvoicesContext';
 import { useAccountContext } from './context/AccountContext';
 import { BalanceProvider } from './context/BalanceContext';
 import CommonUtils from '@src/util/CommonUtils';
+import EmptyDataContainer from '@src/components/EmptyData';
+import { ReactComponent as EmptyDataSVG } from '@src/assets/image/EmptyDataTable.svg';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const PaymentsInvoices = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [tabs, setTabs] = useState();
   const { selectedAccount } = useAccountContext();
+  const { t } = useTranslate();
 
   useEffect(() => {
     if (!Array.isArray(tabListData) || tabListData.length === 0) {
@@ -29,27 +33,26 @@ const PaymentsInvoices = () => {
       return {
         ...item,
         isActiveTab: location.pathname.includes(item.path),
-        ariaSelected: location.pathname.includes(item.path) ? 'true' : 'false'
+        ariaSelected: location.pathname.includes(item.path) ? 'true' : 'false',
+        configName: t('paymentInvoices.tabs.' + item.configName)
       };
     });
 
     setTabs(updatedTabs);
   }, [location.pathname]);
 
-
   console.log('PaymentsInvoices', selectedAccount);
 
   return (
     <div className="MCP-module-wrapper">
-      <ModuleHeader heading={<PageHeader heading={'Payment Invoices'} />} />
-
+      <ModuleHeader heading={<PageHeader heading={t('paymentInvoices.header')} />} />
       {CommonUtils.isNonEmptyObject(selectedAccount) ? (
         <React.Fragment>
-           <RecordDetails />
+          <RecordDetails />
 
           <BalanceProvider>
             <BalanceDetails />
-          </BalanceProvider> 
+          </BalanceProvider>
 
           <div className="MCP-module-body">
             <div id="tablist-container" className="MCP-panel-container">
@@ -69,10 +72,11 @@ const PaymentsInvoices = () => {
           </div>
         </React.Fragment>
       ) : (
-        <div className="emptyDataContainer">
-          <h2 className="emptyDataHeading">No Data Found</h2>
-          <p className="emptyDataDescription">No account data available to display !</p>
-        </div>
+        <EmptyDataContainer
+          image={''}
+          heading={t('paymentInvoices.EmptyData.heading')}
+          description={t('paymentInvoices.EmptyData.description')}
+        />
       )}
     </div>
   );

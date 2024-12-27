@@ -1,0 +1,26 @@
+.emptyDataContainer {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  //   border: 1px solid var(--brand-color-grey-scale-warm-1);
+  border-radius: var(--brand-border-radius--5);
+  height: 100%;
+  .emptyDataImage {
+    width: 150px;
+    height: auto;
+    padding-bottom: var(--spacing-03);
+  }
+  .emptyDataHeading {
+    // padding: var(--spacing-04);
+    font-size: var(--brand-font-size--15);
+    color: var(--brand-color-background-light-slate);
+    line-height: var(--brand-line-height--m-large);
+    padding-bottom: var(--spacing-03);
+  }
+  .emptyDataDescription {
+    font-size: var(--brand-font-size--extra-small);
+    color: var(--brand-color-background-light-slate);
+    line-height: var(--brand-line-height--small);
+    padding-bottom: var(--spacing-03);
+  }
+}

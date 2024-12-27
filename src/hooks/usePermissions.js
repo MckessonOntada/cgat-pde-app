@@ -15,11 +15,10 @@ const usePermission = () => {
   };
 
   const hasAnyPermission = (permissions = []) => {
-    permissions.forEach((permission) => {
-      return userPermissions.includes(permission);
-    });
-
-    return false;
+    // permissions.forEach((permission) => {
+    //   return userPermissions.includes(permission);
+    // });
+    return permissions.some((item) => userPermissions.includes(item));
   };
 
   const hasPermission = (permission) => {

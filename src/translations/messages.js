@@ -27,7 +27,7 @@ export const messages = {
     ...DashboardEN,
     ...OrgManagementEN,
     ...orderManagementMessagesEn,
-    ...PaymentInvoicesES,
+
     ...PaymentInvoicesEN,
     ...AccountEN,
     ...SignupEN,
@@ -40,6 +40,7 @@ export const messages = {
     ...DashboardES,
     ...OrgManagementES,
     ...orderManagementMessagesEs,
+    ...PaymentInvoicesES,
     ...AccountES,
     ...SignupES,
     ...filtersES,

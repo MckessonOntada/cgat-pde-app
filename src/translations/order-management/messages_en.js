@@ -16,6 +16,7 @@ export const MessageEn = {
   'captions.btnCancel': 'Cancel',
   'captions.btnNext': 'Next',
   'captions.btnSelect': 'Select',
+  'captions.btnSelecttherapy': 'Select Therapy',
   'captions.btnPrintSummary': 'Print Summary',
   'captions.btnGoToOrders': 'Go to orders',
   'captions.btnSaveAndContinue': 'Save and Continue',

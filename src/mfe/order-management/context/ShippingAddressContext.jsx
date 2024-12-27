@@ -1,6 +1,6 @@
 import OrderService from '@src/api/commonService/OrderService';
 import AuthUtils from '@src/util/AuthUtils';
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 
 const initialFilterState = {
@@ -66,9 +66,10 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
       if (result.content) {
         const { content: data, totalElements, totalPages } = result;
 
-        setPageConfig(() => ({
-          totalElements,
-          totalPages
+        setPageConfig((prevConfig) => ({
+          ...prevConfig,
+          ...(totalElements && { totalElements }),
+          ...(totalPages && { totalPages })
         }));
 
         const formattedData = prepareDataForTable(data);
@@ -80,12 +81,17 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
   });
 
   const applyFilters = (filters) => {
-    setFilterState((prevFilters) => ({ ...prevFilters, ...filters }));
+    setPageConfig((prev) => ({ ...prev, pageNumber: 1 }));
+    setFilterState({ ...filters });
   };
 
   const clearFilters = () => {
     setFilterState({ ...initialFilterState });
   };
+
+  useEffect(() => {
+    refreshData();
+  }, [filterState, pageConfig.pageNumber]);
 
   const setPageNumber = (pageIndex) => {
     setPageConfig((prevConfig) => ({
