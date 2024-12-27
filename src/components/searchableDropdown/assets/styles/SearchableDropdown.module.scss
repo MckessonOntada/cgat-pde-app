@@ -125,7 +125,7 @@ input[type="checkbox"] {
   margin-right: 9px;
   flex-shrink: 0;
 
-  + label {
+  +label {
     display: flex;
     cursor: pointer;
 
@@ -146,7 +146,7 @@ input[type="checkbox"] {
   }
 
   &:checked {
-    + label::before {
+    +label::before {
       border: 1px solid var(--brand-color-primary-blue);
       display: inline-block;
       width: 18px;
@@ -159,7 +159,7 @@ input[type="checkbox"] {
   }
 
   &:checked {
-    + label::after {
+    +label::after {
       border-color: transparent;
       width: 18px;
       height: 18px;
@@ -171,7 +171,7 @@ input[type="checkbox"] {
     }
   }
 
-  &:focus-visible + label::before {
+  &:focus-visible+label::before {
     outline: 2px solid var(--brand-color-secondary-active-yellow-1);
     outline-offset: 1px;
   }
@@ -320,6 +320,7 @@ input[type="checkbox"] {
   margin: 0px !important;
   max-height: 168px !important;
 }
+
 .selectMenuListSingleSelectlg {
   margin: 0px !important;
   max-height: 184px !important;
@@ -431,6 +432,24 @@ input[type="checkbox"] {
   display: -webkit-box;
 }
 
+.compoundLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .labelWithDescription {
+    font-weight: var(--brand-font-weight-600);
+  }
+
+  .labelDescription {
+    font-weight: var(--brand-font-weight-400);
+  }
+}
+
+.width100 {
+  width: 100%;
+}
+
 .labelContainer {
   background: none !important;
 
@@ -439,7 +458,7 @@ input[type="checkbox"] {
     padding-left: 8px;
   }
 
-  .clearFieldButton > button {
+  .clearFieldButton>button {
     height: 0;
     min-width: 0;
     margin-bottom: 4px;
@@ -462,12 +481,14 @@ input[type="checkbox"] {
 .selectAll {
   padding-left: 0px;
   align-items: center;
+
   span {
     width: 34px;
     margin-right: 4px;
     padding: 0px;
     margin-left: -3px;
   }
+
   svg {
     width: 26px !important;
     height: 100%;

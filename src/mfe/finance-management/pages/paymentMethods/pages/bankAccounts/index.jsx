@@ -26,7 +26,7 @@ export default function BankAccounts(params) {
         />
       </div>
       <div className="table-header">
-        <h1>{t('paymentInvoices.paymentMethods.table.cards.heading')}</h1>
+        <h1>{t('paymentInvoices.paymentMethods.table.bankAccounts.heading')}</h1>
       </div>
       <BankAccountsTable />
     </React.Fragment>

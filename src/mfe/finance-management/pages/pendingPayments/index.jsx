@@ -12,20 +12,20 @@ export default function PendingPayments(params) {
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
-      {
-        type: 'multiSelectDropdown',
-        name: 'paymentStatus',
-        tableColumnId: 'paymentStatus',
-        label: t('pendingPayments.table.paymentStatus'),
-        options: []
-      },
-      {
-        type: 'dropdown',
-        name: 'billDate',
-        tableColumnId: 'billDate',
-        label: t('pendingPayments.table.billDate'),
-        options: []
-      },
+      // {
+      //   type: 'multiSelectDropdown',
+      //   name: 'paymentStatus',
+      //   tableColumnId: 'paymentStatus',
+      //   label: t('pendingPayments.table.paymentStatus'),
+      //   options: []
+      // },
+      // {
+      //   type: 'dropdown',
+      //   name: 'billDate',
+      //   tableColumnId: 'payOn',
+      //   label: t('pendingPayments.table.billDate'),
+      //   options: []
+      // },
       {
         type: 'dateRangePicker',
         name: 'dateRange'

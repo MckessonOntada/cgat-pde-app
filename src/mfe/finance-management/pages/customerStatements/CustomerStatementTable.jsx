@@ -112,7 +112,8 @@ export default function CustomerStatementTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}>
+            }}
+          >
             <Loader variant="circular" />
           </div>
         }
