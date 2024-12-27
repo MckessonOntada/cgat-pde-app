@@ -135,8 +135,7 @@ export const AccountProvider = ({ children }) => {
         searchPayToAccounts,
         applyEvent,
         defaultSetEvent
-      }}
-    >
+      }}>
       {children}
     </AccountContext.Provider>
   );

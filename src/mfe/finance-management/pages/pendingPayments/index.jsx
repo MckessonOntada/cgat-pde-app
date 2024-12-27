@@ -28,7 +28,7 @@ export default function PendingPayments(params) {
       // },
       {
         type: 'dateRangePicker',
-        name: 'dateRange'
+        name: 'paymentInitiationDate'
       }
     ];
   }, []);
