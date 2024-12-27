@@ -24,7 +24,7 @@ export default function CreditsTable() {
       minWidth: '112px',
       cell: (props) => (
         <div className="cellEllipse">
-          <Link style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}>{`${props.billNumber}`}</Link>
+          <Link style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}>{`${props?.billNumber}`}</Link>
         </div>
       )
     },
@@ -35,7 +35,7 @@ export default function CreditsTable() {
       minWidth: '160px',
       sortable: true,
       wrap: true,
-      cell: (props) => <div>{props.soldToSite || '-'}</div>
+      cell: (props) => <div>{props?.soldToSite || '-'}</div>
     },
     {
       id: 'description',
@@ -44,7 +44,7 @@ export default function CreditsTable() {
       minWidth: '144px',
       sortable: true,
       wrap: true,
-      cell: (props) => props.description || '-'
+      cell: (props) => props?.description || '-'
     },
     {
       id: 'billDate',
@@ -54,10 +54,9 @@ export default function CreditsTable() {
       wrap: true,
       minWidth: '160px',
       cell: (props) => (
-        <EclipsesTextcss className="cellEllipse" str={dayjs(props.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'} maxWidth={240} />
+        <EclipsesTextcss className="cellEllipse" str={dayjs(props?.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'} maxWidth={240} />
       )
     },
-
     {
       id: 'billAmount',
       name: t('paymentInvoices.credits.table.amount'),
@@ -126,7 +125,8 @@ export default function CreditsTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}>
+            }}
+          >
             <Loader variant="circular" />
           </div>
         }

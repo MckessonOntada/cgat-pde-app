@@ -9,6 +9,7 @@ import { ReactComponent as ActionIcon } from '@src/assets/image/actionIcon.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import dayjs from 'dayjs';
+import { DUE_STATUS } from './InvoiceConstants';
 
 export default function InvoicesTable() {
   const { t } = useTranslate();
@@ -25,18 +26,18 @@ export default function InvoicesTable() {
       minWidth: '112px',
       cell: (props) => (
         <div className="cellEllipse">
-          <Link style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}>{`${props.billNumber}`}</Link>
+          <Link style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}>{`${props?.billNumber || ''}`}</Link>
         </div>
       )
     },
     {
       id: 'soldToSite',
       name: t('paymentInvoices.history.table.SoldToSite'),
-      selector: () => {},
+      selector: (row) => row.soldToSite,
       minWidth: '160px',
       sortable: true,
       wrap: true,
-      cell: (props) => <div>{props.soldToSite || '-'}</div>
+      cell: (props) => <div>{props?.soldToSite || '-'}</div>
     },
     {
       name: t('paymentInvoices.history.table.PostingDate'),
@@ -46,17 +47,16 @@ export default function InvoicesTable() {
       wrap: true,
       minWidth: '160px',
       cell: (props) => (
-        <EclipsesTextcss className="cellEllipse" str={dayjs(props.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'} maxWidth={240} />
+        <EclipsesTextcss className="cellEllipse" str={dayjs(props?.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'} maxWidth={240} />
       )
     },
-
     {
       name: t('paymentInvoices.history.table.PaymentTerm'),
       selector: 'paymentTerm',
       minWidth: '144px',
       id: 'paymentTerm',
       wrap: true,
-      cell: (props) => <div className="status-container">{props.paymentTerm}</div>
+      cell: (props) => <div className="status-container">{props?.paymentTerm}</div>
     },
     {
       name: t('paymentInvoices.history.table.DueDate'),
@@ -65,7 +65,7 @@ export default function InvoicesTable() {
       sortable: true,
       wrap: true,
       id: 'dueDate',
-      cell: (props) => <div className="cellEllipse">{dayjs(props.dueDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
+      cell: (props) => <div className="cellEllipse">{dayjs(props?.dueDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
     },
     {
       name: t('paymentInvoices.history.table.OpenAmount'),
@@ -77,7 +77,7 @@ export default function InvoicesTable() {
       id: 'openAmount',
       cell: (props) => (
         <div className="cellEllipse">
-          <FormattedNumber value={props?.openAmount} style="currency" currency="USD" />
+          <FormattedNumber value={props?.openAmount || 0} style="currency" currency="USD" />
         </div>
       )
     },
@@ -91,12 +91,14 @@ export default function InvoicesTable() {
       id: 'status',
       cell: (props) => (
         <div className="status-container">
-          {props.status == 'PLUS_91_DAYS_OVERDUE' ? (
-            <Badge text="+91 DAYS OVERDUE" type="error-default" />
-          ) : props.status.match(/\d+/) && props.status.match(/\d+/)[0] ? (
-            <Badge text={`${props.status.match(/\d+/)[0]} DAYS OVERDUE`} type="warning-default" />
+          {props?.status ? (
+            <Badge
+              text={DUE_STATUS[props?.status].label}
+              type={'info-default'}
+              customStyle={{ color: `${DUE_STATUS[props?.status].color}`, border: `1px solid ${DUE_STATUS[props?.status].color}` }}
+            />
           ) : (
-            <Badge text={`${props.status}`} type="warning-default" />
+            '-'
           )}
         </div>
       )
@@ -111,7 +113,7 @@ export default function InvoicesTable() {
       id: 'billAmount',
       cell: (props) => (
         <div className="cellEllipse">
-          <FormattedNumber value={props?.billAmount} style="currency" currency="USD" />
+          <FormattedNumber value={props?.billAmount || 0} style="currency" currency="USD" />
         </div>
       )
     }

@@ -70,7 +70,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
         : true;
 
       const matchesPaymentStatus = filters?.paymentTerm?.length > 0 ? filters.paymentTerm.includes(item.paymentTerm?.toString()) : true;
-      const matchesPaymentMethod = filters?.status?.length > 0 ? filters.status.includes(item.status?.toString()) : true;
+      const matchesPaymentMethod = filters?.status?.length > 0 ? item.status?.toString() === (filters?.status) : true;
 
       return matchesSearchQuery && matchesPaymentStatus && matchesPaymentMethod;
     });
@@ -113,7 +113,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
       setData(res.data.openInvoices.slice(startIndex, endIndex));
       setUnSlicedData(res.data.openInvoices);
       setActualData(res.data.openInvoices);
-      
+
       setPaginationConfig((state) => ({
         ...state,
         totalPages: Math.ceil(res.data.openInvoices.length / paginationConfig.pageSize),

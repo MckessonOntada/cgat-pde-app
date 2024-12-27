@@ -119,7 +119,8 @@ export default function PendingPaymentTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}>
+            }}
+          >
             <Loader variant="circular" />
           </div>
         }
