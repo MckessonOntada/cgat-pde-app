@@ -1,14 +1,16 @@
 import React from 'react';
-import { Button, Heading, Required } from '@mckesson/mcp-component-library';
+import { Button, Heading, Required, CheckboxGroup, CustomDataTable, RadioGroup } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
+import { ReactComponent as InfoIcon } from '@src/assets/svg/info_icon_circle_filled.svg';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import PageHeader from '@src/components/pageHeader';
 import { Field, Form, Formik } from 'formik';
 import { getFormFields } from './fields';
 import * as Yup from 'yup';
 import OrderService from '@src/api/commonService/OrderService';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
@@ -22,10 +24,10 @@ const getValidationSchema = (t) =>
       .max(20, t('labels.COI_IdExceedDigits'))
       .required(t('labels.COIIdRequired')),
     orderQuantity: Yup.number()
-      .typeError(t('OrderQuantityShouldPositive'))
+      .typeError(t('labels.OrderQuantityShouldPositive'))
       .required(t('labels.orderQuantityRequired'))
       .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
-      .integer(t('OrderQuantityMustBeInteger')),
+      .integer(t('labels.OrderQuantityMustBeInteger')),
 
     slotNumber: Yup.string()
       .required(t('labels.slotNumberRequired'))
@@ -55,6 +57,19 @@ function AdditionalDetails() {
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
+  const therapyId = formState.activeRecord?.therapy.id;
+  const soldToAccountId = formState.activeRecord?.accountDetails.soldToAccount.id;
+  const shipToAccountId = formState.activeRecord?.accountDetails.shipToAccount.id;
+  const variantsApiRequestParam = { pageNo: 0, pageSize: 10 };
+
+  const [checkboxOptions, setCheckboxOptions] = React.useState({
+    isDisabled: false,
+    isChecked: false,
+    label: t('messages.variantAcknowledgement'),
+    value: false
+  });
+  const [consentStatus, setConsentStatus] = React.useState('');
+  const [variant, setVariant] = React.useState();
 
   const { isEdit = false } = location.state || {};
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(
@@ -69,6 +84,13 @@ function AdditionalDetails() {
     }
   );
 
+  const { isLoading, data: variantsData = {} } = useQuery({
+    queryKey: ['order', 'variants', orderId],
+    queryFn: async () => OrderService.getVariants(therapyId, soldToAccountId, shipToAccountId, variantsApiRequestParam),
+    enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId,
+    refetchOnWindowFocus: false
+  });
+  console.log(variantsData, '❤');
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ADDITIONAL_DETAILS);
   }, []);
@@ -105,6 +127,7 @@ function AdditionalDetails() {
 
   const handleOnSubmit = (values) => {
     const payload = {
+      id: values.coiId,
       orderQuantity: values.orderQuantity,
       slotNumber: values.slotNumber,
       poNumber: values.poNumber,
@@ -119,6 +142,29 @@ function AdditionalDetails() {
     //compare data change, display modal for confirmation
     navigate(-1);
   };
+
+  const handleOnVariantChange = (variant) => {
+    setVariant(variant);
+  };
+
+  const handleOnAcknowledgmentChange = () => {
+    const updatedOptions = { ...checkboxOptions, isChecked: !checkboxOptions.isChecked };
+
+    setCheckboxOptions(updatedOptions);
+  };
+
+  const data = [
+    {
+      variantId: 68,
+      variant: 'Type A',
+      variantDescription: 'One to One'
+    },
+    {
+      variantId: 2,
+      variant: 'Type B',
+      variantDescription: 'One to Many'
+    }
+  ];
 
   const validationSchema = getValidationSchema(t);
 
@@ -153,7 +199,7 @@ function AdditionalDetails() {
                       <Required id="Required" /> {t('labels.required')}
                     </p>
                   </div>
-                  <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+                  <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 align-items-start">
                     {formFields.map(({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
                       <Field
                         key={index}
@@ -168,6 +214,23 @@ function AdditionalDetails() {
                     ))}
                   </div>
                 </div>
+                {/* <div className="MCP-sect">
+                  <Heading as="h3">{t('labels.selectVariant')}</Heading>
+                  <VariantTable variant={variant} onChange={handleOnVariantChange} data={data} />
+                </div>
+                <div className="agreement-checkbox-control">
+                  <Field name="variant-acknowledgement">
+                    {({ field, form }) => (
+                      <CheckboxGroup
+                        id={'default'}
+                        name="variant-acknowledgement"
+                        items={[{ ...checkboxOptions, onChange: () => handleOnAcknowledgmentChange() }]}
+                        size="md"
+                      />
+                    )}
+                  </Field>
+                </div> */}
+
                 <div className="controls">
                   <Button size="md" variant="secondary" onClick={handleOnBack}>
                     {t('captions.btnBack')}
@@ -185,4 +248,62 @@ function AdditionalDetails() {
   );
 }
 
+const VariantTable = ({ variant, onChange, data }) => {
+  const { t } = useTranslate();
+  const columns = [
+    {
+      id: 'id',
+      selector: () => {},
+      width: '40px',
+      sortable: false,
+      cell: (props) => (
+        <span className="MCP-table-cell radio-button-wrapper">
+          <RadioGroup
+            direction="column"
+            id={`radio-button-variant-${props.variantId}`}
+            items={[
+              {
+                isDisabled: false,
+                label: ' ',
+                value: props.variantId
+              }
+            ]}
+            onChangeValue={() => {
+              onChange(props);
+            }}
+            radioBtnWidth="auto"
+            value={variant?.variantId === props.variantId ? props.variantId : ''}
+          />
+        </span>
+      )
+    },
+    {
+      id: 'variant',
+      name: (
+        <div className="variant-table-cell icon">
+          <span>{t('labels.variant')}</span>
+          <InfoIcon />
+        </div>
+      ),
+      selector: () => {},
+      minWidth: '220px',
+      maxWidth: '280px',
+      sortable: false,
+      cell: (props) => (
+        <span aria-label={t('labels.variant')}>
+          <EclipsesTextcss str={props.variant} maxWidth={240} />
+        </span>
+      )
+    },
+    {
+      id: 'variantDescription',
+      name: <div className="variant-table-cell">{t('labels.variantDescription')}</div>,
+      minWidth: '300px',
+      selector: () => {},
+      sortable: false,
+      cell: (props) => <span>{props.variantDescription}</span>
+    }
+  ];
+  return <CustomDataTable id="order-management-therapy-listing" type={'normal'} columns={columns} data={data} />;
+};
 export default AdditionalDetails;

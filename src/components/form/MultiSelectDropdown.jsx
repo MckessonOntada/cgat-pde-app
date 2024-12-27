@@ -1,18 +1,31 @@
-
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { SearchableDropdown } from '../searchableDropdown';
 import { Label, Required, TextError } from '@mckesson/mcp-component-library';
 
 const MultiSelectDropdown = (props) => {
-  const { id, label, value, isRequired, onChange, onSearch, error, variant, options, recordsCountToEnableSearch, ...rest } = props;
+  const { id, label, value, isRequired, onChange, onSearch, error, variant, options, recordsCountToEnableSearch, forcedValue, ...rest } =
+    props;
   const [startSearchStringTimer, setStartSearchStringTimer] = useState(null);
   const [searchString, setSearchString] = useState('');
+
+  const dropdownContainerRef = useRef(null);
 
   const debouncedSearch = () => {
     clearTimeout(startSearchStringTimer);
     const timeout = setTimeout(() => onSearch(searchString), 500);
     setStartSearchStringTimer(timeout);
   };
+
+  useEffect(() => {
+    if (!forcedValue) {
+      return;
+    }
+    const inputElement = dropdownContainerRef.current.querySelector('#label-targetAccount');
+    setTimeout(() => {
+      inputElement.value = forcedValue;
+      inputElement.innerText = options.find((opt) => opt.value === forcedValue).label;
+    }, 100);
+  }, [forcedValue]);
 
   React.useEffect(() => {
     if (variant !== 'async') {
@@ -25,9 +38,8 @@ const MultiSelectDropdown = (props) => {
     };
   }, [searchString]);
 
-
   return (
-    <div className="grid">
+    <div className="grid" ref={dropdownContainerRef}>
       <Label htmlFor={id} className="label-heading">
         {label}
         {isRequired && <Required id="Required">Required</Required>}

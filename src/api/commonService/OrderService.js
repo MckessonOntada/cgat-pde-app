@@ -72,6 +72,19 @@ async function saveAccount(orderId, payload) {
   return {};
 }
 
+async function submitOrder(orderId) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/submit`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH);
+
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
 async function getTherapies(requestParams) {
   const url = `${ApiRoutes.USERS()}/current/therapies?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
@@ -110,6 +123,17 @@ async function getShippingAddressForTherapyByAccountId(therapyId, accountId, req
 
   return {};
 }
+async function getVariants(therapyId, accountId, shipToAccountId, requestParams) {
+  const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccount/${accountId}/shiptoaccount/${shipToAccountId}/variants?${serializeParams(
+    requestParams
+  )}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
 
 async function getProgramAndChannelConfig(therapyId, requestParams) {
   const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/programs-channels?${serializeParams(requestParams)}`;
@@ -129,10 +153,12 @@ const OrderService = Object.freeze({
   getTherapyDetailsById,
   getSoldToAccounts,
   getShippingAddressForTherapyByAccountId,
+  getVariants,
   savePatientDetails,
   saveAdditionalDetails,
   saveAccount,
-  getProgramAndChannelConfig
+  getProgramAndChannelConfig,
+  submitOrder
 });
 
 export default OrderService;
