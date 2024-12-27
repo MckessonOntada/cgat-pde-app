@@ -1,4 +1,4 @@
-import { showSnackbar as _showSnackbar } from '@src/store/reducer/snackbarReducer';
+import { showAlert as _showAlert, closeAlert as _closeAlert } from '@src/store/reducer/alertReducer';
 import { useDispatch } from 'react-redux';
 
 const useAlert = () => {
@@ -7,10 +7,14 @@ const useAlert = () => {
   const showAlert = (props) => {
     const _props = typeof props === 'string' ? { description: props, type: 'success', anchorEl: null } : props;
 
-    dispatch(_showSnackbar(_props));
+    dispatch(_showAlert(_props));
   };
 
-  return { showAlert };
+  const closeAlert = () => {
+    dispatch(_closeAlert());
+  };
+
+  return { showAlert, closeAlert };
 };
 
 export default useAlert;

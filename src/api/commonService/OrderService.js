@@ -72,6 +72,19 @@ async function saveAccount(orderId, payload) {
   return {};
 }
 
+async function submitOrder(orderId) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+
+  const url = `${ApiRoutes.ORDERS}/${orderId}/submit`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH);
+
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
 async function getTherapies(requestParams) {
   const url = `${ApiRoutes.USERS()}/current/therapies?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
@@ -132,7 +145,8 @@ const OrderService = Object.freeze({
   savePatientDetails,
   saveAdditionalDetails,
   saveAccount,
-  getProgramAndChannelConfig
+  getProgramAndChannelConfig,
+  submitOrder
 });
 
 export default OrderService;

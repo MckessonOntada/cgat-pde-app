@@ -14,38 +14,41 @@ import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import useAlert from '@src/hooks/useAlert';
 import PermittedComponent from '@src/components/permitted-component';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import OrderService from '@src/api/commonService/OrderService';
+import { useMutation } from 'react-query';
 
 const Summary = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { isFetching, formState, editByStage, setCurrentOrder } = useManageOrder();
   const { orderId } = useParams();
-  const alertRef = React.useRef(null);
 
+  const alertRef = React.useRef(null);
   const { showAlert } = useAlert();
+
+  const submitOrder = useMutation(async () => await OrderService.submitOrder(orderId), {
+    onSuccess: (result) => {
+      navigate('/orders');
+    },
+    onError: (err) => {
+      showAlert({ description: err.message, type: 'error', anchorEl: alertRef });
+    }
+  });
 
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ORDER_SUMMARY);
   }, []);
 
-  const [checkboxOptions, setCheckboxOptions] = React.useState([
-    {
-      isDisabled: false,
-      isChecked: false,
-      label: t('messages.orderPlacementAcknowledgement'),
-      value: false
-    }
-  ]);
-  const handleChange = (value) => {
-    const updatedOptions = checkboxOptions.map((item) =>
-      item.value === value
-        ? {
-            ...item,
-            isChecked: !item.isChecked
-          }
-        : item
-    );
-    setCheckboxOptions(updatedOptions);
+  const [agreeCheckboxOptions, setAgreeCheckboxOptions] = React.useState({
+    isDisabled: false,
+    isChecked: false,
+    label: t('messages.orderPlacementAcknowledgement'),
+    value: false
+  });
+  const handleChange = () => {
+    const updatedOptions = { ...agreeCheckboxOptions, isChecked: !agreeCheckboxOptions.isChecked };
+
+    setAgreeCheckboxOptions(updatedOptions);
   };
 
   const handleOnBackButtonClick = () => {
@@ -55,11 +58,10 @@ const Summary = () => {
   };
 
   const handleOnSubmit = () => {
-    if (checkboxOptions[0].isChecked) {
-      navigate('/orders');
-    } else {
-      if (alertRef?.current) showAlert({ description: t('messages.selectAcknowledgementError'), type: 'error', anchorEl: alertRef });
+    if (agreeCheckboxOptions.isChecked) {
+      submitOrder.mutate();
     }
+    return;
   };
 
   const handleOnBackToOrders = () => {
@@ -106,7 +108,7 @@ const Summary = () => {
     additionalDetails = {},
     patientDetailsRequired = false
   } = formState.activeRecord || {};
-  const isAgreed = checkboxOptions[0].isChecked;
+  const isAgreed = agreeCheckboxOptions.isChecked;
 
   return (
     <div className="MCP-module-wrapper">
@@ -248,10 +250,7 @@ const Summary = () => {
             <CheckboxGroup
               id={'default'}
               name="order-agreement"
-              items={checkboxOptions.map((item) => ({
-                ...item,
-                onChange: () => handleChange(item.value)
-              }))}
+              items={[{ ...agreeCheckboxOptions, onChange: () => handleChange() }]}
               size="md"
             />
           </div>
@@ -262,7 +261,7 @@ const Summary = () => {
             <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
               {t('captions.btnBack')}
             </Button>
-            <Button size={'md'} variant="primary" type="submit" onClick={handleOnSubmit}>
+            <Button size={'md'} variant="primary" type="submit" onClick={handleOnSubmit} disabled={!isAgreed}>
               {t('captions.btnSubmitOrder')}
             </Button>
           </div>

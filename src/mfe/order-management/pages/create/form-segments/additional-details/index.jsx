@@ -22,10 +22,10 @@ const getValidationSchema = (t) =>
       .max(20, t('labels.COI_IdExceedDigits'))
       .required(t('labels.COIIdRequired')),
     orderQuantity: Yup.number()
-      .typeError(t('OrderQuantityShouldPositive'))
+      .typeError(t('labels.OrderQuantityShouldPositive'))
       .required(t('labels.orderQuantityRequired'))
       .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
-      .integer(t('OrderQuantityMustBeInteger')),
+      .integer(t('labels.OrderQuantityMustBeInteger')),
 
     slotNumber: Yup.string()
       .required(t('labels.slotNumberRequired'))
@@ -105,6 +105,7 @@ function AdditionalDetails() {
 
   const handleOnSubmit = (values) => {
     const payload = {
+      id: values.coiId,
       orderQuantity: values.orderQuantity,
       slotNumber: values.slotNumber,
       poNumber: values.poNumber,
@@ -153,7 +154,7 @@ function AdditionalDetails() {
                       <Required id="Required" /> {t('labels.required')}
                     </p>
                   </div>
-                  <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+                  <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 align-items-start">
                     {formFields.map(({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
                       <Field
                         key={index}
