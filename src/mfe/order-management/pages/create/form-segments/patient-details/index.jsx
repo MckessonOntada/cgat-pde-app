@@ -29,9 +29,38 @@ const PatientDetails = () => {
   const location = useLocation();
   const { isEdit = false } = location.state || {};
 
+  const INITIAL_VALUES = {
+    patientInfo: {
+      firstName: '',
+      middleName: '',
+      lastName: '',
+      gender: '',
+      dateOfBirth: ''
+    },
+    contact: {
+      emailId: '',
+      phoneNumber: ''
+    },
+    patientAddress: {
+      addressLine1: '',
+      addressLine2: '',
+      city: '',
+      zipCode: '',
+      state: ''
+    },
+    patientIdentifier: ''
+  };
+
+  const [initialValues, setInitialValues] = useState(INITIAL_VALUES);
+
   React.useEffect(() => {
-    if (!formState.activeRecord?.patientDetailsRequired) {
+    if (!formState.activeRecord) {
+      return;
+    }
+    if (!formState.activeRecord.patientDetailsRequired) {
       navigate(`../${orderId}/additional-details`);
+    } else {
+      setInitialValues({ ...formState.activeRecord?.patient });
     }
   }, [formState.activeRecord]);
 
@@ -56,13 +85,11 @@ const PatientDetails = () => {
     navigate(`../${orderId}/accounts`);
   };
 
-  const initialValues = {};
-
   const handleSubmit = (form) => {
-    const { patientInfo, ...rest } = form;
+    const { patientInfo } = form;
 
     const payload = {
-      ...rest
+      ...form
     };
     if (patientInfo && patientInfo.dateOfBirth) {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(patientInfo.dateOfBirth, 'MM-DD-YYYY');
@@ -136,9 +163,7 @@ const PatientDetails = () => {
             handleSubmit(values);
             actions.setSubmitting(false);
           }}>
-          {({ values, isValid, dirty }) => {
-            const isButtonDisabled = !(dirty && isValid);
-
+          {({ values, isValid }) => {
             return (
               <Form>
                 <div className={styles.wrapper}>
@@ -151,7 +176,7 @@ const PatientDetails = () => {
                         <Button size="md" variant="secondary" onClick={handleOnBack}>
                           {t('captions.btnBack')}
                         </Button>
-                        <Button size="md" variant="primary" disabled={isButtonDisabled || isSaving} type="submit">
+                        <Button size="md" variant="primary" disabled={!values?.patientIdentifier || isSaving} type="submit">
                           {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
                         </Button>
                       </div>

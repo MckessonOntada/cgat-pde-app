@@ -51,7 +51,8 @@ export const formConfig = [
         label: 'orderManagement.patientDetails.inputLabel.date_of_birth',
         placeholder: ' ',
         component: 'datePicker',
-        maxLength: 50
+        maxLength: 50,
+        disableFuture: true
       },
       {
         id: 'patientIdentifier',

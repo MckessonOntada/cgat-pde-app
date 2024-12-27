@@ -41,6 +41,7 @@ export const MessageEs = {
   'labels.results': '[es]results',
   'labels.perPage': '[es]Per page',
   'labels.needAssistanceSelectingAccount': '[es]Need assistance with selecting an account?',
+  'labels.pleaseSelectTheBelowProgram': '[es] Please select panel to place the order.',
   'labels.orderThroughBelowPrograms': '[es]Are you here to order through any of the below programs?',
   'labels.orderThroughBelowChannel': '[es]Please select channel to place the order.',
   'labels.therapySelection': '[es]Therapy Selection',

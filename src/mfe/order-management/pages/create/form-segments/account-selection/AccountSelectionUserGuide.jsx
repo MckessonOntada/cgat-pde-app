@@ -85,7 +85,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
 
           <div className="MCP-panel-container">
             <div className={styles.selectionBlock}>
-              <p className={styles.caption}>{t('labels.orderThroughBelowPrograms')}</p>
+              <p className={styles.caption}>{t('labels.pleaseSelectTheBelowProgram')}</p>
               <RadioGroup
                 direction="row"
                 id="orderProgramOption1"
