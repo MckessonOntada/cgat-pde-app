@@ -154,15 +154,16 @@ function AdditionalDetails() {
                     </p>
                   </div>
                   <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-                    {formFields.map((field, index) => (
+                    {formFields.map(({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
                       <Field
                         key={index}
-                        name={field.name}
-                        label={field.label}
-                        placeholder={field.placeholder}
-                        isRequired={field.isRequired}
-                        component={field.component}
-                        maxLength={field.maxLength}
+                        name={name}
+                        label={label}
+                        placeholder={placeholder}
+                        isRequired={isRequired}
+                        component={component}
+                        maxLength={maxLength}
+                        {...otherProps}
                       />
                     ))}
                   </div>

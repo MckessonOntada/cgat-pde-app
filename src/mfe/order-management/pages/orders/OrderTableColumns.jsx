@@ -135,7 +135,7 @@ export const createColumns = (t, navigate, activeTab) => [
     minWidth: '240px',
     maxWidth: '320px',
     sortable: true,
-    sortKey: 'orderId',
+    sortKey: 'id',
     cell: (props) => (
       <Link className="MCP-table-link" to={getPathByOrderStage(props)} state={props} aria-label={t('labels.orderId')}>
         <EclipsesTextcss str={props.id} maxWidth={200} />
@@ -147,7 +147,7 @@ export const createColumns = (t, navigate, activeTab) => [
     name: t('labels.patientName'),
     selector: () => {},
     sortable: true,
-    sortKey: 'patientName',
+    sortKey: 'patient.patientInfo',
     minWidth: '140px',
     maxWidth: '200px',
     cell: (props) => {
@@ -164,7 +164,7 @@ export const createColumns = (t, navigate, activeTab) => [
     name: t('labels.therapy'),
     selector: () => {},
     sortable: true,
-    sortKey: 'therapyId',
+    sortKey: 'therapy.materialDescription',
     minWidth: '140px',
     cell: (props) => (
       <EclipsesTextcss
@@ -180,7 +180,7 @@ export const createColumns = (t, navigate, activeTab) => [
     name: t('table.columns.captions.author'),
     selector: () => {},
     sortable: true,
-    sortKey: 'author',
+    sortKey: 'author?.name',
     minWidth: '140px',
     maxWidth: '200px',
     cell: (props) => <EclipsesTextcss str={props.author?.name} maxWidth={170} className={'MCP-table-cell'} />,
@@ -191,7 +191,7 @@ export const createColumns = (t, navigate, activeTab) => [
     name: t('table.columns.captions.createdOn'),
     selector: () => {},
     sortable: true,
-    sortKey: 'createdOn',
+    sortKey: 'createdAt',
     width: '100px',
     cell: (props) => (
       <span aria-label={t('table.columns.captions.createdOn')}>
@@ -209,7 +209,7 @@ export const createColumns = (t, navigate, activeTab) => [
     sortKey: 'submittedBy',
     minWidth: '180px',
     maxWidth: '340px',
-    cell: (props) => <span>{props.submittedBy?.id}</span>,
+    cell: (props) => <span>{props.submittedB}</span>,
     omit: activeTab !== 'submitted'
   },
   {
@@ -242,7 +242,8 @@ export const createColumns = (t, navigate, activeTab) => [
     id: 'price',
     name: t('table.columns.captions.price'),
     selector: () => {},
-    sortable: false,
+    sortable: true,
+    selector: 'orderCost',
     width: '100px',
     cell: (props) => <span aria-label={t('table.columns.captions.price')}>{props.orderCost}</span>
   },
