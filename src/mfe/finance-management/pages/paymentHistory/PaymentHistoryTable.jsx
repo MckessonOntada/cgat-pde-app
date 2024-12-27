@@ -12,6 +12,12 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FormattedNumber } from 'react-intl';
 import dayjs from 'dayjs';
 
+const PAYMENT_STATUS = {
+  PENDING: { label: 'Pending', color: 'warning' },
+  PROCESSED: { label: 'Processed', color: 'success' },
+  FAILED: { label: 'Failed', color: 'error' }
+};
+
 export default function PaymentHistoryTable() {
   const { t } = useTranslate();
   const [isOpen, setIsOpen] = useState(false);
@@ -62,13 +68,20 @@ export default function PaymentHistoryTable() {
       sortable: true,
       cell: (props) => (
         <div className="status-container">
-          {props.paymentStatus == 'COMPLETED' ? <Badge text="COMPLETED" type="success" /> : <Badge text="IN PROCESS" type="info-default" />}
+          {PAYMENT_STATUS[props?.paymentStatus.toUpperCase()] ? (
+            <Badge
+              text={PAYMENT_STATUS[props?.paymentStatus.toUpperCase()].label}
+              type={`${PAYMENT_STATUS[props?.paymentStatus.toUpperCase()].color}-high`}
+            />
+          ) : (
+            '-'
+          )}
         </div>
       )
     },
     {
       id: 'totalAuthorizedPaymentAmount',
-      name: <div className="align-items-right">{t('paymentInvoices.history.table.totalAuthorizedPaymentAmt')}</div>,
+      name: t('paymentInvoices.history.table.totalAuthorizedPaymentAmt'),
       selector: (row) => `${row.totalAuthorizedPaymentAmount}`,
       width: '20%',
       sortable: true,

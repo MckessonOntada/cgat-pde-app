@@ -6,6 +6,7 @@ import { serializeParams } from '@src/util/ApiUtils';
 import ApiRoutes from '@src/api/ApiRoutes';
 import CommonUtils from '@src/util/CommonUtils';
 import useSnackbar from '@src/hooks/useSnackbar';
+import { GeographicUtils } from '@src/util/GeographicUtil';
 
 const ACCOUNTS_PER_SEARCH = 20;
 
@@ -27,6 +28,7 @@ export const AccountProvider = ({ children }) => {
     const formattedAccounts = payToAccountsData.map((account, index) => ({
       index,
       label: `(${account.accountNumber}) ${account.accountName}`,
+      labelDescription: GeographicUtils.addressAggregator(account),
       value: account.id
     }));
     setPayToAccountsList(formattedAccounts);
@@ -91,8 +93,8 @@ export const AccountProvider = ({ children }) => {
     }
   }, [defaultPayToAccount]);
 
-  const applyEvent = (selectedPayToAccount) => {
-    setSelectedAccount(payToAccountsData.find((account) => account.id === selectedPayToAccount.value));
+  const applyEvent = (selectedPayToAccountId) => {
+    setSelectedAccount(payToAccountsData.find((account) => account.id === selectedPayToAccountId));
   };
 
   const { mutate: setDefaultAccount } = useMutation(
@@ -132,7 +134,6 @@ export const AccountProvider = ({ children }) => {
         selectedAccount,
         searchPayToAccounts,
         applyEvent,
-        searchText,
         defaultSetEvent
       }}
     >

@@ -5,6 +5,7 @@ import './index.scss';
 import { usePaymentInvoices } from '../../context/PaymentsInvoicesContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Button } from '@mckesson/mcp-component-library';
+import { DUE_STATUS } from './InvoiceConstants';
 
 export default function Invoices(params) {
   const { t } = useTranslate();
@@ -24,7 +25,7 @@ export default function Invoices(params) {
         name: 'status',
         tableColumnId: 'status',
         customLabel: (data) => {
-          return data == 'PLUS_91_DAYS_OVERDUE' ? '+91 DAYS OVERDUE' : data.match(/\d+/) ? `${data.match(/\d+/)[0]} DAYS OVERDUE` : data;
+          return DUE_STATUS[data].label;
         },
         label: t('paymentInvoices.history.table.status'),
         options: []

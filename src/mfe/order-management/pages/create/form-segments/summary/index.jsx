@@ -56,7 +56,8 @@ const Summary = () => {
 
   const handleOnSubmit = () => {
     if (checkboxOptions[0].isChecked) {
-      navigate('/orders');
+      // navigate('/orders');
+      navigate(`../${orderId}/order-confirmed`);
     } else {
       if (alertRef?.current) showAlert({ description: t('messages.selectAcknowledgementError'), type: 'error', anchorEl: alertRef });
     }
