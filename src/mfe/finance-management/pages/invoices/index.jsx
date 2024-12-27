@@ -32,10 +32,16 @@ export default function Invoices(params) {
       },
       {
         type: 'dateRangePicker',
-        name: 'dateRange',
-        startDateLabel: t('paymentInvoices.history.table.PostingDate'),
-        endDateLabel: t('paymentInvoices.history.table.DueDate')
+        name: 'billDate',
+        startDateLabel: t('paymentInvoices.invoicesTable.filter.billDateStart'),
+        endDateLabel: t('paymentInvoices.invoicesTable.filter.billDateEnd')
       }
+      // {
+      //   type: 'dateRangePicker',
+      //   name: 'dueDate',
+      //   startDateLabel: t('paymentInvoices.invoicesTable.filter.dueDateStart'),
+      //   endDateLabel: t('paymentInvoices.invoicesTable.filter.dueDateEnd')
+      // }
     ];
   }, []);
   return (

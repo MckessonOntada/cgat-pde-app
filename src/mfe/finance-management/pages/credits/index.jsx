@@ -14,7 +14,7 @@ export default function Credits(params) {
     return [
       {
         type: 'dateRangePicker',
-        name: 'dateRange'
+        name: 'billDate'
       }
     ];
   }, []);

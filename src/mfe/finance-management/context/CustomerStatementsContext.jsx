@@ -21,7 +21,7 @@ const INITIAL_FILTER_STATE = {
   searchQuery: '',
   billNumber: [],
   soldToSite: [],
-  dateRange: [dayjs().subtract(180, 'day').format('YYYY-MM-DD'), dayjs().format('YYYY-MM-DD')]
+  dateRange: [dayjs().subtract(180, 'day').format('MM/DD/YYYY'), dayjs().format('MM/DD/YYYY')]
 };
 
 const INITIAL_SORT_STATE = {
@@ -48,8 +48,12 @@ export const CustomerStatementsProvider = ({ children }) => {
   const [actualData, setActualData] = useState([]);
 
   const applyFilters = (filters) => {
-    const formattedStartDate = dayjs(filters.dateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD');
-    const formattedEndDate = dayjs(filters.dateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD');
+    const formattedStartDate = filters.dateRange[0] 
+      ? dayjs(filters.dateRange[0], 'MM/DD/YYYY').format('MM/DD/YYYY') 
+      : dayjs().subtract(180, 'day').format('MM/DD/YYYY');
+    const formattedEndDate = filters.dateRange[1] 
+      ? dayjs(filters.dateRange[1], 'MM/DD/YYYY').format('MM/DD/YYYY') 
+      : dayjs().format('MM/DD/YYYY');
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig((prevFilters) => ({
       ...prevFilters,
@@ -95,8 +99,8 @@ export const CustomerStatementsProvider = ({ children }) => {
         companyCode: selectedAccount?.companyCode,
         salesOrg: selectedAccount?.salesOrg,
         payerAccountNumber: selectedAccount?.accountNumber,
-        dateFrom: filterConfig.dateRange[0],
-        dateTo: filterConfig.dateRange[1],
+        dateFrom: dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD'),
+                dateTo: dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD'),
         validDateRange: true
       };
 
