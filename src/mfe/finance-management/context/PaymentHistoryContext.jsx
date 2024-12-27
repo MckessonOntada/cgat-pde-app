@@ -22,7 +22,7 @@ const INITIAL_FILTER_STATE = {
   searchQuery: '',
   paymentMethod: '',
   paymentStatus: '',
-  dateRange: [dayjs().subtract(180, 'day').format('DD/MM/YYYY'), dayjs().format('DD/MM/YYYY')]
+  dateRange: [dayjs().subtract(180, 'day').format('MM/DD/YYYY'), dayjs().format('MM/DD/YYYY')]
 };
 
 const INITIAL_SORT_STATE = {
@@ -49,8 +49,12 @@ export const PaymentHistoryProvider = ({ children }) => {
   const [actualData, setActualData] = useState([]);
 
   const applyFilters = (filters) => {
-    const formattedStartDate = dayjs(filters.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY');
-    const formattedEndDate = dayjs(filters.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY');
+    const formattedStartDate = filters.dateRange[0] 
+          ? dayjs(filters.dateRange[0], 'MM/DD/YYYY').format('MM/DD/YYYY') 
+          : dayjs().subtract(180, 'day').format('MM/DD/YYYY');
+        const formattedEndDate = filters.dateRange[1] 
+          ? dayjs(filters.dateRange[1], 'MM/DD/YYYY').format('MM/DD/YYYY') 
+          : dayjs().format('MM/DD/YYYY');
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig((prevFilters) => ({
       ...prevFilters,
@@ -101,8 +105,8 @@ export const PaymentHistoryProvider = ({ children }) => {
         companyCode: selectedAccount?.companyCode,
         salesOrg: selectedAccount?.salesOrg,
         payerAccountNumber: selectedAccount?.accountNumber,
-        dateFrom: filterConfig.dateRange[0],
-        dateTo: filterConfig.dateRange[1]
+        dateFrom: dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY'),
+        dateTo: dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY')
       };
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
       if (res.data) {

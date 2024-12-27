@@ -30,6 +30,12 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.balanceCard.payNowBtn': 'Pay Now',
   'paymentInvoices.balanceAPI.error': 'Error fetching open invoices balance.',
 
+  // Invoices Table
+  'paymentInvoices.invoicesTable.filter.billDateStart': 'Bill Date (Start)',
+  'paymentInvoices.invoicesTable.filter.billDateEnd': 'Bill Date (End)',
+  'paymentInvoices.invoicesTable.filter.dueDateStart': 'Due Date (Start)',
+  'paymentInvoices.invoicesTable.filter.dueDateEnd': 'Due Date (End)',
+
   // Payment History
   'paymentInvoices.history.table.confirmationNumber': 'Confirmation No.',
   'paymentInvoices.history.table.purchaseOrderNumber': 'Purchase Order Number',

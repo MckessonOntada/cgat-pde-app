@@ -3,7 +3,7 @@ import { Dropdown as BaseDropdown, Label, TextError, Required } from '@mckesson/
 import './Components.scss';
 
 export default function Dropdown(props) {
-  const { id, label, value, isRequired, error, onChange, ...rest } = props;
+  const { id, label, value = '', isRequired, error, onChange, ...rest } = props;
 
   return (
     <div id={id} className="grid">

@@ -3,6 +3,7 @@ import appReducer from './reducer/appReducer';
 import modalReducer from './reducer/modalReducer';
 import snackbarReducer from './reducer/snackbarReducer';
 import userReducer from './reducer/userReducer';
+import alertReducer from './reducer/alertReducer';
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     modalState: modalReducer,
     snackbarState: snackbarReducer,
     userState: userReducer,
+    alertState: alertReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

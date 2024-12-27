@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Heading, Button } from '@mckesson/mcp-component-library';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from './AccountSelection.module.scss';
@@ -31,6 +31,7 @@ const AccountSelection = () => {
   const [accountSearchString, setAccountSearchString] = React.useState('');
   const [selectedShippingAddress, setSelectedShippingAddress] = React.useState('');
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
+  const [acccountError, setAccountError] = useState({ isError: false, message: '' });
   const therapyId = formState.activeRecord?.therapy?.materialNumber;
 
   React.useEffect(() => {
@@ -87,18 +88,24 @@ const AccountSelection = () => {
   };
 
   const handleOnSubmit = () => {
-    if (selectedAccount) {
+    if (selectedAccount && selectedShippingAddress) {
       const payload = {
         soldToAccountId: selectedAccount.id,
         shipToAccountId: selectedShippingAddress.id
       };
+      setAccountError({ isError: false, message: '' });
       saveAccount(payload);
+    } else {
+      if (!selectedAccount) {
+        setAccountError({ isError: true, message: 'Please select an account before proceeding.' });
+        return;
+      }
     }
   };
 
   const handleOnBackToOrders = () => {
     //compare data change, display modal for confirmation
-    navigate('/orders');
+    navigate(-1);
   };
 
   const getAddress = (acc) => {
@@ -181,11 +188,13 @@ const AccountSelection = () => {
                         value={selectedAccount?.accountNumber || ''}
                         onChange={(val) => setSelectedAccount(accountsListData.content?.filter((acc) => acc.accountNumber === val)[0])}
                         options={accountListOptions}
+                        forcedValue={selectedAccount?.accountNumber}
                         variant={'async'}
                         onSearch={(e) => {
                           setAccountSearchString(() => e);
                         }}
                         recordsCountToEnableSearch={5}
+                        error={acccountError.isError && acccountError.message}
                         size="lg"
                       />
                     </div>
@@ -207,7 +216,12 @@ const AccountSelection = () => {
             <Button size="md" onClick={() => {}} variant="secondary">
               {t('captions.btnInventorySelection')}
             </Button>
-            <Button size="md" onClick={handleOnSubmit} disabled={!selectedShippingAddress || isSaving} variant="primary" type="submit">
+            <Button
+              size="md"
+              onClick={handleOnSubmit}
+              disabled={!selectedShippingAddress || !selectedAccount || isSaving}
+              variant="primary"
+              type="submit">
               {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
             </Button>
           </div>

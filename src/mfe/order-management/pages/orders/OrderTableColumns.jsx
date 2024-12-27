@@ -28,12 +28,16 @@ const getLinkByStatus = ({ status, id }, t) => {
   return <Link to={path}>{label}</Link>;
 };
 
-const getOptionsByStatus = (status, t, tab, id) => {
+const getOptionsByStatus = (props, status, t, tab, id) => {
   const options = [];
   const navigate = useNavigate();
+
   const handleOnOptionSelection = ({ value }) => {
     if (value === 'view') {
       navigate(`${id}/summary`);
+    }
+    if (value === 'resume') {
+      navigate(getPathByOrderStage(props));
     }
     if (value === 'edit') {
       navigate(`edit-order/${id}`);
@@ -254,6 +258,6 @@ export const createColumns = (t, navigate, activeTab) => [
     sortable: false,
     width: '120px',
     center: true,
-    cell: (props) => getOptionsByStatus(props.status, t, activeTab, props.id)
+    cell: (props) => getOptionsByStatus(props, props.status, t, activeTab, props.id)
   }
 ];

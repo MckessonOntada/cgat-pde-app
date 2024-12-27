@@ -42,7 +42,7 @@ export default function CustomerStatementTable() {
       minWidth: '144px',
       sortable: true,
       wrap: true,
-      cell: (props) => dayjs(props.date, 'YYYY-MM-DD')?.format('MM/DD/YYYY') || '-'
+      cell: (props) => dayjs(props.date, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'
     },
     {
       id: 'statementBalance',

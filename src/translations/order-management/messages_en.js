@@ -21,6 +21,7 @@ export const MessageEn = {
   'captions.btnGoToOrders': 'Go to orders',
   'captions.btnSaveAndContinue': 'Save and Continue',
   'captions.btnBackToManageOrder': 'Back to Manage Order',
+  'captions.btnBackToOrders': 'Back to Orders',
   'captions.btnBack': 'Back',
   'captions.btnEdit': 'Edit',
   'captions.btnSubmitOrder': 'Submit Order',
@@ -40,6 +41,7 @@ export const MessageEn = {
   'labels.results': 'results',
   'labels.perPage': 'Per page',
   'labels.needAssistanceSelectingAccount': 'Need assistance with selecting an account?',
+  'labels.pleaseSelectTheBelowProgram': 'Please select panel to place the order.',
   'labels.orderThroughBelowPrograms': 'Are you here to order through any of the below programs?',
   'labels.orderThroughBelowChannel': 'Please select channel to place the order.',
   'labels.therapySelection': 'Therapy Selection',
@@ -228,5 +230,10 @@ export const MessageEn = {
   'orderManagement.patientDetails.validation.patient_identifier_required': 'Patient identifier is required.',
   'orderManagement.patientDetails.validation.patient_identifier_max': 'Patient identifier cannot exceed 20 characters.',
   'orderManagement.patientDetails.inputLabel.date_of_birth': 'Date of birth',
-  'orderManagement.patientDetails.option.please_select': 'Please select'
+  'orderManagement.patientDetails.option.please_select': 'Please select',
+
+  'labels.description.approval': 'Order is reviewed and confirmed for accuracy and payment',
+  'labels.description.fulfillment': 'Items are picked, packed, and prepared for shipment',
+  'labels.description.shipment': 'Order is dispatched and tracked during transit',
+  'labels.description.finalDelivery': 'Order is delivered to your specified address'
 };
