@@ -2,12 +2,14 @@ import React from 'react';
 import styles from './OrderStatus.module.scss';
 import { Button, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
-import { ReactComponent as IconTick } from '@src/assets/svg/tick-circle-filled.svg';
+import { ReactComponent as IconTick } from '@src/assets/svg/tick-circle-success.svg';
 import StatusBreadcrumb from './StatusBreadcrumb';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DetailSegment from '@src/components/DetailSegment';
+import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
+import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 
 const details = {
   orderId: '12345',
@@ -22,11 +24,31 @@ const details = {
 const OrderStatus = () => {
   const { t } = useTranslate();
   const { orderId } = useParams();
+  const navigate = useNavigate();
+  const { isFetching, formState, setCurrentOrder } = useManageOrder();
+
+  React.useEffect(() => {
+    orderId && setCurrentOrder(orderId, ORDER_STAGES.ORDER_SUMMARY);
+  }, []);
+
+  const { therapy = {}, orderCost, patient } = formState.activeRecord || {};
+
+  const backToOrders = () => {
+    navigate('/orders');
+  };
+
   return (
     <div className={'MCP-module-wrapper'}>
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={() => {}} size="md">
-          {t('captions.btnBackToManageOrder')}
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={() => {
+            backToOrders();
+          }}
+          size="md">
+          {t('captions.btnBackToOrders')}
         </Button>
       </div>
       <ModuleHeader
@@ -38,39 +60,53 @@ const OrderStatus = () => {
             </div>
             <div className={styles.content}>
               <Heading as={'h1'}>{t('headings.orderSubmitted')}</Heading>
-              <Heading as={'h3'}>{t('messages.orderSuccessApprovalPending')}</Heading>
+              <p className={styles.orderSubmitDescription}>{t('messages.orderSuccessApprovalPending')}</p>
             </div>
           </div>
         }
       />
       <div className={'MCP-module-body'}>
         <div className="MCP-panel-container">
-          <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5">
-            <DetailSegment label={t('labels.orderId')} value={details.orderId} />
-            <DetailSegment label={t('labels.materialDescription')} value={details.materialDescription} />
+          <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
+            <DetailSegment label={t('labels.orderId')} value={orderId} />
+            <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
+            <DetailSegment
+              label={t('labels.patientName')}
+              value={
+                [patient?.patientInfo?.firstName, patient?.patientInfo?.middleName, patient?.patientInfo?.lastName]
+                  .filter(Boolean) // Filters out null, undefined, or empty strings
+                  .join(' ') || 'N/A'
+              }
+            />
           </div>
-          <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5">
-            <DetailSegment label={t('labels.patientName')} value={details.patientName} />
-            <DetailSegment label={t('labels.patientIdentifier')} value={details.patientIdentifier} />
-            <DetailSegment label={t('labels.dob')} value={details.dateOfBirth} />
-            <DetailSegment label={t('labels.gender')} value={details.gender} />
-            <DetailSegment className={styles.orderCost} label={t('labels.orderCost')} value={<p className={styles.price}>{details.orderCost}</p>} />
+          <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
+            <DetailSegment
+              label={t('labels.patientIdentifier')}
+              value={patient?.patientInfo?.patientIdentifier ? patient?.patientInfo?.patientIdentifier : 'N/A'}
+            />
+            <DetailSegment label={t('labels.dob')} value={patient?.patientInfo?.dob ? patient?.patientInfo?.dob : 'N/A'} />
+            <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender ? patient?.patientInfo?.gender : 'N/A'} />
+            <DetailSegment
+              className={styles.orderCost}
+              customLabelStyles={styles.orderCostItem}
+              label={t('labels.price')}
+              customValueStyles={styles.orderCostItem}
+              value={<p className={`${styles.price}`}>{orderCost ? `$${orderCost}` : 'N/A'}</p>}
+            />
           </div>
         </div>
         <div className="MCP-panel-container">
-          <div className={styles.flex}>
+          <div className={`${styles.orderFlow}`}>
             <h4 className={styles.customSecondaryHeading}>{t('labels.whatToExpect')}</h4>
-            <div className={styles.statusBreadcrumb}>
-              <StatusBreadcrumb />
-            </div>
+            <StatusBreadcrumb />
           </div>
         </div>
       </div>
       <div className={'controls'}>
-        <Button size="md" variant="secondary">
+        <Button size="md" variant="secondary" disabled={true}>
           {t('captions.btnPrintSummary')}
         </Button>
-        <Button size="md" variant="primary">
+        <Button size="md" variant="primary" onClick={() => backToOrders()}>
           {t('captions.btnGoToOrders')}
         </Button>
       </div>

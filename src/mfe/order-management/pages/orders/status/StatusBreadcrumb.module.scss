@@ -1,0 +1,95 @@
+// .status-breadcrumb{
+// 	display: inline-flex;
+// 	gap: var(--spacing-03);
+// 	list-style-type: none;
+// 	.item{
+// 		padding-left: var(--spacing-04);
+// 		padding-right: var(--spacing-04);
+// 		white-space: nowrap;
+// 		background-color: #e4e4e4;
+// 		font-weight: var(--brand-font-weight-600);
+// 		font-size: var(--brand-font-size--small);
+// 		border-radius: var(--spacing-02);
+// 		position: relative;
+// 		height: 56px;
+// 		display: flex;
+// 		align-items: center;
+// 		justify-content: center;
+// 		.caption{
+// 			position: relative;
+// 			z-index: 999;
+// 			transform: translateX(10px);
+// 		}
+// 		&:after{
+// 			content: " ";
+// 			position: absolute;
+// 			background-color: #e4e4e4;
+// 			z-index: 99;
+// 			height: 44px;
+// 			width: 44px;
+// 			right: -16px;
+// 			border-radius: var(--spacing-02);
+// 			transform: rotate(45deg);
+// 		}
+// 		&:before{
+// 			content: " ";
+// 			position: absolute;
+// 			background-color: #fff;
+// 			height: 44px;
+// 			width: 44px;
+// 			z-index: 9;
+// 			left: -28px;
+// 			border-radius: var(--spacing-02);
+// 			transform: rotate(45deg);
+// 		}
+// 		&:last-of-type{
+// 			padding-right: var(--spacing-05);
+// 			&:after{
+// 				content: unset;
+// 			}
+// 		}
+// 	}
+// }
+
+.orderListContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-03);
+  font-size: var(--brand-font-size--20);
+
+  .orderListItem {
+    display: flex;
+    padding: var(--spacing-03);
+    gap: var(--spacing-03);
+    background-color: var(--brand-color-cool-blue);
+    border-radius: var(--spacing-01);
+    align-items: center;
+  }
+
+  .orderListCount {
+    background-color: var(--brand-color-black);
+    border-radius: var(--spacing-01);
+    height: 52px;
+    width: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--brand-color-background-white);
+    flex-shrink: 0;
+  }
+
+  .orderListContent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-02);
+
+    .orderListLabel {
+      font-weight: var(--brand-font-weight-700);
+    }
+
+    .orderListdescription {
+      font-size: var(--brand-font-size--default);
+      color: var(--brand-color-primary-slate);
+    }
+  }
+}
