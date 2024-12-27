@@ -41,8 +41,6 @@ const PaymentsInvoices = () => {
     setTabs(updatedTabs);
   }, [location.pathname]);
 
-  console.log('PaymentsInvoices', selectedAccount);
-
   return (
     <div className="MCP-module-wrapper">
       <ModuleHeader heading={<PageHeader heading={t('paymentInvoices.header')} />} />

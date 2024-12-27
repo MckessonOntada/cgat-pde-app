@@ -20,8 +20,8 @@ const RECORDS_PER_PAGE = 8;
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
-  paymentMethod: [],
-  paymentStatus: [],
+  paymentMethod: '',
+  paymentStatus: '',
   dateRange: [dayjs().subtract(180, 'day').format('DD/MM/YYYY'), dayjs().format('DD/MM/YYYY')]
 };
 
