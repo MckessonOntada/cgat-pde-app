@@ -7,6 +7,7 @@ import { GeographicUtils } from '@src/util/GeographicUtil';
 import CommonUtils from '@src/util/CommonUtils';
 import { useNavigate } from 'react-router-dom';
 import { PATHS } from '../routes';
+import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 
 const TABLET_BREAKPOINT = 768;
 
@@ -16,7 +17,7 @@ export default function RecordDetails() {
   const isMobileView = windowSize.width < TABLET_BREAKPOINT;
   const buttonSize = isMobileView ? 'md' : 'lg';
   const navigate = useNavigate();
-  const { selectedAccount, searchPayToAccounts, payToAccountsList, applyEvent, searchText, defaultSetEvent } = useAccountContext();
+  const { selectedAccount, searchPayToAccounts, payToAccountsList, applyEvent, defaultSetEvent } = useAccountContext();
   const [selectedPayToAccount, setSelectedPayToAccount] = useState(null);
 
   const [isValueSelected, setIsValueSelected] = useState(false);
@@ -26,7 +27,6 @@ export default function RecordDetails() {
       applyEvent(selectedPayToAccount);
       navigate(PATHS.invoices);
     }
-    // setIsValueSelected(!isValueSelected);
   };
 
   const onDefaultSetClick = () => {
@@ -49,7 +49,7 @@ export default function RecordDetails() {
         </div>
         <div className="account-search">
           <div className="search-form">
-            <AutoSuggestSearch
+            {/* <AutoSuggestSearch
               id="pay-to-accounts-search"
               size="lg"
               outline={true}
@@ -60,6 +60,19 @@ export default function RecordDetails() {
                 CommonUtils.isNonEmptyObject(selectedAccount) ? `(${selectedAccount?.accountNumber}) ${selectedAccount?.accountName}` : ''
               }
               setValue={true}
+            /> */}
+            <MultiSelectDropdown
+              id={'pay-to-accounts-search'}
+              label={' '}
+              isMultiSelect={false}
+              placeholder={'Select Account'}
+              onChange={getSelectedValueData}
+              options={payToAccountsList}
+              variant={'async'}
+              onSearch={(event) => searchPayToAccounts(event)}
+              recordsCountToEnableSearch={5}
+              size="lg"
+              value={CommonUtils.isNonEmptyObject(selectedAccount) ? selectedAccount?.id : ''}
             />
           </div>
           <div className="search-form-actions">
@@ -71,7 +84,6 @@ export default function RecordDetails() {
               disabled={
                 !CommonUtils.isNonEmptyObject(selectedAccount) ||
                 !isValueSelected ||
-                !CommonUtils.isNonEmptyString(searchText) ||
                 !CommonUtils.isNonEmptyArray(payToAccountsList)
               }
             >

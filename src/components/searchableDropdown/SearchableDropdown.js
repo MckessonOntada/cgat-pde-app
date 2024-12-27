@@ -837,7 +837,7 @@ export const SearchableDropdown = (props) => {
     selectedOptionsUi =
       selectedOptions &&
       selectedOptions?.map((option, index) => {
-        const { label, value } = option;
+        const { label, labelDescription = null, value } = option;
         return (
           <li
             className={`${styles.selectMenuItem} ${!isMultiSelect ? styles['selectMenuItemSingleSelect' + size] : ''} ${
@@ -870,8 +870,7 @@ export const SearchableDropdown = (props) => {
               />
             )}
             <div
-              // className={`${!isMultiSelect ? styles.growFlex : ''} ${styles.lineClamps2}`}
-              className={`${!isMultiSelect ? styles.growFlex : ''}`}
+              className={`${!isMultiSelect ? styles.growFlex : ''} ${styles.width100}`}
               tabIndex={isActionable ? 0 : -1}
               onClick={(e) => (isActionable ? handleSelect('SELECTED', value) : null)}
               onKeyDown={(event) => {
@@ -879,7 +878,12 @@ export const SearchableDropdown = (props) => {
                   handleSelect('SELECTED', value);
                 }
               }}>
-              <TooltipText className={styles.lineClamps2}>{label}</TooltipText>
+              <TooltipText className={styles.lineClamps2}>
+                <div className={labelDescription ? styles.compoundLabel : ''}>
+                  <span className={labelDescription ? styles.labelWithDescription : ''}>{label}</span>
+                  {labelDescription ? <span className={styles.labelDescription}>{labelDescription}</span> : null}
+                </div>
+              </TooltipText>
             </div>
             {isActionable && !option.isHideAction && (
               <button
