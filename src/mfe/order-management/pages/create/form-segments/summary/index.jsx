@@ -262,9 +262,11 @@ const Summary = () => {
             <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
               {t('captions.btnBack')}
             </Button>
-            <Button size={'md'} variant="primary" type="submit" onClick={handleOnSubmit}>
-              {t('captions.btnSubmitOrder')}
-            </Button>
+            <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS]}>
+              <Button size={'md'} variant="primary" type="submit" onClick={handleOnSubmit}>
+                {t('captions.btnSubmitOrder')}
+              </Button>
+            </PermittedComponent>
           </div>
         </div>
       </div>

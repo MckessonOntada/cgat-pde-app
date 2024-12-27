@@ -37,7 +37,7 @@ export const TherapyProvider = ({ children }) => {
 
   const requestParams = React.useMemo(
     () => ({
-      pageNumber: paginationConfig.pageNumber - 1,
+      pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       ...(filterConfig?.salesOrg && filterConfig?.salesOrg.length > 0 && { salesOrg: [...filterConfig.salesOrg] }),
@@ -84,7 +84,7 @@ export const TherapyProvider = ({ children }) => {
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
 
   const applyFilters = (filters) => {
-    setPageNumber(1);
+    setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig({ ...filters });
   };
 

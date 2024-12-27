@@ -178,6 +178,7 @@ const AccountSelection = () => {
                         label={' '}
                         isMultiSelect={false}
                         placeholder={'Select Account'}
+                        value={selectedAccount?.accountNumber || ''}
                         onChange={(val) => setSelectedAccount(accountsListData.content?.filter((acc) => acc.accountNumber === val)[0])}
                         options={accountListOptions}
                         variant={'async'}
@@ -186,7 +187,6 @@ const AccountSelection = () => {
                         }}
                         recordsCountToEnableSearch={5}
                         size="lg"
-                        value={selectedAccount?.accountNumber || ''}
                       />
                     </div>
                     <Link to="#" onClick={handleOnClick} className="action-link">

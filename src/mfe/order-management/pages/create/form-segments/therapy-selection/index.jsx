@@ -125,6 +125,10 @@ function TherapySelection() {
     }
   };
 
+  const handleOnDrawerSelect = (therapy) => {
+    setTherapy(therapy);
+  };
+
   const forms = FormList(t);
 
   return (
@@ -166,7 +170,7 @@ function TherapySelection() {
           />
           {therapyDetails && (
             <FloatingDrawer open={true} anchor="right" onClose={handleOnClose}>
-              <TherapyDetails therapyId={therapyDetails} onClose={handleOnClose} />
+              <TherapyDetails therapyId={therapyDetails} onSelect={handleOnDrawerSelect} onClose={handleOnClose} />
             </FloatingDrawer>
           )}
         </div>
