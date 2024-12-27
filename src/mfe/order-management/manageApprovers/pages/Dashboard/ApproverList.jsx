@@ -165,7 +165,7 @@ function ApproverList({ onActionSuccess }) {
           <Button
             variant="secondary"
             onClick={handleActivateDeactivate}
-            disabled={!hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP)}>
+            disabled={!hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_APPROVER_GROUP)}>
             {selectedRows.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
           </Button>
         </div>
