@@ -5,7 +5,6 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { useAccountContext } from './AccountContext';
-import dayjs from 'dayjs';
 import CommonUtils from '@src/util/CommonUtils';
 
 const PaymentsInvoicesContext = createContext();
