@@ -168,12 +168,22 @@ export const PaymentsInvoiceProvider = ({ children }) => {
       const valA = a[newSortConfig.sortBy];
       const valB = b[newSortConfig.sortBy];
 
-      if (typeof valA === 'string' && typeof valB === 'string') {
+      if (
+        typeof valA === 'string' &&
+        typeof valB === 'string' &&
+        newSortConfig.sortBy !== 'billDate' &&
+        newSortConfig.sortBy !== 'dueDate'
+      ) {
         return newSortConfig.sortOrder === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
       } else if (typeof valA === 'number' && typeof valB === 'number') {
         return newSortConfig.sortOrder === 'asc' ? valA - valB : valB - valA;
-      } else if (valA instanceof Date && valB instanceof Date) {
-        return newSortConfig.sortOrder === 'asc' ? new Date(valA) - new Date(valB) : new Date(valB) - new Date(valA);
+      } else if (newSortConfig.sortBy === 'billDate' || newSortConfig.sortBy === 'dueDate') {
+        const dateA = dayjs(valA, 'DD/MM/YYYY');
+        const dateB = dayjs(valB, 'DD/MM/YYYY');
+        if (!dateA.isValid() || !dateB.isValid()) {
+          return 0;
+        }
+        return newSortConfig.sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
       } else {
         return 0;
       }
