@@ -38,6 +38,12 @@ const AccountSelection = () => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ACCOUNT_DETAILS);
   }, []);
 
+  const { isPriceApiLoading, data: priceDetails = {} } = useQuery({
+    queryKey: ['order', 'therapy', 'price', therapyId, selectedAccount],
+    queryFn: async () => OrderService.getPriceDetails(therapyId, selectedAccount.accountNumber, selectedShippingAddress.accountNumber),
+    enabled: !!therapyId && !!selectedAccount?.accountNumber && !!selectedShippingAddress?.accountNumber,
+    refetchOnWindowFocus: false
+  });
   const { isLoading, data: accountsListData = {} } = useQuery({
     queryKey: ['order', 'therapy', therapyId, accountSearchString],
     queryFn: async () => OrderService.getSoldToAccounts(therapyId, serializeParams({ query: accountSearchString })),
@@ -148,7 +154,7 @@ const AccountSelection = () => {
       <div className="MCP-module-body">
         <OrderStepper />
         <div className={`MCP-module-wrapper`}>
-          <OrderHeaderDetails />
+          <OrderHeaderDetails netPriceData={priceDetails.netPrice} />
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>
               <ModuleHeader

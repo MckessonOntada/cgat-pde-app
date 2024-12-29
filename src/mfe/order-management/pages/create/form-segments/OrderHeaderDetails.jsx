@@ -4,7 +4,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import { ReactComponent as TickIcon } from '@src/assets/svg/tick-circle-filled.svg';
 
-function OrderHeaderDetails() {
+function OrderHeaderDetails({ netPriceData }) {
   const { t } = useTranslate();
   const { formState } = useManageOrder();
   const [segments, setSegments] = React.useState([]);
@@ -36,7 +36,7 @@ function OrderHeaderDetails() {
 
     detailsSegments.push(
       <div className={`price-wrapper col-span-${5 - detailsSegments.length}`}>
-        <DetailSegment label={t('labels.price')} value={orderCost || '$----'} />
+        <DetailSegment label={t('labels.price')} value={netPriceData || '$----'} />
       </div>
     );
 

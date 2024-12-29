@@ -62,7 +62,7 @@ function AdditionalDetails() {
   const shipToAccountId = formState.activeRecord?.accountDetails.shipToAccount.id;
   const variantsApiRequestParam = { pageNo: 0, pageSize: 10 };
 
-  const [checkboxOptions, setCheckboxOptions] = React.useState({
+  const [variantAcknowledgement, setVariantAcknowledgement] = React.useState({
     isDisabled: false,
     isChecked: false,
     label: t('messages.variantAcknowledgement'),
@@ -90,7 +90,6 @@ function AdditionalDetails() {
     enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId,
     refetchOnWindowFocus: false
   });
-  console.log(variantsData, '❤');
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ADDITIONAL_DETAILS);
   }, []);
@@ -98,7 +97,7 @@ function AdditionalDetails() {
   React.useEffect(() => {
     const { additionalDetails } = formState.activeRecord || {};
     if (additionalDetails) {
-      const { dateOfAdministration, id, orderQuantity, patientConsentTaken, poNumber, slotNumber } = additionalDetails;
+      const { dateOfAdministration, id, orderQuantity, patientConsentTaken, poNumber, slotNumber, variant: _variant } = additionalDetails;
 
       setInitialFormValues({
         coiId: id,
@@ -107,8 +106,18 @@ function AdditionalDetails() {
         poNumber: poNumber,
         dateOfAdministration: dateOfAdministration
       });
+
+      if (!variantsData.content) {
+        return;
+      }
+      setVariant({
+        variant: _variant.variant,
+        variantDescription: _variant.variantDescription,
+        id: variantsData.content?.find((_v) => _variant.variant === _v.variant).id
+      });
+      setVariantAcknowledgement((prev) => ({ ...prev, isChecked: patientConsentTaken }));
     }
-  }, [formState.activeRecord]);
+  }, [formState.activeRecord, variantsData]);
 
   const handleOnBack = () => {
     //compare data change, display modal for confirmation
@@ -132,7 +141,12 @@ function AdditionalDetails() {
       slotNumber: values.slotNumber,
       poNumber: values.poNumber,
       dateOfAdministration: values.dateOfAdministration,
-      patientConsentTaken: true
+      patientConsentTaken: true,
+      variant: {
+        variant: variant.variant,
+        variantDescription: variant.variantDescription,
+        variantAcknowledgment: variantAcknowledgement.isChecked
+      }
     };
 
     saveAdditionalDetails(payload);
@@ -148,23 +162,10 @@ function AdditionalDetails() {
   };
 
   const handleOnAcknowledgmentChange = () => {
-    const updatedOptions = { ...checkboxOptions, isChecked: !checkboxOptions.isChecked };
+    const updatedOptions = { ...variantAcknowledgement, isChecked: !variantAcknowledgement.isChecked };
 
-    setCheckboxOptions(updatedOptions);
+    setVariantAcknowledgement(updatedOptions);
   };
-
-  const data = [
-    {
-      variantId: 68,
-      variant: 'Type A',
-      variantDescription: 'One to One'
-    },
-    {
-      variantId: 2,
-      variant: 'Type B',
-      variantDescription: 'One to Many'
-    }
-  ];
 
   const validationSchema = getValidationSchema(t);
 
@@ -213,29 +214,32 @@ function AdditionalDetails() {
                       />
                     ))}
                   </div>
+                  {!!variantsData?.content && variantsData.content.length > 0 && (
+                    <>
+                      <Heading as="h3">{t('labels.selectVariant')}</Heading>
+                      <VariantTable variant={variant} onChange={handleOnVariantChange} data={variantsData.content} />
+                    </>
+                  )}
                 </div>
-                {/* <div className="MCP-sect">
-                  <Heading as="h3">{t('labels.selectVariant')}</Heading>
-                  <VariantTable variant={variant} onChange={handleOnVariantChange} data={data} />
-                </div>
+
                 <div className="agreement-checkbox-control">
                   <Field name="variant-acknowledgement">
                     {({ field, form }) => (
                       <CheckboxGroup
                         id={'default'}
                         name="variant-acknowledgement"
-                        items={[{ ...checkboxOptions, onChange: () => handleOnAcknowledgmentChange() }]}
+                        items={[{ ...variantAcknowledgement, onChange: () => handleOnAcknowledgmentChange() }]}
                         size="md"
                       />
                     )}
                   </Field>
-                </div> */}
+                </div>
 
                 <div className="controls">
                   <Button size="md" variant="secondary" onClick={handleOnBack}>
                     {t('captions.btnBack')}
                   </Button>
-                  <Button size="md" variant="primary" type="submit" disabled={isSaving}>
+                  <Button size="md" variant="primary" type="submit" disabled={isSaving || !variant || !variantAcknowledgement.isChecked}>
                     {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
                   </Button>
                 </div>
@@ -253,26 +257,25 @@ const VariantTable = ({ variant, onChange, data }) => {
   const columns = [
     {
       id: 'id',
-      selector: () => {},
       width: '40px',
       sortable: false,
       cell: (props) => (
         <span className="MCP-table-cell radio-button-wrapper">
           <RadioGroup
             direction="column"
-            id={`radio-button-variant-${props.variantId}`}
+            id={`radio-button-variant-${props.id}`}
             items={[
               {
                 isDisabled: false,
                 label: ' ',
-                value: props.variantId
+                value: props.id
               }
             ]}
             onChangeValue={() => {
               onChange(props);
             }}
             radioBtnWidth="auto"
-            value={variant?.variantId === props.variantId ? props.variantId : ''}
+            value={variant?.id === props.id ? props.id : ''}
           />
         </span>
       )
