@@ -83,6 +83,13 @@ const PatientDetails = () => {
     //compare data change, display modal for confirmation
     editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
     navigate(`../${orderId}/accounts`);
+
+    if (isEdit) {
+      navigate(`../${orderId}/summary`, { state: { isEdit: true } });
+    } else {
+      editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
+      navigate(`../${orderId}/accounts`);
+    }
   };
 
   const handleSubmit = (form) => {

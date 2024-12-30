@@ -119,7 +119,7 @@ function TherapySelection() {
 
   const handleCancel = () => {
     if (isEdit) {
-      navigate(`../${orderId}/summary`);
+      navigate(`../${orderId}/summary`, { state: { isEdit: true } });
     } else {
       navigate('/orders');
     }

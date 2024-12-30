@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Heading, Required, CheckboxGroup, CustomDataTable, RadioGroup } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { ReactComponent as InfoIcon } from '@src/assets/svg/info_icon_circle_filled.svg';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
@@ -54,6 +54,7 @@ function AdditionalDetails() {
   const { t } = useTranslate();
   const formFields = getFormFields(t);
   const navigate = useNavigate();
+  const location = useLocation();
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
@@ -90,7 +91,7 @@ function AdditionalDetails() {
     enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId,
     refetchOnWindowFocus: false
   });
-  console.log(variantsData, '❤');
+
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ADDITIONAL_DETAILS);
   }, []);
@@ -113,7 +114,7 @@ function AdditionalDetails() {
   const handleOnBack = () => {
     //compare data change, display modal for confirmation
     if (isEdit) {
-      navigate(`../${orderId}/summary`);
+      navigate(`../${orderId}/summary`, { state: { isEdit: true } });
     } else {
       if (formState.activeRecord?.patientDetailsRequired) {
         editByStage(ORDER_STAGES.PATIENT_DETAILS);

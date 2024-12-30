@@ -2,6 +2,7 @@ import OrderService from '@src/api/commonService/OrderService';
 import React, { createContext, useContext, useState } from 'react';
 import { MdViewArray } from 'react-icons/md';
 import { useQuery } from 'react-query';
+import { StatusEnum } from '../pages/orders/constants';
 
 const TAB_VARIANT = {
   PENDING_SUBMISSION: 'pending submission',
@@ -40,8 +41,9 @@ export const OrderProvider = ({ children }) => {
   const [tabVariant, setTabVariant] = React.useState(TAB_VARIANT.PENDING_SUBMISSION);
 
   const requestParams = React.useMemo(() => {
-    const validStatuses = ['in_draft', 'approval_pending', 'submitted', 'all'];
+    const validStatuses = [StatusEnum.IN_DRAFT, StatusEnum.APPROVAL_PENDING, StatusEnum.SUBMITTED, 'all'];
     const isStatusValid = validStatuses.includes(filterConfig.status);
+
     const params = {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
@@ -49,9 +51,10 @@ export const OrderProvider = ({ children }) => {
       sortOrder: sortConfig.sortOrder || 'desc',
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       ...(tabVariant === 'submitted'
-        ? { status: 'submitted' }
+        ? { statuses: StatusEnum.SUBMITTED }
         : {
-            status: isStatusValid && filterConfig.status !== 'all' ? filterConfig.status : ['in_draft', 'approval_pending']
+            statuses:
+              isStatusValid && filterConfig.status !== 'all' ? filterConfig.status : `${StatusEnum.IN_DRAFT},${StatusEnum.APPROVAL_PENDING}`
           })
     };
     return params;

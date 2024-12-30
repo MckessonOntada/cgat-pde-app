@@ -80,7 +80,7 @@ const AccountSelection = () => {
   const handleOnBack = () => {
     //check for data change
     if (isEdit) {
-      navigate(`../${orderId}/summary`);
+      navigate(`../${orderId}/summary`, { state: { isEdit: true } });
     } else {
       editByStage(ORDER_STAGES.THERAPY_SELECTION);
       navigate(`../edit-order/${orderId}`);

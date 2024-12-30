@@ -31,9 +31,9 @@ const OrderIndex = () => {
         name: 'status',
         label: t('userManagement.table.status'),
         options: [
-          { label: 'All', value: 'all' },
-          { label: 'Pending', value: 'pending' },
-          { label: 'Approval Pending', value: 'approval pending' }
+          { label: 'ALL', value: 'ALL' },
+          { label: 'IN DRAFT', value: 'IN_DRAFT' },
+          { label: 'APPROVAL PENDING', value: 'APPROVAL_PENDING' }
         ]
       }
     ];
