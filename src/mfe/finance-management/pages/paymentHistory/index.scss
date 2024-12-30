@@ -7,6 +7,9 @@
   border: 1px solid var(--brand-color-patient-primary-3);
   border-radius: var(--brand-border-radius--6);
 }
+.rdt_TableCol {
+  padding-right: var(--spacing-03) !important;
+}
 
 .userList {
   overflow-x: auto;

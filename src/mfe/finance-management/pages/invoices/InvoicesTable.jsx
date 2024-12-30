@@ -76,10 +76,11 @@ export default function InvoicesTable() {
       wrap: true,
       id: 'openAmount',
       cell: (props) => (
-        <div className="cellEllipse align-items-right">
+        <div className="cellEllipse align-items-right ">
           <FormattedNumber value={props?.openAmount || 0} style="currency" currency="USD" />
         </div>
-      )
+      ),
+      right: true
     },
     {
       name: t('paymentInvoices.history.table.status'),
@@ -112,10 +113,11 @@ export default function InvoicesTable() {
       center: true,
       id: 'billAmount',
       cell: (props) => (
-        <div className="cellEllipse align-items-right">
+        <div className="cellEllipse align-items-right ">
           <FormattedNumber value={props?.billAmount || 0} style="currency" currency="USD" />
         </div>
-      )
+      ),
+      right: true
     }
     // {
     //   name: t('paymentInvoices.history.table.Actions'),

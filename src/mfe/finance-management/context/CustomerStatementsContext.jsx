@@ -48,11 +48,11 @@ export const CustomerStatementsProvider = ({ children }) => {
   const [actualData, setActualData] = useState([]);
 
   const applyFilters = (filters) => {
-    const formattedStartDate = filters.dateRange[0] 
-      ? dayjs(filters.dateRange[0], 'MM/DD/YYYY').format('MM/DD/YYYY') 
+    const formattedStartDate = filters.dateRange[0]
+      ? dayjs(filters.dateRange[0], 'MM/DD/YYYY').format('MM/DD/YYYY')
       : dayjs().subtract(180, 'day').format('MM/DD/YYYY');
-    const formattedEndDate = filters.dateRange[1] 
-      ? dayjs(filters.dateRange[1], 'MM/DD/YYYY').format('MM/DD/YYYY') 
+    const formattedEndDate = filters.dateRange[1]
+      ? dayjs(filters.dateRange[1], 'MM/DD/YYYY').format('MM/DD/YYYY')
       : dayjs().format('MM/DD/YYYY');
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig((prevFilters) => ({
@@ -100,7 +100,7 @@ export const CustomerStatementsProvider = ({ children }) => {
         salesOrg: selectedAccount?.salesOrg,
         payerAccountNumber: selectedAccount?.accountNumber,
         dateFrom: dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD'),
-                dateTo: dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD'),
+        dateTo: dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD'),
         validDateRange: true
       };
 
@@ -151,12 +151,17 @@ export const CustomerStatementsProvider = ({ children }) => {
       const valA = a[newSortConfig.sortBy];
       const valB = b[newSortConfig.sortBy];
 
-      if (typeof valA === 'string' && typeof valB === 'string') {
+      if (typeof valA === 'string' && typeof valB === 'string' && newSortConfig.sortBy !== 'date') {
         return newSortConfig.sortOrder === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
       } else if (typeof valA === 'number' && typeof valB === 'number') {
         return newSortConfig.sortOrder === 'asc' ? valA - valB : valB - valA;
-      } else if (valA instanceof Date && valB instanceof Date) {
-        return newSortConfig.sortOrder === 'asc' ? new Date(valA) - new Date(valB) : new Date(valB) - new Date(valA);
+      } else if (newSortConfig.sortBy === 'date') {
+        const dateA = dayjs(valA, 'DD/MM/YYYY');
+        const dateB = dayjs(valB, 'DD/MM/YYYY');
+        if (!dateA.isValid() || !dateB.isValid()) {
+          return 0;
+        }
+        return newSortConfig.sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
       } else {
         return 0;
       }
