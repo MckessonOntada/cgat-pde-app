@@ -17,6 +17,8 @@ import OrderService from '@src/api/commonService/OrderService';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import OrderStepper from '../OrderStepper';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
+import { RoutePaths } from '@src/routes/constants';
+import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -24,10 +26,11 @@ function TherapySelection() {
   const location = useLocation();
   const [therapy, setTherapy] = useState(null);
   const { clearFilters, applyFilters } = useTherapy();
+  const [initialSelectedThearpy, setInitialSelectedTherapy] = React.useState(null);
   const { formState } = useManageOrder();
   const searchParams = new URLSearchParams(location.search);
   const therapyDetails = searchParams.get('therapy-details');
-
+  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const { orderId } = useParams();
   const { isEdit = false } = location.state || {};
 
@@ -39,6 +42,7 @@ function TherapySelection() {
     const { therapy } = formState.activeRecord || {};
     if (therapy) {
       setTherapy(therapy);
+      setInitialSelectedTherapy(therapy);
     } else {
       console.log('Could not set therapy');
     }
@@ -111,17 +115,33 @@ function TherapySelection() {
       createNewOrder(payload);
     }
   };
+  const isDirty = JSON.stringify(therapy) !== JSON.stringify(initialSelectedThearpy);
 
   const handleOnBackToOrders = () => {
-    //compare data change, display modal for confirmation
-    navigate('/orders');
+    if (isDirty) {
+      setModalSuccessCallback('list');
+    } else {
+      navigate(RoutePaths.pathOrderManagement);
+    }
   };
 
   const handleCancel = () => {
+    if (isDirty) {
+      setModalSuccessCallback(isEdit ? 'summary' : 'list');
+      return;
+    }
     if (isEdit) {
       navigate(`../${orderId}/summary`, { state: { isEdit: true } });
     } else {
-      navigate('/orders');
+      navigate(RoutePaths.pathOrderManagement);
+    }
+  };
+
+  const handleNavigate = () => {
+    if (modalSuccessCallback === 'list') {
+      navigate(RoutePaths.pathOrderManagement);
+    } else if (modalSuccessCallback === 'summary') {
+      navigate(`../${orderId}/summary`, { state: { isEdit: true } });
     }
   };
 
@@ -175,6 +195,13 @@ function TherapySelection() {
           )}
         </div>
       </div>
+      <DiscardChangesModal
+        heading={t('messages.confirmation.discardheader')}
+        description={t('messages.confirmation.therapy')}
+        isOpen={Boolean(modalSuccessCallback)}
+        onClose={() => setModalSuccessCallback(null)}
+        onConfirm={handleNavigate}
+      />
     </div>
   );
 }

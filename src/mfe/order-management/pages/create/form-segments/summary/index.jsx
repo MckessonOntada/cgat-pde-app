@@ -57,7 +57,7 @@ const Summary = () => {
   const handleOnBackButtonClick = () => {
     //compare data change, display modal for confirmation
     if (isEdit && formState.activeRecord.status === StatusEnum.SUBMITTED) {
-      navigate(RoutePaths.pathOrderManagement);
+      navigate(RoutePaths.pathOrderManagement, { state: { activeTab: StatusEnum.SUBMITTED } });
     } else {
       editByStage(ORDER_STAGES.ADDITIONAL_DETAILS);
       navigate(`../${orderId}/additional-details`);
@@ -73,7 +73,7 @@ const Summary = () => {
 
   const handleOnBackToOrders = () => {
     //compare data change, display modal for confirmation
-    navigate(-1);
+    navigate(RoutePaths.pathOrderManagement);
   };
 
   const handleOnEditSection = (stage) => {

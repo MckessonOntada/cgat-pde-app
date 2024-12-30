@@ -65,7 +65,7 @@ export const OrderProvider = ({ children }) => {
     refetch: refreshData,
     error
   } = useQuery({
-    queryKey: ['orders'],
+    queryKey: ['orders', tabVariant],
     queryFn: async () => OrderService.getOrders(requestParams),
     onSuccess: (result) => {
       const { totalElements, totalPages } = result;
@@ -120,7 +120,9 @@ export const OrderProvider = ({ children }) => {
         setCurrentPage,
         applySort,
         changeTab,
-        refreshData
+        refreshData,
+        tabVariant,
+        setTabVariant
       }}>
       {children}
     </OrderContext.Provider>

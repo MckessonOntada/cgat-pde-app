@@ -23,6 +23,10 @@ export const MessageEn = {
   'captions.btnBackToManageOrder': 'Back to Manage Order',
   'captions.btnBackToOrders': 'Back to Orders',
   'captions.btnBack': 'Back',
+  'captions.btnBacktoAdditionalDetails': 'Back To Additional Details',
+  'captions.btnBacktoPatientDetails': 'Back To Patient Details',
+  'captions.btnBacktoAccountSelection': 'Back To Account Selection',
+  'captions.btnBacktoTherapySelection': 'Back To Therapy Selection',
   'captions.btnEdit': 'Edit',
   'captions.btnSubmitOrder': 'Submit Order',
   'captions.btnInventorySelection': 'Inventory Selections',
@@ -235,5 +239,11 @@ export const MessageEn = {
   'labels.description.approval': 'Order is reviewed and confirmed for accuracy and payment',
   'labels.description.fulfillment': 'Items are picked, packed, and prepared for shipment',
   'labels.description.shipment': 'Order is dispatched and tracked during transit',
-  'labels.description.finalDelivery': 'Order is delivered to your specified address'
+  'labels.description.finalDelivery': 'Order is delivered to your specified address',
+
+  'messages.confirmation.discardheader': 'Discard Changes',
+  'messages.confirmation.account': 'You have changed Account details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.therapy': 'You have changed Therapy details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.addition': 'You have changed Addtional details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.patient': 'You have changed Patient details. Do you still want to go back? Your changes will be discarded!'
 };
