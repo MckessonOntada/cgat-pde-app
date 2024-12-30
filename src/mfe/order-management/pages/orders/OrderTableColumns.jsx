@@ -187,7 +187,7 @@ export const createColumns = (t, navigate, activeTab) => [
     sortKey: 'author?.name',
     minWidth: '140px',
     maxWidth: '200px',
-    cell: (props) => <EclipsesTextcss str={props.author?.name} maxWidth={170} className={'MCP-table-cell'} />,
+    cell: (props) => <EclipsesTextcss str={props.createdBy?.name} maxWidth={170} className={'MCP-table-cell'} />,
     omit: activeTab !== 'pending submission'
   },
   {
