@@ -46,8 +46,8 @@ const TherapyDataTable = ({ therapy, onChange }) => {
           isLoading={isFetching}
           error={error && error.message}
           image={EmptyDataImage}
-          heading={t('table.add.label')}
-          description={t('table.empty_table_description')}
+          heading={t('table.labels.therapySelectionNoDataAvailable')}
+          description={t('table.labels.therapySelectionNoDataAvailableDescription')}
         />
       }
     />

@@ -54,7 +54,6 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
     [filterState, pageConfig.currentPage]
   );
 
-  console.log(!!selectedAccount?.accountNumber);
   const {
     isFetching,
     isError,
@@ -115,6 +114,7 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
         filterState,
         pageConfig,
         dataState,
+        selectedAccount,
         applyFilters,
         clearFilters,
         setPageNumber,
