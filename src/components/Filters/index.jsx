@@ -86,9 +86,11 @@ const Filters = ({
             <div className="MCP-filter-panel">
               <div className="filter-header">
                 <div className="search-box">
-                  <button type="button" onClick={handleExpandCard} disabled={!isAdditionalFiltersAdded}>
-                    <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
-                  </button>
+                  {isAdditionalFiltersAdded && (
+                    <button type="button" onClick={handleExpandCard}>
+                      <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
+                    </button>
+                  )}
                   <div className={'ctrl-search-box'}>
                     <Field name={'searchQuery'} label={''} placeholder={searchPlaceholder} component={Components['input']} />
                   </div>
@@ -101,7 +103,7 @@ const Filters = ({
                       </Button>
                     )}
                     <Button type="submit" size="md" variant="secondary" className="filter-btn">
-                      {t('filters.applyfilters')}
+                      {isAdditionalFiltersAdded ? t('filters.applyfilters') : t('filters.search')}
                     </Button>
                   </div>
                 )}

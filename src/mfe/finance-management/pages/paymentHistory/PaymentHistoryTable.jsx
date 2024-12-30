@@ -20,7 +20,7 @@ const PAYMENT_STATUS = {
 
 export default function PaymentHistoryTable() {
   const { t } = useTranslate();
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
 
   const { data, isFetching, paginationConfig, setPageNumber, applySort, isError } = usePaymentHistory();
   const columns = [
@@ -31,7 +31,7 @@ export default function PaymentHistoryTable() {
       sortable: true,
       wrap: true,
       cell: (props) => (
-        <div className="cellEllipse" onClick={() => setIsOpen(true)}>
+        <div className="cellEllipse">
           <Link style={{ color: '#007bff', fontWeight: '600' }}>{`${props.confirmationNo}`}</Link>
         </div>
       )
@@ -86,10 +86,11 @@ export default function PaymentHistoryTable() {
       width: '20%',
       sortable: true,
       cell: (props) => (
-        <div className="align-items-right">
+        <div className="cellEllipse align-items-right">
           <FormattedNumber value={props?.totalAuthorizedPaymentAmount} style="currency" currency="USD" />
         </div>
-      )
+      ),
+      right: true
     }
   ];
 
@@ -140,9 +141,9 @@ export default function PaymentHistoryTable() {
           </div>
         }
       />
-      <FloatingDrawer open={isOpen} anchor="right" onClose={() => setIsOpen(false)}>
-        <PaymentDetails />
-      </FloatingDrawer>
+      {/* <FloatingDrawer open={isOpen} anchor="right" onClose={() => setIsOpen(false)}> */}
+      {/* <PaymentDetails /> */}
+      {/* </FloatingDrawer> */}
     </React.Fragment>
   );
 }

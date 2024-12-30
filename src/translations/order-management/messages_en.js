@@ -135,7 +135,9 @@ export const MessageEn = {
   'table.actions.reviewOrder': 'Review Order',
   'table.actions.resumeOrder': 'Resume Order',
   'table.actions.viewDetail': 'View Detail',
-
+  'table.labels.therapySelectionNoDataAvailable': 'No data available',
+  'table.labels.therapySelectionNoDataAvailableDescription': 'No therapy found, please try adding one',
+  'messages.noShippingAddressFound': 'No shipping address found',
   'labels.orderActions.resume': 'Resume',
   'labels.orderActions.delete': 'Delete',
   'labels.orderActions.review': 'Review',

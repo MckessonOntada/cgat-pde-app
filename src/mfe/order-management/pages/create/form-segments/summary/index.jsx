@@ -262,7 +262,7 @@ const Summary = () => {
             />
           </div>
           <div className="controls">
-            <Button size={'md'} variant="secondary">
+            <Button disabled={true} size={'md'} variant="secondary">
               {t('captions.btnPrintSummary')}
             </Button>
             <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>

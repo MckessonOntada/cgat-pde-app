@@ -11,7 +11,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.accountSearch.applyBtn': 'Apply',
   'paymentInvoices.accountSearch.setAsDefaultBtn': 'Set as Default',
   'paymentInvoices.getAccountsAPI.error': 'Error fetching accounts list.',
-  'paymentInvoices.setDefaultAccountAPI.success': 'Default account set successfully.',
+  'paymentInvoices.setDefaultAccountAPI.success': 'Default account set to',
   'paymentInvoices.setDefaultAccountAPI.error': 'Error setting default account.',
   // Metrics Card
   'paymentInvoices.metrics.totalDebitBalance': 'Total Debit Balance',
@@ -55,7 +55,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.filters.paymentDetails': 'Payment Details',
   'paymentInvoices.history.table.heading': 'Payment History',
   'paymentInvoices.history.table.emptyData': 'No Payment History Found',
-  'paymentInvoices.history.table.emptyDataDescription': 'Please try again later',
+  'paymentInvoices.history.table.emptyDataDescription': 'Try again or adjust filters',
   // Customer Statements
   'paymentInvoices.CS.filters.autoSearch': 'Search by document number, sold to',
   'paymentInvoices.CS.filters.filterBtn': 'Apply Filter',

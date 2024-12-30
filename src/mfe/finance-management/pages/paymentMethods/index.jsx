@@ -7,10 +7,16 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { PaymentMethodsProvider } from '../../context/PaymentMethodsContext';
 import { ReactComponent as AddCircle } from '@src/assets/svg/add-circle.svg';
 import { useTranslate } from '@src/translations/useTranslation';
+import useWindowSize from '@src/hooks/UseWindowSize';
+
+const TABLET_BREAKPOINT = 768;
 
 const PaymentMethods = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const windowSize = useWindowSize();
+  const isMobileView = windowSize.width < TABLET_BREAKPOINT;
+  const buttonSize = isMobileView ? 'md' : 'lg';
   const [tabs, setTabs] = useState([]);
   const { t } = useTranslate();
 
@@ -42,7 +48,7 @@ const PaymentMethods = () => {
             useAsButton={true}
             aria-label={'record-tab-list'}
           />
-          <Button Icon={AddCircle} size="md" onClick={() => {}} disabled={true}>
+          <Button Icon={AddCircle} size={buttonSize} onClick={() => {}} disabled={true}>
             {t('paymentInvoices.paymentMethods.table.bankAccount.addnewcard')}
           </Button>
         </div>

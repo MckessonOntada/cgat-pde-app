@@ -210,7 +210,7 @@ function AdditionalDetails() {
         onSubmit={(values) => {
           handleOnSubmit(values);
         }}>
-        {(dirty) => {
+        {({ values, isValid, dirty }) => {
           React.useEffect(() => {
             setIsDirty(dirty);
           }, [dirty]);

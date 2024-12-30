@@ -7,6 +7,7 @@ import { usePaymentMethods } from '@src/mfe/finance-management/context/PaymentMe
 import { useTranslate } from '@src/translations/useTranslation';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FinanceUtils } from '@src/util/FinanceUtil';
+import dayjs from 'dayjs';
 
 const CARD_TYPES = {
   VISA: 'VISA',
@@ -19,6 +20,7 @@ export default function CreditCardsTable() {
 
   const columns = [
     {
+      id: 'type',
       name: t('paymentInvoices.paymentMethods.table.cards.cardType'),
       selector: (row) => row.type,
       sortable: true,
@@ -27,6 +29,7 @@ export default function CreditCardsTable() {
       cell: (props) => <div>{props.type === CARD_TYPES.VISA ? <VisaLogo /> : <MasterCardLogo />}</div>
     },
     {
+      id: 'holderName',
       name: t('paymentInvoices.paymentMethods.table.cards.nameOnCard'),
       selector: (row) => row.holderName,
       sortable: true,
@@ -35,6 +38,7 @@ export default function CreditCardsTable() {
       cell: (props) => <div>{props.holderName}</div>
     },
     {
+      id: 'number',
       name: t('paymentInvoices.paymentMethods.table.cards.cardNumber'),
       selector: (row) => row.number,
       sortable: true,
@@ -43,14 +47,16 @@ export default function CreditCardsTable() {
       cell: (props) => <div className="cellEllipse">{FinanceUtils.maskCardNumber(props.number)}</div>
     },
     {
+      id: 'expirationDate',
       name: t('paymentInvoices.paymentMethods.table.cards.cardValidity'),
       selector: (row) => row.expirationDate,
       sortable: true,
       wrap: true,
       minWidth: '144px',
-      cell: (props) => <div>{props.expirationDate}</div>
+      cell: (props) => <div>{dayjs(props?.expirationDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
     },
     {
+      id: 'postalCode',
       name: t('paymentInvoices.paymentMethods.table.cards.zipCode'),
       selector: (row) => row.postalCode,
       sortable: true,
@@ -115,8 +121,7 @@ export default function CreditCardsTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}
-          >
+            }}>
             <Loader variant="circular" />
           </div>
         }
