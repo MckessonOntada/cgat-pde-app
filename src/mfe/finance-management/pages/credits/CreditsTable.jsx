@@ -65,10 +65,11 @@ export default function CreditsTable() {
       sortable: true,
       wrap: true,
       cell: (props) => (
-        <div className="status-container">
+        <div className="status-container align-items-right">
           <FormattedNumber value={props?.billAmount} style="currency" currency="USD" />
         </div>
-      )
+      ),
+      right: true
     }
     // {
     //   name: t('paymentInvoices.history.table.Actions'),
@@ -125,8 +126,7 @@ export default function CreditsTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}
-          >
+            }}>
             <Loader variant="circular" />
           </div>
         }
