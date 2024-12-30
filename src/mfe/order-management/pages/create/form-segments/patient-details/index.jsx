@@ -163,7 +163,7 @@ const PatientDetails = () => {
             handleSubmit(values);
             actions.setSubmitting(false);
           }}>
-          {({ values, isValid }) => {
+          {({ values }) => {
             return (
               <Form>
                 <div className={styles.wrapper}>

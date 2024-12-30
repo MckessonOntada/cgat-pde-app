@@ -32,7 +32,9 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
     const tableData = [];
 
     _data.forEach((d) => {
-      const shippingAddress = [d.houseNumber, d.street, d.street2, d.street3, d.district, d.city, d.state, d.country, d.zipCode].join(', ');
+      const shippingAddress = [d.houseNumber, d.street, d.street2, d.street3, d.district, d.city, d.state, d.country, d.zipCode]
+        .filter(Boolean)
+        .join(', ');
       const shippingAccountNumber = d.accountNumber;
       const shippingAccountName = d.accountName;
       const id = d.id;

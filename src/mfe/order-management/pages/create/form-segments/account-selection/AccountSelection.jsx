@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Heading, Button } from '@mckesson/mcp-component-library';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from './AccountSelection.module.scss';
@@ -19,6 +19,7 @@ import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import { serializeParams } from '@src/util/ApiUtils';
+import useAlert from '@src/hooks/useAlert';
 
 const AccountSelection = () => {
   const { t } = useTranslate();
@@ -33,6 +34,9 @@ const AccountSelection = () => {
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
   const [acccountError, setAccountError] = useState({ isError: false, message: '' });
   const therapyId = formState.activeRecord?.therapy?.materialNumber;
+
+  const alertContainerRef = useRef(null);
+  const { showAlert } = useAlert();
 
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ACCOUNT_DETAILS);
@@ -59,7 +63,7 @@ const AccountSelection = () => {
     accountsListData.content?.forEach((acc) => {
       const label = `(${acc.accountNumber}) ` + acc.accountName;
       const value = acc.accountNumber;
-      const subLabel = [acc.houseNumber, acc.street, acc.city, acc.state, acc.zipCode].join(', ');
+      const subLabel = [acc.houseNumber, acc.street, acc.city, acc.state, acc.zipCode].filter(Boolean).join(', ');
       accArr.push({ label, value, subLabel });
     });
 
@@ -75,6 +79,32 @@ const AccountSelection = () => {
     },
     onError: console.log
   });
+
+  const handleInventoryCheck = async () => {
+    requestPayload = {
+      customerNumber: 'string',
+      shipTo: selectedAccount?.accountNumber,
+      salesOrg: 'string',
+      distChannel: 'string',
+      division: 'string',
+      companyCode: 'string',
+      orderId: 'string',
+      items: [
+        {
+          itemNumber: 'string',
+          ndc: 'string',
+          identifier: 'string'
+        }
+      ]
+    };
+
+    try {
+      const res = OrderService.saveAccount(orderId, data);
+      console.log(res, '❤');
+    } catch (err) {
+      showAlert({ description: err.message, type: 'error', anchorEl: alertContainerRef });
+    }
+  };
 
   const handleOnClose = () => {
     setOpen(false);
@@ -115,7 +145,7 @@ const AccountSelection = () => {
   };
 
   const getAddress = (acc) => {
-    return [acc.houseNumber, acc.street, acc.district, acc.city, acc.state, acc.zipCode].join(', ');
+    return [acc.houseNumber, acc.street, acc.district, acc.city, acc.state, acc.zipCode].filter(Boolean).join(', ');
   };
 
   const handleOnAccountSelection = (selectedAccount) => {
@@ -148,6 +178,7 @@ const AccountSelection = () => {
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
+      <div ref={alertContainerRef} />
 
       <PageHeader heading={<Heading as="h1">{isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}</Heading>} />
 
@@ -219,8 +250,13 @@ const AccountSelection = () => {
             <Button size="md" onClick={handleOnBack} variant="secondary">
               {t('captions.btnBack')}
             </Button>
-            <Button size="md" onClick={() => {}} variant="secondary">
-              {t('captions.btnInventorySelection')}
+            <Button
+              size="md"
+              onClick={() => {
+                handleInventoryCheck();
+              }}
+              variant="secondary">
+              {t('captions.btnInventoryCheck')}
             </Button>
             <Button
               size="md"

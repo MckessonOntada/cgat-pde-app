@@ -146,6 +146,16 @@ async function getVariants(therapyId, accountId, shipToAccountId, requestParams)
   return {};
 }
 
+async function getInventoryStatus(requestBody) {
+  const url = `${ApiRoutes.USERS()}/inventory/availability}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, requestBody);
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
 async function getProgramAndChannelConfig(therapyId, requestParams) {
   const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/programs-channels?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
@@ -166,6 +176,7 @@ const OrderService = Object.freeze({
   getShippingAddressForTherapyByAccountId,
   getPriceDetails,
   getVariants,
+  getInventoryStatus,
   savePatientDetails,
   saveAdditionalDetails,
   saveAccount,
