@@ -54,6 +54,7 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
     [filterState, pageConfig.currentPage]
   );
 
+  console.log(!!selectedAccount?.accountNumber);
   const {
     isFetching,
     isError,
@@ -90,7 +91,7 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
   };
 
   useEffect(() => {
-    refreshData();
+    if (selectedAccount?.accountNumber) refreshData();
   }, [filterState, pageConfig.pageNumber]);
 
   const setPageNumber = (pageIndex) => {
