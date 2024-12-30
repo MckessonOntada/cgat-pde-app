@@ -96,10 +96,12 @@
 }
 
 .table-header {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 
   @include mixins.respond("sm") {
-    display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
   }
