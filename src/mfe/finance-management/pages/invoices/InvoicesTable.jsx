@@ -72,7 +72,6 @@ export default function InvoicesTable() {
       selector: (row) => row.openAmount,
       minWidth: '144px',
       sortable: true,
-      center: true,
       wrap: true,
       id: 'openAmount',
       cell: (props) => (
@@ -110,14 +109,13 @@ export default function InvoicesTable() {
       minWidth: '140px',
       sortable: true,
       wrap: true,
-      center: true,
+      right: true,
       id: 'billAmount',
       cell: (props) => (
         <div className="cellEllipse align-items-right ">
           <FormattedNumber value={props?.billAmount || 0} style="currency" currency="USD" />
         </div>
       ),
-      right: true
     }
     // {
     //   name: t('paymentInvoices.history.table.Actions'),
