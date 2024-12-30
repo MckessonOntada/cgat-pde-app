@@ -97,6 +97,7 @@ export const OrderProvider = ({ children }) => {
   };
 
   const changeTab = (tabType = '') => {
+    setFilterConfig({ ...INITIAL_FILTER_STATE });
     setCurrentPage(1);
     if (tabType.toLowerCase() === 'submitted') setTabVariant('submitted');
     else {

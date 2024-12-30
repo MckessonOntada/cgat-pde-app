@@ -29,7 +29,7 @@ const AccountSelection = () => {
   const { isEdit = false } = location.state || {};
   const [selectedAccount, setSelectedAccount] = React.useState(null);
   const [accountSearchString, setAccountSearchString] = React.useState('');
-  const [selectedShippingAddress, setSelectedShippingAddress] = React.useState('');
+  const [selectedShippingAddress, setSelectedShippingAddress] = React.useState(null);
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
   const [acccountError, setAccountError] = useState({ isError: false, message: '' });
   const therapyId = formState.activeRecord?.therapy?.materialNumber;

@@ -187,7 +187,9 @@ export const createColumns = (t, navigate, activeTab) => [
     sortKey: 'author?.name',
     minWidth: '140px',
     maxWidth: '200px',
-    cell: (props) => <EclipsesTextcss str={props.author?.name} maxWidth={170} className={'MCP-table-cell'} />,
+    cell: (props) => (
+      <EclipsesTextcss tooltip={props.createdBy?.userName} str={props.createdBy?.name} maxWidth={170} className={'MCP-table-cell'} />
+    ),
     omit: activeTab !== 'pending submission'
   },
   {
@@ -213,7 +215,9 @@ export const createColumns = (t, navigate, activeTab) => [
     sortKey: 'submittedBy',
     minWidth: '180px',
     maxWidth: '340px',
-    cell: (props) => <span>{props.submittedB}</span>,
+    cell: (props) => (
+      <EclipsesTextcss tooltip={props.submittedBy?.userName} str={props.submittedBy?.name} maxWidth={170} className={'MCP-table-cell'} />
+    ),
     omit: activeTab !== 'submitted'
   },
   {
