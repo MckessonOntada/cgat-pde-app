@@ -96,12 +96,16 @@
 }
 
 .table-header {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
   @include mixins.respond("sm") {
-    display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
   }
+
   button {
     margin: 2px;
   }
@@ -128,10 +132,19 @@
     }
   }
 }
+
 .filterContainer {
   display: grid;
   gap: var(--spacing-04);
   padding: var(--spacing-04) 0;
   background-color: var(--brand-color-background-white);
-  width: 25%;
+  width: auto;
+
+  @include mixins.respond("sm") {
+    width: 40%;
+
+    @include mixins.respond("md") {
+      width: 25%;
+    }
+  }
 }
