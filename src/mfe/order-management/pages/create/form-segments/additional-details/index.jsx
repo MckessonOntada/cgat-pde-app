@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Heading, Required, CheckboxGroup, CustomDataTable, RadioGroup } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { ReactComponent as InfoIcon } from '@src/assets/svg/info_icon_circle_filled.svg';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
@@ -17,6 +17,8 @@ import OrderStepper from '../OrderStepper';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import { NUMBER_REGEX } from '@src/components/form/ValidationRegExp';
 import CommonUtils from '@src/util/CommonUtils';
+import { RoutePaths } from '@src/routes/constants';
+import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 
 const getValidationSchema = (t) =>
   Yup.object({
@@ -55,6 +57,7 @@ function AdditionalDetails() {
   const { t } = useTranslate();
   const formFields = getFormFields(t);
   const navigate = useNavigate();
+  const location = useLocation();
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
@@ -62,6 +65,8 @@ function AdditionalDetails() {
   const soldToAccountId = formState.activeRecord?.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = formState.activeRecord?.accountDetails?.shipToAccount?.accountNumber;
   const variantsApiRequestParam = { pageNo: 0, pageSize: 10 };
+  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
+  const [isDirty, setIsDirty] = React.useState(false);
 
   const [variantAcknowledgement, setVariantAcknowledgement] = React.useState({
     isDisabled: false,
@@ -91,6 +96,7 @@ function AdditionalDetails() {
     enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId,
     refetchOnWindowFocus: false
   });
+
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ADDITIONAL_DETAILS);
   }, []);
@@ -121,9 +127,12 @@ function AdditionalDetails() {
   }, [formState.activeRecord, variantsData]);
 
   const handleOnBack = () => {
-    //compare data change, display modal for confirmation
+    if (isDirty) {
+      setModalSuccessCallback(isEdit ? 'summary' : formState.activeRecord?.patientDetailsRequired ? 'patient' : 'account');
+      return;
+    }
     if (isEdit) {
-      navigate(`../${orderId}/summary`);
+      navigate(`../${orderId}/summary`, { state: { isEdit: true } });
     } else {
       if (formState.activeRecord?.patientDetailsRequired) {
         editByStage(ORDER_STAGES.PATIENT_DETAILS);
@@ -157,8 +166,25 @@ function AdditionalDetails() {
   };
 
   const handleOnBackToOrders = () => {
-    //compare data change, display modal for confirmation
-    navigate(-1);
+    if (isDirty) {
+      setModalSuccessCallback('list');
+    } else {
+      navigate(RoutePaths.pathOrderManagement);
+    }
+  };
+
+  const handleNavigate = () => {
+    if (modalSuccessCallback === 'list') {
+      navigate(RoutePaths.pathOrderManagement);
+    } else if (modalSuccessCallback === 'summary') {
+      navigate(`../${orderId}/summary`, { state: { isEdit: true } });
+    } else if (modalSuccessCallback === 'patient') {
+      editByStage(ORDER_STAGES.PATIENT_DETAILS);
+      navigate(`../${orderId}/patient`);
+    } else if (modalSuccessCallback === 'account') {
+      editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
+      navigate(`../${orderId}/accounts`);
+    }
   };
 
   const handleOnVariantChange = (variant) => {
@@ -190,7 +216,11 @@ function AdditionalDetails() {
         onSubmit={(values) => {
           handleOnSubmit(values);
         }}>
-        {() => {
+        {({ values, isValid, dirty }) => {
+          React.useEffect(() => {
+            setIsDirty(dirty);
+          }, [dirty]);
+
           return (
             <Form>
               <div className="MCP-module-body">
@@ -240,7 +270,7 @@ function AdditionalDetails() {
 
                 <div className="controls">
                   <Button size="md" variant="secondary" onClick={handleOnBack}>
-                    {t('captions.btnBack')}
+                    {isEdit ? t('captions.btnBack') : t('captions.btnBacktoPatientDetails')}
                   </Button>
                   <Button
                     size="md"
@@ -257,6 +287,13 @@ function AdditionalDetails() {
           );
         }}
       </Formik>
+      <DiscardChangesModal
+        heading={t('messages.confirmation.discardheader')}
+        description={t('messages.confirmation.addition')}
+        isOpen={Boolean(modalSuccessCallback)}
+        onClose={() => setModalSuccessCallback(null)}
+        onConfirm={handleNavigate}
+      />
     </div>
   );
 }

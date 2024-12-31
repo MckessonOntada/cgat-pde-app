@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Button, AutoSuggestSearch } from '@mckesson/mcp-component-library';
+import React, { useEffect, useState } from 'react';
+import { Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import useWindowSize from '@src/hooks/UseWindowSize';
 import { useAccountContext } from '../context/AccountContext';
@@ -17,20 +17,24 @@ export default function RecordDetails() {
   const isMobileView = windowSize.width < TABLET_BREAKPOINT;
   const buttonSize = isMobileView ? 'md' : 'lg';
   const navigate = useNavigate();
-  const { selectedAccount, searchPayToAccounts, payToAccountsList, applyEvent, defaultSetEvent } = useAccountContext();
+  const { selectedAccount, searchPayToAccounts, payToAccountsList, applyEvent, defaultSetEvent, defaultPayToAccount } = useAccountContext();
   const [selectedPayToAccount, setSelectedPayToAccount] = useState(null);
 
   const [isValueSelected, setIsValueSelected] = useState(false);
+  const [isCurrentDefault, setIsCurrentDefault] = useState(false);
 
   const onApplyClick = () => {
     if (CommonUtils.isNonEmptyObject(selectedPayToAccount)) {
       applyEvent(selectedPayToAccount);
       navigate(PATHS.invoices);
+      setIsCurrentDefault(true);
     }
   };
 
   const onDefaultSetClick = () => {
     CommonUtils.isNonEmptyObject(selectedPayToAccount) && defaultSetEvent(selectedPayToAccount);
+
+    setIsCurrentDefault(!isCurrentDefault);
   };
 
   const getSelectedValueData = (selectedValue) => {
@@ -49,18 +53,6 @@ export default function RecordDetails() {
         </div>
         <div className="account-search">
           <div className="search-form">
-            {/* <AutoSuggestSearch
-              id="pay-to-accounts-search"
-              size="lg"
-              outline={true}
-              suggestionList={payToAccountsList}
-              onChangeInput={(event) => searchPayToAccounts(event)}
-              getSelectedValueData={getSelectedValueData}
-              searchValue={
-                CommonUtils.isNonEmptyObject(selectedAccount) ? `(${selectedAccount?.accountNumber}) ${selectedAccount?.accountName}` : ''
-              }
-              setValue={true}
-            /> */}
             <MultiSelectDropdown
               id={'pay-to-accounts-search'}
               label={' '}
@@ -82,11 +74,8 @@ export default function RecordDetails() {
               size={buttonSize}
               onClick={onApplyClick}
               disabled={
-                !CommonUtils.isNonEmptyObject(selectedAccount) ||
-                !isValueSelected ||
-                !CommonUtils.isNonEmptyArray(payToAccountsList)
-              }
-            >
+                !CommonUtils.isNonEmptyObject(selectedAccount) || !isValueSelected || !CommonUtils.isNonEmptyArray(payToAccountsList)
+              }>
               {t('paymentInvoices.accountSearch.applyBtn')}
             </Button>
             <Button
@@ -94,8 +83,12 @@ export default function RecordDetails() {
               variant={'secondary'}
               size={buttonSize}
               onClick={onDefaultSetClick}
-              disabled={!CommonUtils.isNonEmptyObject(selectedAccount) || !isValueSelected}
-            >
+              disabled={
+                !CommonUtils.isNonEmptyObject(selectedAccount) ||
+                !isValueSelected ||
+                defaultPayToAccount?.id === selectedAccount?.id ||
+                !isCurrentDefault
+              }>
               {t('paymentInvoices.accountSearch.setAsDefaultBtn')}
             </Button>
           </div>

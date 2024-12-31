@@ -7,7 +7,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
 import { FormList } from '../Constants';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import DetailSegment from '@src/components/DetailSegment';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
@@ -17,13 +17,16 @@ import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation } from 'react-query';
 import { orderStatus } from '@src/mfe/order-management/utils/orderManagementVariables';
+import { RoutePaths } from '@src/routes/constants';
+import { StatusEnum } from '../../../orders/constants';
 
 const Summary = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { isFetching, formState, editByStage, setCurrentOrder } = useManageOrder();
   const { orderId } = useParams();
-
+  const location = useLocation();
+  const { isEdit = false } = location.state || {};
   const alertContainerId = 'summary-alert-container';
   const { showAlert } = useAlert();
 
@@ -54,8 +57,12 @@ const Summary = () => {
 
   const handleOnBackButtonClick = () => {
     //compare data change, display modal for confirmation
-    editByStage(ORDER_STAGES.ADDITIONAL_DETAILS);
-    navigate(`../${orderId}/additional-details`);
+    if (isEdit && formState.activeRecord.status === StatusEnum.SUBMITTED) {
+      navigate(RoutePaths.pathOrderManagement, { state: { activeTab: StatusEnum.SUBMITTED } });
+    } else {
+      editByStage(ORDER_STAGES.ADDITIONAL_DETAILS);
+      navigate(`../${orderId}/additional-details`);
+    }
   };
 
   const handleOnSubmit = () => {
@@ -67,7 +74,7 @@ const Summary = () => {
 
   const handleOnBackToOrders = () => {
     //compare data change, display modal for confirmation
-    navigate(-1);
+    navigate(RoutePaths.pathOrderManagement);
   };
 
   const handleOnEditSection = (stage) => {
@@ -280,7 +287,7 @@ const Summary = () => {
             />
           </div>
           <div className="controls">
-            <Button size={'md'} variant="secondary">
+            <Button disabled={true} size={'md'} variant="secondary">
               {t('captions.btnPrintSummary')}
             </Button>
             <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>

@@ -92,7 +92,7 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
   };
 
   useEffect(() => {
-    refreshData();
+    if (selectedAccount?.accountNumber) refreshData();
   }, [filterState, pageConfig.pageNumber]);
 
   const setPageNumber = (pageIndex) => {
@@ -116,6 +116,7 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
         filterState,
         pageConfig,
         dataState,
+        selectedAccount,
         applyFilters,
         clearFilters,
         setPageNumber,

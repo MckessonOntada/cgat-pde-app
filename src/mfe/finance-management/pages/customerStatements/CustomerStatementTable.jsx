@@ -42,7 +42,7 @@ export default function CustomerStatementTable() {
       minWidth: '144px',
       sortable: true,
       wrap: true,
-      cell: (props) => dayjs(props.date, 'YYYY-MM-DD')?.format('MM/DD/YYYY') || '-'
+      cell: (props) => dayjs(props.date, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'
     },
     {
       id: 'statementBalance',
@@ -52,10 +52,11 @@ export default function CustomerStatementTable() {
       wrap: true,
       minWidth: '144px',
       cell: (props) => (
-        <div className="status-container">
+        <div className="status-container align-items-right">
           <FormattedNumber value={props?.statementBalance} style="currency" currency="USD" />
         </div>
-      )
+      ),
+      right: true
     }
     // {
     //   name: t('paymentInvoices.history.table.Actions'),
@@ -112,8 +113,7 @@ export default function CustomerStatementTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}
-          >
+            }}>
             <Loader variant="circular" />
           </div>
         }

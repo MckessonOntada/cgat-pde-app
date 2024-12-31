@@ -58,9 +58,16 @@ module.exports = {
         exclude: /\.module\.(scss|sass)$/i,
         use: ['style-loader', 'css-loader', 'sass-loader']
       },
+      // {
+      //   test: /\.(woff|woff2|ttf|eot|jpg|gif)$/i,
+      //   use: ['file-loader']
+      // },
       {
         test: /\.(woff|woff2|ttf|eot|jpg|gif)$/i,
-        use: ['file-loader']
+        type: 'asset/resource', // Webpack 5 handles fonts natively
+        generator: {
+          filename: 'assets/fonts/[name][ext]' // Specify where fonts should be output
+        }
       },
       {
         test: /\.(svg|png)$/,
@@ -134,7 +141,8 @@ module.exports = {
   ],
   resolve: {
     alias: {
-      '@src': path.resolve(__dirname, 'src/')
+      '@src': path.resolve(__dirname, 'src/'),
+      '@fonts': path.resolve(__dirname, 'src/assets/fonts') // Alias to refer to fonts folder easily
     }
   }
 };

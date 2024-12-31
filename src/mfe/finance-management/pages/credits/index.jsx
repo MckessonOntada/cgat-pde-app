@@ -14,7 +14,7 @@ export default function Credits(params) {
     return [
       {
         type: 'dateRangePicker',
-        name: 'dateRange'
+        name: 'billDate'
       }
     ];
   }, []);
@@ -29,7 +29,7 @@ export default function Credits(params) {
           actualData={actualData}
         />
       </div>
-      <div className="MCP-table-wrapper">
+      <div className="MCP-table-wrapper credit-table-container">
         <div className="table-header">
           <h1>{t('paymentInvoices.credits.table.heading')}</h1>
           <Button variant="secondary" onClick={() => {}} size="sm" disabled>

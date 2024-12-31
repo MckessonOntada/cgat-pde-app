@@ -34,10 +34,14 @@ const getOptionsByStatus = (props, status, t, tab, id) => {
 
   const handleOnOptionSelection = ({ value }) => {
     if (value === 'view') {
-      navigate(`${id}/summary`);
+      if (props.status === StatusEnum.SUBMITTED) {
+        navigate(`${id}/summary`, { state: { isEdit: true } });
+      } else navigate(`${id}/summary`);
     }
     if (value === 'resume') {
-      navigate(getPathByOrderStage(props));
+      if (props.status === StatusEnum.SUBMITTED) {
+        navigate(getPathByOrderStage(props), { state: { isEdit: true } });
+      } else navigate(getPathByOrderStage(props));
     }
     if (value === 'edit') {
       navigate(`edit-order/${id}`);
@@ -141,7 +145,11 @@ export const createColumns = (t, navigate, activeTab) => [
     sortable: true,
     sortKey: 'id',
     cell: (props) => (
-      <Link className="MCP-table-link" to={getPathByOrderStage(props)} state={props} aria-label={t('labels.orderId')}>
+      <Link
+        className="MCP-table-link"
+        to={getPathByOrderStage(props)}
+        state={props.currentStage === 'ORDER_SUMMARY' && props.status === StatusEnum.SUBMITTED ? { ...props, isEdit: true } : { ...props }}
+        aria-label={t('labels.orderId')}>
         <EclipsesTextcss str={props.id} maxWidth={200} />
       </Link>
     )
@@ -187,7 +195,9 @@ export const createColumns = (t, navigate, activeTab) => [
     sortKey: 'author?.name',
     minWidth: '140px',
     maxWidth: '200px',
-    cell: (props) => <EclipsesTextcss str={props.author?.name} maxWidth={170} className={'MCP-table-cell'} />,
+    cell: (props) => (
+      <EclipsesTextcss tooltip={props.createdBy?.userName} str={props.createdBy?.name} maxWidth={170} className={'MCP-table-cell'} />
+    ),
     omit: activeTab !== 'pending submission'
   },
   {
@@ -210,10 +220,12 @@ export const createColumns = (t, navigate, activeTab) => [
     name: t('table.columns.captions.submittedBy'),
     selector: () => {},
     sortable: true,
-    sortKey: 'submittedBy',
+    sortKey: 'submittedBy.name',
     minWidth: '180px',
     maxWidth: '340px',
-    cell: (props) => <span>{props.submittedB}</span>,
+    cell: (props) => (
+      <EclipsesTextcss tooltip={props.submittedBy?.userName} str={props.submittedBy?.name} maxWidth={170} className={'MCP-table-cell'} />
+    ),
     omit: activeTab !== 'submitted'
   },
   {
@@ -237,7 +249,7 @@ export const createColumns = (t, navigate, activeTab) => [
     cell: (props) => (
       <Tooltip body={props.status}>
         <span>
-          <Badge text={props.status?.replace('_', ' ')} type={getColorByStatus(props.status.toLowerCase())} />
+          <Badge text={props.status?.replace('_', ' ')} type={getColorByStatus(props.status)} />
         </span>
       </Tooltip>
     )

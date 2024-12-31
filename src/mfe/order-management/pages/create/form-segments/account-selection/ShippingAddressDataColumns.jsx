@@ -7,28 +7,28 @@ export const createColumns = (t, navigate, selectedShippingAddress, setSelectedS
     selector: () => {},
     sortable: false,
     width: '5%',
-    cell: (props) => (
-      <span className="MCP-table-cell radio-button-wrapper">
-        <RadioGroup
-          direction="column"
-          id={`radio-button-shipping-address`}
-          items={[
-            {
-              isDisabled: false,
-              label: ' ',
-              value: props.id
-            }
-          ]}
-          onChangeValue={() => {
-            setSelectedShippingAddress(props);
-          }}
-          onOtherTextChange={() => {}}
-          onSubRadioFieldChange={() => {}}
-          radioBtnWidth="auto"
-          value={selectedShippingAddress.id && selectedShippingAddress.id == props.id ? props.id : ''}
-        />
-      </span>
-    )
+    cell: (props) => {
+      return (
+        <span className="MCP-table-cell radio-button-wrapper">
+          <RadioGroup
+            direction="column"
+            id={`radio-button-shipping-address-${props.id}`}
+            items={[
+              {
+                isDisabled: false,
+                label: ' ',
+                value: props.id
+              }
+            ]}
+            onChangeValue={() => setSelectedShippingAddress(props)}
+            onOtherTextChange={() => {}}
+            onSubRadioFieldChange={() => {}}
+            radioBtnWidth="auto"
+            value={selectedShippingAddress && selectedShippingAddress.id === props.id ? props.id : ' '}
+          />
+        </span>
+      );
+    }
   },
   {
     id: 'shippingAddress',

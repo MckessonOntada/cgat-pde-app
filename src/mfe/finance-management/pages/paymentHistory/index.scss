@@ -7,6 +7,9 @@
   border: 1px solid var(--brand-color-patient-primary-3);
   border-radius: var(--brand-border-radius--6);
 }
+.rdt_TableCol {
+  padding-right: var(--spacing-03) !important;
+}
 
 .userList {
   overflow-x: auto;
@@ -96,12 +99,16 @@
 }
 
 .table-header {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
   @include mixins.respond("sm") {
-    display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
   }
+
   button {
     margin: 2px;
   }

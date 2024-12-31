@@ -20,6 +20,8 @@ import OrderStepper from '../OrderStepper';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import { serializeParams } from '@src/util/ApiUtils';
 import useAlert from '@src/hooks/useAlert';
+import { RoutePaths } from '@src/routes/constants';
+import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 
 const AccountSelection = () => {
   const { t } = useTranslate();
@@ -31,6 +33,9 @@ const AccountSelection = () => {
   const [selectedAccount, setSelectedAccount] = React.useState(null);
   const [accountSearchString, setAccountSearchString] = React.useState('');
   const [selectedShippingAddress, setSelectedShippingAddress] = React.useState('');
+  const [initialSelectedAccount, setInitialSelectedAccount] = React.useState(null);
+  const [initialSelectedShippingAddress, setInitialSelectedShippingAddress] = React.useState('');
+  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
   const [acccountError, setAccountError] = useState({ isError: false, message: '' });
   const therapyId = formState.activeRecord?.therapy?.materialNumber;
@@ -123,10 +128,18 @@ const AccountSelection = () => {
     setOpen(true);
   };
 
+  const isDirty =
+    JSON.stringify(selectedAccount) !== JSON.stringify(initialSelectedAccount) ||
+    JSON.stringify(selectedShippingAddress) !== JSON.stringify(initialSelectedShippingAddress);
+
   const handleOnBack = () => {
-    //check for data change
+    if (isDirty) {
+      setModalSuccessCallback(isEdit ? 'summary' : 'details');
+      return;
+    }
+
     if (isEdit) {
-      navigate(`../${orderId}/summary`);
+      navigate(`../${orderId}/summary`, { state: { isEdit: true } });
     } else {
       editByStage(ORDER_STAGES.THERAPY_SELECTION);
       navigate(`../edit-order/${orderId}`);
@@ -150,8 +163,21 @@ const AccountSelection = () => {
   };
 
   const handleOnBackToOrders = () => {
-    //compare data change, display modal for confirmation
-    navigate(-1);
+    if (isDirty) {
+      setModalSuccessCallback('list');
+    } else {
+      navigate(RoutePaths.pathOrderManagement);
+    }
+  };
+  const handleNavigate = () => {
+    if (modalSuccessCallback === 'list') {
+      navigate(RoutePaths.pathOrderManagement);
+    } else if (modalSuccessCallback === 'details') {
+      editByStage(ORDER_STAGES.THERAPY_SELECTION);
+      navigate(`../edit-order/${orderId}`);
+    } else if (modalSuccessCallback === 'summary') {
+      navigate(`../${orderId}/summary`, { state: { isEdit: true } });
+    }
   };
 
   const getAddress = (acc) => {
@@ -171,9 +197,12 @@ const AccountSelection = () => {
         if (soldToAccount) {
           const originalSelectedAccount = accountsListData.content?.filter((acc) => acc.accountNumber === soldToAccount.accountNumber)[0];
           if (originalSelectedAccount) setSelectedAccount(originalSelectedAccount);
+
+          setInitialSelectedAccount(originalSelectedAccount); // Set initial value;
         }
         if (shipToAccount) {
           setSelectedShippingAddress(shipToAccount);
+          setInitialSelectedShippingAddress(shipToAccount); // Set initial value
         }
       } else {
         console.log('Could not set account');
@@ -258,7 +287,7 @@ const AccountSelection = () => {
           </div>
           <div className="controls">
             <Button size="md" onClick={handleOnBack} variant="secondary">
-              {t('captions.btnBack')}
+              {isEdit ? t('captions.btnBack') : t('captions.btnBacktoTherapySelection')}
             </Button>
             <Button
               size="md"
@@ -284,6 +313,13 @@ const AccountSelection = () => {
           )}
         </div>
       </div>
+      <DiscardChangesModal
+        heading={t('messages.confirmation.discardheader')}
+        description={t('messages.confirmation.account')}
+        isOpen={Boolean(modalSuccessCallback)}
+        onClose={() => setModalSuccessCallback(null)}
+        onConfirm={handleNavigate}
+      />
     </div>
   );
 };

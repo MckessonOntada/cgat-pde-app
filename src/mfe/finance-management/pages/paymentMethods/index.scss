@@ -96,12 +96,16 @@
 }
 
 .table-header {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
   @include mixins.respond("sm") {
-    display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
   }
+
   button {
     margin: 2px;
   }
@@ -116,6 +120,14 @@
 
 .tablist-container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column-reverse;
+  gap: 24px;
+
+  @include mixins.respond("sm") {
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
 }

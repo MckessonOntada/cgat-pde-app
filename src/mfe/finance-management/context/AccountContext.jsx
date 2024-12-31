@@ -7,6 +7,7 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import CommonUtils from '@src/util/CommonUtils';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { GeographicUtils } from '@src/util/GeographicUtil';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const ACCOUNTS_PER_SEARCH = 20;
 
@@ -17,6 +18,7 @@ export const useAccountContext = () => {
 };
 
 export const AccountProvider = ({ children }) => {
+  const { t } = useTranslate();
   const [searchText, setSearchText] = useState('');
   const [defaultPayToAccount, setDefaultPayToAccount] = useState(null);
   const [selectedAccount, setSelectedAccount] = useState(null);
@@ -102,8 +104,11 @@ export const AccountProvider = ({ children }) => {
     {
       onSuccess: (response) => {
         if (CommonUtils.isNonEmptyObject(response)) {
-          showSnackbar({ description: t('paymentInvoices.setDefaultAccountAPI.success'), type: 'success' });
           refetchPayToAccountsData();
+          showSnackbar({
+            description: `${t('paymentInvoices.setDefaultAccountAPI.success')} ${selectedAccount?.accountNumber}`,
+            type: 'success'
+          });
         }
       },
       onError: (error) => {
@@ -134,9 +139,9 @@ export const AccountProvider = ({ children }) => {
         selectedAccount,
         searchPayToAccounts,
         applyEvent,
-        defaultSetEvent
-      }}
-    >
+        defaultSetEvent,
+        defaultPayToAccount
+      }}>
       {children}
     </AccountContext.Provider>
   );

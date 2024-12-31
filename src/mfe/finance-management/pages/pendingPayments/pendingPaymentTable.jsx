@@ -60,10 +60,11 @@ export default function PendingPaymentTable() {
       sortable: true,
       wrap: true,
       cell: (props) => (
-        <div className="cellEllipse">
+        <div className="cellEllipse align-items-right">
           <FormattedNumber value={props?.authorizedAmt} style="currency" currency="USD" />
         </div>
-      )
+      ),
+      right: true
     }
     // {
     //   name: t('paymentInvoices.history.table.Actions'),
@@ -119,8 +120,7 @@ export default function PendingPaymentTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}
-          >
+            }}>
             <Loader variant="circular" />
           </div>
         }

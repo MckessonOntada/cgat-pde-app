@@ -7,6 +7,7 @@ import { useIntl } from 'react-intl';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useSessionFeatures from '@src/hooks/useSessionFeatures';
 import AuthUtils from '@src/util/AuthUtils';
+import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 
 const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
   const intl = useIntl();
@@ -48,15 +49,20 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
     let updatedTabs = [];
 
     if (Array.isArray(navLinks) && navLinks.length > 0) {
-      updatedTabs = navLinks.map((item) => {
-        const isDashboard = item.configName === 'Dashboard' && location.pathname === '/';
-        const isMatchingPath = item.path !== '/' && location.pathname.includes(item.path);
-        return {
-          ...item,
-          isActiveTab: isDashboard || isMatchingPath,
-          ariaSelected: isDashboard || isMatchingPath ? 'true' : 'false',
-          configName: `${intl.formatMessage({ id: item.translationName })}`
-        };
+      updatedTabs = navLinks.filter((item) => {
+        if (
+          item.configName === 'Dashboard' ||
+          (item.configName !== 'Dashboard' && AuthUtils.userHasRoutePermission(routePermissionConfig.paymentInvoices))
+        ) {
+          const isDashboard = item.configName === 'Dashboard' && location.pathname === '/';
+          const isMatchingPath = item.path !== '/' && location.pathname.includes(item.path);
+          return {
+            ...item,
+            isActiveTab: isDashboard || isMatchingPath,
+            ariaSelected: isDashboard || isMatchingPath ? 'true' : 'false',
+            configName: `${intl.formatMessage({ id: item.translationName })}`
+          };
+        }
       });
     }
     return updatedTabs;
