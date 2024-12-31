@@ -49,21 +49,23 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
     let updatedTabs = [];
 
     if (Array.isArray(navLinks) && navLinks.length > 0) {
-      updatedTabs = navLinks.filter((item) => {
-        if (
-          item.configName === 'Dashboard' ||
-          (item.configName !== 'Dashboard' && AuthUtils.userHasRoutePermission(routePermissionConfig.paymentInvoices))
-        ) {
-          const isDashboard = item.configName === 'Dashboard' && location.pathname === '/';
-          const isMatchingPath = item.path !== '/' && location.pathname.includes(item.path);
-          return {
-            ...item,
-            isActiveTab: isDashboard || isMatchingPath,
-            ariaSelected: isDashboard || isMatchingPath ? 'true' : 'false',
-            configName: `${intl.formatMessage({ id: item.translationName })}`
-          };
-        }
-      });
+      updatedTabs = navLinks
+        .map((item) => {
+          if (
+            item.configName === 'Dashboard' ||
+            (item.configName !== 'Dashboard' && AuthUtils.userHasRoutePermission(routePermissionConfig.paymentInvoices))
+          ) {
+            const isDashboard = item.configName === 'Dashboard' && location.pathname === '/';
+            const isMatchingPath = item.path !== '/' && location.pathname.includes(item.path);
+            return {
+              ...item,
+              isActiveTab: isDashboard || isMatchingPath,
+              ariaSelected: isDashboard || isMatchingPath ? 'true' : 'false',
+              configName: `${intl.formatMessage({ id: item.translationName })}`
+            };
+          }
+        })
+        .filter((item) => !!item);
     }
     return updatedTabs;
   }, [navLinks, location.pathname]);
