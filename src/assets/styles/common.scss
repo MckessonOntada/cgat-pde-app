@@ -53,6 +53,15 @@ div.disable-all {
   pointer-events: none;
 }
 
+.MCP-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-03);
+  align-items: stretch;
+  justify-content: space-between;
+  font-size: var(--brand-font-size--default);
+}
+
 // module css
 .MCP-module-wrapper {
   display: flex;

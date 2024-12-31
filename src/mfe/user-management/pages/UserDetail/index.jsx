@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
-import { Badge, Button, Heading, Switch, Alert, Modal } from '@mckesson/mcp-component-library';
+import { Badge, Button, Heading, Switch, Alert, Modal, CheckboxGroup } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
@@ -19,9 +19,11 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import UserAccounts from '@src/components/Accounts/Accounts';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+import { useDispatch } from 'react-redux';
 
-function getbgColorOnRole(Role) {
-  switch (Role) {
+function getBackgroundColorByRole(role) {
+  switch (role) {
     case 'ORGANIZATION ADMIN':
       return 'success';
     case 'ORGANIZATION USER':
@@ -35,6 +37,7 @@ const UserDetail = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { userId } = useParams();
+  const dispatch = useDispatch();
   const [searchText, setSearchText] = useState('');
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const [alertDescription, setAlertDescription] = useState('');
@@ -44,6 +47,7 @@ const UserDetail = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const [isOpen, setIsOpen] = useState(false);
   const [isDeactivate, setIsDeactivate] = useState(false);
+  const [isConsentModalOpen, setIsConsentModalOpen] = React.useState(false);
 
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
@@ -91,7 +95,11 @@ const UserDetail = () => {
   };
 
   const handleDeactivateUser = async (userId) => {
-    const res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.DELETE, null);
+    const res = await HttpResourceService.callRest(
+      `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`,
+      httpVerb.DELETE,
+      null
+    );
     return res.data;
   };
 
@@ -143,6 +151,10 @@ const UserDetail = () => {
     return groupedPermissions;
   };
 
+  const handleOnConsentConfirm = () => {
+    // Login as user process
+  };
+
   const groupedPermissions = groupPermissionsByCategory(data?.permissions || [], PERMISSIONS_ENUM);
 
   return (
@@ -152,12 +164,32 @@ const UserDetail = () => {
         <p>{t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}</p>
       </div>
 
-      {isDeactivate && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
+      {isDeactivate && isAlertVisible && (
+        <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />
+      )}
       <div className="MCP-module-body">
         <ModuleHeader
           heading={<Heading as="h1">{t('userManagement.header.view.edit_user')}</Heading>}
           controls={
-            <Button Icon={EditPencil} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`../${PATHS.editUser}/${userId}`, { state: { isEdit: true } })}>
+            <Button variant="primary" size="md" onClick={() => setIsConsentModalOpen(true)}>
+              {t('button.label.loginAsThisUser')}
+            </Button>
+          }
+        />
+        <ModuleHeader
+          heading={
+            <div className="subheader-text">
+              <EclipsesTextcss str={`${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName}`} maxWidth={500} />
+            </div>
+          }
+          controls={
+            <Button
+              Icon={EditPencil}
+              variant="secondary"
+              className="button-icon"
+              size="md"
+              disabled={!data?.isActive}
+              onClick={() => navigate(`../${PATHS.editUser}/${userId}`, { state: { isEdit: true } })}>
               {t('userManagement.button.edit')}
             </Button>
           }
@@ -166,16 +198,29 @@ const UserDetail = () => {
         <div className="MCP-panel-container">
           <div className="user-header">
             <div className="user-info">
-              <div className="subheader-text">
-                <EclipsesTextcss str={`${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName}`} maxWidth={500} />
-              </div>
-              {data?.role?.name && <Badge text={data?.role?.name} type={getbgColorOnRole(data?.role?.name)} />}
+              {data?.role?.name && <Badge text={data?.role?.name} type={getBackgroundColorByRole(data?.role?.name)} />}
             </div>
             <div className="user-status">
               <span className="view_label">{t('userManagement.userdetails.lastupdatedon')}</span>
 
-              <span className="label-text"> {data?.updatedAt ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM-DD-YYYY') : data?.createdAt ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY') : 'N/A'}</span>
-              <Switch handleToggle={handleDeactivate} id="id" disabled={!data?.isActive} label={data?.isActive ? 'Active' : ''} labelPosition="right" name="Toggle" size="lg" value={data?.isActive} />
+              <span className="label-text">
+                {' '}
+                {data?.updatedAt
+                  ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM-DD-YYYY')
+                  : data?.createdAt
+                  ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY')
+                  : 'N/A'}
+              </span>
+              <Switch
+                handleToggle={handleDeactivate}
+                id="id"
+                disabled={!data?.isActive}
+                label={data?.isActive ? 'Active' : ''}
+                labelPosition="right"
+                name="Toggle"
+                size="lg"
+                value={data?.isActive}
+              />
             </div>
           </div>
 
@@ -223,7 +268,13 @@ const UserDetail = () => {
           heading={<Heading as="h1">{t('userManagement.header.view.permissions_granted')}</Heading>}
           controls={
             <div className="controls">
-              <Button Icon={EditPencil} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`../${PATHS.userPermissions}/${userId}`, { state: { isEdit: true, permissionsData: data } })}>
+              <Button
+                Icon={EditPencil}
+                variant="secondary"
+                className="button-icon"
+                size="md"
+                disabled={!data?.isActive}
+                onClick={() => navigate(`../${PATHS.userPermissions}/${userId}`, { state: { isEdit: true, permissionsData: data } })}>
                 {t('userManagement.button.edit')}
               </Button>
             </div>
@@ -258,7 +309,12 @@ const UserDetail = () => {
               </div>
             ))
           ) : (
-            <EmptyDataTable isLoading={isLoading} image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('userManagement.messages.emptysubtitle')} />
+            <EmptyDataTable
+              isLoading={isLoading}
+              image={EmptyDataImage}
+              heading={t('message.emptyTableTitle')}
+              description={t('userManagement.messages.emptysubtitle')}
+            />
           )}
         </div>
 
@@ -268,7 +324,13 @@ const UserDetail = () => {
               heading={<Heading as="h1">{t('userManagement.header.view.linked_accounts')}</Heading>}
               controls={
                 <div className="controls">
-                  <Button Icon={EditPencil} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`../${PATHS.addAccounts}/${userId}`, { state: { isEdit: true } })}>
+                  <Button
+                    Icon={EditPencil}
+                    variant="secondary"
+                    className="button-icon"
+                    size="md"
+                    disabled={!data?.isActive}
+                    onClick={() => navigate(`../${PATHS.addAccounts}/${userId}`, { state: { isEdit: true } })}>
                     {t('userManagement.button.edit')}
                   </Button>
                 </div>
@@ -282,7 +344,13 @@ const UserDetail = () => {
                 duration={10000}
               />
             )}
-            <UserAccounts selectableRows={false} omitColumns={['distributionChannel']} practiceId={data?.practiceId || 1} showSelectedAccounts={false} userId={userId} />
+            <UserAccounts
+              selectableRows={false}
+              omitColumns={['distributionChannel']}
+              practiceId={data?.practiceId || 1}
+              showSelectedAccounts={false}
+              userId={userId}
+            />
           </div>
         )}
       </div>
@@ -305,7 +373,64 @@ const UserDetail = () => {
           modalSize: 'xxxs'
         }}
       />
+      {isConsentModalOpen && <ConsentModal data={data} onYes={handleOnConsentConfirm} onNo={() => setIsConsentModalOpen(false)} />}
     </div>
+  );
+};
+
+const ConsentModal = ({ data, onYes, onNo }) => {
+  const { t } = useTranslate();
+  const [consentCheckboxOption, setConsentCheckboxOption] = React.useState({
+    isDisabled: false,
+    isChecked: false,
+    label: t('popup.message.wishToContinueLoginAsThisUserCheckBoxConsent'),
+    value: false
+  });
+
+  const targetUser = `${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName}`;
+
+  const handleOnLoginAsConsentChange = (args) => {
+    const updatedOptions = {
+      ...consentCheckboxOption,
+      isChecked: args.target.checked
+    };
+    setConsentCheckboxOption({ ...updatedOptions });
+  };
+
+  return (
+    <Modal
+      {...{
+        id: 'default-modal',
+        isOpen: true,
+        onClose: onNo,
+        modalTitle: t('popup.title.alert'),
+        modalBody: (
+          <div className="MCP-modal-body">
+            <Heading as="h6">{t('popup.message.wishToContinueLoginAsThisUserQuestion')}</Heading>
+            <p>{t('popup.message.wishToContinueLoginAsThisUserDescription').replace('{{targetUser}}', targetUser)}</p>
+            <div>
+              <CheckboxGroup
+                id={'default'}
+                name="order-agreement"
+                items={[{ ...consentCheckboxOption, onChange: handleOnLoginAsConsentChange }]}
+                size="md"
+              />
+            </div>
+          </div>
+        ),
+        modalFooter: (
+          <div className="controls">
+            <Button variant="secondary" size="md" onClick={onNo}>
+              {t('label.no')}
+            </Button>
+            <Button variant="primary" size="md" onClick={onYes}>
+              {t('label.yes')}
+            </Button>
+          </div>
+        ),
+        modalSize: 'md'
+      }}
+    />
   );
 };
 

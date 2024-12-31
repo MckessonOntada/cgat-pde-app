@@ -282,5 +282,12 @@ export const UserManagementES = {
   'errors.default': 'An unexpected error occurred.',
 
   'Table.Tabs.ActiveUser': 'S_ACTIVE USERS',
-  'Table.Tabs.pendingRequest': 'S_PENDING REQUESTS'
+  'Table.Tabs.pendingRequest': 'S_PENDING REQUESTS',
+  'button.label.loginAsThisUser': 'S_Login as this user',
+  'popup.title.alert': 'S_Alert!',
+  'popup.message.wishToContinueLoginAsThisUserQuestion': 'S_Do you wish to continue?',
+  'popup.message.wishToContinueLoginAsThisUserDescription':
+    'S_You are about to perform actions on behalf of {{targetUser}}. Please confirm that you have you have verified the identity of the requesting user the necessary permissions and that you understand the implications of proceeding with this task',
+  'popup.message.wishToContinueLoginAsThisUserCheckBoxConsent':
+    'S_By confirming, you acknowledge that all actions taken will be logged and attributed to your account.'
 };
