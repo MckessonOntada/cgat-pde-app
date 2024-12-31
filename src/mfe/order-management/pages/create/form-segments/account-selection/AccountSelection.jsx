@@ -40,6 +40,7 @@ const AccountSelection = () => {
   const [acccountError, setAccountError] = useState({ isError: false, message: '' });
   const [alertState, setAlertState] = useState(null);
   const therapyId = formState.activeRecord?.therapy?.materialNumber;
+  const [netPriceData, setNetPriceData] = useState(null);
 
   const alertContainerId = 'accountSelection-alert-Container';
   const { showAlert } = useAlert();
@@ -48,12 +49,18 @@ const AccountSelection = () => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ACCOUNT_DETAILS);
   }, []);
 
-  const { isPriceApiLoading, data: priceDetails = {} } = useQuery({
-    queryKey: ['order', 'therapy', 'price', therapyId, selectedAccount],
-    queryFn: async () => OrderService.getPriceDetails(therapyId, selectedAccount.accountNumber, selectedShippingAddress.accountNumber),
+  const { isLoading: isPriceApiLoading, data: priceDetails = {} } = useQuery({
+    queryKey: ['order', 'therapy', 'price', therapyId, selectedAccount?.accountNumber, selectedShippingAddress?.accountNumber],
+    queryFn: async () => {
+      return OrderService.getPriceDetails(therapyId, selectedAccount.accountNumber, selectedShippingAddress.accountNumber);
+    },
     enabled: !!therapyId && !!selectedAccount?.accountNumber && !!selectedShippingAddress?.accountNumber,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    onSuccess: (data) => {
+      setNetPriceData(data.netPrice);
+    }
   });
+
   const { isLoading, data: accountsListData = {} } = useQuery({
     queryKey: ['order', 'therapy', therapyId, accountSearchString],
     queryFn: async () => OrderService.getSoldToAccounts(therapyId, serializeParams({ query: accountSearchString })),
@@ -111,7 +118,7 @@ const AccountSelection = () => {
       const res = await OrderService.getInventoryStatus(requestPayload);
       if (res.status === 200) {
         showAlert({
-          description: 'The selected therapy is in stock.',
+          description: t('messages.inventoryCheck.success'),
           type: 'success',
           anchorEl: alertContainerId
         });
@@ -119,14 +126,12 @@ const AccountSelection = () => {
     } catch (err) {
       if (err.status === 400) {
         showAlert({
-          description:
-            'The selected therapy is not in stock right now, however you can place the order. The order will be fulfilled once the therapy is available in stock',
+          description: t('messages.inventoryCheck.error'),
           type: 'warning',
           anchorEl: alertContainerId
         });
         return {
-          description:
-            'The selected therapy is not in stock right now, however you can place the order. The order will be fulfilled once the therapy is available in stock',
+          description: t('messages.inventoryCheck.error'),
           type: 'warning'
         };
       } else {
@@ -238,7 +243,7 @@ const AccountSelection = () => {
       <div className="MCP-module-body">
         <OrderStepper />
         <div className={`MCP-module-wrapper`}>
-          <OrderHeaderDetails netPriceData={priceDetails.netPrice} />
+          <OrderHeaderDetails netPriceData={netPriceData} />
           <div id={alertContainerId} />
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>

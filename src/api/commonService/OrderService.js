@@ -32,17 +32,17 @@ async function getOrderById(orderId) {
   return {};
 }
 
-async function savePatientDetails(orderId, payload) {
+async function savePatientDetails(orderId, payload, skipDuplicateCheck = false) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
-  const url = `${ApiRoutes.ORDERS()}/${orderId}/patient`;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/patient?skipDuplicateCheck=${skipDuplicateCheck}`;
   try {
     const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
     if (res.data) {
       return res.data;
     }
   } catch (err) {
-    throw new Error('Unable to set patient details. Please try later.', err.status, err.code);
+    throw { err, payload };
   }
 }
 

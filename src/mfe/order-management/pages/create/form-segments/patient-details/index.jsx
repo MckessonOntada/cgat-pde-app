@@ -20,6 +20,7 @@ import useAlert from '@src/hooks/useAlert';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
+import { renderModal } from '@src/util/ModalUtil';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
@@ -75,16 +76,51 @@ const PatientDetails = () => {
     }
   }, [formState.activeRecord]);
 
-  const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(async (data) => OrderService.savePatientDetails(orderId, data), {
-    onSuccess: (result) => {
-      const { id } = result;
-      setActiveRecord(result);
-      navigate(`../${id}/additional-details`);
-    },
-    onError: () => {
-      showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
+  const openDuplicateConfirmationModal = (payload) => {
+    renderModal({
+      title: t('modal.title.duplicateOrder'),
+      bodyContent: (
+        <p
+          style={{
+            fontSize: 'var(--brand-font-size--default)',
+            fontWeight: 400,
+            lineHeight: 'var(--brand-line-height--m-large)'
+          }}>
+          {t('modal.body.duplicateOrder.line_1').replace('$order_id', orderId)}
+          <br /> {t('modal.body.duplicateOrder.line_2')}
+        </p>
+      ),
+      footerActions: {
+        confirm: {
+          label: t('modal.action.continue'),
+          action: () => {
+            handleSubmit(payload, true);
+          }
+        },
+        cancel: {
+          label: t('modal.action.cancel')
+        }
+      }
+    });
+  };
+
+  const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(
+    async ({ payload, skipDuplicateCheck }) => OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck),
+    {
+      onSuccess: (result) => {
+        const { id } = result;
+        setActiveRecord(result);
+        navigate(`../${id}/additional-details`);
+      },
+      onError: ({ err, payload }) => {
+        if (err.status === 409) {
+          openDuplicateConfirmationModal(payload);
+        } else {
+          showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
+        }
+      }
     }
-  });
+  );
 
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.PATIENT_DETAILS);
@@ -104,7 +140,7 @@ const PatientDetails = () => {
     }
   };
 
-  const handleSubmit = (form) => {
+  const handleSubmit = (form, skipDuplicateCheck) => {
     const { patientInfo } = form;
 
     const payload = {
@@ -114,7 +150,7 @@ const PatientDetails = () => {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(patientInfo.dateOfBirth, 'MM-DD-YYYY');
     }
 
-    savePatientDetails(payload);
+    savePatientDetails({ payload, skipDuplicateCheck });
   };
 
   const handleOnBackToOrders = () => {
@@ -182,12 +218,12 @@ const PatientDetails = () => {
           </div> */}
 
           <OrderHeaderDetails />
+          <div id={alertContainerId} />
 
           {messageConfig && messageConfig.primaryMessage && (
             <Alert onClose={clearMessage} showTitle title={messageConfig.primaryMessage} type={messageConfig.messageKind} />
           )}
         </div>
-        <div id={alertContainerId} />
         <Formik
           initialValues={initialValues}
           validationSchema={getValidationSchema(t)}

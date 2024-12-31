@@ -36,12 +36,12 @@ function OrderHeaderDetails({ netPriceData }) {
 
     detailsSegments.push(
       <div className={`price-wrapper col-span-${5 - detailsSegments.length}`}>
-        <DetailSegment label={t('labels.price')} value={netPriceData || '$----'} />
+        <DetailSegment label={t('labels.price')} value={`$${netPriceData || '----'}`} />
       </div>
     );
 
     setSegments([...detailsSegments]);
-  }, [formState.activeRecord]);
+  }, [formState.activeRecord, netPriceData]);
   return (
     <div className="MCP-panel-container">
       <div className={`grid grid-gap-24 grid-cols-1 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5`}>{segments}</div>
