@@ -105,7 +105,10 @@ export const AccountProvider = ({ children }) => {
       onSuccess: (response) => {
         if (CommonUtils.isNonEmptyObject(response)) {
           refetchPayToAccountsData();
-          showSnackbar({ description: t('paymentInvoices.setDefaultAccountAPI.success'), type: 'success' });
+          showSnackbar({
+            description: `${t('paymentInvoices.setDefaultAccountAPI.success')} ${selectedAccount?.accountNumber}`,
+            type: 'success'
+          });
         }
       },
       onError: (error) => {

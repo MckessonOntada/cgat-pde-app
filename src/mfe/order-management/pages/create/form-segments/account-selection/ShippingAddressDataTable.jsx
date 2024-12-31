@@ -11,7 +11,7 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 const ShippingAddressDataTable = ({ pagination = true, selectedShippingAddress, setSelectedShippingAddress }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { dataState: data, pageConfig, isFetching, isError, error, setPageNumber } = useShippingAddress();
+  const { dataState: data, pageConfig, isFetching, isError, error, setPageNumber, selectedAccount } = useShippingAddress();
   const columns = createColumns(t, navigate, selectedShippingAddress, setSelectedShippingAddress);
 
   const handleOnPageChange = (_event, pageIndex) => {
@@ -39,7 +39,7 @@ const ShippingAddressDataTable = ({ pagination = true, selectedShippingAddress, 
           isLoading={isFetching}
           error={isError && error.message}
           image={EmptyDataImage}
-          heading={t('messages.selectAnAccountForShippingAddress')}
+          heading={selectedAccount ? t('messages.noShippingAddressFound') : t('messages.selectAnAccountForShippingAddress')}
           description={''}
         />
       }

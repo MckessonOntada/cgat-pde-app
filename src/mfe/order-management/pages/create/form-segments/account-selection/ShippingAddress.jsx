@@ -8,10 +8,10 @@ import { useShippingAddress } from '@src/mfe/order-management/context/ShippingAd
 
 function ShippingAddress({ selectedShippingAddress, setSelectedShippingAddress }) {
   const { t } = useTranslate();
-  const { applyFilters, clearFilters } = useShippingAddress();
+  const { applyFilters, clearFilters, selectedAccount } = useShippingAddress();
 
   return (
-    <div className="MCP-module-body">
+    <div className={`MCP-module-body ${!selectedAccount ? 'disable-all' : ''}`}>
       <ModuleHeader heading={<Heading as="h2">{t('headings.shippingAddress')}</Heading>} />
       <div className="MCP-panel-container">
         <CommonFilters

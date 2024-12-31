@@ -11,7 +11,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.accountSearch.applyBtn': 'Apply',
   'paymentInvoices.accountSearch.setAsDefaultBtn': 'Set as Default',
   'paymentInvoices.getAccountsAPI.error': 'Error fetching accounts list.',
-  'paymentInvoices.setDefaultAccountAPI.success': 'Default account set successfully.',
+  'paymentInvoices.setDefaultAccountAPI.success': 'Default account set to',
   'paymentInvoices.setDefaultAccountAPI.error': 'Error setting default account.',
   // Metrics Card
   'paymentInvoices.metrics.totalDebitBalance': 'Total Debit Balance',

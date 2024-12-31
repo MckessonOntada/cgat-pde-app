@@ -18,6 +18,8 @@ import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
 import useAlert from '@src/hooks/useAlert';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
+import { RoutePaths } from '@src/routes/constants';
+import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
@@ -28,6 +30,8 @@ const PatientDetails = () => {
   const { showAlert } = useAlert();
   const location = useLocation();
   const { isEdit = false } = location.state || {};
+  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
+  const [isDirty, setIsDirty] = React.useState(false);
 
   const INITIAL_VALUES = {
     patientInfo: {
@@ -80,9 +84,17 @@ const PatientDetails = () => {
   }, []);
 
   const handleOnBack = () => {
-    //compare data change, display modal for confirmation
-    editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-    navigate(`../${orderId}/accounts`);
+    if (isDirty) {
+      setModalSuccessCallback(isEdit ? 'summary' : 'account');
+      return;
+    }
+
+    if (isEdit) {
+      navigate(`../${orderId}/summary`, { state: { isEdit: true } });
+    } else {
+      editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
+      navigate(`../${orderId}/accounts`);
+    }
   };
 
   const handleSubmit = (form) => {
@@ -99,8 +111,22 @@ const PatientDetails = () => {
   };
 
   const handleOnBackToOrders = () => {
-    //compare data change, display modal for confirmation
-    navigate(-1);
+    if (isDirty) {
+      setModalSuccessCallback('list');
+    } else {
+      navigate(RoutePaths.pathOrderManagement);
+    }
+  };
+
+  const handleNavigate = () => {
+    if (modalSuccessCallback === 'list') {
+      navigate(RoutePaths.pathOrderManagement);
+    } else if (modalSuccessCallback === 'summary') {
+      navigate(`../${orderId}/summary`, { state: { isEdit: true } });
+    } else if (modalSuccessCallback === 'account') {
+      editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
+      navigate(`../${orderId}/accounts`);
+    }
   };
 
   const forms = FormList(t);
@@ -163,7 +189,10 @@ const PatientDetails = () => {
             handleSubmit(values);
             actions.setSubmitting(false);
           }}>
-          {({ values, isValid }) => {
+          {({ values, isValid, dirty }) => {
+            React.useEffect(() => {
+              setIsDirty(dirty);
+            }, [dirty]);
             return (
               <Form>
                 <div className={styles.wrapper}>
@@ -174,7 +203,7 @@ const PatientDetails = () => {
                     controls={
                       <div className="controls">
                         <Button size="md" variant="secondary" onClick={handleOnBack}>
-                          {t('captions.btnBack')}
+                          {isEdit ? t('captions.btnBack') : t('captions.btnBacktoAccountSelection')}
                         </Button>
                         <Button size="md" variant="primary" disabled={!values?.patientIdentifier || isSaving} type="submit">
                           {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
@@ -188,6 +217,13 @@ const PatientDetails = () => {
           }}
         </Formik>
       </div>
+      <DiscardChangesModal
+        heading={t('messages.confirmation.discardheader')}
+        description={t('messages.confirmation.patient')}
+        isOpen={Boolean(modalSuccessCallback)}
+        onClose={() => setModalSuccessCallback(null)}
+        onConfirm={handleNavigate}
+      />
     </div>
   );
 };

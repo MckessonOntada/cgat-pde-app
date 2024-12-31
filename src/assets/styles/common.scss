@@ -36,10 +36,10 @@
 }
 
 .custom-date-range-picker {
-  > div {
-    > div {
-      > div {
-        > div {
+  >div {
+    >div {
+      >div {
+        >div {
           width: unset;
           min-width: 160px;
           flex-grow: 1;
@@ -49,12 +49,17 @@
   }
 }
 
+div.disable-all {
+  pointer-events: none;
+}
+
 // module css
 .MCP-module-wrapper {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-03);
   height: 100%;
+
   .MCP-module-body {
     display: flex;
     flex-direction: column;
