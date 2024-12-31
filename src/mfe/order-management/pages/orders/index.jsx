@@ -1,7 +1,7 @@
 import React from 'react';
 import { TabList, Button, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle.svg';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { routesConfig } from './../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '../../../../components/module-header';
@@ -17,10 +17,13 @@ import PermittedComponent from '@src/components/permitted-component';
 const OrderIndex = () => {
   const { t } = useTranslate();
   const [tabList, setTabList] = React.useState(getTabs(t));
-  const { applyFilters, clearFilters, changeTab } = useOrders();
+  const { applyFilters, clearFilters, changeTab, tabVariant, setTabVariant } = useOrders();
   const { resetActiveRecord } = useManageOrder();
   const navigate = useNavigate();
+  const location = useLocation();
+  const activeTabFromState = location.state?.activeTab;
   const activeTab = tabList.find((tab) => tab.isActiveTab);
+  const [tabKey, setTabKey] = React.useState(activeTabFromState || activeTab?.configName);
 
   const additionalFiltersConfig = React.useMemo(() => {
     if (activeTab?.configName === 'SUBMITTED') return [];
@@ -31,9 +34,9 @@ const OrderIndex = () => {
         name: 'status',
         label: t('userManagement.table.status'),
         options: [
-          { label: 'All', value: 'all' },
-          { label: 'Pending', value: 'pending' },
-          { label: 'Approval Pending', value: 'approval pending' }
+          { label: 'ALL', value: 'ALL' },
+          { label: 'IN DRAFT', value: 'IN_DRAFT' },
+          { label: 'APPROVAL PENDING', value: 'APPROVAL_PENDING' }
         ]
       }
     ];
@@ -50,6 +53,7 @@ const OrderIndex = () => {
 
   const handleOnTabChange = (tab) => {
     setActiveTab(tab.configName);
+    setTabKey(tab.configName);
     changeTab(tab.configName);
   };
 
@@ -59,8 +63,13 @@ const OrderIndex = () => {
   };
 
   React.useEffect(() => {
-    setActiveTab(tabList?.[0].configName);
-  }, []);
+    if (activeTabFromState) {
+      setActiveTab(activeTabFromState);
+      setTabVariant('submitted'); // Set the tab from state
+    } else {
+      setActiveTab(tabList?.[0].configName); // Default to the first tab
+    }
+  }, [activeTabFromState]);
 
   return (
     <div className="MCP-module-wrapper">
@@ -91,7 +100,7 @@ const OrderIndex = () => {
             useAsButton={true}
             aria-label={t('controls.ariaLabels.orderTabList')}
           />
-          <div className="MCP-CardContainer">
+          <div className="MCP-CardContainer" key={tabKey}>
             <CommonFilters
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}

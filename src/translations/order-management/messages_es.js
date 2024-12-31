@@ -23,6 +23,10 @@ export const MessageEs = {
   'captions.btnBackToManageOrder': 'S_Back to Manage Order',
   'captions.btnBackToOrders': 'S_Back to Orders',
   'captions.btnBack': 'S_Back',
+  'captions.btnBacktoAdditionalDetails': 'S_Back To Additional Details',
+  'captions.btnBacktoPatientDetails': 'S_Back To Patient Details',
+  'captions.btnBacktoAccountSelection': 'S_Back To Account Selection',
+  'captions.btnBacktoTherapySelection': 'S_Back To Therapy Selection',
   'captions.btnEdit': 'S_Edit',
   'captions.btnSubmitOrder': 'S_Submit Order',
   'captions.btnInventorySelection': 'S_Inventory Selections',
@@ -245,5 +249,10 @@ export const MessageEs = {
   'orderManagement.patientDetails.validation.patient_identifier_required': 'S_ Patient identifier is required.',
   'orderManagement.patientDetails.validation.patient_identifier_max': 'S_ Patient identifier cannot exceed 20 characters.',
   'orderManagement.patientDetails.inputLabel.date_of_birth': 'S_ Date of birth',
-  'orderManagement.patientDetails.option.please_select': 'S_ Please select'
+  'orderManagement.patientDetails.option.please_select': 'S_ Please select',
+  'messages.confirmation.discardheader': 'S_Discard Changes',
+  'messages.confirmation.account': 'S_You have changed Account details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.therapy': 'S_You have changed Therapy details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.addition': 'S_You have changed Addtional details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.patient': 'S_You have changed Patient details. Do you still want to go back? Your changes will be discarded!'
 };
