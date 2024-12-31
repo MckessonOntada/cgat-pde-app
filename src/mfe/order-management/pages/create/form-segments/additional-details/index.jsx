@@ -16,6 +16,7 @@ import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import { NUMBER_REGEX } from '@src/components/form/ValidationRegExp';
+import CommonUtils from '@src/util/CommonUtils';
 
 const getValidationSchema = (t) =>
   Yup.object({
@@ -57,9 +58,9 @@ function AdditionalDetails() {
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
-  const therapyId = formState.activeRecord?.therapy.materialNumber;
-  const soldToAccountId = formState.activeRecord?.accountDetails.soldToAccount.accountNumber;
-  const shipToAccountId = formState.activeRecord?.accountDetails.shipToAccount.accountNumber;
+  const therapyId = formState.activeRecord?.therapy?.materialNumber;
+  const soldToAccountId = formState.activeRecord?.accountDetails?.soldToAccount?.accountNumber;
+  const shipToAccountId = formState.activeRecord?.accountDetails?.shipToAccount?.accountNumber;
   const variantsApiRequestParam = { pageNo: 0, pageSize: 10 };
 
   const [variantAcknowledgement, setVariantAcknowledgement] = React.useState({
@@ -217,7 +218,7 @@ function AdditionalDetails() {
                       />
                     ))}
                   </div>
-                  {!!variantsData?.content && variantsData.content.length > 0 && (
+                  {!!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content) && (
                     <>
                       <Heading as="h3">{t('labels.selectVariant')}</Heading>
                       <VariantTable variant={variant} onChange={handleOnVariantChange} data={variantsData.content} />
@@ -245,7 +246,9 @@ function AdditionalDetails() {
                     size="md"
                     variant="primary"
                     type="submit"
-                    disabled={isSaving || (variantsData?.content?.length > 0 && (!variant || !variantAcknowledgement.isChecked))}>
+                    disabled={
+                      isSaving || (CommonUtils.isNonEmptyObject(variantsData?.content) && (!variant || !variantAcknowledgement?.isChecked))
+                    }>
                     {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
                   </Button>
                 </div>
@@ -269,19 +272,19 @@ const VariantTable = ({ variant, onChange, data }) => {
         <span className="MCP-table-cell radio-button-wrapper">
           <RadioGroup
             direction="column"
-            id={`radio-button-variant-${props.id}`}
+            id={`radio-button-variant-${props.variant}`}
             items={[
               {
                 isDisabled: false,
                 label: ' ',
-                value: props.id
+                value: props.variant
               }
             ]}
             onChangeValue={() => {
               onChange(props);
             }}
             radioBtnWidth="auto"
-            value={variant?.id === props.id ? props.id : ''}
+            value={variant?.variant === props.variant ? props.variant : ''}
           />
         </span>
       )

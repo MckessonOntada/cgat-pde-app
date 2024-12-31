@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Heading, Button } from '@mckesson/mcp-component-library';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from './AccountSelection.module.scss';
@@ -35,7 +35,7 @@ const AccountSelection = () => {
   const [acccountError, setAccountError] = useState({ isError: false, message: '' });
   const therapyId = formState.activeRecord?.therapy?.materialNumber;
 
-  const alertContainerRef = useRef(null);
+  const alertContainerId = 'accountSelection-alert-Container';
   const { showAlert } = useAlert();
 
   React.useEffect(() => {
@@ -81,28 +81,38 @@ const AccountSelection = () => {
   });
 
   const handleInventoryCheck = async () => {
-    requestPayload = {
-      customerNumber: 'string',
+    const selectedAccountDetails = accountsListData.content.find((acc) => acc.accountNumber === selectedAccount?.accountNumber);
+    const requestPayload = {
+      customerNumber: selectedShippingAddress?.accountNumber,
       shipTo: selectedAccount?.accountNumber,
-      salesOrg: 'string',
-      distChannel: 'string',
-      division: 'string',
-      companyCode: 'string',
-      orderId: 'string',
-      items: [
-        {
-          itemNumber: 'string',
-          ndc: 'string',
-          identifier: 'string'
-        }
-      ]
+      salesOrg: selectedAccountDetails.salesOrg,
+      distChannel: selectedAccountDetails.distributionChannel,
+      division: selectedAccountDetails.division,
+      companyCode: selectedAccountDetails.companyCode,
+      orderId,
+      items: null
     };
 
     try {
-      const res = OrderService.saveAccount(orderId, data);
-      console.log(res, '❤');
+      const res = await OrderService.getInventoryStatus(requestPayload);
+      if (res.status === 200) {
+        showAlert({
+          description: 'The selected therapy is in stock.',
+          type: 'success',
+          anchorEl: alertContainerId
+        });
+      }
     } catch (err) {
-      showAlert({ description: err.message, type: 'error', anchorEl: alertContainerRef });
+      if (err.status === 400) {
+        showAlert({
+          description:
+            'The selected therapy is not in stock right now, however you can place the order. The order will be fulfilled once the therapy is available in stock',
+          type: 'warning',
+          anchorEl: alertContainerId
+        });
+      } else {
+        showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
+      }
     }
   };
 
@@ -178,7 +188,6 @@ const AccountSelection = () => {
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
-      <div ref={alertContainerRef} />
 
       <PageHeader heading={<Heading as="h1">{isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}</Heading>} />
 
@@ -186,6 +195,7 @@ const AccountSelection = () => {
         <OrderStepper />
         <div className={`MCP-module-wrapper`}>
           <OrderHeaderDetails netPriceData={priceDetails.netPrice} />
+          <div id={alertContainerId} />
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>
               <ModuleHeader

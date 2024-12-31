@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import styles from './PatientDetails.module.scss';
 import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
 import ModuleHeader from '@src/components/module-header';
@@ -24,7 +24,7 @@ const PatientDetails = () => {
   const { orderId } = useParams();
   const navigate = useNavigate();
   const { formState, setActiveRecord, setCurrentOrder, messageConfig, editByStage } = useManageOrder();
-  const alertContainerRef = useRef(null);
+  const alertContainerId = 'patintDetails-alert-container';
   const { showAlert } = useAlert();
   const location = useLocation();
   const { isEdit = false } = location.state || {};
@@ -71,7 +71,7 @@ const PatientDetails = () => {
       navigate(`../${id}/additional-details`);
     },
     onError: () => {
-      showAlert({ description: err.message, type: 'error', anchorEl: alertContainerRef });
+      showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
     }
   });
 
@@ -154,7 +154,7 @@ const PatientDetails = () => {
             <Alert onClose={clearMessage} showTitle title={messageConfig.primaryMessage} type={messageConfig.messageKind} />
           )}
         </div>
-        <div ref={alertContainerRef} />
+        <div id={alertContainerId} />
         <Formik
           initialValues={initialValues}
           validationSchema={getValidationSchema(t)}

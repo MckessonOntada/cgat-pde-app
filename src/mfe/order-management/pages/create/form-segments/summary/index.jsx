@@ -24,7 +24,7 @@ const Summary = () => {
   const { isFetching, formState, editByStage, setCurrentOrder } = useManageOrder();
   const { orderId } = useParams();
 
-  const alertRef = React.useRef(null);
+  const alertContainerId = 'summary-alert-container';
   const { showAlert } = useAlert();
 
   const submitOrder = useMutation(async () => await OrderService.submitOrder(orderId), {
@@ -32,7 +32,7 @@ const Summary = () => {
       navigate(`../${orderId}/order-confirmed`);
     },
     onError: (err) => {
-      showAlert({ description: err.message, type: 'error', anchorEl: alertRef });
+      showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
     }
   });
 
@@ -121,7 +121,7 @@ const Summary = () => {
       </div>
 
       <PageHeader heading={<Heading as="h1">{t('headings.createNewOrder')}</Heading>} />
-      <div ref={alertRef} />
+      <div id={alertContainerId} />
       <div className="MCP-module-body">
         <Stepper activeIndex={5} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} />
         <div className={'MCP-module-wrapper'}>

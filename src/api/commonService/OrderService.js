@@ -147,13 +147,14 @@ async function getVariants(therapyId, accountId, shipToAccountId, requestParams)
 }
 
 async function getInventoryStatus(requestBody) {
-  const url = `${ApiRoutes.USERS()}/inventory/availability}`;
-  const res = await HttpResourceService.callRest(url, httpVerb.GET, requestBody);
-  if (res.data) {
-    return res.data;
+  try {
+    const res = await HttpResourceService.callRest(`${ApiRoutes.INVENTORY()}/availability`, httpVerb.POST, requestBody);
+    if (res.data) {
+      return res.data;
+    }
+  } catch (error) {
+    throw error;
   }
-
-  return {};
 }
 
 async function getProgramAndChannelConfig(therapyId, requestParams) {

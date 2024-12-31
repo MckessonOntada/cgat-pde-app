@@ -30,7 +30,7 @@ function OrderHeaderDetails({ netPriceData }) {
       detailsSegments.push(<DetailSegment label={t('labels.shipToAccountNumber')} value={accountDetails.shipToAccount.accountNumber} />);
     }
     if (patientDetailsRequired && patient) {
-      const patientFullName = [`${patient.lastName},`, patient.firstName, patient.middleName].join(' ');
+      const patientFullName = [patient.lastName, patient.firstName, patient.middleName].filter(Boolean).join(' ') || '-';
       detailsSegments.push(<DetailSegment label={t('labels.patientName')} value={patientFullName} />);
     }
 
