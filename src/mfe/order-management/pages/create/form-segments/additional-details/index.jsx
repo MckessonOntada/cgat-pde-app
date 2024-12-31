@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Heading, Required, CheckboxGroup, CustomDataTable, RadioGroup } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -19,6 +19,7 @@ import { NUMBER_REGEX } from '@src/components/form/ValidationRegExp';
 import CommonUtils from '@src/util/CommonUtils';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
+import useAlert from '@src/hooks/useAlert';
 
 const getValidationSchema = (t) =>
   Yup.object({
@@ -58,6 +59,7 @@ function AdditionalDetails() {
   const formFields = getFormFields(t);
   const navigate = useNavigate();
   const location = useLocation();
+  const { isEdit = false, alertState } = location.state || {};
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
@@ -67,7 +69,6 @@ function AdditionalDetails() {
   const variantsApiRequestParam = { pageNo: 0, pageSize: 10 };
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
-
   const [variantAcknowledgement, setVariantAcknowledgement] = React.useState({
     isDisabled: false,
     isChecked: false,
@@ -76,8 +77,9 @@ function AdditionalDetails() {
   });
   const [consentStatus, setConsentStatus] = React.useState('');
   const [variant, setVariant] = React.useState();
+  const { showAlert } = useAlert();
+  const alertContainerId = 'additionalDetails-alert-container';
 
-  const { isEdit = false } = location.state || {};
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(
     async (data) => OrderService.saveAdditionalDetails(orderId, data),
     {
@@ -89,6 +91,13 @@ function AdditionalDetails() {
       onError: console.log
     }
   );
+
+  useEffect(() => {
+    if (!alertState) {
+      return;
+    }
+    showAlert({ ...alertState, anchorEl: alertContainerId });
+  }, []);
 
   const { isLoading, data: variantsData = {} } = useQuery({
     queryKey: ['order', 'variants', orderId],
@@ -227,6 +236,7 @@ function AdditionalDetails() {
                 <OrderStepper />
 
                 <OrderHeaderDetails />
+                <div id={alertContainerId} />
                 <div className="MCP-panel-container">
                   <div className="row-space-between-center">
                     <Heading as="h3">{t('labels.additionalDetails')}</Heading>

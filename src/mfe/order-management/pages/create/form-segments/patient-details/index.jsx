@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './PatientDetails.module.scss';
 import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
 import ModuleHeader from '@src/components/module-header';
@@ -29,7 +29,7 @@ const PatientDetails = () => {
   const alertContainerId = 'patintDetails-alert-container';
   const { showAlert } = useAlert();
   const location = useLocation();
-  const { isEdit = false } = location.state || {};
+  const { isEdit = false, alertState } = location.state || {};
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
 
@@ -56,6 +56,13 @@ const PatientDetails = () => {
   };
 
   const [initialValues, setInitialValues] = useState(INITIAL_VALUES);
+
+  useEffect(() => {
+    if (!alertState) {
+      return;
+    }
+    showAlert({ ...alertState, anchorEl: alertContainerId });
+  }, []);
 
   React.useEffect(() => {
     if (!formState.activeRecord) {
@@ -189,10 +196,7 @@ const PatientDetails = () => {
             handleSubmit(values);
             actions.setSubmitting(false);
           }}>
-          {({ values, isValid, dirty }) => {
-            React.useEffect(() => {
-              setIsDirty(dirty);
-            }, [dirty]);
+          {({ values, isValid }) => {
             return (
               <Form>
                 <div className={styles.wrapper}>

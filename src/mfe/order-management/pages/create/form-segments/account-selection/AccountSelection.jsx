@@ -38,6 +38,7 @@ const AccountSelection = () => {
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
   const [acccountError, setAccountError] = useState({ isError: false, message: '' });
+  const [alertState, setAlertState] = useState(null);
   const therapyId = formState.activeRecord?.therapy?.materialNumber;
 
   const alertContainerId = 'accountSelection-alert-Container';
@@ -76,11 +77,19 @@ const AccountSelection = () => {
   }, [accountsListData, formState.activeRecord]);
 
   const { isLoading: isSaving, mutate: saveAccount } = useMutation(async (data) => OrderService.saveAccount(orderId, data), {
-    onSuccess: (result) => {
+    onSuccess: async (result) => {
       const { id } = result;
       setActiveRecord(result);
-      if (result.patientDetailsRequired) navigate(`../${id}/patient`);
-      else navigate(`../${id}/additional-details`);
+      try {
+        const alertState = await handleInventoryCheck();
+        if (result.patientDetailsRequired) {
+          navigate(`../${id}/patient`, { state: { alertState } });
+        } else {
+          navigate(`../${id}/additional-details`, { state: { alertState } });
+        }
+      } catch (err) {
+        console.error(err);
+      }
     },
     onError: console.log
   });
@@ -115,6 +124,11 @@ const AccountSelection = () => {
           type: 'warning',
           anchorEl: alertContainerId
         });
+        return {
+          description:
+            'The selected therapy is not in stock right now, however you can place the order. The order will be fulfilled once the therapy is available in stock',
+          type: 'warning'
+        };
       } else {
         showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
       }
@@ -146,13 +160,14 @@ const AccountSelection = () => {
     }
   };
 
-  const handleOnSubmit = () => {
+  const handleOnSubmit = async () => {
     if (selectedAccount && selectedShippingAddress) {
       const payload = {
         soldToAccountId: selectedAccount.id,
         shipToAccountId: selectedShippingAddress.id
       };
       setAccountError({ isError: false, message: '' });
+
       saveAccount(payload);
     } else {
       if (!selectedAccount) {
