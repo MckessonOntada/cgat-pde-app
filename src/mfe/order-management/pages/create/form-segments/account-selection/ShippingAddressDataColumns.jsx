@@ -37,7 +37,7 @@ export const createColumns = (t, navigate, selectedShippingAddress, setSelectedS
     sortable: false,
     width: '45%',
     minWidth: '240px',
-    cell: (props) => <span className={'MCP-table-cell'}> {props.shippingAddress}</span>
+    cell: (props) => <span className={'MCP-table-cell'}> {props.address}</span>
   },
   {
     id: 'shippingAccountNumber',
@@ -45,7 +45,7 @@ export const createColumns = (t, navigate, selectedShippingAddress, setSelectedS
     selector: () => {},
     sortable: false,
     width: '25%',
-    cell: (props) => <span className={'MCP-table-cell'}> {props.shippingAccountNumber}</span>
+    cell: (props) => <span className={'MCP-table-cell'}> {props.acountNumber}</span>
   },
   {
     id: 'shippingAccountName',
@@ -53,6 +53,6 @@ export const createColumns = (t, navigate, selectedShippingAddress, setSelectedS
     selector: () => {},
     sortable: false,
     width: '25%',
-    cell: (props) => <span className={'MCP-table-cell'}> {props.shippingAccountName}</span>
+    cell: (props) => <span className={'MCP-table-cell'}> {props.accountName}</span>
   }
 ];

@@ -69,23 +69,23 @@ const OrderStatus = () => {
               value={
                 [patient?.patientInfo?.firstName, patient?.patientInfo?.middleName, patient?.patientInfo?.lastName]
                   .filter(Boolean) // Filters out null, undefined, or empty strings
-                  .join(' ') || 'N/A'
+                  .join(' ') || '-'
               }
             />
           </div>
           <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
             <DetailSegment
               label={t('labels.patientIdentifier')}
-              value={patient?.patientInfo?.patientIdentifier ? patient?.patientInfo?.patientIdentifier : 'N/A'}
+              value={patient?.patientInfo?.patientIdentifier ? patient?.patientInfo?.patientIdentifier : '-'}
             />
-            <DetailSegment label={t('labels.dob')} value={patient?.patientInfo?.dob ? patient?.patientInfo?.dob : 'N/A'} />
-            <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender ? patient?.patientInfo?.gender : 'N/A'} />
+            <DetailSegment label={t('labels.dob')} value={patient?.patientInfo?.dob ? patient?.patientInfo?.dob : '-'} />
+            <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender ? patient?.patientInfo?.gender : '-'} />
             <DetailSegment
               className={styles.orderCost}
               customLabelStyles={styles.orderCostItem}
               label={t('labels.price')}
               customValueStyles={styles.orderCostItem}
-              value={<p className={`${styles.price}`}>{orderCost ? `$${orderCost}` : 'N/A'}</p>}
+              value={<p className={`${styles.price}`}>{orderCost ? `$${orderCost}` : '-'}</p>}
             />
           </div>
         </div>

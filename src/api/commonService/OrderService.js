@@ -32,17 +32,17 @@ async function getOrderById(orderId) {
   return {};
 }
 
-async function savePatientDetails(orderId, payload) {
+async function savePatientDetails(orderId, payload, skipDuplicateCheck = false) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
-  const url = `${ApiRoutes.ORDERS()}/${orderId}/patient`;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/patient?skipDuplicateCheck=${skipDuplicateCheck}`;
   try {
     const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
     if (res.data) {
       return res.data;
     }
   } catch (err) {
-    throw new Error('Unable to set patient details. Please try later.', err.status, err.code);
+    throw { err, payload };
   }
 }
 
@@ -123,6 +123,17 @@ async function getShippingAddressForTherapyByAccountId(therapyId, accountId, req
 
   return {};
 }
+
+async function getPriceDetails(therapyId, accountId, shipToAccountId, variant = '') {
+  const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccount/${accountId}/shiptoaccount/${shipToAccountId}/catalog`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
 async function getVariants(therapyId, accountId, shipToAccountId, requestParams) {
   const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccount/${accountId}/shiptoaccount/${shipToAccountId}/variants?${serializeParams(
     requestParams
@@ -133,6 +144,17 @@ async function getVariants(therapyId, accountId, shipToAccountId, requestParams)
   }
 
   return {};
+}
+
+async function getInventoryStatus(requestBody) {
+  try {
+    const res = await HttpResourceService.callRest(`${ApiRoutes.INVENTORY()}/availability`, httpVerb.POST, requestBody);
+    if (res.data) {
+      return res.data;
+    }
+  } catch (error) {
+    throw error;
+  }
 }
 
 async function getProgramAndChannelConfig(therapyId, requestParams) {
@@ -153,7 +175,9 @@ const OrderService = Object.freeze({
   getTherapyDetailsById,
   getSoldToAccounts,
   getShippingAddressForTherapyByAccountId,
+  getPriceDetails,
   getVariants,
+  getInventoryStatus,
   savePatientDetails,
   saveAdditionalDetails,
   saveAccount,

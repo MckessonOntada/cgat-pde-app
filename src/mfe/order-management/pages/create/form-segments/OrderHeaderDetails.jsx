@@ -4,7 +4,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import { ReactComponent as TickIcon } from '@src/assets/svg/tick-circle-filled.svg';
 
-function OrderHeaderDetails() {
+function OrderHeaderDetails({ netPriceData }) {
   const { t } = useTranslate();
   const { formState } = useManageOrder();
   const [segments, setSegments] = React.useState([]);
@@ -30,18 +30,18 @@ function OrderHeaderDetails() {
       detailsSegments.push(<DetailSegment label={t('labels.shipToAccountNumber')} value={accountDetails.shipToAccount.accountNumber} />);
     }
     if (patientDetailsRequired && patient) {
-      const patientFullName = [`${patient.lastName},`, patient.firstName, patient.middleName].join(' ');
+      const patientFullName = [patient.lastName, patient.firstName, patient.middleName].filter(Boolean).join(' ') || '-';
       detailsSegments.push(<DetailSegment label={t('labels.patientName')} value={patientFullName} />);
     }
 
     detailsSegments.push(
       <div className={`price-wrapper col-span-${5 - detailsSegments.length}`}>
-        <DetailSegment label={t('labels.price')} value={orderCost || '$----'} />
+        <DetailSegment label={t('labels.price')} value={`$${netPriceData || '----'}`} />
       </div>
     );
 
     setSegments([...detailsSegments]);
-  }, [formState.activeRecord]);
+  }, [formState.activeRecord, netPriceData]);
   return (
     <div className="MCP-panel-container">
       <div className={`grid grid-gap-24 grid-cols-1 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5`}>{segments}</div>

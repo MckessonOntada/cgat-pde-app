@@ -29,7 +29,7 @@ export const MessageEn = {
   'captions.btnBacktoTherapySelection': 'Back To Therapy Selection',
   'captions.btnEdit': 'Edit',
   'captions.btnSubmitOrder': 'Submit Order',
-  'captions.btnInventorySelection': 'Inventory Selections',
+  'captions.btnInventoryCheck': 'Inventory Check',
   'captions.emptyTableTitle': 'No Order found',
   'captions.emptyTableSubtitle': 'You need to add Order to see data in this table.',
   'labels.variant': 'Variant',
@@ -204,6 +204,14 @@ export const MessageEn = {
   'messages.selectAccountToBuyTherapy': 'Please select the account to buy the therapy for',
   'messages.patientConcent': 'Please acknowledge if Patient Consent has been taken',
   'messages.selectAcknowledgementError': 'Please select checkbox to acknowledge the order',
+  'messages.inventoryCheck.success': 'The selected therapy is in stock.',
+  'messages.inventoryCheck.error':
+    'The selected therapy is not in stock right now, however you can place the order. The order will be fulfilled once the therapy is available in stock',
+  'modal.action.continue': 'Continue',
+  'modal.action.cancel': 'Cancel',
+  'modal.title.duplicateOrder': 'Duplicate Order',
+  'modal.body.duplicateOrder.line_1': 'This therapy has already been ordered for this patient (Order ID #$order_id).',
+  'modal.body.duplicateOrder.line_2': 'Please confirm if you still want to place this order.',
   // order management patient details screen
 
   'orderManagement.patientDetails.inputLabel.email': 'Email',
@@ -219,6 +227,7 @@ export const MessageEn = {
   'orderManagement.patientDetails.inputLabel.gender': 'Gender',
   'orderManagement.patientDetails.inputLabel.patientIdentifier': 'Patient Identifier',
   'orderManagement.patientDetails.contact_details': 'Contact Details',
+  'orderManagement.patientDetails.address_details': 'Address Details',
   'orderManagement.patientDetails.personal_details': 'Personal Details',
   'orderManagement.patientDetails.required': 'Required',
   'orderManagement.patientDetails.validation.first_name_max': 'First name cannot exceed 50 characters.',

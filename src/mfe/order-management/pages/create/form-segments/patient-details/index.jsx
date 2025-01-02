@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './PatientDetails.module.scss';
 import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
 import ModuleHeader from '@src/components/module-header';
@@ -20,16 +20,17 @@ import useAlert from '@src/hooks/useAlert';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
+import { renderModal } from '@src/util/ModalUtil';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
   const { orderId } = useParams();
   const navigate = useNavigate();
   const { formState, setActiveRecord, setCurrentOrder, messageConfig, editByStage } = useManageOrder();
-  const alertContainerRef = useRef(null);
+  const alertContainerId = 'patintDetails-alert-container';
   const { showAlert } = useAlert();
   const location = useLocation();
-  const { isEdit = false } = location.state || {};
+  const { isEdit = false, alertState } = location.state || {};
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
 
@@ -57,6 +58,13 @@ const PatientDetails = () => {
 
   const [initialValues, setInitialValues] = useState(INITIAL_VALUES);
 
+  useEffect(() => {
+    if (!alertState) {
+      return;
+    }
+    showAlert({ ...alertState, anchorEl: alertContainerId });
+  }, []);
+
   React.useEffect(() => {
     if (!formState.activeRecord) {
       return;
@@ -68,16 +76,51 @@ const PatientDetails = () => {
     }
   }, [formState.activeRecord]);
 
-  const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(async (data) => OrderService.savePatientDetails(orderId, data), {
-    onSuccess: (result) => {
-      const { id } = result;
-      setActiveRecord(result);
-      navigate(`../${id}/additional-details`);
-    },
-    onError: () => {
-      showAlert({ description: err.message, type: 'error', anchorEl: alertContainerRef });
+  const openDuplicateConfirmationModal = (payload) => {
+    renderModal({
+      title: t('modal.title.duplicateOrder'),
+      bodyContent: (
+        <p
+          style={{
+            fontSize: 'var(--brand-font-size--default)',
+            fontWeight: 400,
+            lineHeight: 'var(--brand-line-height--m-large)'
+          }}>
+          {t('modal.body.duplicateOrder.line_1').replace('$order_id', orderId)}
+          <br /> {t('modal.body.duplicateOrder.line_2')}
+        </p>
+      ),
+      footerActions: {
+        confirm: {
+          label: t('modal.action.continue'),
+          action: () => {
+            handleSubmit(payload, true);
+          }
+        },
+        cancel: {
+          label: t('modal.action.cancel')
+        }
+      }
+    });
+  };
+
+  const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(
+    async ({ payload, skipDuplicateCheck }) => OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck),
+    {
+      onSuccess: (result) => {
+        const { id } = result;
+        setActiveRecord(result);
+        navigate(`../${id}/additional-details`);
+      },
+      onError: ({ err, payload }) => {
+        if (err.status === 409) {
+          openDuplicateConfirmationModal(payload);
+        } else {
+          showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
+        }
+      }
     }
-  });
+  );
 
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.PATIENT_DETAILS);
@@ -97,7 +140,7 @@ const PatientDetails = () => {
     }
   };
 
-  const handleSubmit = (form) => {
+  const handleSubmit = (form, skipDuplicateCheck) => {
     const { patientInfo } = form;
 
     const payload = {
@@ -107,7 +150,7 @@ const PatientDetails = () => {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(patientInfo.dateOfBirth, 'MM-DD-YYYY');
     }
 
-    savePatientDetails(payload);
+    savePatientDetails({ payload, skipDuplicateCheck });
   };
 
   const handleOnBackToOrders = () => {
@@ -175,12 +218,12 @@ const PatientDetails = () => {
           </div> */}
 
           <OrderHeaderDetails />
+          <div id={alertContainerId} />
 
           {messageConfig && messageConfig.primaryMessage && (
             <Alert onClose={clearMessage} showTitle title={messageConfig.primaryMessage} type={messageConfig.messageKind} />
           )}
         </div>
-        <div ref={alertContainerRef} />
         <Formik
           initialValues={initialValues}
           validationSchema={getValidationSchema(t)}
@@ -189,10 +232,7 @@ const PatientDetails = () => {
             handleSubmit(values);
             actions.setSubmitting(false);
           }}>
-          {({ values, isValid, dirty }) => {
-            React.useEffect(() => {
-              setIsDirty(dirty);
-            }, [dirty]);
+          {({ values, isValid }) => {
             return (
               <Form>
                 <div className={styles.wrapper}>

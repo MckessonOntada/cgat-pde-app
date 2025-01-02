@@ -20,7 +20,7 @@ const MultiSelectDropdown = (props) => {
     if (!forcedValue) {
       return;
     }
-    const inputElement = dropdownContainerRef.current.querySelector('#label-targetAccount');
+    const inputElement = dropdownContainerRef.current.querySelector(`#label-${id}`);
     setTimeout(() => {
       inputElement.value = forcedValue;
       inputElement.innerText = options.find((opt) => opt.value === forcedValue).label;

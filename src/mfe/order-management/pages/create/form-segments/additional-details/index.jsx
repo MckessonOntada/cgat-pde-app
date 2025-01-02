@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Heading, Required, CheckboxGroup, CustomDataTable, RadioGroup } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -16,8 +16,10 @@ import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import { NUMBER_REGEX } from '@src/components/form/ValidationRegExp';
+import CommonUtils from '@src/util/CommonUtils';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
+import useAlert from '@src/hooks/useAlert';
 
 const getValidationSchema = (t) =>
   Yup.object({
@@ -57,17 +59,17 @@ function AdditionalDetails() {
   const formFields = getFormFields(t);
   const navigate = useNavigate();
   const location = useLocation();
+  const { isEdit = false, alertState } = location.state || {};
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
-  const therapyId = formState.activeRecord?.therapy.id;
-  const soldToAccountId = formState.activeRecord?.accountDetails.soldToAccount.id;
-  const shipToAccountId = formState.activeRecord?.accountDetails.shipToAccount.id;
+  const therapyId = formState.activeRecord?.therapy?.materialNumber;
+  const soldToAccountId = formState.activeRecord?.accountDetails?.soldToAccount?.accountNumber;
+  const shipToAccountId = formState.activeRecord?.accountDetails?.shipToAccount?.accountNumber;
   const variantsApiRequestParam = { pageNo: 0, pageSize: 10 };
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
-
-  const [checkboxOptions, setCheckboxOptions] = React.useState({
+  const [variantAcknowledgement, setVariantAcknowledgement] = React.useState({
     isDisabled: false,
     isChecked: false,
     label: t('messages.variantAcknowledgement'),
@@ -75,8 +77,9 @@ function AdditionalDetails() {
   });
   const [consentStatus, setConsentStatus] = React.useState('');
   const [variant, setVariant] = React.useState();
+  const { showAlert } = useAlert();
+  const alertContainerId = 'additionalDetails-alert-container';
 
-  const { isEdit = false } = location.state || {};
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(
     async (data) => OrderService.saveAdditionalDetails(orderId, data),
     {
@@ -88,6 +91,13 @@ function AdditionalDetails() {
       onError: console.log
     }
   );
+
+  useEffect(() => {
+    if (!alertState) {
+      return;
+    }
+    showAlert({ ...alertState, anchorEl: alertContainerId });
+  }, []);
 
   const { isLoading, data: variantsData = {} } = useQuery({
     queryKey: ['order', 'variants', orderId],
@@ -103,7 +113,7 @@ function AdditionalDetails() {
   React.useEffect(() => {
     const { additionalDetails } = formState.activeRecord || {};
     if (additionalDetails) {
-      const { dateOfAdministration, id, orderQuantity, patientConsentTaken, poNumber, slotNumber } = additionalDetails;
+      const { dateOfAdministration, id, orderQuantity, patientConsentTaken, poNumber, slotNumber, variant: _variant } = additionalDetails;
 
       setInitialFormValues({
         coiId: id,
@@ -112,8 +122,18 @@ function AdditionalDetails() {
         poNumber: poNumber,
         dateOfAdministration: dateOfAdministration
       });
+
+      if (!variantsData.content || !_variant) {
+        return;
+      }
+      setVariant({
+        variant: _variant.variant,
+        variantDescription: _variant.variantDescription,
+        id: variantsData.content?.find((_v) => _variant.variant === _v.variant).id
+      });
+      setVariantAcknowledgement((prev) => ({ ...prev, isChecked: patientConsentTaken }));
     }
-  }, [formState.activeRecord]);
+  }, [formState.activeRecord, variantsData]);
 
   const handleOnBack = () => {
     if (isDirty) {
@@ -134,13 +154,21 @@ function AdditionalDetails() {
   };
 
   const handleOnSubmit = (values) => {
+    const _var = !!variant
+      ? {
+          variant: variant.variant,
+          variantDescription: variant.variantDescription,
+          variantAcknowledgment: variantAcknowledgement.isChecked
+        }
+      : null;
     const payload = {
       id: values.coiId,
       orderQuantity: values.orderQuantity,
       slotNumber: values.slotNumber,
       poNumber: values.poNumber,
       dateOfAdministration: values.dateOfAdministration,
-      patientConsentTaken: true
+      patientConsentTaken: true,
+      variant: _var
     };
 
     saveAdditionalDetails(payload);
@@ -173,23 +201,10 @@ function AdditionalDetails() {
   };
 
   const handleOnAcknowledgmentChange = () => {
-    const updatedOptions = { ...checkboxOptions, isChecked: !checkboxOptions.isChecked };
+    const updatedOptions = { ...variantAcknowledgement, isChecked: !variantAcknowledgement.isChecked };
 
-    setCheckboxOptions(updatedOptions);
+    setVariantAcknowledgement(updatedOptions);
   };
-
-  const data = [
-    {
-      variantId: 68,
-      variant: 'Type A',
-      variantDescription: 'One to One'
-    },
-    {
-      variantId: 2,
-      variant: 'Type B',
-      variantDescription: 'One to Many'
-    }
-  ];
 
   const validationSchema = getValidationSchema(t);
 
@@ -221,6 +236,7 @@ function AdditionalDetails() {
                 <OrderStepper />
 
                 <OrderHeaderDetails />
+                <div id={alertContainerId} />
                 <div className="MCP-panel-container">
                   <div className="row-space-between-center">
                     <Heading as="h3">{t('labels.additionalDetails')}</Heading>
@@ -242,29 +258,37 @@ function AdditionalDetails() {
                       />
                     ))}
                   </div>
+                  {!!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content) && (
+                    <>
+                      <Heading as="h3">{t('labels.selectVariant')}</Heading>
+                      <VariantTable variant={variant} onChange={handleOnVariantChange} data={variantsData.content} />
+                      <div className="agreement-checkbox-control">
+                        <Field name="variant-acknowledgement">
+                          {({ field, form }) => (
+                            <CheckboxGroup
+                              id={'default'}
+                              name="variant-acknowledgement"
+                              items={[{ ...variantAcknowledgement, onChange: () => handleOnAcknowledgmentChange() }]}
+                              size="md"
+                            />
+                          )}
+                        </Field>
+                      </div>
+                    </>
+                  )}
                 </div>
-                {/* <div className="MCP-sect">
-                  <Heading as="h3">{t('labels.selectVariant')}</Heading>
-                  <VariantTable variant={variant} onChange={handleOnVariantChange} data={data} />
-                </div>
-                <div className="agreement-checkbox-control">
-                  <Field name="variant-acknowledgement">
-                    {({ field, form }) => (
-                      <CheckboxGroup
-                        id={'default'}
-                        name="variant-acknowledgement"
-                        items={[{ ...checkboxOptions, onChange: () => handleOnAcknowledgmentChange() }]}
-                        size="md"
-                      />
-                    )}
-                  </Field>
-                </div> */}
 
                 <div className="controls">
                   <Button size="md" variant="secondary" onClick={handleOnBack}>
                     {isEdit ? t('captions.btnBack') : t('captions.btnBacktoPatientDetails')}
                   </Button>
-                  <Button size="md" variant="primary" type="submit" disabled={isSaving}>
+                  <Button
+                    size="md"
+                    variant="primary"
+                    type="submit"
+                    disabled={
+                      isSaving || (CommonUtils.isNonEmptyObject(variantsData?.content) && (!variant || !variantAcknowledgement?.isChecked))
+                    }>
                     {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
                   </Button>
                 </div>
@@ -289,26 +313,25 @@ const VariantTable = ({ variant, onChange, data }) => {
   const columns = [
     {
       id: 'id',
-      selector: () => {},
       width: '40px',
       sortable: false,
       cell: (props) => (
         <span className="MCP-table-cell radio-button-wrapper">
           <RadioGroup
             direction="column"
-            id={`radio-button-variant-${props.variantId}`}
+            id={`radio-button-variant-${props.variant}`}
             items={[
               {
                 isDisabled: false,
                 label: ' ',
-                value: props.variantId
+                value: props.variant
               }
             ]}
             onChangeValue={() => {
               onChange(props);
             }}
             radioBtnWidth="auto"
-            value={variant?.variantId === props.variantId ? props.variantId : ''}
+            value={variant?.variant === props.variant ? props.variant : ''}
           />
         </span>
       )

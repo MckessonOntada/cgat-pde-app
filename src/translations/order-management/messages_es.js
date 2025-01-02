@@ -29,7 +29,7 @@ export const MessageEs = {
   'captions.btnBacktoTherapySelection': 'S_Back To Therapy Selection',
   'captions.btnEdit': 'S_Edit',
   'captions.btnSubmitOrder': 'S_Submit Order',
-  'captions.btnInventorySelection': 'S_Inventory Selections',
+  'captions.btnInventoryCheck': 'S_Inventory Check',
   'captions.emptyTableTitle': 'S_No Order found',
   'captions.emptyTableSubtitle': 'S_You need to add Order to see data in this table.',
   'labels.uploadDocument': 'S_Upload Document',
@@ -213,11 +213,20 @@ export const MessageEs = {
   'messages.patientConcent': 'S_Please acknowledge if Patient Consent has been taken',
   'messages.selectAccountToBuyTherapy': 'S_Please select the account to buy the therapy for',
   'messages.selectAcknowledgementError': 'S_Please select checkbox to acknowledge the order',
+  'messages.inventoryCheck.success': 'S_The selected therapy is in stock.',
+  'messages.inventoryCheck.error':
+    'S_The selected therapy is not in stock right now, however you can place the order. The order will be fulfilled once the therapy is available in stock',
 
   'labels.description.approval': 'S_Order is reviewed and confirmed for accuracy and payment',
   'labels.description.fulfillment': 'S_Items are picked, packed, and prepared for shipment',
   'labels.description.shipment': 'S_Order is dispatched and tracked during transit',
   'labels.description.finalDelivery': 'S_Order is delivered to your specified address',
+
+  'modal.action.continue': 'S_Continue',
+  'modal.action.cancel': 'S_Cancel',
+  'modal.title.duplicateOrder': 'S_Duplicate Order',
+  'modal.body.duplicateOrder.line_1': 'S_This therapy has already been ordered for this patient (Order ID #$order_id).',
+  'modal.body.duplicateOrder.line_2': 'S_Please confirm if you still want to place this order.',
 
   'orderManagement.patientDetails.inputLabel.email': 'S_ Email',
   'orderManagement.patientDetails.inputLabel.phone_no': 'S_ Phone Number',
@@ -232,6 +241,7 @@ export const MessageEs = {
   'orderManagement.patientDetails.inputLabel.gender': 'S_ Gender',
   'orderManagement.patientDetails.inputLabel.patientIdentifier': 'S_ Patient Identifier',
   'orderManagement.patientDetails.contact_details': 'S_ Contact Details',
+  'orderManagement.patientDetails.address_details': 'S_ Address Details',
   'orderManagement.patientDetails.personal_details': 'S_ Personal Details',
   'orderManagement.patientDetails.required': 'S_ Required',
   'orderManagement.patientDetails.validation.first_name_max': 'S_ First name cannot exceed 50 characters.',
