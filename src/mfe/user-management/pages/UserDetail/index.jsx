@@ -21,6 +21,7 @@ import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import UserAccounts from '@src/components/Accounts/Accounts';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
+import PermittedComponent from '@src/components/permitted-component';
 
 function getBackgroundColorByRole(role) {
   switch (role) {
@@ -48,7 +49,7 @@ const UserDetail = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDeactivate, setIsDeactivate] = useState(false);
   const [isConsentModalOpen, setIsConsentModalOpen] = React.useState(false);
-
+  const isGhostLoggedIn = Boolean(AuthUtils.getGhostId());
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
@@ -152,10 +153,27 @@ const UserDetail = () => {
   };
 
   const handleOnConsentConfirm = () => {
-    // Login as user process
+    const selectedUserPermissions = data.permissions;
+    const selectedUserId = data.id;
+    if (selectedUserId && selectedUserPermissions && Array.isArray(selectedUserPermissions)) {
+      const ghostDetails = {
+        permissions: selectedUserPermissions,
+        id: selectedUserId,
+        name: data.name,
+        role: data.role?.name,
+        practiceId: data.practiceId
+      };
+      AuthUtils.setGhost(ghostDetails);
+
+      navigate('/');
+      //set permissions
+    } else {
+      throw new Error('Something went wrong. Missing user identifier or invalid permission list.');
+    }
   };
 
   const groupedPermissions = groupPermissionsByCategory(data?.permissions || [], PERMISSIONS_ENUM);
+  const userFullName = `${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName}`;
 
   return (
     <div className="MCP-module-wrapper">
@@ -171,15 +189,20 @@ const UserDetail = () => {
         <ModuleHeader
           heading={<Heading as="h1">{t('userManagement.header.view.edit_user')}</Heading>}
           controls={
-            <Button variant="primary" size="md" onClick={() => setIsConsentModalOpen(true)}>
-              {t('button.label.loginAsThisUser')}
-            </Button>
+            data?.isActive &&
+            !isGhostLoggedIn && (
+              <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
+                <Button variant="primary" size="md" onClick={() => setIsConsentModalOpen(true)}>
+                  {t('button.label.loginAsThisUser')}
+                </Button>
+              </PermittedComponent>
+            )
           }
         />
         <ModuleHeader
           heading={
             <div className="subheader-text">
-              <EclipsesTextcss str={`${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName}`} maxWidth={500} />
+              <EclipsesTextcss str={userFullName} maxWidth={500} />
             </div>
           }
           controls={
@@ -373,12 +396,14 @@ const UserDetail = () => {
           modalSize: 'xxxs'
         }}
       />
-      {isConsentModalOpen && <ConsentModal data={data} onYes={handleOnConsentConfirm} onNo={() => setIsConsentModalOpen(false)} />}
+      {isConsentModalOpen && (
+        <ConsentModal userFullName={userFullName} onYes={handleOnConsentConfirm} onNo={() => setIsConsentModalOpen(false)} />
+      )}
     </div>
   );
 };
 
-const ConsentModal = ({ data, onYes, onNo }) => {
+const ConsentModal = ({ userFullName, onYes, onNo }) => {
   const { t } = useTranslate();
   const [consentCheckboxOption, setConsentCheckboxOption] = React.useState({
     isDisabled: false,
@@ -386,8 +411,6 @@ const ConsentModal = ({ data, onYes, onNo }) => {
     label: t('popup.message.wishToContinueLoginAsThisUserCheckBoxConsent'),
     value: false
   });
-
-  const targetUser = `${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName}`;
 
   const handleOnLoginAsConsentChange = (args) => {
     const updatedOptions = {
@@ -407,7 +430,7 @@ const ConsentModal = ({ data, onYes, onNo }) => {
         modalBody: (
           <div className="MCP-modal-body">
             <Heading as="h6">{t('popup.message.wishToContinueLoginAsThisUserQuestion')}</Heading>
-            <p>{t('popup.message.wishToContinueLoginAsThisUserDescription').replace('{{targetUser}}', targetUser)}</p>
+            <p>{t('popup.message.wishToContinueLoginAsThisUserDescription').replace('{{targetUser}}', userFullName)}</p>
             <div>
               <CheckboxGroup
                 id={'default'}
@@ -423,7 +446,7 @@ const ConsentModal = ({ data, onYes, onNo }) => {
             <Button variant="secondary" size="md" onClick={onNo}>
               {t('label.no')}
             </Button>
-            <Button variant="primary" size="md" onClick={onYes}>
+            <Button variant="primary" size="md" onClick={onYes} disabled={!consentCheckboxOption.isChecked}>
               {t('label.yes')}
             </Button>
           </div>

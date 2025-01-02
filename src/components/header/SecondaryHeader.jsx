@@ -8,11 +8,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import useSessionFeatures from '@src/hooks/useSessionFeatures';
 import AuthUtils from '@src/util/AuthUtils';
 import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
+import CommonUtils from '@src/util/CommonUtils';
 
 const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
   const intl = useIntl();
   const navigate = useNavigate();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const ghostDetails = AuthUtils.getGhostDetails();
 
   const location = useLocation();
   const {
@@ -85,7 +87,30 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
     );
   };
 
+  const getGhostLoginDetails = () => {
+    const handleOnExitUserView = () => {
+      AuthUtils.removeGhost();
+      navigate('/');
+      window.location.reload();
+    };
+    if (ghostDetails?.id) {
+      return (
+        <div className="ghost-info-panel">
+          <p className="logged-in-label">
+            {intl.formatMessage({ id: 'header.label.loggedInAs' }).replace('{{ghostFullName}}', CommonUtils.getFullName(ghostDetails.name))}
+          </p>
+          <Button color="secondary" onClick={handleOnExitUserView}>
+            Exit User View
+          </Button>
+        </div>
+      );
+    }
+  };
+
   const RightSideView = () => {
+    if (isSystemAdminView) {
+      return null;
+    }
     return (
       <div className={styles.navItemsRight} aria-label="System administration view">
         <div className={styles.navOptions}>
@@ -93,6 +118,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
             The button is only visible for system admin.
             The isSystemAdminView return false for non-admin user.
           */}
+          {getGhostLoginDetails()}
           {AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() && (
             <Button color="secondary" onClick={handleSystemAdminViewClick}>
               {intl.formatMessage({ id: 'header.label.systemAdminView' })}
@@ -107,7 +133,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
     <div className={`${styles.navContainer} ${styles.secondary}`} aria-label="Secondary header">
       <div className={styles.wrapper}>
         <LeftSideView />
-        {!isSystemAdminView && <RightSideView />}
+        <RightSideView />
       </div>
     </div>
   );

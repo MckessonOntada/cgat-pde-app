@@ -53,6 +53,18 @@ div.disable-all {
   pointer-events: none;
 }
 
+.ghost-info-panel {
+  font-size: var(--brand-font-size--extra-small);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-04);
+
+  .logged-in-label {
+    text-transform: uppercase;
+  }
+}
+
 .MCP-modal-body {
   display: flex;
   flex-direction: column;

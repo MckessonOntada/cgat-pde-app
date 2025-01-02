@@ -34,6 +34,12 @@ export const authToken = (noHeader, noSidHeader) => {
   };
 
   const sessionId = sessionStorage.getItem('sid');
+
+  const ghostId = sessionStorage.getItem('ghostId');
+  if (ghostId) {
+    headers['<key>'] = ghostId;
+  }
+
   if (!noSidHeader && sessionId) {
     headers['Session-Id'] = sessionId;
   }

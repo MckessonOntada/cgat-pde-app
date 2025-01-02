@@ -327,7 +327,7 @@ export const UserManagementEN = {
   'Table.Tabs.ActiveUser': 'ACTIVE USERS',
   'Table.Tabs.pendingRequest': 'PENDING REQUESTS',
   'button.label.loginAsThisUser': 'Login as this user',
-  'popup.title.alert': 'S_Alert!',
+  'popup.title.alert': 'Alert!',
   'popup.message.wishToContinueLoginAsThisUserQuestion': 'Do you wish to continue?',
   'popup.message.wishToContinueLoginAsThisUserDescription':
     'You are about to perform actions on behalf of {{targetUser}}. Please confirm that you have you have verified the identity of the requesting user the necessary permissions and that you understand the implications of proceeding with this task',
