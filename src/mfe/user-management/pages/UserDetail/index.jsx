@@ -176,11 +176,10 @@ const UserDetail = () => {
       };
       ghostPromise(ghostDetails)
         .then((message) => {
-          alert(message);
           navigate('/');
         })
         .catch((error) => {
-          alert(`error ${error}`);
+          console.log(`error ${error}`);
         });
       //set permissions
     } else {

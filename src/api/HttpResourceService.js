@@ -1,5 +1,6 @@
 import axios from 'axios';
 import ApiRoutes from './ApiRoutes';
+import AuthUtils from '@src/util/AuthUtils';
 
 const axiosInstance = axios.create({});
 
@@ -35,9 +36,9 @@ export const authToken = (noHeader, noSidHeader) => {
 
   const sessionId = sessionStorage.getItem('sid');
 
-  const ghostId = sessionStorage.getItem('ghostId');
+  const ghostId = AuthUtils.getGhostId();
   if (ghostId) {
-    headers['<key>'] = ghostId;
+    headers['x-imp-user-id'] = ghostId;
   }
 
   if (!noSidHeader && sessionId) {
