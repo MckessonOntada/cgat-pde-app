@@ -10,6 +10,17 @@ import AuthUtils from '@src/util/AuthUtils';
 import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 import CommonUtils from '@src/util/CommonUtils';
 
+const ghostLogout = () => {
+  return new Promise(function (resolve, reject) {
+    try {
+      AuthUtils.removeGhost();
+      resolve('Exiting ghost login');
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
   const intl = useIntl();
   const navigate = useNavigate();
@@ -89,9 +100,13 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
 
   const getGhostLoginDetails = () => {
     const handleOnExitUserView = () => {
-      AuthUtils.removeGhost();
-      navigate('/');
-      window.location.reload();
+      ghostLogout()
+        .then((message) => {
+          navigate('?expelled=true');
+        })
+        .catch((error) => {
+          console.log(`error: ${error}`);
+        });
     };
     if (ghostDetails?.id) {
       return (

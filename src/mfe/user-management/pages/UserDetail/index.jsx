@@ -34,6 +34,17 @@ function getBackgroundColorByRole(role) {
   }
 }
 
+const ghostPromise = (ghostDetails) => {
+  return new Promise(function (resolve, reject) {
+    try {
+      AuthUtils.setGhost(ghostDetails);
+      resolve('Logged in as ghost');
+    } catch (error) {
+      reject('Failed to login as ghost');
+    }
+  });
+};
+
 const UserDetail = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
@@ -163,9 +174,14 @@ const UserDetail = () => {
         role: data.role?.name,
         practiceId: data.practiceId
       };
-      AuthUtils.setGhost(ghostDetails);
-
-      navigate('/');
+      ghostPromise(ghostDetails)
+        .then((message) => {
+          alert(message);
+          navigate('/');
+        })
+        .catch((error) => {
+          alert(`error ${error}`);
+        });
       //set permissions
     } else {
       throw new Error('Something went wrong. Missing user identifier or invalid permission list.');
