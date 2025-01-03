@@ -25,6 +25,7 @@ const OrderIndex = () => {
   const activeTab = tabList.find((tab) => tab.isActiveTab);
   const [tabKey, setTabKey] = React.useState(activeTabFromState || activeTab?.configName);
 
+  const alertContainerId = 'summary-alert-container';
   const additionalFiltersConfig = React.useMemo(() => {
     if (activeTab?.configName === 'SUBMITTED') return [];
 
@@ -86,7 +87,7 @@ const OrderIndex = () => {
           </div>
         }
       />
-
+      <div id={alertContainerId} />
       {/* add alert here */}
 
       <div className="MCP-module-body">
@@ -110,7 +111,7 @@ const OrderIndex = () => {
           </div>
           <div className="MCP-table-wrapper">
             <Heading as="h2">{t('headings.orderListing')}</Heading>
-            <OrderDataTable tab={activeTab && activeTab.configName.toLocaleLowerCase()} />
+            <OrderDataTable tab={activeTab && activeTab.configName.toLocaleLowerCase()} alertContainerId={alertContainerId} />
           </div>
         </div>
       </div>

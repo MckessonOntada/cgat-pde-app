@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './OrderFlowSteps.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 
-function OrderFlowSteps() {
+function OrderFlowSteps({ showApproval = true }) {
   const { t } = useTranslate();
   const items = [
     {
@@ -26,9 +26,11 @@ function OrderFlowSteps() {
       description: t('labels.description.finalDelivery')
     }
   ];
+
+  const filteredItems = showApproval ? items : items.filter((item) => item.id !== 'approval');
   return (
     <div className={styles.orderListContainer}>
-      {items.map((item, index) => (
+      {filteredItems.map((item, index) => (
         <div className={styles.orderListItem} key={index}>
           <div className={styles.orderListCount}>{index + 1}</div>
           <div className={styles.orderListContent}>

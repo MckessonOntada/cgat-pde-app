@@ -9,11 +9,11 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import './OrderDataTable.module.scss';
 
-const OrderDataTable = ({ tab }) => {
+const OrderDataTable = ({ tab, alertContainerId }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { dataState: data, paginationConfig, isFetching, error, setCurrentPage, applySort, refreshData } = useOrders();
-  const columns = createColumns(t, navigate, tab);
+  const columns = createColumns(t, navigate, tab, alertContainerId);
 
   const handleOnPageChange = (_event, pageIndex) => {
     setCurrentPage(pageIndex);

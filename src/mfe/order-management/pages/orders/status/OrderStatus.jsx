@@ -10,12 +10,16 @@ import ModuleHeader from '@src/components/module-header';
 import DetailSegment from '@src/components/DetailSegment';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
+import { useLocation } from 'react-router-dom';
+import { StatusEnum } from '../../orders/constants';
 
 const OrderStatus = () => {
   const { t } = useTranslate();
   const { orderId } = useParams();
   const navigate = useNavigate();
   const { isFetching, formState, setCurrentOrder } = useManageOrder();
+  const location = useLocation();
+  const { isApproved = false } = location.state || {};
 
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ORDER_SUMMARY);
@@ -53,8 +57,18 @@ const OrderStatus = () => {
               <IconTick />
             </div>
             <div className={styles.content}>
-              <Heading as={'h1'}>{t('headings.orderSubmitted')}</Heading>
-              <p className={styles.orderSubmitDescription}>{t('messages.orderSuccessApprovalPending')}</p>
+              {!isApproved && (
+                <>
+                  <Heading as={'h1'}>{t('headings.orderSubmitted')}</Heading>
+                  <p className={styles.orderSubmitDescription}>{t('messages.orderSuccessApprovalPending')}</p>
+                </>
+              )}
+              {isApproved && (
+                <>
+                  <Heading as={'h1'}>{t('headings.orderApproved')}</Heading>
+                  <p className={styles.orderSubmitDescription}>{t('messages.orderApprovalSuccess')}</p>
+                </>
+              )}
             </div>
           </div>
         }
@@ -92,7 +106,7 @@ const OrderStatus = () => {
         <div className="MCP-panel-container">
           <div className={`${styles.orderFlow}`}>
             <h4 className={styles.customSecondaryHeading}>{t('labels.whatToExpect')}</h4>
-            <OrderFlowSteps />
+            <OrderFlowSteps showApproval={!isApproved} />
           </div>
         </div>
       </div>

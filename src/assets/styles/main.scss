@@ -159,6 +159,19 @@ button {
   cursor: pointer;
 }
 
+.MuiDialog-container {
+  .MuiDialogContent-root {
+    h3 {
+      display: block;
+      font-size: 14px !important;
+      margin-top: 0.4em;
+      margin-bottom: 0.4em;
+      margin-left: 0;
+      margin-right: 0;
+      font-weight: var(--brand-font-weight-400) !important;
+    }
+  }
+}
 h4 {
   display: block;
   font-size: 1.4em !important;

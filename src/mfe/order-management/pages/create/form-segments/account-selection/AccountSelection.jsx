@@ -29,7 +29,8 @@ const AccountSelection = () => {
   const navigate = useNavigate();
   const { orderId } = useParams();
   const location = useLocation();
-  const { isEdit = false } = location.state || {};
+  const { isEdit = false, isReview = false } = location.state || {};
+  const isReviewandEdit = isReview && isEdit;
   const [selectedAccount, setSelectedAccount] = React.useState(null);
   const [accountSearchString, setAccountSearchString] = React.useState('');
   const [selectedShippingAddress, setSelectedShippingAddress] = React.useState('');
@@ -90,9 +91,9 @@ const AccountSelection = () => {
       try {
         const alertState = await handleInventoryCheck();
         if (result.patientDetailsRequired) {
-          navigate(`../${id}/patient`, { state: { alertState } });
+          navigate(`../${id}/patient`, { state: { alertState, isEdit: isEdit, isReview: isReview } });
         } else {
-          navigate(`../${id}/additional-details`, { state: { alertState } });
+          navigate(`../${id}/additional-details`, { state: { alertState, isEdit: isEdit, isReview: isReview } });
         }
       } catch (err) {
         console.error(err);
@@ -158,10 +159,10 @@ const AccountSelection = () => {
     }
 
     if (isEdit) {
-      navigate(`../${orderId}/summary`, { state: { isEdit: true } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview } });
     } else {
       editByStage(ORDER_STAGES.THERAPY_SELECTION);
-      navigate(`../edit-order/${orderId}`);
+      navigate(`../edit-order/${orderId}`, { state: { isEdit: isEdit, isReview: isReview } });
     }
   };
 
@@ -194,9 +195,9 @@ const AccountSelection = () => {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'details') {
       editByStage(ORDER_STAGES.THERAPY_SELECTION);
-      navigate(`../edit-order/${orderId}`);
+      navigate(`../edit-order/${orderId}`, { state: { isEdit: isEdit, isReview: isReview } });
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, { state: { isEdit: true } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview } });
     }
   };
 
@@ -238,7 +239,13 @@ const AccountSelection = () => {
         </Button>
       </div>
 
-      <PageHeader heading={<Heading as="h1">{isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}</Heading>} />
+      <PageHeader
+        heading={
+          <Heading as="h1">
+            {isReviewandEdit ? t('headings.reviewOrder') : isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}
+          </Heading>
+        }
+      />
 
       <div className="MCP-module-body">
         <OrderStepper />
