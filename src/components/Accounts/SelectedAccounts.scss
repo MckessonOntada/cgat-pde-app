@@ -2,7 +2,7 @@
   border: 1px solid var(--brand-color-patient-primary-3);
   background-color: #f9f9f9; // Optional styling for visual separation
   border-radius: 4px;
-  height: 90%;
+  height: 100%;
 }
 
 .selected-account-heading {
@@ -16,12 +16,14 @@
   width: 100%;
   color: var(--brand-color-background-grey);
 }
+
 .selected-account-container {
   padding: var(--spacing-03);
   max-height: 300px;
   overflow-y: auto;
   overflow-x: hidden;
 }
+
 .selected-account {
   display: flex;
   justify-content: space-between;

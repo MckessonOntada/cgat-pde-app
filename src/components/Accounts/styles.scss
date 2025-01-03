@@ -18,6 +18,7 @@
 
 .selected-account-chips {
   display: block;
+
   @include mixins.respond("lg") {
     display: none;
   }
@@ -25,11 +26,12 @@
 
 .selected-account-box {
   display: none;
+
   @include mixins.respond("lg") {
     width: 25%;
     align-self: stretch;
-    margin-bottom: 9px;
     display: block;
+    margin-bottom: 38px;
   }
 }
 

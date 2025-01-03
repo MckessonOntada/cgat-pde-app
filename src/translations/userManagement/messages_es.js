@@ -282,5 +282,8 @@ export const UserManagementES = {
   'errors.default': 'An unexpected error occurred.',
 
   'Table.Tabs.ActiveUser': 'S_ACTIVE USERS',
-  'Table.Tabs.pendingRequest': 'S_PENDING REQUESTS'
+  'Table.Tabs.pendingRequest': 'S_PENDING REQUESTS',
+  'labels.startDate': 'S_Start Date',
+  'labels.endDate': 'S_End Date',
+  'placeholders.search': 'S_Search'
 };

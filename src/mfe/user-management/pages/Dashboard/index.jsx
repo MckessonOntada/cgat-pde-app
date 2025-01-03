@@ -14,7 +14,6 @@ import ModuleHeader from '@src/components/module-header';
 import AuthUtils from '@src/util/AuthUtils';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import CommonFilters from '@src/components/Filters';
-import { ROLES } from '../../mockData/UsersData';
 import usePermission from '@src/hooks/usePermissions';
 
 export default function Dashboard() {
@@ -46,7 +45,11 @@ export default function Dashboard() {
   useEffect(() => {
     if (isSuccess) {
       refreshData();
-      let message = isReject ? t('messages.pending_user_reject_success') : isSystemAdminView ? t('messages.sysadmin_create_success') : t('messages.user_create_success');
+      let message = isReject
+        ? t('messages.pending_user_reject_success')
+        : isSystemAdminView
+        ? t('messages.sysadmin_create_success')
+        : t('messages.user_create_success');
       showAlert('success', message);
     }
   }, [isSuccess, isReject, location.pathname, location.state, navigate]);
@@ -118,6 +121,7 @@ export default function Dashboard() {
         type: 'dropdown',
         name: 'status',
         label: t('userManagement.table.status'),
+        placeholder: t('placeholders.search'),
         options: [
           { label: 'All', value: 'all' },
           { label: 'Inactive', value: 'inactive' },
@@ -126,7 +130,9 @@ export default function Dashboard() {
       },
       {
         type: 'dateRangePicker',
-        name: 'dateRange'
+        name: 'dateRange',
+        startDateLabel: t('labels.startDate'),
+        endDateLabel: t('labels.endDate')
       }
     ];
   }, [isSystemAdminView, roleList]);
@@ -135,11 +141,18 @@ export default function Dashboard() {
     <div className="MCP-module-wrapper" id={debugIds(ID.TABLE, ID.CONTAINER)}>
       <Breadcrumb items={breadcrumbItems} />
       <ModuleHeader
-        heading={<Heading as="h1">{t(isSystemAdminView ? 'userManagement.header.systemadmin.label' : 'userManagement.header.label')}</Heading>}
+        heading={
+          <Heading as="h1">{t(isSystemAdminView ? 'userManagement.header.systemadmin.label' : 'userManagement.header.label')}</Heading>
+        }
         controls={
           <div className="controls">
             {hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_USERS) && (
-              <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createUser}`)}>
+              <Button
+                Icon={add_circle_bold}
+                className="button-icon"
+                variant="primary"
+                size="md"
+                onClick={() => navigate(`${PATHS.createUser}`)}>
                 {t(isSystemAdminView ? 'userManagement.button.addsystemadmin' : 'userManagement.button.adduser')}
               </Button>
             )}
@@ -152,13 +165,22 @@ export default function Dashboard() {
         }
       />
       {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
-
       <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
         <div className="MCP-panel-container">
-          <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={t('userManagement.searchFilter.label')} />
+          <CommonFilters
+            onApplyFilters={applyFilters}
+            onClearFilters={clearFilters}
+            additionalFilters={AdditionalFiltersConfig}
+            searchPlaceholder={t('userManagement.searchFilter.label')}
+          />
         </div>
-        <Heading as="h2"> {t(isSystemAdminView ? 'userManagement.table.systemadminlisting.label' : 'userManagement.table.userlisting.label')}</Heading>
-        {!isSystemAdminView && <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />}
+        <Heading as="h2">
+          {' '}
+          {t(isSystemAdminView ? 'userManagement.table.systemadminlisting.label' : 'userManagement.table.userlisting.label')}
+        </Heading>
+        {!isSystemAdminView && (
+          <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />
+        )}
         <div className="userList">
           {activeTab === 'ACTIVE USERS' && <UserTable selectableRows={true} onActionSuccess={handleSuccess} />}
           {activeTab === 'PENDING REQUESTS' && <UserTable selectableRows={false} />}

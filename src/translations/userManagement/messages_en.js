@@ -325,5 +325,8 @@ export const UserManagementEN = {
   'messages.sysadmin_create_success': 'System Admin has been created successfully.',
 
   'Table.Tabs.ActiveUser': 'ACTIVE USERS',
-  'Table.Tabs.pendingRequest': 'PENDING REQUESTS'
+  'Table.Tabs.pendingRequest': 'PENDING REQUESTS',
+  'labels.startDate': 'Start Date',
+  'labels.endDate': 'End Date',
+  'placeholders.search': 'Search'
 };
