@@ -79,6 +79,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.status': 'S_Status',
   'paymentInvoices.paymentMethods.filter.search.placeholder': 'S_Select by name or number',
   'paymentInvoices.invoice.table.emptyData': 'S_No Invoice Found',
+  'paymentInvoices.Details.backToManageInvoices': 'S_BACK TO MANAGE INVOICES PAGE',
 
   //Credits
   'paymentInvoices.credits.table.description': 'S_Description',

@@ -84,6 +84,8 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.heading': 'Invoice Listing',
   'paymentInvoices.history.table.status': 'Status',
   'paymentInvoices.invoice.table.emptyData': 'No Invoice Found',
+  'paymentInvoices.Details.backToManageInvoices': 'BACK TO MANAGE INVOICES PAGE',
+
   //Credits
   'paymentInvoices.credits.table.description': 'Description',
   'paymentInvoices.credits.table.validfrom': ' Valid From',
