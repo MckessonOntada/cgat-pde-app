@@ -10,11 +10,11 @@ import AuthUtils from '@src/util/AuthUtils';
 import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 import CommonUtils from '@src/util/CommonUtils';
 
-const ghostLogout = () => {
+const impersonateLogout = () => {
   return new Promise(function (resolve, reject) {
     try {
-      AuthUtils.removeGhost();
-      resolve('Exiting ghost login');
+      AuthUtils.removeImpersonate();
+      resolve('Exiting impersonate login');
     } catch (error) {
       reject(error);
     }
@@ -25,7 +25,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
   const intl = useIntl();
   const navigate = useNavigate();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const ghostDetails = AuthUtils.getGhostDetails();
+  const impersonateDetails = AuthUtils.getImpersonateDetails();
 
   const location = useLocation();
   const {
@@ -98,9 +98,9 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
     );
   };
 
-  const getGhostLoginDetails = () => {
+  const getImpersonateLoginDetails = () => {
     const handleOnExitUserView = () => {
-      ghostLogout()
+      impersonateLogout()
         .then((message) => {
           navigate('?expelled=true');
         })
@@ -108,14 +108,16 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
           console.log(`error: ${error}`);
         });
     };
-    if (ghostDetails?.id) {
+    if (impersonateDetails?.id) {
       return (
-        <div className="ghost-info-panel">
+        <div className="impersonate-info-panel">
           <p className="logged-in-label">
-            {intl.formatMessage({ id: 'header.label.loggedInAs' }).replace('{{ghostFullName}}', CommonUtils.getFullName(ghostDetails.name))}
+            {intl
+              .formatMessage({ id: 'header.label.loggedInAs' })
+              .replace('{{impersonateFullName}}', CommonUtils.getFullName(impersonateDetails.name))}
           </p>
           <Button color="secondary" onClick={handleOnExitUserView}>
-            Exit User View
+            {intl.formatMessage({ id: 'button.captions.exitUserView' })}
           </Button>
         </div>
       );
@@ -133,7 +135,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
             The button is only visible for system admin.
             The isSystemAdminView return false for non-admin user.
           */}
-          {getGhostLoginDetails()}
+          {getImpersonateLoginDetails()}
           {AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() && (
             <Button color="secondary" onClick={handleSystemAdminViewClick}>
               {intl.formatMessage({ id: 'header.label.systemAdminView' })}

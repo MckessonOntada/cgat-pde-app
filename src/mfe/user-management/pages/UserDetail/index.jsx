@@ -34,13 +34,13 @@ function getBackgroundColorByRole(role) {
   }
 }
 
-const ghostPromise = (ghostDetails) => {
+const impersonatePromise = (impersonateDetails) => {
   return new Promise(function (resolve, reject) {
     try {
-      AuthUtils.setGhost(ghostDetails);
-      resolve('Logged in as ghost');
+      AuthUtils.setImpersonate(impersonateDetails);
+      resolve('Logged in as impersonate');
     } catch (error) {
-      reject('Failed to login as ghost');
+      reject('Failed to login as impersonate');
     }
   });
 };
@@ -60,7 +60,7 @@ const UserDetail = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDeactivate, setIsDeactivate] = useState(false);
   const [isConsentModalOpen, setIsConsentModalOpen] = React.useState(false);
-  const isGhostLoggedIn = Boolean(AuthUtils.getGhostId());
+  const isImpersonateLoggedIn = Boolean(AuthUtils.getImpersonateId());
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
@@ -167,14 +167,14 @@ const UserDetail = () => {
     const selectedUserPermissions = data.permissions;
     const selectedUserId = data.id;
     if (selectedUserId && selectedUserPermissions && Array.isArray(selectedUserPermissions)) {
-      const ghostDetails = {
+      const impersonateDetails = {
         permissions: selectedUserPermissions,
         id: selectedUserId,
         name: data.name,
         role: data.role?.name,
         practiceId: data.practiceId
       };
-      ghostPromise(ghostDetails)
+      impersonatePromise(impersonateDetails)
         .then((message) => {
           navigate('/');
         })
@@ -205,7 +205,7 @@ const UserDetail = () => {
           heading={<Heading as="h1">{t('userManagement.header.view.edit_user')}</Heading>}
           controls={
             data?.isActive &&
-            !isGhostLoggedIn && (
+            !isImpersonateLoggedIn && (
               <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
                 <Button variant="primary" size="md" onClick={() => setIsConsentModalOpen(true)}>
                   {t('button.label.loginAsThisUser')}

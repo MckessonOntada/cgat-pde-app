@@ -5,5 +5,6 @@ export const LoginMessagesES = {
   'header.label.notifications': 'S_Notifications',
   'header.label.help': 'S_Help',
   'header.label.systemAdminView': 'S_System Admin View',
-  'header.label.loggedInAs': 'S_logged in as {{ghostFullName}}'
+  'header.label.loggedInAs': 'S_logged in as {{impersonateFullName}}',
+  'button.captions.exitUserView': 'S_Exit User View'
 };

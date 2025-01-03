@@ -43,25 +43,25 @@ const isSystemAdmin = function () {
 };
 
 const isSystemAdminView = function () {
-  const ghostId = getGhostId();
-  if (ghostId) {
+  const impersonateId = getImpersonateId();
+  if (impersonateId) {
     return isSystemAdmin();
   }
   return isSystemAdmin() && !getPracticeId();
 };
 
-const setGhost = (details) => {
+const setImpersonate = (details) => {
   const { id, name, permissions, practiceId, role, ...rest } = details;
-  if (!id) throw new Error('Missing ghost id');
+  if (!id) throw new Error('Missing impersonate id');
   if (!permissions) throw new Error('Missing permissions');
   if (!Array.isArray(permissions)) throw new Error('Invalid permission object. Permission can be list only.');
 
-  const ghostDetails = { id, name, rest };
+  const impersonateDetails = { id, name, rest };
   const existingPermissions = sessionStorage.getItem('USER_PERMISSIONS');
   const existingPracticeId = sessionStorage.getItem('SELECTED_PRACTICE_ID');
   const existingROLE = sessionStorage.getItem('USER_ROLE');
 
-  sessionStorage.setItem('GHOST_DETAILS', JSON.stringify(ghostDetails));
+  sessionStorage.setItem('IMPERSONATE_DETAILS', JSON.stringify(impersonateDetails));
   sessionStorage.setItem('USER_PERMISSIONS', permissions);
   sessionStorage.setItem('__USER_PERMISSIONS__', existingPermissions);
   sessionStorage.setItem('USER_ROLE', role);
@@ -70,7 +70,7 @@ const setGhost = (details) => {
   sessionStorage.setItem('__SELECTED_PRACTICE_ID__', existingPracticeId);
 };
 
-const removeGhost = () => {
+const removeImpersonate = () => {
   const originalPermissions = sessionStorage.getItem('__USER_PERMISSIONS__');
   const originalPracticeId = sessionStorage.getItem('__SELECTED_PRACTICE_ID__');
   const originalRole = sessionStorage.getItem('__USER_ROLE__');
@@ -78,23 +78,23 @@ const removeGhost = () => {
   sessionStorage.setItem('USER_PERMISSIONS', originalPermissions);
   sessionStorage.setItem('SELECTED_PRACTICE_ID', originalPracticeId);
   sessionStorage.setItem('USER_ROLE', originalRole);
-  sessionStorage.removeItem('GHOST_DETAILS');
+  sessionStorage.removeItem('IMPERSONATE_DETAILS');
   sessionStorage.removeItem('__USER_PERMISSIONS__');
   sessionStorage.removeItem('__USER_ROLE__');
   sessionStorage.removeItem('__SELECTED_PRACTICE_ID__');
 };
 
-const getGhostDetails = () => {
+const getImpersonateDetails = () => {
   try {
-    const ghostDetails = JSON.parse(sessionStorage.getItem('GHOST_DETAILS'));
-    return ghostDetails;
+    const impersonateDetails = JSON.parse(sessionStorage.getItem('IMPERSONATE_DETAILS'));
+    return impersonateDetails;
   } catch (error) {}
 };
 
-const getGhostId = () => {
+const getImpersonateId = () => {
   try {
-    const ghostDetails = JSON.parse(sessionStorage.getItem('GHOST_DETAILS'));
-    return ghostDetails?.id;
+    const impersonateDetails = JSON.parse(sessionStorage.getItem('IMPERSONATE_DETAILS'));
+    return impersonateDetails?.id;
   } catch (error) {}
 };
 
@@ -133,10 +133,10 @@ const AuthUtils = Object.freeze({
   getPracticeId,
   setPracticeId,
   removePracticeId,
-  setGhost,
-  getGhostId,
-  removeGhost,
-  getGhostDetails,
+  setImpersonate,
+  getImpersonateId,
+  removeImpersonate,
+  getImpersonateDetails,
   isSystemAdmin,
   isSystemAdminView
 });
