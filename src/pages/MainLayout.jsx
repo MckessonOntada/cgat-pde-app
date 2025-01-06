@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { Button, Loader } from '@mckesson/mcp-component-library';
 
@@ -27,8 +27,17 @@ const OrgEntryPoint = React.lazy(() => import('@src/mfe/org-management'));
 const PaymentInvoices = React.lazy(() => import('@src/mfe/finance-management'));
 
 function MainLayout() {
-  const { pathname } = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
+  const queryParams = new URLSearchParams(location.search);
+  const isExpelled = queryParams.get('expelled');
+
+  React.useEffect(() => {
+    if (isExpelled) {
+      console.log('read updated storage');
+      navigate('/');
+    }
+  }, [isExpelled]);
 
   return (
     <div id={debugIds(ID.MAIN)} className={styles.appContainer}>

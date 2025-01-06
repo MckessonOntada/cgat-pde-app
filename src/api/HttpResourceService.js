@@ -1,5 +1,6 @@
 import axios from 'axios';
 import ApiRoutes from './ApiRoutes';
+import AuthUtils from '@src/util/AuthUtils';
 
 const axiosInstance = axios.create({});
 
@@ -34,6 +35,12 @@ export const authToken = (noHeader, noSidHeader) => {
   };
 
   const sessionId = sessionStorage.getItem('sid');
+
+  const impersonateId = AuthUtils.getImpersonateId();
+  if (impersonateId) {
+    headers['x-imp-user-id'] = impersonateId;
+  }
+
   if (!noSidHeader && sessionId) {
     headers['Session-Id'] = sessionId;
   }

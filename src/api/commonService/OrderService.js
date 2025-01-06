@@ -167,6 +167,32 @@ async function getProgramAndChannelConfig(therapyId, requestParams) {
   return {};
 }
 
+async function setOrderAssignToMe(orderId) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/approver/assignToMe`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH);
+
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
+async function setOrderUnassignToMe(orderId) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/approver/release`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH);
+
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -182,7 +208,9 @@ const OrderService = Object.freeze({
   saveAdditionalDetails,
   saveAccount,
   getProgramAndChannelConfig,
-  submitOrder
+  submitOrder,
+  setOrderAssignToMe,
+  setOrderUnassignToMe
 });
 
 export default OrderService;
