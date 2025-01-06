@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Badge, DropdownMenu, Button, Tooltip, Modal } from '@mckesson/mcp-component-library';
+import { Badge, Button, Tooltip, MenuList } from '@mckesson/mcp-component-library';
 import { StatusEnum } from './constants';
 import { routesConfig } from '../../routes/constants';
 import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
@@ -66,7 +66,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
     showAlert({ description: t('messages.success.delete'), type: 'success', anchorEl: alertContainerId });
     return;
   };
-  const handleOnOptionSelection = ({ value }) => {
+  const handleOnOptionSelection = (value) => {
     if (value === 'view') {
       if (props.status === StatusEnum.SUBMITTED) {
         navigate(`${id}/summary`, { state: { isEdit: true } });
@@ -177,8 +177,8 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
   }
 
   return (
-    <DropdownMenu
-      anchorEl={<Button Icon={() => <IconEllipsis />} iconButton variant="tertiary" label="Icon Button" />}
+    <MenuList
+      menuIcon={<IconEllipsis key={'menu-list-order-table'} />}
       handleSelect={handleOnOptionSelection}
       options={options}
       aria-label="Order options"
