@@ -19,6 +19,9 @@ import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import { serializeParams } from '@src/util/ApiUtils';
+import useAlert from '@src/hooks/useAlert';
+import { RoutePaths } from '@src/routes/constants';
+import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 
 const AccountSelection = () => {
   const { t } = useTranslate();
@@ -26,17 +29,38 @@ const AccountSelection = () => {
   const navigate = useNavigate();
   const { orderId } = useParams();
   const location = useLocation();
-  const { isEdit = false } = location.state || {};
+  const { isEdit = false, isReview = false } = location.state || {};
+  const isReviewandEdit = isReview && isEdit;
   const [selectedAccount, setSelectedAccount] = React.useState(null);
   const [accountSearchString, setAccountSearchString] = React.useState('');
   const [selectedShippingAddress, setSelectedShippingAddress] = React.useState('');
+  const [initialSelectedAccount, setInitialSelectedAccount] = React.useState(null);
+  const [initialSelectedShippingAddress, setInitialSelectedShippingAddress] = React.useState('');
+  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
   const [acccountError, setAccountError] = useState({ isError: false, message: '' });
+  const [alertState, setAlertState] = useState(null);
   const therapyId = formState.activeRecord?.therapy?.materialNumber;
+  const [netPriceData, setNetPriceData] = useState(null);
+
+  const alertContainerId = 'accountSelection-alert-Container';
+  const { showAlert } = useAlert();
 
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ACCOUNT_DETAILS);
   }, []);
+
+  const { isLoading: isPriceApiLoading, data: priceDetails = {} } = useQuery({
+    queryKey: ['order', 'therapy', 'price', therapyId, selectedAccount?.accountNumber, selectedShippingAddress?.accountNumber],
+    queryFn: async () => {
+      return OrderService.getPriceDetails(therapyId, selectedAccount.accountNumber, selectedShippingAddress.accountNumber);
+    },
+    enabled: !!therapyId && !!selectedAccount?.accountNumber && !!selectedShippingAddress?.accountNumber,
+    refetchOnWindowFocus: false,
+    onSuccess: (data) => {
+      setNetPriceData(data.netPrice);
+    }
+  });
 
   const { isLoading, data: accountsListData = {} } = useQuery({
     queryKey: ['order', 'therapy', therapyId, accountSearchString],
@@ -53,7 +77,7 @@ const AccountSelection = () => {
     accountsListData.content?.forEach((acc) => {
       const label = `(${acc.accountNumber}) ` + acc.accountName;
       const value = acc.accountNumber;
-      const subLabel = [acc.houseNumber, acc.street, acc.city, acc.state, acc.zipCode].join(', ');
+      const subLabel = [acc.houseNumber, acc.street, acc.city, acc.state, acc.zipCode].filter(Boolean).join(', ');
       accArr.push({ label, value, subLabel });
     });
 
@@ -61,14 +85,61 @@ const AccountSelection = () => {
   }, [accountsListData, formState.activeRecord]);
 
   const { isLoading: isSaving, mutate: saveAccount } = useMutation(async (data) => OrderService.saveAccount(orderId, data), {
-    onSuccess: (result) => {
+    onSuccess: async (result) => {
       const { id } = result;
       setActiveRecord(result);
-      if (result.patientDetailsRequired) navigate(`../${id}/patient`);
-      else navigate(`../${id}/additional-details`);
+      try {
+        const alertState = await handleInventoryCheck();
+        if (result.patientDetailsRequired) {
+          navigate(`../${id}/patient`, { state: { alertState, isEdit: isEdit, isReview: isReview } });
+        } else {
+          navigate(`../${id}/additional-details`, { state: { alertState, isEdit: isEdit, isReview: isReview } });
+        }
+      } catch (err) {
+        console.error(err);
+      }
     },
     onError: console.log
   });
+
+  const handleInventoryCheck = async () => {
+    const selectedAccountDetails = accountsListData.content.find((acc) => acc.accountNumber === selectedAccount?.accountNumber);
+    const requestPayload = {
+      customerNumber: selectedShippingAddress?.accountNumber,
+      shipTo: selectedAccount?.accountNumber,
+      salesOrg: selectedAccountDetails.salesOrg,
+      distChannel: selectedAccountDetails.distributionChannel,
+      division: selectedAccountDetails.division,
+      companyCode: selectedAccountDetails.companyCode,
+      orderId,
+      items: null
+    };
+
+    try {
+      const res = await OrderService.getInventoryStatus(requestPayload);
+      if (res.status === 200) {
+        showAlert({
+          description: t('messages.inventoryCheck.success'),
+          type: 'success',
+          anchorEl: alertContainerId
+        });
+      }
+    } catch (err) {
+      if (err.status === 400) {
+        showAlert({
+          description: t('messages.inventoryCheck.error'),
+          type: 'warning',
+          anchorEl: alertContainerId
+        });
+        return {
+          description: t('messages.inventoryCheck.error'),
+          type: 'warning'
+        };
+      } else {
+        showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
+      }
+    }
+  };
 
   const handleOnClose = () => {
     setOpen(false);
@@ -77,23 +148,32 @@ const AccountSelection = () => {
     setOpen(true);
   };
 
+  const isDirty =
+    JSON.stringify(selectedAccount) !== JSON.stringify(initialSelectedAccount) ||
+    JSON.stringify(selectedShippingAddress) !== JSON.stringify(initialSelectedShippingAddress);
+
   const handleOnBack = () => {
-    //check for data change
+    if (isDirty) {
+      setModalSuccessCallback(isEdit ? 'summary' : 'details');
+      return;
+    }
+
     if (isEdit) {
-      navigate(`../${orderId}/summary`);
+      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview } });
     } else {
       editByStage(ORDER_STAGES.THERAPY_SELECTION);
-      navigate(`../edit-order/${orderId}`);
+      navigate(`../edit-order/${orderId}`, { state: { isEdit: isEdit, isReview: isReview } });
     }
   };
 
-  const handleOnSubmit = () => {
+  const handleOnSubmit = async () => {
     if (selectedAccount && selectedShippingAddress) {
       const payload = {
         soldToAccountId: selectedAccount.id,
         shipToAccountId: selectedShippingAddress.id
       };
       setAccountError({ isError: false, message: '' });
+
       saveAccount(payload);
     } else {
       if (!selectedAccount) {
@@ -104,12 +184,25 @@ const AccountSelection = () => {
   };
 
   const handleOnBackToOrders = () => {
-    //compare data change, display modal for confirmation
-    navigate(-1);
+    if (isDirty) {
+      setModalSuccessCallback('list');
+    } else {
+      navigate(RoutePaths.pathOrderManagement);
+    }
+  };
+  const handleNavigate = () => {
+    if (modalSuccessCallback === 'list') {
+      navigate(RoutePaths.pathOrderManagement);
+    } else if (modalSuccessCallback === 'details') {
+      editByStage(ORDER_STAGES.THERAPY_SELECTION);
+      navigate(`../edit-order/${orderId}`, { state: { isEdit: isEdit, isReview: isReview } });
+    } else if (modalSuccessCallback === 'summary') {
+      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview } });
+    }
   };
 
   const getAddress = (acc) => {
-    return [acc.houseNumber, acc.street, acc.district, acc.city, acc.state, acc.zipCode].join(', ');
+    return [acc.houseNumber, acc.street, acc.district, acc.city, acc.state, acc.zipCode].filter(Boolean).join(', ');
   };
 
   const handleOnAccountSelection = (selectedAccount) => {
@@ -125,9 +218,12 @@ const AccountSelection = () => {
         if (soldToAccount) {
           const originalSelectedAccount = accountsListData.content?.filter((acc) => acc.accountNumber === soldToAccount.accountNumber)[0];
           if (originalSelectedAccount) setSelectedAccount(originalSelectedAccount);
+
+          setInitialSelectedAccount(originalSelectedAccount); // Set initial value;
         }
         if (shipToAccount) {
           setSelectedShippingAddress(shipToAccount);
+          setInitialSelectedShippingAddress(shipToAccount); // Set initial value
         }
       } else {
         console.log('Could not set account');
@@ -143,12 +239,19 @@ const AccountSelection = () => {
         </Button>
       </div>
 
-      <PageHeader heading={<Heading as="h1">{isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}</Heading>} />
+      <PageHeader
+        heading={
+          <Heading as="h1">
+            {isReviewandEdit ? t('headings.reviewOrder') : isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}
+          </Heading>
+        }
+      />
 
       <div className="MCP-module-body">
         <OrderStepper />
         <div className={`MCP-module-wrapper`}>
-          <OrderHeaderDetails />
+          <OrderHeaderDetails netPriceData={netPriceData} />
+          <div id={alertContainerId} />
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>
               <ModuleHeader
@@ -211,10 +314,15 @@ const AccountSelection = () => {
           </div>
           <div className="controls">
             <Button size="md" onClick={handleOnBack} variant="secondary">
-              {t('captions.btnBack')}
+              {isEdit ? t('captions.btnBack') : t('captions.btnBacktoTherapySelection')}
             </Button>
-            <Button size="md" onClick={() => {}} variant="secondary">
-              {t('captions.btnInventorySelection')}
+            <Button
+              size="md"
+              onClick={() => {
+                handleInventoryCheck();
+              }}
+              variant="secondary">
+              {t('captions.btnInventoryCheck')}
             </Button>
             <Button
               size="md"
@@ -232,6 +340,13 @@ const AccountSelection = () => {
           )}
         </div>
       </div>
+      <DiscardChangesModal
+        heading={t('messages.confirmation.discardheader')}
+        description={t('messages.confirmation.account')}
+        isOpen={Boolean(modalSuccessCallback)}
+        onClose={() => setModalSuccessCallback(null)}
+        onConfirm={handleNavigate}
+      />
     </div>
   );
 };

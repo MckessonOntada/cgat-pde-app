@@ -10,6 +10,7 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import dayjs from 'dayjs';
 import { DUE_STATUS } from './InvoiceConstants';
+import { PATHS } from '../../routes';
 
 export default function InvoicesTable() {
   const { t } = useTranslate();
@@ -26,7 +27,9 @@ export default function InvoicesTable() {
       minWidth: '112px',
       cell: (props) => (
         <div className="cellEllipse">
-          <Link style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}>{`${props?.billNumber || ''}`}</Link>
+          <Link
+            style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
+            to={`/record/${PATHS.invoices}/${props?.billNumber}/details`}>{`${props?.billNumber || ''}`}</Link>
         </div>
       )
     },
@@ -72,7 +75,6 @@ export default function InvoicesTable() {
       selector: (row) => row.openAmount,
       minWidth: '144px',
       sortable: true,
-      center: true,
       wrap: true,
       id: 'openAmount',
       cell: (props) => (
@@ -109,15 +111,13 @@ export default function InvoicesTable() {
       selector: (row) => row?.billAmount,
       minWidth: '140px',
       sortable: true,
-      wrap: true,
-      center: true,
+      right: true,
       id: 'billAmount',
       cell: (props) => (
         <div className="cellEllipse align-items-right ">
           <FormattedNumber value={props?.billAmount || 0} style="currency" currency="USD" />
         </div>
-      ),
-      right: true
+      )
     }
     // {
     //   name: t('paymentInvoices.history.table.Actions'),

@@ -9,6 +9,7 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FormattedNumber } from 'react-intl';
 import dayjs from 'dayjs';
+import { PATHS } from '../../routes';
 
 export default function CreditsTable() {
   const { t } = useTranslate();
@@ -24,7 +25,11 @@ export default function CreditsTable() {
       minWidth: '112px',
       cell: (props) => (
         <div className="cellEllipse">
-          <Link style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}>{`${props?.billNumber}`}</Link>
+          <Link
+            style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
+            to={`/record/${PATHS.credits}/${props?.billNumber}/details`}>
+            {`${props?.billNumber}`}
+          </Link>
         </div>
       )
     },

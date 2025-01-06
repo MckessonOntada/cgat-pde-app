@@ -74,7 +74,9 @@ export const transformAttributesToRules = (values, practiceId) => {
       });
     });
   }
-
+  Object.keys(result.rules).map((item) => {
+    result.rules[item] = result.rules[item] === 0 || result.rules[item].length === 0 ? null : result.rules[item];
+  });
   return result;
 };
 

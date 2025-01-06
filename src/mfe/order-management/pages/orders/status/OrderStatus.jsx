@@ -10,12 +10,16 @@ import ModuleHeader from '@src/components/module-header';
 import DetailSegment from '@src/components/DetailSegment';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
+import { useLocation } from 'react-router-dom';
+import { StatusEnum } from '../../orders/constants';
 
 const OrderStatus = () => {
   const { t } = useTranslate();
   const { orderId } = useParams();
   const navigate = useNavigate();
   const { isFetching, formState, setCurrentOrder } = useManageOrder();
+  const location = useLocation();
+  const { isApproved = false } = location.state || {};
 
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ORDER_SUMMARY);
@@ -53,8 +57,18 @@ const OrderStatus = () => {
               <IconTick />
             </div>
             <div className={styles.content}>
-              <Heading as={'h1'}>{t('headings.orderSubmitted')}</Heading>
-              <p className={styles.orderSubmitDescription}>{t('messages.orderSuccessApprovalPending')}</p>
+              {!isApproved && (
+                <>
+                  <Heading as={'h1'}>{t('headings.orderSubmitted')}</Heading>
+                  <p className={styles.orderSubmitDescription}>{t('messages.orderSuccessApprovalPending')}</p>
+                </>
+              )}
+              {isApproved && (
+                <>
+                  <Heading as={'h1'}>{t('headings.orderApproved')}</Heading>
+                  <p className={styles.orderSubmitDescription}>{t('messages.orderApprovalSuccess')}</p>
+                </>
+              )}
             </div>
           </div>
         }
@@ -69,30 +83,30 @@ const OrderStatus = () => {
               value={
                 [patient?.patientInfo?.firstName, patient?.patientInfo?.middleName, patient?.patientInfo?.lastName]
                   .filter(Boolean) // Filters out null, undefined, or empty strings
-                  .join(' ') || 'N/A'
+                  .join(' ') || '-'
               }
             />
           </div>
           <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
             <DetailSegment
               label={t('labels.patientIdentifier')}
-              value={patient?.patientInfo?.patientIdentifier ? patient?.patientInfo?.patientIdentifier : 'N/A'}
+              value={patient?.patientInfo?.patientIdentifier ? patient?.patientInfo?.patientIdentifier : '-'}
             />
-            <DetailSegment label={t('labels.dob')} value={patient?.patientInfo?.dob ? patient?.patientInfo?.dob : 'N/A'} />
-            <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender ? patient?.patientInfo?.gender : 'N/A'} />
+            <DetailSegment label={t('labels.dob')} value={patient?.patientInfo?.dob ? patient?.patientInfo?.dob : '-'} />
+            <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender ? patient?.patientInfo?.gender : '-'} />
             <DetailSegment
               className={styles.orderCost}
               customLabelStyles={styles.orderCostItem}
               label={t('labels.price')}
               customValueStyles={styles.orderCostItem}
-              value={<p className={`${styles.price}`}>{orderCost ? `$${orderCost}` : 'N/A'}</p>}
+              value={<p className={`${styles.price}`}>{orderCost ? `$${orderCost}` : '-'}</p>}
             />
           </div>
         </div>
         <div className="MCP-panel-container">
           <div className={`${styles.orderFlow}`}>
             <h4 className={styles.customSecondaryHeading}>{t('labels.whatToExpect')}</h4>
-            <OrderFlowSteps />
+            <OrderFlowSteps showApproval={!isApproved} />
           </div>
         </div>
       </div>

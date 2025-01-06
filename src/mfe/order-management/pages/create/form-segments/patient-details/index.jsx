@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './PatientDetails.module.scss';
 import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
 import ModuleHeader from '@src/components/module-header';
@@ -18,16 +18,23 @@ import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
 import useAlert from '@src/hooks/useAlert';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
+import { RoutePaths } from '@src/routes/constants';
+import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
+import { renderModal } from '@src/util/ModalUtil';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
   const { orderId } = useParams();
   const navigate = useNavigate();
   const { formState, setActiveRecord, setCurrentOrder, messageConfig, editByStage } = useManageOrder();
-  const alertContainerRef = useRef(null);
+  const alertContainerId = 'patintDetails-alert-container';
   const { showAlert } = useAlert();
   const location = useLocation();
-  const { isEdit = false } = location.state || {};
+  const { isEdit = false, isReview = false, alertState } = location.state || {};
+  const isReviewandEdit = isReview && isEdit;
+
+  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
+  const [isDirty, setIsDirty] = React.useState(false);
 
   const INITIAL_VALUES = {
     patientInfo: {
@@ -53,6 +60,13 @@ const PatientDetails = () => {
 
   const [initialValues, setInitialValues] = useState(INITIAL_VALUES);
 
+  useEffect(() => {
+    if (!alertState) {
+      return;
+    }
+    showAlert({ ...alertState, anchorEl: alertContainerId });
+  }, []);
+
   React.useEffect(() => {
     if (!formState.activeRecord) {
       return;
@@ -64,28 +78,71 @@ const PatientDetails = () => {
     }
   }, [formState.activeRecord]);
 
-  const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(async (data) => OrderService.savePatientDetails(orderId, data), {
-    onSuccess: (result) => {
-      const { id } = result;
-      setActiveRecord(result);
-      navigate(`../${id}/additional-details`);
-    },
-    onError: () => {
-      showAlert({ description: err.message, type: 'error', anchorEl: alertContainerRef });
+  const openDuplicateConfirmationModal = (payload) => {
+    renderModal({
+      title: t('modal.title.duplicateOrder'),
+      bodyContent: (
+        <p
+          style={{
+            fontSize: 'var(--brand-font-size--default)',
+            fontWeight: 400,
+            lineHeight: 'var(--brand-line-height--m-large)'
+          }}>
+          {t('modal.body.duplicateOrder.line_1').replace('$order_id', orderId)}
+          <br /> {t('modal.body.duplicateOrder.line_2')}
+        </p>
+      ),
+      footerActions: {
+        confirm: {
+          label: t('modal.action.continue'),
+          action: () => {
+            handleSubmit(payload, true);
+          }
+        },
+        cancel: {
+          label: t('modal.action.cancel')
+        }
+      }
+    });
+  };
+
+  const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(
+    async ({ payload, skipDuplicateCheck }) => OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck),
+    {
+      onSuccess: (result) => {
+        const { id } = result;
+        setActiveRecord(result);
+        navigate(`../${id}/additional-details`, { state: { isEdit: isEdit, isReview: isReview } });
+      },
+      onError: ({ err, payload }) => {
+        if (err.status === 409) {
+          openDuplicateConfirmationModal(payload);
+        } else {
+          showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
+        }
+      }
     }
-  });
+  );
 
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.PATIENT_DETAILS);
   }, []);
 
   const handleOnBack = () => {
-    //compare data change, display modal for confirmation
-    editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-    navigate(`../${orderId}/accounts`);
+    if (isDirty) {
+      setModalSuccessCallback(isEdit ? 'summary' : 'account');
+      return;
+    }
+
+    if (isEdit) {
+      navigate(`../${orderId}/summary`, { state: { isEdit: true, isReview: isReview } });
+    } else {
+      editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
+      navigate(`../${orderId}/accounts`, { state: { isReview: isReview, isEdit: isEdit } });
+    }
   };
 
-  const handleSubmit = (form) => {
+  const handleSubmit = (form, skipDuplicateCheck) => {
     const { patientInfo } = form;
 
     const payload = {
@@ -95,12 +152,26 @@ const PatientDetails = () => {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(patientInfo.dateOfBirth, 'MM-DD-YYYY');
     }
 
-    savePatientDetails(payload);
+    savePatientDetails({ payload, skipDuplicateCheck });
   };
 
   const handleOnBackToOrders = () => {
-    //compare data change, display modal for confirmation
-    navigate(-1);
+    if (isDirty) {
+      setModalSuccessCallback('list');
+    } else {
+      navigate(RoutePaths.pathOrderManagement);
+    }
+  };
+
+  const handleNavigate = () => {
+    if (modalSuccessCallback === 'list') {
+      navigate(RoutePaths.pathOrderManagement);
+    } else if (modalSuccessCallback === 'summary') {
+      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview } });
+    } else if (modalSuccessCallback === 'account') {
+      editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
+      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isReview: isReview } });
+    }
   };
 
   const forms = FormList(t);
@@ -113,7 +184,13 @@ const PatientDetails = () => {
         </Button>
       </div>
 
-      <PageHeader heading={<Heading as="h1">{isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}</Heading>} />
+      <PageHeader
+        heading={
+          <Heading as="h1">
+            {isReviewandEdit ? t('headings.reviewOrder') : isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}
+          </Heading>
+        }
+      />
 
       <div className="MCP-module-body">
         {/* <Stepper activeIndex={3} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} /> */}
@@ -149,12 +226,12 @@ const PatientDetails = () => {
           </div> */}
 
           <OrderHeaderDetails />
+          <div id={alertContainerId} />
 
           {messageConfig && messageConfig.primaryMessage && (
             <Alert onClose={clearMessage} showTitle title={messageConfig.primaryMessage} type={messageConfig.messageKind} />
           )}
         </div>
-        <div ref={alertContainerRef} />
         <Formik
           initialValues={initialValues}
           validationSchema={getValidationSchema(t)}
@@ -174,7 +251,7 @@ const PatientDetails = () => {
                     controls={
                       <div className="controls">
                         <Button size="md" variant="secondary" onClick={handleOnBack}>
-                          {t('captions.btnBack')}
+                          {isEdit ? t('captions.btnBack') : t('captions.btnBacktoAccountSelection')}
                         </Button>
                         <Button size="md" variant="primary" disabled={!values?.patientIdentifier || isSaving} type="submit">
                           {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
@@ -188,6 +265,13 @@ const PatientDetails = () => {
           }}
         </Formik>
       </div>
+      <DiscardChangesModal
+        heading={t('messages.confirmation.discardheader')}
+        description={t('messages.confirmation.patient')}
+        isOpen={Boolean(modalSuccessCallback)}
+        onClose={() => setModalSuccessCallback(null)}
+        onConfirm={handleNavigate}
+      />
     </div>
   );
 };

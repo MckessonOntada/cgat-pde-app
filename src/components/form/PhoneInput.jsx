@@ -24,9 +24,9 @@ export default function PhoneInput(props) {
         try {
           inputElement.value = formatPhoneNumber(value);
         } catch (e) {}
-      }, 200);
+      }, 100);
     }
-  }, [value]);
+  }, [value, props]);
 
   return (
     <div className="grid align-PhoneInput" ref={phoneInputRef}>

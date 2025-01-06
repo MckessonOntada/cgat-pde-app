@@ -7,20 +7,23 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
+import { useAccounts } from './AccountsContext';
 
 export default function Actions({ row, userId, practiceId, refetch }) {
   const { t } = useTranslate();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedAccountId, setSelectedAccountId] = useState(null);
-
+  const { setPageNumber } = useAccounts();
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
 
   const { mutate, isLoading, isError, data } = useMutation(
     async ({ accid }) => {
-      const apiUrl = userId ? `${ApiRoutes.USERS()}/${userId}/accounts/${accid}?${serializeParams(requestParams)}` : `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts/${accid}?${serializeParams(requestParams)}`;
+      const apiUrl = userId
+        ? `${ApiRoutes.USERS()}/${userId}/accounts/${accid}?${serializeParams(requestParams)}`
+        : `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts/${accid}?${serializeParams(requestParams)}`;
 
       const res = await HttpResourceService.callRest(apiUrl, httpVerb.DELETE, {});
       return res;
@@ -30,7 +33,7 @@ export default function Actions({ row, userId, practiceId, refetch }) {
         console.log('Account Unlinked successfully:', response);
         setIsOpen(false);
         if (refetch) {
-          refetch(); // Reload the account list
+          setPageNumber(1);
         }
       },
       onError: (error) => {

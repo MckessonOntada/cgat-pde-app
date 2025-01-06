@@ -8,13 +8,15 @@ const InfoCards = ({ title, value, infoText }) => {
     <div className="info-card">
       <div className="card-header">
         <div className="info-title">{title}</div>
-        <div className="info-icon">
-          <Tooltip body={infoText} key={'textarea-tooltip-' + title} placement="top" maxW={'280px'}>
-            <div type="button" aria-label="information">
-              <IconInfo />
-            </div>
-          </Tooltip>
-        </div>
+        {infoText && (
+          <div className="info-icon">
+            <Tooltip body={infoText} key={'textarea-tooltip-' + title} placement="top" maxW={'280px'}>
+              <div type="button" aria-label="information">
+                <IconInfo />
+              </div>
+            </Tooltip>
+          </div>
+        )}
       </div>
       <div className="card-value">{value || 'NA'}</div>
     </div>

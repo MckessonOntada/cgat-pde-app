@@ -413,7 +413,8 @@ const CommonUtils = Object.freeze({
   deepEqual,
   getDateRange,
   truncateString,
-  formatPhoneNumber
+  formatPhoneNumber,
+  getFullName
 });
 
 export default CommonUtils;

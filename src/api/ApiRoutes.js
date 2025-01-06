@@ -55,7 +55,8 @@ const ApiRoutes = Object.freeze({
   SET_DEFAULT_PAY_TO_ACCOUNT: (payToAccountId) =>
     constructUserManagementServiceUrl(`users/current/preference/defaultpayto/${payToAccountId}`),
   ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`),
-  CUSTOMER_STATEMENTS_LISTING: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/statements`)
+  CUSTOMER_STATEMENTS_LISTING: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/statements`),
+  INVENTORY: () => constructOrderManagementServiceUrl(`inventory`)
 });
 
 export default ApiRoutes;
