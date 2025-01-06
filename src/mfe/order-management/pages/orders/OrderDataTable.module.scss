@@ -1,16 +1,16 @@
-[data-column-id="actions"] ul[class*="DropdownMenu-module--dropdownContent"] {
-  left: auto !important;
-  right: 15px !important;
-  top: 10px !important;
-  position: absolute;
-  text-align: left !important;
-  z-index: 1050; /* Ensure it appears above the grid and other elements */
-  min-width: 100px;
+// [data-column-id="actions"] ul[class*="DropdownMenu-module--dropdownContent"] {
+//   left: auto !important;
+//   right: 15px !important;
+//   top: 10px !important;
+//   position: absolute;
+//   text-align: left !important;
+//   z-index: 1050; /* Ensure it appears above the grid and other elements */
+//   min-width: 100px;
 
-  border-radius: 4px; /* Add slight rounding for a clean look */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for elevation */
-  overflow: visible; /* Ensure dropdown is not clipped */
-}
+//   border-radius: 4px; /* Add slight rounding for a clean look */
+//   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for elevation */
+//   overflow: visible; /* Ensure dropdown is not clipped */
+// }
 
 [data-column-id="actions"] {
   position: relative;
