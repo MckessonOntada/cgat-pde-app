@@ -39,8 +39,8 @@ const TherapyDataTable = ({ therapy, onChange }) => {
       totalRocords={paginationConfig.totalElements}
       recordsPerPage={paginationConfig.pageSize}
       aria-label={t('table.ariaLabel.orderList')}
-      paginationRecordsPerPageMessage={'per page'}
-      paginationTotalRecorsMessage={'result'}
+      paginationRecordsPerPageMessage={t('labels.perPage')}
+      paginationTotalRecorsMessage={t('labels.results')}
       noDataComponent={
         <EmptyDataTable
           isLoading={isFetching}
