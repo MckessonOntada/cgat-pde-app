@@ -961,7 +961,7 @@ export const SearchableDropdown = (props) => {
               ) : (
                 <TooltipText className={styles.lineClamps2}>
                   <div className={labelDescription ? styles.compoundLabel : ''}>
-                    <span className={labelDescription ? styles.labelWithDescription : ''}>{label}asdasd</span>
+                    <span className={labelDescription ? styles.labelWithDescription : ''}>{label}</span>
                     {labelDescription ? <span className={styles.labelDescription}>{labelDescription}</span> : null}
                   </div>
                 </TooltipText>
