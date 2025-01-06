@@ -72,7 +72,10 @@ export default function AccountsList(props) {
         name: t('account.address'),
         cell: (row) => (
           <div>
-            <EclipsesTextcss str={`${row.address.houseNumber} ${row.address.street} ${row.address.street2} ${row.address.street3} ${row.address.city} ${row.address.district} ${row.address.state} ${row.address.country}  ${row.address.zipCode}`} maxWidth={320} />
+            <EclipsesTextcss
+              str={`${row.address.houseNumber} ${row.address.street} ${row.address.street2} ${row.address.street3} ${row.address.city} ${row.address.district} ${row.address.state} ${row.address.country}  ${row.address.zipCode}`}
+              maxWidth={320}
+            />
           </div>
         ),
         omit: omitColumns.includes('address'),
@@ -160,7 +163,14 @@ export default function AccountsList(props) {
             paginationRecordsPerPageMessage={t('orgManagement.per_page')}
             isAdmin={true}
             onSortIconClick={props.handleSort}
-            noDataComponent={<EmptyDataTable isLoading={isLoading} image={EmptyDataImage} heading={t('account.add.label')} description={t('account.empty_table.description')} />}
+            noDataComponent={
+              <EmptyDataTable
+                isLoading={isLoading}
+                image={EmptyDataImage}
+                heading={t('account.add.label')}
+                description={t('account.empty_table.description')}
+              />
+            }
           />
         </div>
         {showSelectedAccounts && (

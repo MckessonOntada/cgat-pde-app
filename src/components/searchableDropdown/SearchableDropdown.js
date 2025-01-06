@@ -342,7 +342,7 @@ export const SearchableDropdown = (props) => {
           setDisplayValue(tempOption[0]);
         }
       } else {
-        setDisplayValue(CommonUtils.isNonEmptyString(defaultSelectedLabel) ? defaultSelectedLabel : 'Select option');
+        setDisplayValue(CommonUtils.isNonEmptyString(defaultSelectedLabel) ? defaultSelectedLabel : searchPlaceholder);
       }
     }
     if (isMultiSelect && onChange) {
@@ -797,7 +797,7 @@ export const SearchableDropdown = (props) => {
         if (CommonUtils.isNonEmptyString(defaultSelectedLabel)) {
           return defaultSelectedLabel;
         }
-        return 'Select option';
+        return searchPlaceholder;
       }
     } else {
       if (showSelectedLabels ? !CommonUtils.isNonEmptyString(getSelectedLabels()) : getSelectedCount() === 0) {

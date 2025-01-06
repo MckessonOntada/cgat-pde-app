@@ -326,6 +326,9 @@ export const UserManagementEN = {
 
   'Table.Tabs.ActiveUser': 'ACTIVE USERS',
   'Table.Tabs.pendingRequest': 'PENDING REQUESTS',
+  'labels.startDate': 'Start Date',
+  'labels.endDate': 'End Date',
+  'placeholders.search': 'Search',
   'button.label.loginAsThisUser': 'Login as this user',
   'popup.title.alert': 'Alert!',
   'popup.message.wishToContinueLoginAsThisUserQuestion': 'Do you wish to continue?',

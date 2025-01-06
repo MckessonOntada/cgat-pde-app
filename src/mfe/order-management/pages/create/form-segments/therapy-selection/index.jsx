@@ -178,7 +178,7 @@ function TherapySelection() {
                 onApplyFilters={applyFilters}
                 onClearFilters={clearFilters}
                 additionalFilters={additionalFiltersConfig}
-                searchPlaceholder={t('controls.placeholder.therepySelection.search')}
+                searchPlaceholder={t('controls.placeholder.therapySelection.search')}
               />
             </div>
             <TherapyDataTable therapy={therapy} onChange={setTherapy} />
