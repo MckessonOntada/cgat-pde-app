@@ -287,7 +287,7 @@ const AccountSelection = () => {
                         id={'targetAccount'}
                         label={' '}
                         isMultiSelect={false}
-                        placeholder={'Select Account'}
+                        placeholder={t('controls.placeholder.selectOption')}
                         value={selectedAccount?.accountNumber || ''}
                         onChange={(val) => setSelectedAccount(accountsListData.content?.filter((acc) => acc.accountNumber === val)[0])}
                         options={accountListOptions}

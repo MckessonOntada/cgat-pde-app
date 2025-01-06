@@ -3,8 +3,21 @@ import { SearchableDropdown } from '../searchableDropdown';
 import { Label, Required, TextError } from '@mckesson/mcp-component-library';
 
 const MultiSelectDropdown = (props) => {
-  const { id, label, value, isRequired, onChange, onSearch, error, variant, options, recordsCountToEnableSearch, forcedValue, ...rest } =
-    props;
+  const {
+    id,
+    label,
+    value,
+    isRequired,
+    onChange,
+    onSearch,
+    error,
+    variant,
+    options,
+    recordsCountToEnableSearch,
+    forcedValue,
+    placeholder,
+    ...rest
+  } = props;
   const [startSearchStringTimer, setStartSearchStringTimer] = useState(null);
   const [searchString, setSearchString] = useState('');
 
@@ -55,6 +68,7 @@ const MultiSelectDropdown = (props) => {
         asyncRecordsFound={options?.length}
         variant={variant}
         recordsCountToEnableSearch={recordsCountToEnableSearch}
+        searchPlaceholder={placeholder}
         {...rest}
       />
       {error && <TextError errorMessage={error} />}

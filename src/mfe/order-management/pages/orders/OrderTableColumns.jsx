@@ -323,7 +323,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     cell: (props) => (
       <Tooltip body={props.status}>
         <span>
-          <Badge text={props.status?.replace('_', ' ')} type={getColorByStatus(props.status)} />
+          <Badge text={t(`labels.status.${props.status.toLowerCase()}`)} type={getColorByStatus(props.status)} />
         </span>
       </Tooltip>
     )
