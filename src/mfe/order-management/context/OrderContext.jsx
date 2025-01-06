@@ -4,10 +4,6 @@ import { MdViewArray } from 'react-icons/md';
 import { useQuery } from 'react-query';
 import { StatusEnum } from '../pages/orders/constants';
 
-const TAB_VARIANT = {
-  PENDING_SUBMISSION: 'pending submission',
-  SUBMITTED: 'submitted'
-};
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
   status: []
@@ -38,7 +34,7 @@ export const OrderProvider = ({ children }) => {
   const [paginationConfig, setPaginationConfig] = React.useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);
   const [dataState, setDataState] = React.useState(INITIAL_DATA_STATE);
-  const [tabVariant, setTabVariant] = React.useState(TAB_VARIANT.PENDING_SUBMISSION);
+  const [tabVariant, setTabVariant] = React.useState(1);
 
   const requestParams = React.useMemo(() => {
     const validStatuses = [StatusEnum.IN_DRAFT, StatusEnum.APPROVAL_PENDING, StatusEnum.SUBMITTED, 'all'];
@@ -50,7 +46,7 @@ export const OrderProvider = ({ children }) => {
       sortBy: sortConfig.sortBy || 'createdAt',
       sortOrder: sortConfig.sortOrder || 'desc',
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      ...(tabVariant === 'submitted'
+      ...(tabVariant === 2
         ? { statuses: StatusEnum.SUBMITTED }
         : {
             statuses:
@@ -99,13 +95,10 @@ export const OrderProvider = ({ children }) => {
     setPaginationConfig((prevState) => ({ ...prevState, pageNumber: pageNumber }));
   };
 
-  const changeTab = (tabType = '') => {
+  const changeTab = (tabType = 1) => {
     setFilterConfig({ ...INITIAL_FILTER_STATE });
     setCurrentPage(1);
-    if (tabType.toLowerCase() === 'submitted') setTabVariant('submitted');
-    else {
-      setTabVariant('pending_submission');
-    }
+    setTabVariant(tabType);
   };
 
   return (

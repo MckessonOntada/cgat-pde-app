@@ -59,7 +59,7 @@ const Summary = () => {
   const handleOnBackButtonClick = () => {
     //compare data change, display modal for confirmation
     if (isEdit && formState.activeRecord.status === StatusEnum.SUBMITTED) {
-      navigate(RoutePaths.pathOrderManagement, { state: { activeTab: StatusEnum.SUBMITTED } });
+      navigate(RoutePaths.pathOrderManagement, { state: { activeTab: 2 } });
     } else if (isReview) {
       navigate(RoutePaths.pathOrderManagement);
     } else {
