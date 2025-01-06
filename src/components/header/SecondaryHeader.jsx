@@ -95,7 +95,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
           useAsButton={false}
           role="tablist"
           aria-label="Secondary navigation tabs"
-          LinkComponent={Link}
+          // LinkComponent={Link}
         />
       </div>
     );
