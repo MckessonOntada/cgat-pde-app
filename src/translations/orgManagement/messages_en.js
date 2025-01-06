@@ -136,7 +136,7 @@ export const OrgManagementEN = {
   'orgManagement.label.associateAccount': 'Associate Account',
   'orgManagement.messages.newRoleCreation': 'New role has been successfully created.',
   'orgManagement.messages.roleUpdate': 'Role has been successfully updated.',
-  'message.emptyTableTitle': 'No Data Available',
+  'message.userEmptyTableTitle': 'No Data Available',
   'orgManagement.messages.roleEmptyTableSubtitle': 'Data is unavailable. Please add an organization to view the table content.',
   'orgManagement.messages.userEmptyTableSubtitle': 'Data is unavailable. Please add an user to view the table content.',
   'orgManagement.messages.deleteRoleFailed': 'Failed to deactivate role, please try again.',

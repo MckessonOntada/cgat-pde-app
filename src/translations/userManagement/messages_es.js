@@ -49,6 +49,10 @@ export const UserManagementES = {
   'userManagement.label.cancel': 'S_Cancel',
   'userManagement.label.save': 'S_Save',
   'userManagement.label.status': 'S_Status',
+  'userManagement.label.description': 'S_Description',
+  'userManagement.label.createdOn': 'S_Created On',
+  'userManagement.label.emptyPermissionListTitle': 'S_No permissions available',
+  'userManagement.label.emptyPermissionListSubtitle': 'S_Please assign permission to see it here',
   'userManagement.status.active': 'S_Active',
   'userManagement.status.inactive': 'S_Inactive',
   'userManagement.manageUser.breadCrumb.lable.allUser': 'S_All Users',
@@ -119,6 +123,9 @@ export const UserManagementES = {
   'userManagement.stepper.option.user_details': 'S_User Details',
   'userManagement.stepper.option.roles_and_permissions': 'S_Roles and Permissions',
   'userManagement.stepper.option.associate_accounts': 'S_Associate Accounts',
+
+  'userManagement.userDetails.userAddress': 'S_User Address',
+  'userManagement.userDetails.lastUpdatedOn': 'S_Last Updated On:',
 
   'userManagement.header.view.edit_user': 'S_User Details',
 

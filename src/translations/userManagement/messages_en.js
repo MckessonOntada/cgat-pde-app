@@ -50,6 +50,10 @@ export const UserManagementEN = {
   'userManagement.label.cancel': 'Cancel',
   'userManagement.label.save': 'Save',
   'userManagement.label.status': 'Status',
+  'userManagement.label.description': 'Description',
+  'userManagement.label.createdOn': 'Created On',
+  'userManagement.label.emptyPermissionListTitle': 'No permissions available',
+  'userManagement.label.emptyPermissionListSubtitle': 'Please assign permission to see it here',
   'userManagement.status.active': 'Active',
   'userManagement.status.inactive': 'Inactive',
   'userManagement.manageUser.breadCrumb.lable.allUser': 'All Users',
@@ -119,8 +123,8 @@ export const UserManagementEN = {
   'userManagement.create_user.validation.fax_max': 'Fax can be a maximum of 15 characters',
   'userManagement.create_user.option.please_select': 'Please Select',
 
-  'userManagement.userdetails.addressdetails': 'User Address',
-  'userManagement.userdetails.lastupdatedon': 'Last Updated On:',
+  'userManagement.userDetails.userAddress': 'User Address',
+  'userManagement.userDetails.lastUpdatedOn': 'Last Updated On:',
 
   'userManagement.stepper.option.user_details': 'User Details',
   'userManagement.stepper.option.roles_and_permissions': 'Roles and Permissions',

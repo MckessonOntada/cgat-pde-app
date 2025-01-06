@@ -66,7 +66,13 @@ const roleDetail = () => {
           <ModuleHeader
             heading={<Heading as="h1">{t('orgManagement.role.labelRolesDetails')}</Heading>}
             controls={
-              <Button Icon={EditPencil} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`edit-role`, { state: data })}>
+              <Button
+                Icon={EditPencil}
+                variant="secondary"
+                className="button-icon"
+                size="md"
+                disabled={!data?.isActive}
+                onClick={() => navigate(`edit-role`, { state: data })}>
                 {t('userManagement.button.edit')}
               </Button>
             }
@@ -78,14 +84,16 @@ const roleDetail = () => {
                 <Heading as="h2">{data?.name}</Heading>
               </div>
               <div className="user-status">
-                <span className="view_label">Created On:</span>
-                <span className="label-text">{CommonUtils.convertDateStringFormat(data?.createdAt ? data?.createdAt : data?.updatedAt, 'MM-DD-YYYY')}</span>
+                <span className="view_label">{t('userManagement.label.createdOn')}:</span>
+                <span className="label-text">
+                  {CommonUtils.convertDateStringFormat(data?.createdAt ? data?.createdAt : data?.updatedAt, 'MM-DD-YYYY')}
+                </span>
               </div>
             </div>
 
             <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-2">
               <div>
-                <span className="view_label">Description</span>
+                <span className="view_label">{t('userManagement.label.description')}</span>
                 <p className="label-text">{data?.description || '-'}</p>
               </div>
             </div>
@@ -95,7 +103,13 @@ const roleDetail = () => {
             heading={<Heading as="h1">{t('userManagement.header.view.permissions_granted')}</Heading>}
             controls={
               <div className="controls">
-                <Button Icon={EditPencil} variant="secondary" className="button-icon" size="md" disabled={!data?.isActive} onClick={() => navigate(`permissions`, { state: { data, isEdit: true } })}>
+                <Button
+                  Icon={EditPencil}
+                  variant="secondary"
+                  className="button-icon"
+                  size="md"
+                  disabled={!data?.isActive}
+                  onClick={() => navigate(`permissions`, { state: { data, isEdit: true } })}>
                   {t('userManagement.button.edit')}
                 </Button>
               </div>
@@ -130,7 +144,12 @@ const roleDetail = () => {
                 </div>
               ))
             ) : (
-              <EmptyDataTable isLoading={false} image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('userManagement.messages.emptysubtitle')} />
+              <EmptyDataTable
+                isLoading={false}
+                image={EmptyDataImage}
+                heading={t('userManagement.label.emptyPermissionListTitle')}
+                description={t('userManagement.label.emptyPermissionListSubtitle')}
+              />
             )}
           </div>
         </div>
