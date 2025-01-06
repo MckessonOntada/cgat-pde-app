@@ -19,6 +19,7 @@ import ScrollToTop from '@src/components/scrollToTop/ScrollToTop';
 import ManageApprovers from '@src/mfe/order-management/manageApprovers';
 import { AccountProvider } from '@src/mfe/finance-management/context/AccountContext';
 import Details from '@src/mfe/finance-management/pages/details';
+import { PATHS as PaymentInvoicesPaths } from '@src/mfe/finance-management/routes';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
@@ -132,7 +133,7 @@ function MainLayout() {
                 element={
                   <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
                     <AccountProvider>
-                      <Details />
+                      <Details type={PaymentInvoicesPaths.invoices} />
                     </AccountProvider>
                   </ProtectedRoute>
                 }
@@ -142,7 +143,7 @@ function MainLayout() {
                 element={
                   <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
                     <AccountProvider>
-                      <Details />
+                      <Details type={PaymentInvoicesPaths.credits} />
                     </AccountProvider>
                   </ProtectedRoute>
                 }
