@@ -119,8 +119,8 @@ export const UserManagementEN = {
   'userManagement.create_user.validation.fax_max': 'Fax can be a maximum of 15 characters',
   'userManagement.create_user.option.please_select': 'Please Select',
 
-  'userManagement.userdetails.addressdetails': 'User Address',
-  'userManagement.userdetails.lastupdatedon': 'Last Updated On:',
+  'userManagement.userDetails.userAddress': 'User Address',
+  'userManagement.userDetails.lastUpdatedOn': 'Last Updated On:',
 
   'userManagement.stepper.option.user_details': 'User Details',
   'userManagement.stepper.option.roles_and_permissions': 'Roles and Permissions',

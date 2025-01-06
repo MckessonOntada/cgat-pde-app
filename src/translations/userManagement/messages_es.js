@@ -120,6 +120,9 @@ export const UserManagementES = {
   'userManagement.stepper.option.roles_and_permissions': 'S_Roles and Permissions',
   'userManagement.stepper.option.associate_accounts': 'S_Associate Accounts',
 
+  'userManagement.userDetails.userAddress': 'S_User Address',
+  'userManagement.userDetails.lastUpdatedOn': 'S_Last Updated On:',
+
   'userManagement.header.view.edit_user': 'S_User Details',
 
   'userManagement.header.view.permissions_granted': 'S_Permissions Granted',

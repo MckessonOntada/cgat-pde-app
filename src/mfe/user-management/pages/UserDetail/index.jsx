@@ -239,7 +239,7 @@ const UserDetail = () => {
               {data?.role?.name && <Badge text={data?.role?.name} type={getBackgroundColorByRole(data?.role?.name)} />}
             </div>
             <div className="user-status">
-              <span className="view_label">{t('userManagement.userdetails.lastupdatedon')}</span>
+              <span className="view_label">{t('userManagement.userDetails.lastUpdatedOn')}</span>
 
               <span className="label-text">
                 {' '}
@@ -253,7 +253,7 @@ const UserDetail = () => {
                 handleToggle={handleDeactivate}
                 id="id"
                 disabled={!data?.isActive}
-                label={data?.isActive ? 'Active' : ''}
+                label={data?.isActive ? t('userManagement.status.active') : ''}
                 labelPosition="right"
                 name="Toggle"
                 size="lg"
@@ -264,7 +264,7 @@ const UserDetail = () => {
 
           <div className="userCardContainer grid grid-gap-24 grid-cols-1 md:grid-cols-4">
             <div>
-              <span className="view_label">{t('userManagement.userdetails.addressdetails')}</span>
+              <span className="view_label">{t('userManagement.userDetails.userAddress')}</span>
               <p className="label-text">
                 {data?.address.address1}, {data?.address.address2}
               </p>

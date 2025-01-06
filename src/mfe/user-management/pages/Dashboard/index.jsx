@@ -73,7 +73,7 @@ export default function Dashboard() {
   };
 
   const handleTabClick = (tab) => {
-    setActiveTab(tab.configName);
+    setActiveTab(tab.id);
   };
 
   const tabs = [
@@ -81,14 +81,14 @@ export default function Dashboard() {
       id: 1,
       configName: t('Table.Tabs.ActiveUser'),
       isActive: true,
-      isActiveTab: activeTab === 'ACTIVE USERS',
+      isActiveTab: activeTab === 1,
       sequence: 1,
       lableForMobile: 'ACTIVE USERS'
     },
     {
       id: 2,
       configName: t('Table.Tabs.pendingRequest'),
-      isActiveTab: activeTab === 'PENDING REQUESTS',
+      isActiveTab: activeTab === 2,
       isActive: true,
       sequence: 2,
       lableForMobile: 'ACTIVE USERS'
@@ -175,15 +175,14 @@ export default function Dashboard() {
           />
         </div>
         <Heading as="h2">
-          {' '}
           {t(isSystemAdminView ? 'userManagement.table.systemadminlisting.label' : 'userManagement.table.userlisting.label')}
         </Heading>
         {!isSystemAdminView && (
           <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />
         )}
         <div className="userList">
-          {activeTab === 'ACTIVE USERS' && <UserTable selectableRows={true} onActionSuccess={handleSuccess} />}
-          {activeTab === 'PENDING REQUESTS' && <UserTable selectableRows={false} />}
+          {activeTab === 1 && <UserTable selectableRows={true} onActionSuccess={handleSuccess} />}
+          {activeTab === 2 && <UserTable selectableRows={false} />}
         </div>
       </div>
     </div>
