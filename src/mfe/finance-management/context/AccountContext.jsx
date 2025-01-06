@@ -35,15 +35,15 @@ export const AccountProvider = ({ children }) => {
     }));
     setPayToAccountsList(formattedAccounts);
   };
-
-  const apiUrl = useMemo(() => {
+  
+  const getApiUrl = (searchText) => {
     const params = {
       pageNo: 0,
       pageSize: ACCOUNTS_PER_SEARCH,
       query: searchText
     };
-    return `${ApiRoutes.PAY_TO_ACCOUNTS}?${serializeParams(params)}`;
-  }, [searchText]);
+    return `${ApiRoutes.PAY_TO_ACCOUNTS()}?${serializeParams(params)}`;
+  };
 
   const {
     isLoading: fetchingAccounts,
@@ -51,9 +51,9 @@ export const AccountProvider = ({ children }) => {
     isError: errorFetchingAccounts,
     refetch: refetchPayToAccountsData
   } = useQuery({
-    queryKey: [apiUrl],
+    queryKey: [searchText],
     queryFn: async () => {
-      const response = await HttpResourceService.callRest(`${apiUrl}`, httpVerb.GET, {});
+      const response = await HttpResourceService.callRest(`${getApiUrl(searchText)}`, httpVerb.GET, {});
       if (response && response.data) {
         const { content } = response.data;
         return content;
