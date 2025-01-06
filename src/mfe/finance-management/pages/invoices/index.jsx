@@ -57,7 +57,7 @@ export default function Invoices(params) {
       </div>
       <div className="MCP-table-wrapper">
         <div className="table-header">
-          <h1>{t('paymentInvoices.history.table.heading')}</h1>
+          <h1>{t('paymentInvoices.invoice.table.heading')}</h1>
           <Button variant="secondary" onClick={() => {}} size="sm" disabled>
             {t('paymentInvoices.CS.ExportExcel')}
           </Button>

@@ -75,7 +75,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.OpenAmount': 'S_Open Amount',
   'paymentInvoices.history.table.BillAmount': 'S_Bill Amount',
   'paymentInvoices.history.table.Actions': 'S_Actions',
-  'paymentInvoices.history.table.heading': 'S_Payment Listing',
+  'paymentInvoices.invoice.table.heading': 'S_Invoice Listing',
   'paymentInvoices.history.table.status': 'S_Status',
   'paymentInvoices.paymentMethods.filter.search.placeholder': 'S_Select by name or number',
   'paymentInvoices.invoice.table.emptyData': 'S_No Invoice Found',
