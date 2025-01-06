@@ -285,5 +285,12 @@ export const UserManagementES = {
   'Table.Tabs.pendingRequest': 'S_PENDING REQUESTS',
   'labels.startDate': 'S_Start Date',
   'labels.endDate': 'S_End Date',
-  'placeholders.search': 'S_Search'
+  'placeholders.search': 'S_Search',
+  'button.label.loginAsThisUser': 'S_Login as this user',
+  'popup.title.alert': 'S_Alert!',
+  'popup.message.wishToContinueLoginAsThisUserQuestion': 'S_Do you wish to continue?',
+  'popup.message.wishToContinueLoginAsThisUserDescription':
+    'S_You are about to perform actions on behalf of {{targetUser}}. Please confirm that you have you have verified the identity of the requesting user the necessary permissions and that you understand the implications of proceeding with this task',
+  'popup.message.wishToContinueLoginAsThisUserCheckBoxConsent':
+    'S_By confirming, you acknowledge that all actions taken will be logged and attributed to your account.'
 };

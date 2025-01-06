@@ -59,7 +59,8 @@ function AdditionalDetails() {
   const formFields = getFormFields(t);
   const navigate = useNavigate();
   const location = useLocation();
-  const { isEdit = false, alertState } = location.state || {};
+  const { isEdit = false, isReview = false, alertState } = location.state || {};
+  const isReviewandEdit = isReview && isEdit;
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
@@ -86,7 +87,7 @@ function AdditionalDetails() {
       onSuccess: (result) => {
         const { id } = result;
         setActiveRecord(result);
-        navigate(`../${id}/summary`);
+        navigate(`../${id}/summary`, { state: { isEdit: isEdit, isReview: isReview } });
       },
       onError: console.log
     }
@@ -141,14 +142,14 @@ function AdditionalDetails() {
       return;
     }
     if (isEdit) {
-      navigate(`../${orderId}/summary`, { state: { isEdit: true } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview } });
     } else {
       if (formState.activeRecord?.patientDetailsRequired) {
         editByStage(ORDER_STAGES.PATIENT_DETAILS);
-        navigate(`../${orderId}/patient`);
+        navigate(`../${orderId}/patient`, { state: { isReview: isReview, isEdit: isEdit } });
       } else {
         editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-        navigate(`../${orderId}/accounts`);
+        navigate(`../${orderId}/accounts`, { state: { isReview: isReview, isEdit: isEdit } });
       }
     }
   };
@@ -186,13 +187,13 @@ function AdditionalDetails() {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, { state: { isEdit: true } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview } });
     } else if (modalSuccessCallback === 'patient') {
       editByStage(ORDER_STAGES.PATIENT_DETAILS);
-      navigate(`../${orderId}/patient`);
+      navigate(`../${orderId}/patient`, { state: { isEdit: isEdit, isReview: isReview } });
     } else if (modalSuccessCallback === 'account') {
       editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-      navigate(`../${orderId}/accounts`);
+      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isReview: isReview } });
     }
   };
 
@@ -216,7 +217,13 @@ function AdditionalDetails() {
         </Button>
       </div>
 
-      <PageHeader heading={<Heading as="h1">{isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}</Heading>} />
+      <PageHeader
+        heading={
+          <Heading as="h1">
+            {isReviewandEdit ? t('headings.reviewOrder') : isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}
+          </Heading>
+        }
+      />
 
       <Formik
         initialValues={initialFormValues}

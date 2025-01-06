@@ -84,6 +84,11 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.heading': 'Invoice Listing',
   'paymentInvoices.history.table.status': 'Status',
   'paymentInvoices.invoice.table.emptyData': 'No Invoice Found',
+  'paymentInvoices.Details.backToManageInvoices': 'BACK TO MANAGE INVOICES PAGE',
+  'paymentInvoices.Details.Invoice': 'Invoice',
+  'paymentInvoices.Details.DownloadPDF': 'DOWNLOAD PDF',
+  'paymentInvoices.Details.ReviewAndPay': 'REVIEW AND PAY',
+
   //Credits
   'paymentInvoices.credits.table.description': 'Description',
   'paymentInvoices.credits.table.validfrom': ' Valid From',
@@ -91,6 +96,9 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.credits.table.downloadPdf': ' download pdf',
   'paymentInvoices.credits.table.heading': 'Credits Listing',
   'paymentInvoices.credits.table.emptyData': 'No Credits Found',
+  'paymentInvoices.Details.backToManageCredits': 'BACK TO MANAGE CREDITS PAGE',
+  'paymentInvoices.Details.Credit': 'Credit',
+
   //payment methods - bank account
   'paymentInvoices.paymentMethods.banks.filter.search.label': 'Search bank accounts',
   'paymentInvoices.paymentMethods.filter.search.placeholder': 'Select by name or number',

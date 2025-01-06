@@ -1,5 +1,5 @@
 export const PATHS = {
-  invoices: 'invoice',
+  invoices: 'invoices',
   credits: 'credits',
   pendingPayments: 'pending-payments',
   paymentHistory: 'payment-history',

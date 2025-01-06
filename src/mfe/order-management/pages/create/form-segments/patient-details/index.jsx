@@ -30,7 +30,9 @@ const PatientDetails = () => {
   const alertContainerId = 'patintDetails-alert-container';
   const { showAlert } = useAlert();
   const location = useLocation();
-  const { isEdit = false, alertState } = location.state || {};
+  const { isEdit = false, isReview = false, alertState } = location.state || {};
+  const isReviewandEdit = isReview && isEdit;
+
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
 
@@ -110,7 +112,7 @@ const PatientDetails = () => {
       onSuccess: (result) => {
         const { id } = result;
         setActiveRecord(result);
-        navigate(`../${id}/additional-details`);
+        navigate(`../${id}/additional-details`, { state: { isEdit: isEdit, isReview: isReview } });
       },
       onError: ({ err, payload }) => {
         if (err.status === 409) {
@@ -133,10 +135,10 @@ const PatientDetails = () => {
     }
 
     if (isEdit) {
-      navigate(`../${orderId}/summary`, { state: { isEdit: true } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: true, isReview: isReview } });
     } else {
       editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-      navigate(`../${orderId}/accounts`);
+      navigate(`../${orderId}/accounts`, { state: { isReview: isReview, isEdit: isEdit } });
     }
   };
 
@@ -165,10 +167,10 @@ const PatientDetails = () => {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, { state: { isEdit: true } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview } });
     } else if (modalSuccessCallback === 'account') {
       editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-      navigate(`../${orderId}/accounts`);
+      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isReview: isReview } });
     }
   };
 
@@ -182,7 +184,13 @@ const PatientDetails = () => {
         </Button>
       </div>
 
-      <PageHeader heading={<Heading as="h1">{isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}</Heading>} />
+      <PageHeader
+        heading={
+          <Heading as="h1">
+            {isReviewandEdit ? t('headings.reviewOrder') : isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}
+          </Heading>
+        }
+      />
 
       <div className="MCP-module-body">
         {/* <Stepper activeIndex={3} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} /> */}

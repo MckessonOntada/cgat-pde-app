@@ -1,6 +1,7 @@
 export const MessageEn = {
   'headings.orders': 'Orders',
   'headings.createNewOrder': 'Create New Order',
+  'headings.reviewOrder': 'Review Order',
   'headings.editOrder': 'Edit Order',
   'headings.orderListing': 'Order Listing',
   'headings.orderSummary': 'Order Summary',
@@ -8,6 +9,7 @@ export const MessageEn = {
   'headings.shippingAddress': 'Shipping Address',
   'headings.selectAccountToUpdate': 'Select the account you want to update',
   'headings.orderSubmitted': 'Order Submitted!',
+  'headings.orderApproved': 'Order Approved!',
   'headings.addShippingAddress': 'Add Shipping Address',
   'captions.status': 'Status',
   'captions.clearFilters': 'Clear Filters',
@@ -29,9 +31,12 @@ export const MessageEn = {
   'captions.btnBacktoTherapySelection': 'Back To Therapy Selection',
   'captions.btnEdit': 'Edit',
   'captions.btnSubmitOrder': 'Submit Order',
+  'captions.btnApproveOrder': 'Approve Order',
+  'captions.btnRejectOrder': 'Reject Order',
   'captions.btnInventoryCheck': 'Inventory Check',
   'captions.emptyTableTitle': 'No Order found',
   'captions.emptyTableSubtitle': 'You need to add Order to see data in this table.',
+  'labels.orderDetails': 'Order Details',
   'labels.variant': 'Variant',
   'labels.coiId': 'COI ID',
   'labels.orderQuantity': 'Order Quantity',
@@ -143,9 +148,14 @@ export const MessageEn = {
   'labels.orderActions.review': 'Review',
   'labels.orderActions.view': 'View Details',
   'labels.orderActions.edit': 'Edit Order',
+  'labels.orderActions.cancel': 'Cancel Order',
   'labels.orderActions.assignToMe': 'Assign to me',
+  'labels.orderActions.unassignToMe': 'UnAssign to me',
   'labels.orderActions.approve': 'Approve Order',
-
+  'labels.orderActions.deletemessage': 'Are you sure you wish to Delete this Order ?',
+  'labels.orderActions.cancelmessage': 'Please reach out to customer support at 1800XXXXXXX for any updation or cancellation in the order.',
+  'labels.orderActions.okay': 'okay',
+  'labels.information': 'Information',
   'labels.therapy.generalDetails': 'Details',
   'labels.therapy.configuration': 'Configuration',
   'labels.therapy.materialNumber': 'Material Number',
@@ -199,6 +209,7 @@ export const MessageEn = {
   'label.no': 'No',
   'messages.formNotFound': 'Form Not Found',
   'messages.orderSuccessApprovalPending': 'Your order has been submitted successfully and is now pending for approval.',
+  'messages.orderApprovalSuccess': 'Your order has been approved successfully and is in line for the fulfilment.',
   'messages.accountSelect': 'Please select the account to buy the therapy for',
   'messages.selectAnAccountForShippingAddress': 'Select an account to view the list of shipping addresses',
   'messages.orderPlacementAcknowledgement':
@@ -259,5 +270,16 @@ export const MessageEn = {
   'messages.confirmation.account': 'You have changed Account details. Do you still want to go back? Your changes will be discarded!',
   'messages.confirmation.therapy': 'You have changed Therapy details. Do you still want to go back? Your changes will be discarded!',
   'messages.confirmation.addition': 'You have changed Addtional details. Do you still want to go back? Your changes will be discarded!',
-  'messages.confirmation.patient': 'You have changed Patient details. Do you still want to go back? Your changes will be discarded!'
+  'messages.confirmation.patient': 'You have changed Patient details. Do you still want to go back? Your changes will be discarded!',
+
+  'messages.header.confirmation': 'Confirmation!',
+  'messages.header.warning': 'Warning!',
+
+  'messages.confirmation.reject': 'Are you sure you want to reject this order',
+  'messages.confirmation.approve': 'Are you sure you want to approve this order',
+  'messages.success.delete': 'Order Deleted Successfully.',
+  'messages.success.release': 'Order Released Successfully.',
+  'messages.success.assign': 'Order Assigned Successfully.',
+  'errors.There is no Approver Group assigned to the order': 'There is no Approver Group assigned to the order.',
+  'errors.default': 'An unexpected error occurred.'
 };
