@@ -68,7 +68,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
             item.configName === 'Dashboard' ||
             (item.configName !== 'Dashboard' && AuthUtils.userHasRoutePermission(routePermissionConfig.paymentInvoices))
           ) {
-            const isDashboard = item.configName === 'Dashboard' && location.pathname === '/';
+            const isDashboard = item.configName === 'Dashboard' && !location.pathname.includes('/record');
             const isMatchingPath = item.path !== '/' && location.pathname.includes(item.path);
             return {
               ...item,

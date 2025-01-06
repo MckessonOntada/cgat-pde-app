@@ -174,35 +174,37 @@ function Details(props) {
           <DetailsFlexGrid invoiceDetails={invoiceDetails} />
         </div>
         <DetailMetrics data={billDates} />
-        <CustomDataTable
-          id="my-data-table"
-          type="normal"
-          columns={columns}
-          data={data || []}
-          onSortIconClick={() => {}}
-          //   progressPending={isFetching}
-          noDataComponent={
-            <EmptyDataTable
-              isLoading={false}
-              error={false ? 'Something went wrong! Please try again' : null}
-              image={EmptyDataImage}
-              heading={t('paymentInvoices.invoice.table.emptyData')}
-              description={t('paymentInvoices.history.table.emptyDataDescription')}
-            />
-          }
-          progressComponent={
-            <div
-              style={{
-                alignItems: 'center',
-                border: '1px solid #ccc',
-                display: 'flex',
-                height: '350px',
-                justifyContent: 'center'
-              }}>
-              <Loader variant="circular" />
-            </div>
-          }
-        />
+        <div className="datatable-container">
+          <CustomDataTable
+            id="my-data-table"
+            type="normal"
+            columns={columns}
+            data={data || []}
+            onSortIconClick={() => {}}
+            //   progressPending={isFetching}
+            noDataComponent={
+              <EmptyDataTable
+                isLoading={false}
+                error={false ? 'Something went wrong! Please try again' : null}
+                image={EmptyDataImage}
+                heading={t('paymentInvoices.invoice.table.emptyData')}
+                description={t('paymentInvoices.history.table.emptyDataDescription')}
+              />
+            }
+            progressComponent={
+              <div
+                style={{
+                  alignItems: 'center',
+                  border: '1px solid #ccc',
+                  display: 'flex',
+                  height: '350px',
+                  justifyContent: 'center'
+                }}>
+                <Loader variant="circular" />
+              </div>
+            }
+          />
+        </div>
       </div>
 
       <div className="footer-section">
