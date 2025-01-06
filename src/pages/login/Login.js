@@ -63,7 +63,7 @@ const Login = () => {
       helpLinks: {
         custom: [
           {
-            text: 'Sign Up',
+            text: 'New User',
             href: '/signup',
             className: 'signup-link'
           }
