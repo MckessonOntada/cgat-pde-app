@@ -29,6 +29,13 @@ export const PaymentInvoicesES = {
   'paymentInvoices.balanceCard.PLUS_91_DAYS_OVERDUE': 'S_91+ days over',
   'paymentInvoices.balanceCard.payNowBtn': 'S_Pay Now',
   'paymentInvoices.balanceAPI.error': 'S_Error fetching open invoices balance.',
+  // Invoices Table
+  'paymentInvoices.invoicesTable.filter.billDateStart': 's_Bill Date (Start)',
+  'paymentInvoices.invoicesTable.filter.billDateEnd': 's_Bill Date (End)',
+  'paymentInvoices.invoicesTable.filter.dueDateStart': 's_Due Date (Start)',
+  'paymentInvoices.invoicesTable.filter.dueDateEnd': 's_Due Date (End)',
+  'paymentInvoices.pendingPayments.filter.dueDateStart': 's_Initiation Date (Start)',
+  'paymentInvoices.pendingPayments.filter.dueDateEnd': 's_Initiation Date (End)',
   // Payment History
   'paymentInvoices.history.table.confirmationNumber': 'S_Confirmation No.',
   'paymentInvoices.history.table.purchaseOrderNumber': 'S_Purchase Order Number',
@@ -36,7 +43,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.paymentStatus': 'S_Payment Status',
   'paymentInvoices.history.table.paymentInitiationDate': 'S_Payment Initiation Date',
   'paymentInvoices.history.table.totalAuthorizedPaymentAmt': 'S_Total Authorization Amt',
-  'paymentInvoices.history.filters.autoSearch': 'S_Search by document number, sold to',
+  'paymentInvoices.history.filters.autoSearch': 'S_Search by Confirmation No., Payment Method',
   'paymentInvoices.history.filters.filterBtn': 'S_Filter',
   'paymentInvoices.history.filters.status': 'S_Payment Status',
   'paymentInvoices.history.filters.method': 'S_Payment Method',
@@ -118,7 +125,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.paymentMethods.table.cards.emptyData': 'S_No Credit Cards Found',
 
   //Pending Payments
-  'pendingPayments.filters.autoSearch': 'S_Search by document number, sold to',
+  'pendingPayments.filters.autoSearch': 'S_Search by Confirmation No., Payment Method',
   'pendingPayments.table.confirmationNumber': 'S_Confirmation Number',
   'pendingPayments.table.totalAuthorizedPaymentAmt': 'S_Total Authorized Payment Amount',
   'pendingPayments.table.cancelPayment': 'S_CANCEL PAYMENT',
@@ -127,7 +134,6 @@ export const PaymentInvoicesES = {
   'pendingPayments.table.bankAccount.emptyData': 'S_No Pending Payments Found',
   'pendingPayments.table.paymentStatus': 'S_Payment Status',
   'pendingPayments.table.billDate': 'S_Bill Date',
-  'pendingPayments.filters.autoSearch': 'S_Search by document number, sold to',
 
   // No data found
   'paymentInvoices.EmptyData.heading': 'S_No Data Found',

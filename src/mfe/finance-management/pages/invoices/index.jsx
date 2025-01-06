@@ -51,7 +51,7 @@ export default function Invoices(params) {
           onApplyFilters={applyFilters}
           onClearFilters={clearFilters}
           additionalFilters={AdditionalFiltersConfig}
-          searchPlaceholder={t('pendingPayments.filters.autoSearch')}
+          searchPlaceholder={'Search by Bill No., Sold to'}
           actualData={actualData}
         />
       </div>

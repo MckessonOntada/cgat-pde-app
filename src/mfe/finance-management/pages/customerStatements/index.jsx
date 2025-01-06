@@ -15,8 +15,6 @@ export default function CustomerSatements(params) {
       {
         type: 'dateRangePicker',
         name: 'dateRange',
-        startDateLabel: t('paymentInvoices.history.table.PostingDate'),
-        endDateLabel: t('paymentInvoices.history.table.DueDate'),
         minDate: dayjs().subtract(180, 'days').toDate(),
         maxDate: new Date()
       }
@@ -30,7 +28,7 @@ export default function CustomerSatements(params) {
           onApplyFilters={applyFilters}
           onClearFilters={clearFilters}
           additionalFilters={AdditionalFiltersConfig}
-          searchPlaceholder={'Search by document number, sold to...'}
+          searchPlaceholder={'Search by Bill No.'}
           actualData={actualData}
         />
       </div>

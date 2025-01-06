@@ -35,6 +35,8 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.invoicesTable.filter.billDateEnd': 'Bill Date (End)',
   'paymentInvoices.invoicesTable.filter.dueDateStart': 'Due Date (Start)',
   'paymentInvoices.invoicesTable.filter.dueDateEnd': 'Due Date (End)',
+  'paymentInvoices.pendingPayments.filter.initiationDateStart': 'Initiation Date (Start)',
+  'paymentInvoices.pendingPayments.filter.initiationDateEnd': 'Initiation Date (End)',
 
   // Payment History
   'paymentInvoices.history.table.confirmationNumber': 'Confirmation No.',
@@ -43,7 +45,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.paymentStatus': 'Payment Status',
   'paymentInvoices.history.table.paymentInitiationDate': 'Payment Initiation Date',
   'paymentInvoices.history.table.totalAuthorizedPaymentAmt': 'Total Authorization Amt',
-  'paymentInvoices.history.filters.autoSearch': 'Search by document number, sold to',
+  'paymentInvoices.history.filters.autoSearch': 'Search by Confirmation No., Payment Method',
   'paymentInvoices.history.filters.filterBtn': 'Filter',
   'paymentInvoices.history.filters.status': 'Payment Status',
   'paymentInvoices.history.filters.method': 'Payment Method',
@@ -124,7 +126,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.paymentMethods.table.cards.emptyData': 'No Credit Cards Found',
 
   //Pending Payments
-  'pendingPayments.filters.autoSearch': 'Search by document number, sold to',
+  'pendingPayments.filters.autoSearch': 'Search by Confirmation No., Payment Method',
   'pendingPayments.table.confirmationNumber': 'Confirmation Number',
   'pendingPayments.table.totalAuthorizedPaymentAmt': 'Total Authorized Payment Amount',
   'pendingPayments.table.cancelPayment': 'CANCEL PAYMENT',
@@ -133,7 +135,6 @@ export const PaymentInvoicesEN = {
   'pendingPayments.table.bankAccount.emptyData': 'No Pending Payments Found',
   'pendingPayments.table.paymentStatus': 'Payment Status',
   'pendingPayments.table.billDate': 'Bill Date',
-  'pendingPayments.filters.autoSearch': 'Search by document number, sold to',
 
   // No data found
   'paymentInvoices.EmptyData.heading': 'No Data Found',
