@@ -80,6 +80,9 @@ export const PaymentInvoicesES = {
   'paymentInvoices.paymentMethods.filter.search.placeholder': 'S_Select by name or number',
   'paymentInvoices.invoice.table.emptyData': 'S_No Invoice Found',
   'paymentInvoices.Details.backToManageInvoices': 'S_BACK TO MANAGE INVOICES PAGE',
+  'paymentInvoices.Details.Invoice': 'S_Invoice',
+  'paymentInvoices.Details.DownloadPDF': 'S_DOWNLOAD PDF',
+  'paymentInvoices.Details.ReviewAndPay': 'S_REVIEW AND PAY',
 
   //Credits
   'paymentInvoices.credits.table.description': 'S_Description',
@@ -88,6 +91,8 @@ export const PaymentInvoicesES = {
   'paymentInvoices.credits.table.downloadPdf': 'S_download pdf',
   'paymentInvoices.credits.table.heading': 'S_Credits Listing',
   'paymentInvoices.credits.table.emptyData': 'S_No Credits Found',
+  'paymentInvoices.Details.backToManageCredits': 'S_BACK TO MANAGE CREDITS PAGE',
+  'paymentInvoices.Details.Credit': 'S_Credit',
 
   //payment methods - bank account
   'paymentInvoices.paymentMethods.banks.filter.search.label': 'S_Search bank accounts',

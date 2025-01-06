@@ -11,6 +11,7 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FormattedNumber } from 'react-intl';
 import dayjs from 'dayjs';
+import { PATHS } from '../../routes';
 
 const PAYMENT_STATUS = {
   PENDING: { label: 'Pending', color: 'warning' },
@@ -32,7 +33,9 @@ export default function PaymentHistoryTable() {
       wrap: true,
       cell: (props) => (
         <div className="cellEllipse">
-          <Link style={{ color: '#007bff', fontWeight: '600' }}>{`${props.confirmationNo}`}</Link>
+          <Link
+            style={{ color: '#007bff', fontWeight: '600' }}
+            to={`/record/${PATHS.paymentHistory}/${props?.confirmationNo}/confirmation`}>{`${props?.confirmationNo}`}</Link>
         </div>
       )
     },
