@@ -56,6 +56,10 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.heading': 'S_Payment History',
   'paymentInvoices.history.table.emptyData': 'S_No Payment History Found',
   'paymentInvoices.history.table.emptyDataDescription': 'S_Please try again later',
+  'paymentInvoices.history.table.authorizedPayment':'S_Authorized Payment',
+  'paymentInvoices.history.table.usedDate':'S_Used Date',
+  'paymentInvoices.history.table.creditUsed':'Credit Used',
+  'paymentInvoices.Details.print': 'S_Print',
 
   // Customer Statements
   'paymentInvoices.CS.filters.autoSearch': 'S_Search by document number, sold to',

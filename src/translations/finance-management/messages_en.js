@@ -58,6 +58,10 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.heading': 'Payment History',
   'paymentInvoices.history.table.emptyData': 'No Payment History Found',
   'paymentInvoices.history.table.emptyDataDescription': 'Try again or adjust filters',
+  'paymentInvoices.history.table.authorizedPayment':'Authorized Payment',
+  'paymentInvoices.history.table.usedDate':'Used Date',
+  'paymentInvoices.history.table.creditUsed':'Credit Used',
+
   // Customer Statements
   'paymentInvoices.CS.filters.autoSearch': 'Search by document number, sold to',
   'paymentInvoices.CS.filters.filterBtn': 'Apply Filter',
@@ -90,6 +94,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.Details.Invoice': 'Invoice',
   'paymentInvoices.Details.DownloadPDF': 'DOWNLOAD PDF',
   'paymentInvoices.Details.ReviewAndPay': 'REVIEW AND PAY',
+  'paymentInvoices.Details.print': 'Print',
 
   //Credits
   'paymentInvoices.credits.table.description': 'Description',
