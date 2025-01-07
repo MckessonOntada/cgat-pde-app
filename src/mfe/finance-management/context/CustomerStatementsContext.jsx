@@ -6,6 +6,7 @@ import useSnackbar from '@src/hooks/useSnackbar';
 import { useAccountContext } from './AccountContext';
 import dayjs from 'dayjs';
 import { useTranslate } from '@src/translations/useTranslation';
+import CommonUtils from '@src/util/CommonUtils';
 
 const CustomerStatementsContext = createContext();
 
@@ -229,13 +230,11 @@ export const CustomerStatementsProvider = ({ children }) => {
         }
       },
       onError: (error) => {
-        if (
-          CommonUtils.isNonEmptyObject(error) &&
-          CommonUtils.isNonEmptyObject(error.response) &&
-          CommonUtils.isNonEmptyObject(error.response.data)
-        ) {
+        if (error && error.response && error.response.data && error.response.data) {
           showSnackbar({
-            description: `${t('paymentInvoices.CS.export.error')}`,
+            description: CommonUtils.isNonEmptyString(error.response.data.message)
+              ? error.response.data.message
+              : t('paymentInvoices.CS.export.error'),
             type: 'error'
           });
         }
