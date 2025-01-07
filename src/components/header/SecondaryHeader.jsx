@@ -4,7 +4,7 @@ import { setUserData } from '@src/store/reducer/userReducer';
 import { Button, TabList } from '@mckesson/mcp-component-library';
 import styles from './assets/styles/Header.module.scss';
 import { useIntl } from 'react-intl';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useSessionFeatures from '@src/hooks/useSessionFeatures';
 import AuthUtils from '@src/util/AuthUtils';
 import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
@@ -68,7 +68,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
             item.configName === 'Dashboard' ||
             (item.configName !== 'Dashboard' && AuthUtils.userHasRoutePermission(routePermissionConfig.paymentInvoices))
           ) {
-            const isDashboard = item.configName === 'Dashboard' && location.pathname === '/';
+            const isDashboard = item.configName === 'Dashboard' && !location.pathname.includes('/record');
             const isMatchingPath = item.path !== '/' && location.pathname.includes(item.path);
             return {
               ...item,
@@ -95,6 +95,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
           useAsButton={false}
           role="tablist"
           aria-label="Secondary navigation tabs"
+          LinkComponent={Link}
         />
       </div>
     );

@@ -99,8 +99,8 @@ export const CustomerStatementsProvider = ({ children }) => {
         companyCode: selectedAccount?.companyCode,
         salesOrg: selectedAccount?.salesOrg,
         payerAccountNumber: selectedAccount?.accountNumber,
-        dateFrom: dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY').format('YYYY-MM-DD'),
-        dateTo: dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('YYYY-MM-DD'),
+        dateFrom: dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY'),
+        dateTo: dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY'),
         validDateRange: true
       };
 

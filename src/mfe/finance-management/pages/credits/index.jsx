@@ -14,7 +14,9 @@ export default function Credits(params) {
     return [
       {
         type: 'dateRangePicker',
-        name: 'billDate'
+        name: 'billDate',
+        startDateLabel: t('paymentInvoices.invoicesTable.filter.billDateStart'),
+        endDateLabel: t('paymentInvoices.invoicesTable.filter.billDateEnd')
       }
     ];
   }, []);
@@ -25,7 +27,7 @@ export default function Credits(params) {
           onApplyFilters={applyFilters}
           onClearFilters={clearFilters}
           additionalFilters={AdditionalFiltersConfig}
-          searchPlaceholder={'Search by document number, sold to...'}
+          searchPlaceholder={'Search by Bill No., Sold to'}
           actualData={actualData}
         />
       </div>

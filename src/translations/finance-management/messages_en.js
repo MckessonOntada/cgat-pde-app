@@ -35,6 +35,8 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.invoicesTable.filter.billDateEnd': 'Bill Date (End)',
   'paymentInvoices.invoicesTable.filter.dueDateStart': 'Due Date (Start)',
   'paymentInvoices.invoicesTable.filter.dueDateEnd': 'Due Date (End)',
+  'paymentInvoices.pendingPayments.filter.initiationDateStart': 'Initiation Date (Start)',
+  'paymentInvoices.pendingPayments.filter.initiationDateEnd': 'Initiation Date (End)',
 
   // Payment History
   'paymentInvoices.history.table.confirmationNumber': 'Confirmation No.',
@@ -43,7 +45,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.paymentStatus': 'Payment Status',
   'paymentInvoices.history.table.paymentInitiationDate': 'Payment Initiation Date',
   'paymentInvoices.history.table.totalAuthorizedPaymentAmt': 'Total Authorization Amt',
-  'paymentInvoices.history.filters.autoSearch': 'Search by document number, sold to',
+  'paymentInvoices.history.filters.autoSearch': 'Search by Confirmation No., Payment Method',
   'paymentInvoices.history.filters.filterBtn': 'Filter',
   'paymentInvoices.history.filters.status': 'Payment Status',
   'paymentInvoices.history.filters.method': 'Payment Method',
@@ -56,6 +58,10 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.heading': 'Payment History',
   'paymentInvoices.history.table.emptyData': 'No Payment History Found',
   'paymentInvoices.history.table.emptyDataDescription': 'Try again or adjust filters',
+  'paymentInvoices.history.table.authorizedPayment':'Authorized Payment',
+  'paymentInvoices.history.table.usedDate':'Used Date',
+  'paymentInvoices.history.table.creditUsed':'Credit Used',
+
   // Customer Statements
   'paymentInvoices.CS.filters.autoSearch': 'Search by document number, sold to',
   'paymentInvoices.CS.filters.filterBtn': 'Apply Filter',
@@ -81,13 +87,14 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.OpenAmount': 'Open Amount',
   'paymentInvoices.history.table.BillAmount': 'Bill Amount',
   'paymentInvoices.history.table.Actions': 'Actions',
-  'paymentInvoices.history.table.heading': 'Invoice Listing',
+  'paymentInvoices.invoice.table.heading': 'Invoice Listing',
   'paymentInvoices.history.table.status': 'Status',
   'paymentInvoices.invoice.table.emptyData': 'No Invoice Found',
   'paymentInvoices.Details.backToManageInvoices': 'BACK TO MANAGE INVOICES PAGE',
   'paymentInvoices.Details.Invoice': 'Invoice',
   'paymentInvoices.Details.DownloadPDF': 'DOWNLOAD PDF',
   'paymentInvoices.Details.ReviewAndPay': 'REVIEW AND PAY',
+  'paymentInvoices.Details.print': 'Print',
 
   //Credits
   'paymentInvoices.credits.table.description': 'Description',
@@ -124,7 +131,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.paymentMethods.table.cards.emptyData': 'No Credit Cards Found',
 
   //Pending Payments
-  'pendingPayments.filters.autoSearch': 'Search by document number, sold to',
+  'pendingPayments.filters.autoSearch': 'Search by Confirmation No., Payment Method',
   'pendingPayments.table.confirmationNumber': 'Confirmation Number',
   'pendingPayments.table.totalAuthorizedPaymentAmt': 'Total Authorized Payment Amount',
   'pendingPayments.table.cancelPayment': 'CANCEL PAYMENT',
@@ -133,7 +140,6 @@ export const PaymentInvoicesEN = {
   'pendingPayments.table.bankAccount.emptyData': 'No Pending Payments Found',
   'pendingPayments.table.paymentStatus': 'Payment Status',
   'pendingPayments.table.billDate': 'Bill Date',
-  'pendingPayments.filters.autoSearch': 'Search by document number, sold to',
 
   // No data found
   'paymentInvoices.EmptyData.heading': 'No Data Found',

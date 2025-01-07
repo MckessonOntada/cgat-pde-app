@@ -26,7 +26,11 @@ export default function CreditCardsTable() {
       sortable: true,
       wrap: true,
       minWidth: '112px',
-      cell: (props) => <div>{props.type === CARD_TYPES.VISA ? <VisaLogo /> : <MasterCardLogo />}</div>
+      cell: (props) => (
+        <div style={{ width: '66px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {props.type === CARD_TYPES.VISA ? <VisaLogo /> : <MasterCardLogo />}
+        </div>
+      )
     },
     {
       id: 'holderName',

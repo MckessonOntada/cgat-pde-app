@@ -28,7 +28,9 @@ export default function PendingPayments(params) {
       // },
       {
         type: 'dateRangePicker',
-        name: 'paymentInitiationDate'
+        name: 'paymentInitiationDate',
+        startDateLabel: t('paymentInvoices.pendingPayments.filter.initiationDateStart'),
+        endDateLabel: t('paymentInvoices.pendingPayments.filter.initiationDateEnd')
       }
     ];
   }, []);

@@ -908,7 +908,7 @@ export const SearchableDropdown = (props) => {
     nonSelectedOptionsUi =
       tempTwentyOptions &&
       tempTwentyOptions.map((option, index) => {
-        const { label, value, endLabel } = option;
+        const { label, labelDescription, value, endLabel } = option;
 
         return (
           <li
@@ -959,7 +959,12 @@ export const SearchableDropdown = (props) => {
                   <span className={styles.endLabelOptionEndLabel}>{endLabel}</span>
                 </div>
               ) : (
-                <TooltipText className={styles.lineClamps2}>{label}</TooltipText>
+                <TooltipText className={styles.lineClamps2}>
+                  <div className={labelDescription ? styles.compoundLabel : ''}>
+                    <span className={labelDescription ? styles.labelWithDescription : ''}>{label}</span>
+                    {labelDescription ? <span className={styles.labelDescription}>{labelDescription}</span> : null}
+                  </div>
+                </TooltipText>
               )}
             </div>
             {isActionable && !option.isHideAction && (
