@@ -14,7 +14,7 @@ const Dashboard = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
-  const isExpelled = queryParams.get('expelled');
+  const isExpelled = Boolean(queryParams.get('expelled'));
 
   React.useEffect(() => {
     if (isExpelled) {
