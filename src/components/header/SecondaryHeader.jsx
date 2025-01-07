@@ -8,12 +8,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import useSessionFeatures from '@src/hooks/useSessionFeatures';
 import AuthUtils from '@src/util/AuthUtils';
 import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
-import CommonUtils from '@src/util/CommonUtils';
+import { SESSION_CONST } from '@src/constants/SessionConstants';
 
 const impersonateLogout = () => {
-  return new Promise(function (resolve, reject) {
+  return new Promise(async function (resolve, reject) {
     try {
-      AuthUtils.removeImpersonate();
+      await AuthUtils.removeImpersonateId();
       resolve('Exiting impersonate login');
     } catch (error) {
       reject(error);
@@ -25,7 +25,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
   const intl = useIntl();
   const navigate = useNavigate();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const impersonateDetails = AuthUtils.getImpersonateDetails();
+  const impersonatedUsername = sessionStorage.getItem(SESSION_CONST.IMPERSONATE_USERNAME);
 
   const location = useLocation();
   const {
@@ -110,13 +110,11 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
           console.log(`error: ${error}`);
         });
     };
-    if (impersonateDetails?.id) {
+    if (impersonatedUsername) {
       return (
         <div className="impersonate-info-panel">
           <p className="logged-in-label">
-            {intl
-              .formatMessage({ id: 'header.label.loggedInAs' })
-              .replace('{{impersonateFullName}}', CommonUtils.getFullName(impersonateDetails.name))}
+            {intl.formatMessage({ id: 'header.label.loggedInAs' }).replace('{{impersonateFullName}}', impersonatedUsername)}
           </p>
           <Button color="secondary" onClick={handleOnExitUserView}>
             {intl.formatMessage({ id: 'button.captions.exitUserView' })}

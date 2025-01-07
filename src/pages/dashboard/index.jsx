@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Heading } from '@mckesson/mcp-component-library';
 import styles from './Dashboard.module.scss';
 import { SYSTEM_ADMIN_CARDS_DATA, CARDS_DATA } from './DashboardCards';
@@ -9,11 +9,19 @@ import usePermission from '@src/hooks/usePermissions';
 
 const Dashboard = () => {
   const { t } = useTranslate();
-
-  const userRole = AuthUtils.getUserRole();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const userPermissions = AuthUtils.getUserPermissions();
   const { hasPermission } = usePermission();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const queryParams = new URLSearchParams(location.search);
+  const isExpelled = queryParams.get('expelled');
+
+  React.useEffect(() => {
+    if (isExpelled) {
+      console.log('read updated storage');
+      navigate('/');
+    }
+  }, [isExpelled]);
 
   // const cards = isSystemAdminView ? SYSTEM_ADMIN_CARDS_DATA : CARDS_DATA;
   const cards = useMemo(() => {
@@ -23,7 +31,7 @@ const Dashboard = () => {
       return _hasAccess;
     });
     return _cards;
-  }, []);
+  }, [isExpelled]);
 
   return (
     <div className={styles.container}>

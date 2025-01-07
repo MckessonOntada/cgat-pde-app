@@ -33,6 +33,7 @@ const ApiRoutes = Object.freeze({
   USERS_PROVISIONING_ORGLIST_PUBLIC: constructUserManagementServicePublicUrl('users-provisioning-requests/practices'),
   GET_REFERENCE_LIST: constructUserManagementServiceUrl('reference'),
   GET_JWT_DECODE: constructUserManagementServicePublicUrl('public/jwt'),
+  GET_CURRENT_USER: constructUserManagementServicePublicUrl('user/current'),
   POST_USER_BULK_UPLOAD: constructUserManagementServiceUrl('users/roles'),
   POST_USER_LOGIN: constructUserManagementServiceUrl('users/postLogin'),
   POST_USER_LOGOUT: constructUserManagementServiceUrl('users/postLogout'),
