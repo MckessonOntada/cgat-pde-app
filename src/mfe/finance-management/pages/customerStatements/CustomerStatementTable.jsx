@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 
 export default function CustomerStatementTable() {
   const { t } = useTranslate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError } = useCustomerStatements();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportPDF } = useCustomerStatements();
   const columns = [
     {
       id: 'billNumber',
@@ -57,20 +57,19 @@ export default function CustomerStatementTable() {
         </div>
       ),
       right: true
+    },
+    {
+      name: t('paymentInvoices.history.table.Actions'),
+      selector: (row) => row,
+      minWidth: '144px',
+      sortable: true,
+      wrap: true,
+      cell: (props) => (
+        <Button className="back-button-control" variant="tertiary" Icon={() => <PDFicon />} onClick={() => exportPDF(props)} size="md">
+          {t('paymentInvoices.CS.table.exportPdf')}
+        </Button>
+      )
     }
-    // {
-    //   name: t('paymentInvoices.history.table.Actions'),
-    //   selector: () => {},
-    //   minWidth: '144px',
-    //   sortable: true,
-    //   wrap: true,
-
-    //   cell: (props) => (
-    //     <Button className="back-button-control" variant="tertiary" Icon={() => <PDFicon />} onClick={() => {}} size="md">
-    //       {t('paymentInvoices.CS.table.exportPdf')}
-    //     </Button>
-    //   )
-    // }
   ];
   const handleSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
