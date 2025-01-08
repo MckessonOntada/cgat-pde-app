@@ -146,7 +146,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
     }
   };
 
-  if (tab?.toLowerCase() === 'pending submission') {
+  if (tab === 1) {
     if (!status) return null;
 
     if (status.toLowerCase() === 'pending' || status.toLowerCase() === 'cancelled') {
@@ -182,7 +182,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
         value: 'review'
       });
     }
-  } else if (tab?.toLowerCase() === 'submitted') {
+  } else if (tab === 2) {
     options.push({
       label: t(`labels.orderActions.view`),
       value: 'view'
@@ -291,7 +291,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     cell: (props) => (
       <EclipsesTextcss tooltip={props.createdBy?.userName} str={props.createdBy?.name} maxWidth={170} className={'MCP-table-cell'} />
     ),
-    omit: activeTab !== 'pending submission'
+    omit: activeTab !== 1
   },
   {
     id: 'createdOn',
@@ -305,7 +305,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
         {CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')}
       </span>
     ),
-    omit: activeTab !== 'pending submission'
+    omit: activeTab !== 1
   },
 
   {
@@ -319,7 +319,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     cell: (props) => (
       <EclipsesTextcss tooltip={props.submittedBy?.userName} str={props.submittedBy?.name} maxWidth={170} className={'MCP-table-cell'} />
     ),
-    omit: activeTab !== 'submitted'
+    omit: activeTab !== 2
   },
   {
     id: 'submittedOn',
@@ -329,7 +329,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortKey: 'submittedOn',
     width: '180px',
     cell: (props) => <span>{props.submittedOn ? CommonUtils.convertDateStringFormat(props.submittedOn, 'MM-DD-YYYY') : '-'}</span>,
-    omit: activeTab !== 'submitted'
+    omit: activeTab !== 2
   },
 
   {
