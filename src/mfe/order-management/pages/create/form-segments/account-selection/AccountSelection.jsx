@@ -42,6 +42,7 @@ const AccountSelection = () => {
   const [alertState, setAlertState] = useState(null);
   const therapyId = formState.activeRecord?.therapy?.materialNumber;
   const [netPriceData, setNetPriceData] = useState(null);
+  const [inventoryType, setInventoryType] = useState(null);
 
   const alertContainerId = 'accountSelection-alert-Container';
   const { showAlert } = useAlert();
@@ -59,6 +60,7 @@ const AccountSelection = () => {
     refetchOnWindowFocus: false,
     onSuccess: (data) => {
       setNetPriceData(data.netPrice);
+      setInventoryType(data.inventoryType);
     }
   });
 
@@ -114,7 +116,9 @@ const AccountSelection = () => {
       orderId,
       items: null
     };
-
+    if (!(inventoryType && ['S', 'I'].includes(inventoryType))) {
+      return;
+    }
     try {
       const res = await OrderService.getInventoryStatus(requestPayload);
       if (res.status === 200) {
@@ -123,6 +127,10 @@ const AccountSelection = () => {
           type: 'success',
           anchorEl: alertContainerId
         });
+        return {
+          description: t('messages.inventoryCheck.success'),
+          type: 'success'
+        };
       }
     } catch (err) {
       if (err.status === 400) {
@@ -321,7 +329,8 @@ const AccountSelection = () => {
               onClick={() => {
                 handleInventoryCheck();
               }}
-              variant="secondary">
+              variant="secondary"
+              disabled={!(inventoryType && ['S', 'I'].includes(inventoryType))}>
               {t('captions.btnInventoryCheck')}
             </Button>
             <Button
