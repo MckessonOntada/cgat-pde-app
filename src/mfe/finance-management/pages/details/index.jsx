@@ -198,7 +198,7 @@ function Details(props) {
             noDataComponent={
               <EmptyDataTable
                 isLoading={isLoading}
-                error={error ? 'Something went wrong! Please try again' : null}
+                error={isError ? 'Something went wrong! Please try again' : null}
                 image={EmptyDataImage}
                 heading={t('paymentInvoices.invoice.table.emptyData')}
                 description={t('paymentInvoices.history.table.emptyDataDescription')}
