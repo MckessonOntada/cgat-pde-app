@@ -287,9 +287,9 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortable: true,
     sortKey: 'author?.name',
     minWidth: '140px',
-    maxWidth: '3200px',
+    maxWidth: '320px',
     cell: (props) => (
-      <EclipsesTextcss tooltip={props.createdBy?.userName} str={props.createdBy?.name} maxWidth={320} className={'MCP-table-cell'} />
+      <EclipsesTextcss tooltip={props.createdBy?.userName} str={props.createdBy?.name} maxWidth={300} className={'MCP-table-cell'} />
     ),
     omit: activeTab !== 1
   },
