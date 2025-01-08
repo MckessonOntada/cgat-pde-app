@@ -30,7 +30,7 @@ const PatientDetails = () => {
   const alertContainerId = 'patintDetails-alert-container';
   const { showAlert } = useAlert();
   const location = useLocation();
-  const { isEdit = false, isReview = false, alertState } = location.state || {};
+  const { isEdit = false, isReview = false, isApprover = false, alertState } = location.state || {};
   const isReviewandEdit = isReview && isEdit;
 
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
@@ -112,7 +112,7 @@ const PatientDetails = () => {
       onSuccess: (result) => {
         const { id } = result;
         setActiveRecord(result);
-        navigate(`../${id}/additional-details`, { state: { isEdit: isEdit, isReview: isReview } });
+        navigate(`../${id}/additional-details`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
       },
       onError: ({ err, payload }) => {
         if (err.status === 409) {
@@ -135,10 +135,10 @@ const PatientDetails = () => {
     }
 
     if (isEdit) {
-      navigate(`../${orderId}/summary`, { state: { isEdit: true, isReview: isReview } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: true, isReview: isReview, isApprover: isApprover } });
     } else {
       editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-      navigate(`../${orderId}/accounts`, { state: { isReview: isReview, isEdit: isEdit } });
+      navigate(`../${orderId}/accounts`, { state: { isReview: isReview, isEdit: isEdit, isApprover: isApprover } });
     }
   };
 
@@ -167,10 +167,10 @@ const PatientDetails = () => {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'account') {
       editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isReview: isReview } });
+      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
     }
   };
 

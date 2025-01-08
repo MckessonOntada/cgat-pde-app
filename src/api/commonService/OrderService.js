@@ -215,6 +215,17 @@ async function getAssignedGroups() {
   return {};
 }
 
+async function simulateOrder(orderId) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/simulate`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET);
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -234,7 +245,8 @@ const OrderService = Object.freeze({
   setOrderAssignToMe,
   setOrderUnassignToMe,
   deleteOrder,
-  getAssignedGroups
+  getAssignedGroups,
+  simulateOrder
 });
 
 export default OrderService;

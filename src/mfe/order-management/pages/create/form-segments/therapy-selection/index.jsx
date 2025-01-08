@@ -32,7 +32,7 @@ function TherapySelection() {
   const therapyDetails = searchParams.get('therapy-details');
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const { orderId } = useParams();
-  const { isEdit = false, isReview = false } = location.state || {};
+  const { isEdit = false, isReview = false, isApprover = false } = location.state || {};
   const isReviewandEdit = isReview && isEdit;
 
   React.useEffect(() => {
@@ -102,7 +102,7 @@ function TherapySelection() {
     onSuccess: (result) => {
       setActiveRecord(result);
       const { id } = result;
-      navigate(`../${id}/accounts`, { state: { isReview: isReview, isEdit: isEdit } });
+      navigate(`../${id}/accounts`, { state: { isReview: isReview, isEdit: isEdit, isApprover: isApprover } });
     },
     onError: console.log
   });
@@ -132,7 +132,7 @@ function TherapySelection() {
       return;
     }
     if (isEdit) {
-      navigate(`../${orderId}/summary`, { state: { isEdit: true, isReview: isReview } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: true, isReview: isReview, isApprover: isApprover } });
     } else {
       navigate(RoutePaths.pathOrderManagement);
     }
@@ -142,7 +142,7 @@ function TherapySelection() {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, { state: { isEdit: true, isReview: isReview } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: true, isReview: isReview, isApprover: isApprover } });
     }
   };
 

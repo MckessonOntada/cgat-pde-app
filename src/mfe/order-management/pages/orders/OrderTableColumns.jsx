@@ -46,7 +46,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
   const { hasPermission } = usePermission();
   const assignMutation = useMutation(() => OrderService.setOrderAssignToMe(id), {
     onSuccess: (result) => {
-      navigate(`${id}/summary`, { state: { isReview: true } });
+      navigate(`${id}/summary`, { state: { isReview: true, isApprover: true } });
     },
     onError: (err) => {
       const errorKey = handleApiError(err);
@@ -128,7 +128,11 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
       });
     }
     if (value === 'review') {
-      navigate(`${id}/summary`, { state: { isReview: true, isEdit: true } });
+      if (props.approver?.id === loggedinUserId) {
+        navigate(`${id}/summary`, { state: { isReview: true, isEdit: true, isApprover: true } });
+      } else {
+        navigate(`${id}/summary`, { state: { isReview: true, isApprover: false } });
+      }
     }
     if (value === 'assign') {
       if (props.approver != null && props.approver?.id != null) {
@@ -220,6 +224,24 @@ const getPathByOrderStage = ({ currentStage, id, patientDetailsRequired }) => {
   }
 };
 
+const getState = (props) => {
+  const loggedinUserId = AuthUtils.getUserId();
+  if (props.id === 'a7c5fee0-7213-4b8e-8904-f357f13b8ca5') {
+    console.log(props);
+  }
+  if (props.status === StatusEnum.SUBMITTED) {
+    return props;
+  } else if (props.status === StatusEnum.APPROVAL_PENDING) {
+    if (props.approver?.id === loggedinUserId) {
+      return { isReview: true, isEdit: true, isApprover: true };
+    } else {
+      return { isReview: true, isApprover: false };
+    }
+  } else {
+    return props;
+  }
+};
+
 const getPatientName = (patientInfo) => {
   let lastName = '';
   if (patientInfo?.name?.lastName) fullName += ',';
@@ -241,7 +263,8 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
       <Link
         className="MCP-table-link"
         to={getPathByOrderStage(props)}
-        state={props.currentStage === 'ORDER_SUMMARY' && props.status === StatusEnum.SUBMITTED ? { ...props, isEdit: true } : { ...props }}
+        //state={props.currentStage === 'ORDER_SUMMARY' && props.status === StatusEnum.SUBMITTED ? { ...props, isEdit: true } : { ...props }}
+        state={getState(props)}
         aria-label={t('labels.orderId')}>
         <EclipsesTextcss str={props.id} maxWidth={200} />
       </Link>

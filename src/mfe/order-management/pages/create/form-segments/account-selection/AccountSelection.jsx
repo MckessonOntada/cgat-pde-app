@@ -29,7 +29,7 @@ const AccountSelection = () => {
   const navigate = useNavigate();
   const { orderId } = useParams();
   const location = useLocation();
-  const { isEdit = false, isReview = false } = location.state || {};
+  const { isEdit = false, isReview = false, isApprover = false } = location.state || {};
   const isReviewandEdit = isReview && isEdit;
   const [selectedAccount, setSelectedAccount] = React.useState(null);
   const [accountSearchString, setAccountSearchString] = React.useState('');
@@ -91,9 +91,9 @@ const AccountSelection = () => {
       try {
         const alertState = await handleInventoryCheck();
         if (result.patientDetailsRequired) {
-          navigate(`../${id}/patient`, { state: { alertState, isEdit: isEdit, isReview: isReview } });
+          navigate(`../${id}/patient`, { state: { alertState, isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
         } else {
-          navigate(`../${id}/additional-details`, { state: { alertState, isEdit: isEdit, isReview: isReview } });
+          navigate(`../${id}/additional-details`, { state: { alertState, isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
         }
       } catch (err) {
         console.error(err);
@@ -159,10 +159,10 @@ const AccountSelection = () => {
     }
 
     if (isEdit) {
-      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
     } else {
       editByStage(ORDER_STAGES.THERAPY_SELECTION);
-      navigate(`../edit-order/${orderId}`, { state: { isEdit: isEdit, isReview: isReview } });
+      navigate(`../edit-order/${orderId}`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
     }
   };
 
@@ -195,9 +195,9 @@ const AccountSelection = () => {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'details') {
       editByStage(ORDER_STAGES.THERAPY_SELECTION);
-      navigate(`../edit-order/${orderId}`, { state: { isEdit: isEdit, isReview: isReview } });
+      navigate(`../edit-order/${orderId}`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
     }
   };
 

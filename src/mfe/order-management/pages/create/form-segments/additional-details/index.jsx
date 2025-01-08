@@ -59,7 +59,7 @@ function AdditionalDetails() {
   const formFields = getFormFields(t);
   const navigate = useNavigate();
   const location = useLocation();
-  const { isEdit = false, isReview = false, alertState } = location.state || {};
+  const { isEdit = false, isReview = false, isApprover = false, alertState } = location.state || {};
   const isReviewandEdit = isReview && isEdit;
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
@@ -87,7 +87,7 @@ function AdditionalDetails() {
       onSuccess: (result) => {
         const { id } = result;
         setActiveRecord(result);
-        navigate(`../${id}/summary`, { state: { isEdit: isEdit, isReview: isReview } });
+        navigate(`../${id}/summary`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
       },
       onError: (error) => {
         showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
@@ -152,14 +152,14 @@ function AdditionalDetails() {
       return;
     }
     if (isEdit) {
-      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
     } else {
       if (formState.activeRecord?.patientDetailsRequired) {
         editByStage(ORDER_STAGES.PATIENT_DETAILS);
-        navigate(`../${orderId}/patient`, { state: { isReview: isReview, isEdit: isEdit } });
+        navigate(`../${orderId}/patient`, { state: { isReview: isReview, isEdit: isEdit, isApprover: isApprover } });
       } else {
         editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-        navigate(`../${orderId}/accounts`, { state: { isReview: isReview, isEdit: isEdit } });
+        navigate(`../${orderId}/accounts`, { state: { isReview: isReview, isEdit: isEdit, isApprover: isApprover } });
       }
     }
   };
@@ -197,13 +197,13 @@ function AdditionalDetails() {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'patient') {
       editByStage(ORDER_STAGES.PATIENT_DETAILS);
-      navigate(`../${orderId}/patient`, { state: { isEdit: isEdit, isReview: isReview } });
+      navigate(`../${orderId}/patient`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'account') {
       editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isReview: isReview } });
+      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
     }
   };
 
