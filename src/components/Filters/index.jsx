@@ -99,7 +99,7 @@ const Filters = ({
                   <div className="filter-control-buttons filterControls">
                     {isAnyFilterApplied && (
                       <Button type="button" size="md" textButton className="txtbtn" onClick={() => handleClearFilters(formik.resetForm)}>
-                        {t('filters.clearfilters')}
+                        {isAdditionalFiltersAdded ? t('filters.clearfilters') : t('filters.clearsearch')}
                       </Button>
                     )}
                     <Button type="submit" size="md" variant="secondary" className="filter-btn">

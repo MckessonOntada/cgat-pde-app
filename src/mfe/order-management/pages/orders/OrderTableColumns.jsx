@@ -7,13 +7,14 @@ import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import CommonUtils from '@src/util/CommonUtils';
 import AuthUtils from '@src/util/AuthUtils';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
 import { renderModal } from '@src/util/ModalUtil';
+import { useOrders } from '../../context/OrderContext';
 
 const getColorByStatus = (status) => {
   const statusColors = {
@@ -41,7 +42,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
   const navigate = useNavigate();
   const loggedinUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
-
+  const { refreshData, assginedGroupsData } = useOrders();
   const { hasPermission } = usePermission();
   const assignMutation = useMutation(() => OrderService.setOrderAssignToMe(id), {
     onSuccess: (result) => {
@@ -55,6 +56,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
 
   const unassignMutation = useMutation(() => OrderService.setOrderUnassignToMe(id), {
     onSuccess: (result) => {
+      refreshData();
       showAlert({ description: t('messages.success.release'), type: 'success', anchorEl: alertContainerId });
     },
     onError: (err) => {
@@ -62,10 +64,27 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
       showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
     }
   });
-  const handleDelete = () => {
-    showAlert({ description: t('messages.success.delete'), type: 'success', anchorEl: alertContainerId });
-    return;
+
+  const deleteMutation = useMutation(() => OrderService.deleteOrder(id), {
+    onSuccess: (result) => {
+      refreshData();
+      showAlert({ description: t('messages.success.delete'), type: 'success', anchorEl: alertContainerId });
+    },
+    onError: (error) => {
+      const errorKey = handleApiError(err);
+      showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
+    }
+  });
+
+  const handleDelete = async (orderId) => {
+    deleteMutation.mutate();
   };
+
+  const doesApproverGroupExist = (approverGroupIds, assginedGroupsData) => {
+    if (!approverGroupIds || !assginedGroupsData) return false;
+    return approverGroupIds.some((id) => assginedGroupsData.includes(id));
+  };
+
   const handleOnOptionSelection = (value) => {
     if (value === 'view') {
       if (props.status === StatusEnum.SUBMITTED) {
@@ -145,19 +164,19 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
           value: 'delete'
         }
       );
-    } else if (status?.toLowerCase() === 'approval pending') {
-      //To Do, need to check the logged in user is part of approver group
-      if (!props.approver || props.approver.id === null) {
+    } else if (status?.toLowerCase() === 'approval_pending') {
+      if ((!props.approver || props.approver?.id === null) && doesApproverGroupExist(props.approverGroupIds, assginedGroupsData)) {
         options.push({
           label: t(`labels.orderActions.assignToMe`),
           value: 'assign'
         });
-      } else if (props.approver.id === loggedinUserId) {
+      } else if (props.approver?.id === loggedinUserId) {
         options.push({
           label: t(`labels.orderActions.unassignToMe`),
           value: 'unassign'
         });
       }
+
       options.push({
         label: t(`labels.orderActions.review`),
         value: 'review'

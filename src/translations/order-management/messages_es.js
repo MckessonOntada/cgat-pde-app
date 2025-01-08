@@ -158,6 +158,7 @@ export const MessageEs = {
     'S_Please reach out to customer support at 1800XXXXXXX for any updation or cancellation in the order.',
   'labels.orderActions.okay': 'S_okay',
   'labels.information': 'S_Information',
+  'labels.confirmation': 'S_Confirmation',
   'labels.therapy.generalDetails': 'S_Details',
   'labels.therapy.configuration': 'S_Configuration',
   'labels.therapy.materialNumber': 'S_Material Number',

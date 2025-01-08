@@ -123,7 +123,6 @@ const Summary = () => {
   };
 
   const handleOnBackToOrders = () => {
-    //compare data change, display modal for confirmation
     navigate(RoutePaths.pathOrderManagement);
   };
 
@@ -160,6 +159,7 @@ const Summary = () => {
   const forms = FormList(t);
   const {
     therapy = {},
+    catalog = {},
     orderCost,
     accountDetails = {},
     patient,
@@ -222,18 +222,18 @@ const Summary = () => {
                 />
                 <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
                   <DetailSegment label={t('labels.nationalDrugCode')} value={therapy.ndcNumber} />
-                  <DetailSegment label={t('labels.UDI')} value={therapy?.uDI || '-'} />
+                  <DetailSegment label={t('labels.UDI')} value={catalog?.uDI || '-'} />
                   <DetailSegment
                     label={t('labels.distributionChannel')}
                     value={accountDetails?.shipToAccount?.distributionChannel || '-'}
                   />
                   <DetailSegment label={t('labels.salesOrganization')} value={accountDetails?.shipToAccount?.accountName} />
-                  <DetailSegment label={t('labels.netPrice')} value={therapy.netPrice || '-'} />
-                  <DetailSegment label={t('labels.contractPrice')} value={therapy.contractPrice || '-'} />
-                  <DetailSegment label={t('labels.wacPrice')} value={therapy?.wACPrice || '-'} />
-                  <DetailSegment label={t('labels.regularPrice')} value={therapy?.regularPrice || '-'} />
-                  <DetailSegment label={t('labels.340bPrice')} value={therapy?.['340bPrice'] || '-'} />
-                  <DetailSegment label={t('labels.priceUnit')} value={therapy?.priceUnit || '-'} />
+                  <DetailSegment label={t('labels.netPrice')} value={catalog?.netPrice || '-'} />
+                  <DetailSegment label={t('labels.contractPrice')} value={catalog?.contractPrice || '-'} />
+                  <DetailSegment label={t('labels.wacPrice')} value={catalog?.wACPrice || '-'} />
+                  <DetailSegment label={t('labels.regularPrice')} value={catalog?.regularPrice || '-'} />
+                  <DetailSegment label={t('labels.340bPrice')} value={catalog?.['340bPrice'] || '-'} />
+                  <DetailSegment label={t('labels.priceUnit')} value={catalog?.priceUnit || '-'} />
                 </div>
               </div>
               <div className="MCP-module-body">
@@ -270,9 +270,11 @@ const Summary = () => {
                       className={styles.panelHeader}
                       heading={
                         <Heading as="h3">
-                          {[patient?.patientInfo?.firstName, patient?.patientInfo?.middleName, patient?.patientInfo?.lastName]
-                            .filter(Boolean)
-                            .join(' ') || '-'}
+                          {patient?.patientInfo
+                            ? [patient.patientInfo.firstName, patient.patientInfo.middleName, patient.patientInfo.lastName]
+                                .filter(Boolean)
+                                .join(' ')
+                            : t('labels.patientDetails')}
                         </Heading>
                       }
                       controls={

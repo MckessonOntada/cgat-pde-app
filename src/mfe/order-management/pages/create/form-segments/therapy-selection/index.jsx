@@ -177,7 +177,7 @@ function TherapySelection() {
               <CommonFilters
                 onApplyFilters={applyFilters}
                 onClearFilters={clearFilters}
-                additionalFilters={additionalFiltersConfig}
+                additionalFilters={[]}
                 searchPlaceholder={t('controls.placeholder.therapySelection.search')}
               />
             </div>

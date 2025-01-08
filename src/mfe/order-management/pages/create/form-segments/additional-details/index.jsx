@@ -89,7 +89,9 @@ function AdditionalDetails() {
         setActiveRecord(result);
         navigate(`../${id}/summary`, { state: { isEdit: isEdit, isReview: isReview } });
       },
-      onError: console.log
+      onError: (error) => {
+        showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
+      }
     }
   );
 
@@ -114,10 +116,18 @@ function AdditionalDetails() {
   React.useEffect(() => {
     const { additionalDetails } = formState.activeRecord || {};
     if (additionalDetails) {
-      const { dateOfAdministration, id, orderQuantity, patientConsentTaken, poNumber, slotNumber, variant: _variant } = additionalDetails;
+      const {
+        dateOfAdministration,
+        coiId,
+        orderQuantity,
+        patientConsentTaken,
+        poNumber,
+        slotNumber,
+        variantDetails: _variant
+      } = additionalDetails;
 
       setInitialFormValues({
-        coiId: id,
+        coiId: coiId,
         orderQuantity: orderQuantity,
         slotNumber: slotNumber,
         poNumber: poNumber,
@@ -163,13 +173,13 @@ function AdditionalDetails() {
         }
       : null;
     const payload = {
-      id: values.coiId,
+      coiId: values.coiId,
       orderQuantity: values.orderQuantity,
       slotNumber: values.slotNumber,
       poNumber: values.poNumber,
       dateOfAdministration: values.dateOfAdministration,
       patientConsentTaken: true,
-      variant: _var
+      variantDetails: _var
     };
 
     saveAdditionalDetails(payload);
