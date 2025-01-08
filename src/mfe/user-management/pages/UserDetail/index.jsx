@@ -178,6 +178,7 @@ const UserDetail = () => {
 
   const groupedPermissions = groupPermissionsByCategory(data?.permissions || [], PERMISSIONS_ENUM);
   const userFullName = `${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName}`;
+  const loggedUserId = Number(AuthUtils.getUserId());
 
   return (
     <div className="MCP-module-wrapper">
@@ -194,6 +195,7 @@ const UserDetail = () => {
           heading={<Heading as="h1">{t('userManagement.header.view.edit_user')}</Heading>}
           controls={
             data?.isActive &&
+            data?.id !== loggedUserId &&
             !isImpersonateLoggedIn && (
               <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
                 <Button variant="primary" size="md" onClick={() => setIsConsentModalOpen(true)}>
