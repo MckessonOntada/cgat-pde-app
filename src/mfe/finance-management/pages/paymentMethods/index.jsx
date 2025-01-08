@@ -48,9 +48,10 @@ const PaymentMethods = () => {
             useAsButton={true}
             aria-label={'record-tab-list'}
           />
-          <Button Icon={AddCircle} size={buttonSize} onClick={() => {}} disabled={true}>
+          {/* TODO: Remove Code if not required later. Keep for Add new card screen. */}
+          {/* <Button Icon={AddCircle} size={buttonSize} onClick={() => {}} disabled={true}>
             {t('paymentInvoices.paymentMethods.table.bankAccount.addnewcard')}
-          </Button>
+          </Button> */}
         </div>
         <Routes />
       </div>

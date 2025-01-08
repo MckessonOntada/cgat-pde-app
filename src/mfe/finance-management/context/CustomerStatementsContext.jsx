@@ -1,10 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { useAccountContext } from './AccountContext';
 import dayjs from 'dayjs';
+import { useTranslate } from '@src/translations/useTranslation';
+import CommonUtils from '@src/util/CommonUtils';
 
 const CustomerStatementsContext = createContext();
 
@@ -37,6 +39,7 @@ const INITIAL_PAGINATION_STATE = {
 };
 
 export const CustomerStatementsProvider = ({ children }) => {
+  const { t } = useTranslate();
   const [data, setData] = useState([]);
   const [unSlicedData, setUnSlicedData] = useState([]);
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
@@ -179,6 +182,70 @@ export const CustomerStatementsProvider = ({ children }) => {
     }));
   };
 
+  const { mutate: exportStatementPDF } = useMutation(
+    async (data) =>
+      await HttpResourceService.callRest(
+        `${ApiRoutes.EXPORT_CUSTOMER_STATEMENTS(data)}`,
+        httpVerb.POST,
+        {
+          companyCode: selectedAccount?.companyCode,
+          salesOrg: selectedAccount?.salesOrg,
+          payerAccountNumber: selectedAccount?.accountNumber,
+          documentDate: data?.date
+        },
+        undefined,
+        false,
+        false,
+        'blob' // Set responseType to 'blob'
+      ),
+    {
+      onSuccess: (response) => {
+        if (response && response.data) {
+          // Get the Content-Disposition header
+          const contentDisposition = response.headers['content-disposition'];
+          let fileName = 'Customer Statement.pdf'; // Default name
+
+          // Try to extract the file name from the header
+          if (contentDisposition && contentDisposition.indexOf('filename=') !== -1) {
+            const matches = contentDisposition.match(/filename="([^"]+)"/);
+            if (matches && matches[1]) {
+              fileName = matches[1];
+            }
+          }
+
+          // Create a blob from the response data
+          const blob = new Blob([response.data], { type: 'application/pdf' });
+
+          // Create a download link
+          const link = document.createElement('a');
+          link.href = window.URL.createObjectURL(blob);
+          link.download = fileName; // Use the extracted or default file name
+          link.click();
+
+          // Show success message
+          showSnackbar({
+            description: `${t('paymentInvoices.CS.export.success')}`,
+            type: 'success'
+          });
+        }
+      },
+      onError: (error) => {
+        if (error && error.response && error.response.data && error.response.data) {
+          showSnackbar({
+            description: CommonUtils.isNonEmptyString(error.response.data.message)
+              ? error.response.data.message
+              : t('paymentInvoices.CS.export.error'),
+            type: 'error'
+          });
+        }
+      }
+    }
+  );
+
+  const exportPDF = (data) => {
+    exportStatementPDF({ date: data.date, docNo: data.docNo, accountNumber: selectedAccount?.accountNumber });
+  };
+
   const contextValue = {
     data: data || [],
     actualData: actualData || [],
@@ -190,7 +257,8 @@ export const CustomerStatementsProvider = ({ children }) => {
     applyFilters,
     clearFilters,
     applySort,
-    setPageNumber
+    setPageNumber,
+    exportPDF
   };
   return <CustomerStatementsContext.Provider value={contextValue}>{children}</CustomerStatementsContext.Provider>;
 };

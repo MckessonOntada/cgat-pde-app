@@ -143,5 +143,9 @@ export const PaymentInvoicesEN = {
 
   // No data found
   'paymentInvoices.EmptyData.heading': 'No Data Found',
-  'paymentInvoices.EmptyData.description': 'No accounts found linked with user'
+  'paymentInvoices.EmptyData.description': 'No accounts found linked with user',
+
+  
+  'paymentInvoices.CS.export.success': 'Customer Statement exported.',
+  'paymentInvoices.CS.export.error': 'Error exporting statement.',
 };
