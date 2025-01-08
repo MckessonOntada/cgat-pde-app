@@ -7,7 +7,7 @@ import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import CommonUtils from '@src/util/CommonUtils';
 import AuthUtils from '@src/util/AuthUtils';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
@@ -42,7 +42,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
   const navigate = useNavigate();
   const loggedinUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
-  const { refreshData } = useOrders();
+  const { refreshData, assginedGroupsData } = useOrders();
   const { hasPermission } = usePermission();
   const assignMutation = useMutation(() => OrderService.setOrderAssignToMe(id), {
     onSuccess: (result) => {
@@ -56,6 +56,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
 
   const unassignMutation = useMutation(() => OrderService.setOrderUnassignToMe(id), {
     onSuccess: (result) => {
+      refreshData();
       showAlert({ description: t('messages.success.release'), type: 'success', anchorEl: alertContainerId });
     },
     onError: (err) => {
@@ -79,7 +80,12 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
     deleteMutation.mutate();
   };
 
-  const handleOnOptionSelection = ({ value }) => {
+  const doesApproverGroupExist = (approverGroupIds, assginedGroupsData) => {
+    if (!approverGroupIds || !assginedGroupsData) return false;
+    return approverGroupIds.some((id) => assginedGroupsData.includes(id));
+  };
+
+  const handleOnOptionSelection = (value) => {
     if (value === 'view') {
       if (props.status === StatusEnum.SUBMITTED) {
         navigate(`${id}/summary`, { state: { isEdit: true } });
@@ -159,12 +165,12 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
         }
       );
     } else if (status?.toLowerCase() === 'approval_pending') {
-      if (!props.approver || props.approver.id === null) {
+      if ((!props.approver || props.approver?.id === null) && doesApproverGroupExist(props.approverGroupIds, assginedGroupsData)) {
         options.push({
           label: t(`labels.orderActions.assignToMe`),
           value: 'assign'
         });
-      } else if (props.approver.id === loggedinUserId) {
+      } else if (props.approver?.id === loggedinUserId) {
         options.push({
           label: t(`labels.orderActions.unassignToMe`),
           value: 'unassign'

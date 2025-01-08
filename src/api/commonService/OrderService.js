@@ -204,6 +204,17 @@ async function deleteOrder(orderId) {
   return {};
 }
 
+async function getAssignedGroups() {
+  const url = `${ApiRoutes.APPROVER_GROUP()}/users/current/assigned-groups`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET);
+
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -222,7 +233,8 @@ const OrderService = Object.freeze({
   submitOrder,
   setOrderAssignToMe,
   setOrderUnassignToMe,
-  deleteOrder
+  deleteOrder,
+  getAssignedGroups
 });
 
 export default OrderService;

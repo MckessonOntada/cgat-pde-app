@@ -76,6 +76,16 @@ export const OrderProvider = ({ children }) => {
     }
   });
 
+  const { isLoading, data: assginedGroupsData = {} } = useQuery({
+    queryKey: ['order', 'approver-group'],
+    queryFn: async () => {
+      const res = await OrderService.getAssignedGroups(requestParams);
+      return res;
+    },
+
+    refetchOnWindowFocus: false
+  });
+
   React.useEffect(() => {
     refreshData();
   }, [filterConfig, paginationConfig.pageNumber, sortConfig, tabVariant]);
@@ -116,7 +126,8 @@ export const OrderProvider = ({ children }) => {
         changeTab,
         refreshData,
         tabVariant,
-        setTabVariant
+        setTabVariant,
+        assginedGroupsData
       }}>
       {children}
     </OrderContext.Provider>
