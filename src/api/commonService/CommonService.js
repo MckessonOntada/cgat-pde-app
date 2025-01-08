@@ -1,14 +1,68 @@
 import HttpResourceService, { httpVerb } from '../HttpResourceService';
 import ApiRoutes from '../ApiRoutes';
+import CommonUtils from '@src/util/CommonUtils';
+import { SESSION_CONST } from '@src/constants/SessionConstants';
+import AuthUtils from '@src/util/AuthUtils';
 
 const getUserDetails = () => {
-  return sessionStorage.getItem('USERNAME');
+  return sessionStorage.getItem(SESSION_CONST.USERNAME);
 };
 
-const getJwtDecode = async () => {
+const getLoggedInUser = async () => {
   try {
     const { data } = await HttpResourceService.callRest(ApiRoutes.GET_JWT_DECODE, httpVerb.GET);
     return data;
+  } catch (error) {
+    console.log(error);
+    throw Error('Unable to fetch data');
+  }
+};
+
+const updateSessionStorage = async () => {
+  try {
+    const userDetails = await getCurrentLoggedInUser();
+
+    if (CommonUtils.isNonEmptyObject(userDetails)) {
+      const activeUserRoleName = userDetails['role']['name'];
+      const activeUserName = userDetails['userName'];
+      const activeUserId = userDetails['id'];
+      const activeUserPermissions = userDetails['permissions'];
+      const activeUserPracticeId = userDetails['practiceId'];
+      const impersonatedByUsername = userDetails['impersonatedByUser']?.userName;
+
+      sessionStorage.setItem(SESSION_CONST.USER_ROLE, activeUserRoleName);
+      sessionStorage.setItem(SESSION_CONST.USERNAME, impersonatedByUsername || activeUserName);
+      sessionStorage.setItem(SESSION_CONST.USER_ID, activeUserId);
+      sessionStorage.setItem(SESSION_CONST.USER_PERMISSIONS, activeUserPermissions);
+
+      if (impersonatedByUsername) sessionStorage.setItem(SESSION_CONST.IMPERSONATE_USERNAME, activeUserName);
+      else sessionStorage.removeItem(SESSION_CONST.IMPERSONATE_USERNAME);
+
+      if (activeUserRoleName !== 'System Admin') {
+        AuthUtils.setPracticeId(activeUserPracticeId);
+      }
+
+      return userDetails;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    throw Error(error);
+  }
+};
+
+const getCurrentLoggedInUser = async () => {
+  try {
+    const response = await HttpResourceService.callRest(
+      ApiRoutes.GET_CURRENT_USER,
+      httpVerb.GET,
+      {},
+      {
+        'Content-Type': 'application/json'
+      }
+    );
+
+    return response.data;
   } catch (error) {
     console.log(error);
     throw Error('Unable to fetch data');
@@ -29,6 +83,6 @@ const generateFile = async (file) => {
   }
 };
 
-const CommonService = Object.freeze({ getUserDetails, getJwtDecode, generateFile });
+const CommonService = Object.freeze({ getUserDetails, getLoggedInUser, generateFile, updateSessionStorage });
 
 export default CommonService;
