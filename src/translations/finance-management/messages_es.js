@@ -29,6 +29,13 @@ export const PaymentInvoicesES = {
   'paymentInvoices.balanceCard.PLUS_91_DAYS_OVERDUE': 'S_91+ days over',
   'paymentInvoices.balanceCard.payNowBtn': 'S_Pay Now',
   'paymentInvoices.balanceAPI.error': 'S_Error fetching open invoices balance.',
+  // Invoices Table
+  'paymentInvoices.invoicesTable.filter.billDateStart': 's_Bill Date (Start)',
+  'paymentInvoices.invoicesTable.filter.billDateEnd': 's_Bill Date (End)',
+  'paymentInvoices.invoicesTable.filter.dueDateStart': 's_Due Date (Start)',
+  'paymentInvoices.invoicesTable.filter.dueDateEnd': 's_Due Date (End)',
+  'paymentInvoices.pendingPayments.filter.dueDateStart': 's_Initiation Date (Start)',
+  'paymentInvoices.pendingPayments.filter.dueDateEnd': 's_Initiation Date (End)',
   // Payment History
   'paymentInvoices.history.table.confirmationNumber': 'S_Confirmation No.',
   'paymentInvoices.history.table.purchaseOrderNumber': 'S_Purchase Order Number',
@@ -36,7 +43,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.paymentStatus': 'S_Payment Status',
   'paymentInvoices.history.table.paymentInitiationDate': 'S_Payment Initiation Date',
   'paymentInvoices.history.table.totalAuthorizedPaymentAmt': 'S_Total Authorization Amt',
-  'paymentInvoices.history.filters.autoSearch': 'S_Search by document number, sold to',
+  'paymentInvoices.history.filters.autoSearch': 'S_Search by Confirmation No., Payment Method',
   'paymentInvoices.history.filters.filterBtn': 'S_Filter',
   'paymentInvoices.history.filters.status': 'S_Payment Status',
   'paymentInvoices.history.filters.method': 'S_Payment Method',
@@ -49,6 +56,10 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.heading': 'S_Payment History',
   'paymentInvoices.history.table.emptyData': 'S_No Payment History Found',
   'paymentInvoices.history.table.emptyDataDescription': 'S_Please try again later',
+  'paymentInvoices.history.table.authorizedPayment':'S_Authorized Payment',
+  'paymentInvoices.history.table.usedDate':'S_Used Date',
+  'paymentInvoices.history.table.creditUsed':'Credit Used',
+  'paymentInvoices.Details.print': 'S_Print',
 
   // Customer Statements
   'paymentInvoices.CS.filters.autoSearch': 'S_Search by document number, sold to',
@@ -75,10 +86,14 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.OpenAmount': 'S_Open Amount',
   'paymentInvoices.history.table.BillAmount': 'S_Bill Amount',
   'paymentInvoices.history.table.Actions': 'S_Actions',
-  'paymentInvoices.history.table.heading': 'S_Payment Listing',
+  'paymentInvoices.invoice.table.heading': 'S_Invoice Listing',
   'paymentInvoices.history.table.status': 'S_Status',
   'paymentInvoices.paymentMethods.filter.search.placeholder': 'S_Select by name or number',
   'paymentInvoices.invoice.table.emptyData': 'S_No Invoice Found',
+  'paymentInvoices.Details.backToManageInvoices': 'S_BACK TO MANAGE INVOICES PAGE',
+  'paymentInvoices.Details.Invoice': 'S_Invoice',
+  'paymentInvoices.Details.DownloadPDF': 'S_DOWNLOAD PDF',
+  'paymentInvoices.Details.ReviewAndPay': 'S_REVIEW AND PAY',
 
   //Credits
   'paymentInvoices.credits.table.description': 'S_Description',
@@ -87,6 +102,8 @@ export const PaymentInvoicesES = {
   'paymentInvoices.credits.table.downloadPdf': 'S_download pdf',
   'paymentInvoices.credits.table.heading': 'S_Credits Listing',
   'paymentInvoices.credits.table.emptyData': 'S_No Credits Found',
+  'paymentInvoices.Details.backToManageCredits': 'S_BACK TO MANAGE CREDITS PAGE',
+  'paymentInvoices.Details.Credit': 'S_Credit',
 
   //payment methods - bank account
   'paymentInvoices.paymentMethods.banks.filter.search.label': 'S_Search bank accounts',
@@ -112,7 +129,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.paymentMethods.table.cards.emptyData': 'S_No Credit Cards Found',
 
   //Pending Payments
-  'pendingPayments.filters.autoSearch': 'S_Search by document number, sold to',
+  'pendingPayments.filters.autoSearch': 'S_Search by Confirmation No., Payment Method',
   'pendingPayments.table.confirmationNumber': 'S_Confirmation Number',
   'pendingPayments.table.totalAuthorizedPaymentAmt': 'S_Total Authorized Payment Amount',
   'pendingPayments.table.cancelPayment': 'S_CANCEL PAYMENT',
@@ -121,7 +138,6 @@ export const PaymentInvoicesES = {
   'pendingPayments.table.bankAccount.emptyData': 'S_No Pending Payments Found',
   'pendingPayments.table.paymentStatus': 'S_Payment Status',
   'pendingPayments.table.billDate': 'S_Bill Date',
-  'pendingPayments.filters.autoSearch': 'S_Search by document number, sold to',
 
   // No data found
   'paymentInvoices.EmptyData.heading': 'S_No Data Found',

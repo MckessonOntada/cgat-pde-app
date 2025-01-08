@@ -41,7 +41,7 @@ export const UserProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
-  const [activeTab, setActiveTab] = useState(ACTIVE_USERS);
+  const [activeTab, setActiveTab] = useState(1);
 
   const updateFilterState = useCallback((field, value) => {
     setFilterState((prevState) => ({
@@ -67,11 +67,10 @@ export const UserProvider = ({ children }) => {
     [filterConfig, paginationConfig.pageNumber, sortConfig]
   );
 
-  const { isLoading, isError, data, refetch } = useQuery({
+  const { isLoading, isError, error, data, refetch } = useQuery({
     queryKey: ['users', activeTab, requestParams],
     queryFn: async () => {
-      const url =
-        activeTab === 'ACTIVE USERS' ? `${ApiRoutes.USERS()}?${serializeParams(requestParams)}` : `${ApiRoutes.USERS_PROVISIONING()}`;
+      const url = activeTab === 1 ? `${ApiRoutes.USERS()}?${serializeParams(requestParams)}` : `${ApiRoutes.USERS_PROVISIONING()}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       if (res.data) {
         const { content: data, totalElements, totalPages } = res.data;
@@ -134,6 +133,7 @@ export const UserProvider = ({ children }) => {
       roleList,
       isLoading,
       isError,
+      error,
       filterConfig,
       paginationConfig,
       setFilterConfig,

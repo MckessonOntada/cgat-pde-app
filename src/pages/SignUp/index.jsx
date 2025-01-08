@@ -15,7 +15,14 @@ import { useMutation, useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import CommonDataService from '../../api/commonService/CommonDataService';
-import { ADDRESS_REGEX, ALPHABETIC_WITH_SPACE, ALPHABETIC_WITH_SPECIAL, FAX_REGEX, PHONE_REGEX, ZIP_REGEX } from '@src/components/form/ValidationRegExp';
+import {
+  ADDRESS_REGEX,
+  ALPHABETIC_WITH_SPACE,
+  ALPHABETIC_WITH_SPECIAL,
+  FAX_REGEX,
+  PHONE_REGEX,
+  ZIP_REGEX
+} from '@src/components/form/ValidationRegExp';
 
 const SignUp = () => {
   const { t } = useTranslate();
@@ -94,7 +101,10 @@ const SignUp = () => {
         .matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.first_name')) // Only alphabets
         .min(2, t('userManagement.create_user.validation.first_name_min_max'))
         .required(t('userManagement.create_user.validation.first_name_required')),
-      middleName: Yup.string().matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.middle_name')).min(2, t('userManagement.create_user.validation.middle_name_min_max')).nullable(),
+      middleName: Yup.string()
+        .matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.middle_name'))
+        .min(2, t('userManagement.create_user.validation.middle_name_min_max'))
+        .nullable(),
       lastName: Yup.string()
         .matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.last_name')) // Only alphabets
         .min(2, t('userManagement.create_user.validation.last_name_min_max'))
@@ -102,7 +112,9 @@ const SignUp = () => {
     }),
 
     contact: Yup.object({
-      email: Yup.string().email(t('userManagement.create_user.validation.invalid_email')).required(t('userManagement.create_user.validation.email_required')),
+      email: Yup.string()
+        .email(t('userManagement.create_user.validation.invalid_email'))
+        .required(t('userManagement.create_user.validation.email_required')),
       phone: Yup.string()
         .matches(PHONE_REGEX, t('userManagement.create_user.validation.phone_no')) // 10 digits only
         .required(t('userManagement.create_user.validation.phone_no_required')),
@@ -200,12 +212,19 @@ const SignUp = () => {
                       {errors.practiceId && touched.practiceId && !values.practiceId && <TextError errorMessage={errors.practiceId} />}
                     </div>
                     <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
-                      <Field name="comment" fieldlabel={t('forms.labels.comment')} placeholder=" " component={Components['textarea']} maxCharHelperText={t('forms.placeholder.max_5000_chars')} maxCharLimit={5000} />
+                      <Field
+                        name="comment"
+                        fieldlabel={t('forms.labels.comment')}
+                        placeholder=" "
+                        component={Components['textarea']}
+                        maxCharHelperText={t('forms.placeholder.max_5000_chars')}
+                        maxCharLimit={5000}
+                      />
                     </div>
                   </div>{' '}
                 </div>
                 <div className={'buttonGroup'}>
-                  <Button size="md" variant="primary" type="button" onClick={() => navigate('/')}>
+                  <Button size="md" variant="secondary" type="button" onClick={() => navigate('/')}>
                     {t('forms.buttons.cancel')}
                   </Button>
                   <Button type="submit" variant="primary" size="md">

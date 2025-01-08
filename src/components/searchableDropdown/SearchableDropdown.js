@@ -342,7 +342,7 @@ export const SearchableDropdown = (props) => {
           setDisplayValue(tempOption[0]);
         }
       } else {
-        setDisplayValue(CommonUtils.isNonEmptyString(defaultSelectedLabel) ? defaultSelectedLabel : 'Select option');
+        setDisplayValue(CommonUtils.isNonEmptyString(defaultSelectedLabel) ? defaultSelectedLabel : searchPlaceholder);
       }
     }
     if (isMultiSelect && onChange) {
@@ -797,7 +797,7 @@ export const SearchableDropdown = (props) => {
         if (CommonUtils.isNonEmptyString(defaultSelectedLabel)) {
           return defaultSelectedLabel;
         }
-        return 'Select option';
+        return searchPlaceholder;
       }
     } else {
       if (showSelectedLabels ? !CommonUtils.isNonEmptyString(getSelectedLabels()) : getSelectedCount() === 0) {
@@ -908,7 +908,7 @@ export const SearchableDropdown = (props) => {
     nonSelectedOptionsUi =
       tempTwentyOptions &&
       tempTwentyOptions.map((option, index) => {
-        const { label, value, endLabel } = option;
+        const { label, labelDescription, value, endLabel } = option;
 
         return (
           <li
@@ -959,7 +959,12 @@ export const SearchableDropdown = (props) => {
                   <span className={styles.endLabelOptionEndLabel}>{endLabel}</span>
                 </div>
               ) : (
-                <TooltipText className={styles.lineClamps2}>{label}</TooltipText>
+                <TooltipText className={styles.lineClamps2}>
+                  <div className={labelDescription ? styles.compoundLabel : ''}>
+                    <span className={labelDescription ? styles.labelWithDescription : ''}>{label}</span>
+                    {labelDescription ? <span className={styles.labelDescription}>{labelDescription}</span> : null}
+                  </div>
+                </TooltipText>
               )}
             </div>
             {isActionable && !option.isHideAction && (

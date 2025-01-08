@@ -50,6 +50,10 @@ export const UserManagementEN = {
   'userManagement.label.cancel': 'Cancel',
   'userManagement.label.save': 'Save',
   'userManagement.label.status': 'Status',
+  'userManagement.label.description': 'Description',
+  'userManagement.label.createdOn': 'Created On',
+  'userManagement.label.emptyPermissionListTitle': 'No permissions available',
+  'userManagement.label.emptyPermissionListSubtitle': 'Please assign permission to see it here',
   'userManagement.status.active': 'Active',
   'userManagement.status.inactive': 'Inactive',
   'userManagement.manageUser.breadCrumb.lable.allUser': 'All Users',
@@ -119,8 +123,8 @@ export const UserManagementEN = {
   'userManagement.create_user.validation.fax_max': 'Fax can be a maximum of 15 characters',
   'userManagement.create_user.option.please_select': 'Please Select',
 
-  'userManagement.userdetails.addressdetails': 'User Address',
-  'userManagement.userdetails.lastupdatedon': 'Last Updated On:',
+  'userManagement.userDetails.userAddress': 'User Address',
+  'userManagement.userDetails.lastUpdatedOn': 'Last Updated On:',
 
   'userManagement.stepper.option.user_details': 'User Details',
   'userManagement.stepper.option.roles_and_permissions': 'Roles and Permissions',
@@ -325,5 +329,15 @@ export const UserManagementEN = {
   'messages.sysadmin_create_success': 'System Admin has been created successfully.',
 
   'Table.Tabs.ActiveUser': 'ACTIVE USERS',
-  'Table.Tabs.pendingRequest': 'PENDING REQUESTS'
+  'Table.Tabs.pendingRequest': 'PENDING REQUESTS',
+  'labels.startDate': 'Start Date',
+  'labels.endDate': 'End Date',
+  'placeholders.search': 'Search',
+  'button.label.loginAsThisUser': 'Login as this user',
+  'popup.title.alert': 'Alert!',
+  'popup.message.wishToContinueLoginAsThisUserQuestion': 'Do you wish to continue?',
+  'popup.message.wishToContinueLoginAsThisUserDescription':
+    'You are about to perform actions on behalf of {{targetUser}}. Please confirm that you have you have verified the identity of the requesting user the necessary permissions and that you understand the implications of proceeding with this task',
+  'popup.message.wishToContinueLoginAsThisUserCheckBoxConsent':
+    'By confirming, you acknowledge that all actions taken will be logged and attributed to your account.'
 };

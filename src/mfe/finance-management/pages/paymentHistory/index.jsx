@@ -31,8 +31,8 @@ export default function PaymentHistory(params) {
       {
         type: 'dateRangePicker',
         name: 'dateRange',
-        startDateLabel: t('paymentInvoices.history.table.PostingDate'),
-        endDateLabel: t('paymentInvoices.history.table.DueDate'),
+        startDateLabel: t('paymentInvoices.pendingPayments.filter.initiationDateStart'),
+        endDateLabel: t('paymentInvoices.pendingPayments.filter.initiationDateEnd'),
         minDate: dayjs().subtract(180, 'days').toDate(),
         maxDate: new Date()
       }

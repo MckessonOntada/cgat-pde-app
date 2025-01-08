@@ -33,7 +33,7 @@ function UserTable({ onActionSuccess }) {
   const [selectedRows, setSelectedRows] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const { isLoading, data, activeTab, paginationConfig, applySort, refreshData, setPageNumber } = useUser();
+  const { isLoading, isError, error, data, activeTab, paginationConfig, applySort, refreshData, setPageNumber } = useUser();
   const userPermissions = AuthUtils.getUserPermissions();
   const { hasPermission } = usePermission();
 
@@ -46,7 +46,11 @@ function UserTable({ onActionSuccess }) {
   };
 
   const handleDeactivateUser = async (userId) => {
-    const res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.DELETE, null);
+    const res = await HttpResourceService.callRest(
+      `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`,
+      httpVerb.DELETE,
+      null
+    );
     return res.data;
   };
 
@@ -134,7 +138,10 @@ function UserTable({ onActionSuccess }) {
                   <Link
                     to={`${props.id}`} // dynamically constructs the URL with userId
                     className="MCP-table-link">
-                    <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName || ''}`} maxWidth={300} />
+                    <EclipsesTextcss
+                      str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName || ''}`}
+                      maxWidth={300}
+                    />
                   </Link>
                 ) : (
                   <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName || ''}`} maxWidth={300} />
@@ -185,7 +192,17 @@ function UserTable({ onActionSuccess }) {
         selector: 'status',
         center: true,
         minWidth: '80px',
-        cell: (props) => <div>{activeTab === 'PENDING REQUESTS' ? <Badge text="Pending" type="info-default" /> : props.isActive ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />}</div>
+        cell: (props) => (
+          <div>
+            {activeTab === 'PENDING REQUESTS' ? (
+              <Badge text="Pending" type="info-default" />
+            ) : props.isActive ? (
+              <Badge text="Active" type="success" />
+            ) : (
+              <Badge text="Inactive" type="info-default" />
+            )}
+          </div>
+        )
       },
       {
         id: 'dataAdded',
@@ -199,7 +216,13 @@ function UserTable({ onActionSuccess }) {
         id: 'action',
         center: true,
         name: t('userManagement.table.action'),
-        cell: (row) => <Actions row={row} showEditButton={activeTab === 'PENDING REQUESTS' && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS)} showViewButton={activeTab !== 'PENDING REQUESTS' && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS)} />,
+        cell: (row) => (
+          <Actions
+            row={row}
+            showEditButton={activeTab === 'PENDING REQUESTS' && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS)}
+            showViewButton={activeTab !== 'PENDING REQUESTS' && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS)}
+          />
+        ),
         omit: isSystemAdminView,
         width: '120px'
       }
@@ -235,7 +258,15 @@ function UserTable({ onActionSuccess }) {
         stickyHeader
         responsive
         pagination={true}
-        noDataComponent={<EmptyDataTable isLoading={isLoading} image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('orgManagement.messages.userEmptyTableSubtitle')} />}
+        noDataComponent={
+          <EmptyDataTable
+            error={(isError && error.message) || 'Something went wrong, Please try again later.'}
+            isLoading={isLoading}
+            image={EmptyDataImage}
+            heading={t('message.userEmptyTableTitle')}
+            description={t('orgManagement.messages.userEmptyTableSubtitle')}
+          />
+        }
       />
       <Modal
         {...{

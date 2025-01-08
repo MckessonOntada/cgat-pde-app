@@ -22,12 +22,12 @@ const OrderIndex = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const activeTabFromState = location.state?.activeTab;
-  const activeTab = tabList.find((tab) => tab.isActiveTab);
-  const [tabKey, setTabKey] = React.useState(activeTabFromState || activeTab?.configName);
+  const activeTab = tabList.find((tab) => tab.id === tabVariant);
+  const [tabKey, setTabKey] = React.useState(activeTabFromState || activeTab?.id);
 
   const alertContainerId = 'summary-alert-container';
   const additionalFiltersConfig = React.useMemo(() => {
-    if (activeTab?.configName === 'SUBMITTED') return [];
+    if (activeTab?.id === 2) return [];
 
     return [
       {
@@ -47,15 +47,15 @@ const OrderIndex = () => {
     setTabList(
       tabList.map((tab) => ({
         ...tab,
-        isActiveTab: tab.configName === activeTab
+        isActiveTab: tab.id === activeTab
       }))
     );
   };
 
   const handleOnTabChange = (tab) => {
-    setActiveTab(tab.configName);
-    setTabKey(tab.configName);
-    changeTab(tab.configName);
+    setActiveTab(tab.id);
+    setTabKey(tab.id);
+    changeTab(tab.id);
   };
 
   const handleOnClick = () => {
@@ -66,9 +66,9 @@ const OrderIndex = () => {
   React.useEffect(() => {
     if (activeTabFromState) {
       setActiveTab(activeTabFromState);
-      setTabVariant('submitted'); // Set the tab from state
+      setTabVariant(2); // Set the tab from state
     } else {
-      setActiveTab(tabList?.[0].configName); // Default to the first tab
+      setActiveTab(1); // Default to the first tab
     }
   }, [activeTabFromState]);
 

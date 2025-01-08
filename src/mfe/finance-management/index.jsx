@@ -13,7 +13,6 @@ import { useAccountContext } from './context/AccountContext';
 import { BalanceProvider } from './context/BalanceContext';
 import CommonUtils from '@src/util/CommonUtils';
 import EmptyDataContainer from '@src/components/EmptyData';
-import { ReactComponent as EmptyDataSVG } from '@src/assets/image/EmptyDataTable.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 
 const PaymentsInvoices = () => {

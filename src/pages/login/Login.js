@@ -16,6 +16,7 @@ import AuthUtils from '@src/util/AuthUtils';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import useSessionFeatures from '@src/hooks/useSessionFeatures';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const widgetRef = useRef();
@@ -25,6 +26,8 @@ const Login = () => {
   } = useSessionFeatures();
   let oktaConfig = OktaHelper.getConfiguration();
   let { oktaAuth } = useOktaAuth();
+  const navigate = useNavigate();
+
   const { refetch: onPostUserLogin } = useFetchQueryRetry(
     [`postUserLogin`],
     async () => {
@@ -60,15 +63,24 @@ const Login = () => {
         issuer,
         scopes
       },
-      helpLinks: {
-        custom: [
-          {
-            text: 'Sign Up',
-            href: '/signup',
-            className: 'signup-link'
+      // helpLinks: {
+      //   custom: [
+      //     {
+      //       text: 'New User',
+      //       href: '/signup',
+      //       className: 'signup-link'
+      //     }
+      //   ]
+      // },
+      customButtons: [
+        {
+          title: 'NEW USER?',
+          className: 'custom-signUp-button',
+          click: function () {
+            navigate('/signup');
           }
-        ]
-      },
+        }
+      ],
       features: {
         showPasswordToggleOnSignInPage: true,
         registration: true,
