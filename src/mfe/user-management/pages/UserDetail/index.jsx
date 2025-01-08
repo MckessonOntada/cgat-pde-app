@@ -373,13 +373,15 @@ const UserDetail = () => {
                 duration={10000}
               />
             )}
-            <UserAccounts
-              selectableRows={false}
-              omitColumns={['distributionChannel']}
-              practiceId={data?.practiceId || 1}
-              showSelectedAccounts={false}
-              userId={userId}
-            />
+            {data?.practiceId && (
+              <UserAccounts
+                selectableRows={false}
+                omitColumns={['distributionChannel']}
+                practiceId={data?.practiceId}
+                showSelectedAccounts={false}
+                userId={userId}
+              />
+            )}
           </div>
         )}
       </div>
