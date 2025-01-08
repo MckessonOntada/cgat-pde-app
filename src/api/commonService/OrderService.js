@@ -193,6 +193,17 @@ async function setOrderUnassignToMe(orderId) {
   return {};
 }
 
+async function deleteOrder(orderId) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+  const url = `${ApiRoutes.ORDERS()}/${orderId}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.DELETE);
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -210,7 +221,8 @@ const OrderService = Object.freeze({
   getProgramAndChannelConfig,
   submitOrder,
   setOrderAssignToMe,
-  setOrderUnassignToMe
+  setOrderUnassignToMe,
+  deleteOrder
 });
 
 export default OrderService;

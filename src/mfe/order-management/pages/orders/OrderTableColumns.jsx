@@ -14,6 +14,7 @@ import { handleApiError } from '@src/util/ApiUtils';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
 import { renderModal } from '@src/util/ModalUtil';
+import { useOrders } from '../../context/OrderContext';
 
 const getColorByStatus = (status) => {
   const statusColors = {
@@ -41,7 +42,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
   const navigate = useNavigate();
   const loggedinUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
-
+  const { refreshData } = useOrders();
   const { hasPermission } = usePermission();
   const assignMutation = useMutation(() => OrderService.setOrderAssignToMe(id), {
     onSuccess: (result) => {
@@ -62,10 +63,22 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
       showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
     }
   });
-  const handleDelete = () => {
-    showAlert({ description: t('messages.success.delete'), type: 'success', anchorEl: alertContainerId });
-    return;
+
+  const deleteMutation = useMutation(() => OrderService.deleteOrder(id), {
+    onSuccess: (result) => {
+      refreshData();
+      showAlert({ description: t('messages.success.delete'), type: 'success', anchorEl: alertContainerId });
+    },
+    onError: (error) => {
+      const errorKey = handleApiError(err);
+      showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
+    }
+  });
+
+  const handleDelete = async (orderId) => {
+    deleteMutation.mutate();
   };
+
   const handleOnOptionSelection = ({ value }) => {
     if (value === 'view') {
       if (props.status === StatusEnum.SUBMITTED) {
@@ -145,8 +158,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
           value: 'delete'
         }
       );
-    } else if (status?.toLowerCase() === 'approval pending') {
-      //To Do, need to check the logged in user is part of approver group
+    } else if (status?.toLowerCase() === 'approval_pending') {
       if (!props.approver || props.approver.id === null) {
         options.push({
           label: t(`labels.orderActions.assignToMe`),
@@ -158,6 +170,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
           value: 'unassign'
         });
       }
+
       options.push({
         label: t(`labels.orderActions.review`),
         value: 'review'
