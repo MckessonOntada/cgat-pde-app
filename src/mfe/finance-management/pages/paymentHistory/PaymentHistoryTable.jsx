@@ -35,7 +35,8 @@ export default function PaymentHistoryTable() {
         <div className="cellEllipse">
           <Link
             style={{ color: '#007bff', fontWeight: '600' }}
-            to={`/record/${PATHS.paymentHistory}/${props?.confirmationNo}/confirmation`}>{`${props?.confirmationNo}`}</Link>
+            to={`/record/${PATHS.paymentHistory}/${props?.confirmationNo}/confirmation`}
+            state={{ ...props }}>{`${props?.confirmationNo}`}</Link>
         </div>
       )
     },

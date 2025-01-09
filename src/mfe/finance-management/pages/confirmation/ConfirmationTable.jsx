@@ -1,22 +1,24 @@
 import React from 'react';
-import { Heading, Loader, CustomDataTable } from '@mckesson/mcp-component-library';
+import { Heading, Loader, CustomDataTable, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
 import { FormattedNumber } from 'react-intl';
+import { ReactComponent as PDFicon } from '@src/assets/svg/office-file-pdf.svg';
+
 
 const createColumns = (t, type) => {
   const commonColumns = [
     {
       name: t('paymentInvoices.history.table.billNumber'),
       id: 'billNumber',
-      selector: (row) => `${row.billNumber}`,
+      selector: (row) => `${row.billNo}`,
       sortable: true,
       wrap: true,
       minWidth: '112px',
       cell: (props) => (
         <div className="cellEllipse">
-          <Link style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}>{`${props?.billNumber || ''}`}</Link>
+          <Link style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}>{`${props?.billNo || ''}`}</Link>
         </div>
       )
     },
@@ -27,7 +29,7 @@ const createColumns = (t, type) => {
       minWidth: '160px',
       sortable: true,
       wrap: true,
-      cell: (props) => <div>{props?.soldToSite || '-'}</div>
+      cell: (props) => <div>{props?.soldToAccountNumber || '-'}</div>
     }
   ];
 
@@ -66,30 +68,27 @@ const createColumns = (t, type) => {
     },
     {
       name: t('paymentInvoices.history.table.authorizedPayment'),
-      selector: (row) => row?.authorizedPayment,
+      selector: (row) => row?.authAmount,
       minWidth: '140px',
       sortable: true,
       right: true,
       id: 'authorizedPayment',
       cell: (props) => (
         <div className="cellEllipse align-items-right">
-          <FormattedNumber value={props?.authorizedPayment || 0} style="currency" currency="USD" />
+          <FormattedNumber value={props?.authAmount || 0} style="currency" currency="USD" />
         </div>
       )
+    },
+    {
+      name: t('paymentInvoices.history.table.Actions'),
+      minWidth: '144px',
+      wrap: true,
+      cell: (props) => (
+        <Button className="back-button-control" variant="tertiary" Icon={() => <PDFicon />} onClick={() => {}} size="md" disabled={!props?.pdfAvailable}>
+          {t('paymentInvoices.CS.table.exportPdf')}
+        </Button>
+      )
     }
-    // {
-    //   name: t('paymentInvoices.history.table.Actions'),
-    //   selector: (row) => row.totalAuthorizedPaymentAmt,
-    //   minWidth: '144px',
-    //   sortable: true,
-    //   wrap: true,
-
-    //   cell: (props) => (
-    //     <Button className="back-button-control" variant="tertiary" Icon={() => <PDFicon />} onClick={() => {}} size="md">
-    //       {t('paymentInvoices.credits.table.downloadPdf')}
-    //     </Button>
-    //   )
-    // }
   ];
 
   const creditColumns = [
@@ -110,32 +109,42 @@ const createColumns = (t, type) => {
       sortable: true,
       wrap: true,
       id: 'usedDate',
-      cell: (props) => <div className="cellEllipse">{dayjs(props?.usedDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
+      cell: (props) => <div className="cellEllipse">{props?.usedDate ? dayjs(props.usedDate, 'DD/MM/YYYY').format('MM/DD/YYYY') : '-'}</div>
     },
     {
       name: t('paymentInvoices.credits.table.amount'),
-      selector: (row) => row?.amount,
+      selector: (row) => row?.billAmount,
       minWidth: '140px',
       sortable: true,
       right: true,
-      id: 'amount',
+      id: 'billAmount',
       cell: (props) => (
         <div className="cellEllipse align-items-right">
-          <FormattedNumber value={props?.amount || 0} style="currency" currency="USD" />
+          <FormattedNumber value={props?.billAmount || 0} style="currency" currency="USD" />
         </div>
       )
     },
     {
       name: t('paymentInvoices.history.table.creditUsed'),
-      selector: (row) => row?.creditUsed,
+      selector: (row) => row?.authAmount,
       minWidth: '140px',
       sortable: true,
       right: true,
-      id: 'creditUsed',
+      id: 'authAmount',
       cell: (props) => (
         <div className="cellEllipse align-items-right">
-          <FormattedNumber value={props?.creditUsed || 0} style="currency" currency="USD" />
+          <FormattedNumber value={props?.authAmount || 0} style="currency" currency="USD" />
         </div>
+      )
+    },
+    {
+      name: t('paymentInvoices.history.table.Actions'),
+      minWidth: '144px',
+      wrap: true,
+      cell: (props) => (
+        <Button className="back-button-control" variant="tertiary" Icon={() => <PDFicon />} onClick={() => {}} size="md" disabled={!props?.pdfAvailable}>
+          {t('paymentInvoices.CS.table.exportPdf')}
+        </Button>
       )
     }
   ];
@@ -143,13 +152,12 @@ const createColumns = (t, type) => {
   return type === 'invoice' ? invoiceColumns : creditColumns;
 };
 
-function ConfirmationTable({ invoiceData, creditData, isFetching }) {
+function ConfirmationTable({ invoiceData, creditData }) {
   const { t } = useTranslate();
-
   return (
     <>
       <Heading as="h1" fontWeight="600">
-        Invoice List
+        {t('paymentInvoices.table.invoiceHeading')}
       </Heading>
       <div className="details-table">
         <CustomDataTable
@@ -176,7 +184,7 @@ function ConfirmationTable({ invoiceData, creditData, isFetching }) {
       </div>
 
       <Heading as="h1" fontWeight="600">
-        Credit List
+        {t('paymentInvoices.table.creditHeading')}
       </Heading>
       <div className="details-table">
         <CustomDataTable

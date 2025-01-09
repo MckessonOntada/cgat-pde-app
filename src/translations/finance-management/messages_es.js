@@ -56,10 +56,12 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.heading': 'S_Payment History',
   'paymentInvoices.history.table.emptyData': 'S_No Payment History Found',
   'paymentInvoices.history.table.emptyDataDescription': 'S_Please try again later',
-  'paymentInvoices.history.table.authorizedPayment':'S_Authorized Payment',
-  'paymentInvoices.history.table.usedDate':'S_Used Date',
-  'paymentInvoices.history.table.creditUsed':'Credit Used',
+  'paymentInvoices.history.table.authorizedPayment': 'S_Authorized Payment',
+  'paymentInvoices.history.table.usedDate': 'S_Used Date',
+  'paymentInvoices.history.table.creditUsed': 'S_Credit Used',
   'paymentInvoices.Details.print': 'S_Print',
+  'paymentInvoices.table.therapyInfo':'S_Therapy Info',
+
 
   // Customer Statements
   'paymentInvoices.CS.filters.autoSearch': 'S_Search by document number, sold to',
@@ -76,6 +78,24 @@ export const PaymentInvoicesES = {
   'paymentInvoices.CS.table.actions': 'S_Action(s)',
   'paymentInvoices.CS.table.exportPdf': 'S_Export PDF',
   'paymentInvoices.CS.table.emptyData': 'S_No Customer Statement Found',
+  'paymentInvoices.Details.Bill': 'S_Bill',
+  'paymentInvoices.Details.Reference': 'S_Reference',
+  'paymentInvoices.Details.PO': 'S_PO#',
+  'paymentInvoices.Details.PaymentTerm': 'S_Payment Term',
+  'paymentInvoices.Details.AmountDue': 'S_Amount Due',
+  'paymentInvoices.Details.DueDate': 'S_Due Date',
+  'paymentInvoices.Details.BillDate': 'S_Bill Date',
+  'paymentInvoices.Details.CreditAmount': 'S_Credit Amount',
+  'paymentInvoices.Details.CreditRemaining': 'S_Credit Remaining',
+  'paymentInvoices.Details.ValidFrom': 'S_Valid From',
+  'paymentInvoices.Details.Item': 'S_Item',
+  'paymentInvoices.Details.therapyId': 'S_Therapy Id',
+  'paymentInvoices.Details.Description': 'S_Description',
+  'paymentInvoices.Details.referenceDocument': 'S_Reference Document',
+  'paymentInvoices.Details.Quantity': 'S_Quantity',
+  'paymentInvoices.Details.Unit': 'S_Unit',
+  'paymentInvoices.Details.netPrice': 'S_Net Value',
+  'paymentInvoices.Details.grossPrice': 'S_Gross Value',
 
   // Invoices
   'paymentInvoices.history.table.billNumber': 'S_Bill Number',
@@ -94,6 +114,32 @@ export const PaymentInvoicesES = {
   'paymentInvoices.Details.Invoice': 'S_Invoice',
   'paymentInvoices.Details.DownloadPDF': 'S_DOWNLOAD PDF',
   'paymentInvoices.Details.ReviewAndPay': 'S_REVIEW AND PAY',
+  'paymentInvoices.details.distChannel': 'S_Dist Channel',
+  'paymentInvoices.details.division': 'S_Division',
+  'paymentInvoices.details.SAPMaterial': 'S_SAP Material',
+  'paymentInvoices.details.variantinfo': 'S_Variant Info',
+  'paymentInvoices.details.Variant': 'S_Variant',
+  'paymentInvoices.details.VariantDescription': 'S_Variant Description',
+  'paymentInvoices.details.contractInfo': 'S_Contract Info',
+  'paymentInvoices.details.ContractNumber': 'S_Contract Number',
+  'paymentInvoices.details.ContractType': 'S_Contract Type',
+  'paymentInvoices.details.ContractTypeDescription': 'S_Contract Type Description',
+  'paymentInvoices.details.ContractValidFrom': 'S_Contract Valid From',
+  'paymentInvoices.details.ContractValidTill': 'S_Contract Valid Till',
+  'paymentInvoices.details.Identifier340B': 'S_340B Identifier',
+  'paymentInvoices.details.pricingInfo': 'S_Pricing Info',
+  'paymentInvoices.details.PriceDate': 'S_Price Date',
+  'paymentInvoices.details.NetPrice': 'S_Net Price ($)',
+  'paymentInvoices.details.RegularPrice': 'S_Regular Price ($)',
+  'paymentInvoices.details.ContractPrice': 'S_Contract Price ($)',
+  'paymentInvoices.details.WACPrice': 'S_WAC Price ($)',
+  'paymentInvoices.details.Discounts': 'S_Discounts ($)',
+  'paymentInvoices.details.Price340B': 'S_340B Price',
+  'paymentInvoices.details.PriceUnit': 'S_Price Unit',
+  'paymentInvoices.details.Currency': 'S_Currency',
+  'paymentInvoices.details.MinimumOrderQuantity': 'S_Minimum Order Quantity',
+  'paymentInvoices.table.invoiceHeading': 'S_Invoice List',
+  'paymentInvoices.table.creditHeading': 'S_Credit List',
 
   //Credits
   'paymentInvoices.credits.table.description': 'S_Description',
@@ -141,5 +187,8 @@ export const PaymentInvoicesES = {
 
   // No data found
   'paymentInvoices.EmptyData.heading': 'S_No Data Found',
-  'paymentInvoices.EmptyData.description': 'S_No accounts found linked with user'
+  'paymentInvoices.EmptyData.description': 'S_No accounts found linked with user',
+
+  'paymentInvoices.CS.export.success': 'S_Customer Statement exported.',
+  'paymentInvoices.CS.export.error': 'S_Error exporting statement.'
 };

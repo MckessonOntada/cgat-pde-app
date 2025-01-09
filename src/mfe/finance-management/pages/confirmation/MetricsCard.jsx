@@ -1,45 +1,29 @@
 import { GeographicUtils } from '@src/util/GeographicUtil';
 import React from 'react';
 import CommonUtils from '@src/util/CommonUtils';
-import InfoCards from '@src/components/infoCards/InfoCards';
+import DetailMetrics from '../../components/detailMetrics/DetailMetrics';
+import DetailsFlexGrid from '../../components/detailsList/DetailsFlexGrid';
 
 const MetricsCard = ({ selectedAccount, invoiceDetails, billDates }) => {
-  const renderAccountInfo = () => (
-    <div className="account-info">
-      <div className="account-name">
-        {CommonUtils.isNonEmptyString(selectedAccount?.accountName) ? selectedAccount?.accountName : ''}
-      </div>
-      <div className="account-address">
-        {selectedAccount ? GeographicUtils.addressAggregator(selectedAccount) : ''}
-      </div>
-    </div>
-  );
+  const renderAccountInfo = () => {
+    if (!CommonUtils.isNonEmptyObject(selectedAccount)) return null;
 
-  const renderInvoiceDetails = () =>
-    Object.entries(invoiceDetails)?.map(([key, value], index) => (
-      <div key={key} className={`element-row ${index % 2 === 0 ? 'left-column' : 'right-column'}`}>
-        <div className="list-item">
-          <div className="label">{key}</div>
-          <div className="value">{value}</div>
-        </div>
-        {!(Object.values(invoiceDetails).length === index + 1 || Object.values(invoiceDetails).length === index + 2) && (
-          <div className="border-separator"></div>
-        )}
-      </div>
-    ));
+    const accountName = CommonUtils.isNonEmptyString(selectedAccount?.accountName) ? selectedAccount.accountName : '';
+    const accountAddress = selectedAccount ? GeographicUtils.addressAggregator(selectedAccount) : '';
 
-  const renderBillDates = () =>
-    Object.entries(billDates).map(([key, value]) => (
-      <div key={key} className="info-cards-container">
-        <InfoCards title={key} value={value} />
+    return (
+      <div className="account-info">
+        <div className="account-name">{accountName}</div>
+        <div className="account-address">{accountAddress}</div>
       </div>
-    ));
+    );
+  };
 
   return (
     <>
-      {CommonUtils.isNonEmptyObject(selectedAccount) && renderAccountInfo()}
-      <div className="details-wrapper">{invoiceDetails && renderInvoiceDetails()}</div>
-      <div className="bill-amount-wrapper">{renderBillDates()}</div>
+      {renderAccountInfo()}
+      {invoiceDetails && <DetailsFlexGrid invoiceDetails={invoiceDetails} />}
+      {billDates && <DetailMetrics data={billDates} />}
     </>
   );
 };

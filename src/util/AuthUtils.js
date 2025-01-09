@@ -1,3 +1,4 @@
+import CommonService from '@src/api/commonService/CommonService';
 import { SESSION_CONST } from '@src/constants/SessionConstants';
 import { permission } from 'process';
 /**
@@ -50,52 +51,24 @@ const isSystemAdminView = function () {
   return isSystemAdmin() && !getPracticeId();
 };
 
-const setImpersonate = (details) => {
-  const { id, name, permissions, practiceId, role, ...rest } = details;
+const setImpersonateId = async (id) => {
   if (!id) throw new Error('Missing impersonate id');
-  if (!permissions) throw new Error('Missing permissions');
-  if (!Array.isArray(permissions)) throw new Error('Invalid permission object. Permission can be list only.');
 
-  const impersonateDetails = { id, name, rest };
-  const existingPermissions = sessionStorage.getItem('USER_PERMISSIONS');
-  const existingPracticeId = sessionStorage.getItem('SELECTED_PRACTICE_ID');
-  const existingROLE = sessionStorage.getItem('USER_ROLE');
-
-  sessionStorage.setItem('IMPERSONATE_DETAILS', JSON.stringify(impersonateDetails));
-  sessionStorage.setItem('USER_PERMISSIONS', permissions);
-  sessionStorage.setItem('__USER_PERMISSIONS__', existingPermissions);
-  sessionStorage.setItem('USER_ROLE', role);
-  sessionStorage.setItem('__USER_ROLE__', existingROLE);
-  sessionStorage.setItem('SELECTED_PRACTICE_ID', practiceId);
-  sessionStorage.setItem('__SELECTED_PRACTICE_ID__', existingPracticeId);
+  sessionStorage.setItem('x-imp-user-id', id);
+  await CommonService.updateSessionStorage();
 };
 
-const removeImpersonate = () => {
-  const originalPermissions = sessionStorage.getItem('__USER_PERMISSIONS__');
-  const originalPracticeId = sessionStorage.getItem('__SELECTED_PRACTICE_ID__');
-  const originalRole = sessionStorage.getItem('__USER_ROLE__');
-
-  sessionStorage.setItem('USER_PERMISSIONS', originalPermissions);
-  sessionStorage.setItem('SELECTED_PRACTICE_ID', originalPracticeId);
-  sessionStorage.setItem('USER_ROLE', originalRole);
-  sessionStorage.removeItem('IMPERSONATE_DETAILS');
-  sessionStorage.removeItem('__USER_PERMISSIONS__');
-  sessionStorage.removeItem('__USER_ROLE__');
-  sessionStorage.removeItem('__SELECTED_PRACTICE_ID__');
-};
-
-const getImpersonateDetails = () => {
-  try {
-    const impersonateDetails = JSON.parse(sessionStorage.getItem('IMPERSONATE_DETAILS'));
-    return impersonateDetails;
-  } catch (error) {}
+const removeImpersonateId = async () => {
+  sessionStorage.removeItem('x-imp-user-id');
+  await CommonService.updateSessionStorage();
 };
 
 const getImpersonateId = () => {
   try {
-    const impersonateDetails = JSON.parse(sessionStorage.getItem('IMPERSONATE_DETAILS'));
-    return impersonateDetails?.id;
+    const impersonatedSelectedId = sessionStorage.getItem('x-imp-user-id');
+    return impersonatedSelectedId;
   } catch (error) {}
+  return null;
 };
 
 /**
@@ -136,10 +109,9 @@ const AuthUtils = Object.freeze({
   getPracticeId,
   setPracticeId,
   removePracticeId,
-  setImpersonate,
+  setImpersonateId,
   getImpersonateId,
-  removeImpersonate,
-  getImpersonateDetails,
+  removeImpersonateId,
   isSystemAdmin,
   isSystemAdminView
 });

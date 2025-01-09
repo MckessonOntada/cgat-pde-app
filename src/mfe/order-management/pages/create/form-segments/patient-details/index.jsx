@@ -31,6 +31,9 @@ const PatientDetails = () => {
   const { showAlert } = useAlert();
   const location = useLocation();
   const { isEdit = false, isApprover = false, alertState } = location.state || {};
+  const therapyId = formState.activeRecord?.therapy?.materialNumber;
+  const soldToAccountId = formState.activeRecord?.accountDetails?.soldToAccount?.accountNumber;
+  const shipToAccountId = formState.activeRecord?.accountDetails?.shipToAccount?.accountNumber;
 
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
@@ -191,7 +194,7 @@ const PatientDetails = () => {
         <OrderStepper />
 
         <div className={styles.wrapper}>
-          <OrderHeaderDetails />
+          <OrderHeaderDetails therapyId={therapyId} soldToAccountId={soldToAccountId} shipToAccountId={shipToAccountId} />
           <div id={alertContainerId} />
 
           {messageConfig && messageConfig.primaryMessage && (

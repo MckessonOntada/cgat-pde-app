@@ -19,7 +19,6 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import UserAccounts from '@src/components/Accounts/Accounts';
-import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
 import PermittedComponent from '@src/components/permitted-component';
 
@@ -34,10 +33,10 @@ function getBackgroundColorByRole(role) {
   }
 }
 
-const impersonatePromise = (impersonateDetails) => {
-  return new Promise(function (resolve, reject) {
+const impersonatePromise = (selectedUserId) => {
+  return new Promise(async function (resolve, reject) {
     try {
-      AuthUtils.setImpersonate(impersonateDetails);
+      await AuthUtils.setImpersonateId(selectedUserId);
       resolve('Logged in as impersonate');
     } catch (error) {
       reject('Failed to login as impersonate');
@@ -49,7 +48,6 @@ const UserDetail = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { userId } = useParams();
-  const dispatch = useDispatch();
   const [searchText, setSearchText] = useState('');
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const [alertDescription, setAlertDescription] = useState('');
@@ -164,24 +162,15 @@ const UserDetail = () => {
   };
 
   const handleOnConsentConfirm = () => {
-    const selectedUserPermissions = data.permissions;
     const selectedUserId = data.id;
-    if (selectedUserId && selectedUserPermissions && Array.isArray(selectedUserPermissions)) {
-      const impersonateDetails = {
-        permissions: selectedUserPermissions,
-        id: selectedUserId,
-        name: data.name,
-        role: data.role?.name,
-        practiceId: data.practiceId
-      };
-      impersonatePromise(impersonateDetails)
+    if (selectedUserId) {
+      impersonatePromise(selectedUserId)
         .then((message) => {
           navigate('/');
         })
         .catch((error) => {
           console.log(`error ${error}`);
         });
-      //set permissions
     } else {
       throw new Error('Something went wrong. Missing user identifier or invalid permission list.');
     }
@@ -189,6 +178,7 @@ const UserDetail = () => {
 
   const groupedPermissions = groupPermissionsByCategory(data?.permissions || [], PERMISSIONS_ENUM);
   const userFullName = `${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName}`;
+  const loggedUserId = Number(AuthUtils.getUserId());
 
   return (
     <div className="MCP-module-wrapper">
@@ -205,6 +195,7 @@ const UserDetail = () => {
           heading={<Heading as="h1">{t('userManagement.header.view.edit_user')}</Heading>}
           controls={
             data?.isActive &&
+            data?.id !== loggedUserId &&
             !isImpersonateLoggedIn && (
               <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
                 <Button variant="primary" size="md" onClick={() => setIsConsentModalOpen(true)}>
@@ -382,13 +373,15 @@ const UserDetail = () => {
                 duration={10000}
               />
             )}
-            <UserAccounts
-              selectableRows={false}
-              omitColumns={['distributionChannel']}
-              practiceId={data?.practiceId || 1}
-              showSelectedAccounts={false}
-              userId={userId}
-            />
+            {data?.practiceId && (
+              <UserAccounts
+                selectableRows={false}
+                omitColumns={['distributionChannel']}
+                practiceId={data?.practiceId}
+                showSelectedAccounts={false}
+                userId={userId}
+              />
+            )}
           </div>
         )}
       </div>

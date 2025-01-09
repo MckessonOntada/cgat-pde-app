@@ -40,7 +40,10 @@ const AccountSelection = () => {
   const [acccountError, setAccountError] = useState({ isError: false, message: '' });
   const [alertState, setAlertState] = useState(null);
   const therapyId = formState.activeRecord?.therapy?.materialNumber;
-  const [netPriceData, setNetPriceData] = useState(null);
+  const [inventoryType, setInventoryType] = useState(null);
+  const setInventoryTypeData = (data) => {
+    setInventoryType(data);
+  };
 
   const alertContainerId = 'accountSelection-alert-Container';
   const { showAlert } = useAlert();
@@ -48,18 +51,6 @@ const AccountSelection = () => {
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ACCOUNT_DETAILS);
   }, []);
-
-  const { isLoading: isPriceApiLoading, data: priceDetails = {} } = useQuery({
-    queryKey: ['order', 'therapy', 'price', therapyId, selectedAccount?.accountNumber, selectedShippingAddress?.accountNumber],
-    queryFn: async () => {
-      return OrderService.getPriceDetails(therapyId, selectedAccount.accountNumber, selectedShippingAddress.accountNumber);
-    },
-    enabled: !!therapyId && !!selectedAccount?.accountNumber && !!selectedShippingAddress?.accountNumber,
-    refetchOnWindowFocus: false,
-    onSuccess: (data) => {
-      setNetPriceData(data.netPrice);
-    }
-  });
 
   const { isLoading, data: accountsListData = {} } = useQuery({
     queryKey: ['order', 'therapy', therapyId, accountSearchString],
@@ -113,7 +104,9 @@ const AccountSelection = () => {
       orderId,
       items: null
     };
-
+    if (!(inventoryType && ['S', 'I'].includes(inventoryType))) {
+      return;
+    }
     try {
       const res = await OrderService.getInventoryStatus(requestPayload);
       if (res.status === 200) {
@@ -122,6 +115,10 @@ const AccountSelection = () => {
           type: 'success',
           anchorEl: alertContainerId
         });
+        return {
+          description: t('messages.inventoryCheck.success'),
+          type: 'success'
+        };
       }
     } catch (err) {
       if (err.status === 400) {
@@ -243,7 +240,12 @@ const AccountSelection = () => {
       <div className="MCP-module-body">
         <OrderStepper />
         <div className={`MCP-module-wrapper`}>
-          <OrderHeaderDetails netPriceData={netPriceData} />
+          <OrderHeaderDetails
+            setInventoryTypeData={setInventoryTypeData}
+            therapyId={therapyId}
+            soldToAccountId={selectedAccount?.accountNumber}
+            shipToAccountId={selectedShippingAddress?.accountNumber}
+          />
           <div id={alertContainerId} />
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>
@@ -314,7 +316,8 @@ const AccountSelection = () => {
               onClick={() => {
                 handleInventoryCheck();
               }}
-              variant="secondary">
+              variant="secondary"
+              disabled={!(inventoryType && ['S', 'I'].includes(inventoryType))}>
               {t('captions.btnInventoryCheck')}
             </Button>
             <Button

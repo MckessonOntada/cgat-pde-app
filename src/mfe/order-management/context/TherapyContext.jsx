@@ -45,9 +45,9 @@ export const TherapyProvider = ({ children }) => {
         filterConfig?.customerIdentifier.length > 0 && { customerIdentifier: [...filterConfig.customerIdentifier] }),
 
       ...(sortConfig?.sortBy && { sortBy: sortConfig.sortBy }),
-      ...(sortConfig?.sortOrder && { sortBy: sortConfig.sortOrder })
+      ...(sortConfig?.sortOrder && { sortOrder: sortConfig.sortOrder })
     }),
-    [filterConfig, paginationConfig.pageNumber]
+    [filterConfig, paginationConfig.pageNumber, sortConfig]
   );
 
   const updateFilterState = React.useCallback((field, value) => {

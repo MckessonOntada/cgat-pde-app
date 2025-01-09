@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useAccountContext } from '../../context/AccountContext';
 import { Heading, Button } from '@mckesson/mcp-component-library';
@@ -13,31 +13,13 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import DetailMetrics from '../../components/detailMetrics/DetailMetrics';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { PATHS } from '../../routes';
-
-// Dummy data will be removed after API integration
-const invoiceDetails = {
-  Bill: 339829172,
-  Reference: 339829172,
-  'PO#': 'LYNX_CART_231207115913',
-  'Payment Term': '1-15,N25TH/16-EOM,N10TH PROX'
-};
-
-const billDates = {
-  'Amount Due': '$2318.23',
-  'Due Date': 'Dec 25, 2024',
-  'Bill Date': 'Dec 07, 2024'
-};
-const data = [
-  {
-    billItemNumber: '2355',
-    mckItemNumber: 'Mk876565',
-    refDoc: 'TYYgfgh',
-    quantity: 56,
-    salesUnit: 'XYZ',
-    netValue: 456,
-    grossValue: 560
-  }
-];
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
+import { useQuery } from 'react-query';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import FloatingDrawer from '@src/components/floating-drawer';
+import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
+import { TherapyDetailsConstants } from './assets/constants/TherapyDetailsConstants';
 
 function Details(props) {
   const { billNumber } = useParams();
@@ -45,102 +27,151 @@ function Details(props) {
   const { selectedAccount } = useAccountContext();
   const { t } = useTranslate();
   const INVOICES_SCREEN = type === PATHS.invoices;
+  const [invoiceDetails, setInvoiceDetails] = useState({});
+  const [billDates, setBillDates] = useState({});
+  const [therapy, setTherapy] = useState(null);
+  const searchParams = new URLSearchParams(location.search);
 
+  const [open, setOpen] = useState(false);
+  const therapyDetails = searchParams.get('therapy-details');
   const navigate = useNavigate();
   const onBackToPaymentsInvoices = () => {
     navigate(-1);
   };
 
+  const { isLoading, isError, error, data, refetch } = useQuery({
+    queryKey: ['invoiceDetails', selectedAccount],
+    queryFn: async () => {
+      if (selectedAccount?.id) {
+        const url = `${ApiRoutes.INVOICES_CREDITS_DETAILS(selectedAccount?.id, billNumber)}`;
+        let payload = {
+          companyCode: selectedAccount?.companyCode,
+          salesOrg: selectedAccount?.salesOrg,
+          payerAccountNumber: selectedAccount?.accountNumber,
+          userName: ''
+        };
+        const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+        if (res.data) {
+          setInvoiceDetails(() => ({
+            ...{},
+            [t('paymentInvoices.Details.Bill')]: res.data.billNumber,
+            [t('paymentInvoices.Details.Reference')]: res.data.referenceNumber,
+            [t('paymentInvoices.Details.PO')]: res.data.poNumber,
+            [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm
+          }));
+          // bill bates
+          let _invoiceDue = INVOICES_SCREEN
+            ? {
+                [t('paymentInvoices.Details.AmountDue')]: `$${res.data.amountDue}`,
+                [t('paymentInvoices.Details.DueDate')]: res.data.dueDate,
+                [t('paymentInvoices.Details.BillDate')]: res.data.billDate
+              }
+            : {
+                [t('paymentInvoices.Details.CreditAmount')]: `$${res.data.amountDue}`,
+                [t('paymentInvoices.Details.CreditRemaining')]: '',
+                [t('paymentInvoices.Details.ValidFrom')]: res.data.dueDate
+              };
+          setBillDates(_invoiceDue);
+          return res.data;
+        }
+      }
+    },
+    refetchOnWindowFocus: false
+  });
+
   const columns = useMemo(
     () => [
       {
-        name: 'Item',
-        id: 'billItemNumber',
-        selector: (row) => `${row.billItemNumber}`,
-        sortable: true,
+        name: t('paymentInvoices.Details.Item'),
+        id: 'item',
+        selector: (row) => `${row.item}`,
         wrap: true,
-        minWidth: '112px',
-        cell: (props) => <div className="cellEllipse">{props.billItemNumber}</div>
+        minWidth: '120px',
+        cell: (props) => <div className="cellEllipse">{props.item || '-'}</div>
       },
       {
-        name: 'Therapy Id',
-        id: '',
+        name: t('paymentInvoices.Details.therapyId'),
+        id: 'therapyId',
         selector: (row) => {
-          row.mckItemNumber;
+          row.therapyId;
         },
-        sortable: true,
         wrap: true,
-        minWidth: '112px',
+        minWidth: '150px',
         cell: (props) => (
           <div className="cellEllipse">
-            {' '}
-            <Link style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}>{`${props?.mckItemNumber || ''}`}</Link>
+            <Link
+              style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
+              onClick={() => {
+                setOpen(!open);
+                setTherapy(props?.item);
+              }}>{`${props?.therapyId || '-'}`}</Link>
           </div>
         )
       },
       {
-        name: 'Description',
+        name: t('paymentInvoices.Details.Description'),
         id: '',
         selector: (row) => {},
-        sortable: true,
         wrap: true,
-        // minWidth: '112px',
         cell: (props) => <div className="cellEllipse">-</div>
       },
       {
-        name: 'Reference Document',
-        id: 'refDoc',
+        name: t('paymentInvoices.Details.referenceDocument'),
+        id: 'referenceDocument',
         selector: (row) => {
-          row.refDoc;
+          row.referenceDocument;
         },
-        sortable: true,
         wrap: true,
-        minWidth: '112px',
-        cell: (props) => <div className="cellEllipse">{props.refDoc}</div>
+        minWidth: '300px',
+        cell: (props) => (
+          <div>
+            <EclipsesTextcss str={props.referenceDocument} maxWidth={280} />
+          </div>
+        )
       },
       {
-        name: 'Quantity',
+        name: t('paymentInvoices.Details.Quantity'),
         id: 'quantity',
         selector: (row) => {
           row.quantity;
         },
-        sortable: true,
         wrap: true,
         minWidth: '112px',
         cell: (props) => <div className="cellEllipse">{props.quantity}</div>
       },
       {
-        name: 'Unit',
-        id: 'salesUnit',
+        name: t('paymentInvoices.Details.Unit'),
+        id: 'unit',
         selector: (row) => {
-          row.salesUnit;
+          row.unit;
         },
-        sortable: true,
         wrap: true,
-        minWidth: '112px',
-        cell: (props) => <div className="cellEllipse">{props.salesUnit}</div>
+        minWidth: '250px',
+        cell: (props) => (
+          <div>
+            <EclipsesTextcss str={props.unit} maxWidth={200} />
+          </div>
+        )
       },
       {
-        name: 'Net Value',
-        id: 'netValue',
+        name: t('paymentInvoices.Details.netPrice'),
+        id: 'netPrice',
         selector: (row) => {
-          row.netValue;
+          row.netPrice;
         },
-        sortable: true,
         wrap: true,
-        minWidth: '112px',
-        cell: (props) => <div className="cellEllipse">{props.netValue}</div>
+        right: true,
+        cell: (props) => <div className="cellEllipse align-items-right">{props.netPrice || '-'}</div>
       },
       {
-        name: 'Gross Value',
-        id: '',
+        name: t('paymentInvoices.Details.grossPrice'),
+        id: 'grossPrice',
         selector: (row) => {
-          row.grossValue;
+          row.grossPrice;
         },
-        sortable: true,
-        wrap: true,
-        minWidth: '112px',
-        cell: (props) => <div className="cellEllipse">{props.grossValue}</div>
+        minWidth: '150px',
+        right: true,
+        cell: (props) => <div className="cellEllipse align-items-right">{props.grossPrice || '-'}</div>
       }
     ],
     []
@@ -179,13 +210,15 @@ function Details(props) {
             id="my-data-table"
             type="normal"
             columns={columns}
-            data={data || []}
+            data={data?.invoiceItems || []}
             onSortIconClick={() => {}}
-            //   progressPending={isFetching}
+            progressPending={isLoading}
+            fixedHeader
+            fixedHeaderScrollHeight="20px"
             noDataComponent={
               <EmptyDataTable
-                isLoading={false}
-                error={false ? 'Something went wrong! Please try again' : null}
+                isLoading={isLoading}
+                error={isError ? 'Something went wrong! Please try again' : null}
                 image={EmptyDataImage}
                 heading={t('paymentInvoices.invoice.table.emptyData')}
                 description={t('paymentInvoices.history.table.emptyDataDescription')}
@@ -197,7 +230,7 @@ function Details(props) {
                   alignItems: 'center',
                   border: '1px solid #ccc',
                   display: 'flex',
-                  height: '350px',
+                  height: '150px',
                   justifyContent: 'center'
                 }}>
                 <Loader variant="circular" />
@@ -225,6 +258,17 @@ function Details(props) {
           </React.Fragment>
         )}
       </div>
+      {open && (
+        <FloatingDrawer open={true} anchor="right" onClose={() => setOpen(!open)}>
+          <TherapyDetails
+            therapyId={therapy}
+            onSelect={() => {}}
+            onClose={() => {}}
+            therapyData={TherapyDetailsConstants}
+            showButton={false}
+          />
+        </FloatingDrawer>
+      )}
     </div>
   );
 }

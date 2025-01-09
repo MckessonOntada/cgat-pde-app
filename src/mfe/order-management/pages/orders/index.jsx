@@ -135,7 +135,7 @@ const OrderIndex = () => {
           </div>
           <div className="MCP-table-wrapper">
             <Heading as="h2">{t('headings.orderListing')}</Heading>
-            <OrderDataTable tab={activeTab && activeTab.configName.toLocaleLowerCase()} alertContainerId={alertContainerId} />
+            <OrderDataTable tab={activeTab && activeTab.id} alertContainerId={alertContainerId} />
           </div>
         </div>
       </div>

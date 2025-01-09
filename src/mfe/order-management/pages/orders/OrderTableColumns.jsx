@@ -150,7 +150,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
     }
   };
 
-  if (tab?.toLowerCase() === 'pending submission') {
+  if (tab === 1) {
     if (!status) return null;
 
     if (status.toLowerCase() === 'pending' || status.toLowerCase() === 'cancelled') {
@@ -195,7 +195,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
         });
       }
     }
-  } else if (tab?.toLowerCase() === 'submitted') {
+  } else if (tab === 2) {
     if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS)) {
       options.push({
         label: t(`labels.orderActions.view`),
@@ -266,7 +266,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     minWidth: '240px',
-    maxWidth: '320px',
+    maxWidth: '380px',
     sortable: true,
     sortKey: 'id',
     cell: (props) => (
@@ -276,7 +276,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
         //state={props.currentStage === 'ORDER_SUMMARY' && props.status === StatusEnum.SUBMITTED ? { ...props, isEdit: true } : { ...props }}
         state={getState(props)}
         aria-label={t('labels.orderId')}>
-        <EclipsesTextcss str={props.id} maxWidth={200} />
+        <EclipsesTextcss str={props.id} maxWidth={220} />
       </Link>
     )
   },
@@ -303,7 +303,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'therapy.materialDescription',
-    minWidth: '140px',
+    minWidth: '120px',
     cell: (props) => (
       <EclipsesTextcss
         str={props.therapy?.materialDescription}
@@ -320,11 +320,11 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortable: true,
     sortKey: 'author?.name',
     minWidth: '140px',
-    maxWidth: '200px',
+    maxWidth: '320px',
     cell: (props) => (
-      <EclipsesTextcss tooltip={props.createdBy?.userName} str={props.createdBy?.name} maxWidth={170} className={'MCP-table-cell'} />
+      <EclipsesTextcss tooltip={props.createdBy?.userName} str={props.createdBy?.name} maxWidth={300} className={'MCP-table-cell'} />
     ),
-    omit: activeTab !== 'pending submission'
+    omit: activeTab !== 1
   },
   {
     id: 'createdOn',
@@ -332,13 +332,13 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'createdAt',
-    width: '100px',
+    width: '160px',
     cell: (props) => (
       <span aria-label={t('table.columns.captions.createdOn')}>
         {CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')}
       </span>
     ),
-    omit: activeTab !== 'pending submission'
+    omit: activeTab !== 1
   },
 
   {
@@ -352,7 +352,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     cell: (props) => (
       <EclipsesTextcss tooltip={props.submittedBy?.userName} str={props.submittedBy?.name} maxWidth={170} className={'MCP-table-cell'} />
     ),
-    omit: activeTab !== 'submitted'
+    omit: activeTab !== 2
   },
   {
     id: 'submittedOn',
@@ -362,7 +362,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortKey: 'submittedOn',
     width: '180px',
     cell: (props) => <span>{props.submittedOn ? CommonUtils.convertDateStringFormat(props.submittedOn, 'MM-DD-YYYY') : '-'}</span>,
-    omit: activeTab !== 'submitted'
+    omit: activeTab !== 2
   },
 
   {
@@ -385,9 +385,10 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     name: t('table.columns.captions.price'),
     selector: () => {},
     sortable: true,
+    right: true,
     selector: 'orderCost',
     width: '100px',
-    cell: (props) => <span aria-label={t('table.columns.captions.price')}>{props.orderCost}</span>
+    cell: (props) => <span aria-label={t('table.columns.captions.price')}>{props.orderCost ? `$ ${props.orderCost}` : null}</span>
   },
   {
     id: 'actions',

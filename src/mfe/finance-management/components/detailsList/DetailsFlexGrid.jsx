@@ -13,7 +13,7 @@ function DetailsFlexGrid({ invoiceDetails }) {
           <div className={`element-row ${index % 2 == 0 ? `left-column` : `right-column`}`}>
             <div className="list-item">
               <div className="label">{key}</div>
-              <div className="value">{value}</div>
+              <div className="value">{value || '-'}</div>
             </div>
             {!(Object.values(invoiceDetails).length === index + 1) && <div className="border-separator"></div>}
           </div>
