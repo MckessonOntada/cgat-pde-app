@@ -78,6 +78,24 @@ export const PaymentInvoicesES = {
   'paymentInvoices.CS.table.actions': 'S_Action(s)',
   'paymentInvoices.CS.table.exportPdf': 'S_Export PDF',
   'paymentInvoices.CS.table.emptyData': 'S_No Customer Statement Found',
+  'paymentInvoices.Details.Bill': 'S_Bill',
+  'paymentInvoices.Details.Reference': 'S_Reference',
+  'paymentInvoices.Details.PO': 'S_PO#',
+  'paymentInvoices.Details.PaymentTerm': 'S_Payment Term',
+  'paymentInvoices.Details.AmountDue': 'S_Amount Due',
+  'paymentInvoices.Details.DueDate': 'S_Due Date',
+  'paymentInvoices.Details.BillDate': 'S_Bill Date',
+  'paymentInvoices.Details.CreditAmount': 'S_Credit Amount',
+  'paymentInvoices.Details.CreditRemaining': 'S_Credit Remaining',
+  'paymentInvoices.Details.ValidFrom': 'S_Valid From',
+  'paymentInvoices.Details.Item': 'S_Item',
+  'paymentInvoices.Details.therapyId': 'S_Therapy Id',
+  'paymentInvoices.Details.Description': 'S_Description',
+  'paymentInvoices.Details.referenceDocument': 'S_Reference Document',
+  'paymentInvoices.Details.Quantity': 'S_Quantity',
+  'paymentInvoices.Details.Unit': 'S_Unit',
+  'paymentInvoices.Details.netPrice': 'S_Net Value',
+  'paymentInvoices.Details.grossPrice': 'S_Gross Value',
 
   // Invoices
   'paymentInvoices.history.table.billNumber': 'S_Bill Number',
@@ -172,5 +190,5 @@ export const PaymentInvoicesES = {
   'paymentInvoices.EmptyData.description': 'S_No accounts found linked with user',
 
   'paymentInvoices.CS.export.success': 'S_Customer Statement exported.',
-  'paymentInvoices.CS.export.error': 'S_Error exporting statement.',
+  'paymentInvoices.CS.export.error': 'S_Error exporting statement.'
 };

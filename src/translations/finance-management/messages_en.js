@@ -95,6 +95,24 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.Details.DownloadPDF': 'DOWNLOAD PDF',
   'paymentInvoices.Details.ReviewAndPay': 'REVIEW AND PAY',
   'paymentInvoices.Details.print': 'Print',
+  'paymentInvoices.Details.Bill': 'Bill',
+  'paymentInvoices.Details.Reference': 'Reference',
+  'paymentInvoices.Details.PO': 'PO#',
+  'paymentInvoices.Details.PaymentTerm': 'Payment Term',
+  'paymentInvoices.Details.AmountDue': 'Amount Due',
+  'paymentInvoices.Details.DueDate': 'Due Date',
+  'paymentInvoices.Details.BillDate': 'Bill Date',
+  'paymentInvoices.Details.CreditAmount': 'Credit Amount',
+  'paymentInvoices.Details.CreditRemaining': 'Credit Remaining',
+  'paymentInvoices.Details.ValidFrom': 'Valid From',
+  'paymentInvoices.Details.Item': 'Item',
+  'paymentInvoices.Details.therapyId': 'Therapy Id',
+  'paymentInvoices.Details.Description': 'Description',
+  'paymentInvoices.Details.referenceDocument': 'Reference Document',
+  'paymentInvoices.Details.Quantity': 'Quantity',
+  'paymentInvoices.Details.Unit': 'Unit',
+  'paymentInvoices.Details.netPrice': 'Net Value',
+  'paymentInvoices.Details.grossPrice': 'Gross Value',
   'paymentInvoices.details.distChannel': 'Dist Channel',
   'paymentInvoices.details.division': 'Division',
   'paymentInvoices.details.SAPMaterial': 'SAP Material',
@@ -172,7 +190,6 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.EmptyData.heading': 'No Data Found',
   'paymentInvoices.EmptyData.description': 'No accounts found linked with user',
 
-  
   'paymentInvoices.CS.export.success': 'Customer Statement exported.',
-  'paymentInvoices.CS.export.error': 'Error exporting statement.',
+  'paymentInvoices.CS.export.error': 'Error exporting statement.'
 };

@@ -54,15 +54,23 @@ function Details(props) {
         if (res.data) {
           setInvoiceDetails(() => ({
             ...{},
-            Bill: res.data.billNumber,
-            Reference: res.data.referenceNumber,
-            'PO#': res.data.poNumber,
-            'Payment Term': res.data.paymentTerm
+            [t('paymentInvoices.Details.Bill')]: res.data.billNumber,
+            [t('paymentInvoices.Details.Reference')]: res.data.referenceNumber,
+            [t('paymentInvoices.Details.PO')]: res.data.poNumber,
+            [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm
           }));
           // bill bates
           let _invoiceDue = INVOICES_SCREEN
-            ? { 'Amount Due': `$${res.data.amountDue}`, 'Due Date': res.data.dueDate, 'Bill Date': res.data.billDate }
-            : { 'Credit Amount': `$${res.data.amountDue}`, 'Credit Remaining': '', 'Valid From': res.data.dueDate };
+            ? {
+                [t('paymentInvoices.Details.AmountDue')]: `$${res.data.amountDue}`,
+                [t('paymentInvoices.Details.DueDate')]: res.data.dueDate,
+                [t('paymentInvoices.Details.BillDate')]: res.data.billDate
+              }
+            : {
+                [t('paymentInvoices.Details.CreditAmount')]: `$${res.data.amountDue}`,
+                [t('paymentInvoices.Details.CreditRemaining')]: '',
+                [t('paymentInvoices.Details.ValidFrom')]: res.data.dueDate
+              };
           setBillDates(_invoiceDue);
           return res.data;
         }
@@ -74,7 +82,7 @@ function Details(props) {
   const columns = useMemo(
     () => [
       {
-        name: 'Item',
+        name: t('paymentInvoices.Details.Item'),
         id: 'item',
         selector: (row) => `${row.item}`,
         wrap: true,
@@ -82,7 +90,7 @@ function Details(props) {
         cell: (props) => <div className="cellEllipse">{props.item || '-'}</div>
       },
       {
-        name: 'Therapy Id',
+        name: t('paymentInvoices.Details.therapyId'),
         id: 'therapyId',
         selector: (row) => {
           row.therapyId;
@@ -101,14 +109,14 @@ function Details(props) {
         )
       },
       {
-        name: 'Description',
+        name: t('paymentInvoices.Details.Description'),
         id: '',
         selector: (row) => {},
         wrap: true,
         cell: (props) => <div className="cellEllipse">-</div>
       },
       {
-        name: 'Reference Document',
+        name: t('paymentInvoices.Details.referenceDocument'),
         id: 'referenceDocument',
         selector: (row) => {
           row.referenceDocument;
@@ -122,7 +130,7 @@ function Details(props) {
         )
       },
       {
-        name: 'Quantity',
+        name: t('paymentInvoices.Details.Quantity'),
         id: 'quantity',
         selector: (row) => {
           row.quantity;
@@ -132,7 +140,7 @@ function Details(props) {
         cell: (props) => <div className="cellEllipse">{props.quantity}</div>
       },
       {
-        name: 'Unit',
+        name: t('paymentInvoices.Details.Unit'),
         id: 'unit',
         selector: (row) => {
           row.unit;
@@ -146,7 +154,7 @@ function Details(props) {
         )
       },
       {
-        name: 'Net Value',
+        name: t('paymentInvoices.Details.netPrice'),
         id: 'netPrice',
         selector: (row) => {
           row.netPrice;
@@ -156,7 +164,7 @@ function Details(props) {
         cell: (props) => <div className="cellEllipse align-items-right">{props.netPrice || '-'}</div>
       },
       {
-        name: 'Gross Value',
+        name: t('paymentInvoices.Details.grossPrice'),
         id: 'grossPrice',
         selector: (row) => {
           row.grossPrice;
