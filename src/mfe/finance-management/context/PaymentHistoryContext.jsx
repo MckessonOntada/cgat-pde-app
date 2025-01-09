@@ -112,13 +112,13 @@ export const PaymentHistoryProvider = ({ children }) => {
       if (res.data) {
         const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
         const endIndex = startIndex + paginationConfig.pageSize;
-        setData(res.data?.paymentDetails.slice(startIndex, endIndex));
-        setUnSlicedData(res.data?.paymentDetails);
-        setActualData(res.data?.paymentDetails);
+        setData(res.data?.paymentHistory.slice(startIndex, endIndex));
+        setUnSlicedData(res.data?.paymentHistory);
+        setActualData(res.data?.paymentHistory);
         setPaginationConfig((state) => ({
           ...state,
-          totalPages: Math.ceil(res.data?.paymentDetails.length / paginationConfig.pageSize),
-          totalElements: res.data?.paymentDetails.length
+          totalPages: Math.ceil(res.data?.paymentHistory.length / paginationConfig.pageSize),
+          totalElements: res.data?.paymentHistory.length
         }));
       }
     },
