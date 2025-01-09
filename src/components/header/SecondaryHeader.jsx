@@ -38,7 +38,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
     if (location.pathname === '/') {
       window.location.reload();
     } else {
-      navigate('/');
+      navigate('/?expelled=true');
     }
   };
 
