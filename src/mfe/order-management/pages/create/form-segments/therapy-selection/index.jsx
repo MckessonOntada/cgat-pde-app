@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Button, Heading } from '@mckesson/mcp-component-library';
 import styles from './TherapySelection.module.scss';
-import TherapyDetails from './TherapyDetails';
+import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import FloatingDrawer from '@src/components/floating-drawer';
 import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -19,6 +19,7 @@ import OrderStepper from '../OrderStepper';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
+import { TherapyDetailsConstants } from './assets/constants/TherapyDetailsConstants';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -150,8 +151,6 @@ function TherapySelection() {
     setTherapy(therapy);
   };
 
-  const forms = FormList(t);
-
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -197,7 +196,7 @@ function TherapySelection() {
           />
           {therapyDetails && (
             <FloatingDrawer open={true} anchor="right" onClose={handleOnClose}>
-              <TherapyDetails therapyId={therapyDetails} onSelect={handleOnDrawerSelect} onClose={handleOnClose} />
+              <TherapyDetails therapyId={therapyDetails} onSelect={handleOnDrawerSelect} onClose={handleOnClose} therapyData={TherapyDetailsConstants} />
             </FloatingDrawer>
           )}
         </div>
