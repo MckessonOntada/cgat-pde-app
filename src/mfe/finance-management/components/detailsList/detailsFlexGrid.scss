@@ -40,4 +40,12 @@
       //   width: calc(50%);
     }
   }
+
+  .element-row:nth-last-child(2) {
+    @include mixins.respond("lg") {
+      .border-separator {
+        display: none;
+      }
+    }
+  }
 }

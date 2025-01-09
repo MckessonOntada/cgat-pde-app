@@ -60,11 +60,10 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.usedDate': 'S_Used Date',
   'paymentInvoices.history.table.creditUsed': 'S_Credit Used',
   'paymentInvoices.Details.print': 'S_Print',
-  'paymentInvoices.table.therapyInfo':'S_Therapy Info',
-
+  'paymentInvoices.table.therapyInfo': 'S_Therapy Info',
 
   // Customer Statements
-  'paymentInvoices.CS.filters.autoSearch': 'S_Search by document number, sold to',
+  'paymentInvoices.CS.filters.autoSearch': 'S_Search by Bill No.',
   'paymentInvoices.CS.filters.filterBtn': 'S_Apply Filter',
   'paymentInvoices.CS.filters.startDate': 'S_Start Date',
   'paymentInvoices.CS.filters.endDate': 'S_End Date',
@@ -81,6 +80,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.Details.Bill': 'S_Bill',
   'paymentInvoices.Details.Reference': 'S_Reference',
   'paymentInvoices.Details.PO': 'S_PO#',
+  'paymentInvoices.Details.shipToPoNumber': 'S_Ship To PO#',
   'paymentInvoices.Details.PaymentTerm': 'S_Payment Term',
   'paymentInvoices.Details.AmountDue': 'S_Amount Due',
   'paymentInvoices.Details.DueDate': 'S_Due Date',
@@ -140,6 +140,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.details.MinimumOrderQuantity': 'S_Minimum Order Quantity',
   'paymentInvoices.table.invoiceHeading': 'S_Invoice List',
   'paymentInvoices.table.creditHeading': 'S_Credit List',
+  'paymentInvoices.filter.search': 'S_Search by Bill No., Sold to',
 
   //Credits
   'paymentInvoices.credits.table.description': 'S_Description',
@@ -173,6 +174,8 @@ export const PaymentInvoicesES = {
   'paymentInvoices.paymentMethods.table.cards.zipCode': 'S_Zip Code',
   'paymentInvoices.paymentMethods.table.cards.action': 'S_Action',
   'paymentInvoices.paymentMethods.table.cards.emptyData': 'S_No Credit Cards Found',
+  'paymentInvoices.paymentMethods.tabs.bankAccount': 'S_Bank Accounts',
+  'paymentInvoices.paymentMethods.tabs.CreditCards': 'S_Credit Cards',
 
   //Pending Payments
   'pendingPayments.filters.autoSearch': 'S_Search by Confirmation No., Payment Method',

@@ -63,7 +63,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.creditUsed': 'Credit Used',
 
   // Customer Statements
-  'paymentInvoices.CS.filters.autoSearch': 'Search by document number, sold to',
+  'paymentInvoices.CS.filters.autoSearch': 'Search by Bill No.',
   'paymentInvoices.CS.filters.filterBtn': 'Apply Filter',
   'paymentInvoices.CS.filters.startDate': 'Start Date',
   'paymentInvoices.CS.filters.endDate': 'End Date',
@@ -99,6 +99,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.Details.Reference': 'Reference',
   'paymentInvoices.Details.PO': 'PO#',
   'paymentInvoices.Details.PaymentTerm': 'Payment Term',
+  'paymentInvoices.Details.shipToPoNumber': 'Ship To PO#',
   'paymentInvoices.Details.AmountDue': 'Amount Due',
   'paymentInvoices.Details.DueDate': 'Due Date',
   'paymentInvoices.Details.BillDate': 'Bill Date',
@@ -139,7 +140,8 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.details.MinimumOrderQuantity': 'Minimum Order Quantity',
   'paymentInvoices.table.invoiceHeading': 'Invoice List',
   'paymentInvoices.table.creditHeading': 'Credit List',
-  'paymentInvoices.table.therapyInfo':'Therapy Info',
+  'paymentInvoices.table.therapyInfo': 'Therapy Info',
+  'paymentInvoices.filter.search': 'Search by Bill No., Sold to',
 
   //Credits
   'paymentInvoices.credits.table.description': 'Description',
@@ -163,6 +165,8 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.paymentMethods.table.bankAccount.bankCountry': 'Bank Country',
   'paymentInvoices.paymentMethods.table.bankAccount.companyCode': 'Company Code',
   'paymentInvoices.paymentMethods.table.bankAccount.emptyData': 'No Bank Accounts Found',
+  'paymentInvoices.paymentMethods.tabs.bankAccount': 'Bank Accounts',
+  'paymentInvoices.paymentMethods.tabs.CreditCards': 'Credit Cards',
 
   'paymentInvoices.paymentMethods.cards.filter.search.label': 'Search Credit Cards',
   'paymentInvoices.paymentMethods.filter.search.placeholder': 'Select by name or number',
