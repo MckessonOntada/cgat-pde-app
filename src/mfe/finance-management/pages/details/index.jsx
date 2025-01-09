@@ -55,9 +55,10 @@ function Details(props) {
           setInvoiceDetails(() => ({
             ...{},
             [t('paymentInvoices.Details.Bill')]: res.data.billNumber,
+            [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm,
             [t('paymentInvoices.Details.Reference')]: res.data.referenceNumber,
-            [t('paymentInvoices.Details.PO')]: res.data.poNumber,
-            [t('paymentInvoices.Details.PaymentTerm')]: res.data.paymentTerm
+            [t('paymentInvoices.Details.shipToPoNumber')]: res.data.shipToPONumber,
+            [t('paymentInvoices.Details.PO')]: res.data.poNumber
           }));
           // bill bates
           let _invoiceDue = INVOICES_SCREEN
@@ -263,7 +264,7 @@ function Details(props) {
           <TherapyDetails
             therapyId={therapy}
             onSelect={() => {}}
-            onClose={() => {}}
+            onClose={() => setOpen(!open)}
             therapyData={TherapyDetailsConstants}
             showButton={false}
           />

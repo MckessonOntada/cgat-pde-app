@@ -28,7 +28,7 @@ export default function CustomerSatements(params) {
           onApplyFilters={applyFilters}
           onClearFilters={clearFilters}
           additionalFilters={AdditionalFiltersConfig}
-          searchPlaceholder={'Search by Bill No.'}
+          searchPlaceholder={t('paymentInvoices.CS.filters.autoSearch')}
           actualData={actualData}
         />
       </div>
