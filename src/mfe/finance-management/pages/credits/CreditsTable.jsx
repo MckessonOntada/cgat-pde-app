@@ -46,10 +46,14 @@ export default function CreditsTable() {
       id: 'description',
       name: t('paymentInvoices.credits.table.description'),
       selector: (row) => row.description,
-      minWidth: '144px',
+      minWidth: '320px',
       sortable: true,
       wrap: true,
-      cell: (props) => props?.description || '-'
+      cell: (props) => (
+        <div>
+          <EclipsesTextcss str={props?.description || ''} maxWidth={280} />
+        </div>
+      )
     },
     {
       id: 'billDate',
