@@ -105,7 +105,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
     const handleOnExitUserView = () => {
       impersonateLogout()
         .then((message) => {
-          navigate('?expelled=true');
+          navigate('/?expelled=true');
         })
         .catch((error) => {
           console.log(`error: ${error}`);
