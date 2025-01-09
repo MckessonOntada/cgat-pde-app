@@ -78,7 +78,6 @@ function AdditionalDetails() {
   });
   const [consentStatus, setConsentStatus] = React.useState('');
   const [variant, setVariant] = React.useState();
-  const [netPriceData, setNetPriceData] = React.useState(null);
   const { showAlert } = useAlert();
   const alertContainerId = 'additionalDetails-alert-container';
 
@@ -106,17 +105,6 @@ function AdditionalDetails() {
     queryFn: async () => OrderService.getVariants(therapyId, soldToAccountId, shipToAccountId, variantsApiRequestParam),
     enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId,
     refetchOnWindowFocus: false
-  });
-
-  const { isLoading: isPriceApiLoading, data: priceDetails = {} } = useQuery({
-    queryKey: ['order', 'additionalDetails', 'price', therapyId, soldToAccountId, shipToAccountId, variant?.variant],
-    queryFn: async () => OrderService.getPriceDetails(therapyId, soldToAccountId, shipToAccountId, variant?.variant),
-    enabled:
-      !!therapyId && !!soldToAccountId && !!shipToAccountId && ((CommonUtils.isNonEmptyObject(variantsData?.content) && !!variant) || true),
-    refetchOnWindowFocus: false,
-    onSuccess: (data) => {
-      setNetPriceData(data.netPrice);
-    }
   });
 
   React.useEffect(() => {
@@ -254,7 +242,12 @@ function AdditionalDetails() {
               <div className="MCP-module-body">
                 <OrderStepper />
 
-                <OrderHeaderDetails netPriceData={netPriceData} />
+                <OrderHeaderDetails
+                  therapyId={therapyId}
+                  soldToAccountId={soldToAccountId}
+                  shipToAccountId={shipToAccountId}
+                  variant={variant?.variant}
+                />
                 <div id={alertContainerId} />
                 <div className="MCP-panel-container">
                   <div className="row-space-between-center">

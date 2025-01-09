@@ -32,6 +32,9 @@ const PatientDetails = () => {
   const location = useLocation();
   const { isEdit = false, isReview = false, alertState } = location.state || {};
   const isReviewandEdit = isReview && isEdit;
+  const therapyId = formState.activeRecord?.therapy?.materialNumber;
+  const soldToAccountId = formState.activeRecord?.accountDetails?.soldToAccount?.accountNumber;
+  const shipToAccountId = formState.activeRecord?.accountDetails?.shipToAccount?.accountNumber;
 
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
@@ -225,7 +228,7 @@ const PatientDetails = () => {
             </div>
           </div> */}
 
-          <OrderHeaderDetails />
+          <OrderHeaderDetails therapyId={therapyId} soldToAccountId={soldToAccountId} shipToAccountId={shipToAccountId} />
           <div id={alertContainerId} />
 
           {messageConfig && messageConfig.primaryMessage && (

@@ -41,8 +41,10 @@ const AccountSelection = () => {
   const [acccountError, setAccountError] = useState({ isError: false, message: '' });
   const [alertState, setAlertState] = useState(null);
   const therapyId = formState.activeRecord?.therapy?.materialNumber;
-  const [netPriceData, setNetPriceData] = useState(null);
   const [inventoryType, setInventoryType] = useState(null);
+  const setInventoryTypeData = (data) => {
+    setInventoryType(data);
+  };
 
   const alertContainerId = 'accountSelection-alert-Container';
   const { showAlert } = useAlert();
@@ -50,19 +52,6 @@ const AccountSelection = () => {
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ACCOUNT_DETAILS);
   }, []);
-
-  const { isLoading: isPriceApiLoading, data: priceDetails = {} } = useQuery({
-    queryKey: ['order', 'therapy', 'price', therapyId, selectedAccount?.accountNumber, selectedShippingAddress?.accountNumber],
-    queryFn: async () => {
-      return OrderService.getPriceDetails(therapyId, selectedAccount.accountNumber, selectedShippingAddress.accountNumber);
-    },
-    enabled: !!therapyId && !!selectedAccount?.accountNumber && !!selectedShippingAddress?.accountNumber,
-    refetchOnWindowFocus: false,
-    onSuccess: (data) => {
-      setNetPriceData(data.netPrice);
-      setInventoryType(data.inventoryType);
-    }
-  });
 
   const { isLoading, data: accountsListData = {} } = useQuery({
     queryKey: ['order', 'therapy', therapyId, accountSearchString],
@@ -258,7 +247,12 @@ const AccountSelection = () => {
       <div className="MCP-module-body">
         <OrderStepper />
         <div className={`MCP-module-wrapper`}>
-          <OrderHeaderDetails netPriceData={netPriceData} />
+          <OrderHeaderDetails
+            setInventoryTypeData={setInventoryTypeData}
+            therapyId={therapyId}
+            soldToAccountId={selectedAccount?.accountNumber}
+            shipToAccountId={selectedShippingAddress?.accountNumber}
+          />
           <div id={alertContainerId} />
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>
