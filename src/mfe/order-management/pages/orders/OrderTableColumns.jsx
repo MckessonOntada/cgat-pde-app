@@ -355,7 +355,11 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     right: true,
     selector: 'orderCost',
     width: '100px',
-    cell: (props) => <span aria-label={t('table.columns.captions.price')}>{props.orderCost ? `$ ${props.orderCost}` : null}</span>
+    cell: (props) => (
+      <span className="MCP-table-cell price" aria-label={t('table.columns.captions.price')}>
+        {props.orderCost ? `$ ${props.orderCost}` : null}
+      </span>
+    )
   },
   {
     id: 'actions',

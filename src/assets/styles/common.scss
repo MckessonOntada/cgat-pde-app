@@ -108,6 +108,10 @@ div.disable-all {
       }
     }
   }
+
+  &.price {
+    padding-right: var(--spacing-03);
+  }
 }
 
 .variant-table-cell {
