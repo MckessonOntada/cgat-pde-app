@@ -91,6 +91,9 @@ const userHasPermission = function (permission) {
  */
 const userHasRoutePermission = function (routePermissions) {
   const userPermissions = getUserPermissions() || [];
+  if (routePermissions.length === 0) {
+    return true;
+  }
   const hasAccess = routePermissions.some((permission) => userPermissions.includes(permission));
   return hasAccess;
 };
