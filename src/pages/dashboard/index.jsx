@@ -20,6 +20,7 @@ const Dashboard = () => {
     if (isExpelled) {
       console.log('read updated storage');
       navigate('/');
+      window.location.reload();
     }
   }, [isExpelled]);
 
