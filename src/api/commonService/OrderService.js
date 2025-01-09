@@ -124,8 +124,10 @@ async function getShippingAddressForTherapyByAccountId(therapyId, accountId, req
   return {};
 }
 
-async function getPriceDetails(therapyId, accountId, shipToAccountId, variant = '') {
-  const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccount/${accountId}/shiptoaccount/${shipToAccountId}/catalog`;
+async function getPriceDetails(therapyId, accountId, shipToAccountId, variant = null) {
+  const url = `${ApiRoutes.USERS()}/current/therapies/${therapyId}/soldtoaccount/${accountId}/shiptoaccount/${shipToAccountId}/catalog${
+    !!variant ? `?variantType=${variant}` : ''
+  }`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {
     return res.data;
@@ -149,8 +151,8 @@ async function getVariants(therapyId, accountId, shipToAccountId, requestParams)
 async function getInventoryStatus(requestBody) {
   try {
     const res = await HttpResourceService.callRest(`${ApiRoutes.INVENTORY()}/availability`, httpVerb.POST, requestBody);
-    if (res.data) {
-      return res.data;
+    if (res) {
+      return res;
     }
   } catch (error) {
     throw error;
