@@ -17,6 +17,9 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { useQuery } from 'react-query';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import FloatingDrawer from '@src/components/floating-drawer';
+import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
+import { TherapyDetailsConstants } from './assets/constants/TherapyDetailsConstants';
 
 function Details(props) {
   const { billNumber } = useParams();
@@ -26,6 +29,11 @@ function Details(props) {
   const INVOICES_SCREEN = type === PATHS.invoices;
   const [invoiceDetails, setInvoiceDetails] = useState({});
   const [billDates, setBillDates] = useState({});
+  const [therapy, setTherapy] = useState(null);
+  const searchParams = new URLSearchParams(location.search);
+
+  const [open, setOpen] = useState(false);
+  const therapyDetails = searchParams.get('therapy-details');
   const navigate = useNavigate();
   const onBackToPaymentsInvoices = () => {
     navigate(-1);
@@ -91,8 +99,12 @@ function Details(props) {
         minWidth: '150px',
         cell: (props) => (
           <div className="cellEllipse">
-            {' '}
-            <Link style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}>{`${props?.therapyId || '-'}`}</Link>
+            <Link
+              style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
+              onClick={() => {
+                setOpen(!open);
+                setTherapy(props?.item);
+              }}>{`${props?.therapyId || '-'}`}</Link>
           </div>
         )
       },
@@ -246,6 +258,17 @@ function Details(props) {
           </React.Fragment>
         )}
       </div>
+      {open && (
+        <FloatingDrawer open={true} anchor="right" onClose={() => setOpen(!open)}>
+          <TherapyDetails
+            therapyId={therapy}
+            onSelect={() => {}}
+            onClose={() => {}}
+            therapyData={TherapyDetailsConstants}
+            showButton={false}
+          />
+        </FloatingDrawer>
+      )}
     </div>
   );
 }
