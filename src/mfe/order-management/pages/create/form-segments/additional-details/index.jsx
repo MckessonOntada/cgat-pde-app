@@ -156,10 +156,10 @@ function AdditionalDetails() {
     } else {
       if (formState.activeRecord?.patientDetailsRequired) {
         editByStage(ORDER_STAGES.PATIENT_DETAILS);
-        navigate(`../${orderId}/patient`, { state: { isReview: isReview, isEdit: isEdit, isApprover: isApprover } });
+        navigate(`../${orderId}/patient`, { state: { isReview: isReview, isEdit: false, isApprover: isApprover } });
       } else {
         editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-        navigate(`../${orderId}/accounts`, { state: { isReview: isReview, isEdit: isEdit, isApprover: isApprover } });
+        navigate(`../${orderId}/accounts`, { state: { isReview: isReview, isEdit: false, isApprover: isApprover } });
       }
     }
   };
@@ -200,10 +200,10 @@ function AdditionalDetails() {
       navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'patient') {
       editByStage(ORDER_STAGES.PATIENT_DETAILS);
-      navigate(`../${orderId}/patient`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+      navigate(`../${orderId}/patient`, { state: { isEdit: false, isReview: isReview, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'account') {
       editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+      navigate(`../${orderId}/accounts`, { state: { isEdit: false, isReview: isReview, isApprover: isApprover } });
     }
   };
 
@@ -227,13 +227,7 @@ function AdditionalDetails() {
         </Button>
       </div>
 
-      <PageHeader
-        heading={
-          <Heading as="h1">
-            {isReviewandEdit ? t('headings.reviewOrder') : isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}
-          </Heading>
-        }
-      />
+      <PageHeader heading={<Heading as="h1">{isReview ? t('headings.reviewOrder') : t('headings.createNewOrder')}</Heading>} />
 
       <Formik
         initialValues={initialFormValues}

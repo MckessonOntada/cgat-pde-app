@@ -112,7 +112,7 @@ const PatientDetails = () => {
       onSuccess: (result) => {
         const { id } = result;
         setActiveRecord(result);
-        navigate(`../${id}/additional-details`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+        navigate(`../${id}/additional-details`, { state: { isEdit: false, isReview: isReview, isApprover: isApprover } });
       },
       onError: ({ err, payload }) => {
         if (err.status === 409) {
@@ -184,47 +184,12 @@ const PatientDetails = () => {
         </Button>
       </div>
 
-      <PageHeader
-        heading={
-          <Heading as="h1">
-            {isReviewandEdit ? t('headings.reviewOrder') : isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}
-          </Heading>
-        }
-      />
+      <PageHeader heading={<Heading as="h1">{isReview ? t('headings.reviewOrder') : t('headings.createNewOrder')}</Heading>} />
 
       <div className="MCP-module-body">
-        {/* <Stepper activeIndex={3} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} /> */}
         <OrderStepper />
 
         <div className={styles.wrapper}>
-          {/* <div className="MCP-panel-container">
-            <div className={styles.sect}>
-              <div className={`row-space-between-center`}>
-                <div className={styles.row}>
-                  <div className={`${styles.col} ${styles.detailSegment}`}>
-                    <div className={'fieldName'}>{t('labels.therapyDescription')}</div>
-                    <div className={`${'fieldValue'} ${styles.price}`}>
-                      {therapy?.materialDescription}
-                      <TickIcon width="16px" height="16px" />
-                    </div>
-                  </div>
-                  <div className={`${styles.col} ${styles.detailSegment}`}>
-                    <div className={'fieldName'}>{t('labels.orderByAccountNumber')}</div>
-                    <div className={'fieldValue'}>{accountDetails?.accountNumber}</div>
-                  </div>
-                </div>
-                <div className={`${styles.col} ${styles.detailSegment}`}>
-                  <div className={'fieldName'}>{t('labels.shipToAccountNumber')}</div>
-                  <div className={`${'fieldValue'} ${styles.price}`}>{accountDetails?.shipToAccount?.accountNumber}</div>
-                </div>
-                <div className={`${styles.col} ${styles.detailSegment}`}>
-                  <div className={'fieldName'}>{t('labels.priceDetails')}</div>
-                  <div className={`${'fieldValue'} ${styles.price}`}>{orderCost || '--'}</div>
-                </div>
-              </div>
-            </div>
-          </div> */}
-
           <OrderHeaderDetails />
           <div id={alertContainerId} />
 
@@ -240,7 +205,10 @@ const PatientDetails = () => {
             handleSubmit(values);
             actions.setSubmitting(false);
           }}>
-          {({ values, isValid }) => {
+          {({ values, isValid, dirty }) => {
+            React.useEffect(() => {
+              setIsDirty(dirty);
+            }, [dirty]);
             return (
               <Form>
                 <div className={styles.wrapper}>

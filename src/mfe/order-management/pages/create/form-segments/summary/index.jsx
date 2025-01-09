@@ -16,7 +16,6 @@ import PermittedComponent from '@src/components/permitted-component';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation, useQuery } from 'react-query';
-import { orderStatus } from '@src/mfe/order-management/utils/orderManagementVariables';
 import { RoutePaths } from '@src/routes/constants';
 import { StatusEnum } from '../../../orders/constants';
 import { renderModal } from '@src/util/ModalUtil';
@@ -27,21 +26,35 @@ const Summary = () => {
   const { isFetching, formState, editByStage, setCurrentOrder } = useManageOrder();
   const { orderId } = useParams();
   const location = useLocation();
-  const { isEdit = false, isReview = false, isApprover = false } = location.state || {};
+  const { isEdit = false, isReview = false, isApprover = false, isSimulate = false } = location.state || {};
   const alertContainerId = 'summary-alert-container';
   const { showAlert } = useAlert();
-
+  const forms = FormList(t);
+  const {
+    therapy = {},
+    catalog = {},
+    orderCost,
+    accountDetails = {},
+    patient,
+    additionalDetails = {},
+    patientDetailsRequired = false,
+    status
+  } = formState.activeRecord || {};
   const { isLoading, data: simulationData = {} } = useQuery({
     queryKey: ['orderDetails', orderId],
     queryFn: async () => {
       const response = await OrderService.simulateOrder(orderId);
       return response;
     },
-    enabled: Boolean(orderId),
+    // enabled: Boolean(
+    //   formState?.activeRecord && ![StatusEnum.SUBMITTED, StatusEnum.APPROVAL_PENDING].includes(formState.activeRecord.status) && !isEdit
+    // ),
+    enabled: isSimulate,
     refetchOnWindowFocus: false,
     onError: (error) => {
       showAlert({ description: error?.response?.data?.message, type: 'error', anchorEl: alertContainerId });
-    }
+    },
+    retry: false
   });
 
   if (!isLoading && simulationData) {
@@ -57,9 +70,13 @@ const Summary = () => {
     }
   }
 
-  const submitOrder = useMutation(async () => await OrderService.submitOrder(orderId), {
-    onSuccess: (result) => {
-      navigate(`../${orderId}/order-confirmed`);
+  const submitOrder = useMutation(async ({ action }) => await OrderService.submitOrder(orderId), {
+    onSuccess: (result, { action }) => {
+      if (action === 'submit') {
+        navigate(`../${orderId}/order-confirmed`);
+      } else {
+        navigate(`../${orderId}/order-confirmed`, { state: { isApproved: true } });
+      }
     },
     onError: (err) => {
       showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
@@ -96,7 +113,7 @@ const Summary = () => {
 
   const handleOnSubmit = () => {
     if (agreeCheckboxOptions.isChecked) {
-      submitOrder.mutate();
+      submitOrder.mutate({ action: 'submit' });
     }
     return;
   };
@@ -105,8 +122,7 @@ const Summary = () => {
     return;
   };
   const handleApprove = () => {
-    submitOrder.mutate();
-    navigate(`../${orderId}/order-confirmed`, { state: { isApproved: true } });
+    submitOrder.mutate({ action: 'approve' });
   };
 
   const handleOnApprove = () => {
@@ -183,17 +199,6 @@ const Summary = () => {
     return <Loader />;
   }
 
-  const forms = FormList(t);
-  const {
-    therapy = {},
-    catalog = {},
-    orderCost,
-    accountDetails = {},
-    patient,
-    additionalDetails = {},
-    patientDetailsRequired = false,
-    status
-  } = formState.activeRecord || {};
   const isAgreed = agreeCheckboxOptions.isChecked;
   const hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover);
 
@@ -207,7 +212,7 @@ const Summary = () => {
       {formState.activeRecord?.status !== StatusEnum.SUBMITTED && !isReview && (
         <PageHeader heading={<Heading as="h1">{t('headings.createNewOrder')}</Heading>} />
       )}
-      {isReview && <PageHeader heading={<Heading as="h1">{t('headings.reviewOrder')}</Heading>} />}
+      {isApprover && <PageHeader heading={<Heading as="h1">{t('headings.reviewOrder')}</Heading>} />}
       <div id={alertContainerId} />
       <div className="MCP-module-body">
         {!hideControls && (

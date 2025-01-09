@@ -91,9 +91,9 @@ const AccountSelection = () => {
       try {
         const alertState = await handleInventoryCheck();
         if (result.patientDetailsRequired) {
-          navigate(`../${id}/patient`, { state: { alertState, isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+          navigate(`../${id}/patient`, { state: { alertState, isEdit: false, isReview: isReview, isApprover: isApprover } });
         } else {
-          navigate(`../${id}/additional-details`, { state: { alertState, isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+          navigate(`../${id}/additional-details`, { state: { alertState, isEdit: false, isReview: isReview, isApprover: isApprover } });
         }
       } catch (err) {
         console.error(err);
@@ -162,7 +162,7 @@ const AccountSelection = () => {
       navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
     } else {
       editByStage(ORDER_STAGES.THERAPY_SELECTION);
-      navigate(`../edit-order/${orderId}`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+      navigate(`../edit-order/${orderId}`, { state: { isEdit: false, isReview: isReview, isApprover: isApprover } });
     }
   };
 
@@ -195,9 +195,9 @@ const AccountSelection = () => {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'details') {
       editByStage(ORDER_STAGES.THERAPY_SELECTION);
-      navigate(`../edit-order/${orderId}`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+      navigate(`../edit-order/${orderId}`, { state: { isEdit: false, isReview: isReview, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: false, isReview: isReview, isApprover: isApprover } });
     }
   };
 
@@ -239,13 +239,7 @@ const AccountSelection = () => {
         </Button>
       </div>
 
-      <PageHeader
-        heading={
-          <Heading as="h1">
-            {isReviewandEdit ? t('headings.reviewOrder') : isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}
-          </Heading>
-        }
-      />
+      <PageHeader heading={<Heading as="h1">{isReview ? t('headings.reviewOrder') : t('headings.createNewOrder')}</Heading>} />
 
       <div className="MCP-module-body">
         <OrderStepper />

@@ -94,7 +94,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
     if (value === 'resume') {
       if (props.status === StatusEnum.SUBMITTED) {
         navigate(getPathByOrderStage(props), { state: { isEdit: true } });
-      } else navigate(getPathByOrderStage(props));
+      } else navigate(getPathByOrderStage(props), { state: { isSimulate: true } });
     }
     if (value === 'edit') {
       navigate(`edit-order/${id}`);
@@ -181,10 +181,17 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
         });
       }
 
-      options.push({
-        label: t(`labels.orderActions.review`),
-        value: 'review'
-      });
+      if (options.length > 0 && options[options.length - 1].value === 'unassign') {
+        options.push({
+          label: t(`labels.orderActions.review`),
+          value: 'review'
+        });
+      } else {
+        options.push({
+          label: t(`labels.orderActions.view`),
+          value: 'review'
+        });
+      }
     }
   } else if (tab?.toLowerCase() === 'submitted') {
     options.push({
@@ -226,9 +233,6 @@ const getPathByOrderStage = ({ currentStage, id, patientDetailsRequired }) => {
 
 const getState = (props) => {
   const loggedinUserId = AuthUtils.getUserId();
-  if (props.id === 'a7c5fee0-7213-4b8e-8904-f357f13b8ca5') {
-    console.log(props);
-  }
   if (props.status === StatusEnum.SUBMITTED) {
     return props;
   } else if (props.status === StatusEnum.APPROVAL_PENDING) {
@@ -237,6 +241,8 @@ const getState = (props) => {
     } else {
       return { isReview: true, isApprover: false };
     }
+  } else if (props.status === StatusEnum.IN_DRAFT) {
+    return { isSimulate: true };
   } else {
     return props;
   }
