@@ -149,7 +149,7 @@ function MainLayout() {
                 element={
                   <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
                     <AccountProvider>
-                      <Confirmation type={PaymentInvoicesPaths.paymentInvoices} />
+                      <Confirmation type={PaymentInvoicesPaths.pendingPayments} />
                     </AccountProvider>
                   </ProtectedRoute>
                 }

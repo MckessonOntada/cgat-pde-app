@@ -27,7 +27,11 @@ export default function PendingPaymentTable() {
         <div className="cellEllipse">
           <Link
             style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
-            to={`/record/${PATHS.pendingPayments}/${props?.confirmationNo}/confirmation`}>{`${props?.confirmationNo}`}</Link>
+            to={`/record/${PATHS.pendingPayments}/${props.confirmationNo}/confirmation`}
+            state={{...props}}
+            >
+            {props.confirmationNo}
+          </Link>
         </div>
       )
     },
