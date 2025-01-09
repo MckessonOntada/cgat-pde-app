@@ -252,7 +252,12 @@ function AdditionalDetails() {
               <div className="MCP-module-body">
                 <OrderStepper />
 
-                <OrderHeaderDetails />
+                <OrderHeaderDetails
+                  therapyId={therapyId}
+                  soldToAccountId={soldToAccountId}
+                  shipToAccountId={shipToAccountId}
+                  variant={variant?.variant}
+                />
                 <div id={alertContainerId} />
                 <div className="MCP-panel-container">
                   <div className="row-space-between-center">
