@@ -32,8 +32,7 @@ function TherapySelection() {
   const therapyDetails = searchParams.get('therapy-details');
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const { orderId } = useParams();
-  const { isEdit = false, isReview = false, isApprover = false } = location.state || {};
-  const isReviewandEdit = isReview && isEdit;
+  const { isEdit = false, isApprover = false } = location.state || {};
 
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.THERAPY_SELECTION);
@@ -102,7 +101,7 @@ function TherapySelection() {
     onSuccess: (result) => {
       setActiveRecord(result);
       const { id } = result;
-      navigate(`../${id}/accounts`, { state: { isReview: isReview, isEdit: isEdit, isApprover: isApprover } });
+      navigate(`../${id}/accounts`, { state: { isEdit: isEdit, isApprover: isApprover } });
     },
     onError: console.log
   });
@@ -132,7 +131,7 @@ function TherapySelection() {
       return;
     }
     if (isEdit) {
-      navigate(`../${orderId}/summary`, { state: { isEdit: true, isReview: isReview, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: true, isApprover: isApprover } });
     } else {
       navigate(RoutePaths.pathOrderManagement);
     }
@@ -142,7 +141,7 @@ function TherapySelection() {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, { state: { isEdit: true, isReview: isReview, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: true, isApprover: isApprover } });
     }
   };
 
@@ -160,7 +159,7 @@ function TherapySelection() {
         </Button>
       </div>
 
-      <PageHeader heading={<Heading as="h1">{isReview ? t('headings.reviewOrder') : t('headings.createNewOrder')}</Heading>} />
+      <PageHeader heading={<Heading as="h1">{isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')}</Heading>} />
 
       <div className="MCP-module-body">
         <OrderStepper />

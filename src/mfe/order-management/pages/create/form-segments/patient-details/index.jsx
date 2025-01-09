@@ -30,8 +30,7 @@ const PatientDetails = () => {
   const alertContainerId = 'patintDetails-alert-container';
   const { showAlert } = useAlert();
   const location = useLocation();
-  const { isEdit = false, isReview = false, isApprover = false, alertState } = location.state || {};
-  const isReviewandEdit = isReview && isEdit;
+  const { isEdit = false, isApprover = false, alertState } = location.state || {};
 
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
@@ -112,7 +111,7 @@ const PatientDetails = () => {
       onSuccess: (result) => {
         const { id } = result;
         setActiveRecord(result);
-        navigate(`../${id}/additional-details`, { state: { isEdit: false, isReview: isReview, isApprover: isApprover } });
+        navigate(`../${id}/additional-details`, { state: { isEdit: false, isApprover: isApprover } });
       },
       onError: ({ err, payload }) => {
         if (err.status === 409) {
@@ -135,10 +134,10 @@ const PatientDetails = () => {
     }
 
     if (isEdit) {
-      navigate(`../${orderId}/summary`, { state: { isEdit: true, isReview: isReview, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: true, isApprover: isApprover } });
     } else {
       editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-      navigate(`../${orderId}/accounts`, { state: { isReview: isReview, isEdit: isEdit, isApprover: isApprover } });
+      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isApprover: isApprover } });
     }
   };
 
@@ -151,7 +150,9 @@ const PatientDetails = () => {
     if (patientInfo && patientInfo.dateOfBirth) {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(patientInfo.dateOfBirth, 'MM-DD-YYYY');
     }
-
+    if (isApprover) {
+      skipDuplicateCheck = true;
+    }
     savePatientDetails({ payload, skipDuplicateCheck });
   };
 
@@ -167,10 +168,10 @@ const PatientDetails = () => {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'account') {
       editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isApprover: isApprover } });
     }
   };
 
@@ -184,7 +185,7 @@ const PatientDetails = () => {
         </Button>
       </div>
 
-      <PageHeader heading={<Heading as="h1">{isReview ? t('headings.reviewOrder') : t('headings.createNewOrder')}</Heading>} />
+      <PageHeader heading={<Heading as="h1">{isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')}</Heading>} />
 
       <div className="MCP-module-body">
         <OrderStepper />

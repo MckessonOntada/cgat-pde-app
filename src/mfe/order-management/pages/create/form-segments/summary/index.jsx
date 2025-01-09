@@ -26,7 +26,7 @@ const Summary = () => {
   const { isFetching, formState, editByStage, setCurrentOrder } = useManageOrder();
   const { orderId } = useParams();
   const location = useLocation();
-  const { isEdit = false, isReview = false, isApprover = false, isSimulate = false } = location.state || {};
+  const { isEdit = false, isApprover = false, isSimulate = false } = location.state || {};
   const alertContainerId = 'summary-alert-container';
   const { showAlert } = useAlert();
   const forms = FormList(t);
@@ -49,12 +49,11 @@ const Summary = () => {
     // enabled: Boolean(
     //   formState?.activeRecord && ![StatusEnum.SUBMITTED, StatusEnum.APPROVAL_PENDING].includes(formState.activeRecord.status) && !isEdit
     // ),
-    enabled: isSimulate,
+    enabled: isSimulate || isApprover,
     refetchOnWindowFocus: false,
     onError: (error) => {
       showAlert({ description: error?.response?.data?.message, type: 'error', anchorEl: alertContainerId });
-    },
-    retry: false
+    }
   });
 
   if (!isLoading && simulationData) {
@@ -100,10 +99,7 @@ const Summary = () => {
   };
 
   const handleOnBackButtonClick = () => {
-    //compare data change, display modal for confirmation
-    if (isEdit && formState.activeRecord.status === StatusEnum.SUBMITTED) {
-      navigate(RoutePaths.pathOrderManagement, { state: { activeTab: 2 } });
-    } else if (isReview) {
+    if (isApprover || isSimulate) {
       navigate(RoutePaths.pathOrderManagement);
     } else {
       editByStage(ORDER_STAGES.ADDITIONAL_DETAILS);
@@ -173,19 +169,19 @@ const Summary = () => {
     editByStage(stage);
     switch (stage) {
       case ORDER_STAGES.THERAPY_SELECTION: {
-        navigate(`../edit-order/${orderId}`, { state: { isEdit: true, isReview: isReview, isApprover: isApprover } });
+        navigate(`../edit-order/${orderId}`, { state: { isEdit: true, isApprover: isApprover } });
         break;
       }
       case ORDER_STAGES.ACCOUNT_DETAILS: {
-        navigate(`../${orderId}/accounts`, { state: { isEdit: true, isReview: isReview, isApprover: isApprover } });
+        navigate(`../${orderId}/accounts`, { state: { isEdit: true, isApprover: isApprover } });
         break;
       }
       case ORDER_STAGES.PATIENT_DETAILS: {
-        navigate(`../${orderId}/patient`, { state: { isEdit: true, isReview: isReview, isApprover: isApprover } });
+        navigate(`../${orderId}/patient`, { state: { isEdit: true, isApprover: isApprover } });
         break;
       }
       case ORDER_STAGES.ADDITIONAL_DETAILS: {
-        navigate(`../${orderId}/additional-details`, { state: { isEdit: true, isReview: isReview, isApprover: isApprover } });
+        navigate(`../${orderId}/additional-details`, { state: { isEdit: true, isApprover: isApprover } });
         break;
       }
       default: {
@@ -209,7 +205,7 @@ const Summary = () => {
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
-      {formState.activeRecord?.status !== StatusEnum.SUBMITTED && !isReview && (
+      {formState.activeRecord?.status === StatusEnum.IN_DRAFT && (
         <PageHeader heading={<Heading as="h1">{t('headings.createNewOrder')}</Heading>} />
       )}
       {isApprover && <PageHeader heading={<Heading as="h1">{t('headings.reviewOrder')}</Heading>} />}
@@ -225,11 +221,11 @@ const Summary = () => {
               <ModuleHeader
                 className={styles.panelHeader}
                 heading={
-                  <Heading as="h3">{t(status === StatusEnum.SUBMITTED || isReview ? 'labels.orderDetails' : 'labels.price')}</Heading>
+                  <Heading as="h3">{t(status === StatusEnum.SUBMITTED || isApprover ? 'labels.orderDetails' : 'labels.price')}</Heading>
                 }
               />
               <div class={styles.flexPanel}>
-                {(status === StatusEnum.SUBMITTED || isReview) && <DetailSegment label={t('labels.orderId')} value={orderId} />}
+                {(status === StatusEnum.SUBMITTED || isApprover) && <DetailSegment label={t('labels.orderId')} value={orderId} />}
                 <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
                 <DetailSegment label={t('labels.orderCost')} value={<p className={styles.price}>{orderCost}</p>} />
               </div>
@@ -407,6 +403,9 @@ const Summary = () => {
             )}
             {isApprover && (
               <>
+                <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
+                  {t('captions.btnBack')}
+                </Button>
                 <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REJECT_ORDER]}>
                   <Button size={'md'} variant="primary" type="submit" onClick={handleOnReject} disabled={!isAgreed}>
                     {t('captions.btnRejectOrder')}

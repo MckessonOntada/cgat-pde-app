@@ -46,7 +46,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
   const { hasPermission } = usePermission();
   const assignMutation = useMutation(() => OrderService.setOrderAssignToMe(id), {
     onSuccess: (result) => {
-      navigate(`${id}/summary`, { state: { isReview: true, isApprover: true } });
+      navigate(`${id}/summary`, { state: { isApprover: true } });
     },
     onError: (err) => {
       const errorKey = handleApiError(err);
@@ -129,9 +129,9 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
     }
     if (value === 'review') {
       if (props.approver?.id === loggedinUserId) {
-        navigate(`${id}/summary`, { state: { isReview: true, isEdit: true, isApprover: true } });
+        navigate(`${id}/summary`, { state: { isEdit: true, isApprover: true } });
       } else {
-        navigate(`${id}/summary`, { state: { isReview: true, isApprover: false } });
+        navigate(`${id}/summary`, { state: { isApprover: false } });
       }
     }
     if (value === 'assign') {
@@ -158,16 +158,18 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
     }
 
     if (status?.toLowerCase() === 'in_draft') {
-      options.unshift(
-        {
-          label: t(`labels.orderActions.resume`),
-          value: 'resume'
-        },
-        {
-          label: t(`labels.orderActions.delete`),
-          value: 'delete'
-        }
-      );
+      if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS)) {
+        options.unshift(
+          {
+            label: t(`labels.orderActions.resume`),
+            value: 'resume'
+          },
+          {
+            label: t(`labels.orderActions.delete`),
+            value: 'delete'
+          }
+        );
+      }
     } else if (status?.toLowerCase() === 'approval_pending') {
       if ((!props.approver || props.approver?.id === null) && doesApproverGroupExist(props.approverGroupIds, assginedGroupsData)) {
         options.push({
@@ -194,10 +196,12 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
       }
     }
   } else if (tab?.toLowerCase() === 'submitted') {
-    options.push({
-      label: t(`labels.orderActions.view`),
-      value: 'view'
-    });
+    if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS)) {
+      options.push({
+        label: t(`labels.orderActions.view`),
+        value: 'view'
+      });
+    }
     if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CANCEL_ORDER)) {
       options.push({
         label: t(`labels.orderActions.cancel`),
@@ -237,9 +241,9 @@ const getState = (props) => {
     return props;
   } else if (props.status === StatusEnum.APPROVAL_PENDING) {
     if (props.approver?.id === loggedinUserId) {
-      return { isReview: true, isEdit: true, isApprover: true };
+      return { isEdit: true, isApprover: true };
     } else {
-      return { isReview: true, isApprover: false };
+      return { isApprover: false };
     }
   } else if (props.status === StatusEnum.IN_DRAFT) {
     return { isSimulate: true };

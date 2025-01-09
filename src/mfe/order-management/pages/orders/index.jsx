@@ -13,11 +13,29 @@ import { useOrders } from '../../context/OrderContext';
 import { useManageOrder } from '../../context/ManageOrderContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import PermittedComponent from '@src/components/permitted-component';
+import usePermission from '@src/hooks/usePermissions';
 
 const OrderIndex = () => {
   const { t } = useTranslate();
-  const [tabList, setTabList] = React.useState(getTabs(t));
+  const { hasPermission } = usePermission();
+  const isPendingTab = hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_PENDING_ORDERS);
+  const isSubmittedTab = hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS);
   const { applyFilters, clearFilters, changeTab, tabVariant, setTabVariant } = useOrders();
+  const [tabList, setTabList] = React.useState(() => {
+    const allTabs = getTabs(t);
+    return allTabs.filter((tab) => {
+      if (tab.id === 1 && isPendingTab) {
+        setTabVariant(1);
+        return true;
+      }
+      if (tab.id === 2 && isSubmittedTab) {
+        setTabVariant(2);
+        return true;
+      }
+      return false;
+    });
+  });
+
   const { resetActiveRecord } = useManageOrder();
   const navigate = useNavigate();
   const location = useLocation();
@@ -68,7 +86,13 @@ const OrderIndex = () => {
       setActiveTab(activeTabFromState);
       setTabVariant(2); // Set the tab from state
     } else {
-      setActiveTab(1); // Default to the first tab
+      if (isPendingTab || (isPendingTab && isSubmittedTab)) {
+        setActiveTab(1);
+        setTabVariant(1);
+      } else if (isSubmittedTab) {
+        setActiveTab(2);
+        setTabVariant(2);
+      }
     }
   }, [activeTabFromState]);
 
