@@ -283,5 +283,7 @@ export const MessageEn = {
   'messages.success.release': 'Order Released Successfully.',
   'messages.success.assign': 'Order Assigned Successfully.',
   'errors.There is no Approver Group assigned to the order': 'There is no Approver Group assigned to the order.',
-  'errors.default': 'An unexpected error occurred.'
+  'errors.default': 'An unexpected error occurred.',
+  'order.label.admin': 'Admin',
+  'order.label.manageOrder': 'Manage Order'
 };

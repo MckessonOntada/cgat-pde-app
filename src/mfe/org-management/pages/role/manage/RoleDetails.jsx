@@ -26,6 +26,8 @@ const getRoleValidationSchema = (t) =>
       .max(100, 'orgManagement.form.errors.roleDescriptionMaxLength')
   });
 
+const moduleBasePath = '/admin/organization/roles';
+
 const RoleDetails = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
@@ -62,12 +64,12 @@ const RoleDetails = () => {
     if (JSON.stringify(formData) !== JSON.stringify(initialData)) {
       setModalSuccessCallback('list');
     } else {
-      navigate(isEdit ? `/organization/roles/${roleId}` : '/organization/roles');
+      navigate(isEdit ? `${moduleBasePath}/${roleId}` : moduleBasePath);
     }
   };
 
   const handleGoBack = () => {
-    navigate('/organization/roles');
+    navigate(moduleBasePath);
   };
 
   const roleValidationSchema = getRoleValidationSchema(t);
@@ -93,7 +95,7 @@ const RoleDetails = () => {
           const { name, description } = data;
 
           refreshData();
-          navigate(isEdit ? `/organization/roles/${roleId}` : `/organization/roles/${id}/permissions`, {
+          navigate(isEdit ? `${roleId}` : `${moduleBasePath}/${id}/permissions`, {
             state: { ...row, name, description }
           });
         }
@@ -117,7 +119,7 @@ const RoleDetails = () => {
 
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
-      navigate('/organization/roles');
+      navigate(moduleBasePath);
     }
   };
 

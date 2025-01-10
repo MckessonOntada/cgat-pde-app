@@ -339,5 +339,6 @@ export const UserManagementEN = {
   'popup.message.wishToContinueLoginAsThisUserDescription':
     'You are about to perform actions on behalf of {{targetUser}}. Please confirm that you have you have verified the identity of the requesting user the necessary permissions and that you understand the implications of proceeding with this task',
   'popup.message.wishToContinueLoginAsThisUserCheckBoxConsent':
-    'By confirming, you acknowledge that all actions taken will be logged and attributed to your account.'
+    'By confirming, you acknowledge that all actions taken will be logged and attributed to your account.',
+  'userManagement.breadcrumb.admin': 'Admin'
 };

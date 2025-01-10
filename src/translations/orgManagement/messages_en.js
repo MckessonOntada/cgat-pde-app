@@ -1,6 +1,7 @@
 export const OrgManagementEN = {
   'orgManagement.header.label': 'Manage Organization',
   'orgManagement.header.dashboard': 'Dashboard',
+  'orgManagement.header.admin': 'Admin',
   'orgManagement.add.label': 'Add Organization',
   'orgManagement.clearFilter.label': 'clear filters',
   'orgManagement.searchFilter.label': 'Search By Name or Email',
