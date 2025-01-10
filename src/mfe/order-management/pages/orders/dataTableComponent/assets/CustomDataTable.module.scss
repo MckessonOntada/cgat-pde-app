@@ -1,0 +1,116 @@
+::-webkit-scrollbar {
+  height: 4px;
+}
+
+.tableContainer {
+  border: 1px solid #bac5cc;
+}
+
+.typeNormal {
+  border-radius: 8px;
+}
+
+.typeCompact {
+  border-radius: 4px;
+}
+
+.paginationWrapper {
+  margin-top: 20px;
+}
+
+.paginationWrapperSticky {
+  position: sticky;
+  bottom: 0;
+  background: #fbfbfa;
+  padding-block: 20px;
+}
+
+.verticalLine {
+  display: inline;
+  height: 12px !important;
+  margin-inline: 12px;
+  border-color: var(--brand-color-background-dark-slate) !important;
+}
+
+.d_flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.totalRecords {
+  font-weight: var(--brand-font-weight-600);
+  font-size: var(--brand-font-size--small);
+  line-height: var(--brand-line-height--large);
+  padding-right: 24px;
+}
+
+.recordPerPage {
+  font-weight: var(-brand-font-weight-600);
+  font-size: var(--brand-font-size--small);
+  line-height: var(--brand-line-height--large);
+  padding-left: 24px;
+}
+
+.pagination {
+  padding-inline: 15px;
+}
+
+.emptyTableContainer {
+  display: flex;
+  width: 100%;
+  height: 210px;
+  align-items: center;
+  justify-content: center;
+
+  .emptyTableDisplay {
+    font-size: var(--brand-font-size--24);
+    font-weight: var(--brand-font-weight-600);
+    line-height: var(--brand-line-height--xx-large);
+    letter-spacing: -0.002em;
+    text-align: center;
+  }
+}
+
+//responsive paggination
+@media (max-width: 600px) {
+  .d_flex {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .verticalLine {
+    display: none;
+  }
+
+  .totalRecords {
+    padding-right: 0px;
+  }
+
+  .recordPerPage {
+    padding-left: 0px;
+  }
+
+  .pagination {
+    padding-inline: 0px;
+  }
+}
+
+.dataTableEmptyUI {
+  background: var(--brand-color-general-white);
+  padding: 10px;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.tableLoader {
+  background: var(--brand-color-general-white);
+  border-radius: 8px;
+}
+
+.noDataTable > div:first-of-type {
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+}

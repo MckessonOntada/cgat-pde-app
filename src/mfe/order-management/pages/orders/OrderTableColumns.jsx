@@ -269,6 +269,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     maxWidth: '380px',
     sortable: true,
     sortKey: 'id',
+    showByDefault: true,
     cell: (props) => (
       <Link
         className="MCP-table-link"
@@ -288,6 +289,8 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortKey: 'patient.patientInfo',
     minWidth: '140px',
     maxWidth: '200px',
+    showByDefault: true,
+    showDefaultLabel: 'Patient Name',
     cell: (props) => {
       const patientInfo = props.patient && props.patient.patientInfo;
       return !patientInfo ? (
@@ -372,6 +375,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortable: false,
     width: '180px',
     center: true,
+    showByDefault: true,
     cell: (props) => (
       <Tooltip body={props.status}>
         <span>
@@ -400,7 +404,9 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: false,
     width: '120px',
+    showByDefault: true,
     center: true,
+    type: 'action',
     cell: (props) => getOptionsByStatus(props, props.status, t, activeTab, props.id, alertContainerId)
   }
 ];

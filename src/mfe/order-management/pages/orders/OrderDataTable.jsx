@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { CustomDataTable } from '@mckesson/mcp-component-library';
+import { CustomDataTable } from './dataTableComponent';
 import { useOrders } from '../../context/OrderContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { createColumns } from './OrderTableColumns';
@@ -14,6 +14,20 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
   const navigate = useNavigate();
   const { dataState: data, paginationConfig, isFetching, error, setCurrentPage, applySort, refreshData } = useOrders();
   const columns = createColumns(t, navigate, tab, alertContainerId);
+  const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 600);
+
+  // Handle screen size changes
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth <= 600);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const handleOnPageChange = (_event, pageIndex) => {
     setCurrentPage(pageIndex);
@@ -39,6 +53,7 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
       aria-label={t('table.ariaLabel.orderList')}
       paginationRecordsPerPageMessage={t('labels.perPage')}
       paginationTotalRecorsMessage={t('labels.results')}
+      isMobileView={isMobileView}
       noDataComponent={
         <EmptyDataTable
           isLoading={isFetching}

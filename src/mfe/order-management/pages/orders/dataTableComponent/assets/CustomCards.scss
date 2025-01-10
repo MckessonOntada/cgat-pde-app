@@ -1,0 +1,74 @@
+.dynamic-container {
+  padding: 1rem;
+  font-family: Arial, sans-serif;
+}
+
+/* Table styling */
+.dynamic-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.dynamic-table th,
+.dynamic-table td {
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.dynamic-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+/* Cards for smaller screens */
+
+.card-item {
+  margin-bottom: 0.5rem;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .dynamic-table {
+    display: none;
+  }
+
+  .dynamic-cards {
+    display: block;
+  }
+}
+
+.card-container {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.collapsed-detail {
+  padding: 5px;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.card-details {
+  margin-top: 10px;
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.expanded-detail {
+  padding: 5px 0;
+}
