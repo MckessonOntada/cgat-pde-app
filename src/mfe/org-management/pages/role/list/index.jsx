@@ -46,8 +46,8 @@ function RolesList() {
 
   const breadcrumbItems = [
     {
-      label: t('orgManagement.header.dashboard'),
-      url: '/'
+      label: t('orgManagement.header.admin'),
+      url: AuthUtils.isSystemAdminView() ? '/' : '/admin'
     },
     {
       label: t('orgManagement.role.headingManageOrder')
@@ -71,13 +71,20 @@ function RolesList() {
         }
       />
 
-      {messageConfig.kind && messageConfig.primaryMessage && <Alert duration={10000} onClose={clearMessage} description={messageConfig.primaryMessage} type={messageConfig.kind} />}
+      {messageConfig.kind && messageConfig.primaryMessage && (
+        <Alert duration={10000} onClose={clearMessage} description={messageConfig.primaryMessage} type={messageConfig.kind} />
+      )}
 
       {/* module body */}
       <div className="MCP-module-body">
         <div className="MCP-panel-container">
           <div className="MCP-CardContainer">
-            <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={t('orgManagement.role.placeholder')} />
+            <CommonFilters
+              onApplyFilters={applyFilters}
+              onClearFilters={clearFilters}
+              additionalFilters={AdditionalFiltersConfig}
+              searchPlaceholder={t('orgManagement.role.placeholder')}
+            />
           </div>
           <div className="MCP-table-wrapper">
             <ModuleHeader heading={<Heading as="h2">{t('orgManagement.role.labelRolesListing')}</Heading>} />

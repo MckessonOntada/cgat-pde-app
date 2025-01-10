@@ -36,24 +36,26 @@ const Dashboard = () => {
 
   return (
     <div className={styles.container}>
-      {/* <Heading as="h1">{isSystemAdminView ? 'System Admin' : }</Heading> */}
-
-      <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
-        {cards.map((card, index) => {
-          const Icon = card.icon;
-          return (
-            <Link to={card.path} key={index}>
-              <div id={`${card.label}-${card.index}`} className={styles.card}>
-                <Icon />
-                <Heading as="h3" color="brand-color-black">
-                  {t(`dashboard.card.${card.label}`)}
-                </Heading>
-                <p className={styles.cardContent}>{t(`dashboard.card.${card.details}`)}</p>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
+      {isSystemAdminView ? (
+        <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
+          {cards.map((card, index) => {
+            const Icon = card.icon;
+            return (
+              <Link to={card.path} key={index}>
+                <div id={`${card.label}-${card.index}`} className={styles.card}>
+                  <Icon />
+                  <Heading as="h3" color="brand-color-black">
+                    {t(`dashboard.card.${card.label}`)}
+                  </Heading>
+                  <p className={styles.cardContent}>{t(`dashboard.card.${card.details}`)}</p>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      ) : (
+        <Heading as="h1">Coming Soon</Heading>
+      )}
     </div>
   );
 };

@@ -13,9 +13,14 @@ import { PaymentsCreditsProvider } from '../context/PaymentsCreditsContext';
 import Credits from '../pages/credits';
 import { PendingPaymentsProvider } from '../context/PendingPaymentsContext';
 import PendingPayments from '../pages/pendingPayments';
-import { useAccountContext } from '../context/AccountContext';
+import { AccountProvider, useAccountContext } from '../context/AccountContext';
 import CommonUtils from '@src/util/CommonUtils';
 import { CustomerStatementsProvider } from '../context/CustomerStatementsContext';
+import ProtectedRoute from '@src/routes/ProtectedRoute';
+import Details from '../pages/details';
+import { PATHS as PaymentInvoicesPaths } from '@src/mfe/finance-management/routes';
+import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
+import Confirmation from '../pages/confirmation';
 
 const Routes = () => {
   const { selectedAccount } = useAccountContext();
@@ -76,6 +81,48 @@ const Routes = () => {
           </PaymentMethodsProvider>
         }
       />
+
+      <Route
+        path={'invoices/:billNumber/details'}
+        element={
+          <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
+            <AccountProvider>
+              <Details type={PaymentInvoicesPaths.invoices} />
+            </AccountProvider>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={'credits/:billNumber/details'}
+        element={
+          <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
+            <AccountProvider>
+              <Details type={PaymentInvoicesPaths.credits} />
+            </AccountProvider>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={'pending-payments/:confirmationNumber/confirmation'}
+        element={
+          <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
+            <AccountProvider>
+              <Confirmation type={PaymentInvoicesPaths.pendingPayments} />
+            </AccountProvider>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={'payment-history/:confirmationNumber/confirmation'}
+        element={
+          <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
+            <AccountProvider>
+              <Confirmation type={PaymentInvoicesPaths.paymentHistory} />
+            </AccountProvider>
+          </ProtectedRoute>
+        }
+      />
+
       <Route path={'*'} element={<NotFound />} />
     </ReactRoutes>
   ) : null;

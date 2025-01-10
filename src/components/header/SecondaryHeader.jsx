@@ -66,14 +66,24 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
         .map((item) => {
           if (
             item.configName === 'Dashboard' ||
-            (item.configName !== 'Dashboard' && AuthUtils.userHasRoutePermission(routePermissionConfig.paymentInvoices))
+            (item.configName !== 'Dashboard' && AuthUtils.userHasRoutePermission(item.permittedRoute))
           ) {
-            const isDashboard = item.configName === 'Dashboard' && !location.pathname.includes('/record');
-            const isMatchingPath = item.path !== '/' && location.pathname.includes(item.path);
+            let isActiveTab = false;
+            // let isDashboard = item.configName === 'Dashboard';
+            // let isMatchingPath = item.path !== '/' && location.pathname.includes(item.path);
+
+            // if (isMatchingPath) {
+            //   isDashboard = false;
+            // }
+
+            if (item.configName === 'Dashboard' && location.pathname === '/') isActiveTab = true;
+
+            if (item.configName !== 'Dashboard' && location.pathname.includes(item.path)) isActiveTab = true;
+
             return {
               ...item,
-              isActiveTab: isDashboard || isMatchingPath,
-              ariaSelected: isDashboard || isMatchingPath ? 'true' : 'false',
+              isActiveTab: isActiveTab,
+              ariaSelected: isActiveTab ? 'true' : 'false',
               configName: `${intl.formatMessage({ id: item.translationName })}`
             };
           }
