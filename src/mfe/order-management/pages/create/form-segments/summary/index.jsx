@@ -46,9 +46,6 @@ const Summary = () => {
       const response = await OrderService.simulateOrder(orderId);
       return response;
     },
-    // enabled: Boolean(
-    //   formState?.activeRecord && ![StatusEnum.SUBMITTED, StatusEnum.APPROVAL_PENDING].includes(formState.activeRecord.status) && !isEdit
-    // ),
     enabled: isSimulate || isApprover,
     refetchOnWindowFocus: false,
     onError: (error) => {
@@ -209,11 +206,12 @@ const Summary = () => {
         <PageHeader heading={<Heading as="h1">{t('headings.createNewOrder')}</Heading>} />
       )}
       {isApprover && <PageHeader heading={<Heading as="h1">{t('headings.reviewOrder')}</Heading>} />}
-      <div id={alertContainerId} />
+
       <div className="MCP-module-body">
         {!hideControls && (
           <Stepper activeIndex={5} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} />
         )}
+        <div id={alertContainerId} />
         <div className={'MCP-module-wrapper'}>
           <ModuleHeader heading={<Heading as="h2">{t('labels.summary')}</Heading>} />
           <div className={'MCP-module-body'}>
