@@ -65,7 +65,7 @@ const OrgList = () => {
           onClick={() => {
             setOrganization(org);
             dispatch(closeModal());
-            window.location.href = PATHS.dashboard;
+            window.location.href = '/admin';
           }}>
           Okay
         </Button>

@@ -6,7 +6,7 @@ import { routesConfig } from './../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '../../../../components/module-header';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
-import { getTabs, breadcrumbItems } from './constants';
+import { getTabs, getBreadcrumbItems } from './constants';
 import OrderDataTable from './OrderDataTable';
 import CommonFilters from '@src/components/Filters';
 import { useOrders } from '../../context/OrderContext';
@@ -98,7 +98,7 @@ const OrderIndex = () => {
 
   return (
     <div className="MCP-module-wrapper">
-      <Breadcrumb items={breadcrumbItems} />
+      <Breadcrumb items={getBreadcrumbItems(t)} />
       <ModuleHeader
         heading={<Heading as="h1">{t('headings.orders')}</Heading>}
         controls={

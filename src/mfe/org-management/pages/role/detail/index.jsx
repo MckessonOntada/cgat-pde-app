@@ -30,7 +30,7 @@ const roleDetail = () => {
   });
 
   const handleGoBack = () => {
-    navigate('/organization/roles');
+    navigate('/admin/organization/roles');
   };
 
   const groupPermissionsByCategory = (rolePermissions, permissionsEnum) => {

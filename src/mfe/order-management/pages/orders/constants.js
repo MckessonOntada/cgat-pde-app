@@ -1,4 +1,4 @@
-export const breadcrumbItems = [{ label: 'Dashboard', url: '/' }, { label: 'Manage Orders' }];
+export const getBreadcrumbItems = (t) => [{ label: t('order.label.admin'), url: '/' }, { label: t('order.label.manageOrder') }];
 
 export const getTabs = (t) => [
   {

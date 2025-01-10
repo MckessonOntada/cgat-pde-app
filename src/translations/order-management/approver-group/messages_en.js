@@ -7,6 +7,7 @@ export const ApproverManagementEN = {
   'approvergroup.searchFilter.label': 'Search By Group Name',
   'approvergroup.clearFilter.label': 'clear filters',
   'approvergroup.breadcrumb.labeldashboard': 'Dashboard',
+  'approvergroup.breadcrumb.admin': 'Admin',
   'approvergroup.results': 'results',
   'approvergroup.per_page': 'per page',
   'approvergroup.selected_items': `Item's Selected`,

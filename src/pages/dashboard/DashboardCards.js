@@ -30,38 +30,38 @@ const SYSTEM_ADMIN_CARDS_DATA = [
 ];
 
 const CARDS_DATA = [
-  {
-    name: 'ManageOrders',
-    label: 'manage_orders',
-    icon: OrderIcon,
-    details: 'order_card_description',
-    path: AppRoutes.pathOrderManagement,
-    permissions: ORDER_MANAGEMENT.MANAGE_ORDERS
-  },
-  {
-    name: 'ManageUsers',
-    label: 'manage_users',
-    icon: UserIcon,
-    details: 'efficiently_streamline_user_management_for_seamless_experience',
-    path: AppRoutes.pathUserManagement,
-    permissions: USER_MANAGEMENT.MANAGE_USERS_SCREEN
-  },
-  {
-    name: 'ManageRoles',
-    label: 'manage_roles',
-    icon: ChecklistIcon,
-    details: 'role_card_description',
-    path: '/organization/roles',
-    permissions: USER_MANAGEMENT.MANAGE_ROLES_SCREEN
-  },
-  {
-    name: 'ManageApproverGroups',
-    label: 'manage_approver_groups',
-    icon: ApproverGroupIcon,
-    details: 'approver_management_description',
-    path: AppRoutes.pathApproverManagement,
-    permissions: ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP
-  }
+  // {
+  //   name: 'ManageOrders',
+  //   label: 'manage_orders',
+  //   icon: OrderIcon,
+  //   details: 'order_card_description',
+  //   path: AppRoutes.pathOrderManagement,
+  //   permissions: ORDER_MANAGEMENT.MANAGE_ORDERS
+  // },
+  // {
+  //   name: 'ManageUsers',
+  //   label: 'manage_users',
+  //   icon: UserIcon,
+  //   details: 'efficiently_streamline_user_management_for_seamless_experience',
+  //   path: AppRoutes.pathUserManagement,
+  //   permissions: USER_MANAGEMENT.MANAGE_USERS_SCREEN
+  // },
+  // {
+  //   name: 'ManageRoles',
+  //   label: 'manage_roles',
+  //   icon: ChecklistIcon,
+  //   details: 'role_card_description',
+  //   path: '/organization/roles',
+  //   permissions: USER_MANAGEMENT.MANAGE_ROLES_SCREEN
+  // },
+  // {
+  //   name: 'ManageApproverGroups',
+  //   label: 'manage_approver_groups',
+  //   icon: ApproverGroupIcon,
+  //   details: 'approver_management_description',
+  //   path: AppRoutes.pathApproverManagement,
+  //   permissions: ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP
+  // }
   // {
   //   name: 'ManageCatalog',
   //   label: 'manage_catalog',
