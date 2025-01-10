@@ -1,17 +1,28 @@
 @use "./main.scss";
 
+body {
+  background-color: var(--brand-color-background-warm-grey-3);
+}
+
 .appContainer {
   display: flex;
   flex-direction: column;
   height: 100vh;
+
+
+  .app-wrapper {
+    width: 100%;
+    align-self: stretch;
+  }
 }
+
 .home {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   overflow: auto;
   background-color: var(--brand-color-background-white);
-  padding: var(--spacing-03);
+  padding: var(--spacing-04);
   background-color: var(--brand-color-background-warm-grey-3, #fbfbfa);
 }
 

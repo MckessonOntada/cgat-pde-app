@@ -532,3 +532,8 @@ div.disable-all {
 .selected-item-text {
   font-size: var(--brand-font-size--large) !important;
 }
+
+.max-container {
+  max-width: 1800px;
+  margin: 0px auto;
+}
