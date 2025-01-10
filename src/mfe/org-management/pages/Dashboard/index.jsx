@@ -13,11 +13,13 @@ import CommonFilters from '@src/components/Filters';
 import { US_STATES } from '@src/components/form/util';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
+import AuthUtils from '@src/util/AuthUtils';
 
 function DashboardPage() {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
+  const isSystemAdminView = AuthUtils.isSystemAdminView();
   const [isAlertVisible, setIsAlertVisible] = React.useState(false);
   const isSuccess = location.state?.isSuccess || false;
   const [alertDescription, setAlertDescription] = React.useState('');
@@ -25,7 +27,7 @@ function DashboardPage() {
   const { applyFilters, clearFilters } = useOrg();
   const breadcrumbItems = [
     {
-      label: `${t('orgManagement.header.dashboard')}`,
+      label: `${t('orgManagement.header.admin')}`,
       url: '/'
     },
     {
@@ -84,7 +86,12 @@ function DashboardPage() {
         controls={
           <div className="controls">
             {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION) && (
-              <Button Icon={add_circle_bold} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.createOrg}`)}>
+              <Button
+                Icon={add_circle_bold}
+                className="button-icon"
+                variant="primary"
+                size="md"
+                onClick={() => navigate(`${PATHS.createOrg}`)}>
                 {t('orgManagement.add.label')}
               </Button>
             )}
@@ -96,7 +103,12 @@ function DashboardPage() {
       <div className="MCP-module-body">
         <div className="MCP-panel-container">
           <div className="MCP-panel-container">
-            <CommonFilters onApplyFilters={applyFilters} onClearFilters={clearFilters} additionalFilters={AdditionalFiltersConfig} searchPlaceholder={t('orgManagement.org.placeholder')} />
+            <CommonFilters
+              onApplyFilters={applyFilters}
+              onClearFilters={clearFilters}
+              additionalFilters={AdditionalFiltersConfig}
+              searchPlaceholder={t('orgManagement.org.placeholder')}
+            />
           </div>
           <Heading as="h2">{t('orgManagement.org_list')}</Heading>
           <OrgList />

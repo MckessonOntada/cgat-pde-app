@@ -5,8 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { routesConfig } from './../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '../../../../components/module-header';
-import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
-import { getTabs, breadcrumbItems } from './constants';
+import { getTabs } from './constants';
 import OrderDataTable from './OrderDataTable';
 import CommonFilters from '@src/components/Filters';
 import { useOrders } from '../../context/OrderContext';
@@ -98,7 +97,6 @@ const OrderIndex = () => {
 
   return (
     <div className="MCP-module-wrapper">
-      <Breadcrumb items={breadcrumbItems} />
       <ModuleHeader
         heading={<Heading as="h1">{t('headings.orders')}</Heading>}
         controls={

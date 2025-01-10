@@ -27,7 +27,8 @@ export default function CreditsTable() {
         <div className="cellEllipse">
           <Link
             style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
-            to={`/record/${PATHS.credits}/${props?.billNumber}/details`}>
+            to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
+          >
             {`${props?.billNumber}`}
           </Link>
         </div>
@@ -135,7 +136,8 @@ export default function CreditsTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}>
+            }}
+          >
             <Loader variant="circular" />
           </div>
         }

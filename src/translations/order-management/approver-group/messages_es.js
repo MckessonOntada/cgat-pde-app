@@ -7,6 +7,7 @@ export const ApproverManagementES = {
   'approvergroup.searchFilter.label': 'S_Search By Group Name',
   'approvergroup.clearFilter.label': 'S_clear filters',
   'approvergroup.breadcrumb.labeldashboard': 'S_Dashboard',
+  'approvergroup.breadcrumb.admin': 'S_Admin',
   'approvergroup.results': 'S_results',
   'approvergroup.per_page': 'S_per page',
   'approvergroup.selected_items': `Item's Selected`,

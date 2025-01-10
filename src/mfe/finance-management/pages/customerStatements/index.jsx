@@ -34,7 +34,6 @@ export default function CustomerSatements(params) {
       </div>
       <div className="MCP-table-wrapper">
         <div className="table-header">
-          <h1> {t('paymentInvoices.CS.StatementListing')}</h1>
           <Button variant="secondary" onClick={() => {}} size="sm" disabled>
             {t('paymentInvoices.CS.ExportExcel')}
           </Button>

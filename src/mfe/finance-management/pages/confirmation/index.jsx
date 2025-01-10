@@ -61,10 +61,10 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
 
   const renderFooterButtons = () => (
     <div className="footer-section">
-      <Button variant="secondary" onClick={() => {}} size="sm">
+      <Button variant="secondary" onClick={() => {}} size="sm" disabled>
         {type === PATHS.paymentHistory ? t('paymentInvoices.history.filters.printSummary') : t('paymentInvoices.CS.ExportExcel')}
       </Button>
-      <Button onClick={() => {}} size="sm">
+      <Button onClick={() => {}} size="sm" disabled>
         {type === PATHS.paymentHistory ? t('paymentInvoices.history.filters.downloadExcel') : t('paymentInvoices.Details.print')}
       </Button>
     </div>

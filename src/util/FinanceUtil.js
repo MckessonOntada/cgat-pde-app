@@ -10,7 +10,15 @@ const maskCardNumber = (cardNumber) => {
   return `XXXX-XXXX-XXXX-${lastFourDigits}`;
 };
 
+const formatCurrency = (value) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  }).format(value);
+};
+
 export const FinanceUtils = Object.freeze({
   maskBankNumber,
-  maskCardNumber
+  maskCardNumber,
+  formatCurrency
 });

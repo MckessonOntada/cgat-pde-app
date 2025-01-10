@@ -6,6 +6,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import { useBalanceContext } from '../context/BalanceContext';
 import { useAccountContext } from '../context/AccountContext';
+import { FinanceUtils } from '@src/util/FinanceUtil';
 
 export default function BalanceDetails() {
   const { t } = useTranslate();
@@ -20,17 +21,17 @@ export default function BalanceDetails() {
       const formattedData = [
         {
           label: t('paymentInvoices.metrics.totalDebitBalance'),
-          value: `$${Math.abs(totalDebitBalance) || '0.00'}`,
+          value: `${Math.abs(totalDebitBalance) || '0.00'}`,
           tooltipText: t('paymentInvoices.metrics.totalDebitBalance.tooltipText')
         },
         {
           label: t('paymentInvoices.metrics.totalCreditBalance'),
-          value: `$${Math.abs(totalCreditBalance) || '0.00'}`,
+          value: `${Math.abs(totalCreditBalance) || '0.00'}`,
           tooltipText: t('paymentInvoices.metrics.totalCreditBalance.tooltipText')
         },
         {
           label: t('paymentInvoices.metrics.pastDueBalance'),
-          value: `$${Math.abs(pastDueBalance) || '0.00'}`,
+          value: `${Math.abs(pastDueBalance) || '0.00'}`,
           tooltipText: t('paymentInvoices.metrics.pastDueBalance.tooltipText')
         }
       ];
@@ -50,6 +51,7 @@ export default function BalanceDetails() {
       return formattedData.map(({ key, label, color }) => ({
         label,
         segmentValue: Math.abs(data[key] || 0),
+        displayValue: FinanceUtils.formatCurrency(parseFloat(Math.abs(data[key] || 0))),
         color
       }));
     }
@@ -65,7 +67,7 @@ export default function BalanceDetails() {
             <div className="metrics">
               {formatBalanceData(balanceData).map((data, index) => (
                 <div key={index} className="info-cards-container">
-                  <InfoCards title={data.label} value={data.value} infoText={data.tooltipText} />
+                  <InfoCards title={data.label} value={FinanceUtils.formatCurrency(parseFloat(data.value))} infoText={data.tooltipText} />
                 </div>
               ))}
             </div>
@@ -78,7 +80,7 @@ export default function BalanceDetails() {
           {!CommonUtils.isNonEmptyObject(balanceData) ? null : <Divider className="divider-style" />}
           {!CommonUtils.isNonEmptyObject(balanceData) ? null : (
             <div className="metrics-chart">
-              <LinearSegmentChart data={formatChartData(balanceData.overDueAmountByStatus)} unit={'$'} />
+              <LinearSegmentChart data={formatChartData(balanceData.overDueAmountByStatus)} />
             </div>
           )}
         </div>
