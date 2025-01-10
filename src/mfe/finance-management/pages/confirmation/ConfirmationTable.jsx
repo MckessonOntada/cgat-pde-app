@@ -2,7 +2,6 @@ import React from 'react';
 import { Heading, Loader, CustomDataTable, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import dayjs from 'dayjs';
-import { Link } from 'react-router-dom';
 import { FormattedNumber } from 'react-intl';
 import { ReactComponent as PDFicon } from '@src/assets/svg/office-file-pdf.svg';
 
@@ -16,11 +15,7 @@ const createColumns = (t, type) => {
       sortable: true,
       wrap: true,
       minWidth: '112px',
-      cell: (props) => (
-        <div className="cellEllipse">
-          <Link style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}>{`${props?.billNo || ''}`}</Link>
-        </div>
-      )
+      cell: (props) => <div className="cellEllipse">{props?.billNo || ''}</div>
     },
     {
       id: 'soldToSite',
