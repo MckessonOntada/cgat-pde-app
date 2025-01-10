@@ -19,6 +19,7 @@ import { AccountProvider } from '@src/mfe/finance-management/context/AccountCont
 import Details from '@src/mfe/finance-management/pages/details';
 import { PATHS as PaymentInvoicesPaths } from '@src/mfe/finance-management/routes';
 import Confirmation from '@src/mfe/finance-management/pages/confirmation';
+import ReviewPayments from '@src/mfe/finance-management/pages/reviewPayments';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
@@ -130,6 +131,16 @@ function MainLayout() {
                   <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
                     <AccountProvider>
                       <Details type={PaymentInvoicesPaths.invoices} />
+                    </AccountProvider>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path={'/record/invoices/reviewPayments'}
+                element={
+                  <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
+                    <AccountProvider>
+                      <ReviewPayments type={PaymentInvoicesPaths.invoices} />
                     </AccountProvider>
                   </ProtectedRoute>
                 }
