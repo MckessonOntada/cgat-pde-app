@@ -228,6 +228,19 @@ async function simulateOrder(orderId) {
   return {};
 }
 
+async function updateTherapy(orderId, requestBody) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
+
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/therapy`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, requestBody);
+
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -248,7 +261,8 @@ const OrderService = Object.freeze({
   setOrderUnassignToMe,
   deleteOrder,
   getAssignedGroups,
-  simulateOrder
+  simulateOrder,
+  updateTherapy
 });
 
 export default OrderService;
