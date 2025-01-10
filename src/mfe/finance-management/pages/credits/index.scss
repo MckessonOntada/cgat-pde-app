@@ -105,7 +105,7 @@
 
   @include mixins.respond("sm") {
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: end;
     align-items: center;
   }
 

@@ -20,11 +20,7 @@ export default function CustomerStatementTable() {
       sortable: true,
       wrap: true,
       minWidth: '112px',
-      cell: (props) => (
-        <div className="cellEllipse">
-          <Link style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}>{`${props.docNo}`}</Link>
-        </div>
-      )
+      cell: (props) => <div className="cellEllipse">{`${props.docNo}`}</div>
     },
     {
       id: 'accountNumber',
