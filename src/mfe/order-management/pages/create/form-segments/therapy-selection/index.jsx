@@ -102,18 +102,35 @@ function TherapySelection() {
     onSuccess: (result) => {
       setActiveRecord(result);
       const { id } = result;
-      navigate(`../${id}/accounts`, { state: { isEdit: isEdit, isApprover: isApprover } });
+      navigate(`../${id}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
     },
     onError: console.log
   });
+
+  const { isLoading: isUpdating, mutate: updateTherapy } = useMutation(
+    async ({ orderId, payload }) => {
+      return await OrderService.updateTherapy(orderId, payload);
+    },
+    {
+      onSuccess: (result) => {
+        setActiveRecord(result);
+        const { id } = result;
+        navigate(`../${id}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
+      },
+      onError: console.log
+    }
+  );
 
   const handleOnSubmit = () => {
     if (therapy) {
       const payload = {
         id: therapy.id
       };
-
-      createNewOrder(payload);
+      if (isEdit || isApprover) {
+        updateTherapy({ orderId, payload });
+      } else {
+        createNewOrder(payload);
+      }
     }
   };
   const isDirty = JSON.stringify(therapy) !== JSON.stringify(initialSelectedThearpy);
@@ -189,7 +206,12 @@ function TherapySelection() {
           />
           {therapyDetails && (
             <FloatingDrawer open={true} anchor="right" onClose={handleOnClose}>
-              <TherapyDetails therapyId={therapyDetails} onSelect={handleOnDrawerSelect} onClose={handleOnClose} therapyData={TherapyDetailsConstants} />
+              <TherapyDetails
+                therapyId={therapyDetails}
+                onSelect={handleOnDrawerSelect}
+                onClose={handleOnClose}
+                therapyData={TherapyDetailsConstants}
+              />
             </FloatingDrawer>
           )}
         </div>
