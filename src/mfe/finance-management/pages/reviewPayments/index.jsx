@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import InfoCards from '@src/components/infoCards/InfoCards';
@@ -11,8 +11,8 @@ import { useLocation } from 'react-router-dom';
 const data = [
   {
     currency: 'USD',
-    billAmount: 24378.7,
-    openAmount: 24378.7,
+    billAmount: 1.1,
+    openAmount: 1.1,
     paymentTerm: 'Due in 15 days',
     isPdfAvailable: true,
     status: 'OVERDUE',
@@ -24,8 +24,8 @@ const data = [
   },
   {
     currency: 'USD',
-    billAmount: 2134.4,
-    openAmount: 2134.4,
+    billAmount: 2.2,
+    openAmount: 2.2,
     paymentTerm: 'Due in 30 days',
     isPdfAvailable: false,
     status: 'OVERDUE',
@@ -37,8 +37,8 @@ const data = [
   },
   {
     currency: 'USD',
-    billAmount: 5421.3,
-    openAmount: 5421.3,
+    billAmount: 3.3,
+    openAmount: 3.3,
     paymentTerm: 'Due in 35 days',
     isPdfAvailable: true,
     status: null,
@@ -57,9 +57,7 @@ function ReviewPayments() {
 
   useEffect(() => {
     if (location.state?.invoices && location.state?.invoices.length > 0) {
-      // let _data = location.state?.invoices.map((item) => ({ ...item, paymentAmount: item.openAmount }));
-      let _data = data.map((item) => ({ ...item, paymentAmount: item.openAmount }));
-      console.log('location..', location, _data);
+      let _data = location.state?.invoices.map((item) => ({ ...item, paymentAmount: item.openAmount }));
       setSelectedInvoices(_data);
     }
   }, []);
@@ -71,6 +69,15 @@ function ReviewPayments() {
   };
 
   const backButtonClick = () => {};
+
+  const invoicesSum = useMemo(() => {
+    let _sum = selectedInvoices
+      .filter((i) => i.paymentAmount)
+      .reduce((accumulator, currentValue) => {
+        return parseFloat(currentValue.paymentAmount), accumulator + parseFloat(currentValue.paymentAmount);
+      }, 0);
+    return parseFloat(_sum).toFixed(2);
+  }, [selectedInvoices]);
 
   return (
     <div className={'reviewPayments'}>
@@ -88,7 +95,7 @@ function ReviewPayments() {
             {t('Review and Pay')}
           </Heading>
         </div>
-        {/* <div className={'section'}>
+        <div className={'section'}>
           <div className={'sectionHeader'}>{t('Account')}</div>
           <div className={'sectionCard'}>
             <div className={'accountNumber'}>0000000174</div>
@@ -102,9 +109,13 @@ function ReviewPayments() {
             {CommonUtils.isNonEmptyObject(paymentCard) &&
               Object.entries(paymentCard)?.map(([key, value]) => <InfoCards title={key} value={value} />)}
           </div>
-        </div> */}
+        </div>
         <div>
           <SelectedInvoiceList selectedInvoices={selectedInvoices} setSelectedInvoices={setSelectedInvoices} />
+        </div>
+        <div className="invoice-sum-container">
+          <div className="label">{`${selectedInvoices.length} invoice(s), amount to be paid:`}</div>{' '}
+          <div className="value">{`$${invoicesSum}`}</div>
         </div>
       </div>
     </div>

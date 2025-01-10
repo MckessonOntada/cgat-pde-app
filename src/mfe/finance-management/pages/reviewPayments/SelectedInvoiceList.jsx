@@ -6,6 +6,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import dayjs from 'dayjs';
 import { FormattedNumber } from 'react-intl';
 import { ReactComponent as RemoveCircle } from '@src/assets/svg/cross-red.svg';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 
 function SelectedInvoiceList(props) {
   const { t } = useTranslate();
@@ -104,7 +105,6 @@ function SelectedInvoiceList(props) {
   ];
 
   const onChangePayAmount = (event, index) => {
-    console.log('eve...', event, index);
     let _invoices = [...[], ...selectedInvoices];
     _invoices[index].paymentAmount = event.target.value;
     setSelectedInvoices(_invoices);
@@ -122,29 +122,13 @@ function SelectedInvoiceList(props) {
       type="normal"
       columns={columns}
       data={selectedInvoices || []}
-
-      //    progressPending={isFetching}
-      //   noDataComponent={
-      //     <EmptyDataTable
-      //       isLoading={isFetching}
-      //       error={isError ? 'Something went wrong! Please try again' : null}
-      //       image={EmptyDataImage}
-      //       heading={t('paymentInvoices.invoice.table.emptyData')}
-      //       description={t('paymentInvoices.history.table.emptyDataDescription')}
-      //     />
-      //   }
-      //   progressComponent={
-      //     <div
-      //       style={{
-      //         alignItems: 'center',
-      //         border: '1px solid #ccc',
-      //         display: 'flex',
-      //         height: '350px',
-      //         justifyContent: 'center'
-      //       }}>
-      //       <Loader variant="circular" />
-      //     </div>
-      //   }
+      noDataComponent={
+        <EmptyDataTable
+          image={EmptyDataImage}
+          heading={t('paymentInvoices.invoice.table.emptyData')}
+          description={'Please select Invoices from dashboard'}
+        />
+      }
     />
   );
 }

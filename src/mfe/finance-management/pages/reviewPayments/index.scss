@@ -115,3 +115,22 @@
   font-weight: 600;
   font-size: 14px;
 }
+
+.invoice-sum-container {
+  display: flex;
+  gap: 8px;
+  justify-content: end;
+  align-items: center;
+  height: 40px;
+  border-radius: 8px;
+  padding: 8px 16px;
+  background-color: #f2f6fa;
+  .label {
+    font-size: 14px;
+  }
+  .value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1e394e;
+  }
+}
