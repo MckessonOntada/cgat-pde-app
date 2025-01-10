@@ -158,7 +158,7 @@ const AccountSelection = () => {
       navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
     } else {
       editByStage(ORDER_STAGES.THERAPY_SELECTION);
-      navigate(`../edit-order/${orderId}`, { state: { isEdit: false, isApprover: isApprover } });
+      navigate(`../edit-order/${orderId}`, { state: { isEdit: false, isApprover: isApprover, isBack: true } });
     }
   };
 
@@ -191,7 +191,7 @@ const AccountSelection = () => {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'details') {
       editByStage(ORDER_STAGES.THERAPY_SELECTION);
-      navigate(`../edit-order/${orderId}`, { state: { isEdit: false, isApprover: isApprover } });
+      navigate(`../edit-order/${orderId}`, { state: { isEdit: false, isApprover: isApprover, isBack: true } });
     } else if (modalSuccessCallback === 'summary') {
       navigate(`../${orderId}/summary`, { state: { isEdit: false, isApprover: isApprover } });
     }
