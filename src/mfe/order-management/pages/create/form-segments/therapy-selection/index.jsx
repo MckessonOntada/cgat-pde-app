@@ -20,6 +20,8 @@ import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import { TherapyDetailsConstants } from './assets/constants/TherapyDetailsConstants';
+import useAlert from '@src/hooks/useAlert';
+import { handleApiError } from '@src/util/ApiUtils';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -33,7 +35,9 @@ function TherapySelection() {
   const therapyDetails = searchParams.get('therapy-details');
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const { orderId } = useParams();
-  const { isEdit = false, isApprover = false } = location.state || {};
+  const { isEdit = false, isApprover = false, isBack = false } = location.state || {};
+  const alertContainerId = 'alert-container';
+  const { showAlert } = useAlert();
 
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.THERAPY_SELECTION);
@@ -104,7 +108,10 @@ function TherapySelection() {
       const { id } = result;
       navigate(`../${id}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
     },
-    onError: console.log
+    onError: (err) => {
+      const errorKey = handleApiError(err);
+      showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
+    }
   });
 
   const { isLoading: isUpdating, mutate: updateTherapy } = useMutation(
@@ -117,7 +124,10 @@ function TherapySelection() {
         const { id } = result;
         navigate(`../${id}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
       },
-      onError: console.log
+      onError: (err) => {
+        const errorKey = handleApiError(err);
+        showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
+      }
     }
   );
 
@@ -126,7 +136,7 @@ function TherapySelection() {
       const payload = {
         id: therapy.id
       };
-      if (isEdit || isApprover) {
+      if (isEdit || isApprover || isBack) {
         updateTherapy({ orderId, payload });
       } else {
         createNewOrder(payload);
@@ -179,6 +189,7 @@ function TherapySelection() {
 
       <div className="MCP-module-body">
         <OrderStepper />
+        <div id={alertContainerId} />
         <div className={styles.wrapper}>
           <div className="MCP-panel-container">
             <ModuleHeader heading={<Heading as="h2">{t('labels.therapySelection')}</Heading>} />

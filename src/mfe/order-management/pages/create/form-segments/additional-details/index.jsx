@@ -20,6 +20,7 @@ import CommonUtils from '@src/util/CommonUtils';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import useAlert from '@src/hooks/useAlert';
+import { handleApiError } from '@src/util/ApiUtils';
 
 const getValidationSchema = (t) =>
   Yup.object({
@@ -105,7 +106,11 @@ function AdditionalDetails() {
     queryKey: ['order', 'variants', orderId],
     queryFn: async () => OrderService.getVariants(therapyId, soldToAccountId, shipToAccountId, variantsApiRequestParam),
     enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    onError: (error) => {
+      const errorKey = handleApiError(err);
+      showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
+    }
   });
 
   React.useEffect(() => {
