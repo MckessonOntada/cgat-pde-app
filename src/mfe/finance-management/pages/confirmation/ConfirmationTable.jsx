@@ -15,11 +15,7 @@ const createColumns = (t, type) => {
       sortable: true,
       wrap: true,
       minWidth: '112px',
-      cell: (props) => (
-        <div className="cellEllipse">
-          <div>{`${props?.billNo || ''}`}</div>
-        </div>
-      )
+      cell: (props) => <div className="cellEllipse">{props?.billNo || ''}</div>
     },
     {
       id: 'soldToSite',
