@@ -30,7 +30,7 @@ export default function InvoicesTable() {
           <Link
             style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
             to={`/record/${PATHS.invoices}/${props?.billNumber}/details`}
-          >{`${props?.billNumber || ''}`}</Link>
+            state={{ invoices: [...[], props] }}>{`${props?.billNumber || ''}`}</Link>
         </div>
       )
     },
