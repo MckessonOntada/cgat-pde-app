@@ -125,7 +125,8 @@ export default function CreditCardsTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}>
+            }}
+          >
             <Loader variant="circular" />
           </div>
         }

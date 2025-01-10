@@ -28,8 +28,8 @@ export default function PendingPaymentTable() {
           <Link
             style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
             to={`/record/${PATHS.pendingPayments}/${props.confirmationNo}/confirmation`}
-            state={{...props}}
-            >
+            state={{ ...props }}
+          >
             {props.confirmationNo}
           </Link>
         </div>
@@ -127,7 +127,8 @@ export default function PendingPaymentTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}>
+            }}
+          >
             <Loader variant="circular" />
           </div>
         }

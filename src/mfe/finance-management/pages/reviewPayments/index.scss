@@ -3,88 +3,88 @@
 //  @include mixins.respond(sm) {}
 
 .reviewPayments {
-    .reviewPaymentsContent {
+  .reviewPaymentsContent {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 8px 0;
+
+    .backNavigation {
+      .backButton {
+        padding: 0px !important; //remove important after component change
+      }
+    }
+
+    .header {
+      width: 100%;
+      display: flex;
+
+      .heading {
+        color: var(--text-dark-slate-body-hover-state, #1e394e);
+        font-size: var(--typography-text-size-title-headline-md, 28px);
+        font-style: normal;
+        font-weight: 600;
+        line-height: var(--typography-line-height-title-headline-md, 32px);
+        letter-spacing: -0.112px;
+      }
+    }
+
+    .section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      .sectionHeader {
+        color: var(--text-dark-slate-body-hover-state, #1e394e);
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: var(--typography-line-height-title-headline-sm, 28px);
+        letter-spacing: -0.04px;
+      }
+
+      .sectionCard {
         width: 100%;
         display: flex;
         flex-direction: column;
-        gap: 24px;
-        padding: 8px 0;
+        padding: 16px;
+        gap: 8px;
+        border-radius: 8px;
+        border: 1px solid #d9d8d7;
+        background: #fff;
 
-        .backNavigation {
-            .backButton {
-                padding: 0px !important; //remove important after component change
-            }
+        .accountNumber {
+          color: var(--text-dark-slate-body-hover-state, #1e394e);
+          font-family: var(--global-fonts-family-title, Nunito);
+          font-size: 18px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 18px;
+          /* 100% */
         }
 
-        .header {
-            width: 100%;
-            display: flex;
-
-            .heading {
-                color: var(--text-dark-slate-body-hover-state, #1E394E);
-                font-size: var(--typography-text-size-title-headline-md, 28px);
-                font-style: normal;
-                font-weight: 600;
-                line-height: var(--typography-line-height-title-headline-md, 32px);
-                letter-spacing: -0.112px;
-            }
+        .accountName {
+          color: var(--text-dark-slate-body-hover-state, #1e394e);
+          font-family: var(--global-fonts-family-body, Nunito);
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 20px;
+          /* 142.857% */
         }
 
-        .section {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-
-            .sectionHeader {
-                color: var(--text-dark-slate-body-hover-state, #1E394E);
-                font-size: 20px;
-                font-style: normal;
-                font-weight: 600;
-                line-height: var(--typography-line-height-title-headline-sm, 28px);
-                letter-spacing: -0.04px;
-            }
-
-            .sectionCard {
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                padding: 16px;
-                gap: 8px;
-                border-radius: 8px;
-                border: 1px solid #D9D8D7;
-                background: #FFF;
-
-                .accountNumber {
-                    color: var(--text-dark-slate-body-hover-state, #1E394E);
-                    font-family: var(--global-fonts-family-title, Nunito);
-                    font-size: 18px;
-                    font-style: normal;
-                    font-weight: 700;
-                    line-height: 18px;
-                    /* 100% */
-                }
-
-                .accountName {
-                    color: var(--text-dark-slate-body-hover-state, #1E394E);
-                    font-family: var(--global-fonts-family-body, Nunito);
-                    font-size: 14px;
-                    font-style: normal;
-                    font-weight: 500;
-                    line-height: 20px;
-                    /* 142.857% */
-                }
-
-                .accountAddress {
-                    color: var(--text-dark-slate-body-hover-state, #1E394E);
-                    font-family: var(--global-fonts-family-body, Nunito);
-                    font-size: 14px;
-                    font-style: normal;
-                    font-weight: 500;
-                    line-height: 20px;
-                    /* 142.857% */
-                }
-            }
+        .accountAddress {
+          color: var(--text-dark-slate-body-hover-state, #1e394e);
+          font-family: var(--global-fonts-family-body, Nunito);
+          font-size: 14px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 20px;
+          /* 142.857% */
         }
+      }
     }
+  }
 }

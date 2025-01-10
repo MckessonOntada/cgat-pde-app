@@ -5,7 +5,6 @@ import dayjs from 'dayjs';
 import { FormattedNumber } from 'react-intl';
 import { ReactComponent as PDFicon } from '@src/assets/svg/office-file-pdf.svg';
 
-
 const createColumns = (t, type) => {
   const commonColumns = [
     {
@@ -79,7 +78,14 @@ const createColumns = (t, type) => {
       minWidth: '144px',
       wrap: true,
       cell: (props) => (
-        <Button className="back-button-control" variant="tertiary" Icon={() => <PDFicon />} onClick={() => {}} size="md" disabled={!props?.pdfAvailable}>
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <PDFicon />}
+          onClick={() => {}}
+          size="md"
+          disabled={!props?.pdfAvailable}
+        >
           {t('paymentInvoices.CS.table.exportPdf')}
         </Button>
       )
@@ -137,7 +143,14 @@ const createColumns = (t, type) => {
       minWidth: '144px',
       wrap: true,
       cell: (props) => (
-        <Button className="back-button-control" variant="tertiary" Icon={() => <PDFicon />} onClick={() => {}} size="md" disabled={!props?.pdfAvailable}>
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <PDFicon />}
+          onClick={() => {}}
+          size="md"
+          disabled={!props?.pdfAvailable}
+        >
           {t('paymentInvoices.CS.table.exportPdf')}
         </Button>
       )
@@ -171,7 +184,8 @@ function ConfirmationTable({ invoiceData, creditData }) {
                 display: 'flex',
                 height: '350px',
                 justifyContent: 'center'
-              }}>
+              }}
+            >
               <Loader variant="circular" />
             </div>
           }
@@ -198,7 +212,8 @@ function ConfirmationTable({ invoiceData, creditData }) {
                 display: 'flex',
                 height: '350px',
                 justifyContent: 'center'
-              }}>
+              }}
+            >
               <Loader variant="circular" />
             </div>
           }

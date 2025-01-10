@@ -104,7 +104,7 @@ function Details(props) {
               style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
               onClick={() => {
                 setOpen(!open);
-                setTherapy(props?.item);
+                setTherapy(props?.therapyId);
               }}>{`${props?.therapyId || '-'}`}</Link>
           </div>
         )
@@ -244,7 +244,7 @@ function Details(props) {
       <div className="footer-section">
         {INVOICES_SCREEN ? (
           <React.Fragment>
-            <Button size="md" variant="secondary">
+            <Button size="md" variant="secondary" disabled>
               {t('paymentInvoices.Details.DownloadPDF')}
             </Button>
             <Button
@@ -252,7 +252,7 @@ function Details(props) {
               variant="primary"
               type="submit"
               onClick={() => {
-                console.log("NAVIGATION")
+                console.log('NAVIGATION');
                 navigate(`/record/invoices/reviewPayments`);
               }}>
               {t('paymentInvoices.Details.ReviewAndPay')}
@@ -260,7 +260,7 @@ function Details(props) {
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <Button size="md" variant="primary">
+            <Button size="md" variant="primary" disabled>
               {t('paymentInvoices.Details.DownloadPDF')}
             </Button>
           </React.Fragment>
@@ -274,6 +274,7 @@ function Details(props) {
             onClose={() => setOpen(!open)}
             therapyData={TherapyDetailsConstants}
             showButton={false}
+            useUserService={true}
           />
         </FloatingDrawer>
       )}
