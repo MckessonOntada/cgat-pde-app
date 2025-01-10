@@ -105,7 +105,8 @@ function Details(props) {
               onClick={() => {
                 setOpen(!open);
                 setTherapy(props?.item);
-              }}>{`${props?.therapyId || '-'}`}</Link>
+              }}
+            >{`${props?.therapyId || '-'}`}</Link>
           </div>
         )
       },
@@ -186,7 +187,8 @@ function Details(props) {
           variant="tertiary"
           Icon={() => <IconArrowLeft />}
           onClick={onBackToPaymentsInvoices}
-          size="md">
+          size="md"
+        >
           {INVOICES_SCREEN ? t('paymentInvoices.Details.backToManageInvoices') : t('paymentInvoices.Details.backToManageCredits')}
         </Button>
       </div>
@@ -233,7 +235,8 @@ function Details(props) {
                   display: 'flex',
                   height: '150px',
                   justifyContent: 'center'
-                }}>
+                }}
+              >
                 <Loader variant="circular" />
               </div>
             }
@@ -252,9 +255,10 @@ function Details(props) {
               variant="primary"
               type="submit"
               onClick={() => {
-                console.log("NAVIGATION")
+                console.log('NAVIGATION');
                 navigate(`/record/invoices/reviewPayments`);
-              }}>
+              }}
+            >
               {t('paymentInvoices.Details.ReviewAndPay')}
             </Button>
           </React.Fragment>

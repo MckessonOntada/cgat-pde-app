@@ -29,7 +29,8 @@ export default function InvoicesTable() {
         <div className="cellEllipse">
           <Link
             style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
-            to={`/record/${PATHS.invoices}/${props?.billNumber}/details`}>{`${props?.billNumber || ''}`}</Link>
+            to={`/record/${PATHS.invoices}/${props?.billNumber}/details`}
+          >{`${props?.billNumber || ''}`}</Link>
         </div>
       )
     },
@@ -179,7 +180,8 @@ export default function InvoicesTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}>
+            }}
+          >
             <Loader variant="circular" />
           </div>
         }

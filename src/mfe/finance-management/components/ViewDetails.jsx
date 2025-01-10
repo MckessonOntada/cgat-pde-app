@@ -39,7 +39,8 @@ export default function ViewDetails(props) {
           variant="tertiary"
           Icon={() => <IconArrowLeft />}
           onClick={onBackToPaymentsInvoices}
-          size="md">
+          size="md"
+        >
           {backText || t('paymentInvoices.Details.backToManageInvoices')}
         </Button>
       </div>

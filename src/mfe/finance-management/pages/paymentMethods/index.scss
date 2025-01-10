@@ -124,7 +124,6 @@
   gap: 24px;
 
   @include mixins.respond("sm") {
-
     display: flex;
     flex-direction: row;
     justify-content: space-between;
