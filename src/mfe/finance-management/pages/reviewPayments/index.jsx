@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import InfoCards from '@src/components/infoCards/InfoCards';
@@ -8,9 +8,16 @@ import CommonUtils from '@src/util/CommonUtils';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 
 import './index.scss';
+import SelectedInvoiceList from './SelectedInvoiceList';
+import { useLocation } from 'react-router-dom';
 
 function ReviewPayments() {
   const { t } = useTranslate();
+  const [selectedInvoices, setSelectedInvoices] = useState([]);
+  const location = useLocation();
+  useEffect(() => {
+    console.log('location..', location);
+  }, []);
 
   const paymentCard = {
     'Schedule option': 'Pay Today',
@@ -36,7 +43,7 @@ function ReviewPayments() {
             {t('Review and Pay')}
           </Heading>
         </div>
-        <div className={'section'}>
+        {/* <div className={'section'}>
           <div className={'sectionHeader'}>{t('Account')}</div>
           <div className={'sectionCard'}>
             <div className={'accountNumber'}>0000000174</div>
@@ -50,6 +57,9 @@ function ReviewPayments() {
             {CommonUtils.isNonEmptyObject(paymentCard) &&
               Object.entries(paymentCard)?.map(([key, value]) => <InfoCards title={key} value={value} />)}
           </div>
+        </div> */}
+        <div>
+          <SelectedInvoiceList />
         </div>
       </div>
     </div>
