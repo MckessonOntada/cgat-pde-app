@@ -29,7 +29,8 @@ export default function InvoicesTable() {
         <div className="cellEllipse">
           <Link
             style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
-            to={`/record/${PATHS.invoices}/${props?.billNumber}/details`}>{`${props?.billNumber || ''}`}</Link>
+            to={`/record/${PATHS.invoices}/${props?.billNumber}/details`}
+            state={{ invoices: [...[], props] }}>{`${props?.billNumber || ''}`}</Link>
         </div>
       )
     },
