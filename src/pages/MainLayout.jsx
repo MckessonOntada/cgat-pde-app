@@ -15,16 +15,12 @@ import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 import Role from '@src/mfe/org-management/pages/role';
 import ScrollToTop from '@src/components/scrollToTop/ScrollToTop';
 import ManageApprovers from '@src/mfe/order-management/manageApprovers';
-import { AccountProvider } from '@src/mfe/finance-management/context/AccountContext';
-import Details from '@src/mfe/finance-management/pages/details';
-import { PATHS as PaymentInvoicesPaths } from '@src/mfe/finance-management/routes';
-import Confirmation from '@src/mfe/finance-management/pages/confirmation';
+import RecordsMainRoutes from '@src/mfe/finance-management/RecordsMainRoutes';
 import AdminLayout from './admin';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
 const OrgEntryPoint = React.lazy(() => import('@src/mfe/org-management'));
-const PaymentInvoices = React.lazy(() => import('@src/mfe/finance-management'));
 
 function MainLayout() {
   return (
@@ -130,57 +126,11 @@ function MainLayout() {
                 />
               </Route>
               <Route
-                path={'/record/invoices/:billNumber/details'}
-                element={
-                  <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
-                    <AccountProvider>
-                      <Details type={PaymentInvoicesPaths.invoices} />
-                    </AccountProvider>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={'/record/credits/:billNumber/details'}
-                element={
-                  <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
-                    <AccountProvider>
-                      <Details type={PaymentInvoicesPaths.credits} />
-                    </AccountProvider>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={'/record/pending-payments/:confirmationNumber/confirmation'}
-                element={
-                  <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
-                    <AccountProvider>
-                      <Confirmation type={PaymentInvoicesPaths.pendingPayments} />
-                    </AccountProvider>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={'/record/payment-history/:confirmationNumber/confirmation'}
-                element={
-                  <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
-                    <AccountProvider>
-                      <Confirmation type={PaymentInvoicesPaths.paymentHistory} />
-                    </AccountProvider>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
                 path={'/record/*'}
                 element={
-                  !AuthUtils.isSystemAdminView() ? (
-                    <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
-                      <AccountProvider>
-                        <PaymentInvoices />
-                      </AccountProvider>
-                    </ProtectedRoute>
-                  ) : (
-                    <Navigate to="/" />
-                  )
+                  <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
+                    <RecordsMainRoutes />
+                  </ProtectedRoute>
                 }
               />
               <Route

@@ -247,7 +247,14 @@ function Details(props) {
             <Button size="md" variant="secondary">
               {t('paymentInvoices.Details.DownloadPDF')}
             </Button>
-            <Button size="md" variant="primary" type="submit">
+            <Button
+              size="md"
+              variant="primary"
+              type="submit"
+              onClick={() => {
+                console.log("NAVIGATION")
+                navigate(`/record/invoices/reviewPayments`);
+              }}>
               {t('paymentInvoices.Details.ReviewAndPay')}
             </Button>
           </React.Fragment>
