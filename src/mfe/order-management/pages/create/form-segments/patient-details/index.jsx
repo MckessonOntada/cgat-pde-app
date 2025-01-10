@@ -30,8 +30,10 @@ const PatientDetails = () => {
   const alertContainerId = 'patintDetails-alert-container';
   const { showAlert } = useAlert();
   const location = useLocation();
-  const { isEdit = false, isReview = false, isApprover = false, alertState } = location.state || {};
-  const isReviewandEdit = isReview && isEdit;
+  const { isEdit = false, isApprover = false, alertState } = location.state || {};
+  const therapyId = formState.activeRecord?.therapy?.materialNumber;
+  const soldToAccountId = formState.activeRecord?.accountDetails?.soldToAccount?.accountNumber;
+  const shipToAccountId = formState.activeRecord?.accountDetails?.shipToAccount?.accountNumber;
 
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
@@ -112,7 +114,7 @@ const PatientDetails = () => {
       onSuccess: (result) => {
         const { id } = result;
         setActiveRecord(result);
-        navigate(`../${id}/additional-details`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+        navigate(`../${id}/additional-details`, { state: { isEdit: false, isApprover: isApprover } });
       },
       onError: ({ err, payload }) => {
         if (err.status === 409) {
@@ -135,10 +137,10 @@ const PatientDetails = () => {
     }
 
     if (isEdit) {
-      navigate(`../${orderId}/summary`, { state: { isEdit: true, isReview: isReview, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: true, isApprover: isApprover } });
     } else {
       editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-      navigate(`../${orderId}/accounts`, { state: { isReview: isReview, isEdit: isEdit, isApprover: isApprover } });
+      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isApprover: isApprover } });
     }
   };
 
@@ -151,7 +153,9 @@ const PatientDetails = () => {
     if (patientInfo && patientInfo.dateOfBirth) {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(patientInfo.dateOfBirth, 'MM-DD-YYYY');
     }
-
+    if (isApprover) {
+      skipDuplicateCheck = true;
+    }
     savePatientDetails({ payload, skipDuplicateCheck });
   };
 
@@ -167,10 +171,10 @@ const PatientDetails = () => {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'account') {
       editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isApprover: isApprover } });
     }
   };
 
@@ -184,48 +188,13 @@ const PatientDetails = () => {
         </Button>
       </div>
 
-      <PageHeader
-        heading={
-          <Heading as="h1">
-            {isReviewandEdit ? t('headings.reviewOrder') : isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}
-          </Heading>
-        }
-      />
+      <PageHeader heading={<Heading as="h1">{isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')}</Heading>} />
 
       <div className="MCP-module-body">
-        {/* <Stepper activeIndex={3} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} /> */}
         <OrderStepper />
 
         <div className={styles.wrapper}>
-          {/* <div className="MCP-panel-container">
-            <div className={styles.sect}>
-              <div className={`row-space-between-center`}>
-                <div className={styles.row}>
-                  <div className={`${styles.col} ${styles.detailSegment}`}>
-                    <div className={'fieldName'}>{t('labels.therapyDescription')}</div>
-                    <div className={`${'fieldValue'} ${styles.price}`}>
-                      {therapy?.materialDescription}
-                      <TickIcon width="16px" height="16px" />
-                    </div>
-                  </div>
-                  <div className={`${styles.col} ${styles.detailSegment}`}>
-                    <div className={'fieldName'}>{t('labels.orderByAccountNumber')}</div>
-                    <div className={'fieldValue'}>{accountDetails?.accountNumber}</div>
-                  </div>
-                </div>
-                <div className={`${styles.col} ${styles.detailSegment}`}>
-                  <div className={'fieldName'}>{t('labels.shipToAccountNumber')}</div>
-                  <div className={`${'fieldValue'} ${styles.price}`}>{accountDetails?.shipToAccount?.accountNumber}</div>
-                </div>
-                <div className={`${styles.col} ${styles.detailSegment}`}>
-                  <div className={'fieldName'}>{t('labels.priceDetails')}</div>
-                  <div className={`${'fieldValue'} ${styles.price}`}>{orderCost || '--'}</div>
-                </div>
-              </div>
-            </div>
-          </div> */}
-
-          <OrderHeaderDetails />
+          <OrderHeaderDetails therapyId={therapyId} soldToAccountId={soldToAccountId} shipToAccountId={shipToAccountId} />
           <div id={alertContainerId} />
 
           {messageConfig && messageConfig.primaryMessage && (
@@ -240,7 +209,10 @@ const PatientDetails = () => {
             handleSubmit(values);
             actions.setSubmitting(false);
           }}>
-          {({ values, isValid }) => {
+          {({ values, isValid, dirty }) => {
+            React.useEffect(() => {
+              setIsDirty(dirty);
+            }, [dirty]);
             return (
               <Form>
                 <div className={styles.wrapper}>

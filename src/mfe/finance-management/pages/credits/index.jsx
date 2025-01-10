@@ -27,7 +27,7 @@ export default function Credits(params) {
           onApplyFilters={applyFilters}
           onClearFilters={clearFilters}
           additionalFilters={AdditionalFiltersConfig}
-          searchPlaceholder={'Search by Bill No., Sold to'}
+          searchPlaceholder={t('paymentInvoices.filter.search')}
           actualData={actualData}
         />
       </div>

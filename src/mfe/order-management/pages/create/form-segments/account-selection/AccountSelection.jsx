@@ -29,8 +29,7 @@ const AccountSelection = () => {
   const navigate = useNavigate();
   const { orderId } = useParams();
   const location = useLocation();
-  const { isEdit = false, isReview = false, isApprover = false } = location.state || {};
-  const isReviewandEdit = isReview && isEdit;
+  const { isEdit = false, isApprover = false } = location.state || {};
   const [selectedAccount, setSelectedAccount] = React.useState(null);
   const [accountSearchString, setAccountSearchString] = React.useState('');
   const [selectedShippingAddress, setSelectedShippingAddress] = React.useState('');
@@ -41,8 +40,10 @@ const AccountSelection = () => {
   const [acccountError, setAccountError] = useState({ isError: false, message: '' });
   const [alertState, setAlertState] = useState(null);
   const therapyId = formState.activeRecord?.therapy?.materialNumber;
-  const [netPriceData, setNetPriceData] = useState(null);
   const [inventoryType, setInventoryType] = useState(null);
+  const setInventoryTypeData = (data) => {
+    setInventoryType(data);
+  };
 
   const alertContainerId = 'accountSelection-alert-Container';
   const { showAlert } = useAlert();
@@ -50,19 +51,6 @@ const AccountSelection = () => {
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ACCOUNT_DETAILS);
   }, []);
-
-  const { isLoading: isPriceApiLoading, data: priceDetails = {} } = useQuery({
-    queryKey: ['order', 'therapy', 'price', therapyId, selectedAccount?.accountNumber, selectedShippingAddress?.accountNumber],
-    queryFn: async () => {
-      return OrderService.getPriceDetails(therapyId, selectedAccount.accountNumber, selectedShippingAddress.accountNumber);
-    },
-    enabled: !!therapyId && !!selectedAccount?.accountNumber && !!selectedShippingAddress?.accountNumber,
-    refetchOnWindowFocus: false,
-    onSuccess: (data) => {
-      setNetPriceData(data.netPrice);
-      setInventoryType(data.inventoryType);
-    }
-  });
 
   const { isLoading, data: accountsListData = {} } = useQuery({
     queryKey: ['order', 'therapy', therapyId, accountSearchString],
@@ -93,9 +81,9 @@ const AccountSelection = () => {
       try {
         const alertState = await handleInventoryCheck();
         if (result.patientDetailsRequired) {
-          navigate(`../${id}/patient`, { state: { alertState, isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+          navigate(`../${id}/patient`, { state: { alertState, isEdit: false, isApprover: isApprover } });
         } else {
-          navigate(`../${id}/additional-details`, { state: { alertState, isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+          navigate(`../${id}/additional-details`, { state: { alertState, isEdit: false, isApprover: isApprover } });
         }
       } catch (err) {
         console.error(err);
@@ -167,10 +155,10 @@ const AccountSelection = () => {
     }
 
     if (isEdit) {
-      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
     } else {
       editByStage(ORDER_STAGES.THERAPY_SELECTION);
-      navigate(`../edit-order/${orderId}`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+      navigate(`../edit-order/${orderId}`, { state: { isEdit: false, isApprover: isApprover } });
     }
   };
 
@@ -203,9 +191,9 @@ const AccountSelection = () => {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'details') {
       editByStage(ORDER_STAGES.THERAPY_SELECTION);
-      navigate(`../edit-order/${orderId}`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+      navigate(`../edit-order/${orderId}`, { state: { isEdit: false, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: false, isApprover: isApprover } });
     }
   };
 
@@ -247,18 +235,17 @@ const AccountSelection = () => {
         </Button>
       </div>
 
-      <PageHeader
-        heading={
-          <Heading as="h1">
-            {isReviewandEdit ? t('headings.reviewOrder') : isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}
-          </Heading>
-        }
-      />
+      <PageHeader heading={<Heading as="h1">{isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')}</Heading>} />
 
       <div className="MCP-module-body">
         <OrderStepper />
         <div className={`MCP-module-wrapper`}>
-          <OrderHeaderDetails netPriceData={netPriceData} />
+          <OrderHeaderDetails
+            setInventoryTypeData={setInventoryTypeData}
+            therapyId={therapyId}
+            soldToAccountId={selectedAccount?.accountNumber}
+            shipToAccountId={selectedShippingAddress?.accountNumber}
+          />
           <div id={alertContainerId} />
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>

@@ -180,6 +180,8 @@ const UserDetail = () => {
   const userFullName = `${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName}`;
   const loggedUserId = Number(AuthUtils.getUserId());
 
+  const prePermissions = data?.isActive && data?.id !== loggedUserId && !isImpersonateLoggedIn && !AuthUtils.isSystemAdmin();
+
   return (
     <div className="MCP-module-wrapper">
       <div className="back-navigation py2 capitalize" onClick={goBack} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
@@ -194,9 +196,7 @@ const UserDetail = () => {
         <ModuleHeader
           heading={<Heading as="h1">{t('userManagement.header.view.edit_user')}</Heading>}
           controls={
-            data?.isActive &&
-            data?.id !== loggedUserId &&
-            !isImpersonateLoggedIn && (
+            prePermissions && (
               <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
                 <Button variant="primary" size="md" onClick={() => setIsConsentModalOpen(true)}>
                   {t('button.label.loginAsThisUser')}

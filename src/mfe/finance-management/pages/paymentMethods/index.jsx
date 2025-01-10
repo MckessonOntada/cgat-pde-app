@@ -26,7 +26,8 @@ const PaymentMethods = () => {
         return {
           ...item,
           isActiveTab: location.pathname.includes(item.path),
-          ariaSelected: location.pathname.includes(item.path) ? 'true' : 'false'
+          ariaSelected: location.pathname.includes(item.path) ? 'true' : 'false',
+          configName: t(`paymentInvoices.paymentMethods.tabs.${item.translationKey}`)
         };
       });
       setTabs(updatedTabs);

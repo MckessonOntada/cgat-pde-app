@@ -59,8 +59,7 @@ function AdditionalDetails() {
   const formFields = getFormFields(t);
   const navigate = useNavigate();
   const location = useLocation();
-  const { isEdit = false, isReview = false, isApprover = false, alertState } = location.state || {};
-  const isReviewandEdit = isReview && isEdit;
+  const { isEdit = false, isApprover = false, alertState } = location.state || {};
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
@@ -87,7 +86,7 @@ function AdditionalDetails() {
       onSuccess: (result) => {
         const { id } = result;
         setActiveRecord(result);
-        navigate(`../${id}/summary`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+        navigate(`../${id}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
       },
       onError: (error) => {
         showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
@@ -152,14 +151,14 @@ function AdditionalDetails() {
       return;
     }
     if (isEdit) {
-      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
     } else {
       if (formState.activeRecord?.patientDetailsRequired) {
         editByStage(ORDER_STAGES.PATIENT_DETAILS);
-        navigate(`../${orderId}/patient`, { state: { isReview: isReview, isEdit: isEdit, isApprover: isApprover } });
+        navigate(`../${orderId}/patient`, { state: { isEdit: false, isApprover: isApprover } });
       } else {
         editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-        navigate(`../${orderId}/accounts`, { state: { isReview: isReview, isEdit: isEdit, isApprover: isApprover } });
+        navigate(`../${orderId}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
       }
     }
   };
@@ -197,13 +196,13 @@ function AdditionalDetails() {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'patient') {
       editByStage(ORDER_STAGES.PATIENT_DETAILS);
-      navigate(`../${orderId}/patient`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+      navigate(`../${orderId}/patient`, { state: { isEdit: false, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'account') {
       editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
-      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isReview: isReview, isApprover: isApprover } });
+      navigate(`../${orderId}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
     }
   };
 
@@ -227,13 +226,7 @@ function AdditionalDetails() {
         </Button>
       </div>
 
-      <PageHeader
-        heading={
-          <Heading as="h1">
-            {isReviewandEdit ? t('headings.reviewOrder') : isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}
-          </Heading>
-        }
-      />
+      <PageHeader heading={<Heading as="h1">{isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')}</Heading>} />
 
       <Formik
         initialValues={initialFormValues}
@@ -252,7 +245,12 @@ function AdditionalDetails() {
               <div className="MCP-module-body">
                 <OrderStepper />
 
-                <OrderHeaderDetails />
+                <OrderHeaderDetails
+                  therapyId={therapyId}
+                  soldToAccountId={soldToAccountId}
+                  shipToAccountId={shipToAccountId}
+                  variant={variant?.variant}
+                />
                 <div id={alertContainerId} />
                 <div className="MCP-panel-container">
                   <div className="row-space-between-center">
