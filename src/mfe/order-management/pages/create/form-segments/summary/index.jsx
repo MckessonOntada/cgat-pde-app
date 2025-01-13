@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './Summary.module.scss';
 import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg';
 import ModuleHeader from '@src/components/module-header';
-import { Button, CheckboxGroup, Stepper, Heading, Loader } from '@mckesson/mcp-component-library';
+import { Button, CheckboxGroup, Stepper, Heading, Loader, Badge } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
@@ -19,6 +19,8 @@ import { useMutation, useQuery } from 'react-query';
 import { RoutePaths } from '@src/routes/constants';
 import { StatusEnum } from '../../../orders/constants';
 import { renderModal } from '@src/util/ModalUtil';
+import FloatingDrawer from '@src/components/floating-drawer';
+import CommentPanel from './CommentPanel';
 
 const Summary = () => {
   const { t } = useTranslate();
@@ -200,9 +202,9 @@ const Summary = () => {
   if (isFetching) {
     return <Loader />;
   }
-
   const isAgreed = agreeCheckboxOptions.isChecked;
   const hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover);
+  const isRejected = status === StatusEnum.REJECTED;
 
   return (
     <div className="MCP-module-wrapper">
@@ -217,12 +219,26 @@ const Summary = () => {
       {isApprover && <PageHeader heading={<Heading as="h1">{t('headings.reviewOrder')}</Heading>} />}
 
       <div className="MCP-module-body">
-        {!hideControls && (
+        {!hideControls && !isRejected ? (
           <Stepper activeIndex={5} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} />
-        )}
+        ) : null}
         <div id={alertContainerId} />
         <div className={'MCP-module-wrapper'}>
-          <ModuleHeader heading={<Heading as="h2">{t('labels.summary')}</Heading>} />
+          <ModuleHeader
+            heading={<Heading as="h2">{t('labels.summary')}</Heading>}
+            controls={
+              isRejected && (
+                <React.Fragment>
+                  <div class="row-space-between-center">
+                    <Badge text={t(`labels.status.${status.toLowerCase()}`)} type={'error'} />
+                    <Button size={'md'} variant="tertiary" onClick={() => {}}>
+                      {t('captions.btnViewComments')}
+                    </Button>
+                  </div>
+                </React.Fragment>
+              )
+            }
+          />
           <div className={'MCP-module-body'}>
             <div className="MCP-panel-container">
               <ModuleHeader
@@ -414,12 +430,7 @@ const Summary = () => {
                   {t('captions.btnBack')}
                 </Button>
                 <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REJECT_ORDER]}>
-                  <Button
-                    size={'md'}
-                    variant="primary"
-                    type="submit"
-                    onClick={handleOnReject}
-                    disabled={!isAgreed && status !== StatusEnum.APPROVAL_PENDING}>
+                  <Button size={'md'} variant="primary" type="submit" onClick={handleOnReject} disabled={!isAgreed}>
                     {t('captions.btnRejectOrder')}
                   </Button>
                 </PermittedComponent>
@@ -433,6 +444,9 @@ const Summary = () => {
           </div>
         </div>
       </div>
+      <FloatingDrawer open={true}>
+        <CommentPanel />
+      </FloatingDrawer>
     </div>
   );
 };

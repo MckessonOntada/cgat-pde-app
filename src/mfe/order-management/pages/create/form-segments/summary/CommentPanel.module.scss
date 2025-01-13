@@ -1,0 +1,36 @@
+.wrapper {
+    min-width: 420px;
+
+    .drawerContent {
+        height: 100vh;
+        padding: var(--spacing-03, 16px);
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: space-between;
+        font-size: var(--brand-font-size--extra-small);
+        // border: 1px solid black;
+
+        .topSect {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-04);
+
+            .header {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: var(--spacing-04);
+                justify-content: space-between;
+            }
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-end;
+            gap: var(--spacing-03);
+        }
+    }
+}

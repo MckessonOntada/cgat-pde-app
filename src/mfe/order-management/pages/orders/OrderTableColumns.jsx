@@ -21,7 +21,8 @@ const getColorByStatus = (status) => {
     [StatusEnum.IN_DRAFT]: 'info',
     [StatusEnum.APPROVAL_PENDING]: 'info',
     [StatusEnum.SUBMITTED]: 'success',
-    [StatusEnum.CANCELLED]: 'error'
+    [StatusEnum.CANCELLED]: 'error',
+    [StatusEnum.REJECTED]: 'error'
   };
   return statusColors[status] || 'info';
 };

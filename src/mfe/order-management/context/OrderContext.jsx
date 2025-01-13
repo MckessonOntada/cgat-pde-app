@@ -47,7 +47,7 @@ export const OrderProvider = ({ children }) => {
       sortOrder: sortConfig.sortOrder || 'desc',
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       ...(tabVariant === 2
-        ? { statuses: StatusEnum.SUBMITTED }
+        ? { statuses: `${StatusEnum.SUBMITTED}, ${StatusEnum.REJECTED}` }
         : {
             statuses:
               isStatusValid && filterConfig.status !== 'all' ? filterConfig.status : `${StatusEnum.IN_DRAFT},${StatusEnum.APPROVAL_PENDING}`
