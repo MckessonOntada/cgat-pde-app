@@ -79,6 +79,15 @@ const Summary = () => {
     }
   });
 
+  const { mutate: rejectOrder } = useMutation(async (reason) => await OrderService.rejectOrder(orderId, reason), {
+    onSuccess: (response) => {
+      console.log(response);
+    },
+    onError: (error) => {
+      showAlert({ description: error.message, type: 'error', anchorEl: alertContainerId });
+    }
+  });
+
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ORDER_SUMMARY);
   }, []);
@@ -112,7 +121,7 @@ const Summary = () => {
   };
 
   const handleReject = () => {
-    return;
+    rejectOrder('Conditions are not matching');
   };
   const handleApprove = () => {
     submitOrder.mutate({ action: 'approve' });
@@ -405,7 +414,12 @@ const Summary = () => {
                   {t('captions.btnBack')}
                 </Button>
                 <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REJECT_ORDER]}>
-                  <Button size={'md'} variant="primary" type="submit" onClick={handleOnReject} disabled={!isAgreed}>
+                  <Button
+                    size={'md'}
+                    variant="primary"
+                    type="submit"
+                    onClick={handleOnReject}
+                    disabled={!isAgreed && status !== StatusEnum.APPROVAL_PENDING}>
                     {t('captions.btnRejectOrder')}
                   </Button>
                 </PermittedComponent>
