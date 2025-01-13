@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useAccountContext } from '../../context/AccountContext';
 import { Heading, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -35,6 +35,8 @@ function Details(props) {
   const [open, setOpen] = useState(false);
   const therapyDetails = searchParams.get('therapy-details');
   const navigate = useNavigate();
+  const locationParams = useLocation();
+
   const onBackToPaymentsInvoices = () => {
     navigate(-1);
   };
@@ -253,7 +255,7 @@ function Details(props) {
               type="submit"
               onClick={() => {
                 console.log('NAVIGATION');
-                navigate(`/record/invoices/reviewPayments`);
+                navigate(`/record/invoices/reviewPayments`, { state: locationParams.state });
               }}>
               {t('paymentInvoices.Details.ReviewAndPay')}
             </Button>
