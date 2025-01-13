@@ -13,6 +13,11 @@ body {
   .app-wrapper {
     width: 100%;
     align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: auto;
+    background-color: var(--brand-color-background-warm-grey-3);
   }
 }
 
