@@ -75,7 +75,8 @@ export default function RecordDetails() {
               onClick={onApplyClick}
               disabled={
                 !CommonUtils.isNonEmptyObject(selectedAccount) || !isValueSelected || !CommonUtils.isNonEmptyArray(payToAccountsList)
-              }>
+              }
+            >
               {t('paymentInvoices.accountSearch.applyBtn')}
             </Button>
             <Button
@@ -88,7 +89,8 @@ export default function RecordDetails() {
                 !isValueSelected ||
                 defaultPayToAccount?.id === selectedAccount?.id ||
                 !isCurrentDefault
-              }>
+              }
+            >
               {t('paymentInvoices.accountSearch.setAsDefaultBtn')}
             </Button>
           </div>

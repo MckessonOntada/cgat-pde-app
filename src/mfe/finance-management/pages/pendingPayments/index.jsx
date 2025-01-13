@@ -47,11 +47,6 @@ export default function PendingPayments(params) {
       </div>
       <div className="MCP-table-wrapper">
         <div className="table-header">
-          <div>
-            <h1>{t('pendingPayments.table.heading')} </h1>
-            <h2 className="subHeader">{t('pendingPayments.table.paymentMethod.subHeader')}</h2>
-          </div>
-
           <Button variant="secondary" onClick={() => {}} size="sm" disabled>
             {t('paymentInvoices.CS.ExportExcel')}
           </Button>

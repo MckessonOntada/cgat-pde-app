@@ -34,7 +34,7 @@ export const AccountProvider = ({ children }) => {
     }));
     setPayToAccountsList(formattedAccounts);
   };
-  
+
   const getApiUrl = (searchText) => {
     const params = {
       pageNo: 0,
@@ -140,7 +140,8 @@ export const AccountProvider = ({ children }) => {
         applyEvent,
         defaultSetEvent,
         defaultPayToAccount
-      }}>
+      }}
+    >
       {children}
     </AccountContext.Provider>
   );

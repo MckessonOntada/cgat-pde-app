@@ -42,7 +42,6 @@ const PaymentsInvoices = () => {
 
   return (
     <div className="MCP-module-wrapper">
-      <ModuleHeader heading={<PageHeader heading={t('paymentInvoices.header')} />} />
       {CommonUtils.isNonEmptyObject(selectedAccount) ? (
         <React.Fragment>
           <RecordDetails />

@@ -36,7 +36,8 @@ export default function PaymentHistoryTable() {
           <Link
             style={{ color: '#007bff', fontWeight: '600' }}
             to={`/record/${PATHS.paymentHistory}/${props?.confirmationNo}/confirmation`}
-            state={{ ...props }}>{`${props?.confirmationNo}`}</Link>
+            state={{ ...props }}
+          >{`${props?.confirmationNo}`}</Link>
         </div>
       )
     },
@@ -140,7 +141,8 @@ export default function PaymentHistoryTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}>
+            }}
+          >
             <Loader variant="circular" />
           </div>
         }
