@@ -24,7 +24,6 @@ export default function InvoicesTable() {
     const allDataIncluded = data.every((invoice) =>
       includeinvoiceData.some((includedInvoice) => includedInvoice.billNumber === invoice.billNumber)
     );
-    console.log('allDataIncluded', allDataIncluded);
     return allDataIncluded;
   };
   const renderCheckBox = (row, index) => {
@@ -113,8 +112,7 @@ export default function InvoicesTable() {
           <Link
             style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
             to={`/record/${PATHS.invoices}/${props?.billNumber}/details`}
-            state={{ invoices: [...[], props] }}
-          >{`${props?.billNumber || ''}`}</Link>
+            state={{ invoices: [...[], props] }}>{`${props?.billNumber || ''}`}</Link>
         </div>
       )
     },
@@ -238,7 +236,7 @@ export default function InvoicesTable() {
           <Button
             variant="secondary"
             onClick={() => {
-              navigate(`/record/invoices/reviewPayments`, { state: { includeinvoiceData } });
+              navigate(`/record/invoices/reviewPayments`, { state: { invoices: includeinvoiceData } });
             }}
             size="sm">
             {t('paymentInvoices.Details.ReviewAndPay')}

@@ -6,54 +6,21 @@ import CommonUtils from '@src/util/CommonUtils';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import './index.scss';
 import SelectedInvoiceList from './SelectedInvoiceList';
-import { useLocation } from 'react-router-dom';
-
-const data = [
-  {
-    currency: 'USD',
-    billAmount: 1.1,
-    openAmount: 1.1,
-    paymentTerm: 'Due in 15 days',
-    isPdfAvailable: true,
-    status: 'OVERDUE',
-    billNumber: '3344041234',
-    soldToSite: 'act12345',
-    billDate: '14/02/2024',
-    dueDate: '20/12/2024',
-    description: null
-  },
-  {
-    currency: 'USD',
-    billAmount: 2.2,
-    openAmount: 2.2,
-    paymentTerm: 'Due in 30 days',
-    isPdfAvailable: false,
-    status: 'OVERDUE',
-    billNumber: '3344041246',
-    soldToSite: 'act67654',
-    billDate: '09/03/2024',
-    dueDate: '08/01/2025',
-    description: null
-  },
-  {
-    currency: 'USD',
-    billAmount: 3.3,
-    openAmount: 3.3,
-    paymentTerm: 'Due in 35 days',
-    isPdfAvailable: true,
-    status: null,
-    billNumber: '3344041247',
-    soldToSite: 'act99887',
-    billDate: '10/03/2024',
-    dueDate: '15/01/2025',
-    description: null
-  }
-];
+import { useLocation, useNavigate } from 'react-router-dom';
+import Credits from '../credits';
+import { PaymentsCreditsProvider } from '../../context/PaymentsCreditsContext';
+import { useDispatch } from 'react-redux';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 
 function ReviewPayments() {
   const { t } = useTranslate();
   const [selectedInvoices, setSelectedInvoices] = useState([]);
   const location = useLocation();
+  const [selectedCredits, setSelectedCredits] = useState([]);
+  const { state } = location;
+  const { includeinvoiceData } = state || {};
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (location.state?.invoices && location.state?.invoices.length > 0) {
@@ -61,17 +28,35 @@ function ReviewPayments() {
       setSelectedInvoices(_data);
     }
   }, []);
-  const { state } = location;
-  const { includeinvoiceData } = state || {};
 
-  console.log('includeinvoiceData', includeinvoiceData);
   const paymentCard = {
     'Schedule option': 'Pay Today',
     'Net amount to be charged': '$8,129.91',
     'Payment method': '4600 - FIRST CITIZENS BANK & TRUST CO'
   };
 
-  const backButtonClick = () => {};
+  const backButtonClick = () => {
+    const state = {};
+    state.title = 'Confirm';
+    state.body = 'Are you sure want to leave Review and Pay screen?';
+    state.footer = (
+      <div className="controls">
+        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+          Cancel
+        </Button>
+        <Button
+          size="md"
+          variant="primary"
+          onClick={() => {
+            navigate(-1);
+            dispatch(closeModal());
+          }}>
+          Okay
+        </Button>
+      </div>
+    );
+    dispatch(openModal(state));
+  };
 
   const invoicesSum = useMemo(() => {
     let _sum = selectedInvoices
@@ -81,6 +66,15 @@ function ReviewPayments() {
       }, 0);
     return parseFloat(_sum).toFixed(2);
   }, [selectedInvoices]);
+
+  const creditsSum = useMemo(() => {
+    let _sum = selectedCredits
+      .filter((i) => i.billAmount)
+      .reduce((accumulator, currentValue) => {
+        return parseFloat(currentValue.billAmount), accumulator + parseFloat(currentValue.billAmount);
+      }, 0);
+    return parseFloat(_sum).toFixed(2);
+  }, [selectedCredits]);
 
   return (
     <div className={'reviewPayments'}>
@@ -119,6 +113,19 @@ function ReviewPayments() {
         <div className="invoice-sum-container">
           <div className="label">{`${selectedInvoices.length} invoice(s), amount to be paid:`}</div>{' '}
           <div className="value">{`$${invoicesSum}`}</div>
+        </div>
+        <div className="MCP-module-wrapper">
+          <div>
+            <h1>Credits Available</h1>
+          </div>
+          <div id="tablist-container" className="MCP-module-body">
+            <PaymentsCreditsProvider>
+              <Credits selectedCredits={selectedCredits} setSelectedCredits={setSelectedCredits} selectableRows={true} />
+            </PaymentsCreditsProvider>
+          </div>
+          <div className="invoice-sum-container">
+            <div className="label">{`Total credit amount:`}</div> <div className="value">{`$${creditsSum}`}</div>
+          </div>
         </div>
       </div>
     </div>

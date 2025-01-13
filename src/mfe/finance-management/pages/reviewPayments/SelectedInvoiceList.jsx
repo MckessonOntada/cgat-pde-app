@@ -7,10 +7,14 @@ import dayjs from 'dayjs';
 import { FormattedNumber } from 'react-intl';
 import { ReactComponent as RemoveCircle } from '@src/assets/svg/cross-red.svg';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import { showSnackbar } from '@src/store/reducer/snackbarReducer';
+import { useDispatch } from 'react-redux';
 
 function SelectedInvoiceList(props) {
   const { t } = useTranslate();
   const { selectedInvoices, setSelectedInvoices } = props;
+  const dispatch = useDispatch();
+
   const columns = [
     {
       name: t('paymentInvoices.history.table.billNumber'),
@@ -84,10 +88,12 @@ function SelectedInvoiceList(props) {
         <input
           type="number"
           className={`paymenyAmount-input ${
-            props.paymentAmount > props.openAmount || props.paymentAmount < 0 || !props.paymentAmount ? `error-input` : ``
+            props.paymentAmount > props.openAmount || props.paymentAmount <= 0 || !props.paymentAmount ? `error-input` : ``
           }`}
           value={props.paymentAmount}
           onChange={(e) => onChangePayAmount(e, index)}
+          min={0}
+          onBlur={(e) => onBlurPayAmount(e, index, props)}
         />
       )
     },
@@ -97,7 +103,7 @@ function SelectedInvoiceList(props) {
       id: 'paymentAmount',
       //   center: true,
       cell: (props, index) => (
-        <div className="action-container" onClick={() => onRemoveInvoice(index)}>
+        <div className={`action-container ${selectedInvoices.length <= 1 ? `in-active` : ``}`} onClick={() => onRemoveInvoice(index)}>
           <RemoveCircle disabled /> REMOVE
         </div>
       )
@@ -108,6 +114,18 @@ function SelectedInvoiceList(props) {
     let _invoices = [...[], ...selectedInvoices];
     _invoices[index].paymentAmount = event.target.value;
     setSelectedInvoices(_invoices);
+  };
+
+  const onBlurPayAmount = (event, index, rowData) => {
+    if (event.target.value <= 0 || event.target.value > rowData.openAmount) {
+      dispatch(
+        showSnackbar({
+          description:
+            event.target.value > rowData.openAmount ? 'Payment amount cannot exceed the open amount' : 'Invalid payment amount entered',
+          type: 'error'
+        })
+      );
+    }
   };
 
   const onRemoveInvoice = (index) => {
