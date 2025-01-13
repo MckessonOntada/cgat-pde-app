@@ -6,52 +6,11 @@ import { useTranslate } from '@src/translations/useTranslation';
 import dayjs from 'dayjs';
 import { FormattedNumber } from 'react-intl';
 import { ReactComponent as RemoveCircle } from '@src/assets/svg/cross-red.svg';
-
-const data = [
-  {
-    currency: 'USD',
-    billAmount: 24378.7,
-    openAmount: 24378.7,
-    paymentTerm: 'Due in 15 days',
-    isPdfAvailable: true,
-    status: 'OVERDUE',
-    billNumber: '3344041234',
-    soldToSite: 'act12345',
-    billDate: '14/02/2024',
-    dueDate: '20/12/2024',
-    description: null
-  },
-  {
-    currency: 'USD',
-    billAmount: 2134.4,
-    openAmount: 2134.4,
-    paymentTerm: 'Due in 30 days',
-    isPdfAvailable: false,
-    status: 'OVERDUE',
-    billNumber: '3344041246',
-    soldToSite: 'act67654',
-    billDate: '09/03/2024',
-    dueDate: '08/01/2025',
-    description: null
-  },
-  {
-    currency: 'USD',
-    billAmount: 5421.3,
-    openAmount: 5421.3,
-    paymentTerm: 'Due in 35 days',
-    isPdfAvailable: true,
-    status: null,
-    billNumber: '3344041247',
-    soldToSite: 'act99887',
-    billDate: '10/03/2024',
-    dueDate: '15/01/2025',
-    description: null
-  }
-];
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 
 function SelectedInvoiceList(props) {
   const { t } = useTranslate();
-
+  const { selectedInvoices, setSelectedInvoices } = props;
   const columns = [
     {
       name: t('paymentInvoices.history.table.billNumber'),
@@ -80,14 +39,6 @@ function SelectedInvoiceList(props) {
       minWidth: '160px',
       cell: (props) => <EclipsesTextcss className="cellEllipse" str={props.description || '-'} maxWidth={240} />
     },
-    // {
-    //   name: t('paymentInvoices.history.table.PaymentTerm'),
-    //   selector: 'paymentTerm',
-    //   minWidth: '144px',
-    //   id: 'paymentTerm',
-    //   wrap: true,
-    //   cell: (props) => <div className="status-container">{props?.paymentTerm}</div>
-    // },
     {
       name: t('paymentInvoices.history.table.DueDate'),
       selector: (row) => row.dueDate,
@@ -127,54 +78,57 @@ function SelectedInvoiceList(props) {
     {
       name: 'payment Amount',
       minWidth: '240px',
-      //   sortable: true,
       id: 'paymentAmount',
-      //   wrap: true,
-      cell: (props) => <input />
+      right: true,
+      cell: (props, index) => (
+        <input
+          type="number"
+          className={`paymenyAmount-input ${
+            props.paymentAmount > props.openAmount || props.paymentAmount < 0 || !props.paymentAmount ? `error-input` : ``
+          }`}
+          value={props.paymentAmount}
+          onChange={(e) => onChangePayAmount(e, index)}
+        />
+      )
     },
     {
       name: 'Actions',
-      minWidth: '240px',
-      //   sortable: true,
+      minWidth: '160px',
       id: 'paymentAmount',
-      //   wrap: true,
-      cell: (props) => (
-        <div>
-          <RemoveCircle /> REMOVE
+      //   center: true,
+      cell: (props, index) => (
+        <div className="action-container" onClick={() => onRemoveInvoice(index)}>
+          <RemoveCircle disabled /> REMOVE
         </div>
       )
     }
   ];
+
+  const onChangePayAmount = (event, index) => {
+    let _invoices = [...[], ...selectedInvoices];
+    _invoices[index].paymentAmount = event.target.value;
+    setSelectedInvoices(_invoices);
+  };
+
+  const onRemoveInvoice = (index) => {
+    let _invoices = [...[], ...selectedInvoices];
+    _invoices.splice(index, 1);
+    setSelectedInvoices(_invoices);
+  };
 
   return (
     <CustomDataTable
       id="my-data-table"
       type="normal"
       columns={columns}
-      data={data || []}
-
-      //    progressPending={isFetching}
-      //   noDataComponent={
-      //     <EmptyDataTable
-      //       isLoading={isFetching}
-      //       error={isError ? 'Something went wrong! Please try again' : null}
-      //       image={EmptyDataImage}
-      //       heading={t('paymentInvoices.invoice.table.emptyData')}
-      //       description={t('paymentInvoices.history.table.emptyDataDescription')}
-      //     />
-      //   }
-      //   progressComponent={
-      //     <div
-      //       style={{
-      //         alignItems: 'center',
-      //         border: '1px solid #ccc',
-      //         display: 'flex',
-      //         height: '350px',
-      //         justifyContent: 'center'
-      //       }}>
-      //       <Loader variant="circular" />
-      //     </div>
-      //   }
+      data={selectedInvoices || []}
+      noDataComponent={
+        <EmptyDataTable
+          image={EmptyDataImage}
+          heading={t('paymentInvoices.invoice.table.emptyData')}
+          description={'Please select Invoices from dashboard'}
+        />
+      }
     />
   );
 }

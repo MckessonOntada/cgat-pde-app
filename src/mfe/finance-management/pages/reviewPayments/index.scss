@@ -88,3 +88,49 @@
     }
   }
 }
+
+// selected Invoices table - css
+.paymenyAmount-input {
+  width: 70%;
+  height: 26px;
+  text-align: end;
+  border: 1px solid #627386;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #181818;
+  &.error-input {
+    border: 1px solid #db3a29 !important;
+    color: #db3a29 !important;
+  }
+  &.error-input:focus-visible {
+    outline: auto #db3a29;
+    // outline;
+  }
+}
+.action-container {
+  color: rgb(219, 58, 41);
+  display: flex;
+  //   align-items: center;
+  gap: 7px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.invoice-sum-container {
+  display: flex;
+  gap: 8px;
+  justify-content: end;
+  align-items: center;
+  height: 40px;
+  border-radius: 8px;
+  padding: 8px 16px;
+  background-color: #f2f6fa;
+  .label {
+    font-size: 14px;
+  }
+  .value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1e394e;
+  }
+}
