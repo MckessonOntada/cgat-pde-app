@@ -1,6 +1,7 @@
 export const OrgManagementES = {
   'orgManagement.header.label': 'S_Manage Organization',
   'orgManagement.header.dashboard': 'S_Dashboard',
+  'orgManagement.header.admin': 'S_Admin',
   'orgManagement.add.label': 'S_Add Organization',
   'orgManagement.clearFilter.label': 'S_clear filters',
   'orgManagement.searchFilter.label': 'S_Search By Name or Email',

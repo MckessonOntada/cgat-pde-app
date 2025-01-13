@@ -16,6 +16,7 @@ import Role from '@src/mfe/org-management/pages/role';
 import ScrollToTop from '@src/components/scrollToTop/ScrollToTop';
 import ManageApprovers from '@src/mfe/order-management/manageApprovers';
 import RecordsMainRoutes from '@src/mfe/finance-management/RecordsMainRoutes';
+import AdminLayout from './admin';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
@@ -46,9 +47,13 @@ function MainLayout() {
               <Route
                 path={'orders/*'}
                 element={
-                  <ProtectedRoute permissions={routePermissionConfig.orders}>
-                    <OrderManagementEntryPoint />
-                  </ProtectedRoute>
+                  !AuthUtils.isSystemAdminView() ? (
+                    <ProtectedRoute permissions={routePermissionConfig.orders}>
+                      <OrderManagementEntryPoint />
+                    </ProtectedRoute>
+                  ) : (
+                    <Navigate to="/" />
+                  )
                 }
               />
 
@@ -60,7 +65,7 @@ function MainLayout() {
                   </ProtectedRoute>
                 }>
                 <Route
-                  path={'/user'}
+                  path={'/admin/user'}
                   element={
                     <ProtectedRoute permissions={routePermissionConfig.users}>
                       <UsersEntryPoint />
@@ -68,7 +73,7 @@ function MainLayout() {
                   }
                 />
                 <Route
-                  path={'/user/*'}
+                  path={'/admin/user/*'}
                   element={
                     <ProtectedRoute permissions={routePermissionConfig.users}>
                       <UsersEntryPoint />
@@ -77,7 +82,7 @@ function MainLayout() {
                 />
               </Route>
               <Route
-                path={`/organization/roles/*`}
+                path={`/admin/organization/roles/*`}
                 element={
                   <ProtectedRoute permissions={routePermissionConfig.roles}>
                     <Role />
@@ -85,7 +90,7 @@ function MainLayout() {
                 }
               />
               <Route
-                path={`/approver-group/*`}
+                path={`/admin/approver-group/*`}
                 element={
                   <ProtectedRoute permissions={routePermissionConfig.approvergroups}>
                     <ManageApprovers />
@@ -93,7 +98,7 @@ function MainLayout() {
                 }
               />
               <Route
-                path={'/organization'}
+                path={'/admin/organization'}
                 element={
                   AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() ? (
                     <Navigate to={'/'} />
@@ -104,7 +109,7 @@ function MainLayout() {
                   )
                 }>
                 <Route
-                  path={'/organization'}
+                  path={'/admin/organization'}
                   element={
                     <ProtectedRoute permissions={routePermissionConfig.organization}>
                       <OrgEntryPoint />
@@ -112,7 +117,7 @@ function MainLayout() {
                   }
                 />
                 <Route
-                  path={'/organization/*'}
+                  path={'/admin/organization/*'}
                   element={
                     <ProtectedRoute permissions={routePermissionConfig.organization}>
                       <OrgEntryPoint />
@@ -129,6 +134,19 @@ function MainLayout() {
                 }
               />
               <Route
+                index={true}
+                path={'/admin'}
+                element={
+                  !AuthUtils.isSystemAdminView() ? (
+                    <ProtectedRoute permissions={routePermissionConfig.admin}>
+                      <AdminLayout />
+                    </ProtectedRoute>
+                  ) : (
+                    <Navigate to="/" />
+                  )
+                }
+              />
+              {/* <Route
                 path={'/system-admin'}
                 element={
                   AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() ? (
@@ -155,7 +173,7 @@ function MainLayout() {
                     </ProtectedRoute>
                   }
                 />
-              </Route>
+              </Route> */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>

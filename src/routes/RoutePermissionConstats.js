@@ -43,5 +43,7 @@ export const routePermissionConfig = {
     ORDER_MANAGEMENT.VIEW_APPROVER_GROUP
   ],
 
-  paymentInvoices: Object.values(PAYMENT_INVOICING)
+  paymentInvoices: Object.values(PAYMENT_INVOICING),
+  orders: Object.values(ORDER_MANAGEMENT),
+  admin: Object.values(ADMIN_MANAGEMENT)
 };

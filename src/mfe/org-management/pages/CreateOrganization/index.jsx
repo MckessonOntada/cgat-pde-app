@@ -92,7 +92,7 @@ const CreateOrganization = () => {
 
   const createNewOrg = (values) => {
     const formData = new FormData();
-    formData.append('logo', 'test');
+    formData.append('logo', values.file);
     formData.append(
       'practiceStr',
       JSON.stringify({

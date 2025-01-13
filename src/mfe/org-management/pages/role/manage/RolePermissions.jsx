@@ -45,7 +45,7 @@ const RolePermissions = () => {
   const handleOnCancelButtonClick = () => {
     if (!arePermissionsEqual(row?.permissions, enabledPermissions)) {
       setModalSuccessCallback('list');
-    } else navigate(isEdit ? `/organization/roles/${roleId}` : `/organization/${PATHS.roles}`);
+    } else navigate(isEdit ? `/admin/organization/roles/${roleId}` : `/admin/organization/${PATHS.roles}`);
   };
 
   useEffect(() => {
@@ -86,7 +86,7 @@ const RolePermissions = () => {
             );
           }
           refreshData();
-          navigate(isEdit ? `/organization/roles/${roleId}` : `/organization/${PATHS.roles}`);
+          navigate(isEdit ? `/admin/organization/roles/${roleId}` : `/admin/organization/${PATHS.roles}`);
         }
       },
       onError: (error) => {
@@ -118,15 +118,15 @@ const RolePermissions = () => {
   const handleGoBack = () => {
     if (!arePermissionsEqual(row?.permissions, enabledPermissions)) {
       setModalSuccessCallback('mainlist');
-    } else navigate('/organization/roles');
+    } else navigate('admin/organization/roles');
   };
 
   const handleNavigate = () => {
     if (modalSuccessCallback === 'back') navigate(`../${roleId}/edit-role`, { state: row });
     else if (modalSuccessCallback === 'list') {
-      navigate(isEdit ? `/organization/roles/${roleId}` : '/organization/roles');
+      navigate(isEdit ? `/admin/organization/roles/${roleId}` : '/admin/organization/roles');
     } else if (modalSuccessCallback === 'mainlist') {
-      navigate('/organization/roles');
+      navigate('/admin/organization/roles');
     }
   };
 
@@ -151,7 +151,14 @@ const RolePermissions = () => {
       {isAlertVisible && <Alert type={alert.type} title={alert.title} description={alert.description} />}
 
       <div className="MCP-module-body">
-        {!isEdit && <Stepper activeIndex={2} dividerText="of" mobileLabel={t('orgManagement.role.labelStep')} stepHeaders={forms.map((f) => ({ label: f.label }))} />}
+        {!isEdit && (
+          <Stepper
+            activeIndex={2}
+            dividerText="of"
+            mobileLabel={t('orgManagement.role.labelStep')}
+            stepHeaders={forms.map((f) => ({ label: f.label }))}
+          />
+        )}
 
         <div>
           <Formik
@@ -163,7 +170,14 @@ const RolePermissions = () => {
             validateOnBlur={true}>
             {({ values }) => (
               <Form>
-                <PermissionForm enabledPermissions={enabledPermissions} setEnabledPermissions={setEnabledPermissions} onRoleChange={setInheritedRole} handleRoleSelect={() => {}} editRoleId={roleId} isRolePage={true} />
+                <PermissionForm
+                  enabledPermissions={enabledPermissions}
+                  setEnabledPermissions={setEnabledPermissions}
+                  onRoleChange={setInheritedRole}
+                  handleRoleSelect={() => {}}
+                  editRoleId={roleId}
+                  isRolePage={true}
+                />
 
                 <div className={'buttonGroup'}>
                   <Button variant="secondary" type="button" onClick={handleOnCancelButtonClick} size={'md'}>
@@ -178,11 +192,11 @@ const RolePermissions = () => {
           </Formik>
         </div>
       </div>
-      <DiscardChangesModal 
+      <DiscardChangesModal
         heading="Discard Changes"
-        description='You have changed role permissions. Do you still want to go back? Your changes will be discarded!'
-        isOpen={Boolean(modalSuccessCallback)} 
-        onClose={() => setModalSuccessCallback(null)} 
+        description="You have changed role permissions. Do you still want to go back? Your changes will be discarded!"
+        isOpen={Boolean(modalSuccessCallback)}
+        onClose={() => setModalSuccessCallback(null)}
         onConfirm={handleNavigate}
       />
     </div>

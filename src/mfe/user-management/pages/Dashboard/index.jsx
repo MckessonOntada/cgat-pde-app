@@ -97,8 +97,8 @@ export default function Dashboard() {
 
   const breadcrumbItems = [
     {
-      label: t('userManagement.breadcrumb.labeldashboard'),
-      url: '/'
+      label: t('userManagement.breadcrumb.admin'),
+      url: isSystemAdminView ? '/' : '/admin'
     },
     {
       label: isSystemAdminView ? t('userManagement.header.systemadminlisting.label') : t('userManagement.header.listing.label')

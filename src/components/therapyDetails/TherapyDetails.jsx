@@ -1,19 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './assets/TherapyDetails.module.scss';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useQuery } from 'react-query';
 import { Loader, Heading, Button } from '@mckesson/mcp-component-library';
 import OrderService from '@src/api/commonService/OrderService';
+import UserService from '@src/api/commonService/UserService';
+import useSnackbar from '@src/hooks/useSnackbar';
 
-function TherapyDetails({ therapyId, onClose, onSelect, therapyData, showButton=true }) {
+function TherapyDetails({ therapyId, onClose, onSelect, therapyData, showButton = true, useUserService = false }) {
   const { t } = useTranslate();
-  const { isLoading, data: therapyDetails = {} } = useQuery({
+  const { showSnackbar } = useSnackbar();
+  const { isLoading, data: therapyDetails = {}, error } = useQuery({
     queryKey: ['order', 'therapy', therapyId],
-    queryFn: async () => OrderService.getTherapyDetailsById(therapyId),
+    queryFn: async () => (useUserService ? UserService.getTherapyById(therapyId) : OrderService.getTherapyDetailsById(therapyId)),
     enabled: Boolean(therapyId),
     refetchOnWindowFocus: false
   });
+  
+  useEffect(() => {
+    if (error) {
+      showSnackbar('Error fetching Therapy Details', 'error');
+    }
+  }, [error, showSnackbar, t]);
+
   const handleSelect = () => {
     if (onSelect && therapyDetails) {
       onSelect(therapyDetails);

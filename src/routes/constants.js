@@ -3,11 +3,12 @@ export const RoutePaths = {
   pathPageLogin: '/login',
   pathPageLoginCallback: '/login/callback',
   pathAdmin: '/admin',
-  pathUserManagement: '/user',
-  pathOrgManagement: '/organization',
+  pathUserManagement: '/admin/user',
+  pathOrgManagement: '/admin/organization',
   pathOrderManagement: '/orders',
-  pathApproverManagement: '/approver-group',
-  pathSystemAdminManagement: '/system-admin',
+  pathApproverManagement: '/admin/approver-group',
+  pathOrganizationRoles: '/admin/organization/roles',
+  pathSystemAdminManagement: '/admin/user', //'/system-admin',
   pathSignup: '/signup',
   pathSignin: '/signin'
 };
