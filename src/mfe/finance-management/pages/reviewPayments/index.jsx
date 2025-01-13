@@ -14,11 +14,15 @@ import { useLocation } from 'react-router-dom';
 function ReviewPayments() {
   const { t } = useTranslate();
   const [selectedInvoices, setSelectedInvoices] = useState([]);
-  const location = useLocation();
   useEffect(() => {
     console.log('location..', location);
   }, []);
 
+  const location = useLocation();
+  const { state } = location;
+  const { includeinvoiceData } = state || {};
+
+  console.log('includeinvoiceData', includeinvoiceData);
   const paymentCard = {
     'Schedule option': 'Pay Today',
     'Net amount to be charged': '$8,129.91',

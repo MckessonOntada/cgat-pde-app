@@ -169,6 +169,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.paymentMethods.table.cards.emptyData': 'S_No Credit Cards Found',
   'paymentInvoices.paymentMethods.tabs.bankAccount': 'S_Bank Accounts',
   'paymentInvoices.paymentMethods.tabs.CreditCards': 'S_Credit Cards',
+  'paymentInvoices.history.table.selectedAccount': 'S_Item Selected',
 
   //Pending Payments
   'pendingPayments.filters.autoSearch': 'S_Search by Confirmation No., Payment Method',
