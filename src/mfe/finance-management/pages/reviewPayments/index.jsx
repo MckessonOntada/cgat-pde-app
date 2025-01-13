@@ -133,6 +133,12 @@ function ReviewPayments() {
       }, 0);
     return parseFloat(_sum).toFixed(2);
   }, [selectedCredits]);
+
+  const totalAmount = useMemo(() => {
+    let _total = invoicesSum - creditsSum;
+    return parseFloat(_total).toFixed(2);
+  }, [invoicesSum, creditsSum]);
+
   const getRadioItems = () => {
     const isDisabledDueDate = location.state.includeinvoiceData
       ? location.state.includeinvoiceData.some((invoice) => dayjs(invoice.dueDate, 'DD/MM/YYYY').isBefore(dayjs()))
@@ -265,7 +271,7 @@ function ReviewPayments() {
         </div>
         <div className="invoice-sum-container">
           <div className="label">Amount to be charged to your Payment account:</div>
-          <div className="value">{`$${invoicesSum - creditsSum}`}</div>
+          <div className="value">{`$${totalAmount}`}</div>
         </div>
       </div>
       <div className="footer-section">
