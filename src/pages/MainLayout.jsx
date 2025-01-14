@@ -26,8 +26,8 @@ function MainLayout() {
   return (
     <div id={debugIds(ID.MAIN)} className={styles.appContainer}>
       <Header />
-      <div className={`${styles['app-wrapper']} max-container`}>
-        <div className={styles.home} id={debugIds(ID.HOME)}>
+      <div className={`${styles['app-wrapper']}`}>
+        <div className={`${styles.home} max-container`} id={debugIds(ID.HOME)}>
           <ScrollToTop containerId={debugIds(ID.HOME)} />
           <Suspense fallback={<Loader type="screen" />}>
             <div className={styles.routeContent} id={debugIds(ID.HOME, ID.ROUTE_CONTENT)}>

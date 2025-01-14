@@ -16,19 +16,15 @@ body {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    overflow: auto;
+    overflow-y: scroll;
     background-color: var(--brand-color-background-warm-grey-3);
   }
 }
 
 .home {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  overflow: auto;
-  background-color: var(--brand-color-background-white);
   padding: var(--spacing-04);
-  background-color: var(--brand-color-background-warm-grey-3, #fbfbfa);
+  width: 100%;
+
 }
 
 .routes {
