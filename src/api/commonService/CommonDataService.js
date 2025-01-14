@@ -41,9 +41,8 @@ const useOrganizationLogo = (logUrl, practiceId) => {
   return useQuery(
     [`organizationLogo_${practiceId}`, logUrl],
     async () => {
-      const isSystemAdminView = AuthUtils.isSystemAdminView();
       const response = await HttpResourceService.callRest(
-        `${ApiRoutes.LOGO}/${isSystemAdminView ? 1 : practiceId}/logo`,
+        `${ApiRoutes.LOGO}/${practiceId || 1}/logo`,
         httpVerb.GET,
         {},
         {},
