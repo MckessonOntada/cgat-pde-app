@@ -1,11 +1,12 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { PayToAccounts } from '../mockData/PayToAccounts';
 import { useMutation, useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { serializeParams } from '@src/util/ApiUtils';
 import ApiRoutes from '@src/api/ApiRoutes';
 import CommonUtils from '@src/util/CommonUtils';
 import useSnackbar from '@src/hooks/useSnackbar';
+import { GeographicUtils } from '@src/util/GeographicUtil';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const ACCOUNTS_PER_SEARCH = 20;
 
@@ -16,6 +17,7 @@ export const useAccountContext = () => {
 };
 
 export const AccountProvider = ({ children }) => {
+  const { t } = useTranslate();
   const [searchText, setSearchText] = useState('');
   const [defaultPayToAccount, setDefaultPayToAccount] = useState(null);
   const [selectedAccount, setSelectedAccount] = useState(null);
@@ -27,19 +29,20 @@ export const AccountProvider = ({ children }) => {
     const formattedAccounts = payToAccountsData.map((account, index) => ({
       index,
       label: `(${account.accountNumber}) ${account.accountName}`,
+      labelDescription: GeographicUtils.addressAggregator(account),
       value: account.id
     }));
     setPayToAccountsList(formattedAccounts);
   };
 
-  const apiUrl = useMemo(() => {
+  const getApiUrl = (searchText) => {
     const params = {
       pageNo: 0,
       pageSize: ACCOUNTS_PER_SEARCH,
       query: searchText
     };
-    return `${ApiRoutes.PAY_TO_ACCOUNTS}?${serializeParams(params)}`;
-  }, [searchText]);
+    return `${ApiRoutes.PAY_TO_ACCOUNTS()}?${serializeParams(params)}`;
+  };
 
   const {
     isLoading: fetchingAccounts,
@@ -47,9 +50,9 @@ export const AccountProvider = ({ children }) => {
     isError: errorFetchingAccounts,
     refetch: refetchPayToAccountsData
   } = useQuery({
-    queryKey: [apiUrl],
+    queryKey: [searchText],
     queryFn: async () => {
-      const response = await HttpResourceService.callRest(`${apiUrl}`, httpVerb.GET, {});
+      const response = await HttpResourceService.callRest(`${getApiUrl(searchText)}`, httpVerb.GET, {});
       if (response && response.data) {
         const { content } = response.data;
         return content;
@@ -91,8 +94,8 @@ export const AccountProvider = ({ children }) => {
     }
   }, [defaultPayToAccount]);
 
-  const applyEvent = (selectedPayToAccount) => {
-    setSelectedAccount(payToAccountsData.find((account) => account.id === selectedPayToAccount.value));
+  const applyEvent = (selectedPayToAccountId) => {
+    setSelectedAccount(payToAccountsData.find((account) => account.id === selectedPayToAccountId));
   };
 
   const { mutate: setDefaultAccount } = useMutation(
@@ -100,8 +103,11 @@ export const AccountProvider = ({ children }) => {
     {
       onSuccess: (response) => {
         if (CommonUtils.isNonEmptyObject(response)) {
-          showSnackbar({ description: t('paymentInvoices.setDefaultAccountAPI.success'), type: 'success' });
           refetchPayToAccountsData();
+          showSnackbar({
+            description: `${t('paymentInvoices.setDefaultAccountAPI.success')} ${selectedAccount?.accountNumber}`,
+            type: 'success'
+          });
         }
       },
       onError: (error) => {
@@ -132,8 +138,8 @@ export const AccountProvider = ({ children }) => {
         selectedAccount,
         searchPayToAccounts,
         applyEvent,
-        searchText,
-        defaultSetEvent
+        defaultSetEvent,
+        defaultPayToAccount
       }}
     >
       {children}

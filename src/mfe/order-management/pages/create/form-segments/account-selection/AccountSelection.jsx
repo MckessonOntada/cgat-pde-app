@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Heading, Button } from '@mckesson/mcp-component-library';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from './AccountSelection.module.scss';
@@ -19,6 +19,9 @@ import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import { serializeParams } from '@src/util/ApiUtils';
+import useAlert from '@src/hooks/useAlert';
+import { RoutePaths } from '@src/routes/constants';
+import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 
 const AccountSelection = () => {
   const { t } = useTranslate();
@@ -26,12 +29,24 @@ const AccountSelection = () => {
   const navigate = useNavigate();
   const { orderId } = useParams();
   const location = useLocation();
-  const { isEdit = false } = location.state || {};
+  const { isEdit = false, isApprover = false } = location.state || {};
   const [selectedAccount, setSelectedAccount] = React.useState(null);
   const [accountSearchString, setAccountSearchString] = React.useState('');
   const [selectedShippingAddress, setSelectedShippingAddress] = React.useState('');
+  const [initialSelectedAccount, setInitialSelectedAccount] = React.useState(null);
+  const [initialSelectedShippingAddress, setInitialSelectedShippingAddress] = React.useState('');
+  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
+  const [acccountError, setAccountError] = useState({ isError: false, message: '' });
+  const [alertState, setAlertState] = useState(null);
   const therapyId = formState.activeRecord?.therapy?.materialNumber;
+  const [inventoryType, setInventoryType] = useState(null);
+  const setInventoryTypeData = (data) => {
+    setInventoryType(data);
+  };
+
+  const alertContainerId = 'accountSelection-alert-Container';
+  const { showAlert } = useAlert();
 
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ACCOUNT_DETAILS);
@@ -52,7 +67,7 @@ const AccountSelection = () => {
     accountsListData.content?.forEach((acc) => {
       const label = `(${acc.accountNumber}) ` + acc.accountName;
       const value = acc.accountNumber;
-      const subLabel = [acc.houseNumber, acc.street, acc.city, acc.state, acc.zipCode].join(', ');
+      const subLabel = [acc.houseNumber, acc.street, acc.city, acc.state, acc.zipCode].filter(Boolean).join(', ');
       accArr.push({ label, value, subLabel });
     });
 
@@ -60,14 +75,67 @@ const AccountSelection = () => {
   }, [accountsListData, formState.activeRecord]);
 
   const { isLoading: isSaving, mutate: saveAccount } = useMutation(async (data) => OrderService.saveAccount(orderId, data), {
-    onSuccess: (result) => {
+    onSuccess: async (result) => {
       const { id } = result;
       setActiveRecord(result);
-      if (result.patientDetailsRequired) navigate(`../${id}/patient`);
-      else navigate(`../${id}/additional-details`);
+      try {
+        const alertState = await handleInventoryCheck();
+        if (result.patientDetailsRequired) {
+          navigate(`../${id}/patient`, { state: { alertState, isEdit: false, isApprover: isApprover } });
+        } else {
+          navigate(`../${id}/additional-details`, { state: { alertState, isEdit: false, isApprover: isApprover } });
+        }
+      } catch (err) {
+        console.error(err);
+      }
     },
     onError: console.log
   });
+
+  const handleInventoryCheck = async () => {
+    const selectedAccountDetails = accountsListData.content.find((acc) => acc.accountNumber === selectedAccount?.accountNumber);
+    const requestPayload = {
+      customerNumber: selectedShippingAddress?.accountNumber,
+      shipTo: selectedAccount?.accountNumber,
+      salesOrg: selectedAccountDetails.salesOrg,
+      distChannel: selectedAccountDetails.distributionChannel,
+      division: selectedAccountDetails.division,
+      companyCode: selectedAccountDetails.companyCode,
+      orderId,
+      items: null
+    };
+    if (!(inventoryType && ['S', 'I'].includes(inventoryType))) {
+      return;
+    }
+    try {
+      const res = await OrderService.getInventoryStatus(requestPayload);
+      if (res.status === 200) {
+        showAlert({
+          description: t('messages.inventoryCheck.success'),
+          type: 'success',
+          anchorEl: alertContainerId
+        });
+        return {
+          description: t('messages.inventoryCheck.success'),
+          type: 'success'
+        };
+      }
+    } catch (err) {
+      if (err.status === 400) {
+        showAlert({
+          description: t('messages.inventoryCheck.error'),
+          type: 'warning',
+          anchorEl: alertContainerId
+        });
+        return {
+          description: t('messages.inventoryCheck.error'),
+          type: 'warning'
+        };
+      } else {
+        showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
+      }
+    }
+  };
 
   const handleOnClose = () => {
     setOpen(false);
@@ -76,33 +144,61 @@ const AccountSelection = () => {
     setOpen(true);
   };
 
+  const isDirty =
+    JSON.stringify(selectedAccount) !== JSON.stringify(initialSelectedAccount) ||
+    JSON.stringify(selectedShippingAddress) !== JSON.stringify(initialSelectedShippingAddress);
+
   const handleOnBack = () => {
-    //check for data change
+    if (isDirty) {
+      setModalSuccessCallback(isEdit ? 'summary' : 'details');
+      return;
+    }
+
     if (isEdit) {
-      navigate(`../${orderId}/summary`);
+      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
     } else {
       editByStage(ORDER_STAGES.THERAPY_SELECTION);
-      navigate(`../edit-order/${orderId}`);
+      navigate(`../edit-order/${orderId}`, { state: { isEdit: false, isApprover: isApprover, isBack: true } });
     }
   };
 
-  const handleOnSubmit = () => {
-    if (selectedAccount) {
+  const handleOnSubmit = async () => {
+    if (selectedAccount && selectedShippingAddress) {
       const payload = {
         soldToAccountId: selectedAccount.id,
         shipToAccountId: selectedShippingAddress.id
       };
+      setAccountError({ isError: false, message: '' });
+
       saveAccount(payload);
+    } else {
+      if (!selectedAccount) {
+        setAccountError({ isError: true, message: 'Please select an account before proceeding.' });
+        return;
+      }
     }
   };
 
   const handleOnBackToOrders = () => {
-    //compare data change, display modal for confirmation
-    navigate('/orders');
+    if (isDirty) {
+      setModalSuccessCallback('list');
+    } else {
+      navigate(RoutePaths.pathOrderManagement);
+    }
+  };
+  const handleNavigate = () => {
+    if (modalSuccessCallback === 'list') {
+      navigate(RoutePaths.pathOrderManagement);
+    } else if (modalSuccessCallback === 'details') {
+      editByStage(ORDER_STAGES.THERAPY_SELECTION);
+      navigate(`../edit-order/${orderId}`, { state: { isEdit: false, isApprover: isApprover, isBack: true } });
+    } else if (modalSuccessCallback === 'summary') {
+      navigate(`../${orderId}/summary`, { state: { isEdit: false, isApprover: isApprover } });
+    }
   };
 
   const getAddress = (acc) => {
-    return [acc.houseNumber, acc.street, acc.district, acc.city, acc.state, acc.zipCode].join(', ');
+    return [acc.houseNumber, acc.street, acc.district, acc.city, acc.state, acc.zipCode].filter(Boolean).join(', ');
   };
 
   const handleOnAccountSelection = (selectedAccount) => {
@@ -118,9 +214,12 @@ const AccountSelection = () => {
         if (soldToAccount) {
           const originalSelectedAccount = accountsListData.content?.filter((acc) => acc.accountNumber === soldToAccount.accountNumber)[0];
           if (originalSelectedAccount) setSelectedAccount(originalSelectedAccount);
+
+          setInitialSelectedAccount(originalSelectedAccount); // Set initial value;
         }
         if (shipToAccount) {
           setSelectedShippingAddress(shipToAccount);
+          setInitialSelectedShippingAddress(shipToAccount); // Set initial value
         }
       } else {
         console.log('Could not set account');
@@ -136,12 +235,18 @@ const AccountSelection = () => {
         </Button>
       </div>
 
-      <PageHeader heading={<Heading as="h1">{isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}</Heading>} />
+      <PageHeader heading={<Heading as="h1">{isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')}</Heading>} />
 
       <div className="MCP-module-body">
         <OrderStepper />
         <div className={`MCP-module-wrapper`}>
-          <OrderHeaderDetails />
+          <OrderHeaderDetails
+            setInventoryTypeData={setInventoryTypeData}
+            therapyId={therapyId}
+            soldToAccountId={selectedAccount?.accountNumber}
+            shipToAccountId={selectedShippingAddress?.accountNumber}
+          />
+          <div id={alertContainerId} />
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>
               <ModuleHeader
@@ -177,15 +282,17 @@ const AccountSelection = () => {
                         id={'targetAccount'}
                         label={' '}
                         isMultiSelect={false}
-                        placeholder={'Select Account'}
+                        placeholder={t('controls.placeholder.selectOption')}
                         value={selectedAccount?.accountNumber || ''}
                         onChange={(val) => setSelectedAccount(accountsListData.content?.filter((acc) => acc.accountNumber === val)[0])}
                         options={accountListOptions}
+                        forcedValue={selectedAccount?.accountNumber}
                         variant={'async'}
                         onSearch={(e) => {
                           setAccountSearchString(() => e);
                         }}
                         recordsCountToEnableSearch={5}
+                        error={acccountError.isError && acccountError.message}
                         size="lg"
                       />
                     </div>
@@ -202,12 +309,23 @@ const AccountSelection = () => {
           </div>
           <div className="controls">
             <Button size="md" onClick={handleOnBack} variant="secondary">
-              {t('captions.btnBack')}
+              {isEdit ? t('captions.btnBack') : t('captions.btnBacktoTherapySelection')}
             </Button>
-            <Button size="md" onClick={() => {}} variant="secondary">
-              {t('captions.btnInventorySelection')}
+            <Button
+              size="md"
+              onClick={() => {
+                handleInventoryCheck();
+              }}
+              variant="secondary"
+              disabled={!(inventoryType && ['S', 'I'].includes(inventoryType))}>
+              {t('captions.btnInventoryCheck')}
             </Button>
-            <Button size="md" onClick={handleOnSubmit} disabled={!selectedShippingAddress || isSaving} variant="primary" type="submit">
+            <Button
+              size="md"
+              onClick={handleOnSubmit}
+              disabled={!selectedShippingAddress || !selectedAccount || isSaving}
+              variant="primary"
+              type="submit">
               {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
             </Button>
           </div>
@@ -218,6 +336,13 @@ const AccountSelection = () => {
           )}
         </div>
       </div>
+      <DiscardChangesModal
+        heading={t('messages.confirmation.discardheader')}
+        description={t('messages.confirmation.account')}
+        isOpen={Boolean(modalSuccessCallback)}
+        onClose={() => setModalSuccessCallback(null)}
+        onConfirm={handleNavigate}
+      />
     </div>
   );
 };

@@ -21,8 +21,12 @@ const getRoleValidationSchema = (t) =>
       .min(2, t('orgManagement.form.errors.roleNameMinLength'))
       .max(50, t('orgManagement.form.errors.roleNameMaxLength'))
       .matches(/^[A-Za-z\s]+$/, t('orgManagement.form.errors.roleNamevalidation')),
-    roleDescription: Yup.string().min(10, 'orgManagement.form.errors.roleDescriptionMinLength').max(100, 'orgManagement.form.errors.roleDescriptionMaxLength')
+    roleDescription: Yup.string()
+      .min(10, 'orgManagement.form.errors.roleDescriptionMinLength')
+      .max(100, 'orgManagement.form.errors.roleDescriptionMaxLength')
   });
+
+const moduleBasePath = '/admin/organization/roles';
 
 const RoleDetails = () => {
   const { t } = useTranslate();
@@ -60,12 +64,12 @@ const RoleDetails = () => {
     if (JSON.stringify(formData) !== JSON.stringify(initialData)) {
       setModalSuccessCallback('list');
     } else {
-      navigate(isEdit ? `/organization/roles/${roleId}` : '/organization/roles');
+      navigate(isEdit ? `${moduleBasePath}/${roleId}` : moduleBasePath);
     }
   };
 
   const handleGoBack = () => {
-    navigate('/organization/roles');
+    navigate(moduleBasePath);
   };
 
   const roleValidationSchema = getRoleValidationSchema(t);
@@ -91,7 +95,9 @@ const RoleDetails = () => {
           const { name, description } = data;
 
           refreshData();
-          navigate(isEdit ? `/organization/roles/${roleId}` : `/organization/roles/${id}/permissions`, { state: { ...row, name, description } });
+          navigate(isEdit ? `${roleId}` : `${moduleBasePath}/${id}/permissions`, {
+            state: { ...row, name, description }
+          });
         }
       },
       onError: (error) => {
@@ -113,7 +119,7 @@ const RoleDetails = () => {
 
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
-      navigate('/organization/roles');
+      navigate(moduleBasePath);
     }
   };
 
@@ -142,7 +148,14 @@ const RoleDetails = () => {
       <ModuleHeader heading={<PageHeader heading={t('orgManagement.role.labelAddRole')} />} />
 
       <div className="MCP-module-body">
-        {!isEdit && <Stepper activeIndex={1} dividerText="of" mobileLabel={t('orgManagement.role.labelStep')} stepHeaders={forms.map((f) => ({ label: f.label }))} />}
+        {!isEdit && (
+          <Stepper
+            activeIndex={1}
+            dividerText="of"
+            mobileLabel={t('orgManagement.role.labelStep')}
+            stepHeaders={forms.map((f) => ({ label: f.label }))}
+          />
+        )}
 
         <div>
           <Formik initialValues={formData} validationSchema={roleValidationSchema} onSubmit={handleOnSubmit} enableReinitialize>
@@ -166,10 +179,22 @@ const RoleDetails = () => {
 
                       <div className="MCP-module-body">
                         <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-                          <Field name="roleName" label={t('orgManagement.role.labelRoleName')} placeholder=" " isRequired component={Components['input']} />
+                          <Field
+                            name="roleName"
+                            label={t('orgManagement.role.labelRoleName')}
+                            placeholder=" "
+                            isRequired
+                            component={Components['input']}
+                          />
                         </div>
                         <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
-                          <Field name="roleDescription" placeholder=" " component={Components['textarea']} fieldlabel={t('orgManagement.role.labelRoleDescription')} maxCharLimit="100" />
+                          <Field
+                            name="roleDescription"
+                            placeholder=" "
+                            component={Components['textarea']}
+                            fieldlabel={t('orgManagement.role.labelRoleDescription')}
+                            maxCharLimit="100"
+                          />
                         </div>
                       </div>
                     </div>
@@ -192,7 +217,13 @@ const RoleDetails = () => {
           </Formik>
         </div>
       </div>
-      <DiscardChangesModal heading="Discard Changes" description="You have changed role details. Do you still want to go back? Your changes will be discarded!" isOpen={Boolean(modalSuccessCallback)} onClose={() => setModalSuccessCallback(null)} onConfirm={handleNavigate} />
+      <DiscardChangesModal
+        heading="Discard Changes"
+        description="You have changed role details. Do you still want to go back? Your changes will be discarded!"
+        isOpen={Boolean(modalSuccessCallback)}
+        onClose={() => setModalSuccessCallback(null)}
+        onConfirm={handleNavigate}
+      />
     </div>
   );
 };

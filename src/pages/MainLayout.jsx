@@ -1,10 +1,8 @@
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
-import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
 
-import { Button, Loader } from '@mckesson/mcp-component-library';
-
-import ErrorComponent from '../components/error/ErrorComponent';
+import { Loader } from '@mckesson/mcp-component-library';
 import { debugIds, ID } from '@src/constants/id';
 
 import styles from '../../src/assets/styles/MainLayout.module.scss';
@@ -17,17 +15,14 @@ import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 import Role from '@src/mfe/org-management/pages/role';
 import ScrollToTop from '@src/components/scrollToTop/ScrollToTop';
 import ManageApprovers from '@src/mfe/order-management/manageApprovers';
-import { AccountProvider } from '@src/mfe/finance-management/context/AccountContext';
+import RecordsMainRoutes from '@src/mfe/finance-management/RecordsMainRoutes';
+import AdminLayout from './admin';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
 const OrgEntryPoint = React.lazy(() => import('@src/mfe/org-management'));
-const PaymentInvoices = React.lazy(() => import('@src/mfe/finance-management'));
 
 function MainLayout() {
-  const { pathname } = useLocation();
-  const navigate = useNavigate();
-
   return (
     <div id={debugIds(ID.MAIN)} className={styles.appContainer}>
       <Header />
@@ -52,9 +47,13 @@ function MainLayout() {
               <Route
                 path={'orders/*'}
                 element={
-                  <ProtectedRoute permissions={routePermissionConfig.orders}>
-                    <OrderManagementEntryPoint />
-                  </ProtectedRoute>
+                  !AuthUtils.isSystemAdminView() ? (
+                    <ProtectedRoute permissions={routePermissionConfig.orders}>
+                      <OrderManagementEntryPoint />
+                    </ProtectedRoute>
+                  ) : (
+                    <Navigate to="/" />
+                  )
                 }
               />
 
@@ -66,7 +65,7 @@ function MainLayout() {
                   </ProtectedRoute>
                 }>
                 <Route
-                  path={'/user'}
+                  path={'/admin/user'}
                   element={
                     <ProtectedRoute permissions={routePermissionConfig.users}>
                       <UsersEntryPoint />
@@ -74,7 +73,7 @@ function MainLayout() {
                   }
                 />
                 <Route
-                  path={'/user/*'}
+                  path={'/admin/user/*'}
                   element={
                     <ProtectedRoute permissions={routePermissionConfig.users}>
                       <UsersEntryPoint />
@@ -83,7 +82,7 @@ function MainLayout() {
                 />
               </Route>
               <Route
-                path={`/organization/roles/*`}
+                path={`/admin/organization/roles/*`}
                 element={
                   <ProtectedRoute permissions={routePermissionConfig.roles}>
                     <Role />
@@ -91,7 +90,7 @@ function MainLayout() {
                 }
               />
               <Route
-                path={`/approver-group/*`}
+                path={`/admin/approver-group/*`}
                 element={
                   <ProtectedRoute permissions={routePermissionConfig.approvergroups}>
                     <ManageApprovers />
@@ -99,7 +98,7 @@ function MainLayout() {
                 }
               />
               <Route
-                path={'/organization'}
+                path={'/admin/organization'}
                 element={
                   AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() ? (
                     <Navigate to={'/'} />
@@ -110,7 +109,7 @@ function MainLayout() {
                   )
                 }>
                 <Route
-                  path={'/organization'}
+                  path={'/admin/organization'}
                   element={
                     <ProtectedRoute permissions={routePermissionConfig.organization}>
                       <OrgEntryPoint />
@@ -118,7 +117,7 @@ function MainLayout() {
                   }
                 />
                 <Route
-                  path={'/organization/*'}
+                  path={'/admin/organization/*'}
                   element={
                     <ProtectedRoute permissions={routePermissionConfig.organization}>
                       <OrgEntryPoint />
@@ -130,13 +129,24 @@ function MainLayout() {
                 path={'/record/*'}
                 element={
                   <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
-                    <AccountProvider>
-                      <PaymentInvoices />
-                    </AccountProvider>
+                    <RecordsMainRoutes />
                   </ProtectedRoute>
                 }
               />
               <Route
+                index={true}
+                path={'/admin'}
+                element={
+                  !AuthUtils.isSystemAdminView() ? (
+                    <ProtectedRoute permissions={routePermissionConfig.admin}>
+                      <AdminLayout />
+                    </ProtectedRoute>
+                  ) : (
+                    <Navigate to="/" />
+                  )
+                }
+              />
+              {/* <Route
                 path={'/system-admin'}
                 element={
                   AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() ? (
@@ -163,7 +173,7 @@ function MainLayout() {
                     </ProtectedRoute>
                   }
                 />
-              </Route>
+              </Route> */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>

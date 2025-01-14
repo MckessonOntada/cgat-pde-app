@@ -4,18 +4,17 @@ import OktaSignIn from '@okta/okta-signin-widget';
 import { debugIds, ID } from '@src/constants/id';
 import AuthService from '@src/api/authService/AuthService';
 import CommonService from '@src/api/commonService/CommonService';
-import CommonUtils from '@src/util/CommonUtils';
 import OktaHelper from '@src/config/OktaHelper';
 import '@okta/okta-signin-widget/css/okta-sign-in.min.css';
 import './assets/styles/Login.css';
 import style from './assets/styles/Login.module.scss';
 import useFetchQueryRetry from '@src/hooks/useFetchQueryRetry';
 import AppLogo from '@src/assets/image/app-logo.svg';
-import { SESSION_CONST } from '@src/constants/SessionConstants';
 import AuthUtils from '@src/util/AuthUtils';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import useSessionFeatures from '@src/hooks/useSessionFeatures';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const widgetRef = useRef();
@@ -25,6 +24,8 @@ const Login = () => {
   } = useSessionFeatures();
   let oktaConfig = OktaHelper.getConfiguration();
   let { oktaAuth } = useOktaAuth();
+  const navigate = useNavigate();
+
   const { refetch: onPostUserLogin } = useFetchQueryRetry(
     [`postUserLogin`],
     async () => {
@@ -60,15 +61,24 @@ const Login = () => {
         issuer,
         scopes
       },
-      helpLinks: {
-        custom: [
-          {
-            text: 'Sign Up',
-            href: '/signup',
-            className: 'signup-link'
+      // helpLinks: {
+      //   custom: [
+      //     {
+      //       text: 'New User',
+      //       href: '/signup',
+      //       className: 'signup-link'
+      //     }
+      //   ]
+      // },
+      customButtons: [
+        {
+          title: 'NEW USER?',
+          className: 'custom-signUp-button',
+          click: function () {
+            navigate('/signup');
           }
-        ]
-      },
+        }
+      ],
       features: {
         showPasswordToggleOnSignInPage: true,
         registration: true,
@@ -99,7 +109,7 @@ const Login = () => {
     widget.renderEl(
       { el: widgetRef.current },
       async (response) => {
-        const userData = await checkUserRole(response);
+        const userData = await validateTokenAndUpdateSessionStorage(response);
         if (response.status === 'SUCCESS') {
           if (userData.roleExist) {
             sessionStorage.setItem('sid', response.tokens.idToken.idToken);
@@ -138,30 +148,14 @@ const Login = () => {
       AuthService.userLogout(oktaAuth);
     };
 
-    const checkUserRole = async (response) => {
+    const validateTokenAndUpdateSessionStorage = async (response) => {
       try {
         const accessToken = response.tokens.accessToken;
         sessionStorage.setItem('APP_AUTH_TOKEN', `${accessToken.tokenType} ${accessToken.accessToken}`);
 
-        const decodedResponse = await CommonService.getJwtDecode();
-        const roles = decodedResponse['roles'];
-        const username = decodedResponse['userName'];
-        const userId = decodedResponse['userId'];
-        const permissions = decodedResponse['permissions'];
-        const practiceId = decodedResponse['practiceId'];
+        const userDetails = await CommonService.updateSessionStorage();
 
-        if (CommonUtils.isNonEmptyArray(roles) && username) {
-          sessionStorage.setItem(SESSION_CONST.USER_ROLE, roles[0]);
-          sessionStorage.setItem(SESSION_CONST.USERNAME, username);
-          sessionStorage.setItem(SESSION_CONST.USER_ID, userId);
-          sessionStorage.setItem(SESSION_CONST.USER_PERMISSIONS, permissions);
-          if (roles[0] !== 'System Admin') {
-            AuthUtils.setPracticeId(practiceId);
-          }
-          return { practiceId, userId, username, roleExist: true };
-        } else {
-          return false;
-        }
+        return { ...userDetails, roleExist: true };
       } catch (error) {
         throw Error(error);
       }

@@ -65,7 +65,7 @@ const OrgList = () => {
           onClick={() => {
             setOrganization(org);
             dispatch(closeModal());
-            window.location.href = PATHS.dashboard;
+            window.location.href = '/admin';
           }}>
           Okay
         </Button>
@@ -100,7 +100,7 @@ const OrgList = () => {
       id: 'name',
       name: t('orgManagement.table.name'),
       cell: (row) => (
-        <div className="cellEllipse">
+        <div>
           <Link
             variant="tertiary"
             className="MCP-table-link"
@@ -142,7 +142,12 @@ const OrgList = () => {
       id: 'date',
       name: t('orgManagement.table.dateUpdated'),
       selector: (row) => row.updatedAt,
-      cell: (row) => (row.updatedAt ? CommonUtils.convertDateStringFormat(row.updatedAt, 'MM-DD-YYYY') : row.createdAt ? CommonUtils.convertDateStringFormat(row.createdAt, 'MM-DD-YYYY') : 'N/A'),
+      cell: (row) =>
+        row.updatedAt
+          ? CommonUtils.convertDateStringFormat(row.updatedAt, 'MM-DD-YYYY')
+          : row.createdAt
+          ? CommonUtils.convertDateStringFormat(row.createdAt, 'MM-DD-YYYY')
+          : 'N/A',
       width: '180px',
       wrap: true
     },
@@ -151,7 +156,10 @@ const OrgList = () => {
       name: t('orgManagement.table.status'),
       cell: (row) => (
         <div className="cellEllipse">
-          <Badge text={row.isActive ? t('orgManagement.button.activate') : t('orgManagement.button.inactivate')} type={row.isActive ? 'success' : 'info-default'} />
+          <Badge
+            text={row.isActive ? t('orgManagement.button.activate') : t('orgManagement.button.inactivate')}
+            type={row.isActive ? 'success' : 'info-default'}
+          />
         </div>
       ),
       width: '200px',
@@ -226,7 +234,15 @@ const OrgList = () => {
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         isAdmin={true}
-        noDataComponent={<EmptyDataTable isLoading={isLoading} error={isError ? 'Something went wrong! Please try again' : null} image={EmptyDataImage} heading={t('orgManagement.add.label')} description={t('orgManagement.empty_table.description')} />}
+        noDataComponent={
+          <EmptyDataTable
+            isLoading={isLoading}
+            error={isError ? 'Something went wrong! Please try again' : null}
+            image={EmptyDataImage}
+            heading={t('orgManagement.add.label')}
+            description={t('orgManagement.empty_table.description')}
+          />
+        }
       />
       <Modal
         {...{

@@ -8,8 +8,9 @@ on:
 env:
   DOCKER_REGISTRY: "mck-ontada-sre.jfrog.io" 
   IMAGE_NAME: "mck-ontada-sre.jfrog.io/cgat-pde-app" 
-  PRISMA_USER:  ${{ secrets.PRISMA_USER }}
-  PRISMA_PASSWORD:  ${{ secrets.PRISMA_PASSWORD }}
+  WIZ_IMAGE_POLICY: "McKesson Vulnerability Scanner Policy"
+  # PRISMA_USER:  ${{ secrets.PRISMA_USER }}
+  # PRISMA_PASSWORD:  ${{ secrets.PRISMA_PASSWORD }}
 
 jobs:
   build_and_push:
@@ -72,7 +73,7 @@ jobs:
       - name: Generate wiz-cli Docker Image Scan report
         id: scan
         run: |
-          ./wizcli docker scan --image ${{ env.IMAGE_NAME }} --policy "$WIZ_IMAGE_POLICY" >> scan_output.txt
+          ./wizcli docker scan --image ${{ env.IMAGE_NAME }}:${{ steps.short-sha.outputs.sha }} --policy "$WIZ_IMAGE_POLICY" >> scan_output.txt
           echo "printing the report"
           cat scan_output.txt
 

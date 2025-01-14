@@ -9,6 +9,7 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FormattedNumber } from 'react-intl';
 import dayjs from 'dayjs';
+import { PATHS } from '../../routes';
 
 export default function CreditsTable() {
   const { t } = useTranslate();
@@ -24,7 +25,12 @@ export default function CreditsTable() {
       minWidth: '112px',
       cell: (props) => (
         <div className="cellEllipse">
-          <Link style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}>{`${props.billNumber}`}</Link>
+          <Link
+            style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
+            to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
+          >
+            {`${props?.billNumber}`}
+          </Link>
         </div>
       )
     },
@@ -35,16 +41,20 @@ export default function CreditsTable() {
       minWidth: '160px',
       sortable: true,
       wrap: true,
-      cell: (props) => <div>{props.soldToSite || '-'}</div>
+      cell: (props) => <div>{props?.soldToSite || '-'}</div>
     },
     {
       id: 'description',
       name: t('paymentInvoices.credits.table.description'),
       selector: (row) => row.description,
-      minWidth: '144px',
+      minWidth: '320px',
       sortable: true,
       wrap: true,
-      cell: (props) => props.description || '-'
+      cell: (props) => (
+        <div>
+          <EclipsesTextcss str={props?.description || ''} maxWidth={280} />
+        </div>
+      )
     },
     {
       id: 'billDate',
@@ -54,10 +64,9 @@ export default function CreditsTable() {
       wrap: true,
       minWidth: '160px',
       cell: (props) => (
-        <EclipsesTextcss className="cellEllipse" str={dayjs(props.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'} maxWidth={240} />
+        <EclipsesTextcss className="cellEllipse" str={dayjs(props?.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'} maxWidth={240} />
       )
     },
-
     {
       id: 'billAmount',
       name: t('paymentInvoices.credits.table.amount'),
@@ -66,10 +75,11 @@ export default function CreditsTable() {
       sortable: true,
       wrap: true,
       cell: (props) => (
-        <div className="status-container">
+        <div className="status-container align-items-right">
           <FormattedNumber value={props?.billAmount} style="currency" currency="USD" />
         </div>
-      )
+      ),
+      right: true
     }
     // {
     //   name: t('paymentInvoices.history.table.Actions'),
@@ -126,7 +136,8 @@ export default function CreditsTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}>
+            }}
+          >
             <Loader variant="circular" />
           </div>
         }

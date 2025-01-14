@@ -20,9 +20,9 @@ const RECORDS_PER_PAGE = 8;
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
-  paymentMethod: [],
-  paymentStatus: [],
-  dateRange: [dayjs().subtract(180, 'day').format('DD/MM/YYYY'), dayjs().format('DD/MM/YYYY')]
+  paymentMethod: '',
+  paymentStatus: '',
+  dateRange: [dayjs().subtract(180, 'day').format('MM/DD/YYYY'), dayjs().format('MM/DD/YYYY')]
 };
 
 const INITIAL_SORT_STATE = {
@@ -49,8 +49,12 @@ export const PaymentHistoryProvider = ({ children }) => {
   const [actualData, setActualData] = useState([]);
 
   const applyFilters = (filters) => {
-    const formattedStartDate = dayjs(filters.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY');
-    const formattedEndDate = dayjs(filters.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY');
+    const formattedStartDate = filters.dateRange[0]
+      ? dayjs(filters.dateRange[0], 'MM/DD/YYYY').format('MM/DD/YYYY')
+      : dayjs().subtract(180, 'day').format('MM/DD/YYYY');
+    const formattedEndDate = filters.dateRange[1]
+      ? dayjs(filters.dateRange[1], 'MM/DD/YYYY').format('MM/DD/YYYY')
+      : dayjs().format('MM/DD/YYYY');
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig((prevFilters) => ({
       ...prevFilters,
@@ -101,20 +105,20 @@ export const PaymentHistoryProvider = ({ children }) => {
         companyCode: selectedAccount?.companyCode,
         salesOrg: selectedAccount?.salesOrg,
         payerAccountNumber: selectedAccount?.accountNumber,
-        dateFrom: filterConfig.dateRange[0],
-        dateTo: filterConfig.dateRange[1]
+        dateFrom: dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY'),
+        dateTo: dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY')
       };
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
       if (res.data) {
         const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
         const endIndex = startIndex + paginationConfig.pageSize;
-        setData(res.data?.paymentDetails.slice(startIndex, endIndex));
-        setUnSlicedData(res.data?.paymentDetails);
-        setActualData(res.data?.paymentDetails);
+        setData(res.data?.paymentHistory.slice(startIndex, endIndex));
+        setUnSlicedData(res.data?.paymentHistory);
+        setActualData(res.data?.paymentHistory);
         setPaginationConfig((state) => ({
           ...state,
-          totalPages: Math.ceil(res.data?.paymentDetails.length / paginationConfig.pageSize),
-          totalElements: res.data?.paymentDetails.length
+          totalPages: Math.ceil(res.data?.paymentHistory.length / paginationConfig.pageSize),
+          totalElements: res.data?.paymentHistory.length
         }));
       }
     },
@@ -151,12 +155,17 @@ export const PaymentHistoryProvider = ({ children }) => {
       const valA = a[newSortConfig.sortBy];
       const valB = b[newSortConfig.sortBy];
 
-      if (typeof valA === 'string' && typeof valB === 'string') {
+      if (typeof valA === 'string' && typeof valB === 'string' && newSortConfig.sortBy !== 'paymentInitiationDate') {
         return newSortConfig.sortOrder === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
       } else if (typeof valA === 'number' && typeof valB === 'number') {
         return newSortConfig.sortOrder === 'asc' ? valA - valB : valB - valA;
-      } else if (valA instanceof Date && valB instanceof Date) {
-        return newSortConfig.sortOrder === 'asc' ? new Date(valA) - new Date(valB) : new Date(valB) - new Date(valA);
+      } else if (newSortConfig.sortBy === 'paymentInitiationDate') {
+        const dateA = dayjs(valA, 'DD/MM/YYYY');
+        const dateB = dayjs(valB, 'DD/MM/YYYY');
+        if (!dateA.isValid() || !dateB.isValid()) {
+          return 0;
+        }
+        return newSortConfig.sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
       } else {
         return 0;
       }

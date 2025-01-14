@@ -11,10 +11,17 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FormattedNumber } from 'react-intl';
 import dayjs from 'dayjs';
+import { PATHS } from '../../routes';
+
+const PAYMENT_STATUS = {
+  PENDING: { label: 'Pending', color: 'warning' },
+  PROCESSED: { label: 'Processed', color: 'success' },
+  FAILED: { label: 'Failed', color: 'error' }
+};
 
 export default function PaymentHistoryTable() {
   const { t } = useTranslate();
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
 
   const { data, isFetching, paginationConfig, setPageNumber, applySort, isError } = usePaymentHistory();
   const columns = [
@@ -25,8 +32,12 @@ export default function PaymentHistoryTable() {
       sortable: true,
       wrap: true,
       cell: (props) => (
-        <div className="cellEllipse" onClick={() => setIsOpen(true)}>
-          <Link style={{ color: '#007bff', fontWeight: '600' }}>{`${props.confirmationNo}`}</Link>
+        <div className="cellEllipse">
+          <Link
+            style={{ color: '#007bff', fontWeight: '600' }}
+            to={`/record/${PATHS.paymentHistory}/${props?.confirmationNo}/confirmation`}
+            state={{ ...props }}
+          >{`${props?.confirmationNo}`}</Link>
         </div>
       )
     },
@@ -62,21 +73,29 @@ export default function PaymentHistoryTable() {
       sortable: true,
       cell: (props) => (
         <div className="status-container">
-          {props.paymentStatus == 'COMPLETED' ? <Badge text="COMPLETED" type="success" /> : <Badge text="IN PROCESS" type="info-default" />}
+          {PAYMENT_STATUS[props?.paymentStatus.toUpperCase()] ? (
+            <Badge
+              text={PAYMENT_STATUS[props?.paymentStatus.toUpperCase()].label}
+              type={`${PAYMENT_STATUS[props?.paymentStatus.toUpperCase()].color}-high`}
+            />
+          ) : (
+            '-'
+          )}
         </div>
       )
     },
     {
       id: 'totalAuthorizedPaymentAmount',
-      name: <div className="align-items-right">{t('paymentInvoices.history.table.totalAuthorizedPaymentAmt')}</div>,
+      name: t('paymentInvoices.history.table.totalAuthorizedPaymentAmt'),
       selector: (row) => `${row.totalAuthorizedPaymentAmount}`,
       width: '20%',
       sortable: true,
       cell: (props) => (
-        <div className="align-items-right">
+        <div className="cellEllipse align-items-right">
           <FormattedNumber value={props?.totalAuthorizedPaymentAmount} style="currency" currency="USD" />
         </div>
-      )
+      ),
+      right: true
     }
   ];
 
@@ -122,14 +141,15 @@ export default function PaymentHistoryTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}>
+            }}
+          >
             <Loader variant="circular" />
           </div>
         }
       />
-      <FloatingDrawer open={isOpen} anchor="right" onClose={() => setIsOpen(false)}>
-        <PaymentDetails />
-      </FloatingDrawer>
+      {/* <FloatingDrawer open={isOpen} anchor="right" onClose={() => setIsOpen(false)}> */}
+      {/* <PaymentDetails /> */}
+      {/* </FloatingDrawer> */}
     </React.Fragment>
   );
 }

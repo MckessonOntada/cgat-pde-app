@@ -1,25 +1,25 @@
-export const breadcrumbItems = [{ label: 'Dashboard', url: '/' }, { label: 'Manage Orders' }];
+export const getBreadcrumbItems = (t) => [{ label: t('order.label.admin'), url: '/' }, { label: t('order.label.manageOrder') }];
 
 export const getTabs = (t) => [
   {
     id: 1,
-    configName: 'PENDING SUBMISSION',
+    configName: t('labels.tabs.pendingSubmission'),
     isActive: true,
     sequence: 1,
-    labelForMobile: 'PENDING SUBMISSION'
+    labelForMobile: t('labels.tabs.pendingSubmission')
   },
   {
     id: 2,
-    configName: 'SUBMITTED',
+    configName: t('labels.tabs.submitted'),
     isActive: false,
     sequence: 2,
-    labelForMobile: 'SUBMITTED'
+    labelForMobile: t('labels.tabs.submitted')
   }
 ];
 
 export const StatusEnum = {
-  IN_DRAFT: 'in draft',
-  APPROVAL_PENDING: 'approval pending',
-  SUBMITTED: 'submitted',
-  CANCELLED: 'cancelled'
+  IN_DRAFT: 'IN_DRAFT',
+  APPROVAL_PENDING: 'APPROVAL_PENDING',
+  SUBMITTED: 'SUBMITTED',
+  CANCELLED: 'CANCELLED'
 };

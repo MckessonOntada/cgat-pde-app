@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Button, Heading } from '@mckesson/mcp-component-library';
 import styles from './TherapySelection.module.scss';
-import TherapyDetails from './TherapyDetails';
+import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import FloatingDrawer from '@src/components/floating-drawer';
 import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -17,6 +17,11 @@ import OrderService from '@src/api/commonService/OrderService';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import OrderStepper from '../OrderStepper';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
+import { RoutePaths } from '@src/routes/constants';
+import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
+import { TherapyDetailsConstants } from './assets/constants/TherapyDetailsConstants';
+import useAlert from '@src/hooks/useAlert';
+import { handleApiError } from '@src/util/ApiUtils';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -24,12 +29,15 @@ function TherapySelection() {
   const location = useLocation();
   const [therapy, setTherapy] = useState(null);
   const { clearFilters, applyFilters } = useTherapy();
+  const [initialSelectedThearpy, setInitialSelectedTherapy] = React.useState(null);
   const { formState } = useManageOrder();
   const searchParams = new URLSearchParams(location.search);
   const therapyDetails = searchParams.get('therapy-details');
-
+  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const { orderId } = useParams();
-  const { isEdit = false } = location.state || {};
+  const { isEdit = false, isApprover = false, isBack = false } = location.state || {};
+  const alertContainerId = 'alert-container';
+  const { showAlert } = useAlert();
 
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.THERAPY_SELECTION);
@@ -39,6 +47,7 @@ function TherapySelection() {
     const { therapy } = formState.activeRecord || {};
     if (therapy) {
       setTherapy(therapy);
+      setInitialSelectedTherapy(therapy);
     } else {
       console.log('Could not set therapy');
     }
@@ -97,39 +106,76 @@ function TherapySelection() {
     onSuccess: (result) => {
       setActiveRecord(result);
       const { id } = result;
-      navigate(`../${id}/accounts`);
+      navigate(`../${id}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
     },
-    onError: console.log
+    onError: (err) => {
+      const errorKey = handleApiError(err);
+      showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
+    }
   });
+
+  const { isLoading: isUpdating, mutate: updateTherapy } = useMutation(
+    async ({ orderId, payload }) => {
+      return await OrderService.updateTherapy(orderId, payload);
+    },
+    {
+      onSuccess: (result) => {
+        setActiveRecord(result);
+        const { id } = result;
+        navigate(`../${id}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
+      },
+      onError: (err) => {
+        const errorKey = handleApiError(err);
+        showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
+      }
+    }
+  );
 
   const handleOnSubmit = () => {
     if (therapy) {
       const payload = {
         id: therapy.id
       };
+      if (isEdit || isApprover || isBack) {
+        updateTherapy({ orderId, payload });
+      } else {
+        createNewOrder(payload);
+      }
+    }
+  };
+  const isDirty = JSON.stringify(therapy) !== JSON.stringify(initialSelectedThearpy);
 
-      createNewOrder(payload);
+  const handleOnBackToOrders = () => {
+    if (isDirty) {
+      setModalSuccessCallback('list');
+    } else {
+      navigate(RoutePaths.pathOrderManagement);
     }
   };
 
-  const handleOnBackToOrders = () => {
-    //compare data change, display modal for confirmation
-    navigate('/orders');
+  const handleCancel = () => {
+    if (isDirty) {
+      setModalSuccessCallback(isEdit ? 'summary' : 'list');
+      return;
+    }
+    if (isEdit) {
+      navigate(`../${orderId}/summary`, { state: { isEdit: true, isApprover: isApprover } });
+    } else {
+      navigate(RoutePaths.pathOrderManagement);
+    }
   };
 
-  const handleCancel = () => {
-    if (isEdit) {
-      navigate(`../${orderId}/summary`);
-    } else {
-      navigate('/orders');
+  const handleNavigate = () => {
+    if (modalSuccessCallback === 'list') {
+      navigate(RoutePaths.pathOrderManagement);
+    } else if (modalSuccessCallback === 'summary') {
+      navigate(`../${orderId}/summary`, { state: { isEdit: true, isApprover: isApprover } });
     }
   };
 
   const handleOnDrawerSelect = (therapy) => {
     setTherapy(therapy);
   };
-
-  const forms = FormList(t);
 
   return (
     <div className="MCP-module-wrapper">
@@ -139,10 +185,11 @@ function TherapySelection() {
         </Button>
       </div>
 
-      <PageHeader heading={<Heading as="h1">{isEdit ? t('headings.editOrder') : t('headings.createNewOrder')}</Heading>} />
+      <PageHeader heading={<Heading as="h1">{isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')}</Heading>} />
 
       <div className="MCP-module-body">
         <OrderStepper />
+        <div id={alertContainerId} />
         <div className={styles.wrapper}>
           <div className="MCP-panel-container">
             <ModuleHeader heading={<Heading as="h2">{t('labels.therapySelection')}</Heading>} />
@@ -150,8 +197,8 @@ function TherapySelection() {
               <CommonFilters
                 onApplyFilters={applyFilters}
                 onClearFilters={clearFilters}
-                additionalFilters={additionalFiltersConfig}
-                searchPlaceholder={t('controls.placeholder.therepySelection.search')}
+                additionalFilters={[]}
+                searchPlaceholder={t('controls.placeholder.therapySelection.search')}
               />
             </div>
             <TherapyDataTable therapy={therapy} onChange={setTherapy} />
@@ -170,11 +217,23 @@ function TherapySelection() {
           />
           {therapyDetails && (
             <FloatingDrawer open={true} anchor="right" onClose={handleOnClose}>
-              <TherapyDetails therapyId={therapyDetails} onSelect={handleOnDrawerSelect} onClose={handleOnClose} />
+              <TherapyDetails
+                therapyId={therapyDetails}
+                onSelect={handleOnDrawerSelect}
+                onClose={handleOnClose}
+                therapyData={TherapyDetailsConstants}
+              />
             </FloatingDrawer>
           )}
         </div>
       </div>
+      <DiscardChangesModal
+        heading={t('messages.confirmation.discardheader')}
+        description={t('messages.confirmation.therapy')}
+        isOpen={Boolean(modalSuccessCallback)}
+        onClose={() => setModalSuccessCallback(null)}
+        onConfirm={handleNavigate}
+      />
     </div>
   );
 }

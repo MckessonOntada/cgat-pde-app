@@ -13,6 +13,7 @@ import usePermission from '@src/hooks/usePermissions';
 import ApproverList from './ApproverList';
 import { useApprover } from '../../context/ApproverContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import AuthUtils from '@src/util/AuthUtils';
 
 export default function Dashboard() {
   const { t } = useTranslate();
@@ -66,8 +67,8 @@ export default function Dashboard() {
 
   const breadcrumbItems = [
     {
-      label: t('approvergroup.breadcrumb.labeldashboard'),
-      url: '/'
+      label: t('approvergroup.breadcrumb.admin'),
+      url: AuthUtils.isSystemAdminView() ? '/' : '/admin'
     },
     {
       label: t('approvergroup.header.label')

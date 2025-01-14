@@ -11,7 +11,8 @@ export const tabListData = [
     isActiveTab: true,
     sequence: 1,
     labelForMobile: 'Bank Accounts',
-    path: PATHS.bankAccounts
+    path: PATHS.bankAccounts,
+    translationKey: 'bankAccount'
   },
   ,
   {
@@ -21,6 +22,7 @@ export const tabListData = [
     isActiveTab: false,
     sequence: 2,
     labelForMobile: 'Credit Cards',
-    path: PATHS.creditCards
+    path: PATHS.creditCards,
+    translationKey: 'CreditCards'
   }
 ];

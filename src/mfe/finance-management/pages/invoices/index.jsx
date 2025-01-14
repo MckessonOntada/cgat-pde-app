@@ -5,6 +5,7 @@ import './index.scss';
 import { usePaymentInvoices } from '../../context/PaymentsInvoicesContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Button } from '@mckesson/mcp-component-library';
+import { DUE_STATUS } from './InvoiceConstants';
 
 export default function Invoices(params) {
   const { t } = useTranslate();
@@ -24,17 +25,23 @@ export default function Invoices(params) {
         name: 'status',
         tableColumnId: 'status',
         customLabel: (data) => {
-          return data == 'PLUS_91_DAYS_OVERDUE' ? '+91 DAYS OVERDUE' : data.match(/\d+/) ? `${data.match(/\d+/)[0]} DAYS OVERDUE` : data;
+          return DUE_STATUS[data].label;
         },
         label: t('paymentInvoices.history.table.status'),
         options: []
       },
       {
         type: 'dateRangePicker',
-        name: 'dateRange',
-        startDateLabel: t('paymentInvoices.history.table.PostingDate'),
-        endDateLabel: t('paymentInvoices.history.table.DueDate')
+        name: 'billDate',
+        startDateLabel: t('paymentInvoices.invoicesTable.filter.billDateStart'),
+        endDateLabel: t('paymentInvoices.invoicesTable.filter.billDateEnd')
       }
+      // {
+      //   type: 'dateRangePicker',
+      //   name: 'dueDate',
+      //   startDateLabel: t('paymentInvoices.invoicesTable.filter.dueDateStart'),
+      //   endDateLabel: t('paymentInvoices.invoicesTable.filter.dueDateEnd')
+      // }
     ];
   }, []);
   return (
@@ -44,13 +51,12 @@ export default function Invoices(params) {
           onApplyFilters={applyFilters}
           onClearFilters={clearFilters}
           additionalFilters={AdditionalFiltersConfig}
-          searchPlaceholder={t('pendingPayments.filters.autoSearch')}
+          searchPlaceholder={t('paymentInvoices.filter.search')}
           actualData={actualData}
         />
       </div>
       <div className="MCP-table-wrapper">
         <div className="table-header">
-          <h1>{t('paymentInvoices.history.table.heading')}</h1>
           <Button variant="secondary" onClick={() => {}} size="sm" disabled>
             {t('paymentInvoices.CS.ExportExcel')}
           </Button>

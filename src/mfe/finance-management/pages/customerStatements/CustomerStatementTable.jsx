@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 
 export default function CustomerStatementTable() {
   const { t } = useTranslate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError } = useCustomerStatements();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportPDF } = useCustomerStatements();
   const columns = [
     {
       id: 'billNumber',
@@ -20,11 +20,7 @@ export default function CustomerStatementTable() {
       sortable: true,
       wrap: true,
       minWidth: '112px',
-      cell: (props) => (
-        <div className="cellEllipse">
-          <Link style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}>{`${props.docNo}`}</Link>
-        </div>
-      )
+      cell: (props) => <div className="cellEllipse">{`${props.docNo}`}</div>
     },
     {
       id: 'accountNumber',
@@ -42,7 +38,7 @@ export default function CustomerStatementTable() {
       minWidth: '144px',
       sortable: true,
       wrap: true,
-      cell: (props) => dayjs(props.date, 'YYYY-MM-DD')?.format('MM/DD/YYYY') || '-'
+      cell: (props) => dayjs(props.date, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'
     },
     {
       id: 'statementBalance',
@@ -52,24 +48,24 @@ export default function CustomerStatementTable() {
       wrap: true,
       minWidth: '144px',
       cell: (props) => (
-        <div className="status-container">
+        <div className="status-container align-items-right">
           <FormattedNumber value={props?.statementBalance} style="currency" currency="USD" />
         </div>
+      ),
+      right: true
+    },
+    {
+      name: t('paymentInvoices.history.table.Actions'),
+      selector: (row) => row,
+      minWidth: '144px',
+      sortable: true,
+      wrap: true,
+      cell: (props) => (
+        <Button className="back-button-control" variant="tertiary" Icon={() => <PDFicon />} onClick={() => exportPDF(props)} size="md">
+          {t('paymentInvoices.CS.table.exportPdf')}
+        </Button>
       )
     }
-    // {
-    //   name: t('paymentInvoices.history.table.Actions'),
-    //   selector: () => {},
-    //   minWidth: '144px',
-    //   sortable: true,
-    //   wrap: true,
-
-    //   cell: (props) => (
-    //     <Button className="back-button-control" variant="tertiary" Icon={() => <PDFicon />} onClick={() => {}} size="md">
-    //       {t('paymentInvoices.CS.table.exportPdf')}
-    //     </Button>
-    //   )
-    // }
   ];
   const handleSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
@@ -112,7 +108,8 @@ export default function CustomerStatementTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}>
+            }}
+          >
             <Loader variant="circular" />
           </div>
         }

@@ -1,4 +1,6 @@
+import CommonService from '@src/api/commonService/CommonService';
 import { SESSION_CONST } from '@src/constants/SessionConstants';
+import { permission } from 'process';
 /**
  * @description - Check if the user has a specific role
  * @param {any} role - The input to check.
@@ -42,13 +44,37 @@ const isSystemAdmin = function () {
 };
 
 const isSystemAdminView = function () {
+  const impersonateId = getImpersonateId();
+  if (impersonateId) {
+    return isSystemAdmin();
+  }
   return isSystemAdmin() && !getPracticeId();
+};
+
+const setImpersonateId = async (id) => {
+  if (!id) throw new Error('Missing impersonate id');
+
+  sessionStorage.setItem('x-imp-user-id', id);
+  await CommonService.updateSessionStorage();
+};
+
+const removeImpersonateId = async () => {
+  sessionStorage.removeItem('x-imp-user-id');
+  await CommonService.updateSessionStorage();
+};
+
+const getImpersonateId = () => {
+  try {
+    const impersonatedSelectedId = sessionStorage.getItem('x-imp-user-id');
+    return impersonatedSelectedId;
+  } catch (error) {}
+  return null;
 };
 
 /**
  * @description - Check if the user has a specific permission
  * @param {any} permission - The input to check.
- * @returns {boolean} - True if the user has speicific permission, false otherwise.
+ * @returns {boolean} - True if the user has specific permission, false otherwise.
  */
 const userHasPermission = function (permission) {
   // const role = sessionStorage.getItem(SESSION_CONST.USER_ROLE);
@@ -61,10 +87,13 @@ const userHasPermission = function (permission) {
 /**
  * @description - Check if the user has a specific permission
  * @param {any} pathname - The input to check.
- * @returns {boolean} - True if the user has speicific permission, false otherwise.
+ * @returns {boolean} - True if the user has specific permission, false otherwise.
  */
 const userHasRoutePermission = function (routePermissions) {
   const userPermissions = getUserPermissions() || [];
+  if (routePermissions.length === 0) {
+    return true;
+  }
   const hasAccess = routePermissions.some((permission) => userPermissions.includes(permission));
   return hasAccess;
 };
@@ -80,6 +109,9 @@ const AuthUtils = Object.freeze({
   getPracticeId,
   setPracticeId,
   removePracticeId,
+  setImpersonateId,
+  getImpersonateId,
+  removeImpersonateId,
   isSystemAdmin,
   isSystemAdminView
 });

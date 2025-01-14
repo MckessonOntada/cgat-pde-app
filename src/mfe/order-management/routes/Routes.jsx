@@ -76,15 +76,22 @@ function OrderManagementRoutes() {
       <Route
         path={`:orderId/summary`}
         element={
-          <ProtectedRoute permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS]}>
+          <ProtectedRoute permissions={[]}>
             <Summary />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={`:orderId/order-confirmed`}
+        element={
+          <ProtectedRoute permissions={[]}>
+            <OrderStatus />
           </ProtectedRoute>
         }
       />
 
       <Route path={routesConfig.viewDetails} element={<OrderSummary />} />
       <Route path={routesConfig.reviewOrder} element={<div></div>} />
-      <Route path={`${routesConfig.status}/:orderId`} element={<OrderStatus />} />
       <Route path={'*'} element={<NotFound />} />
     </Routes>
   );

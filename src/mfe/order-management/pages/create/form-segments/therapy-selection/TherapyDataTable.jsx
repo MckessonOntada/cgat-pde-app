@@ -39,15 +39,15 @@ const TherapyDataTable = ({ therapy, onChange }) => {
       totalRocords={paginationConfig.totalElements}
       recordsPerPage={paginationConfig.pageSize}
       aria-label={t('table.ariaLabel.orderList')}
-      paginationRecordsPerPageMessage={'per page'}
-      paginationTotalRecorsMessage={'result'}
+      paginationRecordsPerPageMessage={t('labels.perPage')}
+      paginationTotalRecorsMessage={t('labels.results')}
       noDataComponent={
         <EmptyDataTable
           isLoading={isFetching}
           error={error && error.message}
           image={EmptyDataImage}
-          heading={t('table.add.label')}
-          description={t('table.empty_table_description')}
+          heading={t('table.labels.therapySelectionNoDataAvailable')}
+          description={t('table.labels.therapySelectionNoDataAvailableDescription')}
         />
       }
     />

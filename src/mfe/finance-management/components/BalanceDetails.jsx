@@ -6,6 +6,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import { useBalanceContext } from '../context/BalanceContext';
 import { useAccountContext } from '../context/AccountContext';
+import { FinanceUtils } from '@src/util/FinanceUtil';
 
 export default function BalanceDetails() {
   const { t } = useTranslate();
@@ -20,17 +21,17 @@ export default function BalanceDetails() {
       const formattedData = [
         {
           label: t('paymentInvoices.metrics.totalDebitBalance'),
-          value: `$${totalDebitBalance || '0.00'}`,
+          value: `${Math.abs(totalDebitBalance) || '0.00'}`,
           tooltipText: t('paymentInvoices.metrics.totalDebitBalance.tooltipText')
         },
         {
           label: t('paymentInvoices.metrics.totalCreditBalance'),
-          value: `$${totalCreditBalance || '0.00'}`,
+          value: `${Math.abs(totalCreditBalance) || '0.00'}`,
           tooltipText: t('paymentInvoices.metrics.totalCreditBalance.tooltipText')
         },
         {
           label: t('paymentInvoices.metrics.pastDueBalance'),
-          value: `$${pastDueBalance || '0.00'}`,
+          value: `${Math.abs(pastDueBalance) || '0.00'}`,
           tooltipText: t('paymentInvoices.metrics.pastDueBalance.tooltipText')
         }
       ];
@@ -41,15 +42,16 @@ export default function BalanceDetails() {
   const formatChartData = (data) => {
     if (data) {
       const formattedData = [
-        { key: '1_30_DAYS_OVERDUE', label: t('paymentInvoices.balanceCard.1_30_DAYS_OVERDUE'), color: '#BED630' },
-        { key: '31_60_DAYS_OVERDUE', label: t('paymentInvoices.balanceCard.31_60_DAYS_OVERDUE'), color: '#F7C91E' },
-        { key: '61_90_DAYS_OVERDUE', label: t('paymentInvoices.balanceCard.61_90_DAYS_OVERDUE'), color: '#FF9839' },
+        { key: 'OVERDUE', label: t('paymentInvoices.balanceCard.1_30_DAYS_OVERDUE'), color: '#BED630' },
+        { key: 'PLUS_31_DAYS_OVERDUE', label: t('paymentInvoices.balanceCard.31_60_DAYS_OVERDUE'), color: '#F7C91E' },
+        { key: 'PLUS_61_DAYS_OVERDUE', label: t('paymentInvoices.balanceCard.61_90_DAYS_OVERDUE'), color: '#FF9839' },
         { key: 'PLUS_91_DAYS_OVERDUE', label: t('paymentInvoices.balanceCard.PLUS_91_DAYS_OVERDUE'), color: '#DB3A29' }
       ];
 
       return formattedData.map(({ key, label, color }) => ({
         label,
-        segmentValue: data[key] || 0,
+        segmentValue: Math.abs(data[key] || 0),
+        displayValue: FinanceUtils.formatCurrency(parseFloat(Math.abs(data[key] || 0))),
         color
       }));
     }
@@ -65,12 +67,12 @@ export default function BalanceDetails() {
             <div className="metrics">
               {formatBalanceData(balanceData).map((data, index) => (
                 <div key={index} className="info-cards-container">
-                  <InfoCards title={data.label} value={data.value} infoText={data.tooltipText} />
+                  <InfoCards title={data.label} value={FinanceUtils.formatCurrency(parseFloat(data.value))} infoText={data.tooltipText} />
                 </div>
               ))}
             </div>
             <div className="action-button">
-              <Button size={'lg'} disabled={!CommonUtils.isNonEmptyObject(balanceData)}>
+              <Button size={'lg'} disabled={!CommonUtils.isNonEmptyObject(balanceData) || true}>
                 {t('paymentInvoices.balanceCard.payNowBtn')}
               </Button>
             </div>
@@ -78,7 +80,7 @@ export default function BalanceDetails() {
           {!CommonUtils.isNonEmptyObject(balanceData) ? null : <Divider className="divider-style" />}
           {!CommonUtils.isNonEmptyObject(balanceData) ? null : (
             <div className="metrics-chart">
-              <LinearSegmentChart data={formatChartData(balanceData.overDueAmountByStatus)} unit={'$'} />
+              <LinearSegmentChart data={formatChartData(balanceData.overDueAmountByStatus)} />
             </div>
           )}
         </div>

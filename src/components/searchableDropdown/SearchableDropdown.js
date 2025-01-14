@@ -342,7 +342,7 @@ export const SearchableDropdown = (props) => {
           setDisplayValue(tempOption[0]);
         }
       } else {
-        setDisplayValue(CommonUtils.isNonEmptyString(defaultSelectedLabel) ? defaultSelectedLabel : 'Select option');
+        setDisplayValue(CommonUtils.isNonEmptyString(defaultSelectedLabel) ? defaultSelectedLabel : searchPlaceholder);
       }
     }
     if (isMultiSelect && onChange) {
@@ -797,7 +797,7 @@ export const SearchableDropdown = (props) => {
         if (CommonUtils.isNonEmptyString(defaultSelectedLabel)) {
           return defaultSelectedLabel;
         }
-        return 'Select option';
+        return searchPlaceholder;
       }
     } else {
       if (showSelectedLabels ? !CommonUtils.isNonEmptyString(getSelectedLabels()) : getSelectedCount() === 0) {
@@ -837,7 +837,7 @@ export const SearchableDropdown = (props) => {
     selectedOptionsUi =
       selectedOptions &&
       selectedOptions?.map((option, index) => {
-        const { label, value } = option;
+        const { label, labelDescription = null, value } = option;
         return (
           <li
             className={`${styles.selectMenuItem} ${!isMultiSelect ? styles['selectMenuItemSingleSelect' + size] : ''} ${
@@ -870,8 +870,7 @@ export const SearchableDropdown = (props) => {
               />
             )}
             <div
-              // className={`${!isMultiSelect ? styles.growFlex : ''} ${styles.lineClamps2}`}
-              className={`${!isMultiSelect ? styles.growFlex : ''}`}
+              className={`${!isMultiSelect ? styles.growFlex : ''} ${styles.width100}`}
               tabIndex={isActionable ? 0 : -1}
               onClick={(e) => (isActionable ? handleSelect('SELECTED', value) : null)}
               onKeyDown={(event) => {
@@ -879,7 +878,12 @@ export const SearchableDropdown = (props) => {
                   handleSelect('SELECTED', value);
                 }
               }}>
-              <TooltipText className={styles.lineClamps2}>{label}</TooltipText>
+              <TooltipText className={styles.lineClamps2}>
+                <div className={labelDescription ? styles.compoundLabel : ''}>
+                  <span className={labelDescription ? styles.labelWithDescription : ''}>{label}</span>
+                  {labelDescription ? <span className={styles.labelDescription}>{labelDescription}</span> : null}
+                </div>
+              </TooltipText>
             </div>
             {isActionable && !option.isHideAction && (
               <button
@@ -904,7 +908,7 @@ export const SearchableDropdown = (props) => {
     nonSelectedOptionsUi =
       tempTwentyOptions &&
       tempTwentyOptions.map((option, index) => {
-        const { label, value, endLabel } = option;
+        const { label, labelDescription, value, endLabel } = option;
 
         return (
           <li
@@ -955,7 +959,12 @@ export const SearchableDropdown = (props) => {
                   <span className={styles.endLabelOptionEndLabel}>{endLabel}</span>
                 </div>
               ) : (
-                <TooltipText className={styles.lineClamps2}>{label}</TooltipText>
+                <TooltipText className={styles.lineClamps2}>
+                  <div className={labelDescription ? styles.compoundLabel : ''}>
+                    <span className={labelDescription ? styles.labelWithDescription : ''}>{label}</span>
+                    {labelDescription ? <span className={styles.labelDescription}>{labelDescription}</span> : null}
+                  </div>
+                </TooltipText>
               )}
             </div>
             {isActionable && !option.isHideAction && (

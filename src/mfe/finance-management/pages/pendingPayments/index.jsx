@@ -12,23 +12,25 @@ export default function PendingPayments(params) {
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
-      {
-        type: 'multiSelectDropdown',
-        name: 'paymentStatus',
-        tableColumnId: 'paymentStatus',
-        label: t('pendingPayments.table.paymentStatus'),
-        options: []
-      },
-      {
-        type: 'dropdown',
-        name: 'billDate',
-        tableColumnId: 'billDate',
-        label: t('pendingPayments.table.billDate'),
-        options: []
-      },
+      // {
+      //   type: 'multiSelectDropdown',
+      //   name: 'paymentStatus',
+      //   tableColumnId: 'paymentStatus',
+      //   label: t('pendingPayments.table.paymentStatus'),
+      //   options: []
+      // },
+      // {
+      //   type: 'dropdown',
+      //   name: 'billDate',
+      //   tableColumnId: 'payOn',
+      //   label: t('pendingPayments.table.billDate'),
+      //   options: []
+      // },
       {
         type: 'dateRangePicker',
-        name: 'dateRange'
+        name: 'paymentInitiationDate',
+        startDateLabel: t('paymentInvoices.pendingPayments.filter.initiationDateStart'),
+        endDateLabel: t('paymentInvoices.pendingPayments.filter.initiationDateEnd')
       }
     ];
   }, []);
@@ -45,11 +47,6 @@ export default function PendingPayments(params) {
       </div>
       <div className="MCP-table-wrapper">
         <div className="table-header">
-          <div>
-            <h1>{t('pendingPayments.table.heading')} </h1>
-            <h2 className="subHeader">{t('pendingPayments.table.paymentMethod.subHeader')}</h2>
-          </div>
-
           <Button variant="secondary" onClick={() => {}} size="sm" disabled>
             {t('paymentInvoices.CS.ExportExcel')}
           </Button>

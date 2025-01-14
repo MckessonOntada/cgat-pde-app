@@ -37,7 +37,11 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
     refetchOnWindowFocus: false
   });
 
-  const getAllPermissions = () => Object.values(PERMISSIONS_ENUM).flatMap((permissions) => Object.values(permissions));
+  const filteredPermissionsEnum = isSystemAdminView
+    ? PERMISSIONS_ENUM
+    : Object.fromEntries(Object.entries(PERMISSIONS_ENUM).filter(([key]) => key !== 'ORGANIZATION_MANAGEMENT'));
+
+  const getAllPermissions = () => Object.values(filteredPermissionsEnum).flatMap((permissions) => Object.values(permissions));
 
   const enableAllPermissions = () => {
     const allPermissions = getAllPermissions();
@@ -52,7 +56,14 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
     const selected = value;
     const roleId = roleData?.find((item) => item.id == value);
 
-    const permissions = roleId?.permissions ?? [];
+    // Get permissions for the selected role
+    let permissions = roleId?.permissions ?? [];
+
+    // Exclude ORGANIZATION_MANAGEMENT permissions if not system admin
+    if (!isSystemAdminView) {
+      const excludedPermissions = Object.values(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT);
+      permissions = permissions.filter((permission) => !excludedPermissions.includes(permission));
+    }
 
     if (selected) {
       setSelectedRole(selected);
@@ -62,7 +73,9 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
   };
 
   const togglePermission = (permission) => {
-    const updatedPermissions = isPermissionEnabled(permission) ? enabledPermissions.filter((perm) => perm !== permission) : [...enabledPermissions, permission];
+    const updatedPermissions = isPermissionEnabled(permission)
+      ? enabledPermissions.filter((perm) => perm !== permission)
+      : [...enabledPermissions, permission];
 
     setEnabledPermissions(updatedPermissions);
   };
@@ -79,7 +92,15 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
 
           <div className="MCP-panel-container">
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
-              <Dropdown id="role" label={t('userManagement.user_permissions.select_role')} value={selectedRole} onChange={handleRoleChange} options={roleData || []} isRequired={!isRolePage} size="lg" />
+              <Dropdown
+                id="role"
+                label={t('userManagement.user_permissions.select_role')}
+                value={selectedRole}
+                onChange={handleRoleChange}
+                options={roleData || []}
+                isRequired={!isRolePage}
+                size="lg"
+              />
             </div>
           </div>
         </Fragment>
@@ -102,7 +123,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
       />
 
       <div className="MCP-panel-container grid grid-gap-16">
-        {Object.entries(PERMISSIONS_ENUM).map(([category, permissions]) => (
+        {Object.entries(filteredPermissionsEnum).map(([category, permissions]) => (
           <div key={category} className="MCP-module-body permission-category">
             <Heading as="h3">{t(category)}</Heading>
             <div className="permission-category">
@@ -126,7 +147,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
                         />
                       </div>
                     </div>
-                    {idx % 2 === 0 && idx !== Object.keys(PERMISSIONS_ENUM[category]).length - 1 && <div className="divider"></div>}
+                    {idx % 2 === 0 && idx !== Object.keys(filteredPermissionsEnum[category]).length - 1 && <div className="divider"></div>}
                   </React.Fragment>
                 ))}
               </div>

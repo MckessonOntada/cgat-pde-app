@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
+import dayjs from 'dayjs';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { useAccountContext } from './AccountContext';
+import CommonUtils from '@src/util/CommonUtils';
 
 const PaymentsCreditsContext = createContext();
 
@@ -20,7 +22,7 @@ const INITIAL_FILTER_STATE = {
   searchQuery: '',
   billNumber: [],
   soldToSite: [],
-  dateRange: ''
+  billDate: ''
 };
 
 const INITIAL_SORT_STATE = {
@@ -56,7 +58,7 @@ export const PaymentsCreditsProvider = ({ children }) => {
   };
 
   const filterData = async (filters) => {
-    if (JSON.stringify(filters.dateRange) !== JSON.stringify(previousFilterConfig.dateRange)) {
+    if (JSON.stringify(filters.billDate) !== JSON.stringify(previousFilterConfig.billDate)) {
       await refetch();
       setPreviousFilterConfig(filters);
     }
@@ -65,7 +67,14 @@ export const PaymentsCreditsProvider = ({ children }) => {
       const matchesSearchQuery = filters?.searchQuery
         ? item.billNumber?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase())
         : true;
-      return matchesSearchQuery;
+      const matchesBillDate =
+        filters?.billDate?.length === 2
+          ? new Date(dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY')) >=
+              new Date(CommonUtils.isNonEmptyString(filters.billDate[0]) ? dayjs(filters.billDate[0]).format('MM/DD/YYYY') : new Date()) &&
+            new Date(dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY')) <=
+              new Date(CommonUtils.isNonEmptyString(filters.billDate[1]) ? dayjs(filters.billDate[1]).format('MM/DD/YYYY') : new Date())
+          : true;
+      return matchesSearchQuery && matchesBillDate;
     });
 
     const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
@@ -90,8 +99,8 @@ export const PaymentsCreditsProvider = ({ children }) => {
         salesOrg: selectedAccount?.salesOrg,
         payerAccountNumber: selectedAccount?.accountNumber
       };
-      //  if(filterConfig.dateRange?.length>0 && JSON.stringify(filterConfig.dateRange) !== JSON.stringify(previousFilterConfig.dateRange)){
-      //   payload={...payload,...{dateFrom:filterConfig.dateRange[0]??"",dateTo:filterConfig.dateRange[1]??""}}
+      //  if(filterConfig.billDate?.length>0 && JSON.stringify(filterConfig.billDate) !== JSON.stringify(previousFilterConfig.billDate)){
+      //   payload={...payload,...{dateFrom:filterConfig.billDate[0]??"",dateTo:filterConfig.billDate[1]??""}}
       //  }
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
       if (res.data) {
@@ -141,12 +150,17 @@ export const PaymentsCreditsProvider = ({ children }) => {
       const valA = a[newSortConfig.sortBy];
       const valB = b[newSortConfig.sortBy];
 
-      if (typeof valA === 'string' && typeof valB === 'string') {
+      if (typeof valA === 'string' && typeof valB === 'string' && newSortConfig.sortBy !== 'billDate') {
         return newSortConfig.sortOrder === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
       } else if (typeof valA === 'number' && typeof valB === 'number') {
         return newSortConfig.sortOrder === 'asc' ? valA - valB : valB - valA;
-      } else if (valA instanceof Date && valB instanceof Date) {
-        return newSortConfig.sortOrder === 'asc' ? new Date(valA) - new Date(valB) : new Date(valB) - new Date(valA);
+      } else if (newSortConfig.sortBy === 'billDate') {
+        const dateA = dayjs(valA, 'DD/MM/YYYY');
+        const dateB = dayjs(valB, 'DD/MM/YYYY');
+        if (!dateA.isValid() || !dateB.isValid()) {
+          return 0;
+        }
+        return newSortConfig.sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
       } else {
         return 0;
       }

@@ -25,9 +25,6 @@ export default function BankAccounts(params) {
           useRegister={false}
         />
       </div>
-      <div className="table-header">
-        <h1>{t('paymentInvoices.paymentMethods.table.cards.heading')}</h1>
-      </div>
       <BankAccountsTable />
     </React.Fragment>
   );

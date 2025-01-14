@@ -31,8 +31,8 @@ export default function PaymentHistory(params) {
       {
         type: 'dateRangePicker',
         name: 'dateRange',
-        startDateLabel: t('paymentInvoices.history.table.PostingDate'),
-        endDateLabel: t('paymentInvoices.history.table.DueDate'),
+        startDateLabel: t('paymentInvoices.pendingPayments.filter.initiationDateStart'),
+        endDateLabel: t('paymentInvoices.pendingPayments.filter.initiationDateEnd'),
         minDate: dayjs().subtract(180, 'days').toDate(),
         maxDate: new Date()
       }
@@ -51,7 +51,6 @@ export default function PaymentHistory(params) {
         />
       </div>
       <div className="table-header">
-        <h1>{t('paymentInvoices.history.table.heading')}</h1>
         <Button variant="secondary" onClick={() => {}} size="sm" disabled>
           {t('paymentInvoices.CS.ExportExcel')}
         </Button>

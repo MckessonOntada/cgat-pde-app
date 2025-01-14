@@ -5,10 +5,10 @@ import { ReactComponent as IconLogout } from '@src/assets/svg/logout.svg';
 import { ReactComponent as IconMenu } from '@src/assets/svg/burger-menu.svg';
 import { ReactComponent as IconArrowDown } from '@src/assets/svg/arrow-down-filled.svg';
 import { ReactComponent as IconHelp } from '@src/assets/svg/help-circle-filled.svg';
-import { connect, useDispatch, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { setUserData } from '@src/store/reducer/userReducer';
 import { debugIds, ID } from '@src/constants/id';
-import { Button, Dropdown, DropdownMenu, SearchableDropdown, Modal } from '@mckesson/mcp-component-library';
+import { Button, MenuList, Modal } from '@mckesson/mcp-component-library';
 import styles from './assets/styles/Header.module.scss';
 import { useIntl } from 'react-intl';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -23,7 +23,7 @@ import AuthUtils from '../../util/AuthUtils';
 import { useTranslate } from '@src/translations/useTranslation';
 import { currentLocale } from '@src/translations/i18n';
 
-const PrimaryHeader = ({ user, setUserData, debugId }) => {
+const PrimaryHeader = () => {
   const intl = useIntl();
   const { t } = useTranslate();
   const { oktaAuth, authState } = useOktaAuth();
@@ -117,32 +117,25 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
         <span>{intl.formatMessage({ id: 'header.label.notifications' })}</span>
         <IconNotification />
       </Link>,
-      <DropdownMenu
-        anchorEl={
-          <button className={styles.actionLink} aria-label="Account options">
-            <span>{userName || 'Anonymous'}</span>
-            <IconArrowDown />
-          </button>
-        }
-        handleSelect={() => {}}
-        options={HeaderConfig.profileOptions}
-        aria-label="Profile options"
-      />,
+      <MenuList handleSelect={() => {}} options={HeaderConfig.profileOptions} aria-label="Profile options">
+        <button className={styles.actionLink} aria-label="Account options">
+          <span>{userName || 'Anonymous'}</span>
+          <IconArrowDown />
+        </button>
+      </MenuList>,
       <div className={styles.languageSelect}>
-        <DropdownMenu
-          anchorEl={
-            <button className={styles.actionLink} aria-label="language options">
-              <span>{currentLanguage?.label || 'English'}</span>
-              <IconArrowDown />
-            </button>
-          }
-          handleSelect={(e) => {
-            localStorage.setItem('APP_LOCALE', e.value);
+        <MenuList
+          handleSelect={(val) => {
+            localStorage.setItem('APP_LOCALE', val);
             window.location.reload();
           }}
           options={HeaderConfig.languages}
-          aria-label="language options"
-        />
+          aria-label="language options">
+          <button className={styles.actionLink} aria-label="language options">
+            <span>{currentLanguage?.label || 'English'}</span>
+            <IconArrowDown />
+          </button>
+        </MenuList>
       </div>,
       <Link className={styles.actionLink} to={'help'} aria-label="Help center">
         <span>{intl.formatMessage({ id: 'header.label.help' })}</span>

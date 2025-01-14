@@ -12,11 +12,7 @@ export function renderModal({ title, bodyContent, footerActions, modalClose }) {
   ) : (
     <>
       {footerActions?.cancel && (
-        <Button
-          variant="secondary"
-          size="md"
-          isModalButton={true}
-          onClick={() => store.dispatch(closeModal())}>
+        <Button variant="secondary" size="md" isModalButton={true} onClick={() => store.dispatch(closeModal())}>
           {footerActions.cancel.label || 'Cancel'}
         </Button>
       )}
@@ -26,7 +22,12 @@ export function renderModal({ title, bodyContent, footerActions, modalClose }) {
           size={'md'}
           isModalButton={true}
           variant="primary"
-          onClick={footerActions.confirm.action}>
+          onClick={() => {
+            try {
+              footerActions.confirm.action();
+              store.dispatch(closeModal());
+            } catch (err) {}
+          }}>
           {footerActions.confirm.label || 'Confirm'}
         </Button>
       )}

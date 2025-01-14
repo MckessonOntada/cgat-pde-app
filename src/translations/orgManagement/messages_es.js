@@ -1,6 +1,7 @@
 export const OrgManagementES = {
   'orgManagement.header.label': 'S_Manage Organization',
   'orgManagement.header.dashboard': 'S_Dashboard',
+  'orgManagement.header.admin': 'S_Admin',
   'orgManagement.add.label': 'S_Add Organization',
   'orgManagement.clearFilter.label': 'S_clear filters',
   'orgManagement.searchFilter.label': 'S_Search By Name or Email',
@@ -30,6 +31,7 @@ export const OrgManagementES = {
   'orgManagement.button.activate': 'S_ACTIVE',
   'orgManagement.button.inactivate': 'S_INACTIVE',
   'orgManagement.button.confirm': 'S_Confirm',
+  'orgManagement.button.okay': 'S_Okay',
   'orgManagement.message.accountSelectionConfirmationTitle': 'S_Select this org?',
   'orgManagement.message.accountSelectionConfirmationDescription': 'S_Do you want to continue with selected organization',
   'orgManagement.message.roleDeactivateConfirmationTitle': 'S_Deactivate role?',
@@ -137,5 +139,7 @@ export const OrgManagementES = {
   'errors.practice_name_key': 'S_Organization name already exists.',
   'errors.practice_email_key': 'S_Email ID already exists in the System.',
   'errors.practice_phone_key': 'S_Phone number already exists.',
-  'errors.default': 'S_An unexpected error occurred.'
+  'errors.default': 'S_An unexpected error occurred.',
+  'message.userEmptyTableTitle': 'S_No Data Available',
+  'orgManagement.messages.userEmptyTableSubtitle': 'S_Data is unavailable. Please add an user to view the table content.'
 };

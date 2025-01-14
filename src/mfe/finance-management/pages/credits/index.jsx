@@ -14,7 +14,9 @@ export default function Credits(params) {
     return [
       {
         type: 'dateRangePicker',
-        name: 'dateRange'
+        name: 'billDate',
+        startDateLabel: t('paymentInvoices.invoicesTable.filter.billDateStart'),
+        endDateLabel: t('paymentInvoices.invoicesTable.filter.billDateEnd')
       }
     ];
   }, []);
@@ -25,13 +27,12 @@ export default function Credits(params) {
           onApplyFilters={applyFilters}
           onClearFilters={clearFilters}
           additionalFilters={AdditionalFiltersConfig}
-          searchPlaceholder={'Search by document number, sold to...'}
+          searchPlaceholder={t('paymentInvoices.filter.search')}
           actualData={actualData}
         />
       </div>
-      <div className="MCP-table-wrapper">
+      <div className="MCP-table-wrapper credit-table-container">
         <div className="table-header">
-          <h1>{t('paymentInvoices.credits.table.heading')}</h1>
           <Button variant="secondary" onClick={() => {}} size="sm" disabled>
             {t('paymentInvoices.CS.ExportExcel')}
           </Button>

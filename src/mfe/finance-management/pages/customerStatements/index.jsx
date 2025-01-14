@@ -15,8 +15,6 @@ export default function CustomerSatements(params) {
       {
         type: 'dateRangePicker',
         name: 'dateRange',
-        startDateLabel: t('paymentInvoices.history.table.PostingDate'),
-        endDateLabel: t('paymentInvoices.history.table.DueDate'),
         minDate: dayjs().subtract(180, 'days').toDate(),
         maxDate: new Date()
       }
@@ -30,13 +28,12 @@ export default function CustomerSatements(params) {
           onApplyFilters={applyFilters}
           onClearFilters={clearFilters}
           additionalFilters={AdditionalFiltersConfig}
-          searchPlaceholder={'Search by document number, sold to...'}
+          searchPlaceholder={t('paymentInvoices.CS.filters.autoSearch')}
           actualData={actualData}
         />
       </div>
       <div className="MCP-table-wrapper">
         <div className="table-header">
-          <h1> {t('paymentInvoices.CS.StatementListing')}</h1>
           <Button variant="secondary" onClick={() => {}} size="sm" disabled>
             {t('paymentInvoices.CS.ExportExcel')}
           </Button>

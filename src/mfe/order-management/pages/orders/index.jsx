@@ -1,29 +1,50 @@
 import React from 'react';
 import { TabList, Button, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle.svg';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { routesConfig } from './../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '../../../../components/module-header';
-import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
-import { getTabs, breadcrumbItems } from './constants';
+import { getTabs } from './constants';
 import OrderDataTable from './OrderDataTable';
 import CommonFilters from '@src/components/Filters';
 import { useOrders } from '../../context/OrderContext';
 import { useManageOrder } from '../../context/ManageOrderContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import PermittedComponent from '@src/components/permitted-component';
+import usePermission from '@src/hooks/usePermissions';
 
 const OrderIndex = () => {
   const { t } = useTranslate();
-  const [tabList, setTabList] = React.useState(getTabs(t));
-  const { applyFilters, clearFilters, changeTab } = useOrders();
+  const { hasPermission } = usePermission();
+  const isPendingTab = hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_PENDING_ORDERS);
+  const isSubmittedTab = hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS);
+  const { applyFilters, clearFilters, changeTab, tabVariant, setTabVariant } = useOrders();
+  const [tabList, setTabList] = React.useState(() => {
+    const allTabs = getTabs(t);
+    return allTabs.filter((tab) => {
+      if (tab.id === 1 && isPendingTab) {
+        setTabVariant(1);
+        return true;
+      }
+      if (tab.id === 2 && isSubmittedTab) {
+        setTabVariant(2);
+        return true;
+      }
+      return false;
+    });
+  });
+
   const { resetActiveRecord } = useManageOrder();
   const navigate = useNavigate();
-  const activeTab = tabList.find((tab) => tab.isActiveTab);
+  const location = useLocation();
+  const activeTabFromState = location.state?.activeTab;
+  const activeTab = tabList.find((tab) => tab.id === tabVariant);
+  const [tabKey, setTabKey] = React.useState(activeTabFromState || activeTab?.id);
 
+  const alertContainerId = 'summary-alert-container';
   const additionalFiltersConfig = React.useMemo(() => {
-    if (activeTab?.configName === 'SUBMITTED') return [];
+    if (activeTab?.id === 2) return [];
 
     return [
       {
@@ -31,9 +52,9 @@ const OrderIndex = () => {
         name: 'status',
         label: t('userManagement.table.status'),
         options: [
-          { label: 'All', value: 'all' },
-          { label: 'Pending', value: 'pending' },
-          { label: 'Approval Pending', value: 'approval pending' }
+          { label: 'ALL', value: 'ALL' },
+          { label: 'IN DRAFT', value: 'IN_DRAFT' },
+          { label: 'APPROVAL PENDING', value: 'APPROVAL_PENDING' }
         ]
       }
     ];
@@ -43,14 +64,15 @@ const OrderIndex = () => {
     setTabList(
       tabList.map((tab) => ({
         ...tab,
-        isActiveTab: tab.configName === activeTab
+        isActiveTab: tab.id === activeTab
       }))
     );
   };
 
   const handleOnTabChange = (tab) => {
-    setActiveTab(tab.configName);
-    changeTab(tab.configName);
+    setActiveTab(tab.id);
+    setTabKey(tab.id);
+    changeTab(tab.id);
   };
 
   const handleOnClick = () => {
@@ -59,12 +81,22 @@ const OrderIndex = () => {
   };
 
   React.useEffect(() => {
-    setActiveTab(tabList?.[0].configName);
-  }, []);
+    if (activeTabFromState) {
+      setActiveTab(activeTabFromState);
+      setTabVariant(2); // Set the tab from state
+    } else {
+      if (isPendingTab || (isPendingTab && isSubmittedTab)) {
+        setActiveTab(1);
+        setTabVariant(1);
+      } else if (isSubmittedTab) {
+        setActiveTab(2);
+        setTabVariant(2);
+      }
+    }
+  }, [activeTabFromState]);
 
   return (
     <div className="MCP-module-wrapper">
-      <Breadcrumb items={breadcrumbItems} />
       <ModuleHeader
         heading={<Heading as="h1">{t('headings.orders')}</Heading>}
         controls={
@@ -77,7 +109,7 @@ const OrderIndex = () => {
           </div>
         }
       />
-
+      <div id={alertContainerId} />
       {/* add alert here */}
 
       <div className="MCP-module-body">
@@ -91,7 +123,7 @@ const OrderIndex = () => {
             useAsButton={true}
             aria-label={t('controls.ariaLabels.orderTabList')}
           />
-          <div className="MCP-CardContainer">
+          <div className="MCP-CardContainer" key={tabKey}>
             <CommonFilters
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}
@@ -101,7 +133,7 @@ const OrderIndex = () => {
           </div>
           <div className="MCP-table-wrapper">
             <Heading as="h2">{t('headings.orderListing')}</Heading>
-            <OrderDataTable tab={activeTab && activeTab.configName.toLocaleLowerCase()} />
+            <OrderDataTable tab={activeTab && activeTab.id} alertContainerId={alertContainerId} />
           </div>
         </div>
       </div>

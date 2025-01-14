@@ -1,0 +1,28 @@
+@use "@src/assets/styles/abstracts/mixins";
+
+.bill-amount-wrapper {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--brand-color-patient-primary-3, #b3c2c9);
+  display: grid;
+  gap: 16px;
+  padding: var(--spacing-03);
+
+  @include mixins.respond("sm") {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--spacing-04);
+    flex-wrap: wrap;
+  }
+
+  .bill-amount-container {
+    .label {
+      font-size: 14px;
+      font-weight: 400;
+    }
+    .value {
+      font-size: 24px;
+      font-weight: 700;
+    }
+  }
+}

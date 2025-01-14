@@ -1,3 +1,4 @@
+import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 import { LOCALES } from '@src/translations/locales';
 
 const HeaderConfig = {
@@ -13,17 +14,18 @@ const HeaderConfig = {
       sequence: 1,
       translationName: 'header.tabs.dashboard'
     },
-
-    // {
-    //   label: 'Orders',
-    //   id: 2,
-    //   configName: 'Orders',
-    //   path: '/orders',
-    //   isActive: true,
-    //   isActiveTab: false,
-    //   labelForMobile: 'Orders',
-    //   sequence: 2
-    // },
+    {
+      label: 'Orders',
+      id: 4,
+      configName: 'Orders',
+      path: '/orders',
+      isActive: true,
+      isActiveTab: false,
+      labelForMobile: 'Orders',
+      translationName: 'header.tabs.orders',
+      permittedRoute: routePermissionConfig.orders,
+      sequence: 2
+    },
     {
       label: 'Payment and Invoices',
       path: '/record',
@@ -32,8 +34,9 @@ const HeaderConfig = {
       isActive: true,
       isActiveTab: false,
       labelForMobile: 'Payment and Invoices',
-      sequence: 3, 
-      translationName: 'header.tabs.paymentAndInvoices', 
+      sequence: 3,
+      translationName: 'header.tabs.paymentAndInvoices',
+      permittedRoute: routePermissionConfig.paymentInvoices,
       submenu: [
         {
           label: 'Invoices',
@@ -48,17 +51,19 @@ const HeaderConfig = {
           target: 'customer-statement'
         }
       ]
+    },
+    {
+      label: 'Admin',
+      path: '/admin',
+      id: 5,
+      configName: 'Admin',
+      isActive: true,
+      isActiveTab: false,
+      labelForMobile: 'Admin',
+      translationName: 'header.tabs.admin',
+      permittedRoute: routePermissionConfig.admin,
+      sequence: 1
     }
-    // {
-    //     label: 'Admin',
-    //     path: 'admin',
-    //     id: 4,
-    //     configName: 'Admin',
-    //     isActive: true,
-    //     isActiveTab: false,
-    //     labelForMobile: 'Admin',
-    //     sequence: 4
-    // }
   ],
   profileOptions: [
     {

@@ -2,11 +2,8 @@ import OrderService from '@src/api/commonService/OrderService';
 import React, { createContext, useContext, useState } from 'react';
 import { MdViewArray } from 'react-icons/md';
 import { useQuery } from 'react-query';
+import { StatusEnum } from '../pages/orders/constants';
 
-const TAB_VARIANT = {
-  PENDING_SUBMISSION: 'pending submission',
-  SUBMITTED: 'submitted'
-};
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
   status: []
@@ -37,21 +34,23 @@ export const OrderProvider = ({ children }) => {
   const [paginationConfig, setPaginationConfig] = React.useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);
   const [dataState, setDataState] = React.useState(INITIAL_DATA_STATE);
-  const [tabVariant, setTabVariant] = React.useState(TAB_VARIANT.PENDING_SUBMISSION);
+  const [tabVariant, setTabVariant] = React.useState(1);
 
   const requestParams = React.useMemo(() => {
-    const validStatuses = ['in_draft', 'approval_pending', 'submitted', 'all'];
+    const validStatuses = [StatusEnum.IN_DRAFT, StatusEnum.APPROVAL_PENDING, StatusEnum.SUBMITTED, 'all'];
     const isStatusValid = validStatuses.includes(filterConfig.status);
+
     const params = {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
       sortBy: sortConfig.sortBy || 'createdAt',
       sortOrder: sortConfig.sortOrder || 'desc',
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      ...(tabVariant === 'submitted'
-        ? { status: 'submitted' }
+      ...(tabVariant === 2
+        ? { statuses: StatusEnum.SUBMITTED }
         : {
-            status: isStatusValid && filterConfig.status !== 'all' ? filterConfig.status : ['in_draft', 'approval_pending']
+            statuses:
+              isStatusValid && filterConfig.status !== 'all' ? filterConfig.status : `${StatusEnum.IN_DRAFT},${StatusEnum.APPROVAL_PENDING}`
           })
     };
     return params;
@@ -62,7 +61,7 @@ export const OrderProvider = ({ children }) => {
     refetch: refreshData,
     error
   } = useQuery({
-    queryKey: ['orders'],
+    queryKey: ['orders', tabVariant],
     queryFn: async () => OrderService.getOrders(requestParams),
     onSuccess: (result) => {
       const { totalElements, totalPages } = result;
@@ -75,6 +74,16 @@ export const OrderProvider = ({ children }) => {
         setDataState(result.content);
       }
     }
+  });
+
+  const { isLoading, data: assginedGroupsData = {} } = useQuery({
+    queryKey: ['order', 'approver-group'],
+    queryFn: async () => {
+      const res = await OrderService.getAssignedGroups(requestParams);
+      return res;
+    },
+
+    refetchOnWindowFocus: false
   });
 
   React.useEffect(() => {
@@ -96,12 +105,10 @@ export const OrderProvider = ({ children }) => {
     setPaginationConfig((prevState) => ({ ...prevState, pageNumber: pageNumber }));
   };
 
-  const changeTab = (tabType = '') => {
+  const changeTab = (tabType = 1) => {
+    setFilterConfig({ ...INITIAL_FILTER_STATE });
     setCurrentPage(1);
-    if (tabType.toLowerCase() === 'submitted') setTabVariant('submitted');
-    else {
-      setTabVariant('pending_submission');
-    }
+    setTabVariant(tabType);
   };
 
   return (
@@ -117,7 +124,10 @@ export const OrderProvider = ({ children }) => {
         setCurrentPage,
         applySort,
         changeTab,
-        refreshData
+        refreshData,
+        tabVariant,
+        setTabVariant,
+        assginedGroupsData
       }}>
       {children}
     </OrderContext.Provider>

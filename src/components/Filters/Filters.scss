@@ -1,10 +1,17 @@
+@use "@src/assets/styles/abstracts/mixins";
+
 .searchContainer {
   width: 60%;
   max-width: 460px;
 }
 
 .filterControls {
-  width: 40%;
+  width: auto;
+
+  @include mixins.respond(sm) {
+    width: 40%;
+  }
+
   justify-content: end;
 }
 

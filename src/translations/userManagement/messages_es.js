@@ -49,6 +49,10 @@ export const UserManagementES = {
   'userManagement.label.cancel': 'S_Cancel',
   'userManagement.label.save': 'S_Save',
   'userManagement.label.status': 'S_Status',
+  'userManagement.label.description': 'S_Description',
+  'userManagement.label.createdOn': 'S_Created On',
+  'userManagement.label.emptyPermissionListTitle': 'S_No permissions available',
+  'userManagement.label.emptyPermissionListSubtitle': 'S_Please assign permission to see it here',
   'userManagement.status.active': 'S_Active',
   'userManagement.status.inactive': 'S_Inactive',
   'userManagement.manageUser.breadCrumb.lable.allUser': 'S_All Users',
@@ -119,6 +123,9 @@ export const UserManagementES = {
   'userManagement.stepper.option.user_details': 'S_User Details',
   'userManagement.stepper.option.roles_and_permissions': 'S_Roles and Permissions',
   'userManagement.stepper.option.associate_accounts': 'S_Associate Accounts',
+
+  'userManagement.userDetails.userAddress': 'S_User Address',
+  'userManagement.userDetails.lastUpdatedOn': 'S_Last Updated On:',
 
   'userManagement.header.view.edit_user': 'S_User Details',
 
@@ -282,5 +289,16 @@ export const UserManagementES = {
   'errors.default': 'An unexpected error occurred.',
 
   'Table.Tabs.ActiveUser': 'S_ACTIVE USERS',
-  'Table.Tabs.pendingRequest': 'S_PENDING REQUESTS'
+  'Table.Tabs.pendingRequest': 'S_PENDING REQUESTS',
+  'labels.startDate': 'S_Start Date',
+  'labels.endDate': 'S_End Date',
+  'placeholders.search': 'S_Search',
+  'button.label.loginAsThisUser': 'S_Login as this user',
+  'popup.title.alert': 'S_Alert!',
+  'popup.message.wishToContinueLoginAsThisUserQuestion': 'S_Do you wish to continue?',
+  'popup.message.wishToContinueLoginAsThisUserDescription':
+    'S_You are about to perform actions on behalf of {{targetUser}}. Please confirm that you have you have verified the identity of the requesting user the necessary permissions and that you understand the implications of proceeding with this task',
+  'popup.message.wishToContinueLoginAsThisUserCheckBoxConsent':
+    'S_By confirming, you acknowledge that all actions taken will be logged and attributed to your account.',
+  'userManagement.breadcrumb.admin': 'S_Admin'
 };
