@@ -28,6 +28,7 @@ const constructOrderManagementServiceUrl = (uri) => {
 const ApiRoutes = Object.freeze({
   GET_CGAT_PDE_OKTA_CONFIG: constructUserManagementServicePublicUrl('public/idpConfig'),
   USERS: () => constructUserManagementServiceUrl(`users`),
+  LOGO: `${USERMANAGEMENT_SERVICE_BASE_URL}api/practice`,
   POST_SIGNUP_USER: `${USERMANAGEMENT_SERVICE_BASE_URL}api/users-provisioning-requests`,
   USERS_PROVISIONING: () => constructUserManagementServiceUrl('users-provisioning-requests'),
   USERS_PROVISIONING_ORGLIST_PUBLIC: constructUserManagementServicePublicUrl('users-provisioning-requests/practices'),
@@ -60,7 +61,7 @@ const ApiRoutes = Object.freeze({
   CUSTOMER_STATEMENTS_LISTING: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/statements`),
   EXPORT_CUSTOMER_STATEMENTS: (data) => constructOrderManagementServiceUrl(`account/${data.accountNumber}/statements/${data.docNo}`),
   INVENTORY: () => constructOrderManagementServiceUrl(`inventory`),
-  THERAPIES: (therapyId) => constructUserManagementServicePublicUrl(`therapies/${therapyId}`),
+  THERAPIES: (therapyId) => constructUserManagementServicePublicUrl(`therapies/${therapyId}`)
 });
 
 export default ApiRoutes;
