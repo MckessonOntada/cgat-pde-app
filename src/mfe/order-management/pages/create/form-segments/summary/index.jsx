@@ -176,6 +176,74 @@ const Summary = () => {
     setIsCommentPanelOpen(false);
   };
 
+  const getAllowedControls = () => {
+    const controls = [];
+    const controlPrintSummary = (
+      <Button disabled={true} size={'md'} variant="secondary">
+        {t('captions.btnPrintSummary')}
+      </Button>
+    );
+
+    const controlCancel = (
+      <Button size={'md'} variant="secondary" onClick={() => alert('cancel')}>
+        {t('captions.btnCancel')}
+      </Button>
+    );
+
+    const controlReSubmitOrder = (
+      <Button
+        size={'md'}
+        variant="primary"
+        onClick={() => {
+          alert('resubmit order');
+        }}>
+        {t('captions.btnReSubmitOrder')}
+      </Button>
+    );
+    const controlBack = (
+      <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
+        {t('captions.btnBack')}
+      </Button>
+    );
+    const controlSubmitOrder = (
+      <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS]}>
+        <Button
+          size={'md'}
+          variant="primary"
+          type="submit"
+          onClick={handleOnSubmit}
+          disabled={!isAgreed || formState.activeRecord?.status === StatusEnum.SUBMITTED}>
+          {t('captions.btnSubmitOrder')}
+        </Button>
+      </PermittedComponent>
+    );
+
+    const controlRejectOrder = (
+      <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REJECT_ORDER]}>
+        <Button size={'md'} variant="primary" type="submit" onClick={() => setIsCommentPanelOpen(true)} disabled={!isAgreed}>
+          {t('captions.btnRejectOrder')}
+        </Button>
+      </PermittedComponent>
+    );
+    const controlApproveOrder = (
+      <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.APPROVE_ORDERS]}>
+        <Button size={'md'} variant="primary" type="submit" onClick={handleOnApprove} disabled={!isAgreed}>
+          {t('captions.btnApproveOrder')}
+        </Button>
+      </PermittedComponent>
+    );
+
+    if (status === StatusEnum.REJECTED) {
+      controls.push(controlPrintSummary, controlCancel, controlReSubmitOrder);
+    } else if (!isApprover && status !== StatusEnum.SUBMITTED && status !== StatusEnum.APPROVAL_PENDING) {
+      controls.push(controlPrintSummary, controlBack, controlSubmitOrder);
+    } else if (isApprover) {
+      controls.push(controlBack, controlRejectOrder, controlApproveOrder);
+    }
+
+    return controls;
+  };
+
   if (isFetching) {
     return <Loader />;
   }
@@ -379,46 +447,7 @@ const Summary = () => {
               />
             </div>
           )}
-          <div className="controls">
-            {!hideControls && !isApprover && (
-              <>
-                <Button disabled={true} size={'md'} variant="secondary">
-                  {t('captions.btnPrintSummary')}
-                </Button>
-                <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
-                  {t('captions.btnBack')}
-                </Button>
-                <PermittedComponent
-                  permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS]}>
-                  <Button
-                    size={'md'}
-                    variant="primary"
-                    type="submit"
-                    onClick={handleOnSubmit}
-                    disabled={!isAgreed || formState.activeRecord?.status === StatusEnum.SUBMITTED}>
-                    {t('captions.btnSubmitOrder')}
-                  </Button>
-                </PermittedComponent>
-              </>
-            )}
-            {isApprover && (
-              <>
-                <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
-                  {t('captions.btnBack')}
-                </Button>
-                <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REJECT_ORDER]}>
-                  <Button size={'md'} variant="primary" type="submit" onClick={() => setIsCommentPanelOpen(true)} disabled={!isAgreed}>
-                    {t('captions.btnRejectOrder')}
-                  </Button>
-                </PermittedComponent>
-                <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.APPROVE_ORDERS]}>
-                  <Button size={'md'} variant="primary" type="submit" onClick={handleOnApprove} disabled={!isAgreed}>
-                    {t('captions.btnApproveOrder')}
-                  </Button>
-                </PermittedComponent>
-              </>
-            )}
-          </div>
+          <div className="controls">{getAllowedControls()}</div>
         </div>
       </div>
       <FloatingDrawer open={isCommentPanelOpen} anchor="right" onClose={() => setIsCommentPanelOpen(false)}>
