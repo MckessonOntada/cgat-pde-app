@@ -255,6 +255,19 @@ async function updateTherapy(orderId, requestBody) {
   return {};
 }
 
+async function discardCurrentOrderVersion(orderId) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to discard order changes.');
+
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/discard`;
+  const res = await HttpResourceService.callRest(url, httpVerb.DELETE);
+
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -277,7 +290,8 @@ const OrderService = Object.freeze({
   deleteOrder,
   getAssignedGroups,
   simulateOrder,
-  updateTherapy
+  updateTherapy,
+  discardCurrentOrderVersion
 });
 
 export default OrderService;

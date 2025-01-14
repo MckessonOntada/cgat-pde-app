@@ -11,16 +11,17 @@ import OrderService from '@src/api/commonService/OrderService';
 import useAlert from '@src/hooks/useAlert';
 import { StatusEnum } from '../../../orders/constants';
 
-const initialValues = {
+const INITIAL_VALUES = {
   rejectionReason: ''
 };
 
 const COMMENT_MAX_LENGTH = 5000;
 
-const CommentPanel = ({ onClose, onSuccess, meta }) => {
+const CommentPanel = ({ readOnly, onClose, onSuccess, meta }) => {
   const { t } = useTranslate();
   const firstField = React.useRef(null);
   const serverResponseMessage = 'server-response-reject-order';
+  const [initialValues, setInitialValues] = React.useState(INITIAL_VALUES);
   serverResponseMessage;
   const { showAlert } = useAlert();
 
@@ -62,9 +63,18 @@ const CommentPanel = ({ onClose, onSuccess, meta }) => {
     }
   };
 
+  React.useEffect(() => {
+    const { rejectionDetails } = meta;
+    if (rejectionDetails?.rejectionReason) {
+      setInitialValues({
+        rejectionReason: rejectionDetails.rejectionReason
+      });
+    }
+  }, [meta]);
+
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleOnSubmit}>
-      {() => {
+    <Formik initialValues={initialValues} enableReinitialize validationSchema={validationSchema} onSubmit={handleOnSubmit}>
+      {({ values }) => {
         return (
           <Form>
             <div className={styles.wrapper}>
@@ -93,14 +103,16 @@ const CommentPanel = ({ onClose, onSuccess, meta }) => {
                   </div>
                 </div>
 
-                <div className={styles.controls}>
-                  <Button onClick={onClose} variant="secondary" size="md">
-                    {t('captions.btnCancel')}
-                  </Button>
-                  <Button type="submit" variant="primary" size="md">
-                    {t('captions.btnRejectOrder')}
-                  </Button>
-                </div>
+                {!readOnly && (
+                  <div className={styles.controls}>
+                    <Button onClick={onClose} variant="secondary" size="md">
+                      {t('captions.btnCancel')}
+                    </Button>
+                    <Button type="submit" variant="primary" size="md">
+                      {t('captions.btnRejectOrder')}
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </Form>

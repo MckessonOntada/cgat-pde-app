@@ -294,5 +294,7 @@ export const MessageEn = {
   'message.errorShortComment': 'Comment is very short, try to add detailed comment.',
   'message.errorCommentExceedMaxLength': 'Comment can not be more than {{length}} characters.',
   'message.errorCommentRequiredToRejectOrder': 'Comment is required to reject the order. Please provide reason for rejection.',
-  'captions.btnReSubmitOrder': 'Re-Submit Order'
+  'captions.btnReSubmitOrder': 'Re-Submit Order',
+  'labels.orderActions.discardChangesByMe': 'Discard changes by me',
+  'message.success.discardVersionChanges': 'Discarded changes made by you.'
 };

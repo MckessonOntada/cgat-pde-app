@@ -41,15 +41,21 @@ const Summary = () => {
     patient,
     additionalDetails = {},
     patientDetailsRequired = false,
+    rejectionDetails,
     status
   } = formState.activeRecord || {};
+  const isRejected = status === StatusEnum.REJECTED;
+  const isConcluded = status === StatusEnum.REJECTED || status === StatusEnum.SUBMITTED;
+
+  console.log(status && !isConcluded && (isSimulate || isApprover));
+
   const { isLoading, data: simulationData = {} } = useQuery({
     queryKey: ['orderDetails', orderId],
     queryFn: async () => {
       const response = await OrderService.simulateOrder(orderId);
       return response;
     },
-    enabled: isSimulate || isApprover,
+    enabled: Boolean(status && !isConcluded && (isSimulate || isApprover)),
     refetchOnWindowFocus: false,
     onError: (error) => {
       showAlert({ description: error?.response?.data?.message, type: 'error', anchorEl: alertContainerId });
@@ -234,7 +240,7 @@ const Summary = () => {
     );
 
     if (status === StatusEnum.REJECTED) {
-      controls.push(controlPrintSummary, controlCancel, controlReSubmitOrder);
+      controls.push(controlPrintSummary); //, controlCancel, controlReSubmitOrder);
     } else if (!isApprover && status !== StatusEnum.SUBMITTED && status !== StatusEnum.APPROVAL_PENDING) {
       controls.push(controlPrintSummary, controlBack, controlSubmitOrder);
     } else if (isApprover) {
@@ -247,9 +253,9 @@ const Summary = () => {
   if (isFetching) {
     return <Loader />;
   }
+
   const isAgreed = agreeCheckboxOptions.isChecked;
-  const hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover);
-  const isRejected = status === StatusEnum.REJECTED;
+  const hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected;
 
   return (
     <div className="MCP-module-wrapper">
@@ -276,7 +282,7 @@ const Summary = () => {
                 <React.Fragment>
                   <div class="row-space-between-center">
                     <Badge text={t(`labels.status.${status.toLowerCase()}`)} type={'error'} />
-                    <Button size={'md'} variant="tertiary" onClick={() => {}}>
+                    <Button size={'md'} variant="tertiary" onClick={() => setIsCommentPanelOpen(true)}>
                       {t('captions.btnViewComments')}
                     </Button>
                   </div>
@@ -403,7 +409,6 @@ const Summary = () => {
             </div>
 
             <div className="MCP-panel-container">
-              {}
               <ModuleHeader
                 className={styles.panelHeader}
                 heading={<Heading as="h3">{t('labels.additionalDetails')}</Heading>}
@@ -451,7 +456,12 @@ const Summary = () => {
         </div>
       </div>
       <FloatingDrawer open={isCommentPanelOpen} anchor="right" onClose={() => setIsCommentPanelOpen(false)}>
-        <CommentPanel meta={{ orderId }} onSuccess={handleAfterRejectOrder} onClose={() => setIsCommentPanelOpen(false)} />
+        <CommentPanel
+          readOnly={isRejected}
+          meta={{ orderId, rejectionDetails }}
+          onSuccess={handleAfterRejectOrder}
+          onClose={() => setIsCommentPanelOpen(false)}
+        />
       </FloatingDrawer>
     </div>
   );
