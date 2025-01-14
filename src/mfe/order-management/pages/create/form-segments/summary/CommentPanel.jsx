@@ -73,7 +73,7 @@ const CommentPanel = ({ readOnly, onClose, onSuccess, meta }) => {
   }, [meta]);
 
   return (
-    <Formik initialValues={initialValues} enableReinitialize validationSchema={validationSchema} onSubmit={handleOnSubmit}>
+    <Formik initialValues={initialValues} enableReinitialize={true} validationSchema={validationSchema} onSubmit={handleOnSubmit}>
       {({ values }) => {
         return (
           <Form>
@@ -98,8 +98,9 @@ const CommentPanel = ({ readOnly, onClose, onSuccess, meta }) => {
                       isRequired
                       component={Components['textarea']}
                       maxCharHelperText={t('forms.placeholder.max_5000_chars')}
-                      maxCharLimit={COMMENT_MAX_LENGTH}
-                    />
+                      maxCharLimit={COMMENT_MAX_LENGTH}>
+                      {values.rejectionReason}
+                    </Field>
                   </div>
                 </div>
 
