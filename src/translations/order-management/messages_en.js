@@ -18,6 +18,7 @@ export const MessageEn = {
   'captions.btnCancel': 'Cancel',
   'captions.btnNext': 'Next',
   'captions.btnSelect': 'Select',
+  'captions.btnViewComments': 'View Comments',
   'captions.btnSelecttherapy': 'Select Therapy',
   'captions.btnPrintSummary': 'Print Summary',
   'captions.btnGoToOrders': 'Go to orders',
@@ -35,6 +36,9 @@ export const MessageEn = {
   'captions.btnRejectOrder': 'Reject Order',
   'captions.btnInventoryCheck': 'Inventory Check',
   'captions.emptyTableTitle': 'No Order found',
+  'captions.lblRejectOrder': 'Reject Order',
+  'captions.reasonForRejection': 'Reason For Rejection',
+  'captions.lblReason': 'Reason',
   'captions.emptyTableSubtitle': 'You need to add Order to see data in this table.',
   'labels.orderDetails': 'Order Details',
   'labels.variant': 'Variant',
@@ -191,6 +195,7 @@ export const MessageEn = {
   'labels.status.in_draft': 'In Draft',
   'labels.status.approval_pending': 'Approval Pending',
   'labels.status.submitted': 'Submitted',
+  'labels.status.rejected': 'Rejected',
   'table.columns.captions.nationalDrugCode': 'National Drug Code',
   'table.columns.captions.strength': 'Strength',
   'table.columns.captions.dosage': 'Dosage',
@@ -285,5 +290,11 @@ export const MessageEn = {
   'errors.There is no Approver Group assigned to the order': 'There is no Approver Group assigned to the order.',
   'errors.default': 'An unexpected error occurred.',
   'order.label.admin': 'Admin',
-  'order.label.manageOrder': 'Manage Order'
+  'order.label.manageOrder': 'Manage Order',
+  'message.errorShortComment': 'Comment is very short, try to add detailed comment.',
+  'message.errorCommentExceedMaxLength': 'Comment can not be more than {{length}} characters.',
+  'message.errorCommentRequiredToRejectOrder': 'Comment is required to reject the order. Please provide reason for rejection.',
+  'captions.btnReSubmitOrder': 'Re-Submit Order',
+  'labels.orderActions.discardChangesByMe': 'Discard changes by me',
+  'message.success.discardVersionChanges': 'Discarded changes made by you.'
 };
