@@ -5,14 +5,31 @@ import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import Components from '@src/components/form/Components';
 import { Formik, Field, Form } from 'formik';
+import * as Yup from 'yup';
+import { useMutation } from 'react-query';
+import OrderService from '@src/api/commonService/OrderService';
+import useAlert from '@src/hooks/useAlert';
+import { StatusEnum } from '../../../orders/constants';
 
 const initialValues = {
   rejectionReason: ''
 };
 
-const CommentPanel = ({ onClose, onSubmit }) => {
+const COMMENT_MAX_LENGTH = 5000;
+
+const CommentPanel = ({ onClose, onSuccess, meta }) => {
   const { t } = useTranslate();
   const firstField = React.useRef(null);
+  const serverResponseMessage = 'server-response-reject-order';
+  serverResponseMessage;
+  const { showAlert } = useAlert();
+
+  const validationSchema = Yup.object({
+    rejectionReason: Yup.string()
+      .min(2, t('message.errorShortComment'))
+      .max(5000, t('message.errorCommentExceedMaxLength').replace('{{length}}', COMMENT_MAX_LENGTH))
+      .required(t('message.errorCommentRequiredToRejectOrder'))
+  });
 
   React.useEffect(() => {
     if (firstField.current) {
@@ -20,25 +37,49 @@ const CommentPanel = ({ onClose, onSubmit }) => {
     }
   }, []);
 
+  const { mutate: rejectOrder } = useMutation(
+    async ({ orderId, rejectionReason }) => await OrderService.rejectOrder(orderId, rejectionReason),
+    {
+      onSuccess: (response) => {
+        const { status } = response;
+        if (status === StatusEnum.REJECTED) {
+          onSuccess(response);
+        } else {
+          showAlert({ description: 'Could not reject order. Please try again later', type: 'error', anchorEl: serverResponseMessage });
+        }
+      },
+      onError: (error) => {
+        showAlert({ description: error.message, type: 'error', anchorEl: serverResponseMessage });
+      }
+    }
+  );
+
+  const handleOnSubmit = (values) => {
+    const { rejectionReason } = values;
+    const { orderId } = meta;
+    if (rejectionReason && orderId) {
+      rejectOrder({ orderId, rejectionReason });
+    }
+  };
+
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.drawerContent}>
-        <div className={styles.topSect}>
-          <div className={styles.header}>
-            <Heading as="h4">{t('captions.lblRejectOrder')}</Heading>
-            <button onClick={onClose} aria-label={t('captions.close')}>
-              <IconClose />
-            </button>
-          </div>
+    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleOnSubmit}>
+      {() => {
+        return (
+          <Form>
+            <div className={styles.wrapper}>
+              <div className={styles.drawerContent}>
+                <div className={styles.topSect}>
+                  <div className={styles.header}>
+                    <Heading as="h4">{t('captions.lblRejectOrder')}</Heading>
+                    <button onClick={onClose}>
+                      <IconClose />
+                    </button>
+                  </div>
 
-          <div>
-            <Heading as="h4">{t('captions.reasonForRejection')}</Heading>
-            <Formik initialValues={initialValues} enableReinitialize onSubmit={(values, actions) => {}}>
-              {({ values, isValid, dirty }) => {
-                React.useEffect(() => {}, [dirty]);
-
-                return (
-                  <Form>
+                  <div className={styles.form}>
+                    <Heading as="h4">{t('captions.reasonForRejection')}</Heading>
+                    <div className={styles.serverMessage} id={serverResponseMessage}></div>
                     <Field
                       ref={firstField}
                       name="rejectionReason"
@@ -46,22 +87,26 @@ const CommentPanel = ({ onClose, onSubmit }) => {
                       placeholder=" "
                       isRequired
                       component={Components['textarea']}
-                      maxLength={50}
-                      maxCharHelperText="Maximum 1,000 Characters"
+                      maxCharHelperText={t('forms.placeholder.max_5000_chars')}
+                      maxCharLimit={COMMENT_MAX_LENGTH}
                     />
-                  </Form>
-                );
-              }}
-            </Formik>
-          </div>
-        </div>
+                  </div>
+                </div>
 
-        <div className={styles.controls}>
-          <Button label={t('captions.btnCancel')} onClick={onClose} variant="secondary" size="md" />
-          <Button label={t('captions.btnRejectOrder')} onClick={() => {}} variant="primary" size="md" />
-        </div>
-      </div>
-    </div>
+                <div className={styles.controls}>
+                  <Button onClick={onClose} variant="secondary" size="md">
+                    {t('captions.btnCancel')}
+                  </Button>
+                  <Button type="submit" variant="primary" size="md">
+                    {t('captions.btnRejectOrder')}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Form>
+        );
+      }}
+    </Formik>
   );
 };
 

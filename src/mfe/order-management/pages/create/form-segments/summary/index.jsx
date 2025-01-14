@@ -25,12 +25,13 @@ import CommentPanel from './CommentPanel';
 const Summary = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { isFetching, formState, editByStage, setCurrentOrder } = useManageOrder();
+  const { isFetching, setActiveRecord, formState, editByStage, setCurrentOrder } = useManageOrder();
   const { orderId } = useParams();
   const location = useLocation();
   const { isEdit = false, isApprover = false, isSimulate = false } = location.state || {};
   const alertContainerId = 'summary-alert-container';
   const { showAlert } = useAlert();
+  const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
   const forms = FormList(t);
   const {
     therapy = {},
@@ -78,15 +79,6 @@ const Summary = () => {
     },
     onError: (err) => {
       showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
-    }
-  });
-
-  const { mutate: rejectOrder } = useMutation(async (reason) => await OrderService.rejectOrder(orderId, reason), {
-    onSuccess: (response) => {
-      console.log(response);
-    },
-    onError: (error) => {
-      showAlert({ description: error.message, type: 'error', anchorEl: alertContainerId });
     }
   });
 
@@ -149,26 +141,6 @@ const Summary = () => {
     }
   };
 
-  const handleOnReject = () => {
-    if (agreeCheckboxOptions.isChecked) {
-      renderModal({
-        title: t('messages.header.warning'),
-        bodyContent: <h3>{t('messages.confirmation.reject')},</h3>,
-        footerActions: {
-          cancel: {
-            label: t('label.no')
-          },
-          confirm: {
-            label: t('label.yes'),
-            action: () => {
-              handleReject();
-            }
-          }
-        }
-      });
-    }
-  };
-
   const handleOnBackToOrders = () => {
     navigate(RoutePaths.pathOrderManagement);
   };
@@ -197,6 +169,11 @@ const Summary = () => {
         break;
       }
     }
+  };
+
+  const handleAfterRejectOrder = (data) => {
+    setActiveRecord(data);
+    setIsCommentPanelOpen(false);
   };
 
   if (isFetching) {
@@ -430,7 +407,7 @@ const Summary = () => {
                   {t('captions.btnBack')}
                 </Button>
                 <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REJECT_ORDER]}>
-                  <Button size={'md'} variant="primary" type="submit" onClick={handleOnReject} disabled={!isAgreed}>
+                  <Button size={'md'} variant="primary" type="submit" onClick={() => setIsCommentPanelOpen(true)} disabled={!isAgreed}>
                     {t('captions.btnRejectOrder')}
                   </Button>
                 </PermittedComponent>
@@ -444,8 +421,8 @@ const Summary = () => {
           </div>
         </div>
       </div>
-      <FloatingDrawer open={true}>
-        <CommentPanel />
+      <FloatingDrawer open={isCommentPanelOpen} anchor="right" onClose={() => setIsCommentPanelOpen(false)}>
+        <CommentPanel meta={{ orderId }} onSuccess={handleAfterRejectOrder} onClose={() => setIsCommentPanelOpen(false)} />
       </FloatingDrawer>
     </div>
   );

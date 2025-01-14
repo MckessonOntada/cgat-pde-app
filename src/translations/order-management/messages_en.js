@@ -290,5 +290,9 @@ export const MessageEn = {
   'errors.There is no Approver Group assigned to the order': 'There is no Approver Group assigned to the order.',
   'errors.default': 'An unexpected error occurred.',
   'order.label.admin': 'Admin',
-  'order.label.manageOrder': 'Manage Order'
+  'order.label.manageOrder': 'Manage Order',
+  'message.errorShortComment': 'Comment is very short, try to add detailed comment.',
+  'message.errorCommentExceedMaxLength': 'Comment can not be more than {{length}} characters.',
+  'message.errorCommentRequiredToRejectOrder': 'Comment is required to reject the order. Please provide reason for rejection.',
+  'captions.btnReSubmitOrder': 'Re-Submit Order'
 };
