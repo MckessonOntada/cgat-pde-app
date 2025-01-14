@@ -60,6 +60,8 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
     organization: { setOrganization, selectedOrganization }
   } = useSessionFeatures();
 
+  const { data: organizationLogo } = CommonDataService.useOrganizationLogo(selectedOrganization.logoUrl, selectedOrganization.id);
+
   const handleChange = (value) => {
     setSelectedOrg(value);
     setIsOpen(true);
@@ -95,6 +97,11 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
             </Link>
           ) : (
             <Link to={''} id={''} className={`${styles.customheader}`}>
+              {organizationLogo && (
+                <div className={`${styles.logoContainer}`}>
+                  <img src={organizationLogo || ''} />
+                </div>
+              )}
               <h1>{selectedOrganization.name}</h1>
             </Link>
           )}
@@ -180,10 +187,8 @@ const PrimaryHeader = ({ user, setUserData, debugId }) => {
           </LeftSideView>
         ) : (
           <div className={styles.navItemsLeft} id={''}>
-            {' '}
             <div className={styles.branding}>
-              {' '}
-              <AppLogo />{' '}
+              <AppLogo />
             </div>
           </div>
         )}
