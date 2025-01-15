@@ -6,7 +6,12 @@ import CommonUtils from '@src/util/CommonUtils';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import './index.scss';
 import SelectedInvoiceList from './SelectedInvoiceList';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Credits from '../credits';
+import { PaymentsCreditsProvider } from '../../context/PaymentsCreditsContext';
+import { useDispatch } from 'react-redux';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+// import { useLocation } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import ApiRoutes from '../../../../api/ApiRoutes';
 import { useAccountContext } from '../../context/AccountContext';
@@ -20,6 +25,11 @@ function ReviewPayments() {
   const { t } = useTranslate();
   const [selectedInvoices, setSelectedInvoices] = useState([]);
   const location = useLocation();
+  const [selectedCredits, setSelectedCredits] = useState([]);
+  const { state } = location;
+  const { includeinvoiceData } = state || {};
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { selectedAccount } = useAccountContext();
   const { showSnackbar } = useSnackbar();
   const [mergedData, setMergedData] = useState([]);
@@ -69,7 +79,28 @@ function ReviewPayments() {
     'Payment method': '4600 - FIRST CITIZENS BANK & TRUST CO'
   };
 
-  const backButtonClick = () => {};
+  const backButtonClick = () => {
+    const state = {};
+    state.title = 'Confirm';
+    state.body = 'Are you sure want to leave Review and Pay screen?';
+    state.footer = (
+      <div className="controls">
+        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+          Cancel
+        </Button>
+        <Button
+          size="md"
+          variant="primary"
+          onClick={() => {
+            navigate(-1);
+            dispatch(closeModal());
+          }}>
+          Okay
+        </Button>
+      </div>
+    );
+    dispatch(openModal(state));
+  };
 
   const getValue = (data) => {
     return data.map((item) => ({
@@ -93,6 +124,20 @@ function ReviewPayments() {
       .reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.paymentAmount), 0);
     return parseFloat(_sum).toFixed(2);
   }, [selectedInvoices]);
+
+  const creditsSum = useMemo(() => {
+    let _sum = selectedCredits
+      .filter((i) => i.billAmount)
+      .reduce((accumulator, currentValue) => {
+        return parseFloat(currentValue.billAmount), accumulator + parseFloat(currentValue.billAmount);
+      }, 0);
+    return parseFloat(_sum).toFixed(2);
+  }, [selectedCredits]);
+
+  const totalAmount = useMemo(() => {
+    let _total = invoicesSum - creditsSum;
+    return parseFloat(_total).toFixed(2);
+  }, [invoicesSum, creditsSum]);
 
   const getRadioItems = () => {
     const isDisabledDueDate = location.state.includeinvoiceData
@@ -185,6 +230,19 @@ function ReviewPayments() {
           <div className="label">{`${selectedInvoices.length} invoice(s), amount to be paid:`}</div>
           <div className="value">{`$${invoicesSum}`}</div>
         </div>
+        <div className="MCP-module-wrapper">
+          <div>
+            <h1>Credits Available</h1>
+          </div>
+          <div id="tablist-container" className="MCP-module-body">
+            <PaymentsCreditsProvider>
+              <Credits selectedCredits={selectedCredits} setSelectedCredits={setSelectedCredits} selectableRows={true} />
+            </PaymentsCreditsProvider>
+          </div>
+          <div className="invoice-sum-container">
+            <div className="label">{`Total credit amount:`}</div> <div className="value">{`$${creditsSum}`}</div>
+          </div>
+        </div>
       </div>
       <div className="payment">
         <Heading as="h2">Payment</Heading>
@@ -213,7 +271,7 @@ function ReviewPayments() {
         </div>
         <div className="invoice-sum-container">
           <div className="label">Amount to be charged to your Payment account:</div>
-          <div className="value">{`$${invoicesSum}`}</div>
+          <div className="value">{`$${totalAmount}`}</div>
         </div>
       </div>
       <div className="footer-section">
