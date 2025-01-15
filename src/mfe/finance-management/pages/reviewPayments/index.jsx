@@ -20,6 +20,8 @@ import useSnackbar from '@src/hooks/useSnackbar';
 import { FinanceUtils } from '@src/util/FinanceUtil';
 import dayjs from 'dayjs';
 import { RadioGroup } from '@src/components/radioGroup';
+import DetailMetrics from '../../components/detailMetrics/DetailMetrics';
+import CreditsSelected from './CreditsSelected';
 
 function ReviewPayments() {
   const { t } = useTranslate();
@@ -39,6 +41,7 @@ function ReviewPayments() {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });
+  const REVIEW_MODE = state.reviewMode || false;
 
   const { data: paymentMethodsData = [], isError } = useQuery({
     queryKey: ['paymentMethodsreviewPayments'],
@@ -71,9 +74,15 @@ function ReviewPayments() {
   }, [paymentMethodsData]);
 
   useEffect(() => {
-    if (location.state?.invoices && location.state?.invoices.length > 0) {
-      const _data = location.state.invoices.map((item) => ({ ...item, paymentAmount: item.openAmount }));
+    if (location.state?.invoices && location.state?.invoices.length > 0 && !REVIEW_MODE) {
+      const _data = location.state.invoices.map((item) => ({ ...item, paymentAmount: item.paymentAmount || item.openAmount }));
       setSelectedInvoices(_data);
+    }
+    if (state?.creditsSelected?.length > 0 && !REVIEW_MODE) {
+      setSelectedCredits(state.creditsSelected);
+    }
+    if (REVIEW_MODE) {
+      setSelectedInvoices(state.invoices || []);
     }
   }, [location.state]);
 
@@ -84,27 +93,30 @@ function ReviewPayments() {
   };
 
   const backButtonClick = () => {
-    const state = {};
-    state.title = 'Confirm';
-    state.body = 'Are you sure want to leave Review and Pay screen?';
-    state.footer = (
-      <div className="controls">
-        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
-          Cancel
-        </Button>
-        <Button
-          size="md"
-          variant="primary"
-          onClick={() => {
-            navigate(-1);
-            dispatch(closeModal());
-          }}
-        >
-          Okay
-        </Button>
-      </div>
-    );
-    dispatch(openModal(state));
+    if (REVIEW_MODE) {
+      navigate('.', { state: { ...state, reviewMode: false }, replace: true });
+    } else {
+      const state = {};
+      state.title = 'Confirm';
+      state.body = 'Are you sure want to leave Review and Pay screen?';
+      state.footer = (
+        <div className="controls">
+          <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+            Cancel
+          </Button>
+          <Button
+            size="md"
+            variant="primary"
+            onClick={() => {
+              navigate(-1);
+              dispatch(closeModal());
+            }}>
+            Okay
+          </Button>
+        </div>
+      );
+      dispatch(openModal(state));
+    }
   };
 
   const getValue = (data) => {
@@ -200,6 +212,10 @@ function ReviewPayments() {
         ];
   };
 
+  const onPreviewPayment = () => {
+    navigate('.', { state: { ...state, invoices: selectedInvoices, creditsSelected: selectedCredits, reviewMode: true }, replace: true });
+  };
+
   return (
     <div className="reviewPayments">
       <div className="reviewPaymentsContent">
@@ -221,74 +237,93 @@ function ReviewPayments() {
             <div className="accountAddress">1432 S Dobson Rd Ste 106, Mesa, AZ, 85202</div>
           </div>
         </div>
-        <div className="section">
-          <div className="sectionHeader">{'Payment Summary'}</div>
-          <div className="sectionCard">
-            {CommonUtils.isNonEmptyObject(paymentCard) &&
-              Object.entries(paymentCard).map(([key, value]) => <InfoCards title={key} value={value} />)}
+        {REVIEW_MODE && (
+          <div className="section">
+            <div className="sectionHeader">{'Payment Summary'}</div>
+            <DetailMetrics data={paymentCard} />
           </div>
-        </div>
+        )}
         <div>
           <div>
             <h1>Invoices Selected</h1>
           </div>
           <SelectedInvoiceList selectedInvoices={selectedInvoices} setSelectedInvoices={setSelectedInvoices} />
         </div>
-        <div className="invoice-sum-container">
-          <div className="label">{`${selectedInvoices.length} invoice(s), amount to be paid:`}</div>
-          <div className="value">{`$${formatter.format(invoicesSum)}`}</div>
-        </div>
-        <div className="MCP-module-wrapper">
-          <div>
-            <h1>Credits Available</h1>
+        {!REVIEW_MODE && (
+          <div className="invoice-sum-container">
+            <div className="label">{`${selectedInvoices.length} invoice(s), amount to be paid:`}</div>
+            <div className="value">{`${FinanceUtils.formatCurrency(invoicesSum)}`}</div>
           </div>
-          <div id="tablist-container" className="MCP-module-body">
-            <PaymentsCreditsProvider>
-              <Credits selectedCredits={selectedCredits} setSelectedCredits={setSelectedCredits} selectableRows={true} />
-            </PaymentsCreditsProvider>
+        )}
+        {!!REVIEW_MODE ||
+          (REVIEW_MODE && state?.creditsSelected?.length > 0 && (
+            <div className="MCP-module-wrapper">
+              <div>
+                <h1>Credits Available</h1>
+              </div>
+              <div id="tablist-container" className="MCP-module-body">
+                {REVIEW_MODE ? (
+                  <CreditsSelected />
+                ) : (
+                  <PaymentsCreditsProvider>
+                    <Credits selectedCredits={selectedCredits} setSelectedCredits={setSelectedCredits} selectableRows={true} />
+                  </PaymentsCreditsProvider>
+                )}
+              </div>
+              {!REVIEW_MODE && (
+                <div className="invoice-sum-container">
+                  <div className="label">{`Total credit amount:`}</div>{' '}
+                  <div className="value">{`${FinanceUtils.formatCurrency(creditsSum)}`}</div>
+                </div>
+              )}
+            </div>
+          ))}
+      </div>
+      {!REVIEW_MODE && (
+        <div className="payment">
+          <Heading as="h2">Payment</Heading>
+          <div className="paymentMethodContainer">
+            <div className="paymentMethod">Select a method</div>
+            <AutoSuggestDropdown
+              suggestionList={getValue(mergedData)}
+              id="id"
+              selectedVal={getselectedValue}
+              getselectedValue={(val) => setSelectedData(val)}
+              onChangeInput={() => {}}
+              suggestionListContainerWidth="400px"
+            />
+          </div>
+          <div className="paymentOptionContainer">
+            <RadioGroup
+              direction="column"
+              id="radio-button-order-therapy-props.id"
+              items={getRadioItems()}
+              onChangeValue={(e) => setPaymentOption(e)}
+              onOtherTextChange={() => {}}
+              onSubRadioFieldChange={() => {}}
+              radioBtnWidth="auto"
+              value={paymentOption}
+            />
           </div>
           <div className="invoice-sum-container">
-            <div className="label">{`Total credit amount:`}</div> <div className="value">{`$${formatter.format(creditsSum)}`}</div>
+            <div className="label">Amount to be charged to your Payment account:</div>
+            <div className="value">{`${FinanceUtils.formatCurrency(totalAmount)}`}</div>
           </div>
         </div>
-      </div>
-      <div className="payment">
-        <Heading as="h2">Payment</Heading>
-        <div className="paymentMethodContainer">
-          <div className="paymentMethod">Select a method</div>
-          <AutoSuggestDropdown
-            suggestionList={getValue(mergedData)}
-            id="id"
-            selectedVal={getselectedValue}
-            getselectedValue={(val) => setSelectedData(val)}
-            onChangeInput={() => {}}
-            suggestionListContainerWidth="400px"
-          />
-        </div>
-        <div className="paymentOptionContainer">
-          <RadioGroup
-            direction="column"
-            id="radio-button-order-therapy-props.id"
-            items={getRadioItems()}
-            onChangeValue={(e) => setPaymentOption(e)}
-            onOtherTextChange={() => {}}
-            onSubRadioFieldChange={() => {}}
-            radioBtnWidth="auto"
-            value={paymentOption}
-          />
-        </div>
-        <div className="invoice-sum-container">
-          <div className="label">Amount to be charged to your Payment account:</div>
-          <div className="value">{`$${formatter.format(totalAmount)}`}</div>
-        </div>
-      </div>
+      )}
       <div className="footer-section">
-        <Button variant="secondary" onClick={() => {}} size="sm" disabled>
+        <Button variant="secondary" onClick={() => navigate('../')} size="sm">
           Cancel
         </Button>
-        <Button onClick={() => navigate('.', { state: { ...state, reviewMode: true } })} size="sm">
-          Preview Payment
-        </Button>
+        {REVIEW_MODE ? (
+          <Button onClick={onPreviewPayment} size="sm">
+            {`PAY ${FinanceUtils.formatCurrency(totalAmount)}`}
+          </Button>
+        ) : (
+          <Button onClick={onPreviewPayment} size="sm">
+            Preview Payment
+          </Button>
+        )}
       </div>
     </div>
   );
