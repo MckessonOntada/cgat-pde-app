@@ -75,7 +75,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
 
       const matchesPaymentStatus = filters?.paymentTerm?.length > 0 ? filters.paymentTerm.includes(item.paymentTerm?.toString()) : true;
 
-      const matchesPaymentMethod = filters?.status?.length > 0 ? item.status?.toString() === filters.status : true;
+      const matchesPaymentMethod = filters?.status?.length > 0 ? filters.status.includes(item.status?.toString()) : true;
 
       const matchesBillDate =
         filters?.billDate?.length === 2
