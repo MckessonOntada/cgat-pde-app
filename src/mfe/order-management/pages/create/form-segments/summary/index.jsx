@@ -299,7 +299,7 @@ const Summary = () => {
               <div class={styles.flexPanel}>
                 {(status === StatusEnum.SUBMITTED || isApprover) && <DetailSegment label={t('labels.orderId')} value={orderId} />}
                 <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
-                <DetailSegment label={t('labels.orderCost')} value={<p className={styles.price}>{orderCost}</p>} />
+                <DetailSegment label={t('labels.orderCost')} value={<p className={styles.price}>{`$${orderCost}`}</p>} />
               </div>
             </div>
             <div className={'grid grid-gap-16 grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'}>
