@@ -1,0 +1,48 @@
+.wrapper {
+    width: 420px;
+
+    .drawerContent {
+        height: 100vh;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: space-between;
+        font-size: var(--brand-font-size--extra-small);
+        // border: 1px solid black;
+
+        .topSect {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-01);
+
+            .header {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: var(--spacing-04);
+                padding: var(--spacing-01) var(--spacing-03);
+                justify-content: space-between;
+                border-bottom: 1px solid var(--brand-color-dark-grey);
+            }
+
+            .form {
+                padding: var(--spacing-01) var(--spacing-03);
+            }
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-end;
+            gap: var(--spacing-03);
+            padding: var(--spacing-01) var(--spacing-03);
+            margin-bottom: var(--spacing-02);
+        }
+    }
+
+    .serverMessage {
+        margin-bottom: var(--spacing-03);
+    }
+}

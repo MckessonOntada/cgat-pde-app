@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './Summary.module.scss';
 import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg';
 import ModuleHeader from '@src/components/module-header';
-import { Button, CheckboxGroup, Stepper, Heading, Loader } from '@mckesson/mcp-component-library';
+import { Button, CheckboxGroup, Stepper, Heading, Loader, Badge } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
@@ -19,16 +19,19 @@ import { useMutation, useQuery } from 'react-query';
 import { RoutePaths } from '@src/routes/constants';
 import { StatusEnum } from '../../../orders/constants';
 import { renderModal } from '@src/util/ModalUtil';
+import FloatingDrawer from '@src/components/floating-drawer';
+import CommentPanel from './CommentPanel';
 
 const Summary = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { isFetching, formState, editByStage, setCurrentOrder } = useManageOrder();
+  const { isFetching, setActiveRecord, formState, editByStage, setCurrentOrder } = useManageOrder();
   const { orderId } = useParams();
   const location = useLocation();
   const { isEdit = false, isApprover = false, isSimulate = false } = location.state || {};
   const alertContainerId = 'summary-alert-container';
   const { showAlert } = useAlert();
+  const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
   const forms = FormList(t);
   const {
     therapy = {},
@@ -38,15 +41,21 @@ const Summary = () => {
     patient,
     additionalDetails = {},
     patientDetailsRequired = false,
+    rejectionDetails,
     status
   } = formState.activeRecord || {};
+  const isRejected = status === StatusEnum.REJECTED;
+  const isConcluded = status === StatusEnum.REJECTED || status === StatusEnum.SUBMITTED;
+
+  console.log(status && !isConcluded && (isSimulate || isApprover));
+
   const { isLoading, data: simulationData = {} } = useQuery({
     queryKey: ['orderDetails', orderId],
     queryFn: async () => {
       const response = await OrderService.simulateOrder(orderId);
       return response;
     },
-    enabled: isSimulate || isApprover,
+    enabled: Boolean(status && !isConcluded && (isSimulate || isApprover)),
     refetchOnWindowFocus: false,
     onError: (error) => {
       showAlert({ description: error?.response?.data?.message, type: 'error', anchorEl: alertContainerId });
@@ -112,7 +121,7 @@ const Summary = () => {
   };
 
   const handleReject = () => {
-    return;
+    rejectOrder('Conditions are not matching');
   };
   const handleApprove = () => {
     submitOrder.mutate({ action: 'approve' });
@@ -131,26 +140,6 @@ const Summary = () => {
             label: t('label.yes'),
             action: () => {
               handleApprove();
-            }
-          }
-        }
-      });
-    }
-  };
-
-  const handleOnReject = () => {
-    if (agreeCheckboxOptions.isChecked) {
-      renderModal({
-        title: t('messages.header.warning'),
-        bodyContent: <h3>{t('messages.confirmation.reject')},</h3>,
-        footerActions: {
-          cancel: {
-            label: t('label.no')
-          },
-          confirm: {
-            label: t('label.yes'),
-            action: () => {
-              handleReject();
             }
           }
         }
@@ -188,12 +177,85 @@ const Summary = () => {
     }
   };
 
+  const handleAfterRejectOrder = (data) => {
+    setActiveRecord(data);
+    setIsCommentPanelOpen(false);
+  };
+
+  const getAllowedControls = () => {
+    const controls = [];
+    const controlPrintSummary = (
+      <Button disabled={true} size={'md'} variant="secondary">
+        {t('captions.btnPrintSummary')}
+      </Button>
+    );
+
+    const controlCancel = (
+      <Button size={'md'} variant="secondary" onClick={() => alert('cancel')}>
+        {t('captions.btnCancel')}
+      </Button>
+    );
+
+    const controlReSubmitOrder = (
+      <Button
+        size={'md'}
+        variant="primary"
+        onClick={() => {
+          alert('resubmit order');
+        }}>
+        {t('captions.btnReSubmitOrder')}
+      </Button>
+    );
+    const controlBack = (
+      <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
+        {t('captions.btnBack')}
+      </Button>
+    );
+    const controlSubmitOrder = (
+      <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS]}>
+        <Button
+          size={'md'}
+          variant="primary"
+          type="submit"
+          onClick={handleOnSubmit}
+          disabled={!isAgreed || formState.activeRecord?.status === StatusEnum.SUBMITTED}>
+          {t('captions.btnSubmitOrder')}
+        </Button>
+      </PermittedComponent>
+    );
+
+    const controlRejectOrder = (
+      <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REJECT_ORDER]}>
+        <Button size={'md'} variant="primary" type="submit" onClick={() => setIsCommentPanelOpen(true)} disabled={!isAgreed}>
+          {t('captions.btnRejectOrder')}
+        </Button>
+      </PermittedComponent>
+    );
+    const controlApproveOrder = (
+      <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.APPROVE_ORDERS]}>
+        <Button size={'md'} variant="primary" type="submit" onClick={handleOnApprove} disabled={!isAgreed}>
+          {t('captions.btnApproveOrder')}
+        </Button>
+      </PermittedComponent>
+    );
+
+    if (status === StatusEnum.REJECTED) {
+      controls.push(controlPrintSummary); //, controlCancel, controlReSubmitOrder);
+    } else if (!isApprover && status !== StatusEnum.SUBMITTED && status !== StatusEnum.APPROVAL_PENDING) {
+      controls.push(controlPrintSummary, controlBack, controlSubmitOrder);
+    } else if (isApprover) {
+      controls.push(controlBack, controlRejectOrder, controlApproveOrder);
+    }
+
+    return controls;
+  };
+
   if (isFetching) {
     return <Loader />;
   }
 
   const isAgreed = agreeCheckboxOptions.isChecked;
-  const hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover);
+  const hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected;
 
   return (
     <div className="MCP-module-wrapper">
@@ -208,12 +270,26 @@ const Summary = () => {
       {isApprover && <PageHeader heading={<Heading as="h1">{t('headings.reviewOrder')}</Heading>} />}
 
       <div className="MCP-module-body">
-        {!hideControls && (
+        {!hideControls && !isRejected ? (
           <Stepper activeIndex={5} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} />
-        )}
+        ) : null}
         <div id={alertContainerId} />
         <div className={'MCP-module-wrapper'}>
-          <ModuleHeader heading={<Heading as="h2">{t('labels.summary')}</Heading>} />
+          <ModuleHeader
+            heading={<Heading as="h2">{t('labels.summary')}</Heading>}
+            controls={
+              isRejected && (
+                <React.Fragment>
+                  <div class="row-space-between-center">
+                    <Badge text={t(`labels.status.${status.toLowerCase()}`)} type={'error'} />
+                    <Button size={'md'} variant="tertiary" onClick={() => setIsCommentPanelOpen(true)}>
+                      {t('captions.btnViewComments')}
+                    </Button>
+                  </div>
+                </React.Fragment>
+              )
+            }
+          />
           <div className={'MCP-module-body'}>
             <div className="MCP-panel-container">
               <ModuleHeader
@@ -333,7 +409,6 @@ const Summary = () => {
             </div>
 
             <div className="MCP-panel-container">
-              {}
               <ModuleHeader
                 className={styles.panelHeader}
                 heading={<Heading as="h3">{t('labels.additionalDetails')}</Heading>}
@@ -377,48 +452,17 @@ const Summary = () => {
               />
             </div>
           )}
-          <div className="controls">
-            {!hideControls && !isApprover && (
-              <>
-                <Button disabled={true} size={'md'} variant="secondary">
-                  {t('captions.btnPrintSummary')}
-                </Button>
-                <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
-                  {t('captions.btnBack')}
-                </Button>
-                <PermittedComponent
-                  permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS]}>
-                  <Button
-                    size={'md'}
-                    variant="primary"
-                    type="submit"
-                    onClick={handleOnSubmit}
-                    disabled={!isAgreed || formState.activeRecord?.status === StatusEnum.SUBMITTED}>
-                    {t('captions.btnSubmitOrder')}
-                  </Button>
-                </PermittedComponent>
-              </>
-            )}
-            {isApprover && (
-              <>
-                <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
-                  {t('captions.btnBack')}
-                </Button>
-                <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REJECT_ORDER]}>
-                  <Button size={'md'} variant="primary" type="submit" onClick={handleOnReject} disabled={!isAgreed}>
-                    {t('captions.btnRejectOrder')}
-                  </Button>
-                </PermittedComponent>
-                <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.APPROVE_ORDERS]}>
-                  <Button size={'md'} variant="primary" type="submit" onClick={handleOnApprove} disabled={!isAgreed}>
-                    {t('captions.btnApproveOrder')}
-                  </Button>
-                </PermittedComponent>
-              </>
-            )}
-          </div>
+          <div className="controls">{getAllowedControls()}</div>
         </div>
       </div>
+      <FloatingDrawer open={isCommentPanelOpen} anchor="right" onClose={() => setIsCommentPanelOpen(false)}>
+        <CommentPanel
+          readOnly={isRejected}
+          meta={{ orderId, rejectionDetails }}
+          onSuccess={handleAfterRejectOrder}
+          onClose={() => setIsCommentPanelOpen(false)}
+        />
+      </FloatingDrawer>
     </div>
   );
 };
