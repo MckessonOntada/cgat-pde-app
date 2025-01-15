@@ -67,9 +67,9 @@ const UserDetail = () => {
   const { isLoading, isError, data, refetch } = useQuery({
     queryKey: [`users/${userId}`],
     queryFn: async () => {
-      const url = !isPending
-        ? `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`
-        : `${ApiRoutes.USERS_PROVISIONING()}/${userId}`;
+      const url = isPending
+        ? `${ApiRoutes.USERS_PROVISIONING()}/${userId}`
+        : `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       return res.data;
     },
