@@ -7,7 +7,7 @@ body {
 .appContainer {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100dvh;
 
 
   .app-wrapper {
@@ -17,7 +17,6 @@ body {
     flex-direction: column;
     flex-grow: 1;
     overflow-y: scroll;
-    background-color: var(--brand-color-background-warm-grey-3);
   }
 }
 
