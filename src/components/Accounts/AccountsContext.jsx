@@ -18,9 +18,9 @@ export const useAccounts = () => {
 
 const INITIAL_STATE = {
   searchQuery: '',
-  status: [],
-  salesOrg: [],
-  distChannels: []
+  status: null,
+  salesOrg: null,
+  distChannels: null
 };
 
 const INITIAL_SORT_PARAMS = {
@@ -62,7 +62,7 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
       sortOrder: sortCriteria.sortOrder,
       practiceId,
       partnerFunction: 'SOLD_TO',
-      ...(filterConfig.searchQuery.length && { query: filterConfig.searchQuery }),
+      ...(filterConfig.searchQuery && { query: filterConfig.searchQuery }),
       // TODO : Add multi select support
       ...(filterConfig.status && { status: filterConfig.status }),
       ...(filterConfig.distChannels && { distChannels: filterConfig.distChannels }),
@@ -76,7 +76,9 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
     if (userId) {
       return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/users/${userId}/accounts?${serializeParams(params)}`;
     }
-    return practiceId ? `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts?${serializeParams(params)}` : `${ApiRoutes.PUBLIC_ACCOUNTS}?${serializeParams(params)}`;
+    return practiceId
+      ? `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts?${serializeParams(params)}`
+      : `${ApiRoutes.PUBLIC_ACCOUNTS}?${serializeParams(params)}`;
   }, [filterConfig, paginationConfig, sortCriteria, practiceId]);
 
   // Fetch data from server
@@ -107,14 +109,13 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
   const applyFilters = useCallback((values) => {
     setFilterConfig(values);
   }, []);
- 
+
   const setPageNumber = (pageNumber) => {
     setPaginationConfig((prevConfig) => ({
       ...prevConfig,
       pageNumber
     }));
   };
- 
 
   useEffect(() => {
     refetch();
@@ -140,7 +141,19 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
       setPageNumber,
       applyFilters
     }),
-    [data, updateFilterState, clearFilters, currentPage, setPageNumber, isLoading, isError, filterConfig, paginationConfig, applyFilters, refetch]
+    [
+      data,
+      updateFilterState,
+      clearFilters,
+      currentPage,
+      setPageNumber,
+      isLoading,
+      isError,
+      filterConfig,
+      paginationConfig,
+      applyFilters,
+      refetch
+    ]
   );
 
   return <AccountsContext.Provider value={ctxValue}>{children}</AccountsContext.Provider>;

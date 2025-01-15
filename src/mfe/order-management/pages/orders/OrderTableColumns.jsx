@@ -21,7 +21,8 @@ const getColorByStatus = (status) => {
     [StatusEnum.IN_DRAFT]: 'info',
     [StatusEnum.APPROVAL_PENDING]: 'info',
     [StatusEnum.SUBMITTED]: 'success',
-    [StatusEnum.CANCELLED]: 'error'
+    [StatusEnum.CANCELLED]: 'error',
+    [StatusEnum.REJECTED]: 'error'
   };
   return statusColors[status] || 'info';
 };
@@ -69,6 +70,17 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
     onSuccess: (result) => {
       refreshData();
       showAlert({ description: t('messages.success.delete'), type: 'success', anchorEl: alertContainerId });
+    },
+    onError: (error) => {
+      const errorKey = handleApiError(err);
+      showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
+    }
+  });
+
+  const { mutate: discardCurrentOrderVersion } = useMutation(async (orderId) => await OrderService.discardCurrentOrderVersion(orderId), {
+    onSuccess: (response) => {
+      refreshData();
+      showAlert({ description: t('message.success.discardVersionChanges'), type: 'success', anchorEl: alertContainerId });
     },
     onError: (error) => {
       const errorKey = handleApiError(err);
@@ -148,16 +160,19 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
     if (value === 'unassign') {
       unassignMutation.mutate();
     }
+    if (value === 'discard-changes-by-me') {
+      discardCurrentOrderVersion(props.id);
+    }
   };
 
   if (tab === 1) {
     if (!status) return null;
 
-    if (status.toLowerCase() === 'pending' || status.toLowerCase() === 'cancelled') {
+    if (status === StatusEnum.PENDING || status === StatusEnum.CANCELLED) {
       return null;
     }
 
-    if (status?.toLowerCase() === 'in_draft') {
+    if (status === StatusEnum.IN_DRAFT) {
       if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS)) {
         options.unshift(
           {
@@ -170,7 +185,12 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
           }
         );
       }
-    } else if (status?.toLowerCase() === 'approval_pending') {
+    } else if (status === StatusEnum.REJECTED) {
+      options.push({
+        label: t(`labels.orderActions.view`),
+        value: 'review'
+      });
+    } else if (status === StatusEnum.APPROVAL_PENDING) {
       if ((!props.approver || props.approver?.id === null) && doesApproverGroupExist(props.approverGroupIds, assginedGroupsData)) {
         options.push({
           label: t(`labels.orderActions.assignToMe`),
@@ -181,6 +201,12 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
           label: t(`labels.orderActions.unassignToMe`),
           value: 'unassign'
         });
+        if (props.versionOwner) {
+          options.push({
+            label: t(`labels.orderActions.discardChangesByMe`),
+            value: 'discard-changes-by-me'
+          });
+        }
       }
 
       if (options.length > 0 && options[options.length - 1].value === 'unassign') {

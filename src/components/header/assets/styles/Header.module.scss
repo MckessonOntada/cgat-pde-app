@@ -225,4 +225,15 @@
   font-weight: 700;
   text-decoration: none;
   color: var(--brand-color-grey) !important;
+  display: flex;
+  gap: 6px;
+
+  .logoContainer {
+    height: 28px;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
 }
