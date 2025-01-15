@@ -6,7 +6,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { Button } from '@mckesson/mcp-component-library';
 import { usePaymentCredits } from '../../context/PaymentsCreditsContext';
 
-export default function Credits(params) {
+export default function Credits(props) {
   const { t } = useTranslate();
   const { applyFilters, clearFilters, actualData } = usePaymentCredits();
 
@@ -32,12 +32,18 @@ export default function Credits(params) {
         />
       </div>
       <div className="MCP-table-wrapper credit-table-container">
-        <div className="table-header">
-          <Button variant="secondary" onClick={() => {}} size="sm" disabled>
-            {t('paymentInvoices.CS.ExportExcel')}
-          </Button>
-        </div>
-        <CreditsTable />
+        {!props.selectableRows && (
+          <div className="table-header">
+            <Button variant="secondary" onClick={() => {}} size="sm" disabled>
+              {t('paymentInvoices.CS.ExportExcel')}
+            </Button>
+          </div>
+        )}
+        <CreditsTable
+          selectedRows={props.selectedCredits}
+          setSelectedRows={props.setSelectedCredits}
+          selectableRows={props.selectableRows}
+        />
       </div>
     </React.Fragment>
   );

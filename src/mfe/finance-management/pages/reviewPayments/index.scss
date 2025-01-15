@@ -114,6 +114,13 @@
   gap: 7px;
   font-weight: 600;
   font-size: 14px;
+  &.in-active {
+    g {
+      fill: lightgray;
+    }
+    color: lightgray;
+    cursor: pointer;
+  }
 }
 
 .invoice-sum-container {
