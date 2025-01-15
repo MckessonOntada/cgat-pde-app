@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Heading, AutoSuggestDropdown } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import InfoCards from '@src/components/infoCards/InfoCards';
 import CommonUtils from '@src/util/CommonUtils';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import './index.scss';
@@ -11,7 +10,6 @@ import Credits from '../credits';
 import { PaymentsCreditsProvider } from '../../context/PaymentsCreditsContext';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
-// import { useLocation } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import ApiRoutes from '../../../../api/ApiRoutes';
 import { useAccountContext } from '../../context/AccountContext';
@@ -29,7 +27,6 @@ function ReviewPayments() {
   const location = useLocation();
   const [selectedCredits, setSelectedCredits] = useState([]);
   const { state } = location;
-  const { includeinvoiceData } = state || {};
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { selectedAccount } = useAccountContext();
@@ -37,10 +34,6 @@ function ReviewPayments() {
   const [mergedData, setMergedData] = useState([]);
   const [selectedData, setSelectedData] = useState('');
   const [paymentOption, setPaymentOption] = useState('');
-  const formatter = new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
   const REVIEW_MODE = state.reviewMode || false;
 
   const { data: paymentMethodsData = [], isError } = useQuery({
@@ -81,16 +74,12 @@ function ReviewPayments() {
     if (state?.creditsSelected?.length > 0 && !REVIEW_MODE) {
       setSelectedCredits(state.creditsSelected);
     }
+    state.selectedData && setSelectedData(state.selectedData);
+    state.paymentOption && setPaymentOption(state.paymentOption);
     if (REVIEW_MODE) {
       setSelectedInvoices(state.invoices || []);
     }
   }, [location.state]);
-
-  const paymentCard = {
-    'Schedule option': 'Pay Today',
-    'Net amount to be charged': '$8,129.91',
-    'Payment method': '4600 - FIRST CITIZENS BANK & TRUST CO'
-  };
 
   const backButtonClick = () => {
     if (REVIEW_MODE) {
@@ -226,6 +215,10 @@ function ReviewPayments() {
     });
   };
 
+  const disablePreview = () => {
+    return !selectedData || !paymentOption;
+  };
+
   return (
     <div className="reviewPayments">
       <div className="reviewPaymentsContent">
@@ -245,7 +238,6 @@ function ReviewPayments() {
             <div className="sectionCard">
               <div className="accountNumber">{selectedAccount.accountNumber}</div>
               <div className="accountName">{selectedAccount.accountName}</div>
-              {/* <div className="accountAddress">1432 S Dobson Rd Ste 106, Mesa, AZ, 85202</div> */}
               <div className="accountAddress">
                 {selectedAccount.street}, {selectedAccount.state}, {selectedAccount.city}, {selectedAccount.country},{' '}
                 {selectedAccount.zipCode}
@@ -256,12 +248,18 @@ function ReviewPayments() {
         {REVIEW_MODE && (
           <div className="section">
             <div className="sectionHeader">{'Payment Summary'}</div>
-            <DetailMetrics data={paymentCard} />
+            <DetailMetrics
+              data={{
+                'Schedule option': state.paymentOption,
+                'Net amount to be charged': FinanceUtils.formatCurrency(totalAmount),
+                'Payment method': state.selectedData.label
+              }}
+            />
           </div>
         )}
         <div>
           <div>
-            <h1>Invoices Selected</h1>
+            <h1>{REVIEW_MODE ? 'Invoices Selected for Payment' : 'Invoices Selected'}</h1>
           </div>
           <SelectedInvoiceList selectedInvoices={selectedInvoices} setSelectedInvoices={setSelectedInvoices} />
         </div>
@@ -274,7 +272,7 @@ function ReviewPayments() {
         {(!REVIEW_MODE || (REVIEW_MODE && state?.creditsSelected?.length > 0)) && (
           <div className="MCP-module-wrapper">
             <div>
-              <h1>Credits Available</h1>
+              <h1>{REVIEW_MODE ? 'Credits Selected' : 'Credits Available'}</h1>
             </div>
             <div id="tablist-container" className="MCP-module-body">
               {REVIEW_MODE ? (
@@ -335,7 +333,7 @@ function ReviewPayments() {
             {`PAY ${FinanceUtils.formatCurrency(totalAmount)}`}
           </Button>
         ) : (
-          <Button onClick={onPreviewPayment} size="sm">
+          <Button onClick={onPreviewPayment} size="sm" disabled={disablePreview()}>
             Preview Payment
           </Button>
         )}

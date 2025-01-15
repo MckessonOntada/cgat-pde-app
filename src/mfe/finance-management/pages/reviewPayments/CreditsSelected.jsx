@@ -17,7 +17,6 @@ function CreditsSelected(props) {
   const [data, setData] = useState([]);
   const location = useLocation();
   const { state } = location;
-  //   const { isFetching, paginationConfig, setPageNumber, applySort, isError } = usePaymentCredits();
 
   useEffect(() => {
     if (state.creditsSelected?.length > 0) {
@@ -30,7 +29,6 @@ function CreditsSelected(props) {
       id: 'billNumber',
       name: t('paymentInvoices.history.table.billNumber'),
       selector: (row) => `${row.billNumber}`,
-      sortable: true,
       wrap: true,
       minWidth: '112px',
       cell: (props) => (
@@ -49,7 +47,6 @@ function CreditsSelected(props) {
       name: t('paymentInvoices.history.table.SoldToSite'),
       selector: () => {},
       minWidth: '160px',
-      sortable: true,
       wrap: true,
       cell: (props) => <div>{props?.soldToSite || '-'}</div>
     },
@@ -58,7 +55,6 @@ function CreditsSelected(props) {
       name: t('paymentInvoices.credits.table.description'),
       selector: (row) => row.description,
       minWidth: '320px',
-      sortable: true,
       wrap: true,
       cell: (props) => (
         <div>
@@ -70,7 +66,6 @@ function CreditsSelected(props) {
       id: 'dueDate',
       name: t('paymentInvoices.credits.table.validfrom'),
       selector: (row) => row.dueDate,
-      sortable: true,
       wrap: true,
       minWidth: '160px',
       cell: (props) => (
@@ -82,7 +77,6 @@ function CreditsSelected(props) {
       name: t('paymentInvoices.credits.table.amount'),
       selector: (row) => row.billAmount,
       minWidth: '144px',
-      sortable: true,
       wrap: true,
       cell: (props) => (
         <div className="status-container align-items-right">
@@ -92,9 +86,6 @@ function CreditsSelected(props) {
       right: true
     }
   ];
-  const handleSort = (selectedColumn, sortDirection) => {
-    // if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
-  };
 
   return (
     <React.Fragment>
@@ -103,20 +94,8 @@ function CreditsSelected(props) {
         type="normal"
         columns={columns}
         data={data || []}
-        onSortIconClick={handleSort}
-        // currentPage={paginationConfig.pageNumber}
-        // totalPageCount={paginationConfig.totalPages}
-        // pagination={true}
-        // totalRocords={paginationConfig.totalElements}
-        // handleChangePage={handleChangePage}
-        // recordsPerPage={paginationConfig.pageSize}
-        // paginationTotalRecorsMessage={t('orgManagement.results')}
-        // paginationRecordsPerPageMessage={t('orgManagement.per_page')}
-        // progressPending={isFetching}
         noDataComponent={
           <EmptyDataTable
-            // isLoading={isFetching}
-            // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
             heading={t('paymentInvoices.credits.table.emptyData')}
             description={t('paymentInvoices.history.table.emptyDataDescription')}

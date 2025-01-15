@@ -9,8 +9,7 @@ import { ReactComponent as RemoveCircle } from '@src/assets/svg/cross-red.svg';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { showSnackbar } from '@src/store/reducer/snackbarReducer';
 import { useDispatch } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import { omit } from '@okta/okta-auth-js';
+import { Link, useLocation } from 'react-router-dom';
 
 function SelectedInvoiceList(props) {
   const { t } = useTranslate();
@@ -25,24 +24,30 @@ function SelectedInvoiceList(props) {
       name: t('paymentInvoices.history.table.billNumber'),
       id: 'billNumber',
       selector: (row) => `${row.billNumber}`,
-      sortable: true,
       wrap: true,
       minWidth: '112px',
-      cell: (props) => <div className="cellEllipse">{`${props?.billNumber || ''}`}</div>
+      cell: (props) => (
+        <div className="cellEllipse">
+          <Link
+            style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
+            // to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
+          >
+            {`${props?.billNumber || ''}`}
+          </Link>
+        </div>
+      )
     },
     {
       id: 'soldToSite',
       name: t('paymentInvoices.history.table.SoldToSite'),
       selector: (row) => row.soldToSite,
       minWidth: '160px',
-      sortable: true,
       wrap: true,
       cell: (props) => <div>{props?.soldToSite || '-'}</div>
     },
     {
       name: 'Description',
       selector: (row) => row.description,
-      sortable: true,
       id: 'description',
       wrap: true,
       minWidth: '160px',
@@ -52,7 +57,6 @@ function SelectedInvoiceList(props) {
       name: t('paymentInvoices.history.table.DueDate'),
       selector: (row) => row.dueDate,
       minWidth: '168px',
-      sortable: true,
       wrap: true,
       id: 'dueDate',
       cell: (props) => <div className="cellEllipse">{dayjs(props?.dueDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
@@ -61,7 +65,6 @@ function SelectedInvoiceList(props) {
       name: t('paymentInvoices.history.table.BillAmount'),
       selector: (row) => row?.billAmount,
       minWidth: '140px',
-      sortable: true,
       right: true,
       id: 'billAmount',
       cell: (props) => (
@@ -74,7 +77,6 @@ function SelectedInvoiceList(props) {
       name: t('paymentInvoices.history.table.OpenAmount'),
       selector: (row) => row.openAmount,
       minWidth: '144px',
-      sortable: true,
       wrap: true,
       id: 'openAmount',
       cell: (props) => (
@@ -111,7 +113,6 @@ function SelectedInvoiceList(props) {
       name: 'Actions',
       minWidth: '160px',
       id: 'paymentAmount',
-      //   center: true,
       cell: (props, index) => (
         <div className={`action-container ${selectedInvoices.length <= 1 ? `in-active` : ``}`} onClick={() => onRemoveInvoice(index)}>
           <RemoveCircle disabled /> REMOVE
