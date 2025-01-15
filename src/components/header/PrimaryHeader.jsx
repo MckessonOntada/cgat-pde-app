@@ -173,30 +173,34 @@ const PrimaryHeader = () => {
 
   return (
     <div className={`${styles.navContainer} ${styles.primary}`}>
-      <div className={styles.wrapper} id={''}>
-        {authState?.isAuthenticated ? (
-          <LeftSideView>
-            <AppLogo />
-          </LeftSideView>
-        ) : (
-          <div className={styles.navItemsLeft} id={''}>
-            <div className={styles.branding}>
+      <div className="max-container">
+        <div className={styles.wrapper} id={''}>
+          {authState?.isAuthenticated ? (
+            <LeftSideView>
               <AppLogo />
+            </LeftSideView>
+          ) : (
+            <div className={styles.navItemsLeft} id={''}>
+              {' '}
+              <div className={styles.branding}>
+                {' '}
+                <AppLogo />{' '}
+              </div>
             </div>
+          )}
+          {authState?.isAuthenticated && (
+            <div className={styles.desktopOnly}>
+              <RightSideView />
+            </div>
+          )}
+          <div className={styles.mobileOnly}>
+            <button onClick={toggleDrawer} aria-label="Open drawer menu">
+              <IconMenu />
+            </button>
+            <FloatingDrawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>
+              <RightSideView />
+            </FloatingDrawer>
           </div>
-        )}
-        {authState?.isAuthenticated && (
-          <div className={styles.desktopOnly}>
-            <RightSideView />
-          </div>
-        )}
-        <div className={styles.mobileOnly}>
-          <button onClick={toggleDrawer} aria-label="Open drawer menu">
-            <IconMenu />
-          </button>
-          <FloatingDrawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>
-            <RightSideView />
-          </FloatingDrawer>
         </div>
       </div>
       <Modal
