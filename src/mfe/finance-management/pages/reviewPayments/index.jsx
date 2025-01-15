@@ -213,7 +213,17 @@ function ReviewPayments() {
   };
 
   const onPreviewPayment = () => {
-    navigate('.', { state: { ...state, invoices: selectedInvoices, creditsSelected: selectedCredits, reviewMode: true }, replace: true });
+    navigate('.', {
+      state: {
+        ...state,
+        invoices: selectedInvoices,
+        creditsSelected: selectedCredits,
+        reviewMode: true,
+        selectedData: selectedData,
+        paymentOption: paymentOption
+      },
+      replace: true
+    });
   };
 
   return (
@@ -231,11 +241,17 @@ function ReviewPayments() {
         </div>
         <div className="section">
           <div className="sectionHeader">{t('Account')}</div>
-          <div className="sectionCard">
-            <div className="accountNumber">0000000174</div>
-            <div className="accountName">Ironwood Cancer And Research Center</div>
-            <div className="accountAddress">1432 S Dobson Rd Ste 106, Mesa, AZ, 85202</div>
-          </div>
+          {selectedAccount && (
+            <div className="sectionCard">
+              <div className="accountNumber">{selectedAccount.accountNumber}</div>
+              <div className="accountName">{selectedAccount.accountName}</div>
+              {/* <div className="accountAddress">1432 S Dobson Rd Ste 106, Mesa, AZ, 85202</div> */}
+              <div className="accountAddress">
+                {selectedAccount.street}, {selectedAccount.state}, {selectedAccount.city}, {selectedAccount.country},{' '}
+                {selectedAccount.zipCode}
+              </div>
+            </div>
+          )}
         </div>
         {REVIEW_MODE && (
           <div className="section">
