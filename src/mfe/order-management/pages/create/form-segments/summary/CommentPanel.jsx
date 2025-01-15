@@ -63,6 +63,11 @@ const CommentPanel = ({ readOnly, onClose, onSuccess, meta }) => {
     }
   };
 
+  const handleOnClose = (event) => {
+    event.preventDefault();
+    if (onClose) onClose();
+  };
+
   React.useEffect(() => {
     const { rejectionDetails } = meta;
     if (rejectionDetails?.rejectionReason) {
@@ -82,7 +87,7 @@ const CommentPanel = ({ readOnly, onClose, onSuccess, meta }) => {
                 <div className={styles.topSect}>
                   <div className={styles.header}>
                     <Heading as="h4">{t('captions.lblRejectOrder')}</Heading>
-                    <button onClick={onClose}>
+                    <button onClick={handleOnClose}>
                       <IconClose />
                     </button>
                   </div>
@@ -96,6 +101,7 @@ const CommentPanel = ({ readOnly, onClose, onSuccess, meta }) => {
                       fieldlabel={t('captions.lblReason')}
                       placeholder=" "
                       isRequired
+                      isReadOnly={readOnly}
                       component={Components['textarea']}
                       maxCharHelperText={t('forms.placeholder.max_5000_chars')}
                       maxCharLimit={COMMENT_MAX_LENGTH}>

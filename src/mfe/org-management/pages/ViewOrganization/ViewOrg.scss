@@ -10,10 +10,12 @@
   line-height: 28px;
   font-weight: 600;
 }
+
 .link-acc-box {
   display: flex;
   justify-content: space-between;
 }
+
 .button-icon svg {
   width: 16px;
   height: 16px;
@@ -26,9 +28,9 @@
   gap: var(--spacing-03);
 }
 
-.details-view-container {
-  display: none;
-  @include mixins.respond("sm") {
-    display: block;
-  }
-}
+// .details-view-container {
+//   display: none;
+//   @include mixins.respond("sm") {
+//     display: block;
+//   }
+// }

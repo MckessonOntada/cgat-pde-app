@@ -112,8 +112,8 @@ function ApproverList({ onActionSuccess }) {
         sortable: true,
         sortKey: 'name',
         wrap: true,
-        minWidth: '440px',
-        cell: (props) => <EclipsesTextcss str={props.name} maxWidth={400} />
+        minWidth: '150px',
+        cell: (props) => <EclipsesTextcss str={props.name} maxWidth={140} />
       },
       {
         id: 'createdBy',
@@ -122,8 +122,8 @@ function ApproverList({ onActionSuccess }) {
         sortable: true,
         sortKey: 'createdBy',
         wrap: true,
-        minWidth: '160px',
-        cell: (props) => <EclipsesTextcss str={props.createdBy.name} maxWidth={200} />
+        minWidth: '150px',
+        cell: (props) => <EclipsesTextcss str={props.createdBy.name} maxWidth={140} />
       },
       {
         id: 'createdAt',
@@ -132,7 +132,7 @@ function ApproverList({ onActionSuccess }) {
         sortable: true,
         sortKey: 'createdAt',
         wrap: true,
-        minWidth: '160px',
+        minWidth: '100px',
         cell: (props) => CommonUtils.convertDateStringFormat(props.createdAt, 'MM-DD-YYYY')
       },
       {
@@ -140,7 +140,7 @@ function ApproverList({ onActionSuccess }) {
         name: t('approvergroup.table.status'),
         selector: (row) => row.status,
         center: true,
-        minWidth: '200px',
+        minWidth: '100px',
         cell: (props) => <div>{props.active ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />}</div>
       },
       {
@@ -148,8 +148,6 @@ function ApproverList({ onActionSuccess }) {
         center: true,
         name: t('approvergroup.table.action'),
         cell: (row) => <Actions row={row} />,
-        width: '200px',
-        minWidth: '200px',
         omit: !hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_APPROVER_GROUP)
       }
     ];
@@ -210,10 +208,11 @@ function ApproverList({ onActionSuccess }) {
           ),
           modalFooter: (
             <React.Fragment>
-              <Button onClick={handleConfirmCancel} variant="secondary">
+              <Button onClick={handleConfirmCancel} variant="secondary" size="sm">
                 {t('approvergroup.button.cancel')}
               </Button>
               <Button
+                size="sm"
                 onClick={() =>
                   handleConfirm(selectedRows?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate'))
                 }>

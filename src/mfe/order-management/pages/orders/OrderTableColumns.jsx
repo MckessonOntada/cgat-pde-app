@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Badge, Button, Tooltip, MenuList } from '@mckesson/mcp-component-library';
+import { Badge, Tooltip, MenuList } from '@mckesson/mcp-component-library';
 import { StatusEnum } from './constants';
 import { routesConfig } from '../../routes/constants';
 import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
@@ -15,6 +15,7 @@ import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions
 import usePermission from '@src/hooks/usePermissions';
 import { renderModal } from '@src/util/ModalUtil';
 import { useOrders } from '../../context/OrderContext';
+import { useManageOrder } from '../../context/ManageOrderContext';
 
 const getColorByStatus = (status) => {
   const statusColors = {
@@ -43,6 +44,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
   const navigate = useNavigate();
   const loggedinUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
+  const { setActiveRecord } = useManageOrder();
   const { refreshData, assginedGroupsData } = useOrders();
   const { hasPermission } = usePermission();
   const assignMutation = useMutation(() => OrderService.setOrderAssignToMe(id), {
@@ -98,6 +100,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
   };
 
   const handleOnOptionSelection = (value) => {
+    setActiveRecord(value);
     if (value === 'view') {
       if (props.status === StatusEnum.SUBMITTED) {
         navigate(`${id}/summary`, { state: { isEdit: true } });
@@ -107,9 +110,6 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
       if (props.status === StatusEnum.SUBMITTED) {
         navigate(getPathByOrderStage(props), { state: { isEdit: true } });
       } else navigate(getPathByOrderStage(props), { state: { isSimulate: true } });
-    }
-    if (value === 'edit') {
-      navigate(`edit-order/${id}`);
     }
     if (value === 'delete') {
       renderModal({
@@ -128,7 +128,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
         }
       });
     }
-    if (value === 'cancel') {
+    if (value === 'cancel' || value === 'edit') {
       renderModal({
         title: t('labels.information'),
         bodyContent: <h3>{t('labels.orderActions.cancelmessage')}</h3>,
@@ -228,6 +228,12 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
         value: 'view'
       });
     }
+    if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS)) {
+      options.push({
+        label: t(`labels.orderActions.edit`),
+        value: 'edit'
+      });
+    }
     if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CANCEL_ORDER)) {
       options.push({
         label: t(`labels.orderActions.cancel`),
@@ -291,10 +297,9 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     name: t('labels.orderId'),
     selector: () => {},
     sortable: true,
-    minWidth: '240px',
-    maxWidth: '380px',
     sortable: true,
     sortKey: 'id',
+    minWidth: '160px',
     cell: (props) => (
       <Link
         className="MCP-table-link"
@@ -302,7 +307,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
         //state={props.currentStage === 'ORDER_SUMMARY' && props.status === StatusEnum.SUBMITTED ? { ...props, isEdit: true } : { ...props }}
         state={getState(props)}
         aria-label={t('labels.orderId')}>
-        <EclipsesTextcss str={props.id} maxWidth={220} />
+        <EclipsesTextcss str={props.id} maxWidth={140} />
       </Link>
     )
   },
@@ -312,14 +317,12 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'patient.patientInfo',
-    minWidth: '140px',
-    maxWidth: '200px',
     cell: (props) => {
       const patientInfo = props.patient && props.patient.patientInfo;
       return !patientInfo ? (
         'N/A'
       ) : (
-        <EclipsesTextcss aria-label={t('labels.patientName')} str={getPatientName(patientInfo)} maxWidth={170} />
+        <EclipsesTextcss aria-label={t('labels.patientName')} str={getPatientName(patientInfo)} maxWidth={100} />
       );
     }
   },
@@ -329,11 +332,10 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'therapy.materialDescription',
-    minWidth: '120px',
     cell: (props) => (
       <EclipsesTextcss
         str={props.therapy?.materialDescription}
-        maxWidth={100}
+        maxWidth={90}
         className={'MCP-table-cell'}
         aria-label={t('labels.therapy')}
       />
@@ -345,10 +347,9 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'author?.name',
-    minWidth: '140px',
-    maxWidth: '320px',
+    maxWidth: '160px',
     cell: (props) => (
-      <EclipsesTextcss tooltip={props.createdBy?.userName} str={props.createdBy?.name} maxWidth={300} className={'MCP-table-cell'} />
+      <EclipsesTextcss tooltip={props.createdBy?.userName} str={props.createdBy?.name} maxWidth={140} className={'MCP-table-cell'} />
     ),
     omit: activeTab !== 1
   },
@@ -358,7 +359,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'createdAt',
-    width: '160px',
+    minWidth: '100px',
     cell: (props) => (
       <span aria-label={t('table.columns.captions.createdOn')}>
         {CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')}
@@ -373,10 +374,9 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'submittedBy.name',
-    minWidth: '180px',
-    maxWidth: '340px',
+    maxWidth: '160px',
     cell: (props) => (
-      <EclipsesTextcss tooltip={props.submittedBy?.userName} str={props.submittedBy?.name} maxWidth={170} className={'MCP-table-cell'} />
+      <EclipsesTextcss tooltip={props.submittedBy?.userName} str={props.submittedBy?.name} maxWidth={140} className={'MCP-table-cell'} />
     ),
     omit: activeTab !== 2
   },
@@ -386,7 +386,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'submittedOn',
-    width: '180px',
+    width: '110px',
     cell: (props) => <span>{props.submittedOn ? CommonUtils.convertDateStringFormat(props.submittedOn, 'MM-DD-YYYY') : '-'}</span>,
     omit: activeTab !== 2
   },
@@ -396,7 +396,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     name: t('table.columns.captions.status'),
     selector: () => {},
     sortable: false,
-    width: '180px',
+    minWidth: '160px',
     center: true,
     cell: (props) => (
       <Tooltip body={props.status}>
@@ -404,7 +404,8 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
           <Badge text={t(`labels.status.${props.status.toLowerCase()}`)} type={getColorByStatus(props.status)} />
         </span>
       </Tooltip>
-    )
+    ),
+    omit: activeTab !== 1
   },
   {
     id: 'price',
@@ -413,7 +414,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortable: true,
     right: true,
     selector: 'orderCost',
-    width: '100px',
+    maxWidth: '100px',
     cell: (props) => (
       <span className="MCP-table-cell price" aria-label={t('table.columns.captions.price')}>
         {props.orderCost ? `$ ${props.orderCost}` : null}
@@ -425,7 +426,6 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     name: t('table.columns.captions.actions'),
     selector: () => {},
     sortable: false,
-    width: '120px',
     center: true,
     cell: (props) => getOptionsByStatus(props, props.status, t, activeTab, props.id, alertContainerId)
   }

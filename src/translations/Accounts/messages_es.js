@@ -1,6 +1,6 @@
 export const AccountES = {
-  'account.no': 'S_Account Number',
-  'account.name': 'S_Account Name',
+  'account.no': 'S_Number',
+  'account.name': 'S_Name',
   'account.sales_org': 'S_Sales Org',
   'account.distribution': 'S_Distribution Channel',
   'account.address': 'S_Address',
