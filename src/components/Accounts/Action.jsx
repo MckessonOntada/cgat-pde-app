@@ -32,6 +32,7 @@ export default function Actions({ row, userId, practiceId, refetch }) {
       onSuccess: (response) => {
         console.log('Account Unlinked successfully:', response);
         setIsOpen(false);
+        refetch();
         if (refetch) {
           setPageNumber(1);
         }

@@ -117,7 +117,7 @@ function UserTable({ onActionSuccess }) {
         ),
         wrap: true,
         width: '40px',
-        omit: activeTab === 'PENDING REQUESTS'
+        omit: activeTab === 2
       },
       { name: 'ID', selector: 'id', sortable: true, omit: true },
       {
@@ -130,7 +130,7 @@ function UserTable({ onActionSuccess }) {
         minWidth: '340px',
         cell: (props) => (
           <div>
-            {activeTab === 'PENDING REQUESTS' ? (
+            {activeTab === 2 ? (
               <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName || ''}`} maxWidth={300} />
             ) : (
               <React.Fragment>
@@ -184,7 +184,7 @@ function UserTable({ onActionSuccess }) {
           ) : (
             '-'
           ),
-        omit: isSystemAdminView || activeTab === 'PENDING REQUESTS'
+        omit: isSystemAdminView || activeTab === 2
       },
       {
         id: 'status',
@@ -194,7 +194,7 @@ function UserTable({ onActionSuccess }) {
         minWidth: '80px',
         cell: (props) => (
           <div>
-            {activeTab === 'PENDING REQUESTS' ? (
+            {activeTab === 2 ? (
               <Badge text="Pending" type="info-default" />
             ) : props.isActive ? (
               <Badge text="Active" type="success" />
@@ -219,8 +219,8 @@ function UserTable({ onActionSuccess }) {
         cell: (row) => (
           <Actions
             row={row}
-            showEditButton={activeTab === 'PENDING REQUESTS' && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS)}
-            showViewButton={activeTab !== 'PENDING REQUESTS' && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS)}
+            showEditButton={activeTab === 2 && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS)}
+            showViewButton={activeTab !== 2 && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS)}
           />
         ),
         omit: isSystemAdminView,

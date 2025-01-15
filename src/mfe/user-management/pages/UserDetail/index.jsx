@@ -53,7 +53,8 @@ const UserDetail = () => {
   const [alertDescription, setAlertDescription] = useState('');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const location = useLocation();
-  const isSuccess = location.state?.isSuccess || false;
+  //  const isSuccess = location.state?.isSuccess || false;
+  const { isSuccess = false, isPending = false } = location.state || {};
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const [isOpen, setIsOpen] = useState(false);
   const [isDeactivate, setIsDeactivate] = useState(false);
@@ -66,7 +67,10 @@ const UserDetail = () => {
   const { isLoading, isError, data, refetch } = useQuery({
     queryKey: [`users/${userId}`],
     queryFn: async () => {
-      const res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.GET, {});
+      const url = !isPending
+        ? `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`
+        : `${ApiRoutes.USERS_PROVISIONING()}/${userId}`;
+      const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       return res.data;
     },
     enabled: !!userId,
@@ -341,7 +345,7 @@ const UserDetail = () => {
             <EmptyDataTable
               isLoading={isLoading}
               image={EmptyDataImage}
-              heading={t('message.emptyTableTitle')}
+              heading={t('message.userEmptyTableTitle')}
               description={t('userManagement.messages.emptysubtitle')}
             />
           )}
