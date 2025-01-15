@@ -113,7 +113,7 @@ const OrgList = () => {
       ),
       sortable: true,
       sortKey: 'name',
-      minWidth: '280px',
+      minWidth: '250px',
       wrap: true
     },
     {
@@ -121,8 +121,8 @@ const OrgList = () => {
       name: t('orgManagement.table.id'),
       selector: (row) => row.id,
       sortable: true,
+      minWidth: '100px',
       sortKey: 'id',
-      width: '180px',
       wrap: true
     },
     {
@@ -135,7 +135,7 @@ const OrgList = () => {
       ),
       sortable: true,
       sortKey: 'id',
-      minWidth: '280px',
+      minWidth: '250px',
       wrap: true
     },
     {
@@ -148,7 +148,7 @@ const OrgList = () => {
           : row.createdAt
           ? CommonUtils.convertDateStringFormat(row.createdAt, 'MM-DD-YYYY')
           : 'N/A',
-      width: '180px',
+      minWidth: '100px',
       wrap: true
     },
     {
@@ -162,7 +162,7 @@ const OrgList = () => {
           />
         </div>
       ),
-      width: '200px',
+      minWidth: '100px',
       wrap: true,
       center: true
     },
@@ -170,7 +170,7 @@ const OrgList = () => {
       id: 'action',
       name: t('orgManagement.table.action'),
       cell: (row) => <Actions row={row} />, // Pass row as a named prop
-      width: '180px',
+      minWidth: '100px',
       wrap: true,
       center: true
     }
