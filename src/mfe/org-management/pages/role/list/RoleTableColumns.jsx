@@ -39,22 +39,22 @@ export const createColumns = (t, selectedRows, setSelectedRows) => [
     ),
     wrap: true,
     sortable: true,
-    sortKey: 'name',
-    width: '460px'
+    sortKey: 'name'
   },
   {
     id: 'createAt',
     name: t('orgManagement.role.tableHeadingCreatedOn'),
     selector: (row) => CommonUtils.convertDateStringFormat(row.createdAt ? row.createdAt : row.updatedAt, 'MM-DD-YYYY'),
-    wrap: true,
-    width: '460px'
+    wrap: true
   },
   {
     id: 'status',
     name: t('orgManagement.table.status'),
-    cell: (row) => (row.isActive !== undefined && row.isActive !== null ? <Badge text={row.isActive ? 'Active' : 'Inactive'} type={getBadgeType(row.isActive)} /> : null),
+    cell: (row) =>
+      row.isActive !== undefined && row.isActive !== null ? (
+        <Badge text={row.isActive ? 'Active' : 'Inactive'} type={getBadgeType(row.isActive)} />
+      ) : null,
     wrap: true,
-    center: true,
-    width: '280xp'
+    center: true
   }
 ];
