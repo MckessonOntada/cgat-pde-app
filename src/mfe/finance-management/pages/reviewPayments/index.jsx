@@ -35,6 +35,10 @@ function ReviewPayments() {
   const [mergedData, setMergedData] = useState([]);
   const [selectedData, setSelectedData] = useState('');
   const [paymentOption, setPaymentOption] = useState('');
+  const formatter = new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 
   const { data: paymentMethodsData = [], isError } = useQuery({
     queryKey: ['paymentMethodsreviewPayments'],
@@ -224,11 +228,14 @@ function ReviewPayments() {
           </div>
         </div>
         <div>
+          <div>
+            <h1>Invoices Selected</h1>
+          </div>
           <SelectedInvoiceList selectedInvoices={selectedInvoices} setSelectedInvoices={setSelectedInvoices} />
         </div>
         <div className="invoice-sum-container">
           <div className="label">{`${selectedInvoices.length} invoice(s), amount to be paid:`}</div>
-          <div className="value">{`$${invoicesSum}`}</div>
+          <div className="value">{`$${formatter.format(invoicesSum)}`}</div>
         </div>
         <div className="MCP-module-wrapper">
           <div>
@@ -240,7 +247,7 @@ function ReviewPayments() {
             </PaymentsCreditsProvider>
           </div>
           <div className="invoice-sum-container">
-            <div className="label">{`Total credit amount:`}</div> <div className="value">{`$${creditsSum}`}</div>
+            <div className="label">{`Total credit amount:`}</div> <div className="value">{`$${formatter.format(creditsSum)}`}</div>
           </div>
         </div>
       </div>
@@ -271,14 +278,14 @@ function ReviewPayments() {
         </div>
         <div className="invoice-sum-container">
           <div className="label">Amount to be charged to your Payment account:</div>
-          <div className="value">{`$${totalAmount}`}</div>
+          <div className="value">{`$${formatter.format(totalAmount)}`}</div>
         </div>
       </div>
       <div className="footer-section">
         <Button variant="secondary" onClick={() => {}} size="sm" disabled>
           Cancel
         </Button>
-        <Button onClick={() => {}} size="sm" disabled>
+        <Button onClick={() => navigate('.', { state: { ...state, reviewMode: true } })} size="sm">
           Preview Payment
         </Button>
       </div>
