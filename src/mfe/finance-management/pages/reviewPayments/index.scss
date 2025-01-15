@@ -114,6 +114,13 @@
   gap: 7px;
   font-weight: 600;
   font-size: 14px;
+  &.in-active {
+    g {
+      fill: lightgray;
+    }
+    color: lightgray;
+    cursor: pointer;
+  }
 }
 
 .invoice-sum-container {
@@ -133,4 +140,50 @@
     font-weight: 700;
     color: #1e394e;
   }
+}
+
+.paymentMethod {
+  color: var(--text-body-01---default, #1e394e);
+  /* Body/Regular XS */
+  font-family: var(--typography-font-family-body, Nunito);
+  font-size: var(--typography-text-size-body-font-x-small, 12px);
+  font-style: normal;
+  font-weight: 400;
+  line-height: var(--typography-line-height-body-font-x-small, 16px); /* 133.333% */
+  letter-spacing: 0.012px;
+  padding-bottom: 4px;
+}
+.payment {
+  border-radius: 8px;
+  border: 1px solid #d9d8d7;
+  background: #fff;
+  padding: 24px 32px;
+  display: flex;
+  gap: 24px;
+  flex-direction: column;
+}
+
+.paymentMethodContainer {
+  display: flex;
+  width: 400px;
+  flex-direction: column;
+  gap: 4px;
+}
+.paymentOptionContainer {
+  border-radius: 8px;
+  border: 1px solid #d9d8d7;
+  background: #fff;
+  display: flex;
+  padding: 24px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  align-self: stretch;
+}
+.footer-section {
+  padding-top: 32px;
+  display: flex;
+  justify-content: end;
+  width: 100%;
+  gap: var(--spacing-03);
 }

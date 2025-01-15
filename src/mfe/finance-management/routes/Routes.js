@@ -45,7 +45,7 @@ const Routes = () => {
         path={PATHS.credits}
         element={
           <PaymentsCreditsProvider>
-            <Credits />
+            <Credits selectedCredits={[]} setSelectedCredits={() => {}} selectableRows={false} />
           </PaymentsCreditsProvider>
         }
       />

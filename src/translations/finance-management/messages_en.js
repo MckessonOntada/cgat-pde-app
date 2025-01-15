@@ -59,6 +59,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.authorizedPayment': 'Authorized Payment',
   'paymentInvoices.history.table.usedDate': 'Used Date',
   'paymentInvoices.history.table.creditUsed': 'Credit Used',
+  'paymentInvoices.history.table.selectedAccount': 'Item Selected',
 
   // Customer Statements
   'paymentInvoices.CS.filters.autoSearch': 'Search by Bill No.',

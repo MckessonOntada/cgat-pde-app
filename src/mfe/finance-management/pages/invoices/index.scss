@@ -135,3 +135,20 @@
     }
   }
 }
+
+.selected-invoices {
+  display: flex;
+  padding: 5px 14px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  border-radius: 5px;
+  background: var(--brand-color-patient-primary-1);
+  .label {
+    color: var(--brand-color-black);
+    font-weight: var(--brand-font-weight-400);
+    font-size: var(--brand-font-size--large);
+    line-height: var(--brand-line-height--x-large);
+    letter-spacing: -0.036px;
+  }
+}
