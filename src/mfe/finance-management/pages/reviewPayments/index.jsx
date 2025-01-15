@@ -98,7 +98,8 @@ function ReviewPayments() {
           onClick={() => {
             navigate(-1);
             dispatch(closeModal());
-          }}>
+          }}
+        >
           Okay
         </Button>
       </div>

@@ -171,69 +171,71 @@ const SignUp = () => {
   return (
     <div className={mainLayoutStyles.appContainer}>
       <PrimaryHeader />
-      <div className={mainLayoutStyles.home}>
-        <div className="MCP-module-wrapper py3">
-          <ModuleHeader heading={<Heading as="h1">{t('forms.headings.newUserRegistration')}</Heading>} />
-          {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            enableReinitialize
-            onSubmit={(values, actions) => {
-              handleSubmit(values);
-              actions.setSubmitting(false);
-            }}>
-            {({ values, errors, touched, setFieldValue, setFieldTouched }) => (
-              <Form>
-                <div className="MCP-panel-container">
-                  <UserDetailsFormSegment />
-                  <div>
-                    <Heading as="h3">{t('forms.headings.organization_details')}</Heading>
-                  </div>
-                  <div className="form-segment">
-                    <div className="line-height">
-                      <Label className="label-heading">
-                        {t('forms.labels.organization')}
-                        <Required id="Required">Required</Required>
-                      </Label>
-                      <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 ">
-                        <AutoSuggestDropdown
-                          eregVariant
-                          getselectedValue={(e) => {
-                            setFieldValue('practiceId', e.id);
-                            setFieldTouched('practiceId', true);
-                          }}
-                          onChangeInput={onSearchOrganization}
-                          placeHolder=""
-                          suggestionList={organizationList || []}
-                          isShowRefineQueryMessage
+      <div className={`${mainLayoutStyles['app-wrapper']}`}>
+        <div className={`${mainLayoutStyles.home} max-container`}>
+          <div className="MCP-module-wrapper">
+            <ModuleHeader heading={<Heading as="h1">{t('forms.headings.newUserRegistration')}</Heading>} />
+            {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              enableReinitialize
+              onSubmit={(values, actions) => {
+                handleSubmit(values);
+                actions.setSubmitting(false);
+              }}>
+              {({ values, errors, touched, setFieldValue, setFieldTouched }) => (
+                <Form>
+                  <div className="MCP-panel-container">
+                    <UserDetailsFormSegment />
+                    <div>
+                      <Heading as="h3">{t('forms.headings.organization_details')}</Heading>
+                    </div>
+                    <div className="form-segment">
+                      <div className="line-height">
+                        <Label className="label-heading">
+                          {t('forms.labels.organization')}
+                          <Required id="Required">Required</Required>
+                        </Label>
+                        <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 ">
+                          <AutoSuggestDropdown
+                            eregVariant
+                            getselectedValue={(e) => {
+                              setFieldValue('practiceId', e.id);
+                              setFieldTouched('practiceId', true);
+                            }}
+                            onChangeInput={onSearchOrganization}
+                            placeHolder=""
+                            suggestionList={organizationList || []}
+                            isShowRefineQueryMessage
+                          />
+                        </div>
+                        {errors.practiceId && touched.practiceId && !values.practiceId && <TextError errorMessage={errors.practiceId} />}
+                      </div>
+                      <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
+                        <Field
+                          name="comment"
+                          fieldlabel={t('forms.labels.comment')}
+                          placeholder=" "
+                          component={Components['textarea']}
+                          maxCharHelperText={t('forms.placeholder.max_5000_chars')}
+                          maxCharLimit={5000}
                         />
                       </div>
-                      {errors.practiceId && touched.practiceId && !values.practiceId && <TextError errorMessage={errors.practiceId} />}
-                    </div>
-                    <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
-                      <Field
-                        name="comment"
-                        fieldlabel={t('forms.labels.comment')}
-                        placeholder=" "
-                        component={Components['textarea']}
-                        maxCharHelperText={t('forms.placeholder.max_5000_chars')}
-                        maxCharLimit={5000}
-                      />
-                    </div>
-                  </div>{' '}
-                </div>
-                <div className={'buttonGroup'}>
-                  <Button size="md" variant="secondary" type="button" onClick={() => navigate('/')}>
-                    {t('forms.buttons.cancel')}
-                  </Button>
-                  <Button type="submit" variant="primary" size="md">
-                    {t('forms.buttons.createaccount')}
-                  </Button>
-                </div>
-              </Form>
-            )}
-          </Formik>
+                    </div>{' '}
+                  </div>
+                  <div className={'buttonGroup'}>
+                    <Button size="md" variant="secondary" type="button" onClick={() => navigate('/')}>
+                      {t('forms.buttons.cancel')}
+                    </Button>
+                    <Button type="submit" variant="primary" size="md">
+                      {t('forms.buttons.createaccount')}
+                    </Button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
+          </div>
         </div>
       </div>
     </div>

@@ -14,14 +14,14 @@ export default function Invoices(params) {
   const AdditionalFiltersConfig = useMemo(() => {
     return [
       {
-        type: 'dropdown',
+        type: 'multiSelectDropdown',
         name: 'paymentTerm',
         tableColumnId: 'paymentTerm',
         label: t('paymentInvoices.history.table.PaymentTerm'),
         options: []
       },
       {
-        type: 'dropdown',
+        type: 'multiSelectDropdown',
         name: 'status',
         tableColumnId: 'status',
         customLabel: (data) => {

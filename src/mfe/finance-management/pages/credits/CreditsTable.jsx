@@ -109,7 +109,8 @@ export default function CreditsTable(props) {
         <div className="cellEllipse">
           <Link
             style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
-            to={`/record/${PATHS.credits}/${props?.billNumber}/details`}>
+            to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
+          >
             {`${props?.billNumber}`}
           </Link>
         </div>
@@ -138,14 +139,14 @@ export default function CreditsTable(props) {
       )
     },
     {
-      id: 'billDate',
+      id: 'dueDate',
       name: t('paymentInvoices.credits.table.validfrom'),
-      selector: (row) => row.billDate,
+      selector: (row) => row.dueDate,
       sortable: true,
       wrap: true,
       minWidth: '160px',
       cell: (props) => (
-        <EclipsesTextcss className="cellEllipse" str={dayjs(props?.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'} maxWidth={240} />
+        <EclipsesTextcss className="cellEllipse" str={dayjs(props?.dueDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'} maxWidth={240} />
       )
     },
     {
@@ -217,7 +218,8 @@ export default function CreditsTable(props) {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}>
+            }}
+          >
             <Loader variant="circular" />
           </div>
         }
