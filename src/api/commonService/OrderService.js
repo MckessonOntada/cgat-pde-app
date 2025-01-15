@@ -85,6 +85,20 @@ async function submitOrder(orderId) {
   return {};
 }
 
+async function rejectOrder(orderId, rejectionReason) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to reject the order.');
+  if (!rejectionReason) throw new Error('Reason is missing. Reason is required to reject the order.');
+
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/reject`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, rejectionReason);
+
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
 async function getTherapies(requestParams) {
   const url = `${ApiRoutes.USERS()}/current/therapies?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
@@ -241,6 +255,19 @@ async function updateTherapy(orderId, requestBody) {
   return {};
 }
 
+async function discardCurrentOrderVersion(orderId) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to discard order changes.');
+
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/discard`;
+  const res = await HttpResourceService.callRest(url, httpVerb.DELETE);
+
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -257,12 +284,14 @@ const OrderService = Object.freeze({
   saveAccount,
   getProgramAndChannelConfig,
   submitOrder,
+  rejectOrder,
   setOrderAssignToMe,
   setOrderUnassignToMe,
   deleteOrder,
   getAssignedGroups,
   simulateOrder,
-  updateTherapy
+  updateTherapy,
+  discardCurrentOrderVersion
 });
 
 export default OrderService;
