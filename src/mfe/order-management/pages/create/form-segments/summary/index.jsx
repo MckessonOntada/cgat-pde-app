@@ -375,7 +375,8 @@ const Summary = () => {
                       className={styles.panelHeader}
                       heading={
                         <Heading as="h3">
-                          {patient?.patientInfo
+                          {patient?.patientInfo &&
+                          (patient.patientInfo.firstName || patient.patientInfo.middleName || patient.patientInfo.lastName)
                             ? [patient.patientInfo.firstName, patient.patientInfo.middleName, patient.patientInfo.lastName]
                                 .filter(Boolean)
                                 .join(' ')
