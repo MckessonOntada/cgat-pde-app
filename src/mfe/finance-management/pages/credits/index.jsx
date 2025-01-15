@@ -15,8 +15,8 @@ export default function Credits(props) {
       {
         type: 'dateRangePicker',
         name: 'billDate',
-        startDateLabel: t('paymentInvoices.invoicesTable.filter.billDateStart'),
-        endDateLabel: t('paymentInvoices.invoicesTable.filter.billDateEnd')
+        startDateLabel: t('paymentInvoices.invoicesTable.filter.dueDateStart'),
+        endDateLabel: t('paymentInvoices.invoicesTable.filter.dueDateEnd')
       }
     ];
   }, []);

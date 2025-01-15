@@ -35,15 +35,14 @@ export default function AccountsList(props) {
           </Link>
         ),
         wrap: true,
-        width: '180px'
+        width: '100px'
       },
       {
         id: 'accountName',
         name: t('account.name'),
         wrap: true,
         selector: (row) => row.accountName,
-        minWidth: '280px',
-        maxWidth: '360px',
+        minWidth: '250px',
         cell: (row) => (
           <div>
             <EclipsesTextcss str={row.accountName} maxWidth={240} />
@@ -54,18 +53,22 @@ export default function AccountsList(props) {
         id: 'salesOrg',
         name: t('account.sales_org'),
         selector: (row) => row.salesOrg,
-        width: '160px',
-        wrap: true
+        minWidth: '100px',
+        wrap: true,
+        cell: (row) => (
+          <div>
+            <EclipsesTextcss str={row.salesOrg} maxWidth={90} />
+          </div>
+        )
       },
       {
         id: 'distributionChannel',
         name: t('account.distribution'),
         selector: (row) => row.distributionChannel,
         wrap: true,
-        cell: (row) => <div className="cellEllipse">{row.distributionChannel}</div>,
+        cell: (row) => <div>{row.distributionChannel}</div>,
         omit: omitColumns.includes('distributionChannel'),
-        minWidth: '280px',
-        center: false
+        minWidth: '160px'
       },
       {
         id: 'address',
@@ -74,12 +77,12 @@ export default function AccountsList(props) {
           <div>
             <EclipsesTextcss
               str={`${row.address.houseNumber} ${row.address.street} ${row.address.street2} ${row.address.street3} ${row.address.city} ${row.address.district} ${row.address.state} ${row.address.country}  ${row.address.zipCode}`}
-              maxWidth={320}
+              maxWidth={140}
             />
           </div>
         ),
         omit: omitColumns.includes('address'),
-        minWidth: '280px'
+        minWidth: '150px'
       },
       {
         id: 'cgatIdentifier',
@@ -87,14 +90,14 @@ export default function AccountsList(props) {
         name: t('account.identifier'),
         cell: (row) => <div className="cellEllipse">{row.companyCode}</div>,
         omit: omitColumns.includes('cgatIdentifier'),
-        width: '240px'
+        minWidth: '150px'
       },
       {
         id: 'action',
         center: true,
         name: t('account.action'),
         cell: (row) => <Actions row={row} userId={userId} practiceId={practiceId} refetch={refetch} />,
-        width: '180px',
+        width: '120px',
         omit: omitColumns.includes('action')
       }
     ];

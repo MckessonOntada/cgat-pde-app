@@ -4,13 +4,16 @@
   display: grid;
   gap: var(--spacing-03);
 }
+
 .container-box {
   display: grid;
   gap: var(--spacing-02);
   padding: var(--spacing-03);
   border: 1px solid var(--brand-color-patient-primary-3);
   border-radius: var(--brand-border-radius--6);
+  background-color: var(--brand-color-background-white);
 }
+
 .buttonGroup {
   display: flex;
   width: 100%;
@@ -59,10 +62,12 @@
 .form-container {
   display: grid;
   gap: var(--spacing-03);
+
   .form-segment-title {
     font-size: var(--brand-font-size--large);
     font-weight: var(--brand-font-weight-600);
   }
+
   .form-instruction {
     font-size: var(--brand-font-size--small);
   }
@@ -99,6 +104,7 @@
 
 .details-view-container {
   display: none;
+
   @include mixins.respond("sm") {
     display: block;
   }

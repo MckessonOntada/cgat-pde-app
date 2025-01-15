@@ -47,8 +47,6 @@ const Summary = () => {
   const isRejected = status === StatusEnum.REJECTED;
   const isConcluded = status === StatusEnum.REJECTED || status === StatusEnum.SUBMITTED;
 
-  console.log(status && !isConcluded && (isSimulate || isApprover));
-
   const { isLoading, data: simulationData = {} } = useQuery({
     queryKey: ['orderDetails', orderId],
     queryFn: async () => {
@@ -301,7 +299,7 @@ const Summary = () => {
               <div class={styles.flexPanel}>
                 {(status === StatusEnum.SUBMITTED || isApprover) && <DetailSegment label={t('labels.orderId')} value={orderId} />}
                 <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
-                <DetailSegment label={t('labels.orderCost')} value={<p className={styles.price}>{orderCost}</p>} />
+                <DetailSegment label={t('labels.orderCost')} value={<p className={styles.price}>{`$${orderCost}`}</p>} />
               </div>
             </div>
             <div className={'grid grid-gap-16 grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'}>
@@ -375,7 +373,8 @@ const Summary = () => {
                       className={styles.panelHeader}
                       heading={
                         <Heading as="h3">
-                          {patient?.patientInfo
+                          {patient?.patientInfo &&
+                          (patient.patientInfo.firstName || patient.patientInfo.middleName || patient.patientInfo.lastName)
                             ? [patient.patientInfo.firstName, patient.patientInfo.middleName, patient.patientInfo.lastName]
                                 .filter(Boolean)
                                 .join(' ')
