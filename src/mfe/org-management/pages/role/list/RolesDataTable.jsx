@@ -54,11 +54,11 @@ const RolesDataTable = () => {
     state.body = t('orgManagement.message.roleDeactivateConfirmationDescription');
     state.footer = (
       <div className="controls">
-        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+        <Button size="sm" variant="secondary" onClick={() => dispatch(closeModal())}>
           Cancel
         </Button>
         <Button
-          size="md"
+          size="sm"
           variant="primary"
           onClick={() => {
             deleteRole(selectedRows);
@@ -74,7 +74,7 @@ const RolesDataTable = () => {
   return (
     <div>
       {selectedRows && (
-         <div className="selected-item-alert">
+        <div className="selected-item-alert">
           <p className="selected-item-text">1 Item's Selected</p>
           <Button variant="secondary" onClick={handleOnUserConfirmation}>
             Deactivate
@@ -98,7 +98,14 @@ const RolesDataTable = () => {
         paginationRecordsPerPageMessage={`per page`}
         selectableRowsHeader={false}
         selectedRowId={selectedRows}
-        noDataComponent={<EmptyDataTable isLoading={isLoading} image={EmptyDataImage} heading={t('message.emptyTableTitle')} description={t('orgManagement.messages.roleEmptyTableSubtitle')} />}
+        noDataComponent={
+          <EmptyDataTable
+            isLoading={isLoading}
+            image={EmptyDataImage}
+            heading={t('message.emptyTableTitle')}
+            description={t('orgManagement.messages.roleEmptyTableSubtitle')}
+          />
+        }
         stickyHeader
         responsive
       />

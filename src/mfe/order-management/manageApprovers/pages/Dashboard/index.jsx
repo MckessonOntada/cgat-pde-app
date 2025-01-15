@@ -126,8 +126,6 @@ export default function Dashboard() {
             searchPlaceholder={t('approvergroup.searchFilter.label')}
           />
         </div>
-        <Heading as="h2"> {t('approvergroup.table.listing.label')}</Heading>
-
         <div className="userList">
           <ApproverList selectableRows={true} onActionSuccess={handleSuccess} />
         </div>
