@@ -59,6 +59,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.creditUsed': 'S_Credit Used',
   'paymentInvoices.Details.print': 'S_Print',
   'paymentInvoices.table.therapyInfo': 'S_Therapy Info',
+  'paymentInvoices.history.confirm.backToPaymentHistory': 'S_BACK TO PAYMENT HISTORY',
 
   // Customer Statements
   'paymentInvoices.CS.filters.autoSearch': 'S_Search by Bill No.',
@@ -180,6 +181,7 @@ export const PaymentInvoicesES = {
   'pendingPayments.table.bankAccount.emptyData': 'S_No Pending Payments Found',
   'pendingPayments.table.paymentStatus': 'S_Payment Status',
   'pendingPayments.table.billDate': 'S_Bill Date',
+  'pendingPayments.confirm.BackToPendingPayments': 'S_BACK TO PENDING PAYMENTS',
 
   // No data found
   'paymentInvoices.EmptyData.heading': 'S_No Data Found',

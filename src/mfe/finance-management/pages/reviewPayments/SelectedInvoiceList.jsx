@@ -9,11 +9,16 @@ import { ReactComponent as RemoveCircle } from '@src/assets/svg/cross-red.svg';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { showSnackbar } from '@src/store/reducer/snackbarReducer';
 import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { omit } from '@okta/okta-auth-js';
 
 function SelectedInvoiceList(props) {
   const { t } = useTranslate();
   const { selectedInvoices, setSelectedInvoices } = props;
   const dispatch = useDispatch();
+  const location = useLocation();
+  const { state } = location;
+  const REVIEW_MODE = state.reviewMode || false;
 
   const columns = [
     {
@@ -80,22 +85,27 @@ function SelectedInvoiceList(props) {
       right: true
     },
     {
-      name: 'payment Amount',
+      name: 'Payment Amount',
       minWidth: '240px',
       id: 'paymentAmount',
       right: true,
-      cell: (props, index) => (
-        <input
-          type="number"
-          className={`paymenyAmount-input ${
-            props.paymentAmount > props.openAmount || props.paymentAmount <= 0 || !props.paymentAmount ? `error-input` : ``
-          }`}
-          value={props.paymentAmount}
-          onChange={(e) => onChangePayAmount(e, index)}
-          min={0}
-          onBlur={(e) => onBlurPayAmount(e, index, props)}
-        />
-      )
+      cell: (props, index) =>
+        REVIEW_MODE ? (
+          <div className="cellEllipse align-items-right ">
+            <FormattedNumber value={props.paymentAmount || 0} style="currency" currency="USD" />
+          </div>
+        ) : (
+          <input
+            type="number"
+            className={`paymenyAmount-input ${
+              props.paymentAmount > props.openAmount || props.paymentAmount <= 0 || !props.paymentAmount ? `error-input` : ``
+            }`}
+            value={props.paymentAmount}
+            onChange={(e) => onChangePayAmount(e, index)}
+            min={0}
+            onBlur={(e) => onBlurPayAmount(e, index, props)}
+          />
+        )
     },
     {
       name: 'Actions',
@@ -106,7 +116,8 @@ function SelectedInvoiceList(props) {
         <div className={`action-container ${selectedInvoices.length <= 1 ? `in-active` : ``}`} onClick={() => onRemoveInvoice(index)}>
           <RemoveCircle disabled /> REMOVE
         </div>
-      )
+      ),
+      omit: REVIEW_MODE
     }
   ];
 

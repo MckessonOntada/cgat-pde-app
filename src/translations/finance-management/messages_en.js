@@ -60,6 +60,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.usedDate': 'Used Date',
   'paymentInvoices.history.table.creditUsed': 'Credit Used',
   'paymentInvoices.history.table.selectedAccount': 'Item Selected',
+  'paymentInvoices.history.confirm.backToPaymentHistory': 'BACK TO PAYMENT HISTORY',
 
   // Customer Statements
   'paymentInvoices.CS.filters.autoSearch': 'Search by Bill No.',
@@ -182,6 +183,7 @@ export const PaymentInvoicesEN = {
   'pendingPayments.table.bankAccount.emptyData': 'No Pending Payments Found',
   'pendingPayments.table.paymentStatus': 'Payment Status',
   'pendingPayments.table.billDate': 'Bill Date',
+  'pendingPayments.confirm.BackToPendingPayments': 'BACK TO PENDING PAYMENTS',
 
   // No data found
   'paymentInvoices.EmptyData.heading': 'No Data Found',
