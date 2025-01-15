@@ -159,9 +159,11 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
 
   return (
     <div className={`${styles.navContainer} ${styles.secondary}`} aria-label="Secondary header">
-      <div className={styles.wrapper}>
-        <LeftSideView />
-        <RightSideView />
+      <div className="max-container">
+        <div className={styles.wrapper}>
+          <LeftSideView />
+          <RightSideView />
+        </div>
       </div>
     </div>
   );

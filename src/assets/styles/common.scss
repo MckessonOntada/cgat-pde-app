@@ -532,3 +532,29 @@ div.disable-all {
 .selected-item-text {
   font-size: var(--brand-font-size--large) !important;
 }
+
+.max-container {
+  margin: 0px auto;
+}
+
+@media only screen and (min-width: 576px) {}
+
+@media only screen and (min-width: 992px) {}
+
+@media only screen and (min-width: 1280px) {
+  .max-container {
+    max-width: 1120px;
+  }
+}
+
+@media only screen and (min-width: 1440px) {
+  .max-container {
+    max-width: 1280px;
+  }
+}
+
+@media only screen and (min-width: 1920px) {
+  .max-container {
+    max-width: 1640px;
+  }
+}

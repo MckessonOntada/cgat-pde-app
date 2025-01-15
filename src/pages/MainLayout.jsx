@@ -26,158 +26,132 @@ function MainLayout() {
   return (
     <div id={debugIds(ID.MAIN)} className={styles.appContainer}>
       <Header />
-      <div className={styles.home} id={debugIds(ID.HOME)}>
-        <ScrollToTop containerId={debugIds(ID.HOME)} />
-        <Suspense fallback={<Loader type="screen" />}>
-          <div className={styles.routeContent} id={debugIds(ID.HOME, ID.ROUTE_CONTENT)}>
-            <Routes className={styles.routes}>
-              {AppRoutes.routes.map((route, idx) => {
-                return route.element ? (
+      <div className={`${styles['app-wrapper']}`}>
+        <div className={`${styles.home} max-container`} id={debugIds(ID.HOME)}>
+          <ScrollToTop containerId={debugIds(ID.HOME)} />
+          <Suspense fallback={<Loader type="screen" />}>
+            <div className={styles.routeContent} id={debugIds(ID.HOME, ID.ROUTE_CONTENT)}>
+              <Routes className={styles.routes}>
+                {AppRoutes.routes.map((route, idx) => {
+                  return route.element ? (
+                    <Route
+                      key={idx}
+                      path={route.path}
+                      element={
+                        <ProtectedRoute isDashboard={route.isDashboard}>
+                          <route.element />
+                        </ProtectedRoute>
+                      }
+                    />
+                  ) : null;
+                })}
+                <Route
+                  path={'orders/*'}
+                  element={
+                    !AuthUtils.isSystemAdminView() ? (
+                      <ProtectedRoute permissions={routePermissionConfig.orders}>
+                        <OrderManagementEntryPoint />
+                      </ProtectedRoute>
+                    ) : (
+                      <Navigate to="/" />
+                    )
+                  }
+                />
+
+                <Route
+                  path={AppRoutes.pathUserManagement}
+                  element={
+                    <ProtectedRoute permissions={routePermissionConfig.users}>
+                      <Outlet />
+                    </ProtectedRoute>
+                  }>
                   <Route
-                    key={idx}
-                    path={route.path}
+                    path={'/admin/user'}
                     element={
-                      <ProtectedRoute isDashboard={route.isDashboard}>
-                        <route.element />
+                      <ProtectedRoute permissions={routePermissionConfig.users}>
+                        <UsersEntryPoint />
                       </ProtectedRoute>
                     }
                   />
-                ) : null;
-              })}
-              <Route
-                path={'orders/*'}
-                element={
-                  !AuthUtils.isSystemAdminView() ? (
-                    <ProtectedRoute permissions={routePermissionConfig.orders}>
-                      <OrderManagementEntryPoint />
-                    </ProtectedRoute>
-                  ) : (
-                    <Navigate to="/" />
-                  )
-                }
-              />
-
-              <Route
-                path={AppRoutes.pathUserManagement}
-                element={
-                  <ProtectedRoute permissions={routePermissionConfig.users}>
-                    <Outlet />
-                  </ProtectedRoute>
-                }>
+                  <Route
+                    path={'/admin/user/*'}
+                    element={
+                      <ProtectedRoute permissions={routePermissionConfig.users}>
+                        <UsersEntryPoint />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Route>
                 <Route
-                  path={'/admin/user'}
+                  path={`/admin/organization/roles/*`}
                   element={
-                    <ProtectedRoute permissions={routePermissionConfig.users}>
-                      <UsersEntryPoint />
+                    <ProtectedRoute permissions={routePermissionConfig.roles}>
+                      <Role />
                     </ProtectedRoute>
                   }
                 />
                 <Route
-                  path={'/admin/user/*'}
+                  path={`/admin/approver-group/*`}
                   element={
-                    <ProtectedRoute permissions={routePermissionConfig.users}>
-                      <UsersEntryPoint />
+                    <ProtectedRoute permissions={routePermissionConfig.approvergroups}>
+                      <ManageApprovers />
                     </ProtectedRoute>
                   }
                 />
-              </Route>
-              <Route
-                path={`/admin/organization/roles/*`}
-                element={
-                  <ProtectedRoute permissions={routePermissionConfig.roles}>
-                    <Role />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={`/admin/approver-group/*`}
-                element={
-                  <ProtectedRoute permissions={routePermissionConfig.approvergroups}>
-                    <ManageApprovers />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path={'/admin/organization'}
-                element={
-                  AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() ? (
-                    <Navigate to={'/'} />
-                  ) : (
-                    <ProtectedRoute permissions={routePermissionConfig.organization}>
-                      <Outlet />
-                    </ProtectedRoute>
-                  )
-                }>
                 <Route
                   path={'/admin/organization'}
                   element={
-                    <ProtectedRoute permissions={routePermissionConfig.organization}>
-                      <OrgEntryPoint />
+                    AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() ? (
+                      <Navigate to={'/'} />
+                    ) : (
+                      <ProtectedRoute permissions={routePermissionConfig.organization}>
+                        <Outlet />
+                      </ProtectedRoute>
+                    )
+                  }>
+                  <Route
+                    path={'/admin/organization'}
+                    element={
+                      <ProtectedRoute permissions={routePermissionConfig.organization}>
+                        <OrgEntryPoint />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path={'/admin/organization/*'}
+                    element={
+                      <ProtectedRoute permissions={routePermissionConfig.organization}>
+                        <OrgEntryPoint />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Route>
+                <Route
+                  path={'/record/*'}
+                  element={
+                    <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
+                      <RecordsMainRoutes />
                     </ProtectedRoute>
                   }
                 />
                 <Route
-                  path={'/admin/organization/*'}
+                  index={true}
+                  path={'/admin'}
                   element={
-                    <ProtectedRoute permissions={routePermissionConfig.organization}>
-                      <OrgEntryPoint />
-                    </ProtectedRoute>
+                    !AuthUtils.isSystemAdminView() ? (
+                      <ProtectedRoute permissions={routePermissionConfig.admin}>
+                        <AdminLayout />
+                      </ProtectedRoute>
+                    ) : (
+                      <Navigate to="/" />
+                    )
                   }
                 />
-              </Route>
-              <Route
-                path={'/record/*'}
-                element={
-                  <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
-                    <RecordsMainRoutes />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                index={true}
-                path={'/admin'}
-                element={
-                  !AuthUtils.isSystemAdminView() ? (
-                    <ProtectedRoute permissions={routePermissionConfig.admin}>
-                      <AdminLayout />
-                    </ProtectedRoute>
-                  ) : (
-                    <Navigate to="/" />
-                  )
-                }
-              />
-              {/* <Route
-                path={'/system-admin'}
-                element={
-                  AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() ? (
-                    <Navigate to={'/'} />
-                  ) : (
-                    <ProtectedRoute permissions={routePermissionConfig.systemAdmin}>
-                      <Outlet />
-                    </ProtectedRoute>
-                  )
-                }>
-                <Route
-                  path={'/system-admin'}
-                  element={
-                    <ProtectedRoute permissions={routePermissionConfig.systemAdmin}>
-                      <UsersEntryPoint />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path={'/system-admin/*'}
-                  element={
-                    <ProtectedRoute permissions={routePermissionConfig.systemAdmin}>
-                      <UsersEntryPoint />
-                    </ProtectedRoute>
-                  }
-                />
-              </Route> */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </div>
-        </Suspense>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
+          </Suspense>
+        </div>
       </div>
     </div>
   );
