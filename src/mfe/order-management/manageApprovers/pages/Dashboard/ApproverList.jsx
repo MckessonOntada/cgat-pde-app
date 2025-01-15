@@ -210,10 +210,11 @@ function ApproverList({ onActionSuccess }) {
           ),
           modalFooter: (
             <React.Fragment>
-              <Button onClick={handleConfirmCancel} variant="secondary">
+              <Button onClick={handleConfirmCancel} variant="secondary" size="sm">
                 {t('approvergroup.button.cancel')}
               </Button>
               <Button
+                size="sm"
                 onClick={() =>
                   handleConfirm(selectedRows?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate'))
                 }>
