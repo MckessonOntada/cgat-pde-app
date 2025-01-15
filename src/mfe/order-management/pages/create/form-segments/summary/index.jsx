@@ -47,8 +47,6 @@ const Summary = () => {
   const isRejected = status === StatusEnum.REJECTED;
   const isConcluded = status === StatusEnum.REJECTED || status === StatusEnum.SUBMITTED;
 
-  console.log(status && !isConcluded && (isSimulate || isApprover));
-
   const { isLoading, data: simulationData = {} } = useQuery({
     queryKey: ['orderDetails', orderId],
     queryFn: async () => {

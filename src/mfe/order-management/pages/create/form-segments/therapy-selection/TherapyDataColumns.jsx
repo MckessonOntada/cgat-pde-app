@@ -45,8 +45,7 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     id: 'therapyDescription',
     name: t('labels.therapyDescription'),
     selector: () => {},
-    minWidth: '220px',
-    maxWidth: '280px',
+    maxWidth: '250px',
     sortable: true,
     sortKey: 'material_description',
     cell: (props) => (
@@ -58,7 +57,6 @@ export const createColumns = (t, navigate, therapy, onChange) => [
   {
     id: 'therapyNumber',
     name: t('labels.therapyNumber'),
-    width: '8%',
     selector: () => {},
     sortable: true,
     sortKey: 'material_Number',
@@ -68,8 +66,7 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     id: 'ndc',
     name: t('table.columns.captions.nationalDrugCode'),
     selector: () => {},
-    minWidth: '200px',
-    maxWidth: '220px',
+    maxWidth: '190px',
     sortable: true,
     sortKey: 'ndc_number',
     cell: (props) => (
@@ -82,7 +79,7 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     id: 'strength',
     name: t('table.columns.captions.strength'),
     selector: () => {},
-    width: '120px',
+    maxWidth: '30px',
     sortable: false,
     cell: (props) => <span aria-label={t('table.columns.captions.strength')}>{props.strength}</span>
   },
@@ -90,7 +87,7 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     id: 'dosage',
     name: t('table.columns.captions.dosage'),
     selector: () => {},
-    width: '4%',
+    maxWidth: '30px',
     sortable: false,
     cell: (props) => <span aria-label={t('table.columns.captions.dosage')}>{props.dosage}</span>
   },
@@ -98,7 +95,6 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     id: 'sellingUnitCode',
     name: t('table.columns.captions.sellingUnitCode'),
     selector: () => {},
-    width: '7%',
     sortable: false,
     cell: (props) => <span aria-label={t('table.columns.captions.sellingUnitCode')}>{props.sellingUnitCode}</span>
   },
@@ -106,22 +102,22 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     id: 'vendorName',
     name: t('table.columns.captions.vendorName'),
     selector: () => {},
-    width: '7%',
     sortable: false,
-    cell: (props) => <span aria-label={t('table.columns.captions.vendorName')}>{props.vendorName}</span>
+    maxWidth: '140px',
+    cell: (props) => (
+      <EclipsesTextcss tooltip={props.createdBy?.userName} str={props.vendorName} maxWidth={130} className={'MCP-table-cell'} />
+    )
   },
   {
     id: 'upcCode',
     name: t('table.columns.captions.upcCode'),
     selector: () => {},
-    width: '6%',
     sortable: false,
     cell: (props) => <span aria-label={t('table.columns.captions.upcCode')}>{props.upcCode}</span>
   },
   {
     id: 'dropshipIndicator',
     name: t('table.columns.captions.dropshipIndicator'),
-    width: '7%',
     selector: () => {},
     sortable: false,
     cell: (props) => (
@@ -135,7 +131,7 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     id: 'status',
     name: t('table.columns.captions.status'),
     selector: () => {},
-    width: '4%',
+    maxWidth: '30px',
     sortable: false,
     cell: (props) => <Badge text={props.status} type={getColorByStatus(props.status)} />
   },
@@ -143,7 +139,6 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     id: 'baseUnitOfMeasure',
     name: t('table.columns.captions.baseUnitsOfMeasure'),
     selector: () => {},
-    width: '7%',
     sortable: false,
     cell: (props) => <span aria-label={t('table.columns.captions.baseUnitsOfMeasure')}>{props.baseUnitOfMeasure}</span>
   },
@@ -151,7 +146,6 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     id: 'cgatIdentifier',
     name: t('table.columns.captions.cgatIdentifier'),
     selector: () => {},
-    width: '4%',
     sortable: false,
     cell: (props) => (
       <Badge

@@ -13,6 +13,7 @@ import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
+import PermittedComponent from '@src/components/permitted-component';
 
 const roleDetail = () => {
   const { t } = useTranslate();
@@ -66,15 +67,17 @@ const roleDetail = () => {
           <ModuleHeader
             heading={<Heading as="h1">{t('orgManagement.role.labelRolesDetails')}</Heading>}
             controls={
-              <Button
-                Icon={EditPencil}
-                variant="secondary"
-                className="button-icon"
-                size="md"
-                disabled={!data?.isActive}
-                onClick={() => navigate(`edit-role`, { state: data })}>
-                {t('userManagement.button.edit')}
-              </Button>
+              <PermittedComponent permissions={[PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_ROLES]}>
+                <Button
+                  Icon={EditPencil}
+                  variant="secondary"
+                  className="button-icon"
+                  size="md"
+                  disabled={!data?.isActive}
+                  onClick={() => navigate(`edit-role`, { state: data })}>
+                  {t('userManagement.button.edit')}
+                </Button>
+              </PermittedComponent>
             }
           />
 
@@ -103,15 +106,17 @@ const roleDetail = () => {
             heading={<Heading as="h1">{t('userManagement.header.view.permissions_granted')}</Heading>}
             controls={
               <div className="controls">
-                <Button
-                  Icon={EditPencil}
-                  variant="secondary"
-                  className="button-icon"
-                  size="md"
-                  disabled={!data?.isActive}
-                  onClick={() => navigate(`permissions`, { state: { data, isEdit: true } })}>
-                  {t('userManagement.button.edit')}
-                </Button>
+                <PermittedComponent permissions={[PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_ROLES]}>
+                  <Button
+                    Icon={EditPencil}
+                    variant="secondary"
+                    className="button-icon"
+                    size="md"
+                    disabled={!data?.isActive}
+                    onClick={() => navigate(`permissions`, { state: { data, isEdit: true } })}>
+                    {t('userManagement.button.edit')}
+                  </Button>
+                </PermittedComponent>
               </div>
             }
           />
