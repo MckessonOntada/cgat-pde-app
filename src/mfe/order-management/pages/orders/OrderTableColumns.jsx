@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Badge, Button, Tooltip, MenuList } from '@mckesson/mcp-component-library';
+import { Badge, Tooltip, MenuList } from '@mckesson/mcp-component-library';
 import { StatusEnum } from './constants';
 import { routesConfig } from '../../routes/constants';
 import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
@@ -15,6 +15,7 @@ import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions
 import usePermission from '@src/hooks/usePermissions';
 import { renderModal } from '@src/util/ModalUtil';
 import { useOrders } from '../../context/OrderContext';
+import { useManageOrder } from '../../context/ManageOrderContext';
 
 const getColorByStatus = (status) => {
   const statusColors = {
@@ -43,6 +44,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
   const navigate = useNavigate();
   const loggedinUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
+  const { setActiveRecord } = useManageOrder();
   const { refreshData, assginedGroupsData } = useOrders();
   const { hasPermission } = usePermission();
   const assignMutation = useMutation(() => OrderService.setOrderAssignToMe(id), {
@@ -98,6 +100,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
   };
 
   const handleOnOptionSelection = (value) => {
+    setActiveRecord(value);
     if (value === 'view') {
       if (props.status === StatusEnum.SUBMITTED) {
         navigate(`${id}/summary`, { state: { isEdit: true } });
@@ -107,9 +110,6 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
       if (props.status === StatusEnum.SUBMITTED) {
         navigate(getPathByOrderStage(props), { state: { isEdit: true } });
       } else navigate(getPathByOrderStage(props), { state: { isSimulate: true } });
-    }
-    if (value === 'edit') {
-      navigate(`edit-order/${id}`);
     }
     if (value === 'delete') {
       renderModal({
@@ -128,7 +128,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
         }
       });
     }
-    if (value === 'cancel') {
+    if (value === 'cancel' || value === 'edit') {
       renderModal({
         title: t('labels.information'),
         bodyContent: <h3>{t('labels.orderActions.cancelmessage')}</h3>,
@@ -226,6 +226,12 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
       options.push({
         label: t(`labels.orderActions.view`),
         value: 'view'
+      });
+    }
+    if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS)) {
+      options.push({
+        label: t(`labels.orderActions.edit`),
+        value: 'edit'
       });
     }
     if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CANCEL_ORDER)) {
