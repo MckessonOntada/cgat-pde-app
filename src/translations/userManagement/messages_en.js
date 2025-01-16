@@ -71,14 +71,14 @@ export const UserManagementEN = {
   'userManagement.button.adduser': 'Add User',
   'userManagement.button.uploadUsers': 'Upload Users',
   'userManagement.button.addsystemadmin': 'Add System Administrator',
-
   'userManagement.button.add_accounts': 'Add Accounts',
   'userManagement.button.deactivate': 'Deactivate',
   'userManagement.button.activate': 'Activate',
   'userManagement.button.unlink': 'Unlink Account',
   'userManagement.user.backmessage': 'Back to Manage Users',
   'userManagement.sysadmin.backmessage': 'Back to Manage System Admin Page',
-
+  'userManagement.provision.message': 'User is not provisioned in Okta. {click} to Provision the User in Okta.',
+  'userManagement.button.clickhere': 'Click here',
   'userManagement.create_user': 'Add User',
   'userManagement.create_sysadmin': 'Add System Administrator',
   'userManagement.create_user.details_to_create_user': 'Please check the details to create a organization user.',
@@ -328,6 +328,8 @@ export const UserManagementEN = {
   'messages.user_self_register_success': 'User has been registered successfully.',
   'messages.sysadmin_create_success': 'System Admin has been created successfully.',
   'messages.accountlinkSuccess': 'new account(s) has been successfully linked to this user.',
+  'messages.provisionedsuccess': 'User provisioned in Okta successfully.',
+  'messages.provisionederrror': 'Unable to provision the user in Okta.',
 
   'Table.Tabs.ActiveUser': 'ACTIVE USERS',
   'Table.Tabs.pendingRequest': 'PENDING REQUESTS',

@@ -36,6 +36,8 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.invoicesTable.filter.dueDateEnd': 'Due Date (End)',
   'paymentInvoices.pendingPayments.filter.initiationDateStart': 'Initiation Date (Start)',
   'paymentInvoices.pendingPayments.filter.initiationDateEnd': 'Initiation Date (End)',
+  'paymentInvoices.invoicesTable.filter.validFromEnd': 'Valid From (End)',
+  'paymentInvoices.invoicesTable.filter.validFromStart': 'Valid From (Start)',
 
   // Payment History
   'paymentInvoices.history.table.confirmationNumber': 'Confirmation No.',
@@ -93,6 +95,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.status': 'Status',
   'paymentInvoices.invoice.table.emptyData': 'No Invoice Found',
   'paymentInvoices.Details.backToManageInvoices': 'BACK TO MANAGE INVOICES PAGE',
+  'paymentInvoices.Details.backToReviewAndPay': 'BACK TO REVIEW PAYMENTS PAGE',
   'paymentInvoices.Details.Invoice': 'Invoice',
   'paymentInvoices.Details.DownloadPDF': 'DOWNLOAD PDF',
   'paymentInvoices.Details.ReviewAndPay': 'REVIEW AND PAY',
@@ -146,6 +149,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.filter.search': 'Search by Bill No., Sold to',
   'paymentInvoices.heading.ReviewAndPay': 'Review and Pay',
   'paymentInvoices.Details.Account': 'Account',
+  'paymentInvoices.reviewPayments.BackToManagePayments': 'BACK TO MANAGE PAYMENTS',
   'paymentInvoices.reviewPayments.invoiceSelected': 'Invoices Selected for Payment',
   'paymentInvoices.reviewPayments.invoice': 'Invoices Selected',
   'paymentInvoices.reviewPayments.selectMethod': 'Select a method',
