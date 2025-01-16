@@ -263,7 +263,7 @@ function UserTable({ onActionSuccess }) {
             isLoading={isLoading}
             image={EmptyDataImage}
             heading={t('message.userEmptyTableTitle')}
-            description={t('orgManagement.messages.userEmptyTableSubtitle')}
+            description={t('userManagement.messages.userEmptyTableSubtitle')}
           />
         }
       />
@@ -272,14 +272,16 @@ function UserTable({ onActionSuccess }) {
           id: 'xxxs-modal',
           isOpen,
           onClose: () => setIsOpen(false),
-          modalTitle: 'Confirmation message',
-          modalBody: <h3>Are you sure you wish to Deactivate this User ?</h3>,
+          modalTitle: t('userManagement.confirmationmessage'),
+          modalBody: <h3>{t('userManagement.message.DeactivateUser')}</h3>,
           modalFooter: (
             <React.Fragment>
-              <Button onClick={handleConfirmCancel} variant="secondary">
+              <Button onClick={handleConfirmCancel} variant="secondary" size="sm">
                 {t('userManagement.label.cancel')}
               </Button>
-              <Button onClick={handleConfirmDeactivate}>{t('userManagement.button.deactivate')}</Button>
+              <Button size="sm" onClick={handleConfirmDeactivate}>
+                {t('userManagement.button.deactivate')}
+              </Button>
             </React.Fragment>
           ),
           modalSize: 'xxxs'

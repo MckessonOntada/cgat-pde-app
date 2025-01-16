@@ -208,14 +208,18 @@ const PrimaryHeader = () => {
           id: 'xxxs-modal',
           isOpen,
           onClose: () => setIsOpen(false),
-          modalTitle: 'Confirmation message',
-          modalBody: <div>Are you sure want to change organization view ?</div>,
+          modalTitle: t('orgManagement.confirmationmessage'),
+          modalBody: <h3>{t('orgManagement.Orgchangemessage')}</h3>,
+
           modalFooter: (
             <React.Fragment>
-              <Button onClick={onCancelOrganizationChange} variant="secondary">
+              <Button onClick={onCancelOrganizationChange} variant="secondary" size="sm">
                 {t('orgManagement.button.cancel')}
               </Button>
-              <Button onClick={confirmChangeOrganization}> {t('orgManagement.button.confirm')}</Button>
+              <Button onClick={confirmChangeOrganization} size="sm">
+                {' '}
+                {t('orgManagement.button.confirm')}
+              </Button>
             </React.Fragment>
           ),
           modalSize: 'xxxs'

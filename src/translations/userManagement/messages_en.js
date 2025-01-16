@@ -133,7 +133,7 @@ export const UserManagementEN = {
   'userManagement.header.view.edit_user': 'User Details',
 
   'userManagement.header.view.permissions_granted': 'Permissions Granted',
-  'orgManagement.messages.userEmptyTableSubtitle': 'Data is unavailable. Please add an user to view the table content.',
+  'userManagement.messages.userEmptyTableSubtitle': 'Data is unavailable. Please add an user to view the table content.',
   'userManagement.messages.emptysubtitle': 'Data is unavailable. Please add Permission(s) to view the content.',
   'userManagement.header.view.linked_accounts': 'Linked Accounts',
 
@@ -327,6 +327,7 @@ export const UserManagementEN = {
   'messages.pending_user_reject_success': 'Pending User has been rejected.',
   'messages.user_self_register_success': 'User has been registered successfully.',
   'messages.sysadmin_create_success': 'System Admin has been created successfully.',
+  'messages.accountlinkSuccess': 'new account(s) has been successfully linked to this user.',
 
   'Table.Tabs.ActiveUser': 'ACTIVE USERS',
   'Table.Tabs.pendingRequest': 'PENDING REQUESTS',
@@ -340,5 +341,7 @@ export const UserManagementEN = {
     'You are about to perform actions on behalf of {{targetUser}}. Please confirm that you have you have verified the identity of the requesting user the necessary permissions and that you understand the implications of proceeding with this task',
   'popup.message.wishToContinueLoginAsThisUserCheckBoxConsent':
     'By confirming, you acknowledge that all actions taken will be logged and attributed to your account.',
-  'userManagement.breadcrumb.admin': 'Admin'
+  'userManagement.breadcrumb.admin': 'Admin',
+  'userManagement.message.DeactivateUser': 'Are you sure you wish to Deactivate this User ?',
+  'userManagement.confirmationmessage': 'Confirmation message'
 };

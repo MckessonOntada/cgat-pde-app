@@ -174,9 +174,7 @@ export default function Dashboard() {
             searchPlaceholder={t('userManagement.searchFilter.label')}
           />
         </div>
-        <Heading as="h2">
-          {t(isSystemAdminView ? 'userManagement.table.systemadminlisting.label' : 'userManagement.table.userlisting.label')}
-        </Heading>
+
         {!isSystemAdminView && (
           <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />
         )}

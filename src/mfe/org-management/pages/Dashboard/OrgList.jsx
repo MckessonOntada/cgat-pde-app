@@ -56,11 +56,11 @@ const OrgList = () => {
     state.body = <h3>{t('orgManagement.message.accountSelectionConfirmationDescription')}</h3>;
     state.footer = (
       <div className="controls">
-        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+        <Button size="sm" variant="secondary" onClick={() => dispatch(closeModal())}>
           Cancel
         </Button>
         <Button
-          size="md"
+          size="sm"
           variant="primary"
           onClick={() => {
             setOrganization(org);
@@ -249,8 +249,8 @@ const OrgList = () => {
           id: 'xxxs-modal',
           isOpen,
           onClose: () => setIsOpen(false),
-          modalTitle: 'Confirmation message',
-          modalBody: <h3>Are you sure you wish to Deactivate this Organization ?</h3>,
+          modalTitle: t('orgManagement.confirmationmessage'),
+          modalBody: <h3>{t('orgManagement.message.DeactivateOrg')}</h3>,
           modalFooter: (
             <React.Fragment>
               <Button onClick={onCancelOrganizationChange} size="sm" variant="secondary">
