@@ -17,12 +17,13 @@ function CreditsSelected(props) {
   const [data, setData] = useState([]);
   const location = useLocation();
   const { state } = location;
+  const { creditsSelected } = state;
 
   useEffect(() => {
-    if (state.creditsSelected?.length > 0) {
-      setData(state.creditsSelected);
+    if (creditsSelected?.length > 0) {
+      setData(creditsSelected);
     }
-  }, [state]);
+  }, [creditsSelected]);
 
   const columns = [
     {

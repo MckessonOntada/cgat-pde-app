@@ -180,6 +180,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.reviewPayments.confirmationDialogue': 'S_Are you sure want to leave Review and Pay screen?',
   'paymentInvoices.reviewPayments.confirm': 'S_Confirm',
   'paymentInvoices.reviewPayments.Okay': 'S_Okay',
+  'paymentInvoices.reviewPayments.remove': 'S_REMOVE',
 
 
   //Credits

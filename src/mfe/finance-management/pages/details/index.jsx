@@ -107,7 +107,7 @@ function Details(props) {
               onClick={() => {
                 setOpen(!open);
                 setTherapy(props?.therapyId);
-              }}>{`${props?.therapyId || '-'}`}</Link>
+              }}>{props?.therapyId || '-'}</Link>
           </div>
         )
       },
@@ -254,7 +254,6 @@ function Details(props) {
                 variant="primary"
                 type="submit"
                 onClick={() => {
-                  console.log('NAVIGATION');
                   navigate(`/record/invoices/reviewPayments`, { state: { ...locationParams.state, reviewPay: true } });
                 }}>
                 {t('paymentInvoices.Details.ReviewAndPay')}

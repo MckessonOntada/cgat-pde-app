@@ -117,7 +117,7 @@ function SelectedInvoiceList(props) {
       id: 'paymentAmount',
       cell: (props, index) => (
         <div className={`action-container ${selectedInvoices.length <= 1 ? `in-active` : ``}`} onClick={() => onRemoveInvoice(index)}>
-          <RemoveCircle disabled /> REMOVE
+          <RemoveCircle disabled /> {t('paymentInvoices.reviewPayments.remove')}
         </div>
       ),
       omit: REVIEW_MODE

@@ -11,6 +11,7 @@ import PaymentsInvoices from '.';
 import ConfirmationPayments from './pages/confirmationPayments';
 
 function RecordsMainRoutes(props) {
+  console.log('RecordsMainRoutes props', routePermissionConfig);
   return (
     <Routes>
       <Route

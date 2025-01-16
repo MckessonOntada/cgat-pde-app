@@ -23,7 +23,7 @@ function TherapyDetails({ therapyId, onClose, onSelect, therapyData, showButton 
       onClose();
       showSnackbar({description: 'Error fetching Therapy Details', type: 'error'});
     }
-  }, [error, showSnackbar, t]);
+  }, [error]);
 
   const handleSelect = () => {
     if (onSelect && therapyDetails) {
