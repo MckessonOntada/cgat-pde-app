@@ -35,6 +35,8 @@ export const PaymentInvoicesES = {
   'paymentInvoices.invoicesTable.filter.dueDateEnd': 's_Due Date (End)',
   'paymentInvoices.pendingPayments.filter.dueDateStart': 's_Initiation Date (Start)',
   'paymentInvoices.pendingPayments.filter.dueDateEnd': 's_Initiation Date (End)',
+    'paymentInvoices.invoicesTable.filter.validFromEnd': 'S_Valid From (End)',
+  'paymentInvoices.invoicesTable.filter.validFromStart': 'S_Valid From (Start)',
   // Payment History
   'paymentInvoices.history.table.confirmationNumber': 'S_Confirmation No.',
   'paymentInvoices.history.table.purchaseOrderNumber': 'S_Purchase Order Number',

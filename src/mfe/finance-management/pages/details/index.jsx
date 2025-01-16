@@ -244,7 +244,7 @@ function Details(props) {
       </div>
       <div className="footer-section">
         {INVOICES_SCREEN ? (
-          !locationParams.state.reviewPay && (
+          !locationParams.state?.reviewPay && (
             <React.Fragment>
               <Button size="md" variant="secondary" disabled>
                 {t('paymentInvoices.Details.DownloadPDF')}
