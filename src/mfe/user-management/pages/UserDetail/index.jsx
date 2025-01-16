@@ -184,7 +184,7 @@ const UserDetail = () => {
   const userFullName = `${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName}`;
   const loggedUserId = Number(AuthUtils.getUserId());
 
-  const prePermissions = data?.isActive && data?.id !== loggedUserId && !isImpersonateLoggedIn;
+  const prePermissions = data?.isActive && data?.id !== loggedUserId && !isImpersonateLoggedIn && !isSystemAdminView;
 
   return (
     <div className="MCP-module-wrapper">
