@@ -10,6 +10,7 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { showSnackbar } from '@src/store/reducer/snackbarReducer';
 import { useDispatch } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
+import { PATHS } from '../../routes';
 
 function SelectedInvoiceList(props) {
   const { t } = useTranslate();
@@ -31,7 +32,8 @@ function SelectedInvoiceList(props) {
           <Link
             style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
             // to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
-          >
+            to={`/record/${PATHS.invoices}/${props?.billNumber}/details`}
+            state={{ ...state }}>
             {`${props?.billNumber || ''}`}
           </Link>
         </div>
