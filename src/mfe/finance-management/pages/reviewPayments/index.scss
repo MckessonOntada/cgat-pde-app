@@ -86,6 +86,11 @@
         }
       }
     }
+    .selectedInvoices-container {
+      display: flex;
+      gap: 16px;
+      flex-direction: column;
+    }
   }
 }
 

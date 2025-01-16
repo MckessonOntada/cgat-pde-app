@@ -143,6 +143,7 @@ export const PaymentInvoicesES = {
     'S_The payment will be processed immediately. Once processed, this payment cannot be stopped or reversed.',
   'paymentInvoices.heading.ReviewAndPay': 'S_Review and Pay',
   'paymentInvoices.Details.Account': 'S_Account',
+  'paymentInvoices.reviewPayments.BackToManagePayments': 'S_BACK TO MANAGE PAYMENTS',
   'paymentInvoices.reviewPayments.invoiceSelected': 'S_Invoices Selected for Payment',
   'paymentInvoices.reviewPayments.invoice': 'S_Invoices Selected',
   'paymentInvoices.reviewPayments.selectMethod': 'S_Select a method',
@@ -181,7 +182,6 @@ export const PaymentInvoicesES = {
   'paymentInvoices.reviewPayments.confirm': 'S_Confirm',
   'paymentInvoices.reviewPayments.Okay': 'S_Okay',
   'paymentInvoices.reviewPayments.remove': 'S_REMOVE',
-
 
   //Credits
   'paymentInvoices.credits.table.description': 'S_Description',

@@ -198,6 +198,11 @@ function ReviewPayments() {
         ];
   };
 
+  const _validatePaymentAmount = () => {
+    let _valid = selectedInvoices.find((item) => item.paymentAmount > item.openAmount || item.paymentAmount <= 0 || !item.paymentAmount);
+    return !_valid;
+  };
+
   const onPreviewPayment = () => {
     if (REVIEW_MODE) {
       navigate('/record/invoices/confirmationPayments', {
@@ -216,17 +221,27 @@ function ReviewPayments() {
         replace: true
       });
     } else {
-      navigate('.', {
-        state: {
-          ...state,
-          invoices: selectedInvoices,
-          creditsSelected: selectedCredits,
-          reviewMode: true,
-          paymentOption: paymentOption,
-          selectedPayment: selectedData
-        },
-        replace: true
-      });
+      let valid = _validatePaymentAmount();
+      if (valid) {
+        navigate('.', {
+          state: {
+            ...state,
+            invoices: selectedInvoices,
+            creditsSelected: selectedCredits,
+            reviewMode: true,
+            paymentOption: paymentOption,
+            selectedPayment: selectedData
+          },
+          replace: true
+        });
+      } else {
+        dispatch(
+          showSnackbar({
+            description: 'Invalid payment amount entered',
+            type: 'error'
+          })
+        );
+      }
     }
   };
   const disablePreview = () => {
@@ -238,7 +253,7 @@ function ReviewPayments() {
       <div className="reviewPaymentsContent">
         <div className="backNavigation">
           <Button className="backButton" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={backButtonClick} size="md">
-            {t('paymentInvoices.Details.backToManageInvoices')}
+            {t('paymentInvoices.reviewPayments.BackToManagePayments')}
           </Button>
         </div>
         <div className="header">
@@ -273,7 +288,7 @@ function ReviewPayments() {
             />
           </div>
         )}
-        <div>
+        <div className="selectedInvoices-container">
           <div>
             <h1>{REVIEW_MODE ? t('paymentInvoices.reviewPayments.invoiceSelected') : t('paymentInvoices.reviewPayments.invoice')}</h1>
           </div>
