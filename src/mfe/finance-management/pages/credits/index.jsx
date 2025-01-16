@@ -5,7 +5,7 @@ import './index.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Button } from '@mckesson/mcp-component-library';
 import { usePaymentCredits } from '../../context/PaymentsCreditsContext';
-
+ 
 export default function Credits(props) {
   const { t } = useTranslate();
   const { applyFilters, clearFilters, actualData } = usePaymentCredits();
@@ -15,8 +15,8 @@ export default function Credits(props) {
       {
         type: 'dateRangePicker',
         name: 'billDate',
-        startDateLabel: t('paymentInvoices.invoicesTable.filter.dueDateStart'),
-        endDateLabel: t('paymentInvoices.invoicesTable.filter.dueDateEnd')
+        startDateLabel: t('paymentInvoices.invoicesTable.filter.validFromEnd'),
+        endDateLabel: t('paymentInvoices.invoicesTable.filter.validFromStart')
       }
     ];
   }, []);

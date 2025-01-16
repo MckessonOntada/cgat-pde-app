@@ -168,7 +168,7 @@ function ReviewPayments() {
             subLabel: t('paymentInvoices.reviewPayments.payDuedateDesc')
           },
           {
-            isDisabled: selectedData?.type !== 'Bank',
+            isDisabled: selectedData?.type === 'Bank',
             label: t('paymentInvoices.reviewPayments.paySpecfic'),
             value: 'Pay on Specific Date',
             subLabel: t('paymentInvoices.reviewPayments.paySpecficDesc'),
@@ -283,7 +283,7 @@ function ReviewPayments() {
                 [t('paymentInvoices.reviewPayments.netAmount')]: FinanceUtils.formatCurrency(totalAmount),
                 [t('paymentInvoices.reviewPayments.paymentMethod')]: `${
                   selectedData?.number?.slice(-4) || selectedData?.accountNumber?.slice(-4)
-                } - ${GeographicUtils.addressAggregator(selectedAccount)}`
+                } - ${selectedData?.userDefinedName || selectedData?.name}`,
               }}
             />
           </div>
