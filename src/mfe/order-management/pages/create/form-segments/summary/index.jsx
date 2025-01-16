@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './Summary.module.scss';
 import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg';
 import ModuleHeader from '@src/components/module-header';
-import { Button, CheckboxGroup, Stepper, Heading, Loader, Badge } from '@mckesson/mcp-component-library';
+import { Button, Modal, RadioGroup, CheckboxGroup, Stepper, Heading, Loader, Badge } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
@@ -21,10 +21,13 @@ import { StatusEnum } from '../../../orders/constants';
 import { renderModal } from '@src/util/ModalUtil';
 import FloatingDrawer from '@src/components/floating-drawer';
 import CommentPanel from './CommentPanel';
+import AuthUtils from '@src/util/AuthUtils';
 
 const Summary = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
+  const isImpersonated = Boolean(AuthUtils.getImpersonateId());
+  const [isPAPOrderConfirmModalOpen, setIsPAPOrderConfirmModalOpen] = React.useState(false);
   const { isFetching, setActiveRecord, formState, editByStage, setCurrentOrder } = useManageOrder();
   const { orderId } = useParams();
   const location = useLocation();
@@ -111,9 +114,18 @@ const Summary = () => {
     }
   };
 
+  const handleOnOrderTypeChange = (value) => {
+    alert(value);
+    setImpersonatedOrderType(value);
+  };
+
   const handleOnSubmit = () => {
     if (agreeCheckboxOptions.isChecked) {
-      submitOrder.mutate({ action: 'submit' });
+      if (isImpersonated) {
+        setIsPAPOrderConfirmModalOpen(true);
+      } else {
+        // submitOrder.mutate({ action: 'submit' });
+      }
     }
     return;
   };
@@ -254,7 +266,7 @@ const Summary = () => {
 
   const isAgreed = agreeCheckboxOptions.isChecked;
   const hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected;
-
+  console.log(isPAPOrderConfirmModalOpen);
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -462,7 +474,59 @@ const Summary = () => {
           onClose={() => setIsCommentPanelOpen(false)}
         />
       </FloatingDrawer>
+      {isPAPOrderConfirmModalOpen && (
+        <PAPOrderTypeConfirmModal onClose={() => setIsCommentPanelOpen(false)} onSubmit={() => alert('submit order with pap')} />
+      )}
     </div>
+  );
+};
+
+const PAPOrderTypeConfirmModal = ({ onClose, onSubmit }) => {
+  const [impersonatedOrderType, setImpersonatedOrderType] = React.useState(null);
+  const { t } = useTranslate();
+  return (
+    <Modal
+      id="xxxs-modal"
+      isOpen={true}
+      onClose={onClose}
+      modalTitle={t('prompt.title.alert')}
+      modalBody={
+        <div className={styles.papOptions}>
+          <p>{t('prompt.message.submitOrder')}</p>
+          <div>
+            <RadioGroup
+              caption=""
+              direction="row"
+              items={[
+                {
+                  isDisabled: false,
+                  label: t('prompt.option.papOrder'),
+                  value: 'pap'
+                },
+                {
+                  isDisabled: false,
+                  label: t('prompt.option.nonPapOrder'),
+                  value: 'non-pap'
+                }
+              ]}
+              onChangeValue={setImpersonatedOrderType}
+              radioBtnWidth="auto"
+              showFlexWrap={false}
+              value={impersonatedOrderType}
+            />
+          </div>
+        </div>
+      }
+      modalFooter={
+        <React.Fragment>
+          <Button onClick={onClose} variant="secondary">
+            {t('captions.btnCancel')}
+          </Button>
+          <Button onClick={onSubmit}>{t('prompt.action.submit')}</Button>
+        </React.Fragment>
+      }
+      modalSize="md"
+    />
   );
 };
 

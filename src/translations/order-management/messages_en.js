@@ -296,5 +296,10 @@ export const MessageEn = {
   'message.errorCommentRequiredToRejectOrder': 'Comment is required to reject the order. Please provide reason for rejection.',
   'captions.btnReSubmitOrder': 'Re-Submit Order',
   'labels.orderActions.discardChangesByMe': 'Discard changes by me',
-  'message.success.discardVersionChanges': 'Discarded changes made by you.'
+  'message.success.discardVersionChanges': 'Discarded changes made by you.',
+  'prompt.title.alert': 'Alert!',
+  'prompt.message.submitOrder': 'How do you wish to submit this order?',
+  'prompt.option.papOrder': 'PAP Order',
+  'prompt.option.nonPapOrder': 'Non-PAP Order',
+  'prompt.action.submit': 'Submit'
 };
