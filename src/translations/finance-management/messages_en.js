@@ -36,6 +36,8 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.invoicesTable.filter.dueDateEnd': 'Due Date (End)',
   'paymentInvoices.pendingPayments.filter.initiationDateStart': 'Initiation Date (Start)',
   'paymentInvoices.pendingPayments.filter.initiationDateEnd': 'Initiation Date (End)',
+  'paymentInvoices.invoicesTable.filter.validFromEnd': 'Valid From (End)',
+  'paymentInvoices.invoicesTable.filter.validFromStart': 'Valid From (Start)',
 
   // Payment History
   'paymentInvoices.history.table.confirmationNumber': 'Confirmation No.',
@@ -93,6 +95,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.status': 'Status',
   'paymentInvoices.invoice.table.emptyData': 'No Invoice Found',
   'paymentInvoices.Details.backToManageInvoices': 'BACK TO MANAGE INVOICES PAGE',
+  'paymentInvoices.Details.backToReviewAndPay': 'BACK TO REVIEW PAYMENTS PAGE',
   'paymentInvoices.Details.Invoice': 'Invoice',
   'paymentInvoices.Details.DownloadPDF': 'DOWNLOAD PDF',
   'paymentInvoices.Details.ReviewAndPay': 'REVIEW AND PAY',
@@ -146,6 +149,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.filter.search': 'Search by Bill No., Sold to',
   'paymentInvoices.heading.ReviewAndPay': 'Review and Pay',
   'paymentInvoices.Details.Account': 'Account',
+  'paymentInvoices.reviewPayments.BackToManagePayments': 'BACK TO MANAGE PAYMENTS',
   'paymentInvoices.reviewPayments.invoiceSelected': 'Invoices Selected for Payment',
   'paymentInvoices.reviewPayments.invoice': 'Invoices Selected',
   'paymentInvoices.reviewPayments.selectMethod': 'Select a method',
@@ -158,10 +162,13 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.reviewPayments.paymentAmount': 'Payment Amount',
   'paymentInvoices.reviewPayments.payToday': 'Pay Today',
   'paymentInvoices.reviewPayments.paySpecfic': 'Pay on Specific Date',
-  'paymentInvoices.reviewPayments.paySpecficDesc': 'Once submitted , you have the option to cancel the payment until 4:00 PM CT on the specified date of the earliest invoice.',
-  'paymentInvoices.reviewPayments.payTodayDesc': 'Once submitted, the payment will be processed immediately and no further changes can be made. (Note: Payments submitted after 4.30 PM CT will be processed the next business day)',
+  'paymentInvoices.reviewPayments.paySpecficDesc':
+    'Once submitted , you have the option to cancel the payment until 4:00 PM CT on the specified date of the earliest invoice.',
+  'paymentInvoices.reviewPayments.payTodayDesc':
+    'Once submitted, the payment will be processed immediately and no further changes can be made. (Note: Payments submitted after 4.30 PM CT will be processed the next business day)',
   'paymentInvoices.reviewPayments.payDuedate': 'Pay on Due Date',
-  'paymentInvoices.reviewPayments.payDuedateDesc': 'Once submitted , you have the option to cancel the payment until 4:00 PM CT on the due date of the earliest invoice.',
+  'paymentInvoices.reviewPayments.payDuedateDesc':
+    'Once submitted , you have the option to cancel the payment until 4:00 PM CT on the due date of the earliest invoice.',
   'paymentInvoices.reviewPayments.paymentMethod': 'Payment Method',
   'paymentInvoices.reviewPayments.netAmount': 'Net amount to be charged',
   'paymentInvoices.reviewPayments.scheduleOption': 'Schedule option',

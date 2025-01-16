@@ -55,7 +55,7 @@ export default function Invoices(params) {
           actualData={actualData}
         />
       </div>
-      <div className="MCP-table-wrapper">
+      <div className="MCP-table-wrapper table-wrapper">
         <div className="table-header">
           <Button variant="secondary" onClick={() => {}} size="sm" disabled>
             {t('paymentInvoices.CS.ExportExcel')}

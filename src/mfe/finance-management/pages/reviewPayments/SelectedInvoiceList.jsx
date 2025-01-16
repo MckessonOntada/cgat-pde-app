@@ -48,17 +48,9 @@ function SelectedInvoiceList(props) {
       cell: (props) => <div>{props?.soldToSite || '-'}</div>
     },
     {
-      name: t('paymentInvoices.credits.table.description'),
-      selector: (row) => row.description,
-      id: 'description',
-      wrap: true,
-      minWidth: '160px',
-      cell: (props) => <EclipsesTextcss className="cellEllipse" str={props.description || '-'} maxWidth={240} />
-    },
-    {
       name: t('paymentInvoices.history.table.DueDate'),
       selector: (row) => row.dueDate,
-      minWidth: '168px',
+      maxWidth: '130px',
       wrap: true,
       id: 'dueDate',
       cell: (props) => <div className="cellEllipse">{dayjs(props?.dueDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
@@ -132,13 +124,9 @@ function SelectedInvoiceList(props) {
 
   const onBlurPayAmount = (event, index, rowData) => {
     if (event.target.value <= 0 || event.target.value > rowData.openAmount) {
-      dispatch(
-        showSnackbar({
-          description:
-            event.target.value > rowData.openAmount ? 'Payment amount cannot exceed the open amount' : 'Invalid payment amount entered',
-          type: 'error'
-        })
-      );
+      let _invoices = [...[], ...selectedInvoices];
+      _invoices[index].paymentAmount = rowData.openAmount;
+      setSelectedInvoices(_invoices);
     }
   };
 
