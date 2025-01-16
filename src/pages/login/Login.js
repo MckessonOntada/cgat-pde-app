@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useOktaAuth } from '@okta/okta-react';
 import OktaSignIn from '@okta/okta-signin-widget';
+import { Heading } from '@mckesson/mcp-component-library';
 import { debugIds, ID } from '@src/constants/id';
 import AuthService from '@src/api/authService/AuthService';
 import CommonService from '@src/api/commonService/CommonService';
@@ -15,9 +16,14 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import useSessionFeatures from '@src/hooks/useSessionFeatures';
 import { useNavigate } from 'react-router-dom';
+import { ReactComponent as McKessonLogo } from '@src/assets/image/McKesson_logo.svg';
+import { useTranslate } from '@src/translations/useTranslation';
+import Footer from './Footer';
+
 
 const Login = () => {
   const widgetRef = useRef();
+  const { t } = useTranslate();
   const [widgetReady, setWidgetReady] = useState(false); // TODO: What does this accomplish if state isn't being used?
   const {
     organization: { setOrganization, selectedOrganization }
@@ -73,7 +79,7 @@ const Login = () => {
       customButtons: [
         {
           title: 'NEW USER?',
-          className: 'custom-signUp-button',
+          className: style.customSignUpButton,
           click: function () {
             navigate('/signup');
           }
@@ -86,16 +92,16 @@ const Login = () => {
       },
       i18n: {
         en: {
-          'primaryauth.username.placeholder': 'Email Address',
-          'password.forgot.email.or.username.placeholder': 'Email Address',
-          'account.unlock.email.or.username.placeholder': 'Email Address',
+          'primaryauth.username.placeholder': 'Enter your username or email address',
+          'password.forgot.email.or.username.placeholder': 'Enter your username or email address',
+          'account.unlock.email.or.username.placeholder': 'Enter your username or email address',
           'errors.E0000004': 'Invalid email address or password',
           help: 'Need help signing in?'
         },
         es: {
-          'primaryauth.username.placeholder': 's_Email Address',
-          'password.forgot.email.or.username.placeholder': 's_Email Address',
-          'account.unlock.email.or.username.placeholder': 's_Email Address',
+          'primaryauth.username.placeholder': 's_Enter your username or email address',
+          'password.forgot.email.or.username.placeholder': 's_Enter your username or email address',
+          'account.unlock.email.or.username.placeholder': 's_Enter your username or email address',
           'errors.E0000004': 's_Invalid email address or password',
           help: 'S_Need help signing in?'
         }
@@ -184,7 +190,21 @@ const Login = () => {
 
   return (
     <div className={style.oktaRoot} id={debugIds(ID.LOGIN, ID.CONTAINER)}>
-      <div className={'w-100'} ref={widgetRef} id={debugIds(ID.LOGIN, ID.WIDGET)}></div>
+      <div className={`${style.loginWrap} max-container`}>
+        <div className={style.loginHeader}>
+          <McKessonLogo aria-hidden="true" focusable="false" title={t('company.logoAltText')} />
+           <Heading as="h2"><span>{t('login.header.1')} </span>{t('login.header.2')}</Heading>
+          <p><span>{t('login.page.desc.1')} </span>{t('login.page.desc.2')}</p>
+        </div>
+        <div className={style.loginContainor}>
+          <p className={style.lWelcome}>{t('login.welcome')}</p>
+          <Heading as="h3" className={style.lHead}>{t('login.ordringPortal')}</Heading>
+          <p className={style.lDetails}>{t('login.details')}</p>
+          <div className={'w-100'} ref={widgetRef} id={debugIds(ID.LOGIN, ID.WIDGET)}></div>
+          <p className={style.lNote}><span>{t('login.note')}: </span>{t('login.details')}</p>
+        </div>
+      </div>
+      <Footer />
     </div>
   );
 };

@@ -1,18 +1,198 @@
 @use "../../../../assets/styles/abstracts/mixins";
 
 .oktaRoot {
-  display: flex;
-  flex-direction: column;
-  height: 80vh;
-  justify-content: center;
-  align-items: center;
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 55% 45%;
+  overflow: auto;
 }
 
 .auth-footer {
   .js-forgot-password {
     display: none;
+  }
+}
+.loginWrap {
+  display: flex;
+  margin: var(--spacing-11) auto 0px;
+  justify-content: space-between;
+  width: 100%;
+  z-index: 999;
+  padding: 0px var(--spacing-16);
+
+  .loginContainor {
+    box-shadow: 0px 4px 8px 0px #262C3626 !important;
+    border-radius: var(--brand-border-radius--22-5);
+    width: 500px;
+    margin-bottom: -75px;
+    background: var(--brand-color-background-white);
+    padding: 46px 32px 47px;
+    height: fit-content;
+
+    .lWelcome {
+      font-size: var(--brand-font-size--large);
+      color: var(--brand-color-black);
+    }
+
+    .lHead {
+      font-size: var(--brand-font-size--24) !important;
+      font-weight: var(--brand-font-weight-700);
+      color: #0068AC;
+    }
+
+    .lDetails {
+      font-size: var(--brand-font-size--small);
+      color: var(--brand-color-black);
+      padding: var(--spacing-03) 0px;
+    }
+
+    .lNote {
+      font-size: var(--brand-font-size--extra-small);
+      color: var(--brand-color-primary-slate);
+      span {
+        color:#CA2C1F;
+        font-weight: var(--brand-font-weight-700);
+      }
+    }
+  }
+
+  .loginHeader {
+    padding-top: var(--spacing-05);
+
+    h2 {
+      font-size: var(--brand-font-size--32) !important;
+      padding: var(--spacing-05) 0px;
+      color: #1E394E;
+
+      span {
+        display: block;
+      }
+    }
+
+    p {
+      font-size: var(--brand-font-size--large);
+      color: var(--brand-color-primary-slate);
+
+      span {
+        display: block;
+      }
+    }
+  }
+}
+
+.customSignUpButton {
+  background-color: var(--brand-color-background-white) !important;
+  border: 1px solid var(--brand-color-primary) !important;
+  color: var(--brand-color-primary) !important;
+  text-decoration: none !important;
+  font-weight:var(--brand-font-weight-600) !important;
+  margin-bottom: 0px !important;
+  line-height: 38px !important;
+  height: 38px !important;
+  font-size: var(brand-font-size--defaul);
+}
+
+.loginFooter {
+  background-color: #1B3150;
+  justify-content: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .footerWrapper {
+    width: 80%;
+
+    .footerContant {
+      display: flex;
+      justify-content: space-between;
+      color: var(--brand-color-background-white);
+      padding-bottom: var(--spacing-04);
+      border-bottom: 1px solid var(--brand-color-background-white);
+      margin: 0px var(--spacing-04);
+      flex-wrap: wrap;
+      gap: var(--spacing-06);
+
+      div {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-03);
+        min-width: 370px;
+        
+        h2{
+          font-size: var(--brand-font-size--24) !important;
+        }
+        a {
+          color: var(--brand-color-background-warm-grey-3);
+          text-decoration: none;
+          font-weight: var(--brand-font-weight-600);
+          font-size: var(--brand-font-size--24);
+        }
+      }
+    }
+
+    .footerBase {
+      display: flex;
+      margin: 0px var(--spacing-04);
+      padding: var(--spacing-04) 0px;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--spacing-03);
+
+      p {
+        font-size: var(--brand-font-size--large);
+        font-weight: var(--brand-font-weight-400);
+        color: var(--brand-color-background-white);
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 1200px) {
+  .loginWrap {
+    flex-wrap: wrap;
+    gap: var(--spacing-08);
+    justify-content: center;
+    
+    .loginHeader {
+      text-align: center;
+
+      h2 {
+        font-size: var(--brand-font-size--24) !important;
+        padding: var(--spacing-04) 0px var(--spacing-02);
+
+        span {
+          display: inline;
+        }
+      }
+
+      p {
+        span {
+          display: inline;
+        }
+      }
+    }
+
+    
+  }
+  .oktaRoot {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .loginFooter {
+    padding-top: var(--spacing-20);
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .loginWrap {
+    padding: 0px var(--spacing-04);
+    .loginContainor{
+      width: fit-content;
+    }
+  }
+  .loginFooter{
+    .footerWrapper{
+      width: 100%;
+    }
   }
 }
