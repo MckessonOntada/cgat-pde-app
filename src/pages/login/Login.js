@@ -201,7 +201,7 @@ const Login = () => {
           <Heading as="h3" className={style.lHead}>{t('login.ordringPortal')}</Heading>
           <p className={style.lDetails}>{t('login.details')}</p>
           <div className={'w-100'} ref={widgetRef} id={debugIds(ID.LOGIN, ID.WIDGET)}></div>
-          <p className={style.lNote}><span style={{}}>{t('login.note')}: </span>{t('login.details')}</p>
+          <p className={style.lNote}><span>{t('login.note')}: </span>{t('login.details')}</p>
         </div>
       </div>
       <Footer />
