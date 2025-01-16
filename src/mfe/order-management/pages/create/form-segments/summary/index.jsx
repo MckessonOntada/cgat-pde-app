@@ -54,7 +54,7 @@ const Summary = () => {
     additionalDetails = {},
     patientDetailsRequired = false,
     rejectionDetails,
-    isPapOrder,
+    paporder: isPapOrder,
     status
   } = formState.activeRecord || {};
 
@@ -88,7 +88,7 @@ const Summary = () => {
     }
   }
 
-  const { mutate: submitOrder } = useMutation(async ({ action, payload }) => await OrderService.submitOrder(orderId, payload), {
+  const { mutate: submitOrder } = useMutation(async ({ action, isPAPOrder }) => await OrderService.submitOrder(orderId, isPAPOrder), {
     onSuccess: (_result, { action }) => {
       if (action === BUTTON_ACTIONS.SUBMIT) {
         navigate(`../${orderId}/order-confirmed`);
@@ -124,11 +124,9 @@ const Summary = () => {
   };
 
   const handleOnSubmitPapOrder = (orderType) => {
-    const payload = {
-      isPAPOrder: orderType === ORDER_TYPES.PAP_ORDER
-    };
+    const isPAPOrder = orderType === ORDER_TYPES.PAP_ORDER;
     setIsPAPOrderConfirmModalOpen(false);
-    submitOrder({ action: BUTTON_ACTIONS.SUBMIT, payload });
+    submitOrder({ action: BUTTON_ACTIONS.SUBMIT, isPAPOrder });
   };
 
   const handleOnSubmit = () => {
