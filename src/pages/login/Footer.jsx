@@ -13,16 +13,16 @@ const Footer = () => {
             <div className={style.footerContant}>
                 <div>
                     <Heading as="h2">{t('footer.terms')}</Heading>
-                    <Link to={''}>{t('footer.privacy')}</Link>
-                    <Link to={''}>{t('footer.info')}</Link>
+                    <Link to={'https://www.ontadahealth.com/privacy-notice'} target="_blank">{t('footer.privacy')}</Link>
+                    <Link to={'https://privacyportal.onetrust.com/webform/599133ba-bafa-4e24-8173-6e59b6c96dab/f081c4ff-0e3b-4d07-a79f-30effc0fc255'} target="_blank">{t('footer.info')}</Link>
                 </div>
                 <div>
                     <Heading as="h2">{t('footer.help')}</Heading>
-                    <Link to={''}>{t('footer.help.content')}</Link>
+                    <Link to={'https://www.ontadahealth.com/help'} target="_blank">{t('footer.help.content')}</Link>
                 </div>
                 <div>
                     <Heading as="h2">{t('footer.contant')}</Heading>
-                    <Link to={''}>{t('footer.contant.no')}</Link>
+                    <Link to={'tel:1-855-887-6788'} target="_blank">{t('footer.contant.no')}</Link>
                 </div>
             </div>
             <div className={style.footerBase}>
