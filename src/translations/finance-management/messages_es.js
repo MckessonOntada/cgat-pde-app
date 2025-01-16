@@ -108,6 +108,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.paymentMethods.filter.search.placeholder': 'S_Select by name or number',
   'paymentInvoices.invoice.table.emptyData': 'S_No Invoice Found',
   'paymentInvoices.Details.backToManageInvoices': 'S_BACK TO MANAGE INVOICES PAGE',
+  'paymentInvoices.Details.backToReviewAndPay': 'BACK TO REVIEW PAYMENTS PAGE',
   'paymentInvoices.Details.Invoice': 'S_Invoice',
   'paymentInvoices.Details.DownloadPDF': 'S_DOWNLOAD PDF',
   'paymentInvoices.Details.ReviewAndPay': 'S_REVIEW AND PAY',

@@ -143,7 +143,7 @@ function ReviewPayments() {
 
   const totalAmount = useMemo(() => {
     let _total = invoicesSum - creditsSum;
-    return parseFloat(_total).toFixed(2);
+    return parseFloat(_total > 0 ? _total : 0).toFixed(2);
   }, [invoicesSum, creditsSum]);
 
   const getRadioItems = () => {

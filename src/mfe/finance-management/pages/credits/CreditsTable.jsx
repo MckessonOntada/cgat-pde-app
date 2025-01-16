@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Badge, Button, CustomDataTable, Loader } from '@mckesson/mcp-component-library';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as PDFicon } from '../../../../assets/svg/office-file-pdf.svg';
@@ -16,7 +16,8 @@ export default function CreditsTable(props) {
   const { t } = useTranslate();
   const { data, isFetching, paginationConfig, setPageNumber, applySort, isError } = usePaymentCredits();
   const { selectedRows, setSelectedRows, selectableRows } = props;
-
+  const location = useLocation();
+  const { state } = location;
   const renderCheckBox = (row, index) => {
     return (
       <input
@@ -110,7 +111,7 @@ export default function CreditsTable(props) {
           <Link
             style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
             to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
-          >
+            state={{ ...state }}>
             {`${props?.billNumber}`}
           </Link>
         </div>
@@ -218,8 +219,7 @@ export default function CreditsTable(props) {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}
-          >
+            }}>
             <Loader variant="circular" />
           </div>
         }

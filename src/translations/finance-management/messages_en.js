@@ -93,6 +93,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.status': 'Status',
   'paymentInvoices.invoice.table.emptyData': 'No Invoice Found',
   'paymentInvoices.Details.backToManageInvoices': 'BACK TO MANAGE INVOICES PAGE',
+  'paymentInvoices.Details.backToReviewAndPay': 'BACK TO REVIEW PAYMENTS PAGE',
   'paymentInvoices.Details.Invoice': 'Invoice',
   'paymentInvoices.Details.DownloadPDF': 'DOWNLOAD PDF',
   'paymentInvoices.Details.ReviewAndPay': 'REVIEW AND PAY',

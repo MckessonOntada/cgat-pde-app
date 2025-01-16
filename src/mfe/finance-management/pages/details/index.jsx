@@ -107,7 +107,10 @@ function Details(props) {
               onClick={() => {
                 setOpen(!open);
                 setTherapy(props?.therapyId);
-              }}>{props?.therapyId || '-'}</Link>
+              }}
+              state={{ ...locationParams.state }}>
+              {props?.therapyId || '-'}
+            </Link>
           </div>
         )
       },
@@ -189,7 +192,11 @@ function Details(props) {
           Icon={() => <IconArrowLeft />}
           onClick={onBackToPaymentsInvoices}
           size="md">
-          {INVOICES_SCREEN ? t('paymentInvoices.Details.backToManageInvoices') : t('paymentInvoices.Details.backToManageCredits')}
+          {locationParams?.state?.reviewPay
+            ? t('paymentInvoices.Details.backToReviewAndPay')
+            : INVOICES_SCREEN
+            ? t('paymentInvoices.Details.backToManageInvoices')
+            : t('paymentInvoices.Details.backToManageCredits')}
         </Button>
       </div>
       <Heading>
@@ -244,7 +251,7 @@ function Details(props) {
       </div>
       <div className="footer-section">
         {INVOICES_SCREEN ? (
-          !locationParams.state.reviewPay && (
+          !locationParams?.state?.reviewPay && (
             <React.Fragment>
               <Button size="md" variant="secondary" disabled>
                 {t('paymentInvoices.Details.DownloadPDF')}
