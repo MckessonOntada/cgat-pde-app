@@ -16,6 +16,8 @@ export const MessageEs = {
   'controls.createNewOrder': 'S_Create New Order',
   'captions.orderStatus': 'S_Order Status',
   'captions.btnCancel': 'S_Cancel',
+  'captions.btnYes': 'S_Yes',
+  'captions.btnNo': 'S_No',
   'captions.btnNext': 'S_Next',
   'captions.btnViewComments': 'S_View Comments',
   'captions.btnSelect': 'S_Select',
@@ -299,8 +301,13 @@ export const MessageEs = {
   'labels.orderActions.discardChangesByMe': 'S_Discard changes by me',
   'message.success.discardVersionChanges': 'S_Discarded changes made by you.',
   'prompt.title.alert': 'S_Alert!',
-  'prompt.message.submitOrder': 'S_How do you wish to submit this order?',
+  'prompt.message.submitOrder': 'S_Do you wish to order this therapy under PAP program?',
+  'prompt.subMessage.submitOrder': "S_Select 'Yes' to proceed with PAP benefits or 'No' to submit as a regular order.",
   'prompt.option.papOrder': 'S_PAP Order',
   'prompt.option.nonPapOrder': 'S_Non-PAP Order',
-  'prompt.action.submit': 'S_Submit'
+  'prompt.action.submit': 'S_Submit',
+  'message.error.papOrderCanNotEdit':
+    "S_You can't edit this order, If you wish to make any changes to the order, please call the customer center",
+  'prompt.message.editRestriction':
+    "S_You can't edit this order, If you wish to make any changes to the order, please contact the customer support 1800-XXX-XXXX"
 };
