@@ -1,0 +1,121 @@
+import React, { useEffect, useState } from 'react';
+import { Badge, Button, CustomDataTable, Loader } from '@mckesson/mcp-component-library';
+import { Link, useLocation } from 'react-router-dom';
+import { useTranslate } from '@src/translations/useTranslation';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import { ReactComponent as PDFicon } from '../../../../assets/svg/office-file-pdf.svg';
+import { usePaymentCredits } from '../../context/PaymentsCreditsContext';
+import EmptyDataTable from '@src/components/EmptyTable';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import { FormattedNumber } from 'react-intl';
+import dayjs from 'dayjs';
+// import { PATHS } from '../../routes';
+import CommonUtils from '@src/util/CommonUtils';
+
+function CreditsSelected(props) {
+  const { t } = useTranslate();
+  const [data, setData] = useState([]);
+  const location = useLocation();
+  const { state } = location;
+  const { creditsSelected } = state;
+
+  useEffect(() => {
+    if (creditsSelected?.length > 0) {
+      setData(creditsSelected);
+    }
+  }, [creditsSelected]);
+
+  const columns = [
+    {
+      id: 'billNumber',
+      name: t('paymentInvoices.history.table.billNumber'),
+      selector: (row) => `${row.billNumber}`,
+      wrap: true,
+      minWidth: '112px',
+      cell: (props) => (
+        <div className="cellEllipse">
+          <Link
+            style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
+            // to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
+          >
+            {`${props?.billNumber}`}
+          </Link>
+        </div>
+      )
+    },
+    {
+      id: 'soldToSite',
+      name: t('paymentInvoices.history.table.SoldToSite'),
+      selector: () => {},
+      minWidth: '160px',
+      wrap: true,
+      cell: (props) => <div>{props?.soldToSite || '-'}</div>
+    },
+    {
+      id: 'description',
+      name: t('paymentInvoices.credits.table.description'),
+      selector: (row) => row.description,
+      minWidth: '320px',
+      wrap: true,
+      cell: (props) => (
+        <div>
+          <EclipsesTextcss str={props?.description || ''} maxWidth={280} />
+        </div>
+      )
+    },
+    {
+      id: 'dueDate',
+      name: t('paymentInvoices.credits.table.validfrom'),
+      selector: (row) => row.dueDate,
+      wrap: true,
+      minWidth: '160px',
+      cell: (props) => (
+        <EclipsesTextcss className="cellEllipse" str={dayjs(props?.dueDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'} maxWidth={240} />
+      )
+    },
+    {
+      id: 'billAmount',
+      name: t('paymentInvoices.credits.table.amount'),
+      selector: (row) => row.billAmount,
+      minWidth: '144px',
+      wrap: true,
+      cell: (props) => (
+        <div className="status-container align-items-right">
+          <FormattedNumber value={props?.billAmount} style="currency" currency="USD" />
+        </div>
+      ),
+      right: true
+    }
+  ];
+
+  return (
+    <React.Fragment>
+      <CustomDataTable
+        id="my-data-table"
+        type="normal"
+        columns={columns}
+        data={data || []}
+        noDataComponent={
+          <EmptyDataTable
+            image={EmptyDataImage}
+            heading={t('paymentInvoices.credits.table.emptyData')}
+            description={t('paymentInvoices.history.table.emptyDataDescription')}
+          />
+        }
+        progressComponent={
+          <div
+            style={{
+              alignItems: 'center',
+              border: '1px solid #ccc',
+              display: 'flex',
+              height: '350px',
+              justifyContent: 'center'
+            }}>
+            <Loader variant="circular" />
+          </div>
+        }
+      />
+    </React.Fragment>
+  );
+}
+export default CreditsSelected;

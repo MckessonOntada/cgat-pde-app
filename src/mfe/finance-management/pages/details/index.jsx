@@ -107,8 +107,7 @@ function Details(props) {
               onClick={() => {
                 setOpen(!open);
                 setTherapy(props?.therapyId);
-              }}
-            >{`${props?.therapyId || '-'}`}</Link>
+              }}>{props?.therapyId || '-'}</Link>
           </div>
         )
       },
@@ -189,8 +188,7 @@ function Details(props) {
           variant="tertiary"
           Icon={() => <IconArrowLeft />}
           onClick={onBackToPaymentsInvoices}
-          size="md"
-        >
+          size="md">
           {INVOICES_SCREEN ? t('paymentInvoices.Details.backToManageInvoices') : t('paymentInvoices.Details.backToManageCredits')}
         </Button>
       </div>
@@ -237,33 +235,31 @@ function Details(props) {
                   display: 'flex',
                   height: '150px',
                   justifyContent: 'center'
-                }}
-              >
+                }}>
                 <Loader variant="circular" />
               </div>
             }
           />
         </div>
       </div>
-
       <div className="footer-section">
         {INVOICES_SCREEN ? (
-          <React.Fragment>
-            <Button size="md" variant="secondary" disabled>
-              {t('paymentInvoices.Details.DownloadPDF')}
-            </Button>
-            <Button
-              size="md"
-              variant="primary"
-              type="submit"
-              onClick={() => {
-                console.log('NAVIGATION');
-                navigate(`/record/invoices/reviewPayments`, { state: locationParams.state });
-              }}
-            >
-              {t('paymentInvoices.Details.ReviewAndPay')}
-            </Button>
-          </React.Fragment>
+          !locationParams.state.reviewPay && (
+            <React.Fragment>
+              <Button size="md" variant="secondary" disabled>
+                {t('paymentInvoices.Details.DownloadPDF')}
+              </Button>
+              <Button
+                size="md"
+                variant="primary"
+                type="submit"
+                onClick={() => {
+                  navigate(`/record/invoices/reviewPayments`, { state: { ...locationParams.state, reviewPay: true } });
+                }}>
+                {t('paymentInvoices.Details.ReviewAndPay')}
+              </Button>
+            </React.Fragment>
+          )
         ) : (
           <React.Fragment>
             <Button size="md" variant="primary" disabled>

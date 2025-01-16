@@ -31,6 +31,7 @@ export default function Credits(props) {
           actualData={actualData}
         />
       </div>
+
       <div className="MCP-table-wrapper credit-table-container">
         {!props.selectableRows && (
           <div className="table-header">
