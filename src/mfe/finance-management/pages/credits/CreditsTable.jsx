@@ -104,13 +104,12 @@ export default function CreditsTable(props) {
       selector: (row) => `${row.billNumber}`,
       sortable: true,
       wrap: true,
-      minWidth: '112px',
+      minWidth: '120px',
       cell: (props) => (
         <div className="cellEllipse">
           <Link
             style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
-            to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
-          >
+            to={`/record/${PATHS.credits}/${props?.billNumber}/details`}>
             {`${props?.billNumber}`}
           </Link>
         </div>
@@ -120,7 +119,7 @@ export default function CreditsTable(props) {
       id: 'soldToSite',
       name: t('paymentInvoices.history.table.SoldToSite'),
       selector: () => {},
-      minWidth: '160px',
+      minWidth: '180px',
       sortable: true,
       wrap: true,
       cell: (props) => <div>{props?.soldToSite || '-'}</div>
@@ -129,7 +128,7 @@ export default function CreditsTable(props) {
       id: 'description',
       name: t('paymentInvoices.credits.table.description'),
       selector: (row) => row.description,
-      minWidth: '320px',
+      minWidth: '340px',
       sortable: true,
       wrap: true,
       cell: (props) => (
@@ -144,16 +143,14 @@ export default function CreditsTable(props) {
       selector: (row) => row.dueDate,
       sortable: true,
       wrap: true,
-      minWidth: '160px',
-      cell: (props) => (
-        <EclipsesTextcss className="cellEllipse" str={dayjs(props?.dueDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'} maxWidth={240} />
-      )
+      width: '140px',
+      cell: (props) => dayjs(props?.dueDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'
     },
     {
       id: 'billAmount',
       name: t('paymentInvoices.credits.table.amount'),
       selector: (row) => row.billAmount,
-      minWidth: '144px',
+      maxWidth: '240px',
       sortable: true,
       wrap: true,
       cell: (props) => (
@@ -218,8 +215,7 @@ export default function CreditsTable(props) {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}
-          >
+            }}>
             <Loader variant="circular" />
           </div>
         }
