@@ -40,11 +40,15 @@ function TherapySelection() {
   const { showAlert } = useAlert();
 
   React.useEffect(() => {
+    const { paporder: isPapOrder } = formState.activeRecord || {};
+    if (isPapOrder) navigate('/orders');
+  }, [formState.activeRecord]);
+
+  React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.THERAPY_SELECTION);
   }, []);
 
   React.useEffect(() => {
-    const { therapy } = formState.activeRecord || {};
     if (therapy) {
       setTherapy(therapy);
       setInitialSelectedTherapy(therapy);

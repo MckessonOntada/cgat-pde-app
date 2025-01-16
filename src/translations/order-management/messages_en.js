@@ -16,6 +16,8 @@ export const MessageEn = {
   'controls.createNewOrder': 'Create New Order',
   'captions.orderStatus': 'Order Status',
   'captions.btnCancel': 'Cancel',
+  'captions.btnYes': 'Yes',
+  'captions.btnNo': 'No',
   'captions.btnNext': 'Next',
   'captions.btnSelect': 'Select',
   'captions.btnViewComments': 'View Comments',
@@ -296,5 +298,15 @@ export const MessageEn = {
   'message.errorCommentRequiredToRejectOrder': 'Comment is required to reject the order. Please provide reason for rejection.',
   'captions.btnReSubmitOrder': 'Re-Submit Order',
   'labels.orderActions.discardChangesByMe': 'Discard changes by me',
-  'message.success.discardVersionChanges': 'Discarded changes made by you.'
+  'message.success.discardVersionChanges': 'Discarded changes made by you.',
+  'prompt.title.alert': 'Alert!',
+  'prompt.message.submitOrder': 'Do you wish to order this therapy under PAP program?',
+  'prompt.subMessage.submitOrder': "Select 'Yes' to proceed with PAP benefits or 'No' to submit as a regular order.",
+  'prompt.option.papOrder': 'PAP Order',
+  'prompt.option.nonPapOrder': 'Non-PAP Order',
+  'prompt.action.submit': 'Submit',
+  'message.error.papOrderCanNotEdit':
+    "You can't edit this order, If you wish to make any changes to the order, please call the customer center",
+  'prompt.message.editRestriction':
+    "You can't edit this order, If you wish to make any changes to the order, please contact the customer support 1800-XXX-XXXX"
 };
