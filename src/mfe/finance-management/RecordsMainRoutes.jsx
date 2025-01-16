@@ -8,7 +8,7 @@ import ReviewPayments from './pages/reviewPayments';
 import Confirmation from './pages/confirmation';
 import { PATHS as PaymentInvoicesPaths } from '@src/mfe/finance-management/routes';
 import PaymentsInvoices from '.';
-import { Routes as RouteIndex } from '@src/mfe/finance-management/routes';
+import ConfirmationPayments from './pages/confirmationPayments';
 
 function RecordsMainRoutes(props) {
   return (
@@ -29,6 +29,16 @@ function RecordsMainRoutes(props) {
           <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
             <AccountProvider>
               <ReviewPayments type={PaymentInvoicesPaths.invoices} />
+            </AccountProvider>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={'invoices/ConfirmationPayments'}
+        element={
+          <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
+            <AccountProvider>
+              <ConfirmationPayments />
             </AccountProvider>
           </ProtectedRoute>
         }

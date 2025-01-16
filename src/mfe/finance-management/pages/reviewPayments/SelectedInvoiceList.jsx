@@ -18,7 +18,7 @@ function SelectedInvoiceList(props) {
   const dispatch = useDispatch();
   const location = useLocation();
   const { state } = location;
-  const REVIEW_MODE = state.reviewMode || false;
+  const REVIEW_MODE = state?.reviewMode || false;
 
   const columns = [
     {
@@ -48,7 +48,7 @@ function SelectedInvoiceList(props) {
       cell: (props) => <div>{props?.soldToSite || '-'}</div>
     },
     {
-      name: 'Description',
+      name: t('paymentInvoices.credits.table.description'),
       selector: (row) => row.description,
       id: 'description',
       wrap: true,
@@ -89,7 +89,7 @@ function SelectedInvoiceList(props) {
       right: true
     },
     {
-      name: 'Payment Amount',
+      name: t('paymentInvoices.reviewPayments.paymentAmount'),
       minWidth: '240px',
       id: 'paymentAmount',
       right: true,
@@ -112,7 +112,7 @@ function SelectedInvoiceList(props) {
         )
     },
     {
-      name: 'Actions',
+      name: t('paymentInvoices.history.table.Actions'),
       minWidth: '160px',
       id: 'paymentAmount',
       cell: (props, index) => (

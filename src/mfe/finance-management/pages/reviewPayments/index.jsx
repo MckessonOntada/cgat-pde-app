@@ -20,6 +20,7 @@ import dayjs from 'dayjs';
 import { RadioGroup } from '@src/components/radioGroup';
 import DetailMetrics from '../../components/detailMetrics/DetailMetrics';
 import CreditsSelected from './CreditsSelected';
+import { GeographicUtils } from '@src/util/GeographicUtil';
 
 function ReviewPayments() {
   const { t } = useTranslate();
@@ -34,7 +35,7 @@ function ReviewPayments() {
   const [mergedData, setMergedData] = useState([]);
   const [selectedData, setSelectedData] = useState('');
   const [paymentOption, setPaymentOption] = useState('');
-  const REVIEW_MODE = state.reviewMode || false;
+  const REVIEW_MODE = state?.reviewMode || false;
 
   const { data: paymentMethodsData = [], isError } = useQuery({
     queryKey: ['paymentMethodsreviewPayments'],
@@ -74,8 +75,8 @@ function ReviewPayments() {
     if (state?.creditsSelected?.length > 0 && !REVIEW_MODE) {
       setSelectedCredits(state.creditsSelected);
     }
-    state.selectedData && setSelectedData(state.selectedData);
-    state.paymentOption && setPaymentOption(state.paymentOption);
+    state?.selectedData && setSelectedData(state.selectedData);
+    state?.paymentOption && setPaymentOption(state.paymentOption);
     if (REVIEW_MODE) {
       setSelectedInvoices(state.invoices || []);
     }
@@ -86,12 +87,12 @@ function ReviewPayments() {
       navigate('.', { state: { ...state, reviewMode: false }, replace: true });
     } else {
       const state = {};
-      state.title = 'Confirm';
-      state.body = 'Are you sure want to leave Review and Pay screen?';
+      state.title = t('paymentInvoices.reviewPayments.confirm');
+      state.body = t('paymentInvoices.reviewPayments.confirmationDialogue');
       state.footer = (
         <div className="controls">
           <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
-            Cancel
+            {t('paymentInvoices.reviewPayments.cancel')}
           </Button>
           <Button
             size="md"
@@ -100,7 +101,7 @@ function ReviewPayments() {
               navigate(-1);
               dispatch(closeModal());
             }}>
-            Okay
+            {t('paymentInvoices.reviewPayments.Okay')}
           </Button>
         </div>
       );
@@ -146,75 +147,88 @@ function ReviewPayments() {
   }, [invoicesSum, creditsSum]);
 
   const getRadioItems = () => {
-    const isDisabledDueDate = location.state.includeinvoiceData
-      ? location.state.includeinvoiceData.some((invoice) => dayjs(invoice.dueDate, 'DD/MM/YYYY').isBefore(dayjs()))
+    const isDisabledDueDate = location.state?.includeinvoiceData
+      ? location.state?.includeinvoiceData.some((invoice) => dayjs(invoice.dueDate, 'DD/MM/YYYY').isBefore(dayjs()))
       : location.state?.invoices
-      ? location.state.invoices.some((invoice) => dayjs(invoice.dueDate, 'DD/MM/YYYY').isBefore(dayjs()))
+      ? location.state?.invoices.some((invoice) => dayjs(invoice.dueDate, 'DD/MM/YYYY').isBefore(dayjs()))
       : false;
 
     return selectedData
       ? [
           {
             isDisabled: false,
-            label: 'Pay Today',
+            label: t('paymentInvoices.reviewPayments.payToday'),
             value: 'Pay Today',
-            subLabel:
-              'Once submitted, the payment will be processed immediately and no further changes can be made. (Note: Payments submitted after 4.30 PM CT will be processed the next business day)'
+            subLabel: t('paymentInvoices.reviewPayments.payTodayDesc')
           },
           {
             isDisabled: isDisabledDueDate,
-            label: 'Pay on Due Date',
+            label: t('paymentInvoices.reviewPayments.payDuedate'),
             value: 'Pay on Due Date',
-            subLabel: 'Once submitted , you have the option to cancel the payment until 4:00 PM CT on the due date of the earliest invoice.'
+            subLabel: t('paymentInvoices.reviewPayments.payDuedateDesc')
           },
           {
             isDisabled: selectedData?.type !== 'Bank',
-            label: 'Pay on Specific Date',
+            label: t('paymentInvoices.reviewPayments.paySpecfic'),
             value: 'Pay on Specific Date',
-            subLabel:
-              'Once submitted , you have the option to cancel the payment until 4:00 PM CT on the specified date of the earliest invoice.',
+            subLabel: t('paymentInvoices.reviewPayments.paySpecficDesc'),
             subType: 'datePicker'
           }
         ]
       : [
           {
             isDisabled: false,
-            label: 'Pay Today',
+            label: t('paymentInvoices.reviewPayments.payToday'),
             value: 'Pay Today',
-            subLabel:
-              'Once submitted, the payment will be processed immediately and no further changes can be made. (Note: Payments submitted after 4.30 PM CT will be processed the next business day)'
+            subLabel: t('paymentInvoices.reviewPayments.payTodayDesc')
           },
           {
             isDisabled: isDisabledDueDate,
-            label: 'Pay on Due Date',
+            label: t('paymentInvoices.reviewPayments.payDuedate'),
             value: 'Pay on Due Date',
-            subLabel: 'Once submitted , you have the option to cancel the payment until 4:00 PM CT on the due date of the earliest invoice.'
+            subLabel: t('paymentInvoices.reviewPayments.payDuedateDesc')
           },
           {
             isDisabled: false,
-            label: 'Pay on Specific Date',
+            label: t('paymentInvoices.reviewPayments.paySpecfic'),
             value: 'Pay on Specific Date',
-            subLabel:
-              'Once submitted , you have the option to cancel the payment until 4:00 PM CT on the specified date of the earliest invoice.',
+            subLabel: t('paymentInvoices.reviewPayments.paySpecficDesc'),
             subType: 'datePicker'
           }
         ];
   };
 
   const onPreviewPayment = () => {
-    navigate('.', {
-      state: {
-        ...state,
-        invoices: selectedInvoices,
-        creditsSelected: selectedCredits,
-        reviewMode: true,
-        selectedData: selectedData,
-        paymentOption: paymentOption
-      },
-      replace: true
-    });
+    if (REVIEW_MODE) {
+      navigate('/record/invoices/confirmationPayments', {
+        state: {
+          ...state,
+          invoices: selectedInvoices,
+          creditsSelected: selectedCredits,
+          selectedPayment: selectedData,
+          paymentOption: paymentOption,
+          amount: FinanceUtils.formatCurrency(invoicesSum),
+          creditAmount: FinanceUtils.formatCurrency(creditsSum),
+          amountPaid: FinanceUtils.formatCurrency(totalAmount),
+          reviewMode: true,
+          totalCreditAmount: FinanceUtils.formatCurrency(selectedCredits.reduce((sum, bill) => sum + bill.billAmount, 0))
+        },
+        replace: true
+      });
+    } else {
+      navigate('.', {
+        state: {
+          ...state,
+          invoices: selectedInvoices,
+          creditsSelected: selectedCredits,
+          reviewMode: true,
+          paymentOption: paymentOption,
+          selectedPayment: selectedData
+        },
+        replace: true
+      });
+    }
   };
-
   const disablePreview = () => {
     return !selectedData || !paymentOption;
   };
@@ -229,11 +243,11 @@ function ReviewPayments() {
         </div>
         <div className="header">
           <Heading as="h1" className="heading">
-            {t('Review and Pay')}
+            {t('paymentInvoices.heading.ReviewAndPay')}
           </Heading>
         </div>
         <div className="section">
-          <div className="sectionHeader">{t('Account')}</div>
+          <div className="sectionHeader">{t('paymentInvoices.Details.Account')}</div>
           {selectedAccount && (
             <div className="sectionCard">
               <div className="accountNumber">{selectedAccount.accountNumber}</div>
@@ -247,19 +261,21 @@ function ReviewPayments() {
         </div>
         {REVIEW_MODE && (
           <div className="section">
-            <div className="sectionHeader">{'Payment Summary'}</div>
+            <div className="sectionHeader">{t('paymentInvoices.reviewPayments.paymentSummary')}</div>
             <DetailMetrics
               data={{
-                'Schedule option': state.paymentOption,
-                'Net amount to be charged': FinanceUtils.formatCurrency(totalAmount),
-                'Payment method': state.selectedData.label
+                [t('paymentInvoices.reviewPayments.scheduleOption')]: state.paymentOption,
+                [t('paymentInvoices.reviewPayments.netAmount')]: FinanceUtils.formatCurrency(totalAmount),
+                [t('paymentInvoices.reviewPayments.paymentMethod')]: `${
+                  selectedData?.number?.slice(-4) || selectedData?.accountNumber?.slice(-4)
+                } - ${GeographicUtils.addressAggregator(selectedAccount)}`
               }}
             />
           </div>
         )}
         <div>
           <div>
-            <h1>{REVIEW_MODE ? 'Invoices Selected for Payment' : 'Invoices Selected'}</h1>
+            <h1>{REVIEW_MODE ? t('paymentInvoices.reviewPayments.invoiceSelected') : t('paymentInvoices.reviewPayments.invoice')}</h1>
           </div>
           <SelectedInvoiceList selectedInvoices={selectedInvoices} setSelectedInvoices={setSelectedInvoices} />
         </div>
@@ -272,7 +288,9 @@ function ReviewPayments() {
         {(!REVIEW_MODE || (REVIEW_MODE && state?.creditsSelected?.length > 0)) && (
           <div className="MCP-module-wrapper">
             <div>
-              <h1>{REVIEW_MODE ? 'Credits Selected' : 'Credits Available'}</h1>
+              <h1>
+                {REVIEW_MODE ? t('paymentInvoices.reviewPayments.creditsSelected') : t('paymentInvoices.reviewPayments.creditsAvail')}
+              </h1>
             </div>
             <div id="tablist-container" className="MCP-module-body">
               {REVIEW_MODE ? (
@@ -294,9 +312,9 @@ function ReviewPayments() {
       </div>
       {!REVIEW_MODE && (
         <div className="payment">
-          <Heading as="h2">Payment</Heading>
+          <Heading as="h2">{t('paymentInvoices.reviewPayments.payment')}</Heading>
           <div className="paymentMethodContainer">
-            <div className="paymentMethod">Select a method</div>
+            <div className="paymentMethod">{t('paymentInvoices.reviewPayments.selectMethod')}</div>
             <AutoSuggestDropdown
               suggestionList={getValue(mergedData)}
               id="id"
@@ -319,14 +337,14 @@ function ReviewPayments() {
             />
           </div>
           <div className="invoice-sum-container">
-            <div className="label">Amount to be charged to your Payment account:</div>
+            <div className="label">{t('paymentInvoices.reviewPayments.invoiceDesc')}</div>
             <div className="value">{`${FinanceUtils.formatCurrency(totalAmount)}`}</div>
           </div>
         </div>
       )}
       <div className="footer-section">
         <Button variant="secondary" onClick={() => navigate('../')} size="sm">
-          Cancel
+          {t('paymentInvoices.reviewPayments.cancel')}
         </Button>
         {REVIEW_MODE ? (
           <Button onClick={onPreviewPayment} size="sm">
@@ -334,7 +352,7 @@ function ReviewPayments() {
           </Button>
         ) : (
           <Button onClick={onPreviewPayment} size="sm" disabled={disablePreview()}>
-            Preview Payment
+            {t('paymentInvoices.reviewPayments.previewPayment')}
           </Button>
         )}
       </div>

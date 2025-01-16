@@ -22,21 +22,25 @@ export default function Credits(props) {
   }, []);
   return (
     <React.Fragment>
-      <div className="MCP-CardContainer">
-        <CommonFilters
-          onApplyFilters={applyFilters}
-          onClearFilters={clearFilters}
-          additionalFilters={AdditionalFiltersConfig}
-          searchPlaceholder={t('paymentInvoices.filter.search')}
-          actualData={actualData}
-        />
-      </div>
+      {(props.showFilter ?? true) && (
+        <div className="MCP-CardContainer">
+          <CommonFilters
+            onApplyFilters={applyFilters}
+            onClearFilters={clearFilters}
+            additionalFilters={AdditionalFiltersConfig}
+            searchPlaceholder={t('paymentInvoices.filter.search')}
+            actualData={actualData}
+          />
+        </div>
+      )}
       <div className="MCP-table-wrapper credit-table-container">
         {!props.selectableRows && (
           <div className="table-header">
-            <Button variant="secondary" onClick={() => {}} size="sm" disabled>
-              {t('paymentInvoices.CS.ExportExcel')}
-            </Button>
+            {(props.showFilter ?? true) && (
+              <Button variant="secondary" onClick={() => {}} size="sm" disabled>
+                {t('paymentInvoices.CS.ExportExcel')}
+              </Button>
+            )}
           </div>
         )}
         <CreditsTable
