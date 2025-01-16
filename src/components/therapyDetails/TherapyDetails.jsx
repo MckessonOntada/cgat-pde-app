@@ -20,7 +20,8 @@ function TherapyDetails({ therapyId, onClose, onSelect, therapyData, showButton 
   
   useEffect(() => {
     if (error) {
-      showSnackbar('Error fetching Therapy Details', 'error');
+      onClose();
+      showSnackbar({description: 'Error fetching Therapy Details', type: 'error'});
     }
   }, [error, showSnackbar, t]);
 

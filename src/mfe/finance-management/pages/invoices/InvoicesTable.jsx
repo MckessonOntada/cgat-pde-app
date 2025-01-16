@@ -112,8 +112,7 @@ export default function InvoicesTable() {
           <Link
             style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
             to={`/record/${PATHS.invoices}/${props?.billNumber}/details`}
-            state={{ invoices: [...[], props] }}
-          >{`${props?.billNumber || ''}`}</Link>
+            state={{ invoices: [...[], props] }}>{`${props?.billNumber || ''}`}</Link>
         </div>
       )
     },
@@ -237,10 +236,9 @@ export default function InvoicesTable() {
           <Button
             variant="secondary"
             onClick={() => {
-              navigate(`/record/invoices/reviewPayments`, { state: { invoices: includeinvoiceData } });
+              navigate(`/record/invoices/reviewPayments`, { state: { invoices: includeinvoiceData, reviewPay: true } });
             }}
-            size="sm"
-          >
+            size="sm">
             {t('paymentInvoices.Details.ReviewAndPay')}
           </Button>
         </div>
@@ -278,8 +276,7 @@ export default function InvoicesTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}
-          >
+            }}>
             <Loader variant="circular" />
           </div>
         }
