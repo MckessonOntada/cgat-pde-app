@@ -17,10 +17,9 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { FinanceUtils } from '@src/util/FinanceUtil';
 import dayjs from 'dayjs';
-import { RadioGroup } from '@src/components/radioGroup';
+import { PaymentOptionsControls } from '@src/mfe/finance-management/pages/reviewPayments/paymentControlOptions';
 import DetailMetrics from '../../components/detailMetrics/DetailMetrics';
 import CreditsSelected from './CreditsSelected';
-import { GeographicUtils } from '@src/util/GeographicUtil';
 
 function ReviewPayments() {
   const { t } = useTranslate();
@@ -340,7 +339,7 @@ function ReviewPayments() {
             />
           </div>
           <div className="paymentOptionContainer">
-            <RadioGroup
+            <PaymentOptionsControls
               direction="column"
               id="radio-button-order-therapy-props.id"
               items={getRadioItems()}
