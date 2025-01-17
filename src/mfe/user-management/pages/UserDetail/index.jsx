@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
-import { Badge, Button, Heading, Switch, Alert, Modal, CheckboxGroup } from '@mckesson/mcp-component-library';
+import { Badge, Button, Heading, Switch, Alert, Modal, CheckboxGroup, IconButton } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
@@ -19,7 +19,6 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import UserAccounts from '@src/components/Accounts/Accounts';
-import { useDispatch } from 'react-redux';
 import PermittedComponent from '@src/components/permitted-component';
 
 function getBackgroundColorByRole(role) {
@@ -52,12 +51,13 @@ const UserDetail = () => {
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const [alertDescription, setAlertDescription] = useState('');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertType, setAlertType] = useState(null);
   const location = useLocation();
-  //  const isSuccess = location.state?.isSuccess || false;
   const { isSuccess = false, isPending = false } = location.state || {};
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const [isOpen, setIsOpen] = useState(false);
   const [isDeactivate, setIsDeactivate] = useState(false);
+  const [isProvisioned, setIsProvisioned] = useState(false);
   const [isConsentModalOpen, setIsConsentModalOpen] = React.useState(false);
   const isImpersonateLoggedIn = Boolean(AuthUtils.getImpersonateId());
   const requestParams = {
@@ -77,11 +77,58 @@ const UserDetail = () => {
     refetchOnWindowFocus: false
   });
 
+  const mutation = useMutation(
+    async () => {
+      const res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}/retry-okta-provisioning`, httpVerb.POST, null);
+      return res.data;
+    },
+    {
+      onSuccess: (res) => {
+        setIsAlertVisible(true);
+        setIsProvisioned(true);
+        setAlertType('success');
+        setAlertDescription(t('messages.provisionedsuccess'));
+      },
+      onError: (error) => {
+        setIsAlertVisible(true);
+        setIsProvisioned(true);
+        setAlertType('error');
+        setAlertDescription(t('messages.provisionederrror'));
+      }
+    }
+  );
+
+  useEffect(() => {
+    if (data?.provisionedInOktaStatus !== 'PROVISIONED' && data?.isActive) {
+      setIsAlertVisible(true);
+      setIsProvisioned(true);
+      setAlertType('error');
+
+      setAlertDescription(
+        <>
+          {t('userManagement.provision.message', {
+            click: (
+              <span>
+                <IconButton
+                  label={t('userManagement.button.clickhere')}
+                  size="lg"
+                  iconButton={false}
+                  textButton={true}
+                  onClick={handleRetry}
+                />
+              </span>
+            )
+          })}
+        </>
+      );
+    }
+  }, [data?.provisionedInOktaStatus]);
+
   useEffect(() => {
     if (!isSuccess) return;
 
     setIsAlertVisible(true);
-    setAlertDescription(`${location.state.recCount} new accounts have been successfully linked to this user.`);
+    setAlertDescription(`${location.state.recCount} ${t('messages.accountlinkSuccess')}.`);
 
     const timer = setTimeout(handleAlertClose, 10000);
 
@@ -95,6 +142,12 @@ const UserDetail = () => {
 
   const goBack = () => {
     navigate(isSystemAdminView ? RoutePaths.pathSystemAdminManagement : RoutePaths.pathUserManagement);
+  };
+
+  const handleRetry = () => {
+    if (userId) {
+      mutation.mutate();
+    }
   };
 
   const onRemoveAccount = useCallback(
@@ -123,12 +176,14 @@ const UserDetail = () => {
       refetch();
       setIsDeactivate(true);
       setIsAlertVisible(true);
+      setAlertType('success');
       setAlertDescription(t('messages.user_deactivate_success'));
     },
     onError: (error) => {
       console.error(`Failed to deactivate user:`, error);
       setIsDeactivate(true);
       setIsAlertVisible(true);
+      setAlertType('error');
       setAlertDescription(t('messages.user_deactivate_failure'));
     }
   });
@@ -184,7 +239,7 @@ const UserDetail = () => {
   const userFullName = `${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName}`;
   const loggedUserId = Number(AuthUtils.getUserId());
 
-  const prePermissions = data?.isActive && data?.id !== loggedUserId && !isImpersonateLoggedIn;
+  const prePermissions = data?.isActive && data?.id !== loggedUserId && !isImpersonateLoggedIn && !isSystemAdminView;
 
   return (
     <div className="MCP-module-wrapper">
@@ -193,8 +248,8 @@ const UserDetail = () => {
         <p>{t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}</p>
       </div>
 
-      {isDeactivate && isAlertVisible && (
-        <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />
+      {(isDeactivate || isProvisioned) && isAlertVisible && (
+        <Alert description={alertDescription} onClose={handleAlertClose} type={alertType} duration={10000} />
       )}
       <div className="MCP-module-body">
         <ModuleHeader
@@ -395,7 +450,7 @@ const UserDetail = () => {
           id: 'xxxs-modal',
           isOpen,
           onClose: () => setIsOpen(false),
-          modalTitle: 'Confirmation message',
+          modalTitle: t('userManagement.confirmationMessage'),
           modalBody: (
             <div className="MCP-modal-body">
               <p>{t('popup.userDeactivation.question')}</p>

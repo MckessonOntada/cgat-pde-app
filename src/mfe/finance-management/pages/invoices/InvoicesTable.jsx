@@ -98,7 +98,7 @@ export default function InvoicesTable() {
       sortable: false,
       cell: (row, index) => renderCheckBox(row, index),
       selector: (row) => row.MRN,
-      width: '48px'
+      width: '50px'
     },
     {
       name: t('paymentInvoices.history.table.billNumber'),
@@ -106,14 +106,13 @@ export default function InvoicesTable() {
       selector: (row) => `${row.billNumber}`,
       sortable: true,
       wrap: true,
-      minWidth: '112px',
+      maxWidth: '140px',
       cell: (props) => (
         <div className="cellEllipse">
           <Link
             style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
             to={`/record/${PATHS.invoices}/${props?.billNumber}/details`}
-            state={{ invoices: [...[], props] }}
-          >{`${props?.billNumber || ''}`}</Link>
+            state={{ invoices: [...[], props] }}>{`${props?.billNumber || ''}`}</Link>
         </div>
       )
     },
@@ -121,7 +120,7 @@ export default function InvoicesTable() {
       id: 'soldToSite',
       name: t('paymentInvoices.history.table.SoldToSite'),
       selector: (row) => row.soldToSite,
-      minWidth: '160px',
+      maxWidth: '140px',
       sortable: true,
       wrap: true,
       cell: (props) => <div>{props?.soldToSite || '-'}</div>
@@ -132,23 +131,21 @@ export default function InvoicesTable() {
       sortable: true,
       id: 'billDate',
       wrap: true,
-      minWidth: '160px',
-      cell: (props) => (
-        <EclipsesTextcss className="cellEllipse" str={dayjs(props?.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'} maxWidth={240} />
-      )
+      width: '100px',
+      cell: (props) => dayjs(props?.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'
     },
     {
       name: t('paymentInvoices.history.table.PaymentTerm'),
       selector: 'paymentTerm',
-      minWidth: '144px',
+      maxWidth: '140px',
       id: 'paymentTerm',
       wrap: true,
-      cell: (props) => <div className="status-container">{props?.paymentTerm}</div>
+      cell: (props) => <EclipsesTextcss className="cellEllipse" str={props?.paymentTerm} maxWidth={90} />
     },
     {
       name: t('paymentInvoices.history.table.DueDate'),
       selector: (row) => row.dueDate,
-      minWidth: '168px',
+      width: '120px',
       sortable: true,
       wrap: true,
       id: 'dueDate',
@@ -237,10 +234,9 @@ export default function InvoicesTable() {
           <Button
             variant="secondary"
             onClick={() => {
-              navigate(`/record/invoices/reviewPayments`, { state: { invoices: includeinvoiceData } });
+              navigate(`/record/invoices/reviewPayments`, { state: { invoices: includeinvoiceData, reviewPay: true } });
             }}
-            size="sm"
-          >
+            size="sm">
             {t('paymentInvoices.Details.ReviewAndPay')}
           </Button>
         </div>
@@ -278,8 +274,7 @@ export default function InvoicesTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}
-          >
+            }}>
             <Loader variant="circular" />
           </div>
         }

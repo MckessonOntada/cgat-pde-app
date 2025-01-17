@@ -14,6 +14,7 @@ export const UserManagementES = {
   'userManagement.header.systemadminlisting.label': 'S_Manage System Admins',
   'userManagement.table.userlisting.label': 'S_Users Listing',
   'userManagement.table.systemadminlisting.label': 'S_System Admin Listing',
+
   'userManagement.breadcrumb.labeldashboard': 'S_Dashboard',
   'userManagement.table.name': 'S_Name',
   'userManagement.table.email': 'S_Email',
@@ -30,8 +31,7 @@ export const UserManagementES = {
   'userManagement.table.action.view': 'S_VIEW',
   'userManagement.empty_table.description': 'S_You need to add Users to see data in this table.',
   'userManagement.add.label': 'S_Add User',
-  'userManagement.placeholder.searchByNameAndemail': 'S_Select by name and email',
-
+  'userManagement.placeholder.searchByNameAndemail': 'S_Select by Name and Email',
   'userManagement.filter.label': 'S_Filter By',
   'userManagement.table.warning': 'S_Warning',
   'userManagement.snackbar.fileWarning': 'S_File has warning. Please check the file and re-upload',
@@ -46,6 +46,7 @@ export const UserManagementES = {
   'userManagement.upload.cancel.label': 'S_Cancel Upload',
   'userManagement.upload.error.uploadError': 'S_Error uploading the file. Please try again later.',
   'userManagement.upload.error.fileError': 'S_File error/s. Please correct and upload again.',
+  'userManagement.label.role': 'S_Role',
   'userManagement.label.cancel': 'S_Cancel',
   'userManagement.label.save': 'S_Save',
   'userManagement.label.status': 'S_Status',
@@ -70,14 +71,14 @@ export const UserManagementES = {
   'userManagement.button.adduser': 'S_Add User',
   'userManagement.button.uploadUsers': 'S_Upload Users',
   'userManagement.button.addsystemadmin': 'S_Add System Administrator',
-
   'userManagement.button.add_accounts': 'S_Add Accounts',
   'userManagement.button.deactivate': 'S_Deactivate',
   'userManagement.button.activate': 'S_Activate',
   'userManagement.button.unlink': 'S_Unlink Account',
   'userManagement.user.backmessage': 'S_Back to Manage Users',
   'userManagement.sysadmin.backmessage': 'S_Back to Manage System Admin Page',
-
+  'userManagement.provision.message': 'S_User is not provisioned in Okta. {click} to Provision the User in Okta.',
+  'userManagement.button.clickhere': 'S_Click here',
   'userManagement.create_user': 'S_Add User',
   'userManagement.create_sysadmin': 'S_Add System Administrator',
   'userManagement.create_user.details_to_create_user': 'S_Please check the details to create a organization user.',
@@ -112,24 +113,28 @@ export const UserManagementES = {
   'userManagement.create_user.validation.zip_required': 'S_Zip Code is required',
   'userManagement.create_user.validation.city': 'S_City must only contain alphabets.',
   'userManagement.create_user.validation.zip': 'S_Enter a valid Zip Code.',
+  'userManagement.create_account.validation.zip_max': 'S_zip can be a maximum of 15 characters',
   'userManagement.create_user.validation.state_required': 'S_State is required',
   'userManagement.create_user.validation.email_required': 'S_Email Id is required',
   'userManagement.create_user.validation.invalid_email': 'S_Enter a valid Email Address',
   'userManagement.create_user.validation.phone_no_required': 'S_Phone Number is required..',
   'userManagement.create_user.validation.phone_no': 'S_Enter a valid Phone Number.',
   'userManagement.create_user.validation.fax': 'S_Fax must be a valid format.',
+  'userManagement.create_user.validation.fax_max': 'S_Fax can be a maximum of 15 characters',
   'userManagement.create_user.option.please_select': 'S_Please Select',
+
+  'userManagement.userDetails.userAddress': 'S_User Address',
+  'userManagement.userDetails.lastUpdatedOn': 'S_Last Updated On:',
 
   'userManagement.stepper.option.user_details': 'S_User Details',
   'userManagement.stepper.option.roles_and_permissions': 'S_Roles and Permissions',
   'userManagement.stepper.option.associate_accounts': 'S_Associate Accounts',
 
-  'userManagement.userDetails.userAddress': 'S_User Address',
-  'userManagement.userDetails.lastUpdatedOn': 'S_Last Updated On:',
-
   'userManagement.header.view.edit_user': 'S_User Details',
 
   'userManagement.header.view.permissions_granted': 'S_Permissions Granted',
+  'userManagement.messages.userEmptyTableSubtitle': 'S_Data is unavailable. Please add an user to view the table content.',
+  'userManagement.messages.emptysubtitle': 'S_Data is unavailable. Please add Permission(s) to view the content.',
   'userManagement.header.view.linked_accounts': 'S_Linked Accounts',
 
   'userManagement.user_permissions.managePermissions': 'S_Manage Permissions',
@@ -284,10 +289,20 @@ export const UserManagementES = {
   'PAYMENT_INVOICING.CANCEL_PAYMENT.DESCRIPTION': 'S_Allows user to cancel payment, enables Cancel Payment option',
   'PAYMENT_INVOICING.VIEW_CREDIT_LISTING': 'S_View Credit Listing',
   'PAYMENT_INVOICING.VIEW_CREDIT_LISTING.DESCRIPTION': 'S_Allows user to view Credit listing',
-  'errors.user_email_key': 'Email ID already exists in the System.',
-  'errors.user_phone_key': 'Phone number already exists.',
-  'errors.default': 'An unexpected error occurred.',
 
+  'errors.user_email_key': 'S_Email ID already exists in the System.',
+  'errors.user_phone_key': 'S_Phone number already exists.',
+  'errors.default': 'S_An unexpected error occurred.',
+
+  'messages.user_deactivate_success': 'S_User has been Deactivated successfully.',
+  'messages.user_deactivate_failure': 'S_Failed to Deactivate the User.',
+  'messages.user_create_success': 'S_User has been created successfully.',
+  'messages.pending_user_reject_success': 'S_Pending User has been rejected.',
+  'messages.user_self_register_success': 'S_User has been registered successfully.',
+  'messages.sysadmin_create_success': 'S_System Admin has been created successfully.',
+  'messages.accountlinkSuccess': 'S_new account(s) has been successfully linked to this user.',
+  'messages.provisionedsuccess': 'S_User provisioned in Okta successfully.',
+  'messages.provisionederrror': 'S_Unable to provision the user in Okta.',
   'Table.Tabs.ActiveUser': 'S_ACTIVE USERS',
   'Table.Tabs.pendingRequest': 'S_PENDING REQUESTS',
   'labels.startDate': 'S_Start Date',
@@ -301,5 +316,6 @@ export const UserManagementES = {
   'popup.message.wishToContinueLoginAsThisUserCheckBoxConsent':
     'S_By confirming, you acknowledge that all actions taken will be logged and attributed to your account.',
   'userManagement.breadcrumb.admin': 'S_Admin',
-  'popup.userDeactivation.question': 'S_Are you sure you wish to Deactivate this User ?'
+  'popup.userDeactivation.question': 'S_Are you sure you wish to Deactivate this User?',
+  'userManagement.confirmationMessage': 'Confirmation message'
 };

@@ -67,13 +67,17 @@ export const PaymentsCreditsProvider = ({ children }) => {
       const matchesSearchQuery = filters?.searchQuery
         ? item.billNumber?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase())
         : true;
-      const matchesBillDate =
-        filters?.billDate?.length === 2
-          ? new Date(dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY')) >=
-              new Date(CommonUtils.isNonEmptyString(filters.billDate[0]) ? dayjs(filters.billDate[0]).format('MM/DD/YYYY') : new Date()) &&
-            new Date(dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY')) <=
-              new Date(CommonUtils.isNonEmptyString(filters.billDate[1]) ? dayjs(filters.billDate[1]).format('MM/DD/YYYY') : new Date())
-          : true;
+            const matchesBillDate =
+              filters?.billDate?.length === 2
+                ? filters.billDate[0] != '' && filters.billDate[1] != ''
+                  ? (dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY')) >= dayjs(filters.billDate[0]).format('MM/DD/YYYY') &&
+                    (dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY')) <= dayjs(filters.billDate[1]).format('MM/DD/YYYY')
+                  : filters.billDate[0] != ''
+                  ? (dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY')) >= dayjs(filters.billDate[0]).format('MM/DD/YYYY')
+                  : filters.billDate[1] != ''
+                  ? (dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY')) <= dayjs(filters.billDate[1]).format('MM/DD/YYYY')
+                  : true
+                : true;
       return matchesSearchQuery && matchesBillDate;
     });
 

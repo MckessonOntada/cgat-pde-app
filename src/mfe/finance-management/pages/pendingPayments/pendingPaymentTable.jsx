@@ -22,14 +22,13 @@ export default function PendingPaymentTable() {
       selector: (row) => `${row.confirmationNo}`,
       sortable: true,
       wrap: true,
-      minWidth: '112px',
+      minWidth: '110px',
       cell: (props) => (
         <div className="cellEllipse">
           <Link
             style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
             to={`/record/${PATHS.pendingPayments}/${props.confirmationNo}/confirmation`}
-            state={{ ...props }}
-          >
+            state={{ ...props }}>
             {props.confirmationNo}
           </Link>
         </div>
@@ -39,7 +38,7 @@ export default function PendingPaymentTable() {
       id: 'paymentMethod',
       name: t('paymentInvoices.history.table.paymentMethod'),
       selector: (row) => row.paymentMethod,
-      minWidth: '160px',
+      minWidth: '400px',
       sortable: true,
       wrap: true,
       cell: (props) => <div>{props.paymentMethod}</div>
@@ -50,14 +49,8 @@ export default function PendingPaymentTable() {
       selector: (row) => row.paymentInitiationDate,
       sortable: true,
       wrap: true,
-      minWidth: '160px',
-      cell: (props) => (
-        <EclipsesTextcss
-          className="cellEllipse"
-          str={dayjs(props.paymentInitiationDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}
-          maxWidth={240}
-        />
-      )
+      maxWidth: '160px',
+      cell: (props) => dayjs(props.paymentInitiationDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'
     },
     {
       id: 'authorizedAmt',
@@ -127,8 +120,7 @@ export default function PendingPaymentTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}
-          >
+            }}>
             <Loader variant="circular" />
           </div>
         }

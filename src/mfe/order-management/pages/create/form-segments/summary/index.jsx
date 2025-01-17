@@ -148,7 +148,11 @@ const Summary = () => {
     if (agreeCheckboxOptions.isChecked) {
       renderModal({
         title: t('messages.header.confirmation'),
-        bodyContent: <Heading as="h4">{t('messages.confirmation.approve')},</Heading>,
+        bodyContent: (
+          <div className="MCP-modal-body">
+            <p>{t('messages.confirmation.approve')}</p>
+          </div>
+        ),
         footerActions: {
           cancel: {
             label: t('label.no')
@@ -172,7 +176,11 @@ const Summary = () => {
     if (isPapOrder) {
       renderModal({
         title: t('prompt.title.alert'),
-        bodyContent: <Heading as="h4">{t('prompt.message.editRestriction')},</Heading>
+        bodyContent: (
+          <div className="MCP-modal-body">
+            <p>{t('prompt.message.editRestriction')}</p>
+          </div>
+        )
       });
       return;
     }

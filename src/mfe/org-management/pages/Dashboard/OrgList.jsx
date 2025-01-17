@@ -253,18 +253,18 @@ const OrgList = () => {
           id: 'xxxs-modal',
           isOpen,
           onClose: () => setIsOpen(false),
-          modalTitle: 'Confirmation message',
+          modalTitle: t('userManagement.confirmationMessage'),
           modalBody: (
             <div className="MCP-modal-body">
-              <p>Are you sure you wish to Deactivate this Organization ?</p>
+              <p>{t('popup.userDeactivation.question')}</p>
             </div>
           ),
           modalFooter: (
             <React.Fragment>
-              <Button onClick={onCancelOrganizationChange} size="sm" variant="secondary">
+              <Button onClick={onCancelOrganizationChange} size="md" variant="secondary">
                 {t('orgManagement.button.cancel')}
               </Button>
-              <Button onClick={confirmChangeOrganization} size="sm">
+              <Button onClick={confirmChangeOrganization} size="md">
                 {t('orgManagement.button.deactivate')}
               </Button>
             </React.Fragment>

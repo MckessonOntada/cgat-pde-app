@@ -54,7 +54,7 @@ export default function ViewOrganization() {
   useEffect(() => {
     if (updateState.isSuccess) {
       setIsAlertVisible(true);
-      setAlertDescription(`${updateState.recCount} new acounts has been successfully added to the organziation`);
+      setAlertDescription(`${updateState.recCount} ${t('orgManagement.messages.accountlinkSuccess')}`);
       const timer = setTimeout(() => {
         handleAlertClose;
       }, 10000);
@@ -146,7 +146,10 @@ export default function ViewOrganization() {
       )}
       {isView && !addNewAccounts && data && (
         <div className="details-view-container">
-          <DetailsView data={data} onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: { ...data, isEdit: true } }, true)} />
+          <DetailsView
+            data={data}
+            onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: { ...data, isEdit: true } }, true)}
+          />
         </div>
       )}
       <ModuleHeader
@@ -163,16 +166,24 @@ export default function ViewOrganization() {
           )
         }
       />
-      {updateState.isSuccess && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
-      <OrganizationAccounts showSelectedAccounts={addNewAccounts} omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']} selectedRows={selectedAccounts} setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)} practiceId={addNewAccounts ? null : orgId} />
+      {updateState.isSuccess && isAlertVisible && (
+        <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />
+      )}
+      <OrganizationAccounts
+        showSelectedAccounts={addNewAccounts}
+        omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']}
+        selectedRows={selectedAccounts}
+        setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)}
+        practiceId={addNewAccounts ? null : orgId}
+      />
 
       {addNewAccounts && (
         <div className="btn-box">
-          <Button variant="secondary" onClick={handleCancel}>
+          <Button size="md" variant="secondary" onClick={handleCancel}>
             {t('orgManagement.button.back')}
           </Button>
-          <Button disabled={selectedAccounts?.length <= 0} onClick={addNewAccountsClick}>
-            {t(isView ? 'orgManagement.add.account' : selectedCount > 0 ? 'orgManagement.create_org' : 'orgManagement.add.viewsummary')}
+          <Button size="md" disabled={selectedAccounts?.length <= 0} onClick={addNewAccountsClick}>
+            {t(isView ? 'orgManagement.add.account' : 'orgManagement.create_org')}
           </Button>
         </div>
       )}

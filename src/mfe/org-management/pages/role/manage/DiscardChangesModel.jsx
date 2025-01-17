@@ -10,7 +10,11 @@ const DiscardChangesModal = ({ heading = '', description = '', isOpen, onClose, 
       isOpen={isOpen}
       onClose={onClose}
       modalTitle={heading}
-      modalBody={<Heading as="h3">{description}</Heading>}
+      modalBody={
+        <div className="MCP-modal-body">
+          <p>{description}</p>
+        </div>
+      }
       modalFooter={
         <div className="controls">
           <Button size="md" variant="secondary" onClick={onClose}>

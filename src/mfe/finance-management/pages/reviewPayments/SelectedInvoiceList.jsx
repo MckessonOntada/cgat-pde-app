@@ -9,45 +9,48 @@ import { ReactComponent as RemoveCircle } from '@src/assets/svg/cross-red.svg';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { showSnackbar } from '@src/store/reducer/snackbarReducer';
 import { useDispatch } from 'react-redux';
+import { Link, useLocation } from 'react-router-dom';
+import { PATHS } from '../../routes';
 
 function SelectedInvoiceList(props) {
   const { t } = useTranslate();
   const { selectedInvoices, setSelectedInvoices } = props;
   const dispatch = useDispatch();
+  const location = useLocation();
+  const { state } = location;
+  const REVIEW_MODE = state?.reviewMode || false;
 
   const columns = [
     {
       name: t('paymentInvoices.history.table.billNumber'),
       id: 'billNumber',
       selector: (row) => `${row.billNumber}`,
-      sortable: true,
       wrap: true,
       minWidth: '112px',
-      cell: (props) => <div className="cellEllipse">{`${props?.billNumber || ''}`}</div>
+      cell: (props) => (
+        <div className="cellEllipse">
+          <Link
+            style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
+            // to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
+            to={`/record/${PATHS.invoices}/${props?.billNumber}/details`}
+            state={{ ...state }}>
+            {`${props?.billNumber || ''}`}
+          </Link>
+        </div>
+      )
     },
     {
       id: 'soldToSite',
       name: t('paymentInvoices.history.table.SoldToSite'),
       selector: (row) => row.soldToSite,
       minWidth: '160px',
-      sortable: true,
       wrap: true,
       cell: (props) => <div>{props?.soldToSite || '-'}</div>
     },
     {
-      name: 'Description',
-      selector: (row) => row.description,
-      sortable: true,
-      id: 'description',
-      wrap: true,
-      minWidth: '160px',
-      cell: (props) => <EclipsesTextcss className="cellEllipse" str={props.description || '-'} maxWidth={240} />
-    },
-    {
       name: t('paymentInvoices.history.table.DueDate'),
       selector: (row) => row.dueDate,
-      minWidth: '168px',
-      sortable: true,
+      maxWidth: '130px',
       wrap: true,
       id: 'dueDate',
       cell: (props) => <div className="cellEllipse">{dayjs(props?.dueDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
@@ -56,7 +59,6 @@ function SelectedInvoiceList(props) {
       name: t('paymentInvoices.history.table.BillAmount'),
       selector: (row) => row?.billAmount,
       minWidth: '140px',
-      sortable: true,
       right: true,
       id: 'billAmount',
       cell: (props) => (
@@ -69,7 +71,6 @@ function SelectedInvoiceList(props) {
       name: t('paymentInvoices.history.table.OpenAmount'),
       selector: (row) => row.openAmount,
       minWidth: '144px',
-      sortable: true,
       wrap: true,
       id: 'openAmount',
       cell: (props) => (
@@ -80,33 +81,38 @@ function SelectedInvoiceList(props) {
       right: true
     },
     {
-      name: 'payment Amount',
+      name: t('paymentInvoices.reviewPayments.paymentAmount'),
       minWidth: '240px',
       id: 'paymentAmount',
       right: true,
-      cell: (props, index) => (
-        <input
-          type="number"
-          className={`paymenyAmount-input ${
-            props.paymentAmount > props.openAmount || props.paymentAmount <= 0 || !props.paymentAmount ? `error-input` : ``
-          }`}
-          value={props.paymentAmount}
-          onChange={(e) => onChangePayAmount(e, index)}
-          min={0}
-          onBlur={(e) => onBlurPayAmount(e, index, props)}
-        />
-      )
+      cell: (props, index) =>
+        REVIEW_MODE ? (
+          <div className="cellEllipse align-items-right ">
+            <FormattedNumber value={props.paymentAmount || 0} style="currency" currency="USD" />
+          </div>
+        ) : (
+          <input
+            type="number"
+            className={`paymenyAmount-input ${
+              props.paymentAmount > props.openAmount || props.paymentAmount <= 0 || !props.paymentAmount ? `error-input` : ``
+            }`}
+            value={props.paymentAmount}
+            onChange={(e) => onChangePayAmount(e, index)}
+            min={0}
+            onBlur={(e) => onBlurPayAmount(e, index, props)}
+          />
+        )
     },
     {
-      name: 'Actions',
+      name: t('paymentInvoices.history.table.Actions'),
       minWidth: '160px',
       id: 'paymentAmount',
-      //   center: true,
       cell: (props, index) => (
         <div className={`action-container ${selectedInvoices.length <= 1 ? `in-active` : ``}`} onClick={() => onRemoveInvoice(index)}>
-          <RemoveCircle disabled /> REMOVE
+          <RemoveCircle disabled /> {t('paymentInvoices.reviewPayments.remove')}
         </div>
-      )
+      ),
+      omit: REVIEW_MODE
     }
   ];
 
@@ -118,13 +124,9 @@ function SelectedInvoiceList(props) {
 
   const onBlurPayAmount = (event, index, rowData) => {
     if (event.target.value <= 0 || event.target.value > rowData.openAmount) {
-      dispatch(
-        showSnackbar({
-          description:
-            event.target.value > rowData.openAmount ? 'Payment amount cannot exceed the open amount' : 'Invalid payment amount entered',
-          type: 'error'
-        })
-      );
+      let _invoices = [...[], ...selectedInvoices];
+      _invoices[index].paymentAmount = rowData.openAmount;
+      setSelectedInvoices(_invoices);
     }
   };
 

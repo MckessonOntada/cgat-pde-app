@@ -86,10 +86,21 @@
         }
       }
     }
+    .selectedInvoices-container {
+      display: flex;
+      gap: 16px;
+      flex-direction: column;
+    }
   }
 }
 
 // selected Invoices table - css
+.paymenyAmount-input::-webkit-inner-spin-button,
+.paymenyAmount-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  // margin: 0;
+}
+
 .paymenyAmount-input {
   width: 70%;
   height: 26px;
@@ -98,6 +109,7 @@
   border-radius: 4px;
   font-size: 12px;
   color: #181818;
+  padding-right: 7px;
   &.error-input {
     border: 1px solid #db3a29 !important;
     color: #db3a29 !important;
@@ -128,9 +140,9 @@
   gap: 8px;
   justify-content: end;
   align-items: center;
-  height: 40px;
+  min-height: 40px;
   border-radius: 8px;
-  padding: 8px 16px;
+  padding: 14px 16px;
   background-color: #f2f6fa;
   .label {
     font-size: 14px;
@@ -139,6 +151,9 @@
     font-size: 22px;
     font-weight: 700;
     color: #1e394e;
+  }
+  @include mixins.respond(sm) {
+    padding: 8px 16px;
   }
 }
 
@@ -165,9 +180,10 @@
 
 .paymentMethodContainer {
   display: flex;
-  width: 400px;
+  width: 100%;
   flex-direction: column;
   gap: 4px;
+  max-width: 400px;
 }
 .paymentOptionContainer {
   border-radius: 8px;
