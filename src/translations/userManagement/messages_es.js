@@ -300,5 +300,6 @@ export const UserManagementES = {
     'S_You are about to perform actions on behalf of {{targetUser}}. Please confirm that you have you have verified the identity of the requesting user the necessary permissions and that you understand the implications of proceeding with this task',
   'popup.message.wishToContinueLoginAsThisUserCheckBoxConsent':
     'S_By confirming, you acknowledge that all actions taken will be logged and attributed to your account.',
-  'userManagement.breadcrumb.admin': 'S_Admin'
+  'userManagement.breadcrumb.admin': 'S_Admin',
+  'popup.userDeactivation.question': 'S_Are you sure you wish to Deactivate this User ?'
 };

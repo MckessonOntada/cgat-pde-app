@@ -396,13 +396,19 @@ const UserDetail = () => {
           isOpen,
           onClose: () => setIsOpen(false),
           modalTitle: 'Confirmation message',
-          modalBody: <h3>Are you sure you wish to Deactivate this User ?</h3>,
+          modalBody: (
+            <div className="MCP-modal-body">
+              <p>{t('popup.userDeactivation.question')}</p>
+            </div>
+          ),
           modalFooter: (
             <React.Fragment>
-              <Button onClick={handleConfirmCancel} variant="secondary">
+              <Button size="md" onClick={handleConfirmCancel} variant="secondary">
                 {t('userManagement.label.cancel')}
               </Button>
-              <Button onClick={handleConfirmDeactivate}>{t('userManagement.button.deactivate')}</Button>
+              <Button size="md" onClick={handleConfirmDeactivate}>
+                {t('userManagement.button.deactivate')}
+              </Button>
             </React.Fragment>
           ),
           modalSize: 'xxxs'

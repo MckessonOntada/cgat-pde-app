@@ -53,7 +53,11 @@ const OrgList = () => {
 
     const state = {};
     state.title = t('orgManagement.message.accountSelectionConfirmationTitle');
-    state.body = <h3>{t('orgManagement.message.accountSelectionConfirmationDescription')}</h3>;
+    state.body = (
+      <div className="MCP-modal-body">
+        <p>{t('orgManagement.message.accountSelectionConfirmationDescription')}</p>
+      </div>
+    );
     state.footer = (
       <div className="controls">
         <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
@@ -250,7 +254,11 @@ const OrgList = () => {
           isOpen,
           onClose: () => setIsOpen(false),
           modalTitle: 'Confirmation message',
-          modalBody: <h3>Are you sure you wish to Deactivate this Organization ?</h3>,
+          modalBody: (
+            <div className="MCP-modal-body">
+              <p>Are you sure you wish to Deactivate this Organization ?</p>
+            </div>
+          ),
           modalFooter: (
             <React.Fragment>
               <Button onClick={onCancelOrganizationChange} size="sm" variant="secondary">
