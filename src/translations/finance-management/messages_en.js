@@ -188,6 +188,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.reviewPayments.confirm': 'Confirm',
   'paymentInvoices.reviewPayments.Okay': 'Okay',
   'paymentInvoices.reviewPayments.remove': 'REMOVE',
+  'paymentInvoices.reviewPayments.pay': 'PAY',
 
   //Credits
   'paymentInvoices.credits.table.description': 'Description',
@@ -238,5 +239,8 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.EmptyData.description': 'No accounts found linked with user',
 
   'paymentInvoices.CS.export.success': 'Customer Statement exported.',
-  'paymentInvoices.CS.export.error': 'Error exporting statement.'
+  'paymentInvoices.paymentHistory.export.success': 'Payment History exported.',
+  'paymentInvoices.CS.export.error': 'Error exporting statement.',
+  'paymentInvoices.paymentHistory.export.error': 'Error exporting Payment history.',
+  'paymentInvoices.reviewPayments.selectedInvoice': '{count} invoice(s), amount to be paid:'
 };
