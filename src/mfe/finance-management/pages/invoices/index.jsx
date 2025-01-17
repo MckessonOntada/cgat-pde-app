@@ -9,7 +9,7 @@ import { DUE_STATUS } from './InvoiceConstants';
 
 export default function Invoices(params) {
   const { t } = useTranslate();
-  const { applyFilters, clearFilters, actualData } = usePaymentInvoices();
+  const { applyFilters, clearFilters, actualData, exportExcel } = usePaymentInvoices();
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
@@ -35,7 +35,13 @@ export default function Invoices(params) {
         name: 'billDate',
         startDateLabel: t('paymentInvoices.invoicesTable.filter.billDateStart'),
         endDateLabel: t('paymentInvoices.invoicesTable.filter.billDateEnd')
-      }
+      },
+      {
+        type: 'dateRangePicker',
+        name: 'dueDate',
+        startDateLabel: t('paymentInvoices.invoicesTable.filter.dueDateStart'),
+        endDateLabel: t('paymentInvoices.invoicesTable.filter.dueDateEnd')
+      },
       // {
       //   type: 'dateRangePicker',
       //   name: 'dueDate',
@@ -57,7 +63,7 @@ export default function Invoices(params) {
       </div>
       <div className="MCP-table-wrapper table-wrapper">
         <div className="table-header">
-          <Button variant="secondary" onClick={() => {}} size="sm" disabled>
+          <Button variant="secondary" onClick={() => exportExcel()} size="sm" >
             {t('paymentInvoices.CS.ExportExcel')}
           </Button>
         </div>

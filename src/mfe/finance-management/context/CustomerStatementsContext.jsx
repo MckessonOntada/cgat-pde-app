@@ -201,8 +201,8 @@ export const CustomerStatementsProvider = ({ children }) => {
     {
       onSuccess: (response) => {
         if (response && response.data) {
-          // Get the Content-Disposition header
-          const contentDisposition = response.headers['content-disposition'];
+          // Get the content-disposition header
+          const contentDisposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
           let fileName = 'Customer Statement.pdf'; // Default name
 
           // Try to extract the file name from the header
