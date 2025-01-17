@@ -192,7 +192,7 @@ export const PaymentInvoicesES = {
 
   //Credits
   'paymentInvoices.credits.table.description': 'S_Description',
-  'paymentInvoices.credits.table.billDate': 'S_Bill',
+  'paymentInvoices.credits.table.billDate': 'S_Bill Date',
   'paymentInvoices.credits.table.validfrom': 'S_Valid From',
   'paymentInvoices.credits.table.amount': 'S_Amount',
   'paymentInvoices.credits.table.downloadPdf': 'S_download pdf',
