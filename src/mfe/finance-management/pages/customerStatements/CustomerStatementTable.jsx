@@ -9,10 +9,13 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import dayjs from 'dayjs';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import ApiRoutes from '@src/api/ApiRoutes';
+import { useAccountContext } from '../../context/AccountContext';
 
 export default function CustomerStatementTable() {
   const { t } = useTranslate();
   const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportPDF } = useCustomerStatements();
+  const { selectedAccount } = useAccountContext();
   const columns = [
     {
       id: 'billNumber',
@@ -62,7 +65,23 @@ export default function CustomerStatementTable() {
       sortable: true,
       wrap: true,
       cell: (props) => (
-        <Button className="back-button-control" variant="tertiary" Icon={() => <PDFicon />} onClick={() => exportPDF(props)} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <PDFicon />}
+          onClick={() => {
+            exportPDF(
+              `${ApiRoutes.EXPORT_CUSTOMER_STATEMENTS({ docNo: props.docNo, accountNumber: selectedAccount?.accountNumber })}`,
+              {
+                companyCode: selectedAccount?.companyCode,
+                salesOrg: selectedAccount?.salesOrg,
+                payerAccountNumber: selectedAccount?.accountNumber,
+                documentDate: props?.date
+              },
+              'pdf'
+            );
+          }}
+          size="md">
           {t('paymentInvoices.CS.table.exportPdf')}
         </Button>
       )
