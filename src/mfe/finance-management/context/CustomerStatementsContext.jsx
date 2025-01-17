@@ -183,27 +183,25 @@ export const CustomerStatementsProvider = ({ children }) => {
   };
 
   const { mutate: exportStatementPDF } = useMutation(
-    async (data) =>
-      await HttpResourceService.callRest(
-        `${ApiRoutes.EXPORT_CUSTOMER_STATEMENTS(data)}`,
+    async (data) => {
+      const { url, payload, type } = data;
+      return await HttpResourceService.callRest(
+        url,
         httpVerb.POST,
-        {
-          companyCode: selectedAccount?.companyCode,
-          salesOrg: selectedAccount?.salesOrg,
-          payerAccountNumber: selectedAccount?.accountNumber,
-          documentDate: data?.date
-        },
+        payload,
         undefined,
         false,
         false,
         'blob' // Set responseType to 'blob'
-      ),
+      );
+    },
     {
-      onSuccess: (response) => {
+      onSuccess: (response, variables) => {
+        const { type } = variables;
         if (response && response.data) {
           // Get the content-disposition header
           const contentDisposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
-          let fileName = 'Customer Statement.pdf'; // Default name
+          let fileName = 'Customer Statement.' + type; // Default name
 
           // Try to extract the file name from the header
           if (contentDisposition && contentDisposition.indexOf('filename=') !== -1) {
@@ -214,7 +212,7 @@ export const CustomerStatementsProvider = ({ children }) => {
           }
 
           // Create a blob from the response data
-          const blob = new Blob([response.data], { type: 'application/pdf' });
+          const blob = new Blob([response.data], { type: 'application/' + type });
 
           // Create a download link
           const link = document.createElement('a');
@@ -242,8 +240,8 @@ export const CustomerStatementsProvider = ({ children }) => {
     }
   );
 
-  const exportPDF = (data) => {
-    exportStatementPDF({ date: data.date, docNo: data.docNo, accountNumber: selectedAccount?.accountNumber });
+  const exportPDF = (url, payload, type) => {
+    exportStatementPDF({ url, payload, type });
   };
 
   const contextValue = {

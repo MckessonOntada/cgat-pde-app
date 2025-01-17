@@ -333,7 +333,10 @@ function ReviewPayments() {
               suggestionList={getValue(mergedData)}
               id="id"
               selectedVal={getselectedValue}
-              getselectedValue={(val) => setSelectedData(val)}
+              getselectedValue={(val) => {
+                setSelectedData(val);
+                setPaymentOption('');
+              }}
               onChangeInput={() => {}}
               suggestionListContainerWidth="400px"
             />
