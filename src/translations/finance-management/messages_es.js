@@ -185,6 +185,8 @@ export const PaymentInvoicesES = {
   'paymentInvoices.reviewPayments.confirm': 'S_Confirm',
   'paymentInvoices.reviewPayments.Okay': 'S_Okay',
   'paymentInvoices.reviewPayments.remove': 'S_REMOVE',
+  'paymentInvoices.reviewPayments.pay': 'S_PAY',
+  'paymentInvoices.reviewPayments.selectedInvoice': '{count} S_invoice(s), amount to be paid:',
 
   //Credits
   'paymentInvoices.credits.table.description': 'S_Description',
