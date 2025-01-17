@@ -417,7 +417,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     maxWidth: '100px',
     cell: (props) => (
       <span className="MCP-table-cell price" aria-label={t('table.columns.captions.price')}>
-        {props.orderCost ? `$ ${props.orderCost}` : null}
+        {props.orderCost ? `$${props.orderCost}` : null}
       </span>
     )
   },

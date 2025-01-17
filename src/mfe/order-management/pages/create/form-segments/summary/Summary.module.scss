@@ -24,6 +24,12 @@
 .price {
     font-size: var(--brand-font-size--32);
     font-weight: var(--brand-font-weight-600);
+    span{
+        top: -1em;
+        font-size: var(--brand-font-size--small);
+        position: relative;
+        left: -1px;
+    }
 }
 
 // .papOptions {

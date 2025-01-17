@@ -366,6 +366,14 @@ div.disable-all {
 
   .fieldValue {
     font-size: var(--brand-font-size--large);
+    .dollarSign{
+      span{
+        top: -4px;
+        font-size: var(--brand-font-size--10);
+        position: relative;
+        left: -1px;
+      }
+    }
   }
 
   &.col-span-4 {
