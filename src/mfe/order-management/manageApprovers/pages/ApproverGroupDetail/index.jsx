@@ -184,24 +184,25 @@ function ApproverGroupDetails() {
               groupData.rules[key] !== undefined &&
               (Array.isArray(groupData.rules[key]) ? groupData.rules[key].length > 0 : groupData.rules[key]) ? (
                 <div key={key} className="MCP-module-body attribute-category">
-                  <div className="subheader-text">{t(`rules.${key}`)}</div>
+                  { valueKey !== null ? (
+                      <div className="subheader-text">{t(`rules.${key}`)}</div>
+                    ) : valueKey === null && ( 
+                      <div className="subheader-text">
+                        {t(`rules.${key}`)} 
+                        <span className='price'><span>$</span>{groupData.rules[key]}</span>
+                      </div>
+                  )}
                   <div className="attribute-category">
                     <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 attribute-list">
-                      {Array.isArray(groupData.rules[key])
-                        ? groupData.rules[key].map((item, idx) => (
+                      {Array.isArray(groupData.rules[key]) &&
+                        groupData.rules[key].map((item, idx) => (
                             <div key={idx} className="flex items-center justify-between attribute-item">
                               <div>
                                 <p className="to-upper-case label-text">{item[valueKey]}</p>
                               </div>
                             </div>
                           ))
-                        : valueKey === null && (
-                            <div className="flex items-center justify-between attribute-item">
-                              <div>
-                                <h4>{groupData.rules[key]}</h4>
-                              </div>
-                            </div>
-                          )}
+                        }
                     </div>
                   </div>
                 </div>
