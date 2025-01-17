@@ -71,14 +71,14 @@ export const UserManagementES = {
   'userManagement.button.adduser': 'S_Add User',
   'userManagement.button.uploadUsers': 'S_Upload Users',
   'userManagement.button.addsystemadmin': 'S_Add System Administrator',
-
   'userManagement.button.add_accounts': 'S_Add Accounts',
   'userManagement.button.deactivate': 'S_Deactivate',
   'userManagement.button.activate': 'S_Activate',
   'userManagement.button.unlink': 'S_Unlink Account',
   'userManagement.user.backmessage': 'S_Back to Manage Users',
   'userManagement.sysadmin.backmessage': 'S_Back to Manage System Admin Page',
-
+  'userManagement.provision.message': 'S_User is not provisioned in Okta. {click} to Provision the User in Okta.',
+  'userManagement.button.clickhere': 'S_Click here',
   'userManagement.create_user': 'S_Add User',
   'userManagement.create_sysadmin': 'S_Add System Administrator',
   'userManagement.create_user.details_to_create_user': 'S_Please check the details to create a organization user.',
@@ -301,7 +301,8 @@ export const UserManagementES = {
   'messages.user_self_register_success': 'S_User has been registered successfully.',
   'messages.sysadmin_create_success': 'S_System Admin has been created successfully.',
   'messages.accountlinkSuccess': 'S_new account(s) has been successfully linked to this user.',
-
+  'messages.provisionedsuccess': 'S_User provisioned in Okta successfully.',
+  'messages.provisionederrror': 'S_Unable to provision the user in Okta.',
   'Table.Tabs.ActiveUser': 'S_ACTIVE USERS',
   'Table.Tabs.pendingRequest': 'S_PENDING REQUESTS',
   'labels.startDate': 'S_Start Date',

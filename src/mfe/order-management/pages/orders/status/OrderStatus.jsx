@@ -103,12 +103,15 @@ const OrderStatus = () => {
             />
           </div>
         </div>
-        <div className="MCP-panel-container">
-          <div className={`${styles.orderFlow}`}>
-            <h4 className={styles.customSecondaryHeading}>{t('labels.whatToExpect')}</h4>
-            <OrderFlowSteps showApproval={!isApproved} />
+
+        {!isApproved && (
+          <div className="MCP-panel-container">
+            <div className={`${styles.orderFlow}`}>
+              <h4 className={styles.customSecondaryHeading}>{t('labels.whatToExpect')}</h4>
+              <OrderFlowSteps showApproval={!isApproved} />
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div className={'controls'}>
         <Button size="md" variant="secondary" disabled={true}>

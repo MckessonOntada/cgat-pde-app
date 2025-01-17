@@ -17,10 +17,9 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { FinanceUtils } from '@src/util/FinanceUtil';
 import dayjs from 'dayjs';
-import { RadioGroup } from '@src/components/radioGroup';
+import { PaymentOptionsControls } from '@src/mfe/finance-management/pages/reviewPayments/paymentControlOptions';
 import DetailMetrics from '../../components/detailMetrics/DetailMetrics';
 import CreditsSelected from './CreditsSelected';
-import { GeographicUtils } from '@src/util/GeographicUtil';
 
 function ReviewPayments() {
   const { t } = useTranslate();
@@ -283,7 +282,7 @@ function ReviewPayments() {
                 [t('paymentInvoices.reviewPayments.netAmount')]: FinanceUtils.formatCurrency(totalAmount),
                 [t('paymentInvoices.reviewPayments.paymentMethod')]: `${
                   selectedData?.number?.slice(-4) || selectedData?.accountNumber?.slice(-4)
-                } - ${selectedData?.userDefinedName || selectedData?.name}`,
+                } - ${selectedData?.userDefinedName || selectedData?.name}`
               }}
             />
           </div>
@@ -334,13 +333,16 @@ function ReviewPayments() {
               suggestionList={getValue(mergedData)}
               id="id"
               selectedVal={getselectedValue}
-              getselectedValue={(val) => setSelectedData(val)}
+              getselectedValue={(val) => {
+                setSelectedData(val);
+                setPaymentOption('');
+              }}
               onChangeInput={() => {}}
               suggestionListContainerWidth="400px"
             />
           </div>
           <div className="paymentOptionContainer">
-            <RadioGroup
+            <PaymentOptionsControls
               direction="column"
               id="radio-button-order-therapy-props.id"
               items={getRadioItems()}

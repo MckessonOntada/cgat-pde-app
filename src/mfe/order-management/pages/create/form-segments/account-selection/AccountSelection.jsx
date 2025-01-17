@@ -49,6 +49,11 @@ const AccountSelection = () => {
   const { showAlert } = useAlert();
 
   React.useEffect(() => {
+    const { paporder: isPapOrder } = formState.activeRecord || {};
+    if (isPapOrder) navigate('/orders');
+  }, [formState.activeRecord]);
+
+  React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ACCOUNT_DETAILS);
   }, []);
 

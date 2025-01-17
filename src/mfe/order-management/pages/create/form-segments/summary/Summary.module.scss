@@ -1,9 +1,10 @@
-.panelHeader{
+.panelHeader {
     padding-bottom: var(--spacing-01);
     font-size: var(--brand-font-size--20);
     font-weight: var(--brand-font-weight-600);
     border-bottom: 1px solid var(--brand-color-grey-scale-warm-1);
 }
+
 .actionLink {
     display: flex;
     gap: var(--spacing-01);
@@ -14,12 +15,49 @@
     color: var(--brand-color-font-black);
 }
 
-.flexPanel{
+.flexPanel {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-.price{
+
+.price {
     font-size: var(--brand-font-size--32);
     font-weight: var(--brand-font-weight-600);
+    span{
+        top: -1em;
+        font-size: var(--brand-font-size--small);
+        position: relative;
+        left: -1px;
+    }
+}
+
+// .papOptions {
+//     display: flex;
+//     flex-direction: column;
+//     gap: var(--spacing-03);
+//     font-size: var(--brand-font-size--default) !important;
+//     font-weight: var(--brand-font-weight-600);
+
+//     .title {
+//         font-size: var(--brand-font-size--default) !important;
+//         display: inline-block;
+//         white-space: nowrap;
+//     }
+// }
+
+.papOptions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-03);
+    font-size: var(--brand-font-size--default) !important;
+    font-weight: var(--brand-font-weight-600);
+    color: var(--brand-color-background-dark-slate);
+
+    .title {
+        color: var(--brand-color-text-black);
+        font-weight: var(--brand-font-weight-700);
+        display: inline-block;
+        white-space: nowrap;
+    }
 }

@@ -17,6 +17,18 @@
 
 .attribute-category {
   margin-bottom: var(--spacing-01);
+  gap: var(--spacing-02) !important;
+  .price{
+      font-size: var(--brand-font-size--large);
+      font-weight: var(--brand-font-weight-600);
+      padding-left: var(--spacing-03);
+    span{
+      top: -4px;
+      font-size: var(--brand-font-size--10);
+      position: relative;
+      left: -1px;
+    }
+  }
 }
 .attribute-list {
   display: grid;
@@ -30,7 +42,7 @@
   }
 
   @include mixins.respond(lg) {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
@@ -58,7 +70,7 @@
   }
 
   @include mixins.respond(lg) {
-    &:not(:nth-child(3n)):after {
+    &:not(:nth-child(4n)):after {
       content: "";
       position: absolute;
       top: 0; // Aligns divider to the top
@@ -69,7 +81,7 @@
     }
 
     // Remove divider for the last column in each row
-    &:nth-child(3n):after {
+    &:nth-child(4n):after {
       display: none;
     }
   }

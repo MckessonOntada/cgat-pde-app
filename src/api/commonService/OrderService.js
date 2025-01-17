@@ -1,7 +1,6 @@
 import { serializeParams } from '@src/util/ApiUtils';
 import ApiRoutes from '../ApiRoutes';
 import HttpResourceService, { httpVerb } from '../HttpResourceService';
-import AuthUtils from '@src/util/AuthUtils';
 
 async function createOrder(payload) {
   const url = `${ApiRoutes.ORDERS()}`;
@@ -72,11 +71,11 @@ async function saveAccount(orderId, payload) {
   return {};
 }
 
-async function submitOrder(orderId) {
+async function submitOrder(orderId, payload) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/submit`;
-  const res = await HttpResourceService.callRest(url, httpVerb.PATCH);
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
 
   if (res.data) {
     return res.data;

@@ -153,6 +153,11 @@
   flex-direction: column;
 }
 
+.paymentMethodContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 .paymentOptionContainer {
   border-radius: 8px;
   border: 1px solid #d9d8d7;

@@ -42,18 +42,18 @@ export default function PaymentHistoryTable() {
     {
       name: t('paymentInvoices.paymentMethods.table.bankAccount.bankCountry'),
       selector: () => {},
-      minWidth: '144px',
+      maxWidth: '160px',
       sortable: true,
       wrap: true,
-      cell: (props) => <div>{''}</div>
+      cell: (props) => <EclipsesTextcss src={' '} maxWidth={150} />
     },
     {
       name: t('paymentInvoices.paymentMethods.table.bankAccount.companyCode'),
       selector: () => {},
-      minWidth: '168px',
+      maxWidth: '180px',
       sortable: true,
       wrap: true,
-      cell: (props) => <div>{''}</div>
+      cell: (props) => <EclipsesTextcss src={' '} maxWidth={170} />
     }
   ];
 
@@ -99,8 +99,7 @@ export default function PaymentHistoryTable() {
             display: 'flex',
             height: '350px',
             justifyContent: 'center'
-          }}
-        >
+          }}>
           <Loader variant="circular" />
         </div>
       }
