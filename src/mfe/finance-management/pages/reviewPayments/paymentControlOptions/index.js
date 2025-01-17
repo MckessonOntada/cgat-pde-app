@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './assets/index.module.scss';
-import { Button, Required, Label, Legend, Heading, CustomDatepicker } from '@mckesson/mcp-component-library';
+import { Required, Label, Legend, Heading, CustomDatepicker } from '@mckesson/mcp-component-library';
 
 export const PaymentOptionsControls = (props) => {
   let {
@@ -13,11 +13,10 @@ export const PaymentOptionsControls = (props) => {
     radioBtnWidth,
     showFlexWrap,
     isRequired,
-    size,
-    showClear,
-    breakItemLabel,
-    itemCustomStyles,
-    labelCustomStyles
+    size = 'md',
+    breakItemLabel = true,
+    itemCustomStyles = {},
+    labelCustomStyles = {}
   } = props;
 
   const onChangeRadio = (event, isOtherFieldChange) => {
@@ -26,23 +25,13 @@ export const PaymentOptionsControls = (props) => {
 
   return (
     <>
-      <fieldset onChange={onChangeRadio} className={`${styles["direction-column"]} ${showFlexWrap && styles.flexWrapStyle}`} data-testid="radio-container">
+      <fieldset
+        onChange={onChangeRadio}
+        className={`${styles['direction-column']} ${showFlexWrap && styles.flexWrapStyle}`}
+        data-testid="radio-container">
         <Legend fontSize={'var(--brand-font-size--small)'} className={styles.labelContainer} styles={labelCustomStyles}>
           {caption}
           {isRequired && <Required />}
-          {showClear && (
-            <div className={`${styles.radioClearFieldButton}`}>
-              <Button
-                variant="tertiary"
-                textButton={true}
-                textTransform={'capitalize'}
-                onClick={() => {
-                  onChangeValue('');
-                }}>
-                <span style={{ fontSize: '12px' }}>clear</span>
-              </Button>
-            </div>
-          )}
         </Legend>
 
         {items &&
@@ -82,7 +71,7 @@ export const PaymentOptionsControls = (props) => {
                       name={item.value}
                       value={''}
                       onChange={(e) => console.log(e)}
-                      isDisabled={item.isDisabled}
+                      isDisabled={item.isDisabled || item.value !== value}
                       isShowLabel={false}
                     />
                   </div>
@@ -103,19 +92,8 @@ PaymentOptionsControls.propTypes = {
   caption: PropTypes.string, //heading
   showFlexWrap: PropTypes.bool,
   radioBtnWidth: PropTypes.string,
-  otherTextValue: PropTypes.any,
   onOtherTextChange: PropTypes.func,
   onSubRadioFieldChange: PropTypes.func,
   dataSchema: PropTypes.any,
-  size: PropTypes.oneOf(['sm', 'md', 'lg']),
-  showClear: PropTypes.bool
-};
-
-PaymentOptionsControls.defaultProps = {
-  otherTextValue: '',
-  size: 'md',
-  showClear: false,
-  breakItemLabel: true,
-  labelCustomStyles: {},
-  itemCustomStyles: {}
+  size: PropTypes.oneOf(['sm', 'md', 'lg'])
 };
