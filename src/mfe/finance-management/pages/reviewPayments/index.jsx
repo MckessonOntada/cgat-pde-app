@@ -282,7 +282,7 @@ function ReviewPayments() {
                 [t('paymentInvoices.reviewPayments.netAmount')]: FinanceUtils.formatCurrency(totalAmount),
                 [t('paymentInvoices.reviewPayments.paymentMethod')]: `${
                   selectedData?.number?.slice(-4) || selectedData?.accountNumber?.slice(-4)
-                } - ${selectedData?.userDefinedName || selectedData?.name}`,
+                } - ${selectedData?.userDefinedName || selectedData?.name}`
               }}
             />
           </div>
@@ -333,7 +333,10 @@ function ReviewPayments() {
               suggestionList={getValue(mergedData)}
               id="id"
               selectedVal={getselectedValue}
-              getselectedValue={(val) => setSelectedData(val)}
+              getselectedValue={(val) => {
+                setSelectedData(val);
+                setPaymentOption('');
+              }}
               onChangeInput={() => {}}
               suggestionListContainerWidth="400px"
             />
