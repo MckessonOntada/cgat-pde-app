@@ -35,7 +35,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.invoicesTable.filter.dueDateEnd': 's_Due Date (End)',
   'paymentInvoices.pendingPayments.filter.dueDateStart': 's_Initiation Date (Start)',
   'paymentInvoices.pendingPayments.filter.dueDateEnd': 's_Initiation Date (End)',
-    'paymentInvoices.invoicesTable.filter.validFromEnd': 'S_Valid From (End)',
+  'paymentInvoices.invoicesTable.filter.validFromEnd': 'S_Valid From (End)',
   'paymentInvoices.invoicesTable.filter.validFromStart': 'S_Valid From (Start)',
   // Payment History
   'paymentInvoices.history.table.confirmationNumber': 'S_Confirmation No.',
@@ -237,5 +237,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.EmptyData.description': 'S_No accounts found linked with user',
 
   'paymentInvoices.CS.export.success': 'S_Customer Statement exported.',
-  'paymentInvoices.CS.export.error': 'S_Error exporting statement.'
+  'paymentInvoices.CS.export.error': 'S_Error exporting statement.',
+  'paymentInvoices.CS.export.error': 'S_Error exporting statement.',
+  'paymentInvoices.paymentHistory.export.error': 'S_Error exporting Payment history.'
 };

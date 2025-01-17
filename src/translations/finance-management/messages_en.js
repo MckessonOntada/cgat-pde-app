@@ -239,6 +239,8 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.EmptyData.description': 'No accounts found linked with user',
 
   'paymentInvoices.CS.export.success': 'Customer Statement exported.',
+  'paymentInvoices.paymentHistory.export.success': 'Payment History exported.',
   'paymentInvoices.CS.export.error': 'Error exporting statement.',
-  'paymentInvoices.reviewPayments.selectedInvoice': '{count} invoice(s), amount to be paid:',
+  'paymentInvoices.paymentHistory.export.error': 'Error exporting Payment history.',
+  'paymentInvoices.reviewPayments.selectedInvoice': '{count} invoice(s), amount to be paid:'
 };

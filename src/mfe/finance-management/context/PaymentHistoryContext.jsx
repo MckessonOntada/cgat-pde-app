@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { PaymentHistoryData } from '../mockData/PaymentHistoryData';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { useAccountContext } from './AccountContext';
 import dayjs from 'dayjs';
+import { GeographicUtils } from '@src/util/GeographicUtil';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const PaymentHistoryContext = createContext();
 
@@ -47,6 +48,7 @@ export const PaymentHistoryProvider = ({ children }) => {
   const { showSnackbar } = useSnackbar();
   const { selectedAccount } = useAccountContext();
   const [actualData, setActualData] = useState([]);
+  const { t } = useTranslate();
 
   const applyFilters = (filters) => {
     const formattedStartDate = filters.dateRange[0]
@@ -128,6 +130,77 @@ export const PaymentHistoryProvider = ({ children }) => {
     enabled: !!selectedAccount?.id
   });
 
+  const { mutate: exportStatementPDF } = useMutation(
+    async (data) =>
+      await HttpResourceService.callRest(
+        `${ApiRoutes.EXPORT_PAYMENT_HISTORY(data)}`,
+        httpVerb.POST,
+        {
+          companyCode: selectedAccount?.companyCode,
+          salesOrg: selectedAccount?.salesOrg,
+          payerAccountNumber: selectedAccount?.accountNumber,
+          dateFrom: dayjs(filterConfig?.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY') || '',
+          dateTo: dayjs(filterConfig?.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY') || '',
+          paymentHistoryFilter: {
+            searchTerm: filterConfig?.searchQuery || '',
+            paymentStatus: filterConfig?.paymentStatus || [],
+            paymentMethod: filterConfig?.paymentMethod || []
+          },
+          excelMetaDataDTO: {
+            accountNumber: selectedAccount?.accountNumber,
+            name: selectedAccount?.accountName,
+            address: GeographicUtils.addressAggregator(selectedAccount)
+          }
+        },
+        undefined,
+        false,
+        false,
+        'blob' // Set responseType to 'blob'
+      ),
+    {
+      onSuccess: (response) => {
+        if (response && response.data) {
+          // Get the Content-Disposition header
+          const contentDisposition = response.headers['content-disposition'];
+          let fileName = 'Payment History.xlsx'; // Default name
+
+          // Try to extract the file name from the header
+          if (contentDisposition && contentDisposition.indexOf('filename=') !== -1) {
+            const matches = contentDisposition.match(/filename="([^"]+)"/);
+            if (matches && matches[1]) {
+              fileName = matches[1];
+            }
+          }
+
+          // Create a blob from the response data
+          const blob = new Blob([response.data], { type: 'application/xlsx' });
+
+          // Create a download link
+          const link = document.createElement('a');
+          link.href = window.URL.createObjectURL(blob);
+          link.download = fileName; // Use the extracted or default file name
+          link.click();
+
+          // Show success message
+          showSnackbar({
+            description: `${t('paymentInvoices.paymentHistory.export.success')}`,
+            type: 'success'
+          });
+        }
+      },
+      onError: (error) => {
+        if (error && error.response && error.response.data && error.response.data) {
+          showSnackbar({
+            description: CommonUtils.isNonEmptyString(error.response.data.message)
+              ? error.response.data.message
+              : t('paymentInvoices.paymentHistory.export.error'),
+            type: 'error'
+          });
+        }
+      }
+    }
+  );
+
   useEffect(() => {
     filterData(filterConfig);
     if (JSON.stringify(sortConfig) !== JSON.stringify(INITIAL_SORT_STATE)) {
@@ -183,6 +256,10 @@ export const PaymentHistoryProvider = ({ children }) => {
     }));
   };
 
+  const exportPDF = (data) => {
+    exportStatementPDF({ accountNumber: selectedAccount?.accountNumber });
+  };
+
   const contextValue = {
     data: data || [],
     actualData: actualData || [],
@@ -194,7 +271,8 @@ export const PaymentHistoryProvider = ({ children }) => {
     applyFilters,
     clearFilters,
     applySort,
-    setPageNumber
+    setPageNumber,
+    exportPDF
   };
   return <PaymentHistoryContext.Provider value={contextValue}>{children}</PaymentHistoryContext.Provider>;
 };
