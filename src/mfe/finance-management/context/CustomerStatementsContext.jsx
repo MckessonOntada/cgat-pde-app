@@ -111,7 +111,19 @@ export const CustomerStatementsProvider = ({ children }) => {
       if (res.data) {
         const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
         const endIndex = startIndex + paginationConfig.pageSize;
-        setData(res.data?.statements.slice(startIndex, endIndex));
+
+        let _data = [...[], ...res.data.statements];
+        let _modifiedData = _data.filter((item) => {
+          const matchesSearchQuery = filterConfig?.searchQuery
+            ? item.docNo?.toString().toLowerCase().includes(filterConfig.searchQuery.toLowerCase()) ||
+              item.accountNumber?.toString().toLowerCase().includes(filterConfig.searchQuery.toLowerCase()) ||
+              item.date?.toString().toLowerCase().includes(filterConfig.searchQuery.toLowerCase()) ||
+              item.statementBalance?.toString().toLowerCase().includes(filterConfig.searchQuery.toLowerCase())
+            : true;
+          return matchesSearchQuery;
+        });
+
+        setData(_modifiedData.slice(startIndex, endIndex));
         setUnSlicedData(res.data?.statements);
         setActualData(res.data?.statements);
         setPaginationConfig((state) => ({
