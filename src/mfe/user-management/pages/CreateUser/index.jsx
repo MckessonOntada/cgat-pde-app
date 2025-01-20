@@ -34,6 +34,7 @@ const CreateUser = () => {
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alert, setAlert] = useState(null);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const isSystemAdmin = AuthUtils.isSystemAdmin();
   const [isDirty, setIsDirty] = React.useState(false);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
 
@@ -282,7 +283,7 @@ const CreateUser = () => {
       <ModuleHeader
         heading={<Heading as="h1">{t(isSystemAdminView ? 'userManagement.create_sysadmin' : 'userManagement.create_user')}</Heading>}
       />
-      {!isEdit && (
+      {!isEdit && !isSystemAdmin && (
         <div className="stepper">
           <Stepper
             activeIndex={1}
@@ -294,13 +295,10 @@ const CreateUser = () => {
               {
                 label: t('userManagement.stepper.option.roles_and_permissions')
               },
-              ...(isSystemAdminView
-                ? [] // Exclude the third step
-                : [
-                    {
-                      label: t('userManagement.stepper.option.associate_accounts')
-                    }
-                  ])
+
+              {
+                label: t('userManagement.stepper.option.associate_accounts')
+              }
             ]}
           />
         </div>

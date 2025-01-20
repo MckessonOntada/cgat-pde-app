@@ -7,7 +7,7 @@ import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg'
 import './ViewOrg.scss';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { RoutePaths } from '@src/routes/constants';
-import { Button, Heading, Loader, Alert, Stepper } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { PATHS as InternalPaths } from '../../routes/constants';
 import ModuleHeader from '@src/components/module-header';
@@ -128,7 +128,7 @@ export default function ViewOrganization() {
         </Button>
       </div>
       {!addNewAccounts && <ModuleHeader heading={<Heading as="h1">{t('orgManagement.create_org.org-details')}</Heading>} />}
-      {!isView && (
+      {/* {!isView && (
         <div className="stepper">
           <Stepper
             activeIndex={2}
@@ -143,7 +143,7 @@ export default function ViewOrganization() {
             ]}
           />
         </div>
-      )}
+      )} */}
       {isView && !addNewAccounts && data && (
         <div className="details-view-container">
           <DetailsView
