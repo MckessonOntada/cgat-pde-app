@@ -51,11 +51,7 @@
   align-items: flex-start;
   padding: var(--spacing-02);
   position: relative;
-
-  // &:not(:last-child) {
-  //   margin-bottom: var(--spacing-03);
-  // }
-
+  
   @include mixins.respond(md) {
     &:not(:nth-child(2n)):after {
       content: "";
@@ -124,9 +120,6 @@
   padding: var(--spacing-02);
   position: relative;
 
-  // &:not(:last-child) {
-  //   margin-bottom: var(--spacing-03);
-  // }
   &:not(:last-child):after {
     content: "";
     position: absolute;
