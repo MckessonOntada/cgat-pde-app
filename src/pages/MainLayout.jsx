@@ -48,7 +48,7 @@ function MainLayout() {
                 <Route
                   path={'orders/*'}
                   element={
-                    !AuthUtils.isSystemAdminView() ? (
+                    !AuthUtils.isSystemAdmin() ? (
                       <ProtectedRoute permissions={routePermissionConfig.orders}>
                         <OrderManagementEntryPoint />
                       </ProtectedRoute>

@@ -225,7 +225,7 @@ const UserDetail = () => {
     if (selectedUserId) {
       impersonatePromise(selectedUserId)
         .then((message) => {
-          navigate('/');
+          navigate('/?expelled=true');
         })
         .catch((error) => {
           console.log(`error ${error}`);
