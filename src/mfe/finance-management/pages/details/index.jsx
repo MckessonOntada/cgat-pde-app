@@ -89,7 +89,7 @@ function Details(props) {
         id: 'item',
         selector: (row) => `${row.item}`,
         wrap: true,
-        minWidth: '120px',
+        minWidth: '100px',
         cell: (props) => <div className="cellEllipse">{props.item || '-'}</div>
       },
       {
@@ -99,7 +99,7 @@ function Details(props) {
           row.therapyId;
         },
         wrap: true,
-        minWidth: '150px',
+        minWidth: '120px',
         cell: (props) => (
           <div className="cellEllipse">
             <Link
@@ -119,7 +119,9 @@ function Details(props) {
         id: '',
         selector: (row) => {},
         wrap: true,
-        cell: (props) => <div className="cellEllipse">-</div>
+        minWidth: '140px',
+        maxWidth: '180px',
+        cell: (props) => <EclipsesTextcss str={'-'} maxWidth={170} />
       },
       {
         name: t('paymentInvoices.Details.referenceDocument'),
@@ -128,10 +130,11 @@ function Details(props) {
           row.referenceDocument;
         },
         wrap: true,
-        minWidth: '300px',
+        minWidth: '100px',
+        maxWidth: '220px',
         cell: (props) => (
           <div>
-            <EclipsesTextcss str={props.referenceDocument} maxWidth={280} />
+            <EclipsesTextcss str={props.referenceDocument} maxWidth={210} />
           </div>
         )
       },
@@ -142,7 +145,7 @@ function Details(props) {
           row.quantity;
         },
         wrap: true,
-        minWidth: '112px',
+        minWidth: '80px',
         cell: (props) => <div className="cellEllipse">{props.quantity}</div>
       },
       {
@@ -152,7 +155,7 @@ function Details(props) {
           row.unit;
         },
         wrap: true,
-        minWidth: '250px',
+        minWidth: '80px',
         cell: (props) => (
           <div>
             <EclipsesTextcss str={props.unit} maxWidth={200} />
@@ -167,6 +170,7 @@ function Details(props) {
         },
         wrap: true,
         right: true,
+        width: '120px',
         cell: (props) => <div className="cellEllipse align-items-right">{props.netPrice || '-'}</div>
       },
       {
@@ -175,7 +179,7 @@ function Details(props) {
         selector: (row) => {
           row.grossPrice;
         },
-        minWidth: '150px',
+        width: '120px',
         right: true,
         cell: (props) => <div className="cellEllipse align-items-right">{props.grossPrice || '-'}</div>
       }

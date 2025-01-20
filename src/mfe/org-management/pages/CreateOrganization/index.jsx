@@ -156,9 +156,9 @@ const CreateOrganization = () => {
         {(formik) => (
           <Form>
             <div className="container-box">
-              <div className="headingBox">
+              {/* <div className="headingBox">
                 <Heading as="h2">{t('orgManagement.createOrg.headerMessage')}</Heading>
-              </div>
+              </div> */}
               <OrgDetailsFormSegment formik={formik} />
             </div>
 

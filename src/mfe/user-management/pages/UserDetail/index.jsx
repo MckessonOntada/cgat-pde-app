@@ -60,6 +60,7 @@ const UserDetail = () => {
   const [isProvisioned, setIsProvisioned] = useState(false);
   const [isConsentModalOpen, setIsConsentModalOpen] = React.useState(false);
   const isImpersonateLoggedIn = Boolean(AuthUtils.getImpersonateId());
+  const isSelf = userId === AuthUtils.getUserId();
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
@@ -276,7 +277,7 @@ const UserDetail = () => {
               variant="secondary"
               className="button-icon"
               size="md"
-              disabled={!data?.isActive}
+              disabled={!data?.isActive || isSelf}
               onClick={() => navigate(`../${PATHS.editUser}/${userId}`, { state: { isEdit: true } })}>
               {t('userManagement.button.edit')}
             </Button>
@@ -302,7 +303,7 @@ const UserDetail = () => {
               <Switch
                 handleToggle={handleDeactivate}
                 id="id"
-                disabled={!data?.isActive}
+                disabled={!data?.isActive || isSelf}
                 label={data?.isActive ? t('userManagement.status.active') : ''}
                 labelPosition="right"
                 name="Toggle"
@@ -332,7 +333,7 @@ const UserDetail = () => {
 
             <div>
               <span className="view_label">{t('userManagement.create_user.inputLabel.fax')}</span>
-              <p className="label-text">{data?.contact.fax}</p>
+              <p className="label-text">{data?.contact.fax || '-'}</p>
             </div>
 
             <div>
@@ -361,7 +362,7 @@ const UserDetail = () => {
                 variant="secondary"
                 className="button-icon"
                 size="md"
-                disabled={!data?.isActive}
+                disabled={!data?.isActive || isSelf}
                 onClick={() => navigate(`../${PATHS.userPermissions}/${userId}`, { state: { isEdit: true, permissionsData: data } })}>
                 {t('userManagement.button.edit')}
               </Button>
