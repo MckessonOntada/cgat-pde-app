@@ -53,14 +53,18 @@ const OrgList = () => {
 
     const state = {};
     state.title = t('orgManagement.message.accountSelectionConfirmationTitle');
-    state.body = <h3>{t('orgManagement.message.accountSelectionConfirmationDescription')}</h3>;
+    state.body = (
+      <div className="MCP-modal-body">
+        <p>{t('orgManagement.message.accountSelectionConfirmationDescription')}</p>
+      </div>
+    );
     state.footer = (
       <div className="controls">
-        <Button size="sm" variant="secondary" onClick={() => dispatch(closeModal())}>
+        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
           Cancel
         </Button>
         <Button
-          size="sm"
+          size="md"
           variant="primary"
           onClick={() => {
             setOrganization(org);
@@ -249,14 +253,18 @@ const OrgList = () => {
           id: 'xxxs-modal',
           isOpen,
           onClose: () => setIsOpen(false),
-          modalTitle: t('orgManagement.confirmationmessage'),
-          modalBody: <h3>{t('orgManagement.message.DeactivateOrg')}</h3>,
+          modalTitle: t('userManagement.confirmationMessage'),
+          modalBody: (
+            <div className="MCP-modal-body">
+              <p>{t('popup.userDeactivation.question')}</p>
+            </div>
+          ),
           modalFooter: (
             <React.Fragment>
-              <Button onClick={onCancelOrganizationChange} size="sm" variant="secondary">
+              <Button onClick={onCancelOrganizationChange} size="md" variant="secondary">
                 {t('orgManagement.button.cancel')}
               </Button>
-              <Button onClick={confirmChangeOrganization} size="sm">
+              <Button onClick={confirmChangeOrganization} size="md">
                 {t('orgManagement.button.deactivate')}
               </Button>
             </React.Fragment>

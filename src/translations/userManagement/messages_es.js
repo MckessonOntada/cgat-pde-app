@@ -316,6 +316,6 @@ export const UserManagementES = {
   'popup.message.wishToContinueLoginAsThisUserCheckBoxConsent':
     'S_By confirming, you acknowledge that all actions taken will be logged and attributed to your account.',
   'userManagement.breadcrumb.admin': 'S_Admin',
-  'userManagement.message.DeactivateUser': 'Are you sure you wish to Deactivate this User ?',
-  'userManagement.confirmationmessage': 'Confirmation message'
+  'popup.userDeactivation.question': 'S_Are you sure you wish to Deactivate this User?',
+  'userManagement.confirmationMessage': 'Confirmation message'
 };

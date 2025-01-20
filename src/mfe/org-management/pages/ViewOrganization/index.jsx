@@ -179,10 +179,10 @@ export default function ViewOrganization() {
 
       {addNewAccounts && (
         <div className="btn-box">
-          <Button variant="secondary" onClick={handleCancel}>
+          <Button size="md" variant="secondary" onClick={handleCancel}>
             {t('orgManagement.button.back')}
           </Button>
-          <Button disabled={selectedAccounts?.length <= 0} onClick={addNewAccountsClick}>
+          <Button size="md" disabled={selectedAccounts?.length <= 0} onClick={addNewAccountsClick}>
             {t(isView ? 'orgManagement.add.account' : 'orgManagement.create_org')}
           </Button>
         </div>
