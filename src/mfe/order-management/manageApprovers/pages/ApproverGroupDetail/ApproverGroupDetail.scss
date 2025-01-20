@@ -16,8 +16,7 @@
 }
 
 .attribute-category {
-  margin-bottom: var(--spacing-01);
-  gap: var(--spacing-02) !important;
+  gap: var(--spacing-01) !important;
   .price{
       font-size: var(--brand-font-size--large);
       font-weight: var(--brand-font-weight-600);
@@ -53,9 +52,9 @@
   padding: var(--spacing-02);
   position: relative;
 
-  &:not(:last-child) {
-    margin-bottom: var(--spacing-03);
-  }
+  // &:not(:last-child) {
+  //   margin-bottom: var(--spacing-03);
+  // }
 
   @include mixins.respond(md) {
     &:not(:nth-child(2n)):after {
@@ -125,9 +124,9 @@
   padding: var(--spacing-02);
   position: relative;
 
-  &:not(:last-child) {
-    margin-bottom: var(--spacing-03);
-  }
+  // &:not(:last-child) {
+  //   margin-bottom: var(--spacing-03);
+  // }
   &:not(:last-child):after {
     content: "";
     position: absolute;
