@@ -66,6 +66,7 @@ const ApiRoutes = Object.freeze({
   EXPORT_PAYMENT_HISTORY: (data) => constructOrderManagementServiceUrl(`account/${data.accountNumber}/payments/history/export`),
   EXPORT_INVOICES_EXCEL: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/open-invoices/export`),
   EXPORT_CREDITS_EXCEL: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/open-invoices/credit/export`),
+  EXPORT_PENDING_PAYMENT_EXCEL: (data) =>constructOrderManagementServiceUrl(`account/${data.accountNumber}/payments/pending/export`),
 });
 
 export default ApiRoutes;

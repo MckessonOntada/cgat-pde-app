@@ -247,5 +247,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.paymentHistory.export.success': 'Payment History exported.',
   'paymentInvoices.paymentHistory.export.error': 'Error exporting Payment history.',
   'paymentInvoices.excel.export.success': 'Excel exported.',
-  'paymentInvoices.excel.export.error': 'Error exporting excel.'
+  'paymentInvoices.excel.export.error': 'Error exporting excel.',
+  'paymentInvoices.pendingPaynemt.export.success': 'Pending Payment exported.',
+  'paymentInvoices.pendingPaynemt.export.error': 'Pending exporting Payment .',
 };
