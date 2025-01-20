@@ -366,8 +366,9 @@ div.disable-all {
 
   .fieldValue {
     font-size: var(--brand-font-size--large);
-    .dollarSign{
-      span{
+
+    .dollarSign {
+      span {
         top: -4px;
         font-size: var(--brand-font-size--10);
         position: relative;
@@ -549,13 +550,13 @@ div.disable-all {
 
 @media only screen and (min-width: 992px) {}
 
-@media only screen and (min-width: 1280px) {
+@media only screen and (min-width: 1200px) {
   .max-container {
     max-width: 1120px;
   }
 }
 
-@media only screen and (min-width: 1440px) {
+@media only screen and (min-width: 1360px) {
   .max-container {
     max-width: 1280px;
   }
