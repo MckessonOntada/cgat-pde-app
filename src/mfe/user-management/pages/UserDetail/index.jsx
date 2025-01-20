@@ -60,6 +60,8 @@ const UserDetail = () => {
   const [isProvisioned, setIsProvisioned] = useState(false);
   const [isConsentModalOpen, setIsConsentModalOpen] = React.useState(false);
   const isImpersonateLoggedIn = Boolean(AuthUtils.getImpersonateId());
+  const isSelf = userId === AuthUtils.getUserId();
+  const [duration, setDuration] = React.useState(10000);
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
@@ -88,12 +90,14 @@ const UserDetail = () => {
         setIsProvisioned(true);
         setAlertType('success');
         setAlertDescription(t('messages.provisionedsuccess'));
+        setDuration(10000);
       },
       onError: (error) => {
         setIsAlertVisible(true);
         setIsProvisioned(true);
         setAlertType('error');
         setAlertDescription(t('messages.provisionederrror'));
+        setDuration(null);
       }
     }
   );
@@ -103,7 +107,7 @@ const UserDetail = () => {
       setIsAlertVisible(true);
       setIsProvisioned(true);
       setAlertType('error');
-
+      setDuration(null);
       setAlertDescription(
         <>
           {t('userManagement.provision.message', {
@@ -178,12 +182,14 @@ const UserDetail = () => {
       setIsAlertVisible(true);
       setAlertType('success');
       setAlertDescription(t('messages.user_deactivate_success'));
+      setDuration(10000);
     },
     onError: (error) => {
       console.error(`Failed to deactivate user:`, error);
       setIsDeactivate(true);
       setIsAlertVisible(true);
       setAlertType('error');
+      setDuration(10000);
       setAlertDescription(t('messages.user_deactivate_failure'));
     }
   });
@@ -249,7 +255,7 @@ const UserDetail = () => {
       </div>
 
       {(isDeactivate || isProvisioned) && isAlertVisible && (
-        <Alert description={alertDescription} onClose={handleAlertClose} type={alertType} duration={10000} />
+        <Alert description={alertDescription} onClose={handleAlertClose} type={alertType} duration={duration} />
       )}
       <div className="MCP-module-body">
         <ModuleHeader
@@ -276,7 +282,7 @@ const UserDetail = () => {
               variant="secondary"
               className="button-icon"
               size="md"
-              disabled={!data?.isActive}
+              disabled={!data?.isActive || isSelf}
               onClick={() => navigate(`../${PATHS.editUser}/${userId}`, { state: { isEdit: true } })}>
               {t('userManagement.button.edit')}
             </Button>
@@ -302,7 +308,7 @@ const UserDetail = () => {
               <Switch
                 handleToggle={handleDeactivate}
                 id="id"
-                disabled={!data?.isActive}
+                disabled={!data?.isActive || isSelf}
                 label={data?.isActive ? t('userManagement.status.active') : ''}
                 labelPosition="right"
                 name="Toggle"
@@ -332,7 +338,7 @@ const UserDetail = () => {
 
             <div>
               <span className="view_label">{t('userManagement.create_user.inputLabel.fax')}</span>
-              <p className="label-text">{data?.contact.fax}</p>
+              <p className="label-text">{data?.contact.fax || '-'}</p>
             </div>
 
             <div>
@@ -361,7 +367,7 @@ const UserDetail = () => {
                 variant="secondary"
                 className="button-icon"
                 size="md"
-                disabled={!data?.isActive}
+                disabled={!data?.isActive || isSelf}
                 onClick={() => navigate(`../${PATHS.userPermissions}/${userId}`, { state: { isEdit: true, permissionsData: data } })}>
                 {t('userManagement.button.edit')}
               </Button>

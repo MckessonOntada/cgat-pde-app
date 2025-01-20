@@ -322,13 +322,13 @@ const CreateUser = () => {
           return (
             <Form>
               <div className="MCP-panel-container">
-                <Heading as="h2">
+                {/* <Heading as="h2">
                   {t(
                     isSystemAdminView
                       ? 'userManagement.create_user.details_to_create_sysadmin'
                       : 'userManagement.create_user.details_to_create_user'
                   )}
-                </Heading>
+                </Heading> */}
                 <UserDetailsFormSegment />
               </div>
               <div className={'buttonGroup'}>
