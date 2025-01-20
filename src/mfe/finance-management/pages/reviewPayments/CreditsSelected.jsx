@@ -64,6 +64,16 @@ function CreditsSelected(props) {
       )
     },
     {
+      id: 'billDate',
+      name: t('paymentInvoices.credits.table.billDate'),
+      selector: (row) => row.billDate,
+      wrap: true,
+      minWidth: '160px',
+      cell: (props) => (
+        <EclipsesTextcss className="cellEllipse" str={dayjs(props?.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'} maxWidth={240} />
+      )
+    },
+    {
       id: 'dueDate',
       name: t('paymentInvoices.credits.table.validfrom'),
       selector: (row) => row.dueDate,

@@ -92,6 +92,9 @@
       flex-direction: column;
     }
   }
+  [data-column-id="checkbox"] {
+    overflow: unset;
+  }
 }
 
 // selected Invoices table - css

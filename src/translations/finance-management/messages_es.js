@@ -31,12 +31,14 @@ export const PaymentInvoicesES = {
   // Invoices Table
   'paymentInvoices.invoicesTable.filter.billDateStart': 's_Bill Date (Start)',
   'paymentInvoices.invoicesTable.filter.billDateEnd': 's_Bill Date (End)',
+  'paymentInvoices.invoicesTable.filter.dueDateStart': 'S_Due Date (Start)',
+  'paymentInvoices.invoicesTable.filter.dueDateEnd': 'S_Due Date (End)',
   'paymentInvoices.invoicesTable.filter.dueDateStart': 's_Due Date (Start)',
   'paymentInvoices.invoicesTable.filter.dueDateEnd': 's_Due Date (End)',
   'paymentInvoices.pendingPayments.filter.dueDateStart': 's_Initiation Date (Start)',
   'paymentInvoices.pendingPayments.filter.dueDateEnd': 's_Initiation Date (End)',
-    'paymentInvoices.invoicesTable.filter.validFromEnd': 'S_Valid From (End)',
-  'paymentInvoices.invoicesTable.filter.validFromStart': 'S_Valid From (Start)',
+  'paymentInvoices.invoicesTable.filter.validFromEnd': 'S_Bill Date (End)',
+  'paymentInvoices.invoicesTable.filter.validFromStart': 'S_Bill Date (Start)',
   // Payment History
   'paymentInvoices.history.table.confirmationNumber': 'S_Confirmation No.',
   'paymentInvoices.history.table.purchaseOrderNumber': 'S_Purchase Order Number',
@@ -185,10 +187,13 @@ export const PaymentInvoicesES = {
   'paymentInvoices.reviewPayments.confirm': 'S_Confirm',
   'paymentInvoices.reviewPayments.Okay': 'S_Okay',
   'paymentInvoices.reviewPayments.remove': 'S_REMOVE',
+  'paymentInvoices.reviewPayments.pay': 'S_PAY',
+  'paymentInvoices.reviewPayments.selectedInvoice': '{count} S_invoice(s), amount to be paid:',
 
   //Credits
   'paymentInvoices.credits.table.description': 'S_Description',
-  'paymentInvoices.credits.table.validfrom': ' S_Valid From',
+  'paymentInvoices.credits.table.billDate': 'S_Bill Date',
+  'paymentInvoices.credits.table.validfrom': 'S_Valid From',
   'paymentInvoices.credits.table.amount': 'S_Amount',
   'paymentInvoices.credits.table.downloadPdf': 'S_download pdf',
   'paymentInvoices.credits.table.emptyData': 'S_No Credits Found',
@@ -234,6 +239,11 @@ export const PaymentInvoicesES = {
   'paymentInvoices.EmptyData.heading': 'S_No Data Found',
   'paymentInvoices.EmptyData.description': 'S_No accounts found linked with user',
 
+  'paymentInvoices.reviewPayments.selectedInvoice': 'S_{count} invoice(s), amount to be paid:',
   'paymentInvoices.CS.export.success': 'S_Customer Statement exported.',
-  'paymentInvoices.CS.export.error': 'S_Error exporting statement.'
+  'paymentInvoices.CS.export.error': 'S_Error exporting statement.',
+  'paymentInvoices.paymentHistory.export.success': 'S_Payment History exported.',
+  'paymentInvoices.paymentHistory.export.error': 'S_Error exporting Payment history.',
+  'paymentInvoices.excel.export.success': 'S_Excel exported.',
+  'paymentInvoices.excel.export.error': 'S_Error exporting excel.'
 };

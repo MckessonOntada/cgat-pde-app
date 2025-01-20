@@ -34,10 +34,12 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.invoicesTable.filter.billDateEnd': 'Bill Date (End)',
   'paymentInvoices.invoicesTable.filter.dueDateStart': 'Due Date (Start)',
   'paymentInvoices.invoicesTable.filter.dueDateEnd': 'Due Date (End)',
+  'paymentInvoices.invoicesTable.filter.dueDateStart': 'Due Date (Start)',
+  'paymentInvoices.invoicesTable.filter.dueDateEnd': 'Due Date (End)',
   'paymentInvoices.pendingPayments.filter.initiationDateStart': 'Initiation Date (Start)',
   'paymentInvoices.pendingPayments.filter.initiationDateEnd': 'Initiation Date (End)',
-  'paymentInvoices.invoicesTable.filter.validFromEnd': 'Valid From (End)',
-  'paymentInvoices.invoicesTable.filter.validFromStart': 'Valid From (Start)',
+  'paymentInvoices.invoicesTable.filter.validFromEnd': 'Bill Date (End)',
+  'paymentInvoices.invoicesTable.filter.validFromStart': 'Bill Date (Start)',
 
   // Payment History
   'paymentInvoices.history.table.confirmationNumber': 'Confirmation No.',
@@ -188,10 +190,12 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.reviewPayments.confirm': 'Confirm',
   'paymentInvoices.reviewPayments.Okay': 'Okay',
   'paymentInvoices.reviewPayments.remove': 'REMOVE',
+  'paymentInvoices.reviewPayments.pay': 'PAY',
 
   //Credits
   'paymentInvoices.credits.table.description': 'Description',
-  'paymentInvoices.credits.table.validfrom': ' Valid From',
+  'paymentInvoices.credits.table.billDate': 'Bill Date',
+  'paymentInvoices.credits.table.validfrom': 'Valid From',
   'paymentInvoices.credits.table.amount': ' Amount',
   'paymentInvoices.credits.table.downloadPdf': ' download pdf',
   'paymentInvoices.credits.table.emptyData': 'No Credits Found',
@@ -237,6 +241,11 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.EmptyData.heading': 'No Data Found',
   'paymentInvoices.EmptyData.description': 'No accounts found linked with user',
 
+  'paymentInvoices.reviewPayments.selectedInvoice': '{count} invoice(s), amount to be paid:',
   'paymentInvoices.CS.export.success': 'Customer Statement exported.',
-  'paymentInvoices.CS.export.error': 'Error exporting statement.'
+  'paymentInvoices.CS.export.error': 'Error exporting statement.',
+  'paymentInvoices.paymentHistory.export.success': 'Payment History exported.',
+  'paymentInvoices.paymentHistory.export.error': 'Error exporting Payment history.',
+  'paymentInvoices.excel.export.success': 'Excel exported.',
+  'paymentInvoices.excel.export.error': 'Error exporting excel.'
 };

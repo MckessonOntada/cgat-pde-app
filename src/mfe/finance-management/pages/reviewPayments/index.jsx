@@ -157,40 +157,40 @@ function ReviewPayments() {
           {
             isDisabled: false,
             label: t('paymentInvoices.reviewPayments.payToday'),
-            value: 'Pay Today',
+            value: t('paymentInvoices.reviewPayments.payToday'),
             subLabel: t('paymentInvoices.reviewPayments.payTodayDesc')
           },
           {
             isDisabled: isDisabledDueDate,
             label: t('paymentInvoices.reviewPayments.payDuedate'),
-            value: 'Pay on Due Date',
+            value: t('paymentInvoices.reviewPayments.payDuedate'),
             subLabel: t('paymentInvoices.reviewPayments.payDuedateDesc')
           },
           {
             isDisabled: selectedData?.type === 'Bank',
             label: t('paymentInvoices.reviewPayments.paySpecfic'),
-            value: 'Pay on Specific Date',
+            value: t('paymentInvoices.reviewPayments.paySpecfic'),
             subLabel: t('paymentInvoices.reviewPayments.paySpecficDesc'),
             subType: 'datePicker'
           }
         ]
       : [
           {
-            isDisabled: false,
+            isDisabled: true,
             label: t('paymentInvoices.reviewPayments.payToday'),
-            value: 'Pay Today',
+            value: t('paymentInvoices.reviewPayments.payToday'),
             subLabel: t('paymentInvoices.reviewPayments.payTodayDesc')
           },
           {
-            isDisabled: isDisabledDueDate,
+            isDisabled: true,
             label: t('paymentInvoices.reviewPayments.payDuedate'),
-            value: 'Pay on Due Date',
+            value: t('paymentInvoices.reviewPayments.payDuedate'),
             subLabel: t('paymentInvoices.reviewPayments.payDuedateDesc')
           },
           {
-            isDisabled: false,
+            isDisabled: true,
             label: t('paymentInvoices.reviewPayments.paySpecfic'),
-            value: 'Pay on Specific Date',
+            value: t('paymentInvoices.reviewPayments.paySpecfic'),
             subLabel: t('paymentInvoices.reviewPayments.paySpecficDesc'),
             subType: 'datePicker'
           }
@@ -295,7 +295,7 @@ function ReviewPayments() {
         </div>
         {!REVIEW_MODE && (
           <div className="invoice-sum-container">
-            <div className="label">{`${selectedInvoices.length} invoice(s), amount to be paid:`}</div>
+            <div className="label"> {t('paymentInvoices.reviewPayments.selectedInvoice', { count: selectedInvoices.length })}</div>
             <div className="value">{`${FinanceUtils.formatCurrency(invoicesSum)}`}</div>
           </div>
         )}
@@ -365,7 +365,7 @@ function ReviewPayments() {
         </Button>
         {REVIEW_MODE ? (
           <Button onClick={onPreviewPayment} size="sm">
-            {`PAY ${FinanceUtils.formatCurrency(totalAmount)}`}
+            {`${t('paymentInvoices.reviewPayments.pay')} ${FinanceUtils.formatCurrency(totalAmount)}`}
           </Button>
         ) : (
           <Button onClick={onPreviewPayment} size="sm" disabled={disablePreview()}>

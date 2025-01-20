@@ -60,8 +60,12 @@ const ApiRoutes = Object.freeze({
   ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`),
   CUSTOMER_STATEMENTS_LISTING: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/statements`),
   EXPORT_CUSTOMER_STATEMENTS: (data) => constructOrderManagementServiceUrl(`account/${data.accountNumber}/statements/${data.docNo}`),
+  EXPORT_CUSTOMER_STATEMENTS_EXCEL: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/statements/export`),
   INVENTORY: () => constructOrderManagementServiceUrl(`inventory`),
-  THERAPIES: (therapyId) => constructUserManagementServicePublicUrl(`therapies/${therapyId}`)
+  THERAPIES: (therapyId) => constructUserManagementServicePublicUrl(`therapies/${therapyId}`),
+  EXPORT_PAYMENT_HISTORY: (data) => constructOrderManagementServiceUrl(`account/${data.accountNumber}/payments/history/export`),
+  EXPORT_INVOICES_EXCEL: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/open-invoices/export`),
+  EXPORT_CREDITS_EXCEL: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/open-invoices/credit/export`),
 });
 
 export default ApiRoutes;
