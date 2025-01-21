@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Stepper, Button, Modal, Alert } from '@mckesson/mcp-component-library';
+import { Button, Alert } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
 import PageHeader from '@src/components/pageHeader';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Field, Formik, Form } from 'formik';
+import { Formik, Form } from 'formik';
 import { useMutation } from 'react-query';
 import PermissionForm from '../../../../user-management/pages/UserPermissions/PermissionForm';
 import HttpResourceService, { httpVerb } from '../../../../../api/HttpResourceService';
@@ -151,14 +151,14 @@ const RolePermissions = () => {
       {isAlertVisible && <Alert type={alert.type} title={alert.title} description={alert.description} />}
 
       <div className="MCP-module-body">
-        {!isEdit && (
+        {/* {!isEdit && (
           <Stepper
             activeIndex={2}
             dividerText="of"
             mobileLabel={t('orgManagement.role.labelStep')}
             stepHeaders={forms.map((f) => ({ label: f.label }))}
           />
-        )}
+        )} */}
 
         <div>
           <Formik

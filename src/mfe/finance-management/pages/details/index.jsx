@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useAccountContext } from '../../context/AccountContext';
 import { Heading, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -35,6 +35,8 @@ function Details(props) {
   const [open, setOpen] = useState(false);
   const therapyDetails = searchParams.get('therapy-details');
   const navigate = useNavigate();
+  const locationParams = useLocation();
+
   const onBackToPaymentsInvoices = () => {
     navigate(-1);
   };
@@ -87,7 +89,7 @@ function Details(props) {
         id: 'item',
         selector: (row) => `${row.item}`,
         wrap: true,
-        minWidth: '120px',
+        minWidth: '100px',
         cell: (props) => <div className="cellEllipse">{props.item || '-'}</div>
       },
       {
@@ -97,7 +99,7 @@ function Details(props) {
           row.therapyId;
         },
         wrap: true,
-        minWidth: '150px',
+        minWidth: '120px',
         cell: (props) => (
           <div className="cellEllipse">
             <Link
@@ -105,7 +107,10 @@ function Details(props) {
               onClick={() => {
                 setOpen(!open);
                 setTherapy(props?.therapyId);
-              }}>{`${props?.therapyId || '-'}`}</Link>
+              }}
+              state={{ ...locationParams.state }}>
+              {props?.therapyId || '-'}
+            </Link>
           </div>
         )
       },
@@ -114,7 +119,9 @@ function Details(props) {
         id: '',
         selector: (row) => {},
         wrap: true,
-        cell: (props) => <div className="cellEllipse">-</div>
+        minWidth: '140px',
+        maxWidth: '180px',
+        cell: (props) => <EclipsesTextcss str={'-'} maxWidth={170} />
       },
       {
         name: t('paymentInvoices.Details.referenceDocument'),
@@ -123,10 +130,11 @@ function Details(props) {
           row.referenceDocument;
         },
         wrap: true,
-        minWidth: '300px',
+        minWidth: '100px',
+        maxWidth: '220px',
         cell: (props) => (
           <div>
-            <EclipsesTextcss str={props.referenceDocument} maxWidth={280} />
+            <EclipsesTextcss str={props.referenceDocument} maxWidth={210} />
           </div>
         )
       },
@@ -137,7 +145,7 @@ function Details(props) {
           row.quantity;
         },
         wrap: true,
-        minWidth: '112px',
+        minWidth: '80px',
         cell: (props) => <div className="cellEllipse">{props.quantity}</div>
       },
       {
@@ -147,7 +155,7 @@ function Details(props) {
           row.unit;
         },
         wrap: true,
-        minWidth: '250px',
+        minWidth: '80px',
         cell: (props) => (
           <div>
             <EclipsesTextcss str={props.unit} maxWidth={200} />
@@ -162,6 +170,7 @@ function Details(props) {
         },
         wrap: true,
         right: true,
+        width: '120px',
         cell: (props) => <div className="cellEllipse align-items-right">{props.netPrice || '-'}</div>
       },
       {
@@ -170,7 +179,7 @@ function Details(props) {
         selector: (row) => {
           row.grossPrice;
         },
-        minWidth: '150px',
+        width: '120px',
         right: true,
         cell: (props) => <div className="cellEllipse align-items-right">{props.grossPrice || '-'}</div>
       }
@@ -187,7 +196,11 @@ function Details(props) {
           Icon={() => <IconArrowLeft />}
           onClick={onBackToPaymentsInvoices}
           size="md">
-          {INVOICES_SCREEN ? t('paymentInvoices.Details.backToManageInvoices') : t('paymentInvoices.Details.backToManageCredits')}
+          {locationParams?.state?.reviewPay
+            ? t('paymentInvoices.Details.backToReviewAndPay')
+            : INVOICES_SCREEN
+            ? t('paymentInvoices.Details.backToManageInvoices')
+            : t('paymentInvoices.Details.backToManageCredits')}
         </Button>
       </div>
       <Heading>
@@ -240,24 +253,24 @@ function Details(props) {
           />
         </div>
       </div>
-
       <div className="footer-section">
         {INVOICES_SCREEN ? (
-          <React.Fragment>
-            <Button size="md" variant="secondary" disabled>
-              {t('paymentInvoices.Details.DownloadPDF')}
-            </Button>
-            <Button
-              size="md"
-              variant="primary"
-              type="submit"
-              onClick={() => {
-                console.log('NAVIGATION');
-                navigate(`/record/invoices/reviewPayments`);
-              }}>
-              {t('paymentInvoices.Details.ReviewAndPay')}
-            </Button>
-          </React.Fragment>
+          !locationParams?.state?.reviewPay && (
+            <React.Fragment>
+              <Button size="md" variant="secondary" disabled>
+                {t('paymentInvoices.Details.DownloadPDF')}
+              </Button>
+              <Button
+                size="md"
+                variant="primary"
+                type="submit"
+                onClick={() => {
+                  navigate(`/record/invoices/reviewPayments`, { state: { ...locationParams.state, reviewPay: true } });
+                }}>
+                {t('paymentInvoices.Details.ReviewAndPay')}
+              </Button>
+            </React.Fragment>
+          )
         ) : (
           <React.Fragment>
             <Button size="md" variant="primary" disabled>

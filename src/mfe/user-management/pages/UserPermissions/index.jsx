@@ -24,6 +24,7 @@ const UserPermissions = () => {
   const { permissionsData, isEdit = false, isBack = false } = location.state || {};
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alert, setAlert] = useState(null);
+  const isSystemAdmin = AuthUtils.isSystemAdmin();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
 
   const requestParams = {
@@ -61,7 +62,11 @@ const UserPermissions = () => {
     isError: isSaveUserPermissionError,
     data: saveUserPermissionResponse
   } = useMutation(async ({ payload }) => {
-    const res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}/roles-permissions?${serializeParams(requestParams)}`, httpVerb.PATCH, payload);
+    const res = await HttpResourceService.callRest(
+      `${ApiRoutes.USERS()}/${userId}/roles-permissions?${serializeParams(requestParams)}`,
+      httpVerb.PATCH,
+      payload
+    );
     return res.data;
   });
 
@@ -77,9 +82,13 @@ const UserPermissions = () => {
         onSuccess: (response) => {
           console.log('User created/updated successfully:', response);
           if (isSystemAdminView) {
-            navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : RoutePaths.pathUserManagement, { state: { isSuccess: true } });
+            navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : RoutePaths.pathUserManagement, {
+              state: { isSuccess: true }
+            });
           } else {
-            navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.addAccounts}/${userId}`, { state: { permissionsData: payload } });
+            navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.addAccounts}/${userId}`, {
+              state: { permissionsData: payload }
+            });
           }
         },
         onError: (error) => {
@@ -98,7 +107,7 @@ const UserPermissions = () => {
         </Button>
       </div>
       <ModuleHeader heading={<Heading as="h1">{t('userManagement.create_user')}</Heading>} />
-      {!isEdit && (
+      {!isEdit && !isSystemAdmin && (
         <div className="stepper">
           <Stepper
             activeIndex={2}
@@ -110,13 +119,9 @@ const UserPermissions = () => {
               {
                 label: t('userManagement.stepper.option.roles_and_permissions')
               },
-              ...(isSystemAdminView
-                ? [] // Exclude the third step
-                : [
-                    {
-                      label: t('userManagement.stepper.option.associate_accounts')
-                    }
-                  ])
+              {
+                label: t('userManagement.stepper.option.associate_accounts')
+              }
             ]}
           />
         </div>

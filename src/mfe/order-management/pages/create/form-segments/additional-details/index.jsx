@@ -76,10 +76,14 @@ function AdditionalDetails() {
     label: t('messages.variantAcknowledgement'),
     value: false
   });
-  const [consentStatus, setConsentStatus] = React.useState('');
   const [variant, setVariant] = React.useState();
   const { showAlert } = useAlert();
   const alertContainerId = 'additionalDetails-alert-container';
+
+  React.useEffect(() => {
+    const { paporder: isPapOrder } = formState.activeRecord || {};
+    if (isPapOrder) navigate('/orders');
+  }, [formState.activeRecord]);
 
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(
     async (data) => OrderService.saveAdditionalDetails(orderId, data),

@@ -25,7 +25,7 @@ export default function CreditCardsTable() {
       selector: (row) => row.type,
       sortable: true,
       wrap: true,
-      minWidth: '112px',
+      width: '140px',
       cell: (props) => (
         <div style={{ width: '66px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {props.type === CARD_TYPES.VISA ? <VisaLogo /> : <MasterCardLogo />}
@@ -56,7 +56,7 @@ export default function CreditCardsTable() {
       selector: (row) => row.expirationDate,
       sortable: true,
       wrap: true,
-      minWidth: '144px',
+      width: '160px',
       cell: (props) => <div>{dayjs(props?.expirationDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
     },
     {
@@ -65,7 +65,7 @@ export default function CreditCardsTable() {
       selector: (row) => row.postalCode,
       sortable: true,
       wrap: true,
-      minWidth: '168px',
+      width: '120px',
       cell: (props) => <div>{props.postalCode}</div>
     }
     // {
@@ -125,8 +125,7 @@ export default function CreditCardsTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}
-          >
+            }}>
             <Loader variant="circular" />
           </div>
         }

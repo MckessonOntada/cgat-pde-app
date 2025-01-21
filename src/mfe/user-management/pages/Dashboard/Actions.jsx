@@ -14,8 +14,7 @@ export default function Actions({ row, showEditButton, showViewButton }) {
   const navigate = useNavigate();
 
   const handleEdit = (userId) => {
-    navigate(`../${PATHS.editUser}/${userId}`,  { state: { isPending: true } })
-    //navigate(`edit-user/${userId}`);
+    navigate(`../${PATHS.editUser}/${userId}`, { state: { isPending: true } });
   };
 
   const handleView = (userId) => {
@@ -23,55 +22,15 @@ export default function Actions({ row, showEditButton, showViewButton }) {
     navigate(path);
   };
 
-  const handleReject = () => {
-    // alert('Handle Reject');
-  };
-
-  const handleOtherAction = () => {
-    // alert('Handle Other Action');
-  };
-
   return (
     <div className="actionsBox" id={debugIds(ID.ACTION_ICON, ID.CONTAINER)}>
-      {/* <DropdownMenu
-        anchorEl={<VerticalIcon />}
-        handleSelect={(selectedItem) => {
-          if (selectedItem.value === 'Edit') {
-            handleEdit(row.id);
-          }
-          if (selectedItem.value === 'Reject') {
-            handleReject();
-          }
-
-        }}
-        options={[
-          {
-            label: t('userManagement.table.action.edit'),
-            value: 'Edit'
-          },
-          {
-            label: t('userManagement.table.action.reject'),
-            value: 'Reject'
-          }
-        ]}
-      /> */}
       {showViewButton && (
-        <Button
-          Icon={View}
-          variant="tertiary"
-          size="md"
-          className="button-icon"
-          onClick={() => handleView(row.id)}>
+        <Button Icon={View} variant="tertiary" size="md" className="button-icon" onClick={() => handleView(row.id)}>
           {t('userManagement.table.action.view')}
         </Button>
       )}
       {showEditButton && (
-        <Button 
-          Icon={Edit}
-          variant="tertiary"
-          size="md"
-          className="button-icon"
-          onClick={() => handleEdit(row.id)}>
+        <Button Icon={Edit} variant="tertiary" size="md" className="button-icon" onClick={() => handleEdit(row.id)}>
           {t('userManagement.table.action.edit')}
         </Button>
       )}

@@ -62,6 +62,11 @@ const PatientDetails = () => {
 
   const [initialValues, setInitialValues] = useState(INITIAL_VALUES);
 
+  React.useEffect(() => {
+    const { paporder: isPapOrder } = formState.activeRecord || {};
+    if (isPapOrder) navigate('/orders');
+  }, [formState.activeRecord]);
+
   useEffect(() => {
     if (!alertState) {
       return;

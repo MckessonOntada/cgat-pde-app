@@ -3,17 +3,17 @@ import { LOCALES } from '@src/translations/locales';
 
 const HeaderConfig = {
   navLinks: [
-    {
-      label: 'Dashboard',
-      path: '/',
-      id: 1,
-      configName: 'Dashboard',
-      isActive: true,
-      isActiveTab: false,
-      labelForMobile: 'Dashboard',
-      sequence: 1,
-      translationName: 'header.tabs.dashboard'
-    },
+    // {
+    //   label: 'Dashboard',
+    //   path: '/',
+    //   id: 1,
+    //   configName: 'Dashboard',
+    //   isActive: true,
+    //   isActiveTab: false,
+    //   labelForMobile: 'Dashboard',
+    //   sequence: 1,
+    //   translationName: 'header.tabs.dashboard'
+    // },
     {
       label: 'Orders',
       id: 4,

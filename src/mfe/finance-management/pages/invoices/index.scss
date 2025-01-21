@@ -103,6 +103,7 @@
   flex-direction: column;
   gap: 16px;
 
+
   @include mixins.respond("sm") {
     flex-direction: row;
     justify-content: end;
@@ -133,5 +134,28 @@
         border-color: var(--brand-color-grey-scale-cool-1);
       }
     }
+  }
+}
+
+.selected-invoices {
+  display: flex;
+  padding: 5px 14px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  border-radius: 5px;
+  background: var(--brand-color-patient-primary-1);
+  .label {
+    color: var(--brand-color-black);
+    font-weight: var(--brand-font-weight-400);
+    font-size: var(--brand-font-size--large);
+    line-height: var(--brand-line-height--x-large);
+    letter-spacing: -0.036px;
+  }
+}
+
+.table-wrapper{
+  [data-column-id="checkbox"] {
+    overflow: unset;
   }
 }

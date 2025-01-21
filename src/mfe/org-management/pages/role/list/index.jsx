@@ -87,7 +87,6 @@ function RolesList() {
             />
           </div>
           <div className="MCP-table-wrapper">
-            <ModuleHeader heading={<Heading as="h2">{t('orgManagement.role.labelRolesListing')}</Heading>} />
             <RolesDataTable />
           </div>
         </div>

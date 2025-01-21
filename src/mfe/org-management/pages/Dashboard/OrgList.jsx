@@ -53,7 +53,11 @@ const OrgList = () => {
 
     const state = {};
     state.title = t('orgManagement.message.accountSelectionConfirmationTitle');
-    state.body = <h3>{t('orgManagement.message.accountSelectionConfirmationDescription')}</h3>;
+    state.body = (
+      <div className="MCP-modal-body">
+        <p>{t('orgManagement.message.accountSelectionConfirmationDescription')}</p>
+      </div>
+    );
     state.footer = (
       <div className="controls">
         <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
@@ -113,7 +117,7 @@ const OrgList = () => {
       ),
       sortable: true,
       sortKey: 'name',
-      minWidth: '280px',
+      minWidth: '250px',
       wrap: true
     },
     {
@@ -121,8 +125,8 @@ const OrgList = () => {
       name: t('orgManagement.table.id'),
       selector: (row) => row.id,
       sortable: true,
+      minWidth: '100px',
       sortKey: 'id',
-      width: '180px',
       wrap: true
     },
     {
@@ -135,7 +139,7 @@ const OrgList = () => {
       ),
       sortable: true,
       sortKey: 'id',
-      minWidth: '280px',
+      minWidth: '250px',
       wrap: true
     },
     {
@@ -148,7 +152,7 @@ const OrgList = () => {
           : row.createdAt
           ? CommonUtils.convertDateStringFormat(row.createdAt, 'MM-DD-YYYY')
           : 'N/A',
-      width: '180px',
+      minWidth: '100px',
       wrap: true
     },
     {
@@ -162,7 +166,7 @@ const OrgList = () => {
           />
         </div>
       ),
-      width: '200px',
+      minWidth: '100px',
       wrap: true,
       center: true
     },
@@ -170,7 +174,7 @@ const OrgList = () => {
       id: 'action',
       name: t('orgManagement.table.action'),
       cell: (row) => <Actions row={row} />, // Pass row as a named prop
-      width: '180px',
+      minWidth: '100px',
       wrap: true,
       center: true
     }
@@ -249,14 +253,18 @@ const OrgList = () => {
           id: 'xxxs-modal',
           isOpen,
           onClose: () => setIsOpen(false),
-          modalTitle: 'Confirmation message',
-          modalBody: <h3>Are you sure you wish to Deactivate this Organization ?</h3>,
+          modalTitle: t('userManagement.confirmationMessage'),
+          modalBody: (
+            <div className="MCP-modal-body">
+              <p>{t('popup.userDeactivation.question')}</p>
+            </div>
+          ),
           modalFooter: (
             <React.Fragment>
-              <Button onClick={onCancelOrganizationChange} size="sm" variant="secondary">
+              <Button onClick={onCancelOrganizationChange} size="md" variant="secondary">
                 {t('orgManagement.button.cancel')}
               </Button>
-              <Button onClick={confirmChangeOrganization} size="sm">
+              <Button onClick={confirmChangeOrganization} size="md">
                 {t('orgManagement.button.deactivate')}
               </Button>
             </React.Fragment>

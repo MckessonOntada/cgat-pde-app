@@ -32,9 +32,8 @@ export default function Actions({ row, userId, practiceId, refetch }) {
       onSuccess: (response) => {
         console.log('Account Unlinked successfully:', response);
         setIsOpen(false);
-        if (refetch) {
-          setPageNumber(1);
-        }
+        refetch();
+        setPageNumber(1);
       },
       onError: (error) => {
         console.error('Failed to unlink account:', error);
@@ -60,7 +59,7 @@ export default function Actions({ row, userId, practiceId, refetch }) {
 
   return (
     <>
-      <Button Icon={DeleteIcon} variant="tertiary" size="md" onClick={() => handleOpenPopup(row.id)}>
+      <Button Icon={DeleteIcon} variant="tertiary" size="sm" onClick={() => handleOpenPopup(row.id)}>
         {t('account.btn.unlink')}
       </Button>
       <Modal
@@ -68,14 +67,16 @@ export default function Actions({ row, userId, practiceId, refetch }) {
           id: 'xxxs-modal',
           isOpen,
           onClose: () => setIsOpen(false),
-          modalTitle: 'Confirmation message',
+          modalTitle: t('orgManagement.confirmationmessage'),
           modalBody: <h3>Are you sure you wish to unlink this account ?</h3>,
           modalFooter: (
             <React.Fragment>
-              <Button onClick={handleClosePopup} variant="secondary">
+              <Button onClick={handleClosePopup} variant="secondary" size="sm">
                 {t('userManagement.label.cancel')}
               </Button>
-              <Button onClick={handleConfirmUnlink}>{t('userManagement.button.unlink')}</Button>
+              <Button onClick={handleConfirmUnlink} size="sm">
+                {t('userManagement.button.unlink')}
+              </Button>
             </React.Fragment>
           ),
           modalSize: 'xxxs'

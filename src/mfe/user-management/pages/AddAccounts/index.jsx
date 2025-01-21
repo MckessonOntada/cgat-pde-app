@@ -4,7 +4,6 @@ import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
-import AllAccountsData from '@src/mfe/org-management/mockData/AllAccounts';
 import { RoutePaths } from '@src/routes/constants';
 import { useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
@@ -25,14 +24,16 @@ const AddAccounts = () => {
   const isSuccess = location.state?.isSuccess || false;
   const practiceId = AuthUtils.getPracticeId() ?? 1;
   const selectedCount = selectedAccounts?.length || 0;
-  const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const isSystemAdmin = AuthUtils.isSystemAdmin();
 
   const handleGoBack = () => {
     navigate(RoutePaths.pathUserManagement);
   };
 
   const handleBackButton = () => {
-    navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.userPermissions}/${userId}`, { state: { isBack: true, permissionsData: permissionsData } });
+    navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : `../${PATHS.userPermissions}/${userId}`, {
+      state: { isBack: true, permissionsData: permissionsData }
+    });
   };
 
   const handleSearchChange = (inputValue) => {
@@ -86,9 +87,11 @@ const AddAccounts = () => {
         </Button>
       </div>
 
-      <ModuleHeader heading={<Heading as="h1">{isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}</Heading>} />
+      <ModuleHeader
+        heading={<Heading as="h1">{isEdit ? t('userManagement.button.add_accounts') : t('userManagement.create_user')}</Heading>}
+      />
 
-      {!isEdit && (
+      {!isEdit && !isSystemAdmin && (
         <div className="stepper">
           <Stepper
             activeIndex={3}
@@ -108,7 +111,14 @@ const AddAccounts = () => {
         </div>
       )}
 
-      <UserAccounts selectedRows={selectedAccounts} setSelectedRows={setSelectedAccounts} showSelectedAccounts={true} omitColumns={['action', 'cgatIdentifier', 'address']} practiceId={practiceId} selectableRows={true} />
+      <UserAccounts
+        selectedRows={selectedAccounts}
+        setSelectedRows={setSelectedAccounts}
+        showSelectedAccounts={true}
+        omitColumns={['action', 'cgatIdentifier', 'address']}
+        practiceId={practiceId}
+        selectableRows={true}
+      />
       <div className={'buttonGroup'}>
         <Button variant="secondary" type="button" onClick={handleBackButton} size={'md'}>
           {t('userManagement.button.back')}

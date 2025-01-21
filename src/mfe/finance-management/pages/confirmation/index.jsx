@@ -50,7 +50,9 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
 
   const renderBackButton = () => (
     <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={onBackToPaymentsInvoices} size="md">
-      {backText || t('paymentInvoices.Details.backToManageInvoices')}
+      {type === PATHS.paymentHistory
+        ? t('paymentInvoices.history.confirm.backToPaymentHistory')
+        : t('pendingPayments.confirm.BackToPendingPayments')}
     </Button>
   );
 

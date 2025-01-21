@@ -12,6 +12,7 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FormattedNumber } from 'react-intl';
 import dayjs from 'dayjs';
 import { PATHS } from '../../routes';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 const PAYMENT_STATUS = {
   PENDING: { label: 'Pending', color: 'warning' },
@@ -30,23 +31,24 @@ export default function PaymentHistoryTable() {
       name: t('paymentInvoices.history.table.confirmationNumber'),
       selector: (row) => `${row.confirmationNo}`,
       sortable: true,
+      maxWidth: '180px',
       wrap: true,
       cell: (props) => (
         <div className="cellEllipse">
           <Link
             style={{ color: '#007bff', fontWeight: '600' }}
             to={`/record/${PATHS.paymentHistory}/${props?.confirmationNo}/confirmation`}
-            state={{ ...props }}
-          >{`${props?.confirmationNo}`}</Link>
+            state={{ ...props }}>{`${props?.confirmationNo}`}</Link>
         </div>
       )
     },
     {
       id: 'purchaseOrderNo',
       name: t('paymentInvoices.history.table.purchaseOrderNumber'),
+      maxWidth: '180px',
       sortable: true,
       selector: (row) => `${row.purchaseOrderNo}`,
-      cell: (props) => <div>{props.purchaseOrderNo}</div>
+      cell: (props) => <EclipsesTextcss str={props.purchaseOrderNo} maxWidth={170} />
     },
     {
       id: 'paymentMethod',
@@ -54,15 +56,15 @@ export default function PaymentHistoryTable() {
       selector: (row) => `${row.paymentMethod}`,
       wrap: true,
       sortable: true,
-      width: '20%',
-      cell: (props) => <div className="cellEllipse">{props.paymentMethod}</div>
+      minWidth: '140px',
+      cell: (props) => <EclipsesTextcss str={props.paymentMethod} maxWidth={130} />
     },
 
     {
       id: 'paymentInitiationDate',
       name: t('paymentInvoices.history.table.paymentInitiationDate'),
       selector: (row) => `${row.paymentInitiationDate}`,
-      width: '20%',
+      minWidth: '160px',
       sortable: true,
       cell: (props) => <div className="cellEllipse">{dayjs(props.paymentInitiationDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
     },
@@ -71,6 +73,8 @@ export default function PaymentHistoryTable() {
       name: t('paymentInvoices.history.table.paymentStatus'),
       selector: (row) => `${row.paymentStatus}`,
       sortable: true,
+      width: '140px',
+      center: true,
       cell: (props) => (
         <div className="status-container">
           {PAYMENT_STATUS[props?.paymentStatus.toUpperCase()] ? (
@@ -88,7 +92,8 @@ export default function PaymentHistoryTable() {
       id: 'totalAuthorizedPaymentAmount',
       name: t('paymentInvoices.history.table.totalAuthorizedPaymentAmt'),
       selector: (row) => `${row.totalAuthorizedPaymentAmount}`,
-      width: '20%',
+      minWidth: '120px',
+      maxWidth: '220px',
       sortable: true,
       cell: (props) => (
         <div className="cellEllipse align-items-right">
@@ -141,8 +146,7 @@ export default function PaymentHistoryTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}
-          >
+            }}>
             <Loader variant="circular" />
           </div>
         }

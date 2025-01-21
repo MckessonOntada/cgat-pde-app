@@ -8,7 +8,7 @@ import { Button } from '@mckesson/mcp-component-library';
 
 export default function PendingPayments(params) {
   const { t } = useTranslate();
-  const { actualData, applyFilters, clearFilters } = usePendingPayments();
+  const { actualData, applyFilters, clearFilters, exportPDF } = usePendingPayments();
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
@@ -47,7 +47,7 @@ export default function PendingPayments(params) {
       </div>
       <div className="MCP-table-wrapper">
         <div className="table-header">
-          <Button variant="secondary" onClick={() => {}} size="sm" disabled>
+          <Button variant="secondary" onClick={() => exportPDF()} size="sm" >
             {t('paymentInvoices.CS.ExportExcel')}
           </Button>
         </div>

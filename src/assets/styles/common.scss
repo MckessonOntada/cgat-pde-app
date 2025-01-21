@@ -366,6 +366,15 @@ div.disable-all {
 
   .fieldValue {
     font-size: var(--brand-font-size--large);
+
+    .dollarSign {
+      span {
+        top: -4px;
+        font-size: var(--brand-font-size--10);
+        position: relative;
+        left: -1px;
+      }
+    }
   }
 
   &.col-span-4 {
@@ -531,4 +540,34 @@ div.disable-all {
 
 .selected-item-text {
   font-size: var(--brand-font-size--large) !important;
+}
+
+.max-container {
+  margin: 0px auto;
+}
+
+@media only screen and (min-width: 576px) {}
+
+@media only screen and (min-width: 992px) {}
+
+@media only screen and (min-width: 1200px) {
+  .max-container {
+    max-width: 1120px;
+  }
+}
+
+@media only screen and (min-width: 1360px) {
+  .max-container {
+    max-width: 1280px;
+  }
+}
+
+@media only screen and (min-width: 1920px) {
+  .max-container {
+    max-width: 1640px;
+  }
+}
+
+.MuiDialog-paperFullWidth {
+  max-width: 640px !important;
 }

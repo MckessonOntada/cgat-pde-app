@@ -6,5 +6,21 @@ export const LoginMessagesEN = {
   'header.label.systemAdminView': 'System Admin View',
   'header.label.loggedInAs': 'logged in as {{impersonateFullName}}',
   'button.captions.exitUserView': 'Exit User View',
-  'widget.footer.contextmessage': 'If you need further assistance, please contact support at help@mckesson.com'
+  'widget.footer.contextmessage': 'If you need further assistance, please contact support at help@mckesson.com',
+  'login.header.1': 'Advancing',
+  'login.header.2': 'Health Outcomes for All',
+  'login.page.desc.1' : 'Solutions for your pharmacy, hospital,',
+  'login.page.desc.2' : 'Organization or biopharma company',
+  'login.welcome':'Welcome !',
+  'login.ordringPortal': 'Ordering Portal',
+  'login.details':'Welcome to our Cell & Gene Therapy platform, where excellence in patient care meets cutting-edge innovation.',
+  'login.note':'Note',
+  'footer.terms':'Terms',
+  'footer.privacy':'Privacy Notice',
+  'footer.info':'Do not sell my information',
+  'footer.help': 'Help',
+  'footer.help.content': 'User Help Content',
+  'footer.contant':'Contact',
+  'footer.contant.no':'Contact us at: 1-855-887-6788',
+  'footer.copyright':'© 2024 McKesson Corporation Health Technology Products LLC.'
 };

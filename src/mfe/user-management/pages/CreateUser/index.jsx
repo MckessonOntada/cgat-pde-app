@@ -15,7 +15,14 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { handleApiError, serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import { RoutePaths } from '@src/routes/constants';
-import { ALPHABETIC_WITH_SPECIAL, ALPHABETIC_WITH_SPACE, ADDRESS_REGEX, ZIP_REGEX, PHONE_REGEX, FAX_REGEX } from '@src/components/form/ValidationRegExp';
+import {
+  ALPHABETIC_WITH_SPECIAL,
+  ALPHABETIC_WITH_SPACE,
+  ADDRESS_REGEX,
+  ZIP_REGEX,
+  PHONE_REGEX,
+  FAX_REGEX
+} from '@src/components/form/ValidationRegExp';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 
 const CreateUser = () => {
@@ -27,6 +34,7 @@ const CreateUser = () => {
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alert, setAlert] = useState(null);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const isSystemAdmin = AuthUtils.isSystemAdmin();
   const [isDirty, setIsDirty] = React.useState(false);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
 
@@ -56,7 +64,9 @@ const CreateUser = () => {
   } = useQuery({
     queryKey: [`users/${userId}`],
     queryFn: async () => {
-      const url = !isPending ? `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}` : `${ApiRoutes.USERS_PROVISIONING()}/${userId}`;
+      const url = !isPending
+        ? `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`
+        : `${ApiRoutes.USERS_PROVISIONING()}/${userId}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
 
       return res.data;
@@ -67,7 +77,11 @@ const CreateUser = () => {
 
   const { mutate, isLoading, isError, data } = useMutation(async ({ payload, isReject }) => {
     if (isEdit || isBack) {
-      const updateUser = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.PATCH, payload);
+      const updateUser = await HttpResourceService.callRest(
+        `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`,
+        httpVerb.PATCH,
+        payload
+      );
       return updateUser.data;
     } else if (isPending) {
       const reqParams = {
@@ -75,9 +89,17 @@ const CreateUser = () => {
       };
       if (!isReject) {
         // For approval, first create the user
-        const createUserResponse = await HttpResourceService.callRest(`${ApiRoutes.USERS()}?${serializeParams(requestParams)}`, httpVerb.POST, payload);
+        const createUserResponse = await HttpResourceService.callRest(
+          `${ApiRoutes.USERS()}?${serializeParams(requestParams)}`,
+          httpVerb.POST,
+          payload
+        );
         // Then, approve the user
-        const approveResponse = await HttpResourceService.callRest(`${ApiRoutes.USERS_PROVISIONING()}/${userId}/status?${serializeParams(reqParams)}`, httpVerb.PATCH, payload);
+        const approveResponse = await HttpResourceService.callRest(
+          `${ApiRoutes.USERS_PROVISIONING()}/${userId}/status?${serializeParams(reqParams)}`,
+          httpVerb.PATCH,
+          payload
+        );
         // Return both responses for the approval
         return {
           createUser: createUserResponse.data,
@@ -85,10 +107,18 @@ const CreateUser = () => {
         };
       }
       // For rejection,
-      const rejectResponse = await HttpResourceService.callRest(`${ApiRoutes.USERS_PROVISIONING()}/${userId}/status?${serializeParams(reqParams)}`, httpVerb.PATCH, payload);
+      const rejectResponse = await HttpResourceService.callRest(
+        `${ApiRoutes.USERS_PROVISIONING()}/${userId}/status?${serializeParams(reqParams)}`,
+        httpVerb.PATCH,
+        payload
+      );
       return rejectResponse.data;
     } else {
-      const createUserResponse = await HttpResourceService.callRest(`${ApiRoutes.USERS()}?${serializeParams(requestParams)}`, httpVerb.POST, payload);
+      const createUserResponse = await HttpResourceService.callRest(
+        `${ApiRoutes.USERS()}?${serializeParams(requestParams)}`,
+        httpVerb.POST,
+        payload
+      );
       return {
         createUser: createUserResponse.data
       };
@@ -127,7 +157,11 @@ const CreateUser = () => {
         .min(2, t('userManagement.create_user.validation.first_name_min_max'))
         .required(t('userManagement.create_user.validation.first_name_required'))
         .max(50, t('userManagement.create_user.validation.first_name_min_max')),
-      middleName: Yup.string().matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.middle_name')).min(2, t('userManagement.create_user.validation.middle_name_min_max')).max(50, t('userManagement.create_user.validation.middle_name_min_max')).nullable(),
+      middleName: Yup.string()
+        .matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.middle_name'))
+        .min(2, t('userManagement.create_user.validation.middle_name_min_max'))
+        .max(50, t('userManagement.create_user.validation.middle_name_min_max'))
+        .nullable(),
       lastName: Yup.string()
         .matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.last_name')) // Only alphabets
         .min(2, t('userManagement.create_user.validation.last_name_min_max'))
@@ -136,11 +170,15 @@ const CreateUser = () => {
     }),
 
     contact: Yup.object({
-      email: Yup.string().email(t('userManagement.create_user.validation.invalid_email')).required(t('userManagement.create_user.validation.email_required')),
+      email: Yup.string()
+        .email(t('userManagement.create_user.validation.invalid_email'))
+        .required(t('userManagement.create_user.validation.email_required')),
       phone: Yup.string()
         .matches(PHONE_REGEX, t('userManagement.create_user.validation.phone_no')) // 10 digits only
         .required(t('userManagement.create_user.validation.phone_no_required')),
-      fax: Yup.string().matches(FAX_REGEX, t('userManagement.create_user.validation.fax')).max(15, t('userManagement.create_user.validation.fax_max'))
+      fax: Yup.string()
+        .matches(FAX_REGEX, t('userManagement.create_user.validation.fax'))
+        .max(15, t('userManagement.create_user.validation.fax_max'))
     }),
 
     address: Yup.object({
@@ -191,9 +229,14 @@ const CreateUser = () => {
       {
         onSuccess: (response) => {
           console.log('User created/updated successfully:', response);
-          navigate(isEdit ? `/${isSystemAdminView ? 'system-admin' : 'user'}/${response?.createUser?.id ? response.createUser?.id : userId}` : `../${PATHS.userPermissions}/${response?.createUser?.id ? response.createUser?.id : userId}`, {
-            state: { permissionsData: permissionsData }
-          });
+          navigate(
+            isEdit
+              ? `/admin/user/${response?.createUser?.id ? response.createUser?.id : userId}`
+              : `../${PATHS.userPermissions}/${response?.createUser?.id ? response.createUser?.id : userId}`,
+            {
+              state: { permissionsData: permissionsData }
+            }
+          );
         },
         onError: (error) => {
           const errorKey = handleApiError(error);
@@ -237,8 +280,10 @@ const CreateUser = () => {
         </Button>
       </div>
 
-      <ModuleHeader heading={<Heading as="h1">{t(isSystemAdminView ? 'userManagement.create_sysadmin' : 'userManagement.create_user')}</Heading>} />
-      {!isEdit && (
+      <ModuleHeader
+        heading={<Heading as="h1">{t(isSystemAdminView ? 'userManagement.create_sysadmin' : 'userManagement.create_user')}</Heading>}
+      />
+      {!isEdit && !isSystemAdmin && (
         <div className="stepper">
           <Stepper
             activeIndex={1}
@@ -250,13 +295,10 @@ const CreateUser = () => {
               {
                 label: t('userManagement.stepper.option.roles_and_permissions')
               },
-              ...(isSystemAdminView
-                ? [] // Exclude the third step
-                : [
-                    {
-                      label: t('userManagement.stepper.option.associate_accounts')
-                    }
-                  ])
+
+              {
+                label: t('userManagement.stepper.option.associate_accounts')
+              }
             ]}
           />
         </div>
@@ -280,7 +322,13 @@ const CreateUser = () => {
           return (
             <Form>
               <div className="MCP-panel-container">
-                <Heading as="h2">{t(isSystemAdminView ? 'userManagement.create_user.details_to_create_sysadmin' : 'userManagement.create_user.details_to_create_user')}</Heading>
+                {/* <Heading as="h2">
+                  {t(
+                    isSystemAdminView
+                      ? 'userManagement.create_user.details_to_create_sysadmin'
+                      : 'userManagement.create_user.details_to_create_user'
+                  )}
+                </Heading> */}
                 <UserDetailsFormSegment />
               </div>
               <div className={'buttonGroup'}>
@@ -300,7 +348,13 @@ const CreateUser = () => {
           );
         }}
       </Formik>
-      <DiscardChangesModal heading="Discard Changes" description="You have changed user details. Do you still want to go back? Your changes will be discarded!" isOpen={Boolean(modalSuccessCallback)} onClose={() => setModalSuccessCallback(null)} onConfirm={handleNavigate} />
+      <DiscardChangesModal
+        heading="Discard Changes"
+        description="You have changed user details. Do you still want to go back? Your changes will be discarded!"
+        isOpen={Boolean(modalSuccessCallback)}
+        onClose={() => setModalSuccessCallback(null)}
+        onConfirm={handleNavigate}
+      />
     </div>
   );
 };
