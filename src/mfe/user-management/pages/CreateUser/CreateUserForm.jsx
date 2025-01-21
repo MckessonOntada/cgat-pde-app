@@ -57,9 +57,9 @@ const UserDetailsFormSegment = () => {
         <div>
           <div className="headingBox">
             <Heading as="h3">{t('userManagement.create_user.contact_details')}</Heading>
-            <p className="form-instruction">
+            {/* <p className="form-instruction">
               <Required id="Required"></Required> {t('userManagement.create_user.required')}
-            </p>
+            </p> */}
           </div>
           <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 line-height align-items-start">
             <Field

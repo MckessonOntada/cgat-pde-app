@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
 
 export default function PaymentHistory(params) {
   const { t } = useTranslate();
-  const { applyFilters, clearFilters, actualData } = usePaymentHistory();
+  const { applyFilters, clearFilters, actualData, exportPDF } = usePaymentHistory();
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
@@ -51,7 +51,12 @@ export default function PaymentHistory(params) {
         />
       </div>
       <div className="table-header">
-        <Button variant="secondary" onClick={() => {}} size="sm" disabled>
+        <Button
+          variant="secondary"
+          onClick={() => {
+            exportPDF();
+          }}
+          size="sm">
           {t('paymentInvoices.CS.ExportExcel')}
         </Button>
       </div>

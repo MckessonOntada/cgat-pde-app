@@ -7,7 +7,7 @@ import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg'
 import './ViewOrg.scss';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { RoutePaths } from '@src/routes/constants';
-import { Button, Heading, Loader, Alert, Stepper } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { PATHS as InternalPaths } from '../../routes/constants';
 import ModuleHeader from '@src/components/module-header';
@@ -54,7 +54,7 @@ export default function ViewOrganization() {
   useEffect(() => {
     if (updateState.isSuccess) {
       setIsAlertVisible(true);
-      setAlertDescription(`${updateState.recCount} new acounts has been successfully added to the organziation`);
+      setAlertDescription(`${updateState.recCount} ${t('orgManagement.messages.accountlinkSuccess')}`);
       const timer = setTimeout(() => {
         handleAlertClose;
       }, 10000);
@@ -128,7 +128,7 @@ export default function ViewOrganization() {
         </Button>
       </div>
       {!addNewAccounts && <ModuleHeader heading={<Heading as="h1">{t('orgManagement.create_org.org-details')}</Heading>} />}
-      {!isView && (
+      {/* {!isView && (
         <div className="stepper">
           <Stepper
             activeIndex={2}
@@ -143,10 +143,13 @@ export default function ViewOrganization() {
             ]}
           />
         </div>
-      )}
+      )} */}
       {isView && !addNewAccounts && data && (
         <div className="details-view-container">
-          <DetailsView data={data} onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: { ...data, isEdit: true } }, true)} />
+          <DetailsView
+            data={data}
+            onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: { ...data, isEdit: true } }, true)}
+          />
         </div>
       )}
       <ModuleHeader
@@ -163,16 +166,24 @@ export default function ViewOrganization() {
           )
         }
       />
-      {updateState.isSuccess && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
-      <OrganizationAccounts showSelectedAccounts={addNewAccounts} omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']} selectedRows={selectedAccounts} setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)} practiceId={addNewAccounts ? null : orgId} />
+      {updateState.isSuccess && isAlertVisible && (
+        <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />
+      )}
+      <OrganizationAccounts
+        showSelectedAccounts={addNewAccounts}
+        omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']}
+        selectedRows={selectedAccounts}
+        setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)}
+        practiceId={addNewAccounts ? null : orgId}
+      />
 
       {addNewAccounts && (
         <div className="btn-box">
-          <Button variant="secondary" onClick={handleCancel}>
+          <Button size="md" variant="secondary" onClick={handleCancel}>
             {t('orgManagement.button.back')}
           </Button>
-          <Button disabled={selectedAccounts?.length <= 0} onClick={addNewAccountsClick}>
-            {t(isView ? 'orgManagement.add.account' : selectedCount > 0 ? 'orgManagement.create_org' : 'orgManagement.add.viewsummary')}
+          <Button size="md" disabled={selectedAccounts?.length <= 0} onClick={addNewAccountsClick}>
+            {t(isView ? 'orgManagement.add.account' : 'orgManagement.create_org')}
           </Button>
         </div>
       )}

@@ -28,6 +28,7 @@ const constructOrderManagementServiceUrl = (uri) => {
 const ApiRoutes = Object.freeze({
   GET_CGAT_PDE_OKTA_CONFIG: constructUserManagementServicePublicUrl('public/idpConfig'),
   USERS: () => constructUserManagementServiceUrl(`users`),
+  LOGO: `${USERMANAGEMENT_SERVICE_BASE_URL}api/practice`,
   POST_SIGNUP_USER: `${USERMANAGEMENT_SERVICE_BASE_URL}api/users-provisioning-requests`,
   USERS_PROVISIONING: () => constructUserManagementServiceUrl('users-provisioning-requests'),
   USERS_PROVISIONING_ORGLIST_PUBLIC: constructUserManagementServicePublicUrl('users-provisioning-requests/practices'),
@@ -59,8 +60,13 @@ const ApiRoutes = Object.freeze({
   ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`),
   CUSTOMER_STATEMENTS_LISTING: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/statements`),
   EXPORT_CUSTOMER_STATEMENTS: (data) => constructOrderManagementServiceUrl(`account/${data.accountNumber}/statements/${data.docNo}`),
+  EXPORT_CUSTOMER_STATEMENTS_EXCEL: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/statements/export`),
   INVENTORY: () => constructOrderManagementServiceUrl(`inventory`),
   THERAPIES: (therapyId) => constructUserManagementServicePublicUrl(`therapies/${therapyId}`),
+  EXPORT_PAYMENT_HISTORY: (data) => constructOrderManagementServiceUrl(`account/${data.accountNumber}/payments/history/export`),
+  EXPORT_INVOICES_EXCEL: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/open-invoices/export`),
+  EXPORT_CREDITS_EXCEL: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/open-invoices/credit/export`),
+  EXPORT_PENDING_PAYMENT_EXCEL: (data) =>constructOrderManagementServiceUrl(`account/${data.accountNumber}/payments/pending/export`),
 });
 
 export default ApiRoutes;

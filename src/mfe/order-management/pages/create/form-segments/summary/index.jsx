@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './Summary.module.scss';
 import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg';
 import ModuleHeader from '@src/components/module-header';
-import { Button, CheckboxGroup, Stepper, Heading, Loader } from '@mckesson/mcp-component-library';
+import { Button, Modal, RadioGroup, CheckboxGroup, Stepper, Heading, Loader, Badge } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
@@ -19,17 +19,32 @@ import { useMutation, useQuery } from 'react-query';
 import { RoutePaths } from '@src/routes/constants';
 import { StatusEnum } from '../../../orders/constants';
 import { renderModal } from '@src/util/ModalUtil';
+import FloatingDrawer from '@src/components/floating-drawer';
+import CommentPanel from './CommentPanel';
+import AuthUtils from '@src/util/AuthUtils';
+
+const ALERT_CONTAINER_ID = 'summary-alert-container';
+const BUTTON_ACTIONS = {
+  SUBMIT: 'submit',
+  APPROVE: 'approve',
+  REJECT: 'reject'
+};
+const ORDER_TYPES = {
+  PAP_ORDER: 'PAP ORDER',
+  NON_PAP_ORDER: 'NON PAP ORDER'
+};
 
 const Summary = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { isFetching, formState, editByStage, setCurrentOrder } = useManageOrder();
-  const { orderId } = useParams();
   const location = useLocation();
-  const { isEdit = false, isApprover = false, isSimulate = false } = location.state || {};
-  const alertContainerId = 'summary-alert-container';
+  const { orderId } = useParams();
   const { showAlert } = useAlert();
   const forms = FormList(t);
+  const [isPAPOrderConfirmModalOpen, setIsPAPOrderConfirmModalOpen] = React.useState(false);
+  const { isFetching, setActiveRecord, formState, editByStage, setCurrentOrder } = useManageOrder();
+  const { isApprover = false, isSimulate = false } = location.state || {};
+  const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
   const {
     therapy = {},
     catalog = {},
@@ -38,18 +53,25 @@ const Summary = () => {
     patient,
     additionalDetails = {},
     patientDetailsRequired = false,
+    rejectionDetails,
+    paporder: isPapOrder,
     status
   } = formState.activeRecord || {};
+
+  const isImpersonated = Boolean(AuthUtils.getImpersonateId()),
+    isRejected = status === StatusEnum.REJECTED,
+    isConcluded = status === StatusEnum.REJECTED || status === StatusEnum.SUBMITTED;
+
   const { isLoading, data: simulationData = {} } = useQuery({
     queryKey: ['orderDetails', orderId],
     queryFn: async () => {
       const response = await OrderService.simulateOrder(orderId);
       return response;
     },
-    enabled: isSimulate || isApprover,
+    enabled: Boolean(status && !isConcluded && (isSimulate || isApprover)),
     refetchOnWindowFocus: false,
     onError: (error) => {
-      showAlert({ description: error?.response?.data?.message, type: 'error', anchorEl: alertContainerId });
+      showAlert({ description: error?.response?.data?.message, type: 'error', anchorEl: ALERT_CONTAINER_ID });
     }
   });
 
@@ -58,24 +80,24 @@ const Summary = () => {
     const infoMessages = simulationData.infoMessages?.map((msg) => msg.value) || [];
 
     if (warningMessages.length > 0) {
-      showAlert({ description: err.message, type: 'warning', anchorEl: alertContainerId });
+      showAlert({ description: err.message, type: 'warning', anchorEl: ALERT_CONTAINER_ID });
     }
 
     if (infoMessages.length > 0) {
-      showAlert({ description: err.message, type: 'infor', anchorEl: alertContainerId });
+      showAlert({ description: err.message, type: 'info', anchorEl: ALERT_CONTAINER_ID });
     }
   }
 
-  const submitOrder = useMutation(async ({ action }) => await OrderService.submitOrder(orderId), {
-    onSuccess: (result, { action }) => {
-      if (action === 'submit') {
+  const { mutate: submitOrder } = useMutation(async ({ action, isPAPOrder }) => await OrderService.submitOrder(orderId, isPAPOrder), {
+    onSuccess: (_result, { action }) => {
+      if (action === BUTTON_ACTIONS.SUBMIT) {
         navigate(`../${orderId}/order-confirmed`);
       } else {
         navigate(`../${orderId}/order-confirmed`, { state: { isApproved: true } });
       }
     },
     onError: (err) => {
-      showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
+      showAlert({ description: err.message, type: 'error', anchorEl: ALERT_CONTAINER_ID });
     }
   });
 
@@ -89,11 +111,8 @@ const Summary = () => {
     label: t('messages.orderPlacementAcknowledgement'),
     value: false
   });
-  const handleChange = () => {
-    const updatedOptions = { ...agreeCheckboxOptions, isChecked: !agreeCheckboxOptions.isChecked };
 
-    setAgreeCheckboxOptions(updatedOptions);
-  };
+  const handleChange = () => setAgreeCheckboxOptions({ ...agreeCheckboxOptions, isChecked: !agreeCheckboxOptions.isChecked });
 
   const handleOnBackButtonClick = () => {
     if (isApprover || isSimulate) {
@@ -104,25 +123,36 @@ const Summary = () => {
     }
   };
 
+  const handleOnSubmitPapOrder = (orderType) => {
+    const isPAPOrder = orderType === ORDER_TYPES.PAP_ORDER;
+    setIsPAPOrderConfirmModalOpen(false);
+    submitOrder({ action: BUTTON_ACTIONS.SUBMIT, isPAPOrder });
+  };
+
   const handleOnSubmit = () => {
     if (agreeCheckboxOptions.isChecked) {
-      submitOrder.mutate({ action: 'submit' });
+      if (isImpersonated) {
+        setIsPAPOrderConfirmModalOpen(true);
+      } else {
+        submitOrder({ action: BUTTON_ACTIONS.SUBMIT });
+      }
     }
     return;
   };
 
-  const handleReject = () => {
-    return;
-  };
   const handleApprove = () => {
-    submitOrder.mutate({ action: 'approve' });
+    submitOrder({ action: BUTTON_ACTIONS.APPROVE });
   };
 
   const handleOnApprove = () => {
     if (agreeCheckboxOptions.isChecked) {
       renderModal({
         title: t('messages.header.confirmation'),
-        bodyContent: <h3>{t('messages.confirmation.approve')},</h3>,
+        bodyContent: (
+          <div className="MCP-modal-body">
+            <p>{t('messages.confirmation.approve')}</p>
+          </div>
+        ),
         footerActions: {
           cancel: {
             label: t('label.no')
@@ -138,62 +168,116 @@ const Summary = () => {
     }
   };
 
-  const handleOnReject = () => {
-    if (agreeCheckboxOptions.isChecked) {
-      renderModal({
-        title: t('messages.header.warning'),
-        bodyContent: <h3>{t('messages.confirmation.reject')},</h3>,
-        footerActions: {
-          cancel: {
-            label: t('label.no')
-          },
-          confirm: {
-            label: t('label.yes'),
-            action: () => {
-              handleReject();
-            }
-          }
-        }
-      });
-    }
-  };
-
   const handleOnBackToOrders = () => {
     navigate(RoutePaths.pathOrderManagement);
   };
 
   const handleOnEditSection = (stage) => {
-    editByStage(stage);
-    switch (stage) {
-      case ORDER_STAGES.THERAPY_SELECTION: {
-        navigate(`../edit-order/${orderId}`, { state: { isEdit: true, isApprover: isApprover } });
-        break;
-      }
-      case ORDER_STAGES.ACCOUNT_DETAILS: {
-        navigate(`../${orderId}/accounts`, { state: { isEdit: true, isApprover: isApprover } });
-        break;
-      }
-      case ORDER_STAGES.PATIENT_DETAILS: {
-        navigate(`../${orderId}/patient`, { state: { isEdit: true, isApprover: isApprover } });
-        break;
-      }
-      case ORDER_STAGES.ADDITIONAL_DETAILS: {
-        navigate(`../${orderId}/additional-details`, { state: { isEdit: true, isApprover: isApprover } });
-        break;
-      }
-      default: {
-        navigate('/orders');
-        break;
-      }
+    if (isPapOrder) {
+      renderModal({
+        title: t('prompt.title.alert'),
+        bodyContent: (
+          <div className="MCP-modal-body">
+            <p>{t('prompt.message.editRestriction')}</p>
+          </div>
+        )
+      });
+      return;
     }
+    editByStage(stage);
+    const stageRoutes = {
+      [ORDER_STAGES.THERAPY_SELECTION]: `../edit-order/${orderId}`,
+      [ORDER_STAGES.ACCOUNT_DETAILS]: `../${orderId}/accounts`,
+      [ORDER_STAGES.PATIENT_DETAILS]: `../${orderId}/patient`,
+      [ORDER_STAGES.ADDITIONAL_DETAILS]: `../${orderId}/additional-details`
+    };
+
+    const route = stageRoutes[stage] || '/orders';
+    navigate(route, { state: { isEdit: true, isApprover: isApprover } });
+  };
+
+  const handleAfterRejectOrder = (data) => {
+    setActiveRecord(data);
+    setIsCommentPanelOpen(false);
+  };
+
+  const getAllowedControls = () => {
+    const controls = [];
+    const controlPrintSummary = (
+      <Button disabled={true} size={'md'} variant="secondary">
+        {t('captions.btnPrintSummary')}
+      </Button>
+    );
+
+    const controlCancel = (
+      <Button size={'md'} variant="secondary" onClick={() => alert('cancel')}>
+        {t('captions.btnCancel')}
+      </Button>
+    );
+
+    const controlReSubmitOrder = (
+      <Button
+        size={'md'}
+        variant="primary"
+        onClick={() => {
+          alert('resubmit order');
+        }}>
+        {t('captions.btnReSubmitOrder')}
+      </Button>
+    );
+
+    const controlBack = (
+      <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
+        {t('captions.btnBack')}
+      </Button>
+    );
+
+    const controlSubmitOrder = (
+      <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS]}>
+        <Button
+          size={'md'}
+          variant="primary"
+          type="submit"
+          onClick={handleOnSubmit}
+          disabled={!isAgreed || formState.activeRecord?.status === StatusEnum.SUBMITTED}>
+          {t('captions.btnSubmitOrder')}
+        </Button>
+      </PermittedComponent>
+    );
+
+    const controlRejectOrder = (
+      <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REJECT_ORDER]}>
+        <Button size={'md'} variant="primary" type="submit" onClick={() => setIsCommentPanelOpen(true)} disabled={!isAgreed}>
+          {t('captions.btnRejectOrder')}
+        </Button>
+      </PermittedComponent>
+    );
+
+    const controlApproveOrder = (
+      <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.APPROVE_ORDERS]}>
+        <Button size={'md'} variant="primary" type="submit" onClick={handleOnApprove} disabled={!isAgreed}>
+          {t('captions.btnApproveOrder')}
+        </Button>
+      </PermittedComponent>
+    );
+
+    if (status === StatusEnum.REJECTED) {
+      controls.push(controlPrintSummary); //, controlCancel, controlReSubmitOrder);
+    } else if (!isApprover && status !== StatusEnum.SUBMITTED && status !== StatusEnum.APPROVAL_PENDING) {
+      controls.push(controlPrintSummary, controlBack, controlSubmitOrder);
+    } else if (isApprover) {
+      controls.push(controlBack, controlRejectOrder, controlApproveOrder);
+    }
+
+    return controls;
   };
 
   if (isFetching) {
     return <Loader />;
   }
 
-  const isAgreed = agreeCheckboxOptions.isChecked;
-  const hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover);
+  const isAgreed = agreeCheckboxOptions.isChecked,
+    hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected;
 
   return (
     <div className="MCP-module-wrapper">
@@ -208,12 +292,24 @@ const Summary = () => {
       {isApprover && <PageHeader heading={<Heading as="h1">{t('headings.reviewOrder')}</Heading>} />}
 
       <div className="MCP-module-body">
-        {!hideControls && (
+        {!hideControls && !isRejected && (
           <Stepper activeIndex={5} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} />
         )}
-        <div id={alertContainerId} />
+        <div id={ALERT_CONTAINER_ID} />
         <div className={'MCP-module-wrapper'}>
-          <ModuleHeader heading={<Heading as="h2">{t('labels.summary')}</Heading>} />
+          <ModuleHeader
+            heading={<Heading as="h2">{t('labels.summary')}</Heading>}
+            controls={
+              isRejected && (
+                <div class="row-space-between-center">
+                  <Badge text={t(`labels.status.${status.toLowerCase()}`)} type={'error'} />
+                  <Button size={'md'} variant="tertiary" onClick={() => setIsCommentPanelOpen(true)}>
+                    {t('captions.btnViewComments')}
+                  </Button>
+                </div>
+              )
+            }
+          />
           <div className={'MCP-module-body'}>
             <div className="MCP-panel-container">
               <ModuleHeader
@@ -225,7 +321,7 @@ const Summary = () => {
               <div class={styles.flexPanel}>
                 {(status === StatusEnum.SUBMITTED || isApprover) && <DetailSegment label={t('labels.orderId')} value={orderId} />}
                 <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
-                <DetailSegment label={t('labels.orderCost')} value={<p className={styles.price}>{orderCost}</p>} />
+                <DetailSegment label={t('labels.orderCost')} value={<p className={styles.price}><span>$</span>{orderCost}</p>} />
               </div>
             </div>
             <div className={'grid grid-gap-16 grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'}>
@@ -234,19 +330,17 @@ const Summary = () => {
                   className={styles.panelHeader}
                   heading={<Heading as="h3">{t('labels.therapy')}</Heading>}
                   controls={
-                    <>
-                      {!hideControls && (
-                        <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                          <Button
-                            size="md"
-                            variant="tertiary"
-                            onClick={() => handleOnEditSection(ORDER_STAGES.THERAPY_SELECTION)}
-                            Icon={() => <IconEditField />}>
-                            {t('captions.btnEdit')}
-                          </Button>
-                        </PermittedComponent>
-                      )}
-                    </>
+                    !hideControls && (
+                      <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                        <Button
+                          size="md"
+                          variant="tertiary"
+                          onClick={() => handleOnEditSection(ORDER_STAGES.THERAPY_SELECTION)}
+                          Icon={() => <IconEditField />}>
+                          {t('captions.btnEdit')}
+                        </Button>
+                      </PermittedComponent>
+                    )
                   }
                 />
                 <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
@@ -271,19 +365,17 @@ const Summary = () => {
                     className={styles.panelHeader}
                     heading={<Heading as="h3">{t('labels.accountDetails')}</Heading>}
                     controls={
-                      <>
-                        {!hideControls && (
-                          <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                            <Button
-                              size="md"
-                              variant="tertiary"
-                              onClick={() => handleOnEditSection(ORDER_STAGES.ACCOUNT_DETAILS)}
-                              Icon={() => <IconEditField />}>
-                              {t('captions.btnEdit')}
-                            </Button>
-                          </PermittedComponent>
-                        )}
-                      </>
+                      !hideControls && (
+                        <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                          <Button
+                            size="md"
+                            variant="tertiary"
+                            onClick={() => handleOnEditSection(ORDER_STAGES.ACCOUNT_DETAILS)}
+                            Icon={() => <IconEditField />}>
+                            {t('captions.btnEdit')}
+                          </Button>
+                        </PermittedComponent>
+                      )
                     }
                   />
                   <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2`}>
@@ -299,7 +391,8 @@ const Summary = () => {
                       className={styles.panelHeader}
                       heading={
                         <Heading as="h3">
-                          {patient?.patientInfo
+                          {patient?.patientInfo &&
+                          (patient.patientInfo.firstName || patient.patientInfo.middleName || patient.patientInfo.lastName)
                             ? [patient.patientInfo.firstName, patient.patientInfo.middleName, patient.patientInfo.lastName]
                                 .filter(Boolean)
                                 .join(' ')
@@ -307,19 +400,17 @@ const Summary = () => {
                         </Heading>
                       }
                       controls={
-                        <>
-                          {!hideControls && (
-                            <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                              <Button
-                                size="md"
-                                variant="tertiary"
-                                onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
-                                Icon={() => <IconEditField />}>
-                                {t('captions.btnEdit')}
-                              </Button>
-                            </PermittedComponent>
-                          )}
-                        </>
+                        !hideControls && (
+                          <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                            <Button
+                              size="md"
+                              variant="tertiary"
+                              onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
+                              Icon={() => <IconEditField />}>
+                              {t('captions.btnEdit')}
+                            </Button>
+                          </PermittedComponent>
+                        )
                       }
                     />
                     <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
@@ -333,24 +424,21 @@ const Summary = () => {
             </div>
 
             <div className="MCP-panel-container">
-              {}
               <ModuleHeader
                 className={styles.panelHeader}
                 heading={<Heading as="h3">{t('labels.additionalDetails')}</Heading>}
                 controls={
-                  <>
-                    {!hideControls && (
-                      <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                        <Button
-                          size="md"
-                          variant="tertiary"
-                          onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
-                          Icon={() => <IconEditField />}>
-                          {t('captions.btnEdit')}
-                        </Button>
-                      </PermittedComponent>
-                    )}
-                  </>
+                  !hideControls && (
+                    <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                      <Button
+                        size="md"
+                        variant="tertiary"
+                        onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
+                        Icon={() => <IconEditField />}>
+                        {t('captions.btnEdit')}
+                      </Button>
+                    </PermittedComponent>
+                  )
                 }
               />
               <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-6'}>
@@ -377,49 +465,49 @@ const Summary = () => {
               />
             </div>
           )}
-          <div className="controls">
-            {!hideControls && !isApprover && (
-              <>
-                <Button disabled={true} size={'md'} variant="secondary">
-                  {t('captions.btnPrintSummary')}
-                </Button>
-                <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
-                  {t('captions.btnBack')}
-                </Button>
-                <PermittedComponent
-                  permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS]}>
-                  <Button
-                    size={'md'}
-                    variant="primary"
-                    type="submit"
-                    onClick={handleOnSubmit}
-                    disabled={!isAgreed || formState.activeRecord?.status === StatusEnum.SUBMITTED}>
-                    {t('captions.btnSubmitOrder')}
-                  </Button>
-                </PermittedComponent>
-              </>
-            )}
-            {isApprover && (
-              <>
-                <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
-                  {t('captions.btnBack')}
-                </Button>
-                <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REJECT_ORDER]}>
-                  <Button size={'md'} variant="primary" type="submit" onClick={handleOnReject} disabled={!isAgreed}>
-                    {t('captions.btnRejectOrder')}
-                  </Button>
-                </PermittedComponent>
-                <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.APPROVE_ORDERS]}>
-                  <Button size={'md'} variant="primary" type="submit" onClick={handleOnApprove} disabled={!isAgreed}>
-                    {t('captions.btnApproveOrder')}
-                  </Button>
-                </PermittedComponent>
-              </>
-            )}
-          </div>
+          <div className="controls">{getAllowedControls()}</div>
         </div>
       </div>
+      <FloatingDrawer open={isCommentPanelOpen} anchor="right" onClose={() => setIsCommentPanelOpen(false)}>
+        <CommentPanel
+          readOnly={isRejected}
+          meta={{ orderId, rejectionDetails }}
+          onSuccess={handleAfterRejectOrder}
+          onClose={() => setIsCommentPanelOpen(false)}
+        />
+      </FloatingDrawer>
+      {isPAPOrderConfirmModalOpen && (
+        <PAPOrderTypeConfirmModal onClose={() => setIsPAPOrderConfirmModalOpen(false)} onSubmit={handleOnSubmitPapOrder} />
+      )}
     </div>
+  );
+};
+
+const PAPOrderTypeConfirmModal = ({ onClose, onSubmit }) => {
+  const { t } = useTranslate();
+  return (
+    <Modal
+      isOpen={true}
+      onClose={onClose}
+      modalTitle={t('prompt.title.alert')}
+      modalBody={
+        <div className={styles.papOptions}>
+          <p className={styles.title}>{t('prompt.message.submitOrder')}</p>
+          <p>{t('prompt.subMessage.submitOrder')}</p>
+        </div>
+      }
+      modalFooter={
+        <React.Fragment>
+          <Button size="md" onClick={() => onSubmit(ORDER_TYPES.NON_PAP_ORDER)} variant="secondary">
+            {t('captions.btnNo')}
+          </Button>
+          <Button size="md" onClick={() => onSubmit(ORDER_TYPES.PAP_ORDER)}>
+            {t('captions.btnYes')}
+          </Button>
+        </React.Fragment>
+      }
+      modalSize="md"
+    />
   );
 };
 

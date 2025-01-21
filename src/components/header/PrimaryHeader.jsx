@@ -60,6 +60,8 @@ const PrimaryHeader = () => {
     organization: { setOrganization, selectedOrganization }
   } = useSessionFeatures();
 
+  const { data: organizationLogo } = CommonDataService.useOrganizationLogo(selectedOrganization.logoUrl, selectedOrganization.id);
+
   const handleChange = (value) => {
     setSelectedOrg(value);
     setIsOpen(true);
@@ -95,6 +97,11 @@ const PrimaryHeader = () => {
             </Link>
           ) : (
             <Link to={''} id={''} className={`${styles.customheader}`}>
+              {organizationLogo && (
+                <div className={`${styles.logoContainer}`}>
+                  <img src={organizationLogo || ''} />
+                </div>
+              )}
               <h1>{selectedOrganization.name}</h1>
             </Link>
           )}
@@ -166,32 +173,34 @@ const PrimaryHeader = () => {
 
   return (
     <div className={`${styles.navContainer} ${styles.primary}`}>
-      <div className={styles.wrapper} id={''}>
-        {authState?.isAuthenticated ? (
-          <LeftSideView>
-            <AppLogo />
-          </LeftSideView>
-        ) : (
-          <div className={styles.navItemsLeft} id={''}>
-            {' '}
-            <div className={styles.branding}>
+      <div className="max-container">
+        <div className={styles.wrapper} id={''}>
+          {authState?.isAuthenticated ? (
+            <LeftSideView>
+              <AppLogo />
+            </LeftSideView>
+          ) : (
+            <div className={styles.navItemsLeft} id={''}>
               {' '}
-              <AppLogo />{' '}
+              <div className={styles.branding}>
+                {' '}
+                <AppLogo />{' '}
+              </div>
             </div>
+          )}
+          {authState?.isAuthenticated && (
+            <div className={styles.desktopOnly}>
+              <RightSideView />
+            </div>
+          )}
+          <div className={styles.mobileOnly}>
+            <button onClick={toggleDrawer} aria-label="Open drawer menu">
+              <IconMenu />
+            </button>
+            <FloatingDrawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>
+              <RightSideView />
+            </FloatingDrawer>
           </div>
-        )}
-        {authState?.isAuthenticated && (
-          <div className={styles.desktopOnly}>
-            <RightSideView />
-          </div>
-        )}
-        <div className={styles.mobileOnly}>
-          <button onClick={toggleDrawer} aria-label="Open drawer menu">
-            <IconMenu />
-          </button>
-          <FloatingDrawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>
-            <RightSideView />
-          </FloatingDrawer>
         </div>
       </div>
       <Modal
@@ -199,14 +208,18 @@ const PrimaryHeader = () => {
           id: 'xxxs-modal',
           isOpen,
           onClose: () => setIsOpen(false),
-          modalTitle: 'Confirmation message',
-          modalBody: <div>Are you sure want to change organization view ?</div>,
+          modalTitle: t('orgManagement.confirmationmessage'),
+          modalBody: <h3>{t('orgManagement.Orgchangemessage')}</h3>,
+
           modalFooter: (
             <React.Fragment>
-              <Button onClick={onCancelOrganizationChange} variant="secondary">
+              <Button onClick={onCancelOrganizationChange} variant="secondary" size="sm">
                 {t('orgManagement.button.cancel')}
               </Button>
-              <Button onClick={confirmChangeOrganization}> {t('orgManagement.button.confirm')}</Button>
+              <Button onClick={confirmChangeOrganization} size="sm">
+                {' '}
+                {t('orgManagement.button.confirm')}
+              </Button>
             </React.Fragment>
           ),
           modalSize: 'xxxs'

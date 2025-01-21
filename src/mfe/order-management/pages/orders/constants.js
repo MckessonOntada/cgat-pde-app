@@ -19,7 +19,9 @@ export const getTabs = (t) => [
 
 export const StatusEnum = {
   IN_DRAFT: 'IN_DRAFT',
+  PENDING: 'PENDING',
   APPROVAL_PENDING: 'APPROVAL_PENDING',
   SUBMITTED: 'SUBMITTED',
-  CANCELLED: 'CANCELLED'
+  CANCELLED: 'CANCELLED',
+  REJECTED: 'REJECTED'
 };

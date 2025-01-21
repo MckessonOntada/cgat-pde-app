@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
-import { Badge, Button, Heading, Switch, Alert, Modal, CheckboxGroup } from '@mckesson/mcp-component-library';
+import { Badge, Button, Heading, Switch, Alert, Modal, CheckboxGroup, IconButton } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
@@ -19,7 +19,6 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import UserAccounts from '@src/components/Accounts/Accounts';
-import { useDispatch } from 'react-redux';
 import PermittedComponent from '@src/components/permitted-component';
 
 function getBackgroundColorByRole(role) {
@@ -52,13 +51,17 @@ const UserDetail = () => {
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const [alertDescription, setAlertDescription] = useState('');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertType, setAlertType] = useState(null);
   const location = useLocation();
-  const isSuccess = location.state?.isSuccess || false;
+  const { isSuccess = false, isPending = false } = location.state || {};
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const [isOpen, setIsOpen] = useState(false);
   const [isDeactivate, setIsDeactivate] = useState(false);
+  const [isProvisioned, setIsProvisioned] = useState(false);
   const [isConsentModalOpen, setIsConsentModalOpen] = React.useState(false);
   const isImpersonateLoggedIn = Boolean(AuthUtils.getImpersonateId());
+  const isSelf = userId === AuthUtils.getUserId();
+  const [duration, setDuration] = React.useState(10000);
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
@@ -66,18 +69,70 @@ const UserDetail = () => {
   const { isLoading, isError, data, refetch } = useQuery({
     queryKey: [`users/${userId}`],
     queryFn: async () => {
-      const res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.GET, {});
+      const url = isPending
+        ? `${ApiRoutes.USERS_PROVISIONING()}/${userId}`
+        : `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`;
+      const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       return res.data;
     },
     enabled: !!userId,
     refetchOnWindowFocus: false
   });
 
+  const mutation = useMutation(
+    async () => {
+      const res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}/retry-okta-provisioning`, httpVerb.POST, null);
+      return res.data;
+    },
+    {
+      onSuccess: (res) => {
+        setIsAlertVisible(true);
+        setIsProvisioned(true);
+        setAlertType('success');
+        setAlertDescription(t('messages.provisionedsuccess'));
+        setDuration(10000);
+      },
+      onError: (error) => {
+        setIsAlertVisible(true);
+        setIsProvisioned(true);
+        setAlertType('error');
+        setAlertDescription(t('messages.provisionederrror'));
+        setDuration(null);
+      }
+    }
+  );
+
+  useEffect(() => {
+    if (data?.provisionedInOktaStatus !== 'PROVISIONED' && data?.isActive) {
+      setIsAlertVisible(true);
+      setIsProvisioned(true);
+      setAlertType('error');
+      setDuration(null);
+      setAlertDescription(
+        <>
+          {t('userManagement.provision.message', {
+            click: (
+              <span>
+                <IconButton
+                  label={t('userManagement.button.clickhere')}
+                  size="lg"
+                  iconButton={false}
+                  textButton={true}
+                  onClick={handleRetry}
+                />
+              </span>
+            )
+          })}
+        </>
+      );
+    }
+  }, [data?.provisionedInOktaStatus]);
+
   useEffect(() => {
     if (!isSuccess) return;
 
     setIsAlertVisible(true);
-    setAlertDescription(`${location.state.recCount} new accounts have been successfully linked to this user.`);
+    setAlertDescription(`${location.state.recCount} ${t('messages.accountlinkSuccess')}.`);
 
     const timer = setTimeout(handleAlertClose, 10000);
 
@@ -91,6 +146,12 @@ const UserDetail = () => {
 
   const goBack = () => {
     navigate(isSystemAdminView ? RoutePaths.pathSystemAdminManagement : RoutePaths.pathUserManagement);
+  };
+
+  const handleRetry = () => {
+    if (userId) {
+      mutation.mutate();
+    }
   };
 
   const onRemoveAccount = useCallback(
@@ -119,12 +180,16 @@ const UserDetail = () => {
       refetch();
       setIsDeactivate(true);
       setIsAlertVisible(true);
+      setAlertType('success');
       setAlertDescription(t('messages.user_deactivate_success'));
+      setDuration(10000);
     },
     onError: (error) => {
       console.error(`Failed to deactivate user:`, error);
       setIsDeactivate(true);
       setIsAlertVisible(true);
+      setAlertType('error');
+      setDuration(10000);
       setAlertDescription(t('messages.user_deactivate_failure'));
     }
   });
@@ -166,7 +231,7 @@ const UserDetail = () => {
     if (selectedUserId) {
       impersonatePromise(selectedUserId)
         .then((message) => {
-          navigate('/');
+          navigate('/?expelled=true');
         })
         .catch((error) => {
           console.log(`error ${error}`);
@@ -180,7 +245,7 @@ const UserDetail = () => {
   const userFullName = `${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName}`;
   const loggedUserId = Number(AuthUtils.getUserId());
 
-  const prePermissions = data?.isActive && data?.id !== loggedUserId && !isImpersonateLoggedIn && !AuthUtils.isSystemAdmin();
+  const prePermissions = data?.isActive && data?.id !== loggedUserId && !isImpersonateLoggedIn && !isSystemAdminView;
 
   return (
     <div className="MCP-module-wrapper">
@@ -189,8 +254,8 @@ const UserDetail = () => {
         <p>{t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}</p>
       </div>
 
-      {isDeactivate && isAlertVisible && (
-        <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />
+      {(isDeactivate || isProvisioned) && isAlertVisible && (
+        <Alert description={alertDescription} onClose={handleAlertClose} type={alertType} duration={duration} />
       )}
       <div className="MCP-module-body">
         <ModuleHeader
@@ -217,7 +282,7 @@ const UserDetail = () => {
               variant="secondary"
               className="button-icon"
               size="md"
-              disabled={!data?.isActive}
+              disabled={!data?.isActive || isSelf}
               onClick={() => navigate(`../${PATHS.editUser}/${userId}`, { state: { isEdit: true } })}>
               {t('userManagement.button.edit')}
             </Button>
@@ -243,7 +308,7 @@ const UserDetail = () => {
               <Switch
                 handleToggle={handleDeactivate}
                 id="id"
-                disabled={!data?.isActive}
+                disabled={!data?.isActive || isSelf}
                 label={data?.isActive ? t('userManagement.status.active') : ''}
                 labelPosition="right"
                 name="Toggle"
@@ -273,7 +338,7 @@ const UserDetail = () => {
 
             <div>
               <span className="view_label">{t('userManagement.create_user.inputLabel.fax')}</span>
-              <p className="label-text">{data?.contact.fax}</p>
+              <p className="label-text">{data?.contact.fax || '-'}</p>
             </div>
 
             <div>
@@ -302,7 +367,7 @@ const UserDetail = () => {
                 variant="secondary"
                 className="button-icon"
                 size="md"
-                disabled={!data?.isActive}
+                disabled={!data?.isActive || isSelf}
                 onClick={() => navigate(`../${PATHS.userPermissions}/${userId}`, { state: { isEdit: true, permissionsData: data } })}>
                 {t('userManagement.button.edit')}
               </Button>
@@ -341,7 +406,7 @@ const UserDetail = () => {
             <EmptyDataTable
               isLoading={isLoading}
               image={EmptyDataImage}
-              heading={t('message.emptyTableTitle')}
+              heading={t('message.userEmptyTableTitle')}
               description={t('userManagement.messages.emptysubtitle')}
             />
           )}
@@ -391,14 +456,20 @@ const UserDetail = () => {
           id: 'xxxs-modal',
           isOpen,
           onClose: () => setIsOpen(false),
-          modalTitle: 'Confirmation message',
-          modalBody: <h3>Are you sure you wish to Deactivate this User ?</h3>,
+          modalTitle: t('userManagement.confirmationMessage'),
+          modalBody: (
+            <div className="MCP-modal-body">
+              <p>{t('popup.userDeactivation.question')}</p>
+            </div>
+          ),
           modalFooter: (
             <React.Fragment>
-              <Button onClick={handleConfirmCancel} variant="secondary">
+              <Button size="md" onClick={handleConfirmCancel} variant="secondary">
                 {t('userManagement.label.cancel')}
               </Button>
-              <Button onClick={handleConfirmDeactivate}>{t('userManagement.button.deactivate')}</Button>
+              <Button size="md" onClick={handleConfirmDeactivate}>
+                {t('userManagement.button.deactivate')}
+              </Button>
             </React.Fragment>
           ),
           modalSize: 'xxxs'

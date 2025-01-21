@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import dayjs from 'dayjs';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { useAccountContext } from './AccountContext';
 import CommonUtils from '@src/util/CommonUtils';
+import { useTranslate } from '@src/translations/useTranslation';
+import { GeographicUtils } from '@src/util/GeographicUtil';
 
 const PaymentsCreditsContext = createContext();
 
@@ -22,7 +24,8 @@ const INITIAL_FILTER_STATE = {
   searchQuery: '',
   billNumber: [],
   soldToSite: [],
-  billDate: ''
+  billDate: '',
+  dueDate: ''
 };
 
 const INITIAL_SORT_STATE = {
@@ -38,6 +41,7 @@ const INITIAL_PAGINATION_STATE = {
 };
 
 export const PaymentsCreditsProvider = ({ children }) => {
+  const { t } = useTranslate();
   const [data, setData] = useState([]);
   const [unSlicedData, setUnSlicedData] = useState([]);
   const [actualData, setActualData] = useState([]);
@@ -69,12 +73,29 @@ export const PaymentsCreditsProvider = ({ children }) => {
         : true;
       const matchesBillDate =
         filters?.billDate?.length === 2
-          ? new Date(dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY')) >=
-              new Date(CommonUtils.isNonEmptyString(filters.billDate[0]) ? dayjs(filters.billDate[0]).format('MM/DD/YYYY') : new Date()) &&
-            new Date(dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY')) <=
-              new Date(CommonUtils.isNonEmptyString(filters.billDate[1]) ? dayjs(filters.billDate[1]).format('MM/DD/YYYY') : new Date())
+          ? filters.billDate[0] != '' && filters.billDate[1] != ''
+            ? dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(filters.billDate[0]).format('MM/DD/YYYY') &&
+              dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(filters.billDate[1]).format('MM/DD/YYYY')
+            : filters.billDate[0] != ''
+            ? dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(filters.billDate[0]).format('MM/DD/YYYY')
+            : filters.billDate[1] != ''
+            ? dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(filters.billDate[1]).format('MM/DD/YYYY')
+            : true
           : true;
-      return matchesSearchQuery && matchesBillDate;
+
+      const matchesDueDate =
+        filters?.dueDate?.length === 2
+          ? filters.dueDate[0] != '' && filters.dueDate[1] != ''
+            ? dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(filters.dueDate[0]).format('MM/DD/YYYY') &&
+              dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(filters.dueDate[1]).format('MM/DD/YYYY')
+            : filters.dueDate[0] != ''
+            ? dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(filters.dueDate[0]).format('MM/DD/YYYY')
+            : filters.dueDate[1] != ''
+            ? dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(filters.dueDate[1]).format('MM/DD/YYYY')
+            : true
+          : true;
+
+      return matchesSearchQuery && matchesBillDate && matchesDueDate;
     });
 
     const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
@@ -171,13 +192,96 @@ export const PaymentsCreditsProvider = ({ children }) => {
     setData(_modifiedData.slice(startIndex, endIndex));
   };
 
-  const getSortLogic = () => {};
-
   const setPageNumber = (pageNumber) => {
     setPaginationConfig((prevConfig) => ({
       ...prevConfig,
       pageNumber
     }));
+  };
+
+  const { mutate: exportCreditsExcel } = useMutation(
+    async (data) =>
+      await HttpResourceService.callRest(
+        `${ApiRoutes.EXPORT_CREDITS_EXCEL(selectedAccount?.accountNumber)}`,
+        httpVerb.POST,
+        data,
+        undefined,
+        false,
+        false,
+        'blob' // Set responseType to 'blob'
+      ),
+    {
+      onSuccess: (response) => {
+        if (response && response.data) {
+          // Get the content-disposition header
+          const contentDisposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
+          let fileName = 'PaymentCredits.xlsx'; // Default name
+
+          // Try to extract the file name from the header
+          if (contentDisposition && contentDisposition.indexOf('filename=') !== -1) {
+            const matches = contentDisposition.match(/filename="([^"]+)"/);
+            if (matches && matches[1]) {
+              fileName = matches[1];
+            }
+          }
+
+          // Create a blob from the response data
+          const blob = new Blob([response.data], { type: 'application/xlsx' });
+
+          // Create a download link
+          const link = document.createElement('a');
+          link.href = window.URL.createObjectURL(blob);
+          link.download = fileName; // Use the extracted or default file name
+          link.click();
+
+          // Show success message
+          showSnackbar({
+            description: `${t('paymentInvoices.excel.export.success')}`,
+            type: 'success'
+          });
+        }
+      },
+      onError: (error) => {
+        if (error && error.response && error.response.data && error.response.data) {
+          showSnackbar({
+            description: CommonUtils.isNonEmptyString(error.response.data.message)
+              ? error.response.data.message
+              : t('paymentInvoices.excel.export.error'),
+            type: 'error'
+          });
+        }
+      }
+    }
+  );
+
+  const exportExcel = async () => {
+    exportCreditsExcel({
+      companyCode: selectedAccount?.companyCode,
+      salesOrg: selectedAccount?.salesOrg,
+      payerAccountNumber: selectedAccount?.accountNumber,
+      openInvoiceFilterDTO: {
+        searchTerm: filterConfig?.searchQuery || '',
+        paymentTerm: filterConfig?.paymentTerm || [],
+        status: filterConfig?.status || [],
+        billDateStart: CommonUtils.isNonEmptyString(filterConfig?.billDate[0])
+          ? dayjs(filterConfig?.billDate[0], 'MM/DD/YYYY').format('DD/MM/YYYY')
+          : '' || '',
+        billDateEnd: CommonUtils.isNonEmptyString(filterConfig?.billDate[1])
+          ? dayjs(filterConfig?.billDate[1], 'MM/DD/YYYY').format('DD/MM/YYYY')
+          : '' || '',
+        validFromStart: CommonUtils.isNonEmptyString(filterConfig?.dueDate[0])
+          ? dayjs(filterConfig?.dueDate[0], 'MM/DD/YYYY').format('DD/MM/YYYY')
+          : '' || '',
+        validFromEnd: CommonUtils.isNonEmptyString(filterConfig?.dueDate[1])
+          ? dayjs(filterConfig?.dueDate[1], 'MM/DD/YYYY').format('DD/MM/YYYY')
+          : '' || ''
+      },
+      excelMetaDataDTO: {
+        accountNumber: selectedAccount?.accountNumber,
+        name: selectedAccount?.accountName,
+        address: GeographicUtils.addressAggregator(selectedAccount)
+      }
+    });
   };
 
   const contextValue = {
@@ -192,7 +296,8 @@ export const PaymentsCreditsProvider = ({ children }) => {
     applyFilters,
     clearFilters,
     applySort,
-    setPageNumber
+    setPageNumber,
+    exportExcel
   };
   return <PaymentsCreditsContext.Provider value={contextValue}>{children}</PaymentsCreditsContext.Provider>;
 };

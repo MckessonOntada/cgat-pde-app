@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Formik, Form } from 'formik';
-import { Loader, Alert, Stepper, Button, Heading } from '@mckesson/mcp-component-library';
+import { Loader, Alert, Button, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import OrgDetailsFormSegment from './CreateOrgForm';
@@ -126,7 +126,7 @@ const CreateOrganization = () => {
 
       {isAlertVisible && <Alert type={alert.type} title={alert.title} description={alert.description} />}
 
-      {!isEdit && (
+      {/* {!isEdit && (
         <div className="stepper">
           <Stepper
             activeIndex={1}
@@ -141,7 +141,7 @@ const CreateOrganization = () => {
             ]}
           />
         </div>
-      )}
+      )} */}
 
       <Formik
         enableReinitialize
@@ -156,9 +156,9 @@ const CreateOrganization = () => {
         {(formik) => (
           <Form>
             <div className="container-box">
-              <div className="headingBox">
+              {/* <div className="headingBox">
                 <Heading as="h2">{t('orgManagement.createOrg.headerMessage')}</Heading>
-              </div>
+              </div> */}
               <OrgDetailsFormSegment formik={formik} />
             </div>
 

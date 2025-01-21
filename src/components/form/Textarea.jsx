@@ -3,18 +3,7 @@ import { TextareaInput, Label, TextError, Required } from '@mckesson/mcp-compone
 import { useTranslate } from '@src/translations/useTranslation';
 
 export default function Textarea(props) {
-  const {
-    id,
-    label,
-    value,
-    error,
-    isRequired,
-    maxCharLimit = 1000,
-    displayType = 'outline',
-    onChange,
-    onBlur,
-    ...rest
-  } = props;
+  const { id, label, value, error, isRequired, maxCharLimit = 1000, displayType = 'outline', onChange, onBlur, ...rest } = props;
 
   return (
     <div className="grid">
@@ -30,6 +19,7 @@ export default function Textarea(props) {
         showError={!!error}
         displayType={displayType}
         maxCharLimit={maxCharLimit}
+        value={value}
         {...rest}
       />
       {error && (

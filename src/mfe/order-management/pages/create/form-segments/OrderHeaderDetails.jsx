@@ -50,7 +50,11 @@ function OrderHeaderDetails({ therapyId, soldToAccountId, shipToAccountId, setIn
 
     detailsSegments.push(
       <div className={`price-wrapper col-span-${5 - detailsSegments.length}`}>
-        <DetailSegment label={t('labels.price')} value={`$${priceDetails.netPrice || '----'}`} />
+        <DetailSegment 
+          label={t('labels.price')} 
+          value={<span className="dollarSign"><span>$</span>{priceDetails.netPrice || '----'}</span>}
+        />
+        
       </div>
     );
 

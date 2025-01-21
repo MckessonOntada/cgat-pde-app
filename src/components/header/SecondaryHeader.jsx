@@ -7,7 +7,6 @@ import { useIntl } from 'react-intl';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useSessionFeatures from '@src/hooks/useSessionFeatures';
 import AuthUtils from '@src/util/AuthUtils';
-import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 import { SESSION_CONST } from '@src/constants/SessionConstants';
 
 const impersonateLogout = () => {
@@ -24,6 +23,7 @@ const impersonateLogout = () => {
 const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
   const intl = useIntl();
   const navigate = useNavigate();
+  const isSystemAdmin = AuthUtils.isSystemAdmin();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const impersonatedUsername = sessionStorage.getItem(SESSION_CONST.IMPERSONATE_USERNAME);
 
@@ -69,16 +69,14 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
             (item.configName !== 'Dashboard' && AuthUtils.userHasRoutePermission(item.permittedRoute))
           ) {
             let isActiveTab = false;
-            // let isDashboard = item.configName === 'Dashboard';
-            // let isMatchingPath = item.path !== '/' && location.pathname.includes(item.path);
-
-            // if (isMatchingPath) {
-            //   isDashboard = false;
-            // }
 
             if (item.configName === 'Dashboard' && location.pathname === '/') isActiveTab = true;
 
             if (item.configName !== 'Dashboard' && location.pathname.includes(item.path)) isActiveTab = true;
+
+            if (item.configName === 'Orders' && isSystemAdmin) {
+              return false;
+            }
 
             return {
               ...item,
@@ -159,9 +157,11 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
 
   return (
     <div className={`${styles.navContainer} ${styles.secondary}`} aria-label="Secondary header">
-      <div className={styles.wrapper}>
-        <LeftSideView />
-        <RightSideView />
+      <div className="max-container">
+        <div className={styles.wrapper}>
+          <LeftSideView />
+          <RightSideView />
+        </div>
       </div>
     </div>
   );

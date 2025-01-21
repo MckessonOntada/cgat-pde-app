@@ -8,10 +8,14 @@ import { FormattedNumber } from 'react-intl';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import dayjs from 'dayjs';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import ApiRoutes from '@src/api/ApiRoutes';
+import { useAccountContext } from '../../context/AccountContext';
 
 export default function CustomerStatementTable() {
   const { t } = useTranslate();
   const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportPDF } = useCustomerStatements();
+  const { selectedAccount } = useAccountContext();
   const columns = [
     {
       id: 'billNumber',
@@ -19,23 +23,23 @@ export default function CustomerStatementTable() {
       selector: (row) => `${row.docNo}`,
       sortable: true,
       wrap: true,
-      minWidth: '112px',
-      cell: (props) => <div className="cellEllipse">{`${props.docNo}`}</div>
+      minWidth: '140px',
+      cell: (props) => props.docNo
     },
     {
       id: 'accountNumber',
       name: t('paymentInvoices.CS.table.accountnumber'),
       selector: (row) => `${row.accountNumber}`,
-      minWidth: '160px',
+      minWidth: '140px',
       sortable: true,
       wrap: true,
-      cell: (props) => <div>{props.accountNumber}</div>
+      cell: (props) => props.accountNumber
     },
     {
       id: 'date',
       name: t('paymentInvoices.CS.table.date'),
       selector: (row) => row.date,
-      minWidth: '144px',
+      width: '100px',
       sortable: true,
       wrap: true,
       cell: (props) => dayjs(props.date, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'
@@ -46,7 +50,7 @@ export default function CustomerStatementTable() {
       selector: (row) => row.statementBalance,
       sortable: true,
       wrap: true,
-      minWidth: '144px',
+      maxWidth: '220px',
       cell: (props) => (
         <div className="status-container align-items-right">
           <FormattedNumber value={props?.statementBalance} style="currency" currency="USD" />
@@ -57,11 +61,27 @@ export default function CustomerStatementTable() {
     {
       name: t('paymentInvoices.history.table.Actions'),
       selector: (row) => row,
-      minWidth: '144px',
+      maxWidth: '150px',
       sortable: true,
       wrap: true,
       cell: (props) => (
-        <Button className="back-button-control" variant="tertiary" Icon={() => <PDFicon />} onClick={() => exportPDF(props)} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <PDFicon />}
+          onClick={() => {
+            exportPDF(
+              `${ApiRoutes.EXPORT_CUSTOMER_STATEMENTS({ docNo: props.docNo, accountNumber: selectedAccount?.accountNumber })}`,
+              {
+                companyCode: selectedAccount?.companyCode,
+                salesOrg: selectedAccount?.salesOrg,
+                payerAccountNumber: selectedAccount?.accountNumber,
+                documentDate: props?.date
+              },
+              'pdf'
+            );
+          }}
+          size="md">
           {t('paymentInvoices.CS.table.exportPdf')}
         </Button>
       )
@@ -108,8 +128,7 @@ export default function CustomerStatementTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}
-          >
+            }}>
             <Loader variant="circular" />
           </div>
         }

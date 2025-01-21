@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Badge, Button, CustomDataTable, Loader } from '@mckesson/mcp-component-library';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as PDFicon } from '../../../../assets/svg/office-file-pdf.svg';
@@ -10,25 +10,108 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FormattedNumber } from 'react-intl';
 import dayjs from 'dayjs';
 import { PATHS } from '../../routes';
+import CommonUtils from '@src/util/CommonUtils';
 
-export default function CreditsTable() {
+export default function CreditsTable(props) {
   const { t } = useTranslate();
   const { data, isFetching, paginationConfig, setPageNumber, applySort, isError } = usePaymentCredits();
+  const { selectedRows, setSelectedRows, selectableRows } = props;
+  const location = useLocation();
+  const { state } = location;
+  const renderCheckBox = (row, index) => {
+    return (
+      <input
+        data-testid="rowcheckbox"
+        type="checkbox"
+        id={'checkbox' + row?.id}
+        disabled={isCheckboxDisabled(row)}
+        onChange={() => handleRowSelected(row)}
+        checked={isChecked(row)}
+        ref={(el) => {
+          if (el) {
+            el.indeterminate = row.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber && selectedRows.length > 0 && !getindeterminate();
+          }
+        }}
+      />
+    );
+  };
+  const isCheckboxDisabled = (row) => {
+    let isDisbled = row.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber && !CommonUtils.isNonEmptyArray(data);
+    return isDisbled;
+  };
+  const handleRowSelected = (data) => {
+    if (data.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber) {
+      handleHeaderCheck(data);
+    } else {
+      handleIndividualCheck(data);
+    }
+  };
+  const isChecked = (row) => {
+    if (row.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber) {
+      return getindeterminate();
+    }
+    let availableRow = selectedRows.find((item) => item.billNumber === row?.billNumber);
+    return !!availableRow;
+  };
+  const getindeterminate = () => {
+    const allDataIncluded = data.every((invoice) =>
+      selectedRows.some((includedInvoice) => includedInvoice.billNumber === invoice.billNumber)
+    );
+    return allDataIncluded;
+  };
+  const handleHeaderCheck = () => {
+    if (isAllChecked()) {
+      setSelectedRows([]);
+    } else {
+      if (paginationConfig.pageNumber === 1) {
+        setSelectedRows(data);
+      } else {
+        const allDataIncluded = data.every((invoice) =>
+          selectedRows.some((includedInvoice) => includedInvoice.billNumber === invoice.billNumber)
+        );
+        if (!allDataIncluded) {
+          setSelectedRows([...selectedRows, ...data]);
+        } else {
+          setSelectedRows(selectedRows.filter((item) => !data.some((invoice) => invoice.billNumber === item.billNumber)));
+        }
+      }
+    }
+  };
+  const isAllChecked = () => {
+    return selectedRows.length === data.length;
+  };
+
+  const handleIndividualCheck = (data) => {
+    if (selectedRows.find((item) => item.billNumber === data?.billNumber)) {
+      setSelectedRows(selectedRows.filter((item) => item.billNumber !== data?.billNumber));
+      return;
+    }
+    setSelectedRows([...selectedRows, ...[data]]);
+  };
 
   const columns = [
+    {
+      id: 'checkbox',
+      name: renderCheckBox({ id: 'ALL_PATIENTS_' + paginationConfig.pageNumber }),
+      sortable: false,
+      cell: (row, index) => renderCheckBox(row, index),
+      selector: (row) => row.MRN,
+      width: '48px',
+      omit: !selectableRows
+    },
     {
       id: 'billNumber',
       name: t('paymentInvoices.history.table.billNumber'),
       selector: (row) => `${row.billNumber}`,
       sortable: true,
       wrap: true,
-      minWidth: '112px',
+      minWidth: '120px',
       cell: (props) => (
         <div className="cellEllipse">
           <Link
             style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
             to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
-          >
+            state={{ ...state }}>
             {`${props?.billNumber}`}
           </Link>
         </div>
@@ -38,7 +121,7 @@ export default function CreditsTable() {
       id: 'soldToSite',
       name: t('paymentInvoices.history.table.SoldToSite'),
       selector: () => {},
-      minWidth: '160px',
+      minWidth: '180px',
       sortable: true,
       wrap: true,
       cell: (props) => <div>{props?.soldToSite || '-'}</div>
@@ -47,7 +130,7 @@ export default function CreditsTable() {
       id: 'description',
       name: t('paymentInvoices.credits.table.description'),
       selector: (row) => row.description,
-      minWidth: '320px',
+      minWidth: '340px',
       sortable: true,
       wrap: true,
       cell: (props) => (
@@ -58,20 +141,27 @@ export default function CreditsTable() {
     },
     {
       id: 'billDate',
-      name: t('paymentInvoices.credits.table.validfrom'),
+      name: t('paymentInvoices.credits.table.billDate'),
       selector: (row) => row.billDate,
       sortable: true,
       wrap: true,
-      minWidth: '160px',
-      cell: (props) => (
-        <EclipsesTextcss className="cellEllipse" str={dayjs(props?.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'} maxWidth={240} />
-      )
+      width: '140px',
+      cell: (props) => dayjs(props?.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'
+    },
+    {
+      id: 'dueDate',
+      name: t('paymentInvoices.credits.table.validfrom'),
+      selector: (row) => row.dueDate,
+      sortable: true,
+      wrap: true,
+      width: '140px',
+      cell: (props) => dayjs(props?.dueDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'
     },
     {
       id: 'billAmount',
       name: t('paymentInvoices.credits.table.amount'),
       selector: (row) => row.billAmount,
-      minWidth: '144px',
+      maxWidth: '240px',
       sortable: true,
       wrap: true,
       cell: (props) => (
@@ -136,8 +226,7 @@ export default function CreditsTable() {
               display: 'flex',
               height: '350px',
               justifyContent: 'center'
-            }}
-          >
+            }}>
             <Loader variant="circular" />
           </div>
         }

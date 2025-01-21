@@ -6,16 +6,18 @@ import CommonUtils from '@src/util/CommonUtils';
 import './styles.scss';
 import usePermission from '@src/hooks/usePermissions';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import CommonDataService from '@src/api/commonService/CommonDataService';
 
 const DetailsView = ({ data, onEditClick }) => {
   const { t } = useTranslate();
   const { hasPermission } = usePermission();
+  const { data: organizationLogo } = CommonDataService.useOrganizationLogo(data.logoUrl, data.id);
 
   return (
     <div className="view-container">
       <div className="org-box">
         <div className="org-logo-box">
-          {data?.logoUrl && <img src={data?.logoUrl} alt="Logo" className="logo-img" />}
+          {data?.logoUrl && <img src={organizationLogo} alt="Logo" className="logo-img" />}
           <h2 className="org-label">{data.name}</h2>
         </div>
         {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.EDIT_ORGANIZATION) && (
@@ -30,7 +32,10 @@ const DetailsView = ({ data, onEditClick }) => {
       <div className="view-container grid grid-gap-24 grid-cols-1 md:grid-cols-4">
         <div>
           <p className="contact-heading">{t('orgManagement.org_detail.person_name')}</p>
-          <p className="contact-details">{`${data.contactPerson.firstName || ''} ${data.contactPerson.middleName || ''} ${data.contactPerson.lastName || ''}`.trim() || 'N/A'}</p>
+          <p className="contact-details">
+            {`${data.contactPerson.firstName || ''} ${data.contactPerson.middleName || ''} ${data.contactPerson.lastName || ''}`.trim() ||
+              'N/A'}
+          </p>
         </div>
         <div>
           <p className="contact-heading">{t('orgManagement.create_org.inputLabel.email')}</p>
@@ -46,7 +51,11 @@ const DetailsView = ({ data, onEditClick }) => {
         </div>
         <div>
           <p className="contact-heading">{t('orgManagement.org_detail.address')}</p>
-          <p className="contact-details">{[data.address.address1, data.address.address2, data.address.city, data.address.state, data.address.zip].filter(Boolean).join(', ') || 'N/A'}</p>
+          <p className="contact-details">
+            {[data.address.address1, data.address.address2, data.address.city, data.address.state, data.address.zip]
+              .filter(Boolean)
+              .join(', ') || 'N/A'}
+          </p>
         </div>
       </div>
     </div>

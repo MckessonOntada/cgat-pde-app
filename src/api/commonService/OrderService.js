@@ -1,7 +1,6 @@
 import { serializeParams } from '@src/util/ApiUtils';
 import ApiRoutes from '../ApiRoutes';
 import HttpResourceService, { httpVerb } from '../HttpResourceService';
-import AuthUtils from '@src/util/AuthUtils';
 
 async function createOrder(payload) {
   const url = `${ApiRoutes.ORDERS()}`;
@@ -72,11 +71,25 @@ async function saveAccount(orderId, payload) {
   return {};
 }
 
-async function submitOrder(orderId) {
+async function submitOrder(orderId, payload) {
   if (!orderId) throw new Error('Order id is missing. Order id is required to fetch details.');
 
   const url = `${ApiRoutes.ORDERS()}/${orderId}/submit`;
-  const res = await HttpResourceService.callRest(url, httpVerb.PATCH);
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
+
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
+async function rejectOrder(orderId, rejectionReason) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to reject the order.');
+  if (!rejectionReason) throw new Error('Reason is missing. Reason is required to reject the order.');
+
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/reject`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, rejectionReason);
 
   if (res.data) {
     return res.data;
@@ -241,6 +254,19 @@ async function updateTherapy(orderId, requestBody) {
   return {};
 }
 
+async function discardCurrentOrderVersion(orderId) {
+  if (!orderId) throw new Error('Order id is missing. Order id is required to discard order changes.');
+
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/discard`;
+  const res = await HttpResourceService.callRest(url, httpVerb.DELETE);
+
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -257,12 +283,14 @@ const OrderService = Object.freeze({
   saveAccount,
   getProgramAndChannelConfig,
   submitOrder,
+  rejectOrder,
   setOrderAssignToMe,
   setOrderUnassignToMe,
   deleteOrder,
   getAssignedGroups,
   simulateOrder,
-  updateTherapy
+  updateTherapy,
+  discardCurrentOrderVersion
 });
 
 export default OrderService;
