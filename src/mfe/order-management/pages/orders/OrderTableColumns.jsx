@@ -269,7 +269,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     maxWidth: '380px',
     sortable: true,
     sortKey: 'id',
-    showByDefault: true,
+    showInMobileHeader: true,
     cell: (props) => (
       <Link
         className="MCP-table-link"
@@ -289,13 +289,14 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortKey: 'patient.patientInfo',
     minWidth: '140px',
     maxWidth: '200px',
-    showByDefault: true,
-    showDefaultLabel: 'Patient Name',
+    showInMobileHeader: true,
+    showColumnNameInHeader: true,
     cell: (props) => {
       const patientInfo = props.patient && props.patient.patientInfo;
       return !patientInfo ? (
         'N/A'
       ) : (
+        // if(mobileView)
         <EclipsesTextcss aria-label={t('labels.patientName')} str={getPatientName(patientInfo)} maxWidth={170} />
       );
     }
@@ -375,7 +376,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortable: false,
     width: '180px',
     center: true,
-    showByDefault: true,
+    showInMobileHeader: true,
     cell: (props) => (
       <Tooltip body={props.status}>
         <span>
@@ -404,9 +405,11 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: false,
     width: '120px',
-    showByDefault: true,
     center: true,
-    type: 'action',
+    showInMobileHeader: true,
+    isAction: true, // must use "action" if button is to be placed in the right, else use default if id is "action"
     cell: (props) => getOptionsByStatus(props, props.status, t, activeTab, props.id, alertContainerId)
   }
 ];
+
+// {showInMobileHeader: bool, showColumnNameInHeader: bool, isAction: bool, style: {}}

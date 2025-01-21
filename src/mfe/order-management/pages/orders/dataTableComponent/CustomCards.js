@@ -1,43 +1,60 @@
 import React, { useState } from 'react';
 import './assets/CustomCards.scss';
+import CommonUtils from '@src/util/CommonUtils';
 
 function CustomCard({ columns, row }) {
-  const showDefaultData = columns.filter((col) => !!col.showByDefault && !(col.type === 'action' || col.id?.toLowerCase() === 'action'));
-  const hiddenData = columns.filter((col) => !col.showByDefault);
-  const actionItems = columns.filter((col) => col.type === 'action' || col.id?.toLowerCase() === 'action');
+  const showDefaultData = columns.filter((col) => !!col.showInMobileHeader && !col.isAction);
+  const hiddenData = columns.filter((col) => !col.showInMobileHeader);
+  const actionItems = columns.filter((col) => col.isAction);
 
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(showDefaultData.length === 0);
 
   const handleCardClick = (e) => {
     e.preventDefault();
+    if (hiddenData.length === 0 || showDefaultData.length === 0) {
+      return;
+    }
     setExpanded(!expanded);
+  };
+
+  const handleActionClick = (e, onClick) => {
+    e.stopPropagation();
+    if (onClick) {
+      onClick(row);
+    }
   };
 
   return (
     <div className="card-container" key={row.id} onClick={handleCardClick}>
-      <div className="accordion-card">
+      {(showDefaultData.length > 0 || actionItems.length > 0) && (
         <div className="card-header">
           <div>
             {showDefaultData.map((col) => (
-              <div key={col.id} className="collapsed-detail">
-                {!!col.showDefaultLabel ? `${col.showDefaultLabel}: ` : ''}
+              <div key={col.id} className="collapsed-detail" onClick={(e) => handleActionClick(e, col.onClick)}>
+                {col.showColumnNameInHeader && col.name && `${col.name}: `}
                 {col.cell ? col.cell(row) : col.selector(row) || row[col.id]}
               </div>
             ))}
           </div>
-          <div className="collapsed-detail">{actionItems.map((col) => (col.cell ? col.cell(row) : col.selector(row) || row[col.id]))}</div>
+          <div className="collapsed-detail action-button">
+            {actionItems.map((col) => (
+              <div onClick={(e) => handleActionClick(e, col.onClick)}>{col.cell ? col.cell(row) : col.selector(row) || row[col.id]}</div>
+            ))}
+          </div>
         </div>
-        {expanded && (
-          <div className="card-details">
-            {hiddenData.map((col) => (
-              <div key={col.id} className="expanded-detail">
-                <strong>{col.name}: </strong>
+      )}
+      {(expanded || showDefaultData.length === 0) && (
+        <div className="card-details">
+          {hiddenData.map((col) => (
+            <div key={col.id} className="expanded-detail">
+              {col.name && <div className="expanded-detail-content-key">{col.name}</div>}
+              <div className="expanded-detail-content-value" onClick={(e) => handleActionClick(e, col.onClick)}>
                 {col.cell ? col.cell(row) : col.selector(row) || row[col.id]}
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

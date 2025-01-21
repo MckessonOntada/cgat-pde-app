@@ -44,11 +44,11 @@ export const CustomDataTable = (props) => {
     selectedRowId,
     rowSelectCritera,
     selectedRowIds,
-    isMobileView
+    showCardView
   } = props;
 
   const pageChangeEvent = (e, newPage) => {
-    document.querySelector(`#data-table-${id} > *:first-child`).scrollTop = 0;
+    if (!showCardView) document.querySelector(`#data-table-${id} > *:first-child`).scrollTop = 0;
     handleChangePage(e, newPage);
   };
 
@@ -123,12 +123,12 @@ export const CustomDataTable = (props) => {
 
   return (
     <>
-      {isMobileView ? (
-        <>
+      {showCardView ? (
+        <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start">
           {data.map((row) => (
             <CustomCard columns={columns} row={row} />
           ))}
-        </>
+        </div>
       ) : (
         <div
           className={`${styles.tableContainer} ${getTypeClasses()} ${
