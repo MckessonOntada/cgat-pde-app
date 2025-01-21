@@ -20,8 +20,22 @@ export const DashboardEN = {
   'dashboard.card.systemAdministrator': 'System Administrator',
   'dashboard.card.manage_approver_groups': 'Manage Approver Groups',
   'dashboard.card.approver_management_description': 'Enables you to efficiently create, review and manage approver groups.',
+
   'dashboard.card.system_configuration': 'System Configuration',
   'dashboard.card.system_configuration_card_description': 'Enables you to efficiently create and manage all the system configurations.',
+  'dashboard.card.system_config_manage_material': 'Manage Material',
+  'dashboard.card.system_config_manage_catalog': 'Manage Catalog',
+  'dashboard.card.system_config_manage_questionnaire': 'Manage Questionnaire',
+  'dashboard.card.system_config_manage_account': 'Manage Account',
+  'dashboard.card.system_config_description_manage_material':
+    'Enables you to efficiently review and manage materials master and related configurations.',
+  'dashboard.card.system_config_description_manage_catalog':
+    'Enables you to efficiently review and manage catalog master and related configurations.',
+  'dashboard.card.system_config_description_manage_questionnaire':
+    'Enables you to review and define questionnaire templates to be used as configuration in various system workflows.',
+  'dashboard.card.system_config_description_manage_account':
+    'Enables you to review and define questionnaire templates to be used as configuration in various system workflows.',
+
   // Secondary Header routing tabs
   'header.tabs.dashboard': 'Dashboard',
   'header.tabs.paymentAndInvoices': 'Payments and Invoices',

@@ -20,8 +20,21 @@ export const DashboardES = {
     'S_Streamline role assignments and permissions, allowing you to define, edit, and review user roles efficiently.',
   'dashboard.card.manage_approver_groups': 'S_Manage Approver Groups',
   'dashboard.card.approver_management_description': 'S_Enables you to efficiently create, review and manage approver groups.',
+
   'dashboard.card.system_configuration': 'S_System Configuration',
   'dashboard.card.system_configuration_card_description': 'S_Enables you to efficiently create and manage all the system configurations.',
+  'dashboard.card.system_config_manage_material': 'S_Manage Material',
+  'dashboard.card.system_config_manage_catalog': 'S_Manage Catalog',
+  'dashboard.card.system_config_manage_questionnaire': 'S_Manage Questionnaire',
+  'dashboard.card.system_config_manage_account': 'S_Manage Account',
+  'dashboard.card.system_config_description_manage_material':
+    'S_Enables you to efficiently review and manage materials master and related configurations.',
+  'dashboard.card.system_config_description_manage_catalog':
+    'S_Enables you to efficiently review and manage catalog master and related configurations.',
+  'dashboard.card.system_config_description_manage_questionnaire':
+    'S_Enables you to review and define questionnaire templates to be used as configuration in various system workflows.',
+  'dashboard.card.system_config_description_manage_account':
+    'S_Enables you to review and define questionnaire templates to be used as configuration in various system workflows.',
 
   // Secondary Header routing tabs
   'header.tabs.dashboard': 'S_Dashboard',

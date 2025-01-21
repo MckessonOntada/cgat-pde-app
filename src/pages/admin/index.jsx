@@ -17,21 +17,17 @@ function AdminLayout() {
     return cards;
   }, []);
   return (
-    <div className={styles.container}>
+    <div className={''}>
       {/* <Heading as="h1">{isSystemAdminView ? 'System Admin' : }</Heading> */}
 
       <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
         {allowedCards.map((card, index) => {
           const Icon = card.icon;
           return (
-            <Link to={card.path} key={index}>
-              <div id={`${card.label}-${card.index}`} className={styles.card}>
-                <Icon />
-                <Heading as="h3" color="brand-color-black">
-                  {t(`dashboard.card.${card.label}`)}
-                </Heading>
-                <p className={styles.cardContent}>{t(`dashboard.card.${card.details}`)}</p>
-              </div>
+            <Link id={`${card.label}-${card.index}`} className={'dashboard-card'} to={card.path} key={index}>
+              <Icon />
+              <p className="card-heading">{t(`dashboard.card.${card.label}`)}</p>
+              <p>{t(`dashboard.card.${card.details}`)}</p>
             </Link>
           );
         })}
