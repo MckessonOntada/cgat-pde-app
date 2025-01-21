@@ -250,4 +250,5 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.excel.export.error': 'Error exporting excel.',
   'paymentInvoices.pendingPaynemt.export.success': 'Pending Payment exported.',
   'paymentInvoices.pendingPaynemt.export.error': 'Pending exporting Payment .',
+  'paymentInvoices.history.table.bill.id': 'BILL ID'
 };

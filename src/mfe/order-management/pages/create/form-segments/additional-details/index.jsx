@@ -235,7 +235,7 @@ function AdditionalDetails() {
         </Button>
       </div>
 
-      <PageHeader heading={<Heading as="h1">{isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')}</Heading>} />
+      <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
 
       <Formik
         initialValues={initialFormValues}

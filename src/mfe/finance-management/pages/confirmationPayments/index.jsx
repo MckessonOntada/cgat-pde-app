@@ -160,7 +160,7 @@ function ConfirmationPayments() {
             ))}
         </div>
         <div className="section">
-          <div className="sectionHeader">{t('paymentInvoices.reviewPayments.paymentSummary')}</div>
+          {/* <div className="sectionHeader">{t('paymentInvoices.reviewPayments.paymentSummary')}</div> */}
           <div className="sectionCard">
             {CommonUtils.isNonEmptyObject(paymentCard) &&
               Object.entries(paymentCard).map(([key, value]) => <InfoCards title={key} value={value} />)}

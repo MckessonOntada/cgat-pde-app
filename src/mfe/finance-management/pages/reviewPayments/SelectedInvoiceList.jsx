@@ -22,7 +22,7 @@ function SelectedInvoiceList(props) {
 
   const columns = [
     {
-      name: t('paymentInvoices.history.table.billNumber'),
+      name: t('paymentInvoices.history.table.bill.id'),
       id: 'billNumber',
       selector: (row) => `${row.billNumber}`,
       wrap: true,
@@ -46,6 +46,14 @@ function SelectedInvoiceList(props) {
       minWidth: '160px',
       wrap: true,
       cell: (props) => <div>{props?.soldToSite || '-'}</div>
+    },
+    {
+      id: 'description',
+      name: t('paymentInvoices.Details.Description'),
+      selector: (row) => row.description,
+      minWidth: '160px',
+      wrap: true,
+      cell: (props) => <div>{props?.description || '-'}</div>
     },
     {
       name: t('paymentInvoices.history.table.DueDate'),
