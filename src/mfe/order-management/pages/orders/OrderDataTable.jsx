@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { CustomDataTable } from './dataTableComponent';
+import { CustomDataTable } from '../../../../components/dataTableComponent';
 import { useOrders } from '../../context/OrderContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { createColumns } from './OrderTableColumns';

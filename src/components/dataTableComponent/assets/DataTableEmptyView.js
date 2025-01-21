@@ -1,5 +1,5 @@
-import React from "react";
-import styles from "../assets/CustomDataTable.module.scss";
+import React from 'react';
+import styles from './CustomDataTable.module.scss';
 
 function DataTableEmptyView({ text, ...props }) {
   return (
