@@ -20,6 +20,8 @@ export const DashboardES = {
     'S_Streamline role assignments and permissions, allowing you to define, edit, and review user roles efficiently.',
   'dashboard.card.manage_approver_groups': 'S_Manage Approver Groups',
   'dashboard.card.approver_management_description': 'S_Enables you to efficiently create, review and manage approver groups.',
+  'dashboard.card.system_configuration': 'S_System Configuration',
+  'dashboard.card.system_configuration_card_description': 'S_Enables you to efficiently create and manage all the system configurations.',
 
   // Secondary Header routing tabs
   'header.tabs.dashboard': 'S_Dashboard',

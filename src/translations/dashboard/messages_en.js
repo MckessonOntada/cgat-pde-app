@@ -20,7 +20,8 @@ export const DashboardEN = {
   'dashboard.card.systemAdministrator': 'System Administrator',
   'dashboard.card.manage_approver_groups': 'Manage Approver Groups',
   'dashboard.card.approver_management_description': 'Enables you to efficiently create, review and manage approver groups.',
-
+  'dashboard.card.system_configuration': 'System Configuration',
+  'dashboard.card.system_configuration_card_description': 'Enables you to efficiently create and manage all the system configurations.',
   // Secondary Header routing tabs
   'header.tabs.dashboard': 'Dashboard',
   'header.tabs.paymentAndInvoices': 'Payments and Invoices',

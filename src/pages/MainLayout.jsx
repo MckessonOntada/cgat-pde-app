@@ -45,6 +45,16 @@ function MainLayout() {
                     />
                   ) : null;
                 })}
+
+                <Route
+                  path={AppRoutes.pathSystemConfiguration}
+                  element={
+                    <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
+                      <div>System Configuration</div>
+                    </ProtectedRoute>
+                  }
+                />
+
                 <Route
                   path={'orders/*'}
                   element={
