@@ -5,27 +5,19 @@
   display: flex;
   align-items: center;
 
-  .breadcrumbitem {
+  .breadcrumbItem {
+    font-weight: var(--brand-font-weight-600);
     display: flex;
     align-items: center;
 
     .separator {
-      margin: 0px;
-      width: var(--spacing-04);
-      // height: var(--spacing-04);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .link {
-      text-decoration: none;
+      margin: 0px calc(var(--spacing-02) + var(--spacing-01));
     }
 
     .linkItem {
+      text-decoration: none;
       font-size: 14px;
       color: var(--brand-color-primary);
-      font-weight: var(--brand-font-weight-600);
     }
   }
 }

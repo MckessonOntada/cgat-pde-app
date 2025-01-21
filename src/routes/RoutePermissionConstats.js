@@ -1,6 +1,7 @@
 const { PERMISSIONS_ENUM } = require('@src/mfe/user-management/pages/UserPermissions/permissionsEnum');
 
-const { USER_MANAGEMENT, ADMIN_MANAGEMENT, ORGANIZATION_MANAGEMENT, ORDER_MANAGEMENT, PAYMENT_INVOICING } = PERMISSIONS_ENUM;
+const { USER_MANAGEMENT, ADMIN_MANAGEMENT, ORGANIZATION_MANAGEMENT, ORDER_MANAGEMENT, PAYMENT_INVOICING, SYSTEM_CONFIGURATION } =
+  PERMISSIONS_ENUM;
 
 export const routePermissionConfig = {
   users: [
@@ -45,5 +46,6 @@ export const routePermissionConfig = {
 
   paymentInvoices: Object.values(PAYMENT_INVOICING),
   orders: Object.values(ORDER_MANAGEMENT),
-  admin: Object.values(ADMIN_MANAGEMENT)
+  admin: Object.values(ADMIN_MANAGEMENT),
+  systemConfiguration: Object.values(SYSTEM_CONFIGURATION)
 };
