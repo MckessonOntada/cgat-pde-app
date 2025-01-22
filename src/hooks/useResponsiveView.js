@@ -10,7 +10,6 @@ function useResponsiveView(breakpoint = 768) {
 
     window.addEventListener('resize', handleResize);
 
-    // Cleanup on unmount
     return () => {
       window.removeEventListener('resize', handleResize);
     };
