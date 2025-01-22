@@ -157,6 +157,8 @@ button {
   background: transparent;
   border: none;
   cursor: pointer;
+  padding-top:  var(--spacing-02);
+  padding-right:  var(--spacing-02);
 }
 
 .MuiDialog-container {
