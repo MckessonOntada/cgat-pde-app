@@ -17,6 +17,7 @@ import ScrollToTop from '@src/components/scrollToTop/ScrollToTop';
 import ManageApprovers from '@src/mfe/order-management/manageApprovers';
 import RecordsMainRoutes from '@src/mfe/finance-management/RecordsMainRoutes';
 import AdminLayout from './admin';
+import { SystemConfiguration } from '@src/mfe/order-management/pages/system-configuration';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
@@ -45,16 +46,22 @@ function MainLayout() {
                     />
                   ) : null;
                 })}
+
+                <Route
+                  path={AppRoutes.pathSystemConfiguration}
+                  element={
+                    <ProtectedRoute permissions={[]}>
+                      <SystemConfiguration />
+                    </ProtectedRoute>
+                  }
+                />
+
                 <Route
                   path={'orders/*'}
                   element={
-                    !AuthUtils.isSystemAdmin() ? (
-                      <ProtectedRoute permissions={routePermissionConfig.orders}>
-                        <OrderManagementEntryPoint />
-                      </ProtectedRoute>
-                    ) : (
-                      <Navigate to="/" />
-                    )
+                    <ProtectedRoute permissions={routePermissionConfig.orders}>
+                      <OrderManagementEntryPoint />
+                    </ProtectedRoute>
                   }
                 />
 

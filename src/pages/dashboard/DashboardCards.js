@@ -2,13 +2,14 @@ import AppRoutes from '../../routes/AppRoutes';
 import { ReactComponent as OrderIcon } from '../../assets/svg/bag-circle.svg';
 import { ReactComponent as UserIcon } from '../../assets/svg/user-circle.svg';
 import { ReactComponent as organizationIcon } from '../../assets/svg/organizationIcon.svg';
+import { ReactComponent as SystemConfigurationIcon } from '@src/assets/svg/system_configuration_icon.svg';
 import { ReactComponent as ChecklistIcon } from '../../assets/svg/checklist-circle.svg';
 import { ReactComponent as ApproverGroupIcon } from '../../assets/svg/approvergroup_icon.svg';
 import { ReactComponent as CatalogueIcon } from '../../assets/svg/catalogue-circle.svg';
 import { ReactComponent as LinkIcon } from '../../assets/svg/link-circle.svg';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 
-const { USER_MANAGEMENT, ORGANIZATION_MANAGEMENT, ORDER_MANAGEMENT } = PERMISSIONS_ENUM;
+const { USER_MANAGEMENT, ORGANIZATION_MANAGEMENT, SYSTEM_CONFIGURATION } = PERMISSIONS_ENUM;
 
 const SYSTEM_ADMIN_CARDS_DATA = [
   {
@@ -26,6 +27,14 @@ const SYSTEM_ADMIN_CARDS_DATA = [
     details: 'organization_card_description',
     path: AppRoutes.pathOrgManagement,
     permissions: ORGANIZATION_MANAGEMENT.MANAGE_ORGANIZATION_SCREEN
+  },
+  {
+    name: 'systemConfiguration',
+    label: 'system_configuration',
+    icon: SystemConfigurationIcon,
+    details: 'system_configuration_card_description',
+    path: AppRoutes.pathSystemConfiguration,
+    permissions: SYSTEM_CONFIGURATION
   }
 ];
 

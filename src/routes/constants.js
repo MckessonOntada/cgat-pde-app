@@ -6,6 +6,7 @@ export const RoutePaths = {
   pathUserManagement: '/admin/user',
   pathOrgManagement: '/admin/organization',
   pathOrderManagement: '/orders',
+  pathSystemConfiguration: '/orders/system-configuration',
   pathApproverManagement: '/admin/approver-group',
   pathOrganizationRoles: '/admin/organization/roles',
   pathSystemAdminManagement: '/admin/user', //'/system-admin',
