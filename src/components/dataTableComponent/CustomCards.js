@@ -52,7 +52,7 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
         <div className="card-header">
           <div>
             {showDefaultData.map((col) => (
-              <div key={col.id} className="collapsed-detail" onClick={(e) => handleActionClick(e, col.onClick)}>
+              <div key={col.id} className="collapsed-detail" style={col.mobileStyles} onClick={(e) => handleActionClick(e, col.onClick)}>
                 {col.showColumnNameInHeader && col.name && `${col.name}: `}
                 {renderCell(col, row)}
               </div>
@@ -70,7 +70,7 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
           {hiddenData.map((col) => (
             <div key={col.id} className="expanded-detail">
               {col.name && <div className="expanded-detail-content-key">{col.name}</div>}
-              <div className="expanded-detail-content-value" onClick={(e) => handleActionClick(e, col.onClick)}>
+              <div className="expanded-detail-content-value" style={col.mobileStyles} onClick={(e) => handleActionClick(e, col.onClick)}>
                 {renderCell(col, row)}
               </div>
             </div>
