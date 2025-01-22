@@ -96,12 +96,16 @@
     font-weight: 600;
     max-width: 50%;
     text-align: right !important;
+    word-break: break-word !important;
+    overflow: none !important;
+    white-space: normal !important;
+    display: inline !important;
     //override table css
     & > div,
     & > a,
     & span,
     & p {
-      max-width: 50% !important;
+      max-width: 100% !important;
       word-break: break-word !important;
       overflow: none !important;
       white-space: normal !important;
