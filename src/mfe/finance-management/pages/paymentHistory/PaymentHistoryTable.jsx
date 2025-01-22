@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import DataTable from '@src/components/dataTable/DataTable';
-import { Badge, CustomDataTable, Loader } from '@mckesson/mcp-component-library';
+import { Badge, Loader } from '@mckesson/mcp-component-library';
 import { PaymentHistoryData } from '../../mockData/PaymentHistoryData';
 import { Link } from 'react-router-dom';
 import FloatingDrawer from '../../../../components/floating-drawer';
@@ -13,6 +13,8 @@ import { FormattedNumber } from 'react-intl';
 import dayjs from 'dayjs';
 import { PATHS } from '../../routes';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import { CustomDataTable } from '@src/components/dataTableComponent';
 
 const PAYMENT_STATUS = {
   PENDING: { label: 'Pending', color: 'warning' },
@@ -25,6 +27,8 @@ export default function PaymentHistoryTable() {
   // const [isOpen, setIsOpen] = useState(false);
 
   const { data, isFetching, paginationConfig, setPageNumber, applySort, isError } = usePaymentHistory();
+  const showCardView = useResponsiveView();
+
   const columns = [
     {
       id: 'confirmationNo',
@@ -75,6 +79,7 @@ export default function PaymentHistoryTable() {
       sortable: true,
       width: '140px',
       center: true,
+      showInMobileHeader: true,
       cell: (props) => (
         <div className="status-container">
           {PAYMENT_STATUS[props?.paymentStatus.toUpperCase()] ? (
@@ -129,6 +134,8 @@ export default function PaymentHistoryTable() {
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         progressPending={isFetching}
+        showCardView={showCardView}
+        defaultExpandedCardView={true}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}

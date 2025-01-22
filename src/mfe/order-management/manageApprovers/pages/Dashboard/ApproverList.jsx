@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { CustomDataTable, Button, Badge, CheckboxGroup, Modal } from '@mckesson/mcp-component-library';
+import { Button, Badge, CheckboxGroup, Modal } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
@@ -13,6 +13,8 @@ import { useApprover } from '../../context/ApproverContext';
 import Actions from './Actions';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
+import { CustomDataTable } from '@src/components/dataTableComponent';
+import useResponsiveView from '@src/hooks/useResponsiveView';
 
 function ApproverList({ onActionSuccess }) {
   const { t } = useTranslate();
@@ -21,7 +23,7 @@ function ApproverList({ onActionSuccess }) {
   const { data, paginationConfig, applySort, setPageNumber, refreshData } = useApprover();
   const userPermissions = AuthUtils.getUserPermissions();
   const { hasPermission } = usePermission();
-
+  const showCardView = useResponsiveView();
   const handleActivateDeactivateApproverGroup = async ({ grpId, actionName }) => {
     if (actionName === t('approvergroup.button.activate')) {
       const resActivate = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}/${grpId}/activate`, httpVerb.PATCH, null);
@@ -88,6 +90,7 @@ function ApproverList({ onActionSuccess }) {
       {
         id: 'checkbox',
         name: '',
+        showInMobileHeader: true,
         cell: (row) => (
           <CheckboxGroup
             id={'default'}
@@ -148,7 +151,8 @@ function ApproverList({ onActionSuccess }) {
         center: true,
         name: t('approvergroup.table.action'),
         cell: (row) => <Actions row={row} />,
-        omit: !hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_APPROVER_GROUP)
+        omit: !hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_APPROVER_GROUP),
+        isAction: true
       }
     ];
   }, [data, userPermissions]);
@@ -185,6 +189,8 @@ function ApproverList({ onActionSuccess }) {
         stickyHeader
         responsive
         pagination={true}
+        showCardView={showCardView}
+        defaultExpandedCardView={true}
         noDataComponent={
           <EmptyDataTable
             image={EmptyDataImage}

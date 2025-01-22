@@ -13,6 +13,7 @@ export const createColumns = (t, selectedRows, setSelectedRows) => [
   {
     id: 'checkbox',
     name: '',
+    showInMobileHeader: true,
     cell: (row) => (
       <CheckboxGroup
         id={'default'}
@@ -55,6 +56,7 @@ export const createColumns = (t, selectedRows, setSelectedRows) => [
         <Badge text={row.isActive ? 'Active' : 'Inactive'} type={getBadgeType(row.isActive)} />
       ) : null,
     wrap: true,
+    isAction: true,
     center: true
   }
 ];

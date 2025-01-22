@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CustomDataTable, Button } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useRole } from '../../../context/RoleContext';
 import { createColumns } from './RoleTableColumns';
@@ -11,6 +11,8 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import './Role.scss';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import { CustomDataTable } from '@src/components/dataTableComponent';
 
 const RolesDataTable = () => {
   const { t } = useTranslate();
@@ -19,6 +21,8 @@ const RolesDataTable = () => {
   const { applySort } = useRole();
   const { data, paginationConfig, setPageNumber, isLoading, refreshData, setMessage } = useRole();
   const dispatch = useDispatch();
+  const showCardView = useResponsiveView();
+
   const { mutate: deleteRole } = useMutation({
     mutationFn: async (id) => {
       const response = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}/${id}`, httpVerb.DELETE);
@@ -98,6 +102,8 @@ const RolesDataTable = () => {
         paginationRecordsPerPageMessage={`per page`}
         selectableRowsHeader={false}
         selectedRowId={selectedRows}
+        showCardView={showCardView}
+        defaultExpandedCardView={true}
         noDataComponent={
           <EmptyDataTable
             isLoading={isLoading}
