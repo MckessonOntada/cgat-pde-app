@@ -263,6 +263,7 @@ function UserTable({ onActionSuccess }) {
         responsive
         pagination={true}
         showCardView={showCardView}
+        defaultExpandedCardView={true}
         noDataComponent={
           <EmptyDataTable
             error={(isError && error.message) || 'Something went wrong, Please try again later.'}

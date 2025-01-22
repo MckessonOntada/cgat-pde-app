@@ -263,6 +263,7 @@ export default function InvoicesTable() {
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         progressPending={isFetching}
         showCardView={showCardView}
+        defaultExpandedCardView={false}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}

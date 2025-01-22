@@ -8,7 +8,7 @@ import CommonUtils from '@src/util/CommonUtils';
 import { GeographicUtils } from '@src/util/GeographicUtil';
 import DetailsFlexGrid from '../../components/detailsList/DetailsFlexGrid';
 import './viewDetails.scss';
-import { Badge, DropdownMenu, CustomDataTable, Loader } from '@mckesson/mcp-component-library';
+import { Badge, DropdownMenu, Loader } from '@mckesson/mcp-component-library';
 import EmptyDataTable from '@src/components/EmptyTable';
 import DetailMetrics from '../../components/detailMetrics/DetailMetrics';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
@@ -20,6 +20,8 @@ import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import FloatingDrawer from '@src/components/floating-drawer';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import { TherapyDetailsConstants } from './assets/constants/TherapyDetailsConstants';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import { CustomDataTable } from '@src/components/dataTableComponent';
 
 function Details(props) {
   const { billNumber } = useParams();
@@ -36,7 +38,7 @@ function Details(props) {
   const therapyDetails = searchParams.get('therapy-details');
   const navigate = useNavigate();
   const locationParams = useLocation();
-
+  const showCardView = useResponsiveView();
   const onBackToPaymentsInvoices = () => {
     navigate(-1);
   };
@@ -229,6 +231,7 @@ function Details(props) {
             progressPending={isLoading}
             fixedHeader
             fixedHeaderScrollHeight="20px"
+            showCardView={showCardView}
             noDataComponent={
               <EmptyDataTable
                 isLoading={isLoading}

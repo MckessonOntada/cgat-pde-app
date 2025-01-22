@@ -44,7 +44,9 @@ export const CustomDataTable = (props) => {
     selectedRowId,
     rowSelectCritera,
     selectedRowIds,
-    showCardView
+    showCardView,
+    defaultExpandedCardView,
+    collapsibleCardView
   } = props;
 
   const pageChangeEvent = (e, newPage) => {
@@ -125,8 +127,14 @@ export const CustomDataTable = (props) => {
     <>
       {showCardView ? (
         <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start">
-          {data.map((row) => (
-            <CustomCard columns={columns} row={row} />
+          {data.map((row, index) => (
+            <CustomCard
+              columns={columns}
+              rowIndex={index}
+              row={row}
+              defaultExpandedCardView={defaultExpandedCardView}
+              collapsibleCardView={collapsibleCardView}
+            />
           ))}
         </div>
       ) : (
@@ -209,7 +217,9 @@ CustomDataTable.propTypes = {
   isStickyPagination: PropTypes.bool,
   selectedRowId: PropTypes.string,
   rowSelectCritera: PropTypes.func,
-  selectedRowIds: PropTypes.array
+  selectedRowIds: PropTypes.array,
+  defaultExpandedCardView: PropTypes.bool,
+  collapsibleCardView: PropTypes.bool
 };
 
 CustomDataTable.defaultProps = {

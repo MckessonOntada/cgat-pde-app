@@ -1,7 +1,7 @@
 import React from 'react';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import EmptyDataTable from '@src/components/EmptyTable';
-import { Badge, DropdownMenu, CustomDataTable, Loader } from '@mckesson/mcp-component-library';
+import { Badge, DropdownMenu, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import dayjs from 'dayjs';
 import { FormattedNumber } from 'react-intl';
@@ -11,6 +11,8 @@ import { showSnackbar } from '@src/store/reducer/snackbarReducer';
 import { useDispatch } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { PATHS } from '../../routes';
+import { CustomDataTable } from '@src/components/dataTableComponent';
+import useResponsiveView from '@src/hooks/useResponsiveView';
 
 function SelectedInvoiceList(props) {
   const { t } = useTranslate();
@@ -19,6 +21,7 @@ function SelectedInvoiceList(props) {
   const location = useLocation();
   const { state } = location;
   const REVIEW_MODE = state?.reviewMode || false;
+  const showCardView = useResponsiveView();
 
   const columns = [
     {
@@ -112,7 +115,8 @@ function SelectedInvoiceList(props) {
           <RemoveCircle disabled /> {t('paymentInvoices.reviewPayments.remove')}
         </div>
       ),
-      omit: REVIEW_MODE
+      omit: REVIEW_MODE,
+      isAction: true
     }
   ];
 
@@ -142,6 +146,8 @@ function SelectedInvoiceList(props) {
       type="normal"
       columns={columns}
       data={selectedInvoices || []}
+      showCardView={showCardView}
+      defaultExpandedCardView={true}
       noDataComponent={
         <EmptyDataTable
           image={EmptyDataImage}

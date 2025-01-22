@@ -2,19 +2,31 @@ import React, { useState } from 'react';
 import './assets/CustomCards.scss';
 import CommonUtils from '@src/util/CommonUtils';
 
-function CustomCard({ columns, row }) {
-  const showDefaultData = columns.filter((col) => !!col.showInMobileHeader && !col.isAction);
-  const hiddenData = columns.filter((col) => !col.showInMobileHeader);
-  const actionItems = columns.filter((col) => col.isAction);
+/*
+defaultExpandedCardView - card will be expanded by default
+  (if defaultExpandedCardView = true, Expanded by default)
+  (if defaultExpandedCardView = false, Collapsed by default)
+*/
 
-  const [expanded, setExpanded] = useState(showDefaultData.length === 0);
+/*
+collapsibleCardView -- A user input that card can be expand and  collapse 
+  (if collapsibleCardView = true, expandable or collapsible)
+  (if collapsibleCardView = false, can not be expandable or collapsible)
+*/
+
+function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleCardView = true, rowIndex }) {
+  const showDefaultData = columns.filter((col) => !!col.showInMobileHeader && !col.isAction && !col.omit);
+  const hiddenData = columns.filter((col) => !col.showInMobileHeader && !col.isAction && !col.omit);
+  const actionItems = columns.filter((col) => col.isAction && !col.omit && !col.omit);
+
+  const [expanded, setExpanded] = useState(defaultExpandedCardView || showDefaultData.length === 0);
 
   const handleCardClick = (e) => {
     e.preventDefault();
     if (hiddenData.length === 0 || showDefaultData.length === 0) {
       return;
     }
-    setExpanded(!expanded);
+    collapsibleCardView && setExpanded(!expanded);
   };
 
   const handleActionClick = (e, onClick) => {
@@ -49,7 +61,7 @@ function CustomCard({ columns, row }) {
             <div key={col.id} className="expanded-detail">
               {col.name && <div className="expanded-detail-content-key">{col.name}</div>}
               <div className="expanded-detail-content-value" onClick={(e) => handleActionClick(e, col.onClick)}>
-                {col.cell ? col.cell(row) : col.selector(row) || row[col.id]}
+                {col.cell ? col.cell(row, rowIndex) : col.selector(row) || row[col.id]}
               </div>
             </div>
           ))}

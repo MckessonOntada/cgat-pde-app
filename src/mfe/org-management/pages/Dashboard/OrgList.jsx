@@ -1,4 +1,4 @@
-import { Badge, Button, CheckboxGroup, CustomDataTable, Modal } from '@mckesson/mcp-component-library';
+import { Badge, Button, CheckboxGroup, Modal } from '@mckesson/mcp-component-library';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
@@ -15,6 +15,8 @@ import Actions from './Actions';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
+import { CustomDataTable } from '@src/components/dataTableComponent';
+import useResponsiveView from '@src/hooks/useResponsiveView';
 
 const OrgList = () => {
   const { t } = useTranslate();
@@ -25,6 +27,7 @@ const OrgList = () => {
   const location = (address) => {
     return `${address.address1 || ''}, ${address.city || ''}, ${address.state || ''}, ${address.pin || ''}`;
   };
+  const showCardView = useResponsiveView();
 
   const handleDeActivateOrg = async (orgId) => {
     const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}/${orgId}`, httpVerb.DELETE);
@@ -83,6 +86,7 @@ const OrgList = () => {
     {
       id: 'checkbox',
       name: '',
+      showInMobileHeader: true,
       cell: (row) => (
         <CheckboxGroup
           id={'default'}
@@ -176,7 +180,8 @@ const OrgList = () => {
       cell: (row) => <Actions row={row} />, // Pass row as a named prop
       minWidth: '100px',
       wrap: true,
-      center: true
+      center: true,
+      isAction: true
     }
   ];
 
@@ -238,6 +243,8 @@ const OrgList = () => {
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         isAdmin={true}
+        showCardView={showCardView}
+        defaultExpandedCardView={true}
         noDataComponent={
           <EmptyDataTable
             isLoading={isLoading}
