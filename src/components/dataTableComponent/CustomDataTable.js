@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import DataTable from 'react-data-table-component';
 import styles from './assets/CustomDataTable.module.scss';
-import { Divider } from '@mckesson/mcp-component-library';
+import { Divider, Dropdown, Button } from '@mckesson/mcp-component-library';
 import './assets/DataTableCssOverride.scss';
 import { customStylesNormal, customStylesCompact } from './assets/DataTableCutomStyle.js';
 import { Paginate } from '@mckesson/mcp-component-library';
@@ -11,6 +11,7 @@ import { CUSTOM_TABLE_TYPE } from './assets/constants/CustomTableConstants';
 import DataTableEmptyView from './assets/DataTableEmptyView';
 import CommonUtils from '@src/util/CommonUtils';
 import CustomCard from './CustomCards';
+import { ReactComponent as arrowThickUp } from './assets/svg/arrowThickUp.svg';
 
 export const CustomDataTable = (props) => {
   const {
@@ -48,6 +49,9 @@ export const CustomDataTable = (props) => {
     defaultExpandedCardView,
     collapsibleCardView
   } = props;
+
+  const [tableSortKey, setTableSortKey] = useState(defaultSortColumn || '');
+  const [sortOrder, setSortOrder] = useState('asc');
 
   const pageChangeEvent = (e, newPage) => {
     if (!showCardView) document.querySelector(`#data-table-${id} > *:first-child`).scrollTop = 0;
@@ -123,20 +127,63 @@ export const CustomDataTable = (props) => {
     ];
   };
 
+  const renderCardSort = () => {
+    const sortableColumns = columns.filter((col) => col.sortable).map((col) => ({ value: col.name, label: col.name }));
+    return (
+      <div className={styles.sortByContainer}>
+        <span className={styles.sortByText}>Sort by:</span>
+        <div className={styles.dropdownContainer}>
+          <Dropdown
+            size="lg"
+            value={tableSortKey}
+            options={sortableColumns}
+            onChange={(val) => {
+              setTableSortKey(val);
+              onSortIconClick(
+                columns.find((col) => col.name === val),
+                sortOrder,
+                data
+              );
+            }}
+          />
+        </div>
+        <Button
+          size="md"
+          disabled={!tableSortKey}
+          iconButton={true}
+          className={sortOrder === 'asc' ? '' : styles.cardSortIconButtonRotated}
+          variant="secondary"
+          Icon={!!sortIcon ? sortIcon : arrowThickUp}
+          onClick={() => {
+            setSortOrder((prevSort) => (prevSort === 'asc' ? 'desc' : 'asc'));
+            onSortIconClick(
+              columns.find((col) => col.name === tableSortKey),
+              sortOrder === 'asc' ? 'desc' : 'asc',
+              data
+            );
+          }}
+        />
+      </div>
+    );
+  };
+
   return (
     <>
       {showCardView ? (
-        <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start">
-          {data.map((row, index) => (
-            <CustomCard
-              columns={columns}
-              rowIndex={index}
-              row={row}
-              defaultExpandedCardView={defaultExpandedCardView}
-              collapsibleCardView={collapsibleCardView}
-            />
-          ))}
-        </div>
+        <>
+          {renderCardSort()}
+          <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start">
+            {data.map((row, index) => (
+              <CustomCard
+                columns={columns}
+                rowIndex={index}
+                row={row}
+                defaultExpandedCardView={defaultExpandedCardView}
+                collapsibleCardView={collapsibleCardView}
+              />
+            ))}
+          </div>
+        </>
       ) : (
         <div
           className={`${styles.tableContainer} ${getTypeClasses()} ${

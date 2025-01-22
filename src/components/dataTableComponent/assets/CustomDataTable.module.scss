@@ -114,3 +114,25 @@
   border-bottom-right-radius: 0px;
   border-bottom-left-radius: 0px;
 }
+
+// SortComponent
+
+.sortByContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 0;
+  justify-content: end;
+}
+
+.sortByText {
+  font-size: 16px;
+  font-weight: bold;
+}
+.dropdownContainer {
+  min-width: 50%;
+}
+.cardSortIconButtonRotated {
+  transform: rotate(180deg);
+}

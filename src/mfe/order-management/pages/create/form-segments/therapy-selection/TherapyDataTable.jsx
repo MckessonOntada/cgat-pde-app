@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { CustomDataTable } from '../../../../../../components/dataTableComponent';
+import useResponsiveView from '@src/hooks/useResponsiveView';
 
 const TherapyDataTable = ({ therapy, onChange }) => {
   const { t } = useTranslate();
@@ -25,20 +26,7 @@ const TherapyDataTable = ({ therapy, onChange }) => {
     }
   };
 
-  const [showCardView, setShowCardView] = useState(window.innerWidth <= 2000);
-
-  // Handle screen size changes
-  useEffect(() => {
-    const handleResize = () => {
-      setShowCardView(window.innerWidth <= 2000);
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+  const showCardView = useResponsiveView();
 
   return (
     <CustomDataTable

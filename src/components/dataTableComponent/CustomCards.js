@@ -36,6 +36,16 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
     }
   };
 
+  const renderCell = (col, row) => {
+    return !!col.cell && typeof col.cell === 'function'
+      ? col.cell(row, rowIndex)
+      : !!col.selector
+      ? typeof col.selector === 'function'
+        ? col.selector(row)
+        : row[col.selector]
+      : row[col.id];
+  };
+
   return (
     <div className="card-container" key={row.id} onClick={handleCardClick}>
       {(showDefaultData.length > 0 || actionItems.length > 0) && (
@@ -44,13 +54,13 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
             {showDefaultData.map((col) => (
               <div key={col.id} className="collapsed-detail" onClick={(e) => handleActionClick(e, col.onClick)}>
                 {col.showColumnNameInHeader && col.name && `${col.name}: `}
-                {col.cell ? col.cell(row) : col.selector(row) || row[col.id]}
+                {renderCell(col, row)}
               </div>
             ))}
           </div>
           <div className="collapsed-detail action-button">
             {actionItems.map((col) => (
-              <div onClick={(e) => handleActionClick(e, col.onClick)}>{col.cell ? col.cell(row) : col.selector(row) || row[col.id]}</div>
+              <div onClick={(e) => handleActionClick(e, col.onClick)}>{renderCell(col, row)}</div>
             ))}
           </div>
         </div>
@@ -61,7 +71,7 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
             <div key={col.id} className="expanded-detail">
               {col.name && <div className="expanded-detail-content-key">{col.name}</div>}
               <div className="expanded-detail-content-value" onClick={(e) => handleActionClick(e, col.onClick)}>
-                {col.cell ? col.cell(row, rowIndex) : col.selector(row) || row[col.id]}
+                {renderCell(col, row)}
               </div>
             </div>
           ))}
