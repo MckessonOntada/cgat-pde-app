@@ -15,6 +15,7 @@ import { OrderProvider } from '../context/OrderContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import ProtectedRoute from '@src/routes/ProtectedRoute';
 import { CONFIG_MODULE_ROUTES } from '../pages/system-configuration/constants';
+import ManageCatalog from '../pages/system-configuration/manage-catalog';
 
 function OrderManagementRoutes() {
   const addEditPermission = [PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS];
@@ -92,7 +93,7 @@ function OrderManagementRoutes() {
       />
 
       <Route path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_MATERIAL}`} element={<div>Manage Material</div>} />
-      <Route path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_CATALOG}`} element={<div>Manage Catalog</div>} />
+      <Route path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_CATALOG}`} element={<ManageCatalog />} />
       <Route path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_QUESTIONNAIRE}`} element={<div>Manage Questionnaire</div>} />
       <Route path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_ACCOUNT}`} element={<div>Manage Account</div>} />
 
