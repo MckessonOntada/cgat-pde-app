@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { SearchableDropdown } from '../searchableDropdown';
 import { Label, Required, TextError } from '@mckesson/mcp-component-library';
+import { highlightFieldOnLabelClick } from './util';
 
 const MultiSelectDropdown = (props) => {
   const {
@@ -52,7 +53,7 @@ const MultiSelectDropdown = (props) => {
   }, [searchString]);
 
   return (
-    <div className="grid" ref={dropdownContainerRef}>
+    <div className="grid" onClick={(e) => highlightFieldOnLabelClick(e, dropdownContainerRef)} ref={dropdownContainerRef}>
       <Label htmlFor={id} className="label-heading">
         {label}
         {isRequired && <Required id="Required">Required</Required>}

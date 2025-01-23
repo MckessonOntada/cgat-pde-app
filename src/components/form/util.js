@@ -1,6 +1,5 @@
 import US_STATE_CITY from '@src/assets/data/US_States_and_Cities.json';
 
-
 //TODO: fix me - EKTA
 export const getNestedValuePayment = (obj, fieldName) => {
   const keys = fieldName?.split('.');
@@ -64,4 +63,15 @@ export const US_CITIES_OF_STATE = (state) => {
   }
 
   return _options; // .splice(0, 10);
+};
+
+export const highlightFieldOnLabelClick = (event, containerRef) => {
+  event.stopPropagation();
+
+  if (containerRef.current) {
+    const dropdownElement = containerRef.current.querySelector('input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if (dropdownElement) {
+      dropdownElement.focus();
+    }
+  }
 };

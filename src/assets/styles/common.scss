@@ -550,6 +550,31 @@ div.disable-all {
   margin: 0px auto;
 }
 
+.dashboard-card {
+  text-decoration: none;
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--spacing-03);
+  padding: var(--spacing-04);
+  border: 1px solid var(--brand-color-patient-primary-3);
+  border-radius: var(--brand-border-radius--8);
+  background-color: var(--brand-color-background-white);
+  color: var(--brand-color-primary-slate);
+  width: 100%;
+
+  p.card-heading {
+    font-size: var(--brand-font-size--large);
+    font-weight: var(--brand-font-weight-700);
+    line-height: var(--brand-font-size--22);
+    color: var(--brand-color-text-dark-slate);
+  }
+
+  p {
+    font-size: var(--brand-font-size--small);
+    font-weight: var(--brand-font-weight-400);
+  }
+}
+
 @media only screen and (min-width: 576px) {}
 
 @media only screen and (min-width: 992px) {}
