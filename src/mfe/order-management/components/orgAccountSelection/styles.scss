@@ -1,0 +1,17 @@
+.actions-container {
+  display: flex;
+  //   flex-direction: row;
+  width: 100%;
+  height: auto;
+  gap: var(--spacing-04);
+  padding: var(--spacing-04);
+  border: 1px solid var(--brand-color-patient-primary-3);
+  border-radius: var(--brand-border-radius--8);
+  background-color: var(--brand-color-background-white);
+  .org-select {
+    width: 50%;
+  }
+  .account-select {
+    width: 50%;
+  }
+}
