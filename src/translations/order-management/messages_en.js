@@ -308,5 +308,23 @@ export const MessageEn = {
   'message.error.papOrderCanNotEdit':
     "You can't edit this order, If you wish to make any changes to the order, please call the customer center",
   'prompt.message.editRestriction':
-    "You can't edit this order, If you wish to make any changes to the order, please contact the customer support 1800-XXX-XXXX"
+    "You can't edit this order, If you wish to make any changes to the order, please contact the customer support 1800-XXX-XXXX",
+
+  'button.caption.backQuestionnaireBuilder': 'Back to Questionnaire Builder',
+  'heading.addQuestionnaire': 'Add Questionnaire',
+  'heading.templateDetails': 'Template Details',
+  'heading.questions': 'Questions',
+  'message.questionTextMaxChar': 'Maximum 1,000 Characters',
+  'label.question': 'Question',
+  'placeholder.OptionItr': 'Option {{index}}',
+  'button.addOption': 'Add Option',
+  'label.check.questionMandatory': 'Mark this question as mandatory?',
+  'label.check.requiredDocument': 'Document upload required?',
+  'button.caption.addQuestion': 'Add Question',
+  'button.caption.createQuestionnaire': 'Create Questionnaire',
+  'label.type': 'Type',
+  'label.templateName': 'Template Name',
+  'message.questionnaire.templateNameRequired': 'Template name is required',
+  'message.questionnaire.templateNameMinWidth': 'Template name must be at least 2 characters',
+  'message.questionnaire.templateNameMaxWidth': 'Template name must be at most 24 characters'
 };

@@ -1,13 +1,13 @@
 import React from 'react';
-import { Button, Heading, CheckboxGroup, TextareaInput, InputField } from '@mckesson/mcp-component-library';
+import { Button, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as ArrowLeftIcon } from '@src/assets/svg/arrow-left.svg';
 import { Field, Formik, Form, FieldArray } from 'formik';
 import Components from '@src/components/form/Components';
 import { ReactComponent as PlusIcon } from '@src/assets/svg/plus.svg';
 import { ReactComponent as BinRedIcon } from '@src/assets/svg/bin-red.svg';
-import useQuestionnaire from './useQuestionnaire';
 import * as Yup from 'yup';
 import CheckBox from '@src/components/form/CheckBox';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const QUESTION_TYPE = {
   RADIO_BUTTON: 'radio_button',
@@ -16,25 +16,25 @@ const QUESTION_TYPE = {
   INPUT: 'input'
 };
 
-const schema = Yup.object().shape({
-  ['template-name']: Yup.string()
-    .required('Template name is required')
-    .min(2, 'Template name must be at least 2 characters')
-    .max(24, 'Template name must be at most 24 characters'),
-  ['question-list']: Yup.array().of(
-    Yup.object().shape({
-      ['question-type']: Yup.string().required('You must select a template type'),
-      ['question-text']: Yup.string().required('You must select a template type'),
-      ['question-option']: Yup.array().of(
-        Yup.object().shape({
-          value: Yup.string().required('Option value is required')
-        })
-      )
-    })
-  )
-});
-
 function AddQuestionnaire() {
+  const { t } = useTranslate();
+  const schema = Yup.object().shape({
+    ['template-name']: Yup.string()
+      .required(t('message.questionnaire.templateNameRequired'))
+      .min(2, t('message.questionnaire.templateNameMinWidth'))
+      .max(24, t('message.questionnaire.templateNameMaxWidth')),
+    ['question-list']: Yup.array().of(
+      Yup.object().shape({
+        ['question-type']: Yup.string().required(t('message.questionnaire.selectTemplateType')),
+        ['question-text']: Yup.string().required(t('message.questionnaire.provideQuestionText')),
+        ['question-option']: Yup.array().of(
+          Yup.object().shape({
+            value: Yup.string().required(t('message.questionnaire.optionValueRequired'))
+          })
+        )
+      })
+    )
+  });
   return (
     <div>
       <div>
@@ -59,25 +59,25 @@ function AddQuestionnaire() {
                 <div className="MCP-module-header">
                   <div className="styled-icon-button">
                     <Button variant="tertiary" size="md" Icon={ArrowLeftIcon}>
-                      Back to Questionnaire Builder
+                      {t('button.caption.backQuestionnaireBuilder')}
                     </Button>
                   </div>
                 </div>
                 <div className="MCP-module-body">
                   <div className="styled-heading">
-                    <Heading as="h1">Add Questionnaire</Heading>
+                    <Heading as="h1">{t('heading.addQuestionnaire')}</Heading>
                   </div>
 
                   <div className="MCP-CardContainer">
                     <div className="template">
                       <div className="styledHeading">
-                        <Heading as="h2">Template Details</Heading>
+                        <Heading as="h2">{t('heading.templateDetails')}</Heading>
                       </div>
                       <div class="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
                         <div className="styled-form-field">
                           <Field
                             name={`template-name`}
-                            label={`Template Name`}
+                            label={t('label.templateName')}
                             placeholder={` `}
                             errors={{ name: 'error' }}
                             isRequired
@@ -86,7 +86,7 @@ function AddQuestionnaire() {
                         </div>
                       </div>
                       <div className="styledHeading">
-                        <Heading as="h2">Questions</Heading>
+                        <Heading as="h2">{t('heading.questions')}</Heading>
                       </div>
                       <FieldArray name="question-list">
                         {({ push: addQuestion, remove: removeQuestion }) => (
@@ -99,7 +99,7 @@ function AddQuestionnaire() {
                                       <Field
                                         component={Components['dropdown']}
                                         name={`question-list.${index}.question-type`}
-                                        fieldlabel={'Type'}
+                                        fieldlabel={t('label.type')}
                                         placeholder=" "
                                         isRequired
                                         size="lg"
@@ -124,7 +124,7 @@ function AddQuestionnaire() {
                                           onClick={() => {
                                             removeQuestion(index);
                                           }}>
-                                          Delete
+                                          {t('labels.orderActions.delete')}
                                         </Button>
                                       </div>
                                     </div>
@@ -132,13 +132,11 @@ function AddQuestionnaire() {
                                   <div className="styled-form-field">
                                     <Field
                                       name={`question-list.${index}.question-text`}
-                                      fieldlabel={'Question'}
+                                      fieldlabel={t('label.question')}
                                       placeholder={` `}
                                       component={Components['textarea']}
-                                      maxCharHelperText="Maximum 1,000 Characters"
+                                      maxCharHelperText={t('message.questionTextMaxChar')}
                                       maxCharLimit={1000}
-                                      maxCharWarningLimit={900}
-                                      maxLimitReachedHelpertext="Character limit reached"
                                     />
                                   </div>
                                   {question['question-type'] && (
@@ -157,11 +155,11 @@ function AddQuestionnaire() {
                                                           <div className="styled-form-field">
                                                             <Field
                                                               name={`question-list.${index}.question-option.${optionIndex}.value`}
-                                                              label={`Option ${optionIndex + 1}`}
-                                                              placeholder={`Option ${optionIndex + 1}`}
+                                                              label={t('placeholder.OptionItr').replace('{{index}}', optionIndex + 1)}
+                                                              placeholder={t('placeholder.OptionItr').replace('{{index}}', optionIndex)}
                                                               component={Components['input']}
                                                               isRequired
-                                                              fieldlabel={'Question'}
+                                                              fieldlabel={t('label.question')}
                                                             />
                                                           </div>
                                                           <div className="void-gap"></div>
@@ -177,7 +175,7 @@ function AddQuestionnaire() {
                                                                 onClick={() => {
                                                                   removeOption(optionIndex);
                                                                 }}>
-                                                                Delete
+                                                                {t('labels.orderActions.delete')}
                                                               </Button>
                                                             </div>
                                                           </div>
@@ -197,7 +195,7 @@ function AddQuestionnaire() {
                                                             value: ''
                                                           });
                                                         }}>
-                                                        Add Option
+                                                        {t('button.addOption')}
                                                       </Button>
                                                     </div>
                                                   </div>
@@ -214,11 +212,11 @@ function AddQuestionnaire() {
                                       name={`question-list.${index}.checks`}
                                       items={[
                                         {
-                                          label: 'Mark this question as mandatory',
+                                          label: t('label.check.questionMandatory'),
                                           value: 'isMandatory'
                                         },
                                         {
-                                          label: 'Document upload required?',
+                                          label: t('label.check.requiredDocument'),
                                           value: 'isDocumentRequired'
                                         }
                                       ]}
@@ -238,7 +236,7 @@ function AddQuestionnaire() {
                                   variant="tertiary"
                                   size="md"
                                   Icon={PlusIcon}>
-                                  Add Question
+                                  {t('button.caption.addQuestion')}
                                 </Button>
                               </div>
                             </div>
@@ -249,10 +247,10 @@ function AddQuestionnaire() {
                   </div>
                   <div className="controls">
                     <Button size="md" variant="secondary">
-                      Cancel
+                      {t('captions.btnCancel')}
                     </Button>
                     <Button type="submit" size="md" variant="primary">
-                      Create Questionnaire
+                      {t('button.caption.createQuestionnaire')}
                     </Button>
                   </div>
                 </div>
