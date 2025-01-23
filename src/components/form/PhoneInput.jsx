@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { MaskedInput, TextError, Label, Required } from '@mckesson/mcp-component-library';
 import './Components.scss';
+import { highlightFieldOnLabelClick } from './util';
 
 export default function PhoneInput(props) {
   const { id, value, isRequired, error = '', onChangeFn, onBlur, label, ...rest } = props;
@@ -29,7 +30,7 @@ export default function PhoneInput(props) {
   }, [value, props]);
 
   return (
-    <div className="grid align-PhoneInput" ref={phoneInputRef}>
+    <div className="grid align-PhoneInput" onClick={(e) => highlightFieldOnLabelClick(e, phoneInputRef)} ref={phoneInputRef}>
       <Label htmlFor={id} className="label-heading">
         {label}
         {isRequired && <Required id="Required">Required</Required>}

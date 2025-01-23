@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { TextareaInput, Label, TextError, Required } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
+import { highlightFieldOnLabelClick } from './util';
 
 export default function Textarea(props) {
   const { id, label, value, error, isRequired, maxCharLimit = 1000, displayType = 'outline', onChange, onBlur, ...rest } = props;
+  const fieldContainerRef = useRef(null);
 
   return (
-    <div className="grid">
+    <div className="grid" onClick={(e) => highlightFieldOnLabelClick(e, fieldContainerRef)} ref={fieldContainerRef}>
       <Label htmlFor={id} className="label-heading">
         {label}
         {isRequired && <Required id="Required">Required</Required>}

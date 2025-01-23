@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { InputField as BaseInputField, Label, TextError, Required } from '@mckesson/mcp-component-library';
-import { getNestedValue } from './util';
+import { getNestedValue, highlightFieldOnLabelClick } from './util';
 
 export default function ZipInput(props) {
   const { field, form, children, className, label, maxLength, ...rest } = props;
@@ -47,7 +47,7 @@ export default function ZipInput(props) {
     }
   }, [fieldValue]);
   return (
-    <div className="grid align-ZipCodeInput" ref={zipinputDivRef}>
+    <div className="grid align-ZipCodeInput" onClick={(e) => highlightFieldOnLabelClick(e, zipinputDivRef)} ref={zipinputDivRef}>
       <Label htmlFor={field.name} className="label-heading">
         {label}
         {props.isRequired && <Required id="Required">Required</Required>}
