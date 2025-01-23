@@ -79,7 +79,7 @@ div.disable-all {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-03);
-  height: 100%;
+  // height: 100%;
 
   .MCP-module-body {
     display: flex;
@@ -595,4 +595,114 @@ div.disable-all {
 
 .MuiDialog-paperFullWidth {
   max-width: 640px !important;
+}
+
+.styled-icon-button {
+  display: inline-block;
+
+  button[class*="IonButton-module"] {
+    padding-left: 0px;
+    padding-right: 0px;
+    min-width: unset;
+
+    .text-wrap {
+      margin-top: 1px;
+    }
+  }
+
+  &.error-button {
+    button[disabled] {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    button[class*="IonButton-module"] {
+      color: var(--brand-color-warning-orange-4) !important;
+
+      svg {
+        fill: var(--brand-color-warning-orange-4) !important;
+        color: var(--brand-color-warning-orange-4) !important;
+      }
+    }
+  }
+}
+
+.styled-heading {
+
+  //module primary heading
+  h1 {
+    font-size: var(--brand-font-size--28) !important;
+    line-height: var(--spacing-05);
+    font-weight: var(--brand-font-weight-600);
+  }
+
+  h2 {
+    font-size: var(--brand-font-size--24) !important;
+    line-height: calc(var(--spacing-04) + var(--spacing-01));
+    font-weight: var(--brand-font-weight-700);
+  }
+}
+
+.styled-form-field {
+
+  .label-heading,
+  label[class*="TextareaInput-module--label"],
+  label[class*="InputField-module--labelText"] {
+    font-size: var(--brand-font-size--default);
+    font-weight: var(--brand-font-weight-600);
+    line-height: var(--brand-font-size--20);
+  }
+}
+
+.stacked-checkbox {
+  font-size: var(--brand-font-size--default);
+
+  fieldset {
+    gap: var(--spacing-04);
+  }
+}
+
+//temp
+.template,
+.template-question,
+.template-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  gap: var(--spacing-04);
+}
+
+.template-question {
+  padding-bottom: var(--spacing-04);
+  margin-bottom: var(--spacing-04);
+  border-bottom: 1px solid var(--brand-color-patient-primary-3);
+}
+
+.option-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-04);
+  align-items: stretch;
+  margin-bottom: var(--spacing-04);
+
+  .void-gap {
+    display: none;
+
+    @include mixins.respond(md) {
+      display: initial;
+    }
+  }
+}
+
+.option-panel {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.flex-end {
+  display: flex;
+  justify-content: flex-end;
+  align-self: flex-end;
 }
