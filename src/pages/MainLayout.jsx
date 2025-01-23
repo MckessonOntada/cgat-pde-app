@@ -50,7 +50,7 @@ function MainLayout() {
                 <Route
                   path={AppRoutes.pathSystemConfiguration}
                   element={
-                    <ProtectedRoute permissions={[]}>
+                    <ProtectedRoute permissions={[]} isDashboard={true}>
                       <SystemConfiguration />
                     </ProtectedRoute>
                   }
@@ -59,7 +59,7 @@ function MainLayout() {
                 <Route
                   path={'orders/*'}
                   element={
-                    <ProtectedRoute permissions={routePermissionConfig.orders}>
+                    <ProtectedRoute permissions={[...routePermissionConfig.orders, ...routePermissionConfig.systemConfiguration]}>
                       <OrderManagementEntryPoint />
                     </ProtectedRoute>
                   }

@@ -121,6 +121,7 @@ export const MessageEs = {
   'controls.placeholders.autoSearch': 'S_Search by Order ID, Patient name, Account',
   'controls.ariaLabels.searchOrders': 'S_Search Orders',
   'controls.placeholder.therapySelection.search': 'S_Search Therapy by Name, NDC, UDI...',
+  'controls.placeholder.material.search': 'S_Search by Name, NDC, Material Number...',
   'controls.placeholder.shippingAddress.search': 'S_Search by Account name or Number',
   'controls.placeholder.selectOption': 'S_Select Option',
   'controls.ariaLabels.expandFilters': 'S_Expand Filters',
