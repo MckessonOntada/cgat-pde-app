@@ -326,5 +326,8 @@ export const MessageEn = {
   'label.templateName': 'Template Name',
   'message.questionnaire.templateNameRequired': 'Template name is required',
   'message.questionnaire.templateNameMinWidth': 'Template name must be at least 2 characters',
-  'message.questionnaire.templateNameMaxWidth': 'Template name must be at most 24 characters'
+  'message.questionnaire.templateNameMaxWidth': 'Template name must be at most 24 characters',
+  'message.questionnaire.selectTemplateType': 'You must select a template type',
+  'message.questionnaire.provideQuestionText': 'You must provide question text',
+  'message.questionnaire.optionValueRequired': 'Option value is required'
 };
