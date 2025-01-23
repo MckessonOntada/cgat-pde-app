@@ -355,17 +355,21 @@ div.disable-all {
   display: inline-flex;
   text-decoration: none;
   color: var(--brand-color-text-blue);
-  font-size: var(--brand-font-size--default);
-  font-weight: var(--brand-font-weight-700);
+  font-size: var(--brand-font-size--small);
+  font-weight: var(--brand-font-weight-600);
 }
 
 .price-wrapper {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  .fieldName {
+    justify-content: flex-end;
+  }
 
   .fieldValue {
     font-size: var(--brand-font-size--large);
+    
 
     .dollarSign {
       span {
@@ -439,7 +443,7 @@ div.disable-all {
 }
 
 .fieldName {
-  color: #767e94; //color const missing
+  color: var(--brand-color-background-dark-slate);
   font-size: var(--brand-font-size--small);
   display: flex;
   flex-wrap: nowrap;

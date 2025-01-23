@@ -1,6 +1,6 @@
 import React from 'react';
 import { TabList, Button, Heading } from '@mckesson/mcp-component-library';
-import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle.svg';
+import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bold.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { routesConfig } from './../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -102,7 +102,7 @@ const OrderIndex = () => {
         controls={
           <div className="controls">
             <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS}>
-              <Button Icon={AddCircleFilled} onClick={handleOnClick} size="md" aria-label={t('controls.createNewOrder')}>
+              <Button Icon={AddCircleFilled} className="button-icon" onClick={handleOnClick} size="lg" aria-label={t('controls.createNewOrder')}>
                 {t('controls.ariaLabels.createNewOrder')}
               </Button>
             </PermittedComponent>

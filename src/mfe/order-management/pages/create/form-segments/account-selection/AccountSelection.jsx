@@ -240,7 +240,7 @@ const AccountSelection = () => {
         </Button>
       </div>
 
-      <PageHeader heading={<Heading as="h1">{isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')}</Heading>} />
+      <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
 
       <div className="MCP-module-body">
         <OrderStepper />
@@ -312,10 +312,7 @@ const AccountSelection = () => {
               <ShippingAddress selectedShippingAddress={selectedShippingAddress} setSelectedShippingAddress={setSelectedShippingAddress} />
             </ShippingAddressProvider>
           </div>
-          <div className="controls">
-            <Button size="md" onClick={handleOnBack} variant="secondary">
-              {isEdit ? t('captions.btnBack') : t('captions.btnBacktoTherapySelection')}
-            </Button>
+          <div className={styles.inventoryControl}>
             <Button
               size="md"
               onClick={() => {
@@ -325,14 +322,19 @@ const AccountSelection = () => {
               disabled={!(inventoryType && ['S', 'I'].includes(inventoryType))}>
               {t('captions.btnInventoryCheck')}
             </Button>
-            <Button
-              size="md"
-              onClick={handleOnSubmit}
-              disabled={!selectedShippingAddress || !selectedAccount || isSaving}
-              variant="primary"
-              type="submit">
-              {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
-            </Button>
+            <div className='controls'>
+              <Button size="md" onClick={handleOnBack} variant="secondary">
+                {isEdit ? t('captions.btnBack') : t('captions.btnBacktoTherapySelection')}
+              </Button>
+              <Button
+                size="md"
+                onClick={handleOnSubmit}
+                disabled={!selectedShippingAddress || !selectedAccount || isSaving}
+                variant="primary"
+                type="submit">
+                {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
+              </Button>
+            </div>
           </div>
           {open && (
             <FloatingDrawer open={open} anchor="right" onClose={handleOnClose}>
