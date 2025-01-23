@@ -329,5 +329,7 @@ export const MessageEn = {
   'message.questionnaire.templateNameMaxWidth': 'Template name must be at most 24 characters',
   'message.questionnaire.selectTemplateType': 'You must select a template type',
   'message.questionnaire.provideQuestionText': 'You must provide question text',
-  'message.questionnaire.optionValueRequired': 'Option value is required'
+  'message.questionnaire.optionValueRequired': 'Option value is required',
+  'heading.manageQuestionnaire': 'Manage Questionnaire',
+  'button.caption.addQuestionnaire': 'Add Questionnaire'
 };
