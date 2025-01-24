@@ -316,7 +316,7 @@ export const MessageEn = {
   'heading.questions': 'Questions',
   'message.questionTextMaxChar': 'Maximum 1,000 Characters',
   'label.question': 'Question',
-  'placeholder.OptionItr': 'Option {{index}}',
+  'placeholder.optionItr': 'Option',
   'button.addOption': 'Add Option',
   'label.check.questionMandatory': 'Mark this question as mandatory?',
   'label.check.requiredDocument': 'Document upload required?',

@@ -1,0 +1,27 @@
+.toggleButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-01);
+    background: #e5e8ea;
+    border-radius: 12px;
+    cursor: pointer;
+    padding: var(--spacing-01);
+}
+
+.option {
+    flex: 1;
+    min-width: 32px;
+    font-size: var(--brand-font-size--extra-small);
+    text-align: center;
+    padding: 0 var(--spacing-01);
+    color: #181818;
+    border-radius: var(--spacing-02);
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.active {
+    color: #007cc1;
+    background: #ffffff;
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Heading } from '@mckesson/mcp-component-library';
+import { Button, Heading, Switch } from '@mckesson/mcp-component-library';
 import { ReactComponent as ArrowLeftIcon } from '@src/assets/svg/arrow-left.svg';
 import { Field, Formik, Form, FieldArray } from 'formik';
 import Components from '@src/components/form/Components';
@@ -8,6 +8,8 @@ import { ReactComponent as BinRedIcon } from '@src/assets/svg/bin-red.svg';
 import * as Yup from 'yup';
 import CheckBox from '@src/components/form/CheckBox';
 import { useTranslate } from '@src/translations/useTranslation';
+import ToggleButton from './ToggleButton';
+import { useNavigate } from 'react-router-dom';
 
 const QUESTION_TYPE = {
   RADIO_BUTTON: 'radio_button',
@@ -18,6 +20,8 @@ const QUESTION_TYPE = {
 
 function AddQuestionnaire() {
   const { t } = useTranslate();
+  const navigate = useNavigate();
+  const [lang, setLang] = React.useState('en');
   const schema = Yup.object().shape({
     ['template-name']: Yup.string()
       .required(t('message.questionnaire.templateNameRequired'))
@@ -35,6 +39,12 @@ function AddQuestionnaire() {
       })
     )
   });
+
+  const handleOnLanguageChange = () => {
+    if (lang == 'en') setLang('es');
+    else setLang('en');
+  };
+
   return (
     <div>
       <div>
@@ -43,8 +53,9 @@ function AddQuestionnaire() {
             ['template-name']: '',
             ['question-list']: [
               {
-                'question-text': '',
+                'question-text': { en: '', es: '' },
                 'question-type': '',
+                //default english text as value
                 'question-option': [{ value: '' }, { value: '' }],
                 checks: []
               }
@@ -58,7 +69,11 @@ function AddQuestionnaire() {
               <div className="MCP-module-wrapper">
                 <div className="MCP-module-header">
                   <div className="styled-icon-button">
-                    <Button variant="tertiary" size="md" Icon={ArrowLeftIcon}>
+                    <Button
+                      onClick={() => navigate('/orders/system-configuration/manage-questionnaire')}
+                      variant="tertiary"
+                      size="md"
+                      Icon={ArrowLeftIcon}>
                       {t('button.caption.backQuestionnaireBuilder')}
                     </Button>
                   </div>
@@ -129,15 +144,20 @@ function AddQuestionnaire() {
                                       </div>
                                     </div>
                                   </div>
-                                  <div className="styled-form-field">
-                                    <Field
-                                      name={`question-list.${index}.question-text`}
-                                      fieldlabel={t('label.question')}
-                                      placeholder={` `}
-                                      component={Components['textarea']}
-                                      maxCharHelperText={t('message.questionTextMaxChar')}
-                                      maxCharLimit={1000}
-                                    />
+                                  <div>
+                                    <div className="styled-form-field">
+                                      <Field
+                                        name={`question-list.${index}.question-text.${lang}`}
+                                        fieldlabel={t('label.question')}
+                                        placeholder={` `}
+                                        component={Components['textarea']}
+                                        maxCharHelperText={t('message.questionTextMaxChar')}
+                                        maxCharLimit={1000}
+                                      />
+                                    </div>
+                                    <div>
+                                      <ToggleButton options={['en', 'es']} size="small" onChange={handleOnLanguageChange} />
+                                    </div>
                                   </div>
                                   {question['question-type'] && (
                                     <div>
@@ -151,33 +171,42 @@ function AddQuestionnaire() {
                                                   <div className="option-list">
                                                     {question['question-option']?.map((option, optionIndex) => {
                                                       return (
-                                                        <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-                                                          <div className="styled-form-field">
-                                                            <Field
-                                                              name={`question-list.${index}.question-option.${optionIndex}.value`}
-                                                              label={t('placeholder.OptionItr').replace('{{index}}', optionIndex + 1)}
-                                                              placeholder={t('placeholder.OptionItr').replace('{{index}}', optionIndex)}
-                                                              component={Components['input']}
-                                                              isRequired
-                                                              fieldlabel={t('label.question')}
-                                                            />
-                                                          </div>
-                                                          <div className="void-gap"></div>
-                                                          <div className="flex-end">
-                                                            <div className="styled-icon-button error-button">
-                                                              <Button
-                                                                Icon={BinRedIcon}
-                                                                size="md"
-                                                                variant="tertiary"
-                                                                color="error"
-                                                                type="button"
-                                                                disabled={question['question-option'].length === 2}
-                                                                onClick={() => {
-                                                                  removeOption(optionIndex);
-                                                                }}>
-                                                                {t('labels.orderActions.delete')}
-                                                              </Button>
+                                                        <div>
+                                                          <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+                                                            <div className="styled-form-field">
+                                                              <Field
+                                                                name={`question-list.${index}.question-option.${optionIndex}.value`}
+                                                                label={t('placeholder.optionItr')}
+                                                                placeholder={t('placeholder.optionItr')}
+                                                                component={Components['input']}
+                                                                isRequired
+                                                                fieldlabel={t('label.question')}
+                                                              />
                                                             </div>
+                                                            <div className="void-gap"></div>
+                                                            <div className="flex-end">
+                                                              <div className="styled-icon-button error-button">
+                                                                <Button
+                                                                  Icon={BinRedIcon}
+                                                                  size="md"
+                                                                  variant="tertiary"
+                                                                  color="error"
+                                                                  type="button"
+                                                                  disabled={question['question-option'].length === 2}
+                                                                  onClick={() => {
+                                                                    removeOption(optionIndex);
+                                                                  }}>
+                                                                  {t('labels.orderActions.delete')}
+                                                                </Button>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                          <div>
+                                                            <ToggleButton
+                                                              options={['en', 'es']}
+                                                              size="small"
+                                                              onChange={handleOnLanguageChange}
+                                                            />
                                                           </div>
                                                         </div>
                                                       );
