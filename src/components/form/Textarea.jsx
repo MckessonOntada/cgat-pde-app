@@ -1,16 +1,30 @@
 import React from 'react';
 import { TextareaInput, Label, TextError, Required } from '@mckesson/mcp-component-library';
-import { useTranslate } from '@src/translations/useTranslation';
 
 export default function Textarea(props) {
-  const { id, label, value, error, isRequired, maxCharLimit = 1000, displayType = 'outline', onChange, onBlur, ...rest } = props;
+  const {
+    id,
+    label,
+    labelControls,
+    value,
+    error,
+    isRequired,
+    maxCharLimit = 1000,
+    displayType = 'outline',
+    onChange,
+    onBlur,
+    ...rest
+  } = props;
 
   return (
     <div className="grid">
-      <Label htmlFor={id} className="label-heading">
-        {label}
-        {isRequired && <Required id="Required">Required</Required>}
-      </Label>
+      <div className="row-space-between-center">
+        <Label htmlFor={id} className="label-heading">
+          {label}
+          {isRequired && <Required id="Required">Required</Required>}
+        </Label>
+        {labelControls}
+      </div>
       <TextareaInput
         id={id}
         name={id}

@@ -149,14 +149,14 @@ function AddQuestionnaire() {
                                       <Field
                                         name={`question-list.${index}.question-text.${lang}`}
                                         fieldlabel={t('label.question')}
+                                        labelControls={
+                                          <ToggleButton options={['en', 'es']} size="small" onChange={handleOnLanguageChange} />
+                                        }
                                         placeholder={` `}
                                         component={Components['textarea']}
                                         maxCharHelperText={t('message.questionTextMaxChar')}
                                         maxCharLimit={1000}
                                       />
-                                    </div>
-                                    <div>
-                                      <ToggleButton options={['en', 'es']} size="small" onChange={handleOnLanguageChange} />
                                     </div>
                                   </div>
                                   {question['question-type'] && (
@@ -181,6 +181,13 @@ function AddQuestionnaire() {
                                                                 component={Components['input']}
                                                                 isRequired
                                                                 fieldlabel={t('label.question')}
+                                                                labelControls={
+                                                                  <ToggleButton
+                                                                    options={['en', 'es']}
+                                                                    size="small"
+                                                                    onChange={handleOnLanguageChange}
+                                                                  />
+                                                                }
                                                               />
                                                             </div>
                                                             <div className="void-gap"></div>
@@ -200,13 +207,6 @@ function AddQuestionnaire() {
                                                                 </Button>
                                                               </div>
                                                             </div>
-                                                          </div>
-                                                          <div>
-                                                            <ToggleButton
-                                                              options={['en', 'es']}
-                                                              size="small"
-                                                              onChange={handleOnLanguageChange}
-                                                            />
                                                           </div>
                                                         </div>
                                                       );

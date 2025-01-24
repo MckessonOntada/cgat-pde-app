@@ -4,7 +4,7 @@ import Textarea from '../Textarea';
 import { getNestedValue } from '../util';
 
 export default function TextareaFormik(props) {
-  const { field, form, fieldlabel, isRequired, maxCharLimit, isReadOnly, onChange } = props;
+  const { field, form, fieldlabel, labelControls, isRequired, maxCharLimit, isReadOnly, onChange } = props;
   const { t } = useTranslate();
   const { name, onBlur } = field;
 
@@ -16,6 +16,7 @@ export default function TextareaFormik(props) {
     <Textarea
       name={name}
       label={fieldlabel}
+      labelControls={labelControls}
       onChangeFn={onChange ? onChange : (value) => setFieldValue(name, value)}
       onBlurFn={onBlur}
       isRequired={isRequired}

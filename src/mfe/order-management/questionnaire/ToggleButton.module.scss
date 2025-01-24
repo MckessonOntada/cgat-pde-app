@@ -2,11 +2,10 @@
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--spacing-01);
+    padding: 3px;
     background: #e5e8ea;
     border-radius: 12px;
     cursor: pointer;
-    padding: var(--spacing-01);
 }
 
 .option {
@@ -17,11 +16,13 @@
     padding: 0 var(--spacing-01);
     color: #181818;
     border-radius: var(--spacing-02);
+    font-weight: var(--brand-font-weight-700);
     background: transparent;
+    text-transform: uppercase;
     transition: all 0.3s ease;
 }
 
 .active {
-    color: #007cc1;
-    background: #ffffff;
+    background: #007cc1;
+    color: #ffffff;
 }
