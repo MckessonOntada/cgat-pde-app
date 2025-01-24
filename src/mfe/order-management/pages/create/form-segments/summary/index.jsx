@@ -287,9 +287,9 @@ const Summary = () => {
         </Button>
       </div>
       {formState.activeRecord?.status === StatusEnum.IN_DRAFT && (
-        <PageHeader heading={<Heading as="h1">{t('headings.createNewOrder')}</Heading>} />
+        <PageHeader heading={t('headings.createNewOrder')} />
       )}
-      {isApprover && <PageHeader heading={<Heading as="h1">{t('headings.reviewOrder')}</Heading>} />}
+      {isApprover && <PageHeader heading={t('headings.reviewOrder')} />}
 
       <div className="MCP-module-body">
         {!hideControls && !isRejected && (

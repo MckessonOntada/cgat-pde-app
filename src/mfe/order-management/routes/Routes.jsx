@@ -15,6 +15,8 @@ import { OrderProvider } from '../context/OrderContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import ProtectedRoute from '@src/routes/ProtectedRoute';
 import { CONFIG_MODULE_ROUTES } from '../pages/system-configuration/constants';
+import ManageCatalog from '../pages/system-configuration/manage-catalog';
+import { OrgAccountSelectionProvider } from '../components/orgAccountSelection/context/OrgAccountSelectionContext';
 import ManageQuestionnaireRoute from '../questionnaire';
 
 function OrderManagementRoutes() {
@@ -93,7 +95,14 @@ function OrderManagementRoutes() {
       />
 
       <Route path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_MATERIAL}`} element={<div>Manage Material</div>} />
-      <Route path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_CATALOG}`} element={<div>Manage Catalog</div>} />
+      <Route
+        path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_CATALOG}`}
+        element={
+          <OrgAccountSelectionProvider showAccountsSelect={true}>
+            <ManageCatalog />
+          </OrgAccountSelectionProvider>
+        }
+      />
       <Route path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_QUESTIONNAIRE}/*`} element={<ManageQuestionnaireRoute/>} />
       <Route path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_ACCOUNT}`} element={<div>Manage Account</div>} />
 

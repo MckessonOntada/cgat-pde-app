@@ -287,9 +287,9 @@ function ReviewPayments() {
             />
           </div>
         )}
-        <div className="selectedInvoices-container">
-          <div>
-            <h1>{REVIEW_MODE ? t('paymentInvoices.reviewPayments.invoiceSelected') : t('paymentInvoices.reviewPayments.invoice')}</h1>
+        <div className="selectedInvoices-container section">
+          <div  className="sectionHeader">
+            {REVIEW_MODE ? t('paymentInvoices.reviewPayments.invoiceSelected') : t('paymentInvoices.reviewPayments.invoice')}
           </div>
           <SelectedInvoiceList selectedInvoices={selectedInvoices} setSelectedInvoices={setSelectedInvoices} />
         </div>
@@ -300,11 +300,9 @@ function ReviewPayments() {
           </div>
         )}
         {(!REVIEW_MODE || (REVIEW_MODE && state?.creditsSelected?.length > 0)) && (
-          <div className="MCP-module-wrapper">
-            <div>
-              <h1>
+          <div className="MCP-module-wrapper section">
+            <div className="sectionHeader">
                 {REVIEW_MODE ? t('paymentInvoices.reviewPayments.creditsSelected') : t('paymentInvoices.reviewPayments.creditsAvail')}
-              </h1>
             </div>
             <div id="tablist-container" className="MCP-module-body">
               {REVIEW_MODE ? (
@@ -325,37 +323,39 @@ function ReviewPayments() {
         )}
       </div>
       {!REVIEW_MODE && (
-        <div className="payment">
-          <Heading as="h2">{t('paymentInvoices.reviewPayments.payment')}</Heading>
-          <div className="paymentMethodContainer">
-            <div className="paymentMethod">{t('paymentInvoices.reviewPayments.selectMethod')}</div>
-            <AutoSuggestDropdown
-              suggestionList={getValue(mergedData)}
-              id="id"
-              selectedVal={getselectedValue}
-              getselectedValue={(val) => {
-                setSelectedData(val);
-                setPaymentOption('');
-              }}
-              onChangeInput={() => {}}
-              suggestionListContainerWidth="400px"
-            />
+        <div>
+          <div className="paymentSectionHeader">
+            {t('paymentInvoices.reviewPayments.payment')}
           </div>
-          <div className="paymentOptionContainer">
-            <PaymentOptionsControls
-              direction="column"
-              id="radio-button-order-therapy-props.id"
-              items={getRadioItems()}
-              onChangeValue={(e) => setPaymentOption(e)}
-              onOtherTextChange={() => {}}
-              onSubRadioFieldChange={() => {}}
-              radioBtnWidth="auto"
-              value={paymentOption}
-            />
-          </div>
-          <div className="invoice-sum-container">
-            <div className="label">{t('paymentInvoices.reviewPayments.invoiceDesc')}</div>
-            <div className="value">{`${FinanceUtils.formatCurrency(totalAmount)}`}</div>
+          <div className="payment">
+            <div className="paymentMethodContainer">
+              <div className="paymentMethod">{t('paymentInvoices.reviewPayments.selectMethod')}</div>
+              <AutoSuggestDropdown
+                suggestionList={getValue(mergedData)}
+                id="id"
+                selectedVal={getselectedValue}
+                getselectedValue={(val) => {
+                  setSelectedData(val);
+                  setPaymentOption('');
+                } }
+                onChangeInput={() => { } }
+                suggestionListContainerWidth="400px" />
+            </div>
+            <div className="paymentOptionContainer">
+              <PaymentOptionsControls
+                direction="column"
+                id="radio-button-order-therapy-props.id"
+                items={getRadioItems()}
+                onChangeValue={(e) => setPaymentOption(e)}
+                onOtherTextChange={() => { } }
+                onSubRadioFieldChange={() => { } }
+                radioBtnWidth="auto"
+                value={paymentOption} />
+            </div>
+            <div className="invoice-sum-container">
+              <div className="label">{t('paymentInvoices.reviewPayments.invoiceDesc')}</div>
+              <div className="value">{`${FinanceUtils.formatCurrency(totalAmount)}`}</div>
+            </div>
           </div>
         </div>
       )}

@@ -18,7 +18,7 @@ export default function index() {
   const [masterEntity, setMasterEntity] = useState('');
  const  {isMaterial =false, isCatalog= false, isAccount= false } = location.state || {};  
   
-  const handleNavigation = () => { navigate("map-questionnaire", { state: { value: entity } });};
+  const handleNavigation = () => { navigate("map-questionnaire", { state: { value: masterEntity } });};
   useEffect(() => {
       if (isMaterial) {
         refetchMaterialData();
