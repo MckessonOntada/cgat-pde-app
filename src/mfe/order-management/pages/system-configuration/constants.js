@@ -17,7 +17,7 @@ const CONFIG_MODULE_ROUTES = {
   MANAGE_ACCOUNT: 'manage-account',
   MANAGE_CATALOG: 'manage-catalog',
   MANAGE_MATERIAL: 'manage-material',
-  MANAGE_QUESTIONNAIRE: 'manage-questionnaire'
+  MANAGE_QUESTIONNAIRE: 'questionnaire'
 };
 
 const CARDS = [

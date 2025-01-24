@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { TextareaInput, Label, TextError, Required } from '@mckesson/mcp-component-library';
+import { highlightFieldOnLabelClick } from './util';
 
 export default function Textarea(props) {
   const {
@@ -15,9 +16,10 @@ export default function Textarea(props) {
     onBlur,
     ...rest
   } = props;
+  const fieldContainerRef = useRef(null);
 
   return (
-    <div className="grid">
+    <div className="grid" onClick={(e) => highlightFieldOnLabelClick(e, fieldContainerRef)} ref={fieldContainerRef}>
       <div className="row-space-between-center">
         <Label htmlFor={id} className="label-heading">
           {label}

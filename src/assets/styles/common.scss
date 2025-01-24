@@ -354,8 +354,8 @@ div.disable-all {
   display: inline-flex;
   text-decoration: none;
   color: var(--brand-color-text-blue);
-  font-size: var(--brand-font-size--default);
-  font-weight: var(--brand-font-weight-700);
+  font-size: var(--brand-font-size--small);
+  font-weight: var(--brand-font-weight-600);
 }
 
 .price-wrapper {
@@ -363,8 +363,13 @@ div.disable-all {
   align-items: center;
   justify-content: flex-end;
 
+  .fieldName {
+    justify-content: flex-end;
+  }
+
   .fieldValue {
     font-size: var(--brand-font-size--large);
+
 
     .dollarSign {
       span {
@@ -438,7 +443,7 @@ div.disable-all {
 }
 
 .fieldName {
-  color: #767e94; //color const missing
+  color: var(--brand-color-background-dark-slate);
   font-size: var(--brand-font-size--small);
   display: flex;
   flex-wrap: nowrap;
@@ -640,6 +645,12 @@ div.disable-all {
     line-height: calc(var(--spacing-04) + var(--spacing-01));
     font-weight: var(--brand-font-weight-700);
   }
+
+  h3 {
+    font-size: var(--brand-font-size--22) !important;
+    line-height: calc(var(--spacing-04) + var(--spacing-01));
+    font-weight: var(--brand-font-weight-700);
+  }
 }
 
 .styled-form-field {
@@ -650,6 +661,23 @@ div.disable-all {
     font-size: var(--brand-font-size--default);
     font-weight: var(--brand-font-weight-600);
     line-height: var(--brand-font-size--20);
+  }
+}
+
+.styled-radio-group {
+  fieldset {
+    legend {
+      font-size: var(--brand-font-size--large) !important;
+      font-weight: var(--brand-font-weight-600);
+      line-height: var(--brand-line-height--x-large);
+      margin-bottom: var(--spacing-04);
+    }
+  }
+
+  label {
+    font-size: var(--brand-font-size--default) !important;
+    font-weight: var(--brand-font-weight-600);
+    line-height: var(--brand-line-height--m-large);
   }
 }
 
@@ -704,4 +732,26 @@ div.disable-all {
   display: flex;
   justify-content: flex-end;
   align-self: flex-end;
+}
+
+.grail-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+
+  >div {
+    padding: var(--spacing-03);
+    flex: 0 0 auto;
+  }
+
+  div.grow {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    border-top: 1px solid var(--brand-color-text-cool-grey);
+    border-bottom: 1px solid var(--brand-color-text-cool-grey);
+  }
+}
+
+.floating-drawer {
+  width: 340px;
 }

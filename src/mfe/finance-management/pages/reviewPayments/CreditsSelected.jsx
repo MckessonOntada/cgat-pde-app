@@ -28,7 +28,7 @@ function CreditsSelected(props) {
   const columns = [
     {
       id: 'billNumber',
-      name: t('paymentInvoices.history.table.billNumber'),
+      name: t('paymentInvoices.history.table.bill.id'),
       selector: (row) => `${row.billNumber}`,
       wrap: true,
       minWidth: '112px',

@@ -4,14 +4,18 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import { useTranslate } from '@src/translations/useTranslation';
 import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 import { ReactComponent as ViewIcon } from '@src/assets/svg/eye_open_filled.svg';
-import { Button, CustomDataTable, Heading } from '@mckesson/mcp-component-library';
+import { Button, CustomDataTable, Heading, RadioGroup } from '@mckesson/mcp-component-library';
+import FloatingDrawer from '@src/components/floating-drawer';
+import { useNavigate } from 'react-router-dom';
 
 function TemplateList() {
   const { t } = useTranslate();
   const handleOnPageChange = () => {};
   const handleOnSort = () => {};
-  const [selectedRows, setSelectedRows] = React.useState([1, 2, 3, 4]);
+  const navigate = useNavigate();
 
+  const [selectedRows, setSelectedRows] = React.useState([1, 2, 3, 4]);
+  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const handleOnChange = (state, id) => {
     if (state) {
       selectedRows.push(id);
@@ -101,6 +105,11 @@ function TemplateList() {
       )
     }
   ];
+
+  const handleOnSelectMaster = (entity) => {
+    navigate('map-questionnaire', { state: { value: entity } });
+  };
+
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-CardContainer">
@@ -121,7 +130,7 @@ function TemplateList() {
           <div>
             <div className="selected-item-alert row-space-between-center">
               <p className="selected-item-text">{`${selectedRows.length} items selected.`}</p>
-              <Button size="sm" variant="secondary">
+              <Button onClick={() => setIsDrawerOpen(true)} size="sm" variant="secondary">
                 Configure
               </Button>
             </div>
@@ -151,8 +160,62 @@ function TemplateList() {
           }
         />
       </div>
+      <FloatingDrawer anchor="right" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+        <SelectMaster onClose={() => setIsDrawerOpen(false)} onSubmit={handleOnSelectMaster} />
+      </FloatingDrawer>
     </div>
   );
 }
+
+const SelectMaster = ({ onClose, onSubmit }) => {
+  const [entity, setEntity] = React.useState(null);
+  const options = [
+    {
+      isDisabled: false,
+      label: 'Material',
+      value: 'Material'
+    },
+    {
+      isDisabled: false,
+      label: 'Catalog',
+      value: 'Catalog'
+    },
+    {
+      isDisabled: false,
+      label: 'Account',
+      value: 'Account'
+    }
+  ];
+  const handleOnSubmit = () => {
+    if (onSubmit) onSubmit(entity);
+  };
+  return (
+    <div className="grail-layout floating-drawer">
+      <div className="styled-heading">
+        <Heading as="h3">Select Master</Heading>
+      </div>
+      <div className="grow">
+        <div className="styled-radio-group">
+          <RadioGroup
+            caption="Select master you want to apply this questionnaire for:"
+            direction="column"
+            items={options}
+            onChangeValue={setEntity}
+            radioBtnWidth="auto"
+            value={entity}
+          />
+        </div>
+      </div>
+      <div className="controls">
+        <Button variant="secondary" size="md" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button variant="primary" size="md" onClick={handleOnSubmit}>
+          Continue
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 export default TemplateList;

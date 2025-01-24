@@ -70,7 +70,7 @@ function AddQuestionnaire() {
                 <div className="MCP-module-header">
                   <div className="styled-icon-button">
                     <Button
-                      onClick={() => navigate('/orders/system-configuration/manage-questionnaire')}
+                      onClick={() => navigate('/orders/system-configuration/questionnaire')}
                       variant="tertiary"
                       size="md"
                       Icon={ArrowLeftIcon}>
