@@ -28,6 +28,7 @@ export default function mapQuestionnaire() {
   const [selectedRows, setSelectedRows] = useState([]);
   const selectedEntityType = location.state?.value || false; 
   const { isMaterial, isCatalog, isAccount } = getEntityTypeFlags(selectedEntityType); 
+
   const handleCancel = () => {
     navigate(-1);
   };
@@ -71,8 +72,8 @@ export default function mapQuestionnaire() {
       />
       {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
       <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
-        <div className="MCP-panel-container">
-          {!isMaterial && <OrgAccountsSelect handleAccountChange={() => {}} showAccountsSelect={!!isCatalog} />}
+      {!isMaterial && <OrgAccountsSelect handleAccountChange={() => {}} showAccountsSelect={!!isCatalog} />}
+        <div className="MCP-panel-container"> 
           <CommonFilters
             onApplyFilters={applyFilters}
             onClearFilters={clearFilters}
@@ -85,7 +86,12 @@ export default function mapQuestionnaire() {
                 : 'controls.placeholder.Accounts.search'
             )}
           />
-        </div>
+        </div> 
+        <Heading as="h2">{t( isMaterial
+                ? 'table.ariaLabel.materialList'
+                : isCatalog
+                ? 'table.ariaLabel.catalogList'
+                : 'table.ariaLabel.accountList')}</Heading>
         <EntityDataTable EntityType={selectedEntityType} setSelectedRows={setSelectedRows} />
       </div>
       <ModuleHeader

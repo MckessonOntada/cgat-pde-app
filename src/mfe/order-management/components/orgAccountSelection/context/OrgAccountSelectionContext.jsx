@@ -73,8 +73,7 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg =true, enableA
         {}
       );
       if (response) {
-        const { content, totalElements, totalPages } = response.data;
-        alert("test")
+        const { content, totalElements, totalPages } = response.data; 
         return content || [];
       }
       return [];

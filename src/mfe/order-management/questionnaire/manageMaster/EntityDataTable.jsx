@@ -15,8 +15,7 @@ const EntityDataTable = ({ EntityType, setSelectedRows }) => {
     useManagerQuestionnaire();
   const isMaterial = EntityType == MasterEntityType.Material;
   const isCatalog = EntityType == MasterEntityType.Catalog;
-  const isAccount = EntityType == MasterEntityType.Account;
-  console.log('MaterialData', MaterialData, CatalogData, AccountsData);
+  const isAccount = EntityType == MasterEntityType.Account; 
   const entityData =
     isMaterial && MaterialData ? MaterialData : isCatalog && CatalogData ? CatalogData : isAccount && AccountsData ? AccountsData : [];
   const columns = getColumnsByEntityType(t, navigate, EntityType, entityData, setSelectedRows);
