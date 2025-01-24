@@ -8,7 +8,7 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import { MasterEntityType } from '../util';
 
-const EntityDataTable = ({ EntityType, setSelectedRows  }) => {
+const EntityDataTable = ({ EntityType, setSelectedRows }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { paginationConfig, setCurrentPage, applySort, MaterialData, CatalogData, AccountsData, isLoading, isError } =
@@ -16,11 +16,10 @@ const EntityDataTable = ({ EntityType, setSelectedRows  }) => {
   const isMaterial = EntityType == MasterEntityType.Material;
   const isCatalog = EntityType == MasterEntityType.Catalog;
   const isAccount = EntityType == MasterEntityType.Account;
-
-  const entityData= isMaterial ? MaterialData : isCatalog ? CatalogData : isAccount ? AccountsData : []
+  console.log('MaterialData', MaterialData, CatalogData, AccountsData);
+  const entityData =
+    isMaterial && MaterialData ? MaterialData : isCatalog && CatalogData ? CatalogData : isAccount && AccountsData ? AccountsData : [];
   const columns = getColumnsByEntityType(t, navigate, EntityType, entityData, setSelectedRows);
-
-
 
   const handleOnPageChange = (_event, pageIndex) => {
     setCurrentPage(pageIndex);
@@ -34,7 +33,7 @@ const EntityDataTable = ({ EntityType, setSelectedRows  }) => {
     <CustomDataTable
       type={'normal'}
       columns={columns}
-      data={entityData}
+      data={entityData || []}
       handleChangePage={handleOnPageChange}
       onSortIconClick={handleOnSort}
       pagination={true}
@@ -42,7 +41,9 @@ const EntityDataTable = ({ EntityType, setSelectedRows  }) => {
       totalPageCount={paginationConfig.totalPages}
       totalRocords={paginationConfig.totalElements}
       recordsPerPage={paginationConfig.pageSize}
-      aria-label={t(isMaterial ? 'table.ariaLabel.materialList' : isCatalog ?  'table.ariaLabel.catalogList': 'table.ariaLabel.accountList')}
+      aria-label={t(
+        isMaterial ? 'table.ariaLabel.materialList' : isCatalog ? 'table.ariaLabel.catalogList' : 'table.ariaLabel.accountList'
+      )}
       paginationRecordsPerPageMessage={t('labels.perPage')}
       paginationTotalRecorsMessage={t('labels.results')}
       noDataComponent={
@@ -50,8 +51,20 @@ const EntityDataTable = ({ EntityType, setSelectedRows  }) => {
           isLoading={isLoading}
           error={isError && isError.message}
           image={EmptyDataImage}
-          heading={t(isMaterial ? 'captions.questionnaire.material.emptyTableTitle' : isCatalog ?  'captions.questionnaire.catalog.emptyTableTitle': 'captions.questionnaire.account.emptyTableTitle')}
-          description={t(isMaterial ? 'captions.questionnaire.material.emptyTableSubtitle' : isCatalog ?  'captions.questionnaire.catalog.emptyTableSubtitle': 'captions.questionnaire.account.emptyTableSubtitle')}
+          heading={t(
+            isMaterial
+              ? 'captions.questionnaire.material.emptyTableTitle'
+              : isCatalog
+              ? 'captions.questionnaire.catalog.emptyTableTitle'
+              : 'captions.questionnaire.account.emptyTableTitle'
+          )}
+          description={t(
+            isMaterial
+              ? 'captions.questionnaire.material.emptyTableSubtitle'
+              : isCatalog
+              ? 'captions.questionnaire.catalog.emptyTableSubtitle'
+              : 'captions.questionnaire.account.emptyTableSubtitle'
+          )}
         />
       }
     />

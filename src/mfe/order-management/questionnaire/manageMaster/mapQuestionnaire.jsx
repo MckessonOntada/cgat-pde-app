@@ -14,26 +14,27 @@ import usePermission from '@src/hooks/usePermissions';
 import EntityDataTable from './EntityDataTable';
 import { useManagerQuestionnaire } from '../../context/ManageQuestionnaireContext';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
-import { MasterEntityType } from '../util';
-import { routesConfig } from '../constants';
+import { getEntityTypeFlags, MasterEntityType } from '../util';
+import OrgAccountsSelect from '../../components/orgAccountSelection/OrgAccountsSelect';
 
 export default function mapQuestionnaire() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { applyFilters, clearFilters } = useManagerQuestionnaire();
+  const { applyFilters, clearFilters, setEntity } = useManagerQuestionnaire();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const location = useLocation();
   const [alertDescription, setAlertDescription] = useState('');
   const [alert, setAlert] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
-  const selectedEntityType = location.state?.value || false;
-  const isMaterial = selectedEntityType == MasterEntityType.Material;
-  const isCatalog = selectedEntityType == MasterEntityType.Catalog;
-  const isAccount = selectedEntityType == MasterEntityType.Account;
-
+  const selectedEntityType = location.state?.value || false; 
+  const { isMaterial, isCatalog, isAccount } = getEntityTypeFlags(selectedEntityType); 
   const handleCancel = () => {
     navigate(-1);
   };
+
+  useEffect(() => {
+    setEntity(selectedEntityType);
+  }, [selectedEntityType]);
 
   const handleOnSubmit = () => {
     if (selectedRows.length === 0) {
@@ -71,6 +72,7 @@ export default function mapQuestionnaire() {
       {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
       <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
         <div className="MCP-panel-container">
+          {!isMaterial && <OrgAccountsSelect handleAccountChange={() => {}} showAccountsSelect={!!isCatalog} />}
           <CommonFilters
             onApplyFilters={applyFilters}
             onClearFilters={clearFilters}

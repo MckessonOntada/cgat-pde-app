@@ -2,8 +2,12 @@ import React, { createContext, useContext, useState } from 'react';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
-import { MasterEntityType } from '../questionnaire/util';
+import { getEntityTypeFlags, MasterEntityType } from '../questionnaire/util';
 import { serializeParams } from '@src/util/ApiUtils';
+import {
+  OrgAccountSelectionProvider,
+  useOrgAccountSelectionContext
+} from '../components/orgAccountSelection/context/OrgAccountSelectionContext';
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
   status: []
@@ -30,10 +34,14 @@ export const useManagerQuestionnaire = () => {
 };
 
 export const ManageQuestionnaireProvider = ({ children }) => {
+  const { selectedOrganization, selectedAccount } = useOrgAccountSelectionContext(); 
   const [filterConfig, setFilterConfig] = React.useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = React.useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);
-  const [entityType, setEntityType] = React.useState(null);
+  const [entityType, setEntityType] = React.useState(null); 
+  const [MaterialData, setMaterialData] = React.useState([]);
+  const [CatalogData, setCatalogData] = React.useState([]);
+  const [AccountsData, setAccountsData] = React.useState([]);
 
   const requestParams = React.useMemo(() => {
     const baseParams = {
@@ -51,23 +59,23 @@ export const ManageQuestionnaireProvider = ({ children }) => {
         };
       case MasterEntityType.Catalog:
         return {
-          ...baseParams
-          //Add more param
+          ...baseParams,
+          accountNumbers: selectedAccount?.accountNumber
         };
       case MasterEntityType.Account:
         return {
-          ...baseParams
-          //Add more param
+          ...baseParams,
+          practiceId: selectedOrganization?.id,
+          partnerFunction: 'SOLD_TO', 
         };
       default:
         return baseParams;
     }
-  }, [entityType, filterConfig, paginationConfig.pageNumber, sortConfig]);
+  }, [entityType, filterConfig, paginationConfig.pageNumber, sortConfig,selectedAccount?.accountNumber,selectedOrganization?.id]);
 
   const {
     isLoading: isLoadingMaterial,
-    isError: isErrorMaterial,
-    data: MaterialData,
+    isError: isErrorMaterial,    
     refetch: refetchMaterialData
   } = useQuery({
     queryKey: ['Material', entityType],
@@ -83,23 +91,23 @@ export const ManageQuestionnaireProvider = ({ children }) => {
         ...(totalElements && { totalElements }),
         ...(totalPages && { totalPages })
       }));
+      setMaterialData(data);
       return data;
     },
     refetchOnWindowFocus: false,
-    enabled: entityType != null && entityType === MasterEntityType.Material
+    enabled: !!entityType && entityType === MasterEntityType.Material
   });
 
   const {
     isLoading: isLoadingCatalog,
-    isError: isErrorCatalog,
-    data: CatalogData,
+    isError: isErrorCatalog,     
     refetch: refetchCatalogData
   } = useQuery({
     queryKey: ['Catalog', entityType],
     queryFn: async () => {
-      const url = `${ApiRoutes.THERAPIES()}?${serializeParams(requestParams)}`;  //TODO
+      const url = `${ApiRoutes.CATALOGS()}?${serializeParams(requestParams)}`; //TODO
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-      if (res.data) {
+      if (!res.data) {
         return [];
       }
       const { content: data, totalElements, totalPages } = res.data;
@@ -108,23 +116,24 @@ export const ManageQuestionnaireProvider = ({ children }) => {
         ...(totalElements && { totalElements }),
         ...(totalPages && { totalPages })
       }));
+      
+      setCatalogData(data);
       return data;
     },
     refetchOnWindowFocus: false,
-    enabled: entityType != null && entityType === MasterEntityType.Catalog
+    enabled: !!selectedAccount && entityType === MasterEntityType.Catalog
   });
 
   const {
     isLoading: isLoadingAccounts,
-    isError: isErrorAccounts,
-    data: AccountsData,
+    isError: isErrorAccounts, 
     refetch: refetchAccountsData
   } = useQuery({
     queryKey: ['Accounts', entityType],
     queryFn: async () => {
-      const url = `${ApiRoutes.THERAPIES()}?${serializeParams(requestParams)}`; // TODo
+      const url =  `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrganization.id}/accounts??${serializeParams(requestParams)}`; 
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-      if (res.data) {
+      if (!res.data) {
         return [];
       }
       const { content: data, totalElements, totalPages } = res.data;
@@ -132,20 +141,27 @@ export const ManageQuestionnaireProvider = ({ children }) => {
         ...prevConfig,
         ...(totalElements && { totalElements }),
         ...(totalPages && { totalPages })
-      }));
+      }));      
+      setAccountsData(data);
       return data;
     },
     refetchOnWindowFocus: false,
-    enabled: entityType != null && entityType === MasterEntityType.Account
+    enabled: !!selectedOrganization && entityType === MasterEntityType.Account
   });
 
   React.useEffect(() => {
-    
-    if (entityType === MasterEntityType.Account) refetchAccountsData();
-    else if (entityType === MasterEntityType.Material) refetchMaterialData();
-    else if (entityType === MasterEntityType.Catalog)  
-    refetchCatalogData();
+    getRefetch();
   }, [filterConfig, paginationConfig.pageNumber, sortConfig, entityType]);
+
+  const getRefetch = (entityType) => {
+    const { isMaterial, isCatalog, isAccount } = getEntityTypeFlags(entityType);
+
+    if (isAccount) return refetchAccountsData;
+    if (isMaterial) return refetchMaterialData;
+    if (isCatalog) return refetchCatalogData;
+
+    return [];
+  };
 
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
 
@@ -162,9 +178,15 @@ export const ManageQuestionnaireProvider = ({ children }) => {
     setPaginationConfig((prevState) => ({ ...prevState, pageNumber: pageNumber }));
   };
 
-  const setEntity = (entityType) => {
-    setEntityType(entityType);
-    console.log('entityType',entityType)
+  const setEntity = (entity) => {
+    setEntityType(entity);
+    if (entity === MasterEntityType.Material) {
+      setMaterialData([]);  
+    } else if (entity === MasterEntityType.Catalog) {
+      setCatalogData([]); 
+    } else if (entity === MasterEntityType.Account) {
+      setAccountsData([]) 
+    }
   };
 
   return (
@@ -179,9 +201,7 @@ export const ManageQuestionnaireProvider = ({ children }) => {
         MaterialData,
         CatalogData,
         AccountsData,
-        refetchMaterialData,
-        refetchCatalogData,
-        refetchAccountsData,
+        getRefetch,
         setEntity,
         entityType,
         setEntityType,

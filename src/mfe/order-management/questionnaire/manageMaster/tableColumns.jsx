@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MasterEntityType } from '../util';
+import { getAddress, MasterEntityType } from '../util';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { useManagerQuestionnaire } from '../../context/ManageQuestionnaireContext';
 import CommonUtils from '@src/util/CommonUtils';
@@ -172,55 +172,55 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType,entityData,
           width: '50px'
         },
         {
-          id: 'materialNumber',
+          id: 'accountNumber',
           name: t('table.columns.captions.accountNumber'),
           selector: () => {},
           maxWidth: '350px',
           sortable: true,
-          sortKey: 'materialNumber',
+          sortKey: 'accountNumber',
           cell: (props) => (
             <Link className="MCP-table-link" aria-label={t('table.columns.captions.accountNumber')}>
-              <EclipsesTextcss str={props.materialNumber} maxWidth={240} />
+              <EclipsesTextcss str={props.accountNumber} maxWidth={240} />
             </Link>
           )
         },
         {
-          id: 'materialDescription',
+          id: 'accountName',
           name: t('table.columns.captions.accountName'),
           selector: () => {},
           maxWidth: '350px',
           sortable: true,
-          sortKey: 'materialDescription',
-          cell: (props) => <span aria-label={t('table.columns.captions.accountName')}>{props.materialDescription}</span>
+          sortKey: 'accountName',
+          cell: (props) => <span aria-label={t('table.columns.captions.accountName')}>{props.accountName}</span>
         },
         {
-          id: 'ndc',
+          id: 'address',
           name: t('table.columns.captions.address'),
           selector: () => {},
           maxWidth: '290px',
           sortable: true,
-          sortKey: 'ndcNumber',
+          sortKey: 'address',
           cell: (props) => (
             <span aria-label={t('table.columns.captions.address')}>
-              <EclipsesTextcss str={props.ndcNumber} maxWidth={180} />
+              <EclipsesTextcss str={getAddress(props.accountNumber)} maxWidth={180} />
             </span>
           )
         },
         {
-          id: 'strength',
+          id: 'salesOrg',
           name: t('labels.salesOrg'),
           selector: () => {},
           maxWidth: '150px',
           sortable: false,
-          cell: (props) => <span aria-label={t('labels.salesOrg')}>{props.strength}</span>
+          cell: (props) => <span aria-label={t('labels.salesOrg')}>{props.salesOrg}</span>
         },
         {
-          id: 'dosage',
+          id: 'distributionChannel',
           name: t('labels.distributionChannel'),
           selector: () => {},
           maxWidth: '350px',
           sortable: false,
-          cell: (props) => <span aria-label={t('labels.distributionChannel')}>{props.dosage}</span>
+          cell: (props) => <span aria-label={t('labels.distributionChannel')}>{props.distributionChannel}</span>
         }
       ];
     case MasterEntityType.Catalog:
