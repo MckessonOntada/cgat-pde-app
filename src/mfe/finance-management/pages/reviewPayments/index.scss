@@ -206,3 +206,12 @@
   width: 100%;
   gap: var(--spacing-03);
 }
+.paymentSectionHeader {
+  color: var(--text-dark-slate-body-hover-state, #1e394e);
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: var(--typography-line-height-title-headline-sm, 28px);
+  letter-spacing: -0.04px;
+  padding: var(--spacing-03) 0px 12px;
+}

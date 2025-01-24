@@ -59,7 +59,7 @@ function MainLayout() {
                 <Route
                   path={'orders/*'}
                   element={
-                    <ProtectedRoute permissions={routePermissionConfig.orders}>
+                    <ProtectedRoute permissions={[...routePermissionConfig.orders, ...routePermissionConfig.systemConfiguration]}>
                       <OrderManagementEntryPoint />
                     </ProtectedRoute>
                   }

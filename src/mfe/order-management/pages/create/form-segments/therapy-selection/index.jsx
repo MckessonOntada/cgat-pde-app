@@ -189,14 +189,13 @@ function TherapySelection() {
         </Button>
       </div>
 
-      <PageHeader heading={<Heading as="h1">{isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')}</Heading>} />
+      <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
 
       <div className="MCP-module-body">
         <OrderStepper />
         <div id={alertContainerId} />
         <div className={styles.wrapper}>
           <div className="MCP-panel-container">
-            <ModuleHeader heading={<Heading as="h2">{t('labels.therapySelection')}</Heading>} />
             <div className="MCP-panel-container">
               <CommonFilters
                 onApplyFilters={applyFilters}
@@ -205,6 +204,7 @@ function TherapySelection() {
                 searchPlaceholder={t('controls.placeholder.therapySelection.search')}
               />
             </div>
+            <ModuleHeader heading={<Heading as="h2">{t('labels.therapySelection')}</Heading>} />
             <TherapyDataTable therapy={therapy} onChange={setTherapy} />
           </div>
           <ModuleHeader
