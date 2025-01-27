@@ -16,6 +16,9 @@ import CommonUtils from '@src/util/CommonUtils';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import { CustomDataTable } from '@src/components/dataTableComponent';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
 function getBackgroundColorByRole(Role) {
   switch (Role) {
@@ -230,16 +233,17 @@ function UserTable({ onActionSuccess }) {
 
   return (
     <div>
-      {selectedRows && (
-        <div className="selected-item-alert">
-          <p className="selected-item-text">
-            {1} {t('userManagement.selected_items')}
-          </p>
+      <TableHeading
+        heading={t('userManagement.table.systemadminlisting.label')}
+        secondaryView={!!selectedRows}
+        secondaryViewHeading={`1 ${t('userManagement.selected_items')}`}
+        secondaryViewControls={
           <Button variant="secondary" onClick={handleDeactivate}>
             {t('userManagement.button.deactivate')}
           </Button>
-        </div>
-      )}
+        }
+        style={{ marginBottom: '24px' }}
+      />
 
       <CustomDataTable
         type={'normal'}

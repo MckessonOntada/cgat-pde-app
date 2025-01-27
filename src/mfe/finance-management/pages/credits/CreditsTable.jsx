@@ -109,7 +109,7 @@ export default function CreditsTable(props) {
       cell: (props) => (
         <div className="cellEllipse">
           <Link
-            style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
+            style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
             to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
             state={{ ...state }}>
             {`${props?.billNumber}`}
