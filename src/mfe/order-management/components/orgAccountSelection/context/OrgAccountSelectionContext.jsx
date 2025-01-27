@@ -18,7 +18,7 @@ export const useOrgAccountSelectionContext = () => {
 
 const ACCOUNTS_PER_SEARCH = 20;
 
-export const OrgAccountSelectionProvider = ({ children, showAccountsSelect }) => {
+export const OrgAccountSelectionProvider = ({ children, enableOrg =true, enableAcct = true }) => { 
   const dispatch = useDispatch();
   const [searchOrgText, setSearchOrgText] = useState('');
   const [selectedOrganization, setSelectedOrganization] = useState(null);
@@ -43,7 +43,8 @@ export const OrgAccountSelectionProvider = ({ children, showAccountsSelect }) =>
       }
       return [];
     },
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    enabled : !!enableOrg
   });
   const debounceOrgSearch = useCallback(() => {
     let timeoutId;
@@ -52,8 +53,7 @@ export const OrgAccountSelectionProvider = ({ children, showAccountsSelect }) =>
       timeoutId = setTimeout(() => setSearchOrgText(text), 500);
     };
   }, []);
-  const searchOrgList = debounceOrgSearch();
-
+  const searchOrgList = debounceOrgSearch(); 
   // Accounts List config
   const accountParams = () => {
     return {
@@ -73,13 +73,13 @@ export const OrgAccountSelectionProvider = ({ children, showAccountsSelect }) =>
         {}
       );
       if (response) {
-        const { content, totalElements, totalPages } = response.data;
+        const { content, totalElements, totalPages } = response.data; 
         return content || [];
       }
       return [];
     },
     refetchOnWindowFocus: false,
-    enabled: !!selectedOrganization && !!showAccountsSelect
+    enabled: !!selectedOrganization && !!enableAcct
   });
   const debounceAccountsSearch = useCallback(() => {
     let timeoutId;

@@ -50,7 +50,7 @@ function MainLayout() {
                 <Route
                   path={AppRoutes.pathSystemConfiguration}
                   element={
-                    <ProtectedRoute permissions={[]}>
+                    <ProtectedRoute permissions={[]} isDashboard={true}>
                       <SystemConfiguration />
                     </ProtectedRoute>
                   }
