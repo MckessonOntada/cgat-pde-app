@@ -426,7 +426,6 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     name: t('table.columns.captions.actions'),
     selector: () => {},
     sortable: false,
-    center: true,
     cell: (props) => getOptionsByStatus(props, props.status, t, activeTab, props.id, alertContainerId)
   }
 ];
