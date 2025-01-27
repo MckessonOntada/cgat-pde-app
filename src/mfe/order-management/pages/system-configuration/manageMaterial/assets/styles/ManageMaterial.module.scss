@@ -1,0 +1,15 @@
+@use "@src/assets/styles/abstracts/mixins";
+
+.manageMaterial {
+    display: flex;
+    width: 100%;
+    padding: 24px;
+
+    border-radius: 8px;
+    border: 1px solid var(--uiwarm-patient-warm-gray-1, #D9D8D7);
+    background: var(--background-white-base-bkg-texts, #FFF);
+
+    @include mixins.respond("lg") {
+        padding: 32px;
+    }
+}
