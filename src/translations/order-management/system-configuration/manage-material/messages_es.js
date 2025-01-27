@@ -42,6 +42,8 @@ export const SystemConfigurationES = {
   "manageMaterial.drawer.details.configuration.heading": "S_Configuraciones",
   "manageMaterial.drawer.details.configuration.body.slotNumber": "S_Número de Ranura",
   "manageMaterial.drawer.details.configuration.body.patientConsent": "S_Consentimiento del Paciente",
+  "manageMaterial.drawer.details.configuration.body.coiIdRequired": "S_ID de COI Requerido",
+  "manageMaterial.drawer.details.configuration.body.patientInfoRequired": "S_Información del Paciente Requerida",
   // Configuration Drawer
   "manageMaterial.drawer.configuration.heading": "S_Configuración de Material",
   "manageMaterial.drawer.configuration.preview": "S_Vista Previa",

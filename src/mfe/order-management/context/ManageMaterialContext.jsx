@@ -4,11 +4,15 @@ import { useQuery } from 'react-query';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
+import ApiRoutes from '@src/api/ApiRoutes';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import { serializeParams } from '@src/util/ApiUtils';
 
 // Create the context
 export const ManageMaterialContext = createContext();
 
 const RECORDS_PER_PAGE = 8;
+const THERAPIES_PER_SEARCH = 20;
 
 const INITIAL_FILTER_STATE = {
   searchQuery: ''
@@ -50,12 +54,21 @@ export const ManageMaterialProvider = ({ children }) => {
 
   const { showSnackbar } = useSnackbar();
 
-  const { isFetching, isError, refetch } = useQuery(
-    ['getMaterials'],
-    async () => {
-      const res = { data: { material: manageMaterialData } };
+  const getApiUrl = (searchText) => {
+    const params = {
+      pageNo: paginationConfig.pageNumber - 1,
+      pageSize: '',
+      query: filterConfig.searchQuery || ''
+    };
+    return `${ApiRoutes.GET_ALL_MATERIALS()}?${serializeParams(params)}`;
+  };
 
-      if (!res.data || !res.data.material) {
+  const { isFetching, isError, refetch } = useQuery(
+    ['getMaterials', filterConfig],
+    async () => {
+      const res = await HttpResourceService.callRest(`${getApiUrl()}`, httpVerb.GET, {});
+
+      if (!res.data || !res.data.content) {
         showSnackbar({ description: t('manageMaterial.data.fetch.error'), type: 'error' });
         return;
       }
@@ -63,14 +76,14 @@ export const ManageMaterialProvider = ({ children }) => {
       const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
       const endIndex = startIndex + paginationConfig.pageSize;
 
-      setData(res.data.material.slice(startIndex, endIndex));
-      setUnSlicedData(res.data.material);
-      setActualData(res.data.material);
+      setData(res.data.content.slice(startIndex, endIndex));
+      setUnSlicedData(res.data.content);
+      setActualData(res.data.content);
 
       setPaginationConfig((state) => ({
         ...state,
-        totalPages: Math.ceil(res.data.material.length / paginationConfig.pageSize),
-        totalElements: res.data.material.length
+        totalPages: Math.ceil(res.data.content.length / paginationConfig.pageSize),
+        totalElements: res.data.content.length
       }));
     },
     {
@@ -116,7 +129,7 @@ export const ManageMaterialProvider = ({ children }) => {
     }
   };
 
-  const filterData = async (filters) => {
+  /* const filterData = async (filters) => {
     let _data = [...[], ...actualData];
     let _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery
@@ -136,19 +149,24 @@ export const ManageMaterialProvider = ({ children }) => {
     }));
     setData(_modifiedData.slice(startIndex, endIndex));
     setUnSlicedData(_modifiedData);
-  };
+  }; */
 
-  const applyFilters = () => {
-    // Implement filter logic here
+  const applyFilters = (filters) => {
+    setPaginationConfig((prev) => ({ ...prev, pageNumber: INITIAL_PAGINATION_STATE.pageNumber }));
+    setFilterConfig((prevFilters) => ({
+      ...prevFilters,
+      ...filters
+    }));
   };
 
   const clearFilters = () => {
-    // Implement clear filter logic here
+    setPaginationConfig((prev) => ({ ...prev, pageNumber: INITIAL_PAGINATION_STATE.pageNumber }));
+    setFilterConfig(INITIAL_FILTER_STATE);
   };
 
   useEffect(() => {
     if (CommonUtils.isNonEmptyArray(data) && CommonUtils.isNonEmptyArray(unSlicedData)) {
-      filterData(filterConfig);
+      // filterData(filterConfig);
       if (JSON.stringify(sortConfig) !== JSON.stringify(INITIAL_SORT_STATE)) {
         sortData(sortConfig);
       }

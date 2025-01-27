@@ -18,7 +18,7 @@ import { CONFIG_MODULE_ROUTES } from '../pages/system-configuration/constants';
 import ManageCatalog from '../pages/system-configuration/manage-catalog';
 import { OrgAccountSelectionProvider } from '../components/orgAccountSelection/context/OrgAccountSelectionContext';
 import ManageMaterial from '../pages/system-configuration/manageMaterial/ManageMaterial';
-import { ManageMaterialProvider } from '../context/ManageMaterailContext';
+import { ManageMaterialProvider } from '../context/ManageMaterialContext';
 import Questionnaire from '../questionnaire';
 import { QuestionnaireProvider } from '../context/QuestionnaireContext';
 

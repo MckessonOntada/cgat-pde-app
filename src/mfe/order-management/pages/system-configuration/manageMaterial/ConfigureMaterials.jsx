@@ -4,10 +4,17 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { Loader, Heading, Button, RadioGroup, Label, Required } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
 import useSnackbar from '@src/hooks/useSnackbar';
+import { useManageMaterial } from '@src/mfe/order-management/context/ManageMaterialContext';
+import CommonUtils from '@src/util/CommonUtils';
+import MaterialService from '@src/api/commonService/MaterialService';
+import { useQuery } from 'react-query';
 
 function ConfigureMaterials({ onClose }) {
   const { t } = useTranslate();
   const { showSnackbar } = useSnackbar();
+
+  const { selectedMaterials } = useManageMaterial();
+  console.log('selectedMaterials', selectedMaterials);
 
   const formFields = [
     {
@@ -63,8 +70,20 @@ function ConfigureMaterials({ onClose }) {
           ))}
         </div>
         <div className={styles.controls}>
-          <Button label={t('manageMaterial.drawer.controls.cancel')} onClick={onClose} variant="secondary" size="md" aria-label={t('manageMaterial.drawer.controls.cancel')} />
-          <Button label={t('manageMaterial.drawer.controls.apply')} onClick={() => {}} variant="primary" size="md" aria-label={t('manageMaterial.drawer.controls.apply')} />
+          <Button
+            label={t('manageMaterial.drawer.controls.cancel')}
+            onClick={onClose}
+            variant="secondary"
+            size="md"
+            aria-label={t('manageMaterial.drawer.controls.cancel')}
+          />
+          <Button
+            label={t('manageMaterial.drawer.controls.apply')}
+            onClick={() => {}}
+            variant="primary"
+            size="md"
+            aria-label={t('manageMaterial.drawer.controls.apply')}
+          />
         </div>
       </div>
       {/* )} */}

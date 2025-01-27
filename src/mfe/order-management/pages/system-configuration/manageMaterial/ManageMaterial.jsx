@@ -4,7 +4,7 @@ import styles from './assets/styles/ManageMaterial.module.scss';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
 import { Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useManageMaterial } from '@src/mfe/order-management/context/ManageMaterailContext';
+import { useManageMaterial } from '@src/mfe/order-management/context/ManageMaterialContext';
 import ManageMaterialTable from './ManageMaterialTable';
 
 function ManageMaterial() {
@@ -21,7 +21,7 @@ function ManageMaterial() {
       url: '/admin/system-configuration'
     },
     {
-      label: t('manageMaterial.breadcrumbs.manageMaterial'),
+      label: t('manageMaterial.breadcrumbs.manageMaterial')
     }
   ];
 

@@ -24,7 +24,9 @@ export const MaterialConfigConstants = [
     sectionHeading: 'manageMaterial.drawer.details.configuration.heading', 
     sectionData: [
       { label: 'manageMaterial.drawer.details.configuration.body.slotNumber', value: 'slotNumber' },
-      { label: 'manageMaterial.drawer.details.configuration.body.patientConsent', value: 'patientConsent' }
+      { label: 'manageMaterial.drawer.details.configuration.body.patientConsent', value: 'patientConsent' },
+      { label: 'manageMaterial.drawer.details.configuration.body.coiIdRequired', value: 'isCoiIdRequired' },
+      { label: 'manageMaterial.drawer.details.configuration.body.patientInfoRequired', value: 'isPatientInformationRequired' }
     ]
   }
 ];

@@ -8,6 +8,8 @@ import { Loader, Heading, Button } from '@mckesson/mcp-component-library';
 import OrderService from '@src/api/commonService/OrderService';
 import UserService from '@src/api/commonService/UserService';
 import useSnackbar from '@src/hooks/useSnackbar';
+import MaterialService from '@src/api/commonService/MaterialService';
+import CommonUtils from '@src/util/CommonUtils';
 
 function TherapyDetails({
   therapyId,
@@ -17,6 +19,7 @@ function TherapyDetails({
   configurationData,
   showFooter = true,
   useUserService = false,
+  useMaterialService = false,
   isMaterialConfiguration = false
 }) {
   const { t } = useTranslate();
@@ -27,7 +30,12 @@ function TherapyDetails({
     error
   } = useQuery({
     queryKey: ['order', 'therapy', 'material', therapyId],
-    queryFn: async () => (useUserService ? UserService.getTherapyById(therapyId) : OrderService.getTherapyDetailsById(therapyId)),
+    queryFn: async () =>
+      useMaterialService
+        ? MaterialService.getMaterialConfigById(therapyId)
+        : useUserService
+        ? UserService.getTherapyById(therapyId)
+        : OrderService.getTherapyDetailsById(therapyId),
     enabled: Boolean(therapyId),
     refetchOnWindowFocus: false
   });
@@ -78,10 +86,14 @@ function DetailsPanel({ details, handleSelect, onClose, therapyData, configurati
   const { t } = useTranslate();
 
   const renderDetails = (fields, details) =>
-    fields.map(({ label, value }) => <DetailItem key={label} label={t(label)} value={details[value] || '-'} />);
+    fields.map(({ label, value }) => (
+      <DetailItem key={label} label={t(label)} value={isMaterialConfiguration ? details.therapy[value] : details[value] || '-'} />
+    ));
 
   const renderConfiguration = (fields, details) =>
-    fields.map(({ label, value }) => <ConfigItem key={label} label={t(label)} value={details[value] || '-'} />);
+    fields.map(({ label, value }) => (
+      <ConfigItem key={label} label={t(label)} value={isMaterialConfiguration ? details.materialConfig[value] : details[value] || '-'} />
+    ));
 
   return (
     <div className={styles.detailsPanel}>
@@ -140,7 +152,17 @@ function ConfigItem({ label, value, isAction = false }) {
       <div className={styles.detailItem}>
         <div className={styles.leftContentBold}>{label}</div>
         <div className={styles.rightContentAction}>
-          <IconBinRed role={'button'} onClick={() => console.log('Delete Clicked')} />
+          {typeof value === 'boolean' ? (
+            value ? (
+              'YES'
+            ) : (
+              'NO'
+            )
+          ) : CommonUtils.isNonEmptyString(value) ? (
+            value
+          ) : (
+            <IconBinRed role={'button'} onClick={() => console.log('Delete Clicked')} />
+          )}
         </div>
       </div>
     </>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Loader, CustomDataTable, Button } from '@mckesson/mcp-component-library';
 import EmptyDataTable from '@src/components/EmptyTable';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useManageMaterial } from '@src/mfe/order-management/context/ManageMaterailContext';
+import { useManageMaterial } from '@src/mfe/order-management/context/ManageMaterialContext';
 
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { Link } from 'react-router-dom';
@@ -17,6 +17,7 @@ function ManageMaterialTable({ ...props }) {
     useManageMaterial();
   const [openDetails, setOpenDetails] = React.useState(false);
   const [openConfiguration, setOpenConfiguration] = React.useState(false);
+  const [materialNumber, setMaterialNumber] = React.useState(null);
 
   const getindeterminate = () => {
     const allDataIncluded = data.every((invoice) =>
@@ -118,6 +119,7 @@ function ManageMaterialTable({ ...props }) {
             style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
             onClick={() => {
               setOpenDetails(!openDetails);
+              setMaterialNumber(props?.materialNumber);
             }}>
             {props?.materialNumber || '-'}
           </Link>
@@ -135,11 +137,11 @@ function ManageMaterialTable({ ...props }) {
     {
       name: t('manageMaterial.table.nationalDrugCode'),
       id: 'nationalDrugCode',
-      selector: (row) => row.nationalDrugCode,
+      selector: (row) => row.ndcNumber,
       sortable: true,
       wrap: true,
       maxWidth: '150px',
-      cell: (props) => <div>{props?.nationalDrugCode || '-'}</div>
+      cell: (props) => <div>{props?.ndcNumber || '-'}</div>
     },
     {
       name: t('manageMaterial.table.strength'),
@@ -224,12 +226,13 @@ function ManageMaterialTable({ ...props }) {
       {openDetails && (
         <FloatingDrawer open={true} anchor="right" onClose={() => setOpenDetails(!openDetails)}>
           <TherapyDetails
-            therapyId={2}
+            therapyId={materialNumber}
             therapyData={MaterialDetailsConstants}
             configurationData={MaterialConfigConstants}
             onClose={() => setOpenDetails(!openDetails)}
             showFooter={false}
             isMaterialConfiguration={true}
+            useMaterialService={true}
           />
         </FloatingDrawer>
       )}
