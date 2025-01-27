@@ -110,7 +110,6 @@ function DashboardPage() {
               searchPlaceholder={t('orgManagement.org.placeholder')}
             />
           </div>
-          <Heading as="h2">{t('orgManagement.org_list')}</Heading>
           <OrgList />
         </div>
       </div>

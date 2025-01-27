@@ -15,6 +15,7 @@ import Actions from './Actions';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
 const OrgList = () => {
   const { t } = useTranslate();
@@ -212,16 +213,18 @@ const OrgList = () => {
   return (
     <div>
       {/* {isLoading && <Loader type="screen" />} */}
-      {selectedRows && (
-        <div className="selected-item-alert">
-          <p className="selected-item-text">
-            {1} {t('orgManagement.selected_items')}
-          </p>
+
+      <TableHeading
+        heading={t('orgManagement.org_list')}
+        secondaryView={!!selectedRows}
+        secondaryViewHeading={`1 ${t('orgManagement.selected_items')}`}
+        secondaryViewControls={
           <Button variant="secondary" onClick={handleDeactivate}>
             {t('orgManagement.button.deactivate')}
           </Button>
-        </div>
-      )}
+        }
+        style={{ marginBottom: '24px' }}
+      />
 
       <CustomDataTable
         id="my-data-table"

@@ -22,6 +22,7 @@ import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/Disca
 import { TherapyDetailsConstants } from './assets/constants/TherapyDetailsConstants';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -204,7 +205,7 @@ function TherapySelection() {
                 searchPlaceholder={t('controls.placeholder.therapySelection.search')}
               />
             </div>
-            <ModuleHeader heading={<Heading as="h2">{t('labels.therapySelection')}</Heading>} />
+            <TableHeading heading={t('labels.therapySelection')} />
             <TherapyDataTable therapy={therapy} onChange={setTherapy} />
           </div>
           <ModuleHeader

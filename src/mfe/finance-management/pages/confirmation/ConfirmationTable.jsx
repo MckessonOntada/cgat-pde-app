@@ -165,7 +165,7 @@ function ConfirmationTable({ invoiceData, creditData }) {
   return (
     <>
       <Heading as="h1" fontWeight="600">
-        {t('paymentInvoices.table.invoiceHeading')}
+        {t('paymentInvoices.table.confirmationInvoiceHeading')}
       </Heading>
       <div className="details-table">
         <CustomDataTable

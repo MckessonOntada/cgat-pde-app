@@ -5,6 +5,7 @@ import ShippingAddressDataTable from './ShippingAddressDataTable';
 import CommonFilters from '@src/components/Filters';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useShippingAddress } from '@src/mfe/order-management/context/ShippingAddressContext';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
 function ShippingAddress({ selectedShippingAddress, setSelectedShippingAddress }) {
   const { t } = useTranslate();
@@ -12,7 +13,6 @@ function ShippingAddress({ selectedShippingAddress, setSelectedShippingAddress }
 
   return (
     <div className={`MCP-module-body ${!selectedAccount ? 'disable-all' : ''}`}>
-      <ModuleHeader heading={<Heading as="h2">{t('headings.shippingAddress')}</Heading>} />
       <div className="MCP-panel-container">
         <CommonFilters
           onApplyFilters={applyFilters}
@@ -21,6 +21,8 @@ function ShippingAddress({ selectedShippingAddress, setSelectedShippingAddress }
           searchPlaceholder={t('controls.placeholder.shippingAddress.search')}
         />
       </div>
+      <TableHeading heading={t('headings.shippingAddress')} />
+
       <div className="MCP-table-wrapper">
         <ShippingAddressDataTable
           selectedShippingAddress={selectedShippingAddress}

@@ -15,7 +15,7 @@ const PatientDetailsForm = () => {
           <div key={sectionIndex}>
             {section.sectionTitle && (
               <div className="headingBox">
-                <Heading as="h3">{t(section.sectionTitle)}</Heading>
+                <h2>{t(section.sectionTitle)}</h2>
                 {sectionIndex === 0 && (
                   <p className="form-instruction">
                     <Required id="Required"></Required> {t('orderManagement.patientDetails.required')}

@@ -157,8 +157,8 @@ button {
   background: transparent;
   border: none;
   cursor: pointer;
-  padding-top:  var(--spacing-02);
-  padding-right:  var(--spacing-02);
+  padding-top: var(--spacing-02);
+  padding-right: var(--spacing-02);
 }
 
 .MuiDialog-container {
@@ -203,7 +203,11 @@ h6 {
   margin-right: 0;
   font-weight: var(--brand-font-weight-700) !important;
 }
-h1{
+h1 {
   font-size: 2.8em !important;
+  font-weight: 600;
+}
+h2 {
+  font-size: 2em !important;
   font-weight: 600;
 }
