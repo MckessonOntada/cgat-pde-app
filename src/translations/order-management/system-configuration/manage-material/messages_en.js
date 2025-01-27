@@ -21,5 +21,38 @@ export const SystemConfigurationEN = {
   'manageMaterial.table.header.text': 'Item(s) Selected',
   'manageMaterial.table.header.button.configure': 'Configure',
   //
-  'manageMaterial.data.fetch.error': 'Error fetching invoice listing'
+  'manageMaterial.data.fetch.error': 'Error fetching invoice listing',
+  // Details Drawer
+  'manageMaterial.drawer.heading': 'Material Details',
+  // Details Drawer Body
+  "manageMaterial.drawer.details.heading": "Details",
+  "manageMaterial.drawer.details.body.materialNumber": "Material Number",
+  "manageMaterial.drawer.details.body.materialDescription": "Material Description",
+  "manageMaterial.drawer.details.body.ndc": "NDC",
+  "manageMaterial.drawer.details.body.strength": "Strength",
+  "manageMaterial.drawer.details.body.dosage": "Dosage",
+  "manageMaterial.drawer.details.body.sellingUnitCode": "Selling Unit Code",
+  "manageMaterial.drawer.details.body.vendorName": "Vendor Name",
+  "manageMaterial.drawer.details.body.upcCode": "UPC Code",
+  "manageMaterial.drawer.details.body.dropshipIndicator": "Dropship Indicator",
+  "manageMaterial.drawer.details.body.baseUnitOfMeasure": "Base Unit of Measure",
+  "manageMaterial.drawer.details.body.cgatIdentifier": "CGAT Identifier",
+  "manageMaterial.drawer.details.body.productLevelPricing": "Product Level Pricing",
+  "manageMaterial.drawer.details.body.minimumOrderQuantity": "Minimum Order Quantity",
+  "manageMaterial.drawer.details.configuration.heading": "Configurations",
+  "manageMaterial.drawer.details.configuration.body.slotNumber": "Slot Number",
+  "manageMaterial.drawer.details.configuration.body.patientConsent": "Patient Consent",
+  // Configuration Drawer
+  "manageMaterial.drawer.configuration.heading": "Material Configuration",
+  "manageMaterial.drawer.configuration.preview": "Preview",
+  // Configuration Drawer Body
+  "manageMaterial.drawer.configuration.body.patientInfoRequired": "Patient information required?",
+  "manageMaterial.drawer.configuration.body.coiIdRequired": "COI ID Required?",
+  "manageMaterial.drawer.configuration.body.patientInfoRequired.yes": "Yes",
+  "manageMaterial.drawer.configuration.body.patientInfoRequired.no": "No",
+  "manageMaterial.drawer.configuration.body.coiIdRequired.yes": "Yes",
+  "manageMaterial.drawer.configuration.body.coiIdRequired.no": "No",
+  // Configuration Drawer Controls
+  "manageMaterial.drawer.controls.cancel": "Cancel",
+  "manageMaterial.drawer.controls.apply": "Apply",
 };

@@ -286,7 +286,7 @@ function Details(props) {
             onSelect={() => {}}
             onClose={() => setOpen(!open)}
             therapyData={TherapyDetailsConstants}
-            showButton={false}
+            showFooter={false}
             useUserService={true}
           />
         </FloatingDrawer>

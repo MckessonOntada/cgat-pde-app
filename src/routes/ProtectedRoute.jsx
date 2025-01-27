@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const ProtectedRoute = (props) => {
   const { isDashboard = false, permissions } = props;
   const navigate = useNavigate();
-  if (!isDashboard && !AuthUtils.userHasRoutePermission(permissions)) {
+    if (!isDashboard && !AuthUtils.userHasRoutePermission(permissions)) {
     return (
       <ErrorComponent
         variant="center"

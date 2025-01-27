@@ -8,12 +8,15 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { Link } from 'react-router-dom';
 import FloatingDrawer from '@src/components/floating-drawer';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
+import { MaterialConfigConstants, MaterialDetailsConstants } from './assets/constants/MaterialConstants';
+import ConfigureMaterials from './ConfigureMaterials';
 
 function ManageMaterialTable({ ...props }) {
   const { t } = useTranslate();
   const { data, paginationConfig, setPageNumber, applySort, isFetching, isError, selectedMaterials, setSelectedMaterials } =
     useManageMaterial();
-  const [open, setOpen] = React.useState(false);
+  const [openDetails, setOpenDetails] = React.useState(false);
+  const [openConfiguration, setOpenConfiguration] = React.useState(false);
 
   const getindeterminate = () => {
     const allDataIncluded = data.every((invoice) =>
@@ -114,7 +117,7 @@ function ManageMaterialTable({ ...props }) {
           <Link
             style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
             onClick={() => {
-              setOpen(!open);
+              setOpenDetails(!openDetails);
             }}>
             {props?.materialNumber || '-'}
           </Link>
@@ -174,7 +177,7 @@ function ManageMaterialTable({ ...props }) {
           <Button
             variant="secondary"
             onClick={() => {
-              setOpen(!open);
+              setOpenConfiguration(!openConfiguration);
             }}
             size="sm">
             {t('manageMaterial.table.header.button.configure')}
@@ -218,9 +221,21 @@ function ManageMaterialTable({ ...props }) {
           </div>
         }
       />
-      {open && (
-        <FloatingDrawer open={true} anchor="right" onClose={() => setOpen(!open)}>
-          <TherapyDetails isMaterialConfiguration={true} therapyId={2} onClose={() => setOpen(!open)} />
+      {openDetails && (
+        <FloatingDrawer open={true} anchor="right" onClose={() => setOpenDetails(!openDetails)}>
+          <TherapyDetails
+            therapyId={2}
+            therapyData={MaterialDetailsConstants}
+            configurationData={MaterialConfigConstants}
+            onClose={() => setOpenDetails(!openDetails)}
+            showFooter={false}
+            isMaterialConfiguration={true}
+          />
+        </FloatingDrawer>
+      )}
+      {openConfiguration && (
+        <FloatingDrawer open={true} anchor="right" onClose={() => setOpenConfiguration(!openConfiguration)}>
+          <ConfigureMaterials onClose={() => setOpenConfiguration(!openConfiguration)} />
         </FloatingDrawer>
       )}
     </React.Fragment>

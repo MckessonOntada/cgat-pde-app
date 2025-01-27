@@ -19,6 +19,8 @@ import ManageCatalog from '../pages/system-configuration/manage-catalog';
 import { OrgAccountSelectionProvider } from '../components/orgAccountSelection/context/OrgAccountSelectionContext';
 import ManageMaterial from '../pages/system-configuration/manageMaterial/ManageMaterial';
 import { ManageMaterialProvider } from '../context/ManageMaterailContext';
+import Questionnaire from '../questionnaire';
+import { QuestionnaireProvider } from '../context/QuestionnaireContext';
 
 function OrderManagementRoutes() {
   const addEditPermission = [PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS];
@@ -110,7 +112,14 @@ function OrderManagementRoutes() {
           </OrgAccountSelectionProvider>
         }
       />
-      <Route path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_QUESTIONNAIRE}`} element={<div>Manage Questionnaire</div>} />
+      <Route
+        path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_QUESTIONNAIRE}/*`}
+        element={
+          <QuestionnaireProvider>
+            <Questionnaire />
+          </QuestionnaireProvider>
+        }
+      />
       <Route path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_ACCOUNT}`} element={<div>Manage Account</div>} />
 
       <Route path={routesConfig.viewDetails} element={<OrderSummary />} />
