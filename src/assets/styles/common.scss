@@ -370,15 +370,14 @@ div.disable-all {
   .fieldValue {
     font-size: var(--brand-font-size--large);
 
-
-    .dollarSign {
-      span {
-        top: -4px;
-        font-size: var(--brand-font-size--10);
-        position: relative;
-        left: -1px;
-      }
-    }
+    // .dollarSign {
+    //   span {
+    //     top: -4px;
+    //     font-size: var(--brand-font-size--10);
+    //     position: relative;
+    //     left: -1px;
+    //   }
+    // }
   }
 
   &.col-span-4 {
@@ -754,4 +753,13 @@ div.disable-all {
 
 .floating-drawer {
   width: 340px;
+}
+
+#secondaryNavPanel {
+  button,
+  a {
+    font-size: var(--brand-font-size--small);
+    line-height: var(--brand-line-height--large);
+    text-transform: uppercase;
+  }
 }

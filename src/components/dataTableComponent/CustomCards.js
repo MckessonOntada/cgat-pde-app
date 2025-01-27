@@ -47,7 +47,7 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
   };
 
   return (
-    <div className="card-container" key={row.id} onClick={handleCardClick}>
+    <div className="table-card-container" key={row.id} onClick={handleCardClick}>
       {(showDefaultData.length > 0 || actionItems.length > 0) && (
         <div className="card-header">
           <div>

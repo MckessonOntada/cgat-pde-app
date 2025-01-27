@@ -105,7 +105,7 @@ function Details(props) {
         cell: (props) => (
           <div className="cellEllipse">
             <Link
-              style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
+              style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
               onClick={() => {
                 setOpen(!open);
                 setTherapy(props?.therapyId);

@@ -13,6 +13,7 @@ import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import './Role.scss';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
 const RolesDataTable = () => {
   const { t } = useTranslate();
@@ -77,14 +78,17 @@ const RolesDataTable = () => {
 
   return (
     <div>
-      {selectedRows && (
-        <div className="selected-item-alert">
-          <p className="selected-item-text">1 Item's Selected</p>
+      <TableHeading
+        heading={t('orgManagement.role.labelRolesListing')}
+        secondaryView={!!selectedRows}
+        secondaryViewHeading={`1 ${t('orgManagement.selected_items')}`}
+        secondaryViewControls={
           <Button variant="secondary" onClick={handleOnUserConfirmation}>
-            Deactivate
+            {t('orgManagement.button.deactivate')}
           </Button>
-        </div>
-      )}
+        }
+        style={{ marginBottom: '24px' }}
+      />
 
       <CustomDataTable
         id="my-data-table"

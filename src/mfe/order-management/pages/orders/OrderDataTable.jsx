@@ -9,6 +9,7 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import './OrderDataTable.module.scss';
 import useResponsiveView from '@src/hooks/useResponsiveView';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
 const OrderDataTable = ({ tab, alertContainerId }) => {
   const { t } = useTranslate();
@@ -26,32 +27,35 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
   };
 
   return (
-    <CustomDataTable
-      id="order-management-order-listing"
-      type={'normal'}
-      columns={columns}
-      data={data}
-      handleChangePage={handleOnPageChange}
-      onSortIconClick={handleOnSort}
-      pagination={true}
-      currentPage={paginationConfig.pageNumber}
-      totalPageCount={paginationConfig.totalPages}
-      totalRocords={paginationConfig.totalElements}
-      recordsPerPage={paginationConfig.pageSize}
-      aria-label={t('table.ariaLabel.orderList')}
-      paginationRecordsPerPageMessage={t('labels.perPage')}
-      paginationTotalRecorsMessage={t('labels.results')}
-      showCardView={showCardView}
-      noDataComponent={
-        <EmptyDataTable
-          isLoading={isFetching}
-          error={error && error.message}
-          image={EmptyDataImage}
-          heading={t('captions.emptyTableTitle')}
-          description={t('captions.emptyTableSubtitle')}
-        />
-      }
-    />
+    <>
+      <TableHeading heading={t('table.ariaLabel.orderList')} />
+      <CustomDataTable
+        id="order-management-order-listing"
+        type={'normal'}
+        columns={columns}
+        data={data}
+        handleChangePage={handleOnPageChange}
+        onSortIconClick={handleOnSort}
+        pagination={true}
+        currentPage={paginationConfig.pageNumber}
+        totalPageCount={paginationConfig.totalPages}
+        totalRocords={paginationConfig.totalElements}
+        recordsPerPage={paginationConfig.pageSize}
+        aria-label={t('table.ariaLabel.orderList')}
+        paginationRecordsPerPageMessage={t('labels.perPage')}
+        paginationTotalRecorsMessage={t('labels.results')}
+        showCardView={showCardView}
+        noDataComponent={
+          <EmptyDataTable
+            isLoading={isFetching}
+            error={error && error.message}
+            image={EmptyDataImage}
+            heading={t('captions.emptyTableTitle')}
+            description={t('captions.emptyTableSubtitle')}
+          />
+        }
+      />
+    </>
   );
 };
 

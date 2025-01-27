@@ -15,6 +15,7 @@ import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions
 import usePermission from '@src/hooks/usePermissions';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
 function ApproverList({ onActionSuccess }) {
   const { t } = useTranslate();
@@ -159,19 +160,20 @@ function ApproverList({ onActionSuccess }) {
 
   return (
     <div>
-      {selectedRows && (
-        <div className="selected-item-alert">
-          <p className="selected-item-text">
-            {1} {t('approvergroup.selected_items')}
-          </p>
+      <TableHeading
+        heading={t('approvergroup.table.listing.label')}
+        secondaryView={!!selectedRows}
+        secondaryViewHeading={`1 ${t('approvergroup.selected_items')}`}
+        secondaryViewControls={
           <Button
             variant="secondary"
             onClick={handleActivateDeactivate}
             disabled={!hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_APPROVER_GROUP)}>
-            {selectedRows.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
+            {selectedRows?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
           </Button>
-        </div>
-      )}
+        }
+        style={{ marginBottom: '24px' }}
+      />
 
       <CustomDataTable
         type={'normal'}
