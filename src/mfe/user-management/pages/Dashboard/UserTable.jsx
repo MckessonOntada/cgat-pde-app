@@ -16,8 +16,6 @@ import CommonUtils from '@src/util/CommonUtils';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
-import useResponsiveView from '@src/hooks/useResponsiveView';
-import { CustomDataTable } from '@src/components/dataTableComponent';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 
 function getBackgroundColorByRole(Role) {

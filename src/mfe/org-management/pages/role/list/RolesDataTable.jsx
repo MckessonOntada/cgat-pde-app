@@ -11,8 +11,6 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import './Role.scss';
-import useResponsiveView from '@src/hooks/useResponsiveView';
-import { CustomDataTable } from '@src/components/dataTableComponent';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 
 const RolesDataTable = () => {

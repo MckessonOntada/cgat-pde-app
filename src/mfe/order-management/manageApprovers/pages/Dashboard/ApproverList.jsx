@@ -13,8 +13,6 @@ import { useApprover } from '../../context/ApproverContext';
 import Actions from './Actions';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
-import { CustomDataTable } from '@src/components/dataTableComponent';
-import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 
 function ApproverList({ onActionSuccess }) {

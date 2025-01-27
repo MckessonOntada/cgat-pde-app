@@ -15,8 +15,6 @@ import Actions from './Actions';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
-import { CustomDataTable } from '@src/components/dataTableComponent';
-import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 
 const OrgList = () => {
