@@ -7,12 +7,15 @@ import { ReactComponent as ViewIcon } from '@src/assets/svg/eye_open_filled.svg'
 import { Button, CustomDataTable, Heading, RadioGroup } from '@mckesson/mcp-component-library';
 import FloatingDrawer from '@src/components/floating-drawer';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 
 function TemplateList() {
   const { t } = useTranslate();
   const handleOnPageChange = () => {};
   const handleOnSort = () => {};
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [selectedRows, setSelectedRows] = React.useState([1, 2, 3, 4]);
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
@@ -110,6 +113,35 @@ function TemplateList() {
     navigate('map-questionnaire', { state: { value: entity } });
   };
 
+  const deactivateQuestionnaire = () => {};
+
+  const handleOnDeactivateQuestionnaire = () => {
+    const state = {};
+    state.title = 'Deactivate?';
+    state.body = (
+      <div className="MCP-modal-body">
+        <p>Do you want to deactivate selected questionnaire templates?</p>
+      </div>
+    );
+    state.footer = (
+      <div className="controls">
+        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+          Cancel
+        </Button>
+        <Button
+          size="md"
+          variant="primary"
+          onClick={() => {
+            deactivateQuestionnaire();
+            dispatch(closeModal());
+          }}>
+          Yes
+        </Button>
+      </div>
+    );
+    dispatch(openModal(state));
+  };
+
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-CardContainer">
@@ -130,9 +162,14 @@ function TemplateList() {
           <div>
             <div className="selected-item-alert row-space-between-center">
               <p className="selected-item-text">{`${selectedRows.length} items selected.`}</p>
-              <Button onClick={() => setIsDrawerOpen(true)} size="sm" variant="secondary">
-                Configure
-              </Button>
+              <div className="controls">
+                <Button onClick={() => setIsDrawerOpen(true)} size="sm" variant="secondary">
+                  Configure
+                </Button>
+                <Button onClick={handleOnDeactivateQuestionnaire} size="sm" variant="secondary">
+                  Deactivate
+                </Button>
+              </div>
             </div>
           </div>
         )}
