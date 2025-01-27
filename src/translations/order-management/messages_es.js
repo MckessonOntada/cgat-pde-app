@@ -121,6 +121,7 @@ export const MessageEs = {
   'controls.placeholders.autoSearch': 'S_Search by Order ID, Patient name, Account',
   'controls.ariaLabels.searchOrders': 'S_Search Orders',
   'controls.placeholder.therapySelection.search': 'S_Search Therapy by Name, NDC, UDI...',
+  'controls.placeholder.material.search': 'S_Search by Name, NDC, Material Number...',
   'controls.placeholder.shippingAddress.search': 'S_Search by Account name or Number',
   'controls.placeholder.selectOption': 'S_Select Option',
   'controls.ariaLabels.expandFilters': 'S_Expand Filters',
@@ -309,5 +310,26 @@ export const MessageEs = {
   'message.error.papOrderCanNotEdit':
     "S_You can't edit this order, If you wish to make any changes to the order, please call the customer center",
   'prompt.message.editRestriction':
-    "S_You can't edit this order, If you wish to make any changes to the order, please contact the customer support 1800-XXX-XXXX"
+    "S_You can't edit this order, If you wish to make any changes to the order, please contact the customer support 1800-XXX-XXXX",
+
+  'button.caption.backQuestionnaireBuilder': 'S_Back to Questionnaire Builder',
+  'heading.addQuestionnaire': 'S_Add Questionnaire',
+  'heading.templateDetails': 'S_Template Details',
+  'heading.questions': 'S_Questions',
+  'message.questionTextMaxChar': 'S_Maximum 1,000 Characters',
+  'label.question': 'S_Question',
+  'placeholder.optionItr': 'S_Option',
+  'button.addOption': 'S_Add Option',
+  'label.check.questionMandatory': 'S_Mark this question as mandatory?',
+  'label.check.requiredDocument': 'S_Document upload required?',
+  'button.caption.addQuestion': 'S_Add Question',
+  'button.caption.createQuestionnaire': 'S_Create Questionnaire',
+  'label.type': 'S_Type',
+  'label.templateName': 'S_Template Name',
+  'message.questionnaire.templateNameRequired': 'S_Template name is required',
+  'message.questionnaire.templateNameMinWidth': 'S_Template name must be at least 2 characters',
+  'message.questionnaire.templateNameMaxWidth': 'S_Template name must be at most 24 characters',
+  'message.questionnaire.selectTemplateType': 'S_You must select a template type',
+  'message.questionnaire.provideQuestionText': 'S_You must provide question text',
+  'message.questionnaire.optionValueRequired': 'S_Option value is required'
 };

@@ -19,7 +19,7 @@ export default function CheckBox(props) {
       updatedCheckedValues = [...currentCheckedValues, valueToAddOrRemove];
     } else {
       // If unchecked, remove the value from the array
-      updatedCheckedValues = currentCheckedValues.filter(value => value !== valueToAddOrRemove);
+      updatedCheckedValues = currentCheckedValues.filter((value) => value !== valueToAddOrRemove);
     }
 
     form.setFieldValue(field.name, updatedCheckedValues);
@@ -32,8 +32,8 @@ export default function CheckBox(props) {
       errorMessage={error ? form.errors[field.name] : ''}
       items={items.map((item, index) => ({
         ...item,
-        onChange: event => handleChange(event, index),
-        isChecked: field.value ? field.value.includes(item.value) : false,
+        onChange: (event) => handleChange(event, index),
+        isChecked: field.value ? field.value.includes(item.value) : false
       }))}
     />
   );
