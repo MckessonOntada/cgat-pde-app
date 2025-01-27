@@ -28,6 +28,8 @@ function TemplateList() {
     setSelectedRows([...selectedRows]);
   };
 
+  const handleOnViewClick = (props) => {};
+
   const columns = [
     {
       id: 'questionnaire-template-list-item-control',
@@ -101,7 +103,7 @@ function TemplateList() {
       minWidth: '160px',
       cell: (props) => (
         <div className="styled-icon-button error-button">
-          <Button icon={ViewIcon} variant="secondary" size="md">
+          <Button onClick={() => handleOnViewClick(props)} icon={ViewIcon} variant="secondary" size="md">
             View
           </Button>
         </div>
@@ -116,30 +118,32 @@ function TemplateList() {
   const deactivateQuestionnaire = () => {};
 
   const handleOnDeactivateQuestionnaire = () => {
-    const state = {};
-    state.title = 'Deactivate?';
-    state.body = (
-      <div className="MCP-modal-body">
-        <p>Do you want to deactivate selected questionnaire templates?</p>
-      </div>
-    );
-    state.footer = (
-      <div className="controls">
-        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
-          Cancel
-        </Button>
-        <Button
-          size="md"
-          variant="primary"
-          onClick={() => {
-            deactivateQuestionnaire();
-            dispatch(closeModal());
-          }}>
-          Yes
-        </Button>
-      </div>
-    );
-    dispatch(openModal(state));
+    if (selectedRows || selectedRows.length <= 0) {
+      const state = {};
+      state.title = 'Deactivate?';
+      state.body = (
+        <div className="MCP-modal-body">
+          <p>Do you want to deactivate selected questionnaire templates?</p>
+        </div>
+      );
+      state.footer = (
+        <div className="controls">
+          <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+            Cancel
+          </Button>
+          <Button
+            size="md"
+            variant="primary"
+            onClick={() => {
+              deactivateQuestionnaire();
+              dispatch(closeModal());
+            }}>
+            Yes
+          </Button>
+        </div>
+      );
+      dispatch(openModal(state));
+    }
   };
 
   return (

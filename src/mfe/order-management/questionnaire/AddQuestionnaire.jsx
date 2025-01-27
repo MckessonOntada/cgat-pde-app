@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 import CheckBox from '@src/components/form/CheckBox';
 import { useTranslate } from '@src/translations/useTranslation';
 import ToggleButton from './ToggleButton';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const QUESTION_TYPE = {
   RADIO_BUTTON: 'radio_button',
@@ -18,9 +18,17 @@ const QUESTION_TYPE = {
   INPUT: 'input'
 };
 
+const MODE = {
+  CREATE: 'CREATE',
+  EDIT: 'EDIT',
+  VIEW: 'VIEW'
+};
+
 function AddQuestionnaire() {
   const { t } = useTranslate();
+  const [mode, setMode] = React.useState(MODE.CREATE);
   const navigate = useNavigate();
+  const { id } = useParams();
   const [lang, setLang] = React.useState('en');
   const schema = Yup.object().shape({
     ['template-name']: Yup.string()
@@ -39,6 +47,15 @@ function AddQuestionnaire() {
       })
     )
   });
+
+  React.useEffect(() => {
+    if (id) {
+      setMode(MODE.EDIT);
+      // fetch questionnaire details by id
+      // re-structure response
+      // assign it initial state
+    }
+  }, []);
 
   const handleOnLanguageChange = () => {
     if (lang == 'en') setLang('es');
@@ -278,9 +295,15 @@ function AddQuestionnaire() {
                     <Button size="md" variant="secondary">
                       {t('captions.btnCancel')}
                     </Button>
-                    <Button type="submit" size="md" variant="primary">
-                      {t('button.caption.createQuestionnaire')}
-                    </Button>
+                    {mode === MODE.EDIT ? (
+                      <Button type="submit" size="md" variant="primary">
+                        {t('button.caption.updateQuestionnaire')}
+                      </Button>
+                    ) : (
+                      <Button type="submit" size="md" variant="primary">
+                        {t('button.caption.createQuestionnaire')}
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>
