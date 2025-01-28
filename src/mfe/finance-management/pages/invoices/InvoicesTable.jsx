@@ -131,7 +131,7 @@ export default function InvoicesTable() {
       sortable: true,
       wrap: true,
       showInMobileHeader: true,
-
+      mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
       cell: (props) => <div>{props?.soldToSite || '-'}</div>
     },
     {

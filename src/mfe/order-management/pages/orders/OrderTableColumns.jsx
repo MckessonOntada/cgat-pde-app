@@ -96,7 +96,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
 
   const doesApproverGroupExist = (approverGroupIds, assginedGroupsData) => {
     if (!approverGroupIds || !assginedGroupsData) return false;
-    return approverGroupIds.some((id) => assginedGroupsData.includes(id));
+    return approverGroupIds.some((id) => assginedGroupsData?.includes(id));
   };
 
   const handleOnOptionSelection = (value) => {

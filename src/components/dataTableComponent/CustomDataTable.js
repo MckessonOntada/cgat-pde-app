@@ -151,7 +151,7 @@ export const CustomDataTable = (props) => {
           size="md"
           disabled={!tableSortKey}
           iconButton={true}
-          className={sortOrder === 'asc' ? '' : styles.cardSortIconButtonRotated}
+          className={sortOrder === 'asc' ? styles.cardSortIconButton : styles.cardSortIconButtonRotated}
           variant="secondary"
           Icon={!!sortIcon ? sortIcon : arrowThickUp}
           onClick={() => {

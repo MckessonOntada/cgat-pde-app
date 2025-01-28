@@ -13,7 +13,7 @@ function ShippingAddress({ selectedShippingAddress, setSelectedShippingAddress }
 
   return (
     <div className={`MCP-module-body ${!selectedAccount ? 'disable-all' : ''}`}>
-      <div className="MCP-panel-container">
+      <div className="MCP-CardContainer">
         <CommonFilters
           onApplyFilters={applyFilters}
           onClearFilters={clearFilters}

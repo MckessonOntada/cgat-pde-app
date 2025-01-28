@@ -44,6 +44,7 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
         aria-label={t('table.ariaLabel.orderList')}
         paginationRecordsPerPageMessage={t('labels.perPage')}
         paginationTotalRecorsMessage={t('labels.results')}
+        showCardView={showCardView}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}

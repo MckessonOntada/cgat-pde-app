@@ -6,8 +6,8 @@ import { createColumns } from './TherapyDataColumns';
 import { useNavigate } from 'react-router-dom';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import { CustomDataTable } from '../../../../../../components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
+import { CustomDataTable } from '@src/components/dataTableComponent';
 
 const TherapyDataTable = ({ therapy, onChange }) => {
   const { t } = useTranslate();
