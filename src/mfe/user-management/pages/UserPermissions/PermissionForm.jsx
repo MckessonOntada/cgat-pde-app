@@ -36,9 +36,8 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
     refetchOnWindowFocus: false
   });
 
-const userType = AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL';
+const userType = isSystemAdminView ? 'ADMIN' : 'GENERAL';
 
-console.log('userType',userType);
 
 const { data: permissionsData } = useQuery({
   queryKey: ['users/permissions'],
@@ -136,7 +135,6 @@ const { data: permissionsData } = useQuery({
     const filteredPermissions = Object.fromEntries(
       Object.entries(groupedPermissions).filter(([key, value]) => Object.keys(value).length > 0)
     );
-    console.log('filteredPermissions',filteredPermissions);
     return filteredPermissions;
   },
   enabled: true,
