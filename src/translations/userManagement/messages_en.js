@@ -345,5 +345,6 @@ export const UserManagementEN = {
     'By confirming, you acknowledge that all actions taken will be logged and attributed to your account.',
   'userManagement.breadcrumb.admin': 'Admin',
   'popup.userDeactivation.question': 'Are you sure you wish to Deactivate this User?',
-  'userManagement.confirmationMessage': 'Confirmation message'
+  'userManagement.confirmationMessage': 'Confirmation message',
+  'userManagement.message.DeactivateUser': 'Are you sure you wish to Deactivate this User ?',
 };
