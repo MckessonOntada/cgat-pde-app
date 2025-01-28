@@ -67,22 +67,19 @@ export const QuestionnaireProvider = ({ children }) => {
     queryKey: ['Templates', requestParams],
     queryFn: async () => QuestionnaireConfig.getQuestionnaires(requestParams),
     onSuccess: (result) => {
-     const { content: data, totalElements, totalPages } = res.data;
+      const { totalElements, totalPages, content :data } = result;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
         ...(totalElements && { totalElements }),
         ...(totalPages && { totalPages })
       }));
-      if (result.content) {
-         return data;
-      }
-    },
-     
+     return data;
+    } ,
     refetchOnWindowFocus: false
   });
-
+ 
   useEffect(() => {
-    refetchTemplates;
+    refetchTemplates();
   }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
 
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
@@ -112,6 +109,7 @@ export const QuestionnaireProvider = ({ children }) => {
         setCurrentPage,
         applySort,
         data: TemplatesData,
+        refetchTemplates,
         isLoading: isLoadingTemplates,
         isError: isErrorTemplates,
         setTemplates,

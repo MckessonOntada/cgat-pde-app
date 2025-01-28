@@ -69,6 +69,7 @@ const ApiRoutes = Object.freeze({
   EXPORT_PENDING_PAYMENT_EXCEL: (data) =>constructOrderManagementServiceUrl(`account/${data.accountNumber}/payments/pending/export`),
   CATALOGS: () => constructUserManagementServicePublicUrl(`catalogs`),
   THERAPIES: () => constructUserManagementServicePublicUrl(`therapies`),
+  QUESTIONNAIRE: () => constructUserManagementServicePublicUrl(`questionnaires`),
 });
 
 export default ApiRoutes;

@@ -1,0 +1,13 @@
+
+.alignMultiple {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-01);
+  justify-content: flex-end;
+}
+
+.spnTemplate {
+ font-size: var(--brand-font-size--small);
+ font-weight: var(--brand-font-weight-400);
+ color:var(--brand-color-black)
+}
