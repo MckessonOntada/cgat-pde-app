@@ -274,7 +274,7 @@ function UserTable({ onActionSuccess }) {
           id: 'xxxs-modal',
           isOpen,
           onClose: () => setIsOpen(false),
-          modalTitle: t('userManagement.confirmationmessage'),
+          modalTitle: t('userManagement.confirmationMessage'),
           modalBody: <h3>{t('userManagement.message.DeactivateUser')}</h3>,
           modalFooter: (
             <React.Fragment>
