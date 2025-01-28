@@ -17,7 +17,9 @@ function CatalogDataTable(props) {
       minWidth: '112px',
       cell: (props) => (
         <div className="cellEllipse">
-          <Link style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}>{`${props?.sapMaterialId || ''}`}</Link>
+          <Link style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}>{`${
+            props?.sapMaterialId || ''
+          }`}</Link>
         </div>
       )
     },

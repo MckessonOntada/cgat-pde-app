@@ -4,7 +4,7 @@ import './index.scss';
 import RecordDetails from './components/RecordDetails';
 import BalanceDetails from './components/BalanceDetails';
 import Routes from './routes/Routes';
-import { TabList, Alert } from '@mckesson/mcp-component-library';
+import { TabList, Alert, Heading } from '@mckesson/mcp-component-library';
 import { PATHS, tabListData } from './routes/constants';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ModuleHeader from '../../components/module-header';
@@ -44,6 +44,7 @@ const PaymentsInvoices = () => {
     <div className="MCP-module-wrapper">
       {CommonUtils.isNonEmptyObject(selectedAccount) ? (
         <React.Fragment>
+          <ModuleHeader heading={<Heading as="h1">{t('paymentInvoices.header.managePayments')}</Heading>} />
           <RecordDetails />
 
           <BalanceProvider>

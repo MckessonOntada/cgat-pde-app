@@ -102,7 +102,7 @@ const PrimaryHeader = () => {
                   <img src={organizationLogo || ''} />
                 </div>
               )}
-              <h1>{selectedOrganization.name}</h1>
+              <h2>{selectedOrganization.name}</h2>
             </Link>
           )}
         </div>
@@ -117,11 +117,12 @@ const PrimaryHeader = () => {
         <span>{intl.formatMessage({ id: 'header.label.notifications' })}</span>
         <IconNotification />
       </Link>,
+
       <MenuList handleSelect={() => {}} options={HeaderConfig.profileOptions} aria-label="Profile options">
-        <button className={styles.actionLink} aria-label="Account options">
+        <div className={styles.actionLink} aria-label="Account options">
           <span>{userName || 'Anonymous'}</span>
           <IconArrowDown />
-        </button>
+        </div>
       </MenuList>,
       <div className={styles.languageSelect}>
         <MenuList
@@ -131,10 +132,10 @@ const PrimaryHeader = () => {
           }}
           options={HeaderConfig.languages}
           aria-label="language options">
-          <button className={styles.actionLink} aria-label="language options">
+          <div className={styles.actionLink} aria-label="language options">
             <span>{currentLanguage?.label || 'English'}</span>
             <IconArrowDown />
-          </button>
+          </div>
         </MenuList>
       </div>,
       <Link className={styles.actionLink} to={'help'} aria-label="Help center">

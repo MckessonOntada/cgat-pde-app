@@ -210,7 +210,7 @@ const Summary = () => {
     );
 
     const controlCancel = (
-      <Button size={'md'} variant="secondary" onClick={() => alert('cancel')}>
+      <Button size={'md'} variant="secondary" onClick={handleOnBackButtonClick}>
         {t('captions.btnCancel')}
       </Button>
     );
@@ -264,7 +264,7 @@ const Summary = () => {
     if (status === StatusEnum.REJECTED) {
       controls.push(controlPrintSummary); //, controlCancel, controlReSubmitOrder);
     } else if (!isApprover && status !== StatusEnum.SUBMITTED && status !== StatusEnum.APPROVAL_PENDING) {
-      controls.push(controlPrintSummary, controlBack, controlSubmitOrder);
+      controls.push(controlPrintSummary, controlCancel, controlSubmitOrder);
     } else if (isApprover) {
       controls.push(controlBack, controlRejectOrder, controlApproveOrder);
     }
@@ -286,9 +286,7 @@ const Summary = () => {
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
-      {formState.activeRecord?.status === StatusEnum.IN_DRAFT && (
-        <PageHeader heading={t('headings.createNewOrder')} />
-      )}
+      {formState.activeRecord?.status === StatusEnum.IN_DRAFT && <PageHeader heading={t('headings.createNewOrder')} />}
       {isApprover && <PageHeader heading={t('headings.reviewOrder')} />}
 
       <div className="MCP-module-body">
@@ -297,7 +295,7 @@ const Summary = () => {
         )}
         <div id={ALERT_CONTAINER_ID} />
         <div className={'MCP-module-wrapper'}>
-          <ModuleHeader
+          {/* <ModuleHeader
             heading={<Heading as="h2">{t('labels.summary')}</Heading>}
             controls={
               isRejected && (
@@ -309,19 +307,29 @@ const Summary = () => {
                 </div>
               )
             }
-          />
+          /> */}
           <div className={'MCP-module-body'}>
             <div className="MCP-panel-container">
               <ModuleHeader
                 className={styles.panelHeader}
                 heading={
-                  <Heading as="h3">{t(status === StatusEnum.SUBMITTED || isApprover ? 'labels.orderDetails' : 'labels.price')}</Heading>
+                  <Heading as="h3">
+                    {t(status === StatusEnum.SUBMITTED || isApprover ? 'labels.orderDetails' : 'labels.priceDetails')}
+                  </Heading>
                 }
               />
               <div class={styles.flexPanel}>
                 {(status === StatusEnum.SUBMITTED || isApprover) && <DetailSegment label={t('labels.orderId')} value={orderId} />}
                 <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
-                <DetailSegment label={t('labels.orderCost')} value={<p className={styles.price}><span>$</span>{orderCost}</p>} />
+                <DetailSegment
+                  label={t('labels.orderCost')}
+                  value={
+                    <p className={styles.price}>
+                      <span>$</span>
+                      {orderCost}
+                    </p>
+                  }
+                />
               </div>
             </div>
             <div className={'grid grid-gap-16 grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'}>
