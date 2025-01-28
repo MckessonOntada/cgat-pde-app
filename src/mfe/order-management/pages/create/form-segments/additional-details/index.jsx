@@ -22,12 +22,16 @@ import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/Disca
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 
-const getValidationSchema = (t) =>
+const getValidationSchema = (t, config) =>
   Yup.object({
     coiId: Yup.string()
       .matches(NUMBER_REGEX, t('labels.COI_IdMustValidNumber'))
       .max(20, t('labels.COI_IdExceedDigits'))
-      .required(t('labels.COIIdRequired')),
+      .when([], {
+        is: () => config.isCoiIdRequired === true,
+        then: (schema) => schema.required(t('labels.COIIdRequired')),
+        otherwise: (schema) => schema
+      }),
     orderQuantity: Yup.number()
       .typeError(t('labels.OrderQuantityShouldPositive'))
       .required(t('labels.orderQuantityRequired'))
@@ -57,7 +61,6 @@ const INITIAL_VALUES = {
 
 function AdditionalDetails() {
   const { t } = useTranslate();
-  const formFields = getFormFields(t);
   const navigate = useNavigate();
   const location = useLocation();
   const { isEdit = false, isApprover = false, alertState } = location.state || {};
@@ -79,6 +82,9 @@ function AdditionalDetails() {
   const [variant, setVariant] = React.useState();
   const { showAlert } = useAlert();
   const alertContainerId = 'additionalDetails-alert-container';
+  const { isCoiIdRequired } = formState?.activeRecord || {};
+  const formFields = getFormFields(t, { isCoiIdRequired });
+  const validationSchema = getValidationSchema(t, { isCoiIdRequired });
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = formState.activeRecord || {};
@@ -224,8 +230,6 @@ function AdditionalDetails() {
 
     setVariantAcknowledgement(updatedOptions);
   };
-
-  const validationSchema = getValidationSchema(t);
 
   return (
     <div className="MCP-module-wrapper">
