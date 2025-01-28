@@ -96,7 +96,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
 
   const doesApproverGroupExist = (approverGroupIds, assginedGroupsData) => {
     if (!approverGroupIds || !assginedGroupsData) return false;
-    return approverGroupIds.some((id) => assginedGroupsData.includes(id));
+    return approverGroupIds.some((id) => assginedGroupsData?.includes(id));
   };
 
   const handleOnOptionSelection = (value) => {
@@ -299,6 +299,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortable: true,
     sortable: true,
     sortKey: 'id',
+    showInMobileHeader: true,
     minWidth: '160px',
     cell: (props) => (
       <Link
@@ -317,11 +318,14 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'patient.patientInfo',
+    showInMobileHeader: true,
+    showColumnNameInHeader: true,
     cell: (props) => {
       const patientInfo = props.patient && props.patient.patientInfo;
       return !patientInfo ? (
         'N/A'
       ) : (
+        // if(mobileView)
         <EclipsesTextcss aria-label={t('labels.patientName')} str={getPatientName(patientInfo)} maxWidth={100} />
       );
     }
@@ -398,6 +402,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortable: false,
     minWidth: '160px',
     center: true,
+    showInMobileHeader: true,
     cell: (props) => (
       <Tooltip body={props.status}>
         <span>
@@ -426,7 +431,10 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     name: t('table.columns.captions.actions'),
     selector: () => {},
     sortable: false,
-    center: true,
+    showInMobileHeader: true,
+    isAction: true, // must use "action" if button is to be placed in the right, else use default if id is "action"
     cell: (props) => getOptionsByStatus(props, props.status, t, activeTab, props.id, alertContainerId)
   }
 ];
+
+// {showInMobileHeader: bool, showColumnNameInHeader: bool, isAction: bool, style: {}}

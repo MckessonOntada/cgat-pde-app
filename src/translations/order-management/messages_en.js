@@ -72,7 +72,7 @@ export const MessageEn = {
   'labels.orderByAccountNumber': 'Order by Account Number',
   'labels.shipToAccountNumber': 'Ship to Account Number',
   'labels.therapyDescription': 'Therapy Description',
-  'labels.priceDetails': 'Price',
+  'labels.priceDetails': 'Price Details',
   'labels.therapy': 'Therapy',
   'labels.therapyDetails': 'Therapy Details',
   'labels.price': 'Price',

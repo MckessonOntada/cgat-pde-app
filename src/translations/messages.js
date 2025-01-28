@@ -19,6 +19,8 @@ import { SignupEN } from './signup/messages_en';
 import { SignupES } from './signup/messages_es';
 import { filtersEN } from './filters/messages_en';
 import { filtersES } from './filters/messages_es';
+import { SystemConfigurationEN } from './order-management/system-configuration/manage-material/messages_en';
+import { SystemConfigurationES } from './order-management/system-configuration/manage-material/messages_es';
 
 export const messages = {
   [LOCALES.ENGLISH]: {
@@ -31,7 +33,8 @@ export const messages = {
     ...AccountEN,
     ...SignupEN,
     ...filtersEN,
-    ...approverGroupMessagesEn
+    ...approverGroupMessagesEn,
+    ...SystemConfigurationEN
   },
   [LOCALES.SPANISH]: {
     ...LoginMessagesES,
@@ -43,6 +46,7 @@ export const messages = {
     ...AccountES,
     ...SignupES,
     ...filtersES,
-    ...approverGroupMessagesEs
+    ...approverGroupMessagesEs,
+    ...SystemConfigurationES
   }
 };

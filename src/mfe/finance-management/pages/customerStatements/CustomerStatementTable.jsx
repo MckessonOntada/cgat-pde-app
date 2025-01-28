@@ -1,5 +1,5 @@
 import React from 'react';
-import { CustomDataTable, Loader, Button } from '@mckesson/mcp-component-library';
+import { Loader, Button } from '@mckesson/mcp-component-library';
 import { Link } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as PDFicon } from '../../../../assets/svg/office-file-pdf.svg';
@@ -11,11 +11,14 @@ import dayjs from 'dayjs';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { useAccountContext } from '../../context/AccountContext';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import { CustomDataTable } from '@src/components/dataTableComponent';
 
 export default function CustomerStatementTable() {
   const { t } = useTranslate();
   const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportPDF } = useCustomerStatements();
   const { selectedAccount } = useAccountContext();
+  const showCardView = useResponsiveView();
   const columns = [
     {
       id: 'billNumber',
@@ -24,6 +27,7 @@ export default function CustomerStatementTable() {
       sortable: true,
       wrap: true,
       minWidth: '140px',
+      showInMobileHeader: true,
       cell: (props) => props.docNo
     },
     {
@@ -64,6 +68,7 @@ export default function CustomerStatementTable() {
       maxWidth: '150px',
       sortable: true,
       wrap: true,
+      isAction: true,
       cell: (props) => (
         <Button
           className="back-button-control"
@@ -111,6 +116,8 @@ export default function CustomerStatementTable() {
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         progressPending={isFetching}
+        showCardView={showCardView}
+        // defaultExpandedCardView={true}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}

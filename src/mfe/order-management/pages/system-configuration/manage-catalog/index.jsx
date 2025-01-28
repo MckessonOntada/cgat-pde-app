@@ -35,7 +35,7 @@ function ManageCatalog(props) {
         <Heading as="h2">{t('dashboard.card.manage_catalog')}</Heading>
         <div className="MCP-panel-container">
           <OrgAccountsSelect handleAccountChange={() => {}} />
-          <div class="MCP-panel-container">
+          <div class="MCP-CardContainer">
             <CommonFilters
               onApplyFilters={() => {}}
               onClearFilters={() => {}}

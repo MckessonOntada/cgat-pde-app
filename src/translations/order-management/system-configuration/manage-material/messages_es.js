@@ -1,0 +1,64 @@
+export const SystemConfigurationES = {
+  // Meta
+  'manageMaterial.heading': 'S_Administrar Material',
+  // Breadcrumbs
+  'manageMaterial.breadcrumbs.systemAdministrator': 'S_Administrador del Sistema',
+  'manageMaterial.breadcrumbs.systemConfiguration': 'S_Configuración del Sistema',
+  'manageMaterial.breadcrumbs.manageMaterial': 'S_Administrar Material',
+  // Filters
+  'manageMaterial.filters.searchPlaceholder': 'S_Buscar por Nombre, NDC, Número de Material...',
+  // Table
+  'manageMaterial.table.materialNumber': 'S_Número de Material',
+  'manageMaterial.table.materialDescription': 'S_Descripción del Material',
+  'manageMaterial.table.nationalDrugCode': 'S_Código Nacional de Medicamento',
+  'manageMaterial.table.strength': 'S_Concentración',
+  'manageMaterial.table.dosage': 'S_Dosificación',
+  'manageMaterial.table.pagination.totalRecords': 'S_resultados',
+  'manageMaterial.table.pagination.perPage': 'S_por página',
+  'manageMaterial.table.error': 'S_¡Algo salió mal! Por favor, inténtelo de nuevo',
+  'manageMaterial.table.emptyData': 'S_No se encontraron materiales',
+  'manageMaterial.table.emptyDataDescription': 'S_Inténtelo de nuevo o ajuste los filtros',
+  'manageMaterial.table.header.text': 'S_Elemento(s) Seleccionado(s)',
+  'manageMaterial.table.header.button.configure': 'S_Configurar',
+  //
+  'manageMaterial.data.fetch.error': 'S_Error al obtener el listado de facturas',
+  // Details Drawer
+  'manageMaterial.drawer.heading': 'S_Detalles del Material',
+  // Details Drawer Body
+  "manageMaterial.drawer.details.heading": "S_Detalles",
+  "manageMaterial.drawer.details.body.materialNumber": "S_Número de Material",
+  "manageMaterial.drawer.details.body.materialDescription": "S_Descripción del Material",
+  "manageMaterial.drawer.details.body.ndc": "S_NDC",
+  "manageMaterial.drawer.details.body.strength": "S_Concentración",
+  "manageMaterial.drawer.details.body.dosage": "S_Dosificación",
+  "manageMaterial.drawer.details.body.sellingUnitCode": "S_Código de Unidad de Venta",
+  "manageMaterial.drawer.details.body.vendorName": "S_Nombre del Proveedor",
+  "manageMaterial.drawer.details.body.upcCode": "S_Código UPC",
+  "manageMaterial.drawer.details.body.dropshipIndicator": "S_Indicador de Envío Directo",
+  "manageMaterial.drawer.details.body.baseUnitOfMeasure": "S_Unidad Base de Medida",
+  "manageMaterial.drawer.details.body.cgatIdentifier": "S_Identificador CGAT",
+  "manageMaterial.drawer.details.body.productLevelPricing": "S_Precio a Nivel de Producto",
+  "manageMaterial.drawer.details.body.minimumOrderQuantity": "S_Cantidad Mínima de Pedido",
+  "manageMaterial.drawer.details.configuration.heading.questionnaire": "S_Configuración del Cuestionario",
+  "manageMaterial.drawer.details.configuration.heading.material": "S_Configuración del Material",
+  "manageMaterial.drawer.details.configuration.heading.catalog": "S_Configuración del Catálogo",
+  "manageMaterial.drawer.details.configuration.actions.preview": "S_Vista Previa",
+  "manageMaterial.drawer.details.configuration.actions.delete": "S_Eliminar",
+  "manageMaterial.drawer.details.configuration.body.coiIdRequired": "S_ID de COI Requerido",
+  "manageMaterial.drawer.details.configuration.body.patientInfoRequired": "S_Información del Paciente Requerida",
+  // Configuration Drawer
+  "manageMaterial.drawer.configuration.heading": "S_Configuración de Material",
+  // Configuration Drawer Body
+  "manageMaterial.drawer.configuration.body.patientInfoRequired": "S_¿Se requiere información del paciente?",
+  "manageMaterial.drawer.configuration.body.coiIdRequired": "S_¿Se requiere ID de COI?",
+  "manageMaterial.drawer.configuration.body.patientInfoRequired.yes": "S_Sí",
+  "manageMaterial.drawer.configuration.body.patientInfoRequired.no": "S_No",
+  "manageMaterial.drawer.configuration.body.coiIdRequired.yes": "S_Sí",
+  "manageMaterial.drawer.configuration.body.coiIdRequired.no": "S_No",
+  // Configuration Drawer Controls
+  "manageMaterial.drawer.controls.cancel": "S_Cancelar",
+  "manageMaterial.drawer.controls.apply": "S_Aplicar",
+  // Alerts
+  "manageMaterial.drawer.controls.apply.success": "S_Configuración aplicada correctamente",
+  "manageMaterial.drawer.controls.apply.error": "S_Error al aplicar la configuración"
+};
