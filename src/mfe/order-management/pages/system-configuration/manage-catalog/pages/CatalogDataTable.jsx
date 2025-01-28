@@ -1,36 +1,128 @@
 import { useTranslate } from '@src/translations/useTranslation';
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CustomDataTable } from '@mckesson/mcp-component-library';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import { useCatalogContext } from '../context/CatalogContext';
+import CommonUtils from '@src/util/CommonUtils';
+import { Button } from '@mckesson/mcp-component-library';
+import ConfigureCatalog from './ConfigureCatalog';
+import CatalogDetails from './CatalogDetails';
 
 function CatalogDataTable(props) {
   const { t } = useTranslate();
 
+  const { paginationConfig, catalogList: data, setPageNumber } = useCatalogContext();
+  const [selectedCatalogs, setSelectedCatalogs] = useState([]);
+  const [openConfigurationDraw, setOpenConfigurationDraw] = useState(false);
+  const [openCatalogDetails, setOpenCatalogDetails] = useState(false);
+  const [viewCatalog, setViewCatalog] = useState(null);
+
+  const getindeterminate = () => {
+    const allDataIncluded = data.every((invoice) => selectedCatalogs.some((includedInvoice) => includedInvoice.id === invoice.id));
+    return allDataIncluded;
+  };
+
+  const renderCheckBox = (row, index) => {
+    return (
+      <input
+        data-testid="rowcheckbox"
+        type="checkbox"
+        id={'checkbox' + row?.id}
+        disabled={isCheckboxDisabled(row)}
+        onChange={() => handleRowSelected(row)}
+        checked={isChecked(row)}
+        ref={(el) => {
+          if (el) {
+            el.indeterminate =
+              row.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber && selectedCatalogs.length > 0 && !getindeterminate();
+          }
+        }}
+      />
+    );
+  };
+  const isChecked = (row) => {
+    if (row.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber) {
+      return getindeterminate();
+    }
+    let availableRow = selectedCatalogs.find((item) => item.id === row?.id);
+    return !!availableRow;
+  };
+  const isAllChecked = () => {
+    return selectedCatalogs.length === data.length;
+  };
+  const isCheckboxDisabled = (row) => {
+    let isDisbled = row.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber && !CommonUtils.isNonEmptyArray(data);
+    return isDisbled;
+  };
+  const handleRowSelected = (data) => {
+    if (data.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber) {
+      handleHeaderCheck(data);
+    } else {
+      handleIndividualCheck(data);
+    }
+  };
+  const handleIndividualCheck = (data) => {
+    if (selectedCatalogs.find((item) => item.id === data?.id)) {
+      setSelectedCatalogs(selectedCatalogs.filter((item) => item.id !== data?.id));
+      return;
+    }
+    setSelectedCatalogs([...selectedCatalogs, ...[data]]);
+  };
+  const handleHeaderCheck = () => {
+    if (isAllChecked()) {
+      setSelectedCatalogs([]);
+    } else {
+      if (paginationConfig.pageNumber === 1) {
+        setSelectedCatalogs(data);
+      } else {
+        const allDataIncluded = data.every((invoice) => selectedCatalogs.some((includedInvoice) => includedInvoice.id === invoice.id));
+        if (!allDataIncluded) {
+          setSelectedCatalogs([...selectedCatalogs, ...data]);
+        } else {
+          setSelectedCatalogs(selectedCatalogs.filter((item) => !data.some((invoice) => invoice.id === item.id)));
+        }
+      }
+    }
+  };
+
   const columns = [
     {
+      id: 'checkbox',
+      name: renderCheckBox({ id: 'ALL_PATIENTS_' + paginationConfig.pageNumber }),
+      sortable: false,
+      cell: (row, index) => renderCheckBox(row, index),
+      selector: (row) => row.MRN,
+      width: '50px'
+    },
+    {
       name: 'SAP Material ID',
-      //   id: 'billNumber',
+      id: 'sapMaterial',
       selector: (row) => {},
       wrap: true,
       minWidth: '112px',
       cell: (props) => (
         <div className="cellEllipse">
-          <Link style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}>{`${props?.sapMaterialId || ''}`}</Link>
+          <Link
+            style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
+            onClick={() => {
+              setViewCatalog(props);
+              setOpenCatalogDetails(true);
+            }}>{`${props?.sapMaterial || ''}`}</Link>
         </div>
       )
     },
     {
-      id: '',
+      id: 'materialDescriptionInLanguageEn',
       name: 'Material Description',
       selector: (row) => {},
       minWidth: '100px',
       wrap: true,
-      cell: (props) => <div className="cellEllipse">{props?.description || '-'}</div>
+      cell: (props) => <div className="cellEllipse">{props?.materialDescriptionInLanguageEn || '-'}</div>
     },
     {
-      id: '',
+      id: 'ndc',
       name: 'NDC',
       selector: (row) => {},
       minWidth: '120px',
@@ -38,7 +130,7 @@ function CatalogDataTable(props) {
       cell: (props) => <div>{props?.ndc || '-'}</div>
     },
     {
-      id: '',
+      id: 'distChannel',
       name: 'Dist Channel',
       selector: (row) => {},
       minWidth: '120px',
@@ -46,7 +138,7 @@ function CatalogDataTable(props) {
       cell: (props) => <div>{props?.distChannel || '-'}</div>
     },
     {
-      id: '',
+      id: 'variant',
       name: 'Variant',
       selector: (row) => {},
       minWidth: '120px',
@@ -54,12 +146,12 @@ function CatalogDataTable(props) {
       cell: (props) => <div>{props?.variant || '-'}</div>
     },
     {
-      id: '',
+      id: 'soldToCustomer',
       name: 'Sold to',
       selector: (row) => {},
       minWidth: '120px',
       wrap: true,
-      cell: (props) => <div>{props?.soldToAccount || '-'}</div>
+      cell: (props) => <div>{props?.soldToCustomer || '-'}</div>
     },
     {
       id: '',
@@ -67,29 +159,56 @@ function CatalogDataTable(props) {
       selector: (row) => {},
       minWidth: '120px',
       wrap: true,
-      cell: (props) => <div>{props?.shipToAccount || '-'}</div>
+      cell: (props) => <div>{props?.shipToCustomer || '-'}</div>
     }
   ];
+
+  const handleChangePage = (e, newPage) => {
+    setPageNumber(newPage);
+  };
   return (
     <div>
+      {selectedCatalogs?.length > 0 && (
+        <div className="selected-item-alert">
+          <p className="selected-item-text">
+            {selectedCatalogs?.length} {t('orgManagement.selected_items')}
+          </p>
+          <Button variant="secondary" onClick={() => setOpenConfigurationDraw(true)}>
+            CONFIGURATION
+          </Button>
+        </div>
+      )}
+
       <CustomDataTable
         id="my-data-table"
         type="normal"
         columns={columns}
-        data={[
-          {
-            sapMaterialId: '324352',
-            description: 'MPB HC UDRSFC GTCSTS',
-            ndc: 'N5012638701',
-            distChannel: 'MPB',
-            variant: 'Type A',
-            soldToAccount: '116322',
-            shipToAccount: '936236'
-          }
-        ]}
+        data={data}
+        currentPage={paginationConfig.pageNumber}
+        totalPageCount={paginationConfig.totalPages}
+        pagination={true}
+        handleChangePage={handleChangePage}
+        totalRocords={paginationConfig.totalElements} // Corrected typo here
+        recordsPerPage={paginationConfig.pageSize}
+        paginationTotalRecorsMessage={t('orgManagement.results')}
+        paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         noDataComponent={
           <EmptyDataTable image={EmptyDataImage} heading={'No Catalogs Found'} description={'Please try changing organization '} />
         }
+      />
+
+      <ConfigureCatalog
+        openConfigurationDraw={openConfigurationDraw}
+        setOpenConfigurationDraw={setOpenConfigurationDraw}
+        selectedCatalogs={selectedCatalogs}
+        setSelectedCatalogs={setSelectedCatalogs}
+      />
+
+      <CatalogDetails
+        openCatalogDetails={openCatalogDetails}
+        setOpenCatalogDetails={setOpenCatalogDetails}
+        viewCatalog={viewCatalog}
+        setViewCatalog={setViewCatalog}
       />
     </div>
   );

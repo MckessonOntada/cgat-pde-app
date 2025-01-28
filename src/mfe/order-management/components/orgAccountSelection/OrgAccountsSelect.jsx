@@ -16,13 +16,18 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
   } = useOrgAccountSelectionContext();
 
   const orgOptions = useMemo(() => {
-    return (
+    let _options = [];
+    _options =
       organizationOptions.map((item, index) => ({
         index,
         label: item.name,
         value: item.id
-      })) || []
-    );
+      })) || [];
+    if (selectedOrganization) {
+      let findOrg = _options.find((item) => item.value == selectedOrganization.id);
+      !findOrg && _options.push({ label: selectedOrganization.name, value: selectedOrganization.id });
+    }
+    return _options;
   }, [organizationOptions]);
 
   const getSelectedOrg = (selectedValue) => {
@@ -55,7 +60,7 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
     <div className="actions-container">
       <div className="org-select">
         <MultiSelectDropdown
-          id={'pay-to-accounts-search'}
+          id={'select-org-search'}
           label={'Select organization'}
           isMultiSelect={false}
           // placeholder={selectedOrganization?.name || 'Select Organization'}
@@ -72,7 +77,7 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
       {showAccountsSelect && (
         <div className="account-select">
           <MultiSelectDropdown
-            id={'pay-to-accounts-search'}
+            id={'select-account-search'}
             label={'Select Account'}
             isMultiSelect={false}
             // placeholder={selectedOrganization?.label || 'Select Organization'}

@@ -17,6 +17,8 @@ import ProtectedRoute from '@src/routes/ProtectedRoute';
 import { CONFIG_MODULE_ROUTES } from '../pages/system-configuration/constants';
 import ManageCatalog from '../pages/system-configuration/manage-catalog';
 import { OrgAccountSelectionProvider } from '../components/orgAccountSelection/context/OrgAccountSelectionContext';
+import { CatalogProvider } from '../pages/system-configuration/manage-catalog/context/CatalogContext';
+import ManageCatalogRoute from '../pages/system-configuration/manage-catalog/routes/Routes';
 
 function OrderManagementRoutes() {
   const addEditPermission = [PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS];
@@ -95,10 +97,10 @@ function OrderManagementRoutes() {
 
       <Route path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_MATERIAL}`} element={<div>Manage Material</div>} />
       <Route
-        path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_CATALOG}`}
+        path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_CATALOG}/*`}
         element={
           <OrgAccountSelectionProvider showAccountsSelect={true}>
-            <ManageCatalog />
+            <ManageCatalogRoute />
           </OrgAccountSelectionProvider>
         }
       />
