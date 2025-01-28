@@ -1,24 +1,38 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styles from './assets/styles/ConfigureMaterials.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Loader, Heading, Button, RadioGroup, Label, Required } from '@mckesson/mcp-component-library';
+import { Heading, Button, RadioGroup, Label, Required } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
-import useSnackbar from '@src/hooks/useSnackbar';
 import { useManageMaterial } from '@src/mfe/order-management/context/ManageMaterialContext';
-import CommonUtils from '@src/util/CommonUtils';
-import MaterialService from '@src/api/commonService/MaterialService';
-import { useQuery } from 'react-query';
+import { useMutation } from 'react-query';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import ApiRoutes from '@src/api/ApiRoutes';
 
-function ConfigureMaterials({ onClose }) {
+function ConfigureMaterials({ onClose, onSuccess, onError }) {
   const { t } = useTranslate();
-  const { showSnackbar } = useSnackbar();
   const [formValues, setFormValues] = useState({
     patientInfoRequired: '',
     coiIdRequired: ''
   });
 
-  const { selectedMaterials, applyConfiguration, configureSuccess } = useManageMaterial();
-  console.log('selectedMaterials', selectedMaterials);
+  const { selectedMaterials, refetch } = useManageMaterial();
+
+  const { mutate: applyConfiguration } = useMutation(
+    async (configValues) => {
+      return await HttpResourceService.callRest(ApiRoutes.CONFIGURE_MATERIALS(), httpVerb.POST, configValues);
+    },
+    {
+      onSuccess: () => {
+        onSuccess();
+        onClose();
+        refetch();
+      },
+      onError: () => {
+        onError();
+        onClose();
+      }
+    }
+  );
 
   const formFields = [
     {
@@ -30,7 +44,7 @@ function ConfigureMaterials({ onClose }) {
       ],
       value: formValues.patientInfoRequired,
       required: true,
-      onChangeValue: (value) => setFormValues(prev => ({ ...prev, patientInfoRequired: value }))
+      onChangeValue: (value) => setFormValues((prev) => ({ ...prev, patientInfoRequired: value }))
     },
     {
       caption: t('manageMaterial.drawer.configuration.body.coiIdRequired'),
@@ -41,25 +55,20 @@ function ConfigureMaterials({ onClose }) {
       ],
       value: formValues.coiIdRequired,
       required: true,
-      onChangeValue: (value) => setFormValues(prev => ({ ...prev, coiIdRequired: value }))
+      onChangeValue: (value) => setFormValues((prev) => ({ ...prev, coiIdRequired: value }))
     }
   ];
 
   const handleApplyConfiguration = () => {
     const configValues = {
-      materialNumbers: selectedMaterials.map(material => material.materialNumber),
+      materialNumbers: selectedMaterials.map((material) => material.materialNumber),
       isPatientInformationRequired: formValues.patientInfoRequired === 'yes',
       isCoiIdRequired: formValues.coiIdRequired === 'yes'
     };
     applyConfiguration(configValues);
-    console.log('configValues', configValues);
   };
 
-  useEffect(() => {
-    if (configureSuccess) {
-      onClose();
-    }
-  }, [configureSuccess]);
+  const isApplyDisabled = !formValues.patientInfoRequired && !formValues.coiIdRequired;
 
   return (
     <div className={styles.wrapper}>
@@ -103,10 +112,10 @@ function ConfigureMaterials({ onClose }) {
             variant="primary"
             size="md"
             aria-label={t('manageMaterial.drawer.controls.apply')}
+            disabled={isApplyDisabled}
           />
         </div>
       </div>
-      {/* )} */}
     </div>
   );
 }

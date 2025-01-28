@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { manageMaterialData } from '../pages/system-configuration/manageMaterial/assets/__mock__/manageMaterialData';
-import { useQuery, useMutation } from 'react-query';
+import { useQuery } from 'react-query';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
@@ -93,29 +92,6 @@ export const ManageMaterialProvider = ({ children }) => {
     }
   );
 
-  const [configureSuccess, setConfigureSuccess] = useState(false);
-
-  const { mutate: configureMaterials } = useMutation(
-    async (configValues) => {
-      return await HttpResourceService.callRest(
-        ApiRoutes.CONFIGURE_MATERIALS(),
-        httpVerb.POST,
-        configValues
-      );
-    },
-    {
-      onSuccess: () => {
-        setConfigureSuccess(true);
-        showSnackbar({ description: t('manageMaterial.drawer.controls.apply.success'), type: 'success' });
-        refetch();
-      },
-      onError: (error) => {
-        setConfigureSuccess(false);
-        showSnackbar({ description: t('manageMaterial.drawer.controls.apply.error'), type: 'error' });
-      }
-    }
-  );
-
   const setPageNumber = (pageNumber) => {
     setPaginationConfig((prevConfig) => ({
       ...prevConfig,
@@ -187,10 +163,6 @@ export const ManageMaterialProvider = ({ children }) => {
     setFilterConfig(INITIAL_FILTER_STATE);
   };
 
-  const applyConfiguration = (configValues) => {
-    configureMaterials(configValues);
-  };
-
   useEffect(() => {
     if (CommonUtils.isNonEmptyArray(data) && CommonUtils.isNonEmptyArray(unSlicedData)) {
       filterData(filterConfig);
@@ -208,6 +180,7 @@ export const ManageMaterialProvider = ({ children }) => {
         paginationConfig,
         sortConfig,
         filterConfig,
+        refetch,
         isFetching,
         isError,
         setPageNumber,
@@ -216,8 +189,6 @@ export const ManageMaterialProvider = ({ children }) => {
         clearFilters,
         selectedMaterials,
         setSelectedMaterials,
-        applyConfiguration,
-        configureSuccess
       }}>
       {children}
     </ManageMaterialContext.Provider>
