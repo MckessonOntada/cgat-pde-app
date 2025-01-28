@@ -35,10 +35,10 @@ export const useManagerQuestionnaire = () => {
 
 export const ManageQuestionnaireProvider = ({ children }) => {
   const { selectedOrganization, selectedAccount,setSelectedOrganization,setSelectedAccount } = useOrgAccountSelectionContext(); 
-  const [filterConfig, setFilterConfig] = React.useState(INITIAL_FILTER_STATE);
-  const [paginationConfig, setPaginationConfig] = React.useState(INITIAL_PAGINATION_STATE);
-  const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);
-  const [entityType, setEntityType] = React.useState(null); 
+  const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
+  const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
+  const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
+  const [entityType, setEntityType] = useState(null); 
   
   const requestParams = React.useMemo(() => {
     const baseParams = {
