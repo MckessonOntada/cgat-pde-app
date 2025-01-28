@@ -4,7 +4,6 @@ import { useTranslate } from '@src/translations/useTranslation';
 
 function ViewConfiguration({ steps = [] }) {
   const { t } = useTranslate();
-  console.log('steps...', steps);
   return (
     <div className="MCP-panel-container">
       <div className={`${styles.orderFlow}`}>

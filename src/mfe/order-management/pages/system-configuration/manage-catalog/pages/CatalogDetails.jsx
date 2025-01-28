@@ -11,9 +11,11 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { CatalogDetailsConstants } from '../constants/constants';
 import { useNavigate } from 'react-router-dom';
 import useSnackbar from '@src/hooks/useSnackbar';
+import { useTranslate } from '@src/translations/useTranslation';
 
 function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog, setViewCatalog, showAlert }) {
   const navigate = useNavigate();
+  const { t } = useTranslate();
   const { showSnackbar } = useSnackbar();
   const handleCloseDrawer = () => {
     setOpenCatalogDetails((state) => !state);
@@ -41,9 +43,7 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
       return res.data;
     },
     {
-      onSuccess: (response) => {
-        console.log('Success :', response);
-      },
+      onSuccess: (response) => {},
       onError: (error) => {
         showSnackbar({ description: 'Error while fetching Catalog Details', type: 'error' });
         setOpenCatalogDetails(false);
@@ -60,11 +60,11 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
     {
       onSuccess: (response) => {
         setOpenCatalogDetails(false);
-        showAlert('success', 'Catalog configuration deleted successfully');
+        showAlert('success', t('ManageCatalog.configure.success'));
       },
       onError: (error) => {
         setOpenCatalogDetails(false);
-        showSnackbar({ description: 'Error while deleting catalog configuration', type: 'error' });
+        showSnackbar({ description: t('ManageCatalog.configure.error'), type: 'error' });
       }
     }
   );
@@ -75,7 +75,7 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
         <FloatingDrawer open={openCatalogDetails} anchor="right" onClose={handleCloseDrawer}>
           <div className="details-main-wrapper">
             <div className="header">
-              <Heading as="h2">{'Catalog details'}</Heading>
+              <Heading as="h2">{t('ManageCatalog.Catalogdetails')}</Heading>
               <button onClick={handleCloseDrawer}>
                 <IconClose />
               </button>
@@ -96,7 +96,7 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
               ))}
               {data?.catalogConfiguration && (
                 <div className="configure-li">
-                  <div className="details-key">Configurations</div>
+                  <div className="details-key">{t('ManageCatalog.Configurations')}</div>
                   <div className="details-value">
                     <div onClick={() => navigate('view-catalog', { state: { configSteps: data?.catalogConfiguration } })}>PREVIEW </div>
                     <div onClick={() => deleteConfiguration()}>

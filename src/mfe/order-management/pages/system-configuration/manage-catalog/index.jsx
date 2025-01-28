@@ -41,7 +41,7 @@ function ManageCatalog(props) {
             onApplyFilters={applyFilters}
             onClearFilters={clearFilters}
             additionalFilters={[]}
-            searchPlaceholder={'Search by Material Id'}
+            searchPlaceholder={t('ManageCatalog.SearchByMaterialId')}
             actualData={{}}
           />
         </div>

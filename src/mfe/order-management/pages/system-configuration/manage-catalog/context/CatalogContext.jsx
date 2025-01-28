@@ -71,18 +71,15 @@ export const CatalogProvider = ({ children }) => {
           }
         })
         .filter((ele) => !!ele);
-      console.log('_accNumber....', _accNumber);
       return {
         pageNo: paginationConfig.pageNumber - 1,
         pageSize: paginationConfig.pageSize,
         accountNumbers: _accNumber,
-        // accountNumbers: ['sc53'],
         ...(filterConfig.searchQuery && { query: filterConfig.searchQuery })
       };
     }
   };
 
-  console.log('url....', selectedAccount);
   // API call for fetching all catalogs
   const {
     isLoading,

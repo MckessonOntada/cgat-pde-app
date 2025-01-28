@@ -2,8 +2,10 @@ import React, { useEffect, useMemo, useState } from 'react';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import { useOrgAccountSelectionContext } from './context/OrgAccountSelectionContext';
 import './styles.scss';
+import { useTranslate } from '@src/translations/useTranslation';
 
 function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsSelect = true }) {
+  const { t } = useTranslate();
   const {
     organizationOptions,
     searchOrgList,
@@ -43,10 +45,10 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
       <div className="org-select">
         <MultiSelectDropdown
           id={'select-org-search'}
-          label={'Select organization'}
+          label={t('ManageCatalog.SelectOrganization')}
           isMultiSelect={false}
           // placeholder={selectedOrganization?.name || 'Select Organization'}
-          placeholder={'Select Organization'}
+          placeholder={t('ManageCatalog.SelectOrganization')}
           onChange={getSelectedOrg}
           options={options}
           variant={'async'}
@@ -65,9 +67,9 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
         <div className="account-select">
           <MultiSelectDropdown
             id={'select-account-search'}
-            label={'Select Account'}
+            label={t('ManageCatalog.SelectAccount')}
             isMultiSelect={true}
-            placeholder={'Select Account'}
+            placeholder={t('ManageCatalog.SelectAccount')}
             onChange={getSelectedAccount}
             options={accountOptions || []}
             variant={'async'}

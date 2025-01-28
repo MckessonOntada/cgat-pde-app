@@ -98,7 +98,7 @@ function CatalogDataTable(props) {
       width: '50px'
     },
     {
-      name: 'SAP Material ID',
+      name: t('ManageCatalog.Table.SAPMaterialID'),
       id: 'sapMaterial',
       selector: (row) => {},
       wrap: true,
@@ -116,7 +116,7 @@ function CatalogDataTable(props) {
     },
     {
       id: 'materialDescriptionInLanguageEn',
-      name: 'Material Description',
+      name: t('ManageCatalog.Table.MaterialDescription'),
       selector: (row) => {},
       minWidth: '100px',
       wrap: true,
@@ -124,7 +124,7 @@ function CatalogDataTable(props) {
     },
     {
       id: 'ndc',
-      name: 'NDC',
+      name: t('ManageCatalog.Table.NDC'),
       selector: (row) => {},
       minWidth: '120px',
       wrap: true,
@@ -132,7 +132,7 @@ function CatalogDataTable(props) {
     },
     {
       id: 'distChannel',
-      name: 'Dist Channel',
+      name: t('ManageCatalog.Table.DistChannel'),
       selector: (row) => {},
       minWidth: '120px',
       wrap: true,
@@ -140,7 +140,7 @@ function CatalogDataTable(props) {
     },
     {
       id: 'variant',
-      name: 'Variant',
+      name: t('ManageCatalog.Table.Variant'),
       selector: (row) => {},
       minWidth: '120px',
       wrap: true,
@@ -148,7 +148,7 @@ function CatalogDataTable(props) {
     },
     {
       id: 'soldToCustomer',
-      name: 'Sold to',
+      name: t('ManageCatalog.Table.Soldto'),
       selector: (row) => {},
       minWidth: '120px',
       wrap: true,
@@ -156,7 +156,7 @@ function CatalogDataTable(props) {
     },
     {
       id: '',
-      name: 'Ship to',
+      name: t('ManageCatalog.Table.Shipto'),
       selector: (row) => {},
       minWidth: '120px',
       wrap: true,
@@ -196,7 +196,7 @@ function CatalogDataTable(props) {
             {selectedCatalogs?.length} {t('orgManagement.selected_items')}
           </p>
           <Button variant="secondary" onClick={() => setOpenConfigurationDraw(true)}>
-            CONFIGURATION
+            {t('ManageCatalog.Button.Configure')}
           </Button>
         </div>
       )}
@@ -219,7 +219,11 @@ function CatalogDataTable(props) {
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         noDataComponent={
-          <EmptyDataTable image={EmptyDataImage} heading={'No Catalogs Found'} description={'Please try changing organization '} />
+          <EmptyDataTable
+            image={EmptyDataImage}
+            heading={t('ManageCatalog.Table.nodata')}
+            description={t('ManageCatalog.Table.nodataMsg')}
+          />
         }
       />
 

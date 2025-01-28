@@ -12,6 +12,7 @@ import { serializeParams } from '@src/util/ApiUtils';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import * as Yup from 'yup';
 import useSnackbar from '@src/hooks/useSnackbar';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const validationSchema = Yup.object().shape({
   steps: Yup.array().of(
@@ -32,6 +33,7 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
     ]
   });
   const { showSnackbar } = useSnackbar();
+  const { t } = useTranslate();
 
   const { mutate, isLoading, isError, data } = useMutation(
     async (payload) => {
@@ -99,7 +101,7 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
                   <FieldArray name="steps">
                     {({ insert, remove, push }) => (
                       <div className="step-main-container">
-                        <Heading as="h4">What to expect next ?</Heading>
+                        <Heading as="h4">{t('ManageCatalog.WhatToExpectNext')}</Heading>
                         {values.steps.length > 0 &&
                           values.steps.map((step, index) => (
                             <div className="step-container" key={index}>
@@ -133,7 +135,7 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
                           ))}
                         <div>
                           <Button label="Tertiary" onClick={() => push({ stepName: '', description: '' })} variant="tertiary">
-                            + ADD STEP
+                            {t('ManageCatalog.ADDSTEP')}
                           </Button>
                         </div>
                       </div>
@@ -141,10 +143,10 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
                   </FieldArray>
                   <div className="configure-footer">
                     <Button label="secondary" variant="secondary" onClick={handleCloseDrawer}>
-                      CANCEL
+                      {t('ManageCatalog.Button.Cancel')}
                     </Button>
                     <Button label="Primary" type="submit">
-                      SAVE CHANGES
+                      {t('ManageCatalog.Button.save')}
                     </Button>
                   </div>
                 </Form>
