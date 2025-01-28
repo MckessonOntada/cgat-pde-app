@@ -1,4 +1,12 @@
+import ApiRoutes from '../ApiRoutes';
+import HttpResourceService, { httpVerb } from '../HttpResourceService';
+
 async function getQuestionnaires() {
+  const url = `${ApiRoutes.ORDERS()}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, null);
+  if (res.data) {
+    return res.data;
+  }
   return {};
 }
 

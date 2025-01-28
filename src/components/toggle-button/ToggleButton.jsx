@@ -4,6 +4,10 @@ import styles from './ToggleButton.module.scss';
 const ToggleButton = ({ options = [], value, size = 'medium', onChange }) => {
   const [activeOption, setActiveOption] = useState(value || options[0]);
 
+  React.useEffect(() => {
+    if (activeOption !== value) setActiveOption(value);
+  }, [value]);
+
   const handleOptionClick = (option) => {
     setActiveOption(option);
     if (onChange) {

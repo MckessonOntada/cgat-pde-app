@@ -15,7 +15,6 @@ function TemplateList() {
   const handleOnPageChange = () => {};
   const handleOnSort = () => {};
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const [selectedRows, setSelectedRows] = React.useState([1, 2, 3, 4]);
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
@@ -115,37 +114,6 @@ function TemplateList() {
     navigate('map-questionnaire', { state: { value: entity } });
   };
 
-  const deactivateQuestionnaire = () => {};
-
-  const handleOnDeactivateQuestionnaire = () => {
-    if (selectedRows || selectedRows.length <= 0) {
-      const state = {};
-      state.title = 'Deactivate?';
-      state.body = (
-        <div className="MCP-modal-body">
-          <p>Do you want to deactivate selected questionnaire templates?</p>
-        </div>
-      );
-      state.footer = (
-        <div className="controls">
-          <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
-            Cancel
-          </Button>
-          <Button
-            size="md"
-            variant="primary"
-            onClick={() => {
-              deactivateQuestionnaire();
-              dispatch(closeModal());
-            }}>
-            Yes
-          </Button>
-        </div>
-      );
-      dispatch(openModal(state));
-    }
-  };
-
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-CardContainer">
@@ -169,9 +137,6 @@ function TemplateList() {
               <div className="controls">
                 <Button onClick={() => setIsDrawerOpen(true)} size="sm" variant="secondary">
                   Configure
-                </Button>
-                <Button onClick={handleOnDeactivateQuestionnaire} size="sm" variant="secondary">
-                  Deactivate
                 </Button>
               </div>
             </div>
