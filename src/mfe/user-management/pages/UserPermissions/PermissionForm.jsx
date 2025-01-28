@@ -38,7 +38,6 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
 
 const userType = isSystemAdminView ? 'ADMIN' : 'GENERAL';
 
-
 const { data: permissionsData } = useQuery({
   queryKey: ['users/permissions'],
   queryFn: async () => {
@@ -162,12 +161,6 @@ const { data: permissionsData } = useQuery({
 
     // Get permissions for the selected role
     let permissions = roleId?.permissions ?? [];
-
-    // Exclude ORGANIZATION_MANAGEMENT permissions if not system admin
-    if (!isSystemAdminView && permissionsData.ORGANIZATION_MANAGEMENT) {
-      const excludedPermissions = Object.values(permissionsData.ORGANIZATION_MANAGEMENT);
-      permissions = permissions.filter((permission) => !excludedPermissions.includes(permission));
-    }
 
     if (selected) {
       setSelectedRole(selected);
