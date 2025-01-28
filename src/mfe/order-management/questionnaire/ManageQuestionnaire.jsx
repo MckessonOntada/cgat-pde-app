@@ -4,7 +4,8 @@ import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as AddCircleIcon } from '@src/assets/svg/add-circle.svg';
 import TemplateList from './TemplateList';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom'; 
+import { getEntityTypeFlags } from './util';
 
 function ManageQuestionnaire() {
   const { t } = useTranslate();
@@ -23,15 +24,16 @@ function ManageQuestionnaire() {
       label: 'Questionnaire Builder'
     }
   ];
-  const { isMaterial = false, isCatalog = false, isAccount = false } = location.state || {};
-
-  const checkSuccessFlag = isMaterial || isCatalog || isAccount;
+  const selectedEntityType = location.state?.value || false;
+  const isSucess = location.state?.isSucess || false;
+  const { isMaterial, isCatalog, isAccount } = getEntityTypeFlags(selectedEntityType); 
   const getSuccessMessage = () => {
     if (isMaterial) return t('messages.confirmation.success_config_material');
     if (isCatalog) return t('messages.confirmation.success_config_catalog');
     if (isAccount) return t('messages.confirmation.success_config_account');
     return '';
   };
+
 
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alertDescription, setAlertDescription] = useState('');
@@ -42,7 +44,7 @@ function ManageQuestionnaire() {
   };
 
   React.useEffect(() => {
-    if (checkSuccessFlag) {
+    if (isSucess) {
       setIsAlertVisible(true);
       setAlertDescription(getSuccessMessage);
       setAlert({ type: 'success' });
@@ -51,7 +53,7 @@ function ManageQuestionnaire() {
 
   const handleAlertClose = () => {
     setIsAlertVisible(false);
-    navigate(location.pathname, { replace: true, state: { ...location.state, isMaterial: false, isCatalog: false, isAccount: false } });
+    navigate(location.pathname, { replace: true, state: { ...location.state.value } });
   };
 
   return (

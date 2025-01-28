@@ -1,107 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAddress, MasterEntityType } from '../util';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
-import { useManagerQuestionnaire } from '../../context/ManageQuestionnaireContext';
-import CommonUtils from '@src/util/CommonUtils';
+import { useManagerQuestionnaire } from '../../context/ManageQuestionnaireContext'; 
+import { useMultiCheckBox } from '../MultiSelectDatatable';
 
-export const getColumnsByEntityType = (t, navigate, masterEntityType,entityData,setSelectedRows) => { 
-  const [data, setData] = useState([]);
-  const {  paginationConfig, } = useManagerQuestionnaire(); 
-
-  const getindeterminate = () => {
-    const allDataIncluded = entityData?.every((item) =>
-      data.some((includedItem) => includedItem.id === item.id)
-    );
-    return allDataIncluded;
-  };
-  const renderCheckBox = (row, index) => {
-    return (
-      <input
-        data-testid="rowcheckbox"
-        type="checkbox"
-        id={'checkbox' + row?.id}
-        disabled={isCheckboxDisabled(row)}
-        onChange={() => handleRowSelected(row)}
-        checked={isChecked(row)}
-        ref={(el) => {
-          if (el) {
-            el.indeterminate =
-              row.id === 'ALL_ROWS' + paginationConfig.pageNumber && data.length > 0 && !getindeterminate();
-          }
-        }}
-      />
-    );
-  };
-
-  const isChecked = (row) => {
-    if (row.id === 'ALL_ROWS' + paginationConfig.pageNumber) {
-      return getindeterminate();
-    }
-    let availableRow = data.find((item) => item.id === row?.id);
-    return !!availableRow;
-  };
-
-  const isAllChecked = () => {
-    return data.length === entityData.length;
-  };
-
-  const isCheckboxDisabled = (row) => {
-    let isDisbled = row.id === 'ALL_ROWS' + paginationConfig.pageNumber && !CommonUtils.isNonEmptyArray(entityData);
-    return isDisbled;
-  };
-
-  const handleRowSelected = (entityData) => {
-    if (entityData.id === 'ALL_ROWS' + paginationConfig.pageNumber) {
-      handleHeaderCheck(entityData);
-    } else {
-      handleIndividualCheck(entityData);
-    }
-  };
-
-  const handleIndividualCheck = (entityData) => {
-    if (data.find((item) => item.id === entityData?.id)) {
-      const updatedRows=data.filter((item) => item.id !== entityData?.id);
-      setData(updatedRows);
-      setSelectedRows(updatedRows);
-      return;
-    }
-    setData([...data, ...[entityData]]);
-    setSelectedRows([...data, ...[entityData]]);
-
-  };
-  
-  const handleHeaderCheck = () => {
-    if (isAllChecked()) {
-      setData([]);
-      setSelectedRows([]);
-    } else {
-      if (paginationConfig.pageNumber === 1) {
-        setData(entityData);
-        setSelectedRows(entityData);
-      } else {
-        const allDataIncluded = entityData.every((item) =>
-          data.some((includedItem) => includedItem.id === item.id)
-        );
-        if (!allDataIncluded) {
-          setData([...data, ...entityData]);
-          setSelectedRows([...data, ...[entityData]]);
-        } else {
-          setData(data.filter((item) => !entityData.some((item) => item.id === item.id)));
-          setSelectedRows(data.filter((item) => !entityData.some((item) => item.id === item.id)));
-        }
-      }
-    }
-  };
+export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData, setSelectedRows) => {
+  const { paginationConfig } = useManagerQuestionnaire();
+  const { renderCheckBox, selectedData } = useMultiCheckBox(entityData, paginationConfig);
+  useEffect(() => {
+    setSelectedRows(selectedData);
+  }, [selectedData]);
 
   switch (masterEntityType) {
     case MasterEntityType.Material:
       return [
         {
           id: 'checkbox',
-          name: entityData?.length > 0 
-          ? renderCheckBox({ id: 'ALL_ROWS' + paginationConfig.pageNumber }) 
-          : null, 
+          name: entityData?.length > 0 ? renderCheckBox({ id: 'ALL_ROWS' + paginationConfig.pageNumber }) : null,
           sortable: false,
           cell: (row, index) => renderCheckBox(row, index),
           selector: (row) => row.MRN,
@@ -163,9 +79,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType,entityData,
       return [
         {
           id: 'checkbox',
-          name: entityData?.length > 0 
-          ? renderCheckBox({ id: 'ALL_ROWS' + paginationConfig.pageNumber }) 
-          : null, 
+          name: entityData?.length > 0 ? renderCheckBox({ id: 'ALL_ROWS' + paginationConfig.pageNumber }) : null,
           sortable: false,
           cell: (row, index) => renderCheckBox(row, index),
           selector: (row) => row.MRN,
@@ -227,24 +141,22 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType,entityData,
       return [
         {
           id: 'checkbox',
-            name: entityData?.length > 0 
-          ? renderCheckBox({ id: 'ALL_ROWS' + paginationConfig.pageNumber }) 
-          : null, 
+          name: entityData?.length > 0 ? renderCheckBox({ id: 'ALL_ROWS' + paginationConfig.pageNumber }) : null,
           sortable: false,
           cell: (row, index) => renderCheckBox(row, index),
           selector: (row) => row.MRN,
           width: '50px'
         },
         {
-          id: 'materialNumber',
+          id: 'sapMaterial',
           name: t('labels.SapmaterialID'),
           selector: () => {},
           maxWidth: '350px',
           sortable: true,
-          sortKey: 'materialNumber',
+          sortKey: 'sapMaterial',
           cell: (props) => (
             <Link className="MCP-table-link" aria-label={t('labels.SapmaterialID')}>
-              <EclipsesTextcss str={props.materialNumber} maxWidth={240} />
+              <EclipsesTextcss str={props.sapMaterial} maxWidth={240} />
             </Link>
           )
         },
@@ -254,50 +166,58 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType,entityData,
           selector: () => {},
           maxWidth: '350px',
           sortable: true,
-          sortKey: 'materialDescription',
-          cell: (props) => <span aria-label={t('labels.therapy.Description')}>{props.materialDescription}</span>
+          sortKey: 'materialDescriptionInLanguageEn',
+          cell: (props) => <span aria-label={t('labels.therapy.Description')}>{props.materialDescriptionInLanguageEn}</span>
         },
         {
           id: 'ndc',
-          name: t( 'labels.therapy.ndc'),
+          name: t('labels.therapy.ndc'),
           selector: () => {},
           maxWidth: '290px',
           sortable: true,
           sortKey: 'ndcNumber',
           cell: (props) => (
             <span aria-label={t('labels.therapy.ndc')}>
-              <EclipsesTextcss str={props.ndcNumber} maxWidth={180} />
+              <EclipsesTextcss str={props.ndc} maxWidth={180} />
             </span>
           )
         },
         {
-          id: 'ndc',
+          id: 'distChannel',
           name: t('labels.distChannel'),
           selector: () => {},
           maxWidth: '290px',
           sortable: true,
-          sortKey: 'ndcNumber',
+          sortKey: 'distChannel',
           cell: (props) => (
             <span aria-label={t('labels.distChannel')}>
-              <EclipsesTextcss str={props.ndcNumber} maxWidth={180} />
+              <EclipsesTextcss str={props.distChannel} maxWidth={180} />
             </span>
           )
         },
         {
-          id: 'strength',
+          id: 'variant',
           name: t('labels.variant'),
           selector: () => {},
           maxWidth: '150px',
           sortable: false,
-          cell: (props) => <span aria-label={t('labels.variant')}>{props.strength}</span>
+          cell: (props) => <span aria-label={t('labels.variant')}>{props.variant}</span>
         },
         {
-          id: 'dosage',
-          name: t('labels.netPrice'),
+          id: 'soldToCustomer',
+          name: t('labels.soldTo'),
           selector: () => {},
           maxWidth: '150px',
           sortable: false,
-          cell: (props) => <span aria-label={t('labels.netPrice')}>{props.dosage}</span>
+          cell: (props) => <span aria-label={t('labels.soldTo')}>{props.soldToCustomer}</span>
+        },
+        {
+          id: 'shipToCustomer',
+          name: t('labels.shipTo'),
+          selector: () => {},
+          maxWidth: '150px',
+          sortable: false,
+          cell: (props) => <span aria-label={t('labels.shipTo')}>{props.shipToCustomer}</span>
         }
       ];
     default:
