@@ -41,7 +41,7 @@ export default function PaymentHistory(params) {
 
   return (
     <React.Fragment>
-      <div className="MCP-panel-container">
+      <div className="MCP-CardContainer">
         <CommonFilters
           onApplyFilters={applyFilters}
           onClearFilters={clearFilters}

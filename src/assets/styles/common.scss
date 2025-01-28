@@ -36,10 +36,10 @@
 }
 
 .custom-date-range-picker {
-  >div {
-    >div {
-      >div {
-        >div {
+  > div {
+    > div {
+      > div {
+        > div {
           width: unset;
           min-width: 160px;
           flex-grow: 1;
@@ -337,10 +337,17 @@ div.disable-all {
   width: 100%;
   height: auto;
   gap: var(--spacing-04);
-  padding: var(--spacing-04);
-  border: 1px solid var(--brand-color-patient-primary-3);
-  border-radius: var(--brand-border-radius--8);
-  background-color: var(--brand-color-background-white);
+  // padding: var(--spacing-04);
+  // border: 1px solid var(--brand-color-patient-primary-3);
+  // border-radius: var(--brand-border-radius--8);
+  // background-color: var(--brand-color-background-white);
+
+  @include mixins.respond(sm) {
+    padding: var(--spacing-04);
+    border: 1px solid var(--brand-color-patient-primary-3);
+    border-radius: var(--brand-border-radius--8);
+    background-color: var(--brand-color-background-white);
+  }
 }
 
 .MCP-sect {
@@ -574,9 +581,11 @@ div.disable-all {
   }
 }
 
-@media only screen and (min-width: 576px) {}
+@media only screen and (min-width: 576px) {
+}
 
-@media only screen and (min-width: 992px) {}
+@media only screen and (min-width: 992px) {
+}
 
 @media only screen and (min-width: 1200px) {
   .max-container {
@@ -631,7 +640,6 @@ div.disable-all {
 }
 
 .styled-heading {
-
   //module primary heading
   h1 {
     font-size: var(--brand-font-size--28) !important;
@@ -653,7 +661,6 @@ div.disable-all {
 }
 
 .styled-form-field {
-
   .label-heading,
   label[class*="TextareaInput-module--label"],
   label[class*="InputField-module--labelText"] {
@@ -738,7 +745,7 @@ div.disable-all {
   flex-direction: column;
   height: 100vh;
 
-  >div {
+  > div {
     padding: var(--spacing-03);
     flex: 0 0 auto;
   }
@@ -755,11 +762,17 @@ div.disable-all {
   width: 340px;
 }
 
-#secondaryNavPanel {
-  button,
-  a {
-    font-size: var(--brand-font-size--small);
-    line-height: var(--brand-line-height--large);
-    text-transform: uppercase;
+#secondaryNav {
+  background: none;
+  @include mixins.respond(sm) {
+    background-color: var(--brand-color-background-white);
+  }
+  #secondaryNavPanel {
+    button,
+    a {
+      font-size: var(--brand-font-size--small);
+      line-height: var(--brand-line-height--large);
+      text-transform: uppercase;
+    }
   }
 }

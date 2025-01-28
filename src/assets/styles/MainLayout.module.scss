@@ -1,14 +1,17 @@
 @use "./main.scss";
+@use "abstracts/mixins";
 
 body {
-  background-color: var(--brand-color-background-warm-grey-3);
+  background-color: var(--brand-color-background-white);
+  @include mixins.respond(sm) {
+    background-color: var(--brand-color-background-warm-grey-3);
+  }
 }
 
 .appContainer {
   display: flex;
   flex-direction: column;
   height: 100dvh;
-
 
   .app-wrapper {
     width: 100%;
@@ -23,7 +26,6 @@ body {
 .home {
   padding: var(--spacing-04);
   width: 100%;
-
 }
 
 .routes {

@@ -55,17 +55,21 @@
     font-size: 14px;
   }
 
+  .action-button {
+    align-self: flex-start;
+  }
   .collapsed-detail {
+    display: flex;
+    gap: 4px;
     padding: 5px;
     white-space: normal;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
+    flex-wrap: wrap;
     word-break: break-word;
   }
 
   .card-details {
     width: 100%;
-    padding: 0 10px;
+    padding: 5px;
   }
 
   .expanded-detail {
@@ -75,7 +79,6 @@
     overflow-wrap: break-word;
     word-wrap: break-word;
     word-break: break-word;
-    padding: 5px 0;
     min-height: 42px;
     font-size: 14px;
     line-height: 18px;
@@ -104,6 +107,7 @@
       & span,
       & p {
         max-width: 100% !important;
+        text-align: right !important;
         word-break: break-word !important;
         overflow: none !important;
         white-space: normal !important;

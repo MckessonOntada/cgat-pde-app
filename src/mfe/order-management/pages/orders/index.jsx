@@ -102,7 +102,12 @@ const OrderIndex = () => {
         controls={
           <div className="controls">
             <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS}>
-              <Button Icon={AddCircleFilled} className="button-icon" onClick={handleOnClick} size="lg" aria-label={t('controls.createNewOrder')}>
+              <Button
+                Icon={AddCircleFilled}
+                className="button-icon"
+                onClick={handleOnClick}
+                size="lg"
+                aria-label={t('controls.createNewOrder')}>
                 {t('controls.ariaLabels.createNewOrder')}
               </Button>
             </PermittedComponent>

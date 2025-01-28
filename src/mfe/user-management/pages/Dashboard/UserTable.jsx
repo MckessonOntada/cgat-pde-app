@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { CustomDataTable, Button, Badge, CheckboxGroup, Modal, Tooltip } from '@mckesson/mcp-component-library';
+import { Button, Badge, CheckboxGroup, Modal, Tooltip } from '@mckesson/mcp-component-library';
 import './index.scss';
 import Actions from './Actions';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -16,6 +16,8 @@ import CommonUtils from '@src/util/CommonUtils';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import { CustomDataTable } from '@src/components/dataTableComponent';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 
 function getBackgroundColorByRole(Role) {
@@ -37,6 +39,7 @@ function UserTable({ onActionSuccess }) {
   const { isLoading, isError, error, data, activeTab, paginationConfig, applySort, refreshData, setPageNumber } = useUser();
   const userPermissions = AuthUtils.getUserPermissions();
   const { hasPermission } = usePermission();
+  const showCardView = useResponsiveView();
 
   const handleRowSelected = ({ selectedRows }) => {
     setSelectedRows(selectedRows);
@@ -102,6 +105,7 @@ function UserTable({ onActionSuccess }) {
       {
         id: 'checkbox',
         name: '',
+        showInMobileHeader: true,
         cell: (row) => (
           <CheckboxGroup
             id={'default'}
@@ -120,7 +124,7 @@ function UserTable({ onActionSuccess }) {
         width: '40px',
         omit: activeTab === 2
       },
-      { name: 'ID', selector: 'id', sortable: true, omit: true },
+      // { name: 'ID', selector: 'id', sortable: true, omit: true },
       {
         id: 'name',
         name: t('userManagement.table.name'),
@@ -190,7 +194,7 @@ function UserTable({ onActionSuccess }) {
       {
         id: 'status',
         name: t('userManagement.table.status'),
-        selector: 'status',
+        selector: () => {},
         center: true,
         minWidth: '80px',
         cell: (props) => (
@@ -208,7 +212,7 @@ function UserTable({ onActionSuccess }) {
       {
         id: 'dataAdded',
         name: t('userManagement.table.dateAdded'),
-        selector: 'date_added',
+        selector: () => {},
         wrap: true,
         minWidth: '100px',
         cell: (props) => CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')
@@ -224,7 +228,8 @@ function UserTable({ onActionSuccess }) {
             showViewButton={activeTab !== 2 && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS)}
           />
         ),
-        omit: isSystemAdminView
+        omit: isSystemAdminView,
+        isAction: true
       }
     ];
   }, [data, userPermissions]);
@@ -259,6 +264,8 @@ function UserTable({ onActionSuccess }) {
         stickyHeader
         responsive
         pagination={true}
+        showCardView={showCardView}
+        defaultExpandedCardView={true}
         noDataComponent={
           <EmptyDataTable
             error={(isError && error.message) || 'Something went wrong, Please try again later.'}
