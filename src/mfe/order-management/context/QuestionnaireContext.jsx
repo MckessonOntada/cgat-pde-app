@@ -67,7 +67,7 @@ export const QuestionnaireProvider = ({ children }) => {
     queryKey: ['Templates', requestParams],
     queryFn: async () => QuestionnaireConfig.getQuestionnaires(requestParams),
     onSuccess: (result) => {
-      const { content: data, totalElements, totalPages } = res.data;
+      const { content: data, totalElements, totalPages } = result;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
         ...(totalElements && { totalElements }),

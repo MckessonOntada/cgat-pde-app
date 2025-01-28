@@ -11,6 +11,24 @@ async function getQuestionnaires() {
 }
 
 async function createQuestionnaire(payload) {
+  const url = `${ApiRoutes.QUESTIONNAIRE()}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
+
+async function getQuestionnaireById(id) {
+  const url = `${ApiRoutes.QUESTIONNAIRE()}/${id}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, null);
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
+
+async function deactivateQuestionnaireById(id) {
   return {};
 }
 
@@ -18,10 +36,11 @@ async function applyQuestionnaireConfig(payload) {
   return {};
 }
 
-const QuestionnaireConfig = Object.freeze({
+const QuestionnaireService = Object.freeze({
   getQuestionnaires,
   createQuestionnaire,
-  applyQuestionnaireConfig
+  applyQuestionnaireConfig,
+  getQuestionnaireById
 });
 
-export default QuestionnaireConfig;
+export default QuestionnaireService;

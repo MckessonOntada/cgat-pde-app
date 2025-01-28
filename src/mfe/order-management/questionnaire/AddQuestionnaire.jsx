@@ -11,6 +11,8 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { useNavigate, useParams } from 'react-router-dom';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
+import { useMutation, useQuery } from 'react-query';
+import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 
 const QUESTION_TYPE = {
   RADIO_BUTTON: 'radio_button',
@@ -47,6 +49,25 @@ function AddQuestionnaire() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const [initialFormState, setInitialFormState] = React.useState(INITIAL_FORM_STATE);
+  console.log(id);
+  const {
+    mutate: createQuestionnaire,
+    isLoading,
+    isError,
+    data
+  } = useMutation(async (payload) => QuestionnaireService.createQuestionnaire(payload), {
+    onSuccess: (response) => {},
+    onError: (error) => {}
+  });
+
+  const { data: questionnaireDetails, refetch } = useQuery({
+    queryKey: ['questionnaire-module', 'fetch-by-id', id],
+    queryFn: async () => QuestionnaireService.getQuestionnaireById(id),
+    enabled: Boolean(id),
+    refetchOnWindowFocus: false,
+    onSuccess: (result) => {},
+    onError: (error) => {}
+  });
 
   const schema = Yup.object().shape({
     templateName: Yup.string()
@@ -150,7 +171,7 @@ function AddQuestionnaire() {
       });
     }
 
-    console.log(payload);
+    createQuestionnaire(payload);
   };
 
   const deactivateQuestionnaire = () => {};
@@ -189,7 +210,7 @@ function AddQuestionnaire() {
   return (
     <div>
       <div>
-        <Formik initialValues={initialFormState} onSubmit={handleOnSubmit} enableReinitialize validationSchema={schema}>
+        <Formik disabled initialValues={initialFormState} onSubmit={handleOnSubmit} enableReinitialize validationSchema={schema}>
           {({ values, errors, setFieldValue, setFieldError }) => {
             return (
               <Form>
