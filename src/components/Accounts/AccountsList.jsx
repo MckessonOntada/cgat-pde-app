@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { CustomDataTable, CheckboxGroup } from '@mckesson/mcp-component-library';
+import { CheckboxGroup } from '@mckesson/mcp-component-library';
 import SelectedAccounts from './SelectedAccounts';
 import './styles.scss';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -10,6 +10,8 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { useAccounts } from './AccountsContext';
 import Actions from './Action';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import { CustomDataTable } from '../dataTableComponent';
 
 export default function AccountsList(props) {
   const {
@@ -23,7 +25,7 @@ export default function AccountsList(props) {
   } = props;
   const { data, paginationConfig, refetch, setPageNumber } = useAccounts();
   const { t } = useTranslate();
-
+  const showCardView = useResponsiveView();
   const columns = useMemo(() => {
     const _columns = [
       {
@@ -98,7 +100,8 @@ export default function AccountsList(props) {
         name: t('account.action'),
         cell: (row) => <Actions row={row} userId={userId} practiceId={practiceId} refetch={refetch} />,
         width: '120px',
-        omit: omitColumns.includes('action')
+        omit: omitColumns.includes('action'),
+        isAction: true
       }
     ];
     if (showSelectedAccounts) {
@@ -166,6 +169,9 @@ export default function AccountsList(props) {
             paginationRecordsPerPageMessage={t('orgManagement.per_page')}
             isAdmin={true}
             onSortIconClick={props.handleSort}
+            showCardView={showCardView}
+            defaultExpandedCardView={true}
+            collapsibleCardView={false}
             noDataComponent={
               <EmptyDataTable
                 isLoading={isLoading}

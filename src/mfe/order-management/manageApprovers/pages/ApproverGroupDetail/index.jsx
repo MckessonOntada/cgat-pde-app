@@ -150,7 +150,7 @@ function ApproverGroupDetails() {
           }
         />
 
-        <div className="MCP-panel-container">
+        <div className="MCP-CardContainer">
           <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3">
             <div className="approver-group-labelWrap">
               <span className="view_label">{t('approvergroup.view.subheader.group_name')}</span>
@@ -172,7 +172,7 @@ function ApproverGroupDetails() {
         </div>
 
         <Heading as="h3">{t('approvergroup.view.subheader.attributes')}</Heading>
-        <div className="MCP-panel-container grid grid-gap-16">
+        <div className="MCP-CardContainer grid grid-gap-16">
           {!(groupData?.rules && Object.keys(groupData.rules).length > 0) ? (
             <EmptyDataTable
               image={EmptyDataImage}
@@ -184,25 +184,29 @@ function ApproverGroupDetails() {
               groupData.rules[key] !== undefined &&
               (Array.isArray(groupData.rules[key]) ? groupData.rules[key].length > 0 : groupData.rules[key]) ? (
                 <div key={key} className="MCP-module-body attribute-category">
-                  { valueKey !== null ? (
-                      <div className="subheader-text">{t(`rules.${key}`)}</div>
-                    ) : valueKey === null && ( 
+                  {valueKey !== null ? (
+                    <div className="subheader-text">{t(`rules.${key}`)}</div>
+                  ) : (
+                    valueKey === null && (
                       <div className="subheader-text">
-                        {t(`rules.${key}`)} 
-                        <span className='price'><span>$</span>{groupData.rules[key]}</span>
+                        {t(`rules.${key}`)}
+                        <span className="price">
+                          <span>$</span>
+                          {groupData.rules[key]}
+                        </span>
                       </div>
+                    )
                   )}
                   <div className="attribute-category">
                     <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 attribute-list">
                       {Array.isArray(groupData.rules[key]) &&
                         groupData.rules[key].map((item, idx) => (
-                            <div key={idx} className="flex items-center justify-between attribute-item">
-                              <div>
-                                <p className="to-upper-case label-text">{item[valueKey]}</p>
-                              </div>
+                          <div key={idx} className="flex items-center justify-between attribute-item">
+                            <div>
+                              <p className="to-upper-case label-text">{item[valueKey]}</p>
                             </div>
-                          ))
-                        }
+                          </div>
+                        ))}
                     </div>
                   </div>
                 </div>
@@ -212,7 +216,7 @@ function ApproverGroupDetails() {
         </div>
 
         <Heading as="h3">{t('approvergroup.view.subheader.manage_treatment_center')}</Heading>
-        <div className="MCP-panel-container grid grid-gap-16">
+        <div className="MCP-CardContainer grid grid-gap-16">
           {groupData?.approverUsers && groupData?.approverUsers.length > 0 ? (
             <div className="grid grid-gap-16 grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 approver-user-list">
               {groupData.approverUsers.map(({ userId, userName }, idx) => (

@@ -2,12 +2,14 @@ import React from 'react';
 import EmptyDataTable from '@src/components/EmptyTable';
 import { ReactComponent as MasterCardLogo } from '@src/assets/svg/master_card_logo.svg';
 import { ReactComponent as VisaLogo } from '@src/assets/svg/visa_logo.svg';
-import { Loader, CustomDataTable } from '@mckesson/mcp-component-library';
+import { Loader } from '@mckesson/mcp-component-library';
 import { usePaymentMethods } from '@src/mfe/finance-management/context/PaymentMethodsContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FinanceUtils } from '@src/util/FinanceUtil';
 import dayjs from 'dayjs';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import { CustomDataTable } from '@src/components/dataTableComponent';
 
 const CARD_TYPES = {
   VISA: 'VISA',
@@ -17,7 +19,7 @@ const CARD_TYPES = {
 export default function CreditCardsTable() {
   const { t } = useTranslate();
   const { cardsData, isFetching, isError, applyCardsSort, cardsPaginationConfig, setCardsTablePageNumber } = usePaymentMethods();
-
+  const showCardView = useResponsiveView();
   const columns = [
     {
       id: 'type',
@@ -48,6 +50,7 @@ export default function CreditCardsTable() {
       sortable: true,
       wrap: true,
       minWidth: '160px',
+      showInMobileHeader: true,
       cell: (props) => <div className="cellEllipse">{FinanceUtils.maskCardNumber(props.number)}</div>
     },
     {
@@ -108,6 +111,8 @@ export default function CreditCardsTable() {
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         progressPending={isFetching}
+        showCardView={showCardView}
+        defaultExpandedCardView={true}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}

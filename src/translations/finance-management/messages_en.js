@@ -5,6 +5,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.tabs.PAYMENT HISTORY': 'PAYMENT HISTORY',
   'paymentInvoices.tabs.CUSTOMER STATEMENTS': 'CUSTOMER STATEMENTS',
   'paymentInvoices.tabs.PAYMENT METHODS': 'PAYMENT METHODS',
+  'paymentInvoices.header.managePayments': 'Manage Payments & Invoices',
 
   // Account Search
   'paymentInvoices.accountSearch.applyBtn': 'Apply',
@@ -145,7 +146,8 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.details.PriceUnit': 'Price Unit',
   'paymentInvoices.details.Currency': 'Currency',
   'paymentInvoices.details.MinimumOrderQuantity': 'Minimum Order Quantity',
-  'paymentInvoices.table.invoiceHeading': 'Invoice List',
+  'paymentInvoices.table.confirmationInvoiceHeading': 'Invoice List',
+  'paymentInvoices.table.invoiceHeading': 'Invoice Listing',
   'paymentInvoices.table.creditHeading': 'Credit List',
   'paymentInvoices.table.therapyInfo': 'Therapy Info',
   'paymentInvoices.filter.search': 'Search by Bill No., Sold to',

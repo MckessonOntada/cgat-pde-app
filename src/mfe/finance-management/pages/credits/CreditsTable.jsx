@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Badge, Button, CustomDataTable, Loader } from '@mckesson/mcp-component-library';
+import { Loader } from '@mckesson/mcp-component-library';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
@@ -11,6 +11,8 @@ import { FormattedNumber } from 'react-intl';
 import dayjs from 'dayjs';
 import { PATHS } from '../../routes';
 import CommonUtils from '@src/util/CommonUtils';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import { CustomDataTable } from '@src/components/dataTableComponent';
 
 export default function CreditsTable(props) {
   const { t } = useTranslate();
@@ -18,6 +20,8 @@ export default function CreditsTable(props) {
   const { selectedRows, setSelectedRows, selectableRows } = props;
   const location = useLocation();
   const { state } = location;
+  const showCardView = useResponsiveView();
+
   const renderCheckBox = (row, index) => {
     return (
       <input
@@ -97,7 +101,8 @@ export default function CreditsTable(props) {
       cell: (row, index) => renderCheckBox(row, index),
       selector: (row) => row.MRN,
       width: '48px',
-      omit: !selectableRows
+      omit: !selectableRows,
+      showInMobileHeader: true
     },
     {
       id: 'billNumber',
@@ -109,7 +114,7 @@ export default function CreditsTable(props) {
       cell: (props) => (
         <div className="cellEllipse">
           <Link
-            style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
+            style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
             to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
             state={{ ...state }}>
             {`${props?.billNumber}`}
@@ -124,6 +129,7 @@ export default function CreditsTable(props) {
       minWidth: '180px',
       sortable: true,
       wrap: true,
+      showInMobileHeader: !selectableRows,
       cell: (props) => <div>{props?.soldToSite || '-'}</div>
     },
     {
@@ -209,6 +215,8 @@ export default function CreditsTable(props) {
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         progressPending={isFetching}
+        showCardView={showCardView}
+        // defaultExpandedCardView={true}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}

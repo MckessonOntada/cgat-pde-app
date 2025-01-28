@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CustomDataTable, Button } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useRole } from '../../../context/RoleContext';
 import { createColumns } from './RoleTableColumns';
@@ -11,6 +11,9 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import './Role.scss';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import { CustomDataTable } from '@src/components/dataTableComponent';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
 const RolesDataTable = () => {
   const { t } = useTranslate();
@@ -19,6 +22,8 @@ const RolesDataTable = () => {
   const { applySort } = useRole();
   const { data, paginationConfig, setPageNumber, isLoading, refreshData, setMessage } = useRole();
   const dispatch = useDispatch();
+  const showCardView = useResponsiveView();
+
   const { mutate: deleteRole } = useMutation({
     mutationFn: async (id) => {
       const response = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}/${id}`, httpVerb.DELETE);
@@ -73,14 +78,17 @@ const RolesDataTable = () => {
 
   return (
     <div>
-      {selectedRows && (
-        <div className="selected-item-alert">
-          <p className="selected-item-text">1 Item's Selected</p>
+      <TableHeading
+        heading={t('orgManagement.role.labelRolesListing')}
+        secondaryView={!!selectedRows}
+        secondaryViewHeading={`1 ${t('orgManagement.selected_items')}`}
+        secondaryViewControls={
           <Button variant="secondary" onClick={handleOnUserConfirmation}>
-            Deactivate
+            {t('orgManagement.button.deactivate')}
           </Button>
-        </div>
-      )}
+        }
+        style={{ marginBottom: '24px' }}
+      />
 
       <CustomDataTable
         id="my-data-table"
@@ -98,6 +106,8 @@ const RolesDataTable = () => {
         paginationRecordsPerPageMessage={`per page`}
         selectableRowsHeader={false}
         selectedRowId={selectedRows}
+        showCardView={showCardView}
+        defaultExpandedCardView={true}
         noDataComponent={
           <EmptyDataTable
             isLoading={isLoading}
