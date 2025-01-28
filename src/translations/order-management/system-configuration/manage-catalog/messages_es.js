@@ -21,5 +21,21 @@ export const ManageCatalogMessagesES = {
   'ManageCatalog.Configurations': 'S_Configurations',
   'ManageCatalog.Back': 'S_BACK TO MANAGE CATALOG',
   'ManageCatalog.CatalogConfiguration': 'S_Catalog Configuration',
-  'ManageCatalog.Catalogdetails': 'S_Catalog details'
+  'ManageCatalog.Catalogdetails': 'S_Catalog details',
+  'ManageCatalog.Details': 'S_Details',
+  'ManageCatalog.Details.Salesorg': 'S_Sales org',
+  'ManageCatalog.Details.DistChannel': 'S_Dist Channel',
+  'ManageCatalog.Details.SapMaterial': 'S_Sap Material',
+  'ManageCatalog.Details.Variant': 'S_Variant',
+  'ManageCatalog.Details.Variantdescription': 'S_Variant description',
+  'ManageCatalog.Details.NDC': 'S_NDC',
+  'ManageCatalog.Details.UDI': 'S_UDI',
+  'ManageCatalog.Details.Materialdescription': 'S_Material description',
+  'ManageCatalog.Details.Netprice': 'S_Net price',
+  'ManageCatalog.Details.Regularprice': 'S_Regular price',
+  'ManageCatalog.Details.ContractPrice': 'S_Contract Price',
+  'ManageCatalog.Details.WACPrice': 'S_WAC Price',
+  'ManageCatalog.Details.340bPrice': 'S_340b Price',
+  'ManageCatalog.Details.Priceunit': 'S_Price unit',
+  'ManageCatalog.Details.Minimumorderquantity': 'S_Minimum order quantity'
 };

@@ -2,21 +2,21 @@ export const CatalogDetailsConstants = [
   {
     sectionHeading: 'Details',
     sectionData: [
-      { label: 'Sales org', value: 'salesOrg' },
-      { label: 'Dist Channel', value: 'distChannel' },
-      { label: 'Sap Material', value: 'sapMaterial' },
+      { label: 'Salesorg', value: 'salesOrg' },
+      { label: 'DistChannel', value: 'distChannel' },
+      { label: 'SapMaterial', value: 'sapMaterial' },
       { label: 'Variant', value: 'variant' },
-      { label: 'Variant description', value: 'variantDescription' },
+      { label: 'Variantdescription', value: 'variantDescription' },
       { label: 'NDC', value: 'ndc' },
       { label: 'UDI', value: 'udi' },
-      { label: 'Material description', value: 'materialDescriptionInLanguageEn' },
-      { label: 'Net price', value: 'netPrice' },
-      { label: 'Regular price', value: 'regularPrice' },
-      { label: 'Contract Price', value: 'contractPrice' },
-      { label: 'WAC Price', value: 'wacPrice' },
-      { label: '340b Price', value: 'price340b' },
-      { label: 'Price unit', value: 'priceUnit' },
-      { label: 'Minimum order quantity', value: 'minimumOrderQuantity' }
+      { label: 'Materialdescription', value: 'materialDescriptionInLanguageEn' },
+      { label: 'Netprice', value: 'netPrice' },
+      { label: 'Regularprice', value: 'regularPrice' },
+      { label: 'ContractPrice', value: 'contractPrice' },
+      { label: 'WACPrice', value: 'wacPrice' },
+      { label: '340bPrice', value: 'price340b' },
+      { label: 'Priceunit', value: 'priceUnit' },
+      { label: 'Minimumorderquantity', value: 'minimumOrderQuantity' }
     ]
   }
 ];

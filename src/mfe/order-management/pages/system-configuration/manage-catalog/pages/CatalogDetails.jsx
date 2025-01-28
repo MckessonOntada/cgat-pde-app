@@ -83,11 +83,11 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
             <div className={'details-body'}>
               {CatalogDetailsConstants.map((item, index) => (
                 <React.Fragment>
-                  <Heading as="h4">{item.sectionHeading}</Heading>
+                  <Heading as="h4">{t(`ManageCatalog.${item.sectionHeading}`)}</Heading>
                   <div className="details-ul">
                     {item.sectionData.map((item, index) => (
                       <div className="details-li">
-                        <div className="details-key">{item.label}</div>
+                        <div className="details-key">{t(`ManageCatalog.Details.${item.label}`)}</div>
                         <div className="details-value">{data?.catalogPrice[item.value] || '-'}</div>
                       </div>
                     ))}

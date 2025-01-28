@@ -21,5 +21,21 @@ export const ManageCatalogMessagesEN = {
   'ManageCatalog.Configurations': 'Configurations',
   'ManageCatalog.Back': 'BACK TO MANAGE CATALOG',
   'ManageCatalog.CatalogConfiguration': 'Catalog Configuration',
-  'ManageCatalog.Catalogdetails': 'Catalog details'
+  'ManageCatalog.Catalogdetails': 'Catalog details',
+  'ManageCatalog.Details': 'Details',
+  'ManageCatalog.Details.Salesorg': 'Sales org',
+  'ManageCatalog.Details.DistChannel': 'Dist Channel',
+  'ManageCatalog.Details.SapMaterial': 'Sap Material',
+  'ManageCatalog.Details.Variant': 'Variant',
+  'ManageCatalog.Details.Variantdescription': 'Variant description',
+  'ManageCatalog.Details.NDC': 'NDC',
+  'ManageCatalog.Details.UDI': 'UDI',
+  'ManageCatalog.Details.Materialdescription': 'Material description',
+  'ManageCatalog.Details.Netprice': 'Net price',
+  'ManageCatalog.Details.Regularprice': 'Regular price',
+  'ManageCatalog.Details.ContractPrice': 'Contract Price',
+  'ManageCatalog.Details.WACPrice': 'WAC Price',
+  'ManageCatalog.Details.340bPrice': '340b Price',
+  'ManageCatalog.Details.Priceunit': 'Price unit',
+  'ManageCatalog.Details.Minimumorderquantity': 'Minimum order quantity'
 };
