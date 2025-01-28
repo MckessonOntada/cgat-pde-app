@@ -16,6 +16,7 @@ import usePermission from '@src/hooks/usePermissions';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
 function ApproverList({ onActionSuccess }) {
   const { t } = useTranslate();

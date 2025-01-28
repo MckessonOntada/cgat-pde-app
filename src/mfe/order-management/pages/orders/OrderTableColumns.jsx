@@ -431,7 +431,6 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     name: t('table.columns.captions.actions'),
     selector: () => {},
     sortable: false,
-    center: true,
     showInMobileHeader: true,
     isAction: true, // must use "action" if button is to be placed in the right, else use default if id is "action"
     cell: (props) => getOptionsByStatus(props, props.status, t, activeTab, props.id, alertContainerId)

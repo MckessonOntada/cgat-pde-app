@@ -15,12 +15,13 @@ import { PATHS } from '../../routes';
 import CommonUtils from '@src/util/CommonUtils';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
 export default function InvoicesTable() {
   const { t } = useTranslate();
   const [includeinvoiceData, setIncludeinvoiceData] = useState([]);
   const navigate = useNavigate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError } = usePaymentInvoices();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel } = usePaymentInvoices();
   const showCardView = useResponsiveView();
 
   const getindeterminate = () => {
@@ -233,9 +234,16 @@ export default function InvoicesTable() {
   };
   return (
     <React.Fragment>
-      {includeinvoiceData.length > 0 && (
-        <div className="selected-invoices">
-          <div className="label">{`${includeinvoiceData.length} ${t('paymentInvoices.history.table.selectedAccount')}`}</div>
+      <TableHeading
+        heading={t('paymentInvoices.table.invoiceHeading')}
+        controls={
+          <Button variant="secondary" onClick={() => exportExcel()} size="sm">
+            {t('paymentInvoices.CS.ExportExcel')}
+          </Button>
+        }
+        secondaryView={includeinvoiceData.length > 0}
+        secondaryViewHeading={`${includeinvoiceData.length} ${t('paymentInvoices.history.table.selectedAccount')}`}
+        secondaryViewControls={
           <Button
             variant="secondary"
             onClick={() => {
@@ -244,8 +252,8 @@ export default function InvoicesTable() {
             size="sm">
             {t('paymentInvoices.Details.ReviewAndPay')}
           </Button>
-        </div>
-      )}
+        }
+      />
 
       <CustomDataTable
         id="my-data-table"

@@ -5,6 +5,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.tabs.PAYMENT HISTORY': 'PAYMENT HISTORY',
   'paymentInvoices.tabs.CUSTOMER STATEMENTS': 'CUSTOMER STATEMENTS',
   'paymentInvoices.tabs.PAYMENT METHODS': 'PAYMENT METHODS',
+  'paymentInvoices.header.managePayments': 'Manage Payments & Invoices',
 
   // Account Search
   'paymentInvoices.accountSearch.applyBtn': 'Apply',

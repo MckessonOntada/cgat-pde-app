@@ -31,9 +31,22 @@
       align-items: stretch;
       gap: var(--spacing-04);
       height: 100vh;
+
       .panelHeading {
         font-size: var(--brand-font-size--default);
         font-weight: var(--brand-font-weight-600);
+      }
+
+      .drawerBodyContent {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-04);
+
+        .configurationHeader {
+          display: flex;
+          width: 100%;
+          justify-content: space-between;
+        }
       }
 
       .detailItem {
@@ -45,8 +58,18 @@
         border-bottom: 1px solid var(--brand-color-dark-grey);
         font-size: var(--brand-font-size--small);
         color: var(--brand-color-font-black);
+
+        .leftContentBold {
+          font-weight: var(--brand-font-weight-600);
+        }
+
+        .rightContentAction {
+          cursor: pointer;
+        }
       }
     }
+
+
     .controls {
       display: flex;
       flex-direction: row;
