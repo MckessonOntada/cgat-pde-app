@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import { useOrgAccountSelectionContext } from './context/OrgAccountSelectionContext';
 import './styles.scss';
@@ -12,23 +12,12 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
     accountsList,
     searchAccountList,
     selectedAccount,
-    setSelectedAccount
+    setSelectedAccount,
+    options,
+    setOptions,
+    accountOptions,
+    setAccountOptions
   } = useOrgAccountSelectionContext();
-
-  const orgOptions = useMemo(() => {
-    let _options = [];
-    _options =
-      organizationOptions.map((item, index) => ({
-        index,
-        label: item.name,
-        value: item.id
-      })) || [];
-    if (selectedOrganization) {
-      let findOrg = _options.find((item) => item.value == selectedOrganization.id);
-      !findOrg && _options.push({ label: selectedOrganization.name, value: selectedOrganization.id });
-    }
-    return _options;
-  }, [organizationOptions]);
 
   const getSelectedOrg = (selectedValue) => {
     let _selected = organizationOptions.find((ele) => ele.id == selectedValue);
@@ -38,21 +27,14 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
     }
   };
 
-  const accountOptions = useMemo(() => {
-    return (
-      accountsList.map((item, index) => ({
-        index,
-        label: item.accountName,
-        value: item.id
-      })) || []
-    );
-  }, [accountsList]);
+  // const accountOptions = useMemo(() => {
+  //   return accountsList.map((item, index) => ({ ...item, label: item.accountName, value: item.accountNumber, isChecked: true })) || [];
+  // }, [accountsList]);
 
   const getSelectedAccount = (selectedValue) => {
-    let _selected = accountsList.find((ele) => ele.id == selectedValue);
-    setSelectedAccount(_selected);
-    if (handleAccountChange) {
-      handleAccountChange(_selected);
+    if (selectedValue.length > 0) {
+      setSelectedAccount(selectedValue);
+      setAccountOptions(selectedValue);
     }
   };
 
@@ -66,12 +48,17 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
           // placeholder={selectedOrganization?.name || 'Select Organization'}
           placeholder={'Select Organization'}
           onChange={getSelectedOrg}
-          options={orgOptions}
+          options={options}
           variant={'async'}
           onSearch={(event) => searchOrgList(event)}
           recordsCountToEnableSearch={5}
           size="md"
-          value={selectedOrganization?.id || ''}
+          isSortEnable={false}
+          // size="md"
+          value={selectedOrganization?.id.toString() || ''}
+          fieldDisplayValue={
+            selectedOrganization?.name ? { label: selectedOrganization.name, value: selectedOrganization.id.toString() } : undefined
+          }
         />
       </div>
       {showAccountsSelect && (
@@ -79,8 +66,7 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
           <MultiSelectDropdown
             id={'select-account-search'}
             label={'Select Account'}
-            isMultiSelect={false}
-            // placeholder={selectedOrganization?.label || 'Select Organization'}
+            isMultiSelect={true}
             placeholder={'Select Account'}
             onChange={getSelectedAccount}
             options={accountOptions || []}
@@ -88,7 +74,7 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
             onSearch={(event) => searchAccountList(event)}
             recordsCountToEnableSearch={5}
             size="md"
-            value={selectedAccount?.id || ''}
+            // value={selectedAccount || ''}
           />
         </div>
       )}

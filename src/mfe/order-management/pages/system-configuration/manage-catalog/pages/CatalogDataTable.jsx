@@ -9,6 +9,7 @@ import CommonUtils from '@src/util/CommonUtils';
 import { Button } from '@mckesson/mcp-component-library';
 import ConfigureCatalog from './ConfigureCatalog';
 import CatalogDetails from './CatalogDetails';
+import { Alert } from '@mckesson/mcp-component-library';
 
 function CatalogDataTable(props) {
   const { t } = useTranslate();
@@ -166,6 +167,27 @@ function CatalogDataTable(props) {
   const handleChangePage = (e, newPage) => {
     setPageNumber(newPage);
   };
+
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertDescription, setAlertDescription] = useState('');
+  const [alert, setAlert] = useState(null);
+
+  const handleAlertClose = () => {
+    setIsAlertVisible(false);
+  };
+  const showAlert = (type, message) => {
+    setAlert({ type });
+    setIsAlertVisible(true);
+    setAlertDescription(message);
+    const timer = setTimeout(() => {
+      setIsAlertVisible(false);
+      setAlert({ type: '', description: '' });
+    }, 10000);
+
+    // Cleanup the timer to prevent memory leaks
+    return () => clearTimeout(timer);
+  };
+
   return (
     <div>
       {selectedCatalogs?.length > 0 && (
@@ -178,7 +200,11 @@ function CatalogDataTable(props) {
           </Button>
         </div>
       )}
-
+      {isAlertVisible && (
+        <div className="alert-container">
+          <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />
+        </div>
+      )}
       <CustomDataTable
         id="my-data-table"
         type="normal"
@@ -202,6 +228,7 @@ function CatalogDataTable(props) {
         setOpenConfigurationDraw={setOpenConfigurationDraw}
         selectedCatalogs={selectedCatalogs}
         setSelectedCatalogs={setSelectedCatalogs}
+        showAlert={showAlert}
       />
 
       <CatalogDetails
@@ -209,6 +236,7 @@ function CatalogDataTable(props) {
         setOpenCatalogDetails={setOpenCatalogDetails}
         viewCatalog={viewCatalog}
         setViewCatalog={setViewCatalog}
+        showAlert={showAlert}
       />
     </div>
   );

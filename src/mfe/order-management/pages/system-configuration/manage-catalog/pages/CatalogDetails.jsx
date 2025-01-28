@@ -12,7 +12,7 @@ import { CatalogDetailsConstants } from '../constants/constants';
 import { useNavigate } from 'react-router-dom';
 import useSnackbar from '@src/hooks/useSnackbar';
 
-function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog, setViewCatalog }) {
+function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog, setViewCatalog, showAlert }) {
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
   const handleCloseDrawer = () => {
@@ -33,6 +33,7 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
       mutate();
     }
   }, [openCatalogDetails]);
+
   const { mutate, isLoading, isError, data } = useMutation(
     async (payload) => {
       const apiUrl = `${ApiRoutes.GET_CATALOG_DATA()}/configuration?${serializeParams(requestParams())}`;
@@ -46,6 +47,24 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
       onError: (error) => {
         showSnackbar({ description: 'Error while fetching Catalog Details', type: 'error' });
         setOpenCatalogDetails(false);
+      }
+    }
+  );
+
+  const { mutate: deleteConfiguration, isLoading: isDeleteLoading } = useMutation(
+    async (payload) => {
+      const apiUrl = `${ApiRoutes.GET_CATALOG_DATA()}/configuration?${serializeParams(requestParams())}`;
+      const res = await HttpResourceService.callRest(apiUrl, httpVerb.DELETE, {});
+      return res;
+    },
+    {
+      onSuccess: (response) => {
+        setOpenCatalogDetails(false);
+        showAlert('success', 'Catalog configuration deleted successfully');
+      },
+      onError: (error) => {
+        setOpenCatalogDetails(false);
+        showSnackbar({ description: 'Error while deleting catalog configuration', type: 'error' });
       }
     }
   );
@@ -78,14 +97,11 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
               {data?.catalogConfiguration && (
                 <div className="configure-li">
                   <div className="details-key">Configurations</div>
-                  <div
-                    className="details-value"
-                    onClick={() => navigate('view-catalog', { state: { configSteps: data?.catalogConfiguration } })}>
-                    PREVIEW{' '}
-                    <span>
-                      {' '}
+                  <div className="details-value">
+                    <div onClick={() => navigate('view-catalog', { state: { configSteps: data?.catalogConfiguration } })}>PREVIEW </div>
+                    <div onClick={() => deleteConfiguration()}>
                       <DeleteIcon />
-                    </span>
+                    </div>
                   </div>
                 </div>
               )}

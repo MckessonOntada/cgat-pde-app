@@ -63,13 +63,23 @@ export const CatalogProvider = ({ children }) => {
   const clearFilters = () => setFilterConfig(INITIAL_FILTER_STATE);
 
   const requestParams = () => {
-    let _accNumber = selectedAccount?.accountNumber;
-    return {
-      pageNo: paginationConfig.pageNumber - 1,
-      pageSize: paginationConfig.pageSize,
-      accountNumbers: [`${_accNumber}`],
-      ...(filterConfig.searchQuery && { query: filterConfig.searchQuery })
-    };
+    if (selectedAccount && selectedAccount.length > 0) {
+      let _accNumber = selectedAccount
+        ?.map((i) => {
+          if (i.isChecked) {
+            return i.accountNumber;
+          }
+        })
+        .filter((ele) => !!ele);
+      console.log('_accNumber....', _accNumber);
+      return {
+        pageNo: paginationConfig.pageNumber - 1,
+        pageSize: paginationConfig.pageSize,
+        accountNumbers: _accNumber,
+        // accountNumbers: ['sc53'],
+        ...(filterConfig.searchQuery && { query: filterConfig.searchQuery })
+      };
+    }
   };
 
   console.log('url....', selectedAccount);
@@ -83,21 +93,23 @@ export const CatalogProvider = ({ children }) => {
   } = useQuery({
     queryKey: [selectedAccount],
     queryFn: async () => {
-      const url = `${ApiRoutes.GET_CATALOG_DATA()}?${serializeParams(requestParams())}`;
-      const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-      if (res.data) {
-        const { content: data, totalElements, totalPages } = res.data;
-        setPaginationConfig((prevConfig) => ({
-          ...prevConfig,
-          ...(totalElements && { totalElements }),
-          ...(totalPages && { totalPages })
-        }));
-        return data;
+      if (selectedAccount && selectedAccount.length > 0 && selectedAccount.some((i) => i.isChecked)) {
+        const url = `${ApiRoutes.GET_CATALOG_DATA()}?${serializeParams(requestParams())}`;
+        const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+        if (res.data) {
+          const { content: data, totalElements, totalPages } = res.data;
+          setPaginationConfig((prevConfig) => ({
+            ...prevConfig,
+            ...(totalElements && { totalElements }),
+            ...(totalPages && { totalPages })
+          }));
+          return data;
+        }
+        return [];
       }
-      return [];
     },
     refetchOnWindowFocus: false,
-    enabled: !!selectedAccount
+    enabled: selectedAccount && selectedAccount?.length > 0 ? true : false
   });
 
   useEffect(() => {

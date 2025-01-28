@@ -24,7 +24,8 @@ export const OrgAccountSelectionProvider = ({ children, showAccountsSelect }) =>
   const [selectedOrganization, setSelectedOrganization] = useState(null);
   const [searchAccountText, setSearchAccountText] = useState('');
   const [selectedAccount, setSelectedAccount] = useState(null);
-
+  const [options, setOptions] = useState([]);
+  const [accountOptions, setAccountOptions] = useState();
   // Organization List configuration
   const orgParams = () => {
     return { pageNo: 0, pageSize: ACCOUNTS_PER_SEARCH, query: searchOrgText };
@@ -39,6 +40,19 @@ export const OrgAccountSelectionProvider = ({ children, showAccountsSelect }) =>
       );
       if (response) {
         const { content, totalElements, totalPages } = response.data;
+        if (content.length > 0) {
+          let data = content.map((item, index) => ({
+            index: index + 1,
+            label: item.name,
+            value: item.id
+          }));
+          if (selectedOrganization) {
+            let findOrg = data.find((item) => item.id == selectedOrganization.id);
+            !findOrg && data.unshift({ index: 0, label: selectedOrganization.name, value: selectedOrganization.id });
+          }
+
+          setOptions(data);
+        }
         return content;
       }
       return [];
@@ -74,6 +88,8 @@ export const OrgAccountSelectionProvider = ({ children, showAccountsSelect }) =>
       );
       if (response) {
         const { content, totalElements, totalPages } = response.data;
+        let _opt = content.map((item, index) => ({ ...item, label: item.accountName, value: item.accountNumber, isChecked: false })) || [];
+        setAccountOptions(_opt);
         return content || [];
       }
       return [];
@@ -103,7 +119,11 @@ export const OrgAccountSelectionProvider = ({ children, showAccountsSelect }) =>
     accountsList: accountsList || [],
     searchAccountList,
     selectedAccount,
-    setSelectedAccount
+    setSelectedAccount,
+    options,
+    setOptions,
+    accountOptions,
+    setAccountOptions
   };
   return <orgAccountsSelectionContext.Provider value={contextValue}>{children}</orgAccountsSelectionContext.Provider>;
 };

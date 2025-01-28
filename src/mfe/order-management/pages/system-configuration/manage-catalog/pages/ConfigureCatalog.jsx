@@ -22,7 +22,7 @@ const validationSchema = Yup.object().shape({
   )
 });
 
-function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, selectedCatalogs, setSelectedCatalogs }) {
+function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, selectedCatalogs, setSelectedCatalogs, showAlert }) {
   const [initialValues, setInitialValues] = useState({
     steps: [
       {
@@ -37,14 +37,14 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
     async (payload) => {
       const apiUrl = `${ApiRoutes.GET_CATALOG_DATA()}/configure`;
       const res = await HttpResourceService.callRest(apiUrl, httpVerb.POST, payload);
-      // console.log('response..', res);
       return res;
     },
     {
       onSuccess: (response) => {
         setOpenConfigurationDraw(false);
         setSelectedCatalogs([]);
-        showSnackbar({ description: 'Catalog configured successfully', type: 'success' });
+        // showSnackbar({ description: 'Catalog configured successfully', type: 'success' });
+        showAlert('success', 'Catalog configured successfully');
       },
       onError: (error) => {
         setOpenConfigurationDraw(true);
@@ -75,7 +75,6 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
       })),
       ...values
     };
-    console.log(payload);
     mutate(payload);
   };
 
