@@ -13,3 +13,14 @@
         padding: 32px;
     }
 }
+
+.cardContainer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-04);
+    padding: var(--spacing-04);
+    border: 1px solid var(--brand-color-patient-primary-3);
+    border-radius: var(--brand-border-radius--8);
+    background-color: var(--brand-color-background-white);
+    width: 100%;
+}

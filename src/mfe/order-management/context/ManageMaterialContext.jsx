@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { manageMaterialData } from '../pages/system-configuration/manageMaterial/assets/__mock__/manageMaterialData';
 import { useQuery } from 'react-query';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -129,7 +128,7 @@ export const ManageMaterialProvider = ({ children }) => {
     }
   };
 
-  /* const filterData = async (filters) => {
+  const filterData = async (filters) => {
     let _data = [...[], ...actualData];
     let _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery
@@ -149,7 +148,7 @@ export const ManageMaterialProvider = ({ children }) => {
     }));
     setData(_modifiedData.slice(startIndex, endIndex));
     setUnSlicedData(_modifiedData);
-  }; */
+  };
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: INITIAL_PAGINATION_STATE.pageNumber }));
@@ -166,7 +165,7 @@ export const ManageMaterialProvider = ({ children }) => {
 
   useEffect(() => {
     if (CommonUtils.isNonEmptyArray(data) && CommonUtils.isNonEmptyArray(unSlicedData)) {
-      // filterData(filterConfig);
+      filterData(filterConfig);
       if (JSON.stringify(sortConfig) !== JSON.stringify(INITIAL_SORT_STATE)) {
         sortData(sortConfig);
       }
@@ -181,6 +180,7 @@ export const ManageMaterialProvider = ({ children }) => {
         paginationConfig,
         sortConfig,
         filterConfig,
+        refetch,
         isFetching,
         isError,
         setPageNumber,
@@ -188,7 +188,7 @@ export const ManageMaterialProvider = ({ children }) => {
         applyFilters,
         clearFilters,
         selectedMaterials,
-        setSelectedMaterials
+        setSelectedMaterials,
       }}>
       {children}
     </ManageMaterialContext.Provider>

@@ -39,14 +39,15 @@ export const SystemConfigurationES = {
   "manageMaterial.drawer.details.body.cgatIdentifier": "S_Identificador CGAT",
   "manageMaterial.drawer.details.body.productLevelPricing": "S_Precio a Nivel de Producto",
   "manageMaterial.drawer.details.body.minimumOrderQuantity": "S_Cantidad Mínima de Pedido",
-  "manageMaterial.drawer.details.configuration.heading": "S_Configuraciones",
-  "manageMaterial.drawer.details.configuration.body.slotNumber": "S_Número de Ranura",
-  "manageMaterial.drawer.details.configuration.body.patientConsent": "S_Consentimiento del Paciente",
+  "manageMaterial.drawer.details.configuration.heading.questionnaire": "S_Configuración del Cuestionario",
+  "manageMaterial.drawer.details.configuration.heading.material": "S_Configuración del Material",
+  "manageMaterial.drawer.details.configuration.heading.catalog": "S_Configuración del Catálogo",
+  "manageMaterial.drawer.details.configuration.actions.preview": "S_Vista Previa",
+  "manageMaterial.drawer.details.configuration.actions.delete": "S_Eliminar",
   "manageMaterial.drawer.details.configuration.body.coiIdRequired": "S_ID de COI Requerido",
   "manageMaterial.drawer.details.configuration.body.patientInfoRequired": "S_Información del Paciente Requerida",
   // Configuration Drawer
   "manageMaterial.drawer.configuration.heading": "S_Configuración de Material",
-  "manageMaterial.drawer.configuration.preview": "S_Vista Previa",
   // Configuration Drawer Body
   "manageMaterial.drawer.configuration.body.patientInfoRequired": "S_¿Se requiere información del paciente?",
   "manageMaterial.drawer.configuration.body.coiIdRequired": "S_¿Se requiere ID de COI?",
@@ -56,5 +57,8 @@ export const SystemConfigurationES = {
   "manageMaterial.drawer.configuration.body.coiIdRequired.no": "S_No",
   // Configuration Drawer Controls
   "manageMaterial.drawer.controls.cancel": "S_Cancelar",
-  "manageMaterial.drawer.controls.apply": "S_Aplicar"
+  "manageMaterial.drawer.controls.apply": "S_Aplicar",
+  // Alerts
+  "manageMaterial.drawer.controls.apply.success": "S_Configuración aplicada correctamente",
+  "manageMaterial.drawer.controls.apply.error": "S_Error al aplicar la configuración"
 };
