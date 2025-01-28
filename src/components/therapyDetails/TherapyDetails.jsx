@@ -73,7 +73,7 @@ function TherapyDetails({
               therapyData={therapyData}
               configurationData={configurationData}
               showFooter={showFooter}
-              isMaterialConfiguration
+              isMaterialConfiguration={isMaterialConfiguration}
             />
           )}
         </div>
