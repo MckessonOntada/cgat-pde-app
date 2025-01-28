@@ -71,7 +71,8 @@ const ApiRoutes = Object.freeze({
   THERAPIES: () => constructUserManagementServicePublicUrl(`therapies`),
   GET_ALL_MATERIALS: () => constructUserManagementServicePublicUrl(`therapies`),
   GET_MATERIAL_BY_ID: (materialId) => constructUserManagementServicePublicUrl(`therapies/${materialId}`),
-  GET_MATERIAL_CONFIG_BY_ID: (materials) => constructUserManagementServicePublicUrl(`therapies/config/${materials}`)
+  GET_MATERIAL_CONFIG_BY_ID: (materials) => constructUserManagementServicePublicUrl(`therapies/config/${materials}`),
+  CONFIGURE_MATERIALS: () => constructUserManagementServicePublicUrl(`therapies/config/update`)
 });
 
 export default ApiRoutes;

@@ -14,11 +14,11 @@ function ManageMaterial() {
   const breadcrumbItems = [
     {
       label: t('manageMaterial.breadcrumbs.systemAdministrator'),
-      url: '/admin'
+      url: '/'
     },
     {
       label: t('manageMaterial.breadcrumbs.systemConfiguration'),
-      url: '/admin/system-configuration'
+      url: '/orders/system-configuration'
     },
     {
       label: t('manageMaterial.breadcrumbs.manageMaterial')

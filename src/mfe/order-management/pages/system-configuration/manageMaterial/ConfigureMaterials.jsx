@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './assets/styles/ConfigureMaterials.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Loader, Heading, Button, RadioGroup, Label, Required } from '@mckesson/mcp-component-library';
@@ -12,8 +12,12 @@ import { useQuery } from 'react-query';
 function ConfigureMaterials({ onClose }) {
   const { t } = useTranslate();
   const { showSnackbar } = useSnackbar();
+  const [formValues, setFormValues] = useState({
+    patientInfoRequired: '',
+    coiIdRequired: ''
+  });
 
-  const { selectedMaterials } = useManageMaterial();
+  const { selectedMaterials, applyConfiguration, configureSuccess } = useManageMaterial();
   console.log('selectedMaterials', selectedMaterials);
 
   const formFields = [
@@ -24,9 +28,9 @@ function ConfigureMaterials({ onClose }) {
         { isDisabled: false, label: t('manageMaterial.drawer.configuration.body.patientInfoRequired.yes'), value: 'yes' },
         { isDisabled: false, label: t('manageMaterial.drawer.configuration.body.patientInfoRequired.no'), value: 'no' }
       ],
-      value: '', // default value
+      value: formValues.patientInfoRequired,
       required: true,
-      onChangeValue: () => {}
+      onChangeValue: (value) => setFormValues(prev => ({ ...prev, patientInfoRequired: value }))
     },
     {
       caption: t('manageMaterial.drawer.configuration.body.coiIdRequired'),
@@ -35,11 +39,27 @@ function ConfigureMaterials({ onClose }) {
         { isDisabled: false, label: t('manageMaterial.drawer.configuration.body.coiIdRequired.yes'), value: 'yes' },
         { isDisabled: false, label: t('manageMaterial.drawer.configuration.body.coiIdRequired.no'), value: 'no' }
       ],
-      value: '', // default value
+      value: formValues.coiIdRequired,
       required: true,
-      onChangeValue: () => {}
+      onChangeValue: (value) => setFormValues(prev => ({ ...prev, coiIdRequired: value }))
     }
   ];
+
+  const handleApplyConfiguration = () => {
+    const configValues = {
+      materialNumbers: selectedMaterials.map(material => material.materialNumber),
+      isPatientInformationRequired: formValues.patientInfoRequired === 'yes',
+      isCoiIdRequired: formValues.coiIdRequired === 'yes'
+    };
+    applyConfiguration(configValues);
+    console.log('configValues', configValues);
+  };
+
+  useEffect(() => {
+    if (configureSuccess) {
+      onClose();
+    }
+  }, [configureSuccess]);
 
   return (
     <div className={styles.wrapper}>
@@ -79,7 +99,7 @@ function ConfigureMaterials({ onClose }) {
           />
           <Button
             label={t('manageMaterial.drawer.controls.apply')}
-            onClick={() => {}}
+            onClick={() => handleApplyConfiguration()}
             variant="primary"
             size="md"
             aria-label={t('manageMaterial.drawer.controls.apply')}

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { manageMaterialData } from '../pages/system-configuration/manageMaterial/assets/__mock__/manageMaterialData';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
@@ -93,6 +93,29 @@ export const ManageMaterialProvider = ({ children }) => {
     }
   );
 
+  const [configureSuccess, setConfigureSuccess] = useState(false);
+
+  const { mutate: configureMaterials } = useMutation(
+    async (configValues) => {
+      return await HttpResourceService.callRest(
+        ApiRoutes.CONFIGURE_MATERIALS(),
+        httpVerb.POST,
+        configValues
+      );
+    },
+    {
+      onSuccess: () => {
+        setConfigureSuccess(true);
+        showSnackbar({ description: t('manageMaterial.drawer.controls.apply.success'), type: 'success' });
+        refetch();
+      },
+      onError: (error) => {
+        setConfigureSuccess(false);
+        showSnackbar({ description: t('manageMaterial.drawer.controls.apply.error'), type: 'error' });
+      }
+    }
+  );
+
   const setPageNumber = (pageNumber) => {
     setPaginationConfig((prevConfig) => ({
       ...prevConfig,
@@ -129,7 +152,7 @@ export const ManageMaterialProvider = ({ children }) => {
     }
   };
 
-  /* const filterData = async (filters) => {
+  const filterData = async (filters) => {
     let _data = [...[], ...actualData];
     let _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery
@@ -149,7 +172,7 @@ export const ManageMaterialProvider = ({ children }) => {
     }));
     setData(_modifiedData.slice(startIndex, endIndex));
     setUnSlicedData(_modifiedData);
-  }; */
+  };
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: INITIAL_PAGINATION_STATE.pageNumber }));
@@ -164,9 +187,13 @@ export const ManageMaterialProvider = ({ children }) => {
     setFilterConfig(INITIAL_FILTER_STATE);
   };
 
+  const applyConfiguration = (configValues) => {
+    configureMaterials(configValues);
+  };
+
   useEffect(() => {
     if (CommonUtils.isNonEmptyArray(data) && CommonUtils.isNonEmptyArray(unSlicedData)) {
-      // filterData(filterConfig);
+      filterData(filterConfig);
       if (JSON.stringify(sortConfig) !== JSON.stringify(INITIAL_SORT_STATE)) {
         sortData(sortConfig);
       }
@@ -188,7 +215,9 @@ export const ManageMaterialProvider = ({ children }) => {
         applyFilters,
         clearFilters,
         selectedMaterials,
-        setSelectedMaterials
+        setSelectedMaterials,
+        applyConfiguration,
+        configureSuccess
       }}>
       {children}
     </ManageMaterialContext.Provider>

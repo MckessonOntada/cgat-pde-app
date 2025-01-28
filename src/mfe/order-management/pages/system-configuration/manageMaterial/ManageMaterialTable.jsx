@@ -8,7 +8,7 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { Link } from 'react-router-dom';
 import FloatingDrawer from '@src/components/floating-drawer';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
-import { MaterialConfigConstants, MaterialDetailsConstants } from './assets/constants/MaterialConstants';
+import { ConfigConstants, MaterialDetailsConstants } from './assets/constants/MaterialConstants';
 import ConfigureMaterials from './ConfigureMaterials';
 
 function ManageMaterialTable({ ...props }) {
@@ -201,6 +201,7 @@ function ManageMaterialTable({ ...props }) {
         paginationTotalRecorsMessage={t('manageMaterial.table.pagination.totalRecords')}
         paginationRecordsPerPageMessage={t('manageMaterial.table.pagination.perPage')}
         progressPending={isFetching}
+        responsive={true}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}
@@ -228,7 +229,7 @@ function ManageMaterialTable({ ...props }) {
           <TherapyDetails
             therapyId={materialNumber}
             therapyData={MaterialDetailsConstants}
-            configurationData={MaterialConfigConstants}
+            configurationData={ConfigConstants}
             onClose={() => setOpenDetails(!openDetails)}
             showFooter={false}
             isMaterialConfiguration={true}
