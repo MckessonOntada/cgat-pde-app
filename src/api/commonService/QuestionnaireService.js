@@ -19,6 +19,15 @@ async function createQuestionnaire(payload) {
   return {};
 }
 
+async function updateQuestionnaire(id, payload) {
+  const url = `${ApiRoutes.QUESTIONNAIRE()}/${id}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PUT, payload);
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
+
 async function getQuestionnaireById(id) {
   const url = `${ApiRoutes.QUESTIONNAIRE()}/${id}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, null);
@@ -30,7 +39,7 @@ async function getQuestionnaireById(id) {
 
 async function deactivateQuestionnaireById(id) {
   const url = `${ApiRoutes.QUESTIONNAIRE()}/${id}/deactivate`;
-  const res = await HttpResourceService.callRest(url, httpVerb.GET, null);
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, null);
   if (res.data) {
     return res.data;
   }
@@ -44,6 +53,7 @@ async function applyQuestionnaireConfig(payload) {
 const QuestionnaireService = Object.freeze({
   getQuestionnaires,
   createQuestionnaire,
+  updateQuestionnaire,
   applyQuestionnaireConfig,
   getQuestionnaireById,
   deactivateQuestionnaireById

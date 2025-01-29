@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader, Alert } from '@mckesson/mcp-component-library';
 import { ReactComponent as ArrowLeftIcon } from '@src/assets/svg/arrow-left.svg';
 import { Field, Formik, Form, FieldArray } from 'formik';
 import Components from '@src/components/form/Components';
@@ -42,6 +42,12 @@ const INITIAL_FORM_STATE = {
   ]
 };
 
+const INITIAL_ALERT_CONFIG = {
+  isVisible: false,
+  description: '',
+  type: null
+};
+
 function AddQuestionnaire() {
   const { t } = useTranslate();
   const [mode, setMode] = React.useState(MODE.CREATE);
@@ -49,6 +55,14 @@ function AddQuestionnaire() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const [initialFormState, setInitialFormState] = React.useState(INITIAL_FORM_STATE);
+  const [alertConfig, setAlertConfig] = React.useState(INITIAL_ALERT_CONFIG);
+
+  React.useEffect(() => {
+    if (id) {
+      setMode(MODE.VIEW);
+      getQuestionnaireDetails();
+    }
+  }, []);
 
   const {
     mutate: createQuestionnaire,
@@ -61,17 +75,39 @@ function AddQuestionnaire() {
   });
 
   const {
-    mutate: deactivateQuestionnaire,
-    isLoading: isDeactivating,
-    isError: deactivateError,
-    data: deactiavateResponse
-  } = useMutation(async (id) => QuestionnaireService.deactivateQuestionnaireById(id), {
-    onSuccess: (response) => {},
+    mutate: updateQuestionnaire,
+    isFetching: isUpdating,
+    is: updateError,
+    data: updateResponse
+  } = useMutation(async ({ id, payload }) => QuestionnaireService.updateQuestionnaire(id, payload), {
+    onSuccess: (response) => {
+      setAlertConfig({
+        isVisible: true,
+        description: 'Questionnaire updated successfully.',
+        type: 'success'
+      });
+    },
     onError: (error) => {}
   });
 
   const {
-    data: _questionnaireDetails,
+    mutate: deactivateQuestionnaire,
+    isLoading: isDeactivating,
+    isError: deactivateError,
+    data: deactivateResponse
+  } = useMutation(async (id) => QuestionnaireService.deactivateQuestionnaireById(id), {
+    onSuccess: (response) => {
+      setAlertConfig({
+        isVisible: true,
+        description: 'Questionnaire deactivated successfully.',
+        type: 'success'
+      });
+    },
+    onError: (error) => {}
+  });
+
+  const {
+    data: questionnaireDetails,
     isFetching: isFetchingQuestionnaireDetails,
     refetch: getQuestionnaireDetails
   } = useQuery({
@@ -85,7 +121,7 @@ function AddQuestionnaire() {
 
         const formattedQuestions = questions.map((question) => {
           const { type, text, additionalAttributes, isDocumentRequired, isMandatory } = question;
-          const _question = { type, checks: [] };
+          const _question = { type: type.toLowerCase(), checks: [] };
           if (isDocumentRequired) {
             _question.checks.push('isDocumentRequired');
           }
@@ -155,17 +191,9 @@ function AddQuestionnaire() {
     )
   });
 
-  React.useEffect(() => {
-    if (id) {
-      setMode(MODE.VIEW);
-      getQuestionnaireDetails();
-    }
-  }, []);
-
   const handleOnSubmit = (values, { setFieldError, setFieldValue }) => {
     const { templateName, questions } = values;
 
-    //optionList validation
     let areQuestionValid = true;
     questions.forEach((question, questionIndex) => {
       if (question.type !== QUESTION_TYPE.INPUT) {
@@ -218,7 +246,11 @@ function AddQuestionnaire() {
       });
     }
 
-    createQuestionnaire(payload);
+    if (mode === MODE.EDIT) {
+      updateQuestionnaire({ id, payload });
+    } else {
+      createQuestionnaire(payload);
+    }
   };
 
   const handleOnDeactivateQuestionnaire = () => {
@@ -278,13 +310,22 @@ function AddQuestionnaire() {
                       <Heading as="h1">{t('heading.addQuestionnaire')}</Heading>
                     </div>
 
+                    {alertConfig.isVisible && (
+                      <Alert
+                        description={alertConfig.description}
+                        onClose={() => setAlertConfig(INITIAL_ALERT_CONFIG)}
+                        type={alertConfig.type}
+                        duration={10000}
+                      />
+                    )}
+
                     <div className="MCP-CardContainer">
                       <div className="template">
                         <div className="row-space-between-center">
                           <div className="styledHeading">
                             <Heading as="h2">{t('heading.templateDetails')}</Heading>
                           </div>
-                          {mode !== MODE.CREATE && (
+                          {mode !== MODE.CREATE && questionnaireDetails.active && (
                             <div className="controls">
                               {mode !== MODE.EDIT && (
                                 <Button variant="secondary" size="md" onClick={() => setMode(MODE.EDIT)}>
@@ -350,22 +391,24 @@ function AddQuestionnaire() {
                                           />
                                         </div>
                                         <div className="void-gap"></div>
-                                        <div className="flex-end">
-                                          <div className="styled-icon-button error-button">
-                                            <Button
-                                              Icon={BinRedIcon}
-                                              size="md"
-                                              variant="tertiary"
-                                              color="error"
-                                              type="button"
-                                              disabled={values['questions'].length === 1 || readOnly}
-                                              onClick={() => {
-                                                removeQuestion(index);
-                                              }}>
-                                              {t('labels.orderActions.delete')}
-                                            </Button>
+                                        {mode !== MODE.VIEW && (
+                                          <div className="flex-end">
+                                            <div className="styled-icon-button error-button">
+                                              <Button
+                                                Icon={BinRedIcon}
+                                                size="md"
+                                                variant="tertiary"
+                                                color="error"
+                                                type="button"
+                                                disabled={values['questions'].length === 1}
+                                                onClick={() => {
+                                                  removeQuestion(index);
+                                                }}>
+                                                {t('labels.orderActions.delete')}
+                                              </Button>
+                                            </div>
                                           </div>
-                                        </div>
+                                        )}
                                       </div>
                                       <div>
                                         <div className="styled-form-field">
@@ -379,10 +422,8 @@ function AddQuestionnaire() {
                                                 options={['en', 'es']}
                                                 size="small"
                                                 value={question['caption']['activeLanguage']}
-                                                isReadOnly={readOnly}
                                                 component={Components['toggleButton']}
                                               />
-                                              // <ToggleButton  onChange={handleOnLanguageChange} />
                                             }
                                             placeholder={` `}
                                             component={Components['textarea']}
@@ -416,7 +457,6 @@ function AddQuestionnaire() {
                                                                       name={`questions.${index}.options.${optionIndex}.activeLanguage`}
                                                                       options={['en', 'es']}
                                                                       size="small"
-                                                                      isReadOnly={readOnly}
                                                                       value={option['activeLanguage']}
                                                                       component={Components['toggleButton']}
                                                                     />
@@ -424,43 +464,49 @@ function AddQuestionnaire() {
                                                                 />
                                                               </div>
                                                               <div className="void-gap"></div>
-                                                              <div className="flex-end">
-                                                                <div className="styled-icon-button error-button">
-                                                                  <Button
-                                                                    Icon={BinRedIcon}
-                                                                    size="md"
-                                                                    variant="tertiary"
-                                                                    color="error"
-                                                                    type="button"
-                                                                    disabled={question['options'].length === 2 || readOnly}
-                                                                    onClick={() => {
-                                                                      removeOption(optionIndex);
-                                                                    }}>
-                                                                    {t('labels.orderActions.delete')}
-                                                                  </Button>
+                                                              {mode !== MODE.VIEW && (
+                                                                <div className="flex-end">
+                                                                  <div className="styled-icon-button error-button">
+                                                                    <Button
+                                                                      Icon={BinRedIcon}
+                                                                      size="md"
+                                                                      variant="tertiary"
+                                                                      color="error"
+                                                                      type="button"
+                                                                      disabled={question['options'].length === 2 || readOnly}
+                                                                      onClick={() => {
+                                                                        removeOption(optionIndex);
+                                                                      }}>
+                                                                      {t('labels.orderActions.delete')}
+                                                                    </Button>
+                                                                  </div>
                                                                 </div>
-                                                              </div>
+                                                              )}
                                                             </div>
                                                           </div>
                                                         );
                                                       })}
                                                     </div>
                                                     <div>
-                                                      <div className="styled-icon-button">
-                                                        <Button
-                                                          Icon={PlusIcon}
-                                                          size="md"
-                                                          variant="tertiary"
-                                                          type="button"
-                                                          disabled={readOnly}
-                                                          onClick={() => {
-                                                            addOption({
-                                                              value: ''
-                                                            });
-                                                          }}>
-                                                          {t('button.addOption')}
-                                                        </Button>
-                                                      </div>
+                                                      {mode !== MODE.VIEW && (
+                                                        <div className="styled-icon-button">
+                                                          <Button
+                                                            Icon={PlusIcon}
+                                                            size="md"
+                                                            variant="tertiary"
+                                                            type="button"
+                                                            disabled={readOnly}
+                                                            onClick={() => {
+                                                              addOption({
+                                                                en: '',
+                                                                es: '',
+                                                                activeLanguage: LANGUAGE.ENGLISH
+                                                              });
+                                                            }}>
+                                                            {t('button.addOption')}
+                                                          </Button>
+                                                        </div>
+                                                      )}
                                                     </div>
                                                   </div>
                                                 );
@@ -474,10 +520,12 @@ function AddQuestionnaire() {
                                           name={`questions.${index}.checks`}
                                           items={[
                                             {
+                                              isDisabled: readOnly,
                                               label: t('label.check.questionMandatory'),
                                               value: 'isMandatory'
                                             },
                                             {
+                                              isDisabled: readOnly,
                                               label: t('label.check.requiredDocument'),
                                               value: 'isDocumentRequired'
                                             }
@@ -491,18 +539,27 @@ function AddQuestionnaire() {
                                   ))}
                                 </div>
                                 <div>
-                                  <div className="styled-icon-button">
-                                    <Button
-                                      onClick={() => {
-                                        addQuestion({ type: '', caption: '', options: [] });
-                                      }}
-                                      variant="tertiary"
-                                      size="md"
-                                      disabled={readOnly}
-                                      Icon={PlusIcon}>
-                                      {t('button.caption.addQuestion')}
-                                    </Button>
-                                  </div>
+                                  {mode !== MODE.VIEW && (
+                                    <div className="styled-icon-button">
+                                      <Button
+                                        onClick={() => {
+                                          addQuestion({
+                                            type: '',
+                                            caption: {
+                                              en: '',
+                                              es: ''
+                                            },
+                                            options: []
+                                          });
+                                        }}
+                                        variant="tertiary"
+                                        size="md"
+                                        disabled={readOnly}
+                                        Icon={PlusIcon}>
+                                        {t('button.caption.addQuestion')}
+                                      </Button>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             );
@@ -510,20 +567,22 @@ function AddQuestionnaire() {
                         </FieldArray>
                       </div>
                     </div>
-                    <div className="controls">
-                      <Button size="md" variant="secondary">
-                        {t('captions.btnCancel')}
-                      </Button>
-                      {mode === MODE.EDIT ? (
-                        <Button type="submit" size="md" variant="primary">
-                          {t('button.caption.updateQuestionnaire')}
+                    {mode !== MODE.VIEW && (
+                      <div className="controls">
+                        <Button size="md" variant="secondary">
+                          {t('captions.btnCancel')}
                         </Button>
-                      ) : (
-                        <Button type="submit" size="md" variant="primary">
-                          {t('button.caption.createQuestionnaire')}
-                        </Button>
-                      )}
-                    </div>
+                        {mode === MODE.EDIT ? (
+                          <Button type="submit" size="md" variant="primary">
+                            {t('button.caption.updateQuestionnaire')}
+                          </Button>
+                        ) : (
+                          <Button type="submit" size="md" variant="primary">
+                            {t('button.caption.createQuestionnaire')}
+                          </Button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </Form>
