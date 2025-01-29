@@ -521,7 +521,7 @@ const ConsentModal = ({ userFullName, onYes, onNo }) => {
           </div>
         ),
         modalFooter: (
-          <div className="controls loginAsBtn">
+          <div className="controls">
             <Button variant="secondary" size="md" onClick={onNo}>
               {t('label.no')}
             </Button>

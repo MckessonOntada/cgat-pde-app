@@ -53,12 +53,7 @@
   border: 1px solid var(--brand-color-patient-primary-3);
   border-radius: var(--brand-border-radius--6);
 }
-.loginAsBtn{
-  align-items: center;
-}
-.loginAsBtn button:last-child{
-  height: 36px !important;
-}
+
 @media (max-width: 600px) {
   .user-header {
     flex-direction: column; /* Stack items vertically */
