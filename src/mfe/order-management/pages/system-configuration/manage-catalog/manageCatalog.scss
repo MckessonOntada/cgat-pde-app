@@ -1,0 +1,105 @@
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-02);
+  justify-content: space-between;
+  border-bottom: 1px solid var(--brand-color-dark-grey);
+  padding: var(--spacing-02) var(--spacing-03);
+  font-size: var(--brand-font-size--small);
+  font-weight: var(--brand-font-weight-600);
+}
+.configure-form {
+  height: calc(100% - 46px);
+  overflow: auto;
+  .step-main-container {
+    width: 440px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .step-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      .stepName-container {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        .stepName {
+          width: calc(100% - 28px);
+        }
+        .remove-icon {
+          padding: 40px 3px 0 3px;
+        }
+      }
+    }
+  }
+}
+.configure-footer {
+  display: flex;
+  padding: 16px;
+  gap: 8px;
+  justify-content: end;
+  border-top: 1px solid var(--brand-color-dark-grey);
+  position: sticky;
+  bottom: 0px;
+  background: #ffffff;
+}
+
+.details-main-wrapper {
+  width: 440px;
+  .details-body {
+    padding: 16px 22px;
+    height: calc(100% - 44px);
+    overflow: auto;
+    .details-ul {
+      .details-li {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        padding: 12px 0px;
+        border-bottom: 1px solid var(--brand-color-dark-grey);
+
+        .details-key {
+          width: 40%;
+          color: #1e394e;
+        }
+        .details-value {
+          width: 55%;
+          text-align: end;
+          font-weight: 600;
+          color: #181818;
+        }
+      }
+    }
+    .configure-li {
+      display: flex;
+      justify-content: space-between;
+      padding: 24px 0px;
+      // border-bottom: 1px solid var(--brand-color-dark-grey);
+
+      .details-key {
+        font-size: 16px;
+        font-weight: 700;
+        width: 40%;
+        color: #1e394e;
+      }
+      .details-value {
+        width: 55%;
+        text-align: end;
+        font-weight: 600;
+        color: #007cc1;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        justify-content: end;
+        gap: 10px;
+      }
+    }
+  }
+}
+.alert-container {
+  margin-bottom: var(--spacing-03);
+}
