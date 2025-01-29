@@ -183,7 +183,7 @@ export const SearchableDropdown = (props) => {
     isJbatVariant,
     showSelectedLabels
   } = props;
-
+  // console.log('options, value...', id, options, value, fieldDisplayValue);
   useEffect(() => {
     if (fieldDisplayValue !== undefined) {
       setDisplayValue(fieldDisplayValue);
@@ -788,6 +788,7 @@ export const SearchableDropdown = (props) => {
     }
 
     if (!isMultiSelect) {
+      // console.log('display..', displayValue, '...\n', defaultSelectedLabel, '..\n', searchPlaceholder);
       if (CommonUtils.isNonNullObject(displayValue)) {
         return displayValue.label;
       } else {

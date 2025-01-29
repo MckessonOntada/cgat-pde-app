@@ -80,6 +80,7 @@ export const UserManagementEN = {
   'userManagement.provision.message': 'User is not provisioned in Okta. {click} to Provision the User in Okta.',
   'userManagement.button.clickhere': 'Click here',
   'userManagement.create_user': 'Add User',
+  'userManagement.create_organization_user': 'Add Organization User',
   'userManagement.create_sysadmin': 'Add System Administrator',
   'userManagement.create_user.details_to_create_user': 'Please check the details to create a organization user.',
   'userManagement.create_user.details_to_create_sysadmin': 'Please complete the form to register a new system administrator.',
@@ -340,7 +341,7 @@ export const UserManagementEN = {
   'popup.title.alert': 'Alert!',
   'popup.message.wishToContinueLoginAsThisUserQuestion': 'Do you wish to continue?',
   'popup.message.wishToContinueLoginAsThisUserDescription':
-    'You are about to perform actions on behalf of {{targetUser}}. Please confirm that you have you have verified the identity of the requesting user the necessary permissions and that you understand the implications of proceeding with this task',
+    'You are about to perform actions on behalf of {{targetUser}}. Please confirm that you have verified the identity of the requesting user the necessary permissions and that you understand the implications of proceeding with this task.',
   'popup.message.wishToContinueLoginAsThisUserCheckBoxConsent':
     'By confirming, you acknowledge that all actions taken will be logged and attributed to your account.',
   'userManagement.breadcrumb.admin': 'Admin',

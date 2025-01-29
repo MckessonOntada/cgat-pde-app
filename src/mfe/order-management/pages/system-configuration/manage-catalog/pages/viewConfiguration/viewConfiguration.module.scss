@@ -1,0 +1,53 @@
+.orderListContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-03);
+  font-size: var(--brand-font-size--20);
+
+  .orderListItem {
+    display: flex;
+    padding: var(--spacing-03);
+    gap: var(--spacing-03);
+    background-color: var(--brand-color-cool-blue);
+    border-radius: var(--spacing-01);
+    align-items: center;
+  }
+
+  .orderListCount {
+    background-color: var(--brand-color-black);
+    border-radius: var(--spacing-01);
+    height: 52px;
+    width: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--brand-color-background-white);
+    flex-shrink: 0;
+  }
+
+  .orderListContent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-02);
+
+    .orderListLabel {
+      font-weight: var(--brand-font-weight-700);
+    }
+
+    .orderListdescription {
+      font-size: var(--brand-font-size--default);
+      color: var(--brand-color-primary-slate);
+    }
+  }
+}
+.orderFlow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-04);
+}
+.customSecondaryHeading {
+  font-size: var(--brand-font-size--24) !important;
+  color: var(--brand-color-black) !important;
+  font-weight: var(--brand-font-weight-600) !important;
+  margin: 0 !important;
+}

@@ -137,7 +137,7 @@ export const OrgManagementES = {
   'orgManagement.form.errors.roleNameMaxLength': 'S_Role Name must be at least 3 characters long',
   'orgManagement.form.errors.roleDescriptionMinLength': 'S_Role Description must be at least 10 characters long',
   'orgManagement.form.errors.roleDescriptionMaxLength': 'S_Role Description cannot exceed 100 characters',
-  'orgManagement.messages.accountlinkSuccess': 'S_new account(s) has been successfully added to the organization.',
+  'orgManagement.messages.accountlinkSuccess': 'S_new account(s) have been successfully added to the organization',
   'errors.practice_name_key': 'S_Organization name already exists.',
   'errors.practice_email_key': 'S_Email ID already exists in the System.',
   'errors.practice_phone_key': 'S_Phone number already exists.',
