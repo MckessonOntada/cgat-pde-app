@@ -374,6 +374,7 @@ export const MessageEn = {
   'label.Material': 'Material',
   'label.Catalog': 'Catalog',
   'label.Account': 'Account',
+  'label.configure': 'Configure',
   'label.selectMaster': 'Select Master',
   'table.columns.captions.configuredfor': 'Configured for',
   'table.columns.captions.dateCreatedOn': 'Date Created On',

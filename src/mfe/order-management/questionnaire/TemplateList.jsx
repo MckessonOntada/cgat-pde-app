@@ -7,13 +7,13 @@ import { ReactComponent as View } from '@src/assets/image/view.svg';
 import { ReactComponent as CatalogImage } from '@src/assets/image/alert-circle-c.svg';
 import { ReactComponent as AccountImage } from '@src/assets/image/alert-circle-a.svg';
 import { ReactComponent as MaterialImage } from '@src/assets/image/alert-circle-m.svg';
-
+import TableHeading from '@src/components/tableHeading/TableHeading';
 import { Button, CustomDataTable, Heading, RadioGroup, Badge } from '@mckesson/mcp-component-library';
 import FloatingDrawer from '@src/components/floating-drawer';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useQuestionnaire } from '../context/QuestionnaireContext';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import { useMultiCheckBox } from './MultiSelectDatatable';
+import { useMultiCheckBox } from './useMultiCheckBox';
 import CommonUtils from '@src/util/CommonUtils';
 
 function TemplateList() {
@@ -29,13 +29,13 @@ function TemplateList() {
     isLoading,
     paginationConfig,
     selectedTemplates,
-    setTemplates,
-    refetchTemplates
+    setTemplates 
   } = useQuestionnaire();
-  const { renderCheckBox, selectedData, setSelectedData } = useMultiCheckBox(data, paginationConfig, selectedTemplates);
+  const { renderCheckBox, selectedData, setSelectedData } = useMultiCheckBox(data, paginationConfig, selectedTemplates, setTemplates);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const selectedEntityType = location.state?.value || false;
+  const isSuccess = location.state?.isSuccess || false;
 
   useEffect(() => {
     if (!selectedEntityType) {
@@ -46,7 +46,12 @@ function TemplateList() {
     }
   }, [selectedTemplates, setSelectedData, selectedData]);
 
- 
+  useEffect(() => {
+    if (isSuccess) {
+      setSelectedData([]);
+      setTemplates([]);
+    }
+  }, []);
 
   const handleChangePage = (e, newPage) => {
     setPageNumber(newPage);
@@ -56,7 +61,7 @@ function TemplateList() {
     if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
-  const handleView = (id) => {};
+  const handleView = (id) => {}; 
 
   const columns = [
     {
@@ -69,7 +74,7 @@ function TemplateList() {
     },
     {
       id: 'templateName',
-      name: t('Template Name'),
+      name: t('label.templateName'),
       selector: (row) => row.templateName || '',
       sortable: true,
       sortKey: 'template_name',
@@ -97,12 +102,12 @@ function TemplateList() {
       cell: (props) => {
         return (
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            {props.configuredAt.map((item) => {
+            {props.configuredAt.map((item, index) => {
               if (!item) return null;
               const iconMap = {
-                catalog: <CatalogImage />,
-                account: <AccountImage />,
-                material: <MaterialImage />
+                catalog: <CatalogImage key={index} />,
+                account: <AccountImage key={index} />,
+                material: <MaterialImage key={index} />
               };
               return iconMap[item.toLowerCase()] || null;
             })}
@@ -143,7 +148,7 @@ function TemplateList() {
   ];
 
   const handleOnSelectMaster = (entity) => {
-    navigate('map-questionnaire', { state: { value: entity } });
+    navigate('map-questionnaire', { state: { value: entity, selectedTemplates: selectedTemplates } });
   };
 
   return (
@@ -157,26 +162,22 @@ function TemplateList() {
         />
       </div>
 
-      <div className="styledHeading">
-        <Heading as="h2">Questionnaire Listing</Heading>
-      </div>
-
       <div>
-        {selectedTemplates && selectedTemplates.length > 0 && (
-          <div>
-            <div className="selected-item-alert row-space-between-center">
-              <p className="selected-item-text">{`${selectedTemplates.length} items selected.`}</p>
-
-              <Button onClick={() => setIsDrawerOpen(true)} size="sm" variant="secondary">
-                Configure
-              </Button>
-            </div>
-          </div>
-        )}
+        <TableHeading
+          heading={t('table.ariaLabel.questionaaireList')}
+          secondaryView={selectedTemplates && selectedTemplates.length > 0}
+          secondaryViewHeading={`${selectedTemplates.length} ${t('userManagement.selected_items')}`}
+          secondaryViewControls={
+            <Button onClick={() => setIsDrawerOpen(true)} size="sm" variant="secondary">
+              {t('label.configure')}
+            </Button>
+          }
+          style={{ marginBottom: '24px' }}
+        />
         <CustomDataTable
           id="questionnaire-template-listing"
           columns={columns}
-          data={data?.content || []}
+          data={data || []}
           handleChangePage={handleChangePage}
           onSortIconClick={handleOnSortIconClick}
           pagination={true}
@@ -209,17 +210,17 @@ const SelectMaster = ({ onClose, onSubmit, t }) => {
   const options = [
     {
       isDisabled: false,
-      label: t('Material'),
+      label: t('label.Material'),
       value: 'Material'
     },
     {
       isDisabled: false,
-      label: t('Catalog'),
+      label: t('label.Catalog'),
       value: 'Catalog'
     },
     {
       isDisabled: false,
-      label: t('Account'),
+      label: t('label.Account'),
       value: 'Account'
     }
   ];
@@ -229,7 +230,7 @@ const SelectMaster = ({ onClose, onSubmit, t }) => {
   return (
     <div className="grail-layout floating-drawer">
       <div className="styled-heading">
-        <Heading as="h3">{t('Select Master')}</Heading>
+        <Heading as="h3">{t('label.selectMaster')}</Heading>
       </div>
       <div className="grow">
         <div className="styled-radio-group">

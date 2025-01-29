@@ -3,14 +3,21 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getAddress, MasterEntityType } from '../util';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { useManagerQuestionnaire } from '../../context/ManageQuestionnaireContext'; 
-import { useMultiCheckBox } from '../MultiSelectDatatable';
+import { useMultiCheckBox } from '../useMultiCheckBox';
+import { ro } from 'react-date-range/dist/locale';
 
-export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData, setSelectedRows) => {
+export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData, setSelectedRows, setOpenDetails, setSelectedDetails) => {
   const { paginationConfig } = useManagerQuestionnaire();
   const { renderCheckBox, selectedData } = useMultiCheckBox(entityData, paginationConfig);
   useEffect(() => {
     setSelectedRows(selectedData);
   }, [selectedData]);
+
+
+  const handleRowClick = (e,row) => { 
+    setSelectedDetails(row);
+    setOpenDetails(true);
+  };
 
   switch (masterEntityType) {
     case MasterEntityType.Material:
@@ -31,24 +38,38 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           sortable: true,
           sortKey: 'materialNumber',
           cell: (props) => (
-            <Link className="MCP-table-link" aria-label={t('labels.therapy.materialNumber')}>
-              <EclipsesTextcss str={props.materialNumber} maxWidth={240} />
-            </Link>
+            <div className="cellEllipse">
+              <Link
+                className="MCP-table-link"
+                aria-label={t('table.columns.captions.accountNumber')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setOpenDetails(true);
+                  setSelectedDetails(props);
+                }}>
+                <EclipsesTextcss str={props.materialNumber} maxWidth={240} />
+              </Link>
+             
+            </div>
           )
         },
         {
           id: 'materialDescription',
           name: t('labels.therapy.materialDescription'),
-          selector: () => {},
+          selector: (row) => row.materialDescription || '',
           maxWidth: '350px',
           sortable: true,
           sortKey: 'materialDescription',
-          cell: (props) => <span aria-label={t('labels.therapy.Description')}>{props.materialDescription}</span>
+          cell: (props) => (
+            <span aria-label={t('labels.therapy.materialDescription')}>
+              <EclipsesTextcss str={props.materialDescription} maxWidth={380} />
+            </span>
+          )
         },
         {
           id: 'ndc',
           name: t('table.columns.captions.nationalDrugCode'),
-          selector: () => {},
+          selector: (row) => row.ndcNumber || '',
           maxWidth: '290px',
           sortable: true,
           sortKey: 'ndcNumber',
@@ -61,7 +82,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
         {
           id: 'strength',
           name: t('table.columns.captions.strength'),
-          selector: () => {},
+          selector: (row) => row.strength || '',
           maxWidth: '150px',
           sortable: false,
           cell: (props) => <span aria-label={t('table.columns.captions.strength')}>{props.strength}</span>
@@ -69,7 +90,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
         {
           id: 'dosage',
           name: t('table.columns.captions.dosage'),
-          selector: () => {},
+          selector: (row) => row.dosage || '',
           maxWidth: '150px',
           sortable: false,
           cell: (props) => <span aria-label={t('table.columns.captions.dosage')}>{props.dosage}</span>
@@ -88,7 +109,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
         {
           id: 'accountNumber',
           name: t('table.columns.captions.accountNumber'),
-          selector: () => {},
+          selector: (row) => row.accountNumber || '',
           maxWidth: '350px',
           sortable: true,
           sortKey: 'accountNumber',
@@ -101,7 +122,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
         {
           id: 'accountName',
           name: t('table.columns.captions.accountName'),
-          selector: () => {},
+          selector: (row) => row.accountName || '',
           maxWidth: '350px',
           sortable: true,
           sortKey: 'accountName',
@@ -110,7 +131,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
         {
           id: 'address',
           name: t('table.columns.captions.address'),
-          selector: () => {},
+          selector: (row) => row.accountNumber || '',
           maxWidth: '290px',
           sortable: true,
           sortKey: 'address',
@@ -123,7 +144,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
         {
           id: 'salesOrg',
           name: t('labels.salesOrg'),
-          selector: () => {},
+          selector: (row) => row.salesOrg || '',
           maxWidth: '150px',
           sortable: false,
           cell: (props) => <span aria-label={t('labels.salesOrg')}>{props.salesOrg}</span>
@@ -131,7 +152,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
         {
           id: 'distributionChannel',
           name: t('labels.distributionChannel'),
-          selector: () => {},
+          selector:(row) => row.distributionChannel || '',
           maxWidth: '350px',
           sortable: false,
           cell: (props) => <span aria-label={t('labels.distributionChannel')}>{props.distributionChannel}</span>
@@ -150,10 +171,10 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
         {
           id: 'sapMaterial',
           name: t('labels.SapmaterialID'),
-          selector: () => {},
+          selector: (row) => row.sapMaterial || '',
           maxWidth: '350px',
-          sortable: true,
-          sortKey: 'sapMaterial',
+          // sortable: true,
+          // sortKey: 'sapMaterial',
           cell: (props) => (
             <Link className="MCP-table-link" aria-label={t('labels.SapmaterialID')}>
               <EclipsesTextcss str={props.sapMaterial} maxWidth={240} />
@@ -163,19 +184,19 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
         {
           id: 'materialDescription',
           name: t('labels.therapy.materialDescription'),
-          selector: () => {},
+          selector: (row) => row.materialDescriptionInLanguageEn || '',
           maxWidth: '350px',
-          sortable: true,
-          sortKey: 'materialDescriptionInLanguageEn',
-          cell: (props) => <span aria-label={t('labels.therapy.Description')}>{props.materialDescriptionInLanguageEn}</span>
+          // sortable: true,
+          // sortKey: 'materialDescriptionInLanguageEn',
+          cell: (props) => <span aria-label={t('labels.therapy.materialDescription')}>{props.materialDescriptionInLanguageEn}</span>
         },
         {
           id: 'ndc',
           name: t('labels.therapy.ndc'),
-          selector: () => {},
+          selector: (row) => row.ndc || '', 
           maxWidth: '290px',
-          sortable: true,
-          sortKey: 'ndcNumber',
+          // sortable: true,
+          // sortKey: 'ndcNumber',
           cell: (props) => (
             <span aria-label={t('labels.therapy.ndc')}>
               <EclipsesTextcss str={props.ndc} maxWidth={180} />
@@ -185,10 +206,10 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
         {
           id: 'distChannel',
           name: t('labels.distChannel'),
-          selector: () => {},
+          selector: (row) => row.distChannel || '',
           maxWidth: '290px',
-          sortable: true,
-          sortKey: 'distChannel',
+          // sortable: true,
+          // sortKey: 'distChannel',
           cell: (props) => (
             <span aria-label={t('labels.distChannel')}>
               <EclipsesTextcss str={props.distChannel} maxWidth={180} />
@@ -198,7 +219,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
         {
           id: 'variant',
           name: t('labels.variant'),
-          selector: () => {},
+          selector: (row) => row.variant || '',
           maxWidth: '150px',
           sortable: false,
           cell: (props) => <span aria-label={t('labels.variant')}>{props.variant}</span>
@@ -206,7 +227,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
         {
           id: 'soldToCustomer',
           name: t('labels.soldTo'),
-          selector: () => {},
+          selector: (row) => row.soldToCustomer || '',  
           maxWidth: '150px',
           sortable: false,
           cell: (props) => <span aria-label={t('labels.soldTo')}>{props.soldToCustomer}</span>
@@ -214,7 +235,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
         {
           id: 'shipToCustomer',
           name: t('labels.shipTo'),
-          selector: () => {},
+          selector: row => row.shipToCustomer || '',
           maxWidth: '150px',
           sortable: false,
           cell: (props) => <span aria-label={t('labels.shipTo')}>{props.shipToCustomer}</span>

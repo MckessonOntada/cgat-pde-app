@@ -108,7 +108,7 @@ export const QuestionnaireProvider = ({ children }) => {
         clearFilters,
         setCurrentPage,
         applySort,
-        data: TemplatesData,
+        data: TemplatesData?.content,
         refetchTemplates,
         isLoading: isLoadingTemplates,
         isError: isErrorTemplates,

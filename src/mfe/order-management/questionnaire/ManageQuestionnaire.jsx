@@ -49,6 +49,7 @@ function ManageQuestionnaire() {
       setIsAlertVisible(true);
       setAlertDescription(getSuccessMessage);
       setAlert({ type: 'success' }); 
+      refetchTemplates();
     }
   }, [location.state, navigate]);
 

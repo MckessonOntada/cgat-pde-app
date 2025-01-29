@@ -34,14 +34,20 @@ export default function mapQuestionnaire() {
   const [alert, setAlert] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
   const selectedEntityType = location.state?.value || false;
+  const templatesSelected = location.state?.selectedTemplates;
   const { isMaterial, isCatalog, isAccount } = getEntityTypeFlags(selectedEntityType);
+
   const handleCancel = () => {
     navigate('../');
   };
-  
-
   useEffect(() => {
     setEntity(selectedEntityType);
+  }, [selectedEntityType]);
+
+  useEffect(() => {
+    if (selectedTemplates.length === 0){
+      setSelectedTemplates(templatesSelected);
+    }
   }, [selectedEntityType]);
 
   const handleOnSubmit = () => {
