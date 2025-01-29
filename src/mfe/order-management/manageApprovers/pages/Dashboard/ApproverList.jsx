@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { CustomDataTable, Button, Badge, CheckboxGroup, Modal } from '@mckesson/mcp-component-library';
+import { Button, Badge, CheckboxGroup, Modal } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
@@ -13,6 +13,9 @@ import { useApprover } from '../../context/ApproverContext';
 import Actions from './Actions';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
+import { CustomDataTable } from '@src/components/dataTableComponent';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
 function ApproverList({ onActionSuccess }) {
   const { t } = useTranslate();
@@ -21,7 +24,7 @@ function ApproverList({ onActionSuccess }) {
   const { data, paginationConfig, applySort, setPageNumber, refreshData } = useApprover();
   const userPermissions = AuthUtils.getUserPermissions();
   const { hasPermission } = usePermission();
-
+  const showCardView = useResponsiveView();
   const handleActivateDeactivateApproverGroup = async ({ grpId, actionName }) => {
     if (actionName === t('approvergroup.button.activate')) {
       const resActivate = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}/${grpId}/activate`, httpVerb.PATCH, null);
@@ -88,6 +91,7 @@ function ApproverList({ onActionSuccess }) {
       {
         id: 'checkbox',
         name: '',
+        showInMobileHeader: true,
         cell: (row) => (
           <CheckboxGroup
             id={'default'}
@@ -148,26 +152,28 @@ function ApproverList({ onActionSuccess }) {
         center: true,
         name: t('approvergroup.table.action'),
         cell: (row) => <Actions row={row} />,
-        omit: !hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_APPROVER_GROUP)
+        omit: !hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_APPROVER_GROUP),
+        isAction: true
       }
     ];
   }, [data, userPermissions]);
 
   return (
     <div>
-      {selectedRows && (
-        <div className="selected-item-alert">
-          <p className="selected-item-text">
-            {1} {t('approvergroup.selected_items')}
-          </p>
+      <TableHeading
+        heading={t('approvergroup.table.listing.label')}
+        secondaryView={!!selectedRows}
+        secondaryViewHeading={`1 ${t('approvergroup.selected_items')}`}
+        secondaryViewControls={
           <Button
             variant="secondary"
             onClick={handleActivateDeactivate}
             disabled={!hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_APPROVER_GROUP)}>
-            {selectedRows.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
+            {selectedRows?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
           </Button>
-        </div>
-      )}
+        }
+        style={{ marginBottom: '24px' }}
+      />
 
       <CustomDataTable
         type={'normal'}
@@ -185,6 +191,8 @@ function ApproverList({ onActionSuccess }) {
         stickyHeader
         responsive
         pagination={true}
+        showCardView={showCardView}
+        defaultExpandedCardView={true}
         noDataComponent={
           <EmptyDataTable
             image={EmptyDataImage}

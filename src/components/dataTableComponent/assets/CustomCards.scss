@@ -1,0 +1,118 @@
+.dynamic-container {
+  padding: 1rem;
+  font-family: Arial, sans-serif;
+}
+
+/* Table styling */
+.dynamic-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.dynamic-table th,
+.dynamic-table td {
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.dynamic-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+/* Cards for smaller screens */
+
+.card-item {
+  margin-bottom: 0.5rem;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .dynamic-table {
+    display: none;
+  }
+
+  .dynamic-cards {
+    display: block;
+  }
+}
+
+.table-card-container {
+  flex-direction: column;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  .card-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+  }
+
+  .action-button {
+    align-self: flex-start;
+  }
+  .collapsed-detail {
+    display: flex;
+    gap: 4px;
+    padding: 5px;
+    white-space: normal;
+    flex-wrap: wrap;
+    word-break: break-word;
+  }
+
+  .card-details {
+    width: 100%;
+    padding: 5px;
+  }
+
+  .expanded-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    min-height: 42px;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 400;
+    border-bottom: 1px solid #bac5cc;
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .expanded-detail-content-key {
+      font-weight: 400;
+      max-width: 50%;
+      text-align: left;
+    }
+    .expanded-detail-content-value {
+      font-weight: 600;
+      max-width: 50%;
+      text-align: right !important;
+      word-break: break-word !important;
+      overflow: none !important;
+      white-space: normal !important;
+      display: inline !important;
+      //override table css
+      & > div,
+      & > a,
+      & span,
+      & p {
+        max-width: 100% !important;
+        text-align: right !important;
+        word-break: break-word !important;
+        overflow: none !important;
+        white-space: normal !important;
+        display: inline !important;
+      }
+    }
+  }
+}

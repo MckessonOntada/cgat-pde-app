@@ -242,7 +242,7 @@ const UserDetail = () => {
   };
 
   const groupedPermissions = groupPermissionsByCategory(data?.permissions || [], PERMISSIONS_ENUM);
-  const userFullName = `${data?.name.lastName} ${data?.name.firstName},${data?.name.middleName}`;
+  const userFullName = `${data?.name.lastName} ${data?.name.firstName}${data?.name.middleName ? `, ${data?.name.middleName}` : ''}`;
   const loggedUserId = Number(AuthUtils.getUserId());
 
   const prePermissions = data?.isActive && data?.id !== loggedUserId && !isImpersonateLoggedIn && !isSystemAdminView;

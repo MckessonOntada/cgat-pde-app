@@ -80,6 +80,7 @@ export const UserManagementES = {
   'userManagement.provision.message': 'S_User is not provisioned in Okta. {click} to Provision the User in Okta.',
   'userManagement.button.clickhere': 'S_Click here',
   'userManagement.create_user': 'S_Add User',
+  'userManagement.create_organization_user': 'S_Add Organization User',
   'userManagement.create_sysadmin': 'S_Add System Administrator',
   'userManagement.create_user.details_to_create_user': 'S_Please check the details to create a organization user.',
   'userManagement.create_user.details_to_create_sysadmin': 'S_Please complete the form to register a new system administrator.',
@@ -312,10 +313,11 @@ export const UserManagementES = {
   'popup.title.alert': 'S_Alert!',
   'popup.message.wishToContinueLoginAsThisUserQuestion': 'S_Do you wish to continue?',
   'popup.message.wishToContinueLoginAsThisUserDescription':
-    'S_You are about to perform actions on behalf of {{targetUser}}. Please confirm that you have you have verified the identity of the requesting user the necessary permissions and that you understand the implications of proceeding with this task',
+    'S_You are about to perform actions on behalf of {{targetUser}}. Please confirm that you have verified the identity of the requesting user the necessary permissions and that you understand the implications of proceeding with this task.',
   'popup.message.wishToContinueLoginAsThisUserCheckBoxConsent':
     'S_By confirming, you acknowledge that all actions taken will be logged and attributed to your account.',
   'userManagement.breadcrumb.admin': 'S_Admin',
   'popup.userDeactivation.question': 'S_Are you sure you wish to Deactivate this User?',
-  'userManagement.confirmationMessage': 'Confirmation message'
+  'userManagement.confirmationMessage': 'Confirmation message',
+
 };

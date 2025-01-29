@@ -1,9 +1,11 @@
 import React from 'react';
-import { Heading, Loader, CustomDataTable, Button } from '@mckesson/mcp-component-library';
+import { Heading, Loader, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import dayjs from 'dayjs';
 import { FormattedNumber } from 'react-intl';
 import { ReactComponent as PDFicon } from '@src/assets/svg/office-file-pdf.svg';
+import { CustomDataTable } from '@src/components/dataTableComponent';
+import useResponsiveView from '@src/hooks/useResponsiveView';
 
 const createColumns = (t, type) => {
   const commonColumns = [
@@ -77,6 +79,7 @@ const createColumns = (t, type) => {
       name: t('paymentInvoices.history.table.Actions'),
       minWidth: '144px',
       wrap: true,
+      isAction: true,
       cell: (props) => (
         <Button
           className="back-button-control"
@@ -84,8 +87,7 @@ const createColumns = (t, type) => {
           Icon={() => <PDFicon />}
           onClick={() => {}}
           size="md"
-          disabled={!props?.pdfAvailable}
-        >
+          disabled={!props?.pdfAvailable}>
           {t('paymentInvoices.CS.table.exportPdf')}
         </Button>
       )
@@ -149,8 +151,7 @@ const createColumns = (t, type) => {
           Icon={() => <PDFicon />}
           onClick={() => {}}
           size="md"
-          disabled={!props?.pdfAvailable}
-        >
+          disabled={!props?.pdfAvailable}>
           {t('paymentInvoices.CS.table.exportPdf')}
         </Button>
       )
@@ -162,10 +163,12 @@ const createColumns = (t, type) => {
 
 function ConfirmationTable({ invoiceData, creditData }) {
   const { t } = useTranslate();
+  const showCardView = useResponsiveView();
+
   return (
     <>
       <Heading as="h1" fontWeight="600">
-        {t('paymentInvoices.table.invoiceHeading')}
+        {t('paymentInvoices.table.confirmationInvoiceHeading')}
       </Heading>
       <div className="details-table">
         <CustomDataTable
@@ -176,6 +179,8 @@ function ConfirmationTable({ invoiceData, creditData }) {
           onSortIconClick={() => {}}
           handleChangePage={() => {}}
           noDataComponent={'No invoice used in this payments'}
+          showCardView={showCardView}
+          // defaultExpandedCardView={true}
           progressComponent={
             <div
               style={{
@@ -184,8 +189,7 @@ function ConfirmationTable({ invoiceData, creditData }) {
                 display: 'flex',
                 height: '350px',
                 justifyContent: 'center'
-              }}
-            >
+              }}>
               <Loader variant="circular" />
             </div>
           }
@@ -204,6 +208,8 @@ function ConfirmationTable({ invoiceData, creditData }) {
           onSortIconClick={() => {}}
           handleChangePage={() => {}}
           noDataComponent={'No credit used in this payments'}
+          showCardView={showCardView}
+          defaultExpandedCardView={true}
           progressComponent={
             <div
               style={{
@@ -212,8 +218,7 @@ function ConfirmationTable({ invoiceData, creditData }) {
                 display: 'flex',
                 height: '350px',
                 justifyContent: 'center'
-              }}
-            >
+              }}>
               <Loader variant="circular" />
             </div>
           }

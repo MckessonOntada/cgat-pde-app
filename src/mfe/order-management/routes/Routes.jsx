@@ -17,6 +17,10 @@ import ProtectedRoute from '@src/routes/ProtectedRoute';
 import { CONFIG_MODULE_ROUTES } from '../pages/system-configuration/constants';
 import ManageCatalog from '../pages/system-configuration/manage-catalog';
 import { OrgAccountSelectionProvider } from '../components/orgAccountSelection/context/OrgAccountSelectionContext';
+import { CatalogProvider } from '../pages/system-configuration/manage-catalog/context/CatalogContext';
+import ManageCatalogRoute from '../pages/system-configuration/manage-catalog/routes/Routes';
+import ManageMaterial from '../pages/system-configuration/manageMaterial/ManageMaterial';
+import { ManageMaterialProvider } from '../context/ManageMaterialContext';
 import Questionnaire from '../questionnaire';
 import { QuestionnaireProvider } from '../context/QuestionnaireContext';
 
@@ -94,13 +98,19 @@ function OrderManagementRoutes() {
           </ProtectedRoute>
         }
       />
-
-      <Route path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_MATERIAL}`} element={<div>Manage Material</div>} />
       <Route
-        path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_CATALOG}`}
+        path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_MATERIAL}`}
+        element={
+          <ManageMaterialProvider>
+            <ManageMaterial />
+          </ManageMaterialProvider>
+        }
+      />
+      <Route
+        path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_CATALOG}/*`}
         element={
           <OrgAccountSelectionProvider showAccountsSelect={true}>
-            <ManageCatalog />
+            <ManageCatalogRoute />
           </OrgAccountSelectionProvider>
         }
       />

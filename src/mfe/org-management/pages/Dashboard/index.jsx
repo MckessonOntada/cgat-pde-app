@@ -102,7 +102,7 @@ function DashboardPage() {
 
       <div className="MCP-module-body">
         <div className="MCP-panel-container">
-          <div className="MCP-panel-container">
+          <div className="MCP-CardContainer">
             <CommonFilters
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}
@@ -110,7 +110,6 @@ function DashboardPage() {
               searchPlaceholder={t('orgManagement.org.placeholder')}
             />
           </div>
-          <Heading as="h2">{t('orgManagement.org_list')}</Heading>
           <OrgList />
         </div>
       </div>

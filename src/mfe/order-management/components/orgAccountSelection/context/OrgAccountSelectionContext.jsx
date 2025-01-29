@@ -18,13 +18,14 @@ export const useOrgAccountSelectionContext = () => {
 
 const ACCOUNTS_PER_SEARCH = 20;
 
-export const OrgAccountSelectionProvider = ({ children, enableOrg =true, enableAcct = true }) => { 
+export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enableAcct = true }) => {
   const dispatch = useDispatch();
   const [searchOrgText, setSearchOrgText] = useState('');
   const [selectedOrganization, setSelectedOrganization] = useState(null);
   const [searchAccountText, setSearchAccountText] = useState('');
   const [selectedAccount, setSelectedAccount] = useState(null);
-
+  const [options, setOptions] = useState([]);
+  const [accountOptions, setAccountOptions] = useState();
   // Organization List configuration
   const orgParams = () => {
     return { pageNo: 0, pageSize: ACCOUNTS_PER_SEARCH, query: searchOrgText };
@@ -39,12 +40,25 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg =true, enableA
       );
       if (response) {
         const { content, totalElements, totalPages } = response.data;
+        if (content.length > 0) {
+          let data = content.map((item, index) => ({
+            index: index + 1,
+            label: item.name,
+            value: item.id
+          }));
+          if (selectedOrganization) {
+            let findOrg = data.find((item) => item.id == selectedOrganization.id);
+            !findOrg && data.unshift({ index: 0, label: selectedOrganization.name, value: selectedOrganization.id });
+          }
+
+          setOptions(data);
+        }
         return content;
       }
       return [];
     },
     refetchOnWindowFocus: false,
-    enabled : !!enableOrg
+    enabled: !!enableOrg
   });
   const debounceOrgSearch = useCallback(() => {
     let timeoutId;
@@ -53,7 +67,7 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg =true, enableA
       timeoutId = setTimeout(() => setSearchOrgText(text), 500);
     };
   }, []);
-  const searchOrgList = debounceOrgSearch(); 
+  const searchOrgList = debounceOrgSearch();
   // Accounts List config
   const accountParams = () => {
     return {
@@ -73,7 +87,16 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg =true, enableA
         {}
       );
       if (response) {
-        const { content, totalElements, totalPages } = response.data; 
+        const { content, totalElements, totalPages } = response.data;
+        let _opt =
+          content.map((item, index) => ({
+            ...item,
+            label: item.accountName,
+            value: item.accountNumber,
+            isChecked: index == 0 ? true : false
+          })) || [];
+        setAccountOptions(_opt);
+        setSelectedAccount(_opt);
         return content || [];
       }
       return [];
@@ -103,7 +126,11 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg =true, enableA
     accountsList: accountsList || [],
     searchAccountList,
     selectedAccount,
-    setSelectedAccount
+    setSelectedAccount,
+    options,
+    setOptions,
+    accountOptions,
+    setAccountOptions
   };
   return <orgAccountsSelectionContext.Provider value={contextValue}>{children}</orgAccountsSelectionContext.Provider>;
 };

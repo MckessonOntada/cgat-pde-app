@@ -4,14 +4,16 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { usePaymentMethods } from '@src/mfe/finance-management/context/PaymentMethodsContext';
-import { Loader, CustomDataTable } from '@mckesson/mcp-component-library';
+import { Loader } from '@mckesson/mcp-component-library';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FinanceUtils } from '@src/util/FinanceUtil';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import { CustomDataTable } from '@src/components/dataTableComponent';
 
 export default function PaymentHistoryTable() {
   const { t } = useTranslate();
   const { bankAccountsData, isFetching, isError, applyBankSort, bankPaginationConfig, setBanksTablePageNumber } = usePaymentMethods();
-
+  const showCardView = useResponsiveView();
   const columns = [
     {
       name: t('paymentInvoices.paymentMethods.table.bankAccount.bankName'),
@@ -19,6 +21,7 @@ export default function PaymentHistoryTable() {
       sortable: true,
       wrap: true,
       minWidth: '112px',
+      showInMobileHeader: true,
       cell: (props) => <div className="cellEllipse">{`${props.name}`}</div>
     },
     {
@@ -82,6 +85,8 @@ export default function PaymentHistoryTable() {
       paginationTotalRecorsMessage={t('orgManagement.results')}
       paginationRecordsPerPageMessage={t('orgManagement.per_page')}
       progressPending={isFetching}
+      showCardView={showCardView}
+      defaultExpandedCardView={true}
       noDataComponent={
         <EmptyDataTable
           isLoading={isFetching}

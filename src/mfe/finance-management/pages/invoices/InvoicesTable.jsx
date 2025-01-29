@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Badge, Button, CustomDataTable, Loader } from '@mckesson/mcp-component-library';
+import { Badge, Button, Loader } from '@mckesson/mcp-component-library';
 import { Link } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
@@ -13,12 +13,16 @@ import dayjs from 'dayjs';
 import { DUE_STATUS } from './InvoiceConstants';
 import { PATHS } from '../../routes';
 import CommonUtils from '@src/util/CommonUtils';
+import { CustomDataTable } from '@src/components/dataTableComponent';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
 export default function InvoicesTable() {
   const { t } = useTranslate();
   const [includeinvoiceData, setIncludeinvoiceData] = useState([]);
   const navigate = useNavigate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError } = usePaymentInvoices();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel } = usePaymentInvoices();
+  const showCardView = useResponsiveView();
 
   const getindeterminate = () => {
     const allDataIncluded = data.every((invoice) =>
@@ -98,7 +102,8 @@ export default function InvoicesTable() {
       sortable: false,
       cell: (row, index) => renderCheckBox(row, index),
       selector: (row) => row.MRN,
-      width: '50px'
+      width: '50px',
+      showInMobileHeader: true
     },
     {
       name: t('paymentInvoices.history.table.billNumber'),
@@ -107,10 +112,12 @@ export default function InvoicesTable() {
       sortable: true,
       wrap: true,
       maxWidth: '140px',
+      showInMobileHeader: true,
+      showColumnNameInHeader: true,
       cell: (props) => (
         <div className="cellEllipse">
           <Link
-            style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
+            style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
             to={`/record/${PATHS.invoices}/${props?.billNumber}/details`}
             state={{ invoices: [...[], props] }}>{`${props?.billNumber || ''}`}</Link>
         </div>
@@ -123,6 +130,8 @@ export default function InvoicesTable() {
       maxWidth: '140px',
       sortable: true,
       wrap: true,
+      showInMobileHeader: true,
+      mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
       cell: (props) => <div>{props?.soldToSite || '-'}</div>
     },
     {
@@ -173,6 +182,7 @@ export default function InvoicesTable() {
       center: true,
       wrap: true,
       id: 'status',
+      showInMobileHeader: true,
       cell: (props) => (
         <div className="status-container">
           {props?.status ? (
@@ -206,15 +216,11 @@ export default function InvoicesTable() {
     //   sortable: true,
     //   id: 'actions',
     //   wrap: true,
+    //   showInMobileHeader: true,
+    //   isAction: true,
     //   cell: (props) => (
     //     <div className="cellEllipse actionIcon">
-    //       <DropdownMenu
-    //         anchorEl={<ActionIcon />}
-    //         handleSelect={() => {}}
-    //         options={dataElement}
-    //         optionsAlign="left"
-    //         aria-label="Profile options"
-    //       />
+    //       <DropdownMenu anchorEl={<ActionIcon />} handleSelect={() => {}} options={[]} optionsAlign="left" aria-label="Profile options" />
     //     </div>
     //   )
     // }
@@ -228,9 +234,16 @@ export default function InvoicesTable() {
   };
   return (
     <React.Fragment>
-      {includeinvoiceData.length > 0 && (
-        <div className="selected-invoices">
-          <div className="label">{`${includeinvoiceData.length} ${t('paymentInvoices.history.table.selectedAccount')}`}</div>
+      <TableHeading
+        heading={t('paymentInvoices.table.invoiceHeading')}
+        controls={
+          <Button variant="secondary" onClick={() => exportExcel()} size="sm">
+            {t('paymentInvoices.CS.ExportExcel')}
+          </Button>
+        }
+        secondaryView={includeinvoiceData.length > 0}
+        secondaryViewHeading={`${includeinvoiceData.length} ${t('paymentInvoices.history.table.selectedAccount')}`}
+        secondaryViewControls={
           <Button
             variant="secondary"
             onClick={() => {
@@ -239,8 +252,8 @@ export default function InvoicesTable() {
             size="sm">
             {t('paymentInvoices.Details.ReviewAndPay')}
           </Button>
-        </div>
-      )}
+        }
+      />
 
       <CustomDataTable
         id="my-data-table"
@@ -257,6 +270,8 @@ export default function InvoicesTable() {
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         progressPending={isFetching}
+        showCardView={showCardView}
+        defaultExpandedCardView={false}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}

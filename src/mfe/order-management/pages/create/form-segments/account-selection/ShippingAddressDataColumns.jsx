@@ -7,6 +7,7 @@ export const createColumns = (t, navigate, selectedShippingAddress, setSelectedS
     selector: () => {},
     sortable: false,
     width: '5%',
+    showInMobileHeader: true,
     cell: (props) => {
       return (
         <span className="MCP-table-cell radio-button-wrapper">
@@ -37,6 +38,8 @@ export const createColumns = (t, navigate, selectedShippingAddress, setSelectedS
     sortable: false,
     width: '45%',
     minWidth: '240px',
+    showInMobileHeader: true,
+    mobileStyles: { fontWeight: 700 },
     cell: (props) => <span className={'MCP-table-cell'}> {props.address}</span>
   },
   {
@@ -45,6 +48,8 @@ export const createColumns = (t, navigate, selectedShippingAddress, setSelectedS
     selector: () => {},
     sortable: false,
     width: '25%',
+    showInMobileHeader: true,
+    showColumnNameInHeader: true,
     cell: (props) => <span className={'MCP-table-cell'}> {props.accountNumber}</span>
   },
   {

@@ -74,7 +74,7 @@ const OrderStatus = () => {
         }
       />
       <div className={'MCP-module-body'}>
-        <div className="MCP-panel-container">
+        <div className="MCP-CardContainer">
           <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
             <DetailSegment label={t('labels.orderId')} value={orderId} />
             <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
@@ -105,7 +105,7 @@ const OrderStatus = () => {
         </div>
 
         {!isApproved && (
-          <div className="MCP-panel-container">
+          <div className="MCP-CardContainer">
             <div className={`${styles.orderFlow}`}>
               <h4 className={styles.customSecondaryHeading}>{t('labels.whatToExpect')}</h4>
               <OrderFlowSteps showApproval={!isApproved} />
