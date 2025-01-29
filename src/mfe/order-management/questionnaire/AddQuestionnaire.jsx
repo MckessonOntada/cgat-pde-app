@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Heading, Switch } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
 import { ReactComponent as ArrowLeftIcon } from '@src/assets/svg/arrow-left.svg';
 import { Field, Formik, Form, FieldArray } from 'formik';
 import Components from '@src/components/form/Components';
@@ -49,7 +49,7 @@ function AddQuestionnaire() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const [initialFormState, setInitialFormState] = React.useState(INITIAL_FORM_STATE);
-  console.log(id);
+
   const {
     mutate: createQuestionnaire,
     isLoading,
@@ -60,12 +60,61 @@ function AddQuestionnaire() {
     onError: (error) => {}
   });
 
-  const { data: questionnaireDetails, refetch } = useQuery({
+  const {
+    mutate: deactivateQuestionnaire,
+    isLoading: isDeactivating,
+    isError: deactivateError,
+    data: deactiavateResponse
+  } = useMutation(async (id) => QuestionnaireService.deactivateQuestionnaireById(id), {
+    onSuccess: (response) => {},
+    onError: (error) => {}
+  });
+
+  const {
+    data: _questionnaireDetails,
+    isFetching: isFetchingQuestionnaireDetails,
+    refetch: getQuestionnaireDetails
+  } = useQuery({
     queryKey: ['questionnaire-module', 'fetch-by-id', id],
     queryFn: async () => QuestionnaireService.getQuestionnaireById(id),
     enabled: Boolean(id),
     refetchOnWindowFocus: false,
-    onSuccess: (result) => {},
+    onSuccess: (result) => {
+      if (result) {
+        const { templateName, questions } = result;
+
+        const formattedQuestions = questions.map((question) => {
+          const { type, text, additionalAttributes, isDocumentRequired, isMandatory } = question;
+          const _question = { type, checks: [] };
+          if (isDocumentRequired) {
+            _question.checks.push('isDocumentRequired');
+          }
+          if (isMandatory) {
+            _question.checks.push('isMandatory');
+          }
+
+          _question.caption = { ...text, activeLanguage: LANGUAGE.ENGLISH };
+
+          if (additionalAttributes?.options && Array.isArray(additionalAttributes.options)) {
+            _question.options = additionalAttributes.options.map((option) => ({
+              ...option,
+              activeLanguage: LANGUAGE.ENGLISH
+            }));
+          }
+
+          return _question;
+        });
+
+        const existingInitialState = {
+          templateName,
+          questions: formattedQuestions
+        };
+
+        console.log(existingInitialState);
+
+        setInitialFormState(existingInitialState);
+      }
+    },
     onError: (error) => {}
   });
 
@@ -84,7 +133,7 @@ function AddQuestionnaire() {
             es: Yup.string(),
             activeLanguage: Yup.string().default(LANGUAGE.ENGLISH)
           }),
-        questionOptions: Yup.array()
+        options: Yup.array()
           .of(
             Yup.object().shape({
               en: Yup.string(),
@@ -109,9 +158,7 @@ function AddQuestionnaire() {
   React.useEffect(() => {
     if (id) {
       setMode(MODE.VIEW);
-      // fetch questionnaire details by id
-      // re-structure response
-      // assign it initial state
+      getQuestionnaireDetails();
     }
   }, []);
 
@@ -127,17 +174,17 @@ function AddQuestionnaire() {
           [QUESTION_TYPE.RADIO_BUTTON]: 2,
           [QUESTION_TYPE.CHECKBOX]: 1
         };
-        if (!question.questionOptions || question.questionOptions.length < minimumOptionsIndex[question.type]) {
+        if (!question.options || question.options.length < minimumOptionsIndex[question.type]) {
           alert('Options are enough');
           areQuestionValid = false;
         }
 
-        question.questionOptions.forEach((option, optionIndex) => {
+        question.options.forEach((option, optionIndex) => {
           if (!option.en) {
             areQuestionValid = false;
-            setFieldValue(`questions.${questionIndex}.questionOptions.${optionIndex}.activeLanguage`, LANGUAGE.ENGLISH);
+            setFieldValue(`questions.${questionIndex}.options.${optionIndex}.activeLanguage`, LANGUAGE.ENGLISH);
             setFieldError(`templateName`, 'at least requires english text');
-            //questions.${questionIndex}.questionOptions.${optionIndex}
+            //questions.${questionIndex}.options.${optionIndex}
           }
         });
       }
@@ -149,7 +196,7 @@ function AddQuestionnaire() {
     payload.templateName = templateName;
     if (questions && Array.isArray(questions)) {
       payload.questions = questions.map((question) => {
-        const { checks, questionOptions, caption, type } = question;
+        const { checks, options, caption, type } = question;
         const formattedQuestion = {
           type: type,
           text: {
@@ -162,9 +209,9 @@ function AddQuestionnaire() {
             formattedQuestion[check] = true;
           });
 
-        if (questionOptions)
+        if (options)
           formattedQuestion.additionalAttributes = {
-            options: questionOptions.map(({ en, es }) => ({ en, es }))
+            options: options.map(({ en, es }) => ({ en, es }))
           };
 
         return formattedQuestion;
@@ -174,38 +221,38 @@ function AddQuestionnaire() {
     createQuestionnaire(payload);
   };
 
-  const deactivateQuestionnaire = () => {};
-
   const handleOnDeactivateQuestionnaire = () => {
-    if (selectedRows || selectedRows.length <= 0) {
-      const state = {};
-      state.title = 'Deactivate?';
-      state.body = (
-        <div className="MCP-modal-body">
-          <p>Do you want to deactivate selected questionnaire templates?</p>
-        </div>
-      );
-      state.footer = (
-        <div className="controls">
-          <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
-            Cancel
-          </Button>
-          <Button
-            size="md"
-            variant="primary"
-            onClick={() => {
-              deactivateQuestionnaire();
-              dispatch(closeModal());
-            }}>
-            Yes
-          </Button>
-        </div>
-      );
-      dispatch(openModal(state));
-    }
+    const state = {};
+    state.title = 'Deactivate?';
+    state.body = (
+      <div className="MCP-modal-body">
+        <p>Do you want to deactivate selected questionnaire templates?</p>
+      </div>
+    );
+    state.footer = (
+      <div className="controls">
+        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+          Cancel
+        </Button>
+        <Button
+          size="md"
+          variant="primary"
+          onClick={() => {
+            deactivateQuestionnaire(id);
+            dispatch(closeModal());
+          }}>
+          Yes
+        </Button>
+      </div>
+    );
+    dispatch(openModal(state));
   };
 
   const readOnly = mode === MODE.VIEW;
+
+  if (id && isFetchingQuestionnaireDetails) {
+    return <Loader variant="circular" />;
+  }
 
   return (
     <div>
@@ -281,13 +328,14 @@ function AddQuestionnaire() {
                                             fieldlabel={t('label.type')}
                                             placeholder=" "
                                             isRequired
+                                            isReadOnly={readOnly}
                                             size="lg"
                                             onChange={(selectedType) => {
                                               setFieldValue(`questions[${index}].type`, selectedType);
                                               if (selectedType === QUESTION_TYPE.INPUT) {
-                                                setFieldValue(`questions[${index}].questionOptions`, null);
+                                                setFieldValue(`questions[${index}].options`, null);
                                               } else {
-                                                setFieldValue(`questions[${index}].questionOptions`, [
+                                                setFieldValue(`questions[${index}].options`, [
                                                   { en: '', es: '', activeLanguage: 'en' },
                                                   { en: '', es: '', activeLanguage: 'en' }
                                                 ]);
@@ -310,7 +358,7 @@ function AddQuestionnaire() {
                                               variant="tertiary"
                                               color="error"
                                               type="button"
-                                              disabled={values['questions'].length === 1}
+                                              disabled={values['questions'].length === 1 || readOnly}
                                               onClick={() => {
                                                 removeQuestion(index);
                                               }}>
@@ -324,12 +372,14 @@ function AddQuestionnaire() {
                                           <Field
                                             name={`questions.${index}.caption['${question.caption.activeLanguage}']`}
                                             fieldlabel={t('label.question')}
+                                            isReadOnly={readOnly}
                                             labelControls={
                                               <Field
                                                 name={`questions.${index}.caption.activeLanguage`}
                                                 options={['en', 'es']}
                                                 size="small"
                                                 value={question['caption']['activeLanguage']}
+                                                isReadOnly={readOnly}
                                                 component={Components['toggleButton']}
                                               />
                                               // <ToggleButton  onChange={handleOnLanguageChange} />
@@ -341,30 +391,32 @@ function AddQuestionnaire() {
                                           />
                                         </div>
                                       </div>
-                                      {question['type'] && question.questionOptions && (
+                                      {question['type'] && question.options && (
                                         <div className="template-form">
                                           {
-                                            <FieldArray name={`questions.${index}.questionOptions`}>
+                                            <FieldArray name={`questions.${index}.options`}>
                                               {({ push: addOption, remove: removeOption }) => {
                                                 return (
                                                   <div className="options" key={`question-${index}`}>
                                                     <div className="option-list">
-                                                      {question['questionOptions']?.map((option, optionIndex) => {
+                                                      {question['options']?.map((option, optionIndex) => {
                                                         return (
                                                           <div key={`question-${index}-option-${optionIndex}`}>
                                                             <div className="grid grid-gap-24 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
                                                               <div className="styled-form-field">
                                                                 <Field
-                                                                  name={`questions.${index}.questionOptions.${optionIndex}.${option.activeLanguage}`}
+                                                                  name={`questions.${index}.options.${optionIndex}.${option.activeLanguage}`}
                                                                   label={t('placeholder.optionItr') + (optionIndex + 1)}
                                                                   placeholder={t('placeholder.optionItr')}
                                                                   component={Components['input']}
                                                                   isRequired
+                                                                  isReadOnly={readOnly}
                                                                   labelControls={
                                                                     <Field
-                                                                      name={`questions.${index}.questionOptions.${optionIndex}.activeLanguage`}
+                                                                      name={`questions.${index}.options.${optionIndex}.activeLanguage`}
                                                                       options={['en', 'es']}
                                                                       size="small"
+                                                                      isReadOnly={readOnly}
                                                                       value={option['activeLanguage']}
                                                                       component={Components['toggleButton']}
                                                                     />
@@ -380,7 +432,7 @@ function AddQuestionnaire() {
                                                                     variant="tertiary"
                                                                     color="error"
                                                                     type="button"
-                                                                    disabled={question['questionOptions'].length === 2}
+                                                                    disabled={question['options'].length === 2 || readOnly}
                                                                     onClick={() => {
                                                                       removeOption(optionIndex);
                                                                     }}>
@@ -400,6 +452,7 @@ function AddQuestionnaire() {
                                                           size="md"
                                                           variant="tertiary"
                                                           type="button"
+                                                          disabled={readOnly}
                                                           onClick={() => {
                                                             addOption({
                                                               value: ''
@@ -430,6 +483,7 @@ function AddQuestionnaire() {
                                             }
                                           ]}
                                           size="md"
+                                          readonly={readOnly}
                                           component={CheckBox}
                                         />
                                       </div>
@@ -440,10 +494,11 @@ function AddQuestionnaire() {
                                   <div className="styled-icon-button">
                                     <Button
                                       onClick={() => {
-                                        addQuestion({ type: '', caption: '', questionOptions: [] });
+                                        addQuestion({ type: '', caption: '', options: [] });
                                       }}
                                       variant="tertiary"
                                       size="md"
+                                      disabled={readOnly}
                                       Icon={PlusIcon}>
                                       {t('button.caption.addQuestion')}
                                     </Button>

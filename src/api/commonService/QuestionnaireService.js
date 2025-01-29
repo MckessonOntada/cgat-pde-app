@@ -29,6 +29,11 @@ async function getQuestionnaireById(id) {
 }
 
 async function deactivateQuestionnaireById(id) {
+  const url = `${ApiRoutes.QUESTIONNAIRE()}/${id}/deactivate`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, null);
+  if (res.data) {
+    return res.data;
+  }
   return {};
 }
 
@@ -40,7 +45,8 @@ const QuestionnaireService = Object.freeze({
   getQuestionnaires,
   createQuestionnaire,
   applyQuestionnaireConfig,
-  getQuestionnaireById
+  getQuestionnaireById,
+  deactivateQuestionnaireById
 });
 
 export default QuestionnaireService;

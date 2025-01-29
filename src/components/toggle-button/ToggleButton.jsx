@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './ToggleButton.module.scss';
 
-const ToggleButton = ({ options = [], value, size = 'medium', onChange }) => {
+const ToggleButton = ({ options = [], value, isReadOnly, size = 'medium', onChange }) => {
   const [activeOption, setActiveOption] = useState(value || options[0]);
 
   React.useEffect(() => {
@@ -9,9 +9,11 @@ const ToggleButton = ({ options = [], value, size = 'medium', onChange }) => {
   }, [value]);
 
   const handleOptionClick = (option) => {
-    setActiveOption(option);
-    if (onChange) {
-      onChange(option);
+    if (!isReadOnly) {
+      setActiveOption(option);
+      if (onChange) {
+        onChange(option);
+      }
     }
   };
 

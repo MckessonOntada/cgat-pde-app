@@ -10,6 +10,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useQuestionnaire } from '../context/QuestionnaireContext';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { useMultiCheckBox } from './MultiSelectDatatable';
+import { ROUTE_CONFIG } from './constants';
 
 function TemplateList() {
   const { t } = useTranslate();
@@ -88,7 +89,7 @@ function TemplateList() {
       minWidth: '160px',
       cell: (props) => (
         <div className="styled-icon-button error-button">
-          <Button onClick={() => handleOnViewClick(props)} icon={ViewIcon} variant="secondary" size="md">
+          <Button onClick={() => navigate(`${ROUTE_CONFIG.VIEW_QUESTIONNAIRE}/${props.id}`)} icon={ViewIcon} variant="secondary" size="md">
             View
           </Button>
         </div>
@@ -130,7 +131,7 @@ function TemplateList() {
         <CustomDataTable
           id="questionnaire-template-listing"
           columns={columns}
-          data={data || []}
+          data={data?.content || []}
           handleChangePage={handleOnPageChange}
           onSortIconClick={handleOnSort}
           pagination={true}
