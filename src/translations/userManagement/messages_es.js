@@ -80,6 +80,7 @@ export const UserManagementES = {
   'userManagement.provision.message': 'S_User is not provisioned in Okta. {click} to Provision the User in Okta.',
   'userManagement.button.clickhere': 'S_Click here',
   'userManagement.create_user': 'S_Add User',
+  'userManagement.create_organization_user': 'S_Add Organization User',
   'userManagement.create_sysadmin': 'S_Add System Administrator',
   'userManagement.create_user.details_to_create_user': 'S_Please check the details to create a organization user.',
   'userManagement.create_user.details_to_create_sysadmin': 'S_Please complete the form to register a new system administrator.',
@@ -317,5 +318,6 @@ export const UserManagementES = {
     'S_By confirming, you acknowledge that all actions taken will be logged and attributed to your account.',
   'userManagement.breadcrumb.admin': 'S_Admin',
   'popup.userDeactivation.question': 'S_Are you sure you wish to Deactivate this User?',
-  'userManagement.confirmationMessage': 'Confirmation message'
+  'userManagement.confirmationMessage': 'Confirmation message',
+
 };
