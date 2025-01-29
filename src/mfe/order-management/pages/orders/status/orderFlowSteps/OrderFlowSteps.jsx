@@ -3,7 +3,7 @@ import styles from './OrderFlowSteps.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 
-function OrderFlowSteps({ showApproval = true }) {
+function OrderFlowSteps() {
   const { t } = useTranslate();
   const { formState } = useManageOrder();
 
@@ -19,8 +19,8 @@ function OrderFlowSteps({ showApproval = true }) {
             <div className={styles.orderListItem} key={index}>
               <div className={styles.orderListCount}>{index + 1}</div>
               <div className={styles.orderListContent}>
-                <div className={styles.orderListLabel}>{item.label}</div>
-                <div className={styles.orderListdescription}>{item.description}</div>
+                <div className={styles.orderListLabel}>{item.stepName}</div>
+                <div className={styles.orderListDescription}>{item.description}</div>
               </div>
             </div>
           ))}

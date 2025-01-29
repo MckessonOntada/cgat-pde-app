@@ -19,8 +19,7 @@ const OrderStatus = () => {
   const navigate = useNavigate();
   const { isFetching, formState, setCurrentOrder } = useManageOrder();
   const location = useLocation();
-  const { isApproved = false } = location.state || {};
-
+  const orderStatus = formState.activeRecord?.status;
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ORDER_SUMMARY);
   }, []);
@@ -57,13 +56,13 @@ const OrderStatus = () => {
               <IconTick />
             </div>
             <div className={styles.content}>
-              {!isApproved && (
+              {orderStatus && orderStatus !== 'SUBMITTED' && (
                 <>
                   <Heading as={'h1'}>{t('headings.orderSubmitted')}</Heading>
                   <p className={styles.orderSubmitDescription}>{t('messages.orderSuccessApprovalPending')}</p>
                 </>
               )}
-              {isApproved && (
+              {orderStatus === 'SUBMITTED' && (
                 <>
                   <Heading as={'h1'}>{t('headings.orderApproved')}</Heading>
                   <p className={styles.orderSubmitDescription}>{t('messages.orderApprovalSuccess')}</p>
@@ -104,7 +103,7 @@ const OrderStatus = () => {
           </div>
         </div>
 
-        {!isApproved && <OrderFlowSteps showApproval={!isApproved} />}
+        {orderStatus === 'SUBMITTED' && <OrderFlowSteps />}
       </div>
       <div className={'controls'}>
         <Button size="md" variant="secondary" disabled={true}>
