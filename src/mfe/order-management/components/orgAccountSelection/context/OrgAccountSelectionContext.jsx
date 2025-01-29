@@ -88,8 +88,15 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
       );
       if (response) {
         const { content, totalElements, totalPages } = response.data;
-        let _opt = content.map((item, index) => ({ ...item, label: item.accountName, value: item.accountNumber, isChecked: false })) || [];
+        let _opt =
+          content.map((item, index) => ({
+            ...item,
+            label: item.accountName,
+            value: item.accountNumber,
+            isChecked: index == 0 ? true : false
+          })) || [];
         setAccountOptions(_opt);
+        setSelectedAccount(_opt);
         return content || [];
       }
       return [];
