@@ -27,13 +27,13 @@ export const ConfigConstants = [
       { label: 'manageMaterial.drawer.details.configuration.actions.delete', id: 'delete', icon: 'delete' }
     ],
     sectionData: [
-      { label: 'Template 1', value: 'template1' , translation: false},
-      { label: 'Template 2', value: 'template2' , translation: false}
+      { label: 'Template 1', value: 'template1', translation: false },
+      { label: 'Template 2', value: 'template2', translation: false }
     ]
   },
   {
     sectionHeading: 'manageMaterial.drawer.details.configuration.heading.material',
-    actions: [{ label: 'manageMaterial.drawer.details.configuration.actions.delete', id: 'delete', icon: 'delete' }],
+    actions: [{ label: 'manageMaterial.drawer.details.configuration.actions.delete', id: 'delete-materialConfig', icon: 'delete' }],
     sectionData: [
       { label: 'manageMaterial.drawer.details.configuration.body.patientInfoRequired', value: 'isPatientInformationRequired' },
       { label: 'manageMaterial.drawer.details.configuration.body.coiIdRequired', value: 'isCoiIdRequired' }
