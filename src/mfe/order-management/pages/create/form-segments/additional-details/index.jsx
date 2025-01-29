@@ -82,7 +82,7 @@ function AdditionalDetails() {
   const [variant, setVariant] = React.useState();
   const { showAlert } = useAlert();
   const alertContainerId = 'additionalDetails-alert-container';
-  const { isCoiIdRequired } = formState?.activeRecord || {};
+  const { isCoiIdRequired, patientDetailsRequired } = formState?.activeRecord || {};
   const formFields = getFormFields(t, { isCoiIdRequired });
   const validationSchema = getValidationSchema(t, { isCoiIdRequired });
 
@@ -308,7 +308,11 @@ function AdditionalDetails() {
 
                 <div className="controls">
                   <Button size="md" variant="secondary" onClick={handleOnBack}>
-                    {isEdit ? t('captions.btnBack') : t('captions.btnBacktoPatientDetails')}
+                    {isEdit
+                      ? t('captions.btnBack')
+                      : patientDetailsRequired
+                      ? t('captions.btnBacktoPatientDetails')
+                      : t('captions.btnBacktoAccountSelection')}
                   </Button>
                   <Button
                     size="md"
