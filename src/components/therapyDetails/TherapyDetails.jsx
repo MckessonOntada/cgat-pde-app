@@ -105,7 +105,7 @@ function DetailsPanel({ details, handleSelect, onClose, therapyData, configurati
       <div className={styles.drawerBodyContent}>
         {therapyData?.map((section, index) => (
           <div key={index}>
-            <Heading as="h4">{t(section.sectionHeading)}</Heading>
+            <Heading as="h3">{t(section.sectionHeading)}</Heading>
             <div>{renderDetails(section.sectionData, details)}</div>
           </div>
         ))}
@@ -113,7 +113,7 @@ function DetailsPanel({ details, handleSelect, onClose, therapyData, configurati
           configurationData?.map((section, index) => (
             <div key={index}>
               <div className={styles.configurationHeader}>
-                <Heading as="h4">{t(section.sectionHeading)}</Heading>
+                <Heading as="h3">{t(section.sectionHeading)}</Heading>
                 <div className={styles.actions}>
                   {section.actions?.map((action) =>
                     action.icon === 'delete' ? (
