@@ -102,7 +102,7 @@ function DashboardPage() {
 
       <div className="MCP-module-body">
         <div className="MCP-panel-container">
-          <div className="MCP-panel-container">
+          <div className="MCP-CardContainer">
             <CommonFilters
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}

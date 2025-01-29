@@ -197,7 +197,7 @@ function TherapySelection() {
         <div id={alertContainerId} />
         <div className={styles.wrapper}>
           <div className="MCP-panel-container">
-            <div className="MCP-panel-container">
+            <div className="MCP-CardContainer">
               <CommonFilters
                 onApplyFilters={applyFilters}
                 onClearFilters={clearFilters}

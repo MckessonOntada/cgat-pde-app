@@ -73,7 +73,7 @@ export default function mapQuestionnaire() {
       {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
       <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
         {!isMaterial && <OrgAccountsSelect handleAccountChange={() => {}} showAccountsSelect={!!isCatalog} />}
-        <div className="MCP-panel-container">
+        <div className="MCP-CardContainer">
           <CommonFilters
             onApplyFilters={applyFilters}
             onClearFilters={clearFilters}

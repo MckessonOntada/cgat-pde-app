@@ -211,3 +211,7 @@ h2 {
   font-size: 2em !important;
   font-weight: 600;
 }
+
+div[role="columnheader"][disabled] {
+  color: black;
+}

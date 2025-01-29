@@ -262,7 +262,7 @@ const AccountSelection = () => {
                   </div>
                 }
               />
-              <div className="MCP-panel-container">
+              <div className="MCP-CardContainer">
                 <div className={'grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3'}>
                   <div className={styles.account}>
                     <div className={styles.accountDetails}>
@@ -322,7 +322,7 @@ const AccountSelection = () => {
               disabled={!(inventoryType && ['S', 'I'].includes(inventoryType))}>
               {t('captions.btnInventoryCheck')}
             </Button>
-            <div className='controls'>
+            <div className="controls">
               <Button size="md" onClick={handleOnBack} variant="secondary">
                 {isEdit ? t('captions.btnBack') : t('captions.btnBacktoTherapySelection')}
               </Button>

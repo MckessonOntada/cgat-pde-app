@@ -83,7 +83,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
             </button>
           </div>
 
-          <div className="MCP-panel-container">
+          <div className="MCP-CardContainer">
             <div className={styles.selectionBlock}>
               <p className={styles.caption}>{t('labels.pleaseSelectTheBelowProgram')}</p>
               <RadioGroup
@@ -97,7 +97,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
             </div>
           </div>
 
-          <div className="MCP-panel-container">
+          <div className="MCP-CardContainer">
             <div className={styles.selectionBlock}>
               <p>{t('labels.orderThroughBelowPrograms')}</p>
               <RadioGroup

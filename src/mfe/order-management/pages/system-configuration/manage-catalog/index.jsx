@@ -6,10 +6,12 @@ import CatalogDataTable from './pages/CatalogDataTable';
 import CommonFilters from '@src/components/Filters';
 import './manageCatalog.scss';
 import OrgAccountsSelect from '../../../components/orgAccountSelection/OrgAccountsSelect';
-import { CatalogProvider } from './context/CatalogContext';
+import { CatalogProvider, useCatalogContext } from './context/CatalogContext';
+import ViewConfiguration from './pages/viewConfiguration/ViewConfiguration';
 
 function ManageCatalog(props) {
   const { t } = useTranslate();
+  const { applyFilters, clearFilters } = useCatalogContext();
 
   const translatedBreadcrumbs = [
     {
@@ -29,25 +31,23 @@ function ManageCatalog(props) {
   }));
 
   return (
-    <CatalogProvider>
-      <div className="MCP-module-wrapper">
-        <Breadcrumbs items={translatedBreadcrumbs} />
-        <Heading as="h2">{t('dashboard.card.manage_catalog')}</Heading>
-        <div className="MCP-panel-container">
-          <OrgAccountsSelect handleAccountChange={() => {}} />
-          <div class="MCP-panel-container">
-            <CommonFilters
-              onApplyFilters={() => {}}
-              onClearFilters={() => {}}
-              additionalFilters={[]}
-              searchPlaceholder={t('paymentInvoices.filter.search')}
-              actualData={{}}
-            />
-          </div>
-          <CatalogDataTable />
+    <div className="MCP-module-wrapper">
+      <Breadcrumbs items={translatedBreadcrumbs} />
+      <Heading as="h2">{t('dashboard.card.manage_catalog')}</Heading>
+      <div className="MCP-panel-container">
+        <OrgAccountsSelect handleAccountChange={() => {}} />
+        <div class="MCP-panel-container">
+          <CommonFilters
+            onApplyFilters={applyFilters}
+            onClearFilters={clearFilters}
+            additionalFilters={[]}
+            searchPlaceholder={t('ManageCatalog.SearchByMaterialId')}
+            actualData={{}}
+          />
         </div>
+        <CatalogDataTable />
       </div>
-    </CatalogProvider>
+    </div>
   );
 }
 export default ManageCatalog;

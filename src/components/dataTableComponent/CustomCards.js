@@ -50,11 +50,11 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
     <div className="table-card-container" key={row.id} onClick={handleCardClick}>
       {(showDefaultData.length > 0 || actionItems.length > 0) && (
         <div className="card-header">
-          <div>
+          <div style={{ width: '100%' }}>
             {showDefaultData.map((col) => (
-              <div key={col.id} className="collapsed-detail" style={col.mobileStyles} onClick={(e) => handleActionClick(e, col.onClick)}>
-                {col.showColumnNameInHeader && col.name && `${col.name}: `}
-                {renderCell(col, row)}
+              <div key={col.id} className="collapsed-detail" style={col.mobileStyles}>
+                {col.showColumnNameInHeader && col.name && <div>{col.name}:</div>}
+                <div onClick={(e) => handleActionClick(e, col.onClick)}>{renderCell(col, row)}</div>
               </div>
             ))}
           </div>

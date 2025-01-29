@@ -1,9 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import { useOrgAccountSelectionContext } from './context/OrgAccountSelectionContext';
 import './styles.scss';
+import { useTranslate } from '@src/translations/useTranslation';
 
 function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsSelect = true }) {
+  const { t } = useTranslate();
   const {
     organizationOptions,
     searchOrgList,
@@ -12,18 +14,12 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
     accountsList,
     searchAccountList,
     selectedAccount,
-    setSelectedAccount
+    setSelectedAccount,
+    options,
+    setOptions,
+    accountOptions,
+    setAccountOptions
   } = useOrgAccountSelectionContext();
-
-  const orgOptions = useMemo(() => {
-    return (
-      organizationOptions.map((item, index) => ({
-        index,
-        label: item.name,
-        value: item.id
-      })) || []
-    );
-  }, [organizationOptions]);
 
   const getSelectedOrg = (selectedValue) => {
     let _selected = organizationOptions.find((ele) => ele.id == selectedValue);
@@ -33,21 +29,14 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
     }
   };
 
-  const accountOptions = useMemo(() => {
-    return (
-      accountsList.map((item, index) => ({
-        index,
-        label: item.accountName,
-        value: item.id
-      })) || []
-    );
-  }, [accountsList]);
+  // const accountOptions = useMemo(() => {
+  //   return accountsList.map((item, index) => ({ ...item, label: item.accountName, value: item.accountNumber, isChecked: true })) || [];
+  // }, [accountsList]);
 
   const getSelectedAccount = (selectedValue) => {
-    let _selected = accountsList.find((ele) => ele.id == selectedValue);
-    setSelectedAccount(_selected);
-    if (handleAccountChange) {
-      handleAccountChange(_selected);
+    if (selectedValue.length > 0) {
+      setSelectedAccount(selectedValue);
+      setAccountOptions(selectedValue);
     }
   };
 
@@ -55,35 +44,39 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
     <div className="actions-container">
       <div className="org-select">
         <MultiSelectDropdown
-          id={'pay-to-accounts-search'}
-          label={'Select organization'}
+          id={'select-org-search'}
+          label={t('ManageCatalog.SelectOrganization')}
           isMultiSelect={false}
           // placeholder={selectedOrganization?.name || 'Select Organization'}
-          placeholder={'Select Organization'}
+          placeholder={t('ManageCatalog.SelectOrganization')}
           onChange={getSelectedOrg}
-          options={orgOptions}
+          options={options}
           variant={'async'}
           onSearch={(event) => searchOrgList(event)}
           recordsCountToEnableSearch={5}
           size="md"
-          value={selectedOrganization?.id || ''}
+          isSortEnable={false}
+          // size="md"
+          value={selectedOrganization?.id.toString() || ''}
+          fieldDisplayValue={
+            selectedOrganization?.name ? { label: selectedOrganization.name, value: selectedOrganization.id.toString() } : undefined
+          }
         />
       </div>
       {showAccountsSelect && (
         <div className="account-select">
           <MultiSelectDropdown
-            id={'pay-to-accounts-search'}
-            label={'Select Account'}
-            isMultiSelect={false}
-            // placeholder={selectedOrganization?.label || 'Select Organization'}
-            placeholder={'Select Account'}
+            id={'select-account-search'}
+            label={t('ManageCatalog.SelectAccount')}
+            isMultiSelect={true}
+            placeholder={t('ManageCatalog.SelectAccount')}
             onChange={getSelectedAccount}
             options={accountOptions || []}
             variant={'async'}
             onSearch={(event) => searchAccountList(event)}
             recordsCountToEnableSearch={5}
             size="md"
-            value={selectedAccount?.id || ''}
+            // value={selectedAccount || ''}
           />
         </div>
       )}

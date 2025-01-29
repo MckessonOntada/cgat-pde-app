@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { CustomDataTable } from '@mckesson/mcp-component-library';
 import { useTherapy } from '../../../../context/TherapyContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { createColumns } from './TherapyDataColumns';
 import { useNavigate } from 'react-router-dom';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import { CustomDataTable } from '@src/components/dataTableComponent';
 
 const TherapyDataTable = ({ therapy, onChange }) => {
   const { t } = useTranslate();
@@ -25,6 +26,8 @@ const TherapyDataTable = ({ therapy, onChange }) => {
     }
   };
 
+  const showCardView = useResponsiveView();
+
   return (
     <CustomDataTable
       id="order-management-therapy-listing"
@@ -41,6 +44,7 @@ const TherapyDataTable = ({ therapy, onChange }) => {
       aria-label={t('table.ariaLabel.orderList')}
       paginationRecordsPerPageMessage={t('labels.perPage')}
       paginationTotalRecorsMessage={t('labels.results')}
+      showCardView={showCardView}
       noDataComponent={
         <EmptyDataTable
           isLoading={isFetching}
