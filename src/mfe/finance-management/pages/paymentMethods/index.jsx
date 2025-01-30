@@ -20,6 +20,8 @@ const PaymentMethods = () => {
   const [tabs, setTabs] = useState([]);
   const { t } = useTranslate();
 
+  const isBankTabActive = location.pathname.includes(PATHS.bankAccounts);
+
   useEffect(() => {
     if (Array.isArray(tabListData) && tabListData.length > 0) {
       const updatedTabs = tabListData.map((item) => {
@@ -33,6 +35,15 @@ const PaymentMethods = () => {
       setTabs(updatedTabs);
     }
   }, [location.pathname]);
+
+  const handleDownloadACHForm = () => {
+    const link = document.createElement('a');
+    link.href = '/achForm.pdf';
+    link.download = 'achForm.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <React.Fragment>
@@ -49,10 +60,11 @@ const PaymentMethods = () => {
             useAsButton={true}
             aria-label={'record-tab-list'}
           />
-          {/* TODO: Remove Code if not required later. Keep for Add new card screen. */}
-          {/* <Button Icon={AddCircle} size={buttonSize} onClick={() => {}} disabled={true}>
-            {t('paymentInvoices.paymentMethods.table.bankAccount.addnewcard')}
-          </Button> */}
+          {isBankTabActive && (
+            <Button Icon={AddCircle} size={buttonSize} onClick={handleDownloadACHForm}>
+              {t('paymentInvoices.paymentMethods.table.bankAccount.addBank')}
+            </Button>
+          )}
         </div>
         <Routes />
       </div>

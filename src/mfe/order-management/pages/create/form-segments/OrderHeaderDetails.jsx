@@ -11,7 +11,7 @@ function OrderHeaderDetails({ therapyId, soldToAccountId, shipToAccountId, setIn
   const { formState } = useManageOrder();
   const [segments, setSegments] = React.useState([]);
 
-  const { isLoading: isPriceApiLoading, data: priceDetails = {} } = useQuery({
+  const { isLoading: isPriceApiLoading, data: priceDetails = null } = useQuery({
     queryKey: ['order', 'orderHeaderDetails', 'price', therapyId, soldToAccountId, shipToAccountId, variant],
     queryFn: async () => OrderService.getPriceDetails(therapyId, soldToAccountId, shipToAccountId, variant),
     enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId && (!!variant || true),
@@ -55,7 +55,7 @@ function OrderHeaderDetails({ therapyId, soldToAccountId, shipToAccountId, setIn
           value={
             <span className="dollarSign">
               <span>$</span>
-              {priceDetails.netPrice || '----'}
+              {priceDetails?.netPrice || '----'}
             </span>
           }
         />
@@ -64,6 +64,7 @@ function OrderHeaderDetails({ therapyId, soldToAccountId, shipToAccountId, setIn
 
     setSegments([...detailsSegments]);
   }, [formState.activeRecord, priceDetails]);
+
   return (
     <div className="MCP-CardContainer">
       <div className={`grid grid-gap-24 grid-cols-1 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5`}>{segments}</div>
