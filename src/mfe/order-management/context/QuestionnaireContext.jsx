@@ -88,7 +88,12 @@ export const QuestionnaireProvider = ({ children }) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig({ ...filters });
   };
-
+  const setPageNumber = (pageNumber) => {
+    setPaginationConfig((prevConfig) => ({
+      ...prevConfig,
+      pageNumber
+    }));
+  };
   const clearFilters = () => {
     setFilterConfig({ ...INITIAL_FILTER_STATE });
   };
@@ -106,7 +111,7 @@ export const QuestionnaireProvider = ({ children }) => {
         paginationConfig,
         applyFilters,
         clearFilters,
-        setCurrentPage,
+        setCurrentPage,setPageNumber,
         applySort,
         data: TemplatesData?.content,
         refetchTemplates,

@@ -6,7 +6,8 @@ export const routesConfig = {
   reviewOrder: 'review-order',
   summary: 'summary',
   confirmation: 'order-confirmed',
-  status: 'status'
+  status: 'status',
+  systemConfiguration : 'system-configuration'
 };
 
 export const ORDER_STAGES = {

@@ -52,19 +52,16 @@ export default function mapQuestionnaire() {
 
   const handleOnSubmit = () => {
     if (selectedRows.length === 0) {
-      setAlertDescription(
-        t(
-          isMaterial
-            ? 'messages.error_config_material'
-            : isCatalog
-            ? 'messages.error_config_catalog'
-            : isAccount
-            ? 'messages.error_config_account'
-            : ''
-        )
+      const alertDesc = t(
+        isMaterial
+          ? 'messages.error_config_material'
+          : isCatalog
+          ? 'messages.error_config_catalog'
+          : isAccount
+          ? 'messages.error_config_account'
+          : ''
       );
-      setIsAlertVisible(true);
-      setAlert({ type: 'error' });
+      showAlert('error', alertDesc); 
       return;
     }
     ConfigureQuestionnaire();
@@ -99,12 +96,16 @@ export default function mapQuestionnaire() {
       },
       onError: (error) => {
         const errorKey = handleApiError(error);
-        setAlertDescription(t(errorKey));
-        setIsAlertVisible(true);
-        setAlert({ type: 'error' });
+        showAlert('error', t(errorKey));
       }
     }
   );
+
+  const showAlert = (type, message) => {
+    setAlert({ type });
+    setIsAlertVisible(true);
+    setAlertDescription(message);  
+  };
 
   const handleAlertClose = () => {
     setIsAlertVisible(false);
@@ -161,7 +162,7 @@ export default function mapQuestionnaire() {
         <Heading as="h2">
           {t(isMaterial ? 'table.ariaLabel.materialList' : isCatalog ? 'table.ariaLabel.catalogList' : 'table.ariaLabel.accountList')}
         </Heading>
-        <EntityDataTable EntityType={selectedEntityType} setSelectedRows={setSelectedRows} />
+        <EntityDataTable EntityType={selectedEntityType} setSelectedRows={setSelectedRows} showAlert={showAlert} />
       </div>
       <ModuleHeader
         controls={

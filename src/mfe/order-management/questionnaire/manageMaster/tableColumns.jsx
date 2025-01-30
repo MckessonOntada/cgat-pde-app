@@ -4,7 +4,6 @@ import { getAddress, MasterEntityType } from '../util';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { useManagerQuestionnaire } from '../../context/ManageQuestionnaireContext'; 
 import { useMultiCheckBox } from '../useMultiCheckBox';
-import { ro } from 'react-date-range/dist/locale';
 
 export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData, setSelectedRows, setOpenDetails, setSelectedDetails) => {
   const { paginationConfig } = useManagerQuestionnaire();
@@ -114,7 +113,14 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           sortable: true,
           sortKey: 'accountNumber',
           cell: (props) => (
-            <Link className="MCP-table-link" aria-label={t('table.columns.captions.accountNumber')}>
+            <Link
+              className="MCP-table-link"
+              aria-label={t('table.columns.captions.accountNumber')}
+              onClick={(e) => {
+                e.preventDefault();
+                setOpenDetails(true);
+                setSelectedDetails(props);
+              }}>
               <EclipsesTextcss str={props.accountNumber} maxWidth={240} />
             </Link>
           )
@@ -137,7 +143,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           sortKey: 'address',
           cell: (props) => (
             <span aria-label={t('table.columns.captions.address')}>
-              <EclipsesTextcss str={getAddress(props.accountNumber)} maxWidth={180} />
+              <EclipsesTextcss str={getAddress(props.address)} maxWidth={180} />
             </span>
           )
         },
@@ -152,7 +158,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
         {
           id: 'distributionChannel',
           name: t('labels.distributionChannel'),
-          selector:(row) => row.distributionChannel || '',
+          selector: (row) => row.distributionChannel || '',
           maxWidth: '350px',
           sortable: false,
           cell: (props) => <span aria-label={t('labels.distributionChannel')}>{props.distributionChannel}</span>
@@ -176,7 +182,14 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           // sortable: true,
           // sortKey: 'sapMaterial',
           cell: (props) => (
-            <Link className="MCP-table-link" aria-label={t('labels.SapmaterialID')}>
+            <Link
+              className="MCP-table-link"
+              aria-label={t('labels.SapmaterialID')}
+              onClick={(e) => {
+                e.preventDefault();
+                setOpenDetails(true);
+                setSelectedDetails(props);
+              }}>              
               <EclipsesTextcss str={props.sapMaterial} maxWidth={240} />
             </Link>
           )
@@ -193,7 +206,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
         {
           id: 'ndc',
           name: t('labels.therapy.ndc'),
-          selector: (row) => row.ndc || '', 
+          selector: (row) => row.ndc || '',
           maxWidth: '290px',
           // sortable: true,
           // sortKey: 'ndcNumber',
@@ -227,7 +240,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
         {
           id: 'soldToCustomer',
           name: t('labels.soldTo'),
-          selector: (row) => row.soldToCustomer || '',  
+          selector: (row) => row.soldToCustomer || '',
           maxWidth: '150px',
           sortable: false,
           cell: (props) => <span aria-label={t('labels.soldTo')}>{props.soldToCustomer}</span>
@@ -235,7 +248,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
         {
           id: 'shipToCustomer',
           name: t('labels.shipTo'),
-          selector: row => row.shipToCustomer || '',
+          selector: (row) => row.shipToCustomer || '',
           maxWidth: '150px',
           sortable: false,
           cell: (props) => <span aria-label={t('labels.shipTo')}>{props.shipToCustomer}</span>

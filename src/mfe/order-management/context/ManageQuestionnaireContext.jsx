@@ -39,7 +39,17 @@ export const ManageQuestionnaireProvider = ({ children }) => {
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const [entityType, setEntityType] = useState(null); 
-  
+   let _accNumber; 
+   if (selectedAccount && selectedAccount.length > 0) {
+     _accNumber = selectedAccount
+       ?.map((i) => {
+         if (i.isChecked) {
+           return i.accountNumber;
+         }
+       })
+       .filter((ele) => !!ele);
+   }
+
   const requestParams = React.useMemo(() => {
     const baseParams = {
       pageNo: paginationConfig.pageNumber - 1,
@@ -57,18 +67,18 @@ export const ManageQuestionnaireProvider = ({ children }) => {
       case MasterEntityType.Catalog:
         return {
           ...baseParams,
-          accountNumbers: selectedAccount?.accountNumber
+          accountNumbers: _accNumber
         };
       case MasterEntityType.Account:
         return {
           ...baseParams,
           practiceId: selectedOrganization?.id,
-          partnerFunction: 'SOLD_TO', 
+          partnerFunction: 'SOLD_TO'
         };
       default:
         return baseParams;
     }
-  }, [entityType, filterConfig, paginationConfig.pageNumber, sortConfig,selectedAccount?.accountNumber,selectedOrganization?.id]);
+  }, [entityType, filterConfig, paginationConfig.pageNumber, sortConfig, _accNumber, selectedOrganization?.id]);
 
   const {
     isLoading: isLoadingMaterial,
