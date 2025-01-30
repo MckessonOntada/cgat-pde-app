@@ -8,19 +8,22 @@ import { ReactComponent as CatalogImage } from '@src/assets/image/alert-circle-c
 import { ReactComponent as AccountImage } from '@src/assets/image/alert-circle-a.svg';
 import { ReactComponent as MaterialImage } from '@src/assets/image/alert-circle-m.svg';
 import TableHeading from '@src/components/tableHeading/TableHeading';
-import { Button, CustomDataTable, Heading, RadioGroup, Badge } from '@mckesson/mcp-component-library';
+import { Button, Heading, RadioGroup, Badge } from '@mckesson/mcp-component-library';
 import FloatingDrawer from '@src/components/floating-drawer';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useQuestionnaire } from '../context/QuestionnaireContext';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { useMultiCheckBox } from './useMultiCheckBox';
+import useResponsiveView from '@src/hooks/useResponsiveView';
 import CommonUtils from '@src/util/CommonUtils';
 import { ROUTE_CONFIG } from './constants';
+import { CustomDataTable } from '@src/components/dataTableComponent';
 
 function TemplateList() {
   const { t } = useTranslate();
   const location = useLocation();
   const navigate = useNavigate();
+  const showCardView = useResponsiveView();
   const { applyFilters, clearFilters, applySort, data, isError, isLoading, paginationConfig, selectedTemplates, setTemplates } =
     useQuestionnaire();
   const { renderCheckBox, selectedData, setSelectedData } = useMultiCheckBox(data, paginationConfig, selectedTemplates, setTemplates);
@@ -182,8 +185,10 @@ function TemplateList() {
           totalPageCount={paginationConfig.totalPages}
           totalRocords={paginationConfig.totalElements}
           recordsPerPage={paginationConfig.pageSize}
+          aria-label={t('table.ariaLabel.questionaaireList')}
           paginationRecordsPerPageMessage={t('labels.perPage')}
           paginationTotalRecorsMessage={t('labels.results')}
+          showCardView={showCardView}
           noDataComponent={
             <EmptyDataTable
               isLoading={isLoading}

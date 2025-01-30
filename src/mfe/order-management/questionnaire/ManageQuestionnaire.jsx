@@ -7,6 +7,7 @@ import TemplateList from './TemplateList';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getEntityTypeFlags } from './util';
 import { useQuestionnaire } from '../context/QuestionnaireContext';
+import ModuleHeader from '@src/components/module-header';
 
 function ManageQuestionnaire() {
   const { t } = useTranslate();
@@ -15,7 +16,7 @@ function ManageQuestionnaire() {
   const breadcrumbItems = [
     {
       label: 'System administrator',
-      url: '/orders/admin'
+      url: '/'
     },
     {
       label: 'System Configuration',
@@ -65,16 +66,18 @@ function ManageQuestionnaire() {
           <Breadcrumbs items={breadcrumbItems} />
         </div>
         <div className="MCP-module-body">
-          <div className="row-space-between-center">
-            <div className="styled-heading">
-              <Heading as="h1">{t('heading.manageQuestionnaire')}</Heading>
-            </div>
-            <Button onClick={handleOnClick} variant="primary" size="md" Icon={AddCircleIcon}>
-              {t('button.caption.addQuestionnaire')}
-            </Button>
-          </div>
+          <ModuleHeader
+            heading={<Heading as="h1">{t('heading.manageQuestionnaire')}</Heading>}
+            controls={
+              <div className="controls">
+                <Button onClick={handleOnClick} variant="primary" size="md" Icon={AddCircleIcon}>
+                  {t('button.caption.addQuestionnaire')}
+                </Button>
+              </div>
+            }
+          />
           {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
-          <div className="MCP-CardContainer">
+          <div className="MCP-panel-container">
             <TemplateList />
           </div>
         </div>
