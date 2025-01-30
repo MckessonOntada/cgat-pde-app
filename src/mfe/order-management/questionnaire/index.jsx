@@ -23,20 +23,21 @@ function Questionnaire() {
   };
   return (
     <QuestionnaireProvider>
-    <Routes>
-      <Route path="" index element={<ManageQuestionnaire />} />
-      <Route path={ROUTE_CONFIG.ADD_QUESTIONNAIRE} element={<AddQuestionnaire />} />
-      <Route
-        path={ROUTE_CONFIG.MAP_QUESTIONNAIRE}
-        element={
-          <OrgAccountSelectionProvider enableOrg={handleOrg()} enableAcct={handleAccount()}>
-            <ManageQuestionnaireProvider> 
-              <MapQuestionnaire />
-            </ManageQuestionnaireProvider>
-          </OrgAccountSelectionProvider>
-        }></Route>
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+      <Routes>
+        <Route path="" index element={<ManageQuestionnaire />} />
+        <Route path={ROUTE_CONFIG.ADD_QUESTIONNAIRE} element={<AddQuestionnaire />} />
+        <Route path={`${ROUTE_CONFIG.VIEW_QUESTIONNAIRE}/:id`} element={<AddQuestionnaire />} />
+        <Route
+          path={ROUTE_CONFIG.MAP_QUESTIONNAIRE}
+          element={
+            <OrgAccountSelectionProvider enableOrg={handleOrg()} enableAcct={handleAccount()}>
+              <ManageQuestionnaireProvider>
+                <MapQuestionnaire />
+              </ManageQuestionnaireProvider>
+            </OrgAccountSelectionProvider>
+          }></Route>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </QuestionnaireProvider>
   );
 }

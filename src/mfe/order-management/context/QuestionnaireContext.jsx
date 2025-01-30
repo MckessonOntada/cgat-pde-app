@@ -45,7 +45,7 @@ export const QuestionnaireProvider = ({ children }) => {
   const selectEntity = () => {};
   const removeEntity = () => {};
 
-  const contextValue = { bucket, selectEntity, removeEntity }; 
+  const contextValue = { bucket, selectEntity, removeEntity };
   const requestParams = useMemo(() => {
     const baseParams = {
       pageNo: paginationConfig.pageNumber - 1,
@@ -67,17 +67,17 @@ export const QuestionnaireProvider = ({ children }) => {
     queryKey: ['Templates', requestParams],
     queryFn: async () => QuestionnaireConfig.getQuestionnaires(requestParams),
     onSuccess: (result) => {
-      const { totalElements, totalPages, content :data } = result;
+      const { totalElements, totalPages, content: data } = result;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
         ...(totalElements && { totalElements }),
         ...(totalPages && { totalPages })
       }));
-     return data;
-    } ,
+      return data;
+    },
     refetchOnWindowFocus: false
   });
- 
+
   useEffect(() => {
     refetchTemplates();
   }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
@@ -97,7 +97,9 @@ export const QuestionnaireProvider = ({ children }) => {
     setPaginationConfig((prevState) => ({ ...prevState, pageNumber: pageNumber }));
   };
 
-  const setTemplates= (templates) => { setSelectedTemplates(templates); };
+  const setTemplates = (templates) => {
+    setSelectedTemplates(templates);
+  };
 
   return (
     <QuestionnaireContext.Provider

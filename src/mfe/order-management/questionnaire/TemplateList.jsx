@@ -15,22 +15,14 @@ import { useQuestionnaire } from '../context/QuestionnaireContext';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { useMultiCheckBox } from './useMultiCheckBox';
 import CommonUtils from '@src/util/CommonUtils';
+import { ROUTE_CONFIG } from './constants';
 
 function TemplateList() {
   const { t } = useTranslate();
   const location = useLocation();
   const navigate = useNavigate();
-  const {
-    applyFilters,
-    clearFilters,
-    applySort,
-    data,
-    isError,
-    isLoading,
-    paginationConfig,
-    selectedTemplates,
-    setTemplates 
-  } = useQuestionnaire();
+  const { applyFilters, clearFilters, applySort, data, isError, isLoading, paginationConfig, selectedTemplates, setTemplates } =
+    useQuestionnaire();
   const { renderCheckBox, selectedData, setSelectedData } = useMultiCheckBox(data, paginationConfig, selectedTemplates, setTemplates);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -61,7 +53,7 @@ function TemplateList() {
     if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
-  const handleView = (id) => {}; 
+  const handleView = (id) => {};
 
   const columns = [
     {
@@ -139,7 +131,12 @@ function TemplateList() {
       minWidth: '160px',
       cell: (props) => (
         <div className="actionsBox">
-          <Button Icon={View} variant="tertiary" size="md" className="button-icon" onClick={() => handleView(row.id)}>
+          <Button
+            Icon={View}
+            variant="tertiary"
+            size="md"
+            className="button-icon"
+            onClick={() => navigate(`${ROUTE_CONFIG.VIEW_QUESTIONNAIRE}/${props.id}`)}>
             {t('userManagement.table.action.view')}
           </Button>
         </div>

@@ -7,6 +7,7 @@ import DateRangePickerFormik from './formik/DateRangePickerFormik';
 import MultiSelectDropdownFormik from './formik/MultiSelectDropdownFormik';
 import DatePickerFormik from './formik/DatePickerFormik';
 import RadioGroup from './RadioGroup';
+import ToggleButtonFieldFormik from './formik/ToggleButtonFormik';
 
 const Components = {
   input: InputFieldFormik,
@@ -17,7 +18,8 @@ const Components = {
   dateRangePicker: DateRangePickerFormik,
   multiSelectDropdown: MultiSelectDropdownFormik,
   datePicker: DatePickerFormik,
-  radioGroup: RadioGroup
+  radioGroup: RadioGroup,
+  toggleButton: ToggleButtonFieldFormik
 };
 
 export default Components;
