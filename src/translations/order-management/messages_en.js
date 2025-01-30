@@ -366,5 +366,19 @@ export const MessageEn = {
   'message.questionnaire.provideQuestionText': 'You must provide question text',
   'message.questionnaire.optionValueRequired': 'Option value is required',
   'heading.manageQuestionnaire': 'Manage Questionnaire',
-  'button.caption.addQuestionnaire': 'Add Questionnaire'
+  'button.caption.addQuestionnaire': 'Add Questionnaire',
+  'labels.soldTo': 'Sold to account',
+  'labels.shipTo': 'Ship to account',
+  'button.caption.change': 'Change',
+  'label.selectContent': 'Select master you want to apply this questionnaire for:',
+  'label.Material': 'Material',
+  'label.Catalog': 'Catalog',
+  'label.Account': 'Account',
+  'label.configure': 'Configure',
+  'label.selectMaster': 'Select Master',
+  'table.columns.captions.configuredfor': 'Configured for',
+  'table.columns.captions.dateCreatedOn': 'Date Created On',
+  'table.columns.captions.created_By': 'Created By',
+  'table.columns.captions.action': 'Action',
+  'controls.placeholder.searchQuestionnaire': 'Search by Template Name'
 };

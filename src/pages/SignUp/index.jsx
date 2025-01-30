@@ -23,13 +23,14 @@ import {
   PHONE_REGEX,
   ZIP_REGEX
 } from '@src/components/form/ValidationRegExp';
+import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 
 const SignUp = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alert, setAlert] = useState(null);
-
+  const [selectedOrganization, setSelectedOrganization] = useState(null);
   useEffect(() => {
     if (isAlertVisible) {
       const timer = setTimeout(() => {
@@ -49,7 +50,7 @@ const SignUp = () => {
     return res.data;
   });
 
-  const [requestParams, setRequestParams] = useState({ pageNo: 0, pageSize: 5, sortBy: 'name', sortOrder: 'asc' });
+  const [requestParams, setRequestParams] = useState({ pageNo: 0, pageSize: 20, sortBy: 'name', sortOrder: 'asc' });
 
   const {
     isLoading: loadingOrg,
@@ -60,7 +61,13 @@ const SignUp = () => {
     queryKey: ['organizationListPublic'],
     queryFn: async () => {
       const res = await CommonDataService.getOrganizationListAsPublic(requestParams);
-      return res.content;
+      const { content } = res;
+      let _data = [...[], ...content];
+      if (selectedOrganization) {
+        let findOrg = _data.find((item) => item.value == selectedOrganization.value);
+        !findOrg && _data.unshift(selectedOrganization);
+      }
+      return _data;
     },
     refetchOnWindowFocus: false
   });
@@ -168,6 +175,12 @@ const SignUp = () => {
     setRequestParams(payload);
   };
 
+  const onChangeOrganization = (selectedOrg, setFieldValue) => {
+    let _selected = organizationList.find((ele) => ele.value == selectedOrg);
+    setSelectedOrganization(_selected);
+    setFieldValue('practiceId', _selected.id);
+  };
+
   return (
     <div className={mainLayoutStyles.appContainer}>
       <PrimaryHeader />
@@ -198,16 +211,18 @@ const SignUp = () => {
                           <Required id="Required">Required</Required>
                         </Label>
                         <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 ">
-                          <AutoSuggestDropdown
-                            eregVariant
-                            getselectedValue={(e) => {
-                              setFieldValue('practiceId', e.id);
-                              setFieldTouched('practiceId', true);
-                            }}
-                            onChangeInput={onSearchOrganization}
-                            placeHolder=""
-                            suggestionList={organizationList || []}
-                            isShowRefineQueryMessage
+                          <MultiSelectDropdown
+                            id={'select-org-search'}
+                            isMultiSelect={false}
+                            placeholder={t('forms.labels.organization')}
+                            onChange={(event) => onChangeOrganization(event, setFieldValue)}
+                            options={organizationList || []}
+                            variant={'async'}
+                            onSearch={(event) => onSearchOrganization(event)}
+                            recordsCountToEnableSearch={5}
+                            size="md"
+                            isSortEnable={false}
+                            value={selectedOrganization?.value || ''}
                           />
                         </div>
                         {errors.practiceId && touched.practiceId && !values.practiceId && <TextError errorMessage={errors.practiceId} />}

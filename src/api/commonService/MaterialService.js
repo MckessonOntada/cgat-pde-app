@@ -19,9 +19,19 @@ async function getMaterialConfigById(id) {
   return [];
 }
 
+async function deleteMaterialConfig(id) {
+  const url = `${ApiRoutes.DELETE_MATERIAL_CONFIG(id)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.DELETE, {});
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
+
 const MaterialService = Object.freeze({
   getMaterialById,
-  getMaterialConfigById
+  getMaterialConfigById,
+  deleteMaterialConfig
 });
 
 export default MaterialService;

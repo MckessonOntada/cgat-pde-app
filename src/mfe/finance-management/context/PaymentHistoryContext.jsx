@@ -112,9 +112,27 @@ export const PaymentHistoryProvider = ({ children }) => {
       };
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
       if (res.data) {
+        let _data = [...[], ...res.data?.paymentHistory];
+        let _modifiedData = _data.filter((item) => {
+          const matchesSearchQuery = filterConfig?.searchQuery
+            ? item.confirmationNo?.toLowerCase().includes(filterConfig.searchQuery.toLowerCase()) ||
+              item.paymentMethod?.toString().includes(filterConfig.searchQuery.toLowerCase()) ||
+              item.paymentInitiationDate?.toString().includes(filterConfig.searchQuery.toLowerCase()) ||
+              item.paymentStatus?.toString().includes(filterConfig.searchQuery.toLowerCase()) ||
+              item.totalAuthorizedPaymentAmount?.toString().includes(filterConfig.searchQuery.toLowerCase())
+            : true;
+          const matchesPaymentStatus =
+            filterConfig?.paymentStatus?.length > 0 ? filterConfig.paymentStatus.includes(item.paymentStatus) : true;
+          const matchesPaymentMethod =
+            filterConfig?.paymentMethod?.length > 0 ? filterConfig.paymentMethod.includes(item.paymentMethod) : true;
+
+          return matchesSearchQuery && matchesPaymentStatus && matchesPaymentMethod;
+          // return matchesSearchQuery;
+        });
+
         const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
         const endIndex = startIndex + paginationConfig.pageSize;
-        setData(res.data?.paymentHistory.slice(startIndex, endIndex));
+        setData(_modifiedData.slice(startIndex, endIndex));
         setUnSlicedData(res.data?.paymentHistory);
         setActualData(res.data?.paymentHistory);
         setPaginationConfig((state) => ({
