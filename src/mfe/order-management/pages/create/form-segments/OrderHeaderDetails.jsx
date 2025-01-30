@@ -55,7 +55,7 @@ function OrderHeaderDetails({ therapyId, soldToAccountId, shipToAccountId, setIn
           value={
             <span className="dollarSign">
               <span>$</span>
-              {priceDetails.netPrice || '----'}
+              {priceDetails?.netPrice || '----'}
             </span>
           }
         />
