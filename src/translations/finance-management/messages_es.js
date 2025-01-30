@@ -204,6 +204,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.paymentMethods.banks.filter.search.label': 'S_Search bank accounts',
   'paymentInvoices.paymentMethods.filter.search.placeholder': 'S_Select by name or number',
   'paymentInvoices.paymentMethods.table.bankAccount.addnewcard': 'S_add new card',
+  'paymentInvoices.paymentMethods.table.bankAccount.addnewcard': 'S_add bank account',
   'paymentInvoices.paymentMethods.table.bankAccount.bankName': 'S_Name',
   'paymentInvoices.paymentMethods.table.bankAccount.routingNumber': 'S_Routing Number',
   'paymentInvoices.paymentMethods.table.bankAccount.bankAccNumber': 'S_Account Number',
