@@ -58,6 +58,29 @@ async function configureQuestionnaire(entityType, payload) {
   return {};
 }
 
+async function getConfiguredQuestionnaire(payload) {
+  if (!payload || typeof payload !== 'object') {
+    throw new Error(
+      'Invalid payload. Expected an object with the following shape: { soldToCustomer : <string>, shipToCustomer : <string>, sapMaterial : <string>, variant?: <string> }.'
+    );
+  }
+
+  const { soldToCustomer, shipToCustomer, sapMaterial } = payload;
+
+  if (soldToCustomer === undefined || shipToCustomer === undefined || sapMaterial === undefined) {
+    throw new Error(
+      "Invalid payload. Required properties: 'soldToCustomer', 'shipToCustomer', and 'sapMaterial '. Optional property: 'variant'."
+    );
+  }
+
+  const url = `${ApiRoutes.QUESTIONNAIRE()}/configured-questionnaire`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, payload);
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
+
 const QuestionnaireService = Object.freeze({
   getQuestionnaires,
   createQuestionnaire,
@@ -65,7 +88,8 @@ const QuestionnaireService = Object.freeze({
   configureQuestionnaire,
   updateQuestionnaire,
   getQuestionnaireById,
-  deactivateQuestionnaireById
+  deactivateQuestionnaireById,
+  getConfiguredQuestionnaire
 });
 
 export default QuestionnaireService;

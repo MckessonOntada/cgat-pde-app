@@ -21,6 +21,7 @@ import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
+import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 
 const getValidationSchema = (t) =>
   Yup.object({
@@ -106,11 +107,36 @@ function AdditionalDetails() {
     showAlert({ ...alertState, anchorEl: alertContainerId });
   }, []);
 
+  const {
+    data: configuredQuestions,
+    isFetching: isFetchingConfiguredQuestions,
+    isError: isErrorConfiguredQuestions,
+    error: configuredQuestionsError,
+    refetch: fetchConfiguredQuestions
+  } = useQuery({
+    queryKey: ['configured-questionnaire'],
+    queryFn: async () => {
+      const { accountDetails, therapy } = formState.activeRecord;
+      const payload = {
+        variant,
+        soldToCustomer: accountDetails.soldToAccount.id,
+        shipToCustomer: accountDetails.shipToAccount.id,
+        sapMaterial: therapy.materialNumber
+      };
+      return QuestionnaireService.getConfiguredQuestionnaire(payload);
+    },
+    enabled: false,
+    refetchOnWindowFocus: false,
+    onSuccess: console.log,
+    onError: console.log
+  });
+
   const { isLoading, data: variantsData = {} } = useQuery({
     queryKey: ['order', 'variants', orderId],
     queryFn: async () => OrderService.getVariants(therapyId, soldToAccountId, shipToAccountId, variantsApiRequestParam),
     enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId,
     refetchOnWindowFocus: false,
+    onSuccess: (result) => {},
     onError: (error) => {
       const errorKey = handleApiError(err);
       showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
@@ -218,6 +244,10 @@ function AdditionalDetails() {
   const handleOnVariantChange = (variant) => {
     setVariant(variant);
   };
+
+  React.useEffect(() => {
+    if (formState.activeRecord) fetchConfiguredQuestions();
+  }, [variant, formState.activeRecord]);
 
   const handleOnAcknowledgmentChange = () => {
     const updatedOptions = { ...variantAcknowledgement, isChecked: !variantAcknowledgement.isChecked };
