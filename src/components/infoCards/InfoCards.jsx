@@ -18,7 +18,9 @@ const InfoCards = ({ title, value, infoText }) => {
           </div>
         )}
       </div>
-      <div className="card-value">{value || 'NA'}</div>
+      <div className="card-value">
+        { value.startsWith('$') ? ( <div><span className='currencySymbol'>$</span>{value.slice(1)}</div>  ) : (  value || 'NA' ) }
+      </div>
     </div>
   );
 };

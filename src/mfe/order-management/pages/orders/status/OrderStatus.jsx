@@ -99,7 +99,7 @@ const OrderStatus = () => {
               customLabelStyles={styles.orderCostItem}
               label={t('labels.price')}
               customValueStyles={styles.orderCostItem}
-              value={<p className={`${styles.price}`}>{orderCost ? `$${orderCost}` : '-'}</p>}
+              value={<p className={`${styles.price}`}>{orderCost ? <><span className={`${styles.currencySymbol}`}>$</span>{orderCost}</> : '-'}</p>}
             />
           </div>
         </div>
