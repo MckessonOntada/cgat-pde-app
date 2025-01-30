@@ -20,6 +20,8 @@ const PaymentMethods = () => {
   const [tabs, setTabs] = useState([]);
   const { t } = useTranslate();
 
+  const isBankTabActive = location.pathname.includes(PATHS.BANK_ACCOUNTS);
+
   useEffect(() => {
     if (Array.isArray(tabListData) && tabListData.length > 0) {
       const updatedTabs = tabListData.map((item) => {
@@ -58,9 +60,11 @@ const PaymentMethods = () => {
             useAsButton={true}
             aria-label={'record-tab-list'}
           />
-          <Button Icon={AddCircle} size={buttonSize} onClick={handleDownloadACHForm}>
-            {t('paymentInvoices.paymentMethods.table.bankAccount.addBank')}
-          </Button>
+          {isBankTabActive && (
+            <Button Icon={AddCircle} size={buttonSize} onClick={handleDownloadACHForm}>
+              {t('paymentInvoices.paymentMethods.table.bankAccount.addBank')}
+            </Button>
+          )}
         </div>
         <Routes />
       </div>
