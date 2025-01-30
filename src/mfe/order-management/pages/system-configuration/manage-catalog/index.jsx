@@ -11,7 +11,7 @@ import ViewConfiguration from './pages/viewConfiguration/ViewConfiguration';
 
 function ManageCatalog(props) {
   const { t } = useTranslate();
-  const { applyFilters, clearFilters } = useCatalogContext();
+  const { applyFilters, clearFilters, filterConfig } = useCatalogContext();
 
   const translatedBreadcrumbs = [
     {
@@ -31,7 +31,7 @@ function ManageCatalog(props) {
   }));
 
   return (
-    <div className="MCP-module-wrapper">
+    <div className="MCP-module-wrapper catalog-module">
       <Breadcrumbs items={translatedBreadcrumbs} />
       <Heading as="h2">{t('dashboard.card.manage_catalog')}</Heading>
       <div className="MCP-panel-container">
@@ -42,7 +42,8 @@ function ManageCatalog(props) {
             onClearFilters={clearFilters}
             additionalFilters={[]}
             searchPlaceholder={t('ManageCatalog.SearchByMaterialId')}
-            actualData={{}}
+            actualData={[]}
+            initialData={filterConfig}
           />
         </div>
         <CatalogDataTable />
