@@ -20,7 +20,7 @@ const PaymentMethods = () => {
   const [tabs, setTabs] = useState([]);
   const { t } = useTranslate();
 
-  const isBankTabActive = location.pathname.includes(PATHS.BANK_ACCOUNTS);
+  const isBankTabActive = location.pathname.includes(PATHS.bankAccounts);
 
   useEffect(() => {
     if (Array.isArray(tabListData) && tabListData.length > 0) {
