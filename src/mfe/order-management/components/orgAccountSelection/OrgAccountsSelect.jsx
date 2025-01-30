@@ -11,17 +11,14 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
     searchOrgList,
     selectedOrganization,
     setSelectedOrganization,
-    accountsList,
     searchAccountList,
-    selectedAccount,
     setSelectedAccount,
     options,
-    setOptions,
     accountOptions,
     setAccountOptions
   } = useOrgAccountSelectionContext();
 
-  const getSelectedOrg = (selectedValue) => {
+  const onOrganizationChange = (selectedValue) => {
     let _selected = organizationOptions.find((ele) => ele.id == selectedValue);
     setSelectedOrganization(_selected);
     if (handleOrgChange) {
@@ -29,11 +26,7 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
     }
   };
 
-  // const accountOptions = useMemo(() => {
-  //   return accountsList.map((item, index) => ({ ...item, label: item.accountName, value: item.accountNumber, isChecked: true })) || [];
-  // }, [accountsList]);
-
-  const onChangeAccountHandler = (selectedValue) => {
+  const onAccountChange = (selectedValue) => {
     if (selectedValue.length > 0) {
       setSelectedAccount(selectedValue);
       setAccountOptions(selectedValue);
@@ -48,14 +41,13 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
           label={t('ManageCatalog.SelectOrganization')}
           isMultiSelect={false}
           placeholder={t('ManageCatalog.SelectOrganization')}
-          onChange={getSelectedOrg}
+          onChange={onOrganizationChange}
           options={options}
           variant={'async'}
           onSearch={(event) => searchOrgList(event)}
           recordsCountToEnableSearch={5}
           size="md"
           isSortEnable={false}
-          // size="md"
           value={selectedOrganization?.id.toString() || ''}
           fieldDisplayValue={
             selectedOrganization?.name ? { label: selectedOrganization.name, value: selectedOrganization.id.toString() } : undefined
@@ -69,13 +61,12 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
             label={t('ManageCatalog.SelectAccount')}
             isMultiSelect={true}
             placeholder={t('ManageCatalog.SelectAccount')}
-            onChange={onChangeAccountHandler}
+            onChange={onAccountChange}
             options={accountOptions || []}
             variant={'async'}
             onSearch={(event) => searchAccountList(event)}
             recordsCountToEnableSearch={5}
             size="md"
-            // value={selectedAccount || ''}
           />
         </div>
       )}
