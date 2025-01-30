@@ -86,6 +86,8 @@ function TemplateList() {
       sortable: true,
       sortKey: 'active',
       minWidth: '160px',
+      wrap: true,
+      center: true,
       cell: (props) => (props.active ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />)
     },
     {
@@ -132,6 +134,8 @@ function TemplateList() {
       id: 'actions',
       name: t('table.columns.captions.action'),
       minWidth: '160px',
+      wrap: true,
+      center: true,
       cell: (props) => (
         <div className="actionsBox">
           <Button
