@@ -58,11 +58,14 @@ async function configureQuestionnaire(entityType, payload) {
   return {};
 }
 
-const QuestionnaireConfig = Object.freeze({
+const QuestionnaireService = Object.freeze({
   getQuestionnaires,
   createQuestionnaire,
   applyQuestionnaireConfig,
-  configureQuestionnaire
+  configureQuestionnaire,
+  updateQuestionnaire,
+  getQuestionnaireById,
+  deactivateQuestionnaireById
 });
 
 export default QuestionnaireService;

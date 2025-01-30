@@ -131,7 +131,12 @@ function TemplateList() {
       minWidth: '160px',
       cell: (props) => (
         <div className="actionsBox">
-          <Button Icon={View} variant="tertiary" size="md" className="button-icon" onClick={() => handleView(row.id)}>
+          <Button
+            Icon={View}
+            variant="tertiary"
+            size="md"
+            className="button-icon"
+            onClick={() => navigate(`${ROUTE_CONFIG.VIEW_QUESTIONNAIRE}/${props.id}`)}>
             {t('userManagement.table.action.view')}
           </Button>
         </div>
