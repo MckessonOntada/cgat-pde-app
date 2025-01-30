@@ -3,27 +3,32 @@ import CommonFilters from '@src/components/Filters';
 import EmptyDataTable from '@src/components/EmptyTable';
 import { useTranslate } from '@src/translations/useTranslation';
 import EclipsesText from '@src/components/EclipsesText/EclipsesText';
-import { ReactComponent as ViewIcon } from '@src/assets/svg/eye_open_filled.svg';
-import { Button, CustomDataTable, Heading, RadioGroup, CheckboxGroup } from '@mckesson/mcp-component-library';
+import { ReactComponent as View } from '@src/assets/image/view.svg';
+import { ReactComponent as CatalogImage } from '@src/assets/image/alert-circle-c.svg';
+import { ReactComponent as AccountImage } from '@src/assets/image/alert-circle-a.svg';
+import { ReactComponent as MaterialImage } from '@src/assets/image/alert-circle-m.svg';
+import TableHeading from '@src/components/tableHeading/TableHeading';
+import { Button, CustomDataTable, Heading, RadioGroup, Badge } from '@mckesson/mcp-component-library';
 import FloatingDrawer from '@src/components/floating-drawer';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useQuestionnaire } from '../context/QuestionnaireContext';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import { useMultiCheckBox } from './MultiSelectDatatable';
+import { useMultiCheckBox } from './useMultiCheckBox';
+import CommonUtils from '@src/util/CommonUtils';
 import { ROUTE_CONFIG } from './constants';
 
 function TemplateList() {
   const { t } = useTranslate();
   const location = useLocation();
-  const handleOnPageChange = () => {};
-  const handleOnSort = () => {};
   const navigate = useNavigate();
-  const { applyFilters, clearFilters, data, isError, isLoading, paginationConfig, selectedTemplates, setTemplates } = useQuestionnaire();
-  const { renderCheckBox, selectedData, setSelectedData } = useMultiCheckBox(data, paginationConfig, selectedTemplates);
+  const { applyFilters, clearFilters, applySort, data, isError, isLoading, paginationConfig, selectedTemplates, setTemplates } =
+    useQuestionnaire();
+  const { renderCheckBox, selectedData, setSelectedData } = useMultiCheckBox(data, paginationConfig, selectedTemplates, setTemplates);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const selectedEntityType = location.state?.value || false;
-  console.log('selectedTemplates', selectedTemplates, selectedTemplates?.length);
+  const isSuccess = location.state?.isSuccess || false;
+
   useEffect(() => {
     if (!selectedEntityType) {
       setTemplates(selectedData);
@@ -32,21 +37,39 @@ function TemplateList() {
       setSelectedData(selectedTemplates);
     }
   }, [selectedTemplates, setSelectedData, selectedData]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      setSelectedData([]);
+      setTemplates([]);
+    }
+  }, []);
+
+  const handleChangePage = (e, newPage) => {
+    setPageNumber(newPage);
+  };
+
+  const handleOnSortIconClick = (selectedColumn, sortDirection) => {
+    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+  };
+
+  const handleView = (id) => {};
+
   const columns = [
     {
       id: 'checkbox',
       name: data?.length > 0 ? renderCheckBox({ id: 'ALL_ROWS' + paginationConfig.pageNumber }) : null,
       sortable: false,
       cell: (row, index) => renderCheckBox(row, index),
-      selector: (row) => row.MRN,
+      selector: (row) => row.id,
       width: '50px'
     },
     {
       id: 'templateName',
-      name: 'Template Name',
-      selector: () => {},
+      name: t('label.templateName'),
+      selector: (row) => row.templateName || '',
       sortable: true,
-      sortKey: 'id',
+      sortKey: 'template_name',
       minWidth: '160px',
       maxWidth: '270px',
       cell: (props) => {
@@ -55,42 +78,61 @@ function TemplateList() {
     },
     {
       id: 'status',
-      name: 'Status',
-      selector: () => {},
+      name: t('table.columns.captions.status'),
+      selector: (row) => row.active,
       sortable: true,
-      sortKey: 'id',
+      sortKey: 'active',
       minWidth: '160px',
-      cell: (props) => {}
+      cell: (props) => (props.active ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />)
+    },
+    {
+      id: 'configuredAt',
+      name: t('table.columns.captions.configuredfor'),
+      selector: (row) => row.configuredAt,
+      sortKey: 'configuredAt',
+      minWidth: '160px',
+      cell: (props) => {
+        return (
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            {props.configuredAt.map((item, index) => {
+              if (!item) return null;
+              const iconMap = {
+                catalog: <CatalogImage key={index} />,
+                account: <AccountImage key={index} />,
+                material: <MaterialImage key={index} />
+              };
+              return iconMap[item.toLowerCase()] || null;
+            })}
+          </div>
+        );
+      }
     },
     {
       id: 'createdOn',
-      name: 'Date Created On',
-      selector: () => {},
+      name: t('table.columns.captions.dateCreatedOn'),
+      selector: (row) => row.createdOn || '',
       sortable: true,
-      sortKey: 'id',
+      sortKey: 'created_at',
       minWidth: '160px',
-      cell: (props) => {}
+      cell: (props) => CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')
     },
     {
       id: 'createdBy',
-      name: 'Created By',
-      selector: () => {},
+      name: t('table.columns.captions.created_By'),
+      selector: (row) => row.createdBy || '',
       sortable: true,
-      sortKey: 'id',
+      sortKey: 'created_by',
       minWidth: '160px',
       cell: (props) => {}
     },
     {
       id: 'actions',
-      name: 'Action',
-      selector: () => {},
-      sortable: true,
-      sortKey: 'id',
+      name: t('table.columns.captions.action'),
       minWidth: '160px',
       cell: (props) => (
-        <div className="styled-icon-button error-button">
-          <Button onClick={() => navigate(`${ROUTE_CONFIG.VIEW_QUESTIONNAIRE}/${props.id}`)} icon={ViewIcon} variant="secondary" size="md">
-            View
+        <div className="actionsBox">
+          <Button Icon={View} variant="tertiary" size="md" className="button-icon" onClick={() => handleView(row.id)}>
+            {t('userManagement.table.action.view')}
           </Button>
         </div>
       )
@@ -98,47 +140,43 @@ function TemplateList() {
   ];
 
   const handleOnSelectMaster = (entity) => {
-    navigate('map-questionnaire', { state: { value: entity } });
+    navigate('map-questionnaire', { state: { value: entity, selectedTemplates: selectedTemplates } });
   };
 
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-CardContainer">
         <CommonFilters
-          onApplyFilters={() => {}}
-          onClearFilters={() => {}}
+          onApplyFilters={applyFilters}
+          onClearFilters={clearFilters}
           additionalFilters={[]}
           searchPlaceholder={t('controls.placeholder.searchQuestionnaire')}
         />
       </div>
 
-      <div className="styledHeading">
-        <Heading as="h2">Questionnaire Listing</Heading>
-      </div>
-
       <div>
-        {selectedTemplates && selectedTemplates.length > 0 && (
-          <div>
-            <div className="selected-item-alert row-space-between-center">
-              <p className="selected-item-text">{`${selectedTemplates.length} items selected.`}</p>
-
-              <Button onClick={() => setIsDrawerOpen(true)} size="sm" variant="secondary">
-                Configure
-              </Button>
-            </div>
-          </div>
-        )}
+        <TableHeading
+          heading={t('table.ariaLabel.questionaaireList')}
+          secondaryView={selectedTemplates && selectedTemplates.length > 0}
+          secondaryViewHeading={`${selectedTemplates.length} ${t('userManagement.selected_items')}`}
+          secondaryViewControls={
+            <Button onClick={() => setIsDrawerOpen(true)} size="sm" variant="secondary">
+              {t('label.configure')}
+            </Button>
+          }
+          style={{ marginBottom: '24px' }}
+        />
         <CustomDataTable
           id="questionnaire-template-listing"
           columns={columns}
-          data={data?.content || []}
-          handleChangePage={handleOnPageChange}
-          onSortIconClick={handleOnSort}
+          data={data || []}
+          handleChangePage={handleChangePage}
+          onSortIconClick={handleOnSortIconClick}
           pagination={true}
-          currentPage={1}
-          totalPageCount={100}
-          totalRocords={800}
-          recordsPerPage={8}
+          currentPage={paginationConfig.pageNumber}
+          totalPageCount={paginationConfig.totalPages}
+          totalRocords={paginationConfig.totalElements}
+          recordsPerPage={paginationConfig.pageSize}
           paginationRecordsPerPageMessage={t('labels.perPage')}
           paginationTotalRecorsMessage={t('labels.results')}
           noDataComponent={
@@ -164,17 +202,17 @@ const SelectMaster = ({ onClose, onSubmit, t }) => {
   const options = [
     {
       isDisabled: false,
-      label: t('Material'),
+      label: t('label.Material'),
       value: 'Material'
     },
     {
       isDisabled: false,
-      label: t('Catalog'),
+      label: t('label.Catalog'),
       value: 'Catalog'
     },
     {
       isDisabled: false,
-      label: t('Account'),
+      label: t('label.Account'),
       value: 'Account'
     }
   ];
@@ -184,7 +222,7 @@ const SelectMaster = ({ onClose, onSubmit, t }) => {
   return (
     <div className="grail-layout floating-drawer">
       <div className="styled-heading">
-        <Heading as="h3">{t('Select Master')}</Heading>
+        <Heading as="h3">{t('label.selectMaster')}</Heading>
       </div>
       <div className="grow">
         <div className="styled-radio-group">

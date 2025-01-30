@@ -101,7 +101,7 @@ export const ManageQuestionnaireProvider = ({ children }) => {
     data: CatalogData,
     refetch: refetchCatalogData
   } = useQuery({
-    queryKey: ['Catalog', entityType,selectedAccount?.id],
+    queryKey: ['Catalog', entityType, selectedAccount?.id, , requestParams],
     queryFn: async () => {
       const url = `${ApiRoutes.CATALOGS()}?${serializeParams(requestParams)}`; //TODO
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
@@ -126,9 +126,9 @@ export const ManageQuestionnaireProvider = ({ children }) => {
     data: AccountsData,
     refetch: refetchAccountsData
   } = useQuery({
-    queryKey: ['Accounts', entityType,selectedOrganization?.id],
+    queryKey: ['Accounts', entityType, selectedOrganization?.id, , requestParams],
     queryFn: async () => {
-      const url =  `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrganization.id}/accounts??${serializeParams(requestParams)}`; // TODo
+      const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrganization.id}/accounts??${serializeParams(requestParams)}`; // TODo
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       if (!res.data) {
         return [];

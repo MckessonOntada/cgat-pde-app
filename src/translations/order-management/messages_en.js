@@ -374,6 +374,11 @@ export const MessageEn = {
   'label.Material': 'Material',
   'label.Catalog': 'Catalog',
   'label.Account': 'Account',
+  'label.configure': 'Configure',
   'label.selectMaster': 'Select Master',
-  'controls.placeholder.searchQuestionnaire': 'Search by label, variant type'
+  'table.columns.captions.configuredfor': 'Configured for',
+  'table.columns.captions.dateCreatedOn': 'Date Created On',
+  'table.columns.captions.created_By': 'Created By',
+  'table.columns.captions.action': 'Action',
+  'controls.placeholder.searchQuestionnaire': 'Search by Template Name'
 };

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-export const useMultiCheckBox = (inputData, paginationConfig, setExternalSelectedRows) => {
-  const [selectedData, setSelectedData] = useState([]);
+export const useMultiCheckBox = (inputData, paginationConfig, externalSelectedRows,setExternalSelectedRows) => {
+  const [selectedData, setSelectedData] = useState([]);  
 
   const setExternalStateItems = (updatedRows) => {
     setSelectedData(updatedRows);
