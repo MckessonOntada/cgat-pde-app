@@ -35,6 +35,12 @@
 .price {
   font-size: var(--brand-font-size--32);
   font-weight: var(--brand-font-weight-600);
+    .currencySymbol {
+      top: -10px !important;
+      font-size: var(--brand-font-size--default) !important;
+      position: relative;
+      left: -1px;
+  }
 }
 
 .orderSubmitDescription {

@@ -376,15 +376,7 @@ div.disable-all {
 
   .fieldValue {
     font-size: var(--brand-font-size--large);
-
-    // .dollarSign {
-    //   span {
-    //     top: -4px;
-    //     font-size: var(--brand-font-size--10);
-    //     position: relative;
-    //     left: -1px;
-    //   }
-    // }
+    justify-content: flex-end;
   }
 
   &.col-span-4 {
@@ -423,7 +415,20 @@ div.disable-all {
     }
   }
 }
-
+.dollarSign {
+  span {
+    top: -5px;
+    font-size: var(--brand-font-size--10);
+    position: relative;
+    left: -1px;
+  }
+}
+.currencySymbol {
+  top: -8px;
+  font-size: var(--brand-font-size--small);
+  position: relative;
+  left: -1px;
+}
 .primaryHeading {
   font-size: var(--brand-font-size--28);
   font-weight: 600;
