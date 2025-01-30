@@ -36,10 +36,10 @@
 }
 
 .custom-date-range-picker {
-  > div {
-    > div {
-      > div {
-        > div {
+  >div {
+    >div {
+      >div {
+        >div {
           width: unset;
           min-width: 160px;
           flex-grow: 1;
@@ -581,11 +581,9 @@ div.disable-all {
   }
 }
 
-@media only screen and (min-width: 576px) {
-}
+@media only screen and (min-width: 576px) {}
 
-@media only screen and (min-width: 992px) {
-}
+@media only screen and (min-width: 992px) {}
 
 @media only screen and (min-width: 1200px) {
   .max-container {
@@ -640,6 +638,7 @@ div.disable-all {
 }
 
 .styled-heading {
+
   //module primary heading
   h1 {
     font-size: var(--brand-font-size--28) !important;
@@ -661,13 +660,30 @@ div.disable-all {
 }
 
 .styled-form-field {
+
   .label-heading,
   label[class*="TextareaInput-module--label"],
-  label[class*="InputField-module--labelText"] {
-    font-size: var(--brand-font-size--default);
+  label[class*="InputField-module--labelText"],
+  fieldset legend[class*="CheckboxGroup-module--captionWrap"],
+  fieldset legend[class*="labelContainer"] {
+    font-size: var(--brand-font-size--default) !important;
     font-weight: var(--brand-font-weight-600);
     line-height: var(--brand-font-size--20);
   }
+
+  div[class*="RadioGroup-module"] {
+    label {
+      font-size: var(--brand-font-size--default) !important;
+      font-weight: var(--brand-font-weight-400) !important;
+      line-height: var(--brand-font-size--20);
+    }
+  }
+}
+
+.styled-control-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-03);
 }
 
 .styled-radio-group {
@@ -691,7 +707,7 @@ div.disable-all {
   font-size: var(--brand-font-size--default);
 
   fieldset {
-    gap: var(--spacing-04);
+    gap: var(--spacing-03);
   }
 }
 
@@ -745,7 +761,7 @@ div.disable-all {
   flex-direction: column;
   height: 100vh;
 
-  > div {
+  >div {
     padding: var(--spacing-03);
     flex: 0 0 auto;
   }
@@ -764,10 +780,13 @@ div.disable-all {
 
 #secondaryNav {
   background: none;
+
   @include mixins.respond(sm) {
     background-color: var(--brand-color-background-white);
   }
+
   #secondaryNavPanel {
+
     button,
     a {
       font-size: var(--brand-font-size--small);

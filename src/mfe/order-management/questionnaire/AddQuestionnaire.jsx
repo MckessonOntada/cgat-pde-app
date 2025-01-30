@@ -13,12 +13,13 @@ import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
 import { useMutation, useQuery } from 'react-query';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
+import QuestionnaireTemplate from './QuestionnaireTemplate';
 
-const QUESTION_TYPE = {
-  RADIO_BUTTON: 'radio_button',
-  DROPDOWN: 'dropdown',
-  CHECKBOX: 'checkbox',
-  INPUT: 'input'
+export const QUESTION_TYPE = {
+  RADIO_BUTTON: 'RADIO_BUTTON',
+  DROPDOWN: 'DROPDOWN',
+  CHECKBOX: 'CHECKBOX',
+  INPUT: 'INPUT'
 };
 
 const MODE = {
@@ -27,7 +28,7 @@ const MODE = {
   VIEW: 'VIEW'
 };
 
-const LANGUAGE = {
+export const LANGUAGE = {
   ENGLISH: 'en',
   SPANISH: 'es'
 };
@@ -121,7 +122,7 @@ function AddQuestionnaire() {
 
         const formattedQuestions = questions.map((question) => {
           const { type, text, additionalAttributes, isDocumentRequired, isMandatory } = question;
-          const _question = { type: type.toLowerCase(), checks: [] };
+          const _question = { type: type.toUpperCase(), checks: [] };
           if (isDocumentRequired) {
             _question.checks.push('isDocumentRequired');
           }
@@ -288,6 +289,7 @@ function AddQuestionnaire() {
 
   return (
     <div>
+      {questionnaireDetails && <QuestionnaireTemplate config={questionnaireDetails} />}
       <div>
         <Formik disabled initialValues={initialFormState} onSubmit={handleOnSubmit} enableReinitialize validationSchema={schema}>
           {({ values, errors, setFieldValue, setFieldError }) => {
@@ -383,10 +385,10 @@ function AddQuestionnaire() {
                                               }
                                             }}
                                             options={[
-                                              { label: 'Input Field', value: 'input' },
-                                              { label: 'Radio Button', value: 'radio_button' },
-                                              { label: 'Checkbox', value: 'checkbox' },
-                                              { label: 'Dropdown', value: 'dropdown' }
+                                              { label: 'Input Field', value: QUESTION_TYPE.INPUT },
+                                              { label: 'Radio Button', value: QUESTION_TYPE.RADIO_BUTTON },
+                                              { label: 'Checkbox', value: QUESTION_TYPE.CHECKBOX },
+                                              { label: 'Dropdown', value: QUESTION_TYPE.DROPDOWN }
                                             ]}
                                           />
                                         </div>

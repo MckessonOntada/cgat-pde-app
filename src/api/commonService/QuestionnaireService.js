@@ -21,7 +21,7 @@ async function createQuestionnaire(payload) {
 
 async function updateQuestionnaire(id, payload) {
   const url = `${ApiRoutes.QUESTIONNAIRE()}/${id}`;
-  const res = await HttpResourceService.callRest(url, httpVerb.PUT, payload);
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
   if (res.data) {
     return res.data;
   }
