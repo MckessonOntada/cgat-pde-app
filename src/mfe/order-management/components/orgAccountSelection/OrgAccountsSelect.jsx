@@ -33,7 +33,7 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
   //   return accountsList.map((item, index) => ({ ...item, label: item.accountName, value: item.accountNumber, isChecked: true })) || [];
   // }, [accountsList]);
 
-  const getSelectedAccount = (selectedValue) => {
+  const onChangeAccountHandler = (selectedValue) => {
     if (selectedValue.length > 0) {
       setSelectedAccount(selectedValue);
       setAccountOptions(selectedValue);
@@ -47,7 +47,6 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
           id={'select-org-search'}
           label={t('ManageCatalog.SelectOrganization')}
           isMultiSelect={false}
-          // placeholder={selectedOrganization?.name || 'Select Organization'}
           placeholder={t('ManageCatalog.SelectOrganization')}
           onChange={getSelectedOrg}
           options={options}
@@ -70,7 +69,7 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
             label={t('ManageCatalog.SelectAccount')}
             isMultiSelect={true}
             placeholder={t('ManageCatalog.SelectAccount')}
-            onChange={getSelectedAccount}
+            onChange={onChangeAccountHandler}
             options={accountOptions || []}
             variant={'async'}
             onSearch={(event) => searchAccountList(event)}
