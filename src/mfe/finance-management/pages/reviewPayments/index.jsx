@@ -296,7 +296,7 @@ function ReviewPayments() {
         {!REVIEW_MODE && (
           <div className="invoice-sum-container">
             <div className="label"> {t('paymentInvoices.reviewPayments.selectedInvoice', { count: selectedInvoices.length })}</div>
-            <div className="value">{`${FinanceUtils.formatCurrency(invoicesSum)}`}</div>
+            <div className="value"><span className='currencySymbol'>$</span>{`${FinanceUtils.formatCurrency(invoicesSum).slice(1)}`}</div>
           </div>
         )}
         {(!REVIEW_MODE || (REVIEW_MODE && state?.creditsSelected?.length > 0)) && (
@@ -316,7 +316,7 @@ function ReviewPayments() {
             {!REVIEW_MODE && (
               <div className="invoice-sum-container">
                 <div className="label">{`Total credit amount:`}</div>{' '}
-                <div className="value">{`${FinanceUtils.formatCurrency(creditsSum)}`}</div>
+                <div className="value"><span className='currencySymbol'>$</span>{`${FinanceUtils.formatCurrency(creditsSum).slice(1)}`}</div>
               </div>
             )}
           </div>
@@ -354,7 +354,7 @@ function ReviewPayments() {
             </div>
             <div className="invoice-sum-container">
               <div className="label">{t('paymentInvoices.reviewPayments.invoiceDesc')}</div>
-              <div className="value">{`${FinanceUtils.formatCurrency(totalAmount)}`}</div>
+              <div className="value"><span className='currencySymbol'>$</span>{`${FinanceUtils.formatCurrency(totalAmount).slice(1)}`}</div>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 .wrapper {
-  min-width: 360px;
+  min-width: 446px;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -46,6 +46,22 @@
           display: flex;
           width: 100%;
           justify-content: space-between;
+          align-items: center;
+
+          .sectionHeading {
+            display: flex;
+          }
+
+          .actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-03);
+            justify-content: end;
+            button,
+            a, svg {
+              cursor: pointer;
+            }
+          }
         }
       }
 
@@ -61,10 +77,6 @@
 
         .leftContentBold {
           font-weight: var(--brand-font-weight-600);
-        }
-
-        .rightContentAction {
-          cursor: pointer;
         }
       }
     }

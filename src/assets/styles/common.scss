@@ -337,10 +337,17 @@ div.disable-all {
   width: 100%;
   height: auto;
   gap: var(--spacing-04);
-  padding: var(--spacing-04);
-  border: 1px solid var(--brand-color-patient-primary-3);
-  border-radius: var(--brand-border-radius--8);
-  background-color: var(--brand-color-background-white);
+  // padding: var(--spacing-04);
+  // border: 1px solid var(--brand-color-patient-primary-3);
+  // border-radius: var(--brand-border-radius--8);
+  // background-color: var(--brand-color-background-white);
+
+  @include mixins.respond(sm) {
+    padding: var(--spacing-04);
+    border: 1px solid var(--brand-color-patient-primary-3);
+    border-radius: var(--brand-border-radius--8);
+    background-color: var(--brand-color-background-white);
+  }
 }
 
 .MCP-sect {
@@ -369,15 +376,7 @@ div.disable-all {
 
   .fieldValue {
     font-size: var(--brand-font-size--large);
-
-    // .dollarSign {
-    //   span {
-    //     top: -4px;
-    //     font-size: var(--brand-font-size--10);
-    //     position: relative;
-    //     left: -1px;
-    //   }
-    // }
+    justify-content: flex-end;
   }
 
   &.col-span-4 {
@@ -416,7 +415,20 @@ div.disable-all {
     }
   }
 }
-
+.dollarSign {
+  span {
+    top: -5px;
+    font-size: var(--brand-font-size--10);
+    position: relative;
+    left: -1px;
+  }
+}
+.currencySymbol {
+  top: -8px;
+  font-size: var(--brand-font-size--small);
+  position: relative;
+  left: -1px;
+}
 .primaryHeading {
   font-size: var(--brand-font-size--28);
   font-weight: 600;
@@ -656,11 +668,27 @@ div.disable-all {
 
   .label-heading,
   label[class*="TextareaInput-module--label"],
-  label[class*="InputField-module--labelText"] {
-    font-size: var(--brand-font-size--default);
+  label[class*="InputField-module--labelText"],
+  fieldset legend[class*="CheckboxGroup-module--captionWrap"],
+  fieldset legend[class*="labelContainer"] {
+    font-size: var(--brand-font-size--default) !important;
     font-weight: var(--brand-font-weight-600);
     line-height: var(--brand-font-size--20);
   }
+
+  div[class*="RadioGroup-module"] {
+    label {
+      font-size: var(--brand-font-size--default) !important;
+      font-weight: var(--brand-font-weight-400) !important;
+      line-height: var(--brand-font-size--20);
+    }
+  }
+}
+
+.styled-control-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-03);
 }
 
 .styled-radio-group {
@@ -684,7 +712,7 @@ div.disable-all {
   font-size: var(--brand-font-size--default);
 
   fieldset {
-    gap: var(--spacing-04);
+    gap: var(--spacing-03);
   }
 }
 
@@ -755,11 +783,20 @@ div.disable-all {
   width: 340px;
 }
 
-#secondaryNavPanel {
-  button,
-  a {
-    font-size: var(--brand-font-size--small);
-    line-height: var(--brand-line-height--large);
-    text-transform: uppercase;
+#secondaryNav {
+  background: none;
+
+  @include mixins.respond(sm) {
+    background-color: var(--brand-color-background-white);
+  }
+
+  #secondaryNavPanel {
+
+    button,
+    a {
+      font-size: var(--brand-font-size--small);
+      line-height: var(--brand-line-height--large);
+      text-transform: uppercase;
+    }
   }
 }

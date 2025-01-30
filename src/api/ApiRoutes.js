@@ -40,6 +40,7 @@ const ApiRoutes = Object.freeze({
   POST_USER_LOGOUT: constructUserManagementServiceUrl('users/postLogout'),
   GET_ROLES: () => constructUserManagementServiceUrl(`roles`),
   GET_ROLE_PERMISSIONS: (roleId) => constructUserManagementServiceUrl(`roles/${roleId}/permissions`),
+  GET_PERMISSIONS: (userType) => constructUserManagementServicePublicUrl(`global/permissions/${userType}`),
   ORGANIZATIONS: constructUserManagementServiceUrl('practices'),
   PUBLIC_ORGANIZATIONS: constructUserManagementServicePublicUrl('practices'),
   ACCOUNTS: constructUserManagementServiceUrl('accounts'),
@@ -67,11 +68,16 @@ const ApiRoutes = Object.freeze({
   EXPORT_INVOICES_EXCEL: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/open-invoices/export`),
   EXPORT_CREDITS_EXCEL: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/open-invoices/credit/export`),
   EXPORT_PENDING_PAYMENT_EXCEL: (data) => constructOrderManagementServiceUrl(`account/${data.accountNumber}/payments/pending/export`),
+  QUESTIONNAIRE: () => constructUserManagementServicePublicUrl(`questionnaires`),
+  GET_CATALOG_DATA: () => constructUserManagementServicePublicUrl('catalogs'),
   CATALOGS: () => constructUserManagementServicePublicUrl(`catalogs`),
   THERAPIES: () => constructUserManagementServicePublicUrl(`therapies`),
+  QUESTIONNAIRE: () => constructUserManagementServicePublicUrl(`questionnaires`),
   GET_ALL_MATERIALS: () => constructUserManagementServicePublicUrl(`therapies`),
   GET_MATERIAL_BY_ID: (materialId) => constructUserManagementServicePublicUrl(`therapies/${materialId}`),
-  GET_MATERIAL_CONFIG_BY_ID: (materials) => constructUserManagementServicePublicUrl(`therapies/config/${materials}`)
+  GET_MATERIAL_CONFIG_BY_ID: (materials) => constructUserManagementServicePublicUrl(`therapies/config/${materials}`),
+  CONFIGURE_MATERIALS: () => constructUserManagementServicePublicUrl(`therapies/config/update`),
+  DELETE_MATERIAL_CONFIG: (materialId) => constructUserManagementServicePublicUrl(`therapies/config/${materialId}`),
 });
 
 export default ApiRoutes;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Loader, CustomDataTable, Button } from '@mckesson/mcp-component-library';
+import { Loader, CustomDataTable, Button, Alert } from '@mckesson/mcp-component-library';
 import EmptyDataTable from '@src/components/EmptyTable';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useManageMaterial } from '@src/mfe/order-management/context/ManageMaterialContext';
@@ -8,8 +8,9 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { Link } from 'react-router-dom';
 import FloatingDrawer from '@src/components/floating-drawer';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
-import { MaterialConfigConstants, MaterialDetailsConstants } from './assets/constants/MaterialConstants';
+import { ConfigConstants, MaterialDetailsConstants } from './assets/constants/MaterialConstants';
 import ConfigureMaterials from './ConfigureMaterials';
+import CommonUtils from '@src/util/CommonUtils';
 
 function ManageMaterialTable({ ...props }) {
   const { t } = useTranslate();
@@ -18,6 +19,8 @@ function ManageMaterialTable({ ...props }) {
   const [openDetails, setOpenDetails] = React.useState(false);
   const [openConfiguration, setOpenConfiguration] = React.useState(false);
   const [materialNumber, setMaterialNumber] = React.useState(null);
+  const [configureSuccess, setConfigureSuccess] = React.useState(false);
+  const [configureError, setConfigureError] = React.useState(false);
 
   const getindeterminate = () => {
     const allDataIncluded = data.every((invoice) =>
@@ -28,25 +31,25 @@ function ManageMaterialTable({ ...props }) {
 
   const renderCheckBox = (row, index) => {
     return (
-      <input
-        data-testid="rowcheckbox"
-        type="checkbox"
-        id={'checkbox' + row?.id}
-        disabled={isCheckboxDisabled(row)}
-        onChange={() => handleRowSelected(row)}
-        checked={isChecked(row)}
-        ref={(el) => {
-          if (el) {
-            el.indeterminate =
-              row.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber && selectedMaterials.length > 0 && !getindeterminate();
-          }
-        }}
-      />
+        <input
+          data-testid="rowcheckbox"
+          type="checkbox"
+          id={'checkbox' + row?.id}
+          disabled={isCheckboxDisabled(row)}
+          onChange={() => handleRowSelected(row)}
+          checked={isChecked(row)}
+          ref={(el) => {
+            if (el) {
+              el.indeterminate =
+                row.id === 'ALL_ITEMS_' + paginationConfig.pageNumber && selectedMaterials.length > 0 && !getindeterminate();
+            }
+          }}
+        />
     );
   };
 
   const isChecked = (row) => {
-    if (row.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber) {
+    if (row.id === 'ALL_ITEMS_' + paginationConfig.pageNumber) {
       return getindeterminate();
     }
     let availableRow = selectedMaterials.find((item) => item.materialNumber === row?.materialNumber);
@@ -58,12 +61,12 @@ function ManageMaterialTable({ ...props }) {
   };
 
   const isCheckboxDisabled = (row) => {
-    let isDisbled = row.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber && !CommonUtils.isNonEmptyArray(data);
+    let isDisbled = row.id === 'ALL_ITEMS_' + paginationConfig.pageNumber && !CommonUtils.isNonEmptyArray(data);
     return isDisbled;
   };
 
   const handleRowSelected = (data) => {
-    if (data.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber) {
+    if (data.id === 'ALL_ITEMS_' + paginationConfig.pageNumber) {
       handleHeaderCheck(data);
     } else {
       handleIndividualCheck(data);
@@ -132,7 +135,7 @@ function ManageMaterialTable({ ...props }) {
       selector: (row) => row.materialDescription,
       sortable: true,
       wrap: true,
-      cell: (props) => <div>{props?.materialDescription || '-'}</div>
+      cell: (props) => <div className="cellEllipse">{props?.materialDescription || '-'}</div>
     },
     {
       name: t('manageMaterial.table.nationalDrugCode'),
@@ -141,7 +144,7 @@ function ManageMaterialTable({ ...props }) {
       sortable: true,
       wrap: true,
       maxWidth: '150px',
-      cell: (props) => <div>{props?.ndcNumber || '-'}</div>
+      cell: (props) => <div className="cellEllipse">{props?.ndcNumber || '-'}</div>
     },
     {
       name: t('manageMaterial.table.strength'),
@@ -150,7 +153,7 @@ function ManageMaterialTable({ ...props }) {
       sortable: false,
       wrap: true,
       maxWidth: '140px',
-      cell: (props) => <div>{props?.strength || '-'}</div>
+      cell: (props) => <div className="cellEllipse">{props?.strength || '-'}</div>
     },
     {
       name: t('manageMaterial.table.dosage'),
@@ -159,7 +162,7 @@ function ManageMaterialTable({ ...props }) {
       sortable: false,
       wrap: true,
       maxWidth: '120px',
-      cell: (props) => <div>{props?.dosage || '-'}</div>
+      cell: (props) => <div className="cellEllipse">{props?.dosage || '-'}</div>
     }
   ];
 
@@ -186,6 +189,22 @@ function ManageMaterialTable({ ...props }) {
           </Button>
         </div>
       )}
+      {configureSuccess && (
+        <Alert 
+          description={t('manageMaterial.drawer.controls.apply.success')} 
+          onClose={() => setConfigureSuccess(false)} 
+          type="success" 
+          duration={3000} 
+        />
+      )}
+      {configureError && (
+        <Alert
+          description={t('manageMaterial.drawer.controls.apply.error')}
+          onClose={() => setConfigureError(false)}
+          type="error"
+          duration={3000}
+        />
+      )}
       <CustomDataTable
         id="manage-material-table"
         type="normal"
@@ -201,6 +220,7 @@ function ManageMaterialTable({ ...props }) {
         paginationTotalRecorsMessage={t('manageMaterial.table.pagination.totalRecords')}
         paginationRecordsPerPageMessage={t('manageMaterial.table.pagination.perPage')}
         progressPending={isFetching}
+        responsive={true}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}
@@ -228,7 +248,7 @@ function ManageMaterialTable({ ...props }) {
           <TherapyDetails
             therapyId={materialNumber}
             therapyData={MaterialDetailsConstants}
-            configurationData={MaterialConfigConstants}
+            configurationData={ConfigConstants}
             onClose={() => setOpenDetails(!openDetails)}
             showFooter={false}
             isMaterialConfiguration={true}
@@ -238,7 +258,11 @@ function ManageMaterialTable({ ...props }) {
       )}
       {openConfiguration && (
         <FloatingDrawer open={true} anchor="right" onClose={() => setOpenConfiguration(!openConfiguration)}>
-          <ConfigureMaterials onClose={() => setOpenConfiguration(!openConfiguration)} />
+          <ConfigureMaterials 
+            onClose={() => setOpenConfiguration(!openConfiguration)} 
+            onSuccess={() => setConfigureSuccess(true)}
+            onError={() => setConfigureError(true)}
+          />
         </FloatingDrawer>
       )}
     </React.Fragment>

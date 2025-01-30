@@ -14,11 +14,11 @@ function ManageMaterial() {
   const breadcrumbItems = [
     {
       label: t('manageMaterial.breadcrumbs.systemAdministrator'),
-      url: '/admin'
+      url: '/'
     },
     {
       label: t('manageMaterial.breadcrumbs.systemConfiguration'),
-      url: '/admin/system-configuration'
+      url: '/orders/system-configuration'
     },
     {
       label: t('manageMaterial.breadcrumbs.manageMaterial')
@@ -29,8 +29,8 @@ function ManageMaterial() {
     <div className="MCP-module-wrapper">
       <Breadcrumbs items={breadcrumbItems} />
       <Heading as="h2">{t('manageMaterial.heading')}</Heading>
-      <div className={`MCP-CardContainer`}>
-        <div className={`MCP-CardContainer`}>
+      <div className={`${styles.cardContainer}`}>
+        <div className={`${styles.cardContainer}`}>
           <CommonFilters
             additionalFilters={[]}
             onApplyFilters={applyFilters}

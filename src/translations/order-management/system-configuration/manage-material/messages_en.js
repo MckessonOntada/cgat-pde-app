@@ -39,14 +39,15 @@ export const SystemConfigurationEN = {
   "manageMaterial.drawer.details.body.cgatIdentifier": "CGAT Identifier",
   "manageMaterial.drawer.details.body.productLevelPricing": "Product Level Pricing",
   "manageMaterial.drawer.details.body.minimumOrderQuantity": "Minimum Order Quantity",
-  "manageMaterial.drawer.details.configuration.heading": "Configurations",
-  "manageMaterial.drawer.details.configuration.body.slotNumber": "Slot Number",
-  "manageMaterial.drawer.details.configuration.body.patientConsent": "Patient Consent",
+  "manageMaterial.drawer.details.configuration.heading.questionnaire": "Questionnaire Configuration",
+  "manageMaterial.drawer.details.configuration.heading.material": "Material Configuration",
+  "manageMaterial.drawer.details.configuration.heading.catalog": "Catalog Configuration",
+  "manageMaterial.drawer.details.configuration.actions.preview": "Preview",
+  "manageMaterial.drawer.details.configuration.actions.delete": "Delete",
   "manageMaterial.drawer.details.configuration.body.coiIdRequired": "COI ID Required",
   "manageMaterial.drawer.details.configuration.body.patientInfoRequired": "Patient information required",
   // Configuration Drawer
   "manageMaterial.drawer.configuration.heading": "Material Configuration",
-  "manageMaterial.drawer.configuration.preview": "Preview",
   // Configuration Drawer Body
   "manageMaterial.drawer.configuration.body.patientInfoRequired": "Patient information required?",
   "manageMaterial.drawer.configuration.body.coiIdRequired": "COI ID Required?",
@@ -57,4 +58,7 @@ export const SystemConfigurationEN = {
   // Configuration Drawer Controls
   "manageMaterial.drawer.controls.cancel": "Cancel",
   "manageMaterial.drawer.controls.apply": "Apply",
+  // Alerts
+  "manageMaterial.drawer.controls.apply.success": "Configuration applied successfully",
+  "manageMaterial.drawer.controls.apply.error": "Error applying configuration"
 };

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { CustomDataTable } from '@mckesson/mcp-component-library';
+import { CustomDataTable } from '../../../../components/dataTableComponent';
 import { useOrders } from '../../context/OrderContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { createColumns } from './OrderTableColumns';
@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import './OrderDataTable.module.scss';
+import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 
 const OrderDataTable = ({ tab, alertContainerId }) => {
@@ -15,6 +16,7 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
   const navigate = useNavigate();
   const { dataState: data, paginationConfig, isFetching, error, setCurrentPage, applySort, refreshData } = useOrders();
   const columns = createColumns(t, navigate, tab, alertContainerId);
+  const showCardView = useResponsiveView();
 
   const handleOnPageChange = (_event, pageIndex) => {
     setCurrentPage(pageIndex);
@@ -42,6 +44,7 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
         aria-label={t('table.ariaLabel.orderList')}
         paginationRecordsPerPageMessage={t('labels.perPage')}
         paginationTotalRecorsMessage={t('labels.results')}
+        showCardView={showCardView}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}

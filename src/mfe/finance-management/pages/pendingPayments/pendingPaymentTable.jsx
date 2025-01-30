@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, CustomDataTable, Loader } from '@mckesson/mcp-component-library';
+import { Button, Loader } from '@mckesson/mcp-component-library';
 import { Link } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
@@ -10,11 +10,13 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FormattedNumber } from 'react-intl';
 import dayjs from 'dayjs';
 import { PATHS } from '../../routes';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import { CustomDataTable } from '@src/components/dataTableComponent';
 
 export default function PendingPaymentTable() {
   const { t } = useTranslate();
   const { data, isFetching, paginationConfig, setPageNumber, applySort, isError } = usePendingPayments();
-
+  const showCardView = useResponsiveView();
   const columns = [
     {
       id: 'confirmationNo',
@@ -23,6 +25,7 @@ export default function PendingPaymentTable() {
       sortable: true,
       wrap: true,
       minWidth: '110px',
+      showInMobileHeader: true,
       cell: (props) => (
         <div className="cellEllipse">
           <Link
@@ -103,6 +106,8 @@ export default function PendingPaymentTable() {
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         progressPending={isFetching}
+        showCardView={showCardView}
+        defaultExpandedCardView={true}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}

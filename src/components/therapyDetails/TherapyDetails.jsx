@@ -27,7 +27,8 @@ function TherapyDetails({
   const {
     isLoading,
     data: therapyDetails = {},
-    error
+    error,
+    refetch
   } = useQuery({
     queryKey: ['order', 'therapy', 'material', therapyId],
     queryFn: async () =>
@@ -53,6 +54,19 @@ function TherapyDetails({
       onClose();
     }
   };
+
+  const handleDeleteConfig = async (actionId) => {
+    if (actionId === 'delete-materialConfig') {
+      try {
+        await MaterialService.deleteMaterialConfig(therapyId);
+        showSnackbar({ description: t('manageMaterial.drawer.controls.apply.success'), type: 'success' });
+        refetch();
+      } catch (error) {
+        showSnackbar({ description: t('manageMaterial.drawer.controls.apply.error'), type: 'error' });
+      }
+    }
+  };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
@@ -73,7 +87,8 @@ function TherapyDetails({
               therapyData={therapyData}
               configurationData={configurationData}
               showFooter={showFooter}
-              isMaterialConfiguration
+              isMaterialConfiguration={isMaterialConfiguration}
+              onDeleteConfig={handleDeleteConfig}
             />
           )}
         </div>
@@ -82,7 +97,7 @@ function TherapyDetails({
   );
 }
 
-function DetailsPanel({ details, handleSelect, onClose, therapyData, configurationData, showFooter, isMaterialConfiguration }) {
+function DetailsPanel({ details, handleSelect, onClose, therapyData, configurationData, showFooter, isMaterialConfiguration, onDeleteConfig }) {
   const { t } = useTranslate();
 
   const renderDetails = (fields, details) =>
@@ -91,16 +106,25 @@ function DetailsPanel({ details, handleSelect, onClose, therapyData, configurati
     ));
 
   const renderConfiguration = (fields, details) =>
-    fields.map(({ label, value }) => (
-      <ConfigItem key={label} label={t(label)} value={isMaterialConfiguration ? details.materialConfig[value] : details[value] || '-'} />
-    ));
+    fields.map(({ label, value, display = true, translation = true }) => {
+      const configValue = details?.materialConfig?.[value];
+      const displayValue = typeof configValue === 'boolean' ? (configValue ? 'YES' : 'NO') : configValue ?? '-';
+      return (
+        <ConfigItem
+          key={label}
+          label={translation ? t(label) : label}
+          value={isMaterialConfiguration ? displayValue : details[value] || '-'}
+          display={display}
+        />
+      );
+    });
 
   return (
     <div className={styles.detailsPanel}>
       <div className={styles.drawerBodyContent}>
         {therapyData?.map((section, index) => (
           <div key={index}>
-            <Heading as="h4">{t(section.sectionHeading)}</Heading>
+            <Heading as="h3">{t(section.sectionHeading)}</Heading>
             <div>{renderDetails(section.sectionData, details)}</div>
           </div>
         ))}
@@ -108,10 +132,18 @@ function DetailsPanel({ details, handleSelect, onClose, therapyData, configurati
           configurationData?.map((section, index) => (
             <div key={index}>
               <div className={styles.configurationHeader}>
-                <Heading as="h4">{t(section.sectionHeading)}</Heading>{' '}
-                <Button textButton onClick={() => console.log('Preview Clicked')}>
-                  {t('manageMaterial.drawer.configuration.preview')}
-                </Button>
+                <Heading as="h3">{t(section.sectionHeading)}</Heading>
+                <div className={styles.actions}>
+                  {section.actions?.map((action) =>
+                    action.icon === 'delete' ? (
+                      <IconBinRed key={action.id} role="button" onClick={() => onDeleteConfig(action.id)} />
+                    ) : (
+                      <Button key={action.id} textButton onClick={() => console.log(`${action.id} Clicked`)}>
+                        {t(action.label)}
+                      </Button>
+                    )
+                  )}
+                </div>
               </div>
               <div>{renderConfiguration(section.sectionData, details)}</div>
             </div>
@@ -145,8 +177,10 @@ function DetailItem({ label, value }) {
   );
 }
 
-function ConfigItem({ label, value, isAction = false }) {
+function ConfigItem({ label, value, display = true }) {
   const { t } = useTranslate();
+  if (!display) return null;
+
   return (
     <>
       <div className={styles.detailItem}>
@@ -158,11 +192,7 @@ function ConfigItem({ label, value, isAction = false }) {
             ) : (
               'NO'
             )
-          ) : CommonUtils.isNonEmptyString(value) ? (
-            value
-          ) : (
-            <IconBinRed role={'button'} onClick={() => console.log('Delete Clicked')} />
-          )}
+          ) : value}
         </div>
       </div>
     </>

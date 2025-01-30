@@ -55,7 +55,7 @@ function OrderHeaderDetails({ therapyId, soldToAccountId, shipToAccountId, setIn
           value={
             <span className="dollarSign">
               <span>$</span>
-              {priceDetails?.netPrice || '----'}
+              {priceDetails.netPrice || '----'}
             </span>
           }
         />
@@ -66,7 +66,7 @@ function OrderHeaderDetails({ therapyId, soldToAccountId, shipToAccountId, setIn
   }, [formState.activeRecord, priceDetails]);
 
   return (
-    <div className="MCP-panel-container">
+    <div className="MCP-CardContainer">
       <div className={`grid grid-gap-24 grid-cols-1 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5`}>{segments}</div>
     </div>
   );

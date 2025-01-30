@@ -181,7 +181,7 @@ const CreateApproverGroup = () => {
 
           return (
             <Form>
-              <div className="MCP-panel-container">
+              <div className="MCP-CardContainer">
                 <Heading as="h2">{t('approvergroup.approvergroupdetails')}</Heading>
                 <div className="MCP-module-wrapper">
                   <div className="MCP-module-body form-container">

@@ -309,7 +309,7 @@ const Summary = () => {
             }
           /> */}
           <div className={'MCP-module-body'}>
-            <div className="MCP-panel-container">
+            <div className="MCP-CardContainer">
               <ModuleHeader
                 className={styles.panelHeader}
                 heading={
@@ -332,8 +332,8 @@ const Summary = () => {
                 />
               </div>
             </div>
-            <div className={'grid grid-gap-16 grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'}>
-              <div className="MCP-panel-container">
+            <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'}>
+              <div className="MCP-CardContainer">
                 <ModuleHeader
                   className={styles.panelHeader}
                   heading={<Heading as="h3">{t('labels.therapy')}</Heading>}
@@ -368,7 +368,7 @@ const Summary = () => {
                 </div>
               </div>
               <div className="MCP-module-body">
-                <div className="MCP-panel-container">
+                <div className="MCP-CardContainer">
                   <ModuleHeader
                     className={styles.panelHeader}
                     heading={<Heading as="h3">{t('labels.accountDetails')}</Heading>}
@@ -394,7 +394,7 @@ const Summary = () => {
                   </div>
                 </div>
                 {patientDetailsRequired && (
-                  <div className="MCP-panel-container">
+                  <div className="MCP-CardContainer">
                     <ModuleHeader
                       className={styles.panelHeader}
                       heading={
@@ -431,7 +431,7 @@ const Summary = () => {
               </div>
             </div>
 
-            <div className="MCP-panel-container">
+            <div className="MCP-CardContainer">
               <ModuleHeader
                 className={styles.panelHeader}
                 heading={<Heading as="h3">{t('labels.additionalDetails')}</Heading>}

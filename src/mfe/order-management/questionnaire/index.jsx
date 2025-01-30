@@ -8,6 +8,7 @@ import NotFound from '@src/pages/error-pages/NotFound';
 import { OrgAccountSelectionProvider } from '../components/orgAccountSelection/context/OrgAccountSelectionContext';
 import { ManageQuestionnaireProvider } from '../context/ManageQuestionnaireContext';
 import { MasterEntityType } from './util';
+import { QuestionnaireProvider } from '../context/QuestionnaireContext';
 
 function Questionnaire() {
   const location = useLocation();
@@ -21,20 +22,23 @@ function Questionnaire() {
     return false;
   };
   return (
-    <Routes>
-      <Route path="" index element={<ManageQuestionnaire />} />
-      <Route path={ROUTE_CONFIG.ADD_QUESTIONNAIRE} element={<AddQuestionnaire />} />
-      <Route
-        path={ROUTE_CONFIG.MAP_QUESTIONNAIRE}
-        element={
-          <OrgAccountSelectionProvider enableOrg={handleOrg()} enableAcct={handleAccount()}>
-            <ManageQuestionnaireProvider>
-              <MapQuestionnaire />
-            </ManageQuestionnaireProvider>
-          </OrgAccountSelectionProvider>
-        }></Route>
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <QuestionnaireProvider>
+      <Routes>
+        <Route path="" index element={<ManageQuestionnaire />} />
+        <Route path={ROUTE_CONFIG.ADD_QUESTIONNAIRE} element={<AddQuestionnaire />} />
+        <Route path={`${ROUTE_CONFIG.VIEW_QUESTIONNAIRE}/:id`} element={<AddQuestionnaire />} />
+        <Route
+          path={ROUTE_CONFIG.MAP_QUESTIONNAIRE}
+          element={
+            <OrgAccountSelectionProvider enableOrg={handleOrg()} enableAcct={handleAccount()}>
+              <ManageQuestionnaireProvider>
+                <MapQuestionnaire />
+              </ManageQuestionnaireProvider>
+            </OrgAccountSelectionProvider>
+          }></Route>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </QuestionnaireProvider>
   );
 }
 

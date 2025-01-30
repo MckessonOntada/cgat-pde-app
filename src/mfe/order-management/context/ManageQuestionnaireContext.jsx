@@ -35,10 +35,10 @@ export const useManagerQuestionnaire = () => {
 
 export const ManageQuestionnaireProvider = ({ children }) => {
   const { selectedOrganization, selectedAccount,setSelectedOrganization,setSelectedAccount } = useOrgAccountSelectionContext(); 
-  const [filterConfig, setFilterConfig] = React.useState(INITIAL_FILTER_STATE);
-  const [paginationConfig, setPaginationConfig] = React.useState(INITIAL_PAGINATION_STATE);
-  const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);
-  const [entityType, setEntityType] = React.useState(null); 
+  const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
+  const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
+  const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
+  const [entityType, setEntityType] = useState(null); 
   
   const requestParams = React.useMemo(() => {
     const baseParams = {
@@ -101,7 +101,7 @@ export const ManageQuestionnaireProvider = ({ children }) => {
     data: CatalogData,
     refetch: refetchCatalogData
   } = useQuery({
-    queryKey: ['Catalog', entityType,selectedAccount?.id],
+    queryKey: ['Catalog', entityType, selectedAccount?.id, , requestParams],
     queryFn: async () => {
       const url = `${ApiRoutes.CATALOGS()}?${serializeParams(requestParams)}`; //TODO
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
@@ -126,9 +126,9 @@ export const ManageQuestionnaireProvider = ({ children }) => {
     data: AccountsData,
     refetch: refetchAccountsData
   } = useQuery({
-    queryKey: ['Accounts', entityType,selectedOrganization?.id],
+    queryKey: ['Accounts', entityType, selectedOrganization?.id, , requestParams],
     queryFn: async () => {
-      const url =  `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrganization.id}/accounts??${serializeParams(requestParams)}`; // TODo
+      const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrganization.id}/accounts??${serializeParams(requestParams)}`; // TODo
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       if (!res.data) {
         return [];

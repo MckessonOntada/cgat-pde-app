@@ -51,7 +51,7 @@ export const PaymentOptionsControls = (props) => {
                   <input
                     type="radio"
                     id={id + '-item-' + index}
-                    name={id + '-item'}
+                    name={id + '-item-' + index}
                     value={item.value}
                     disabled={item.isDisabled}
                     checked={item.value === value}

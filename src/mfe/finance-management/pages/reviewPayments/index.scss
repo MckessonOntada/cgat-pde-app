@@ -154,6 +154,10 @@
     font-size: 22px;
     font-weight: 700;
     color: #1e394e;
+    .currencySymbol{
+      top: -6px;
+      font-size: var(--brand-font-size--extra-small);
+    }
   }
   @include mixins.respond(sm) {
     padding: 8px 16px;

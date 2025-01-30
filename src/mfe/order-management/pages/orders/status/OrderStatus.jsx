@@ -73,7 +73,7 @@ const OrderStatus = () => {
         }
       />
       <div className={'MCP-module-body'}>
-        <div className="MCP-panel-container">
+        <div className="MCP-CardContainer">
           <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
             <DetailSegment label={t('labels.orderId')} value={orderId} />
             <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
@@ -98,7 +98,18 @@ const OrderStatus = () => {
               customLabelStyles={styles.orderCostItem}
               label={t('labels.price')}
               customValueStyles={styles.orderCostItem}
-              value={<p className={`${styles.price}`}>{orderCost ? `$${orderCost}` : '-'}</p>}
+              value={
+                <p className={`${styles.price}`}>
+                  {orderCost ? (
+                    <>
+                      <span className={`${styles.currencySymbol}`}>$</span>
+                      {orderCost}
+                    </>
+                  ) : (
+                    '-'
+                  )}
+                </p>
+              }
             />
           </div>
         </div>
