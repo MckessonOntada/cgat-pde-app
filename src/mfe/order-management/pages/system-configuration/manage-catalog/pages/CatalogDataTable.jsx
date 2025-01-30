@@ -19,6 +19,9 @@ function CatalogDataTable(props) {
   const [openConfigurationDraw, setOpenConfigurationDraw] = useState(false);
   const [openCatalogDetails, setOpenCatalogDetails] = useState(false);
   const [viewCatalog, setViewCatalog] = useState(null);
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertDescription, setAlertDescription] = useState('');
+  const [alert, setAlert] = useState(null);
 
   const getindeterminate = () => {
     const allDataIncluded = data.every((invoice) => selectedCatalogs.some((includedInvoice) => includedInvoice.id === invoice.id));
@@ -167,10 +170,6 @@ function CatalogDataTable(props) {
   const handleChangePage = (e, newPage) => {
     setPageNumber(newPage);
   };
-
-  const [isAlertVisible, setIsAlertVisible] = useState(false);
-  const [alertDescription, setAlertDescription] = useState('');
-  const [alert, setAlert] = useState(null);
 
   const handleAlertClose = () => {
     setIsAlertVisible(false);

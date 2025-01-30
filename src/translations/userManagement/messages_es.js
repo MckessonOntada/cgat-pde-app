@@ -70,6 +70,7 @@ export const UserManagementES = {
   'userManagement.button.edit': 'S_Edit',
   'userManagement.button.adduser': 'S_Add User',
   'userManagement.button.uploadUsers': 'S_Upload Users',
+  'userManagement.button.downloadTemplate': 'S_Download Template',
   'userManagement.button.addsystemadmin': 'S_Add System Administrator',
   'userManagement.button.add_accounts': 'S_Add Accounts',
   'userManagement.button.deactivate': 'S_Deactivate',
@@ -318,6 +319,5 @@ export const UserManagementES = {
     'S_By confirming, you acknowledge that all actions taken will be logged and attributed to your account.',
   'userManagement.breadcrumb.admin': 'S_Admin',
   'popup.userDeactivation.question': 'S_Are you sure you wish to Deactivate this User?',
-  'userManagement.confirmationMessage': 'Confirmation message',
-
+  'userManagement.confirmationMessage': 'Confirmation message'
 };
