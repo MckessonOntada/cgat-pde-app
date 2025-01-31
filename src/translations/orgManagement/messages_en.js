@@ -21,6 +21,7 @@ export const OrgManagementEN = {
   'orgManagement.table.action.view': 'VIEW',
 
   'orgManagement.button.save': 'SAVE',
+  'orgManagement.buttonsave.and.continue' : 'SAVE AND CONTINUE',
   'orgManagement.button.next': 'Next',
   'orgManagement.button.filter': 'APPLY FILTER',
   'orgManagement.button.filterApplying': 'APPLYING FILTER',
