@@ -141,7 +141,7 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
                   <div className="Questionnaire-li">
                     <div className="Questionnaire-key">{t('ManageCatalog.questionnaireConfiguration')}</div>
                     <div className="Questionnaire-value">
-                      <div onClick={() => navigate(PREVIEW_URL, { state: { isCatalog: true } })}>{t('ManageCatalog.Preview')}</div>
+                      <div onClick={() => navigate(PREVIEW_URL, { state: { isCatalog: true, questionnaire: data?.questionnaires  } })}>{t('ManageCatalog.Preview')}</div>
                     </div>
                   </div>
                   <div className="Questionnairedetails-ul">

@@ -121,7 +121,7 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
                   <div className="Questionnaire-li">
                     <div className="Questionnaire-key">{t('ManageAccount.questionnaireConfiguration')}</div>
                     <div className="Questionnaire-value">
-                      <div onClick={() => navigate(PREVIEW_URL, { state: { isAccount: true } })}>{t('ManageCatalog.Preview')}</div>
+                      <div onClick={() => navigate(PREVIEW_URL, { state: { isAccount: true, questionnaire: data?.questionnaireList } })}>{t('ManageCatalog.Preview')}</div>
                     </div>
                   </div>
                   <div className="Questionnairedetails-ul">

@@ -146,6 +146,7 @@ function DetailsPanel({
           templateName={questionnaire.templateName}
           onDelete={() => OnDelinkQuestionnaireClick(questionnaire.id)}
           showHeader={showHeader}
+          questionnaire={details.questionnaires}
         />
       );
       showHeader = false;
@@ -246,7 +247,7 @@ function ConfigItem({ label, value, display = true }) {
   );
 }
 
-function QuestionnaireItem({ templateName, section, onDelete, showHeader }) {
+function QuestionnaireItem({ templateName, section, onDelete, showHeader,questionnaire }) {
   const navigate = useNavigate();
   const { t } = useTranslate();
 
@@ -258,7 +259,10 @@ function QuestionnaireItem({ templateName, section, onDelete, showHeader }) {
           <div className={styles.sectionHeadingkey}>{t(section.sectionHeading)}</div>
           <div className={styles.actions}>
             {section.actions?.map((action) => (
-              <Button key={action.id} textButton onClick={() => navigate(PREVIEW_URL, { state: { isMaterial: true } })}>
+              <Button
+                key={action.id}
+                textButton
+                onClick={() => navigate(PREVIEW_URL, { state: { isMaterial: true, questionnaire: questionnaire } })}>
                 {t(action.label)}
               </Button>
             ))}
