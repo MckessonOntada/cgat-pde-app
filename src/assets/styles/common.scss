@@ -65,7 +65,8 @@ div.disable-all {
   }
 }
 
-.MCP-modal-body {
+.MCP-modal-body,
+.questionnaire-template-question-list {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-03);
@@ -415,6 +416,7 @@ div.disable-all {
     }
   }
 }
+
 .dollarSign {
   span {
     top: -5px;
@@ -423,12 +425,14 @@ div.disable-all {
     left: -1px;
   }
 }
+
 .currencySymbol {
   top: -8px;
   font-size: var(--brand-font-size--small);
   position: relative;
   left: -1px;
 }
+
 .primaryHeading {
   font-size: var(--brand-font-size--28);
   font-weight: 600;
@@ -674,6 +678,7 @@ div.disable-all {
     font-size: var(--brand-font-size--default) !important;
     font-weight: var(--brand-font-weight-600);
     line-height: var(--brand-font-size--20);
+
   }
 
   div[class*="RadioGroup-module"] {
@@ -681,6 +686,7 @@ div.disable-all {
       font-size: var(--brand-font-size--default) !important;
       font-weight: var(--brand-font-weight-400) !important;
       line-height: var(--brand-font-size--20);
+
     }
   }
 }
@@ -798,5 +804,16 @@ div.disable-all {
       line-height: var(--brand-line-height--large);
       text-transform: uppercase;
     }
+  }
+}
+
+.questionnaire-template-question-list {
+
+  .label-heading,
+  label[class*="TextareaInput-module--label"],
+  label[class*="InputField-module--labelText"],
+  fieldset legend[class*="CheckboxGroup-module--captionWrap"],
+  fieldset legend[class*="labelContainer"] {
+    margin-bottom: var(--spacing-02);
   }
 }

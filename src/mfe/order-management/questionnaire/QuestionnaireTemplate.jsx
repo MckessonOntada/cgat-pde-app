@@ -7,8 +7,8 @@ import FileInput from '@src/components/FileInput';
 
 function QuestionnaireTemplate({ config, isPreview }) {
   const activeLanguage = 'en';
-  console.log(config);
-  if (!config && config.questions) {
+
+  if (!config || !config.questions) {
     return (
       <div>
         <p>No question available</p>
@@ -17,9 +17,9 @@ function QuestionnaireTemplate({ config, isPreview }) {
   }
 
   const getControl = (controlConfig) => {
-    const { text, type, checks, additionalAttributes, isDocumentRequired, isMandatory } = controlConfig;
+    const { text, type, additionalAttributes, isDocumentRequired, isMandatory } = controlConfig;
     const questionLabel = text[activeLanguage];
-    const fieldName = questionLabel.replace(' ', '_');
+    const fieldName = questionLabel.replace(/ /g, '_');
     const attributes = {};
     if (isMandatory) {
       attributes.isRequired = true;
@@ -40,7 +40,7 @@ function QuestionnaireTemplate({ config, isPreview }) {
         additionalAttributes?.options.map((option) => ({
           isDisabled: false,
           label: option[activeLanguage] || option[LANGUAGE.ENGLISH],
-          value: option[LANGUAGE.ENGLISH].replace(' ', '_')
+          value: option[LANGUAGE.ENGLISH].replace(/ /g, '_')
         })) || [];
 
       if (type === QUESTION_TYPE.DROPDOWN) attributes.options = options;
@@ -85,13 +85,7 @@ function QuestionnaireTemplate({ config, isPreview }) {
     return field;
   };
 
-  return (
-    <Formik>
-      <Form>
-        <div className="MCP-CardContainer">{config.questions.map((question) => getControl(question))}</div>;
-      </Form>
-    </Formik>
-  );
+  return <div className="questionnaire-template-question-list">{config.questions.map((question) => getControl(question))}</div>;
 }
 
 export default QuestionnaireTemplate;

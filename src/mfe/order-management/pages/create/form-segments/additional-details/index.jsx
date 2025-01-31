@@ -22,9 +22,133 @@ import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/Disca
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
+import QuestionnaireTemplate from '@src/mfe/order-management/questionnaire/QuestionnaireTemplate';
+import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/order-management/questionnaire/AddQuestionnaire';
 
-const getValidationSchema = (t) =>
-  Yup.object({
+const config = {
+  createdAt: null,
+  updatedAt: '2025-01-30T11:52:41.404+00:00',
+  id: 86,
+  templateName: 'Basic info',
+  questions: [
+    {
+      text: {
+        en: 'What is your name?',
+        es: ''
+      },
+      type: 'INPUT',
+      isMandatory: true,
+      isDocumentRequired: true
+    },
+    {
+      text: {
+        en: 'What is your gender?',
+        es: ''
+      },
+      type: 'RADIO_BUTTON',
+      additionalAttributes: {
+        options: [
+          {
+            en: 'Male',
+            es: ''
+          },
+          {
+            en: 'Female',
+            es: ''
+          }
+        ]
+      }
+    },
+    {
+      text: {
+        en: 'Select applicable options',
+        es: ''
+      },
+      type: 'CHECKBOX',
+      additionalAttributes: {
+        options: [
+          {
+            en: 'Do you live in india?',
+            es: ''
+          },
+          {
+            en: 'Do you travel a lot?',
+            es: ''
+          },
+          {
+            en: 'Sample test question',
+            es: ''
+          }
+        ]
+      }
+    },
+    {
+      text: {
+        en: 'Select country you live in.',
+        es: ''
+      },
+      type: 'DROPDOWN',
+      additionalAttributes: {
+        options: [
+          {
+            en: 'Delhi',
+            es: ''
+          },
+          {
+            en: 'Mumbai',
+            es: ''
+          },
+          {
+            en: 'Chennai',
+            es: ''
+          },
+          {
+            en: 'Culcatta',
+            es: ''
+          }
+        ]
+      }
+    }
+  ],
+  configuredAt: ['Catalog'],
+  active: true
+};
+
+const INITIAL_VALUES = {
+  coiId: '',
+  orderQuantity: '',
+  slotNumber: '',
+  poNumber: '',
+  dateOfAdministration: ''
+};
+
+function AdditionalDetails() {
+  const { t } = useTranslate();
+  const formFields = getFormFields(t);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { isEdit = false, isApprover = false, alertState } = location.state || {};
+  const { orderId } = useParams();
+  const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
+  const [validationSchema, setValidationSchema] = React.useState(null);
+  const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
+  const therapyId = formState.activeRecord?.therapy?.materialNumber;
+  const soldToAccountId = formState.activeRecord?.accountDetails?.soldToAccount?.accountNumber;
+  const shipToAccountId = formState.activeRecord?.accountDetails?.shipToAccount?.accountNumber;
+  const variantsApiRequestParam = { pageNo: 0, pageSize: 10 };
+  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
+  const [isDirty, setIsDirty] = React.useState(false);
+  const [variantAcknowledgement, setVariantAcknowledgement] = React.useState({
+    isDisabled: false,
+    isChecked: false,
+    label: t('messages.variantAcknowledgement'),
+    value: false
+  });
+  const [variant, setVariant] = React.useState();
+  const { showAlert } = useAlert();
+  const alertContainerId = 'additionalDetails-alert-container';
+
+  const initialValidationSchema = Yup.object({
     coiId: Yup.string()
       .matches(NUMBER_REGEX, t('labels.COI_IdMustValidNumber'))
       .max(20, t('labels.COI_IdExceedDigits'))
@@ -47,39 +171,9 @@ const getValidationSchema = (t) =>
       .required(t('labels.DateOfAdministrationRequired'))
       .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
   });
-
-const INITIAL_VALUES = {
-  coiId: '',
-  orderQuantity: '',
-  slotNumber: '',
-  poNumber: '',
-  dateOfAdministration: ''
-};
-
-function AdditionalDetails() {
-  const { t } = useTranslate();
-  const formFields = getFormFields(t);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { isEdit = false, isApprover = false, alertState } = location.state || {};
-  const { orderId } = useParams();
-  const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
-  const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
-  const therapyId = formState.activeRecord?.therapy?.materialNumber;
-  const soldToAccountId = formState.activeRecord?.accountDetails?.soldToAccount?.accountNumber;
-  const shipToAccountId = formState.activeRecord?.accountDetails?.shipToAccount?.accountNumber;
-  const variantsApiRequestParam = { pageNo: 0, pageSize: 10 };
-  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-  const [isDirty, setIsDirty] = React.useState(false);
-  const [variantAcknowledgement, setVariantAcknowledgement] = React.useState({
-    isDisabled: false,
-    isChecked: false,
-    label: t('messages.variantAcknowledgement'),
-    value: false
-  });
-  const [variant, setVariant] = React.useState();
-  const { showAlert } = useAlert();
-  const alertContainerId = 'additionalDetails-alert-container';
+  React.useEffect(() => {
+    setValidationSchema(initialValidationSchema);
+  }, []);
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = formState.activeRecord || {};
@@ -114,22 +208,47 @@ function AdditionalDetails() {
     error: configuredQuestionsError,
     refetch: fetchConfiguredQuestions
   } = useQuery({
-    queryKey: ['configured-questionnaire'],
+    queryKey: ['configured-questionnaire', variant ?? 'default-variant'],
     queryFn: async () => {
       const { accountDetails, therapy } = formState.activeRecord;
       const payload = {
         variant,
-        soldToCustomer: accountDetails.soldToAccount.id,
-        shipToCustomer: accountDetails.shipToAccount.id,
+        soldToCustomer: accountDetails.soldToAccount.accountNumber,
+        shipToCustomer: accountDetails.shipToAccount.accountNumber,
         sapMaterial: therapy.materialNumber
       };
       return QuestionnaireService.getConfiguredQuestionnaire(payload);
     },
     enabled: false,
     refetchOnWindowFocus: false,
-    onSuccess: console.log,
+    onSuccess: () => {
+      const questionnaireFields = {};
+      const validationSchemaFields = {};
+
+      config.questions.forEach((question) => {
+        const fieldName = question.text[LANGUAGE.ENGLISH].replace(/ /g, '_');
+
+        questionnaireFields[fieldName] = '';
+
+        validationSchemaFields[fieldName] =
+          question.type === QUESTION_TYPE.INPUT || question.type === QUESTION_TYPE.RADIO_BUTTON
+            ? Yup.string()[question.isMandatory ? 'required' : 'nullable'](`${fieldName} is required`)
+            : Yup.array().of(Yup.string())[question.isMandatory ? 'min' : 'nullable'](1, `${fieldName} is required`);
+      });
+
+      const questionnaireValidationSchema = Yup.object(validationSchemaFields);
+      const newValidationSchema = initialValidationSchema.concat(questionnaireValidationSchema);
+      setInitialFormValues((prevState) => ({
+        ...prevState,
+        ...questionnaireFields
+      }));
+
+      setValidationSchema(newValidationSchema);
+    },
     onError: console.log
   });
+
+  console.log(validationSchema);
 
   const { isLoading, data: variantsData = {} } = useQuery({
     queryKey: ['order', 'variants', orderId],
@@ -255,7 +374,7 @@ function AdditionalDetails() {
     setVariantAcknowledgement(updatedOptions);
   };
 
-  const validationSchema = getValidationSchema(t);
+  console.log(initialFormValues);
 
   return (
     <div className="MCP-module-wrapper">
@@ -272,6 +391,7 @@ function AdditionalDetails() {
         enableReinitialize={true}
         validationSchema={validationSchema}
         onSubmit={(values) => {
+          console.log(values);
           handleOnSubmit(values);
         }}>
         {({ values, isValid, dirty }) => {
@@ -329,6 +449,15 @@ function AdditionalDetails() {
                         </Field>
                       </div>
                     </>
+                  )}
+
+                  {config && (
+                    <div className="configured-questionnaire-form">
+                      <div className="styled-heading">
+                        <h3>Additional Questions</h3>
+                      </div>
+                      <QuestionnaireTemplate config={config} isPreview={false} />
+                    </div>
                   )}
                 </div>
 
