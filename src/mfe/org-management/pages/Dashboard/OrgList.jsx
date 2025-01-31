@@ -65,7 +65,7 @@ const OrgList = () => {
     state.footer = (
       <div className="controls">
         <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
-          Cancel
+          {t('orgManagement.button.cancel')}
         </Button>
         <Button
           size="md"
@@ -75,7 +75,7 @@ const OrgList = () => {
             dispatch(closeModal());
             window.location.href = '/admin';
           }}>
-          Okay
+          {t('orgManagement.button.okay')}
         </Button>
       </div>
     );
