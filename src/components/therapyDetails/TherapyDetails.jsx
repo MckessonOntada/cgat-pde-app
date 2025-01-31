@@ -250,8 +250,7 @@ function ConfigItem({ label, value, display = true }) {
   );
 }
 
-function QuestionnaireItem({ templateName, section, onDelete }) {
-  
+function QuestionnaireItem({ templateName, section, onDelete }) { 
   const navigate = useNavigate();
   const { t } = useTranslate();
   return (
