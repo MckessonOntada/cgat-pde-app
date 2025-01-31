@@ -24,7 +24,6 @@ import { handleApiError } from '@src/util/ApiUtils';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import QuestionnaireTemplate from '@src/mfe/order-management/questionnaire/QuestionnaireTemplate';
 import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/order-management/questionnaire/AddQuestionnaire';
-
 const config = {
   createdAt: null,
   updatedAt: '2025-01-30T11:52:41.404+00:00',
@@ -232,15 +231,15 @@ function AdditionalDetails() {
 
         validationSchemaFields[fieldName] =
           question.type === QUESTION_TYPE.INPUT || question.type === QUESTION_TYPE.RADIO_BUTTON
-            ? Yup.string()[question.isMandatory ? 'required' : 'nullable'](`${fieldName} is required`)
-            : Yup.array().of(Yup.string())[question.isMandatory ? 'min' : 'nullable'](1, `${fieldName} is required`);
+            ? Yup.string()[question.isMandatory ? 'required' : 'nullable'](`Value is required`)
+            : Yup.array().of(Yup.string())[question.isMandatory ? 'min' : 'nullable'](1, `Select at least on option`);
       });
 
       const questionnaireValidationSchema = Yup.object(validationSchemaFields);
       const newValidationSchema = initialValidationSchema.concat(questionnaireValidationSchema);
       setInitialFormValues((prevState) => ({
         ...prevState,
-        ...questionnaireFields
+        configuredQuestionnaires: { ...questionnaireFields }
       }));
 
       setValidationSchema(newValidationSchema);
@@ -325,6 +324,22 @@ function AdditionalDetails() {
           variantAcknowledgment: variantAcknowledgement.isChecked
         }
       : null;
+
+    // question template response
+    const { accountDetails, therapy } = formState.activeRecord;
+    const questionnaireDependencies = {
+      soldToCustomer: accountDetails.soldToAccount.accountNumber,
+      shipToCustomer: accountDetails.soldToAccount.accountNumber,
+      sapMaterial: therapy.materialNumber,
+      variant
+    };
+    //template/question
+    const response = {};
+    const questionnaireResponse = {
+      response,
+      dependencies: questionnaireDependencies
+    };
+
     const payload = {
       coiId: values.coiId,
       orderQuantity: values.orderQuantity,
@@ -332,7 +347,8 @@ function AdditionalDetails() {
       poNumber: values.poNumber,
       dateOfAdministration: values.dateOfAdministration,
       patientConsentTaken: true,
-      variantDetails: _var
+      variantDetails: _var,
+      configuredQuestionnaires: JSON.stringify(questionnaireResponse)
     };
 
     saveAdditionalDetails(payload);

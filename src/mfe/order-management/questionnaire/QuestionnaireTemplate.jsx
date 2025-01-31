@@ -5,15 +5,14 @@ import Components from '@src/components/form/Components';
 import CheckBox from '@src/components/form/CheckBox';
 import FileInput from '@src/components/FileInput';
 
-function QuestionnaireTemplate({ config, isPreview }) {
+function QuestionnaireTemplate({ isPreview }) {
   const activeLanguage = 'en';
-
-  if (!config || !config.questions) {
-    return (
-      <div>
-        <p>No question available</p>
-      </div>
-    );
+  if (
+    !config ||
+    (typeof config === 'object' && !Array.isArray(config) && !config.hasOwnProperty('questions')) ||
+    (typeof config !== 'object' && !Array.isArray(config))
+  ) {
+    return <div>No preview</div>;
   }
 
   const getControl = (controlConfig) => {
@@ -85,7 +84,24 @@ function QuestionnaireTemplate({ config, isPreview }) {
     return field;
   };
 
-  return <div className="questionnaire-template-question-list">{config.questions.map((question) => getControl(question))}</div>;
+  let templateList = [];
+  if (typeof config === 'object' && !Array.isArray(config)) {
+    templateList.push(<div className="template">{config.questions.map((question) => getControl(question))}</div>);
+  } else if (Array.isArray(config)) {
+    {
+      config.map((template) => {
+        templateList.push(<div className="template">{template.questions.map((question) => getControl(question))}</div>);
+      });
+    }
+  }
+
+  return (
+    <Formik>
+      <Form>
+        <div className="questionnaire-template-question-list">{templateList}</div>;
+      </Form>
+    </Formik>
+  );
 }
 
 export default QuestionnaireTemplate;

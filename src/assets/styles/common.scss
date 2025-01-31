@@ -1,7 +1,9 @@
 @use "abstracts/mixins";
 
 .MCP-CardContainer {
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   gap: var(--spacing-04);
   padding: var(--spacing-04);
   border: 1px solid var(--brand-color-patient-primary-3);
@@ -675,18 +677,17 @@ div.disable-all {
   label[class*="InputField-module--labelText"],
   fieldset legend[class*="CheckboxGroup-module--captionWrap"],
   fieldset legend[class*="labelContainer"] {
-    font-size: var(--brand-font-size--default) !important;
-    font-weight: var(--brand-font-weight-600);
-    line-height: var(--brand-font-size--20);
+    // font-size: var(--brand-font-size--default) !important;
+    // font-weight: var(--brand-font-weight-600);
+    // line-height: var(--brand-font-size--20);
 
   }
 
   div[class*="RadioGroup-module"] {
     label {
-      font-size: var(--brand-font-size--default) !important;
-      font-weight: var(--brand-font-weight-400) !important;
-      line-height: var(--brand-font-size--20);
-
+      // font-size: var(--brand-font-size--default) !important;
+      // font-weight: var(--brand-font-weight-400) !important;
+      // line-height: var(--brand-font-size--20);
     }
   }
 }
@@ -700,10 +701,10 @@ div.disable-all {
 .styled-radio-group {
   fieldset {
     legend {
-      font-size: var(--brand-font-size--large) !important;
-      font-weight: var(--brand-font-weight-600);
-      line-height: var(--brand-line-height--x-large);
-      margin-bottom: var(--spacing-04);
+      // font-size: var(--brand-font-size--large) !important;
+      // font-weight: var(--brand-font-weight-600);
+      // line-height: var(--brand-line-height--x-large);
+      // margin-bottom: var(--spacing-04);
     }
   }
 
@@ -814,6 +815,6 @@ div.disable-all {
   label[class*="InputField-module--labelText"],
   fieldset legend[class*="CheckboxGroup-module--captionWrap"],
   fieldset legend[class*="labelContainer"] {
-    margin-bottom: var(--spacing-02);
+    // margin-bottom: var(--spacing-02);
   }
 }

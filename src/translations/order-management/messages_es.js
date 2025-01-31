@@ -359,6 +359,7 @@ export const MessageEs = {
   'label.check.requiredDocument': 'S_Document upload required?',
   'button.caption.addQuestion': 'S_Add Question',
   'button.caption.createQuestionnaire': 'S_Create Questionnaire',
+  'button.caption.updateQuestionnaire': 'Update Questionnaire',
   'label.type': 'S_Type',
   'label.templateName': 'S_Template Name',
   'message.questionnaire.templateNameRequired': 'S_Template name is required',
