@@ -249,5 +249,6 @@ export const PaymentInvoicesES = {
   'paymentInvoices.excel.export.error': 'S_Error exporting excel.',
   'paymentInvoices.pendingPaynemt.export.success': 'S_Pending Payment exported.',
   'paymentInvoices.pendingPaynemt.export.error': 'S_Pending exporting Payment .',
-  'paymentInvoices.history.table.bill.id': 'S_BILL ID'
+  'paymentInvoices.history.table.bill.id': 'S_BILL ID',
+  'paymentInvoices.paymentMethods.achForm.description': 'S_Enrollment form in a PDF format for user to fill in offline and submit to the respective bank',
 };
