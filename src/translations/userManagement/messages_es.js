@@ -70,6 +70,15 @@ export const UserManagementES = {
   'userManagement.button.edit': 'S_Edit',
   'userManagement.button.adduser': 'S_Add User',
   'userManagement.button.uploadUsers': 'S_Upload Users',
+  'userManagement.button.uploadingUsers': 'S_Uploading...',
+  'userManagement.button.downloadTemplateDescription':
+    'S_Clicking on the download button will download sample template for uploading bulk users.',
+  'userManagement.button.downloadTemplate': 'S_Bulk Upload User Template',
+  'userManagement.button.uploadError': 'S_Error while creating Organization users',
+  'userManagement.button.uploadConflict':
+    'S_Issue in uploading users. Some or all user records might have failed. The errors are listed in the downloaded file. Please review and try again.',
+  'userManagement.button.uploadSuccess': 'S_Organization users has been successfully created',
+  'userManagement.button.downloadFail': 'S_Organization users has been successfully created',
   'userManagement.button.downloadTemplate': 'S_Download Template',
   'userManagement.button.addsystemadmin': 'S_Add System Administrator',
   'userManagement.button.add_accounts': 'S_Add Accounts',
