@@ -202,22 +202,23 @@ const { data: permissionsData } = useQuery({
           </div>
         </Fragment>
       )}
-
-      <ModuleHeader
-        heading={<Heading as="h3">{t('userManagement.user_permissions.managePermissions')}</Heading>}
-        controls={
-          !isSystemAdminView && (
-            <div className="controls">
-              <Button size="md" variant="secondary" onClick={resetPermissions}>
-                {t('userManagement.user_permissions.button.reset')}
-              </Button>
-              <Button size="md" variant="secondary" onClick={enableAllPermissions}>
-                {t('userManagement.user_permissions.button.applyall')}
-              </Button>
-            </div>
-          )
-        }
-      />
+      <div className='permissionsTitle'>
+        <ModuleHeader
+          heading={<Heading as="h3">{t('userManagement.user_permissions.managePermissions')}</Heading>}
+          controls={
+            !isSystemAdminView && (
+              <div className="controls">
+                <Button size="md" variant="secondary" onClick={resetPermissions}>
+                  {t('userManagement.user_permissions.button.reset')}
+                </Button>
+                <Button size="md" variant="secondary" onClick={enableAllPermissions}>
+                  {t('userManagement.user_permissions.button.applyall')}
+                </Button>
+              </div>
+            )
+          }
+        />
+      </div>
 
       <div className="MCP-panel-container grid grid-gap-16">
         {filteredPermissionsEnum &&
