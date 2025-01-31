@@ -8,13 +8,19 @@ import UserTable from './UserTable';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
 import { debugIds, ID } from '@src/constants/id';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
-import { ReactComponent as upload_bottom } from '@src/assets/image/upload_bottom.svg';
+import { ReactComponent as UploadSVG } from '@src/assets/image/upload_bottom.svg';
+import { ReactComponent as DownloadSVG } from '@src/assets/svg/downloadArrow.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
 import AuthUtils from '@src/util/AuthUtils';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import CommonFilters from '@src/components/Filters';
 import usePermission from '@src/hooks/usePermissions';
+import CommonUtils from '@src/util/CommonUtils';
+import { useMutation } from 'react-query';
+import ApiRoutes from '@src/api/ApiRoutes';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import useSnackbar from '@src/hooks/useSnackbar';
 
 export default function Dashboard() {
   const { t } = useTranslate();
@@ -28,6 +34,8 @@ export default function Dashboard() {
   const [alertDescription, setAlertDescription] = useState('');
   const [alert, setAlert] = useState(null);
   const { hasPermission } = usePermission();
+  const [inputKey, setInputKey] = useState(0);
+  const { showSnackbar } = useSnackbar();
 
   const showAlert = (type, message) => {
     setAlert({ type });
@@ -137,6 +145,61 @@ export default function Dashboard() {
     ];
   }, [isSystemAdminView, roleList]);
 
+  const handleDownload = () => {
+    const fileUrl = '/templates/upload_users_template.csv';
+    fetch(fileUrl)
+      .then((response) => response.blob())
+      .then((blob) => {
+        CommonUtils.downloadFile(blob, 'upload_users_template.csv');
+      })
+      .catch((error) => console.error('Error downloading file:', error));
+  };
+
+  const {
+    mutate: uploadBulkUser,
+    isLoading,
+    data
+  } = useMutation(
+    async (data) => {
+      const { url, payload, type } = data;
+      return await HttpResourceService.callRest(url, httpVerb.POST, payload, {
+        'Content-Type': 'multipart/form-data'
+      });
+    },
+    {
+      onSuccess: async (response, variables) => {
+        if (response.status == 200) {
+          showAlert('success', 'Organization user has been successfully created');
+        } else if (response.status == 206) {
+          const csvContent = response.data;
+          const blob = new Blob([csvContent], { type: 'text/csv' });
+          let download = CommonUtils.downloadFile(blob, 'bulk users.csv');
+          if (download.status == 'success') {
+            showAlert('error', 'Partial content received. Some data might be missing.');
+          } else {
+            showSnackbar({ description: 'Something went wrong while downloading users file', type: 'error' });
+          }
+        } else {
+          showSnackbar({ description: 'Error while creating Organization users', type: 'error' });
+        }
+        refreshData();
+      },
+      onError: (error) => {
+        showSnackbar({ description: 'Error while creating Organization users', type: 'error' });
+      }
+    }
+  );
+
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const url = `${ApiRoutes.USERS()}/upload?userType=GENERAL`;
+    const formData = new FormData();
+    formData.append('userData', file);
+    uploadBulkUser({ url, payload: formData, type: 'csv' });
+    setInputKey(inputKey + 1);
+  };
+
   return (
     <div className="MCP-module-wrapper" id={debugIds(ID.TABLE, ID.CONTAINER)}>
       <Breadcrumb items={breadcrumbItems} />
@@ -157,9 +220,17 @@ export default function Dashboard() {
               </Button>
             )}
             {!isSystemAdminView && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.UPLOAD_USERS) && (
-              <Button Icon={upload_bottom} className="button-icon" variant="primary" size="md">
-                {t('userManagement.button.uploadUsers')}
-              </Button>
+              <React.Fragment>
+                <div className="">
+                  <input type="file" key={inputKey} id="fileInput" onChange={handleFileChange} style={{ display: 'none' }} />
+                  <Button Icon={UploadSVG} className="button-icon" variant="primary" size="md" onClick={(e) => e.stopPropagation()}>
+                    <label htmlFor="fileInput">{t('userManagement.button.uploadUsers')}</label>
+                  </Button>
+                </div>
+                <Button Icon={DownloadSVG} className="button-icon" variant="secondary" onClick={handleDownload} size="md">
+                  {t('userManagement.button.downloadTemplate')}
+                </Button>
+              </React.Fragment>
             )}
           </div>
         }

@@ -36,8 +36,12 @@ const INITIAL_FILTER_STATE = {
 export const CatalogProvider = ({ children }) => {
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
-  const { selectedAccount } = useOrgAccountSelectionContext();
+  const { selectedAccount, selectedOrganization } = useOrgAccountSelectionContext();
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
+
+  useEffect(() => {
+    clearFilters();
+  }, [selectedOrganization, selectedAccount]);
 
   const setPageNumber = (pageNumber) => {
     setPaginationConfig((prevConfig) => ({
@@ -45,13 +49,7 @@ export const CatalogProvider = ({ children }) => {
       pageNumber
     }));
   };
-  const applySort = (newSortConfig) => {
-    setSortConfig(newSortConfig);
-    setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
-    if (paginationConfig.pageNumber === 1) {
-      // sortData(newSortConfig);
-    }
-  };
+
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig((prevFilters) => ({
@@ -118,7 +116,9 @@ export const CatalogProvider = ({ children }) => {
     catalogList: catalogList || [],
     setPageNumber,
     clearFilters,
-    applyFilters
+    applyFilters,
+    isLoading,
+    filterConfig
   };
   return <CatalogContext.Provider value={contextValue}>{children}</CatalogContext.Provider>;
 };

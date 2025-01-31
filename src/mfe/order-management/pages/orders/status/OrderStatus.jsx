@@ -19,8 +19,7 @@ const OrderStatus = () => {
   const navigate = useNavigate();
   const { isFetching, formState, setCurrentOrder } = useManageOrder();
   const location = useLocation();
-  const { isApproved = false } = location.state || {};
-
+  const orderStatus = formState.activeRecord?.status;
   React.useEffect(() => {
     orderId && setCurrentOrder(orderId, ORDER_STAGES.ORDER_SUMMARY);
   }, []);
@@ -57,13 +56,13 @@ const OrderStatus = () => {
               <IconTick />
             </div>
             <div className={styles.content}>
-              {!isApproved && (
+              {orderStatus && orderStatus !== 'SUBMITTED' && (
                 <>
                   <Heading as={'h1'}>{t('headings.orderSubmitted')}</Heading>
                   <p className={styles.orderSubmitDescription}>{t('messages.orderSuccessApprovalPending')}</p>
                 </>
               )}
-              {isApproved && (
+              {orderStatus === 'SUBMITTED' && (
                 <>
                   <Heading as={'h1'}>{t('headings.orderApproved')}</Heading>
                   <p className={styles.orderSubmitDescription}>{t('messages.orderApprovalSuccess')}</p>
@@ -99,19 +98,23 @@ const OrderStatus = () => {
               customLabelStyles={styles.orderCostItem}
               label={t('labels.price')}
               customValueStyles={styles.orderCostItem}
-              value={<p className={`${styles.price}`}>{orderCost ? `$${orderCost}` : '-'}</p>}
+              value={
+                <p className={`${styles.price}`}>
+                  {orderCost ? (
+                    <>
+                      <span className={`${styles.currencySymbol}`}>$</span>
+                      {orderCost}
+                    </>
+                  ) : (
+                    '-'
+                  )}
+                </p>
+              }
             />
           </div>
         </div>
 
-        {!isApproved && (
-          <div className="MCP-CardContainer">
-            <div className={`${styles.orderFlow}`}>
-              <h4 className={styles.customSecondaryHeading}>{t('labels.whatToExpect')}</h4>
-              <OrderFlowSteps showApproval={!isApproved} />
-            </div>
-          </div>
-        )}
+        {orderStatus === 'SUBMITTED' && <OrderFlowSteps />}
       </div>
       <div className={'controls'}>
         <Button size="md" variant="secondary" disabled={true}>

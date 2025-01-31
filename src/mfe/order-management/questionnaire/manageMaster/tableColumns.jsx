@@ -82,7 +82,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           id: 'strength',
           name: t('table.columns.captions.strength'),
           selector: (row) => row.strength || '',
-          maxWidth: '150px',
+          maxWidth: '260px',
           sortable: false,
           cell: (props) => <span aria-label={t('table.columns.captions.strength')}>{props.strength}</span>
         },
@@ -151,7 +151,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           id: 'salesOrg',
           name: t('labels.salesOrg'),
           selector: (row) => row.salesOrg || '',
-          maxWidth: '150px',
+          maxWidth: '250px',
           sortable: false,
           cell: (props) => <span aria-label={t('labels.salesOrg')}>{props.salesOrg}</span>
         },
@@ -159,7 +159,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           id: 'distributionChannel',
           name: t('labels.distributionChannel'),
           selector: (row) => row.distributionChannel || '',
-          maxWidth: '350px',
+          maxWidth: '200px',
           sortable: false,
           cell: (props) => <span aria-label={t('labels.distributionChannel')}>{props.distributionChannel}</span>
         }

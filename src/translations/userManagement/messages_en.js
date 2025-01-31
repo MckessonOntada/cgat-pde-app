@@ -70,6 +70,7 @@ export const UserManagementEN = {
   'userManagement.button.edit': 'Edit',
   'userManagement.button.adduser': 'Add User',
   'userManagement.button.uploadUsers': 'Upload Users',
+  'userManagement.button.downloadTemplate': 'Download Template',
   'userManagement.button.addsystemadmin': 'Add System Administrator',
   'userManagement.button.add_accounts': 'Add Accounts',
   'userManagement.button.deactivate': 'Deactivate',
@@ -347,5 +348,5 @@ export const UserManagementEN = {
   'userManagement.breadcrumb.admin': 'Admin',
   'popup.userDeactivation.question': 'Are you sure you wish to Deactivate this User?',
   'userManagement.confirmationMessage': 'Confirmation message',
-  'userManagement.message.DeactivateUser': 'Are you sure you wish to Deactivate this User ?',
+  'userManagement.message.DeactivateUser': 'Are you sure you wish to Deactivate this User ?'
 };

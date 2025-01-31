@@ -18,7 +18,8 @@ const Filters = ({
   showControls = true,
   additionalFilters,
   searchPlaceholder = 'Search...',
-  actualData = []
+  actualData = [],
+  initialData = {}
 }) => {
   const { t } = useTranslate();
   //TODO: This useEffect is not needed. It can be removed.
@@ -67,11 +68,12 @@ const Filters = ({
   };
 
   const isAdditionalFiltersAdded = additionalFilters && CommonUtils.isNonEmptyObject(additionalFilters);
+  const initialValues = generateInitialFilterState(additionalFilters);
 
   return (
     <Formik
       enableReinitialize
-      initialValues={generateInitialFilterState(additionalFilters)}
+      initialValues={{ ...initialValues, ...initialData }}
       onSubmit={(values, actions) => {
         onApplyFilters(values);
         actions.setSubmitting(false);

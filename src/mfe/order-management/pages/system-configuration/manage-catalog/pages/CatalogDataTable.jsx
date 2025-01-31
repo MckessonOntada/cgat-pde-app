@@ -1,24 +1,25 @@
 import { useTranslate } from '@src/translations/useTranslation';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CustomDataTable } from '@mckesson/mcp-component-library';
+import { CustomDataTable, Loader, Alert, Button } from '@mckesson/mcp-component-library';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { useCatalogContext } from '../context/CatalogContext';
 import CommonUtils from '@src/util/CommonUtils';
-import { Button } from '@mckesson/mcp-component-library';
 import ConfigureCatalog from './ConfigureCatalog';
 import CatalogDetails from './CatalogDetails';
-import { Alert } from '@mckesson/mcp-component-library';
 
 function CatalogDataTable(props) {
   const { t } = useTranslate();
 
-  const { paginationConfig, catalogList: data, setPageNumber } = useCatalogContext();
+  const { paginationConfig, catalogList: data, setPageNumber, isLoading } = useCatalogContext();
   const [selectedCatalogs, setSelectedCatalogs] = useState([]);
   const [openConfigurationDraw, setOpenConfigurationDraw] = useState(false);
   const [openCatalogDetails, setOpenCatalogDetails] = useState(false);
   const [viewCatalog, setViewCatalog] = useState(null);
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertDescription, setAlertDescription] = useState('');
+  const [alert, setAlert] = useState(null);
 
   const getindeterminate = () => {
     const allDataIncluded = data.every((invoice) => selectedCatalogs.some((includedInvoice) => includedInvoice.id === invoice.id));
@@ -168,10 +169,6 @@ function CatalogDataTable(props) {
     setPageNumber(newPage);
   };
 
-  const [isAlertVisible, setIsAlertVisible] = useState(false);
-  const [alertDescription, setAlertDescription] = useState('');
-  const [alert, setAlert] = useState(null);
-
   const handleAlertClose = () => {
     setIsAlertVisible(false);
   };
@@ -224,6 +221,19 @@ function CatalogDataTable(props) {
             heading={t('ManageCatalog.Table.nodata')}
             description={t('ManageCatalog.Table.nodataMsg')}
           />
+        }
+        progressPending={isLoading}
+        progressComponent={
+          <div
+            style={{
+              alignItems: 'center',
+              border: '1px solid #ccc',
+              display: 'flex',
+              height: '350px',
+              justifyContent: 'center'
+            }}>
+            <Loader variant="circular" />
+          </div>
         }
       />
 

@@ -8,30 +8,25 @@ import { ReactComponent as CatalogImage } from '@src/assets/image/alert-circle-c
 import { ReactComponent as AccountImage } from '@src/assets/image/alert-circle-a.svg';
 import { ReactComponent as MaterialImage } from '@src/assets/image/alert-circle-m.svg';
 import TableHeading from '@src/components/tableHeading/TableHeading';
-import { Button, CustomDataTable, Heading, RadioGroup, Badge } from '@mckesson/mcp-component-library';
+import { Button, Heading, RadioGroup, Badge } from '@mckesson/mcp-component-library';
 import FloatingDrawer from '@src/components/floating-drawer';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useQuestionnaire } from '../context/QuestionnaireContext';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { useMultiCheckBox } from './useMultiCheckBox';
+import useResponsiveView from '@src/hooks/useResponsiveView';
 import CommonUtils from '@src/util/CommonUtils';
+import { ROUTE_CONFIG } from './constants';
+import { CustomDataTable } from '@src/components/dataTableComponent';
 
 function TemplateList() {
   const { t } = useTranslate();
   const location = useLocation();
   const navigate = useNavigate();
-  const {
-    applyFilters,
-    clearFilters,
-    applySort,
-    data,
-    isError,
-    isLoading,
-    paginationConfig,
-    selectedTemplates,
-    setTemplates,
-    setPageNumber
-  } = useQuestionnaire();
+  const showCardView = useResponsiveView();
+  const { applyFilters, clearFilters, applySort, data, isError, isLoading, paginationConfig, selectedTemplates, setTemplates,
+    setPageNumber} =
+    useQuestionnaire();
   const { renderCheckBox, selectedData, setSelectedData } = useMultiCheckBox(data, paginationConfig, selectedTemplates, setTemplates);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -62,7 +57,7 @@ function TemplateList() {
     if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
-  const handleView = (id) => {}; 
+  const handleView = (id) => {};
 
   const columns = [
     {
@@ -92,6 +87,8 @@ function TemplateList() {
       sortable: true,
       sortKey: 'active',
       minWidth: '160px',
+      wrap: true,
+      center: true,
       cell: (props) => (props.active ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />)
     },
     {
@@ -138,9 +135,16 @@ function TemplateList() {
       id: 'actions',
       name: t('table.columns.captions.action'),
       minWidth: '160px',
+      wrap: true,
+      center: true,
       cell: (props) => (
         <div className="actionsBox">
-          <Button Icon={View} variant="tertiary" size="md" className="button-icon" onClick={() => handleView(row.id)}>
+          <Button
+            Icon={View}
+            variant="tertiary"
+            size="md"
+            className="button-icon"
+            onClick={() => navigate(`${ROUTE_CONFIG.VIEW_QUESTIONNAIRE}/${props.id}`)}>
             {t('userManagement.table.action.view')}
           </Button>
         </div>
@@ -186,8 +190,10 @@ function TemplateList() {
           totalPageCount={paginationConfig.totalPages}
           totalRocords={paginationConfig.totalElements}
           recordsPerPage={paginationConfig.pageSize}
+          aria-label={t('table.ariaLabel.questionaaireList')}
           paginationRecordsPerPageMessage={t('labels.perPage')}
           paginationTotalRecorsMessage={t('labels.results')}
+          showCardView={showCardView}
           noDataComponent={
             <EmptyDataTable
               isLoading={isLoading}

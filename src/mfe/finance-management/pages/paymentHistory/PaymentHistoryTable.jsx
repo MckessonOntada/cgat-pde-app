@@ -26,7 +26,7 @@ export default function PaymentHistoryTable() {
   const { t } = useTranslate();
   // const [isOpen, setIsOpen] = useState(false);
 
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError } = usePaymentHistory();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, filterConfig } = usePaymentHistory();
   const showCardView = useResponsiveView();
 
   const columns = [
@@ -42,7 +42,7 @@ export default function PaymentHistoryTable() {
           <Link
             style={{ color: 'var(--brand-color-primary)', fontWeight: '600' }}
             to={`/record/${PATHS.paymentHistory}/${props?.confirmationNo}/confirmation`}
-            state={{ ...props }}>{`${props?.confirmationNo}`}</Link>
+            state={{ ...props, filterConfig }}>{`${props?.confirmationNo}`}</Link>
         </div>
       )
     },

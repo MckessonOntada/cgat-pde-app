@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { CustomDataTable } from '@mckesson/mcp-component-library';
 import { useManagerQuestionnaire } from '../../context/ManageQuestionnaireContext';
 import { getColumnsByEntityType } from './tableColumns';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +9,8 @@ import { MasterEntityType } from '../util';
 import FloatingDrawer from '@src/components/floating-drawer';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import { ConfigConstants, MaterialDetailsConstants } from '../../pages/system-configuration/manageMaterial/assets/constants/MaterialConstants';
+import { CustomDataTable } from '@src/components/dataTableComponent';
+import useResponsiveView from '@src/hooks/useResponsiveView';
 import CatalogDetails from '../../pages/system-configuration/manage-catalog/pages/CatalogDetails';
 import AccountDetails from './AccountDetails';
  
@@ -18,6 +19,7 @@ const EntityDataTable = ({ EntityType, setSelectedRows ,showAlert}) => {
   const navigate = useNavigate();
   const [openDetails, setOpenDetails] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState(null);
+  const showCardView = useResponsiveView();
     
   const { paginationConfig, setCurrentPage, applySort, MaterialData, CatalogData, AccountsData, isLoading, isError } =
     useManagerQuestionnaire();
@@ -54,6 +56,7 @@ const EntityDataTable = ({ EntityType, setSelectedRows ,showAlert}) => {
         )}
         paginationRecordsPerPageMessage={t('labels.perPage')}
         paginationTotalRecorsMessage={t('labels.results')}
+        showCardView={showCardView}
         noDataComponent={
           <EmptyDataTable
             isLoading={isLoading}

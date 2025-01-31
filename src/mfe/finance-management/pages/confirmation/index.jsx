@@ -10,6 +10,9 @@ import { useAccountContext } from '../../context/AccountContext';
 import './assets/index.scss';
 import { PATHS } from '../../routes';
 import dayjs from 'dayjs';
+import { useExportStatementPDF } from './actions/actions';
+import ApiRoutes from '@src/api/ApiRoutes';
+import { GeographicUtils } from '@src/util/GeographicUtil';
 
 const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
   const { t } = useTranslate();
@@ -18,6 +21,7 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { state } = location;
+  const { mutate: exportStatementPDF } = useExportStatementPDF();
 
   const invoiceDetails = {
     'Account Number': selectedAccount?.accountNumber || '-',
@@ -61,12 +65,60 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
       <MetricsCard selectedAccount={selectedAccount} invoiceDetails={invoiceDetails} billDates={billDates} />
     );
 
+  const handleExport = () => {
+    const url = `${ApiRoutes.PENDING_PAYMENTS_LISTING(selectedAccount?.id)}/detail/individual/export?confirmationNo=${confirmationNumber}`;
+    const payload = {
+      companyCode: selectedAccount?.companyCode,
+      salesOrg: selectedAccount?.salesOrg,
+      payerAccountNumber: selectedAccount?.accountNumber,
+      filter: {
+        searchTerm: '',
+        initiationDateStart: '',
+        initiationDateEnd: ''
+      },
+      excelMetaDataDTO: {
+        accountNumber: selectedAccount?.accountNumber,
+        name: selectedAccount?.accountName,
+        address: GeographicUtils.addressAggregator(selectedAccount)
+      }
+    };
+    const type = 'xlsx';
+    exportStatementPDF({ url, payload, type, confirmationNumber: confirmationNumber, t: t });
+  };
+
+  const handleDownload = () => {
+    const url = `${ApiRoutes.PAYMENT_HISTORY_LISTING(selectedAccount?.id)}/detail/export?confirmationNo=${confirmationNumber}`;
+    const payload = {
+      companyCode: selectedAccount?.companyCode,
+      salesOrg: selectedAccount?.salesOrg,
+      payerAccountNumber: selectedAccount?.accountNumber,
+      dateFrom: dayjs(state?.filterConfig?.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY') || '',
+      dateTo: dayjs(state?.filterConfig?.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY') || '',
+      paymentHistoryFilter: {
+        searchTerm: '',
+        paymentStatus: [],
+        paymentMethod: []
+      },
+      excelMetaDataDTO: {
+        accountNumber: selectedAccount?.accountNumber,
+        name: selectedAccount?.accountName,
+        address: GeographicUtils.addressAggregator(selectedAccount)
+      }
+    };
+    const type = 'xlsx';
+    exportStatementPDF({ url, payload, type, confirmationNumber: confirmationNumber, t: t });
+  };
+
   const renderFooterButtons = () => (
     <div className="footer-section">
-      <Button variant="secondary" onClick={() => {}} size="sm" disabled>
+      <Button
+        variant="secondary"
+        onClick={type === PATHS.paymentHistory ? () => {} : handleExport}
+        size="sm"
+        disabled={type === PATHS.paymentHistory}>
         {type === PATHS.paymentHistory ? t('paymentInvoices.history.filters.printSummary') : t('paymentInvoices.CS.ExportExcel')}
       </Button>
-      <Button onClick={() => {}} size="sm" disabled>
+      <Button onClick={type === PATHS.paymentHistory ? handleDownload : () => {}} size="sm" disabled={type !== PATHS.paymentHistory}>
         {type === PATHS.paymentHistory ? t('paymentInvoices.history.filters.downloadExcel') : t('paymentInvoices.Details.print')}
       </Button>
     </div>

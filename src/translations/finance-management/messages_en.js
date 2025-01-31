@@ -208,6 +208,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.paymentMethods.banks.filter.search.label': 'Search bank accounts',
   'paymentInvoices.paymentMethods.filter.search.placeholder': 'Select by name or number',
   'paymentInvoices.paymentMethods.table.bankAccount.addnewcard': 'add new card',
+  'paymentInvoices.paymentMethods.table.bankAccount.addBank': 'add bank account',
   'paymentInvoices.paymentMethods.table.bankAccount.bankName': 'Name',
   'paymentInvoices.paymentMethods.table.bankAccount.routingNumber': 'Routing Number',
   'paymentInvoices.paymentMethods.table.bankAccount.bankAccNumber': 'Account Number',

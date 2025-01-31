@@ -27,6 +27,8 @@ function Questionnaire() {
       <Routes>
         <Route path="" index element={<ManageQuestionnaire />} />
         <Route path={ROUTE_CONFIG.ADD_QUESTIONNAIRE} element={<AddQuestionnaire />} />
+        <Route path={`${ROUTE_CONFIG.VIEW_QUESTIONNAIRE}/:id`} element={<AddQuestionnaire />} />
+
         <Route
           path={ROUTE_CONFIG.MAP_QUESTIONNAIRE}
           element={
