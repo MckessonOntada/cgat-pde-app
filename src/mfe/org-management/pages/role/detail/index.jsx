@@ -101,26 +101,26 @@ const roleDetail = () => {
               </div>
             </div>
           </div>
-
-          <ModuleHeader
-            heading={<Heading as="h1">{t('userManagement.header.view.permissions_granted')}</Heading>}
-            controls={
-              <div className="controls">
-                <PermittedComponent permissions={[PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_ROLES]}>
-                  <Button
-                    Icon={EditPencil}
-                    variant="secondary"
-                    className="button-icon"
-                    size="md"
-                    disabled={!data?.isActive}
-                    onClick={() => navigate(`permissions`, { state: { data, isEdit: true } })}>
-                    {t('userManagement.button.edit')}
-                  </Button>
-                </PermittedComponent>
-              </div>
-            }
-          />
-
+          <div className='roleTitle'>
+            <ModuleHeader
+              heading={<Heading as="h1">{t('userManagement.header.view.permissions_granted')}</Heading>}
+              controls={
+                <div className="controls">
+                  <PermittedComponent permissions={[PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_ROLES]}>
+                    <Button
+                      Icon={EditPencil}
+                      variant="secondary"
+                      className="button-icon"
+                      size="md"
+                      disabled={!data?.isActive}
+                      onClick={() => navigate(`permissions`, { state: { data, isEdit: true } })}>
+                      {t('userManagement.button.edit')}
+                    </Button>
+                  </PermittedComponent>
+                </div>
+              }
+            />
+          </div>
           <div className="MCP-panel-container grid grid-gap-16">
             {data?.permissions?.length > 0 ? (
               Object.entries(groupedPermissions).map(([categoryKey, permissions]) => (
