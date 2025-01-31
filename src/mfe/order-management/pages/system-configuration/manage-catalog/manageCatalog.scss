@@ -98,6 +98,47 @@
         gap: 10px;
       }
     }
+
+    .Questionnaire-li {
+      display: flex;
+      justify-content: space-between;
+      padding: 24px 0px;
+
+      .Questionnaire-key {
+        font-size: var(--brand-font-size--default);
+        font-weight: var(--brand-font-weight-700);
+        color: var(--brand-color-primary--hover);
+        // padding: var(--spacing-04) 0px var(--spacing-02) 0px;
+        width: 60%;
+      }
+      .Questionnaire-value {
+        width: 40%;
+        text-align: end;
+        font-weight: var(--brand-font-weight-600);
+        color: var(--brand-color-primary);
+        font-size: var(--brand-font-size--small);
+        cursor: pointer;
+        display: flex;
+        justify-content: end;
+        gap: 10px;
+      }
+    }
+
+    .Questionnairedetails-ul {
+      .Questionnairedetails-li {
+        display: flex;
+        justify-content: space-between;
+        font-size: var(--brand-font-size--small); 
+        border-bottom: 1px solid var(--brand-color-dark-grey);
+
+        .Questionnairedetails-key {
+          width: 70%;
+          color: (var--brand-color-font-black);
+          font-weight: var(--brand-font-weight-700);
+        }
+         
+      }
+    }
   }
 }
 .alert-container {

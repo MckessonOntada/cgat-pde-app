@@ -12,7 +12,7 @@ export const getEntityTypeFlags = (selectedEntityType) => {
   };
 };
 
-export const getAddress = (account) => {
+export const getAddress = (account) => { 
     return [account.houseNumber, account.street, account.district, account.city, account.state, account.zipCode].filter(Boolean).join(', ');
   };
 

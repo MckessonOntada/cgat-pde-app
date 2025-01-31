@@ -21,8 +21,18 @@ function TemplateList() {
   const { t } = useTranslate();
   const location = useLocation();
   const navigate = useNavigate();
-  const { applyFilters, clearFilters, applySort, data, isError, isLoading, paginationConfig, selectedTemplates, setTemplates } =
-    useQuestionnaire();
+  const {
+    applyFilters,
+    clearFilters,
+    applySort,
+    data,
+    isError,
+    isLoading,
+    paginationConfig,
+    selectedTemplates,
+    setTemplates,
+    setPageNumber
+  } = useQuestionnaire();
   const { renderCheckBox, selectedData, setSelectedData } = useMultiCheckBox(data, paginationConfig, selectedTemplates, setTemplates);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
