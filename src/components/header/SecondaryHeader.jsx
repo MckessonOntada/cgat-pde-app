@@ -3,11 +3,13 @@ import { connect } from 'react-redux';
 import { setUserData } from '@src/store/reducer/userReducer';
 import { Button, TabList } from '@mckesson/mcp-component-library';
 import styles from './assets/styles/Header.module.scss';
-import { useIntl } from 'react-intl';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useSessionFeatures from '@src/hooks/useSessionFeatures';
 import AuthUtils from '@src/util/AuthUtils';
 import { SESSION_CONST } from '@src/constants/SessionConstants';
+import { useTranslate } from '@src/translations/useTranslation';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+import { useDispatch } from 'react-redux';
 
 const impersonateLogout = () => {
   return new Promise(async function (resolve, reject) {
@@ -20,12 +22,13 @@ const impersonateLogout = () => {
   });
 };
 
-const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
-  const intl = useIntl();
+const SecondaryHeader = ({ navLinks }) => {
+  const { t } = useTranslate();
   const navigate = useNavigate();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const impersonatedUsername = sessionStorage.getItem(SESSION_CONST.IMPERSONATE_USERNAME);
+  const dispatch = useDispatch();
 
   const location = useLocation();
   const {
@@ -49,7 +52,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
           label: 'System Administrator',
           path: '/',
           id: 1,
-          configName: `${intl.formatMessage({ id: 'dashboard.card.systemAdministrator' })}`,
+          configName: t('dashboard.card.systemAdministrator'),
           isActive: true,
           isActiveTab: true,
           labelForMobile: 'System Administrator',
@@ -82,7 +85,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
               ...item,
               isActiveTab: isActiveTab,
               ariaSelected: isActiveTab ? 'true' : 'false',
-              configName: `${intl.formatMessage({ id: item.translationName })}`
+              configName: t(item.translationName)
             };
           }
         })
@@ -110,23 +113,41 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
   };
 
   const getImpersonateLoginDetails = () => {
-    const handleOnExitUserView = () => {
+    const exitUserView = () => {
       impersonateLogout()
-        .then((message) => {
+        .then(() => {
           navigate('/?expelled=true');
         })
         .catch((error) => {
           console.log(`error: ${error}`);
         });
     };
+    const handleOnExitUserView = () => {
+      const state = {};
+      state.title = `${t('button.captions.exitUserView')}?`;
+      state.body = (
+        <div className="MCP-modal-body">
+          <p>{t('message.exitUserViewConfirmation')}</p>
+        </div>
+      );
+      state.footer = (
+        <div className="controls">
+          <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+            {t('button.caption.no')}
+          </Button>
+          <Button size="md" variant="primary" onClick={exitUserView}>
+            {t('button.caption.yes')}
+          </Button>
+        </div>
+      );
+      dispatch(openModal(state));
+    };
     if (impersonatedUsername) {
       return (
         <div className="impersonate-info-panel">
-          <p className="logged-in-label">
-            {intl.formatMessage({ id: 'header.label.loggedInAs' }).replace('{{impersonateFullName}}', impersonatedUsername)}
-          </p>
+          <p className="logged-in-label">{t('header.label.loggedInAs').replace('{{impersonateFullName}}', impersonatedUsername)}</p>
           <Button color="secondary" onClick={handleOnExitUserView}>
-            {intl.formatMessage({ id: 'button.captions.exitUserView' })}
+            {t('button.captions.exitUserView')}
           </Button>
         </div>
       );
@@ -147,7 +168,7 @@ const SecondaryHeader = ({ user, setUserData, debugId, navLinks }) => {
           {getImpersonateLoginDetails()}
           {AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() && (
             <Button color="secondary" onClick={handleSystemAdminViewClick}>
-              {intl.formatMessage({ id: 'header.label.systemAdminView' })}
+              {t('header.label.systemAdminView')}
             </Button>
           )}
         </div>
