@@ -209,3 +209,36 @@
   font-size: 28px;
   font-weight: 600;
 }
+
+.upload-userBtn {
+  #ProgressButton-default {
+    height: var(--spacing-05) !important;
+    padding-left: 18px;
+    padding-right: 18px;
+    outline-offset: 0px;
+    border-radius: 6px;
+    outline: 2px solid var(--brand-color-primary-blue, #007cc1);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer !important;
+  }
+}
+
+.download-Icon {
+  height: var(--spacing-05) !important;
+  padding-left: 12px;
+  padding-right: 12px;
+  outline-offset: 0px;
+  border-radius: 6px;
+  outline: 2px solid var(--brand-color-primary-blue, #007cc1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
