@@ -237,7 +237,7 @@ function UserTable({ onActionSuccess }) {
   return (
     <div>
       <TableHeading
-        heading={t('userManagement.table.userlisting.label')}
+        heading={isSystemAdminView ? t('userManagement.table.systemadminlisting.label') : t('userManagement.table.userlisting.label')}
         secondaryView={!!selectedRows}
         secondaryViewHeading={`1 ${t('userManagement.selected_items')}`}
         secondaryViewControls={
