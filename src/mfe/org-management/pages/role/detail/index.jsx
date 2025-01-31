@@ -101,7 +101,7 @@ const roleDetail = () => {
               </div>
             </div>
           </div>
-          <div className='roleTitle'>
+          <div className='secondryTitle'>
             <ModuleHeader
               heading={<Heading as="h1">{t('userManagement.header.view.permissions_granted')}</Heading>}
               controls={

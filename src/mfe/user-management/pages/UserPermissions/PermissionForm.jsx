@@ -202,7 +202,7 @@ const { data: permissionsData } = useQuery({
           </div>
         </Fragment>
       )}
-      <div className='permissionsTitle'>
+      <div className='secondryTitle'>
         <ModuleHeader
           heading={<Heading as="h3">{t('userManagement.user_permissions.managePermissions')}</Heading>}
           controls={
