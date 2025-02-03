@@ -89,7 +89,7 @@ function UploadUsers({ showAlert }) {
       </div>
 
       <Tooltip body={t('userManagement.button.downloadTemplateDescription')} title={t('userManagement.button.downloadTemplate')}>
-        <div className="download-Icon">
+        <div className="download-Icon" onClick={handleDownload}>
           <DownloadSVG />
         </div>
       </Tooltip>
