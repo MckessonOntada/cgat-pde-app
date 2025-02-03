@@ -53,7 +53,7 @@ const FloatingDrawer = ({ open, onClose, anchor = 'left', swipeable = false, chi
           top: 0,
           left: 0,
           height: '100vh',
-          width: isMobileView ? '100%' : 'auto',
+          width: isMobileView ? '80%' : 'auto',
           transform: open ? 'translateX(0)' : 'translateX(-100%)'
         };
       case 'right':
@@ -62,7 +62,7 @@ const FloatingDrawer = ({ open, onClose, anchor = 'left', swipeable = false, chi
           top: 0,
           right: 0,
           height: '100vh',
-          width: isMobileView ? '100%' : 'auto',
+          width: isMobileView ? '80%' : 'auto',
           transform: open ? 'translateX(0)' : 'translateX(100%)'
         };
       case 'top':

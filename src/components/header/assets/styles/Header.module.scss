@@ -3,6 +3,7 @@
 .navContainer {
   &.primary {
     background-color: var(--brand-color-patient-primary-1);
+    padding-right: 10px;
 
     .navItemsLeft {
       padding: var(--spacing-02) 0px;
@@ -141,7 +142,10 @@
 
   li:last-child {
     border-right: none;
-    padding-right: 30px;
+    padding-right: 20px;
+    @include mixins.respond(sm) {
+      padding-right: 0;
+    }
   }
 
   .linkWrapper {
@@ -235,4 +239,8 @@
       height: 100%;
     }
   }
+}
+
+.secondaryNav {
+  padding-right: 10px;
 }

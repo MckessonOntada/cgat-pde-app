@@ -167,6 +167,22 @@ export const CustomDataTable = (props) => {
     );
   };
 
+  const renderEmptyDataComponent = () => (
+    <div>
+      {progressPending ? (
+        <div className={styles.tableLoader}>{progressComponent ? progressComponent : <Loader />}</div>
+      ) : (
+        <div>
+          {data?.length < 1 && (
+            <div className={styles.dataTableEmptyUI}>
+              {typeof noDataComponent === 'string' ? <DataTableEmptyView text={noDataComponent} /> : noDataComponent}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <>
       {showCardView ? (
@@ -183,6 +199,7 @@ export const CustomDataTable = (props) => {
               />
             ))}
           </div>
+          {renderEmptyDataComponent()}
         </>
       ) : (
         <div
@@ -213,19 +230,7 @@ export const CustomDataTable = (props) => {
             conditionalRowStyles={getConditionalRowStyles()}
             selectableRowSelected={rowSelectCritera}
           />
-          <div>
-            {progressPending ? (
-              <div className={styles.tableLoader}>{progressComponent ? progressComponent : <Loader />}</div>
-            ) : (
-              <div>
-                {data?.length < 1 && (
-                  <div className={styles.dataTableEmptyUI}>
-                    {typeof noDataComponent === 'string' ? <DataTableEmptyView text={noDataComponent} /> : noDataComponent}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+          {renderEmptyDataComponent()}
         </div>
       )}
 
