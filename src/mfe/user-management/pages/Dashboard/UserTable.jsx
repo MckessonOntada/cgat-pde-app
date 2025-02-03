@@ -234,9 +234,7 @@ function UserTable({ onActionSuccess }) {
       }
     ];
   }, [data, userPermissions]);
-  console.log("ttt", selectedRows == currentUserId ? true : false);
-  console.log("ttt", selectedRows);
-  console.log("ttt", currentUserId);
+
   return (
     <div>
       <TableHeading
