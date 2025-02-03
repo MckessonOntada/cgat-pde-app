@@ -37,5 +37,10 @@ export const ManageCatalogMessagesES = {
   'ManageCatalog.Details.WACPrice': 'S_WAC Price',
   'ManageCatalog.Details.340bPrice': 'S_340b Price',
   'ManageCatalog.Details.Priceunit': 'S_Price unit',
-  'ManageCatalog.Details.Minimumorderquantity': 'S_Minimum order quantity'
+  'ManageCatalog.Details.Minimumorderquantity': 'S_Minimum order quantity',
+  'ManageCatalog.delink.success': 'S_Questionnaire Template deleted successfully',
+  'ManageCatalog.delink.error': 'S_Error while deleting Questionnaire Template',
+  'ManageCatalog.questionnaireConfiguration': 'S_Questionnaire Configuration',
+  'ManageCatalog.Preview': 'S_PREVIEW',
+  'ManageCatalog.BacktoPage': 'S_BACK TO MANAGE CATALOG PAGE'
 };

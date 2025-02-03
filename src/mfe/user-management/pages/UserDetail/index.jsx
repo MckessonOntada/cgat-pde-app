@@ -357,24 +357,24 @@ const UserDetail = () => {
             </div>
           </div>
         </div>
-
-        <ModuleHeader
-          heading={<Heading as="h1">{t('userManagement.header.view.permissions_granted')}</Heading>}
-          controls={
-            <div className="controls">
-              <Button
-                Icon={EditPencil}
-                variant="secondary"
-                className="button-icon"
-                size="md"
-                disabled={!data?.isActive || isSelf}
-                onClick={() => navigate(`../${PATHS.userPermissions}/${userId}`, { state: { isEdit: true, permissionsData: data } })}>
-                {t('userManagement.button.edit')}
-              </Button>
-            </div>
-          }
-        />
-
+        <div className='secondryTitle'>
+          <ModuleHeader
+            heading={<Heading as="h1">{t('userManagement.header.view.permissions_granted')}</Heading>}
+            controls={
+              <div className="controls">
+                <Button
+                  Icon={EditPencil}
+                  variant="secondary"
+                  className="button-icon"
+                  size="md"
+                  disabled={!data?.isActive || isSelf}
+                  onClick={() => navigate(`../${PATHS.userPermissions}/${userId}`, { state: { isEdit: true, permissionsData: data } })}>
+                  {t('userManagement.button.edit')}
+                </Button>
+              </div>
+            }
+          />
+        </div>
         <div className="MCP-panel-container grid grid-gap-16">
           {data?.permissions?.length > 0 ? (
             Object.entries(groupedPermissions).map(([categoryKey, permissions]) => (

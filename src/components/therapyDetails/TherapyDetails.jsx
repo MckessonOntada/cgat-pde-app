@@ -3,13 +3,18 @@ import styles from './assets/TherapyDetails.module.scss';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
 import { ReactComponent as IconBinRed } from '@src/assets/svg/bin-red.svg';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { Loader, Heading, Button } from '@mckesson/mcp-component-library';
 import OrderService from '@src/api/commonService/OrderService';
 import UserService from '@src/api/commonService/UserService';
 import useSnackbar from '@src/hooks/useSnackbar';
 import MaterialService from '@src/api/commonService/MaterialService';
 import CommonUtils from '@src/util/CommonUtils';
+import ApiRoutes from '@src/api/ApiRoutes';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import { useNavigate } from 'react-router-dom';
+import { PREVIEW_URL } from '@src/mfe/order-management/questionnaire/constants';
+import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 
 function TherapyDetails({
   therapyId,
@@ -88,6 +93,7 @@ function TherapyDetails({
               configurationData={configurationData}
               showFooter={showFooter}
               isMaterialConfiguration={isMaterialConfiguration}
+              refetch={refetch}
               onDeleteConfig={handleDeleteConfig}
             />
           )}
@@ -97,13 +103,56 @@ function TherapyDetails({
   );
 }
 
-function DetailsPanel({ details, handleSelect, onClose, therapyData, configurationData, showFooter, isMaterialConfiguration, onDeleteConfig }) {
+function DetailsPanel({
+  details,
+  handleSelect,
+  onClose,
+  therapyData,
+  configurationData,
+  showFooter,
+  isMaterialConfiguration,
+  onDeleteConfig,
+  refetch = { refetch }
+}) {
   const { t } = useTranslate();
+  const { showSnackbar } = useSnackbar();
+
+  const OnDelinkQuestionnaireClick = async (id) => {
+    const payload = {
+      questionnaireId: id,
+      materialNumber: details.therapy.materialNumber
+    };
+    try {
+      await QuestionnaireService.deLinkConfigureQuestionnaire('Material', payload);
+      showSnackbar({ description: t('manageMaterial.drawer.delink.success'), type: 'success' });
+      refetch();
+    } catch (error) {
+      showSnackbar({ description: t('manageMaterial.drawer.delink.error'), type: 'error' });
+    }
+  };
 
   const renderDetails = (fields, details) =>
     fields.map(({ label, value }) => (
       <DetailItem key={label} label={t(label)} value={isMaterialConfiguration ? details.therapy[value] : details[value] || '-'} />
     ));
+
+  const renderQuestionnaire = (details, section) => {
+    let showHeader = true;
+    return details.questionnaires.map((questionnaire, index) => {
+      const item = (
+        <QuestionnaireItem
+          key={questionnaire.id}
+          section={section}
+          templateName={questionnaire.templateName}
+          onDelete={() => OnDelinkQuestionnaireClick(questionnaire.id)}
+          showHeader={showHeader}
+          questionnaire={details.questionnaires}
+        />
+      );
+      showHeader = false;
+      return item;
+    });
+  };
 
   const renderConfiguration = (fields, details) =>
     fields.map(({ label, value, display = true, translation = true }) => {
@@ -118,7 +167,7 @@ function DetailsPanel({ details, handleSelect, onClose, therapyData, configurati
         />
       );
     });
-
+console.log(details.questionnaires);
   return (
     <div className={styles.detailsPanel}>
       <div className={styles.drawerBodyContent}>
@@ -130,23 +179,30 @@ function DetailsPanel({ details, handleSelect, onClose, therapyData, configurati
         ))}
         {isMaterialConfiguration &&
           configurationData?.map((section, index) => (
-            <div key={index}>
-              <div className={styles.configurationHeader}>
-                <Heading as="h3">{t(section.sectionHeading)}</Heading>
-                <div className={styles.actions}>
-                  {section.actions?.map((action) =>
-                    action.icon === 'delete' ? (
-                      <IconBinRed key={action.id} role="button" onClick={() => onDeleteConfig(action.id)} />
-                    ) : (
-                      <Button key={action.id} textButton onClick={() => console.log(`${action.id} Clicked`)}>
-                        {t(action.label)}
-                      </Button>
-                    )
-                  )}
+            <>
+              {!section.questionnaire ? (
+                <div key={index}>
+                  <div className={styles.configurationHeader}>
+                    {/* <Heading as="h3">{t(section.sectionHeading)}</Heading> */}
+                    <div className={styles.sectionHeadingkey}>{t(section.sectionHeading)}</div>
+                    <div className={styles.actions}>
+                      {section.actions?.map((action) =>
+                        action.icon === 'delete' ? (
+                          <IconBinRed key={action.id} role="button" onClick={() => onDeleteConfig(action.id)} />
+                        ) : (
+                          <Button key={action.id} textButton onClick={() => console.log(`${action.id} Clicked`)}>
+                            {t(action.label)}
+                          </Button>
+                        )
+                      )}
+                    </div>
+                  </div>
+                  <div>{renderConfiguration(section.sectionData, details)}</div>
                 </div>
-              </div>
-              <div>{renderConfiguration(section.sectionData, details)}</div>
-            </div>
+              ) : (
+                details.questionnaires .length > 0  ? <div> {renderQuestionnaire(details, section) }</div> : ''
+              )}
+            </>
           ))}
       </div>
       {showFooter && (
@@ -185,14 +241,39 @@ function ConfigItem({ label, value, display = true }) {
     <>
       <div className={styles.detailItem}>
         <div className={styles.leftContentBold}>{label}</div>
-        <div className={styles.rightContentAction}>
-          {typeof value === 'boolean' ? (
-            value ? (
-              'YES'
-            ) : (
-              'NO'
-            )
-          ) : value}
+        <div className={styles.rightContentAction}>{typeof value === 'boolean' ? (value ? 'YES' : 'NO') : value}</div>
+      </div>
+    </>
+  );
+}
+
+function QuestionnaireItem({ templateName, section, onDelete, showHeader,questionnaire }) {
+  const navigate = useNavigate();
+  const { t } = useTranslate();
+
+  return (
+    <>
+      {showHeader && (
+        <div className={styles.configurationHeader}>
+          {/* <Heading as="h3">{t(section.sectionHeading)}</Heading> */}
+          <div className={styles.sectionHeadingkey}>{t(section.sectionHeading)}</div>
+          <div className={styles.actions}>
+            {section.actions?.map((action) => (
+              <Button
+                key={action.id}
+                textButton
+                onClick={() => navigate(PREVIEW_URL, { state: { isMaterial: true, questionnaire: questionnaire } })}>
+                {t(action.label)}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className={styles.detailItem}>
+        <div className={styles.leftContentBold}>{templateName}</div>
+        <div className={styles.rightContentAction} onClick={onDelete}>
+          <IconBinRed className={styles.deleteIcon} />
         </div>
       </div>
     </>

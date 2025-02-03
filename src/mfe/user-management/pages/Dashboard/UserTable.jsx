@@ -38,6 +38,7 @@ function UserTable({ onActionSuccess }) {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const { isLoading, isError, error, data, activeTab, paginationConfig, applySort, refreshData, setPageNumber } = useUser();
   const userPermissions = AuthUtils.getUserPermissions();
+  const currentUserId =  AuthUtils.getUserId();
   const { hasPermission } = usePermission();
   const showCardView = useResponsiveView();
 
@@ -241,8 +242,8 @@ function UserTable({ onActionSuccess }) {
         secondaryView={!!selectedRows}
         secondaryViewHeading={`1 ${t('userManagement.selected_items')}`}
         secondaryViewControls={
-          <Button variant="secondary" onClick={handleDeactivate}>
-            {t('userManagement.button.deactivate')}
+          <Button variant="secondary" onClick={handleDeactivate} disabled={selectedRows == currentUserId ? true : false}>
+              {t('userManagement.button.deactivate')}
           </Button>
         }
         style={{ marginBottom: '24px' }}

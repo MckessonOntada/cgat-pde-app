@@ -11,13 +11,16 @@ import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import { ConfigConstants, MaterialDetailsConstants } from '../../pages/system-configuration/manageMaterial/assets/constants/MaterialConstants';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
+import CatalogDetails from '../../pages/system-configuration/manage-catalog/pages/CatalogDetails';
+import AccountDetails from './AccountDetails';
  
-const EntityDataTable = ({ EntityType, setSelectedRows }) => {
+const EntityDataTable = ({ EntityType, setSelectedRows ,showAlert}) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const [openDetails, setOpenDetails] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState(null);
   const showCardView = useResponsiveView();
+    
   const { paginationConfig, setCurrentPage, applySort, MaterialData, CatalogData, AccountsData, isLoading, isError } =
     useManagerQuestionnaire();
   const isMaterial = EntityType == MasterEntityType.Material;
@@ -76,19 +79,36 @@ const EntityDataTable = ({ EntityType, setSelectedRows }) => {
           />
         }
       />
-      {openDetails && (
-        <FloatingDrawer open={true} anchor="right" onClose={() => setOpenDetails(!openDetails)}>
-          <TherapyDetails
-            therapyId={selectedDetails?.materialNumber}
-            therapyData={MaterialDetailsConstants}
-            configurationData={ConfigConstants}
-            onClose={() => setOpenDetails(!openDetails)}
-            showFooter={false}
-            isMaterialConfiguration={true}
-            useMaterialService={true}
+      {openDetails &&
+        (isMaterial ? (
+          <FloatingDrawer open={true} anchor="right" onClose={() => setOpenDetails(!openDetails)}>
+            <TherapyDetails
+              therapyId={selectedDetails?.materialNumber}
+              therapyData={MaterialDetailsConstants}
+              configurationData={ConfigConstants}
+              onClose={() => setOpenDetails(!openDetails)}
+              showFooter={false}
+              isMaterialConfiguration={true}
+              useMaterialService={true}
+            />
+          </FloatingDrawer>
+        ) : isCatalog ? (
+          <CatalogDetails
+            openCatalogDetails={openDetails}
+            setOpenCatalogDetails={setOpenDetails}
+            viewCatalog={selectedDetails}
+            setViewCatalog={setSelectedDetails}
+            showAlert={showAlert}
           />
-        </FloatingDrawer>
-      )}
+        ) : isAccount ? (
+          <AccountDetails
+            openDetails={openDetails}
+            setOpenDetails={setOpenDetails}
+            viewAccount={selectedDetails}
+            setViewAccount={setSelectedDetails}
+            showAlert={showAlert}
+          />
+        ) : null)}
     </>
   );
 };
