@@ -171,7 +171,7 @@ export const CustomDataTable = (props) => {
     <>
       {showCardView ? (
         <>
-          {renderCardSort()}
+          {data && data.length > 0 && renderCardSort()}
           <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start">
             {data.map((row, index) => (
               <CustomCard
