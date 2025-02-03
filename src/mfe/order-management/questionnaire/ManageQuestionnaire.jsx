@@ -44,8 +44,11 @@ function ManageQuestionnaire() {
   React.useEffect(() => {
     if (location.state?.alertConfig) {
       setAlertConfig({ ...location.state.alertConfig });
-      navigate(location.pathname, { replace: true, state: null });
     }
+    if (location.state?.refetch) {
+      refetchTemplates();
+    }
+    navigate(location.pathname, { replace: true, state: null });
   }, [navigate, location.pathname]);
 
   React.useEffect(() => {

@@ -78,7 +78,8 @@ function AddQuestionnaire() {
             isVisible: true,
             description: 'Questionnaire created successfully.',
             type: 'success'
-          }
+          },
+          refetch: true
         }
       });
     },
@@ -98,7 +99,8 @@ function AddQuestionnaire() {
             isVisible: true,
             description: 'Questionnaire updated successfully.',
             type: 'success'
-          }
+          },
+          refetch: true
         }
       });
     },
@@ -112,6 +114,7 @@ function AddQuestionnaire() {
     data: deactivateResponse
   } = useMutation(async (id) => QuestionnaireService.deactivateQuestionnaireById(id), {
     onSuccess: (response) => {
+      setMode(MODE.VIEW);
       setAlertConfig({
         isVisible: true,
         description: 'Questionnaire deactivated successfully.',
@@ -162,8 +165,6 @@ function AddQuestionnaire() {
           templateName,
           questions: formattedQuestions
         };
-
-        console.log(existingInitialState);
 
         setInitialFormState(existingInitialState);
       }
@@ -311,7 +312,6 @@ function AddQuestionnaire() {
 
   return (
     <div>
-      <QuestionnaireTemplate />
       <div>
         <Formik disabled initialValues={initialFormState} onSubmit={handleOnSubmit} enableReinitialize validationSchema={schema}>
           {({ values, errors, setFieldValue, setFieldError }) => {

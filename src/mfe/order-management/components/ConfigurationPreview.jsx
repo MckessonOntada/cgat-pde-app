@@ -36,7 +36,8 @@ function ConfigurationPreview() {
         <div className="styled-heading">
           <Heading as="h1">Configuration Preview</Heading>
         </div>
-
+      </div>
+      <div>
         <QuestionnaireTemplate config={{}} isPreview={true} />
       </div>
     </div>
