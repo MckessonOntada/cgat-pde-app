@@ -80,7 +80,7 @@ function UploadUsers({ showAlert }) {
   return (
     <React.Fragment>
       <div className="upload-userBtn">
-        <input type="file" key={inputKey} id="fileInput" onChange={handleFileChange} style={{ display: 'none' }} />
+        <input type="file" key={inputKey} id="fileInput" onChange={handleFileChange} style={{ display: 'none' }} accept=".csv" />
         <Button Icon={UploadSVG} className="button-icon" variant="primary" size="md" onClick={(e) => e.stopPropagation()}>
           <label htmlFor="fileInput">
             {isLoading ? t('userManagement.button.uploadingUsers') : t('userManagement.button.uploadUsers')}
@@ -88,7 +88,10 @@ function UploadUsers({ showAlert }) {
         </Button>
       </div>
 
-      <Tooltip body={t('userManagement.button.downloadTemplateDescription')} title={t('userManagement.button.downloadTemplate')}>
+      <Tooltip
+        body={t('userManagement.button.downloadTemplateDescription')}
+        title={t('userManagement.button.downloadTemplate')}
+        placement="top-end">
         <div className="download-Icon" onClick={handleDownload}>
           <DownloadSVG />
         </div>
