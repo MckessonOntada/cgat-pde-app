@@ -71,8 +71,7 @@ export const UserManagementEN = {
   'userManagement.button.adduser': 'Add User',
   'userManagement.button.uploadUsers': 'Upload Users',
   'userManagement.button.uploadingUsers': 'Uploading...',
-  'userManagement.button.downloadTemplateDescription':
-    'Clicking on the download button will download sample template for uploading bulk users.',
+  'userManagement.button.downloadTemplateDescription': 'Download sample template for uploading bulk users.',
   'userManagement.button.downloadTemplate': 'Bulk Upload User Template',
   'userManagement.button.uploadError': 'Error while creating Organization users',
   'userManagement.button.uploadConflict':
