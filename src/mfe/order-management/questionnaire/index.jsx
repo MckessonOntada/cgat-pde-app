@@ -9,6 +9,7 @@ import { OrgAccountSelectionProvider } from '../components/orgAccountSelection/c
 import { ManageQuestionnaireProvider } from '../context/ManageQuestionnaireContext';
 import { MasterEntityType } from './util';
 import { QuestionnaireProvider } from '../context/QuestionnaireContext';
+import ConfigurationPreview from '../components/ConfigurationPreview';
 
 function Questionnaire() {
   const location = useLocation();
@@ -27,6 +28,7 @@ function Questionnaire() {
         <Route path="" index element={<ManageQuestionnaire />} />
         <Route path={ROUTE_CONFIG.ADD_QUESTIONNAIRE} element={<AddQuestionnaire />} />
         <Route path={`${ROUTE_CONFIG.VIEW_QUESTIONNAIRE}/:id`} element={<AddQuestionnaire />} />
+
         <Route
           path={ROUTE_CONFIG.MAP_QUESTIONNAIRE}
           element={
@@ -37,6 +39,7 @@ function Questionnaire() {
             </OrgAccountSelectionProvider>
           }></Route>
         <Route path="*" element={<NotFound />} />
+        <Route path={ROUTE_CONFIG.CONFIG_PREVIEW} element={<ConfigurationPreview />} />
       </Routes>
     </QuestionnaireProvider>
   );

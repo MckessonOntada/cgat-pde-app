@@ -12,6 +12,8 @@ import { CatalogDetailsConstants } from '../constants/constants';
 import { useNavigate } from 'react-router-dom';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
+import { PREVIEW_URL, ROUTE_CONFIG } from '@src/mfe/order-management/questionnaire/constants';
+import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 
 function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog, setViewCatalog, showAlert }) {
   const navigate = useNavigate();
@@ -32,11 +34,11 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
 
   useEffect(() => {
     if (openCatalogDetails && viewCatalog) {
-      mutate();
+      fetchCatalog();
     }
   }, [openCatalogDetails]);
 
-  const { mutate, isLoading, isError, data } = useMutation(
+  const {  mutate: fetchCatalog, isLoading, isError, data } = useMutation(
     async (payload) => {
       const apiUrl = `${ApiRoutes.GET_CATALOG_DATA()}/configuration?${serializeParams(requestParams())}`;
       const res = await HttpResourceService.callRest(apiUrl, httpVerb.GET, {});
@@ -50,7 +52,9 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
       }
     }
   );
-
+ const refetch = () => {
+   fetchCatalog();  
+ };
   const { mutate: deleteConfiguration, isLoading: isDeleteLoading } = useMutation(
     async (payload) => {
       const apiUrl = `${ApiRoutes.GET_CATALOG_DATA()}/configuration?${serializeParams(requestParams())}`;
@@ -60,11 +64,38 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
     {
       onSuccess: (response) => {
         setOpenCatalogDetails(false);
-        showAlert('success', t('ManageCatalog.configure.success'));
+        showAlert('success', t('ManageCatalog.delink.success'));
       },
       onError: (error) => {
         setOpenCatalogDetails(false);
-        showSnackbar({ description: t('ManageCatalog.configure.error'), type: 'error' });
+        showSnackbar({ description: t('ManageCatalog.delink.error'), type: 'error' });
+      }
+    }
+  );
+  const OnDeleteClick = (id) => {
+    const payload = {
+      questionnaireId: id,
+      catalogId: {
+        sapMaterial: viewCatalog.sapMaterial,
+        soldToCustomer: viewCatalog.soldToCustomer,
+        shipToCustomer: viewCatalog.shipToCustomer,
+        variant: viewCatalog.variant || ''
+      }
+    };
+    delinkQuestionnaire(payload);
+  };
+   
+  const { mutate: delinkQuestionnaire, isLoading: isDelinkLoading } = useMutation(
+    async (payload) => {
+      await QuestionnaireService.deLinkConfigureQuestionnaire('Catalog', payload);
+    },
+    {
+      onSuccess: (response) => {
+           showSnackbar({ description: t('ManageCatalog.delink.success'), type: 'success' });
+         refetch();
+      },
+      onError: (error) => { 
+        showSnackbar({ description: t('ManageCatalog.delink.error'), type: 'error' });
       }
     }
   );
@@ -83,7 +114,7 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
             <div className={'details-body'}>
               {CatalogDetailsConstants.map((item, index) => (
                 <React.Fragment>
-                  <Heading as="h4">{t(`ManageCatalog.${item.sectionHeading}`)}</Heading>
+                  <Heading as="h3">{t(`ManageCatalog.${item.sectionHeading}`)}</Heading>
                   <div className="details-ul">
                     {item.sectionData.map((item, index) => (
                       <div className="details-li">
@@ -104,6 +135,28 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
                     </div>
                   </div>
                 </div>
+              )}
+              {data?.questionnaires?.length > 0 && (
+                <>
+                  <div className="Questionnaire-li">
+                    <div className="Questionnaire-key">{t('ManageCatalog.questionnaireConfiguration')}</div>
+                    <div className="Questionnaire-value">
+                      <div onClick={() => navigate(PREVIEW_URL, { state: { isCatalog: true, questionnaire: data?.questionnaires  } })}>{t('ManageCatalog.Preview')}</div>
+                    </div>
+                  </div>
+                  <div className="Questionnairedetails-ul">
+                    {data?.questionnaires.map((item, index) => {
+                      return (
+                        <div key={index} className="Questionnairedetails-li">
+                          <div className="Questionnairedetails-key">{item.templateName}</div>
+                          <div className="delete-button" onClick={() => OnDeleteClick(item.id)}>
+                            <DeleteIcon />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
               )}
             </div>
           </div>

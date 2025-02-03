@@ -381,4 +381,5 @@ export const MessageEn = {
   'table.columns.captions.created_By': 'Created By',
   'table.columns.captions.action': 'Action',
   'controls.placeholder.searchQuestionnaire': 'Search by Template Name'
+   
 };

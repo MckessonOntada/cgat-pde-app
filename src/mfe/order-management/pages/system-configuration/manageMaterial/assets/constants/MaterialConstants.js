@@ -22,14 +22,9 @@ export const MaterialDetailsConstants = [
 export const ConfigConstants = [
   {
     sectionHeading: 'manageMaterial.drawer.details.configuration.heading.questionnaire',
-    actions: [
-      { label: 'manageMaterial.drawer.details.configuration.actions.preview', id: 'preview' },
-      { label: 'manageMaterial.drawer.details.configuration.actions.delete', id: 'delete', icon: 'delete' }
-    ],
-    sectionData: [
-      { label: 'Template 1', value: 'template1', translation: false },
-      { label: 'Template 2', value: 'template2', translation: false }
-    ]
+    actions: [{ label: 'manageMaterial.drawer.details.configuration.actions.preview', id: 'preview' }],
+    sectionData: [],
+    questionnaire: true
   },
   {
     sectionHeading: 'manageMaterial.drawer.details.configuration.heading.material',
@@ -37,14 +32,7 @@ export const ConfigConstants = [
     sectionData: [
       { label: 'manageMaterial.drawer.details.configuration.body.patientInfoRequired', value: 'isPatientInformationRequired' },
       { label: 'manageMaterial.drawer.details.configuration.body.coiIdRequired', value: 'isCoiIdRequired' }
-    ]
-  },
-  {
-    sectionHeading: 'manageMaterial.drawer.details.configuration.heading.catalog',
-    actions: [
-      { label: 'manageMaterial.drawer.details.configuration.actions.preview', id: 'preview' },
-      { label: 'manageMaterial.drawer.details.configuration.actions.delete', id: 'delete', icon: 'delete' }
     ],
-    sectionData: []
+    questionnaire:false
   }
 ];

@@ -52,6 +52,13 @@
             display: flex;
           }
 
+          .sectionHeadingkey{ 
+              font-size: var(--brand-font-size--default);
+              font-weight: var(--brand-font-weight-700);
+              color: var(--brand-color-primary--hover);
+              width: 60%;
+              padding-bottom:var(--spacing-02);
+          }
           .actions {
             display: flex;
             align-items: center;
