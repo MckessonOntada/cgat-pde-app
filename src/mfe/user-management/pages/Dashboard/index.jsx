@@ -8,13 +8,13 @@ import UserTable from './UserTable';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
 import { debugIds, ID } from '@src/constants/id';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
-import { ReactComponent as upload_bottom } from '@src/assets/image/upload_bottom.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
 import AuthUtils from '@src/util/AuthUtils';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import CommonFilters from '@src/components/Filters';
 import usePermission from '@src/hooks/usePermissions';
+import UploadUsers from './UploadUsers';
 
 export default function Dashboard() {
   const { t } = useTranslate();
@@ -156,11 +156,7 @@ export default function Dashboard() {
                 {t(isSystemAdminView ? 'userManagement.button.addsystemadmin' : 'userManagement.button.adduser')}
               </Button>
             )}
-            {!isSystemAdminView && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.UPLOAD_USERS) && (
-              <Button Icon={upload_bottom} className="button-icon" variant="primary" size="md">
-                {t('userManagement.button.uploadUsers')}
-              </Button>
-            )}
+            {!isSystemAdminView && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.UPLOAD_USERS) && <UploadUsers showAlert={showAlert} />}
           </div>
         }
       />

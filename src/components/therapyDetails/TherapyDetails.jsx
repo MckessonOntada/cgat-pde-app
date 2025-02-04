@@ -13,7 +13,8 @@ import CommonUtils from '@src/util/CommonUtils';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { useNavigate } from 'react-router-dom';
-import { PREVIEW_URL, ROUTE_CONFIG } from '@src/mfe/order-management/questionnaire/constants';
+import { PREVIEW_URL } from '@src/mfe/order-management/questionnaire/constants';
+import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 
 function TherapyDetails({
   therapyId,
@@ -92,8 +93,8 @@ function TherapyDetails({
               configurationData={configurationData}
               showFooter={showFooter}
               isMaterialConfiguration={isMaterialConfiguration}
-              onDeleteConfig={handleDeleteConfig}
               refetch={refetch}
+              onDeleteConfig={handleDeleteConfig}
             />
           )}
         </div>
@@ -116,49 +117,42 @@ function DetailsPanel({
   const { t } = useTranslate();
   const { showSnackbar } = useSnackbar();
 
-  const OnDelinkQuestionnaireClick = (id) => {
+  const OnDelinkQuestionnaireClick = async (id) => {
     const payload = {
       questionnaireId: id,
       materialNumber: details.therapy.materialNumber
     };
-    delinkQuestionnaire(payload);
-  };
-
-  const { mutate: delinkQuestionnaire, isLoading: isDelinkLoading } = useMutation(
-    async (payload) => {
-      const apiUrl = `${ApiRoutes.QUESTIONNAIRE()}/configure/deLink?type=Material`;
-      const res = await HttpResourceService.callRest(apiUrl, httpVerb.DELETE, payload);
-      return res;
-    },
-    {
-      onSuccess: (response) => {
-        showSnackbar({ description: t('manageMaterial.drawer.delink.success'), type: 'success' });
-        if (details?.questionnaires?.length === 1) {
-          refetch();
-        } else {
-          details.questionnaires = details.questionnaires.filter((item) => item.id !== response.data.questionnaireId);
-        }
-      },
-      onError: (error) => {
-        showSnackbar({ description: t('manageMaterial.drawer.delink.error'), type: 'error' });
-      }
+    try {
+      await QuestionnaireService.deLinkConfigureQuestionnaire('Material', payload);
+      showSnackbar({ description: t('manageMaterial.drawer.delink.success'), type: 'success' });
+      refetch();
+    } catch (error) {
+      showSnackbar({ description: t('manageMaterial.drawer.delink.error'), type: 'error' });
     }
-  );
+  };
 
   const renderDetails = (fields, details) =>
     fields.map(({ label, value }) => (
       <DetailItem key={label} label={t(label)} value={isMaterialConfiguration ? details.therapy[value] : details[value] || '-'} />
     ));
 
-  const renderQuestionnaire = (details, section) =>
-    details.questionnaires.map((questionnaire) => (
-      <QuestionnaireItem
-        key={questionnaire.id}
-        section={section}
-        templateName={questionnaire.templateName}
-        onDelete={() => OnDelinkQuestionnaireClick(questionnaire.id)}
-      />
-    ));
+  const renderQuestionnaire = (details, section) => {
+    let showHeader = true;
+    return details.questionnaires.map((questionnaire, index) => {
+      const item = (
+        <QuestionnaireItem
+          key={questionnaire.id}
+          section={section}
+          templateName={questionnaire.templateName}
+          onDelete={() => OnDelinkQuestionnaireClick(questionnaire.id)}
+          showHeader={showHeader}
+          questionnaire={details.questionnaires}
+        />
+      );
+      showHeader = false;
+      return item;
+    });
+  };
 
   const renderConfiguration = (fields, details) =>
     fields.map(({ label, value, display = true, translation = true }) => {
@@ -173,7 +167,7 @@ function DetailsPanel({
         />
       );
     });
-
+  console.log(details.questionnaires);
   return (
     <div className={styles.detailsPanel}>
       <div className={styles.drawerBodyContent}>
@@ -185,11 +179,12 @@ function DetailsPanel({
         ))}
         {isMaterialConfiguration &&
           configurationData?.map((section, index) => (
-            <div key={index}>
-              {!section.questionnaire && (
-                <>
+            <>
+              {!section.questionnaire ? (
+                <div key={index}>
                   <div className={styles.configurationHeader}>
-                    <Heading as="h3">{t(section.sectionHeading)}</Heading>
+                    {/* <Heading as="h3">{t(section.sectionHeading)}</Heading> */}
+                    <div className={styles.sectionHeadingkey}>{t(section.sectionHeading)}</div>
                     <div className={styles.actions}>
                       {section.actions?.map((action) =>
                         action.icon === 'delete' ? (
@@ -203,10 +198,13 @@ function DetailsPanel({
                     </div>
                   </div>
                   <div>{renderConfiguration(section.sectionData, details)}</div>
-                </>
+                </div>
+              ) : details.questionnaires.length > 0 ? (
+                <div> {renderQuestionnaire(details, section)}</div>
+              ) : (
+                ''
               )}
-              {section.questionnaire && <div> {renderQuestionnaire(details, section)}</div>}
-            </div>
+            </>
           ))}
       </div>
       {showFooter && (
@@ -251,21 +249,29 @@ function ConfigItem({ label, value, display = true }) {
   );
 }
 
-function QuestionnaireItem({ templateName, section, onDelete }) {
+function QuestionnaireItem({ templateName, section, onDelete, showHeader, questionnaire }) {
   const navigate = useNavigate();
   const { t } = useTranslate();
+
   return (
     <>
-      <div className={styles.configurationHeader}>
-        <Heading as="h4">{t(section.sectionHeading)}</Heading>
-        <div className={styles.actions}>
-          {section.actions?.map((action) => (
-            <Button key={action.id} textButton onClick={() => navigate(PREVIEW_URL, { state: { isMaterial: true } })}>
-              {t(action.label)}
-            </Button>
-          ))}
+      {showHeader && (
+        <div className={styles.configurationHeader}>
+          {/* <Heading as="h3">{t(section.sectionHeading)}</Heading> */}
+          <div className={styles.sectionHeadingkey}>{t(section.sectionHeading)}</div>
+          <div className={styles.actions}>
+            {section.actions?.map((action) => (
+              <Button
+                key={action.id}
+                textButton
+                onClick={() => navigate(PREVIEW_URL, { state: { isMaterial: true, questionnaire: questionnaire } })}>
+                {t(action.label)}
+              </Button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
       <div className={styles.detailItem}>
         <div className={styles.leftContentBold}>{templateName}</div>
         <div className={styles.rightContentAction} onClick={onDelete}>

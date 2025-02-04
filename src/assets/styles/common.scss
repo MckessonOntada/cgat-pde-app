@@ -708,17 +708,17 @@ div.disable-all {
   }
 
   label {
-    font-size: var(--brand-font-size--default) !important;
-    font-weight: var(--brand-font-weight-600);
-    line-height: var(--brand-line-height--m-large);
+    // font-size: var(--brand-font-size--default) !important;
+    // font-weight: var(--brand-font-weight-600);
+    // line-height: var(--brand-line-height--m-large);
   }
 }
 
 .stacked-checkbox {
-  font-size: var(--brand-font-size--default);
+  font-size: var(--brand-font-size--small);
 
   fieldset {
-    gap: var(--spacing-03);
+    gap: var(--spacing-02);
   }
 }
 
@@ -816,4 +816,12 @@ div.disable-all {
   fieldset legend[class*="labelContainer"] {
     // margin-bottom: var(--spacing-02);
   }
+}
+
+.secondryTitle {
+  padding-top: var(--spacing-03);
+}
+
+.readonly {
+  pointer-events: none;
 }

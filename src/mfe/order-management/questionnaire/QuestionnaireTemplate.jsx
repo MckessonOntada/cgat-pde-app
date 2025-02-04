@@ -12,6 +12,7 @@ import { ReactComponent as FileUploadIcon } from '@src/assets/svg/document.svg';
 
 function QuestionnaireTemplate({ onFileUpload, config, isPreview, onRemoveFile }) {
   const activeLanguage = 'en';
+
   if (
     !config ||
     (typeof config === 'object' && !Array.isArray(config) && !config.hasOwnProperty('questions')) ||
@@ -55,12 +56,16 @@ function QuestionnaireTemplate({ onFileUpload, config, isPreview, onRemoveFile }
     if (type === QUESTION_TYPE.RADIO_BUTTON) {
       attributes.caption = questionLabel;
       attributes.id = `radio-button-${id}-${differentiator}`;
+      attributes.itemCustomStyles = { fontSize: '14px', marginRight: '24px', fontWeight: '400' };
+      attributes.labelCustomStyles = { marginBottom: '8px', fontSize: '14px' };
     }
 
     if (type === QUESTION_TYPE.CHECKBOX) {
       attributes.caption = questionLabel;
       wrapperClass.push('stacked-checkbox');
       attributes.id = `checkbox-${id}-${differentiator}`;
+      attributes.itemCustomStyles = { fontSize: '14px', marginRight: '24px', fontWeight: '400' };
+      attributes.labelCustomStyles = { marginBottom: '8px', fontSize: '14px' };
     }
     const field = (
       <div className={wrapperClass.join(' ')}>
@@ -93,7 +98,7 @@ function QuestionnaireTemplate({ onFileUpload, config, isPreview, onRemoveFile }
                   </div>
                 </div>
               ) : (
-                <div className="fileUploadControl">
+                <div className={`fileUploadControl ${isPreview ? 'readonly' : ''}`}>
                   <Field name={`${fieldName}.attachment`}>
                     {({ field, form }) => (
                       <FileInput
@@ -134,7 +139,7 @@ function QuestionnaireTemplate({ onFileUpload, config, isPreview, onRemoveFile }
       });
     }
   }
-
+  console.log('templateList', templateList);
   return <div className="questionnaire-template-question-list">{templateList}</div>;
 }
 

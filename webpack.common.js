@@ -133,7 +133,8 @@ module.exports = {
       __IKM_BASE_URL__: JSON.stringify(process.env.REACT_APP_IKM_BASE_URL),
       __STUDY_MANAGEMENT_SERVICE_BASE_URL__: JSON.stringify(process.env.REACT_APP_STUDY_MANAGEMENT_SERVICE_BASE_URL),
       __CONTENT_SERVICE_BASE_URL__: JSON.stringify(process.env.REACT_APP_CONTENT_SERVICE_BASE_URL),
-      __IPV_VIEWER_URL__: JSON.stringify(process.env.IPV_VIEWER_URL)
+      __IPV_VIEWER_URL__: JSON.stringify(process.env.IPV_VIEWER_URL),
+      __FS_ORG_ID__: JSON.stringify(process.env.REACT_APP_FS_ORG_ID)
     }),
     new Dotenv()
     // Uncomment to run the Bundle Analyzer

@@ -1,3 +1,5 @@
+@use "@src/assets/styles/abstracts/mixins";
+
 .header {
   display: flex;
   flex-direction: row;
@@ -13,11 +15,14 @@
   height: calc(100% - 46px);
   overflow: auto;
   .step-main-container {
-    width: 440px;
+    width: 100%;
     padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 8px;
+    @include mixins.respond(sm) {
+      width: 440px;
+    }
 
     .step-container {
       display: flex;
@@ -49,22 +54,28 @@
 }
 
 .details-main-wrapper {
-  width: 440px;
+  width: 100%;
+  @include mixins.respond(sm) {
+    width: 440px;
+  }
   .details-body {
-    padding: 16px 22px;
+    padding: var(--spacing-03);
     height: calc(100% - 44px);
     overflow: auto;
     .details-ul {
       .details-li {
-        display: flex;
+      display: flex;
+        align-items: center;
+        gap: var(--spacing-03);
         justify-content: space-between;
-        font-size: 14px;
-        padding: 12px 0px;
+        padding: var(--spacing-02) 0px;
         border-bottom: 1px solid var(--brand-color-dark-grey);
+        font-size: var(--brand-font-size--small);
+        color: var(--brand-color-font-black);
 
         .details-key {
           width: 40%;
-          color: #1e394e;
+          color: var(--brand-color-font-black);;
         }
         .details-value {
           width: 55%;
@@ -102,7 +113,7 @@
     .Questionnaire-li {
       display: flex;
       justify-content: space-between;
-      padding: 24px 0px;
+      padding: 16px 0px;
 
       .Questionnaire-key {
         font-size: var(--brand-font-size--default);
@@ -125,16 +136,20 @@
     }
 
     .Questionnairedetails-ul {
-      .Questionnairedetails-li {
-        display: flex;
+      .Questionnairedetails-li {  
+        display: flex ;
+        align-items: center;
+        gap: var(--spacing-03);
         justify-content: space-between;
-        font-size: var(--brand-font-size--small); 
+        padding: var(--spacing-02) 0px;
         border-bottom: 1px solid var(--brand-color-dark-grey);
+        font-size: var(--brand-font-size--small);
+        color: var(--brand-color-font-black);
 
         .Questionnairedetails-key {
           width: 70%;
           color: (var--brand-color-font-black);
-          font-weight: var(--brand-font-weight-700);
+          font-weight: var(--brand-font-weight-600);
         }
          
       }

@@ -22,10 +22,10 @@ export const useMultiCheckBox = (inputData, paginationConfig, externalSelectedRo
     return selectedData.some((item) => item.id === row?.id);
   };
 
-  const isAllChecked = () => selectedData.length === inputData.length;
+  const isAllChecked = () => selectedData.length === inputData.filter((item) => item.active !== false).length;
 
   const isCheckboxDisabled = (row) => {
-    return row.id === 'ALL_ROWS' + paginationConfig.pageNumber && inputData.length === 0;
+    return row.active === false || (row.id === 'ALL_ROWS' + paginationConfig.pageNumber && inputData.length === 0);
   };
 
   const handleRowSelected = (row) => {
@@ -47,12 +47,13 @@ export const useMultiCheckBox = (inputData, paginationConfig, externalSelectedRo
     if (isAllChecked()) {
       setExternalStateItems([]);
     } else {
-      const allDataIncluded = inputData.every((item) => selectedData.some((includedItem) => includedItem.id === item.id));
+      const activeRows = inputData.filter((item) => item.active !== false);
+      const allDataIncluded = activeRows.every((item) => selectedData.some((includedItem) => includedItem.id === item.id));
       if (!allDataIncluded) {
-        const updatedData = [...selectedData, ...inputData];
+        const updatedData = [...selectedData, ...activeRows];
         setExternalStateItems(updatedData);
       } else {
-        const filteredData = selectedData.filter((item) => !inputData.some((excludedItem) => excludedItem.id === item.id));
+        const filteredData = selectedData.filter((item) => !activeRows.some((excludedItem) => excludedItem.id === item.id));
         setExternalStateItems(filteredData);
       }
     }

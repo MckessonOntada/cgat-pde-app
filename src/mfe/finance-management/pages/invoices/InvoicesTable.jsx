@@ -16,6 +16,7 @@ import CommonUtils from '@src/util/CommonUtils';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
+import { useAccountContext } from '../../context/AccountContext';
 
 export default function InvoicesTable() {
   const { t } = useTranslate();
@@ -23,7 +24,8 @@ export default function InvoicesTable() {
   const navigate = useNavigate();
   const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel } = usePaymentInvoices();
   const showCardView = useResponsiveView();
-
+  const { selectedAccount } = useAccountContext();
+  console.log('selectedAccount.salesOrg....', selectedAccount);
   const getindeterminate = () => {
     const allDataIncluded = data.every((invoice) =>
       includeinvoiceData.some((includedInvoice) => includedInvoice.billNumber === invoice.billNumber)
@@ -103,7 +105,8 @@ export default function InvoicesTable() {
       cell: (row, index) => renderCheckBox(row, index),
       selector: (row) => row.MRN,
       width: '50px',
-      showInMobileHeader: true
+      showInMobileHeader: true,
+      omit: !CommonUtils.enableReviewAndPay(selectedAccount)
     },
     {
       name: t('paymentInvoices.history.table.billNumber'),

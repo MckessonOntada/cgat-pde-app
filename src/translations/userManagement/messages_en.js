@@ -70,6 +70,15 @@ export const UserManagementEN = {
   'userManagement.button.edit': 'Edit',
   'userManagement.button.adduser': 'Add User',
   'userManagement.button.uploadUsers': 'Upload Users',
+  'userManagement.button.uploadingUsers': 'Uploading...',
+  'userManagement.button.downloadTemplateDescription': 'Download sample template for uploading bulk users.',
+  'userManagement.button.downloadTemplate': 'Bulk Upload User Template',
+  'userManagement.button.uploadError': 'Error while creating Organization users',
+  'userManagement.button.uploadConflict':
+    'Issue in uploading users. Some or all user records might have failed. The errors are listed in the downloaded file. Please review and try again.',
+  'userManagement.button.uploadSuccess': 'Organization users has been successfully created',
+  'userManagement.button.downloadFail': 'Organization users has been successfully created',
+  'userManagement.button.downloadTemplate': 'Download Template',
   'userManagement.button.addsystemadmin': 'Add System Administrator',
   'userManagement.button.add_accounts': 'Add Accounts',
   'userManagement.button.deactivate': 'Deactivate',
@@ -347,5 +356,5 @@ export const UserManagementEN = {
   'userManagement.breadcrumb.admin': 'Admin',
   'popup.userDeactivation.question': 'Are you sure you wish to Deactivate this User?',
   'userManagement.confirmationMessage': 'Confirmation message',
-  'userManagement.message.DeactivateUser': 'Are you sure you wish to Deactivate this User ?',
+  'userManagement.message.DeactivateUser': 'Are you sure you wish to Deactivate this User ?'
 };

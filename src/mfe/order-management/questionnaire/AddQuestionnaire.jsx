@@ -115,6 +115,7 @@ function AddQuestionnaire() {
   } = useMutation(async (id) => QuestionnaireService.deactivateQuestionnaireById(id), {
     onSuccess: (response) => {
       setMode(MODE.VIEW);
+      getQuestionnaireDetails();
       setAlertConfig({
         isVisible: true,
         description: 'Questionnaire deactivated successfully.',

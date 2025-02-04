@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import FloatingDrawer from '@src/components/floating-drawer'; 
+import FloatingDrawer from '@src/components/floating-drawer';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
-import { Loader, Heading, Button } from '@mckesson/mcp-component-library';
+import {  Heading } from '@mckesson/mcp-component-library';
 import { useMutation, useQuery } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
@@ -11,7 +11,8 @@ import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useOrgAccountSelectionContext } from '../../components/orgAccountSelection/context/OrgAccountSelectionContext';
 import { getAddress } from '../util';
-import { PREVIEW_URL, ROUTE_CONFIG } from '../constants';
+import { PREVIEW_URL } from '../constants';
+import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 
 export const AccountDetailsConstants = [
   {
@@ -58,27 +59,19 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
 
   const { mutate: delinkQuestionnaire, isLoading: isDelinkLoading } = useMutation(
     async (payload) => {
-      const apiUrl = `${ApiRoutes.QUESTIONNAIRE()}/configure/deLink?type=Account`;
-      const res = await HttpResourceService.callRest(apiUrl, httpVerb.DELETE, payload);
-      return res;
+      await QuestionnaireService.deLinkConfigureQuestionnaire('Account', payload);
     },
     {
-      onSuccess: (response) => {
-        // setOpenDetails(false);
-      //  showAlert('success', t('ManageAccount.delink.success'));
+      onSuccess: (response) => { 
         showSnackbar({ description: t('ManageAccount.delink.success'), type: 'success' });
-        if (data?.questionnaireList?.length === 1) {
-          refetch();  
-        } else {
-          data.questionnaireList = data.questionnaireList.filter((item) => item.id !== response.data.questionnaireId);
-        }
+        refetch();
       },
-      onError: (error) => { 
+      onError: (error) => {
         showSnackbar({ description: t('ManageAccount.delink.error'), type: 'error' });
       }
     }
   );
- 
+
   return (
     <React.Fragment>
       {data && (
@@ -93,6 +86,7 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
             <div className={'details-body'}>
               {AccountDetailsConstants.map((item, index) => (
                 <React.Fragment>
+                   <Heading as="h3">{t(`ManageCatalog.${item.sectionHeading}`)}</Heading>
                   <div className="details-ul">
                     {item.sectionData.map((sectionItem, sectionIndex) => {
                       let value = data?.account[sectionItem.value] || '-';
@@ -127,7 +121,7 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
                   <div className="Questionnaire-li">
                     <div className="Questionnaire-key">{t('ManageAccount.questionnaireConfiguration')}</div>
                     <div className="Questionnaire-value">
-                      <div onClick={() => navigate(PREVIEW_URL, { state: { isAccount: true } })}>{t('ManageCatalog.Preview')}</div>
+                      <div onClick={() => navigate(PREVIEW_URL, { state: { isAccount: true, questionnaire: data?.questionnaireList } })}>{t('ManageCatalog.Preview')}</div>
                     </div>
                   </div>
                   <div className="Questionnairedetails-ul">

@@ -155,7 +155,7 @@ function AdditionalDetails() {
     setUploadList(uploadList);
     setValidationSchema(initialValidationSchema);
   };
-
+  const variantType = variant?.variant;
   const {
     data: configuredQuestions,
     isFetching: isFetchingConfiguredQuestions,
@@ -167,7 +167,7 @@ function AdditionalDetails() {
     queryFn: async () => {
       const { accountDetails, therapy } = formState.activeRecord;
       const payload = {
-        variant,
+        variantType,
         soldToCustomer: accountDetails.soldToAccount.accountNumber,
         shipToCustomer: accountDetails.shipToAccount.accountNumber,
         sapMaterial: therapy.materialNumber

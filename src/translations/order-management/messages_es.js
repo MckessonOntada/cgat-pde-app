@@ -383,5 +383,6 @@ export const MessageEs = {
   'table.columns.captions.dateCreatedOn': 'S_Date Created On',
   'table.columns.captions.created_By': 'S_Created By',
   'table.columns.captions.action': 'S_Action',
-  'controls.placeholder.searchQuestionnaire': 'S_Search by Template Name'
+  'controls.placeholder.searchQuestionnaire': 'S_Search by Template Name',
+  'labels.configurationPreview': 'S_Configuration Preview'
 };

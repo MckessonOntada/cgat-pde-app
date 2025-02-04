@@ -71,11 +71,13 @@ export default function BalanceDetails() {
                 </div>
               ))}
             </div>
-            <div className="action-button">
-              <Button size={'lg'} disabled={!CommonUtils.isNonEmptyObject(balanceData) || true}>
-                {t('paymentInvoices.balanceCard.payNowBtn')}
-              </Button>
-            </div>
+            {CommonUtils.enableReviewAndPay(selectedAccount) && (
+              <div className="action-button">
+                <Button size={'lg'} disabled={!CommonUtils.isNonEmptyObject(balanceData) || true}>
+                  {t('paymentInvoices.balanceCard.payNowBtn')}
+                </Button>
+              </div>
+            )}
           </div>
           {!CommonUtils.isNonEmptyObject(balanceData) ? null : <Divider className="divider-style" />}
           {!CommonUtils.isNonEmptyObject(balanceData) ? null : (

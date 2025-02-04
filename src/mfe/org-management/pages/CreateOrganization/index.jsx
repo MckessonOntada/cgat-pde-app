@@ -167,7 +167,7 @@ const CreateOrganization = () => {
                 {t('orgManagement.button.back')}
               </Button>
               <Button type="submit" size={'md'}>
-                {t('orgManagement.button.save')}
+                {t('orgManagement.buttonsave.and.continue')}
               </Button>
             </div>
           </Form>

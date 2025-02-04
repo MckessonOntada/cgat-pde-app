@@ -263,15 +263,17 @@ function Details(props) {
               <Button size="md" variant="secondary" disabled>
                 {t('paymentInvoices.Details.DownloadPDF')}
               </Button>
-              <Button
-                size="md"
-                variant="primary"
-                type="submit"
-                onClick={() => {
-                  navigate(`/record/invoices/reviewPayments`, { state: { ...locationParams.state, reviewPay: true } });
-                }}>
-                {t('paymentInvoices.Details.ReviewAndPay')}
-              </Button>
+              {CommonUtils.enableReviewAndPay(selectedAccount) && (
+                <Button
+                  size="md"
+                  variant="primary"
+                  type="submit"
+                  onClick={() => {
+                    navigate(`/record/invoices/reviewPayments`, { state: { ...locationParams.state, reviewPay: true } });
+                  }}>
+                  {t('paymentInvoices.Details.ReviewAndPay')}
+                </Button>
+              )}
             </React.Fragment>
           )
         ) : (
