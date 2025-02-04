@@ -50,7 +50,6 @@ async function applyQuestionnaireConfig(payload) {
 
 async function configureQuestionnaire(entityType, payload) {
   const url = `${ApiRoutes.QUESTIONNAIRE()}/configure?type=${entityType}`;
-  console.log('url', url);
   const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
   if (res.data) {
     return res.data;
@@ -99,6 +98,15 @@ async function uploadQuestionnaireDocument(payload) {
   return {};
 }
 
+async function deLinkConfigureQuestionnaire(entityType, payload) {
+  const apiUrl = `${ApiRoutes.QUESTIONNAIRE()}/configure/deLink?type=${entityType}`;
+  const res = await HttpResourceService.callRest(apiUrl, httpVerb.DELETE, payload);
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
+
 const QuestionnaireService = Object.freeze({
   getQuestionnaires,
   createQuestionnaire,
@@ -108,7 +116,8 @@ const QuestionnaireService = Object.freeze({
   getQuestionnaireById,
   deactivateQuestionnaireById,
   getConfiguredQuestionnaire,
-  uploadQuestionnaireDocument
+  uploadQuestionnaireDocument,
+  deLinkConfigureQuestionnaire
 });
 
 export default QuestionnaireService;

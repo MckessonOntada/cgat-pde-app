@@ -35,7 +35,6 @@ const INITIAL_VALUES = {
 
 function AdditionalDetails() {
   const { t } = useTranslate();
-  const formFields = getFormFields(t);
   const navigate = useNavigate();
   const location = useLocation();
   const { isEdit = false, isApprover = false, alertState } = location.state || {};
@@ -453,7 +452,11 @@ function AdditionalDetails() {
 
                 <div className="controls">
                   <Button size="md" variant="secondary" onClick={handleOnBack}>
-                    {isEdit ? t('captions.btnBack') : t('captions.btnBacktoPatientDetails')}
+                    {isEdit
+                      ? t('captions.btnBack')
+                      : patientDetailsRequired
+                      ? t('captions.btnBacktoPatientDetails')
+                      : t('captions.btnBacktoAccountSelection')}
                   </Button>
                   <Button
                     size="md"

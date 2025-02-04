@@ -4,6 +4,7 @@ import utc from 'dayjs/plugin/utc.js';
 import timezone from 'dayjs/plugin/timezone';
 import parse from 'html-react-parser';
 import DOMPurify from 'dompurify';
+import useSnackbar from '@src/hooks/useSnackbar';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -386,6 +387,33 @@ export const getFullName = (name) => {
     .trim();
 };
 
+export const downloadFile = (blob, fileName) => {
+  let result = { status: '' };
+  try {
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    result.status = 'success';
+  } catch (error) {
+    result = { ...result, status: 'error', error: error };
+    console.log('error while downloading file', error);
+  }
+  return result;
+};
+
+export const enableReviewAndPay = (selectedAccount) => {
+  let ignorableSalesOrgIds = ['5040'];
+  if (selectedAccount) {
+    let hide = ignorableSalesOrgIds.some((ele) => ele == selectedAccount.salesOrg);
+    return !hide;
+  } else {
+    return false;
+  }
+};
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -414,7 +442,9 @@ const CommonUtils = Object.freeze({
   getDateRange,
   truncateString,
   formatPhoneNumber,
-  getFullName
+  getFullName,
+  downloadFile,
+  enableReviewAndPay
 });
 
 export default CommonUtils;

@@ -120,7 +120,7 @@
 
 .tablist-container {
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   gap: 24px;
 
   @include mixins.respond("sm") {

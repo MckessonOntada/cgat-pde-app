@@ -204,6 +204,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.paymentMethods.banks.filter.search.label': 'S_Search bank accounts',
   'paymentInvoices.paymentMethods.filter.search.placeholder': 'S_Select by name or number',
   'paymentInvoices.paymentMethods.table.bankAccount.addnewcard': 'S_add new card',
+  'paymentInvoices.paymentMethods.table.bankAccount.addnewcard': 'S_add bank account',
   'paymentInvoices.paymentMethods.table.bankAccount.bankName': 'S_Name',
   'paymentInvoices.paymentMethods.table.bankAccount.routingNumber': 'S_Routing Number',
   'paymentInvoices.paymentMethods.table.bankAccount.bankAccNumber': 'S_Account Number',
@@ -248,5 +249,6 @@ export const PaymentInvoicesES = {
   'paymentInvoices.excel.export.error': 'S_Error exporting excel.',
   'paymentInvoices.pendingPaynemt.export.success': 'S_Pending Payment exported.',
   'paymentInvoices.pendingPaynemt.export.error': 'S_Pending exporting Payment .',
-  'paymentInvoices.history.table.bill.id': 'S_BILL ID'
+  'paymentInvoices.history.table.bill.id': 'S_BILL ID',
+  'paymentInvoices.paymentMethods.achForm.description': 'S_Enrollment form in a PDF format for user to fill in offline and submit to the respective bank',
 };

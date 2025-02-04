@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
 import { PREVIEW_URL, ROUTE_CONFIG } from '@src/mfe/order-management/questionnaire/constants';
+import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 
 function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog, setViewCatalog, showAlert }) {
   const navigate = useNavigate();
@@ -83,25 +84,17 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
     };
     delinkQuestionnaire(payload);
   };
-
+   
   const { mutate: delinkQuestionnaire, isLoading: isDelinkLoading } = useMutation(
     async (payload) => {
-      const apiUrl = `${ApiRoutes.QUESTIONNAIRE()}/configure/deLink?type=Catalog`;
-      const res = await HttpResourceService.callRest(apiUrl, httpVerb.DELETE, payload);
-      return res;
+      await QuestionnaireService.deLinkConfigureQuestionnaire('Catalog', payload);
     },
     {
       onSuccess: (response) => {
-        // setOpenCatalogDetails(false);
            showSnackbar({ description: t('ManageCatalog.delink.success'), type: 'success' });
-        if (data?.questionnaires?.length === 1) {
-          refetch();
-        } else {
-          data.questionnaires = data.questionnaires.filter((item) => item.id !== response.data.questionnaireId);
-        }
+         refetch();
       },
-      onError: (error) => {
-        // setOpenCatalogDetails(false);
+      onError: (error) => { 
         showSnackbar({ description: t('ManageCatalog.delink.error'), type: 'error' });
       }
     }
@@ -121,7 +114,7 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
             <div className={'details-body'}>
               {CatalogDetailsConstants.map((item, index) => (
                 <React.Fragment>
-                  <Heading as="h4">{t(`ManageCatalog.${item.sectionHeading}`)}</Heading>
+                  <Heading as="h3">{t(`ManageCatalog.${item.sectionHeading}`)}</Heading>
                   <div className="details-ul">
                     {item.sectionData.map((item, index) => (
                       <div className="details-li">
@@ -148,7 +141,7 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
                   <div className="Questionnaire-li">
                     <div className="Questionnaire-key">{t('ManageCatalog.questionnaireConfiguration')}</div>
                     <div className="Questionnaire-value">
-                      <div onClick={() => navigate(PREVIEW_URL, { state: { isCatalog: true } })}>{t('ManageCatalog.Preview')}</div>
+                      <div onClick={() => navigate(PREVIEW_URL, { state: { isCatalog: true, questionnaire: data?.questionnaires  } })}>{t('ManageCatalog.Preview')}</div>
                     </div>
                   </div>
                   <div className="Questionnairedetails-ul">

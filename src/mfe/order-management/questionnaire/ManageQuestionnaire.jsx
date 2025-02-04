@@ -7,6 +7,7 @@ import TemplateList from './TemplateList';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getEntityTypeFlags } from './util';
 import { useQuestionnaire } from '../context/QuestionnaireContext';
+import ModuleHeader from '@src/components/module-header';
 
 function ManageQuestionnaire() {
   const { t } = useTranslate();
@@ -15,7 +16,7 @@ function ManageQuestionnaire() {
   const breadcrumbItems = [
     {
       label: 'System administrator',
-      url: '/orders/admin'
+      url: '/'
     },
     {
       label: 'System Configuration',

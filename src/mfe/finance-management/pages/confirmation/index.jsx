@@ -113,13 +113,13 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
     <div className="footer-section">
       <Button
         variant="secondary"
-        onClick={type === PATHS.paymentHistory ? () => {} : handleExport}
+        onClick={type === PATHS.paymentHistory ? handleDownload : () => {}}
         size="sm"
-        disabled={type === PATHS.paymentHistory}>
-        {type === PATHS.paymentHistory ? t('paymentInvoices.history.filters.printSummary') : t('paymentInvoices.CS.ExportExcel')}
+        disabled={type !== PATHS.paymentHistory}>
+        {type === PATHS.paymentHistory ? t('paymentInvoices.CS.ExportExcel') : t('paymentInvoices.history.filters.printSummary')}
       </Button>
-      <Button onClick={type === PATHS.paymentHistory ? handleDownload : () => {}} size="sm" disabled={type !== PATHS.paymentHistory}>
-        {type === PATHS.paymentHistory ? t('paymentInvoices.history.filters.downloadExcel') : t('paymentInvoices.Details.print')}
+      <Button onClick={type === PATHS.paymentHistory ? () => {} : handleExport} size="sm" disabled={type === PATHS.paymentHistory}>
+        {type === PATHS.paymentHistory ? t('paymentInvoices.Details.print') : t('paymentInvoices.history.filters.downloadExcel')}
       </Button>
     </div>
   );

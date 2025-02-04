@@ -136,9 +136,9 @@ export const ManageQuestionnaireProvider = ({ children }) => {
     data: AccountsData,
     refetch: refetchAccountsData
   } = useQuery({
-    queryKey: ['Accounts', entityType, selectedOrganization?.id, , requestParams],
+    queryKey: ['Accounts', entityType, selectedOrganization?.id, requestParams],
     queryFn: async () => {
-      const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrganization.id}/accounts??${serializeParams(requestParams)}`; // TODo
+      const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrganization.id}/accounts?${serializeParams(requestParams)}`; // TODo
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       if (!res.data) {
         return [];
@@ -183,8 +183,7 @@ export const ManageQuestionnaireProvider = ({ children }) => {
   };
 
   const setCurrentPage = (pageNumber) => {
-    setPaginationConfig((prevState) => ({ ...prevState, pageNumber: pageNumber }));
-    getRefetch(entityType);
+    setPaginationConfig((prevState) => ({ ...prevState, pageNumber: pageNumber })); 
   };
 
   const setEntity = (entity) => {

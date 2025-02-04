@@ -9,7 +9,7 @@ function ConfigurationPreview() {
   const { t } = useTranslate();
   const location = useLocation();
   const navigate = useNavigate();
-  const { isMaterial = false, isCatalog = false, isAccount = false } = location.state || false;
+  const { isMaterial = false, isCatalog = false, isAccount = false, questionnaire = [] } = location.state || false;
 
   const handleOnBackToQuestionnaire = () => {
     navigate(-1);
