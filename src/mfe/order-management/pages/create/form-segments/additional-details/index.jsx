@@ -35,7 +35,6 @@ const INITIAL_VALUES = {
 
 function AdditionalDetails() {
   const { t } = useTranslate();
-  const formFields = getFormFields(t);
   const navigate = useNavigate();
   const location = useLocation();
   const { isEdit = false, isApprover = false, alertState } = location.state || {};
@@ -59,12 +58,18 @@ function AdditionalDetails() {
   const [variant, setVariant] = React.useState();
   const { showAlert } = useAlert();
   const alertContainerId = 'additionalDetails-alert-container';
+  const { isCoiIdRequired, patientDetailsRequired } = formState?.activeRecord || {};
 
   const initialValidationSchema = Yup.object({
     coiId: Yup.string()
       .matches(NUMBER_REGEX, t('labels.COI_IdMustValidNumber'))
       .max(20, t('labels.COI_IdExceedDigits'))
-      .required(t('labels.COIIdRequired')),
+      .when([], {
+        is: () => isCoiIdRequired === true,
+        then: (schema) => schema.required(t('labels.COIIdRequired')),
+        otherwise: (schema) => schema
+      }),
+
     orderQuantity: Yup.number()
       .typeError(t('labels.OrderQuantityShouldPositive'))
       .required(t('labels.orderQuantityRequired'))
@@ -83,6 +88,9 @@ function AdditionalDetails() {
       .required(t('labels.DateOfAdministrationRequired'))
       .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
   });
+
+  const formFields = getFormFields(t, { isCoiIdRequired });
+
   React.useEffect(() => {
     setValidationSchema(initialValidationSchema);
   }, []);
@@ -159,7 +167,9 @@ function AdditionalDetails() {
     },
     enabled: false,
     refetchOnWindowFocus: false,
-    onSuccess: prepareQuestionnaire,
+    onSuccess: (result) => {
+      result && prepareQuestionnaire(result);
+    },
     onError: console.log
   });
 
@@ -219,20 +229,22 @@ function AdditionalDetails() {
         slotNumber
       };
 
-      prepareQuestionnaire(configuredQuestionnaires);
-      // if (configuredQuestionnaires) {
-      //   configuredQuestionnaires.forEach((template) => {
-      //     if (template.questions && Array.isArray(template.questions)) {
-      //       template.questions.map((question) => {
-      //         initialValues[`${template.id}`] = question.value;
-      //         // ${id}#${questionLabel.text[LANGUAGE.ENGLISH].replace(/ /g, '_')}`
-      //       });
-      //     }
-      //   });
-      // }
+      configuredQuestionnaires && prepareQuestionnaire(configuredQuestionnaires);
+      if (configuredQuestionnaires) {
+        configuredQuestionnaires.forEach((template) => {
+          if (template.questions && Array.isArray(template.questions)) {
+            template.questions.map((question, index) => {
+              const fieldName = `${template.id}#${question.text[LANGUAGE.ENGLISH].replace(/ /g, '_')}`;
+              initialValues[fieldName] = question.value;
+            });
+          }
+        });
+      }
       setInitialFormValues({
         ...initialValues
       });
+
+      console.log(initialValues);
 
       if (!variantsData.content || !_variant) {
         return;
@@ -443,9 +455,6 @@ function AdditionalDetails() {
 
                   {configuredQuestions && Array.isArray(configuredQuestions) && configuredQuestions.length > 0 && (
                     <div className="configured-questionnaire-form">
-                      <div className="styled-heading">
-                        <h3>Additional Questions</h3>
-                      </div>
                       <QuestionnaireTemplate onFileUpload={handleOnFileChange} config={configuredQuestions} isPreview={false} />
                     </div>
                   )}

@@ -17,7 +17,7 @@ function QuestionnaireTemplate({ onFileUpload, config, isPreview }) {
 
   const getControl = (controlConfig, id, differentiator) => {
     const { text, type, additionalAttributes, isDocumentRequired, isMandatory, documentUrl } = controlConfig;
-    console.log(documentUrl);
+
     const questionLabel = text[LANGUAGE.ENGLISH]?.trim();
     const fieldName = `${id}#${questionLabel.replace(/ /g, '_')}`;
     const attributes = {};
@@ -57,12 +57,11 @@ function QuestionnaireTemplate({ onFileUpload, config, isPreview }) {
       wrapperClass.push('stacked-checkbox');
       attributes.id = `checkbox-${id}-${differentiator}`;
     }
-
     const field = (
       <div className={wrapperClass.join(' ')}>
         {/* <div className="field-caption">{questionLabel}</div> */}
         <div className="styled-control-wrapper">
-          <div class="grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+          <div class="grid grid-gap-16 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
             <Field name={fieldName} label={questionLabel} placeholder={` `} {...attributes} />
           </div>
           {isDocumentRequired && (
@@ -104,7 +103,7 @@ function QuestionnaireTemplate({ onFileUpload, config, isPreview }) {
     );
   } else if (Array.isArray(config)) {
     {
-      config.map((template) => {
+      config.map((template, templateIndex) => {
         templateList.push(
           <div className="template">
             {template.questions.map((question, questionIndex) => getControl(question, template.id, questionIndex))}

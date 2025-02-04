@@ -1,11 +1,11 @@
 import Components from '@src/components/form/Components';
 
-export const getFormFields = (t) => [
+export const getFormFields = (t, config) => [
   {
     name: 'coiId',
     label: t('labels.coiId'),
     placeholder: ' ',
-    isRequired: true,
+    isRequired: config.isCoiIdRequired,
     component: Components['input'],
     maxLength: 50
   },
