@@ -126,14 +126,15 @@ module.exports = {
       __MAIN_BASE_URL__: JSON.stringify(process.env.REACT_APP_PUBLIC_PATH),
       __USERMANAGEMENT_SERVICE_BASE_URL__: JSON.stringify(process.env.REACT_APP_USERMANAGEMENT_SERVICE_BASE_URL),
       __ORDERMANAGEMENT_SERVICE_BASE_URL__: JSON.stringify(process.env.REACT_APP_ORDERMANAGEMENT_SERVICE_BASE_URL),
-      __DATA_ABSTRACTION_SERVICE_BASE_URL__: JSON.stringify(process.env.REACT_APP_DATA_ABSTRACTION_SERVICE_BASE_URL),
       __INACTIVITY_TIMEOUT__: process.env.REACT_APP_INACTIVITY_TIMEOUT,
-      __SERVICE_NOW_URL__: JSON.stringify(process.env.REACT_APP_SERVICE_NOW_URL),
-      __SERVICE_NOW_IT_SUPPORT_URL__: JSON.stringify(process.env.REACT_APP_SERVICE_NOW_IT_SUPPORT_URL),
-      __IKM_BASE_URL__: JSON.stringify(process.env.REACT_APP_IKM_BASE_URL),
-      __STUDY_MANAGEMENT_SERVICE_BASE_URL__: JSON.stringify(process.env.REACT_APP_STUDY_MANAGEMENT_SERVICE_BASE_URL),
-      __CONTENT_SERVICE_BASE_URL__: JSON.stringify(process.env.REACT_APP_CONTENT_SERVICE_BASE_URL),
-      __IPV_VIEWER_URL__: JSON.stringify(process.env.IPV_VIEWER_URL)
+      __FS_ORG_ID__: process.env.REACT_APP_FS_ORG_ID
+      // __DATA_ABSTRACTION_SERVICE_BASE_URL__: JSON.stringify(process.env.REACT_APP_DATA_ABSTRACTION_SERVICE_BASE_URL),
+      // __SERVICE_NOW_URL__: JSON.stringify(process.env.REACT_APP_SERVICE_NOW_URL),
+      // __SERVICE_NOW_IT_SUPPORT_URL__: JSON.stringify(process.env.REACT_APP_SERVICE_NOW_IT_SUPPORT_URL),
+      // __IKM_BASE_URL__: JSON.stringify(process.env.REACT_APP_IKM_BASE_URL),
+      // __STUDY_MANAGEMENT_SERVICE_BASE_URL__: JSON.stringify(process.env.REACT_APP_STUDY_MANAGEMENT_SERVICE_BASE_URL),
+      // __CONTENT_SERVICE_BASE_URL__: JSON.stringify(process.env.REACT_APP_CONTENT_SERVICE_BASE_URL),
+      // __IPV_VIEWER_URL__: JSON.stringify(process.env.IPV_VIEWER_URL)
     }),
     new Dotenv()
     // Uncomment to run the Bundle Analyzer
