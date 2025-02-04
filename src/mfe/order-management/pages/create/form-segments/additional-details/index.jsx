@@ -58,6 +58,9 @@ function AdditionalDetails() {
   const [variant, setVariant] = React.useState();
   const { showAlert } = useAlert();
   const alertContainerId = 'additionalDetails-alert-container';
+  const { isCoiIdRequired, patientDetailsRequired } = formState?.activeRecord || {};
+  const formFields = getFormFields(t, { isCoiIdRequired });
+  //const validationSchema = getValidationSchema(t, { isCoiIdRequired });
 
   const initialValidationSchema = Yup.object({
     coiId: Yup.string()
@@ -137,7 +140,7 @@ function AdditionalDetails() {
       setValidationSchema(newValidationSchema);
     });
   };
-
+  const variantType = variant?.variant;
   const {
     data: configuredQuestions,
     isFetching: isFetchingConfiguredQuestions,
@@ -149,7 +152,7 @@ function AdditionalDetails() {
     queryFn: async () => {
       const { accountDetails, therapy } = formState.activeRecord;
       const payload = {
-        variant,
+        variantType,
         soldToCustomer: accountDetails.soldToAccount.accountNumber,
         shipToCustomer: accountDetails.shipToAccount.accountNumber,
         sapMaterial: therapy.materialNumber
@@ -452,11 +455,7 @@ function AdditionalDetails() {
 
                 <div className="controls">
                   <Button size="md" variant="secondary" onClick={handleOnBack}>
-                    {isEdit
-                      ? t('captions.btnBack')
-                      : patientDetailsRequired
-                      ? t('captions.btnBacktoPatientDetails')
-                      : t('captions.btnBacktoAccountSelection')}
+                    {isEdit ? t('captions.btnBack') : t('captions.btnBacktoPatientDetails')}
                   </Button>
                   <Button
                     size="md"

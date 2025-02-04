@@ -818,3 +818,7 @@ div.disable-all {
 .secondryTitle {
   padding-top: var(--spacing-03);
 }
+
+.readonly {
+  pointer-events: none;
+}

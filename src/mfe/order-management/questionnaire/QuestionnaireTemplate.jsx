@@ -7,6 +7,7 @@ import FileInput from '@src/components/FileInput';
 
 function QuestionnaireTemplate({ onFileUpload, config, isPreview }) {
   const activeLanguage = 'en';
+
   if (
     !config ||
     (typeof config === 'object' && !Array.isArray(config) && !config.hasOwnProperty('questions')) ||
@@ -17,7 +18,6 @@ function QuestionnaireTemplate({ onFileUpload, config, isPreview }) {
 
   const getControl = (controlConfig, id) => {
     const { text, type, additionalAttributes, isDocumentRequired, isMandatory, documentUrl } = controlConfig;
-    console.log(documentUrl);
     const questionLabel = text[LANGUAGE.ENGLISH]?.trim();
     const fieldName = `${id}#${questionLabel.replace(/ /g, '_')}`;
     const attributes = {};
@@ -70,7 +70,7 @@ function QuestionnaireTemplate({ onFileUpload, config, isPreview }) {
                   <div>[link]</div> <button>Delete</button>
                 </div>
               ) : (
-                <div className="fileUploadControl">
+                <div className={`fileUploadControl ${isPreview ? 'readonly' : ''}`}>
                   <Field name={`${fieldName}.attachment`}>
                     {({ field, form }) => (
                       <FileInput
@@ -105,7 +105,7 @@ function QuestionnaireTemplate({ onFileUpload, config, isPreview }) {
       });
     }
   }
-
+  console.log('templateList', templateList);
   return <div className="questionnaire-template-question-list">{templateList}</div>;
 }
 
