@@ -50,7 +50,7 @@ const SignUp = () => {
     return res.data;
   });
 
-  const [requestParams, setRequestParams] = useState({ pageNo: 0, pageSize: 20, sortBy: 'name', sortOrder: 'asc' });
+  const [requestParams, setRequestParams] = useState({ pageNo: 0, pageSize: 20, sortBy: 'name', sortOrder: 'asc', status: ['active'] });
 
   const {
     isLoading: loadingOrg,

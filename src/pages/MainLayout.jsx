@@ -18,6 +18,7 @@ import ManageApprovers from '@src/mfe/order-management/manageApprovers';
 import RecordsMainRoutes from '@src/mfe/finance-management/RecordsMainRoutes';
 import AdminLayout from './admin';
 import { SystemConfiguration } from '@src/mfe/order-management/pages/system-configuration';
+import { AccountProvider } from '@src/mfe/finance-management/context/AccountContext';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
@@ -137,7 +138,9 @@ function MainLayout() {
                   path={'/record/*'}
                   element={
                     <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
-                      <RecordsMainRoutes />
+                      <AccountProvider>
+                        <RecordsMainRoutes />
+                      </AccountProvider>
                     </ProtectedRoute>
                   }
                 />

@@ -404,6 +404,16 @@ export const downloadFile = (blob, fileName) => {
   return result;
 };
 
+export const enableReviewAndPay = (selectedAccount) => {
+  let ignorableSalesOrgIds = ['5040'];
+  if (selectedAccount) {
+    let hide = ignorableSalesOrgIds.some((ele) => ele == selectedAccount.salesOrg);
+    return !hide;
+  } else {
+    return false;
+  }
+};
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -433,7 +443,8 @@ const CommonUtils = Object.freeze({
   truncateString,
   formatPhoneNumber,
   getFullName,
-  downloadFile
+  downloadFile,
+  enableReviewAndPay
 });
 
 export default CommonUtils;

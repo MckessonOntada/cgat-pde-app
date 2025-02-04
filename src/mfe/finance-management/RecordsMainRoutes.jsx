@@ -2,45 +2,43 @@ import ProtectedRoute from '@src/routes/ProtectedRoute';
 import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { AccountProvider } from './context/AccountContext';
+import { AccountProvider, useAccountContext } from './context/AccountContext';
 import Details from './pages/details';
 import ReviewPayments from './pages/reviewPayments';
 import Confirmation from './pages/confirmation';
 import { PATHS as PaymentInvoicesPaths } from '@src/mfe/finance-management/routes';
 import PaymentsInvoices from '.';
 import ConfirmationPayments from './pages/confirmationPayments';
+import CommonUtils from '@src/util/CommonUtils';
 
 function RecordsMainRoutes(props) {
-  console.log('RecordsMainRoutes props', routePermissionConfig);
+  const { selectedAccount } = useAccountContext();
+
   return (
     <Routes>
       <Route
         path={'invoices/:billNumber/details'}
         element={
           <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
-            <AccountProvider>
-              <Details type={PaymentInvoicesPaths.invoices} />
-            </AccountProvider>
+            <Details type={PaymentInvoicesPaths.invoices} />
           </ProtectedRoute>
         }
       />
-      <Route
-        path={'invoices/reviewPayments'}
-        element={
-          <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
-            <AccountProvider>
+      {CommonUtils.enableReviewAndPay(selectedAccount) && (
+        <Route
+          path={'invoices/reviewPayments'}
+          element={
+            <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
               <ReviewPayments type={PaymentInvoicesPaths.invoices} />
-            </AccountProvider>
-          </ProtectedRoute>
-        }
-      />
+            </ProtectedRoute>
+          }
+        />
+      )}
       <Route
         path={'invoices/ConfirmationPayments'}
         element={
           <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
-            <AccountProvider>
-              <ConfirmationPayments />
-            </AccountProvider>
+            <ConfirmationPayments />
           </ProtectedRoute>
         }
       />
@@ -48,9 +46,7 @@ function RecordsMainRoutes(props) {
         path={'credits/:billNumber/details'}
         element={
           <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
-            <AccountProvider>
-              <Details type={PaymentInvoicesPaths.credits} />
-            </AccountProvider>
+            <Details type={PaymentInvoicesPaths.credits} />
           </ProtectedRoute>
         }
       />
@@ -58,9 +54,7 @@ function RecordsMainRoutes(props) {
         path={'pending-payments/:confirmationNumber/confirmation'}
         element={
           <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
-            <AccountProvider>
-              <Confirmation type={PaymentInvoicesPaths.pendingPayments} />
-            </AccountProvider>
+            <Confirmation type={PaymentInvoicesPaths.pendingPayments} />
           </ProtectedRoute>
         }
       />
@@ -68,9 +62,7 @@ function RecordsMainRoutes(props) {
         path={'payment-history/:confirmationNumber/confirmation'}
         element={
           <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
-            <AccountProvider>
-              <Confirmation type={PaymentInvoicesPaths.paymentHistory} />
-            </AccountProvider>
+            <Confirmation type={PaymentInvoicesPaths.paymentHistory} />
           </ProtectedRoute>
         }
       />
@@ -78,9 +70,7 @@ function RecordsMainRoutes(props) {
         path="*"
         element={
           <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
-            <AccountProvider>
-              <PaymentsInvoices />
-            </AccountProvider>
+            <PaymentsInvoices />
           </ProtectedRoute>
         }
       />
