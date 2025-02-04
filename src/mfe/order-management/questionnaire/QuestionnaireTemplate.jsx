@@ -15,7 +15,7 @@ function QuestionnaireTemplate({ onFileUpload, config, isPreview }) {
     return <div>No preview</div>;
   }
 
-  const getControl = (controlConfig, id) => {
+  const getControl = (controlConfig, id, differentiator) => {
     const { text, type, additionalAttributes, isDocumentRequired, isMandatory, documentUrl } = controlConfig;
     console.log(documentUrl);
     const questionLabel = text[LANGUAGE.ENGLISH]?.trim();
@@ -49,11 +49,13 @@ function QuestionnaireTemplate({ onFileUpload, config, isPreview }) {
 
     if (type === QUESTION_TYPE.RADIO_BUTTON) {
       attributes.caption = questionLabel;
+      attributes.id = `radio-button-${id}-${differentiator}`;
     }
 
     if (type === QUESTION_TYPE.CHECKBOX) {
       attributes.caption = questionLabel;
       wrapperClass.push('stacked-checkbox');
+      attributes.id = `checkbox-${id}-${differentiator}`;
     }
 
     const field = (
@@ -97,11 +99,17 @@ function QuestionnaireTemplate({ onFileUpload, config, isPreview }) {
 
   let templateList = [];
   if (typeof config === 'object' && !Array.isArray(config)) {
-    templateList.push(<div className="template">{config.questions.map((question) => getControl(question, 1))}</div>);
+    templateList.push(
+      <div className="template">{config.questions.map((question, questionIndex) => getControl(question, 1, questionIndex))}</div>
+    );
   } else if (Array.isArray(config)) {
     {
       config.map((template) => {
-        templateList.push(<div className="template">{template.questions.map((question) => getControl(question, template.id))}</div>);
+        templateList.push(
+          <div className="template">
+            {template.questions.map((question, questionIndex) => getControl(question, template.id, questionIndex))}
+          </div>
+        );
       });
     }
   }

@@ -542,6 +542,7 @@ function AddQuestionnaire() {
                                       <div className="stacked-checkbox">
                                         <Field
                                           name={`questions.${index}.checks`}
+                                          id={`Check-${index}`}
                                           items={[
                                             {
                                               isDisabled: readOnly,
