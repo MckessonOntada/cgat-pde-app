@@ -60,7 +60,7 @@ jobs:
         REACT_APP_USERMANAGEMENT_SERVICE_BASE_URL: ${{ vars.REACT_APP_USERMANAGEMENT_SERVICE_BASE_URL }}
         REACT_APP_ORDERMANAGEMENT_SERVICE_BASE_URL: ${{ vars.REACT_APP_ORDERMANAGEMENT_SERVICE_BASE_URL }} 
         REACT_APP_PUBLIC_PATH: ${{ vars.REACT_APP_PUBLIC_PATH }}
-        REACT_APP_FS_ORG_ID: "${vars.REACT_APP_FS_ORG_ID}"
+        REACT_APP_FS_ORG_ID: ${{vars.REACT_APP_FS_ORG_ID}}
       run: |
         # Setting up cluster configurations, config files are in the kubectl image
         # https://github.com/mckesson/pltsrv-kube-apps/tree/master/kubectl
