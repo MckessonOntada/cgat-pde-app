@@ -24,94 +24,6 @@ import { handleApiError } from '@src/util/ApiUtils';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import QuestionnaireTemplate from '@src/mfe/order-management/questionnaire/QuestionnaireTemplate';
 import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/order-management/questionnaire/AddQuestionnaire';
-const config = {
-  createdAt: null,
-  updatedAt: '2025-01-30T11:52:41.404+00:00',
-  id: 86,
-  templateName: 'Basic info',
-  questions: [
-    {
-      text: {
-        en: 'What is your name?',
-        es: ''
-      },
-      type: 'INPUT',
-      isMandatory: true,
-      isDocumentRequired: true
-    },
-    {
-      text: {
-        en: 'What is your gender?',
-        es: ''
-      },
-      type: 'RADIO_BUTTON',
-      additionalAttributes: {
-        options: [
-          {
-            en: 'Male',
-            es: ''
-          },
-          {
-            en: 'Female',
-            es: ''
-          }
-        ]
-      }
-    },
-    {
-      text: {
-        en: 'Select applicable options',
-        es: ''
-      },
-      type: 'CHECKBOX',
-      additionalAttributes: {
-        options: [
-          {
-            en: 'Do you live in india?',
-            es: ''
-          },
-          {
-            en: 'Do you travel a lot?',
-            es: ''
-          },
-          {
-            en: 'Sample test question',
-            es: ''
-          }
-        ]
-      }
-    },
-    {
-      text: {
-        en: 'Select country you live in.',
-        es: ''
-      },
-      type: 'DROPDOWN',
-      additionalAttributes: {
-        options: [
-          {
-            en: 'Delhi',
-            es: ''
-          },
-          {
-            en: 'Mumbai',
-            es: ''
-          },
-          {
-            en: 'Chennai',
-            es: ''
-          },
-          {
-            en: 'Culcatta',
-            es: ''
-          }
-        ]
-      }
-    }
-  ],
-  configuredAt: ['Catalog'],
-  active: true
-};
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -137,6 +49,7 @@ function AdditionalDetails() {
   const variantsApiRequestParam = { pageNo: 0, pageSize: 10 };
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
+  const [uploadList, setUploadList] = React.useState({});
   const [variantAcknowledgement, setVariantAcknowledgement] = React.useState({
     isDisabled: false,
     isChecked: false,
@@ -200,6 +113,32 @@ function AdditionalDetails() {
     showAlert({ ...alertState, anchorEl: alertContainerId });
   }, []);
 
+  const prepareQuestionnaire = (result) => {
+    if (!result || !Array.isArray(result)) {
+      throw new Error('Not a valid questionnaire config');
+      return;
+    }
+    const questionnaireFields = {};
+    const validationSchemaFields = {};
+    result.forEach((template) => {
+      template.questions.forEach((question) => {
+        const fieldName = `${template.id}#${question.text[LANGUAGE.ENGLISH]?.trim().replace(/ /g, '_')}`;
+        questionnaireFields[fieldName] = '';
+        validationSchemaFields[fieldName] =
+          question.type === QUESTION_TYPE.INPUT || question.type === QUESTION_TYPE.RADIO_BUTTON
+            ? Yup.string()[question.isMandatory ? 'required' : 'nullable'](`Value is required`)
+            : Yup.array().of(Yup.string())[question.isMandatory ? 'min' : 'nullable'](1, `Select at least on option`);
+      });
+      const questionnaireValidationSchema = Yup.object(validationSchemaFields);
+      const newValidationSchema = initialValidationSchema.concat(questionnaireValidationSchema);
+      setInitialFormValues((prevState) => ({
+        ...prevState,
+        ...questionnaireFields
+      }));
+      setValidationSchema(newValidationSchema);
+    });
+  };
+
   const {
     data: configuredQuestions,
     isFetching: isFetchingConfiguredQuestions,
@@ -220,34 +159,27 @@ function AdditionalDetails() {
     },
     enabled: false,
     refetchOnWindowFocus: false,
-    onSuccess: () => {
-      const questionnaireFields = {};
-      const validationSchemaFields = {};
-
-      config.questions.forEach((question) => {
-        const fieldName = question.text[LANGUAGE.ENGLISH].replace(/ /g, '_');
-
-        questionnaireFields[fieldName] = '';
-
-        validationSchemaFields[fieldName] =
-          question.type === QUESTION_TYPE.INPUT || question.type === QUESTION_TYPE.RADIO_BUTTON
-            ? Yup.string()[question.isMandatory ? 'required' : 'nullable'](`Value is required`)
-            : Yup.array().of(Yup.string())[question.isMandatory ? 'min' : 'nullable'](1, `Select at least on option`);
-      });
-
-      const questionnaireValidationSchema = Yup.object(validationSchemaFields);
-      const newValidationSchema = initialValidationSchema.concat(questionnaireValidationSchema);
-      setInitialFormValues((prevState) => ({
-        ...prevState,
-        configuredQuestionnaires: { ...questionnaireFields }
-      }));
-
-      setValidationSchema(newValidationSchema);
-    },
+    onSuccess: prepareQuestionnaire,
     onError: console.log
   });
 
-  console.log(validationSchema);
+  const { data: uploadDocumentResponse, mutate: uploadDocument } = useMutation(
+    async ({ fieldName, file }) => {
+      const [templateId] = fieldName.split('#');
+      return QuestionnaireService.uploadQuestionnaireDocument({ orderId, templateId, file });
+    },
+    {
+      onSuccess: (result, variables) => {
+        const { fieldName } = variables;
+        uploadList[fieldName] = result;
+        setUploadList(uploadList);
+      }
+    }
+  );
+
+  const handleOnFileChange = (fieldName, file) => {
+    uploadDocument({ fieldName, file });
+  };
 
   const { isLoading, data: variantsData = {} } = useQuery({
     queryKey: ['order', 'variants', orderId],
@@ -275,15 +207,31 @@ function AdditionalDetails() {
         patientConsentTaken,
         poNumber,
         slotNumber,
-        variantDetails: _variant
+        variantDetails: _variant,
+        configuredQuestionnaires
       } = additionalDetails;
 
+      const initialValues = {
+        dateOfAdministration,
+        coiId,
+        orderQuantity,
+        poNumber,
+        slotNumber
+      };
+
+      prepareQuestionnaire(configuredQuestionnaires);
+      // if (configuredQuestionnaires) {
+      //   configuredQuestionnaires.forEach((template) => {
+      //     if (template.questions && Array.isArray(template.questions)) {
+      //       template.questions.map((question) => {
+      //         initialValues[`${template.id}`] = question.value;
+      //         // ${id}#${questionLabel.text[LANGUAGE.ENGLISH].replace(/ /g, '_')}`
+      //       });
+      //     }
+      //   });
+      // }
       setInitialFormValues({
-        coiId: coiId,
-        orderQuantity: orderQuantity,
-        slotNumber: slotNumber,
-        poNumber: poNumber,
-        dateOfAdministration: dateOfAdministration
+        ...initialValues
       });
 
       if (!variantsData.content || !_variant) {
@@ -334,21 +282,50 @@ function AdditionalDetails() {
       variant
     };
     //template/question
-    const response = {};
+    const response = [];
     const questionnaireResponse = {
-      response,
+      response: [...configuredQuestions],
       dependencies: questionnaireDependencies
     };
+    const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, ...rest } = values;
+    Object.entries(rest).forEach(([key, value]) => {
+      if (!key) return;
+
+      const [templateId, fieldKey, attachment] = key.split('#');
+      if (!templateId || !fieldKey) {
+        return;
+      }
+
+      const template = questionnaireResponse.response.find((_template) => _template.id == templateId);
+      if (!template) return;
+      const answeredTemplate = {
+        templateName: template.templateName,
+        questions: template.questions
+      };
+      const question = answeredTemplate.questions.find((question) => {
+        const fieldName = `${question.text[LANGUAGE.ENGLISH].replace(/ /g, '_')}`;
+        return fieldName === fieldKey;
+      });
+
+      if (attachment) {
+        const documentUrl = uploadList[key];
+        question.documentUrl = documentUrl;
+      } else {
+        question.value = value;
+      }
+
+      // questionnaireResponse.response.push(answeredTemplate);
+    });
 
     const payload = {
-      coiId: values.coiId,
-      orderQuantity: values.orderQuantity,
-      slotNumber: values.slotNumber,
-      poNumber: values.poNumber,
-      dateOfAdministration: values.dateOfAdministration,
-      patientConsentTaken: true,
+      coiId,
+      orderQuantity,
+      slotNumber,
+      poNumber,
+      dateOfAdministration,
       variantDetails: _var,
-      configuredQuestionnaires: JSON.stringify(questionnaireResponse)
+      patientConsentTaken: true,
+      configuredQuestionnaires: questionnaireResponse.response
     };
 
     saveAdditionalDetails(payload);
@@ -381,7 +358,7 @@ function AdditionalDetails() {
   };
 
   React.useEffect(() => {
-    if (formState.activeRecord) fetchConfiguredQuestions();
+    if (formState.activeRecord && !isEdit) fetchConfiguredQuestions();
   }, [variant, formState.activeRecord]);
 
   const handleOnAcknowledgmentChange = () => {
@@ -389,8 +366,6 @@ function AdditionalDetails() {
 
     setVariantAcknowledgement(updatedOptions);
   };
-
-  console.log(initialFormValues);
 
   return (
     <div className="MCP-module-wrapper">
@@ -407,7 +382,6 @@ function AdditionalDetails() {
         enableReinitialize={true}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-          console.log(values);
           handleOnSubmit(values);
         }}>
         {({ values, isValid, dirty }) => {
@@ -467,12 +441,12 @@ function AdditionalDetails() {
                     </>
                   )}
 
-                  {config && (
+                  {configuredQuestions && Array.isArray(configuredQuestions) && configuredQuestions.length > 0 && (
                     <div className="configured-questionnaire-form">
                       <div className="styled-heading">
                         <h3>Additional Questions</h3>
                       </div>
-                      <QuestionnaireTemplate config={config} isPreview={false} />
+                      <QuestionnaireTemplate onFileUpload={handleOnFileChange} config={configuredQuestions} isPreview={false} />
                     </div>
                   )}
                 </div>

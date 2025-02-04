@@ -81,6 +81,24 @@ async function getConfiguredQuestionnaire(requestParams) {
   return {};
 }
 
+async function uploadQuestionnaireDocument(payload) {
+  const { orderId, templateId, file } = payload;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/documents?templateId=${templateId}`;
+
+  const res = await HttpResourceService.callRest(
+    url,
+    httpVerb.POST,
+    { file },
+    {
+      'Content-Type': 'multipart/form-data'
+    }
+  );
+
+  if (res.data) return res.data;
+
+  return {};
+}
+
 const QuestionnaireService = Object.freeze({
   getQuestionnaires,
   createQuestionnaire,
@@ -89,7 +107,8 @@ const QuestionnaireService = Object.freeze({
   updateQuestionnaire,
   getQuestionnaireById,
   deactivateQuestionnaireById,
-  getConfiguredQuestionnaire
+  getConfiguredQuestionnaire,
+  uploadQuestionnaireDocument
 });
 
 export default QuestionnaireService;
