@@ -1,0 +1,21 @@
+.attachment-ribbon {
+    .filename {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: var(--spacing-02);
+        color: var(--brand-color-text-blue);
+
+        .icon {
+            width: var(--spacing-04);
+            color: inherit;
+        }
+
+        a {
+            display: inline-flex;
+            text-decoration: none;
+            font-size: var(--brand-font-size--small);
+            font-weight: var(--brand-font-weight-600);
+        }
+    }
+}

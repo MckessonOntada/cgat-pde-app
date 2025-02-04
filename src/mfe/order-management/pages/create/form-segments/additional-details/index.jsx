@@ -49,6 +49,7 @@ function AdditionalDetails() {
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
   const [uploadList, setUploadList] = React.useState({});
+  const [questionnaireTemplateConfig, setQuestionnaireTemplateConfig] = React.useState(null);
   const [variantAcknowledgement, setVariantAcknowledgement] = React.useState({
     isDisabled: false,
     isChecked: false,
@@ -122,29 +123,37 @@ function AdditionalDetails() {
   }, []);
 
   const prepareQuestionnaire = (result) => {
+    setQuestionnaireTemplateConfig(result);
     if (!result || !Array.isArray(result)) {
       throw new Error('Not a valid questionnaire config');
       return;
     }
     const questionnaireFields = {};
     const validationSchemaFields = {};
-    result.forEach((template) => {
-      template.questions.forEach((question) => {
+    result.forEach((template, templateIndex) => {
+      template.questions.forEach((question, questionIndex) => {
         const fieldName = `${template.id}#${question.text[LANGUAGE.ENGLISH]?.trim().replace(/ /g, '_')}`;
-        questionnaireFields[fieldName] = '';
+        questionnaireFields[fieldName] = question.value;
+        if (question.isDocumentRequired && question.documentUrl) {
+          uploadList[`${fieldName}`] = question.documentUrl;
+          questionnaireFields[`${fieldName}#attachment`] = question.documentUrl;
+        }
         validationSchemaFields[fieldName] =
           question.type === QUESTION_TYPE.INPUT || question.type === QUESTION_TYPE.RADIO_BUTTON
             ? Yup.string()[question.isMandatory ? 'required' : 'nullable'](`Value is required`)
             : Yup.array().of(Yup.string())[question.isMandatory ? 'min' : 'nullable'](1, `Select at least on option`);
       });
       const questionnaireValidationSchema = Yup.object(validationSchemaFields);
-      const newValidationSchema = initialValidationSchema.concat(questionnaireValidationSchema);
-      setInitialFormValues((prevState) => ({
+      initialValidationSchema.concat(questionnaireValidationSchema);
+    });
+    setInitialFormValues((prevState) => {
+      return {
         ...prevState,
         ...questionnaireFields
-      }));
-      setValidationSchema(newValidationSchema);
+      };
     });
+    setUploadList(uploadList);
+    setValidationSchema(initialValidationSchema);
   };
 
   const {
@@ -191,6 +200,25 @@ function AdditionalDetails() {
     uploadDocument({ fieldName, file });
   };
 
+  const handleOnRemoveDocument = (fieldName) => {
+    const { [fieldName]: removedFile, ...rest } = uploadList;
+    const [templateId, field, _attachment] = fieldName.split('#');
+    const template = questionnaireTemplateConfig.find((item) => item.id == templateId);
+    if (template) {
+      const question = template.questions.find((question) => {
+        const _fieldName = question.text[LANGUAGE.ENGLISH].replace(/ /g, '_');
+        return field == _fieldName;
+      });
+      if (question) {
+        question.documentUrl = null;
+      }
+    }
+    setQuestionnaireTemplateConfig([...questionnaireTemplateConfig]);
+    setUploadList(rest);
+    initialFormValues[`${fieldName}#attachment`] = null;
+    setInitialFormValues({ ...initialFormValues });
+  };
+
   const { isLoading, data: variantsData = {} } = useQuery({
     queryKey: ['order', 'variants', orderId],
     queryFn: async () => OrderService.getVariants(therapyId, soldToAccountId, shipToAccountId, variantsApiRequestParam),
@@ -230,21 +258,21 @@ function AdditionalDetails() {
       };
 
       configuredQuestionnaires && prepareQuestionnaire(configuredQuestionnaires);
-      if (configuredQuestionnaires) {
-        configuredQuestionnaires.forEach((template) => {
-          if (template.questions && Array.isArray(template.questions)) {
-            template.questions.map((question, index) => {
-              const fieldName = `${template.id}#${question.text[LANGUAGE.ENGLISH].replace(/ /g, '_')}`;
-              initialValues[fieldName] = question.value;
-            });
-          }
-        });
-      }
-      setInitialFormValues({
-        ...initialValues
-      });
 
-      console.log(initialValues);
+      // if (configuredQuestionnaires) {
+      //   configuredQuestionnaires.forEach((template) => {
+      //     if (template.questions && Array.isArray(template.questions)) {
+      //       template.questions.map((question, index) => {
+      //         const fieldName = `${template.id}#${question.text[LANGUAGE.ENGLISH].replace(/ /g, '_')}`;
+      //         initialValues[fieldName] = question.value;
+      //       });
+      //     }
+      //   });
+      // }
+      setInitialFormValues((prevState) => ({
+        ...prevState,
+        ...initialValues
+      }));
 
       if (!variantsData.content || !_variant) {
         return;
@@ -296,7 +324,7 @@ function AdditionalDetails() {
     //template/question
     const response = [];
     const questionnaireResponse = {
-      response: [...configuredQuestions],
+      response: [...questionnaireTemplateConfig],
       dependencies: questionnaireDependencies
     };
     const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, ...rest } = values;
@@ -453,9 +481,14 @@ function AdditionalDetails() {
                     </>
                   )}
 
-                  {configuredQuestions && Array.isArray(configuredQuestions) && configuredQuestions.length > 0 && (
+                  {questionnaireTemplateConfig && Array.isArray(questionnaireTemplateConfig) && questionnaireTemplateConfig.length > 0 && (
                     <div className="configured-questionnaire-form">
-                      <QuestionnaireTemplate onFileUpload={handleOnFileChange} config={configuredQuestions} isPreview={false} />
+                      <QuestionnaireTemplate
+                        onRemoveFile={handleOnRemoveDocument}
+                        onFileUpload={handleOnFileChange}
+                        config={questionnaireTemplateConfig}
+                        isPreview={false}
+                      />
                     </div>
                   )}
                 </div>

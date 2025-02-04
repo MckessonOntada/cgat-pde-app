@@ -1,11 +1,16 @@
 import React from 'react';
 import { LANGUAGE, QUESTION_TYPE } from './AddQuestionnaire';
-import { Field, Form, Formik } from 'formik';
+import styles from './QuestionnaireTemplate.module.scss';
+import { Field } from 'formik';
 import Components from '@src/components/form/Components';
 import CheckBox from '@src/components/form/CheckBox';
+import { Button } from '@mckesson/mcp-component-library';
 import FileInput from '@src/components/FileInput';
+import { Link } from 'react-router-dom';
+import { ReactComponent as BinRedIcon } from '@src/assets/svg/bin-red.svg';
+import { ReactComponent as FileUploadIcon } from '@src/assets/svg/document.svg';
 
-function QuestionnaireTemplate({ onFileUpload, config, isPreview }) {
+function QuestionnaireTemplate({ onFileUpload, config, isPreview, onRemoveFile }) {
   const activeLanguage = 'en';
   if (
     !config ||
@@ -67,8 +72,25 @@ function QuestionnaireTemplate({ onFileUpload, config, isPreview }) {
           {isDocumentRequired && (
             <div>
               {documentUrl ? (
-                <div className="row-space-between-center">
-                  <div>[link]</div> <button>Delete</button>
+                <div className={styles['attachment-ribbon']}>
+                  <div class="grid grid-gap-16 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+                    <div className="row-space-between-center">
+                      <div className={styles['filename']}>
+                        <FileUploadIcon width={20} />
+                        <Link to={documentUrl}>{documentUrl.substring(documentUrl.lastIndexOf('/') + 1)}</Link>
+                      </div>
+                      <div className="styled-icon-button error-button">
+                        <Button
+                          Icon={BinRedIcon}
+                          size="md"
+                          variant="tertiary"
+                          color="error"
+                          type="button"
+                          onClick={() => onRemoveFile(fieldName)}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div className="fileUploadControl">
