@@ -48,7 +48,6 @@ function AdditionalDetails() {
   const variantsApiRequestParam = { pageNo: 0, pageSize: 10 };
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
-  const [uploadList, setUploadList] = React.useState({});
   const [questionnaireTemplateConfig, setQuestionnaireTemplateConfig] = React.useState(null);
   const [variantAcknowledgement, setVariantAcknowledgement] = React.useState({
     isDisabled: false,
@@ -61,7 +60,7 @@ function AdditionalDetails() {
   const alertContainerId = 'additionalDetails-alert-container';
   const { isCoiIdRequired, patientDetailsRequired } = formState?.activeRecord || {};
 
-  const initialValidationSchema = Yup.object({
+  let initialValidationSchema = Yup.object({
     coiId: Yup.string()
       .matches(NUMBER_REGEX, t('labels.COI_IdMustValidNumber'))
       .max(20, t('labels.COI_IdExceedDigits'))
@@ -70,13 +69,11 @@ function AdditionalDetails() {
         then: (schema) => schema.required(t('labels.COIIdRequired')),
         otherwise: (schema) => schema
       }),
-
     orderQuantity: Yup.number()
       .typeError(t('labels.OrderQuantityShouldPositive'))
       .required(t('labels.orderQuantityRequired'))
       .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
       .integer(t('labels.OrderQuantityMustBeInteger')),
-
     slotNumber: Yup.string()
       .required(t('labels.slotNumberRequired'))
       .max(20, t('labels.slotNumberLengthError'))
@@ -126,35 +123,46 @@ function AdditionalDetails() {
     setQuestionnaireTemplateConfig(result);
     if (!result || !Array.isArray(result)) {
       throw new Error('Not a valid questionnaire config');
-      return;
     }
+
     const questionnaireFields = {};
     const validationSchemaFields = {};
-    result.forEach((template, templateIndex) => {
-      template.questions.forEach((question, questionIndex) => {
-        const fieldName = `${template.id}#${question.text[LANGUAGE.ENGLISH]?.trim().replace(/ /g, '_')}`;
-        questionnaireFields[fieldName] = question.value;
+
+    result.forEach((template) => {
+      template.questions.forEach((question) => {
+        const fieldName = CommonUtils.generateUniqueCode(`${template.id}#${question.text[LANGUAGE.ENGLISH]}`);
+        questionnaireFields[fieldName] = {
+          value: question.value
+        };
+
         if (question.isDocumentRequired && question.documentUrl) {
-          uploadList[`${fieldName}`] = question.documentUrl;
-          questionnaireFields[`${fieldName}#attachment`] = question.documentUrl;
+          questionnaireFields[fieldName].documentUrl = question.documentUrl;
         }
-        validationSchemaFields[fieldName] =
-          question.type === QUESTION_TYPE.INPUT || question.type === QUESTION_TYPE.RADIO_BUTTON
-            ? Yup.string()[question.isMandatory ? 'required' : 'nullable'](`Value is required`)
-            : Yup.array().of(Yup.string())[question.isMandatory ? 'min' : 'nullable'](1, `Select at least on option`);
+
+        validationSchemaFields[fieldName] = Yup.object({
+          value:
+            question.type === QUESTION_TYPE.INPUT ||
+            question.type === QUESTION_TYPE.DROPDOWN ||
+            question.type === QUESTION_TYPE.RADIO_BUTTON
+              ? Yup.string()[question.isMandatory ? 'required' : 'nullable']('Value is required')
+              : Yup.array().of(Yup.string())[question.isMandatory ? 'min' : 'nullable'](1, 'Select at least one option'),
+          documentUrl: Yup.string().nullable()
+        });
       });
-      const questionnaireValidationSchema = Yup.object(validationSchemaFields);
-      initialValidationSchema.concat(questionnaireValidationSchema);
     });
+
+    const questionnaireValidationSchema = Yup.object(validationSchemaFields);
+    initialValidationSchema = initialValidationSchema.concat(questionnaireValidationSchema);
+    setValidationSchema(initialValidationSchema);
+
     setInitialFormValues((prevState) => {
       return {
         ...prevState,
         ...questionnaireFields
       };
     });
-    setUploadList(uploadList);
-    setValidationSchema(initialValidationSchema);
   };
+
   const variantType = variant?.variant;
   const {
     data: configuredQuestions,
@@ -178,8 +186,7 @@ function AdditionalDetails() {
     refetchOnWindowFocus: false,
     onSuccess: (result) => {
       result && prepareQuestionnaire(result);
-    },
-    onError: console.log
+    }
   });
 
   const { data: uploadDocumentResponse, mutate: uploadDocument } = useMutation(
@@ -189,33 +196,18 @@ function AdditionalDetails() {
     },
     {
       onSuccess: (result, variables) => {
-        const { fieldName } = variables;
-        uploadList[fieldName] = result;
-        setUploadList(uploadList);
+        const { fieldName, setFieldValue } = variables;
+        setFieldValue(`${fieldName}.documentUrl`, result);
       }
     }
   );
 
-  const handleOnFileChange = (fieldName, file) => {
-    uploadDocument({ fieldName, file });
+  const handleOnDocumentChange = (fieldName, file, setFieldValue) => {
+    uploadDocument({ fieldName, file, setFieldValue });
   };
 
   const handleOnRemoveDocument = (fieldName) => {
-    const { [fieldName]: removedFile, ...rest } = uploadList;
-    const [templateId, field, _attachment] = fieldName.split('#');
-    const template = questionnaireTemplateConfig.find((item) => item.id == templateId);
-    if (template) {
-      const question = template.questions.find((question) => {
-        const _fieldName = question.text[LANGUAGE.ENGLISH].replace(/ /g, '_');
-        return field == _fieldName;
-      });
-      if (question) {
-        question.documentUrl = null;
-      }
-    }
-    setQuestionnaireTemplateConfig([...questionnaireTemplateConfig]);
-    setUploadList(rest);
-    initialFormValues[`${fieldName}#attachment`] = null;
+    initialFormValues[fieldName].documentUrl = null;
     setInitialFormValues({ ...initialFormValues });
   };
 
@@ -259,16 +251,6 @@ function AdditionalDetails() {
 
       configuredQuestionnaires && prepareQuestionnaire(configuredQuestionnaires);
 
-      // if (configuredQuestionnaires) {
-      //   configuredQuestionnaires.forEach((template) => {
-      //     if (template.questions && Array.isArray(template.questions)) {
-      //       template.questions.map((question, index) => {
-      //         const fieldName = `${template.id}#${question.text[LANGUAGE.ENGLISH].replace(/ /g, '_')}`;
-      //         initialValues[fieldName] = question.value;
-      //       });
-      //     }
-      //   });
-      // }
       setInitialFormValues((prevState) => ({
         ...prevState,
         ...initialValues
@@ -313,7 +295,6 @@ function AdditionalDetails() {
         }
       : null;
 
-    // question template response
     const { accountDetails, therapy } = formState.activeRecord;
     const questionnaireDependencies = {
       soldToCustomer: accountDetails.soldToAccount.accountNumber,
@@ -321,40 +302,24 @@ function AdditionalDetails() {
       sapMaterial: therapy.materialNumber,
       variant
     };
-    //template/question
-    const response = [];
+
     const questionnaireResponse = {
       response: [...questionnaireTemplateConfig],
       dependencies: questionnaireDependencies
     };
     const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, ...rest } = values;
-    Object.entries(rest).forEach(([key, value]) => {
-      if (!key) return;
 
-      const [templateId, fieldKey, attachment] = key.split('#');
-      if (!templateId || !fieldKey) {
-        return;
-      }
+    questionnaireTemplateConfig.forEach((template) => {
+      if (!template.questions) return;
 
-      const template = questionnaireResponse.response.find((_template) => _template.id == templateId);
-      if (!template) return;
-      const answeredTemplate = {
-        templateName: template.templateName,
-        questions: template.questions
-      };
-      const question = answeredTemplate.questions.find((question) => {
-        const fieldName = `${question.text[LANGUAGE.ENGLISH].replace(/ /g, '_')}`;
-        return fieldName === fieldKey;
+      template.questions.forEach((question) => {
+        const fieldName = CommonUtils.generateUniqueCode(`${template.id}#${question.text[LANGUAGE.ENGLISH]}`);
+        const fieldValue = values[fieldName];
+        if (!fieldName) return;
+
+        question.value = fieldValue.value;
+        question.documentUrl = fieldValue.documentUrl;
       });
-
-      if (attachment) {
-        const documentUrl = uploadList[key];
-        question.documentUrl = documentUrl;
-      } else {
-        question.value = value;
-      }
-
-      // questionnaireResponse.response.push(answeredTemplate);
     });
 
     const payload = {
@@ -365,7 +330,7 @@ function AdditionalDetails() {
       dateOfAdministration,
       variantDetails: _var,
       patientConsentTaken: true,
-      configuredQuestionnaires: questionnaireResponse.response
+      configuredQuestionnaires: questionnaireTemplateConfig
     };
 
     saveAdditionalDetails(payload);
@@ -424,10 +389,8 @@ function AdditionalDetails() {
         onSubmit={(values) => {
           handleOnSubmit(values);
         }}>
-        {({ values, isValid, dirty }) => {
-          React.useEffect(() => {
-            setIsDirty(dirty);
-          }, [dirty]);
+        {({ dirty }) => {
+          useEffect(() => setIsDirty(dirty), [dirty]);
 
           return (
             <Form>
@@ -484,8 +447,8 @@ function AdditionalDetails() {
                   {questionnaireTemplateConfig && Array.isArray(questionnaireTemplateConfig) && questionnaireTemplateConfig.length > 0 && (
                     <div className="configured-questionnaire-form">
                       <QuestionnaireTemplate
-                        onRemoveFile={handleOnRemoveDocument}
-                        onFileUpload={handleOnFileChange}
+                        onRemoveDocument={handleOnRemoveDocument}
+                        onDocumentChange={handleOnDocumentChange}
                         config={questionnaireTemplateConfig}
                         isPreview={false}
                       />

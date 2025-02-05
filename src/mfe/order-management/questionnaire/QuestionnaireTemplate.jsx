@@ -1,7 +1,7 @@
 import React from 'react';
 import { LANGUAGE, QUESTION_TYPE } from './AddQuestionnaire';
 import styles from './QuestionnaireTemplate.module.scss';
-import { Field } from 'formik';
+import { Field, useFormikContext } from 'formik';
 import Components from '@src/components/form/Components';
 import CheckBox from '@src/components/form/CheckBox';
 import { Button } from '@mckesson/mcp-component-library';
@@ -9,9 +9,11 @@ import FileInput from '@src/components/FileInput';
 import { Link } from 'react-router-dom';
 import { ReactComponent as BinRedIcon } from '@src/assets/svg/bin-red.svg';
 import { ReactComponent as FileUploadIcon } from '@src/assets/svg/document.svg';
+import CommonUtils from '@src/util/CommonUtils';
 
-function QuestionnaireTemplate({ onFileUpload, config, isPreview, onRemoveFile }) {
+function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
   const activeLanguage = 'en';
+  const { values: formValues = {}, setFieldValue } = useFormikContext();
 
   if (
     !config ||
@@ -22,10 +24,10 @@ function QuestionnaireTemplate({ onFileUpload, config, isPreview, onRemoveFile }
   }
 
   const getControl = (controlConfig, id, differentiator) => {
-    const { text, type, additionalAttributes, isDocumentRequired, isMandatory, documentUrl } = controlConfig;
-
+    const { text, type, additionalAttributes, isDocumentRequired, isMandatory } = controlConfig;
     const questionLabel = text[LANGUAGE.ENGLISH]?.trim();
-    const fieldName = `${id}#${questionLabel.replace(/ /g, '_')}`;
+    const fieldName = CommonUtils.generateUniqueCode(`${id}#${questionLabel}`);
+
     const attributes = {};
     if (isMandatory) {
       attributes.isRequired = true;
@@ -67,22 +69,25 @@ function QuestionnaireTemplate({ onFileUpload, config, isPreview, onRemoveFile }
       attributes.itemCustomStyles = { fontSize: '14px', marginRight: '24px', fontWeight: '400' };
       attributes.labelCustomStyles = { marginBottom: '8px', fontSize: '14px' };
     }
+
+    const { documentUrl: attachmentValue } = formValues[fieldName] || {};
     const field = (
       <div className={wrapperClass.join(' ')}>
-        {/* <div className="field-caption">{questionLabel}</div> */}
         <div className="styled-control-wrapper">
           <div class="grid grid-gap-16 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-            <Field name={fieldName} label={questionLabel} placeholder={` `} {...attributes} />
+            <Field name={`${fieldName}.value`} label={questionLabel} placeholder={` `} {...attributes} />
           </div>
           {isDocumentRequired && (
             <div>
-              {documentUrl ? (
+              {attachmentValue ? (
                 <div className={styles['attachment-ribbon']}>
                   <div class="grid grid-gap-16 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
                     <div className="row-space-between-center">
                       <div className={styles['filename']}>
                         <FileUploadIcon width={20} />
-                        <Link to={documentUrl}>{documentUrl.substring(documentUrl.lastIndexOf('/') + 1)}</Link>
+                        <Link target="_blank" to={attachmentValue}>
+                          {attachmentValue.substring(attachmentValue.lastIndexOf('/') + 1)}
+                        </Link>
                       </div>
                       <div className="styled-icon-button error-button">
                         <Button
@@ -91,7 +96,7 @@ function QuestionnaireTemplate({ onFileUpload, config, isPreview, onRemoveFile }
                           variant="tertiary"
                           color="error"
                           type="button"
-                          onClick={() => onRemoveFile(fieldName)}
+                          onClick={() => setFieldValue(`${fieldName}.documentUrl`, null)}
                         />
                       </div>
                     </div>
@@ -99,13 +104,12 @@ function QuestionnaireTemplate({ onFileUpload, config, isPreview, onRemoveFile }
                 </div>
               ) : (
                 <div className={`fileUploadControl ${isPreview ? 'readonly' : ''}`}>
-                  <Field name={`${fieldName}.attachment`}>
-                    {({ field, form }) => (
+                  <Field name={`${fieldName}.documentUrl`}>
+                    {() => (
                       <FileInput
-                        initialLogo={field.value}
+                        initialLogo={attachmentValue}
                         onFileSelect={(file) => {
-                          onFileUpload(`${fieldName}#attachment`, file);
-                          form.setFieldValue(`${fieldName}#attachment`, file);
+                          onDocumentChange(fieldName, file, setFieldValue);
                         }}
                         label="Upload file"
                         buttonCaption={'Select File'}
@@ -130,7 +134,7 @@ function QuestionnaireTemplate({ onFileUpload, config, isPreview, onRemoveFile }
     );
   } else if (Array.isArray(config)) {
     {
-      config.map((template, templateIndex) => {
+      config.map((template) => {
         templateList.push(
           <div className="template">
             {template.questions.map((question, questionIndex) => getControl(question, template.id, questionIndex))}
@@ -139,7 +143,6 @@ function QuestionnaireTemplate({ onFileUpload, config, isPreview, onRemoveFile }
       });
     }
   }
-  console.log('templateList', templateList);
   return <div className="questionnaire-template-question-list">{templateList}</div>;
 }
 
