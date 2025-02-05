@@ -167,7 +167,7 @@ function DetailsPanel({
         />
       );
     });
-console.log(details.questionnaires);
+  console.log(details.questionnaires);
   return (
     <div className={styles.detailsPanel}>
       <div className={styles.drawerBodyContent}>
@@ -199,8 +199,10 @@ console.log(details.questionnaires);
                   </div>
                   <div>{renderConfiguration(section.sectionData, details)}</div>
                 </div>
+              ) : details.questionnaires.length > 0 ? (
+                <div> {renderQuestionnaire(details, section)}</div>
               ) : (
-                details.questionnaires .length > 0  ? <div> {renderQuestionnaire(details, section) }</div> : ''
+                ''
               )}
             </>
           ))}
@@ -247,7 +249,7 @@ function ConfigItem({ label, value, display = true }) {
   );
 }
 
-function QuestionnaireItem({ templateName, section, onDelete, showHeader,questionnaire }) {
+function QuestionnaireItem({ templateName, section, onDelete, showHeader, questionnaire }) {
   const navigate = useNavigate();
   const { t } = useTranslate();
 

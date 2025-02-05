@@ -1,18 +1,20 @@
-import React from 'react'
-import { Button, Heading } from '@mckesson/mcp-component-library';
+import React from 'react';
+import { Button, Heading, Required } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
-import {  useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import QuestionnaireTemplate from '../questionnaire/QuestionnaireTemplate';
+import { Form, Formik } from 'formik';
 
 function ConfigurationPreview() {
   const { t } = useTranslate();
-  const location =useLocation();
-  const navigate= useNavigate();
-  const { isMaterial = false, isCatalog = false, isAccount = false, questionnaire =[]} = location.state || false; 
-  
-   const handleOnBackToQuestionnaire = () => {
-     navigate(-1);
-   };
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { isMaterial = false, isCatalog = false, isAccount = false, questionnaire = [] } = location.state || false;
+
+  const handleOnBackToQuestionnaire = () => {
+    navigate(-1);
+  };
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -33,11 +35,24 @@ function ConfigurationPreview() {
       </div>
       <div className="row-space-between-center">
         <div className="styled-heading">
-          <Heading as="h1">Configuration Preview</Heading>
+          <Heading as="h1">{t('labels.configurationPreview')}</Heading>
         </div>
+      </div>
+      <div className="MCP-panel-container ">
+        <div className="row-space-between-center styled-heading">
+          <Heading as="h3">{t('labels.additionalDetails')}</Heading>
+          <p className="tertiaryHeading">
+            <Required id="Required"></Required> {t('userManagement.create_user.required')}
+          </p>
+        </div>
+        <Formik>
+          <Form>
+            <QuestionnaireTemplate config={questionnaire} isPreview={true} />
+          </Form>
+        </Formik>
       </div>
     </div>
   );
-} 
+}
 
-export default ConfigurationPreview
+export default ConfigurationPreview;

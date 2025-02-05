@@ -357,6 +357,7 @@ export const MessageEn = {
   'label.check.requiredDocument': 'Document upload required?',
   'button.caption.addQuestion': 'Add Question',
   'button.caption.createQuestionnaire': 'Create Questionnaire',
+  'button.caption.updateQuestionnaire': 'Update Questionnaire',
   'label.type': 'Type',
   'label.templateName': 'Template Name',
   'message.questionnaire.templateNameRequired': 'Template name is required',
@@ -380,6 +381,6 @@ export const MessageEn = {
   'table.columns.captions.dateCreatedOn': 'Date Created On',
   'table.columns.captions.created_By': 'Created By',
   'table.columns.captions.action': 'Action',
-  'controls.placeholder.searchQuestionnaire': 'Search by Template Name'
-   
+  'controls.placeholder.searchQuestionnaire': 'Search by Template Name',
+  'labels.configurationPreview': 'Configuration Preview'
 };

@@ -24,9 +24,18 @@ function TemplateList() {
   const location = useLocation();
   const navigate = useNavigate();
   const showCardView = useResponsiveView();
-  const { applyFilters, clearFilters, applySort, data, isError, isLoading, paginationConfig, selectedTemplates, setTemplates,
-    setPageNumber} =
-    useQuestionnaire();
+  const {
+    applyFilters,
+    clearFilters,
+    applySort,
+    data,
+    isError,
+    isLoading,
+    paginationConfig,
+    selectedTemplates,
+    setTemplates,
+    setPageNumber
+  } = useQuestionnaire();
   const { renderCheckBox, selectedData, setSelectedData } = useMultiCheckBox(data, paginationConfig, selectedTemplates, setTemplates);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -49,7 +58,7 @@ function TemplateList() {
     }
   }, []);
 
-  const handleChangePage = (e, newPage) => { 
+  const handleChangePage = (e, newPage) => {
     setPageNumber(newPage);
   };
 

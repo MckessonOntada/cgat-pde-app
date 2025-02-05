@@ -45,7 +45,7 @@ export default function mapQuestionnaire() {
   }, [selectedEntityType]);
 
   useEffect(() => {
-    if (selectedTemplates.length === 0){
+    if (selectedTemplates.length === 0) {
       setSelectedTemplates(templatesSelected);
     }
   }, [selectedEntityType]);
@@ -61,7 +61,7 @@ export default function mapQuestionnaire() {
           ? 'messages.error_config_account'
           : ''
       );
-      showAlert('error', alertDesc); 
+      showAlert('error', alertDesc);
       return;
     }
     ConfigureQuestionnaire();
@@ -104,7 +104,7 @@ export default function mapQuestionnaire() {
   const showAlert = (type, message) => {
     setAlert({ type });
     setIsAlertVisible(true);
-    setAlertDescription(message);  
+    setAlertDescription(message);
   };
 
   const handleAlertClose = () => {

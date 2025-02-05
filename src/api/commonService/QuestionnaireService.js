@@ -57,6 +57,47 @@ async function configureQuestionnaire(entityType, payload) {
   return {};
 }
 
+async function getConfiguredQuestionnaire(requestParams) {
+  if (!requestParams || typeof requestParams !== 'object') {
+    throw new Error(
+      'Invalid payload. Expected an object with the following shape: { soldToCustomer : <string>, shipToCustomer : <string>, sapMaterial : <string>, variant?: <string> }.'
+    );
+  }
+
+  const { soldToCustomer, shipToCustomer, sapMaterial } = requestParams;
+
+  if (soldToCustomer === undefined || shipToCustomer === undefined || sapMaterial === undefined) {
+    throw new Error(
+      "Invalid payload. Required properties: 'soldToCustomer', 'shipToCustomer', and 'sapMaterial '. Optional property: 'variant'."
+    );
+  }
+
+  const url = `${ApiRoutes.QUESTIONNAIRE()}/configured-questionnaire?${serializeParams(requestParams)}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, null);
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
+
+async function uploadQuestionnaireDocument(payload) {
+  const { orderId, templateId, file } = payload;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/documents?templateId=${templateId}`;
+
+  const res = await HttpResourceService.callRest(
+    url,
+    httpVerb.POST,
+    { file },
+    {
+      'Content-Type': 'multipart/form-data'
+    }
+  );
+
+  if (res.data) return res.data;
+
+  return {};
+}
+
 async function deLinkConfigureQuestionnaire(entityType, payload) {
   const apiUrl = `${ApiRoutes.QUESTIONNAIRE()}/configure/deLink?type=${entityType}`;
   const res = await HttpResourceService.callRest(apiUrl, httpVerb.DELETE, payload);
@@ -74,6 +115,8 @@ const QuestionnaireService = Object.freeze({
   updateQuestionnaire,
   getQuestionnaireById,
   deactivateQuestionnaireById,
+  getConfiguredQuestionnaire,
+  uploadQuestionnaireDocument,
   deLinkConfigureQuestionnaire
 });
 

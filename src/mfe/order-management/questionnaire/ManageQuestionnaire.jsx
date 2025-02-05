@@ -36,26 +36,35 @@ function ManageQuestionnaire() {
     if (isAccount) return t('messages.confirmation.success_config_account');
     return '';
   };
- 
-  const [isAlertVisible, setIsAlertVisible] = useState(false);
-  const [alertDescription, setAlertDescription] = useState('');
-  const [alert, setAlert] = useState(null);
+  const [alertConfig, setAlertConfig] = useState(location.state?.alertConfig || null);
 
   const handleOnClick = () => {
     navigate('add');
   };
 
   React.useEffect(() => {
+    if (location.state?.alertConfig) {
+      setAlertConfig({ ...location.state.alertConfig });
+    }
+    if (location.state?.refetch) {
+      refetchTemplates();
+    }
+    navigate(location.pathname, { replace: true, state: null });
+  }, [navigate, location.pathname]);
+
+  React.useEffect(() => {
     if (isSuccess) {
-      setIsAlertVisible(true);
-      setAlertDescription(getSuccessMessage);
-      setAlert({ type: 'success' }); 
+      setAlertConfig({
+        isVisible: true,
+        description: getSuccessMessage(),
+        type: 'success'
+      });
       refetchTemplates();
     }
   }, [location.state, navigate]);
 
   const handleAlertClose = () => {
-    setIsAlertVisible(false);
+    setAlertConfig(null);
     navigate(location.pathname, { replace: true, state: { ...location.state.value } });
   };
 
@@ -66,18 +75,18 @@ function ManageQuestionnaire() {
           <Breadcrumbs items={breadcrumbItems} />
         </div>
         <div className="MCP-module-body">
-          <ModuleHeader
-            heading={<Heading as="h1">{t('heading.manageQuestionnaire')}</Heading>}
-            controls={
-              <div className="controls">
-                <Button onClick={handleOnClick} variant="primary" size="md" Icon={AddCircleIcon}>
-                  {t('button.caption.addQuestionnaire')}
-                </Button>
-              </div>
-            }
-          />
-          {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
-          <div className="MCP-panel-container">
+          <div className="row-space-between-center">
+            <div className="styled-heading">
+              <Heading as="h1">{t('heading.manageQuestionnaire')}</Heading>
+            </div>
+            <Button onClick={handleOnClick} variant="primary" size="md" Icon={AddCircleIcon}>
+              {t('button.caption.addQuestionnaire')}
+            </Button>
+          </div>
+          {alertConfig && alertConfig.isVisible && (
+            <Alert description={alertConfig.description} onClose={handleAlertClose} type={alertConfig.type} duration={10000} />
+          )}
+          <div className="MCP-CardContainer">
             <TemplateList />
           </div>
         </div>

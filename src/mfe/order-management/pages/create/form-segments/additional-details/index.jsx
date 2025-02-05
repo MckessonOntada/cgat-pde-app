@@ -21,17 +21,56 @@ import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
+import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
+import QuestionnaireTemplate from '@src/mfe/order-management/questionnaire/QuestionnaireTemplate';
+import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/order-management/questionnaire/AddQuestionnaire';
 
-const getValidationSchema = (t, config) =>
-  Yup.object({
+const INITIAL_VALUES = {
+  coiId: '',
+  orderQuantity: '',
+  slotNumber: '',
+  poNumber: '',
+  dateOfAdministration: ''
+};
+
+function AdditionalDetails() {
+  const { t } = useTranslate();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { isEdit = false, isApprover = false, alertState } = location.state || {};
+  const { orderId } = useParams();
+  const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
+  const [validationSchema, setValidationSchema] = React.useState(null);
+  const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
+  const therapyId = formState.activeRecord?.therapy?.materialNumber;
+  const soldToAccountId = formState.activeRecord?.accountDetails?.soldToAccount?.accountNumber;
+  const shipToAccountId = formState.activeRecord?.accountDetails?.shipToAccount?.accountNumber;
+  const variantsApiRequestParam = { pageNo: 0, pageSize: 10 };
+  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
+  const [isDirty, setIsDirty] = React.useState(false);
+  const [uploadList, setUploadList] = React.useState({});
+  const [questionnaireTemplateConfig, setQuestionnaireTemplateConfig] = React.useState(null);
+  const [variantAcknowledgement, setVariantAcknowledgement] = React.useState({
+    isDisabled: false,
+    isChecked: false,
+    label: t('messages.variantAcknowledgement'),
+    value: false
+  });
+  const [variant, setVariant] = React.useState();
+  const { showAlert } = useAlert();
+  const alertContainerId = 'additionalDetails-alert-container';
+  const { isCoiIdRequired, patientDetailsRequired } = formState?.activeRecord || {};
+
+  const initialValidationSchema = Yup.object({
     coiId: Yup.string()
       .matches(NUMBER_REGEX, t('labels.COI_IdMustValidNumber'))
       .max(20, t('labels.COI_IdExceedDigits'))
       .when([], {
-        is: () => config.isCoiIdRequired === true,
+        is: () => isCoiIdRequired === true,
         then: (schema) => schema.required(t('labels.COIIdRequired')),
         otherwise: (schema) => schema
       }),
+
     orderQuantity: Yup.number()
       .typeError(t('labels.OrderQuantityShouldPositive'))
       .required(t('labels.orderQuantityRequired'))
@@ -51,40 +90,11 @@ const getValidationSchema = (t, config) =>
       .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
   });
 
-const INITIAL_VALUES = {
-  coiId: '',
-  orderQuantity: '',
-  slotNumber: '',
-  poNumber: '',
-  dateOfAdministration: ''
-};
-
-function AdditionalDetails() {
-  const { t } = useTranslate();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { isEdit = false, isApprover = false, alertState } = location.state || {};
-  const { orderId } = useParams();
-  const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
-  const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
-  const therapyId = formState.activeRecord?.therapy?.materialNumber;
-  const soldToAccountId = formState.activeRecord?.accountDetails?.soldToAccount?.accountNumber;
-  const shipToAccountId = formState.activeRecord?.accountDetails?.shipToAccount?.accountNumber;
-  const variantsApiRequestParam = { pageNo: 0, pageSize: 10 };
-  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-  const [isDirty, setIsDirty] = React.useState(false);
-  const [variantAcknowledgement, setVariantAcknowledgement] = React.useState({
-    isDisabled: false,
-    isChecked: false,
-    label: t('messages.variantAcknowledgement'),
-    value: false
-  });
-  const [variant, setVariant] = React.useState();
-  const { showAlert } = useAlert();
-  const alertContainerId = 'additionalDetails-alert-container';
-  const { isCoiIdRequired, patientDetailsRequired } = formState?.activeRecord || {};
   const formFields = getFormFields(t, { isCoiIdRequired });
-  const validationSchema = getValidationSchema(t, { isCoiIdRequired });
+
+  React.useEffect(() => {
+    setValidationSchema(initialValidationSchema);
+  }, []);
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = formState.activeRecord || {};
@@ -112,11 +122,109 @@ function AdditionalDetails() {
     showAlert({ ...alertState, anchorEl: alertContainerId });
   }, []);
 
+  const prepareQuestionnaire = (result) => {
+    setQuestionnaireTemplateConfig(result);
+    if (!result || !Array.isArray(result)) {
+      throw new Error('Not a valid questionnaire config');
+      return;
+    }
+    const questionnaireFields = {};
+    const validationSchemaFields = {};
+    result.forEach((template, templateIndex) => {
+      template.questions.forEach((question, questionIndex) => {
+        const fieldName = `${template.id}#${question.text[LANGUAGE.ENGLISH]?.trim().replace(/ /g, '_')}`;
+        questionnaireFields[fieldName] = question.value;
+        if (question.isDocumentRequired && question.documentUrl) {
+          uploadList[`${fieldName}`] = question.documentUrl;
+          questionnaireFields[`${fieldName}#attachment`] = question.documentUrl;
+        }
+        validationSchemaFields[fieldName] =
+          question.type === QUESTION_TYPE.INPUT || question.type === QUESTION_TYPE.RADIO_BUTTON
+            ? Yup.string()[question.isMandatory ? 'required' : 'nullable'](`Value is required`)
+            : Yup.array().of(Yup.string())[question.isMandatory ? 'min' : 'nullable'](1, `Select at least on option`);
+      });
+      const questionnaireValidationSchema = Yup.object(validationSchemaFields);
+      initialValidationSchema.concat(questionnaireValidationSchema);
+    });
+    setInitialFormValues((prevState) => {
+      return {
+        ...prevState,
+        ...questionnaireFields
+      };
+    });
+    setUploadList(uploadList);
+    setValidationSchema(initialValidationSchema);
+  };
+  const variantType = variant?.variant;
+  const {
+    data: configuredQuestions,
+    isFetching: isFetchingConfiguredQuestions,
+    isError: isErrorConfiguredQuestions,
+    error: configuredQuestionsError,
+    refetch: fetchConfiguredQuestions
+  } = useQuery({
+    queryKey: ['configured-questionnaire', variant ?? 'default-variant'],
+    queryFn: async () => {
+      const { accountDetails, therapy } = formState.activeRecord;
+      const payload = {
+        variantType,
+        soldToCustomer: accountDetails.soldToAccount.accountNumber,
+        shipToCustomer: accountDetails.shipToAccount.accountNumber,
+        sapMaterial: therapy.materialNumber
+      };
+      return QuestionnaireService.getConfiguredQuestionnaire(payload);
+    },
+    enabled: false,
+    refetchOnWindowFocus: false,
+    onSuccess: (result) => {
+      result && prepareQuestionnaire(result);
+    },
+    onError: console.log
+  });
+
+  const { data: uploadDocumentResponse, mutate: uploadDocument } = useMutation(
+    async ({ fieldName, file }) => {
+      const [templateId] = fieldName.split('#');
+      return QuestionnaireService.uploadQuestionnaireDocument({ orderId, templateId, file });
+    },
+    {
+      onSuccess: (result, variables) => {
+        const { fieldName } = variables;
+        uploadList[fieldName] = result;
+        setUploadList(uploadList);
+      }
+    }
+  );
+
+  const handleOnFileChange = (fieldName, file) => {
+    uploadDocument({ fieldName, file });
+  };
+
+  const handleOnRemoveDocument = (fieldName) => {
+    const { [fieldName]: removedFile, ...rest } = uploadList;
+    const [templateId, field, _attachment] = fieldName.split('#');
+    const template = questionnaireTemplateConfig.find((item) => item.id == templateId);
+    if (template) {
+      const question = template.questions.find((question) => {
+        const _fieldName = question.text[LANGUAGE.ENGLISH].replace(/ /g, '_');
+        return field == _fieldName;
+      });
+      if (question) {
+        question.documentUrl = null;
+      }
+    }
+    setQuestionnaireTemplateConfig([...questionnaireTemplateConfig]);
+    setUploadList(rest);
+    initialFormValues[`${fieldName}#attachment`] = null;
+    setInitialFormValues({ ...initialFormValues });
+  };
+
   const { isLoading, data: variantsData = {} } = useQuery({
     queryKey: ['order', 'variants', orderId],
     queryFn: async () => OrderService.getVariants(therapyId, soldToAccountId, shipToAccountId, variantsApiRequestParam),
     enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId,
     refetchOnWindowFocus: false,
+    onSuccess: (result) => {},
     onError: (error) => {
       const errorKey = handleApiError(err);
       showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
@@ -137,16 +245,34 @@ function AdditionalDetails() {
         patientConsentTaken,
         poNumber,
         slotNumber,
-        variantDetails: _variant
+        variantDetails: _variant,
+        configuredQuestionnaires
       } = additionalDetails;
 
-      setInitialFormValues({
-        coiId: coiId,
-        orderQuantity: orderQuantity,
-        slotNumber: slotNumber,
-        poNumber: poNumber,
-        dateOfAdministration: dateOfAdministration
-      });
+      const initialValues = {
+        dateOfAdministration,
+        coiId,
+        orderQuantity,
+        poNumber,
+        slotNumber
+      };
+
+      configuredQuestionnaires && prepareQuestionnaire(configuredQuestionnaires);
+
+      // if (configuredQuestionnaires) {
+      //   configuredQuestionnaires.forEach((template) => {
+      //     if (template.questions && Array.isArray(template.questions)) {
+      //       template.questions.map((question, index) => {
+      //         const fieldName = `${template.id}#${question.text[LANGUAGE.ENGLISH].replace(/ /g, '_')}`;
+      //         initialValues[fieldName] = question.value;
+      //       });
+      //     }
+      //   });
+      // }
+      setInitialFormValues((prevState) => ({
+        ...prevState,
+        ...initialValues
+      }));
 
       if (!variantsData.content || !_variant) {
         return;
@@ -186,14 +312,60 @@ function AdditionalDetails() {
           variantAcknowledgment: variantAcknowledgement.isChecked
         }
       : null;
+
+    // question template response
+    const { accountDetails, therapy } = formState.activeRecord;
+    const questionnaireDependencies = {
+      soldToCustomer: accountDetails.soldToAccount.accountNumber,
+      shipToCustomer: accountDetails.soldToAccount.accountNumber,
+      sapMaterial: therapy.materialNumber,
+      variant
+    };
+    //template/question
+    const response = [];
+    const questionnaireResponse = {
+      response: [...questionnaireTemplateConfig],
+      dependencies: questionnaireDependencies
+    };
+    const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, ...rest } = values;
+    Object.entries(rest).forEach(([key, value]) => {
+      if (!key) return;
+
+      const [templateId, fieldKey, attachment] = key.split('#');
+      if (!templateId || !fieldKey) {
+        return;
+      }
+
+      const template = questionnaireResponse.response.find((_template) => _template.id == templateId);
+      if (!template) return;
+      const answeredTemplate = {
+        templateName: template.templateName,
+        questions: template.questions
+      };
+      const question = answeredTemplate.questions.find((question) => {
+        const fieldName = `${question.text[LANGUAGE.ENGLISH].replace(/ /g, '_')}`;
+        return fieldName === fieldKey;
+      });
+
+      if (attachment) {
+        const documentUrl = uploadList[key];
+        question.documentUrl = documentUrl;
+      } else {
+        question.value = value;
+      }
+
+      // questionnaireResponse.response.push(answeredTemplate);
+    });
+
     const payload = {
-      coiId: values.coiId,
-      orderQuantity: values.orderQuantity,
-      slotNumber: values.slotNumber,
-      poNumber: values.poNumber,
-      dateOfAdministration: values.dateOfAdministration,
+      coiId,
+      orderQuantity,
+      slotNumber,
+      poNumber,
+      dateOfAdministration,
+      variantDetails: _var,
       patientConsentTaken: true,
-      variantDetails: _var
+      configuredQuestionnaires: questionnaireResponse.response
     };
 
     saveAdditionalDetails(payload);
@@ -224,6 +396,10 @@ function AdditionalDetails() {
   const handleOnVariantChange = (variant) => {
     setVariant(variant);
   };
+
+  React.useEffect(() => {
+    if (formState.activeRecord && !isEdit) fetchConfiguredQuestions();
+  }, [variant, formState.activeRecord]);
 
   const handleOnAcknowledgmentChange = () => {
     const updatedOptions = { ...variantAcknowledgement, isChecked: !variantAcknowledgement.isChecked };
@@ -304,15 +480,22 @@ function AdditionalDetails() {
                       </div>
                     </>
                   )}
+
+                  {questionnaireTemplateConfig && Array.isArray(questionnaireTemplateConfig) && questionnaireTemplateConfig.length > 0 && (
+                    <div className="configured-questionnaire-form">
+                      <QuestionnaireTemplate
+                        onRemoveFile={handleOnRemoveDocument}
+                        onFileUpload={handleOnFileChange}
+                        config={questionnaireTemplateConfig}
+                        isPreview={false}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className="controls">
                   <Button size="md" variant="secondary" onClick={handleOnBack}>
-                    {isEdit
-                      ? t('captions.btnBack')
-                      : patientDetailsRequired
-                      ? t('captions.btnBacktoPatientDetails')
-                      : t('captions.btnBacktoAccountSelection')}
+                    {isEdit ? t('captions.btnBack') : t('captions.btnBacktoPatientDetails')}
                   </Button>
                   <Button
                     size="md"

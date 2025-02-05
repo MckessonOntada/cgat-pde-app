@@ -33,6 +33,6 @@ export const ConfigConstants = [
       { label: 'manageMaterial.drawer.details.configuration.body.patientInfoRequired', value: 'isPatientInformationRequired' },
       { label: 'manageMaterial.drawer.details.configuration.body.coiIdRequired', value: 'isCoiIdRequired' }
     ],
-    questionnaire:false
+    questionnaire: false
   }
 ];

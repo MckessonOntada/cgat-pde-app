@@ -6,7 +6,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as AddCircleBold } from '@src/assets/image/add_circle_bold.svg';
 import { ReactComponent as Close } from '@src/assets/image/close.svg';
 
-const FileInput = ({ onFileSelect, label, initialLogo }) => {
+const FileInput = ({ onFileSelect, label, initialLogo, buttonCaption }) => {
   const [file, setFile] = useState(initialLogo || null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
@@ -77,7 +77,7 @@ const FileInput = ({ onFileSelect, label, initialLogo }) => {
         </div>
 
         <Button Icon={AddCircleBold} className="button-icon" variant="secondary" onClick={handleBrowseClick} size={'md'}>
-          {t('file.browse.logo')}
+          {buttonCaption || t('file.browse.logo')}
         </Button>
 
         {file && (

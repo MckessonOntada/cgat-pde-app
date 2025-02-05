@@ -28,6 +28,7 @@ function OrderHeaderDetails({ therapyId, soldToAccountId, shipToAccountId, setIn
     const { therapy, author, accountDetails, patient, patientDetailsRequired, orderCost } = formState.activeRecord || {};
     detailsSegments.push(
       <DetailSegment
+        key={'therapy-description'}
         label={t('labels.therapyDescription')}
         value={
           <React.Fragment>
@@ -38,18 +39,26 @@ function OrderHeaderDetails({ therapyId, soldToAccountId, shipToAccountId, setIn
       />
     );
     if (accountDetails && accountDetails.soldToAccount) {
-      detailsSegments.push(<DetailSegment label={t('labels.orderByAccountNumber')} value={accountDetails.soldToAccount.accountNumber} />);
+      detailsSegments.push(
+        <DetailSegment
+          key={'sold-to-account'}
+          label={t('labels.orderByAccountNumber')}
+          value={accountDetails.soldToAccount.accountNumber}
+        />
+      );
     }
     if (accountDetails && accountDetails.shipToAccount) {
-      detailsSegments.push(<DetailSegment label={t('labels.shipToAccountNumber')} value={accountDetails.shipToAccount.accountNumber} />);
+      detailsSegments.push(
+        <DetailSegment key={'ship-to-account'} label={t('labels.shipToAccountNumber')} value={accountDetails.shipToAccount.accountNumber} />
+      );
     }
     if (patientDetailsRequired && patient) {
       const patientFullName = [patient.lastName, patient.firstName, patient.middleName].filter(Boolean).join(' ') || '-';
-      detailsSegments.push(<DetailSegment label={t('labels.patientName')} value={patientFullName} />);
+      detailsSegments.push(<DetailSegment key={'patient-name'} label={t('labels.patientName')} value={patientFullName} />);
     }
 
     detailsSegments.push(
-      <div className={`price-wrapper col-span-${5 - detailsSegments.length}`}>
+      <div key={'price-details'} className={`price-wrapper col-span-${5 - detailsSegments.length}`}>
         <DetailSegment
           label={t('labels.price')}
           value={
