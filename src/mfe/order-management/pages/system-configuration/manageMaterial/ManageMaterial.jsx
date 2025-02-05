@@ -28,7 +28,7 @@ function ManageMaterial() {
   return (
     <div className="MCP-module-wrapper">
       <Breadcrumbs items={breadcrumbItems} />
-      <Heading as="h2">{t('manageMaterial.heading')}</Heading>
+      <Heading as="h1">{t('manageMaterial.heading')}</Heading>
       <div className={`${styles.cardContainer}`}>
         <div className={`${styles.cardContainer}`}>
           <CommonFilters

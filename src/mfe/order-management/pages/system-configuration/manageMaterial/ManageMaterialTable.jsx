@@ -169,19 +169,6 @@ function ManageMaterialTable({ ...props }) {
 
   return (
     <React.Fragment>
-      {selectedMaterials.length > 0 && (
-        <div className="selected-invoices">
-          <div className="label">{`${selectedMaterials.length} ${t('manageMaterial.table.header.text')}`}</div>
-          <Button
-            variant="secondary"
-            onClick={() => {
-              setOpenConfiguration(!openConfiguration);
-            }}
-            size="sm">
-            {t('manageMaterial.table.header.button.configure')}
-          </Button>
-        </div>
-      )}
       {configureSuccess && (
         <Alert
           description={t('manageMaterial.drawer.controls.apply.success')}
@@ -199,6 +186,19 @@ function ManageMaterialTable({ ...props }) {
         />
       )}
       <TableHeading heading={'Material Listing'} />
+      {selectedMaterials.length > 0 && (
+        <div className="selected-invoices">
+          <div className="label">{`${selectedMaterials.length} ${t('manageMaterial.table.header.text')}`}</div>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setOpenConfiguration(!openConfiguration);
+            }}
+            size="sm">
+            {t('manageMaterial.table.header.button.configure')}
+          </Button>
+        </div>
+      )}
       <CustomDataTable
         id="manage-material-table"
         type="normal"
