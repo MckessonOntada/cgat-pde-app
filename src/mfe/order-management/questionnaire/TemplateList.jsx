@@ -34,7 +34,8 @@ function TemplateList() {
     paginationConfig,
     selectedTemplates,
     setTemplates,
-    setPageNumber
+    setPageNumber,
+    refetchTemplates
   } = useQuestionnaire();
   const { renderCheckBox, selectedData, setSelectedData } = useMultiCheckBox(data, paginationConfig, selectedTemplates, setTemplates);
 
@@ -56,6 +57,7 @@ function TemplateList() {
       setSelectedData([]);
       setTemplates([]);
     }
+    refetchTemplates();
   }, []);
 
   const handleChangePage = (e, newPage) => {
