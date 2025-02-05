@@ -50,7 +50,7 @@ function ManageQuestionnaire() {
       refetchTemplates();
     }
     navigate(location.pathname, { replace: true, state: null });
-  }, [navigate, location.pathname]);
+  }, [navigate, location.pathname, location.state]);
 
   React.useEffect(() => {
     if (isSuccess) {

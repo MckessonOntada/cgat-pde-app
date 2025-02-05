@@ -1,20 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Alert, Button, Heading, Label } from '@mckesson/mcp-component-library';
-
 import { useTranslate } from '@src/translations/useTranslation';
-import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
 import { debugIds, ID } from '@src/constants/id';
-import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
-import { ReactComponent as upload_bottom } from '@src/assets/image/upload_bottom.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
-import ModuleHeader from '@src/components/module-header';
-import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import CommonFilters from '@src/components/Filters';
-import usePermission from '@src/hooks/usePermissions';
 import EntityDataTable from './EntityDataTable';
 import { useManagerQuestionnaire } from '../../context/ManageQuestionnaireContext';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
-import { getEntityTypeFlags, MasterEntityType } from '../util';
+import { getEntityTypeFlags } from '../util';
 import OrgAccountsSelect from '../../components/orgAccountSelection/OrgAccountsSelect';
 import { useQuestionnaire } from '../../context/QuestionnaireContext';
 import QuestionnaireConfig from '@src/api/commonService/QuestionnaireService';
@@ -68,7 +61,12 @@ export default function mapQuestionnaire() {
     ConfigureQuestionnaire();
   };
 
-  const templateNames = selectedTemplates.map((template) => template.templateName).join(', ');
+  const [firstTemplate, secondTemplate, ...remainingTemplates] = selectedTemplates.map((template) => template.templateName);
+
+  const templateNames =
+    remainingTemplates.length > 0
+      ? `${firstTemplate}, ${secondTemplate}  ( + ${remainingTemplates.length} more)`
+      : [firstTemplate, secondTemplate].filter(Boolean).join(', ');
 
   function buildPayload({ isMaterial, isCatalog, isAccount, selectedRows = [] }) {
     return {
