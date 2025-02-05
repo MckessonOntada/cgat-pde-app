@@ -73,7 +73,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
-        <Heading as="h2">{t('manageMaterial.drawer.configuration.heading')}</Heading>
+        <Heading as="h3">{t('manageMaterial.drawer.configuration.heading')}</Heading>
         <button onClick={onClose}>
           <IconClose />
         </button>
