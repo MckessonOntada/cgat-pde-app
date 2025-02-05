@@ -93,7 +93,6 @@ function TemplateList() {
       id: 'status',
       name: t('table.columns.captions.status'),
       selector: (row) => row.active,
-      sortable: true,
       sortKey: 'active',
       minWidth: '160px',
       wrap: true,
@@ -249,7 +248,7 @@ const SelectMaster = ({ onClose, onSubmit, t }) => {
         <Heading as="h3">{t('label.selectMaster')}</Heading>
       </div>
       <div className="grow">
-        <div className="styled-radio-group">
+        <div className="radio-group">
           <RadioGroup
             caption={t('label.selectContent')}
             direction="column"

@@ -60,11 +60,18 @@
     }
   }
 
-  .remove-button {
+  // [class*="IonButton-module--baseStyles"] [class*="IonButton-module--icon"] {
+  //   color: red !important;
+  // }
+  // [class*="IonButton-module--baseStyles"]:hover [class*="IonButton-module--icon"] {
+  //   color: red !important;
+  // }
+
+  .remove-button-upload {
     position: absolute;
     cursor: pointer;
     width: 16px;
-    height: 16px;
+    height: 55px;
     margin-right: var(--spacing-01);
     right: 5px;
   }

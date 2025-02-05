@@ -38,7 +38,12 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
     }
   }, [openCatalogDetails]);
 
-  const {  mutate: fetchCatalog, isLoading, isError, data } = useMutation(
+  const {
+    mutate: fetchCatalog,
+    isLoading,
+    isError,
+    data
+  } = useMutation(
     async (payload) => {
       const apiUrl = `${ApiRoutes.GET_CATALOG_DATA()}/configuration?${serializeParams(requestParams())}`;
       const res = await HttpResourceService.callRest(apiUrl, httpVerb.GET, {});
@@ -52,9 +57,9 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
       }
     }
   );
- const refetch = () => {
-   fetchCatalog();  
- };
+  const refetch = () => {
+    fetchCatalog();
+  };
   const { mutate: deleteConfiguration, isLoading: isDeleteLoading } = useMutation(
     async (payload) => {
       const apiUrl = `${ApiRoutes.GET_CATALOG_DATA()}/configuration?${serializeParams(requestParams())}`;
@@ -84,17 +89,16 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
     };
     delinkQuestionnaire(payload);
   };
-   
+
   const { mutate: delinkQuestionnaire, isLoading: isDelinkLoading } = useMutation(
     async (payload) => {
       await QuestionnaireService.deLinkConfigureQuestionnaire('Catalog', payload);
     },
     {
       onSuccess: (response) => {
-           showSnackbar({ description: t('ManageCatalog.delink.success'), type: 'success' });
-         refetch();
+        refetch();
       },
-      onError: (error) => { 
+      onError: (error) => {
         showSnackbar({ description: t('ManageCatalog.delink.error'), type: 'error' });
       }
     }
@@ -141,7 +145,9 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
                   <div className="Questionnaire-li">
                     <div className="Questionnaire-key">{t('ManageCatalog.questionnaireConfiguration')}</div>
                     <div className="Questionnaire-value">
-                      <div onClick={() => navigate(PREVIEW_URL, { state: { isCatalog: true, questionnaire: data?.questionnaires  } })}>{t('ManageCatalog.Preview')}</div>
+                      <div onClick={() => navigate(PREVIEW_URL, { state: { isCatalog: true, questionnaire: data?.questionnaires } })}>
+                        {t('ManageCatalog.Preview')}
+                      </div>
                     </div>
                   </div>
                   <div className="Questionnairedetails-ul">

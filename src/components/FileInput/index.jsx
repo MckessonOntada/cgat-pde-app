@@ -88,7 +88,14 @@ const FileInput = ({ onFileSelect, label, initialLogo, buttonCaption }) => {
               <p>{(file.size / 1024).toFixed(2)} KB</p>
             </div>
 
-            <Button Icon={Close} className="remove-button" variant="tertiary" onClick={handleClearLogo} iconButton={true} size={'md'} />
+            <Button
+              Icon={Close}
+              className="remove-button-upload"
+              variant="tertiary"
+              onClick={handleClearLogo}
+              iconButton={true}
+              size={'lg'}
+            />
           </div>
         )}
       </label>

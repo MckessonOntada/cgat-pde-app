@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Alert, Button, Heading } from '@mckesson/mcp-component-library';
+import { Alert, Button, Heading, Label } from '@mckesson/mcp-component-library';
 
 import { useTranslate } from '@src/translations/useTranslation';
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
@@ -21,6 +21,7 @@ import QuestionnaireConfig from '@src/api/commonService/QuestionnaireService';
 import { useMutation } from 'react-query';
 import { handleApiError } from '@src/util/ApiUtils';
 import './index.scss';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
 export default function mapQuestionnaire() {
   const { t } = useTranslate();
@@ -136,7 +137,7 @@ export default function mapQuestionnaire() {
           </Heading>
         </div>
         <div className="alignMultiple">
-          <span className="spnTemplate">{templateNames}</span>
+          <Label className="spnTemplate">{templateNames}</Label>
           <Button onClick={handleOnClick} variant="tertiary" size="md">
             {t('button.caption.change')}
           </Button>
@@ -159,23 +160,21 @@ export default function mapQuestionnaire() {
             )}
           />
         </div>
-        <Heading as="h2">
-          {t(isMaterial ? 'table.ariaLabel.materialList' : isCatalog ? 'table.ariaLabel.catalogList' : 'table.ariaLabel.accountList')}
-        </Heading>
-        <EntityDataTable EntityType={selectedEntityType} setSelectedRows={setSelectedRows} showAlert={showAlert} />
-      </div>
-      <ModuleHeader
-        controls={
-          <div className="controls">
-            <Button size="md" variant="secondary" onClick={handleCancel}>
-              {t('captions.btnCancel')}
-            </Button>
-            <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit}>
+
+        <TableHeading
+          heading={t(
+            isMaterial ? 'table.ariaLabel.materialList' : isCatalog ? 'table.ariaLabel.catalogList' : 'table.ariaLabel.accountList'
+          )}
+          secondaryView={selectedRows && selectedRows.length > 0}
+          secondaryViewHeading={`${selectedRows.length} ${t('userManagement.selected_items')}`}
+          secondaryViewControls={
+            <Button size="md" variant="secondary" type="submit" onClick={handleOnSubmit}>
               {t('label.addquestionnaire')}
             </Button>
-          </div>
-        }
-      />
+          }
+        />
+        <EntityDataTable EntityType={selectedEntityType} setSelectedRows={setSelectedRows} showAlert={showAlert} />
+      </div>
     </div>
   );
 }

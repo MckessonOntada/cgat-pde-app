@@ -124,7 +124,6 @@ function DetailsPanel({
     };
     try {
       await QuestionnaireService.deLinkConfigureQuestionnaire('Material', payload);
-      showSnackbar({ description: t('manageMaterial.drawer.delink.success'), type: 'success' });
       refetch();
     } catch (error) {
       showSnackbar({ description: t('manageMaterial.drawer.delink.error'), type: 'error' });
