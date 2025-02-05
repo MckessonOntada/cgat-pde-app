@@ -50,6 +50,7 @@ function TherapySelection() {
   }, []);
 
   React.useEffect(() => {
+    const { therapy } = formState.activeRecord || {};
     if (therapy) {
       setTherapy(therapy);
       setInitialSelectedTherapy(therapy);

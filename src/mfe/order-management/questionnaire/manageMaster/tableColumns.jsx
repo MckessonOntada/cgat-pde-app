@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAddress, MasterEntityType } from '../util';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
-import { useManagerQuestionnaire } from '../../context/ManageQuestionnaireContext'; 
+import { useManagerQuestionnaire } from '../../context/ManageQuestionnaireContext';
 import { useMultiCheckBox } from '../useMultiCheckBox';
 
 export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData, setSelectedRows, setOpenDetails, setSelectedDetails) => {
@@ -12,8 +12,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
     setSelectedRows(selectedData);
   }, [selectedData]);
 
-
-  const handleRowClick = (e,row) => { 
+  const handleRowClick = (e, row) => {
     setSelectedDetails(row);
     setOpenDetails(true);
   };
@@ -34,8 +33,6 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           name: t('labels.therapy.materialNumber'),
           selector: () => {},
           maxWidth: '350px',
-          sortable: true,
-          sortKey: 'materialNumber',
           cell: (props) => (
             <div className="cellEllipse">
               <Link
@@ -48,7 +45,6 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
                 }}>
                 <EclipsesTextcss str={props.materialNumber} maxWidth={240} />
               </Link>
-             
             </div>
           )
         },
@@ -57,11 +53,9 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           name: t('labels.therapy.materialDescription'),
           selector: (row) => row.materialDescription || '',
           maxWidth: '350px',
-          sortable: true,
-          sortKey: 'materialDescription',
           cell: (props) => (
             <span aria-label={t('labels.therapy.materialDescription')}>
-              <EclipsesTextcss str={props.materialDescription} maxWidth={380} />
+              <EclipsesTextcss str={props.materialDescription} maxWidth={350} />
             </span>
           )
         },
@@ -70,8 +64,6 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           name: t('table.columns.captions.nationalDrugCode'),
           selector: (row) => row.ndcNumber || '',
           maxWidth: '290px',
-          sortable: true,
-          sortKey: 'ndcNumber',
           cell: (props) => (
             <span aria-label={t('table.columns.captions.nationalDrugCode')}>
               <EclipsesTextcss str={props.ndcNumber} maxWidth={180} />
@@ -110,8 +102,6 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           name: t('table.columns.captions.accountNumber'),
           selector: (row) => row.accountNumber || '',
           maxWidth: '350px',
-          sortable: true,
-          sortKey: 'accountNumber',
           cell: (props) => (
             <Link
               className="MCP-table-link"
@@ -130,8 +120,6 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           name: t('table.columns.captions.accountName'),
           selector: (row) => row.accountName || '',
           maxWidth: '350px',
-          sortable: true,
-          sortKey: 'accountName',
           cell: (props) => <span aria-label={t('table.columns.captions.accountName')}>{props.accountName}</span>
         },
         {
@@ -139,8 +127,6 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           name: t('table.columns.captions.address'),
           selector: (row) => row.accountNumber || '',
           maxWidth: '290px',
-          sortable: true,
-          sortKey: 'address',
           cell: (props) => (
             <span aria-label={t('table.columns.captions.address')}>
               <EclipsesTextcss str={getAddress(props.address)} maxWidth={180} />
@@ -179,8 +165,6 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           name: t('labels.SapmaterialID'),
           selector: (row) => row.sapMaterial || '',
           maxWidth: '350px',
-          // sortable: true,
-          // sortKey: 'sapMaterial',
           cell: (props) => (
             <Link
               className="MCP-table-link"
@@ -189,7 +173,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
                 e.preventDefault();
                 setOpenDetails(true);
                 setSelectedDetails(props);
-              }}>              
+              }}>
               <EclipsesTextcss str={props.sapMaterial} maxWidth={240} />
             </Link>
           )
@@ -199,8 +183,6 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           name: t('labels.therapy.materialDescription'),
           selector: (row) => row.materialDescriptionInLanguageEn || '',
           maxWidth: '350px',
-          // sortable: true,
-          // sortKey: 'materialDescriptionInLanguageEn',
           cell: (props) => <span aria-label={t('labels.therapy.materialDescription')}>{props.materialDescriptionInLanguageEn}</span>
         },
         {
@@ -208,8 +190,6 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           name: t('labels.therapy.ndc'),
           selector: (row) => row.ndc || '',
           maxWidth: '290px',
-          // sortable: true,
-          // sortKey: 'ndcNumber',
           cell: (props) => (
             <span aria-label={t('labels.therapy.ndc')}>
               <EclipsesTextcss str={props.ndc} maxWidth={180} />
@@ -221,8 +201,6 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           name: t('labels.distChannel'),
           selector: (row) => row.distChannel || '',
           maxWidth: '290px',
-          // sortable: true,
-          // sortKey: 'distChannel',
           cell: (props) => (
             <span aria-label={t('labels.distChannel')}>
               <EclipsesTextcss str={props.distChannel} maxWidth={180} />
