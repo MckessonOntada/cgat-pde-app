@@ -42,5 +42,7 @@ export const ManageCatalogMessagesES = {
   'ManageCatalog.delink.error': 'S_Error while deleting Questionnaire Template',
   'ManageCatalog.questionnaireConfiguration': 'S_Questionnaire Configuration',
   'ManageCatalog.Preview': 'S_PREVIEW',
-  'ManageCatalog.BacktoPage': 'S_BACK TO MANAGE CATALOG PAGE'
+  'ManageCatalog.BacktoPage': 'S_BACK TO MANAGE CATALOG PAGE',
+  'ManageCatalog.Configurations': 'S_Configurations',
+  'ManageCatalog.input.validation.text': 'S_Maximum 5,000 Characters'
 };

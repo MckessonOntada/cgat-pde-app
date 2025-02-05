@@ -8,6 +8,7 @@ import { useCatalogContext } from '../context/CatalogContext';
 import CommonUtils from '@src/util/CommonUtils';
 import ConfigureCatalog from './ConfigureCatalog';
 import CatalogDetails from './CatalogDetails';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
 function CatalogDataTable(props) {
   const { t } = useTranslate();
@@ -187,16 +188,17 @@ function CatalogDataTable(props) {
 
   return (
     <div>
-      {selectedCatalogs?.length > 0 && (
-        <div className="selected-item-alert">
-          <p className="selected-item-text">
-            {selectedCatalogs?.length} {t('orgManagement.selected_items')}
-          </p>
+      <TableHeading
+        heading={t('table.ariaLabel.catalogList')}
+        secondaryView={selectedCatalogs?.length}
+        secondaryViewHeading={`${selectedCatalogs?.length} ${t('orgManagement.selected_items')}`}
+        secondaryViewControls={
           <Button variant="secondary" onClick={() => setOpenConfigurationDraw(true)}>
             {t('ManageCatalog.Button.Configure')}
           </Button>
-        </div>
-      )}
+        }
+        style={{ marginBottom: '16px' }}
+      />
       {isAlertVisible && (
         <div className="alert-container">
           <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />

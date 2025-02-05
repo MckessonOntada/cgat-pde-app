@@ -669,6 +669,10 @@ div.disable-all {
     line-height: calc(var(--spacing-04) + var(--spacing-01));
     font-weight: var(--brand-font-weight-700);
   }
+  h4{
+    font-weight: var(--brand-font-weight-700) !important;
+    font-size: var(--brand-font-size--default) !important;
+  }
 }
 
 .styled-form-field {

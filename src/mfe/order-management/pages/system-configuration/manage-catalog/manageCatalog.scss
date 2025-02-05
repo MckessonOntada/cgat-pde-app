@@ -23,7 +23,11 @@
     @include mixins.respond(sm) {
       width: 440px;
     }
-
+    .add-step{
+      button{
+        padding-left: 0px;
+      }
+    }
     .step-container {
       display: flex;
       flex-direction: column;
@@ -158,4 +162,10 @@
 }
 .alert-container {
   margin-bottom: var(--spacing-03);
+}
+.inputTextDesc{
+  text-align: end;
+  margin-top: -16px;
+  font-size: var(--brand-font-size--extra-small);
+  font-weight: var(--brand-font-weight-400);
 }
