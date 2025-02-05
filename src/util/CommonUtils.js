@@ -387,6 +387,15 @@ export const getFullName = (name) => {
     .trim();
 };
 
+function generateUniqueCode(str) {
+  let hash = 5381;
+  str = str.trim();
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash * 33) ^ str.charCodeAt(i);
+  }
+  return (hash >>> 0).toString(16);
+}
+
 export const downloadFile = (blob, fileName) => {
   let result = { status: '' };
   try {
@@ -444,7 +453,8 @@ const CommonUtils = Object.freeze({
   formatPhoneNumber,
   getFullName,
   downloadFile,
-  enableReviewAndPay
+  enableReviewAndPay,
+  generateUniqueCode
 });
 
 export default CommonUtils;
