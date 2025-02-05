@@ -58,7 +58,15 @@ function AddQuestionnaire() {
   const dispatch = useDispatch();
   const [initialFormState, setInitialFormState] = React.useState(INITIAL_FORM_STATE);
   const [alertConfig, setAlertConfig] = React.useState(INITIAL_ALERT_CONFIG);
-
+  const defaultQuestionTemplate = {
+    type: '',
+    caption: {
+      en: '',
+      es: '',
+      activeLanguage: LANGUAGE.ENGLISH
+    },
+    options: []
+  };
   React.useEffect(() => {
     if (id) {
       setMode(MODE.VIEW);
@@ -574,14 +582,7 @@ function AddQuestionnaire() {
                                     <div className="styled-icon-button">
                                       <Button
                                         onClick={() => {
-                                          addQuestion({
-                                            type: '',
-                                            caption: {
-                                              en: '',
-                                              es: ''
-                                            },
-                                            options: []
-                                          });
+                                          addQuestion(defaultQuestionTemplate);
                                         }}
                                         variant="tertiary"
                                         size="md"
