@@ -103,7 +103,9 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
                   <FieldArray name="steps">
                     {({ insert, remove, push }) => (
                       <div className="step-main-container">
-                        <Heading as="h4">{t('ManageCatalog.WhatToExpectNext')}</Heading>
+                        <div className="styled-heading">
+                          <Heading as="h4">{t('ManageCatalog.WhatToExpectNext')}</Heading>
+                        </div>
                         {values.steps.length > 0 &&
                           values.steps.map((step, index) => (
                             <div className="step-container" key={index}>

@@ -23,10 +23,6 @@
     @include mixins.respond(sm) {
       width: 440px;
     }
-    h4{
-      font-weight:var(--brand-font-weight-700) !important ;
-      font-size: var(--brand-font-size--default) !important;
-    }
     .add-step{
       button{
         padding-left: 0px;

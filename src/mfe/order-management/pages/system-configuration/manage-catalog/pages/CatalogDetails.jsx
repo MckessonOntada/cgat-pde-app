@@ -110,7 +110,9 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
         <FloatingDrawer open={openCatalogDetails} anchor="right" onClose={handleCloseDrawer}>
           <div className="details-main-wrapper">
             <div className="header">
-              <Heading as="h2">{t('ManageCatalog.Catalogdetails')}</Heading>
+              <div className="styled-heading">
+                <Heading as="h3">{t('ManageCatalog.Catalogdetails')}</Heading>
+              </div>
               <button onClick={handleCloseDrawer}>
                 <IconClose />
               </button>
@@ -118,7 +120,9 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
             <div className={'details-body'}>
               {CatalogDetailsConstants.map((item, index) => (
                 <React.Fragment>
-                  <Heading as="h3">{t(`ManageCatalog.${item.sectionHeading}`)}</Heading>
+                  <div className="styled-heading">
+                    <Heading as="h4">{t(`ManageCatalog.${item.sectionHeading}`)}</Heading>
+                  </div>
                   <div className="details-ul">
                     {item.sectionData.map((item, index) => (
                       <div className="details-li">
