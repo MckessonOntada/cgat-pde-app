@@ -50,6 +50,8 @@ export const QuestionnaireProvider = ({ children }) => {
     const baseParams = {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
+      sortBy: sortConfig.sortBy || 'created_at',
+      sortOrder: sortConfig.sortOrder || 'desc',
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       ...(sortConfig?.sortBy && { sortBy: sortConfig.sortBy }),
       ...(sortConfig?.sortOrder && { sortOrder: sortConfig.sortOrder })

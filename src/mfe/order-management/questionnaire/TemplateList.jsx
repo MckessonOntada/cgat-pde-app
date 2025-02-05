@@ -93,7 +93,6 @@ function TemplateList() {
       id: 'status',
       name: t('table.columns.captions.status'),
       selector: (row) => row.active,
-      sortable: true,
       sortKey: 'active',
       minWidth: '160px',
       wrap: true,
@@ -129,7 +128,7 @@ function TemplateList() {
       sortable: true,
       sortKey: 'created_at',
       minWidth: '160px',
-      cell: (props) => CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')
+      cell: (props) => CommonUtils.convertDateStringFormat(props.createdAt, 'MM-DD-YYYY')
     },
     {
       id: 'createdBy',
@@ -138,7 +137,7 @@ function TemplateList() {
       sortable: true,
       sortKey: 'created_by',
       minWidth: '160px',
-      cell: (props) => {}
+      cell: (props) => props.createdBy
     },
     {
       id: 'actions',
@@ -249,7 +248,7 @@ const SelectMaster = ({ onClose, onSubmit, t }) => {
         <Heading as="h3">{t('label.selectMaster')}</Heading>
       </div>
       <div className="grow">
-        <div className="styled-radio-group">
+        <div className="radio-group">
           <RadioGroup
             caption={t('label.selectContent')}
             direction="column"

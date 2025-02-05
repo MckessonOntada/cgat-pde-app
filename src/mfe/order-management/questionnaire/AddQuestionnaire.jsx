@@ -1,7 +1,8 @@
 import React from 'react';
-import { Button, Heading, Loader, Alert } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader, Alert, Switch } from '@mckesson/mcp-component-library';
 import { ReactComponent as ArrowLeftIcon } from '@src/assets/svg/arrow-left.svg';
 import { Field, Formik, Form, FieldArray } from 'formik';
+import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
 import Components from '@src/components/form/Components';
 import { ReactComponent as PlusIcon } from '@src/assets/svg/plus.svg';
 import { ReactComponent as BinRedIcon } from '@src/assets/svg/bin-red.svg';
@@ -280,10 +281,10 @@ function AddQuestionnaire() {
 
   const handleOnDeactivateQuestionnaire = () => {
     const state = {};
-    state.title = 'Deactivate?';
+    state.title = t('labels.confirmationmessage');
     state.body = (
       <div className="MCP-modal-body">
-        <p>Do you want to deactivate selected questionnaire templates?</p>
+        <p>{t('labels.template_deactivateConfirmation')}</p>
       </div>
     );
     state.footer = (
@@ -353,13 +354,17 @@ function AddQuestionnaire() {
                           {mode !== MODE.CREATE && questionnaireDetails?.active && (
                             <div className="controls">
                               {mode !== MODE.EDIT && (
-                                <Button variant="secondary" size="md" onClick={() => setMode(MODE.EDIT)}>
-                                  Edit
+                                <Button Icon={EditPencil} variant="secondary" size="md" onClick={() => setMode(MODE.EDIT)}>
+                                  {t('captions.btnEdit')}
                                 </Button>
                               )}
-                              <Button variant="secondary" size="md" onClick={handleOnDeactivateQuestionnaire}>
-                                Deactivate
-                              </Button>
+                              <Switch
+                                handleToggle={handleOnDeactivateQuestionnaire}
+                                id="id"
+                                name="Toggle"
+                                size="lg"
+                                value={questionnaireDetails?.active}
+                              />
                             </div>
                           )}
                         </div>

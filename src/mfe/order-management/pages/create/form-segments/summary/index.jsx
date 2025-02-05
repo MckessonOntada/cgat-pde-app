@@ -22,6 +22,7 @@ import { renderModal } from '@src/util/ModalUtil';
 import FloatingDrawer from '@src/components/floating-drawer';
 import CommentPanel from './CommentPanel';
 import AuthUtils from '@src/util/AuthUtils';
+import OrderStepper from '../OrderStepper';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -290,24 +291,9 @@ const Summary = () => {
       {isApprover && <PageHeader heading={t('headings.reviewOrder')} />}
 
       <div className="MCP-module-body">
-        {!hideControls && !isRejected && (
-          <Stepper activeIndex={5} dividerText="of" mobileLabel={t('labels.steps')} stepHeaders={forms.map((f) => ({ label: f.label }))} />
-        )}
+        {!hideControls && !isRejected && <OrderStepper />}
         <div id={ALERT_CONTAINER_ID} />
         <div className={'MCP-module-wrapper'}>
-          {/* <ModuleHeader
-            heading={<Heading as="h2">{t('labels.summary')}</Heading>}
-            controls={
-              isRejected && (
-                <div class="row-space-between-center">
-                  <Badge text={t(`labels.status.${status.toLowerCase()}`)} type={'error'} />
-                  <Button size={'md'} variant="tertiary" onClick={() => setIsCommentPanelOpen(true)}>
-                    {t('captions.btnViewComments')}
-                  </Button>
-                </div>
-              )
-            }
-          /> */}
           <div className={'MCP-module-body'}>
             <div className="MCP-CardContainer">
               <ModuleHeader
