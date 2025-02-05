@@ -33,7 +33,7 @@ function ManageCatalog(props) {
   return (
     <div className="MCP-module-wrapper catalog-module">
       <Breadcrumbs items={translatedBreadcrumbs} />
-      <Heading as="h2">{t('dashboard.card.manage_catalog')}</Heading>
+      <Heading as="h1">{t('dashboard.card.manage_catalog')}</Heading>
       <div className="MCP-panel-container">
         <OrgAccountsSelect handleAccountChange={() => {}} />
         <div class="MCP-panel-container">

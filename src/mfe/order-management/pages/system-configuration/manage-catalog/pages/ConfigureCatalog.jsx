@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import FloatingDrawer from '@src/components/floating-drawer';
 import { ErrorMessage, Field, FieldArray, Form, Formik } from 'formik';
 import Components from '@src/components/form/Components';
-import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
+import { ReactComponent as DeleteIcon } from '@src/assets/svg/delete-icon.svg';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
 import { Loader, Heading, Button } from '@mckesson/mcp-component-library';
 import '../manageCatalog.scss';
@@ -86,7 +86,9 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
         <FloatingDrawer open={openConfigurationDraw} anchor="right" onClose={handleCloseDrawer}>
           <div>
             <div className="header">
-              <Heading as="h2">{'Configure'}</Heading>
+              <div className='styled-heading'>
+                <Heading as="h3">{t('ManageCatalog.Configurations')}</Heading>
+              </div>
               <button onClick={handleCloseDrawer}>
                 <IconClose />
               </button>
@@ -130,10 +132,11 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
                                   component={Components['textarea']}
                                   maxLength={100}
                                 />
+                                <p className='inputTextDesc'>{t('ManageCatalog.input.validation.text')}</p>
                               </div>
                             </div>
                           ))}
-                        <div>
+                        <div className='add-step'>
                           <Button label="Tertiary" onClick={() => push({ stepName: '', description: '' })} variant="tertiary">
                             {t('ManageCatalog.ADDSTEP')}
                           </Button>
