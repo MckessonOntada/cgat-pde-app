@@ -135,7 +135,7 @@ function AdditionalDetails() {
         const fieldName = `${template.id}#${question.text[LANGUAGE.ENGLISH]?.trim().replace(/ /g, '_')}`;
         questionnaireFields[fieldName] = question.value;
         if (question.isDocumentRequired && question.documentUrl) {
-          uploadList[`${fieldName}`] = question.documentUrl;
+          uploadList[`${fieldName}#attachment`] = question.documentUrl;
           questionnaireFields[`${fieldName}#attachment`] = question.documentUrl;
         }
         validationSchemaFields[fieldName] =
