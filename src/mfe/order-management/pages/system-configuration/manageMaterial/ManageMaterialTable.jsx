@@ -1,9 +1,8 @@
 import React from 'react';
-import { Loader, CustomDataTable, Button, Alert } from '@mckesson/mcp-component-library';
+import { Loader, Button, Alert } from '@mckesson/mcp-component-library';
 import EmptyDataTable from '@src/components/EmptyTable';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useManageMaterial } from '@src/mfe/order-management/context/ManageMaterialContext';
-
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { Link } from 'react-router-dom';
 import FloatingDrawer from '@src/components/floating-drawer';
@@ -11,16 +10,19 @@ import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import { ConfigConstants, MaterialDetailsConstants } from './assets/constants/MaterialConstants';
 import ConfigureMaterials from './ConfigureMaterials';
 import CommonUtils from '@src/util/CommonUtils';
+import { CustomDataTable } from '@src/components/dataTableComponent';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
 function ManageMaterialTable({ ...props }) {
   const { t } = useTranslate();
-  const { data, paginationConfig, setPageNumber, applySort, isFetching, isError, selectedMaterials, setSelectedMaterials } =
-    useManageMaterial();
+  const { data, paginationConfig, setPageNumber, isFetching, isError, selectedMaterials, setSelectedMaterials } = useManageMaterial();
   const [openDetails, setOpenDetails] = React.useState(false);
   const [openConfiguration, setOpenConfiguration] = React.useState(false);
   const [materialNumber, setMaterialNumber] = React.useState(null);
   const [configureSuccess, setConfigureSuccess] = React.useState(false);
   const [configureError, setConfigureError] = React.useState(false);
+  const showCardView = useResponsiveView();
 
   const getindeterminate = () => {
     const allDataIncluded = data.every((invoice) =>
@@ -31,20 +33,19 @@ function ManageMaterialTable({ ...props }) {
 
   const renderCheckBox = (row, index) => {
     return (
-        <input
-          data-testid="rowcheckbox"
-          type="checkbox"
-          id={'checkbox' + row?.id}
-          disabled={isCheckboxDisabled(row)}
-          onChange={() => handleRowSelected(row)}
-          checked={isChecked(row)}
-          ref={(el) => {
-            if (el) {
-              el.indeterminate =
-                row.id === 'ALL_ITEMS_' + paginationConfig.pageNumber && selectedMaterials.length > 0 && !getindeterminate();
-            }
-          }}
-        />
+      <input
+        data-testid="rowcheckbox"
+        type="checkbox"
+        id={'checkbox' + row?.id}
+        disabled={isCheckboxDisabled(row)}
+        onChange={() => handleRowSelected(row)}
+        checked={isChecked(row)}
+        ref={(el) => {
+          if (el) {
+            el.indeterminate = row.id === 'ALL_ITEMS_' + paginationConfig.pageNumber && selectedMaterials.length > 0 && !getindeterminate();
+          }
+        }}
+      />
     );
   };
 
@@ -104,18 +105,18 @@ function ManageMaterialTable({ ...props }) {
     {
       id: 'checkbox',
       name: renderCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }),
-      sortable: false,
+      // sortable: false,
       cell: (row, index) => renderCheckBox(row, index),
       selector: (row) => row['Material Number'],
-      width: '50px'
+      width: '50px',
+      showInMobileHeader: true
     },
     {
       name: t('manageMaterial.table.materialNumber'),
       id: 'materialNumber',
       selector: (row) => row.materialNumber,
-      sortable: true,
       wrap: true,
-      maxWidth: '175px',
+      minWidth: '220px',
       cell: (props) => (
         <div className="cellEllipse">
           <Link
@@ -133,42 +134,34 @@ function ManageMaterialTable({ ...props }) {
       name: t('manageMaterial.table.materialDescription'),
       id: 'materialDescription',
       selector: (row) => row.materialDescription,
-      sortable: true,
       wrap: true,
+      minWidth: '220px',
       cell: (props) => <div className="cellEllipse">{props?.materialDescription || '-'}</div>
     },
     {
       name: t('manageMaterial.table.nationalDrugCode'),
-      id: 'nationalDrugCode',
+      id: 'ndcNumber',
       selector: (row) => row.ndcNumber,
-      sortable: true,
       wrap: true,
-      maxWidth: '150px',
+      minWidth: '214px',
       cell: (props) => <div className="cellEllipse">{props?.ndcNumber || '-'}</div>
     },
     {
       name: t('manageMaterial.table.strength'),
       id: 'strength',
       selector: (row) => row.strength,
-      sortable: false,
       wrap: true,
-      maxWidth: '140px',
       cell: (props) => <div className="cellEllipse">{props?.strength || '-'}</div>
     },
     {
       name: t('manageMaterial.table.dosage'),
       id: 'dosage',
       selector: (row) => row.dosage,
-      sortable: false,
       wrap: true,
-      maxWidth: '120px',
+      maxWidth: '140px',
       cell: (props) => <div className="cellEllipse">{props?.dosage || '-'}</div>
     }
   ];
-
-  const handleSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
-  };
 
   const handleChangePage = (e, newPage) => {
     setPageNumber(newPage);
@@ -190,11 +183,11 @@ function ManageMaterialTable({ ...props }) {
         </div>
       )}
       {configureSuccess && (
-        <Alert 
-          description={t('manageMaterial.drawer.controls.apply.success')} 
-          onClose={() => setConfigureSuccess(false)} 
-          type="success" 
-          duration={3000} 
+        <Alert
+          description={t('manageMaterial.drawer.controls.apply.success')}
+          onClose={() => setConfigureSuccess(false)}
+          type="success"
+          duration={3000}
         />
       )}
       {configureError && (
@@ -205,12 +198,12 @@ function ManageMaterialTable({ ...props }) {
           duration={3000}
         />
       )}
+      <TableHeading heading={'Material Listing'} />
       <CustomDataTable
         id="manage-material-table"
         type="normal"
         columns={columns}
         data={data || []}
-        onSortIconClick={handleSort}
         currentPage={paginationConfig.pageNumber}
         totalPageCount={paginationConfig.totalPages}
         pagination={true}
@@ -221,6 +214,8 @@ function ManageMaterialTable({ ...props }) {
         paginationRecordsPerPageMessage={t('manageMaterial.table.pagination.perPage')}
         progressPending={isFetching}
         responsive={true}
+        showCardView={showCardView}
+        defaultExpandedCardView={true}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}
@@ -258,8 +253,8 @@ function ManageMaterialTable({ ...props }) {
       )}
       {openConfiguration && (
         <FloatingDrawer open={true} anchor="right" onClose={() => setOpenConfiguration(!openConfiguration)}>
-          <ConfigureMaterials 
-            onClose={() => setOpenConfiguration(!openConfiguration)} 
+          <ConfigureMaterials
+            onClose={() => setOpenConfiguration(!openConfiguration)}
             onSuccess={() => setConfigureSuccess(true)}
             onError={() => setConfigureError(true)}
           />

@@ -40,10 +40,7 @@ export const useManageMaterial = () => {
 // Create the provider component
 export const ManageMaterialProvider = ({ children }) => {
   const { t } = useTranslate();
-  const [data, setData] = useState([]);
-  const [unSlicedData, setUnSlicedData] = useState([]);
   const [actualData, setActualData] = useState([]);
-
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
@@ -56,13 +53,13 @@ export const ManageMaterialProvider = ({ children }) => {
   const getApiUrl = (searchText) => {
     const params = {
       pageNo: paginationConfig.pageNumber - 1,
-      pageSize: '',
+      pageSize: paginationConfig.pageSize,
       query: filterConfig.searchQuery || ''
     };
     return `${ApiRoutes.GET_ALL_MATERIALS()}?${serializeParams(params)}`;
   };
 
-  const { isFetching, isError, refetch } = useQuery(
+  const { isFetching, isError, refetch, data } = useQuery(
     ['getMaterials', filterConfig],
     async () => {
       const res = await HttpResourceService.callRest(`${getApiUrl()}`, httpVerb.GET, {});
@@ -72,18 +69,13 @@ export const ManageMaterialProvider = ({ children }) => {
         return;
       }
 
-      const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
-      const endIndex = startIndex + paginationConfig.pageSize;
-
-      setData(res.data.content.slice(startIndex, endIndex));
-      setUnSlicedData(res.data.content);
-      setActualData(res.data.content);
-
-      setPaginationConfig((state) => ({
-        ...state,
-        totalPages: Math.ceil(res.data.content.length / paginationConfig.pageSize),
-        totalElements: res.data.content.length
+      const { content: data, totalElements, totalPages } = res.data;
+      setPaginationConfig((prevConfig) => ({
+        ...prevConfig,
+        ...(totalElements && { totalElements }),
+        ...(totalPages && { totalPages })
       }));
+      return data;
     },
     {
       onError: (error) => {
@@ -99,56 +91,14 @@ export const ManageMaterialProvider = ({ children }) => {
     }));
   };
 
-  const sortData = (newSortConfig) => {
-    let _data = [...[], ...unSlicedData];
-
-    let _modifiedData = _data.sort((a, b) => {
-      const valA = a[newSortConfig.sortBy];
-      const valB = b[newSortConfig.sortBy];
-
-      if (typeof valA === 'string' && typeof valB === 'string') {
-        return newSortConfig.sortOrder === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
-      } else if (typeof valA === 'number' && typeof valB === 'number') {
-        return newSortConfig.sortOrder === 'asc' ? valA - valB : valB - valA;
-      } else {
-        return 0;
-      }
-    });
-    const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
-    const endIndex = startIndex + paginationConfig.pageSize;
-
-    setData(_modifiedData.slice(startIndex, endIndex));
-  };
-
   const applySort = (newSortConfig) => {
     setSortConfig(newSortConfig);
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
-    if (paginationConfig.pageNumber === 1) {
-      sortData(newSortConfig);
-    }
   };
 
-  const filterData = async (filters) => {
-    let _data = [...[], ...actualData];
-    let _modifiedData = _data.filter((item) => {
-      const matchesSearchQuery = filters?.searchQuery
-        ? item.materialNumber?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase())
-        : true;
-
-      return matchesSearchQuery;
-    });
-
-    const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
-    const endIndex = startIndex + paginationConfig.pageSize;
-    // Updating the page count and total records
-    setPaginationConfig((state) => ({
-      ...state,
-      totalPages: Math.ceil(_modifiedData.length / paginationConfig.pageSize),
-      totalElements: _modifiedData.length
-    }));
-    setData(_modifiedData.slice(startIndex, endIndex));
-    setUnSlicedData(_modifiedData);
-  };
+  useEffect(() => {
+    refetch();
+  }, [paginationConfig.pageNumber, filterConfig, sortConfig]);
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: INITIAL_PAGINATION_STATE.pageNumber }));
@@ -163,19 +113,10 @@ export const ManageMaterialProvider = ({ children }) => {
     setFilterConfig(INITIAL_FILTER_STATE);
   };
 
-  useEffect(() => {
-    if (CommonUtils.isNonEmptyArray(data) && CommonUtils.isNonEmptyArray(unSlicedData)) {
-      filterData(filterConfig);
-      if (JSON.stringify(sortConfig) !== JSON.stringify(INITIAL_SORT_STATE)) {
-        sortData(sortConfig);
-      }
-    }
-  }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
-
   return (
     <ManageMaterialContext.Provider
       value={{
-        data,
+        data: data || [],
         actualData,
         paginationConfig,
         sortConfig,
@@ -188,7 +129,7 @@ export const ManageMaterialProvider = ({ children }) => {
         applyFilters,
         clearFilters,
         selectedMaterials,
-        setSelectedMaterials,
+        setSelectedMaterials
       }}>
       {children}
     </ManageMaterialContext.Provider>
