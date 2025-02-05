@@ -384,5 +384,7 @@ export const MessageEs = {
   'table.columns.captions.created_By': 'S_Created By',
   'table.columns.captions.action': 'S_Action',
   'controls.placeholder.searchQuestionnaire': 'S_Search by Template Name',
-  'labels.configurationPreview': 'S_Configuration Preview'
+  'labels.configurationPreview': 'S_Configuration Preview',
+  'labels.confirmationmessage': 'S_Confirmation message',
+  'labels.template_deactivateConfirmation': 'S_Do you want to deactivate selected questionnaire template ?'
 };

@@ -128,7 +128,7 @@ function TemplateList() {
       sortable: true,
       sortKey: 'created_at',
       minWidth: '160px',
-      cell: (props) => CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')
+      cell: (props) => CommonUtils.convertDateStringFormat(props.createdAt, 'MM-DD-YYYY')
     },
     {
       id: 'createdBy',
@@ -137,7 +137,7 @@ function TemplateList() {
       sortable: true,
       sortKey: 'created_by',
       minWidth: '160px',
-      cell: (props) => {}
+      cell: (props) => props.createdBy
     },
     {
       id: 'actions',

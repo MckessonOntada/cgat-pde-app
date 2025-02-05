@@ -382,5 +382,7 @@ export const MessageEn = {
   'table.columns.captions.created_By': 'Created By',
   'table.columns.captions.action': 'Action',
   'controls.placeholder.searchQuestionnaire': 'Search by Template Name',
-  'labels.configurationPreview': 'Configuration Preview'
+  'labels.configurationPreview': 'Configuration Preview',
+  'labels.confirmationmessage': 'Confirmation message',
+  'labels.template_deactivateConfirmation': 'Do you want to deactivate selected questionnaire template ?'
 };
