@@ -220,7 +220,7 @@ const SignUp = () => {
                             variant={'async'}
                             onSearch={(event) => onSearchOrganization(event)}
                             recordsCountToEnableSearch={5}
-                            size="md"
+                            size="lg"
                             isSortEnable={false}
                             value={selectedOrganization?.value || ''}
                           />
