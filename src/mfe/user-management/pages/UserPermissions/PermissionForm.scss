@@ -6,7 +6,7 @@
 
 .permission-list {
   display: grid;
-  grid-template-columns: 1fr ;
+  grid-template-columns: 1fr;
   /* Two items with a divider in the middle */
   gap: var(--spacing-03);
   align-items: center;
@@ -20,6 +20,7 @@
 
 .permission-item {
   display: flex;
+  gap: var(--spacing-03);
   justify-content: space-between;
   align-items: center;
   padding: var(--spacing-02) var(--spacing-02) var(--spacing-02) 0px;
@@ -42,6 +43,8 @@
 
 .permission-toggle {
   display: flex;
+  min-width: 130px;
+  justify-content: space-between;
   align-items: center;
 }
 
