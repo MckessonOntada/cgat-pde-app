@@ -127,7 +127,7 @@ const SecondaryHeader = ({ navLinks }) => {
       state.title = `${t('button.captions.exitUserView')}?`;
       state.body = (
         <div className="MCP-modal-body">
-          <p>{t('message.exitUserViewConfirmation')}</p>
+          <p>{t('message.exitUserViewConfirmation').replace('{{username}}', impersonatedUsername)}</p>
         </div>
       );
       state.footer = (
