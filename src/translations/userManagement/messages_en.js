@@ -143,7 +143,10 @@ export const UserManagementEN = {
   'userManagement.header.view.edit_user': 'User Details',
 
   'userManagement.header.view.permissions_granted': 'Permissions Granted',
+  'userManagement.message.userEmptyTableTitle': 'No Users Found',
+  'userManagement.message.sysadminEmptyTableTitle': 'No System Admins Found',
   'userManagement.messages.userEmptyTableSubtitle': 'Data is unavailable. Please add an user to view the table content.',
+  'userManagement.messages.sysadminEmptyTableSubtitle': 'Data is unavailable. Please add a System Admin to view the table content.',
   'userManagement.messages.emptysubtitle': 'Data is unavailable. Please add Permission(s) to view the content.',
   'userManagement.header.view.linked_accounts': 'Linked Accounts',
 

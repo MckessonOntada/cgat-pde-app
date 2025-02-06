@@ -28,3 +28,12 @@
     font-weight: var(--brand-font-weight-600);
   }
 }
+
+div[data-testid^="date-range-component"] {
+  label {
+    margin-bottom: var(--spacing-01) !important;
+    font-size: var(--brand-font-size--small) !important;
+    line-height: var(--brand-line-height--large) !important;
+    letter-spacing: normal !important;
+  }
+}
