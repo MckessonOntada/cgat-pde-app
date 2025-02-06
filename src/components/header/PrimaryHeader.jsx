@@ -124,24 +124,24 @@ const PrimaryHeader = () => {
           <IconArrowDown />
         </div>
       </MenuList>,
-      <div className={styles.languageSelect}>
-        <MenuList
-          handleSelect={(val) => {
-            localStorage.setItem('APP_LOCALE', val);
-            window.location.reload();
-          }}
-          options={HeaderConfig.languages}
-          aria-label="language options">
-          <div className={styles.actionLink} aria-label="language options">
-            <span>{currentLanguage?.label || 'English'}</span>
-            <IconArrowDown />
-          </div>
-        </MenuList>
-      </div>,
-      <Link className={styles.actionLink} to={'help'} aria-label="Help center">
-        <span>{intl.formatMessage({ id: 'header.label.help' })}</span>
-        <IconHelp />
-      </Link>,
+      // <div className={styles.languageSelect}>
+      //   <MenuList
+      //     handleSelect={(val) => {
+      //       localStorage.setItem('APP_LOCALE', val);
+      //       window.location.reload();
+      //     }}
+      //     options={HeaderConfig.languages}
+      //     aria-label="language options">
+      //     <div className={styles.actionLink} aria-label="language options">
+      //       <span>{currentLanguage?.label || 'English'}</span>
+      //       <IconArrowDown />
+      //     </div>
+      //   </MenuList>
+      // </div>,
+      // <Link className={styles.actionLink} to={'help'} aria-label="Help center">
+      //   <span>{intl.formatMessage({ id: 'header.label.help' })}</span>
+      //   <IconHelp />
+      // </Link>,
       <Button
         label={'button.logout'}
         aria-label="Log out of account"
