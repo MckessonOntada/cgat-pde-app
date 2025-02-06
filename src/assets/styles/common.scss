@@ -38,10 +38,10 @@
 }
 
 .custom-date-range-picker {
-  > div {
-    > div {
-      > div {
-        > div {
+  >div {
+    >div {
+      >div {
+        >div {
           width: unset;
           min-width: 160px;
           flex-grow: 1;
@@ -592,11 +592,9 @@ div.disable-all {
   }
 }
 
-@media only screen and (min-width: 576px) {
-}
+@media only screen and (min-width: 576px) {}
 
-@media only screen and (min-width: 992px) {
-}
+@media only screen and (min-width: 992px) {}
 
 @media only screen and (min-width: 1200px) {
   .max-container {
@@ -651,6 +649,7 @@ div.disable-all {
 }
 
 .styled-heading {
+
   //module primary heading
   h1 {
     font-size: var(--brand-font-size--28) !important;
@@ -669,13 +668,15 @@ div.disable-all {
     line-height: calc(var(--spacing-04) + var(--spacing-01));
     font-weight: var(--brand-font-weight-700);
   }
-  h4{
+
+  h4 {
     font-weight: var(--brand-font-weight-700) !important;
     font-size: var(--brand-font-size--default) !important;
   }
 }
 
 .styled-form-field {
+
   .label-heading,
   label[class*="TextareaInput-module--label"],
   label[class*="InputField-module--labelText"],
@@ -776,7 +777,7 @@ div.disable-all {
   flex-direction: column;
   height: 100vh;
 
-  > div {
+  >div {
     padding: var(--spacing-03);
     flex: 0 0 auto;
   }
@@ -797,6 +798,7 @@ div.disable-all {
   }
 
   #secondaryNavPanel {
+
     button,
     a {
       font-size: var(--brand-font-size--small);
@@ -807,6 +809,7 @@ div.disable-all {
 }
 
 .questionnaire-template-question-list {
+
   .label-heading,
   label[class*="TextareaInput-module--label"],
   label[class*="InputField-module--labelText"],
@@ -839,4 +842,9 @@ div.disable-all {
     font-weight: var(--brand-font-weight-600) !important;
     line-height: var(--brand-line-height--m-large) !important;
   }
+}
+
+
+.module-breadcrumb {
+  margin-bottom: var(--spacing-02);
 }

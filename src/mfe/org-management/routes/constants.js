@@ -7,4 +7,4 @@ export const PATHS = {
   createRole: 'create-role',
   editRole: ':roleId/edit-role',
   permissions: ':roleId/permissions'
-}; 
+};

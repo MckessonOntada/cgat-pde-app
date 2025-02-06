@@ -57,7 +57,7 @@ function RolesList() {
   return (
     <div className="MCP-module-wrapper">
       {/* Breadcrumb */}
-      <Breadcrumb items={breadcrumbItems} />
+      <Breadcrumb className="module-breadcrumb" items={breadcrumbItems} />
 
       {/* module header */}
       <ModuleHeader

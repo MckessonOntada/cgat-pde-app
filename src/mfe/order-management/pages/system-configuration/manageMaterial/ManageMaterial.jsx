@@ -27,7 +27,7 @@ function ManageMaterial() {
 
   return (
     <div className="MCP-module-wrapper">
-      <Breadcrumbs items={breadcrumbItems} />
+      <Breadcrumbs className="module-breadcrumb" items={breadcrumbItems} />
       <Heading as="h1">{t('manageMaterial.heading')}</Heading>
       <div className={`${styles.cardContainer}`}>
         <div className={`${styles.cardContainer}`}>

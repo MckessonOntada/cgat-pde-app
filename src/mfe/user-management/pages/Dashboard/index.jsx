@@ -139,7 +139,7 @@ export default function Dashboard() {
 
   return (
     <div className="MCP-module-wrapper" id={debugIds(ID.TABLE, ID.CONTAINER)}>
-      <Breadcrumb items={breadcrumbItems} />
+      <Breadcrumb className="module-breadcrumb" items={breadcrumbItems} />
       <ModuleHeader
         heading={
           <Heading as="h1">{t(isSystemAdminView ? 'userManagement.header.systemadmin.label' : 'userManagement.header.label')}</Heading>

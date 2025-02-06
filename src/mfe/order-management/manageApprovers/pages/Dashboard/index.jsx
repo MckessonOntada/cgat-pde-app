@@ -97,7 +97,7 @@ export default function Dashboard() {
 
   return (
     <div className="MCP-module-wrapper" id={debugIds(ID.TABLE, ID.CONTAINER)}>
-      <Breadcrumb items={breadcrumbItems} />
+      <Breadcrumb className="module-breadcrumb" items={breadcrumbItems} />
       <ModuleHeader
         heading={<Heading as="h1">{t('approvergroup.header.label')}</Heading>}
         controls={

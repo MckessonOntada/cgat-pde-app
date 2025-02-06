@@ -79,7 +79,7 @@ function DashboardPage() {
 
   return (
     <div className="MCP-module-wrapper">
-      <Breadcrumb items={breadcrumbItems} />
+      <Breadcrumb className="module-breadcrumb" items={breadcrumbItems} />
 
       <ModuleHeader
         heading={<Heading as="h1">{t('orgManagement.header.label')}</Heading>}
