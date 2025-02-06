@@ -39,15 +39,15 @@ const Dashboard = () => {
   const cards = useMemo(() => {
     if (isSystemAdminView) return SYSTEM_ADMIN_CARDS_DATA;
     let _cards = CARDS_DATA.filter((card) => {
-      let _hasAccess = hasPermission(card.permissions);
+      let _hasAccess = hasAnyPermission(card.permissions);
       return _hasAccess;
     });
     return _cards;
   }, [isExpelled]);
 
-  if (!isSystemAdminView) {
-    return <></>;
-  }
+  // if (!isSystemAdminView) {
+  //   return <></>;
+  // }
 
   return (
     <div className={''}>
