@@ -67,29 +67,13 @@ function MainLayout() {
                 />
 
                 <Route
-                  path={AppRoutes.pathUserManagement}
+                  path={`${AppRoutes.pathUserManagement}/*`}
                   element={
                     <ProtectedRoute permissions={routePermissionConfig.users}>
-                      <Outlet />
+                      <UsersEntryPoint />
                     </ProtectedRoute>
-                  }>
-                  <Route
-                    path={'/admin/user'}
-                    element={
-                      <ProtectedRoute permissions={routePermissionConfig.users}>
-                        <UsersEntryPoint />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path={'/admin/user/*'}
-                    element={
-                      <ProtectedRoute permissions={routePermissionConfig.users}>
-                        <UsersEntryPoint />
-                      </ProtectedRoute>
-                    }
-                  />
-                </Route>
+                  }
+                />
                 <Route
                   path={`/admin/organization/roles/*`}
                   element={
@@ -113,27 +97,11 @@ function MainLayout() {
                       <Navigate to={'/'} />
                     ) : (
                       <ProtectedRoute permissions={routePermissionConfig.organization}>
-                        <Outlet />
+                        <OrgEntryPoint />
                       </ProtectedRoute>
                     )
-                  }>
-                  <Route
-                    path={'/admin/organization'}
-                    element={
-                      <ProtectedRoute permissions={routePermissionConfig.organization}>
-                        <OrgEntryPoint />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path={'/admin/organization/*'}
-                    element={
-                      <ProtectedRoute permissions={routePermissionConfig.organization}>
-                        <OrgEntryPoint />
-                      </ProtectedRoute>
-                    }
-                  />
-                </Route>
+                  }
+                />
                 <Route
                   path={'/record/*'}
                   element={
@@ -149,7 +117,12 @@ function MainLayout() {
                   path={'/admin'}
                   element={
                     !AuthUtils.isSystemAdminView() ? (
-                      <ProtectedRoute permissions={routePermissionConfig.admin}>
+                      <ProtectedRoute
+                        permissions={[
+                          ...routePermissionConfig.approvergroups,
+                          ...routePermissionConfig.roles,
+                          ...routePermissionConfig.users
+                        ]}>
                         <AdminLayout />
                       </ProtectedRoute>
                     ) : (

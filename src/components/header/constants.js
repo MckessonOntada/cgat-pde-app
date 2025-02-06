@@ -61,7 +61,7 @@ const HeaderConfig = {
       isActiveTab: false,
       labelForMobile: 'Admin',
       translationName: 'header.tabs.admin',
-      permittedRoute: routePermissionConfig.admin,
+      permittedRoute: [...routePermissionConfig.approvergroups, ...routePermissionConfig.roles, ...routePermissionConfig.users],
       sequence: 1
     }
   ],

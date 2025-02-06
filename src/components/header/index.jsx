@@ -1,8 +1,8 @@
 import React from 'react';
 import PrimaryHeader from './PrimaryHeader';
 import SecondaryHeader from './SecondaryHeader';
-import HeaderConfig from './__mock__';
 import { debugIds, ID } from '../../constants/id';
+import HeaderConfig from './constants';
 
 const GlobalHeader = () => {
   return (
