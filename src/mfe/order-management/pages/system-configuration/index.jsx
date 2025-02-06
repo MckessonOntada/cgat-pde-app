@@ -13,7 +13,7 @@ export function SystemConfiguration(props) {
   }));
   return (
     <div className="MCP-module-wrapper">
-      <Breadcrumbs items={translatedBreadcrumbs} />
+      <Breadcrumbs className="module-breadcrumb" items={translatedBreadcrumbs} />
       <Heading as="h2">{t('dashboard.card.system_configuration')}</Heading>
       <div className={''}>
         <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">

@@ -72,7 +72,7 @@ function ManageQuestionnaire() {
     <div>
       <div className="MCP-module-wrapper">
         <div className="MCP-module-header">
-          <Breadcrumbs items={breadcrumbItems} />
+          <Breadcrumbs className="module-breadcrumb" items={breadcrumbItems} />
         </div>
         <div className="MCP-module-body">
           <div className="row-space-between-center">

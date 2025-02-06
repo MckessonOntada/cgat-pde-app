@@ -4,9 +4,9 @@ import styles from './assets/styles/BreadCrumbs.module.scss';
 import { ReactComponent as SeparatorIcon } from '@src/assets/svg/arrow_right.svg';
 import { Link } from 'react-router-dom';
 
-const Breadcrumbs = ({ items }) => {
+const Breadcrumbs = ({ items, className }) => {
   return (
-    <nav aria-label="breadcrumb">
+    <nav aria-label="breadcrumb" className={className}>
       <ol className={styles.breadcrumb}>
         {items.map((item, index) => (
           <li key={index} className={styles.breadcrumbItem}>
