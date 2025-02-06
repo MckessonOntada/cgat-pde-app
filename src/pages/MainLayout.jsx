@@ -91,7 +91,7 @@ function MainLayout() {
                   }
                 />
                 <Route
-                  path={'/admin/organization'}
+                  path={'/admin/organization/*'}
                   element={
                     AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() ? (
                       <Navigate to={'/'} />
