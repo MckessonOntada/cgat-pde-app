@@ -3,15 +3,12 @@ import styles from './assets/TherapyDetails.module.scss';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
 import { ReactComponent as IconBinRed } from '@src/assets/svg/bin-red.svg';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { Loader, Heading, Button } from '@mckesson/mcp-component-library';
 import OrderService from '@src/api/commonService/OrderService';
 import UserService from '@src/api/commonService/UserService';
 import useSnackbar from '@src/hooks/useSnackbar';
 import MaterialService from '@src/api/commonService/MaterialService';
-import CommonUtils from '@src/util/CommonUtils';
-import ApiRoutes from '@src/api/ApiRoutes';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { useNavigate } from 'react-router-dom';
 import { PREVIEW_URL } from '@src/mfe/order-management/questionnaire/constants';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
@@ -166,7 +163,7 @@ function DetailsPanel({
         />
       );
     });
-  console.log(details.questionnaires);
+
   return (
     <div className={styles.detailsPanel}>
       <div className={styles.drawerBodyContent}>
@@ -180,29 +177,28 @@ function DetailsPanel({
           configurationData?.map((section, index) => (
             <>
               {!section.questionnaire ? (
-                <div key={index}>
-                  <div className={styles.configurationHeader}>
-                    {/* <Heading as="h3">{t(section.sectionHeading)}</Heading> */}
-                    <div className={styles.sectionHeadingkey}>{t(section.sectionHeading)}</div>
-                    <div className={styles.actions}>
-                      {section.actions?.map((action) =>
-                        action.icon === 'delete' ? (
-                          <IconBinRed key={action.id} role="button" onClick={() => onDeleteConfig(action.id)} />
-                        ) : (
-                          <Button key={action.id} textButton onClick={() => console.log(`${action.id} Clicked`)}>
-                            {t(action.label)}
-                          </Button>
-                        )
-                      )}
+                details?.materialConfig ? (
+                  <div key={index}>
+                    <div className={styles.configurationHeader}>
+                      <div className={styles.sectionHeadingkey}>{t(section.sectionHeading)}</div>
+                      <div className={styles.actions}>
+                        {section.actions?.map((action) =>
+                          action.icon === 'delete' ? (
+                            <IconBinRed key={action.id} role="button" onClick={() => onDeleteConfig(action.id)} />
+                          ) : (
+                            <Button key={action.id} textButton onClick={() => console.log(`${action.id} Clicked`)}>
+                              {t(action.label)}
+                            </Button>
+                          )
+                        )}
+                      </div>
                     </div>
+                    <div>{renderConfiguration(section.sectionData, details)}</div>
                   </div>
-                  <div>{renderConfiguration(section.sectionData, details)}</div>
-                </div>
+                ) : null
               ) : details.questionnaires.length > 0 ? (
                 <div> {renderQuestionnaire(details, section)}</div>
-              ) : (
-                ''
-              )}
+              ) : null}
             </>
           ))}
       </div>
