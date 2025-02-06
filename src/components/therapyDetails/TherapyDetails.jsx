@@ -3,19 +3,15 @@ import styles from './assets/TherapyDetails.module.scss';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
 import { ReactComponent as IconBinRed } from '@src/assets/svg/bin-red.svg';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { Loader, Heading, Button } from '@mckesson/mcp-component-library';
 import OrderService from '@src/api/commonService/OrderService';
 import UserService from '@src/api/commonService/UserService';
 import useSnackbar from '@src/hooks/useSnackbar';
 import MaterialService from '@src/api/commonService/MaterialService';
-import CommonUtils from '@src/util/CommonUtils';
-import ApiRoutes from '@src/api/ApiRoutes';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { useNavigate } from 'react-router-dom';
 import { PREVIEW_URL } from '@src/mfe/order-management/questionnaire/constants';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
-import { NULL } from 'sass';
 
 function TherapyDetails({
   therapyId,
