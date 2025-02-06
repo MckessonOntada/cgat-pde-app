@@ -12,7 +12,7 @@ export const UserManagementEN = {
 
   'userManagement.header.listing.label': 'Manage Users',
   'userManagement.header.systemadminlisting.label': 'Manage System Admins',
-  'userManagement.table.userlisting.label': 'Users Listing',
+  'userManagement.table.userlisting.label': 'User Listing',
   'userManagement.table.systemadminlisting.label': 'System Admin Listing',
 
   'userManagement.breadcrumb.labeldashboard': 'Dashboard',

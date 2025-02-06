@@ -185,7 +185,7 @@ const { data: permissionsData } = useQuery({
     <div className="MCP-module-wrapper">
       {!isSystemAdminView && (
         <Fragment>
-          <ModuleHeader heading={<Heading as="h3">{t('userManagement.user_permissions.select_role')}</Heading>} />
+          <ModuleHeader heading={<Heading as="h2">{t('userManagement.user_permissions.select_role')}</Heading>} />
 
           <div className="MCP-panel-container">
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
@@ -204,7 +204,7 @@ const { data: permissionsData } = useQuery({
       )}
       <div className='secondryTitle'>
         <ModuleHeader
-          heading={<Heading as="h3">{t('userManagement.user_permissions.managePermissions')}</Heading>}
+          heading={<Heading as="h2">{t('userManagement.user_permissions.managePermissions')}</Heading>}
           controls={
             !isSystemAdminView && (
               <div className="controls">

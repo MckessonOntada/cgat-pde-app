@@ -145,8 +145,8 @@ const PrimaryHeader = () => {
       <Button
         label={'button.logout'}
         aria-label="Log out of account"
-        icon={<IconLogout />}
-        iconPosition={'right'}
+        Icon={IconLogout}
+        iconPosition='right'
         id={debugIds(ID.HEADER, ID.NAV, ID.RIGHT, ID.BUTTON, ID.LOGOUT)}
         data-testid={'LOGOUT'}
         size="sm"
