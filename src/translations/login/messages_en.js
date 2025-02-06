@@ -23,7 +23,7 @@ export const LoginMessagesEN = {
   'footer.contant': 'Contact',
   'footer.contant.no': 'Contact us at: 1-855-887-6788',
   'footer.copyright': '© 2024 McKesson Corporation Health Technology Products LLC.',
-  'message.exitUserViewConfirmation': 'Do you want to exit this user view?',
+  'message.exitUserViewConfirmation': 'Do you wish to exit working as {{username}}?',
   'button.caption.no': 'No',
   'button.caption.yes': 'Yes'
 };
