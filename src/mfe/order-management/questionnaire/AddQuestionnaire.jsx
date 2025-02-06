@@ -314,6 +314,14 @@ function AddQuestionnaire() {
     dispatch(openModal(state));
   };
 
+  const handleOnCancel = () => {
+    if (mode === MODE.EDIT) {
+      setMode(MODE.VIEW);
+    } else {
+      navigate('/orders/system-configuration/questionnaire');
+    }
+  };
+
   const readOnly = mode === MODE.VIEW;
 
   if (id && isFetchingQuestionnaireDetails) {
@@ -602,7 +610,7 @@ function AddQuestionnaire() {
                     <div>
                       {mode !== MODE.VIEW && (
                         <div className="controls">
-                          <Button size="md" variant="secondary">
+                          <Button onClick={handleOnCancel} size="md" variant="secondary">
                             {t('captions.btnCancel')}
                           </Button>
                           {mode === MODE.EDIT ? (
