@@ -18,7 +18,7 @@ const OrgDetailsFormSegment = () => {
 
   return (
     <div className="form-container">
-      <div className="headingBox">
+      <div className="headingBox orgDetailsTitle">
         <Heading as="h3">{t('orgManagement.create_org.org-details')}</Heading>
 
         <p className="form-instruction">
