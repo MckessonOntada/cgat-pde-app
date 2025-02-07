@@ -324,7 +324,7 @@ const AccountSelection = () => {
             </Button>
             <div className="controls">
               <Button size="md" onClick={handleOnBack} variant="secondary">
-                {isEdit ? t('captions.btnBack') : t('captions.btnBacktoTherapySelection')}
+                {t('captions.btnBack')}
               </Button>
               <Button
                 size="md"

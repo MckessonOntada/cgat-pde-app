@@ -33,13 +33,19 @@
   margin-bottom: var(--spacing-01);
 }
 
+.permission-info h4 {
+  display: block;
+  font-size: var(--brand-font-size--default) !important;
+  font-weight: var(--brand-font-weight-600) !important;
+  line-height: 20px !important;
+}
+
 .permission-info p {
   font-weight: var(--brand-font-weight-400);
-  font-size: var(--brand-font-size--15);
+  font-size: var(--brand-font-size--small) !important;
   line-height: var(--spacing-04);
   color: var(--brand-color-primary-slate);
 }
-
 
 .permission-toggle {
   display: flex;

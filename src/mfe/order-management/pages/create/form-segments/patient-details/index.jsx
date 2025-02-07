@@ -228,7 +228,7 @@ const PatientDetails = () => {
                     controls={
                       <div className="controls">
                         <Button size="md" variant="secondary" onClick={handleOnBack}>
-                          {isEdit ? t('captions.btnBack') : t('captions.btnBacktoAccountSelection')}
+                          {t('captions.btnBack')}
                         </Button>
                         <Button size="md" variant="primary" disabled={!values?.patientIdentifier || isSaving} type="submit">
                           {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}

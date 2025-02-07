@@ -55,8 +55,12 @@ const RolesDataTable = () => {
 
   const handleOnUserConfirmation = () => {
     const state = {};
-    state.title = t('orgManagement.message.roleDeactivateConfirmationTitle');
-    state.body = t('orgManagement.message.roleDeactivateConfirmationDescription');
+    state.title = t('userManagement.confirmationMessage');
+    state.body = (
+      <div className="MCP-modal-body">
+        <p>{t('orgManagement.message.roleDeactivateConfirmationDescription')}</p>
+      </div>
+    );
     state.footer = (
       <div className="controls">
         <Button size="sm" variant="secondary" onClick={() => dispatch(closeModal())}>
