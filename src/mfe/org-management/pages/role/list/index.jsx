@@ -59,37 +59,41 @@ function RolesList() {
       {/* Breadcrumb */}
       <Breadcrumb className="module-breadcrumb" items={breadcrumbItems} />
 
-      {/* module header */}
-      <ModuleHeader
-        heading={<Heading as="h1">{t('orgManagement.role.headingManageOrder')}</Heading>}
-        controls={
-          userPermissions.includes(PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_ROLES) && (
-            <Button Icon={AddCircleFilled} size="md" onClick={handleOnAddRoleClick}>
-              {t('orgManagement.role.labelAddRole')}
-            </Button>
-          )
-        }
-      />
+      <div>
+        <div className="containerTitle">
+          {/* module header */}
+          <ModuleHeader
+            heading={<Heading as="h1">{t('orgManagement.role.headingManageOrder')}</Heading>}
+            controls={
+              userPermissions.includes(PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_ROLES) && (
+                <Button Icon={AddCircleFilled} size="md" onClick={handleOnAddRoleClick}>
+                  {t('orgManagement.role.labelAddRole')}
+                </Button>
+              )
+            }
+          />
+        </div>
+        {messageConfig.kind && messageConfig.primaryMessage && (
+          <Alert duration={10000} onClose={clearMessage} description={messageConfig.primaryMessage} type={messageConfig.kind} />
+        )}
 
-      {messageConfig.kind && messageConfig.primaryMessage && (
-        <Alert duration={10000} onClose={clearMessage} description={messageConfig.primaryMessage} type={messageConfig.kind} />
-      )}
-
-      {/* module body */}
-      <div className="MCP-module-body">
-        <div className="MCP-panel-container">
-          <div className="MCP-CardContainer">
-            <CommonFilters
-              onApplyFilters={applyFilters}
-              onClearFilters={clearFilters}
-              additionalFilters={AdditionalFiltersConfig}
-              searchPlaceholder={t('orgManagement.role.placeholder')}
-            />
-          </div>
-          <div className="MCP-table-wrapper">
-            <RolesDataTable />
+        {/* module body */}
+        <div className="MCP-module-body">
+          <div className="MCP-panel-container">
+            <div className="MCP-CardContainer">
+              <CommonFilters
+                onApplyFilters={applyFilters}
+                onClearFilters={clearFilters}
+                additionalFilters={AdditionalFiltersConfig}
+                searchPlaceholder={t('orgManagement.role.placeholder')}
+              />
+            </div>
+            <div className="MCP-table-wrapper">
+              <RolesDataTable />
+            </div>
           </div>
         </div>
+
       </div>
     </div>
   );

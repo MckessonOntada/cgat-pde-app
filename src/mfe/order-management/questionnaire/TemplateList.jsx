@@ -187,7 +187,7 @@ function TemplateList() {
               {t('label.configure')}
             </Button>
           }
-          style={{ marginBottom: '24px' }}
+          style={{ marginBottom: '16px' }}
         />
         <CustomDataTable
           id="questionnaire-template-listing"
