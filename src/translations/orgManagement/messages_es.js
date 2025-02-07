@@ -9,8 +9,8 @@ export const OrgManagementES = {
   'orgManagement.stepper.option.org_details': 'S_Organization Details',
   'orgManagement.stepper.option.acct_details': 'S_Link Accounts',
 
-  'orgManagement.table.name': 'S_Name',
-  'orgManagement.table.id': 'S_ID',
+  'orgManagement.table.name': 'S_Organization Name',
+  'orgManagement.table.id': 'S_Organization ID',
   'orgManagement.table.location': 'S_Location',
   'orgManagement.table.status': 'S_Status',
   'orgManagement.table.dateUpdated': 'S_Last Updated On',

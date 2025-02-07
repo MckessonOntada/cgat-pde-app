@@ -796,14 +796,18 @@ div.disable-all {
   @include mixins.respond(sm) {
     background-color: var(--brand-color-background-white);
   }
-
   #secondaryNavPanel {
-
-    button,
-    a {
-      font-size: var(--brand-font-size--small);
-      line-height: var(--brand-line-height--large);
-      text-transform: uppercase;
+    ul{
+      margin-left: 0px;
+      li:first-child button {
+        padding-left: 0px;
+      }
+      button,
+      a {
+        font-size: var(--brand-font-size--small);
+        line-height: var(--brand-line-height--large);
+        text-transform: uppercase;
+      }
     }
   }
 }
