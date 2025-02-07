@@ -158,5 +158,6 @@ export const OrgManagementEN = {
   'errors.practice_phone_key': 'Phone number already exists.',
   'errors.default': 'An unexpected error occurred.',
 
-  'orgManagement.filters.status.label': 'Select by name & location'
+  'orgManagement.filters.status.label': 'Select by name & location',
+  'button.caption.uploadFile': 'Upload File'
 };

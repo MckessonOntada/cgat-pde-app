@@ -18,5 +18,6 @@ export const AccountEN = {
   'account.empty_table.description': 'You need to add Accounts to see data in this table.',
 
   'file.drag.label': 'Drag your file(s) to start uploading',
-  'file.browse.logo': 'BROWSE LOGO'
+  'file.browse.logo': 'BROWSE LOGO',
+  'file.browsInput.selectFile': 'Select File'
 };

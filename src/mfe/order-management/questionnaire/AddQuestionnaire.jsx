@@ -85,7 +85,7 @@ function AddQuestionnaire() {
         state: {
           alertConfig: {
             isVisible: true,
-            description: 'Questionnaire created successfully.',
+            description: t('message.questionnaireCreated'),
             type: 'success'
           },
           refetch: true
@@ -106,7 +106,7 @@ function AddQuestionnaire() {
         state: {
           alertConfig: {
             isVisible: true,
-            description: 'Questionnaire updated successfully.',
+            description: t('message.questionnaireUpdated'),
             type: 'success'
           },
           refetch: true
@@ -127,7 +127,7 @@ function AddQuestionnaire() {
       getQuestionnaireDetails();
       setAlertConfig({
         isVisible: true,
-        description: 'Questionnaire deactivated successfully.',
+        description: t('message.questionnaireDeactivated'),
         type: 'success'
       });
     },
@@ -197,7 +197,7 @@ function AddQuestionnaire() {
       Yup.object().shape({
         type: Yup.string().required(t('message.questionnaire.selectTemplateType')),
         caption: Yup.object()
-          .required('question text is required')
+          .required(t('message.questionTextRequired'))
           .shape({
             en: Yup.string(),
             es: Yup.string(),
@@ -216,8 +216,8 @@ function AddQuestionnaire() {
             is: (type) => type === QUESTION_TYPE.DROPDOWN || type === QUESTION_TYPE.RADIO_BUTTON || type === QUESTION_TYPE.CHECKBOX,
             then: (schema) =>
               schema.default([
-                { en: '', es: '', activeLanguage: 'en' },
-                { en: '', es: '', activeLanguage: 'en' }
+                { en: '', es: '', activeLanguage: LANGUAGE.ENGLISH },
+                { en: '', es: '', activeLanguage: LANGUAGE.ENGLISH }
               ]),
             otherwise: (schema) => schema.notRequired()
           })
@@ -237,7 +237,6 @@ function AddQuestionnaire() {
           [QUESTION_TYPE.CHECKBOX]: 1
         };
         if (!question.options || question.options.length < minimumOptionsIndex[question.type]) {
-          alert('Options are enough');
           areQuestionValid = false;
         }
 
@@ -245,8 +244,7 @@ function AddQuestionnaire() {
           if (!option.en) {
             areQuestionValid = false;
             setFieldValue(`questions.${questionIndex}.options.${optionIndex}.activeLanguage`, LANGUAGE.ENGLISH);
-            setFieldError(`templateName`, 'at least requires english text');
-            //questions.${questionIndex}.options.${optionIndex}
+            setFieldError(`templateName`, t('message.englishTextIsRequired'));
           }
         });
       }
@@ -423,8 +421,8 @@ function AddQuestionnaire() {
                                                 setFieldValue(`questions[${index}].options`, null);
                                               } else {
                                                 setFieldValue(`questions[${index}].options`, [
-                                                  { en: '', es: '', activeLanguage: 'en' },
-                                                  { en: '', es: '', activeLanguage: 'en' }
+                                                  { en: '', es: '', activeLanguage: LANGUAGE.ENGLISH },
+                                                  { en: '', es: '', activeLanguage: LANGUAGE.ENGLISH }
                                                 ]);
                                               }
                                             }}

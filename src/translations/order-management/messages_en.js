@@ -384,5 +384,13 @@ export const MessageEn = {
   'controls.placeholder.searchQuestionnaire': 'Search by Template Name',
   'labels.configurationPreview': 'Configuration Preview',
   'labels.confirmationmessage': 'Confirmation message',
-  'labels.template_deactivateConfirmation': 'Do you want to deactivate selected questionnaire template ?'
+  'labels.template_deactivateConfirmation': 'Do you want to deactivate selected questionnaire template ?',
+  'message.error.notAValidDocument': 'Not a valid document.',
+  'control.label.uploadFile': 'Upload File',
+  'button.caption.selectFile': 'Select File',
+  'message.questionnaireCreated': 'Questionnaire created successfully.',
+  'message.questionnaireUpdated': 'Questionnaire updated successfully.',
+  'message.questionnaireDeactivated': 'Questionnaire deactivated successfully.',
+  'message.questionTextRequired': 'Question text is required',
+  'message.englishTextIsRequired': 'At least requires english text'
 };
