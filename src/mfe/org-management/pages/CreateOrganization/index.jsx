@@ -13,6 +13,7 @@ import './CreateOrg.scss';
 import { PATHS } from '../../routes/constants';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { handleApiError } from '@src/util/ApiUtils';
+import ModuleHeader from '@src/components/module-header';
 
 const CreateOrganization = () => {
   const [organizationData, setOrganizationData] = useState(INITIAL_VALUES);
@@ -142,7 +143,11 @@ const CreateOrganization = () => {
           />
         </div>
       )} */}
-
+      <ModuleHeader
+        heading={
+          <Heading as="h1">{t('orgManagement.create_org')}</Heading>
+        }
+      />
       <Formik
         enableReinitialize
         initialValues={organizationData}

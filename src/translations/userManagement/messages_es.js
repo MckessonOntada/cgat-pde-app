@@ -316,7 +316,7 @@ export const UserManagementES = {
   'messages.accountlinkSuccess': 'S_new account(s) has been successfully linked to this user.',
   'messages.provisionedsuccess': 'S_User provisioned in Okta successfully.',
   'messages.provisionederrror': 'S_Unable to provision the user in Okta.',
-  'Table.Tabs.ActiveUser': 'S_ACTIVE USERS',
+  'Table.Tabs.ActiveUser': 'S_USERS',
   'Table.Tabs.pendingRequest': 'S_PENDING REQUESTS',
   'labels.startDate': 'S_Start Date',
   'labels.endDate': 'S_End Date',

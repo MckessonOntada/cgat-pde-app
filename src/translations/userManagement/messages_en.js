@@ -344,7 +344,7 @@ export const UserManagementEN = {
   'messages.provisionedsuccess': 'User provisioned in Okta successfully.',
   'messages.provisionederrror': 'Unable to provision the user in Okta.',
 
-  'Table.Tabs.ActiveUser': 'ACTIVE USERS',
+  'Table.Tabs.ActiveUser': 'USERS',
   'Table.Tabs.pendingRequest': 'PENDING REQUESTS',
   'labels.startDate': 'Start Date',
   'labels.endDate': 'End Date',
