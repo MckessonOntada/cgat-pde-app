@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
-import { Button, Heading } from '@mckesson/mcp-component-library';
+import { Button, Heading, Switch, Alert } from '@mckesson/mcp-component-library';
 import './index.scss';
 import ModuleHeader from '@src/components/module-header';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import CommonUtils from '@src/util/CommonUtils.js';
@@ -14,13 +14,21 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PermittedComponent from '@src/components/permitted-component';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import { useDispatch } from 'react-redux';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 
 const roleDetail = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { roleId } = useParams();
+  const dispatch = useDispatch();
+  const [messageConfig, setMessageConfig] = useState({
+    type: '',
+    message: ''
+  });
 
-  const { isLoading, isError, data } = useQuery({
+  const { isLoading, isError, data, refetch } = useQuery({
     queryKey: [`roles/${roleId}`],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}/${roleId}`, httpVerb.GET, {});
@@ -34,6 +42,58 @@ const roleDetail = () => {
     navigate('/admin/organization/roles');
   };
 
+  const { mutate: deleteRole } = useMutation({
+    mutationFn: async (id) => {
+      const response = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}/${id}`, httpVerb.DELETE);
+      return response.data;
+    },
+    onError: (error, variables, context) => {
+      setMessageConfig({
+        type: 'error',
+        message: t('orgManagement.messages.deleteRoleFailed')
+      });
+    },
+    onSuccess: (data, variables, context) => {
+      setMessageConfig({
+        type: 'success',
+        message: t('orgManagement.messages.deleteRoleSuccess')
+      });
+      refetch();
+    }
+  });
+
+  const handleOnUserConfirmation = () => {
+    const state = {};
+    state.title = t('userManagement.confirmationMessage');
+    state.body = (
+      <div className="MCP-modal-body">
+        <p>{t('orgManagement.message.roleDeactivateConfirmationDescription')}</p>
+      </div>
+    );
+    state.footer = (
+      <div className="controls">
+        <Button size="sm" variant="secondary" onClick={() => dispatch(closeModal())}>
+          Cancel
+        </Button>
+        <Button
+          size="sm"
+          variant="primary"
+          onClick={() => {
+            deleteRole(roleId);
+            dispatch(closeModal());
+          }}>
+          Okay
+        </Button>
+      </div>
+    );
+    dispatch(openModal(state));
+  };
+  const clearMessage = () => {
+    setMessageConfig({
+      type: '',
+      message: ''
+    });
+  };
   const groupPermissionsByCategory = (rolePermissions, permissionsEnum) => {
     const groupedPermissions = {};
 
@@ -62,10 +122,17 @@ const roleDetail = () => {
             {t('orgManagement.role.captionsBtnBackToManageRoles')}
           </Button>
         </div>
-
+        {messageConfig && messageConfig.type && messageConfig.message && (
+          <Alert duration={10000} onClose={clearMessage} description={messageConfig.message} type={messageConfig.type} />
+        )}
         <div className="MCP-module-body">
+          <ModuleHeader heading={<Heading as="h1">{t('orgManagement.role.labelRolesDetails')}</Heading>} />
           <ModuleHeader
-            heading={<Heading as="h1">{t('orgManagement.role.labelRolesDetails')}</Heading>}
+            heading={
+              <div className="subheader-text">
+                <EclipsesTextcss str={data?.name} maxWidth={500} />
+              </div>
+            }
             controls={
               <PermittedComponent permissions={[PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_ROLES]}>
                 <Button
@@ -84,24 +151,29 @@ const roleDetail = () => {
           <div className="MCP-panel-container">
             <div className="role-header">
               <div className="role-info">
-                <Heading as="h2">{data?.name}</Heading>
+                <p className="label-text">{data?.description || '-'}</p>
               </div>
-              <div className="user-status">
+              <div className="role-status">
                 <span className="view_label">{t('userManagement.label.createdOn')}:</span>
                 <span className="label-text">
                   {CommonUtils.convertDateStringFormat(data?.createdAt ? data?.createdAt : data?.updatedAt, 'MM-DD-YYYY')}
                 </span>
-              </div>
-            </div>
-
-            <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-2">
-              <div>
-                <span className="view_label">{t('userManagement.label.description')}</span>
-                <p className="label-text">{data?.description || '-'}</p>
+                <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_ROLES}>
+                  <Switch
+                    handleToggle={handleOnUserConfirmation}
+                    id="id"
+                    disabled={!data?.isActive}
+                    label={data?.isActive ? t('userManagement.status.active') : ''}
+                    labelPosition="right"
+                    name="Toggle"
+                    size="lg"
+                    value={data?.isActive}
+                  />
+                </PermittedComponent>
               </div>
             </div>
           </div>
-          <div className='secondryTitle'>
+          <div className="secondryTitle">
             <ModuleHeader
               heading={<Heading as="h1">{t('userManagement.header.view.permissions_granted')}</Heading>}
               controls={

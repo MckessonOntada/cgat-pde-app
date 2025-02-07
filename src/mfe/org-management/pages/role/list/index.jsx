@@ -15,7 +15,7 @@ import CommonFilters from '@src/components/Filters';
 function RolesList() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { messageConfig, clearMessage, clearFilters, applyFilters } = useRole();
+  const { messageConfig, clearMessage, clearFilters, applyFilters, refreshData } = useRole();
   const userPermissions = AuthUtils.getUserPermissions();
 
   const handleOnAddRoleClick = () => {
@@ -23,6 +23,7 @@ function RolesList() {
   };
   useEffect(() => {
     clearFilters();
+    refreshData();
   }, []);
 
   const AdditionalFiltersConfig = useMemo(() => {

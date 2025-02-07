@@ -277,15 +277,17 @@ const UserDetail = () => {
             </div>
           }
           controls={
-            <Button
-              Icon={EditPencil}
-              variant="secondary"
-              className="button-icon"
-              size="md"
-              disabled={!data?.isActive || isSelf}
-              onClick={() => navigate(`../${PATHS.editUser}/${userId}`, { state: { isEdit: true } })}>
-              {t('userManagement.button.edit')}
-            </Button>
+            <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
+              <Button
+                Icon={EditPencil}
+                variant="secondary"
+                className="button-icon"
+                size="md"
+                disabled={!data?.isActive || isSelf}
+                onClick={() => navigate(`../${PATHS.editUser}/${userId}`, { state: { isEdit: true } })}>
+                {t('userManagement.button.edit')}
+              </Button>
+            </PermittedComponent>
           }
         />
 
@@ -305,16 +307,18 @@ const UserDetail = () => {
                   ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY')
                   : 'N/A'}
               </span>
-              <Switch
-                handleToggle={handleDeactivate}
-                id="id"
-                disabled={!data?.isActive || isSelf}
-                label={data?.isActive ? t('userManagement.status.active') : ''}
-                labelPosition="right"
-                name="Toggle"
-                size="lg"
-                value={data?.isActive}
-              />
+              <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
+                <Switch
+                  handleToggle={handleDeactivate}
+                  id="id"
+                  disabled={!data?.isActive || isSelf}
+                  label={data?.isActive ? t('userManagement.status.active') : ''}
+                  labelPosition="right"
+                  name="Toggle"
+                  size="lg"
+                  value={data?.isActive}
+                />
+              </PermittedComponent>
             </div>
           </div>
 
@@ -357,21 +361,23 @@ const UserDetail = () => {
             </div>
           </div>
         </div>
-        <div className='secondryTitle'>
+        <div className="secondryTitle">
           <ModuleHeader
             heading={<Heading as="h1">{t('userManagement.header.view.permissions_granted')}</Heading>}
             controls={
-              <div className="controls">
-                <Button
-                  Icon={EditPencil}
-                  variant="secondary"
-                  className="button-icon"
-                  size="md"
-                  disabled={!data?.isActive || isSelf}
-                  onClick={() => navigate(`../${PATHS.userPermissions}/${userId}`, { state: { isEdit: true, permissionsData: data } })}>
-                  {t('userManagement.button.edit')}
-                </Button>
-              </div>
+              <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
+                <div className="controls">
+                  <Button
+                    Icon={EditPencil}
+                    variant="secondary"
+                    className="button-icon"
+                    size="md"
+                    disabled={!data?.isActive || isSelf}
+                    onClick={() => navigate(`../${PATHS.userPermissions}/${userId}`, { state: { isEdit: true, permissionsData: data } })}>
+                    {t('userManagement.button.edit')}
+                  </Button>
+                </div>
+              </PermittedComponent>
             }
           />
         </div>
@@ -417,17 +423,19 @@ const UserDetail = () => {
             <ModuleHeader
               heading={<Heading as="h1">{t('userManagement.header.view.linked_accounts')}</Heading>}
               controls={
-                <div className="controls">
-                  <Button
-                    Icon={EditPencil}
-                    variant="secondary"
-                    className="button-icon"
-                    size="md"
-                    disabled={!data?.isActive}
-                    onClick={() => navigate(`../${PATHS.addAccounts}/${userId}`, { state: { isEdit: true } })}>
-                    {t('userManagement.button.edit')}
-                  </Button>
-                </div>
+                <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
+                  <div className="controls">
+                    <Button
+                      Icon={EditPencil}
+                      variant="secondary"
+                      className="button-icon"
+                      size="md"
+                      disabled={!data?.isActive}
+                      onClick={() => navigate(`../${PATHS.addAccounts}/${userId}`, { state: { isEdit: true } })}>
+                      {t('userManagement.button.edit')}
+                    </Button>
+                  </div>
+                </PermittedComponent>
               }
             />
             {isSuccess && isAlertVisible && (

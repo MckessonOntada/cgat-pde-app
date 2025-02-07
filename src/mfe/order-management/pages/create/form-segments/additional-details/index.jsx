@@ -458,7 +458,7 @@ function AdditionalDetails() {
 
                 <div className="controls">
                   <Button size="md" variant="secondary" onClick={handleOnBack}>
-                    {isEdit ? t('captions.btnBack') : t('captions.btnBacktoPatientDetails')}
+                    {t('captions.btnBack')}
                   </Button>
                   <Button
                     size="md"

@@ -10,6 +10,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .role-info {
@@ -21,7 +22,11 @@
 .label-text {
   font-size: var(--brand-font-size--default);
   font-weight: var(--brand-font-weight-500);
-  line-height: var(--brand-line-height--medium);
+  line-height: var(--brand-line-height--large);
+  color: var(--brand-color-primary-slate);
+  white-space: nowrap;
+  text-wrap: wrap;
+  word-break: break-word;
 }
 
 .permission-category {
@@ -87,4 +92,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.role-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
