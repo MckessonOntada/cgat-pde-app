@@ -202,57 +202,58 @@ const { data: permissionsData } = useQuery({
           </div>
         </Fragment>
       )}
-      <div className='secondryTitle'>
-        <ModuleHeader
-          heading={<Heading as="h2">{t('userManagement.user_permissions.managePermissions')}</Heading>}
-          controls={
-            !isSystemAdminView && (
-              <div className="controls">
-                <Button size="md" variant="secondary" onClick={resetPermissions}>
-                  {t('userManagement.user_permissions.button.reset')}
-                </Button>
-                <Button size="md" variant="secondary" onClick={enableAllPermissions}>
-                  {t('userManagement.user_permissions.button.applyall')}
-                </Button>
-              </div>
-            )
-          }
-        />
-      </div>
-
-      <div className="MCP-panel-container grid grid-gap-16">
-        {filteredPermissionsEnum &&
-          Object.entries(filteredPermissionsEnum).map(([category, permissions]) => (
-            <div key={category} className="MCP-module-body permission-category">
-              <Heading as="h3">{t(category)}</Heading>
-              <div className="permission-category">
-                <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 permission-list">
-                  {Object.entries(permissions).map(([key, permission], idx) => (
-                    <React.Fragment key={idx}>
-                      <div key={key} className="flex items-center justify-between permission-item">
-                        <div className="permission-info">
-                          <div className="permission-info-header">{t(`${category}.${key}`)}</div>
-                          <p>{t(`${category}.${key}.DESCRIPTION`)}</p>
+      <div>
+        <div className='containerTitle'>
+          <ModuleHeader
+            heading={<Heading as="h2">{t('userManagement.user_permissions.managePermissions')}</Heading>}
+            controls={
+              !isSystemAdminView && (
+                <div className="controls">
+                  <Button size="md" variant="secondary" onClick={resetPermissions}>
+                    {t('userManagement.user_permissions.button.reset')}
+                  </Button>
+                  <Button size="md" variant="secondary" onClick={enableAllPermissions}>
+                    {t('userManagement.user_permissions.button.applyall')}
+                  </Button>
+                </div>
+              )
+            }
+          />
+        </div>
+        <div className="MCP-panel-container grid grid-gap-16">
+          {filteredPermissionsEnum &&
+            Object.entries(filteredPermissionsEnum).map(([category, permissions]) => (
+              <div key={category} className="MCP-module-body permission-category">
+                <Heading as="h3">{t(category)}</Heading>
+                <div className="permission-category">
+                  <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 permission-list">
+                    {Object.entries(permissions).map(([key, permission], idx) => (
+                      <React.Fragment key={idx}>
+                        <div key={key} className="flex items-center justify-between permission-item">
+                          <div className="permission-info">
+                            <div className="permission-info-header">{t(`${category}.${key}`)}</div>
+                            <p>{t(`${category}.${key}.DESCRIPTION`)}</p>
+                          </div>
+                          <div className="permission-toggle">
+                            <Switch
+                              id={`toggle-${category}-${key}`}
+                              label={!isSystemAdminView ? (isPermissionEnabled(permission) ? 'Enabled' : 'Disabled') : undefined}
+                              disabled={isSystemAdminView}
+                              labelPosition="right"
+                              size="lg"
+                              checked={isPermissionEnabled(permission)}
+                              onChange={() => togglePermission(permission)}
+                            />
+                          </div>
                         </div>
-                        <div className="permission-toggle">
-                          <Switch
-                            id={`toggle-${category}-${key}`}
-                            label={!isSystemAdminView ? (isPermissionEnabled(permission) ? 'Enabled' : 'Disabled') : undefined}
-                            disabled={isSystemAdminView}
-                            labelPosition="right"
-                            size="lg"
-                            checked={isPermissionEnabled(permission)}
-                            onChange={() => togglePermission(permission)}
-                          />
-                        </div>
-                      </div>
-                      {idx % 2 === 0 && idx !== Object.keys(filteredPermissionsEnum[category]).length - 1 && <div className="divider"></div>}
-                    </React.Fragment>
-                  ))}
+                        {idx % 2 === 0 && idx !== Object.keys(filteredPermissionsEnum[category]).length - 1 && <div className="divider"></div>}
+                      </React.Fragment>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

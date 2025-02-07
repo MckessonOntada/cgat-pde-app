@@ -28,18 +28,22 @@ function ManageMaterial() {
   return (
     <div className="MCP-module-wrapper">
       <Breadcrumbs className="module-breadcrumb" items={breadcrumbItems} />
-      <Heading as="h1">{t('manageMaterial.heading')}</Heading>
-      <div className={`${styles.cardContainer}`}>
-        <div className={`${styles.cardContainer}`}>
-          <CommonFilters
-            additionalFilters={[]}
-            onApplyFilters={applyFilters}
-            onClearFilters={clearFilters}
-            searchPlaceholder={t('manageMaterial.filters.searchPlaceholder')}
-            actualData={actualData}
-          />
+      <div>
+        <div className='containerTitle'>
+          <Heading as="h1">{t('manageMaterial.heading')}</Heading>
         </div>
-        <ManageMaterialTable className={styles.manageMaterialTable} />
+        <div className={`${styles.cardContainer}`}>
+          <div className={`${styles.cardContainer}`}>
+            <CommonFilters
+              additionalFilters={[]}
+              onApplyFilters={applyFilters}
+              onClearFilters={clearFilters}
+              searchPlaceholder={t('manageMaterial.filters.searchPlaceholder')}
+              actualData={actualData}
+            />
+          </div>
+          <ManageMaterialTable className={styles.manageMaterialTable} />
+        </div>
       </div>
     </div>
   );

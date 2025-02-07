@@ -81,7 +81,7 @@ div.disable-all {
 .MCP-module-wrapper {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-03);
+  gap: var(--spacing-05);
 
   .MCP-module-body {
     display: flex;
@@ -339,7 +339,7 @@ div.disable-all {
   flex-direction: column;
   width: 100%;
   height: auto;
-  gap: var(--spacing-04);
+  gap: var(--spacing-05);
   // padding: var(--spacing-04);
   // border: 1px solid var(--brand-color-patient-primary-3);
   // border-radius: var(--brand-border-radius--8);
@@ -846,5 +846,8 @@ div.disable-all {
 
 
 .module-breadcrumb {
-  margin-bottom: var(--spacing-02);
+  // margin-bottom: var(--spacing-03);
+}
+.containerTitle {
+  padding-bottom: var(--spacing-03);
 }

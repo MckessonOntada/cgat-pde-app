@@ -140,43 +140,47 @@ export default function Dashboard() {
   return (
     <div className="MCP-module-wrapper" id={debugIds(ID.TABLE, ID.CONTAINER)}>
       <Breadcrumb className="module-breadcrumb" items={breadcrumbItems} />
-      <ModuleHeader
-        heading={
-          <Heading as="h1">{t(isSystemAdminView ? 'userManagement.header.systemadmin.label' : 'userManagement.header.label')}</Heading>
-        }
-        controls={
-          <div className="controls">
-            {hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_USERS) && (
-              <Button
-                Icon={add_circle_bold}
-                className="button-icon"
-                variant="primary"
-                size="md"
-                onClick={() => navigate(`${PATHS.createUser}`)}>
-                {t(isSystemAdminView ? 'userManagement.button.addsystemadmin' : 'userManagement.button.adduser')}
-              </Button>
-            )}
-            {!isSystemAdminView && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.UPLOAD_USERS) && <UploadUsers showAlert={showAlert} />}
-          </div>
-        }
-      />
-      {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
-      <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
-        <div className="MCP-CardContainer">
-          <CommonFilters
-            onApplyFilters={applyFilters}
-            onClearFilters={clearFilters}
-            additionalFilters={AdditionalFiltersConfig}
-            searchPlaceholder={t('userManagement.searchFilter.label')}
+      <div>
+        <div className='containerTitle'>
+          <ModuleHeader
+            heading={
+              <Heading as="h1">{t(isSystemAdminView ? 'userManagement.header.systemadmin.label' : 'userManagement.header.label')}</Heading>
+            }
+            controls={
+              <div className="controls">
+                {hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_USERS) && (
+                  <Button
+                    Icon={add_circle_bold}
+                    className="button-icon"
+                    variant="primary"
+                    size="md"
+                    onClick={() => navigate(`${PATHS.createUser}`)}>
+                    {t(isSystemAdminView ? 'userManagement.button.addsystemadmin' : 'userManagement.button.adduser')}
+                  </Button>
+                )}
+                {!isSystemAdminView && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.UPLOAD_USERS) && <UploadUsers showAlert={showAlert} />}
+              </div>
+            }
           />
         </div>
+        {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
+        <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
+          <div className="MCP-CardContainer">
+            <CommonFilters
+              onApplyFilters={applyFilters}
+              onClearFilters={clearFilters}
+              additionalFilters={AdditionalFiltersConfig}
+              searchPlaceholder={t('userManagement.searchFilter.label')}
+            />
+          </div>
 
-        {!isSystemAdminView && (
-          <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />
-        )}
-        <div className="userList">
-          {activeTab === 1 && <UserTable selectableRows={true} onActionSuccess={handleSuccess} />}
-          {activeTab === 2 && <UserTable selectableRows={false} />}
+          {!isSystemAdminView && (
+            <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />
+          )}
+          <div className="userList">
+            {activeTab === 1 && <UserTable selectableRows={true} onActionSuccess={handleSuccess} />}
+            {activeTab === 2 && <UserTable selectableRows={false} />}
+          </div>
         </div>
       </div>
     </div>

@@ -246,7 +246,7 @@ function UserTable({ onActionSuccess }) {
             {t('userManagement.button.deactivate')}
           </Button>
         }
-        style={{ marginBottom: '24px' }}
+        style={{ marginBottom: '16px' }}
       />
 
       <CustomDataTable

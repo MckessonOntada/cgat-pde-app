@@ -127,7 +127,6 @@ export default function ViewOrganization() {
           {t('orgManagement.back.organization')}
         </Button>
       </div>
-      {!addNewAccounts && <ModuleHeader heading={<Heading as="h1">{t('orgManagement.create_org.org-details')}</Heading>} />}
       {/* {!isView && (
         <div className="stepper">
           <Stepper
@@ -144,38 +143,53 @@ export default function ViewOrganization() {
           />
         </div>
       )} */}
-      {isView && !addNewAccounts && data && (
-        <div className="details-view-container">
-          <DetailsView
-            data={data}
-            onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: { ...data, isEdit: true } }, true)}
+      <div>
+        <div className="containerTitle">
+          {!addNewAccounts && 
+            <ModuleHeader 
+             heading={<Heading as="h1">{t('orgManagement.create_org.org-details')}</Heading>} 
+             style={{ marginBottom: '16px' }}
+            />
+          }
+        </div>
+        {isView && !addNewAccounts && data && (
+          <div className="details-view-container">
+            <DetailsView
+              data={data}
+              onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: { ...data, isEdit: true } }, true)}
+            />
+          </div>
+        )}
+      </div>
+      <div>
+        <div className="containerTitle">
+          <ModuleHeader
+            heading={<Heading as="h1">{addNewAccounts ? t('orgManagement.select_account') : t('orgManagement.link')}</Heading>}
+            controls={
+              !addNewAccounts && (
+                <div className="controls">
+                  {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.EDIT_ORGANIZATION) && (
+                    <Button Icon={EditPencil} variant="secondary" className="button-icon" onClick={onEditAccounts} size={'md'}>
+                      {t(isView ? 'orgManagement.table.action.edit' : 'orgManagement.add.account')}
+                    </Button>
+                  )}
+                </div>
+              )
+            }
+            style={{ marginBottom: '16px' }}
           />
         </div>
-      )}
-      <ModuleHeader
-        heading={<Heading as="h1">{addNewAccounts ? t('orgManagement.select_account') : t('orgManagement.link')}</Heading>}
-        controls={
-          !addNewAccounts && (
-            <div className="controls">
-              {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.EDIT_ORGANIZATION) && (
-                <Button Icon={EditPencil} variant="secondary" className="button-icon" onClick={onEditAccounts} size={'md'}>
-                  {t(isView ? 'orgManagement.table.action.edit' : 'orgManagement.add.account')}
-                </Button>
-              )}
-            </div>
-          )
-        }
-      />
-      {updateState.isSuccess && isAlertVisible && (
-        <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />
-      )}
-      <OrganizationAccounts
-        showSelectedAccounts={addNewAccounts}
-        omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']}
-        selectedRows={selectedAccounts}
-        setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)}
-        practiceId={addNewAccounts ? null : orgId}
-      />
+        {updateState.isSuccess && isAlertVisible && (
+          <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />
+        )}
+        <OrganizationAccounts
+          showSelectedAccounts={addNewAccounts}
+          omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']}
+          selectedRows={selectedAccounts}
+          setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)}
+          practiceId={addNewAccounts ? null : orgId}
+        />
+      </div>
 
       {addNewAccounts && (
         <div className="btn-box">
