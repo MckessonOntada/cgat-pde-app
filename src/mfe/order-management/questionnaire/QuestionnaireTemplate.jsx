@@ -5,14 +5,57 @@ import { Field, useFormikContext } from 'formik';
 import Components from '@src/components/form/Components';
 import CheckBox from '@src/components/form/CheckBox';
 import { Button } from '@mckesson/mcp-component-library';
-import FileInput from '@src/components/FileInput';
 import { Link } from 'react-router-dom';
 import { ReactComponent as BinRedIcon } from '@src/assets/svg/bin-red.svg';
 import { ReactComponent as FileUploadIcon } from '@src/assets/svg/document.svg';
 import CommonUtils from '@src/util/CommonUtils';
+import { useTranslate } from '@src/translations/useTranslation';
+
+function validateFile(file) {
+  const maxSize = 5 * 1024 * 1024;
+  const allowedMimeTypes = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'text/plain',
+    'text/csv'
+  ];
+
+  const forbiddenMimeTypes = [
+    'image/png',
+    'image/jpeg',
+    'image/gif',
+    'image/webp',
+    'image/svg+xml',
+    'application/x-msdownload',
+    'application/octet-stream',
+    'application/x-sh'
+  ];
+
+  if (!file) {
+    return { isValid: false, message: 'No file selected.' };
+  }
+
+  if (file.size > maxSize) {
+    return { isValid: false, message: 'File size must be 5MB or smaller.' };
+  }
+
+  if (forbiddenMimeTypes.includes(file.type)) {
+    return { isValid: false, message: 'Invalid file type. Images and executables are not allowed.' };
+  }
+
+  if (!allowedMimeTypes.includes(file.type)) {
+    return { isValid: false, message: 'Unsupported file type. Please upload a valid document.' };
+  }
+
+  return { isValid: true, message: 'File is valid.' };
+}
 
 function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
-  const activeLanguage = 'en';
+  const activeLanguage = LANGUAGE.ENGLISH;
+  const { t } = useTranslate();
   const { values: formValues = {}, setFieldValue } = useFormikContext();
 
   if (
@@ -104,18 +147,12 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
                 </div>
               ) : (
                 <div className={`fileUploadControl ${isPreview ? 'readonly' : ''}`}>
-                  <Field name={`${fieldName}.documentUrl`}>
-                    {() => (
-                      <FileInput
-                        initialLogo={attachmentValue}
-                        onFileSelect={(file) => {
-                          onDocumentChange(fieldName, file, setFieldValue);
-                        }}
-                        label="Upload file"
-                        buttonCaption={'Select File'}
-                      />
-                    )}
-                  </Field>
+                  <Field
+                    name={`${fieldName}.documentUrl`}
+                    validateOnChange={validateFile}
+                    onFileChange={(file) => onDocumentChange(fieldName, file, setFieldValue)}
+                    component={Components['inputFile']}
+                  />
                 </div>
               )}
             </div>

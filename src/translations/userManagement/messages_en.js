@@ -12,7 +12,7 @@ export const UserManagementEN = {
 
   'userManagement.header.listing.label': 'Manage Users',
   'userManagement.header.systemadminlisting.label': 'Manage System Admins',
-  'userManagement.table.userlisting.label': 'Users Listing',
+  'userManagement.table.userlisting.label': 'User Listing',
   'userManagement.table.systemadminlisting.label': 'System Admin Listing',
 
   'userManagement.breadcrumb.labeldashboard': 'Dashboard',
@@ -345,7 +345,7 @@ export const UserManagementEN = {
   'messages.provisionedsuccess': 'User provisioned in Okta successfully.',
   'messages.provisionederrror': 'Unable to provision the user in Okta.',
 
-  'Table.Tabs.ActiveUser': 'ACTIVE USERS',
+  'Table.Tabs.ActiveUser': 'USERS',
   'Table.Tabs.pendingRequest': 'PENDING REQUESTS',
   'labels.startDate': 'Start Date',
   'labels.endDate': 'End Date',

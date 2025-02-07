@@ -8,7 +8,7 @@
 .container-box {
   display: grid;
   gap: var(--spacing-02);
-  padding: var(--spacing-03);
+  padding: var(--spacing-05);
   border: 1px solid var(--brand-color-patient-primary-3);
   border-radius: var(--brand-border-radius--6);
   background-color: var(--brand-color-background-white);
@@ -37,6 +37,10 @@
   h3 {
     font-weight: var(--brand-font-weight-600);
   }
+}
+
+.orgDetailsTitle{
+  margin-top: 0px;
 }
 
 .line-height {

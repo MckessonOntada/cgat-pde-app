@@ -9,8 +9,8 @@ export const OrgManagementEN = {
   'orgManagement.stepper.option.org_details': 'Organization Details',
   'orgManagement.stepper.option.acct_details': 'Link Accounts',
 
-  'orgManagement.table.name': 'Name',
-  'orgManagement.table.id': 'ID',
+  'orgManagement.table.name': 'Organization Name',
+  'orgManagement.table.id': 'Organization ID',
   'orgManagement.table.location': 'Location',
   'orgManagement.table.status': 'Status',
   'orgManagement.table.dateUpdated': 'Last Updated On',
@@ -158,5 +158,6 @@ export const OrgManagementEN = {
   'errors.practice_phone_key': 'Phone number already exists.',
   'errors.default': 'An unexpected error occurred.',
 
-  'orgManagement.filters.status.label': 'Select by name & location'
+  'orgManagement.filters.status.label': 'Select by name & location',
+  'button.caption.uploadFile': 'Upload File'
 };

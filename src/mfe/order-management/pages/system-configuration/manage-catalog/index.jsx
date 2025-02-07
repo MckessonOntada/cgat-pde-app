@@ -33,20 +33,24 @@ function ManageCatalog(props) {
   return (
     <div className="MCP-module-wrapper catalog-module">
       <Breadcrumbs className="module-breadcrumb" items={translatedBreadcrumbs} />
-      <Heading as="h1">{t('dashboard.card.manage_catalog')}</Heading>
-      <div className="MCP-panel-container">
-        <OrgAccountsSelect handleAccountChange={() => {}} />
-        <div class="MCP-panel-container">
-          <CommonFilters
-            onApplyFilters={applyFilters}
-            onClearFilters={clearFilters}
-            additionalFilters={[]}
-            searchPlaceholder={t('ManageCatalog.SearchByMaterialId')}
-            actualData={[]}
-            initialData={filterConfig}
-          />
+      <div>
+        <div className='containerTitle'>
+          <Heading as="h1">{t('dashboard.card.manage_catalog')}</Heading>
         </div>
-        <CatalogDataTable />
+        <div className="MCP-panel-container">
+          <OrgAccountsSelect handleAccountChange={() => {}} />
+          <div class="MCP-panel-container">
+            <CommonFilters
+              onApplyFilters={applyFilters}
+              onClearFilters={clearFilters}
+              additionalFilters={[]}
+              searchPlaceholder={t('ManageCatalog.SearchByMaterialId')}
+              actualData={[]}
+              initialData={filterConfig}
+            />
+          </div>
+          <CatalogDataTable />
+        </div>
       </div>
     </div>
   );

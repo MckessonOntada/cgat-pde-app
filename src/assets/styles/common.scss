@@ -81,7 +81,7 @@ div.disable-all {
 .MCP-module-wrapper {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-03);
+  gap: var(--spacing-05);
 
   .MCP-module-body {
     display: flex;
@@ -339,14 +339,14 @@ div.disable-all {
   flex-direction: column;
   width: 100%;
   height: auto;
-  gap: var(--spacing-04);
+  gap: var(--spacing-05);
   // padding: var(--spacing-04);
   // border: 1px solid var(--brand-color-patient-primary-3);
   // border-radius: var(--brand-border-radius--8);
   // background-color: var(--brand-color-background-white);
 
   @include mixins.respond(sm) {
-    padding: var(--spacing-04);
+    padding: var(--spacing-05);
     border: 1px solid var(--brand-color-patient-primary-3);
     border-radius: var(--brand-border-radius--8);
     background-color: var(--brand-color-background-white);
@@ -796,14 +796,18 @@ div.disable-all {
   @include mixins.respond(sm) {
     background-color: var(--brand-color-background-white);
   }
-
   #secondaryNavPanel {
-
-    button,
-    a {
-      font-size: var(--brand-font-size--small);
-      line-height: var(--brand-line-height--large);
-      text-transform: uppercase;
+    ul{
+      margin-left: 0px;
+      li:first-child button {
+        padding-left: 0px;
+      }
+      button,
+      a {
+        font-size: var(--brand-font-size--small);
+        line-height: var(--brand-line-height--large);
+        text-transform: uppercase;
+      }
     }
   }
 }
@@ -844,7 +848,6 @@ div.disable-all {
   }
 }
 
-
-.module-breadcrumb {
-  margin-bottom: var(--spacing-02);
+.containerTitle {
+  padding-bottom: var(--spacing-03);
 }

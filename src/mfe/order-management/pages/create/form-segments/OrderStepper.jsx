@@ -24,9 +24,17 @@ function OrderStepper() {
     return true;
   });
 
+  const activeIndex = () => {
+    if (!patientDetailsRequired && currentStage > 2) {
+      return currentStage;
+    } else {
+      return currentStage + 1;
+    }
+  };
+
   return (
     <Stepper
-      activeIndex={patientDetailsRequired ? currentStage + 1 : currentStage}
+      activeIndex={activeIndex()}
       dividerText="of"
       mobileLabel={t('labels.steps')}
       stepHeaders={filteredStepperItems.map((f) => ({ label: f.label }))}

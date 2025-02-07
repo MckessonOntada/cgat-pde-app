@@ -3,12 +3,19 @@ import { Field } from 'formik';
 import Components from '@src/components/form/Components';
 import { Required, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import FileInput from '@src/components/FileInput';
 import { US_STATES } from '@src/components/form/util';
 
 const OrgDetailsFormSegment = () => {
   const { t } = useTranslate();
+  function validateFile(file) {
+    const allowedMimeTypes = ['image/png', 'image/jpeg'];
 
+    if (!allowedMimeTypes.includes(file.type)) {
+      return { isValid: false, message: 'Unsupported file type. Please upload a valid image.' };
+    }
+
+    return { isValid: true, message: 'File is valid.' };
+  }
   const usStates = US_STATES();
   usStates.unshift({
     isDisabled: true,
@@ -18,7 +25,7 @@ const OrgDetailsFormSegment = () => {
 
   return (
     <div className="form-container">
-      <div className="headingBox">
+      <div className="headingBox orgDetailsTitle">
         <Heading as="h3">{t('orgManagement.create_org.org-details')}</Heading>
 
         <p className="form-instruction">
@@ -35,21 +42,8 @@ const OrgDetailsFormSegment = () => {
         maxLength={100}
       />
 
-      {/* Use setFieldValue with FileUpload component */}
+      <Field name="file" validateOnChange={validateFile} label={t('button.caption.uploadFile')} component={Components['inputFile']} />
 
-      <Field name="file">
-        {({ field, form }) => (
-          <FileInput
-            initialLogo={field.value}
-            onFileSelect={(file) => {
-              form.setFieldValue(field.name, file);
-            }}
-            label="Upload file"
-          />
-        )}
-      </Field>
-
-      {/* Remaining Fields */}
       <div className="headingBox">
         <Heading as="h3">{t('orgManagement.create_org.contact_details')}</Heading>
       </div>

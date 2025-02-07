@@ -80,37 +80,40 @@ function DashboardPage() {
   return (
     <div className="MCP-module-wrapper">
       <Breadcrumb className="module-breadcrumb" items={breadcrumbItems} />
+      <div>
+        <div className='containerTitle'>
+          <ModuleHeader
+            heading={<Heading as="h1">{t('orgManagement.header.label')}</Heading>}
+            controls={
+              <div className="controls">
+                {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION) && (
+                  <Button
+                    Icon={add_circle_bold}
+                    className="button-icon"
+                    variant="primary"
+                    size="md"
+                    onClick={() => navigate(`${PATHS.createOrg}`)}>
+                    {t('orgManagement.add.label')}
+                  </Button>
+                )}
+              </div>
+            }
+          />
+        </div>
+        {isSuccess && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
 
-      <ModuleHeader
-        heading={<Heading as="h1">{t('orgManagement.header.label')}</Heading>}
-        controls={
-          <div className="controls">
-            {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION) && (
-              <Button
-                Icon={add_circle_bold}
-                className="button-icon"
-                variant="primary"
-                size="md"
-                onClick={() => navigate(`${PATHS.createOrg}`)}>
-                {t('orgManagement.add.label')}
-              </Button>
-            )}
+        <div className="MCP-module-body">
+          <div className="MCP-panel-container">
+            <div className="MCP-CardContainer">
+              <CommonFilters
+                onApplyFilters={applyFilters}
+                onClearFilters={clearFilters}
+                additionalFilters={AdditionalFiltersConfig}
+                searchPlaceholder={t('orgManagement.org.placeholder')}
+              />
+            </div>
+            <OrgList />
           </div>
-        }
-      />
-      {isSuccess && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
-
-      <div className="MCP-module-body">
-        <div className="MCP-panel-container">
-          <div className="MCP-CardContainer">
-            <CommonFilters
-              onApplyFilters={applyFilters}
-              onClearFilters={clearFilters}
-              additionalFilters={AdditionalFiltersConfig}
-              searchPlaceholder={t('orgManagement.org.placeholder')}
-            />
-          </div>
-          <OrgList />
         </div>
       </div>
     </div>

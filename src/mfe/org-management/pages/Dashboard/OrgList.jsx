@@ -122,7 +122,7 @@ const OrgList = () => {
       ),
       sortable: true,
       sortKey: 'name',
-      minWidth: '250px',
+      minWidth: '210px',
       wrap: true
     },
     {
@@ -130,7 +130,7 @@ const OrgList = () => {
       name: t('orgManagement.table.id'),
       selector: (row) => row.id,
       sortable: true,
-      minWidth: '100px',
+      minWidth: '140px',
       sortKey: 'id',
       wrap: true
     },
