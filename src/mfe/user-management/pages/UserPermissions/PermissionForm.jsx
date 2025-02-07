@@ -36,113 +36,118 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
     refetchOnWindowFocus: false
   });
 
-const userType = isSystemAdminView ? 'ADMIN' : 'GENERAL';
+  const userType = isSystemAdminView ? 'ADMIN' : 'GENERAL';
 
-const { data: permissionsData } = useQuery({
-  queryKey: ['users/permissions'],
-  queryFn: async () => {
-    const res = await HttpResourceService.callRest(`${ApiRoutes.GET_PERMISSIONS(userType)}`, httpVerb.GET, {});
-    const rawPermissions = res.data || [];
-    console.log('rawPermissions',rawPermissions)
-    // grouped format
-    const groupedPermissions = {
-      USER_MANAGEMENT: {},
-      ADMIN_MANAGEMENT: {},
-      ORGANIZATION_MANAGEMENT: {},
-      ORDER_MANAGEMENT: {},
-      SYSTEM_CONFIGURATION: {},
-      PAYMENT_INVOICING: {}
-    };
-    //filter the data according to group
-    rawPermissions.forEach(permission => {
-      if ([
-        "MANAGE_USERS_SCREEN",
-        "ADD_USERS",
-        "EDIT_USERS",
-        "VIEW_USERS",
-        "UPLOAD_USERS",
-        "CREATE_USER_FOR_PENDING_USER_REQUEST",
-        "MANAGE_ROLES_SCREEN",
-        "ADD_ROLES",
-        "VIEW_ROLES",
-        "EDIT_ROLES",
-        "ON_BEHALF_OF_USER"
-      ].includes(permission)) {
-        groupedPermissions.USER_MANAGEMENT[permission] = permission;
-      } else if ([
-        "MANAGE_SYSTEM_ADMINISTRATOR_SCREEN",
-        "ADD_SYSTEM_ADMINISTRATOR",
-        "VIEW_SYSTEM_ADMINISTRATOR",
-        "EDIT_SYSTEM_ADMINISTRATOR",
-      ].includes(permission)) {
-        groupedPermissions.ADMIN_MANAGEMENT[permission] = permission;
-      } else if ([
-        'MANAGE_ORGANIZATION_SCREEN',
-        'ADD_ORGANIZATION',
-        'EDIT_ORGANIZATION',
-        'VIEW_ORGANIZATION',
-      ].includes(permission)) {
-        groupedPermissions.ORGANIZATION_MANAGEMENT[permission] = permission;
-      } else if ([
-        "MANAGE_ORDERS",
-        "ADD_ORDERS",
-        "EDIT_ORDERS",
-        "VIEW_ORDERS",
-        "APPROVE_ORDERS",
-        "CANCEL_ORDER",
-        "REJECT_ORDER",
-        "VIEW_PENDING_ORDERS",
-        "MANAGE_APPROVER_GROUP",
-        "VIEW_APPROVER_GROUP",
-        "ADD_APPROVER_GROUP",
-        "EDIT_APPROVER_GROUP"
-      ].includes(permission)) {
-        groupedPermissions.ORDER_MANAGEMENT[permission] = permission;
-      }  else if ([
-        'ADD_QUESTIONNAIRE',
-        'VIEW_QUESTIONNAIRE',
-        'CONFIGURE_QUESTIONNAIRE',
-        'DEACTIVATE_QUESTIONNAIRE',
-        'MANAGE_MATERIAL',
-        'VIEW_MATERIAL',
-        'MANAGE_CATALOG',
-        'VIEW_CATALOG',
-      ].includes(permission)) {
-        groupedPermissions.SYSTEM_CONFIGURATION[permission] = permission;
-      } else if ([
-        "PAY_INVOICES",
-        "MANAGE_CUSTOMER_STATEMENT",
-        "VIEW_INVOICES",
-        "MANAGE_INVOICES",
-        "VIEW_PAYMENT_HISTORY",
-        "VIEW_CUSTOMER_STATEMENT",
-        "VIEW_PAYMENT_METHOD_CARD",
-        "ADD_PAYMENT_METHOD_CARD",
-        "MANAGE_PAYMENT_METHOD_CARD",
-        "DELETE_PAYMENT_METHOD_CARD",
-        "MANAGE_PAYMENT_METHOD_BANK",
-        "DELETE_PAYMENT_METHOD_BANK",
-        "ADD_PAYMENT_METHOD_BANK",
-        "VIEW_PAYMENT_METHOD_BANK",
-        "CANCEL_PAYMENT",
-        "VIEW_CREDIT_LISTING"
-      ].includes(permission)) {
-        groupedPermissions.PAYMENT_INVOICING[permission] = permission;
-      }
-    });
-    // remove empty data
-    const filteredPermissions = Object.fromEntries(
-      Object.entries(groupedPermissions).filter(([key, value]) => Object.keys(value).length > 0)
-    );
-    return filteredPermissions;
-  },
-  enabled: true,
-  refetchOnWindowFocus: false,
-});
+  const { data: permissionsData } = useQuery({
+    queryKey: ['users/permissions'],
+    queryFn: async () => {
+      const res = await HttpResourceService.callRest(`${ApiRoutes.GET_PERMISSIONS(userType)}`, httpVerb.GET, {});
+      const rawPermissions = res.data || [];
+      console.log('rawPermissions', rawPermissions);
+      // grouped format
+      const groupedPermissions = {
+        USER_MANAGEMENT: {},
+        ADMIN_MANAGEMENT: {},
+        ORGANIZATION_MANAGEMENT: {},
+        ORDER_MANAGEMENT: {},
+        SYSTEM_CONFIGURATION: {},
+        PAYMENT_INVOICING: {}
+      };
+      //filter the data according to group
+      rawPermissions.forEach((permission) => {
+        if (
+          [
+            'MANAGE_USERS_SCREEN',
+            'ADD_USERS',
+            'EDIT_USERS',
+            'VIEW_USERS',
+            'UPLOAD_USERS',
+            'CREATE_USER_FOR_PENDING_USER_REQUEST',
+            'MANAGE_ROLES_SCREEN',
+            'ADD_ROLES',
+            'VIEW_ROLES',
+            'EDIT_ROLES',
+            'ON_BEHALF_OF_USER'
+          ].includes(permission)
+        ) {
+          groupedPermissions.USER_MANAGEMENT[permission] = permission;
+        } else if (
+          [
+            'MANAGE_SYSTEM_ADMINISTRATOR_SCREEN',
+            'ADD_SYSTEM_ADMINISTRATOR',
+            'VIEW_SYSTEM_ADMINISTRATOR',
+            'EDIT_SYSTEM_ADMINISTRATOR'
+          ].includes(permission)
+        ) {
+          groupedPermissions.ADMIN_MANAGEMENT[permission] = permission;
+        } else if (['MANAGE_ORGANIZATION_SCREEN', 'ADD_ORGANIZATION', 'EDIT_ORGANIZATION', 'VIEW_ORGANIZATION'].includes(permission)) {
+          groupedPermissions.ORGANIZATION_MANAGEMENT[permission] = permission;
+        } else if (
+          [
+            'MANAGE_ORDERS',
+            'ADD_ORDERS',
+            'EDIT_ORDERS',
+            'VIEW_ORDERS',
+            'APPROVE_ORDERS',
+            'CANCEL_ORDER',
+            'REJECT_ORDER',
+            'VIEW_PENDING_ORDERS',
+            'MANAGE_APPROVER_GROUP',
+            'VIEW_APPROVER_GROUP',
+            'ADD_APPROVER_GROUP',
+            'EDIT_APPROVER_GROUP'
+          ].includes(permission)
+        ) {
+          groupedPermissions.ORDER_MANAGEMENT[permission] = permission;
+        } else if (
+          [
+            'ADD_QUESTIONNAIRE',
+            'VIEW_QUESTIONNAIRE',
+            'CONFIGURE_QUESTIONNAIRE',
+            'DEACTIVATE_QUESTIONNAIRE',
+            'MANAGE_MATERIAL',
+            'VIEW_MATERIAL',
+            'MANAGE_CATALOG',
+            'VIEW_CATALOG'
+          ].includes(permission)
+        ) {
+          groupedPermissions.SYSTEM_CONFIGURATION[permission] = permission;
+        } else if (
+          [
+            'PAY_INVOICES',
+            'MANAGE_CUSTOMER_STATEMENT',
+            'VIEW_INVOICES',
+            'MANAGE_INVOICES',
+            'VIEW_PAYMENT_HISTORY',
+            'VIEW_CUSTOMER_STATEMENT',
+            'VIEW_PAYMENT_METHOD_CARD',
+            'ADD_PAYMENT_METHOD_CARD',
+            'MANAGE_PAYMENT_METHOD_CARD',
+            'DELETE_PAYMENT_METHOD_CARD',
+            'MANAGE_PAYMENT_METHOD_BANK',
+            'DELETE_PAYMENT_METHOD_BANK',
+            'ADD_PAYMENT_METHOD_BANK',
+            'VIEW_PAYMENT_METHOD_BANK',
+            'CANCEL_PAYMENT',
+            'VIEW_CREDIT_LISTING'
+          ].includes(permission)
+        ) {
+          groupedPermissions.PAYMENT_INVOICING[permission] = permission;
+        }
+      });
+      // remove empty data
+      const filteredPermissions = Object.fromEntries(
+        Object.entries(groupedPermissions).filter(([key, value]) => Object.keys(value).length > 0)
+      );
+      return filteredPermissions;
+    },
+    enabled: true,
+    refetchOnWindowFocus: false
+  });
 
   const filteredPermissionsEnum = isSystemAdminView
-  ? permissionsData || {}
-  : Object.fromEntries(Object.entries(permissionsData || {}).filter(([key]) => key !== 'ORGANIZATION_MANAGEMENT'));
+    ? permissionsData || {}
+    : Object.fromEntries(Object.entries(permissionsData || {}).filter(([key]) => key !== 'ORGANIZATION_MANAGEMENT'));
 
   const getAllPermissions = () => Object.values(filteredPermissionsEnum).flatMap((permissions) => Object.values(permissions));
 
@@ -202,9 +207,9 @@ const { data: permissionsData } = useQuery({
           </div>
         </Fragment>
       )}
-      <div className='secondryTitle'>
+      <div className="secondryTitle">
         <ModuleHeader
-          heading={<Heading as="h3">{t('userManagement.user_permissions.managePermissions')}</Heading>}
+          heading={<Heading as="h2">{t('userManagement.user_permissions.managePermissions')}</Heading>}
           controls={
             !isSystemAdminView && (
               <div className="controls">
@@ -246,13 +251,15 @@ const { data: permissionsData } = useQuery({
                           />
                         </div>
                       </div>
-                      {idx % 2 === 0 && idx !== Object.keys(filteredPermissionsEnum[category]).length - 1 && <div className="divider"></div>}
+                      {idx % 2 === 0 && idx !== Object.keys(filteredPermissionsEnum[category]).length - 1 && (
+                        <div className="divider"></div>
+                      )}
                     </React.Fragment>
                   ))}
                 </div>
               </div>
             </div>
-        ))}
+          ))}
       </div>
     </div>
   );

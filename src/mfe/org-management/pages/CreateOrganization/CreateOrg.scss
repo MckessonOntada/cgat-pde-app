@@ -34,6 +34,9 @@
   align-items: center;
   // margin-top: var(--spacing-02);
   // margin-bottom: var(--spacing-04);
+  h3 {
+    font-weight: var(--brand-font-weight-600);
+  }
 }
 
 .line-height {

@@ -8,6 +8,10 @@
   padding: 0 1px;
 
   background: none;
+  h2 {
+    font-size: var(--brand-font-size--24) !important;
+    font-weight: var(--brand-font-weight-600);
+  }
 }
 
 .tableHeadingContainerSeconday {

@@ -13,4 +13,8 @@
     flex-wrap: wrap;
     gap: var(--spacing-03);
   }
+  h2 {
+    font-size: var(--brand-font-size--24) !important;
+    font-weight: var(--brand-font-weight-600);
+  }
 }

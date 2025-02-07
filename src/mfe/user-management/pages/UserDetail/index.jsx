@@ -24,7 +24,7 @@ import PermittedComponent from '@src/components/permitted-component';
 function getBackgroundColorByRole(role) {
   switch (role) {
     case 'ORGANIZATION ADMIN':
-      return 'success';
+      return '#DEEBF0';
     case 'ORGANIZATION USER':
       return 'primary';
     default:
@@ -273,7 +273,9 @@ const UserDetail = () => {
         <ModuleHeader
           heading={
             <div className="subheader-text">
-              <EclipsesTextcss str={userFullName} maxWidth={500} />
+              <Heading as="h2">
+                <EclipsesTextcss str={userFullName} maxWidth={500} />
+              </Heading>
             </div>
           }
           controls={
@@ -292,7 +294,15 @@ const UserDetail = () => {
         <div className="MCP-panel-container">
           <div className="user-header">
             <div className="user-info">
-              {data?.role?.name && <Badge text={data?.role?.name} type={getBackgroundColorByRole(data?.role?.name)} />}
+              {data?.role?.name && (
+                <Badge
+                  text={data?.role?.name}
+                  type={getBackgroundColorByRole(data?.role?.name)}
+                  customStyle={{
+                    background: '#DEEBF0'
+                  }}
+                />
+              )}
             </div>
             <div className="user-status">
               <span className="view_label">{t('userManagement.userDetails.lastUpdatedOn')}</span>
@@ -357,9 +367,9 @@ const UserDetail = () => {
             </div>
           </div>
         </div>
-        <div className='secondryTitle'>
+        <div className="secondryTitle">
           <ModuleHeader
-            heading={<Heading as="h1">{t('userManagement.header.view.permissions_granted')}</Heading>}
+            heading={<Heading as="h2">{t('userManagement.header.view.permissions_granted')}</Heading>}
             controls={
               <div className="controls">
                 <Button
@@ -406,7 +416,7 @@ const UserDetail = () => {
             <EmptyDataTable
               isLoading={isLoading}
               image={EmptyDataImage}
-              heading={t('message.userEmptyTableTitle')}
+              heading={t('userManagement.message.userEmptyTableTitle')}
               description={t('userManagement.messages.emptysubtitle')}
             />
           )}
@@ -415,7 +425,7 @@ const UserDetail = () => {
         {!isSystemAdminView && (
           <div className="MCP-module-body">
             <ModuleHeader
-              heading={<Heading as="h1">{t('userManagement.header.view.linked_accounts')}</Heading>}
+              heading={<Heading as="h2">{t('userManagement.header.view.linked_accounts')}</Heading>}
               controls={
                 <div className="controls">
                   <Button
