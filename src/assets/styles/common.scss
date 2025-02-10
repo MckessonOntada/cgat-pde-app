@@ -849,7 +849,7 @@ div.disable-all {
 .customTab{
   ul{
     margin: 0px !important;
-    gap: 32px;
+    gap: var(--spacing-04);
     li button {
       padding-left: 0px;
       padding-right: 0px;
