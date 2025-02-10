@@ -6,7 +6,7 @@ function TableHeading({ heading, controls, secondaryView, secondaryViewHeading, 
     <div className={`${styles.tableHeadingContainer} ${secondaryView && styles.tableHeadingContainerSeconday}`} style={style}>
       {!secondaryView ? (
         <>
-          <h2>{heading}</h2>
+          <h2 className="">{heading}</h2>
           {controls}
         </>
       ) : (

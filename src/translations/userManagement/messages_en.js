@@ -148,6 +148,7 @@ export const UserManagementEN = {
   'userManagement.messages.userEmptyTableSubtitle': 'Data is unavailable. Please add an user to view the table content.',
   'userManagement.messages.sysadminEmptyTableSubtitle': 'Data is unavailable. Please add a System Admin to view the table content.',
   'userManagement.messages.emptysubtitle': 'Data is unavailable. Please add Permission(s) to view the content.',
+  'userManagement.message.userEmptyTableTitle': 'No Permissions Found.',
   'userManagement.header.view.linked_accounts': 'Linked Accounts',
 
   'userManagement.user_permissions.managePermissions': 'Manage Permissions',
@@ -156,7 +157,7 @@ export const UserManagementEN = {
   'userManagement.user_permissions.select_role': 'Select Role',
 
   'userManagement.searchFilter.addaccount_label': 'Search By Name or location',
-  'userManagement.add_accounts.labelheader': 'Please select accounts to incorporate into the organization',
+  'userManagement.add_accounts.labelheader': 'Select accounts',
 
   USER_MANAGEMENT: 'User and account Management',
   ORGANIZATION_MANAGEMENT: 'Organization Management',

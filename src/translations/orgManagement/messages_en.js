@@ -117,7 +117,7 @@ export const OrgManagementEN = {
   'orgManagement.per_page': 'per page',
   'orgManagement.selected_items': `Item Selected`,
   'orgManagement.link': 'Linked Accounts',
-  'orgManagement.select_account': 'Please select accounts to incorporate into the organization.',
+  'orgManagement.select_account': 'Select accounts',
   'orgManagement.org.placeholder': 'Search by Organization Name',
 
   'orgManagement.empty_table.description': 'You need to add Organization to see data in this table.',
