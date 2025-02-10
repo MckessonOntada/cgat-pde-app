@@ -171,9 +171,11 @@ export default function Dashboard() {
               searchPlaceholder={t('userManagement.searchFilter.label')}
             />
           </div>
-
+          
           {!isSystemAdminView && (
-            <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />
+            <div className='customTab'>
+              <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />
+            </div>
           )}
           <div className="userList">
             {activeTab === 1 && <UserTable selectableRows={true} onActionSuccess={handleSuccess} />}

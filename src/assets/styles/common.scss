@@ -797,17 +797,11 @@ div.disable-all {
     background-color: var(--brand-color-background-white);
   }
   #secondaryNavPanel {
-    ul{
-      margin-left: 0px;
-      li:first-child button {
-        padding-left: 0px;
-      }
-      button,
-      a {
-        font-size: var(--brand-font-size--small);
-        line-height: var(--brand-line-height--large);
-        text-transform: uppercase;
-      }
+    button,
+    a {
+      font-size: var(--brand-font-size--small);
+      line-height: var(--brand-line-height--large);
+      text-transform: uppercase;
     }
   }
 }
@@ -850,4 +844,15 @@ div.disable-all {
 
 .containerTitle {
   padding-bottom: var(--spacing-03);
+}
+
+.customTab{
+  ul{
+    margin: 0px !important;
+    gap: 32px;
+    li button {
+      padding-left: 0px;
+      padding-right: 0px;
+    }
+  }
 }
