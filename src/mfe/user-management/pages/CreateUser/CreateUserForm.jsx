@@ -19,7 +19,7 @@ const UserDetailsFormSegment = () => {
     <div className="MCP-module-wrapper">
       <div className="MCP-module-body form-container">
         <div>
-          <div className="headingBox">
+          <div className="headingBox firstHeading">
             <Heading as="h3">{t('userManagement.create_user.personal_details')}</Heading>
             <p className="form-instruction">
               <Required id="Required"></Required> {t('userManagement.create_user.required')}
