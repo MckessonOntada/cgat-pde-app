@@ -301,7 +301,8 @@ const UserDetail = () => {
                   text={data?.role?.name}
                   type={getBackgroundColorByRole(data?.role?.name)}
                   customStyle={{
-                    background: '#DEEBF0'
+                    background: '#DEEBF0',
+                    color: '#254E56'
                   }}
                 />
               )}
