@@ -27,11 +27,9 @@ function ManageMaterial() {
 
   return (
     <div className="MCP-module-wrapper">
-      <Breadcrumbs className="module-breadcrumb" items={breadcrumbItems} />
-      <div>
-        <div className='containerTitle'>
-          <Heading as="h1">{t('manageMaterial.heading')}</Heading>
-        </div>
+      <Breadcrumbs items={breadcrumbItems} />
+      <div className="MCP-module-body">
+        <Heading as="h1">{t('manageMaterial.heading')}</Heading>
         <div className={`${styles.cardContainer}`}>
           <div className={`${styles.cardContainer}`}>
             <CommonFilters

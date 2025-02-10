@@ -13,20 +13,22 @@ export function SystemConfiguration(props) {
   }));
   return (
     <div className="MCP-module-wrapper">
-      <Breadcrumbs className="module-breadcrumb" items={translatedBreadcrumbs} />
-      <Heading as="h2">{t('dashboard.card.system_configuration')}</Heading>
-      <div className={''}>
-        <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
-          {CARDS.map((card, index) => {
-            const Icon = card.icon;
-            return (
-              <Link id={`${card.label}-${card.index}`} className={'dashboard-card'} to={card.path} key={index}>
-                <Icon />
-                <p className="card-heading">{t(`dashboard.card.${card.label}`)}</p>
-                <p>{t(`dashboard.card.${card.details}`)}</p>
-              </Link>
-            );
-          })}
+      <Breadcrumbs items={translatedBreadcrumbs} />
+      <div className='MCP-module-body'>
+        <Heading as="h2">{t('dashboard.card.system_configuration')}</Heading>
+        <div className={''}>
+          <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
+            {CARDS.map((card, index) => {
+              const Icon = card.icon;
+              return (
+                <Link id={`${card.label}-${card.index}`} className={'dashboard-card'} to={card.path} key={index}>
+                  <Icon />
+                  <p className="card-heading">{t(`dashboard.card.${card.label}`)}</p>
+                  <p>{t(`dashboard.card.${card.details}`)}</p>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
