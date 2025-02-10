@@ -58,22 +58,19 @@ function RolesList() {
   return (
     <div className="MCP-module-wrapper">
       {/* Breadcrumb */}
-      <Breadcrumb className="module-breadcrumb" items={breadcrumbItems} />
-
-      <div>
-        <div className="containerTitle">
-          {/* module header */}
-          <ModuleHeader
-            heading={<Heading as="h1">{t('orgManagement.role.headingManageOrder')}</Heading>}
-            controls={
-              userPermissions.includes(PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_ROLES) && (
-                <Button Icon={AddCircleFilled} size="md" onClick={handleOnAddRoleClick}>
-                  {t('orgManagement.role.labelAddRole')}
-                </Button>
-              )
-            }
-          />
-        </div>
+      <Breadcrumb items={breadcrumbItems} />
+      <div className="MCP-module-body">
+        {/* module header */}
+        <ModuleHeader
+          heading={<Heading as="h1">{t('orgManagement.role.headingManageOrder')}</Heading>}
+          controls={
+            userPermissions.includes(PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_ROLES) && (
+              <Button Icon={AddCircleFilled} size="md" onClick={handleOnAddRoleClick}>
+                {t('orgManagement.role.labelAddRole')}
+              </Button>
+            )
+          }
+        />
         {messageConfig.kind && messageConfig.primaryMessage && (
           <Alert duration={10000} onClose={clearMessage} description={messageConfig.primaryMessage} type={messageConfig.kind} />
         )}

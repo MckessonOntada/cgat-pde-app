@@ -79,27 +79,25 @@ function DashboardPage() {
 
   return (
     <div className="MCP-module-wrapper">
-      <Breadcrumb className="module-breadcrumb" items={breadcrumbItems} />
-      <div>
-        <div className='containerTitle'>
-          <ModuleHeader
-            heading={<Heading as="h1">{t('orgManagement.header.label')}</Heading>}
-            controls={
-              <div className="controls">
-                {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION) && (
-                  <Button
-                    Icon={add_circle_bold}
-                    className="button-icon"
-                    variant="primary"
-                    size="md"
-                    onClick={() => navigate(`${PATHS.createOrg}`)}>
-                    {t('orgManagement.add.label')}
-                  </Button>
-                )}
-              </div>
-            }
-          />
-        </div>
+      <Breadcrumb items={breadcrumbItems} />
+      <div className="MCP-module-body">
+        <ModuleHeader
+          heading={<Heading as="h1">{t('orgManagement.header.label')}</Heading>}
+          controls={
+            <div className="controls">
+              {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION) && (
+                <Button
+                  Icon={add_circle_bold}
+                  className="button-icon"
+                  variant="primary"
+                  size="md"
+                  onClick={() => navigate(`${PATHS.createOrg}`)}>
+                  {t('orgManagement.add.label')}
+                </Button>
+              )}
+            </div>
+          }
+        />
         {isSuccess && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
 
         <div className="MCP-module-body">

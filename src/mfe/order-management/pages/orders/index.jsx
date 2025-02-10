@@ -97,47 +97,49 @@ const OrderIndex = () => {
 
   return (
     <div className="MCP-module-wrapper">
-      <ModuleHeader
-        heading={<Heading as="h1">{t('headings.orders')}</Heading>}
-        controls={
-          <div className="controls">
-            <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS}>
-              <Button
-                Icon={AddCircleFilled}
-                className="button-icon"
-                onClick={handleOnClick}
-                size="lg"
-                aria-label={t('controls.createNewOrder')}>
-                {t('controls.ariaLabels.createNewOrder')}
-              </Button>
-            </PermittedComponent>
-          </div>
-        }
-      />
-      <div id={alertContainerId} />
-      {/* add alert here */}
-
       <div className="MCP-module-body">
-        <div className="MCP-panel-container">
-          <TabList
-            options={tabList}
-            alignment="left"
-            onTabClick={handleOnTabChange}
-            showShadow={false}
-            variant={'text'}
-            useAsButton={true}
-            aria-label={t('controls.ariaLabels.orderTabList')}
-          />
-          <div className="MCP-CardContainer" key={tabKey}>
-            <CommonFilters
-              onApplyFilters={applyFilters}
-              onClearFilters={clearFilters}
-              additionalFilters={additionalFiltersConfig}
-              searchPlaceholder={t('controls.placeholder.searchOrderPlaceholder')}
+        <ModuleHeader
+          heading={<Heading as="h1">{t('headings.orders')}</Heading>}
+          controls={
+            <div className="controls">
+              <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS}>
+                <Button
+                  Icon={AddCircleFilled}
+                  className="button-icon"
+                  onClick={handleOnClick}
+                  size="lg"
+                  aria-label={t('controls.createNewOrder')}>
+                  {t('controls.ariaLabels.createNewOrder')}
+                </Button>
+              </PermittedComponent>
+            </div>
+          }
+        />
+        <div id={alertContainerId} />
+        {/* add alert here */}
+
+        <div className="MCP-module-body">
+          <div className="MCP-panel-container">
+            <TabList
+              options={tabList}
+              alignment="left"
+              onTabClick={handleOnTabChange}
+              showShadow={false}
+              variant={'text'}
+              useAsButton={true}
+              aria-label={t('controls.ariaLabels.orderTabList')}
             />
-          </div>
-          <div className="MCP-table-wrapper">
-            <OrderDataTable tab={activeTab && activeTab.id} alertContainerId={alertContainerId} />
+            <div className="MCP-CardContainer" key={tabKey}>
+              <CommonFilters
+                onApplyFilters={applyFilters}
+                onClearFilters={clearFilters}
+                additionalFilters={additionalFiltersConfig}
+                searchPlaceholder={t('controls.placeholder.searchOrderPlaceholder')}
+              />
+            </div>
+            <div className="MCP-table-wrapper">
+              <OrderDataTable tab={activeTab && activeTab.id} alertContainerId={alertContainerId} />
+            </div>
           </div>
         </div>
       </div>
