@@ -120,15 +120,17 @@ const OrderIndex = () => {
 
         <div className="MCP-module-body">
           <div className="MCP-panel-container">
-            <TabList
-              options={tabList}
-              alignment="left"
-              onTabClick={handleOnTabChange}
-              showShadow={false}
-              variant={'text'}
-              useAsButton={true}
-              aria-label={t('controls.ariaLabels.orderTabList')}
-            />
+            <div className='customTab'>
+              <TabList
+                options={tabList}
+                alignment="left"
+                onTabClick={handleOnTabChange}
+                showShadow={false}
+                variant={'text'}
+                useAsButton={true}
+                aria-label={t('controls.ariaLabels.orderTabList')}
+              />
+            </div>
             <div className="MCP-CardContainer" key={tabKey}>
               <CommonFilters
                 onApplyFilters={applyFilters}

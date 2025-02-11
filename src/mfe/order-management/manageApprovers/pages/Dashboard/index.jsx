@@ -98,36 +98,38 @@ export default function Dashboard() {
   return (
     <div className="MCP-module-wrapper" id={debugIds(ID.TABLE, ID.CONTAINER)}>
       <Breadcrumb items={breadcrumbItems} />
-      <ModuleHeader
-        heading={<Heading as="h1">{t('approvergroup.header.label')}</Heading>}
-        controls={
-          <div className="controls">
-            {hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_APPROVER_GROUP) && (
-              <Button
-                Icon={add_circle_bold}
-                className="button-icon"
-                variant="primary"
-                size="md"
-                onClick={() => navigate(`${PATHS.createapprovergroup}`)}>
-                {t('approvergroup.create_approvergroup')}
-              </Button>
-            )}
-          </div>
-        }
-      />
-      {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
+      <div className="MCP-module-body">
+        <ModuleHeader
+          heading={<Heading as="h1">{t('approvergroup.header.label')}</Heading>}
+          controls={
+            <div className="controls">
+              {hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_APPROVER_GROUP) && (
+                <Button
+                  Icon={add_circle_bold}
+                  className="button-icon"
+                  variant="primary"
+                  size="md"
+                  onClick={() => navigate(`${PATHS.createapprovergroup}`)}>
+                  {t('approvergroup.create_approvergroup')}
+                </Button>
+              )}
+            </div>
+          }
+        />
+        {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
 
-      <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
-        <div className="MCP-CardContainer">
-          <CommonFilters
-            onApplyFilters={applyFilters}
-            onClearFilters={clearFilters}
-            additionalFilters={AdditionalFiltersConfig}
-            searchPlaceholder={t('approvergroup.searchFilter.label')}
-          />
-        </div>
-        <div className="userList">
-          <ApproverList selectableRows={true} onActionSuccess={handleSuccess} />
+        <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
+          <div className="MCP-CardContainer">
+            <CommonFilters
+              onApplyFilters={applyFilters}
+              onClearFilters={clearFilters}
+              additionalFilters={AdditionalFiltersConfig}
+              searchPlaceholder={t('approvergroup.searchFilter.label')}
+            />
+          </div>
+          <div className="userList">
+            <ApproverList selectableRows={true} onActionSuccess={handleSuccess} />
+          </div>
         </div>
       </div>
     </div>
