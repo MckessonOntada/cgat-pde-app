@@ -294,6 +294,19 @@ const Summary = () => {
         {!hideControls && !isRejected && <OrderStepper />}
         <div id={ALERT_CONTAINER_ID} />
         <div className={'MCP-module-wrapper'}>
+          <ModuleHeader
+            heading={<Heading as="h2">{t('labels.summary')}</Heading>}
+            controls={
+              isRejected && (
+                <div class="row-space-between-center">
+                  <Badge text={t(`labels.status.${status.toLowerCase()}`)} type={'error'} />
+                  <Button size={'md'} variant="tertiary" onClick={() => setIsCommentPanelOpen(true)}>
+                    {t('captions.btnViewComments')}
+                  </Button>
+                </div>
+              )
+            }
+          />
           <div className={'MCP-module-body'}>
             <div className="MCP-CardContainer">
               <ModuleHeader
