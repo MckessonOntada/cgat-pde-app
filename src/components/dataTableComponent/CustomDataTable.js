@@ -131,6 +131,7 @@ export const CustomDataTable = (props) => {
     const sortableColumns = columns.filter((col) => col.sortable).map((col) => ({ value: col.name, label: col.name }));
     return (
       <div className={styles.sortByContainer}>
+        {/* <span className={styles.selectAllText}>Select All</span> */}
         <span className={styles.sortByText}>Sort by:</span>
         <div className={styles.dropdownContainer}>
           <Dropdown

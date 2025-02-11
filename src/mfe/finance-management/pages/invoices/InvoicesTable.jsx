@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Badge, Button, Loader } from '@mckesson/mcp-component-library';
+import { Badge, Button, Loader, DropdownMenu } from '@mckesson/mcp-component-library';
 import { Link } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
@@ -106,6 +106,7 @@ export default function InvoicesTable() {
       selector: (row) => row.MRN,
       width: '50px',
       showInMobileHeader: true,
+      isSelectable: true,
       omit: !CommonUtils.enableReviewAndPay(selectedAccount)
     },
     {
@@ -134,6 +135,7 @@ export default function InvoicesTable() {
       sortable: true,
       wrap: true,
       showInMobileHeader: true,
+      cardHeader: true,
       mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
       cell: (props) => <div>{props?.soldToSite || '-'}</div>
     },
@@ -221,8 +223,9 @@ export default function InvoicesTable() {
     //   wrap: true,
     //   showInMobileHeader: true,
     //   isAction: true,
+    //   isContextMenu: true, // If it is already a context menu
     //   cell: (props) => (
-    //     <div className="cellEllipse actionIcon">
+    //     <div className="actionIcon">
     //       <DropdownMenu anchorEl={<ActionIcon />} handleSelect={() => {}} options={[]} optionsAlign="left" aria-label="Profile options" />
     //     </div>
     //   )
