@@ -62,7 +62,6 @@ const AccountSelection = () => {
     enabled: !!therapyId,
     refetchOnWindowFocus: false,
     onError: (error) => {
-      alert('ok');
       showAlert({ description: error.message, type: 'error', anchorEl: alertContainerId });
     }
   });
