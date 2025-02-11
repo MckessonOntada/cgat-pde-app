@@ -30,6 +30,8 @@ function SelectedInvoiceList(props) {
       selector: (row) => `${row.billNumber}`,
       wrap: true,
       minWidth: '112px',
+      showInMobileHeader: true,
+      showColumnNameInHeader: true,
       cell: (props) => (
         <div className="cellEllipse">
           <Link
@@ -56,6 +58,8 @@ function SelectedInvoiceList(props) {
       selector: (row) => row.description,
       minWidth: '160px',
       wrap: true,
+      showInMobileHeader: true,
+      cardHeader: true,
       cell: (props) => <div>{props?.description || '-'}</div>
     },
     {
@@ -155,7 +159,7 @@ function SelectedInvoiceList(props) {
       columns={columns}
       data={selectedInvoices || []}
       showCardView={showCardView}
-      defaultExpandedCardView={true}
+      defaultExpandedCardView={false}
       noDataComponent={
         <EmptyDataTable
           image={EmptyDataImage}

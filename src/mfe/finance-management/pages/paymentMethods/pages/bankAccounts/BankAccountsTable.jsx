@@ -22,6 +22,7 @@ export default function PaymentHistoryTable() {
       wrap: true,
       minWidth: '112px',
       showInMobileHeader: true,
+      showColumnNameInHeader: true,
       cell: (props) => <div className="cellEllipse">{`${props.name}`}</div>
     },
     {
@@ -39,6 +40,9 @@ export default function PaymentHistoryTable() {
       sortable: true,
       wrap: true,
       minWidth: '160px',
+      showInMobileHeader: true,
+      cardHeader: true,
+      mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
       cell: (props) => <EclipsesTextcss className="cellEllipse" str={FinanceUtils.maskBankNumber(props.accountNumber)} maxWidth={240} />
     },
 
@@ -86,7 +90,7 @@ export default function PaymentHistoryTable() {
       paginationRecordsPerPageMessage={t('orgManagement.per_page')}
       progressPending={isFetching}
       showCardView={showCardView}
-      defaultExpandedCardView={true}
+      defaultExpandedCardView={false}
       noDataComponent={
         <EmptyDataTable
           isLoading={isFetching}

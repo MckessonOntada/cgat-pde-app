@@ -102,6 +102,8 @@ function Details(props) {
         },
         wrap: true,
         minWidth: '120px',
+        showInMobileHeader: true,
+        showColumnNameInHeader: true,
         cell: (props) => (
           <div className="cellEllipse">
             <Link
@@ -134,6 +136,8 @@ function Details(props) {
         wrap: true,
         minWidth: '100px',
         maxWidth: '220px',
+        cardHeader: true,
+        showInMobileHeader: true,
         cell: (props) => (
           <div>
             <EclipsesTextcss str={props.referenceDocument} maxWidth={210} />
@@ -232,6 +236,7 @@ function Details(props) {
             fixedHeader
             fixedHeaderScrollHeight="20px"
             showCardView={showCardView}
+            defaultExpandedCardView={false}
             noDataComponent={
               <EmptyDataTable
                 isLoading={isLoading}
