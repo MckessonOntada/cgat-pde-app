@@ -20,9 +20,16 @@ const Dashboard = () => {
 
   React.useEffect(() => {
     let navigateToUrl = '';
+
     if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ADMIN_MANAGEMENT))) navigateToUrl = '/admin';
     else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ORDER_MANAGEMENT))) navigateToUrl = '/orders';
     else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.PAYMENT_INVOICING))) navigateToUrl = '/record';
+
+    if (!isSystemAdmin) {
+      if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ORDER_MANAGEMENT))) navigateToUrl = '/orders';
+      else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.PAYMENT_INVOICING))) navigateToUrl = '/record';
+      else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ADMIN_MANAGEMENT))) navigateToUrl = '/admin';
+    }
 
     if (!isSystemAdminView && navigateToUrl) navigate(navigateToUrl, { replace: true });
   }, []);
