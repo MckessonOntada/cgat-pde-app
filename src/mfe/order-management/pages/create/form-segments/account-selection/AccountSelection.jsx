@@ -37,8 +37,7 @@ const AccountSelection = () => {
   const [initialSelectedShippingAddress, setInitialSelectedShippingAddress] = React.useState('');
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
-  const [acccountError, setAccountError] = useState({ isError: false, message: '' });
-  const [alertState, setAlertState] = useState(null);
+  const [accountError, setAccountError] = useState({ isError: false, message: '' });
   const therapyId = formState.activeRecord?.therapy?.materialNumber;
   const [inventoryType, setInventoryType] = useState(null);
   const setInventoryTypeData = (data) => {
@@ -61,7 +60,11 @@ const AccountSelection = () => {
     queryKey: ['order', 'therapy', therapyId, accountSearchString],
     queryFn: async () => OrderService.getSoldToAccounts(therapyId, serializeParams({ query: accountSearchString })),
     enabled: !!therapyId,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    onError: (error) => {
+      alert('ok');
+      showAlert({ description: error.message, type: 'error', anchorEl: alertContainerId });
+    }
   });
 
   const accountListOptions = useMemo(() => {
@@ -94,7 +97,9 @@ const AccountSelection = () => {
         console.error(err);
       }
     },
-    onError: console.log
+    onError: (error) => {
+      showAlert({ description: error.message, type: 'error', anchorEl: alertContainerId });
+    }
   });
 
   const handleInventoryCheck = async () => {
@@ -297,7 +302,7 @@ const AccountSelection = () => {
                           setAccountSearchString(() => e);
                         }}
                         recordsCountToEnableSearch={5}
-                        error={acccountError.isError && acccountError.message}
+                        error={accountError.isError && accountError.message}
                         size="lg"
                       />
                     </div>
