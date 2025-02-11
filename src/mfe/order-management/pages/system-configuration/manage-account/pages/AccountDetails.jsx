@@ -13,6 +13,7 @@ import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { PREVIEW_URL } from '@src/mfe/order-management/questionnaire/constants';
 import { getAddress } from '@src/mfe/order-management/questionnaire/util';
 import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import { renderModal } from '@src/util/ModalUtil';
 
 export const AccountDetailsConstants = [
   {
@@ -54,7 +55,25 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
       questionnaireId: id,
       accountNumber: viewAccount.accountNumber
     };
-    delinkQuestionnaire(payload);
+    renderModal({
+      title: t('messages.header.confirmation'),
+      bodyContent: (
+        <div className="MCP-modal-body">
+          <p>{t('messages.confirmation.delink')}</p>
+        </div>
+      ),
+      footerActions: {
+        cancel: {
+          label: t('label.no')
+        },
+        confirm: {
+          label: t('label.yes'),
+          action: () => {
+            delinkQuestionnaire(payload);
+          }
+        }
+      }
+    });
   };
 
   const { mutate: delinkQuestionnaire, isLoading: isDelinkLoading } = useMutation(

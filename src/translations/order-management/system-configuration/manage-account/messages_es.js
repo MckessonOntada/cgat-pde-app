@@ -13,7 +13,8 @@ export const ManageAccountMessagesES = {
   'ManageAccount.BacktoPage': 'S_BACK TO MANAGE ACCOUNT PAGE',
   'ManageAccount.headings.manageAccount': 'S_Manage Account',
   'ManageAccount.controls.placeholder.Accounts.search': 'S_Search by Account Name, NDC, UDI...',
-  'ManageAccount.table.ariaLabel.accountList': 'S_Account listing',
+  'ManageAccount.table.ariaLabel.accountList': 'S_Account Listing',
   'ManageAccount.emptyTableTitle': 'S_No Accounts found',
-  'ManageAccount.emptyTableSubtitle': 'S_You need to select organizations or add Accounts to organizations to see data in this table.'
+  'ManageAccount.emptyTableSubtitle': 'S_You need to select organizations or add Accounts to organizations to see data in this table.',
+  'messages.confirmation.delink': 'S_Are you sure you want to delink the questionnaire ?'
 };

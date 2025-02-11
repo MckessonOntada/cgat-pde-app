@@ -63,5 +63,6 @@ export const SystemConfigurationES = {
   'manageMaterial.drawer.controls.apply.error': 'S_Error al aplicar la configuración',
   'manageMaterial.drawer.delink.success': 'S_Questionnaire Template deleted successfully',
   'manageMaterial.drawer.delink.error': 'S_Error while deleting Questionnaire Template',
-  'manageMaterial.BacktoPage': 'S_BACK TO MANAGE  MATERIAL PAGE'
+  'manageMaterial.BacktoPage': 'S_BACK TO MANAGE  MATERIAL PAGE',
+  'messages.confirmation.deleteConfiguration': 'S_Are you sure you want to delete the configuration ?'
 };
