@@ -19,6 +19,7 @@ import ManageCatalog from '../pages/system-configuration/manage-catalog';
 import { OrgAccountSelectionProvider } from '../components/orgAccountSelection/context/OrgAccountSelectionContext';
 import { CatalogProvider } from '../pages/system-configuration/manage-catalog/context/CatalogContext';
 import ManageCatalogRoute from '../pages/system-configuration/manage-catalog/routes/Routes';
+import ManageAccountRoute from '../pages/system-configuration/manage-account/routes/Routes';
 import ManageMaterial from '../pages/system-configuration/manageMaterial/ManageMaterial';
 import { ManageMaterialProvider } from '../context/ManageMaterialContext';
 import Questionnaire from '../questionnaire';
@@ -122,7 +123,14 @@ function OrderManagementRoutes() {
           </QuestionnaireProvider>
         }
       />
-      <Route path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_ACCOUNT}`} element={<div>Manage Account</div>} />
+      <Route
+        path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_ACCOUNT}`}
+        element={
+          <OrgAccountSelectionProvider showAccountsSelect={true}>
+            <ManageAccountRoute />
+          </OrgAccountSelectionProvider>
+        }
+      />
 
       <Route path={routesConfig.viewDetails} element={<OrderSummary />} />
       <Route path={routesConfig.reviewOrder} element={<div></div>} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import FloatingDrawer from '@src/components/floating-drawer';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
@@ -9,10 +9,11 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { useNavigate } from 'react-router-dom';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useOrgAccountSelectionContext } from '../../components/orgAccountSelection/context/OrgAccountSelectionContext';
-import { getAddress } from '../util';
-import { PREVIEW_URL } from '../constants';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
+import { PREVIEW_URL } from '@src/mfe/order-management/questionnaire/constants';
+import { getAddress } from '@src/mfe/order-management/questionnaire/util';
+import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import { renderModal } from '@src/util/ModalUtil';
 
 export const AccountDetailsConstants = [
   {
@@ -27,25 +28,25 @@ export const AccountDetailsConstants = [
   }
 ];
 
-function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccount, showAlert }) {
+function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccount }) {
   const navigate = useNavigate();
   const { t } = useTranslate();
   const { showSnackbar } = useSnackbar();
-  const { selectedOrganization, setSelectedOrganization } = useOrgAccountSelectionContext();
+  const { selectedOrganization } = useOrgAccountSelectionContext();
+
   const handleCloseDrawer = () => {
     setOpenDetails((state) => !state);
   };
 
   const practiceId = selectedOrganization?.id;
   const { isLoading, isError, data, refetch } = useQuery({
-    queryKey: [`configuration`],
+    queryKey: ['Account', viewAccount?.id],
     queryFn: async () => {
       const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts/configuration/${viewAccount.id}`;
-      console.log('url', url);
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       return res.data;
     },
-
+    enabled: !!viewAccount && viewAccount?.id ? true : false,
     refetchOnWindowFocus: false
   });
 
@@ -54,7 +55,25 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
       questionnaireId: id,
       accountNumber: viewAccount.accountNumber
     };
-    delinkQuestionnaire(payload);
+    renderModal({
+      title: t('messages.header.confirmation'),
+      bodyContent: (
+        <div className="MCP-modal-body">
+          <p>{t('messages.confirmation.delink')}</p>
+        </div>
+      ),
+      footerActions: {
+        cancel: {
+          label: t('label.no')
+        },
+        confirm: {
+          label: t('label.yes'),
+          action: () => {
+            delinkQuestionnaire(payload);
+          }
+        }
+      }
+    });
   };
 
   const { mutate: delinkQuestionnaire, isLoading: isDelinkLoading } = useMutation(
@@ -102,19 +121,7 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
                   </div>
                 </React.Fragment>
               ))}
-              {data?.accountConfiguration && (
-                <div className="configure-li">
-                  <div className="details-key">{t('ManageAccount.Configurations')}</div>
-                  <div className="details-value">
-                    <div onClick={() => navigate('view-catalog', { state: { configSteps: data?.accountConfiguration } })}>
-                      t('ManageAccount.Preview')
-                    </div>
-                    <div onClick={() => deleteConfiguration()}>
-                      <DeleteIcon />
-                    </div>
-                  </div>
-                </div>
-              )}
+
               {data?.questionnaireList?.length > 0 && (
                 <>
                   <div className="Questionnaire-li">

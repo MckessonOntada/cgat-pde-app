@@ -14,6 +14,7 @@ import useSnackbar from '@src/hooks/useSnackbar';
 import { useTranslate } from '@src/translations/useTranslation';
 import { PREVIEW_URL, ROUTE_CONFIG } from '@src/mfe/order-management/questionnaire/constants';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
+import { renderModal } from '@src/util/ModalUtil';
 
 function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog, setViewCatalog, showAlert }) {
   const navigate = useNavigate();
@@ -57,9 +58,11 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
       }
     }
   );
+
   const refetch = () => {
     fetchCatalog();
   };
+
   const { mutate: deleteConfiguration, isLoading: isDeleteLoading } = useMutation(
     async (payload) => {
       const apiUrl = `${ApiRoutes.GET_CATALOG_DATA()}/configuration?${serializeParams(requestParams())}`;
@@ -77,21 +80,44 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
       }
     }
   );
-  const OnDeleteClick = (id) => {
-    const payload = {
-      questionnaireId: id,
-      catalogId: {
-        sapMaterial: viewCatalog.sapMaterial,
-        soldToCustomer: viewCatalog.soldToCustomer,
-        shipToCustomer: viewCatalog.shipToCustomer,
-        variant: viewCatalog.variant || ''
+
+  const OnDeleteClick = (id, actionId) => {
+    renderModal({
+      title: t('messages.header.confirmation'),
+      bodyContent: (
+        <div className="MCP-modal-body">
+          <p>{t(actionId === 'questionnaire' ? 'messages.confirmation.delink' : 'messages.confirmation.deleteConfiguration')}</p>
+        </div>
+      ),
+      footerActions: {
+        cancel: {
+          label: t('label.no')
+        },
+        confirm: {
+          label: t('label.yes'),
+          action: () => {
+            if (actionId === 'questionnaire') {
+              delinkQuestionnaire(id);
+            } else if (actionId === 'config') {
+              deleteConfiguration();
+            }
+          }
+        }
       }
-    };
-    delinkQuestionnaire(payload);
+    });
   };
 
   const { mutate: delinkQuestionnaire, isLoading: isDelinkLoading } = useMutation(
-    async (payload) => {
+    async (id) => {
+      const payload = {
+        questionnaireId: id,
+        catalogId: {
+          sapMaterial: viewCatalog.sapMaterial,
+          soldToCustomer: viewCatalog.soldToCustomer,
+          shipToCustomer: viewCatalog.shipToCustomer,
+          variant: viewCatalog.variant || ''
+        }
+      };
       await QuestionnaireService.deLinkConfigureQuestionnaire('Catalog', payload);
     },
     {
@@ -138,7 +164,7 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
                   <div className="details-key">{t('ManageCatalog.Configurations')}</div>
                   <div className="details-value">
                     <div onClick={() => navigate('view-catalog', { state: { configSteps: data?.catalogConfiguration } })}>PREVIEW </div>
-                    <div onClick={() => deleteConfiguration()}>
+                    <div onClick={() => OnDeleteClick(data?.catalogConfiguration.id, 'config')}>
                       <DeleteIcon />
                     </div>
                   </div>
@@ -159,7 +185,7 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
                       return (
                         <div key={index} className="Questionnairedetails-li">
                           <div className="Questionnairedetails-key">{item.templateName}</div>
-                          <div className="delete-button" onClick={() => OnDeleteClick(item.id)}>
+                          <div className="delete-button" onClick={() => OnDeleteClick(item.id, 'questionnaire')}>
                             <DeleteIcon />
                           </div>
                         </div>

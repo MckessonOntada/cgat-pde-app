@@ -12,6 +12,7 @@ import MaterialService from '@src/api/commonService/MaterialService';
 import { useNavigate } from 'react-router-dom';
 import { PREVIEW_URL } from '@src/mfe/order-management/questionnaire/constants';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
+import { renderModal } from '@src/util/ModalUtil';
 
 function TherapyDetails({
   therapyId,
@@ -59,13 +60,31 @@ function TherapyDetails({
 
   const handleDeleteConfig = async (actionId) => {
     if (actionId === 'delete-materialConfig') {
-      try {
-        await MaterialService.deleteMaterialConfig(therapyId);
-        showSnackbar({ description: t('manageMaterial.drawer.controls.apply.success'), type: 'success' });
-        refetch();
-      } catch (error) {
-        showSnackbar({ description: t('manageMaterial.drawer.controls.apply.error'), type: 'error' });
-      }
+      renderModal({
+        title: t('messages.header.confirmation'),
+        bodyContent: (
+          <div className="MCP-modal-body">
+            <p>{t('messages.confirmation.deleteConfiguration')}</p>
+          </div>
+        ),
+        footerActions: {
+          cancel: {
+            label: t('label.no')
+          },
+          confirm: {
+            label: t('label.yes'),
+            action: async () => {
+              try {
+                await MaterialService.deleteMaterialConfig(therapyId);
+                showSnackbar({ description: t('manageMaterial.drawer.controls.apply.success'), type: 'success' });
+                refetch();
+              } catch (error) {
+                showSnackbar({ description: t('manageMaterial.drawer.controls.apply.error'), type: 'error' });
+              }
+            }
+          }
+        }
+      });
     }
   };
 
@@ -119,12 +138,30 @@ function DetailsPanel({
       questionnaireId: id,
       materialNumber: details.therapy.materialNumber
     };
-    try {
-      await QuestionnaireService.deLinkConfigureQuestionnaire('Material', payload);
-      refetch();
-    } catch (error) {
-      showSnackbar({ description: t('manageMaterial.drawer.delink.error'), type: 'error' });
-    }
+    renderModal({
+      title: t('messages.header.confirmation'),
+      bodyContent: (
+        <div className="MCP-modal-body">
+          <p>{t('messages.confirmation.delink')}</p>
+        </div>
+      ),
+      footerActions: {
+        cancel: {
+          label: t('label.no')
+        },
+        confirm: {
+          label: t('label.yes'),
+          action: async () => {
+            try {
+              await QuestionnaireService.deLinkConfigureQuestionnaire('Material', payload);
+              refetch();
+            } catch (error) {
+              showSnackbar({ description: t('manageMaterial.drawer.delink.error'), type: 'error' });
+            }
+          }
+        }
+      }
+    });
   };
 
   const renderDetails = (fields, details) =>
