@@ -69,6 +69,7 @@ export default function CustomerStatementTable() {
       sortable: true,
       wrap: true,
       isAction: true,
+      isContextMenu: false,
       cell: (props) => (
         <Button
           className="back-button-control"
