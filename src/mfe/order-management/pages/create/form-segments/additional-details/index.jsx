@@ -107,7 +107,7 @@ function AdditionalDetails() {
         navigate(`../${id}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
       },
       onError: (error) => {
-        showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
+        showAlert({ description: error.message, type: 'error', anchorEl: alertContainerId });
       }
     }
   );
@@ -186,6 +186,9 @@ function AdditionalDetails() {
     refetchOnWindowFocus: false,
     onSuccess: (result) => {
       result && prepareQuestionnaire(result);
+    },
+    onError: (error) => {
+      showAlert({ description: error.message, type: 'error', anchorEl: alertContainerId });
     }
   });
 
@@ -198,6 +201,9 @@ function AdditionalDetails() {
       onSuccess: (result, variables) => {
         const { fieldName, setFieldValue } = variables;
         setFieldValue(`${fieldName}.documentUrl`, result);
+      },
+      onError: (error) => {
+        showAlert({ description: error.message, type: 'error', anchorEl: alertContainerId });
       }
     }
   );
@@ -218,7 +224,7 @@ function AdditionalDetails() {
     refetchOnWindowFocus: false,
     onSuccess: (result) => {},
     onError: (error) => {
-      const errorKey = handleApiError(err);
+      const errorKey = handleApiError(error);
       showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
     }
   });

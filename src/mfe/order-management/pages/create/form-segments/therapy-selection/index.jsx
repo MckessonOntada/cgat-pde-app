@@ -8,7 +8,6 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import TherapyDataTable from './TherapyDataTable';
 import { useTherapy } from '../../../../context/TherapyContext';
-import { FormList } from '../Constants';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
 import CommonFilters from '@src/components/Filters';
@@ -83,29 +82,6 @@ function TherapySelection() {
     value: i.replace(' ', '_').toLowerCase()
   }));
 
-  const additionalFiltersConfig = useMemo(() => {
-    let config = [];
-    config.push(
-      {
-        type: 'multiSelectDropdown',
-        name: 'customerIdentifier',
-        label: t('labels.customerIndicator'),
-        options: CUSTOMER_INDICATORS
-      },
-      {
-        type: 'multiSelectDropdown',
-        name: 'salesOrg',
-        label: t('labels.salesOrganization'),
-        options: [
-          { label: 'MPB', value: 'so76' },
-          { label: 'Specialty', value: 1000 },
-          { label: '3PL', value: 1100 }
-        ]
-      }
-    );
-
-    return config;
-  }, []);
   const { setActiveRecord, setCurrentOrder } = useManageOrder();
 
   const { isLoading: isSaving, mutate: createNewOrder } = useMutation(async (data) => OrderService.createOrder(data), {
