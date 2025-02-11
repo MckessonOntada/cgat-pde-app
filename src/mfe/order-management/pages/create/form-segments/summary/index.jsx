@@ -2,11 +2,10 @@ import React from 'react';
 import styles from './Summary.module.scss';
 import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg';
 import ModuleHeader from '@src/components/module-header';
-import { Button, Modal, RadioGroup, CheckboxGroup, Stepper, Heading, Loader, Badge } from '@mckesson/mcp-component-library';
+import { Button, Modal, CheckboxGroup, Heading, Loader, Badge } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
-import { FormList } from '../Constants';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import DetailSegment from '@src/components/DetailSegment';
 import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
@@ -41,7 +40,6 @@ const Summary = () => {
   const location = useLocation();
   const { orderId } = useParams();
   const { showAlert } = useAlert();
-  const forms = FormList(t);
   const [isPAPOrderConfirmModalOpen, setIsPAPOrderConfirmModalOpen] = React.useState(false);
   const { isFetching, setActiveRecord, formState, editByStage, setCurrentOrder } = useManageOrder();
   const { isApprover = false, isSimulate = false } = location.state || {};
@@ -58,7 +56,7 @@ const Summary = () => {
     paporder: isPapOrder,
     status
   } = formState.activeRecord || {};
-
+  const variantDetails = additionalDetails.variantDetails || {};
   const isImpersonated = Boolean(AuthUtils.getImpersonateId()),
     isRejected = status === StatusEnum.REJECTED,
     isConcluded = status === StatusEnum.REJECTED || status === StatusEnum.SUBMITTED;
@@ -453,11 +451,8 @@ const Summary = () => {
                 <DetailSegment label={t('labels.slotNo')} value={additionalDetails?.slotNumber} />
                 <DetailSegment label={t('labels.poNo')} value={additionalDetails?.poNumber} />
                 <DetailSegment label={t('labels.dateOfAdministration')} value={additionalDetails?.dateOfAdministration} />
-                <DetailSegment label={t('labels.selectVariant')} value={additionalDetails?.selectVariant || '-'} />
-                <DetailSegment
-                  label={t('labels.variantDescription')}
-                  value={additionalDetails?.variant && additionalDetails.variant?.variantDescription}
-                />
+                <DetailSegment label={t('labels.selectVariant')} value={variantDetails.variant || '-'} />
+                <DetailSegment label={t('labels.variantDescription')} value={variantDetails.variantDescription || '-'} />
                 <DetailSegment label={t('labels.patientConsent')} value={additionalDetails?.patientConsentTaken ? 'Yes' : 'No'} />
               </div>
             </div>
