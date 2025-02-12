@@ -6,7 +6,7 @@ const stateOptions = US_STATES();
 
 export const formConfig = [
   {
-    sectionTitle: 'orderManagement.patientDetails.personal_details',
+    sectionTitle: 'orderManagement.patientDetails.patient_details',
     grid: { base: 1, md: 3, lg: 3, xl: 3 },
     fields: [
       {

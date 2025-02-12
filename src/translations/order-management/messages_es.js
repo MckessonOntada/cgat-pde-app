@@ -256,7 +256,7 @@ export const MessageEs = {
   'orderManagement.patientDetails.inputLabel.patientIdentifier': 'S_Patient Identifier',
   'orderManagement.patientDetails.contact_details': 'S_Contact Details',
   'orderManagement.patientDetails.address_details': 'S_Address Details',
-  'orderManagement.patientDetails.personal_details': 'S_Personal Details',
+  'orderManagement.patientDetails.patient_details': 'S_Patient Details',
   'orderManagement.patientDetails.required': 'S_Required',
   'orderManagement.patientDetails.validation.first_name_max': 'S_First name cannot exceed 50 characters.',
   'orderManagement.patientDetails.validation.middle_name_max': 'S_Middle name cannot exceed 50 characters.',
