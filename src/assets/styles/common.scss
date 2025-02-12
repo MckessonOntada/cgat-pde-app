@@ -855,3 +855,9 @@ div.disable-all {
     }
   }
 }
+
+.required {
+  font-size: var(--brand-font-size--20) !important;
+  font-weight: var(--brand-font-weight-700);
+  color: var(--brand-color-warning-orange-4);
+}

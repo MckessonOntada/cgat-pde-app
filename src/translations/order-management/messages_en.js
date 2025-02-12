@@ -130,7 +130,7 @@ export const MessageEn = {
   'controls.ariaLabels.expandFilters': 'Expand Filters',
   'controls.ariaLabels.collapseFilters': 'Collapse Filters',
   'controls.ariaLabels.orderManagementStatue': 'Order Management Status',
-  'controls.ariaLabels.createNewOrder': 'Create a new order',
+  'controls.ariaLabels.createNewOrder': 'Create new order',
   'controls.ariaLabels.orderTabList': 'Order Status Tablist',
   'labels.required': 'Required',
   'labels.patientName': 'Patient Name',

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './assets/index.module.scss';
-import { Required, Label, Legend, Heading, CustomDatepicker } from '@mckesson/mcp-component-library';
+import { Label, Legend, Heading, CustomDatepicker } from '@mckesson/mcp-component-library';
 
 export const PaymentOptionsControls = (props) => {
   let {
@@ -31,7 +31,7 @@ export const PaymentOptionsControls = (props) => {
         data-testid="radio-container">
         <Legend fontSize={'var(--brand-font-size--small)'} className={styles.labelContainer} styles={labelCustomStyles}>
           {caption}
-          {isRequired && <Required />}
+          {isRequired && <span className='required'>*</span>}
         </Legend>
 
         {items &&

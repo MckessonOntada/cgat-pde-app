@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Heading, Required, CheckboxGroup, CustomDataTable, RadioGroup } from '@mckesson/mcp-component-library';
+import { Button, Heading, CheckboxGroup, CustomDataTable, RadioGroup } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -414,7 +414,7 @@ function AdditionalDetails() {
                   <div className="row-space-between-center">
                     <Heading as="h3">{t('labels.additionalDetails')}</Heading>
                     <p className="form-instruction">
-                      <Required id="Required" /> {t('labels.required')}
+                    <span className='required'>*</span> {t('labels.required')}
                     </p>
                   </div>
                   <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 align-items-start">
