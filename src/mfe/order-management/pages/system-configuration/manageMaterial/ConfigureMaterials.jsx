@@ -84,7 +84,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
             <div className={styles.formField} key={index}>
               <div className={styles.caption}>
                 <Label className={styles.label}>{field.caption}</Label>
-                <Required />
+                <span className='required'/>
               </div>
               <RadioGroup
                 direction="row"
