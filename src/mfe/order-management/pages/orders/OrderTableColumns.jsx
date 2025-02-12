@@ -336,10 +336,11 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'therapy.materialDescription',
+    maxWidth: '150px',
     cell: (props) => (
       <EclipsesTextcss
         str={props.therapy?.materialDescription}
-        maxWidth={90}
+        maxWidth={140}
         className={'MCP-table-cell'}
         aria-label={t('labels.therapy')}
       />
@@ -363,7 +364,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'createdAt',
-    minWidth: '100px',
+    minWidth: '80px',
     cell: (props) => (
       <span aria-label={t('table.columns.captions.createdOn')}>
         {CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')}
@@ -390,7 +391,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'submittedOn',
-    width: '110px',
+    width: '155px',
     cell: (props) => <span>{props.submittedOn ? CommonUtils.convertDateStringFormat(props.submittedOn, 'MM-DD-YYYY') : '-'}</span>,
     omit: activeTab !== 2
   },
@@ -432,6 +433,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: false,
     showInMobileHeader: true,
+    width: '100px',
     isAction: true, // must use "action" if button is to be placed in the right, else use default if id is "action"
     cell: (props) => getOptionsByStatus(props, props.status, t, activeTab, props.id, alertContainerId)
   }

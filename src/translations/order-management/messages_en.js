@@ -137,7 +137,7 @@ export const MessageEn = {
   'labels.orderId': 'Order ID',
   'labels.therapy': 'Therapy',
   'table.columns.captions.author': 'Author',
-  'table.columns.captions.createdOn': 'CreatedOn',
+  'table.columns.captions.createdOn': 'Created On',
   'table.columns.captions.status': 'Status',
   'table.columns.captions.submittedBy': 'Submitted By',
   'table.columns.captions.submittedOn': 'Submitted On',
