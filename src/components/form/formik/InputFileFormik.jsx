@@ -45,7 +45,6 @@ function InputFileFormik(props) {
 
   const handleDrop = (event) => {
     event.preventDefault();
-    setIsDragging(false);
     const droppedFile = event.dataTransfer.files[0];
     if (validateBeforeChange(droppedFile, event))
       if (droppedFile) {
@@ -56,11 +55,6 @@ function InputFileFormik(props) {
 
   const handleDragOver = (event) => {
     event.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
   };
 
   const handleBrowseClick = () => {
@@ -104,7 +98,7 @@ function InputFileFormik(props) {
         htmlFor="fileInput"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
+        // onDragLeave={handleDragLeave}
         className={styles['control-label']}>
         <div className={styles['upload-panel']}>
           <div>
