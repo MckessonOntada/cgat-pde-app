@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styles from './assets/TherapyDetails.module.scss';
-import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
+import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
 import { ReactComponent as IconBinRed } from '@src/assets/svg/bin-red.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useQuery } from 'react-query';
@@ -91,10 +91,10 @@ function TherapyDetails({
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
-        <Heading as="h2">{!isMaterialConfiguration ? t('labels.therapyDetails') : t('manageMaterial.drawer.heading')}</Heading>
-        <button onClick={onClose}>
+        <Heading as="h3">{!isMaterialConfiguration ? t('labels.therapyDetails') : t('manageMaterial.drawer.heading')}</Heading>
+        <Button textButton onClick={onClose}>
           <IconClose />
-        </button>
+        </Button>
       </div>
       {isLoading ? (
         <Loader variant="circular" />

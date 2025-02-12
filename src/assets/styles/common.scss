@@ -221,6 +221,10 @@ div.disable-all {
     display: flex;
     gap: var(--spacing-03);
     width: 100%;
+    button{
+      padding-top: var(--spacing-02);
+      padding-right: var(--spacing-02);
+    }
   }
 
   .filter-header {
@@ -852,6 +856,10 @@ div.disable-all {
     li button {
       padding-left: 0px;
       padding-right: 0px;
+      font-family: var(--brand-font-family-primary);
+      background: transparent;
+      border: none;
+      cursor: pointer;
     }
   }
 }
