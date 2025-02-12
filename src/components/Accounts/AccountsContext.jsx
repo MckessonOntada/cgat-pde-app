@@ -50,7 +50,7 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
 
   const clearFilters = () => {
     setFilterConfig(INITIAL_STATE);
-    setCurrentPage(1);
+    setPaginationConfig(INITIAL_PAGINATION_STATE);
   };
 
   // use from context
@@ -63,14 +63,9 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
       practiceId,
       partnerFunction: 'SOLD_TO',
       ...(filterConfig.searchQuery && { query: filterConfig.searchQuery }),
-      // TODO : Add multi select support
       ...(filterConfig.status && { status: filterConfig.status }),
       ...(filterConfig.distChannels && { distChannels: filterConfig.distChannels }),
       ...(filterConfig.salesOrg && { salesOrg: filterConfig.salesOrg })
-      // TODO : Use below after Adding multi select support
-      // ...(filterConfig.status?.length && { status: filterConfig.status.join(",") }),
-      // ...(filterConfig.distChannels?.length && { distChannels: filterConfig.distChannels.join(",") }),
-      // ...(filterConfig.salesOrg?.length && { salesOrg: filterConfig.salesOrg.join(",") }),
     };
 
     if (userId) {
@@ -80,6 +75,10 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
       ? `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts?${serializeParams(params)}`
       : `${ApiRoutes.PUBLIC_ACCOUNTS}?${serializeParams(params)}`;
   }, [filterConfig, paginationConfig, sortCriteria, practiceId]);
+
+  useEffect(() => {
+    clearFilters();
+  }, [practiceId]);
 
   // Fetch data from server
   const { isLoading, data, isError, refetch } = useQuery({
@@ -96,7 +95,6 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
           if (totalPages) {
             prevConfig.totalPages = totalPages;
           }
-
           return prevConfig;
         });
 
