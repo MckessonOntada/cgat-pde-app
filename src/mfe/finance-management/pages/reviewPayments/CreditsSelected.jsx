@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Badge, Button, CustomDataTable, Loader } from '@mckesson/mcp-component-library';
+import { Badge, Button, Loader } from '@mckesson/mcp-component-library';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
@@ -11,6 +11,8 @@ import { FormattedNumber } from 'react-intl';
 import dayjs from 'dayjs';
 // import { PATHS } from '../../routes';
 import CommonUtils from '@src/util/CommonUtils';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import { CustomDataTable } from '@src/components/dataTableComponent';
 
 function CreditsSelected(props) {
   const { t } = useTranslate();
@@ -18,7 +20,7 @@ function CreditsSelected(props) {
   const location = useLocation();
   const { state } = location;
   const { creditsSelected } = state;
-
+  const showCardView = useResponsiveView();
   useEffect(() => {
     if (creditsSelected?.length > 0) {
       setData(creditsSelected);
@@ -32,6 +34,8 @@ function CreditsSelected(props) {
       selector: (row) => `${row.billNumber}`,
       wrap: true,
       minWidth: '112px',
+      showInMobileHeader: true,
+      showColumnNameInHeader: true,
       cell: (props) => (
         <div className="cellEllipse">
           <Link
@@ -57,6 +61,8 @@ function CreditsSelected(props) {
       selector: (row) => row.description,
       minWidth: '320px',
       wrap: true,
+      showInMobileHeader: true,
+      cardHeader: true,
       cell: (props) => (
         <div>
           <EclipsesTextcss str={props?.description || ''} maxWidth={280} />
@@ -105,6 +111,8 @@ function CreditsSelected(props) {
         type="normal"
         columns={columns}
         data={data || []}
+        showCardView={showCardView}
+        defaultExpandedCardView={false}
         noDataComponent={
           <EmptyDataTable
             image={EmptyDataImage}

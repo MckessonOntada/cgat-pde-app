@@ -50,7 +50,7 @@ export default function ZipInput(props) {
     <div className="grid align-ZipCodeInput" onClick={(e) => highlightFieldOnLabelClick(e, zipinputDivRef)} ref={zipinputDivRef}>
       <Label htmlFor={field.name} className="label-heading">
         {label}
-        {props.isRequired && <Required id="Required">Required</Required>}
+        {props.isRequired && <span className='required'> *</span>}
       </Label>
       <BaseInputField
         {...rest}

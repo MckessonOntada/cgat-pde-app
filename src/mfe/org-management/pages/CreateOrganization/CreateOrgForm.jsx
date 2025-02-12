@@ -1,7 +1,7 @@
 import React from 'react';
 import { Field } from 'formik';
 import Components from '@src/components/form/Components';
-import { Required, Heading } from '@mckesson/mcp-component-library';
+import { Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { US_STATES } from '@src/components/form/util';
 
@@ -29,7 +29,7 @@ const OrgDetailsFormSegment = () => {
         <Heading as="h3">{t('orgManagement.create_org.org-details')}</Heading>
 
         <p className="form-instruction">
-          <Required id="Required" /> {t('orgManagement.create_org.required')}
+        <span className='required'>*</span> {t('orgManagement.create_org.required')}
         </p>
       </div>
 

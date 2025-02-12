@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Heading, Required } from '@mckesson/mcp-component-library';
+import { Button, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -42,7 +42,7 @@ function ConfigurationPreview() {
         <div className="row-space-between-center styled-heading">
           <Heading as="h3">{t('labels.additionalDetails')}</Heading>
           <p className="tertiaryHeading">
-            <Required id="Required"></Required> {t('userManagement.create_user.required')}
+          <span className='required'>*</span> {t('userManagement.create_user.required')}
           </p>
         </div>
         <Formik>
