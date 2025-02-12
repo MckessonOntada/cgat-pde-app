@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Button, Heading } from '@mckesson/mcp-component-library';
+import { Button, Alert } from '@mckesson/mcp-component-library';
 import styles from './TherapySelection.module.scss';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import FloatingDrawer from '@src/components/floating-drawer';
@@ -37,6 +37,7 @@ function TherapySelection() {
   const { orderId } = useParams();
   const { isEdit = false, isApprover = false, isBack = false } = location.state || {};
   const alertContainerId = 'alert-container';
+  const [therapySelectionMessage, setTherapySelectionMessage] = React.useState(null);
   const { showAlert } = useAlert();
 
   React.useEffect(() => {
@@ -114,6 +115,11 @@ function TherapySelection() {
   );
 
   const handleOnSubmit = () => {
+    if (!therapy || isSaving) {
+      setTherapySelectionMessage({ description: 'Select therapy to create order', type: 'error' });
+      return;
+    }
+
     if (therapy) {
       const payload = {
         id: therapy.id
@@ -183,6 +189,14 @@ function TherapySelection() {
               />
             </div>
             <TableHeading heading={t('labels.therapySelection')} />
+            {therapySelectionMessage && (
+              <Alert
+                description={therapySelectionMessage.description}
+                type={therapySelectionMessage.type}
+                duration={10000}
+                onClose={() => setTherapySelectionMessage(null)}
+              />
+            )}
             <TherapyDataTable therapy={therapy} onChange={setTherapy} />
           </div>
           <ModuleHeader
@@ -191,7 +205,7 @@ function TherapySelection() {
                 <Button size="md" variant="secondary" onClick={handleCancel}>
                   {t('captions.btnCancel')}
                 </Button>
-                <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit} disabled={!therapy || isSaving}>
+                <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit}>
                   {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
                 </Button>
               </div>

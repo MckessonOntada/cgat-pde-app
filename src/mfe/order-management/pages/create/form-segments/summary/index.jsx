@@ -43,6 +43,7 @@ const Summary = () => {
   const [isPAPOrderConfirmModalOpen, setIsPAPOrderConfirmModalOpen] = React.useState(false);
   const { isFetching, setActiveRecord, formState, editByStage, setCurrentOrder } = useManageOrder();
   const { isApprover = false, isSimulate = false } = location.state || {};
+  const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
   const {
     therapy = {},
@@ -56,7 +57,7 @@ const Summary = () => {
     paporder: isPapOrder,
     status
   } = formState.activeRecord || {};
-  const variantDetails = additionalDetails.variantDetails || {};
+  const variantDetails = additionalDetails?.variantDetails || {};
   const isImpersonated = Boolean(AuthUtils.getImpersonateId()),
     isRejected = status === StatusEnum.REJECTED,
     isConcluded = status === StatusEnum.REJECTED || status === StatusEnum.SUBMITTED;
@@ -111,7 +112,10 @@ const Summary = () => {
     value: false
   });
 
-  const handleChange = () => setAgreeCheckboxOptions({ ...agreeCheckboxOptions, isChecked: !agreeCheckboxOptions.isChecked });
+  const handleChange = () => {
+    setOrderAgreementCheckboxError(null);
+    setAgreeCheckboxOptions({ ...agreeCheckboxOptions, isChecked: !agreeCheckboxOptions.isChecked });
+  };
 
   const handleOnBackButtonClick = () => {
     if (isApprover || isSimulate) {
@@ -129,6 +133,11 @@ const Summary = () => {
   };
 
   const handleOnSubmit = () => {
+    if (!agreeCheckboxOptions.isChecked) {
+      setOrderAgreementCheckboxError('Please acknowledge to submit order');
+      return;
+    }
+
     if (agreeCheckboxOptions.isChecked) {
       if (isImpersonated) {
         setIsPAPOrderConfirmModalOpen(true);
@@ -136,14 +145,26 @@ const Summary = () => {
         submitOrder({ action: BUTTON_ACTIONS.SUBMIT });
       }
     }
-    return;
   };
 
   const handleApprove = () => {
     submitOrder({ action: BUTTON_ACTIONS.APPROVE });
   };
 
+  const handleReject = () => {
+    if (!agreeCheckboxOptions.isChecked) {
+      setOrderAgreementCheckboxError('Please acknowledge to reject order');
+      return;
+    }
+    setIsCommentPanelOpen(true);
+  };
+
   const handleOnApprove = () => {
+    if (!agreeCheckboxOptions.isChecked) {
+      setOrderAgreementCheckboxError('Please acknowledge to approve order');
+      return;
+    }
+
     if (agreeCheckboxOptions.isChecked) {
       renderModal({
         title: t('messages.header.confirmation'),
@@ -233,12 +254,7 @@ const Summary = () => {
 
     const controlSubmitOrder = (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS]}>
-        <Button
-          size={'md'}
-          variant="primary"
-          type="submit"
-          onClick={handleOnSubmit}
-          disabled={!isAgreed || formState.activeRecord?.status === StatusEnum.SUBMITTED}>
+        <Button size={'md'} variant="primary" type="submit" onClick={handleOnSubmit}>
           {t('captions.btnSubmitOrder')}
         </Button>
       </PermittedComponent>
@@ -246,7 +262,7 @@ const Summary = () => {
 
     const controlRejectOrder = (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REJECT_ORDER]}>
-        <Button size={'md'} variant="primary" type="submit" onClick={() => setIsCommentPanelOpen(true)} disabled={!isAgreed}>
+        <Button size={'md'} variant="primary" type="submit" onClick={handleReject}>
           {t('captions.btnRejectOrder')}
         </Button>
       </PermittedComponent>
@@ -254,7 +270,7 @@ const Summary = () => {
 
     const controlApproveOrder = (
       <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.APPROVE_ORDERS]}>
-        <Button size={'md'} variant="primary" type="submit" onClick={handleOnApprove} disabled={!isAgreed}>
+        <Button size={'md'} variant="primary" type="submit" onClick={handleOnApprove}>
           {t('captions.btnApproveOrder')}
         </Button>
       </PermittedComponent>
@@ -459,6 +475,8 @@ const Summary = () => {
               <CheckboxGroup
                 id={'default'}
                 name="order-agreement"
+                error={Boolean(orderAgreementCheckboxError)}
+                errorMessage={orderAgreementCheckboxError}
                 items={[{ ...agreeCheckboxOptions, onChange: () => handleChange() }]}
                 size="md"
               />
