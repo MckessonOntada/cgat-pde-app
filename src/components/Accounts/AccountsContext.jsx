@@ -53,6 +53,10 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
     setPaginationConfig(INITIAL_PAGINATION_STATE);
   };
 
+  useEffect(() => {
+    clearFilters();
+  }, [practiceId]);
+
   // use from context
   const apiUrl = useMemo(() => {
     let params = {
@@ -75,10 +79,6 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
       ? `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts?${serializeParams(params)}`
       : `${ApiRoutes.PUBLIC_ACCOUNTS}?${serializeParams(params)}`;
   }, [filterConfig, paginationConfig, sortCriteria, practiceId]);
-
-  useEffect(() => {
-    clearFilters();
-  }, [practiceId]);
 
   // Fetch data from server
   const { isLoading, data, isError, refetch } = useQuery({
