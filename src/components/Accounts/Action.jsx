@@ -68,13 +68,13 @@ export default function Actions({ row, userId, practiceId, refetch }) {
           isOpen,
           onClose: () => setIsOpen(false),
           modalTitle: t('orgManagement.confirmationmessage'),
-          modalBody: <h3>Are you sure you wish to unlink this account ?</h3>,
+          modalBody: <div className="MCP-modal-body">Are you sure you wish to unlink this account ?</div>,
           modalFooter: (
             <React.Fragment>
-              <Button onClick={handleClosePopup} variant="secondary" size="sm">
+              <Button onClick={handleClosePopup} variant="secondary" size="md">
                 {t('userManagement.label.cancel')}
               </Button>
-              <Button onClick={handleConfirmUnlink} size="sm">
+              <Button onClick={handleConfirmUnlink} size="md">
                 {t('userManagement.button.unlink')}
               </Button>
             </React.Fragment>

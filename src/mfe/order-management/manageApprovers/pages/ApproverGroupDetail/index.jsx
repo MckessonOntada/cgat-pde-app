@@ -244,9 +244,9 @@ function ApproverGroupDetails() {
         onClose={() => setIsOpen(false)}
         modalTitle={t('approvergroup.confirmationmessage')}
         modalBody={
-          <h3>
+          <div className="MCP-modal-body">
             {groupData?.active ? t('approvergroup.confirmationmessage.message') : t('approvergroup.confirmationmessage.activatemessage')}
-          </h3>
+          </div>
         }
         modalFooter={
           <React.Fragment>
