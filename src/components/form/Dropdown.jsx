@@ -8,7 +8,7 @@ export default function Dropdown(props) {
   const fieldContainerRef = useRef(null);
 
   return (
-    <div id={id} onClick={(e) => highlightFieldOnLabelClick(e, fieldContainerRef)} ref={fieldContainerRef} className="">
+    <div id={id} onClick={(e) => highlightFieldOnLabelClick(e, fieldContainerRef)} ref={fieldContainerRef}>
       <Label htmlFor={id} className="label-heading">
         {label}
         {isRequired && <Required id="Required">Required</Required>}
