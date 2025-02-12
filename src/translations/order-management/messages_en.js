@@ -115,7 +115,7 @@ export const MessageEn = {
   'labels.slotNumberRequired': 'Slot number is required',
   'labels.slotNumberLengthError': 'Slot Number length can not be greater than 20',
   'labels.PONumberRequired': 'PO number is required',
-  'labels.PONumberLengthError': 'PO Number can not be greater than 20',
+  'labels.PONumberLengthError': 'PO Number can not be greater than 35',
   'labels.DateOfAdministrationRequired': 'Date of administration is required',
   'labels.dateOfAdministrationFutureDateOnly': 'Date of administration must be in the future',
   'controls.placeholder.searchOrderPlaceholder': 'Search by Order ID, Patient name, Account',
