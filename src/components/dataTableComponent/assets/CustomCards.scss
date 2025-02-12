@@ -43,10 +43,15 @@
   flex-direction: column;
   border: 1px solid #ddd;
   padding: 1rem;
-  border-radius: 5px;
+  gap: 8px;
+  border-radius: 8px;
   margin-bottom: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background-color: #fff;
+  display: flex;
+  &.active {
+    border: 1px solid #007cc1;
+  }
   .card-header {
     width: 100%;
     display: flex;
@@ -58,6 +63,13 @@
   .action-button {
     align-self: flex-start;
   }
+  .default-data-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
   .collapsed-detail {
     display: flex;
     gap: 4px;
@@ -115,5 +127,24 @@
         display: inline !important;
       }
     }
+  }
+}
+
+.expand-collapse-toggle {
+  padding: 0px;
+  margin-right: 8px;
+  padding: 0px;
+  align-items: center;
+  display: flex;
+  height: 100%;
+  img {
+    height: 16px;
+    width: 16px;
+  }
+}
+.default-data-Value {
+  &.card-main-header {
+    font-size: 16px;
+    font-weight: 700;
   }
 }

@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import DataTable from 'react-data-table-component';
 import styles from './assets/CustomDataTable.module.scss';
 import { Divider, Dropdown, Button } from '@mckesson/mcp-component-library';
 import './assets/DataTableCssOverride.scss';
-import { customStylesNormal, customStylesCompact } from './assets/DataTableCutomStyle.js';
+import { customStylesNormal, customStylesCompact, isEqual } from './assets/DataTableCutomStyle.js';
 import { Paginate } from '@mckesson/mcp-component-library';
 import { Loader } from '@mckesson/mcp-component-library';
 import { CUSTOM_TABLE_TYPE } from './assets/constants/CustomTableConstants';
@@ -47,7 +47,10 @@ export const CustomDataTable = (props) => {
     selectedRowIds,
     showCardView,
     defaultExpandedCardView,
-    collapsibleCardView
+    collapsibleCardView,
+    isMultipleRowSelect = false,
+    selectedData = [],
+    setSelectedData
   } = props;
 
   const [tableSortKey, setTableSortKey] = useState(defaultSortColumn || '');
@@ -127,43 +130,64 @@ export const CustomDataTable = (props) => {
     ];
   };
 
+  const selectedAll = useMemo(
+    () => data.every((record) => selectedData.some((selected) => isEqual(selected, record))),
+    [data, selectedData]
+  );
+
+  const handleSelectAll = () => {
+    if (selectedAll) {
+      // Deselect all records of the current page
+      setSelectedData((prev) => prev.filter((record) => !data.some((pageRecord) => isEqual(pageRecord, record))));
+    } else {
+      // Select all records of the current page
+      setSelectedData((prev) => [...prev, ...data.filter((record) => !prev.some((selected) => isEqual(selected, record)))]);
+    }
+  };
+
   const renderCardSort = () => {
     const sortableColumns = columns.filter((col) => col.sortable).map((col) => ({ value: col.name, label: col.name }));
     return (
-      <div className={styles.sortByContainer}>
-        {/* <span className={styles.selectAllText}>Select All</span> */}
-        <span className={styles.sortByText}>Sort by:</span>
-        <div className={styles.dropdownContainer}>
-          <Dropdown
-            size="lg"
-            value={tableSortKey}
-            options={sortableColumns}
-            onChange={(val) => {
-              setTableSortKey(val);
+      <div className={styles.actionsBar}>
+        {isMultipleRowSelect && (
+          <div onClick={handleSelectAll} className={styles.selectAllText}>
+            {selectedAll ? 'DESELECT ALL' : 'SELECT ALL'}
+          </div>
+        )}
+        <div className={styles.sortByContainer}>
+          <span className={styles.sortByText}>Sort by:</span>
+          <div className={styles.dropdownContainer}>
+            <Dropdown
+              size="lg"
+              value={tableSortKey}
+              options={sortableColumns}
+              onChange={(val) => {
+                setTableSortKey(val);
+                onSortIconClick(
+                  columns.find((col) => col.name === val),
+                  sortOrder,
+                  data
+                );
+              }}
+            />
+          </div>
+          <Button
+            size="md"
+            disabled={!tableSortKey}
+            iconButton={true}
+            className={sortOrder === 'asc' ? styles.cardSortIconButton : styles.cardSortIconButtonRotated}
+            variant="secondary"
+            Icon={!!sortIcon ? sortIcon : arrowThickUp}
+            onClick={() => {
+              setSortOrder((prevSort) => (prevSort === 'asc' ? 'desc' : 'asc'));
               onSortIconClick(
-                columns.find((col) => col.name === val),
-                sortOrder,
+                columns.find((col) => col.name === tableSortKey),
+                sortOrder === 'asc' ? 'desc' : 'asc',
                 data
               );
             }}
           />
         </div>
-        <Button
-          size="md"
-          disabled={!tableSortKey}
-          iconButton={true}
-          className={sortOrder === 'asc' ? styles.cardSortIconButton : styles.cardSortIconButtonRotated}
-          variant="secondary"
-          Icon={!!sortIcon ? sortIcon : arrowThickUp}
-          onClick={() => {
-            setSortOrder((prevSort) => (prevSort === 'asc' ? 'desc' : 'asc'));
-            onSortIconClick(
-              columns.find((col) => col.name === tableSortKey),
-              sortOrder === 'asc' ? 'desc' : 'asc',
-              data
-            );
-          }}
-        />
       </div>
     );
   };
@@ -197,6 +221,7 @@ export const CustomDataTable = (props) => {
                 row={row}
                 defaultExpandedCardView={defaultExpandedCardView}
                 collapsibleCardView={collapsibleCardView}
+                selectedData={selectedData}
               />
             ))}
           </div>

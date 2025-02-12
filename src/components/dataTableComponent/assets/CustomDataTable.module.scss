@@ -116,19 +116,32 @@
 }
 
 // SortComponent
-
-.sortByContainer {
+.actionsBar {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 8px;
-  width: 100%;
-  padding: 8px 0;
-  justify-content: end;
+  justify-content: space-between;
+  .selectAllText {
+    // flex-grow: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: #007cc1;
+    min-width: 80px;
+  }
+  .sortByContainer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    // width: 100%;
+    padding: 8px 0;
+    justify-content: end;
+    flex-grow: 2;
+  }
 }
 
 .sortByText {
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 12px;
+  font-weight: 400;
 }
 .dropdownContainer {
   min-width: 50%;

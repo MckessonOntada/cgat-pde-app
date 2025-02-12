@@ -28,6 +28,8 @@ export default function CustomerStatementTable() {
       wrap: true,
       minWidth: '140px',
       showInMobileHeader: true,
+      cardHeader: true,
+      mobileStyles: { fontSize: 'var(--brand-font-size--default)' },
       cell: (props) => props.docNo
     },
     {
@@ -37,6 +39,9 @@ export default function CustomerStatementTable() {
       minWidth: '140px',
       sortable: true,
       wrap: true,
+      showInMobileHeader: true,
+      showColumnNameInHeader: true,
+      mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
       cell: (props) => props.accountNumber
     },
     {
@@ -118,7 +123,7 @@ export default function CustomerStatementTable() {
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         progressPending={isFetching}
         showCardView={showCardView}
-        // defaultExpandedCardView={true}
+        defaultExpandedCardView={false}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}

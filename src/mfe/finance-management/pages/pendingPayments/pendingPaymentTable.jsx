@@ -26,6 +26,7 @@ export default function PendingPaymentTable() {
       wrap: true,
       minWidth: '110px',
       showInMobileHeader: true,
+      cardHeader: true,
       cell: (props) => (
         <div className="cellEllipse">
           <Link
@@ -107,7 +108,7 @@ export default function PendingPaymentTable() {
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         progressPending={isFetching}
         showCardView={showCardView}
-        defaultExpandedCardView={true}
+        defaultExpandedCardView={false}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}

@@ -37,10 +37,12 @@ export default function PaymentHistoryTable() {
       sortable: true,
       maxWidth: '180px',
       wrap: true,
+      showInMobileHeader: true,
+      showColumnNameInHeader: true,
       cell: (props) => (
         <div className="cellEllipse">
           <Link
-            style={{ color: 'var(--brand-color-primary)', fontWeight: '600' }}
+            style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none'  }}
             to={`/record/${PATHS.paymentHistory}/${props?.confirmationNo}/confirmation`}
             state={{ ...props, filterConfig }}>{`${props?.confirmationNo}`}</Link>
         </div>
@@ -61,6 +63,8 @@ export default function PaymentHistoryTable() {
       wrap: true,
       sortable: true,
       minWidth: '140px',
+      cardHeader: true,
+      showInMobileHeader: true,
       cell: (props) => <EclipsesTextcss str={props.paymentMethod} maxWidth={130} />
     },
 
@@ -135,7 +139,7 @@ export default function PaymentHistoryTable() {
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         progressPending={isFetching}
         showCardView={showCardView}
-        defaultExpandedCardView={true}
+        defaultExpandedCardView={false}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}

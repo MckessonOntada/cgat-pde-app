@@ -41,6 +41,8 @@ export default function CreditCardsTable() {
       sortable: true,
       wrap: true,
       minWidth: '160px',
+      showInMobileHeader: true,
+      showColumnNameInHeader: true,
       cell: (props) => <div>{props.holderName}</div>
     },
     {
@@ -51,6 +53,7 @@ export default function CreditCardsTable() {
       wrap: true,
       minWidth: '160px',
       showInMobileHeader: true,
+      cardHeader: true,
       cell: (props) => <div className="cellEllipse">{FinanceUtils.maskCardNumber(props.number)}</div>
     },
     {
@@ -112,7 +115,7 @@ export default function CreditCardsTable() {
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         progressPending={isFetching}
         showCardView={showCardView}
-        defaultExpandedCardView={true}
+        defaultExpandedCardView={false}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}
