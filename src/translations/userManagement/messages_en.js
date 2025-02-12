@@ -89,6 +89,7 @@ export const UserManagementEN = {
   'userManagement.provision.message': 'User is not provisioned in Okta. {click} to Provision the User in Okta.',
   'userManagement.button.clickhere': 'Click here',
   'userManagement.create_user': 'Add User',
+  'userManagement.edit_user': 'Edit User',
   'userManagement.create_organization_user': 'Add Organization User',
   'userManagement.create_sysadmin': 'Add System Administrator',
   'userManagement.create_user.details_to_create_user': 'Please check the details to create a organization user.',
