@@ -293,6 +293,9 @@ function AdditionalDetails() {
   };
 
   const handleOnSubmit = (values) => {
+    if (CommonUtils.isNonEmptyObject(variantsData?.content) && (!variant || !variantAcknowledgement?.isChecked)) {
+      return;
+    }
     const _var = !!variant
       ? {
           variant: variant.variant,
@@ -466,13 +469,7 @@ function AdditionalDetails() {
                   <Button size="md" variant="secondary" onClick={handleOnBack}>
                     {t('captions.btnBack')}
                   </Button>
-                  <Button
-                    size="md"
-                    variant="primary"
-                    type="submit"
-                    disabled={
-                      isSaving || (CommonUtils.isNonEmptyObject(variantsData?.content) && (!variant || !variantAcknowledgement?.isChecked))
-                    }>
+                  <Button size="md" variant="primary" type="submit">
                     {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
                   </Button>
                 </div>

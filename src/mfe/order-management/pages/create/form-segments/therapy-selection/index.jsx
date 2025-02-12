@@ -114,6 +114,11 @@ function TherapySelection() {
   );
 
   const handleOnSubmit = () => {
+    if (!therapy || isSaving) {
+      showAlert({ description: 'Select therapy to create order', type: 'error', anchorEl: alertContainerId });
+      return;
+    }
+
     if (therapy) {
       const payload = {
         id: therapy.id
@@ -191,7 +196,7 @@ function TherapySelection() {
                 <Button size="md" variant="secondary" onClick={handleCancel}>
                   {t('captions.btnCancel')}
                 </Button>
-                <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit} disabled={!therapy || isSaving}>
+                <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit}>
                   {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
                 </Button>
               </div>
