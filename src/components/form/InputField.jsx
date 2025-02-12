@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { InputField as BaseInputField, Label, TextError, Required } from '@mckesson/mcp-component-library';
+import { InputField as BaseInputField, Label, TextError } from '@mckesson/mcp-component-library';
 import { highlightFieldOnLabelClick } from './util';
 
 export default function InputField(props) {
@@ -10,7 +10,7 @@ export default function InputField(props) {
       <div className="row-space-between-center">
         <Label htmlFor={name} className="label-heading">
           {label}
-          {isRequired && <Required id="Required">Required</Required>}
+          {isRequired && <span className='required'> *</span>}
         </Label>
         {labelControls}
       </div>

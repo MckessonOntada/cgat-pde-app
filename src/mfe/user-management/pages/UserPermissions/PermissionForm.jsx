@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { Switch, Button, Dropdown, Heading } from '@mckesson/mcp-component-library';
+import { Switch, Button, Heading } from '@mckesson/mcp-component-library';
+import Dropdown from '@src/components/form/Dropdown';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import './PermissionForm.scss';
