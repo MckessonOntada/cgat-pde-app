@@ -98,6 +98,7 @@ export const MessageEn = {
   'labels.patientIdentifier': 'Patient Identifier',
   'labels.gender': 'Gender',
   'labels.dob': 'Date of Birth',
+  'labels.DOB': 'DOB',
   'labels.dateOfAdministration': 'Date of Administration',
   'labels.slotNo': 'Slot No',
   'labels.selectVariant': 'Select Variant',
