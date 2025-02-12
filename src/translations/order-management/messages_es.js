@@ -137,7 +137,7 @@ export const MessageEs = {
   'labels.orderId': 'S_Order ID',
   'labels.therapy': 'S_Therapy',
   'table.columns.captions.author': 'S_Author',
-  'table.columns.captions.createdOn': 'S_CreatedOn',
+  'table.columns.captions.createdOn': 'S_Created On',
   'table.columns.captions.status': 'S_Status',
   'table.columns.captions.submittedBy': 'S_Submitted By',
   'table.columns.captions.submittedOn': 'S_Submitted On',
