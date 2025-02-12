@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import './assets/CustomCards.scss';
 import CommonUtils from '@src/util/CommonUtils';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import arrow_down from '@src/assets/image/arrow_down.svg';
 import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 import { MenuList } from '@mckesson/mcp-component-library';
+import { isEqual } from './assets/DataTableCutomStyle';
 
 /*
 defaultExpandedCardView - card will be expanded by default
@@ -24,7 +25,7 @@ collapsibleCardView -- A user input that card can be expand and  collapse
  * cardHeader - if "true" the column will be moved to first index of default Data, Beside the expand collapse Button.
  */
 
-function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleCardView = true, rowIndex }) {
+function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleCardView = true, rowIndex, selectedData = [] }) {
   const isSelectableInput = columns.filter((col) => !!col.isSelectable);
   const showDefaultData = columns
     .filter((col) => !!col.showInMobileHeader && !col.isAction && !col.omit && !col.isSelectable)
@@ -61,16 +62,20 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
 
   const renderExpandIcon = (colIndex) => {
     return colIndex === 0 && showDefaultData.length + hiddenData.length > 4 ? (
-      <button type="button" onClick={() => {}} style={{ padding: '0px' }}>
+      <button type="button" onClick={() => {}} className="expand-collapse-toggle">
         <img src={expanded ? arrow_down : arrow_right} alt="toggle-icon" />
       </button>
     ) : (
       <></>
     );
   };
+  console.log('row...', row);
+  const selectedCard = useMemo(() => {
+    return selectedData.some((record) => isEqual(record, row));
+  }, [row, selectedData]);
 
   return (
-    <div className="table-card-container" key={row.id} onClick={handleCardClick}>
+    <div className={`table-card-container ${selectedCard ? `active` : ``}`} key={row.id} onClick={handleCardClick}>
       {isSelectableInput.length > 0 && (
         <div className="card-header">
           <div style={{ width: '100%' }}>
@@ -85,12 +90,16 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
 
       {(showDefaultData.length > 0 || actionItems.length > 0) && (
         <div className="card-header">
-          <div style={{ width: '100%' }}>
+          <div className="default-data-container" style={{ width: '100%' }}>
             {showDefaultData.map((col, colIndex) => (
               <div key={col.id} className="collapsed-detail" style={col.mobileStyles}>
                 {renderExpandIcon(colIndex)}
                 {col.showColumnNameInHeader && col.name && <div>{col.name}-</div>}
-                <div onClick={(e) => handleActionClick(e, col.onClick)}>{renderCell(col, row)}</div>
+                <div
+                  onClick={(e) => handleActionClick(e, col.onClick)}
+                  className={`default-data-Value ${colIndex === 0 ? `card-main-header` : ``}`}>
+                  {renderCell(col, row)}
+                </div>
               </div>
             ))}
           </div>
