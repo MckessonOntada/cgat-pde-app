@@ -394,16 +394,7 @@ const Summary = () => {
                   <div className="MCP-CardContainer">
                     <ModuleHeader
                       className={styles.panelHeader}
-                      heading={
-                        <Heading as="h3">
-                          {patient?.patientInfo &&
-                          (patient.patientInfo.firstName || patient.patientInfo.middleName || patient.patientInfo.lastName)
-                            ? [patient.patientInfo.firstName, patient.patientInfo.middleName, patient.patientInfo.lastName]
-                                .filter(Boolean)
-                                .join(' ')
-                            : t('labels.patientDetails')}
-                        </Heading>
-                      }
+                      heading={<Heading as="h3">{t('labels.patientDetails')}</Heading>}
                       controls={
                         !hideControls && (
                           <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
@@ -420,8 +411,15 @@ const Summary = () => {
                     />
                     <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
                       <DetailSegment label={t('labels.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
-                      <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
-                      <DetailSegment label={t('labels.dob')} value={patient?.patientInfo?.dateOfBirth || '-'} />
+                      <DetailSegment
+                        label={t('labels.patientName')}
+                        value={
+                          patient?.patientInfo
+                            ? `${patient.patientInfo.firstName} ${patient.patientInfo.middleName} ${patient.patientInfo.lastName}`
+                            : '-'
+                        }
+                      />
+                      <DetailSegment label={t('labels.DOB')} value={patient?.patientInfo?.dateOfBirth || '-'} />
                     </div>
                   </div>
                 )}
@@ -447,7 +445,6 @@ const Summary = () => {
                 }
               />
               <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-6'}>
-                <DetailSegment label={t('labels.coiId')} value={additionalDetails?.coiId} />
                 <DetailSegment label={t('labels.slotNo')} value={additionalDetails?.slotNumber} />
                 <DetailSegment label={t('labels.poNo')} value={additionalDetails?.poNumber} />
                 <DetailSegment label={t('labels.dateOfAdministration')} value={additionalDetails?.dateOfAdministration} />

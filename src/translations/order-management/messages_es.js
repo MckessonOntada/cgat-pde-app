@@ -98,6 +98,7 @@ export const MessageEs = {
   'labels.patientIdentifier': 'S_Patient Identifier',
   'labels.gender': 'S_Gender',
   'labels.dob': 'S_Date of Birth',
+  'labels.DOB': 'S_DOB',
   'labels.dateOfAdministration': 'S_Date of Administration',
   'labels.slotNo': 'S_Slot No',
   'labels.selectVariant': 'S_Select Variant',
