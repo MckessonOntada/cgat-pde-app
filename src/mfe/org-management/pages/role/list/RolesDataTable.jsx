@@ -63,11 +63,11 @@ const RolesDataTable = () => {
     );
     state.footer = (
       <div className="controls">
-        <Button size="sm" variant="secondary" onClick={() => dispatch(closeModal())}>
+        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
           Cancel
         </Button>
         <Button
-          size="sm"
+          size="md"
           variant="primary"
           onClick={() => {
             deleteRole(selectedRows);
