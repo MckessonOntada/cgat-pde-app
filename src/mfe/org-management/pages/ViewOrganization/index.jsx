@@ -52,11 +52,6 @@ export default function ViewOrganization() {
 
   useEffect(() => {
     if (updateState.isSuccess) {
-      setAlertConfig({
-        isVisible: true,
-        description: `${updateState.recCount} ${t('orgManagement.messages.accountlinkSuccess')}`,
-        type: 'success'
-      });
       const timer = setTimeout(() => {
         handleAlertClose;
       }, 10000);
@@ -85,15 +80,18 @@ export default function ViewOrganization() {
     }
     const payload = selectedAccounts?.map((account) => account.id);
     mutate(
-      {
-        payload
-      },
+      { payload },
       {
         onSuccess: (response) => {
           if (!isView) {
             navigate(RoutePaths.pathOrgManagement, { state: { isSuccess: true } });
           } else {
             setUpdateState({ isSuccess: isView ? true : false, recCount: selectedCount });
+            setAlertConfig({
+              isVisible: true,
+              description: `${selectedCount} ${t('orgManagement.messages.accountlinkSuccess')}`,
+              type: 'success'
+            });
             handleCancel();
           }
         },
@@ -181,8 +179,8 @@ export default function ViewOrganization() {
         }
         style={{ marginBottom: '16px' }}
       />
-      {(updateState.isSuccess || alertConfig?.isVisible) && (
-        <Alert type={alertConfig.type} description={alertConfig.description} onClose={handleAlertClose} duration={10000} />
+      {updateState.isSuccess && alertConfig?.isVisible && (
+        <Alert type={alertConfig.type} description={alertConfig.description} onClose={() => setAlertConfig(null)} duration={10000} />
       )}
       <OrganizationAccounts
         showSelectedAccounts={addNewAccounts}
