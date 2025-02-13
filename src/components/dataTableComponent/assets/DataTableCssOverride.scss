@@ -5,3 +5,12 @@
 .rdt_TableRow:hover {
   background-color: var(--brand-color-secondary-active-yellow-3) !important;
 }
+
+.dataTable-loader {
+  align-items: center;
+  /* border: 1px solid rgb(204, 204, 204); */
+  display: flex;
+  height: 240px;
+  justify-content: flex-start;
+  width: 240px;
+}
