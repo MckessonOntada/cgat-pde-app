@@ -58,7 +58,7 @@ const MultiSelectDropdown = (props) => {
         <div className="dropdown-label">
           <Label htmlFor={id} className="label-heading">
             {label}
-            {isRequired && <Required id="Required">Required</Required>}
+            {isRequired && <span className="required"> *</span>}
           </Label>
         </div>
       )}
