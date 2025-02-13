@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styles from './PatientDetails.module.scss';
-import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
+import { Button, Alert } from '@mckesson/mcp-component-library';
 import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
-import { FormList } from '../Constants';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import PatientDetailsForm from './PatientDetailsForm';
 import { Form, Formik } from 'formik';
@@ -13,30 +12,31 @@ import { getValidationSchema } from './PatientDetailsFormUtils';
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation } from 'react-query';
 import CommonUtils from '@src/util/CommonUtils';
-import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
 import useAlert from '@src/hooks/useAlert';
-import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import { renderModal } from '@src/util/ModalUtil';
+import useOrder from '../../../orders/useOrder';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
   const { orderId } = useParams();
   const navigate = useNavigate();
-  const { formState, setActiveRecord, setCurrentOrder, messageConfig, editByStage } = useManageOrder();
   const alertContainerId = 'patintDetails-alert-container';
   const { showAlert } = useAlert();
   const location = useLocation();
   const { isEdit = false, isApprover = false, alertState } = location.state || {};
-  const therapyId = formState.activeRecord?.therapy?.materialNumber;
-  const soldToAccountId = formState.activeRecord?.accountDetails?.soldToAccount?.accountNumber;
-  const shipToAccountId = formState.activeRecord?.accountDetails?.shipToAccount?.accountNumber;
 
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
+
+  const { data: orderDetails, isFetching, isError, error } = useOrder(orderId);
+
+  const therapyId = orderDetails?.therapy?.materialNumber;
+  const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
+  const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
 
   const INITIAL_VALUES = {
     patientInfo: {
@@ -60,12 +60,14 @@ const PatientDetails = () => {
     patientIdentifier: ''
   };
 
-  const [initialValues, setInitialValues] = useState({ ...INITIAL_VALUES });
+  const initialValues = React.useMemo(() => {
+    return orderDetails?.patient ? { ...orderDetails.patient } : INITIAL_VALUES;
+  }, [orderDetails]);
 
   React.useEffect(() => {
-    const { paporder: isPapOrder } = formState.activeRecord || {};
+    const { paporder: isPapOrder } = orderDetails || {};
     if (isPapOrder) navigate('/orders');
-  }, [formState.activeRecord]);
+  }, [orderDetails]);
 
   useEffect(() => {
     if (!alertState) {
@@ -75,15 +77,13 @@ const PatientDetails = () => {
   }, []);
 
   React.useEffect(() => {
-    if (!formState.activeRecord) {
+    if (!orderDetails) {
       return;
     }
-    if (!formState.activeRecord.patientDetailsRequired) {
+    if (!orderDetails.patientDetailsRequired) {
       navigate(`../${orderId}/additional-details`);
-    } else {
-      setInitialValues({ ...formState.activeRecord?.patient });
     }
-  }, [formState.activeRecord]);
+  }, [orderDetails]);
 
   const openDuplicateConfirmationModal = (payload) => {
     renderModal({
@@ -118,7 +118,6 @@ const PatientDetails = () => {
     {
       onSuccess: (result) => {
         const { id } = result;
-        setActiveRecord(result);
         navigate(`../${id}/additional-details`, { state: { isEdit: false, isApprover: isApprover } });
       },
       onError: ({ err, payload }) => {
@@ -131,10 +130,6 @@ const PatientDetails = () => {
     }
   );
 
-  React.useEffect(() => {
-    orderId && setCurrentOrder(orderId, ORDER_STAGES.PATIENT_DETAILS);
-  }, []);
-
   const handleOnBack = () => {
     if (isDirty) {
       setModalSuccessCallback(isEdit ? 'summary' : 'account');
@@ -144,7 +139,6 @@ const PatientDetails = () => {
     if (isEdit) {
       navigate(`../${orderId}/summary`, { state: { isEdit: true, isApprover: isApprover } });
     } else {
-      editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
       navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isApprover: isApprover } });
     }
   };
@@ -176,7 +170,6 @@ const PatientDetails = () => {
     } else if (modalSuccessCallback === 'summary') {
       navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'account') {
-      editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
       navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isApprover: isApprover } });
     }
   };
@@ -192,18 +185,21 @@ const PatientDetails = () => {
       <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
 
       <div className="MCP-module-body">
-        <OrderStepper />
+        <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} />
 
         <div className={styles.wrapper}>
-          <OrderHeaderDetails therapyId={therapyId} soldToAccountId={soldToAccountId} shipToAccountId={shipToAccountId} />
+          <OrderHeaderDetails
+            orderDetails={orderDetails}
+            therapyId={therapyId}
+            soldToAccountId={soldToAccountId}
+            shipToAccountId={shipToAccountId}
+          />
           <div id={alertContainerId} />
 
-          {messageConfig && messageConfig.primaryMessage && (
-            <Alert onClose={clearMessage} showTitle title={messageConfig.primaryMessage} type={messageConfig.messageKind} />
-          )}
+          {isError && <Alert showTitle title={error} type={'error'} />}
         </div>
         <Formik
-          initialValues={INITIAL_VALUES}
+          initialValues={initialValues}
           validationSchema={getValidationSchema(t)}
           enableReinitialize
           validate={(values) => {

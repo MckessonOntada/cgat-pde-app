@@ -1,14 +1,12 @@
 import React from 'react';
 import DetailSegment from '@src/components/DetailSegment';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import { ReactComponent as TickIcon } from '@src/assets/svg/tick-circle-filled.svg';
 import { useQuery } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
 
-function OrderHeaderDetails({ therapyId, soldToAccountId, shipToAccountId, setInventoryTypeData, variant }) {
+function OrderHeaderDetails({ orderDetails, therapyId, soldToAccountId, shipToAccountId, setInventoryTypeData, variant }) {
   const { t } = useTranslate();
-  const { formState } = useManageOrder();
   const [segments, setSegments] = React.useState([]);
 
   const { isLoading: isPriceApiLoading, data: priceDetails = null } = useQuery({
@@ -25,7 +23,7 @@ function OrderHeaderDetails({ therapyId, soldToAccountId, shipToAccountId, setIn
 
   React.useEffect(() => {
     const detailsSegments = [];
-    const { therapy, author, accountDetails, patient, patientDetailsRequired, orderCost } = formState.activeRecord || {};
+    const { therapy, author, accountDetails, patient, patientDetailsRequired, orderCost } = orderDetails || {};
     detailsSegments.push(
       <DetailSegment
         key={'therapy-description'}
@@ -72,7 +70,7 @@ function OrderHeaderDetails({ therapyId, soldToAccountId, shipToAccountId, setIn
     );
 
     setSegments([...detailsSegments]);
-  }, [formState.activeRecord, priceDetails]);
+  }, [orderDetails, priceDetails]);
 
   return (
     <div className="MCP-CardContainer">

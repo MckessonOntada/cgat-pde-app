@@ -11,7 +11,6 @@ import { getFormFields } from './fields';
 import * as Yup from 'yup';
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation, useQuery } from 'react-query';
-import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
@@ -24,6 +23,7 @@ import { handleApiError } from '@src/util/ApiUtils';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import QuestionnaireTemplate from '@src/mfe/order-management/questionnaire/QuestionnaireTemplate';
 import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/order-management/questionnaire/AddQuestionnaire';
+import useOrder from '../../../orders/useOrder';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -41,10 +41,7 @@ function AdditionalDetails() {
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
   const [validationSchema, setValidationSchema] = React.useState(null);
-  const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
-  const therapyId = formState.activeRecord?.therapy?.materialNumber;
-  const soldToAccountId = formState.activeRecord?.accountDetails?.soldToAccount?.accountNumber;
-  const shipToAccountId = formState.activeRecord?.accountDetails?.shipToAccount?.accountNumber;
+
   const variantsApiRequestParam = { pageNo: 0, pageSize: 10 };
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
@@ -58,8 +55,11 @@ function AdditionalDetails() {
   const [variant, setVariant] = React.useState();
   const { showAlert } = useAlert();
   const alertContainerId = 'additionalDetails-alert-container';
-  const { isCoiIdRequired, patientDetailsRequired } = formState?.activeRecord || {};
-
+  const { data: orderDetails, isFetching, isError, error } = useOrder(orderId);
+  const { isCoiIdRequired, patientDetailsRequired } = orderDetails || {};
+  const therapyId = orderDetails?.therapy?.materialNumber;
+  const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
+  const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
   let initialValidationSchema = Yup.object({
     coiId: Yup.string()
       .matches(NUMBER_REGEX, t('labels.COI_IdMustValidNumber'))
@@ -94,16 +94,15 @@ function AdditionalDetails() {
   }, []);
 
   React.useEffect(() => {
-    const { paporder: isPapOrder } = formState.activeRecord || {};
+    const { paporder: isPapOrder } = orderDetails || {};
     if (isPapOrder) navigate('/orders');
-  }, [formState.activeRecord]);
+  }, [orderDetails]);
 
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(
     async (data) => OrderService.saveAdditionalDetails(orderId, data),
     {
       onSuccess: (result) => {
         const { id } = result;
-        setActiveRecord(result);
         navigate(`../${id}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
       },
       onError: (error) => {
@@ -173,7 +172,7 @@ function AdditionalDetails() {
   } = useQuery({
     queryKey: ['configured-questionnaire', variant ?? 'default-variant'],
     queryFn: async () => {
-      const { accountDetails, therapy } = formState.activeRecord;
+      const { accountDetails, therapy } = orderDetails;
       const payload = {
         variantType,
         soldToCustomer: accountDetails.soldToAccount.accountNumber,
@@ -182,7 +181,7 @@ function AdditionalDetails() {
       };
       return QuestionnaireService.getConfiguredQuestionnaire(payload);
     },
-    enabled: false,
+    enabled: Boolean(orderDetails),
     refetchOnWindowFocus: false,
     onSuccess: (result) => {
       result && prepareQuestionnaire(result);
@@ -230,11 +229,7 @@ function AdditionalDetails() {
   });
 
   React.useEffect(() => {
-    orderId && setCurrentOrder(orderId, ORDER_STAGES.ADDITIONAL_DETAILS);
-  }, []);
-
-  React.useEffect(() => {
-    const { additionalDetails } = formState.activeRecord || {};
+    const { additionalDetails } = orderDetails || {};
     if (additionalDetails) {
       const {
         dateOfAdministration,
@@ -272,17 +267,17 @@ function AdditionalDetails() {
       });
       setVariantAcknowledgement((prev) => ({ ...prev, isChecked: patientConsentTaken }));
     }
-  }, [formState.activeRecord, variantsData]);
+  }, [orderDetails, variantsData]);
 
   const handleOnBack = () => {
     if (isDirty) {
-      setModalSuccessCallback(isEdit ? 'summary' : formState.activeRecord?.patientDetailsRequired ? 'patient' : 'account');
+      setModalSuccessCallback(isEdit ? 'summary' : orderDetails?.patientDetailsRequired ? 'patient' : 'account');
       return;
     }
     if (isEdit) {
       navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
     } else {
-      if (formState.activeRecord?.patientDetailsRequired) {
+      if (orderDetails?.patientDetailsRequired) {
         editByStage(ORDER_STAGES.PATIENT_DETAILS);
         navigate(`../${orderId}/patient`, { state: { isEdit: false, isApprover: isApprover } });
       } else {
@@ -304,7 +299,7 @@ function AdditionalDetails() {
         }
       : null;
 
-    const { accountDetails, therapy } = formState.activeRecord;
+    const { accountDetails, therapy } = orderDetails;
     const questionnaireDependencies = {
       soldToCustomer: accountDetails.soldToAccount.accountNumber,
       shipToCustomer: accountDetails.soldToAccount.accountNumber,
@@ -372,8 +367,8 @@ function AdditionalDetails() {
   };
 
   React.useEffect(() => {
-    if (formState.activeRecord && !isEdit) fetchConfiguredQuestions();
-  }, [variant, formState.activeRecord]);
+    if (orderDetails && !isEdit) fetchConfiguredQuestions();
+  }, [variant, orderDetails]);
 
   const handleOnAcknowledgmentChange = () => {
     const updatedOptions = { ...variantAcknowledgement, isChecked: !variantAcknowledgement.isChecked };
@@ -404,9 +399,10 @@ function AdditionalDetails() {
           return (
             <Form>
               <div className="MCP-module-body">
-                <OrderStepper />
+                <OrderStepper patientDetailsRequired={patientDetailsRequired} status={orderDetails?.currentStage} />
 
                 <OrderHeaderDetails
+                  orderDetails={orderDetails}
                   therapyId={therapyId}
                   soldToAccountId={soldToAccountId}
                   shipToAccountId={shipToAccountId}
@@ -417,7 +413,7 @@ function AdditionalDetails() {
                   <div className="row-space-between-center">
                     <Heading as="h3">{t('labels.additionalDetails')}</Heading>
                     <p className="form-instruction">
-                    <span className='required'>*</span> {t('labels.required')}
+                      <span className="required">*</span> {t('labels.required')}
                     </p>
                   </div>
                   <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 align-items-start">

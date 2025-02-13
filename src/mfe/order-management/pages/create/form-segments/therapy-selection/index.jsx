@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { Button, Alert } from '@mckesson/mcp-component-library';
 import styles from './TherapySelection.module.scss';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
@@ -13,51 +13,46 @@ import PageHeader from '@src/components/pageHeader';
 import CommonFilters from '@src/components/Filters';
 import { useMutation } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
-import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import OrderStepper from '../OrderStepper';
-import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import { TherapyDetailsConstants } from './assets/constants/TherapyDetailsConstants';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import TableHeading from '@src/components/tableHeading/TableHeading';
+import useOrder from '../../../orders/useOrder';
 
 function TherapySelection() {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const [therapy, setTherapy] = useState(null);
+  const { orderId } = useParams();
   const { clearFilters, applyFilters } = useTherapy();
   const [initialSelectedThearpy, setInitialSelectedTherapy] = React.useState(null);
-  const { formState } = useManageOrder();
+  const { data: orderDetails } = useOrder(orderId);
+  const [therapy, setTherapy] = useState(orderDetails?.therapy);
   const searchParams = new URLSearchParams(location.search);
   const therapyDetails = searchParams.get('therapy-details');
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-  const { orderId } = useParams();
   const { isEdit = false, isApprover = false, isBack = false } = location.state || {};
   const alertContainerId = 'alert-container';
   const [therapySelectionMessage, setTherapySelectionMessage] = React.useState(null);
   const { showAlert } = useAlert();
-
+  console.log(orderDetails);
   React.useEffect(() => {
-    const { paporder: isPapOrder } = formState.activeRecord || {};
+    const { paporder: isPapOrder } = orderDetails || {};
     if (isPapOrder) navigate('/orders');
-  }, [formState.activeRecord]);
+  }, [orderDetails]);
 
   React.useEffect(() => {
-    orderId && setCurrentOrder(orderId, ORDER_STAGES.THERAPY_SELECTION);
-  }, []);
-
-  React.useEffect(() => {
-    const { therapy } = formState.activeRecord || {};
+    const { therapy } = orderDetails || {};
     if (therapy) {
       setTherapy(therapy);
       setInitialSelectedTherapy(therapy);
     } else {
       console.log('Could not set therapy');
     }
-  }, [formState?.activeRecord]);
+  }, [orderDetails]);
 
   const handleOnClose = () => {
     searchParams.delete('therapy-details');
@@ -67,27 +62,8 @@ function TherapySelection() {
     });
   };
 
-  const CUSTOMER_INDICATORS = [
-    'Preferred Customer',
-    'New Customer',
-    'VIP Customer',
-    'Loyalty Member',
-    'Inactive Customer',
-    'High-Value Customer',
-    'Discount Eligible',
-    'First-Time Buyer',
-    'Recurring Buyer',
-    'Potential Lead'
-  ].map((i) => ({
-    label: i,
-    value: i.replace(' ', '_').toLowerCase()
-  }));
-
-  const { setActiveRecord, setCurrentOrder } = useManageOrder();
-
   const { isLoading: isSaving, mutate: createNewOrder } = useMutation(async (data) => OrderService.createOrder(data), {
     onSuccess: (result) => {
-      setActiveRecord(result);
       const { id } = result;
       navigate(`../${id}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
     },
@@ -103,7 +79,6 @@ function TherapySelection() {
     },
     {
       onSuccess: (result) => {
-        setActiveRecord(result);
         const { id } = result;
         navigate(`../${id}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
       },
@@ -176,7 +151,7 @@ function TherapySelection() {
       <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
 
       <div className="MCP-module-body">
-        <OrderStepper />
+        <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} />
         <div id={alertContainerId} />
         <div className={styles.wrapper}>
           <div className="MCP-panel-container">

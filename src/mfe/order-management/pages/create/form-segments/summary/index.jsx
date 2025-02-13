@@ -8,7 +8,6 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 import PageHeader from '@src/components/pageHeader';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import DetailSegment from '@src/components/DetailSegment';
-import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import useAlert from '@src/hooks/useAlert';
 import PermittedComponent from '@src/components/permitted-component';
@@ -22,6 +21,7 @@ import FloatingDrawer from '@src/components/floating-drawer';
 import CommentPanel from './CommentPanel';
 import AuthUtils from '@src/util/AuthUtils';
 import OrderStepper from '../OrderStepper';
+import useOrder from '../../../orders/useOrder';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -40,8 +40,8 @@ const Summary = () => {
   const location = useLocation();
   const { orderId } = useParams();
   const { showAlert } = useAlert();
+  const { data: orderDetails, isFetching, isError, error } = useOrder(orderId);
   const [isPAPOrderConfirmModalOpen, setIsPAPOrderConfirmModalOpen] = React.useState(false);
-  const { isFetching, setActiveRecord, formState, editByStage, setCurrentOrder } = useManageOrder();
   const { isApprover = false, isSimulate = false } = location.state || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
@@ -56,7 +56,7 @@ const Summary = () => {
     rejectionDetails,
     paporder: isPapOrder,
     status
-  } = formState.activeRecord || {};
+  } = orderDetails || {};
   const variantDetails = additionalDetails?.variantDetails || {};
   const isImpersonated = Boolean(AuthUtils.getImpersonateId()),
     isRejected = status === StatusEnum.REJECTED,
@@ -101,10 +101,6 @@ const Summary = () => {
     }
   });
 
-  React.useEffect(() => {
-    orderId && setCurrentOrder(orderId, ORDER_STAGES.ORDER_SUMMARY);
-  }, []);
-
   const [agreeCheckboxOptions, setAgreeCheckboxOptions] = React.useState({
     isDisabled: false,
     isChecked: false,
@@ -121,7 +117,6 @@ const Summary = () => {
     if (isApprover || isSimulate) {
       navigate(RoutePaths.pathOrderManagement);
     } else {
-      editByStage(ORDER_STAGES.ADDITIONAL_DETAILS);
       navigate(`../${orderId}/additional-details`);
     }
   };
@@ -204,7 +199,6 @@ const Summary = () => {
       });
       return;
     }
-    editByStage(stage);
     const stageRoutes = {
       [ORDER_STAGES.THERAPY_SELECTION]: `../edit-order/${orderId}`,
       [ORDER_STAGES.ACCOUNT_DETAILS]: `../${orderId}/accounts`,
@@ -217,7 +211,6 @@ const Summary = () => {
   };
 
   const handleAfterRejectOrder = (data) => {
-    setActiveRecord(data);
     setIsCommentPanelOpen(false);
   };
 
@@ -301,11 +294,13 @@ const Summary = () => {
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
-      {formState.activeRecord?.status === StatusEnum.IN_DRAFT && <PageHeader heading={t('headings.createNewOrder')} />}
+      {orderDetails?.status === StatusEnum.IN_DRAFT && <PageHeader heading={t('headings.createNewOrder')} />}
       {isApprover && <PageHeader heading={t('headings.reviewOrder')} />}
 
       <div className="MCP-module-body">
-        {!hideControls && !isRejected && <OrderStepper />}
+        {!hideControls && !isRejected && (
+          <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} />
+        )}
         <div id={ALERT_CONTAINER_ID} />
         <div className={'MCP-module-wrapper'}>
           <ModuleHeader
@@ -334,14 +329,14 @@ const Summary = () => {
               <div class={styles.flexPanel}>
                 {(status === StatusEnum.SUBMITTED || isApprover) && <DetailSegment label={t('labels.orderId')} value={orderId} />}
                 <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
-                <p className='price-wrapper'>
+                <p className="price-wrapper">
                   <DetailSegment
                     label={t('labels.orderCost')}
                     value={
-                        <span className="dollarSign ">
-                          <span>$</span>
-                          {orderCost}
-                        </span>
+                      <span className="dollarSign ">
+                        <span>$</span>
+                        {orderCost}
+                      </span>
                     }
                   />
                 </p>
