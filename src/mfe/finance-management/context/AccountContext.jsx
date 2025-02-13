@@ -22,6 +22,7 @@ export const AccountProvider = ({ children }) => {
   const [defaultPayToAccount, setDefaultPayToAccount] = useState(null);
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [payToAccountsList, setPayToAccountsList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { showSnackbar } = useSnackbar();
 
@@ -48,7 +49,8 @@ export const AccountProvider = ({ children }) => {
     isLoading: fetchingAccounts,
     data: payToAccountsData,
     isError: errorFetchingAccounts,
-    refetch: refetchPayToAccountsData
+    refetch: refetchPayToAccountsData,
+    isFetched
   } = useQuery({
     queryKey: [searchText],
     queryFn: async () => {
@@ -83,14 +85,21 @@ export const AccountProvider = ({ children }) => {
       formatPayToAccountsList();
       const defaultAccount = payToAccountsData.find((account) => account.isDefault) || payToAccountsData[0];
       if (!CommonUtils.isNonEmptyObject(defaultPayToAccount)) {
-        CommonUtils.isNonEmptyObject(defaultAccount) && setDefaultPayToAccount(defaultAccount);
+        if (CommonUtils.isNonEmptyObject(defaultAccount)) {
+          setDefaultPayToAccount(defaultAccount);
+        }
+      }
+    } else {
+      if (isFetched) {
+        setIsLoading(false);
       }
     }
-  }, [payToAccountsData]);
+  }, [payToAccountsData, errorFetchingAccounts]);
 
   useEffect(() => {
     if (CommonUtils.isNonEmptyObject(defaultPayToAccount)) {
       setSelectedAccount(defaultPayToAccount);
+      setIsLoading(false);
     }
   }, [defaultPayToAccount]);
 
@@ -139,9 +148,9 @@ export const AccountProvider = ({ children }) => {
         searchPayToAccounts,
         applyEvent,
         defaultSetEvent,
-        defaultPayToAccount
-      }}
-    >
+        defaultPayToAccount,
+        isLoading
+      }}>
       {children}
     </AccountContext.Provider>
   );
