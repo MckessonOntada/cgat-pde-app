@@ -181,7 +181,7 @@ function AdditionalDetails() {
       };
       return QuestionnaireService.getConfiguredQuestionnaire(payload);
     },
-    enabled: Boolean(orderDetails),
+    enabled: Boolean(orderDetails && !orderDetails.additionalDetails?.configuredQuestionnaires),
     refetchOnWindowFocus: false,
     onSuccess: (result) => {
       result && prepareQuestionnaire(result);
