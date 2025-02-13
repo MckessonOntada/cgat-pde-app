@@ -18,7 +18,7 @@ function OrderHeaderDetails({ therapyId, soldToAccountId, shipToAccountId, setIn
     refetchOnWindowFocus: false,
     onSuccess: (data) => {
       if (typeof setInventoryTypeData === 'function') {
-        setInventoryTypeData(data.netPrice);
+        setInventoryTypeData(data.inventoryType);
       }
     }
   });
