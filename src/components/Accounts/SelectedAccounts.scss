@@ -2,7 +2,8 @@
   border: 1px solid var(--brand-color-patient-primary-3);
   background-color: #f9f9f9; // Optional styling for visual separation
   border-radius: 4px;
-  min-height: calc(100% - 52px);
+  height: calc(100% - 52px);
+  overflow: auto;
 }
 
 .selected-account-heading {
@@ -24,21 +25,29 @@
 
 .selected-account-container {
   padding: var(--spacing-03);
-  max-height: 300px;
+  // max-height: 300px;
+  height: calc(100% - 45px);
   overflow-y: auto;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .selected-account {
   display: flex;
   justify-content: space-between;
-  padding-bottom: var(--spacing-03);
+  padding-bottom: 12px;
   gap: var(--spacing-03);
+  border-bottom: 1px solid var(--brand-color-grey-scale-cool-1);
+  &:nth-last-child(-n + 1) {
+    border-bottom: none;
+  }
 }
 
 .selected-account-label {
-  font-size: 16px;
-  line-height: 20px;
+  font-size: var(--brand-font-size--small);
+  line-height: 18px;
   color: var(--brand-color-primary--hover);
 }
 
