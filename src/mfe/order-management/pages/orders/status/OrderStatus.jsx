@@ -8,23 +8,17 @@ import OrderFlowSteps from './orderFlowSteps/OrderFlowSteps';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import DetailSegment from '@src/components/DetailSegment';
-import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
-import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
-import { useLocation } from 'react-router-dom';
-import { StatusEnum } from '../../orders/constants';
+import useOrder from '../useOrder';
 
 const OrderStatus = () => {
   const { t } = useTranslate();
   const { orderId } = useParams();
   const navigate = useNavigate();
-  const { isFetching, formState, setCurrentOrder } = useManageOrder();
-  const location = useLocation();
-  const orderStatus = formState.activeRecord?.status;
-  React.useEffect(() => {
-    orderId && setCurrentOrder(orderId, ORDER_STAGES.ORDER_SUMMARY);
-  }, []);
+  const { data: orderDetails = {}, isFetching, isError, error } = useOrder(orderId);
 
-  const { therapy = {}, orderCost, patient } = formState.activeRecord || {};
+  const orderStatus = orderDetails?.status;
+
+  const { therapy = {}, orderCost, patient } = orderDetails || {};
 
   const backToOrders = () => {
     navigate('/orders');
@@ -87,13 +81,10 @@ const OrderStatus = () => {
             />
           </div>
           <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
-            <DetailSegment
-              label={t('labels.patientIdentifier')}
-              value={patient?.patientInfo?.patientIdentifier ? patient?.patientInfo?.patientIdentifier : '-'}
-            />
-            <DetailSegment label={t('labels.dob')} value={patient?.patientInfo?.dob ? patient?.patientInfo?.dob : '-'} />
+            <DetailSegment label={t('labels.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
+            <DetailSegment label={t('labels.dob')} value={patient?.patientInfo?.dateOfBirth || '-'} />
             <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender ? patient?.patientInfo?.gender : '-'} />
-            <p className='price-wrapper'>
+            <p className="price-wrapper">
               <DetailSegment
                 className={styles.orderCost}
                 customLabelStyles={styles.orderCostItem}
@@ -116,7 +107,7 @@ const OrderStatus = () => {
           </div>
         </div>
 
-        {orderStatus === 'SUBMITTED' && <OrderFlowSteps />}
+        {orderStatus === 'SUBMITTED' && <OrderFlowSteps catalogConfiguration={orderDetails.catalogConfiguration} />}
       </div>
       <div className={'controls'}>
         <Button size="md" variant="secondary" disabled={true}>

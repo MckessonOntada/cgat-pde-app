@@ -1,13 +1,10 @@
 import React from 'react';
 import styles from './OrderFlowSteps.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 
-function OrderFlowSteps() {
+function OrderFlowSteps({ catalogConfiguration }) {
   const { t } = useTranslate();
-  const { formState } = useManageOrder();
 
-  const catalogConfiguration = formState.activeRecord?.catalogConfiguration;
   if (!catalogConfiguration || !catalogConfiguration.steps) return null;
 
   return (

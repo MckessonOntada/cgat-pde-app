@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Dropdown as BaseDropdown, Label, TextError } from '@mckesson/mcp-component-library';
+import { Dropdown as BaseDropdown, Label, TextError, Required } from '@mckesson/mcp-component-library';
 import './Components.scss';
 import { highlightFieldOnLabelClick } from './util';
 

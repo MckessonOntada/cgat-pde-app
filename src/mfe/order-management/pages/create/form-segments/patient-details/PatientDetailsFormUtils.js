@@ -136,59 +136,75 @@ export const formConfig = [
 ];
 
 export const getValidationSchema = (t) => {
-  return Yup.object({
-    patientInfo: Yup.object({
-      firstName: Yup.string()
-        .nullable()
-        .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.contact_person_first_name_invalid'))
-        .min(2, t('orgManagement.create_org.validation.first_name_min'))
-        .max(50, t('orgManagement.create_org.validation.first_name_max')),
-      middleName: Yup.string()
-        .nullable()
-        .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.middle_name_invalid'))
-        .min(2, t('orgManagement.create_org.validation.middle_name_min'))
-        .max(50, t('orgManagement.create_org.validation.middle_name_max')),
-      lastName: Yup.string()
-        .nullable()
-        .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.contact_person_last_name_invalid'))
-        .min(2, t('orgManagement.create_org.validation.last_name_min'))
-        .max(50, t('orgManagement.create_org.validation.last_name_max')),
-      gender: Yup.string().nullable(),
-      dateOfBirth: Yup.string().nullable()
-    }).nullable(),
-    contact: Yup.object({
-      emailId: Yup.string()
-        .nullable()
-        .email(t('orderManagement.patientDetails.validation.invalid_email'))
-        .max(50, t('orderManagement.patientDetails.validation.email_max')),
-      phoneNumber: Yup.string()
-        .nullable()
-        .matches(PHONE_REGEX, t('orderManagement.patientDetails.validation.phone_invalid'))
-        .max(15, t('orderManagement.patientDetails.validation.phone_max'))
-    }).nullable(),
-    patientAddress: Yup.object({
-      addressLine1: Yup.string()
-        .nullable()
-        .matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_1_invalid'))
-        .min(2, t('orgManagement.create_org.validation.address_1_min'))
-        .max(100, t('orgManagement.create_org.validation.address_1_max')),
-      addressLine2: Yup.string()
-        .nullable()
-        .matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_2_invalid'))
-        .min(2, t('orgManagement.create_org.validation.address_2_min'))
-        .max(250, t('orgManagement.create_org.validation.address_2_max')),
-      city: Yup.string()
-        .nullable()
-        .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.city_invalid'))
-        .min(2, t('orgManagement.create_org.validation.city_min'))
-        .max(50, t('orgManagement.create_org.validation.city_max')),
-      zipCode: Yup.string()
-        .nullable()
-        .matches(ZIP_REGEX, t('orgManagement.create_org.validation.zip_invalid'))
-        .max(10, t('orgManagement.create_account.validation.zip_max')),
-      state: Yup.string().nullable()
-    }).nullable(),
+  return Yup.object().shape({
+    patientInfo: Yup.object()
+      .shape({
+        firstName: Yup.string()
+          .nullable()
+          .trim()
+          .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.contact_person_first_name_invalid'))
+          .min(2, t('orgManagement.create_org.validation.first_name_min'))
+          .max(50, t('orgManagement.create_org.validation.first_name_max')),
+        middleName: Yup.string()
+          .nullable()
+          .trim()
+          .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.middle_name_invalid'))
+          .min(2, t('orgManagement.create_org.validation.middle_name_min'))
+          .max(50, t('orgManagement.create_org.validation.middle_name_max')),
+        lastName: Yup.string()
+          .nullable()
+          .trim()
+          .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.contact_person_last_name_invalid'))
+          .min(2, t('orgManagement.create_org.validation.last_name_min'))
+          .max(50, t('orgManagement.create_org.validation.last_name_max')),
+        gender: Yup.string().nullable(),
+        dateOfBirth: Yup.date().nullable().typeError(t('orderManagement.patientDetails.validation.invalid_date'))
+      })
+      .nullable(),
+    contact: Yup.object()
+      .shape({
+        emailId: Yup.string()
+          .nullable()
+          .trim()
+          .email(t('orderManagement.patientDetails.validation.invalid_email'))
+          .max(50, t('orderManagement.patientDetails.validation.email_max')),
+        phoneNumber: Yup.string()
+          .nullable()
+          .trim()
+          .matches(PHONE_REGEX, t('orderManagement.patientDetails.validation.phone_invalid'))
+          .max(15, t('orderManagement.patientDetails.validation.phone_max'))
+      })
+      .nullable(),
+    patientAddress: Yup.object()
+      .shape({
+        addressLine1: Yup.string()
+          .nullable()
+          .trim()
+          .matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_1_invalid'))
+          .min(2, t('orgManagement.create_org.validation.address_1_min'))
+          .max(100, t('orgManagement.create_org.validation.address_1_max')),
+        addressLine2: Yup.string()
+          .nullable()
+          .trim()
+          .matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_2_invalid'))
+          .min(2, t('orgManagement.create_org.validation.address_2_min'))
+          .max(250, t('orgManagement.create_org.validation.address_2_max')),
+        city: Yup.string()
+          .nullable()
+          .trim()
+          .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.city_invalid'))
+          .min(2, t('orgManagement.create_org.validation.city_min'))
+          .max(50, t('orgManagement.create_org.validation.city_max')),
+        zipCode: Yup.string()
+          .nullable()
+          .trim()
+          .matches(ZIP_REGEX, t('orgManagement.create_org.validation.zip_invalid'))
+          .max(10, t('orgManagement.create_account.validation.zip_max')),
+        state: Yup.string().nullable()
+      })
+      .nullable(),
     patientIdentifier: Yup.string()
+      .trim()
       .required(t('orderManagement.patientDetails.validation.patient_identifier_required'))
       .max(20, t('orderManagement.patientDetails.validation.patient_identifier_max'))
   });

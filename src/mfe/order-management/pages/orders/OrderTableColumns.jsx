@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Badge, Tooltip, MenuList } from '@mckesson/mcp-component-library';
 import { StatusEnum } from './constants';
@@ -7,7 +7,7 @@ import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import CommonUtils from '@src/util/CommonUtils';
 import AuthUtils from '@src/util/AuthUtils';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
@@ -15,7 +15,6 @@ import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions
 import usePermission from '@src/hooks/usePermissions';
 import { renderModal } from '@src/util/ModalUtil';
 import { useOrders } from '../../context/OrderContext';
-import { useManageOrder } from '../../context/ManageOrderContext';
 
 const getColorByStatus = (status) => {
   const statusColors = {
@@ -44,7 +43,6 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
   const navigate = useNavigate();
   const loggedinUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
-  const { setActiveRecord } = useManageOrder();
   const { refreshData, assginedGroupsData } = useOrders();
   const { hasPermission } = usePermission();
   const assignMutation = useMutation(() => OrderService.setOrderAssignToMe(id), {
@@ -100,7 +98,6 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
   };
 
   const handleOnOptionSelection = (value) => {
-    setActiveRecord(value);
     if (value === 'view') {
       if (props.status === StatusEnum.SUBMITTED) {
         navigate(`${id}/summary`, { state: { isEdit: true } });
