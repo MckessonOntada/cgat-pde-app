@@ -221,7 +221,7 @@ div.disable-all {
     display: flex;
     gap: var(--spacing-03);
     width: 100%;
-    button{
+    button {
       padding-top: var(--spacing-02);
       padding-right: var(--spacing-02);
     }
@@ -546,7 +546,7 @@ div.disable-all {
   height: 150px;
   // padding-top: 20px;
   border-radius: 8px;
-  border: 1px solid #bac5cc;
+  // border: 1px solid #bac5cc;
   display: flex;
   align-items: center;
 }
