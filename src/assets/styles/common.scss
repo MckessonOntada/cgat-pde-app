@@ -38,10 +38,10 @@
 }
 
 .custom-date-range-picker {
-  > div {
-    > div {
-      > div {
-        > div {
+  >div {
+    >div {
+      >div {
+        >div {
           width: unset;
           min-width: 160px;
           flex-grow: 1;
@@ -222,9 +222,11 @@ div.disable-all {
     gap: var(--spacing-03);
     width: 100%;
     align-items: center;
+
     .label-heading {
       display: none;
     }
+
     button {
       padding: 0 !important;
       min-width: auto !important;
@@ -600,11 +602,9 @@ div.disable-all {
   }
 }
 
-@media only screen and (min-width: 576px) {
-}
+@media only screen and (min-width: 576px) {}
 
-@media only screen and (min-width: 992px) {
-}
+@media only screen and (min-width: 992px) {}
 
 @media only screen and (min-width: 1200px) {
   .max-container {
@@ -659,6 +659,7 @@ div.disable-all {
 }
 
 .styled-heading {
+
   //module primary heading
   h1 {
     font-size: var(--brand-font-size--28) !important;
@@ -685,6 +686,7 @@ div.disable-all {
 }
 
 .styled-form-field {
+
   .label-heading,
   label[class*="TextareaInput-module--label"],
   label[class*="InputField-module--labelText"],
@@ -785,7 +787,7 @@ div.disable-all {
   flex-direction: column;
   height: 100vh;
 
-  > div {
+  >div {
     padding: var(--spacing-03);
     flex: 0 0 auto;
   }
@@ -804,7 +806,9 @@ div.disable-all {
   @include mixins.respond(sm) {
     background-color: var(--brand-color-background-white);
   }
+
   #secondaryNavPanel {
+
     button,
     a {
       font-size: var(--brand-font-size--small);
@@ -815,6 +819,7 @@ div.disable-all {
 }
 
 .questionnaire-template-question-list {
+
   .label-heading,
   label[class*="TextareaInput-module--label"],
   label[class*="InputField-module--labelText"],
@@ -857,6 +862,7 @@ div.disable-all {
   ul {
     margin: 0px !important;
     gap: var(--spacing-04);
+
     li button {
       font-family: var(--brand-font-family-primary);
       background: transparent;
@@ -871,4 +877,9 @@ div.disable-all {
   font-size: var(--brand-font-size--20) !important;
   font-weight: var(--brand-font-weight-700);
   color: var(--brand-color-warning-orange-4);
+}
+
+.error-label {
+  font-size: var(--brand-font-size--small);
+  color: var(--brand-color-warning-coral)
 }
