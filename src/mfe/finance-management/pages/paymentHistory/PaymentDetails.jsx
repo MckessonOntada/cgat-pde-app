@@ -12,9 +12,9 @@ function PaymentDetails() {
     <div className={styles.wrapper}>
       <div className={styles.header}>
         <h6>{t('paymentInvoices.history.filters.paymentDetails')}</h6>
-        <button onClick={() => {}}>
+        <Button variant="tertiary" onClick={() => {}}>
           <IconClose />
-        </button>
+        </Button>
       </div>
       <div className={styles.body}>
         {data?.map((detailItem, index) => {

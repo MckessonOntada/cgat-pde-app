@@ -146,7 +146,7 @@ const PrimaryHeader = () => {
         label={'button.logout'}
         aria-label="Log out of account"
         Icon={IconLogout}
-        iconPosition='right'
+        iconPosition="right"
         id={debugIds(ID.HEADER, ID.NAV, ID.RIGHT, ID.BUTTON, ID.LOGOUT)}
         data-testid={'LOGOUT'}
         size="sm"
@@ -195,9 +195,9 @@ const PrimaryHeader = () => {
             </div>
           )}
           <div className={styles.mobileOnly}>
-            <button onClick={toggleDrawer} aria-label="Open drawer menu">
+            <Button variant="tertiary" onClick={toggleDrawer} aria-label="Open drawer menu">
               <IconMenu />
-            </button>
+            </Button>
             <FloatingDrawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>
               <RightSideView />
             </FloatingDrawer>

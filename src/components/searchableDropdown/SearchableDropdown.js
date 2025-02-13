@@ -887,12 +887,13 @@ export const SearchableDropdown = (props) => {
               </TooltipText>
             </div>
             {isActionable && !option.isHideAction && (
-              <button
+              <Button
+                variant="tertiary"
                 data-testid={id + '-menuAction-testid-' + index}
                 className={styles.menuActionIcon}
                 onClick={() => menuActionClick(value)}>
                 {menuActionIcon}
-              </button>
+              </Button>
             )}
           </li>
         );
@@ -969,9 +970,9 @@ export const SearchableDropdown = (props) => {
               )}
             </div>
             {isActionable && !option.isHideAction && (
-              <button className={styles.menuActionIcon} onClick={() => menuActionClick(value)}>
+              <Button variant="tertiary" className={styles.menuActionIcon} onClick={() => menuActionClick(value)}>
                 {menuActionIcon}
-              </button>
+              </Button>
             )}
           </li>
         );

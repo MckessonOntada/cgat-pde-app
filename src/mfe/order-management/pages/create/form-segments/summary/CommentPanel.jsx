@@ -87,9 +87,9 @@ const CommentPanel = ({ readOnly, onClose, onSuccess, meta }) => {
                 <div className={styles.topSect}>
                   <div className={styles.header}>
                     <Heading as="h4">{t('captions.lblRejectOrder')}</Heading>
-                    <button onClick={handleOnClose}>
+                    <Button variant="tertiary" onClick={handleOnClose}>
                       <IconClose />
-                    </button>
+                    </Button>
                   </div>
 
                   <div className={styles.form}>

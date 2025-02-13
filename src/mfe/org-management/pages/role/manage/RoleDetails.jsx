@@ -22,8 +22,8 @@ const getRoleValidationSchema = (t) =>
       .max(50, t('orgManagement.form.errors.roleNameMaxLength'))
       .matches(/^[A-Za-z\s]+$/, t('orgManagement.form.errors.roleNamevalidation')),
     roleDescription: Yup.string()
-      .min(10, 'orgManagement.form.errors.roleDescriptionMinLength')
-      .max(100, 'orgManagement.form.errors.roleDescriptionMaxLength')
+      .min(10, t('orgManagement.form.errors.roleDescriptionMinLength'))
+      .max(100, t('orgManagement.form.errors.roleDescriptionMaxLength'))
   });
 
 const moduleBasePath = '/admin/organization/roles';
@@ -172,7 +172,7 @@ const RoleDetails = () => {
                         heading={<Heading as="h2">{t('orgManagement.role.headingPermissionDetails')}</Heading>}
                         controls={
                           <p>
-                            <span className='required'>*</span> {t('orgManagement.create_org.required')}
+                            <span className="required">*</span> {t('orgManagement.create_org.required')}
                           </p>
                         }
                       />

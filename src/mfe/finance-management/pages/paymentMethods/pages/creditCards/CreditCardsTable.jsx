@@ -74,18 +74,6 @@ export default function CreditCardsTable() {
       width: '120px',
       cell: (props) => <div>{props.postalCode}</div>
     }
-    // {
-    //   name: t('paymentInvoices.paymentMethods.table.cards.action'),
-    //   selector: () => {},
-    //   minWidth: '80px',
-    //   cell: () => (
-    //     <div>
-    //       <button style={{ background: 'transparent', border: 'none' }}>
-    //         <i className="more-icon" />
-    //       </button>
-    //     </div>
-    //   )
-    // }
   ];
 
   const handleSortClick = (selectedColumn, sortDirection) => {

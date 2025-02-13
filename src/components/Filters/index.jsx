@@ -89,7 +89,7 @@ const Filters = ({
               <div className="filter-header">
                 <div className="search-box">
                   {isAdditionalFiltersAdded && (
-                    <Button type="button" textButton size="lg" onClick={handleExpandCard}>
+                    <Button variant="tertiary" type="button" onClick={handleExpandCard}> 
                       <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
                     </Button>
                   )}
