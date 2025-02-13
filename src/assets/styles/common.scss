@@ -221,9 +221,13 @@ div.disable-all {
     display: flex;
     gap: var(--spacing-03);
     width: 100%;
+    align-items: center;
+    .label-heading {
+      display: none;
+    }
     button {
-      padding-top: var(--spacing-02);
-      padding-right: var(--spacing-02);
+      padding: 0 !important;
+      min-width: auto !important;
     }
   }
 
@@ -854,12 +858,11 @@ div.disable-all {
     margin: 0px !important;
     gap: var(--spacing-04);
     li button {
-      padding-left: 0px;
-      padding-right: 0px;
       font-family: var(--brand-font-family-primary);
       background: transparent;
       border: none;
       cursor: pointer;
+      padding: 0;
     }
   }
 }

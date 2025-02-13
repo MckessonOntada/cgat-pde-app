@@ -92,7 +92,7 @@ function TherapyDetails({
     <div className={styles.wrapper}>
       <div className={styles.header}>
         <Heading as="h3">{!isMaterialConfiguration ? t('labels.therapyDetails') : t('manageMaterial.drawer.heading')}</Heading>
-        <Button textButton onClick={onClose}>
+         <Button variant="tertiary" onClick={onClose}>
           <IconClose />
         </Button>
       </div>

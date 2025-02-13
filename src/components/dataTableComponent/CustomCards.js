@@ -4,7 +4,7 @@ import CommonUtils from '@src/util/CommonUtils';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import arrow_down from '@src/assets/image/arrow_down.svg';
 import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
-import { MenuList } from '@mckesson/mcp-component-library';
+import { MenuList, Button } from '@mckesson/mcp-component-library';
 import { isEqual } from './assets/DataTableCutomStyle';
 
 /*
@@ -62,9 +62,9 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
 
   const renderExpandIcon = (colIndex) => {
     return colIndex === 0 /* && showDefaultData.length + hiddenData.length > 4 */ ? (
-      <button type="button" onClick={() => {}} className="expand-collapse-toggle">
+      <Button variant="tertiary" type="button" onClick={() => {}} className="expand-collapse-toggle">
         <img src={expanded ? arrow_down : arrow_right} alt="toggle-icon" />
-      </button>
+      </Button>
     ) : (
       <></>
     );

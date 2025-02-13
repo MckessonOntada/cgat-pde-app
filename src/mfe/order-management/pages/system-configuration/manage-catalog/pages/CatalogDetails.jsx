@@ -139,7 +139,7 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
               <div className="styled-heading">
                 <Heading as="h3">{t('ManageCatalog.Catalogdetails')}</Heading>
               </div>
-              <Button textButton onClick={handleCloseDrawer}>
+              <Button variant="tertiary" onClick={handleCloseDrawer}>
                 <IconClose />
               </Button>
             </div>

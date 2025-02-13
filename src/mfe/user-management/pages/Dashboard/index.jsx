@@ -171,9 +171,9 @@ export default function Dashboard() {
               searchPlaceholder={t('userManagement.searchFilter.label')}
             />
           </div>
-          
+
           {!isSystemAdminView && (
-            <div className='customTab'>
+            <div className="customTab">
               <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />
             </div>
           )}
