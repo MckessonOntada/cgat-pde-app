@@ -172,7 +172,7 @@ const RoleDetails = () => {
                         heading={<Heading as="h2">{t('orgManagement.role.headingPermissionDetails')}</Heading>}
                         controls={
                           <p>
-                            <Required /> {t('orgManagement.create_org.required')}
+                            <span className='required'>*</span> {t('orgManagement.create_org.required')}
                           </p>
                         }
                       />

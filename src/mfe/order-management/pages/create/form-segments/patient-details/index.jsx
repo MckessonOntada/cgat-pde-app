@@ -60,7 +60,7 @@ const PatientDetails = () => {
     patientIdentifier: ''
   };
 
-  const [initialValues, setInitialValues] = useState(INITIAL_VALUES);
+  const [initialValues, setInitialValues] = useState({ ...INITIAL_VALUES });
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = formState.activeRecord || {};
@@ -151,10 +151,8 @@ const PatientDetails = () => {
 
   const handleSubmit = (form, skipDuplicateCheck) => {
     const { patientInfo } = form;
+    const payload = CommonUtils.cleanObject(form);
 
-    const payload = {
-      ...form
-    };
     if (patientInfo && patientInfo.dateOfBirth) {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(patientInfo.dateOfBirth, 'MM-DD-YYYY');
     }
@@ -183,8 +181,6 @@ const PatientDetails = () => {
     }
   };
 
-  const forms = FormList(t);
-  const { therapy, accountDetails, orderCost } = formState.activeRecord || {};
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -207,9 +203,16 @@ const PatientDetails = () => {
           )}
         </div>
         <Formik
-          initialValues={initialValues}
+          initialValues={INITIAL_VALUES}
           validationSchema={getValidationSchema(t)}
           enableReinitialize
+          validate={(values) => {
+            const errors = {};
+            if (!values.patientIdentifier) {
+              errors['patientIdentifier'] = 'Patient Identifier is required';
+            }
+            return errors;
+          }}
           onSubmit={(values, actions) => {
             handleSubmit(values);
             actions.setSubmitting(false);
@@ -230,7 +233,7 @@ const PatientDetails = () => {
                         <Button size="md" variant="secondary" onClick={handleOnBack}>
                           {t('captions.btnBack')}
                         </Button>
-                        <Button size="md" variant="primary" disabled={!values?.patientIdentifier || isSaving} type="submit">
+                        <Button size="md" variant="primary" type="submit">
                           {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
                         </Button>
                       </div>

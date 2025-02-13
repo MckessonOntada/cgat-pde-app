@@ -208,19 +208,19 @@ function ApproverList({ onActionSuccess }) {
           onClose: () => setIsOpen(false),
           modalTitle: t('approvergroup.confirmationmessage'),
           modalBody: (
-            <h3>
+            <div className="MCP-modal-body">
               {selectedRows?.active
                 ? t('approvergroup.confirmationmessage.message')
                 : t('approvergroup.confirmationmessage.activatemessage')}
-            </h3>
+            </div>
           ),
           modalFooter: (
             <React.Fragment>
-              <Button onClick={handleConfirmCancel} variant="secondary" size="sm">
+              <Button onClick={handleConfirmCancel} variant="secondary" size="md">
                 {t('approvergroup.button.cancel')}
               </Button>
               <Button
-                size="sm"
+                size="md"
                 onClick={() =>
                   handleConfirm(selectedRows?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate'))
                 }>

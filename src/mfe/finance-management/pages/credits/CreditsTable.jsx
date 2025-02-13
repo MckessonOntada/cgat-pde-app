@@ -111,6 +111,8 @@ export default function CreditsTable(props) {
       sortable: true,
       wrap: true,
       minWidth: '120px',
+      showInMobileHeader: true,
+      showColumnNameInHeader: true,
       cell: (props) => (
         <div className="cellEllipse">
           <Link
@@ -129,7 +131,9 @@ export default function CreditsTable(props) {
       minWidth: '180px',
       sortable: true,
       wrap: true,
-      showInMobileHeader: !selectableRows,
+      showInMobileHeader: true,
+      cardHeader: true,
+      mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
       cell: (props) => <div>{props?.soldToSite || '-'}</div>
     },
     {
@@ -216,7 +220,7 @@ export default function CreditsTable(props) {
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         progressPending={isFetching}
         showCardView={showCardView}
-        // defaultExpandedCardView={true}
+        defaultExpandedCardView={false}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}

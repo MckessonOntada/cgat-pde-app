@@ -108,6 +108,7 @@ export const OrderProvider = ({ children }) => {
   };
 
   const changeTab = (tabType = 1) => {
+    setDataState(INITIAL_DATA_STATE);
     setFilterConfig({ ...INITIAL_FILTER_STATE });
     setCurrentPage(1);
     setTabVariant(tabType);

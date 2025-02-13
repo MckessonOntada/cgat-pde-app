@@ -118,7 +118,9 @@ const RolePermissions = () => {
   const handleGoBack = () => {
     if (!arePermissionsEqual(row?.permissions, enabledPermissions)) {
       setModalSuccessCallback('mainlist');
-    } else navigate('admin/organization/roles');
+    } else {
+      navigate(isEdit ? `/admin/organization/roles/${roleId}` : '/admin/organization/roles');
+    }
   };
 
   const handleNavigate = () => {

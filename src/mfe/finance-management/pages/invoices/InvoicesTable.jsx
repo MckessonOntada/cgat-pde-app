@@ -278,6 +278,9 @@ export default function InvoicesTable() {
         progressPending={isFetching}
         showCardView={showCardView}
         defaultExpandedCardView={false}
+        isMultipleRowSelect={true}
+        selectedData={includeinvoiceData}
+        setSelectedData={setIncludeinvoiceData}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}

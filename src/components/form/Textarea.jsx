@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { TextareaInput, Label, TextError, Required } from '@mckesson/mcp-component-library';
+import { TextareaInput, Label, TextError } from '@mckesson/mcp-component-library';
 import { highlightFieldOnLabelClick } from './util';
 
 export default function Textarea(props) {
@@ -23,7 +23,7 @@ export default function Textarea(props) {
       <div className="row-space-between-center">
         <Label htmlFor={id} className="label-heading">
           {label}
-          {isRequired && <Required id="Required">Required</Required>}
+          {isRequired && <span className='required'> *</span>}
         </Label>
         {labelControls}
       </div>

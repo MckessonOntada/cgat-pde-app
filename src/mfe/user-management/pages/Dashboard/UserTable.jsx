@@ -289,13 +289,17 @@ function UserTable({ onActionSuccess }) {
           isOpen,
           onClose: () => setIsOpen(false),
           modalTitle: t('userManagement.confirmationMessage'),
-          modalBody: <h3>{t('userManagement.message.DeactivateUser')}</h3>,
+          modalBody: (
+            <div className="MCP-modal-body">
+              <p>{t('userManagement.message.DeactivateUser')}</p>
+            </div>
+          ),
           modalFooter: (
             <React.Fragment>
-              <Button onClick={handleConfirmCancel} variant="secondary" size="sm">
+              <Button onClick={handleConfirmCancel} variant="secondary" size="md">
                 {t('userManagement.label.cancel')}
               </Button>
-              <Button size="sm" onClick={handleConfirmDeactivate}>
+              <Button size="md" onClick={handleConfirmDeactivate}>
                 {t('userManagement.button.deactivate')}
               </Button>
             </React.Fragment>

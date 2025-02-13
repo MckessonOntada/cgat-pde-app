@@ -423,6 +423,29 @@ export const enableReviewAndPay = (selectedAccount) => {
   }
 };
 
+const cleanObject = (obj) => {
+  if (Array.isArray(obj)) {
+    return obj
+      .map(cleanObject)
+      .filter((item) => item !== undefined && item !== null && !(typeof item === 'object' && Object.keys(item).length === 0));
+  } else if (typeof obj === 'object' && obj !== null) {
+    return Object.entries(obj).reduce((acc, [key, value]) => {
+      const cleanedValue = cleanObject(value);
+      if (
+        cleanedValue !== undefined &&
+        cleanedValue !== null &&
+        cleanedValue !== '' &&
+        !(Array.isArray(cleanedValue) && cleanedValue.length === 0) &&
+        !(typeof cleanedValue === 'object' && Object.keys(cleanedValue).length === 0)
+      ) {
+        acc[key] = cleanedValue;
+      }
+      return acc;
+    }, {});
+  }
+  return obj;
+};
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -454,7 +477,8 @@ const CommonUtils = Object.freeze({
   getFullName,
   downloadFile,
   enableReviewAndPay,
-  generateUniqueCode
+  generateUniqueCode,
+  cleanObject
 });
 
 export default CommonUtils;

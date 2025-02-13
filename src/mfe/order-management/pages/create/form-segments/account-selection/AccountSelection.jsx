@@ -172,6 +172,11 @@ const AccountSelection = () => {
   };
 
   const handleOnSubmit = async () => {
+    if (!selectedShippingAddress || !selectedAccount || isSaving) {
+      showAlert({ description: 'Please selected required details.', type: 'error', anchorEl: alertContainerId });
+      return;
+    }
+
     if (selectedAccount && selectedShippingAddress) {
       const payload = {
         soldToAccountId: selectedAccount.id,
@@ -291,7 +296,7 @@ const AccountSelection = () => {
                         id={'targetAccount'}
                         label={' '}
                         isMultiSelect={false}
-                        placeholder={t('controls.placeholder.selectOption')}
+                        placeholder={t('headings.seletAccount')}
                         value={selectedAccount?.accountNumber || ''}
                         onChange={(val) => setSelectedAccount(accountsListData.content?.filter((acc) => acc.accountNumber === val)[0])}
                         options={accountListOptions}
@@ -330,12 +335,7 @@ const AccountSelection = () => {
               <Button size="md" onClick={handleOnBack} variant="secondary">
                 {t('captions.btnBack')}
               </Button>
-              <Button
-                size="md"
-                onClick={handleOnSubmit}
-                disabled={!selectedShippingAddress || !selectedAccount || isSaving}
-                variant="primary"
-                type="submit">
+              <Button size="md" onClick={handleOnSubmit} variant="primary" type="submit">
                 {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
               </Button>
             </div>

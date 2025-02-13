@@ -25,9 +25,8 @@ export default function ViewOrganization() {
 
   const navigate = useNavigate();
   const { t } = useTranslate();
-  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertConfig, setAlertConfig] = React.useState(null);
   const [updateState, setUpdateState] = useState({ isSuccess: false });
-  const [alertDescription, setAlertDescription] = useState('');
   const [addNewAccounts, setAddNewAccounts] = useState(!isView);
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const selectedCount = selectedAccounts?.length || 0;
@@ -53,8 +52,6 @@ export default function ViewOrganization() {
 
   useEffect(() => {
     if (updateState.isSuccess) {
-      setIsAlertVisible(true);
-      setAlertDescription(`${updateState.recCount} ${t('orgManagement.messages.accountlinkSuccess')}`);
       const timer = setTimeout(() => {
         handleAlertClose;
       }, 10000);
@@ -63,8 +60,7 @@ export default function ViewOrganization() {
   }, [updateState.isSuccess, location.pathname, location.state]);
 
   const handleAlertClose = () => {
-    setIsAlertVisible(false);
-    setUpdateState({ isSuccess: false });
+    setAlertConfig(null);
   };
 
   const { mutate } = useMutation(async ({ payload }) => {
@@ -74,24 +70,37 @@ export default function ViewOrganization() {
   });
 
   const addNewAccountsClick = () => {
+    if (selectedAccounts?.length <= 0) {
+      setAlertConfig({
+        isVisible: true,
+        description: `Select at least on account`,
+        type: 'error'
+      });
+      return;
+    }
     const payload = selectedAccounts?.map((account) => account.id);
     mutate(
-      {
-        payload
-      },
+      { payload },
       {
         onSuccess: (response) => {
-          console.log('Accounts updated successfully:', response);
           if (!isView) {
             navigate(RoutePaths.pathOrgManagement, { state: { isSuccess: true } });
           } else {
             setUpdateState({ isSuccess: isView ? true : false, recCount: selectedCount });
+            setAlertConfig({
+              isVisible: true,
+              description: `${selectedCount} ${t('orgManagement.messages.accountlinkSuccess')}`,
+              type: 'success'
+            });
             handleCancel();
           }
         },
         onError: (error) => {
-          console.log('Failed to add accounts:', error);
-          alert('Failed to update accounts');
+          setAlertConfig({
+            isVisible: true,
+            description: `Failed to add accounts: ${error.message}`,
+            type: 'error'
+          });
         }
       }
     );
@@ -143,53 +152,50 @@ export default function ViewOrganization() {
           />
         </div>
       )} */}
-        {!addNewAccounts && 
-          <ModuleHeader 
-            heading={<Heading as="h1">{t('orgManagement.create_org.org-details')}</Heading>} 
-            style={{ marginBottom: '16px' }}
-          />
-        }
+      {!addNewAccounts && (
+        <ModuleHeader heading={<Heading as="h1">{t('orgManagement.create_org.org-details')}</Heading>} style={{ marginBottom: '16px' }} />
+      )}
 
-        {isView && !addNewAccounts && data && (
-          <div className="details-view-container">
-            <DetailsView
-              data={data}
-              onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: { ...data, isEdit: true } }, true)}
-            />
-          </div>
-        )}
-        <ModuleHeader
-          heading={<Heading as="h1">{addNewAccounts ? t('orgManagement.select_account') : t('orgManagement.link')}</Heading>}
-          controls={
-            !addNewAccounts && (
-              <div className="controls">
-                {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.EDIT_ORGANIZATION) && (
-                  <Button Icon={EditPencil} variant="secondary" className="button-icon" onClick={onEditAccounts} size={'md'}>
-                    {t(isView ? 'orgManagement.table.action.edit' : 'orgManagement.add.account')}
-                  </Button>
-                )}
-              </div>
-            )
-          }
-          style={{ marginBottom: '16px' }}
-        />
-        {updateState.isSuccess && isAlertVisible && (
-          <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />
-        )}
-        <OrganizationAccounts
-          showSelectedAccounts={addNewAccounts}
-          omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']}
-          selectedRows={selectedAccounts}
-          setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)}
-          practiceId={addNewAccounts ? null : orgId}
-        />
+      {isView && !addNewAccounts && data && (
+        <div className="details-view-container">
+          <DetailsView
+            data={data}
+            onEditClick={() => navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: { ...data, isEdit: true } }, true)}
+          />
+        </div>
+      )}
+      <ModuleHeader
+        heading={<Heading as="h1">{addNewAccounts ? t('orgManagement.select_account') : t('orgManagement.link')}</Heading>}
+        controls={
+          !addNewAccounts && (
+            <div className="controls">
+              {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.EDIT_ORGANIZATION) && (
+                <Button Icon={EditPencil} variant="secondary" className="button-icon" onClick={onEditAccounts} size={'md'}>
+                  {t(isView ? 'orgManagement.table.action.edit' : 'orgManagement.add.account')}
+                </Button>
+              )}
+            </div>
+          )
+        }
+        style={{ marginBottom: '16px' }}
+      />
+      {updateState.isSuccess && alertConfig?.isVisible && (
+        <Alert type={alertConfig.type} description={alertConfig.description} onClose={() => setAlertConfig(null)} duration={10000} />
+      )}
+      <OrganizationAccounts
+        showSelectedAccounts={addNewAccounts}
+        omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']}
+        selectedRows={selectedAccounts}
+        setSelectedRows={(newAccounts) => setSelectedAccounts(newAccounts)}
+        practiceId={addNewAccounts ? null : orgId}
+      />
 
       {addNewAccounts && (
         <div className="btn-box">
           <Button size="md" variant="secondary" onClick={handleCancel}>
             {t('orgManagement.button.back')}
           </Button>
-          <Button size="md" disabled={selectedAccounts?.length <= 0} onClick={addNewAccountsClick}>
+          <Button size="md" onClick={addNewAccountsClick}>
             {t(isView ? 'orgManagement.add.account' : 'orgManagement.create_org')}
           </Button>
         </div>

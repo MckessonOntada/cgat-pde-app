@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './assets/styles/ConfigureMaterials.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Heading, Button, RadioGroup, Label, Required } from '@mckesson/mcp-component-library';
+import { Heading, Button, RadioGroup, Label } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
 import { useManageMaterial } from '@src/mfe/order-management/context/ManageMaterialContext';
 import { useMutation } from 'react-query';
@@ -84,7 +84,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
             <div className={styles.formField} key={index}>
               <div className={styles.caption}>
                 <Label className={styles.label}>{field.caption}</Label>
-                <Required />
+                <span className='required'>*</span>
               </div>
               <RadioGroup
                 direction="row"

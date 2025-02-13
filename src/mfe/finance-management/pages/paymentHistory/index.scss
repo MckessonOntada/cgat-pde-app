@@ -119,6 +119,9 @@
   width: 100%;
   justify-content: end;
   padding-right: 16px;
+  @media screen and (max-width: 768px) {
+    padding-right: 0px;
+  }
 }
 
 .subHeader {

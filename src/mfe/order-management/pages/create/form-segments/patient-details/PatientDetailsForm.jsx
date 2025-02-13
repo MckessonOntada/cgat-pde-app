@@ -1,7 +1,7 @@
 import React from 'react';
 import { Field } from 'formik';
 import Components from '@src/components/form/Components';
-import { Required, Heading } from '@mckesson/mcp-component-library';
+import { Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { formConfig } from './PatientDetailsFormUtils';
 
@@ -18,7 +18,7 @@ const PatientDetailsForm = () => {
                 <h2>{t(section.sectionTitle)}</h2>
                 {sectionIndex === 0 && (
                   <p className="form-instruction">
-                    <Required id="Required"></Required> {t('orderManagement.patientDetails.required')}
+                    <span className='required'>*</span> {t('orderManagement.patientDetails.required')}
                   </p>
                 )}
               </div>

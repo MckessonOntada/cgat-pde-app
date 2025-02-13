@@ -210,14 +210,14 @@ const PrimaryHeader = () => {
           isOpen,
           onClose: () => setIsOpen(false),
           modalTitle: t('orgManagement.confirmationmessage'),
-          modalBody: <h3>{t('orgManagement.Orgchangemessage')}</h3>,
+          modalBody: <div className="MCP-modal-body">{t('orgManagement.Orgchangemessage')}</div>,
 
           modalFooter: (
             <React.Fragment>
-              <Button onClick={onCancelOrganizationChange} variant="secondary" size="sm">
+              <Button onClick={onCancelOrganizationChange} variant="secondary" size="md">
                 {t('orgManagement.button.cancel')}
               </Button>
-              <Button onClick={confirmChangeOrganization} size="sm">
+              <Button onClick={confirmChangeOrganization} size="md">
                 {' '}
                 {t('orgManagement.button.confirm')}
               </Button>
