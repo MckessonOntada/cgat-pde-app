@@ -241,6 +241,7 @@ export const PaymentInvoicesEN = {
   'pendingPayments.confirm.BackToPendingPayments': 'BACK TO PENDING PAYMENTS',
 
   // No data found
+  'paymentInvoices.dataLoading': 'Fetching Accounts...',
   'paymentInvoices.EmptyData.heading': 'No Data Found',
   'paymentInvoices.EmptyData.description': 'No accounts found linked with user',
 
@@ -255,5 +256,6 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.pendingPaynemt.export.error': 'Pending exporting Payment .',
   'paymentInvoices.history.table.bill.id': 'BILL ID',
 
-  'paymentInvoices.paymentMethods.achForm.description': 'Enrollment form in a PDF format for user to fill in offline and submit to the respective bank',
+  'paymentInvoices.paymentMethods.achForm.description':
+    'Enrollment form in a PDF format for user to fill in offline and submit to the respective bank'
 };

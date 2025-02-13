@@ -16,7 +16,7 @@ import OrderService from '@src/api/commonService/OrderService';
 import ShippingAddress from './ShippingAddress';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { serializeParams } from '@src/util/ApiUtils';
+import { ExtractErrorfromAPIResponse, serializeParams } from '@src/util/ApiUtils';
 import useAlert from '@src/hooks/useAlert';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
@@ -131,12 +131,12 @@ const AccountSelection = () => {
     } catch (err) {
       if (err.status === 400) {
         showAlert({
-          description: t('messages.inventoryCheck.error'),
+          description: ExtractErrorfromAPIResponse(err.response?.data.message),
           type: 'warning',
           anchorEl: alertContainerId
         });
         return {
-          description: t('messages.inventoryCheck.error'),
+          description: ExtractErrorfromAPIResponse(err.response?.data.message),
           type: 'warning'
         };
       } else {

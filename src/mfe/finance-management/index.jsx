@@ -4,7 +4,7 @@ import './index.scss';
 import RecordDetails from './components/RecordDetails';
 import BalanceDetails from './components/BalanceDetails';
 import Routes from './routes/Routes';
-import { TabList, Alert, Heading } from '@mckesson/mcp-component-library';
+import { TabList, Heading } from '@mckesson/mcp-component-library';
 import { PATHS, tabListData } from './routes/constants';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ModuleHeader from '../../components/module-header';
@@ -14,12 +14,13 @@ import { BalanceProvider } from './context/BalanceContext';
 import CommonUtils from '@src/util/CommonUtils';
 import EmptyDataContainer from '@src/components/EmptyData';
 import { useTranslate } from '@src/translations/useTranslation';
+import EmptyUI from './EmptyUI';
 
 const PaymentsInvoices = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [tabs, setTabs] = useState();
-  const { selectedAccount } = useAccountContext();
+  const { selectedAccount, isLoading } = useAccountContext();
   const { t } = useTranslate();
 
   useEffect(() => {
@@ -40,43 +41,37 @@ const PaymentsInvoices = () => {
     setTabs(updatedTabs);
   }, [location.pathname]);
 
+  if (isLoading || !CommonUtils.isNonEmptyObject(selectedAccount)) {
+    return <EmptyUI isLoading={isLoading} isEmpty={!CommonUtils.isNonEmptyObject(selectedAccount)} />;
+  }
+
   return (
     <div className="MCP-module-wrapper">
-      {CommonUtils.isNonEmptyObject(selectedAccount) ? (
-        <React.Fragment>
-          <ModuleHeader heading={<Heading as="h1">{t('paymentInvoices.header.managePayments')}</Heading>} />
-          <RecordDetails />
+      <ModuleHeader heading={<Heading as="h1">{t('paymentInvoices.header.managePayments')}</Heading>} />
+      <RecordDetails />
 
-          <BalanceProvider>
-            <BalanceDetails />
-          </BalanceProvider>
+      <BalanceProvider>
+        <BalanceDetails />
+      </BalanceProvider>
 
-          <div className="MCP-module-body">
-            <div id="tablist-container" className="MCP-panel-container">
-              <div className="customTab">
-                <TabList
-                  options={tabs}
-                  alignment="left"
-                  onTabClick={(e) => {
-                    navigate(e.path);
-                  }}
-                  showShadow={false}
-                  variant={'text'}
-                  useAsButton={true}
-                  aria-label={'record-tab-list'}
-                />
-              </div>
-              <Routes />
-            </div>
+      <div className="MCP-module-body">
+        <div id="tablist-container" className="MCP-panel-container">
+          <div className="customTab">
+            <TabList
+              options={tabs}
+              alignment="left"
+              onTabClick={(e) => {
+                navigate(e.path);
+              }}
+              showShadow={false}
+              variant={'text'}
+              useAsButton={true}
+              aria-label={'record-tab-list'}
+            />
           </div>
-        </React.Fragment>
-      ) : (
-        <EmptyDataContainer
-          image={''}
-          heading={t('paymentInvoices.EmptyData.heading')}
-          description={t('paymentInvoices.EmptyData.description')}
-        />
-      )}
+          <Routes />
+        </div>
+      </div>
     </div>
   );
 };

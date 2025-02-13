@@ -237,6 +237,7 @@ export const PaymentInvoicesES = {
   'pendingPayments.confirm.BackToPendingPayments': 'S_BACK TO PENDING PAYMENTS',
 
   // No data found
+  'paymentInvoices.dataLoading': 'S_Fetching Accounts...',
   'paymentInvoices.EmptyData.heading': 'S_No Data Found',
   'paymentInvoices.EmptyData.description': 'S_No accounts found linked with user',
 
@@ -250,5 +251,6 @@ export const PaymentInvoicesES = {
   'paymentInvoices.pendingPaynemt.export.success': 'S_Pending Payment exported.',
   'paymentInvoices.pendingPaynemt.export.error': 'S_Pending exporting Payment .',
   'paymentInvoices.history.table.bill.id': 'S_BILL ID',
-  'paymentInvoices.paymentMethods.achForm.description': 'S_Enrollment form in a PDF format for user to fill in offline and submit to the respective bank',
+  'paymentInvoices.paymentMethods.achForm.description':
+    'S_Enrollment form in a PDF format for user to fill in offline and submit to the respective bank'
 };
