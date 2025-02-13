@@ -26,15 +26,16 @@ export const ExtractErrorfromAPIResponse = (errorMessage) => {
   }
 
   // Extract the content inside square brackets
-  const match = errorMessage.match(/\[([^\]]+)\]/);
-  if (match && match[1]) {
-    // Split messages correctly, handling missing commas
-    const messagesArray = match[1]
-      .split(/",\s*"|","\s*"/) // Handles cases where some commas are missing
-      .map((msg) => msg.replace(/["']/g, '').trim()); // Remove quotes and trim spaces
+  try {
+    const match = errorMessage.match(/\[([^\]]+)\]/);
+    if (match && match[1]) {
+      // Split messages correctly, handling missing commas
+      const messagesArray = match[1]
+        .split(/",\s*"|","\s*"/) // Handles cases where some commas are missing
+        .map((msg) => msg.replace(/["']/g, '').trim()); // Remove quotes and trim spaces
 
-    return messagesArray.join(', '); // Return clean, comma-separated messages
-  }
-
+      return messagesArray.join(', '); // Return clean, comma-separated messages
+    }
+  } catch (error) {}
   return errorMessage; // Return original message if format doesn't match
 };
