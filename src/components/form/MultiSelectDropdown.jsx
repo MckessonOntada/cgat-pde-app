@@ -54,12 +54,14 @@ const MultiSelectDropdown = (props) => {
 
   return (
     <div ref={dropdownContainerRef} className="dropdown-container">
-      <div className="dropdown-label">
-        <Label htmlFor={id} className="label-heading">
-          {label}
-          {isRequired && <Required id="Required">Required</Required>}
-        </Label>
-      </div>
+      {(label || isRequired) && (
+        <div className="dropdown-label">
+          <Label htmlFor={id} className="label-heading">
+            {label}
+            {isRequired && <Required id="Required">Required</Required>}
+          </Label>
+        </div>
+      )}
       <SearchableDropdown
         id={id}
         name={id}

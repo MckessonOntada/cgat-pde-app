@@ -9,12 +9,14 @@ export default function Dropdown(props) {
 
   return (
     <div id={id} className="dropdown-container" onClick={(e) => highlightFieldOnLabelClick(e, fieldContainerRef)} ref={fieldContainerRef}>
-      <div className="dropdown-label">
-        <Label htmlFor={id} className="label-heading">
-          {label}
-          {isRequired && <Required id="Required">Required</Required>}
-        </Label>
-      </div>
+      {(label || isRequired) && (
+        <div className="dropdown-label">
+          <Label htmlFor={id} className="label-heading">
+            {label}
+            {isRequired && <Required id="Required">Required</Required>}
+          </Label>
+        </div>
+      )}
       <BaseDropdown value={value} error={!!error} onChange={onChange} {...rest} />
       {error && <TextError errorMessage={error} />}
     </div>

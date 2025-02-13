@@ -125,7 +125,7 @@ input[type="checkbox"] {
   margin-right: 9px;
   flex-shrink: 0;
 
-  +label {
+  + label {
     display: flex;
     cursor: pointer;
 
@@ -146,7 +146,7 @@ input[type="checkbox"] {
   }
 
   &:checked {
-    +label::before {
+    + label::before {
       border: 1px solid var(--brand-color-primary-blue);
       display: inline-block;
       width: 18px;
@@ -159,7 +159,7 @@ input[type="checkbox"] {
   }
 
   &:checked {
-    +label::after {
+    + label::after {
       border-color: transparent;
       width: 18px;
       height: 18px;
@@ -171,7 +171,7 @@ input[type="checkbox"] {
     }
   }
 
-  &:focus-visible+label::before {
+  &:focus-visible + label::before {
     outline: 2px solid var(--brand-color-secondary-active-yellow-1);
     outline-offset: 1px;
   }
@@ -373,6 +373,9 @@ input[type="checkbox"] {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    word-break: break-all;
+    width: 100%;
+    display: block;
   }
 }
 
@@ -458,7 +461,7 @@ input[type="checkbox"] {
     padding-left: 8px;
   }
 
-  .clearFieldButton>button {
+  .clearFieldButton > button {
     height: 0;
     min-width: 0;
     margin-bottom: 4px;
