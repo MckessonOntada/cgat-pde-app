@@ -137,11 +137,20 @@ const UserPermissions = () => {
         }}
         validateOnChange={false}
         validateOnBlur={true}>
-        {({ values, setFieldValue, initialValues, isValid }) => {
+        {({ values, setFieldValue, initialValues, isValid, handleSubmit }) => {
           const isDirty = (isEdit && values.roleId) || isBack || permissionsData?.roleId || isFormValuesChanged(initialValues, values);
 
           return (
-            <Form>
+            <Form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!(isDirty && isValid)) {
+                  setAlert({ type: 'error', message: 'Please provide required values.' });
+                  setIsAlertVisible(true);
+                  return;
+                }
+                handleSubmit();
+              }}>
               <PermissionForm
                 enabledPermissions={values.permissions}
                 setEnabledPermissions={(permissions) => setFieldValue('permissions', permissions)}
@@ -152,7 +161,7 @@ const UserPermissions = () => {
                 <Button variant="secondary" type="button" onClick={handleBack} size={'md'}>
                   {t('userManagement.button.back')}
                 </Button>
-                <Button variant="primary" type="submit" size={'md'} disabled={!(isValid && isDirty)}>
+                <Button variant="primary" type="submit" size={'md'}>
                   {t(isSystemAdminView ? 'userManagement.label.save' : 'userManagement.button.savencontinue')}
                 </Button>
               </div>
