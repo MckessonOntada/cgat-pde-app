@@ -67,6 +67,9 @@
     .search-form {
       width: 100%;
       display: block;
+      .dropdown-label {
+        display: none;
+      }
     }
 
     .search-form-actions {

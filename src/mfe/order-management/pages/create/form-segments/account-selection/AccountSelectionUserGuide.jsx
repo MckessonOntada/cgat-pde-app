@@ -14,8 +14,6 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
   const [selectedChannel, setChannel] = useState('');
   const [account, setAccount] = useState(null);
 
-  const options = [];
-
   const {
     isFetching: isFetchingConfig,
     data: programChannelConfig,
@@ -85,13 +83,13 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
 
           <div className="MCP-CardContainer">
             <div className={styles.selectionBlock}>
-              <p className={styles.caption}>{t('labels.pleaseSelectTheBelowProgram')}</p>
+              <p className={styles.caption}>{t('labels.orderAssistance.selectChannel')}</p>
               <RadioGroup
                 direction="row"
-                id="orderProgramOption1"
-                items={programs.map((v) => ({ label: v, value: v }))}
-                onChangeValue={setProgram}
-                value={selectedProgram}
+                id="order-channel-options"
+                items={channels.map((v) => ({ label: v, value: v }))}
+                onChangeValue={setChannel}
+                value={selectedChannel}
                 radioBtnWidth="auto"
               />
             </div>
@@ -99,13 +97,13 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
 
           <div className="MCP-CardContainer">
             <div className={styles.selectionBlock}>
-              <p>{t('labels.orderThroughBelowPrograms')}</p>
+              <p>{t('labels.orderAssistance.selectProgram')}</p>
               <RadioGroup
                 direction="row"
-                id="orderProgramOption2"
-                items={channels.map((v) => ({ label: v, value: v }))}
-                onChangeValue={setChannel}
-                value={selectedChannel}
+                id="order-program-options"
+                items={programs.map((v) => ({ label: v, value: v }))}
+                onChangeValue={setProgram}
+                value={selectedProgram}
                 radioBtnWidth="auto"
               />
             </div>

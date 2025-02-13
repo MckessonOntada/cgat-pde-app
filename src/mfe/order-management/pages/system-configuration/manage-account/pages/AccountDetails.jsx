@@ -1,7 +1,7 @@
 import React from 'react';
 import FloatingDrawer from '@src/components/floating-drawer';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
-import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
+import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
 import { Heading, Button } from '@mckesson/mcp-component-library';
 import { useMutation, useQuery } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
@@ -96,8 +96,8 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
         <FloatingDrawer open={openDetails} anchor="right" onClose={handleCloseDrawer}>
           <div className="details-main-wrapper">
             <div className="header">
-              <Heading as="h2">{t('ManageAccount.accountDetails')}</Heading>
-              <Button variant="tertiary" onClick={handleCloseDrawer}>
+              <Heading as="h3">{t('ManageAccount.accountDetails')}</Heading>
+              <Button variant="tertiary" onClick={handleCloseDrawer}> 
                 <IconClose />
               </Button>
             </div>

@@ -220,15 +220,14 @@ div.disable-all {
   .search-box {
     display: flex;
     gap: var(--spacing-03);
-    width: 100%;
+    width: 100%; 
     align-items: center;
     .label-heading {
       display: none;
-    }
-
+    } 
     button {
       padding: 0 !important;
-      min-width: auto !important;
+      min-width: auto !important; 
     }
   }
 
@@ -858,12 +857,12 @@ div.disable-all {
   ul {
     margin: 0px !important;
     gap: var(--spacing-04);
-    li button {
+    li button { 
       font-family: var(--brand-font-family-primary);
       background: transparent;
       border: none;
-      cursor: pointer;
-      padding: 0;
+      cursor: pointer; 
+      padding: 0; 
     }
   }
 }
