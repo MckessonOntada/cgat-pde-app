@@ -86,12 +86,12 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
         <FloatingDrawer open={openConfigurationDraw} anchor="right" onClose={handleCloseDrawer}>
           <div>
             <div className="header">
-              <div className='styled-heading'>
+              <div className="styled-heading">
                 <Heading as="h3">{t('ManageCatalog.Configurations')}</Heading>
               </div>
-              <button onClick={handleCloseDrawer}>
+              <Button variant="tertiary" onClick={handleCloseDrawer}>
                 <IconClose />
-              </button>
+              </Button>
             </div>
             <Formik
               enableReinitialize={true}
@@ -134,11 +134,11 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
                                   component={Components['textarea']}
                                   maxLength={100}
                                 />
-                                <p className='inputTextDesc'>{t('ManageCatalog.input.validation.text')}</p>
+                                <p className="inputTextDesc">{t('ManageCatalog.input.validation.text')}</p>
                               </div>
                             </div>
                           ))}
-                        <div className='add-step'>
+                        <div className="add-step">
                           <Button label="Tertiary" onClick={() => push({ stepName: '', description: '' })} variant="tertiary">
                             {t('ManageCatalog.ADDSTEP')}
                           </Button>

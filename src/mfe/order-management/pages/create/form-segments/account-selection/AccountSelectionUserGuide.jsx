@@ -78,9 +78,9 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
         <div className={styles.topSect}>
           <div className={styles.header}>
             <Heading as="h3">{t('labels.needAssistanceSelectingAccount')}</Heading>
-            <button onClick={onClose} aria-label={t('captions.close')}>
+            <Button variant="tertiary" onClick={onClose} aria-label={t('captions.close')}>
               <IconClose />
-            </button>
+            </Button>
           </div>
 
           <div className="MCP-CardContainer">

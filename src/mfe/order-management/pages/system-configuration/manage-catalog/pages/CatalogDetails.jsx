@@ -139,9 +139,9 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
               <div className="styled-heading">
                 <Heading as="h3">{t('ManageCatalog.Catalogdetails')}</Heading>
               </div>
-              <button onClick={handleCloseDrawer}>
+              <Button variant="tertiary" onClick={handleCloseDrawer}>
                 <IconClose />
-              </button>
+              </Button>
             </div>
             <div className={'details-body'}>
               {CatalogDetailsConstants.map((item, index) => (

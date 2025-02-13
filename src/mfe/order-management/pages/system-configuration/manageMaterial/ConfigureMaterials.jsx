@@ -74,9 +74,9 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
     <div className={styles.wrapper}>
       <div className={styles.header}>
         <Heading as="h3">{t('manageMaterial.drawer.configuration.heading')}</Heading>
-        <button onClick={onClose}>
+        <Button variant="tertiary" onClick={onClose}>
           <IconClose />
-        </button>
+        </Button>
       </div>
       <div className={styles.body}>
         <div className={styles.formControls}>
@@ -84,7 +84,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
             <div className={styles.formField} key={index}>
               <div className={styles.caption}>
                 <Label className={styles.label}>{field.caption}</Label>
-                <span className='required'>*</span>
+                <span className="required">*</span>
               </div>
               <RadioGroup
                 direction="row"

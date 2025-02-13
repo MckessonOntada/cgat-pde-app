@@ -89,9 +89,9 @@ const Filters = ({
               <div className="filter-header">
                 <div className="search-box">
                   {isAdditionalFiltersAdded && (
-                    <button type="button" onClick={handleExpandCard}>
+                    <Button variant="tertiary" type="button" onClick={handleExpandCard}>
                       <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
-                    </button>
+                    </Button>
                   )}
                   <div className={'ctrl-search-box'}>
                     <Field name={'searchQuery'} label={''} placeholder={searchPlaceholder} component={Components['input']} />
