@@ -69,7 +69,7 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
       <></>
     );
   };
-  console.log('row...', row);
+
   const selectedCard = useMemo(() => {
     return selectedData.some((record) => isEqual(record, row));
   }, [row, selectedData]);
