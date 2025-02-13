@@ -17,4 +17,9 @@
   z-index: 1001;
   transition: transform 0.3s ease;
   display: flex;
+  .header{
+    h3 {
+      font-size: 22px !important;
+    }
+  }
 }

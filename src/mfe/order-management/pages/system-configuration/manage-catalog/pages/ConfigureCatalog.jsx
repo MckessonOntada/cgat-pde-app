@@ -3,7 +3,7 @@ import FloatingDrawer from '@src/components/floating-drawer';
 import { ErrorMessage, Field, FieldArray, Form, Formik } from 'formik';
 import Components from '@src/components/form/Components';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/delete-icon.svg';
-import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
+import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
 import { Loader, Heading, Button } from '@mckesson/mcp-component-library';
 import '../manageCatalog.scss';
 import { useMutation } from 'react-query';
@@ -89,9 +89,9 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
               <div className='styled-heading'>
                 <Heading as="h3">{t('ManageCatalog.Configurations')}</Heading>
               </div>
-              <button onClick={handleCloseDrawer}>
+              <Button textButton onClick={handleCloseDrawer}>
                 <IconClose />
-              </button>
+              </Button>
             </div>
             <Formik
               enableReinitialize={true}

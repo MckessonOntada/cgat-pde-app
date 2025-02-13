@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import FloatingDrawer from '@src/components/floating-drawer';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
-import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
+import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
 import { Loader, Heading, Button } from '@mckesson/mcp-component-library';
 import '../manageCatalog.scss';
 import { useMutation } from 'react-query';
@@ -139,9 +139,9 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
               <div className="styled-heading">
                 <Heading as="h3">{t('ManageCatalog.Catalogdetails')}</Heading>
               </div>
-              <button onClick={handleCloseDrawer}>
+              <Button textButton onClick={handleCloseDrawer}>
                 <IconClose />
-              </button>
+              </Button>
             </div>
             <div className={'details-body'}>
               {CatalogDetailsConstants.map((item, index) => (

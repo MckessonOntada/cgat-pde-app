@@ -87,7 +87,7 @@ function ReviewPayments() {
     } else {
       const state = {};
       state.title = t('paymentInvoices.reviewPayments.confirm');
-      state.body = t('paymentInvoices.reviewPayments.confirmationDialogue');
+      state.body = <div className="MCP-modal-body">{t('paymentInvoices.reviewPayments.confirmationDialogue')}</div>;
       state.footer = (
         <div className="controls">
           <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
