@@ -14,14 +14,13 @@ import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import CommonUtils from '@src/util/CommonUtils';
 import OrderService from '@src/api/commonService/OrderService';
 import ShippingAddress from './ShippingAddress';
-import { useManageOrder } from '@src/mfe/order-management/context/ManageOrderContext';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import { serializeParams } from '@src/util/ApiUtils';
 import useAlert from '@src/hooks/useAlert';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
+import useOrder from '../../../orders/useOrder';
 
 const AccountSelection = () => {
   const { t } = useTranslate();
@@ -36,10 +35,11 @@ const AccountSelection = () => {
   const [initialSelectedAccount, setInitialSelectedAccount] = React.useState(null);
   const [initialSelectedShippingAddress, setInitialSelectedShippingAddress] = React.useState('');
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-  const { formState, setActiveRecord, setCurrentOrder, editByStage } = useManageOrder();
   const [accountError, setAccountError] = useState({ isError: false, message: '' });
-  const therapyId = formState.activeRecord?.therapy?.materialNumber;
   const [inventoryType, setInventoryType] = useState(null);
+  const { data: orderDetails, isFetching, isError, error } = useOrder(orderId);
+  const therapyId = orderDetails?.therapy?.materialNumber;
+
   const setInventoryTypeData = (data) => {
     setInventoryType(data);
   };
@@ -48,12 +48,12 @@ const AccountSelection = () => {
   const { showAlert } = useAlert();
 
   React.useEffect(() => {
-    const { paporder: isPapOrder } = formState.activeRecord || {};
+    const { paporder: isPapOrder } = orderDetails || {};
     if (isPapOrder) navigate('/orders');
-  }, [formState.activeRecord]);
+  }, [orderDetails]);
 
   React.useEffect(() => {
-    orderId && setCurrentOrder(orderId, ORDER_STAGES.ACCOUNT_DETAILS);
+    // refreshOrder({ queryKey: ['summary', Date.now(), orderId] });
   }, []);
 
   const { isLoading, data: accountsListData = {} } = useQuery({
@@ -79,12 +79,11 @@ const AccountSelection = () => {
     });
 
     return accArr;
-  }, [accountsListData, formState.activeRecord]);
+  }, [accountsListData, orderDetails]);
 
   const { isLoading: isSaving, mutate: saveAccount } = useMutation(async (data) => OrderService.saveAccount(orderId, data), {
     onSuccess: async (result) => {
       const { id } = result;
-      setActiveRecord(result);
       try {
         const alertState = await handleInventoryCheck();
         if (result.patientDetailsRequired) {
@@ -166,7 +165,6 @@ const AccountSelection = () => {
     if (isEdit) {
       navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
     } else {
-      editByStage(ORDER_STAGES.THERAPY_SELECTION);
       navigate(`../edit-order/${orderId}`, { state: { isEdit: false, isApprover: isApprover, isBack: true } });
     }
   };
@@ -204,7 +202,6 @@ const AccountSelection = () => {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'details') {
-      editByStage(ORDER_STAGES.THERAPY_SELECTION);
       navigate(`../edit-order/${orderId}`, { state: { isEdit: false, isApprover: isApprover, isBack: true } });
     } else if (modalSuccessCallback === 'summary') {
       navigate(`../${orderId}/summary`, { state: { isEdit: false, isApprover: isApprover } });
@@ -221,8 +218,8 @@ const AccountSelection = () => {
   };
 
   React.useEffect(() => {
-    if (CommonUtils.isNonEmptyObject(accountsListData) && formState.activeRecord) {
-      const { accountDetails } = formState.activeRecord;
+    if (CommonUtils.isNonEmptyObject(accountsListData) && orderDetails) {
+      const { accountDetails } = orderDetails;
       if (accountDetails) {
         const { soldToAccount, shipToAccount } = accountDetails;
         if (soldToAccount) {
@@ -239,7 +236,7 @@ const AccountSelection = () => {
         console.log('Could not set account');
       }
     }
-  }, [formState?.activeRecord, accountsListData]);
+  }, [orderDetails, accountsListData]);
 
   return (
     <div className="MCP-module-wrapper">
@@ -252,9 +249,10 @@ const AccountSelection = () => {
       <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
 
       <div className="MCP-module-body">
-        <OrderStepper />
+        <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} />
         <div className={`MCP-module-wrapper`}>
           <OrderHeaderDetails
+            orderDetails={orderDetails}
             setInventoryTypeData={setInventoryTypeData}
             therapyId={therapyId}
             soldToAccountId={selectedAccount?.accountNumber}

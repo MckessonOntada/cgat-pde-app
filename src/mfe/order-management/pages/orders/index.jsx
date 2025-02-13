@@ -9,7 +9,6 @@ import { getTabs } from './constants';
 import OrderDataTable from './OrderDataTable';
 import CommonFilters from '@src/components/Filters';
 import { useOrders } from '../../context/OrderContext';
-import { useManageOrder } from '../../context/ManageOrderContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import PermittedComponent from '@src/components/permitted-component';
 import usePermission from '@src/hooks/usePermissions';
@@ -35,7 +34,6 @@ const OrderIndex = () => {
     });
   });
 
-  const { resetActiveRecord } = useManageOrder();
   const navigate = useNavigate();
   const location = useLocation();
   const activeTabFromState = location.state?.activeTab;
@@ -76,7 +74,6 @@ const OrderIndex = () => {
   };
 
   const handleOnClick = () => {
-    resetActiveRecord();
     navigate(routesConfig.createOrder);
   };
 
@@ -120,7 +117,7 @@ const OrderIndex = () => {
 
         <div className="MCP-module-body">
           <div className="MCP-panel-container">
-            <div className='customTab'>
+            <div className="customTab">
               <TabList
                 options={tabList}
                 alignment="left"

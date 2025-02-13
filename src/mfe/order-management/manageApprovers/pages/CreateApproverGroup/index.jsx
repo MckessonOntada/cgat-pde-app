@@ -6,7 +6,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { PATHS } from '../../routes/constants';
 import ModuleHeader from '@src/components/module-header';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import AuthUtils from '@src/util/AuthUtils';
@@ -39,9 +39,26 @@ const CreateApproverGroup = () => {
   const userPermissions = AuthUtils.getUserPermissions();
   const { hasPermission } = usePermission();
 
+  const {
+    isLoading: isLoadingapproverGroup,
+    data: groupData,
+    isError: isErrorapproverGroup,
+    refetch
+  } = useQuery({
+    queryKey: [`approver-group/${grpId}`],
+    queryFn: async () => {
+      const res = await HttpResourceService.callRest(`${ApiRoutes.APPROVER_GROUP()}/${grpId}`, httpVerb.GET, {});
+      if (res.data) {
+        return res.data;
+      }
+    },
+    enabled: !!grpId,
+    refetchOnWindowFocus: false
+  });
+
   useEffect(() => {
     if (!dataBinded.current) {
-      if (location.state?.data && usersData && initialValues.id) {
+      if (groupData && usersData && initialValues.id) {
         const selectedUserData = usersData.map((user) => ({
           value: user.value,
           label: user.label,
@@ -70,9 +87,9 @@ const CreateApproverGroup = () => {
   };
 
   useEffect(() => {
-    if (location.state?.data && grpId) {
+    if (groupData && grpId) {
       setIsEditMode(true);
-      initializeFormFromLocation(grpId, location.state.data);
+      initializeFormFromLocation(grpId, groupData);
     }
   }, [location.state, grpId, isEditMode]);
 
