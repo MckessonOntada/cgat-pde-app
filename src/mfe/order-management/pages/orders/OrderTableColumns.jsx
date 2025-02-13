@@ -283,9 +283,9 @@ const getState = (props) => {
 
 const getPatientName = (patientInfo) => {
   let lastName = '';
-  if (patientInfo?.name?.lastName) fullName += ',';
+  if (patientInfo?.lastName) lastName += patientInfo?.lastName + ',';
 
-  return [lastName, patientInfo?.name?.firstName, patientInfo?.name?.middleName].join(' ');
+  return [lastName, patientInfo?.firstName, patientInfo?.middleName].join(' ');
 };
 
 export const createColumns = (t, navigate, activeTab, alertContainerId) => [
@@ -319,12 +319,8 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     showColumnNameInHeader: true,
     cell: (props) => {
       const patientInfo = props.patient && props.patient.patientInfo;
-      return !patientInfo ? (
-        'N/A'
-      ) : (
-        // if(mobileView)
-        <EclipsesTextcss aria-label={t('labels.patientName')} str={getPatientName(patientInfo)} maxWidth={100} />
-      );
+      if (!patientInfo) return 'N/A';
+      else return <EclipsesTextcss aria-label={t('labels.patientName')} str={getPatientName(patientInfo)} maxWidth={100} />;
     }
   },
   {
