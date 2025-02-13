@@ -189,6 +189,7 @@ const Summary = () => {
 
   const handleOnEditSection = (stage) => {
     if (isPapOrder) {
+      console.log('This is a PAP Order, Hence can not be edited.');
       renderModal({
         title: t('prompt.title.alert'),
         bodyContent: (
