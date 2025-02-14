@@ -277,6 +277,8 @@ input[type="checkbox"] {
   background-color: white;
   position: absolute;
   z-index: 99;
+  max-width: unset !important;
+  width: 100% !important;
 }
 
 .selectOptionsMaxWidth {
@@ -425,6 +427,7 @@ input[type="checkbox"] {
 
 .growFlex {
   flex-grow: 1;
+  overflow-x: hidden;
 }
 
 .lineClamps2 {

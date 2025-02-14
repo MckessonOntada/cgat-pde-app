@@ -193,7 +193,8 @@ const RoleDetails = () => {
                             placeholder=" "
                             component={Components['textarea']}
                             fieldlabel={t('orgManagement.role.labelRoleDescription')}
-                            maxCharLimit="100"
+                            maxCharHelperText={t('ManageCatalog.input.validation.text')}
+                            maxCharLimit={5000}
                           />
                         </div>
                       </div>

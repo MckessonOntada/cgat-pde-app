@@ -52,7 +52,7 @@ export default function Invoices(params) {
   }, []);
   return (
     <React.Fragment>
-      <div className="MCP-CardContainer">
+      <div className="MCP-CardContainer invoices-container">
         <CommonFilters
           onApplyFilters={applyFilters}
           onClearFilters={clearFilters}
