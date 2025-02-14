@@ -336,7 +336,7 @@ const Summary = () => {
                     value={
                       <span className="dollarSign ">
                         <span>$</span>
-                        {orderCost}
+                        {parseFloat(orderCost).toFixed(2)}
                       </span>
                     }
                   />

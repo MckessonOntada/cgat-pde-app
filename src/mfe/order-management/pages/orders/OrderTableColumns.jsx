@@ -320,7 +320,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     cell: (props) => {
       const patientInfo = props.patient && props.patient.patientInfo;
       if (!patientInfo) return 'N/A';
-      else return <EclipsesTextcss aria-label={t('labels.patientName')} str={getPatientName(patientInfo)} maxWidth={100} />;
+      else return <EclipsesTextcss aria-label={t('labels.patientName')} str={getPatientName(patientInfo)} maxWidth={140} />;
     }
   },
   {
@@ -329,7 +329,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'therapy.materialDescription',
-    maxWidth: '150px',
+    maxWidth: '140px',
     cell: (props) => (
       <EclipsesTextcss
         str={props.therapy?.materialDescription}
@@ -413,10 +413,11 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortable: false,
     right: true,
     selector: 'orderCost',
-    maxWidth: '100px',
+    minWidth: '100px',
+    maxWidth: '140px',
     cell: (props) => (
       <span className="MCP-table-cell price" aria-label={t('table.columns.captions.price')}>
-        {props.orderCost ? `$${props.orderCost}` : null}
+        {props.orderCost ? `$${parseFloat(props.orderCost).toFixed(2)}` : null}
       </span>
     )
   },

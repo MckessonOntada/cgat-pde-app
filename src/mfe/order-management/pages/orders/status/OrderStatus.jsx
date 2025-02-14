@@ -95,7 +95,7 @@ const OrderStatus = () => {
                     {orderCost ? (
                       <>
                         <span className={`${styles.currencySymbol}`}>$</span>
-                        {orderCost}
+                        {parseFloat(orderCost).toFixed(2)}
                       </>
                     ) : (
                       '-'
