@@ -192,7 +192,7 @@ function ApproverGroupDetails() {
                         {t(`rules.${key}`)}
                         <span className="price">
                           <span>$</span>
-                          {groupData.rules[key]}
+                          {parseFloat(groupData.rules[key]).toFixed(2)}
                         </span>
                       </div>
                     )
