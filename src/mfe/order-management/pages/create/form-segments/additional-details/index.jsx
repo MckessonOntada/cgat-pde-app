@@ -45,6 +45,7 @@ function AdditionalDetails() {
   const variantsApiRequestParam = { pageNo: 0, pageSize: 10 };
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
+  const [formikErrorMsg, setFormikErrorMsg] = React.useState(null);
   const [questionnaireTemplateConfig, setQuestionnaireTemplateConfig] = React.useState(null);
   const [variantAcknowledgement, setVariantAcknowledgement] = React.useState({
     isDisabled: false,
@@ -390,11 +391,20 @@ function AdditionalDetails() {
         initialValues={initialFormValues}
         enableReinitialize={true}
         validationSchema={validationSchema}
+        onError={(value) => {
+          console.log(value);
+        }}
         onSubmit={(values) => {
           handleOnSubmit(values);
         }}>
-        {({ dirty }) => {
+        {({ dirty, errors }) => {
           useEffect(() => setIsDirty(dirty), [dirty]);
+
+          useEffect(() => {
+            if (Object.keys(errors).length > 0) {
+              setFormikErrorMsg('Please enter required fields.');
+            }
+          }, [errors]);
 
           return (
             <Form>
@@ -459,15 +469,18 @@ function AdditionalDetails() {
                       />
                     </div>
                   )}
+                  <div className="controls error-label">{formikErrorMsg}</div>
                 </div>
 
-                <div className="controls">
-                  <Button size="md" variant="secondary" onClick={handleOnBack}>
-                    {t('captions.btnBack')}
-                  </Button>
-                  <Button size="md" variant="primary" type="submit">
-                    {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
-                  </Button>
+                <div>
+                  <div className="controls">
+                    <Button size="md" variant="secondary" onClick={handleOnBack}>
+                      {t('captions.btnBack')}
+                    </Button>
+                    <Button size="md" variant="primary" type="submit">
+                      {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
+                    </Button>
+                  </div>
                 </div>
               </div>
             </Form>

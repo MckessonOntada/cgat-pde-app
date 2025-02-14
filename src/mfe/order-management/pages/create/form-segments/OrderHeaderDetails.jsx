@@ -62,7 +62,7 @@ function OrderHeaderDetails({ orderDetails, therapyId, soldToAccountId, shipToAc
           value={
             <span className="dollarSign">
               <span>$</span>
-              {priceDetails?.netPrice || '----'}
+              {priceDetails?.netPrice ? parseFloat(priceDetails?.netPrice).toFixed(2) : '----'}
             </span>
           }
         />

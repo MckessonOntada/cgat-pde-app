@@ -57,7 +57,7 @@ export default function ZipInput(props) {
         id={field.name}
         name={field.name}
         value={maskedValue}
-        errors={{ [field.name]: errorMessage }}
+        errors={ isFieldTouched && { [field.name]: errorMessage }}
         register={() => ({
           onChange: handleInputChange,
           onBlur: handleInputBlur

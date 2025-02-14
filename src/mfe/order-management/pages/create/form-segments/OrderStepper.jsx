@@ -21,6 +21,9 @@ function OrderStepper({ status, patientDetailsRequired = false }) {
   };
 
   if (!patientDetailsRequired) {
+    if (status === ORDER_STAGES.PATIENT_DETAILS) {
+      status = ORDER_STAGES.ADDITIONAL_DETAILS;
+    }
     currentStage.PATIENT_DETAILS = -1;
     currentStage.ADDITIONAL_DETAILS = 3;
     currentStage.ORDER_SUMMARY = 4;

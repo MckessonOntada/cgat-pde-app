@@ -189,6 +189,7 @@ const Summary = () => {
 
   const handleOnEditSection = (stage) => {
     if (isPapOrder) {
+      console.log('This is a PAP Order, Hence can not be edited.');
       renderModal({
         title: t('prompt.title.alert'),
         bodyContent: (
@@ -335,7 +336,7 @@ const Summary = () => {
                     value={
                       <span className="dollarSign ">
                         <span>$</span>
-                        {orderCost}
+                        {parseFloat(orderCost).toFixed(2)}
                       </span>
                     }
                   />
