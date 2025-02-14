@@ -88,8 +88,8 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
             <div className="header">
               <div className="styled-heading">
                 <Heading as="h3">{t('ManageCatalog.Configurations')}</Heading>
-              </div> 
-              <Button variant="tertiary" onClick={handleCloseDrawer}> 
+              </div>
+              <Button variant="tertiary" onClick={handleCloseDrawer}>
                 <IconClose />
               </Button>
             </div>
@@ -132,9 +132,10 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
                                   placeholder=" "
                                   isRequired={false}
                                   component={Components['textarea']}
-                                  maxLength={100}
+                                  maxCharHelperText={t('ManageCatalog.input.validation.text')}
+                                  maxCharLimit={5000}
+                                  maxCharWarningLimit={4900}
                                 />
-                                <p className="inputTextDesc">{t('ManageCatalog.input.validation.text')}</p>
                               </div>
                             </div>
                           ))}

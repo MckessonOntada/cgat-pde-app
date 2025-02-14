@@ -103,7 +103,6 @@
   flex-direction: column;
   gap: 16px;
 
-
   @include mixins.respond("sm") {
     flex-direction: row;
     justify-content: end;
@@ -154,8 +153,14 @@
   }
 }
 
-.table-wrapper{
+.table-wrapper {
   [data-column-id="checkbox"] {
     overflow: unset;
+  }
+}
+
+.invoices-container {
+  .label-heading {
+    margin: 0px !important;
   }
 }

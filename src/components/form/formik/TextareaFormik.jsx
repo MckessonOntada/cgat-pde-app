@@ -24,6 +24,10 @@ export default function TextareaFormik(props) {
       displayType={'outline'}
       isReadOnly={isReadOnly}
       maxCharLimit={maxCharLimit}
+      maxCharHelperText={props.maxCharHelperText}
+      maxCharWarningLimit={props.maxCharWarningLimit}
+      maxLength={props.maxLength}
+      maxLimitReachedHelpertext={props.maxLimitReachedHelpertext}
       {...field}
     />
   );
