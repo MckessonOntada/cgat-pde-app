@@ -2,6 +2,7 @@ export const RoutePaths = {
   pathAppBase: '',
   pathPageLogin: '/login',
   pathPageLoginCallback: '/login/callback',
+  pathPageForgotPassword: '/forgot-password',
   pathAdmin: '/admin',
   pathUserManagement: '/admin/user',
   pathOrgManagement: '/admin/organization',

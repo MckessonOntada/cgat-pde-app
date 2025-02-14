@@ -17,6 +17,7 @@ import LoginCallback from './pages/LoginCallback/LoginCallback';
 import SignUp from "./pages/SignUp";
 import SignIn from './pages/SignIn';
 import NotFound from './pages/error-pages/NotFound';
+import ForgotPassword from './pages/forgot-password/forgot-password';
 
 
 function AuthorizedRoute({ children }) {
@@ -117,6 +118,7 @@ const Navigation = () => {
         <Routes>
           <Route exact path={`${AppRoutes.pathPageLogin}`} element={<Login />} />
           <Route exact path={AppRoutes.pathPageLoginCallback} element={<LoginCallback />} />
+          <Route exact path={`${AppRoutes.pathPageForgotPassword}`} element={<ForgotPassword />} />
           <Route path={AppRoutes.pathSignup} element={<SignUp />} />
           <Route path={`${AppRoutes.pathSignin}`} element={<SignIn />} />
           <Route
@@ -132,7 +134,8 @@ const Navigation = () => {
           />
         </Routes>
       </Suspense>
-    // </Security>
+      //{' '}
+    </Security>
   );
 };
 
