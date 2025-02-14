@@ -14,7 +14,7 @@ const getLoggedInUser = async () => {
     return data;
   } catch (error) {
     console.log(error);
-    throw Error('Unable to fetch data');
+    throw Error(error);
   }
 };
 
@@ -22,30 +22,29 @@ const updateSessionStorage = async () => {
   try {
     const userDetails = await getCurrentLoggedInUser();
 
-    if (CommonUtils.isNonEmptyObject(userDetails)) {
-      const activeUserRoleName = userDetails['role']['name'];
-      const activeUserName = userDetails['userName'];
-      const activeUserId = userDetails['id'];
-      const activeUserPermissions = userDetails['permissions'];
-      const activeUserPracticeId = userDetails['practiceId'];
-      const impersonatedByUsername = userDetails['impersonatedByUser']?.userName;
-
-      sessionStorage.setItem(SESSION_CONST.USER_ROLE, activeUserRoleName);
-      sessionStorage.setItem(SESSION_CONST.USERNAME, impersonatedByUsername || activeUserName);
-      sessionStorage.setItem(SESSION_CONST.USER_ID, activeUserId);
-      sessionStorage.setItem(SESSION_CONST.USER_PERMISSIONS, activeUserPermissions);
-
-      if (impersonatedByUsername) sessionStorage.setItem(SESSION_CONST.IMPERSONATE_USERNAME, activeUserName);
-      else sessionStorage.removeItem(SESSION_CONST.IMPERSONATE_USERNAME);
-
-      if (activeUserRoleName !== 'System Admin') {
-        AuthUtils.setPracticeId(activeUserPracticeId);
-      }
-
-      return userDetails;
-    } else {
-      return false;
+    if (!CommonUtils.isNonEmptyObject(userDetails)) {
+      throw Error('Invalid Login credentials.');
     }
+    const activeUserRoleName = userDetails['role']['name'];
+    const activeUserName = userDetails['userName'];
+    const activeUserId = userDetails['id'];
+    const activeUserPermissions = userDetails['permissions'];
+    const activeUserPracticeId = userDetails['practiceId'];
+    const impersonatedByUsername = userDetails['impersonatedByUser']?.userName;
+
+    sessionStorage.setItem(SESSION_CONST.USER_ROLE, activeUserRoleName);
+    sessionStorage.setItem(SESSION_CONST.USERNAME, impersonatedByUsername || activeUserName);
+    sessionStorage.setItem(SESSION_CONST.USER_ID, activeUserId);
+    sessionStorage.setItem(SESSION_CONST.USER_PERMISSIONS, activeUserPermissions);
+
+    if (impersonatedByUsername) sessionStorage.setItem(SESSION_CONST.IMPERSONATE_USERNAME, activeUserName);
+    else sessionStorage.removeItem(SESSION_CONST.IMPERSONATE_USERNAME);
+
+    if (activeUserRoleName !== 'System Admin') {
+      AuthUtils.setPracticeId(activeUserPracticeId);
+    }
+
+    return userDetails;
   } catch (error) {
     throw Error(error);
   }
@@ -65,7 +64,7 @@ const getCurrentLoggedInUser = async () => {
     return response.data;
   } catch (error) {
     console.log(error);
-    throw Error('Unable to fetch data');
+    throw Error(error);
   }
 };
 

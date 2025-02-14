@@ -20,7 +20,6 @@ import { ReactComponent as McKessonLogo } from '@src/assets/image/McKesson_logo.
 import { useTranslate } from '@src/translations/useTranslation';
 import Footer from './Footer';
 
-
 const Login = () => {
   const widgetRef = useRef();
   const { t } = useTranslate();
@@ -156,14 +155,14 @@ const Login = () => {
 
     const validateTokenAndUpdateSessionStorage = async (response) => {
       try {
+        const userDetails = await CommonService.updateSessionStorage();
+
         const accessToken = response.tokens.accessToken;
         sessionStorage.setItem('APP_AUTH_TOKEN', `${accessToken.tokenType} ${accessToken.accessToken}`);
 
-        const userDetails = await CommonService.updateSessionStorage();
-
         return { ...userDetails, roleExist: true };
       } catch (error) {
-        throw Error(error);
+        return { error, roleExist: false };
       }
     };
 
@@ -193,15 +192,26 @@ const Login = () => {
       <div className={`${style.loginWrap} max-container`}>
         <div className={style.loginHeader}>
           <McKessonLogo aria-hidden="true" focusable="false" title={t('company.logoAltText')} />
-           <Heading as="h2"><span>{t('login.header.1')} </span>{t('login.header.2')}</Heading>
-          <p><span>{t('login.page.desc.1')} </span>{t('login.page.desc.2')}</p>
+          <Heading as="h2">
+            <span>{t('login.header.1')} </span>
+            {t('login.header.2')}
+          </Heading>
+          <p>
+            <span>{t('login.page.desc.1')} </span>
+            {t('login.page.desc.2')}
+          </p>
         </div>
         <div className={style.loginContainor}>
           <p className={style.lWelcome}>{t('login.welcome')}</p>
-          <Heading as="h3" className={style.lHead}>{t('login.ordringPortal')}</Heading>
+          <Heading as="h3" className={style.lHead}>
+            {t('login.ordringPortal')}
+          </Heading>
           <p className={style.lDetails}>{t('login.details')}</p>
           <div className={'w-100'} ref={widgetRef} id={debugIds(ID.LOGIN, ID.WIDGET)}></div>
-          <p className={style.lNote}><span>{t('login.note')}: </span>{t('login.details')}</p>
+          <p className={style.lNote}>
+            <span>{t('login.note')}: </span>
+            {t('login.details')}
+          </p>
         </div>
       </div>
       <Footer />
