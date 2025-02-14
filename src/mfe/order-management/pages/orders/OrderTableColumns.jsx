@@ -410,7 +410,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     id: 'price',
     name: t('table.columns.captions.price'),
     selector: () => {},
-    sortable: true,
+    sortable: false,
     right: true,
     selector: 'orderCost',
     maxWidth: '100px',
