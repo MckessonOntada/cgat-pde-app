@@ -279,6 +279,9 @@ const AccountSelection = () => {
                             <b>{selectedAccount.accountName}</b>
                           </p>
                           <p className={styles.address}>{getAddress(selectedAccount)}</p>
+                          <p className={styles.address}>
+                            {t('labels.distributionChannel')} - {selectedAccount?.distributionChannel}
+                          </p>
                         </React.Fragment>
                       ) : (
                         <React.Fragment>
