@@ -2,6 +2,7 @@ import React from 'react';
 import ModuleHeader from '@src/components/module-header';
 import { Heading, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
+import EmptyDataContainer from '@src/components/EmptyData';
 
 function EmptyUI({ isLoading, isEmpty }) {
   const { t } = useTranslate();
