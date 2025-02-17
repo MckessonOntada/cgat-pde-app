@@ -196,6 +196,8 @@ function UserTable({ onActionSuccess }) {
         id: 'status',
         name: t('userManagement.table.status'),
         selector: () => {},
+        sortable: true,
+        sortKey: 'is_active',
         center: true,
         minWidth: '80px',
         cell: (props) => (
@@ -213,8 +215,10 @@ function UserTable({ onActionSuccess }) {
       {
         id: 'dataAdded',
         name: t('userManagement.table.dateAdded'),
-        selector: () => {},
+        selector: (row) => row.updated_At || row.created_At,
         wrap: true,
+        sortable: true,
+        sortKey: 'updated_At',
         minWidth: '100px',
         cell: (props) => CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')
       },
