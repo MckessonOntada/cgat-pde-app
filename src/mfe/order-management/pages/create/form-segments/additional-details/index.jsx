@@ -141,11 +141,25 @@ function AdditionalDetails() {
 
         validationSchemaFields[fieldName] = Yup.object({
           value:
-            question.type === QUESTION_TYPE.INPUT ||
-            question.type === QUESTION_TYPE.DROPDOWN ||
-            question.type === QUESTION_TYPE.RADIO_BUTTON
-              ? Yup.string()[question.isMandatory ? 'required' : 'nullable']('Value is required')
-              : Yup.array().of(Yup.string())[question.isMandatory ? 'min' : 'nullable'](1, 'Select at least one option'),
+            question.type === QUESTION_TYPE.INPUT || question.type === QUESTION_TYPE.DROPDOWN
+              ? question.isMandatory
+                ? Yup.string().required('Value is required')
+                : Yup.string().nullable()
+              : question.type === QUESTION_TYPE.RADIO_BUTTON
+              ? question.isMandatory
+                ? Yup.string().required('Value is required')
+                : Yup.string().nullable()
+              : question.type === QUESTION_TYPE.CHECKBOX
+              ? question.isMandatory
+                ? Yup.array()
+                    .of(Yup.string())
+                    .min(1, 'Value is require')
+                    .test('not-empty', 'Value is required', (value) => Array.isArray(value) && value.length > 0)
+                : Yup.array().of(Yup.string()).nullable()
+              : question.isMandatory
+              ? Yup.array().of(Yup.string()).min(1, 'Value is required')
+              : Yup.array().of(Yup.string()).nullable(),
+
           documentUrl: Yup.string().nullable()
         });
       });
@@ -279,10 +293,10 @@ function AdditionalDetails() {
       navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
     } else {
       if (orderDetails?.patientDetailsRequired) {
-        editByStage(ORDER_STAGES.PATIENT_DETAILS);
+        //  editByStage(ORDER_STAGES.PATIENT_DETAILS);
         navigate(`../${orderId}/patient`, { state: { isEdit: false, isApprover: isApprover } });
       } else {
-        editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
+        //  editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
         navigate(`../${orderId}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
       }
     }
@@ -355,10 +369,10 @@ function AdditionalDetails() {
     } else if (modalSuccessCallback === 'summary') {
       navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'patient') {
-      editByStage(ORDER_STAGES.PATIENT_DETAILS);
+      // editByStage(ORDER_STAGES.PATIENT_DETAILS);
       navigate(`../${orderId}/patient`, { state: { isEdit: false, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'account') {
-      editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
+      //  editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
       navigate(`../${orderId}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
     }
   };
@@ -397,7 +411,8 @@ function AdditionalDetails() {
         onSubmit={(values) => {
           handleOnSubmit(values);
         }}>
-        {({ dirty, errors }) => {
+        {({ dirty, errors, values }) => {
+          console.log('values', values, errors);
           useEffect(() => setIsDirty(dirty), [dirty]);
 
           useEffect(() => {

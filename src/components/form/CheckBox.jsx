@@ -1,13 +1,24 @@
 import React from 'react';
-import { CheckboxGroup } from '@mckesson/mcp-component-library';
+import { CheckboxGroup, TextError } from '@mckesson/mcp-component-library';
 
 export default function CheckBox(props) {
   const { field, form, items } = props;
-  const error = form.errors[field.name] && form.touched[field.name];
+  const fieldNameParts = field.name?.includes('.') ? field.name.split('.') : null;
+  const rootFieldName = fieldNameParts ? fieldNameParts[0] : field.name;
+  const subFieldName = fieldNameParts ? fieldNameParts[1] : null;
+
+  const isTouched = subFieldName ? form.touched?.[rootFieldName]?.[subFieldName] || form.touched?.[field.name] : form.touched?.[field.name];
+
+  // Get the error only if the field is touched
+  const error = isTouched
+    ? subFieldName
+      ? form.errors?.[rootFieldName]?.[subFieldName] || form.errors?.[field.name]
+      : form.errors?.[field.name]
+    : null;
 
   const handleChange = (event, index) => {
     // Get the current checked items from the form state
-    const currentCheckedValues = field.value || [];
+    const currentCheckedValues = Array.isArray(field.value) ? field.value : [];
 
     const valueToAddOrRemove = items[index].value;
     const isChecked = event.target.checked;
@@ -22,19 +33,20 @@ export default function CheckBox(props) {
       updatedCheckedValues = currentCheckedValues.filter((value) => value !== valueToAddOrRemove);
     }
 
-    form.setFieldValue(field.name, updatedCheckedValues);
+    form.setFieldValue(rootFieldName, { value: updatedCheckedValues });
   };
 
   return (
-    <CheckboxGroup
-      {...props}
-      error={!!error}
-      errorMessage={error ? form.errors[field.name] : ''}
-      items={items.map((item, index) => ({
-        ...item,
-        onChange: (event) => handleChange(event, index),
-        isChecked: field.value ? field.value.includes(item.value) : false
-      }))}
-    />
+    <div>
+      <CheckboxGroup
+        {...props}
+        items={items.map((item, index) => ({
+          ...item,
+          onChange: (event) => handleChange(event, index),
+          isChecked: field.value ? field.value.includes(item.value) : false
+        }))}
+      />
+      {error && <TextError errorMessage={error} />}
+    </div>
   );
 }
