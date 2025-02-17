@@ -155,11 +155,9 @@ const Login = () => {
 
     const validateTokenAndUpdateSessionStorage = async (response) => {
       try {
-        const userDetails = await CommonService.updateSessionStorage();
-
         const accessToken = response.tokens.accessToken;
         sessionStorage.setItem('APP_AUTH_TOKEN', `${accessToken.tokenType} ${accessToken.accessToken}`);
-
+        const userDetails = await CommonService.updateSessionStorage();
         return { ...userDetails, roleExist: true };
       } catch (error) {
         return { error, roleExist: false };
