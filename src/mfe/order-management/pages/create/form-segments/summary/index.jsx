@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styles from './Summary.module.scss';
 import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg';
 import ModuleHeader from '@src/components/module-header';
@@ -22,6 +22,7 @@ import CommentPanel from './CommentPanel';
 import AuthUtils from '@src/util/AuthUtils';
 import OrderStepper from '../OrderStepper';
 import useOrder from '../../../orders/useOrder';
+import { useCustomPrint } from '@src/util/printUtils';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -61,7 +62,26 @@ const Summary = () => {
   const isImpersonated = Boolean(AuthUtils.getImpersonateId()),
     isRejected = status === StatusEnum.REJECTED,
     isConcluded = status === StatusEnum.REJECTED || status === StatusEnum.SUBMITTED;
-
+  const contentRef = useRef(null);
+  const printPage = useCustomPrint(
+    contentRef,`
+    .MCP-module-wrapper{
+      gap:8px !important;
+    }
+    .agreement-checkbox-control{
+      display: none !important;
+    }
+    .MCP-CardContainer{
+      page-break-inside: avoid;
+      page-break-after: auto;
+    }
+    .MCP-CardContainer .print-div{
+      display: flex;
+    }
+    .MCP-CardContainer > div{
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }`
+  );
   const { isLoading, data: simulationData = {} } = useQuery({
     queryKey: ['orderDetails', orderId],
     queryFn: async () => {
@@ -218,7 +238,7 @@ const Summary = () => {
   const getAllowedControls = () => {
     const controls = [];
     const controlPrintSummary = (
-      <Button disabled={true} size={'md'} variant="secondary">
+      <Button size={'md'} variant="secondary" onClick={() => printPage()}>
         {t('captions.btnPrintSummary')}
       </Button>
     );
@@ -298,9 +318,11 @@ const Summary = () => {
       {orderDetails?.status === StatusEnum.IN_DRAFT && <PageHeader heading={t('headings.createNewOrder')} />}
       {isApprover && <PageHeader heading={t('headings.reviewOrder')} />}
 
-      <div className="MCP-module-body">
+      <div className="MCP-module-body" ref={contentRef}>
         {!hideControls && !isRejected && (
-          <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} />
+          <div className='order-stepper-wrapper'>
+            <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} />
+          </div>
         )}
         <div id={ALERT_CONTAINER_ID} />
         <div className={'MCP-module-wrapper'}>

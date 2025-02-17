@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styles from './OrderStatus.module.scss';
 import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
@@ -9,13 +9,24 @@ import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import DetailSegment from '@src/components/DetailSegment';
 import useOrder from '../useOrder';
+import { useCustomPrint } from '@src/util/printUtils';
 
 const OrderStatus = () => {
   const { t } = useTranslate();
   const { orderId } = useParams();
   const navigate = useNavigate();
   const { data: orderDetails = {}, isFetching, isError, error } = useOrder(orderId);
+  const contentRef = useRef(null);
 
+  const printPage = useCustomPrint(
+    contentRef,`
+    .MCP-CardContainer .print-div{
+      display: flex;
+    }
+    .MCP-CardContainer .print-div > div{
+      width: 180px;
+    }`
+  );
   const orderStatus = orderDetails?.status;
 
   const { therapy = {}, orderCost, patient } = orderDetails || {};
@@ -29,7 +40,7 @@ const OrderStatus = () => {
   }
 
   return (
-    <div className={'MCP-module-wrapper'}>
+    <div className={'MCP-module-wrapper'} ref={contentRef}>
       <div>
         <Button
           className="back-button-control"
@@ -68,7 +79,7 @@ const OrderStatus = () => {
       />
       <div className={'MCP-module-body'}>
         <div className="MCP-CardContainer">
-          <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
+          <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 print-div">
             <DetailSegment label={t('labels.orderId')} value={orderId} />
             <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
             <DetailSegment
@@ -80,7 +91,7 @@ const OrderStatus = () => {
               }
             />
           </div>
-          <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
+          <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 print-div">
             <DetailSegment label={t('labels.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
             <DetailSegment label={t('labels.dob')} value={patient?.patientInfo?.dateOfBirth || '-'} />
             <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender ? patient?.patientInfo?.gender : '-'} />
@@ -110,7 +121,7 @@ const OrderStatus = () => {
         {orderStatus === 'SUBMITTED' && <OrderFlowSteps catalogConfiguration={orderDetails.catalogConfiguration} />}
       </div>
       <div className={'controls'}>
-        <Button size="md" variant="secondary" disabled={true}>
+        <Button size="md" variant="secondary" onClick={() => printPage()}>
           {t('captions.btnPrintSummary')}
         </Button>
         <Button size="md" variant="primary" onClick={() => backToOrders()}>
