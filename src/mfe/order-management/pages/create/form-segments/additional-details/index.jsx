@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Heading, CheckboxGroup, CustomDataTable, RadioGroup } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -53,6 +53,7 @@ function AdditionalDetails() {
     label: t('messages.variantAcknowledgement'),
     value: false
   });
+  const [agreementCheckboxError, setAgreementCheckboxError] = React.useState(null);
   const [variant, setVariant] = React.useState();
   const { showAlert } = useAlert();
   const alertContainerId = 'additionalDetails-alert-container';
@@ -153,7 +154,7 @@ function AdditionalDetails() {
               ? question.isMandatory
                 ? Yup.array()
                     .of(Yup.string())
-                    .min(1, 'Value is require')
+                    .min(1, 'Value is required')
                     .test('not-empty', 'Value is required', (value) => Array.isArray(value) && value.length > 0)
                 : Yup.array().of(Yup.string()).nullable()
               : question.isMandatory
@@ -293,10 +294,8 @@ function AdditionalDetails() {
       navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
     } else {
       if (orderDetails?.patientDetailsRequired) {
-        //  editByStage(ORDER_STAGES.PATIENT_DETAILS);
         navigate(`../${orderId}/patient`, { state: { isEdit: false, isApprover: isApprover } });
       } else {
-        //  editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
         navigate(`../${orderId}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
       }
     }
@@ -304,6 +303,7 @@ function AdditionalDetails() {
 
   const handleOnSubmit = (values) => {
     if (CommonUtils.isNonEmptyObject(variantsData?.content) && (!variant || !variantAcknowledgement?.isChecked)) {
+      setAgreementCheckboxError(t('message.acknowldge'));
       return;
     }
     const _var = !!variant
@@ -369,15 +369,14 @@ function AdditionalDetails() {
     } else if (modalSuccessCallback === 'summary') {
       navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'patient') {
-      // editByStage(ORDER_STAGES.PATIENT_DETAILS);
       navigate(`../${orderId}/patient`, { state: { isEdit: false, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'account') {
-      //  editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
       navigate(`../${orderId}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
     }
   };
 
   const handleOnVariantChange = (variant) => {
+    setAgreementCheckboxError(null);
     setVariant(variant);
   };
 
@@ -412,7 +411,6 @@ function AdditionalDetails() {
           handleOnSubmit(values);
         }}>
         {({ dirty, errors, values }) => {
-          console.log('values', values, errors);
           useEffect(() => setIsDirty(dirty), [dirty]);
 
           useEffect(() => {
@@ -466,6 +464,8 @@ function AdditionalDetails() {
                               id={'default'}
                               name="variant-acknowledgement"
                               items={[{ ...variantAcknowledgement, onChange: () => handleOnAcknowledgmentChange() }]}
+                              error={Boolean(agreementCheckboxError)}
+                              errorMessage={agreementCheckboxError}
                               size="md"
                             />
                           )}
@@ -515,6 +515,14 @@ function AdditionalDetails() {
 
 const VariantTable = ({ variant, onChange, data }) => {
   const { t } = useTranslate();
+
+  useEffect(() => {
+    if (!variant && data?.length > 0) {
+      const firstVariant = data[0];
+      onChange(firstVariant);
+    }
+  }, [data, onChange]);
+
   const columns = [
     {
       id: 'id',

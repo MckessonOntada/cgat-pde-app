@@ -392,5 +392,6 @@ export const MessageEn = {
   'message.questionnaireUpdated': 'Questionnaire updated successfully.',
   'message.questionnaireDeactivated': 'Questionnaire deactivated successfully.',
   'message.questionTextRequired': 'Question text is required',
-  'message.englishTextIsRequired': 'At least requires english text'
+  'message.englishTextIsRequired': 'At least requires english text',
+  'message.acknowldge': 'Please acknowledge to Save and Continue'
 };
