@@ -448,7 +448,6 @@ function AddQuestionnaire() {
                                                 onClick={() => {
                                                   removeQuestion(index);
                                                 }}>
-                                                {t('labels.orderActions.delete')}
                                               </Button>
                                             </div>
                                           </div>
