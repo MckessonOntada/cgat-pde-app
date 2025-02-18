@@ -446,15 +446,6 @@ const cleanObject = (obj) => {
   return obj;
 };
 
-// utils.js
-
-// utils.js
-
-/**
- * Formats a number into a string without currency symbol (e.g., 536,636.00)
- * @param {number} value - The value to be formatted
- * @returns {string} - The formatted number as a string without currency symbol
- */
 const formatNumberWithoutSymbol = (value) => {
   return new Intl.NumberFormat('en-US', {style: 'currency',currency: 'USD', }).format(value || 0).slice(1)
 }
