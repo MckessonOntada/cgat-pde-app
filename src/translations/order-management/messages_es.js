@@ -261,6 +261,8 @@ export const MessageEs = {
   'orderManagement.patientDetails.validation.middle_name_max': 'S_Middle name cannot exceed 50 characters.',
   'orderManagement.patientDetails.validation.last_name_max': 'S_Last name cannot exceed 50 characters.',
   'orderManagement.patientDetails.validation.invalid_email': 'S_Please enter a valid email address.',
+  'orderManagement.patientDetails.dob.must.be.past': 'S_Date of Birth must be in the Past.',
+  'orderManagement.patientDetails.validation.invalid_date': 'S_Invalid date',
   'orderManagement.patientDetails.validation.email_max': 'S_Email cannot exceed 50 characters.',
   'orderManagement.patientDetails.validation.phone_invalid': 'S_Please enter a valid phone number.',
   'orderManagement.patientDetails.validation.phone_max': 'S_Phone number cannot exceed 15 digits.',
