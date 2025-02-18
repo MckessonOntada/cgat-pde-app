@@ -52,6 +52,9 @@ const CreateApproverGroup = () => {
         return res.data;
       }
     },
+    onSuccess: (result) => {
+      initializeFormFromLocation(grpId, result);
+    },
     enabled: !!grpId,
     refetchOnWindowFocus: false
   });
