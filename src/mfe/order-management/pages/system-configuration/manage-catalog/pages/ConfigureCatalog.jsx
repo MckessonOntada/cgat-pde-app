@@ -120,8 +120,18 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
                                     maxLength={100}
                                   />
                                 </div>
-                                <div className="remove-icon">
-                                  <DeleteIcon />
+                                <div className="styled-icon-button error-button remove-icon">
+                                  <Button
+                                    Icon={DeleteIcon}
+                                    iconButton
+                                    textButton
+                                    size="lg"
+                                    variant="tertiary"
+                                    color="error"
+                                    type="button"
+                                    disabled={values.steps.length === 1}
+                                    onClick={() => remove(index)}
+                                  />
                                 </div>
                               </div>
 
