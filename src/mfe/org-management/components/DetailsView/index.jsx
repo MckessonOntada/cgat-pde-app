@@ -14,7 +14,7 @@ const DetailsView = ({ data, onEditClick }) => {
   const { data: organizationLogo } = CommonDataService.useOrganizationLogo(data.logoUrl, data.id);
 
   return (
-    <div className="view-container">
+    <div className="MCP-panel-container">
       <div className="org-box">
         <div className="org-logo-box">
           {data?.logoUrl && <img src={organizationLogo} alt="Logo" className="logo-img" />}
