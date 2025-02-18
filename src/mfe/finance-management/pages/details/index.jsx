@@ -67,7 +67,9 @@ function Details(props) {
           // bill bates
           let _invoiceDue = INVOICES_SCREEN
             ? {
-                [t('paymentInvoices.Details.AmountDue')]: `$${res.data.amountDue}`,
+                [t('paymentInvoices.Details.AmountDue')]: `${
+                  new Intl.NumberFormat('en-US', {style: 'currency',currency: 'USD', }).format(res.data.amountDue || 0)
+                }`,
                 [t('paymentInvoices.Details.DueDate')]: res.data.dueDate,
                 [t('paymentInvoices.Details.BillDate')]: res.data.billDate
               }

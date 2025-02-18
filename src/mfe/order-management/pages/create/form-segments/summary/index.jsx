@@ -358,7 +358,7 @@ const Summary = () => {
                     value={
                       <span className="dollarSign ">
                         <span>$</span>
-                        {parseFloat(orderCost).toFixed(2)}
+                        {new Intl.NumberFormat('en-US', {style: 'currency',currency: 'USD', }).format(orderCost || 0).slice(1)}
                       </span>
                     }
                   />

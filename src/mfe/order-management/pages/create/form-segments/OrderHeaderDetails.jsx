@@ -62,7 +62,9 @@ function OrderHeaderDetails({ orderDetails, therapyId, soldToAccountId, shipToAc
           value={
             <span className="dollarSign">
               <span>$</span>
-              {priceDetails?.netPrice ? parseFloat(priceDetails?.netPrice).toFixed(2) : '----'}
+              {priceDetails?.netPrice
+                ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(priceDetails?.netPrice || 0).slice(1)
+                : '----'}
             </span>
           }
         />

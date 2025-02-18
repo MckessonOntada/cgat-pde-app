@@ -106,7 +106,7 @@ const OrderStatus = () => {
                     {orderCost ? (
                       <>
                         <span className={`${styles.currencySymbol}`}>$</span>
-                        {parseFloat(orderCost).toFixed(2)}
+                        {new Intl.NumberFormat('en-US', {style: 'currency',currency: 'USD', }).format(orderCost || 0).slice(1)}
                       </>
                     ) : (
                       '-'
