@@ -36,14 +36,12 @@ const CreateApproverGroup = () => {
   const dataBinded = useRef(false);
   const [isDirty, setIsDirty] = React.useState(false);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-  const userPermissions = AuthUtils.getUserPermissions();
   const { hasPermission } = usePermission();
 
   const {
     isLoading: isLoadingapproverGroup,
     data: groupData,
-    isError: isErrorapproverGroup,
-    refetch
+    isError: isErrorapproverGroup
   } = useQuery({
     queryKey: [`approver-group/${grpId}`],
     queryFn: async () => {
