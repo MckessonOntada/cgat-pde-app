@@ -390,15 +390,7 @@ function AdditionalDetails() {
 
     setVariantAcknowledgement(updatedOptions);
   };
-  const scrollToError = (errors) => {
-    const firstErrorField = Object.keys(errors)[0]; // Get first error field name
-    const errorElement = document.querySelector(`[name="${firstErrorField}"]`);
 
-    if (errorElement) {
-      errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      errorElement.focus(); // Set focus on the first error field
-    }
-  };
   return (
     <div className="MCP-module-wrapper">
       <div>
