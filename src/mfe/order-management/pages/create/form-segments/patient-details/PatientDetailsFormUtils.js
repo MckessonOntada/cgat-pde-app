@@ -158,7 +158,10 @@ export const getValidationSchema = (t) => {
           .min(2, t('orgManagement.create_org.validation.last_name_min'))
           .max(50, t('orgManagement.create_org.validation.last_name_max')),
         gender: Yup.string().nullable(),
-        dateOfBirth: Yup.date().nullable().typeError(t('orderManagement.patientDetails.validation.invalid_date'))
+        dateOfBirth: Yup.date()
+          .nullable()
+          .max(new Date(), t('orderManagement.patientDetails.dob.must.be.past'))
+          .typeError(t('orderManagement.patientDetails.validation.invalid_date'))
       })
       .nullable(),
     contact: Yup.object()
