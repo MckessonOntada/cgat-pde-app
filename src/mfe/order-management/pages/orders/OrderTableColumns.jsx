@@ -15,6 +15,7 @@ import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions
 import usePermission from '@src/hooks/usePermissions';
 import { renderModal } from '@src/util/ModalUtil';
 import { useOrders } from '../../context/OrderContext';
+import { FormattedNumber } from 'react-intl';
 
 const getColorByStatus = (status) => {
   const statusColors = {
@@ -414,11 +415,10 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     right: true,
     selector: 'orderCost',
     minWidth: '100px',
-    maxWidth: '140px',
     cell: (props) => (
-      <span className="MCP-table-cell price" aria-label={t('table.columns.captions.price')}>
-        {props.orderCost ? `$${parseFloat(props.orderCost).toFixed(2)}` : null}
-      </span>
+      <div className="cellEllipse align-items-right ">
+       {props.orderCost ? <FormattedNumber value={props.orderCost} style="currency" currency="USD" /> : ''} 
+      </div>
     )
   },
   {

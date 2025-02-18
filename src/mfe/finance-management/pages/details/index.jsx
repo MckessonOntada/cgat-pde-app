@@ -67,12 +67,12 @@ function Details(props) {
           // bill bates
           let _invoiceDue = INVOICES_SCREEN
             ? {
-                [t('paymentInvoices.Details.AmountDue')]: `$${res.data.amountDue}`,
+                [t('paymentInvoices.Details.AmountDue')]: `${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
                 [t('paymentInvoices.Details.DueDate')]: res.data.dueDate,
                 [t('paymentInvoices.Details.BillDate')]: res.data.billDate
               }
             : {
-                [t('paymentInvoices.Details.CreditAmount')]: `$${res.data.amountDue}`,
+                [t('paymentInvoices.Details.CreditAmount')]: `${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
                 [t('paymentInvoices.Details.CreditRemaining')]: '',
                 [t('paymentInvoices.Details.ValidFrom')]: res.data.dueDate
               };
