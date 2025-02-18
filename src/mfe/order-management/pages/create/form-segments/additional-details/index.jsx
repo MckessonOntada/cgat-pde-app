@@ -148,20 +148,21 @@ function AdditionalDetails() {
                 : Yup.string().nullable()
               : question.type === QUESTION_TYPE.RADIO_BUTTON
               ? question.isMandatory
-                ? Yup.string().required('Value is required')
+                ? Yup.string().required('Select at least one option')
                 : Yup.string().nullable()
               : question.type === QUESTION_TYPE.CHECKBOX
               ? question.isMandatory
                 ? Yup.array()
                     .of(Yup.string())
-                    .min(1, 'Value is required')
-                    .test('not-empty', 'Value is required', (value) => Array.isArray(value) && value.length > 0)
+                    .min(1, 'Select at least one option')
+                    .test('not-empty', 'Select at least one option', (value) => Array.isArray(value) && value.length > 0)
                 : Yup.array().of(Yup.string()).nullable()
               : question.isMandatory
-              ? Yup.array().of(Yup.string()).min(1, 'Value is required')
+              ? Yup.array().of(Yup.string()).min(1, 'Select at least one option')
               : Yup.array().of(Yup.string()).nullable(),
 
-          documentUrl: Yup.string().nullable()
+          documentUrl:
+            question.isDocumentRequired && question.isMandatory ? Yup.string().required('Please Upload Document') : Yup.string().nullable()
         });
       });
     });
@@ -389,7 +390,15 @@ function AdditionalDetails() {
 
     setVariantAcknowledgement(updatedOptions);
   };
+  const scrollToError = (errors) => {
+    const firstErrorField = Object.keys(errors)[0]; // Get first error field name
+    const errorElement = document.querySelector(`[name="${firstErrorField}"]`);
 
+    if (errorElement) {
+      errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      errorElement.focus(); // Set focus on the first error field
+    }
+  };
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -412,12 +421,6 @@ function AdditionalDetails() {
         }}>
         {({ dirty, errors, values }) => {
           useEffect(() => setIsDirty(dirty), [dirty]);
-
-          useEffect(() => {
-            if (Object.keys(errors).length > 0) {
-              setFormikErrorMsg('Please enter required fields.');
-            }
-          }, [errors]);
 
           return (
             <Form>
@@ -562,7 +565,7 @@ const VariantTable = ({ variant, onChange, data }) => {
       maxWidth: '280px',
       sortable: false,
       cell: (props) => (
-        <span aria-label={t('labels.variant')}>
+        <span className="flex" aria-label={t('labels.variant')}>
           <EclipsesTextcss str={props.variant} maxWidth={240} />
         </span>
       )

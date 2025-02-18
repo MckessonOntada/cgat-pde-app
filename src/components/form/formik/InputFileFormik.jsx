@@ -15,10 +15,10 @@ function InputFileFormik(props) {
   const fileInputRef = React.useRef(value || null);
   const { t } = useTranslate();
   const [file, setFile] = React.useState(value || null);
-  ``;
-  const { errors, setFieldValue } = form;
+  const { errors, touched, setFieldValue } = form;
   const errorMessage = getNestedValue(errors, `${field.name}`);
-
+  const isFieldTouched = field.name.includes('.') ? getNestedValue(touched, field.name.split('.')[0]) : getNestedValue(touched, field.name);
+  console.log('errors', errors, isFieldTouched);
   const validateBeforeChange = (file, event) => {
     if (validateOnChange) {
       const validationResponse = validateOnChange(file);
@@ -136,7 +136,7 @@ function InputFileFormik(props) {
           </div>
         )}
       </label>
-      <div>{errorMessage && <label className={styles['error-label']}>{errorMessage}</label>}</div>
+      <div>{isFieldTouched && errorMessage && <label className={styles['error-label']}>{errorMessage}</label>}</div>
     </div>
   );
 }

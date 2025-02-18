@@ -1,13 +1,15 @@
 import React from 'react';
-import { CheckboxGroup, TextError } from '@mckesson/mcp-component-library';
+import { CheckboxGroup, TextError, Label } from '@mckesson/mcp-component-library';
 
 export default function CheckBox(props) {
-  const { field, form, items } = props;
-  const fieldNameParts = field.name?.includes('.') ? field.name.split('.') : null;
-  const rootFieldName = fieldNameParts ? fieldNameParts[0] : field.name;
+  const { field, form, items, label, direction = 'column', isRequired = false, shouldSplitField = false, ...rest } = props;
+  const fieldNameParts = shouldSplitField && field?.name?.includes('.') ? field.name.split('.') : null;
+  const rootFieldName = fieldNameParts ? fieldNameParts[0] : field?.name;
   const subFieldName = fieldNameParts ? fieldNameParts[1] : null;
 
-  const isTouched = subFieldName ? form.touched?.[rootFieldName]?.[subFieldName] || form.touched?.[field.name] : form.touched?.[field.name];
+  const isTouched = subFieldName
+    ? form.touched?.[rootFieldName]?.[subFieldName] || form.touched?.[field?.name]
+    : form.touched?.[field?.name];
 
   // Get the error only if the field is touched
   const error = isTouched
@@ -33,13 +35,24 @@ export default function CheckBox(props) {
       updatedCheckedValues = currentCheckedValues.filter((value) => value !== valueToAddOrRemove);
     }
 
-    form.setFieldValue(rootFieldName, { value: updatedCheckedValues });
+    if (fieldNameParts) {
+      form.setFieldValue(rootFieldName, { value: updatedCheckedValues });
+    } else {
+      form.setFieldValue(field.name, updatedCheckedValues);
+    }
   };
 
   return (
     <div>
+      <div className="row-space-between-center">
+        <Label htmlFor={name} className="label-heading">
+          {label}
+          {isRequired && <span className="required"> *</span>}
+        </Label>
+      </div>
       <CheckboxGroup
-        {...props}
+        {...rest}
+        direction={direction}
         items={items.map((item, index) => ({
           ...item,
           onChange: (event) => handleChange(event, index),

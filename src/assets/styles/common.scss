@@ -38,10 +38,10 @@
 }
 
 .custom-date-range-picker {
-  >div {
-    >div {
-      >div {
-        >div {
+  > div {
+    > div {
+      > div {
+        > div {
           width: unset;
           min-width: 160px;
           flex-grow: 1;
@@ -602,9 +602,11 @@ div.disable-all {
   }
 }
 
-@media only screen and (min-width: 576px) {}
+@media only screen and (min-width: 576px) {
+}
 
-@media only screen and (min-width: 992px) {}
+@media only screen and (min-width: 992px) {
+}
 
 @media only screen and (min-width: 1200px) {
   .max-container {
@@ -659,7 +661,6 @@ div.disable-all {
 }
 
 .styled-heading {
-
   //module primary heading
   h1 {
     font-size: var(--brand-font-size--28) !important;
@@ -686,23 +687,17 @@ div.disable-all {
 }
 
 .styled-form-field {
-
   .label-heading,
   label[class*="TextareaInput-module--label"],
   label[class*="InputField-module--labelText"],
   fieldset legend[class*="CheckboxGroup-module--captionWrap"],
   fieldset legend[class*="labelContainer"] {
-    // font-size: var(--brand-font-size--default) !important;
-    // font-weight: var(--brand-font-weight-600);
-    // line-height: var(--brand-font-size--20);
   }
 
   div[class*="RadioGroup-module"] {
     label {
-      // font-size: var(--brand-font-size--default) !important;
-      // font-weight: var(--brand-font-weight-400) !important;
-      // line-height: var(--brand-font-size--20);
     }
+    margin-bottom: 1px !important;
   }
 }
 
@@ -712,7 +707,7 @@ div.disable-all {
   gap: var(--spacing-03);
 }
 
-.styled-radio-group {
+.styled-radio- {
   fieldset {
     legend {
       // font-size: var(--brand-font-size--large) !important;
@@ -734,6 +729,7 @@ div.disable-all {
 
   fieldset {
     gap: var(--spacing-02);
+    margin-bottom: var(--spacing-02);
   }
 }
 
@@ -787,7 +783,7 @@ div.disable-all {
   flex-direction: column;
   height: 100vh;
 
-  >div {
+  > div {
     padding: var(--spacing-03);
     flex: 0 0 auto;
   }
@@ -808,7 +804,6 @@ div.disable-all {
   }
 
   #secondaryNavPanel {
-
     button,
     a {
       font-size: var(--brand-font-size--small);
@@ -819,7 +814,6 @@ div.disable-all {
 }
 
 .questionnaire-template-question-list {
-
   .label-heading,
   label[class*="TextareaInput-module--label"],
   label[class*="InputField-module--labelText"],
@@ -881,5 +875,9 @@ div.disable-all {
 
 .error-label {
   font-size: var(--brand-font-size--small);
-  color: var(--brand-color-warning-coral)
+  color: var(--brand-color-warning-coral);
+}
+
+.flex {
+  display: flex;
 }
