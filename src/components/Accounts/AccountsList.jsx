@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CheckboxGroup } from '@mckesson/mcp-component-library';
 import SelectedAccounts from './SelectedAccounts';
@@ -26,6 +26,15 @@ export default function AccountsList(props) {
   const { data, paginationConfig, refetch, setPageNumber } = useAccounts();
   const { t } = useTranslate();
   const showCardView = useResponsiveView();
+  const [tableHeight, setTableHeight] = useState('100%');
+
+  useEffect(() => {
+    setTimeout(() => {
+      let eleHeight = document.getElementById('data-table-my-data-table')?.offsetHeight;
+      setTableHeight(eleHeight);
+    }, 100);
+  }, [data, isLoading]);
+
   const columns = useMemo(() => {
     const _columns = [
       {
@@ -183,7 +192,7 @@ export default function AccountsList(props) {
           />
         </div>
         {showSelectedAccounts && (
-          <div className="selected-account-box">
+          <div className="selected-account-box" style={{ height: tableHeight }}>
             <SelectedAccounts selectedAccounts={selectedRows} onRemoveAccount={onRemoveSelectedAccount} />
           </div>
         )}

@@ -206,13 +206,15 @@ const SignUp = () => {
                     </div>
                     <div className="form-segment">
                       <div className="line-height">
-                        <Label className="label-heading">
+                        {/* <Label className="label-heading">
                           {t('forms.labels.organization')}
                           <Required id="Required">Required</Required>
-                        </Label>
+                        </Label> */}
                         <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 ">
                           <MultiSelectDropdown
                             id={'select-org-search'}
+                            label={t('forms.labels.organization')}
+                            isRequired={true}
                             isMultiSelect={false}
                             placeholder={t('forms.labels.organization')}
                             onChange={(event) => onChangeOrganization(event, setFieldValue)}
