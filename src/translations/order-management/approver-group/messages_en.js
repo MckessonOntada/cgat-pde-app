@@ -69,6 +69,7 @@ export const ApproverManagementEN = {
   'approvergroup.view.subheader.group_created_by': 'Created By:',
   'approvergroup.view.subheader.group_created_on': 'Created On:',
   'approvergroup.view.subheader.attributes': 'Attributes',
+  'approverGroup.view.subheader.rules': 'Rules',
   'approvergroup.view.subheader.manage_treatment_center': 'Approver User List',
 
   'errors.approverGroup_index_name_1_practiceId_1': 'Approver group name already exists in the System.',

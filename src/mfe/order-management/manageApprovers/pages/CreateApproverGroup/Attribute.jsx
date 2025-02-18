@@ -8,6 +8,11 @@ import './index.scss';
 import RenderControls from './RenderControls';
 import { RuleKeys, RuleLabels } from '../ApproverGroupDetail/RulesConfig';
 
+const ruleAttributeConnectingSegment = {
+  Catalog: 'ORDERED ANY OF',
+  Price: 'GREATER THAN'
+};
+
 const Attributes = ({ values, setFieldValue }) => {
   const initRef = useRef(false);
   const { t } = useTranslate();
@@ -35,62 +40,78 @@ const Attributes = ({ values, setFieldValue }) => {
         {({ push, remove }) => (
           <>
             {values.rules?.map((attribute, index) => (
-              <div key={index} className="attributeBox grid grid-gap-24 grid-cols-12 gap-4 align-items-start">
-                <div className="col-span-4">
-                  <Field
-                    id={`rules[${index}].attributeType`}
-                    name={`rules[${index}].attributeType`}
-                    fieldlabel={t('approvergroup.attribute')}
-                    placeholder=" "
-                    component={Components['dropdown']}
-                    isRequired
-                    options={getAvailableOptions(index)}
-                    onChangeHandler={(value) => {
-                      if (value === 'Users') {
-                        setFieldValue('attributeuseroption', 'user_role');
-                      }
-                      if (value === 'Price') {
-                        setFieldValue(`rules[${index}].value`, '');
-                        setFieldValue(`rules[${index}].value_augmented`, '');
-                      }
-                    }}
-                  />
-                </div>
-                <div
-                  className={`${attribute.attributeType === RuleLabels[RuleKeys.USERS] ? 'col-span-12 grid-row-start-new' : 'col-span-8'}`}>
-                  <div className="dropdown-with-button">
-                    <div className="dropdown-row">
-                      <div className="dropdown-wrapper">
-                        <RenderControls
-                          attributeType={attribute.attributeType}
-                          name={`rules[${index}].value`}
-                          isAttributeRemoved={initRef}
-                        />
-                      </div>
+              <div className="attribute-wrapper">
+                <div key={index} className="attributeBox">
+                  <div className="attribute-text-segment">IF</div>
+                  <div className="type col-span-4">
+                    <Field
+                      id={`rules[${index}].attributeType`}
+                      name={`rules[${index}].attributeType`}
+                      fieldlabel={t('approvergroup.attribute') + ' ' + (index + 1)}
+                      placeholder=" "
+                      component={Components['dropdown']}
+                      isRequired
+                      helperText="Please select a criteria to apply the approval rules on."
+                      options={getAvailableOptions(index)}
+                      onChangeHandler={(value) => {
+                        if (value === 'Users') {
+                          setFieldValue('attributeuseroption', 'user_role');
+                        }
+                        if (value === 'Price') {
+                          setFieldValue(`rules[${index}].value`, '');
+                          setFieldValue(`rules[${index}].value_augmented`, '');
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="attribute-text-segment">
+                    {ruleAttributeConnectingSegment[attribute.attributeType] || 'SELECTED ANY OF'}
+                  </div>
+                  <div
+                    className={`control ${
+                      attribute.attributeType === RuleLabels[RuleKeys.USERS] ? 'col-span-12 grid-row-start-new' : 'col-span-8'
+                    }`}>
+                    <div className="dropdown-with-button">
+                      <div className="dropdown-row">
+                        <div className="dropdown-wrapper">
+                          <RenderControls
+                            attributeType={attribute.attributeType}
+                            name={`rules[${index}].value`}
+                            isAttributeRemoved={initRef}
+                            helperText={'Please select the account(s) for the approver group.'}
+                          />
+                        </div>
 
-                      <div className="remove-button">
                         {index !== 0 && (
-                          <Button
-                            Icon={DeleteIcon}
-                            variant="tertiary"
-                            size="md"
-                            className="btnRemove"
-                            onClick={() => {
-                              remove(index);
-                              initRef.current = true;
-                            }}>
-                            {t('approvergroup.button.remove')}
-                          </Button>
+                          <div className="remove-button">
+                            <Button
+                              Icon={DeleteIcon}
+                              variant="tertiary"
+                              size="md"
+                              className="btnRemove"
+                              onClick={() => {
+                                remove(index);
+                                initRef.current = true;
+                              }}>
+                              {t('approvergroup.button.remove')}
+                            </Button>
+                          </div>
                         )}
                       </div>
                     </div>
                   </div>
                 </div>
+                <div className="hr-container">
+                  {index < values.rules.length - 1 && <div className="attribute-text-segment">AND</div>}
+                  <hr className="hr-line" />
+                </div>
               </div>
             ))}
 
             {/* Add Attribute Button */}
-            <div className="separator-line"></div>
+
+            {/* <div className="separator-line"></div> */}
+
             <div className="addAttribute">
               <Button
                 variant="tertiary"

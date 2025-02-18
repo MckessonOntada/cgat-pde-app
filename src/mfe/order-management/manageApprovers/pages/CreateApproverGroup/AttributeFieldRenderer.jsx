@@ -9,7 +9,7 @@ const getAugmentedValues = (rules, attributeType) => {
   return rules.filter((rule) => rule.attributeType === attributeType).flatMap((rule) => rule.value_augmented || []);
 };
 
-const AttributeFieldRenderer = ({ attributeType, name, localData, setLocalData, onRemoveClick, t, values }) => {
+const AttributeFieldRenderer = ({ caption, helperText, attributeType, name, localData, setLocalData, onRemoveClick, t, values }) => {
   const userRadioOptions = [
     { isDisabled: false, label: t('approvergroup.userrole'), value: 'user_role' },
     { isDisabled: false, label: t('approvergroup.username'), value: 'user_name' }
@@ -22,8 +22,9 @@ const AttributeFieldRenderer = ({ attributeType, name, localData, setLocalData, 
           <Field
             id="price"
             name={name}
-            label={t('approvergroup.price')}
+            label={caption}
             placeholder=" "
+            helperText={helperText}
             isRequired
             component={Components['input']}
             maxLength={8}
@@ -37,8 +38,9 @@ const AttributeFieldRenderer = ({ attributeType, name, localData, setLocalData, 
           <Field
             id={RuleLabels[RuleKeys.THERAPIES]}
             name={name}
-            label={t('approvergroup.selecttherapy')}
+            label={caption}
             placeholder=" "
+            helperText={helperText}
             isRequired
             component={Components['multiSelectDropdown']}
             options={localData}
@@ -62,11 +64,12 @@ const AttributeFieldRenderer = ({ attributeType, name, localData, setLocalData, 
           <Field
             id={RuleLabels[RuleKeys.ACCOUNTS]}
             name={name}
-            label={t('approvergroup.selectaccount')}
+            label={caption}
             placeholder=" "
             isRequired
             component={Components['multiSelectDropdown']}
             options={localData}
+            helperText={helperText}
             getUpdatedOptions={(values) => {
               if (values.length > 0) {
                 setLocalData(values);
@@ -87,10 +90,11 @@ const AttributeFieldRenderer = ({ attributeType, name, localData, setLocalData, 
           <Field
             id="User"
             name="attributeuseroption"
-            caption={t('approvergroup.selectuserradio')}
+            caption={caption}
             placeholder=" "
             component={Components['radioGroup']}
             isRequired
+            helperText={helperText}
             items={userRadioOptions}
             breakItemLabel={false}
             itemCustomStyles={{ fontSize: '16px', marginRight: '24px' }}
@@ -100,11 +104,12 @@ const AttributeFieldRenderer = ({ attributeType, name, localData, setLocalData, 
           <Field
             id={RuleLabels[RuleKeys.ACCOUNTS]}
             name={name}
-            label={t('approvergroup.selectuser')}
+            label={caption}
             placeholder=" "
             isRequired
             component={Components['multiSelectDropdown']}
             options={localData}
+            helperText={helperText}
             getUpdatedOptions={(values) => {
               if (values.length > 0) {
                 setLocalData(values);

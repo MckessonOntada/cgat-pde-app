@@ -28,6 +28,12 @@ import './ApproverGroupDetail.scss';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import CommonUtils from '@src/util/CommonUtils';
+import ApproverUserList from './ApproverUserList';
+
+const ruleAttributeConnectingSegment = {
+  catalog: 'ORDERED ANY OF',
+  price: 'GREATER THAN'
+};
 
 function ApproverGroupDetails() {
   const navigate = useNavigate();
@@ -113,6 +119,43 @@ function ApproverGroupDetails() {
     navigate(location.pathname, { replace: true, state: { ...location.state } });
   };
 
+  const rules = [];
+  groupData?.rules &&
+    Object.entries(groupData?.rules || {}).forEach((entry, index) => {
+      const [key, value] = entry;
+      let beautifiedValue = <span className="rule-item-value">{value}</span>;
+      if (key === 'price') {
+        rules.push(
+          <div className="rule-item" key={`rule_item_${index}`}>
+            IF&nbsp;<span>{key}</span>&nbsp;{ruleAttributeConnectingSegment[key] || 'SELECTED ANY OF'}&nbsp;
+            <span className="rule-item-value">${beautifiedValue}</span>
+          </div>
+        );
+        return;
+      }
+      let _key = 'accountName';
+      if (key === 'therapies') _key = 'therapyName';
+      else if (key === 'roles') _key = 'roleName';
+      else if (key === 'users') _key = 'userName';
+
+      beautifiedValue = value.map((val) => <span className="rule-item-value">{val[_key]}</span>);
+
+      rules.push(
+        <div className="rule-item" key={`rule_item_${index}`}>
+          IF&nbsp;<span>{key}</span>&nbsp;{ruleAttributeConnectingSegment[key] || 'SELECTED ANY OF'}&nbsp;
+          <span>
+            {beautifiedValue.map((rule, index) => {
+              return (
+                <span>
+                  {rule}
+                  {index < beautifiedValue.length - 1 && <span>&nbsp;OR&nbsp;</span>}
+                </span>
+              );
+            })}
+          </span>
+        </div>
+      );
+    });
   return (
     <div className="MCP-module-wrapper">
       {isLoading && <Loader type={'screen'} />}
@@ -149,7 +192,6 @@ function ApproverGroupDetails() {
             )
           }
         />
-
         <div className="MCP-CardContainer">
           <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3">
             <div className="approver-group-labelWrap">
@@ -171,72 +213,19 @@ function ApproverGroupDetails() {
           </div>
         </div>
 
-        <Heading as="h3">{t('approvergroup.view.subheader.attributes')}</Heading>
-        <div className="MCP-CardContainer grid grid-gap-16">
-          {!(groupData?.rules && Object.keys(groupData.rules).length > 0) ? (
-            <EmptyDataTable
-              image={EmptyDataImage}
-              heading={t('message.emptyTableTitle')}
-              description={t('approvergroup.empty_table.description')}
-            />
-          ) : (
-            RulesConfig.map(({ key, label, valueKey }) =>
-              groupData.rules[key] !== undefined &&
-              (Array.isArray(groupData.rules[key]) ? groupData.rules[key].length > 0 : groupData.rules[key]) ? (
-                <div key={key} className="MCP-module-body attribute-category">
-                  {valueKey !== null ? (
-                    <div className="subheader-text">{t(`rules.${key}`)}</div>
-                  ) : (
-                    valueKey === null && (
-                      <div className="subheader-text">
-                        {t(`rules.${key}`)}
-                        <span className="price">
-                          <span>$</span>
-                          {parseFloat(groupData.rules[key]).toFixed(2)}
-                        </span>
-                      </div>
-                    )
-                  )}
-                  <div className="attribute-category">
-                    <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 attribute-list">
-                      {Array.isArray(groupData.rules[key]) &&
-                        groupData.rules[key].map((item, idx) => (
-                          <div key={idx} className="flex items-center justify-between attribute-item">
-                            <div>
-                              <p className="to-upper-case label-text">{item[valueKey]}</p>
-                            </div>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                </div>
-              ) : null
-            )
-          )}
+        <Heading as="h3">{t('approverGroup.view.subheader.rules')}</Heading>
+        <div className="MCP-CardContainer rule-list">
+          {rules.map((rule, index) => {
+            return (
+              <React.Fragment>
+                {rule}
+                {index < rules.length - 1 && <div>AND</div>}
+              </React.Fragment>
+            );
+          })}
         </div>
 
-        <Heading as="h3">{t('approvergroup.view.subheader.manage_treatment_center')}</Heading>
-        <div className="MCP-CardContainer grid grid-gap-16">
-          {groupData?.approverUsers && groupData?.approverUsers.length > 0 ? (
-            <div className="grid grid-gap-16 grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 approver-user-list">
-              {groupData.approverUsers.map(({ userId, userName }, idx) => (
-                <React.Fragment key={userId}>
-                  <div className="flex items-center justify-between approver-user-item">
-                    <div>
-                      <p className="label-text">{userName}</p>
-                    </div>
-                  </div>
-                </React.Fragment>
-              ))}
-            </div>
-          ) : (
-            <EmptyDataTable
-              image={EmptyDataImage}
-              heading={t('message.emptyTableTitle')}
-              description={t('approvergroup.empty_table.description')}
-            />
-          )}
-        </div>
+        <ApproverUserList data={groupData?.approverUsers} />
       </div>
       <Modal
         id="xxxs-modal"

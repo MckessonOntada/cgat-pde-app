@@ -10,7 +10,25 @@ import { RuleKeys, RuleLabels, RuleValueKeys } from '../ApproverGroupDetail/Rule
 import AttributeFieldRenderer from './AttributeFieldRenderer';
 import { use } from 'react';
 
-function RenderControls({ attributeType, name, isAttributeRemoved }) {
+const fieldAttributes = {
+  price: {
+    caption: 'Amount'
+  },
+  catalog: {
+    caption: 'Select Therapy'
+  },
+  role: {
+    caption: 'Select Role'
+  },
+  account: {
+    caption: 'Select Account'
+  },
+  user: {
+    caption: 'Select User'
+  }
+};
+
+function RenderControls({ attributeType, name, isAttributeRemoved, helperText }) {
   const { t } = useTranslate();
   const { values, setFieldValue } = useFormikContext();
   const { initialValues, isEditMode } = useFormContext();
@@ -151,15 +169,17 @@ function RenderControls({ attributeType, name, isAttributeRemoved }) {
     });
     setLocalData(updatedOptions);
   };
-
+  console.log(attributeType);
   return (
     <AttributeFieldRenderer
+      caption={fieldAttributes[attributeType.toLowerCase()]?.caption || 'Enter value'}
       attributeType={attributeType}
       name={name}
       localData={localData}
       setLocalData={setLocalData}
       onRemoveClick={onRemoveClick}
       t={t}
+      helperText={helperText}
       values={values}
     />
   );
