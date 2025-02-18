@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Heading, CheckboxGroup, CustomDataTable, RadioGroup } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -53,6 +53,7 @@ function AdditionalDetails() {
     label: t('messages.variantAcknowledgement'),
     value: false
   });
+  const [agreementCheckboxError, setAgreementCheckboxError] = React.useState(null);
   const [variant, setVariant] = React.useState();
   const { showAlert } = useAlert();
   const alertContainerId = 'additionalDetails-alert-container';
@@ -141,12 +142,27 @@ function AdditionalDetails() {
 
         validationSchemaFields[fieldName] = Yup.object({
           value:
-            question.type === QUESTION_TYPE.INPUT ||
-            question.type === QUESTION_TYPE.DROPDOWN ||
-            question.type === QUESTION_TYPE.RADIO_BUTTON
-              ? Yup.string()[question.isMandatory ? 'required' : 'nullable']('Value is required')
-              : Yup.array().of(Yup.string())[question.isMandatory ? 'min' : 'nullable'](1, 'Select at least one option'),
-          documentUrl: Yup.string().nullable()
+            question.type === QUESTION_TYPE.INPUT || question.type === QUESTION_TYPE.DROPDOWN
+              ? question.isMandatory
+                ? Yup.string().required('Value is required')
+                : Yup.string().nullable()
+              : question.type === QUESTION_TYPE.RADIO_BUTTON
+              ? question.isMandatory
+                ? Yup.string().required('Select at least one option')
+                : Yup.string().nullable()
+              : question.type === QUESTION_TYPE.CHECKBOX
+              ? question.isMandatory
+                ? Yup.array()
+                    .of(Yup.string())
+                    .min(1, 'Select at least one option')
+                    .test('not-empty', 'Select at least one option', (value) => Array.isArray(value) && value.length > 0)
+                : Yup.array().of(Yup.string()).nullable()
+              : question.isMandatory
+              ? Yup.array().of(Yup.string()).min(1, 'Select at least one option')
+              : Yup.array().of(Yup.string()).nullable(),
+
+          documentUrl:
+            question.isDocumentRequired && question.isMandatory ? Yup.string().required('Please Upload Document') : Yup.string().nullable()
         });
       });
     });
@@ -279,10 +295,8 @@ function AdditionalDetails() {
       navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
     } else {
       if (orderDetails?.patientDetailsRequired) {
-        editByStage(ORDER_STAGES.PATIENT_DETAILS);
         navigate(`../${orderId}/patient`, { state: { isEdit: false, isApprover: isApprover } });
       } else {
-        editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
         navigate(`../${orderId}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
       }
     }
@@ -290,6 +304,7 @@ function AdditionalDetails() {
 
   const handleOnSubmit = (values) => {
     if (CommonUtils.isNonEmptyObject(variantsData?.content) && (!variant || !variantAcknowledgement?.isChecked)) {
+      setAgreementCheckboxError(t('message.acknowldge'));
       return;
     }
     const _var = !!variant
@@ -355,15 +370,14 @@ function AdditionalDetails() {
     } else if (modalSuccessCallback === 'summary') {
       navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'patient') {
-      editByStage(ORDER_STAGES.PATIENT_DETAILS);
       navigate(`../${orderId}/patient`, { state: { isEdit: false, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'account') {
-      editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
       navigate(`../${orderId}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
     }
   };
 
   const handleOnVariantChange = (variant) => {
+    setAgreementCheckboxError(null);
     setVariant(variant);
   };
 
@@ -397,14 +411,8 @@ function AdditionalDetails() {
         onSubmit={(values) => {
           handleOnSubmit(values);
         }}>
-        {({ dirty, errors }) => {
+        {({ dirty, errors, values }) => {
           useEffect(() => setIsDirty(dirty), [dirty]);
-
-          useEffect(() => {
-            if (Object.keys(errors).length > 0) {
-              setFormikErrorMsg('Please enter required fields.');
-            }
-          }, [errors]);
 
           return (
             <Form>
@@ -451,6 +459,8 @@ function AdditionalDetails() {
                               id={'default'}
                               name="variant-acknowledgement"
                               items={[{ ...variantAcknowledgement, onChange: () => handleOnAcknowledgmentChange() }]}
+                              error={Boolean(agreementCheckboxError)}
+                              errorMessage={agreementCheckboxError}
                               size="md"
                             />
                           )}
@@ -500,6 +510,14 @@ function AdditionalDetails() {
 
 const VariantTable = ({ variant, onChange, data }) => {
   const { t } = useTranslate();
+
+  useEffect(() => {
+    if (!variant && data?.length > 0) {
+      const firstVariant = data[0];
+      onChange(firstVariant);
+    }
+  }, [data, onChange]);
+
   const columns = [
     {
       id: 'id',
@@ -539,7 +557,7 @@ const VariantTable = ({ variant, onChange, data }) => {
       maxWidth: '280px',
       sortable: false,
       cell: (props) => (
-        <span aria-label={t('labels.variant')}>
+        <span className="flex" aria-label={t('labels.variant')}>
           <EclipsesTextcss str={props.variant} maxWidth={240} />
         </span>
       )
