@@ -23,6 +23,7 @@ import AuthUtils from '@src/util/AuthUtils';
 import OrderStepper from '../OrderStepper';
 import useOrder from '../../../orders/useOrder';
 import { useCustomPrint } from '@src/util/printUtils';
+import CommonUtils from '@src/util/CommonUtils';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -358,7 +359,7 @@ const Summary = () => {
                     value={
                       <span className="dollarSign ">
                         <span>$</span>
-                        {new Intl.NumberFormat('en-US', {style: 'currency',currency: 'USD', }).format(orderCost || 0).slice(1)}
+                        {CommonUtils.formatNumberWithoutSymbol(orderCost)}
                       </span>
                     }
                   />
