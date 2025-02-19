@@ -17,6 +17,17 @@ export function getNestedValue(obj, path, defaultValue = undefined) {
   }, obj);
 }
 
+export function getFieldname(fieldName) {
+  if (!fieldName || typeof fieldName !== 'string') return fieldName;
+
+  // Only modify names with bracket notation
+  if (/\[|\]/.test(fieldName)) {
+    return fieldName.replace(/\['(.+?)'\]/g, '.$1').replace(/\[(\d+)\]/g, '.$1');
+  }
+
+  return fieldName;
+}
+
 export const US_STATES_CITIES = () => {
   const _options = [];
 
