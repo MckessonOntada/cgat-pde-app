@@ -19,12 +19,14 @@ function DashboardPage() {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const isSystemAdminView = AuthUtils.isSystemAdminView();
   const [isAlertVisible, setIsAlertVisible] = React.useState(false);
   const isSuccess = location.state?.isSuccess || false;
   const [alertDescription, setAlertDescription] = React.useState('');
+  const [alert, setAlert] = React.useState(null);
+  const [isDeactivate, setIsDeactivate] = React.useState(false);
   const { hasPermission } = usePermission();
   const { applyFilters, clearFilters } = useOrg();
+  const [states, setStates] = React.useState(US_STATES());
   const breadcrumbItems = [
     {
       label: `${t('orgManagement.header.admin')}`,
@@ -38,6 +40,7 @@ function DashboardPage() {
   React.useEffect(() => {
     if (isSuccess) {
       setIsAlertVisible(true);
+      setAlert({ type: 'success' });
       setAlertDescription('Organization Created Successfully');
       const timer = setTimeout(handleAlertClose, 10000);
       return () => clearTimeout(timer);
@@ -47,6 +50,18 @@ function DashboardPage() {
   const handleAlertClose = () => {
     setIsAlertVisible(false);
     navigate(location.pathname, { replace: true, state: { ...location.state, isSuccess: false } });
+  };
+
+  const handlealert = (success, message) => {
+    setIsAlertVisible(true);
+    setIsDeactivate(true);
+    if (success) {
+      setAlert({ type: 'success' });
+      setAlertDescription(message);
+    } else {
+      setAlert({ type: 'error' });
+      setAlertDescription(message);
+    }
   };
 
   const usStates = US_STATES();
@@ -98,7 +113,9 @@ function DashboardPage() {
             </div>
           }
         />
-        {isSuccess && isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type="success" duration={10000} />}
+        {(isSuccess || isDeactivate) && isAlertVisible && (
+          <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />
+        )}
 
         <div className="MCP-module-body">
           <div className="MCP-panel-container">
@@ -110,7 +127,7 @@ function DashboardPage() {
                 searchPlaceholder={t('orgManagement.org.placeholder')}
               />
             </div>
-            <OrgList />
+            <OrgList onActionSuccess={handlealert} />
           </div>
         </div>
       </div>

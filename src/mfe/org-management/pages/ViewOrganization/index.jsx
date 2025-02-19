@@ -71,6 +71,7 @@ export default function ViewOrganization() {
 
   const addNewAccountsClick = () => {
     if (selectedAccounts?.length <= 0) {
+      setUpdateState({ isSuccess: true });
       setAlertConfig({
         isVisible: true,
         description: `Select at least on account`,
@@ -78,6 +79,7 @@ export default function ViewOrganization() {
       });
       return;
     }
+
     const payload = selectedAccounts?.map((account) => account.id);
     mutate(
       { payload },
@@ -92,7 +94,8 @@ export default function ViewOrganization() {
               description: `${selectedCount} ${t('orgManagement.messages.accountlinkSuccess')}`,
               type: 'success'
             });
-            handleCancel();
+            setSelectedAccounts([]);
+            setAddNewAccounts(false);
           }
         },
         onError: (error) => {
@@ -111,6 +114,7 @@ export default function ViewOrganization() {
       setSelectedAccounts([]);
       setAddNewAccounts(false);
       scrollToTopUtil();
+      setAlertConfig(null);
     } else {
       navigate(`../${InternalPaths.editOrg}/${orgId}`, { state: data }, true);
     }
@@ -136,22 +140,7 @@ export default function ViewOrganization() {
           {t('orgManagement.back.organization')}
         </Button>
       </div>
-      {/* {!isView && (
-        <div className="stepper">
-          <Stepper
-            activeIndex={2}
-            dividerText="of"
-            stepHeaders={[
-              {
-                label: t('orgManagement.stepper.option.org_details')
-              },
-              {
-                label: t('orgManagement.stepper.option.acct_details')
-              }
-            ]}
-          />
-        </div>
-      )} */}
+
       {!addNewAccounts && (
         <ModuleHeader heading={<Heading as="h1">{t('orgManagement.create_org.org-details')}</Heading>} style={{ marginBottom: '16px' }} />
       )}
@@ -169,7 +158,7 @@ export default function ViewOrganization() {
         controls={
           !addNewAccounts && (
             <div className="controls">
-              {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.EDIT_ORGANIZATION) && (
+              {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.EDIT_ORGANIZATION) && data?.isActive && (
                 <Button Icon={EditPencil} variant="secondary" className="button-icon" onClick={onEditAccounts} size={'md'}>
                   {t(isView ? 'orgManagement.table.action.edit' : 'orgManagement.add.account')}
                 </Button>
@@ -182,6 +171,7 @@ export default function ViewOrganization() {
       {updateState.isSuccess && alertConfig?.isVisible && (
         <Alert type={alertConfig.type} description={alertConfig.description} onClose={() => setAlertConfig(null)} duration={10000} />
       )}
+
       <OrganizationAccounts
         showSelectedAccounts={addNewAccounts}
         omitColumns={addNewAccounts ? ['action'] : ['distributionChannel']}
