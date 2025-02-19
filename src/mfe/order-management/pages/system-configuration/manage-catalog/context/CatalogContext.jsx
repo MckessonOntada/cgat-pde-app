@@ -84,7 +84,8 @@ export const CatalogProvider = ({ children }) => {
     isError,
     error,
     data: catalogList,
-    refetch
+    refetch,
+    isFetching
   } = useQuery({
     queryKey: [selectedAccount],
     queryFn: async () => {
@@ -117,7 +118,7 @@ export const CatalogProvider = ({ children }) => {
     setPageNumber,
     clearFilters,
     applyFilters,
-    isLoading,
+    isLoading: isFetching,
     filterConfig
   };
   return <CatalogContext.Provider value={contextValue}>{children}</CatalogContext.Provider>;
