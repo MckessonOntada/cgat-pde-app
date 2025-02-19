@@ -192,8 +192,8 @@ function AdditionalDetails() {
       const { accountDetails, therapy } = orderDetails;
       const payload = {
         variantType,
-        soldToCustomer: accountDetails.soldToAccount.accountNumber,
-        shipToCustomer: accountDetails.shipToAccount.accountNumber,
+        soldToCustomer: accountDetails.soldToAccount?.accountNumber,
+        shipToCustomer: accountDetails.shipToAccount?.accountNumber,
         sapMaterial: therapy.materialNumber
       };
       return QuestionnaireService.getConfiguredQuestionnaire(payload);
