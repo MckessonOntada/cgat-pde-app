@@ -6,29 +6,53 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { Field, useFormikContext } from 'formik';
 import { useAccountData, useCatalogData, useUserData, useUserRoleData } from './apiService';
 import { useFormContext } from '../../context/FormContext';
-import { RuleKeys, RuleLabels, RuleValueKeys } from '../ApproverGroupDetail/RulesConfig';
+import { CONTROL_OPTIONS, RuleKeys, RuleLabels, RuleValueKeys } from '../ApproverGroupDetail/RulesConfig';
 import AttributeFieldRenderer from './AttributeFieldRenderer';
-import { use } from 'react';
 
 const fieldAttributes = {
-  price: {
-    caption: 'Amount'
+  PRICE: {
+    helperText: 'Please select a criteria to apply the approval rules on.',
+    inputControl: {
+      caption: 'Amount',
+      searchable: false,
+      helperText: 'Please enter the amount greater than for the approver group.'
+    }
   },
-  catalog: {
-    caption: 'Select Therapy'
+  CATALOG: {
+    helperText: 'Please select a criteria to apply the approval rules on.',
+    inputControl: {
+      caption: 'Select Therapy',
+      searchable: true,
+      helperText: 'Please select the therapy(s) for the approver group.'
+    }
   },
-  role: {
-    caption: 'Select Role'
+  ACCOUNT: {
+    helperText: 'Please select a criteria to apply the approval rules on.',
+    inputControl: {
+      caption: 'Select Account',
+      searchable: true,
+      helperText: 'Please select the account(s) for the approver group.'
+    }
   },
-  account: {
-    caption: 'Select Account'
+  USER_ROLE: {
+    helperText: 'Please select a criteria to apply the approval rules on.',
+    inputControl: {
+      caption: 'Select Role',
+      searchable: true,
+      helperText: 'Please select the role(s) for the approver group.'
+    }
   },
-  user: {
-    caption: 'Select User'
+  USER_NAME: {
+    helperText: 'Please select a criteria to apply the approval rules on.',
+    inputControl: {
+      caption: 'Select User',
+      searchable: true,
+      helperText: 'Please select the user(s) for the approver group.'
+    }
   }
 };
 
-function RenderControls({ attributeType, name, isAttributeRemoved, helperText }) {
+function RenderControls({ attributeType = CONTROL_OPTIONS.PRICE, name, isAttributeRemoved }) {
   const { t } = useTranslate();
   const { values, setFieldValue } = useFormikContext();
   const { initialValues, isEditMode } = useFormContext();
@@ -36,15 +60,19 @@ function RenderControls({ attributeType, name, isAttributeRemoved, helperText })
   const isDataBinded = useRef(false);
   const useInitialValues = useRef(true);
 
-  const shouldFetchCatalog = attributeType === RuleLabels[RuleKeys.THERAPIES];
-  const shouldFetchAccounts = attributeType === RuleLabels[RuleKeys.ACCOUNTS];
-  const shouldFetchUsers = attributeType === RuleLabels[RuleKeys.USERS];
-  const shouldFetchPrice = attributeType === RuleLabels[RuleKeys.PRICE];
+  React.useEffect(() => {}, [attributeType]);
+
+  const shouldFetchCatalog = attributeType === CONTROL_OPTIONS.CATALOG.toUpperCase();
+  const shouldFetchAccounts = attributeType === CONTROL_OPTIONS.ACCOUNT.toUpperCase();
+  const shouldFetchUsers =
+    attributeType === CONTROL_OPTIONS.USER_ROLE.toUpperCase().replace(/\s/g, '_') ||
+    attributeType === CONTROL_OPTIONS.USER_NAME.replace(/\s/g, '_');
+  const shouldFetchPrice = attributeType === CONTROL_OPTIONS.PRICE.toUpperCase();
 
   const catalogQuery = useCatalogData(shouldFetchCatalog);
   const accountQuery = useAccountData(shouldFetchAccounts);
-  const userRoleQuery = useUserRoleData(shouldFetchUsers && values.attributeuseroption === 'user_role');
-  const userDataQuery = useUserData(shouldFetchUsers && values.attributeuseroption === 'user_name');
+  const userRoleQuery = useUserRoleData(shouldFetchUsers);
+  const userDataQuery = useUserData(shouldFetchUsers);
 
   const [selectedData, setSelectedData] = useState({
     price: '',
@@ -169,17 +197,18 @@ function RenderControls({ attributeType, name, isAttributeRemoved, helperText })
     });
     setLocalData(updatedOptions);
   };
-  console.log(attributeType);
+
+  const attributes = fieldAttributes[attributeType].inputControl;
   return (
     <AttributeFieldRenderer
-      caption={fieldAttributes[attributeType.toLowerCase()]?.caption || 'Enter value'}
+      caption={attributes.caption}
+      helperText={attributes.helperText}
       attributeType={attributeType}
       name={name}
       localData={localData}
       setLocalData={setLocalData}
       onRemoveClick={onRemoveClick}
       t={t}
-      helperText={helperText}
       values={values}
     />
   );

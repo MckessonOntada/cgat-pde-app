@@ -883,3 +883,11 @@ div.disable-all {
   font-size: var(--brand-font-size--small);
   color: var(--brand-color-warning-coral)
 }
+
+.control-helper-text {
+  font-weight: var(--brand-font-weight-400);
+  font-size: var(--brand-font-size--extra-small);
+  list-style: var(--brand-line-height--medium);
+  font-style: italic;
+  margin-top: var(--spacing-01);
+}

@@ -13,7 +13,7 @@ export const useFormContext = () => {
 
 const defaultInitialValues = {
   name: '',
-  rules: [{ attributeType: 'Price', value: '' }],
+  rules: [{ attributeType: 'PRICE', value: '' }],
   approverUsers: [],
   attributeuseroption: 'user_role'
 };

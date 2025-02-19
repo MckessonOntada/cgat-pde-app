@@ -6,11 +6,14 @@ import { Button, Pills } from '@mckesson/mcp-component-library';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
 import './index.scss';
 import RenderControls from './RenderControls';
-import { RuleKeys, RuleLabels } from '../ApproverGroupDetail/RulesConfig';
+import { CONTROL_OPTIONS, RuleKeys, RuleLabels } from '../ApproverGroupDetail/RulesConfig';
 
 const ruleAttributeConnectingSegment = {
-  Catalog: 'ORDERED ANY OF',
-  Price: 'GREATER THAN'
+  CATALOG: 'ORDERED ANY OF',
+  PRICE: 'GREATER THAN',
+  ACCOUNT: 'SELECTED ANY OF',
+  USER_ROLE: 'SELECTED ANY OF',
+  USER_NAME: 'SELECTED ANY OF'
 };
 
 const Attributes = ({ values, setFieldValue }) => {
@@ -18,12 +21,10 @@ const Attributes = ({ values, setFieldValue }) => {
   const { t } = useTranslate();
   const attrOptions = [
     { label: t('orgManagement.create_org.option.please_select'), value: '' },
-    ...Object.entries(RuleLabels)
-      .filter(([key]) => key !== RuleKeys.ROLES)
-      .map(([, label]) => ({
-        label,
-        value: label
-      }))
+    ...Object.entries(CONTROL_OPTIONS).map(([key, value]) => ({
+      label: value,
+      value: key
+    }))
   ];
 
   const isAddDisabled = values.rules.length >= attrOptions.length - 1;
@@ -51,22 +52,21 @@ const Attributes = ({ values, setFieldValue }) => {
                       placeholder=" "
                       component={Components['dropdown']}
                       isRequired
-                      helperText="Please select a criteria to apply the approval rules on."
                       options={getAvailableOptions(index)}
                       onChangeHandler={(value) => {
-                        if (value === 'Users') {
-                          setFieldValue('attributeuseroption', 'user_role');
-                        }
-                        if (value === 'Price') {
-                          setFieldValue(`rules[${index}].value`, '');
-                          setFieldValue(`rules[${index}].value_augmented`, '');
-                        }
+                        setFieldValue(`rules[${index}].attributeType`, value);
+                        // if (value === 'Users') {
+                        //   setFieldValue('attributeuseroption', 'user_role');
+                        // }
+                        // if (value === 'Price') {
+                        //   setFieldValue(`rules[${index}].value`, '');
+                        //   setFieldValue(`rules[${index}].value_augmented`, '');
+                        // }
                       }}
                     />
+                    <div className="control-helper-text">Please select a criteria to apply the approval rules on.</div>
                   </div>
-                  <div className="attribute-text-segment">
-                    {ruleAttributeConnectingSegment[attribute.attributeType] || 'SELECTED ANY OF'}
-                  </div>
+                  <div className="attribute-text-segment">{ruleAttributeConnectingSegment[attribute.attributeType]}</div>
                   <div
                     className={`control ${
                       attribute.attributeType === RuleLabels[RuleKeys.USERS] ? 'col-span-12 grid-row-start-new' : 'col-span-8'
@@ -78,7 +78,6 @@ const Attributes = ({ values, setFieldValue }) => {
                             attributeType={attribute.attributeType}
                             name={`rules[${index}].value`}
                             isAttributeRemoved={initRef}
-                            helperText={'Please select the account(s) for the approver group.'}
                           />
                         </div>
 
