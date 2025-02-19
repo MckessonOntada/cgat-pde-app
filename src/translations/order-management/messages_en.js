@@ -395,5 +395,6 @@ export const MessageEn = {
   'message.questionnaireDeactivated': 'Questionnaire deactivated successfully.',
   'message.questionTextRequired': 'Question text is required',
   'message.englishTextIsRequired': 'At least requires english text',
-  'message.acknowldge': 'Please acknowledge to Save and Continue'
+  'message.acknowldge': 'Please acknowledge to Save and Continue',
+  'errors.uq_template_name_lower': 'Template Name already exists'
 };
