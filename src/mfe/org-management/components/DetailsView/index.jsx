@@ -20,7 +20,7 @@ const DetailsView = ({ data, onEditClick }) => {
           {data?.logoUrl && <img src={organizationLogo} alt="Logo" className="logo-img" />}
           <h2 className="org-label">{data.name}</h2>
         </div>
-        {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.EDIT_ORGANIZATION) && (
+        {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.EDIT_ORGANIZATION) && data?.isActive && (
           <Button Icon={EditPencil} variant="secondary" onClick={onEditClick} size="md">
             Edit
           </Button>

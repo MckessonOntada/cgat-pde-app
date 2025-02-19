@@ -19,7 +19,7 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 
-const OrgList = () => {
+const OrgList = ({ onActionSuccess }) => {
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -41,10 +41,17 @@ const OrgList = () => {
 
   const { mutate } = useMutation({
     mutationFn: handleDeActivateOrg,
-    onError: () => {},
     onSuccess: async () => {
       setSelectedRows(null);
       await refreshData();
+      const isSuccess = true;
+      const message = t('orgManagement.messages.DeactivateOrgSuccess');
+      onActionSuccess(isSuccess, message);
+    },
+    onError: (error) => {
+      const isSuccess = false;
+      const message = t('orgManagement.messages.DeactivateOrgFailure');
+      onActionSuccess(isSuccess, message);
     }
   });
 
@@ -110,14 +117,13 @@ const OrgList = () => {
       name: t('orgManagement.table.name'),
       cell: (row) => (
         <div>
-          <Link
-            variant="tertiary"
-            className="MCP-table-link"
-            onClick={(e) => {
-              handleClick(e, row);
-            }}>
+          {row.isActive ? (
+            <Link variant="tertiary" className="MCP-table-link" onClick={(e) => handleClick(e, row)}>
+              <EclipsesTextcss str={row.name} maxWidth={240} />
+            </Link>
+          ) : (
             <EclipsesTextcss str={row.name} maxWidth={240} />
-          </Link>
+          )}
         </div>
       ),
       sortable: true,
@@ -199,8 +205,6 @@ const OrgList = () => {
   };
 
   const handleDeactivate = () => {
-    // setSelectedRows([]);
-    // mutate(selectedRows);
     setIsOpen(true);
   };
 
@@ -266,7 +270,7 @@ const OrgList = () => {
           modalTitle: t('userManagement.confirmationMessage'),
           modalBody: (
             <div className="MCP-modal-body">
-              <p>{t('popup.userDeactivation.question')}</p>
+              <p>{t('orgManagement.message.DeactivateOrg')}</p>
             </div>
           ),
           modalFooter: (
