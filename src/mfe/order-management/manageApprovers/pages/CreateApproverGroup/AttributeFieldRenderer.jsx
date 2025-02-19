@@ -10,8 +10,9 @@ const getAugmentedValues = (rules, attributeType) => {
 };
 
 const AttributeFieldRenderer = ({ caption, helperText, attributeType, name, localData, setLocalData, onRemoveClick, t, values }) => {
+  console.log(values);
   switch (attributeType) {
-    case CONTROL_OPTIONS.PRICE.toUpperCase():
+    case CONTROL_OPTIONS.Price:
       return (
         <div>
           <Field id="price" name={name} label={caption} placeholder=" " isRequired component={Components['input']} maxLength={8} />
@@ -19,8 +20,8 @@ const AttributeFieldRenderer = ({ caption, helperText, attributeType, name, loca
         </div>
       );
 
-    case CONTROL_OPTIONS.CATALOG.toUpperCase():
-    case CONTROL_OPTIONS.ACCOUNT.toUpperCase():
+    case CONTROL_OPTIONS.Catalog:
+    case CONTROL_OPTIONS.Account:
       return (
         <div>
           <Field
@@ -46,8 +47,8 @@ const AttributeFieldRenderer = ({ caption, helperText, attributeType, name, loca
         </div>
       );
 
-    case CONTROL_OPTIONS.USER_ROLE.toUpperCase().replace(/\s/g, '_'):
-    case CONTROL_OPTIONS.USER_NAME.toUpperCase().replace(/\s/g, '_'):
+    case CONTROL_OPTIONS.Roles:
+    case CONTROL_OPTIONS.Users:
       return (
         <div>
           <Field

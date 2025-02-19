@@ -51,9 +51,9 @@ export const RuleValueKeys = {
 };
 
 export const CONTROL_OPTIONS = {
-  PRICE: 'Price',
-  ACCOUNT: 'Account',
-  CATALOG: 'Catalog',
-  USER_ROLE: 'User Role',
-  USER_NAME: 'User Name'
+  Price: 'Price',
+  Account: 'Account',
+  Catalog: 'Catalog',
+  Roles: 'Roles',
+  Users: 'Users'
 };

@@ -9,11 +9,11 @@ import RenderControls from './RenderControls';
 import { CONTROL_OPTIONS, RuleKeys, RuleLabels } from '../ApproverGroupDetail/RulesConfig';
 
 const ruleAttributeConnectingSegment = {
-  CATALOG: 'ORDERED ANY OF',
-  PRICE: 'GREATER THAN',
-  ACCOUNT: 'SELECTED ANY OF',
-  USER_ROLE: 'SELECTED ANY OF',
-  USER_NAME: 'SELECTED ANY OF'
+  Catalog: 'ORDERED ANY OF',
+  Price: 'GREATER THAN',
+  Account: 'SELECTED ANY OF',
+  Roles: 'SELECTED ANY OF',
+  Users: 'SELECTED ANY OF'
 };
 
 const Attributes = ({ values, setFieldValue }) => {
@@ -40,72 +40,71 @@ const Attributes = ({ values, setFieldValue }) => {
       <FieldArray name="rules">
         {({ push, remove }) => (
           <>
-            {values.rules?.map((attribute, index) => (
-              <div className="attribute-wrapper">
-                <div key={index} className="attributeBox">
-                  <div className="attribute-text-segment">IF</div>
-                  <div className="type col-span-4">
-                    <Field
-                      id={`rules[${index}].attributeType`}
-                      name={`rules[${index}].attributeType`}
-                      fieldlabel={t('approvergroup.attribute') + ' ' + (index + 1)}
-                      placeholder=" "
-                      component={Components['dropdown']}
-                      isRequired
-                      options={getAvailableOptions(index)}
-                      onChangeHandler={(value) => {
-                        setFieldValue(`rules[${index}].attributeType`, value);
-                        // if (value === 'Users') {
-                        //   setFieldValue('attributeuseroption', 'user_role');
-                        // }
-                        // if (value === 'Price') {
-                        //   setFieldValue(`rules[${index}].value`, '');
-                        //   setFieldValue(`rules[${index}].value_augmented`, '');
-                        // }
-                      }}
-                    />
-                    <div className="control-helper-text">Please select a criteria to apply the approval rules on.</div>
-                  </div>
-                  <div className="attribute-text-segment">{ruleAttributeConnectingSegment[attribute.attributeType]}</div>
-                  <div
-                    className={`control ${
-                      attribute.attributeType === RuleLabels[RuleKeys.USERS] ? 'col-span-12 grid-row-start-new' : 'col-span-8'
-                    }`}>
-                    <div className="dropdown-with-button">
-                      <div className="dropdown-row">
-                        <div className="dropdown-wrapper">
-                          <RenderControls
-                            attributeType={attribute.attributeType}
-                            name={`rules[${index}].value`}
-                            isAttributeRemoved={initRef}
-                          />
-                        </div>
-
-                        {index !== 0 && (
-                          <div className="remove-button">
-                            <Button
-                              Icon={DeleteIcon}
-                              variant="tertiary"
-                              size="md"
-                              className="btnRemove"
-                              onClick={() => {
-                                remove(index);
-                                initRef.current = true;
-                              }}>
-                              {t('approvergroup.button.remove')}
-                            </Button>
+            <div className="rule-list">
+              {values.rules?.map((attribute, index) => (
+                <div className="rule">
+                  <div key={index} className="rule-wrapper">
+                    <div className="condition attribute-text-segment">IF</div>
+                    <div className="control type">
+                      <Field
+                        id={`rules[${index}].attributeType`}
+                        name={`rules[${index}].attributeType`}
+                        fieldlabel={t('approvergroup.attribute') + ' ' + (index + 1)}
+                        placeholder=" "
+                        component={Components['dropdown']}
+                        isRequired
+                        options={getAvailableOptions(index)}
+                        onChangeHandler={(value) => {
+                          setFieldValue(`rules[${index}].attributeType`, value);
+                          // if (value === 'Users') {
+                          //   setFieldValue('attributeuseroption', 'user_role');
+                          // }
+                          // if (value === 'Price') {
+                          //   setFieldValue(`rules[${index}].value`, '');
+                          //   setFieldValue(`rules[${index}].value_augmented`, '');
+                          // }
+                        }}
+                      />
+                      <div className="control-helper-text">Please select a criteria to apply the approval rules on.</div>
+                    </div>
+                    <div className="clause attribute-text-segment">{ruleAttributeConnectingSegment[attribute.attributeType]}</div>
+                    <div className={`response-control ${attribute.attributeType === CONTROL_OPTIONS.Price ? 'price' : ''}`}>
+                      <div className="dropdown-with-button">
+                        <div className="dropdown-row">
+                          <div className="dropdown-wrapper">
+                            <RenderControls
+                              attributeType={attribute.attributeType}
+                              name={`rules[${index}].value`}
+                              isAttributeRemoved={initRef}
+                            />
                           </div>
-                        )}
+
+                          {index !== 0 && (
+                            <div className="remove-button">
+                              <Button
+                                Icon={DeleteIcon}
+                                variant="tertiary"
+                                size="md"
+                                className="btnRemove"
+                                onClick={() => {
+                                  remove(index);
+                                  initRef.current = true;
+                                }}>
+                                {t('approvergroup.button.remove')}
+                              </Button>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
+                  <div className="hr-container">
+                    {index < values.rules.length - 1 && <div className="attribute-text-segment">AND</div>}
+                    <hr className="hr-line" />
+                  </div>
                 </div>
-                <div className="hr-container">
-                  {index < values.rules.length - 1 && <div className="attribute-text-segment">AND</div>}
-                  <hr className="hr-line" />
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
 
             {/* Add Attribute Button */}
 

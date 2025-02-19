@@ -122,7 +122,7 @@ function ApproverGroupDetails() {
   const rules = [];
   groupData?.rules &&
     Object.entries(groupData?.rules || {}).forEach((entry, index) => {
-      const [key, value] = entry;
+      let [key, value] = entry;
       let beautifiedValue = <span className="rule-item-value">{value}</span>;
       if (key === 'price') {
         rules.push(
@@ -131,6 +131,9 @@ function ApproverGroupDetails() {
             <span className="rule-item-value">${beautifiedValue}</span>
           </div>
         );
+        return;
+      }
+      if (!value) {
         return;
       }
       let _key = 'accountName';

@@ -10,7 +10,7 @@ import { CONTROL_OPTIONS, RuleKeys, RuleLabels, RuleValueKeys } from '../Approve
 import AttributeFieldRenderer from './AttributeFieldRenderer';
 
 const fieldAttributes = {
-  PRICE: {
+  Price: {
     helperText: 'Please select a criteria to apply the approval rules on.',
     inputControl: {
       caption: 'Amount',
@@ -18,7 +18,7 @@ const fieldAttributes = {
       helperText: 'Please enter the amount greater than for the approver group.'
     }
   },
-  CATALOG: {
+  Catalog: {
     helperText: 'Please select a criteria to apply the approval rules on.',
     inputControl: {
       caption: 'Select Therapy',
@@ -26,7 +26,7 @@ const fieldAttributes = {
       helperText: 'Please select the therapy(s) for the approver group.'
     }
   },
-  ACCOUNT: {
+  Account: {
     helperText: 'Please select a criteria to apply the approval rules on.',
     inputControl: {
       caption: 'Select Account',
@@ -34,7 +34,7 @@ const fieldAttributes = {
       helperText: 'Please select the account(s) for the approver group.'
     }
   },
-  USER_ROLE: {
+  Roles: {
     helperText: 'Please select a criteria to apply the approval rules on.',
     inputControl: {
       caption: 'Select Role',
@@ -42,7 +42,7 @@ const fieldAttributes = {
       helperText: 'Please select the role(s) for the approver group.'
     }
   },
-  USER_NAME: {
+  Users: {
     helperText: 'Please select a criteria to apply the approval rules on.',
     inputControl: {
       caption: 'Select User',
@@ -52,7 +52,7 @@ const fieldAttributes = {
   }
 };
 
-function RenderControls({ attributeType = CONTROL_OPTIONS.PRICE, name, isAttributeRemoved }) {
+function RenderControls({ attributeType = CONTROL_OPTIONS.Price, name, isAttributeRemoved }) {
   const { t } = useTranslate();
   const { values, setFieldValue } = useFormikContext();
   const { initialValues, isEditMode } = useFormContext();
@@ -62,17 +62,16 @@ function RenderControls({ attributeType = CONTROL_OPTIONS.PRICE, name, isAttribu
 
   React.useEffect(() => {}, [attributeType]);
 
-  const shouldFetchCatalog = attributeType === CONTROL_OPTIONS.CATALOG.toUpperCase();
-  const shouldFetchAccounts = attributeType === CONTROL_OPTIONS.ACCOUNT.toUpperCase();
-  const shouldFetchUsers =
-    attributeType === CONTROL_OPTIONS.USER_ROLE.toUpperCase().replace(/\s/g, '_') ||
-    attributeType === CONTROL_OPTIONS.USER_NAME.replace(/\s/g, '_');
-  const shouldFetchPrice = attributeType === CONTROL_OPTIONS.PRICE.toUpperCase();
+  const shouldFetchCatalog = attributeType === CONTROL_OPTIONS.Catalog;
+  const shouldFetchAccounts = attributeType === CONTROL_OPTIONS.Account;
+  const shouldFetchUserRole = attributeType === CONTROL_OPTIONS.Roles;
+  const shouldFetchUserNames = attributeType === CONTROL_OPTIONS.Users;
+  const shouldFetchPrice = attributeType === CONTROL_OPTIONS.Price;
 
   const catalogQuery = useCatalogData(shouldFetchCatalog);
   const accountQuery = useAccountData(shouldFetchAccounts);
-  const userRoleQuery = useUserRoleData(shouldFetchUsers);
-  const userDataQuery = useUserData(shouldFetchUsers);
+  const userRoleQuery = useUserRoleData(shouldFetchUserRole);
+  const userDataQuery = useUserData(shouldFetchUserNames);
 
   const [selectedData, setSelectedData] = useState({
     price: '',
@@ -90,17 +89,21 @@ function RenderControls({ attributeType = CONTROL_OPTIONS.PRICE, name, isAttribu
       isDataBinded.current = false;
       return accountQuery;
     }
-    if (shouldFetchUsers) {
+    if (shouldFetchUserRole) {
       isDataBinded.current = false;
-      return values.attributeuseroption === 'user_role' ? userRoleQuery : userDataQuery;
+      return userRoleQuery;
+    }
+    if (shouldFetchUserNames) {
+      isDataBinded.current = false;
+      return userDataQuery;
     }
 
     return { isLoading: false, data: [] };
   }, [
     shouldFetchCatalog,
     shouldFetchAccounts,
-    shouldFetchUsers,
-    values.attributeuseroption,
+    shouldFetchUserRole,
+    shouldFetchUserNames,
     catalogQuery,
     accountQuery,
     userRoleQuery,
@@ -119,7 +122,7 @@ function RenderControls({ attributeType = CONTROL_OPTIONS.PRICE, name, isAttribu
 
       let sourceData = useInitialValues.current ? initialValues : values;
       sourceData.rules = sourceData.rules.map((item) => {
-        if (item.attributeType !== 'Price' && item.value === '') {
+        if (item.attributeType !== CONTROL_OPTIONS.Price && item.value === '') {
           return {
             ...item,
             value: []
@@ -144,7 +147,8 @@ function RenderControls({ attributeType = CONTROL_OPTIONS.PRICE, name, isAttribu
         const updatedState = { ...prevState };
         if (shouldFetchPrice) updatedState.price = '';
         if (shouldFetchAccounts) updatedState.accounts = fetchData;
-        if (shouldFetchUsers) updatedState.users = fetchData;
+        if (shouldFetchUserRole) updatedState.roles = fetchData;
+        if (shouldFetchUserNames) updatedState.users = fetchData;
         if (shouldFetchCatalog) updatedState.categories = fetchData;
         return updatedState;
       });
@@ -152,13 +156,23 @@ function RenderControls({ attributeType = CONTROL_OPTIONS.PRICE, name, isAttribu
       useInitialValues.current = false;
       isDataBinded.current = true;
     }
-  }, [queryResult.data, shouldFetchAccounts, shouldFetchUsers, shouldFetchCatalog, shouldFetchPrice, attributeType, isEditMode]);
+  }, [
+    queryResult.data,
+    shouldFetchAccounts,
+    shouldFetchUserRole,
+    shouldFetchUserNames,
+    shouldFetchCatalog,
+    shouldFetchPrice,
+    attributeType,
+    isEditMode
+  ]);
 
   useEffect(() => {
     if (!isDataBinded.current) {
       const updatedLocalData = (() => {
         if (shouldFetchAccounts) return selectedData.accounts;
-        if (shouldFetchUsers) return selectedData.users;
+        if (shouldFetchUserRole) return selectedData.roles;
+        if (shouldFetchUserNames) return selectedData.users;
         if (shouldFetchCatalog) return selectedData.categories;
         if (shouldFetchPrice) return [];
         return [];
@@ -166,7 +180,7 @@ function RenderControls({ attributeType = CONTROL_OPTIONS.PRICE, name, isAttribu
       isDataBinded.current = true;
       setLocalData(updatedLocalData);
     }
-  }, [selectedData, shouldFetchAccounts, shouldFetchUsers, shouldFetchCatalog, shouldFetchPrice]);
+  }, [selectedData, shouldFetchAccounts, shouldFetchUserRole, shouldFetchUserNames, shouldFetchCatalog, shouldFetchPrice]);
 
   const onRemoveClick = (itemToRemove) => {
     const updatedValues = values.rules.find((rule) => rule.attributeType === attributeType)?.value.filter((id) => id !== itemToRemove);
@@ -198,7 +212,7 @@ function RenderControls({ attributeType = CONTROL_OPTIONS.PRICE, name, isAttribu
     setLocalData(updatedOptions);
   };
 
-  const attributes = fieldAttributes[attributeType].inputControl;
+  const attributes = fieldAttributes[attributeType]?.inputControl || {};
   return (
     <AttributeFieldRenderer
       caption={attributes.caption}
