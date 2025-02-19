@@ -2,11 +2,13 @@ import React, { useRef } from 'react';
 import { Field, FieldArray } from 'formik';
 import { useTranslate } from '@src/translations/useTranslation';
 import Components from '@src/components/form/Components';
-import { Button, Pills } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
 import './index.scss';
 import RenderControls from './RenderControls';
-import { CONTROL_OPTIONS, RuleKeys, RuleLabels } from '../ApproverGroupDetail/RulesConfig';
+import { CONTROL_OPTIONS } from '../ApproverGroupDetail/RulesConfig';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+import { useDispatch } from 'react-redux';
 
 const ruleAttributeConnectingSegment = {
   Catalog: 'ORDERED ANY OF',
@@ -18,6 +20,7 @@ const ruleAttributeConnectingSegment = {
 
 const Attributes = ({ values, setFieldValue }) => {
   const initRef = useRef(false);
+  const dispatch = useDispatch();
   const { t } = useTranslate();
   const attrOptions = [
     { label: t('orgManagement.create_org.option.please_select'), value: '' },
@@ -33,6 +36,32 @@ const Attributes = ({ values, setFieldValue }) => {
     return attrOptions.filter(
       (option) => option.value === '' || !selectedValues.includes(option.value) || values.rules[index]?.attributeType === option.value
     );
+  };
+
+  const confirmOnDelete = () => {
+    const onDelete = () => {
+      remove(index);
+      initRef.current = true;
+    };
+
+    const state = {};
+    state.title = `Delete Rule?`;
+    state.body = (
+      <div className="MCP-modal-body">
+        <p>Do you want to delete this rule?</p>
+      </div>
+    );
+    state.footer = (
+      <div className="controls">
+        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+          {t('button.caption.no')}
+        </Button>
+        <Button size="md" variant="primary" onClick={onDelete}>
+          {t('button.caption.yes')}
+        </Button>
+      </div>
+    );
+    dispatch(openModal(state));
   };
 
   return (
@@ -68,7 +97,7 @@ const Attributes = ({ values, setFieldValue }) => {
                       <div className="control-helper-text">Please select a criteria to apply the approval rules on.</div>
                     </div>
                     <div className="clause attribute-text-segment">{ruleAttributeConnectingSegment[attribute.attributeType]}</div>
-                    <div className={`response-control ${attribute.attributeType === CONTROL_OPTIONS.Price ? 'price' : ''}`}>
+                    <div className={`response-control ${attribute.attributeType === CONTROL_OPTIONS['Price'] ? 'price' : ''}`}>
                       <div className="dropdown-with-button">
                         <div className="dropdown-row">
                           <div className="dropdown-wrapper">
@@ -81,15 +110,7 @@ const Attributes = ({ values, setFieldValue }) => {
 
                           {index !== 0 && (
                             <div className="remove-button">
-                              <Button
-                                Icon={DeleteIcon}
-                                variant="tertiary"
-                                size="md"
-                                className="btnRemove"
-                                onClick={() => {
-                                  remove(index);
-                                  initRef.current = true;
-                                }}>
+                              <Button Icon={DeleteIcon} variant="tertiary" size="md" className="btnRemove" onClick={confirmOnDelete}>
                                 {t('approvergroup.button.remove')}
                               </Button>
                             </div>

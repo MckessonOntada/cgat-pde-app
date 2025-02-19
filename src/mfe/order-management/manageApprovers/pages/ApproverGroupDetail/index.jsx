@@ -6,11 +6,11 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 // Constants
 import { PATHS } from '../../routes/constants';
 import { RoutePaths } from '@src/routes/constants';
-import { RuleKeys, RulesConfig } from './RulesConfig';
+import { CONTROL_OPTIONS, RuleKeys, RulesConfig } from './RulesConfig';
 
 // Components
 import ModuleHeader from '@src/components/module-header';
-import { Button, Heading, Loader, Switch, Alert, Modal } from '@mckesson/mcp-component-library';
+import { Button, Heading, Loader, Switch, Alert, Modal, Pills } from '@mckesson/mcp-component-library';
 import EmptyDataTable from '@src/components/EmptyTable';
 
 // Assets
@@ -31,9 +31,14 @@ import CommonUtils from '@src/util/CommonUtils';
 import ApproverUserList from './ApproverUserList';
 
 const ruleAttributeConnectingSegment = {
-  catalog: 'ORDERED ANY OF',
-  price: 'GREATER THAN'
+  Therapies: 'ORDERED ANY OF',
+  Price: 'GREATER THAN',
+  Accounts: 'SELECTED ANY OF',
+  Roles: 'SELECTED ANY OF',
+  Users: 'SELECTED ANY OF'
 };
+
+const getCamelCase = (str) => str.replace(/(^\w|[-_]\w)/g, (match) => match.replace(/[-_]/, '').toUpperCase());
 
 function ApproverGroupDetails() {
   const navigate = useNavigate();
@@ -126,9 +131,15 @@ function ApproverGroupDetails() {
       let beautifiedValue = <span className="rule-item-value">{value}</span>;
       if (key === 'price') {
         rules.push(
-          <div className="rule-item" key={`rule_item_${index}`}>
-            IF&nbsp;<span>{key}</span>&nbsp;{ruleAttributeConnectingSegment[key] || 'SELECTED ANY OF'}&nbsp;
-            <span className="rule-item-value">${beautifiedValue}</span>
+          <div key={index} className="rule-wrapper">
+            <div className="condition attribute-text-segment">IF</div>
+            <div className="control type">
+              <div className="fake-control">{key}</div>
+            </div>
+            <div className="clause attribute-text-segment">{ruleAttributeConnectingSegment[getCamelCase(key)]}</div>
+            <div className={`response-control ${key === CONTROL_OPTIONS.price ? 'price' : ''}`}>
+              <div className="fake-control">{beautifiedValue}</div>
+            </div>
           </div>
         );
         return;
@@ -140,22 +151,29 @@ function ApproverGroupDetails() {
       if (key === 'therapies') _key = 'therapyName';
       else if (key === 'roles') _key = 'roleName';
       else if (key === 'users') _key = 'userName';
-
-      beautifiedValue = value.map((val) => <span className="rule-item-value">{val[_key]}</span>);
-
+      console.log(key);
       rules.push(
-        <div className="rule-item" key={`rule_item_${index}`}>
-          IF&nbsp;<span>{key}</span>&nbsp;{ruleAttributeConnectingSegment[key] || 'SELECTED ANY OF'}&nbsp;
-          <span>
-            {beautifiedValue.map((rule, index) => {
-              return (
-                <span>
-                  {rule}
-                  {index < beautifiedValue.length - 1 && <span>&nbsp;OR&nbsp;</span>}
-                </span>
-              );
-            })}
-          </span>
+        <div key={index} className="rule-wrapper">
+          <div className="condition attribute-text-segment">IF</div>
+          <div className="control type">
+            <div className="fake-control">{key.toUpperCase()}</div>
+          </div>
+          <div className="clause attribute-text-segment">{ruleAttributeConnectingSegment[getCamelCase(key)]}</div>
+          <div className={`response-control ${key === CONTROL_OPTIONS.Price ? 'price' : ''}`}>
+            <div className="fake-control">
+              <Pills
+                id="id"
+                labels={value.map((val, index) => ({
+                  id: index + 1,
+                  labelText: val[_key]
+                }))}
+                name="Pill"
+                onDelete={() => {}}
+                size="sm"
+                variant="secondary"
+              />
+            </div>
+          </div>
         </div>
       );
     });
@@ -217,15 +235,20 @@ function ApproverGroupDetails() {
         </div>
 
         <Heading as="h3">{t('approverGroup.view.subheader.rules')}</Heading>
-        <div className="MCP-CardContainer rule-list">
-          {rules.map((rule, index) => {
-            return (
-              <React.Fragment>
-                {rule}
-                {index < rules.length - 1 && <div>AND</div>}
-              </React.Fragment>
-            );
-          })}
+        <div className="MCP-CardContainer">
+          <div className="rule-list">
+            {rules.map((rule, index) => {
+              return (
+                <div className="rule" key={`rule-segment-${index}`}>
+                  {rule}
+                  <div className="hr-container">
+                    {index < rules.length - 1 && <div className="attribute-text-segment">AND</div>}
+                    <hr className="hr-line" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         <ApproverUserList data={groupData?.approverUsers} />
