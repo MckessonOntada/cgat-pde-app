@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Heading, CheckboxGroup, CustomDataTable, RadioGroup } from '@mckesson/mcp-component-library';
+import { Button, Heading, CheckboxGroup, CustomDataTable, RadioGroup, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -13,7 +13,6 @@ import OrderService from '@src/api/commonService/OrderService';
 import { useMutation, useQuery } from 'react-query';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import { NUMBER_REGEX } from '@src/components/form/ValidationRegExp';
 import CommonUtils from '@src/util/CommonUtils';
 import { RoutePaths } from '@src/routes/constants';
@@ -57,7 +56,7 @@ function AdditionalDetails() {
   const [variant, setVariant] = React.useState();
   const { showAlert } = useAlert();
   const alertContainerId = 'additionalDetails-alert-container';
-  const { data: orderDetails, isFetching, isError, error } = useOrder(orderId);
+  const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error } = useOrder();
   const { isCoiIdRequired, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
@@ -190,6 +189,8 @@ function AdditionalDetails() {
     queryKey: ['configured-questionnaire', variant ?? 'default-variant'],
     queryFn: async () => {
       const { accountDetails, therapy } = orderDetails;
+      if (orderDetails.additionalDetails?.configuredQuestionnaires) return;
+
       const payload = {
         variantType,
         soldToCustomer: accountDetails.soldToAccount?.accountNumber,
@@ -198,7 +199,9 @@ function AdditionalDetails() {
       };
       return QuestionnaireService.getConfiguredQuestionnaire(payload);
     },
-    enabled: Boolean(orderDetails && !orderDetails.additionalDetails?.configuredQuestionnaires),
+    enabled: Boolean(
+      orderDetails?.accountDetails?.shipToAccount?.accountNumber && orderDetails?.accountDetails?.soldToAccount?.accountNumber
+    ),
     refetchOnWindowFocus: false,
     onSuccess: (result) => {
       result && prepareQuestionnaire(result);
@@ -382,15 +385,18 @@ function AdditionalDetails() {
   };
 
   React.useEffect(() => {
-    if (orderDetails && !isEdit) fetchConfiguredQuestions();
-  }, [variant, orderDetails]);
+    if (!variant) return;
+    fetchConfiguredQuestions();
+  }, [variant]);
 
   const handleOnAcknowledgmentChange = () => {
     const updatedOptions = { ...variantAcknowledgement, isChecked: !variantAcknowledgement.isChecked };
-
     setVariantAcknowledgement(updatedOptions);
   };
 
+  if (isFetchingOrderDetails) {
+    return <Loader />;
+  }
   return (
     <div className="MCP-module-wrapper">
       <div>
