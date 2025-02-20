@@ -101,7 +101,7 @@ const userHasRoutePermission = function (routePermissions) {
 const isCustomerCenter = function () {
   const userRole = getUserRole();
   // Customer center role will be modified with original name once available from BE
-  return userRole === 'Customer Center';
+  return userRole === 'Customer Centre';
 };
 
 const AuthUtils = Object.freeze({
