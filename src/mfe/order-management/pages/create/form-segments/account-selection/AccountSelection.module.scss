@@ -15,6 +15,7 @@
     .name {
       font-size: var(--brand-font-size--large);
       font-weight: var(--brand-font-weight-700);
+      text-transform: capitalize;
     }
 
     .address {

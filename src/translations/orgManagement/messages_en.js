@@ -39,6 +39,8 @@ export const OrgManagementEN = {
   'orgManagement.message.roleDeactivateConfirmationTitle': 'Deactivate role?',
   'orgManagement.message.roleDeactivateConfirmationDescription': 'Do you want to deactivate this role?',
   'orgManagement.message.DeactivateOrg': 'Are you sure you wish to Deactivate this Organization ?',
+  'orgManagement.messages.DeactivateOrgSuccess': 'Organization has been Deactivated Successfully.',
+  'orgManagement.messages.DeactivateOrgFailure': 'Failed to Deactivate the Organization.',
   'orgManagement.Orgchangemessage': 'Are you sure want to change organization view ?',
   'orgManagement.confirmationmessage': 'Confirmation message',
   'orgManagement.create_org': 'Add Organization',

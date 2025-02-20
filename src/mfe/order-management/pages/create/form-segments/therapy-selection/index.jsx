@@ -38,7 +38,7 @@ function TherapySelection() {
   const alertContainerId = 'alert-container';
   const [therapySelectionMessage, setTherapySelectionMessage] = React.useState(null);
   const { showAlert } = useAlert();
-  console.log(orderDetails);
+
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
     if (isPapOrder) navigate('/orders');

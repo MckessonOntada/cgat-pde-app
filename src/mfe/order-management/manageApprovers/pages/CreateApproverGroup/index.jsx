@@ -229,32 +229,30 @@ const CreateApproverGroup = () => {
                       </div>
                     </div>
 
-                    <div>
-                      <div className="headingBox">
-                        <Heading as="h2">{t('approvergroup.approveuserlist')}</Heading>
-                      </div>
+                    <div className="headingBox">
+                      <Heading as="h2">{t('approvergroup.approveuserlist')}</Heading>
+                    </div>
 
-                      <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
-                        <Field
-                          id="approverUsers"
-                          name="approverUsers"
-                          label={t('approvergroup.selectuser')}
-                          placeholder=" "
-                          isRequired
-                          component={Components['multiSelectDropdown']}
-                          options={localUserData || []}
-                          getUpdatedOptions={(values) => {
-                            if (values.length > 0) {
-                              setLocalUsersData(values);
-                            }
-                          }}
-                          onRemoveClick={onRemoveUserClick}
-                          noSelectedCountMessage={t('approvergroup.create.option.please_select')}
-                          pillsLabels={createLabelData(values.approverUsers_augmented)}
-                          pillsCount={5}
-                          ispillsVisible={true}
-                        />
-                      </div>
+                    <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
+                      <Field
+                        id="approverUsers"
+                        name="approverUsers"
+                        label={t('approvergroup.selectuser')}
+                        placeholder=" "
+                        isRequired
+                        component={Components['multiSelectDropdown']}
+                        options={localUserData || []}
+                        getUpdatedOptions={(values) => {
+                          if (values.length > 0) {
+                            setLocalUsersData(values);
+                          }
+                        }}
+                        onRemoveClick={onRemoveUserClick}
+                        noSelectedCountMessage={t('approvergroup.create.option.please_select')}
+                        pillsLabels={createLabelData(values.approverUsers_augmented)}
+                        pillsCount={5}
+                        ispillsVisible={true}
+                      />
                     </div>
                   </div>
                 </div>

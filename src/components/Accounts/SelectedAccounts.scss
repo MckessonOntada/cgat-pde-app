@@ -2,8 +2,9 @@
   border: 1px solid var(--brand-color-patient-primary-3);
   background-color: #f9f9f9; // Optional styling for visual separation
   border-radius: 4px;
-  height: calc(100% - 52px);
+  height: 100%;
   overflow: auto;
+  min-height: 250px;
 }
 
 .selected-account-heading {

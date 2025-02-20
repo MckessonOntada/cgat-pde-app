@@ -14,13 +14,13 @@ const DetailsView = ({ data, onEditClick }) => {
   const { data: organizationLogo } = CommonDataService.useOrganizationLogo(data.logoUrl, data.id);
 
   return (
-    <div className="view-container">
+    <div className="MCP-panel-container">
       <div className="org-box">
         <div className="org-logo-box">
           {data?.logoUrl && <img src={organizationLogo} alt="Logo" className="logo-img" />}
           <h2 className="org-label">{data.name}</h2>
         </div>
-        {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.EDIT_ORGANIZATION) && (
+        {hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.EDIT_ORGANIZATION) && data?.isActive && (
           <Button Icon={EditPencil} variant="secondary" onClick={onEditClick} size="md">
             Edit
           </Button>

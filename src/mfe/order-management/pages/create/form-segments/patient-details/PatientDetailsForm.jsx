@@ -12,9 +12,9 @@ const PatientDetailsForm = () => {
     <div className="MCP-module-wrapper">
       <div className="MCP-module-body form-container">
         {formConfig.map((section, sectionIndex) => (
-          <div key={sectionIndex}>
+          <React.Fragment key={sectionIndex}>
             {section.sectionTitle && (
-              <div className="headingBox">
+              <div className={`headingBox ${sectionIndex === 0 ? 'firstHeading' : ''}`}>
                 <h2>{t(section.sectionTitle)}</h2>
                 {sectionIndex === 0 && (
                   <p className="form-instruction">
@@ -42,7 +42,7 @@ const PatientDetailsForm = () => {
                 />
               ))}
             </div>
-          </div>
+          </React.Fragment>
         ))}
       </div>
     </div>
