@@ -103,10 +103,8 @@ const Attributes = ({ values, setFieldValue }) => {
                           </div>
 
                           {index !== 0 && (
-                            <div className="remove-button">
-                              <Button Icon={DeleteIcon} variant="tertiary" size="md" className="btnRemove" onClick={confirmOnDelete}>
-                                {t('approvergroup.button.remove')}
-                              </Button>
+                            <div className="styled-icon-button remove-button">
+                              <Button Icon={DeleteIcon} variant="tertiary" size="md" className="btnRemove" onClick={confirmOnDelete} />
                             </div>
                           )}
                         </div>
