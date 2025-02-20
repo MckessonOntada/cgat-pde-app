@@ -112,7 +112,7 @@ const Attributes = ({ values, setFieldValue }) => {
                     </div>
                   </div>
                   <div className="hr-container">
-                    {index < values.rules.length - 1 && <div className="attribute-text-segment">{t('rules.logicalOperator.and')}</div>}
+                    {index < values.rules.length - 1 && <div className="hr-text">{t('rules.logicalOperator.and')}</div>}
                     <hr className="hr-line" />
                   </div>
                 </div>
