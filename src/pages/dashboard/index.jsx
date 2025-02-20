@@ -12,6 +12,8 @@ const Dashboard = () => {
   const { t } = useTranslate();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
+  const isCustomerCenter = AuthUtils.isCustomerCenter();
+
   const { hasPermission, hasAnyPermission } = usePermission();
   const location = useLocation();
   const navigate = useNavigate();
@@ -25,7 +27,7 @@ const Dashboard = () => {
     else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ORDER_MANAGEMENT))) navigateToUrl = '/orders';
     else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.PAYMENT_INVOICING))) navigateToUrl = '/record';
 
-    if (!isSystemAdmin) {
+    if (!isSystemAdmin || isCustomerCenter) {
       if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ORDER_MANAGEMENT))) navigateToUrl = '/orders';
       else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.PAYMENT_INVOICING))) navigateToUrl = '/record';
       else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ADMIN_MANAGEMENT))) navigateToUrl = '/admin';

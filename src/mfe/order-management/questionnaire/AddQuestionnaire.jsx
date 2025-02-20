@@ -15,6 +15,8 @@ import { useDispatch } from 'react-redux';
 import { useMutation, useQuery } from 'react-query';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import QuestionnaireTemplate from './QuestionnaireTemplate';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import usePermission from '@src/hooks/usePermissions';
 
 export const QUESTION_TYPE = {
   RADIO_BUTTON: 'RADIO_BUTTON',
@@ -56,6 +58,7 @@ function AddQuestionnaire() {
   const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useDispatch();
+  const { hasPermission } = usePermission();
   const [initialFormState, setInitialFormState] = React.useState(INITIAL_FORM_STATE);
   const [alertConfig, setAlertConfig] = React.useState(INITIAL_ALERT_CONFIG);
   const defaultQuestionTemplate = {
@@ -367,18 +370,20 @@ function AddQuestionnaire() {
                           </div>
                           {mode !== MODE.CREATE && questionnaireDetails?.active && (
                             <div className="controls">
-                              {mode !== MODE.EDIT && (
+                              {mode !== MODE.EDIT && hasPermission(PERMISSIONS_ENUM.SYSTEM_CONFIGURATION.ADD_QUESTIONNAIRE) && (
                                 <Button Icon={EditPencil} variant="secondary" size="md" onClick={() => setMode(MODE.EDIT)}>
                                   {t('captions.btnEdit')}
                                 </Button>
                               )}
-                              <Switch
-                                handleToggle={handleOnDeactivateQuestionnaire}
-                                id="id"
-                                name="Toggle"
-                                size="lg"
-                                value={questionnaireDetails?.active}
-                              />
+                              {hasPermission(PERMISSIONS_ENUM.SYSTEM_CONFIGURATION.DEACTIVATE_QUESTIONNAIRE) && (
+                                <Switch
+                                  handleToggle={handleOnDeactivateQuestionnaire}
+                                  id="id"
+                                  name="Toggle"
+                                  size="lg"
+                                  value={questionnaireDetails?.active}
+                                />
+                              )}
                             </div>
                           )}
                         </div>
@@ -447,8 +452,7 @@ function AddQuestionnaire() {
                                                 disabled={values['questions'].length === 1}
                                                 onClick={() => {
                                                   removeQuestion(index);
-                                                }}>
-                                              </Button>
+                                                }}></Button>
                                             </div>
                                           </div>
                                         )}

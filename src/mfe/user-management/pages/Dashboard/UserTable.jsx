@@ -39,7 +39,7 @@ function UserTable({ onActionSuccess }) {
   const { isLoading, isError, error, data, activeTab, paginationConfig, applySort, refreshData, setPageNumber } = useUser();
   const userPermissions = AuthUtils.getUserPermissions();
   const currentUserId = AuthUtils.getUserId();
-  const { hasPermission } = usePermission();
+  const { hasPermission, hasAnyPermission } = usePermission();
   const showCardView = useResponsiveView();
 
   const handleRowSelected = ({ selectedRows }) => {
@@ -123,7 +123,9 @@ function UserTable({ onActionSuccess }) {
         ),
         wrap: true,
         width: '40px',
-        omit: activeTab === 2
+        omit:
+          activeTab === 2 ||
+          !hasAnyPermission([PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_USERS, PERMISSIONS_ENUM.ADMIN_MANAGEMENT.ADD_SYSTEM_ADMINISTRATOR])
       },
       // { name: 'ID', selector: 'id', sortable: true, omit: true },
       {

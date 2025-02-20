@@ -98,6 +98,12 @@ const userHasRoutePermission = function (routePermissions) {
   return hasAccess;
 };
 
+const isCustomerCenter = function () {
+  const userRole = getUserRole();
+  // Customer center role will be modified with original name once available from BE
+  return userRole === 'Customer Center';
+};
+
 const AuthUtils = Object.freeze({
   userHasRole,
   userHasPermission,
@@ -113,7 +119,8 @@ const AuthUtils = Object.freeze({
   getImpersonateId,
   removeImpersonateId,
   isSystemAdmin,
-  isSystemAdminView
+  isSystemAdminView,
+  isCustomerCenter
 });
 
 export default AuthUtils;

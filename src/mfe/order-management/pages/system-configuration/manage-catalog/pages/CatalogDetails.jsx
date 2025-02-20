@@ -15,11 +15,16 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { PREVIEW_URL, ROUTE_CONFIG } from '@src/mfe/order-management/questionnaire/constants';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { renderModal } from '@src/util/ModalUtil';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import usePermission from '@src/hooks/usePermissions';
+import AuthUtils from '@src/util/AuthUtils';
 
 function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog, setViewCatalog, showAlert }) {
   const navigate = useNavigate();
   const { t } = useTranslate();
   const { showSnackbar } = useSnackbar();
+  const { hasPermission } = usePermission();
+  const isCustomerCenter = AuthUtils.isCustomerCenter();
   const handleCloseDrawer = () => {
     setOpenCatalogDetails((state) => !state);
   };
@@ -164,9 +169,11 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
                   <div className="details-key">{t('ManageCatalog.Configurations')}</div>
                   <div className="details-value">
                     <div onClick={() => navigate('view-catalog', { state: { configSteps: data?.catalogConfiguration } })}>PREVIEW </div>
-                    <div onClick={() => OnDeleteClick(data?.catalogConfiguration.id, 'config')}>
-                      <DeleteIcon />
-                    </div>
+                    {!isCustomerCenter && (
+                      <div onClick={() => OnDeleteClick(data?.catalogConfiguration.id, 'config')}>
+                        <DeleteIcon />
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -185,9 +192,11 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
                       return (
                         <div key={index} className="Questionnairedetails-li">
                           <div className="Questionnairedetails-key">{item.templateName}</div>
-                          <div className="delete-button" onClick={() => OnDeleteClick(item.id, 'questionnaire')}>
-                            <DeleteIcon />
-                          </div>
+                          {!isCustomerCenter && (
+                            <div className="delete-button" onClick={() => OnDeleteClick(item.id, 'questionnaire')}>
+                              <DeleteIcon />
+                            </div>
+                          )}
                         </div>
                       );
                     })}

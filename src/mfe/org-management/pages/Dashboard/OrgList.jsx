@@ -18,6 +18,8 @@ import { useDispatch } from 'react-redux';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
+import usePermission from '@src/hooks/usePermissions';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 
 const OrgList = () => {
   const { t } = useTranslate();
@@ -25,6 +27,7 @@ const OrgList = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { data, paginationConfig, isLoading, isError, refreshData, setPageNumber, applySort } = useOrg();
   const dispatch = useDispatch();
+  const { hasPermission } = usePermission();
   const location = (address) => {
     return `${address.address1 || ''}, ${address.city || ''}, ${address.state || ''}, ${address.pin || ''}`;
   };
@@ -103,7 +106,8 @@ const OrgList = () => {
         />
       ),
       wrap: true,
-      width: '40px'
+      width: '40px',
+      omit: !hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION)
     },
     {
       id: 'name',

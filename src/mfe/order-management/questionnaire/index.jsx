@@ -10,9 +10,12 @@ import { ManageQuestionnaireProvider } from '../context/ManageQuestionnaireConte
 import { MasterEntityType } from './util';
 import { QuestionnaireProvider } from '../context/QuestionnaireContext';
 import ConfigurationPreview from '../components/ConfigurationPreview';
+import usePermission from '@src/hooks/usePermissions';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 
 function Questionnaire() {
   const location = useLocation();
+  const { hasPermission } = usePermission();
 
   const handleAccount = () => {
     if (location?.state?.value === MasterEntityType.Catalog) return true;
@@ -26,7 +29,9 @@ function Questionnaire() {
     <QuestionnaireProvider>
       <Routes>
         <Route path="" index element={<ManageQuestionnaire />} />
-        <Route path={ROUTE_CONFIG.ADD_QUESTIONNAIRE} element={<AddQuestionnaire />} />
+        {hasPermission(PERMISSIONS_ENUM.SYSTEM_CONFIGURATION.ADD_QUESTIONNAIRE) && (
+          <Route path={ROUTE_CONFIG.ADD_QUESTIONNAIRE} element={<AddQuestionnaire />} />
+        )}
         <Route path={`${ROUTE_CONFIG.VIEW_QUESTIONNAIRE}/:id`} element={<AddQuestionnaire />} />
         <Route
           path={ROUTE_CONFIG.MAP_QUESTIONNAIRE}

@@ -189,7 +189,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
 
   return (
     <div className="MCP-module-wrapper">
-      {!isSystemAdminView && (
+      {
         <Fragment>
           <ModuleHeader heading={<Heading as="h2">{t('userManagement.user_permissions.select_role')}</Heading>} />
 
@@ -207,7 +207,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
             </div>
           </div>
         </Fragment>
-      )}
+      }
       <div className="MCP-module-body">
         <ModuleHeader
           heading={<Heading as="h2">{t('userManagement.user_permissions.managePermissions')}</Heading>}

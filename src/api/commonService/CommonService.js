@@ -29,6 +29,15 @@ const updateSessionStorage = async () => {
     const activeUserName = userDetails['userName'];
     const activeUserId = userDetails['id'];
     const activeUserPermissions = userDetails['permissions'];
+    // const activeUserPermissions = [
+    //   'VIEW_USERS',
+    //   'VIEW_ROLES',
+    //   'ON_BEHALF_OF_USER',
+    //   'VIEW_SYSTEM_ADMINISTRATOR',
+    //   'VIEW_ORGANIZATION',
+    //   'VIEW_ORDERS',
+    //   'VIEW_PENDING_ORDERS'
+    // ];
     const activeUserPracticeId = userDetails['practiceId'];
     const impersonatedByUsername = userDetails['impersonatedByUser']?.userName;
 
