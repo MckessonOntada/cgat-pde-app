@@ -98,6 +98,7 @@ export const MessageEn = {
   'labels.gender': 'Gender',
   'labels.dob': 'Date of Birth',
   'labels.DOB': 'DOB',
+  'labels.emailId': 'Email ID',
   'labels.dateOfAdministration': 'Date of Administration',
   'labels.slotNo': 'Slot No',
   'labels.selectVariant': 'Select Variant',
