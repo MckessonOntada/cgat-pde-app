@@ -56,7 +56,7 @@ function AdditionalDetails() {
   const [variant, setVariant] = React.useState();
   const { showAlert } = useAlert();
   const alertContainerId = 'additionalDetails-alert-container';
-  const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error } = useOrder();
+  const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error } = useOrder(orderId);
   const { isCoiIdRequired, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;

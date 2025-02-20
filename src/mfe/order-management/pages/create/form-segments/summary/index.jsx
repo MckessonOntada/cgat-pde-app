@@ -24,6 +24,7 @@ import OrderStepper from '../OrderStepper';
 import useOrder from '../../../orders/useOrder';
 import { useCustomPrint } from '@src/util/printUtils';
 import CommonUtils from '@src/util/CommonUtils';
+import { FormattedNumber } from 'react-intl';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -65,7 +66,8 @@ const Summary = () => {
     isConcluded = status === StatusEnum.REJECTED || status === StatusEnum.SUBMITTED;
   const contentRef = useRef(null);
   const printPage = useCustomPrint(
-    contentRef,`
+    contentRef,
+    `
     .MCP-module-wrapper{
       gap:8px !important;
     }
@@ -321,7 +323,7 @@ const Summary = () => {
 
       <div className="MCP-module-body" ref={contentRef}>
         {!hideControls && !isRejected && (
-          <div className='order-stepper-wrapper'>
+          <div className="order-stepper-wrapper">
             <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} />
           </div>
         )}
@@ -367,38 +369,43 @@ const Summary = () => {
               </div>
             </div>
             <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'}>
-              <div className="MCP-CardContainer">
-                <ModuleHeader
-                  className={styles.panelHeader}
-                  heading={<Heading as="h3">{t('labels.therapy')}</Heading>}
-                  controls={
-                    !hideControls && (
-                      <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                        <Button
-                          size="md"
-                          variant="tertiary"
-                          onClick={() => handleOnEditSection(ORDER_STAGES.THERAPY_SELECTION)}
-                          Icon={() => <IconEditField />}>
-                          {t('captions.btnEdit')}
-                        </Button>
-                      </PermittedComponent>
-                    )
-                  }
-                />
-                <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
-                  <DetailSegment label={t('labels.nationalDrugCode')} value={therapy.ndcNumber} />
-                  <DetailSegment label={t('labels.UDI')} value={catalog?.udi || '-'} />
-                  <DetailSegment
-                    label={t('labels.distributionChannel')}
-                    value={accountDetails?.shipToAccount?.distributionChannel || '-'}
+              <div className="MCP-module-body">
+                <div className="MCP-CardContainer">
+                  <ModuleHeader
+                    className={styles.panelHeader}
+                    heading={<Heading as="h3">{t('labels.therapy')}</Heading>}
+                    controls={
+                      !hideControls && (
+                        <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                          <Button
+                            size="md"
+                            variant="tertiary"
+                            onClick={() => handleOnEditSection(ORDER_STAGES.THERAPY_SELECTION)}
+                            Icon={() => <IconEditField />}>
+                            {t('captions.btnEdit')}
+                          </Button>
+                        </PermittedComponent>
+                      )
+                    }
                   />
-                  <DetailSegment label={t('labels.salesOrganization')} value={accountDetails?.shipToAccount?.accountName} />
-                  <DetailSegment label={t('labels.netPrice')} value={catalog?.netPrice || '-'} />
-                  <DetailSegment label={t('labels.contractPrice')} value={catalog?.contractPrice || '-'} />
-                  <DetailSegment label={t('labels.wacPrice')} value={catalog?.wacPrice || '-'} />
-                  <DetailSegment label={t('labels.regularPrice')} value={catalog?.regularPrice || '-'} />
-                  <DetailSegment label={t('labels.340bPrice')} value={catalog?.price340b || '-'} />
-                  <DetailSegment label={t('labels.priceUnit')} value={catalog?.priceUnit || '-'} />
+                  <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
+                    <DetailSegment label={t('labels.nationalDrugCode')} value={therapy.ndcNumber} />
+                    <DetailSegment label={t('labels.UDI')} value={catalog?.udi || '-'} />
+                    <DetailSegment
+                      label={t('labels.distributionChannel')}
+                      value={accountDetails?.shipToAccount?.distributionChannel || '-'}
+                    />
+                    <DetailSegment label={t('labels.salesOrganization')} value={accountDetails?.shipToAccount?.accountName} />
+                    <DetailSegment
+                      label={t('labels.netPrice')}
+                      value={
+                        <span className="dollarSign">
+                          <span>$</span>
+                          {catalog?.netPrice ? CommonUtils.formatNumberWithoutSymbol(catalog?.netPrice) : '-'}
+                        </span>
+                      }
+                    />
+                  </div>
                 </div>
               </div>
               <div className="MCP-module-body">
@@ -427,42 +434,46 @@ const Summary = () => {
                     <DetailSegment label={t('labels.shippingAccountNo')} value={accountDetails?.shipToAccount?.accountNumber} />
                   </div>
                 </div>
-                {patientDetailsRequired && (
-                  <div className="MCP-CardContainer">
-                    <ModuleHeader
-                      className={styles.panelHeader}
-                      heading={<Heading as="h3">{t('labels.patientDetails')}</Heading>}
-                      controls={
-                        !hideControls && (
-                          <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                            <Button
-                              size="md"
-                              variant="tertiary"
-                              onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
-                              Icon={() => <IconEditField />}>
-                              {t('captions.btnEdit')}
-                            </Button>
-                          </PermittedComponent>
-                        )
-                      }
-                    />
-                    <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
-                      <DetailSegment label={t('labels.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
-                      <DetailSegment
-                        label={t('labels.patientName')}
-                        value={
-                          patient?.patientInfo
-                            ? `${patient.patientInfo.firstName} ${patient.patientInfo.middleName} ${patient.patientInfo.lastName}`
-                            : '-'
-                        }
-                      />
-                      <DetailSegment label={t('labels.DOB')} value={patient?.patientInfo?.dateOfBirth || '-'} />
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
-
+            {patientDetailsRequired && (
+              <div className="MCP-CardContainer">
+                <ModuleHeader
+                  className={styles.panelHeader}
+                  heading={<Heading as="h3">{t('labels.patientDetails')}</Heading>}
+                  controls={
+                    !hideControls && (
+                      <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                        <Button
+                          size="md"
+                          variant="tertiary"
+                          onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
+                          Icon={() => <IconEditField />}>
+                          {t('captions.btnEdit')}
+                        </Button>
+                      </PermittedComponent>
+                    )
+                  }
+                />
+                <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5`}>
+                  <DetailSegment label={t('labels.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
+                  <DetailSegment
+                    label={t('labels.patientName')}
+                    value={
+                      patient?.patientInfo &&
+                      (patient.patientInfo.firstName || patient.patientInfo.middleName || patient.patientInfo.lastName)
+                        ? [patient.patientInfo.firstName, patient.patientInfo.middleName, patient.patientInfo.lastName]
+                            .filter(Boolean)
+                            .join(' ')
+                        : '-'
+                    }
+                  />
+                  <DetailSegment label={t('labels.DOB')} value={patient?.patientInfo?.dateOfBirth || '-'} />
+                  <DetailSegment label={t('labels.emailId')} value={patient?.contact?.emailId || '-'} />
+                  <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
+                </div>
+              </div>
+            )}
             <div className="MCP-CardContainer">
               <ModuleHeader
                 className={styles.panelHeader}
