@@ -1,34 +1,23 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from 'react-query';
-
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
-// Constants
 import { PATHS } from '../../routes/constants';
 import { RoutePaths } from '@src/routes/constants';
-import { CONTROL_OPTIONS, RuleKeys, RulesConfig } from './RulesConfig';
-
-// Components
+import { CONTROL_OPTIONS } from './RulesConfig';
 import ModuleHeader from '@src/components/module-header';
-import { Button, Heading, Loader, Switch, Alert, Modal, Pills } from '@mckesson/mcp-component-library';
-import EmptyDataTable from '@src/components/EmptyTable';
-
-// Assets
-import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import { Button, Heading, Loader, Switch, Alert, Pills } from '@mckesson/mcp-component-library';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
-
-// Translations
 import { useTranslate } from '@src/translations/useTranslation';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
-// Styles
 import './ApproverGroupDetail.scss';
-
-// API
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import CommonUtils from '@src/util/CommonUtils';
 import ApproverUserList from './ApproverUserList';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+import { useDispatch } from 'react-redux';
 
 const ruleAttributeConnectingSegment = {
   Therapies: 'ORDERED ANY OF',
@@ -44,7 +33,7 @@ function ApproverGroupDetails() {
   const navigate = useNavigate();
   const { grpId } = useParams();
   const { t } = useTranslate();
-  const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
   const [isDeactivate, setIsDeactivate] = useState(false);
   const [alertDescription, setAlertDescription] = useState('');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
@@ -107,16 +96,32 @@ function ApproverGroupDetails() {
   };
 
   const handleActivateDeactivate = () => {
-    setIsOpen(true);
-  };
-
-  const handleConfirm = (actionName) => {
-    setIsOpen(false);
-    mutate({ grpId: grpId, actionName });
-  };
-
-  const handleConfirmCancel = () => {
-    setIsOpen(false);
+    const state = {};
+    state.title = t('approvergroup.confirmationmessage');
+    state.body = (
+      <div className="MCP-modal-body">
+        {groupData?.active ? t('approvergroup.confirmationmessage.message') : t('approvergroup.confirmationmessage.activatemessage')}
+      </div>
+    );
+    state.footer = (
+      <div className="controls">
+        <Button onClick={() => dispatch(closeModal())} variant="secondary" size="md">
+          {t('approvergroup.button.cancel')}
+        </Button>
+        <Button
+          onClick={() => {
+            dispatch(closeModal());
+            mutate({
+              grpId: grpId,
+              actionName: groupData?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')
+            });
+          }}
+          size="md">
+          {groupData?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
+        </Button>
+      </div>
+    );
+    dispatch(openModal(state));
   };
 
   const handleAlertClose = () => {
@@ -253,29 +258,6 @@ function ApproverGroupDetails() {
 
         <ApproverUserList data={groupData?.approverUsers} />
       </div>
-      <Modal
-        id="xxxs-modal"
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        modalTitle={t('approvergroup.confirmationmessage')}
-        modalBody={
-          <div className="MCP-modal-body">
-            {groupData?.active ? t('approvergroup.confirmationmessage.message') : t('approvergroup.confirmationmessage.activatemessage')}
-          </div>
-        }
-        modalFooter={
-          <React.Fragment>
-            <Button onClick={handleConfirmCancel} variant="secondary">
-              {t('approvergroup.button.cancel')}
-            </Button>
-            <Button
-              onClick={() => handleConfirm(groupData?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate'))}>
-              {groupData?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
-            </Button>{' '}
-          </React.Fragment>
-        }
-        modalSize="xxxs"
-      />
     </div>
   );
 }
