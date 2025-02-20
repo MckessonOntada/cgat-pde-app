@@ -30,21 +30,30 @@ export const RuleKeys = {
   PRICE: 'price',
   ACCOUNTS: 'accounts',
   THERAPIES: 'therapies',
-  USERS: 'users',
-  ROLES: 'roles'
+  USER_ROLE: 'user_role',
+  USER_NAME: 'user_name'
 };
 
 export const RuleLabels = {
-  [RuleKeys.PRICE]: 'Price',
-  [RuleKeys.ACCOUNTS]: 'Account',
-  [RuleKeys.THERAPIES]: 'Catalog',
-  [RuleKeys.USERS]: 'User',
-  [RuleKeys.ROLES]: 'User'
+  PRICE: 'Price',
+  ACCOUNT: 'Account',
+  CATALOG: 'Catalog',
+  USER_ROLE: 'User Role',
+  USER_NAME: 'User Name'
 };
 
 export const RuleValueKeys = {
-  [RuleKeys.ACCOUNTS]: 'accountId',
-  [RuleKeys.THERAPIES]: 'therapyId',
-  [RuleKeys.USERS]: 'userId',
-  [RuleKeys.ROLES]: 'roleId'
+  PRICE: '',
+  ACCOUNTS: 'accountId',
+  CATALOG: 'therapyId',
+  USER_ROLE: 'userId',
+  USER_NAME: 'userId'
+};
+
+export const CONTROL_OPTIONS = {
+  Price: 'Price',
+  Account: 'Account',
+  Catalog: 'Catalog',
+  Roles: 'Roles',
+  Users: 'Users'
 };

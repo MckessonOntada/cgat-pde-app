@@ -188,7 +188,7 @@ const CreateApproverGroup = () => {
           handleSubmit(values);
           actions.setSubmitting(false);
         }}>
-        {({ values, setFieldValue, handleChange, errors, touched }) => {
+        {({ values, setFieldValue, dirty, handleChange, errors, touched }) => {
           useEffect(() => {
             setIsDirty(Object.keys(touched).length > 0);
           }, [touched]);
@@ -205,23 +205,28 @@ const CreateApproverGroup = () => {
                   <div className="MCP-module-body form-container">
                     <div>
                       <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-                        <Field
-                          id="name"
-                          name="name"
-                          label={t('approvergroup.approvergroupname')}
-                          placeholder=" "
-                          isRequired
-                          component={Components['input']}
-                          maxLength={50}
-                        />
+                        <div>
+                          <Field
+                            id="name"
+                            name="name"
+                            label={t('approvergroup.approvergroupname')}
+                            placeholder=" "
+                            isRequired
+                            component={Components['input']}
+                            maxLength={50}
+                          />
+                          <div className="control-helper-text">Please enter a unique name to identify the approver group.</div>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="headingBox">
-                      <Heading as="h2">{t('approvergroup.attributes')}</Heading>
-                    </div>
                     <div>
-                      <Attributes values={values} setFieldValue={setFieldValue} />
+                      <div className="headingBox">
+                        <Heading as="h2">{'Rules'}</Heading>
+                      </div>
+                      <div>
+                        <Attributes values={values} setFieldValue={setFieldValue} />
+                      </div>
                     </div>
 
                     <div className="headingBox">

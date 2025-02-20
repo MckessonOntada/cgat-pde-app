@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { RuleKeys, RuleLabels, RuleValueKeys } from '../pages/ApproverGroupDetail/RulesConfig';
+import { CONTROL_OPTIONS } from '../pages/ApproverGroupDetail/RulesConfig';
 
 const FormContext = createContext();
 
@@ -13,9 +13,8 @@ export const useFormContext = () => {
 
 const defaultInitialValues = {
   name: '',
-  rules: [{ attributeType: 'Price', value: '' }],
-  approverUsers: [],
-  attributeuseroption: 'user_role'
+  rules: [{ attributeType: CONTROL_OPTIONS.Price, value: '' }],
+  approverUsers: []
 };
 
 export const FormProvider = ({ children }) => {
@@ -37,31 +36,41 @@ export const FormProvider = ({ children }) => {
 
       const { name, rules = {}, approverUsers = [] } = locationData;
 
-      const transformedRules = Object.entries(rules).map(([key, value]) => {
-        if (!value || (Array.isArray(value) && value.length === 0)) {
-          return null;
-        }
+      const transformedRules = [];
 
-        if ([RuleKeys.ACCOUNTS, RuleKeys.THERAPIES, RuleKeys.USERS, RuleKeys.ROLES].includes(key)) {
-          const valueKey = RuleValueKeys[key];
-          if (key === RuleKeys.USERS && rules[RuleKeys.ROLES]?.length > 0) return null;
-          if (key === RuleKeys.ROLES && rules[RuleKeys.USERS]?.length > 0) return null;
-          value = value.map((item) => item[valueKey]);
-        }
-        return { attributeType: RuleLabels[key], value };
+      const { price, accounts, therapies, roles, users } = rules;
+      transformedRules.push({
+        attributeType: CONTROL_OPTIONS.Price,
+        value: price
       });
-      const hasRoles = rules.roles && rules.roles.length > 0;
-      const hasUsers = rules.users && rules.users.length > 0;
+      if (accounts)
+        transformedRules.push({
+          attributeType: CONTROL_OPTIONS.Account,
+          value: accounts.map((item) => item.accountId)
+        });
+      if (therapies)
+        transformedRules.push({
+          attributeType: CONTROL_OPTIONS.Catalog,
+          value: therapies.map((item) => item.therapyId)
+        });
+      if (roles)
+        transformedRules.push({
+          attributeType: CONTROL_OPTIONS.Roles,
+          value: roles.map((item) => item.roleId)
+        });
+      if (users)
+        transformedRules.push({
+          attributeType: CONTROL_OPTIONS.Users,
+          value: users.map((item) => item.userId)
+        });
 
-      const dynamicAttributeUserOption = hasRoles ? 'user_role' : hasUsers ? 'user_name' : 'user_role';
       const transformedApproverUsers = approverUsers.map((user) => user.userId);
 
       setInitialValues({
         id: grpId,
         name: name || '',
         rules: (transformedRules || []).filter((transformedRules) => transformedRules && transformedRules.attributeType),
-        approverUsers: transformedApproverUsers,
-        attributeuseroption: dynamicAttributeUserOption
+        approverUsers: transformedApproverUsers
       });
     }
   };

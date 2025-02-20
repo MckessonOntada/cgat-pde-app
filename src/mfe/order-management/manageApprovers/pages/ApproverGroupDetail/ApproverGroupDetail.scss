@@ -1,4 +1,5 @@
 @use "@src/assets/styles/abstracts/mixins";
+
 .label-text {
   font-size: var(--brand-font-size--default);
   font-weight: var(--brand-font-weight-600);
@@ -17,11 +18,13 @@
 
 .attribute-category {
   gap: var(--spacing-01) !important;
-  .price{
-      font-size: var(--brand-font-size--large);
-      font-weight: var(--brand-font-weight-600);
-      padding-left: var(--spacing-03);
-    span{
+
+  .price {
+    font-size: var(--brand-font-size--large);
+    font-weight: var(--brand-font-weight-600);
+    padding-left: var(--spacing-03);
+
+    span {
       top: -4px;
       font-size: var(--brand-font-size--10);
       position: relative;
@@ -29,6 +32,7 @@
     }
   }
 }
+
 .attribute-list {
   display: grid;
   grid-template-columns: 1fr;
@@ -51,7 +55,7 @@
   align-items: flex-start;
   padding: var(--spacing-02);
   position: relative;
-  
+
   @include mixins.respond(md) {
     &:not(:nth-child(2n)):after {
       content: "";
@@ -134,5 +138,17 @@
     white-space: normal;
     word-break: break-word;
     max-width: 100%;
+  }
+}
+
+.rule-list {
+  font-size: var(--brand-font-size--default);
+  font-weight: var(--brand-font-weight-600);
+
+  .rule-item {
+
+    .rule-item-value {
+      color: #6656B7; //not listed in colors
+    }
   }
 }

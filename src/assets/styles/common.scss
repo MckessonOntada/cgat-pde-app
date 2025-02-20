@@ -38,10 +38,10 @@
 }
 
 .custom-date-range-picker {
-  > div {
-    > div {
-      > div {
-        > div {
+  >div {
+    >div {
+      >div {
+        >div {
           width: unset;
           min-width: 160px;
           flex-grow: 1;
@@ -602,11 +602,9 @@ div.disable-all {
   }
 }
 
-@media only screen and (min-width: 576px) {
-}
+@media only screen and (min-width: 576px) {}
 
-@media only screen and (min-width: 992px) {
-}
+@media only screen and (min-width: 992px) {}
 
 @media only screen and (min-width: 1200px) {
   .max-container {
@@ -661,6 +659,7 @@ div.disable-all {
 }
 
 .styled-heading {
+
   //module primary heading
   h1 {
     font-size: var(--brand-font-size--28) !important;
@@ -687,16 +686,20 @@ div.disable-all {
 }
 
 .styled-form-field {
+
   .label-heading,
   label[class*="TextareaInput-module--label"],
   label[class*="InputField-module--labelText"],
   fieldset legend[class*="CheckboxGroup-module--captionWrap"],
-  fieldset legend[class*="labelContainer"] {
-  }
+  fieldset legend[class*="labelContainer"] {}
 
   div[class*="RadioGroup-module"] {
     label {
+      // font-size: var(--brand-font-size--default) !important;
+      // font-weight: var(--brand-font-weight-400) !important;
+      // line-height: var(--brand-font-size--20);
     }
+
     margin-bottom: 1px !important;
   }
 }
@@ -783,7 +786,7 @@ div.disable-all {
   flex-direction: column;
   height: 100vh;
 
-  > div {
+  >div {
     padding: var(--spacing-03);
     flex: 0 0 auto;
   }
@@ -804,6 +807,7 @@ div.disable-all {
   }
 
   #secondaryNavPanel {
+
     button,
     a {
       font-size: var(--brand-font-size--small);
@@ -814,6 +818,7 @@ div.disable-all {
 }
 
 .questionnaire-template-question-list {
+
   .label-heading,
   label[class*="TextareaInput-module--label"],
   label[class*="InputField-module--labelText"],
@@ -875,7 +880,89 @@ div.disable-all {
 
 .error-label {
   font-size: var(--brand-font-size--small);
-  color: var(--brand-color-warning-coral);
+  color: var(--brand-color-warning-coral)
+}
+
+.control-helper-text {
+  font-weight: var(--brand-font-weight-400);
+  font-size: var(--brand-font-size--extra-small);
+  list-style: var(--brand-line-height--medium);
+  font-style: italic;
+  margin-top: var(--spacing-01);
+}
+
+.rule-list {
+  .rule {
+    .fake-control {
+      padding: var(--spacing-02) 12px;
+      background-color: var(--brand-color-cool-blue);
+      border: 1px solid var(--brand-color-background-light-slate);
+      border-radius: var(--spacing-01);
+      color: var(--brand-color-text-light-slate);
+    }
+
+    &:last-child {
+      .hr-container {
+        .hr-line {
+          border: none;
+        }
+      }
+    }
+
+    .rule-wrapper {
+      display: grid;
+      grid-template-columns: repeat(24, 1fr);
+      column-gap: var(--spacing-03);
+      align-items: center;
+      margin: var(--spacing-04) 0;
+
+      .response-control {
+        grid-column: span 14;
+
+        &.price {
+          grid-column: span 7;
+        }
+      }
+
+      .condition {
+        grid-column: span 1;
+      }
+
+      .control {
+        grid-column: span 6;
+      }
+
+      .clause {
+        grid-column: span 3;
+        display: flex;
+        justify-content: center;
+      }
+    }
+
+    .attribute-text-segment {
+      font-weight: var(--brand-font-weight-700);
+      text-transform: uppercase;
+      font-size: var(--brand-font-size--small);
+      font-style: italic;
+    }
+
+    .hr-container {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-04);
+
+      .hr-text {
+        margin-right: 10px;
+        font-weight: bold;
+      }
+
+      .hr-line {
+        flex-grow: 1;
+        border: none;
+        border-top: 1px solid var(--brand-color-grey-scale-cool-1);
+      }
+    }
+  }
 }
 
 .flex {

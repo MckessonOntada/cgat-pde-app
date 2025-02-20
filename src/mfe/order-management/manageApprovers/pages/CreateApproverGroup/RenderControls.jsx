@@ -1,16 +1,56 @@
-import Components from '@src/components/form/Components';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Pills } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Field, useFormikContext } from 'formik';
+import { useFormikContext } from 'formik';
 import { useAccountData, useCatalogData, useUserData, useUserRoleData } from './apiService';
 import { useFormContext } from '../../context/FormContext';
-import { RuleKeys, RuleLabels, RuleValueKeys } from '../ApproverGroupDetail/RulesConfig';
+import { CONTROL_OPTIONS } from '../ApproverGroupDetail/RulesConfig';
 import AttributeFieldRenderer from './AttributeFieldRenderer';
-import { use } from 'react';
 
-function RenderControls({ attributeType, name, isAttributeRemoved }) {
+const fieldAttributes = {
+  Price: {
+    helperText: 'Please select a criteria to apply the approval rules on.',
+    inputControl: {
+      caption: 'Amount',
+      searchable: false,
+      helperText: 'Please enter the amount greater than for the approver group.'
+    }
+  },
+  Catalog: {
+    helperText: 'Please select a criteria to apply the approval rules on.',
+    inputControl: {
+      caption: 'Select Therapy',
+      searchable: true,
+      helperText: 'Please select the therapy(s) for the approver group.'
+    }
+  },
+  Account: {
+    helperText: 'Please select a criteria to apply the approval rules on.',
+    inputControl: {
+      caption: 'Select Account',
+      searchable: true,
+      helperText: 'Please select the account(s) for the approver group.'
+    }
+  },
+  Roles: {
+    helperText: 'Please select a criteria to apply the approval rules on.',
+    inputControl: {
+      caption: 'Select Role',
+      searchable: true,
+      helperText: 'Please select the role(s) for the approver group.'
+    }
+  },
+  Users: {
+    helperText: 'Please select a criteria to apply the approval rules on.',
+    inputControl: {
+      caption: 'Select User',
+      searchable: true,
+      helperText: 'Please select the user(s) for the approver group.'
+    }
+  }
+};
+
+function RenderControls({ attributeType = CONTROL_OPTIONS.Price, name, isAttributeRemoved }) {
   const { t } = useTranslate();
   const { values, setFieldValue } = useFormikContext();
   const { initialValues, isEditMode } = useFormContext();
@@ -18,15 +58,18 @@ function RenderControls({ attributeType, name, isAttributeRemoved }) {
   const isDataBinded = useRef(false);
   const useInitialValues = useRef(true);
 
-  const shouldFetchCatalog = attributeType === RuleLabels[RuleKeys.THERAPIES];
-  const shouldFetchAccounts = attributeType === RuleLabels[RuleKeys.ACCOUNTS];
-  const shouldFetchUsers = attributeType === RuleLabels[RuleKeys.USERS];
-  const shouldFetchPrice = attributeType === RuleLabels[RuleKeys.PRICE];
+  React.useEffect(() => {}, [attributeType]);
+
+  const shouldFetchCatalog = attributeType === CONTROL_OPTIONS.Catalog;
+  const shouldFetchAccounts = attributeType === CONTROL_OPTIONS.Account;
+  const shouldFetchUserRole = attributeType === CONTROL_OPTIONS.Roles;
+  const shouldFetchUserNames = attributeType === CONTROL_OPTIONS.Users;
+  const shouldFetchPrice = attributeType === CONTROL_OPTIONS.Price;
 
   const catalogQuery = useCatalogData(shouldFetchCatalog);
   const accountQuery = useAccountData(shouldFetchAccounts);
-  const userRoleQuery = useUserRoleData(shouldFetchUsers && values.attributeuseroption === 'user_role');
-  const userDataQuery = useUserData(shouldFetchUsers && values.attributeuseroption === 'user_name');
+  const userRoleQuery = useUserRoleData(shouldFetchUserRole);
+  const userDataQuery = useUserData(shouldFetchUserNames);
 
   const [selectedData, setSelectedData] = useState({
     price: '',
@@ -44,17 +87,21 @@ function RenderControls({ attributeType, name, isAttributeRemoved }) {
       isDataBinded.current = false;
       return accountQuery;
     }
-    if (shouldFetchUsers) {
+    if (shouldFetchUserRole) {
       isDataBinded.current = false;
-      return values.attributeuseroption === 'user_role' ? userRoleQuery : userDataQuery;
+      return userRoleQuery;
+    }
+    if (shouldFetchUserNames) {
+      isDataBinded.current = false;
+      return userDataQuery;
     }
 
     return { isLoading: false, data: [] };
   }, [
     shouldFetchCatalog,
     shouldFetchAccounts,
-    shouldFetchUsers,
-    values.attributeuseroption,
+    shouldFetchUserRole,
+    shouldFetchUserNames,
     catalogQuery,
     accountQuery,
     userRoleQuery,
@@ -73,7 +120,7 @@ function RenderControls({ attributeType, name, isAttributeRemoved }) {
 
       let sourceData = useInitialValues.current ? initialValues : values;
       sourceData.rules = sourceData.rules.map((item) => {
-        if (item.attributeType !== 'Price' && item.value === '') {
+        if (item.attributeType !== CONTROL_OPTIONS.Price && item.value === '') {
           return {
             ...item,
             value: []
@@ -98,7 +145,8 @@ function RenderControls({ attributeType, name, isAttributeRemoved }) {
         const updatedState = { ...prevState };
         if (shouldFetchPrice) updatedState.price = '';
         if (shouldFetchAccounts) updatedState.accounts = fetchData;
-        if (shouldFetchUsers) updatedState.users = fetchData;
+        if (shouldFetchUserRole) updatedState.roles = fetchData;
+        if (shouldFetchUserNames) updatedState.users = fetchData;
         if (shouldFetchCatalog) updatedState.categories = fetchData;
         return updatedState;
       });
@@ -106,13 +154,23 @@ function RenderControls({ attributeType, name, isAttributeRemoved }) {
       useInitialValues.current = false;
       isDataBinded.current = true;
     }
-  }, [queryResult.data, shouldFetchAccounts, shouldFetchUsers, shouldFetchCatalog, shouldFetchPrice, attributeType, isEditMode]);
+  }, [
+    queryResult.data,
+    shouldFetchAccounts,
+    shouldFetchUserRole,
+    shouldFetchUserNames,
+    shouldFetchCatalog,
+    shouldFetchPrice,
+    attributeType,
+    isEditMode
+  ]);
 
   useEffect(() => {
     if (!isDataBinded.current) {
       const updatedLocalData = (() => {
         if (shouldFetchAccounts) return selectedData.accounts;
-        if (shouldFetchUsers) return selectedData.users;
+        if (shouldFetchUserRole) return selectedData.roles;
+        if (shouldFetchUserNames) return selectedData.users;
         if (shouldFetchCatalog) return selectedData.categories;
         if (shouldFetchPrice) return [];
         return [];
@@ -120,7 +178,7 @@ function RenderControls({ attributeType, name, isAttributeRemoved }) {
       isDataBinded.current = true;
       setLocalData(updatedLocalData);
     }
-  }, [selectedData, shouldFetchAccounts, shouldFetchUsers, shouldFetchCatalog, shouldFetchPrice]);
+  }, [selectedData, shouldFetchAccounts, shouldFetchUserRole, shouldFetchUserNames, shouldFetchCatalog, shouldFetchPrice]);
 
   const onRemoveClick = (itemToRemove) => {
     const updatedValues = values.rules.find((rule) => rule.attributeType === attributeType)?.value.filter((id) => id !== itemToRemove);
@@ -152,8 +210,11 @@ function RenderControls({ attributeType, name, isAttributeRemoved }) {
     setLocalData(updatedOptions);
   };
 
+  const attributes = fieldAttributes[attributeType]?.inputControl || {};
   return (
     <AttributeFieldRenderer
+      caption={attributes.caption}
+      helperText={attributes.helperText}
       attributeType={attributeType}
       name={name}
       localData={localData}
