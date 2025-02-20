@@ -213,8 +213,8 @@ function RenderControls({ attributeType = CONTROL_OPTIONS.Price, name, isAttribu
   const attributes = fieldAttributes[attributeType]?.inputControl || {};
   return (
     <AttributeFieldRenderer
-      caption={attributes.caption}
-      helperText={attributes.helperText}
+      caption={t(`rules.value.${attributeType.toLowerCase()}.caption`)}
+      helperText={t(`rules.value.${attributeType.toLowerCase()}.helperText`)}
       attributeType={attributeType}
       name={name}
       localData={localData}

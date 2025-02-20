@@ -6,17 +6,17 @@ import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
 import './index.scss';
 import RenderControls from './RenderControls';
-import { CONTROL_OPTIONS } from '../ApproverGroupDetail/RulesConfig';
+import { CONTROL_OPTIONS, getRuleOperator } from '../ApproverGroupDetail/RulesConfig';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
 
-const ruleAttributeConnectingSegment = {
-  Catalog: 'ORDERED ANY OF',
-  Price: 'GREATER THAN',
-  Account: 'SELECTED ANY OF',
-  Roles: 'SELECTED ANY OF',
-  Users: 'SELECTED ANY OF'
-};
+// const ruleAttributeConnectingSegment = {
+//   Catalog: 'ORDERED ANY OF',
+//   Price: 'GREATER THAN',
+//   Account: 'SELECTED ANY OF',
+//   Roles: 'SELECTED ANY OF',
+//   Users: 'SELECTED ANY OF'
+// };
 
 const Attributes = ({ values, setFieldValue }) => {
   const initRef = useRef(false);
@@ -33,6 +33,7 @@ const Attributes = ({ values, setFieldValue }) => {
   const isAddDisabled = values.rules.length >= attrOptions.length - 1;
   const getAvailableOptions = (index) => {
     const selectedValues = values.rules.map((attr) => attr.attributeType);
+    console.log(attrOptions);
     return attrOptions.filter(
       (option) => option.value === '' || !selectedValues.includes(option.value) || values.rules[index]?.attributeType === option.value
     );
@@ -45,10 +46,10 @@ const Attributes = ({ values, setFieldValue }) => {
     };
 
     const state = {};
-    state.title = `Delete Rule?`;
+    state.title = t('rules.delete.title');
     state.body = (
       <div className="MCP-modal-body">
-        <p>Do you want to delete this rule?</p>
+        <p>{t('rules.delete.confirmation')}</p>
       </div>
     );
     state.footer = (
@@ -73,8 +74,8 @@ const Attributes = ({ values, setFieldValue }) => {
               {values.rules?.map((attribute, index) => (
                 <div className="rule">
                   <div key={index} className="rule-wrapper">
-                    <div className="condition attribute-text-segment">IF</div>
-                    <div className="control type">
+                    <div className="condition attribute-text-segment">{t('rules.clauseIf.if')}</div>
+                    <div className="rule-field type">
                       <Field
                         id={`rules[${index}].attributeType`}
                         name={`rules[${index}].attributeType`}
@@ -85,18 +86,11 @@ const Attributes = ({ values, setFieldValue }) => {
                         options={getAvailableOptions(index)}
                         onChangeHandler={(value) => {
                           setFieldValue(`rules[${index}].attributeType`, value);
-                          // if (value === 'Users') {
-                          //   setFieldValue('attributeuseroption', 'user_role');
-                          // }
-                          // if (value === 'Price') {
-                          //   setFieldValue(`rules[${index}].value`, '');
-                          //   setFieldValue(`rules[${index}].value_augmented`, '');
-                          // }
                         }}
                       />
-                      <div className="control-helper-text">Please select a criteria to apply the approval rules on.</div>
+                      <div className="control-helper-text">{t('rules.field.helperText')}</div>
                     </div>
-                    <div className="clause attribute-text-segment">{ruleAttributeConnectingSegment[attribute.attributeType]}</div>
+                    <div className="rule-operator attribute-text-segment">{getRuleOperator(attribute.attributeType, t)}</div>
                     <div className={`response-control ${attribute.attributeType === CONTROL_OPTIONS['Price'] ? 'price' : ''}`}>
                       <div className="dropdown-with-button">
                         <div className="dropdown-row">
@@ -120,16 +114,12 @@ const Attributes = ({ values, setFieldValue }) => {
                     </div>
                   </div>
                   <div className="hr-container">
-                    {index < values.rules.length - 1 && <div className="attribute-text-segment">AND</div>}
+                    {index < values.rules.length - 1 && <div className="attribute-text-segment">{t('rules.logicalOperator.and')}</div>}
                     <hr className="hr-line" />
                   </div>
                 </div>
               ))}
             </div>
-
-            {/* Add Attribute Button */}
-
-            {/* <div className="separator-line"></div> */}
 
             <div className="addAttribute">
               <Button
@@ -137,7 +127,6 @@ const Attributes = ({ values, setFieldValue }) => {
                 size="md"
                 onClick={() => {
                   push({ attributeType: '', value: '' });
-                  // initRef.current = true;
                 }}
                 disabled={isAddDisabled}>
                 + {t('approvergroup.addattribute')}

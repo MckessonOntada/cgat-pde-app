@@ -84,5 +84,28 @@ export const ApproverManagementEN = {
   'rules.accounts': 'Account',
   'rules.therapies': 'Catalog',
   'rules.users': 'User',
-  'rules.roles': 'Roles'
+  'rules.roles': 'Roles',
+
+  'rules.operator.orderedOfAny': 'Ordered Any Of',
+  'rules.operator.selectedAnyOf': 'Selected Any Of',
+  'rules.operator.greaterThan': 'Greater Than',
+  'rules.logicalOperator.and': 'AND',
+  'rules.clauseIf.if': 'If',
+  'approverGroup.userList.emailAddress': 'Email Address',
+  'approverGroup.userList.name': 'Name',
+  'approverGroup.userList.title': 'Approver User List',
+  'rules.delete.confirmation': 'Do you want to delete this rule?',
+  'rules.delete.title': 'Delete rule?',
+  'rules.field.helperText': 'Please select a criteria to apply the approval rules on.',
+
+  'rules.value.price.caption': 'Amount',
+  'rules.value.price.helperText': 'Please enter the amount greater than for the approver group.',
+  'rules.value.catalog.caption': 'Select Therapy',
+  'rules.value.catalog.helperText': 'Please select the therapy(s) for the approver group.',
+  'rules.value.account.caption': 'Select Account',
+  'rules.value.account.helperText': 'Please select the account(s) for the approver group.',
+  'rules.value.roles.caption': 'Select Role',
+  'rules.value.roles.helperText': 'Please select the role(s) for the approver group.',
+  'rules.value.users.caption': 'Select User',
+  'rules.value.users.helperText': 'Please select the user(s) for the approver group.'
 };

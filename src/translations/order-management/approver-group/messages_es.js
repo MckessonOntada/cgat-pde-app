@@ -81,5 +81,9 @@ export const ApproverManagementES = {
   'rules.accounts': 'S_Account',
   'rules.therapies': 'S_Catalog',
   'rules.users': 'S_User',
-  'rules.roles': 'S_Roles'
+  'rules.roles': 'S_Roles',
+
+  'rules.operator.orderedOfAny': 'S_Ordered Any Of',
+  'rules.operator.selectedAnyOf': 'S_Selected Any Of',
+  'rules.operator.greaterThan': 'S_Greater Than'
 };

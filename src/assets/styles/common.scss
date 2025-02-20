@@ -928,11 +928,11 @@ div.disable-all {
         grid-column: span 1;
       }
 
-      .control {
+      .rule-field {
         grid-column: span 6;
       }
 
-      .clause {
+      .rule-operator {
         grid-column: span 3;
         display: flex;
         justify-content: center;
@@ -952,8 +952,10 @@ div.disable-all {
       gap: var(--spacing-04);
 
       .hr-text {
-        margin-right: 10px;
-        font-weight: bold;
+        font-weight: var(--brand-font-weight-700);
+        text-transform: uppercase;
+        font-size: var(--brand-font-size--large);
+        line-height: var(--brand-line-height--x-large);
       }
 
       .hr-line {

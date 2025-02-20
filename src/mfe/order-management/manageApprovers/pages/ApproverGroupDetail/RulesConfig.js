@@ -57,3 +57,12 @@ export const CONTROL_OPTIONS = {
   Roles: 'Roles',
   Users: 'Users'
 };
+
+export const getRuleOperator = (key, t) =>
+  ({
+    Catalog: t('rules.operator.orderedOfAny'),
+    Price: t('rules.operator.greaterThan'),
+    Account: t('rules.operator.selectedAnyOf'),
+    Roles: t('rules.operator.selectedAnyOf'),
+    Users: t('rules.operator.selectedAnyOf')
+  }[key]);

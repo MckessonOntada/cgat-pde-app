@@ -28,7 +28,7 @@ function TherapySelection() {
   const location = useLocation();
   const { orderId } = useParams();
   const { clearFilters, applyFilters } = useTherapy();
-  const [initialSelectedThearpy, setInitialSelectedTherapy] = React.useState(null);
+  const [initialSelectedTherapy, setInitialSelectedTherapy] = React.useState(null);
   const { data: orderDetails } = useOrder(orderId);
   const [therapy, setTherapy] = useState(orderDetails?.therapy);
   const searchParams = new URLSearchParams(location.search);
@@ -49,8 +49,6 @@ function TherapySelection() {
     if (therapy) {
       setTherapy(therapy);
       setInitialSelectedTherapy(therapy);
-    } else {
-      console.log('Could not set therapy');
     }
   }, [orderDetails]);
 
@@ -106,7 +104,7 @@ function TherapySelection() {
       }
     }
   };
-  const isDirty = JSON.stringify(therapy) !== JSON.stringify(initialSelectedThearpy);
+  const isDirty = JSON.stringify(therapy) !== JSON.stringify(initialSelectedTherapy);
 
   const handleOnBackToOrders = () => {
     if (isDirty) {
