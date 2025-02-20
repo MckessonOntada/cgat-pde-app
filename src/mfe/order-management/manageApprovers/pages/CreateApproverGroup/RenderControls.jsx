@@ -1,12 +1,10 @@
-import Components from '@src/components/form/Components';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Pills } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Field, useFormikContext } from 'formik';
+import { useFormikContext } from 'formik';
 import { useAccountData, useCatalogData, useUserData, useUserRoleData } from './apiService';
 import { useFormContext } from '../../context/FormContext';
-import { CONTROL_OPTIONS, RuleKeys, RuleLabels, RuleValueKeys } from '../ApproverGroupDetail/RulesConfig';
+import { CONTROL_OPTIONS } from '../ApproverGroupDetail/RulesConfig';
 import AttributeFieldRenderer from './AttributeFieldRenderer';
 
 const fieldAttributes = {
