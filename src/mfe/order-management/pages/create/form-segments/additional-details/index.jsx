@@ -56,7 +56,7 @@ function AdditionalDetails() {
   const [variant, setVariant] = React.useState();
   const { showAlert } = useAlert();
   const alertContainerId = 'additionalDetails-alert-container';
-  const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error } = useOrder();
+  const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error } = useOrder(orderId);
   const { isCoiIdRequired, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
@@ -199,9 +199,7 @@ function AdditionalDetails() {
       };
       return QuestionnaireService.getConfiguredQuestionnaire(payload);
     },
-    enabled: Boolean(
-      orderDetails?.accountDetails?.shipToAccount?.accountNumber && orderDetails?.accountDetails?.soldToAccount?.accountNumber
-    ),
+    enabled: false,
     refetchOnWindowFocus: false,
     onSuccess: (result) => {
       result && prepareQuestionnaire(result);
@@ -385,9 +383,13 @@ function AdditionalDetails() {
   };
 
   React.useEffect(() => {
-    if (!variant) return;
-    fetchConfiguredQuestions();
-  }, [variant]);
+    if (orderDetails && !orderDetails.additionalDetails?.configuredQuestionnaires) {
+      const { soldToAccount, shipToAccount } = orderDetails.accountDetails || {};
+      if (soldToAccount && shipToAccount) {
+        fetchConfiguredQuestions();
+      }
+    }
+  }, [variant, orderDetails]);
 
   const handleOnAcknowledgmentChange = () => {
     const updatedOptions = { ...variantAcknowledgement, isChecked: !variantAcknowledgement.isChecked };
