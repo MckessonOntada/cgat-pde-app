@@ -4,10 +4,6 @@ import styles from './QuestionnaireTemplate.module.scss';
 import { Field, useFormikContext } from 'formik';
 import Components from '@src/components/form/Components';
 import CheckBox from '@src/components/form/CheckBox';
-import { Button } from '@mckesson/mcp-component-library';
-import { Link } from 'react-router-dom';
-import { ReactComponent as BinRedIcon } from '@src/assets/svg/bin-red.svg';
-import { ReactComponent as FileUploadIcon } from '@src/assets/svg/document.svg';
 import CommonUtils from '@src/util/CommonUtils';
 import { useTranslate } from '@src/translations/useTranslation';
 
@@ -128,40 +124,15 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
           </div>
 
           {isDocumentRequired && (
-            <div>
-              {attachmentValue ? (
-                <div className={styles['attachment-ribbon']}>
-                  <div class="grid grid-gap-16 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-                    <div className="row-space-between-center">
-                      <div className={styles['filename']}>
-                        <FileUploadIcon width={20} />
-                        <Link target="_blank" to={attachmentValue}>
-                          {attachmentValue.substring(attachmentValue.lastIndexOf('/') + 1)}
-                        </Link>
-                      </div>
-                      <div className="styled-icon-button error-button">
-                        <Button
-                          Icon={BinRedIcon}
-                          size="md"
-                          variant="tertiary"
-                          color="error"
-                          type="button"
-                          onClick={() => setFieldValue(`${fieldName}.documentUrl`, null)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className={`fileUploadControl ${isPreview ? 'readonly' : ''}`}>
-                  <Field
-                    name={`${fieldName}.documentUrl`}
-                    validateOnChange={validateFile}
-                    onFileChange={(file) => onDocumentChange(fieldName, file, setFieldValue)}
-                    component={Components['inputFile']}
-                  />
-                </div>
-              )}
+            <div className={`fileUploadControl ${isPreview ? 'readonly' : ''}`}>
+              <Field
+                name={`${fieldName}.documentUrl`}
+                validateOnChange={validateFile}
+                onFileChange={(file) => onDocumentChange(fieldName, file, setFieldValue)}
+                component={Components['inputFile']}
+                attachmentValue={attachmentValue}
+                setFieldValue={setFieldValue}
+              />
             </div>
           )}
         </div>

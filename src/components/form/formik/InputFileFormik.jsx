@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Divider, Button } from '@mckesson/mcp-component-library';
 import styles from './InputFileFormik.module.scss';
 import { getNestedValue } from '../util';
 import { useTranslate } from '@src/translations/useTranslation';
 import Upload from '@src/assets/image/upload.svg';
 import { ReactComponent as AddCircleBold } from '@src/assets/image/add_circle_bold.svg';
-import { ReactComponent as Close } from '@src/assets/image/close.svg';
 import { useFormikContext } from 'formik';
+import { ReactComponent as FileUploadIcon } from '@src/assets/svg/document.svg';
+import { ReactComponent as BinRedIcon } from '@src/assets/svg/remove.svg';
+import { Link } from 'react-router-dom';
 
 function InputFileFormik(props) {
   const { field, form, onFileChange, primaryButtonCaption } = props;
   const { setFieldError } = useFormikContext();
+  const [errorFile, setErrorFile] = useState(false)
   const { label, value, validateOnChange } = props;
   const fileInputRef = React.useRef(value || null);
   const { t } = useTranslate();
@@ -18,13 +21,13 @@ function InputFileFormik(props) {
   const { errors, touched, setFieldValue } = form;
   const errorMessage = getNestedValue(errors, `${field.name}`);
   const isFieldTouched = field.name.includes('.') ? getNestedValue(touched, field.name.split('.')[0]) : getNestedValue(touched, field.name);
-
   const validateBeforeChange = (file, event) => {
     if (validateOnChange) {
       const validationResponse = validateOnChange(file);
 
       if (!validationResponse.isValid) {
         setFieldError(`${field.name}`, validationResponse.message);
+        setErrorFile(true)
         event.preventDefault();
         return false;
       }
@@ -40,6 +43,7 @@ function InputFileFormik(props) {
         if (onFileChange) onFileChange(selectedFile, event);
         else setFieldValue(field.name, selectedFile);
         setFile(selectedFile);
+        setErrorFile(false)
       }
   };
 
@@ -63,7 +67,7 @@ function InputFileFormik(props) {
 
   const handleClearLogo = () => {
     setFile(null);
-    onFileChange && onFileChange(null);
+    setFieldValue(field.name, null)
     fileInputRef.current.value = '';
   };
 
@@ -96,10 +100,12 @@ function InputFileFormik(props) {
       />
       <label
         htmlFor="fileInput"
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
+        onDrop={ !props.disabled &&  handleDrop}
+        onDragOver={!props.disabled &&  handleDragOver}
         // onDragLeave={handleDragLeave}
-        className={styles['control-label']}>
+        className={styles['control-label']}
+        style={!!props.disabled ? { background: '#F2F6FA' } : {}}
+      >
         <div className={styles['upload-panel']}>
           <div>
             <img src={Upload} alt="Upload Icon" />
@@ -112,31 +118,43 @@ function InputFileFormik(props) {
             <p>OR</p>
             <Divider className={styles['divider-style']} />
           </div>
-          <Button Icon={AddCircleBold} className={styles['button-icon']} variant="secondary" onClick={handleBrowseClick} size={'md'}>
+          <Button Icon={AddCircleBold} className={styles['button-icon']} variant="secondary" onClick={handleBrowseClick} size={'md'} disabled={!!props.disabled || !!file}>
             {primaryButtonCaption || t('file.browsInput.selectFile')}
           </Button>
-        </div>
-
+        </div>  
         {file && (
           <div className={styles['preview-container']}>
-            {file.type.startsWith('image/') && <img src={URL.createObjectURL(file)} alt="Preview" className={styles['image-preview']} />}
             <div className={styles['file-info']}>
-              <p>{file.name}</p>
-              <p>{selectedFileSize} KB</p>
+              <div>
+                {file.type.startsWith('image/') ? <img src={URL.createObjectURL(file)} alt="Preview" className={styles['image-preview']} />: <FileUploadIcon width={20} />}
+              </div>
+              <div>
+                <Link className={styles['file-name']} target="_blank" to={props.attachmentValue}>
+                  <p>{file.name}</p>
+                </Link>
+                <p>{selectedFileSize} KB</p>
+              </div>
             </div>
-
-            <Button
-              Icon={Close}
-              className={styles['remove-button-upload']}
-              variant="tertiary"
-              onClick={handleClearLogo}
-              iconButton={true}
-              size={'lg'}
-            />
+            <div className="styled-icon-button error-button">
+              <Button
+                Icon={BinRedIcon}
+                className={styles['remove-button-upload']}
+                size="lg"
+                variant="tertiary"
+                color="error"
+                type="button"
+                onClick={handleClearLogo}
+              />
+            </div>
+          </div>
+        )}
+        {(errorFile || isFieldTouched) && errorMessage && (
+          <div className={styles['error-container']}>
+            <p>{t('file.browsInput.error.uploading')}</p>
+            <label>{errorMessage}</label>
           </div>
         )}
       </label>
-      <div>{isFieldTouched && errorMessage && <label className={styles['error-label']}>{errorMessage}</label>}</div>
     </div>
   );
 }
