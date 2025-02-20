@@ -72,7 +72,7 @@ const UserPermissions = () => {
 
   const handleSaveAndContinue = (values) => {
     const payload = {
-      roleId: isSystemAdminView ? 1 : permissionsData?.roleId ? permissionsData?.roleId : values.roleId,
+      roleId: permissionsData?.roleId ? permissionsData?.roleId : values.roleId,
       permissions: values.permissions
     };
 
@@ -139,7 +139,6 @@ const UserPermissions = () => {
         validateOnBlur={true}>
         {({ values, setFieldValue, initialValues, isValid, handleSubmit }) => {
           const isDirty = (isEdit && values.roleId) || isBack || permissionsData?.roleId || isFormValuesChanged(initialValues, values);
-
           return (
             <Form
               onSubmit={(e) => {

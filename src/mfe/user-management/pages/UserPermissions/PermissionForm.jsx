@@ -184,7 +184,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
   };
 
   const isPermissionEnabled = (permission) => {
-    return isSystemAdminView || (Array.isArray(enabledPermissions) && enabledPermissions.includes(permission));
+    return Array.isArray(enabledPermissions) && enabledPermissions.includes(permission);
   };
 
   return (
