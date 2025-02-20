@@ -1,3 +1,4 @@
+// Values need to be added once all the data is available in API
 export const TherapyDetailsConstants = [
   {
     sectionHeading: 'labels.therapy.therapyINFO',
