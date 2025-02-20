@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './AccountSelectionUserGuide.module.scss';
 import { RadioGroup, Button, Loader, Heading } from '@mckesson/mcp-component-library';
-import { ReactComponent as IconClose } from '@src/assets/svg/closeIcon.svg';
+import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
 import AccountCard from './AccountCard';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useQuery } from 'react-query';
@@ -72,15 +72,14 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
   const { programs = [], channels = [] } = programChannelConfig;
   return (
     <div className={styles.wrapper}>
+      <div className={styles.header}>
+        <Heading as="h3">{t('labels.needAssistanceSelectingAccount')}</Heading>
+        <Button variant="tertiary" onClick={onClose} aria-label={t('captions.close')} textButton IconClose>
+          <IconClose />
+        </Button>
+      </div>
       <div className={styles.drawerContent}>
         <div className={styles.topSect}>
-          <div className={styles.header}>
-            <Heading as="h3">{t('labels.needAssistanceSelectingAccount')}</Heading>
-            <Button variant="tertiary" onClick={onClose} aria-label={t('captions.close')}>
-              <IconClose />
-            </Button>
-          </div>
-
           <div className="MCP-CardContainer">
             <div className={styles.selectionBlock}>
               <p className={styles.caption}>{t('labels.orderAssistance.selectChannel')}</p>

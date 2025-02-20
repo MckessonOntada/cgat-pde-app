@@ -1,6 +1,19 @@
 .wrapper {
-    min-width: 420px;
-
+    min-width: 446px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    .header{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--spacing-02);
+        justify-content: space-between;
+        border-bottom: 1px solid var(--brand-color-dark-grey);
+        padding: var(--spacing-02) var(--spacing-03);
+        font-size: var(--brand-font-size--small);
+        font-weight: var(--brand-font-weight-600);
+    }
     .drawerContent {
         height: 100vh;
         padding: var(--spacing-03, 16px);
@@ -25,14 +38,6 @@
             display: flex;
             flex-direction: column;
             gap: var(--spacing-04);
-
-            .header {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                gap: var(--spacing-04);
-                justify-content: space-between;
-            }
         }
 
         .controls {

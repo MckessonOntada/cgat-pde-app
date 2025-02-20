@@ -97,7 +97,7 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
           <div className="details-main-wrapper">
             <div className="header">
               <Heading as="h3">{t('ManageAccount.accountDetails')}</Heading>
-              <Button variant="tertiary" onClick={handleCloseDrawer}> 
+              <Button variant="tertiary" onClick={handleCloseDrawer} textButton IconClose> 
                 <IconClose />
               </Button>
             </div>
