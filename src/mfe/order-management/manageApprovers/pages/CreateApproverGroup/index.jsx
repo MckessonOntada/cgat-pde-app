@@ -36,14 +36,12 @@ const CreateApproverGroup = () => {
   const dataBinded = useRef(false);
   const [isDirty, setIsDirty] = React.useState(false);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-  const userPermissions = AuthUtils.getUserPermissions();
   const { hasPermission } = usePermission();
 
   const {
     isLoading: isLoadingapproverGroup,
     data: groupData,
-    isError: isErrorapproverGroup,
-    refetch
+    isError: isErrorapproverGroup
   } = useQuery({
     queryKey: [`approver-group/${grpId}`],
     queryFn: async () => {
@@ -51,6 +49,9 @@ const CreateApproverGroup = () => {
       if (res.data) {
         return res.data;
       }
+    },
+    onSuccess: (result) => {
+      initializeFormFromLocation(grpId, result);
     },
     enabled: !!grpId,
     refetchOnWindowFocus: false
@@ -187,7 +188,7 @@ const CreateApproverGroup = () => {
           handleSubmit(values);
           actions.setSubmitting(false);
         }}>
-        {({ values, setFieldValue, handleChange, errors, touched }) => {
+        {({ values, setFieldValue, dirty, handleChange, errors, touched }) => {
           useEffect(() => {
             setIsDirty(Object.keys(touched).length > 0);
           }, [touched]);
@@ -204,53 +205,54 @@ const CreateApproverGroup = () => {
                   <div className="MCP-module-body form-container">
                     <div>
                       <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
-                        <Field
-                          id="name"
-                          name="name"
-                          label={t('approvergroup.approvergroupname')}
-                          placeholder=" "
-                          isRequired
-                          component={Components['input']}
-                          maxLength={50}
-                        />
+                        <div>
+                          <Field
+                            id="name"
+                            name="name"
+                            label={t('approvergroup.approvergroupname')}
+                            placeholder=" "
+                            isRequired
+                            component={Components['input']}
+                            maxLength={50}
+                          />
+                          <div className="control-helper-text">Please enter a unique name to identify the approver group.</div>
+                        </div>
                       </div>
                     </div>
 
                     <div>
                       <div className="headingBox">
-                        <Heading as="h2">{t('approvergroup.attributes')}</Heading>
+                        <Heading as="h2">{'Rules'}</Heading>
                       </div>
                       <div>
                         <Attributes values={values} setFieldValue={setFieldValue} />
                       </div>
                     </div>
 
-                    <div>
-                      <div className="headingBox">
-                        <Heading as="h2">{t('approvergroup.approveuserlist')}</Heading>
-                      </div>
+                    <div className="headingBox">
+                      <Heading as="h2">{t('approvergroup.approveuserlist')}</Heading>
+                    </div>
 
-                      <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
-                        <Field
-                          id="approverUsers"
-                          name="approverUsers"
-                          label={t('approvergroup.selectuser')}
-                          placeholder=" "
-                          isRequired
-                          component={Components['multiSelectDropdown']}
-                          options={localUserData || []}
-                          getUpdatedOptions={(values) => {
-                            if (values.length > 0) {
-                              setLocalUsersData(values);
-                            }
-                          }}
-                          onRemoveClick={onRemoveUserClick}
-                          noSelectedCountMessage={t('approvergroup.create.option.please_select')}
-                          pillsLabels={createLabelData(values.approverUsers_augmented)}
-                          pillsCount={5}
-                          ispillsVisible={true}
-                        />
-                      </div>
+                    <div className="grid grid-gap-24 grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
+                      <Field
+                        id="approverUsers"
+                        name="approverUsers"
+                        label={t('approvergroup.selectuser')}
+                        placeholder=" "
+                        isRequired
+                        component={Components['multiSelectDropdown']}
+                        options={localUserData || []}
+                        getUpdatedOptions={(values) => {
+                          if (values.length > 0) {
+                            setLocalUsersData(values);
+                          }
+                        }}
+                        onRemoveClick={onRemoveUserClick}
+                        noSelectedCountMessage={t('approvergroup.create.option.please_select')}
+                        pillsLabels={createLabelData(values.approverUsers_augmented)}
+                        pillsCount={5}
+                        ispillsVisible={true}
+                      />
                     </div>
                   </div>
                 </div>

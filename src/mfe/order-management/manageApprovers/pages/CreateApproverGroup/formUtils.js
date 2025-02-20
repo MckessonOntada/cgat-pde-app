@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { ALPHA_NUMERIC_WITH_SPECIAL, ALPHABETIC_WITH_SPECIAL } from '@src/components/form/ValidationRegExp';
-import { RuleKeys, RuleLabels } from '../ApproverGroupDetail/RulesConfig';
+import { CONTROL_OPTIONS } from '../ApproverGroupDetail/RulesConfig';
 
 export const transformAttributesToRules = (values, practiceId) => {
   const { name, approverUsers, approverUsers_augmented, rules } = values;
@@ -10,11 +10,11 @@ export const transformAttributesToRules = (values, practiceId) => {
     name: name || 'default',
     practiceId: practiceId || 0,
     rules: {
-      price: 0,
-      accounts: [],
-      therapies: [],
-      roles: [],
-      users: []
+      // price: 0,
+      // accounts: [],
+      // therapies: [],
+      // roles: [],
+      // users: []
     },
     approverUsers: []
   };
@@ -22,43 +22,33 @@ export const transformAttributesToRules = (values, practiceId) => {
   // Process rules
   rules.forEach((rule) => {
     switch (rule.attributeType) {
-      case RuleLabels[RuleKeys.PRICE]:
+      case CONTROL_OPTIONS.Price:
         result.rules.price = parseInt(rule.value, 10);
         break;
-      case RuleLabels[RuleKeys.THERAPIES]: // Therapies
-        rule.value_augmented.forEach((therapy) => {
-          result.rules.therapies.push({
-            therapyId: therapy.value,
-            therapyName: therapy.name
-          });
-        });
+      case CONTROL_OPTIONS.Catalog: // Therapies
+        result.rules.therapies = rule.value_augmented.map((therapy) => ({
+          therapyId: therapy.value,
+          therapyName: therapy.name
+        }));
         break;
-      case RuleLabels[RuleKeys.ACCOUNTS]:
-        rule.value_augmented.forEach((account) => {
-          result.rules.accounts.push({
-            accountId: account.value,
-            accountName: account.name
-          });
-        });
+      case CONTROL_OPTIONS.Account:
+        result.rules.accounts = rule.value_augmented.map((account) => ({
+          accountId: account.value,
+          accountName: account.name
+        }));
         break;
-      case RuleLabels[RuleKeys.USERS]:
-        if (values.attributeuseroption == 'user_role') {
-          rule.value_augmented.forEach((role) => {
-            result.rules.roles.push({
-              roleId: role.value,
-              roleName: role.name
-            });
-          });
-        } else {
-          rule.value_augmented.forEach((user) => {
-            result.rules.users.push({
-              userId: user.value,
-              userName: user.name
-            });
-          });
-        }
+      case CONTROL_OPTIONS.Roles:
+        result.rules.roles = rule.value_augmented.map((role) => ({
+          roleId: role.value,
+          roleName: role.name
+        }));
         break;
-
+      case CONTROL_OPTIONS.Users:
+        result.rules.users = rule.value_augmented.map((user) => ({
+          userId: user.value,
+          userName: user.name
+        }));
+        break;
       default:
         break;
     }
@@ -93,7 +83,7 @@ export const getValidationSchema = (t) => {
           attributeType: Yup.string()
             .required(t('approvergroup.create.validation.approverattribute_required'))
             .oneOf(
-              [RuleLabels[RuleKeys.PRICE], RuleLabels[RuleKeys.ACCOUNTS], RuleLabels[RuleKeys.THERAPIES], RuleLabels[RuleKeys.USERS]],
+              [CONTROL_OPTIONS.Price, CONTROL_OPTIONS.Account, CONTROL_OPTIONS.Catalog, CONTROL_OPTIONS.Users, CONTROL_OPTIONS.Roles],
               t('approvergroup.create.validation.approverattribute_required')
             ),
           value: Yup.mixed()
@@ -103,21 +93,25 @@ export const getValidationSchema = (t) => {
 
               if (Array.isArray(value)) {
                 if (value.length === 0) {
-                  if (attributeType === RuleLabels[RuleKeys.THERAPIES]) {
+                  if (attributeType === CONTROL_OPTIONS.Catalog) {
                     return this.createError({ message: t('approvergroup.create.validation.therapy_required') });
-                  } else if (attributeType === RuleLabels[RuleKeys.ACCOUNTS]) {
+                  } else if (attributeType === CONTROL_OPTIONS.Account) {
                     return this.createError({ message: t('approvergroup.create.validation.account_required') });
-                  } else if (attributeType === RuleLabels[RuleKeys.USERS]) {
+                  } else if (attributeType === CONTROL_OPTIONS.Roles) {
                     return this.createError({ message: t('approvergroup.create.validation.user_required') });
+                  } else if (attributeType === CONTROL_OPTIONS.Users) {
+                    return this.createError({ message: t('approvergroup.create.validation.user_name_required') });
                   }
                 }
                 return true;
               }
-              if (attributeType === RuleLabels[RuleKeys.PRICE]) {
+              if (attributeType === CONTROL_OPTIONS.Price) {
                 return Yup.number().min(0.001, t('approvergroup.create.validation.price')).isValidSync(value);
               }
 
-              if ([RuleLabels[RuleKeys.ACCOUNTS], RuleLabels[RuleKeys.THERAPIES], RuleLabels[RuleKeys.USERS]].includes(attributeType)) {
+              if (
+                [CONTROL_OPTIONS.Account, CONTROL_OPTIONS.Catalog, CONTROL_OPTIONS.Users, CONTROL_OPTIONS.Roles].includes(attributeType)
+              ) {
                 return value !== '';
               }
 

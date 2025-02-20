@@ -17,6 +17,7 @@ import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import QuestionnaireTemplate from './QuestionnaireTemplate';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
+import { handleApiError } from '@src/util/ApiUtils';
 
 export const QUESTION_TYPE = {
   RADIO_BUTTON: 'RADIO_BUTTON',
@@ -95,7 +96,14 @@ function AddQuestionnaire() {
         }
       });
     },
-    onError: (error) => {}
+    onError: (error) => {
+      const errorKey = handleApiError(error);
+      setAlertConfig({
+        isVisible: true,
+        description: t(errorKey),
+        type: 'error'
+      });
+    }
   });
 
   const {
@@ -116,7 +124,14 @@ function AddQuestionnaire() {
         }
       });
     },
-    onError: (error) => {}
+    onError: (error) => {
+      const errorKey = handleApiError(error);
+      setAlertConfig({
+        isVisible: true,
+        description: t(errorKey),
+        type: 'error'
+      });
+    }
   });
 
   const {
@@ -199,29 +214,45 @@ function AddQuestionnaire() {
     questions: Yup.array().of(
       Yup.object().shape({
         type: Yup.string().required(t('message.questionnaire.selectTemplateType')),
-        caption: Yup.object()
-          .required(t('message.questionTextRequired'))
-          .shape({
-            en: Yup.string(),
-            es: Yup.string(),
-            activeLanguage: Yup.string().default(LANGUAGE.ENGLISH)
+        caption: Yup.object().shape({
+          en: Yup.string().when('activeLanguage', {
+            is: LANGUAGE.ENGLISH,
+            then: (schema) => schema.required(t('message.questionTextRequired')),
+            otherwise: (schema) => schema.notRequired()
           }),
+          es: Yup.string().when('activeLanguage', {
+            is: LANGUAGE.SPANISH,
+            then: (schema) => schema.required(t('message.questionTextRequired')),
+            otherwise: (schema) => schema.notRequired()
+          }),
+          activeLanguage: Yup.string().default(LANGUAGE.ENGLISH)
+        }),
         options: Yup.array()
           .of(
             Yup.object().shape({
-              en: Yup.string(),
-              es: Yup.string(),
+              en: Yup.string().when('activeLanguage', {
+                is: LANGUAGE.ENGLISH,
+                then: (schema) => schema.required('Option text is required'),
+                otherwise: (schema) => schema.notRequired()
+              }),
+              es: Yup.string().when('activeLanguage', {
+                is: LANGUAGE.SPANISH,
+                then: (schema) => schema.required('Option text is required'),
+                otherwise: (schema) => schema.notRequired()
+              }),
               activeLanguage: Yup.string().default(LANGUAGE.ENGLISH)
             })
           )
           .nullable()
           .when('type', {
-            is: (type) => type === QUESTION_TYPE.DROPDOWN || type === QUESTION_TYPE.RADIO_BUTTON || type === QUESTION_TYPE.CHECKBOX,
+            is: (type) => [QUESTION_TYPE.DROPDOWN, QUESTION_TYPE.RADIO_BUTTON, QUESTION_TYPE.CHECKBOX].includes(type),
             then: (schema) =>
-              schema.default([
-                { en: '', es: '', activeLanguage: LANGUAGE.ENGLISH },
-                { en: '', es: '', activeLanguage: LANGUAGE.ENGLISH }
-              ]),
+              schema
+                .default([
+                  { en: '', es: '', activeLanguage: LANGUAGE.ENGLISH },
+                  { en: '', es: '', activeLanguage: LANGUAGE.SPANISH }
+                ])
+                .min(2, 'At least two options are required'),
             otherwise: (schema) => schema.notRequired()
           })
       })
@@ -318,6 +349,7 @@ function AddQuestionnaire() {
   const handleOnCancel = () => {
     if (mode === MODE.EDIT) {
       setMode(MODE.VIEW);
+      getQuestionnaireDetails();
     } else {
       navigate('/orders/system-configuration/questionnaire');
     }
@@ -333,7 +365,7 @@ function AddQuestionnaire() {
     <div>
       <div>
         <Formik disabled initialValues={initialFormState} onSubmit={handleOnSubmit} enableReinitialize validationSchema={schema}>
-          {({ values, errors, setFieldValue, setFieldError }) => {
+          {({ values, errors, touched, setFieldValue, setFieldError }) => {
             return (
               <Form>
                 <div className="MCP-module-wrapper">
@@ -476,6 +508,7 @@ function AddQuestionnaire() {
                                             component={Components['textarea']}
                                             maxCharHelperText={t('message.questionTextMaxChar')}
                                             maxCharLimit={1000}
+                                            isRequired={true}
                                           />
                                         </div>
                                       </div>
@@ -523,9 +556,7 @@ function AddQuestionnaire() {
                                                                       disabled={question['options'].length === 2 || readOnly}
                                                                       onClick={() => {
                                                                         removeOption(optionIndex);
-                                                                      }}>
-                                                                      {t('labels.orderActions.delete')}
-                                                                    </Button>
+                                                                      }}></Button>
                                                                   </div>
                                                                 </div>
                                                               )}

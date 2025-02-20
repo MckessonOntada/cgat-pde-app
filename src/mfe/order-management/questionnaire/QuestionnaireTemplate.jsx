@@ -101,14 +101,15 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
     if (type === QUESTION_TYPE.RADIO_BUTTON) {
       attributes.caption = questionLabel;
       attributes.id = `radio-button-${id}-${differentiator}`;
-      attributes.itemCustomStyles = { fontSize: '14px', marginRight: '24px', fontWeight: '400' };
+      attributes.itemCustomStyles = { fontSize: '14px', marginRight: '24px', fontWeight: '400', display: 'inline' };
       attributes.labelCustomStyles = { marginBottom: '8px', fontSize: '14px' };
     }
 
     if (type === QUESTION_TYPE.CHECKBOX) {
-      attributes.caption = questionLabel;
       wrapperClass.push('stacked-checkbox');
+      attributes.shouldSplitField = true;
       attributes.id = `checkbox-${id}-${differentiator}`;
+      attributes.direction = 'row';
       attributes.itemCustomStyles = { fontSize: '14px', marginRight: '24px', fontWeight: '400' };
       attributes.labelCustomStyles = { marginBottom: '8px', fontSize: '14px' };
     }
@@ -117,9 +118,15 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
     const field = (
       <div className={wrapperClass.join(' ')}>
         <div className="styled-control-wrapper">
-          <div class="grid grid-gap-16 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-            <Field name={`${fieldName}.value`} label={questionLabel} placeholder={` `} {...attributes} />
+          <div
+            className={`grid grid-gap-16 ${
+              [QUESTION_TYPE.CHECKBOX, QUESTION_TYPE.RADIO_BUTTON].includes(type)
+                ? 'grid-cols-1'
+                : 'sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3'
+            }`}>
+            <Field name={`${fieldName}.value`} label={questionLabel} placeholder=" " {...attributes} />
           </div>
+
           {isDocumentRequired && (
             <div>
               {attachmentValue ? (

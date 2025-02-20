@@ -1,16 +1,21 @@
 @use "@src/assets/styles/abstracts/mixins";
+
 .grid-cols-12 {
-  grid-template-columns: repeat(12, 1fr); /* 12 equal grid columns */
+  grid-template-columns: repeat(12, 1fr);
+  /* 12 equal grid columns */
 }
+
 .col-span-4 {
   grid-column: span 4;
 
   @include mixins.respond("sm") {
     grid-column: span 12;
   }
+
   @include mixins.respond("md") {
     grid-column: span 6;
   }
+
   @include mixins.respond("lg") {
     grid-column: span 4;
   }
@@ -22,9 +27,11 @@
   @include mixins.respond("sm") {
     grid-column: span 12;
   }
+
   @include mixins.respond("md") {
     grid-column: span 6;
   }
+
   @include mixins.respond("lg") {
     grid-column: span 8;
   }
@@ -36,6 +43,7 @@
   @include mixins.respond("sm") {
     grid-column: span 12;
   }
+
   @include mixins.respond("md") {
     grid-column: span 12;
   }
@@ -45,10 +53,6 @@
   margin-top: 12px;
 }
 
-.attributeBox {
-  margin-top: var(--spacing-02);
-  margin-bottom: var(--spacing-03);
-}
 
 .addAttribute {
   margin-top: var(--spacing-04);
@@ -65,6 +69,7 @@
 
 .btnRemove {
   color: var(--brand-color-warning-dark-coral) !important;
+
   svg {
     fill: var(--brand-color-warning-dark-coral) !important;
     color: var(--brand-color-warning-dark-coral) !important;

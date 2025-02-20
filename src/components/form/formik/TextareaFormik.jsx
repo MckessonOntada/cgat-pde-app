@@ -1,16 +1,15 @@
 import React from 'react';
 import { useTranslate } from '@src/translations/useTranslation';
 import Textarea from '../Textarea';
-import { getNestedValue } from '../util';
+import { getFieldname, getNestedValue } from '../util';
 
 export default function TextareaFormik(props) {
   const { field, form, fieldlabel, labelControls, isRequired, maxCharLimit, isReadOnly, onChange } = props;
   const { t } = useTranslate();
   const { name, onBlur } = field;
-
   const { errors, touched, setFieldValue } = form;
-  const errorMessage = getNestedValue(errors, name);
-  const isFieldTouched = getNestedValue(touched, name);
+  const errorMessage = getNestedValue(errors, getFieldname(name));
+  const isFieldTouched = getNestedValue(touched, getFieldname(name));
 
   return (
     <Textarea

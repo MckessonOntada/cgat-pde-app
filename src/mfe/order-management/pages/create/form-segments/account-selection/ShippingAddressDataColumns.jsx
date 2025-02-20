@@ -6,7 +6,7 @@ export const createColumns = (t, navigate, selectedShippingAddress, setSelectedS
     name: '',
     selector: () => {},
     sortable: false,
-    width: '5%',
+    width: '35px',
     showInMobileHeader: true,
     cell: (props) => {
       return (

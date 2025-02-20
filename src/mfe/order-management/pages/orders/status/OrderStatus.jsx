@@ -10,6 +10,7 @@ import ModuleHeader from '@src/components/module-header';
 import DetailSegment from '@src/components/DetailSegment';
 import useOrder from '../useOrder';
 import { useCustomPrint } from '@src/util/printUtils';
+import CommonUtils from '@src/util/CommonUtils';
 
 const OrderStatus = () => {
   const { t } = useTranslate();
@@ -106,7 +107,7 @@ const OrderStatus = () => {
                     {orderCost ? (
                       <>
                         <span className={`${styles.currencySymbol}`}>$</span>
-                        {parseFloat(orderCost).toFixed(2)}
+                        {CommonUtils.formatNumberWithoutSymbol(orderCost)}
                       </>
                     ) : (
                       '-'

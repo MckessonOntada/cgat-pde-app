@@ -34,16 +34,20 @@
     .step-container {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: var(--spacing-03);
       .stepName-container {
         display: flex;
-        gap: 8px;
+        gap: var(--spacing-04);
         align-items: center;
         .stepName {
           width: calc(100% - 28px);
         }
         .remove-icon {
-          padding: 40px 3px 0 3px;
+          padding-top: var(--spacing-06);
+            svg{
+              width: 20px;
+              height: 20px;
+            }
         }
       }
     }

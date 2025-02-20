@@ -98,6 +98,7 @@ export const MessageEn = {
   'labels.gender': 'Gender',
   'labels.dob': 'Date of Birth',
   'labels.DOB': 'DOB',
+  'labels.emailId': 'Email ID',
   'labels.dateOfAdministration': 'Date of Administration',
   'labels.slotNo': 'Slot No',
   'labels.selectVariant': 'Select Variant',
@@ -260,6 +261,8 @@ export const MessageEn = {
   'orderManagement.patientDetails.validation.middle_name_max': 'Middle name cannot exceed 50 characters.',
   'orderManagement.patientDetails.validation.last_name_max': 'Last name cannot exceed 50 characters.',
   'orderManagement.patientDetails.validation.invalid_email': 'Please enter a valid email address.',
+  'orderManagement.patientDetails.dob.must.be.past': 'Date of Birth must be in the Past.',
+  'orderManagement.patientDetails.validation.invalid_date': 'Invalid date',
   'orderManagement.patientDetails.validation.email_max': 'Email cannot exceed 50 characters.',
   'orderManagement.patientDetails.validation.phone_invalid': 'Please enter a valid phone number.',
   'orderManagement.patientDetails.validation.phone_max': 'Phone number cannot exceed 15 digits.',
@@ -392,5 +395,7 @@ export const MessageEn = {
   'message.questionnaireUpdated': 'Questionnaire updated successfully.',
   'message.questionnaireDeactivated': 'Questionnaire deactivated successfully.',
   'message.questionTextRequired': 'Question text is required',
-  'message.englishTextIsRequired': 'At least requires english text'
+  'message.englishTextIsRequired': 'At least requires english text',
+  'message.acknowldge': 'Please acknowledge to Save and Continue',
+  'errors.uq_template_name_lower': 'Template Name already exists'
 };

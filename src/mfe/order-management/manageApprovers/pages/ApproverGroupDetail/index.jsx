@@ -1,39 +1,39 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from 'react-query';
-
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
-// Constants
 import { PATHS } from '../../routes/constants';
 import { RoutePaths } from '@src/routes/constants';
-import { RuleKeys, RulesConfig } from './RulesConfig';
-
-// Components
+import { CONTROL_OPTIONS } from './RulesConfig';
 import ModuleHeader from '@src/components/module-header';
-import { Button, Heading, Loader, Switch, Alert, Modal } from '@mckesson/mcp-component-library';
-import EmptyDataTable from '@src/components/EmptyTable';
-
-// Assets
-import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import { Button, Heading, Loader, Switch, Alert, Pills } from '@mckesson/mcp-component-library';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
-
-// Translations
 import { useTranslate } from '@src/translations/useTranslation';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
-// Styles
 import './ApproverGroupDetail.scss';
-
-// API
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import CommonUtils from '@src/util/CommonUtils';
+import ApproverUserList from './ApproverUserList';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+import { useDispatch } from 'react-redux';
+
+const ruleAttributeConnectingSegment = {
+  Therapies: 'ORDERED ANY OF',
+  Price: 'GREATER THAN',
+  Accounts: 'SELECTED ANY OF',
+  Roles: 'SELECTED ANY OF',
+  Users: 'SELECTED ANY OF'
+};
+
+const getCamelCase = (str) => str.replace(/(^\w|[-_]\w)/g, (match) => match.replace(/[-_]/, '').toUpperCase());
 
 function ApproverGroupDetails() {
   const navigate = useNavigate();
   const { grpId } = useParams();
   const { t } = useTranslate();
-  const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
   const [isDeactivate, setIsDeactivate] = useState(false);
   const [alertDescription, setAlertDescription] = useState('');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
@@ -96,16 +96,32 @@ function ApproverGroupDetails() {
   };
 
   const handleActivateDeactivate = () => {
-    setIsOpen(true);
-  };
-
-  const handleConfirm = (actionName) => {
-    setIsOpen(false);
-    mutate({ grpId: grpId, actionName });
-  };
-
-  const handleConfirmCancel = () => {
-    setIsOpen(false);
+    const state = {};
+    state.title = t('approvergroup.confirmationmessage');
+    state.body = (
+      <div className="MCP-modal-body">
+        {groupData?.active ? t('approvergroup.confirmationmessage.message') : t('approvergroup.confirmationmessage.activatemessage')}
+      </div>
+    );
+    state.footer = (
+      <div className="controls">
+        <Button onClick={() => dispatch(closeModal())} variant="secondary" size="md">
+          {t('approvergroup.button.cancel')}
+        </Button>
+        <Button
+          onClick={() => {
+            dispatch(closeModal());
+            mutate({
+              grpId: grpId,
+              actionName: groupData?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')
+            });
+          }}
+          size="md">
+          {groupData?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
+        </Button>
+      </div>
+    );
+    dispatch(openModal(state));
   };
 
   const handleAlertClose = () => {
@@ -113,6 +129,59 @@ function ApproverGroupDetails() {
     navigate(location.pathname, { replace: true, state: { ...location.state } });
   };
 
+  const rules = [];
+  groupData?.rules &&
+    Object.entries(groupData?.rules || {}).forEach((entry, index) => {
+      let [key, value] = entry;
+      let beautifiedValue = <span className="rule-item-value">{value}</span>;
+      if (key === 'price') {
+        rules.push(
+          <div key={index} className="rule-wrapper">
+            <div className="condition attribute-text-segment">IF</div>
+            <div className="control type">
+              <div className="fake-control">{key}</div>
+            </div>
+            <div className="clause attribute-text-segment">{ruleAttributeConnectingSegment[getCamelCase(key)]}</div>
+            <div className={`response-control ${key === CONTROL_OPTIONS.price ? 'price' : ''}`}>
+              <div className="fake-control">{beautifiedValue}</div>
+            </div>
+          </div>
+        );
+        return;
+      }
+      if (!value) {
+        return;
+      }
+      let _key = 'accountName';
+      if (key === 'therapies') _key = 'therapyName';
+      else if (key === 'roles') _key = 'roleName';
+      else if (key === 'users') _key = 'userName';
+      console.log(key);
+      rules.push(
+        <div key={index} className="rule-wrapper">
+          <div className="condition attribute-text-segment">IF</div>
+          <div className="control type">
+            <div className="fake-control">{key.toUpperCase()}</div>
+          </div>
+          <div className="clause attribute-text-segment">{ruleAttributeConnectingSegment[getCamelCase(key)]}</div>
+          <div className={`response-control ${key === CONTROL_OPTIONS.Price ? 'price' : ''}`}>
+            <div className="fake-control">
+              <Pills
+                id="id"
+                labels={value.map((val, index) => ({
+                  id: index + 1,
+                  labelText: val[_key]
+                }))}
+                name="Pill"
+                onDelete={() => {}}
+                size="sm"
+                variant="secondary"
+              />
+            </div>
+          </div>
+        </div>
+      );
+    });
   return (
     <div className="MCP-module-wrapper">
       {isLoading && <Loader type={'screen'} />}
@@ -149,7 +218,6 @@ function ApproverGroupDetails() {
             )
           }
         />
-
         <div className="MCP-CardContainer">
           <div className="grid grid-gap-24 grid-cols-1 md:grid-cols-3">
             <div className="approver-group-labelWrap">
@@ -171,96 +239,25 @@ function ApproverGroupDetails() {
           </div>
         </div>
 
-        <Heading as="h3">{t('approvergroup.view.subheader.attributes')}</Heading>
-        <div className="MCP-CardContainer grid grid-gap-16">
-          {!(groupData?.rules && Object.keys(groupData.rules).length > 0) ? (
-            <EmptyDataTable
-              image={EmptyDataImage}
-              heading={t('message.emptyTableTitle')}
-              description={t('approvergroup.empty_table.description')}
-            />
-          ) : (
-            RulesConfig.map(({ key, label, valueKey }) =>
-              groupData.rules[key] !== undefined &&
-              (Array.isArray(groupData.rules[key]) ? groupData.rules[key].length > 0 : groupData.rules[key]) ? (
-                <div key={key} className="MCP-module-body attribute-category">
-                  {valueKey !== null ? (
-                    <div className="subheader-text">{t(`rules.${key}`)}</div>
-                  ) : (
-                    valueKey === null && (
-                      <div className="subheader-text">
-                        {t(`rules.${key}`)}
-                        <span className="price">
-                          <span>$</span>
-                          {parseFloat(groupData.rules[key]).toFixed(2)}
-                        </span>
-                      </div>
-                    )
-                  )}
-                  <div className="attribute-category">
-                    <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 attribute-list">
-                      {Array.isArray(groupData.rules[key]) &&
-                        groupData.rules[key].map((item, idx) => (
-                          <div key={idx} className="flex items-center justify-between attribute-item">
-                            <div>
-                              <p className="to-upper-case label-text">{item[valueKey]}</p>
-                            </div>
-                          </div>
-                        ))}
-                    </div>
+        <Heading as="h3">{t('approverGroup.view.subheader.rules')}</Heading>
+        <div className="MCP-CardContainer">
+          <div className="rule-list">
+            {rules.map((rule, index) => {
+              return (
+                <div className="rule" key={`rule-segment-${index}`}>
+                  {rule}
+                  <div className="hr-container">
+                    {index < rules.length - 1 && <div className="attribute-text-segment">AND</div>}
+                    <hr className="hr-line" />
                   </div>
                 </div>
-              ) : null
-            )
-          )}
+              );
+            })}
+          </div>
         </div>
 
-        <Heading as="h3">{t('approvergroup.view.subheader.manage_treatment_center')}</Heading>
-        <div className="MCP-CardContainer grid grid-gap-16">
-          {groupData?.approverUsers && groupData?.approverUsers.length > 0 ? (
-            <div className="grid grid-gap-16 grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 approver-user-list">
-              {groupData.approverUsers.map(({ userId, userName }, idx) => (
-                <React.Fragment key={userId}>
-                  <div className="flex items-center justify-between approver-user-item">
-                    <div>
-                      <p className="label-text">{userName}</p>
-                    </div>
-                  </div>
-                </React.Fragment>
-              ))}
-            </div>
-          ) : (
-            <EmptyDataTable
-              image={EmptyDataImage}
-              heading={t('message.emptyTableTitle')}
-              description={t('approvergroup.empty_table.description')}
-            />
-          )}
-        </div>
+        <ApproverUserList data={groupData?.approverUsers} />
       </div>
-      <Modal
-        id="xxxs-modal"
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        modalTitle={t('approvergroup.confirmationmessage')}
-        modalBody={
-          <div className="MCP-modal-body">
-            {groupData?.active ? t('approvergroup.confirmationmessage.message') : t('approvergroup.confirmationmessage.activatemessage')}
-          </div>
-        }
-        modalFooter={
-          <React.Fragment>
-            <Button onClick={handleConfirmCancel} variant="secondary">
-              {t('approvergroup.button.cancel')}
-            </Button>
-            <Button
-              onClick={() => handleConfirm(groupData?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate'))}>
-              {groupData?.active ? t('approvergroup.button.deactivate') : t('approvergroup.button.activate')}
-            </Button>{' '}
-          </React.Fragment>
-        }
-        modalSize="xxxs"
-      />
     </div>
   );
 }

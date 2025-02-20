@@ -4,6 +4,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as TickIcon } from '@src/assets/svg/tick-circle-filled.svg';
 import { useQuery } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
+import CommonUtils from '@src/util/CommonUtils';
 
 function OrderHeaderDetails({ orderDetails, therapyId, soldToAccountId, shipToAccountId, setInventoryTypeData, variant }) {
   const { t } = useTranslate();
@@ -62,7 +63,9 @@ function OrderHeaderDetails({ orderDetails, therapyId, soldToAccountId, shipToAc
           value={
             <span className="dollarSign">
               <span>$</span>
-              {priceDetails?.netPrice ? parseFloat(priceDetails?.netPrice).toFixed(2) : '----'}
+              {priceDetails?.netPrice
+                ? CommonUtils.formatNumberWithoutSymbol(priceDetails?.netPrice)
+                : '----'}
             </span>
           }
         />

@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Button, Heading, CheckboxGroup, CustomDataTable, RadioGroup } from '@mckesson/mcp-component-library';
+import React, { useEffect, useState } from 'react';
+import { Button, Heading, CheckboxGroup, CustomDataTable, RadioGroup, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -13,7 +13,6 @@ import OrderService from '@src/api/commonService/OrderService';
 import { useMutation, useQuery } from 'react-query';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import { NUMBER_REGEX } from '@src/components/form/ValidationRegExp';
 import CommonUtils from '@src/util/CommonUtils';
 import { RoutePaths } from '@src/routes/constants';
@@ -53,10 +52,11 @@ function AdditionalDetails() {
     label: t('messages.variantAcknowledgement'),
     value: false
   });
+  const [agreementCheckboxError, setAgreementCheckboxError] = React.useState(null);
   const [variant, setVariant] = React.useState();
   const { showAlert } = useAlert();
   const alertContainerId = 'additionalDetails-alert-container';
-  const { data: orderDetails, isFetching, isError, error } = useOrder(orderId);
+  const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error } = useOrder(orderId);
   const { isCoiIdRequired, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
@@ -141,12 +141,27 @@ function AdditionalDetails() {
 
         validationSchemaFields[fieldName] = Yup.object({
           value:
-            question.type === QUESTION_TYPE.INPUT ||
-            question.type === QUESTION_TYPE.DROPDOWN ||
-            question.type === QUESTION_TYPE.RADIO_BUTTON
-              ? Yup.string()[question.isMandatory ? 'required' : 'nullable']('Value is required')
-              : Yup.array().of(Yup.string())[question.isMandatory ? 'min' : 'nullable'](1, 'Select at least one option'),
-          documentUrl: Yup.string().nullable()
+            question.type === QUESTION_TYPE.INPUT || question.type === QUESTION_TYPE.DROPDOWN
+              ? question.isMandatory
+                ? Yup.string().required('Value is required')
+                : Yup.string().nullable()
+              : question.type === QUESTION_TYPE.RADIO_BUTTON
+              ? question.isMandatory
+                ? Yup.string().required('Select at least one option')
+                : Yup.string().nullable()
+              : question.type === QUESTION_TYPE.CHECKBOX
+              ? question.isMandatory
+                ? Yup.array()
+                    .of(Yup.string())
+                    .min(1, 'Select at least one option')
+                    .test('not-empty', 'Select at least one option', (value) => Array.isArray(value) && value.length > 0)
+                : Yup.array().of(Yup.string()).nullable()
+              : question.isMandatory
+              ? Yup.array().of(Yup.string()).min(1, 'Select at least one option')
+              : Yup.array().of(Yup.string()).nullable(),
+
+          documentUrl:
+            question.isDocumentRequired && question.isMandatory ? Yup.string().required('Please Upload Document') : Yup.string().nullable()
         });
       });
     });
@@ -174,15 +189,17 @@ function AdditionalDetails() {
     queryKey: ['configured-questionnaire', variant ?? 'default-variant'],
     queryFn: async () => {
       const { accountDetails, therapy } = orderDetails;
+      if (orderDetails.additionalDetails?.configuredQuestionnaires) return;
+
       const payload = {
         variantType,
-        soldToCustomer: accountDetails.soldToAccount.accountNumber,
-        shipToCustomer: accountDetails.shipToAccount.accountNumber,
+        soldToCustomer: accountDetails.soldToAccount?.accountNumber,
+        shipToCustomer: accountDetails.shipToAccount?.accountNumber,
         sapMaterial: therapy.materialNumber
       };
       return QuestionnaireService.getConfiguredQuestionnaire(payload);
     },
-    enabled: Boolean(orderDetails && !orderDetails.additionalDetails?.configuredQuestionnaires),
+    enabled: false,
     refetchOnWindowFocus: false,
     onSuccess: (result) => {
       result && prepareQuestionnaire(result);
@@ -279,10 +296,8 @@ function AdditionalDetails() {
       navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
     } else {
       if (orderDetails?.patientDetailsRequired) {
-        editByStage(ORDER_STAGES.PATIENT_DETAILS);
         navigate(`../${orderId}/patient`, { state: { isEdit: false, isApprover: isApprover } });
       } else {
-        editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
         navigate(`../${orderId}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
       }
     }
@@ -290,6 +305,7 @@ function AdditionalDetails() {
 
   const handleOnSubmit = (values) => {
     if (CommonUtils.isNonEmptyObject(variantsData?.content) && (!variant || !variantAcknowledgement?.isChecked)) {
+      setAgreementCheckboxError(t('message.acknowldge'));
       return;
     }
     const _var = !!variant
@@ -355,28 +371,34 @@ function AdditionalDetails() {
     } else if (modalSuccessCallback === 'summary') {
       navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'patient') {
-      editByStage(ORDER_STAGES.PATIENT_DETAILS);
       navigate(`../${orderId}/patient`, { state: { isEdit: false, isApprover: isApprover } });
     } else if (modalSuccessCallback === 'account') {
-      editByStage(ORDER_STAGES.ACCOUNT_DETAILS);
       navigate(`../${orderId}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
     }
   };
 
   const handleOnVariantChange = (variant) => {
+    setAgreementCheckboxError(null);
     setVariant(variant);
   };
 
   React.useEffect(() => {
-    if (orderDetails && !isEdit) fetchConfiguredQuestions();
+    if (orderDetails && !orderDetails.additionalDetails?.configuredQuestionnaires) {
+      const { soldToAccount, shipToAccount } = orderDetails.accountDetails || {};
+      if (soldToAccount && shipToAccount) {
+        fetchConfiguredQuestions();
+      }
+    }
   }, [variant, orderDetails]);
 
   const handleOnAcknowledgmentChange = () => {
     const updatedOptions = { ...variantAcknowledgement, isChecked: !variantAcknowledgement.isChecked };
-
     setVariantAcknowledgement(updatedOptions);
   };
 
+  if (isFetchingOrderDetails) {
+    return <Loader />;
+  }
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -397,14 +419,8 @@ function AdditionalDetails() {
         onSubmit={(values) => {
           handleOnSubmit(values);
         }}>
-        {({ dirty, errors }) => {
+        {({ dirty, errors, values }) => {
           useEffect(() => setIsDirty(dirty), [dirty]);
-
-          useEffect(() => {
-            if (Object.keys(errors).length > 0) {
-              setFormikErrorMsg('Please enter required fields.');
-            }
-          }, [errors]);
 
           return (
             <Form>
@@ -451,6 +467,8 @@ function AdditionalDetails() {
                               id={'default'}
                               name="variant-acknowledgement"
                               items={[{ ...variantAcknowledgement, onChange: () => handleOnAcknowledgmentChange() }]}
+                              error={Boolean(agreementCheckboxError)}
+                              errorMessage={agreementCheckboxError}
                               size="md"
                             />
                           )}
@@ -500,6 +518,14 @@ function AdditionalDetails() {
 
 const VariantTable = ({ variant, onChange, data }) => {
   const { t } = useTranslate();
+
+  useEffect(() => {
+    if (!variant && data?.length > 0) {
+      const firstVariant = data[0];
+      onChange(firstVariant);
+    }
+  }, [data, onChange]);
+
   const columns = [
     {
       id: 'id',
@@ -539,7 +565,7 @@ const VariantTable = ({ variant, onChange, data }) => {
       maxWidth: '280px',
       sortable: false,
       cell: (props) => (
-        <span aria-label={t('labels.variant')}>
+        <span className="flex" aria-label={t('labels.variant')}>
           <EclipsesTextcss str={props.variant} maxWidth={240} />
         </span>
       )

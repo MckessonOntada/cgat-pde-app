@@ -446,6 +446,11 @@ const cleanObject = (obj) => {
   return obj;
 };
 
+const formatNumberWithoutSymbol = (value) => {
+  return new Intl.NumberFormat('en-US', {style: 'currency',currency: 'USD', }).format(value || 0).slice(1)
+}
+
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -478,7 +483,8 @@ const CommonUtils = Object.freeze({
   downloadFile,
   enableReviewAndPay,
   generateUniqueCode,
-  cleanObject
+  cleanObject,
+  formatNumberWithoutSymbol
 });
 
 export default CommonUtils;
