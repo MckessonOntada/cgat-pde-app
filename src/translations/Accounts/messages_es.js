@@ -19,5 +19,6 @@ export const AccountES = {
 
   'file.drag.label': 'S_Drag your file(s) to start uploading',
   'file.browse.logo': 'S_BROWSE LOGO',
-  'file.browsInput.selectFile': 'Select File'
+  'file.browsInput.selectFile': 'S_Select File',
+  'file.browsInput.error.uploading': 'S_Error Uploading'
 };

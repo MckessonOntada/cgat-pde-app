@@ -72,15 +72,15 @@
     }
 
     .preview-container {
-        margin-top: var(--spacing-03);
-        border: 2px solid var(--brand-color-background-grey);
-        border-radius: var(--brand-border-radius--4);
+        margin-top: var(--spacing-02);
+        border: 1px solid var(--brand-color-patient-primary-1);
+        border-radius: var(--brand-border-radius--16);
         width: 100%;
         display: flex;
         align-items: center;
         position: relative;
-        padding: var(--spacing-02);
-
+        padding: var(--spacing-03);
+        justify-content: space-between;
         img {
             max-height: 28px;
         }
@@ -88,20 +88,50 @@
         .file-info {
             text-align: initial;
             padding-left: var(--spacing-02);
+            display: flex;
+            gap: var(--spacing-02);
+            align-items: center;
+            .file-name{
+                text-decoration: none;
+                p{
+                    color: var(--brand-color-font-black);
+                    font-size: var(--brand-font-size--extra-small);
+                    font-weight: var(--brand-font-weight-600);
 
+                }
+            }
             p {
                 margin: 0;
                 font-size: var(--brand-font-size--extra-small);
+                color: var(--brand-color-text-light-slate);
             }
         }
-
-        .remove-button-upload {
-            position: absolute;
-            cursor: pointer;
-            width: 16px;
-            height: 55px;
-            margin-right: var(--spacing-01);
-            right: 5px;
+        button{
+            svg{
+                width: var(--spacing-04);
+                height: var(--spacing-04);
+              }
+        }
+    }
+    .error-container{
+        margin-top: var(--spacing-02);
+        border: 1px solid var(--brand-color-warning-orange-4);
+        border-radius: var(--brand-border-radius--16);
+        width: 100%;
+        padding: var(--spacing-03);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        p{
+            font-size: var(--brand-font-size--extra-small);
+            color: var(--brand-color-warning-dark-coral);
+            font-weight: var(--brand-font-weight-600);
+        }
+        label{
+            margin-top: var(--spacing-01);
+            color: var(--brand-color-warning-dark-coral);
+            font-weight: var(--brand-font-weight-400);
+            font-size: var(--brand-font-size--extra-small);
         }
     }
 }
