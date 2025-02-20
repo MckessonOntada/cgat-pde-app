@@ -18,7 +18,7 @@ function InputFileFormik(props) {
   const { errors, touched, setFieldValue } = form;
   const errorMessage = getNestedValue(errors, `${field.name}`);
   const isFieldTouched = field.name.includes('.') ? getNestedValue(touched, field.name.split('.')[0]) : getNestedValue(touched, field.name);
-  console.log('errors', errors, isFieldTouched);
+
   const validateBeforeChange = (file, event) => {
     if (validateOnChange) {
       const validationResponse = validateOnChange(file);
