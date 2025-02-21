@@ -10,14 +10,6 @@ import { CONTROL_OPTIONS, getRuleOperator } from '../ApproverGroupDetail/RulesCo
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
 
-// const ruleAttributeConnectingSegment = {
-//   Catalog: 'ORDERED ANY OF',
-//   Price: 'GREATER THAN',
-//   Account: 'SELECTED ANY OF',
-//   Roles: 'SELECTED ANY OF',
-//   Users: 'SELECTED ANY OF'
-// };
-
 const Attributes = ({ values, setFieldValue }) => {
   const initRef = useRef(false);
   const dispatch = useDispatch();
@@ -33,7 +25,6 @@ const Attributes = ({ values, setFieldValue }) => {
   const isAddDisabled = values.rules.length >= attrOptions.length - 1;
   const getAvailableOptions = (index) => {
     const selectedValues = values.rules.map((attr) => attr.attributeType);
-    console.log(attrOptions);
     return attrOptions.filter(
       (option) => option.value === '' || !selectedValues.includes(option.value) || values.rules[index]?.attributeType === option.value
     );
@@ -119,7 +110,7 @@ const Attributes = ({ values, setFieldValue }) => {
               ))}
             </div>
 
-            <div className="addAttribute">
+            <div className="styled-icon-button">
               <Button
                 variant="tertiary"
                 size="md"
@@ -127,7 +118,7 @@ const Attributes = ({ values, setFieldValue }) => {
                   push({ attributeType: '', value: '' });
                 }}
                 disabled={isAddDisabled}>
-                + {t('approvergroup.addattribute')}
+                + {t('approverGroup.addRule')}
               </Button>
             </div>
           </>

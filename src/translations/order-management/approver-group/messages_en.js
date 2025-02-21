@@ -42,6 +42,7 @@ export const ApproverManagementEN = {
   'approvergroup.selectaccount': 'Select Account',
   'approvergroup.price': 'Amount Greater Than',
   'approvergroup.addattribute': 'Add Attribute',
+  'approverGroup.addRule': 'Add Rule',
   'approvergroup.approveuserlist': 'Approver user list',
   'approvergroup.selectuser': 'Select Users',
   'approvergroup.username': 'User Name',
