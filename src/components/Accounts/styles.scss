@@ -26,6 +26,7 @@
 
 .selected-account-box {
   display: none;
+  min-height: 250px;
 
   @include mixins.respond("lg") {
     width: 25%;
