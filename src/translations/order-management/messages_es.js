@@ -135,6 +135,8 @@ export const MessageEs = {
   'labels.required': 'S_Required',
   'labels.patientName': 'S_Patient Name',
   'labels.orderId': 'S_Order ID',
+  'labels.pdeId': 'S_PDE ID',
+  'labels.sapId': 'S_SAP ID',
   'labels.therapy': 'S_Therapy',
   'table.columns.captions.author': 'S_Author',
   'table.columns.captions.createdOn': 'S_Created On',
