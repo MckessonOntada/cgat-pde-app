@@ -30,9 +30,10 @@ const Attributes = ({ values, setFieldValue }) => {
     );
   };
 
-  const confirmOnDelete = () => {
+  const confirmOnDelete = (callback) => {
     const onDelete = () => {
-      remove(index);
+      callback();
+      dispatch(closeModal());
       initRef.current = true;
     };
 
@@ -92,10 +93,16 @@ const Attributes = ({ values, setFieldValue }) => {
                               isAttributeRemoved={initRef}
                             />
                           </div>
-
-                          {index !== 0 && (
+                          {attribute.attributeType === CONTROL_OPTIONS.Price && <div className="empty-gap"></div>}
+                          {values.rules.length > 1 && (
                             <div className="styled-icon-button remove-button">
-                              <Button Icon={DeleteIcon} variant="tertiary" size="md" className="btnRemove" onClick={confirmOnDelete} />
+                              <Button
+                                Icon={DeleteIcon}
+                                variant="tertiary"
+                                size="md"
+                                className="btnRemove"
+                                onClick={() => confirmOnDelete(() => remove(index))}
+                              />
                             </div>
                           )}
                         </div>

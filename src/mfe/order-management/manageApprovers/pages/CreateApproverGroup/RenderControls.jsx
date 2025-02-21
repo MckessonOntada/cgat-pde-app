@@ -210,7 +210,6 @@ function RenderControls({ attributeType = CONTROL_OPTIONS.Price, name, isAttribu
     setLocalData(updatedOptions);
   };
 
-  const attributes = fieldAttributes[attributeType]?.inputControl || {};
   return (
     <AttributeFieldRenderer
       caption={t(`rules.value.${attributeType.toLowerCase()}.caption`)}
