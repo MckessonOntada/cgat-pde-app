@@ -23,6 +23,8 @@ export const UserManagementEN = {
   'userManagement.table.dateAdded': 'Date Added/Updated',
   'userManagement.table.dateUpdated': 'Date Updated',
   'userManagement.table.action': 'Action',
+  'userManagement.table.action.reject': 'Reject Request',
+  'userManagement.table.action.review': 'Review',
   'userManagement.table.action.edit': 'Edit',
   'userManagement.table.action.delete': 'Delete',
   'userManagement.table.action.inactivate': 'Inactivate',
