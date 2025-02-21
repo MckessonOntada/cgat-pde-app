@@ -63,7 +63,8 @@
     h2 {
       font-size: var(--brand-font-size--32) !important;
       padding: var(--spacing-05) 0px;
-      color: #1E394E;
+      color: var(--brand-color-black);
+      font-weight: var(--brand-font-weight-700);
 
       span {
         display: block;
@@ -91,6 +92,7 @@
   line-height: 38px !important;
   height: 38px !important;
   font-size: var(brand-font-size--defaul);
+  border-radius: var(--brand-border-radius--6) !important;
 }
 
 .loginFooter {
@@ -117,11 +119,13 @@
       div {
         display: flex;
         flex-direction: column;
-        gap: var(--spacing-03);
+        gap: var(--spacing-02);
         min-width: 370px;
         
         h2{
           font-size: var(--brand-font-size--20) !important;
+          font-weight: var(--brand-font-weight-700);
+          padding-bottom: var(--spacing-01);
         }
         a {
           color: var(--brand-color-background-warm-grey-3);
@@ -157,7 +161,9 @@
     
     .loginHeader {
       text-align: center;
-
+      svg{
+        transform: scale(0.8);
+      }
       h2 {
         font-size: var(--brand-font-size--24) !important;
         padding: var(--spacing-04) 0px var(--spacing-02);
@@ -176,19 +182,49 @@
   }
   .loginFooter {
     padding-top: var(--spacing-20);
+    .footerContant {
+      div {
+        a{
+          font-size: var(--brand-font-size--default) !important;
+        }
+      }
+    }
   }
 }
 
 @media only screen and (max-width: 768px) {
   .loginWrap {
-    padding: 0px var(--spacing-04);
+    padding: 0px var(--spacing-03);
+    justify-content: flex-start;
+    gap: var(--spacing-05);
+    margin: var(--spacing-06) auto 0px;
+    .loginHeader {
+      text-align: left;
+      padding-top: 0px;
+      svg{
+        transform: scale(0.55);
+        transform-origin: left center;
+      }
+      h2{
+        font-size: var(--brand-font-size--32) !important;
+      }
+    }
     .loginContainor{
       width: fit-content;
+      padding: var(--spacing-03);
+      margin-bottom: var(--spacing-05);
+      border-radius: var(--brand-border-radius--10);
     }
   }
   .loginFooter{
+    padding-top: var(--spacing-06);
     .footerWrapper{
       width: 100%;
+      .footerContant {
+        div {
+          min-width: 100%;
+        }
+      }  
     }
   }
 }
