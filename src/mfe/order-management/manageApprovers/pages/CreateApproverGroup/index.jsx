@@ -222,7 +222,7 @@ const CreateApproverGroup = () => {
 
                     <div>
                       <div className="headingBox">
-                        <Heading as="h2">{'Rules'}</Heading>
+                        <Heading as="h2">{t('approverGroup.view.subheader.rules')}</Heading>
                       </div>
                       <div>
                         <Attributes values={values} setFieldValue={setFieldValue} />

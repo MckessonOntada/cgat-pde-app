@@ -11,7 +11,7 @@ function ApproverUserList({ data }) {
   const columns = [
     {
       id: 'approver-list-user-name',
-      name: 'Name',
+      name: t('approverGroup.userList.name'),
       selector: () => {},
       sortable: true,
       sortKey: 'name',
@@ -20,29 +20,26 @@ function ApproverUserList({ data }) {
       cell: (props) => props.userName
     },
     {
-      id: 'updatedOn',
-      name: 'Updated On',
+      id: 'emailAddress',
+      name: t('approverGroup.userList.emailAddress'),
       selector: () => {},
       sortable: true,
       sortKey: 'updatedOn',
       cell: (props) => props.updatedOn
     }
   ];
-  const showCardView = useResponsiveView();
 
   const handleOnSort = (selectedColumn, sortDirection) => {};
 
   return (
     <>
-      <Heading as="h3">Approver User List</Heading>
-
+      <Heading as="h3">{t('approverGroup.userList.title')}</Heading>
       <CustomDataTable
         id="order-management-order-listing"
         type={'normal'}
         columns={columns}
         data={data}
         onSortIconClick={handleOnSort}
-        showCardView={showCardView}
         noDataComponent={
           <EmptyDataTable image={EmptyDataImage} heading={t('captions.emptyTableTitle')} description={t('captions.emptyTableSubtitle')} />
         }
