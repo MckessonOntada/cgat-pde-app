@@ -124,7 +124,6 @@ function UserTable({ onActionSuccess }) {
   });
 
   const handleOnOptionSelection = (value, row) => {
-    console.log('value...', value, row);
     if (value == 'review') {
       navigate(`../${PATHS.editUser}/${row.id}`, { state: { isPending: true } });
     } else {
@@ -133,7 +132,6 @@ function UserTable({ onActionSuccess }) {
         {
           onSuccess: (response) => {
             navigate(RoutePaths.pathUserManagement, { state: { isReject: true, isSuccess: true }, replace: true });
-            // refreshData();
           },
           onError: (error) => {
             console.log('error: ', error);
@@ -275,22 +273,18 @@ function UserTable({ onActionSuccess }) {
               handleSelect={(value) => handleOnOptionSelection(value, row)}
               options={[
                 {
-                  label: 'Review',
+                  label: t('userManagement.table.action.review'),
                   value: 'review'
                 },
                 {
-                  label: 'Reject Request',
+                  label: t('userManagement.button.rejectrequest'),
                   value: 'reject'
                 }
               ]}
               aria-label="Order options"
             />
           ) : (
-            <Actions
-              row={row}
-              // showEditButton={activeTab === 2 && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS)}
-              showViewButton={activeTab !== 2 && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS)}
-            />
+            <Actions row={row} showViewButton={activeTab !== 2 && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS)} />
           ),
         omit: isSystemAdminView,
         isAction: true
