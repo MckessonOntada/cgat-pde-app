@@ -161,10 +161,11 @@
   height: 16px;
   margin-right: 2px;
 }
-
-.cellEllipse {
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.organization-module {
+  .cellEllipse {
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
