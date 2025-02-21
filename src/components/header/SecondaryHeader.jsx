@@ -26,7 +26,9 @@ const SecondaryHeader = ({ navLinks }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
+  const isCustomerCenter = AuthUtils.isCustomerCenter();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const isCustomerCenterView = AuthUtils.isCustomerCenterView();
   const impersonatedUsername = sessionStorage.getItem(SESSION_CONST.IMPERSONATE_USERNAME);
   const dispatch = useDispatch();
 
@@ -154,6 +156,12 @@ const SecondaryHeader = ({ navLinks }) => {
     }
   };
 
+  const showSystemAdminViewBtn = () => {
+    return (
+      (AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView()) || (AuthUtils.isCustomerCenter() && !AuthUtils.isCustomerCenterView())
+    );
+  };
+
   const RightSideView = () => {
     if (isSystemAdminView) {
       return null;
@@ -166,7 +174,7 @@ const SecondaryHeader = ({ navLinks }) => {
             The isSystemAdminView return false for non-admin user.
           */}
           {getImpersonateLoginDetails()}
-          {AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() && (
+          {showSystemAdminViewBtn() && (
             <Button color="secondary" onClick={handleSystemAdminViewClick}>
               {t('header.label.systemAdminView')}
             </Button>

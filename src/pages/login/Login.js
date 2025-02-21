@@ -36,7 +36,7 @@ const Login = () => {
     async () => {
       /*post login*/
       //Fetching organization details if the loggedin user is not system admin.
-      if (!AuthUtils.isSystemAdmin()) {
+      if (!AuthUtils.isSystemAdmin() && !AuthUtils.isCustomerCenter()) {
         const _practiceId = AuthUtils.getPracticeId();
         const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}/${_practiceId}`, httpVerb.GET, {});
         if (res?.data) {
