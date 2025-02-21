@@ -149,14 +149,14 @@ function ApproverGroupDetails() {
       if (key === 'therapies') _key = 'therapyName';
       else if (key === 'roles') _key = 'roleName';
       else if (key === 'users') _key = 'userName';
-      console.log(key);
+
       rules.push(
         <div key={index} className="rule-wrapper">
           <div className="condition attribute-text-segment">{t('rules.clauseIf.if')}</div>
           <div className="rule-field type">
             <div className="fake-control">{CommonUtils.getCamelCase(key)}</div>
           </div>
-          <div className="rule-operator attribute-text-segment">{getRuleOperator(CommonUtils.etCamelCase(key), t)}</div>
+          <div className="rule-operator attribute-text-segment">{getRuleOperator(CommonUtils.getCamelCase(key), t)}</div>
           <div className={`response-control ${key === CONTROL_OPTIONS.Price ? 'price' : ''}`}>
             <div className="fake-control">
               <Pills

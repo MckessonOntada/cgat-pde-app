@@ -28,7 +28,6 @@ function ApproverUserList({ data }) {
       cell: (props) => props.updatedOn
     }
   ];
-  const showCardView = useResponsiveView();
 
   const handleOnSort = (selectedColumn, sortDirection) => {};
 
@@ -41,7 +40,6 @@ function ApproverUserList({ data }) {
         columns={columns}
         data={data}
         onSortIconClick={handleOnSort}
-        showCardView={showCardView}
         noDataComponent={
           <EmptyDataTable image={EmptyDataImage} heading={t('captions.emptyTableTitle')} description={t('captions.emptyTableSubtitle')} />
         }

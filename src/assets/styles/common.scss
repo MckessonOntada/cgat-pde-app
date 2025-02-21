@@ -910,32 +910,69 @@ div.disable-all {
     }
 
     .rule-wrapper {
-      display: grid;
-      grid-template-columns: repeat(24, 1fr);
-      column-gap: var(--spacing-03);
-      align-items: center;
+      display: block;
       margin: var(--spacing-04) 0;
 
       .response-control {
-        grid-column: span 14;
+        grid-column: span 24;
 
         &.price {
           // grid-column: span 7;
         }
+
+        .empty-gap {
+          display: none;
+        }
       }
 
       .condition {
-        grid-column: span 1;
+        grid-column: span 24;
       }
 
       .rule-field {
-        grid-column: span 6;
+        grid-column: span 24;
       }
 
       .rule-operator {
-        grid-column: span 3;
+        grid-column: span 24;
         display: flex;
-        justify-content: center;
+        justify-content: start;
+        margin-top: var(--spacing-04);
+      }
+    }
+
+    @include mixins.respond(md) {
+      .rule-wrapper {
+        display: grid;
+        grid-template-columns: repeat(24, 1fr);
+        column-gap: var(--spacing-03);
+        align-items: center;
+
+        .response-control {
+          grid-column: span 14;
+
+          &.price {
+            // grid-column: span 7;
+          }
+
+          .empty-gap {
+            display: initial;
+          }
+        }
+
+        .condition {
+          grid-column: span 1;
+        }
+
+        .rule-field {
+          grid-column: span 6;
+        }
+
+        .rule-operator {
+          grid-column: span 3;
+          justify-content: center;
+          margin-top: unset;
+        }
       }
     }
 
