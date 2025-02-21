@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Button, Badge, CheckboxGroup, Modal, Tooltip } from '@mckesson/mcp-component-library';
+import { Button, Badge, CheckboxGroup, Modal, Tooltip, MenuList } from '@mckesson/mcp-component-library';
 import './index.scss';
 import Actions from './Actions';
 import { useTranslate } from '@src/translations/useTranslation';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
 import { useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
@@ -19,6 +19,9 @@ import usePermission from '@src/hooks/usePermissions';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import TableHeading from '@src/components/tableHeading/TableHeading';
+import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
+import { PATHS } from '../../routes';
+import { RoutePaths } from '@src/routes/constants';
 
 function getBackgroundColorByRole(Role) {
   switch (Role) {
@@ -41,6 +44,7 @@ function UserTable({ onActionSuccess }) {
   const currentUserId = AuthUtils.getUserId();
   const { hasPermission } = usePermission();
   const showCardView = useResponsiveView();
+  const navigate = useNavigate();
 
   const handleRowSelected = ({ selectedRows }) => {
     setSelectedRows(selectedRows);
@@ -101,6 +105,44 @@ function UserTable({ onActionSuccess }) {
   useEffect(() => {
     refreshData();
   }, []);
+
+  const {
+    mutate: rejectUser,
+    isLoading: isLoadingReject,
+    isError: isRejectError,
+    data: rejectData
+  } = useMutation(async ({ userId }) => {
+    const reqParams = {
+      status: 'REJECTED'
+    };
+    const rejectResponse = await HttpResourceService.callRest(
+      `${ApiRoutes.USERS_PROVISIONING()}/${userId}/status?${serializeParams(reqParams)}`,
+      httpVerb.PATCH,
+      {}
+    );
+    return rejectResponse.data;
+  });
+
+  const handleOnOptionSelection = (value, row) => {
+    console.log('value...', value, row);
+    if (value == 'review') {
+      navigate(`../${PATHS.editUser}/${row.id}`, { state: { isPending: true } });
+    } else {
+      rejectUser(
+        { userId: row.id },
+        {
+          onSuccess: (response) => {
+            navigate(RoutePaths.pathUserManagement, { state: { isReject: true, isSuccess: true }, replace: true });
+            // refreshData();
+          },
+          onError: (error) => {
+            console.log('error: ', error);
+          }
+        }
+      );
+    }
+  };
+
   const columns = useMemo(() => {
     return [
       {
@@ -137,7 +179,7 @@ function UserTable({ onActionSuccess }) {
         cell: (props) => (
           <div>
             {activeTab === 2 ? (
-              <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName || ''}`} maxWidth={300} />
+              <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName || ''}`} maxWidth={140} />
             ) : (
               <React.Fragment>
                 {hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS) ? (
@@ -226,13 +268,30 @@ function UserTable({ onActionSuccess }) {
         id: 'action',
         center: true,
         name: t('userManagement.table.action'),
-        cell: (row) => (
-          <Actions
-            row={row}
-            showEditButton={activeTab === 2 && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS)}
-            showViewButton={activeTab !== 2 && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS)}
-          />
-        ),
+        cell: (row) =>
+          activeTab == 2 ? (
+            <MenuList
+              menuIcon={<IconEllipsis key={'menu-list-users-table'} />}
+              handleSelect={(value) => handleOnOptionSelection(value, row)}
+              options={[
+                {
+                  label: 'Review',
+                  value: 'review'
+                },
+                {
+                  label: 'Reject Request',
+                  value: 'reject'
+                }
+              ]}
+              aria-label="Order options"
+            />
+          ) : (
+            <Actions
+              row={row}
+              // showEditButton={activeTab === 2 && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS)}
+              showViewButton={activeTab !== 2 && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS)}
+            />
+          ),
         omit: isSystemAdminView,
         isAction: true
       }
