@@ -5,8 +5,9 @@ import { ReactComponent as TickIcon } from '@src/assets/svg/tick-circle-filled.s
 import { useQuery } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
 import CommonUtils from '@src/util/CommonUtils';
+import { InventoryIndicator } from './InventoryIndicator';
 
-function OrderHeaderDetails({ orderDetails, therapyId, soldToAccountId, shipToAccountId, setInventoryTypeData, variant }) {
+function OrderHeaderDetails({ orderDetails, orderStatus, therapyId, soldToAccountId, shipToAccountId, setInventoryTypeData, variant }) {
   const { t } = useTranslate();
   const [segments, setSegments] = React.useState([]);
 
@@ -32,7 +33,7 @@ function OrderHeaderDetails({ orderDetails, therapyId, soldToAccountId, shipToAc
         value={
           <React.Fragment>
             <span>{therapy?.materialDescription || '-'}</span>
-            <TickIcon width="16px" height="16px" />
+            <InventoryIndicator status={orderStatus} />
           </React.Fragment>
         }
       />
@@ -63,9 +64,7 @@ function OrderHeaderDetails({ orderDetails, therapyId, soldToAccountId, shipToAc
           value={
             <span className="dollarSign">
               <span>$</span>
-              {priceDetails?.netPrice
-                ? CommonUtils.formatNumberWithoutSymbol(priceDetails?.netPrice)
-                : '----'}
+              {priceDetails?.netPrice ? CommonUtils.formatNumberWithoutSymbol(priceDetails?.netPrice) : '----'}
             </span>
           }
         />

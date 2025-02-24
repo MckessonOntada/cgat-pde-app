@@ -375,9 +375,9 @@ function AdditionalDetails() {
         orderId,
         items: null
       };
-      // if (!(inventoryType && ['S', 'I'].includes(inventoryType))) {
-      //   return;
-      // }
+      if (!(inventoryType && ['S', 'I', 'A'].includes(inventoryType))) {
+        return;
+      }
       try {
         const res = await OrderService.getInventoryStatus(requestPayload);
         if (res.status === 200) {
@@ -413,7 +413,7 @@ function AdditionalDetails() {
 
   React.useEffect(() => {
     if (orderDetails) checkInventory();
-  }, [orderDetails, variant]);
+  }, [orderDetails, variant, inventoryType]);
 
   const handleOnBackToOrders = () => {
     if (isDirty) {
