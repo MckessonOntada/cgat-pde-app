@@ -1,25 +1,17 @@
 import * as Yup from 'yup';
-import { ALPHA_NUMERIC_WITH_SPECIAL, ALPHABETIC_WITH_SPECIAL } from '@src/components/form/ValidationRegExp';
+import { ALPHA_NUMERIC } from '@src/components/form/ValidationRegExp';
 import { CONTROL_OPTIONS } from '../ApproverGroupDetail/RulesConfig';
 
 export const transformAttributesToRules = (values, practiceId) => {
   const { name, approverUsers, approverUsers_augmented, rules } = values;
 
-  // Initialize the result object
   const result = {
-    name: name || 'default',
+    name: name.trim() || 'default',
     practiceId: practiceId || 0,
-    rules: {
-      // price: 0,
-      // accounts: [],
-      // therapies: [],
-      // roles: [],
-      // users: []
-    },
+    rules: {},
     approverUsers: []
   };
 
-  // Process rules
   rules.forEach((rule) => {
     switch (rule.attributeType) {
       case CONTROL_OPTIONS.Price:
@@ -74,7 +66,7 @@ export const getValidationSchema = (t) => {
   return Yup.object({
     name: Yup.string()
       .required(t('approvergroup.create.validation.approvergroupname_required'))
-      .matches(ALPHA_NUMERIC_WITH_SPECIAL, t('approvergroup.create.validation.approvergroupname')) // Only alphabets
+      .matches(ALPHA_NUMERIC, t('approvergroup.create.validation.approvergroupname')) // Only alphabets
       .min(2, t('approvergroup.create.validation.approvergroupname_min_max'))
       .max(50, t('approvergroup.create.validation.approvergroupname_min_max')),
     rules: Yup.array()

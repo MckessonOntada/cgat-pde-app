@@ -47,10 +47,9 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
             value: item.id
           }));
           if (selectedOrganization) {
-            let findOrg = data.find((item) => item.id == selectedOrganization.id);
+            let findOrg = data.find((item) => item.value == selectedOrganization.id);
             !findOrg && data.unshift({ index: 0, label: selectedOrganization.name, value: selectedOrganization.id });
           }
-
           setOptions(data);
         }
         return content;

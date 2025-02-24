@@ -284,7 +284,7 @@ export default function InvoicesTable() {
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}
-            error={isError ? 'Something went wrong! Please try again' : null}
+            // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
             heading={t('paymentInvoices.invoice.table.emptyData')}
             description={t('paymentInvoices.history.table.emptyDataDescription')}

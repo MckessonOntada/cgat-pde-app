@@ -23,7 +23,7 @@
     flex-grow: 1;
     display: flex;
     gap: var(--spacing-03);
-    overflow-y: scroll;
+    overflow-y: auto;
     flex-direction: column;
     padding: var(--spacing-03);
 

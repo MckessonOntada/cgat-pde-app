@@ -42,7 +42,7 @@ export default function PaymentHistoryTable() {
       cell: (props) => (
         <div className="cellEllipse">
           <Link
-            style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none'  }}
+            style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
             to={`/record/${PATHS.paymentHistory}/${props?.confirmationNo}/confirmation`}
             state={{ ...props, filterConfig }}>{`${props?.confirmationNo}`}</Link>
         </div>
@@ -143,7 +143,7 @@ export default function PaymentHistoryTable() {
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}
-            error={isError ? 'Something went wrong! Please try again' : null}
+            // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
             heading={t('paymentInvoices.history.table.emptyData')}
             description={t('paymentInvoices.history.table.emptyDataDescription')}

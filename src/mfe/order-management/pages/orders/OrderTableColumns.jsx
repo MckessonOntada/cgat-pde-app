@@ -291,12 +291,12 @@ const getPatientName = (patientInfo) => {
 
 export const createColumns = (t, navigate, activeTab, alertContainerId) => [
   {
-    id: 'id',
-    name: t('labels.orderId'),
+    id: 'backendOrderId',
+    name: t('labels.sapId'),
     selector: () => {},
     sortable: true,
     sortable: true,
-    sortKey: 'id',
+    sortKey: 'backendOrderId',
     showInMobileHeader: true,
     minWidth: '160px',
     cell: (props) => (
@@ -305,10 +305,34 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
         to={getPathByOrderStage(props)}
         //state={props.currentStage === 'ORDER_SUMMARY' && props.status === StatusEnum.SUBMITTED ? { ...props, isEdit: true } : { ...props }}
         state={getState(props)}
-        aria-label={t('labels.orderId')}>
-        <EclipsesTextcss str={props.id} maxWidth={140} />
+        aria-label={t('labels.sapId')}>
+        <EclipsesTextcss str={props.backendOrderId} maxWidth={140} />
       </Link>
-    )
+    ),
+    omit: activeTab !== 2
+  },
+  {
+    id: 'id',
+    name: t('labels.pdeId'),
+    selector: () => {},
+    sortable: true,
+    sortable: true,
+    sortKey: 'id',
+    showInMobileHeader: true,
+    minWidth: '160px',
+    cell: (props) =>
+      activeTab !== 2 ? (
+        <Link
+          className="MCP-table-link"
+          to={getPathByOrderStage(props)}
+          //state={props.currentStage === 'ORDER_SUMMARY' && props.status === StatusEnum.SUBMITTED ? { ...props, isEdit: true } : { ...props }}
+          state={getState(props)}
+          aria-label={t('labels.orderId')}>
+          <EclipsesTextcss str={props.id} maxWidth={140} />
+        </Link>
+      ) : (
+        <EclipsesTextcss str={props.id} maxWidth={140} />
+      )
   },
   {
     id: 'patient',
@@ -417,7 +441,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     minWidth: '100px',
     cell: (props) => (
       <div className="cellEllipse align-items-right ">
-       {props.orderCost ? <FormattedNumber value={props.orderCost} style="currency" currency="USD" /> : ''} 
+        {props.orderCost ? <FormattedNumber value={props.orderCost} style="currency" currency="USD" /> : ''}
       </div>
     )
   },

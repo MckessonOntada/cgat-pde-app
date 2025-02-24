@@ -10,7 +10,6 @@ const getAugmentedValues = (rules, attributeType) => {
 };
 
 const AttributeFieldRenderer = ({ caption, helperText, attributeType, name, localData, setLocalData, onRemoveClick, t, values }) => {
-  console.log(values);
   switch (attributeType) {
     case CONTROL_OPTIONS.Price:
       return (

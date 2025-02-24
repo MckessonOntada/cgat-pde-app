@@ -93,7 +93,7 @@ function DashboardPage() {
   }, [usStates]);
 
   return (
-    <div className="MCP-module-wrapper">
+    <div className="MCP-module-wrapper organization-module">
       <Breadcrumb items={breadcrumbItems} />
       <div className="MCP-module-body">
         <ModuleHeader

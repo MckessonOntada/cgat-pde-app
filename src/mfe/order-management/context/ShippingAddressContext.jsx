@@ -27,7 +27,6 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
   const [pageConfig, setPageConfig] = useState(initialPageConfig);
   const [dataState, setDataState] = useState([]);
   const { therapyId, selectedAccount } = accountDetails;
-
   const prepareDataForTable = (_data) => {
     const tableData = [];
 
@@ -62,7 +61,7 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
     error,
     refetch: refreshData
   } = useQuery({
-    queryKey: ['Shipping', requestParams, selectedAccount?.accountNumber],
+    queryKey: ['Shipping', requestParams, selectedAccount?.accountNumber, therapyId],
     queryFn: async () => OrderService.getShippingAddressForTherapyByAccountId(therapyId, selectedAccount?.accountNumber, requestParams),
     onSuccess: (result) => {
       if (result.content) {
@@ -78,6 +77,7 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
         setDataState(formattedData);
       }
     },
+
     enabled: !!selectedAccount?.accountNumber,
     refetchOnWindowFocus: false
   });

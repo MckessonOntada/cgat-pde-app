@@ -447,9 +447,10 @@ const cleanObject = (obj) => {
 };
 
 const formatNumberWithoutSymbol = (value) => {
-  return new Intl.NumberFormat('en-US', {style: 'currency',currency: 'USD', }).format(value || 0).slice(1)
-}
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value || 0).slice(1);
+};
 
+const getCamelCase = (str) => str.replace(/(^\w|[-_]\w)/g, (match) => match.replace(/[-_]/, '').toUpperCase());
 
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
@@ -484,7 +485,8 @@ const CommonUtils = Object.freeze({
   enableReviewAndPay,
   generateUniqueCode,
   cleanObject,
-  formatNumberWithoutSymbol
+  formatNumberWithoutSymbol,
+  getCamelCase
 });
 
 export default CommonUtils;

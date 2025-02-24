@@ -107,7 +107,7 @@ export default function CreditCardsTable() {
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}
-            error={isError ? 'Something went wrong! Please try again' : null}
+            // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
             heading={t('paymentInvoices.paymentMethods.table.cards.emptyData')}
             description={t('paymentInvoices.history.table.emptyDataDescription')}
