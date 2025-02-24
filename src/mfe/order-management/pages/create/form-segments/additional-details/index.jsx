@@ -357,6 +357,64 @@ function AdditionalDetails() {
     saveAdditionalDetails(payload);
   };
 
+  const setInventoryTypeData = (data) => {
+    setInventoryType(data);
+  };
+  const [inventoryType, setInventoryType] = useState(null);
+  const checkInventory = async () => {
+    const { shipToAccount, soldToAccount } = orderDetails.accountDetails || {};
+
+    if (shipToAccount && soldToAccount) {
+      const requestPayload = {
+        customerNumber: shipToAccount?.accountNumber,
+        shipTo: shipToAccount?.accountNumber,
+        salesOrg: soldToAccount.salesOrg,
+        distChannel: soldToAccount.distributionChannel,
+        division: soldToAccount.division,
+        companyCode: soldToAccount.companyCode,
+        orderId,
+        items: null
+      };
+      // if (!(inventoryType && ['S', 'I'].includes(inventoryType))) {
+      //   return;
+      // }
+      try {
+        const res = await OrderService.getInventoryStatus(requestPayload);
+        if (res.status === 200) {
+          console.log(res);
+          showAlert({
+            description: t('messages.inventoryCheck.success'),
+            type: 'success',
+            anchorEl: alertContainerId
+          });
+          return {
+            description: t('messages.inventoryCheck.success'),
+            type: 'success'
+          };
+        }
+      } catch (err) {
+        console.log(err);
+        // if (err.status === 400) {
+        //   showAlert({
+        //     description: ExtractErrorfromAPIResponse(err.response?.data.message),
+        //     type: 'warning',
+        //     anchorEl: alertContainerId
+        //   });
+        //   return {
+        //     description: ExtractErrorfromAPIResponse(err.response?.data.message),
+        //     type: 'warning'
+        //   };
+        //} else {
+        // showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
+        //}
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    if (orderDetails) checkInventory();
+  }, [orderDetails, variant]);
+
   const handleOnBackToOrders = () => {
     if (isDirty) {
       setModalSuccessCallback('list');
@@ -399,6 +457,8 @@ function AdditionalDetails() {
   if (isFetchingOrderDetails) {
     return <Loader />;
   }
+
+  console.log(inventoryType);
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -430,6 +490,7 @@ function AdditionalDetails() {
                 <OrderHeaderDetails
                   orderDetails={orderDetails}
                   therapyId={therapyId}
+                  setInventoryTypeData={setInventoryTypeData}
                   soldToAccountId={soldToAccountId}
                   shipToAccountId={shipToAccountId}
                   variant={variant?.variant}
