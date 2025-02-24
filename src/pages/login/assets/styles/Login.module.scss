@@ -33,7 +33,8 @@
       .emailInput{
         padding: var(--spacing-04) 0px;
         input{
-          font-weight: var(--brand-font-weight-400);;
+          font-weight: var(--brand-font-weight-400);
+          border-radius: 3px;
         }
         label{
           font-size: var(--brand-font-size--default);
