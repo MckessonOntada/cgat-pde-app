@@ -19,7 +19,7 @@
   justify-content: space-between;
   width: 100%;
   z-index: 999;
-  padding: 0px var(--spacing-16) 40px;
+  padding: 0px var(--spacing-16) var(--spacing-06);
 
   .loginContainor {
     box-shadow: 0px 4px 8px 0px #262C3626 !important;
@@ -27,7 +27,7 @@
     width: 500px;
     margin-bottom: -115px;
     background: var(--brand-color-background-white);
-    padding: 46px 32px 47px;
+    padding:  var(--spacing-07)  var(--spacing-05);
     height: fit-content;
     .forgotWrapper{
       .emailInput{
