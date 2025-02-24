@@ -14,11 +14,13 @@ import './Role.scss';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import TableHeading from '@src/components/tableHeading/TableHeading';
+import usePermission from '@src/hooks/usePermissions';
 
 const RolesDataTable = () => {
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState(null);
-  const columns = createColumns(t, selectedRows, setSelectedRows);
+  const { hasPermission } = usePermission();
+  const columns = createColumns(t, selectedRows, setSelectedRows, hasPermission);
   const { applySort } = useRole();
   const { data, paginationConfig, setPageNumber, isLoading, refreshData, setMessage } = useRole();
   const dispatch = useDispatch();

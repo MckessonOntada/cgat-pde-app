@@ -225,7 +225,7 @@ function DetailsPanel({
                       <div className={styles.actions}>
                         {section.actions?.map((action) =>
                           action.icon === 'delete' ? (
-                            <IconBinRed key={action.id} role="button" onClick={() => onDeleteConfig(action.id)} />
+                            hasDeleteConfigAccess && <IconBinRed key={action.id} role="button" onClick={() => onDeleteConfig(action.id)} />
                           ) : (
                             <Button key={action.id} textButton onClick={() => console.log(`${action.id} Clicked`)}>
                               {t(action.label)}

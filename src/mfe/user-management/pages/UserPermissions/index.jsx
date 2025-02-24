@@ -48,9 +48,9 @@ const UserPermissions = () => {
   };
 
   const isFormValuesChanged = (initialValues, currentValues) => {
-    if (isSystemAdminView) {
-      return true; // Return true always if it is a system admin view
-    }
+    // if (isSystemAdminView) {
+    //   return true; // Return true always if it is a system admin view
+    // }
     const isRoleChanged = initialValues.roleId !== currentValues.roleId;
     const arePermissionsChanged = JSON.stringify(initialValues.permissions) !== JSON.stringify(currentValues.permissions);
     return isRoleChanged;
