@@ -48,9 +48,6 @@ const UserPermissions = () => {
   };
 
   const isFormValuesChanged = (initialValues, currentValues) => {
-    if (isSystemAdminView) {
-      return true; // Return true always if it is a system admin view
-    }
     const isRoleChanged = initialValues.roleId !== currentValues.roleId;
     const arePermissionsChanged = JSON.stringify(initialValues.permissions) !== JSON.stringify(currentValues.permissions);
     return isRoleChanged;
@@ -72,7 +69,7 @@ const UserPermissions = () => {
 
   const handleSaveAndContinue = (values) => {
     const payload = {
-      roleId: isSystemAdminView ? 1 : permissionsData?.roleId ? permissionsData?.roleId : values.roleId,
+      roleId: permissionsData?.roleId ? permissionsData?.roleId : values.roleId,
       permissions: values.permissions
     };
 
@@ -139,7 +136,6 @@ const UserPermissions = () => {
         validateOnBlur={true}>
         {({ values, setFieldValue, initialValues, isValid, handleSubmit }) => {
           const isDirty = (isEdit && values.roleId) || isBack || permissionsData?.roleId || isFormValuesChanged(initialValues, values);
-
           return (
             <Form
               onSubmit={(e) => {

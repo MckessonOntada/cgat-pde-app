@@ -25,10 +25,10 @@ const usePermission = () => {
   const hasPermission = (permission) => {
     if (permission && Array.isArray(permission)) {
       permission.forEach((p) => {
-        return userPermissions.includes(p);
+        return userPermissions?.includes(p);
       });
     }
-    return userPermissions.includes(permission);
+    return userPermissions?.includes(permission);
   };
 
   return { hasAllPermission, hasAnyPermission, hasPermission };

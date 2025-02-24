@@ -9,6 +9,7 @@ import CommonUtils from '@src/util/CommonUtils';
 import ConfigureCatalog from './ConfigureCatalog';
 import CatalogDetails from './CatalogDetails';
 import TableHeading from '@src/components/tableHeading/TableHeading';
+import AuthUtils from '@src/util/AuthUtils';
 
 function CatalogDataTable(props) {
   const { t } = useTranslate();
@@ -21,6 +22,7 @@ function CatalogDataTable(props) {
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alertDescription, setAlertDescription] = useState('');
   const [alert, setAlert] = useState(null);
+  const isCustomerCenter = AuthUtils.isCustomerCenter();
 
   const getindeterminate = () => {
     const allDataIncluded = data.every((invoice) => selectedCatalogs.some((includedInvoice) => includedInvoice.id === invoice.id));
@@ -97,7 +99,8 @@ function CatalogDataTable(props) {
       sortable: false,
       cell: (row, index) => renderCheckBox(row, index),
       selector: (row) => row.MRN,
-      width: '50px'
+      width: '50px',
+      omit: isCustomerCenter
     },
     {
       name: t('ManageCatalog.Table.SAPMaterialID'),

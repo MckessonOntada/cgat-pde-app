@@ -25,10 +25,12 @@ const updateSessionStorage = async () => {
     if (!CommonUtils.isNonEmptyObject(userDetails)) {
       throw Error('Invalid Login credentials.');
     }
+
     const activeUserRoleName = userDetails['role']['name'];
     const activeUserName = userDetails['userName'];
     const activeUserId = userDetails['id'];
     const activeUserPermissions = userDetails['permissions'];
+
     const activeUserPracticeId = userDetails['practiceId'];
     const impersonatedByUsername = userDetails['impersonatedByUser']?.userName;
 
@@ -40,7 +42,7 @@ const updateSessionStorage = async () => {
     if (impersonatedByUsername) sessionStorage.setItem(SESSION_CONST.IMPERSONATE_USERNAME, activeUserName);
     else sessionStorage.removeItem(SESSION_CONST.IMPERSONATE_USERNAME);
 
-    if (activeUserRoleName !== 'System Admin') {
+    if (activeUserRoleName !== 'System Admin' && activeUserRoleName !== 'Customer Centre') {
       AuthUtils.setPracticeId(activeUserPracticeId);
     }
 
