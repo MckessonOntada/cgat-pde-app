@@ -78,7 +78,13 @@ function TherapySelection() {
     {
       onSuccess: (result) => {
         const { id } = result;
-        navigate(`../${id}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
+        navigate(`../${id}/accounts`, {
+          state: {
+            isEdit: false,
+            isApprover: isApprover,
+            isTherapyChanged: Number(therapy?.therapyId) !== Number(initialSelectedThearpy?.materialNumber)
+          }
+        });
       },
       onError: (err) => {
         const errorKey = handleApiError(err);

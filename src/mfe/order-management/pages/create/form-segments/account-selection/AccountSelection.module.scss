@@ -21,15 +21,30 @@
     .address {
       font-size: var(--brand-font-size--small);
     }
+
+    .address span {
+      margin-right: var(--spacing-03);
+    }
+    .btnAccount {
+      margin-top: var(--spacing-03);
+    }
   }
 }
 
 .controls {
   display: flex;
-  flex-direction: column;
   gap: var(--spacing-03);
+  justify-content: end;
+  align-items: flex-end;
+  div {
+    font-size: var(--brand-font-size--default);
+  }
 }
 .inventoryControl {
   display: flex;
   justify-content: space-between;
+
+  [data-testid="warning-icon"] {
+    margin-top: 0px !important;
+  }
 }
