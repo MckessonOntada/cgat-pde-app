@@ -82,7 +82,7 @@ function TherapySelection() {
           state: {
             isEdit: false,
             isApprover: isApprover,
-            isTherapyChanged: Number(therapy?.therapyId) !== Number(initialSelectedThearpy?.materialNumber)
+            isTherapyChanged: Number(therapy?.therapyId) !== Number(initialSelectedTherapy?.materialNumber)
           }
         });
       },
