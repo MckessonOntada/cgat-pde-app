@@ -4,7 +4,7 @@ export const TherapyDetailsConstants = [
     sectionData: [
       { label: 'labels.therapy.materialNumber', value: 'materialNumber' },
       { label: 'labels.therapy.materialDescription', value: 'materialDescription' },
-      { label: 'labels.therapy.ndc', value: 'ndc' },
+      { label: 'labels.therapy.ndc', value: 'ndcNumber' },
       { label: 'labels.therapy.strength', value: 'strength' },
       { label: 'labels.therapy.dosage', value: 'dosage' },
       { label: 'labels.therapy.sellingUnitCode', value: 'sellingUnitCode' },
