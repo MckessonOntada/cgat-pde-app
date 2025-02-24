@@ -25,63 +25,12 @@ const updateSessionStorage = async () => {
     if (!CommonUtils.isNonEmptyObject(userDetails)) {
       throw Error('Invalid Login credentials.');
     }
-    // if (userDetails?.role?.name == 'System Admin') {
-    //   userDetails.role = {
-    //     createdAt: null,
-    //     createdBy: 'SYSTEM',
-    //     createdByImpersonator: null,
-    //     updatedAt: null,
-    //     updatedBy: 'SYSTEM',
-    //     updatedByImpersonator: null,
-    //     id: 2,
-    //     name: 'Customer Centre',
-    //     description: 'Customer Centre',
-    //     permissions: [
-    //       'VIEW_QUESTIONNAIRE',
-    //       'VIEW_ROLES',
-    //       'VIEW_SYSTEM_ADMINISTRATOR',
-    //       'MANAGE_CATALOG',
-    //       'VIEW_ACCOUNTS',
-    //       'MANAGE_ROLES_SCREEN',
-    //       'MANAGE_SYSTEM_ADMINISTRATOR_SCREEN',
-    //       'VIEW_ORGANIZATION',
-    //       'MANAGE_MATERIAL',
-    //       'VIEW_MATERIAL',
-    //       'VIEW_USERS',
-    //       'ON_BEHALF_OF_USER',
-    //       'VIEW_CATALOG',
-    //       'MANAGE_ORGANIZATION_SCREEN',
-    //       'MANAGE_USERS_SCREEN',
-    //       'MANAGE_SYSTEM_CONFIGURATIONS'
-    //     ],
-    //     isActive: true
-    //   };
-    // }
+
     const activeUserRoleName = userDetails['role']['name'];
     const activeUserName = userDetails['userName'];
     const activeUserId = userDetails['id'];
     const activeUserPermissions = userDetails['permissions'];
-    // const activeUserPermissions =
-    //   userDetails?.role?.name == 'Customer Centre'
-    //     ? [
-    //         'VIEW_QUESTIONNAIRE',
-    //         'VIEW_ROLES',
-    //         'VIEW_SYSTEM_ADMINISTRATOR',
-    //         'MANAGE_CATALOG',
-    //         'VIEW_ACCOUNTS',
-    //         'MANAGE_ROLES_SCREEN',
-    //         'MANAGE_SYSTEM_ADMINISTRATOR_SCREEN',
-    //         'VIEW_ORGANIZATION',
-    //         'MANAGE_MATERIAL',
-    //         'VIEW_MATERIAL',
-    //         'VIEW_USERS',
-    //         'ON_BEHALF_OF_USER',
-    //         'VIEW_CATALOG',
-    //         'MANAGE_ORGANIZATION_SCREEN',
-    //         'MANAGE_USERS_SCREEN',
-    //         'MANAGE_SYSTEM_CONFIGURATIONS'
-    //       ]
-    //     : userDetails['permissions'];
+
     const activeUserPracticeId = userDetails['practiceId'];
     const impersonatedByUsername = userDetails['impersonatedByUser']?.userName;
 
