@@ -25,5 +25,7 @@ export const LoginMessagesEN = {
   'footer.copyright': '© 2024 McKesson Corporation Health Technology Products LLC.',
   'message.exitUserViewConfirmation': 'Do you wish to exit working as {{username}}?',
   'button.caption.no': 'No',
-  'button.caption.yes': 'Yes'
+  'button.caption.yes': 'Yes',
+  'forgot.password': 'Forgot Password?',
+  'forgot.password.submit': 'Forgot Password'
 };

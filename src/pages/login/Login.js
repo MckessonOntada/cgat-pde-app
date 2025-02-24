@@ -171,7 +171,16 @@ const Login = () => {
     widget.on('afterRender', (aa) => {
       const forgotPasswordLink = document.querySelector('.auth-footer .js-forgot-password');
       if (forgotPasswordLink) {
-        forgotPasswordLink.style.display = 'none';
+          let newLink = document.createElement("a");
+          newLink.textContent = "Forgot Password?"; 
+          newLink.style.marginBottom = "10px"; 
+          newLink.href = "#"; 
+          newLink.addEventListener("click", function (e) {
+              e.preventDefault(); 
+              navigate('/forgot-password');
+          });
+
+          forgotPasswordLink.replaceWith(newLink);
       }
       const helpLink = document.querySelector('.auth-footer .js-help');
       if (helpLink) {
