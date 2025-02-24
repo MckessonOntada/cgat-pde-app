@@ -2,11 +2,12 @@ import React from 'react';
 import DetailSegment from '@src/components/DetailSegment';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as TickIcon } from '@src/assets/svg/tick-circle-filled.svg';
+import { ReactComponent as TickGreyIcon } from '@src/assets/svg/tick_icon.svg';
 import { useQuery } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
 import CommonUtils from '@src/util/CommonUtils';
 
-function OrderHeaderDetails({ orderDetails, therapyId, soldToAccountId, shipToAccountId, setInventoryTypeData, variant }) {
+function OrderHeaderDetails({ orderDetails, therapyId, soldToAccountId, shipToAccountId, variant }) {
   const { t } = useTranslate();
   const [segments, setSegments] = React.useState([]);
 
@@ -15,11 +16,7 @@ function OrderHeaderDetails({ orderDetails, therapyId, soldToAccountId, shipToAc
     queryFn: async () => OrderService.getPriceDetails(therapyId, soldToAccountId, shipToAccountId, variant),
     enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId && (!!variant || true),
     refetchOnWindowFocus: false,
-    onSuccess: (data) => {
-      if (typeof setInventoryTypeData === 'function') {
-        setInventoryTypeData(data.inventoryType);
-      }
-    }
+    onSuccess: (data) => {}
   });
 
   React.useEffect(() => {
@@ -32,7 +29,7 @@ function OrderHeaderDetails({ orderDetails, therapyId, soldToAccountId, shipToAc
         value={
           <React.Fragment>
             <span>{therapy?.materialDescription || '-'}</span>
-            <TickIcon width="16px" height="16px" />
+            <TickGreyIcon width="18px" height="18px" />
           </React.Fragment>
         }
       />
@@ -63,9 +60,7 @@ function OrderHeaderDetails({ orderDetails, therapyId, soldToAccountId, shipToAc
           value={
             <span className="dollarSign">
               <span>$</span>
-              {priceDetails?.netPrice
-                ? CommonUtils.formatNumberWithoutSymbol(priceDetails?.netPrice)
-                : '----'}
+              {priceDetails?.netPrice ? CommonUtils.formatNumberWithoutSymbol(priceDetails?.netPrice) : '----'}
             </span>
           }
         />
