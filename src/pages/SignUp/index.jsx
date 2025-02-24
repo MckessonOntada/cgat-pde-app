@@ -24,6 +24,7 @@ import {
   ZIP_REGEX
 } from '@src/components/form/ValidationRegExp';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
+import { handleApiError } from '@src/util/ApiUtils';
 
 const SignUp = () => {
   const { t } = useTranslate();
@@ -163,7 +164,8 @@ const SignUp = () => {
           navigate(`../${AppRoutes.pathSignin}`);
         },
         onError: (error) => {
-          setAlert({ type: 'error', message: 'Failed to create a user request' });
+          const errorKey = handleApiError(error);
+          setAlert({ type: 'error', message: t(errorKey) });
           setIsAlertVisible(true);
         }
       }
