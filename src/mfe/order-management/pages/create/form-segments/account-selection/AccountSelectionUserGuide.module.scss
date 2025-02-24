@@ -22,6 +22,7 @@
         align-items: flex-start;
         justify-content: space-between;
         font-size: var(--brand-font-size--extra-small);
+        overflow: auto;
 
         .selectionBlock {
             display: flex;
@@ -46,6 +47,7 @@
             align-items: center;
             justify-content: flex-end;
             gap: var(--spacing-03);
+            padding-top: var(--spacing-03);
         }
     }
 }
