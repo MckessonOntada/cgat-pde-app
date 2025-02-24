@@ -195,7 +195,7 @@ export const MessageEs = {
   'labels.pleaseSelectAccount': 'S_Please Select Account',
   'labels.therapyDescription': 'S_Therapy Description',
   'labels.therapyNumber': 'S_Therapy Number',
-  'labels.COI_IdExceedDigits': 'S_COI Id cannot exceed 20 digits',
+  'labels.COI_IdExceedDigits': 'S_COI Id cannot exceed 10 digits',
   'labels.COI_IdMustValidNumber': 'S_COI Id must be a valid number',
   'labels.OrderQuantityShouldPositive': 'S_Order quantity must be a number',
   'labels.OrderQuantityShouldGreaterThanZero': 'S_Order quantity must be greater than zero',
