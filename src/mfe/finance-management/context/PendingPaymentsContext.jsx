@@ -144,8 +144,11 @@ export const PendingPaymentsProvider = ({ children }) => {
       }
     },
     enabled: !!selectedAccount?.id,
+    retry: 1,
     onError: (error) => {
-      showSnackbar({ description: 'Error fetching Pending payments listing', type: 'error' });
+      const { response } = error;
+      let errorMsg = response?.data?.message || 'Error fetching Pending payments listing';
+      showSnackbar({ description: errorMsg, type: 'error' });
     }
   });
 

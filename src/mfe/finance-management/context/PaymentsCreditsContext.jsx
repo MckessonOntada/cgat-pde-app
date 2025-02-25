@@ -139,8 +139,11 @@ export const PaymentsCreditsProvider = ({ children }) => {
     },
     {
       enabled: !!selectedAccount?.id,
+      retry: 1,
       onError: (error) => {
-        showSnackbar({ description: 'Error fetching invoice listing', type: 'error' });
+        const { response } = error;
+        let errorMsg = response?.data?.message || 'Error fetching credits listing';
+        showSnackbar({ description: errorMsg, type: 'error' });
       }
     }
   );
