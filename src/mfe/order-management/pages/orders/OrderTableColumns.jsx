@@ -319,7 +319,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortable: true,
     sortKey: 'id',
     showInMobileHeader: true,
-    minWidth: '140px',
+    minWidth: '160px',
     cell: (props) =>
       activeTab !== 2 ? (
         <Link
@@ -342,7 +342,6 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortKey: 'patient.patientInfo',
     showInMobileHeader: true,
     showColumnNameInHeader: true,
-    maxWidth: '120px',
     cell: (props) => {
       const patientInfo = props.patient && props.patient.patientInfo;
       if (!patientInfo) return 'N/A';
@@ -355,7 +354,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'therapy.materialDescription',
-    maxWidth: '120px',
+    maxWidth: '140px',
     cell: (props) => (
       <EclipsesTextcss
         str={props.therapy?.materialDescription}
@@ -371,7 +370,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'author?.name',
-    maxWidth: '120px',
+    maxWidth: '160px',
     cell: (props) => (
       <EclipsesTextcss tooltip={props.createdBy?.userName} str={props.createdBy?.name} maxWidth={140} className={'MCP-table-cell'} />
     ),
@@ -384,7 +383,6 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortable: true,
     sortKey: 'createdAt',
     minWidth: '80px',
-    maxWidth: '120px',
     cell: (props) => (
       <span aria-label={t('table.columns.captions.createdOn')}>
         {CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')}
@@ -440,8 +438,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortable: false,
     right: true,
     selector: 'orderCost',
-    minWidth: '100px',
-    grow:1.5,
+    width: '180px',
     cell: (props) => (
       <div className="cellEllipse align-items-right ">
         {props.orderCost ? <FormattedNumber value={props.orderCost} style="currency" currency="USD" /> : ''}
