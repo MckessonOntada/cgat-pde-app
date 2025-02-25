@@ -74,9 +74,12 @@ export const PaymentMethodsProvider = ({ children }) => {
       return res.data;
     },
     enabled: !!selectedAccount?.id,
+    retry: 1,
     onError: (error) => {
       if (CommonUtils.isNonEmptyObject(error)) {
-        showSnackbar({ description: t('paymentInvoices.paymentMethods.api.error'), type: 'error' });
+        const { response } = error;
+        let errorMsg = response?.data?.message || t('paymentInvoices.paymentMethods.api.error');
+        showSnackbar({ description: errorMsg, type: 'error' });
       }
     }
   });

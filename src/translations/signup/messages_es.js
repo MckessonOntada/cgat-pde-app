@@ -25,5 +25,7 @@ export const SignupES = {
   'banner.subHeadline':'S_Solutions for your pharmacy, hospital, Organization or biopharma company',
 
   'loginrequest.content' :'S_Your request to create a new account has been submitted successfully. Please hold on while our admin reviews your information and approves your request. We will send your login credentials to the email address and phone number you provided.',
-  'loginrequest.heading' :'S_Request Created'
+  'loginrequest.heading' :'S_Request Created',
+  'loginrequest.button' : 'S_Go to Login Page',
+  'errors.user_provisioning_request_email_key': 'S_Email ID already exists in the System.',
 };

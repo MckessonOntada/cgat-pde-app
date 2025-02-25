@@ -23,7 +23,8 @@ function TherapyDetails({
   showFooter = true,
   useUserService = false,
   useMaterialService = false,
-  isMaterialConfiguration = false
+  isMaterialConfiguration = false,
+  hasDeleteConfigAccess = true
 }) {
   const { t } = useTranslate();
   const { showSnackbar } = useSnackbar();
@@ -92,7 +93,7 @@ function TherapyDetails({
     <div className={styles.wrapper}>
       <div className={styles.header}>
         <Heading as="h3">{!isMaterialConfiguration ? t('labels.therapyDetails') : t('manageMaterial.drawer.heading')}</Heading>
-         <Button variant="tertiary" onClick={onClose} textButton IconClose>
+        <Button variant="tertiary" onClick={onClose} textButton IconClose>
           <IconClose />
         </Button>
       </div>
@@ -111,6 +112,7 @@ function TherapyDetails({
               isMaterialConfiguration={isMaterialConfiguration}
               refetch={refetch}
               onDeleteConfig={handleDeleteConfig}
+              hasDeleteConfigAccess={hasDeleteConfigAccess}
             />
           )}
         </div>
@@ -128,7 +130,8 @@ function DetailsPanel({
   showFooter,
   isMaterialConfiguration,
   onDeleteConfig,
-  refetch = { refetch }
+  refetch = { refetch },
+  hasDeleteConfigAccess
 }) {
   const { t } = useTranslate();
   const { showSnackbar } = useSnackbar();
@@ -169,7 +172,7 @@ function DetailsPanel({
       <DetailItem key={label} label={t(label)} value={isMaterialConfiguration ? details.therapy[value] : details[value] || '-'} />
     ));
 
-  const renderQuestionnaire = (details, section) => {
+  const renderQuestionnaire = (details, section, hasDeleteConfigAccess) => {
     let showHeader = true;
     return details.questionnaires.map((questionnaire, index) => {
       const item = (
@@ -180,6 +183,7 @@ function DetailsPanel({
           onDelete={() => OnDelinkQuestionnaireClick(questionnaire.id)}
           showHeader={showHeader}
           questionnaire={details.questionnaires}
+          hasDeleteConfigAccess={hasDeleteConfigAccess}
         />
       );
       showHeader = false;
@@ -221,7 +225,7 @@ function DetailsPanel({
                       <div className={styles.actions}>
                         {section.actions?.map((action) =>
                           action.icon === 'delete' ? (
-                            <IconBinRed key={action.id} role="button" onClick={() => onDeleteConfig(action.id)} />
+                            hasDeleteConfigAccess && <IconBinRed key={action.id} role="button" onClick={() => onDeleteConfig(action.id)} />
                           ) : (
                             <Button key={action.id} textButton onClick={() => console.log(`${action.id} Clicked`)}>
                               {t(action.label)}
@@ -234,7 +238,7 @@ function DetailsPanel({
                   </div>
                 ) : null
               ) : details.questionnaires.length > 0 ? (
-                <div> {renderQuestionnaire(details, section)}</div>
+                <div> {renderQuestionnaire(details, section, hasDeleteConfigAccess)}</div>
               ) : null}
             </>
           ))}
@@ -281,7 +285,7 @@ function ConfigItem({ label, value, display = true }) {
   );
 }
 
-function QuestionnaireItem({ templateName, section, onDelete, showHeader, questionnaire }) {
+function QuestionnaireItem({ templateName, section, onDelete, showHeader, questionnaire, hasDeleteConfigAccess = true }) {
   const navigate = useNavigate();
   const { t } = useTranslate();
 
@@ -306,9 +310,11 @@ function QuestionnaireItem({ templateName, section, onDelete, showHeader, questi
 
       <div className={styles.detailItem}>
         <div className={styles.leftContentBold}>{templateName}</div>
-        <div className={styles.rightContentAction} onClick={onDelete}>
-          <IconBinRed className={styles.deleteIcon} />
-        </div>
+        {hasDeleteConfigAccess && (
+          <div className={styles.rightContentAction} onClick={onDelete}>
+            <IconBinRed className={styles.deleteIcon} />
+          </div>
+        )}
       </div>
     </>
   );

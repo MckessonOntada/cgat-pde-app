@@ -112,7 +112,6 @@ export default function PendingPaymentTable() {
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}
-            error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
             heading={t('pendingPayments.table.bankAccount.emptyData')}
             description={t('paymentInvoices.history.table.emptyDataDescription')}

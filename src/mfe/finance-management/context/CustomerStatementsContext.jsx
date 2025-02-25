@@ -134,8 +134,11 @@ export const CustomerStatementsProvider = ({ children }) => {
       }
     },
     enabled: !!selectedAccount?.id,
+    retry: 1,
     onError: (error) => {
-      showSnackbar({ description: 'Error fetching customer statements listing', type: 'error' });
+      const { response } = error;
+      let errorMsg = response?.data?.message || 'Error fetching customer statements listing';
+      showSnackbar({ description: errorMsg, type: 'error' });
     }
   });
 

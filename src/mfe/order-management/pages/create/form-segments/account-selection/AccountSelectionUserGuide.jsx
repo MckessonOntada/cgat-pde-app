@@ -112,14 +112,14 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
         </div>
 
         <div className={styles.controls}>
-          <Button label={t('captions.btnCancel')} onClick={onClose} variant="secondary" size="md" aria-label={t('captions.cancel')} />
+          <Button label={t('captions.btnCancel')} onClick={onClose} variant="secondary" size="md" aria-label={t('captions.btnCancel')} />
           <Button
-            label={t('captions.btnSelect')}
+            label={t('headings.seletAccount')}
             onClick={() => onSubmit(account)}
             variant="primary"
             size="md"
             disabled={!account}
-            aria-label={t('captions.selectAccount')}
+            aria-label={t('captions.btnSelect')}
           />
         </div>
       </div>

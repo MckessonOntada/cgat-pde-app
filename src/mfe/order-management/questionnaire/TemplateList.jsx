@@ -18,6 +18,8 @@ import useResponsiveView from '@src/hooks/useResponsiveView';
 import CommonUtils from '@src/util/CommonUtils';
 import { ROUTE_CONFIG } from './constants';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import usePermission from '@src/hooks/usePermissions';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 
 function TemplateList() {
   const { t } = useTranslate();
@@ -42,6 +44,7 @@ function TemplateList() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const selectedEntityType = location.state?.value || false;
   const isSuccess = location.state?.isSuccess || false;
+  const { hasPermission } = usePermission();
 
   useEffect(() => {
     if (!selectedEntityType) {
@@ -77,7 +80,8 @@ function TemplateList() {
       sortable: false,
       cell: (row, index) => renderCheckBox(row, index),
       selector: (row) => row.id,
-      width: '50px'
+      width: '50px',
+      omit: !hasPermission(PERMISSIONS_ENUM.SYSTEM_CONFIGURATION.CONFIGURE_QUESTIONNAIRE)
     },
     {
       id: 'templateName',
