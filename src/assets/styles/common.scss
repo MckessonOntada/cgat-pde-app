@@ -487,6 +487,11 @@ div.disable-all {
   align-items: center;
   justify-content: flex-start;
   gap: var(--spacing-02);
+
+  .overflowing {
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
 }
 
 .row-space-between-center {
