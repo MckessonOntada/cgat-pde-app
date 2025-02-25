@@ -40,7 +40,7 @@ function AdditionalDetails() {
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
   const [validationSchema, setValidationSchema] = React.useState(null);
-
+  const [inventoryStatus, setInventoryStatus] = React.useState(null);
   const variantsApiRequestParam = { pageNo: 0, pageSize: 10 };
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
@@ -381,36 +381,51 @@ function AdditionalDetails() {
       try {
         const res = await OrderService.getInventoryStatus(requestPayload);
         if (res.status === 200) {
-          console.log(res);
-          showAlert({
-            description: t('messages.inventoryCheck.success'),
-            type: 'success',
-            anchorEl: alertContainerId
-          });
+          const result = res.data.inventoryCheckResponse;
+          if (result) {
+            const { erroredItems, warningMessages } = result;
+            if (erroredItems || warningMessages) {
+              setInventoryStatus('OUT_OF_STOCK');
+              if (erroredItems && erroredItems[0]) {
+                const errorDescription = erroredItems[0].errorMessage;
+                showAlert({
+                  description: errorDescription,
+                  type: 'error',
+                  anchorEl: alertContainerId
+                });
+              } else {
+                const errorDescription = warningMessages[0].errorMessage;
+                showAlert({
+                  description: errorDescription,
+                  type: 'warning',
+                  anchorEl: alertContainerId
+                });
+              }
+            } else {
+              if (orderDetails?.therapy.dropshipIndicator) {
+                setInventoryStatus('DROP_SHIP');
+              } else {
+                setInventoryStatus('AVAILABLE');
+              }
+            }
+          }
+
           return {
             description: t('messages.inventoryCheck.success'),
             type: 'success'
           };
         }
       } catch (err) {
-        console.log(err);
-        // if (err.status === 400) {
-        //   showAlert({
-        //     description: ExtractErrorfromAPIResponse(err.response?.data.message),
-        //     type: 'warning',
-        //     anchorEl: alertContainerId
-        //   });
-        //   return {
-        //     description: ExtractErrorfromAPIResponse(err.response?.data.message),
-        //     type: 'warning'
-        //   };
-        //} else {
-        // showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
-        //}
+        setInventoryStatus('OUT_OF_STOCK');
+        showAlert({
+          description: 'Something went wrong, Please try again later.',
+          type: 'error',
+          anchorEl: alertContainerId
+        });
       }
     }
   };
-
+  console.log(variant);
   React.useEffect(() => {
     if (orderDetails) checkInventory();
   }, [orderDetails, variant, inventoryType]);
@@ -458,7 +473,6 @@ function AdditionalDetails() {
     return <Loader />;
   }
 
-  console.log(inventoryType);
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -468,7 +482,6 @@ function AdditionalDetails() {
       </div>
 
       <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
-
       <Formik
         initialValues={initialFormValues}
         enableReinitialize={true}
@@ -494,6 +507,7 @@ function AdditionalDetails() {
                   soldToAccountId={soldToAccountId}
                   shipToAccountId={shipToAccountId}
                   variant={variant?.variant}
+                  status={inventoryStatus}
                 />
                 <div id={alertContainerId} />
                 <div className="MCP-panel-container">
@@ -579,13 +593,6 @@ function AdditionalDetails() {
 
 const VariantTable = ({ variant, onChange, data }) => {
   const { t } = useTranslate();
-
-  useEffect(() => {
-    if (!variant && data?.length > 0) {
-      const firstVariant = data[0];
-      onChange(firstVariant);
-    }
-  }, [data, onChange]);
 
   const columns = [
     {

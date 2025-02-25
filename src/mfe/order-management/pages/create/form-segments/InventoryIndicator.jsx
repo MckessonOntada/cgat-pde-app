@@ -4,30 +4,30 @@ export const InventoryIndicator = ({ status }) => {
   const icons = {
     pending: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="10" fill="gray" />
+        <circle cx="12" cy="12" r="10" fill="#C5C5C5" />
         <path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
-    available: (
+    AVAILABLE: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="10" fill="green" />
+        <circle cx="12" cy="12" r="10" fill="#48a463" />
         <path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
-    dropship: (
+    DROP_SHIP: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="10" fill="orange" />
-        <path d="M10 9h3.5a3 3 0 1 1 0 6H10V9z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="12" cy="12" r="10" fill="#d3722e" />
+        <path d="M10 8h2.5a3 3 0 1 1 0 8H10V8z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
       </svg>
     ),
-    outofstock: (
+    OUT_OF_STOCK: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="10" fill="red" />
+        <circle cx="12" cy="12" r="10" fill="#DB3A29" />
         <path d="M12 9v5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         <circle cx="12" cy="16" r="1.5" fill="white" />
       </svg>
     )
   };
 
-  return <div>{icons[status] || icons.pending}</div>;
+  return <div className="indicator-icon">{icons[status] || icons.pending}</div>;
 };

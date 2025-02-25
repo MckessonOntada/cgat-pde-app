@@ -7,7 +7,7 @@ import OrderService from '@src/api/commonService/OrderService';
 import CommonUtils from '@src/util/CommonUtils';
 import { InventoryIndicator } from './InventoryIndicator';
 
-function OrderHeaderDetails({ orderDetails, orderStatus, therapyId, soldToAccountId, shipToAccountId, setInventoryTypeData, variant }) {
+function OrderHeaderDetails({ orderDetails, status, therapyId, soldToAccountId, shipToAccountId, setInventoryTypeData, variant }) {
   const { t } = useTranslate();
   const [segments, setSegments] = React.useState([]);
 
@@ -33,7 +33,7 @@ function OrderHeaderDetails({ orderDetails, orderStatus, therapyId, soldToAccoun
         value={
           <React.Fragment>
             <span>{therapy?.materialDescription || '-'}</span>
-            <InventoryIndicator status={orderStatus} />
+            <InventoryIndicator status={status} />
           </React.Fragment>
         }
       />
@@ -72,7 +72,7 @@ function OrderHeaderDetails({ orderDetails, orderStatus, therapyId, soldToAccoun
     );
 
     setSegments([...detailsSegments]);
-  }, [orderDetails, priceDetails]);
+  }, [orderDetails, priceDetails, status]);
 
   return (
     <div className="MCP-CardContainer">
