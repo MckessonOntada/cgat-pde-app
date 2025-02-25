@@ -85,10 +85,8 @@ export const AccountProvider = ({ children }) => {
     if (CommonUtils.isNonEmptyArray(payToAccountsData)) {
       formatPayToAccountsList();
       const defaultAccount = payToAccountsData.find((account) => account.isDefault) || payToAccountsData[0];
-      if (!CommonUtils.isNonEmptyObject(defaultPayToAccount)) {
-        if (CommonUtils.isNonEmptyObject(defaultAccount)) {
-          setDefaultPayToAccount(defaultAccount);
-        }
+      if (CommonUtils.isNonEmptyObject(defaultAccount)) {
+        setDefaultPayToAccount(defaultAccount);
       }
     } else {
       if (isFetched) {
