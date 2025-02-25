@@ -32,9 +32,9 @@ const ForgotPassword = () => {
         factorType: 'EMAIL',
         redirectUri: `${window.location.origin}${location.pathname}`
       });
-      setMessage('Your request to reset your password has been successfully submitted, Please check your email.');
+      setMessage(t('forgot.password.success'));
     } catch (error) {
-      setMessage('Error sending password reset email.');
+      setMessage(t('forgot.password.error'));
     }
   };
 
