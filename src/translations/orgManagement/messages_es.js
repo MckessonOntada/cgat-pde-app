@@ -44,6 +44,7 @@ export const OrgManagementES = {
   'orgManagement.Orgchangemessage': 'S_Are you sure want to change organization view ?',
   'orgManagement.confirmationmessage': 'S_Confirmation message',
   'orgManagement.create_org': 'S_Add Organization',
+  'orgManagement.edit_org': 'S_Edit Organization',
   'orgManagement.create_org.details_to_create_org': 'S_Please check the details to create a organization Organization',
   'orgManagement.create_org.org-details': 'S_Organization Details',
   'orgManagement.create_org.contact_details': 'S_Contact Details',
