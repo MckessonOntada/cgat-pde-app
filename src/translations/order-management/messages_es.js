@@ -233,6 +233,8 @@ export const MessageEs = {
     'I hereby acknowledge that the information mentioned above is correct. All details provided are accurate.',
   'messages.variantAcknowledgement': 'S_Please acknowledge that you have verified and selected the correct Variant.',
   'messages.selectAccountToBuyTherapy': 'S_Please select the account to buy the therapy for',
+  'messages.selectAccount': 'S_Please select account',
+  'messages.selectshippingAddress': 'S_Please select the shipping address',
   'messages.patientConcent': 'S_Please acknowledge if Patient Consent has been taken',
   'messages.selectAcknowledgementError': 'S_Please select checkbox to acknowledge the order',
   'messages.inventoryCheck.success': 'S_The selected therapy is in stock.',

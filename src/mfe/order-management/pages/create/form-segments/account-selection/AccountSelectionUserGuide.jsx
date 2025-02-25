@@ -61,7 +61,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
     );
   }
 
-  if (isFetchingConfig) {
+  if (isFetchingConfig || isFetchingAccount) {
     return (
       <div className={styles.wrapper}>
         <Loader variant="circular" />
