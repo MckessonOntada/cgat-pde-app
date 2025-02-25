@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styles from './OrderStatus.module.scss';
-import { Button, Heading, Loader } from '@mckesson/mcp-component-library';
+import { Button, Heading } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { ReactComponent as IconTick } from '@src/assets/svg/tick-circle-success.svg';
 import OrderFlowSteps from './orderFlowSteps/OrderFlowSteps';
@@ -16,11 +16,12 @@ const OrderStatus = () => {
   const { t } = useTranslate();
   const { orderId } = useParams();
   const navigate = useNavigate();
-  const { data: orderDetails = {}, isFetching, isError, error } = useOrder(orderId);
+  const { data: orderDetails = {}, isFetching, isError, error, isLoader } = useOrder(orderId);
   const contentRef = useRef(null);
 
   const printPage = useCustomPrint(
-    contentRef,`
+    contentRef,
+    `
     .MCP-CardContainer .print-div{
       display: flex;
     }
@@ -36,8 +37,8 @@ const OrderStatus = () => {
     navigate('/orders');
   };
 
-  if (isFetching) {
-    return <Loader />;
+  if (isLoader) {
+    return isLoader;
   }
 
   return (

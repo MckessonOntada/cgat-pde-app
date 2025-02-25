@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Heading, CheckboxGroup, CustomDataTable, RadioGroup, Loader } from '@mckesson/mcp-component-library';
+import { Button, Heading, CheckboxGroup, CustomDataTable, RadioGroup } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -56,7 +56,7 @@ function AdditionalDetails() {
   const [variant, setVariant] = React.useState();
   const { showAlert } = useAlert();
   const alertContainerId = 'additionalDetails-alert-container';
-  const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error } = useOrder(orderId);
+  const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
   const { isCoiIdRequired, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
@@ -396,8 +396,8 @@ function AdditionalDetails() {
     setVariantAcknowledgement(updatedOptions);
   };
 
-  if (isFetchingOrderDetails) {
-    return <Loader />;
+  if (isLoader) {
+    return isLoader;
   }
   return (
     <div className="MCP-module-wrapper">

@@ -43,7 +43,7 @@ const Summary = () => {
   const location = useLocation();
   const { orderId } = useParams();
   const { showAlert } = useAlert();
-  const { data: orderDetails, isFetching, isError, error } = useOrder(orderId);
+  const { data: orderDetails, isFetching, isError, error, isLoader } = useOrder(orderId);
   const [isPAPOrderConfirmModalOpen, setIsPAPOrderConfirmModalOpen] = React.useState(false);
   const { isApprover = false, isSimulate = false } = location.state || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
@@ -304,10 +304,9 @@ const Summary = () => {
     return controls;
   };
 
-  if (isFetching) {
-    return <Loader />;
+  if (isLoader) {
+    return isLoader;
   }
-
   const isAgreed = agreeCheckboxOptions.isChecked,
     hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected;
 
