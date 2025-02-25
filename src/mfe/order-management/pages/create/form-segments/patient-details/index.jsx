@@ -32,7 +32,7 @@ const PatientDetails = () => {
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
 
-  const { data: orderDetails, isFetching, isError, error } = useOrder(orderId);
+  const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
 
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
@@ -173,7 +173,9 @@ const PatientDetails = () => {
       navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isApprover: isApprover } });
     }
   };
-
+  if (isLoader) {
+    return isLoader;
+  }
   return (
     <div className="MCP-module-wrapper">
       <div>
