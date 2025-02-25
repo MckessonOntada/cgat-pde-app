@@ -275,6 +275,7 @@ export const MessageEn = {
   'orderManagement.patientDetails.validation.zip_invalid': 'Please enter a valid zip code.',
   'orderManagement.patientDetails.validation.zip_max': 'Zip code cannot exceed 8 digits.',
   'orderManagement.patientDetails.validation.patient_identifier_required': 'Patient identifier is required.',
+  'orderManagement.patientDetails.validation.patient_identifier_must_number': 'Patient identifier must be a number.',
   'orderManagement.patientDetails.validation.patient_identifier_max': 'Patient identifier cannot exceed 20 characters.',
   'orderManagement.patientDetails.inputLabel.date_of_birth': 'Date of birth',
   'orderManagement.patientDetails.option.please_select': 'Please select',
