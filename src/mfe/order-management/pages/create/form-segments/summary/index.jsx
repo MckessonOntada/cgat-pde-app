@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import styles from './Summary.module.scss';
 import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg';
 import ModuleHeader from '@src/components/module-header';
-import { Button, Modal, CheckboxGroup, Heading, Loader, Badge } from '@mckesson/mcp-component-library';
+import { Button, Modal, CheckboxGroup, Heading, Loader, Badge, Tooltip } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
@@ -24,7 +24,6 @@ import OrderStepper from '../OrderStepper';
 import useOrder from '../../../orders/useOrder';
 import { useCustomPrint } from '@src/util/printUtils';
 import CommonUtils from '@src/util/CommonUtils';
-import { FormattedNumber } from 'react-intl';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -469,7 +468,19 @@ const Summary = () => {
                     }
                   />
                   <DetailSegment label={t('labels.DOB')} value={patient?.patientInfo?.dateOfBirth || '-'} />
-                  <DetailSegment label={t('labels.emailId')} value={patient?.contact?.emailId || '-'} />
+
+                  <DetailSegment
+                    label={t('labels.emailId')}
+                    value={
+                      patient?.contact?.emailId ? (
+                        <Tooltip body={patient.contact.emailId}>
+                          <span className="overflowing">{patient.contact.emailId}</span>
+                        </Tooltip>
+                      ) : (
+                        '-'
+                      )
+                    }
+                  />
                   <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
                 </div>
               </div>
