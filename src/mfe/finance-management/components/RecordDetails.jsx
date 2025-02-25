@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import useWindowSize from '@src/hooks/UseWindowSize';
@@ -17,28 +17,67 @@ export default function RecordDetails() {
   const isMobileView = windowSize.width < TABLET_BREAKPOINT;
   const buttonSize = isMobileView ? 'md' : 'lg';
   const navigate = useNavigate();
-  const { selectedAccount, searchPayToAccounts, payToAccountsList, applyEvent, defaultSetEvent, defaultPayToAccount } = useAccountContext();
+  const {
+    selectedAccount,
+    searchPayToAccounts,
+    payToAccountsList,
+    applyEvent,
+    defaultSetEvent,
+    defaultPayToAccount,
+    payToAccountsData,
+    setSelectedAccountRaw
+  } = useAccountContext();
   const [selectedPayToAccount, setSelectedPayToAccount] = useState(null);
 
   const [isValueSelected, setIsValueSelected] = useState(false);
   const [isCurrentDefault, setIsCurrentDefault] = useState(false);
 
+  useEffect(() => {
+    if (selectedAccount)
+      setSelectedPayToAccount({
+        label: `(${selectedAccount.accountNumber}) ${selectedAccount.accountName}`,
+        labelDescription: GeographicUtils.addressAggregator(selectedAccount),
+        value: selectedAccount.id
+      });
+  }, []);
+
+  const options = useMemo(() => {
+    let _options = [...[], ...payToAccountsList];
+    if (selectedPayToAccount) {
+      let findOrg = _options.find((item) => item.value == selectedPayToAccount.value);
+      !findOrg &&
+        _options.unshift({
+          index: 0,
+          label: `(${selectedAccount.accountNumber}) ${selectedAccount.accountName}`,
+          labelDescription: GeographicUtils.addressAggregator(selectedAccount),
+          value: selectedAccount.id
+        });
+    }
+    return payToAccountsList;
+  }, [payToAccountsList]);
+
   const onApplyClick = () => {
     if (CommonUtils.isNonEmptyObject(selectedPayToAccount)) {
-      applyEvent(selectedPayToAccount);
+      applyEvent(selectedPayToAccount.value);
       navigate(PATHS.invoices);
       setIsCurrentDefault(true);
+      setIsValueSelected(false);
     }
   };
 
   const onDefaultSetClick = () => {
-    CommonUtils.isNonEmptyObject(selectedPayToAccount) && defaultSetEvent(selectedPayToAccount);
+    CommonUtils.isNonEmptyObject(selectedPayToAccount) && defaultSetEvent(selectedPayToAccount.value);
 
     setIsCurrentDefault(!isCurrentDefault);
   };
 
   const getSelectedValueData = (selectedValue) => {
-    setSelectedPayToAccount(selectedValue);
+    let _selected = payToAccountsList.find((ele) => ele.value == selectedValue);
+    setSelectedPayToAccount(_selected);
+
+    let _selectedRaw = payToAccountsData.find((ele) => ele.id == selectedValue);
+    setSelectedAccountRaw(_selectedRaw);
+
     setIsValueSelected(true);
   };
 
@@ -59,12 +98,13 @@ export default function RecordDetails() {
               isMultiSelect={false}
               placeholder={'Select Account'}
               onChange={getSelectedValueData}
-              options={payToAccountsList}
+              options={options}
               variant={'async'}
               onSearch={(event) => searchPayToAccounts(event)}
               recordsCountToEnableSearch={5}
               size="lg"
-              value={CommonUtils.isNonEmptyObject(selectedAccount) ? selectedAccount?.id : ''}
+              value={CommonUtils.isNonEmptyObject(selectedPayToAccount) ? selectedPayToAccount?.value : ''}
+              fieldDisplayValue={CommonUtils.isNonEmptyObject(selectedPayToAccount) ? selectedPayToAccount : undefined}
             />
           </div>
           <div className="search-form-actions">
@@ -75,8 +115,7 @@ export default function RecordDetails() {
               onClick={onApplyClick}
               disabled={
                 !CommonUtils.isNonEmptyObject(selectedAccount) || !isValueSelected || !CommonUtils.isNonEmptyArray(payToAccountsList)
-              }
-            >
+              }>
               {t('paymentInvoices.accountSearch.applyBtn')}
             </Button>
             <Button
@@ -85,12 +124,8 @@ export default function RecordDetails() {
               size={buttonSize}
               onClick={onDefaultSetClick}
               disabled={
-                !CommonUtils.isNonEmptyObject(selectedAccount) ||
-                !isValueSelected ||
-                defaultPayToAccount?.id === selectedAccount?.id ||
-                !isCurrentDefault
-              }
-            >
+                !CommonUtils.isNonEmptyObject(selectedAccount) || defaultPayToAccount?.id === selectedAccount?.id || !isCurrentDefault
+              }>
               {t('paymentInvoices.accountSearch.setAsDefaultBtn')}
             </Button>
           </div>

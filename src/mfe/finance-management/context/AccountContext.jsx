@@ -23,6 +23,7 @@ export const AccountProvider = ({ children }) => {
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [payToAccountsList, setPayToAccountsList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedAccountRaw, setSelectedAccountRaw] = useState(null);
 
   const { showSnackbar } = useSnackbar();
 
@@ -104,7 +105,7 @@ export const AccountProvider = ({ children }) => {
   }, [defaultPayToAccount]);
 
   const applyEvent = (selectedPayToAccountId) => {
-    setSelectedAccount(payToAccountsData.find((account) => account.id === selectedPayToAccountId));
+    setSelectedAccount(selectedAccountRaw);
   };
 
   const { mutate: setDefaultAccount } = useMutation(
@@ -149,7 +150,9 @@ export const AccountProvider = ({ children }) => {
         applyEvent,
         defaultSetEvent,
         defaultPayToAccount,
-        isLoading
+        isLoading,
+        payToAccountsData,
+        setSelectedAccountRaw
       }}>
       {children}
     </AccountContext.Provider>
