@@ -364,5 +364,7 @@ export const UserManagementEN = {
   'userManagement.breadcrumb.admin': 'Admin',
   'popup.userDeactivation.question': 'Are you sure you wish to Deactivate this User?',
   'userManagement.confirmationMessage': 'Confirmation message',
-  'userManagement.message.DeactivateUser': 'Are you sure you wish to Deactivate this User ?'
+  'userManagement.message.DeactivateUser': 'Are you sure you wish to Deactivate this User ?',
+  'userManagement.edit_sysadmin': 'Edit System Administrator',
+  'userManagement.edit_organization_user': 'Edit Organization User'
 };
