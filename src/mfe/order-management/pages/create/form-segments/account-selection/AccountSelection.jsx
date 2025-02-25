@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Heading, Button, TextError } from '@mckesson/mcp-component-library';
+import { Heading, Button, ProgressButton } from '@mckesson/mcp-component-library';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from './AccountSelection.module.scss';
 import FloatingDrawer from '@src/components/floating-drawer';
@@ -100,11 +100,18 @@ const AccountSelection = () => {
     }
   };
 
+  React.useEffect(() => {
+    showAlert({ description: accountError.message, type: 'error', anchorEl: alertContainerId });
+  }, [accountError]);
+
   const handleOnSubmit = async () => {
     if (!selectedShippingAddress || !selectedAccount || isSaving) {
-      if (!selectedShippingAddress && selectedAccount) setAccountError({ isError: true, message: 'Please select Shipping Address.' });
-      else if (!selectedAccount) setAccountError({ isError: true, message: 'Please select an account.' });
-      else setAccountError({ isError: true, message: 'Please enter required details.' });
+      if (!selectedShippingAddress && selectedAccount) {
+        setAccountError({ isError: true, message: t('messages.selectshippingAddress') });
+      } else if (!selectedAccount) {
+        setAccountError({ isError: true, message: t('messages.selectAccount') });
+      } else setAccountError({ isError: true, message: t('messages.selectAccount') });
+
       return;
     }
 
@@ -202,6 +209,7 @@ const AccountSelection = () => {
             soldToAccountId={selectedAccount?.accountNumber}
             shipToAccountId={selectedShippingAddress?.accountNumber}
           />
+          {accountError.isError && <div id={alertContainerId} />}
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>
               <ModuleHeader
@@ -263,8 +271,7 @@ const AccountSelection = () => {
               </ShippingAddressProvider>
             )}
           </div>
-          <div className={styles.inventoryControl}>
-            <div>{accountError.isError && <TextError errorMessage={accountError.message} showErrorIcon />}</div>
+          <div>
             <div className="controls">
               <Button size="md" onClick={handleOnBack} variant="secondary">
                 {t('captions.btnBack')}
