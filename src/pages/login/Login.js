@@ -66,15 +66,9 @@ const Login = () => {
         issuer,
         scopes
       },
-      // helpLinks: {
-      //   custom: [
-      //     {
-      //       text: 'New User',
-      //       href: '/signup',
-      //       className: 'signup-link'
-      //     }
-      //   ]
-      // },
+      helpLinks: {
+        forgotPassword: '/forgot-password',
+      },
       customButtons: [
         {
           title: 'NEW USER?',
@@ -169,10 +163,6 @@ const Login = () => {
     });
 
     widget.on('afterRender', (aa) => {
-      const forgotPasswordLink = document.querySelector('.auth-footer .js-forgot-password');
-      if (forgotPasswordLink) {
-        forgotPasswordLink.style.display = 'none';
-      }
       const helpLink = document.querySelector('.auth-footer .js-help');
       if (helpLink) {
         helpLink.style.display = 'none';
