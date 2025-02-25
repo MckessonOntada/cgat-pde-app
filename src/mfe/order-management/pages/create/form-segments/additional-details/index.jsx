@@ -64,7 +64,7 @@ function AdditionalDetails() {
   let initialValidationSchema = Yup.object({
     coiId: Yup.string()
       .matches(NUMBER_REGEX, t('labels.COI_IdMustValidNumber'))
-      .max(20, t('labels.COI_IdExceedDigits'))
+      .max(10, t('labels.COI_IdExceedDigits'))
       .when([], {
         is: () => isCoiIdRequired === true,
         then: (schema) => schema.required(t('labels.COIIdRequired')),
@@ -378,6 +378,7 @@ function AdditionalDetails() {
       if (!(inventoryType && ['S', 'I', 'A'].includes(inventoryType))) {
         return;
       }
+      if (variantsData && !variant) return;
       try {
         const res = await OrderService.getInventoryStatus(requestPayload);
         if (res.status === 200) {

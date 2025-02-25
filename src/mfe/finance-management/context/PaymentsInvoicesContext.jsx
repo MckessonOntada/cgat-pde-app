@@ -156,8 +156,11 @@ export const PaymentsInvoiceProvider = ({ children }) => {
     },
     {
       enabled: !!selectedAccount?.id,
+      retry: 1,
       onError: (error) => {
-        showSnackbar({ description: 'Error fetching invoice listing', type: 'error' });
+        const { response } = error;
+        let errorMsg = response?.data?.message || 'Error fetching invoice listing';
+        showSnackbar({ description: errorMsg, type: 'error' });
       }
     }
   );

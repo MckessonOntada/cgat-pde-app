@@ -27,6 +27,7 @@ export const SignupEN = {
 
   'loginrequest.content' :'Your request to create a new account has been submitted successfully. Please hold on while our admin reviews your information and approves your request. We will send your login credentials to the email address and phone number you provided.',
   'loginrequest.heading' :'Request Created',
-  'loginrequest.button' : 'Go to Login Page'
+  'loginrequest.button' : 'Go to Login Page',
+  'errors.user_provisioning_request_email_key': 'Email ID already exists in the System.',
 };
  

@@ -8,11 +8,15 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { getEntityTypeFlags } from './util';
 import { useQuestionnaire } from '../context/QuestionnaireContext';
 import ModuleHeader from '@src/components/module-header';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import usePermission from '@src/hooks/usePermissions';
 
 function ManageQuestionnaire() {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
+  const { hasPermission } = usePermission();
+
   const breadcrumbItems = [
     {
       label: 'System administrator',
@@ -79,9 +83,11 @@ function ManageQuestionnaire() {
             <div className="styled-heading">
               <Heading as="h1">{t('heading.manageQuestionnaire')}</Heading>
             </div>
-            <Button onClick={handleOnClick} variant="primary" size="md" Icon={AddCircleIcon}>
-              {t('button.caption.addQuestionnaire')}
-            </Button>
+            {hasPermission(PERMISSIONS_ENUM.SYSTEM_CONFIGURATION.ADD_QUESTIONNAIRE) && (
+              <Button onClick={handleOnClick} variant="primary" size="md" Icon={AddCircleIcon}>
+                {t('button.caption.addQuestionnaire')}
+              </Button>
+            )}
           </div>
           {alertConfig && alertConfig.isVisible && (
             <Alert description={alertConfig.description} onClose={handleAlertClose} type={alertConfig.type} duration={10000} />

@@ -2,6 +2,7 @@ import React from 'react';
 import DetailSegment from '@src/components/DetailSegment';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as TickIcon } from '@src/assets/svg/tick-circle-filled.svg';
+import { ReactComponent as TickGreyIcon } from '@src/assets/svg/tick_icon.svg';
 import { useQuery } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
 import CommonUtils from '@src/util/CommonUtils';

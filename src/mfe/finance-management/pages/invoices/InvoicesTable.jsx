@@ -25,13 +25,14 @@ export default function InvoicesTable() {
   const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportExcel } = usePaymentInvoices();
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
-  console.log('selectedAccount.salesOrg....', selectedAccount);
+
   const getindeterminate = () => {
     const allDataIncluded = data.every((invoice) =>
       includeinvoiceData.some((includedInvoice) => includedInvoice.billNumber === invoice.billNumber)
     );
     return allDataIncluded;
   };
+
   const renderCheckBox = (row, index) => {
     return (
       <input
@@ -284,7 +285,7 @@ export default function InvoicesTable() {
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}
-            error={isError ? 'Something went wrong! Please try again' : null}
+            // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
             heading={t('paymentInvoices.invoice.table.emptyData')}
             description={t('paymentInvoices.history.table.emptyDataDescription')}

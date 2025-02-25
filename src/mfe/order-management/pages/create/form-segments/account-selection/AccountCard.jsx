@@ -4,7 +4,6 @@ import { Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 
 const AccountCard = ({ options = [], onChange }) => {
-  console.log(options);
   const { t } = useTranslate();
   const [selected, setSelected] = useState(null);
 
@@ -14,6 +13,7 @@ const AccountCard = ({ options = [], onChange }) => {
     if (selectedAccount) onChange && onChange(selectedAccount);
   };
 
+  if (!options.length) return null;
   return (
     <div className={styles.cardContainer}>
       <div className={styles.header}>

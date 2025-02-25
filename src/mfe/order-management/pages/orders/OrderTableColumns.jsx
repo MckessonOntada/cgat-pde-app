@@ -438,7 +438,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortable: false,
     right: true,
     selector: 'orderCost',
-    minWidth: '100px',
+    width: '180px',
     cell: (props) => (
       <div className="cellEllipse align-items-right ">
         {props.orderCost ? <FormattedNumber value={props.orderCost} style="currency" currency="USD" /> : ''}

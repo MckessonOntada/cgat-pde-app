@@ -23,6 +23,7 @@ export const AccountProvider = ({ children }) => {
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [payToAccountsList, setPayToAccountsList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedAccountRaw, setSelectedAccountRaw] = useState(null);
 
   const { showSnackbar } = useSnackbar();
 
@@ -84,10 +85,8 @@ export const AccountProvider = ({ children }) => {
     if (CommonUtils.isNonEmptyArray(payToAccountsData)) {
       formatPayToAccountsList();
       const defaultAccount = payToAccountsData.find((account) => account.isDefault) || payToAccountsData[0];
-      if (!CommonUtils.isNonEmptyObject(defaultPayToAccount)) {
-        if (CommonUtils.isNonEmptyObject(defaultAccount)) {
-          setDefaultPayToAccount(defaultAccount);
-        }
+      if (CommonUtils.isNonEmptyObject(defaultAccount)) {
+        setDefaultPayToAccount(defaultAccount);
       }
     } else {
       if (isFetched) {
@@ -104,7 +103,7 @@ export const AccountProvider = ({ children }) => {
   }, [defaultPayToAccount]);
 
   const applyEvent = (selectedPayToAccountId) => {
-    setSelectedAccount(payToAccountsData.find((account) => account.id === selectedPayToAccountId));
+    setSelectedAccount(selectedAccountRaw);
   };
 
   const { mutate: setDefaultAccount } = useMutation(
@@ -149,7 +148,9 @@ export const AccountProvider = ({ children }) => {
         applyEvent,
         defaultSetEvent,
         defaultPayToAccount,
-        isLoading
+        isLoading,
+        payToAccountsData,
+        setSelectedAccountRaw
       }}>
       {children}
     </AccountContext.Provider>

@@ -143,7 +143,9 @@ export const PaymentHistoryProvider = ({ children }) => {
       }
     },
     onError: (error) => {
-      showSnackbar({ description: 'Error fetching invoice listing', type: 'error' });
+      const { response } = error;
+      let errorMsg = response?.data?.message || 'Error fetching payment history listing';
+      showSnackbar({ description: errorMsg, type: 'error' });
     },
     enabled: !!selectedAccount?.id
   });

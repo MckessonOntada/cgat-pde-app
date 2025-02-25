@@ -13,6 +13,7 @@ import CommonUtils from '@src/util/CommonUtils';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
+import AuthUtils from '@src/util/AuthUtils';
 
 function ManageMaterialTable({ ...props }) {
   const { t } = useTranslate();
@@ -23,6 +24,7 @@ function ManageMaterialTable({ ...props }) {
   const [configureSuccess, setConfigureSuccess] = React.useState(false);
   const [configureError, setConfigureError] = React.useState(false);
   const showCardView = useResponsiveView();
+  const isCustomerCenter = AuthUtils.isCustomerCenter();
 
   const getindeterminate = () => {
     const allDataIncluded = data.every((invoice) =>
@@ -109,7 +111,8 @@ function ManageMaterialTable({ ...props }) {
       cell: (row, index) => renderCheckBox(row, index),
       selector: (row) => row['Material Number'],
       width: '50px',
-      showInMobileHeader: true
+      showInMobileHeader: true,
+      omit: isCustomerCenter
     },
     {
       name: t('manageMaterial.table.materialNumber'),
@@ -248,6 +251,7 @@ function ManageMaterialTable({ ...props }) {
             showFooter={false}
             isMaterialConfiguration={true}
             useMaterialService={true}
+            hasDeleteConfigAccess={!isCustomerCenter}
           />
         </FloatingDrawer>
       )}

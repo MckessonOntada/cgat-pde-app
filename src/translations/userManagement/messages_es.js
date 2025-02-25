@@ -20,8 +20,9 @@ export const UserManagementES = {
   'userManagement.table.email': 'S_Email',
   'userManagement.table.role': 'S_Role',
   'userManagement.table.status': 'S_Status',
-  'userManagement.table.dateAdded': 'S_Date Added/Updated',
-  'userManagement.table.dateUpdated': 'S_Date Updated',
+  'userManagement.table.dateAdded': 'S_Date Added',
+  'userManagement.table.dateAddedUpdated': 'S_Date Added/Updated',
+  'userManagement.table.dateUpdated': 'S_Last Updated On',
   'userManagement.table.action': 'S_Action',
   'userManagement.table.action.reject': 'S_Reject Request',
   'userManagement.table.action.review': 'S_Review',
@@ -334,5 +335,7 @@ export const UserManagementES = {
     'S_By confirming, you acknowledge that all actions taken will be logged and attributed to your account.',
   'userManagement.breadcrumb.admin': 'S_Admin',
   'popup.userDeactivation.question': 'S_Are you sure you wish to Deactivate this User?',
-  'userManagement.confirmationMessage': 'Confirmation message'
+  'userManagement.confirmationMessage': 'S_Confirmation message',
+  'userManagement.edit_sysadmin': 'S_Edit System Administrator',
+  'userManagement.edit_organization_user': 'S_Edit Organization User'
 };
