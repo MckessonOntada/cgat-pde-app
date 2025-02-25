@@ -160,7 +160,7 @@ export const getValidationSchema = (t) => {
         gender: Yup.string().nullable(),
         dateOfBirth: Yup.date()
           .nullable()
-          .max(new Date(), t('orderManagement.patientDetails.dob.must.be.past'))
+          .max(new Date(new Date().setDate(new Date().getDate() - 1)), t('orderManagement.patientDetails.dob.must.be.past'))
           .typeError(t('orderManagement.patientDetails.validation.invalid_date'))
       })
       .nullable(),
