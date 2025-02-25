@@ -256,13 +256,25 @@ function UserTable({ onActionSuccess }) {
       },
       {
         id: 'dataAdded',
-        name: t('userManagement.table.dateAdded'),
-        selector: (row) => row.updated_At || row.created_At,
+        name: isSystemAdminView ? t('userManagement.table.dateAdded') : t('userManagement.table.dateAddedUpdated'),
+        selector: (row) => (isSystemAdminView ? row.updated_At : row.updated_At || row.created_At),
+        wrap: true,
+        sortable: true,
+        sortKey: isSystemAdminView ? 'created_At' : 'updated_At',
+        minWidth: '100px',
+        cell: (props) =>
+          CommonUtils.convertDateStringFormat(isSystemAdminView ? props.createdAt : props.updatedAt || props.createdAt, 'MM-DD-YYYY')
+      },
+      {
+        id: 'dataUpdated',
+        name: t('userManagement.table.dateUpdated'),
+        selector: (row) => row.updated_At,
         wrap: true,
         sortable: true,
         sortKey: 'updated_At',
         minWidth: '100px',
-        cell: (props) => CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')
+        cell: (props) => CommonUtils.convertDateStringFormat(props.updatedAt, 'MM-DD-YYYY'),
+        omit: !isSystemAdminView
       },
       {
         id: 'action',
