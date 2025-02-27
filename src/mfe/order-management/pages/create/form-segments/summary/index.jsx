@@ -63,7 +63,7 @@ const Summary = () => {
 
   const variantDetails = additionalDetails?.variantDetails || {};
   const isImpersonated = Boolean(AuthUtils.getImpersonateId()),
-    isRejected = status && status === StatusEnum.REJECTED;
+    isRejected = status === "REJECTED";
 
   const contentRef = useRef(null);
   const printPage = useCustomPrint(
