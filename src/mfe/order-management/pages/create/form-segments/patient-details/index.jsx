@@ -19,6 +19,7 @@ import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import { renderModal } from '@src/util/ModalUtil';
 import useOrder from '../../../orders/useOrder';
+import { userOrderPrice } from '../additional-details/userOrderPrice';
 import { Loader } from '@mckesson/mcp-component-library';
 
 const PatientDetails = () => {
@@ -38,7 +39,11 @@ const PatientDetails = () => {
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
-
+  const { data: priceDetails } = userOrderPrice({
+    therapyId,
+    soldToAccountId,
+    shipToAccountId
+  });
   const INITIAL_VALUES = {
     patientInfo: {
       firstName: '',
@@ -194,12 +199,7 @@ const PatientDetails = () => {
         <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} />
 
         <div className={styles.wrapper}>
-          <OrderHeaderDetails
-            orderDetails={orderDetails}
-            therapyId={therapyId}
-            soldToAccountId={soldToAccountId}
-            shipToAccountId={shipToAccountId}
-          />
+          <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
           <div id={alertContainerId} />
 
           {isError && <Alert showTitle title={error} type={'error'} />}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Heading, CheckboxGroup, CustomDataTable, RadioGroup } from '@mckesson/mcp-component-library';
+import { Button, Heading, CheckboxGroup, CustomDataTable, RadioGroup, Loader, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -23,6 +23,8 @@ import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import QuestionnaireTemplate from '@src/mfe/order-management/questionnaire/QuestionnaireTemplate';
 import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/order-management/questionnaire/AddQuestionnaire';
 import useOrder from '../../../orders/useOrder';
+import { DateUtils } from '@src/util/DateUtil';
+import { userOrderPrice } from './userOrderPrice';
 import { Loader } from '@mckesson/mcp-component-library';
 
 const INITIAL_VALUES = {
@@ -33,6 +35,12 @@ const INITIAL_VALUES = {
   dateOfAdministration: ''
 };
 
+const AVAILABILITY_STATUS = {
+  OUT_OF_STOCK: 'OUT_OF_STOCK',
+  AVAILABLE: 'AVAILABLE',
+  DROP_SHIP: 'DROP_SHIP'
+};
+
 function AdditionalDetails() {
   const { t } = useTranslate();
   const navigate = useNavigate();
@@ -41,7 +49,7 @@ function AdditionalDetails() {
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
   const [validationSchema, setValidationSchema] = React.useState(null);
-
+  const [inventoryStatus, setInventoryStatus] = React.useState(null);
   const variantsApiRequestParam = { pageNo: 0, pageSize: 10 };
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
@@ -56,12 +64,26 @@ function AdditionalDetails() {
   const [agreementCheckboxError, setAgreementCheckboxError] = React.useState(null);
   const [variant, setVariant] = React.useState();
   const { showAlert } = useAlert();
+  const [availabilityAlert, setAvailabilityAlert] = React.useState({});
   const alertContainerId = 'additionalDetails-alert-container';
   const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
   const { isCoiIdRequired, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
+  const [dateOfAdministration, setDateOfAdministration] = React.useState('');
+  const [inventoryType, setInventoryType] = useState(null);
+  const { data: priceDetails = {} } = userOrderPrice(
+    {
+      therapyId,
+      soldToAccountId,
+      shipToAccountId,
+      ...(variant && { variant: variant.variant })
+    },
+    null,
+    (data) => setInventoryTypeData(data.inventoryType)
+  );
+
   let initialValidationSchema = Yup.object({
     coiId: Yup.string()
       .matches(ALPHA_NUMERIC_ONLY_UPPERCASE, t('labels.COI_IdMustValidNumber'))
@@ -232,12 +254,14 @@ function AdditionalDetails() {
     setInitialFormValues({ ...initialFormValues });
   };
 
-  const { isLoading, data: variantsData = {} } = useQuery({
+  const { isLoading, data: variantsData } = useQuery({
     queryKey: ['order', 'variants', orderId],
     queryFn: async () => OrderService.getVariants(therapyId, soldToAccountId, shipToAccountId, variantsApiRequestParam),
     enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId,
     refetchOnWindowFocus: false,
-    onSuccess: (result) => {},
+    onSuccess: (result) => {
+      if (!result || !result.content || result.content?.length === 0) checkInventory();
+    },
     onError: (error) => {
       const errorKey = handleApiError(error);
       showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
@@ -355,6 +379,65 @@ function AdditionalDetails() {
     saveAdditionalDetails(payload);
   };
 
+  const setInventoryTypeData = (data) => {
+    setInventoryType(data);
+  };
+
+  const checkInventory = async () => {
+    if (inventoryType && !['S', 'I'].includes(inventoryType)) {
+      return;
+    }
+
+    const { shipToAccount, soldToAccount } = orderDetails.accountDetails || {};
+    if (shipToAccount && soldToAccount) {
+      const requestPayload = {
+        orderId,
+        dateOfAdministration: dateOfAdministration ? DateUtils.formatDate(dateOfAdministration, 'dd/mm/yyyy') : ''
+      };
+
+      try {
+        if (variant) {
+          requestPayload.variant = variant.variant;
+        }
+        const res = await OrderService.getInventoryStatus(requestPayload);
+        if (res.status === 200) {
+          const result = res.data.inventoryCheckResponse;
+          if (result) {
+            const { erroredItems, warningMessages } = result;
+            if (erroredItems || warningMessages) {
+              setInventoryStatus(AVAILABILITY_STATUS.OUT_OF_STOCK);
+
+              const availabilityAlerts = {};
+              if (erroredItems) {
+                availabilityAlerts.errors = erroredItems.map((err) => err.errorMessage);
+              }
+              if (warningMessages) {
+                availabilityAlerts.warnings = warningMessages.map((warn) => warn.errorMessage);
+              }
+              setAvailabilityAlert(availabilityAlerts);
+            } else {
+              if (orderDetails?.therapy.dropshipIndicator) {
+                setInventoryStatus(AVAILABILITY_STATUS.DROP_SHIP);
+              } else {
+                setInventoryStatus(AVAILABILITY_STATUS.AVAILABLE);
+              }
+            }
+          }
+
+          return {
+            description: t('messages.inventoryCheck.success'),
+            type: 'success'
+          };
+        }
+      } catch (err) {
+        setInventoryStatus(null);
+        setAvailabilityAlert({
+          errors: ['Something went wrong, Please try again later.']
+        });
+      }
+    }
+  };
+
   const handleOnBackToOrders = () => {
     if (isDirty) {
       setModalSuccessCallback('list');
@@ -378,6 +461,7 @@ function AdditionalDetails() {
   const handleOnVariantChange = (variant) => {
     setAgreementCheckboxError(null);
     setVariant(variant);
+    checkInventory();
   };
 
   React.useEffect(() => {
@@ -400,6 +484,12 @@ function AdditionalDetails() {
   if (isSaving) {
     return  <Loader type={'screen'} />;
   }
+
+  const closeAvailabilityAlert = (index, key) => {
+    availabilityAlert[key] = availabilityAlert[key].filter((msg, _index) => _index != index);
+    setAvailabilityAlert({ ...availabilityAlert });
+  };
+
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -409,7 +499,6 @@ function AdditionalDetails() {
       </div>
 
       <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
-
       <Formik
         initialValues={initialFormValues}
         enableReinitialize={true}
@@ -420,22 +509,29 @@ function AdditionalDetails() {
         onSubmit={(values) => {
           handleOnSubmit(values);
         }}>
-        {({ dirty, errors, values, setFieldValue }) => {
-          useEffect(() => setIsDirty(dirty), [dirty]);
+        {({ dirty, errors, values }) => {
+          useEffect(() => {
+            setDateOfAdministration(values.dateOfAdministration);
+            setIsDirty(dirty);
+          }, [dirty]);
 
           return (
             <Form>
               <div className="MCP-module-body">
                 <OrderStepper patientDetailsRequired={patientDetailsRequired} status={orderDetails?.currentStage} />
 
-                <OrderHeaderDetails
-                  orderDetails={orderDetails}
-                  therapyId={therapyId}
-                  soldToAccountId={soldToAccountId}
-                  shipToAccountId={shipToAccountId}
-                  variant={variant?.variant}
-                />
+                <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} status={inventoryStatus} />
                 <div id={alertContainerId} />
+                <div>
+                  {availabilityAlert.errors &&
+                    availabilityAlert.errors.map((error, index) => (
+                      <Alert description={error} onClose={() => closeAvailabilityAlert(index, 'errors')} type="error" />
+                    ))}
+                  {availabilityAlert.warnings &&
+                    availabilityAlert.warnings.map((error) => (
+                      <Alert description={error} onClose={() => closeAvailabilityAlert(index, 'warnings')} type="warning" />
+                    ))}
+                </div>
                 <div className="MCP-panel-container">
                   <div className="row-space-between-center">
                     <Heading as="h3">{t('labels.additionalDetails')}</Heading>
@@ -521,13 +617,6 @@ function AdditionalDetails() {
 
 const VariantTable = ({ variant, onChange, data }) => {
   const { t } = useTranslate();
-
-  useEffect(() => {
-    if (!variant && data?.length > 0) {
-      const firstVariant = data[0];
-      onChange(firstVariant);
-    }
-  }, [data, onChange]);
 
   const columns = [
     {

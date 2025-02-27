@@ -1,23 +1,12 @@
 import React from 'react';
 import DetailSegment from '@src/components/DetailSegment';
 import { useTranslate } from '@src/translations/useTranslation';
-import { ReactComponent as TickIcon } from '@src/assets/svg/tick-circle-filled.svg';
-import { ReactComponent as TickGreyIcon } from '@src/assets/svg/tick_icon.svg';
-import { useQuery } from 'react-query';
-import OrderService from '@src/api/commonService/OrderService';
 import CommonUtils from '@src/util/CommonUtils';
+import { InventoryIndicator } from './InventoryIndicator';
 
-function OrderHeaderDetails({ orderDetails, therapyId, soldToAccountId, shipToAccountId, variant }) {
+function OrderHeaderDetails({ orderDetails, priceDetails = {}, status }) {
   const { t } = useTranslate();
   const [segments, setSegments] = React.useState([]);
-
-  const { isLoading: isPriceApiLoading, data: priceDetails = null } = useQuery({
-    queryKey: ['order', 'orderHeaderDetails', 'price', therapyId, soldToAccountId, shipToAccountId, variant],
-    queryFn: async () => OrderService.getPriceDetails(therapyId, soldToAccountId, shipToAccountId, variant),
-    enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId && (!!variant || true),
-    refetchOnWindowFocus: false,
-    onSuccess: (data) => {}
-  });
 
   React.useEffect(() => {
     const detailsSegments = [];
@@ -29,7 +18,7 @@ function OrderHeaderDetails({ orderDetails, therapyId, soldToAccountId, shipToAc
         value={
           <React.Fragment>
             <span>{therapy?.materialDescription || '-'}</span>
-            <TickGreyIcon width="18px" height="18px" />
+            <InventoryIndicator status={status} />
           </React.Fragment>
         }
       />
@@ -68,7 +57,7 @@ function OrderHeaderDetails({ orderDetails, therapyId, soldToAccountId, shipToAc
     );
 
     setSegments([...detailsSegments]);
-  }, [orderDetails, priceDetails]);
+  }, [orderDetails, priceDetails, status]);
 
   return (
     <div className="MCP-CardContainer">
