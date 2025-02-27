@@ -298,7 +298,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortable: true,
     sortKey: 'backendOrderId',
     showInMobileHeader: true,
-    minWidth: '160px',
+    minWidth: '130px',
     cell: (props) => (
       <Link
         className="MCP-table-link"
@@ -306,7 +306,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
         //state={props.currentStage === 'ORDER_SUMMARY' && props.status === StatusEnum.SUBMITTED ? { ...props, isEdit: true } : { ...props }}
         state={getState(props)}
         aria-label={t('labels.sapId')}>
-        <EclipsesTextcss str={props.backendOrderId} maxWidth={140} />
+        <EclipsesTextcss str={props.backendOrderId} maxWidth={120} />
       </Link>
     ),
     omit: activeTab !== 2
@@ -319,7 +319,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortable: true,
     sortKey: 'id',
     showInMobileHeader: true,
-    minWidth: '160px',
+    minWidth: '140px',
     cell: (props) =>
       activeTab !== 2 ? (
         <Link
@@ -328,10 +328,10 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
           //state={props.currentStage === 'ORDER_SUMMARY' && props.status === StatusEnum.SUBMITTED ? { ...props, isEdit: true } : { ...props }}
           state={getState(props)}
           aria-label={t('labels.orderId')}>
-          <EclipsesTextcss str={props.id} maxWidth={140} />
+          <EclipsesTextcss str={props.id} maxWidth={130} />
         </Link>
       ) : (
-        <EclipsesTextcss str={props.id} maxWidth={140} />
+        <EclipsesTextcss str={props.id} maxWidth={130} />
       )
   },
   {
@@ -345,7 +345,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     cell: (props) => {
       const patientInfo = props.patient && props.patient.patientInfo;
       if (!patientInfo) return 'N/A';
-      else return <EclipsesTextcss aria-label={t('labels.patientName')} str={getPatientName(patientInfo)} maxWidth={140} />;
+      else return <EclipsesTextcss aria-label={t('labels.patientName')} str={getPatientName(patientInfo)} maxWidth={130} />;
     }
   },
   {
@@ -354,11 +354,11 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'therapy.materialDescription',
-    maxWidth: '140px',
+    maxWidth: '115px',
     cell: (props) => (
       <EclipsesTextcss
         str={props.therapy?.materialDescription}
-        maxWidth={140}
+        maxWidth={120}
         className={'MCP-table-cell'}
         aria-label={t('labels.therapy')}
       />
@@ -370,9 +370,9 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'author?.name',
-    maxWidth: '160px',
+    maxWidth: '130px',
     cell: (props) => (
-      <EclipsesTextcss tooltip={props.createdBy?.userName} str={props.createdBy?.name} maxWidth={140} className={'MCP-table-cell'} />
+      <EclipsesTextcss tooltip={props.createdBy?.userName} str={props.createdBy?.name} maxWidth={120} className={'MCP-table-cell'} />
     ),
     omit: activeTab !== 1
   },
@@ -383,6 +383,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortable: true,
     sortKey: 'createdAt',
     minWidth: '80px',
+    maxWidth: '135px',
     cell: (props) => (
       <span aria-label={t('table.columns.captions.createdOn')}>
         {CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')}
@@ -397,9 +398,9 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'submittedBy.name',
-    maxWidth: '160px',
+    maxWidth: '140px',
     cell: (props) => (
-      <EclipsesTextcss tooltip={props.submittedBy?.userName} str={props.submittedBy?.name} maxWidth={140} className={'MCP-table-cell'} />
+      <EclipsesTextcss tooltip={props.submittedBy?.userName} str={props.submittedBy?.name} maxWidth={130} className={'MCP-table-cell'} />
     ),
     omit: activeTab !== 2
   },
@@ -409,7 +410,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'submittedOn',
-    width: '155px',
+    width: '100px',
     cell: (props) => <span>{props.submittedOn ? CommonUtils.convertDateStringFormat(props.submittedOn, 'MM-DD-YYYY') : '-'}</span>,
     omit: activeTab !== 2
   },
@@ -438,7 +439,6 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortable: false,
     right: true,
     selector: 'orderCost',
-    width: '180px',
     cell: (props) => (
       <div className="cellEllipse align-items-right ">
         {props.orderCost ? <FormattedNumber value={props.orderCost} style="currency" currency="USD" /> : ''}
