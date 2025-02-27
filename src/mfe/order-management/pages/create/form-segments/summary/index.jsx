@@ -52,13 +52,14 @@ const Summary = () => {
     catalog = {},
     orderCost,
     accountDetails = {},
-    patient,
+    patient = {},
     additionalDetails = {},
     patientDetailsRequired = false,
     rejectionDetails,
     paporder: isPapOrder,
     status
   } = orderDetails || {};
+
   const variantDetails = additionalDetails?.variantDetails || {};
   const isImpersonated = Boolean(AuthUtils.getImpersonateId()),
     isRejected = status === StatusEnum.REJECTED,
@@ -306,6 +307,11 @@ const Summary = () => {
   if (isLoader) {
     return isLoader;
   }
+
+  if (patient.patientInfo)
+    patient.fullName = [patient.patientInfo.firstName, patient.patientInfo.middleName, patient.patientInfo.lastName]
+      .filter(Boolean)
+      .join(' ');
   const isAgreed = agreeCheckboxOptions.isChecked,
     hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected;
 
@@ -458,12 +464,13 @@ const Summary = () => {
                   <DetailSegment
                     label={t('labels.patientName')}
                     value={
-                      patient?.patientInfo &&
-                      (patient.patientInfo.firstName || patient.patientInfo.middleName || patient.patientInfo.lastName)
-                        ? [patient.patientInfo.firstName, patient.patientInfo.middleName, patient.patientInfo.lastName]
-                            .filter(Boolean)
-                            .join(' ')
-                        : '-'
+                      patient.fullName ? (
+                        <Tooltip body={patient.fullName}>
+                          <span className="overflowing">{patient.fullName}</span>
+                        </Tooltip>
+                      ) : (
+                        '-'
+                      )
                     }
                   />
                   <DetailSegment label={t('labels.DOB')} value={patient?.patientInfo?.dateOfBirth || '-'} />
