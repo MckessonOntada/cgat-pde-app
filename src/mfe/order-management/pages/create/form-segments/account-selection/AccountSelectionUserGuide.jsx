@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from './AccountSelectionUserGuide.module.scss';
-import { RadioGroup, Button, Loader, Heading, TextError } from '@mckesson/mcp-component-library';
+import { RadioGroup, Button, Loader, Heading, Alert } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
 import AccountCard from './AccountCard';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -13,7 +13,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
   const [selectedProgram, setProgram] = useState('');
   const [selectedChannel, setChannel] = useState('');
   const [account, setAccount] = useState(null);
-  const [alert, setAlert] = useState(false);
+  const [alertMsg, setAlertMsg] = useState(false);
 
   const {
     isFetching: isFetchingConfig,
@@ -43,13 +43,13 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
   }, [selectedChannel, selectedProgram]);
 
   const handleAccountChange = (selectedAccount) => {
-    setAlert(false);
+    setAlertMsg(false);
     setAccount(selectedAccount);
   };
 
   const handleOnSubmit = () => {
     if (!account || !selectedProgram || !selectedChannel) {
-      setAlert(true);
+      setAlertMsg(true);
       return;
     }
     onSubmit(account);
@@ -64,7 +64,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
   }
 
   if (isError) {
-    setAlert(true);
+    setAlertMsg(true);
     return (
       <div className={styles.wrapper}>
         <div>Error: {error.message}</div>
@@ -80,6 +80,10 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
     );
   }
 
+  const handleAlertClose = () => {
+    setAlertMsg(false);
+  };
+
   const { programs = [], channels = [] } = programChannelConfig;
   return (
     <div className={styles.wrapper}>
@@ -89,11 +93,12 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
           <IconClose />
         </Button>
       </div>
-      {alert && (
-        <div className={styles.alert}>
-          <TextError errorMessage={t('messages.required_Details')} showErrorIcon />
+      {alertMsg && (
+        <div className={styles.errorMessage}>
+          <Alert onClose={handleAlertClose} showTitle title={t('messages.required_Details')} type="error" />
         </div>
       )}
+
       <div className={styles.drawerContent}>
         <div className={styles.topSect}>
           <div className="MCP-CardContainer">
@@ -104,7 +109,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
                 id="order-channel-options"
                 items={channels.map((v) => ({ label: v, value: v }))}
                 onChangeValue={(value) => {
-                  setAlert(false);
+                  setAlertMsg(false);
                   setChannel(value);
                 }}
                 value={selectedChannel}
@@ -121,7 +126,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
                 id="order-program-options"
                 items={programs.map((v) => ({ label: v, value: v }))}
                 onChangeValue={(value) => {
-                  setAlert(false);
+                  setAlertMsg(false);
                   setProgram(value);
                 }}
                 value={selectedProgram}
