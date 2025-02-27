@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Heading, CheckboxGroup, CustomDataTable, RadioGroup, Loader } from '@mckesson/mcp-component-library';
+import { Button, Heading, CheckboxGroup, CustomDataTable, RadioGroup, Loader, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -23,6 +23,7 @@ import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import QuestionnaireTemplate from '@src/mfe/order-management/questionnaire/QuestionnaireTemplate';
 import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/order-management/questionnaire/AddQuestionnaire';
 import useOrder from '../../../orders/useOrder';
+import { DateUtils } from '@src/util/DateUtil';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -30,6 +31,12 @@ const INITIAL_VALUES = {
   slotNumber: '',
   poNumber: '',
   dateOfAdministration: ''
+};
+
+const AVAILABILITY_STATUS = {
+  OUT_OF_STOCK: 'OUT_OF_STOCK',
+  AVAILABLE: 'AVAILABLE',
+  DROP_SHIP: 'DROP_SHIP'
 };
 
 function AdditionalDetails() {
@@ -55,12 +62,15 @@ function AdditionalDetails() {
   const [agreementCheckboxError, setAgreementCheckboxError] = React.useState(null);
   const [variant, setVariant] = React.useState();
   const { showAlert } = useAlert();
+  const [availabilityAlert, setAvailabilityAlert] = React.useState({});
   const alertContainerId = 'additionalDetails-alert-container';
   const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error } = useOrder(orderId);
   const { isCoiIdRequired, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
+  const [dateOfAdministration, setDateOfAdministration] = React.useState('');
+
   let initialValidationSchema = Yup.object({
     coiId: Yup.string()
       .matches(NUMBER_REGEX, t('labels.COI_IdMustValidNumber'))
@@ -234,7 +244,7 @@ function AdditionalDetails() {
     setInitialFormValues({ ...initialFormValues });
   };
 
-  const { isLoading, data: variantsData = {} } = useQuery({
+  const { isLoading, data: variantsData } = useQuery({
     queryKey: ['order', 'variants', orderId],
     queryFn: async () => OrderService.getVariants(therapyId, soldToAccountId, shipToAccountId, variantsApiRequestParam),
     enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId,
@@ -360,53 +370,62 @@ function AdditionalDetails() {
   const setInventoryTypeData = (data) => {
     setInventoryType(data);
   };
+
+  const formateDate = (date) => {
+    if (date) {
+      try {
+        const _date = new Date(date);
+
+        return [_date.getDate(), '/', _date.getMonth(), '/', _date.getFullYear()].join('');
+      } catch (error) {}
+    }
+  };
+
   const [inventoryType, setInventoryType] = useState(null);
   const checkInventory = async () => {
     const { shipToAccount, soldToAccount } = orderDetails.accountDetails || {};
 
     if (shipToAccount && soldToAccount) {
       const requestPayload = {
-        customerNumber: shipToAccount?.accountNumber,
-        shipTo: shipToAccount?.accountNumber,
-        salesOrg: soldToAccount.salesOrg,
-        distChannel: soldToAccount.distributionChannel,
-        division: soldToAccount.division,
-        companyCode: soldToAccount.companyCode,
         orderId,
-        items: null
+        dateOfAdministration: dateOfAdministration ? DateUtils.formatDate(dateOfAdministration, 'dd/mm/yyyy') : ''
       };
-      if (!(inventoryType && ['S', 'I', 'A'].includes(inventoryType))) {
+      if (!['S', 'I'].includes(inventoryType)) {
+        setInventoryStatus(AVAILABILITY_STATUS.DROP_SHIP);
         return;
       }
-      if (variantsData && !variant) return;
+
+      if (variantsData?.content) {
+        setInventoryStatus(null);
+        const hasAnyVariant = variantsData.content.every((c) => CommonUtils.isNonEmptyObject(c));
+        if (hasAnyVariant && !variant) return;
+      }
+
       try {
+        if (variant) {
+          requestPayload.variant = variant.variant;
+        }
         const res = await OrderService.getInventoryStatus(requestPayload);
         if (res.status === 200) {
           const result = res.data.inventoryCheckResponse;
           if (result) {
             const { erroredItems, warningMessages } = result;
             if (erroredItems || warningMessages) {
-              setInventoryStatus('OUT_OF_STOCK');
-              if (erroredItems && erroredItems[0]) {
-                const errorDescription = erroredItems[0].errorMessage;
-                showAlert({
-                  description: errorDescription,
-                  type: 'error',
-                  anchorEl: alertContainerId
-                });
-              } else {
-                const errorDescription = warningMessages[0].errorMessage;
-                showAlert({
-                  description: errorDescription,
-                  type: 'warning',
-                  anchorEl: alertContainerId
-                });
+              setInventoryStatus(AVAILABILITY_STATUS.OUT_OF_STOCK);
+
+              const availabilityAlerts = {};
+              if (erroredItems) {
+                availabilityAlerts.errors = erroredItems.map((err) => err.errorMessage);
               }
+              if (warningMessages) {
+                availabilityAlerts.warnings = errorDescription.concat(warningMessages.map((warn) => warn.errorMessage));
+              }
+              setAvailabilityAlert(availabilityAlerts);
             } else {
               if (orderDetails?.therapy.dropshipIndicator) {
-                setInventoryStatus('DROP_SHIP');
+                setInventoryStatus(AVAILABILITY_STATUS.DROP_SHIP);
               } else {
-                setInventoryStatus('AVAILABLE');
+                setInventoryStatus(AVAILABILITY_STATUS.AVAILABLE);
               }
             }
           }
@@ -417,16 +436,14 @@ function AdditionalDetails() {
           };
         }
       } catch (err) {
-        setInventoryStatus('OUT_OF_STOCK');
-        showAlert({
-          description: 'Something went wrong, Please try again later.',
-          type: 'error',
-          anchorEl: alertContainerId
+        setInventoryStatus(null);
+        setAvailabilityAlert({
+          errors: ['Something went wrong, Please try again later.']
         });
       }
     }
   };
-  console.log(variant);
+
   React.useEffect(() => {
     if (orderDetails) checkInventory();
   }, [orderDetails, variant, inventoryType]);
@@ -494,7 +511,10 @@ function AdditionalDetails() {
           handleOnSubmit(values);
         }}>
         {({ dirty, errors, values }) => {
-          useEffect(() => setIsDirty(dirty), [dirty]);
+          useEffect(() => {
+            setDateOfAdministration(values.dateOfAdministration);
+            setIsDirty(dirty);
+          }, [dirty]);
 
           return (
             <Form>
@@ -511,6 +531,10 @@ function AdditionalDetails() {
                   status={inventoryStatus}
                 />
                 <div id={alertContainerId} />
+                <div>
+                  {availabilityAlert.errors && availabilityAlert.errors.map((error) => <Alert description={error} type="error" />)}
+                  {availabilityAlert.warnings && availabilityAlert.warnings.map((error) => <Alert description={error} type="warning" />)}
+                </div>
                 <div className="MCP-panel-container">
                   <div className="row-space-between-center">
                     <Heading as="h3">{t('labels.additionalDetails')}</Heading>
