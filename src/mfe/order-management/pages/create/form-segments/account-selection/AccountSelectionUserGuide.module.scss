@@ -52,8 +52,7 @@
       padding-top: var(--spacing-03);
     }
   }
-  .alert {
-    padding-left: var(--spacing-03);
-    padding-top: var(--spacing-02);
+  .errorMessage {
+    margin: var(--spacing-03);
   }
 }
