@@ -25,7 +25,6 @@ import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/order-management/questionnaire
 import useOrder from '../../../orders/useOrder';
 import { DateUtils } from '@src/util/DateUtil';
 import { userOrderPrice } from './userOrderPrice';
-import { Loader } from '@mckesson/mcp-component-library';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -482,7 +481,7 @@ function AdditionalDetails() {
     return isLoader;
   }
   if (isSaving) {
-    return  <Loader type={'screen'} />;
+    return <Loader type={'screen'} />;
   }
 
   const closeAvailabilityAlert = (index, key) => {
@@ -509,7 +508,7 @@ function AdditionalDetails() {
         onSubmit={(values) => {
           handleOnSubmit(values);
         }}>
-        {({ dirty, errors, values }) => {
+        {({ dirty, errors, values, setFieldValue }) => {
           useEffect(() => {
             setDateOfAdministration(values.dateOfAdministration);
             setIsDirty(dirty);
