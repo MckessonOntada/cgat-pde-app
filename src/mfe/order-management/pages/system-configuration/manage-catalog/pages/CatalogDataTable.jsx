@@ -107,7 +107,7 @@ function CatalogDataTable(props) {
       id: 'sapMaterial',
       selector: (row) => {},
       wrap: true,
-      minWidth: '112px',
+      minWidth: '220px',
       cell: (props) => (
         <div className="cellEllipse">
           <Link
@@ -123,7 +123,7 @@ function CatalogDataTable(props) {
       id: 'materialDescriptionInLanguageEn',
       name: t('ManageCatalog.Table.MaterialDescription'),
       selector: (row) => {},
-      minWidth: '100px',
+      minWidth: '200px',
       wrap: true,
       cell: (props) => <div className="cellEllipse">{props?.materialDescriptionInLanguageEn || '-'}</div>
     },
@@ -131,7 +131,7 @@ function CatalogDataTable(props) {
       id: 'ndc',
       name: t('ManageCatalog.Table.NDC'),
       selector: (row) => {},
-      minWidth: '120px',
+      minWidth: '100px',
       wrap: true,
       cell: (props) => <div>{props?.ndc || '-'}</div>
     },
@@ -139,7 +139,7 @@ function CatalogDataTable(props) {
       id: 'distChannel',
       name: t('ManageCatalog.Table.DistChannel'),
       selector: (row) => {},
-      minWidth: '120px',
+      minWidth: '100px',
       wrap: true,
       cell: (props) => <div>{props?.distChannel || '-'}</div>
     },
@@ -147,7 +147,7 @@ function CatalogDataTable(props) {
       id: 'variant',
       name: t('ManageCatalog.Table.Variant'),
       selector: (row) => {},
-      minWidth: '120px',
+      minWidth: '100px',
       wrap: true,
       cell: (props) => <div>{props?.variant || '-'}</div>
     },
@@ -155,7 +155,7 @@ function CatalogDataTable(props) {
       id: 'soldToCustomer',
       name: t('ManageCatalog.Table.Soldto'),
       selector: (row) => {},
-      minWidth: '120px',
+      minWidth: '100px',
       wrap: true,
       cell: (props) => <div>{props?.soldToCustomer || '-'}</div>
     },
@@ -163,7 +163,7 @@ function CatalogDataTable(props) {
       id: '',
       name: t('ManageCatalog.Table.Shipto'),
       selector: (row) => {},
-      minWidth: '120px',
+      minWidth: '100px',
       wrap: true,
       cell: (props) => <div>{props?.shipToCustomer || '-'}</div>
     }
