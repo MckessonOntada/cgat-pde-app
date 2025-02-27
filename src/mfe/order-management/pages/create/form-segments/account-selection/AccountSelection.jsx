@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Heading, Button, ProgressButton } from '@mckesson/mcp-component-library';
+import { Heading, Button } from '@mckesson/mcp-component-library';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from './AccountSelection.module.scss';
 import FloatingDrawer from '@src/components/floating-drawer';
@@ -19,6 +19,7 @@ import useAlert from '@src/hooks/useAlert';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import useOrder from '../../../orders/useOrder';
+import { Loader } from '@mckesson/mcp-component-library';
 
 const AccountSelection = () => {
   const { t } = useTranslate();
@@ -35,7 +36,7 @@ const AccountSelection = () => {
   const [initialSelectedShippingAddress, setInitialSelectedShippingAddress] = React.useState('');
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [accountError, setAccountError] = useState({ isError: false, message: '' });
-  const { data: orderDetails, isFetching, isError, error } = useOrder(orderId);
+  const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
   const therapyId = orderDetails?.therapy?.materialNumber;
 
   const alertContainerId = 'accountSelection-alert-Container';
@@ -190,6 +191,12 @@ const AccountSelection = () => {
     }
   }, [orderDetails?.accountDetails, accountsListData, therapyId]);
 
+  if (isLoader) {
+    return isLoader;
+  }
+  if (isSaving) {
+    return  <Loader type={'screen'} />;
+  }
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -277,7 +284,7 @@ const AccountSelection = () => {
                 {t('captions.btnBack')}
               </Button>
               <Button size="md" onClick={handleOnSubmit} variant="primary" type="submit">
-                {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
+                {t('captions.btnSaveAndContinue')}
               </Button>
             </div>
           </div>

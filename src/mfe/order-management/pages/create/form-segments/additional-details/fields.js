@@ -1,13 +1,14 @@
 import Components from '@src/components/form/Components';
 
-export const getFormFields = (t, config) => [
+export const getFormFields = (t, config, setFieldValue) => [
   {
     name: 'coiId',
     label: t('labels.coiId'),
     placeholder: ' ',
     isRequired: config.isCoiIdRequired,
     component: Components['input'],
-    maxLength: 50
+    maxLength: 30,
+    onChange: (e) => setFieldValue('coiId', e.target.value?.toUpperCase())
   },
   {
     name: 'orderQuantity',

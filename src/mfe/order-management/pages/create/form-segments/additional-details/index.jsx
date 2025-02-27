@@ -13,7 +13,7 @@ import OrderService from '@src/api/commonService/OrderService';
 import { useMutation, useQuery } from 'react-query';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { NUMBER_REGEX } from '@src/components/form/ValidationRegExp';
+import { ALPHA_NUMERIC_ONLY_UPPERCASE, NUMBER_REGEX } from '@src/components/form/ValidationRegExp';
 import CommonUtils from '@src/util/CommonUtils';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
@@ -25,6 +25,7 @@ import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/order-management/questionnaire
 import useOrder from '../../../orders/useOrder';
 import { DateUtils } from '@src/util/DateUtil';
 import { userOrderPrice } from './userOrderPrice';
+import { Loader } from '@mckesson/mcp-component-library';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -65,7 +66,7 @@ function AdditionalDetails() {
   const { showAlert } = useAlert();
   const [availabilityAlert, setAvailabilityAlert] = React.useState({});
   const alertContainerId = 'additionalDetails-alert-container';
-  const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error } = useOrder(orderId);
+  const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
   const { isCoiIdRequired, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
@@ -85,8 +86,8 @@ function AdditionalDetails() {
 
   let initialValidationSchema = Yup.object({
     coiId: Yup.string()
-      .matches(NUMBER_REGEX, t('labels.COI_IdMustValidNumber'))
-      .max(10, t('labels.COI_IdExceedDigits'))
+      .matches(ALPHA_NUMERIC_ONLY_UPPERCASE, t('labels.COI_IdMustValidNumber'))
+      .max(30, t('labels.COI_IdExceedDigits'))
       .when([], {
         is: () => isCoiIdRequired === true,
         then: (schema) => schema.required(t('labels.COIIdRequired')),
@@ -109,8 +110,6 @@ function AdditionalDetails() {
       .required(t('labels.DateOfAdministrationRequired'))
       .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
   });
-
-  const formFields = getFormFields(t, { isCoiIdRequired });
 
   React.useEffect(() => {
     setValidationSchema(initialValidationSchema);
@@ -182,8 +181,7 @@ function AdditionalDetails() {
               ? Yup.array().of(Yup.string()).min(1, 'Select at least one option')
               : Yup.array().of(Yup.string()).nullable(),
 
-          documentUrl:
-            question.isDocumentRequired && question.isMandatory ? Yup.string().required('Please Upload Document') : Yup.string().nullable()
+          documentUrl: Yup.string().nullable()
         });
       });
     });
@@ -480,8 +478,11 @@ function AdditionalDetails() {
     setVariantAcknowledgement(updatedOptions);
   };
 
-  if (isFetchingOrderDetails) {
-    return <Loader />;
+  if (isLoader) {
+    return isLoader;
+  }
+  if (isSaving) {
+    return  <Loader type={'screen'} />;
   }
 
   const closeAvailabilityAlert = (index, key) => {
@@ -539,18 +540,20 @@ function AdditionalDetails() {
                     </p>
                   </div>
                   <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 align-items-start">
-                    {formFields.map(({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
-                      <Field
-                        key={index}
-                        name={name}
-                        label={label}
-                        placeholder={placeholder}
-                        isRequired={isRequired}
-                        component={component}
-                        maxLength={maxLength}
-                        {...otherProps}
-                      />
-                    ))}
+                    {getFormFields(t, { isCoiIdRequired }, setFieldValue).map(
+                      ({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
+                        <Field
+                          key={index}
+                          name={name}
+                          label={label}
+                          placeholder={placeholder}
+                          isRequired={isRequired}
+                          component={component}
+                          maxLength={maxLength}
+                          {...otherProps}
+                        />
+                      )
+                    )}
                   </div>
                   {!!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content) && (
                     <>
@@ -592,7 +595,7 @@ function AdditionalDetails() {
                       {t('captions.btnBack')}
                     </Button>
                     <Button size="md" variant="primary" type="submit">
-                      {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
+                      {t('captions.btnSaveAndContinue')}
                     </Button>
                   </div>
                 </div>

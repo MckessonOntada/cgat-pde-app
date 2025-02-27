@@ -490,6 +490,7 @@ div.disable-all {
 
   .overflowing {
     text-overflow: ellipsis;
+    text-wrap: wrap;
     overflow: hidden;
   }
 }

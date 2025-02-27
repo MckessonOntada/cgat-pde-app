@@ -102,9 +102,9 @@ function UserTable({ onActionSuccess }) {
     setSelectedRows(null);
   };
 
-  useEffect(() => {
-    refreshData();
-  }, []);
+  // useEffect(() => {
+  //   refreshData();
+  // }, []);
 
   const {
     mutate: rejectUser,

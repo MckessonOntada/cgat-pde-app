@@ -111,6 +111,14 @@ const isCustomerCenterView = function () {
   return isCustomerCenter() && !getPracticeId();
 };
 
+const getImpersonatedByUser = () => {
+  const impersonatedByUser = sessionStorage.getItem(SESSION_CONST.IMPERSONATED_BY_USER);
+  if (impersonatedByUser) {
+    return JSON.parse(impersonatedByUser);
+  }
+  return null;
+};
+
 const AuthUtils = Object.freeze({
   userHasRole,
   userHasPermission,
@@ -128,7 +136,8 @@ const AuthUtils = Object.freeze({
   isSystemAdmin,
   isSystemAdminView,
   isCustomerCenter,
-  isCustomerCenterView
+  isCustomerCenterView,
+  getImpersonatedByUser
 });
 
 export default AuthUtils;

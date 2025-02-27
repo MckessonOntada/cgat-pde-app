@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
-import { Badge, Button, Heading, Switch, Alert, Modal, CheckboxGroup, IconButton } from '@mckesson/mcp-component-library';
+import { Badge, Button, Heading, Switch, Alert, Modal, CheckboxGroup, IconButton, Loader } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
@@ -246,7 +246,9 @@ const UserDetail = () => {
   const loggedUserId = Number(AuthUtils.getUserId());
 
   const prePermissions = data?.isActive && data?.id !== loggedUserId && !isImpersonateLoggedIn && !isSystemAdminView;
-
+  if (isLoading) {
+    return <Loader type={'screen'} />;
+  }
   return (
     <div className="MCP-module-wrapper">
       <div className="back-navigation py2 capitalize" onClick={goBack} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
@@ -529,7 +531,7 @@ const ConsentModal = ({ userFullName, onYes, onNo }) => {
           <div className="MCP-modal-body">
             <Heading as="h6">{t('popup.message.wishToContinueLoginAsThisUserQuestion')}</Heading>
             <p>{t('popup.message.wishToContinueLoginAsThisUserDescription').replace('{{targetUser}}', userFullName)}</p>
-            <div>
+            <div className='checkboxGroup'>
               <CheckboxGroup
                 id={'default'}
                 name="order-agreement"

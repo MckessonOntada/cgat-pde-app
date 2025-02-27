@@ -20,6 +20,7 @@ import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/Disca
 import { renderModal } from '@src/util/ModalUtil';
 import useOrder from '../../../orders/useOrder';
 import { userOrderPrice } from '../additional-details/userOrderPrice';
+import { Loader } from '@mckesson/mcp-component-library';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
@@ -33,7 +34,7 @@ const PatientDetails = () => {
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
 
-  const { data: orderDetails, isFetching, isError, error } = useOrder(orderId);
+  const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
 
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
@@ -178,7 +179,12 @@ const PatientDetails = () => {
       navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isApprover: isApprover } });
     }
   };
-
+  if (isLoader) {
+    return isLoader;
+  }
+  if (isSaving) {
+    return  <Loader type={'screen'} />;
+  }
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -230,7 +236,7 @@ const PatientDetails = () => {
                           {t('captions.btnBack')}
                         </Button>
                         <Button size="md" variant="primary" type="submit">
-                          {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
+                          {t('captions.btnSaveAndContinue')}
                         </Button>
                       </div>
                     }

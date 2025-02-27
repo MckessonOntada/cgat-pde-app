@@ -85,7 +85,7 @@ const OrgList = ({ onActionSuccess }) => {
             dispatch(closeModal());
             window.location.href = '/admin';
           }}>
-          {t('orgManagement.button.okay')}
+          {t('orgManagement.button.OK')}
         </Button>
       </div>
     );
@@ -149,11 +149,11 @@ const OrgList = ({ onActionSuccess }) => {
       name: t('orgManagement.table.location'),
       cell: (row) => (
         <div>
-          <EclipsesTextcss str={location(row.address)} maxWidth={240} />
+          <EclipsesTextcss str={row.address.state} maxWidth={240} />
         </div>
       ),
       sortable: true,
-      sortKey: 'id',
+      sortKey: 'state',
       minWidth: '250px',
       wrap: true
     },
@@ -161,6 +161,8 @@ const OrgList = ({ onActionSuccess }) => {
       id: 'date',
       name: t('orgManagement.table.dateUpdated'),
       selector: (row) => row.updatedAt,
+      sortable: true,
+      sortKey: 'updated_At',
       cell: (row) =>
         row.updatedAt
           ? CommonUtils.convertDateStringFormat(row.updatedAt, 'MM-DD-YYYY')

@@ -13,8 +13,7 @@ export const TherapyDetailsConstants = [
       { label: 'labels.therapy.dropshipIndicator', value: 'dropshipIndicator' },
       { label: 'labels.therapy.baseUnitOfMeasure', value: 'baseUnitOfMeasure' },
       { label: 'labels.therapy.cgatIdentifier', value: 'cgatIdentifier' },
-      { label: 'labels.therapy.productLevelPricing', value: 'productLevelPricing' },
-      { label: 'labels.therapy.minimumOrderQuantity', value: 'minimumOrderQuantity' }
+      { label: 'labels.therapy.productLevelPricing', value: 'productLevelPricing' }
     ]
   }
 ];

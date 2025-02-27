@@ -64,13 +64,16 @@ export const UserProvider = ({ children }) => {
       ...(filterConfig?.dateRange?.[0] && { startDate: DateUtils.formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy') }),
       ...(filterConfig?.dateRange?.[1] && { endDate: DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy') })
     }),
-    [filterConfig, paginationConfig.pageNumber, sortConfig]
+    [filterConfig, paginationConfig.pageNumber, sortConfig, activeTab]
   );
 
   const { isLoading, isError, error, data, refetch } = useQuery({
     queryKey: ['users', activeTab, requestParams],
     queryFn: async () => {
-      const url = activeTab === 1 ? `${ApiRoutes.USERS()}?${serializeParams(requestParams)}` : `${ApiRoutes.USERS_PROVISIONING()}`;
+      const url =
+        activeTab === 1
+          ? `${ApiRoutes.USERS()}?${serializeParams(requestParams)}`
+          : `${ApiRoutes.USERS_PROVISIONING()}?${serializeParams(requestParams)}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       if (res.data) {
         const { content: data, totalElements, totalPages } = res.data;

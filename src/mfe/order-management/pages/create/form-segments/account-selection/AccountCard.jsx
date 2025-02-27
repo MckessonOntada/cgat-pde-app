@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styles from './AccountCard.module.scss';
-import { Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
+import { Loader } from '@mckesson/mcp-component-library';
 
-const AccountCard = ({ options = [], onChange }) => {
+const AccountCard = ({ options = [], onChange, isFetching }) => {
   const { t } = useTranslate();
   const [selected, setSelected] = useState(null);
 
@@ -12,8 +12,16 @@ const AccountCard = ({ options = [], onChange }) => {
     const selectedAccount = options.filter((a) => a.id === value)[0];
     if (selectedAccount) onChange && onChange(selectedAccount);
   };
+  if (isFetching) {
+    return (
+      <div className={styles.wrapper}>
+        <Loader variant="circular" />
+      </div>
+    );
+  }
 
   if (!options.length) return null;
+
   return (
     <div className={styles.cardContainer}>
       <div className={styles.header}>
