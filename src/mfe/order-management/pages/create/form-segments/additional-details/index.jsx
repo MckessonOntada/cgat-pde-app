@@ -160,8 +160,7 @@ function AdditionalDetails() {
               ? Yup.array().of(Yup.string()).min(1, 'Select at least one option')
               : Yup.array().of(Yup.string()).nullable(),
 
-          documentUrl:
-            question.isDocumentRequired && question.isMandatory ? Yup.string().required('Please Upload Document') : Yup.string().nullable()
+          documentUrl: Yup.string().nullable()
         });
       });
     });
