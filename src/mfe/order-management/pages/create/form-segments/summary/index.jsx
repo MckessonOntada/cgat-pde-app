@@ -24,6 +24,7 @@ import OrderStepper from '../OrderStepper';
 import useOrder from '../../../orders/useOrder';
 import { useCustomPrint } from '@src/util/printUtils';
 import CommonUtils from '@src/util/CommonUtils';
+import { CUSTOMER_CENTRE, SYSTEM_ADMIN } from '@src/api/commonService/CommonService';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -150,6 +151,14 @@ const Summary = () => {
     submitOrder({ action: BUTTON_ACTIONS.SUBMIT, isPAPOrder });
   };
 
+  const isImpersonatedAdmin = () => {
+    const impersonatedByUser = AuthUtils.getImpersonatedByUser();
+    if (impersonatedByUser && (impersonatedByUser.role?.name === SYSTEM_ADMIN || impersonatedByUser.role?.name === CUSTOMER_CENTRE)) {
+      return true;
+    }
+    return false;
+  };
+
   const handleOnSubmit = () => {
     if (!agreeCheckboxOptions.isChecked) {
       setOrderAgreementCheckboxError('Please acknowledge to submit order');
@@ -157,7 +166,7 @@ const Summary = () => {
     }
 
     if (agreeCheckboxOptions.isChecked) {
-      if (isImpersonated) {
+      if (isImpersonatedAdmin()) {
         setIsPAPOrderConfirmModalOpen(true);
       } else {
         submitOrder({ action: BUTTON_ACTIONS.SUBMIT });
