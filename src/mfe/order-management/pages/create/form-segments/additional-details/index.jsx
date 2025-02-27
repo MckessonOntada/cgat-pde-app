@@ -24,6 +24,7 @@ import QuestionnaireTemplate from '@src/mfe/order-management/questionnaire/Quest
 import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/order-management/questionnaire/AddQuestionnaire';
 import useOrder from '../../../orders/useOrder';
 import { DateUtils } from '@src/util/DateUtil';
+import { userOrderPrice } from './userOrderPrice';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -71,21 +72,16 @@ function AdditionalDetails() {
   const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
   const [dateOfAdministration, setDateOfAdministration] = React.useState('');
   const [inventoryType, setInventoryType] = useState(null);
-
-  const { isLoading, data: variantsData } = useQuery({
-    queryKey: ['order', 'variants', orderId],
-    queryFn: async () => OrderService.getVariants(therapyId, soldToAccountId, shipToAccountId, variantsApiRequestParam),
-    enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId,
-    refetchOnWindowFocus: false,
-    onSuccess: (result) => {
-      // if result is empty do inventory check checkI
-      if (!result || result.numberOfElements === 0) checkInventory();
+  const { data: priceDetails = {} } = userOrderPrice(
+    {
+      therapyId,
+      soldToAccountId,
+      shipToAccountId,
+      ...(variant && { variant: variant.variant })
     },
-    onError: (error) => {
-      const errorKey = handleApiError(error);
-      showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
-    }
-  });
+    null,
+    (data) => setInventoryTypeData(data.inventoryType)
+  );
 
   let initialValidationSchema = Yup.object({
     coiId: Yup.string()
@@ -260,6 +256,20 @@ function AdditionalDetails() {
     setInitialFormValues({ ...initialFormValues });
   };
 
+  const { isLoading, data: variantsData } = useQuery({
+    queryKey: ['order', 'variants', orderId],
+    queryFn: async () => OrderService.getVariants(therapyId, soldToAccountId, shipToAccountId, variantsApiRequestParam),
+    enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId,
+    refetchOnWindowFocus: false,
+    onSuccess: (result) => {
+      if (!result || !result.content || result.content?.length === 0) checkInventory();
+    },
+    onError: (error) => {
+      const errorKey = handleApiError(error);
+      showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
+    }
+  });
+
   React.useEffect(() => {
     const { additionalDetails } = orderDetails || {};
     if (additionalDetails) {
@@ -375,74 +385,60 @@ function AdditionalDetails() {
     setInventoryType(data);
   };
 
-  const formateDate = (date) => {
-    if (date) {
-      try {
-        const _date = new Date(date);
-
-        return [_date.getDate(), '/', _date.getMonth(), '/', _date.getFullYear()].join('');
-      } catch (error) {}
-    }
-  };
-
   const checkInventory = async () => {
+    if (inventoryType && !['S', 'I'].includes(inventoryType)) {
+      return;
+    }
+
     const { shipToAccount, soldToAccount } = orderDetails.accountDetails || {};
+    if (shipToAccount && soldToAccount) {
+      const requestPayload = {
+        orderId,
+        dateOfAdministration: dateOfAdministration ? DateUtils.formatDate(dateOfAdministration, 'dd/mm/yyyy') : ''
+      };
 
-    if (!shipToAccount && !soldToAccount) return;
+      try {
+        if (variant) {
+          requestPayload.variant = variant.variant;
+        }
+        const res = await OrderService.getInventoryStatus(requestPayload);
+        if (res.status === 200) {
+          const result = res.data.inventoryCheckResponse;
+          if (result) {
+            const { erroredItems, warningMessages } = result;
+            if (erroredItems || warningMessages) {
+              setInventoryStatus(AVAILABILITY_STATUS.OUT_OF_STOCK);
 
-    if (!['S', 'I'].includes(inventoryType)) {
-      setInventoryStatus(AVAILABILITY_STATUS.DROP_SHIP);
-      return;
-    }
-
-    if (variantsData?.content && !variant) {
-      setInventoryStatus(null);
-      return;
-    }
-
-    const requestPayload = {
-      orderId,
-      dateOfAdministration: dateOfAdministration ? DateUtils.formatDate(dateOfAdministration, 'dd/mm/yyyy') : ''
-    };
-    if (variant) {
-      requestPayload.variant = variant.variant;
-    }
-
-    try {
-      const res = await OrderService.getInventoryStatus(requestPayload);
-      if (res.status === 200) {
-        const result = res.data.inventoryCheckResponse;
-        if (result) {
-          const { erroredItems, warningMessages } = result;
-          if (erroredItems || warningMessages) {
-            setInventoryStatus(AVAILABILITY_STATUS.OUT_OF_STOCK);
-
-            const availabilityAlerts = {};
-            if (erroredItems) {
-              availabilityAlerts.errors = erroredItems.map((err) => err.errorMessage);
-            }
-            if (warningMessages) {
-              availabilityAlerts.warnings = warningMessages.map((warn) => warn.errorMessage);
-            }
-            setAvailabilityAlert(availabilityAlerts);
-          } else {
-            if (orderDetails?.therapy.dropshipIndicator) {
-              setInventoryStatus(AVAILABILITY_STATUS.DROP_SHIP);
+              const availabilityAlerts = {};
+              if (erroredItems) {
+                availabilityAlerts.errors = erroredItems.map((err) => err.errorMessage);
+              }
+              if (warningMessages) {
+                availabilityAlerts.warnings = warningMessages.map((warn) => warn.errorMessage);
+              }
+              setAvailabilityAlert(availabilityAlerts);
             } else {
-              setInventoryStatus(AVAILABILITY_STATUS.AVAILABLE);
+              if (orderDetails?.therapy.dropshipIndicator) {
+                setInventoryStatus(AVAILABILITY_STATUS.DROP_SHIP);
+              } else {
+                setInventoryStatus(AVAILABILITY_STATUS.AVAILABLE);
+              }
             }
           }
+
+          return {
+            description: t('messages.inventoryCheck.success'),
+            type: 'success'
+          };
         }
+      } catch (err) {
+        setInventoryStatus(null);
+        setAvailabilityAlert({
+          errors: ['Something went wrong, Please try again later.']
+        });
       }
-    } catch (err) {
-      setInventoryStatus(null);
-      setAvailabilityAlert({
-        errors: ['Something went wrong, Please try again later.']
-      });
     }
   };
-
-  // when variants are fetched and there is no data in it
 
   const handleOnBackToOrders = () => {
     if (isDirty) {
@@ -488,6 +484,11 @@ function AdditionalDetails() {
     return <Loader />;
   }
 
+  const closeAvailabilityAlert = (index, key) => {
+    availabilityAlert[key] = availabilityAlert[key].filter((msg, _index) => _index != index);
+    setAvailabilityAlert({ ...availabilityAlert });
+  };
+
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -518,19 +519,17 @@ function AdditionalDetails() {
               <div className="MCP-module-body">
                 <OrderStepper patientDetailsRequired={patientDetailsRequired} status={orderDetails?.currentStage} />
 
-                <OrderHeaderDetails
-                  orderDetails={orderDetails}
-                  therapyId={therapyId}
-                  setInventoryTypeData={setInventoryTypeData}
-                  soldToAccountId={soldToAccountId}
-                  shipToAccountId={shipToAccountId}
-                  variant={variant?.variant}
-                  status={inventoryStatus}
-                />
+                <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} status={inventoryStatus} />
                 <div id={alertContainerId} />
                 <div>
-                  {availabilityAlert.errors && availabilityAlert.errors.map((error) => <Alert description={error} type="error" />)}
-                  {availabilityAlert.warnings && availabilityAlert.warnings.map((error) => <Alert description={error} type="warning" />)}
+                  {availabilityAlert.errors &&
+                    availabilityAlert.errors.map((error, index) => (
+                      <Alert description={error} onClose={() => closeAvailabilityAlert(index, 'errors')} type="error" />
+                    ))}
+                  {availabilityAlert.warnings &&
+                    availabilityAlert.warnings.map((error) => (
+                      <Alert description={error} onClose={() => closeAvailabilityAlert(index, 'warnings')} type="warning" />
+                    ))}
                 </div>
                 <div className="MCP-panel-container">
                   <div className="row-space-between-center">

@@ -162,6 +162,7 @@ async function getVariants(therapyId, accountId, shipToAccountId, requestParams)
 }
 
 async function getInventoryStatus(requestBody) {
+  return { status: 200, data: { inventoryCheckResponse: {} } };
   try {
     const res = await HttpResourceService.callRest(`${ApiRoutes.INVENTORY()}/availability`, httpVerb.POST, requestBody);
     if (res) {
