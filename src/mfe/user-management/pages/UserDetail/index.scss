@@ -53,7 +53,12 @@
   border: 1px solid var(--brand-color-patient-primary-3);
   border-radius: var(--brand-border-radius--6);
 }
-
+.checkboxGroup fieldset div{
+  align-items: flex-start;
+}
+.checkboxGroup fieldset div input{
+  margin-top: 2px;
+}
 @media (max-width: 600px) {
   .user-header {
     flex-direction: column; /* Stack items vertically */
