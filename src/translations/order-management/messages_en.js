@@ -15,6 +15,7 @@ export const MessageEn = {
   'captions.clearFilters': 'Clear Filters',
   'controls.createNewOrder': 'Create New Order',
   'captions.orderStatus': 'Order Status',
+  'captions.btnApply': 'Apply',
   'captions.btnCancel': 'Cancel',
   'captions.btnYes': 'Yes',
   'captions.btnNo': 'No',
@@ -404,5 +405,6 @@ export const MessageEn = {
   'message.questionTextRequired': 'Question text is required',
   'message.englishTextIsRequired': 'At least requires english text',
   'message.acknowldge': 'Please acknowledge to Save and Continue',
-  'errors.uq_template_name_lower': 'Template Name already exists'
+  'errors.uq_template_name_lower': 'Template Name already exists',
+  'messages.required_Details': 'Please select required details'
 };
