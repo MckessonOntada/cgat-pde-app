@@ -63,8 +63,8 @@ const Summary = () => {
 
   const variantDetails = additionalDetails?.variantDetails || {};
   const isImpersonated = Boolean(AuthUtils.getImpersonateId()),
-    isRejected = status === StatusEnum.REJECTED,
-    isConcluded = status === StatusEnum.REJECTED || status === StatusEnum.SUBMITTED;
+    isRejected = status && status === StatusEnum.REJECTED;
+
   const contentRef = useRef(null);
   const printPage = useCustomPrint(
     contentRef,
@@ -86,13 +86,13 @@ const Summary = () => {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }`
   );
+
   const { isLoading, data: simulationData = {} } = useQuery({
     queryKey: ['orderDetails', orderId],
     queryFn: async () => {
-      const response = await OrderService.simulateOrder(orderId);
-      return response;
+      return await OrderService.simulateOrder(orderId);
     },
-    enabled: Boolean(status && !isConcluded && (isSimulate || isApprover)),
+    enabled: !status ? false : !(status === 'REJECTED' || status === 'SUBMITTED'),
     refetchOnWindowFocus: false,
     onError: (error) => {
       showAlert({ description: error?.response?.data?.message, type: 'error', anchorEl: ALERT_CONTAINER_ID });
