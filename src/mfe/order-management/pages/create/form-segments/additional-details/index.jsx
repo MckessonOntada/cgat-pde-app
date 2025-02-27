@@ -13,7 +13,7 @@ import OrderService from '@src/api/commonService/OrderService';
 import { useMutation, useQuery } from 'react-query';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { NUMBER_REGEX } from '@src/components/form/ValidationRegExp';
+import { ALPHA_NUMERIC_ONLY_UPPERCASE, NUMBER_REGEX } from '@src/components/form/ValidationRegExp';
 import CommonUtils from '@src/util/CommonUtils';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
@@ -63,8 +63,8 @@ function AdditionalDetails() {
   const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
   let initialValidationSchema = Yup.object({
     coiId: Yup.string()
-      .matches(NUMBER_REGEX, t('labels.COI_IdMustValidNumber'))
-      .max(10, t('labels.COI_IdExceedDigits'))
+      .matches(ALPHA_NUMERIC_ONLY_UPPERCASE, t('labels.COI_IdMustValidNumber'))
+      .max(30, t('labels.COI_IdExceedDigits'))
       .when([], {
         is: () => isCoiIdRequired === true,
         then: (schema) => schema.required(t('labels.COIIdRequired')),
@@ -87,8 +87,6 @@ function AdditionalDetails() {
       .required(t('labels.DateOfAdministrationRequired'))
       .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
   });
-
-  const formFields = getFormFields(t, { isCoiIdRequired });
 
   React.useEffect(() => {
     setValidationSchema(initialValidationSchema);
@@ -419,7 +417,7 @@ function AdditionalDetails() {
         onSubmit={(values) => {
           handleOnSubmit(values);
         }}>
-        {({ dirty, errors, values }) => {
+        {({ dirty, errors, values, setFieldValue }) => {
           useEffect(() => setIsDirty(dirty), [dirty]);
 
           return (
@@ -443,18 +441,20 @@ function AdditionalDetails() {
                     </p>
                   </div>
                   <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 align-items-start">
-                    {formFields.map(({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
-                      <Field
-                        key={index}
-                        name={name}
-                        label={label}
-                        placeholder={placeholder}
-                        isRequired={isRequired}
-                        component={component}
-                        maxLength={maxLength}
-                        {...otherProps}
-                      />
-                    ))}
+                    {getFormFields(t, { isCoiIdRequired }, setFieldValue).map(
+                      ({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
+                        <Field
+                          key={index}
+                          name={name}
+                          label={label}
+                          placeholder={placeholder}
+                          isRequired={isRequired}
+                          component={component}
+                          maxLength={maxLength}
+                          {...otherProps}
+                        />
+                      )
+                    )}
                   </div>
                   {!!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content) && (
                     <>
