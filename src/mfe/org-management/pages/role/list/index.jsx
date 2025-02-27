@@ -30,7 +30,9 @@ function RolesList() {
     return [
       {
         type: 'dateRangePicker',
-        name: 'dateRange'
+        name: 'dateRange',
+        startDateLabel: t('labels.startDate'),
+        endDateLabel: t('labels.endDate')
       },
       {
         type: 'dropdown',
@@ -91,7 +93,6 @@ function RolesList() {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
