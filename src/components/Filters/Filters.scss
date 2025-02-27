@@ -24,3 +24,15 @@
     margin-top: 5px;
   }
 }
+
+.filterRow {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  gap: var(--spacing-03);
+  flex-wrap: wrap;
+
+  .dropdown-container {
+    width: 220px;
+  }
+}

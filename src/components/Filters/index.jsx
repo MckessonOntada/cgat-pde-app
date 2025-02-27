@@ -81,15 +81,14 @@ const Filters = ({
       validateOnChange={false}
       validateOnBlur={false}>
       {(formik) => {
-        const isAnyFilterApplied = Object.values(formik.values).some((value) => value && value.length > 0);
-
+        const isAnyFilterApplied = Object.values(formik.values).some((value) => value !== '' && value !== null && value !== undefined);
         return (
           <Form ref={formRef}>
             <div className="MCP-filter-panel">
               <div className="filter-header">
                 <div className="search-box">
                   {isAdditionalFiltersAdded && (
-                    <Button variant="tertiary" type="button" onClick={handleExpandCard}> 
+                    <Button variant="tertiary" type="button" onClick={handleExpandCard}>
                       <img src={isCardExpanded ? arrow_down : arrow_right} alt="toggle-icon" />
                     </Button>
                   )}
