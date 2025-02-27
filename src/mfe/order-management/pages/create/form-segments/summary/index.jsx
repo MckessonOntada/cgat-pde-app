@@ -317,18 +317,17 @@ const Summary = () => {
     return isLoader;
   }
 
-<<<<<<< Updated upstream
   if (patient.patientInfo)
     patient.fullName = [patient.patientInfo.firstName, patient.patientInfo.middleName, patient.patientInfo.lastName]
       .filter(Boolean)
       .join(' ');
-=======
->>>>>>> Stashed changes
   const isAgreed = agreeCheckboxOptions.isChecked,
     hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected;
+
   if (isSaving) {
     return  <Loader type={'screen'} />;
   }
+  
   return (
     <div className="MCP-module-wrapper">
       <div>
