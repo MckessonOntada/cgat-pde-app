@@ -82,7 +82,7 @@ const roleDetail = () => {
             deleteRole(roleId);
             dispatch(closeModal());
           }}>
-          Okay
+          {t('orgManagement.button.OK')}
         </Button>
       </div>
     );

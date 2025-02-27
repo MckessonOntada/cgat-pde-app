@@ -132,7 +132,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
         bodyContent: <h3>{t('labels.orderActions.cancelmessage')}</h3>,
         footerActions: {
           cancel: {
-            label: t('labels.orderActions.okay')
+            label: t('labels.orderActions.OK')
           }
         }
       });

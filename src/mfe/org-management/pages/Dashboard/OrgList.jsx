@@ -85,7 +85,7 @@ const OrgList = ({ onActionSuccess }) => {
             dispatch(closeModal());
             window.location.href = '/admin';
           }}>
-          {t('orgManagement.button.okay')}
+          {t('orgManagement.button.OK')}
         </Button>
       </div>
     );
