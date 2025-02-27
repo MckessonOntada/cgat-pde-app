@@ -21,6 +21,7 @@ import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import useOrder from '../../../orders/useOrder';
+import { Loader } from '@mckesson/mcp-component-library';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -143,7 +144,9 @@ function TherapySelection() {
   const handleOnDrawerSelect = (therapy) => {
     setTherapy(therapy);
   };
-
+  if (isSaving) {
+    return  <Loader type={'screen'} />;
+  }
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -185,7 +188,7 @@ function TherapySelection() {
                   {t('captions.btnCancel')}
                 </Button>
                 <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit}>
-                  {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
+                  { t('captions.btnSaveAndContinue')}
                 </Button>
               </div>
             }
