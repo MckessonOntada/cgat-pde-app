@@ -106,7 +106,7 @@ function ConfirmationPayments() {
             navigate(-1);
             dispatch(closeModal());
           }}>
-          {t('paymentInvoices.reviewPayments.Okay')}
+          {t('paymentInvoices.reviewPayments.OK')}
         </Button>
       </div>
     );

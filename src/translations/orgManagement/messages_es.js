@@ -33,7 +33,7 @@ export const OrgManagementES = {
   'orgManagement.button.activate': 'S_ACTIVE',
   'orgManagement.button.inactivate': 'S_INACTIVE',
   'orgManagement.button.confirm': 'S_Confirm',
-  'orgManagement.button.okay': 'S_Okay',
+  'orgManagement.button.OK': 'S_OK',
   'orgManagement.message.accountSelectionConfirmationTitle': 'S_Select this organization?',
   'orgManagement.message.accountSelectionConfirmationDescription': 'S_Do you want to continue with selected organization',
   'orgManagement.message.roleDeactivateConfirmationTitle': 'S_Deactivate role?',

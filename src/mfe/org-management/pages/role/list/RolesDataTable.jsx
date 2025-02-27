@@ -75,7 +75,7 @@ const RolesDataTable = () => {
             deleteRole(selectedRows);
             dispatch(closeModal());
           }}>
-          Okay
+          {t('orgManagement.button.OK')}
         </Button>
       </div>
     );
