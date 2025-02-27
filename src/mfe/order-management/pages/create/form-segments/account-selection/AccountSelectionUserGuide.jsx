@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from './AccountSelectionUserGuide.module.scss';
-import { RadioGroup, Button, Loader, Heading } from '@mckesson/mcp-component-library';
+import { RadioGroup, Button, Loader, Heading, TextError } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
 import AccountCard from './AccountCard';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -13,6 +13,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
   const [selectedProgram, setProgram] = useState('');
   const [selectedChannel, setChannel] = useState('');
   const [account, setAccount] = useState(null);
+  const [alert, setAlert] = useState(false);
 
   const {
     isFetching: isFetchingConfig,
@@ -42,7 +43,16 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
   }, [selectedChannel, selectedProgram]);
 
   const handleAccountChange = (selectedAccount) => {
+    setAlert(false);
     setAccount(selectedAccount);
+  };
+
+  const handleOnSubmit = () => {
+    if (!account || !selectedProgram || !selectedChannel) {
+      setAlert(true);
+      return;
+    }
+    onSubmit(account);
   };
 
   if (!therapyId) {
@@ -54,6 +64,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
   }
 
   if (isError) {
+    setAlert(true);
     return (
       <div className={styles.wrapper}>
         <div>Error: {error.message}</div>
@@ -61,7 +72,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
     );
   }
 
-  if (isFetchingConfig || isFetchingAccount) {
+  if (isFetchingConfig) {
     return (
       <div className={styles.wrapper}>
         <Loader variant="circular" />
@@ -78,6 +89,11 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
           <IconClose />
         </Button>
       </div>
+      {alert && (
+        <div className={styles.alert}>
+          <TextError errorMessage={t('messages.required_Details')} showErrorIcon />
+        </div>
+      )}
       <div className={styles.drawerContent}>
         <div className={styles.topSect}>
           <div className="MCP-CardContainer">
@@ -87,7 +103,10 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
                 direction="row"
                 id="order-channel-options"
                 items={channels.map((v) => ({ label: v, value: v }))}
-                onChangeValue={setChannel}
+                onChangeValue={(value) => {
+                  setAlert(false);
+                  setChannel(value);
+                }}
                 value={selectedChannel}
                 radioBtnWidth="auto"
               />
@@ -101,24 +120,26 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
                 direction="row"
                 id="order-program-options"
                 items={programs.map((v) => ({ label: v, value: v }))}
-                onChangeValue={setProgram}
+                onChangeValue={(value) => {
+                  setAlert(false);
+                  setProgram(value);
+                }}
                 value={selectedProgram}
                 radioBtnWidth="auto"
               />
             </div>
           </div>
 
-          <AccountCard options={accountList.content} onChange={handleAccountChange} />
+          <AccountCard options={accountList.content} onChange={handleAccountChange} isFetching={isFetchingAccount} />
         </div>
 
         <div className={styles.controls}>
           <Button label={t('captions.btnCancel')} onClick={onClose} variant="secondary" size="md" aria-label={t('captions.btnCancel')} />
           <Button
-            label={t('headings.seletAccount')}
-            onClick={() => onSubmit(account)}
+            label={t('captions.btnApply')}
+            onClick={() => handleOnSubmit(account)}
             variant="primary"
             size="md"
-            disabled={!account}
             aria-label={t('captions.btnSelect')}
           />
         </div>
