@@ -100,7 +100,7 @@ function ReviewPayments() {
               navigate(-1);
               dispatch(closeModal());
             }}>
-            {t('paymentInvoices.reviewPayments.Okay')}
+            {t('paymentInvoices.reviewPayments.OK')}
           </Button>
         </div>
       );
@@ -288,7 +288,7 @@ function ReviewPayments() {
           </div>
         )}
         <div className="selectedInvoices-container section">
-          <div  className="sectionHeader">
+          <div className="sectionHeader">
             {REVIEW_MODE ? t('paymentInvoices.reviewPayments.invoiceSelected') : t('paymentInvoices.reviewPayments.invoice')}
           </div>
           <SelectedInvoiceList selectedInvoices={selectedInvoices} setSelectedInvoices={setSelectedInvoices} />
@@ -296,13 +296,16 @@ function ReviewPayments() {
         {!REVIEW_MODE && (
           <div className="invoice-sum-container">
             <div className="label"> {t('paymentInvoices.reviewPayments.selectedInvoice', { count: selectedInvoices.length })}</div>
-            <div className="value"><span className='currencySymbol'>$</span>{`${FinanceUtils.formatCurrency(invoicesSum).slice(1)}`}</div>
+            <div className="value">
+              <span className="currencySymbol">$</span>
+              {`${FinanceUtils.formatCurrency(invoicesSum).slice(1)}`}
+            </div>
           </div>
         )}
         {(!REVIEW_MODE || (REVIEW_MODE && state?.creditsSelected?.length > 0)) && (
           <div className="MCP-module-wrapper section">
             <div className="sectionHeader">
-                {REVIEW_MODE ? t('paymentInvoices.reviewPayments.creditsSelected') : t('paymentInvoices.reviewPayments.creditsAvail')}
+              {REVIEW_MODE ? t('paymentInvoices.reviewPayments.creditsSelected') : t('paymentInvoices.reviewPayments.creditsAvail')}
             </div>
             <div id="tablist-container" className="MCP-module-body">
               {REVIEW_MODE ? (
@@ -316,7 +319,10 @@ function ReviewPayments() {
             {!REVIEW_MODE && (
               <div className="invoice-sum-container">
                 <div className="label">{`Total credit amount:`}</div>{' '}
-                <div className="value"><span className='currencySymbol'>$</span>{`${FinanceUtils.formatCurrency(creditsSum).slice(1)}`}</div>
+                <div className="value">
+                  <span className="currencySymbol">$</span>
+                  {`${FinanceUtils.formatCurrency(creditsSum).slice(1)}`}
+                </div>
               </div>
             )}
           </div>
@@ -324,9 +330,7 @@ function ReviewPayments() {
       </div>
       {!REVIEW_MODE && (
         <div>
-          <div className="paymentSectionHeader">
-            {t('paymentInvoices.reviewPayments.payment')}
-          </div>
+          <div className="paymentSectionHeader">{t('paymentInvoices.reviewPayments.payment')}</div>
           <div className="payment">
             <div className="paymentMethodContainer">
               <div className="paymentMethod">{t('paymentInvoices.reviewPayments.selectMethod')}</div>
@@ -337,9 +341,10 @@ function ReviewPayments() {
                 getselectedValue={(val) => {
                   setSelectedData(val);
                   setPaymentOption('');
-                } }
-                onChangeInput={() => { } }
-                suggestionListContainerWidth="400px" />
+                }}
+                onChangeInput={() => {}}
+                suggestionListContainerWidth="400px"
+              />
             </div>
             <div className="paymentOptionContainer">
               <PaymentOptionsControls
@@ -347,14 +352,18 @@ function ReviewPayments() {
                 id="radio-button-order-therapy-props.id"
                 items={getRadioItems()}
                 onChangeValue={(e) => setPaymentOption(e)}
-                onOtherTextChange={() => { } }
-                onSubRadioFieldChange={() => { } }
+                onOtherTextChange={() => {}}
+                onSubRadioFieldChange={() => {}}
                 radioBtnWidth="auto"
-                value={paymentOption} />
+                value={paymentOption}
+              />
             </div>
             <div className="invoice-sum-container">
               <div className="label">{t('paymentInvoices.reviewPayments.invoiceDesc')}</div>
-              <div className="value"><span className='currencySymbol'>$</span>{`${FinanceUtils.formatCurrency(totalAmount).slice(1)}`}</div>
+              <div className="value">
+                <span className="currencySymbol">$</span>
+                {`${FinanceUtils.formatCurrency(totalAmount).slice(1)}`}
+              </div>
             </div>
           </div>
         </div>

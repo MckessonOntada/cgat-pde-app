@@ -46,9 +46,9 @@ const isSystemAdmin = function () {
 const isSystemAdminView = function () {
   const impersonateId = getImpersonateId();
   if (impersonateId) {
-    return isSystemAdmin();
+    return isSystemAdmin() || isCustomerCenter();
   }
-  return isSystemAdmin() && !getPracticeId();
+  return (isSystemAdmin() || isCustomerCenter()) && !getPracticeId();
 };
 
 const setImpersonateId = async (id) => {
@@ -98,6 +98,27 @@ const userHasRoutePermission = function (routePermissions) {
   return hasAccess;
 };
 
+const isCustomerCenter = function () {
+  const userRole = getUserRole();
+  return userRole === 'Customer Centre';
+};
+
+const isCustomerCenterView = function () {
+  const impersonateId = getImpersonateId();
+  if (impersonateId) {
+    return isCustomerCenter();
+  }
+  return isCustomerCenter() && !getPracticeId();
+};
+
+const getImpersonatedByUser = () => {
+  const impersonatedByUser = sessionStorage.getItem(SESSION_CONST.IMPERSONATED_BY_USER);
+  if (impersonatedByUser) {
+    return JSON.parse(impersonatedByUser);
+  }
+  return null;
+};
+
 const AuthUtils = Object.freeze({
   userHasRole,
   userHasPermission,
@@ -113,7 +134,10 @@ const AuthUtils = Object.freeze({
   getImpersonateId,
   removeImpersonateId,
   isSystemAdmin,
-  isSystemAdminView
+  isSystemAdminView,
+  isCustomerCenter,
+  isCustomerCenterView,
+  getImpersonatedByUser
 });
 
 export default AuthUtils;

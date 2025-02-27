@@ -4,7 +4,7 @@ import { useMutation, useQuery } from 'react-query';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { PATHS } from '../../routes/constants';
 import { RoutePaths } from '@src/routes/constants';
-import { CONTROL_OPTIONS } from './RulesConfig';
+import { CONTROL_OPTIONS, getRuleOperator } from './RulesConfig';
 import ModuleHeader from '@src/components/module-header';
 import { Button, Heading, Loader, Switch, Alert, Pills } from '@mckesson/mcp-component-library';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
@@ -18,16 +18,6 @@ import CommonUtils from '@src/util/CommonUtils';
 import ApproverUserList from './ApproverUserList';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
-
-const ruleAttributeConnectingSegment = {
-  Therapies: 'ORDERED ANY OF',
-  Price: 'GREATER THAN',
-  Accounts: 'SELECTED ANY OF',
-  Roles: 'SELECTED ANY OF',
-  Users: 'SELECTED ANY OF'
-};
-
-const getCamelCase = (str) => str.replace(/(^\w|[-_]\w)/g, (match) => match.replace(/[-_]/, '').toUpperCase());
 
 function ApproverGroupDetails() {
   const navigate = useNavigate();
@@ -133,18 +123,21 @@ function ApproverGroupDetails() {
   groupData?.rules &&
     Object.entries(groupData?.rules || {}).forEach((entry, index) => {
       let [key, value] = entry;
-      let beautifiedValue = <span className="rule-item-value">{value}</span>;
+
+      let beautifiedValue = value && (
+        <div className="fake-control">
+          <span className="rule-item-value">${value}</span>
+        </div>
+      );
       if (key === 'price') {
         rules.push(
           <div key={index} className="rule-wrapper">
-            <div className="condition attribute-text-segment">IF</div>
-            <div className="control type">
-              <div className="fake-control">{key}</div>
+            <div className="condition attribute-text-segment">{t('rules.clauseIf.if')}</div>
+            <div className="rule-field type">
+              <div className="fake-control">{CommonUtils.getCamelCase(key)}</div>
             </div>
-            <div className="clause attribute-text-segment">{ruleAttributeConnectingSegment[getCamelCase(key)]}</div>
-            <div className={`response-control ${key === CONTROL_OPTIONS.price ? 'price' : ''}`}>
-              <div className="fake-control">{beautifiedValue}</div>
-            </div>
+            <div className="rule-operator attribute-text-segment">{getRuleOperator(CommonUtils.getCamelCase(key), t)}</div>
+            <div className={`response-control ${key === CONTROL_OPTIONS.Price ? 'price' : ''}`}>{beautifiedValue}</div>
           </div>
         );
         return;
@@ -156,14 +149,14 @@ function ApproverGroupDetails() {
       if (key === 'therapies') _key = 'therapyName';
       else if (key === 'roles') _key = 'roleName';
       else if (key === 'users') _key = 'userName';
-      console.log(key);
+
       rules.push(
         <div key={index} className="rule-wrapper">
-          <div className="condition attribute-text-segment">IF</div>
-          <div className="control type">
-            <div className="fake-control">{key.toUpperCase()}</div>
+          <div className="condition attribute-text-segment">{t('rules.clauseIf.if')}</div>
+          <div className="rule-field type">
+            <div className="fake-control">{CommonUtils.getCamelCase(key)}</div>
           </div>
-          <div className="clause attribute-text-segment">{ruleAttributeConnectingSegment[getCamelCase(key)]}</div>
+          <div className="rule-operator attribute-text-segment">{getRuleOperator(CommonUtils.getCamelCase(key), t)}</div>
           <div className={`response-control ${key === CONTROL_OPTIONS.Price ? 'price' : ''}`}>
             <div className="fake-control">
               <Pills
@@ -247,7 +240,7 @@ function ApproverGroupDetails() {
                 <div className="rule" key={`rule-segment-${index}`}>
                   {rule}
                   <div className="hr-container">
-                    {index < rules.length - 1 && <div className="attribute-text-segment">AND</div>}
+                    {index < rules.length - 1 && <div className="hr-text">{t('rules.logicalOperator.and')}</div>}
                     <hr className="hr-line" />
                   </div>
                 </div>

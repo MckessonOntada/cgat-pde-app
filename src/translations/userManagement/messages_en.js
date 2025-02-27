@@ -20,9 +20,12 @@ export const UserManagementEN = {
   'userManagement.table.email': 'Email',
   'userManagement.table.role': 'Role',
   'userManagement.table.status': 'Status',
-  'userManagement.table.dateAdded': 'Date Added/Updated',
-  'userManagement.table.dateUpdated': 'Date Updated',
+  'userManagement.table.dateAdded': 'Date Added',
+  'userManagement.table.dateAddedUpdated': 'Date Added/Updated',
+  'userManagement.table.dateUpdated': 'Last Updated On',
   'userManagement.table.action': 'Action',
+  'userManagement.table.action.reject': 'Reject Request',
+  'userManagement.table.action.review': 'Review',
   'userManagement.table.action.edit': 'Edit',
   'userManagement.table.action.delete': 'Delete',
   'userManagement.table.action.inactivate': 'Inactivate',
@@ -361,5 +364,7 @@ export const UserManagementEN = {
   'userManagement.breadcrumb.admin': 'Admin',
   'popup.userDeactivation.question': 'Are you sure you wish to Deactivate this User?',
   'userManagement.confirmationMessage': 'Confirmation message',
-  'userManagement.message.DeactivateUser': 'Are you sure you wish to Deactivate this User ?'
+  'userManagement.message.DeactivateUser': 'Are you sure you wish to Deactivate this User ?',
+  'userManagement.edit_sysadmin': 'Edit System Administrator',
+  'userManagement.edit_organization_user': 'Edit Organization User'
 };

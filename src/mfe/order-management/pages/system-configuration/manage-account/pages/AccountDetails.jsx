@@ -14,6 +14,7 @@ import { PREVIEW_URL } from '@src/mfe/order-management/questionnaire/constants';
 import { getAddress } from '@src/mfe/order-management/questionnaire/util';
 import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import { renderModal } from '@src/util/ModalUtil';
+import AuthUtils from '@src/util/AuthUtils';
 
 export const AccountDetailsConstants = [
   {
@@ -33,6 +34,7 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
   const { t } = useTranslate();
   const { showSnackbar } = useSnackbar();
   const { selectedOrganization } = useOrgAccountSelectionContext();
+  const isCustomerCenter = AuthUtils.isCustomerCenter();
 
   const handleCloseDrawer = () => {
     setOpenDetails((state) => !state);
@@ -97,7 +99,7 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
           <div className="details-main-wrapper">
             <div className="header">
               <Heading as="h3">{t('ManageAccount.accountDetails')}</Heading>
-              <Button variant="tertiary" onClick={handleCloseDrawer}> 
+              <Button variant="tertiary" onClick={handleCloseDrawer} textButton IconClose>
                 <IconClose />
               </Button>
             </div>
@@ -137,9 +139,11 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
                       return (
                         <div key={index} className="Questionnairedetails-li">
                           <div className="Questionnairedetails-key">{item.templateName}</div>
-                          <div className="delete-button" onClick={() => OnDeleteClick(item.id)}>
-                            <DeleteIcon />
-                          </div>
+                          {!isCustomerCenter && (
+                            <div className="delete-button" onClick={() => OnDeleteClick(item.id)}>
+                              <DeleteIcon />
+                            </div>
+                          )}
                         </div>
                       );
                     })}

@@ -12,6 +12,8 @@ import { useAccounts } from './AccountsContext';
 import Actions from './Action';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '../dataTableComponent';
+import usePermission from '@src/hooks/usePermissions';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 
 export default function AccountsList(props) {
   const {
@@ -27,6 +29,12 @@ export default function AccountsList(props) {
   const { t } = useTranslate();
   const showCardView = useResponsiveView();
   const [tableHeight, setTableHeight] = useState('100%');
+  const { hasPermission, hasAnyPermission } = usePermission();
+  const isAuthorized = hasAnyPermission([
+    PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_USERS,
+    PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS,
+    PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION
+  ]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -109,7 +117,7 @@ export default function AccountsList(props) {
         name: t('account.action'),
         cell: (row) => <Actions row={row} userId={userId} practiceId={practiceId} refetch={refetch} />,
         width: '120px',
-        omit: omitColumns.includes('action'),
+        omit: !isAuthorized || omitColumns.includes('action'),
         isAction: true
       }
     ];

@@ -1,41 +1,19 @@
-// Values need to be added once all the data is available in API
 export const TherapyDetailsConstants = [
   {
-    sectionHeading: 'labels.therapy.therapyINFO',
+    sectionHeading: 'labels.therapy.generalDetails',
     sectionData: [
+      { label: 'labels.therapy.materialNumber', value: 'materialNumber' },
       { label: 'labels.therapy.materialDescription', value: 'materialDescription' },
       { label: 'labels.therapy.ndc', value: 'ndcNumber' },
-      { label: 'labels.therapy.udi', value: '' },
-      { label: 'labels.therapy.salesOrg', value: 'salesOrg' }
-    ]
-  },
-  {
-    sectionHeading: 'labels.therapy.variantINFO',
-    sectionData: [
-      { label: 'labels.therapy.variant', value: '' },
-      { label: 'labels.therapy.variantDesc', value: '' }
-    ]
-  },
-  {
-    sectionHeading: 'labels.therapy.contractINFO',
-    sectionData: [
-      { label: 'labels.therapy.contractNumber', value: '' },
-      { label: 'labels.therapy.contractType', value: '' },
-      { label: 'labels.therapy.contractTypeDesc', value: '' },
-      { label: 'labels.therapy.contractValidFrom', value: '' },
-      { label: 'labels.therapy.contractValidTill', value: '' },
-      { label: 'labels.therapy.division', value: '' },
-      { label: 'labels.therapy.340bIdentifier', value: '' }
-    ]
-  },
-  {
-    sectionHeading: 'labels.therapy.pricingINFO',
-    sectionData: [
-      { label: 'labels.therapy.PriceDate', value: '' },
-      { label: 'labels.therapy.NetPrice', value: '' },
-      { label: 'labels.therapy.priceUnit', value: '' },
-      { label: 'labels.therapy.currency', value: '' },
-      { label: 'labels.therapy.minimumOrderQuantity', value: 'minOrdrQuantity' }
+      { label: 'labels.therapy.strength', value: 'strength' },
+      { label: 'labels.therapy.dosage', value: 'dosage' },
+      { label: 'labels.therapy.sellingUnitCode', value: 'sellingUnitCode' },
+      { label: 'labels.therapy.vendorName', value: 'vendorName' },
+      { label: 'labels.therapy.upcCode', value: 'upcCode' },
+      { label: 'labels.therapy.dropshipIndicator', value: 'dropshipIndicator' },
+      { label: 'labels.therapy.baseUnitOfMeasure', value: 'baseUnitOfMeasure' },
+      { label: 'labels.therapy.cgatIdentifier', value: 'cgatIdentifier' },
+      { label: 'labels.therapy.productLevelPricing', value: 'productLevelPricing' }
     ]
   }
 ];

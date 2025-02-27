@@ -21,7 +21,7 @@ const DiscardChangesModal = ({ heading = '', description = '', isOpen, onClose, 
             {t('orgManagement.button.cancel')}
           </Button>
           <Button size="md" variant="primary" onClick={onConfirm}>
-            {t('orgManagement.button.okay')}
+            {t('orgManagement.button.OK')}
           </Button>
         </div>
       }

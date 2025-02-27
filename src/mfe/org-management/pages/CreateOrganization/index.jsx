@@ -145,7 +145,7 @@ const CreateOrganization = () => {
       )} */}
       <ModuleHeader
         heading={
-          <Heading as="h1">{t('orgManagement.create_org')}</Heading>
+          <Heading as="h1">{t(!isEdit ? 'orgManagement.create_org' : 'orgManagement.edit_org')}</Heading>
         }
       />
       <Formik

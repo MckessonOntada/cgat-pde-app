@@ -282,9 +282,20 @@ const CreateUser = () => {
 
       <ModuleHeader
         heading={
-          <Heading as="h1">{t(isSystemAdminView ? 'userManagement.create_sysadmin' : 'userManagement.create_organization_user')}</Heading>
+          <Heading as="h1">
+            {t(
+              isEdit
+                ? isSystemAdminView
+                  ? 'userManagement.edit_sysadmin'
+                  : 'userManagement.edit_organization_user'
+                : isSystemAdminView
+                ? 'userManagement.create_sysadmin'
+                : 'userManagement.create_organization_user'
+            )}
+          </Heading>
         }
       />
+
 
       {!isEdit && !isSystemAdminView && (
         <div className="stepper">

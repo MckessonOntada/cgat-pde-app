@@ -487,6 +487,12 @@ div.disable-all {
   align-items: center;
   justify-content: flex-start;
   gap: var(--spacing-02);
+
+  .overflowing {
+    text-overflow: ellipsis;
+    text-wrap: wrap;
+    overflow: hidden;
+  }
 }
 
 .row-space-between-center {
@@ -910,32 +916,69 @@ div.disable-all {
     }
 
     .rule-wrapper {
-      display: grid;
-      grid-template-columns: repeat(24, 1fr);
-      column-gap: var(--spacing-03);
-      align-items: center;
+      display: block;
       margin: var(--spacing-04) 0;
 
       .response-control {
-        grid-column: span 14;
+        grid-column: span 24;
 
         &.price {
-          grid-column: span 7;
+          // grid-column: span 7;
+        }
+
+        .empty-gap {
+          display: none;
         }
       }
 
       .condition {
-        grid-column: span 1;
+        grid-column: span 24;
       }
 
-      .control {
-        grid-column: span 6;
+      .rule-field {
+        grid-column: span 24;
       }
 
-      .clause {
-        grid-column: span 3;
+      .rule-operator {
+        grid-column: span 24;
         display: flex;
-        justify-content: center;
+        justify-content: start;
+        margin-top: var(--spacing-04);
+      }
+    }
+
+    @include mixins.respond(md) {
+      .rule-wrapper {
+        display: grid;
+        grid-template-columns: repeat(24, 1fr);
+        column-gap: var(--spacing-03);
+        align-items: center;
+
+        .response-control {
+          grid-column: span 14;
+
+          &.price {
+            // grid-column: span 7;
+          }
+
+          .empty-gap {
+            display: initial;
+          }
+        }
+
+        .condition {
+          grid-column: span 1;
+        }
+
+        .rule-field {
+          grid-column: span 6;
+        }
+
+        .rule-operator {
+          grid-column: span 3;
+          justify-content: center;
+          margin-top: unset;
+        }
       }
     }
 
@@ -949,11 +992,13 @@ div.disable-all {
     .hr-container {
       display: flex;
       align-items: center;
-      gap: var(--spacing-04);
+      gap: var(--spacing-02);
 
       .hr-text {
-        margin-right: 10px;
-        font-weight: bold;
+        font-weight: var(--brand-font-weight-700);
+        text-transform: uppercase;
+        font-size: var(--brand-font-size--large);
+        line-height: var(--brand-line-height--x-large);
       }
 
       .hr-line {

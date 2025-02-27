@@ -190,7 +190,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.reviewPayments.paymentSummary': 'Payment Summary',
   'paymentInvoices.reviewPayments.confirmationDialogue': 'Are you sure want to leave Review and Pay screen?',
   'paymentInvoices.reviewPayments.confirm': 'Confirm',
-  'paymentInvoices.reviewPayments.Okay': 'Okay',
+  'paymentInvoices.reviewPayments.OK': 'OK',
   'paymentInvoices.reviewPayments.remove': 'REMOVE',
   'paymentInvoices.reviewPayments.pay': 'PAY',
 

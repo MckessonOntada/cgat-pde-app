@@ -18,6 +18,8 @@ import { useDispatch } from 'react-redux';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
+import usePermission from '@src/hooks/usePermissions';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 
 const OrgList = ({ onActionSuccess }) => {
   const { t } = useTranslate();
@@ -25,6 +27,7 @@ const OrgList = ({ onActionSuccess }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { data, paginationConfig, isLoading, isError, refreshData, setPageNumber, applySort } = useOrg();
   const dispatch = useDispatch();
+  const { hasPermission } = usePermission();
   const location = (address) => {
     return `${address.address1 || ''}, ${address.city || ''}, ${address.state || ''}, ${address.pin || ''}`;
   };
@@ -82,7 +85,7 @@ const OrgList = ({ onActionSuccess }) => {
             dispatch(closeModal());
             window.location.href = '/admin';
           }}>
-          {t('orgManagement.button.okay')}
+          {t('orgManagement.button.OK')}
         </Button>
       </div>
     );
@@ -110,7 +113,8 @@ const OrgList = ({ onActionSuccess }) => {
         />
       ),
       wrap: true,
-      width: '40px'
+      width: '40px',
+      omit: !hasPermission(PERMISSIONS_ENUM.ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION)
     },
     {
       id: 'name',
@@ -145,11 +149,11 @@ const OrgList = ({ onActionSuccess }) => {
       name: t('orgManagement.table.location'),
       cell: (row) => (
         <div>
-          <EclipsesTextcss str={location(row.address)} maxWidth={240} />
+          <EclipsesTextcss str={row.address.state} maxWidth={240} />
         </div>
       ),
       sortable: true,
-      sortKey: 'id',
+      sortKey: 'state',
       minWidth: '250px',
       wrap: true
     },
@@ -157,6 +161,8 @@ const OrgList = ({ onActionSuccess }) => {
       id: 'date',
       name: t('orgManagement.table.dateUpdated'),
       selector: (row) => row.updatedAt,
+      sortable: true,
+      sortKey: 'updated_At',
       cell: (row) =>
         row.updatedAt
           ? CommonUtils.convertDateStringFormat(row.updatedAt, 'MM-DD-YYYY')

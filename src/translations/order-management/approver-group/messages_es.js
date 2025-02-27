@@ -41,6 +41,7 @@ export const ApproverManagementES = {
   'approvergroup.selectaccount': 'S_Select Account',
   'approvergroup.price': 'S_Amount Greater Than',
   'approvergroup.addattribute': 'S_Add Attribute',
+  'approverGroup.addRule': 'S_Add Rule',
   'approvergroup.approveuserlist': 'S_Approver user list',
   'approvergroup.selectuser': 'S_Select Users',
   'approvergroup.username': 'S_User Name',
@@ -81,5 +82,9 @@ export const ApproverManagementES = {
   'rules.accounts': 'S_Account',
   'rules.therapies': 'S_Catalog',
   'rules.users': 'S_User',
-  'rules.roles': 'S_Roles'
+  'rules.roles': 'S_Roles',
+
+  'rules.operator.orderedOfAny': 'S_Ordered Any Of',
+  'rules.operator.selectedAnyOf': 'S_Selected Any Of',
+  'rules.operator.greaterThan': 'S_Greater Than'
 };

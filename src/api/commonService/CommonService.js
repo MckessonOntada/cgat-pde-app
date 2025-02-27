@@ -4,6 +4,9 @@ import CommonUtils from '@src/util/CommonUtils';
 import { SESSION_CONST } from '@src/constants/SessionConstants';
 import AuthUtils from '@src/util/AuthUtils';
 
+export const SYSTEM_ADMIN = 'System Admin';
+export const CUSTOMER_CENTRE = 'Customer Centre';
+
 const getUserDetails = () => {
   return sessionStorage.getItem(SESSION_CONST.USERNAME);
 };
@@ -25,10 +28,12 @@ const updateSessionStorage = async () => {
     if (!CommonUtils.isNonEmptyObject(userDetails)) {
       throw Error('Invalid Login credentials.');
     }
+
     const activeUserRoleName = userDetails['role']['name'];
     const activeUserName = userDetails['userName'];
     const activeUserId = userDetails['id'];
     const activeUserPermissions = userDetails['permissions'];
+
     const activeUserPracticeId = userDetails['practiceId'];
     const impersonatedByUsername = userDetails['impersonatedByUser']?.userName;
 
@@ -37,10 +42,18 @@ const updateSessionStorage = async () => {
     sessionStorage.setItem(SESSION_CONST.USER_ID, activeUserId);
     sessionStorage.setItem(SESSION_CONST.USER_PERMISSIONS, activeUserPermissions);
 
-    if (impersonatedByUsername) sessionStorage.setItem(SESSION_CONST.IMPERSONATE_USERNAME, activeUserName);
-    else sessionStorage.removeItem(SESSION_CONST.IMPERSONATE_USERNAME);
+    if (userDetails?.impersonatedByUser) {
+      sessionStorage.setItem(SESSION_CONST.IMPERSONATED_BY_USER, JSON.stringify(userDetails.impersonatedByUser));
+    }
 
-    if (activeUserRoleName !== 'System Admin') {
+    if (impersonatedByUsername) {
+      sessionStorage.setItem(SESSION_CONST.IMPERSONATE_USERNAME, activeUserName);
+    } else {
+      sessionStorage.removeItem(SESSION_CONST.IMPERSONATE_USERNAME);
+      sessionStorage.removeItem(SESSION_CONST.IMPERSONATED_BY_USER);
+    }
+
+    if (activeUserRoleName !== SYSTEM_ADMIN && activeUserRoleName !== CUSTOMER_CENTRE) {
       AuthUtils.setPracticeId(activeUserPracticeId);
     }
 

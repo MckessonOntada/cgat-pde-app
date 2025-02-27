@@ -10,13 +10,11 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { ShippingAddressProvider } from '../../../../context/ShippingAddressContext';
 import PageHeader from '@src/components/pageHeader';
 import { useMutation, useQuery } from 'react-query';
-import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
-import CommonUtils from '@src/util/CommonUtils';
 import OrderService from '@src/api/commonService/OrderService';
 import ShippingAddress from './ShippingAddress';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { ExtractErrorfromAPIResponse, serializeParams } from '@src/util/ApiUtils';
+import { serializeParams } from '@src/util/ApiUtils';
 import useAlert from '@src/hooks/useAlert';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
@@ -28,7 +26,8 @@ const AccountSelection = () => {
   const navigate = useNavigate();
   const { orderId } = useParams();
   const location = useLocation();
-  const { isEdit = false, isApprover = false } = location.state || {};
+  const { isEdit = false, isApprover = false, alertState, isTherapyChanged = false } = location.state || {};
+  const [updateState, setUpdateState] = useState({ isTherapyChanged });
   const [selectedAccount, setSelectedAccount] = React.useState(null);
   const [accountSearchString, setAccountSearchString] = React.useState('');
   const [selectedShippingAddress, setSelectedShippingAddress] = React.useState('');
@@ -36,13 +35,8 @@ const AccountSelection = () => {
   const [initialSelectedShippingAddress, setInitialSelectedShippingAddress] = React.useState('');
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [accountError, setAccountError] = useState({ isError: false, message: '' });
-  const [inventoryType, setInventoryType] = useState(null);
-  const { data: orderDetails, isFetching, isError, error } = useOrder(orderId);
+  const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
   const therapyId = orderDetails?.therapy?.materialNumber;
-
-  const setInventoryTypeData = (data) => {
-    setInventoryType(data);
-  };
 
   const alertContainerId = 'accountSelection-alert-Container';
   const { showAlert } = useAlert();
@@ -52,40 +46,20 @@ const AccountSelection = () => {
     if (isPapOrder) navigate('/orders');
   }, [orderDetails]);
 
-  React.useEffect(() => {
-    // refreshOrder({ queryKey: ['summary', Date.now(), orderId] });
-  }, []);
-
   const { isLoading, data: accountsListData = {} } = useQuery({
     queryKey: ['order', 'therapy', therapyId, accountSearchString],
     queryFn: async () => OrderService.getSoldToAccounts(therapyId, serializeParams({ query: accountSearchString })),
-    enabled: !!therapyId,
+    enabled: !!therapyId && !!orderDetails.accountDetails.soldToAccount,
     refetchOnWindowFocus: false,
     onError: (error) => {
       showAlert({ description: error.message, type: 'error', anchorEl: alertContainerId });
     }
   });
 
-  const accountListOptions = useMemo(() => {
-    if (!CommonUtils.isNonEmptyObject(accountsListData)) {
-      return [];
-    }
-    const accArr = [];
-    accountsListData.content?.forEach((acc) => {
-      const label = `(${acc.accountNumber}) ` + acc.accountName;
-      const value = acc.accountNumber;
-      const subLabel = [acc.houseNumber, acc.street, acc.city, acc.state, acc.zipCode].filter(Boolean).join(', ');
-      accArr.push({ label, value, subLabel });
-    });
-
-    return accArr;
-  }, [accountsListData, orderDetails]);
-
   const { isLoading: isSaving, mutate: saveAccount } = useMutation(async (data) => OrderService.saveAccount(orderId, data), {
     onSuccess: async (result) => {
       const { id } = result;
       try {
-        const alertState = await handleInventoryCheck();
         if (result.patientDetailsRequired) {
           navigate(`../${id}/patient`, { state: { alertState, isEdit: false, isApprover: isApprover } });
         } else {
@@ -100,55 +74,12 @@ const AccountSelection = () => {
     }
   });
 
-  const handleInventoryCheck = async () => {
-    const selectedAccountDetails = accountsListData.content.find((acc) => acc.accountNumber === selectedAccount?.accountNumber);
-    const requestPayload = {
-      customerNumber: selectedShippingAddress?.accountNumber,
-      shipTo: selectedAccount?.accountNumber,
-      salesOrg: selectedAccountDetails.salesOrg,
-      distChannel: selectedAccountDetails.distributionChannel,
-      division: selectedAccountDetails.division,
-      companyCode: selectedAccountDetails.companyCode,
-      orderId,
-      items: null
-    };
-    if (!(inventoryType && ['S', 'I'].includes(inventoryType))) {
-      return;
-    }
-    try {
-      const res = await OrderService.getInventoryStatus(requestPayload);
-      if (res.status === 200) {
-        showAlert({
-          description: t('messages.inventoryCheck.success'),
-          type: 'success',
-          anchorEl: alertContainerId
-        });
-        return {
-          description: t('messages.inventoryCheck.success'),
-          type: 'success'
-        };
-      }
-    } catch (err) {
-      if (err.status === 400) {
-        showAlert({
-          description: ExtractErrorfromAPIResponse(err.response?.data.message),
-          type: 'warning',
-          anchorEl: alertContainerId
-        });
-        return {
-          description: ExtractErrorfromAPIResponse(err.response?.data.message),
-          type: 'warning'
-        };
-      } else {
-        showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
-      }
-    }
-  };
-
   const handleOnClose = () => {
     setOpen(false);
   };
   const handleOnClick = () => {
+    setAccountError({ isError: false, message: '' });
+    setUpdateState({ isTherapyChanged: false });
     setOpen(true);
   };
 
@@ -169,9 +100,18 @@ const AccountSelection = () => {
     }
   };
 
+  React.useEffect(() => {
+    showAlert({ description: accountError.message, type: 'error', anchorEl: alertContainerId });
+  }, [accountError]);
+
   const handleOnSubmit = async () => {
     if (!selectedShippingAddress || !selectedAccount || isSaving) {
-      showAlert({ description: 'Please selected required details.', type: 'error', anchorEl: alertContainerId });
+      if (!selectedShippingAddress && selectedAccount) {
+        setAccountError({ isError: true, message: t('messages.selectshippingAddress') });
+      } else if (!selectedAccount) {
+        setAccountError({ isError: true, message: t('messages.selectAccount') });
+      } else setAccountError({ isError: true, message: t('messages.selectAccount') });
+
       return;
     }
 
@@ -213,30 +153,46 @@ const AccountSelection = () => {
   };
 
   const handleOnAccountSelection = (selectedAccount) => {
+    setSelectedShippingAddress('');
+    setUpdateState({ isTherapyChanged: false });
     setSelectedAccount(selectedAccount);
     setOpen(false);
   };
 
   React.useEffect(() => {
-    if (CommonUtils.isNonEmptyObject(accountsListData) && orderDetails) {
+    if (accountsListData && orderDetails) {
       const { accountDetails } = orderDetails;
       if (accountDetails) {
         const { soldToAccount, shipToAccount } = accountDetails;
         if (soldToAccount) {
-          const originalSelectedAccount = accountsListData.content?.filter((acc) => acc.accountNumber === soldToAccount.accountNumber)[0];
+          const originalSelectedAccount = accountsListData?.content?.filter((acc) => acc.accountNumber === soldToAccount.accountNumber)[0];
           if (originalSelectedAccount) setSelectedAccount(originalSelectedAccount);
 
           setInitialSelectedAccount(originalSelectedAccount); // Set initial value;
+        } else {
+          if (updateState.isTherapyChanged) {
+            setSelectedAccount('');
+            setInitialSelectedAccount('');
+          }
         }
         if (shipToAccount) {
           setSelectedShippingAddress(shipToAccount);
           setInitialSelectedShippingAddress(shipToAccount); // Set initial value
+        } else {
+          if (updateState.isTherapyChanged) {
+            setSelectedShippingAddress('');
+            setInitialSelectedShippingAddress('');
+          }
         }
       } else {
         console.log('Could not set account');
       }
     }
-  }, [orderDetails, accountsListData]);
+  }, [orderDetails?.accountDetails, accountsListData, therapyId]);
+
+  if (isLoader) {
+    return isLoader;
+  }
 
   return (
     <div className="MCP-module-wrapper">
@@ -253,12 +209,11 @@ const AccountSelection = () => {
         <div className={`MCP-module-wrapper`}>
           <OrderHeaderDetails
             orderDetails={orderDetails}
-            setInventoryTypeData={setInventoryTypeData}
             therapyId={therapyId}
             soldToAccountId={selectedAccount?.accountNumber}
             shipToAccountId={selectedShippingAddress?.accountNumber}
           />
-          <div id={alertContainerId} />
+          {accountError.isError && <div id={alertContainerId} />}
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>
               <ModuleHeader
@@ -280,58 +235,47 @@ const AccountSelection = () => {
                           </p>
                           <p className={styles.address}>{getAddress(selectedAccount)}</p>
                           <p className={styles.address}>
-                            {t('labels.distributionChannel')} - {selectedAccount?.distributionChannel}
+                            <span>
+                              {t('labels.distributionChannel')} - {selectedAccount?.distributionChannel}
+                            </span>
+                            <span>
+                              {t('labels.program')} - {selectedAccount?.cgatIdentifier}
+                            </span>
                           </p>
                         </React.Fragment>
                       ) : (
                         <React.Fragment>
                           <Heading as="h3">{t('labels.pleaseSelectAccount')}</Heading>
+                          <div className={styles.btnAccount}>
+                            <Button size="md" onClick={handleOnClick} variant="secondary">
+                              {t('captions.btnSelectYourAccount')}
+                            </Button>
+                          </div>
                         </React.Fragment>
                       )}
                     </div>
                   </div>
                   <div></div>
                   <div className={styles.controls}>
-                    <div className={styles.controlWrapper}>
-                      <MultiSelectDropdown
-                        id={'targetAccount'}
-                        label={' '}
-                        isMultiSelect={false}
-                        placeholder={t('headings.seletAccount')}
-                        value={selectedAccount?.accountNumber || ''}
-                        onChange={(val) => setSelectedAccount(accountsListData.content?.filter((acc) => acc.accountNumber === val)[0])}
-                        options={accountListOptions}
-                        forcedValue={selectedAccount?.accountNumber}
-                        variant={'async'}
-                        onSearch={(e) => {
-                          setAccountSearchString(() => e);
-                        }}
-                        recordsCountToEnableSearch={5}
-                        error={accountError.isError && accountError.message}
-                        size="lg"
-                      />
-                    </div>
-                    <Link to="#" onClick={handleOnClick} className="action-link">
-                      {t('labels.needAssistanceSelectingAccount')}
-                    </Link>
+                    {selectedAccount && (
+                      <Button variant="tertiary" onClick={handleOnClick}>
+                        {t('button.caption.change')}
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
-            <ShippingAddressProvider accountDetails={{ therapyId, selectedAccount }}>
-              <ShippingAddress selectedShippingAddress={selectedShippingAddress} setSelectedShippingAddress={setSelectedShippingAddress} />
-            </ShippingAddressProvider>
+            {selectedAccount && (
+              <ShippingAddressProvider accountDetails={{ therapyId, selectedAccount }}>
+                <ShippingAddress
+                  selectedShippingAddress={selectedShippingAddress}
+                  setSelectedShippingAddress={setSelectedShippingAddress}
+                />
+              </ShippingAddressProvider>
+            )}
           </div>
-          <div className={styles.inventoryControl}>
-            <Button
-              size="md"
-              onClick={() => {
-                handleInventoryCheck();
-              }}
-              variant="secondary"
-              disabled={!(inventoryType && ['S', 'I'].includes(inventoryType))}>
-              {t('captions.btnInventoryCheck')}
-            </Button>
+          <div>
             <div className="controls">
               <Button size="md" onClick={handleOnBack} variant="secondary">
                 {t('captions.btnBack')}

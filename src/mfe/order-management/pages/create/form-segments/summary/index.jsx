@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import styles from './Summary.module.scss';
 import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg';
 import ModuleHeader from '@src/components/module-header';
-import { Button, Modal, CheckboxGroup, Heading, Loader, Badge } from '@mckesson/mcp-component-library';
+import { Button, Modal, CheckboxGroup, Heading, Loader, Badge, Tooltip } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
@@ -24,7 +24,7 @@ import OrderStepper from '../OrderStepper';
 import useOrder from '../../../orders/useOrder';
 import { useCustomPrint } from '@src/util/printUtils';
 import CommonUtils from '@src/util/CommonUtils';
-import { FormattedNumber } from 'react-intl';
+import { CUSTOMER_CENTRE, SYSTEM_ADMIN } from '@src/api/commonService/CommonService';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -43,7 +43,7 @@ const Summary = () => {
   const location = useLocation();
   const { orderId } = useParams();
   const { showAlert } = useAlert();
-  const { data: orderDetails, isFetching, isError, error } = useOrder(orderId);
+  const { data: orderDetails, isFetching, isError, error, isLoader } = useOrder(orderId);
   const [isPAPOrderConfirmModalOpen, setIsPAPOrderConfirmModalOpen] = React.useState(false);
   const { isApprover = false, isSimulate = false } = location.state || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
@@ -53,13 +53,14 @@ const Summary = () => {
     catalog = {},
     orderCost,
     accountDetails = {},
-    patient,
+    patient = {},
     additionalDetails = {},
     patientDetailsRequired = false,
     rejectionDetails,
     paporder: isPapOrder,
     status
   } = orderDetails || {};
+
   const variantDetails = additionalDetails?.variantDetails || {};
   const isImpersonated = Boolean(AuthUtils.getImpersonateId()),
     isRejected = status === StatusEnum.REJECTED,
@@ -150,6 +151,14 @@ const Summary = () => {
     submitOrder({ action: BUTTON_ACTIONS.SUBMIT, isPAPOrder });
   };
 
+  const isImpersonatedAdmin = () => {
+    const impersonatedByUser = AuthUtils.getImpersonatedByUser();
+    if (impersonatedByUser && (impersonatedByUser.role?.name === SYSTEM_ADMIN || impersonatedByUser.role?.name === CUSTOMER_CENTRE)) {
+      return true;
+    }
+    return false;
+  };
+
   const handleOnSubmit = () => {
     if (!agreeCheckboxOptions.isChecked) {
       setOrderAgreementCheckboxError('Please acknowledge to submit order');
@@ -157,7 +166,7 @@ const Summary = () => {
     }
 
     if (agreeCheckboxOptions.isChecked) {
-      if (isImpersonated) {
+      if (isImpersonatedAdmin()) {
         setIsPAPOrderConfirmModalOpen(true);
       } else {
         submitOrder({ action: BUTTON_ACTIONS.SUBMIT });
@@ -304,10 +313,14 @@ const Summary = () => {
     return controls;
   };
 
-  if (isFetching) {
-    return <Loader />;
+  if (isLoader) {
+    return isLoader;
   }
 
+  if (patient.patientInfo)
+    patient.fullName = [patient.patientInfo.firstName, patient.patientInfo.middleName, patient.patientInfo.lastName]
+      .filter(Boolean)
+      .join(' ');
   const isAgreed = agreeCheckboxOptions.isChecked,
     hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected;
 
@@ -460,16 +473,29 @@ const Summary = () => {
                   <DetailSegment
                     label={t('labels.patientName')}
                     value={
-                      patient?.patientInfo &&
-                      (patient.patientInfo.firstName || patient.patientInfo.middleName || patient.patientInfo.lastName)
-                        ? [patient.patientInfo.firstName, patient.patientInfo.middleName, patient.patientInfo.lastName]
-                            .filter(Boolean)
-                            .join(' ')
-                        : '-'
+                      patient.fullName ? (
+                        <Tooltip body={patient.fullName}>
+                          <span className="overflowing">{patient.fullName}</span>
+                        </Tooltip>
+                      ) : (
+                        '-'
+                      )
                     }
                   />
                   <DetailSegment label={t('labels.DOB')} value={patient?.patientInfo?.dateOfBirth || '-'} />
-                  <DetailSegment label={t('labels.emailId')} value={patient?.contact?.emailId || '-'} />
+
+                  <DetailSegment
+                    label={t('labels.emailId')}
+                    value={
+                      patient?.contact?.emailId ? (
+                        <Tooltip body={patient.contact.emailId}>
+                          <span className="overflowing">{patient.contact.emailId}</span>
+                        </Tooltip>
+                      ) : (
+                        '-'
+                      )
+                    }
+                  />
                   <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
                 </div>
               </div>

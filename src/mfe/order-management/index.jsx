@@ -5,14 +5,17 @@ import { ManageOrderProvider } from './context/ManageOrderContext';
 import AuthUtils from '@src/util/AuthUtils';
 import { CONFIG_MODULE_ROUTES } from './pages/system-configuration/constants';
 import AppRoutes from '@src/routes/AppRoutes';
+import { PERMISSIONS_ENUM } from '../user-management/pages/UserPermissions/permissionsEnum';
+import usePermission from '@src/hooks/usePermissions';
 
 const OrderManagement = () => {
   const isSystemAdmin = AuthUtils.isSystemAdmin();
+  const isCustomerCenter = AuthUtils.isCustomerCenter();
   const navigate = useNavigate();
   const location = useLocation();
 
   React.useEffect(() => {
-    if (isSystemAdmin && !location.pathname.includes(AppRoutes.pathSystemConfiguration)) navigate('/');
+    if (isSystemAdmin && !location.pathname.includes(AppRoutes.pathSystemConfiguration) && !isCustomerCenter) navigate('/');
   }, []);
 
   return (
