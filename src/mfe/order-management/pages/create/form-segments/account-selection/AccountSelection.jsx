@@ -19,6 +19,7 @@ import useAlert from '@src/hooks/useAlert';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import useOrder from '../../../orders/useOrder';
+import { Loader } from '@mckesson/mcp-component-library';
 
 const AccountSelection = () => {
   const { t } = useTranslate();
@@ -193,7 +194,9 @@ const AccountSelection = () => {
   if (isLoader) {
     return isLoader;
   }
-
+  if (isSaving) {
+    return  <Loader type={'screen'} />;
+  }
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -281,7 +284,7 @@ const AccountSelection = () => {
                 {t('captions.btnBack')}
               </Button>
               <Button size="md" onClick={handleOnSubmit} variant="primary" type="submit">
-                {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
+                {t('captions.btnSaveAndContinue')}
               </Button>
             </div>
           </div>

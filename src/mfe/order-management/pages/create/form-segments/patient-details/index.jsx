@@ -19,6 +19,7 @@ import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import { renderModal } from '@src/util/ModalUtil';
 import useOrder from '../../../orders/useOrder';
+import { Loader } from '@mckesson/mcp-component-library';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
@@ -176,6 +177,9 @@ const PatientDetails = () => {
   if (isLoader) {
     return isLoader;
   }
+  if (isSaving) {
+    return  <Loader type={'screen'} />;
+  }
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -232,7 +236,7 @@ const PatientDetails = () => {
                           {t('captions.btnBack')}
                         </Button>
                         <Button size="md" variant="primary" type="submit">
-                          {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
+                          {t('captions.btnSaveAndContinue')}
                         </Button>
                       </div>
                     }

@@ -23,6 +23,7 @@ import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import QuestionnaireTemplate from '@src/mfe/order-management/questionnaire/QuestionnaireTemplate';
 import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/order-management/questionnaire/AddQuestionnaire';
 import useOrder from '../../../orders/useOrder';
+import { Loader } from '@mckesson/mcp-component-library';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -396,6 +397,9 @@ function AdditionalDetails() {
   if (isLoader) {
     return isLoader;
   }
+  if (isSaving) {
+    return  <Loader type={'screen'} />;
+  }
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -495,7 +499,7 @@ function AdditionalDetails() {
                       {t('captions.btnBack')}
                     </Button>
                     <Button size="md" variant="primary" type="submit">
-                      {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
+                      {t('captions.btnSaveAndContinue')}
                     </Button>
                   </div>
                 </div>

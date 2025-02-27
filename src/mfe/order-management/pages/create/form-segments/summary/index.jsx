@@ -112,7 +112,7 @@ const Summary = () => {
     }
   }
 
-  const { mutate: submitOrder } = useMutation(async ({ action, isPAPOrder }) => await OrderService.submitOrder(orderId, isPAPOrder), {
+  const { isLoading: isSaving, mutate: submitOrder } = useMutation(async ({ action, isPAPOrder }) => await OrderService.submitOrder(orderId, isPAPOrder), {
     onSuccess: (_result, { action }) => {
       if (action === BUTTON_ACTIONS.SUBMIT) {
         navigate(`../${orderId}/order-confirmed`);
@@ -324,6 +324,10 @@ const Summary = () => {
   const isAgreed = agreeCheckboxOptions.isChecked,
     hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected;
 
+  if (isSaving) {
+    return  <Loader type={'screen'} />;
+  }
+  
   return (
     <div className="MCP-module-wrapper">
       <div>
