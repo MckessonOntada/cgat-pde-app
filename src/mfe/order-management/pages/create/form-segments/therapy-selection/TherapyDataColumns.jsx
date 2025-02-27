@@ -45,7 +45,7 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     id: 'therapyDescription',
     name: t('labels.therapyDescription'),
     selector: () => {},
-    maxWidth: '250px',
+    maxWidth: '280px',
     sortable: true,
     sortKey: 'material_description',
     cell: (props) => (
@@ -66,7 +66,7 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     id: 'ndc',
     name: t('table.columns.captions.nationalDrugCode'),
     selector: () => {},
-    maxWidth: '190px',
+    maxWidth: '250px',
     sortable: true,
     sortKey: 'ndc_number',
     cell: (props) => (
@@ -79,7 +79,8 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     id: 'strength',
     name: t('table.columns.captions.strength'),
     selector: () => {},
-    maxWidth: '30px',
+    maxWidth: '150px',
+    minWidth: '100px',
     sortable: false,
     cell: (props) => <span aria-label={t('table.columns.captions.strength')}>{props.strength}</span>
   },
@@ -87,104 +88,9 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     id: 'dosage',
     name: t('table.columns.captions.dosage'),
     selector: () => {},
-    maxWidth: '30px',
+    maxWidth: '150px',
+    minWidth: '100px',
     sortable: false,
     cell: (props) => <span aria-label={t('table.columns.captions.dosage')}>{props.dosage}</span>
-  },
-  {
-    id: 'sellingUnitCode',
-    name: t('table.columns.captions.sellingUnitCode'),
-    selector: () => {},
-    sortable: false,
-    cell: (props) => <span aria-label={t('table.columns.captions.sellingUnitCode')}>{props.sellingUnitCode}</span>
-  },
-  {
-    id: 'vendorName',
-    name: t('table.columns.captions.vendorName'),
-    selector: () => {},
-    sortable: false,
-    maxWidth: '140px',
-    cell: (props) => (
-      <EclipsesTextcss tooltip={props.createdBy?.userName} str={props.vendorName} maxWidth={130} className={'MCP-table-cell'} />
-    )
-  },
-  {
-    id: 'upcCode',
-    name: t('table.columns.captions.upcCode'),
-    selector: () => {},
-    sortable: false,
-    cell: (props) => <span aria-label={t('table.columns.captions.upcCode')}>{props.upcCode}</span>
-  },
-  {
-    id: 'dropshipIndicator',
-    name: t('table.columns.captions.dropshipIndicator'),
-    selector: () => {},
-    sortable: false,
-    cell: (props) => (
-      <Badge
-        text={props.dropshipIndicator === 'Y' ? t('label.yes') : t('label.no')}
-        type={props.dropshipIndicator === 'Y' ? 'success' : 'info'}
-      />
-    )
-  },
-  {
-    id: 'status',
-    name: t('table.columns.captions.status'),
-    selector: () => {},
-    maxWidth: '30px',
-    sortable: false,
-    cell: (props) => <Badge text={props.status} type={getColorByStatus(props.status)} />
-  },
-  {
-    id: 'baseUnitOfMeasure',
-    name: t('table.columns.captions.baseUnitsOfMeasure'),
-    selector: () => {},
-    sortable: false,
-    cell: (props) => <span aria-label={t('table.columns.captions.baseUnitsOfMeasure')}>{props.baseUnitOfMeasure}</span>
-  },
-  {
-    id: 'cgatIdentifier',
-    name: t('table.columns.captions.cgatIdentifier'),
-    selector: () => {},
-    sortable: false,
-    cell: (props) => (
-      <Badge
-        text={props.cgatIdentifier === 'Y' ? t('label.yes') : t('label.no')}
-        type={props.cgatIdentifier === 'Y' ? 'success' : 'info'}
-      />
-    )
-  },
-  {
-    id: 'salesOrganization',
-    name: t('table.columns.captions.salesOrganization'),
-    selector: () => {},
-    sortable: false,
-    cell: (props) => <span aria-label={t('table.columns.captions.salesOrganization')}>{props.salesOrganization}</span>
-  },
-  {
-    id: 'cgatType',
-    name: t('table.columns.captions.cgatTherapyType'),
-    selector: () => {},
-    sortable: false,
-    cell: (props) => <span aria-label={t('table.columns.captions.cgatTherapyType')}>{props.cgatType}</span>
-  },
-  {
-    id: 'productLevelPricing',
-    name: t('table.columns.captions.productLevelPricing'),
-    selector: () => {},
-    sortable: false,
-    cell: (props) => (
-      <Badge
-        text={props.productLevelPricing === 'Yes' ? t('label.yes') : t('label.no')}
-        type={props.productLevelPricing === 'Yes' ? 'success' : 'info'}
-      />
-    )
-  },
-  {
-    id: 'minimumOrderQuantity',
-    name: t('table.columns.captions.minimumOrderQuantity'),
-    selector: () => {},
-    sortable: false,
-    cell: (props) => <span aria-label={t('table.columns.captions.minimumOrderQuantity')}>{props.minimumOrderQuantity}</span>
   }
 ];

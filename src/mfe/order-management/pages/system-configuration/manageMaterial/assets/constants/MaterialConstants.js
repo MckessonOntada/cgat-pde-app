@@ -13,8 +13,7 @@ export const MaterialDetailsConstants = [
       { label: 'manageMaterial.drawer.details.body.dropshipIndicator', value: 'dropshipIndicator' },
       { label: 'manageMaterial.drawer.details.body.baseUnitOfMeasure', value: 'baseUnitOfMeasure' },
       { label: 'manageMaterial.drawer.details.body.cgatIdentifier', value: 'cgatIdentifier' },
-      { label: 'manageMaterial.drawer.details.body.productLevelPricing', value: 'productLevelPricing' },
-      { label: 'manageMaterial.drawer.details.body.minimumOrderQuantity', value: 'minimumOrderQuantity' }
+      { label: 'manageMaterial.drawer.details.body.productLevelPricing', value: 'productLevelPricing' }
     ]
   }
 ];
