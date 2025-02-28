@@ -13,6 +13,7 @@ import { PATHS } from '../../routes';
 import CommonUtils from '@src/util/CommonUtils';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 
 export default function CreditsTable(props) {
   const { t } = useTranslate();
@@ -22,83 +23,19 @@ export default function CreditsTable(props) {
   const { state } = location;
   const showCardView = useResponsiveView();
 
-  const renderCheckBox = (row, index) => {
-    return (
-      <input
-        data-testid="rowcheckbox"
-        type="checkbox"
-        id={'checkbox' + row?.id}
-        disabled={isCheckboxDisabled(row)}
-        onChange={() => handleRowSelected(row)}
-        checked={isChecked(row)}
-        ref={(el) => {
-          if (el) {
-            el.indeterminate = row.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber && selectedRows.length > 0 && !getindeterminate();
-          }
-        }}
-      />
-    );
-  };
-  const isCheckboxDisabled = (row) => {
-    let isDisbled = row.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber && !CommonUtils.isNonEmptyArray(data);
-    return isDisbled;
-  };
-  const handleRowSelected = (data) => {
-    if (data.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber) {
-      handleHeaderCheck(data);
-    } else {
-      handleIndividualCheck(data);
-    }
-  };
-  const isChecked = (row) => {
-    if (row.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber) {
-      return getindeterminate();
-    }
-    let availableRow = selectedRows.find((item) => item.billNumber === row?.billNumber);
-    return !!availableRow;
-  };
-  const getindeterminate = () => {
-    const allDataIncluded = data.every((invoice) =>
-      selectedRows.some((includedInvoice) => includedInvoice.billNumber === invoice.billNumber)
-    );
-    return allDataIncluded;
-  };
-  const handleHeaderCheck = () => {
-    if (isAllChecked()) {
-      setSelectedRows([]);
-    } else {
-      if (paginationConfig.pageNumber === 1) {
-        setSelectedRows(data);
-      } else {
-        const allDataIncluded = data.every((invoice) =>
-          selectedRows.some((includedInvoice) => includedInvoice.billNumber === invoice.billNumber)
-        );
-        if (!allDataIncluded) {
-          setSelectedRows([...selectedRows, ...data]);
-        } else {
-          setSelectedRows(selectedRows.filter((item) => !data.some((invoice) => invoice.billNumber === item.billNumber)));
-        }
-      }
-    }
-  };
-  const isAllChecked = () => {
-    return selectedRows.length === data.length;
-  };
-
-  const handleIndividualCheck = (data) => {
-    if (selectedRows.find((item) => item.billNumber === data?.billNumber)) {
-      setSelectedRows(selectedRows.filter((item) => item.billNumber !== data?.billNumber));
-      return;
-    }
-    setSelectedRows([...selectedRows, ...[data]]);
-  };
-
   const columns = [
     {
       id: 'checkbox',
-      name: renderCheckBox({ id: 'ALL_PATIENTS_' + paginationConfig.pageNumber }),
+      name: renderTableCheckBox(
+        { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+        data,
+        'billNumber',
+        paginationConfig,
+        selectedRows,
+        setSelectedRows
+      ),
       sortable: false,
-      cell: (row, index) => renderCheckBox(row, index),
+      cell: (row, index) => renderTableCheckBox(row, data, 'billNumber', paginationConfig, selectedRows, setSelectedRows),
       selector: (row) => row.MRN,
       width: '48px',
       omit: !selectableRows,

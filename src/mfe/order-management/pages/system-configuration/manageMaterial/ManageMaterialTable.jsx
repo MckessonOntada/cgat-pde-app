@@ -14,6 +14,7 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import AuthUtils from '@src/util/AuthUtils';
+import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 
 function ManageMaterialTable({ ...props }) {
   const { t } = useTranslate();
@@ -26,89 +27,19 @@ function ManageMaterialTable({ ...props }) {
   const showCardView = useResponsiveView();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
 
-  const getindeterminate = () => {
-    const allDataIncluded = data.every((invoice) =>
-      selectedMaterials.some((includedInvoice) => includedInvoice.materialNumber === invoice.materialNumber)
-    );
-    return allDataIncluded;
-  };
-
-  const renderCheckBox = (row, index) => {
-    return (
-      <input
-        data-testid="rowcheckbox"
-        type="checkbox"
-        id={'checkbox' + row?.id}
-        disabled={isCheckboxDisabled(row)}
-        onChange={() => handleRowSelected(row)}
-        checked={isChecked(row)}
-        ref={(el) => {
-          if (el) {
-            el.indeterminate = row.id === 'ALL_ITEMS_' + paginationConfig.pageNumber && selectedMaterials.length > 0 && !getindeterminate();
-          }
-        }}
-      />
-    );
-  };
-
-  const isChecked = (row) => {
-    if (row.id === 'ALL_ITEMS_' + paginationConfig.pageNumber) {
-      return getindeterminate();
-    }
-    let availableRow = selectedMaterials.find((item) => item.materialNumber === row?.materialNumber);
-    return !!availableRow;
-  };
-
-  const isAllChecked = () => {
-    return selectedMaterials.length === data.length;
-  };
-
-  const isCheckboxDisabled = (row) => {
-    let isDisbled = row.id === 'ALL_ITEMS_' + paginationConfig.pageNumber && !CommonUtils.isNonEmptyArray(data);
-    return isDisbled;
-  };
-
-  const handleRowSelected = (data) => {
-    if (data.id === 'ALL_ITEMS_' + paginationConfig.pageNumber) {
-      handleHeaderCheck(data);
-    } else {
-      handleIndividualCheck(data);
-    }
-  };
-
-  const handleIndividualCheck = (data) => {
-    if (selectedMaterials.find((item) => item.materialNumber === data?.materialNumber)) {
-      setSelectedMaterials(selectedMaterials.filter((item) => item.materialNumber !== data?.materialNumber));
-      return;
-    }
-    setSelectedMaterials([...selectedMaterials, ...[data]]);
-  };
-
-  const handleHeaderCheck = () => {
-    if (isAllChecked()) {
-      setSelectedMaterials([]);
-    } else {
-      if (paginationConfig.pageNumber === 1) {
-        setSelectedMaterials(data);
-      } else {
-        const allDataIncluded = data.every((invoice) =>
-          selectedMaterials.some((includedInvoice) => includedInvoice.materialNumber === invoice.materialNumber)
-        );
-        if (!allDataIncluded) {
-          setSelectedMaterials([...selectedMaterials, ...data]);
-        } else {
-          setSelectedMaterials(selectedMaterials.filter((item) => !data.some((invoice) => invoice.materialNumber === item.materialNumber)));
-        }
-      }
-    }
-  };
-
   const columns = [
     {
       id: 'checkbox',
-      name: renderCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }),
+      name: renderTableCheckBox(
+        { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+        data,
+        'materialNumber',
+        paginationConfig,
+        selectedMaterials,
+        setSelectedMaterials
+      ),
       // sortable: false,
-      cell: (row, index) => renderCheckBox(row, index),
+      cell: (row, index) => renderTableCheckBox(row, data, 'materialNumber', paginationConfig, selectedMaterials, setSelectedMaterials),
       selector: (row) => row['Material Number'],
       width: '50px',
       showInMobileHeader: true,
