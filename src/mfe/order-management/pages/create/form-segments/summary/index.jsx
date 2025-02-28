@@ -25,6 +25,7 @@ import useOrder from '../../../orders/useOrder';
 import { useCustomPrint } from '@src/util/printUtils';
 import CommonUtils from '@src/util/CommonUtils';
 import { CUSTOMER_CENTRE, SYSTEM_ADMIN } from '@src/api/commonService/CommonService';
+import { InventoryIndicator } from '../InventoryIndicator';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -43,11 +44,12 @@ const Summary = () => {
   const location = useLocation();
   const { orderId } = useParams();
   const { showAlert } = useAlert();
-  const { data: orderDetails, isFetching, isError, error, isLoader } = useOrder(orderId);
+  const { data: orderDetails = {}, isFetching, isError, error, isLoader } = useOrder(orderId);
   const [isPAPOrderConfirmModalOpen, setIsPAPOrderConfirmModalOpen] = React.useState(false);
   const { isApprover = false, isSimulate = false } = location.state || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
+  const [availabilityAlerts, setAvailabilityAlerts] = React.useState({ errors: [], warnings: [] });
   const {
     therapy = {},
     catalog = {},
@@ -61,9 +63,45 @@ const Summary = () => {
     status
   } = orderDetails || {};
 
+  const { data: inventoryDetails } = useQuery({
+    queryKey: ['inventory-check', orderDetails.id],
+    queryFn: async () => await OrderService.getInventoryStatus(orderDetails.id),
+    enabled: Boolean(
+      orderDetails.id && (status !== StatusEnum.SUBMITTED || status !== StatusEnum.REJECTED) && ['S', 'I'].includes(catalog?.InventoryType)
+    ),
+    onSuccess: (data) => {
+      handleInventoryDetailsResponse(data, true);
+    },
+    onError: (error) => {
+      handleInventoryDetailsResponse(error, false);
+    },
+    refetchOnWindowFocus: false
+  });
+
+  const handleInventoryDetailsResponse = (data, isSuccess) => {
+    if (isSuccess) {
+      const { erroredItems, warningMessages } = data;
+      const availabilityAlerts = {};
+      if (erroredItems) {
+        availabilityAlerts.errors = erroredItems.map((err) => err.errorMessage);
+      }
+      if (warningMessages) {
+        availabilityAlerts.warnings = warningMessages.map((warn) => warn.errorMessage);
+      }
+    } else {
+      availabilityAlerts.errors = ['Something went wrong while checking inventory. Please try again later.'];
+    }
+    setAvailabilityAlerts(availabilityAlerts);
+  };
+
+  const closeAvailabilityAlert = (index, key) => {
+    availabilityAlerts[key] = availabilityAlerts[key].filter((msg, _index) => _index != index);
+    setAvailabilityAlerts({ ...availabilityAlerts });
+  };
+
   const variantDetails = additionalDetails?.variantDetails || {};
   const isImpersonated = Boolean(AuthUtils.getImpersonateId()),
-    isRejected = status === "REJECTED";
+    isRejected = status === 'REJECTED';
 
   const contentRef = useRef(null);
   const printPage = useCustomPrint(
@@ -112,18 +150,21 @@ const Summary = () => {
     }
   }
 
-  const { isLoading: isSaving, mutate: submitOrder } = useMutation(async ({ action, isPAPOrder }) => await OrderService.submitOrder(orderId, isPAPOrder), {
-    onSuccess: (_result, { action }) => {
-      if (action === BUTTON_ACTIONS.SUBMIT) {
-        navigate(`../${orderId}/order-confirmed`);
-      } else {
-        navigate(`../${orderId}/order-confirmed`, { state: { isApproved: true } });
+  const { isLoading: isSaving, mutate: submitOrder } = useMutation(
+    async ({ action, isPAPOrder }) => await OrderService.submitOrder(orderId, isPAPOrder),
+    {
+      onSuccess: (_result, { action }) => {
+        if (action === BUTTON_ACTIONS.SUBMIT) {
+          navigate(`../${orderId}/order-confirmed`);
+        } else {
+          navigate(`../${orderId}/order-confirmed`, { state: { isApproved: true } });
+        }
+      },
+      onError: (err) => {
+        showAlert({ description: err.message, type: 'error', anchorEl: ALERT_CONTAINER_ID });
       }
-    },
-    onError: (err) => {
-      showAlert({ description: err.message, type: 'error', anchorEl: ALERT_CONTAINER_ID });
     }
-  });
+  );
 
   const [agreeCheckboxOptions, setAgreeCheckboxOptions] = React.useState({
     isDisabled: false,
@@ -325,9 +366,9 @@ const Summary = () => {
     hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected;
 
   if (isSaving) {
-    return  <Loader type={'screen'} />;
+    return <Loader type={'screen'} />;
   }
-  
+
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -345,6 +386,18 @@ const Summary = () => {
           </div>
         )}
         <div id={ALERT_CONTAINER_ID} />
+
+        <div>
+          {availabilityAlerts.errors &&
+            availabilityAlerts.errors.map((error, index) => (
+              <Alert description={error} onClose={() => closeAvailabilityAlert(index, 'errors')} type="error" />
+            ))}
+          {availabilityAlerts.warnings &&
+            availabilityAlerts.warnings.map((error) => (
+              <Alert description={error} onClose={() => closeAvailabilityAlert(index, 'warnings')} type="warning" />
+            ))}
+        </div>
+
         <div className={'MCP-module-wrapper'}>
           <ModuleHeader
             heading={<Heading as="h2">{t('labels.summary')}</Heading>}
@@ -371,7 +424,15 @@ const Summary = () => {
               />
               <div class={styles.flexPanel}>
                 {(status === StatusEnum.SUBMITTED || isApprover) && <DetailSegment label={t('labels.orderId')} value={orderId} />}
-                <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
+                <DetailSegment
+                  label={t('labels.materialDescription')}
+                  value={
+                    <div className="row-space-between-center">
+                      {therapy?.materialDescription}
+                      <InventoryIndicator status={inventoryDetails} />
+                    </div>
+                  }
+                />
                 <p className="price-wrapper">
                   <DetailSegment
                     label={t('labels.orderCost')}
