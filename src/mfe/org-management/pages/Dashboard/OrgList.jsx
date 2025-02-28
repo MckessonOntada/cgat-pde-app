@@ -123,10 +123,10 @@ const OrgList = ({ onActionSuccess }) => {
         <div>
           {row.isActive ? (
             <Link variant="tertiary" className="MCP-table-link" onClick={(e) => handleClick(e, row)}>
-              <EclipsesTextcss str={row.name} maxWidth={240} />
+              <EclipsesTextcss str={row.name} maxWidth={200} />
             </Link>
           ) : (
-            <EclipsesTextcss str={row.name} maxWidth={240} />
+            <EclipsesTextcss str={row.name} maxWidth={200} />
           )}
         </div>
       ),
