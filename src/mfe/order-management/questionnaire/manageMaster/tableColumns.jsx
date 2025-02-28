@@ -4,10 +4,11 @@ import { getAddress, MasterEntityType } from '../util';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { useManagerQuestionnaire } from '../../context/ManageQuestionnaireContext';
 import { useMultiCheckBox } from '../useMultiCheckBox';
+import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 
 export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData, setSelectedRows, setOpenDetails, setSelectedDetails) => {
   const { paginationConfig } = useManagerQuestionnaire();
-  const { renderCheckBox, selectedData } = useMultiCheckBox(entityData, paginationConfig);
+  const [selectedData, setSelectedData] = useState([]);
   useEffect(() => {
     setSelectedRows(selectedData);
   }, [selectedData]);
@@ -22,9 +23,19 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
       return [
         {
           id: 'checkbox',
-          name: entityData?.length > 0 ? renderCheckBox({ id: 'ALL_ROWS' + paginationConfig.pageNumber }) : null,
+          name:
+            entityData?.length > 0
+              ? renderTableCheckBox(
+                  { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+                  entityData,
+                  'id',
+                  paginationConfig,
+                  selectedData,
+                  setSelectedData
+                )
+              : null,
           sortable: false,
-          cell: (row, index) => renderCheckBox(row, index),
+          cell: (row, index) => renderTableCheckBox(row, entityData, 'id', paginationConfig, selectedData, setSelectedData),
           selector: (row) => row.MRN,
           width: '50px'
         },
@@ -91,9 +102,19 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
       return [
         {
           id: 'checkbox',
-          name: entityData?.length > 0 ? renderCheckBox({ id: 'ALL_ROWS' + paginationConfig.pageNumber }) : null,
+          name:
+            entityData?.length > 0
+              ? renderTableCheckBox(
+                  { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+                  entityData,
+                  'id',
+                  paginationConfig,
+                  selectedData,
+                  setSelectedData
+                )
+              : null,
           sortable: false,
-          cell: (row, index) => renderCheckBox(row, index),
+          cell: (row, index) => renderTableCheckBox(row, entityData, 'id', paginationConfig, selectedData, setSelectedData),
           selector: (row) => row.MRN,
           width: '50px'
         },
@@ -154,9 +175,19 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
       return [
         {
           id: 'checkbox',
-          name: entityData?.length > 0 ? renderCheckBox({ id: 'ALL_ROWS' + paginationConfig.pageNumber }) : null,
+          name:
+            entityData?.length > 0
+              ? renderTableCheckBox(
+                  { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+                  entityData,
+                  'id',
+                  paginationConfig,
+                  selectedData,
+                  setSelectedData
+                )
+              : null,
           sortable: false,
-          cell: (row, index) => renderCheckBox(row, index),
+          cell: (row, index) => renderTableCheckBox(row, entityData, 'id', paginationConfig, selectedData, setSelectedData),
           selector: (row) => row.MRN,
           width: '50px'
         },
