@@ -5,7 +5,7 @@ import { StatusEnum } from '../../../orders/constants';
 
 function useSapOrder(payload, onSuccess, onError) {
   const { sapOrderId, salesOrgId, status } = payload;
-  const isEnabled = sapOrderId && salesOrgId && status === StatusEnum.SUBMITTED;
+  console.log(sapOrderId && salesOrgId && status === 'SUBMITTED');
   return useQuery({
     queryKey: ['sap-order-status', sapOrderId, salesOrgId],
     queryFn: async () => OrderService.getOrderStatusFromSAP(sapOrderId, salesOrgId),
@@ -17,7 +17,7 @@ function useSapOrder(payload, onSuccess, onError) {
     onError: () => {
       onError();
     },
-    enabled: isEnabled,
+    enabled: Boolean(sapOrderId && salesOrgId && status === 'SUBMITTED'),
     refetchOnWindowFocus: false
   });
 }

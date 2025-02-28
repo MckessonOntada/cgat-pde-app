@@ -161,9 +161,9 @@ async function getVariants(therapyId, accountId, shipToAccountId, requestParams)
   return {};
 }
 
-async function getInventoryStatus(requestBody) {
+async function getInventoryStatus(orderId) {
   try {
-    const res = await HttpResourceService.callRest(`${ApiRoutes.INVENTORY()}/availability`, httpVerb.POST, requestBody);
+    const res = await HttpResourceService.callRest(`${ApiRoutes.INVENTORY()}/availability/${orderId}`, httpVerb.GET);
     if (res) {
       return res;
     }

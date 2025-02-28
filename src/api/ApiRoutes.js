@@ -59,7 +59,7 @@ const ApiRoutes = Object.freeze({
   SET_DEFAULT_PAY_TO_ACCOUNT: (payToAccountId) =>
     constructUserManagementServiceUrl(`users/current/preference/defaultpayto/${payToAccountId}`),
   ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`),
-  SAP_ORDERS: constructUserManagementServiceUrl(`order`),
+  SAP_ORDERS: constructOrderManagementServiceUrl(`order`),
   CUSTOMER_STATEMENTS_LISTING: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/statements`),
   EXPORT_CUSTOMER_STATEMENTS: (data) => constructOrderManagementServiceUrl(`account/${data.accountNumber}/statements/${data.docNo}`),
   EXPORT_CUSTOMER_STATEMENTS_EXCEL: (accountNumber) => constructOrderManagementServiceUrl(`account/${accountNumber}/statements/export`),

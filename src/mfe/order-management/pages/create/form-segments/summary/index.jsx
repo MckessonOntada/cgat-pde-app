@@ -82,7 +82,9 @@ const Summary = () => {
   const { data: inventoryDetails } = useQuery({
     queryKey: ['inventory-check', orderDetails.id],
     queryFn: async () => await OrderService.getInventoryStatus(orderDetails.id),
-    enabled: Boolean(orderDetails.id && status !== StatusEnum.SUBMITTED && status !== StatusEnum.REJECTED && ['S', 'I'].includes('S')),
+    enabled: Boolean(
+      orderDetails.id && status !== StatusEnum.SUBMITTED && status !== StatusEnum.REJECTED && ['S', 'I'].includes(catalog.inventoryType)
+    ),
     onSuccess: (data) => {
       handleInventoryDetailsResponse(data, true);
     },
@@ -448,7 +450,8 @@ const Summary = () => {
                 }
               />
               <div class={styles.flexPanel}>
-                {(status === StatusEnum.SUBMITTED || isApprover) && <DetailSegment label={t('labels.orderId')} value={orderId} />}
+                {status === StatusEnum.SUBMITTED && <DetailSegment label={t('labels.sapId')} value={backendOrderId} />}
+                {status === StatusEnum.SUBMITTED && <DetailSegment label={t('labels.pdeId')} value={orderId} />}
                 <DetailSegment
                   label={t('labels.materialDescription')}
                   value={
