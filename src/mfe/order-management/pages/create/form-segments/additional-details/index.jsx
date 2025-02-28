@@ -105,7 +105,7 @@ function AdditionalDetails() {
       .required(t('labels.PONumberRequired'))
       .max(35, t('labels.PONumberLengthError'))
       .trim(t('labels.poNumberExtraSpaceError')),
-    dateOfAdministration: Yup.date().min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
+    dateOfAdministration: Yup.date().min(new Date(), t('labels.dateOfAdministrationFutureDateOnly')).nullable()
   });
 
   React.useEffect(() => {
@@ -507,8 +507,9 @@ function AdditionalDetails() {
           handleOnSubmit(values);
         }}>
         {({ dirty, errors, values, setFieldValue }) => {
+          console.log('values.dateOfAdministration', values.dateOfAdministration);
           useEffect(() => {
-            setDateOfAdministration(values.dateOfAdministration);
+            //  setDateOfAdministration(values.dateOfAdministration ? values.dateOfAdministration : '');
             setIsDirty(dirty);
           }, [dirty]);
 
