@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import styles from './Summary.module.scss';
 import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg';
 import ModuleHeader from '@src/components/module-header';
-import { Button, Modal, CheckboxGroup, Heading, Loader, Badge, Tooltip } from '@mckesson/mcp-component-library';
+import { Button, Modal, CheckboxGroup, Heading, Loader, Badge, Tooltip, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
@@ -49,7 +49,7 @@ const Summary = () => {
   const { isApprover = false, isSimulate = false } = location.state || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
-  const [availabilityAlerts, setAvailabilityAlerts] = React.useState({ errors: [], warnings: [] });
+  const [alertMessages, setAlertMessages] = React.useState([]);
   const {
     therapy = {},
     catalog = {},
@@ -66,9 +66,7 @@ const Summary = () => {
   const { data: inventoryDetails } = useQuery({
     queryKey: ['inventory-check', orderDetails.id],
     queryFn: async () => await OrderService.getInventoryStatus(orderDetails.id),
-    enabled: Boolean(
-      orderDetails.id && (status !== StatusEnum.SUBMITTED || status !== StatusEnum.REJECTED) && ['S', 'I'].includes(catalog?.InventoryType)
-    ),
+    enabled: Boolean(orderDetails.id && (status !== StatusEnum.SUBMITTED || status !== StatusEnum.REJECTED) && ['S', 'I'].includes('S')),
     onSuccess: (data) => {
       handleInventoryDetailsResponse(data, true);
     },
@@ -81,27 +79,34 @@ const Summary = () => {
   const handleInventoryDetailsResponse = (data, isSuccess) => {
     if (isSuccess) {
       const { erroredItems, warningMessages } = data;
-      const availabilityAlerts = {};
       if (erroredItems) {
-        availabilityAlerts.errors = erroredItems.map((err) => err.errorMessage);
+        alertMessages.push(
+          ...erroredItems.map((err) => ({
+            description: err.errorMessage,
+            type: 'error'
+          }))
+        );
       }
       if (warningMessages) {
-        availabilityAlerts.warnings = warningMessages.map((warn) => warn.errorMessage);
+        alertMessages.push(
+          ...warningMessages.map((warn) => ({
+            description: warn.errorMessage,
+            type: 'warning'
+          }))
+        );
       }
     } else {
-      availabilityAlerts.errors = ['Something went wrong while checking inventory. Please try again later.'];
+      alertMessages.push({ description: 'Something went wrong while checking inventory. Please try again later.', type: 'error' });
     }
-    setAvailabilityAlerts(availabilityAlerts);
+    setAlertMessages(alertMessages);
   };
 
   const closeAvailabilityAlert = (index, key) => {
-    availabilityAlerts[key] = availabilityAlerts[key].filter((msg, _index) => _index != index);
-    setAvailabilityAlerts({ ...availabilityAlerts });
+    setAlertMessages(alertMessages.filter((msg, _index) => _index != index));
   };
 
   const variantDetails = additionalDetails?.variantDetails || {};
-  const isImpersonated = Boolean(AuthUtils.getImpersonateId()),
-    isRejected = status === 'REJECTED';
+  const isRejected = status === 'REJECTED';
 
   const contentRef = useRef(null);
   const printPage = useCustomPrint(
@@ -142,11 +147,11 @@ const Summary = () => {
     const infoMessages = simulationData.infoMessages?.map((msg) => msg.value) || [];
 
     if (warningMessages.length > 0) {
-      showAlert({ description: err.message, type: 'warning', anchorEl: ALERT_CONTAINER_ID });
+      alertMessages.push(...warningMessages.map((msg) => ({ description: msg, type: 'warning' })));
     }
 
     if (infoMessages.length > 0) {
-      showAlert({ description: err.message, type: 'info', anchorEl: ALERT_CONTAINER_ID });
+      alertMessages.push(...warningMessages.map((msg) => ({ description: msg, type: 'info' })));
     }
   }
 
@@ -388,14 +393,13 @@ const Summary = () => {
         <div id={ALERT_CONTAINER_ID} />
 
         <div>
-          {availabilityAlerts.errors &&
-            availabilityAlerts.errors.map((error, index) => (
-              <Alert description={error} onClose={() => closeAvailabilityAlert(index, 'errors')} type="error" />
-            ))}
-          {availabilityAlerts.warnings &&
-            availabilityAlerts.warnings.map((error) => (
-              <Alert description={error} onClose={() => closeAvailabilityAlert(index, 'warnings')} type="warning" />
-            ))}
+          {alertMessages && (
+            <div className="MCP-module-body">
+              {alertMessages.map((item, index) => (
+                <Alert key={index + 1} description={item.description} onClose={() => closeAvailabilityAlert(index)} type={item.type} />
+              ))}
+            </div>
+          )}
         </div>
 
         <div className={'MCP-module-wrapper'}>
