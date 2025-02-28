@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Stepper, Heading, Button, Alert } from '@mckesson/mcp-component-library';
+import { Stepper, Heading, Button, Alert, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
@@ -93,7 +93,9 @@ const AddAccounts = () => {
       }
     );
   };
-
+  if (isLoading) {
+    return <Loader type={'screen'} />;
+  }
   return (
     <div className="MCP-module-wrapper">
       <div>
