@@ -43,7 +43,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           id: 'materialNumber',
           name: t('labels.therapy.materialNumber'),
           selector: () => {},
-          maxWidth: '350px',
+          maxWidth: '250px',
           cell: (props) => (
             <div className="cellEllipse">
               <Link
@@ -63,10 +63,10 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           id: 'materialDescription',
           name: t('labels.therapy.materialDescription'),
           selector: (row) => row.materialDescription || '',
-          maxWidth: '350px',
+          maxWidth: '230px',
           cell: (props) => (
             <span aria-label={t('labels.therapy.materialDescription')}>
-              <EclipsesTextcss str={props.materialDescription} maxWidth={350} />
+              <EclipsesTextcss str={props.materialDescription} maxWidth={220} />
             </span>
           )
         },
@@ -74,7 +74,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           id: 'ndc',
           name: t('table.columns.captions.nationalDrugCode'),
           selector: (row) => row.ndcNumber || '',
-          maxWidth: '290px',
+          maxWidth: '200px',
           cell: (props) => (
             <span aria-label={t('table.columns.captions.nationalDrugCode')}>
               <EclipsesTextcss str={props.ndcNumber} maxWidth={180} />
@@ -85,7 +85,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           id: 'strength',
           name: t('table.columns.captions.strength'),
           selector: (row) => row.strength || '',
-          maxWidth: '260px',
+          maxWidth: '200px',
           sortable: false,
           cell: (props) => <span aria-label={t('table.columns.captions.strength')}>{props.strength}</span>
         },
@@ -93,7 +93,7 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           id: 'dosage',
           name: t('table.columns.captions.dosage'),
           selector: (row) => row.dosage || '',
-          maxWidth: '150px',
+          maxWidth: '120px',
           sortable: false,
           cell: (props) => <span aria-label={t('table.columns.captions.dosage')}>{props.dosage}</span>
         }

@@ -90,7 +90,9 @@ export default function Dashboard() {
       },
       {
         type: 'dateRangePicker',
-        name: 'dateRange'
+        name: 'dateRange',
+        startDateLabel: t('labels.startDate'),
+        endDateLabel: t('labels.endDate')
       }
     ];
   }, []);

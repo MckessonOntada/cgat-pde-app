@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Stepper, Heading, Button } from '@mckesson/mcp-component-library';
+import { Stepper, Heading, Button, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
@@ -20,6 +20,7 @@ const AddAccounts = () => {
   const { userId } = useParams();
   const [searchText, setSearchText] = useState('');
   const [selectedAccounts, setSelectedAccounts] = useState([]);
+  const [alertConfig, setAlertConfig] = React.useState(null);
   const { permissionsData, isEdit } = location.state || {};
   const isSuccess = location.state?.isSuccess || false;
   const practiceId = AuthUtils.getPracticeId() ?? 1;
@@ -28,6 +29,10 @@ const AddAccounts = () => {
 
   const handleGoBack = () => {
     navigate(RoutePaths.pathUserManagement);
+  };
+
+  const handleAlertClose = () => {
+    setAlertConfig(null);
   };
 
   const handleBackButton = () => {
@@ -48,7 +53,9 @@ const AddAccounts = () => {
 
   const handleSaveandContinue = () => {
     handleAddAccounts();
-    navigate(RoutePaths.pathUserManagement, { state: { isSuccess: true } });
+    if (selectedAccounts?.length > 0) {
+      navigate(RoutePaths.pathUserManagement, { state: { isSuccess: true } });
+    }
   };
 
   const requestParams = {
@@ -62,6 +69,14 @@ const AddAccounts = () => {
   });
 
   const handleAddAccounts = () => {
+    if (selectedAccounts?.length <= 0) {
+      setAlertConfig({
+        isVisible: true,
+        description: `Select at least one account`,
+        type: 'error'
+      });
+      return;
+    }
     const payload = selectedAccounts?.map((account) => account.id);
     mutate(
       {
@@ -110,7 +125,9 @@ const AddAccounts = () => {
           />
         </div>
       )}
-
+      {alertConfig?.isVisible && (
+        <Alert type={alertConfig.type} description={alertConfig.description} onClose={() => setAlertConfig(null)} duration={10000} />
+      )}
       <UserAccounts
         selectedRows={selectedAccounts}
         setSelectedRows={setSelectedAccounts}
@@ -124,12 +141,12 @@ const AddAccounts = () => {
           {t('userManagement.button.back')}
         </Button>
         {!isEdit && (
-          <Button variant="primary" type="button" onClick={handleSaveandContinue} size={'md'} disabled={selectedAccounts?.length <= 0}>
+          <Button variant="primary" type="button" onClick={handleSaveandContinue} size={'md'}>
             {t('userManagement.button.adduser')}
           </Button>
         )}
         {isEdit && (
-          <Button variant="primary" type="button" onClick={handleAddAccounts} size={'md'} disabled={selectedAccounts?.length <= 0}>
+          <Button variant="primary" type="button" onClick={handleAddAccounts} size={'md'}>
             {t('userManagement.button.add_accounts')}
           </Button>
         )}

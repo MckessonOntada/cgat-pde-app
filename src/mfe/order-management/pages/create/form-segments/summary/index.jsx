@@ -63,8 +63,8 @@ const Summary = () => {
 
   const variantDetails = additionalDetails?.variantDetails || {};
   const isImpersonated = Boolean(AuthUtils.getImpersonateId()),
-    isRejected = status === StatusEnum.REJECTED,
-    isConcluded = status === StatusEnum.REJECTED || status === StatusEnum.SUBMITTED;
+    isRejected = status === StatusEnum.REJECTED;
+
   const contentRef = useRef(null);
   const printPage = useCustomPrint(
     contentRef,
@@ -86,13 +86,13 @@ const Summary = () => {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }`
   );
+
   const { isLoading, data: simulationData = {} } = useQuery({
     queryKey: ['orderDetails', orderId],
     queryFn: async () => {
-      const response = await OrderService.simulateOrder(orderId);
-      return response;
+      return await OrderService.simulateOrder(orderId);
     },
-    enabled: Boolean(status && !isConcluded && (isSimulate || isApprover)),
+    enabled: !status ? false : !(status === StatusEnum.REJECTED || status === StatusEnum.SUBMITTED),
     refetchOnWindowFocus: false,
     onError: (error) => {
       showAlert({ description: error?.response?.data?.message, type: 'error', anchorEl: ALERT_CONTAINER_ID });
@@ -112,18 +112,21 @@ const Summary = () => {
     }
   }
 
-  const { mutate: submitOrder } = useMutation(async ({ action, isPAPOrder }) => await OrderService.submitOrder(orderId, isPAPOrder), {
-    onSuccess: (_result, { action }) => {
-      if (action === BUTTON_ACTIONS.SUBMIT) {
-        navigate(`../${orderId}/order-confirmed`);
-      } else {
-        navigate(`../${orderId}/order-confirmed`, { state: { isApproved: true } });
+  const { isLoading: isSaving, mutate: submitOrder } = useMutation(
+    async ({ action, isPAPOrder }) => await OrderService.submitOrder(orderId, isPAPOrder),
+    {
+      onSuccess: (_result, { action }) => {
+        if (action === BUTTON_ACTIONS.SUBMIT) {
+          navigate(`../${orderId}/order-confirmed`);
+        } else {
+          navigate(`../${orderId}/order-confirmed`, { state: { isApproved: true } });
+        }
+      },
+      onError: (err) => {
+        showAlert({ description: err.message, type: 'error', anchorEl: ALERT_CONTAINER_ID });
       }
-    },
-    onError: (err) => {
-      showAlert({ description: err.message, type: 'error', anchorEl: ALERT_CONTAINER_ID });
     }
-  });
+  );
 
   const [agreeCheckboxOptions, setAgreeCheckboxOptions] = React.useState({
     isDisabled: false,
@@ -323,6 +326,10 @@ const Summary = () => {
       .join(' ');
   const isAgreed = agreeCheckboxOptions.isChecked,
     hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected;
+
+  if (isSaving) {
+    return <Loader type={'screen'} />;
+  }
 
   return (
     <div className="MCP-module-wrapper">

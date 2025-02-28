@@ -14,6 +14,16 @@ const useOrder = (orderId) => {
   if (result.isFetching) {
     return { isLoader: <Loader type={'screen'} /> };
   }
+
+  if (result.data) {
+    Object.entries(result.data).forEach((entry) => {
+      const [key, value] = entry;
+      if (value === null) {
+        result.data[key] = undefined;
+      }
+    });
+  }
+
   return result;
 };
 

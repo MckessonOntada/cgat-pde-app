@@ -19,6 +19,8 @@ import useAlert from '@src/hooks/useAlert';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import useOrder from '../../../orders/useOrder';
+import { Loader } from '@mckesson/mcp-component-library';
+import { useOrderPrice } from '../additional-details/useOrderPrice';
 
 const AccountSelection = () => {
   const { t } = useTranslate();
@@ -37,6 +39,11 @@ const AccountSelection = () => {
   const [accountError, setAccountError] = useState({ isError: false, message: '' });
   const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
   const therapyId = orderDetails?.therapy?.materialNumber;
+  const { data: priceDetails } = useOrderPrice({
+    therapyId: therapyId,
+    soldToAccountId: selectedAccount?.accountNumber,
+    shipToAccountId: selectedShippingAddress?.accountNumber
+  });
 
   const alertContainerId = 'accountSelection-alert-Container';
   const { showAlert } = useAlert();
@@ -193,7 +200,9 @@ const AccountSelection = () => {
   if (isLoader) {
     return isLoader;
   }
-
+  if (isSaving) {
+    return <Loader type={'screen'} />;
+  }
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -207,12 +216,7 @@ const AccountSelection = () => {
       <div className="MCP-module-body">
         <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} />
         <div className={`MCP-module-wrapper`}>
-          <OrderHeaderDetails
-            orderDetails={orderDetails}
-            therapyId={therapyId}
-            soldToAccountId={selectedAccount?.accountNumber}
-            shipToAccountId={selectedShippingAddress?.accountNumber}
-          />
+          <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
           {accountError.isError && <div id={alertContainerId} />}
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>
@@ -281,7 +285,7 @@ const AccountSelection = () => {
                 {t('captions.btnBack')}
               </Button>
               <Button size="md" onClick={handleOnSubmit} variant="primary" type="submit">
-                {isSaving ? 'Saving' : t('captions.btnSaveAndContinue')}
+                {t('captions.btnSaveAndContinue')}
               </Button>
             </div>
           </div>

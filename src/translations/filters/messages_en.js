@@ -3,6 +3,6 @@ export const filtersEN = {
   'filters.search': 'Search',
   'filters.clearfilters': 'Clear Filters',
   'filters.clearsearch': 'Clear Search',
-  'filters.startdate': 'Start Date',
-  'filters.enddate': 'End Date'
+  'filters.startdate': 'Created Date (Start)',
+  'filters.enddate': 'Created Date (End)'
 };

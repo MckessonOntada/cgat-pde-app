@@ -107,7 +107,7 @@ export default function Dashboard() {
 
   const AdditionalFiltersConfig = useMemo(() => {
     let config = [];
-    if (!isSystemAdminView) {
+    if (!isSystemAdminView && activeTab === 1) {
       config.push({
         type: 'dropdown',
         name: 'role',
@@ -115,9 +115,8 @@ export default function Dashboard() {
         options: roleList
       });
     }
-    return [
-      ...config,
-      {
+    if (activeTab === 1) {
+      config.push({
         type: 'dropdown',
         name: 'status',
         label: t('userManagement.table.status'),
@@ -127,7 +126,10 @@ export default function Dashboard() {
           { label: 'Inactive', value: 'inactive' },
           { label: 'Active', value: 'active' }
         ]
-      },
+      });
+    }
+    return [
+      ...config,
       {
         type: 'dateRangePicker',
         name: 'dateRange',
@@ -135,7 +137,7 @@ export default function Dashboard() {
         endDateLabel: t('labels.endDate')
       }
     ];
-  }, [isSystemAdminView, roleList]);
+  }, [isSystemAdminView, roleList, activeTab]);
 
   return (
     <div className="MCP-module-wrapper" id={debugIds(ID.TABLE, ID.CONTAINER)}>

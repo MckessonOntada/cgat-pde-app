@@ -97,26 +97,25 @@ const OrderStatus = () => {
             <DetailSegment label={t('labels.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
             <DetailSegment label={t('labels.dob')} value={patient?.patientInfo?.dateOfBirth || '-'} />
             <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender ? patient?.patientInfo?.gender : '-'} />
-            <p className="price-wrapper">
-              <DetailSegment
-                className={styles.orderCost}
-                customLabelStyles={styles.orderCostItem}
-                label={t('labels.price')}
-                customValueStyles={styles.orderCostItem}
-                value={
-                  <p className="dollarSign">
-                    {orderCost ? (
-                      <>
-                        <span className={`${styles.currencySymbol}`}>$</span>
-                        {CommonUtils.formatNumberWithoutSymbol(orderCost)}
-                      </>
-                    ) : (
-                      '-'
-                    )}
-                  </p>
-                }
-              />
-            </p>
+
+            <DetailSegment
+              className={styles.orderCost}
+              customLabelStyles={styles.orderCostItem}
+              label={t('labels.price')}
+              customValueStyles={styles.orderCostItem}
+              value={
+                <p className="dollarSign">
+                  {orderCost ? (
+                    <>
+                      <span className={`${styles.currencySymbol}`}>$</span>
+                      {CommonUtils.formatNumberWithoutSymbol(orderCost)}
+                    </>
+                  ) : (
+                    '-'
+                  )}
+                </p>
+              }
+            />
           </div>
         </div>
 

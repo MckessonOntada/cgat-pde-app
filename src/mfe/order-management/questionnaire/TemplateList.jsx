@@ -149,13 +149,12 @@ function TemplateList() {
       cell: (props) => CommonUtils.convertDateStringFormat(props.createdAt, 'MM-DD-YYYY')
     },
     {
-      id: 'createdBy',
+      id: 'createdByUserName',
       name: t('table.columns.captions.created_By'),
       selector: (row) => row.createdBy || '',
-      sortable: true,
-      sortKey: 'created_by',
+      sortKey: 'createdByUserName',
       minWidth: '160px',
-      cell: (props) => props.createdBy
+      cell: (props) => props.createdByUserName || "NA"
     },
     {
       id: 'actions',
