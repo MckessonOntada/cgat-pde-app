@@ -24,7 +24,7 @@ import QuestionnaireTemplate from '@src/mfe/order-management/questionnaire/Quest
 import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/order-management/questionnaire/AddQuestionnaire';
 import useOrder from '../../../orders/useOrder';
 import { DateUtils } from '@src/util/DateUtil';
-import { userOrderPrice } from './userOrderPrice';
+import { useOrderPrice } from './useOrderPrice';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -72,7 +72,7 @@ function AdditionalDetails() {
   const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
   const [dateOfAdministration, setDateOfAdministration] = React.useState('');
   const [inventoryType, setInventoryType] = useState(null);
-  const { data: priceDetails = {} } = userOrderPrice(
+  const { data: priceDetails = {} } = useOrderPrice(
     {
       therapyId,
       soldToAccountId,
@@ -253,7 +253,7 @@ function AdditionalDetails() {
     setInitialFormValues({ ...initialFormValues });
   };
 
-  const { isLoading, data: variantsData } = useQuery({
+  const { isLoading, data: variantsData = {} } = useQuery({
     queryKey: ['order', 'variants', orderId],
     queryFn: async () => OrderService.getVariants(therapyId, soldToAccountId, shipToAccountId, variantsApiRequestParam),
     enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId,
@@ -296,7 +296,7 @@ function AdditionalDetails() {
         ...initialValues
       }));
 
-      if (!variantsData.content || !_variant) {
+      if (!variantsData?.content || !_variant) {
         return;
       }
       setVariant({

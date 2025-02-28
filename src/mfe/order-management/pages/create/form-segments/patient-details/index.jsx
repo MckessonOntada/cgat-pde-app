@@ -19,7 +19,7 @@ import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import { renderModal } from '@src/util/ModalUtil';
 import useOrder from '../../../orders/useOrder';
-import { userOrderPrice } from '../additional-details/userOrderPrice';
+import { useOrderPrice } from '../additional-details/useOrderPrice';
 import { Loader } from '@mckesson/mcp-component-library';
 
 const PatientDetails = () => {
@@ -39,7 +39,7 @@ const PatientDetails = () => {
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
-  const { data: priceDetails } = userOrderPrice({
+  const { data: priceDetails } = useOrderPrice({
     therapyId,
     soldToAccountId,
     shipToAccountId
@@ -183,7 +183,7 @@ const PatientDetails = () => {
     return isLoader;
   }
   if (isSaving) {
-    return  <Loader type={'screen'} />;
+    return <Loader type={'screen'} />;
   }
   return (
     <div className="MCP-module-wrapper">
