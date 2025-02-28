@@ -16,6 +16,7 @@ export default function AdditionalFilters({ filtersConfig }) {
           endDateLabel={item.endDateLabel}
           minDate={item.minDate}
           maxDate={item.maxDate}
+          {...(item.getUpdatedOptions ? { getUpdatedOptions: item.getUpdatedOptions } : {})}
         />
       ))}
     </div>

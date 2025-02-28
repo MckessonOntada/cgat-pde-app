@@ -3,7 +3,7 @@ import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_
 import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
 import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { PATHS } from '../../routes/constants';
 import './index.scss';
@@ -26,7 +26,24 @@ function DashboardPage() {
   const [isDeactivate, setIsDeactivate] = React.useState(false);
   const { hasPermission } = usePermission();
   const { applyFilters, clearFilters } = useOrg();
-  const [states, setStates] = React.useState(US_STATES());
+
+  const [statesList, setStatesList] = useState([]);
+  const [statusList, setStatusList] = useState([
+    { label: 'All', value: 'all' },
+    { label: 'Inactive', value: 'inactive' },
+    { label: 'Active', value: 'active' }
+  ]);
+
+  useEffect(() => {
+    let _options = US_STATES();
+    _options.unshift({
+      isDisabled: true,
+      value: '',
+      label: t('orgManagement.create_org.option.please_select')
+    });
+    setStatesList(_options);
+  }, []);
+
   const breadcrumbItems = [
     {
       label: `${t('orgManagement.header.admin')}`,
@@ -64,33 +81,41 @@ function DashboardPage() {
     }
   };
 
-  const usStates = US_STATES();
-  usStates.unshift({
-    isDisabled: true,
-    value: '',
-    label: t('orgManagement.create_org.option.please_select')
-  });
-
   const AdditionalFiltersConfig = useMemo(() => {
     return [
       {
         type: 'multiSelectDropdown',
         name: 'location',
         label: `${t('orgManagement.table.location')}`,
-        options: usStates
+        options: statesList,
+        getUpdatedOptions: (e) => {
+          if (e.length > 0) {
+            setStatesList(e);
+          }
+        }
       },
       {
         type: 'multiSelectDropdown',
         name: 'status',
         label: `${t('orgManagement.table.status')}`,
-        options: [
-          { label: 'All', value: 'all' },
-          { label: 'Inactive', value: 'inactive' },
-          { label: 'Active', value: 'active' }
-        ]
+        options: statusList,
+        getUpdatedOptions: (e) => {
+          if (e.length > 0) {
+            setStatusList(e);
+          }
+        }
       }
     ];
-  }, [usStates]);
+  }, [statesList]);
+
+  const clearOptions = () => {
+    setStatesList((prev) => {
+      return prev.map((ele) => ({ ...ele, isChecked: false }));
+    });
+    setStatusList((prev) => {
+      return prev.map((ele) => ({ ...ele, isChecked: false }));
+    });
+  };
 
   return (
     <div className="MCP-module-wrapper organization-module">
@@ -122,7 +147,10 @@ function DashboardPage() {
             <div className="MCP-CardContainer">
               <CommonFilters
                 onApplyFilters={applyFilters}
-                onClearFilters={clearFilters}
+                onClearFilters={() => {
+                  clearFilters();
+                  clearOptions();
+                }}
                 additionalFilters={AdditionalFiltersConfig}
                 searchPlaceholder={t('orgManagement.org.placeholder')}
               />
