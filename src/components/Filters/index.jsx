@@ -81,7 +81,9 @@ const Filters = ({
       validateOnChange={false}
       validateOnBlur={false}>
       {(formik) => {
-        const isAnyFilterApplied = Object.values(formik.values).some((value) => value !== '' && value !== null && value !== undefined);
+        const isAnyFilterApplied = Object.values(formik.values).some(
+          (value) => value !== '' && value !== null && value !== undefined && !(Array.isArray(value) && value.length === 0)
+        );
         return (
           <Form ref={formRef}>
             <div className="MCP-filter-panel">
