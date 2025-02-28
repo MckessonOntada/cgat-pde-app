@@ -87,7 +87,11 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           selector: (row) => row.strength || '',
           maxWidth: '200px',
           sortable: false,
-          cell: (props) => <span aria-label={t('table.columns.captions.strength')}>{props.strength}</span>
+          cell: (props) => (
+            <span aria-label={t('table.columns.captions.strength')}>
+              <EclipsesTextcss str={props.strength} maxWidth={180} />
+            </span>
+          )
         },
         {
           id: 'dosage',
@@ -95,7 +99,11 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           selector: (row) => row.dosage || '',
           maxWidth: '120px',
           sortable: false,
-          cell: (props) => <span aria-label={t('table.columns.captions.dosage')}>{props.dosage}</span>
+          cell: (props) => (
+            <span aria-label={t('table.columns.captions.dosage')}>
+              <EclipsesTextcss str={props.dosage} maxWidth={100} />
+            </span>
+          )
         }
       ];
     case MasterEntityType.Account:
@@ -140,8 +148,12 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           id: 'accountName',
           name: t('table.columns.captions.accountName'),
           selector: (row) => row.accountName || '',
-          maxWidth: '350px',
-          cell: (props) => <span aria-label={t('table.columns.captions.accountName')}>{props.accountName}</span>
+          maxWidth: '250px',
+          cell: (props) => (
+            <span aria-label={t('table.columns.captions.accountName')}>
+              <EclipsesTextcss str={props.accountName} maxWidth={220} />
+            </span>
+          )
         },
         {
           id: 'address',
@@ -160,7 +172,11 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           selector: (row) => row.salesOrg || '',
           maxWidth: '250px',
           sortable: false,
-          cell: (props) => <span aria-label={t('labels.salesOrg')}>{props.salesOrg}</span>
+          cell: (props) => (
+            <span aria-label={t('labels.salesOrg')}>
+              <EclipsesTextcss str={props.salesOrg} maxWidth={220} />
+            </span>
+          )
         },
         {
           id: 'distributionChannel',
@@ -168,7 +184,11 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           selector: (row) => row.distributionChannel || '',
           maxWidth: '200px',
           sortable: false,
-          cell: (props) => <span aria-label={t('labels.distributionChannel')}>{props.distributionChannel}</span>
+          cell: (props) => (
+            <span aria-label={t('labels.distributionChannel')}>
+              <EclipsesTextcss str={props.distributionChannel} maxWidth={180} />
+            </span>
+          )
         }
       ];
     case MasterEntityType.Catalog:
@@ -214,7 +234,11 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           name: t('labels.therapy.materialDescription'),
           selector: (row) => row.materialDescriptionInLanguageEn || '',
           maxWidth: '350px',
-          cell: (props) => <span aria-label={t('labels.therapy.materialDescription')}>{props.materialDescriptionInLanguageEn}</span>
+          cell: (props) => (
+            <span aria-label={t('labels.therapy.materialDescription')}>
+              <EclipsesTextcss str={props.materialDescriptionInLanguageEn} maxWidth={330} />
+            </span>
+          )
         },
         {
           id: 'ndc',
@@ -244,7 +268,11 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           selector: (row) => row.variant || '',
           maxWidth: '150px',
           sortable: false,
-          cell: (props) => <span aria-label={t('labels.variant')}>{props.variant}</span>
+          cell: (props) => (
+            <span aria-label={t('labels.variant')}>
+              <EclipsesTextcss str={props.variant} maxWidth={130} />
+            </span>
+          )
         },
         {
           id: 'soldToCustomer',
@@ -252,7 +280,11 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           selector: (row) => row.soldToCustomer || '',
           maxWidth: '150px',
           sortable: false,
-          cell: (props) => <span aria-label={t('labels.soldTo')}>{props.soldToCustomer}</span>
+          cell: (props) => (
+            <span aria-label={t('labels.soldTo')}>
+              <EclipsesTextcss str={props.soldToCustomer} maxWidth={130} />
+            </span>
+          )
         },
         {
           id: 'shipToCustomer',
@@ -260,7 +292,11 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           selector: (row) => row.shipToCustomer || '',
           maxWidth: '150px',
           sortable: false,
-          cell: (props) => <span aria-label={t('labels.shipTo')}>{props.shipToCustomer}</span>
+          cell: (props) => (
+            <span aria-label={t('labels.shipTo')}>
+              <EclipsesTextcss str={props.shipToCustomer} maxWidth={130} />
+            </span>
+          )
         }
       ];
     default:
