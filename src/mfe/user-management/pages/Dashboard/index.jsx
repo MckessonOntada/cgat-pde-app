@@ -19,7 +19,7 @@ import UploadUsers from './UploadUsers';
 export default function Dashboard() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { activeTab, setActiveTab, refreshData, clearFilters, applyFilters, roleList } = useUser();
+  const { activeTab, setActiveTab, refreshData, clearFilters, applyFilters, roleList, setPageNumber } = useUser();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const location = useLocation();
   const isSuccess = location.state?.isSuccess || false;
@@ -74,6 +74,7 @@ export default function Dashboard() {
 
   const handleTabClick = (tab) => {
     setActiveTab(tab.id);
+    setPageNumber(1);
   };
 
   const tabs = [
@@ -133,8 +134,8 @@ export default function Dashboard() {
       {
         type: 'dateRangePicker',
         name: 'dateRange',
-        startDateLabel: t('labels.startDate'),
-        endDateLabel: t('labels.endDate')
+        startDateLabel: isSystemAdminView ? t('labels.startDate') : t('labels.updatedDateFrom'),
+        endDateLabel: isSystemAdminView ? t('labels.endDate') : t('labels.updatedDateTo')
       }
     ];
   }, [isSystemAdminView, roleList, activeTab]);
