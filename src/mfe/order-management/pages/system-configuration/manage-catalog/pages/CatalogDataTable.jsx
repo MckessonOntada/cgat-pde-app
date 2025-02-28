@@ -10,6 +10,7 @@ import ConfigureCatalog from './ConfigureCatalog';
 import CatalogDetails from './CatalogDetails';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import AuthUtils from '@src/util/AuthUtils';
+import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 
 function CatalogDataTable(props) {
   const { t } = useTranslate();
@@ -24,81 +25,20 @@ function CatalogDataTable(props) {
   const [alert, setAlert] = useState(null);
   const isCustomerCenter = AuthUtils.isCustomerCenter();
 
-  const getindeterminate = () => {
-    const allDataIncluded = data.every((invoice) => selectedCatalogs.some((includedInvoice) => includedInvoice.id === invoice.id));
-    return allDataIncluded;
-  };
-
-  const renderCheckBox = (row, index) => {
-    return (
-      <input
-        data-testid="rowcheckbox"
-        type="checkbox"
-        id={'checkbox' + row?.id}
-        disabled={isCheckboxDisabled(row)}
-        onChange={() => handleRowSelected(row)}
-        checked={isChecked(row)}
-        ref={(el) => {
-          if (el) {
-            el.indeterminate =
-              row.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber && selectedCatalogs.length > 0 && !getindeterminate();
-          }
-        }}
-      />
-    );
-  };
-  const isChecked = (row) => {
-    if (row.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber) {
-      return getindeterminate();
-    }
-    let availableRow = selectedCatalogs.find((item) => item.id === row?.id);
-    return !!availableRow;
-  };
-  const isAllChecked = () => {
-    return selectedCatalogs.length === data.length;
-  };
-  const isCheckboxDisabled = (row) => {
-    let isDisbled = row.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber && !CommonUtils.isNonEmptyArray(data);
-    return isDisbled;
-  };
-  const handleRowSelected = (data) => {
-    if (data.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber) {
-      handleHeaderCheck(data);
-    } else {
-      handleIndividualCheck(data);
-    }
-  };
-  const handleIndividualCheck = (data) => {
-    if (selectedCatalogs.find((item) => item.id === data?.id)) {
-      setSelectedCatalogs(selectedCatalogs.filter((item) => item.id !== data?.id));
-      return;
-    }
-    setSelectedCatalogs([...selectedCatalogs, ...[data]]);
-  };
-  const handleHeaderCheck = () => {
-    if (isAllChecked()) {
-      setSelectedCatalogs([]);
-    } else {
-      if (paginationConfig.pageNumber === 1) {
-        setSelectedCatalogs(data);
-      } else {
-        const allDataIncluded = data.every((invoice) => selectedCatalogs.some((includedInvoice) => includedInvoice.id === invoice.id));
-        if (!allDataIncluded) {
-          setSelectedCatalogs([...selectedCatalogs, ...data]);
-        } else {
-          setSelectedCatalogs(selectedCatalogs.filter((item) => !data.some((invoice) => invoice.id === item.id)));
-        }
-      }
-    }
-  };
-
   const columns = [
     {
       id: 'checkbox',
-      name: renderCheckBox({ id: 'ALL_PATIENTS_' + paginationConfig.pageNumber }),
+      name: renderTableCheckBox(
+        { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+        data,
+        'id',
+        paginationConfig,
+        selectedCatalogs,
+        setSelectedCatalogs
+      ),
       sortable: false,
-      cell: (row, index) => renderCheckBox(row, index),
-      selector: (row) => row.MRN,
+      cell: (row, index) => renderTableCheckBox(row, data, 'id', paginationConfig, selectedCatalogs, setSelectedCatalogs),
+      // selector: (row) => row.MRN,
       width: '50px',
       omit: isCustomerCenter
     },

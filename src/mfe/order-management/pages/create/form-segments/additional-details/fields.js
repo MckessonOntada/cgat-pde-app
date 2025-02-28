@@ -7,8 +7,7 @@ export const getFormFields = (t, config, setFieldValue) => [
     placeholder: ' ',
     isRequired: config.isCoiIdRequired,
     component: Components['input'],
-    maxLength: 30,
-    onChange: (e) => setFieldValue('coiId', e.target.value?.toUpperCase())
+    maxLength: 10
   },
   {
     name: 'orderQuantity',
@@ -38,7 +37,6 @@ export const getFormFields = (t, config, setFieldValue) => [
     name: 'dateOfAdministration',
     label: t('labels.provideDateOfAdministration'),
     placeholder: ' ',
-    isRequired: true,
     component: Components['datePicker'],
     disableDateTill: new Date(),
     disablePast: true

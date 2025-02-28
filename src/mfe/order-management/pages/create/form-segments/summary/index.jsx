@@ -135,7 +135,7 @@ const Summary = () => {
     queryFn: async () => {
       return await OrderService.simulateOrder(orderId);
     },
-    enabled: !status ? false : !(status === 'REJECTED' || status === 'SUBMITTED'),
+    enabled: !status ? false : !(status === StatusEnum.REJECTED || status === StatusEnum.SUBMITTED),
     refetchOnWindowFocus: false,
     onError: (error) => {
       showAlert({ description: error?.response?.data?.message, type: 'error', anchorEl: ALERT_CONTAINER_ID });
@@ -363,10 +363,8 @@ const Summary = () => {
     return isLoader;
   }
 
-  if (patient.patientInfo)
-    patient.fullName = [patient.patientInfo.firstName, patient.patientInfo.middleName, patient.patientInfo.lastName]
-      .filter(Boolean)
-      .join(' ');
+  if (patient.patientInfo) patient.fullName = CommonUtils.getFullName(patient.patientInfo);
+
   const isAgreed = agreeCheckboxOptions.isChecked,
     hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected;
 

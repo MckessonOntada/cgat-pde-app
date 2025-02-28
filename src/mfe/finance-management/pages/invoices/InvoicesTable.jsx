@@ -17,6 +17,7 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import { useAccountContext } from '../../context/AccountContext';
+import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 
 export default function InvoicesTable() {
   const { t } = useTranslate();
@@ -26,84 +27,19 @@ export default function InvoicesTable() {
   const showCardView = useResponsiveView();
   const { selectedAccount } = useAccountContext();
 
-  const getindeterminate = () => {
-    const allDataIncluded = data.every((invoice) =>
-      includeinvoiceData.some((includedInvoice) => includedInvoice.billNumber === invoice.billNumber)
-    );
-    return allDataIncluded;
-  };
-
-  const renderCheckBox = (row, index) => {
-    return (
-      <input
-        data-testid="rowcheckbox"
-        type="checkbox"
-        id={'checkbox' + row?.id}
-        disabled={isCheckboxDisabled(row)}
-        onChange={() => handleRowSelected(row)}
-        checked={isChecked(row)}
-        ref={(el) => {
-          if (el) {
-            el.indeterminate =
-              row.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber && includeinvoiceData.length > 0 && !getindeterminate();
-          }
-        }}
-      />
-    );
-  };
-  const isChecked = (row) => {
-    if (row.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber) {
-      return getindeterminate();
-    }
-    let availableRow = includeinvoiceData.find((item) => item.billNumber === row?.billNumber);
-    return !!availableRow;
-  };
-  const isAllChecked = () => {
-    return includeinvoiceData.length === data.length;
-  };
-  const isCheckboxDisabled = (row) => {
-    let isDisbled = row.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber && !CommonUtils.isNonEmptyArray(data);
-    return isDisbled;
-  };
-  const handleRowSelected = (data) => {
-    if (data.id === 'ALL_PATIENTS_' + paginationConfig.pageNumber) {
-      handleHeaderCheck(data);
-    } else {
-      handleIndividualCheck(data);
-    }
-  };
-  const handleIndividualCheck = (data) => {
-    if (includeinvoiceData.find((item) => item.billNumber === data?.billNumber)) {
-      setIncludeinvoiceData(includeinvoiceData.filter((item) => item.billNumber !== data?.billNumber));
-      return;
-    }
-    setIncludeinvoiceData([...includeinvoiceData, ...[data]]);
-  };
-  const handleHeaderCheck = () => {
-    if (isAllChecked()) {
-      setIncludeinvoiceData([]);
-    } else {
-      if (paginationConfig.pageNumber === 1) {
-        setIncludeinvoiceData(data);
-      } else {
-        const allDataIncluded = data.every((invoice) =>
-          includeinvoiceData.some((includedInvoice) => includedInvoice.billNumber === invoice.billNumber)
-        );
-        if (!allDataIncluded) {
-          setIncludeinvoiceData([...includeinvoiceData, ...data]);
-        } else {
-          setIncludeinvoiceData(includeinvoiceData.filter((item) => !data.some((invoice) => invoice.billNumber === item.billNumber)));
-        }
-      }
-    }
-  };
-
   const columns = [
     {
       id: 'checkbox',
-      name: renderCheckBox({ id: 'ALL_PATIENTS_' + paginationConfig.pageNumber }),
+      name: renderTableCheckBox(
+        { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+        data,
+        'billNumber',
+        paginationConfig,
+        includeinvoiceData,
+        setIncludeinvoiceData
+      ),
       sortable: false,
-      cell: (row, index) => renderCheckBox(row, index),
+      cell: (row, index) => renderTableCheckBox(row, data, 'billNumber', paginationConfig, includeinvoiceData, setIncludeinvoiceData),
       selector: (row) => row.MRN,
       width: '50px',
       showInMobileHeader: true,
