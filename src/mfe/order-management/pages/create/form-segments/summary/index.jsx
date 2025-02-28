@@ -26,6 +26,7 @@ import { useCustomPrint } from '@src/util/printUtils';
 import CommonUtils from '@src/util/CommonUtils';
 import { CUSTOMER_CENTRE, SYSTEM_ADMIN } from '@src/api/commonService/CommonService';
 import { InventoryIndicator } from '../InventoryIndicator';
+import useSapOrder from './useSapOrder';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -50,6 +51,7 @@ const Summary = () => {
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
   const [alertMessages, setAlertMessages] = React.useState([]);
+  const [sapStatus, setSapStatus] = React.useState(null);
   const {
     therapy = {},
     catalog = {},
@@ -60,13 +62,27 @@ const Summary = () => {
     patientDetailsRequired = false,
     rejectionDetails,
     paporder: isPapOrder,
+    backendOrderId,
     status
   } = orderDetails || {};
+
+  const { data: sapOrderDetails } = useSapOrder(
+    {
+      sapOrderId: backendOrderId,
+      salesOrgId: accountDetails.soldToAccount?.salesOrg,
+      status
+    },
+    (status) => setSapStatus(status),
+    (error) => {
+      alertMessages.push({ description: 'Something went wrong while checking SAP order status. Please try again later.', type: 'error' });
+      setAlertMessages(alertMessages);
+    }
+  );
 
   const { data: inventoryDetails } = useQuery({
     queryKey: ['inventory-check', orderDetails.id],
     queryFn: async () => await OrderService.getInventoryStatus(orderDetails.id),
-    enabled: Boolean(orderDetails.id && (status !== StatusEnum.SUBMITTED || status !== StatusEnum.REJECTED) && ['S', 'I'].includes('S')),
+    enabled: Boolean(orderDetails.id && status !== StatusEnum.SUBMITTED && status !== StatusEnum.REJECTED && ['S', 'I'].includes('S')),
     onSuccess: (data) => {
       handleInventoryDetailsResponse(data, true);
     },
@@ -404,14 +420,21 @@ const Summary = () => {
           <ModuleHeader
             heading={<Heading as="h2">{t('labels.summary')}</Heading>}
             controls={
-              isRejected && (
-                <div class="row-space-between-center">
-                  <Badge text={t(`labels.status.${status.toLowerCase()}`)} type={'error'} />
-                  <Button size={'md'} variant="tertiary" onClick={() => setIsCommentPanelOpen(true)}>
-                    {t('captions.btnViewComments')}
-                  </Button>
-                </div>
-              )
+              <React.Fragment>
+                {sapStatus && (
+                  <div className="sap-status-wrapper">
+                    Order Processing <Badge text={sapStatus} />
+                  </div>
+                )}
+                {isRejected && (
+                  <div class="row-space-between-center">
+                    <Badge text={t(`labels.status.${status.toLowerCase()}`)} type={'error'} />
+                    <Button size={'md'} variant="tertiary" onClick={() => setIsCommentPanelOpen(true)}>
+                      {t('captions.btnViewComments')}
+                    </Button>
+                  </div>
+                )}
+              </React.Fragment>
             }
           />
           <div className={'MCP-module-body'}>

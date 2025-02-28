@@ -267,6 +267,20 @@ async function discardCurrentOrderVersion(orderId) {
   return {};
 }
 
+async function getOrderStatusFromSAP(sapOrderId, salesOrgId) {
+  if (!sapOrderId) throw new Error('SAP Order id is missing. SAP Order id is required to discard order changes.');
+  if (!salesOrgId) throw new Error('Sales Org id is missing. Sales Org id is required to discard order changes.');
+
+  const url = `${ApiRoutes.SAP_ORDERS}/${sapOrderId}/sales-org/${salesOrgId}/status`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET);
+
+  if (res.data) {
+    return res.data;
+  }
+
+  return {};
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -290,6 +304,7 @@ const OrderService = Object.freeze({
   getAssignedGroups,
   simulateOrder,
   updateTherapy,
+  getOrderStatusFromSAP,
   discardCurrentOrderVersion
 });
 

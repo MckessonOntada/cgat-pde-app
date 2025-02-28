@@ -118,7 +118,7 @@ const SecondaryHeader = ({ navLinks }) => {
     const exitUserView = () => {
       impersonateLogout()
         .then(() => {
-          navigate('/?expelled=true');
+          navigate('/admin?expelled=true');
         })
         .catch((error) => {
           console.log(`error: ${error}`);
