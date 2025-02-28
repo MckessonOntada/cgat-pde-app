@@ -105,9 +105,7 @@ function AdditionalDetails() {
       .required(t('labels.PONumberRequired'))
       .max(35, t('labels.PONumberLengthError'))
       .trim(t('labels.poNumberExtraSpaceError')),
-    dateOfAdministration: Yup.date()
-      .required(t('labels.DateOfAdministrationRequired'))
-      .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
+    dateOfAdministration: Yup.date().min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
   });
 
   React.useEffect(() => {
