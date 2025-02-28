@@ -8,6 +8,7 @@ import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import AuthUtils from '@src/util/AuthUtils';
+import { serializeParams } from '@src/util/ApiUtils';
 
 const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleSelect, editRoleId, isRolePage }) => {
   const { t } = useTranslate();
@@ -22,7 +23,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
   } = useQuery({
     queryKey: [`users/getAll}`],
     queryFn: async () => {
-      const res = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}`, httpVerb.GET, {});
+      const res = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}?${serializeParams({ status: 'active' })}`, httpVerb.GET, {});
 
       if (res.data?.content) {
         const roles = res.data?.content?.map((role) => ({
