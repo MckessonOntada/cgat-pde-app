@@ -483,16 +483,17 @@ div.disable-all {
   font-size: var(--brand-font-size--default);
   font-weight: var(--brand-font-weight-600);
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: flex-start;
   gap: var(--spacing-02);
 
   .overflowing {
     text-overflow: ellipsis;
-    text-wrap: wrap;
+    white-space: nowrap;
     overflow: hidden;
   }
+
 }
 
 .row-space-between-center {

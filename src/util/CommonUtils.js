@@ -381,10 +381,11 @@ export const getFullName = (name) => {
   if (!name || typeof name !== 'object') return '';
   //defaults to an empty string ('') when firstnam,middlename,lastname is notavailable
   const { firstName = '', middleName = '', lastName = '' } = name;
-  return [lastName, firstName, middleName]
-    .filter((part) => part.trim()) // Remove empty or whitespace-only parts
-    .join(', ')
-    .trim();
+  // return [lastName, firstName, middleName]
+  //   .filter((part) => part.trim()) // Remove empty or whitespace-only parts
+  //   .join(', ')
+  //   .trim();
+  return `${lastName || ''}, ${firstName || ''} ${middleName || ''}`.trim();
 };
 
 function generateUniqueCode(str) {
