@@ -20,6 +20,7 @@ import { ROUTE_CONFIG } from './constants';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import usePermission from '@src/hooks/usePermissions';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 
 function TemplateList() {
   const { t } = useTranslate();
@@ -39,8 +40,8 @@ function TemplateList() {
     setPageNumber,
     refetchTemplates
   } = useQuestionnaire();
-  const { renderCheckBox, selectedData, setSelectedData } = useMultiCheckBox(data, paginationConfig, selectedTemplates, setTemplates);
-
+  // const { renderCheckBox, selectedData, setSelectedData } = useMultiCheckBox(data, paginationConfig, selectedTemplates, setTemplates);
+  const [selectedData, setSelectedData] = useState([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const selectedEntityType = location.state?.value || false;
   const isSuccess = location.state?.isSuccess || false;
@@ -76,9 +77,20 @@ function TemplateList() {
   const columns = [
     {
       id: 'checkbox',
-      name: data?.length > 0 ? renderCheckBox({ id: 'ALL_ROWS' + paginationConfig.pageNumber }) : null,
+      // name: data?.length > 0 ? renderCheckBox({ id: 'ALL_ROWS' + paginationConfig.pageNumber }) : null,
+      name:
+        data?.length > 0
+          ? renderTableCheckBox(
+              { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
+              data,
+              'id',
+              paginationConfig,
+              selectedData,
+              setSelectedData
+            )
+          : null,
       sortable: false,
-      cell: (row, index) => renderCheckBox(row, index),
+      cell: (row, index) => renderTableCheckBox(row, data, 'id', paginationConfig, selectedData, setSelectedData),
       selector: (row) => row.id,
       width: '50px',
       omit: !hasPermission(PERMISSIONS_ENUM.SYSTEM_CONFIGURATION.CONFIGURE_QUESTIONNAIRE)
