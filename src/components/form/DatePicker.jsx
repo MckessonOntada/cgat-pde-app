@@ -20,7 +20,10 @@ export default function DatePicker(props) {
         id={id}
         name={id}
         value={value}
-        onChangeFn={onChange}
+        onChangeFn={(e) => {
+          handleInputBlur();
+          onChange(e);
+        }}
         size="lg"
         errors={isFieldTouched && errorMessage}
         onBlur= {handleInputBlur}
