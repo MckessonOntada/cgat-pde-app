@@ -38,7 +38,6 @@ export const getFormFields = (t, config, setFieldValue) => [
     name: 'dateOfAdministration',
     label: t('labels.provideDateOfAdministration'),
     placeholder: ' ',
-    isRequired: true,
     component: Components['datePicker'],
     disableDateTill: new Date(),
     disablePast: true
