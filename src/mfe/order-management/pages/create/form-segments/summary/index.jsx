@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import styles from './Summary.module.scss';
 import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg';
 import ModuleHeader from '@src/components/module-header';
-import { Button, Modal, CheckboxGroup, Heading, Loader, Badge, Tooltip } from '@mckesson/mcp-component-library';
+import { Button, Modal, CheckboxGroup, Heading, Loader, Badge, Tooltip, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
@@ -25,6 +25,7 @@ import useOrder from '../../../orders/useOrder';
 import { useCustomPrint } from '@src/util/printUtils';
 import CommonUtils from '@src/util/CommonUtils';
 import { CUSTOMER_CENTRE, SYSTEM_ADMIN } from '@src/api/commonService/CommonService';
+import { InventoryIndicator } from '../InventoryIndicator';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -43,11 +44,12 @@ const Summary = () => {
   const location = useLocation();
   const { orderId } = useParams();
   const { showAlert } = useAlert();
-  const { data: orderDetails, isFetching, isError, error, isLoader } = useOrder(orderId);
+  const { data: orderDetails = {}, isFetching, isError, error, isLoader } = useOrder(orderId);
   const [isPAPOrderConfirmModalOpen, setIsPAPOrderConfirmModalOpen] = React.useState(false);
   const { isApprover = false, isSimulate = false } = location.state || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
+  const [alertMessages, setAlertMessages] = React.useState([]);
   const {
     therapy = {},
     catalog = {},
@@ -61,9 +63,50 @@ const Summary = () => {
     status
   } = orderDetails || {};
 
+  const { data: inventoryDetails } = useQuery({
+    queryKey: ['inventory-check', orderDetails.id],
+    queryFn: async () => await OrderService.getInventoryStatus(orderDetails.id),
+    enabled: Boolean(orderDetails.id && (status !== StatusEnum.SUBMITTED || status !== StatusEnum.REJECTED) && ['S', 'I'].includes('S')),
+    onSuccess: (data) => {
+      handleInventoryDetailsResponse(data, true);
+    },
+    onError: (error) => {
+      handleInventoryDetailsResponse(error, false);
+    },
+    refetchOnWindowFocus: false
+  });
+
+  const handleInventoryDetailsResponse = (data, isSuccess) => {
+    if (isSuccess) {
+      const { erroredItems, warningMessages } = data;
+      if (erroredItems) {
+        alertMessages.push(
+          ...erroredItems.map((err) => ({
+            description: err.errorMessage,
+            type: 'error'
+          }))
+        );
+      }
+      if (warningMessages) {
+        alertMessages.push(
+          ...warningMessages.map((warn) => ({
+            description: warn.errorMessage,
+            type: 'warning'
+          }))
+        );
+      }
+    } else {
+      alertMessages.push({ description: 'Something went wrong while checking inventory. Please try again later.', type: 'error' });
+    }
+    setAlertMessages(alertMessages);
+  };
+
+  const closeAvailabilityAlert = (index, key) => {
+    setAlertMessages(alertMessages.filter((msg, _index) => _index != index));
+  };
+
   const variantDetails = additionalDetails?.variantDetails || {};
-  const isImpersonated = Boolean(AuthUtils.getImpersonateId()),
-    isRejected = status === StatusEnum.REJECTED;
+  const isRejected = status === 'REJECTED';
 
   const contentRef = useRef(null);
   const printPage = useCustomPrint(
@@ -104,11 +147,11 @@ const Summary = () => {
     const infoMessages = simulationData.infoMessages?.map((msg) => msg.value) || [];
 
     if (warningMessages.length > 0) {
-      showAlert({ description: err.message, type: 'warning', anchorEl: ALERT_CONTAINER_ID });
+      alertMessages.push(...warningMessages.map((msg) => ({ description: msg, type: 'warning' })));
     }
 
     if (infoMessages.length > 0) {
-      showAlert({ description: err.message, type: 'info', anchorEl: ALERT_CONTAINER_ID });
+      alertMessages.push(...warningMessages.map((msg) => ({ description: msg, type: 'info' })));
     }
   }
 
@@ -346,6 +389,17 @@ const Summary = () => {
           </div>
         )}
         <div id={ALERT_CONTAINER_ID} />
+
+        <div>
+          {alertMessages && (
+            <div className="MCP-module-body">
+              {alertMessages.map((item, index) => (
+                <Alert key={index + 1} description={item.description} onClose={() => closeAvailabilityAlert(index)} type={item.type} />
+              ))}
+            </div>
+          )}
+        </div>
+
         <div className={'MCP-module-wrapper'}>
           <ModuleHeader
             heading={<Heading as="h2">{t('labels.summary')}</Heading>}
@@ -372,7 +426,15 @@ const Summary = () => {
               />
               <div class={styles.flexPanel}>
                 {(status === StatusEnum.SUBMITTED || isApprover) && <DetailSegment label={t('labels.orderId')} value={orderId} />}
-                <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
+                <DetailSegment
+                  label={t('labels.materialDescription')}
+                  value={
+                    <div className="row-space-between-center">
+                      {therapy?.materialDescription}
+                      <InventoryIndicator status={inventoryDetails} />
+                    </div>
+                  }
+                />
                 <p className="price-wrapper">
                   <DetailSegment
                     label={t('labels.orderCost')}
