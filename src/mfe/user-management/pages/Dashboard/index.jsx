@@ -133,8 +133,8 @@ export default function Dashboard() {
       {
         type: 'dateRangePicker',
         name: 'dateRange',
-        startDateLabel: t('labels.startDate'),
-        endDateLabel: t('labels.endDate')
+        startDateLabel: isSystemAdminView ? t('labels.startDate') : t('labels.updatedDateFrom'),
+        endDateLabel: isSystemAdminView ? t('labels.endDate') : t('labels.updatedDateTo')
       }
     ];
   }, [isSystemAdminView, roleList, activeTab]);
