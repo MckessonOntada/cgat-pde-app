@@ -22,7 +22,6 @@ export default function ViewOrganization() {
   const location = useLocation();
   const isView = location.state?.isView || false;
   const { orgId } = useParams();
-
   const navigate = useNavigate();
   const { t } = useTranslate();
   const [alertConfig, setAlertConfig] = React.useState(null);
@@ -63,7 +62,7 @@ export default function ViewOrganization() {
     setAlertConfig(null);
   };
 
-  const { mutate } = useMutation(async ({ payload }) => {
+  const { mutate, isLoading: isAddingAccounts } = useMutation(async ({ payload }) => {
     const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${orgId}/accounts`;
     const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload);
     return res.data;
@@ -74,7 +73,7 @@ export default function ViewOrganization() {
       setUpdateState({ isSuccess: true });
       setAlertConfig({
         isVisible: true,
-        description: `Select at least on account`,
+        description: `Select at least one account`,
         type: 'error'
       });
       return;
@@ -133,7 +132,7 @@ export default function ViewOrganization() {
   };
   return (
     <div className="viewOrg-container">
-      {isLoading && <Loader type={'screen'} />}
+      {isLoading || isAddingAccounts && <Loader type={'screen'} />}
 
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={goBack} size="md">

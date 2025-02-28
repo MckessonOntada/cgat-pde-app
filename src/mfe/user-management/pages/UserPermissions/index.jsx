@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Stepper, Heading, Button, Alert } from '@mckesson/mcp-component-library';
+import { Stepper, Heading, Button, Alert, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import ModuleHeader from '@src/components/module-header';
@@ -95,7 +95,10 @@ const UserPermissions = () => {
       }
     );
   };
-
+  if (isSavingUserPermission) {
+    return <Loader type={'screen'} />;
+  }
+  
   return (
     <div className="MCP-module-wrapper">
       <div>
