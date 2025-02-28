@@ -13,7 +13,7 @@ import OrderService from '@src/api/commonService/OrderService';
 import { useMutation, useQuery } from 'react-query';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import OrderStepper from '../OrderStepper';
-import { ALPHA_NUMERIC_ONLY_UPPERCASE, NUMBER_REGEX } from '@src/components/form/ValidationRegExp';
+import { ALPHA_NUMERIC_ONLY, NUMBER_REGEX } from '@src/components/form/ValidationRegExp';
 import CommonUtils from '@src/util/CommonUtils';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
@@ -85,8 +85,8 @@ function AdditionalDetails() {
 
   let initialValidationSchema = Yup.object({
     coiId: Yup.string()
-      .matches(ALPHA_NUMERIC_ONLY_UPPERCASE, t('labels.COI_IdMustValidNumber'))
-      .max(30, t('labels.COI_IdExceedDigits'))
+      .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
+      .max(10, t('labels.COI_IdExceedDigits'))
       .when([], {
         is: () => isCoiIdRequired === true,
         then: (schema) => schema.required(t('labels.COIIdRequired')),

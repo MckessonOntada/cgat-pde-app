@@ -7,8 +7,7 @@ export const getFormFields = (t, config, setFieldValue) => [
     placeholder: ' ',
     isRequired: config.isCoiIdRequired,
     component: Components['input'],
-    maxLength: 30,
-    onChange: (e) => setFieldValue('coiId', e.target.value?.toUpperCase())
+    maxLength: 10
   },
   {
     name: 'orderQuantity',
