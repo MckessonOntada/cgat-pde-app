@@ -281,7 +281,7 @@ function UserTable({ onActionSuccess }) {
         center: true,
         name: t('userManagement.table.action'),
         cell: (row) =>
-          activeTab == 2 ? (
+          activeTab == 2 && (
             <MenuList
               menuIcon={<IconEllipsis key={'menu-list-users-table'} />}
               handleSelect={(value) => handleOnOptionSelection(value, row)}
@@ -297,10 +297,8 @@ function UserTable({ onActionSuccess }) {
               ]}
               aria-label="Order options"
             />
-          ) : (
-            <Actions row={row} showViewButton={activeTab !== 2 && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS)} />
           ),
-        omit: isSystemAdminView,
+        omit: isSystemAdminView || activeTab == 1,
         isAction: true
       }
     ];
