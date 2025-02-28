@@ -320,10 +320,8 @@ const Summary = () => {
     return isLoader;
   }
 
-  if (patient.patientInfo)
-    patient.fullName = [patient.patientInfo.firstName, patient.patientInfo.middleName, patient.patientInfo.lastName]
-      .filter(Boolean)
-      .join(' ');
+  if (patient.patientInfo) patient.fullName = CommonUtils.getFullName(patient.patientInfo);
+
   const isAgreed = agreeCheckboxOptions.isChecked,
     hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected;
 

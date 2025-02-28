@@ -14,10 +14,10 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status }) {
       key={'therapy-description'}
       label={t('labels.therapyDescription')}
       value={
-        <React.Fragment>
-          <span>{therapy?.materialDescription || '-'}</span>
+        <div className="row-space-between-center therapy-description-wrapper">
+          <div className="overflowing">{therapy?.materialDescription || '-'}</div>
           <InventoryIndicator status={status} />
-        </React.Fragment>
+        </div>
       }
     />
   );
