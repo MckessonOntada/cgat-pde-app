@@ -3,9 +3,6 @@ import OktaHelper from './config/OktaHelper';
 
 const OktaConfigLoader = (props) => {
   const { children } = props;
-
-  console.log('REACT_APP_OKTA_AUTH_SERVER_ID', process.env.REACT_APP_OKTA_AUTH_SERVER_ID);
-  console.log('REACT_APP_OKTA_CLIENT_ID', process.env.REACT_APP_OKTA_CLIENT_ID);
   
   const res = {
     baseUrl: 'https://ikmg2.oktapreview.com',
