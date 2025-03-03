@@ -233,10 +233,11 @@ export const getColumnsByEntityType = (t, navigate, masterEntityType, entityData
           id: 'materialDescription',
           name: t('labels.therapy.materialDescription'),
           selector: (row) => row.materialDescriptionInLanguageEn || '',
-          maxWidth: '350px',
+          maxWidth: '250px',
+          minWidth: '180px',
           cell: (props) => (
             <span aria-label={t('labels.therapy.materialDescription')}>
-              <EclipsesTextcss str={props.materialDescriptionInLanguageEn} maxWidth={330} />
+              <EclipsesTextcss str={props.materialDescriptionInLanguageEn} maxWidth={170} />
             </span>
           )
         },
