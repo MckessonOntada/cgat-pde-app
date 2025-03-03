@@ -433,5 +433,9 @@ export const MessageEs = {
   'message.englishTextIsRequired': 'S_At least requires english text',
   'message.acknowldge': 'S_Please acknowledge to Save and Continue',
   'errors.uq_template_name_lower': 'S_Template Name already exists',
-  'messages.required_Details': 'S_Please select required details'
+  'messages.required_Details': 'S_Please select required details',
+  'labels.OrderProcesing': 'S_Order Procesing',
+  'labels.OrderProcesing.SAPOrderStatus.Open': 'S_OPEN',
+  'labels.OrderProcesing.SAPOrderStatus.Cancelled': 'S_CANCELLED',
+  'labels.OrderProcesing.SAPOrderStatus.Completed': 'S_COMPLETED'
 };

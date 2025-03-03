@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import styles from './Summary.module.scss';
 import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg';
 import ModuleHeader from '@src/components/module-header';
-import { Button, Modal, CheckboxGroup, Heading, Loader, Badge, Tooltip, Alert } from '@mckesson/mcp-component-library';
+import { Button, Modal, CheckboxGroup, Heading, Loader, Badge, Tooltip, Alert, Label } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
@@ -15,7 +15,7 @@ import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation, useQuery } from 'react-query';
 import { RoutePaths } from '@src/routes/constants';
-import { StatusEnum } from '../../../orders/constants';
+import { SAPOrderStatusEnum, StatusEnum } from '../../../orders/constants';
 import { renderModal } from '@src/util/ModalUtil';
 import FloatingDrawer from '@src/components/floating-drawer';
 import CommentPanel from './CommentPanel';
@@ -66,7 +66,7 @@ const Summary = () => {
     status
   } = orderDetails || {};
 
-  const { data: sapOrderDetails } = useSapOrder(
+  const { data: sapOrderDetails, isLoading: isLoaingSapOrderStatus } = useSapOrder(
     {
       sapOrderId: backendOrderId,
       salesOrgId: accountDetails.soldToAccount?.salesOrg,
@@ -78,6 +78,11 @@ const Summary = () => {
       setAlertMessages(alertMessages);
     }
   );
+
+  // const { data: sapOrderDetails, isLoading: isLoadingSapOrderStatus } = {
+  //   data: { finalStatus: 'Cancelled' },
+  //   isLoadingSapOrderStatus: true // Set to true to test loader
+  // };
 
   const { data: inventoryDetails } = useQuery({
     queryKey: ['inventory-check', orderDetails.id],
@@ -125,7 +130,7 @@ const Summary = () => {
 
   const variantDetails = additionalDetails?.variantDetails || {};
   const isRejected = status === 'REJECTED';
-
+  const isSubmitted = status === StatusEnum.SUBMITTED;
   const contentRef = useRef(null);
   const printPage = useCustomPrint(
     contentRef,
@@ -309,6 +314,7 @@ const Summary = () => {
 
   const handleAfterRejectOrder = (data) => {
     setIsCommentPanelOpen(false);
+    navigate(0);
   };
 
   const getAllowedControls = () => {
@@ -422,21 +428,34 @@ const Summary = () => {
           <ModuleHeader
             heading={<Heading as="h2">{t('labels.summary')}</Heading>}
             controls={
-              <React.Fragment>
-                {sapStatus && (
-                  <div className="sap-status-wrapper">
-                    Order Processing <Badge text={sapStatus} />
-                  </div>
-                )}
-                {isRejected && (
-                  <div class="row-space-between-center">
-                    <Badge text={t(`labels.status.${status.toLowerCase()}`)} type={'error'} />
-                    <Button size={'md'} variant="tertiary" onClick={() => setIsCommentPanelOpen(true)}>
-                      {t('captions.btnViewComments')}
-                    </Button>
-                  </div>
-                )}
-              </React.Fragment>
+              isRejected ? (
+                <div className="row-space-between-center">
+                  <Badge text={t(`labels.status.${status.toLowerCase()}`)} type="error" />
+                  <Button size="md" variant="tertiary" onClick={() => setIsCommentPanelOpen(true)}>
+                    {t('captions.btnViewComments')}
+                  </Button>
+                </div>
+              ) : isSubmitted ? (
+                <div className="row-space-between-center">
+                  <Label className={styles.lblProcessing}>{t('labels.OrderProcesing')}</Label>
+                  {isLoaingSapOrderStatus && <Loader variant="circular" containerHeight={styles.containerHeight} />}
+
+                  {!isLoaingSapOrderStatus &&
+                    (sapOrderDetails?.finalStatus ? (
+                      <>
+                        {sapOrderDetails.finalStatus.toLowerCase() === SAPOrderStatusEnum.OPEN.toLowerCase() ? (
+                          <Badge text={t('labels.OrderProcesing.SAPOrderStatus.Open')} type="info" />
+                        ) : sapOrderDetails.finalStatus.toLowerCase() === SAPOrderStatusEnum.CANCELLED.toLowerCase() ? (
+                          <Badge text={t('labels.OrderProcesing.SAPOrderStatus.Cancelled')} type="error" />
+                        ) : (
+                          <Badge text={t('labels.OrderProcesing.SAPOrderStatus.Completed')} type="success" />
+                        )}
+                      </>
+                    ) : (
+                      <span>--</span>
+                    ))}
+                </div>
+              ) : null
             }
           />
           <div className={'MCP-module-body'}>

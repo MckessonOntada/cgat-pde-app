@@ -1,5 +1,6 @@
 import OrderService from '@src/api/commonService/OrderService';
 import { useQuery } from 'react-query';
+import { StatusEnum } from '../../../orders/constants';
 
 function useSapOrder(payload, onSuccess, onError) {
   const { sapOrderId, salesOrgId, status } = payload;
@@ -15,7 +16,7 @@ function useSapOrder(payload, onSuccess, onError) {
     onError: () => {
       onError();
     },
-    enabled: Boolean(sapOrderId && salesOrgId && status === 'SUBMITTED'),
+    enabled: Boolean(sapOrderId && salesOrgId && status === StatusEnum.SUBMITTED),
     refetchOnWindowFocus: false
   });
 }
