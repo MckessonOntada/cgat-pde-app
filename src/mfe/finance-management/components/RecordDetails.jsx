@@ -25,7 +25,8 @@ export default function RecordDetails() {
     defaultSetEvent,
     defaultPayToAccount,
     payToAccountsData,
-    setSelectedAccountRaw
+    setSelectedAccountRaw,
+    totalAccounts
   } = useAccountContext();
   const [selectedPayToAccount, setSelectedPayToAccount] = useState(null);
 
@@ -105,6 +106,8 @@ export default function RecordDetails() {
               size="lg"
               value={CommonUtils.isNonEmptyObject(selectedPayToAccount) ? selectedPayToAccount?.value : ''}
               fieldDisplayValue={CommonUtils.isNonEmptyObject(selectedPayToAccount) ? selectedPayToAccount : undefined}
+              refineFilterMessage={['More records exist.', 'Search to refine.']}
+              asyncRecordsFound={totalAccounts}
             />
           </div>
           <div className="search-form-actions">
