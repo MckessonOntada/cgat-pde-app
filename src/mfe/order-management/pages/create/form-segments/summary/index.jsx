@@ -99,6 +99,14 @@ const Summary = () => {
     refetchOnWindowFocus: false
   });
 
+  React.useEffect(() => {
+    if (orderDetails) {
+      if (catalog.inventoryType === 'T') {
+        setInventoryStatus('DROP_SHIP');
+      }
+    }
+  }, [orderDetails]);
+
   const handleInventoryDetailsResponse = (data, isSuccess) => {
     if (isSuccess) {
       const { erroredItems, warningMessages } = data || {};
@@ -664,7 +672,7 @@ const Summary = () => {
           <div className="controls">{getAllowedControls()}</div>
         </div>
       </div>
-      {isCommentPanelOpen &&
+      {isCommentPanelOpen && (
         <CommentPanel
           readOnly={isRejected}
           meta={{ orderId, rejectionDetails }}
@@ -672,7 +680,7 @@ const Summary = () => {
           onClose={() => setIsCommentPanelOpen(false)}
           openDrawer={isCommentPanelOpen}
         />
-      }
+      )}
       {isPAPOrderConfirmModalOpen && (
         <PAPOrderTypeConfirmModal onClose={() => setIsPAPOrderConfirmModalOpen(false)} onSubmit={handleOnSubmitPapOrder} />
       )}
