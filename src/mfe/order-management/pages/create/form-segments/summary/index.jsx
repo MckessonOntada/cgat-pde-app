@@ -79,11 +79,6 @@ const Summary = () => {
     }
   );
 
-  // const { data: sapOrderDetails, isLoading: isLoadingSapOrderStatus } = {
-  //   data: { finalStatus: 'Cancelled' },
-  //   isLoadingSapOrderStatus: true // Set to true to test loader
-  // };
-
   const getInventoryStatus = async () => {
     try {
       const response = await OrderService.getInventoryStatus(orderDetails.id);
@@ -474,14 +469,7 @@ const Summary = () => {
           />
           <div className={'MCP-module-body'}>
             <div className="MCP-CardContainer">
-              <ModuleHeader
-                className={styles.panelHeader}
-                heading={
-                  <Heading as="h3">
-                    {t(status === StatusEnum.SUBMITTED || isApprover ? 'labels.orderDetails' : 'labels.priceDetails')}
-                  </Heading>
-                }
-              />
+              <ModuleHeader className={styles.panelHeader} heading={<Heading as="h3">{t('labels.priceDetails')}</Heading>} />
               <div class={styles.flexPanel}>
                 {status === StatusEnum.SUBMITTED && <DetailSegment label={t('labels.sapId')} value={backendOrderId} />}
                 {status === StatusEnum.SUBMITTED && <DetailSegment label={t('labels.pdeId')} value={orderId} />}
