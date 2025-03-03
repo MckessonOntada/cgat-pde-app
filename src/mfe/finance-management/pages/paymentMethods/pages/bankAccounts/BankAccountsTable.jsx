@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -26,15 +25,6 @@ export default function PaymentHistoryTable() {
       cell: (props) => <div className="cellEllipse">{`${props.name}`}</div>
     },
     {
-      id: 'purchaseOrderNumber',
-      name: t('paymentInvoices.paymentMethods.table.bankAccount.routingNumber'),
-      selector: () => {},
-      minWidth: '160px',
-      sortable: true,
-      wrap: true,
-      cell: (props) => <div>{''}</div>
-    },
-    {
       name: t('paymentInvoices.paymentMethods.table.bankAccount.bankAccNumber'),
       selector: (row) => row.accountNumber,
       sortable: true,
@@ -44,23 +34,6 @@ export default function PaymentHistoryTable() {
       cardHeader: true,
       mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
       cell: (props) => <EclipsesTextcss className="cellEllipse" str={FinanceUtils.maskBankNumber(props.accountNumber)} maxWidth={240} />
-    },
-
-    {
-      name: t('paymentInvoices.paymentMethods.table.bankAccount.bankCountry'),
-      selector: () => {},
-      maxWidth: '160px',
-      sortable: true,
-      wrap: true,
-      cell: (props) => <EclipsesTextcss src={' '} maxWidth={150} />
-    },
-    {
-      name: t('paymentInvoices.paymentMethods.table.bankAccount.companyCode'),
-      selector: () => {},
-      maxWidth: '180px',
-      sortable: true,
-      wrap: true,
-      cell: (props) => <EclipsesTextcss src={' '} maxWidth={170} />
     }
   ];
 
