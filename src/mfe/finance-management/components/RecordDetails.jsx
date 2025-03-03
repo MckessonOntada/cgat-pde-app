@@ -25,7 +25,8 @@ export default function RecordDetails() {
     defaultSetEvent,
     defaultPayToAccount,
     payToAccountsData,
-    setSelectedAccountRaw
+    setSelectedAccountRaw,
+    fetchingAccounts
   } = useAccountContext();
   const [selectedPayToAccount, setSelectedPayToAccount] = useState(null);
 
@@ -101,10 +102,11 @@ export default function RecordDetails() {
               options={options}
               variant={'async'}
               onSearch={(event) => searchPayToAccounts(event)}
-              recordsCountToEnableSearch={5}
+              recordsCountToEnableSearch={2}
               size="lg"
               value={CommonUtils.isNonEmptyObject(selectedPayToAccount) ? selectedPayToAccount?.value : ''}
               fieldDisplayValue={CommonUtils.isNonEmptyObject(selectedPayToAccount) ? selectedPayToAccount : undefined}
+              isAsyncLoading={fetchingAccounts}
             />
           </div>
           <div className="search-form-actions">
