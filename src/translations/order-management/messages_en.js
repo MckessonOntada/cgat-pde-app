@@ -432,7 +432,7 @@ export const MessageEn = {
   'message.acknowldge': 'Please acknowledge to Save and Continue',
   'errors.uq_template_name_lower': 'Template Name already exists',
   'messages.required_Details': 'Please select required details',
-  'labels.OrderProcesing': 'Order Procesing',
+  'labels.OrderProcesing': 'Order Processing',
   'labels.OrderProcesing.SAPOrderStatus.Open': 'OPEN',
   'labels.OrderProcesing.SAPOrderStatus.Cancelled': 'CANCELLED',
   'labels.OrderProcesing.SAPOrderStatus.Completed': 'COMPLETED'

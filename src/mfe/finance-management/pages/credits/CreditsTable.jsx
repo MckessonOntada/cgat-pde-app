@@ -87,15 +87,6 @@ export default function CreditsTable(props) {
       )
     },
     {
-      id: 'billDate',
-      name: t('paymentInvoices.credits.table.billDate'),
-      selector: (row) => row.billDate,
-      sortable: true,
-      wrap: true,
-      width: '140px',
-      cell: (props) => dayjs(props?.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'
-    },
-    {
       id: 'dueDate',
       name: t('paymentInvoices.credits.table.validfrom'),
       selector: (row) => row.dueDate,
@@ -106,7 +97,7 @@ export default function CreditsTable(props) {
     },
     {
       id: 'billAmount',
-      name: t('paymentInvoices.credits.table.amount'),
+      name: selectableRows ? t('paymentInvoices.credits.table.billamount') : t('paymentInvoices.credits.table.amount'),
       selector: (row) => row.billAmount,
       maxWidth: '240px',
       sortable: true,
