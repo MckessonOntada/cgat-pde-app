@@ -7,7 +7,6 @@
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
 }
-
 .drawerModule {
   position: fixed;
   width: 80%;
@@ -17,9 +16,34 @@
   z-index: 1001;
   transition: transform 0.3s ease;
   display: flex;
-  .header{
-    h3 {
-      font-size: 22px !important;
+  .drawerWrapper{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 450px;
+    .header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: var(--spacing-02);
+      justify-content: space-between;
+      border-bottom: 1px solid var(--brand-color-dark-grey);
+      padding: var(--spacing-02) var(--spacing-03);
+      font-size: var(--brand-font-size--small);
+      font-weight: var(--brand-font-weight-600);
+      h3 {
+        font-size: 22px !important;
+      }
+    }
+    .body{
+      padding: var(--spacing-03);
+      padding-bottom: var(--spacing-06);
+      flex: 1 1 auto;
+      overflow-y: auto;
+    }
+    .footer{
+      border-top: 1px solid var(--brand-color-text-cool-grey);
+      padding: var(--spacing-03)  var(--spacing-05);
     }
   }
 }

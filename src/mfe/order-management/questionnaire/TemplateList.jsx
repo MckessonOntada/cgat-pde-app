@@ -230,14 +230,14 @@ function TemplateList() {
           }
         />
       </div>
-      <FloatingDrawer anchor="right" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
-        <SelectMaster onClose={() => setIsDrawerOpen(false)} onSubmit={handleOnSelectMaster} t={t} />
-      </FloatingDrawer>
+      { isDrawerOpen && 
+        <SelectMaster onSubmit={handleOnSelectMaster} t={t} isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen}/>
+      }
     </div>
   );
 }
 
-const SelectMaster = ({ onClose, onSubmit, t }) => {
+const SelectMaster = ({ onClose, onSubmit, t, isDrawerOpen, setIsDrawerOpen }) => {
   const [entity, setEntity] = React.useState('Material');
   const options = [
     {
@@ -260,31 +260,33 @@ const SelectMaster = ({ onClose, onSubmit, t }) => {
     if (onSubmit) onSubmit(entity);
   };
   return (
-    <div className="grail-layout floating-drawer">
-      <div className="styled-heading">
-        <Heading as="h3">{t('label.selectMaster')}</Heading>
-      </div>
-      <div className="grow">
-        <div className="radio-group">
-          <RadioGroup
-            caption={t('label.selectContent')}
-            direction="column"
-            items={options}
-            onChangeValue={setEntity}
-            radioBtnWidth="auto"
-            value={entity}
-          />
+    <FloatingDrawer 
+      anchor="right" 
+      open={isDrawerOpen} 
+      onClose={() => setIsDrawerOpen(false)} 
+      heading={t('label.selectMaster')}
+      controls={
+        <div className="controls">
+          <Button variant="secondary" size="md" onClick={() => setIsDrawerOpen(false)}>
+            {t('captions.btnCancel')}
+          </Button>
+          <Button variant="primary" size="md" onClick={handleOnSubmit}>
+            {t('modal.action.continue')}
+          </Button>
         </div>
+      }
+    >
+      <div className="radio-group">
+        <RadioGroup
+          caption={t('label.selectContent')}
+          direction="column"
+          items={options}
+          onChangeValue={setEntity}
+          radioBtnWidth="auto"
+          value={entity}
+        />
       </div>
-      <div className="controls">
-        <Button variant="secondary" size="md" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button variant="primary" size="md" onClick={handleOnSubmit}>
-          Continue
-        </Button>
-      </div>
-    </div>
+    </FloatingDrawer>
   );
 };
 

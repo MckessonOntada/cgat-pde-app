@@ -91,12 +91,6 @@ function TherapyDetails({
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.header}>
-        <Heading as="h3">{!isMaterialConfiguration ? t('labels.therapyDetails') : t('manageMaterial.drawer.heading')}</Heading>
-        <Button variant="tertiary" onClick={onClose} textButton IconClose>
-          <IconClose />
-        </Button>
-      </div>
       {isLoading ? (
         <Loader variant="circular" />
       ) : (

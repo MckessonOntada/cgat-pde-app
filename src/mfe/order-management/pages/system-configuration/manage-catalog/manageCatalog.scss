@@ -1,31 +1,11 @@
 @use "@src/assets/styles/abstracts/mixins";
 
-.header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--spacing-02);
-  justify-content: space-between;
-  border-bottom: 1px solid var(--brand-color-dark-grey);
-  padding: var(--spacing-02) var(--spacing-03);
-  font-size: var(--brand-font-size--small);
-  font-weight: var(--brand-font-weight-600);
-  h3 {
-    font-size: 22px !important;
-  }
-}
 .configure-form {
-  height: calc(100% - 46px);
-  overflow: auto;
   .step-main-container {
     width: 100%;
-    padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    @include mixins.respond(sm) {
-      width: 440px;
-    }
     .add-step{
       button{
         padding-left: 0px;
@@ -53,26 +33,9 @@
     }
   }
 }
-.configure-footer {
-  display: flex;
-  padding: 16px;
-  gap: 8px;
-  justify-content: end;
-  border-top: 1px solid var(--brand-color-dark-grey);
-  position: sticky;
-  bottom: 0px;
-  background: #ffffff;
-}
 
 .details-main-wrapper {
-  width: 100%;
-  @include mixins.respond(sm) {
-    width: 440px;
-  }
   .details-body {
-    padding: var(--spacing-03);
-    height: calc(100% - 44px);
-    overflow: auto;
     .details-ul {
       .details-li {
       display: flex;

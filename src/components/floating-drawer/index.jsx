@@ -2,12 +2,16 @@ import React, { useEffect, useCallback, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styles from './Drawer.module.scss';
 import useWindowSize from '@src/hooks/UseWindowSize';
+import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
+import { Heading, Button } from '@mckesson/mcp-component-library';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const SM_BREAKPOINT = 576;
-const FloatingDrawer = ({ open, onClose, anchor = 'left', swipeable = false, children }) => {
+const FloatingDrawer = ({ open, onClose, anchor = 'left', swipeable = false, heading= false, width, controls= false, children }) => {
   const drawerRef = useRef();
   const windowSize = useWindowSize();
   const isMobileView = windowSize.width < SM_BREAKPOINT;
+  const { t } = useTranslate();
   useEffect(() => {
     if (open) {
       const handleKeyDown = (e) => {
@@ -96,8 +100,26 @@ const FloatingDrawer = ({ open, onClose, anchor = 'left', swipeable = false, chi
         aria-modal="true"
         role="dialog"
         aria-labelledby="drawer-title"
-        aria-describedby="drawer-content">
-        {children}
+        aria-describedby="drawer-content"
+      >
+        <div className={styles.drawerWrapper} style={width ? { width: width } : {}}>
+          {heading && 
+            <div className={styles.header}>
+              <Heading as="h3">{heading}</Heading>
+              <Button variant="tertiary" onClick={handleClose} textButton IconClose>
+                <IconClose />
+              </Button>
+            </div>
+          }
+          <div className={styles.body}>
+            {children} 
+          </div>
+          {controls && 
+            <div className={styles.footer}>
+              {controls}
+            </div>
+          }
+        </div>
       </aside>
     </>
   );

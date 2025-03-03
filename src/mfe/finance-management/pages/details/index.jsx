@@ -290,7 +290,7 @@ function Details(props) {
         )}
       </div>
       {open && (
-        <FloatingDrawer open={true} anchor="right" onClose={() => setOpen(!open)}>
+        <FloatingDrawer open={true} anchor="right" onClose={() => setOpen(!open)} heading={t('labels.therapyDetails')}>
           <TherapyDetails
             therapyId={therapy}
             onSelect={() => {}}

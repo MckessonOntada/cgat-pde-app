@@ -290,9 +290,7 @@ const AccountSelection = () => {
             </div>
           </div>
           {open && (
-            <FloatingDrawer open={open} anchor="right" onClose={handleOnClose}>
-              <AccountSelectionUserGuide therapyId={therapyId} onSubmit={handleOnAccountSelection} onClose={handleOnClose} />
-            </FloatingDrawer>
+            <AccountSelectionUserGuide  openDrawer={open}  therapyId={therapyId} onSubmit={handleOnAccountSelection} onClose={handleOnClose} />
           )}
         </div>
       </div>
