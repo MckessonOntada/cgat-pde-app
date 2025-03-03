@@ -98,7 +98,7 @@ export const AccountProvider = ({ children }) => {
   }, [payToAccountsData, errorFetchingAccounts]);
 
   useEffect(() => {
-    if (CommonUtils.isNonEmptyObject(defaultPayToAccount)) {
+    if (CommonUtils.isNonEmptyObject(defaultPayToAccount) && !CommonUtils.isNonEmptyObject(selectedAccount)) {
       setSelectedAccount(defaultPayToAccount);
       setIsLoading(false);
     }

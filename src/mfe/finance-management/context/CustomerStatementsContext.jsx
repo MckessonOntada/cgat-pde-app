@@ -108,10 +108,12 @@ export const CustomerStatementsProvider = ({ children }) => {
       };
 
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+      if (!res.data?.statements) {
+        return [];
+      }
       if (res.data) {
         const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
         const endIndex = startIndex + paginationConfig.pageSize;
-
         let _data = [...[], ...res.data.statements];
         let _modifiedData = _data.filter((item) => {
           const matchesSearchQuery = filterConfig?.searchQuery
