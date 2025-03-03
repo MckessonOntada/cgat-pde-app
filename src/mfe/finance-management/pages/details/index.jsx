@@ -190,7 +190,7 @@ function Details(props) {
         cell: (props) => <div className="cellEllipse align-items-right">{props.grossPrice || '-'}</div>
       }
     ],
-    []
+    [data]
   );
 
   return (
@@ -224,7 +224,7 @@ function Details(props) {
           )}
           <DetailsFlexGrid invoiceDetails={invoiceDetails} />
         </div>
-        <DetailMetrics data={billDates} />
+        {CommonUtils.isNonEmptyObject(billDates) && <DetailMetrics data={billDates} />}
         <div className="datatable-container">
           <CustomDataTable
             id="my-data-table"
@@ -240,7 +240,6 @@ function Details(props) {
             noDataComponent={
               <EmptyDataTable
                 isLoading={isLoading}
-                error={isError ? 'Something went wrong! Please try again' : null}
                 image={EmptyDataImage}
                 heading={t('paymentInvoices.invoice.table.emptyData')}
                 description={t('paymentInvoices.history.table.emptyDataDescription')}
