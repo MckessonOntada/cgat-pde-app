@@ -84,56 +84,58 @@ const Summary = () => {
   //   isLoadingSapOrderStatus: true // Set to true to test loader
   // };
 
-  const { data: inventoryDetails } = useQuery({
-    queryKey: ['inventory-check', orderDetails.id],
-    queryFn: async () => await OrderService.getInventoryStatus(orderDetails.id),
-    enabled: Boolean(
-      orderDetails.id && status !== StatusEnum.SUBMITTED && status !== StatusEnum.REJECTED && ['S', 'I'].includes(catalog.inventoryType)
-    ),
-    onSuccess: (data) => {
-      handleInventoryDetailsResponse(data, true);
-    },
-    onError: (error) => {
-      handleInventoryDetailsResponse(error, false);
-    },
-    refetchOnWindowFocus: false
-  });
+  const getInventoryStatus = async () => {
+    try {
+      const response = await OrderService.getInventoryStatus(orderDetails.id);
+      if (response.status === 200) {
+        handleInventoryDetailsResponse(response.data);
+      }
+    } catch (error) {
+      alertMessages.push({ description: 'Something went wrong while checking inventory. Please try again later.', type: 'error' });
+      setAlertMessages(alertMessages);
+      setInventoryStatus('PENDING');
+    }
+  };
 
   React.useEffect(() => {
-    if (orderDetails) {
-      if (catalog.inventoryType === 'T') {
-        setInventoryStatus('DROP_SHIP');
-      }
+    if (!orderDetails.id || status === StatusEnum.SUBMITTED || status === StatusEnum.REJECTED) {
+      return;
     }
+    if (catalog.inventoryType === 'T') {
+      setInventoryStatus('DROP_SHIP');
+    } else if (catalog.inventoryType === 'S' || catalog.inventoryType === 'I') {
+      setInventoryStatus('CHECKING');
+      getInventoryStatus();
+    } else {
+      console.log('Inventory type not supported');
+    }
+    // orderDetails.id && status !== StatusEnum.SUBMITTED && status !== StatusEnum.REJECTED && ['S', 'I'].includes(catalog.inventoryType);
   }, [orderDetails]);
 
-  const handleInventoryDetailsResponse = (data, isSuccess) => {
-    if (isSuccess) {
-      const { erroredItems, warningMessages } = data || {};
-      if (erroredItems?.length > 0 || warningMessages?.length > 0) {
-        if (erroredItems && erroredItems.length > 0) {
-          alertMessages.push(
-            ...erroredItems.map((err) => ({
-              description: err.errorMessage,
-              type: 'error'
-            }))
-          );
-        }
-        if (warningMessages && warningMessages.length > 0) {
-          alertMessages.push(
-            ...warningMessages.map((warn) => ({
-              description: warn.errorMessage,
-              type: 'warning'
-            }))
-          );
-        }
-        setInventoryStatus('OUT_OF_STOCK');
-      } else {
-        setInventoryStatus('AVAILABLE');
+  const handleInventoryDetailsResponse = (data) => {
+    const { erroredItems, warningMessages } = data || {};
+    if (erroredItems?.length > 0 || warningMessages?.length > 0) {
+      if (erroredItems && erroredItems.length > 0) {
+        alertMessages.push(
+          ...erroredItems.map((err) => ({
+            description: err.errorMessage,
+            type: 'error'
+          }))
+        );
       }
+      if (warningMessages && warningMessages.length > 0) {
+        alertMessages.push(
+          ...warningMessages.map((warn) => ({
+            description: warn.errorMessage,
+            type: 'warning'
+          }))
+        );
+      }
+      setInventoryStatus('OUT_OF_STOCK');
     } else {
-      alertMessages.push({ description: 'Something went wrong while checking inventory. Please try again later.', type: 'error' });
+      setInventoryStatus('AVAILABLE');
     }
+
     setAlertMessages(alertMessages);
   };
 
@@ -451,7 +453,7 @@ const Summary = () => {
               ) : isSubmitted ? (
                 <div className="row-space-between-center">
                   <Label className={styles.lblProcessing}>{t('labels.OrderProcesing')}</Label>
-                  {isLoaingSapOrderStatus && <Loader variant="circular" containerHeight={styles.containerHeight} />}
+                  {isLoaingSapOrderStatus && <div className="dot-loader"></div>}
 
                   {!isLoaingSapOrderStatus &&
                     (sapOrderDetails?.finalStatus ? (
