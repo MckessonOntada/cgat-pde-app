@@ -66,7 +66,7 @@ export const AccountProvider = ({ children }) => {
     },
     refetchOnWindowFocus: false
   });
-  console.log('fetchingAccounts....', fetchingAccounts);
+
   useEffect(() => {
     if (errorFetchingAccounts) {
       showSnackbar({ description: t('paymentInvoices.getAccountsAPI.error'), type: 'error' });

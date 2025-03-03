@@ -8,6 +8,8 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.header.managePayments': 'Manage Payments & Invoices',
 
   // Account Search
+  'paymentInvoices.accountSearch.moreRecordsExist': 'More records exist.',
+  'paymentInvoices.accountSearch.searchToRefine': 'Search to refine.',
   'paymentInvoices.accountSearch.applyBtn': 'Apply',
   'paymentInvoices.accountSearch.setAsDefaultBtn': 'Set as Default',
   'paymentInvoices.getAccountsAPI.error': 'Error fetching accounts list.',

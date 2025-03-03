@@ -103,12 +103,12 @@ export default function RecordDetails() {
               options={options}
               variant={'async'}
               onSearch={(event) => searchPayToAccounts(event)}
-              recordsCountToEnableSearch={2}
+              recordsCountToEnableSearch={5}
               size="lg"
               value={CommonUtils.isNonEmptyObject(selectedPayToAccount) ? selectedPayToAccount?.value : ''}
               fieldDisplayValue={CommonUtils.isNonEmptyObject(selectedPayToAccount) ? selectedPayToAccount : undefined}
               isAsyncLoading={fetchingAccounts}
-              refineFilterMessage={['More records exist.', 'Search to refine.']}
+              refineFilterMessage={[t('paymentInvoices.accountSearch.moreRecordsExist'), t('paymentInvoices.accountSearch.searchToRefine')]}
               asyncRecordsFound={totalAccounts}
             />
           </div>
