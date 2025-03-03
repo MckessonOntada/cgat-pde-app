@@ -95,14 +95,8 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
   return (
     <React.Fragment>
       {data && (
-        <FloatingDrawer open={openDetails} anchor="right" onClose={handleCloseDrawer}>
+        <FloatingDrawer open={openDetails} anchor="right" onClose={handleCloseDrawer} heading={t('ManageAccount.accountDetails')}>
           <div className="details-main-wrapper">
-            <div className="header">
-              <Heading as="h3">{t('ManageAccount.accountDetails')}</Heading>
-              <Button variant="tertiary" onClick={handleCloseDrawer} textButton IconClose>
-                <IconClose />
-              </Button>
-            </div>
             <div className={'details-body'}>
               {AccountDetailsConstants.map((item, index) => (
                 <React.Fragment>

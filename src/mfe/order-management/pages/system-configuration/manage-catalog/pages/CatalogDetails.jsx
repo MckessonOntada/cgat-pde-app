@@ -138,16 +138,8 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
   return (
     <React.Fragment>
       {data && (
-        <FloatingDrawer open={openCatalogDetails} anchor="right" onClose={handleCloseDrawer}>
+        <FloatingDrawer open={openCatalogDetails} anchor="right" onClose={handleCloseDrawer} heading={t('ManageCatalog.Catalogdetails')}>
           <div className="details-main-wrapper">
-            <div className="header">
-              <div className="styled-heading">
-                <Heading as="h3">{t('ManageCatalog.Catalogdetails')}</Heading>
-              </div>
-              <Button variant="tertiary" onClick={handleCloseDrawer} textButton IconClose>
-                <IconClose />
-              </Button>
-            </div>
             <div className={'details-body'}>
               {CatalogDetailsConstants.map((item, index) => (
                 <React.Fragment>

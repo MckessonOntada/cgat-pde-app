@@ -17,7 +17,6 @@ import { useMutation, useQuery } from 'react-query';
 import { RoutePaths } from '@src/routes/constants';
 import { StatusEnum } from '../../../orders/constants';
 import { renderModal } from '@src/util/ModalUtil';
-import FloatingDrawer from '@src/components/floating-drawer';
 import CommentPanel from './CommentPanel';
 import AuthUtils from '@src/util/AuthUtils';
 import OrderStepper from '../OrderStepper';
@@ -636,14 +635,15 @@ const Summary = () => {
           <div className="controls">{getAllowedControls()}</div>
         </div>
       </div>
-      <FloatingDrawer open={isCommentPanelOpen} anchor="right" onClose={() => setIsCommentPanelOpen(false)}>
+      {isCommentPanelOpen &&
         <CommentPanel
           readOnly={isRejected}
           meta={{ orderId, rejectionDetails }}
           onSuccess={handleAfterRejectOrder}
           onClose={() => setIsCommentPanelOpen(false)}
+          openDrawer={isCommentPanelOpen}
         />
-      </FloatingDrawer>
+      }
       {isPAPOrderConfirmModalOpen && (
         <PAPOrderTypeConfirmModal onClose={() => setIsPAPOrderConfirmModalOpen(false)} onSubmit={handleOnSubmitPapOrder} />
       )}

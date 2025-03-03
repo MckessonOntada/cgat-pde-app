@@ -1,9 +1,4 @@
 .wrapper {
-  min-width: 446px;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-
   .header {
     display: flex;
     flex-direction: row;
@@ -20,12 +15,6 @@
   }
 
   .body {
-    flex-grow: 1;
-    display: flex;
-    gap: var(--spacing-03);
-    overflow-y: auto;
-    flex-direction: column;
-    padding: var(--spacing-03);
 
     .detailsPanel {
       display: flex;
@@ -33,7 +22,6 @@
       justify-content: space-between;
       align-items: stretch;
       gap: var(--spacing-04);
-      height: 100vh;
 
       .panelHeading {
         font-size: var(--brand-font-size--default);

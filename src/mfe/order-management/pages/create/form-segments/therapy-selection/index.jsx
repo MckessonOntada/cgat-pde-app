@@ -194,7 +194,12 @@ function TherapySelection() {
             }
           />
           {therapyDetails && (
-            <FloatingDrawer open={true} anchor="right" onClose={handleOnClose}>
+            <FloatingDrawer 
+              open={true} 
+              anchor="right" 
+              onClose={handleOnClose}
+              heading={t('labels.therapyDetails')}
+            >
               <TherapyDetails
                 therapyId={therapyDetails}
                 onSelect={handleOnDrawerSelect}
