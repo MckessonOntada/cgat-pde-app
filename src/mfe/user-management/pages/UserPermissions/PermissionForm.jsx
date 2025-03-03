@@ -9,6 +9,7 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import AuthUtils from '@src/util/AuthUtils';
 import { serializeParams } from '@src/util/ApiUtils';
+import StateDropdown from '@src/components/form/StateDropdown';
 
 const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleSelect, editRoleId, isRolePage }) => {
   const { t } = useTranslate();
@@ -205,6 +206,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
                 isRequired={!isRolePage}
                 size="lg"
               />
+              {/* <StateDropdown /> */}
             </div>
           </div>
         </Fragment>
