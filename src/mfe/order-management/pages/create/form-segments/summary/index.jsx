@@ -129,11 +129,7 @@ const Summary = () => {
         }
         setInventoryStatus('OUT_OF_STOCK');
       } else {
-        if (!therapy.dropshipIndicator) {
-          setInventoryStatus('DROP_SHIP');
-        } else {
-          setInventoryStatus('AVAILABLE');
-        }
+        setInventoryStatus('AVAILABLE');
       }
     } else {
       alertMessages.push({ description: 'Something went wrong while checking inventory. Please try again later.', type: 'error' });
