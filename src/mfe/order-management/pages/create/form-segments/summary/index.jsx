@@ -109,7 +109,6 @@ const Summary = () => {
     } else {
       console.log('Inventory type not supported');
     }
-    // orderDetails.id && status !== StatusEnum.SUBMITTED && status !== StatusEnum.REJECTED && ['S', 'I'].includes(catalog.inventoryType);
   }, [orderDetails]);
 
   const handleInventoryDetailsResponse = (data) => {

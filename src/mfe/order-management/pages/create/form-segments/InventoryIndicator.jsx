@@ -1,5 +1,4 @@
 import React from 'react';
-import { Loader } from '@mckesson/mcp-component-library';
 
 export const InventoryIndicator = ({ status }) => {
   const icons = {
