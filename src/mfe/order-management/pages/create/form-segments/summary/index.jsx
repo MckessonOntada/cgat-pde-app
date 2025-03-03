@@ -52,6 +52,7 @@ const Summary = () => {
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
   const [alertMessages, setAlertMessages] = React.useState([]);
   const [sapStatus, setSapStatus] = React.useState(null);
+  const [inventoryStatus, setInventoryStatus] = React.useState(null);
   const {
     therapy = {},
     catalog = {},
@@ -96,22 +97,31 @@ const Summary = () => {
 
   const handleInventoryDetailsResponse = (data, isSuccess) => {
     if (isSuccess) {
-      const { erroredItems, warningMessages } = data;
-      if (erroredItems) {
-        alertMessages.push(
-          ...erroredItems.map((err) => ({
-            description: err.errorMessage,
-            type: 'error'
-          }))
-        );
-      }
-      if (warningMessages) {
-        alertMessages.push(
-          ...warningMessages.map((warn) => ({
-            description: warn.errorMessage,
-            type: 'warning'
-          }))
-        );
+      const { erroredItems, warningMessages } = data || {};
+      if (erroredItems?.length > 0 || warningMessages?.length > 0) {
+        if (erroredItems && erroredItems.length > 0) {
+          alertMessages.push(
+            ...erroredItems.map((err) => ({
+              description: err.errorMessage,
+              type: 'error'
+            }))
+          );
+        }
+        if (warningMessages && warningMessages.length > 0) {
+          alertMessages.push(
+            ...warningMessages.map((warn) => ({
+              description: warn.errorMessage,
+              type: 'warning'
+            }))
+          );
+        }
+        setInventoryStatus('OUT_OF_STOCK');
+      } else {
+        if (!therapy.dropshipIndicator) {
+          setInventoryStatus('DROP_SHIP');
+        } else {
+          setInventoryStatus('AVAILABLE');
+        }
       }
     } else {
       alertMessages.push({ description: 'Something went wrong while checking inventory. Please try again later.', type: 'error' });
@@ -457,7 +467,7 @@ const Summary = () => {
                   value={
                     <div className="row-space-between-center">
                       {therapy?.materialDescription}
-                      <InventoryIndicator status={inventoryDetails} />
+                      <InventoryIndicator status={inventoryStatus} />
                     </div>
                   }
                 />
