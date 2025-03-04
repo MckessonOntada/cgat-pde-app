@@ -24,7 +24,7 @@ const UserDetailsFormSegment = () => {
             <span className="required">* </span> {t('userManagement.create_user.required')}
           </p>
         </div>
-        <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start">
+        <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline">
           <Field
             id="name.firstName"
             name="name.firstName"
@@ -57,7 +57,7 @@ const UserDetailsFormSegment = () => {
               <Required id="Required"></Required> {t('userManagement.create_user.required')}
             </p> */}
         </div>
-        <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 align-items-start">
+        <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 align-items-baseline">
           <Field
             name="address.address1"
             label={t('userManagement.create_user.inputLabel.address_1')}
@@ -74,7 +74,7 @@ const UserDetailsFormSegment = () => {
             maxLength={100}
           />
         </div>
-        <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 align-items-start">
+        <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 align-items-baseline">
           <Field
             name="address.city"
             label={t('userManagement.create_user.inputLabel.city')}

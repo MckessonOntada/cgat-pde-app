@@ -66,6 +66,7 @@ const Summary = () => {
     status
   } = orderDetails || {};
 
+
   const {
     data: sapOrderDetails,
     isLoading: isLoaingSapOrderStatus,
@@ -466,9 +467,9 @@ const Summary = () => {
               ) : isSubmitted ? (
                 <div className="row-space-between-center">
                   <Label className={styles.lblProcessing}>{t('labels.OrderProcesing')}</Label>
-                  {isLoaingSapOrderStatus && <div className="dot-loader"></div>}
+                  {isLoadingSapOrderStatus && <div className="dot-loader"></div>}
 
-                  {!isLoaingSapOrderStatus &&
+                  {!isLoadingSapOrderStatus &&
                     (sapOrderDetails?.finalStatus ? (
                       <>
                         {sapOrderDetails.finalStatus.toLowerCase() === SAPOrderStatusEnum.OPEN.toLowerCase() ? (
@@ -501,6 +502,7 @@ const Summary = () => {
                 {status === StatusEnum.SUBMITTED && <DetailSegment label={t('labels.pdeId')} value={orderId} />}
                 <DetailSegment
                   label={t('labels.materialDescription')}
+                  tooltip={therapy?.materialDescription}
                   value={
                     <div className="row-space-between-center">
                       {therapy?.materialDescription}
