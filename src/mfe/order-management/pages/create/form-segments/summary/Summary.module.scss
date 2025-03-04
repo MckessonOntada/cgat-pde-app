@@ -69,6 +69,9 @@
   padding-right: var(--spacing-03);
 }
 
-.containerHeight {
-  height: var(--spacing-03);
+.orderProcessing {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-02);
+  justify-content: "flex-end";
 }

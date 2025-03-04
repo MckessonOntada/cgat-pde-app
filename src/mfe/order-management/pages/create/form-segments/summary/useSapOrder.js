@@ -5,7 +5,7 @@ import { StatusEnum } from '../../../orders/constants';
 function useSapOrder(payload, onSuccess, onError) {
   const { sapOrderId, salesOrgId, status } = payload;
 
-  return useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ['sap-order-status', sapOrderId, salesOrgId],
     queryFn: async () => OrderService.getOrderStatusFromSAP(sapOrderId, salesOrgId),
     onSuccess: (result) => {
@@ -19,6 +19,8 @@ function useSapOrder(payload, onSuccess, onError) {
     enabled: Boolean(sapOrderId && salesOrgId && status === StatusEnum.SUBMITTED),
     refetchOnWindowFocus: false
   });
+
+  return { data, isLoading, refetch };
 }
 
 export default useSapOrder;

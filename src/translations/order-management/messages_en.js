@@ -34,6 +34,7 @@ export const MessageEn = {
   'captions.btnBacktoAccountSelection': 'Back To Account Selection',
   'captions.btnBacktoTherapySelection': 'Back To Therapy Selection',
   'captions.btnEdit': 'Edit',
+  'captions.btnRetry': 'Retry',
   'captions.btnSubmitOrder': 'Submit Order',
   'captions.btnApproveOrder': 'Approve Order',
   'captions.btnRejectOrder': 'Reject Order',
