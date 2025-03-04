@@ -113,7 +113,8 @@ function AdditionalDetails() {
         navigate(`../${id}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
       },
       onError: (error) => {
-        showAlert({ description: error.message, type: 'error', anchorEl: alertContainerId });
+        const errorKey = handleApiError(error);
+        showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
       }
     }
   );
@@ -247,7 +248,7 @@ function AdditionalDetails() {
     onSuccess: (result) => {},
     onError: (error) => {
       const errorKey = handleApiError(error);
-      showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
+      showAlert({ description: 't(errorKey)', type: 'error', anchorEl: alertContainerId });
     }
   });
 
@@ -404,12 +405,10 @@ function AdditionalDetails() {
   if (isLoader) {
     return isLoader;
   }
-  if (isSaving) {
-    return <Loader type={'screen'} />;
-  }
 
   return (
     <div className="MCP-module-wrapper">
+      {isSaving && <Loader type={'screen'} />}
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
