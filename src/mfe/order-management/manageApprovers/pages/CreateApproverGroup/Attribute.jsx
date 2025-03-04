@@ -65,8 +65,8 @@ const Attributes = ({ values, setFieldValue }) => {
             <div className="rule-list">
               {values.rules?.map((attribute, index) => (
                 <div className="rule">
-                  <div key={index} className="rule-wrapper">
-                    <div className="condition attribute-text-segment">{t('rules.clauseIf.if')}</div>
+                  <div key={index} className="rule-wrapper alignItems">
+                    <div className="condition attribute-text-segment Pt-32">{t('rules.clauseIf.if')}</div>
                     <div className="rule-field type">
                       <Field
                         id={`rules[${index}].attributeType`}
@@ -82,7 +82,7 @@ const Attributes = ({ values, setFieldValue }) => {
                       />
                       <div className="control-helper-text">{t('rules.field.helperText')}</div>
                     </div>
-                    <div className="rule-operator attribute-text-segment">{getRuleOperator(attribute.attributeType, t)}</div>
+                    <div className="rule-operator attribute-text-segment Pt-32">{getRuleOperator(attribute.attributeType, t)}</div>
                     <div className={`response-control ${attribute.attributeType === CONTROL_OPTIONS['Price'] ? 'price' : ''}`}>
                       <div className="dropdown-with-button">
                         <div className="dropdown-row">
