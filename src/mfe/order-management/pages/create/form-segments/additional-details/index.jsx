@@ -447,7 +447,7 @@ function AdditionalDetails() {
                       <span className="required">*</span> {t('labels.required')}
                     </p>
                   </div>
-                  <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 align-items-start">
+                  <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline">
                     {getFormFields(t, { isCoiIdRequired }, setFieldValue).map(
                       ({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
                         <Field
