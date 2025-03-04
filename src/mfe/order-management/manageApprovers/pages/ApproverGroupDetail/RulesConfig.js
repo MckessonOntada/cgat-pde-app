@@ -54,8 +54,8 @@ export const CONTROL_OPTIONS = {
   Price: 'Price',
   Account: 'Account',
   Catalog: 'Catalog',
-  Roles: 'Roles',
-  Users: 'Users'
+  'User Role': 'User Role',
+  'User Name': 'User Name'
 };
 
 export const getRuleOperator = (key, t) =>

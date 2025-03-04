@@ -29,13 +29,13 @@ export const transformAttributesToRules = (values, practiceId) => {
           accountName: account.name
         }));
         break;
-      case CONTROL_OPTIONS.Roles:
+      case CONTROL_OPTIONS['User Role']:
         result.rules.roles = rule.value_augmented.map((role) => ({
           roleId: role.value,
           roleName: role.name
         }));
         break;
-      case CONTROL_OPTIONS.Users:
+      case CONTROL_OPTIONS['User Name']:
         result.rules.users = rule.value_augmented.map((user) => ({
           userId: user.value,
           userName: user.name
@@ -75,7 +75,13 @@ export const getValidationSchema = (t) => {
           attributeType: Yup.string()
             .required(t('approvergroup.create.validation.approverattribute_required'))
             .oneOf(
-              [CONTROL_OPTIONS.Price, CONTROL_OPTIONS.Account, CONTROL_OPTIONS.Catalog, CONTROL_OPTIONS.Users, CONTROL_OPTIONS.Roles],
+              [
+                CONTROL_OPTIONS.Price,
+                CONTROL_OPTIONS.Account,
+                CONTROL_OPTIONS.Catalog,
+                CONTROL_OPTIONS['User Name'],
+                CONTROL_OPTIONS['User Role']
+              ],
               t('approvergroup.create.validation.approverattribute_required')
             ),
           value: Yup.mixed()
@@ -89,9 +95,9 @@ export const getValidationSchema = (t) => {
                     return this.createError({ message: t('approvergroup.create.validation.therapy_required') });
                   } else if (attributeType === CONTROL_OPTIONS.Account) {
                     return this.createError({ message: t('approvergroup.create.validation.account_required') });
-                  } else if (attributeType === CONTROL_OPTIONS.Roles) {
-                    return this.createError({ message: t('approvergroup.create.validation.user_required') });
-                  } else if (attributeType === CONTROL_OPTIONS.Users) {
+                  } else if (attributeType === CONTROL_OPTIONS['User Role']) {
+                    return this.createError({ message: t('approvergroup.create.validation.user_role_required') });
+                  } else if (attributeType === CONTROL_OPTIONS['User Name']) {
                     return this.createError({ message: t('approvergroup.create.validation.user_name_required') });
                   }
                 }
@@ -102,7 +108,9 @@ export const getValidationSchema = (t) => {
               }
 
               if (
-                [CONTROL_OPTIONS.Account, CONTROL_OPTIONS.Catalog, CONTROL_OPTIONS.Users, CONTROL_OPTIONS.Roles].includes(attributeType)
+                [CONTROL_OPTIONS.Account, CONTROL_OPTIONS.Catalog, CONTROL_OPTIONS['User Name'], CONTROL_OPTIONS['User Role']].includes(
+                  attributeType
+                )
               ) {
                 return value !== '';
               }
