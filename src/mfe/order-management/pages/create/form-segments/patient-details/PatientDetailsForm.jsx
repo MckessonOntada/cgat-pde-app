@@ -25,7 +25,7 @@ const PatientDetailsForm = () => {
             )}
 
             <div
-              className={`grid grid-gap-16 grid-cols-1 md:grid-cols-${section.grid.md} lg:grid-cols-${section.grid.lg} xl:grid-cols-${section.grid.xl} align-items-start`}>
+              className={`grid grid-gap-16 grid-cols-1 md:grid-cols-${section.grid.md} lg:grid-cols-${section.grid.lg} xl:grid-cols-${section.grid.xl} align-items-baseline`}>
               {section.fields.map((field, index) => (
                 <Field
                   {...field}
