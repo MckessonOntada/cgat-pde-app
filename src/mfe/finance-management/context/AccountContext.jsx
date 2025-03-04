@@ -60,6 +60,9 @@ export const AccountProvider = ({ children }) => {
       if (response && response.data) {
         const { content } = response.data;
         setTotalAccounts(response.data.totalElements);
+        if (!content || (Array.isArray(content) && content.length == 0)) {
+          setPayToAccountsList([]);
+        }
         return content;
       }
       return [];
