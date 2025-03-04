@@ -7,6 +7,8 @@ export const PaymentInvoicesES = {
   'paymentInvoices.tabs.PAYMENT METHODS': 'S_PAYMENT METHODS',
 
   // Account Search
+  'paymentInvoices.accountSearch.moreRecordsExist': 'S_More records exist.',
+  'paymentInvoices.accountSearch.searchToRefine': 'S_Search to refine.',
   'paymentInvoices.accountSearch.applyBtn': 'S_Apply',
   'paymentInvoices.accountSearch.setAsDefaultBtn': 'S_Set as Default',
   'paymentInvoices.getAccountsAPI.error': 'S_Error fetching accounts list.',

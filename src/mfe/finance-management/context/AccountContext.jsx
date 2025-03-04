@@ -48,7 +48,7 @@ export const AccountProvider = ({ children }) => {
   };
 
   const {
-    isLoading: fetchingAccounts,
+    isFetching: fetchingAccounts,
     data: payToAccountsData,
     isError: errorFetchingAccounts,
     refetch: refetchPayToAccountsData,
@@ -153,6 +153,7 @@ export const AccountProvider = ({ children }) => {
         isLoading,
         payToAccountsData,
         setSelectedAccountRaw,
+        fetchingAccounts,
         totalAccounts
       }}>
       {children}
