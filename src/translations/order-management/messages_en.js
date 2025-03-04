@@ -34,6 +34,7 @@ export const MessageEn = {
   'captions.btnBacktoAccountSelection': 'Back To Account Selection',
   'captions.btnBacktoTherapySelection': 'Back To Therapy Selection',
   'captions.btnEdit': 'Edit',
+  'captions.btnRetry': 'Retry',
   'captions.btnSubmitOrder': 'Submit Order',
   'captions.btnApproveOrder': 'Approve Order',
   'captions.btnRejectOrder': 'Reject Order',
@@ -64,7 +65,7 @@ export const MessageEn = {
   'labels.patientDetails': 'Patient Details',
   'labels.additionalDetails': 'Additional Details',
   'labels.steps': 'Steps',
-  'labels.summary': 'Summary',
+  'labels.summary': 'Order Summary',
   'labels.approval': 'Approval',
   'labels.fulfillment': 'Fulfillment',
   'labels.shipment': 'Shipment',
@@ -431,5 +432,9 @@ export const MessageEn = {
   'message.englishTextIsRequired': 'At least requires english text',
   'message.acknowldge': 'Please acknowledge to Save and Continue',
   'errors.uq_template_name_lower': 'Template Name already exists',
-  'messages.required_Details': 'Please select required details'
+  'messages.required_Details': 'Please select required details',
+  'labels.OrderProcesing': 'Order Processing',
+  'labels.OrderProcesing.SAPOrderStatus.Open': 'OPEN',
+  'labels.OrderProcesing.SAPOrderStatus.Cancelled': 'CANCELLED',
+  'labels.OrderProcesing.SAPOrderStatus.Completed': 'COMPLETED'
 };

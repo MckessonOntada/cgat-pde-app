@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import styles from './Summary.module.scss';
 import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg';
 import ModuleHeader from '@src/components/module-header';
-import { Button, Modal, CheckboxGroup, Heading, Loader, Badge, Tooltip, Alert } from '@mckesson/mcp-component-library';
+import { Button, Modal, CheckboxGroup, Heading, Loader, Badge, Tooltip, Alert, Label } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
@@ -15,9 +15,8 @@ import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation, useQuery } from 'react-query';
 import { RoutePaths } from '@src/routes/constants';
-import { StatusEnum } from '../../../orders/constants';
+import { SAPOrderStatusEnum, StatusEnum } from '../../../orders/constants';
 import { renderModal } from '@src/util/ModalUtil';
-import FloatingDrawer from '@src/components/floating-drawer';
 import CommentPanel from './CommentPanel';
 import AuthUtils from '@src/util/AuthUtils';
 import OrderStepper from '../OrderStepper';
@@ -52,6 +51,7 @@ const Summary = () => {
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
   const [alertMessages, setAlertMessages] = React.useState([]);
   const [sapStatus, setSapStatus] = React.useState(null);
+  const [inventoryStatus, setInventoryStatus] = React.useState(null);
   const {
     therapy = {},
     catalog = {},
@@ -66,7 +66,7 @@ const Summary = () => {
     status
   } = orderDetails || {};
 
-  const { data: sapOrderDetails } = useSapOrder(
+  const { data: sapOrderDetails, isLoading: isLoadingSapOrderStatus } = useSapOrder(
     {
       sapOrderId: backendOrderId,
       salesOrgId: accountDetails.soldToAccount?.salesOrg,
@@ -79,25 +79,37 @@ const Summary = () => {
     }
   );
 
-  const { data: inventoryDetails } = useQuery({
-    queryKey: ['inventory-check', orderDetails.id],
-    queryFn: async () => await OrderService.getInventoryStatus(orderDetails.id),
-    enabled: Boolean(
-      orderDetails.id && status !== StatusEnum.SUBMITTED && status !== StatusEnum.REJECTED && ['S', 'I'].includes(catalog.inventoryType)
-    ),
-    onSuccess: (data) => {
-      handleInventoryDetailsResponse(data, true);
-    },
-    onError: (error) => {
-      handleInventoryDetailsResponse(error, false);
-    },
-    refetchOnWindowFocus: false
-  });
+  const getInventoryStatus = async () => {
+    try {
+      const response = await OrderService.getInventoryStatus(orderDetails.id);
+      if (response.status === 200) {
+        handleInventoryDetailsResponse(response.data);
+      }
+    } catch (error) {
+      alertMessages.push({ description: 'Something went wrong while checking inventory. Please try again later.', type: 'error' });
+      setAlertMessages(alertMessages);
+      setInventoryStatus('PENDING');
+    }
+  };
 
-  const handleInventoryDetailsResponse = (data, isSuccess) => {
-    if (isSuccess) {
-      const { erroredItems, warningMessages } = data;
-      if (erroredItems) {
+  React.useEffect(() => {
+    if (!orderDetails.id || status === StatusEnum.SUBMITTED || status === StatusEnum.REJECTED) {
+      return;
+    }
+    if (catalog.inventoryType === 'T') {
+      setInventoryStatus('DROP_SHIP');
+    } else if (catalog.inventoryType === 'S' || catalog.inventoryType === 'I') {
+      setInventoryStatus('CHECKING');
+      getInventoryStatus();
+    } else {
+      console.log('Inventory type not supported');
+    }
+  }, [orderDetails]);
+
+  const handleInventoryDetailsResponse = (data) => {
+    const { erroredItems, warningMessages } = data || {};
+    if (erroredItems?.length > 0 || warningMessages?.length > 0) {
+      if (erroredItems && erroredItems.length > 0) {
         alertMessages.push(
           ...erroredItems.map((err) => ({
             description: err.errorMessage,
@@ -105,7 +117,7 @@ const Summary = () => {
           }))
         );
       }
-      if (warningMessages) {
+      if (warningMessages && warningMessages.length > 0) {
         alertMessages.push(
           ...warningMessages.map((warn) => ({
             description: warn.errorMessage,
@@ -113,9 +125,11 @@ const Summary = () => {
           }))
         );
       }
+      setInventoryStatus('OUT_OF_STOCK');
     } else {
-      alertMessages.push({ description: 'Something went wrong while checking inventory. Please try again later.', type: 'error' });
+      setInventoryStatus('AVAILABLE');
     }
+
     setAlertMessages(alertMessages);
   };
 
@@ -125,7 +139,7 @@ const Summary = () => {
 
   const variantDetails = additionalDetails?.variantDetails || {};
   const isRejected = status === 'REJECTED';
-
+  const isSubmitted = status === StatusEnum.SUBMITTED;
   const contentRef = useRef(null);
   const printPage = useCustomPrint(
     contentRef,
@@ -309,6 +323,7 @@ const Summary = () => {
 
   const handleAfterRejectOrder = (data) => {
     setIsCommentPanelOpen(false);
+    navigate(0);
   };
 
   const getAllowedControls = () => {
@@ -422,42 +437,49 @@ const Summary = () => {
           <ModuleHeader
             heading={<Heading as="h2">{t('labels.summary')}</Heading>}
             controls={
-              <React.Fragment>
-                {sapStatus && (
-                  <div className="sap-status-wrapper">
-                    Order Processing <Badge text={sapStatus} />
-                  </div>
-                )}
-                {isRejected && (
-                  <div class="row-space-between-center">
-                    <Badge text={t(`labels.status.${status.toLowerCase()}`)} type={'error'} />
-                    <Button size={'md'} variant="tertiary" onClick={() => setIsCommentPanelOpen(true)}>
-                      {t('captions.btnViewComments')}
-                    </Button>
-                  </div>
-                )}
-              </React.Fragment>
+              isRejected ? (
+                <div className="row-space-between-center">
+                  <Badge text={t(`labels.status.${status.toLowerCase()}`)} type="error" />
+                  <Button size="md" variant="tertiary" onClick={() => setIsCommentPanelOpen(true)}>
+                    {t('captions.btnViewComments')}
+                  </Button>
+                </div>
+              ) : isSubmitted ? (
+                <div className="row-space-between-center">
+                  <Label className={styles.lblProcessing}>{t('labels.OrderProcesing')}</Label>
+                  {isLoadingSapOrderStatus && <div className="dot-loader"></div>}
+
+                  {!isLoadingSapOrderStatus &&
+                    (sapOrderDetails?.finalStatus ? (
+                      <>
+                        {sapOrderDetails.finalStatus.toLowerCase() === SAPOrderStatusEnum.OPEN.toLowerCase() ? (
+                          <Badge text={t('labels.OrderProcesing.SAPOrderStatus.Open')} type="info" />
+                        ) : sapOrderDetails.finalStatus.toLowerCase() === SAPOrderStatusEnum.CANCELLED.toLowerCase() ? (
+                          <Badge text={t('labels.OrderProcesing.SAPOrderStatus.Cancelled')} type="error" />
+                        ) : (
+                          <Badge text={t('labels.OrderProcesing.SAPOrderStatus.Completed')} type="success" />
+                        )}
+                      </>
+                    ) : (
+                      <span>--</span>
+                    ))}
+                </div>
+              ) : null
             }
           />
           <div className={'MCP-module-body'}>
             <div className="MCP-CardContainer">
-              <ModuleHeader
-                className={styles.panelHeader}
-                heading={
-                  <Heading as="h3">
-                    {t(status === StatusEnum.SUBMITTED || isApprover ? 'labels.orderDetails' : 'labels.priceDetails')}
-                  </Heading>
-                }
-              />
+              <ModuleHeader className={styles.panelHeader} heading={<Heading as="h3">{t('labels.priceDetails')}</Heading>} />
               <div class={styles.flexPanel}>
                 {status === StatusEnum.SUBMITTED && <DetailSegment label={t('labels.sapId')} value={backendOrderId} />}
                 {status === StatusEnum.SUBMITTED && <DetailSegment label={t('labels.pdeId')} value={orderId} />}
                 <DetailSegment
                   label={t('labels.materialDescription')}
+                  tooltip={therapy?.materialDescription}
                   value={
                     <div className="row-space-between-center">
                       {therapy?.materialDescription}
-                      <InventoryIndicator status={inventoryDetails} />
+                      <InventoryIndicator status={inventoryStatus} />
                     </div>
                   }
                 />
@@ -636,14 +658,15 @@ const Summary = () => {
           <div className="controls">{getAllowedControls()}</div>
         </div>
       </div>
-      <FloatingDrawer open={isCommentPanelOpen} anchor="right" onClose={() => setIsCommentPanelOpen(false)}>
+      {isCommentPanelOpen && (
         <CommentPanel
           readOnly={isRejected}
           meta={{ orderId, rejectionDetails }}
           onSuccess={handleAfterRejectOrder}
           onClose={() => setIsCommentPanelOpen(false)}
+          openDrawer={isCommentPanelOpen}
         />
-      </FloatingDrawer>
+      )}
       {isPAPOrderConfirmModalOpen && (
         <PAPOrderTypeConfirmModal onClose={() => setIsPAPOrderConfirmModalOpen(false)} onSubmit={handleOnSubmitPapOrder} />
       )}

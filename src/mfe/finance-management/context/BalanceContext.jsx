@@ -50,7 +50,7 @@ export const BalanceProvider = ({ children, initialData = [] }) => {
         payerAccountNumber: selectedAccount?.accountNumber
       });
     }
-  }, [selectedAccount]);
+  }, [selectedAccount?.id]);
 
   return (
     <BalanceContext.Provider
@@ -61,8 +61,7 @@ export const BalanceProvider = ({ children, initialData = [] }) => {
         isMutating: balanceMutation.isLoading,
         balanceData,
         setBalanceData
-      }}
-    >
+      }}>
       {children}
     </BalanceContext.Provider>
   );

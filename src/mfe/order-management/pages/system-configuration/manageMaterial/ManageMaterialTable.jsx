@@ -173,7 +173,13 @@ function ManageMaterialTable({ ...props }) {
         }
       />
       {openDetails && (
-        <FloatingDrawer open={true} anchor="right" onClose={() => setOpenDetails(!openDetails)}>
+        <FloatingDrawer 
+          open={true} 
+          anchor="right" 
+          onClose={() => 
+          setOpenDetails(!openDetails)}
+          heading={t('manageMaterial.drawer.heading')}
+        >
           <TherapyDetails
             therapyId={materialNumber}
             therapyData={MaterialDetailsConstants}
@@ -187,7 +193,7 @@ function ManageMaterialTable({ ...props }) {
         </FloatingDrawer>
       )}
       {openConfiguration && (
-        <FloatingDrawer open={true} anchor="right" onClose={() => setOpenConfiguration(!openConfiguration)}>
+        <FloatingDrawer open={true} anchor="right" onClose={() => setOpenConfiguration(!openConfiguration)} heading={t('manageMaterial.drawer.configuration.heading')}>
           <ConfigureMaterials
             onClose={() => setOpenConfiguration(!openConfiguration)}
             onSuccess={() => setConfigureSuccess(true)}

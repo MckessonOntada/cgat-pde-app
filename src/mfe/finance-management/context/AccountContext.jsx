@@ -24,6 +24,7 @@ export const AccountProvider = ({ children }) => {
   const [payToAccountsList, setPayToAccountsList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedAccountRaw, setSelectedAccountRaw] = useState(null);
+  const [totalAccounts, setTotalAccounts] = useState(0);
 
   const { showSnackbar } = useSnackbar();
 
@@ -47,7 +48,7 @@ export const AccountProvider = ({ children }) => {
   };
 
   const {
-    isLoading: fetchingAccounts,
+    isFetching: fetchingAccounts,
     data: payToAccountsData,
     isError: errorFetchingAccounts,
     refetch: refetchPayToAccountsData,
@@ -58,6 +59,7 @@ export const AccountProvider = ({ children }) => {
       const response = await HttpResourceService.callRest(`${getApiUrl(searchText)}`, httpVerb.GET, {});
       if (response && response.data) {
         const { content } = response.data;
+        setTotalAccounts(response.data.totalElements);
         return content;
       }
       return [];
@@ -96,7 +98,7 @@ export const AccountProvider = ({ children }) => {
   }, [payToAccountsData, errorFetchingAccounts]);
 
   useEffect(() => {
-    if (CommonUtils.isNonEmptyObject(defaultPayToAccount)) {
+    if (CommonUtils.isNonEmptyObject(defaultPayToAccount) && !CommonUtils.isNonEmptyObject(selectedAccount)) {
       setSelectedAccount(defaultPayToAccount);
       setIsLoading(false);
     }
@@ -150,7 +152,9 @@ export const AccountProvider = ({ children }) => {
         defaultPayToAccount,
         isLoading,
         payToAccountsData,
-        setSelectedAccountRaw
+        setSelectedAccountRaw,
+        fetchingAccounts,
+        totalAccounts
       }}>
       {children}
     </AccountContext.Provider>

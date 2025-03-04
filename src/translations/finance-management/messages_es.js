@@ -7,6 +7,8 @@ export const PaymentInvoicesES = {
   'paymentInvoices.tabs.PAYMENT METHODS': 'S_PAYMENT METHODS',
 
   // Account Search
+  'paymentInvoices.accountSearch.moreRecordsExist': 'S_More records exist.',
+  'paymentInvoices.accountSearch.searchToRefine': 'S_Search to refine.',
   'paymentInvoices.accountSearch.applyBtn': 'S_Apply',
   'paymentInvoices.accountSearch.setAsDefaultBtn': 'S_Set as Default',
   'paymentInvoices.getAccountsAPI.error': 'S_Error fetching accounts list.',
@@ -72,7 +74,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.CS.filters.endDate': 'S_Created Date (End)',
   'paymentInvoices.CS.filters.clearFilter': 'S_Clear Filter',
   'paymentInvoices.CS.ExportExcel': 'S_Export Excel',
-  'paymentInvoices.CS.table.billNumber': 'S_Bill No',
+  'paymentInvoices.CS.table.billNumber': 'S_Document Number',
   'paymentInvoices.CS.table.accountnumber': 'S_Account Number',
   'paymentInvoices.CS.table.date': 'S_Date',
   'paymentInvoices.CS.table.statementBalance': 'S_Statement Balance',
@@ -195,6 +197,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.credits.table.billDate': 'S_Bill Date',
   'paymentInvoices.credits.table.validfrom': 'S_Valid From',
   'paymentInvoices.credits.table.amount': 'S_Amount',
+  'paymentInvoices.credits.table.billamount': 'S_Bill Amount',
   'paymentInvoices.credits.table.downloadPdf': 'S_download pdf',
   'paymentInvoices.credits.table.emptyData': 'S_No Credits Found',
   'paymentInvoices.Details.backToManageCredits': 'S_BACK TO MANAGE CREDITS PAGE',

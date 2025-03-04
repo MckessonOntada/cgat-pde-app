@@ -25,3 +25,9 @@ export const StatusEnum = {
   CANCELLED: 'CANCELLED',
   REJECTED: 'REJECTED'
 };
+
+export const SAPOrderStatusEnum = {
+  OPEN: 'OPEN',
+  CANCELLED: 'CANCELLED',
+  COMPLETED: 'COMPLETED'
+};

@@ -83,23 +83,29 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
   return (
     <React.Fragment>
       {openConfigurationDraw && (
-        <FloatingDrawer open={openConfigurationDraw} anchor="right" onClose={handleCloseDrawer}>
-          <div>
-            <div className="header">
-              <div className="styled-heading">
-                <Heading as="h3">{t('ManageCatalog.Configurations')}</Heading>
-              </div>
-              <Button variant="tertiary" onClick={handleCloseDrawer} textButton IconClose>
-                <IconClose />
-              </Button>
-            </div>
-            <Formik
-              enableReinitialize={true}
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={async (values) => onSubmitHandler(values)}>
-              {({ values }) => (
-                <Form className="configure-form">
+        <Formik
+          enableReinitialize={true}
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={async (values) => onSubmitHandler(values)}>
+          {({ values }) => (
+            <Form className="configure-form">
+              <FloatingDrawer
+                open={openConfigurationDraw}
+                anchor="right"
+                onClose={handleCloseDrawer}
+                heading={t('ManageCatalog.Configurations')}
+                controls={
+                  <div className="controls">
+                    <Button label="secondary" variant="secondary" size="md" onClick={handleCloseDrawer}>
+                      {t('ManageCatalog.Button.Cancel')}
+                    </Button>
+                    <Button label="Primary" size="md" type="submit">
+                      {t('ManageCatalog.Button.save')}
+                    </Button>
+                  </div>
+                }>
+                <div>
                   <FieldArray name="steps">
                     {({ insert, remove, push }) => (
                       <div className="step-main-container">
@@ -157,19 +163,11 @@ function ConfigureCatalog({ openConfigurationDraw, setOpenConfigurationDraw, sel
                       </div>
                     )}
                   </FieldArray>
-                  <div className="configure-footer">
-                    <Button label="secondary" variant="secondary" onClick={handleCloseDrawer}>
-                      {t('ManageCatalog.Button.Cancel')}
-                    </Button>
-                    <Button label="Primary" type="submit">
-                      {t('ManageCatalog.Button.save')}
-                    </Button>
-                  </div>
-                </Form>
-              )}
-            </Formik>
-          </div>
-        </FloatingDrawer>
+                </div>
+              </FloatingDrawer>
+            </Form>
+          )}
+        </Formik>
       )}
     </React.Fragment>
   );

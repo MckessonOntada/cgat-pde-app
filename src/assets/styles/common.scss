@@ -889,6 +889,10 @@ div.disable-all {
   color: var(--brand-color-warning-orange-4);
 }
 
+.align-items-baseline {
+  align-items: baseline;
+}
+
 .error-label {
   font-size: var(--brand-font-size--small);
   color: var(--brand-color-warning-coral)
@@ -1024,4 +1028,20 @@ div.disable-all {
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
+  margin-left: var(--spacing-02);
+}
+
+.dot-loader {
+  margin: 0 5px;
+  width: 24px;
+  aspect-ratio: 4;
+  background: radial-gradient(circle closest-side, var(--brand-color-text-blue) 90%, #0000) 0/calc(100%/3) 100% space;
+  clip-path: inset(0 100% 0 0);
+  animation: l1 1s steps(4) infinite;
+}
+
+@keyframes l1 {
+  to {
+    clip-path: inset(0 -34% 0 0)
+  }
 }

@@ -7,8 +7,9 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { useQuery } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
 import { serializeParams } from '@src/util/ApiUtils';
+import FloatingDrawer from '@src/components/floating-drawer';
 
-const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
+const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer }) => {
   const { t } = useTranslate();
   const [selectedProgram, setProgram] = useState('');
   const [selectedChannel, setChannel] = useState('');
@@ -86,59 +87,14 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
 
   const { programs = [], channels = [] } = programChannelConfig;
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.header}>
-        <Heading as="h3">{t('labels.needAssistanceSelectingAccount')}</Heading>
-        <Button variant="tertiary" onClick={onClose} aria-label={t('captions.close')} textButton IconClose>
-          <IconClose />
-        </Button>
-      </div>
-      {alertMsg && (
-        <div className={styles.errorMessage}>
-          <Alert onClose={handleAlertClose} showTitle title={t('messages.required_Details')} type="error" />
-        </div>
-      )}
-
-      <div className={styles.drawerContent}>
-        <div className={styles.topSect}>
-          <div className="MCP-CardContainer">
-            <div className={styles.selectionBlock}>
-              <p className={styles.caption}>{t('labels.orderAssistance.selectChannel')}</p>
-              <RadioGroup
-                direction="row"
-                id="order-channel-options"
-                items={channels.map((v) => ({ label: v, value: v }))}
-                onChangeValue={(value) => {
-                  setAlertMsg(false);
-                  setChannel(value);
-                }}
-                value={selectedChannel}
-                radioBtnWidth="auto"
-              />
-            </div>
-          </div>
-
-          <div className="MCP-CardContainer">
-            <div className={styles.selectionBlock}>
-              <p>{t('labels.orderAssistance.selectProgram')}</p>
-              <RadioGroup
-                direction="row"
-                id="order-program-options"
-                items={programs.map((v) => ({ label: v, value: v }))}
-                onChangeValue={(value) => {
-                  setAlertMsg(false);
-                  setProgram(value);
-                }}
-                value={selectedProgram}
-                radioBtnWidth="auto"
-              />
-            </div>
-          </div>
-
-          <AccountCard options={accountList.content} onChange={handleAccountChange} isFetching={isFetchingAccount} />
-        </div>
-
-        <div className={styles.controls}>
+    <FloatingDrawer 
+      open={openDrawer} 
+      anchor="right" 
+      onClose={onClose} 
+      heading={t('labels.needAssistanceSelectingAccount')} 
+      width={'520px'}
+      controls={
+        <div className='controls'>
           <Button label={t('captions.btnCancel')} onClick={onClose} variant="secondary" size="md" aria-label={t('captions.btnCancel')} />
           <Button
             label={t('captions.btnApply')}
@@ -148,8 +104,56 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit }) => {
             aria-label={t('captions.btnSelect')}
           />
         </div>
+      }
+    >
+      <div className={styles.wrapper}>
+        {alertMsg && (
+          <div className={styles.errorMessage}>
+            <Alert onClose={handleAlertClose} showTitle title={t('messages.required_Details')} type="error" />
+          </div>
+        )}
+
+        <div className={styles.drawerContent}>
+          <div className={styles.topSect}>
+            <div className="MCP-CardContainer">
+              <div className={styles.selectionBlock}>
+                <p className={styles.caption}>{t('labels.orderAssistance.selectChannel')}</p>
+                <RadioGroup
+                  direction="row"
+                  id="order-channel-options"
+                  items={channels.map((v) => ({ label: v, value: v }))}
+                  onChangeValue={(value) => {
+                    setAlertMsg(false);
+                    setChannel(value);
+                  }}
+                  value={selectedChannel}
+                  radioBtnWidth="auto"
+                />
+              </div>
+            </div>
+
+            <div className="MCP-CardContainer">
+              <div className={styles.selectionBlock}>
+                <p>{t('labels.orderAssistance.selectProgram')}</p>
+                <RadioGroup
+                  direction="row"
+                  id="order-program-options"
+                  items={programs.map((v) => ({ label: v, value: v }))}
+                  onChangeValue={(value) => {
+                    setAlertMsg(false);
+                    setProgram(value);
+                  }}
+                  value={selectedProgram}
+                  radioBtnWidth="auto"
+                />
+              </div>
+            </div>
+
+            <AccountCard options={accountList.content} onChange={handleAccountChange} isFetching={isFetchingAccount} />
+          </div>
+        </div>
       </div>
-    </div>
+    </FloatingDrawer>
   );
 };
 

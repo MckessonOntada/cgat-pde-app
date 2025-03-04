@@ -8,6 +8,8 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.header.managePayments': 'Manage Payments & Invoices',
 
   // Account Search
+  'paymentInvoices.accountSearch.moreRecordsExist': 'More records exist.',
+  'paymentInvoices.accountSearch.searchToRefine': 'Search to refine.',
   'paymentInvoices.accountSearch.applyBtn': 'Apply',
   'paymentInvoices.accountSearch.setAsDefaultBtn': 'Set as Default',
   'paymentInvoices.getAccountsAPI.error': 'Error fetching accounts list.',
@@ -78,7 +80,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.CS.filters.endDate': 'Created Date (End)',
   'paymentInvoices.CS.filters.clearFilter': 'Clear Filter',
   'paymentInvoices.CS.ExportExcel': 'Export Excel',
-  'paymentInvoices.CS.table.billNumber': 'Bill No',
+  'paymentInvoices.CS.table.billNumber': 'Document Number',
   'paymentInvoices.CS.table.accountnumber': 'Account Number',
   'paymentInvoices.CS.table.date': 'Date',
   'paymentInvoices.CS.table.statementBalance': 'Statement Balance',
@@ -199,6 +201,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.credits.table.billDate': 'Bill Date',
   'paymentInvoices.credits.table.validfrom': 'Valid From',
   'paymentInvoices.credits.table.amount': ' Amount',
+  'paymentInvoices.credits.table.billamount': 'Bill Amount',
   'paymentInvoices.credits.table.downloadPdf': ' download pdf',
   'paymentInvoices.credits.table.emptyData': 'No Credits Found',
   'paymentInvoices.Details.backToManageCredits': 'BACK TO MANAGE CREDITS PAGE',

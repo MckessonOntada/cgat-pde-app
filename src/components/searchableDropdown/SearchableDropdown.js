@@ -7,7 +7,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import styles from './assets/styles/SearchableDropdown.module.scss';
-import { Button, Tooltip, Label, Required, TextError } from '@mckesson/mcp-component-library';
+import { Button, Tooltip, Label, Required, TextError, Loader } from '@mckesson/mcp-component-library';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
@@ -181,7 +181,8 @@ export const SearchableDropdown = (props) => {
     isModalDropdown,
     multiSelectDefaultLabel,
     isJbatVariant,
-    showSelectedLabels
+    showSelectedLabels,
+    isAsyncLoading
   } = props;
   // console.log('options, value...', id, options, value, fieldDisplayValue);
   useEffect(() => {
@@ -835,6 +836,10 @@ export const SearchableDropdown = (props) => {
   const getSelectOptionsUi = () => {
     let selectedOptionsUi, nonSelectedOptionsUi;
     let tempTwentyOptions = nonSelectedOptions;
+
+    if (isAsyncLoading) {
+      return <Loader variant="circular" />;
+    }
     selectedOptionsUi =
       selectedOptions &&
       selectedOptions?.map((option, index) => {
@@ -1384,7 +1389,8 @@ SearchableDropdown.propTypes = {
   isShowSelectAll: PropTypes.bool,
   multiSelectDefaultLabel: PropTypes.string,
   isJbatVariant: PropTypes.bool,
-  showSelectedLabels: PropTypes.bool
+  showSelectedLabels: PropTypes.bool,
+  isAsyncLoading: PropTypes.bool
 };
 
 SearchableDropdown.defaultProps = {
@@ -1423,5 +1429,6 @@ SearchableDropdown.defaultProps = {
   isShowSelectAll: false,
   isModalDropdown: false,
   isJbatVariant: false,
-  showSelectedLabels: false
+  showSelectedLabels: false,
+  isAsyncLoading: false
 };

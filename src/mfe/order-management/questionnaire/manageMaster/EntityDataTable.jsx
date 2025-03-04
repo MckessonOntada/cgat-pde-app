@@ -84,7 +84,7 @@ const EntityDataTable = ({ EntityType, setSelectedRows, showAlert }) => {
       />
       {openDetails &&
         (isMaterial ? (
-          <FloatingDrawer open={true} anchor="right" onClose={() => setOpenDetails(!openDetails)}>
+          <FloatingDrawer open={true} anchor="right" onClose={() => setOpenDetails(!openDetails)} heading={t('manageMaterial.drawer.heading')}>
             <TherapyDetails
               therapyId={selectedDetails?.materialNumber}
               therapyData={MaterialDetailsConstants}

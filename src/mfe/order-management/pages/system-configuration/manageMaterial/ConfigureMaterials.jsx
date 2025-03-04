@@ -72,12 +72,6 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.header}>
-        <Heading as="h3">{t('manageMaterial.drawer.configuration.heading')}</Heading> 
-        <Button variant="tertiary" onClick={onClose} textButton IconClose> 
-          <IconClose />
-        </Button>
-      </div>
       <div className={styles.body}>
         <div className={styles.formControls}>
           {formFields.map((field, index) => (
