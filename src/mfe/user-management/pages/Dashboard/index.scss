@@ -242,3 +242,11 @@
   justify-content: center;
   cursor: pointer;
 }
+.ellipsis-center{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.statusCenter{
+  padding-left: 30px;
+}
