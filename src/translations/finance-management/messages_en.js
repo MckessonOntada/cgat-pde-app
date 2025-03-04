@@ -80,7 +80,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.CS.filters.endDate': 'Created Date (End)',
   'paymentInvoices.CS.filters.clearFilter': 'Clear Filter',
   'paymentInvoices.CS.ExportExcel': 'Export Excel',
-  'paymentInvoices.CS.table.billNumber': 'Bill No',
+  'paymentInvoices.CS.table.billNumber': 'Document Number',
   'paymentInvoices.CS.table.accountnumber': 'Account Number',
   'paymentInvoices.CS.table.date': 'Date',
   'paymentInvoices.CS.table.statementBalance': 'Statement Balance',

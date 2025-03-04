@@ -74,7 +74,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.CS.filters.endDate': 'S_Created Date (End)',
   'paymentInvoices.CS.filters.clearFilter': 'S_Clear Filter',
   'paymentInvoices.CS.ExportExcel': 'S_Export Excel',
-  'paymentInvoices.CS.table.billNumber': 'S_Bill No',
+  'paymentInvoices.CS.table.billNumber': 'S_Document Number',
   'paymentInvoices.CS.table.accountnumber': 'S_Account Number',
   'paymentInvoices.CS.table.date': 'S_Date',
   'paymentInvoices.CS.table.statementBalance': 'S_Statement Balance',
