@@ -66,7 +66,11 @@ const Summary = () => {
     status
   } = orderDetails || {};
 
-  const { data: sapOrderDetails, isLoading: isLoaingSapOrderStatus } = useSapOrder(
+  const {
+    data: sapOrderDetails,
+    isLoading: isLoaingSapOrderStatus,
+    refetch: retrySapOrderStatus
+  } = useSapOrder(
     {
       sapOrderId: backendOrderId,
       salesOrgId: accountDetails.soldToAccount?.salesOrg,
@@ -74,7 +78,11 @@ const Summary = () => {
     },
     (status) => setSapStatus(status),
     (error) => {
-      alertMessages.push({ description: 'Something went wrong while checking SAP order status. Please try again later.', type: 'error' });
+      alertMessages.push({
+        description: 'Something went wrong while checking SAP order status. Please try again later.',
+        type: 'error',
+        kind: 'SAP_ORDER_STATUS'
+      });
       setAlertMessages(alertMessages);
     }
   );
@@ -135,6 +143,11 @@ const Summary = () => {
 
   const closeAvailabilityAlert = (index, key) => {
     setAlertMessages(alertMessages.filter((msg, _index) => _index != index));
+  };
+
+  const handleRetrySAPOrderStatus = () => {
+    setAlertMessages(alertMessages.filter((msg) => msg.kind != 'SAP_ORDER_STATUS'));
+    retrySapOrderStatus();
   };
 
   const variantDetails = additionalDetails?.variantDetails || {};
@@ -427,7 +440,13 @@ const Summary = () => {
           {alertMessages && (
             <div className="MCP-module-body">
               {alertMessages.map((item, index) => (
-                <Alert key={index + 1} description={item.description} onClose={() => closeAvailabilityAlert(index)} type={item.type} />
+                <Alert
+                  key={index + 1}
+                  description={item.description}
+                  onClose={() => closeAvailabilityAlert(index)}
+                  type={item.type}
+                  duration={10000}
+                />
               ))}
             </div>
           )}
@@ -461,7 +480,14 @@ const Summary = () => {
                         )}
                       </>
                     ) : (
-                      <span>--</span>
+                      <div className={styles.orderProcessing}>
+                        <InventoryIndicator status={'OUT_OF_STOCK'} />
+                        <div className="styled-icon-button">
+                          <Button variant="tertiary" size="lg" onClick={handleRetrySAPOrderStatus}>
+                            {t('captions.btnRetry')}
+                          </Button>
+                        </div>
+                      </div>
                     ))}
                 </div>
               ) : null
