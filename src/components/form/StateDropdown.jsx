@@ -1,8 +1,8 @@
 import { useTranslate } from '@src/translations/useTranslation';
 import React, { useEffect, useState } from 'react';
-import { US_STATES } from './util';
+import { getNestedValue, US_STATES } from './util';
 import MultiSelectDropdown from './MultiSelectDropdown';
-import { Label } from '@mckesson/mcp-component-library';
+import { Label, TextError } from '@mckesson/mcp-component-library';
 
 function StateDropdown({ field, form, label = 'State', isRequired = false }) {
   const { t } = useTranslate();
@@ -10,7 +10,10 @@ function StateDropdown({ field, form, label = 'State', isRequired = false }) {
   const [searchKey, setSearchKey] = useState();
   const [options, setOptions] = useState(US_STATES());
   const [StatesList, setStatesList] = useState(US_STATES());
-
+  const { name, value } = field;
+  const { errors, touched, setFieldValue, setFieldTouched } = form;
+  const errorMessage = getNestedValue(errors, name);
+  const isFieldTouched = getNestedValue(touched, name);
   const onStateChangeHandler = (event) => {
     form.setFieldValue(field.name, event || '');
   };
@@ -47,6 +50,7 @@ function StateDropdown({ field, form, label = 'State', isRequired = false }) {
           isSortEnable={false}
           value={field.value || ''}
           fieldDisplayValue={options.find((opt) => opt.value === field.value) || undefined}
+          error={isFieldTouched && errorMessage}
         />
       </div>
     </React.Fragment>

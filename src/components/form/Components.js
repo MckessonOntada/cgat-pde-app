@@ -9,6 +9,7 @@ import DatePickerFormik from './formik/DatePickerFormik';
 import RadioGroup from './RadioGroup';
 import ToggleButtonFieldFormik from './formik/ToggleButtonFormik';
 import InputFileFormik from './formik/InputFileFormik';
+import StateDropdown from './StateDropdown';
 
 const Components = {
   input: InputFieldFormik,
@@ -21,7 +22,8 @@ const Components = {
   datePicker: DatePickerFormik,
   radioGroup: RadioGroup,
   toggleButton: ToggleButtonFieldFormik,
-  inputFile: InputFileFormik
+  inputFile: InputFileFormik,
+  stateDropdown: StateDropdown
 };
 
 export default Components;

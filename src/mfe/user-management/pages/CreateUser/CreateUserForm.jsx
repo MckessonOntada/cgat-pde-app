@@ -97,7 +97,7 @@ const UserDetailsFormSegment = () => {
               name="address.state"
               label={t('userManagement.create_user.inputLabel.state')}
               placeholder=" "
-              component={StateDropdown}
+              component={Components['stateDropdown']}
               isRequired
               options={options}
             />
