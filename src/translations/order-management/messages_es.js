@@ -34,6 +34,7 @@ export const MessageEs = {
   'captions.btnBacktoAccountSelection': 'S_Back To Account Selection',
   'captions.btnBacktoTherapySelection': 'S_Back To Therapy Selection',
   'captions.btnEdit': 'S_Edit',
+  'captions.btnRetry': 'S_Retry',
   'captions.btnSubmitOrder': 'S_Submit Order',
   'captions.btnApproveOrder': 'S_Approve Order',
   'captions.btnRejectOrder': 'S_Reject Order',
