@@ -82,7 +82,7 @@ export default function CreditsTable(props) {
       wrap: true,
       cell: (props) => (
         <div>
-          <EclipsesTextcss str={props?.description || ''} maxWidth={280} />
+          <EclipsesTextcss str={props?.description || '-'} maxWidth={280} />
         </div>
       )
     },

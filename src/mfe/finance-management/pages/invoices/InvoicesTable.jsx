@@ -82,7 +82,7 @@ export default function InvoicesTable() {
       sortable: true,
       id: 'billDate',
       wrap: true,
-      width: '100px',
+      width: '120px',
       cell: (props) => dayjs(props?.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'
     },
     {
