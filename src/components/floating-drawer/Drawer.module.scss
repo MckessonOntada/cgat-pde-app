@@ -1,10 +1,11 @@
 .drawerBackdrop {
   position: fixed;
-  top: 0;
+  top: 86px;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 .drawerModule {
   position: fixed;
@@ -15,11 +16,11 @@
   z-index: 1001;
   transition: transform 0.3s ease;
   display: flex;
-  margin-top: 88px;
+  margin-top: 87px;
   .drawerWrapper{
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 88px);
+    height: calc(100vh - 87px);
     width: 450px;
     .header {
       display: flex;
