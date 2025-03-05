@@ -119,10 +119,11 @@ function ManageMaterialTable({ ...props }) {
           duration={3000}
         />
       )}
-      <TableHeading heading={'Material Listing'} />
-      {selectedMaterials.length > 0 && (
-        <div className="selected-invoices">
-          <div className="label">{`${selectedMaterials.length} ${t('manageMaterial.table.header.text')}`}</div>
+      <TableHeading
+        heading={'Material Listing'}
+        secondaryView={selectedMaterials?.length}
+        secondaryViewHeading={`${selectedMaterials?.length} ${t('manageMaterial.table.header.text')}`}
+        secondaryViewControls={
           <Button
             variant="secondary"
             onClick={() => {
@@ -131,8 +132,9 @@ function ManageMaterialTable({ ...props }) {
             size="sm">
             {t('manageMaterial.table.header.button.configure')}
           </Button>
-        </div>
-      )}
+        }
+      />
+
       <CustomDataTable
         id="manage-material-table"
         type="normal"
