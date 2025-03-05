@@ -104,7 +104,8 @@ export const ApproverProvider = ({ children }) => {
       }
       return res.data.content.map((item) => ({
         label: getFullName(item.name),
-        value: item.id
+        value: item.id,
+        email: item.contact?.email
       }));
     },
     refetchOnWindowFocus: false,

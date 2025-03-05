@@ -24,8 +24,8 @@ function ApproverUserList({ data }) {
       name: t('approverGroup.userList.emailAddress'),
       selector: () => {},
       sortable: true,
-      sortKey: 'updatedOn',
-      cell: (props) => props.updatedOn
+      sortKey: 'email',
+      cell: (props) => props.email
     }
   ];
 

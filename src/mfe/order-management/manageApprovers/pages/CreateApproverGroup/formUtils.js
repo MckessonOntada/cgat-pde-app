@@ -4,7 +4,6 @@ import { CONTROL_OPTIONS } from '../ApproverGroupDetail/RulesConfig';
 
 export const transformAttributesToRules = (values, practiceId) => {
   const { name, approverUsers, approverUsers_augmented, rules } = values;
-
   const result = {
     name: name.trim() || 'default',
     practiceId: practiceId || 0,
@@ -48,11 +47,13 @@ export const transformAttributesToRules = (values, practiceId) => {
 
   if (approverUsers) {
     approverUsers.forEach((userId) => {
-      const userName = approverUsers_augmented.find((user) => user.value === userId)?.name || `User ${userId}`;
+      const targetUser = approverUsers_augmented.find((user) => user.value === userId);
+      const userName = targetUser?.label || `User ${userId}`;
 
       result.approverUsers.push({
         userId,
-        userName
+        userName,
+        email: targetUser?.email
       });
     });
   }
