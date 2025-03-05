@@ -119,10 +119,11 @@ function ManageMaterialTable({ ...props }) {
           duration={3000}
         />
       )}
-      <TableHeading heading={'Material Listing'} />
-      {selectedMaterials.length > 0 && (
-        <div className="selected-invoices">
-          <div className="label">{`${selectedMaterials.length} ${t('manageMaterial.table.header.text')}`}</div>
+      <TableHeading
+        heading={'Material Listing'}
+        secondaryView={selectedMaterials?.length}
+        secondaryViewHeading={`${selectedMaterials?.length} ${t('manageMaterial.table.header.text')}`}
+        secondaryViewControls={
           <Button
             variant="secondary"
             onClick={() => {
@@ -131,8 +132,9 @@ function ManageMaterialTable({ ...props }) {
             size="sm">
             {t('manageMaterial.table.header.button.configure')}
           </Button>
-        </div>
-      )}
+        }
+      />
+
       <CustomDataTable
         id="manage-material-table"
         type="normal"
@@ -173,13 +175,11 @@ function ManageMaterialTable({ ...props }) {
         }
       />
       {openDetails && (
-        <FloatingDrawer 
-          open={true} 
-          anchor="right" 
-          onClose={() => 
-          setOpenDetails(!openDetails)}
-          heading={t('manageMaterial.drawer.heading')}
-        >
+        <FloatingDrawer
+          open={true}
+          anchor="right"
+          onClose={() => setOpenDetails(!openDetails)}
+          heading={t('manageMaterial.drawer.heading')}>
           <TherapyDetails
             therapyId={materialNumber}
             therapyData={MaterialDetailsConstants}
@@ -193,7 +193,11 @@ function ManageMaterialTable({ ...props }) {
         </FloatingDrawer>
       )}
       {openConfiguration && (
-        <FloatingDrawer open={true} anchor="right" onClose={() => setOpenConfiguration(!openConfiguration)} heading={t('manageMaterial.drawer.configuration.heading')}>
+        <FloatingDrawer
+          open={true}
+          anchor="right"
+          onClose={() => setOpenConfiguration(!openConfiguration)}
+          heading={t('manageMaterial.drawer.configuration.heading')}>
           <ConfigureMaterials
             onClose={() => setOpenConfiguration(!openConfiguration)}
             onSuccess={() => setConfigureSuccess(true)}
