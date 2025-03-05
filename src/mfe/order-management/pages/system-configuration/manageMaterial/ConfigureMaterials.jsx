@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './assets/styles/ConfigureMaterials.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Heading, Button, RadioGroup, Label } from '@mckesson/mcp-component-library';
+import { Heading, Button, RadioGroup, Label, Alert } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
 import { useManageMaterial } from '@src/mfe/order-management/context/ManageMaterialContext';
 import { useMutation } from 'react-query';
@@ -15,6 +15,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
     patientInfoRequired: '',
     coiIdRequired: ''
   });
+  const [error, setError] = useState(false)
 
   const { selectedMaterials, refetch } = useManageMaterial();
 
@@ -59,17 +60,26 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
       onChangeValue: (value) => setFormValues((prev) => ({ ...prev, coiIdRequired: value }))
     }
   ];
+  const isApplyDisabled = formValues.patientInfoRequired && formValues.coiIdRequired;
 
   const handleApplyConfiguration = () => {
-    const configValues = {
-      materialNumbers: selectedMaterials.map((material) => material.materialNumber),
-      isPatientInformationRequired: formValues.patientInfoRequired === 'yes',
-      isCoiIdRequired: formValues.coiIdRequired === 'yes'
-    };
-    applyConfiguration(configValues);
+    if(isApplyDisabled){
+      const configValues = {
+        materialNumbers: selectedMaterials.map((material) => material.materialNumber),
+        isPatientInformationRequired: formValues.patientInfoRequired === 'yes',
+        isCoiIdRequired: formValues.coiIdRequired === 'yes'
+      };
+      applyConfiguration(configValues);
+    }else{
+      setError(true);
+    }
+    
   };
+  const handleAlertClose=()=>{
+    setError(false)
+  }
 
-  const isApplyDisabled = !formValues.patientInfoRequired && !formValues.coiIdRequired;
+  
 
   return (
     <FloatingDrawer 
@@ -92,13 +102,15 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
             variant="primary"
             size="md"
             aria-label={t('manageMaterial.drawer.controls.apply')}
-            disabled={isApplyDisabled}
           />
         </div>
       }
     >
       <div className={styles.wrapper}>
         <div className={styles.body}>
+          {error && !isApplyDisabled && (
+            <Alert description={t('manageMaterial.drawer.configuration.alert.error')} onClose={handleAlertClose} type={'error'} duration={10000} />
+          )}
           <div className={styles.formControls}>
             {formFields.map((field, index) => (
               <div className={styles.formField} key={index}>

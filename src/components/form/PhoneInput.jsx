@@ -4,7 +4,7 @@ import './Components.scss';
 import { highlightFieldOnLabelClick } from './util';
 
 export default function PhoneInput(props) {
-  const { id, value, isRequired, error = '', onChangeFn, onBlur, label, ...rest } = props;
+  const { id, value, isRequired, error = '', onChangeFn, onBlurFn, label, ...rest } = props;
   const [isFieldDirty, setIsFieldDirty] = useState(false);
 
   const phoneInputRef = useRef();
@@ -44,7 +44,7 @@ export default function PhoneInput(props) {
           setIsFieldDirty(true);
           onChangeFn(e);
         }}
-        onBlurFn={onBlur}
+        onBlurFn={onBlurFn}
         value={formatPhoneNumber(value)}
         dataTestId="mobile-input"
         useUnmaskedValue={false}

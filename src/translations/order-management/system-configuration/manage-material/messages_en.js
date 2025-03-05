@@ -66,5 +66,6 @@ export const SystemConfigurationEN = {
   'manageMaterial.drawer.delink.error': 'Error while deleting Questionnaire Template',
   'manageMaterial.BacktoPage': 'BACK TO MANAGE  MATERIAL PAGE',
 
-  'messages.confirmation.deleteConfiguration': 'Are you sure you want to delete the configuration ?'
+  'messages.confirmation.deleteConfiguration': 'Are you sure you want to delete the configuration ?',
+  'manageMaterial.drawer.configuration.alert.error': 'Please select Required Field'
 };
