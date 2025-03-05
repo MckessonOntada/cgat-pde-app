@@ -840,6 +840,10 @@ export const SearchableDropdown = (props) => {
     if (isAsyncLoading) {
       return <Loader variant="circular" />;
     }
+
+    if (isInitialCheck && options.length == 0) {
+      return getEmptyOptionsUi();
+    }
     selectedOptionsUi =
       selectedOptions &&
       selectedOptions?.map((option, index) => {
