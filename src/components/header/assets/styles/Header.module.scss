@@ -8,6 +8,7 @@
     .navItemsLeft {
       padding: var(--spacing-02) 0px;
       padding-right: var(--spacing-02);
+      height: var(--spacing-06);
     }
 
     .navItemsborder {
@@ -238,7 +239,7 @@
   gap: 6px;
 
   .logoContainer {
-    height: 28px;
+    height: 26px;
 
     img {
       width: 100%;
