@@ -1,6 +1,7 @@
 import { serializeParams } from '@src/util/ApiUtils';
 import ApiRoutes from '../ApiRoutes';
 import HttpResourceService, { httpVerb } from '../HttpResourceService';
+import AuthUtils from '@src/util/AuthUtils';
 
 async function createOrder(payload) {
   const url = `${ApiRoutes.ORDERS()}`;
@@ -270,8 +271,10 @@ async function discardCurrentOrderVersion(orderId) {
 async function getOrderStatusFromSAP(sapOrderId, salesOrgId) {
   if (!sapOrderId) throw new Error('SAP Order id is missing. SAP Order id is required to discard order changes.');
   if (!salesOrgId) throw new Error('Sales Org id is missing. Sales Org id is required to discard order changes.');
+  const practiceId = AuthUtils.getPracticeId();
+  if (!practiceId) throw new Error('Practise Id is missing.');
 
-  const url = `${ApiRoutes.SAP_ORDERS}/${sapOrderId}/sales-org/${salesOrgId}/status`;
+  const url = `${ApiRoutes.SAP_ORDERS()}/${sapOrderId}/sales-org/${salesOrgId}/status`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET);
 
   if (res.data) {
