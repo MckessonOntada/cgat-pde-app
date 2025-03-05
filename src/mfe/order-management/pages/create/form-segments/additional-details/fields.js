@@ -23,7 +23,7 @@ export const getFormFields = (t, config, setFieldValue) => [
     placeholder: ' ',
     isRequired: true,
     component: Components['input'],
-    maxLength: 50
+    maxLength: 20
   },
   {
     name: 'poNumber',
@@ -31,7 +31,7 @@ export const getFormFields = (t, config, setFieldValue) => [
     placeholder: ' ',
     isRequired: true,
     component: Components['input'],
-    maxLength: 40
+    maxLength: 35
   },
   {
     name: 'dateOfAdministration',

@@ -438,5 +438,6 @@ export const MessageEs = {
   'labels.OrderProcesing': 'S_Order Processing',
   'labels.OrderProcesing.SAPOrderStatus.Open': 'S_OPEN',
   'labels.OrderProcesing.SAPOrderStatus.Cancelled': 'S_CANCELLED',
-  'labels.OrderProcesing.SAPOrderStatus.Completed': 'S_COMPLETED'
+  'labels.OrderProcesing.SAPOrderStatus.Completed': 'S_COMPLETED',
+  'errors.orders_index_additional_details.po_number_1_practice_id_1': 'S_PO Number already exists.'
 };
