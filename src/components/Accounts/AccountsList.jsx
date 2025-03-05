@@ -105,7 +105,6 @@ export default function AccountsList(props) {
       },
       {
         id: 'cgatIdentifier',
-        center: true,
         name: t('account.identifier'),
         cell: (row) => <div className="cellEllipse">{row.companyCode}</div>,
         omit: omitColumns.includes('cgatIdentifier'),

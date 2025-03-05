@@ -62,8 +62,8 @@ function RenderControls({ attributeType = CONTROL_OPTIONS.Price, name, isAttribu
 
   const shouldFetchCatalog = attributeType === CONTROL_OPTIONS.Catalog;
   const shouldFetchAccounts = attributeType === CONTROL_OPTIONS.Account;
-  const shouldFetchUserRole = attributeType === CONTROL_OPTIONS.Roles;
-  const shouldFetchUserNames = attributeType === CONTROL_OPTIONS.Users;
+  const shouldFetchUserRole = attributeType === CONTROL_OPTIONS['User Role'];
+  const shouldFetchUserNames = attributeType === CONTROL_OPTIONS['User Name'];
   const shouldFetchPrice = attributeType === CONTROL_OPTIONS.Price;
 
   const catalogQuery = useCatalogData(shouldFetchCatalog);
@@ -209,11 +209,11 @@ function RenderControls({ attributeType = CONTROL_OPTIONS.Price, name, isAttribu
     });
     setLocalData(updatedOptions);
   };
-
+  const controlIdentifier = attributeType.replace(' ', '_').toLowerCase();
   return (
     <AttributeFieldRenderer
-      caption={t(`rules.value.${attributeType.toLowerCase()}.caption`)}
-      helperText={t(`rules.value.${attributeType.toLowerCase()}.helperText`)}
+      caption={t(`rules.value.${controlIdentifier}.caption`)}
+      helperText={t(`rules.value.${controlIdentifier}.helperText`)}
       attributeType={attributeType}
       name={name}
       localData={localData}

@@ -175,35 +175,24 @@ function ManageMaterialTable({ ...props }) {
         }
       />
       {openDetails && (
-        <FloatingDrawer
-          open={true}
-          anchor="right"
+        <TherapyDetails
+          therapyId={materialNumber}
+          therapyData={MaterialDetailsConstants}
+          configurationData={ConfigConstants}
           onClose={() => setOpenDetails(!openDetails)}
-          heading={t('manageMaterial.drawer.heading')}>
-          <TherapyDetails
-            therapyId={materialNumber}
-            therapyData={MaterialDetailsConstants}
-            configurationData={ConfigConstants}
-            onClose={() => setOpenDetails(!openDetails)}
-            showFooter={false}
-            isMaterialConfiguration={true}
-            useMaterialService={true}
-            hasDeleteConfigAccess={!isCustomerCenter}
-          />
-        </FloatingDrawer>
+          showFooter={false}
+          isMaterialConfiguration={true}
+          useMaterialService={true}
+          hasDeleteConfigAccess={!isCustomerCenter}
+          heading={t('manageMaterial.drawer.heading')}
+        />
       )}
       {openConfiguration && (
-        <FloatingDrawer
-          open={true}
-          anchor="right"
+        <ConfigureMaterials
           onClose={() => setOpenConfiguration(!openConfiguration)}
-          heading={t('manageMaterial.drawer.configuration.heading')}>
-          <ConfigureMaterials
-            onClose={() => setOpenConfiguration(!openConfiguration)}
-            onSuccess={() => setConfigureSuccess(true)}
-            onError={() => setConfigureError(true)}
-          />
-        </FloatingDrawer>
+          onSuccess={() => setConfigureSuccess(true)}
+          onError={() => setConfigureError(true)}
+        />
       )}
     </React.Fragment>
   );

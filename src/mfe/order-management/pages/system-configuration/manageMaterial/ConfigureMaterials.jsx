@@ -7,6 +7,7 @@ import { useManageMaterial } from '@src/mfe/order-management/context/ManageMater
 import { useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
+import FloatingDrawer from '@src/components/floating-drawer';
 
 function ConfigureMaterials({ onClose, onSuccess, onError }) {
   const { t } = useTranslate();
@@ -71,28 +72,13 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
   const isApplyDisabled = !formValues.patientInfoRequired && !formValues.coiIdRequired;
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.body}>
-        <div className={styles.formControls}>
-          {formFields.map((field, index) => (
-            <div className={styles.formField} key={index}>
-              <div className={styles.caption}>
-                <Label className={styles.label}>{field.caption}</Label>
-                <span className='required'> *</span>
-              </div>
-              <RadioGroup
-                direction="row"
-                id={field.id}
-                items={field.items}
-                onChangeValue={field.onChangeValue}
-                radioBtnWidth="auto"
-                value={field.value}
-                size="lg"
-              />
-            </div>
-          ))}
-        </div>
-        <div className={styles.controls}>
+    <FloatingDrawer 
+      open={true} 
+      anchor="right" 
+      onClose={onClose} 
+      heading={t('manageMaterial.drawer.configuration.heading')}
+      controls={
+        <div className='controls'>
           <Button
             label={t('manageMaterial.drawer.controls.cancel')}
             onClick={onClose}
@@ -109,8 +95,32 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
             disabled={isApplyDisabled}
           />
         </div>
+      }
+    >
+      <div className={styles.wrapper}>
+        <div className={styles.body}>
+          <div className={styles.formControls}>
+            {formFields.map((field, index) => (
+              <div className={styles.formField} key={index}>
+                <div className={styles.caption}>
+                  <Label className={styles.label}>{field.caption}</Label>
+                  <span className='required'> *</span>
+                </div>
+                <RadioGroup
+                  direction="row"
+                  id={field.id}
+                  items={field.items}
+                  onChangeValue={field.onChangeValue}
+                  radioBtnWidth="auto"
+                  value={field.value}
+                  size="lg"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
+    </FloatingDrawer>
   );
 }
 
