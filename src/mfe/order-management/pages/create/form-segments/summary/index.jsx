@@ -68,7 +68,7 @@ const Summary = () => {
 
   const {
     data: sapOrderDetails,
-    isLoading: isLoaingSapOrderStatus,
+    isLoading: isLoadingSapOrderStatus,
     refetch: retrySapOrderStatus
   } = useSapOrder(
     {
