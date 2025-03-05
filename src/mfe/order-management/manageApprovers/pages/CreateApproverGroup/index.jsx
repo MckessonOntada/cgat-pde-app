@@ -37,7 +37,6 @@ const CreateApproverGroup = () => {
   const [isDirty, setIsDirty] = React.useState(false);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const { hasPermission } = usePermission();
-
   const {
     isLoading: isLoadingapproverGroup,
     data: groupData,
@@ -63,6 +62,7 @@ const CreateApproverGroup = () => {
         const selectedUserData = usersData.map((user) => ({
           value: user.value,
           label: user.label,
+          email: user.email,
           isChecked: initialValues.approverUsers.map(String).includes(String(user.value))
         }));
         setLocalUsersData(selectedUserData);
@@ -110,6 +110,7 @@ const CreateApproverGroup = () => {
   });
 
   const handleSubmit = (values) => {
+    values.approverUsers_augmented = localUserData.filter((user) => values.approverUsers.includes(user.value));
     const payload = transformAttributesToRules(values, practiceId);
 
     mutate(
@@ -192,7 +193,6 @@ const CreateApproverGroup = () => {
           useEffect(() => {
             setIsDirty(Object.keys(touched).length > 0);
           }, [touched]);
-
           const onRemoveUserClick = (itemToRemove) => {
             onRemoveUser(itemToRemove, values.approverUsers, values.approverUsers_augmented, setFieldValue);
           };
