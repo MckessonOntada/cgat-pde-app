@@ -66,7 +66,6 @@ const Summary = () => {
     status
   } = orderDetails || {};
 
-
   const {
     data: sapOrderDetails,
     isLoading: isLoaingSapOrderStatus,

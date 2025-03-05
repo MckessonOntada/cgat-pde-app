@@ -14,11 +14,11 @@ import MainLayout from './pages/MainLayout';
 import { debugIds, ID } from '@src/constants/id';
 import { DEFAULT_INACTIVE_TIMEOUT } from '@src/config/AppConfig';
 import LoginCallback from './pages/LoginCallback/LoginCallback';
-import SignUp from "./pages/SignUp";
+import SignUp from './pages/SignUp';
 import SignIn from './pages/SignIn';
 import NotFound from './pages/error-pages/NotFound';
 import ForgotPassword from './pages/forgot-password/forgot-password';
-
+import PublicRoute from './routes/PublicRoute';
 
 function AuthorizedRoute({ children }) {
   let { authState } = useOktaAuth();
@@ -59,10 +59,7 @@ function IdleTimer({ children, timeout }) {
 
     const refreshToken = () => {
       console.info('renew token');
-      sessionStorage.setItem(
-        'APP_AUTH_TOKEN',
-        `${token.accessToken.tokenType} ${token.accessToken.accessToken}`
-      );
+      sessionStorage.setItem('APP_AUTH_TOKEN', `${token.accessToken.tokenType} ${token.accessToken.accessToken}`);
     };
 
     getToken();
@@ -118,9 +115,12 @@ const Navigation = () => {
         <Routes>
           <Route exact path={`${AppRoutes.pathPageLogin}`} element={<Login />} />
           <Route exact path={AppRoutes.pathPageLoginCallback} element={<LoginCallback />} />
-          <Route exact path={`${AppRoutes.pathPageForgotPassword}`} element={<ForgotPassword />} />
-          <Route path={AppRoutes.pathSignup} element={<SignUp />} />
-          <Route path={`${AppRoutes.pathSignin}`} element={<SignIn />} />
+          <Route element={<PublicRoute />}>
+            <Route exact path={`${AppRoutes.pathPageForgotPassword}`} element={<ForgotPassword />} />
+            <Route path={AppRoutes.pathSignup} element={<SignUp />} />
+            <Route path={`${AppRoutes.pathSignin}`} element={<SignIn />} />
+          </Route>
+
           <Route
             exact
             path="*"
