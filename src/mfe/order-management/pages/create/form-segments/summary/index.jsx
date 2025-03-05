@@ -172,6 +172,12 @@ const Summary = () => {
     }
     .MCP-CardContainer > div{
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    #summary-alert-container{
+      display: none !important;
+    }
+    .alert-container{
+      display: none !important;
     }`
   );
 
@@ -436,21 +442,21 @@ const Summary = () => {
         )}
         <div id={ALERT_CONTAINER_ID} />
 
-        <div>
-          {alertMessages && (
-            <div className="MCP-module-body">
-              {alertMessages.map((item, index) => (
-                <Alert
-                  key={index + 1}
-                  description={item.description}
-                  onClose={() => closeAvailabilityAlert(index)}
-                  type={item.type}
-                  duration={10000}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        {alertMessages && (
+          <div className='alert-container'>
+              <div className="MCP-module-body">
+                {alertMessages.map((item, index) => (
+                  <Alert
+                    key={index + 1}
+                    description={item.description}
+                    onClose={() => closeAvailabilityAlert(index)}
+                    type={item.type}
+                    duration={10000}
+                  />
+                ))}
+              </div>
+          </div>
+        )}
 
         <div className={'MCP-module-wrapper'}>
           <ModuleHeader
