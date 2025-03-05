@@ -38,10 +38,10 @@
 }
 
 .custom-date-range-picker {
-  >div {
-    >div {
-      >div {
-        >div {
+  > div {
+    > div {
+      > div {
+        > div {
           width: unset;
           min-width: 160px;
           flex-grow: 1;
@@ -493,7 +493,6 @@ div.disable-all {
     white-space: nowrap;
     overflow: hidden;
   }
-
 }
 
 .row-space-between-center {
@@ -613,9 +612,11 @@ div.disable-all {
   }
 }
 
-@media only screen and (min-width: 576px) {}
+@media only screen and (min-width: 576px) {
+}
 
-@media only screen and (min-width: 992px) {}
+@media only screen and (min-width: 992px) {
+}
 
 @media only screen and (min-width: 1200px) {
   .max-container {
@@ -670,7 +671,6 @@ div.disable-all {
 }
 
 .styled-heading {
-
   //module primary heading
   h1 {
     font-size: var(--brand-font-size--28) !important;
@@ -697,12 +697,12 @@ div.disable-all {
 }
 
 .styled-form-field {
-
   .label-heading,
   label[class*="TextareaInput-module--label"],
   label[class*="InputField-module--labelText"],
   fieldset legend[class*="CheckboxGroup-module--captionWrap"],
-  fieldset legend[class*="labelContainer"] {}
+  fieldset legend[class*="labelContainer"] {
+  }
 
   div[class*="RadioGroup-module"] {
     label {
@@ -797,7 +797,7 @@ div.disable-all {
   flex-direction: column;
   height: 100vh;
 
-  >div {
+  > div {
     padding: var(--spacing-03);
     flex: 0 0 auto;
   }
@@ -818,7 +818,6 @@ div.disable-all {
   }
 
   #secondaryNavPanel {
-
     button,
     a {
       font-size: var(--brand-font-size--small);
@@ -829,7 +828,6 @@ div.disable-all {
 }
 
 .questionnaire-template-question-list {
-
   .label-heading,
   label[class*="TextareaInput-module--label"],
   label[class*="InputField-module--labelText"],
@@ -895,7 +893,7 @@ div.disable-all {
 
 .error-label {
   font-size: var(--brand-font-size--small);
-  color: var(--brand-color-warning-coral)
+  color: var(--brand-color-warning-coral);
 }
 
 .control-helper-text {
@@ -988,7 +986,14 @@ div.disable-all {
           justify-content: center;
           margin-top: unset;
         }
+        .Pt-32 {
+          padding-top: var(--spacing-05);
+        }
       }
+    }
+
+    .alignItems {
+      align-items: flex-start;
     }
 
     .attribute-text-segment {
@@ -1035,13 +1040,13 @@ div.disable-all {
   margin: 0 5px;
   width: 24px;
   aspect-ratio: 4;
-  background: radial-gradient(circle closest-side, var(--brand-color-text-blue) 90%, #0000) 0/calc(100%/3) 100% space;
+  background: radial-gradient(circle closest-side, var(--brand-color-text-blue) 90%, #0000) 0 / calc(100% / 3) 100% space;
   clip-path: inset(0 100% 0 0);
   animation: l1 1s steps(4) infinite;
 }
 
 @keyframes l1 {
   to {
-    clip-path: inset(0 -34% 0 0)
+    clip-path: inset(0 -34% 0 0);
   }
 }

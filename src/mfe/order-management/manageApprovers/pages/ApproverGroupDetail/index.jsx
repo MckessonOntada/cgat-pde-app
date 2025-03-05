@@ -4,7 +4,7 @@ import { useMutation, useQuery } from 'react-query';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { PATHS } from '../../routes/constants';
 import { RoutePaths } from '@src/routes/constants';
-import { CONTROL_OPTIONS, getRuleOperator } from './RulesConfig';
+import { CONTROL_OPTIONS, getRuleLabel, getRuleOperator } from './RulesConfig';
 import ModuleHeader from '@src/components/module-header';
 import { Button, Heading, Loader, Switch, Alert, Pills } from '@mckesson/mcp-component-library';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
@@ -151,12 +151,12 @@ function ApproverGroupDetails() {
       else if (key === 'users') _key = 'userName';
 
       rules.push(
-        <div key={index} className="rule-wrapper">
+        <div key={index} className="rule-wrapper alignItemsCenter">
           <div className="condition attribute-text-segment">{t('rules.clauseIf.if')}</div>
           <div className="rule-field type">
             <div className="fake-control">{CommonUtils.getCamelCase(key)}</div>
           </div>
-          <div className="rule-operator attribute-text-segment">{getRuleOperator(CommonUtils.getCamelCase(key), t)}</div>
+          <div className="rule-operator attribute-text-segment">{getRuleOperator(CommonUtils.getCamelCase(getRuleLabel(key)), t)}</div>
           <div className={`response-control ${key === CONTROL_OPTIONS.Price ? 'price' : ''}`}>
             <div className="fake-control">
               <Pills
