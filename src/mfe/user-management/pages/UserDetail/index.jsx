@@ -531,7 +531,7 @@ const ConsentModal = ({ userFullName, onYes, onNo }) => {
           <div className="MCP-modal-body">
             <Heading as="h6">{t('popup.message.wishToContinueLoginAsThisUserQuestion')}</Heading>
             <p>{t('popup.message.wishToContinueLoginAsThisUserDescription').replace('{{targetUser}}', userFullName)}</p>
-            <div className='checkboxGroup'>
+            <div className="checkboxGroup">
               <CheckboxGroup
                 id={'default'}
                 name="order-agreement"

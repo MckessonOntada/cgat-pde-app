@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment, useMemo } from 'react';
 import { Switch, Button, Heading } from '@mckesson/mcp-component-library';
 import Dropdown from '@src/components/form/Dropdown';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -9,12 +9,25 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import AuthUtils from '@src/util/AuthUtils';
 import { serializeParams } from '@src/util/ApiUtils';
-import StateDropdown from '@src/components/form/StateDropdown';
+import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 
-const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleSelect, editRoleId, isRolePage }) => {
+const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleSelect, editRoleId, isRolePage, defaultRole }) => {
   const { t } = useTranslate();
   const [selectedRole, setSelectedRole] = useState(editRoleId || '');
   const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const [searchKey, setSearchKey] = useState('');
+  const [selectedRoleData, setSelectedRoleData] = useState(null);
+
+  useEffect(() => {
+    if (defaultRole) {
+      setSelectedRoleData({ label: defaultRole.name, value: defaultRole.id });
+    }
+  }, [defaultRole]);
+
+  const getParams = () => {
+    let payload = { status: 'active', query: searchKey };
+    return payload;
+  };
 
   const {
     isLoading,
@@ -24,7 +37,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
   } = useQuery({
     queryKey: [`users/getAll}`],
     queryFn: async () => {
-      const res = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}?${serializeParams({ status: 'active' })}`, httpVerb.GET, {});
+      const res = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}?${serializeParams(getParams())}`, httpVerb.GET, {});
 
       if (res.data?.content) {
         const roles = res.data?.content?.map((role) => ({
@@ -41,12 +54,15 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
 
   const userType = isSystemAdminView ? 'ADMIN' : 'GENERAL';
 
+  useEffect(() => {
+    refetch();
+  }, [searchKey]);
+
   const { data: permissionsData } = useQuery({
     queryKey: ['users/permissions'],
     queryFn: async () => {
       const res = await HttpResourceService.callRest(`${ApiRoutes.GET_PERMISSIONS(userType)}`, httpVerb.GET, {});
       const rawPermissions = res.data || [];
-      console.log('rawPermissions', rawPermissions);
       // grouped format
       const groupedPermissions = {
         USER_MANAGEMENT: {},
@@ -166,6 +182,7 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
   const handleRoleChange = (value) => {
     const selected = value;
     const roleId = roleData?.find((item) => item.id == value);
+    setSelectedRoleData(roleId);
 
     // Get permissions for the selected role
     let permissions = roleId?.permissions ?? [];
@@ -197,16 +214,22 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
 
           <div className="MCP-panel-container">
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
-              <Dropdown
-                id="role"
+              <MultiSelectDropdown
+                id={'select-role-search'}
                 label={t('userManagement.user_permissions.select_role')}
-                value={selectedRole}
+                isMultiSelect={false}
+                placeholder={'select role'}
                 onChange={handleRoleChange}
                 options={roleData || []}
+                variant={'async'}
+                onSearch={(event) => setSearchKey(event)}
+                recordsCountToEnableSearch={5}
                 isRequired={!isRolePage}
                 size="lg"
+                isSortEnable={false}
+                value={editRoleId?.toString() || ''}
+                fieldDisplayValue={selectedRoleData}
               />
-              {/* <StateDropdown /> */}
             </div>
           </div>
         </Fragment>
