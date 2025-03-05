@@ -55,12 +55,12 @@ export const FormProvider = ({ children }) => {
         });
       if (roles)
         transformedRules.push({
-          attributeType: CONTROL_OPTIONS.Roles,
+          attributeType: CONTROL_OPTIONS['User Role'],
           value: roles.map((item) => item.roleId)
         });
       if (users)
         transformedRules.push({
-          attributeType: CONTROL_OPTIONS.Users,
+          attributeType: CONTROL_OPTIONS['User Name'],
           value: users.map((item) => item.userId)
         });
 

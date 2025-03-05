@@ -66,7 +66,11 @@ const Summary = () => {
     status
   } = orderDetails || {};
 
-  const { data: sapOrderDetails, isLoading: isLoadingSapOrderStatus } = useSapOrder(
+  const {
+    data: sapOrderDetails,
+    isLoading: isLoadingSapOrderStatus,
+    refetch: retrySapOrderStatus
+  } = useSapOrder(
     {
       sapOrderId: backendOrderId,
       salesOrgId: accountDetails.soldToAccount?.salesOrg,
@@ -74,7 +78,11 @@ const Summary = () => {
     },
     (status) => setSapStatus(status),
     (error) => {
-      alertMessages.push({ description: 'Something went wrong while checking SAP order status. Please try again later.', type: 'error' });
+      alertMessages.push({
+        description: 'Something went wrong while checking SAP order status. Please try again later.',
+        type: 'error',
+        kind: 'SAP_ORDER_STATUS'
+      });
       setAlertMessages(alertMessages);
     }
   );
@@ -137,6 +145,11 @@ const Summary = () => {
     setAlertMessages(alertMessages.filter((msg, _index) => _index != index));
   };
 
+  const handleRetrySAPOrderStatus = () => {
+    setAlertMessages(alertMessages.filter((msg) => msg.kind != 'SAP_ORDER_STATUS'));
+    retrySapOrderStatus();
+  };
+
   const variantDetails = additionalDetails?.variantDetails || {};
   const isRejected = status === 'REJECTED';
   const isSubmitted = status === StatusEnum.SUBMITTED;
@@ -159,6 +172,12 @@ const Summary = () => {
     }
     .MCP-CardContainer > div{
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    #summary-alert-container{
+      display: none !important;
+    }
+    .alert-container{
+      display: none !important;
     }`
   );
 
@@ -423,15 +442,21 @@ const Summary = () => {
         )}
         <div id={ALERT_CONTAINER_ID} />
 
-        <div>
-          {alertMessages && (
-            <div className="MCP-module-body">
-              {alertMessages.map((item, index) => (
-                <Alert key={index + 1} description={item.description} onClose={() => closeAvailabilityAlert(index)} type={item.type} />
-              ))}
-            </div>
-          )}
-        </div>
+        {alertMessages && (
+          <div className='alert-container'>
+              <div className="MCP-module-body">
+                {alertMessages.map((item, index) => (
+                  <Alert
+                    key={index + 1}
+                    description={item.description}
+                    onClose={() => closeAvailabilityAlert(index)}
+                    type={item.type}
+                    duration={10000}
+                  />
+                ))}
+              </div>
+          </div>
+        )}
 
         <div className={'MCP-module-wrapper'}>
           <ModuleHeader
@@ -461,7 +486,14 @@ const Summary = () => {
                         )}
                       </>
                     ) : (
-                      <span>--</span>
+                      <div className={styles.orderProcessing}>
+                        <InventoryIndicator status={'OUT_OF_STOCK'} />
+                        <div className="styled-icon-button">
+                          <Button variant="tertiary" size="lg" onClick={handleRetrySAPOrderStatus}>
+                            {t('captions.btnRetry')}
+                          </Button>
+                        </div>
+                      </div>
                     ))}
                 </div>
               ) : null

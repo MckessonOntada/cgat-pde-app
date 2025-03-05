@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { PREVIEW_URL } from '@src/mfe/order-management/questionnaire/constants';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { renderModal } from '@src/util/ModalUtil';
+import FloatingDrawer from '@src/components/floating-drawer';
 
 function TherapyDetails({
   therapyId,
@@ -24,7 +25,8 @@ function TherapyDetails({
   useUserService = false,
   useMaterialService = false,
   isMaterialConfiguration = false,
-  hasDeleteConfigAccess = true
+  hasDeleteConfigAccess = true,
+  heading
 }) {
   const { t } = useTranslate();
   const { showSnackbar } = useSnackbar();
@@ -90,38 +92,54 @@ function TherapyDetails({
   };
 
   return (
-    <div className={styles.wrapper}>
-      {isLoading ? (
-        <Loader variant="circular" />
-      ) : (
-        <div className={styles.body}>
-          {therapyDetails && (
-            <DetailsPanel
-              details={therapyDetails}
-              handleSelect={handleSelect}
-              onClose={onClose}
-              therapyData={therapyData}
-              configurationData={configurationData}
-              showFooter={showFooter}
-              isMaterialConfiguration={isMaterialConfiguration}
-              refetch={refetch}
-              onDeleteConfig={handleDeleteConfig}
-              hasDeleteConfigAccess={hasDeleteConfigAccess}
-            />
-          )}
+    <FloatingDrawer 
+      open={true} 
+      anchor="right" 
+      onClose={onClose} 
+      heading={heading}
+      controls={ showFooter && (
+        <div className='controls'>
+          <Button label={t('captions.btnCancel')} onClick={onClose} variant="secondary" size="md" aria-label={t('captions.cancel')} />
+          <Button
+            label={t('captions.btnSelecttherapy')}
+            onClick={handleSelect}
+            variant="primary"
+            size="md"
+            aria-label={t('captions.selectAccount')}
+          />
         </div>
       )}
-    </div>
+    >
+      <div className={styles.wrapper}>
+        {isLoading ? (
+          <Loader variant="circular" />
+        ) : (
+          <div className={styles.body}>
+            {therapyDetails && (
+              <DetailsPanel
+                details={therapyDetails}
+                handleSelect={handleSelect}
+                onClose={onClose}
+                therapyData={therapyData}
+                configurationData={configurationData}
+                showFooter={showFooter}
+                isMaterialConfiguration={isMaterialConfiguration}
+                refetch={refetch}
+                onDeleteConfig={handleDeleteConfig}
+                hasDeleteConfigAccess={hasDeleteConfigAccess}
+              />
+            )}
+          </div>
+        )}
+      </div>
+    </FloatingDrawer>
   );
 }
 
 function DetailsPanel({
   details,
-  handleSelect,
-  onClose,
   therapyData,
   configurationData,
-  showFooter,
   isMaterialConfiguration,
   onDeleteConfig,
   refetch = { refetch },
@@ -237,18 +255,6 @@ function DetailsPanel({
             </>
           ))}
       </div>
-      {showFooter && (
-        <div className={styles.controls}>
-          <Button label={t('captions.btnCancel')} onClick={onClose} variant="secondary" size="md" aria-label={t('captions.cancel')} />
-          <Button
-            label={t('captions.btnSelecttherapy')}
-            onClick={handleSelect}
-            variant="primary"
-            size="md"
-            aria-label={t('captions.selectAccount')}
-          />
-        </div>
-      )}
     </div>
   );
 }

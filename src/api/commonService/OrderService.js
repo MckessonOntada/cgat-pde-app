@@ -271,7 +271,7 @@ async function getOrderStatusFromSAP(sapOrderId, salesOrgId) {
   if (!sapOrderId) throw new Error('SAP Order id is missing. SAP Order id is required to discard order changes.');
   if (!salesOrgId) throw new Error('Sales Org id is missing. Sales Org id is required to discard order changes.');
 
-  const url = `${ApiRoutes.SAP_ORDERS}/${sapOrderId}/sales-org/${salesOrgId}/status`;
+  const url = `${ApiRoutes.SAP_ORDERS()}/${sapOrderId}/sales-org/${salesOrgId}/status`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET);
 
   if (res.data) {

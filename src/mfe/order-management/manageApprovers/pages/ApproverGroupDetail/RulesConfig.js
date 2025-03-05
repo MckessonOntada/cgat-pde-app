@@ -16,12 +16,12 @@ export const RulesConfig = [
   },
   {
     key: 'roles',
-    label: 'Role',
+    label: 'Roles',
     valueKey: 'roleName'
   },
   {
     key: 'users',
-    label: 'User',
+    label: 'Users',
     valueKey: 'userName'
   }
 ];
@@ -54,8 +54,8 @@ export const CONTROL_OPTIONS = {
   Price: 'Price',
   Account: 'Account',
   Catalog: 'Catalog',
-  Roles: 'Roles',
-  Users: 'Users'
+  'User Role': 'User Role',
+  'User Name': 'User Name'
 };
 
 export const getRuleOperator = (key, t) =>
@@ -66,3 +66,8 @@ export const getRuleOperator = (key, t) =>
     Roles: t('rules.operator.selectedAnyOf'),
     Users: t('rules.operator.selectedAnyOf')
   }[key]);
+
+export const getRuleLabel = (key) => {
+  const rule = RulesConfig.find((rule) => rule.key === key);
+  return rule ? rule.label : key; // Return label if found, otherwise return key
+};

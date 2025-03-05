@@ -84,17 +84,16 @@ const EntityDataTable = ({ EntityType, setSelectedRows, showAlert }) => {
       />
       {openDetails &&
         (isMaterial ? (
-          <FloatingDrawer open={true} anchor="right" onClose={() => setOpenDetails(!openDetails)} heading={t('manageMaterial.drawer.heading')}>
-            <TherapyDetails
-              therapyId={selectedDetails?.materialNumber}
-              therapyData={MaterialDetailsConstants}
-              configurationData={ConfigConstants}
-              onClose={() => setOpenDetails(!openDetails)}
-              showFooter={false}
-              isMaterialConfiguration={true}
-              useMaterialService={true}
-            />
-          </FloatingDrawer>
+          <TherapyDetails
+            therapyId={selectedDetails?.materialNumber}
+            therapyData={MaterialDetailsConstants}
+            configurationData={ConfigConstants}
+            onClose={() => setOpenDetails(!openDetails)}
+            showFooter={false}
+            isMaterialConfiguration={true}
+            useMaterialService={true}
+            heading={t('manageMaterial.drawer.heading')}
+          />
         ) : isCatalog ? (
           <CatalogDetails
             openCatalogDetails={openDetails}

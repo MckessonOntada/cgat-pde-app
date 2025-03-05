@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Button, Alert } from '@mckesson/mcp-component-library';
 import styles from './TherapySelection.module.scss';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
-import FloatingDrawer from '@src/components/floating-drawer';
 import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -194,19 +193,13 @@ function TherapySelection() {
             }
           />
           {therapyDetails && (
-            <FloatingDrawer 
-              open={true} 
-              anchor="right" 
+            <TherapyDetails
+              therapyId={therapyDetails}
+              onSelect={handleOnDrawerSelect}
               onClose={handleOnClose}
+              therapyData={TherapyDetailsConstants}
               heading={t('labels.therapyDetails')}
-            >
-              <TherapyDetails
-                therapyId={therapyDetails}
-                onSelect={handleOnDrawerSelect}
-                onClose={handleOnClose}
-                therapyData={TherapyDetailsConstants}
-              />
-            </FloatingDrawer>
+            />
           )}
         </div>
       </div>

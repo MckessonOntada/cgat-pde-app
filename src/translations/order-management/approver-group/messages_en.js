@@ -55,11 +55,12 @@ export const ApproverManagementEN = {
   'approvergroup.create.validation.approveruser_required': 'User is required.',
   'approvergroup.create.validation.approvergroupname_min_max': 'Approver Group Name  must be between 2 and 50 characters.',
   'approvergroup.create.validation.therapy_required': 'Therapy is required.',
-  'approvergroup.create.validation.price_required': 'Amount greater than is required.',
-  'approvergroup.create.validation.price': 'Amount greater than must only contain numbers and greater than 0.',
+  'approvergroup.create.validation.price_required': 'Amount is required.',
+  'approvergroup.create.validation.price': 'Amount must only contain numbers and greater than 0.',
   'approvergroup.create.validation.account_required': 'Account is required.',
   'approvergroup.create.validation.approveruser_required': 'Approver Users required.',
-  'approvergroup.create.validation.user_required': 'User Name or User Role required.',
+  'approvergroup.create.validation.user_role_required': 'User Role is required.',
+  'approvergroup.create.validation.user_name_required': 'User Name is required.',
 
   'approvergroup.create.option.please_select': 'Please Select',
   'approvergroup.selectuserradio': 'Please select one option',
@@ -105,8 +106,8 @@ export const ApproverManagementEN = {
   'rules.value.catalog.helperText': 'Please select the therapy(s) for the approver group.',
   'rules.value.account.caption': 'Select Account',
   'rules.value.account.helperText': 'Please select the account(s) for the approver group.',
-  'rules.value.roles.caption': 'Select Role',
-  'rules.value.roles.helperText': 'Please select the role(s) for the approver group.',
-  'rules.value.users.caption': 'Select User',
-  'rules.value.users.helperText': 'Please select the user(s) for the approver group.'
+  'rules.value.user_role.caption': 'Select Role',
+  'rules.value.user_role.helperText': 'Please select the role(s) for the approver group.',
+  'rules.value.user_name.caption': 'Select User',
+  'rules.value.user_name.helperText': 'Please select the user(s) for the approver group.'
 };

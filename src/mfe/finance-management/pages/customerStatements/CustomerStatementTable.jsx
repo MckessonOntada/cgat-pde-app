@@ -21,18 +21,6 @@ export default function CustomerStatementTable() {
   const showCardView = useResponsiveView();
   const columns = [
     {
-      id: 'accountNumber',
-      name: t('paymentInvoices.CS.table.accountnumber'),
-      selector: (row) => `${row.accountNumber}`,
-      minWidth: '140px',
-      sortable: true,
-      wrap: true,
-      showInMobileHeader: true,
-      showColumnNameInHeader: true,
-      mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
-      cell: (props) => props.accountNumber
-    },
-    {
       id: 'billNumber',
       name: t('paymentInvoices.CS.table.billNumber'),
       selector: (row) => `${row.docNo}`,
@@ -43,6 +31,18 @@ export default function CustomerStatementTable() {
       cardHeader: true,
       mobileStyles: { fontSize: 'var(--brand-font-size--default)' },
       cell: (props) => props.docNo
+    },
+    {
+      id: 'accountNumber',
+      name: t('paymentInvoices.CS.table.accountnumber'),
+      selector: (row) => `${row.accountNumber}`,
+      minWidth: '140px',
+      sortable: true,
+      wrap: true,
+      showInMobileHeader: true,
+      showColumnNameInHeader: true,
+      mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
+      cell: (props) => props.accountNumber
     },
     {
       id: 'date',
