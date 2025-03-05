@@ -225,7 +225,7 @@ function UserTable({ onActionSuccess }) {
         cell: (props) =>
           props.role?.name ? (
             <Tooltip body={props.role?.name}>
-              <span className="cellEllipse">
+              <span className="ellipsis-center">
                 <Badge text={props.role?.name} type={getBackgroundColorByRole(props.role?.name)} />
               </span>
             </Tooltip>
@@ -236,7 +236,7 @@ function UserTable({ onActionSuccess }) {
       },
       {
         id: 'status',
-        name: t('userManagement.table.status'),
+        name: <span className='statusCenter'>{t('userManagement.table.status')}</span>,
         selector: () => {},
         sortable: true,
         sortKey: 'is_active',
