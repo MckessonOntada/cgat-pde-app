@@ -22,6 +22,10 @@ const getUserName = function () {
   return sessionStorage.getItem(SESSION_CONST.USERNAME);
 };
 
+const getFullName = function () {
+  return sessionStorage.getItem(SESSION_CONST.USER_FULL_NAME);
+};
+
 const getUserPermissions = function () {
   return sessionStorage.getItem(SESSION_CONST.USER_PERMISSIONS)?.split(',');
 };
@@ -126,6 +130,7 @@ const AuthUtils = Object.freeze({
   getUserRole,
   getUserId,
   getUserName,
+  getFullName,
   getUserPermissions,
   getPracticeId,
   setPracticeId,

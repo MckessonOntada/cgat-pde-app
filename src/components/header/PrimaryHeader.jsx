@@ -22,6 +22,7 @@ import CommonDataService from '../../api/commonService/CommonDataService';
 import AuthUtils from '../../util/AuthUtils';
 import { useTranslate } from '@src/translations/useTranslation';
 import { currentLocale } from '@src/translations/i18n';
+import EclipsesTextcss from '../EclipsesText/EclipsesTextcss';
 
 const PrimaryHeader = () => {
   const intl = useIntl();
@@ -34,8 +35,20 @@ const PrimaryHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState(null);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const userName = AuthUtils.getUserName();
+  const userName = AuthUtils.getFullName();
+  const [textMaxWidth, setTextMaxWidth] = useState('');
 
+  useEffect(() => {
+    const handleResize = () => {
+      setTextMaxWidth(window.innerWidth <= 992 && window.innerWidth >= 768 ? 160 : '');
+    };    
+  
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Call on mount to set initial width
+  
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
   const requestParams = useMemo(
     () => ({
       pageNo: 0,
@@ -120,7 +133,9 @@ const PrimaryHeader = () => {
 
       <MenuList handleSelect={() => {}} options={HeaderConfig.profileOptions} aria-label="Profile options">
         <div className={styles.actionLink} aria-label="Account options">
-          <span>{userName || 'Anonymous'}</span>
+          <span>
+            <EclipsesTextcss str={userName || 'Anonymous'} maxWidth={textMaxWidth} />
+          </span>
           <IconArrowDown />
         </div>
       </MenuList>,
