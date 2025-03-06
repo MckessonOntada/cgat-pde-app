@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Heading, CheckboxGroup, CustomDataTable, RadioGroup, Loader, Alert } from '@mckesson/mcp-component-library';
+import { Button, Heading, CheckboxGroup, CustomDataTable, RadioGroup, Loader, Alert, TextError } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -30,7 +30,13 @@ const INITIAL_VALUES = {
   orderQuantity: '',
   slotNumber: '',
   poNumber: '',
-  dateOfAdministration: ''
+  dateOfAdministration: '',
+  variant: {
+    variant: '',
+    variantDescription: '',
+    productLevelPricing: false
+  },
+  variantAcknowledgement: false
 };
 
 function AdditionalDetails() {
@@ -71,34 +77,94 @@ function AdditionalDetails() {
     null
   );
 
-  let initialValidationSchema = Yup.object({
-    coiId: Yup.string()
-      .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
-      .max(10, t('labels.COI_IdExceedDigits'))
-      .when([], {
-        is: () => isCoiIdRequired === true,
-        then: (schema) => schema.required(t('labels.COIIdRequired')),
-        otherwise: (schema) => schema
-      }),
-    orderQuantity: Yup.number()
-      .typeError(t('labels.OrderQuantityShouldPositive'))
-      .required(t('labels.orderQuantityRequired'))
-      .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
-      .integer(t('labels.OrderQuantityMustBeInteger')),
-    slotNumber: Yup.string()
-      .required(t('labels.slotNumberRequired'))
-      .max(20, t('labels.slotNumberLengthError'))
-      .trim(t('labels.slotNumberExtraSpaceError')),
-    poNumber: Yup.string()
-      .required(t('labels.PONumberRequired'))
-      .max(35, t('labels.PONumberLengthError'))
-      .trim(t('labels.poNumberExtraSpaceError')),
-    dateOfAdministration: Yup.date().min(new Date(), t('labels.dateOfAdministrationFutureDateOnly')).nullable()
+  const initialValidationSchema = (isVariantRequired) => {
+    return Yup.object({
+      coiId: Yup.string()
+        .matches(ALPHA_NUMERIC_ONLY, t('labels.COI_IdMustValidNumber'))
+        .max(10, t('labels.COI_IdExceedDigits'))
+        .when([], {
+          is: () => isCoiIdRequired === true,
+          then: (schema) => schema.required(t('labels.COIIdRequired')),
+          otherwise: (schema) => schema
+        }),
+      orderQuantity: Yup.number()
+        .typeError(t('labels.OrderQuantityShouldPositive'))
+        .required(t('labels.orderQuantityRequired'))
+        .positive(t('labels.OrderQuantityShouldGreaterThanZero'))
+        .integer(t('labels.OrderQuantityMustBeInteger')),
+      slotNumber: Yup.string()
+        .required(t('labels.slotNumberRequired'))
+        .max(20, t('labels.slotNumberLengthError'))
+        .trim(t('labels.slotNumberExtraSpaceError')),
+      poNumber: Yup.string()
+        .required(t('labels.PONumberRequired'))
+        .max(35, t('labels.PONumberLengthError'))
+        .trim(t('labels.poNumberExtraSpaceError')),
+      dateOfAdministration: Yup.date().min(new Date(), t('labels.dateOfAdministrationFutureDateOnly')).nullable(),
+
+      // Conditionally Require Variant
+      variant: Yup.object()
+        .shape({
+          variant: Yup.string().when([], {
+            is: () => isVariantRequired,
+            then: (schema) => schema.required('Please select at least one variant'),
+            otherwise: (schema) => schema.nullable()
+          }),
+          variantDescription: Yup.string().nullable(),
+          productLevelPricing: Yup.boolean().nullable()
+        })
+        .nullable(),
+
+      // Conditionally Require Acknowledgement Checkbox
+      variantAcknowledgement: Yup.boolean().when([], {
+        is: () => isVariantRequired,
+        then: (schema) => schema.oneOf([true], t('message.acknowldge')),
+        otherwise: (schema) => schema.nullable()
+      })
+    });
+  };
+
+  const { isLoading, data: variantsData = {} } = useQuery({
+    queryKey: ['order', 'variants', orderId],
+    queryFn: async () => OrderService.getVariants(therapyId, soldToAccountId, shipToAccountId, variantsApiRequestParam),
+    enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId,
+    refetchOnWindowFocus: false,
+    onSuccess: (result) => {},
+    onError: (error) => {
+      const errorKey = handleApiError(error);
+      showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
+    }
   });
 
   React.useEffect(() => {
-    setValidationSchema(initialValidationSchema);
-  }, []);
+    // To check if variant selection is required
+    const isVariantRequired = !!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content);
+
+    // Get the Initial Validation Schema based on Variant Required
+    const updatedValidationSchema = initialValidationSchema(isVariantRequired);
+
+    // Prepare Questionnaire Fields and Get its Validation Schema
+    let questionnaireValidationSchema = Yup.object();
+    let questionnaireFields = {};
+
+    if (questionnaireTemplateConfig) {
+      const { validationSchema, fields } = prepareQuestionnaire(questionnaireTemplateConfig);
+      questionnaireValidationSchema = validationSchema;
+      questionnaireFields = fields;
+    }
+
+    // Merge the two validation schemas
+    const finalValidationSchema = updatedValidationSchema.concat(questionnaireValidationSchema);
+
+    // Update Formik Validation Schema
+    setValidationSchema(finalValidationSchema);
+
+    // Update Initial Form Values with Questionnaire Fields
+    setInitialFormValues((prevState) => ({
+      ...prevState,
+      ...questionnaireFields
+    }));
+  }, [variantsData, questionnaireTemplateConfig]);
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
@@ -172,16 +238,10 @@ function AdditionalDetails() {
       });
     });
 
-    const questionnaireValidationSchema = Yup.object(validationSchemaFields);
-    initialValidationSchema = initialValidationSchema.concat(questionnaireValidationSchema);
-    setValidationSchema(initialValidationSchema);
-
-    setInitialFormValues((prevState) => {
-      return {
-        ...prevState,
-        ...questionnaireFields
-      };
-    });
+    return {
+      validationSchema: Yup.object().shape(validationSchemaFields), // Return validation schema
+      fields: questionnaireFields // Return initial values
+    };
   };
 
   const variantType = variant?.variant;
@@ -240,18 +300,6 @@ function AdditionalDetails() {
     setInitialFormValues({ ...initialFormValues });
   };
 
-  const { isLoading, data: variantsData = {} } = useQuery({
-    queryKey: ['order', 'variants', orderId],
-    queryFn: async () => OrderService.getVariants(therapyId, soldToAccountId, shipToAccountId, variantsApiRequestParam),
-    enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId,
-    refetchOnWindowFocus: false,
-    onSuccess: (result) => {},
-    onError: (error) => {
-      const errorKey = handleApiError(error);
-      showAlert({ description: 't(errorKey)', type: 'error', anchorEl: alertContainerId });
-    }
-  });
-
   React.useEffect(() => {
     const { additionalDetails } = orderDetails || {};
     if (additionalDetails) {
@@ -271,7 +319,9 @@ function AdditionalDetails() {
         coiId,
         orderQuantity,
         poNumber,
-        slotNumber
+        slotNumber,
+        variant: _variant,
+        variantAcknowledgement: patientConsentTaken
       };
 
       configuredQuestionnaires && prepareQuestionnaire(configuredQuestionnaires);
@@ -310,10 +360,6 @@ function AdditionalDetails() {
   };
 
   const handleOnSubmit = (values) => {
-    if (CommonUtils.isNonEmptyObject(variantsData?.content) && (!variant || !variantAcknowledgement?.isChecked)) {
-      setAgreementCheckboxError(t('message.acknowldge'));
-      return;
-    }
     const _var = !!variant
       ? {
           variant: variant.variant,
@@ -383,8 +429,14 @@ function AdditionalDetails() {
     }
   };
 
-  const handleOnVariantChange = (variant) => {
+  const handleOnVariantChange = (variant, setErrors, errors, setFieldValue, setFieldTouched) => {
     setAgreementCheckboxError(null);
+    if (errors && errors.variant) {
+      const { variant, ...newErrors } = errors;
+      setErrors(newErrors);
+    }
+    setFieldValue('variant', variant);
+    setFieldTouched('variant', true, false);
     setVariant(variant);
   };
 
@@ -397,15 +449,20 @@ function AdditionalDetails() {
     }
   }, [variant, orderDetails]);
 
-  const handleOnAcknowledgmentChange = () => {
+  const handleOnAcknowledgmentChange = (setErrors, errors, setFieldValue, setFieldTouched) => {
     const updatedOptions = { ...variantAcknowledgement, isChecked: !variantAcknowledgement.isChecked };
+    if (errors && errors.variantAcknowledgement) {
+      const { variantAcknowledgement, ...newErrors } = errors;
+      setErrors(newErrors);
+    }
+    setFieldValue('variantAcknowledgement', updatedOptions.isChecked);
     setVariantAcknowledgement(updatedOptions);
   };
 
   if (isLoader) {
     return isLoader;
   }
-
+  console.log('validationSchema', validationSchema);
   return (
     <div className="MCP-module-wrapper">
       {isSaving && <Loader type={'screen'} />}
@@ -426,11 +483,10 @@ function AdditionalDetails() {
         onSubmit={(values) => {
           handleOnSubmit(values);
         }}>
-        {({ dirty, errors, values, setFieldValue }) => {
+        {({ dirty, errors, values, setFieldValue, setErrors, setFieldTouched, touched }) => {
           useEffect(() => {
             setIsDirty(dirty);
           }, [dirty]);
-
           return (
             <Form>
               <div className="MCP-module-body">
@@ -465,16 +521,34 @@ function AdditionalDetails() {
                   {!!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content) && (
                     <>
                       <Heading as="h3">{t('labels.selectVariant')}</Heading>
-                      <VariantTable variant={variant} onChange={handleOnVariantChange} data={variantsData.content} />
+                      <VariantTable
+                        variant={variant}
+                        onChange={(variant) => handleOnVariantChange(variant, setErrors, errors, setFieldValue, setFieldTouched)}
+                        data={variantsData.content}
+                      />
                       <div className="agreement-checkbox-control">
+                        {errors?.variant && touched?.variant && (
+                          <div className="show-Error">
+                            <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />
+                          </div>
+                        )}
                         <Field name="variant-acknowledgement">
                           {({ field, form }) => (
                             <CheckboxGroup
                               id={'default'}
                               name="variant-acknowledgement"
-                              items={[{ ...variantAcknowledgement, onChange: () => handleOnAcknowledgmentChange() }]}
-                              error={Boolean(agreementCheckboxError)}
-                              errorMessage={agreementCheckboxError}
+                              items={[
+                                {
+                                  ...variantAcknowledgement,
+                                  onChange: () => handleOnAcknowledgmentChange(setErrors, errors, setFieldValue)
+                                }
+                              ]}
+                              error={
+                                errors.variantAcknowledgement && touched?.variantAcknowledgement
+                                  ? Boolean(!values.variantAcknowledgement)
+                                  : false
+                              }
+                              errorMessage={touched?.variantAcknowledgement && errors.variantAcknowledgement}
                               size="md"
                             />
                           )}
