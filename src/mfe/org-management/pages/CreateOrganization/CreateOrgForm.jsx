@@ -29,7 +29,7 @@ const OrgDetailsFormSegment = () => {
         <Heading as="h3">{t('orgManagement.create_org.org-details')}</Heading>
 
         <p className="form-instruction">
-        <span className='required'>*</span> {t('orgManagement.create_org.required')}
+          <span className="required">*</span> {t('orgManagement.create_org.required')}
         </p>
       </div>
 
@@ -139,9 +139,9 @@ const OrgDetailsFormSegment = () => {
           <div className="corrected-dropdown">
             <Field
               name="address.state"
-              fieldlabel={t('orgManagement.create_org.inputLabel.state')}
+              label={t('orgManagement.create_org.inputLabel.state')}
               placeholder=" "
-              component={Components['dropdown']}
+              component={Components['stateDropdown']}
               isRequired
               options={usStates}
             />
