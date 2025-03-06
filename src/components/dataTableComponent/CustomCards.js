@@ -29,7 +29,16 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
   const isSelectableInput = columns.filter((col) => !!col.isSelectable);
   const showDefaultData = columns
     .filter((col) => !!col.showInMobileHeader && !col.isAction && !col.omit && !col.isSelectable)
-    .sort((a, b) => (a.cardHeader ? -1 : b.cardHeader ? 1 : 0));
+    .sort((a, b) => {
+      // sorting the card headers
+      if (a.cardHeader && !b.cardHeader) return -1;
+      if (!a.cardHeader && b.cardHeader) return 1;
+      // sorting for status badge
+      if (a.cardStatus && !b.cardStatus) return -1;
+      if (!a.cardStatus && b.cardStatus) return 1;
+      return 0;
+    });
+
   const hiddenData = columns.filter((col) => !col.showInMobileHeader && !col.isAction && !col.omit);
   const actionItems = columns.filter((col) => col.isAction && !col.omit && !col.omit);
 
@@ -61,7 +70,7 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
   };
 
   const renderExpandIcon = (colIndex) => {
-    return colIndex === 0 /* && showDefaultData.length + hiddenData.length > 4 */ ? (
+    return colIndex === 0 && hiddenData.length > 3 ? (
       <Button variant="tertiary" type="button" onClick={() => {}} className="expand-collapse-toggle">
         <img src={expanded ? arrow_down : arrow_right} alt="toggle-icon" />
       </Button>
@@ -94,7 +103,11 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
             {showDefaultData.map((col, colIndex) => (
               <div key={col.id} className="collapsed-detail" style={col.mobileStyles}>
                 {renderExpandIcon(colIndex)}
-                {col.showColumnNameInHeader && col.name && <div>{col.name}-</div>}
+                {col.showColumnNameInHeader && col.name && (
+                  <div>
+                    {col.name} {colIndex === 0 ? ':' : '-'}
+                  </div>
+                )}
                 <div
                   onClick={(e) => handleActionClick(e, col.onClick)}
                   className={`default-data-Value ${colIndex === 0 ? `card-main-header` : ``}`}>

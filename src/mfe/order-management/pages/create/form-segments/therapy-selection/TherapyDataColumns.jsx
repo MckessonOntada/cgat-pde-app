@@ -18,6 +18,8 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     selector: () => {},
     width: '40px',
     sortable: false,
+    showInMobileHeader: true,
+    isSelectable: true,
     cell: (props) => (
       <div className="MCP-table-cell radio-button-wrapper">
         <RadioGroup
@@ -48,6 +50,8 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     maxWidth: '280px',
     sortable: true,
     sortKey: 'material_description',
+    showInMobileHeader: true,
+    showColumnNameInHeader: true,
     cell: (props) => (
       <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?therapy-details=${props.id}`}>
         <EclipsesTextcss str={props.therapyDescription} />
@@ -69,6 +73,9 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     maxWidth: '250px',
     sortable: true,
     sortKey: 'ndc_number',
+    showInMobileHeader: true,
+    showColumnNameInHeader: true,
+    cardHeader: true,
     cell: (props) => (
       <span aria-label={t('table.columns.captions.nationalDrugCode')}>
         <EclipsesTextcss str={props.ndc} maxWidth={180} />

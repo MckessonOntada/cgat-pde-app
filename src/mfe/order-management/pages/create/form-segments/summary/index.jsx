@@ -425,7 +425,7 @@ const Summary = () => {
   }
 
   return (
-    <div className="MCP-module-wrapper">
+    <div className="MCP-module-wrapper order-summary-container">
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
@@ -443,18 +443,18 @@ const Summary = () => {
         <div id={ALERT_CONTAINER_ID} />
 
         {alertMessages && (
-          <div className='alert-container'>
-              <div className="MCP-module-body">
-                {alertMessages.map((item, index) => (
-                  <Alert
-                    key={index + 1}
-                    description={item.description}
-                    onClose={() => closeAvailabilityAlert(index)}
-                    type={item.type}
-                    duration={10000}
-                  />
-                ))}
-              </div>
+          <div className="alert-container">
+            <div className="MCP-module-body">
+              {alertMessages.map((item, index) => (
+                <Alert
+                  key={index + 1}
+                  description={item.description}
+                  onClose={() => closeAvailabilityAlert(index)}
+                  type={item.type}
+                  duration={10000}
+                />
+              ))}
+            </div>
           </div>
         )}
 

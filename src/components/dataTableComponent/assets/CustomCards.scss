@@ -131,22 +131,48 @@
 }
 
 .expand-collapse-toggle {
-  padding: 0px;
+  padding: 0px !important;
   margin-right: 8px;
-  padding: 0px;
   align-items: center;
   display: flex;
   height: 100%;
   background: none;
   border: none;
-  img {
-    height: 16px;
-    width: 16px;
+  min-width: var(--brand-font-size--22) !important;
+  width: var(--brand-font-size--22) !important;
+  height: var(--brand-font-size--22) !important;
+  .text-wrap {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    img {
+      height: 16px;
+      width: 16px;
+    }
+  }
+}
+.MCP-table-cell {
+  &.radio-button-wrapper {
+    fieldset {
+      div {
+        div {
+          margin-bottom: 0px !important ;
+        }
+      }
+    }
+  }
+  fieldset {
+    label {
+      display: inline !important;
+    }
   }
 }
 .default-data-Value {
   &.card-main-header {
     font-size: 16px;
     font-weight: 700;
+    display: flex;
+    align-items: center;
   }
 }

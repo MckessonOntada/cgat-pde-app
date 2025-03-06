@@ -1050,3 +1050,13 @@ div.disable-all {
     clip-path: inset(0 -34% 0 0);
   }
 }
+
+.order-summary-container {
+  [class^="ModuleHeader-module--headerSegment-"] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-03);
+  }
+}
