@@ -14,6 +14,7 @@ import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '../dataTableComponent';
 import usePermission from '@src/hooks/usePermissions';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import CommonUtils from '@src/util/CommonUtils';
 
 export default function AccountsList(props) {
   const {
@@ -92,14 +93,17 @@ export default function AccountsList(props) {
       {
         id: 'address',
         name: t('account.address'),
-        cell: (row) => (
-          <div>
-            <EclipsesTextcss
-              str={`${row.address.houseNumber} ${row.address.street} ${row.address.street2} ${row.address.street3} ${row.address.city} ${row.address.district} ${row.address.state} ${row.address.country}  ${row.address.zipCode}`}
-              maxWidth={140}
-            />
-          </div>
-        ),
+        cell: (row) => {
+          const sanitizedAddress = CommonUtils.sanitizeValue(row.address);
+          return (
+            <div>
+              <EclipsesTextcss
+                str={`${sanitizedAddress.houseNumber} ${sanitizedAddress.street} ${sanitizedAddress.street2} ${sanitizedAddress.street3} ${sanitizedAddress.city} ${sanitizedAddress.district} ${sanitizedAddress.state} ${sanitizedAddress.country}  ${sanitizedAddress.zipCode}`}
+                maxWidth={140}
+              />
+            </div>
+          );
+        },
         omit: omitColumns.includes('address'),
         minWidth: '150px'
       },

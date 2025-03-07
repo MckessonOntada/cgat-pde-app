@@ -24,6 +24,7 @@ import {
   FAX_REGEX
 } from '@src/components/form/ValidationRegExp';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
+import CommonUtils from '@src/util/CommonUtils';
 
 const CreateUser = () => {
   const { t } = useTranslate();
@@ -141,13 +142,7 @@ const CreateUser = () => {
       countryCode: '91',
       fax: userData?.contact?.fax || ''
     },
-    address: {
-      address1: userData?.address?.address1 || '',
-      address2: userData?.address?.address2 || '',
-      city: userData?.address?.city || '',
-      state: userData?.address?.state || '',
-      zip: userData?.address?.zip || ''
-    }
+    address: CommonUtils.sanitizeValue(userData?.address)
   };
 
   const validationSchema = Yup.object({
@@ -225,7 +220,7 @@ const CreateUser = () => {
     };
 
     mutate(
-      { isLoading, payload, isReject: false,  },
+      { isLoading, payload, isReject: false },
       {
         onSuccess: (response) => {
           console.log('User created/updated successfully:', response);
@@ -298,7 +293,6 @@ const CreateUser = () => {
           </Heading>
         }
       />
-
 
       {!isEdit && !isSystemAdminView && (
         <div className="stepper">

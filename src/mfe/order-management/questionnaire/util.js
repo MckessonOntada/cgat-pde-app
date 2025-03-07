@@ -1,3 +1,5 @@
+import CommonUtils from '@src/util/CommonUtils';
+
 export const MasterEntityType = {
   Material: 'Material',
   Catalog: 'Catalog',
@@ -12,7 +14,16 @@ export const getEntityTypeFlags = (selectedEntityType) => {
   };
 };
 
-export const getAddress = (account) => { 
-    return [account.houseNumber, account.street, account.district, account.city, account.state, account.zipCode].filter(Boolean).join(', ');
-  };
-
+export const getAddress = (account) => {
+  const sanitizedAccount = CommonUtils.sanitizeValue(account);
+  return [
+    sanitizedAccount.houseNumber,
+    sanitizedAccount.street,
+    sanitizedAccount.district,
+    sanitizedAccount.city,
+    sanitizedAccount.state,
+    sanitizedAccount.zipCode
+  ]
+    .filter(Boolean)
+    .join(', ');
+};

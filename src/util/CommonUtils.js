@@ -167,6 +167,22 @@ const getContainerWidth = (size) => {
   };
 };
 
+const sanitizeValue = (value) => {
+  if (value === null || value === undefined) {
+    return '';
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(sanitizeValue);
+  }
+
+  if (typeof value === 'object' && value !== null) {
+    return Object.fromEntries(Object.entries(value).map(([key, val]) => [key, sanitizeValue(val)]));
+  }
+
+  return value;
+};
+
 const getTooltipPosition = (height, width, event) => {
   const margin = 12;
 
@@ -472,6 +488,7 @@ const CommonUtils = Object.freeze({
   excludeKeyFromObject,
   filterObjectByKey,
   isFirefox,
+  sanitizeValue,
   getContainerWidth,
   getTooltipPosition,
   debounce,
