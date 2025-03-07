@@ -86,14 +86,6 @@ export default function InvoicesTable() {
       cell: (props) => dayjs(props?.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'
     },
     {
-      name: t('paymentInvoices.history.table.PaymentTerm'),
-      selector: 'paymentTerm',
-      maxWidth: '140px',
-      id: 'paymentTerm',
-      wrap: true,
-      cell: (props) => <EclipsesTextcss className="cellEllipse" str={props?.paymentTerm} maxWidth={90} />
-    },
-    {
       name: t('paymentInvoices.history.table.DueDate'),
       selector: (row) => row.dueDate,
       width: '120px',
