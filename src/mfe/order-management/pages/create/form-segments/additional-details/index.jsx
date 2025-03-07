@@ -142,8 +142,8 @@ function AdditionalDetails() {
           value: question.value
         };
 
-        if (question.isDocumentRequired && question.documentUrl) {
-          questionnaireFields[fieldName].documentUrl = question.documentUrl;
+        if (question.isDocumentRequired && question.document) {
+          questionnaireFields[fieldName].document = question.document;
         }
 
         validationSchemaFields[fieldName] = Yup.object({
@@ -167,7 +167,13 @@ function AdditionalDetails() {
               ? Yup.array().of(Yup.string()).min(1, 'Select at least one option')
               : Yup.array().of(Yup.string()).nullable(),
 
-          documentUrl: Yup.string().nullable()
+          document: Yup.object()
+            .shape({
+              url: Yup.string(),
+              size: Yup.number(),
+              name: Yup.string()
+            })
+            .nullable()
         });
       });
     });
@@ -222,8 +228,10 @@ function AdditionalDetails() {
     },
     {
       onSuccess: (result, variables) => {
-        const { fieldName, setFieldValue } = variables;
-        setFieldValue(`${fieldName}.documentUrl`, result);
+        const { file, fieldName, setFieldValue } = variables;
+        const { name, size } = file;
+        const document = { url: result, name, size };
+        setFieldValue(`${fieldName}.document`, document);
       },
       onError: (error) => {
         showAlert({ description: error.message, type: 'error', anchorEl: alertContainerId });
@@ -236,7 +244,7 @@ function AdditionalDetails() {
   };
 
   const handleOnRemoveDocument = (fieldName) => {
-    initialFormValues[fieldName].documentUrl = null;
+    initialFormValues[fieldName].document = null;
     setInitialFormValues({ ...initialFormValues });
   };
 
@@ -345,7 +353,7 @@ function AdditionalDetails() {
         if (!fieldName) return;
 
         question.value = fieldValue.value;
-        question.documentUrl = fieldValue.documentUrl;
+        question.document = fieldValue.document;
       });
     });
 

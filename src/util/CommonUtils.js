@@ -388,6 +388,11 @@ export const getFullName = (name) => {
   return `${lastName || ''}, ${firstName || ''} ${middleName || ''}`.trim();
 };
 
+const getFileSize = (sizeInBytes) => {
+  const kb = sizeInBytes / 1024;
+  return kb < 1024 ? `${kb.toFixed(2)} KB` : `${(kb / 1024).toFixed(2)} MB`;
+};
+
 function generateUniqueCode(str) {
   let hash = 5381;
   str = str.trim();
@@ -487,7 +492,8 @@ const CommonUtils = Object.freeze({
   generateUniqueCode,
   cleanObject,
   formatNumberWithoutSymbol,
-  getCamelCase
+  getCamelCase,
+  getFileSize
 });
 
 export default CommonUtils;
