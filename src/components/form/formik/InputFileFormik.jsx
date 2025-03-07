@@ -23,13 +23,6 @@ function InputFileFormik(props) {
   const errorMessage = getNestedValue(errors, `${field.name}`);
   const isFieldTouched = field.name.includes('.') ? getNestedValue(touched, field.name.split('.')[0]) : getNestedValue(touched, field.name);
 
-  React.useEffect(() => {
-    if (attachmentValue) {
-      setFile({
-        name: props.attachmentValue
-      });
-    }
-  }, [attachmentValue]);
   const validateBeforeChange = (file, event) => {
     if (validateOnChange) {
       const validationResponse = validateOnChange(file);
