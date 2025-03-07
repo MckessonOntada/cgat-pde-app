@@ -16,12 +16,12 @@ export const RulesConfig = [
   },
   {
     key: 'roles',
-    label: 'Roles',
+    label: 'User Role',
     valueKey: 'roleName'
   },
   {
     key: 'users',
-    label: 'Users',
+    label: 'User Name',
     valueKey: 'userName'
   }
 ];
@@ -58,13 +58,13 @@ export const CONTROL_OPTIONS = {
   'User Name': 'User Name'
 };
 
-export const getRuleOperator = (key, t) =>
+export const getRuleOperator = (key, t, isViewMode) =>
   ({
-    Catalog: t('rules.operator.orderedOfAny'),
+    Catalog: isViewMode ? t('rules.operator.matchesofAny') : t('rules.operator.orderedOfAny'),
     Price: t('rules.operator.greaterThan'),
-    Account: t('rules.operator.selectedAnyOf'),
-    Roles: t('rules.operator.selectedAnyOf'),
-    Users: t('rules.operator.selectedAnyOf')
+    Account: isViewMode ? t('rules.operator.matchesofAny') : t('rules.operator.selectedAnyOf'),
+    'User Role': isViewMode ? t('rules.operator.matchesofAny') : t('rules.operator.selectedAnyOf'),
+    'User Name': isViewMode ? t('rules.operator.matchesofAny') : t('rules.operator.selectedAnyOf')
   }[key]);
 
 export const getRuleLabel = (key) => {

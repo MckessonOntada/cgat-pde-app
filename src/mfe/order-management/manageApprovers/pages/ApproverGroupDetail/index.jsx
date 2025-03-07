@@ -154,9 +154,11 @@ function ApproverGroupDetails() {
         <div key={index} className="rule-wrapper alignItemsCenter">
           <div className="condition attribute-text-segment">{t('rules.clauseIf.if')}</div>
           <div className="rule-field type">
-            <div className="fake-control">{CommonUtils.getCamelCase(key)}</div>
+            <div className="fake-control">{CommonUtils.getCamelCase(getRuleLabel(key))}</div>
           </div>
-          <div className="rule-operator attribute-text-segment">{getRuleOperator(CommonUtils.getCamelCase(getRuleLabel(key)), t)}</div>
+          <div className="rule-operator attribute-text-segment">
+            {getRuleOperator(CommonUtils.getCamelCase(getRuleLabel(key)), t, true)}
+          </div>
           <div className={`response-control ${key === CONTROL_OPTIONS.Price ? 'price' : ''}`}>
             <div className="fake-control">
               <Pills
