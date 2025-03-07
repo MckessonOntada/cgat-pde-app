@@ -110,7 +110,7 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
       attributes.labelCustomStyles = { marginBottom: '8px', fontSize: '14px' };
     }
 
-    const { documentUrl: attachmentValue } = formValues[fieldName] || {};
+    const { document: attachmentValue } = formValues[fieldName] || {};
     const field = (
       <div className={wrapperClass.join(' ')}>
         <div className="styled-control-wrapper">
@@ -126,7 +126,7 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
           {isDocumentRequired && (
             <div className={`fileUploadControl ${isPreview ? 'readonly' : ''}`}>
               <Field
-                name={`${fieldName}.documentUrl`}
+                name={`${fieldName}.document`}
                 validateOnChange={validateFile}
                 onFileChange={(file) => onDocumentChange(fieldName, file, setFieldValue)}
                 component={Components['inputFile']}
