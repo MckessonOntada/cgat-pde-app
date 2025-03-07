@@ -299,7 +299,6 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortable: true,
     sortable: true,
     sortKey: 'backendOrderId',
-    showInMobileHeader: true,
     minWidth: '130px',
     cell: (props) => (
       <Link
@@ -321,6 +320,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortable: true,
     sortKey: 'id',
     showInMobileHeader: true,
+    showColumnNameInHeader: true,
     minWidth: '140px',
     cell: (props) =>
       activeTab !== 2 ? (
@@ -342,8 +342,6 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'patient.patientInfo',
-    showInMobileHeader: true,
-    showColumnNameInHeader: true,
     cell: (props) => {
       const patientInfo = props.patient && props.patient.patientInfo;
       if (!patientInfo) return 'N/A';
@@ -357,6 +355,8 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortable: true,
     sortKey: 'therapy.materialDescription',
     maxWidth: '115px',
+    showInMobileHeader: true,
+    cardHeader: true,
     cell: (props) => (
       <EclipsesTextcss
         str={props.therapy?.materialDescription}
@@ -425,6 +425,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     minWidth: '160px',
     center: true,
     showInMobileHeader: true,
+    cardStatus: true,
     cell: (props) => (
       <Tooltip body={props.status}>
         <span>
@@ -455,6 +456,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     showInMobileHeader: true,
     width: '100px',
     isAction: true, // must use "action" if button is to be placed in the right, else use default if id is "action"
+    isContextMenu: true,
     cell: (props) => getOptionsByStatus(props, props.status, t, activeTab, props.id, alertContainerId)
   }
 ];

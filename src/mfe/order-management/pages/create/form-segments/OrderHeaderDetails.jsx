@@ -3,6 +3,7 @@ import DetailSegment from '@src/components/DetailSegment';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import { InventoryIndicator } from './InventoryIndicator';
+import './orderHeaderDetails.scss';
 
 function OrderHeaderDetails({ orderDetails, priceDetails = {}, status }) {
   const { t } = useTranslate();
@@ -37,7 +38,7 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status }) {
   }
 
   detailsSegments.push(
-    <div key={'price-details'} className={`price-wrapper col-span-${5 - detailsSegments.length}`}>
+    <div key={'price-details'} className={`price-wrap-container`}>
       <DetailSegment
         label={t('labels.price')}
         value={
@@ -52,7 +53,10 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status }) {
 
   return (
     <div className="MCP-CardContainer">
-      <div className={`grid grid-gap-24 grid-cols-1 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5`}>{detailsSegments}</div>
+      <div
+        className={`grid grid-gap-24 grid-cols-1 md:grid-cols-2 lg:grid-cols-${detailsSegments.length} xl:grid-cols-${detailsSegments.length}`}>
+        {detailsSegments}
+      </div>
     </div>
   );
 }
