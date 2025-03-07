@@ -12,6 +12,7 @@ const DetailsView = ({ data, onEditClick }) => {
   const { t } = useTranslate();
   const { hasPermission } = usePermission();
   const { data: organizationLogo } = CommonDataService.useOrganizationLogo(data.logoUrl, data.id);
+  const sanitizedAddress = CommonUtils.sanitizeValue(data.address);
 
   return (
     <div className="MCP-panel-container">
@@ -52,7 +53,7 @@ const DetailsView = ({ data, onEditClick }) => {
         <div>
           <p className="contact-heading">{t('orgManagement.org_detail.address')}</p>
           <p className="contact-details">
-            {[data.address.address1, data.address.address2, data.address.city, data.address.state, data.address.zip]
+            {[sanitizedAddress.address1, sanitizedAddress.address2, sanitizedAddress.city, sanitizedAddress.state, sanitizedAddress.zip]
               .filter(Boolean)
               .join(', ') || 'N/A'}
           </p>

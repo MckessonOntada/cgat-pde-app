@@ -28,9 +28,7 @@ const OrgList = ({ onActionSuccess }) => {
   const { data, paginationConfig, isLoading, isError, refreshData, setPageNumber, applySort } = useOrg();
   const dispatch = useDispatch();
   const { hasPermission } = usePermission();
-  const location = (address) => {
-    return `${address.address1 || ''}, ${address.city || ''}, ${address.state || ''}, ${address.pin || ''}`;
-  };
+
   const showCardView = useResponsiveView();
 
   const handleDeActivateOrg = async (orgId) => {
