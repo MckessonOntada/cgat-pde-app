@@ -115,7 +115,7 @@ const Summary = () => {
   }, [orderDetails]);
 
   const handleInventoryDetailsResponse = (data = {}) => {
-    const { erroredItems, warningMessages } = data.inventoryCheckResponse;
+    const { erroredItems, warningMessages } = data.inventoryCheckResponse || {};
     if (erroredItems?.length > 0 || warningMessages?.length > 0) {
       if (erroredItems && erroredItems.length > 0) {
         alertMessages.push(
