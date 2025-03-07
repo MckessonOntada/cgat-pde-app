@@ -106,7 +106,7 @@ export default function AccountsList(props) {
       {
         id: 'cgatIdentifier',
         name: t('account.identifier'),
-        cell: (row) => <div className="cellEllipse">{row.companyCode}</div>,
+        cell: (row) => <div className="cellEllipse">{row.cgatIdentifier}</div>,
         omit: omitColumns.includes('cgatIdentifier'),
         minWidth: '150px'
       },
