@@ -45,6 +45,7 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
         paginationRecordsPerPageMessage={t('labels.perPage')}
         paginationTotalRecorsMessage={t('labels.results')}
         showCardView={showCardView}
+        defaultExpandedCardView={false}
         noDataComponent={
           <EmptyDataTable
             isLoading={isFetching}

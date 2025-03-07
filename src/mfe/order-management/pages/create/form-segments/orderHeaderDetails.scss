@@ -1,0 +1,16 @@
+@use "@src/assets/styles/abstracts/mixins";
+
+.price-wrap-container {
+  @include mixins.respond("lg") {
+    display: flex;
+    justify-content: flex-end;
+
+    .fieldName,
+    .fieldValue {
+      width: 100%;
+      text-align: right;
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+}

@@ -170,27 +170,31 @@ const RolePermissions = () => {
             }}
             validateOnChange={false}
             validateOnBlur={true}>
-            {({ values }) => (
-              <Form>
-                <PermissionForm
-                  enabledPermissions={enabledPermissions}
-                  setEnabledPermissions={setEnabledPermissions}
-                  onRoleChange={setInheritedRole}
-                  handleRoleSelect={() => {}}
-                  editRoleId={roleId}
-                  isRolePage={true}
-                />
+            {({ values }) => {
+              let defaultRole = row ? row : null;
+              return (
+                <Form>
+                  <PermissionForm
+                    enabledPermissions={enabledPermissions}
+                    setEnabledPermissions={setEnabledPermissions}
+                    onRoleChange={setInheritedRole}
+                    handleRoleSelect={() => {}}
+                    editRoleId={roleId}
+                    isRolePage={true}
+                    defaultRole={defaultRole}
+                  />
 
-                <div className={'buttonGroup'}>
-                  <Button variant="secondary" type="button" onClick={handleOnCancelButtonClick} size={'md'}>
-                    {t('orgManagement.button.cancel')}
-                  </Button>
-                  <Button variant="primary" type="submit" size={'md'}>
-                    {t('orgManagement.role.captionsBtnSaveAndCancel')}
-                  </Button>
-                </div>
-              </Form>
-            )}
+                  <div className={'buttonGroup'}>
+                    <Button variant="secondary" type="button" onClick={handleOnCancelButtonClick} size={'md'}>
+                      {t('orgManagement.button.cancel')}
+                    </Button>
+                    <Button variant="primary" type="submit" size={'md'}>
+                      {t('orgManagement.role.captionsBtnSaveAndCancel')}
+                    </Button>
+                  </div>
+                </Form>
+              );
+            }}
           </Formik>
         </div>
       </div>

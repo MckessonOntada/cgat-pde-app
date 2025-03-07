@@ -8,6 +8,7 @@ export const createColumns = (t, navigate, selectedShippingAddress, setSelectedS
     sortable: false,
     width: '35px',
     showInMobileHeader: true,
+    isSelectable: true,
     cell: (props) => {
       return (
         <span className="MCP-table-cell radio-button-wrapper">

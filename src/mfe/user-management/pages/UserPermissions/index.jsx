@@ -98,7 +98,7 @@ const UserPermissions = () => {
   if (isSavingUserPermission) {
     return <Loader type={'screen'} />;
   }
-  
+
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -139,6 +139,7 @@ const UserPermissions = () => {
         validateOnBlur={true}>
         {({ values, setFieldValue, initialValues, isValid, handleSubmit }) => {
           const isDirty = (isEdit && values.roleId) || isBack || permissionsData?.roleId || isFormValuesChanged(initialValues, values);
+          let defaultRole = permissionsData ? permissionsData.role : null;
           return (
             <Form
               onSubmit={(e) => {
@@ -155,6 +156,7 @@ const UserPermissions = () => {
                 setEnabledPermissions={(permissions) => setFieldValue('permissions', permissions)}
                 handleRoleSelect={(value) => setFieldValue('roleId', value)}
                 editRoleId={values.roleId ? values.roleId : permissionsData?.roleId}
+                defaultRole={defaultRole}
               />
               <div className={'buttonGroup'}>
                 <Button variant="secondary" type="button" onClick={handleBack} size={'md'}>

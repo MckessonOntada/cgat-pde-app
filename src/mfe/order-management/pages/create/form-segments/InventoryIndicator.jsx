@@ -30,5 +30,5 @@ export const InventoryIndicator = ({ status }) => {
     CHECKING: <div className="dot-loader"></div>
   };
 
-  return <div className="indicator-icon">{icons[status] || icons.pending}</div>;
+  return <div className="indicator-icon">{icons[status] || icons.PENDING}</div>;
 };

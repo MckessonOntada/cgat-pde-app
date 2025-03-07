@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Heading, CheckboxGroup, CustomDataTable, RadioGroup, Loader, Alert, TextError } from '@mckesson/mcp-component-library';
+import { Button, Heading, CheckboxGroup, RadioGroup, Loader, Alert, TextError } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -24,6 +24,8 @@ import QuestionnaireTemplate from '@src/mfe/order-management/questionnaire/Quest
 import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/order-management/questionnaire/AddQuestionnaire';
 import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from './useOrderPrice';
+import useResponsiveView from '@src/hooks/useResponsiveView';
+import { CustomDataTable } from '@src/components/dataTableComponent';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -208,8 +210,8 @@ function AdditionalDetails() {
           value: question.value
         };
 
-        if (question.isDocumentRequired && question.documentUrl) {
-          questionnaireFields[fieldName].documentUrl = question.documentUrl;
+        if (question.isDocumentRequired && question.document) {
+          questionnaireFields[fieldName].document = question.document;
         }
 
         validationSchemaFields[fieldName] = Yup.object({
@@ -233,7 +235,13 @@ function AdditionalDetails() {
               ? Yup.array().of(Yup.string()).min(1, 'Select at least one option')
               : Yup.array().of(Yup.string()).nullable(),
 
-          documentUrl: Yup.string().nullable()
+          document: Yup.object()
+            .shape({
+              url: Yup.string(),
+              size: Yup.number(),
+              name: Yup.string()
+            })
+            .nullable()
         });
       });
     });
@@ -282,8 +290,10 @@ function AdditionalDetails() {
     },
     {
       onSuccess: (result, variables) => {
-        const { fieldName, setFieldValue } = variables;
-        setFieldValue(`${fieldName}.documentUrl`, result);
+        const { file, fieldName, setFieldValue } = variables;
+        const { name, size } = file;
+        const document = { url: result, name, size };
+        setFieldValue(`${fieldName}.document`, document);
       },
       onError: (error) => {
         showAlert({ description: error.message, type: 'error', anchorEl: alertContainerId });
@@ -296,7 +306,7 @@ function AdditionalDetails() {
   };
 
   const handleOnRemoveDocument = (fieldName) => {
-    initialFormValues[fieldName].documentUrl = null;
+    initialFormValues[fieldName].document = null;
     setInitialFormValues({ ...initialFormValues });
   };
 
@@ -391,7 +401,7 @@ function AdditionalDetails() {
         if (!fieldName) return;
 
         question.value = fieldValue.value;
-        question.documentUrl = fieldValue.documentUrl;
+        question.document = fieldValue.document;
       });
     });
 
@@ -597,12 +607,14 @@ function AdditionalDetails() {
 
 const VariantTable = ({ variant, onChange, data }) => {
   const { t } = useTranslate();
-
+  const showCardView = useResponsiveView();
   const columns = [
     {
       id: 'id',
       width: '40px',
       sortable: false,
+      showInMobileHeader: true,
+      isSelectable: true,
       cell: (props) => (
         <span className="MCP-table-cell radio-button-wrapper">
           <RadioGroup
@@ -636,6 +648,9 @@ const VariantTable = ({ variant, onChange, data }) => {
       minWidth: '220px',
       maxWidth: '280px',
       sortable: false,
+      showInMobileHeader: true,
+
+      cardHeader: true,
       cell: (props) => (
         <span className="flex" aria-label={t('labels.variant')}>
           <EclipsesTextcss str={props.variant} maxWidth={240} />
@@ -648,9 +663,20 @@ const VariantTable = ({ variant, onChange, data }) => {
       minWidth: '300px',
       selector: () => {},
       sortable: false,
+      showInMobileHeader: true,
+      // showColumnNameInHeader: true,
       cell: (props) => <span>{props.variantDescription}</span>
     }
   ];
-  return <CustomDataTable id="order-management-therapy-listing" type={'normal'} columns={columns} data={data} />;
+  return (
+    <CustomDataTable
+      id="order-management-therapy-listing"
+      type={'normal'}
+      columns={columns}
+      data={data}
+      showCardView={showCardView}
+      defaultExpandedCardView={true}
+    />
+  );
 };
 export default AdditionalDetails;

@@ -17,7 +17,6 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { useQuery } from 'react-query';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
-import FloatingDrawer from '@src/components/floating-drawer';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import { TherapyDetailsConstants } from './assets/constants/TherapyDetailsConstants';
 import useResponsiveView from '@src/hooks/useResponsiveView';
@@ -289,16 +288,15 @@ function Details(props) {
         )}
       </div>
       {open && (
-        <FloatingDrawer open={true} anchor="right" onClose={() => setOpen(!open)} heading={t('labels.therapyDetails')}>
-          <TherapyDetails
-            therapyId={therapy}
-            onSelect={() => {}}
-            onClose={() => setOpen(!open)}
-            therapyData={TherapyDetailsConstants}
-            showFooter={false}
-            useUserService={true}
-          />
-        </FloatingDrawer>
+        <TherapyDetails
+          therapyId={therapy}
+          onSelect={() => {}}
+          onClose={() => setOpen(!open)}
+          therapyData={TherapyDetailsConstants}
+          showFooter={false}
+          useUserService={true}
+          heading={t('labels.therapyDetails')}
+        />
       )}
     </div>
   );

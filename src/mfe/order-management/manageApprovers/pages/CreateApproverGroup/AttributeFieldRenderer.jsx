@@ -46,8 +46,8 @@ const AttributeFieldRenderer = ({ caption, helperText, attributeType, name, loca
         </div>
       );
 
-    case CONTROL_OPTIONS.Roles:
-    case CONTROL_OPTIONS.Users:
+    case CONTROL_OPTIONS['User Role']:
+    case CONTROL_OPTIONS['User Name']:
       return (
         <div>
           <Field

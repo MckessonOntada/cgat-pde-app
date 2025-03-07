@@ -96,7 +96,7 @@ const RoleDetails = () => {
 
           refreshData();
           navigate(isEdit ? `${moduleBasePath}/${roleId}` : `${moduleBasePath}/${id}/permissions`, {
-            state: { ...row, name, description }
+            state: isEdit ? { ...row, name, description } : { data: data }
           });
         }
       },

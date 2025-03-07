@@ -143,11 +143,7 @@ const CreateOrganization = () => {
           />
         </div>
       )} */}
-      <ModuleHeader
-        heading={
-          <Heading as="h1">{t(!isEdit ? 'orgManagement.create_org' : 'orgManagement.edit_org')}</Heading>
-        }
-      />
+      <ModuleHeader heading={<Heading as="h1">{t(!isEdit ? 'orgManagement.create_org' : 'orgManagement.edit_org')}</Heading>} />
       <Formik
         enableReinitialize
         initialValues={organizationData}
@@ -156,7 +152,6 @@ const CreateOrganization = () => {
           createNewOrg(values);
           actions.setSubmitting(false);
         }}
-        validateOnChange={false}
         validateOnBlur={true}>
         {(formik) => (
           <Form>

@@ -129,13 +129,18 @@ div.disable-all {
 }
 
 .controls {
-  justify-content: flex-start;
+  justify-content: space-between;
   display: flex;
   gap: var(--spacing-03);
   flex-direction: row;
-
+  button {
+    flex-grow: 1;
+  }
   @include mixins.respond(sm) {
     justify-content: flex-end;
+    button {
+      flex-grow: unset;
+    }
   }
 }
 
@@ -1053,4 +1058,14 @@ div.disable-all {
 
 .show-Error {
   transform: translateY(-24px);
+}
+
+.order-summary-container {
+  [class^="ModuleHeader-module--headerSegment-"] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-03);
+  }
 }

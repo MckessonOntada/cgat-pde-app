@@ -36,11 +36,13 @@ const updateSessionStorage = async () => {
 
     const activeUserPracticeId = userDetails['practiceId'];
     const impersonatedByUsername = userDetails['impersonatedByUser']?.userName;
+    const userFullName = `${userDetails?.name.lastName}, ${userDetails?.name.firstName}${userDetails?.name.middleName ? ' ' + userDetails.name.middleName : ''}`;
 
     sessionStorage.setItem(SESSION_CONST.USER_ROLE, activeUserRoleName);
     sessionStorage.setItem(SESSION_CONST.USERNAME, impersonatedByUsername || activeUserName);
     sessionStorage.setItem(SESSION_CONST.USER_ID, activeUserId);
     sessionStorage.setItem(SESSION_CONST.USER_PERMISSIONS, activeUserPermissions);
+    sessionStorage.setItem(SESSION_CONST.USER_FULL_NAME, userFullName);
 
     if (userDetails?.impersonatedByUser) {
       sessionStorage.setItem(SESSION_CONST.IMPERSONATED_BY_USER, JSON.stringify(userDetails.impersonatedByUser));

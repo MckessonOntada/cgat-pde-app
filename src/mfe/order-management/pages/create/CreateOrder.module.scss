@@ -1,23 +1,22 @@
-.iconButton{
-    display: flex;
-    gap: var(--spacing-01);
-    text-transform: uppercase;
-    align-items: center;
-    font-size: var(--brand-font-size--small, 16px);
-    text-decoration: none;
-    color: var(--brand-color-font-black, #181818);
+.iconButton {
+  display: flex;
+  gap: var(--spacing-01);
+  text-transform: uppercase;
+  align-items: center;
+  font-size: var(--brand-font-size--small, 16px);
+  text-decoration: none;
+  color: var(--brand-color-font-black, #181818);
 }
 
-.wrapper{
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-01);
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-01);
 
-    .header{
-
-        .title{
-            font-size: var(--brand-font-size--22);
-            font-weight: var(--brand-font-weight-600);
-        }
+  .header {
+    .title {
+      font-size: var(--brand-font-size--22);
+      font-weight: var(--brand-font-weight-600);
     }
+  }
 }

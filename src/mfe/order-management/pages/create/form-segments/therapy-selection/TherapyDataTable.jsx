@@ -45,6 +45,7 @@ const TherapyDataTable = ({ therapy, onChange }) => {
       paginationRecordsPerPageMessage={t('labels.perPage')}
       paginationTotalRecorsMessage={t('labels.results')}
       showCardView={showCardView}
+      defaultExpandedCardView={false}
       noDataComponent={
         <EmptyDataTable
           isLoading={isFetching}

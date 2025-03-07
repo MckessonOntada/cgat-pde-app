@@ -9,6 +9,7 @@ import { useFormikContext } from 'formik';
 import { ReactComponent as FileUploadIcon } from '@src/assets/svg/document.svg';
 import { ReactComponent as BinRedIcon } from '@src/assets/svg/remove.svg';
 import { Link } from 'react-router-dom';
+import CommonUtils from '@src/util/CommonUtils';
 
 function InputFileFormik(props) {
   const { field, form, onFileChange, primaryButtonCaption } = props;
@@ -79,7 +80,12 @@ function InputFileFormik(props) {
     fileInputRef.current.value = '';
   };
 
-  const selectedFileSize = (file?.size / 1024).toFixed(2);
+  const { name, size, url } = file || {};
+
+  React.useEffect(() => {
+    if (attachmentValue) setFile(attachmentValue);
+  }, [props]);
+
   return (
     <div className={`${styles['component-wrapper']} ${errorMessage ? styles['has-error'] : null}`}>
       <div className={styles['caption-container']}>
@@ -139,17 +145,17 @@ function InputFileFormik(props) {
           <div className={styles['preview-container']}>
             <div className={styles['file-info']}>
               <div>
-                {!attachmentValue && file.type.startsWith('image/') ? (
+                {file.type?.startsWith('image/') ? (
                   <img src={URL.createObjectURL(file)} alt="Preview" className={styles['image-preview']} />
                 ) : (
                   <FileUploadIcon width={20} />
                 )}
               </div>
               <div>
-                <Link className={styles['file-name']} target="_blank" to={props.attachmentValue}>
-                  <p>{file.name}</p>
+                <Link className={styles['file-name']} target="_blank" to={url}>
+                  <p>{name}</p>
                 </Link>
-                <p>{selectedFileSize} KB</p>
+                <p>{CommonUtils.getFileSize(size)}</p>
               </div>
             </div>
             <div className="styled-icon-button error-button">

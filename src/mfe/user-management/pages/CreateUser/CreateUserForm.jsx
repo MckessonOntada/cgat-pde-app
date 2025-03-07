@@ -4,6 +4,7 @@ import Components from '@src/components/form/Components';
 import { Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { US_STATES } from '@src/components/form/util';
+import StateDropdown from '@src/components/form/StateDropdown';
 
 const UserDetailsFormSegment = () => {
   const { t } = useTranslate();
@@ -96,7 +97,7 @@ const UserDetailsFormSegment = () => {
               name="address.state"
               label={t('userManagement.create_user.inputLabel.state')}
               placeholder=" "
-              component={Components['dropdown']}
+              component={Components['stateDropdown']}
               isRequired
               options={options}
             />
@@ -124,6 +125,7 @@ const UserDetailsFormSegment = () => {
             component={Components['input']}
             maxLength={15}
           />
+          {/* <StateDropdown /> */}
         </div>
       </div>
     </div>

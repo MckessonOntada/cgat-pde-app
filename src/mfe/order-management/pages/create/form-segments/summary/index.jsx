@@ -172,6 +172,12 @@ const Summary = () => {
     }
     .MCP-CardContainer > div{
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    #summary-alert-container{
+      display: none !important;
+    }
+    .alert-container{
+      display: none !important;
     }`
   );
 
@@ -419,7 +425,7 @@ const Summary = () => {
   }
 
   return (
-    <div className="MCP-module-wrapper">
+    <div className="MCP-module-wrapper order-summary-container">
       <div>
         <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
@@ -436,8 +442,8 @@ const Summary = () => {
         )}
         <div id={ALERT_CONTAINER_ID} />
 
-        <div>
-          {alertMessages && (
+        {alertMessages && (
+          <div className="alert-container">
             <div className="MCP-module-body">
               {alertMessages.map((item, index) => (
                 <Alert
@@ -449,8 +455,8 @@ const Summary = () => {
                 />
               ))}
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         <div className={'MCP-module-wrapper'}>
           <ModuleHeader
