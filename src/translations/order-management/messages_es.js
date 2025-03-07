@@ -58,7 +58,7 @@ export const MessageEs = {
   'labels.salesOrganization': 'S_Sales Organization',
   'labels.results': 'S_results',
   'labels.perPage': 'S_Per page',
-  'labels.needAssistanceSelectingAccount': 'S_Need assistance with selecting an account?',
+  'labels.needAssistanceSelectingAccount': 'S_Need assistance',
   'labels.orderAssistance.selectChannel': 'S_Please select channel to place the order.',
   'labels.orderAssistance.selectProgram': 'S_Are you here to order through any of the below programs?',
   'labels.therapySelection': 'S_Therapy Selection',
