@@ -1,12 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Field } from 'formik';
 import Components from '@src/components/form/Components';
 import { Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { US_STATES } from '@src/components/form/util';
 
-const OrgDetailsFormSegment = () => {
+const OrgDetailsFormSegment = ({ formik }) => {
   const { t } = useTranslate();
+  const [attachmentValue, setAttachmentValue] = useState(null);
+  useEffect(() => {
+    if (formik.values.logoUrl) {
+      const urlParts = formik.values.logoUrl.split('/');
+      const fileName = urlParts[urlParts.length - 1]; // Get last part as file name
+      setAttachmentValue({
+        name: fileName,
+        size: 0,
+        url: formik.values.logoUrl
+      });
+    }
+  }, [formik.values.logoUrl]);
   function validateFile(file) {
     const allowedMimeTypes = ['image/png', 'image/jpeg'];
 
@@ -42,7 +54,13 @@ const OrgDetailsFormSegment = () => {
         maxLength={100}
       />
 
-      <Field name="file" validateOnChange={validateFile} label={t('button.caption.uploadFile')} component={Components['inputFile']} />
+      <Field
+        name="file"
+        validateOnChange={validateFile}
+        label={t('button.caption.uploadFile')}
+        component={Components['inputFile']}
+        attachmentValue={attachmentValue}
+      />
 
       <div className="headingBox">
         <Heading as="h3">{t('orgManagement.create_org.contact_details')}</Heading>

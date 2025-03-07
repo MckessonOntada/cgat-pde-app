@@ -76,7 +76,7 @@ function InputFileFormik(props) {
 
   React.useEffect(() => {
     if (attachmentValue) setFile(attachmentValue);
-  }, [props]);
+  }, [attachmentValue]);
 
   return (
     <div className={`${styles['component-wrapper']} ${errorMessage ? styles['has-error'] : null}`}>
@@ -147,7 +147,7 @@ function InputFileFormik(props) {
                 <Link className={styles['file-name']} target="_blank" to={url}>
                   <p>{name}</p>
                 </Link>
-                <p>{CommonUtils.getFileSize(size)}</p>
+                {size > 0 && <p>{CommonUtils.getFileSize(size)}</p>}
               </div>
             </div>
             <div className="styled-icon-button error-button">
