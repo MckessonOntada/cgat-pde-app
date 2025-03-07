@@ -10,7 +10,6 @@ import { setUserData } from '@src/store/reducer/userReducer';
 import { debugIds, ID } from '@src/constants/id';
 import { Button, MenuList, Modal } from '@mckesson/mcp-component-library';
 import styles from './assets/styles/Header.module.scss';
-import { useIntl } from 'react-intl';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import HeaderConfig from './constants';
 import FloatingDrawer from '../floating-drawer';
@@ -25,7 +24,6 @@ import { currentLocale } from '@src/translations/i18n';
 import EclipsesTextcss from '../EclipsesText/EclipsesTextcss';
 
 const PrimaryHeader = () => {
-  const intl = useIntl();
   const { t } = useTranslate();
   const { oktaAuth, authState } = useOktaAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -41,14 +39,14 @@ const PrimaryHeader = () => {
   useEffect(() => {
     const handleResize = () => {
       setTextMaxWidth(window.innerWidth <= 992 && window.innerWidth >= 768 ? 160 : '');
-    };    
-  
+    };
+
     window.addEventListener('resize', handleResize);
     handleResize(); // Call on mount to set initial width
-  
+
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-  
+
   const requestParams = useMemo(
     () => ({
       pageNo: 0,
@@ -127,7 +125,7 @@ const PrimaryHeader = () => {
     const currentLanguage = HeaderConfig.languages.find((lang) => lang.value == currentLocale);
     const quickLinks = [
       <Link className={styles.actionLink} to={'notifications'} aria-label="View notifications">
-        <span>{intl.formatMessage({ id: 'header.label.notifications' })}</span>
+        <span>{t('header.label.notifications')}</span>
         <IconNotification />
       </Link>,
 
@@ -154,7 +152,7 @@ const PrimaryHeader = () => {
       //   </MenuList>
       // </div>,
       // <Link className={styles.actionLink} to={'help'} aria-label="Help center">
-      //   <span>{intl.formatMessage({ id: 'header.label.help' })}</span>
+      //   <span>{t('header.label.help')}</span>
       //   <IconHelp />
       // </Link>,
       <Button
@@ -169,7 +167,7 @@ const PrimaryHeader = () => {
         onClick={() => {
           logout();
         }}>
-        {intl.formatMessage({ id: 'header.label.logout' })}
+        {t('header.label.logout')}
       </Button>
     ];
     return (
