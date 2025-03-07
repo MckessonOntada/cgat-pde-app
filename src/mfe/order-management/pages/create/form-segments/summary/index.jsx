@@ -91,6 +91,7 @@ const Summary = () => {
     try {
       const response = await OrderService.getInventoryStatus(orderDetails.id);
       if (response.status === 200) {
+        console.log(response.data);
         handleInventoryDetailsResponse(response.data);
       }
     } catch (error) {
