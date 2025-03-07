@@ -89,6 +89,7 @@ export const ApproverManagementEN = {
   'rules.roles': 'Roles',
 
   'rules.operator.orderedOfAny': 'Ordered Any Of',
+  'rules.operator.matchesofAny': 'Matches Any Of',
   'rules.operator.selectedAnyOf': 'Selected Any Of',
   'rules.operator.greaterThan': 'Greater Than',
   'rules.logicalOperator.and': 'AND',
