@@ -114,8 +114,8 @@ const Summary = () => {
     }
   }, [orderDetails]);
 
-  const handleInventoryDetailsResponse = (data) => {
-    const { erroredItems, warningMessages } = data || {};
+  const handleInventoryDetailsResponse = (data = {}) => {
+    const { erroredItems, warningMessages } = data.inventoryCheckResponse;
     if (erroredItems?.length > 0 || warningMessages?.length > 0) {
       if (erroredItems && erroredItems.length > 0) {
         alertMessages.push(
@@ -443,18 +443,18 @@ const Summary = () => {
         <div id={ALERT_CONTAINER_ID} />
 
         {alertMessages && (
-          <div className='alert-container'>
-              <div className="MCP-module-body">
-                {alertMessages.map((item, index) => (
-                  <Alert
-                    key={index + 1}
-                    description={item.description}
-                    onClose={() => closeAvailabilityAlert(index)}
-                    type={item.type}
-                    duration={10000}
-                  />
-                ))}
-              </div>
+          <div className="alert-container">
+            <div className="MCP-module-body">
+              {alertMessages.map((item, index) => (
+                <Alert
+                  key={index + 1}
+                  description={item.description}
+                  onClose={() => closeAvailabilityAlert(index)}
+                  type={item.type}
+                  duration={10000}
+                />
+              ))}
+            </div>
           </div>
         )}
 
