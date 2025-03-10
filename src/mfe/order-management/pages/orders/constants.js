@@ -1,19 +1,35 @@
+import { ORDER_TABS } from './config';
+
 export const getBreadcrumbItems = (t) => [{ label: t('order.label.admin'), url: '/' }, { label: t('order.label.manageOrder') }];
 
 export const getTabs = (t) => [
   {
-    id: 1,
-    configName: t('labels.tabs.pendingSubmission'),
+    id: ORDER_TABS.SUBMITTED_BUY_AND_BILL,
+    configName: t('labels.tabs.submittedBuyAndBill'),
     isActive: true,
     sequence: 1,
+    labelForMobile: t('labels.tabs.submittedBuyAndBill')
+  },
+  {
+    id: ORDER_TABS.SUBMITTED_SP,
+    configName: t('labels.tabs.submittedSp'),
+    isActive: false,
+    sequence: 2,
+    labelForMobile: t('labels.tabs.submittedSp')
+  },
+  {
+    id: ORDER_TABS.PENDING_SUBMISSION,
+    configName: t('labels.tabs.pendingSubmission'),
+    isActive: false,
+    sequence: 3,
     labelForMobile: t('labels.tabs.pendingSubmission')
   },
   {
-    id: 2,
-    configName: t('labels.tabs.submitted'),
+    id: ORDER_TABS.PENDING_APPROVAL,
+    configName: t('labels.tabs.pendingApproval'),
     isActive: false,
-    sequence: 2,
-    labelForMobile: t('labels.tabs.submitted')
+    sequence: 4,
+    labelForMobile: t('labels.tabs.pendingApproval')
   }
 ];
 

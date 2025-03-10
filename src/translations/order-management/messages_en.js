@@ -110,6 +110,16 @@ export const MessageEn = {
   'labels.actions.view': 'View',
   'labels.actions.edit': 'Edit',
   'labels.tabs.pendingSubmission': 'PENDING SUBMISSION',
+
+  'labels.tabs.submittedBuyAndBill': 'Submitted (buy & bill)',
+  'labels.tabs.submittedSp': 'Submitted (sp)',
+  'labels.tabs.pendingSubmission': 'Pending Submission',
+  'labels.tabs.pendingApproval': 'Pending Approval',
+
+  'labels.tabs.switch.myOrders': 'My Orders',
+  'labels.tabs.switch.allOrders': 'All Orders',
+  'labels.tabs.switch.assignedToMe': 'Assigned To Me',
+
   'labels.tabs.submitted': 'SUBMITTED',
   'labels.therapyDescription': 'Therapy Description',
   'labels.accountDetails': 'Account Details',
@@ -280,6 +290,7 @@ export const MessageEn = {
   'orderManagement.patientDetails.inputLabel.city': 'City',
   'orderManagement.patientDetails.inputLabel.zip': 'Zip Code',
   'orderManagement.patientDetails.inputLabel.state': 'State',
+  'orderManagement.patientDetails.inputLabel.providerDetails': 'Provider Details',
   'orderManagement.patientDetails.inputLabel.first_name': 'First Name',
   'orderManagement.patientDetails.inputLabel.middle_name': 'Middle Name',
   'orderManagement.patientDetails.inputLabel.last_name': 'Last Name',

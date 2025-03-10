@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState } from 'react';
 import { MdViewArray } from 'react-icons/md';
 import { useQuery } from 'react-query';
 import { StatusEnum } from '../pages/orders/constants';
+import { ORDER_TABS } from '../pages/orders/config';
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
@@ -34,7 +35,7 @@ export const OrderProvider = ({ children }) => {
   const [paginationConfig, setPaginationConfig] = React.useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);
   const [dataState, setDataState] = React.useState(INITIAL_DATA_STATE);
-  const [tabVariant, setTabVariant] = React.useState(1);
+  const [tabVariant, setTabVariant] = React.useState(ORDER_TABS.SUBMITTED_BUY_AND_BILL);
 
   const requestParams = React.useMemo(() => {
     const validStatuses = [StatusEnum.IN_DRAFT, StatusEnum.APPROVAL_PENDING, StatusEnum.SUBMITTED, 'all'];
@@ -78,7 +79,7 @@ export const OrderProvider = ({ children }) => {
     }
   });
 
-  const { isLoading, data: assginedGroupsData = {} } = useQuery({
+  const { isLoading, data: assignedGroupsData = {} } = useQuery({
     queryKey: ['order', 'approver-group'],
     queryFn: async () => {
       const res = await OrderService.getAssignedGroups(requestParams);
@@ -107,7 +108,7 @@ export const OrderProvider = ({ children }) => {
     setPaginationConfig((prevState) => ({ ...prevState, pageNumber: pageNumber }));
   };
 
-  const changeTab = (tabType = 1) => {
+  const changeTab = (tabType = ORDER_TABS.SUBMITTED_BUY_AND_BILL) => {
     setDataState(INITIAL_DATA_STATE);
     setFilterConfig({ ...INITIAL_FILTER_STATE });
     setCurrentPage(1);
@@ -130,7 +131,7 @@ export const OrderProvider = ({ children }) => {
         refreshData,
         tabVariant,
         setTabVariant,
-        assginedGroupsData
+        assginedGroupsData: assignedGroupsData
       }}>
       {children}
     </OrderContext.Provider>

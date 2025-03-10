@@ -281,6 +281,7 @@ export const MessageEs = {
   'orderManagement.patientDetails.inputLabel.city': 'S_City',
   'orderManagement.patientDetails.inputLabel.zip': 'S_Zip Code',
   'orderManagement.patientDetails.inputLabel.state': 'S_State',
+  'orderManagement.patientDetails.inputLabel.providerDetails': 'S_Provider Details',
   'orderManagement.patientDetails.inputLabel.first_name': 'S_First Name',
   'orderManagement.patientDetails.inputLabel.middle_name': 'S_Middle Name',
   'orderManagement.patientDetails.inputLabel.last_name': 'S_Last Name',

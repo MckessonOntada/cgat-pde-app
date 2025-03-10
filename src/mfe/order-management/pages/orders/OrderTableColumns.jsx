@@ -94,7 +94,6 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
   };
 
   const doesApproverGroupExist = (approverGroupIds, assginedGroupsData) => {
-    console.log('assginedGroupsData', CommonUtils.isNonEmptyObject(assginedGroupsData)); // Loggind to check issue
     if (!approverGroupIds || !assginedGroupsData || !CommonUtils.isNonEmptyObject(assginedGroupsData)) return false;
     const groupDataArray = Array.isArray(assginedGroupsData) ? assginedGroupsData : [];
     return approverGroupIds.some((id) => groupDataArray?.includes(id));

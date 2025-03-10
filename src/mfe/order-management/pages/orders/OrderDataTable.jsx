@@ -10,12 +10,14 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import './OrderDataTable.module.scss';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
+import ModuleHeader from '@src/components/module-header';
+import { getTableColumns } from './TableColumns';
 
 const OrderDataTable = ({ tab, alertContainerId }) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { dataState: data, paginationConfig, isFetching, error, setCurrentPage, applySort, refreshData } = useOrders();
-  const columns = createColumns(t, navigate, tab, alertContainerId);
+  // const columns = createColumns(t, navigate, tab, alertContainerId);
   const showCardView = useResponsiveView();
 
   const handleOnPageChange = (_event, pageIndex) => {
@@ -26,9 +28,11 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
     if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
+  const columns = getTableColumns(tab, t);
+
   return (
     <>
-      <TableHeading heading={t('table.ariaLabel.orderList')} />
+      <ModuleHeader heading={<TableHeading heading={t('table.ariaLabel.orderList')} />} controls={<div>[All Orders | My Orders]</div>} />
       <CustomDataTable
         id="order-management-order-listing"
         type={'normal'}

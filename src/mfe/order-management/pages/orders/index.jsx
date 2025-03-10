@@ -12,26 +12,19 @@ import { useOrders } from '../../context/OrderContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import PermittedComponent from '@src/components/permitted-component';
 import usePermission from '@src/hooks/usePermissions';
+import { COLUMNS, ORDER_TABS } from './config';
+import { getTableColumns } from './TableColumns';
 
 const OrderIndex = () => {
   const { t } = useTranslate();
   const { hasPermission } = usePermission();
   const isPendingTab = hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_PENDING_ORDERS);
   const isSubmittedTab = hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS);
-  const { applyFilters, clearFilters, changeTab, tabVariant, setTabVariant } = useOrders();
+  const { applyFilters, clearFilters, changeTab, tabVariant } = useOrders();
   const [tabList, setTabList] = React.useState(() => {
     const allTabs = getTabs(t);
-    return allTabs.filter((tab) => {
-      if (tab.id === 1 && isPendingTab) {
-        setTabVariant(1);
-        return true;
-      }
-      if (tab.id === 2 && isSubmittedTab) {
-        setTabVariant(2);
-        return true;
-      }
-      return false;
-    });
+    changeTab();
+    return allTabs;
   });
 
   const navigate = useNavigate();
@@ -58,18 +51,16 @@ const OrderIndex = () => {
     ];
   }, [activeTab]);
 
-  const setActiveTab = (activeTab) => {
+  const setActiveTab = (activeTab) => {};
+
+  const handleOnTabChange = (tab) => {
+    setTabKey(tab.id);
     setTabList(
       tabList.map((tab) => ({
         ...tab,
         isActiveTab: tab.id === activeTab
       }))
     );
-  };
-
-  const handleOnTabChange = (tab) => {
-    setActiveTab(tab.id);
-    setTabKey(tab.id);
     changeTab(tab.id);
   };
 
@@ -78,20 +69,20 @@ const OrderIndex = () => {
   };
 
   React.useEffect(() => {
-    if (activeTabFromState) {
-      setActiveTab(activeTabFromState);
-      setTabVariant(2); // Set the tab from state
-    } else {
-      if (isPendingTab || (isPendingTab && isSubmittedTab)) {
-        setActiveTab(1);
-        setTabVariant(1);
-      } else if (isSubmittedTab) {
-        setActiveTab(2);
-        setTabVariant(2);
-      }
-    }
+    // if (activeTabFromState) {
+    //   setActiveTab(activeTabFromState);
+    //   setTabVariant(2); // Set the tab from state
+    // } else {
+    //   if (isPendingTab || (isPendingTab && isSubmittedTab)) {
+    //     setActiveTab(1);
+    //     setTabVariant(1);
+    //   } else if (isSubmittedTab) {
+    //     setActiveTab(2);
+    //     setTabVariant(2);
+    //   }
+    // }
   }, [activeTabFromState]);
-
+  console.log(tabList);
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-body">
