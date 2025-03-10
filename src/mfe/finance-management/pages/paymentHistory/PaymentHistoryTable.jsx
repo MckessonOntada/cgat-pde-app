@@ -54,7 +54,7 @@ export default function PaymentHistoryTable() {
       maxWidth: '180px',
       sortable: true,
       selector: (row) => `${row.purchaseOrderNo}`,
-      cell: (props) => <EclipsesTextcss str={props.purchaseOrderNo} maxWidth={170} />
+      cell: (props) => <EclipsesTextcss str={props.purchaseOrderNo || '-'} maxWidth={170} />
     },
     {
       id: 'paymentMethod',
@@ -65,7 +65,7 @@ export default function PaymentHistoryTable() {
       minWidth: '140px',
       cardHeader: true,
       showInMobileHeader: true,
-      cell: (props) => <EclipsesTextcss str={props.paymentMethod} maxWidth={130} />
+      cell: (props) => <EclipsesTextcss str={props.paymentMethod || '-'} maxWidth={130} />
     },
 
     {
@@ -74,7 +74,13 @@ export default function PaymentHistoryTable() {
       selector: (row) => `${row.paymentInitiationDate}`,
       minWidth: '160px',
       sortable: true,
-      cell: (props) => <div className="cellEllipse">{dayjs(props.paymentInitiationDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
+      cell: (props) => (
+        <div className="cellEllipse">
+          {dayjs(props.paymentInitiationDate, 'DD/MM/YYYY').isValid() //checking for isValid :  date is valid before attempting to format it.
+            ? dayjs(props.paymentInitiationDate, 'DD/MM/YYYY').format('MM/DD/YYYY')
+            : '-'}
+        </div>
+      )
     },
     {
       id: 'paymentStatus',
@@ -106,7 +112,7 @@ export default function PaymentHistoryTable() {
       sortable: true,
       cell: (props) => (
         <div className="cellEllipse align-items-right">
-          <FormattedNumber value={props?.totalAuthorizedPaymentAmount} style="currency" currency="USD" />
+          <FormattedNumber value={props?.totalAuthorizedPaymentAmount || '-'} style="currency" currency="USD" />
         </div>
       ),
       right: true
