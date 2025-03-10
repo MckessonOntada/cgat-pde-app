@@ -7,9 +7,9 @@ import { usePaymentMethods } from '@src/mfe/finance-management/context/PaymentMe
 import { useTranslate } from '@src/translations/useTranslation';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FinanceUtils } from '@src/util/FinanceUtil';
-import dayjs from 'dayjs';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import CommonUtils from '@src/util/CommonUtils';
 
 const CARD_TYPES = {
   VISA: 'VISA',
@@ -63,7 +63,7 @@ export default function CreditCardsTable() {
       sortable: true,
       wrap: true,
       width: '160px',
-      cell: (props) => <div>{dayjs(props?.expirationDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
+      cell: (props) => CommonUtils.convertDateStringFormat(props?.expirationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       id: 'postalCode',

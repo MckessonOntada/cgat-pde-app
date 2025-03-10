@@ -1,11 +1,11 @@
 import React from 'react';
 import { Heading, Loader, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import dayjs from 'dayjs';
 import { FormattedNumber } from 'react-intl';
 import { ReactComponent as PDFicon } from '@src/assets/svg/office-file-pdf.svg';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
+import CommonUtils from '@src/util/CommonUtils';
 
 const createColumns = (t, type) => {
   const commonColumns = [
@@ -38,7 +38,7 @@ const createColumns = (t, type) => {
       id: 'billDate',
       wrap: true,
       minWidth: '160px',
-      cell: (props) => <div className="cellEllipse">{dayjs(props?.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
+      cell: (props) => <div className="cellEllipse">{CommonUtils.convertDateStringFormat(props?.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
     },
     {
       name: t('paymentInvoices.history.table.DueDate'),
@@ -47,7 +47,7 @@ const createColumns = (t, type) => {
       sortable: true,
       wrap: true,
       id: 'dueDate',
-      cell: (props) => <div className="cellEllipse">{dayjs(props?.dueDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
+      cell: (props) => <div className="cellEllipse">{CommonUtils.convertDateStringFormat(props?.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
     },
     {
       name: t('paymentInvoices.history.table.BillAmount'),
@@ -112,7 +112,7 @@ const createColumns = (t, type) => {
       sortable: true,
       wrap: true,
       id: 'usedDate',
-      cell: (props) => <div className="cellEllipse">{props?.usedDate ? dayjs(props.usedDate, 'DD/MM/YYYY').format('MM/DD/YYYY') : '-'}</div>
+      cell: (props) => <div className="cellEllipse">{CommonUtils.convertDateStringFormat(props?.usedDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
     },
     {
       name: t('paymentInvoices.credits.table.amount'),

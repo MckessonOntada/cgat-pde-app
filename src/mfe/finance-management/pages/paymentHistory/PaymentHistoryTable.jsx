@@ -10,11 +10,11 @@ import { usePaymentHistory } from '../../context/PaymentHistoryContext';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FormattedNumber } from 'react-intl';
-import dayjs from 'dayjs';
 import { PATHS } from '../../routes';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import CommonUtils from '@src/util/CommonUtils';
 
 const PAYMENT_STATUS = {
   PENDING: { label: 'Pending', color: 'warning' },
@@ -74,13 +74,7 @@ export default function PaymentHistoryTable() {
       selector: (row) => `${row.paymentInitiationDate}`,
       minWidth: '160px',
       sortable: true,
-      cell: (props) => (
-        <div className="cellEllipse">
-          {dayjs(props.paymentInitiationDate, 'DD/MM/YYYY').isValid() //checking for isValid :  date is valid before attempting to format it.
-            ? dayjs(props.paymentInitiationDate, 'DD/MM/YYYY').format('MM/DD/YYYY')
-            : '-'}
-        </div>
-      )
+      cell: (props) => CommonUtils.convertDateStringFormat(props?.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       id: 'paymentStatus',

@@ -247,14 +247,17 @@ const convertDateStringToUserTimezone = (dateString) => {
   return formattedDate;
 };
 
-const convertDateStringFormat = (dateString, format) => {
-  if (!dateString) {
-    return dateString;
+const convertDateStringFormat = (dateString, outputformat = 'MM-DD-YYYY', inputFormat = 'DD/MM/YYYY') => {
+  if (!dateString || typeof dateString !== 'string') return '-';
+  let parsedDate;
+
+  if (dayjs(dateString).isValid() && dateString?.includes('T')) {
+    parsedDate = dayjs(dateString);
+  } else {
+    parsedDate = dayjs(dateString, inputFormat, true);
   }
-
-  const formattedDate = dayjs(dateString).format(format);
-
-  return formattedDate;
+  console.log('pare', parsedDate.isValid(), parsedDate.format(outputformat));
+  return parsedDate.isValid() ? parsedDate.format(outputformat) : '-';
 };
 
 const sortByDate = (dateString1, dateString2, sortOrder, fieldId = null) => {
