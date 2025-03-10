@@ -7,11 +7,11 @@ import { useCustomerStatements } from '../../context/CustomerStatementsContext';
 import { FormattedNumber } from 'react-intl';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import dayjs from 'dayjs';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { useAccountContext } from '../../context/AccountContext';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import CommonUtils from '@src/util/CommonUtils';
 
 export default function CustomerStatementTable() {
   const { t } = useTranslate();
@@ -50,7 +50,7 @@ export default function CustomerStatementTable() {
       width: '100px',
       sortable: true,
       wrap: true,
-      cell: (props) => (dayjs(props.date, 'DD/MM/YYYY').isValid ? dayjs(props.date, 'DD/MM/YYYY').format('MM/DD/YYYY') : '-')
+      cell: (props) => CommonUtils.convertDateStringFormat(props.date, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       id: 'statementBalance',

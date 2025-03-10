@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 import { ReactComponent as ActionIcon } from '@src/assets/image/actionIcon.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import dayjs from 'dayjs';
 import { DUE_STATUS } from './InvoiceConstants';
 import { PATHS } from '../../routes';
 import CommonUtils from '@src/util/CommonUtils';
@@ -82,7 +81,7 @@ export default function InvoicesTable() {
       id: 'billDate',
       wrap: true,
       width: '120px',
-      cell: (props) => (dayjs(props?.billDate, 'DD/MM/YYYY').isValid() ? dayjs(props?.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') : '-')
+      cell: (props) => CommonUtils.convertDateStringFormat(props.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       name: t('paymentInvoices.history.table.DueDate'),
@@ -91,7 +90,7 @@ export default function InvoicesTable() {
       sortable: true,
       wrap: true,
       id: 'dueDate',
-      cell: (props) => (dayjs(props?.dueDate, 'DD/MM/YYYY').isValid() ? dayjs(props?.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') : '-')
+      cell: (props) => CommonUtils.convertDateStringFormat(props?.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       name: t('paymentInvoices.history.table.OpenAmount'),

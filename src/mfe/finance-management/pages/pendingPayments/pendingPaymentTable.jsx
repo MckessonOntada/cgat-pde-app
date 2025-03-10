@@ -7,10 +7,10 @@ import { usePendingPayments } from '../../context/PendingPaymentsContext';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FormattedNumber } from 'react-intl';
-import dayjs from 'dayjs';
 import { PATHS } from '../../routes';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import CommonUtils from '@src/util/CommonUtils';
 
 export default function PendingPaymentTable() {
   const { t } = useTranslate();
@@ -53,10 +53,7 @@ export default function PendingPaymentTable() {
       sortable: true,
       wrap: true,
       maxWidth: '160px',
-      cell: (props) =>
-        dayjs(props.paymentInitiationDate, 'DD/MM/YYYY').isValid()
-          ? dayjs(props.paymentInitiationDate, 'DD/MM/YYYY').format('MM/DD/YYYY')
-          : '-'
+      cell: (props) => CommonUtils.convertDateStringFormat(props.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       id: 'authorizedAmt',

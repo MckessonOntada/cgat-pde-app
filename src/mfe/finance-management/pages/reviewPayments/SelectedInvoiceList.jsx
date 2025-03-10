@@ -2,7 +2,6 @@ import React from 'react';
 import EmptyDataTable from '@src/components/EmptyTable';
 import { Badge, DropdownMenu, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import dayjs from 'dayjs';
 import { FormattedNumber } from 'react-intl';
 import { ReactComponent as RemoveCircle } from '@src/assets/svg/cross-red.svg';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
@@ -67,7 +66,7 @@ function SelectedInvoiceList(props) {
       maxWidth: '130px',
       wrap: true,
       id: 'dueDate',
-      cell: (props) => <div className="cellEllipse">{dayjs(props?.dueDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
+      cell: (props) => <div className="cellEllipse">CommonUtils.convertDateStringFormat(props?.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')</div>
     },
     {
       name: t('paymentInvoices.history.table.BillAmount'),

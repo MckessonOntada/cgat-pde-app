@@ -8,8 +8,6 @@ import { usePaymentCredits } from '../../context/PaymentsCreditsContext';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FormattedNumber } from 'react-intl';
-import dayjs from 'dayjs';
-// import { PATHS } from '../../routes';
 import CommonUtils from '@src/util/CommonUtils';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
@@ -78,7 +76,7 @@ function CreditsSelected(props) {
       cell: (props) => (
         <EclipsesTextcss
           className="cellEllipse"
-          str={dayjs(props?.billDate, 'DD/MM/YYYY').isValid() ? dayjs(props?.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') : '-'}
+          str={CommonUtils.convertDateStringFormat(props?.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}
           maxWidth={240}
         />
       )
@@ -92,7 +90,7 @@ function CreditsSelected(props) {
       cell: (props) => (
         <EclipsesTextcss
           className="cellEllipse"
-          str={dayjs(props.dueDate, 'DD/MM/YYYY').isValid() ? dayjs(props.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') : '-'}
+          str={CommonUtils.convertDateStringFormat(props?.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}
           maxWidth={240}
         />
       )
