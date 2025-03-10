@@ -61,9 +61,21 @@ const Filters = ({
     }
   };
 
+  const clearOptions = () => {
+    additionalFilters.forEach((filter, index) => {
+      if (filter.options && Array.isArray(filter.options)) {
+        additionalFilters[index].options = filter.options.map((option) => ({
+          ...option,
+          isChecked: false
+        }));
+      }
+    });
+  };
+
   const handleClearFilters = (resetForm) => {
     resetForm({ values: initialFilters });
     clearInputs();
+    clearOptions();
     onClearFilters();
   };
 
