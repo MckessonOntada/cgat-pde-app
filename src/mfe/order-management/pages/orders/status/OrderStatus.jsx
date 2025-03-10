@@ -81,7 +81,7 @@ const OrderStatus = () => {
       />
       <div className={'MCP-module-body'}>
         <div className="MCP-CardContainer">
-          <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 print-div">
+          <div className="grid grid-gap-12 sm:grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 print-div">
             <DetailSegment label={t('labels.orderId')} value={orderId} />
             <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
             <DetailSegment
@@ -93,7 +93,7 @@ const OrderStatus = () => {
               }
             />
           </div>
-          <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 print-div">
+          <div className="grid grid-gap-12 sm:grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 print-div">
             <DetailSegment label={t('labels.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
             <DetailSegment label={t('labels.dob')} value={patient?.patientInfo?.dateOfBirth || '-'} />
             <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender ? patient?.patientInfo?.gender : '-'} />

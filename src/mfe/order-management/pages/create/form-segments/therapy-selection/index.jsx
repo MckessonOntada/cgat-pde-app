@@ -180,18 +180,14 @@ function TherapySelection() {
             )}
             <TherapyDataTable therapy={therapy} onChange={setTherapy} />
           </div>
-          <ModuleHeader
-            controls={
-              <div className="controls">
-                <Button size="md" variant="secondary" onClick={handleCancel}>
-                  {t('captions.btnCancel')}
-                </Button>
-                <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit}>
-                  { t('captions.btnSaveAndContinue')}
-                </Button>
-              </div>
-            }
-          />
+          <div className="controls">
+            <Button size="md" variant="secondary" onClick={handleCancel}>
+              {t('captions.btnCancel')}
+            </Button>
+            <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit}>
+              { t('captions.btnSaveAndContinue')}
+            </Button>
+          </div>
           {therapyDetails && (
             <TherapyDetails
               therapyId={therapyDetails}

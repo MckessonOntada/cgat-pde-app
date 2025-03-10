@@ -89,6 +89,30 @@ $gapsize: (
   }
 }
 
+@each $gap in $gapsize {
+  @include mixins.respond(md) {
+    .md\:grid-gap-#{$gap} {
+      grid-gap: #{$gap}px;
+    }
+  }
+}
+
+@each $gap in $gapsize {
+  @include mixins.respond(sm) {
+    .sm\:grid-gap-#{$gap} {
+      grid-gap: #{$gap}px;
+    }
+  }
+}
+
+@each $gap in $gapsize {
+  @include mixins.respond(lg) {
+    .lg\:grid-gap-#{$gap} {
+      grid-gap: #{$gap}px;
+    }
+  }
+}
+
 $gridCols: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13;
 
 @each $colStart in $gridCols {

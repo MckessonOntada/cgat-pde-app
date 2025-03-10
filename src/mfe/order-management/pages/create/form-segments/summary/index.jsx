@@ -441,8 +441,7 @@ const Summary = () => {
           </div>
         )}
         <div id={ALERT_CONTAINER_ID} />
-
-        {alertMessages && (
+        {alertMessages?.length > 0 && (
           <div className="alert-container">
             <div className="MCP-module-body">
               {alertMessages.map((item, index) => (
@@ -460,7 +459,7 @@ const Summary = () => {
 
         <div className={'MCP-module-wrapper'}>
           <ModuleHeader
-            heading={<Heading as="h2">{t('labels.summary')}</Heading>}
+            heading={<Heading className={styles.orderSummaryHeading} as="h2">{t('labels.summary')}</Heading>}
             controls={
               isRejected ? (
                 <div className="row-space-between-center">

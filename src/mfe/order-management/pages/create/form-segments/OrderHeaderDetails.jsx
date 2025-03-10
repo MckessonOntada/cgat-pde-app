@@ -54,7 +54,7 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status }) {
   return (
     <div className="MCP-CardContainer">
       <div
-        className={`grid grid-gap-24 grid-cols-1 md:grid-cols-2 lg:grid-cols-${detailsSegments.length} xl:grid-cols-${detailsSegments.length}`}>
+        className={`grid grid-gap-12 sm:grid-gap-32 grid-cols-1 md:grid-cols-2 lg:grid-cols-${detailsSegments.length} xl:grid-cols-${detailsSegments.length}`}>
         {detailsSegments}
       </div>
     </div>
