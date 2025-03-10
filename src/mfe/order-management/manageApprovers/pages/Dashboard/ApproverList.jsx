@@ -21,7 +21,7 @@ function ApproverList({ onActionSuccess }) {
   const { t } = useTranslate();
   const [selectedRows, setSelectedRows] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  const { data, paginationConfig, applySort, setPageNumber, refreshData } = useApprover();
+  const { data, paginationConfig, applySort, setPageNumber, refreshData, error, isLoadingApprovers, isErrorApprovers } = useApprover();
   const userPermissions = AuthUtils.getUserPermissions();
   const { hasPermission } = usePermission();
   const showCardView = useResponsiveView();
@@ -195,8 +195,10 @@ function ApproverList({ onActionSuccess }) {
         defaultExpandedCardView={true}
         noDataComponent={
           <EmptyDataTable
+            isLoading={isLoadingApprovers}
+            error={isErrorApprovers && error}
             image={EmptyDataImage}
-            heading={t('message.emptyTableTitle')}
+            heading={t('message.emptyTableApproverGroupTitle')}
             description={t('approvergroup.empty_table.description')}
           />
         }

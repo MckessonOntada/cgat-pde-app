@@ -425,7 +425,7 @@ const UserDetail = () => {
             <EmptyDataTable
               isLoading={isLoading}
               image={EmptyDataImage}
-              heading={t('userManagement.message.userEmptyTableTitle')}
+              heading={t('userManagement.message.userPermissionEmptyTableTitle')}
               description={t('userManagement.messages.emptysubtitle')}
             />
           )}

@@ -18,7 +18,7 @@ export const useRole = () => {
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
   dateRange: [],
-  status: [],
+  status: []
 };
 
 const INITIAL_SORT_STATE = {
@@ -60,9 +60,9 @@ export const RoleProvider = ({ children }) => {
 
     return params;
   }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
- 
-  const { data, isLoading, isError, refetch, isFetching } = useQuery({
-    queryKey: ["roles", requestParams], 
+
+  const { data, isLoading, isError, error, refetch, isFetching } = useQuery({
+    queryKey: ['roles', requestParams],
     queryFn: async () => {
       const response = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}?${serializeParams(requestParams)}`, httpVerb.GET, {});
       if (response.data) {
@@ -93,7 +93,7 @@ export const RoleProvider = ({ children }) => {
 
   const applyFilters = (filters) => {
     setPageNumber(1);
-    setFilterConfig({...filters});
+    setFilterConfig({ ...filters });
   };
 
   const clearFilters = () => setFilterConfig(INITIAL_FILTER_STATE);
@@ -118,6 +118,7 @@ export const RoleProvider = ({ children }) => {
     isLoading,
     isFetching,
     isError,
+    error,
     filterConfig,
     paginationConfig,
     messageConfig,

@@ -22,7 +22,7 @@ const RolesDataTable = () => {
   const { hasPermission } = usePermission();
   const columns = createColumns(t, selectedRows, setSelectedRows, hasPermission);
   const { applySort } = useRole();
-  const { data, paginationConfig, setPageNumber, isLoading, refreshData, setMessage } = useRole();
+  const { data, paginationConfig, setPageNumber, isLoading, refreshData, setMessage, isError, error } = useRole();
   const dispatch = useDispatch();
   const showCardView = useResponsiveView();
 
@@ -116,6 +116,7 @@ const RolesDataTable = () => {
         defaultExpandedCardView={true}
         noDataComponent={
           <EmptyDataTable
+            error={isError && error}
             isLoading={isLoading}
             image={EmptyDataImage}
             heading={t('message.emptyTableTitle')}
