@@ -6,28 +6,28 @@ export const getTabs = (t) => [
   {
     id: ORDER_TABS.SUBMITTED_BUY_AND_BILL,
     configName: t('labels.tabs.submittedBuyAndBill'),
-    isActive: true,
+    isActiveTab: true,
     sequence: 1,
     labelForMobile: t('labels.tabs.submittedBuyAndBill')
   },
   {
     id: ORDER_TABS.SUBMITTED_SP,
     configName: t('labels.tabs.submittedSp'),
-    isActive: false,
+    isActiveTab: false,
     sequence: 2,
     labelForMobile: t('labels.tabs.submittedSp')
   },
   {
     id: ORDER_TABS.PENDING_SUBMISSION,
     configName: t('labels.tabs.pendingSubmission'),
-    isActive: false,
+    isActiveTab: false,
     sequence: 3,
     labelForMobile: t('labels.tabs.pendingSubmission')
   },
   {
     id: ORDER_TABS.PENDING_APPROVAL,
     configName: t('labels.tabs.pendingApproval'),
-    isActive: false,
+    isActiveTab: false,
     sequence: 4,
     labelForMobile: t('labels.tabs.pendingApproval')
   }

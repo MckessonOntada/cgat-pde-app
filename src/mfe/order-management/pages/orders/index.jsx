@@ -51,17 +51,13 @@ const OrderIndex = () => {
     ];
   }, [activeTab]);
 
-  const setActiveTab = (activeTab) => {};
-
-  const handleOnTabChange = (tab) => {
-    setTabKey(tab.id);
-    setTabList(
-      tabList.map((tab) => ({
-        ...tab,
-        isActiveTab: tab.id === activeTab
-      }))
-    );
-    changeTab(tab.id);
+  const handleOnTabChange = (newTab) => {
+    const newTabs = tabList.map((tab) => ({
+      ...tab,
+      isActiveTab: tab.id === newTab.id
+    }));
+    setTabList(newTabs);
+    changeTab(newTab.id);
   };
 
   const handleOnClick = () => {
@@ -82,7 +78,9 @@ const OrderIndex = () => {
     //   }
     // }
   }, [activeTabFromState]);
-  console.log(tabList);
+
+  const currentTab = (tabList && tabList.find((tab) => tab?.['isActiveTab'])) || {};
+  console.log(currentTab);
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-body">
@@ -119,7 +117,7 @@ const OrderIndex = () => {
                 aria-label={t('controls.ariaLabels.orderTabList')}
               />
             </div>
-            <div className="MCP-CardContainer" key={tabKey}>
+            <div className="MCP-CardContainer" key={currentTab.id}>
               <CommonFilters
                 onApplyFilters={applyFilters}
                 onClearFilters={clearFilters}
