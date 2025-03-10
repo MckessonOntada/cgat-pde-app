@@ -1,5 +1,4 @@
 import React from 'react';
-import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import EmptyDataTable from '@src/components/EmptyTable';
 import { Badge, DropdownMenu, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';

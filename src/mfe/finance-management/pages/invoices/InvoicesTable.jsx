@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Badge, Button, Loader, DropdownMenu } from '@mckesson/mcp-component-library';
 import { Link } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
-import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { usePaymentInvoices } from '../../context/PaymentsInvoicesContext';
 import { FormattedNumber } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
@@ -83,7 +82,7 @@ export default function InvoicesTable() {
       id: 'billDate',
       wrap: true,
       width: '120px',
-      cell: (props) => dayjs(props?.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'
+      cell: (props) => (dayjs(props?.billDate, 'DD/MM/YYYY').isValid() ? dayjs(props?.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') : '-')
     },
     {
       name: t('paymentInvoices.history.table.DueDate'),
@@ -92,7 +91,7 @@ export default function InvoicesTable() {
       sortable: true,
       wrap: true,
       id: 'dueDate',
-      cell: (props) => <div className="cellEllipse">{dayjs(props?.dueDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
+      cell: (props) => (dayjs(props?.dueDate, 'DD/MM/YYYY').isValid() ? dayjs(props?.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') : '-')
     },
     {
       name: t('paymentInvoices.history.table.OpenAmount'),

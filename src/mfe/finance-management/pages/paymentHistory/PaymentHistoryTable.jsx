@@ -54,7 +54,7 @@ export default function PaymentHistoryTable() {
       maxWidth: '180px',
       sortable: true,
       selector: (row) => `${row.purchaseOrderNo}`,
-      cell: (props) => <EclipsesTextcss str={props.purchaseOrderNo || '-'} maxWidth={170} />
+      cell: (props) => <EclipsesTextcss str={props.purchaseOrderNo} maxWidth={170} />
     },
     {
       id: 'paymentMethod',
@@ -65,7 +65,7 @@ export default function PaymentHistoryTable() {
       minWidth: '140px',
       cardHeader: true,
       showInMobileHeader: true,
-      cell: (props) => <EclipsesTextcss str={props.paymentMethod || '-'} maxWidth={130} />
+      cell: (props) => <EclipsesTextcss str={props.paymentMethod} maxWidth={130} />
     },
 
     {

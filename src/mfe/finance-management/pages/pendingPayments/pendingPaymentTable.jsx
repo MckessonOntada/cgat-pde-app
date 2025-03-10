@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Button, Loader } from '@mckesson/mcp-component-library';
 import { Link } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
-import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as CrossIcon } from '../../../../assets/svg/cross-red.svg';
 import { usePendingPayments } from '../../context/PendingPaymentsContext';
 import EmptyDataTable from '@src/components/EmptyTable';
@@ -54,7 +53,10 @@ export default function PendingPaymentTable() {
       sortable: true,
       wrap: true,
       maxWidth: '160px',
-      cell: (props) => dayjs(props.paymentInitiationDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'
+      cell: (props) =>
+        dayjs(props.paymentInitiationDate, 'DD/MM/YYYY').isValid()
+          ? dayjs(props.paymentInitiationDate, 'DD/MM/YYYY').format('MM/DD/YYYY')
+          : '-'
     },
     {
       id: 'authorizedAmt',

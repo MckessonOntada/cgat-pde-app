@@ -8,7 +8,6 @@ import { FormattedNumber } from 'react-intl';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import dayjs from 'dayjs';
-import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { useAccountContext } from '../../context/AccountContext';
 import useResponsiveView from '@src/hooks/useResponsiveView';
@@ -51,7 +50,7 @@ export default function CustomerStatementTable() {
       width: '100px',
       sortable: true,
       wrap: true,
-      cell: (props) => dayjs(props.date, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'
+      cell: (props) => (dayjs(props.date, 'DD/MM/YYYY').isValid ? dayjs(props.date, 'DD/MM/YYYY').format('MM/DD/YYYY') : '-')
     },
     {
       id: 'statementBalance',
