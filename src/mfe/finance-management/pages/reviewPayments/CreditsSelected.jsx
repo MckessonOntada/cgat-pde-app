@@ -65,7 +65,7 @@ function CreditsSelected(props) {
       cardHeader: true,
       cell: (props) => (
         <div>
-          <EclipsesTextcss str={props?.description || ''} maxWidth={280} />
+          <EclipsesTextcss str={props?.description} maxWidth={280} />
         </div>
       )
     },
@@ -76,7 +76,11 @@ function CreditsSelected(props) {
       wrap: true,
       minWidth: '160px',
       cell: (props) => (
-        <EclipsesTextcss className="cellEllipse" str={dayjs(props?.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'} maxWidth={240} />
+        <EclipsesTextcss
+          className="cellEllipse"
+          str={dayjs(props?.billDate, 'DD/MM/YYYY').isValid() ? dayjs(props?.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') : '-'}
+          maxWidth={240}
+        />
       )
     },
     {
@@ -86,7 +90,11 @@ function CreditsSelected(props) {
       wrap: true,
       minWidth: '160px',
       cell: (props) => (
-        <EclipsesTextcss className="cellEllipse" str={dayjs(props?.dueDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'} maxWidth={240} />
+        <EclipsesTextcss
+          className="cellEllipse"
+          str={dayjs(props.dueDate, 'DD/MM/YYYY').isValid() ? dayjs(props.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') : '-'}
+          maxWidth={240}
+        />
       )
     },
     {

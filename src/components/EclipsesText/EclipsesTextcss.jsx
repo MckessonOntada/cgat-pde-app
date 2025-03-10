@@ -13,7 +13,7 @@ function EclipsesTextcss({ tooltip, str, maxWidth = 100 }) {
           textAlign: 'left',
           display: 'inline-block'
         }}>
-        {str}
+        {str || '-'}
       </span>
     </Tooltip>
   );

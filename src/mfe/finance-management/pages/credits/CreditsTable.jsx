@@ -82,7 +82,7 @@ export default function CreditsTable(props) {
       wrap: true,
       cell: (props) => (
         <div>
-          <EclipsesTextcss str={props?.description || '-'} maxWidth={280} />
+          <EclipsesTextcss str={props?.description} maxWidth={280} />
         </div>
       )
     },
@@ -93,7 +93,7 @@ export default function CreditsTable(props) {
       sortable: true,
       wrap: true,
       width: '140px',
-      cell: (props) => dayjs(props?.dueDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'
+      cell: (props) => (dayjs(props?.dueDate, 'DD/MM/YYYY').isValid ? dayjs(props?.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') : '-')
     },
     {
       id: 'billAmount',

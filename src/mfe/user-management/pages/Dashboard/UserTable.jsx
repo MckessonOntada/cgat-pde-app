@@ -236,7 +236,7 @@ function UserTable({ onActionSuccess }) {
       },
       {
         id: 'status',
-        name: <span className='statusCenter'>{t('userManagement.table.status')}</span>,
+        name: <span className="statusCenter">{t('userManagement.table.status')}</span>,
         selector: () => {},
         sortable: true,
         sortKey: 'is_active',
@@ -338,7 +338,7 @@ function UserTable({ onActionSuccess }) {
         defaultExpandedCardView={true}
         noDataComponent={
           <EmptyDataTable
-            error={isError && error.message}
+            error={isError && error}
             isLoading={isLoading}
             image={EmptyDataImage}
             heading={

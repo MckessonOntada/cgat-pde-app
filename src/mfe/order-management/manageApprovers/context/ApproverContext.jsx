@@ -64,6 +64,7 @@ export const ApproverProvider = ({ children }) => {
     isLoading: isLoadingApprovers,
     isError: isErrorApprovers,
     data: approverData,
+    error,
     refetch: refetchApprovers
   } = useQuery({
     queryKey: ['approvers', requestParams],
@@ -146,7 +147,10 @@ export const ApproverProvider = ({ children }) => {
       applySort,
       setPageNumber,
       usersData,
-      refreshData: refetchApprovers
+      refreshData: refetchApprovers,
+      error,
+      isLoadingApprovers,
+      isErrorApprovers
     }),
     [
       approverData,
@@ -158,7 +162,10 @@ export const ApproverProvider = ({ children }) => {
       applySort,
       setPageNumber,
       usersData,
-      refetchApprovers
+      refetchApprovers,
+      error,
+      isLoadingApprovers,
+      isErrorApprovers
     ]
   );
   return <ApproverContext.Provider value={ctxValue}>{children}</ApproverContext.Provider>;
