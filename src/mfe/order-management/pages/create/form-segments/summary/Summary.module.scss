@@ -4,6 +4,11 @@
   font-weight: var(--brand-font-weight-600);
   border-bottom: 1px solid var(--brand-color-grey-scale-warm-1);
 }
+.orderSummaryHeading{
+  @media only screen and (max-width: 576px) {
+    display: none;
+  }
+}
 
 .actionLink {
   display: flex;
@@ -19,6 +24,18 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+  @media only screen and (max-width: 576px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px; //spacing is not avilable for 12px
+  }
+  .price-wrapper {
+    .fieldValue {
+      @media only screen and (max-width: 576px) {
+        justify-content: flex-start;
+      }
+    }
+  }
 }
 
 .price {

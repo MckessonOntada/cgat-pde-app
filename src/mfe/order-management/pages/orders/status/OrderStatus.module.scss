@@ -9,11 +9,23 @@
   align-items: center;
   justify-content: flex-start;
   gap: var(--spacing-03);
+  @media only screen and (max-width: 576px) {
+    align-items: flex-start;
+    gap: var(--spacing-02);
+  }
+  svg{
+    @media only screen and (max-width: 576px) {
+      transform: scale(0.7);
+    }
+  }
 }
 
 
 .customModuleHeader {
   margin: var(--spacing-04) 0px;
+  @media only screen and (max-width: 576px) {
+    margin: 0px
+  }
 }
 
 .statusBreadcrumb {

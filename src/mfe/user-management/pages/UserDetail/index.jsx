@@ -6,6 +6,7 @@ import { Badge, Button, Heading, Switch, Alert, Modal, CheckboxGroup, IconButton
 import './index.scss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
+import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { PATHS } from '../../routes/constants';
 import ModuleHeader from '@src/components/module-header';
 import { useQuery, useMutation } from 'react-query';
@@ -251,11 +252,11 @@ const UserDetail = () => {
   }
   return (
     <div className="MCP-module-wrapper">
-      <div className="back-navigation py2 capitalize" onClick={goBack} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-        <MdOutlineKeyboardArrowLeft size="24px" />
-        <p>{t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}</p>
+      <div>
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={goBack} size="md">
+          {t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}
+        </Button>
       </div>
-
       {(isDeactivate || isProvisioned) && isAlertVisible && (
         <Alert description={alertDescription} onClose={handleAlertClose} type={alertType} duration={duration} />
       )}

@@ -10,6 +10,9 @@
   border-radius: var(--brand-border-radius--8);
   background-color: var(--brand-color-background-white);
   width: 100%;
+  @media only screen and (max-width: 576px) {
+    padding: var(--spacing-03);
+  }
 }
 
 .MCP-Icon-Button {
@@ -82,6 +85,9 @@ div.disable-all {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-05);
+  @media only screen and (max-width: 576px) {
+    gap: var(--spacing-04);
+  }
 
   .MCP-module-body {
     display: flex;
@@ -354,7 +360,7 @@ div.disable-all {
   flex-direction: column;
   width: 100%;
   height: auto;
-  gap: var(--spacing-05);
+  gap: var(--spacing-03);
   // padding: var(--spacing-04);
   // border: 1px solid var(--brand-color-patient-primary-3);
   // border-radius: var(--brand-border-radius--8);
@@ -395,6 +401,9 @@ div.disable-all {
   .fieldValue {
     font-size: var(--brand-font-size--large);
     justify-content: flex-end;
+    @media only screen and (max-width: 576px) {
+      justify-content: flex-start;
+    }
   }
 
   &.col-span-4 {
@@ -520,9 +529,22 @@ div.disable-all {
   color: var(--brand-color-primary-blue);
 }
 
-.agreement-checkbox-control,
 .agreement-checkbox-control legend {
   font-size: var(--brand-font-size--small);
+}
+
+.agreement-checkbox-control{
+  font-size: var(--brand-font-size--small);
+  fieldset{
+    div{
+      @media only screen and (max-width: 576px) {
+        align-items: flex-start;
+      }
+      input{
+        margin-top: var(--spacing-01);
+      }
+    }
+  }
 }
 
 [class*="Badge-module"] {
@@ -749,6 +771,9 @@ div.disable-all {
   fieldset {
     gap: var(--spacing-02);
     margin-bottom: var(--spacing-02);
+    @media only screen and (max-width: 576px) {
+      flex-direction: column;
+    }
   }
 }
 
