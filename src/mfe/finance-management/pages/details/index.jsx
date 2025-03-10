@@ -294,7 +294,6 @@ function Details(props) {
           onClose={() => setOpen(!open)}
           therapyData={TherapyDetailsConstants}
           showFooter={false}
-          useUserService={true}
           heading={t('labels.therapyDetails')}
         />
       )}
