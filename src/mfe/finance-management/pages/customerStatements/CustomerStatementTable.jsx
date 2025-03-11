@@ -20,7 +20,7 @@ export default function CustomerStatementTable() {
   const showCardView = useResponsiveView();
   const columns = [
     {
-      id: 'billNumber',
+      id: 'docNo',
       name: t('paymentInvoices.CS.table.billNumber'),
       selector: (row) => `${row.docNo}`,
       sortable: true,
