@@ -5,8 +5,8 @@ import styles from './ModuleHeader.module.scss';
 const ModuleHeader = ({ heading, controls, className=''}) => {
     return (
         <div className={`${styles.headerSegment} ${className}`}>
-           <div>{heading}</div>
-           <div>{controls}</div>
+           {heading && <div>{heading}</div>}
+           {controls && <div>{controls}</div>}
         </div>
     );
 };

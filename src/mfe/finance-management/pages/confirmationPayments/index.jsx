@@ -173,7 +173,7 @@ function ConfirmationPayments() {
 
         <div className="MCP-module-wrapper">
           <div>
-            <h1>{t('paymentInvoices.reviewPayments.credits')}</h1>
+            <Heading as="h2">{t('paymentInvoices.reviewPayments.credits')}</Heading>
           </div>
           <div id="tablist-container" className="MCP-module-body">
             <PaymentsCreditsProvider>
@@ -186,11 +186,11 @@ function ConfirmationPayments() {
         </div>
       </div>
       <div className="footer-section">
-        <Button variant="secondary" onClick={() => {}} size="sm" disabled>
+        <Button variant="secondary" onClick={() => {}} size="md" disabled>
           {t('paymentInvoices.history.filters.printSummary')}
         </Button>
         <Button
-          size="sm"
+          size="md"
           onClick={() => {
             navigate(`/record/invoices`);
           }}>

@@ -16,6 +16,8 @@ const createColumns = (t, type) => {
       sortable: true,
       wrap: true,
       minWidth: '112px',
+      showInMobileHeader: true,
+      showColumnNameInHeader: true,
       cell: (props) => <div className="cellEllipse">{props?.billNo || ''}</div>
     },
     {
@@ -25,6 +27,8 @@ const createColumns = (t, type) => {
       minWidth: '160px',
       sortable: true,
       wrap: true,
+      cardHeader: true,
+      showInMobileHeader: true,
       cell: (props) => <div>{props?.soldToAccountNumber || '-'}</div>
     }
   ];
@@ -167,7 +171,7 @@ function ConfirmationTable({ invoiceData, creditData }) {
 
   return (
     <>
-      <Heading as="h1" fontWeight="600">
+      <Heading as="h2" fontWeight="600">
         {t('paymentInvoices.table.confirmationInvoiceHeading')}
       </Heading>
       <div className="details-table">
@@ -180,7 +184,7 @@ function ConfirmationTable({ invoiceData, creditData }) {
           handleChangePage={() => {}}
           noDataComponent={'No invoice used in this payments'}
           showCardView={showCardView}
-          // defaultExpandedCardView={true}
+          defaultExpandedCardView={false}
           progressComponent={
             <div
               style={{
@@ -196,7 +200,7 @@ function ConfirmationTable({ invoiceData, creditData }) {
         />
       </div>
 
-      <Heading as="h1" fontWeight="600">
+      <Heading as="h2" fontWeight="600">
         {t('paymentInvoices.table.creditHeading')}
       </Heading>
       <div className="details-table">
@@ -209,7 +213,7 @@ function ConfirmationTable({ invoiceData, creditData }) {
           handleChangePage={() => {}}
           noDataComponent={'No credit used in this payments'}
           showCardView={showCardView}
-          defaultExpandedCardView={true}
+          defaultExpandedCardView={false}
           progressComponent={
             <div
               style={{

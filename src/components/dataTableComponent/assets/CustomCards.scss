@@ -77,7 +77,6 @@
     white-space: normal;
     flex-wrap: wrap;
     word-break: break-word;
-    align-items: center;
   }
 
   .card-details {
@@ -132,7 +131,7 @@
 
 .expand-collapse-toggle {
   padding: 0px !important;
-  margin-right: 8px;
+  margin-right: var(--spacing-01);
   align-items: center;
   display: flex;
   height: 100%;
