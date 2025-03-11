@@ -327,7 +327,7 @@ const jsxColumns = [
     right: true,
     selector: 'orderCost',
     cell: function (props) {
-      return <div className="cellEllipse align-items-right ">{props.orderCost || '00'}</div>;
+      return <div className="cellEllipse align-items-right ">{props.orderCost && `$${parseFloat(props.orderCost).toFixed(2)}`}</div>;
     }
   },
   {
