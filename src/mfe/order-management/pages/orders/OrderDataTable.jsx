@@ -28,7 +28,7 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
     if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
-  const columns = getTableColumns(tab, t);
+  const columns = getTableColumns(tab, t, alertContainerId);
 
   return (
     <>

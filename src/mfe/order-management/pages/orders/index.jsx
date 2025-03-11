@@ -80,7 +80,7 @@ const OrderIndex = () => {
   }, [activeTabFromState]);
 
   const currentTab = (tabList && tabList.find((tab) => tab?.['isActiveTab'])) || {};
-  console.log(currentTab);
+
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-body">
