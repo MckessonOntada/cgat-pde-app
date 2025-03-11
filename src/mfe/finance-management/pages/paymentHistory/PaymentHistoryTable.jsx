@@ -35,7 +35,7 @@ export default function PaymentHistoryTable() {
       name: t('paymentInvoices.history.table.confirmationNumber'),
       selector: (row) => `${row.confirmationNo}`,
       sortable: true,
-      maxWidth: '180px',
+      minWidth: '180px',
       wrap: true,
       showInMobileHeader: true,
       showColumnNameInHeader: true,
@@ -62,17 +62,18 @@ export default function PaymentHistoryTable() {
       selector: (row) => `${row.paymentMethod}`,
       wrap: true,
       sortable: true,
-      minWidth: '140px',
+      maxWidth: '180px',
       cardHeader: true,
       showInMobileHeader: true,
-      cell: (props) => <EclipsesTextcss str={props.paymentMethod} maxWidth={130} />
+      cell: (props) => <EclipsesTextcss str={props.paymentMethod} maxWidth={170} />
     },
 
     {
       id: 'paymentInitiationDate',
       name: t('paymentInvoices.history.table.paymentInitiationDate'),
       selector: (row) => `${row.paymentInitiationDate}`,
-      minWidth: '160px',
+      minWidth: '140px',
+      maxWidth: '180px',
       sortable: true,
       cell: (props) => CommonUtils.convertDateStringFormat(props?.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
@@ -80,14 +81,14 @@ export default function PaymentHistoryTable() {
       id: 'paymentStatus',
       name: t('paymentInvoices.history.table.paymentStatus'),
       selector: (row) => `${row.paymentStatus}`,
-      sortable: true,
-      width: '140px',
+      minWidth: '140px',
       center: true,
       showInMobileHeader: true,
       cell: (props) => (
         <div className="status-container">
           {PAYMENT_STATUS[props?.paymentStatus.toUpperCase()] ? (
             <Badge
+              customStyle={{ minWidth: '140px' }}
               text={PAYMENT_STATUS[props?.paymentStatus.toUpperCase()].label}
               type={`${PAYMENT_STATUS[props?.paymentStatus.toUpperCase()].color}-high`}
             />
@@ -102,7 +103,6 @@ export default function PaymentHistoryTable() {
       name: t('paymentInvoices.history.table.totalAuthorizedPaymentAmt'),
       selector: (row) => `${row.totalAuthorizedPaymentAmount}`,
       minWidth: '120px',
-      maxWidth: '220px',
       sortable: true,
       cell: (props) => (
         <div className="cellEllipse align-items-right">
