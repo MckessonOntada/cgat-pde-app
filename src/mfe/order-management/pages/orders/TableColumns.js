@@ -25,207 +25,135 @@ const getColorByStatus = (status) => {
   return statusColors[status] || 'info';
 };
 
-const getOptionsByStatus = function (props) {
-  const { id, status, __meta: { translate, tab, alertContainerId } = {} } = this || {};
+const getOptionsByStatus = (props) => {
+  const { id, status, __meta: { translate, tab, alertContainerId } = {} } = props || {};
 
-  const options = [];
   const navigate = useNavigate();
   const loggedInUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
   const { refreshData, assginedGroupsData } = useOrders();
   const { hasPermission } = usePermission();
-  const assignMutation = useMutation(() => OrderService.setOrderAssignToMe(id), {
-    onSuccess: (result) => {
-      navigate(`${id}/summary`, { state: { isApprover: true } });
-    },
-    onError: (err) => {
-      const errorKey = handleApiError(err);
-      showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
-    }
+
+  // Mutations
+  const { mutate: assignToMe } = useMutation(() => OrderService.setOrderAssignToMe(id), {
+    onSuccess: () => navigate(`${id}/summary`, { state: { isApprover: true } }),
+    onError: (err) => showAlert({ description: t(handleApiError(err)), type: 'error', anchorEl: alertContainerId })
   });
 
-  const unassignMutation = useMutation(() => OrderService.setOrderUnassignToMe(id), {
-    onSuccess: (result) => {
+  const { mutate: unassignFromMe } = useMutation(() => OrderService.setOrderUnassignToMe(id), {
+    onSuccess: () => {
       refreshData();
       showAlert({ description: translate('messages.success.release'), type: 'success', anchorEl: alertContainerId });
     },
-    onError: (err) => {
-      const errorKey = handleApiError(err);
-      showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
-    }
+    onError: (err) => showAlert({ description: t(handleApiError(err)), type: 'error', anchorEl: alertContainerId })
   });
 
-  const deleteMutation = useMutation(() => OrderService.deleteOrder(id), {
-    onSuccess: (result) => {
+  const { mutate: deleteOrder } = useMutation(() => OrderService.deleteOrder(id), {
+    onSuccess: () => {
       refreshData();
       showAlert({ description: translate('messages.success.delete'), type: 'success', anchorEl: alertContainerId });
     },
-    onError: (error) => {
-      const errorKey = handleApiError(err);
-      showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
-    }
+    onError: (err) => showAlert({ description: t(handleApiError(err)), type: 'error', anchorEl: alertContainerId })
   });
 
-  const { mutate: discardCurrentOrderVersion } = useMutation(async (orderId) => await OrderService.discardCurrentOrderVersion(orderId), {
-    onSuccess: (response) => {
+  const { mutate: discardVersion } = useMutation((orderId) => OrderService.discardCurrentOrderVersion(orderId), {
+    onSuccess: () => {
       refreshData();
       showAlert({ description: translate('message.success.discardVersionChanges'), type: 'success', anchorEl: alertContainerId });
     },
-    onError: (error) => {
-      const errorKey = handleApiError(err);
-      showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
-    }
+    onError: (err) => showAlert({ description: t(handleApiError(err)), type: 'error', anchorEl: alertContainerId })
   });
 
-  const handleDelete = async (orderId) => {
-    deleteMutation.mutate();
-  };
-
-  const doesApproverGroupExist = (approverGroupIds, assginedGroupsData) => {
-    if (!approverGroupIds || !assginedGroupsData || !CommonUtils.isNonEmptyObject(assginedGroupsData)) return false;
-    const groupDataArray = Array.isArray(assginedGroupsData) ? assginedGroupsData : [];
-    return approverGroupIds.some((id) => groupDataArray?.includes(id));
-  };
-
   const handleOnOptionSelection = (value) => {
-    if (value === 'view') {
-      if (props.status === ORDER_STATUS.SUBMITTED) {
-        navigate(`${id}/summary`, { state: { isEdit: true } });
-      } else navigate(`${id}/summary`);
-    }
-    if (value === 'resume') {
-      if (props.status === ORDER_STATUS.SUBMITTED) {
-        navigate(getPathByOrderStage(props), { state: { isEdit: true } });
-      } else navigate(getPathByOrderStage(props), { state: { isSimulate: true } });
-    }
-    if (value === 'delete') {
-      renderModal({
-        title: translate('labels.confirmation'),
-        bodyContent: <h3>{translate('labels.orderActions.deletemessage')}</h3>,
-        footerActions: {
-          cancel: {
-            label: translate('label.no')
-          },
-          confirm: {
-            label: translate('label.yes'),
-            action: () => {
-              handleDelete();
-            }
+    switch (value) {
+      case 'view':
+        navigate(`${id}/summary`, { state: props.status === ORDER_STATUS.SUBMITTED ? { isEdit: true } : {} });
+        break;
+      case 'resume':
+        navigate(getPathByOrderStage(props), { state: props.status === ORDER_STATUS.SUBMITTED ? { isEdit: true } : { isSimulate: true } });
+        break;
+      case 'delete':
+        renderModal({
+          title: translate('labels.confirmation'),
+          bodyContent: <h3>{translate('labels.orderActions.deletemessage')}</h3>,
+          footerActions: {
+            cancel: { label: translate('label.no') },
+            confirm: { label: translate('label.yes'), action: () => deleteOrder() }
           }
-        }
-      });
-    }
-    if (value === 'cancel' || value === 'edit') {
-      renderModal({
-        title: translate('labels.information'),
-        bodyContent: <h3>{translate('labels.orderActions.cancelmessage')}</h3>,
-        footerActions: {
-          cancel: {
-            label: translate('labels.orderActions.OK')
-          }
-        }
-      });
-    }
-    if (value === 'review') {
-      if (props.approver?.id === loggedInUserId) {
-        navigate(`${id}/summary`, { state: { isEdit: true, isApprover: true } });
-      } else {
-        navigate(`${id}/summary`, { state: { isApprover: false } });
-      }
-    }
-    if (value === 'assign') {
-      if (props.approver != null && props.approver?.id != null) {
-        showAlert({
-          description: 'The order is currently in review by another user. Please try again after some time',
-          type: 'error',
-          anchorEl: alertContainerId
         });
-      } else {
-        assignMutation.mutate();
-      }
-    }
-    if (value === 'unassign') {
-      unassignMutation.mutate();
-    }
-    if (value === 'discard-changes-by-me') {
-      discardCurrentOrderVersion(props.id);
+        break;
+      case 'cancel':
+      case 'edit':
+        renderModal({
+          title: translate('labels.information'),
+          bodyContent: <h3>{translate('labels.orderActions.cancelmessage')}</h3>,
+          footerActions: { cancel: { label: translate('labels.orderActions.OK') } }
+        });
+        break;
+      case 'review':
+        navigate(`${id}/summary`, {
+          state: { isEdit: props.approver?.id === loggedInUserId, isApprover: props.approver?.id === loggedInUserId }
+        });
+        break;
+      case 'assign':
+        if (props.approver?.id) {
+          showAlert({
+            description: 'The order is currently in review by another user. Please try again after some time',
+            type: 'error',
+            anchorEl: alertContainerId
+          });
+        } else {
+          assignToMe();
+        }
+        break;
+      case 'unassign':
+        unassignFromMe();
+        break;
+      case 'discard-changes-by-me':
+        discardVersion(props.id);
+        break;
+      default:
+        break;
     }
   };
 
+  // Check if the approver group exists
+  const doesApproverGroupExist = (approverGroupIds, assignedGroups) => {
+    return approverGroupIds?.some((id) => assignedGroups?.includes(id)) ?? false;
+  };
+
+  let options = [];
   if (tab === 1) {
-    if (!status) return null;
-
-    if (status === ORDER_STATUS.PENDING || status === ORDER_STATUS.CANCELLED) {
-      return null;
-    }
-
-    if (status === ORDER_STATUS.IN_DRAFT) {
-      if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS)) {
-        options.unshift(
-          {
-            label: t(`labels.orderActions.resume`),
-            value: 'resume'
-          },
-          {
-            label: t(`labels.orderActions.delete`),
-            value: 'delete'
+    if (![ORDER_STATUS.PENDING, ORDER_STATUS.CANCELLED].includes(status)) {
+      if (status === ORDER_STATUS.IN_DRAFT && hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS)) {
+        options.push({ label: t(`labels.orderActions.resume`), value: 'resume' });
+        options.push({ label: t(`labels.orderActions.delete`), value: 'delete' });
+      } else if (status === ORDER_STATUS.REJECTED) {
+        options.push({ label: t(`labels.orderActions.view`), value: 'review' });
+      } else if (status === ORDER_STATUS.APPROVAL_PENDING) {
+        if (!props.approver?.id && doesApproverGroupExist(props.approverGroupIds, assginedGroupsData)) {
+          options.push({ label: t(`labels.orderActions.assignToMe`), value: 'assign' });
+        } else if (props.approver?.id === loggedInUserId) {
+          options.push({ label: t(`labels.orderActions.unassignToMe`), value: 'unassign' });
+          if (props.versionOwner) {
+            options.push({ label: t(`labels.orderActions.discardChangesByMe`), value: 'discard-changes-by-me' });
           }
-        );
-      }
-    } else if (status === ORDER_STATUS.REJECTED) {
-      options.push({
-        label: t(`labels.orderActions.view`),
-        value: 'review'
-      });
-    } else if (status === ORDER_STATUS.APPROVAL_PENDING) {
-      if ((!props.approver || props.approver?.id === null) && doesApproverGroupExist(props.approverGroupIds, assginedGroupsData)) {
-        options.push({
-          label: t(`labels.orderActions.assignToMe`),
-          value: 'assign'
-        });
-      } else if (props.approver?.id === loggedInUserId) {
-        options.push({
-          label: t(`labels.orderActions.unassignToMe`),
-          value: 'unassign'
-        });
-        if (props.versionOwner) {
-          options.push({
-            label: t(`labels.orderActions.discardChangesByMe`),
-            value: 'discard-changes-by-me'
-          });
         }
-      }
-
-      if (options.length > 0 && options[options.length - 1].value === 'unassign') {
         options.push({
-          label: t(`labels.orderActions.review`),
-          value: 'review'
-        });
-      } else {
-        options.push({
-          label: t(`labels.orderActions.view`),
+          label: t(`labels.orderActions.${options.length && options.at(-1).value === 'unassign' ? 'review' : 'view'}`),
           value: 'review'
         });
       }
     }
   } else if (tab === 2) {
     if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS)) {
-      options.push({
-        label: t(`labels.orderActions.view`),
-        value: 'view'
-      });
+      options.push({ label: t(`labels.orderActions.view`), value: 'view' });
     }
     if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS)) {
-      options.push({
-        label: t(`labels.orderActions.edit`),
-        value: 'edit'
-      });
+      options.push({ label: t(`labels.orderActions.edit`), value: 'edit' });
     }
     if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CANCEL_ORDER)) {
-      options.push({
-        label: t(`labels.orderActions.cancel`),
-        value: 'cancel'
-      });
+      options.push({ label: t(`labels.orderActions.cancel`), value: 'cancel' });
     }
   }
 
@@ -265,7 +193,7 @@ const jsxColumns = [
     cell: function (props) {
       return (
         <Link className="MCP-table-link">
-          <EclipsesTextCss str={props.backendOrderId} maxWidth={120} />
+          <EclipsesTextCss str={props.sapId} maxWidth={120} />
         </Link>
       );
     }
@@ -279,9 +207,7 @@ const jsxColumns = [
     showInMobileHeader: true,
     showColumnNameInHeader: true,
     minWidth: '140px',
-    cell: function (props) {
-      return <EclipsesTextCss str={props.id} maxWidth={130} />;
-    }
+    cell: (props) => <Tooltip body={props.id}>{props.id}</Tooltip>
   },
   {
     id: COLUMNS.PATIENT_NAME,

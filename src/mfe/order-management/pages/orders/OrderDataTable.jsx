@@ -12,8 +12,11 @@ import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import ModuleHeader from '@src/components/module-header';
 import { getTableColumns } from './TableColumns';
+import ToggleButtonGroup from './ToggleButtonGroup';
+import ToggleButton from './ToggleButton';
 
 const OrderDataTable = ({ tab, alertContainerId }) => {
+  const [selected, setSelected] = useState(null);
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { dataState: data, paginationConfig, isFetching, error, setCurrentPage, applySort, refreshData } = useOrders();
@@ -32,7 +35,17 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
 
   return (
     <>
-      <ModuleHeader heading={<TableHeading heading={t('table.ariaLabel.orderList')} />} controls={<div>[All Orders | My Orders]</div>} />
+      <ModuleHeader
+        heading={<TableHeading heading={t('table.ariaLabel.orderList')} />}
+        controls={
+          <div>
+            <ToggleButtonGroup value={selected} onChange={setSelected} exclusive>
+              <ToggleButton value="left">Left</ToggleButton>
+              <ToggleButton value="right">Right</ToggleButton>
+            </ToggleButtonGroup>
+          </div>
+        }
+      />
       <CustomDataTable
         id="order-management-order-listing"
         type={'normal'}
