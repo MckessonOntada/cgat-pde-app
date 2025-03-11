@@ -10,7 +10,7 @@ import Credits from '../credits';
 import { PaymentsCreditsProvider } from '../../context/PaymentsCreditsContext';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import ApiRoutes from '../../../../api/ApiRoutes';
 import { useAccountContext } from '../../context/AccountContext';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
@@ -35,11 +35,12 @@ function ReviewPayments() {
   const [selectedData, setSelectedData] = useState('');
   const [paymentOption, setPaymentOption] = useState('');
   const REVIEW_MODE = state?.reviewMode || false;
+  const [selectedSpecificDate, setSelectedSpecificDate] = useState('');
 
   const { data: paymentMethodsData = [], isError } = useQuery({
-    queryKey: ['paymentMethodsreviewPayments'],
+    queryKey: ['paymentMethodsreviewPayments', selectedAccount?.accountNumber],
     queryFn: async () => {
-      const url = `${ApiRoutes.PAYMENT_METHODS_LISTING(selectedAccount?.accountId)}`;
+      const url = `${ApiRoutes.PAYMENT_METHODS_LISTING(selectedAccount.accountNumber)}`;
       const payload = {
         companyCode: selectedAccount?.companyCode,
         salesOrg: selectedAccount?.salesOrg,
@@ -59,8 +60,8 @@ function ReviewPayments() {
   useEffect(() => {
     if (paymentMethodsData.cards || paymentMethodsData.banks) {
       const merged = [
-        ...paymentMethodsData.cards.map((card) => ({ type: 'Card', ...card })),
-        ...paymentMethodsData.banks.map((bank) => ({ type: 'Bank', ...bank }))
+        ...paymentMethodsData.cards.map((card) => ({ accType: 'CREDIT_CARD', ...card })),
+        ...paymentMethodsData.banks.map((bank) => ({ accType: 'BANK', ...bank }))
       ];
       setMergedData(merged);
     }
@@ -111,11 +112,11 @@ function ReviewPayments() {
   const getValue = (data) => {
     return data.map((item) => ({
       label:
-        item.type === 'Bank'
+        item.accType === 'BANK'
           ? `${FinanceUtils.maskCardNumber(item.accountNumber)}, ${item.name}`
           : `${FinanceUtils.maskCardNumber(item.number)}, ${item.holderName}, ${item?.expirationDate}`,
       value:
-        item.type === 'Bank'
+        item.accType === 'BANK'
           ? `${FinanceUtils.maskCardNumber(item.accountNumber)}, ${item.name}`
           : `${FinanceUtils.maskCardNumber(item.number)}, ${item.holderName}, ${item?.expirationDate}`,
       ...item
@@ -151,7 +152,6 @@ function ReviewPayments() {
       : location.state?.invoices
       ? location.state?.invoices.some((invoice) => dayjs(invoice.dueDate, 'DD/MM/YYYY').isBefore(dayjs()))
       : false;
-
     return selectedData
       ? [
           {
@@ -167,11 +167,14 @@ function ReviewPayments() {
             subLabel: t('paymentInvoices.reviewPayments.payDuedateDesc')
           },
           {
-            isDisabled: selectedData?.type === 'Bank',
+            isDisabled: selectedData?.accType === 'BANK',
             label: t('paymentInvoices.reviewPayments.paySpecfic'),
             value: t('paymentInvoices.reviewPayments.paySpecfic'),
             subLabel: t('paymentInvoices.reviewPayments.paySpecficDesc'),
-            subType: 'datePicker'
+            subType: 'datePicker',
+            onSubTypeChange: (value) => {
+              setSelectedSpecificDate(value);
+            }
           }
         ]
       : [
@@ -202,23 +205,142 @@ function ReviewPayments() {
     return !_valid;
   };
 
+  const {
+    mutate: payInvoices,
+    isLoading,
+    data
+  } = useMutation(
+    async (payload) => {
+      const url = `${ApiRoutes.GET_PAY_AMOUNT_URL(selectedAccount.accountNumber)}`;
+      const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+      return res.data;
+    },
+    {
+      onSuccess: (response, payload) => {
+        if (response) {
+          dispatch(closeModal());
+          let _paymentDate = Object.values(payload.paymentSchedule);
+          navigate('/record/invoices/confirmationPayments', {
+            state: {
+              ...state,
+              confirmationNumber: response.confirmationNo,
+              paymentDate: _paymentDate && _paymentDate[0],
+              invoices: selectedInvoices,
+              creditsSelected: selectedCredits,
+              selectedPayment: selectedData,
+              paymentOption: paymentOption,
+              amount: FinanceUtils.formatCurrency(invoicesSum),
+              creditAmount: FinanceUtils.formatCurrency(creditsSum),
+              amountPaid: FinanceUtils.formatCurrency(totalAmount),
+              reviewMode: true,
+              totalCreditAmount: FinanceUtils.formatCurrency(selectedCredits.reduce((sum, bill) => sum + bill.billAmount, 0))
+            },
+            replace: true
+          });
+        }
+      },
+      onError: (error) => {
+        dispatch(closeModal());
+        dispatch(
+          showSnackbar({
+            description: error?.response?.data?.message || 'Something went wrong while processing payment',
+            type: 'error'
+          })
+        );
+      }
+    }
+  );
+
+  const onConfirmPayment = () => {
+    let payload = {
+      companyCode: selectedAccount.companyCode,
+      salesOrg: selectedAccount.salesOrg,
+      payerAccountNumber: selectedAccount.accountNumber,
+      paymentSchedule: {},
+      isPartialPayment: false,
+      invoices: [],
+      credits: [],
+      paymentMethod: {}
+    };
+    let _totalAmount = 0;
+    let _totalpaymentAmount = 0;
+    state.invoices.map((item) => {
+      _totalAmount = _totalAmount + parseFloat(item.billAmount);
+      _totalpaymentAmount = _totalpaymentAmount + parseFloat(item.paymentAmount);
+    });
+    if (_totalpaymentAmount < _totalAmount) {
+      payload.isPartialPayment = true;
+    }
+    if (state.paymentOption == 'Pay Today') {
+      payload.paymentSchedule.TODAY = dayjs().format('YYYY-MM-DD');
+      setSelectedSpecificDate(dayjs().format('YYYY-MM-DD'));
+    }
+    if (state.paymentOption == 'Pay on Due Date') {
+      let _due_date = location.state?.invoices.find((item) => item.dueDate);
+      payload.paymentSchedule.DUE_DATE = dayjs(_due_date.dueDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
+      setSelectedSpecificDate(dayjs(_due_date.dueDate, 'DD/MM/YYYY').format('YYYY-MM-DD'));
+    }
+    if (state.paymentOption == 'Pay on Specific Date') {
+      payload.paymentSchedule.SPECIFIC_DATE = dayjs(selectedSpecificDate, 'MM/DD/YYYY').format('YYYY-MM-DD');
+    }
+    if (state.invoices) {
+      state.invoices.map((item) => {
+        payload.invoices.push({
+          billId: item.billNumber,
+          soldToSite: item.soldToSite,
+          description: item.description,
+          dueDate: dayjs(item.dueDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+          amount: item.billAmount,
+          openAmount: item.openAmount,
+          paymentAmount: item.paymentAmount
+        });
+      });
+    }
+    if (state.creditsSelected && state.creditsSelected.length > 0) {
+      state.creditsSelected.map((item) => {
+        payload.credits.push({
+          billNumber: item.billNumber,
+          amount: item.billAmount,
+          soldToSite: item.soldToSite
+        });
+      });
+    }
+    if (state.selectedPayment) {
+      let _selectedPayment = state.selectedPayment;
+      let _accType = _selectedPayment.accType;
+      payload.paymentMethod.paymentType = _accType;
+      if (_accType == 'BANK') {
+        payload.paymentMethod.bank = {
+          accountNumber: _selectedPayment.accountNumber,
+          name: _selectedPayment.name
+        };
+      } else {
+        let _credit = { ...{}, ..._selectedPayment };
+        delete _credit.accType;
+        delete _credit.label;
+        delete _credit.name;
+        payload.paymentMethod.credit = _credit;
+      }
+    }
+    payInvoices(payload);
+  };
+
   const onPreviewPayment = () => {
     if (REVIEW_MODE) {
-      navigate('/record/invoices/confirmationPayments', {
-        state: {
-          ...state,
-          invoices: selectedInvoices,
-          creditsSelected: selectedCredits,
-          selectedPayment: selectedData,
-          paymentOption: paymentOption,
-          amount: FinanceUtils.formatCurrency(invoicesSum),
-          creditAmount: FinanceUtils.formatCurrency(creditsSum),
-          amountPaid: FinanceUtils.formatCurrency(totalAmount),
-          reviewMode: true,
-          totalCreditAmount: FinanceUtils.formatCurrency(selectedCredits.reduce((sum, bill) => sum + bill.billAmount, 0))
-        },
-        replace: true
-      });
+      const param = {};
+      param.title = t('paymentInvoices.reviewPayments.confirm');
+      param.body = <div className="MCP-modal-body">{'Ready to pay the selected invoices?'}</div>;
+      param.footer = (
+        <div className="controls">
+          <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+            Cancel
+          </Button>
+          <Button size="md" variant="primary" onClick={onConfirmPayment}>
+            Confirm
+          </Button>
+        </div>
+      );
+      dispatch(openModal(param));
     } else {
       let valid = _validatePaymentAmount();
       if (valid) {

@@ -31,7 +31,7 @@ export const PaymentOptionsControls = (props) => {
         data-testid="radio-container">
         <Legend fontSize={'var(--brand-font-size--small)'} className={styles.labelContainer} styles={labelCustomStyles}>
           {caption}
-          {isRequired && <span className='required'>*</span>}
+          {isRequired && <span className="required">*</span>}
         </Legend>
 
         {items &&
@@ -70,7 +70,7 @@ export const PaymentOptionsControls = (props) => {
                       id={id + '-sub-radio-field-' + index}
                       name={item.value}
                       value={''}
-                      onChange={(e) => console.log(e)}
+                      onChangeFn={(e) => item.onSubTypeChange(e)}
                       isDisabled={item.isDisabled || item.value !== value}
                       isShowLabel={false}
                     />
