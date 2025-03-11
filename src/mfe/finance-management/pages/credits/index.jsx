@@ -5,7 +5,7 @@ import './index.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Button } from '@mckesson/mcp-component-library';
 import { usePaymentCredits } from '../../context/PaymentsCreditsContext';
- 
+
 export default function Credits(props) {
   const { t } = useTranslate();
   const { applyFilters, clearFilters, actualData, exportExcel } = usePaymentCredits();
@@ -23,7 +23,7 @@ export default function Credits(props) {
         name: 'dueDate',
         startDateLabel: t('paymentInvoices.invoicesTable.filter.dueDateStart'),
         endDateLabel: t('paymentInvoices.invoicesTable.filter.dueDateEnd')
-      },
+      }
     ];
   }, []);
   return (
@@ -33,7 +33,7 @@ export default function Credits(props) {
           onApplyFilters={applyFilters}
           onClearFilters={clearFilters}
           additionalFilters={AdditionalFiltersConfig}
-          searchPlaceholder={t('paymentInvoices.filter.search')}
+          searchPlaceholder={t('paymentInvoices.filter.searchByBill')}
           actualData={actualData}
         />
       </div>
@@ -41,7 +41,7 @@ export default function Credits(props) {
       <div className="MCP-table-wrapper credit-table-container">
         {!props.selectableRows && (
           <div className="table-header">
-            <Button variant="secondary" onClick={() => exportExcel()} size="sm" >
+            <Button variant="secondary" onClick={() => exportExcel()} size="sm">
               {t('paymentInvoices.CS.ExportExcel')}
             </Button>
           </div>
