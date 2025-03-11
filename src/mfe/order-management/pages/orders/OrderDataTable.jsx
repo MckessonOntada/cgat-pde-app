@@ -14,9 +14,16 @@ import ModuleHeader from '@src/components/module-header';
 import { getTableColumns } from './TableColumns';
 import ToggleButtonGroup from './ToggleButtonGroup';
 import ToggleButton from './ToggleButton';
+import { TOGGLE_FILTERS } from './config';
 
 const OrderDataTable = ({ tab, alertContainerId }) => {
+  const toggleFilters = TOGGLE_FILTERS[tab];
   const [selected, setSelected] = useState(null);
+  React.useEffect(() => {
+    setSelected(() => {
+      return toggleFilters && Array.isArray(toggleFilters) && toggleFilters[0];
+    });
+  }, [tab]);
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { dataState: data, paginationConfig, isFetching, error, setCurrentPage, applySort, refreshData } = useOrders();
@@ -40,8 +47,11 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
         controls={
           <div>
             <ToggleButtonGroup value={selected} onChange={setSelected} exclusive>
-              <ToggleButton value="left">Left</ToggleButton>
-              <ToggleButton value="right">Right</ToggleButton>
+              {toggleFilters.map((filter, index) => (
+                <ToggleButton key={index} value={filter}>
+                  {filter}
+                </ToggleButton>
+              ))}
             </ToggleButtonGroup>
           </div>
         }

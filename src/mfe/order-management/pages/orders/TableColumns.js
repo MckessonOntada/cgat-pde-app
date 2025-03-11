@@ -210,6 +210,17 @@ const jsxColumns = [
     cell: (props) => <Tooltip body={props.id}>{props.id}</Tooltip>
   },
   {
+    id: COLUMNS.ORDER_ID,
+    name: 'labels.orderId',
+    selector: () => {},
+    sortable: true,
+    sortKey: 'id',
+    showInMobileHeader: true,
+    showColumnNameInHeader: true,
+    minWidth: '140px',
+    cell: (props) => <Tooltip body={props.id}>{props.orderId}</Tooltip>
+  },
+  {
     id: COLUMNS.PATIENT_NAME,
     name: 'labels.patientName',
     selector: () => {},
@@ -241,11 +252,16 @@ const jsxColumns = [
     sortable: true,
     sortKey: 'author?.name',
     maxWidth: '130px',
-    cell: function (props) {
-      return (
-        <EclipsesTextCss tooltip={props.createdBy?.userName} str={props.createdBy?.name} maxWidth={120} className={'MCP-table-cell'} />
-      );
-    }
+    cell: (props) => <Tooltip body={props.createdBy?.userName}>{props.createdBy?.userName}</Tooltip>
+  },
+  {
+    id: COLUMNS.ASSIGNEE,
+    name: 'table.columns.captions.assignee',
+    selector: () => {},
+    sortable: true,
+    sortKey: 'author?.name',
+    maxWidth: '130px',
+    cell: (props) => props.assignee
   },
   {
     id: COLUMNS.CREATED_ON,
@@ -283,6 +299,7 @@ const jsxColumns = [
       return <span>{props.submittedOn ? CommonUtils.convertDateStringFormat(props.submittedOn, 'MM-DD-YYYY') : '-'}</span>;
     }
   },
+
   {
     id: COLUMNS.STATUS,
     name: 'table.columns.captions.status',

@@ -142,6 +142,7 @@ export const MessageEs = {
   'labels.sapId': 'S_SAP ID',
   'labels.therapy': 'S_Therapy',
   'table.columns.captions.author': 'S_Author',
+  'table.columns.captions.assignee': 'S_Assignee',
   'table.columns.captions.createdOn': 'S_Created On',
   'table.columns.captions.status': 'S_Status',
   'table.columns.captions.submittedBy': 'S_Submitted By',

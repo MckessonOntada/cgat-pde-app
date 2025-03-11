@@ -1076,12 +1076,17 @@ div.disable-all {
 }
 
 
-// div[role="row"] {
-//   div[role="cell"] {
-//     white-space: nowrap;
-//     overflow: hidden;
-//     text-overflow: ellipsis;
-//     display: block;
-//     width: 100%;
-//   }
-// }
+div[role="row"] {
+  div[role="cell"] {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-02);
+
+    span {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
+}
