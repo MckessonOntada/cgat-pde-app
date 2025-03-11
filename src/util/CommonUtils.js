@@ -256,7 +256,7 @@ const convertDateStringFormat = (dateString, outputformat = 'MM-DD-YYYY', inputF
   } else {
     parsedDate = dayjs(dateString, inputFormat, true);
   }
-  console.log('pare', parsedDate.isValid(), parsedDate.format(outputformat));
+
   return parsedDate.isValid() ? parsedDate.format(outputformat) : '-';
 };
 
