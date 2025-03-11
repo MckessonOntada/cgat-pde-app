@@ -12,7 +12,7 @@ export const ManageAccountMessagesEN = {
   'ManageAccount.Preview': 'PREVIEW',
   'ManageAccount.BacktoPage': 'BACK TO MANAGE ACCOUNT PAGE',
   'ManageAccount.headings.manageAccount': 'Manage Account',
-  'ManageAccount.controls.placeholder.Accounts.search': 'Search by Account Name, NDC, UDI...',
+  'ManageAccount.controls.placeholder.Accounts.search': 'Search by Account Name...',
   'ManageAccount.table.ariaLabel.accountList': 'Account Listing',
   'ManageAccount.emptyTableTitle': 'No Accounts found',
   'ManageAccount.emptyTableSubtitle': 'You need to select organizations or add Accounts to organizations to see data in this table.',
