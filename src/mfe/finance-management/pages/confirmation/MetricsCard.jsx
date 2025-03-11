@@ -21,8 +21,10 @@ const MetricsCard = ({ selectedAccount, invoiceDetails, billDates }) => {
 
   return (
     <>
-      {renderAccountInfo()}
-      {invoiceDetails && <DetailsFlexGrid invoiceDetails={invoiceDetails} />}
+      <div className='details-header-card'>
+        {renderAccountInfo()}
+        {invoiceDetails && <DetailsFlexGrid invoiceDetails={invoiceDetails} />}
+      </div>
       {billDates && <DetailMetrics data={billDates} />}
     </>
   );

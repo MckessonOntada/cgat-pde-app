@@ -3,6 +3,9 @@
 //  @include mixins.respond(sm) {}
 
 .reviewPayments {
+  @media only screen and (max-width: 576px) {
+    padding-bottom: var(--spacing-14);
+  }
   .reviewPaymentsContent {
     width: 100%;
     display: flex;

@@ -114,11 +114,11 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
       <Button
         variant="secondary"
         onClick={type === PATHS.paymentHistory ? handleDownload : () => {}}
-        size="sm"
+        size="md"
         disabled={type !== PATHS.paymentHistory}>
         {type === PATHS.paymentHistory ? t('paymentInvoices.CS.ExportExcel') : t('paymentInvoices.history.filters.printSummary')}
       </Button>
-      <Button onClick={type === PATHS.paymentHistory ? () => {} : handleExport} size="sm" disabled={type === PATHS.paymentHistory}>
+      <Button onClick={type === PATHS.paymentHistory ? () => {} : handleExport} size="md" disabled={type === PATHS.paymentHistory}>
         {type === PATHS.paymentHistory ? t('paymentInvoices.Details.print') : t('paymentInvoices.history.filters.downloadExcel')}
       </Button>
     </div>
@@ -127,7 +127,7 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
   return (
     <div className="view-details-container">
       <div>{renderBackButton()}</div>
-      <Heading>{`Confirmation - ${confirmationNumber}`}</Heading>
+      <Heading as="h1">{`Confirmation - ${confirmationNumber}`}</Heading>
       <div className="details-card-wrapper">{renderMetricsCard()}</div>
       <ConfirmationTable
         invoiceData={state?.invoices}
