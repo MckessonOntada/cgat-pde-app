@@ -253,7 +253,7 @@ export const MessageEs = {
   'label.no': 'S_No',
   'messages.formNotFound': 'S_Form Not Found',
   'messages.orderSuccessApprovalPending': 'S_Your order has been submitted successfully and is now pending for approval.',
-  'messages.orderApprovalSuccess': 'S_Your order has been approved successfully and is in line for the fulfilment.',
+  'messages.orderApprovalSuccess': 'S_Your order has been approved successfully and is in line for the fulfillment.',
   'messages.accountSelect': 'S_Please select the account to buy the therapy for',
   'messages.selectAnAccountForShippingAddress': 'S_Select an account to view the list of shipping addresses',
   'messages.orderPlacementAcknowledgement':
