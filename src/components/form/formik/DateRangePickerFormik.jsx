@@ -1,7 +1,7 @@
 import React from 'react';
 import DateRangePicker from '../DateRangePicker';
 
-export default function DateRangePickerFormik({ minDate = new Date(), maxDate = new Date(), ...props }) {
+export default function DateRangePickerFormik({ minDate = new Date('-1'), maxDate = new Date(), ...props }) {
   const { field, form } = props;
 
   const onChange = (value) => {
