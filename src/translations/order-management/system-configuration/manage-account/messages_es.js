@@ -12,7 +12,7 @@ export const ManageAccountMessagesES = {
   'ManageAccount.Preview': 'S_Preview',
   'ManageAccount.BacktoPage': 'S_BACK TO MANAGE ACCOUNT PAGE',
   'ManageAccount.headings.manageAccount': 'S_Manage Account',
-  'ManageAccount.controls.placeholder.Accounts.search': 'S_Search by Account Name...',
+  'ManageAccount.controls.placeholder.Accounts.search': 'S_Search by Account Name, Account Number...',
   'ManageAccount.table.ariaLabel.accountList': 'S_Account Listing',
   'ManageAccount.emptyTableTitle': 'S_No Accounts found',
   'ManageAccount.emptyTableSubtitle': 'S_You need to select organizations or add Accounts to organizations to see data in this table.',
