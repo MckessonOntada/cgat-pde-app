@@ -579,8 +579,8 @@ function AdditionalDetails() {
                   )}
                 </div>
 
-                <div>
-                  <div className="controls">
+                <div className='footer-wrapper'>
+                  <div className="controls footer-controls">
                     <Button size="md" variant="secondary" onClick={handleOnBack}>
                       {t('captions.btnBack')}
                     </Button>

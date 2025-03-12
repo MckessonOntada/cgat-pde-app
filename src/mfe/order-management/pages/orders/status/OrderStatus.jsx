@@ -121,13 +121,15 @@ const OrderStatus = () => {
 
         {orderStatus === 'SUBMITTED' && <OrderFlowSteps catalogConfiguration={orderDetails.catalogConfiguration} />}
       </div>
-      <div className={'controls'}>
-        <Button size="md" variant="secondary" onClick={() => printPage()}>
-          {t('captions.btnPrintSummary')}
-        </Button>
-        <Button size="md" variant="primary" onClick={() => backToOrders()}>
-          {t('captions.btnGoToOrders')}
-        </Button>
+      <div className="footer-wrapper">
+        <div className={'controls footer-controls'}>
+          <Button size="md" variant="secondary" onClick={() => printPage()}>
+            {t('captions.btnPrintSummary')}
+          </Button>
+          <Button size="md" variant="primary" onClick={() => backToOrders()}>
+            {t('captions.btnGoToOrders')}
+          </Button>
+        </div>
       </div>
     </div>
   );

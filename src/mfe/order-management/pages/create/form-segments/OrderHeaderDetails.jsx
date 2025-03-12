@@ -24,12 +24,12 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status }) {
   );
   if (accountDetails && accountDetails.soldToAccount) {
     detailsSegments.push(
-      <DetailSegment key={'sold-to-account'} label={t('labels.orderByAccountNumber')} value={accountDetails.soldToAccount.accountNumber} />
+      <DetailSegment key={'sold-to-account'} className='textCapitalize' label={t('labels.orderByAccountNumber')} value={accountDetails.soldToAccount.accountNumber} />
     );
   }
   if (accountDetails && accountDetails.shipToAccount) {
     detailsSegments.push(
-      <DetailSegment key={'ship-to-account'} label={t('labels.shipToAccountNumber')} value={accountDetails.shipToAccount.accountNumber} />
+      <DetailSegment key={'ship-to-account'} className='textCapitalize' label={t('labels.shipToAccountNumber')} value={accountDetails.shipToAccount.accountNumber} />
     );
   }
   if (patientDetailsRequired && patient) {

@@ -522,6 +522,9 @@ div.disable-all {
 .dull-text {
   color: var(--brand-color-primary-slate);
   font-size: var(--brand-font-size--default);
+  @media only screen and (max-width: 576px) {
+    font-size: var(--brand-font-size--small);
+  }
 }
 
 .action-link {
@@ -1092,5 +1095,25 @@ div.disable-all {
     align-items: center;
     flex-wrap: wrap;
     gap: var(--spacing-03);
+  }
+}
+.textCapitalize{
+  text-transform: capitalize;
+}
+.footer-wrapper{
+  @media only screen and (max-width: 576px) {
+    height:var(--spacing-14);
+  }
+  .footer-controls{
+    @media only screen and (max-width: 576px) {
+      position: fixed;
+      bottom: 0px;
+      padding: var(--spacing-03);
+      left: 0px;
+      background: var(--brand-color-background-white);
+      box-shadow: 0px 2px 8px 0px rgba(38, 44, 54, 0.3);
+      width: 100%;
+      flex-wrap: wrap;
+    }
   }
 }

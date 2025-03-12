@@ -80,6 +80,11 @@
     }
     .datatable-container {
       overflow: auto;
+      @media only screen and (max-width: 576px) {
+        gap: var(--spacing-03);
+        display: flex;
+        flex-direction: column;
+      }
     }
   }
   .footer-section {

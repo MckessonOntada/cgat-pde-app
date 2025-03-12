@@ -278,8 +278,8 @@ const AccountSelection = () => {
               </ShippingAddressProvider>
             )}
           </div>
-          <div>
-            <div className="controls">
+          <div className='footer-wrapper'>
+            <div className="controls footer-controls">
               <Button size="md" onClick={handleOnBack} variant="secondary">
                 {t('captions.btnBack')}
               </Button>
