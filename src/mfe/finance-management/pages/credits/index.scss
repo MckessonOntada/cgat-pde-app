@@ -139,4 +139,10 @@
   .rdt_TableCol {
     padding-right: var(--spacing-03);
   }
+  .credit-heading {
+    > div:first-of-type {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-02);
+    }
+  }
 }

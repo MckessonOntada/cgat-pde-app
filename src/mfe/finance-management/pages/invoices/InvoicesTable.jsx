@@ -115,6 +115,7 @@ export default function InvoicesTable() {
       wrap: true,
       id: 'status',
       showInMobileHeader: true,
+      cardStatus: true,
       cell: (props) => (
         <div className="status-container">
           {props?.status ? (

@@ -70,7 +70,7 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
   };
 
   const renderExpandIcon = (colIndex) => {
-    return colIndex === 0 && hiddenData.length > 3 ? (
+    return colIndex === 0 && hiddenData.length > 2 ? (
       <Button variant="tertiary" type="button" onClick={() => {}} className="expand-collapse-toggle">
         <img src={expanded ? arrow_down : arrow_right} alt="toggle-icon" />
       </Button>

@@ -136,13 +136,13 @@
 .filterContainer {
   display: grid;
   gap: var(--spacing-04);
-  padding: var(--spacing-04) 0;
+  padding-top: var(--spacing-02);
   background-color: var(--brand-color-background-white);
   width: auto;
 
   @include mixins.respond("sm") {
     width: 40%;
-
+    padding: var(--spacing-04) 0;
     @include mixins.respond("md") {
       width: 25%;
     }

@@ -96,6 +96,7 @@
     line-height: 18px;
     font-weight: 400;
     border-bottom: 1px solid #bac5cc;
+    padding: var(--spacing-02) 0px;
     &:last-child {
       border-bottom: none;
     }
