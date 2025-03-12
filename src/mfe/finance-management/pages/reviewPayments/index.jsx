@@ -399,31 +399,33 @@ function ReviewPayments() {
         <div>
           <div className="paymentSectionHeader">{t('paymentInvoices.reviewPayments.payment')}</div>
           <div className="payment">
-            <div className="paymentMethodContainer">
-              <div className="paymentMethod">{t('paymentInvoices.reviewPayments.selectMethod')}</div>
-              <AutoSuggestDropdown
-                suggestionList={getValue(mergedData)}
-                id="id"
-                selectedVal={getselectedValue}
-                getselectedValue={(val) => {
-                  setSelectedData(val);
-                  setPaymentOption('');
-                }}
-                onChangeInput={() => {}}
-                suggestionListContainerWidth="400px"
-              />
-            </div>
-            <div className="paymentOptionContainer">
-              <PaymentOptionsControls
-                direction="column"
-                id="radio-button-order-therapy-props.id"
-                items={getRadioItems()}
-                onChangeValue={(e) => setPaymentOption(e)}
-                onOtherTextChange={() => {}}
-                onSubRadioFieldChange={() => {}}
-                radioBtnWidth="auto"
-                value={paymentOption}
-              />
+            <div className='paymentOptionWrappee'>
+              <div className="paymentMethodContainer">
+                <div className="paymentMethod">{t('paymentInvoices.reviewPayments.selectMethod')}</div>
+                <AutoSuggestDropdown
+                  suggestionList={getValue(mergedData)}
+                  id="id"
+                  selectedVal={getselectedValue}
+                  getselectedValue={(val) => {
+                    setSelectedData(val);
+                    setPaymentOption('');
+                  }}
+                  onChangeInput={() => {}}
+                  suggestionListContainerWidth="400px"
+                />
+              </div>
+              <div className="paymentOptionContainer">
+                <PaymentOptionsControls
+                  direction="column"
+                  id="radio-button-order-therapy-props.id"
+                  items={getRadioItems()}
+                  onChangeValue={(e) => setPaymentOption(e)}
+                  onOtherTextChange={() => {}}
+                  onSubRadioFieldChange={() => {}}
+                  radioBtnWidth="auto"
+                  value={paymentOption}
+                />
+              </div>
             </div>
             <div className="invoice-sum-container">
               <div className="label">{t('paymentInvoices.reviewPayments.invoiceDesc')}</div>

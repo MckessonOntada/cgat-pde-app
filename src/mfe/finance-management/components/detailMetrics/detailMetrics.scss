@@ -5,7 +5,7 @@
   border-radius: 8px;
   border: 1px solid var(--brand-color-patient-primary-3, #b3c2c9);
   display: grid;
-  gap: 16px;
+  gap: var(--spacing-04);
   padding: var(--spacing-03);
 
   @include mixins.respond(sm) {

@@ -45,7 +45,7 @@ const PaymentMethods = () => {
 
   return (
     <React.Fragment>
-      <div className="MCP-module-body">
+      <div className="MCP-module-body paymentMethodSection">
         {showAlert && (
           <Alert
             description={t('paymentInvoices.paymentMethods.achForm.description')}

@@ -256,5 +256,10 @@ export const PaymentInvoicesES = {
   'paymentInvoices.pendingPaynemt.export.error': 'S_Pending exporting Payment .',
   'paymentInvoices.history.table.bill.id': 'S_BILL ID',
   'paymentInvoices.paymentMethods.achForm.description':
-    'S_Enrollment form in a PDF format for user to fill in offline and submit to the respective bank'
+    'S_Enrollment form in a PDF format for user to fill in offline and submit to the respective bank',
+  'paymentInvoices.table.paymentPending': 'S_Payment Pending',
+  'paymentInvoices.table.paymentHistory': 'S_Payment History',
+  'paymentInvoices.table.customerStatement': 'S_Customer Statement',
+  'paymentInvoices.table.savedBankAccount': 'S_Saved Bank Accounts',
+  'paymentInvoices.table.savedCards': 'S_Saved Cards',
 };

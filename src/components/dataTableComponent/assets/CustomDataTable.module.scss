@@ -90,7 +90,7 @@
   }
 
   .recordPerPage {
-    padding-left: 0px;
+    display: none;
   }
 
   .pagination {
@@ -139,6 +139,9 @@
     padding: 8px 0;
     justify-content: end;
     flex-grow: 2;
+    @media only screen and (max-width: 576px) {
+     padding: 0px;
+    }
   }
 }
 

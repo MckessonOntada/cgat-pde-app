@@ -125,11 +125,16 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-
+  align-items: flex-start;
   @include mixins.respond("sm") {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+  }
+}
+.paymentMethodSection{
+  @media only screen and (max-width: 576px) {
+    gap: var(--spacing-04) !important;
   }
 }

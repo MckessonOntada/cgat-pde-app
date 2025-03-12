@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import CommonFilters from '@src/components/Filters';
 import './index.scss';
-import { Button } from '@mckesson/mcp-component-library';
+import { Button, Heading } from '@mckesson/mcp-component-library';
 import CustomerStatementTable from './CustomerStatementTable';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useCustomerStatements } from '../../context/CustomerStatementsContext';
@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { useAccountContext } from '../../context/AccountContext';
 import { GeographicUtils } from '@src/util/GeographicUtil';
+import ModuleHeader from '@src/components/module-header';
 
 export default function CustomerSatements(params) {
   const { t } = useTranslate();
@@ -60,11 +61,16 @@ export default function CustomerSatements(params) {
         />
       </div>
       <div className="MCP-table-wrapper">
-        <div className="table-header">
-          <Button variant="secondary" onClick={() => onExportStatements()} size="sm">
-            {t('paymentInvoices.CS.ExportExcel')}
-          </Button>
-        </div>
+        <ModuleHeader
+          heading={<Heading as="h2">{t('paymentInvoices.table.customerStatement')}</Heading>}
+          controls={
+            <div className="table-header">
+              <Button variant="secondary" onClick={() => onExportStatements()} size="sm">
+                {t('paymentInvoices.CS.ExportExcel')}
+              </Button>
+            </div>
+          }
+        />
         <CustomerStatementTable />
       </div>
     </React.Fragment>
