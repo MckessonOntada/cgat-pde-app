@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { element } from 'prop-types';
 import { Button } from '@mckesson/mcp-component-library';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import arrow_down from '@src/assets/image/arrow_down.svg';
@@ -126,7 +126,12 @@ const Filters = ({
       validateOnBlur={false}>
       {(formik) => {
         const isAnyFilterApplied = Object.values(formik.values).some(
-          (value) => value !== '' && value !== null && value !== undefined && !(Array.isArray(value) && value.length === 0)
+          (value) =>
+            value !== '' &&
+            value !== null &&
+            value !== undefined &&
+            !(Array.isArray(value) && value.length === 0) &&
+            !(Array.isArray(value) && value.every((ele) => !ele))
         );
         return (
           <Form ref={formRef} autoComplete="off">
