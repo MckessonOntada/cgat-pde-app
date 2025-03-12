@@ -20,7 +20,7 @@ export default function CustomerStatementTable() {
   const showCardView = useResponsiveView();
   const columns = [
     {
-      id: 'billNumber',
+      id: 'docNo',
       name: t('paymentInvoices.CS.table.billNumber'),
       selector: (row) => `${row.docNo}`,
       sortable: true,
@@ -74,27 +74,28 @@ export default function CustomerStatementTable() {
       wrap: true,
       isAction: true,
       isContextMenu: false,
-      cell: (props) => (
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <PDFicon />}
-          onClick={() => {
-            exportPDF(
-              `${ApiRoutes.EXPORT_CUSTOMER_STATEMENTS({ docNo: props.docNo, accountNumber: selectedAccount?.accountNumber })}`,
-              {
-                companyCode: selectedAccount?.companyCode,
-                salesOrg: selectedAccount?.salesOrg,
-                payerAccountNumber: selectedAccount?.accountNumber,
-                documentDate: props?.date
-              },
-              'pdf'
-            );
-          }}
-          size="md">
-          {t('paymentInvoices.CS.table.exportPdf')}
-        </Button>
-      )
+      cell: (props) =>
+        props.pdfAvailable && (
+          <Button
+            className="back-button-control"
+            variant="tertiary"
+            Icon={() => <PDFicon />}
+            onClick={() => {
+              exportPDF(
+                `${ApiRoutes.EXPORT_CUSTOMER_STATEMENTS({ docNo: props.docNo, accountNumber: selectedAccount?.accountNumber })}`,
+                {
+                  companyCode: selectedAccount?.companyCode,
+                  salesOrg: selectedAccount?.salesOrg,
+                  payerAccountNumber: selectedAccount?.accountNumber,
+                  documentDate: props?.date
+                },
+                'pdf'
+              );
+            }}
+            size="md">
+            {t('paymentInvoices.CS.table.exportPdf')}
+          </Button>
+        )
     }
   ];
   const handleSort = (selectedColumn, sortDirection) => {

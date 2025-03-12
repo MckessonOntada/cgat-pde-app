@@ -256,7 +256,7 @@ const convertDateStringFormat = (dateString, outputformat = 'MM-DD-YYYY', inputF
   } else {
     parsedDate = dayjs(dateString, inputFormat, true);
   }
-  console.log('pare', parsedDate.isValid(), parsedDate.format(outputformat));
+
   return parsedDate.isValid() ? parsedDate.format(outputformat) : '-';
 };
 
@@ -377,6 +377,33 @@ function getDateRange(gapYear) {
   const prevDate = new Date(new Date().setFullYear(intYear));
 
   return [convertDate(prevDate), convertDate(date)];
+}
+
+export const validateDateRange = (value, messages = {}, allowFutureDate = true) => {
+  if (Array.isArray(messages)) messages = {};
+
+  let message = '';
+  const fromDate = value?.[0] && !isNaN(new Date(value[0])) ? new Date(value[0]) : null;
+  const toDate = value?.[1] && !isNaN(new Date(value[1])) ? new Date(value[1]) : null;
+  const today = new Date();
+
+  if ((!fromDate && toDate) || (fromDate && !toDate)) {
+    message = messages.fromDateAndToDate || 'Select Both Dates';
+  } else if (fromDate > toDate) {
+    message = messages.fromDateLessThanToDate || 'From/Start date must be before To/End date.';
+  } else if (!allowFutureDate && toDate > today) {
+    message = messages.toDateNotFuture || 'To/End date cannot be in the future';
+  }
+
+  return message || undefined;
+};
+
+export function gettenYearDate(y) {
+  var d = new Date();
+  var year = d.getFullYear();
+  var month = d.getMonth();
+  var day = d.getDate();
+  return new Date(year + y, month, day);
 }
 
 function truncateString(str, maxLength) {
@@ -504,6 +531,7 @@ const CommonUtils = Object.freeze({
   areArraysEqual,
   deepEqual,
   getDateRange,
+  validateDateRange,
   truncateString,
   formatPhoneNumber,
   getFullName,
@@ -513,7 +541,8 @@ const CommonUtils = Object.freeze({
   cleanObject,
   formatNumberWithoutSymbol,
   getCamelCase,
-  getFileSize
+  getFileSize,
+  gettenYearDate
 });
 
 export default CommonUtils;

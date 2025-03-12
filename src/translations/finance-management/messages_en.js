@@ -153,6 +153,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.table.creditHeading': 'Credit List',
   'paymentInvoices.table.therapyInfo': 'Therapy Info',
   'paymentInvoices.filter.search': 'Search by Bill No., Sold to',
+  'paymentInvoices.filter.searchByBill': 'Search by Bill No.',
   'paymentInvoices.heading.ReviewAndPay': 'Review and Pay',
   'paymentInvoices.Details.Account': 'Account',
   'paymentInvoices.reviewPayments.BackToManagePayments': 'BACK TO MANAGE PAYMENTS',

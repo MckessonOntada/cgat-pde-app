@@ -436,15 +436,15 @@ function ReviewPayments() {
         </div>
       )}
       <div className="footer-section">
-        <Button variant="secondary" onClick={() => navigate('../')} size="sm">
+        <Button variant="secondary" onClick={() => navigate('../')} size="md">
           {t('paymentInvoices.reviewPayments.cancel')}
         </Button>
         {REVIEW_MODE ? (
-          <Button onClick={onPreviewPayment} size="sm">
+          <Button onClick={onPreviewPayment} size="md">
             {`${t('paymentInvoices.reviewPayments.pay')} ${FinanceUtils.formatCurrency(totalAmount)}`}
           </Button>
         ) : (
-          <Button onClick={onPreviewPayment} size="sm" disabled={disablePreview()}>
+          <Button onClick={onPreviewPayment} size="md" disabled={disablePreview()}>
             {t('paymentInvoices.reviewPayments.previewPayment')}
           </Button>
         )}

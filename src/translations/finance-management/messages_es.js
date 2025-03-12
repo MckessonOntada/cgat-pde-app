@@ -145,6 +145,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.table.invoiceHeading': 'S_Invoice List',
   'paymentInvoices.table.creditHeading': 'S_Credit List',
   'paymentInvoices.filter.search': 'S_Search by Bill No., Sold to',
+  'paymentInvoices.filter.searchByBill': 'S_Search by Bill No.',
   'paymentInvoices.Details.GoToManagePayments': 'S_GO TO MANAGE PAYMENTS',
   'paymentInvoices.Details.ConfirmationNote':
     'S_The payment will be processed immediately. Once processed, this payment cannot be stopped or reversed.',
