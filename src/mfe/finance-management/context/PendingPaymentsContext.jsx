@@ -21,7 +21,7 @@ const RECORDS_PER_PAGE = 8;
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
-  paymentInitiationDate: [dayjs().subtract(180, 'day').format('MM/DD/YYYY'), dayjs().format('MM/DD/YYYY')]
+  paymentInitiationDate: ['', '']
 };
 
 const INITIAL_SORT_STATE = {
@@ -46,7 +46,7 @@ export const PendingPaymentsProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { showSnackbar } = useSnackbar();
   const { selectedAccount } = useAccountContext();
-
+  console.log(filterConfig);
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig((prevFilters) => ({
@@ -110,6 +110,7 @@ export const PendingPaymentsProvider = ({ children }) => {
   const clearFilters = () => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig(INITIAL_FILTER_STATE);
+    refetch();
   };
 
   const applySort = (newSortConfig) => {
@@ -120,7 +121,7 @@ export const PendingPaymentsProvider = ({ children }) => {
     }
   };
 
-  const { isFetching, isError } = useQuery({
+  const { isFetching, isError, refetch } = useQuery({
     queryKey: ['pendingPaymentsListing', selectedAccount?.id],
     queryFn: async () => {
       const url = `${ApiRoutes.PENDING_PAYMENTS_LISTING(selectedAccount?.id)}`;
