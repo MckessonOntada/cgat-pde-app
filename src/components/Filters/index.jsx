@@ -22,7 +22,6 @@ const Filters = ({
   initialData = {}
 }) => {
   const { t } = useTranslate();
-  //TODO: This useEffect is not needed. It can be removed.
 
   useEffect(() => {
     if (actualData.length === 0 && additionalFilters.length === 0) return;
@@ -79,6 +78,31 @@ const Filters = ({
     onClearFilters();
   };
 
+  const getDateKeysAndValues = (values) => {
+    return Object.keys(values)
+      .filter((key) => key.toLowerCase().includes('date')) // Find keys containing "date"
+      .reduce((acc, key) => {
+        acc[key] = values[key]; // Store raw date values
+        return acc;
+      }, {});
+  };
+
+  const validateForm = (values) => {
+    let errors = {};
+    const dateKeyValues = getDateKeysAndValues(values);
+
+    Object.keys(dateKeyValues).forEach((key) => {
+      const value = dateKeyValues[key];
+      const error = CommonUtils.validateDateRange(value);
+
+      if (error) {
+        errors[key] = error;
+      }
+    });
+
+    return errors;
+  };
+
   const isAdditionalFiltersAdded = additionalFilters && CommonUtils.isNonEmptyObject(additionalFilters);
   const initialValues = generateInitialFilterState(additionalFilters);
 
@@ -86,7 +110,15 @@ const Filters = ({
     <Formik
       enableReinitialize
       initialValues={{ ...initialValues, ...initialData }}
-      onSubmit={(values, actions) => {
+      validate={validateForm}
+      onSubmit={(values, { setSubmitting, setErrors }) => {
+        const errors = validateForm(values);
+        if (Object.keys(errors).length > 0) {
+          setTimeout(() => setErrors(errors), 0);
+          setSubmitting(false);
+          return;
+        }
+
         onApplyFilters(values);
         actions.setSubmitting(false);
       }}
@@ -97,7 +129,7 @@ const Filters = ({
           (value) => value !== '' && value !== null && value !== undefined && !(Array.isArray(value) && value.length === 0)
         );
         return (
-          <Form ref={formRef}>
+          <Form ref={formRef} autoComplete="off">
             <div className="MCP-filter-panel">
               <div className="filter-header">
                 <div className="search-box">
