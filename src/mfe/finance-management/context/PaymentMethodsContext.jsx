@@ -109,7 +109,7 @@ export const PaymentMethodsProvider = ({ children }) => {
     if (CommonUtils.isNonEmptyString(query)) {
       const lowerQuery = query.toLowerCase();
       setBankAccountsData(
-        unslicedBankAccountsData.filter((item) => item.name.toLowerCase().includes(lowerQuery) || item.accountNumber.includes(lowerQuery))
+        unslicedBankAccountsData.filter((item) => item.name?.toLowerCase().includes(lowerQuery) || item.accountNumber?.includes(lowerQuery))
       );
     } else {
       refetchPaymentMethods();
@@ -120,7 +120,7 @@ export const PaymentMethodsProvider = ({ children }) => {
     if (CommonUtils.isNonEmptyString(query)) {
       const lowerQuery = query.toLowerCase();
       setCardsData(
-        unslicedCardsData.filter((item) => item.holderName.toLowerCase().includes(lowerQuery) || item.number.includes(lowerQuery))
+        unslicedCardsData.filter((item) => item.holderName?.toLowerCase().includes(lowerQuery) || item.number?.includes(lowerQuery))
       );
     } else {
       refetchPaymentMethods();
