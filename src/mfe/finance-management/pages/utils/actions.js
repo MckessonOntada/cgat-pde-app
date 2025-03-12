@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-export const onConfirmPayment = (selectedAccount, state, payInvoices, t) => {
+export const onConfirmPayment = (selectedAccount, state, payInvoices, t, selectedSpecificDate) => {
   let payload = {
     companyCode: selectedAccount.companyCode,
     salesOrg: selectedAccount.salesOrg,
