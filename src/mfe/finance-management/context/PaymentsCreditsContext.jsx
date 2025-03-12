@@ -67,33 +67,45 @@ export const PaymentsCreditsProvider = ({ children }) => {
       setPreviousFilterConfig(filters);
     }
     let _data = [...[], ...actualData];
-    let _modifiedData = _data.filter((item) => {
-      const matchesSearchQuery = filters?.searchQuery
-        ? item.billNumber?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase())
-        : true;
-      const matchesBillDate =
-        filters?.billDate?.length === 2
-          ? filters.billDate[0] != '' && filters.billDate[1] != ''
-            ? dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(filters.billDate[0]).format('MM/DD/YYYY') &&
-              dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(filters.billDate[1]).format('MM/DD/YYYY')
-            : filters.billDate[0] != ''
-            ? dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(filters.billDate[0]).format('MM/DD/YYYY')
-            : filters.billDate[1] != ''
-            ? dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(filters.billDate[1]).format('MM/DD/YYYY')
-            : true
-          : true;
 
-      const matchesDueDate =
-        filters?.dueDate?.length === 2
-          ? filters.dueDate[0] != '' && filters.dueDate[1] != ''
-            ? dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(filters.dueDate[0]).format('MM/DD/YYYY') &&
-              dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(filters.dueDate[1]).format('MM/DD/YYYY')
-            : filters.dueDate[0] != ''
-            ? dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(filters.dueDate[0]).format('MM/DD/YYYY')
-            : filters.dueDate[1] != ''
-            ? dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(filters.dueDate[1]).format('MM/DD/YYYY')
-            : true
+    let _modifiedData = _data.filter((item) => {
+      let matchesSearchQuery = true,
+        matchesBillDate = true,
+        matchesDueDate = true;
+
+      if (filters?.searchQuery) {
+        matchesSearchQuery = filters?.searchQuery
+          ? item.billNumber?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase())
           : true;
+      }
+
+      if (filters.billDate[0] || filters.billDate[1]) {
+        const itemBillDate = dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY'),
+          filterBillStartDate = filters.billDate[0] ? dayjs(filters.billDate[0]).format('MM/DD/YYYY') : null,
+          filterBillEndDate = filters.billDate[1] ? dayjs(filters.billDate[1]).format('MM/DD/YYYY') : null;
+
+        if (filterBillStartDate && filterBillEndDate) {
+          matchesBillDate = itemBillDate >= filterBillStartDate && itemBillDate <= filterBillEndDate;
+        } else if (matchesBillDate) {
+          matchesBillDate = itemBillDate >= matchesBillDate;
+        } else if (filterBillEndDate) {
+          matchesBillDate = itemBillDate <= filterBillEndDate;
+        }
+      }
+
+      if (filters.dueDate[0] || filters.dueDate[1]) {
+        const itemDueDate = dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY'),
+          filterDueStartDate = dayjs(filters.dueDate[0]).format('MM/DD/YYYY'),
+          filterDueEndDate = dayjs(filters.dueDate[1]).format('MM/DD/YYYY');
+
+        if (filterDueStartDate && filterDueEndDate) {
+          matchesDueDate = itemDueDate >= filterDueStartDate && itemDueDate <= filterDueEndDate;
+        } else if (filterDueStartDate) {
+          matchesDueDate = itemDueDate >= filterDueStartDate;
+        } else if (filterDueEndDate) {
+          matchesDueDate = itemDueDate <= filterDueEndDate;
+        }
+      }
 
       return matchesSearchQuery && matchesBillDate && matchesDueDate;
     });
