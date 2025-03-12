@@ -279,7 +279,10 @@ function ReviewPayments() {
           <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
             Cancel
           </Button>
-          <Button size="md" variant="primary" onClick={() => onConfirmPayment(selectedAccount, state, payInvoices, t)}>
+          <Button
+            size="md"
+            variant="primary"
+            onClick={() => onConfirmPayment(selectedAccount, state, payInvoices, t, selectedSpecificDate)}>
             Confirm
           </Button>
         </div>
