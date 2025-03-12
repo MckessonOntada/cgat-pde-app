@@ -300,6 +300,7 @@ function QuestionnaireItem({ templateName, section, onDelete, showHeader, questi
             {section.actions?.map((action) => (
               <Button
                 key={action.id}
+                size="md"
                 textButton
                 onClick={() => navigate(PREVIEW_URL, { state: { isMaterial: true, questionnaire: questionnaire } })}>
                 {t(action.label)}
