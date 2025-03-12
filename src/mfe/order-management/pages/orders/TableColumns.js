@@ -348,7 +348,7 @@ export const getTableColumns = (tab, translate, alertContainerId) => {
   if (!Object.keys(TABLE_COLUMNS).includes(tab)) throw new Error('no matching columns found');
 
   const columns = TABLE_COLUMNS[tab];
-  const tableColumns = jsxColumns.filter((column) => columns.includes(column.id));
+  const tableColumns = columns.map((col) => jsxColumns.find((item) => item.id === col)).filter(Boolean);
 
   const protoObject = {
     translate,

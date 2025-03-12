@@ -87,3 +87,34 @@ export const TABLE_COLUMNS = {
     COLUMNS.ACTION
   ]
 };
+
+export const getTabs = () => [
+  {
+    id: ORDER_TABS.SUBMITTED_BUY_AND_BILL,
+    configName: 'labels.tabs.submittedBuyAndBill',
+    isActiveTab: true,
+    sequence: 1,
+    labelForMobile: 'labels.tabs.submittedBuyAndBill'
+  },
+  {
+    id: ORDER_TABS.SUBMITTED_SP,
+    configName: 'labels.tabs.submittedSp',
+    isActiveTab: false,
+    sequence: 2,
+    labelForMobile: 'labels.tabs.submittedSp'
+  },
+  {
+    id: ORDER_TABS.PENDING_SUBMISSION,
+    configName: 'labels.tabs.pendingSubmission',
+    isActiveTab: false,
+    sequence: 3,
+    labelForMobile: 'labels.tabs.pendingSubmission'
+  },
+  {
+    id: ORDER_TABS.PENDING_APPROVAL,
+    configName: 'labels.tabs.pendingApproval',
+    isActiveTab: false,
+    sequence: 4,
+    labelForMobile: 'labels.tabs.pendingApproval'
+  }
+];

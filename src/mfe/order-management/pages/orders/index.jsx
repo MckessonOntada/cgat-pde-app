@@ -5,14 +5,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { routesConfig } from './../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '../../../../components/module-header';
-import { getTabs } from './constants';
 import OrderDataTable from './OrderDataTable';
 import CommonFilters from '@src/components/Filters';
 import { useOrders } from '../../context/OrderContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import PermittedComponent from '@src/components/permitted-component';
 import usePermission from '@src/hooks/usePermissions';
-import { COLUMNS, ORDER_TABS } from './config';
+import { COLUMNS, getTabs, ORDER_TABS } from './config';
 import { getTableColumns } from './TableColumns';
 
 const OrderIndex = () => {
@@ -22,8 +21,11 @@ const OrderIndex = () => {
   const isSubmittedTab = hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS);
   const { applyFilters, clearFilters, changeTab, tabVariant } = useOrders();
   const [tabList, setTabList] = React.useState(() => {
-    const allTabs = getTabs(t);
-    changeTab();
+    const allTabs = getTabs();
+    allTabs.forEach((tab) => {
+      tab.configName = t(tab.configName);
+      tab.labelForMobile = t(tab.labelForMobile);
+    });
     return allTabs;
   });
 
