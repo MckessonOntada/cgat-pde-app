@@ -72,7 +72,7 @@ export default function InvoicesTable() {
       showInMobileHeader: true,
       cardHeader: true,
       mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
-      cell: (props) => <div>{props?.soldToSite || '-'}</div>
+      cell: (props) => <div className='textCapitalize'>{props?.soldToSite || '-'}</div>
     },
     {
       name: t('paymentInvoices.history.table.PostingDate'),

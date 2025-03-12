@@ -18,6 +18,10 @@
   display: flex;
   margin-top: 87px;
   border-radius: var(--spacing-01);
+  @media only screen and (max-width: 576px) {
+    width: 100% !important;
+    border-radius: 0px;
+  }
   .drawerWrapper{
     display: flex;
     flex-direction: column;

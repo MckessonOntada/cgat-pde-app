@@ -686,7 +686,9 @@ const Summary = () => {
               />
             </div>
           )}
-          <div className="controls">{getAllowedControls()}</div>
+          <div className='footer-wrapper'>
+            <div className="controls footer-controls">{getAllowedControls()}</div>
+          </div>
         </div>
       </div>
       {isCommentPanelOpen && (
