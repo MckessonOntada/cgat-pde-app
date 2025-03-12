@@ -74,7 +74,7 @@ function ConfirmationPayments() {
   const paymentCard = {
     [t('paymentInvoices.credits.table.amount')]: location.state?.amount,
     [t('paymentInvoices.reviewPayments.totalCredit')]: location.state?.totalCreditAmount,
-    [t('paymentInvoices.reviewPayments.creditRemaing')]: location.state?.amountPaid,
+    [t('paymentInvoices.reviewPayments.creditRemaing')]: location.state?.totalCreditsCount,
     [t('paymentInvoices.reviewPayments.amountPaid')]: location.state?.amountPaid
   };
   const confirmationData = {
