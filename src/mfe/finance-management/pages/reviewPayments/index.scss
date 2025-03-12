@@ -75,7 +75,9 @@
           font-style: normal;
           font-weight: 500;
           line-height: 20px;
-          /* 142.857% */
+          @media only screen and (max-width: 576px) {
+            text-align: left !important;
+          }
         }
 
         .accountAddress {
@@ -221,4 +223,18 @@
   line-height: var(--typography-line-height-title-headline-sm, 28px);
   letter-spacing: -0.04px;
   padding: var(--spacing-03) 0px 12px;
+}
+.paymentOptionWrappee{
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-05);
+  border-radius: 8px;
+  border: 1px solid #d9d8d7;
+  background: #fff;
+  padding: var(--spacing-03);
+  @include mixins.respond(sm) {
+    gap: var(--spacing-04);
+    border: none;
+    padding: 0px;
+  }
 }

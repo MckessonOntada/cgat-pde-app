@@ -4,6 +4,9 @@ import './index.scss';
 import InputField from '@src/components/form/InputField';
 import { useTranslate } from '@src/translations/useTranslation';
 import { usePaymentMethods } from '@src/mfe/finance-management/context/PaymentMethodsContext';
+import ModuleHeader from '@src/components/module-header';
+import { Heading } from '@mckesson/mcp-component-library';
+
 
 export default function BankAccounts(params) {
   const { t } = useTranslate();
@@ -25,6 +28,9 @@ export default function BankAccounts(params) {
           useRegister={false}
         />
       </div>
+      <ModuleHeader
+        heading={<Heading as="h2">{t('paymentInvoices.table.savedBankAccount')}</Heading>}
+      />
       <BankAccountsTable />
     </React.Fragment>
   );

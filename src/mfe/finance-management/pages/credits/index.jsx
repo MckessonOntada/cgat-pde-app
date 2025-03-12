@@ -3,9 +3,10 @@ import CommonFilters from '@src/components/Filters';
 import CreditsTable from './CreditsTable';
 import './index.scss';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Button } from '@mckesson/mcp-component-library';
+import { Button, Heading } from '@mckesson/mcp-component-library';
 import { usePaymentCredits } from '../../context/PaymentsCreditsContext';
-
+import ModuleHeader from '@src/components/module-header';
+ 
 export default function Credits(props) {
   const { t } = useTranslate();
   const { applyFilters, clearFilters, actualData, exportExcel } = usePaymentCredits();
@@ -40,10 +41,17 @@ export default function Credits(props) {
 
       <div className="MCP-table-wrapper credit-table-container">
         {!props.selectableRows && (
-          <div className="table-header">
-            <Button variant="secondary" onClick={() => exportExcel()} size="sm">
-              {t('paymentInvoices.CS.ExportExcel')}
-            </Button>
+          <div className='credit-heading'>
+              <ModuleHeader
+                heading={<Heading as="h2">{t('paymentInvoices.table.creditHeading')}</Heading>}
+                controls={
+                  <div className="table-header">
+                    <Button variant="secondary" onClick={() => exportExcel()} size="sm" >
+                      {t('paymentInvoices.CS.ExportExcel')}
+                    </Button>
+                  </div>
+                }
+              />
           </div>
         )}
         <CreditsTable

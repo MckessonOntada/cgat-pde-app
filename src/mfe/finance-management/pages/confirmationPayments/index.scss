@@ -152,7 +152,8 @@
   gap: 24px;
   flex-direction: column;
   @media only screen and (max-width: 576px) {
-    padding: var(--spacing-03);
+    padding: 0px;
+    border: none;
   }
 }
 

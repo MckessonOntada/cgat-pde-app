@@ -261,5 +261,10 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.bill.id': 'BILL ID',
 
   'paymentInvoices.paymentMethods.achForm.description':
-    'Enrollment form in a PDF format for user to fill in offline and submit to the respective bank'
+    'Enrollment form in a PDF format for user to fill in offline and submit to the respective bank',
+  'paymentInvoices.table.paymentPending': 'Payment Pending',
+  'paymentInvoices.table.paymentHistory': 'Payment History',
+  'paymentInvoices.table.customerStatement': 'Customer Statement',
+  'paymentInvoices.table.savedBankAccount': 'Saved Bank Accounts',
+  'paymentInvoices.table.savedCards': 'Saved Cards',
 };

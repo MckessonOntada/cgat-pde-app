@@ -4,7 +4,8 @@ import PendingPaymentTable from './pendingPaymentTable';
 import './index.scss';
 import { usePendingPayments } from '../../context/PendingPaymentsContext';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Button } from '@mckesson/mcp-component-library';
+import { Button, Heading } from '@mckesson/mcp-component-library';
+import ModuleHeader from '@src/components/module-header';
 
 export default function PendingPayments(params) {
   const { t } = useTranslate();
@@ -46,11 +47,16 @@ export default function PendingPayments(params) {
         />
       </div>
       <div className="MCP-table-wrapper">
-        <div className="table-header">
-          <Button variant="secondary" onClick={() => exportPDF()} size="sm" >
-            {t('paymentInvoices.CS.ExportExcel')}
-          </Button>
-        </div>
+        <ModuleHeader
+          heading={<Heading as="h2">{t('paymentInvoices.table.paymentPending')}</Heading>}
+          controls={
+            <div className="table-header">
+              <Button variant="secondary" onClick={() => exportExcel()} size="sm" >
+                {t('paymentInvoices.CS.ExportExcel')}
+              </Button>
+            </div>
+          }
+        />
         <PendingPaymentTable />
       </div>
     </React.Fragment>

@@ -84,6 +84,7 @@ export default function PaymentHistoryTable() {
       minWidth: '140px',
       center: true,
       showInMobileHeader: true,
+      cardStatus: true,
       cell: (props) => (
         <div className="status-container">
           {PAYMENT_STATUS[props?.paymentStatus.toUpperCase()] ? (
