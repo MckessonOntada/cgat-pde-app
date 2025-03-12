@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Heading, AutoSuggestDropdown } from '@mckesson/mcp-component-library';
+import { Button, Heading, AutoSuggestDropdown, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -10,7 +10,7 @@ import Credits from '../credits';
 import { PaymentsCreditsProvider } from '../../context/PaymentsCreditsContext';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import ApiRoutes from '../../../../api/ApiRoutes';
 import { useAccountContext } from '../../context/AccountContext';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
@@ -20,6 +20,9 @@ import dayjs from 'dayjs';
 import { PaymentOptionsControls } from '@src/mfe/finance-management/pages/reviewPayments/paymentControlOptions';
 import DetailMetrics from '../../components/detailMetrics/DetailMetrics';
 import CreditsSelected from './CreditsSelected';
+import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
+import { onConfirmPayment } from '../utils/actions';
+import { paymentMethod } from '../utils/constants';
 
 function ReviewPayments() {
   const { t } = useTranslate();
@@ -35,11 +38,30 @@ function ReviewPayments() {
   const [selectedData, setSelectedData] = useState('');
   const [paymentOption, setPaymentOption] = useState('');
   const REVIEW_MODE = state?.reviewMode || false;
+  const [selectedSpecificDate, setSelectedSpecificDate] = useState('');
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertDescription, setAlertDescription] = useState('');
+  const [alert, setAlert] = useState(null);
+
+  const showAlert = (type, message) => {
+    setAlert({ type });
+    setIsAlertVisible(true);
+    setAlertDescription(message);
+    const timer = setTimeout(() => {
+      setIsAlertVisible(false);
+      setAlert({ type: '', description: '' });
+    }, 10000);
+    return () => clearTimeout(timer);
+  };
+  const handleAlertClose = () => {
+    setIsAlertVisible(false);
+    //  navigate(location.pathname, { replace: true, state: { ...location.state, isSuccess: false, isReject: false } });
+  };
 
   const { data: paymentMethodsData = [], isError } = useQuery({
-    queryKey: ['paymentMethodsreviewPayments'],
+    queryKey: ['paymentMethodsreviewPayments', selectedAccount?.accountNumber],
     queryFn: async () => {
-      const url = `${ApiRoutes.PAYMENT_METHODS_LISTING(selectedAccount?.accountId)}`;
+      const url = `${ApiRoutes.PAYMENT_METHODS_LISTING(selectedAccount.accountNumber)}`;
       const payload = {
         companyCode: selectedAccount?.companyCode,
         salesOrg: selectedAccount?.salesOrg,
@@ -59,8 +81,8 @@ function ReviewPayments() {
   useEffect(() => {
     if (paymentMethodsData.cards || paymentMethodsData.banks) {
       const merged = [
-        ...paymentMethodsData.cards.map((card) => ({ type: 'Card', ...card })),
-        ...paymentMethodsData.banks.map((bank) => ({ type: 'Bank', ...bank }))
+        ...paymentMethodsData.cards.map((card) => ({ accType: paymentMethod.CREDIT_CARD, ...card })),
+        ...paymentMethodsData.banks.map((bank) => ({ accType: paymentMethod.BANK, ...bank }))
       ];
       setMergedData(merged);
     }
@@ -74,7 +96,7 @@ function ReviewPayments() {
     if (state?.creditsSelected?.length > 0 && !REVIEW_MODE) {
       setSelectedCredits(state.creditsSelected);
     }
-    state?.selectedData && setSelectedData(state.selectedData);
+    state?.selectedPayment && setSelectedData(state.selectedPayment);
     state?.paymentOption && setPaymentOption(state.paymentOption);
     if (REVIEW_MODE) {
       setSelectedInvoices(state.invoices || []);
@@ -111,11 +133,11 @@ function ReviewPayments() {
   const getValue = (data) => {
     return data.map((item) => ({
       label:
-        item.type === 'Bank'
+        item.accType === paymentMethod.BANK
           ? `${FinanceUtils.maskCardNumber(item.accountNumber)}, ${item.name}`
           : `${FinanceUtils.maskCardNumber(item.number)}, ${item.holderName}, ${item?.expirationDate}`,
       value:
-        item.type === 'Bank'
+        item.accType === paymentMethod.BANK
           ? `${FinanceUtils.maskCardNumber(item.accountNumber)}, ${item.name}`
           : `${FinanceUtils.maskCardNumber(item.number)}, ${item.holderName}, ${item?.expirationDate}`,
       ...item
@@ -151,7 +173,6 @@ function ReviewPayments() {
       : location.state?.invoices
       ? location.state?.invoices.some((invoice) => dayjs(invoice.dueDate, 'DD/MM/YYYY').isBefore(dayjs()))
       : false;
-
     return selectedData
       ? [
           {
@@ -167,11 +188,14 @@ function ReviewPayments() {
             subLabel: t('paymentInvoices.reviewPayments.payDuedateDesc')
           },
           {
-            isDisabled: selectedData?.type === 'Bank',
+            isDisabled: selectedData?.accType === paymentMethod.BANK,
             label: t('paymentInvoices.reviewPayments.paySpecfic'),
             value: t('paymentInvoices.reviewPayments.paySpecfic'),
             subLabel: t('paymentInvoices.reviewPayments.paySpecficDesc'),
-            subType: 'datePicker'
+            subType: 'datePicker',
+            onSubTypeChange: (value) => {
+              setSelectedSpecificDate(value);
+            }
           }
         ]
       : [
@@ -202,23 +226,65 @@ function ReviewPayments() {
     return !_valid;
   };
 
+  const {
+    mutate: payInvoices,
+    isLoading,
+    data
+  } = useMutation(
+    async (payload) => {
+      const url = `${ApiRoutes.GET_PAY_AMOUNT_URL(selectedAccount.accountNumber)}`;
+      const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+      return res.data;
+    },
+    {
+      onSuccess: (response, payload) => {
+        if (response) {
+          dispatch(closeModal());
+          let _paymentDate = Object.values(payload.paymentSchedule);
+          navigate('/record/invoices/confirmationPayments', {
+            state: {
+              ...state,
+              confirmationNumber: response.confirmationNo,
+              paymentDate: _paymentDate && _paymentDate[0],
+              invoices: selectedInvoices,
+              creditsSelected: selectedCredits,
+              selectedPayment: selectedData,
+              paymentOption: paymentOption,
+              amount: FinanceUtils.formatCurrency(invoicesSum),
+              creditAmount: FinanceUtils.formatCurrency(creditsSum),
+              amountPaid: FinanceUtils.formatCurrency(totalAmount),
+              reviewMode: true,
+              totalCreditAmount: FinanceUtils.formatCurrency(selectedCredits.reduce((sum, bill) => sum + bill.billAmount, 0))
+            },
+            replace: true
+          });
+        } else {
+          showAlert('error', 'Something went wrong while processing payment');
+        }
+      },
+      onError: (error) => {
+        dispatch(closeModal());
+        showAlert('error', error?.response?.data?.message || 'Something went wrong while processing payment');
+      }
+    }
+  );
+
   const onPreviewPayment = () => {
     if (REVIEW_MODE) {
-      navigate('/record/invoices/confirmationPayments', {
-        state: {
-          ...state,
-          invoices: selectedInvoices,
-          creditsSelected: selectedCredits,
-          selectedPayment: selectedData,
-          paymentOption: paymentOption,
-          amount: FinanceUtils.formatCurrency(invoicesSum),
-          creditAmount: FinanceUtils.formatCurrency(creditsSum),
-          amountPaid: FinanceUtils.formatCurrency(totalAmount),
-          reviewMode: true,
-          totalCreditAmount: FinanceUtils.formatCurrency(selectedCredits.reduce((sum, bill) => sum + bill.billAmount, 0))
-        },
-        replace: true
-      });
+      const param = {};
+      param.title = t('paymentInvoices.reviewPayments.confirm');
+      param.body = <div className="MCP-modal-body">{'Ready to pay the selected invoices?'}</div>;
+      param.footer = (
+        <div className="controls">
+          <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+            Cancel
+          </Button>
+          <Button size="md" variant="primary" onClick={() => onConfirmPayment(selectedAccount, state, payInvoices, t)}>
+            Confirm
+          </Button>
+        </div>
+      );
+      dispatch(openModal(param));
     } else {
       let valid = _validatePaymentAmount();
       if (valid) {
@@ -255,6 +321,7 @@ function ReviewPayments() {
             {t('paymentInvoices.reviewPayments.BackToManagePayments')}
           </Button>
         </div>
+        {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
         <div className="header">
           <Heading as="h1" className="heading">
             {t('paymentInvoices.heading.ReviewAndPay')}

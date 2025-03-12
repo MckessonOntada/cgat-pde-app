@@ -78,10 +78,10 @@ function ConfirmationPayments() {
     [t('paymentInvoices.reviewPayments.amountPaid')]: location.state?.amountPaid
   };
   const confirmationData = {
-    [t('paymentInvoices.reviewPayments.mckessonId')]: '123456789',
+    [t('paymentInvoices.reviewPayments.mckessonId')]: location.state?.confirmationNumber,
     [t('paymentInvoices.reviewPayments.paymentInitiatedDate')]: dayjs().format('MM/DD/YYYY'),
     [t('paymentInvoices.reviewPayments.paymentType')]: location.state?.paymentOption,
-    [t('paymentInvoices.reviewPayments.paymentDate')]: '12/12/2021', //we will include
+    [t('paymentInvoices.reviewPayments.paymentDate')]: dayjs(location.state.paymentDate, 'YYYY-MM-DD').format('MM/DD/YYYY'),
     [t('paymentInvoices.Details.Account')]: `${
       location.state?.selectedPayment?.number?.slice(-4) || location.state.selectedPayment?.accountNumber?.slice(-4)
     } - ${GeographicUtils.addressAggregator(selectedAccount)}`,
