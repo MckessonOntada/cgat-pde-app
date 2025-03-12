@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Heading, AutoSuggestDropdown } from '@mckesson/mcp-component-library';
+import { Button, Heading, AutoSuggestDropdown, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -20,6 +20,9 @@ import dayjs from 'dayjs';
 import { PaymentOptionsControls } from '@src/mfe/finance-management/pages/reviewPayments/paymentControlOptions';
 import DetailMetrics from '../../components/detailMetrics/DetailMetrics';
 import CreditsSelected from './CreditsSelected';
+import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
+import { onConfirmPayment } from '../utils/actions';
+import { paymentMethod } from '../utils/constants';
 
 function ReviewPayments() {
   const { t } = useTranslate();
@@ -36,6 +39,24 @@ function ReviewPayments() {
   const [paymentOption, setPaymentOption] = useState('');
   const REVIEW_MODE = state?.reviewMode || false;
   const [selectedSpecificDate, setSelectedSpecificDate] = useState('');
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertDescription, setAlertDescription] = useState('');
+  const [alert, setAlert] = useState(null);
+
+  const showAlert = (type, message) => {
+    setAlert({ type });
+    setIsAlertVisible(true);
+    setAlertDescription(message);
+    const timer = setTimeout(() => {
+      setIsAlertVisible(false);
+      setAlert({ type: '', description: '' });
+    }, 10000);
+    return () => clearTimeout(timer);
+  };
+  const handleAlertClose = () => {
+    setIsAlertVisible(false);
+    //  navigate(location.pathname, { replace: true, state: { ...location.state, isSuccess: false, isReject: false } });
+  };
 
   const { data: paymentMethodsData = [], isError } = useQuery({
     queryKey: ['paymentMethodsreviewPayments', selectedAccount?.accountNumber],
@@ -60,8 +81,8 @@ function ReviewPayments() {
   useEffect(() => {
     if (paymentMethodsData.cards || paymentMethodsData.banks) {
       const merged = [
-        ...paymentMethodsData.cards.map((card) => ({ accType: 'CREDIT_CARD', ...card })),
-        ...paymentMethodsData.banks.map((bank) => ({ accType: 'BANK', ...bank }))
+        ...paymentMethodsData.cards.map((card) => ({ accType: paymentMethod.CREDIT_CARD, ...card })),
+        ...paymentMethodsData.banks.map((bank) => ({ accType: paymentMethod.BANK, ...bank }))
       ];
       setMergedData(merged);
     }
@@ -75,7 +96,7 @@ function ReviewPayments() {
     if (state?.creditsSelected?.length > 0 && !REVIEW_MODE) {
       setSelectedCredits(state.creditsSelected);
     }
-    state?.selectedData && setSelectedData(state.selectedData);
+    state?.selectedPayment && setSelectedData(state.selectedPayment);
     state?.paymentOption && setPaymentOption(state.paymentOption);
     if (REVIEW_MODE) {
       setSelectedInvoices(state.invoices || []);
@@ -112,11 +133,11 @@ function ReviewPayments() {
   const getValue = (data) => {
     return data.map((item) => ({
       label:
-        item.accType === 'BANK'
+        item.accType === paymentMethod.BANK
           ? `${FinanceUtils.maskCardNumber(item.accountNumber)}, ${item.name}`
           : `${FinanceUtils.maskCardNumber(item.number)}, ${item.holderName}, ${item?.expirationDate}`,
       value:
-        item.accType === 'BANK'
+        item.accType === paymentMethod.BANK
           ? `${FinanceUtils.maskCardNumber(item.accountNumber)}, ${item.name}`
           : `${FinanceUtils.maskCardNumber(item.number)}, ${item.holderName}, ${item?.expirationDate}`,
       ...item
@@ -167,7 +188,7 @@ function ReviewPayments() {
             subLabel: t('paymentInvoices.reviewPayments.payDuedateDesc')
           },
           {
-            isDisabled: selectedData?.accType === 'BANK',
+            isDisabled: selectedData?.accType === paymentMethod.BANK,
             label: t('paymentInvoices.reviewPayments.paySpecfic'),
             value: t('paymentInvoices.reviewPayments.paySpecfic'),
             subLabel: t('paymentInvoices.reviewPayments.paySpecficDesc'),
@@ -237,93 +258,16 @@ function ReviewPayments() {
             },
             replace: true
           });
+        } else {
+          showAlert('error', 'Something went wrong while processing payment');
         }
       },
       onError: (error) => {
         dispatch(closeModal());
-        dispatch(
-          showSnackbar({
-            description: error?.response?.data?.message || 'Something went wrong while processing payment',
-            type: 'error'
-          })
-        );
+        showAlert('error', error?.response?.data?.message || 'Something went wrong while processing payment');
       }
     }
   );
-
-  const onConfirmPayment = () => {
-    let payload = {
-      companyCode: selectedAccount.companyCode,
-      salesOrg: selectedAccount.salesOrg,
-      payerAccountNumber: selectedAccount.accountNumber,
-      paymentSchedule: {},
-      isPartialPayment: false,
-      invoices: [],
-      credits: [],
-      paymentMethod: {}
-    };
-    let _totalAmount = 0;
-    let _totalpaymentAmount = 0;
-    state.invoices.map((item) => {
-      _totalAmount = _totalAmount + parseFloat(item.billAmount);
-      _totalpaymentAmount = _totalpaymentAmount + parseFloat(item.paymentAmount);
-    });
-    if (_totalpaymentAmount < _totalAmount) {
-      payload.isPartialPayment = true;
-    }
-    if (state.paymentOption == 'Pay Today') {
-      payload.paymentSchedule.TODAY = dayjs().format('YYYY-MM-DD');
-      setSelectedSpecificDate(dayjs().format('YYYY-MM-DD'));
-    }
-    if (state.paymentOption == 'Pay on Due Date') {
-      let _due_date = location.state?.invoices.find((item) => item.dueDate);
-      payload.paymentSchedule.DUE_DATE = dayjs(_due_date.dueDate, 'DD/MM/YYYY').format('YYYY-MM-DD');
-      setSelectedSpecificDate(dayjs(_due_date.dueDate, 'DD/MM/YYYY').format('YYYY-MM-DD'));
-    }
-    if (state.paymentOption == 'Pay on Specific Date') {
-      payload.paymentSchedule.SPECIFIC_DATE = dayjs(selectedSpecificDate, 'MM/DD/YYYY').format('YYYY-MM-DD');
-    }
-    if (state.invoices) {
-      state.invoices.map((item) => {
-        payload.invoices.push({
-          billId: item.billNumber,
-          soldToSite: item.soldToSite,
-          description: item.description,
-          dueDate: dayjs(item.dueDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-          amount: item.billAmount,
-          openAmount: item.openAmount,
-          paymentAmount: item.paymentAmount
-        });
-      });
-    }
-    if (state.creditsSelected && state.creditsSelected.length > 0) {
-      state.creditsSelected.map((item) => {
-        payload.credits.push({
-          billNumber: item.billNumber,
-          amount: item.billAmount,
-          soldToSite: item.soldToSite
-        });
-      });
-    }
-    if (state.selectedPayment) {
-      let _selectedPayment = state.selectedPayment;
-      let _accType = _selectedPayment.accType;
-      payload.paymentMethod.paymentType = _accType;
-      if (_accType == 'BANK') {
-        payload.paymentMethod.bank = {
-          accountNumber: _selectedPayment.accountNumber,
-          name: _selectedPayment.name
-        };
-      } else {
-        let _credit = { ...{}, ..._selectedPayment };
-        delete _credit.accType;
-        delete _credit.label;
-        delete _credit.name;
-        payload.paymentMethod.credit = _credit;
-      }
-    }
-    payInvoices(payload);
-  };
 
   const onPreviewPayment = () => {
     if (REVIEW_MODE) {
@@ -335,7 +279,7 @@ function ReviewPayments() {
           <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
             Cancel
           </Button>
-          <Button size="md" variant="primary" onClick={onConfirmPayment}>
+          <Button size="md" variant="primary" onClick={() => onConfirmPayment(selectedAccount, state, payInvoices, t)}>
             Confirm
           </Button>
         </div>
@@ -377,6 +321,7 @@ function ReviewPayments() {
             {t('paymentInvoices.reviewPayments.BackToManagePayments')}
           </Button>
         </div>
+        {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
         <div className="header">
           <Heading as="h1" className="heading">
             {t('paymentInvoices.heading.ReviewAndPay')}

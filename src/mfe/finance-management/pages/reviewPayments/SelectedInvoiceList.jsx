@@ -11,6 +11,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { PATHS } from '../../routes';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
+import CommonUtils from '@src/util/CommonUtils';
 
 function SelectedInvoiceList(props) {
   const { t } = useTranslate();
@@ -66,7 +67,7 @@ function SelectedInvoiceList(props) {
       maxWidth: '130px',
       wrap: true,
       id: 'dueDate',
-      cell: (props) => <div className="cellEllipse">CommonUtils.convertDateStringFormat(props?.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')</div>
+      cell: (props) => <div>{CommonUtils.convertDateStringFormat(props?.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
     },
     {
       name: t('paymentInvoices.history.table.BillAmount'),
