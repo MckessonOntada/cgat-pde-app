@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { paymentMethod } from './constants';
 
 export const onConfirmPayment = (selectedAccount, state, payInvoices, t, selectedSpecificDate) => {
   let payload = {
@@ -58,7 +59,7 @@ export const onConfirmPayment = (selectedAccount, state, payInvoices, t, selecte
     let _selectedPayment = state.selectedPayment;
     let _accType = _selectedPayment.accType;
     payload.paymentMethod.paymentType = _accType;
-    if (_accType == 'BANK') {
+    if (_accType == paymentMethod.BANK) {
       payload.paymentMethod.bank = {
         accountNumber: _selectedPayment.accountNumber,
         name: _selectedPayment.name
