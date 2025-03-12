@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Heading, AutoSuggestDropdown, Alert } from '@mckesson/mcp-component-library';
+import { Button, Heading, AutoSuggestDropdown, Alert, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -23,6 +23,9 @@ import CreditsSelected from './CreditsSelected';
 import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
 import { onConfirmPayment } from '../utils/actions';
 import { paymentMethod } from '../utils/constants';
+import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
+import SelectCreditsListing from './SelectCreditsListing';
+import EmptyUI from '../../EmptyUI';
 
 function ReviewPayments() {
   const { t } = useTranslate();
@@ -35,14 +38,15 @@ function ReviewPayments() {
   const { selectedAccount } = useAccountContext();
   const { showSnackbar } = useSnackbar();
   const [mergedData, setMergedData] = useState([]);
-  const [selectedData, setSelectedData] = useState('');
+  const [selectedData, setSelectedData] = useState(null);
   const [paymentOption, setPaymentOption] = useState('');
   const REVIEW_MODE = state?.reviewMode || false;
   const [selectedSpecificDate, setSelectedSpecificDate] = useState('');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alertDescription, setAlertDescription] = useState('');
   const [alert, setAlert] = useState(null);
-
+  const [searchKey, setSearchKey] = useState('');
+  const [totalCreditsCount, settotalCreditsCount] = useState(0);
   const showAlert = (type, message) => {
     setAlert({ type });
     setIsAlertVisible(true);
@@ -83,7 +87,17 @@ function ReviewPayments() {
       const merged = [
         ...paymentMethodsData.cards.map((card) => ({ accType: paymentMethod.CREDIT_CARD, ...card })),
         ...paymentMethodsData.banks.map((bank) => ({ accType: paymentMethod.BANK, ...bank }))
-      ];
+      ].map((item) => ({
+        label:
+          item.accType === paymentMethod.BANK
+            ? `${FinanceUtils.maskCardNumber(item.accountNumber)}, ${item.name}`
+            : `${FinanceUtils.maskCardNumber(item.number)}, ${item.holderName}, ${item?.expirationDate}`,
+        value:
+          item.accType === paymentMethod.BANK
+            ? `${FinanceUtils.maskCardNumber(item.accountNumber)}, ${item.name}`
+            : `${FinanceUtils.maskCardNumber(item.number)}, ${item.holderName}, ${item?.expirationDate}`,
+        ...item
+      }));
       setMergedData(merged);
     }
   }, [paymentMethodsData]);
@@ -98,6 +112,8 @@ function ReviewPayments() {
     }
     state?.selectedPayment && setSelectedData(state.selectedPayment);
     state?.paymentOption && setPaymentOption(state.paymentOption);
+    state.totalCreditsCount && settotalCreditsCount(state.totalCreditsCount);
+    state.selectedSpecificDate && setSelectedSpecificDate(state.selectedSpecificDate);
     if (REVIEW_MODE) {
       setSelectedInvoices(state.invoices || []);
     }
@@ -143,8 +159,6 @@ function ReviewPayments() {
       ...item
     }));
   };
-
-  const getselectedValue = () => selectedData?.label;
 
   const invoicesSum = useMemo(() => {
     const _sum = selectedInvoices
@@ -282,7 +296,11 @@ function ReviewPayments() {
           <Button
             size="md"
             variant="primary"
-            onClick={() => onConfirmPayment(selectedAccount, state, payInvoices, t, selectedSpecificDate)}>
+            onClick={() => {
+              dispatch(closeModal());
+              onConfirmPayment(selectedAccount, state, payInvoices, t, selectedSpecificDate);
+            }}
+            disabled={isLoading}>
             Confirm
           </Button>
         </div>
@@ -298,7 +316,9 @@ function ReviewPayments() {
             creditsSelected: selectedCredits,
             reviewMode: true,
             paymentOption: paymentOption,
-            selectedPayment: selectedData
+            selectedPayment: selectedData,
+            totalCreditsCount: FinanceUtils.formatCurrency(totalCreditsCount - creditsSum),
+            selectedSpecificDate: selectedSpecificDate
           },
           replace: true
         });
@@ -313,8 +333,36 @@ function ReviewPayments() {
     }
   };
   const disablePreview = () => {
-    return !selectedData || !paymentOption;
+    return !selectedData || (paymentOption == t('paymentInvoices.reviewPayments.paySpecfic') ? !selectedSpecificDate : !paymentOption);
   };
+
+  const onChangePayment = (value) => {
+    let _data = mergedData.find((ele) => ele.value == value);
+    setSelectedData(_data);
+  };
+  const getOptions = useMemo(() => {
+    let _data = [];
+    if (searchKey) {
+      _data = mergedData.filter((ele) => ele.value.toLowerCase().includes(searchKey.toLowerCase()));
+    } else {
+      _data = mergedData;
+    }
+    return _data;
+  }, [searchKey, mergedData]);
+
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          alignItems: 'center',
+          display: 'flex',
+          height: '50vh',
+          justifyContent: 'center'
+        }}>
+        <Loader loaderText="Loading..." />
+      </div>
+    );
+  }
 
   return (
     <div className="reviewPayments">
@@ -382,7 +430,12 @@ function ReviewPayments() {
                 <CreditsSelected />
               ) : (
                 <PaymentsCreditsProvider>
-                  <Credits selectedCredits={selectedCredits} setSelectedCredits={setSelectedCredits} selectableRows={true} />
+                  <SelectCreditsListing
+                    selectedCredits={selectedCredits}
+                    setSelectedCredits={setSelectedCredits}
+                    totalCreditsCount={totalCreditsCount}
+                    settotalCreditsCount={settotalCreditsCount}
+                  />
                 </PaymentsCreditsProvider>
               )}
             </div>
@@ -402,19 +455,22 @@ function ReviewPayments() {
         <div>
           <div className="paymentSectionHeader">{t('paymentInvoices.reviewPayments.payment')}</div>
           <div className="payment">
-            <div className='paymentOptionWrappee'>
+            <div className="paymentOptionWrappee">
               <div className="paymentMethodContainer">
-                <div className="paymentMethod">{t('paymentInvoices.reviewPayments.selectMethod')}</div>
-                <AutoSuggestDropdown
-                  suggestionList={getValue(mergedData)}
-                  id="id"
-                  selectedVal={getselectedValue}
-                  getselectedValue={(val) => {
-                    setSelectedData(val);
-                    setPaymentOption('');
-                  }}
-                  onChangeInput={() => {}}
-                  suggestionListContainerWidth="400px"
+                <MultiSelectDropdown
+                  id={'select-payment-search'}
+                  label={t('paymentInvoices.reviewPayments.selectMethod')}
+                  isMultiSelect={false}
+                  placeholder={'Search payment method'}
+                  onChange={onChangePayment}
+                  options={getOptions}
+                  variant={'async'}
+                  onSearch={(event) => setSearchKey(event)}
+                  recordsCountToEnableSearch={5}
+                  size="md"
+                  isSortEnable={false}
+                  value={selectedData?.value.toString() || ''}
+                  fieldDisplayValue={selectedData?.label ? selectedData : undefined}
                 />
               </div>
               <div className="paymentOptionContainer">
