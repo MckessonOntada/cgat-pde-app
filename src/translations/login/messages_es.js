@@ -5,7 +5,7 @@ export const LoginMessagesES = {
   'header.label.notifications': 'S_Notifications',
   'header.label.help': 'S_Help',
   'header.label.systemAdminView': 'S_System Admin View',
-  'header.label.loggedInAs': 'S_logged in as {{impersonateFullName}}',
+  'header.label.loggedInAs': 'S_Logged in as {impersonatedUsername}',
   'button.captions.exitUserView': 'S_Exit User View',
   'login.header.1': 'S_Advancing',
   'login.header.2': 'S_Health Outcomes for All',
@@ -29,5 +29,5 @@ export const LoginMessagesES = {
   'forgot.password': 'S_Forgot Password?',
   'forgot.password.submit': 'S_Forgot Password',
   'forgot.password.success': 'S_Your request to reset your password has been successfully submitted, Please check your email.',
-  'forgot.password.error': 'S_Error sending password reset email.',
+  'forgot.password.error': 'S_Error sending password reset email.'
 };

@@ -36,7 +36,6 @@ const SecondaryHeader = ({ navLinks }) => {
   const {
     organization: { removeOrganization }
   } = useSessionFeatures();
-
   const handleSystemAdminViewClick = () => {
     removeOrganization();
 
@@ -147,7 +146,7 @@ const SecondaryHeader = ({ navLinks }) => {
     if (impersonatedUsername) {
       return (
         <div className="impersonate-info-panel">
-          <p className="logged-in-label">{t('header.label.loggedInAs').replace('{{impersonateFullName}}', impersonatedUsername)}</p>
+          <p className="logged-in-label">{t('header.label.loggedInAs', { impersonatedUsername })}</p>
           <Button color="secondary" onClick={handleOnExitUserView}>
             {t('button.captions.exitUserView')}
           </Button>

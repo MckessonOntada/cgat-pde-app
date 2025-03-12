@@ -4,7 +4,7 @@ export const LoginMessagesEN = {
   'header.label.notifications': 'Notifications',
   'header.label.help': 'Help',
   'header.label.systemAdminView': 'System Admin View',
-  'header.label.loggedInAs': 'logged in as {{impersonateFullName}}',
+  'header.label.loggedInAs': 'Logged in as {impersonatedUsername}',
   'button.captions.exitUserView': 'Exit User View',
   'widget.footer.contextmessage': 'If you need further assistance, please contact support at help@mckesson.com',
   'login.header.1': 'Advancing',
@@ -29,5 +29,5 @@ export const LoginMessagesEN = {
   'forgot.password': 'Forgot Password?',
   'forgot.password.submit': 'Forgot Password',
   'forgot.password.success': 'Your request to reset your password has been successfully submitted, Please check your email.',
-  'forgot.password.error': 'Error sending password reset email.',
+  'forgot.password.error': 'Error sending password reset email.'
 };
