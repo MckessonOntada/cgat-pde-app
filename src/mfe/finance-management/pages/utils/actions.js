@@ -42,7 +42,7 @@ export const onConfirmPayment = (selectedAccount, state, payInvoices, t, selecte
         dueDate: dayjs(item.dueDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
         amount: item.billAmount,
         openAmount: item.openAmount,
-        paymentAmount: item.paymentAmount,
+        paymentAmount: parseFloat(item.paymentAmount),
         fiscalYear: item.fiscalYear
       });
     });
