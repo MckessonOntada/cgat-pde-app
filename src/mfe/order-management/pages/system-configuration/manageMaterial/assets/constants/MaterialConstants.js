@@ -4,7 +4,7 @@ export const MaterialDetailsConstants = [
     sectionData: [
       { label: 'manageMaterial.drawer.details.body.materialNumber', value: 'materialNumber' },
       { label: 'manageMaterial.drawer.details.body.materialDescription', value: 'materialDescription' },
-      { label: 'manageMaterial.drawer.details.body.ndc', value: 'ndc' },
+      { label: 'manageMaterial.drawer.details.body.ndc', value: 'ndcNumber' },
       { label: 'manageMaterial.drawer.details.body.strength', value: 'strength' },
       { label: 'manageMaterial.drawer.details.body.dosage', value: 'dosage' },
       { label: 'manageMaterial.drawer.details.body.sellingUnitCode', value: 'sellingUnitCode' },
