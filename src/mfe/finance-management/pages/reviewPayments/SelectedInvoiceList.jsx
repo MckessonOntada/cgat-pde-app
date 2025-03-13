@@ -122,7 +122,9 @@ function SelectedInvoiceList(props) {
       minWidth: '160px',
       id: 'paymentAmount',
       cell: (props, index) => (
-        <div className={`action-container ${selectedInvoices.length <= 1 ? `in-active` : ``}`} onClick={() => onRemoveInvoice(index)}>
+        <div
+          className={`action-container ${selectedInvoices.length <= 1 ? `in-active` : ``}`}
+          onClick={selectedInvoices.length <= 1 ? null : () => onRemoveInvoice(index)}>
           <RemoveCircle disabled /> {t('paymentInvoices.reviewPayments.remove')}
         </div>
       ),

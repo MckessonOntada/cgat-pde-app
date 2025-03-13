@@ -70,6 +70,7 @@ export const onConfirmPayment = (selectedAccount, state, payInvoices, t, selecte
       delete _credit.accType;
       delete _credit.label;
       delete _credit.name;
+      _credit.value && delete _credit.value;
       payload.paymentMethod.credit = _credit;
     }
   }

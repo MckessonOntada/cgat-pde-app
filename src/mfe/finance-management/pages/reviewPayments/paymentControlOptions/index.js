@@ -67,6 +67,7 @@ export const PaymentOptionsControls = (props) => {
                 {item?.subType === 'datePicker' && (
                   <div className={styles.datePickerSubField}>
                     <CustomDatepicker
+                      key={value}
                       id={id + '-sub-radio-field-' + index}
                       name={item.value}
                       value={item.subTypeValue}

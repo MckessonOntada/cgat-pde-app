@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Heading, AutoSuggestDropdown, Alert, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
@@ -41,12 +41,14 @@ function ReviewPayments() {
   const [selectedData, setSelectedData] = useState(null);
   const [paymentOption, setPaymentOption] = useState('');
   const REVIEW_MODE = state?.reviewMode || false;
-  const [selectedSpecificDate, setSelectedSpecificDate] = useState('');
+  const [selectedSpecificDate, setSelectedSpecificDate] = useState('10/10/2025');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alertDescription, setAlertDescription] = useState('');
   const [alert, setAlert] = useState(null);
   const [searchKey, setSearchKey] = useState('');
   const [totalCreditsCount, settotalCreditsCount] = useState(0);
+  const disablePay = useRef();
+
   const showAlert = (type, message) => {
     setAlert({ type });
     setIsAlertVisible(true);
@@ -214,7 +216,7 @@ function ReviewPayments() {
             subTypeValue: selectedSpecificDate,
             onBlurSubType: (e) => {
               const value = e.target.value;
-              if (!dayjs(value).isValid() || !dayjs().isBefore(dayjs(value, 'MM/DD/YYYY'))) {
+              if (value && (!dayjs(value).isValid() || !dayjs().isBefore(dayjs(value, 'MM/DD/YYYY')))) {
                 setSelectedSpecificDate(dayjs().format('MM/DD/YYYY'));
               }
             }
@@ -305,10 +307,14 @@ function ReviewPayments() {
             size="md"
             variant="primary"
             onClick={() => {
+              if (disablePay.current) return;
               dispatch(closeModal());
-              onConfirmPayment(selectedAccount, state, payInvoices, t, selectedSpecificDate);
+              disablePay.current = setTimeout(() => {
+                onConfirmPayment(selectedAccount, state, payInvoices, t, selectedSpecificDate);
+                disablePay.current = null;
+              }, 500);
             }}
-            disabled={isLoading}>
+            disabled={disablePay.current}>
             Confirm
           </Button>
         </div>
@@ -345,8 +351,10 @@ function ReviewPayments() {
   };
 
   const onChangePayment = (value) => {
+    setSelectedSpecificDate(null);
     let _data = mergedData.find((ele) => ele.value == value);
     setSelectedData(_data);
+    setPaymentOption('');
   };
   const getOptions = useMemo(() => {
     let _data = [];
