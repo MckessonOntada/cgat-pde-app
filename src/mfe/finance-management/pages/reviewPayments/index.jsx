@@ -209,6 +209,14 @@ function ReviewPayments() {
             subType: 'datePicker',
             onSubTypeChange: (value) => {
               setSelectedSpecificDate(value);
+            },
+            disablePast: true,
+            subTypeValue: selectedSpecificDate,
+            onBlurSubType: (e) => {
+              const value = e.target.value;
+              if (!dayjs(value).isValid() || !dayjs().isBefore(dayjs(value, 'MM/DD/YYYY'))) {
+                setSelectedSpecificDate(dayjs().format('MM/DD/YYYY'));
+              }
             }
           }
         ]
