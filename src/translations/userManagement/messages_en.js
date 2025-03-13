@@ -371,5 +371,6 @@ export const UserManagementEN = {
   'userManagement.edit_organization_user': 'Edit Organization User',
 
   'errors.messages.dateRange': "Either enter both dates or none for the filter as it's part of a date range.",
-  'errors.messages.default': 'An unexpected error occurred. Please try again.'
+  'errors.messages.default': 'An unexpected error occurred. Please try again.',
+  'label.comment': 'Comment'
 };
