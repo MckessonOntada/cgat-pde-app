@@ -26,6 +26,7 @@ import CommonUtils from '@src/util/CommonUtils';
 import { CUSTOMER_CENTRE, SYSTEM_ADMIN } from '@src/api/commonService/CommonService';
 import { InventoryIndicator } from '../InventoryIndicator';
 import useSapOrder from './useSapOrder';
+import useTimedArray from './useTimedArray';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -50,6 +51,7 @@ const Summary = () => {
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
   const [alertMessages, setAlertMessages] = React.useState([]);
+  const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
   const [sapStatus, setSapStatus] = React.useState(null);
   const [inventoryStatus, setInventoryStatus] = React.useState(null);
   const {
@@ -78,12 +80,11 @@ const Summary = () => {
     },
     (status) => setSapStatus(status),
     (error) => {
-      alertMessages.push({
+      addNotification({
         description: 'Something went wrong while checking SAP order status. Please try again later.',
         type: 'error',
         kind: 'SAP_ORDER_STATUS'
       });
-      setAlertMessages(alertMessages);
     }
   );
 
@@ -94,8 +95,7 @@ const Summary = () => {
         handleInventoryDetailsResponse(response.data);
       }
     } catch (error) {
-      alertMessages.push({ description: 'Something went wrong while checking inventory. Please try again later.', type: 'error' });
-      setAlertMessages(alertMessages);
+      addNotification({ description: 'Something went wrong while checking inventory. Please try again later.', type: 'error' });
       setInventoryStatus('PENDING');
     }
   };
@@ -118,7 +118,7 @@ const Summary = () => {
     const { erroredItems, warningMessages } = data.inventoryCheckResponse || {};
     if (erroredItems?.length > 0 || warningMessages?.length > 0) {
       if (erroredItems && erroredItems.length > 0) {
-        alertMessages.push(
+        addNotification(
           ...erroredItems.map((err) => ({
             description: err.errorMessage,
             type: 'error'
@@ -126,7 +126,7 @@ const Summary = () => {
         );
       }
       if (warningMessages && warningMessages.length > 0) {
-        alertMessages.push(
+        addNotification(
           ...warningMessages.map((warn) => ({
             description: warn.errorMessage,
             type: 'warning'
@@ -137,16 +137,13 @@ const Summary = () => {
     } else {
       setInventoryStatus('AVAILABLE');
     }
-
-    setAlertMessages(alertMessages);
-  };
-
-  const closeAvailabilityAlert = (index, key) => {
-    setAlertMessages(alertMessages.filter((msg, _index) => _index != index));
   };
 
   const handleRetrySAPOrderStatus = () => {
-    setAlertMessages(alertMessages.filter((msg) => msg.kind != 'SAP_ORDER_STATUS'));
+    const sapOrderStatusAlerts = notifications.find((item) => item.kind === 'SAP_ORDER_STATUS');
+    if (sapOrderStatusAlerts && sapOrderStatusAlerts.length > 0) {
+      sapOrderStatusAlerts.forEach((item) => removeNotification(item.id));
+    }
     retrySapOrderStatus();
   };
 
@@ -188,23 +185,22 @@ const Summary = () => {
     },
     enabled: !status ? false : !(status === StatusEnum.REJECTED || status === StatusEnum.SUBMITTED),
     refetchOnWindowFocus: false,
+    onSuccess: (result) => {
+      const warningMessages = result.warningMessages?.map((msg) => msg.value) || [];
+      const infoMessages = result.infoMessages?.map((msg) => msg.value) || [];
+
+      if (warningMessages.length > 0) {
+        addNotification(...warningMessages.map((msg) => ({ description: msg, type: 'warning' })));
+      }
+
+      if (infoMessages.length > 0) {
+        addNotification(...warningMessages.map((msg) => ({ description: msg, type: 'info' })));
+      }
+    },
     onError: (error) => {
       showAlert({ description: error?.response?.data?.message, type: 'error', anchorEl: ALERT_CONTAINER_ID });
     }
   });
-
-  if (!isLoading && simulationData) {
-    const warningMessages = simulationData.warningMessages?.map((msg) => msg.value) || [];
-    const infoMessages = simulationData.infoMessages?.map((msg) => msg.value) || [];
-
-    if (warningMessages.length > 0) {
-      alertMessages.push(...warningMessages.map((msg) => ({ description: msg, type: 'warning' })));
-    }
-
-    if (infoMessages.length > 0) {
-      alertMessages.push(...warningMessages.map((msg) => ({ description: msg, type: 'info' })));
-    }
-  }
 
   const { isLoading: isSaving, mutate: submitOrder } = useMutation(
     async ({ action, isPAPOrder }) => await OrderService.submitOrder(orderId, isPAPOrder),
@@ -441,17 +437,11 @@ const Summary = () => {
           </div>
         )}
         <div id={ALERT_CONTAINER_ID} />
-        {alertMessages?.length > 0 && (
+        {notifications?.length > 0 && (
           <div className="alert-container">
             <div className="MCP-module-body">
-              {alertMessages.map((item, index) => (
-                <Alert
-                  key={index + 1}
-                  description={item.description}
-                  onClose={() => closeAvailabilityAlert(index)}
-                  type={item.type}
-                  duration={10000}
-                />
+              {notifications.map((item, index) => (
+                <Alert key={item.id} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
               ))}
             </div>
           </div>
@@ -459,7 +449,11 @@ const Summary = () => {
 
         <div className={'MCP-module-wrapper'}>
           <ModuleHeader
-            heading={<Heading className={styles.orderSummaryHeading} as="h2">{t('labels.summary')}</Heading>}
+            heading={
+              <Heading className={styles.orderSummaryHeading} as="h2">
+                {t('labels.summary')}
+              </Heading>
+            }
             controls={
               isRejected ? (
                 <div className="row-space-between-center">
