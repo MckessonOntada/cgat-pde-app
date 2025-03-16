@@ -46,7 +46,7 @@ export const PendingPaymentsProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { showSnackbar } = useSnackbar();
   const { selectedAccount } = useAccountContext();
-  console.log(filterConfig);
+
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig((prevFilters) => ({
@@ -69,7 +69,7 @@ export const PendingPaymentsProvider = ({ children }) => {
       //   filters?.paymentStatus?.length > 0 ? filters.paymentStatus.includes(item.paymentStatus.toString()) : true;
 
       const matchesDate =
-        filters?.paymentInitiationDate?.length === 2
+        filters?.paymentInitiationDate?.length === 2 && !!filters?.paymentInitiationDate[0] && !!filters?.paymentInitiationDate[1]
           ? new Date(dayjs(item.paymentInitiationDate, 'DD/MM/YYYY').format('MM/DD/YYYY')) >=
               new Date(
                 CommonUtils.isNonEmptyString(filters.paymentInitiationDate[0])
