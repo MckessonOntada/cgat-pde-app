@@ -64,6 +64,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.emptyData': 'No Payment History Found',
   'paymentInvoices.history.table.emptyDataDescription': 'Try again or adjust filters',
   'paymentInvoices.history.table.authorizedPayment': 'Authorized Payment',
+  'paymentInvoices.history.table.authorizedAmount': 'Authorized Amount',
   'paymentInvoices.history.table.usedDate': 'Used Date',
   'paymentInvoices.history.table.creditUsed': 'Credit Used',
   'paymentInvoices.history.table.selectedAccount': 'Item Selected',
@@ -265,5 +266,5 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.table.paymentHistory': 'Payment History',
   'paymentInvoices.table.customerStatement': 'Customer Statement',
   'paymentInvoices.table.savedBankAccount': 'Saved Bank Accounts',
-  'paymentInvoices.table.savedCards': 'Saved Cards',
+  'paymentInvoices.table.savedCards': 'Saved Cards'
 };
