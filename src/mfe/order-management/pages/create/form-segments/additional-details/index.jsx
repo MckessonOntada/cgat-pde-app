@@ -404,7 +404,7 @@ function AdditionalDetails() {
         question.document = fieldValue.document;
       });
     });
-
+  
     const payload = {
       coiId,
       orderQuantity,
@@ -412,7 +412,7 @@ function AdditionalDetails() {
       poNumber,
       dateOfAdministration,
       variantDetails: _var,
-      patientConsentTaken: true,
+      patientConsentTaken: !!variant ? _var.variantAcknowledgment : false,
       configuredQuestionnaires: questionnaireTemplateConfig
     };
 
