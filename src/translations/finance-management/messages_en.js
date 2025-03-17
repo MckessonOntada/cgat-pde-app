@@ -192,7 +192,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.reviewPayments.paymentSuccess': 'Payment Successful',
   'paymentInvoices.reviewPayments.thankyouforpayment': 'Thank you for your payment',
   'paymentInvoices.reviewPayments.paymentSummary': 'Payment Summary',
-  'paymentInvoices.reviewPayments.confirmationDialogue': 'Are you sure want to leave Review and Pay screen?',
+  'paymentInvoices.reviewPayments.confirmationDialogue': 'Are you sure you want to leave Review and Pay screen?',
   'paymentInvoices.reviewPayments.confirm': 'Confirm',
   'paymentInvoices.reviewPayments.OK': 'OK',
   'paymentInvoices.reviewPayments.remove': 'REMOVE',
