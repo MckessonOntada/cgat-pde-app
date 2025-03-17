@@ -146,6 +146,9 @@ function SelectedInvoiceList(props) {
   };
 
   const onRemoveInvoice = (index) => {
+    if (selectedInvoices.length <= 1) {
+      return;
+    }
     let _invoices = [...[], ...selectedInvoices];
     _invoices.splice(index, 1);
     setSelectedInvoices(_invoices);
