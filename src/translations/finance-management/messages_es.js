@@ -61,6 +61,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.emptyData': 'S_No Payment History Found',
   'paymentInvoices.history.table.emptyDataDescription': 'S_Please try again later',
   'paymentInvoices.history.table.authorizedPayment': 'S_Authorized Payment',
+  'paymentInvoices.history.table.authorizedAmount': 'Authorized Amount',
   'paymentInvoices.history.table.usedDate': 'S_Used Date',
   'paymentInvoices.history.table.creditUsed': 'S_Credit Used',
   'paymentInvoices.Details.print': 'S_Print',
@@ -260,5 +261,5 @@ export const PaymentInvoicesES = {
   'paymentInvoices.table.paymentHistory': 'S_Payment History',
   'paymentInvoices.table.customerStatement': 'S_Customer Statement',
   'paymentInvoices.table.savedBankAccount': 'S_Saved Bank Accounts',
-  'paymentInvoices.table.savedCards': 'S_Saved Cards',
+  'paymentInvoices.table.savedCards': 'S_Saved Cards'
 };
