@@ -125,14 +125,14 @@ const UserDetailsFormSegment = ({comment}) => {
             component={Components['input']}
             maxLength={15}
           />
-          {comment && (
-            <div className='commentWrap'>
-              <span>{t('label.comment')}</span>
-              <p>{comment}</p>
-            </div>
-          )}
           {/* <StateDropdown /> */}
         </div>
+        {comment && (
+          <div className='commentWrap'>
+            <span>{t('label.comment')}</span>
+            <p>{comment}</p>
+          </div>
+        )}
       </div>
     </div>
   );
