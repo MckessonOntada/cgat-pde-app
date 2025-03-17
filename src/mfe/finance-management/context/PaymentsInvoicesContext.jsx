@@ -70,7 +70,11 @@ export const PaymentsInvoiceProvider = ({ children }) => {
 
     let _data = [...[], ...actualData];
     setIsLoading(true);
+    let startBillDate = filters.billDate[0];
+    let endBillDate = filters.billDate[1];
 
+    let startDueDate = filters.dueDate[0];
+    let endDueDate = filters.dueDate[1];
     const _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery
         ? item.billNumber?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
@@ -83,25 +87,25 @@ export const PaymentsInvoiceProvider = ({ children }) => {
 
       const matchesBillDate =
         filters?.billDate?.length === 2
-          ? !!filters.billDate[0] && !!filters.billDate[1]
-            ? dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(filters.billDate[0]).format('MM/DD/YYYY') &&
-              dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(filters.billDate[1]).format('MM/DD/YYYY')
-            : !!filters.billDate[0]
-            ? dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(filters.billDate[0]).format('MM/DD/YYYY')
-            : !!filters.billDate[1]
-            ? dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(filters.billDate[1]).format('MM/DD/YYYY')
+          ? !!startBillDate && !!endBillDate
+            ? dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(startBillDate).format('MM/DD/YYYY') &&
+              dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(endBillDate).format('MM/DD/YYYY')
+            : !!startBillDate
+            ? dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(startBillDate).format('MM/DD/YYYY')
+            : !!endBillDate
+            ? dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(endBillDate).format('MM/DD/YYYY')
             : true
           : true;
 
       const matchesDueDate =
         filters?.dueDate?.length === 2
-          ? !!filters.dueDate[0] && !!filters.dueDate[1]
-            ? dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(filters.dueDate[0]).format('MM/DD/YYYY') &&
-              dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(filters.dueDate[1]).format('MM/DD/YYYY')
-            : !!filters.dueDate[0]
-            ? dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(filters.dueDate[0]).format('MM/DD/YYYY')
-            : !!filters.dueDate[1]
-            ? dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(filters.dueDate[1]).format('MM/DD/YYYY')
+          ? !!startDueDate && !!endDueDate
+            ? dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(startDueDate).format('MM/DD/YYYY') &&
+              dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(endDueDate).format('MM/DD/YYYY')
+            : !!startDueDate
+            ? dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(startDueDate).format('MM/DD/YYYY')
+            : !!endDueDate
+            ? dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(endDueDate).format('MM/DD/YYYY')
             : true
           : true;
       return matchesSearchQuery && matchesPaymentStatus && matchesPaymentMethod && matchesBillDate && matchesDueDate;
