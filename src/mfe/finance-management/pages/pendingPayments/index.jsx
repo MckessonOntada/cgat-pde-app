@@ -51,7 +51,7 @@ export default function PendingPayments(params) {
           heading={<Heading as="h2">{t('paymentInvoices.table.paymentPending')}</Heading>}
           controls={
             <div className="table-header">
-              <Button variant="secondary" onClick={() => exportExcel()} size="sm" >
+              <Button variant="secondary" onClick={() => exportPDF()} size="sm">
                 {t('paymentInvoices.CS.ExportExcel')}
               </Button>
             </div>
