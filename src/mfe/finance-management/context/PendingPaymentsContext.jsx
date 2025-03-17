@@ -190,8 +190,10 @@ export const PendingPaymentsProvider = ({ children }) => {
     }));
   };
   const { mutate: exportPendingPDF } = useMutation(
-    async (data) =>
-      await HttpResourceService.callRest(
+    async (data) => {
+      let startDate = filterConfig?.paymentInitiationDate?.[0] || null;
+      let endDate = filterConfig?.paymentInitiationDate?.[1] || null;
+      return await HttpResourceService.callRest(
         `${ApiRoutes.EXPORT_PENDING_PAYMENT_EXCEL(data)}`,
         httpVerb.POST,
         {
@@ -200,8 +202,8 @@ export const PendingPaymentsProvider = ({ children }) => {
           payerAccountNumber: selectedAccount?.accountNumber,
           filter: {
             searchTerm: filterConfig?.searchQuery || '',
-            initiationDateStart: dayjs(filterConfig?.paymentInitiationDate?.[0], 'MM/DD/YYYY').format('DD/MM/YYYY') || '',
-            initiationDateEnd: dayjs(filterConfig?.paymentInitiationDate?.[1], 'MM/DD/YYYY').format('DD/MM/YYYY') || ''
+            initiationDateStart: startDate && startDate !== 'Invalid Date' ? dayjs(startDate, 'MM/DD/YYYY').format('DD/MM/YYYY') : '',
+            initiationDateEnd: endDate && endDate !== 'Invalid Date' ? dayjs(endDate, 'MM/DD/YYYY').format('DD/MM/YYYY') : ''
           },
           excelMetaDataDTO: {
             accountNumber: selectedAccount?.accountNumber,
@@ -213,7 +215,8 @@ export const PendingPaymentsProvider = ({ children }) => {
         false,
         false,
         'blob' // Set responseType to 'blob'
-      ),
+      );
+    },
     {
       onSuccess: (response) => {
         if (response && response.data) {
