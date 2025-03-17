@@ -6,7 +6,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { US_STATES } from '@src/components/form/util';
 import StateDropdown from '@src/components/form/StateDropdown';
 
-const UserDetailsFormSegment = () => {
+const UserDetailsFormSegment = ({comment}) => {
   const { t } = useTranslate();
 
   const options = US_STATES();
@@ -125,6 +125,12 @@ const UserDetailsFormSegment = () => {
             component={Components['input']}
             maxLength={15}
           />
+          {comment && (
+            <div className='commentWrap'>
+              <span>{t('label.comment')}</span>
+              <p>{comment}</p>
+            </div>
+          )}
           {/* <StateDropdown /> */}
         </div>
       </div>

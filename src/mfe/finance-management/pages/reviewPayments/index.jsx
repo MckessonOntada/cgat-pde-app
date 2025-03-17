@@ -87,7 +87,7 @@ function ReviewPayments() {
   useEffect(() => {
     if (paymentMethodsData.cards || paymentMethodsData.banks) {
       const merged = [
-        ...paymentMethodsData.cards.map((card) => ({ accType: paymentMethod.CREDIT_CARD, ...card })),
+        // ...paymentMethodsData.cards.map((card) => ({ accType: paymentMethod.CREDIT_CARD, ...card })),
         ...paymentMethodsData.banks.map((bank) => ({ accType: paymentMethod.BANK, ...bank }))
       ].map((item) => ({
         label:
