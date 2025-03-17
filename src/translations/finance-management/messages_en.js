@@ -25,6 +25,7 @@ export const PaymentInvoicesEN = {
     'Summation of all open credits currently available to use towards open invoices.',
   'paymentInvoices.metrics.pastDueBalance.tooltipText': 'Summation of all past due invoices (debit only) as of current date.',
   // Balance Card
+  'paymentInvoices.balanceCard.due': 'Due',
   'paymentInvoices.balanceCard.1_30_DAYS_OVERDUE': '1-30 days over',
   'paymentInvoices.balanceCard.31_60_DAYS_OVERDUE': '31-60 days over',
   'paymentInvoices.balanceCard.61_90_DAYS_OVERDUE': '61-90 days over',

@@ -18,7 +18,7 @@ export default function Invoices(params) {
         name: 'status',
         tableColumnId: 'status',
         customLabel: (data) => {
-          return DUE_STATUS[data].label;
+          return DUE_STATUS[data]?.label;
         },
         label: t('paymentInvoices.history.table.status'),
         options: []
