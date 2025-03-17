@@ -664,7 +664,7 @@ const Summary = () => {
                 <DetailSegment label={t('labels.dateOfAdministration')} value={additionalDetails?.dateOfAdministration || '-'} />
                 <DetailSegment label={t('labels.selectVariant')} value={variantDetails.variant || '-'} />
                 <DetailSegment label={t('labels.variantDescription')} value={variantDetails.variantDescription || '-'} />
-                <DetailSegment label={t('labels.patientConsent')} value={additionalDetails?.patientConsentTaken ? 'Yes' : 'No'} />
+                <DetailSegment label={t('labels.patientConsent')} value={additionalDetails?.patientConsentTaken ? 'Yes' : '-'} />
               </div>
             </div>
           </div>

@@ -15,13 +15,6 @@ export default function Invoices(params) {
     return [
       {
         type: 'multiSelectDropdown',
-        name: 'paymentTerm',
-        tableColumnId: 'paymentTerm',
-        label: t('paymentInvoices.history.table.PaymentTerm'),
-        options: []
-      },
-      {
-        type: 'multiSelectDropdown',
         name: 'status',
         tableColumnId: 'status',
         customLabel: (data) => {
