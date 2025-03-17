@@ -122,9 +122,7 @@ function SelectedInvoiceList(props) {
       minWidth: '160px',
       id: 'paymentAmount',
       cell: (props, index) => (
-        <div
-          className={`action-container ${selectedInvoices.length <= 1 ? `in-active` : ``}`}
-          onClick={selectedInvoices.length <= 1 ? null : () => onRemoveInvoice(index)}>
+        <div className={`action-container ${selectedInvoices.length <= 1 ? `in-active` : ``}`} onClick={() => onRemoveInvoice(index)}>
           <RemoveCircle disabled /> {t('paymentInvoices.reviewPayments.remove')}
         </div>
       ),
@@ -148,6 +146,9 @@ function SelectedInvoiceList(props) {
   };
 
   const onRemoveInvoice = (index) => {
+    if (selectedInvoices.length <= 1) {
+      return;
+    }
     let _invoices = [...[], ...selectedInvoices];
     _invoices.splice(index, 1);
     setSelectedInvoices(_invoices);

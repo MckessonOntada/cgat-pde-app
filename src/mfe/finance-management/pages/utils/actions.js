@@ -67,12 +67,17 @@ export const onConfirmPayment = (selectedAccount, state, payInvoices, t, selecte
       };
     } else {
       let _credit = { ...{}, ..._selectedPayment };
-      delete _credit.accType;
-      delete _credit.label;
-      delete _credit.name;
-      _credit.value && delete _credit.value;
+      _credit = omitKeys(_credit, ['accType', 'label', 'name', 'value']);
       payload.paymentMethod.credit = _credit;
     }
   }
   payInvoices(payload);
+};
+
+const omitKeys = (object, keys = []) => {
+  for (let ele of keys) {
+    if (object && object[ele]) {
+      delete object[ele];
+    }
+  }
 };

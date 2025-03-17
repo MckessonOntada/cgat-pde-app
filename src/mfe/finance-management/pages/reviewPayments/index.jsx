@@ -41,13 +41,13 @@ function ReviewPayments() {
   const [selectedData, setSelectedData] = useState(null);
   const [paymentOption, setPaymentOption] = useState('');
   const REVIEW_MODE = state?.reviewMode || false;
-  const [selectedSpecificDate, setSelectedSpecificDate] = useState('10/10/2025');
+  const [selectedSpecificDate, setSelectedSpecificDate] = useState('');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alertDescription, setAlertDescription] = useState('');
   const [alert, setAlert] = useState(null);
   const [searchKey, setSearchKey] = useState('');
   const [totalCreditsCount, settotalCreditsCount] = useState(0);
-  const disablePay = useRef();
+  const disablePay = useRef(false);
 
   const showAlert = (type, message) => {
     setAlert({ type });
@@ -314,7 +314,7 @@ function ReviewPayments() {
                 disablePay.current = null;
               }, 500);
             }}
-            disabled={disablePay.current}>
+            disabled={!!disablePay.current}>
             Confirm
           </Button>
         </div>
