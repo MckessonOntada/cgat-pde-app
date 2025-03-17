@@ -118,11 +118,11 @@ export default function InvoicesTable() {
       cardStatus: true,
       cell: (props) => (
         <div className="status-container">
-          {props?.status ? (
+          {props.status ? (
             <Badge
-              text={DUE_STATUS[props?.status].label}
+              text={DUE_STATUS[props.status]?.label}
               type={'info-default'}
-              customStyle={{ color: `${DUE_STATUS[props?.status].color}`, border: `1px solid ${DUE_STATUS[props?.status].color}` }}
+              customStyle={{ color: `${DUE_STATUS[props.status]?.color}`, border: `1px solid ${DUE_STATUS[props.status]?.color}` }}
             />
           ) : (
             '-'
