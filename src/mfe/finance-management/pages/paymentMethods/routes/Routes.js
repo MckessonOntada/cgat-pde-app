@@ -10,7 +10,7 @@ const Routes = () => {
     <ReactRoutes>
       <Route index element={<Navigate to={PATHS.bankAccounts}></Navigate>} />
       <Route path={PATHS.bankAccounts} element={<BankAccounts />} />
-      <Route path={PATHS.creditCards} element={<CreditCards />} />
+      {/* <Route path={PATHS.creditCards} element={<CreditCards />} /> */}
       <Route path={'*'} element={<NotFound />} />
     </ReactRoutes>
   );
