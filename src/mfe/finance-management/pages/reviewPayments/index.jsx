@@ -288,7 +288,7 @@ function ReviewPayments() {
       },
       onError: (error) => {
         dispatch(closeModal());
-        showAlert('error', error?.response?.data?.message || 'Something went wrong while processing payment');
+        showAlert('error', 'review-pay: Error while communicating backend service');
       }
     }
   );
