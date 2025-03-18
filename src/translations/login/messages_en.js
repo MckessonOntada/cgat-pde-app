@@ -29,5 +29,6 @@ export const LoginMessagesEN = {
   'forgot.password': 'Forgot Password?',
   'forgot.password.submit': 'Forgot Password',
   'forgot.password.success': 'Your request to reset your password has been successfully submitted, Please check your email.',
-  'forgot.password.error': 'Error sending password reset email.'
+  'forgot.password.error': 'Error sending password reset email.',
+  'forgot.terms.agreement': 'Terms of use and Patient Agreement',
 };
