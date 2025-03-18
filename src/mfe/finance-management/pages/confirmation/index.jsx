@@ -21,7 +21,8 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { state } = location;
-  const { mutate: exportStatementPDF } = useExportStatementPDF();
+  const exportType = type;
+  const { mutate: exportStatementPDF } = useExportStatementPDF(exportType);
 
   const invoiceDetails = {
     'Account Number': selectedAccount?.accountNumber || '-',
