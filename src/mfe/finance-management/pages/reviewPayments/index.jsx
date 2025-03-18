@@ -48,6 +48,7 @@ function ReviewPayments() {
   const [searchKey, setSearchKey] = useState('');
   const [totalCreditsCount, settotalCreditsCount] = useState(0);
   const disablePay = useRef(false);
+  const [SpecificDateError, setSpecificDateError] = useState('');
 
   const showAlert = (type, message) => {
     setAlert({ type });
@@ -148,24 +149,33 @@ function ReviewPayments() {
     }
   };
 
-  const getValue = (data) => {
-    return data.map((item) => ({
-      label:
-        item.accType === paymentMethod.BANK
-          ? `${FinanceUtils.maskCardNumber(item.accountNumber)}, ${item.name}`
-          : `${FinanceUtils.maskCardNumber(item.number)}, ${item.holderName}, ${item?.expirationDate}`,
-      value:
-        item.accType === paymentMethod.BANK
-          ? `${FinanceUtils.maskCardNumber(item.accountNumber)}, ${item.name}`
-          : `${FinanceUtils.maskCardNumber(item.number)}, ${item.holderName}, ${item?.expirationDate}`,
-      ...item
-    }));
-  };
+  const leastDueDateInvoice = useMemo(() => {
+    return selectedInvoices?.length > 0
+      ? selectedInvoices.reduce((min, current) =>
+          dayjs(current.dueDate, 'DD/MM/YYYY').isBefore(dayjs(min.dueDate, 'DD/MM/YYYY')) ? current : min
+        )
+      : null;
+  }, [selectedInvoices]);
+
+  const isPartialPayment = useMemo(() => {
+    if (selectedInvoices?.length > 0) {
+      let _totalAmount = 0;
+      let _totalpaymentAmount = 0;
+      selectedInvoices?.map((item) => {
+        _totalAmount = _totalAmount + parseFloat(item.billAmount);
+        _totalpaymentAmount = _totalpaymentAmount + parseFloat(item.paymentAmount);
+      });
+      return _totalpaymentAmount < _totalAmount ? true : false;
+    } else {
+      return false;
+    }
+  }, [selectedInvoices]);
 
   const invoicesSum = useMemo(() => {
     const _sum = selectedInvoices
       .filter((i) => i.paymentAmount)
       .reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.paymentAmount), 0);
+    setPaymentOption('');
     return parseFloat(_sum).toFixed(2);
   }, [selectedInvoices]);
 
@@ -175,6 +185,7 @@ function ReviewPayments() {
       .reduce((accumulator, currentValue) => {
         return parseFloat(currentValue.billAmount), accumulator + parseFloat(currentValue.billAmount);
       }, 0);
+    setPaymentOption('');
     return parseFloat(_sum).toFixed(2);
   }, [selectedCredits]);
 
@@ -183,12 +194,19 @@ function ReviewPayments() {
     return parseFloat(_total > 0 ? _total : 0).toFixed(2);
   }, [invoicesSum, creditsSum]);
 
+  const validateSpecificDate = (value) => {
+    if (value && (!dayjs(value).isValid() || !dayjs().isBefore(dayjs(value, 'MM/DD/YYYY')))) {
+      setSpecificDateError(`Selected date should not be the past date`);
+    }
+    if (value && !dayjs(value, 'MM/DD/YYYY').isBefore(dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY'))) {
+      let _formatDate = dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY');
+      setSpecificDateError(`Selected date should be before due date: ${_formatDate}`);
+    }
+  };
+
   const getRadioItems = () => {
-    const isDisabledDueDate = location.state?.includeinvoiceData
-      ? location.state?.includeinvoiceData.some((invoice) => dayjs(invoice.dueDate, 'DD/MM/YYYY').isBefore(dayjs()))
-      : location.state?.invoices
-      ? location.state?.invoices.some((invoice) => dayjs(invoice.dueDate, 'DD/MM/YYYY').isBefore(dayjs()))
-      : false;
+    const dueDateIsInPast = leastDueDateInvoice && dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY').isBefore(dayjs());
+
     return selectedData
       ? [
           {
@@ -198,28 +216,37 @@ function ReviewPayments() {
             subLabel: t('paymentInvoices.reviewPayments.payTodayDesc')
           },
           {
-            isDisabled: isDisabledDueDate,
+            isDisabled: dueDateIsInPast || isPartialPayment,
             label: t('paymentInvoices.reviewPayments.payDuedate'),
             value: t('paymentInvoices.reviewPayments.payDuedate'),
             subLabel: t('paymentInvoices.reviewPayments.payDuedateDesc')
           },
           {
-            isDisabled: selectedData?.accType === paymentMethod.BANK,
+            isDisabled: dueDateIsInPast || isPartialPayment || parseFloat(creditsSum) > parseFloat(invoicesSum),
             label: t('paymentInvoices.reviewPayments.paySpecfic'),
             value: t('paymentInvoices.reviewPayments.paySpecfic'),
             subLabel: t('paymentInvoices.reviewPayments.paySpecficDesc'),
             subType: 'datePicker',
             onSubTypeChange: (value) => {
               setSelectedSpecificDate(value);
+              setSpecificDateError('');
+              if (
+                value &&
+                dayjs(value).isValid() &&
+                !dayjs(value, 'MM/DD/YYYY').isBefore(dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY'))
+              ) {
+                let _formatDate = dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY');
+                setSpecificDateError(`Selected date should be before due date: ${_formatDate}`);
+              }
             },
             disablePast: true,
             subTypeValue: selectedSpecificDate,
             onBlurSubType: (e) => {
               const value = e.target.value;
-              if (value && (!dayjs(value).isValid() || !dayjs().isBefore(dayjs(value, 'MM/DD/YYYY')))) {
-                setSelectedSpecificDate(dayjs().format('MM/DD/YYYY'));
-              }
-            }
+              setSpecificDateError('');
+              validateSpecificDate(value);
+            },
+            errorMsg: SpecificDateError
           }
         ]
       : [
@@ -322,7 +349,7 @@ function ReviewPayments() {
       dispatch(openModal(param));
     } else {
       let valid = _validatePaymentAmount();
-      if (valid) {
+      if (valid && !SpecificDateError) {
         navigate('.', {
           state: {
             ...state,
@@ -336,7 +363,7 @@ function ReviewPayments() {
           },
           replace: true
         });
-      } else {
+      } else if (!valid) {
         dispatch(
           showSnackbar({
             description: 'Invalid payment amount entered',
@@ -347,7 +374,11 @@ function ReviewPayments() {
     }
   };
   const disablePreview = () => {
-    return !selectedData || (paymentOption == t('paymentInvoices.reviewPayments.paySpecfic') ? !selectedSpecificDate : !paymentOption);
+    return (
+      !selectedData ||
+      (paymentOption == t('paymentInvoices.reviewPayments.paySpecfic') ? !selectedSpecificDate : !paymentOption) ||
+      !!SpecificDateError
+    );
   };
 
   const onChangePayment = (value) => {

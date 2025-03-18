@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './assets/index.module.scss';
-import { Label, Legend, Heading, CustomDatepicker } from '@mckesson/mcp-component-library';
+import { Label, Legend, Heading, CustomDatepicker, TextError } from '@mckesson/mcp-component-library';
 
 export const PaymentOptionsControls = (props) => {
   let {
@@ -77,6 +77,7 @@ export const PaymentOptionsControls = (props) => {
                       disablePast={item.disablePast ? true : false}
                       onBlur={(event) => item.onBlurSubType?.(event)}
                     />
+                    {item.errorMsg && <TextError errorMessage={item.errorMsg} />}
                   </div>
                 )}
               </div>
