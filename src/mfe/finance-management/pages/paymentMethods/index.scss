@@ -133,8 +133,8 @@
     align-items: center;
   }
 }
-.paymentMethodSection{
-  @media only screen and (max-width: 576px) {
-    gap: var(--spacing-04) !important;
-  }
+.paymentMethodSection {
+  // @media only screen and (max-width: 576px) {
+  gap: var(--spacing-04) !important;
+  // }
 }
