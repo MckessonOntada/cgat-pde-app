@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useTranslate } from '@src/translations/useTranslation';
-import style from './assets/footer.module.scss';
+import style from './assets/Footer.module.scss';
 import { Heading } from '@mckesson/mcp-component-library';
 import useSessionFeatures from "@src/hooks/useSessionFeatures";
 import CommonDataService from "@src/api/commonService/CommonDataService";
