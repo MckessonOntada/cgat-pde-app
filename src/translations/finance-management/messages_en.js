@@ -99,6 +99,8 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.OpenAmount': 'Open Amount',
   'paymentInvoices.history.table.BillAmount': 'Bill Amount',
   'paymentInvoices.history.table.Actions': 'Actions',
+  'paymentInvoices.Actions.payment': 'Payment',
+  'paymentInvoices.Actions.exportPDF': 'Export PDF',
   'paymentInvoices.history.table.status': 'Status',
   'paymentInvoices.invoice.table.emptyData': 'No Invoice Found',
   'paymentInvoices.Details.backToManageInvoices': 'BACK TO MANAGE INVOICES PAGE',
