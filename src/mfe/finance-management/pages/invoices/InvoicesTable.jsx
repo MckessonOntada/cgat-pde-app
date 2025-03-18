@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Badge, Button, Loader, DropdownMenu } from '@mckesson/mcp-component-library';
+import { Badge, Button, Loader, MenuList } from '@mckesson/mcp-component-library';
 import { Link } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { usePaymentInvoices } from '../../context/PaymentsInvoicesContext';
@@ -16,6 +16,7 @@ import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import { useAccountContext } from '../../context/AccountContext';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
+import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 
 export default function InvoicesTable() {
   const { t } = useTranslate();
@@ -72,7 +73,7 @@ export default function InvoicesTable() {
       showInMobileHeader: true,
       cardHeader: true,
       mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
-      cell: (props) => <div className='textCapitalize'>{props?.soldToSite || '-'}</div>
+      cell: (props) => <div className="textCapitalize">{props?.soldToSite || '-'}</div>
     },
     {
       name: t('paymentInvoices.history.table.PostingDate'),
@@ -142,23 +143,43 @@ export default function InvoicesTable() {
           <FormattedNumber value={props?.billAmount || 0} style="currency" currency="USD" />
         </div>
       )
+    },
+    {
+      name: t('paymentInvoices.history.table.Actions'),
+      minWidth: '144px',
+      sortable: true,
+      id: 'actions',
+      wrap: true,
+      showInMobileHeader: true,
+      isAction: true,
+      isContextMenu: true, // If it is already a context menu
+      cell: (props) => (
+        <MenuList
+          menuIcon={<IconEllipsis key={'menu-list-invoice-actions'} />}
+          handleSelect={(value) => handleOnOptionSelection(value, props)}
+          options={[
+            {
+              label: t('paymentInvoices.Actions.payment'),
+              value: 'payment'
+            }
+            // {
+            //   label: t('paymentInvoices.Actions.exportPDF'),
+            //   value: 'exportPDF'
+            // }
+          ]}
+          aria-label="invoice options"
+        />
+      )
     }
-    // {
-    //   name: t('paymentInvoices.history.table.Actions'),
-    //   minWidth: '144px',
-    //   sortable: true,
-    //   id: 'actions',
-    //   wrap: true,
-    //   showInMobileHeader: true,
-    //   isAction: true,
-    //   isContextMenu: true, // If it is already a context menu
-    //   cell: (props) => (
-    //     <div className="actionIcon">
-    //       <DropdownMenu anchorEl={<ActionIcon />} handleSelect={() => {}} options={[]} optionsAlign="left" aria-label="Profile options" />
-    //     </div>
-    //   )
-    // }
   ];
+
+  const handleOnOptionSelection = (value, row) => {
+    if (value == 'payment') {
+      navigate(`/record/invoices/reviewPayments`, { state: { invoices: [row], reviewPay: true } });
+    } else {
+      // Export PDF API integration
+    }
+  };
   const handleSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
   };
