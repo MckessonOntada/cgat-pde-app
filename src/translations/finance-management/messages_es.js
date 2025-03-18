@@ -187,7 +187,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.reviewPayments.paymentSuccess': 'S_Payment Successful',
   'paymentInvoices.reviewPayments.thankyouforpayment': 'S_Thank you for your payment',
   'paymentInvoices.reviewPayments.paymentSummary': 'S_Payment Summary',
-  'paymentInvoices.reviewPayments.confirmationDialogue': 'S_Are you sure want to leave Review and Pay screen?',
+  'paymentInvoices.reviewPayments.confirmationDialogue': 'S_Are you sure you want to leave Review and Pay screen?',
   'paymentInvoices.reviewPayments.confirm': 'S_Confirm',
   'paymentInvoices.reviewPayments.OK': 'S_OK',
   'paymentInvoices.reviewPayments.remove': 'S_REMOVE',

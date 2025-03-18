@@ -42,13 +42,13 @@ const createColumns = (t, type) => {
       sortable: true,
       id: 'billDate',
       wrap: true,
-      width: '160px',
+      width: '140px',
       cell: (props) => <div className="cellEllipse">{CommonUtils.convertDateStringFormat(props?.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
     },
     {
       name: t('paymentInvoices.history.table.DueDate'),
       selector: (row) => row.dueDate,
-      width: '150px',
+      width: '140px',
       sortable: true,
       wrap: true,
       id: 'dueDate',
@@ -57,7 +57,7 @@ const createColumns = (t, type) => {
     {
       name: t('paymentInvoices.history.table.BillAmount'),
       selector: (row) => row?.billAmount,
-      minWidth: '140px',
+      minWidth: '120px',
       sortable: true,
       right: true,
       id: 'billAmount',
@@ -70,7 +70,7 @@ const createColumns = (t, type) => {
     {
       name: t('paymentInvoices.history.table.authorizedAmount'),
       selector: (row) => row?.authAmount,
-      minWidth: '150px',
+      minWidth: '200px',
       sortable: true,
       right: true,
       id: 'authorizedPayment',
