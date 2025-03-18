@@ -148,19 +148,29 @@ function ReviewPayments() {
     }
   };
 
-  const getValue = (data) => {
-    return data.map((item) => ({
-      label:
-        item.accType === paymentMethod.BANK
-          ? `${FinanceUtils.maskCardNumber(item.accountNumber)}, ${item.name}`
-          : `${FinanceUtils.maskCardNumber(item.number)}, ${item.holderName}, ${item?.expirationDate}`,
-      value:
-        item.accType === paymentMethod.BANK
-          ? `${FinanceUtils.maskCardNumber(item.accountNumber)}, ${item.name}`
-          : `${FinanceUtils.maskCardNumber(item.number)}, ${item.holderName}, ${item?.expirationDate}`,
-      ...item
-    }));
-  };
+  const leastDueDateInvoice = useMemo(() => {
+    return selectedInvoices?.length > 0
+      ? selectedInvoices.reduce((min, current) =>
+          dayjs(current.dueDate, 'DD/MM/YYYY').isBefore(dayjs(min.dueDate, 'DD/MM/YYYY')) ? current : min
+        )
+      : null;
+  }, [selectedInvoices]);
+
+  const isPartialPayment = useMemo(() => {
+    if (selectedInvoices?.length > 0) {
+      let _totalAmount = 0;
+      let _totalpaymentAmount = 0;
+      selectedInvoices?.map((item) => {
+        _totalAmount = _totalAmount + parseFloat(item.billAmount);
+        _totalpaymentAmount = _totalpaymentAmount + parseFloat(item.paymentAmount);
+      });
+      return _totalpaymentAmount < _totalAmount ? true : false;
+    } else {
+      return false;
+    }
+  }, [selectedInvoices]);
+
+  console.log('v..', leastDueDateInvoice);
 
   const invoicesSum = useMemo(() => {
     const _sum = selectedInvoices
@@ -189,6 +199,9 @@ function ReviewPayments() {
       : location.state?.invoices
       ? location.state?.invoices.some((invoice) => dayjs(invoice.dueDate, 'DD/MM/YYYY').isBefore(dayjs()))
       : false;
+
+    const dueDateIsInPast = leastDueDateInvoice && dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY').isBefore(dayjs());
+    console.log('disableDueDate...', dueDateIsInPast, isPartialPayment);
     return selectedData
       ? [
           {
@@ -198,13 +211,13 @@ function ReviewPayments() {
             subLabel: t('paymentInvoices.reviewPayments.payTodayDesc')
           },
           {
-            isDisabled: isDisabledDueDate,
+            isDisabled: dueDateIsInPast || isPartialPayment,
             label: t('paymentInvoices.reviewPayments.payDuedate'),
             value: t('paymentInvoices.reviewPayments.payDuedate'),
             subLabel: t('paymentInvoices.reviewPayments.payDuedateDesc')
           },
           {
-            isDisabled: selectedData?.accType === paymentMethod.BANK,
+            isDisabled: dueDateIsInPast || isPartialPayment,
             label: t('paymentInvoices.reviewPayments.paySpecfic'),
             value: t('paymentInvoices.reviewPayments.paySpecfic'),
             subLabel: t('paymentInvoices.reviewPayments.paySpecficDesc'),

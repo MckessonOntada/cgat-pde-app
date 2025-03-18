@@ -77,6 +77,7 @@ export const PaymentOptionsControls = (props) => {
                       disablePast={item.disablePast ? true : false}
                       onBlur={(event) => item.onBlurSubType?.(event)}
                     />
+                    {item.errorMsg && <TextError errorMessage={item.errorMsg} />}
                   </div>
                 )}
               </div>
