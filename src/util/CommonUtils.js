@@ -466,9 +466,9 @@ export const downloadFile = (blob, fileName) => {
 };
 
 export const enableReviewAndPay = (selectedAccount) => {
-  let ignorableSalesOrgIds = ['5040'];
+  let ignorableCompanyCode = ['5040'];
   if (selectedAccount) {
-    let hide = ignorableSalesOrgIds.some((ele) => ele == selectedAccount.salesOrg);
+    let hide = ignorableCompanyCode.some((ele) => ele == selectedAccount.companyCode);
     return !hide;
   } else {
     return false;
