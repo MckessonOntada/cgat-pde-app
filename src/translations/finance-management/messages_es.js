@@ -204,6 +204,8 @@ export const PaymentInvoicesES = {
   'paymentInvoices.credits.table.billamount': 'S_Bill Amount',
   'paymentInvoices.credits.table.downloadPdf': 'S_download pdf',
   'paymentInvoices.credits.table.emptyData': 'S_No Credits Found',
+  'paymentInvoices.credits.filters.ValidFromstart': 'S_Valid From (Start)',
+  'paymentInvoices.credits.filters.ValidFromend': 'S_Valid From (End)',
   'paymentInvoices.Details.backToManageCredits': 'S_BACK TO MANAGE CREDITS PAGE',
   'paymentInvoices.Details.Credit': 'S_Credit',
 
