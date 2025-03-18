@@ -19,6 +19,7 @@ import RecordsMainRoutes from '@src/mfe/finance-management/RecordsMainRoutes';
 import AdminLayout from './admin';
 import { SystemConfiguration } from '@src/mfe/order-management/pages/system-configuration';
 import { AccountProvider } from '@src/mfe/finance-management/context/AccountContext';
+import Footer from '@src/components/footer';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
@@ -135,6 +136,7 @@ function MainLayout() {
             </div>
           </Suspense>
         </div>
+        <Footer/>
       </div>
     </div>
   );
