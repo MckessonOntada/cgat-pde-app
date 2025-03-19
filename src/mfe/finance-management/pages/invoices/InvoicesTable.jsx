@@ -108,7 +108,7 @@ export default function InvoicesTable() {
       right: true
     },
     {
-      name: t('paymentInvoices.history.table.status'),
+      name: <span className="statusCenter">{t('paymentInvoices.history.table.status')}</span>,
       selector: (row) => row.status,
       minWidth: '170px',
       sortable: true,
