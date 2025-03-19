@@ -26,14 +26,14 @@ const getColorByStatus = (status) => {
 };
 
 const getOptionsByStatus = (props) => {
-  const { id, status, __meta: { translate, tab, alertContainerId } = {} } = props || {};
-
+  const { id, status } = props || {};
+  const { translate, tab, alertContainerId } = this.__meta__;
   const navigate = useNavigate();
   const loggedInUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
   const { refreshData, assginedGroupsData } = useOrders();
   const { hasPermission } = usePermission();
-
+  console.log(tab);
   // Mutations
   const { mutate: assignToMe } = useMutation(() => OrderService.setOrderAssignToMe(id), {
     onSuccess: () => navigate(`${id}/summary`, { state: { isApprover: true } }),
