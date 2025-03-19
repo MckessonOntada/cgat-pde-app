@@ -129,7 +129,7 @@ const Summary = () => {
       if (warningMessages && warningMessages.length > 0) {
         addNotification(
           ...warningMessages.map((warn) => ({
-            description: warn.errorMessage,
+            description: warn.value,
             type: 'warning'
           }))
         );
@@ -686,7 +686,7 @@ const Summary = () => {
               />
             </div>
           )}
-          <div className='footer-wrapper'>
+          <div className="footer-wrapper">
             <div className="controls footer-controls">{getAllowedControls()}</div>
           </div>
         </div>
