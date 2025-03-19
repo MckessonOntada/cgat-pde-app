@@ -21,13 +21,19 @@ export default function DateRangePickerFormik({ minDate, maxDate, ...props }) {
       setPickerMinDate(fromDate);
     }
 
-    if ((!fromDate && toDate) || (fromDate && !toDate)) {
-      error = 'Select Both Dates.';
-    } else if (fromDate && toDate && fromDate > toDate) {
-      error = 'From/Start date must be before To/End date.';
-    } else {
-      error = '';
-    }
+    // if ((!fromDate && toDate) || (fromDate && !toDate)) {
+    //   error = 'Please select a valid date range.';
+    // } else if (fromDate && toDate && fromDate > toDate) {
+    //   error = 'Please select a valid date range.';
+    // } else {
+    //   error = '';
+    // }
+
+    error =
+      (!fromDate && toDate) || (fromDate && !toDate) || (fromDate && toDate && fromDate > toDate)
+        ? 'Please select a valid date range.'
+        : '';
+
     form.setFieldValue(field.name, [min || prevMin, max || prevMax]);
     form.setFieldError(field.name, error || undefined);
   };
