@@ -47,14 +47,14 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     id: 'therapyDescription',
     name: t('labels.therapyDescription'),
     selector: () => {},
-    maxWidth: '280px',
+    minWidth: '200px',
     sortable: true,
     sortKey: 'material_description',
     showInMobileHeader: true,
     showColumnNameInHeader: true,
     cell: (props) => (
       <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?therapy-details=${props.id}`}>
-        <EclipsesTextcss str={props.therapyDescription} maxWidth={200}/>
+        <EclipsesTextcss str={props.therapyDescription} maxWidth={220}/>
       </Link>
     )
   },
@@ -63,15 +63,15 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     name: t('labels.therapyNumber'),
     selector: () => {},
     sortable: true,
-    maxWidth: '180px',
+    minWidth: '200px',
     sortKey: 'material_Number',
-    cell: (props) => <span aria-label={t('labels.therapyNumber')}>{props.therapyId}</span>
+    cell: (props) => <span aria-label={t('labels.therapyNumber')}>{'77377373735363321131'}</span>
   },
   {
     id: 'ndc',
     name: t('table.columns.captions.nationalDrugCode'),
     selector: () => {},
-    maxWidth: '220px',
+    minWidth: '120px',
     sortable: true,
     sortKey: 'ndc_number',
     showInMobileHeader: true,
@@ -79,7 +79,7 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     cardHeader: true,
     cell: (props) => (
       <span aria-label={t('table.columns.captions.nationalDrugCode')}>
-        <EclipsesTextcss str={props.ndc} maxWidth={180} />
+        {props.ndc}
       </span>
     )
   },
@@ -87,8 +87,7 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     id: 'strength',
     name: t('table.columns.captions.strength'),
     selector: () => {},
-    maxWidth: '130px',
-    minWidth: '100px',
+    width: '100px',
     sortable: false,
     cell: (props) => <span aria-label={t('table.columns.captions.strength')}>{props.strength}</span>
   },
@@ -96,8 +95,7 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     id: 'dosage',
     name: t('table.columns.captions.dosage'),
     selector: () => {},
-    maxWidth: '150px',
-    minWidth: '100px',
+    width: '100px',
     sortable: false,
     cell: (props) => <span aria-label={t('table.columns.captions.dosage')}>{props.dosage}</span>
   }
