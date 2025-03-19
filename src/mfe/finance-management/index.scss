@@ -113,14 +113,9 @@
           flex-direction: row;
           justify-content: space-between;
         }
-
-        @include mixins.respond("xl") {
-          justify-content: flex-start;
-        }
-
         .info-cards-container {
-          @include mixins.respond("xl") {
-            min-width: 33%;
+          .info-card{
+            min-width: auto;
           }
         }
       }
