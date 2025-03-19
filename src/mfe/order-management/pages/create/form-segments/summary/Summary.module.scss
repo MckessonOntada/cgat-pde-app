@@ -4,11 +4,11 @@
   font-weight: var(--brand-font-weight-600);
   border-bottom: 1px solid var(--brand-color-grey-scale-warm-1);
 }
-.orderSummaryHeading{
-  @media only screen and (max-width: 576px) {
-    display: none;
-  }
-}
+// .orderSummaryHeading{
+//   @media only screen and (max-width: 576px) {
+//     display: none;
+//   }
+// }
 
 .actionLink {
   display: flex;

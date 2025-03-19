@@ -292,20 +292,22 @@ const getPatientName = (patientInfo) => {
 };
 
 export const createColumns = (t, navigate, activeTab, alertContainerId) => [
-  // {
-  //   id: 'paporder',
-  //   name: '',
-  //   selector: () => {},
-  //   center: true,
-  //   width:'80px',
-  //   cell: (props) => (
-  //     props.paporder && (
-  //       <span>
-  //         <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('labels.pap')} />
-  //       </span>
-  //     )
-  //   ),
-  // },
+  {
+    id: 'paporder',
+    name: '',
+    selector: () => {},
+    center: true,
+    width:'80px',
+    showInMobileHeader: true,
+    inlineStatus: true,
+    cell: (props) => (
+      props.paporder && (
+        <span>
+          <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('labels.pap')} />
+        </span>
+      )
+    ),
+  },
   {
     id: 'backendOrderId',
     name: t('labels.sapId'),

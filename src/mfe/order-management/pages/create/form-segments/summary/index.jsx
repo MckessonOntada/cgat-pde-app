@@ -453,11 +453,11 @@ const Summary = () => {
             heading={
               <Heading className={styles.orderSummaryHeading} as="h2">
                 {t('labels.summary')}
-                {/* {paporder && (
+                {paporder && (
                   <span className={styles.pap}>
                     <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('labels.pap.order')} />
                   </span>
-                )} */}
+                )}
               </Heading>
             }
             controls={
