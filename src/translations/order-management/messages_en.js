@@ -142,6 +142,7 @@ export const MessageEn = {
   'labels.sapId': 'SAP ID',
   'labels.therapy': 'Therapy',
   'table.columns.captions.author': 'Author',
+  'table.columns.captions.assignee': 'Assignee',
   'table.columns.captions.createdOn': 'Created On',
   'table.columns.captions.status': 'Status',
   'table.columns.captions.submittedBy': 'Submitted By',
@@ -439,5 +440,5 @@ export const MessageEn = {
   'labels.OrderProcesing.SAPOrderStatus.Completed': 'COMPLETED',
   'errors.orders_index_additional_details.po_number_1_practice_id_1': 'PO Number already exists.',
   'labels.pap': 'PAP',
-  'labels.pap.order': 'PAP ORDER',
+  'labels.pap.order': 'PAP ORDER'
 };
