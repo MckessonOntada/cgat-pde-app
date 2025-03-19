@@ -385,10 +385,22 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     name: t('table.columns.captions.author'),
     selector: () => {},
     sortable: true,
-    sortKey: 'author?.name',
-    maxWidth: '130px',
+    sortKey: 'createdBy.name',
+    maxWidth: '180px',
     cell: (props) => (
-      <EclipsesTextcss tooltip={props.createdBy?.userName} str={props.createdBy?.name} maxWidth={120} className={'MCP-table-cell'} />
+      <EclipsesTextcss tooltip={props.createdBy?.userName} str={props.createdBy?.name} maxWidth={180} className={'MCP-table-cell'} />
+    ),
+    omit: activeTab !== 1
+  },
+  {
+    id: 'Assignee',
+    name: t('table.columns.captions.assignee'),
+    selector: () => {},
+    sortable: true,
+    sortKey: 'approver.name',
+    maxWidth: '180px',
+    cell: (props) => (
+      <EclipsesTextcss tooltip={props.approver?.name} str={props.approver?.name} maxWidth={180} className={'MCP-table-cell'} />
     ),
     omit: activeTab !== 1
   },
