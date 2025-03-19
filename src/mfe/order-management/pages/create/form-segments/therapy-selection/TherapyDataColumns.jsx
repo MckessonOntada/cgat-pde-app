@@ -65,7 +65,7 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     sortable: true,
     minWidth: '200px',
     sortKey: 'material_Number',
-    cell: (props) => <span aria-label={t('labels.therapyNumber')}>{'77377373735363321131'}</span>
+    cell: (props) => <span aria-label={t('labels.therapyNumber')}>{props.therapyId}</span>
   },
   {
     id: 'ndc',
