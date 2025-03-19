@@ -82,7 +82,7 @@ const OrderStatus = () => {
       <div className={'MCP-module-body'}>
         <div className="MCP-CardContainer">
           <div className="grid grid-gap-12 sm:grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 print-div">
-            <DetailSegment label={t('labels.orderId')} value={orderId} />
+            <DetailSegment label={orderStatus === 'SUBMITTED' ? t('labels.sapId') : t('labels.pdeId')} value={orderId} />
             <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
             <DetailSegment
               label={t('labels.patientName')}
