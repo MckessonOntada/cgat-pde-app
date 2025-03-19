@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
@@ -63,8 +63,17 @@ const UserDetail = () => {
   const isImpersonateLoggedIn = Boolean(AuthUtils.getImpersonateId());
   const isSelf = userId === AuthUtils.getUserId();
   const [duration, setDuration] = React.useState(10000);
+  const disablePay = useRef(false);
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
+  };
+  
+  const handleClickLogin = () => {
+    if (disablePay.current) return;
+    disablePay.current = setTimeout(() => {
+      setIsConsentModalOpen(true)
+      disablePay.current = null;
+    }, 500);    
   };
 
   const { isLoading, isError, data, refetch } = useQuery({
@@ -266,7 +275,7 @@ const UserDetail = () => {
           controls={
             prePermissions && (
               <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
-                <Button variant="primary" size="md" onClick={() => setIsConsentModalOpen(true)}>
+                <Button variant="primary" size="md" onClick={(e) => handleClickLogin(e)}>
                   {t('button.label.loginAsThisUser')}
                 </Button>
               </PermittedComponent>
