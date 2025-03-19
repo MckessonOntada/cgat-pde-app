@@ -80,23 +80,6 @@ const createColumns = (t, type) => {
         </div>
       )
     },
-    {
-      name: t('paymentInvoices.history.table.Actions'),
-      width: '150px',
-      wrap: true,
-      isAction: true,
-      cell: (props) => (
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <PDFicon />}
-          onClick={() => {}}
-          size="md"
-          disabled={!props?.pdfAvailable}>
-          {t('paymentInvoices.CS.table.exportPdf')}
-        </Button>
-      )
-    }
   ];
 
   const creditColumns = [
@@ -146,22 +129,6 @@ const createColumns = (t, type) => {
         </div>
       )
     },
-    {
-      name: t('paymentInvoices.history.table.Actions'),
-      width: '150px',
-      wrap: true,
-      cell: (props) => (
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <PDFicon />}
-          onClick={() => {}}
-          size="md"
-          disabled={!props?.pdfAvailable}>
-          {t('paymentInvoices.CS.table.exportPdf')}
-        </Button>
-      )
-    }
   ];
 
   return type === 'invoice' ? invoiceColumns : creditColumns;

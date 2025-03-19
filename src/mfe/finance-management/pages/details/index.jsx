@@ -260,30 +260,19 @@ function Details(props) {
         </div>
       </div>
       <div className="footer-section">
-        {INVOICES_SCREEN ? (
-          !locationParams?.state?.reviewPay && (
-            <React.Fragment>
-              <Button size="md" variant="secondary" disabled>
-                {t('paymentInvoices.Details.DownloadPDF')}
-              </Button>
-              {CommonUtils.enableReviewAndPay(selectedAccount) && (
-                <Button
-                  size="md"
-                  variant="primary"
-                  type="submit"
-                  onClick={() => {
-                    navigate(`/record/invoices/reviewPayments`, { state: { ...locationParams.state, reviewPay: true } });
-                  }}>
-                  {t('paymentInvoices.Details.ReviewAndPay')}
-                </Button>
-              )}
-            </React.Fragment>
-          )
-        ) : (
+        {!locationParams?.state?.reviewPay && (
           <React.Fragment>
-            <Button size="md" variant="primary" disabled>
-              {t('paymentInvoices.Details.DownloadPDF')}
-            </Button>
+            {CommonUtils.enableReviewAndPay(selectedAccount) && (
+              <Button
+                size="md"
+                variant="primary"
+                type="submit"
+                onClick={() => {
+                  navigate(`/record/invoices/reviewPayments`, { state: { ...locationParams.state, reviewPay: true } });
+                }}>
+                {t('paymentInvoices.Details.ReviewAndPay')}
+              </Button>
+            )}
           </React.Fragment>
         )}
       </div>
