@@ -386,13 +386,13 @@ export const validateDateRange = (value, messages = {}, allowFutureDate = true) 
   const fromDate = value?.[0] && !isNaN(new Date(value[0])) ? new Date(value[0]) : null;
   const toDate = value?.[1] && !isNaN(new Date(value[1])) ? new Date(value[1]) : null;
   const today = new Date();
-
+  const defaultMessage = messages.fromDateAndToDate || 'Please select a valid date range.';
   if ((!fromDate && toDate) || (fromDate && !toDate)) {
-    message = messages.fromDateAndToDate || 'Select Both Dates';
+    message = defaultMessage;
   } else if (fromDate > toDate) {
-    message = messages.fromDateLessThanToDate || 'From/Start date must be before To/End date.';
+    message = messages.fromDateLessThanToDate || defaultMessage;
   } else if (!allowFutureDate && toDate > today) {
-    message = messages.toDateNotFuture || 'To/End date cannot be in the future';
+    message = messages.toDateNotFuture || defaultMessage;
   }
 
   return message || undefined;
