@@ -146,8 +146,8 @@ export default function InvoicesTable() {
     },
     {
       name: t('paymentInvoices.history.table.Actions'),
-      minWidth: '144px',
-      sortable: true,
+      width: '100px',
+
       id: 'actions',
       wrap: true,
       showInMobileHeader: true,
