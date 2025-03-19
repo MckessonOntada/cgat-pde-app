@@ -7,6 +7,7 @@ import CommonUtils from '@src/util/CommonUtils';
 import useSnackbar from '@src/hooks/useSnackbar';
 import { GeographicUtils } from '@src/util/GeographicUtil';
 import { useTranslate } from '@src/translations/useTranslation';
+import { useLocation } from 'react-router-dom';
 
 const ACCOUNTS_PER_SEARCH = 20;
 
@@ -25,7 +26,8 @@ export const AccountProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedAccountRaw, setSelectedAccountRaw] = useState(null);
   const [totalAccounts, setTotalAccounts] = useState(0);
-
+  const location = useLocation();
+  const { state } = location;
   const { showSnackbar } = useSnackbar();
 
   const formatPayToAccountsList = () => {
@@ -85,7 +87,6 @@ export const AccountProvider = ({ children }) => {
   }, []);
 
   const searchPayToAccounts = debouncedSetSearchText();
-
   useEffect(() => {
     if (CommonUtils.isNonEmptyArray(payToAccountsData)) {
       formatPayToAccountsList();
@@ -102,7 +103,8 @@ export const AccountProvider = ({ children }) => {
 
   useEffect(() => {
     if (CommonUtils.isNonEmptyObject(defaultPayToAccount) && !CommonUtils.isNonEmptyObject(selectedAccount)) {
-      setSelectedAccount(defaultPayToAccount);
+      let _account = state?.selectedPayToAcc || defaultPayToAccount;
+      setSelectedAccount(_account);
       setIsLoading(false);
     }
   }, [defaultPayToAccount]);
