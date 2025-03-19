@@ -59,7 +59,7 @@ export default function InvoicesTable() {
           <Link
             style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
             to={`/record/${PATHS.invoices}/${props?.billNumber}/details`}
-            state={{ invoices: [...[], props] }}>{`${props?.billNumber || ''}`}</Link>
+            state={{ invoices: [...[], props], selectedPayToAcc: selectedAccount }}>{`${props?.billNumber || ''}`}</Link>
         </div>
       )
     },
@@ -175,7 +175,7 @@ export default function InvoicesTable() {
 
   const handleOnOptionSelection = (value, row) => {
     if (value == 'payment') {
-      navigate(`/record/invoices/reviewPayments`, { state: { invoices: [row], reviewPay: true } });
+      navigate(`/record/invoices/reviewPayments`, { state: { invoices: [row], reviewPay: true, selectedPayToAcc: selectedAccount } });
     } else {
       // Export PDF API integration
     }
@@ -202,7 +202,9 @@ export default function InvoicesTable() {
           <Button
             variant="secondary"
             onClick={() => {
-              navigate(`/record/invoices/reviewPayments`, { state: { invoices: includeinvoiceData, reviewPay: true } });
+              navigate(`/record/invoices/reviewPayments`, {
+                state: { invoices: includeinvoiceData, reviewPay: true, selectedPayToAcc: selectedAccount }
+              });
             }}
             size="sm">
             {t('paymentInvoices.Details.ReviewAndPay')}
