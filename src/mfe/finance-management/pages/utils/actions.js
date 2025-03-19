@@ -63,7 +63,8 @@ export const onConfirmPayment = (selectedAccount, state, payInvoices, t, selecte
     if (_accType == paymentMethod.BANK) {
       payload.paymentMethod.bank = {
         accountNumber: _selectedPayment.accountNumber,
-        name: _selectedPayment.name
+        name: _selectedPayment.name,
+        type: _selectedPayment.type
       };
     } else {
       let _credit = { ...{}, ..._selectedPayment };
