@@ -21,11 +21,30 @@
 
 .additional-filters {
   position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  flex-wrap: wrap;
   .dropdown-container {
     margin-top: 5px;
   }
+  .filter-control-buttons{
+    margin-bottom: var(--spacing-02);
+  }
 }
-
+.filter-control-buttons{
+  @media only screen and (max-width: 768px) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row !important;
+    width: 100%;
+  }
+  button{
+    width: fit-content;
+    text-wrap-mode: nowrap;
+  }
+}
 .filterRow {
   display: flex;
   justify-content: left;
