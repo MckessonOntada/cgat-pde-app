@@ -8,6 +8,7 @@ import { useAccountContext } from './AccountContext';
 import CommonUtils from '@src/util/CommonUtils';
 import { GeographicUtils } from '@src/util/GeographicUtil';
 import { useTranslate } from '@src/translations/useTranslation';
+import { DUE_STATUS } from '../pages/invoices/InvoiceConstants';
 
 const PaymentsInvoicesContext = createContext();
 
@@ -289,7 +290,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
       openInvoiceFilterDTO: {
         searchTerm: filterConfig?.searchQuery || '',
         paymentTerm: filterConfig?.paymentTerm || [],
-        status: filterConfig?.status || [],
+        status: filterConfig?.status?.map((statusKey) => DUE_STATUS[statusKey]?.label),
         billDateStart: CommonUtils.isNonEmptyString(filterConfig?.billDate[0])
           ? dayjs(filterConfig?.billDate[0], 'MM/DD/YYYY').format('DD/MM/YYYY')
           : '' || '',
