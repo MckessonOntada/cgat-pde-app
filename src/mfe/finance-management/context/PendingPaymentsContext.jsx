@@ -273,7 +273,7 @@ export const PendingPaymentsProvider = ({ children }) => {
     filterConfig,
     paginationConfig,
     sortConfig,
-    // refreshData,
+    refetch,
     applyFilters,
     clearFilters,
     applySort,

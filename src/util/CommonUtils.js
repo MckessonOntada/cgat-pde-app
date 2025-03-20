@@ -406,6 +406,12 @@ export function gettenYearDate(y) {
   return new Date(year + y, month, day);
 }
 
+export function isFutureDate(dateStr) {
+  const today = new Date();
+  const date = new Date(dateStr);
+  return date > today;
+}
+
 function truncateString(str, maxLength) {
   return str.length > maxLength ? str.slice(0, maxLength) + '...' : str;
 }
@@ -542,7 +548,8 @@ const CommonUtils = Object.freeze({
   formatNumberWithoutSymbol,
   getCamelCase,
   getFileSize,
-  gettenYearDate
+  gettenYearDate,
+  isFutureDate
 });
 
 export default CommonUtils;

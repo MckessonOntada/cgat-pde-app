@@ -143,4 +143,13 @@
   svg {
     color: #db3a29 !important;
   }
+  &:disabled,
+  &.disabled {
+    color: #ccc !important;
+    cursor: not-allowed;
+
+    svg {
+      color: #ccc !important;
+    }
+  }
 }
