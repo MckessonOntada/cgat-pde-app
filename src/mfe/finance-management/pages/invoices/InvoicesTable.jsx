@@ -169,7 +169,8 @@ export default function InvoicesTable() {
           ]}
           aria-label="invoice options"
         />
-      )
+      ),
+      omit: !CommonUtils.enableReviewAndPay(selectedAccount)
     }
   ];
 
