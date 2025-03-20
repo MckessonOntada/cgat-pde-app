@@ -27,6 +27,7 @@ import { CUSTOMER_CENTRE, SYSTEM_ADMIN } from '@src/api/commonService/CommonServ
 import { InventoryIndicator } from '../InventoryIndicator';
 import useSapOrder from './useSapOrder';
 import useTimedArray from './useTimedArray';
+import AttachmentCard from './AttachmentCard';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -421,6 +422,37 @@ const Summary = () => {
     return <Loader type={'screen'} />;
   }
 
+  let variantAttachment = null,
+    configuredQuestionnaires = [];
+
+  if (additionalDetails.variantDetails.variantDocumentPath) {
+    try {
+      variantAttachment = JSON.parse(additionalDetails.variantDetails.variantDocumentPath);
+    } catch (error) {}
+  }
+
+  if (additionalDetails.configuredQuestionnaires && additionalDetails.configuredQuestionnaires.length > 0) {
+    additionalDetails.configuredQuestionnaires.forEach((template) => {
+      if (template?.questions && template.questions.length > 0) {
+        template.questions.forEach((question) => {
+          if (question.value) {
+            const details = {
+              text: question.text.en,
+              value: question.value
+            };
+
+            if (question.document) {
+              details.attachment = {
+                name: question.document.name,
+                size: question.document.size
+              };
+            }
+            configuredQuestionnaires.push(details);
+          }
+        });
+      }
+    });
+  }
   return (
     <div className="MCP-module-wrapper order-summary-container">
       <div>
@@ -668,11 +700,81 @@ const Summary = () => {
                 <DetailSegment label={t('labels.slotNo')} value={additionalDetails?.slotNumber} />
                 <DetailSegment label={t('labels.poNo')} value={additionalDetails?.poNumber} />
                 <DetailSegment label={t('labels.dateOfAdministration')} value={additionalDetails?.dateOfAdministration || '-'} />
-                <DetailSegment label={t('labels.selectVariant')} value={variantDetails.variant || '-'} />
+                {/* <DetailSegment label={t('labels.selectVariant')} value={variantDetails.variant || '-'} />
                 <DetailSegment label={t('labels.variantDescription')} value={variantDetails.variantDescription || '-'} />
-                <DetailSegment label={t('labels.patientConsent')} value={additionalDetails?.patientConsentTaken ? 'Yes' : '-'} />
+                <DetailSegment label={t('labels.patientConsent')} value={additionalDetails?.patientConsentTaken ? 'Yes' : '-'} /> */}
               </div>
             </div>
+
+            {additionalDetails.variantDetails && (
+              <div className="MCP-CardContainer">
+                <ModuleHeader
+                  className={styles.panelHeader}
+                  heading={<Heading as="h3">Variant</Heading>}
+                  controls={
+                    !hideControls && (
+                      <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                        <Button
+                          size="md"
+                          variant="tertiary"
+                          onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
+                          Icon={() => <IconEditField />}>
+                          {t('captions.btnEdit')}
+                        </Button>
+                      </PermittedComponent>
+                    )
+                  }
+                />
+                <div className="MCP-module-body">
+                  <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
+                    <DetailSegment label={'Variant'} value={additionalDetails?.variantDetails?.variant} />
+                    {variantAttachment && <AttachmentCard fileName={variantAttachment.name} fileSize={variantAttachment.size} />}
+                  </div>
+                  <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
+                    <DetailSegment
+                      label={'Please acknowledge if Patient Consent has been taken'}
+                      value={additionalDetails?.variantDetails?.variantAcknowledgment ? 'Yes' : 'No'}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {additionalDetails.configuredQuestionnaires && (
+              <div className="MCP-CardContainer">
+                <ModuleHeader
+                  className={styles.panelHeader}
+                  heading={<Heading as="h3">Configured Questionnaires</Heading>}
+                  controls={
+                    !hideControls && (
+                      <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                        <Button
+                          size="md"
+                          variant="tertiary"
+                          onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
+                          Icon={() => <IconEditField />}>
+                          {t('captions.btnEdit')}
+                        </Button>
+                      </PermittedComponent>
+                    )
+                  }
+                />
+                <div className="MCP-module-body">
+                  <div className="summary-question-list">
+                    {configuredQuestionnaires.map((question) => {
+                      return (
+                        <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
+                          <DetailSegment label={question.text} value={question.value} />
+                          {question.attachment && (
+                            <AttachmentCard fileName={question.attachment.name} fileSize={question.attachment.size} />
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           {!hideControls && (
             <div className="agreement-checkbox-control">
