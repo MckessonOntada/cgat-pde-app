@@ -38,6 +38,9 @@ function Details(props) {
   const navigate = useNavigate();
   const locationParams = useLocation();
   const showCardView = useResponsiveView();
+
+  const { state: { invoices: [selectedInvoice] = [] } = {} } = locationParams;
+
   const onBackToPaymentsInvoices = () => {
     navigate(-1);
   };
@@ -51,7 +54,10 @@ function Details(props) {
           companyCode: selectedAccount?.companyCode,
           salesOrg: selectedAccount?.salesOrg,
           payerAccountNumber: selectedAccount?.accountNumber,
-          userName: ''
+          userName: '',
+          fiscalYear: selectedInvoice?.fiscalYear,
+          lineItem: selectedInvoice?.lineItem,
+          referenceDocumentNumber: selectedInvoice?.referenceDocumentNumber
         };
         const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
         if (res.data) {
