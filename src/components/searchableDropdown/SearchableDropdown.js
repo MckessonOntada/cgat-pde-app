@@ -248,7 +248,7 @@ export const SearchableDropdown = (props) => {
         let noSelect = [];
         setStoredOptions(getSortedOptions(options, valueToMoveToLast, valueToMoveToTop));
         setIsFilterOptions(true);
-        if (isSelectedShiftDisable || options.length <= 10) {
+        if (isSelectedShiftDisable || (options.length <= 10 && options.every((ele) => ele.isChecked))) {
           selectedOpt = options;
         } else {
           selectedOpt = options.filter((e) => e.isChecked);
