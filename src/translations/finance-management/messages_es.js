@@ -244,6 +244,10 @@ export const PaymentInvoicesES = {
   'pendingPayments.table.paymentStatus': 'S_Payment Status',
   'pendingPayments.table.billDate': 'S_Bill Date',
   'pendingPayments.confirm.BackToPendingPayments': 'S_BACK TO PENDING PAYMENTS',
+  'pendingPayments.table.confirmationDialogue': 'S_Are you sure you want to cancel this payment?',
+  'pendingPayments.cancel.failed': 'S_Error occurred while cancelling the pending payment.',
+  'pendingPayments.cancel.success': 'S_Payment Cancelled Succesfully.',
+  'pendingPayments.cancel.tooltip': 'S_This Payment can not be cancelled.',
 
   // No data found
   'paymentInvoices.dataLoading': 'S_Fetching Accounts...',
