@@ -26,6 +26,7 @@ import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from './useOrderPrice';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import Components from '@src/components/form/Components';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -122,7 +123,14 @@ function AdditionalDetails() {
         is: () => isVariantRequired,
         then: (schema) => schema.oneOf([true], t('message.acknowldge')),
         otherwise: (schema) => schema.nullable()
-      })
+      }),
+      ['variantAcknowledgement.document']: Yup.object()
+        .shape({
+          url: Yup.string(),
+          size: Yup.number(),
+          name: Yup.string()
+        })
+        .nullable()
     });
   };
 
@@ -404,7 +412,7 @@ function AdditionalDetails() {
         question.document = fieldValue.document;
       });
     });
-  
+
     const payload = {
       coiId,
       orderQuantity,
@@ -529,57 +537,67 @@ function AdditionalDetails() {
                     )}
                   </div>
                   {!!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content) && (
-                    <>
-                      <Heading as="h3">{t('labels.selectVariant')}</Heading>
-                      <VariantTable
-                        variant={variant}
-                        onChange={(variant) => handleOnVariantChange(variant, setErrors, errors, setFieldValue, setFieldTouched)}
-                        data={variantsData.content}
-                      />
-                      <div className="agreement-checkbox-control">
-                        {errors?.variant && touched?.variant && (
-                          <div className="show-Error">
-                            <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />
-                          </div>
-                        )}
-                        <Field name="variant-acknowledgement">
-                          {({ field, form }) => (
-                            <CheckboxGroup
-                              id={'default'}
-                              name="variant-acknowledgement"
-                              items={[
-                                {
-                                  ...variantAcknowledgement,
-                                  onChange: () => handleOnAcknowledgmentChange(setErrors, errors, setFieldValue)
+                    <div>
+                      <div className="MCP-module-body">
+                        <Heading as="h3">{t('labels.selectVariant')}</Heading>
+                        <div>
+                          <VariantTable
+                            variant={variant}
+                            onChange={(variant) => handleOnVariantChange(variant, setErrors, errors, setFieldValue, setFieldTouched)}
+                            data={variantsData.content}
+                          />
+                          {errors?.variant && touched?.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />}
+                        </div>
+                        <div className="agreement-checkbox-control">
+                          <Field name="variant-acknowledgement">
+                            {({ field, form }) => (
+                              <CheckboxGroup
+                                id={'default'}
+                                name="variant-acknowledgement"
+                                items={[
+                                  {
+                                    ...variantAcknowledgement,
+                                    onChange: () => handleOnAcknowledgmentChange(setErrors, errors, setFieldValue)
+                                  }
+                                ]}
+                                error={
+                                  errors.variantAcknowledgement && touched?.variantAcknowledgement
+                                    ? Boolean(!values.variantAcknowledgement)
+                                    : false
                                 }
-                              ]}
-                              error={
-                                errors.variantAcknowledgement && touched?.variantAcknowledgement
-                                  ? Boolean(!values.variantAcknowledgement)
-                                  : false
-                              }
-                              errorMessage={touched?.variantAcknowledgement && errors.variantAcknowledgement}
-                              size="md"
-                            />
-                          )}
-                        </Field>
+                                errorMessage={touched?.variantAcknowledgement && errors.variantAcknowledgement}
+                                size="md"
+                              />
+                            )}
+                          </Field>
+                        </div>
+                        <div>
+                          <Field
+                            name="variantAttachment.document"
+                            component={Components['inputFile']}
+                            onFileChange={(file) => handleOnDocumentChange('variantAttachment', file, setFieldValue)}
+                          />
+                        </div>
                       </div>
-                    </>
+                    </div>
                   )}
 
                   {questionnaireTemplateConfig && Array.isArray(questionnaireTemplateConfig) && questionnaireTemplateConfig.length > 0 && (
                     <div className="configured-questionnaire-form">
-                      <QuestionnaireTemplate
-                        onRemoveDocument={handleOnRemoveDocument}
-                        onDocumentChange={handleOnDocumentChange}
-                        config={questionnaireTemplateConfig}
-                        isPreview={false}
-                      />
+                      <div className="MCP-module-body">
+                        <Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading>
+                        <QuestionnaireTemplate
+                          onRemoveDocument={handleOnRemoveDocument}
+                          onDocumentChange={handleOnDocumentChange}
+                          config={questionnaireTemplateConfig}
+                          isPreview={false}
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
 
-                <div className='footer-wrapper'>
+                <div className="footer-wrapper">
                   <div className="controls footer-controls">
                     <Button size="md" variant="secondary" onClick={handleOnBack}>
                       {t('captions.btnBack')}

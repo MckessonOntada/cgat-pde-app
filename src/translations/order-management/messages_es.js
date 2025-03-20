@@ -105,6 +105,7 @@ export const MessageEs = {
   'labels.dateOfAdministration': 'S_Date of Administration',
   'labels.slotNo': 'S_Slot No',
   'labels.selectVariant': 'S_Select Variant',
+  'labels.configuredQuestionnaires': 'S_Configured Questionnaires',
   'labels.poNo': 'S_PO No',
   'labels.variantDescription': 'S_Variant Description',
   'labels.actions.view': 'S_View',
