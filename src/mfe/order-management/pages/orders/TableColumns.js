@@ -25,7 +25,7 @@ const getColorByStatus = (status) => {
   return statusColors[status] || 'info';
 };
 
-const getOptionsByStatus = (props) => {
+function getOptionsByStatus(props) {
   const { id, status } = props || {};
   const { translate, tab, alertContainerId } = this.__meta__;
   const navigate = useNavigate();
@@ -33,7 +33,6 @@ const getOptionsByStatus = (props) => {
   const { showAlert } = useAlert();
   const { refreshData, assginedGroupsData } = useOrders();
   const { hasPermission } = usePermission();
-  console.log(tab);
   // Mutations
   const { mutate: assignToMe } = useMutation(() => OrderService.setOrderAssignToMe(id), {
     onSuccess: () => navigate(`${id}/summary`, { state: { isApprover: true } }),
@@ -165,7 +164,7 @@ const getOptionsByStatus = (props) => {
       aria-label="Order options"
     />
   );
-};
+}
 
 const getPathByOrderStage = ({ currentStage, id, patientDetailsRequired }) => {
   switch (currentStage) {
