@@ -124,7 +124,7 @@ function AdditionalDetails() {
         then: (schema) => schema.oneOf([true], t('message.acknowldge')),
         otherwise: (schema) => schema.nullable()
       }),
-      ['variantAcknowledgement.document']: Yup.object()
+      ['variantAttachment.document']: Yup.object()
         .shape({
           url: Yup.string(),
           size: Yup.number(),
@@ -328,17 +328,21 @@ function AdditionalDetails() {
         patientConsentTaken,
         poNumber,
         slotNumber,
-        variantDetails: _variant,
+        variantDetails,
         configuredQuestionnaires
       } = additionalDetails;
 
+      const { variantDocumentPath, ...otherDetails } = variantDetails;
       const initialValues = {
         dateOfAdministration,
         coiId,
         orderQuantity,
         poNumber,
         slotNumber,
-        variant: _variant,
+        variant: {
+          ...otherDetails,
+          document: variantDocumentPath ? JSON.parse(variantDocumentPath) : undefined
+        },
         variantAcknowledgement: patientConsentTaken
       };
 
@@ -349,13 +353,13 @@ function AdditionalDetails() {
         ...initialValues
       }));
 
-      if (!variantsData?.content || !_variant) {
+      if (!variantsData?.content || !variantDetails) {
         return;
       }
+
+      const targetVariant = variantsData.content?.find((v) => variantDetails.variant === v.variant);
       setVariant({
-        variant: _variant.variant,
-        variantDescription: _variant.variantDescription,
-        id: variantsData.content?.find((_v) => _variant.variant === _v.variant).id
+        ...targetVariant
       });
       setVariantAcknowledgement((prev) => ({ ...prev, isChecked: patientConsentTaken }));
     }
@@ -378,11 +382,12 @@ function AdditionalDetails() {
   };
 
   const handleOnSubmit = (values) => {
-    const _var = !!variant
+    const variantDetails = !!variant
       ? {
           variant: variant.variant,
           variantDescription: variant.variantDescription,
-          variantAcknowledgment: variantAcknowledgement.isChecked
+          variantAcknowledgment: variantAcknowledgement.isChecked,
+          variantDocumentPath: values.variantAttachment?.document && JSON.stringify(values.variantAttachment?.document)
         }
       : null;
 
@@ -419,8 +424,8 @@ function AdditionalDetails() {
       slotNumber,
       poNumber,
       dateOfAdministration,
-      variantDetails: _var,
-      patientConsentTaken: !!variant ? _var.variantAcknowledgment : false,
+      variantDetails: variantDetails,
+      patientConsentTaken: !!variant ? variantDetails.variantAcknowledgment : false,
       configuredQuestionnaires: questionnaireTemplateConfig
     };
 
@@ -480,7 +485,7 @@ function AdditionalDetails() {
   if (isLoader) {
     return isLoader;
   }
-  console.log('validationSchema', validationSchema);
+
   return (
     <div className="MCP-module-wrapper">
       {isSaving && <Loader type={'screen'} />}
@@ -575,6 +580,8 @@ function AdditionalDetails() {
                           <Field
                             name="variantAttachment.document"
                             component={Components['inputFile']}
+                            setFieldValue={setFieldValue}
+                            attachmentValue={initialFormValues?.variant?.document}
                             onFileChange={(file) => handleOnDocumentChange('variantAttachment', file, setFieldValue)}
                           />
                         </div>
