@@ -180,6 +180,9 @@
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+  .collapsed-detail{
+    align-content: center;
+  }
   .column-name{
     font-size: 14px;
   }

@@ -429,7 +429,16 @@ const Summary = () => {
         </Button>
       </div>
       {orderDetails?.status === StatusEnum.IN_DRAFT && <PageHeader heading={t('headings.createNewOrder')} />}
-      {isApprover && <PageHeader heading={t('headings.reviewOrder')} />}
+      {isApprover && 
+        <div className={styles.pageHeadingReview}>
+          <PageHeader heading={t('headings.reviewOrder')} />
+          {paporder && (
+            <span className={styles.pap}>
+              <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('labels.pap.order')} />
+            </span>
+          )}
+        </div>
+      }
 
       <div className="MCP-module-body" ref={contentRef}>
         {!hideControls && !isRejected && (
@@ -451,15 +460,18 @@ const Summary = () => {
         <div className={'MCP-module-wrapper'}>
           <ModuleHeader
             heading={
-              <Heading className={styles.orderSummaryHeading} as="h2">
-                {t('labels.summary')}
-                {paporder && (
-                  <span className={styles.pap}>
-                    <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('labels.pap.order')} />
-                  </span>
-                )}
-              </Heading>
+              !isApprover &&(
+                <Heading className={styles.orderSummaryHeading} as="h2">
+                  <span>{t('labels.summary')}</span>
+                  {paporder && (
+                    <span className={styles.pap}>
+                      <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('labels.pap.order')} />
+                    </span>
+                  )}
+                </Heading>
+              )
             }
+            className={styles.orderSummary}
             controls={
               isRejected ? (
                 <div className="row-space-between-center">

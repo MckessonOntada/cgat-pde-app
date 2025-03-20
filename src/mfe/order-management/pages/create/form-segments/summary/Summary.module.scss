@@ -96,3 +96,24 @@
   gap: var(--spacing-02);
   justify-content: "flex-end";
 }
+.pageHeadingReview{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  @media only screen and (max-width: 576px) {
+    justify-content: space-between;
+  }
+}
+.orderSummary{
+  > div:first-child{
+    @media only screen and (max-width: 768px) {
+      width: 100%;
+    }
+    h2{
+      @media only screen and (max-width: 768px) {
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+  }
+}
