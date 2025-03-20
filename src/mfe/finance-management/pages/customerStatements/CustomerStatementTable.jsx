@@ -66,6 +66,37 @@ export default function CustomerStatementTable() {
       ),
       right: true
     },
+    {
+      name: t('paymentInvoices.history.table.Actions'),
+      selector: (row) => row,
+      maxWidth: '150px',
+      sortable: true,
+      wrap: true,
+      isAction: true,
+      isContextMenu: false,
+      cell: (props) =>
+        props.isPdfAvailable && (
+          <Button
+            className="back-button-control"
+            variant="tertiary"
+            Icon={() => <PDFicon />}
+            onClick={() => {
+              exportPDF(
+                `${ApiRoutes.EXPORT_CUSTOMER_STATEMENTS({ docNo: props.docNo, accountNumber: selectedAccount?.accountNumber })}`,
+                {
+                  companyCode: selectedAccount?.companyCode,
+                  salesOrg: selectedAccount?.salesOrg,
+                  payerAccountNumber: selectedAccount?.accountNumber,
+                  documentDate: props?.date
+                },
+                'pdf'
+              );
+            }}
+            size="md">
+            {t('paymentInvoices.CS.table.exportPdf')}
+          </Button>
+      )
+    }
   ];
   const handleSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
