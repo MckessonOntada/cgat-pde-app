@@ -147,7 +147,7 @@ const Filters = ({
                     <Field name={'searchQuery'} label={''} placeholder={searchPlaceholder} component={Components['input']} />
                   </div>
                 </div>
-                {showControls && (
+                {showControls && !isCardExpanded && (
                   <div className="filter-control-buttons filterControls">
                     {isAnyFilterApplied && (
                       <Button type="button" size="md" textButton className="txtbtn" onClick={() => handleClearFilters(formik.resetForm)}>
@@ -164,6 +164,18 @@ const Filters = ({
                 <ToggleUI in={isCardExpanded} timeout={400}>
                   <div className="additional-filters">
                     <AdditionalFilters filtersConfig={additionalFilters} />
+                    {showControls && (
+                      <div className="filter-control-buttons">
+                        { isAnyFilterApplied && (
+                          <Button type="button" size="md" textButton className="txtbtn" onClick={() => handleClearFilters(formik.resetForm)}>
+                            {isAdditionalFiltersAdded ? t('filters.clearfilters') : t('filters.clearsearch')}
+                          </Button>
+                        )}
+                        <Button type="submit" size="md" variant="secondary" className="filter-btn">
+                          {isAdditionalFiltersAdded ? t('filters.applyfilters') : t('filters.search')}
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </ToggleUI>
               )}

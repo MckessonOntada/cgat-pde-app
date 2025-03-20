@@ -193,8 +193,8 @@ div.disable-all {
 .MCP-filter-panel {
   .ctrl-search-box {
     flex-grow: 1;
-
-    @include mixins.respond(sm) {
+    width: 100%;
+    @include mixins.respond(md) {
       max-width: 460px;
     }
   }
