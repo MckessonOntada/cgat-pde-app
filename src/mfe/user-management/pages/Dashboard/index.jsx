@@ -139,7 +139,8 @@ export default function Dashboard() {
           { label: 'All', value: 'all' },
           { label: 'Pending', value: 'PENDING' },
           { label: 'Rejected', value: 'REJECTED' }
-        ]
+        ],
+        selected: 'PENDING'
       });
     }
     return [
