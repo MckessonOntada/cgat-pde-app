@@ -461,7 +461,7 @@ const Summary = () => {
         </Button>
       </div>
       {orderDetails?.status === StatusEnum.IN_DRAFT && <PageHeader heading={t('headings.createNewOrder')} />}
-      {isApprover && 
+      {isApprover && (
         <div className={styles.pageHeadingReview}>
           <PageHeader heading={t('headings.reviewOrder')} />
           {paporder && (
@@ -470,7 +470,7 @@ const Summary = () => {
             </span>
           )}
         </div>
-      }
+      )}
 
       <div className="MCP-module-body" ref={contentRef}>
         {!hideControls && !isRejected && (
@@ -492,7 +492,7 @@ const Summary = () => {
         <div className={'MCP-module-wrapper'}>
           <ModuleHeader
             heading={
-              !isApprover &&(
+              !isApprover && (
                 <Heading className={styles.orderSummaryHeading} as="h2">
                   <span>{t('labels.summary')}</span>
                   {paporder && (
@@ -741,12 +741,6 @@ const Summary = () => {
                   <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
                     <DetailSegment label={'Variant'} value={additionalDetails?.variantDetails?.variant} />
                     {variantAttachment && <AttachmentCard fileName={variantAttachment.name} fileSize={variantAttachment.size} />}
-                  </div>
-                  <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
-                    <DetailSegment
-                      label={'Please acknowledge if Patient Consent has been taken'}
-                      value={additionalDetails?.variantDetails?.variantAcknowledgment ? 'Yes' : 'No'}
-                    />
                   </div>
                 </div>
               </div>
