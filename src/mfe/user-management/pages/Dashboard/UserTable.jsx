@@ -125,7 +125,9 @@ function UserTable({ onActionSuccess }) {
 
   const handleOnOptionSelection = (value, row) => {
     if (value == 'review') {
-      navigate(`../${PATHS.editUser}/${row.id}`, { state: { isPending: true } });
+      navigate(row.status == 'PENDING' ? `../${PATHS.editUser}/${row.id}` : `../${PATHS.reviewUser}/${row.id}`, {
+        state: { isPending: true }
+      });
     } else {
       rejectUser(
         { userId: row.id },
@@ -245,7 +247,11 @@ function UserTable({ onActionSuccess }) {
         cell: (props) => (
           <div>
             {activeTab === 2 ? (
-              <Badge text="Pending" type="info-default" />
+              props.status == 'PENDING' ? (
+                <Badge text="PENDING" type="info-default" />
+              ) : (
+                <Badge text="REJECTED" type="error" />
+              )
             ) : props.isActive ? (
               <Badge text="Active" type="success" />
             ) : (
@@ -290,10 +296,14 @@ function UserTable({ onActionSuccess }) {
                   label: t('userManagement.table.action.review'),
                   value: 'review'
                 },
-                {
-                  label: t('userManagement.button.rejectrequest'),
-                  value: 'reject'
-                }
+                ...(row.status !== 'REJECTED'
+                  ? [
+                      {
+                        label: t('userManagement.button.rejectrequest'),
+                        value: 'reject'
+                      }
+                    ]
+                  : [])
               ]}
               aria-label="Order options"
             />

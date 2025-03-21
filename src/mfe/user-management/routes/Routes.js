@@ -1,13 +1,14 @@
-import React from "react";
-import { Route, Routes as ReactRoutes } from "react-router-dom";
-import { PATHS } from "./constants";
-import Home from "../pages/Dashboard";
-import UserDetail from "../pages/UserDetail";
-import CreateUser from "../pages/CreateUser";
-import EditUser from "../pages/CreateUser";
-import UserPermissions from "../pages/UserPermissions";
-import AddAccounts from "../pages/AddAccounts";
-import NotFound from "../../../pages/error-pages/NotFound";
+import React from 'react';
+import { Route, Routes as ReactRoutes } from 'react-router-dom';
+import { PATHS } from './constants';
+import Home from '../pages/Dashboard';
+import UserDetail from '../pages/UserDetail';
+import ReviewUser from '../pages/UserDetail/ReviewUser';
+import CreateUser from '../pages/CreateUser';
+import EditUser from '../pages/CreateUser';
+import UserPermissions from '../pages/UserPermissions';
+import AddAccounts from '../pages/AddAccounts';
+import NotFound from '../../../pages/error-pages/NotFound';
 
 const Routes = () => {
   return (
@@ -18,9 +19,10 @@ const Routes = () => {
       <Route path={`${PATHS.editUser}/:userId`} element={<EditUser />} />
       <Route path={`${PATHS.userPermissions}/:userId`} element={<UserPermissions />} />
       <Route path={`${PATHS.addAccounts}/:userId`} element={<AddAccounts />} />
+      <Route path={`${PATHS.reviewUser}/:userId`} element={<ReviewUser />} />
       <Route path={'*'} element={<NotFound />} />
     </ReactRoutes>
   );
 };
 
-export default Routes; 
+export default Routes;

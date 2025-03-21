@@ -340,7 +340,8 @@ export const UserManagementES = {
   'userManagement.confirmationMessage': 'S_Confirmation message',
   'userManagement.edit_sysadmin': 'S_Edit System Administrator',
   'userManagement.edit_organization_user': 'S_Edit Organization User',
-  'errors.messages.dateRange': "Either enter both dates or none for the filter as it's part of a date range.",
-  'errors.messages.emptyDataDescription': 'An unexpected error occurred. Please try again.',
-  'label.comment': 'Comment'
+  'errors.messages.dateRange': "S_Either enter both dates or none for the filter as it's part of a date range.",
+  'errors.messages.emptyDataDescription': 'S_An unexpected error occurred. Please try again.',
+  'label.comment': 'S_Comment',
+  'userManagement.header.review_user': 'S_Review Organization User'
 };

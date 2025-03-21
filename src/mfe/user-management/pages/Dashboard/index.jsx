@@ -129,6 +129,19 @@ export default function Dashboard() {
         ]
       });
     }
+    if (activeTab === 2) {
+      config.push({
+        type: 'dropdown',
+        name: 'status',
+        label: t('userManagement.table.status'),
+        placeholder: t('placeholders.search'),
+        options: [
+          { label: 'All', value: 'all' },
+          { label: 'Pending', value: 'PENDING' },
+          { label: 'Rejected', value: 'REJECTED' }
+        ]
+      });
+    }
     return [
       ...config,
       {

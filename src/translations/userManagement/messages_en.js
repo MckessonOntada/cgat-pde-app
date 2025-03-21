@@ -372,5 +372,7 @@ export const UserManagementEN = {
 
   'errors.messages.dateRange': "Either enter both dates or none for the filter as it's part of a date range.",
   'errors.messages.default': 'An unexpected error occurred. Please try again.',
-  'label.comment': 'Comment'
+  'label.comment': 'Comment',
+
+  'userManagement.header.review_user': 'Review Organization User'
 };
