@@ -1,4 +1,11 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
@@ -44,7 +51,9 @@ const UserProvisioningStatusEnum = {
 
 export const UserProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
-  const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
+  const [paginationConfig, setPaginationConfig] = useState(
+    INITIAL_PAGINATION_CONFIG
+  );
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const [activeTab, setActiveTab] = useState(1);
 
@@ -60,7 +69,10 @@ export const UserProvider = ({ children }) => {
 
     if (activeTab === 2) {
       if (filterConfig?.status === 'all') {
-        statusArray = [UserProvisioningStatusEnum.PENDING, UserProvisioningStatusEnum.REJECTED];
+        statusArray = [
+          UserProvisioningStatusEnum.PENDING,
+          UserProvisioningStatusEnum.REJECTED
+        ];
       } else if (filterConfig?.status) {
         statusArray = [filterConfig.status];
       }
@@ -73,12 +85,21 @@ export const UserProvider = ({ children }) => {
       pageSize: paginationConfig.pageSize,
       sortBy: sortConfig.sortBy || 'first_name',
       sortOrder: sortConfig.sortOrder || 'asc',
-      ...(activeTab === 1 && { userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL' }),
-      ...(activeTab === 1 && filterConfig?.role && { roleIds: [filterConfig.role] }),
+      ...(activeTab === 1 && {
+        userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL'
+      }),
+      ...(activeTab === 1 &&
+        filterConfig?.role && { roleIds: [filterConfig.role] }),
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      ...(activeTab === 1 ? statusArray.length && { status: statusArray } : statusArray.length && { provisioningStatuses: statusArray }),
-      ...(filterConfig?.dateRange?.[0] && { startDate: DateUtils.formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy') }),
-      ...(filterConfig?.dateRange?.[1] && { endDate: DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy') })
+      ...(activeTab === 1
+        ? statusArray.length && { status: statusArray }
+        : statusArray.length && { provisioningStatuses: statusArray }),
+      ...(filterConfig?.dateRange?.[0] && {
+        startDate: DateUtils.formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy')
+      }),
+      ...(filterConfig?.dateRange?.[1] && {
+        endDate: DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy')
+      })
     };
   }, [filterConfig, paginationConfig.pageNumber, sortConfig, activeTab]);
 
@@ -88,7 +109,9 @@ export const UserProvider = ({ children }) => {
       const url =
         activeTab === 1
           ? `${ApiRoutes.USERS()}?${serializeParams(requestParams)}`
-          : `${ApiRoutes.USERS_PROVISIONING()}?${serializeParams(requestParams)}`;
+          : `${ApiRoutes.USERS_PROVISIONING()}?${serializeParams(
+              requestParams
+            )}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       if (res.data) {
         const { content: data, totalElements, totalPages } = res.data;
@@ -110,7 +133,11 @@ export const UserProvider = ({ children }) => {
   const { data: roleList = [] } = useQuery({
     queryKey: ['user', 'roles-list'],
     queryFn: async () => {
-      const response = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}`, httpVerb.GET, {});
+      const response = await HttpResourceService.callRest(
+        `${ApiRoutes.GET_ROLES()}`,
+        httpVerb.GET,
+        {}
+      );
       if (response.data) {
         const { content: data } = response.data;
         return data.map((item) => ({
@@ -163,7 +190,18 @@ export const UserProvider = ({ children }) => {
       setActiveTab,
       refreshData: refetch
     }),
-    [updateFilterState, clearFilters, isLoading, isError, data, activeTab, setActiveTab, refetch]
+    [
+      updateFilterState,
+      clearFilters,
+      isLoading,
+      isError,
+      data,
+      activeTab,
+      setActiveTab,
+      refetch
+    ]
   );
-  return <UserContext.Provider value={ctxValue}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={ctxValue}>{children}</UserContext.Provider>
+  );
 };

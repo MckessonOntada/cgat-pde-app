@@ -23,7 +23,7 @@ export default function DetailSegment({
           ) : (
             <Tooltip body={tooltip || value}>{value}</Tooltip>
           )}
-        </div> 
+        </div>
       </div>
     </div>
   );
