@@ -114,7 +114,14 @@ function AdditionalDetails() {
             otherwise: (schema) => schema.nullable()
           }),
           variantDescription: Yup.string().nullable(),
-          productLevelPricing: Yup.boolean().nullable()
+          productLevelPricing: Yup.boolean().nullable(),
+          document: Yup.object()
+            .shape({
+              url: Yup.string(),
+              size: Yup.number(),
+              name: Yup.string()
+            })
+            .nullable()
         })
         .nullable(),
 
@@ -123,14 +130,7 @@ function AdditionalDetails() {
         is: () => isVariantRequired,
         then: (schema) => schema.oneOf([true], t('message.acknowldge')),
         otherwise: (schema) => schema.nullable()
-      }),
-      ['variantAttachment.document']: Yup.object()
-        .shape({
-          url: Yup.string(),
-          size: Yup.number(),
-          name: Yup.string()
-        })
-        .nullable()
+      })
     });
   };
 
@@ -163,13 +163,8 @@ function AdditionalDetails() {
       questionnaireFields = fields;
     }
 
-    // Merge the two validation schemas
     const finalValidationSchema = updatedValidationSchema.concat(questionnaireValidationSchema);
-
-    // Update Formik Validation Schema
     setValidationSchema(finalValidationSchema);
-
-    // Update Initial Form Values with Questionnaire Fields
     setInitialFormValues((prevState) => ({
       ...prevState,
       ...questionnaireFields
@@ -328,11 +323,11 @@ function AdditionalDetails() {
         patientConsentTaken,
         poNumber,
         slotNumber,
-        variantDetails,
+        variantDetails = {},
         configuredQuestionnaires
       } = additionalDetails;
 
-      const { variantDocumentPath, ...otherDetails } = variantDetails;
+      const { variantDocumentPath, ...otherDetails } = variantDetails || {};
       const initialValues = {
         dateOfAdministration,
         coiId,
@@ -387,7 +382,7 @@ function AdditionalDetails() {
           variant: variant.variant,
           variantDescription: variant.variantDescription,
           variantAcknowledgment: variantAcknowledgement.isChecked,
-          variantDocumentPath: values.variantAttachment?.document && JSON.stringify(values.variantAttachment?.document)
+          variantDocumentPath: values.variant?.document && JSON.stringify(values.variant?.document)
         }
       : null;
 
@@ -453,6 +448,7 @@ function AdditionalDetails() {
   };
 
   const handleOnVariantChange = (variant, setErrors, errors, setFieldValue, setFieldTouched) => {
+    console.log(variant);
     setAgreementCheckboxError(null);
     if (errors && errors.variant) {
       const { variant, ...newErrors } = errors;
@@ -460,6 +456,16 @@ function AdditionalDetails() {
     }
     setFieldValue('variant', variant);
     setFieldTouched('variant', true, false);
+    setVariantAcknowledgement((prevState) => ({
+      ...prevState,
+      isChecked: false
+    }));
+
+    setInitialFormValues((prevState) => ({
+      ...prevState,
+      variantAcknowledgement: false,
+      variant: variant
+    }));
     setVariant(variant);
   };
 
@@ -485,7 +491,7 @@ function AdditionalDetails() {
   if (isLoader) {
     return isLoader;
   }
-
+  console.log(initialFormValues?.variant?.document);
   return (
     <div className="MCP-module-wrapper">
       {isSaving && <Loader type={'screen'} />}
@@ -578,11 +584,11 @@ function AdditionalDetails() {
                         </div>
                         <div>
                           <Field
-                            name="variantAttachment.document"
+                            name="variant.document"
                             component={Components['inputFile']}
                             setFieldValue={setFieldValue}
-                            attachmentValue={initialFormValues?.variant?.document}
-                            onFileChange={(file) => handleOnDocumentChange('variantAttachment', file, setFieldValue)}
+                            attachmentValue={initialFormValues?.variant?.document || null}
+                            onFileChange={(file) => handleOnDocumentChange('variant', file, setFieldValue)}
                           />
                         </div>
                       </div>

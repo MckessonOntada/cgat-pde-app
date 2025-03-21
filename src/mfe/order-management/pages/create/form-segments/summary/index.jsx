@@ -627,18 +627,70 @@ const Summary = () => {
                 </div>
               </div>
             </div>
-            {patientDetailsRequired && (
+
+            <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'}>
+              {patientDetailsRequired && (
+                <div className="MCP-CardContainer">
+                  <ModuleHeader
+                    className={styles.panelHeader}
+                    heading={<Heading as="h3">{t('labels.patientDetails')}</Heading>}
+                    controls={
+                      !hideControls && (
+                        <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                          <Button
+                            size="md"
+                            variant="tertiary"
+                            onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
+                            Icon={() => <IconEditField />}>
+                            {t('captions.btnEdit')}
+                          </Button>
+                        </PermittedComponent>
+                      )
+                    }
+                  />
+                  <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2`}>
+                    <DetailSegment label={t('labels.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
+                    <DetailSegment
+                      label={t('labels.patientName')}
+                      value={
+                        patient.fullName ? (
+                          <Tooltip body={patient.fullName}>
+                            <span className="overflowing">{patient.fullName}</span>
+                          </Tooltip>
+                        ) : (
+                          '-'
+                        )
+                      }
+                    />
+                    <DetailSegment label={t('labels.DOB')} value={patient?.patientInfo?.dateOfBirth || '-'} />
+
+                    <DetailSegment
+                      label={t('labels.emailId')}
+                      value={
+                        patient?.contact?.emailId ? (
+                          <Tooltip body={patient.contact.emailId}>
+                            <span className="overflowing">{patient.contact.emailId}</span>
+                          </Tooltip>
+                        ) : (
+                          '-'
+                        )
+                      }
+                    />
+                    <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
+                  </div>
+                </div>
+              )}
               <div className="MCP-CardContainer">
                 <ModuleHeader
                   className={styles.panelHeader}
-                  heading={<Heading as="h3">{t('labels.patientDetails')}</Heading>}
+                  heading={<Heading as="h3">{t('labels.additionalDetails')}</Heading>}
                   controls={
                     !hideControls && (
                       <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
                         <Button
                           size="md"
                           variant="tertiary"
-                          onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
+                          onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
                           Icon={() => <IconEditField />}>
                           {t('captions.btnEdit')}
                         </Button>
@@ -646,63 +698,11 @@ const Summary = () => {
                     )
                   }
                 />
-                <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5`}>
-                  <DetailSegment label={t('labels.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
-                  <DetailSegment
-                    label={t('labels.patientName')}
-                    value={
-                      patient.fullName ? (
-                        <Tooltip body={patient.fullName}>
-                          <span className="overflowing">{patient.fullName}</span>
-                        </Tooltip>
-                      ) : (
-                        '-'
-                      )
-                    }
-                  />
-                  <DetailSegment label={t('labels.DOB')} value={patient?.patientInfo?.dateOfBirth || '-'} />
-
-                  <DetailSegment
-                    label={t('labels.emailId')}
-                    value={
-                      patient?.contact?.emailId ? (
-                        <Tooltip body={patient.contact.emailId}>
-                          <span className="overflowing">{patient.contact.emailId}</span>
-                        </Tooltip>
-                      ) : (
-                        '-'
-                      )
-                    }
-                  />
-                  <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
+                <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
+                  <DetailSegment label={t('labels.slotNo')} value={additionalDetails?.slotNumber} />
+                  <DetailSegment label={t('labels.poNo')} value={additionalDetails?.poNumber} />
+                  <DetailSegment label={t('labels.dateOfAdministration')} value={additionalDetails?.dateOfAdministration || '-'} />
                 </div>
-              </div>
-            )}
-            <div className="MCP-CardContainer">
-              <ModuleHeader
-                className={styles.panelHeader}
-                heading={<Heading as="h3">{t('labels.additionalDetails')}</Heading>}
-                controls={
-                  !hideControls && (
-                    <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                      <Button
-                        size="md"
-                        variant="tertiary"
-                        onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
-                        Icon={() => <IconEditField />}>
-                        {t('captions.btnEdit')}
-                      </Button>
-                    </PermittedComponent>
-                  )
-                }
-              />
-              <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-6'}>
-                <DetailSegment label={t('labels.slotNo')} value={additionalDetails?.slotNumber} />
-                <DetailSegment label={t('labels.poNo')} value={additionalDetails?.poNumber} />
-                <DetailSegment label={t('labels.dateOfAdministration')} value={additionalDetails?.dateOfAdministration || '-'} />
-                {/* <DetailSegment label={t('labels.selectVariant')} value={variantDetails.variant || '-'} />
-                <DetailSegment label={t('labels.variantDescription')} value={variantDetails.variantDescription || '-'} />
-                <DetailSegment label={t('labels.patientConsent')} value={additionalDetails?.patientConsentTaken ? 'Yes' : '-'} /> */}
               </div>
             </div>
 

@@ -1147,8 +1147,10 @@ div.disable-all {
   gap: var(--spacing-02);
 
   .meta {
+    display: flex;
+    flex-direction: column;
     font-weight: var(--brand-font-weight-400);
-    font-size: var(--brand-font-size--small);
+    font-size: var(--brand-font-size--extra-small);
     line-height: var(--brand-line-height--medium);
     color: var(--brand-color-text-light-slate);
 
