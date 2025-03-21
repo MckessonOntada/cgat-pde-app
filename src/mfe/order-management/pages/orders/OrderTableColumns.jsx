@@ -291,7 +291,7 @@ const getPatientName = (patientInfo) => {
   return [lastName, patientInfo?.firstName, patientInfo?.middleName].join(' ');
 };
 
-export const createColumns = (t, navigate, activeTab, alertContainerId) => [
+export const createColumns = (t, navigate, activeTab, alertContainerId, calculateMinWidth, setCharSide) => [
   {
     id: 'paporder',
     name: '',
@@ -469,13 +469,21 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: false,
     right: true,
-    selector: 'orderCost',
-    cell: (props) => (
-      <div className="cellEllipse align-items-right ">
-        {props.orderCost ? <FormattedNumber value={props.orderCost} style="currency" currency="USD" /> : ''}
-      </div>
-    )
-  },
+    width: calculateMinWidth,
+    cell: (props) => {
+      let char_count = props.orderCost ? props.orderCost.toString().length : 0;
+      setCharSide((prev)=> char_count > prev ? char_count : prev);
+      return (
+        <div className="cellEllipse align-items-right">
+          {props.orderCost ? (
+            <FormattedNumber value={props.orderCost} style="currency" currency="USD" />
+          ) : (
+            ''
+          )}
+        </div>
+      );
+    }
+  },  
   {
     id: 'actions',
     name: t('table.columns.captions.actions'),
