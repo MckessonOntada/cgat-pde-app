@@ -43,9 +43,9 @@ export default function PaymentHistory(params) {
         // tableColumnId: 'paymentStatus',
         label: t('paymentInvoices.history.filters.status'),
         options: statusOptions,
-        getUpdatedOptions: (e) => {
-          if (e.length > 0) {
-            setStatusOptions(e);
+        getUpdatedOptions: (options) => {
+          if (options.length > 0) {
+            setStatusOptions(options);
           }
         }
       },
@@ -54,9 +54,9 @@ export default function PaymentHistory(params) {
         name: 'paymentMethod',
         label: t('paymentInvoices.history.filters.method'),
         options: methodOptions,
-        getUpdatedOptions: (e) => {
-          if (e.length > 0) {
-            setMethodOptions(e);
+        getUpdatedOptions: (options) => {
+          if (options.length > 0) {
+            setMethodOptions(options);
           }
         }
       },
