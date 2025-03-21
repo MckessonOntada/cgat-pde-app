@@ -130,8 +130,8 @@ export const CustomerStatementsProvider = ({ children }) => {
         setActualData(res.data?.statements);
         setPaginationConfig((state) => ({
           ...state,
-          totalPages: Math.ceil(res.data?.statements.length / paginationConfig.pageSize),
-          totalElements: res.data?.statements.length
+          totalPages: Math.ceil(_modifiedData.length / paginationConfig.pageSize),
+          totalElements: _modifiedData.length
         }));
       }
     },
