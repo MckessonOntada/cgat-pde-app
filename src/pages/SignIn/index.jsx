@@ -20,7 +20,7 @@ const SignIn = () => {
         </div>
         <div className="footer"> 
           <OktaFooter
-            copyrightLabel={t('footer.copyright')}
+            copyrightLabel={t('footer.copyright').replace('{{year}}', new Date().getFullYear())}
             dnsmiLabel={t('footer.do_not_sell_myinformation')}
             dnsmiUrl="#"
             pnLabel={t('footer.privacy')}

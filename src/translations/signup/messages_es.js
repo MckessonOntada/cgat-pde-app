@@ -17,7 +17,7 @@ export const SignupES = {
   'footer.user_help': 'S_User Help',
   'footer.contact': 'S_Contact',
   'footer.contact_at' : 'S_Contact us at: 1-855-887-6788',
-  'footer.copyright': 'S_McKesson Corporation Health Technology Products LLC.',
+  'footer.copyright': 'S_© {{year}} Corporation Health Technology Products LLC.',
 
   
   'banner.Heading' : 'S_Advancing' ,                                   
