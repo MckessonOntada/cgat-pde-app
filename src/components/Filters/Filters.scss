@@ -23,13 +23,14 @@
   position: relative;
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
   flex-wrap: wrap;
+  gap: 0px var(--spacing-03);
+  align-items: flex-start;
   .dropdown-container {
     margin-top: 5px;
   }
   .filter-control-buttons{
-    margin-bottom: var(--spacing-02);
+    margin-top: 30px; //spacing is not avilable
   }
 }
 .filter-control-buttons{

@@ -166,14 +166,14 @@ const Filters = ({
                     <AdditionalFilters filtersConfig={additionalFilters} />
                     {showControls && (
                       <div className="filter-control-buttons">
+                        <Button type="submit" size="md" variant="secondary" className="filter-btn">
+                          {isAdditionalFiltersAdded ? t('filters.applyfilters') : t('filters.search')}
+                        </Button>
                         { isAnyFilterApplied && (
                           <Button type="button" size="md" textButton className="txtbtn" onClick={() => handleClearFilters(formik.resetForm)}>
                             {isAdditionalFiltersAdded ? t('filters.clearfilters') : t('filters.clearsearch')}
                           </Button>
                         )}
-                        <Button type="submit" size="md" variant="secondary" className="filter-btn">
-                          {isAdditionalFiltersAdded ? t('filters.applyfilters') : t('filters.search')}
-                        </Button>
                       </div>
                     )}
                   </div>
