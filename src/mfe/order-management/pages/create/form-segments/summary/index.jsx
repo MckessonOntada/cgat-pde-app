@@ -425,7 +425,7 @@ const Summary = () => {
   let variantAttachment = null,
     configuredQuestionnaires = [];
 
-  if (additionalDetails.variantDetails.variantDocumentPath) {
+  if (additionalDetails.variantDetails?.variantDocumentPath) {
     try {
       variantAttachment = JSON.parse(additionalDetails.variantDetails.variantDocumentPath);
     } catch (error) {}
@@ -740,7 +740,7 @@ const Summary = () => {
               </div>
             )}
 
-            {additionalDetails.configuredQuestionnaires && (
+            {additionalDetails.configuredQuestionnaires && additionalDetails.configuredQuestionnaires.length > 0 && (
               <div className="MCP-CardContainer">
                 <ModuleHeader
                   className={styles.panelHeader}
