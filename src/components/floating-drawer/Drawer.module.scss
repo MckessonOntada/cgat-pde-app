@@ -42,12 +42,16 @@
     }
     .body{
       padding: var(--spacing-03);
-      flex: 1 1 auto;
+      padding-bottom: var(--spacing-16);
       overflow-y: auto;
     }
     .footer{
       border-top: 1px solid var(--brand-color-text-cool-grey);
       padding: var(--spacing-03)  var(--spacing-05);
+      position: fixed;
+      bottom: 0px;
+      width: 100%;
+      background: var(--brand-color-background-white);
     }
   }
 }
