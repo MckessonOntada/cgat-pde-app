@@ -11,16 +11,18 @@ import CommonUtils from '@src/util/CommonUtils';
 export default function Invoices(params) {
   const { t } = useTranslate();
   const { applyFilters, clearFilters, actualData } = usePaymentInvoices();
-
   const [statusOptions, setStatusOptions] = useState([]);
+  const [prevValues, setPrevValues] = useState([]);
 
   useEffect(() => {
-    if (!CommonUtils.isNonEmptyObject(statusOptions)) {
+    if (JSON.stringify(actualData) !== JSON.stringify(prevValues)) {
       let currentFilterData = [...new Set(actualData.map((e) => e.status).filter((e) => e))];
       let _options = currentFilterData.map((item) => {
         return { value: item, label: DUE_STATUS[item]?.label || item, isDisabled: false };
       });
       setStatusOptions([..._options]);
+      setPrevValues(actualData);
+      clearFilters();
     }
   }, [actualData]);
 
