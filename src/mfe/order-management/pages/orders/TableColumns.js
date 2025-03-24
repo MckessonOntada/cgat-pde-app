@@ -1,5 +1,5 @@
 import EclipsesTextCss from '@src/components/EclipsesText/EclipsesTextcss';
-import { COLUMNS, ORDER_STATUS, ORDER_TABS, TABLE_COLUMNS } from './config';
+import { COLUMNS, ORDER_ENTITY_ACTION, ORDER_STATUS, ORDER_TABS, TABLE_COLUMNS } from './config';
 import CommonUtils from '@src/util/CommonUtils';
 import { Link, useNavigate } from 'react-router-dom';
 import { Badge, Tooltip, MenuList } from '@mckesson/mcp-component-library';
@@ -14,6 +14,7 @@ import { renderModal } from '@src/util/ModalUtil';
 import AuthUtils from '@src/util/AuthUtils';
 import { useMutation } from 'react-query';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const getColorByStatus = (status) => {
   const statusColors = {
@@ -27,9 +28,9 @@ const getColorByStatus = (status) => {
 };
 
 function getOptionsByStatus(props) {
+  const { t: translate } = useTranslate();
   const { id, status } = props || {};
-  const { translate, tab, alertContainerId } = this.__meta__;
-  console.log(alertContainerId);
+  const { tab, alertContainerId } = this.__meta__;
   const navigate = useNavigate();
   const loggedInUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
@@ -67,13 +68,13 @@ function getOptionsByStatus(props) {
 
   const handleOnOptionSelection = (value) => {
     switch (value) {
-      case 'view':
+      case ORDER_ENTITY_ACTION.VIEW:
         navigate(`${id}/summary`, { state: props.status === ORDER_STATUS.SUBMITTED ? { isEdit: true } : {} });
         break;
-      case 'resume':
+      case ORDER_ENTITY_ACTION.RESUME:
         navigate(getPathByOrderStage(props), { state: props.status === ORDER_STATUS.SUBMITTED ? { isEdit: true } : { isSimulate: true } });
         break;
-      case 'delete':
+      case ORDER_ENTITY_ACTION.DELETE:
         renderModal({
           title: translate('labels.confirmation'),
           bodyContent: <h3>{translate('labels.orderActions.deletemessage')}</h3>,
@@ -83,20 +84,20 @@ function getOptionsByStatus(props) {
           }
         });
         break;
-      case 'cancel':
-      case 'edit':
+      case ORDER_ENTITY_ACTION.CANCEL:
+      case ORDER_ENTITY_ACTION.EDIT:
         renderModal({
           title: translate('labels.information'),
           bodyContent: <h3>{translate('labels.orderActions.cancelmessage')}</h3>,
           footerActions: { cancel: { label: translate('labels.orderActions.OK') } }
         });
         break;
-      case 'review':
+      case ORDER_ENTITY_ACTION.REVIEW:
         navigate(`${id}/summary`, {
           state: { isEdit: props.approver?.id === loggedInUserId, isApprover: props.approver?.id === loggedInUserId }
         });
         break;
-      case 'assign':
+      case ORDER_ENTITY_ACTION.ASSIGN:
         if (props.approver?.id) {
           showAlert({
             description: 'The order is currently in review by another user. Please try again after some time',
@@ -107,10 +108,10 @@ function getOptionsByStatus(props) {
           assignToMe();
         }
         break;
-      case 'unassign':
+      case ORDER_ENTITY_ACTION.UNASSIGN:
         unassignFromMe();
         break;
-      case 'discard-changes-by-me':
+      case ORDER_ENTITY_ACTION.DISCARD_MY_CHANGES:
         discardVersion(props.id);
         break;
       default:
@@ -127,34 +128,40 @@ function getOptionsByStatus(props) {
   if (tab === ORDER_TABS.PENDING_SUBMISSION) {
     if (![ORDER_STATUS.PENDING, ORDER_STATUS.CANCELLED].includes(status)) {
       if (status === ORDER_STATUS.IN_DRAFT && hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS)) {
-        options.push({ label: translate(`labels.orderActions.resume`), value: 'resume' });
-        options.push({ label: translate(`labels.orderActions.delete`), value: 'delete' });
+        options.push({ label: translate(`labels.orderActions.resume`), value: ORDER_ENTITY_ACTION.RESUME });
+        options.push({ label: translate(`labels.orderActions.delete`), value: ORDER_ENTITY_ACTION.DELETE });
       } else if (status === ORDER_STATUS.REJECTED) {
-        options.push({ label: translate(`labels.orderActions.view`), value: 'review' });
+        options.push({ label: translate(`labels.orderActions.view`), value: ORDER_ENTITY_ACTION.REVIEW });
       } else if (status === ORDER_STATUS.APPROVAL_PENDING) {
         if (!props.approver?.id && doesApproverGroupExist(props.approverGroupIds, assginedGroupsData)) {
-          options.push({ label: translate(`labels.orderActions.assignToMe`), value: 'assign' });
+          options.push({ label: translate(`labels.orderActions.assignToMe`), value: ORDER_ENTITY_ACTION.ASSIGN });
         } else if (props.approver?.id === loggedInUserId) {
-          options.push({ label: translate(`labels.orderActions.unassignToMe`), value: 'unassign' });
+          options.push({ label: translate(`labels.orderActions.unassignToMe`), value: ORDER_ENTITY_ACTION.UNASSIGN });
           if (props.versionOwner) {
-            options.push({ label: translate(`labels.orderActions.discardChangesByMe`), value: 'discard-changes-by-me' });
+            options.push({ label: translate(`labels.orderActions.discardChangesByMe`), value: ORDER_ENTITY_ACTION.DISCARD_MY_CHANGES });
           }
         }
         options.push({
-          label: translate(`labels.orderActions.${options.length && options.at(-1).value === 'unassign' ? 'review' : 'view'}`),
-          value: 'review'
+          label: translate(
+            `labels.orderActions.${
+              options.length && options.at(-1).value === ORDER_ENTITY_ACTION.UNASSIGN
+                ? ORDER_ENTITY_ACTION.REVIEW
+                : ORDER_ENTITY_ACTION.VIEW
+            }`
+          ),
+          value: ORDER_ENTITY_ACTION.REVIEW
         });
       }
     }
   } else if (tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL) {
     if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS)) {
-      options.push({ label: translate(`labels.orderActions.view`), value: 'view' });
+      options.push({ label: translate(`labels.orderActions.view`), value: ORDER_ENTITY_ACTION.VIEW });
     }
     if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS)) {
-      options.push({ label: translate(`labels.orderActions.edit`), value: 'edit' });
+      options.push({ label: translate(`labels.orderActions.edit`), value: ORDER_ENTITY_ACTION.EDIT });
     }
     if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CANCEL_ORDER)) {
-      options.push({ label: translate(`labels.orderActions.cancel`), value: 'cancel' });
+      options.push({ label: translate(`labels.orderActions.cancel`), value: ORDER_ENTITY_ACTION.CANCEL });
     }
   }
 

@@ -93,6 +93,18 @@ export const TABLE_COLUMNS = {
   ]
 };
 
+export const ORDER_ENTITY_ACTION = Object.freeze({
+  VIEW: 'VIEW',
+  RESUME: 'RESUME',
+  DELETE: 'DELETE',
+  CANCEL: 'CANCEL',
+  EDIT: 'EDIT',
+  REVIEW: 'REVIEW',
+  ASSIGN: 'ASSIGN',
+  UNASSIGN: 'UNASSIGN',
+  DISCARD_MY_CHANGES: 'DISCARD_MY_CHANGES'
+});
+
 export const getTabs = () => [
   {
     id: ORDER_TABS.SUBMITTED_BUY_AND_BILL,
