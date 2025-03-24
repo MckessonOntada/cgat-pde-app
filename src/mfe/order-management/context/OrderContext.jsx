@@ -1,7 +1,7 @@
 import OrderService from '@src/api/commonService/OrderService';
 import React, { createContext, useContext, useState } from 'react';
 import { useQuery } from 'react-query';
-import { ORDER_TABS, TAB_FILTERS } from '../pages/orders/config';
+import { ORDER_TABS, ORDER_VIEW, TAB_FILTERS } from '../pages/orders/config';
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
@@ -29,6 +29,7 @@ export const useOrders = () => {
 };
 
 export const OrderProvider = ({ children }) => {
+  const [orderView, changeOrderView] = React.useState(null);
   const [filterConfig, setFilterConfig] = React.useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = React.useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);
@@ -42,10 +43,11 @@ export const OrderProvider = ({ children }) => {
       sortBy: sortConfig.sortBy || 'createdAt',
       sortOrder: sortConfig.sortOrder || 'desc',
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      statuses: TAB_FILTERS[tabVariant].join(',')
+      statuses: TAB_FILTERS[tabVariant].join(','),
+      myOrders: orderView === ORDER_VIEW.ALL_ORDERS ? 0 : 1
     };
     return params;
-  }, [filterConfig, paginationConfig.pageNumber, sortConfig, tabVariant]);
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig, tabVariant, orderView]);
 
   const {
     isFetching,
@@ -78,7 +80,7 @@ export const OrderProvider = ({ children }) => {
 
   React.useEffect(() => {
     refreshData();
-  }, [filterConfig, paginationConfig.pageNumber, sortConfig, tabVariant]);
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig, tabVariant, orderView]);
 
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
 
@@ -118,7 +120,9 @@ export const OrderProvider = ({ children }) => {
         refreshData,
         tabVariant,
         setTabVariant,
-        assginedGroupsData: assignedGroupsData
+        assginedGroupsData: assignedGroupsData,
+        orderView,
+        changeOrderView
       }}>
       {children}
     </OrderContext.Provider>

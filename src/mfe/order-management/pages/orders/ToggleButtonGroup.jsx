@@ -4,7 +4,7 @@ import './ToggleButton.scss'; // Importing the CSS file
 const ToggleButtonGroup = ({ value, onChange, exclusive = false, children }) => {
   const handleToggle = (newValue) => {
     if (exclusive) {
-      onChange(value === newValue ? null : newValue);
+      onChange(newValue && value === newValue ? value : newValue);
     } else {
       const newSelection = value.includes(newValue) ? value.filter((item) => item !== newValue) : [...value, newValue];
       onChange(newSelection);
