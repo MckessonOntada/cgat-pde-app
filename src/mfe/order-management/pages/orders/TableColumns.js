@@ -1,5 +1,5 @@
 import EclipsesTextCss from '@src/components/EclipsesText/EclipsesTextcss';
-import { COLUMNS, ORDER_STATUS, TABLE_COLUMNS } from './config';
+import { COLUMNS, ORDER_STATUS, ORDER_TABS, TABLE_COLUMNS } from './config';
 import CommonUtils from '@src/util/CommonUtils';
 import { Link, useNavigate } from 'react-router-dom';
 import { Badge, Tooltip, MenuList } from '@mckesson/mcp-component-library';
@@ -13,6 +13,7 @@ import { handleApiError } from '@src/util/ApiUtils';
 import { renderModal } from '@src/util/ModalUtil';
 import AuthUtils from '@src/util/AuthUtils';
 import { useMutation } from 'react-query';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 
 const getColorByStatus = (status) => {
   const statusColors = {
@@ -28,6 +29,7 @@ const getColorByStatus = (status) => {
 function getOptionsByStatus(props) {
   const { id, status } = props || {};
   const { translate, tab, alertContainerId } = this.__meta__;
+  console.log(alertContainerId);
   const navigate = useNavigate();
   const loggedInUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
@@ -44,7 +46,7 @@ function getOptionsByStatus(props) {
       refreshData();
       showAlert({ description: translate('messages.success.release'), type: 'success', anchorEl: alertContainerId });
     },
-    onError: (err) => showAlert({ description: t(handleApiError(err)), type: 'error', anchorEl: alertContainerId })
+    onError: (err) => showAlert({ description: translate(handleApiError(err)), type: 'error', anchorEl: alertContainerId })
   });
 
   const { mutate: deleteOrder } = useMutation(() => OrderService.deleteOrder(id), {
@@ -52,7 +54,7 @@ function getOptionsByStatus(props) {
       refreshData();
       showAlert({ description: translate('messages.success.delete'), type: 'success', anchorEl: alertContainerId });
     },
-    onError: (err) => showAlert({ description: t(handleApiError(err)), type: 'error', anchorEl: alertContainerId })
+    onError: (err) => showAlert({ description: translate(handleApiError(err)), type: 'error', anchorEl: alertContainerId })
   });
 
   const { mutate: discardVersion } = useMutation((orderId) => OrderService.discardCurrentOrderVersion(orderId), {
@@ -60,7 +62,7 @@ function getOptionsByStatus(props) {
       refreshData();
       showAlert({ description: translate('message.success.discardVersionChanges'), type: 'success', anchorEl: alertContainerId });
     },
-    onError: (err) => showAlert({ description: t(handleApiError(err)), type: 'error', anchorEl: alertContainerId })
+    onError: (err) => showAlert({ description: translate(handleApiError(err)), type: 'error', anchorEl: alertContainerId })
   });
 
   const handleOnOptionSelection = (value) => {
@@ -122,37 +124,37 @@ function getOptionsByStatus(props) {
   };
 
   let options = [];
-  if (tab === 1) {
+  if (tab === ORDER_TABS.PENDING_SUBMISSION) {
     if (![ORDER_STATUS.PENDING, ORDER_STATUS.CANCELLED].includes(status)) {
       if (status === ORDER_STATUS.IN_DRAFT && hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS)) {
-        options.push({ label: t(`labels.orderActions.resume`), value: 'resume' });
-        options.push({ label: t(`labels.orderActions.delete`), value: 'delete' });
+        options.push({ label: translate(`labels.orderActions.resume`), value: 'resume' });
+        options.push({ label: translate(`labels.orderActions.delete`), value: 'delete' });
       } else if (status === ORDER_STATUS.REJECTED) {
-        options.push({ label: t(`labels.orderActions.view`), value: 'review' });
+        options.push({ label: translate(`labels.orderActions.view`), value: 'review' });
       } else if (status === ORDER_STATUS.APPROVAL_PENDING) {
         if (!props.approver?.id && doesApproverGroupExist(props.approverGroupIds, assginedGroupsData)) {
-          options.push({ label: t(`labels.orderActions.assignToMe`), value: 'assign' });
+          options.push({ label: translate(`labels.orderActions.assignToMe`), value: 'assign' });
         } else if (props.approver?.id === loggedInUserId) {
-          options.push({ label: t(`labels.orderActions.unassignToMe`), value: 'unassign' });
+          options.push({ label: translate(`labels.orderActions.unassignToMe`), value: 'unassign' });
           if (props.versionOwner) {
-            options.push({ label: t(`labels.orderActions.discardChangesByMe`), value: 'discard-changes-by-me' });
+            options.push({ label: translate(`labels.orderActions.discardChangesByMe`), value: 'discard-changes-by-me' });
           }
         }
         options.push({
-          label: t(`labels.orderActions.${options.length && options.at(-1).value === 'unassign' ? 'review' : 'view'}`),
+          label: translate(`labels.orderActions.${options.length && options.at(-1).value === 'unassign' ? 'review' : 'view'}`),
           value: 'review'
         });
       }
     }
-  } else if (tab === 2) {
+  } else if (tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL) {
     if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS)) {
-      options.push({ label: t(`labels.orderActions.view`), value: 'view' });
+      options.push({ label: translate(`labels.orderActions.view`), value: 'view' });
     }
     if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS)) {
-      options.push({ label: t(`labels.orderActions.edit`), value: 'edit' });
+      options.push({ label: translate(`labels.orderActions.edit`), value: 'edit' });
     }
     if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.CANCEL_ORDER)) {
-      options.push({ label: t(`labels.orderActions.cancel`), value: 'cancel' });
+      options.push({ label: translate(`labels.orderActions.cancel`), value: 'cancel' });
     }
   }
 
@@ -192,7 +194,7 @@ const jsxColumns = [
     cell: function (props) {
       return (
         <Link className="MCP-table-link">
-          <EclipsesTextCss str={props.sapId} maxWidth={120} />
+          <EclipsesTextCss str={props.backendOrderId} maxWidth={120} />
         </Link>
       );
     }
@@ -217,7 +219,7 @@ const jsxColumns = [
     showInMobileHeader: true,
     showColumnNameInHeader: true,
     minWidth: '140px',
-    cell: (props) => <Tooltip body={props.id}>{props.orderId}</Tooltip>
+    cell: (props) => <Tooltip body={props.id}>{props.id}</Tooltip>
   },
   {
     id: COLUMNS.PATIENT_NAME,

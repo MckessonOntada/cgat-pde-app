@@ -1,9 +1,7 @@
 import OrderService from '@src/api/commonService/OrderService';
 import React, { createContext, useContext, useState } from 'react';
-import { MdViewArray } from 'react-icons/md';
 import { useQuery } from 'react-query';
-import { StatusEnum } from '../pages/orders/constants';
-import { ORDER_TABS } from '../pages/orders/config';
+import { ORDER_TABS, TAB_FILTERS } from '../pages/orders/config';
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
@@ -38,23 +36,13 @@ export const OrderProvider = ({ children }) => {
   const [tabVariant, setTabVariant] = React.useState(ORDER_TABS.SUBMITTED_BUY_AND_BILL);
 
   const requestParams = React.useMemo(() => {
-    const validStatuses = [StatusEnum.IN_DRAFT, StatusEnum.APPROVAL_PENDING, StatusEnum.SUBMITTED, 'all'];
-    const isStatusValid = validStatuses.includes(filterConfig.status);
-
     const params = {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
       sortBy: sortConfig.sortBy || 'createdAt',
       sortOrder: sortConfig.sortOrder || 'desc',
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      ...(tabVariant === 2
-        ? { statuses: `${StatusEnum.SUBMITTED}` }
-        : {
-            statuses:
-              isStatusValid && filterConfig.status !== 'all'
-                ? filterConfig.status
-                : `${StatusEnum.IN_DRAFT},${StatusEnum.APPROVAL_PENDING}, ${StatusEnum.REJECTED}`
-          })
+      statuses: TAB_FILTERS[tabVariant].join(',')
     };
     return params;
   }, [filterConfig, paginationConfig.pageNumber, sortConfig, tabVariant]);
@@ -79,13 +67,12 @@ export const OrderProvider = ({ children }) => {
     }
   });
 
-  const { isLoading, data: assignedGroupsData = {} } = useQuery({
+  const { data: assignedGroupsData = {} } = useQuery({
     queryKey: ['order', 'approver-group'],
     queryFn: async () => {
       const res = await OrderService.getAssignedGroups(requestParams);
       return res;
     },
-
     refetchOnWindowFocus: false
   });
 

@@ -5,19 +5,6 @@ export const ORDER_TABS = {
   PENDING_APPROVAL: 'PENDING_APPROVAL'
 };
 
-export const TAB_FILTERS = Object.freeze({
-  [ORDER_TABS.SUBMITTED_BUY_AND_BILL]: [],
-  [ORDER_TABS.SUBMITTED_SP]: [],
-  [ORDER_TABS.PENDING_SUBMISSION]: [],
-  [ORDER_TABS.PENDING_APPROVAL]: []
-});
-
-const SWITCH_FILTERS = {
-  ALL_ORDERS: 'ALL_ORDERS',
-  MY_ORDERS: 'MY_ORDERS',
-  ASSIGNED_TO_ME: 'ASSIGNED_TO_ME'
-};
-
 export const ORDER_STATUS = {
   IN_DRAFT: 'IN_DRAFT',
   PENDING: 'PENDING',
@@ -25,6 +12,19 @@ export const ORDER_STATUS = {
   SUBMITTED: 'SUBMITTED',
   CANCELLED: 'CANCELLED',
   REJECTED: 'REJECTED'
+};
+
+export const TAB_FILTERS = Object.freeze({
+  [ORDER_TABS.SUBMITTED_BUY_AND_BILL]: [ORDER_STATUS.SUBMITTED],
+  [ORDER_TABS.SUBMITTED_SP]: [],
+  [ORDER_TABS.PENDING_SUBMISSION]: [ORDER_STATUS.IN_DRAFT, ORDER_STATUS.REJECTED],
+  [ORDER_TABS.PENDING_APPROVAL]: [ORDER_STATUS.APPROVAL_PENDING]
+});
+
+const SWITCH_FILTERS = {
+  ALL_ORDERS: 'ALL_ORDERS',
+  MY_ORDERS: 'MY_ORDERS',
+  ASSIGNED_TO_ME: 'ASSIGNED_TO_ME'
 };
 
 export const TOGGLE_FILTERS = {
@@ -52,8 +52,8 @@ export const COLUMNS = {
 
 export const TABLE_COLUMNS = {
   [ORDER_TABS.SUBMITTED_BUY_AND_BILL]: [
-    COLUMNS.PDE_ID,
     COLUMNS.SAP_ID,
+    COLUMNS.PDE_ID,
     COLUMNS.PATIENT_NAME,
     COLUMNS.THERAPY,
     COLUMNS.SUBMITTED_BY,
@@ -79,7 +79,6 @@ export const TABLE_COLUMNS = {
     COLUMNS.AUTHOR,
     COLUMNS.CREATED_ON,
     COLUMNS.STATUS,
-    COLUMNS.PRICE,
     COLUMNS.ACTION
   ],
   [ORDER_TABS.PENDING_APPROVAL]: [
@@ -90,7 +89,6 @@ export const TABLE_COLUMNS = {
     COLUMNS.ASSIGNEE,
     COLUMNS.CREATED_ON,
     COLUMNS.STATUS,
-    COLUMNS.PRICE,
     COLUMNS.ACTION
   ]
 };
@@ -103,13 +101,13 @@ export const getTabs = () => [
     sequence: 1,
     labelForMobile: 'labels.tabs.submittedBuyAndBill'
   },
-  {
-    id: ORDER_TABS.SUBMITTED_SP,
-    configName: 'labels.tabs.submittedSp',
-    isActiveTab: false,
-    sequence: 2,
-    labelForMobile: 'labels.tabs.submittedSp'
-  },
+  // {
+  //   id: ORDER_TABS.SUBMITTED_SP,
+  //   configName: 'labels.tabs.submittedSp',
+  //   isActiveTab: false,
+  //   sequence: 2,
+  //   labelForMobile: 'labels.tabs.submittedSp'
+  // },
   {
     id: ORDER_TABS.PENDING_SUBMISSION,
     configName: 'labels.tabs.pendingSubmission',
