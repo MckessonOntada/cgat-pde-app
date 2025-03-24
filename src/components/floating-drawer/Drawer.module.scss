@@ -26,6 +26,7 @@
     display: flex;
     flex-direction: column;
     width: 450px;
+    position: relative;
     .header {
       display: flex;
       flex-direction: row;
@@ -48,7 +49,7 @@
     .footer{
       border-top: 1px solid var(--brand-color-text-cool-grey);
       padding: var(--spacing-03)  var(--spacing-05);
-      position: fixed;
+      position: absolute;
       bottom: 0px;
       width: 100%;
       background: var(--brand-color-background-white);
