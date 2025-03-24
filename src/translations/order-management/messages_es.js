@@ -168,7 +168,7 @@ export const MessageEs = {
   'labels.orderActions.edit': 'S_Edit Order',
   'labels.orderActions.cancel': 'S_Cancel Order',
   'labels.orderActions.assignToMe': 'S_Assign to me',
-  'labels.orderActions.unassignToMe': 'S_UnAssign to me',
+  'labels.orderActions.unassignToMe': 'S_Unassign',
   'labels.orderActions.approve': 'S_Approve Order',
   'labels.orderActions.deletemessage': 'S_Are you sure you wish to Delete this Order ?',
   'labels.orderActions.cancelmessage':

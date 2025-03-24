@@ -168,7 +168,7 @@ export const MessageEn = {
   'labels.orderActions.edit': 'Edit Order',
   'labels.orderActions.cancel': 'Cancel Order',
   'labels.orderActions.assignToMe': 'Assign to me',
-  'labels.orderActions.unassignToMe': 'UnAssign to me',
+  'labels.orderActions.unassignToMe': 'Unassign',
   'labels.orderActions.approve': 'Approve Order',
   'labels.orderActions.deletemessage': 'Are you sure you wish to Delete this Order ?',
   'labels.orderActions.cancelmessage': 'Please reach out to customer support at 1800XXXXXXX for any updation or cancellation in the order.',
