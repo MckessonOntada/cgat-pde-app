@@ -44,7 +44,7 @@ export const OrderProvider = ({ children }) => {
       sortOrder: sortConfig.sortOrder || 'desc',
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       statuses: TAB_FILTERS[tabVariant].join(','),
-      myOrders: orderView === ORDER_VIEW.ALL_ORDERS ? 0 : 1
+      showMyOrders: orderView === ORDER_VIEW.ALL_ORDERS ? false : true
     };
     return params;
   }, [filterConfig, paginationConfig.pageNumber, sortConfig, tabVariant, orderView]);
