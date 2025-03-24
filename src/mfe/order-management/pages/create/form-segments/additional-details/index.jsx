@@ -448,7 +448,6 @@ function AdditionalDetails() {
   };
 
   const handleOnVariantChange = (variant, setErrors, errors, setFieldValue, setFieldTouched) => {
-    console.log(variant);
     setAgreementCheckboxError(null);
     if (errors && errors.variant) {
       const { variant, ...newErrors } = errors;
@@ -461,11 +460,6 @@ function AdditionalDetails() {
       isChecked: false
     }));
 
-    setInitialFormValues((prevState) => ({
-      ...prevState,
-      variantAcknowledgement: false,
-      variant: variant
-    }));
     setVariant(variant);
   };
 
@@ -587,7 +581,7 @@ function AdditionalDetails() {
                             name="variant.document"
                             component={Components['inputFile']}
                             setFieldValue={setFieldValue}
-                            attachmentValue={initialFormValues?.variant?.document || null}
+                            attachmentValue={values?.variant?.document || null}
                             onFileChange={(file) => handleOnDocumentChange('variant', file, setFieldValue)}
                           />
                         </div>

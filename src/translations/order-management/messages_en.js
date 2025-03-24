@@ -11,6 +11,7 @@ export const MessageEn = {
   'headings.orderSubmitted': 'Order Submitted!',
   'headings.orderApproved': 'Order Approved!',
   'headings.addShippingAddress': 'Add Shipping Address',
+
   'captions.status': 'Status',
   'captions.clearFilters': 'Clear Filters',
   'controls.createNewOrder': 'Create New Order',
@@ -47,6 +48,7 @@ export const MessageEn = {
   'captions.btnSelectYourAccount': 'Select Your Account',
   'labels.orderDetails': 'Order Details',
   'labels.variant': 'Variant',
+  'labels.configuredQuestionnaires': 'Configured Questionnaires',
   'labels.coiId': 'COI ID',
   'labels.orderQuantity': 'Order Quantity',
   'labels.provideSlotNumber': 'Please provide the Slot Number',

@@ -189,6 +189,7 @@ export const MessageEs = {
   'labels.therapy.division': 'S_Division',
   'labels.therapy.sapMaterial': 'S_Sap Material',
   'labels.therapy.variant': 'S_Variant',
+  'labels.configuredQuestionnaires': 'S_Configured Questionnaires',
   'labels.therapy.variantDesc': 'S_Variant Description',
   'labels.therapy.contractNumber': 'S_Contract number ',
   'labels.therapy.contractType': 'S_Contract type ',
