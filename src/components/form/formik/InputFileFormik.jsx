@@ -76,7 +76,7 @@ function InputFileFormik(props) {
   const { name, size, url } = file || {};
 
   React.useEffect(() => {
-    if (attachmentValue) setFile(attachmentValue);
+    setFile(attachmentValue);
   }, [attachmentValue]);
 
   return (

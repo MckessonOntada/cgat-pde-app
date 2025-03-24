@@ -137,8 +137,8 @@ export const PaymentHistoryProvider = ({ children }) => {
         setActualData(res.data?.paymentHistory);
         setPaginationConfig((state) => ({
           ...state,
-          totalPages: Math.ceil(res.data?.paymentHistory.length / paginationConfig.pageSize),
-          totalElements: res.data?.paymentHistory.length
+          totalPages: Math.ceil(_modifiedData.length / paginationConfig.pageSize),
+          totalElements: _modifiedData.length
         }));
       }
     },

@@ -18,7 +18,7 @@ export const SignupEN = {
   'footer.user_help': 'User Help',
   'footer.contact': 'Contact us at: ',
   'footer.contact_at' : '1-855-887-6788',
-  'footer.copyright': '© 2024 McKesson Corporation Health Technology Products LLC.',
+  'footer.copyright': '© {{year}} McKesson Corporation Health Technology Products LLC.',
 
   'banner.mainHeading' : '',
   'banner.Heading' : 'Advancing' ,                                   

@@ -56,7 +56,7 @@ const Footer = () => {
               </Link>
             )}
           </div>
-          <p>{t('footer.copyright')}</p>
+          <p>{t('footer.copyright').replace('{{year}}', new Date().getFullYear())}</p>
         </div>
       </div>
     </footer>

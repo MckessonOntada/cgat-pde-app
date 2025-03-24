@@ -8,7 +8,6 @@ export const CatalogDetailsConstants = [
       { label: 'Variant', value: 'variant' },
       { label: 'Variantdescription', value: 'variantDescription' },
       { label: 'NDC', value: 'ndc' },
-      { label: 'UDI', value: 'udi' },
       { label: 'Materialdescription', value: 'materialDescriptionInLanguageEn' },
       { label: 'Netprice', value: 'netPrice' },
       { label: 'Regularprice', value: 'regularPrice' },

@@ -291,21 +291,23 @@ const getPatientName = (patientInfo) => {
   return [lastName, patientInfo?.firstName, patientInfo?.middleName].join(' ');
 };
 
-export const createColumns = (t, navigate, activeTab, alertContainerId) => [
-  // {
-  //   id: 'paporder',
-  //   name: '',
-  //   selector: () => {},
-  //   center: true,
-  //   width:'80px',
-  //   cell: (props) => (
-  //     props.paporder && (
-  //       <span>
-  //         <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('labels.pap')} />
-  //       </span>
-  //     )
-  //   ),
-  // },
+export const createColumns = (t, navigate, activeTab, alertContainerId, calculateMinWidth, setCharSide) => [
+  {
+    id: 'paporder',
+    name: '',
+    selector: () => {},
+    center: true,
+    width:'80px',
+    showInMobileHeader: true,
+    inlineStatus: true,
+    cell: (props) => (
+      props.paporder && (
+        <span>
+          <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('labels.pap')} />
+        </span>
+      )
+    ),
+  },
   {
     id: 'backendOrderId',
     name: t('labels.sapId'),
@@ -335,7 +337,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortKey: 'id',
     showInMobileHeader: true,
     showColumnNameInHeader: true,
-    minWidth: '140px',
+    minWidth: '120px',
     cell: (props) =>
       activeTab !== 2 ? (
         <Link
@@ -344,10 +346,10 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
           //state={props.currentStage === 'ORDER_SUMMARY' && props.status === StatusEnum.SUBMITTED ? { ...props, isEdit: true } : { ...props }}
           state={getState(props)}
           aria-label={t('labels.orderId')}>
-          <EclipsesTextcss str={props.id} maxWidth={130} />
+          <EclipsesTextcss str={props.id} maxWidth={110} />
         </Link>
       ) : (
-        <EclipsesTextcss str={props.id} maxWidth={130} />
+        <EclipsesTextcss str={props.id} maxWidth={110} />
       )
   },
   {
@@ -410,8 +412,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'createdAt',
-    minWidth: '80px',
-    maxWidth: '135px',
+    width: '135px',
     cell: (props) => (
       <span aria-label={t('table.columns.captions.createdOn')}>
         {CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')}
@@ -426,7 +427,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'submittedBy.name',
-    maxWidth: '140px',
+    minWidth: '160px',
     cell: (props) => (
       <EclipsesTextcss tooltip={props.submittedBy?.userName} str={props.submittedBy?.name} maxWidth={130} className={'MCP-table-cell'} />
     ),
@@ -438,7 +439,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'submittedOn',
-    width: '100px',
+    width: '160px',
     cell: (props) => <span>{props.submittedOn ? CommonUtils.convertDateStringFormat(props.submittedOn, 'MM-DD-YYYY') : '-'}</span>,
     omit: activeTab !== 2
   },
@@ -467,13 +468,21 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: false,
     right: true,
-    selector: 'orderCost',
-    cell: (props) => (
-      <div className="cellEllipse align-items-right ">
-        {props.orderCost ? <FormattedNumber value={props.orderCost} style="currency" currency="USD" /> : ''}
-      </div>
-    )
-  },
+    width: calculateMinWidth,
+    cell: (props) => {
+      let char_count = props.orderCost ? props.orderCost.toString().length : 0;
+      setCharSide((prev)=> char_count > prev ? char_count : prev);
+      return (
+        <div className="cellEllipse align-items-right">
+          {props.orderCost ? (
+            <FormattedNumber value={props.orderCost} style="currency" currency="USD" />
+          ) : (
+            ''
+          )}
+        </div>
+      );
+    }
+  },  
   {
     id: 'actions',
     name: t('table.columns.captions.actions'),

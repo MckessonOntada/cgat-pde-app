@@ -9,7 +9,6 @@ export const MaterialDetailsConstants = [
       { label: 'manageMaterial.drawer.details.body.dosage', value: 'dosage' },
       { label: 'manageMaterial.drawer.details.body.sellingUnitCode', value: 'sellingUnitCode' },
       { label: 'manageMaterial.drawer.details.body.vendorName', value: 'vendorName' },
-      { label: 'manageMaterial.drawer.details.body.upcCode', value: 'upcCode' },
       { label: 'manageMaterial.drawer.details.body.dropshipIndicator', value: 'dropshipIndicator' },
       { label: 'manageMaterial.drawer.details.body.baseUnitOfMeasure', value: 'baseUnitOfMeasure' },
       { label: 'manageMaterial.drawer.details.body.cgatIdentifier', value: 'cgatIdentifier' },

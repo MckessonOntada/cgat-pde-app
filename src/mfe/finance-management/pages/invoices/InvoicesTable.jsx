@@ -68,8 +68,8 @@ export default function InvoicesTable() {
       name: t('paymentInvoices.history.table.SoldToSite'),
       selector: (row) => row.soldToSite,
       maxWidth: '140px',
+      minWidth: '140px',
       sortable: true,
-      wrap: true,
       showInMobileHeader: true,
       cardHeader: true,
       mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
@@ -80,25 +80,22 @@ export default function InvoicesTable() {
       selector: (row) => row.billDate,
       sortable: true,
       id: 'billDate',
-      wrap: true,
       width: '120px',
       cell: (props) => CommonUtils.convertDateStringFormat(props.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       name: t('paymentInvoices.history.table.DueDate'),
       selector: (row) => row.dueDate,
-      width: '120px',
+      width: '125px',
       sortable: true,
-      wrap: true,
       id: 'dueDate',
       cell: (props) => CommonUtils.convertDateStringFormat(props?.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       name: t('paymentInvoices.history.table.OpenAmount'),
       selector: (row) => row.openAmount,
-      minWidth: '144px',
+      minWidth: '155px',
       sortable: true,
-      wrap: true,
       id: 'openAmount',
       cell: (props) => (
         <div className="cellEllipse align-items-right ">
@@ -169,7 +166,8 @@ export default function InvoicesTable() {
           ]}
           aria-label="invoice options"
         />
-      )
+      ),
+      omit: !CommonUtils.enableReviewAndPay(selectedAccount)
     }
   ];
 
