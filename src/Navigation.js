@@ -19,6 +19,7 @@ import SignIn from './pages/SignIn';
 import NotFound from './pages/error-pages/NotFound';
 import ForgotPassword from './pages/forgot-password/forgot-password';
 import PublicRoute from './routes/PublicRoute';
+import BroadcastHandler from './BroadcastHandler';
 
 function AuthorizedRoute({ children }) {
   let { authState } = useOktaAuth();
@@ -112,6 +113,7 @@ const Navigation = () => {
             <Loader type={'screen'} />
           </div>
         }>
+        <BroadcastHandler />
         <Routes>
           <Route exact path={`${AppRoutes.pathPageLogin}`} element={<Login />} />
           <Route exact path={AppRoutes.pathPageLoginCallback} element={<LoginCallback />} />
