@@ -455,6 +455,7 @@ function AdditionalDetails() {
     }
     setFieldValue('variant', variant);
     setFieldTouched('variant', true, false);
+    setFieldValue('variantAcknowledgement', false);
     setVariantAcknowledgement((prevState) => ({
       ...prevState,
       isChecked: false
