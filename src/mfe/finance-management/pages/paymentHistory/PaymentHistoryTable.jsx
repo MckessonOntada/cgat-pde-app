@@ -17,9 +17,15 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import CommonUtils from '@src/util/CommonUtils';
 
 const PAYMENT_STATUS = {
-  PENDING: { label: 'Pending', color: 'warning' },
   PROCESSED: { label: 'Processed', color: 'success' },
-  FAILED: { label: 'Failed', color: 'error' }
+  PENDING: { label: 'Pending', color: 'info' },
+  'IN PROCESS': { label: 'In Process', color: 'info' },
+  SCHEDULED: { label: 'Scheduled', color: 'info' },
+  'PENDING REVIEW': { label: 'Pending Review', color: 'info' },
+  PROCESSING: { label: 'Processing', color: 'info' },
+  FAILED: { label: 'Failed', color: 'error' },
+  CANCELLED: { label: 'Cancelled', color: 'error' },
+  'ON HOLD': { label: 'On Hold', color: 'warning' }
 };
 
 export default function PaymentHistoryTable() {
