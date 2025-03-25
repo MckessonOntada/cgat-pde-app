@@ -75,6 +75,7 @@ export default function Dashboard() {
   const handleTabClick = (tab) => {
     setActiveTab(tab.id);
     setPageNumber(1);
+    clearFilters();
   };
 
   const tabs = [

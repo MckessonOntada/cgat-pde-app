@@ -76,7 +76,7 @@ export const UserProvider = ({ children }) => {
       ...(activeTab === 1 && { userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL' }),
       ...(activeTab === 1 && filterConfig?.role && { roleIds: [filterConfig.role] }),
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      ...(statusArray.length && { status: statusArray }),
+      ...(activeTab === 1 ? statusArray.length && { status: statusArray } : statusArray.length && { provisioningStatuses: statusArray }),
       ...(filterConfig?.dateRange?.[0] && { startDate: DateUtils.formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy') }),
       ...(filterConfig?.dateRange?.[1] && { endDate: DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy') })
     };
