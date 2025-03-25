@@ -21,6 +21,7 @@ import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import { TherapyDetailsConstants } from './assets/constants/TherapyDetailsConstants';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import { FormattedNumber } from 'react-intl';
 
 function Details(props) {
   const { billNumber } = useParams();
@@ -72,21 +73,22 @@ function Details(props) {
           // bill bates
           let _invoiceDue = INVOICES_SCREEN
             ? {
-                [t('paymentInvoices.Details.AmountDue')]: `${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
-                [t('paymentInvoices.Details.DueDate')]: res.data.dueDate,
-                [t('paymentInvoices.Details.BillDate')]: res.data.billDate
+                [t('paymentInvoices.Details.AmountDue')]: `$${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
+                [t('paymentInvoices.Details.DueDate')]: CommonUtils.convertDateStringFormat(res.data.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY'),
+                [t('paymentInvoices.Details.BillDate')]: CommonUtils.convertDateStringFormat(res.data.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
               }
             : {
-                [t('paymentInvoices.Details.CreditAmount')]: `${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
+                [t('paymentInvoices.Details.CreditAmount')]: `$${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
                 [t('paymentInvoices.Details.CreditRemaining')]: '',
-                [t('paymentInvoices.Details.ValidFrom')]: res.data.dueDate
+                [t('paymentInvoices.Details.ValidFrom')]: CommonUtils.convertDateStringFormat(res.data.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
               };
           setBillDates(_invoiceDue);
           return res.data;
         }
       }
     },
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    retry: 1
   });
 
   const columns = useMemo(
@@ -181,8 +183,12 @@ function Details(props) {
         },
         wrap: true,
         right: true,
-        width: '120px',
-        cell: (props) => <div className="cellEllipse align-items-right">{props.netPrice || '-'}</div>
+        minWidth: '130px',
+        cell: (props) => (
+          <div className="cellEllipse align-items-right">
+            <FormattedNumber value={JSON.stringify(props.netPrice)} style="currency" currency="USD" />
+          </div>
+        )
       },
       {
         name: t('paymentInvoices.Details.grossPrice'),
@@ -190,9 +196,13 @@ function Details(props) {
         selector: (row) => {
           row.grossPrice;
         },
-        width: '120px',
+        minWidth: '130px',
         right: true,
-        cell: (props) => <div className="cellEllipse align-items-right">{props.grossPrice || '-'}</div>
+        cell: (props) => (
+          <div className="cellEllipse align-items-right">
+            <FormattedNumber value={props.grossPrice} style="currency" currency="USD" />
+          </div>
+        )
       }
     ],
     [data]
