@@ -54,6 +54,7 @@ function InputFileFormik(props) {
     const droppedFile = event.dataTransfer.files[0];
     if (validateBeforeChange(droppedFile, event))
       if (droppedFile) {
+        setFieldValue(field.name, droppedFile);
         setFile(droppedFile);
         onFileChange && onFileChange(droppedFile);
       }

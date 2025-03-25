@@ -34,9 +34,9 @@ function UploadUsersFile({downloadTemplate, handleUpload, validateFile, label, a
         {alert.isAlertVisible && <Alert description={alert.description} onClose={handleAlertClose} type={alert.type} />}
         <Formik
           initialValues={{ file: null }}
-          onSubmit={(values, { resetForm }) => {
+          onSubmit={(values, { setFieldValue }) => {
             handleUpload(values);
-            resetForm();
+            setFieldValue('file', null);
           }}>
           {({ setFieldValue, values, resetForm }) => (
             <Form>
