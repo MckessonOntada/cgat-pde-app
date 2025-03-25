@@ -52,7 +52,8 @@ export const PaymentsInvoiceProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { showSnackbar } = useSnackbar();
   const [previousFilterConfig, setPreviousFilterConfig] = useState(INITIAL_FILTER_STATE);
-
+  const [resetFilterData, setResetFilterData] = useState(true);
+  const [statusOptions, setStatusOptions] = useState([]);
   const { selectedAccount } = useAccountContext();
 
   const applyFilters = (filters) => {
@@ -127,7 +128,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
   };
 
   const { isFetching, isError, refetch } = useQuery(
-    ['invoiceListing', selectedAccount?.id],
+    ['invoiceListing', [selectedAccount?.id, resetFilterData]],
     async () => {
       if (!selectedAccount?.id) return;
       const url = `${ApiRoutes.INVOICES_CREDITS_LISTING(selectedAccount?.id, false)}`;
@@ -136,9 +137,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
         salesOrg: selectedAccount?.salesOrg,
         payerAccountNumber: selectedAccount?.accountNumber
       };
-      //  if(filterConfig.billDate?.length>0 && JSON.stringify(filterConfig.billDate) !== JSON.stringify(previousFilterConfig.billDate)){
-      //   payload={...payload,...{dateFrom:filterConfig.billDate[0]??"",dateTo:filterConfig.billDate[1]??""}}
-      //  }
+
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
 
       if (!res.data || !res.data.openInvoices) {
@@ -151,7 +150,10 @@ export const PaymentsInvoiceProvider = ({ children }) => {
       setData(res.data.openInvoices.slice(startIndex, endIndex));
       setUnSlicedData(res.data.openInvoices);
       setActualData(res.data.openInvoices);
-
+      if (resetFilterData) {
+        updateFilterData(res.data.openInvoices);
+        setResetFilterData(false);
+      }
       setPaginationConfig((state) => ({
         ...state,
         totalPages: Math.ceil(res.data.openInvoices.length / paginationConfig.pageSize),
@@ -175,6 +177,19 @@ export const PaymentsInvoiceProvider = ({ children }) => {
       sortData(sortConfig);
     }
   }, [filterConfig, paginationConfig.pageNumber]);
+
+  useEffect(() => {
+    clearFilters();
+    setResetFilterData(true);
+  }, [selectedAccount?.accountNumber]);
+
+  const updateFilterData = (actualData) => {
+    let currentFilterData = [...new Set(actualData.map((e) => e.status).filter((e) => e))];
+    let _options = currentFilterData.map((item) => {
+      return { value: item, label: DUE_STATUS[item]?.label || item, isDisabled: false };
+    });
+    setStatusOptions([..._options]);
+  };
 
   const clearFilters = () => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
@@ -325,7 +340,9 @@ export const PaymentsInvoiceProvider = ({ children }) => {
     clearFilters,
     applySort,
     setPageNumber,
-    exportExcel
+    exportExcel,
+    statusOptions,
+    setStatusOptions
   };
   return <PaymentsInvoicesContext.Provider value={contextValue}>{children}</PaymentsInvoicesContext.Provider>;
 };
