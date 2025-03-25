@@ -28,6 +28,7 @@ import { InventoryIndicator } from '../InventoryIndicator';
 import useSapOrder from './useSapOrder';
 import useTimedArray from './useTimedArray';
 import AttachmentCard from './AttachmentCard';
+import { QUESTION_TYPE } from '@src/mfe/order-management/questionnaire/AddQuestionnaire';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -722,7 +723,7 @@ const Summary = () => {
               <div className="MCP-CardContainer">
                 <ModuleHeader
                   className={styles.panelHeader}
-                  heading={<Heading as="h3">Variant</Heading>}
+                  heading={<Heading as="h3">{t('labels.variant')}</Heading>}
                   controls={
                     !hideControls && (
                       <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
@@ -750,7 +751,7 @@ const Summary = () => {
               <div className="MCP-CardContainer">
                 <ModuleHeader
                   className={styles.panelHeader}
-                  heading={<Heading as="h3">Configured Questionnaires</Heading>}
+                  heading={<Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading>}
                   controls={
                     !hideControls && (
                       <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
@@ -768,9 +769,23 @@ const Summary = () => {
                 <div className="MCP-module-body">
                   <div className="summary-question-list">
                     {configuredQuestionnaires.map((question) => {
+                      console.log(question);
                       return (
                         <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
-                          <DetailSegment label={question.text} value={question.value} />
+                          <DetailSegment
+                            label={question.text}
+                            value={
+                              question.value && Array.isArray(question.value) ? (
+                                <div>
+                                  {question.value.map((val) => (
+                                    <div>{val.replace(/_/g, ' ')}</div>
+                                  ))}
+                                </div>
+                              ) : (
+                                question.value
+                              )
+                            }
+                          />
                           {question.attachment && (
                             <AttachmentCard fileName={question.attachment.name} fileSize={question.attachment.size} />
                           )}

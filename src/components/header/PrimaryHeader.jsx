@@ -35,6 +35,7 @@ const PrimaryHeader = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const userName = AuthUtils.getFullName();
   const [textMaxWidth, setTextMaxWidth] = useState('');
+  const channel = new BroadcastChannel('auth_channel');
 
   useEffect(() => {
     const handleResize = () => {
@@ -95,6 +96,7 @@ const PrimaryHeader = () => {
   };
 
   const logout = () => {
+    channel.postMessage({ type: 'LOGOUT' });
     AuthService.userLogout(oktaAuth);
   };
 

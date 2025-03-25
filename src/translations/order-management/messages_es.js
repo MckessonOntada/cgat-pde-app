@@ -168,7 +168,7 @@ export const MessageEs = {
   'labels.orderActions.edit': 'S_Edit Order',
   'labels.orderActions.cancel': 'S_Cancel Order',
   'labels.orderActions.assignToMe': 'S_Assign to me',
-  'labels.orderActions.unassignToMe': 'S_UnAssign to me',
+  'labels.orderActions.unassignToMe': 'S_Unassign',
   'labels.orderActions.approve': 'S_Approve Order',
   'labels.orderActions.deletemessage': 'S_Are you sure you wish to Delete this Order ?',
   'labels.orderActions.cancelmessage':
@@ -189,6 +189,7 @@ export const MessageEs = {
   'labels.therapy.division': 'S_Division',
   'labels.therapy.sapMaterial': 'S_Sap Material',
   'labels.therapy.variant': 'S_Variant',
+  'labels.configuredQuestionnaires': 'S_Configured Questionnaires',
   'labels.therapy.variantDesc': 'S_Variant Description',
   'labels.therapy.contractNumber': 'S_Contract number ',
   'labels.therapy.contractType': 'S_Contract type ',

@@ -54,7 +54,7 @@ export default function CreditsTable(props) {
           <Link
             style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
             to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
-            state={{ ...state }}>
+            state={{ ...state, selectedCredit: [...[], props] }}>
             {`${props?.billNumber}`}
           </Link>
         </div>

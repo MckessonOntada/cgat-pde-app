@@ -337,7 +337,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId, calculat
     sortKey: 'id',
     showInMobileHeader: true,
     showColumnNameInHeader: true,
-    minWidth: '140px',
+    minWidth: '120px',
     cell: (props) =>
       activeTab !== 2 ? (
         <Link
@@ -346,10 +346,10 @@ export const createColumns = (t, navigate, activeTab, alertContainerId, calculat
           //state={props.currentStage === 'ORDER_SUMMARY' && props.status === StatusEnum.SUBMITTED ? { ...props, isEdit: true } : { ...props }}
           state={getState(props)}
           aria-label={t('labels.orderId')}>
-          <EclipsesTextcss str={props.id} maxWidth={130} />
+          <EclipsesTextcss str={props.id} maxWidth={110} />
         </Link>
       ) : (
-        <EclipsesTextcss str={props.id} maxWidth={130} />
+        <EclipsesTextcss str={props.id} maxWidth={110} />
       )
   },
   {
@@ -412,8 +412,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId, calculat
     selector: () => {},
     sortable: true,
     sortKey: 'createdAt',
-    minWidth: '80px',
-    maxWidth: '135px',
+    width: '135px',
     cell: (props) => (
       <span aria-label={t('table.columns.captions.createdOn')}>
         {CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')}
@@ -428,7 +427,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId, calculat
     selector: () => {},
     sortable: true,
     sortKey: 'submittedBy.name',
-    maxWidth: '140px',
+    minWidth: '160px',
     cell: (props) => (
       <EclipsesTextcss tooltip={props.submittedBy?.userName} str={props.submittedBy?.name} maxWidth={130} className={'MCP-table-cell'} />
     ),
@@ -440,7 +439,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId, calculat
     selector: () => {},
     sortable: true,
     sortKey: 'submittedOn',
-    width: '100px',
+    width: '160px',
     cell: (props) => <span>{props.submittedOn ? CommonUtils.convertDateStringFormat(props.submittedOn, 'MM-DD-YYYY') : '-'}</span>,
     omit: activeTab !== 2
   },
