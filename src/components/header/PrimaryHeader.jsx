@@ -210,7 +210,7 @@ const PrimaryHeader = () => {
             </div>
           )}
           <div className={styles.mobileOnly}>
-            <Button variant="tertiary" onClick={toggleDrawer} aria-label="Open drawer menu">
+            <Button variant="tertiary" className={styles.hamburger} onClick={toggleDrawer} aria-label="Open drawer menu">
               <IconMenu />
             </Button>
             <FloatingDrawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>

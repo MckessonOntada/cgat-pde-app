@@ -4,7 +4,9 @@
   &.primary {
     background-color: var(--brand-color-patient-primary-1);
     padding-right: 10px;
-
+    @media only screen and (max-width: 768px) {
+      padding-right: 0px;
+    }
     .navItemsLeft {
       padding: var(--spacing-02) 0px;
       padding-right: var(--spacing-02);
@@ -94,7 +96,9 @@
   justify-content: space-between;
   margin: 0px var(--spacing-04);
   height: 43px; //size is not avilable
-
+  @media only screen and (max-width: 768px) {
+    margin: 0px var(--spacing-03);
+  }
   .branding {
     .appLogo {
       display: inline-block;
@@ -208,6 +212,10 @@
 
     button {
       width: 100%;
+    }
+    .hamburger{
+      padding: 0px;
+      justify-content: flex-end !important;
     }
 
     @include mixins.respond(md) {
