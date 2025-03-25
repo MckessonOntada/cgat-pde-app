@@ -17,14 +17,11 @@ function UploadUsers() {
 
   const showAlert = (type, message) => {
     setAlert({ type: type, description: message, isAlertVisible: true });
-  
     const timer = setTimeout(() => {
       setAlert({ type: '', description: '', isAlertVisible: false });
     }, 10000);
-  
     return () => clearTimeout(timer);
   };
-  
   const handleAlertClose = () => {
     setAlert({ type: '', description: '', isAlertVisible: false });
   };
@@ -85,11 +82,9 @@ function UploadUsers() {
   
   function validateFile(file) {
     const allowdTypes = ['text/csv'];
-
     if (!allowdTypes.includes(file.type)) {
       return { isValid: false, message: 'Unsupported file type. Please upload a valid file.' };
     }
-
     return { isValid: true, message: 'File is valid.' };
   }
 
@@ -102,6 +97,7 @@ function UploadUsers() {
         label={t('lebal.users')}
         alert={alert}
         handleAlertClose={handleAlertClose}
+        isLoading={isLoading}
       />
     </React.Fragment>
   );

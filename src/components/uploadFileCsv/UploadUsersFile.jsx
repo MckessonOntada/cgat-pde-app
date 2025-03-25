@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
+import { Button, Heading, Alert, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -7,11 +7,12 @@ import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import Components from '@src/components/form/Components';
 
-function UploadUsersFile({downloadTemplate, handleUpload, validateFile, label, alert, handleAlertClose}) {
+function UploadUsersFile({downloadTemplate, handleUpload, validateFile, label, alert, handleAlertClose, isLoading}) {
   const { t } = useTranslate();
   const navigate = useNavigate();
   return (
     <React.Fragment>
+      {isLoading && <Loader type="screen" />}
       <div className="MCP-module-wrapper">
         <div>
           <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={() => navigate(-1)} size="md">
@@ -33,11 +34,11 @@ function UploadUsersFile({downloadTemplate, handleUpload, validateFile, label, a
         {alert.isAlertVisible && <Alert description={alert.description} onClose={handleAlertClose} type={alert.type} />}
         <Formik
           initialValues={{ file: null }}
-          onSubmit={(values, { setFieldValue }) => {
+          onSubmit={(values, { resetForm }) => {
             handleUpload(values);
-            setFieldValue('file', null);
+            resetForm();
           }}>
-          {({ setFieldValue, values }) => (
+          {({ setFieldValue, values, resetForm }) => (
             <Form>
               <div className="MCP-panel-container">
                 <Field
