@@ -452,5 +452,12 @@ export const MessageEn = {
   'labels.OrderProcesing.SAPOrderStatus.Open': 'OPEN',
   'labels.OrderProcesing.SAPOrderStatus.Cancelled': 'CANCELLED',
   'labels.OrderProcesing.SAPOrderStatus.Completed': 'COMPLETED',
-  'errors.orders_index_additional_details.po_number_1_practice_id_1': 'PO Number already exists.'
+  'errors.orders_index_additional_details.po_number_1_practice_id_1': 'PO Number already exists.',
+
+  'labels.caption.ALL': 'All',
+  'labels.caption.IN_DRAFT': 'In Draft',
+  'labels.caption.DELETED': 'Deleted',
+  'labels.caption.REJECTED': 'Rejected',
+  'labels.caption.SUBMITTED': 'Submitted',
+  'labels.caption.APPROVAL_PENDING': 'Approval Pending'
 };

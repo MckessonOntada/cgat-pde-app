@@ -101,7 +101,7 @@ const Summary = () => {
   };
 
   React.useEffect(() => {
-    if (!orderDetails.id || status === StatusEnum.SUBMITTED || status === StatusEnum.REJECTED) {
+    if (!orderDetails.id || status === StatusEnum.SUBMITTED || status === StatusEnum.REJECTED || status === 'DELETED') {
       return;
     }
     if (catalog.inventoryType === 'T') {
@@ -152,6 +152,7 @@ const Summary = () => {
 
   const variantDetails = additionalDetails?.variantDetails || {};
   const isRejected = status === 'REJECTED';
+  const isDeleted = status === 'DELETED';
   const isSubmitted = status === StatusEnum.SUBMITTED;
   const contentRef = useRef(null);
   const printPage = useCustomPrint(
@@ -186,7 +187,7 @@ const Summary = () => {
     queryFn: async () => {
       return await OrderService.simulateOrder(orderId);
     },
-    enabled: !status ? false : !(status === StatusEnum.REJECTED || status === StatusEnum.SUBMITTED),
+    enabled: !status ? false : !(status === StatusEnum.REJECTED || status === StatusEnum.SUBMITTED || status === 'DELETED'),
     refetchOnWindowFocus: false,
     onError: (error) => {
       showAlert({ description: error?.response?.data?.message, type: 'error', anchorEl: ALERT_CONTAINER_ID });
@@ -418,7 +419,7 @@ const Summary = () => {
   if (patient.patientInfo) patient.fullName = CommonUtils.getFullName(patient.patientInfo);
 
   const isAgreed = agreeCheckboxOptions.isChecked,
-    hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected;
+    hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected || isDeleted;
 
   if (isSaving) {
     return <Loader type={'screen'} />;
@@ -435,7 +436,7 @@ const Summary = () => {
       {isApprover && <PageHeader heading={t('headings.reviewOrder')} />}
 
       <div className="MCP-module-body" ref={contentRef}>
-        {!hideControls && !isRejected && (
+        {!hideControls && !isRejected && !isDeleted && (
           <div className="order-stepper-wrapper">
             <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} />
           </div>

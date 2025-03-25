@@ -5,7 +5,7 @@ import { ORDER_TABS, ORDER_VIEW, TAB_FILTERS } from '../pages/orders/config';
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
-  status: []
+  status: null
 };
 
 const INITIAL_PAGINATION_STATE = {
@@ -37,13 +37,15 @@ export const OrderProvider = ({ children }) => {
   const [tabVariant, setTabVariant] = React.useState(ORDER_TABS.SUBMITTED_BUY_AND_BILL);
 
   const requestParams = React.useMemo(() => {
+    console.log(filterConfig.status || TAB_FILTERS[tabVariant].join(','));
+
     const params = {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
       sortBy: sortConfig.sortBy || 'createdAt',
       sortOrder: sortConfig.sortOrder || 'desc',
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      statuses: TAB_FILTERS[tabVariant].join(','),
+      statuses: filterConfig.status || TAB_FILTERS[tabVariant].join(','),
       showMyOrders: orderView === ORDER_VIEW.ALL_ORDERS ? false : true
     };
     return params;
@@ -86,7 +88,10 @@ export const OrderProvider = ({ children }) => {
 
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
-    setFilterConfig({ ...filters });
+    setFilterConfig({ ...filterConfig, ...filters });
+    // if (filters.status && !Array.isArray(filters.status)) {
+    //   filters.status = [filters.status];
+    // }
   };
 
   const clearFilters = () => {
@@ -120,7 +125,7 @@ export const OrderProvider = ({ children }) => {
         refreshData,
         tabVariant,
         setTabVariant,
-        assginedGroupsData: assignedGroupsData,
+        assignedGroupsData: assignedGroupsData,
         orderView,
         changeOrderView
       }}>

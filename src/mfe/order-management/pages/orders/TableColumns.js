@@ -15,13 +15,14 @@ import AuthUtils from '@src/util/AuthUtils';
 import { useMutation } from 'react-query';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import { useTranslate } from '@src/translations/useTranslation';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 const getColorByStatus = (status) => {
   const statusColors = {
     [ORDER_STATUS.IN_DRAFT]: 'info',
     [ORDER_STATUS.APPROVAL_PENDING]: 'info',
     [ORDER_STATUS.SUBMITTED]: 'success',
-    [ORDER_STATUS.CANCELLED]: 'error',
+    [ORDER_STATUS.DELETED]: 'error',
     [ORDER_STATUS.REJECTED]: 'error'
   };
   return statusColors[status] || 'info';
@@ -34,8 +35,9 @@ function getOptionsByStatus(props) {
   const navigate = useNavigate();
   const loggedInUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
-  const { refreshData, assginedGroupsData } = useOrders();
+  const { refreshData, assignedGroupsData } = useOrders();
   const { hasPermission } = usePermission();
+
   // Mutations
   const { mutate: assignToMe } = useMutation(() => OrderService.setOrderAssignToMe(id), {
     onSuccess: () => navigate(`${id}/summary`, { state: { isApprover: true } }),
@@ -126,33 +128,35 @@ function getOptionsByStatus(props) {
 
   let options = [];
   if (tab === ORDER_TABS.PENDING_SUBMISSION) {
-    if (![ORDER_STATUS.PENDING, ORDER_STATUS.CANCELLED].includes(status)) {
-      if (status === ORDER_STATUS.IN_DRAFT && hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS)) {
-        options.push({ label: translate(`labels.orderActions.resume`), value: ORDER_ENTITY_ACTION.RESUME });
-        options.push({ label: translate(`labels.orderActions.delete`), value: ORDER_ENTITY_ACTION.DELETE });
-      } else if (status === ORDER_STATUS.REJECTED) {
-        options.push({ label: translate(`labels.orderActions.view`), value: ORDER_ENTITY_ACTION.REVIEW });
-      } else if (status === ORDER_STATUS.APPROVAL_PENDING) {
-        if (!props.approver?.id && doesApproverGroupExist(props.approverGroupIds, assginedGroupsData)) {
-          options.push({ label: translate(`labels.orderActions.assignToMe`), value: ORDER_ENTITY_ACTION.ASSIGN });
-        } else if (props.approver?.id === loggedInUserId) {
-          options.push({ label: translate(`labels.orderActions.unassignToMe`), value: ORDER_ENTITY_ACTION.UNASSIGN });
-          if (props.versionOwner) {
-            options.push({ label: translate(`labels.orderActions.discardChangesByMe`), value: ORDER_ENTITY_ACTION.DISCARD_MY_CHANGES });
-          }
-        }
-        options.push({
-          label: translate(
-            `labels.orderActions.${
-              options.length && options.at(-1).value === ORDER_ENTITY_ACTION.UNASSIGN
-                ? ORDER_ENTITY_ACTION.REVIEW
-                : ORDER_ENTITY_ACTION.VIEW
-            }`
-          ),
-          value: ORDER_ENTITY_ACTION.REVIEW
-        });
+    if (status === ORDER_STATUS.IN_DRAFT && hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS)) {
+      options.push({ label: translate(`labels.orderActions.resume`), value: ORDER_ENTITY_ACTION.RESUME });
+      options.push({ label: translate(`labels.orderActions.delete`), value: ORDER_ENTITY_ACTION.DELETE });
+    } else if (status === ORDER_STATUS.REJECTED) {
+      options.push({ label: translate(`labels.orderActions.view`), value: ORDER_ENTITY_ACTION.REVIEW });
+    } else if (status === ORDER_STATUS.DELETED) {
+      options.push({ label: translate(`labels.orderActions.view`), value: ORDER_ENTITY_ACTION.VIEW });
+    }
+    // if (![ORDER_STATUS.PENDING, ORDER_STATUS.DELETED].includes(status)) {
+    // }
+  } else if (status === ORDER_STATUS.APPROVAL_PENDING) {
+    if (!props.approver?.id && doesApproverGroupExist(props.approverGroupIds, assignedGroupsData)) {
+      options.push({ label: translate(`labels.orderActions.assignToMe`), value: ORDER_ENTITY_ACTION.ASSIGN });
+    } else if (props.approver?.id === loggedInUserId) {
+      options.push({ label: translate(`labels.orderActions.unassignToMe`), value: ORDER_ENTITY_ACTION.UNASSIGN });
+      if (props.versionOwner) {
+        options.push({ label: translate(`labels.orderActions.discardChangesByMe`), value: ORDER_ENTITY_ACTION.DISCARD_MY_CHANGES });
       }
     }
+    options.push({
+      label: translate(
+        `labels.orderActions.${
+          options.length && options.at(-1).value === ORDER_ENTITY_ACTION.UNASSIGN
+            ? ORDER_ENTITY_ACTION.REVIEW.toLowerCase()
+            : ORDER_ENTITY_ACTION.VIEW.toLowerCase()
+        }`
+      ),
+      value: ORDER_ENTITY_ACTION.REVIEW
+    });
   } else if (tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL) {
     if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS)) {
       options.push({ label: translate(`labels.orderActions.view`), value: ORDER_ENTITY_ACTION.VIEW });
@@ -258,7 +262,7 @@ const jsxColumns = [
     name: 'table.columns.captions.author',
     selector: () => {},
     sortable: true,
-    sortKey: 'author?.name',
+    sortKey: 'createdBy.name',
     maxWidth: '130px',
     cell: (props) => <Tooltip body={props.createdBy?.userName}>{props.createdBy?.userName}</Tooltip>
   },
@@ -267,9 +271,11 @@ const jsxColumns = [
     name: 'table.columns.captions.assignee',
     selector: () => {},
     sortable: true,
-    sortKey: 'author?.name',
+    sortKey: 'approver.name',
     maxWidth: '130px',
-    cell: (props) => props.assignee
+    cell: (props) => (
+      <EclipsesTextcss tooltip={props.approver?.name} str={props.approver?.name} maxWidth={180} className={'MCP-table-cell'} />
+    )
   },
   {
     id: COLUMNS.CREATED_ON,
@@ -321,7 +327,7 @@ const jsxColumns = [
       return (
         <Tooltip body={props.status}>
           <span>
-            <Badge text={this.__meta__.translate(`labels.status.${props.status.toLowerCase()}`)} type={getColorByStatus(props.status)} />
+            <Badge text={this.__meta__.translate(`labels.caption.${props.status.toUpperCase()}`)} type={getColorByStatus(props.status)} />
           </span>
         </Tooltip>
       );

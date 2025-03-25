@@ -368,5 +368,10 @@ export const UserManagementEN = {
   'userManagement.confirmationMessage': 'Confirmation message',
   'userManagement.message.DeactivateUser': 'Are you sure you wish to Deactivate this User ?',
   'userManagement.edit_sysadmin': 'Edit System Administrator',
-  'userManagement.edit_organization_user': 'Edit Organization User'
+  'userManagement.edit_organization_user': 'Edit Organization User',
+
+  'labels.caption.ALL': 'All',
+  'labels.caption.IN_DRAFT': 'In Draft',
+  'labels.caption.DELETED': 'Deleted',
+  'labels.caption.REJECTED': 'Rejected'
 };
