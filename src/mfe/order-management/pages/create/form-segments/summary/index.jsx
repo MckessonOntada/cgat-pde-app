@@ -473,7 +473,7 @@ const Summary = () => {
               ) : isSubmitted ? (
                 <div className="row-space-between-center">
                   <Label className={styles.lblProcessing}>{t('labels.OrderProcesing')}</Label>
-                  {isLoadingSapOrderStatus && <div className="dot-loader"></div>}
+                  {isLoadingSapOrderStatus && <InventoryIndicator status={'CHECKING'} />}
 
                   {!isLoadingSapOrderStatus &&
                     (sapOrderDetails?.finalStatus ? (

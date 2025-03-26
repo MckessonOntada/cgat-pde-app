@@ -194,6 +194,26 @@ const getPathByOrderStage = ({ currentStage, id, patientDetailsRequired }) => {
   }
 };
 
+const getState = (props) => {
+  const { status, approver } = props;
+  if (!status) throw new Error('Order status not found, to get state.');
+
+  const loggedInUserId = AuthUtils.getUserId();
+  if (status === ORDER_STATUS.SUBMITTED) {
+    return props;
+  } else if (status === ORDER_STATUS.APPROVAL_PENDING) {
+    if (approver?.id === loggedInUserId) {
+      return { isEdit: true, isApprover: true };
+    } else {
+      return { isApprover: false };
+    }
+  } else if (status === ORDER_STATUS.IN_DRAFT) {
+    return { isSimulate: true };
+  } else {
+    return props;
+  }
+};
+
 const jsxColumns = [
   {
     id: COLUMNS.SAP_ID,
@@ -204,8 +224,8 @@ const jsxColumns = [
     minWidth: '130px',
     cell: function (props) {
       return (
-        <Link className="MCP-table-link">
-          <EclipsesTextCss str={props.backendOrderId} maxWidth={120} />
+        <Link className="MCP-table-link" to={getPathByOrderStage(props)} state={getState(props)}>
+          <EclipsesTextCss str={props.backendOrderId} maxWidth={170} />
         </Link>
       );
     }
@@ -230,7 +250,11 @@ const jsxColumns = [
     showInMobileHeader: true,
     showColumnNameInHeader: true,
     minWidth: '140px',
-    cell: (props) => <Tooltip body={props.id}>{props.id}</Tooltip>
+    cell: (props) => (
+      <Link className="MCP-table-link" to={getPathByOrderStage(props)} state={getState(props)}>
+        <Tooltip body={props.id}>{props.id}</Tooltip>
+      </Link>
+    )
   },
   {
     id: COLUMNS.PATIENT_NAME,
@@ -295,7 +319,7 @@ const jsxColumns = [
     selector: () => {},
     sortable: true,
     sortKey: 'submittedBy.name',
-    maxWidth: '140px',
+    maxWidth: '150px',
     cell: function (props) {
       return (
         <EclipsesTextCss tooltip={props.submittedBy?.userName} str={props.submittedBy?.name} maxWidth={130} className={'MCP-table-cell'} />
