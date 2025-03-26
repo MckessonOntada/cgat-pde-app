@@ -142,22 +142,22 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
               )}
             </div>
           </div>
-          <div className='inline-status'>
-            {inlineStatus.map((col, colIndex) => (
-              <div key={col.id} className="collapsed-detail" style={col.mobileStyles}>
-                {col.showColumnNameInHeader && col.name && (
-                  <div className='column-name'>
-                    {col.name} {colIndex === 0 ? ':' : '-'}
+          {inlineStatus.map((col, colIndex) => (
+            <div className='inline-status'>
+                <div key={col.id} className="collapsed-detail" style={col.mobileStyles}>
+                  {col.showColumnNameInHeader && col.name && (
+                    <div className='column-name'>
+                      {col.name} {colIndex === 0 ? ':' : '-'}
+                    </div>
+                  )}
+                  <div
+                    onClick={(e) => handleActionClick(e, col.onClick)}
+                    className={`default-data-Value ${colIndex === 0 ? `card-main-header` : ``}`}>
+                    {renderCell(col, row)}
                   </div>
-                )}
-                <div
-                  onClick={(e) => handleActionClick(e, col.onClick)}
-                  className={`default-data-Value ${colIndex === 0 ? `card-main-header` : ``}`}>
-                  {renderCell(col, row)}
                 </div>
-              </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </>
       )}
       {(expanded || showDefaultData.length === 0) && (

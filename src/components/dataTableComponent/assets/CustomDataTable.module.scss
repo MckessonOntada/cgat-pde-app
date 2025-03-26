@@ -150,9 +150,11 @@
   min-width: 50%;
 }
 .cardSortIconButton {
-  margin-right: 3px;
+  margin-bottom: var(--spacing-01);
+  margin-right:  var(--spacing-01);
 }
 .cardSortIconButtonRotated {
-  margin-right: 2px;
+  margin-bottom: var(--spacing-01);
+  margin-right:  var(--spacing-01);
   transform: rotate(180deg);
 }
