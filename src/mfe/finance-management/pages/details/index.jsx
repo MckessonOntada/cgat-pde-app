@@ -135,7 +135,7 @@ function Details(props) {
         wrap: true,
         minWidth: '140px',
         maxWidth: '180px',
-        cell: (props) => <EclipsesTextcss str={'-'} maxWidth={170} />
+        cell: (props) => <EclipsesTextcss str={props.therapyDescription} maxWidth={170} />
       },
       {
         name: t('paymentInvoices.Details.referenceDocument'),
@@ -303,6 +303,7 @@ function Details(props) {
           therapyData={TherapyDetailsConstants}
           showFooter={false}
           heading={t('labels.therapyDetails')}
+          useUserService={true}
         />
       )}
     </div>
