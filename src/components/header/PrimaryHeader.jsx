@@ -131,7 +131,7 @@ const PrimaryHeader = () => {
         <IconNotification />
       </Link>,
 
-      <MenuList handleSelect={() => {}} options={HeaderConfig.profileOptions} aria-label="Profile options">
+      <MenuList handleSelect={() => {navigate('/admin/user/my-profile')}} options={HeaderConfig.profileOptions} aria-label="Profile options">
         <div className={styles.actionLink} aria-label="Account options">
           <span>
             <EclipsesTextcss str={userName || 'Anonymous'} maxWidth={textMaxWidth} />

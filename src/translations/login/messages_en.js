@@ -31,4 +31,10 @@ export const LoginMessagesEN = {
   'forgot.password.success': 'Your request to reset your password has been successfully submitted, Please check your email.',
   'forgot.password.error': 'Error sending password reset email.',
   'forgot.terms.agreement': 'Terms of use and Patient Agreement',
+  'reset.password.user.email':'User Name / Email Address',
+  'reset.password.password':'Password',
+  'reset.password.change.password':'Change Password',
+  'reset.password.confirmation.message':'An email has been sent to your registered email address with the link and instructions to reset your password.',
+  'reset.password.ok':'OK',
+  'reset.password.account.settings':'Account Settings',
 };
