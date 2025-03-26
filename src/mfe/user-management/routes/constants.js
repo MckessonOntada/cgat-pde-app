@@ -5,5 +5,5 @@ export const PATHS = {
   editUser:"edit-user",
   userPermissions:"user-permissions",
   addAccounts:"add-accounts",
-  myProfile: 'my-profile'
+  accountSetting: 'account-setting'
 };

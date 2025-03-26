@@ -37,4 +37,5 @@ export const LoginMessagesEN = {
   'reset.password.confirmation.message':'An email has been sent to your registered email address with the link and instructions to reset your password.',
   'reset.password.ok':'OK',
   'reset.password.account.settings':'Account Settings',
+  'reset.password.login.credentials':'Login Credentials',
 };

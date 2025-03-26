@@ -5,36 +5,51 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditIcon } from '@src/assets/svg/edit-icon.svg';
 import './profile.scss';
 import AuthUtils from '@src/util/AuthUtils';
+import CommonDataService from '@src/api/commonService/CommonDataService';
+import { useMutation } from 'react-query';
 
-const MyProfile = () => {
+const AccountSetting = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslate();
   const userName = AuthUtils.getUserName();
-  const handleClick = () => {
-    setIsOpen(true);
-  };
+
+  const { mutate: resetPassword } = useMutation(
+    async () => {
+      return await CommonDataService.resetPassword();
+    },
+    {
+      onSuccess: () => {
+        setIsOpen(true);
+      },
+      onError: () => {
+        console.log("Failed to sent reset passwrd email")
+      }
+    }
+  );
 
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-body">
         <ModuleHeader heading={<Heading as="h1">{t('reset.password.account.settings')}</Heading>} />
         <div className="MCP-panel-container profile-wraper">
-          <Heading as="h3">{t('User Information')}</Heading>
+          <Heading as="h3">{t('reset.password.login.credentials')}</Heading>
           <div className="profile-table">
-            <div className="profile-details">
+            <div className="user-details details">
               <p>{t('reset.password.user.email')}</p>
               <span>{userName}</span>
             </div>
-            <div>
+            <div className='user-details'>
               <p>{t('reset.password.password')}</p>
-              <IconButton
-                label= {t('reset.password.change.password')}
-                size="lg"
-                iconButton={false}
-                textButton={true}
-                Icon={EditIcon}
-                onClick={handleClick} // Fixed function call
-              />
+              <div>
+                <IconButton
+                  label= {t('reset.password.change.password')}
+                  size="lg"
+                  iconButton={false}
+                  textButton={true}
+                  Icon={EditIcon}
+                  onClick={resetPassword}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -51,7 +66,7 @@ const MyProfile = () => {
         }
         modalFooter={
           <Button onClick={() => setIsOpen(false)}  size="md" variant="primary"  >
-            {t('OK')}
+            {'OK'}
           </Button>
         }
         modalSize="xxxs"
@@ -60,4 +75,4 @@ const MyProfile = () => {
   );
 };
 
-export default MyProfile;
+export default AccountSetting;
