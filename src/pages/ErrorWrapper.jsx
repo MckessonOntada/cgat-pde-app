@@ -20,7 +20,6 @@ class ErrorWrapper extends React.Component {
     window.location.reload();
   };
   render() {
-    console.log(this.state);
     if (this.state.hasError) {
       return (
         <div className="MCP-module-wrapper" style={{ padding: '24px', alignItems: 'center' }}>
