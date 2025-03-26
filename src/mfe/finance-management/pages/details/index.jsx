@@ -71,18 +71,7 @@ function Details(props) {
             [t('paymentInvoices.Details.PO')]: res.data.poNumber
           }));
           // bill bates
-          let _invoiceDue = INVOICES_SCREEN
-            ? {
-                [t('paymentInvoices.Details.AmountDue')]: `$${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
-                [t('paymentInvoices.Details.DueDate')]: CommonUtils.convertDateStringFormat(res.data.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY'),
-                [t('paymentInvoices.Details.BillDate')]: CommonUtils.convertDateStringFormat(res.data.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
-              }
-            : {
-                [t('paymentInvoices.Details.CreditAmount')]: `$${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
-                [t('paymentInvoices.Details.CreditRemaining')]: '',
-                [t('paymentInvoices.Details.ValidFrom')]: CommonUtils.convertDateStringFormat(res.data.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
-              };
-          setBillDates(_invoiceDue);
+          updateBillDates(res);
           return res.data;
         }
       }
@@ -90,6 +79,20 @@ function Details(props) {
     refetchOnWindowFocus: false,
     retry: 1
   });
+  const updateBillDates = (res) => {
+    let _invoiceDue = INVOICES_SCREEN
+      ? {
+          [t('paymentInvoices.Details.AmountDue')]: `$${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
+          [t('paymentInvoices.Details.DueDate')]: CommonUtils.convertDateStringFormat(res.data.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY'),
+          [t('paymentInvoices.Details.BillDate')]: CommonUtils.convertDateStringFormat(res.data.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
+        }
+      : {
+          [t('paymentInvoices.Details.CreditAmount')]: `$${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
+          [t('paymentInvoices.Details.CreditRemaining')]: '',
+          [t('paymentInvoices.Details.ValidFrom')]: CommonUtils.convertDateStringFormat(res.data.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
+        };
+    setBillDates(_invoiceDue);
+  };
 
   const columns = useMemo(
     () => [
