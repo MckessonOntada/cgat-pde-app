@@ -13,7 +13,7 @@ import CommonUtils from '@src/util/CommonUtils';
 
 function InputFileFormik(props) {
   const { field, form, onFileChange, primaryButtonCaption } = props;
-  const { setFieldError } = useFormikContext();
+  const { setFieldError, values } = useFormikContext();
   const [errorFile, setErrorFile] = useState(false);
   const { label, value, validateOnChange, attachmentValue } = props;
   const fileInputRef = React.useRef(value || null);
@@ -76,8 +76,14 @@ function InputFileFormik(props) {
   const { name, size, url } = file || {};
 
   React.useEffect(() => {
-    if (attachmentValue) setFile(attachmentValue);
+    setFile(attachmentValue);
   }, [attachmentValue]);
+
+  React.useEffect(() => {
+    if (!attachmentValue) {
+      setFile(values[field.name]);
+    }
+  }, []);
 
   return (
     <div className={`${styles['component-wrapper']} ${errorMessage ? styles['has-error'] : null}`}>

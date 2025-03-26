@@ -152,7 +152,7 @@ export const UserManagementEN = {
   'userManagement.messages.userEmptyTableSubtitle': 'Data is unavailable. Please add an user to view the table content.',
   'userManagement.messages.sysadminEmptyTableSubtitle': 'Data is unavailable. Please add a System Admin to view the table content.',
   'userManagement.messages.emptysubtitle': 'Data is unavailable. Please add Permission(s) to view the content.',
-  'userManagement.message.userEmptyTableTitle': 'No Permissions Found.',
+  'userManagement.message.userPermissionEmptyTableTitle': 'No Permissions Found.',
   'userManagement.header.view.linked_accounts': 'Linked Accounts',
 
   'userManagement.user_permissions.managePermissions': 'Manage Permissions',
@@ -373,5 +373,9 @@ export const UserManagementEN = {
   'labels.caption.ALL': 'All',
   'labels.caption.IN_DRAFT': 'In Draft',
   'labels.caption.DELETED': 'Deleted',
-  'labels.caption.REJECTED': 'Rejected'
+  'labels.caption.REJECTED': 'Rejected',
+
+  'errors.messages.dateRange': "Either enter both dates or none for the filter as it's part of a date range.",
+  'errors.messages.default': 'An unexpected error occurred. Please try again.',
+  'label.comment': 'Comment'
 };

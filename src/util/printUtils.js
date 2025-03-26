@@ -10,12 +10,17 @@ export const useCustomPrint = (contentRef, pageStyle = '', ...rest) => {
   const defaultPageStyle = `
     @page {
         size: A4;
+        margin: 0;
+        padding:20px;
     }
    .order-stepper-wrapper {
         display: none  !important;
     }
     button{
         display: none !important;
+    }
+    .fieldValue .overflowing {
+      white-space: wrap  !important;
     }
   `;
 

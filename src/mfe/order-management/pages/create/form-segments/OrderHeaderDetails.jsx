@@ -24,12 +24,12 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status }) {
   );
   if (accountDetails && accountDetails.soldToAccount) {
     detailsSegments.push(
-      <DetailSegment key={'sold-to-account'} label={t('labels.orderByAccountNumber')} value={accountDetails.soldToAccount.accountNumber} />
+      <DetailSegment key={'sold-to-account'} className='textCapitalize' label={t('labels.orderByAccountNumber')} value={accountDetails.soldToAccount.accountNumber} />
     );
   }
   if (accountDetails && accountDetails.shipToAccount) {
     detailsSegments.push(
-      <DetailSegment key={'ship-to-account'} label={t('labels.shipToAccountNumber')} value={accountDetails.shipToAccount.accountNumber} />
+      <DetailSegment key={'ship-to-account'} className='textCapitalize' label={t('labels.shipToAccountNumber')} value={accountDetails.shipToAccount.accountNumber} />
     );
   }
   if (patientDetailsRequired && patient) {
@@ -54,7 +54,7 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status }) {
   return (
     <div className="MCP-CardContainer">
       <div
-        className={`grid grid-gap-24 grid-cols-1 md:grid-cols-2 lg:grid-cols-${detailsSegments.length} xl:grid-cols-${detailsSegments.length}`}>
+        className={`grid grid-gap-12 sm:grid-gap-32 grid-cols-1 md:grid-cols-2 lg:grid-cols-${detailsSegments.length} xl:grid-cols-${detailsSegments.length}`}>
         {detailsSegments}
       </div>
     </div>

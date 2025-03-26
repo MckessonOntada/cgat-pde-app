@@ -1,6 +1,7 @@
 import React from 'react';
 import { Field } from 'formik';
 import Components from '../form/Components';
+import { gettenYearDate } from '@src/util/CommonUtils';
 
 export default function AdditionalFilters({ filtersConfig }) {
   return (
@@ -14,8 +15,8 @@ export default function AdditionalFilters({ filtersConfig }) {
           options={item.options}
           startDateLabel={item.startDateLabel}
           endDateLabel={item.endDateLabel}
-          minDate={item.minDate}
-          maxDate={item.maxDate}
+          minDate={gettenYearDate(-15)}
+          maxDate={gettenYearDate(15)}
           {...(item.getUpdatedOptions ? { getUpdatedOptions: item.getUpdatedOptions } : {})}
         />
       ))}

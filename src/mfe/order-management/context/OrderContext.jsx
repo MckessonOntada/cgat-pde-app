@@ -44,6 +44,7 @@ export const OrderProvider = ({ children }) => {
       pageSize: paginationConfig.pageSize,
       sortBy: sortConfig.sortBy || 'createdAt',
       sortOrder: sortConfig.sortOrder || 'desc',
+      showMyOrders: false,
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       statuses: filterConfig.status || TAB_FILTERS[tabVariant].join(','),
       showMyOrders: orderView === ORDER_VIEW.ALL_ORDERS ? false : true

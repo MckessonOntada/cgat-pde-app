@@ -1,22 +1,29 @@
 import React, { useState } from 'react';
-import { Button, Loader } from '@mckesson/mcp-component-library';
+import { Button, Loader, Tooltip } from '@mckesson/mcp-component-library';
 import { Link } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
-import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as CrossIcon } from '../../../../assets/svg/cross-red.svg';
 import { usePendingPayments } from '../../context/PendingPaymentsContext';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FormattedNumber } from 'react-intl';
-import dayjs from 'dayjs';
 import { PATHS } from '../../routes';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import CommonUtils from '@src/util/CommonUtils';
+import { renderModal } from '@src/util/ModalUtil';
+import { useMutation } from 'react-query';
+import ApiRoutes from '@src/api/ApiRoutes';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import { useAccountContext } from '../../context/AccountContext';
+import useSnackbar from '@src/hooks/useSnackbar';
 
 export default function PendingPaymentTable() {
   const { t } = useTranslate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError } = usePendingPayments();
+  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, refetch } = usePendingPayments();
+  const { selectedAccount } = useAccountContext();
   const showCardView = useResponsiveView();
+  const { showSnackbar } = useSnackbar();
   const columns = [
     {
       id: 'confirmationNo',
@@ -54,7 +61,7 @@ export default function PendingPaymentTable() {
       sortable: true,
       wrap: true,
       maxWidth: '160px',
-      cell: (props) => dayjs(props.paymentInitiationDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'
+      cell: (props) => CommonUtils.convertDateStringFormat(props.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       id: 'authorizedAmt',
@@ -69,18 +76,32 @@ export default function PendingPaymentTable() {
         </div>
       ),
       right: true
+    },
+    {
+      name: t('paymentInvoices.history.table.Actions'),
+      minWidth: '100px',
+      sortable: false,
+      wrap: true,
+      center: true,
+      cell: (props) => {
+        const isFutureDate = CommonUtils.isFutureDate(props.payOn);
+        return (
+          <Tooltip body={!isFutureDate ? t('pendingPayments.cancel.tooltip') : ''}>
+            <span>
+              <Button
+                className="cancel-button-control"
+                variant="tertiary"
+                Icon={() => <CrossIcon />}
+                onClick={() => onCancelPaymentClick(props.confirmationNo)}
+                size="md"
+                disabled={!isFutureDate}>
+                {t('pendingPayments.table.cancelPayment')}
+              </Button>
+            </span>
+          </Tooltip>
+        );
+      }
     }
-    // {
-    //   name: t('paymentInvoices.history.table.Actions'),
-    //   minWidth: '144px',
-    //   sortable: false,
-    //   wrap: true,
-    //   cell: (props) => (
-    //     <Button className="cancel-button-control" variant="tertiary" Icon={() => <CrossIcon />} onClick={() => {}} size="md">
-    //       {t('pendingPayments.table.cancelPayment')}
-    //     </Button>
-    //   )
-    // }
   ];
   const handleSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
@@ -89,6 +110,46 @@ export default function PendingPaymentTable() {
   const handleChangePage = (e, newPage) => {
     setPageNumber(newPage);
   };
+
+  const onCancelPaymentClick = (confirmationNo) => {
+    renderModal({
+      title: t('messages.header.confirmation'),
+      bodyContent: (
+        <div className="MCP-modal-body">
+          <p>{t('pendingPayments.table.confirmationDialogue')}</p>
+        </div>
+      ),
+      footerActions: {
+        cancel: {
+          label: t('paymentInvoices.reviewPayments.cancel')
+        },
+        confirm: {
+          label: t('paymentInvoices.reviewPayments.confirm'),
+          action: () => {
+            mutate({ confirmationNo });
+          }
+        }
+      }
+    });
+  };
+
+  const { mutate } = useMutation(
+    async ({ confirmationNo }) => {
+      const apiUrl = `${ApiRoutes.PENDING_PAYMENTS_LISTING(selectedAccount?.id)}/${selectedAccount.companyCode}/${confirmationNo}`;
+      const res = await HttpResourceService.callRest(apiUrl, httpVerb.DELETE, {});
+      return res;
+    },
+    {
+      onSuccess: (response) => {
+        refetch();
+        showSnackbar({ description: t('pendingPayments.cancel.success'), type: 'success' });
+      },
+      onError: (error) => {
+        showSnackbar({ description: t('pendingPayments.cancel.failed'), type: 'error' });
+      }
+    }
+  );
+
   return (
     <React.Fragment>
       {/* <DataTable columns={columns} rows={filteredData} responsive /> */}

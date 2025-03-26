@@ -15,12 +15,15 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
     setSelectedAccount,
     options,
     accountOptions,
-    setAccountOptions
+    setAccountOptions,
+    setCheckedAccounts,
+    checkedAccounts
   } = useOrgAccountSelectionContext();
 
   const onOrganizationChange = (selectedValue) => {
     let _selected = organizationOptions.find((ele) => ele.id == selectedValue);
     setSelectedOrganization(_selected);
+    setCheckedAccounts([]);
     if (handleOrgChange) {
       handleOrgChange(_selected);
     }
@@ -28,6 +31,16 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
 
   const onAccountChange = (selectedValue) => {
     if (selectedValue.length > 0) {
+      let _checkedOptions = [...[], ...checkedAccounts];
+      selectedValue.map((ele) => {
+        let eleExist = checkedAccounts.find((item) => item.value == ele.value);
+        if (ele.isChecked) {
+          if (!eleExist) _checkedOptions.push(ele);
+        } else {
+          if (eleExist) _checkedOptions = _checkedOptions.filter((i) => i.value != ele.value);
+        }
+      });
+      setCheckedAccounts(_checkedOptions);
       setSelectedAccount(selectedValue);
       setAccountOptions(selectedValue);
     }

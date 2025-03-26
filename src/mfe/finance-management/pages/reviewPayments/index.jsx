@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Heading, AutoSuggestDropdown } from '@mckesson/mcp-component-library';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Button, Heading, AutoSuggestDropdown, Alert, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -10,7 +10,7 @@ import Credits from '../credits';
 import { PaymentsCreditsProvider } from '../../context/PaymentsCreditsContext';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import ApiRoutes from '../../../../api/ApiRoutes';
 import { useAccountContext } from '../../context/AccountContext';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
@@ -20,6 +20,12 @@ import dayjs from 'dayjs';
 import { PaymentOptionsControls } from '@src/mfe/finance-management/pages/reviewPayments/paymentControlOptions';
 import DetailMetrics from '../../components/detailMetrics/DetailMetrics';
 import CreditsSelected from './CreditsSelected';
+import { scrollToTopUtil } from '@src/components/scrollToTop/scrollUtils';
+import { onConfirmPayment } from '../utils/actions';
+import { paymentMethod } from '../utils/constants';
+import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
+import SelectCreditsListing from './SelectCreditsListing';
+import EmptyUI from '../../EmptyUI';
 
 function ReviewPayments() {
   const { t } = useTranslate();
@@ -32,14 +38,37 @@ function ReviewPayments() {
   const { selectedAccount } = useAccountContext();
   const { showSnackbar } = useSnackbar();
   const [mergedData, setMergedData] = useState([]);
-  const [selectedData, setSelectedData] = useState('');
+  const [selectedData, setSelectedData] = useState(null);
   const [paymentOption, setPaymentOption] = useState('');
   const REVIEW_MODE = state?.reviewMode || false;
+  const [selectedSpecificDate, setSelectedSpecificDate] = useState('');
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [alertDescription, setAlertDescription] = useState('');
+  const [alert, setAlert] = useState(null);
+  const [searchKey, setSearchKey] = useState('');
+  const [totalCreditsCount, settotalCreditsCount] = useState(0);
+  const disablePay = useRef(false);
+  const [SpecificDateError, setSpecificDateError] = useState('');
+
+  const showAlert = (type, message) => {
+    setAlert({ type });
+    setIsAlertVisible(true);
+    setAlertDescription(message);
+    const timer = setTimeout(() => {
+      setIsAlertVisible(false);
+      setAlert({ type: '', description: '' });
+    }, 10000);
+    return () => clearTimeout(timer);
+  };
+  const handleAlertClose = () => {
+    setIsAlertVisible(false);
+    //  navigate(location.pathname, { replace: true, state: { ...location.state, isSuccess: false, isReject: false } });
+  };
 
   const { data: paymentMethodsData = [], isError } = useQuery({
-    queryKey: ['paymentMethodsreviewPayments'],
+    queryKey: ['paymentMethodsreviewPayments', selectedAccount?.accountNumber],
     queryFn: async () => {
-      const url = `${ApiRoutes.PAYMENT_METHODS_LISTING(selectedAccount?.accountId)}`;
+      const url = `${ApiRoutes.PAYMENT_METHODS_LISTING(selectedAccount.accountNumber)}`;
       const payload = {
         companyCode: selectedAccount?.companyCode,
         salesOrg: selectedAccount?.salesOrg,
@@ -59,9 +88,19 @@ function ReviewPayments() {
   useEffect(() => {
     if (paymentMethodsData.cards || paymentMethodsData.banks) {
       const merged = [
-        ...paymentMethodsData.cards.map((card) => ({ type: 'Card', ...card })),
-        ...paymentMethodsData.banks.map((bank) => ({ type: 'Bank', ...bank }))
-      ];
+        // ...paymentMethodsData.cards.map((card) => ({ accType: paymentMethod.CREDIT_CARD, ...card })),
+        ...paymentMethodsData.banks.map((bank) => ({ accType: paymentMethod.BANK, ...bank }))
+      ].map((item) => ({
+        label:
+          item.accType === paymentMethod.BANK
+            ? `${FinanceUtils.maskCardNumber(item.accountNumber)}, ${item.name}`
+            : `${FinanceUtils.maskCardNumber(item.number)}, ${item.holderName}, ${item?.expirationDate}`,
+        value:
+          item.accType === paymentMethod.BANK
+            ? `${FinanceUtils.maskCardNumber(item.accountNumber)}, ${item.name}`
+            : `${FinanceUtils.maskCardNumber(item.number)}, ${item.holderName}, ${item?.expirationDate}`,
+        ...item
+      }));
       setMergedData(merged);
     }
   }, [paymentMethodsData]);
@@ -74,8 +113,10 @@ function ReviewPayments() {
     if (state?.creditsSelected?.length > 0 && !REVIEW_MODE) {
       setSelectedCredits(state.creditsSelected);
     }
-    state?.selectedData && setSelectedData(state.selectedData);
+    state?.selectedPayment && setSelectedData(state.selectedPayment);
     state?.paymentOption && setPaymentOption(state.paymentOption);
+    state.totalCreditsCount && settotalCreditsCount(state.totalCreditsCount);
+    state.selectedSpecificDate && setSelectedSpecificDate(state.selectedSpecificDate);
     if (REVIEW_MODE) {
       setSelectedInvoices(state.invoices || []);
     }
@@ -108,26 +149,33 @@ function ReviewPayments() {
     }
   };
 
-  const getValue = (data) => {
-    return data.map((item) => ({
-      label:
-        item.type === 'Bank'
-          ? `${FinanceUtils.maskCardNumber(item.accountNumber)}, ${item.name}`
-          : `${FinanceUtils.maskCardNumber(item.number)}, ${item.holderName}, ${item?.expirationDate}`,
-      value:
-        item.type === 'Bank'
-          ? `${FinanceUtils.maskCardNumber(item.accountNumber)}, ${item.name}`
-          : `${FinanceUtils.maskCardNumber(item.number)}, ${item.holderName}, ${item?.expirationDate}`,
-      ...item
-    }));
-  };
+  const leastDueDateInvoice = useMemo(() => {
+    return selectedInvoices?.length > 0
+      ? selectedInvoices.reduce((min, current) =>
+          dayjs(current.dueDate, 'DD/MM/YYYY').isBefore(dayjs(min.dueDate, 'DD/MM/YYYY')) ? current : min
+        )
+      : null;
+  }, [selectedInvoices]);
 
-  const getselectedValue = () => selectedData?.label;
+  const isPartialPayment = useMemo(() => {
+    if (selectedInvoices?.length > 0) {
+      let _totalAmount = 0;
+      let _totalpaymentAmount = 0;
+      selectedInvoices?.map((item) => {
+        _totalAmount = _totalAmount + parseFloat(item.billAmount);
+        _totalpaymentAmount = _totalpaymentAmount + parseFloat(item.paymentAmount);
+      });
+      return _totalpaymentAmount < _totalAmount ? true : false;
+    } else {
+      return false;
+    }
+  }, [selectedInvoices]);
 
   const invoicesSum = useMemo(() => {
     const _sum = selectedInvoices
       .filter((i) => i.paymentAmount)
       .reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.paymentAmount), 0);
+    setPaymentOption('');
     return parseFloat(_sum).toFixed(2);
   }, [selectedInvoices]);
 
@@ -137,6 +185,7 @@ function ReviewPayments() {
       .reduce((accumulator, currentValue) => {
         return parseFloat(currentValue.billAmount), accumulator + parseFloat(currentValue.billAmount);
       }, 0);
+    setPaymentOption('');
     return parseFloat(_sum).toFixed(2);
   }, [selectedCredits]);
 
@@ -145,12 +194,18 @@ function ReviewPayments() {
     return parseFloat(_total > 0 ? _total : 0).toFixed(2);
   }, [invoicesSum, creditsSum]);
 
+  const validateSpecificDate = (value) => {
+    if (value && (!dayjs(value).isValid() || !dayjs().isBefore(dayjs(value, 'MM/DD/YYYY')))) {
+      setSpecificDateError(`Selected date should not be the past date`);
+    }
+    if (value && !dayjs(value, 'MM/DD/YYYY').isBefore(dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY'))) {
+      let _formatDate = dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY');
+      setSpecificDateError(`Selected date should be before due date: ${_formatDate}`);
+    }
+  };
+
   const getRadioItems = () => {
-    const isDisabledDueDate = location.state?.includeinvoiceData
-      ? location.state?.includeinvoiceData.some((invoice) => dayjs(invoice.dueDate, 'DD/MM/YYYY').isBefore(dayjs()))
-      : location.state?.invoices
-      ? location.state?.invoices.some((invoice) => dayjs(invoice.dueDate, 'DD/MM/YYYY').isBefore(dayjs()))
-      : false;
+    const dueDateIsInPast = leastDueDateInvoice && dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY').isBefore(dayjs());
 
     return selectedData
       ? [
@@ -161,17 +216,37 @@ function ReviewPayments() {
             subLabel: t('paymentInvoices.reviewPayments.payTodayDesc')
           },
           {
-            isDisabled: isDisabledDueDate,
+            isDisabled: dueDateIsInPast || isPartialPayment,
             label: t('paymentInvoices.reviewPayments.payDuedate'),
             value: t('paymentInvoices.reviewPayments.payDuedate'),
             subLabel: t('paymentInvoices.reviewPayments.payDuedateDesc')
           },
           {
-            isDisabled: selectedData?.type === 'Bank',
+            isDisabled: dueDateIsInPast || isPartialPayment || parseFloat(creditsSum) > parseFloat(invoicesSum),
             label: t('paymentInvoices.reviewPayments.paySpecfic'),
             value: t('paymentInvoices.reviewPayments.paySpecfic'),
             subLabel: t('paymentInvoices.reviewPayments.paySpecficDesc'),
-            subType: 'datePicker'
+            subType: 'datePicker',
+            onSubTypeChange: (value) => {
+              setSelectedSpecificDate(value);
+              setSpecificDateError('');
+              if (
+                value &&
+                dayjs(value).isValid() &&
+                !dayjs(value, 'MM/DD/YYYY').isBefore(dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY'))
+              ) {
+                let _formatDate = dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY');
+                setSpecificDateError(`Selected date should be before due date: ${_formatDate}`);
+              }
+            },
+            disablePast: true,
+            subTypeValue: selectedSpecificDate,
+            onBlurSubType: (e) => {
+              const value = e.target.value;
+              setSpecificDateError('');
+              validateSpecificDate(value);
+            },
+            errorMsg: SpecificDateError
           }
         ]
       : [
@@ -202,26 +277,79 @@ function ReviewPayments() {
     return !_valid;
   };
 
+  const {
+    mutate: payInvoices,
+    isLoading,
+    data
+  } = useMutation(
+    async (payload) => {
+      const url = `${ApiRoutes.GET_PAY_AMOUNT_URL(selectedAccount.accountNumber)}`;
+      const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+      return res.data;
+    },
+    {
+      onSuccess: (response, payload) => {
+        if (response) {
+          dispatch(closeModal());
+          let _paymentDate = Object.values(payload.paymentSchedule);
+          navigate('/record/invoices/confirmationPayments', {
+            state: {
+              ...state,
+              confirmationNumber: response.confirmationNo,
+              paymentDate: _paymentDate && _paymentDate[0],
+              invoices: selectedInvoices,
+              creditsSelected: selectedCredits,
+              selectedPayment: selectedData,
+              paymentOption: paymentOption,
+              amount: FinanceUtils.formatCurrency(invoicesSum),
+              creditAmount: FinanceUtils.formatCurrency(creditsSum),
+              amountPaid: FinanceUtils.formatCurrency(totalAmount),
+              reviewMode: true,
+              totalCreditAmount: FinanceUtils.formatCurrency(selectedCredits.reduce((sum, bill) => sum + bill.billAmount, 0))
+            },
+            replace: true
+          });
+        } else {
+          showAlert('error', 'Something went wrong while processing payment');
+        }
+      },
+      onError: (error) => {
+        dispatch(closeModal());
+        showAlert('error', 'review-pay: Error while communicating backend service');
+      }
+    }
+  );
+
   const onPreviewPayment = () => {
     if (REVIEW_MODE) {
-      navigate('/record/invoices/confirmationPayments', {
-        state: {
-          ...state,
-          invoices: selectedInvoices,
-          creditsSelected: selectedCredits,
-          selectedPayment: selectedData,
-          paymentOption: paymentOption,
-          amount: FinanceUtils.formatCurrency(invoicesSum),
-          creditAmount: FinanceUtils.formatCurrency(creditsSum),
-          amountPaid: FinanceUtils.formatCurrency(totalAmount),
-          reviewMode: true,
-          totalCreditAmount: FinanceUtils.formatCurrency(selectedCredits.reduce((sum, bill) => sum + bill.billAmount, 0))
-        },
-        replace: true
-      });
+      const param = {};
+      param.title = t('paymentInvoices.reviewPayments.confirm');
+      param.body = <div className="MCP-modal-body">{'Ready to pay the selected invoices?'}</div>;
+      param.footer = (
+        <div className="controls">
+          <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+            Cancel
+          </Button>
+          <Button
+            size="md"
+            variant="primary"
+            onClick={() => {
+              if (disablePay.current) return;
+              dispatch(closeModal());
+              disablePay.current = setTimeout(() => {
+                onConfirmPayment(selectedAccount, state, payInvoices, t, selectedSpecificDate);
+                disablePay.current = null;
+              }, 500);
+            }}
+            disabled={!!disablePay.current}>
+            Confirm
+          </Button>
+        </div>
+      );
+      dispatch(openModal(param));
     } else {
       let valid = _validatePaymentAmount();
-      if (valid) {
+      if (valid && !SpecificDateError) {
         navigate('.', {
           state: {
             ...state,
@@ -229,11 +357,13 @@ function ReviewPayments() {
             creditsSelected: selectedCredits,
             reviewMode: true,
             paymentOption: paymentOption,
-            selectedPayment: selectedData
+            selectedPayment: selectedData,
+            totalCreditsCount: FinanceUtils.formatCurrency(totalCreditsCount - creditsSum),
+            selectedSpecificDate: selectedSpecificDate
           },
           replace: true
         });
-      } else {
+      } else if (!valid) {
         dispatch(
           showSnackbar({
             description: 'Invalid payment amount entered',
@@ -244,8 +374,42 @@ function ReviewPayments() {
     }
   };
   const disablePreview = () => {
-    return !selectedData || !paymentOption;
+    return (
+      !selectedData ||
+      (paymentOption == t('paymentInvoices.reviewPayments.paySpecfic') ? !selectedSpecificDate : !paymentOption) ||
+      !!SpecificDateError
+    );
   };
+
+  const onChangePayment = (value) => {
+    setSelectedSpecificDate(null);
+    let _data = mergedData.find((ele) => ele.value == value);
+    setSelectedData(_data);
+    setPaymentOption('');
+  };
+  const getOptions = useMemo(() => {
+    let _data = [];
+    if (searchKey) {
+      _data = mergedData.filter((ele) => ele.value.toLowerCase().includes(searchKey.toLowerCase()));
+    } else {
+      _data = mergedData;
+    }
+    return _data;
+  }, [searchKey, mergedData]);
+
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          alignItems: 'center',
+          display: 'flex',
+          height: '50vh',
+          justifyContent: 'center'
+        }}>
+        <Loader loaderText="Loading..." />
+      </div>
+    );
+  }
 
   return (
     <div className="reviewPayments">
@@ -255,6 +419,7 @@ function ReviewPayments() {
             {t('paymentInvoices.reviewPayments.BackToManagePayments')}
           </Button>
         </div>
+        {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
         <div className="header">
           <Heading as="h1" className="heading">
             {t('paymentInvoices.heading.ReviewAndPay')}
@@ -312,7 +477,12 @@ function ReviewPayments() {
                 <CreditsSelected />
               ) : (
                 <PaymentsCreditsProvider>
-                  <Credits selectedCredits={selectedCredits} setSelectedCredits={setSelectedCredits} selectableRows={true} />
+                  <SelectCreditsListing
+                    selectedCredits={selectedCredits}
+                    setSelectedCredits={setSelectedCredits}
+                    totalCreditsCount={totalCreditsCount}
+                    settotalCreditsCount={settotalCreditsCount}
+                  />
                 </PaymentsCreditsProvider>
               )}
             </div>
@@ -332,31 +502,36 @@ function ReviewPayments() {
         <div>
           <div className="paymentSectionHeader">{t('paymentInvoices.reviewPayments.payment')}</div>
           <div className="payment">
-            <div className="paymentMethodContainer">
-              <div className="paymentMethod">{t('paymentInvoices.reviewPayments.selectMethod')}</div>
-              <AutoSuggestDropdown
-                suggestionList={getValue(mergedData)}
-                id="id"
-                selectedVal={getselectedValue}
-                getselectedValue={(val) => {
-                  setSelectedData(val);
-                  setPaymentOption('');
-                }}
-                onChangeInput={() => {}}
-                suggestionListContainerWidth="400px"
-              />
-            </div>
-            <div className="paymentOptionContainer">
-              <PaymentOptionsControls
-                direction="column"
-                id="radio-button-order-therapy-props.id"
-                items={getRadioItems()}
-                onChangeValue={(e) => setPaymentOption(e)}
-                onOtherTextChange={() => {}}
-                onSubRadioFieldChange={() => {}}
-                radioBtnWidth="auto"
-                value={paymentOption}
-              />
+            <div className="paymentOptionWrappee">
+              <div className="paymentMethodContainer">
+                <MultiSelectDropdown
+                  id={'select-payment-search'}
+                  label={t('paymentInvoices.reviewPayments.selectMethod')}
+                  isMultiSelect={false}
+                  placeholder={'Search payment method'}
+                  onChange={onChangePayment}
+                  options={getOptions}
+                  variant={'async'}
+                  onSearch={(event) => setSearchKey(event)}
+                  recordsCountToEnableSearch={5}
+                  size="md"
+                  isSortEnable={false}
+                  value={selectedData?.value.toString() || ''}
+                  fieldDisplayValue={selectedData?.label ? selectedData : undefined}
+                />
+              </div>
+              <div className="paymentOptionContainer">
+                <PaymentOptionsControls
+                  direction="column"
+                  id="radio-button-order-therapy-props.id"
+                  items={getRadioItems()}
+                  onChangeValue={(e) => setPaymentOption(e)}
+                  onOtherTextChange={() => {}}
+                  onSubRadioFieldChange={() => {}}
+                  radioBtnWidth="auto"
+                  value={paymentOption}
+                />
+              </div>
             </div>
             <div className="invoice-sum-container">
               <div className="label">{t('paymentInvoices.reviewPayments.invoiceDesc')}</div>
@@ -369,15 +544,15 @@ function ReviewPayments() {
         </div>
       )}
       <div className="footer-section">
-        <Button variant="secondary" onClick={() => navigate('../')} size="sm">
+        <Button variant="secondary" onClick={() => navigate('../')} size="md">
           {t('paymentInvoices.reviewPayments.cancel')}
         </Button>
         {REVIEW_MODE ? (
-          <Button onClick={onPreviewPayment} size="sm">
+          <Button onClick={onPreviewPayment} size="md">
             {`${t('paymentInvoices.reviewPayments.pay')} ${FinanceUtils.formatCurrency(totalAmount)}`}
           </Button>
         ) : (
-          <Button onClick={onPreviewPayment} size="sm" disabled={disablePreview()}>
+          <Button onClick={onPreviewPayment} size="md" disabled={disablePreview()}>
             {t('paymentInvoices.reviewPayments.previewPayment')}
           </Button>
         )}

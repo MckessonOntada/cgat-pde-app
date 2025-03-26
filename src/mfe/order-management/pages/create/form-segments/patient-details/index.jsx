@@ -230,18 +230,16 @@ const PatientDetails = () => {
                     <PatientDetailsForm />
                     <Divider />
                   </div>
-                  <ModuleHeader
-                    controls={
-                      <div className="controls">
-                        <Button size="md" variant="secondary" onClick={handleOnBack}>
-                          {t('captions.btnBack')}
-                        </Button>
-                        <Button size="md" variant="primary" type="submit">
-                          {t('captions.btnSaveAndContinue')}
-                        </Button>
-                      </div>
-                    }
-                  />
+                  <div className="footer-wrapper">
+                    <div className="controls footer-controls">
+                      <Button size="md" variant="secondary" onClick={handleOnBack}>
+                        {t('captions.btnBack')}
+                      </Button>
+                      <Button size="md" variant="primary" type="submit">
+                        {t('captions.btnSaveAndContinue')}
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </Form>
             );

@@ -24,6 +24,7 @@ export const PaymentInvoicesES = {
     'S_Summation of all open credits currently available to use towards open invoices.',
   'paymentInvoices.metrics.pastDueBalance.tooltipText': 'S_Summation of all past due invoices (debit only) as of current date.',
   // Balance Card
+  'paymentInvoices.balanceCard.due': 'S_Due',
   'paymentInvoices.balanceCard.1_30_DAYS_OVERDUE': 'S_1-30 days over',
   'paymentInvoices.balanceCard.31_60_DAYS_OVERDUE': 'S_31-60 days over',
   'paymentInvoices.balanceCard.61_90_DAYS_OVERDUE': 'S_61-90 days over',
@@ -61,6 +62,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.emptyData': 'S_No Payment History Found',
   'paymentInvoices.history.table.emptyDataDescription': 'S_Please try again later',
   'paymentInvoices.history.table.authorizedPayment': 'S_Authorized Payment',
+  'paymentInvoices.history.table.authorizedAmount': 'Authorized Amount',
   'paymentInvoices.history.table.usedDate': 'S_Used Date',
   'paymentInvoices.history.table.creditUsed': 'S_Credit Used',
   'paymentInvoices.Details.print': 'S_Print',
@@ -110,6 +112,8 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.OpenAmount': 'S_Open Amount',
   'paymentInvoices.history.table.BillAmount': 'S_Bill Amount',
   'paymentInvoices.history.table.Actions': 'S_Actions',
+  'paymentInvoices.Actions.payment': 'S_Payment',
+  'paymentInvoices.Actions.exportPDF': 'S_Export PDF',
   'paymentInvoices.history.table.status': 'S_Status',
   'paymentInvoices.paymentMethods.filter.search.placeholder': 'S_Select by name or number',
   'paymentInvoices.invoice.table.emptyData': 'S_No Invoice Found',
@@ -144,7 +148,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.details.MinimumOrderQuantity': 'S_Minimum Order Quantity',
   'paymentInvoices.table.invoiceHeading': 'S_Invoice List',
   'paymentInvoices.table.creditHeading': 'S_Credit List',
-  'paymentInvoices.filter.search': 'S_Search by Bill No., Sold to',
+  'paymentInvoices.filter.search': 'S_Search by Bill No.',
   'paymentInvoices.Details.GoToManagePayments': 'S_GO TO MANAGE PAYMENTS',
   'paymentInvoices.Details.ConfirmationNote':
     'S_The payment will be processed immediately. Once processed, this payment cannot be stopped or reversed.',
@@ -185,7 +189,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.reviewPayments.paymentSuccess': 'S_Payment Successful',
   'paymentInvoices.reviewPayments.thankyouforpayment': 'S_Thank you for your payment',
   'paymentInvoices.reviewPayments.paymentSummary': 'S_Payment Summary',
-  'paymentInvoices.reviewPayments.confirmationDialogue': 'S_Are you sure want to leave Review and Pay screen?',
+  'paymentInvoices.reviewPayments.confirmationDialogue': 'S_Are you sure you want to leave Review and Pay screen?',
   'paymentInvoices.reviewPayments.confirm': 'S_Confirm',
   'paymentInvoices.reviewPayments.OK': 'S_OK',
   'paymentInvoices.reviewPayments.remove': 'S_REMOVE',
@@ -200,6 +204,8 @@ export const PaymentInvoicesES = {
   'paymentInvoices.credits.table.billamount': 'S_Bill Amount',
   'paymentInvoices.credits.table.downloadPdf': 'S_download pdf',
   'paymentInvoices.credits.table.emptyData': 'S_No Credits Found',
+  'paymentInvoices.credits.filters.ValidFromstart': 'S_Valid From (Start)',
+  'paymentInvoices.credits.filters.ValidFromend': 'S_Valid From (End)',
   'paymentInvoices.Details.backToManageCredits': 'S_BACK TO MANAGE CREDITS PAGE',
   'paymentInvoices.Details.Credit': 'S_Credit',
 
@@ -238,6 +244,10 @@ export const PaymentInvoicesES = {
   'pendingPayments.table.paymentStatus': 'S_Payment Status',
   'pendingPayments.table.billDate': 'S_Bill Date',
   'pendingPayments.confirm.BackToPendingPayments': 'S_BACK TO PENDING PAYMENTS',
+  'pendingPayments.table.confirmationDialogue': 'S_Are you sure you want to cancel this payment?',
+  'pendingPayments.cancel.failed': 'S_Error occurred while cancelling the pending payment.',
+  'pendingPayments.cancel.success': 'S_Payment Cancelled Succesfully.',
+  'pendingPayments.cancel.tooltip': 'S_This Payment can not be cancelled.',
 
   // No data found
   'paymentInvoices.dataLoading': 'S_Fetching Accounts...',
@@ -255,5 +265,10 @@ export const PaymentInvoicesES = {
   'paymentInvoices.pendingPaynemt.export.error': 'S_Pending exporting Payment .',
   'paymentInvoices.history.table.bill.id': 'S_BILL ID',
   'paymentInvoices.paymentMethods.achForm.description':
-    'S_Enrollment form in a PDF format for user to fill in offline and submit to the respective bank'
+    'S_Enrollment form in a PDF format for user to fill in offline and submit to the respective bank',
+  'paymentInvoices.table.paymentPending': 'S_Payment Pending',
+  'paymentInvoices.table.paymentHistory': 'S_Payment History',
+  'paymentInvoices.table.customerStatement': 'S_Customer Statement',
+  'paymentInvoices.table.savedBankAccount': 'S_Saved Bank Accounts',
+  'paymentInvoices.table.savedCards': 'S_Saved Cards'
 };

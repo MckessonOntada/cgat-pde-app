@@ -65,12 +65,12 @@ export const PaymentHistoryProvider = ({ children }) => {
     }));
   };
 
-  const filterData = async (filters) => {
-    if (JSON.stringify(filters.dateRange) !== JSON.stringify(previousFilterConfig.dateRange)) {
-      await refetch();
-      setPreviousFilterConfig(filters);
-    }
-    let _data = [...[], ...actualData];
+  const filterData = async (filters, dataToFilter) => {
+    // if (JSON.stringify(filters.dateRange) !== JSON.stringify(previousFilterConfig.dateRange)) {
+    //   // await refetch();
+    //   setPreviousFilterConfig(filters);
+    // }
+    let _data = [...(dataToFilter?.length ? dataToFilter : actualData)];
     let _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery
         ? item.confirmationNo?.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
@@ -135,10 +135,11 @@ export const PaymentHistoryProvider = ({ children }) => {
         setData(_modifiedData.slice(startIndex, endIndex));
         setUnSlicedData(res.data?.paymentHistory);
         setActualData(res.data?.paymentHistory);
+        filterData(filterConfig, res.data?.paymentHistory);
         setPaginationConfig((state) => ({
           ...state,
-          totalPages: Math.ceil(res.data?.paymentHistory.length / paginationConfig.pageSize),
-          totalElements: res.data?.paymentHistory.length
+          totalPages: Math.ceil(_modifiedData.length / paginationConfig.pageSize),
+          totalElements: _modifiedData.length
         }));
       }
     },
@@ -223,10 +224,11 @@ export const PaymentHistoryProvider = ({ children }) => {
 
   useEffect(() => {
     filterData(filterConfig);
+
     if (JSON.stringify(sortConfig) !== JSON.stringify(INITIAL_SORT_STATE)) {
       sortData(sortConfig);
     }
-  }, [filterConfig, paginationConfig.pageNumber]);
+  }, [paginationConfig.pageNumber, sortConfig]);
 
   const clearFilters = () => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));

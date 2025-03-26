@@ -152,7 +152,7 @@ export const UserManagementES = {
   'userManagement.messages.userEmptyTableSubtitle': 'S_Data is unavailable. Please add an user to view the table content.',
   'userManagement.messages.sysadminEmptyTableSubtitle': 'S_Data is unavailable. Please add a System Admin to view the table content.',
   'userManagement.messages.emptysubtitle': 'S_Data is unavailable. Please add Permission(s) to view the content.',
-  'userManagement.message.userEmptyTableTitle': 'S_No Permissions Found.',
+  'userManagement.message.userPermissionEmptyTableTitle': 'S_No Permissions Found.',
   'userManagement.header.view.linked_accounts': 'S_Linked Accounts',
 
   'userManagement.user_permissions.managePermissions': 'S_Manage Permissions',
@@ -339,5 +339,8 @@ export const UserManagementES = {
   'popup.userDeactivation.question': 'S_Are you sure you wish to Deactivate this User?',
   'userManagement.confirmationMessage': 'S_Confirmation message',
   'userManagement.edit_sysadmin': 'S_Edit System Administrator',
-  'userManagement.edit_organization_user': 'S_Edit Organization User'
+  'userManagement.edit_organization_user': 'S_Edit Organization User',
+  'errors.messages.dateRange': "Either enter both dates or none for the filter as it's part of a date range.",
+  'errors.messages.emptyDataDescription': 'An unexpected error occurred. Please try again.',
+  'label.comment': 'Comment'
 };

@@ -90,11 +90,14 @@
   }
 
   .recordPerPage {
-    padding-left: 0px;
+    display: none;
   }
 
   .pagination {
     padding-inline: 0px;
+  }
+  .paginationWrapper {
+    margin-top: 0px;
   }
 }
 

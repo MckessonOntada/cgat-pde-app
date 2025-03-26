@@ -8,7 +8,6 @@ import { usePaymentCredits } from '../../context/PaymentsCreditsContext';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FormattedNumber } from 'react-intl';
-import dayjs from 'dayjs';
 import { PATHS } from '../../routes';
 import CommonUtils from '@src/util/CommonUtils';
 import useResponsiveView from '@src/hooks/useResponsiveView';
@@ -55,7 +54,7 @@ export default function CreditsTable(props) {
           <Link
             style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
             to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
-            state={{ ...state }}>
+            state={{ ...state, selectedCredit: [...[], props] }}>
             {`${props?.billNumber}`}
           </Link>
         </div>
@@ -82,7 +81,7 @@ export default function CreditsTable(props) {
       wrap: true,
       cell: (props) => (
         <div>
-          <EclipsesTextcss str={props?.description || '-'} maxWidth={280} />
+          <EclipsesTextcss str={props?.description} maxWidth={280} />
         </div>
       )
     },
@@ -93,7 +92,7 @@ export default function CreditsTable(props) {
       sortable: true,
       wrap: true,
       width: '140px',
-      cell: (props) => dayjs(props?.dueDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'
+      cell: (props) => CommonUtils.convertDateStringFormat(props.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       id: 'billAmount',

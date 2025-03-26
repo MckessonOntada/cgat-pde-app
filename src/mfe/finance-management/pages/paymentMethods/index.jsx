@@ -45,7 +45,7 @@ const PaymentMethods = () => {
 
   return (
     <React.Fragment>
-      <div className="MCP-module-body">
+      <div className="MCP-module-body paymentMethodSection">
         {showAlert && (
           <Alert
             description={t('paymentInvoices.paymentMethods.achForm.description')}
@@ -54,7 +54,7 @@ const PaymentMethods = () => {
             duration={10000}
           />
         )}
-        <div id="tablist-container" className="tablist-container">
+        {/* <div id="tablist-container" className="tablist-container">
           <div className="customTab">
             <TabList
               options={tabs}
@@ -73,7 +73,7 @@ const PaymentMethods = () => {
               {t('paymentInvoices.paymentMethods.table.bankAccount.addBank')}
             </Button>
           )}
-        </div>
+        </div> */}
         <Routes />
       </div>
     </React.Fragment>

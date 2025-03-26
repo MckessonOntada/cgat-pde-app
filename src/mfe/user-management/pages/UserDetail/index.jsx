@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
@@ -6,6 +6,7 @@ import { Badge, Button, Heading, Switch, Alert, Modal, CheckboxGroup, IconButton
 import './index.scss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
+import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { PATHS } from '../../routes/constants';
 import ModuleHeader from '@src/components/module-header';
 import { useQuery, useMutation } from 'react-query';
@@ -62,8 +63,17 @@ const UserDetail = () => {
   const isImpersonateLoggedIn = Boolean(AuthUtils.getImpersonateId());
   const isSelf = userId === AuthUtils.getUserId();
   const [duration, setDuration] = React.useState(10000);
+  const disablePay = useRef(false);
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
+  };
+  
+  const handleClickLogin = () => {
+    if (disablePay.current) return;
+    disablePay.current = setTimeout(() => {
+      setIsConsentModalOpen(true)
+      disablePay.current = null;
+    }, 500);    
   };
 
   const { isLoading, isError, data, refetch } = useQuery({
@@ -251,11 +261,11 @@ const UserDetail = () => {
   }
   return (
     <div className="MCP-module-wrapper">
-      <div className="back-navigation py2 capitalize" onClick={goBack} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-        <MdOutlineKeyboardArrowLeft size="24px" />
-        <p>{t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}</p>
+      <div>
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={goBack} size="md">
+          {t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}
+        </Button>
       </div>
-
       {(isDeactivate || isProvisioned) && isAlertVisible && (
         <Alert description={alertDescription} onClose={handleAlertClose} type={alertType} duration={duration} />
       )}
@@ -265,7 +275,7 @@ const UserDetail = () => {
           controls={
             prePermissions && (
               <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
-                <Button variant="primary" size="md" onClick={() => setIsConsentModalOpen(true)}>
+                <Button variant="primary" size="md" onClick={(e) => handleClickLogin(e)}>
                   {t('button.label.loginAsThisUser')}
                 </Button>
               </PermittedComponent>
@@ -425,7 +435,7 @@ const UserDetail = () => {
             <EmptyDataTable
               isLoading={isLoading}
               image={EmptyDataImage}
-              heading={t('userManagement.message.userEmptyTableTitle')}
+              heading={t('userManagement.message.userPermissionEmptyTableTitle')}
               description={t('userManagement.messages.emptysubtitle')}
             />
           )}

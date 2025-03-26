@@ -92,24 +92,25 @@ function TherapyDetails({
   };
 
   return (
-    <FloatingDrawer 
-      open={true} 
-      anchor="right" 
-      onClose={onClose} 
+    <FloatingDrawer
+      open={true}
+      anchor="right"
+      onClose={onClose}
       heading={heading}
-      controls={ showFooter && (
-        <div className='controls'>
-          <Button label={t('captions.btnCancel')} onClick={onClose} variant="secondary" size="md" aria-label={t('captions.cancel')} />
-          <Button
-            label={t('captions.btnSelecttherapy')}
-            onClick={handleSelect}
-            variant="primary"
-            size="md"
-            aria-label={t('captions.selectAccount')}
-          />
-        </div>
-      )}
-    >
+      controls={
+        showFooter && (
+          <div className="controls">
+            <Button label={t('captions.btnCancel')} onClick={onClose} variant="secondary" size="md" aria-label={t('captions.cancel')} />
+            <Button
+              label={t('captions.btnSelecttherapy')}
+              onClick={handleSelect}
+              variant="primary"
+              size="md"
+              aria-label={t('captions.selectAccount')}
+            />
+          </div>
+        )
+      }>
       <div className={styles.wrapper}>
         {isLoading ? (
           <Loader variant="circular" />
@@ -265,7 +266,7 @@ function DetailItem({ label, value }) {
     <>
       <div className={styles.detailItem}>
         <p className={styles.leftContent}>{label}</p>
-        <p className={styles.rightContent}>{value}</p>
+        <p className={styles.rightContent}>{value || '-'}</p>
       </div>
     </>
   );
@@ -299,6 +300,7 @@ function QuestionnaireItem({ templateName, section, onDelete, showHeader, questi
             {section.actions?.map((action) => (
               <Button
                 key={action.id}
+                size="md"
                 textButton
                 onClick={() => navigate(PREVIEW_URL, { state: { isMaterial: true, questionnaire: questionnaire } })}>
                 {t(action.label)}

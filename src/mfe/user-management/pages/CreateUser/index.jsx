@@ -340,7 +340,7 @@ const CreateUser = () => {
                       : 'userManagement.create_user.details_to_create_user'
                   )}
                 </Heading> */}
-                <UserDetailsFormSegment />
+                <UserDetailsFormSegment comment={userData?.comment} />
               </div>
               <div className={'buttonGroup'}>
                 <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>

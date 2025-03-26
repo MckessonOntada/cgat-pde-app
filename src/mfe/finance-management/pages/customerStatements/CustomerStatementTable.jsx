@@ -7,12 +7,11 @@ import { useCustomerStatements } from '../../context/CustomerStatementsContext';
 import { FormattedNumber } from 'react-intl';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import dayjs from 'dayjs';
-import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { useAccountContext } from '../../context/AccountContext';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import CommonUtils from '@src/util/CommonUtils';
 
 export default function CustomerStatementTable() {
   const { t } = useTranslate();
@@ -21,7 +20,7 @@ export default function CustomerStatementTable() {
   const showCardView = useResponsiveView();
   const columns = [
     {
-      id: 'billNumber',
+      id: 'docNo',
       name: t('paymentInvoices.CS.table.billNumber'),
       selector: (row) => `${row.docNo}`,
       sortable: true,
@@ -51,7 +50,7 @@ export default function CustomerStatementTable() {
       width: '100px',
       sortable: true,
       wrap: true,
-      cell: (props) => dayjs(props.date, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'
+      cell: (props) => CommonUtils.convertDateStringFormat(props.date, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       id: 'statementBalance',
@@ -75,26 +74,27 @@ export default function CustomerStatementTable() {
       wrap: true,
       isAction: true,
       isContextMenu: false,
-      cell: (props) => (
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <PDFicon />}
-          onClick={() => {
-            exportPDF(
-              `${ApiRoutes.EXPORT_CUSTOMER_STATEMENTS({ docNo: props.docNo, accountNumber: selectedAccount?.accountNumber })}`,
-              {
-                companyCode: selectedAccount?.companyCode,
-                salesOrg: selectedAccount?.salesOrg,
-                payerAccountNumber: selectedAccount?.accountNumber,
-                documentDate: props?.date
-              },
-              'pdf'
-            );
-          }}
-          size="md">
-          {t('paymentInvoices.CS.table.exportPdf')}
-        </Button>
+      cell: (props) =>
+        props.isPdfAvailable && (
+          <Button
+            className="back-button-control"
+            variant="tertiary"
+            Icon={() => <PDFicon />}
+            onClick={() => {
+              exportPDF(
+                `${ApiRoutes.EXPORT_CUSTOMER_STATEMENTS({ docNo: props.docNo, accountNumber: selectedAccount?.accountNumber })}`,
+                {
+                  companyCode: selectedAccount?.companyCode,
+                  salesOrg: selectedAccount?.salesOrg,
+                  payerAccountNumber: selectedAccount?.accountNumber,
+                  documentDate: props?.date
+                },
+                'pdf'
+              );
+            }}
+            size="md">
+            {t('paymentInvoices.CS.table.exportPdf')}
+          </Button>
       )
     }
   ];

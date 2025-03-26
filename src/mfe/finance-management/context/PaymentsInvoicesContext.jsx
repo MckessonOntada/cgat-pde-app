@@ -8,6 +8,7 @@ import { useAccountContext } from './AccountContext';
 import CommonUtils from '@src/util/CommonUtils';
 import { GeographicUtils } from '@src/util/GeographicUtil';
 import { useTranslate } from '@src/translations/useTranslation';
+import { DUE_STATUS } from '../pages/invoices/InvoiceConstants';
 
 const PaymentsInvoicesContext = createContext();
 
@@ -51,7 +52,8 @@ export const PaymentsInvoiceProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { showSnackbar } = useSnackbar();
   const [previousFilterConfig, setPreviousFilterConfig] = useState(INITIAL_FILTER_STATE);
-
+  const [resetFilterData, setResetFilterData] = useState(true);
+  const [statusOptions, setStatusOptions] = useState([]);
   const { selectedAccount } = useAccountContext();
 
   const applyFilters = (filters) => {
@@ -70,7 +72,11 @@ export const PaymentsInvoiceProvider = ({ children }) => {
 
     let _data = [...[], ...actualData];
     setIsLoading(true);
+    let startBillDate = filters.billDate[0];
+    let endBillDate = filters.billDate[1];
 
+    let startDueDate = filters.dueDate[0];
+    let endDueDate = filters.dueDate[1];
     const _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery
         ? item.billNumber?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
@@ -83,28 +89,27 @@ export const PaymentsInvoiceProvider = ({ children }) => {
 
       const matchesBillDate =
         filters?.billDate?.length === 2
-          ? filters.billDate[0] != '' && filters.billDate[1] != ''
-            ? dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(filters.billDate[0]).format('MM/DD/YYYY') &&
-              dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(filters.billDate[1]).format('MM/DD/YYYY')
-            : filters.billDate[0] != ''
-            ? dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(filters.billDate[0]).format('MM/DD/YYYY')
-            : filters.billDate[1] != ''
-            ? dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(filters.billDate[1]).format('MM/DD/YYYY')
+          ? !!startBillDate && !!endBillDate
+            ? dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(startBillDate).format('MM/DD/YYYY') &&
+              dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(endBillDate).format('MM/DD/YYYY')
+            : !!startBillDate
+            ? dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(startBillDate).format('MM/DD/YYYY')
+            : !!endBillDate
+            ? dayjs(item.billDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(endBillDate).format('MM/DD/YYYY')
             : true
           : true;
 
       const matchesDueDate =
         filters?.dueDate?.length === 2
-          ? filters.dueDate[0] != '' && filters.dueDate[1] != ''
-            ? dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(filters.dueDate[0]).format('MM/DD/YYYY') &&
-              dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(filters.dueDate[1]).format('MM/DD/YYYY')
-            : filters.dueDate[0] != ''
-            ? dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(filters.dueDate[0]).format('MM/DD/YYYY')
-            : filters.dueDate[1] != ''
-            ? dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(filters.dueDate[1]).format('MM/DD/YYYY')
+          ? !!startDueDate && !!endDueDate
+            ? dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(startDueDate).format('MM/DD/YYYY') &&
+              dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(endDueDate).format('MM/DD/YYYY')
+            : !!startDueDate
+            ? dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') >= dayjs(startDueDate).format('MM/DD/YYYY')
+            : !!endDueDate
+            ? dayjs(item.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY') <= dayjs(endDueDate).format('MM/DD/YYYY')
             : true
           : true;
-
       return matchesSearchQuery && matchesPaymentStatus && matchesPaymentMethod && matchesBillDate && matchesDueDate;
     });
 
@@ -123,7 +128,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
   };
 
   const { isFetching, isError, refetch } = useQuery(
-    ['invoiceListing', selectedAccount?.id],
+    ['invoiceListing', [selectedAccount?.id, resetFilterData]],
     async () => {
       if (!selectedAccount?.id) return;
       const url = `${ApiRoutes.INVOICES_CREDITS_LISTING(selectedAccount?.id, false)}`;
@@ -132,9 +137,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
         salesOrg: selectedAccount?.salesOrg,
         payerAccountNumber: selectedAccount?.accountNumber
       };
-      //  if(filterConfig.billDate?.length>0 && JSON.stringify(filterConfig.billDate) !== JSON.stringify(previousFilterConfig.billDate)){
-      //   payload={...payload,...{dateFrom:filterConfig.billDate[0]??"",dateTo:filterConfig.billDate[1]??""}}
-      //  }
+
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
 
       if (!res.data || !res.data.openInvoices) {
@@ -147,7 +150,10 @@ export const PaymentsInvoiceProvider = ({ children }) => {
       setData(res.data.openInvoices.slice(startIndex, endIndex));
       setUnSlicedData(res.data.openInvoices);
       setActualData(res.data.openInvoices);
-
+      if (resetFilterData) {
+        updateFilterData(res.data.openInvoices);
+        setResetFilterData(false);
+      }
       setPaginationConfig((state) => ({
         ...state,
         totalPages: Math.ceil(res.data.openInvoices.length / paginationConfig.pageSize),
@@ -171,6 +177,19 @@ export const PaymentsInvoiceProvider = ({ children }) => {
       sortData(sortConfig);
     }
   }, [filterConfig, paginationConfig.pageNumber]);
+
+  useEffect(() => {
+    clearFilters();
+    setResetFilterData(true);
+  }, [selectedAccount?.accountNumber]);
+
+  const updateFilterData = (actualData) => {
+    let currentFilterData = [...new Set(actualData.map((e) => e.status).filter((e) => e))];
+    let _options = currentFilterData.map((item) => {
+      return { value: item, label: DUE_STATUS[item]?.label || item, isDisabled: false };
+    });
+    setStatusOptions([..._options]);
+  };
 
   const clearFilters = () => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
@@ -286,7 +305,7 @@ export const PaymentsInvoiceProvider = ({ children }) => {
       openInvoiceFilterDTO: {
         searchTerm: filterConfig?.searchQuery || '',
         paymentTerm: filterConfig?.paymentTerm || [],
-        status: filterConfig?.status || [],
+        status: filterConfig?.status?.map((statusKey) => DUE_STATUS[statusKey]?.label),
         billDateStart: CommonUtils.isNonEmptyString(filterConfig?.billDate[0])
           ? dayjs(filterConfig?.billDate[0], 'MM/DD/YYYY').format('DD/MM/YYYY')
           : '' || '',
@@ -321,7 +340,9 @@ export const PaymentsInvoiceProvider = ({ children }) => {
     clearFilters,
     applySort,
     setPageNumber,
-    exportExcel
+    exportExcel,
+    statusOptions,
+    setStatusOptions
   };
   return <PaymentsInvoicesContext.Provider value={contextValue}>{children}</PaymentsInvoicesContext.Provider>;
 };

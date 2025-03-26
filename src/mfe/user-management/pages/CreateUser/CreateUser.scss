@@ -25,6 +25,9 @@
   align-items: center;
   margin-top: var(--spacing-03);
   margin-bottom: var(--spacing-02);
+  @media only screen and (max-width: 576px) {
+    margin-bottom: 0px;
+  }
   h3 {
     font-weight: var(--brand-font-weight-600);
   }
@@ -83,4 +86,15 @@ div[data-testid^="dropdown-container-"] {
 
 .firstHeading {
   margin-top: 0px !important;
+}
+.commentWrap{
+  margin-top: var(--spacing-03);
+  span{
+    font-size: var(--brand-font-size--small);
+    padding-bottom: var(--spacing-01);
+  }
+  p{
+    font-size: var(--brand-font-size--default);
+    font-weight: var(--brand-font-weight-600);
+  }
 }

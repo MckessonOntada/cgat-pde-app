@@ -4,31 +4,23 @@ import InvoicesTable from './InvoicesTable';
 import './index.scss';
 import { usePaymentInvoices } from '../../context/PaymentsInvoicesContext';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Button } from '@mckesson/mcp-component-library';
-import { DUE_STATUS } from './InvoiceConstants';
 
 export default function Invoices(params) {
   const { t } = useTranslate();
-  const { applyFilters, clearFilters, actualData } = usePaymentInvoices();
+  const { applyFilters, clearFilters, statusOptions, setStatusOptions } = usePaymentInvoices();
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
       {
         type: 'multiSelectDropdown',
-        name: 'paymentTerm',
-        tableColumnId: 'paymentTerm',
-        label: t('paymentInvoices.history.table.PaymentTerm'),
-        options: []
-      },
-      {
-        type: 'multiSelectDropdown',
         name: 'status',
-        tableColumnId: 'status',
-        customLabel: (data) => {
-          return DUE_STATUS[data].label;
-        },
         label: t('paymentInvoices.history.table.status'),
-        options: []
+        options: statusOptions,
+        getUpdatedOptions: (e) => {
+          if (e.length > 0) {
+            setStatusOptions(e);
+          }
+        }
       },
       {
         type: 'dateRangePicker',
@@ -42,14 +34,8 @@ export default function Invoices(params) {
         startDateLabel: t('paymentInvoices.invoicesTable.filter.dueDateStart'),
         endDateLabel: t('paymentInvoices.invoicesTable.filter.dueDateEnd')
       }
-      // {
-      //   type: 'dateRangePicker',
-      //   name: 'dueDate',
-      //   startDateLabel: t('paymentInvoices.invoicesTable.filter.dueDateStart'),
-      //   endDateLabel: t('paymentInvoices.invoicesTable.filter.dueDateEnd')
-      // }
     ];
-  }, []);
+  }, [statusOptions]);
   return (
     <React.Fragment>
       <div className="MCP-CardContainer invoices-container">
@@ -58,7 +44,6 @@ export default function Invoices(params) {
           onClearFilters={clearFilters}
           additionalFilters={AdditionalFiltersConfig}
           searchPlaceholder={t('paymentInvoices.filter.search')}
-          actualData={actualData}
         />
       </div>
       <div className="MCP-table-wrapper table-wrapper">

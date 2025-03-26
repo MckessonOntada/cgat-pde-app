@@ -5,7 +5,7 @@ export const LoginMessagesES = {
   'header.label.notifications': 'S_Notifications',
   'header.label.help': 'S_Help',
   'header.label.systemAdminView': 'S_System Admin View',
-  'header.label.loggedInAs': 'S_logged in as {{impersonateFullName}}',
+  'header.label.loggedInAs': 'S_Logged in as {impersonatedUsername}',
   'button.captions.exitUserView': 'S_Exit User View',
   'login.header.1': 'S_Advancing',
   'login.header.2': 'S_Health Outcomes for All',
@@ -22,7 +22,7 @@ export const LoginMessagesES = {
   'footer.help.content': 'S_User Help Content',
   'footer.contant': 'S_Contact',
   'footer.contant.no': 'S_Contact us at: 1-855-887-6788',
-  'footer.copyright': 'S_© 2024 McKesson Corporation Health Technology Products LLC.',
+  'footer.copyright': 'S_© {{year}} McKesson Corporation Health Technology Products LLC.',
   'message.exitUserViewConfirmation': 'S_Do you wish to exit working as {{username}}?',
   'button.caption.no': 'S_No',
   'button.caption.yes': 'S_Yes',
@@ -30,4 +30,5 @@ export const LoginMessagesES = {
   'forgot.password.submit': 'S_Forgot Password',
   'forgot.password.success': 'S_Your request to reset your password has been successfully submitted, Please check your email.',
   'forgot.password.error': 'S_Error sending password reset email.',
+  'forgot.terms.agreement': 'S_Terms of use and Patient Agreement',
 };

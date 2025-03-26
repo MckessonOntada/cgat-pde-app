@@ -8,7 +8,7 @@ function OrderFlowSteps({ catalogConfiguration }) {
   if (!catalogConfiguration || !catalogConfiguration.steps) return null;
 
   return (
-    <div className="MCP-panel-container">
+    <div className="MCP-CardContainer">
       <div className={`${styles.orderFlow}`}>
         <h4 className={styles.customSecondaryHeading}>{t('labels.whatToExpect')}</h4>
         <div className={styles.orderListContainer}>

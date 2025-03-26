@@ -25,6 +25,7 @@ export const PaymentInvoicesEN = {
     'Summation of all open credits currently available to use towards open invoices.',
   'paymentInvoices.metrics.pastDueBalance.tooltipText': 'Summation of all past due invoices (debit only) as of current date.',
   // Balance Card
+  'paymentInvoices.balanceCard.due': 'Due',
   'paymentInvoices.balanceCard.1_30_DAYS_OVERDUE': '1-30 days over',
   'paymentInvoices.balanceCard.31_60_DAYS_OVERDUE': '31-60 days over',
   'paymentInvoices.balanceCard.61_90_DAYS_OVERDUE': '61-90 days over',
@@ -64,6 +65,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.emptyData': 'No Payment History Found',
   'paymentInvoices.history.table.emptyDataDescription': 'Try again or adjust filters',
   'paymentInvoices.history.table.authorizedPayment': 'Authorized Payment',
+  'paymentInvoices.history.table.authorizedAmount': 'Authorized Amount',
   'paymentInvoices.history.table.usedDate': 'Used Date',
   'paymentInvoices.history.table.creditUsed': 'Credit Used',
   'paymentInvoices.history.table.selectedAccount': 'Item Selected',
@@ -97,6 +99,8 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.OpenAmount': 'Open Amount',
   'paymentInvoices.history.table.BillAmount': 'Bill Amount',
   'paymentInvoices.history.table.Actions': 'Actions',
+  'paymentInvoices.Actions.payment': 'Payment',
+  'paymentInvoices.Actions.exportPDF': 'Export PDF',
   'paymentInvoices.history.table.status': 'Status',
   'paymentInvoices.invoice.table.emptyData': 'No Invoice Found',
   'paymentInvoices.Details.backToManageInvoices': 'BACK TO MANAGE INVOICES PAGE',
@@ -152,7 +156,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.table.invoiceHeading': 'Invoice Listing',
   'paymentInvoices.table.creditHeading': 'Credit List',
   'paymentInvoices.table.therapyInfo': 'Therapy Info',
-  'paymentInvoices.filter.search': 'Search by Bill No., Sold to',
+  'paymentInvoices.filter.search': 'Search by Bill No.',
   'paymentInvoices.heading.ReviewAndPay': 'Review and Pay',
   'paymentInvoices.Details.Account': 'Account',
   'paymentInvoices.reviewPayments.BackToManagePayments': 'BACK TO MANAGE PAYMENTS',
@@ -190,7 +194,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.reviewPayments.paymentSuccess': 'Payment Successful',
   'paymentInvoices.reviewPayments.thankyouforpayment': 'Thank you for your payment',
   'paymentInvoices.reviewPayments.paymentSummary': 'Payment Summary',
-  'paymentInvoices.reviewPayments.confirmationDialogue': 'Are you sure want to leave Review and Pay screen?',
+  'paymentInvoices.reviewPayments.confirmationDialogue': 'Are you sure you want to leave Review and Pay screen?',
   'paymentInvoices.reviewPayments.confirm': 'Confirm',
   'paymentInvoices.reviewPayments.OK': 'OK',
   'paymentInvoices.reviewPayments.remove': 'REMOVE',
@@ -204,6 +208,8 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.credits.table.billamount': 'Bill Amount',
   'paymentInvoices.credits.table.downloadPdf': ' download pdf',
   'paymentInvoices.credits.table.emptyData': 'No Credits Found',
+  'paymentInvoices.credits.filters.ValidFromstart': 'Valid From (Start)',
+  'paymentInvoices.credits.filters.ValidFromend': 'Valid From (End)',
   'paymentInvoices.Details.backToManageCredits': 'BACK TO MANAGE CREDITS PAGE',
   'paymentInvoices.Details.Credit': 'Credit',
 
@@ -242,6 +248,10 @@ export const PaymentInvoicesEN = {
   'pendingPayments.table.paymentStatus': 'Payment Status',
   'pendingPayments.table.billDate': 'Bill Date',
   'pendingPayments.confirm.BackToPendingPayments': 'BACK TO PENDING PAYMENTS',
+  'pendingPayments.table.confirmationDialogue': 'Are you sure you want to cancel this payment?',
+  'pendingPayments.cancel.failed': 'Error occurred while cancelling the pending payment.',
+  'pendingPayments.cancel.success': 'Payment Cancelled Succesfully.',
+  'pendingPayments.cancel.tooltip': 'This Payment can not be cancelled.',
 
   // No data found
   'paymentInvoices.dataLoading': 'Fetching Accounts...',
@@ -260,5 +270,10 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.table.bill.id': 'BILL ID',
 
   'paymentInvoices.paymentMethods.achForm.description':
-    'Enrollment form in a PDF format for user to fill in offline and submit to the respective bank'
+    'Enrollment form in a PDF format for user to fill in offline and submit to the respective bank',
+  'paymentInvoices.table.paymentPending': 'Payment Pending',
+  'paymentInvoices.table.paymentHistory': 'Payment History',
+  'paymentInvoices.table.customerStatement': 'Customer Statement',
+  'paymentInvoices.table.savedBankAccount': 'Saved Bank Accounts',
+  'paymentInvoices.table.savedCards': 'Saved Cards'
 };

@@ -4,7 +4,7 @@ export const LoginMessagesEN = {
   'header.label.notifications': 'Notifications',
   'header.label.help': 'Help',
   'header.label.systemAdminView': 'System Admin View',
-  'header.label.loggedInAs': 'logged in as {{impersonateFullName}}',
+  'header.label.loggedInAs': 'Logged in as {impersonatedUsername}',
   'button.captions.exitUserView': 'Exit User View',
   'widget.footer.contextmessage': 'If you need further assistance, please contact support at help@mckesson.com',
   'login.header.1': 'Advancing',
@@ -22,7 +22,7 @@ export const LoginMessagesEN = {
   'footer.help.content': 'User Help Content',
   'footer.contant': 'Contact',
   'footer.contant.no': 'Contact us at: 1-855-887-6788',
-  'footer.copyright': '© 2024 McKesson Corporation Health Technology Products LLC.',
+  'footer.copyright': '© {{year}} McKesson Corporation Health Technology Products LLC.',
   'message.exitUserViewConfirmation': 'Do you wish to exit working as {{username}}?',
   'button.caption.no': 'No',
   'button.caption.yes': 'Yes',
@@ -30,4 +30,5 @@ export const LoginMessagesEN = {
   'forgot.password.submit': 'Forgot Password',
   'forgot.password.success': 'Your request to reset your password has been successfully submitted, Please check your email.',
   'forgot.password.error': 'Error sending password reset email.',
+  'forgot.terms.agreement': 'Terms of use and Patient Agreement',
 };

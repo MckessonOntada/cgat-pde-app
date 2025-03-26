@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { element } from 'prop-types';
 import { Button } from '@mckesson/mcp-component-library';
 import arrow_right from '@src/assets/image/arrow_right.svg';
 import arrow_down from '@src/assets/image/arrow_down.svg';
@@ -22,7 +22,6 @@ const Filters = ({
   initialData = {}
 }) => {
   const { t } = useTranslate();
-  //TODO: This useEffect is not needed. It can be removed.
 
   useEffect(() => {
     if (actualData.length === 0 && additionalFilters.length === 0) return;
@@ -79,6 +78,31 @@ const Filters = ({
     onClearFilters();
   };
 
+  const getDateKeysAndValues = (values) => {
+    return Object.keys(values)
+      .filter((key) => key.toLowerCase().includes('date')) // Find keys containing "date"
+      .reduce((acc, key) => {
+        acc[key] = values[key]; // Store raw date values
+        return acc;
+      }, {});
+  };
+
+  const validateForm = (values) => {
+    let errors = {};
+    const dateKeyValues = getDateKeysAndValues(values);
+
+    Object.keys(dateKeyValues).forEach((key) => {
+      const value = dateKeyValues[key];
+      const error = CommonUtils.validateDateRange(value);
+
+      if (error) {
+        errors[key] = error;
+      }
+    });
+
+    return errors;
+  };
+
   const isAdditionalFiltersAdded = additionalFilters && CommonUtils.isNonEmptyObject(additionalFilters);
   const initialValues = generateInitialFilterState(additionalFilters);
 
@@ -86,7 +110,15 @@ const Filters = ({
     <Formik
       enableReinitialize
       initialValues={{ ...initialValues, ...initialData }}
-      onSubmit={(values, actions) => {
+      validate={validateForm}
+      onSubmit={(values, { setSubmitting, setErrors }) => {
+        const errors = validateForm(values);
+        if (Object.keys(errors).length > 0) {
+          setTimeout(() => setErrors(errors), 0);
+          setSubmitting(false);
+          return;
+        }
+
         onApplyFilters(values);
         actions.setSubmitting(false);
       }}
@@ -94,10 +126,15 @@ const Filters = ({
       validateOnBlur={false}>
       {(formik) => {
         const isAnyFilterApplied = Object.values(formik.values).some(
-          (value) => value !== '' && value !== null && value !== undefined && !(Array.isArray(value) && value.length === 0)
+          (value) =>
+            value !== '' &&
+            value !== null &&
+            value !== undefined &&
+            !(Array.isArray(value) && value.length === 0) &&
+            !(Array.isArray(value) && value.every((ele) => !ele))
         );
         return (
-          <Form ref={formRef}>
+          <Form ref={formRef} autoComplete="off">
             <div className="MCP-filter-panel">
               <div className="filter-header">
                 <div className="search-box">
@@ -110,7 +147,7 @@ const Filters = ({
                     <Field name={'searchQuery'} label={''} placeholder={searchPlaceholder} component={Components['input']} />
                   </div>
                 </div>
-                {showControls && (
+                {showControls && !isCardExpanded && (
                   <div className="filter-control-buttons filterControls">
                     {isAnyFilterApplied && (
                       <Button type="button" size="md" textButton className="txtbtn" onClick={() => handleClearFilters(formik.resetForm)}>
@@ -127,6 +164,18 @@ const Filters = ({
                 <ToggleUI in={isCardExpanded} timeout={400}>
                   <div className="additional-filters">
                     <AdditionalFilters filtersConfig={additionalFilters} />
+                    {showControls && (
+                      <div className="filter-control-buttons">
+                        <Button type="submit" size="md" variant="secondary" className="filter-btn">
+                          {isAdditionalFiltersAdded ? t('filters.applyfilters') : t('filters.search')}
+                        </Button>
+                        { isAnyFilterApplied && (
+                          <Button type="button" size="md" textButton className="txtbtn" onClick={() => handleClearFilters(formik.resetForm)}>
+                            {isAdditionalFiltersAdded ? t('filters.clearfilters') : t('filters.clearsearch')}
+                          </Button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </ToggleUI>
               )}

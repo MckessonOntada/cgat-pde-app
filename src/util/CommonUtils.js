@@ -247,14 +247,17 @@ const convertDateStringToUserTimezone = (dateString) => {
   return formattedDate;
 };
 
-const convertDateStringFormat = (dateString, format) => {
-  if (!dateString) {
-    return dateString;
+const convertDateStringFormat = (dateString, outputformat = 'MM-DD-YYYY', inputFormat = 'DD/MM/YYYY') => {
+  if (!dateString || typeof dateString !== 'string') return '-';
+  let parsedDate;
+
+  if (dayjs(dateString).isValid() && dateString?.includes('T')) {
+    parsedDate = dayjs(dateString);
+  } else {
+    parsedDate = dayjs(dateString, inputFormat, true);
   }
 
-  const formattedDate = dayjs(dateString).format(format);
-
-  return formattedDate;
+  return parsedDate.isValid() ? parsedDate.format(outputformat) : '-';
 };
 
 const sortByDate = (dateString1, dateString2, sortOrder, fieldId = null) => {
@@ -376,6 +379,39 @@ function getDateRange(gapYear) {
   return [convertDate(prevDate), convertDate(date)];
 }
 
+export const validateDateRange = (value, messages = {}, allowFutureDate = true) => {
+  if (Array.isArray(messages)) messages = {};
+
+  let message = '';
+  const fromDate = value?.[0] && !isNaN(new Date(value[0])) ? new Date(value[0]) : null;
+  const toDate = value?.[1] && !isNaN(new Date(value[1])) ? new Date(value[1]) : null;
+  const today = new Date();
+  const defaultMessage = messages.fromDateAndToDate || 'Please select a valid date range.';
+  if ((!fromDate && toDate) || (fromDate && !toDate)) {
+    message = defaultMessage;
+  } else if (fromDate > toDate) {
+    message = messages.fromDateLessThanToDate || defaultMessage;
+  } else if (!allowFutureDate && toDate > today) {
+    message = messages.toDateNotFuture || defaultMessage;
+  }
+
+  return message || undefined;
+};
+
+export function gettenYearDate(y) {
+  var d = new Date();
+  var year = d.getFullYear();
+  var month = d.getMonth();
+  var day = d.getDate();
+  return new Date(year + y, month, day);
+}
+
+export function isFutureDate(dateStr) {
+  const today = new Date();
+  const date = new Date(dateStr);
+  return date > today;
+}
+
 function truncateString(str, maxLength) {
   return str.length > maxLength ? str.slice(0, maxLength) + '...' : str;
 }
@@ -436,9 +472,9 @@ export const downloadFile = (blob, fileName) => {
 };
 
 export const enableReviewAndPay = (selectedAccount) => {
-  let ignorableSalesOrgIds = ['5040'];
+  let ignorableCompanyCode = ['5040'];
   if (selectedAccount) {
-    let hide = ignorableSalesOrgIds.some((ele) => ele == selectedAccount.salesOrg);
+    let hide = ignorableCompanyCode.some((ele) => ele == selectedAccount.companyCode);
     return !hide;
   } else {
     return false;
@@ -501,6 +537,7 @@ const CommonUtils = Object.freeze({
   areArraysEqual,
   deepEqual,
   getDateRange,
+  validateDateRange,
   truncateString,
   formatPhoneNumber,
   getFullName,
@@ -510,7 +547,9 @@ const CommonUtils = Object.freeze({
   cleanObject,
   formatNumberWithoutSymbol,
   getCamelCase,
-  getFileSize
+  getFileSize,
+  gettenYearDate,
+  isFutureDate
 });
 
 export default CommonUtils;

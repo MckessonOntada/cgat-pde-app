@@ -1,9 +1,7 @@
 import React from 'react';
-import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import EmptyDataTable from '@src/components/EmptyTable';
 import { Badge, DropdownMenu, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import dayjs from 'dayjs';
 import { FormattedNumber } from 'react-intl';
 import { ReactComponent as RemoveCircle } from '@src/assets/svg/cross-red.svg';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
@@ -13,6 +11,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { PATHS } from '../../routes';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
+import CommonUtils from '@src/util/CommonUtils';
 
 function SelectedInvoiceList(props) {
   const { t } = useTranslate();
@@ -68,7 +67,7 @@ function SelectedInvoiceList(props) {
       maxWidth: '130px',
       wrap: true,
       id: 'dueDate',
-      cell: (props) => <div className="cellEllipse">{dayjs(props?.dueDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
+      cell: (props) => <div>{CommonUtils.convertDateStringFormat(props?.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
     },
     {
       name: t('paymentInvoices.history.table.BillAmount'),
@@ -147,6 +146,9 @@ function SelectedInvoiceList(props) {
   };
 
   const onRemoveInvoice = (index) => {
+    if (selectedInvoices.length <= 1) {
+      return;
+    }
     let _invoices = [...[], ...selectedInvoices];
     _invoices.splice(index, 1);
     setSelectedInvoices(_invoices);

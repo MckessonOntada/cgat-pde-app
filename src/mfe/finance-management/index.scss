@@ -9,7 +9,6 @@
   align-items: center;
   border-radius: 8px;
   border: 1px solid var(--brand-color-patient-primary-3, #b3c2c9);
-  margin-bottom: 24px;
   padding: 16px;
   gap: 16px;
 
@@ -84,11 +83,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    gap: 16px;
-
-    @include mixins.respond("md") {
-      gap: 24px;
-    }
+    gap: var(--spacing-04);
 
     @include mixins.respond("xl") {
       gap: 0px;
@@ -118,14 +113,9 @@
           flex-direction: row;
           justify-content: space-between;
         }
-
-        @include mixins.respond("xl") {
-          justify-content: flex-start;
-        }
-
         .info-cards-container {
-          @include mixins.respond("xl") {
-            min-width: 33%;
+          .info-card{
+            min-width: auto;
           }
         }
       }
@@ -149,6 +139,7 @@
 
 #tablist-container {
   position: relative;
+  gap: var(--spacing-04);
 
   #secondaryNavPanel {
     padding-left: 0px;
@@ -164,18 +155,39 @@
 .view-details-container {
   display: grid;
   gap: var(--spacing-04);
+  @media only screen and (max-width: 576px) {
+    margin-bottom: var(--spacing-14);
+  }
   .table-container {
     width: 100%;
     display: grid;
     gap: var(--spacing-03);
+  }
+  h1{
+    @media only screen and (max-width: 576px) {
+      font-size: var(--brand-font-size--20) !important;
+      font-weight: var(--brand-font-weight-700);
+    }
+  }
+  h2{
+    font-size: var(--brand-font-size--24);
+    @media only screen and (max-width: 576px) {
+      font-size: var(--brand-font-size--20);
+    }
   }
   .footer-section {
     display: flex;
     justify-content: end;
     width: 100%;
     gap: var(--spacing-03);
+    @media only screen and (max-width: 576px) {
+      position: fixed;
+      bottom: 0px;
+      padding: 16px;
+      left: 0px;
+      flex-direction: column;
+      background: var(--brand-color-background-white);
+      box-shadow: 0px 2px 8px 0px rgba(38, 44, 54, 0.30);
+    }
   }
-}
-.heading {
-  padding-bottom: 16px;
 }

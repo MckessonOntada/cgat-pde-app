@@ -77,7 +77,6 @@
     white-space: normal;
     flex-wrap: wrap;
     word-break: break-word;
-    align-items: center;
   }
 
   .card-details {
@@ -97,6 +96,7 @@
     line-height: 18px;
     font-weight: 400;
     border-bottom: 1px solid #bac5cc;
+    padding: var(--spacing-02) 0px;
     &:last-child {
       border-bottom: none;
     }
@@ -132,7 +132,7 @@
 
 .expand-collapse-toggle {
   padding: 0px !important;
-  margin-right: 8px;
+  margin-right: var(--spacing-01);
   align-items: center;
   display: flex;
   height: 100%;
@@ -174,5 +174,16 @@
     font-weight: 700;
     display: flex;
     align-items: center;
+  }
+}
+.inline-status{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  .collapsed-detail{
+    align-content: center;
+  }
+  .column-name{
+    font-size: 14px;
   }
 }

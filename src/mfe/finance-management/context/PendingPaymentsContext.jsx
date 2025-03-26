@@ -21,7 +21,7 @@ const RECORDS_PER_PAGE = 8;
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
-  paymentInitiationDate: [dayjs().subtract(180, 'day').format('MM/DD/YYYY'), dayjs().format('MM/DD/YYYY')]
+  paymentInitiationDate: ['', '']
 };
 
 const INITIAL_SORT_STATE = {
@@ -69,7 +69,7 @@ export const PendingPaymentsProvider = ({ children }) => {
       //   filters?.paymentStatus?.length > 0 ? filters.paymentStatus.includes(item.paymentStatus.toString()) : true;
 
       const matchesDate =
-        filters?.paymentInitiationDate?.length === 2
+        filters?.paymentInitiationDate?.length === 2 && !!filters?.paymentInitiationDate[0] && !!filters?.paymentInitiationDate[1]
           ? new Date(dayjs(item.paymentInitiationDate, 'DD/MM/YYYY').format('MM/DD/YYYY')) >=
               new Date(
                 CommonUtils.isNonEmptyString(filters.paymentInitiationDate[0])
@@ -110,6 +110,7 @@ export const PendingPaymentsProvider = ({ children }) => {
   const clearFilters = () => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig(INITIAL_FILTER_STATE);
+    refetch();
   };
 
   const applySort = (newSortConfig) => {
@@ -120,7 +121,7 @@ export const PendingPaymentsProvider = ({ children }) => {
     }
   };
 
-  const { isFetching, isError } = useQuery({
+  const { isFetching, isError, refetch } = useQuery({
     queryKey: ['pendingPaymentsListing', selectedAccount?.id],
     queryFn: async () => {
       const url = `${ApiRoutes.PENDING_PAYMENTS_LISTING(selectedAccount?.id)}`;
@@ -189,8 +190,10 @@ export const PendingPaymentsProvider = ({ children }) => {
     }));
   };
   const { mutate: exportPendingPDF } = useMutation(
-    async (data) =>
-      await HttpResourceService.callRest(
+    async (data) => {
+      let startDate = filterConfig?.paymentInitiationDate?.[0] || null;
+      let endDate = filterConfig?.paymentInitiationDate?.[1] || null;
+      return await HttpResourceService.callRest(
         `${ApiRoutes.EXPORT_PENDING_PAYMENT_EXCEL(data)}`,
         httpVerb.POST,
         {
@@ -199,8 +202,8 @@ export const PendingPaymentsProvider = ({ children }) => {
           payerAccountNumber: selectedAccount?.accountNumber,
           filter: {
             searchTerm: filterConfig?.searchQuery || '',
-            initiationDateStart: dayjs(filterConfig?.paymentInitiationDate?.[0], 'MM/DD/YYYY').format('DD/MM/YYYY') || '',
-            initiationDateEnd: dayjs(filterConfig?.paymentInitiationDate?.[1], 'MM/DD/YYYY').format('DD/MM/YYYY') || ''
+            initiationDateStart: startDate && startDate !== 'Invalid Date' ? dayjs(startDate, 'MM/DD/YYYY').format('DD/MM/YYYY') : '',
+            initiationDateEnd: endDate && endDate !== 'Invalid Date' ? dayjs(endDate, 'MM/DD/YYYY').format('DD/MM/YYYY') : ''
           },
           excelMetaDataDTO: {
             accountNumber: selectedAccount?.accountNumber,
@@ -212,7 +215,8 @@ export const PendingPaymentsProvider = ({ children }) => {
         false,
         false,
         'blob' // Set responseType to 'blob'
-      ),
+      );
+    },
     {
       onSuccess: (response) => {
         if (response && response.data) {
@@ -269,7 +273,7 @@ export const PendingPaymentsProvider = ({ children }) => {
     filterConfig,
     paginationConfig,
     sortConfig,
-    // refreshData,
+    refetch,
     applyFilters,
     clearFilters,
     applySort,

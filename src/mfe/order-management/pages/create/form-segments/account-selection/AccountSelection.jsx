@@ -229,7 +229,7 @@ const AccountSelection = () => {
                 }
               />
               <div className="MCP-CardContainer">
-                <div className={'grid grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3'}>
+                <div className={'grid grid-gap-12 sm:grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3'}>
                   <div className={styles.account}>
                     <div className={styles.accountDetails}>
                       {selectedAccount ? (
@@ -259,14 +259,13 @@ const AccountSelection = () => {
                       )}
                     </div>
                   </div>
-                  <div></div>
-                  <div className={styles.controls}>
-                    {selectedAccount && (
+                  {selectedAccount && (
+                    <div className={styles.controls}>
                       <Button variant="tertiary" onClick={handleOnClick}>
                         {t('button.caption.change')}
                       </Button>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -279,8 +278,8 @@ const AccountSelection = () => {
               </ShippingAddressProvider>
             )}
           </div>
-          <div>
-            <div className="controls">
+          <div className='footer-wrapper'>
+            <div className="controls footer-controls">
               <Button size="md" onClick={handleOnBack} variant="secondary">
                 {t('captions.btnBack')}
               </Button>

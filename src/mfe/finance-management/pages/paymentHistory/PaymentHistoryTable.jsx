@@ -10,16 +10,22 @@ import { usePaymentHistory } from '../../context/PaymentHistoryContext';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { FormattedNumber } from 'react-intl';
-import dayjs from 'dayjs';
 import { PATHS } from '../../routes';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import CommonUtils from '@src/util/CommonUtils';
 
 const PAYMENT_STATUS = {
-  PENDING: { label: 'Pending', color: 'warning' },
   PROCESSED: { label: 'Processed', color: 'success' },
-  FAILED: { label: 'Failed', color: 'error' }
+  PENDING: { label: 'Pending', color: 'info' },
+  'IN PROCESS': { label: 'In Process', color: 'info' },
+  SCHEDULED: { label: 'Scheduled', color: 'info' },
+  'PENDING REVIEW': { label: 'Pending Review', color: 'info' },
+  PROCESSING: { label: 'Processing', color: 'info' },
+  FAILED: { label: 'Failed', color: 'error' },
+  CANCELLED: { label: 'Cancelled', color: 'error' },
+  'ON HOLD': { label: 'On Hold', color: 'warning' }
 };
 
 export default function PaymentHistoryTable() {
@@ -35,7 +41,7 @@ export default function PaymentHistoryTable() {
       name: t('paymentInvoices.history.table.confirmationNumber'),
       selector: (row) => `${row.confirmationNo}`,
       sortable: true,
-      maxWidth: '180px',
+      minWidth: '180px',
       wrap: true,
       showInMobileHeader: true,
       showColumnNameInHeader: true,
@@ -62,32 +68,34 @@ export default function PaymentHistoryTable() {
       selector: (row) => `${row.paymentMethod}`,
       wrap: true,
       sortable: true,
-      minWidth: '140px',
+      maxWidth: '180px',
       cardHeader: true,
       showInMobileHeader: true,
-      cell: (props) => <EclipsesTextcss str={props.paymentMethod} maxWidth={130} />
+      cell: (props) => <EclipsesTextcss str={props.paymentMethod} maxWidth={170} />
     },
 
     {
       id: 'paymentInitiationDate',
       name: t('paymentInvoices.history.table.paymentInitiationDate'),
       selector: (row) => `${row.paymentInitiationDate}`,
-      minWidth: '160px',
+      width: '140px',
+      // maxWidth: '180px',
       sortable: true,
-      cell: (props) => <div className="cellEllipse">{dayjs(props.paymentInitiationDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
+      cell: (props) => CommonUtils.convertDateStringFormat(props?.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       id: 'paymentStatus',
       name: t('paymentInvoices.history.table.paymentStatus'),
       selector: (row) => `${row.paymentStatus}`,
-      sortable: true,
-      width: '140px',
+      width: '150px',
       center: true,
       showInMobileHeader: true,
+      cardStatus: true,
       cell: (props) => (
         <div className="status-container">
           {PAYMENT_STATUS[props?.paymentStatus.toUpperCase()] ? (
             <Badge
+              customStyle={{ minWidth: '140px' }}
               text={PAYMENT_STATUS[props?.paymentStatus.toUpperCase()].label}
               type={`${PAYMENT_STATUS[props?.paymentStatus.toUpperCase()].color}-high`}
             />
@@ -102,11 +110,10 @@ export default function PaymentHistoryTable() {
       name: t('paymentInvoices.history.table.totalAuthorizedPaymentAmt'),
       selector: (row) => `${row.totalAuthorizedPaymentAmount}`,
       minWidth: '120px',
-      maxWidth: '220px',
       sortable: true,
       cell: (props) => (
         <div className="cellEllipse align-items-right">
-          <FormattedNumber value={props?.totalAuthorizedPaymentAmount} style="currency" currency="USD" />
+          <FormattedNumber value={props?.totalAuthorizedPaymentAmount || '-'} style="currency" currency="USD" />
         </div>
       ),
       right: true

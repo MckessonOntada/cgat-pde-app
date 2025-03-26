@@ -1,11 +1,12 @@
 import React from 'react';
 import { Heading, Loader, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import dayjs from 'dayjs';
 import { FormattedNumber } from 'react-intl';
 import { ReactComponent as PDFicon } from '@src/assets/svg/office-file-pdf.svg';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
+import CommonUtils from '@src/util/CommonUtils';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 const createColumns = (t, type) => {
   const commonColumns = [
@@ -16,6 +17,8 @@ const createColumns = (t, type) => {
       sortable: true,
       wrap: true,
       minWidth: '112px',
+      showInMobileHeader: true,
+      showColumnNameInHeader: true,
       cell: (props) => <div className="cellEllipse">{props?.billNo || ''}</div>
     },
     {
@@ -25,6 +28,8 @@ const createColumns = (t, type) => {
       minWidth: '160px',
       sortable: true,
       wrap: true,
+      cardHeader: true,
+      showInMobileHeader: true,
       cell: (props) => <div>{props?.soldToAccountNumber || '-'}</div>
     }
   ];
@@ -37,22 +42,22 @@ const createColumns = (t, type) => {
       sortable: true,
       id: 'billDate',
       wrap: true,
-      minWidth: '160px',
-      cell: (props) => <div className="cellEllipse">{dayjs(props?.billDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
+      width: '140px',
+      cell: (props) => <div className="cellEllipse">{CommonUtils.convertDateStringFormat(props?.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
     },
     {
       name: t('paymentInvoices.history.table.DueDate'),
       selector: (row) => row.dueDate,
-      minWidth: '140px',
+      width: '140px',
       sortable: true,
       wrap: true,
       id: 'dueDate',
-      cell: (props) => <div className="cellEllipse">{dayjs(props?.dueDate, 'DD/MM/YYYY')?.format('MM/DD/YYYY') || '-'}</div>
+      cell: (props) => <div className="cellEllipse">{CommonUtils.convertDateStringFormat(props?.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
     },
     {
       name: t('paymentInvoices.history.table.BillAmount'),
       selector: (row) => row?.billAmount,
-      minWidth: '140px',
+      minWidth: '120px',
       sortable: true,
       right: true,
       id: 'billAmount',
@@ -63,9 +68,9 @@ const createColumns = (t, type) => {
       )
     },
     {
-      name: t('paymentInvoices.history.table.authorizedPayment'),
+      name: t('paymentInvoices.history.table.authorizedAmount'),
       selector: (row) => row?.authAmount,
-      minWidth: '140px',
+      minWidth: '200px',
       sortable: true,
       right: true,
       id: 'authorizedPayment',
@@ -75,23 +80,6 @@ const createColumns = (t, type) => {
         </div>
       )
     },
-    {
-      name: t('paymentInvoices.history.table.Actions'),
-      minWidth: '144px',
-      wrap: true,
-      isAction: true,
-      cell: (props) => (
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <PDFicon />}
-          onClick={() => {}}
-          size="md"
-          disabled={!props?.pdfAvailable}>
-          {t('paymentInvoices.CS.table.exportPdf')}
-        </Button>
-      )
-    }
   ];
 
   const creditColumns = [
@@ -102,17 +90,18 @@ const createColumns = (t, type) => {
       sortable: true,
       id: 'description',
       wrap: true,
-      minWidth: '160px',
-      cell: (props) => <div>{props?.description || '-'}</div>
+      minWidth: '180px',
+      // cell: (props) => <div>{props?.description || '-'}</div>
+      cell: (props) => <EclipsesTextcss str={props?.description || '-'} maxWidth={170} />
     },
     {
       name: t('paymentInvoices.history.table.usedDate'),
       selector: (row) => row.usedDate,
-      minWidth: '140px',
+      width: '150px',
       sortable: true,
       wrap: true,
       id: 'usedDate',
-      cell: (props) => <div className="cellEllipse">{props?.usedDate ? dayjs(props.usedDate, 'DD/MM/YYYY').format('MM/DD/YYYY') : '-'}</div>
+      cell: (props) => <div className="cellEllipse">{CommonUtils.convertDateStringFormat(props?.usedDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
     },
     {
       name: t('paymentInvoices.credits.table.amount'),
@@ -140,22 +129,6 @@ const createColumns = (t, type) => {
         </div>
       )
     },
-    {
-      name: t('paymentInvoices.history.table.Actions'),
-      minWidth: '144px',
-      wrap: true,
-      cell: (props) => (
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <PDFicon />}
-          onClick={() => {}}
-          size="md"
-          disabled={!props?.pdfAvailable}>
-          {t('paymentInvoices.CS.table.exportPdf')}
-        </Button>
-      )
-    }
   ];
 
   return type === 'invoice' ? invoiceColumns : creditColumns;
@@ -167,7 +140,7 @@ function ConfirmationTable({ invoiceData, creditData }) {
 
   return (
     <>
-      <Heading as="h1" fontWeight="600">
+      <Heading as="h2" fontWeight="600">
         {t('paymentInvoices.table.confirmationInvoiceHeading')}
       </Heading>
       <div className="details-table">
@@ -180,7 +153,7 @@ function ConfirmationTable({ invoiceData, creditData }) {
           handleChangePage={() => {}}
           noDataComponent={'No invoice used in this payments'}
           showCardView={showCardView}
-          // defaultExpandedCardView={true}
+          defaultExpandedCardView={false}
           progressComponent={
             <div
               style={{
@@ -196,7 +169,7 @@ function ConfirmationTable({ invoiceData, creditData }) {
         />
       </div>
 
-      <Heading as="h1" fontWeight="600">
+      <Heading as="h2" fontWeight="600">
         {t('paymentInvoices.table.creditHeading')}
       </Heading>
       <div className="details-table">
@@ -209,7 +182,7 @@ function ConfirmationTable({ invoiceData, creditData }) {
           handleChangePage={() => {}}
           noDataComponent={'No credit used in this payments'}
           showCardView={showCardView}
-          defaultExpandedCardView={true}
+          defaultExpandedCardView={false}
           progressComponent={
             <div
               style={{

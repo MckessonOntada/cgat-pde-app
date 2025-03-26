@@ -21,6 +21,7 @@ import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import { TherapyDetailsConstants } from './assets/constants/TherapyDetailsConstants';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import { FormattedNumber } from 'react-intl';
 
 function Details(props) {
   const { billNumber } = useParams();
@@ -38,6 +39,9 @@ function Details(props) {
   const navigate = useNavigate();
   const locationParams = useLocation();
   const showCardView = useResponsiveView();
+
+  const { state: { invoices = [], selectedCredit = [] } = {} } = locationParams;
+  const source = invoices[0] || selectedCredit[0];
   const onBackToPaymentsInvoices = () => {
     navigate(-1);
   };
@@ -51,7 +55,10 @@ function Details(props) {
           companyCode: selectedAccount?.companyCode,
           salesOrg: selectedAccount?.salesOrg,
           payerAccountNumber: selectedAccount?.accountNumber,
-          userName: ''
+          userName: '',
+          fiscalYear: source?.fiscalYear,
+          lineItem: source?.lineItem,
+          referenceDocumentNumber: source?.referenceDocumentNumber
         };
         const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
         if (res.data) {
@@ -64,24 +71,28 @@ function Details(props) {
             [t('paymentInvoices.Details.PO')]: res.data.poNumber
           }));
           // bill bates
-          let _invoiceDue = INVOICES_SCREEN
-            ? {
-                [t('paymentInvoices.Details.AmountDue')]: `${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
-                [t('paymentInvoices.Details.DueDate')]: res.data.dueDate,
-                [t('paymentInvoices.Details.BillDate')]: res.data.billDate
-              }
-            : {
-                [t('paymentInvoices.Details.CreditAmount')]: `${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
-                [t('paymentInvoices.Details.CreditRemaining')]: '',
-                [t('paymentInvoices.Details.ValidFrom')]: res.data.dueDate
-              };
-          setBillDates(_invoiceDue);
+          updateBillDates(res);
           return res.data;
         }
       }
     },
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    retry: 1
   });
+  const updateBillDates = (res) => {
+    let _invoiceDue = INVOICES_SCREEN
+      ? {
+          [t('paymentInvoices.Details.AmountDue')]: `$${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
+          [t('paymentInvoices.Details.DueDate')]: CommonUtils.convertDateStringFormat(res.data.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY'),
+          [t('paymentInvoices.Details.BillDate')]: CommonUtils.convertDateStringFormat(res.data.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
+        }
+      : {
+          [t('paymentInvoices.Details.CreditAmount')]: `$${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
+          [t('paymentInvoices.Details.CreditRemaining')]: '',
+          [t('paymentInvoices.Details.ValidFrom')]: CommonUtils.convertDateStringFormat(res.data.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
+        };
+    setBillDates(_invoiceDue);
+  };
 
   const columns = useMemo(
     () => [
@@ -124,7 +135,7 @@ function Details(props) {
         wrap: true,
         minWidth: '140px',
         maxWidth: '180px',
-        cell: (props) => <EclipsesTextcss str={'-'} maxWidth={170} />
+        cell: (props) => <EclipsesTextcss str={props.therapyDescription} maxWidth={170} />
       },
       {
         name: t('paymentInvoices.Details.referenceDocument'),
@@ -175,8 +186,12 @@ function Details(props) {
         },
         wrap: true,
         right: true,
-        width: '120px',
-        cell: (props) => <div className="cellEllipse align-items-right">{props.netPrice || '-'}</div>
+        minWidth: '130px',
+        cell: (props) => (
+          <div className="cellEllipse align-items-right">
+            <FormattedNumber value={JSON.stringify(props.netPrice)} style="currency" currency="USD" />
+          </div>
+        )
       },
       {
         name: t('paymentInvoices.Details.grossPrice'),
@@ -184,9 +199,13 @@ function Details(props) {
         selector: (row) => {
           row.grossPrice;
         },
-        width: '120px',
+        minWidth: '130px',
         right: true,
-        cell: (props) => <div className="cellEllipse align-items-right">{props.grossPrice || '-'}</div>
+        cell: (props) => (
+          <div className="cellEllipse align-items-right">
+            <FormattedNumber value={props.grossPrice} style="currency" currency="USD" />
+          </div>
+        )
       }
     ],
     [data]
@@ -260,30 +279,19 @@ function Details(props) {
         </div>
       </div>
       <div className="footer-section">
-        {INVOICES_SCREEN ? (
-          !locationParams?.state?.reviewPay && (
-            <React.Fragment>
-              <Button size="md" variant="secondary" disabled>
-                {t('paymentInvoices.Details.DownloadPDF')}
-              </Button>
-              {CommonUtils.enableReviewAndPay(selectedAccount) && (
-                <Button
-                  size="md"
-                  variant="primary"
-                  type="submit"
-                  onClick={() => {
-                    navigate(`/record/invoices/reviewPayments`, { state: { ...locationParams.state, reviewPay: true } });
-                  }}>
-                  {t('paymentInvoices.Details.ReviewAndPay')}
-                </Button>
-              )}
-            </React.Fragment>
-          )
-        ) : (
+        {!locationParams?.state?.reviewPay && (
           <React.Fragment>
-            <Button size="md" variant="primary" disabled>
-              {t('paymentInvoices.Details.DownloadPDF')}
-            </Button>
+            {CommonUtils.enableReviewAndPay(selectedAccount) && (
+              <Button
+                size="md"
+                variant="primary"
+                type="submit"
+                onClick={() => {
+                  navigate(`/record/invoices/reviewPayments`, { state: { ...locationParams.state, reviewPay: true } });
+                }}>
+                {t('paymentInvoices.Details.ReviewAndPay')}
+              </Button>
+            )}
           </React.Fragment>
         )}
       </div>
@@ -294,8 +302,8 @@ function Details(props) {
           onClose={() => setOpen(!open)}
           therapyData={TherapyDetailsConstants}
           showFooter={false}
-          useUserService={true}
           heading={t('labels.therapyDetails')}
+          useUserService={true}
         />
       )}
     </div>

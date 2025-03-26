@@ -74,14 +74,14 @@ function ConfirmationPayments() {
   const paymentCard = {
     [t('paymentInvoices.credits.table.amount')]: location.state?.amount,
     [t('paymentInvoices.reviewPayments.totalCredit')]: location.state?.totalCreditAmount,
-    [t('paymentInvoices.reviewPayments.creditRemaing')]: location.state?.amountPaid,
+    [t('paymentInvoices.reviewPayments.creditRemaing')]: location.state?.totalCreditsCount,
     [t('paymentInvoices.reviewPayments.amountPaid')]: location.state?.amountPaid
   };
   const confirmationData = {
-    [t('paymentInvoices.reviewPayments.mckessonId')]: '123456789',
+    [t('paymentInvoices.reviewPayments.mckessonId')]: location.state?.confirmationNumber,
     [t('paymentInvoices.reviewPayments.paymentInitiatedDate')]: dayjs().format('MM/DD/YYYY'),
     [t('paymentInvoices.reviewPayments.paymentType')]: location.state?.paymentOption,
-    [t('paymentInvoices.reviewPayments.paymentDate')]: '12/12/2021', //we will include
+    [t('paymentInvoices.reviewPayments.paymentDate')]: dayjs(location.state.paymentDate, 'YYYY-MM-DD').format('MM/DD/YYYY'),
     [t('paymentInvoices.Details.Account')]: `${
       location.state?.selectedPayment?.number?.slice(-4) || location.state.selectedPayment?.accountNumber?.slice(-4)
     } - ${GeographicUtils.addressAggregator(selectedAccount)}`,
@@ -173,7 +173,7 @@ function ConfirmationPayments() {
 
         <div className="MCP-module-wrapper">
           <div>
-            <h1>{t('paymentInvoices.reviewPayments.credits')}</h1>
+            <Heading as="h2">{t('paymentInvoices.reviewPayments.credits')}</Heading>
           </div>
           <div id="tablist-container" className="MCP-module-body">
             <PaymentsCreditsProvider>
@@ -186,11 +186,11 @@ function ConfirmationPayments() {
         </div>
       </div>
       <div className="footer-section">
-        <Button variant="secondary" onClick={() => {}} size="sm" disabled>
+        <Button variant="secondary" onClick={() => {}} size="md" disabled>
           {t('paymentInvoices.history.filters.printSummary')}
         </Button>
         <Button
-          size="sm"
+          size="md"
           onClick={() => {
             navigate(`/record/invoices`);
           }}>

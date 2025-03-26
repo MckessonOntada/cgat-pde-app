@@ -11,6 +11,7 @@ export const MessageEn = {
   'headings.orderSubmitted': 'Order Submitted!',
   'headings.orderApproved': 'Order Approved!',
   'headings.addShippingAddress': 'Add Shipping Address',
+
   'captions.status': 'Status',
   'captions.clearFilters': 'Clear Filters',
   'controls.createNewOrder': 'Create New Order',
@@ -47,6 +48,7 @@ export const MessageEn = {
   'captions.btnSelectYourAccount': 'Select Your Account',
   'labels.orderDetails': 'Order Details',
   'labels.variant': 'Variant',
+  'labels.configuredQuestionnaires': 'Configured Questionnaires',
   'labels.coiId': 'COI ID',
   'labels.orderQuantity': 'Order Quantity',
   'labels.provideSlotNumber': 'Please provide the Slot Number',
@@ -105,6 +107,7 @@ export const MessageEn = {
   'labels.dateOfAdministration': 'Date of Administration',
   'labels.slotNo': 'Slot No',
   'labels.selectVariant': 'Select Variant',
+  'labels.configuredQuestionnaires': 'Configured Questionnaires',
   'labels.poNo': 'PO No',
   'labels.variantDescription': 'Variant Description',
   'labels.actions.view': 'View',
@@ -180,7 +183,7 @@ export const MessageEn = {
   'labels.orderActions.edit': 'Edit Order',
   'labels.orderActions.cancel': 'Cancel Order',
   'labels.orderActions.assignToMe': 'Assign to me',
-  'labels.orderActions.unassignToMe': 'UnAssign to me',
+  'labels.orderActions.unassignToMe': 'Unassign',
   'labels.orderActions.approve': 'Approve Order',
   'labels.orderActions.deletemessage': 'Are you sure you wish to Delete this Order ?',
   'labels.orderActions.cancelmessage': 'Please reach out to customer support at 1800XXXXXXX for any updation or cancellation in the order.',
@@ -266,7 +269,7 @@ export const MessageEn = {
   'label.no': 'No',
   'messages.formNotFound': 'Form Not Found',
   'messages.orderSuccessApprovalPending': 'Your order has been submitted successfully and is now pending for approval.',
-  'messages.orderApprovalSuccess': 'Your order has been approved successfully and is in line for the fulfilment.',
+  'messages.orderApprovalSuccess': 'Your order has been approved successfully and is in line for the fulfillment.',
   'messages.accountSelect': 'Please select the account to buy the therapy for',
   'messages.selectAnAccountForShippingAddress': 'Select an account to view the list of shipping addresses',
   'messages.orderPlacementAcknowledgement':
@@ -459,5 +462,8 @@ export const MessageEn = {
   'labels.caption.DELETED': 'Deleted',
   'labels.caption.REJECTED': 'Rejected',
   'labels.caption.SUBMITTED': 'Submitted',
-  'labels.caption.APPROVAL_PENDING': 'Approval Pending'
+  'labels.caption.APPROVAL_PENDING': 'Approval Pending',
+
+  'labels.pap': 'PAP',
+  'labels.pap.order': 'PAP ORDER'
 };

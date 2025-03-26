@@ -21,6 +21,7 @@ export const ApproverManagementEN = {
   'approvergroup.table.action.delete': 'Delete',
   'approvergroup.button.deactivate': 'Deactivate',
   'approvergroup.button.activate': 'Activate',
+  'message.emptyTableApproverGroupTitle': 'No Approver Groups Found',
   'approvergroup.empty_table.description': 'You need to add Approver Groups to see data in this table.',
   'approvergroup.confirmationmessage': 'Confirmation message',
   'approvergroup.confirmationmessage.message': 'Are you sure you wish to Deactivate this Approver Group ?',

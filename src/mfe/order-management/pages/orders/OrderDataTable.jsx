@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { CustomDataTable } from '../../../../components/dataTableComponent';
 import { useOrders } from '../../context/OrderContext';
@@ -34,7 +34,15 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
     orderView,
     changeOrderView
   } = useOrders();
-  // const columns = createColumns(t, navigate, tab, alertContainerId);
+  const [charSize, setCharSize] = useState(0);
+  const calculateMinWidth = useMemo(() => {
+    if (typeof charSize === 'number' && charSize > 0) {
+      return `${70 + charSize * 10}px`;
+    }
+    return '80px';
+  }, [charSize]);
+
+  // const columns = createColumns(t, navigate, tab, alertContainerId, calculateMinWidth, setCharSize);
   const showCardView = useResponsiveView();
 
   const handleOnPageChange = (_event, pageIndex) => {

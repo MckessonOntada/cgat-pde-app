@@ -27,7 +27,7 @@ collapsibleCardView -- A user input that card can be expand and  collapse
 
 function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleCardView = true, rowIndex, selectedData = [] }) {
   const isSelectableInput = columns.filter((col) => !!col.isSelectable);
-  const showDefaultData = columns
+  let showDefaultData = columns
     .filter((col) => !!col.showInMobileHeader && !col.isAction && !col.omit && !col.isSelectable)
     .sort((a, b) => {
       // sorting the card headers
@@ -42,6 +42,16 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
   const hiddenData = columns.filter((col) => !col.showInMobileHeader && !col.isAction && !col.omit);
   const actionItems = columns.filter((col) => col.isAction && !col.omit && !col.omit);
 
+  const inlineStatus = showDefaultData.filter(col => !!col.inlineStatus);
+  if (inlineStatus.length > 0) { 
+    showDefaultData = showDefaultData.filter(col => !col.inlineStatus);
+  
+    if (showDefaultData.length > 0) {
+      const lastRow = showDefaultData.pop();
+      inlineStatus.unshift(lastRow);
+    }
+  }  
+  
   const [expanded, setExpanded] = useState(defaultExpandedCardView || showDefaultData.length === 0);
 
   const handleCardClick = (e) => {
@@ -70,7 +80,7 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
   };
 
   const renderExpandIcon = (colIndex) => {
-    return colIndex === 0 && hiddenData.length > 3 ? (
+    return colIndex === 0 && hiddenData.length > 2 ? (
       <Button variant="tertiary" type="button" onClick={() => {}} className="expand-collapse-toggle">
         <img src={expanded ? arrow_down : arrow_right} alt="toggle-icon" />
       </Button>
@@ -97,14 +107,46 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
         </div>
       )}
 
-      {(showDefaultData.length > 0 || actionItems.length > 0) && (
-        <div className="card-header">
-          <div className="default-data-container" style={{ width: '100%' }}>
-            {showDefaultData.map((col, colIndex) => (
+      {(showDefaultData.length > 0 || actionItems.length > 0 || inlineStatus.length > 0) && (
+        <>
+          <div className="card-header">
+            <div className="default-data-container" style={{ width: '100%' }}>
+              {showDefaultData.map((col, colIndex) => (
+                <div key={col.id} className="collapsed-detail" style={col.mobileStyles}>
+                  {renderExpandIcon(colIndex)}
+                  {col.showColumnNameInHeader && col.name && (
+                    <div>
+                      {col.name} {colIndex === 0 ? ':' : '-'}
+                    </div>
+                  )}
+                  <div
+                    onClick={(e) => handleActionClick(e, col.onClick)}
+                    className={`default-data-Value ${colIndex === 0 ? `card-main-header` : ``}`}>
+                    {renderCell(col, row)}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="collapsed-detail action-button">
+              {actionItems.map((col) =>
+                !!col.isContextMenu ? (
+                  <div onClick={(e) => handleActionClick(e, col.onClick)}>{renderCell(col, row)}</div>
+                ) : (
+                  <MenuList
+                    menuIcon={<IconEllipsis key={'menu-list-order-table'} />}
+                    handleSelect={() => {}}
+                    options={[{ label: renderCell(col, row) }]}
+                    aria-label="Order options"
+                  />
+                )
+              )}
+            </div>
+          </div>
+          <div className='inline-status'>
+            {inlineStatus.map((col, colIndex) => (
               <div key={col.id} className="collapsed-detail" style={col.mobileStyles}>
-                {renderExpandIcon(colIndex)}
                 {col.showColumnNameInHeader && col.name && (
-                  <div>
+                  <div className='column-name'>
                     {col.name} {colIndex === 0 ? ':' : '-'}
                   </div>
                 )}
@@ -116,21 +158,7 @@ function CustomCard({ columns, row, defaultExpandedCardView = true, collapsibleC
               </div>
             ))}
           </div>
-          <div className="collapsed-detail action-button">
-            {actionItems.map((col) =>
-              !!col.isContextMenu ? (
-                <div onClick={(e) => handleActionClick(e, col.onClick)}>{renderCell(col, row)}</div>
-              ) : (
-                <MenuList
-                  menuIcon={<IconEllipsis key={'menu-list-order-table'} />}
-                  handleSelect={() => {}}
-                  options={[{ label: renderCell(col, row) }]}
-                  aria-label="Order options"
-                />
-              )
-            )}
-          </div>
-        </div>
+        </>
       )}
       {(expanded || showDefaultData.length === 0) && (
         <div className="card-details">
