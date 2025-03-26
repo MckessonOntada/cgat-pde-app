@@ -486,7 +486,6 @@ function AdditionalDetails() {
   if (isLoader) {
     return isLoader;
   }
-  console.log(initialFormValues?.variant?.document);
   return (
     <div className="MCP-module-wrapper">
       {isSaving && <Loader type={'screen'} />}

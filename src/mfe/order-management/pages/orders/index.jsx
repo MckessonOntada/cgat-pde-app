@@ -69,18 +69,9 @@ const OrderIndex = () => {
 
   React.useEffect(() => {
     if (activeTabFromState) {
-      // setActiveTab(activeTabFromState);
-      // setTabVariant(2); // Set the tab from state
       changeTab(ORDER_TABS.SUBMITTED_BUY_AND_BILL);
     } else {
-      if (isPendingTab || (isPendingTab && isSubmittedTab)) {
-        // setActiveTab(1);
-        // setTabVariant(1);
-      } else if (isSubmittedTab) {
-        // setActiveTab(2);
-        // setTabVariant(2);
-        changeTab(ORDER_TABS.SUBMITTED_BUY_AND_BILL);
-      }
+      changeTab(ORDER_TABS.SUBMITTED_BUY_AND_BILL);
     }
   }, [activeTabFromState]);
 

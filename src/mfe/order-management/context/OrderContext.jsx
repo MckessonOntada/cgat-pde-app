@@ -37,8 +37,6 @@ export const OrderProvider = ({ children }) => {
   const [tabVariant, setTabVariant] = React.useState(ORDER_TABS.SUBMITTED_BUY_AND_BILL);
 
   const requestParams = React.useMemo(() => {
-    console.log(filterConfig.status || TAB_FILTERS[tabVariant].join(','));
-
     const params = {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
