@@ -15,7 +15,7 @@ export const onConfirmPayment = (selectedAccount, state, payInvoices, t, selecte
   let _totalAmount = 0;
   let _totalpaymentAmount = 0;
   state.invoices.map((item) => {
-    _totalAmount = _totalAmount + parseFloat(item.billAmount);
+    _totalAmount = _totalAmount + parseFloat(item.openAmount);
     _totalpaymentAmount = _totalpaymentAmount + parseFloat(item.paymentAmount);
   });
   if (_totalpaymentAmount < _totalAmount) {
