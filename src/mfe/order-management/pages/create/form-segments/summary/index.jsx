@@ -45,7 +45,7 @@ const getOrderCost = (originalOrderCost, updatedOrderCost) => {
   let orderCost = originalOrderCost;
 
   if (!updatedOrderCost || isNaN(updatedOrderCost)) orderCost = originalOrderCost;
-  if (parseFloat(orderCost) !== parseFloat(updatedOrderCost)) orderCost = updatedOrderCost;
+  else if (parseFloat(orderCost) !== parseFloat(updatedOrderCost)) orderCost = updatedOrderCost;
 
   return CommonUtils.formatNumberWithoutSymbol(orderCost);
 };
