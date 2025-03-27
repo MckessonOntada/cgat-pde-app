@@ -8,7 +8,6 @@ import EditUser from "../pages/CreateUser";
 import UserPermissions from "../pages/UserPermissions";
 import AddAccounts from "../pages/AddAccounts";
 import NotFound from "../../../pages/error-pages/NotFound";
-import AccountSetting from "@src/components/AccountSetting";
 
 const Routes = () => {
   return (
@@ -16,7 +15,6 @@ const Routes = () => {
       <Route path={PATHS.dashboard} element={<Home />} />
       <Route path={PATHS.userDetail} element={<UserDetail />} />
       <Route path={PATHS.createUser} element={<CreateUser />} />
-      <Route path={PATHS.accountSetting} element={<AccountSetting />} />
       <Route path={`${PATHS.editUser}/:userId`} element={<EditUser />} />
       <Route path={`${PATHS.userPermissions}/:userId`} element={<UserPermissions />} />
       <Route path={`${PATHS.addAccounts}/:userId`} element={<AddAccounts />} />

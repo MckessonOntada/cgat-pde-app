@@ -67,12 +67,8 @@ const HeaderConfig = {
   ],
   profileOptions: [
     {
-      label: 'Profile Settings',
-      value: '#',
-    },
-    {
       label: 'Account Setting',
-      value: '/admin/user/account-setting',
+      value: '/account-setting',
     },
   ],
   languages: [
