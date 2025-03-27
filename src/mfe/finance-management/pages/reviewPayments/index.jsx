@@ -456,7 +456,7 @@ function ReviewPayments() {
           <div className="sectionHeader">
             {REVIEW_MODE ? t('paymentInvoices.reviewPayments.invoiceSelected') : t('paymentInvoices.reviewPayments.invoice')}
           </div>
-          <SelectedInvoiceList selectedInvoices={selectedInvoices} setSelectedInvoices={setSelectedInvoices} />
+          <SelectedInvoiceList omitColumns={['billDate']} selectedInvoices={selectedInvoices} setSelectedInvoices={setSelectedInvoices} />
         </div>
         {!REVIEW_MODE && (
           <div className="invoice-sum-container">

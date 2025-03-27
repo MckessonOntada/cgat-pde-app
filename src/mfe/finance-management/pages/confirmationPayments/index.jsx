@@ -166,7 +166,11 @@ function ConfirmationPayments() {
         </div>
         <Heading as="h2">{t('paymentInvoices.reviewPayments.invoices')}</Heading>
         <div>
-          <SelectedInvoiceList selectedInvoices={selectedInvoices} setSelectedInvoices={setSelectedInvoices} />
+          <SelectedInvoiceList
+            omitColumns={['description']}
+            selectedInvoices={selectedInvoices}
+            setSelectedInvoices={setSelectedInvoices}
+          />
         </div>
 
         <div className="MCP-module-wrapper">
