@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Badge, Button, Loader, DropdownMenu } from '@mckesson/mcp-component-library';
+import { Badge, Button, Loader, MenuList } from '@mckesson/mcp-component-library';
 import { Link } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { usePaymentInvoices } from '../../context/PaymentsInvoicesContext';
@@ -16,6 +16,7 @@ import useResponsiveView from '@src/hooks/useResponsiveView';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import { useAccountContext } from '../../context/AccountContext';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
+import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 
 export default function InvoicesTable() {
   const { t } = useTranslate();
@@ -58,7 +59,7 @@ export default function InvoicesTable() {
           <Link
             style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
             to={`/record/${PATHS.invoices}/${props?.billNumber}/details`}
-            state={{ invoices: [...[], props] }}>{`${props?.billNumber || ''}`}</Link>
+            state={{ invoices: [...[], props], selectedPayToAcc: selectedAccount }}>{`${props?.billNumber || ''}`}</Link>
         </div>
       )
     },
@@ -67,37 +68,34 @@ export default function InvoicesTable() {
       name: t('paymentInvoices.history.table.SoldToSite'),
       selector: (row) => row.soldToSite,
       maxWidth: '140px',
+      minWidth: '140px',
       sortable: true,
-      wrap: true,
       showInMobileHeader: true,
       cardHeader: true,
       mobileStyles: { fontWeight: 'var(--brand-font-weight-700)' },
-      cell: (props) => <div className='textCapitalize'>{props?.soldToSite || '-'}</div>
+      cell: (props) => <div className="textCapitalize">{props?.soldToSite || '-'}</div>
     },
     {
       name: t('paymentInvoices.history.table.PostingDate'),
       selector: (row) => row.billDate,
       sortable: true,
       id: 'billDate',
-      wrap: true,
       width: '120px',
       cell: (props) => CommonUtils.convertDateStringFormat(props.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       name: t('paymentInvoices.history.table.DueDate'),
       selector: (row) => row.dueDate,
-      width: '120px',
+      width: '125px',
       sortable: true,
-      wrap: true,
       id: 'dueDate',
       cell: (props) => CommonUtils.convertDateStringFormat(props?.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
       name: t('paymentInvoices.history.table.OpenAmount'),
       selector: (row) => row.openAmount,
-      minWidth: '144px',
+      minWidth: '155px',
       sortable: true,
-      wrap: true,
       id: 'openAmount',
       cell: (props) => (
         <div className="cellEllipse align-items-right ">
@@ -107,7 +105,7 @@ export default function InvoicesTable() {
       right: true
     },
     {
-      name: t('paymentInvoices.history.table.status'),
+      name: <span className="statusCenter">{t('paymentInvoices.history.table.status')}</span>,
       selector: (row) => row.status,
       minWidth: '170px',
       sortable: true,
@@ -118,11 +116,11 @@ export default function InvoicesTable() {
       cardStatus: true,
       cell: (props) => (
         <div className="status-container">
-          {props?.status ? (
+          {props.status ? (
             <Badge
-              text={DUE_STATUS[props?.status].label}
+              text={DUE_STATUS[props.status]?.label}
               type={'info-default'}
-              customStyle={{ color: `${DUE_STATUS[props?.status].color}`, border: `1px solid ${DUE_STATUS[props?.status].color}` }}
+              customStyle={{ color: `${DUE_STATUS[props.status]?.color}`, border: `1px solid ${DUE_STATUS[props.status]?.color}` }}
             />
           ) : (
             '-'
@@ -142,23 +140,44 @@ export default function InvoicesTable() {
           <FormattedNumber value={props?.billAmount || 0} style="currency" currency="USD" />
         </div>
       )
+    },
+    {
+      name: t('paymentInvoices.history.table.Actions'),
+      width: '100px',
+
+      id: 'actions',
+      wrap: true,
+      showInMobileHeader: true,
+      isAction: true,
+      isContextMenu: true, // If it is already a context menu
+      cell: (props) => (
+        <MenuList
+          menuIcon={<IconEllipsis key={'menu-list-invoice-actions'} />}
+          handleSelect={(value) => handleOnOptionSelection(value, props)}
+          options={[
+            {
+              label: t('paymentInvoices.Actions.payment'),
+              value: 'payment'
+            }
+            // {
+            //   label: t('paymentInvoices.Actions.exportPDF'),
+            //   value: 'exportPDF'
+            // }
+          ]}
+          aria-label="invoice options"
+        />
+      ),
+      omit: !CommonUtils.enableReviewAndPay(selectedAccount)
     }
-    // {
-    //   name: t('paymentInvoices.history.table.Actions'),
-    //   minWidth: '144px',
-    //   sortable: true,
-    //   id: 'actions',
-    //   wrap: true,
-    //   showInMobileHeader: true,
-    //   isAction: true,
-    //   isContextMenu: true, // If it is already a context menu
-    //   cell: (props) => (
-    //     <div className="actionIcon">
-    //       <DropdownMenu anchorEl={<ActionIcon />} handleSelect={() => {}} options={[]} optionsAlign="left" aria-label="Profile options" />
-    //     </div>
-    //   )
-    // }
   ];
+
+  const handleOnOptionSelection = (value, row) => {
+    if (value == 'payment') {
+      navigate(`/record/invoices/reviewPayments`, { state: { invoices: [row], reviewPay: true, selectedPayToAcc: selectedAccount } });
+    } else {
+      // Export PDF API integration
+    }
+  };
   const handleSort = (selectedColumn, sortDirection) => {
     if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
   };
@@ -181,7 +200,9 @@ export default function InvoicesTable() {
           <Button
             variant="secondary"
             onClick={() => {
-              navigate(`/record/invoices/reviewPayments`, { state: { invoices: includeinvoiceData, reviewPay: true } });
+              navigate(`/record/invoices/reviewPayments`, {
+                state: { invoices: includeinvoiceData, reviewPay: true, selectedPayToAcc: selectedAccount }
+              });
             }}
             size="sm">
             {t('paymentInvoices.Details.ReviewAndPay')}

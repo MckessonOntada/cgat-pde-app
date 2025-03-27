@@ -38,6 +38,9 @@ function Details(props) {
   const navigate = useNavigate();
   const locationParams = useLocation();
   const showCardView = useResponsiveView();
+
+  const { state: { invoices = [], selectedCredit = [] } = {} } = locationParams;
+  const source = invoices[0] || selectedCredit[0];
   const onBackToPaymentsInvoices = () => {
     navigate(-1);
   };
@@ -51,7 +54,10 @@ function Details(props) {
           companyCode: selectedAccount?.companyCode,
           salesOrg: selectedAccount?.salesOrg,
           payerAccountNumber: selectedAccount?.accountNumber,
-          userName: ''
+          userName: '',
+          fiscalYear: source?.fiscalYear,
+          lineItem: source?.lineItem,
+          referenceDocumentNumber: source?.referenceDocumentNumber
         };
         const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
         if (res.data) {
@@ -260,30 +266,19 @@ function Details(props) {
         </div>
       </div>
       <div className="footer-section">
-        {INVOICES_SCREEN ? (
-          !locationParams?.state?.reviewPay && (
-            <React.Fragment>
-              <Button size="md" variant="secondary" disabled>
-                {t('paymentInvoices.Details.DownloadPDF')}
-              </Button>
-              {CommonUtils.enableReviewAndPay(selectedAccount) && (
-                <Button
-                  size="md"
-                  variant="primary"
-                  type="submit"
-                  onClick={() => {
-                    navigate(`/record/invoices/reviewPayments`, { state: { ...locationParams.state, reviewPay: true } });
-                  }}>
-                  {t('paymentInvoices.Details.ReviewAndPay')}
-                </Button>
-              )}
-            </React.Fragment>
-          )
-        ) : (
+        {!locationParams?.state?.reviewPay && (
           <React.Fragment>
-            <Button size="md" variant="primary" disabled>
-              {t('paymentInvoices.Details.DownloadPDF')}
-            </Button>
+            {CommonUtils.enableReviewAndPay(selectedAccount) && (
+              <Button
+                size="md"
+                variant="primary"
+                type="submit"
+                onClick={() => {
+                  navigate(`/record/invoices/reviewPayments`, { state: { ...locationParams.state, reviewPay: true } });
+                }}>
+                {t('paymentInvoices.Details.ReviewAndPay')}
+              </Button>
+            )}
           </React.Fragment>
         )}
       </div>

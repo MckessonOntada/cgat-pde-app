@@ -1,26 +1,31 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { TabList, Alert, Button, Tooltip } from '@mckesson/mcp-component-library';
 import './index.scss';
-import { PATHS } from '../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useUser } from '../../context/UserContext';
-import UserTable from './UserTable';
-import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
-import { debugIds, ID } from '@src/constants/id';
-import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
-import { ReactComponent as UploadSVG } from '@src/assets/image/upload_bottom.svg';
-import { ReactComponent as DownloadSVG } from '@src/assets/svg/downloadArrow.svg';
 import CommonUtils from '@src/util/CommonUtils';
 import { useMutation } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import useSnackbar from '@src/hooks/useSnackbar';
+import UploadUsersFile from '@src/components/uploadFileCsv/UploadUsersFile.jsx';
 
-function UploadUsers({ showAlert }) {
-  const [inputKey, setInputKey] = useState(0);
+function UploadUsers() {
   const { showSnackbar } = useSnackbar();
   const { refreshData } = useUser();
   const { t } = useTranslate();
+  const [alert, setAlert] = useState({ type: '', description: '', isAlertVisible: false });
+
+  const showAlert = (type, message) => {
+    setAlert({ type: type, description: message, isAlertVisible: true });
+    const timer = setTimeout(() => {
+      setAlert({ type: '', description: '', isAlertVisible: false });
+    }, 10000);
+    return () => clearTimeout(timer);
+  };
+  const handleAlertClose = () => {
+    setAlert({ type: '', description: '', isAlertVisible: false });
+  };
+  
 
   const handleDownload = () => {
     const fileUrl = '/templates/upload_users_template.csv';
@@ -67,35 +72,33 @@ function UploadUsers({ showAlert }) {
       }
     }
   );
-
-  const handleFileChange = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  const handleUpload = (value) => {
+    if (!value.file) return;
     const url = `${ApiRoutes.USERS()}/upload?userType=GENERAL`;
     const formData = new FormData();
-    formData.append('userData', file);
-    uploadBulkUser({ url, payload: formData, type: 'csv' });
-    setInputKey(inputKey + 1);
+    formData.append('userData', value.file);
+    uploadBulkUser({ url, payload: formData });
   };
+  
+  function validateFile(file) {
+    const allowdTypes = ['text/csv'];
+    if (!allowdTypes.includes(file.type)) {
+      return { isValid: false, message: 'Unsupported file type. Please upload a valid file.' };
+    }
+    return { isValid: true, message: 'File is valid.' };
+  }
+
   return (
     <React.Fragment>
-      <div className="upload-userBtn">
-        <input type="file" key={inputKey} id="fileInput" onChange={handleFileChange} style={{ display: 'none' }} accept=".csv" />
-        <Button Icon={UploadSVG} className="button-icon" variant="primary" size="md" onClick={(e) => e.stopPropagation()}>
-          <label htmlFor="fileInput">
-            {isLoading ? t('userManagement.button.uploadingUsers') : t('userManagement.button.uploadUsers')}
-          </label>
-        </Button>
-      </div>
-
-      <Tooltip
-        body={t('userManagement.button.downloadTemplateDescription')}
-        title={t('userManagement.button.downloadTemplate')}
-        placement="top-end">
-        <div className="download-Icon" onClick={handleDownload}>
-          <DownloadSVG />
-        </div>
-      </Tooltip>
+      <UploadUsersFile 
+        downloadTemplate={handleDownload} 
+        handleUpload={handleUpload} 
+        validateFile={validateFile} 
+        label={t('lebal.users')}
+        alert={alert}
+        handleAlertClose={handleAlertClose}
+        isLoading={isLoading}
+      />
     </React.Fragment>
   );
 }

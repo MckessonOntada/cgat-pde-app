@@ -45,6 +45,7 @@ export const OrderProvider = ({ children }) => {
       pageSize: paginationConfig.pageSize,
       sortBy: sortConfig.sortBy || 'createdAt',
       sortOrder: sortConfig.sortOrder || 'desc',
+      showMyOrders: false,
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       ...(tabVariant === 2
         ? { statuses: `${StatusEnum.SUBMITTED}` }

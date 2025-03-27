@@ -47,12 +47,14 @@ export const onConfirmPayment = (selectedAccount, state, payInvoices, t, selecte
       });
     });
   }
+
   if (state.creditsSelected && state.creditsSelected.length > 0) {
     state.creditsSelected.map((item) => {
       payload.credits.push({
         billNumber: item.billNumber,
         amount: item.billAmount,
-        soldToSite: item.soldToSite
+        soldToSite: item.soldToSite,
+        fiscalYear: item.fiscalYear
       });
     });
   }
@@ -63,15 +65,22 @@ export const onConfirmPayment = (selectedAccount, state, payInvoices, t, selecte
     if (_accType == paymentMethod.BANK) {
       payload.paymentMethod.bank = {
         accountNumber: _selectedPayment.accountNumber,
-        name: _selectedPayment.name
+        name: _selectedPayment.name,
+        type: _selectedPayment.type
       };
     } else {
       let _credit = { ...{}, ..._selectedPayment };
-      delete _credit.accType;
-      delete _credit.label;
-      delete _credit.name;
+      _credit = omitKeys(_credit, ['accType', 'label', 'name', 'value']);
       payload.paymentMethod.credit = _credit;
     }
   }
   payInvoices(payload);
+};
+
+const omitKeys = (object, keys = []) => {
+  for (let ele of keys) {
+    if (object && object[ele]) {
+      delete object[ele];
+    }
+  }
 };

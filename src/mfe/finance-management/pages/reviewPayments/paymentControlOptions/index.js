@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './assets/index.module.scss';
-import { Label, Legend, Heading, CustomDatepicker } from '@mckesson/mcp-component-library';
+import { Label, Legend, Heading, CustomDatepicker, TextError } from '@mckesson/mcp-component-library';
 
 export const PaymentOptionsControls = (props) => {
   let {
@@ -26,7 +26,7 @@ export const PaymentOptionsControls = (props) => {
   return (
     <>
       <fieldset
-        onChange={onChangeRadio}
+        // onChange={onChangeRadio}
         className={`${styles['direction-column']} ${showFlexWrap && styles.flexWrapStyle}`}
         data-testid="radio-container">
         <Legend fontSize={'var(--brand-font-size--small)'} className={styles.labelContainer} styles={labelCustomStyles}>
@@ -55,7 +55,7 @@ export const PaymentOptionsControls = (props) => {
                     value={item.value}
                     disabled={item.isDisabled}
                     checked={item.value === value}
-                    onChange={() => {}} // ignored as fieldset is handling the onChange, this is dummy event to suppress html error
+                    onChange={onChangeRadio} // ignored as fieldset is handling the onChange, this is dummy event to suppress html error
                   />
                   <Label htmlFor={id + '-item-' + index} customStyles={itemCustomStyles}>
                     {item.label}
@@ -67,13 +67,17 @@ export const PaymentOptionsControls = (props) => {
                 {item?.subType === 'datePicker' && (
                   <div className={styles.datePickerSubField}>
                     <CustomDatepicker
+                      key={value}
                       id={id + '-sub-radio-field-' + index}
                       name={item.value}
-                      value={''}
+                      value={item.subTypeValue}
                       onChangeFn={(e) => item.onSubTypeChange(e)}
                       isDisabled={item.isDisabled || item.value !== value}
                       isShowLabel={false}
+                      disablePast={item.disablePast ? true : false}
+                      onBlur={(event) => item.onBlurSubType?.(event)}
                     />
+                    {item.errorMsg && <TextError errorMessage={item.errorMsg} />}
                   </div>
                 )}
               </div>

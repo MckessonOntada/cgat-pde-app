@@ -27,7 +27,7 @@ const Footer = () => {
             </div>
             <div className={style.footerBase}>
                 <McKessonLogoWhite aria-hidden="true" focusable="false" title={t('company.logoAltText')} />
-                <p>{t('footer.copyright')}</p>
+                <p>{t('footer.copyright').replace('{{year}}', new Date().getFullYear())}</p>
             </div>
         </div>
     </div>

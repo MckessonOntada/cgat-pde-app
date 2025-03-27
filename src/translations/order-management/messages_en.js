@@ -11,6 +11,7 @@ export const MessageEn = {
   'headings.orderSubmitted': 'Order Submitted!',
   'headings.orderApproved': 'Order Approved!',
   'headings.addShippingAddress': 'Add Shipping Address',
+
   'captions.status': 'Status',
   'captions.clearFilters': 'Clear Filters',
   'controls.createNewOrder': 'Create New Order',
@@ -47,6 +48,7 @@ export const MessageEn = {
   'captions.btnSelectYourAccount': 'Select Your Account',
   'labels.orderDetails': 'Order Details',
   'labels.variant': 'Variant',
+  'labels.configuredQuestionnaires': 'Configured Questionnaires',
   'labels.coiId': 'COI ID',
   'labels.orderQuantity': 'Order Quantity',
   'labels.provideSlotNumber': 'Please provide the Slot Number',
@@ -105,6 +107,7 @@ export const MessageEn = {
   'labels.dateOfAdministration': 'Date of Administration',
   'labels.slotNo': 'Slot No',
   'labels.selectVariant': 'Select Variant',
+  'labels.configuredQuestionnaires': 'Configured Questionnaires',
   'labels.poNo': 'PO No',
   'labels.variantDescription': 'Variant Description',
   'labels.actions.view': 'View',
@@ -142,6 +145,7 @@ export const MessageEn = {
   'labels.sapId': 'SAP ID',
   'labels.therapy': 'Therapy',
   'table.columns.captions.author': 'Author',
+  'table.columns.captions.assignee': 'Assignee',
   'table.columns.captions.createdOn': 'Created On',
   'table.columns.captions.status': 'Status',
   'table.columns.captions.submittedBy': 'Submitted By',
@@ -166,7 +170,7 @@ export const MessageEn = {
   'labels.orderActions.edit': 'Edit Order',
   'labels.orderActions.cancel': 'Cancel Order',
   'labels.orderActions.assignToMe': 'Assign to me',
-  'labels.orderActions.unassignToMe': 'UnAssign to me',
+  'labels.orderActions.unassignToMe': 'Unassign',
   'labels.orderActions.approve': 'Approve Order',
   'labels.orderActions.deletemessage': 'Are you sure you wish to Delete this Order ?',
   'labels.orderActions.cancelmessage': 'Please reach out to customer support at 1800XXXXXXX for any updation or cancellation in the order.',
@@ -437,5 +441,7 @@ export const MessageEn = {
   'labels.OrderProcesing.SAPOrderStatus.Open': 'OPEN',
   'labels.OrderProcesing.SAPOrderStatus.Cancelled': 'CANCELLED',
   'labels.OrderProcesing.SAPOrderStatus.Completed': 'COMPLETED',
-  'errors.orders_index_additional_details.po_number_1_practice_id_1': 'PO Number already exists.'
+  'errors.orders_index_additional_details.po_number_1_practice_id_1': 'PO Number already exists.',
+  'labels.pap': 'PAP',
+  'labels.pap.order': 'PAP ORDER'
 };

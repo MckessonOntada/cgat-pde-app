@@ -5,10 +5,7 @@ import AppRoutes from '../../routes/AppRoutes';
 const getAppAuthToken = () => sessionStorage.getItem('APP_AUTH_TOKEN');
 
 const setAppAuthToken = (authState) => {
-  sessionStorage.setItem(
-    'APP_AUTH_TOKEN',
-    `${authState.accessToken.tokenType} ${authState.accessToken.accessToken}`
-  );
+  sessionStorage.setItem('APP_AUTH_TOKEN', `${authState.accessToken.tokenType} ${authState.accessToken.accessToken}`);
 };
 
 const clearLocalStorage = () => {

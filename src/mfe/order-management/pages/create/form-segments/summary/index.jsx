@@ -27,6 +27,8 @@ import { CUSTOMER_CENTRE, SYSTEM_ADMIN } from '@src/api/commonService/CommonServ
 import { InventoryIndicator } from '../InventoryIndicator';
 import useSapOrder from './useSapOrder';
 import useTimedArray from './useTimedArray';
+import AttachmentCard from './AttachmentCard';
+import { QUESTION_TYPE } from '@src/mfe/order-management/questionnaire/AddQuestionnaire';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -65,7 +67,8 @@ const Summary = () => {
     rejectionDetails,
     paporder: isPapOrder,
     backendOrderId,
-    status
+    status,
+    paporder
   } = orderDetails || {};
 
   const {
@@ -128,7 +131,7 @@ const Summary = () => {
       if (warningMessages && warningMessages.length > 0) {
         addNotification(
           ...warningMessages.map((warn) => ({
-            description: warn.errorMessage,
+            description: warn.value,
             type: 'warning'
           }))
         );
@@ -420,6 +423,37 @@ const Summary = () => {
     return <Loader type={'screen'} />;
   }
 
+  let variantAttachment = null,
+    configuredQuestionnaires = [];
+
+  if (additionalDetails.variantDetails?.variantDocumentPath) {
+    try {
+      variantAttachment = JSON.parse(additionalDetails.variantDetails.variantDocumentPath);
+    } catch (error) {}
+  }
+
+  if (additionalDetails.configuredQuestionnaires && additionalDetails.configuredQuestionnaires.length > 0) {
+    additionalDetails.configuredQuestionnaires.forEach((template) => {
+      if (template?.questions && template.questions.length > 0) {
+        template.questions.forEach((question) => {
+          if (question.value) {
+            const details = {
+              text: question.text.en,
+              value: question.value
+            };
+
+            if (question.document) {
+              details.attachment = {
+                name: question.document.name,
+                size: question.document.size
+              };
+            }
+            configuredQuestionnaires.push(details);
+          }
+        });
+      }
+    });
+  }
   return (
     <div className="MCP-module-wrapper order-summary-container">
       <div>
@@ -428,7 +462,16 @@ const Summary = () => {
         </Button>
       </div>
       {orderDetails?.status === StatusEnum.IN_DRAFT && <PageHeader heading={t('headings.createNewOrder')} />}
-      {isApprover && <PageHeader heading={t('headings.reviewOrder')} />}
+      {isApprover && (
+        <div className={styles.pageHeadingReview}>
+          <PageHeader heading={t('headings.reviewOrder')} />
+          {paporder && (
+            <span className={styles.pap}>
+              <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('labels.pap.order')} />
+            </span>
+          )}
+        </div>
+      )}
 
       <div className="MCP-module-body" ref={contentRef}>
         {!hideControls && !isRejected && (
@@ -450,10 +493,18 @@ const Summary = () => {
         <div className={'MCP-module-wrapper'}>
           <ModuleHeader
             heading={
-              <Heading className={styles.orderSummaryHeading} as="h2">
-                {t('labels.summary')}
-              </Heading>
+              !isApprover && (
+                <Heading className={styles.orderSummaryHeading} as="h2">
+                  <span>{t('labels.summary')}</span>
+                  {paporder && (
+                    <span className={styles.pap}>
+                      <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('labels.pap.order')} />
+                    </span>
+                  )}
+                </Heading>
+              )
             }
+            className={styles.orderSummary}
             controls={
               isRejected ? (
                 <div className="row-space-between-center">
@@ -589,18 +640,70 @@ const Summary = () => {
                 </div>
               </div>
             </div>
-            {patientDetailsRequired && (
+
+            <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'}>
+              {patientDetailsRequired && (
+                <div className="MCP-CardContainer">
+                  <ModuleHeader
+                    className={styles.panelHeader}
+                    heading={<Heading as="h3">{t('labels.patientDetails')}</Heading>}
+                    controls={
+                      !hideControls && (
+                        <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                          <Button
+                            size="md"
+                            variant="tertiary"
+                            onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
+                            Icon={() => <IconEditField />}>
+                            {t('captions.btnEdit')}
+                          </Button>
+                        </PermittedComponent>
+                      )
+                    }
+                  />
+                  <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2`}>
+                    <DetailSegment label={t('labels.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
+                    <DetailSegment
+                      label={t('labels.patientName')}
+                      value={
+                        patient.fullName ? (
+                          <Tooltip body={patient.fullName}>
+                            <span className="overflowing">{patient.fullName}</span>
+                          </Tooltip>
+                        ) : (
+                          '-'
+                        )
+                      }
+                    />
+                    <DetailSegment label={t('labels.DOB')} value={patient?.patientInfo?.dateOfBirth || '-'} />
+
+                    <DetailSegment
+                      label={t('labels.emailId')}
+                      value={
+                        patient?.contact?.emailId ? (
+                          <Tooltip body={patient.contact.emailId}>
+                            <span className="overflowing">{patient.contact.emailId}</span>
+                          </Tooltip>
+                        ) : (
+                          '-'
+                        )
+                      }
+                    />
+                    <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
+                  </div>
+                </div>
+              )}
               <div className="MCP-CardContainer">
                 <ModuleHeader
                   className={styles.panelHeader}
-                  heading={<Heading as="h3">{t('labels.patientDetails')}</Heading>}
+                  heading={<Heading as="h3">{t('labels.additionalDetails')}</Heading>}
                   controls={
                     !hideControls && (
                       <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
                         <Button
                           size="md"
                           variant="tertiary"
-                          onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
+                          onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
                           Icon={() => <IconEditField />}>
                           {t('captions.btnEdit')}
                         </Button>
@@ -608,65 +711,91 @@ const Summary = () => {
                     )
                   }
                 />
-                <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5`}>
-                  <DetailSegment label={t('labels.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
-                  <DetailSegment
-                    label={t('labels.patientName')}
-                    value={
-                      patient.fullName ? (
-                        <Tooltip body={patient.fullName}>
-                          <span className="overflowing">{patient.fullName}</span>
-                        </Tooltip>
-                      ) : (
-                        '-'
-                      )
-                    }
-                  />
-                  <DetailSegment label={t('labels.DOB')} value={patient?.patientInfo?.dateOfBirth || '-'} />
+                <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
+                  <DetailSegment label={t('labels.slotNo')} value={additionalDetails?.slotNumber} />
+                  <DetailSegment label={t('labels.poNo')} value={additionalDetails?.poNumber} />
+                  <DetailSegment label={t('labels.dateOfAdministration')} value={additionalDetails?.dateOfAdministration || '-'} />
+                </div>
+              </div>
+            </div>
 
-                  <DetailSegment
-                    label={t('labels.emailId')}
-                    value={
-                      patient?.contact?.emailId ? (
-                        <Tooltip body={patient.contact.emailId}>
-                          <span className="overflowing">{patient.contact.emailId}</span>
-                        </Tooltip>
-                      ) : (
-                        '-'
-                      )
-                    }
-                  />
-                  <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
+            {additionalDetails.variantDetails && (
+              <div className="MCP-CardContainer">
+                <ModuleHeader
+                  className={styles.panelHeader}
+                  heading={<Heading as="h3">{t('labels.variant')}</Heading>}
+                  controls={
+                    !hideControls && (
+                      <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                        <Button
+                          size="md"
+                          variant="tertiary"
+                          onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
+                          Icon={() => <IconEditField />}>
+                          {t('captions.btnEdit')}
+                        </Button>
+                      </PermittedComponent>
+                    )
+                  }
+                />
+                <div className="MCP-module-body">
+                  <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
+                    <DetailSegment label={'Variant'} value={additionalDetails?.variantDetails?.variant} />
+                    {variantAttachment && <AttachmentCard fileName={variantAttachment.name} fileSize={variantAttachment.size} />}
+                  </div>
                 </div>
               </div>
             )}
-            <div className="MCP-CardContainer">
-              <ModuleHeader
-                className={styles.panelHeader}
-                heading={<Heading as="h3">{t('labels.additionalDetails')}</Heading>}
-                controls={
-                  !hideControls && (
-                    <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                      <Button
-                        size="md"
-                        variant="tertiary"
-                        onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
-                        Icon={() => <IconEditField />}>
-                        {t('captions.btnEdit')}
-                      </Button>
-                    </PermittedComponent>
-                  )
-                }
-              />
-              <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-6'}>
-                <DetailSegment label={t('labels.slotNo')} value={additionalDetails?.slotNumber} />
-                <DetailSegment label={t('labels.poNo')} value={additionalDetails?.poNumber} />
-                <DetailSegment label={t('labels.dateOfAdministration')} value={additionalDetails?.dateOfAdministration || '-'} />
-                <DetailSegment label={t('labels.selectVariant')} value={variantDetails.variant || '-'} />
-                <DetailSegment label={t('labels.variantDescription')} value={variantDetails.variantDescription || '-'} />
-                <DetailSegment label={t('labels.patientConsent')} value={additionalDetails?.patientConsentTaken ? 'Yes' : 'No'} />
+
+            {additionalDetails.configuredQuestionnaires && additionalDetails.configuredQuestionnaires.length > 0 && (
+              <div className="MCP-CardContainer">
+                <ModuleHeader
+                  className={styles.panelHeader}
+                  heading={<Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading>}
+                  controls={
+                    !hideControls && (
+                      <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                        <Button
+                          size="md"
+                          variant="tertiary"
+                          onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
+                          Icon={() => <IconEditField />}>
+                          {t('captions.btnEdit')}
+                        </Button>
+                      </PermittedComponent>
+                    )
+                  }
+                />
+                <div className="MCP-module-body">
+                  <div className="summary-question-list">
+                    {configuredQuestionnaires.map((question) => {
+                      console.log(question);
+                      return (
+                        <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
+                          <DetailSegment
+                            label={question.text}
+                            value={
+                              question.value && Array.isArray(question.value) ? (
+                                <div>
+                                  {question.value.map((val) => (
+                                    <div>{val.replace(/_/g, ' ')}</div>
+                                  ))}
+                                </div>
+                              ) : (
+                                question.value
+                              )
+                            }
+                          />
+                          {question.attachment && (
+                            <AttachmentCard fileName={question.attachment.name} fileSize={question.attachment.size} />
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
           </div>
           {!hideControls && (
             <div className="agreement-checkbox-control">
@@ -680,7 +809,7 @@ const Summary = () => {
               />
             </div>
           )}
-          <div className='footer-wrapper'>
+          <div className="footer-wrapper">
             <div className="controls footer-controls">{getAllowedControls()}</div>
           </div>
         </div>

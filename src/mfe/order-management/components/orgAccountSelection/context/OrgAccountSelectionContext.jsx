@@ -26,6 +26,8 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [options, setOptions] = useState([]);
   const [accountOptions, setAccountOptions] = useState();
+  const [checkedAccounts, setCheckedAccounts] = useState([]);
+
   // Organization List configuration
   const orgParams = () => {
     return { pageNo: 0, pageSize: ACCOUNTS_PER_SEARCH, query: searchOrgText };
@@ -96,7 +98,14 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
             ...item,
             label: item.accountName,
             value: item.accountNumber,
-            isChecked: index == 0 ? true : false
+            isChecked:
+              checkedAccounts.length > 0
+                ? checkedAccounts.find((ele) => ele.accountNumber == item.accountNumber)
+                  ? true
+                  : false
+                : index == 0
+                ? true
+                : false
           })) || [];
         setAccountOptions(_opt);
         setSelectedAccount(_opt);
@@ -133,7 +142,9 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
     options,
     setOptions,
     accountOptions,
-    setAccountOptions
+    setAccountOptions,
+    checkedAccounts,
+    setCheckedAccounts
   };
   return <orgAccountsSelectionContext.Provider value={contextValue}>{children}</orgAccountsSelectionContext.Provider>;
 };

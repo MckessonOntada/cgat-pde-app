@@ -6,6 +6,7 @@ import { ReactComponent as PDFicon } from '@src/assets/svg/office-file-pdf.svg';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import CommonUtils from '@src/util/CommonUtils';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 const createColumns = (t, type) => {
   const commonColumns = [
@@ -41,13 +42,13 @@ const createColumns = (t, type) => {
       sortable: true,
       id: 'billDate',
       wrap: true,
-      minWidth: '160px',
+      width: '140px',
       cell: (props) => <div className="cellEllipse">{CommonUtils.convertDateStringFormat(props?.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
     },
     {
       name: t('paymentInvoices.history.table.DueDate'),
       selector: (row) => row.dueDate,
-      minWidth: '140px',
+      width: '140px',
       sortable: true,
       wrap: true,
       id: 'dueDate',
@@ -56,7 +57,7 @@ const createColumns = (t, type) => {
     {
       name: t('paymentInvoices.history.table.BillAmount'),
       selector: (row) => row?.billAmount,
-      minWidth: '140px',
+      minWidth: '120px',
       sortable: true,
       right: true,
       id: 'billAmount',
@@ -67,9 +68,9 @@ const createColumns = (t, type) => {
       )
     },
     {
-      name: t('paymentInvoices.history.table.authorizedPayment'),
+      name: t('paymentInvoices.history.table.authorizedAmount'),
       selector: (row) => row?.authAmount,
-      minWidth: '140px',
+      minWidth: '200px',
       sortable: true,
       right: true,
       id: 'authorizedPayment',
@@ -79,23 +80,6 @@ const createColumns = (t, type) => {
         </div>
       )
     },
-    {
-      name: t('paymentInvoices.history.table.Actions'),
-      minWidth: '144px',
-      wrap: true,
-      isAction: true,
-      cell: (props) => (
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <PDFicon />}
-          onClick={() => {}}
-          size="md"
-          disabled={!props?.pdfAvailable}>
-          {t('paymentInvoices.CS.table.exportPdf')}
-        </Button>
-      )
-    }
   ];
 
   const creditColumns = [
@@ -106,13 +90,14 @@ const createColumns = (t, type) => {
       sortable: true,
       id: 'description',
       wrap: true,
-      minWidth: '160px',
-      cell: (props) => <div>{props?.description || '-'}</div>
+      minWidth: '180px',
+      // cell: (props) => <div>{props?.description || '-'}</div>
+      cell: (props) => <EclipsesTextcss str={props?.description || '-'} maxWidth={170} />
     },
     {
       name: t('paymentInvoices.history.table.usedDate'),
       selector: (row) => row.usedDate,
-      minWidth: '140px',
+      width: '150px',
       sortable: true,
       wrap: true,
       id: 'usedDate',
@@ -144,22 +129,6 @@ const createColumns = (t, type) => {
         </div>
       )
     },
-    {
-      name: t('paymentInvoices.history.table.Actions'),
-      minWidth: '144px',
-      wrap: true,
-      cell: (props) => (
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <PDFicon />}
-          onClick={() => {}}
-          size="md"
-          disabled={!props?.pdfAvailable}>
-          {t('paymentInvoices.CS.table.exportPdf')}
-        </Button>
-      )
-    }
   ];
 
   return type === 'invoice' ? invoiceColumns : creditColumns;

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import CommonFilters from '@src/components/Filters';
 import InvoicesTable from './InvoicesTable';
 import './index.scss';
@@ -6,29 +6,36 @@ import { usePaymentInvoices } from '../../context/PaymentsInvoicesContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Button } from '@mckesson/mcp-component-library';
 import { DUE_STATUS } from './InvoiceConstants';
+import CommonUtils from '@src/util/CommonUtils';
 
 export default function Invoices(params) {
   const { t } = useTranslate();
   const { applyFilters, clearFilters, actualData } = usePaymentInvoices();
 
+  const [statusOptions, setStatusOptions] = useState([]);
+
+  useEffect(() => {
+    if (!CommonUtils.isNonEmptyObject(statusOptions)) {
+      let currentFilterData = [...new Set(actualData.map((e) => e.status).filter((e) => e))];
+      let _options = currentFilterData.map((item) => {
+        return { value: item, label: DUE_STATUS[item]?.label || item, isDisabled: false };
+      });
+      setStatusOptions([..._options]);
+    }
+  }, [actualData]);
+
   const AdditionalFiltersConfig = useMemo(() => {
     return [
       {
         type: 'multiSelectDropdown',
-        name: 'paymentTerm',
-        tableColumnId: 'paymentTerm',
-        label: t('paymentInvoices.history.table.PaymentTerm'),
-        options: []
-      },
-      {
-        type: 'multiSelectDropdown',
         name: 'status',
-        tableColumnId: 'status',
-        customLabel: (data) => {
-          return DUE_STATUS[data].label;
-        },
         label: t('paymentInvoices.history.table.status'),
-        options: []
+        options: statusOptions,
+        getUpdatedOptions: (e) => {
+          if (e.length > 0) {
+            setStatusOptions(e);
+          }
+        }
       },
       {
         type: 'dateRangePicker',
@@ -49,7 +56,7 @@ export default function Invoices(params) {
       //   endDateLabel: t('paymentInvoices.invoicesTable.filter.dueDateEnd')
       // }
     ];
-  }, []);
+  }, [statusOptions]);
   return (
     <React.Fragment>
       <div className="MCP-CardContainer invoices-container">
@@ -58,7 +65,6 @@ export default function Invoices(params) {
           onClearFilters={clearFilters}
           additionalFilters={AdditionalFiltersConfig}
           searchPlaceholder={t('paymentInvoices.filter.search')}
-          actualData={actualData}
         />
       </div>
       <div className="MCP-table-wrapper table-wrapper">

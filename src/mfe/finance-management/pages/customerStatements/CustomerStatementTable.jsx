@@ -75,7 +75,7 @@ export default function CustomerStatementTable() {
       isAction: true,
       isContextMenu: false,
       cell: (props) =>
-        props.pdfAvailable && (
+        props.isPdfAvailable && (
           <Button
             className="back-button-control"
             variant="tertiary"
@@ -95,7 +95,7 @@ export default function CustomerStatementTable() {
             size="md">
             {t('paymentInvoices.CS.table.exportPdf')}
           </Button>
-        )
+      )
     }
   ];
   const handleSort = (selectedColumn, sortDirection) => {

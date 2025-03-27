@@ -26,6 +26,7 @@ import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from './useOrderPrice';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import Components from '@src/components/form/Components';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -113,7 +114,14 @@ function AdditionalDetails() {
             otherwise: (schema) => schema.nullable()
           }),
           variantDescription: Yup.string().nullable(),
-          productLevelPricing: Yup.boolean().nullable()
+          productLevelPricing: Yup.boolean().nullable(),
+          document: Yup.object()
+            .shape({
+              url: Yup.string(),
+              size: Yup.number(),
+              name: Yup.string()
+            })
+            .nullable()
         })
         .nullable(),
 
@@ -155,13 +163,8 @@ function AdditionalDetails() {
       questionnaireFields = fields;
     }
 
-    // Merge the two validation schemas
     const finalValidationSchema = updatedValidationSchema.concat(questionnaireValidationSchema);
-
-    // Update Formik Validation Schema
     setValidationSchema(finalValidationSchema);
-
-    // Update Initial Form Values with Questionnaire Fields
     setInitialFormValues((prevState) => ({
       ...prevState,
       ...questionnaireFields
@@ -320,17 +323,21 @@ function AdditionalDetails() {
         patientConsentTaken,
         poNumber,
         slotNumber,
-        variantDetails: _variant,
+        variantDetails = {},
         configuredQuestionnaires
       } = additionalDetails;
 
+      const { variantDocumentPath, ...otherDetails } = variantDetails || {};
       const initialValues = {
         dateOfAdministration,
         coiId,
         orderQuantity,
         poNumber,
         slotNumber,
-        variant: _variant,
+        variant: {
+          ...otherDetails,
+          document: variantDocumentPath ? JSON.parse(variantDocumentPath) : undefined
+        },
         variantAcknowledgement: patientConsentTaken
       };
 
@@ -341,13 +348,13 @@ function AdditionalDetails() {
         ...initialValues
       }));
 
-      if (!variantsData?.content || !_variant) {
+      if (!variantsData?.content || !variantDetails) {
         return;
       }
+
+      const targetVariant = variantsData.content?.find((v) => variantDetails.variant === v.variant);
       setVariant({
-        variant: _variant.variant,
-        variantDescription: _variant.variantDescription,
-        id: variantsData.content?.find((_v) => _variant.variant === _v.variant).id
+        ...targetVariant
       });
       setVariantAcknowledgement((prev) => ({ ...prev, isChecked: patientConsentTaken }));
     }
@@ -370,11 +377,12 @@ function AdditionalDetails() {
   };
 
   const handleOnSubmit = (values) => {
-    const _var = !!variant
+    const variantDetails = !!variant
       ? {
           variant: variant.variant,
           variantDescription: variant.variantDescription,
-          variantAcknowledgment: variantAcknowledgement.isChecked
+          variantAcknowledgment: variantAcknowledgement.isChecked,
+          variantDocumentPath: values.variant?.document && JSON.stringify(values.variant?.document)
         }
       : null;
 
@@ -411,8 +419,8 @@ function AdditionalDetails() {
       slotNumber,
       poNumber,
       dateOfAdministration,
-      variantDetails: _var,
-      patientConsentTaken: true,
+      variantDetails: variantDetails,
+      patientConsentTaken: !!variant ? variantDetails.variantAcknowledgment : false,
       configuredQuestionnaires: questionnaireTemplateConfig
     };
 
@@ -447,6 +455,11 @@ function AdditionalDetails() {
     }
     setFieldValue('variant', variant);
     setFieldTouched('variant', true, false);
+    setVariantAcknowledgement((prevState) => ({
+      ...prevState,
+      isChecked: false
+    }));
+
     setVariant(variant);
   };
 
@@ -472,7 +485,7 @@ function AdditionalDetails() {
   if (isLoader) {
     return isLoader;
   }
-  console.log('validationSchema', validationSchema);
+  console.log(initialFormValues?.variant?.document);
   return (
     <div className="MCP-module-wrapper">
       {isSaving && <Loader type={'screen'} />}
@@ -529,57 +542,69 @@ function AdditionalDetails() {
                     )}
                   </div>
                   {!!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content) && (
-                    <>
-                      <Heading as="h3">{t('labels.selectVariant')}</Heading>
-                      <VariantTable
-                        variant={variant}
-                        onChange={(variant) => handleOnVariantChange(variant, setErrors, errors, setFieldValue, setFieldTouched)}
-                        data={variantsData.content}
-                      />
-                      <div className="agreement-checkbox-control">
-                        {errors?.variant && touched?.variant && (
-                          <div className="show-Error">
-                            <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />
-                          </div>
-                        )}
-                        <Field name="variant-acknowledgement">
-                          {({ field, form }) => (
-                            <CheckboxGroup
-                              id={'default'}
-                              name="variant-acknowledgement"
-                              items={[
-                                {
-                                  ...variantAcknowledgement,
-                                  onChange: () => handleOnAcknowledgmentChange(setErrors, errors, setFieldValue)
+                    <div>
+                      <div className="MCP-module-body">
+                        <Heading as="h3">{t('labels.selectVariant')}</Heading>
+                        <div>
+                          <VariantTable
+                            variant={variant}
+                            onChange={(variant) => handleOnVariantChange(variant, setErrors, errors, setFieldValue, setFieldTouched)}
+                            data={variantsData.content}
+                          />
+                          {errors?.variant && touched?.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />}
+                        </div>
+                        <div className="agreement-checkbox-control">
+                          <Field name="variant-acknowledgement">
+                            {({ field, form }) => (
+                              <CheckboxGroup
+                                id={'default'}
+                                name="variant-acknowledgement"
+                                items={[
+                                  {
+                                    ...variantAcknowledgement,
+                                    onChange: () => handleOnAcknowledgmentChange(setErrors, errors, setFieldValue)
+                                  }
+                                ]}
+                                error={
+                                  errors.variantAcknowledgement && touched?.variantAcknowledgement
+                                    ? Boolean(!values.variantAcknowledgement)
+                                    : false
                                 }
-                              ]}
-                              error={
-                                errors.variantAcknowledgement && touched?.variantAcknowledgement
-                                  ? Boolean(!values.variantAcknowledgement)
-                                  : false
-                              }
-                              errorMessage={touched?.variantAcknowledgement && errors.variantAcknowledgement}
-                              size="md"
-                            />
-                          )}
-                        </Field>
+                                errorMessage={touched?.variantAcknowledgement && errors.variantAcknowledgement}
+                                size="md"
+                              />
+                            )}
+                          </Field>
+                        </div>
+                        <div>
+                          <Field
+                            name="variant.document"
+                            component={Components['inputFile']}
+                            setFieldValue={setFieldValue}
+                            attachmentValue={values?.variant?.document || null}
+                            onFileChange={(file) => handleOnDocumentChange('variant', file, setFieldValue)}
+                          />
+                        </div>
                       </div>
-                    </>
+                    </div>
                   )}
 
                   {questionnaireTemplateConfig && Array.isArray(questionnaireTemplateConfig) && questionnaireTemplateConfig.length > 0 && (
                     <div className="configured-questionnaire-form">
-                      <QuestionnaireTemplate
-                        onRemoveDocument={handleOnRemoveDocument}
-                        onDocumentChange={handleOnDocumentChange}
-                        config={questionnaireTemplateConfig}
-                        isPreview={false}
-                      />
+                      <div className="MCP-module-body">
+                        <Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading>
+                        <QuestionnaireTemplate
+                          onRemoveDocument={handleOnRemoveDocument}
+                          onDocumentChange={handleOnDocumentChange}
+                          config={questionnaireTemplateConfig}
+                          isPreview={false}
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
 
-                <div className='footer-wrapper'>
+                <div className="footer-wrapper">
                   <div className="controls footer-controls">
                     <Button size="md" variant="secondary" onClick={handleOnBack}>
                       {t('captions.btnBack')}

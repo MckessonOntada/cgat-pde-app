@@ -1,9 +1,10 @@
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import useSnackbar from '@src/hooks/useSnackbar';
+import { PATHS } from '@src/mfe/finance-management/routes';
 import CommonUtils from '@src/util/CommonUtils';
 import { useMutation } from 'react-query';
 
-export const useExportStatementPDF = () => {
+export const useExportStatementPDF = (exportType) => {
   const { showSnackbar } = useSnackbar();
   return useMutation(
     async (data) => {
@@ -26,9 +27,21 @@ export const useExportStatementPDF = () => {
           let fileName = (confirmationNumber ? confirmationNumber : 'Pending bill') + '.' + type;
 
           if (contentDisposition && contentDisposition.indexOf('filename=') !== -1) {
-            const matches = contentDisposition.match(/filename="([^"]+)"/);
+            let matches = contentDisposition.match(/filename="([^"]+)"/); // Check for quoted filename
+
+            if (!matches) {
+              matches = contentDisposition.match(/filename=([^;]+)/); // Fallback: no quotes
+            }
+
             if (matches && matches[1]) {
               fileName = matches[1];
+            }
+          } else {
+            // If contentDisposition is null or does not contain filename, append string to filename
+            if (exportType === PATHS.paymentHistory) {
+              fileName = 'PaymentHistoryDetails_' + fileName;
+            } else if (exportType === PATHS.pendingPayments) {
+              fileName = 'PendingPaymentDetails_' + fileName;
             }
           }
 

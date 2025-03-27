@@ -386,13 +386,13 @@ export const validateDateRange = (value, messages = {}, allowFutureDate = true) 
   const fromDate = value?.[0] && !isNaN(new Date(value[0])) ? new Date(value[0]) : null;
   const toDate = value?.[1] && !isNaN(new Date(value[1])) ? new Date(value[1]) : null;
   const today = new Date();
-
+  const defaultMessage = messages.fromDateAndToDate || 'Please select a valid date range.';
   if ((!fromDate && toDate) || (fromDate && !toDate)) {
-    message = messages.fromDateAndToDate || 'Select Both Dates';
+    message = defaultMessage;
   } else if (fromDate > toDate) {
-    message = messages.fromDateLessThanToDate || 'From/Start date must be before To/End date.';
+    message = messages.fromDateLessThanToDate || defaultMessage;
   } else if (!allowFutureDate && toDate > today) {
-    message = messages.toDateNotFuture || 'To/End date cannot be in the future';
+    message = messages.toDateNotFuture || defaultMessage;
   }
 
   return message || undefined;
@@ -404,6 +404,12 @@ export function gettenYearDate(y) {
   var month = d.getMonth();
   var day = d.getDate();
   return new Date(year + y, month, day);
+}
+
+export function isFutureDate(dateStr) {
+  const today = new Date();
+  const date = new Date(dateStr);
+  return date > today;
 }
 
 function truncateString(str, maxLength) {
@@ -466,9 +472,9 @@ export const downloadFile = (blob, fileName) => {
 };
 
 export const enableReviewAndPay = (selectedAccount) => {
-  let ignorableSalesOrgIds = ['5040'];
+  let ignorableCompanyCode = ['5040'];
   if (selectedAccount) {
-    let hide = ignorableSalesOrgIds.some((ele) => ele == selectedAccount.salesOrg);
+    let hide = ignorableCompanyCode.some((ele) => ele == selectedAccount.companyCode);
     return !hide;
   } else {
     return false;
@@ -542,7 +548,8 @@ const CommonUtils = Object.freeze({
   formatNumberWithoutSymbol,
   getCamelCase,
   getFileSize,
-  gettenYearDate
+  gettenYearDate,
+  isFutureDate
 });
 
 export default CommonUtils;
