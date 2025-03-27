@@ -25,6 +25,9 @@
             p{
                 font-size: var(--brand-font-size--small)
             }
+            button:hover{
+                letter-spacing: .144px;
+            }
             @media only screen and (max-width: 576px) {
                 flex-direction: column;
                 align-items: flex-start;

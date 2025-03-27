@@ -7,9 +7,12 @@ import './profile.scss';
 import AuthUtils from '@src/util/AuthUtils';
 import CommonDataService from '@src/api/commonService/CommonDataService';
 import { useMutation } from 'react-query';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+import { useDispatch } from 'react-redux';
 
 const AccountSetting = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
   const { t } = useTranslate();
   const userName = AuthUtils.getUserName();
 
@@ -19,14 +22,28 @@ const AccountSetting = () => {
     },
     {
       onSuccess: () => {
-        setIsOpen(true);
+        onSuccessEmail();
       },
       onError: () => {
         console.log("Failed to sent reset passwrd email")
       }
     }
   );
-
+  const onSuccessEmail = () => {
+    const state = {};
+    state.title = t('reset.password.change.password');
+    state.body = (
+      <div className="MCP-modal-body">
+        <p>{t('reset.password.confirmation.message')}</p>
+      </div>
+    );
+    state.footer = (
+      <Button onClick={() => dispatch(closeModal())}  size="md" variant="primary"  >
+        {'OK'}
+      </Button>
+    );
+    dispatch(openModal(state));
+  };
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-module-body">
@@ -54,23 +71,6 @@ const AccountSetting = () => {
           </div>
         </div>
       </div>
-      <Modal
-        id="xxxs-modal"
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        modalTitle={t('reset.password.change.password')}
-        modalBody={
-          <div className="MCP-modal-body">
-            <p>{t('An email has been sent to your registered email address with the link and instructions to reset your password.')}</p>
-          </div>
-        }
-        modalFooter={
-          <Button onClick={() => setIsOpen(false)}  size="md" variant="primary"  >
-            {'OK'}
-          </Button>
-        }
-        modalSize="xxxs"
-      />
     </div>
   );
 };

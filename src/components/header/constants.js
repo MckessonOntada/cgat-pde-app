@@ -68,16 +68,12 @@ const HeaderConfig = {
   profileOptions: [
     {
       label: 'Profile Settings',
-      value: '/admin/user/',
+      value: '#',
     },
     {
       label: 'Account Setting',
       value: '/admin/user/account-setting',
     },
-    {
-      label: 'Payment Method',
-      value: 'record'
-    }
   ],
   languages: [
     {
