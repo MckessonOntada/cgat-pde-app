@@ -450,11 +450,11 @@ const Summary = () => {
               text: question.text.en,
               value: question.value
             };
-
             if (question.document) {
               details.attachment = {
                 name: question.document.name,
-                size: question.document.size
+                size: question.document.size,
+                url: question.document.url
               };
             }
             configuredQuestionnaires.push(details);
@@ -750,7 +750,9 @@ const Summary = () => {
                 <div className="MCP-module-body">
                   <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
                     <DetailSegment label={'Variant'} value={additionalDetails?.variantDetails?.variant} />
-                    {variantAttachment && <AttachmentCard fileName={variantAttachment.name} fileSize={variantAttachment.size} />}
+                    {variantAttachment && (
+                      <AttachmentCard url={variantAttachment.url} fileName={variantAttachment.name} fileSize={variantAttachment.size} />
+                    )}
                   </div>
                 </div>
               </div>
@@ -778,7 +780,6 @@ const Summary = () => {
                 <div className="MCP-module-body">
                   <div className="summary-question-list">
                     {configuredQuestionnaires.map((question) => {
-                      console.log(question);
                       return (
                         <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
                           <DetailSegment
@@ -796,7 +797,11 @@ const Summary = () => {
                             }
                           />
                           {question.attachment && (
-                            <AttachmentCard fileName={question.attachment.name} fileSize={question.attachment.size} />
+                            <AttachmentCard
+                              url={question.attachment?.url}
+                              fileName={question.attachment.name}
+                              fileSize={question.attachment.size}
+                            />
                           )}
                         </div>
                       );
