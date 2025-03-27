@@ -21,6 +21,7 @@ import { SystemConfiguration } from '@src/mfe/order-management/pages/system-conf
 import { AccountProvider } from '@src/mfe/finance-management/context/AccountContext';
 import Footer from '@src/components/footer';
 import ErrorWrapper from './ErrorWrapper';
+import AccountSetting from "@src/components/AccountSetting";
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
@@ -133,6 +134,7 @@ function MainLayout() {
                       )
                     }
                   />
+                  <Route path="/account-setting" element={<AccountSetting />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </div>

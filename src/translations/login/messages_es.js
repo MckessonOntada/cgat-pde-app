@@ -37,5 +37,6 @@ export const LoginMessagesES = {
   'reset.password.confirmation.message':'S_An email has been sent to your registered email address with the link and instructions to reset your password.',
   'reset.password.ok':'S_OK',
   'reset.password.account.settings':'S_Account Settings',
-  'reset.password.login.credentials':'S_Login Credentials',
+  'reset.password.login.userInformation':'S_User Information',
+  'reset.password.error':'S_Failed to sent reset passwrd email',
 };

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ModuleHeader from '../module-header';
-import { Heading, Button, IconButton, Modal } from '@mckesson/mcp-component-library';
+import { Heading, Button, IconButton, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditIcon } from '@src/assets/svg/edit-icon.svg';
 import './profile.scss';
@@ -9,12 +9,13 @@ import CommonDataService from '@src/api/commonService/CommonDataService';
 import { useMutation } from 'react-query';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
+import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 
 const AccountSetting = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const dispatch = useDispatch();
   const { t } = useTranslate();
   const userName = AuthUtils.getUserName();
+  const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
 
   const { mutate: resetPassword } = useMutation(
     async () => {
@@ -25,7 +26,10 @@ const AccountSetting = () => {
         onSuccessEmail();
       },
       onError: () => {
-        console.log("Failed to sent reset passwrd email")
+        addNotification({
+          description: 'Failed to sent reset passwrd email.',
+          type: 'error',
+        });
       }
     }
   );
@@ -48,8 +52,17 @@ const AccountSetting = () => {
     <div className="MCP-module-wrapper">
       <div className="MCP-module-body">
         <ModuleHeader heading={<Heading as="h1">{t('reset.password.account.settings')}</Heading>} />
+        {notifications?.length > 0 && (
+          <div className="alert-container">
+            <div className="MCP-module-body">
+              {notifications.map((item, index) => (
+                <Alert key={item.id} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
+              ))}
+            </div>
+          </div>
+        )}
         <div className="MCP-panel-container profile-wraper">
-          <Heading as="h3">{t('reset.password.login.credentials')}</Heading>
+          <Heading as="h3">{t('reset.password.login.userInformation')}</Heading>
           <div className="profile-table">
             <div className="user-details details">
               <p>{t('reset.password.user.email')}</p>

@@ -25,6 +25,9 @@
             p{
                 font-size: var(--brand-font-size--small)
             }
+            button{
+                text-transform: uppercase;
+            }
             button:hover{
                 letter-spacing: .144px;
             }
