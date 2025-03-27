@@ -9,6 +9,7 @@ const ROOT_ID = 'cgat_pde.appPage';
 export const ID = Object.freeze({
   ABSTRACTORS: '.abstractors',
   ACTION_ICON: '.actionIcon',
+  APP_WRAPPER:'.app-wrapper',
   ASSIGN: '.assign',
   AVATAR: '.avatar',
   BACK: '.back',
