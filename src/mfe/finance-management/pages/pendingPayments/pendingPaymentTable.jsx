@@ -83,6 +83,7 @@ export default function PendingPaymentTable() {
       sortable: false,
       wrap: true,
       center: true,
+      isAction: true,
       cell: (props) => {
         const isFutureDate = CommonUtils.isFutureDate(props.payOn);
         return (

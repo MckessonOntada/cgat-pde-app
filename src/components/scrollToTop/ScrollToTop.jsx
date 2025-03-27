@@ -7,11 +7,11 @@ import { closeSnackbar } from '@src/store/reducer/snackbarReducer';
 
 export default function ScrollToTop({ containerId }) {
   const location = useLocation();
-  const ignorablePaths = [...Object.values(financeRoutes)];
+  const ignorablePaths = [...Object.values(financeRoutes), 'bank-accounts'];
   const dispatch = useDispatch();
 
   const isValid = useMemo(() => {
-    let _isValid = ignorablePaths.some((item) => location.pathname.includes(item));
+    let _isValid = ignorablePaths.some((item) => location.pathname.endsWith(item));
     return !_isValid;
   }, [location.pathname, containerId]);
 

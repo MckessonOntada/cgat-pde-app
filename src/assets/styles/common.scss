@@ -1134,7 +1134,9 @@ div.disable-all {
 }
 
 .statusCenter {
-  padding-left: 30px;
+  @include mixins.respond(md) {
+    padding-left: 30px;
+  }
 }
 
 .attachment-wrapper {
