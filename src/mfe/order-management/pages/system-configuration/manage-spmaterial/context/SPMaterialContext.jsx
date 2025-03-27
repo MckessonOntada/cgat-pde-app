@@ -4,6 +4,7 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import spMaterialData from '../mockData/SPMaterialData';
+import SPMaterialService from '@src/api/commonService/SPMaterialService';
 
 const SPMaterialContext = createContext();
 
@@ -59,26 +60,18 @@ export const SPMaterialProvider = ({ children }) => {
   const { isLoading, isError, error, data, refetch } = useQuery({
     queryKey: ['SPMaterials', requestParams],
     queryFn: async () => {
-      // const url = '';
-      // const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-      // if (res.data) {
-      // const { content: data, totalElements, totalPages } = res.data;
-
-      // setPaginationConfig((prevConfig) => ({
-      //   ...prevConfig,
-      //   ...(totalElements && { totalElements }),
-      //   ...(totalPages && { totalPages })
-      // }));
-
+      const result = await SPMaterialService.getSPMaterialList(requestParams);
+      return result;
+    },
+    select: (result) => result.data,
+    onSuccess: (result) => {
+      // result is what queryFn returns
+      const { totalElements, totalPages } = result;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
-        totalElements: spMaterialData.length,
-        totalPages: 1
+        ...(totalElements && { totalElements }),
+        ...(totalPages && { totalPages })
       }));
-      return spMaterialData;
-      ///  }
-
-      // return [];
     },
     refetchOnWindowFocus: false
   });

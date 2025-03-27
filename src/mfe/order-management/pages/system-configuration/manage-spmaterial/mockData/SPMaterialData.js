@@ -1,4 +1,4 @@
-const spMaterialData = [
+const spMaterial = [
   {
     id: 1,
     spProductID: 3742657,
@@ -64,5 +64,11 @@ const spMaterialData = [
     status: 'ACTIVE'
   }
 ];
+
+const spMaterialData = {
+  content: spMaterial,
+  totalElements: spMaterial.length,
+  totalPages: Math.ceil(spMaterial.length / 8)
+};
 
 export default spMaterialData;
