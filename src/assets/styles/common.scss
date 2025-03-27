@@ -155,6 +155,14 @@ div.disable-all {
   }
 }
 
+.left-floating-control {
+  align-self: flex-start;
+
+  @include mixins.respond(sm) {
+    align-self: flex-end;
+  }
+}
+
 .filter-panel-header {
   display: flex;
   flex-direction: row;
@@ -199,6 +207,7 @@ div.disable-all {
   .ctrl-search-box {
     flex-grow: 1;
     width: 100%;
+
     @include mixins.respond(md) {
       max-width: 460px;
     }
