@@ -41,6 +41,15 @@ const ORDER_TYPES = {
   NON_PAP_ORDER: 'NON PAP ORDER'
 };
 
+const getOrderCost = (originalOrderCost, updatedOrderCost) => {
+  let orderCost = originalOrderCost;
+
+  if (!updatedOrderCost || isNaN(updatedOrderCost)) orderCost = originalOrderCost;
+  else if (parseFloat(orderCost) !== parseFloat(updatedOrderCost)) orderCost = updatedOrderCost;
+
+  return CommonUtils.formatNumberWithoutSymbol(orderCost);
+};
+
 const Summary = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
@@ -565,7 +574,7 @@ const Summary = () => {
                     value={
                       <span className="dollarSign ">
                         <span>$</span>
-                        {CommonUtils.formatNumberWithoutSymbol(orderCost)}
+                        {getOrderCost(orderCost, simulationData.updatedCost)}
                       </span>
                     }
                   />

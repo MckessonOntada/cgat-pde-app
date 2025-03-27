@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Heading, CheckboxGroup, RadioGroup, Loader, Alert, TextError } from '@mckesson/mcp-component-library';
+import { Button, Heading, CheckboxGroup, RadioGroup, Loader, TextError } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -486,7 +486,7 @@ function AdditionalDetails() {
   if (isLoader) {
     return isLoader;
   }
-  console.log(initialFormValues?.variant?.document);
+
   return (
     <div className="MCP-module-wrapper">
       {isSaving && <Loader type={'screen'} />}
@@ -511,6 +511,7 @@ function AdditionalDetails() {
           useEffect(() => {
             setIsDirty(dirty);
           }, [dirty]);
+
           return (
             <Form>
               <div className="MCP-module-body">
@@ -552,7 +553,7 @@ function AdditionalDetails() {
                             onChange={(variant) => handleOnVariantChange(variant, setErrors, errors, setFieldValue, setFieldTouched)}
                             data={variantsData.content}
                           />
-                          {errors?.variant && touched?.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />}
+                          {touched?.variant && !values.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />}
                         </div>
                         <div className="agreement-checkbox-control">
                           <Field name="variant-acknowledgement">

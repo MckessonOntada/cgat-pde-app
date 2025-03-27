@@ -177,7 +177,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.reviewPayments.paymentMethod': 'S_Payment Method',
   'paymentInvoices.reviewPayments.netAmount': 'S_Net amount to be charged',
   'paymentInvoices.reviewPayments.scheduleOption': 'S_Schedule option',
-  'paymentInvoices.reviewPayments.totalCredit': 'S_Total Credit Amount Applied',
+  'paymentInvoices.reviewPayments.totalCredit': 'S_Total Credits Amount Applied',
   'paymentInvoices.reviewPayments.creditRemaing': 'S_Credit Amount Remaining',
   'paymentInvoices.reviewPayments.amountPaid': 'S_Amount Paid',
   'paymentInvoices.reviewPayments.mckessonId': 'S_McKesson Confirmation ID',

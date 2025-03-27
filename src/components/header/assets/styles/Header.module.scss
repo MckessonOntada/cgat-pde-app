@@ -193,25 +193,47 @@
   .mobileOnly {
     display: flex;
 
-    ul {
+    .quickLinksMobile {
       display: flex;
       flex-direction: column;
-      gap: var(--spacing-01);
+      gap: var(--spacing-03);
       align-items: flex-start;
-
-      li {
+      li{
         border-right: unset;
         justify-content: flex-start;
         align-self: unset;
-
-        button {
-          width: 100%;
+        padding: 0px;
+        width: 100%;
+        span{
+          color: var(--brand-color-font-black);
+          font-size: var(--brand-font-size--default);
+          font-weight: var(--brand-font-weight-600);
+        }
+        a{
+          text-decoration: none;
+          color: var(--brand-color-font-black);
+          display: flex;
+          align-items: center;
+          gap: var(--spacing-01);
         }
       }
-    }
+      .linkWrapperMobile{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        border-bottom: 1px solid var(--brand-color-grey-scale-cool-1);
+      }
+      .quickLinksInner{
+        padding: var(--spacing-04) 0px;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-03);
+        a{
+          color: #1E394E;
+          font-size: var(--brand-font-size--small);
+        }
+      }
 
-    button {
-      width: 100%;
     }
     .hamburger{
       padding: 0px;
@@ -260,4 +282,8 @@
 
 .secondaryNav {
   padding-right: 10px;
+}
+
+.logoutBtnMobile{
+  width: 100%;
 }
