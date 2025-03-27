@@ -39,7 +39,7 @@ const AccountSetting = () => {
     );
     state.footer = (
       <Button onClick={() => dispatch(closeModal())}  size="md" variant="primary"  >
-        {'OK'}
+        {t('reset.password.ok')}
       </Button>
     );
     dispatch(openModal(state));
