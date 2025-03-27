@@ -62,6 +62,13 @@ function SelectedInvoiceList(props) {
       cell: (props) => <div>{props?.description || '-'}</div>
     },
     {
+      name: t('paymentInvoices.history.table.PostingDate'),
+      selector: (row) => row?.billDate,
+      minWidth: '150px',
+      id: 'billDate',
+      cell: (props) => <div>{CommonUtils.convertDateStringFormat(props?.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
+    },
+    {
       name: t('paymentInvoices.history.table.DueDate'),
       selector: (row) => row.dueDate,
       maxWidth: '130px',
@@ -154,11 +161,13 @@ function SelectedInvoiceList(props) {
     setSelectedInvoices(_invoices);
   };
 
+  const { omitColumns } = props;
+
   return (
     <CustomDataTable
       id="my-data-table"
       type="normal"
-      columns={columns}
+      columns={columns.filter((col) => !omitColumns?.includes(col.id))}
       data={selectedInvoices || []}
       showCardView={showCardView}
       defaultExpandedCardView={false}

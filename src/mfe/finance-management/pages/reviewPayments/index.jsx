@@ -314,6 +314,23 @@ function ReviewPayments() {
         }
       },
       onError: (error) => {
+        navigate('/record/invoices/confirmationPayments', {
+          state: {
+            ...state,
+            confirmationNumber: 'response.confirmationNo',
+            paymentDate: new Date(),
+            invoices: selectedInvoices,
+            creditsSelected: selectedCredits,
+            selectedPayment: selectedData,
+            paymentOption: paymentOption,
+            amount: FinanceUtils.formatCurrency(invoicesSum),
+            creditAmount: FinanceUtils.formatCurrency(creditsSum),
+            amountPaid: FinanceUtils.formatCurrency(totalAmount),
+            reviewMode: true,
+            totalCreditAmount: FinanceUtils.formatCurrency(selectedCredits.reduce((sum, bill) => sum + bill.billAmount, 0))
+          },
+          replace: true
+        });
         dispatch(closeModal());
         showAlert('error', 'review-pay: Error while communicating backend service');
       }
@@ -456,7 +473,7 @@ function ReviewPayments() {
           <div className="sectionHeader">
             {REVIEW_MODE ? t('paymentInvoices.reviewPayments.invoiceSelected') : t('paymentInvoices.reviewPayments.invoice')}
           </div>
-          <SelectedInvoiceList selectedInvoices={selectedInvoices} setSelectedInvoices={setSelectedInvoices} />
+          <SelectedInvoiceList omitColumns={['billDate']} selectedInvoices={selectedInvoices} setSelectedInvoices={setSelectedInvoices} />
         </div>
         {!REVIEW_MODE && (
           <div className="invoice-sum-container">
