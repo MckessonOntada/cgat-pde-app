@@ -67,13 +67,13 @@ const HeaderConfig = {
   ],
   profileOptions: [
     {
-      label: 'My Profile',
-      value: 'my_profile'
+      label: 'Profile Settings',
+      value: '#',
     },
     {
-      label: 'Payment Method',
-      value: 'payment_method'
-    }
+      label: 'Account Setting',
+      value: '/admin/user/account-setting',
+    },
   ],
   languages: [
     {

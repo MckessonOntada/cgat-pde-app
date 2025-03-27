@@ -1,0 +1,42 @@
+.profile-wraper{
+    @media only screen and (max-width: 576px) {
+        padding: var(--spacing-03);
+        border: 1px solid var(--brand-color-patient-primary-3);
+        border-radius: var(--brand-border-radius--8);
+        background-color: var(--brand-color-background-white);
+    }
+    h3{
+        font-size: var(--brand-font-size--large) !important;
+        @media only screen and (max-width: 576px) {
+            font-size: var(--brand-font-size--default) !important;
+        }
+    }
+    .profile-table {
+        display: flex;
+        flex-direction: column;
+        gap:  var(--spacing-03);
+        .user-details{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            span{
+                font-size: var(--brand-font-size--small)
+            }
+            p{
+                font-size: var(--brand-font-size--small)
+            }
+            button:hover{
+                letter-spacing: .144px;
+            }
+            @media only screen and (max-width: 576px) {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-02);
+            }
+        }
+        .details{
+            padding-bottom:  var(--spacing-03);
+            border-bottom: 1px solid var(--brand-color-grey-scale-warm-1);
+        }
+    }
+}
