@@ -162,7 +162,7 @@ function ReviewPayments() {
       let _totalAmount = 0;
       let _totalpaymentAmount = 0;
       selectedInvoices?.map((item) => {
-        _totalAmount = _totalAmount + parseFloat(item.billAmount);
+        _totalAmount = _totalAmount + parseFloat(item.openAmount);
         _totalpaymentAmount = _totalpaymentAmount + parseFloat(item.paymentAmount);
       });
       return _totalpaymentAmount < _totalAmount ? true : false;
@@ -171,7 +171,7 @@ function ReviewPayments() {
     }
   }, [selectedInvoices]);
 
-  const invoicesSum = useMemo(() => {
+  const paymentAmountSum = useMemo(() => {
     const _sum = selectedInvoices
       .filter((i) => i.paymentAmount)
       .reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.paymentAmount), 0);
@@ -190,9 +190,9 @@ function ReviewPayments() {
   }, [selectedCredits]);
 
   const totalAmount = useMemo(() => {
-    let _total = invoicesSum - creditsSum;
+    let _total = paymentAmountSum - creditsSum;
     return parseFloat(_total > 0 ? _total : 0).toFixed(2);
-  }, [invoicesSum, creditsSum]);
+  }, [paymentAmountSum, creditsSum]);
 
   const validateSpecificDate = (value) => {
     if (value && (!dayjs(value).isValid() || !dayjs().isBefore(dayjs(value, 'MM/DD/YYYY')))) {
@@ -222,7 +222,7 @@ function ReviewPayments() {
             subLabel: t('paymentInvoices.reviewPayments.payDuedateDesc')
           },
           {
-            isDisabled: dueDateIsInPast || isPartialPayment || parseFloat(creditsSum) > parseFloat(invoicesSum),
+            isDisabled: dueDateIsInPast || isPartialPayment || parseFloat(creditsSum) > parseFloat(paymentAmountSum),
             label: t('paymentInvoices.reviewPayments.paySpecfic'),
             value: t('paymentInvoices.reviewPayments.paySpecfic'),
             subLabel: t('paymentInvoices.reviewPayments.paySpecficDesc'),
@@ -301,7 +301,7 @@ function ReviewPayments() {
               creditsSelected: selectedCredits,
               selectedPayment: selectedData,
               paymentOption: paymentOption,
-              amount: FinanceUtils.formatCurrency(invoicesSum),
+              amount: FinanceUtils.formatCurrency(paymentAmountSum),
               creditAmount: FinanceUtils.formatCurrency(creditsSum),
               amountPaid: FinanceUtils.formatCurrency(totalAmount),
               reviewMode: true,
@@ -463,7 +463,7 @@ function ReviewPayments() {
             <div className="label"> {t('paymentInvoices.reviewPayments.selectedInvoice', { count: selectedInvoices.length })}</div>
             <div className="value">
               <span className="currencySymbol">$</span>
-              {`${FinanceUtils.formatCurrency(invoicesSum).slice(1)}`}
+              {`${FinanceUtils.formatCurrency(paymentAmountSum).slice(1)}`}
             </div>
           </div>
         )}
