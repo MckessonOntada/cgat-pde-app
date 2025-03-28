@@ -143,7 +143,7 @@ function ConfirmationTable({ invoiceData, creditData }) {
       <Heading as="h2" fontWeight="600">
         {t('paymentInvoices.table.confirmationInvoiceHeading')}
       </Heading>
-      <div className="details-table">
+      <div className="details-table hidden-on-print">
         <CustomDataTable
           id="invoice-data-table"
           type="normal"
@@ -168,11 +168,36 @@ function ConfirmationTable({ invoiceData, creditData }) {
           }
         />
       </div>
+      <div className="details-table print_screen">
+        <CustomDataTable
+          id="invoice-data-table"
+          type="normal"
+          columns={createColumns(t, 'invoice')}
+          data={invoiceData || []}
+          onSortIconClick={() => {}}
+          handleChangePage={() => {}}
+          noDataComponent={'No invoice used in this payments'}
+          showCardView={true}
+          defaultExpandedCardView={true}
+          progressComponent={
+            <div
+              style={{
+                alignItems: 'center',
+                border: '1px solid #ccc',
+                display: 'flex',
+                height: '350px',
+                justifyContent: 'center'
+              }}>
+              <Loader variant="circular" />
+            </div>
+          }
+        />
+      </div>
 
       <Heading as="h2" fontWeight="600">
         {t('paymentInvoices.table.creditHeading')}
       </Heading>
-      <div className="details-table">
+      <div className="details-table hidden-on-print">
         <CustomDataTable
           id="credit-data-table"
           type="normal"
@@ -183,6 +208,31 @@ function ConfirmationTable({ invoiceData, creditData }) {
           noDataComponent={'No credit used in this payments'}
           showCardView={showCardView}
           defaultExpandedCardView={false}
+          progressComponent={
+            <div
+              style={{
+                alignItems: 'center',
+                border: '1px solid #ccc',
+                display: 'flex',
+                height: '350px',
+                justifyContent: 'center'
+              }}>
+              <Loader variant="circular" />
+            </div>
+          }
+        />
+      </div>
+      <div className="details-table print_screen">
+        <CustomDataTable
+          id="credit-data-table"
+          type="normal"
+          columns={createColumns(t, 'credit')}
+          data={creditData || []}
+          onSortIconClick={() => {}}
+          handleChangePage={() => {}}
+          noDataComponent={'No credit used in this payments'}
+          showCardView={true}
+          defaultExpandedCardView={true}
           progressComponent={
             <div
               style={{

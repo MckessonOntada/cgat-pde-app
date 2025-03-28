@@ -25,7 +25,19 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
   const exportType = type;
   const { mutate: exportStatementPDF } = useExportStatementPDF(exportType);
   const contentRef = useRef(null); 
-  const printPage = useCustomPrint(contentRef);
+  const printPage = useCustomPrint(contentRef, `
+    .table-card-container {
+      page-break-inside: avoid;
+      page-break-after: auto;
+    }
+    .details-table{
+      page-break-inside: avoid;
+      page-break-after: auto;
+    }
+      .print-screen-empty{
+          height: 50px !important;
+      }
+    `);
 
   const invoiceDetails = {
     'Account Number': selectedAccount?.accountNumber || '-',
@@ -122,7 +134,7 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
         >
         {type === PATHS.paymentHistory ? t('paymentInvoices.CS.ExportExcel') : t('paymentInvoices.history.filters.printSummary')}
       </Button>
-      <Button onClick={type === PATHS.paymentHistory ? () => {} : handleExport} size="md" disabled={type === PATHS.paymentHistory}>
+      <Button onClick={type === PATHS.paymentHistory ? () => printPage() : handleExport} size="md" >
         {type === PATHS.paymentHistory ? t('paymentInvoices.Details.print') : t('paymentInvoices.history.filters.downloadExcel')}
       </Button>
     </div>

@@ -57,7 +57,7 @@ function TableCardView(props) {
             {selectedAll ? 'DESELECT ALL' : 'SELECT ALL'}
           </div>
         )}
-        <div className={styles.sortByContainer}>
+        <div className={`${styles.sortByContainer} hidden-on-print`}>
           <span className={styles.sortByText}>Sort by:</span>
           <div className={styles.dropdownContainer}>
             <Dropdown
