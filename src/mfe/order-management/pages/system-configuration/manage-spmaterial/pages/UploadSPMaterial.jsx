@@ -1,24 +1,68 @@
-import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Field, Formik, Form } from 'formik';
-import { Button, Heading, Loader, Alert } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
+import CommonUtils from '@src/util/CommonUtils';
+import { useMutation } from 'react-query';
+import ApiRoutes from '@src/api/ApiRoutes';
+import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
+import UploadFile from '@src/components/uploadFile/UploadFile.jsx';
+import {
+  buildUploadFormData,
+  createAlertHandler,
+  handleDownload,
+  validateFile,
+  handleAlertClose
+} from '@src/components/uploadFile/uploadUtils';
 
 const UploadSPMaterial = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-  const handleNavigate = () => {
-    if (modalSuccessCallback === 'list') {
-      navigate('/orders/system-configuration/manage-spmaterial');
+  const [alert, setAlert] = useState({ type: '', description: '', isAlertVisible: false });
+  const showAlert = createAlertHandler(setAlert);
+  const downloadTemplate = () => handleDownload('/templates/upload_users_template.csv', 'upload_users_template.csv');
+
+  const { mutate: UploadSPMaterial, isLoading } = useMutation(
+    async ({ url, payload }) => {
+      return await HttpResourceService.callRest(url, httpVerb.POST, payload, {
+        'Content-Type': 'multipart/form-data'
+      });
+    },
+    {
+      onSuccess: async (response) => {
+        if (response.status === 200) {
+          showAlert('success', t('manageSPMaterial.messages.button.uploadSuccess'));
+        } else if (response.status === 206) {
+          const csvContent = response.data;
+          const blob = new Blob([csvContent], { type: 'text/csv' });
+          const download = CommonUtils.downloadFile(blob, 'bulk users.csv');
+          if (download.status === 'success') {
+            showAlert('error', t('manageSPMaterial.messages.button.uploadConflict'));
+          } else {
+            showAlert('error', t('manageSPMaterial.messages.button.downloadFail'));
+          }
+        } else {
+          showAlert('error', t('manageSPMaterial.messages.button.uploadError'));
+        }
+        //refreshData();
+      },
+      onError: () => {
+        showAlert('error', t('manageSPMaterial.messages.button.uploadError'));
+      }
     }
+  );
+
+  const handleUpload = (values) => {
+    if (!values.file) {
+      showAlert('error', t('manageSPMaterial.messages.button.requiredupload'));
+      return;
+    }
+    const url = `${ApiRoutes.USERS()}/upload?userType=GENERAL`; //TODO
+    const formData = buildUploadFormData(values.file, 'userData');
+    UploadSPMaterial({ url, payload: formData });
   };
-  const handleCancel = () => {
-    navigate('/orders/system-configuration/manage-spmaterial');
-  };
+
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -31,24 +75,16 @@ const UploadSPMaterial = () => {
           {t('manageSPMaterial.BacktoPage')}
         </Button>
       </div>
-      <ModuleHeader heading={<Heading as="h1">{t('manageSPMaterial.heading.uploadspMaterial')}</Heading>} />
-      <div className="MCP-panel-container"></div>
-      <div className="buttonGroup">
-        <Button variant="secondary" type="button" onClick={handleCancel} size="md">
-          {t('manageSPMaterial.button.cancel')}
-        </Button>
-
-        <Button type="submit" size="md">
-          {t('manageSPMaterial.heading.addSPMaterial')}
-        </Button>
-      </div>
-
-      <DiscardChangesModal
-        heading="Discard Changes"
-        description="You have changed user details. Do you still want to go back? Your changes will be discarded!"
-        isOpen={Boolean(modalSuccessCallback)}
-        onClose={() => setModalSuccessCallback(null)}
-        onConfirm={handleNavigate}
+      <UploadFile
+        label={t('manageSPMaterial.heading.spmaterial')}
+        subHeading={t('manageSPMaterial.heading.uploadspMaterialcsv')}
+        isLoading={isLoading}
+        alert={alert}
+        showAlert={showAlert}
+        handleAlertClose={handleAlertClose}
+        downloadTemplate={downloadTemplate}
+        handleUpload={handleUpload}
+        validateFile={(file) => validateFile(file, ['text/csv'])}
       />
     </div>
   );

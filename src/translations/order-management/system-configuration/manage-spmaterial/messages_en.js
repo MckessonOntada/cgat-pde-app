@@ -1,4 +1,5 @@
 export const ManageSPMateriaMessagesEN = {
+  'manageSPMaterial.heading.spmaterial': 'SP Material',
   'manageSPMaterial.heading': 'Manage SP Material',
   'manageSPMaterial.heading.materialListing': 'SP Material Listing',
   'manageSPMaterial.breadcrumbs.systemAdministrator': 'System Administrator',
@@ -27,7 +28,8 @@ export const ManageSPMateriaMessagesEN = {
   'manageSPMaterial.button.saveandupdate': 'Save and Update',
   'manageSPMaterial.button.cancel': 'Cancel',
   'manageSPMaterial.button.confirm': 'Confirm',
-
+  'labels.upload.csv': 'Upload CSV File',
+  'button.upload.browse': 'Browse',
   'manageSPMaterial.heading.uploadspMaterial': 'Upload SP Material',
   'manageSPMaterial.heading.uploadspMaterialcsv': 'Upload SP Material List CSV',
   'manageSPMaterial.button.Edit': 'Edit',
@@ -55,5 +57,12 @@ export const ManageSPMateriaMessagesEN = {
   'manageSPMaterial.messages.emptyTableSubtitle': 'Please add SP Materials to view the table content.',
 
   'messages.confirmation.deleteConfiguration': 'Are you sure you want to delete the configuration ?',
-  'manageSPMaterial.drawer.configuration.alert.error': 'Please select Required Field'
+  'manageSPMaterial.drawer.configuration.alert.error': 'Please select Required Field',
+
+  'manageSPMaterial.messages.button.requiredupload': 'Please upload csv to add SP Materials',
+  'manageSPMaterial.messages.button.uploadError': 'Error while Uploading SP Materials',
+  'manageSPMaterial.messages.button.uploadConflict':
+    'Issue in Uploading SP Materials. Some or all user records might have failed. The errors are listed in the downloaded file. Please review and try again.',
+  'manageSPMaterial.messages.button.uploadSuccess': 'SP Materials have uploaded succesfully ',
+  'manageSPMaterial.messages.button.downloadFail': 'Failed while downloading CSV'
 };
