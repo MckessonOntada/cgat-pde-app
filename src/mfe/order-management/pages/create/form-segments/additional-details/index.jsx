@@ -304,8 +304,29 @@ function AdditionalDetails() {
     }
   );
 
+  const { data: uploadVariantDocumentResponse, mutate: uploadVariantDocument } = useMutation(
+    async ({ fieldName, file }) => {
+      return QuestionnaireService.uploadVariantDocument({ orderId, variantId: variant.variant, file });
+    },
+    {
+      onSuccess: (result, variables) => {
+        const { file, fieldName, setFieldValue } = variables;
+        const { name, size } = file;
+        const document = { url: result, name, size };
+        setFieldValue(`${fieldName}.document`, document);
+      },
+      onError: (error) => {
+        showAlert({ description: error.message, type: 'error', anchorEl: alertContainerId });
+      }
+    }
+  );
+
   const handleOnDocumentChange = (fieldName, file, setFieldValue) => {
     uploadDocument({ fieldName, file, setFieldValue });
+  };
+
+  const handleOnVariantDocumentChange = (fieldName, file, setFieldValue) => {
+    uploadVariantDocument({ fieldName, file, setFieldValue });
   };
 
   const handleOnRemoveDocument = (fieldName) => {
@@ -583,8 +604,9 @@ function AdditionalDetails() {
                             name="variant.document"
                             component={Components['inputFile']}
                             setFieldValue={setFieldValue}
+                            disabled={Boolean(!variant)}
                             attachmentValue={values?.variant?.document || null}
-                            onFileChange={(file) => handleOnDocumentChange('variant', file, setFieldValue)}
+                            onFileChange={(file) => handleOnVariantDocumentChange('variant', file, setFieldValue)}
                           />
                         </div>
                       </div>
