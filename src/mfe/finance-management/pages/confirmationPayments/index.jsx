@@ -82,12 +82,10 @@ function ConfirmationPayments() {
     [t('paymentInvoices.reviewPayments.paymentInitiatedDate')]: dayjs().format('MM/DD/YYYY'),
     [t('paymentInvoices.reviewPayments.paymentType')]: location.state?.paymentOption,
     [t('paymentInvoices.reviewPayments.paymentDate')]: dayjs(location.state.paymentDate, 'YYYY-MM-DD').format('MM/DD/YYYY'),
-    [t('paymentInvoices.Details.Account')]: `${
-      location.state?.selectedPayment?.number?.slice(-4) || location.state.selectedPayment?.accountNumber?.slice(-4)
-    } - ${GeographicUtils.addressAggregator(selectedAccount)}`,
-    [t('paymentInvoices.reviewPayments.paymentMethod')]: `${
-      location.state?.selectedPayment?.number?.slice(-4) || location.state.selectedPayment?.accountNumber?.slice(-4)
-    } - ${location.state?.selectedPayment?.userDefinedName || location.state?.selectedPayment?.name}`
+    [t('paymentInvoices.Details.Account')]: `${selectedAccount?.accountNumber} - ${GeographicUtils.addressAggregator(selectedAccount)}`,
+    [t('paymentInvoices.reviewPayments.paymentMethod')]: `${location.state?.selectedPayment?.accountNumber?.slice(-4)} - ${
+      location.state?.selectedPayment?.userDefinedName || location.state?.selectedPayment?.name
+    }`
   };
 
   const backButtonClick = () => {
@@ -168,7 +166,11 @@ function ConfirmationPayments() {
         </div>
         <Heading as="h2">{t('paymentInvoices.reviewPayments.invoices')}</Heading>
         <div>
-          <SelectedInvoiceList selectedInvoices={selectedInvoices} setSelectedInvoices={setSelectedInvoices} />
+          <SelectedInvoiceList
+            omitColumns={['description']}
+            selectedInvoices={selectedInvoices}
+            setSelectedInvoices={setSelectedInvoices}
+          />
         </div>
 
         <div className="MCP-module-wrapper">
@@ -177,7 +179,7 @@ function ConfirmationPayments() {
           </div>
           <div id="tablist-container" className="MCP-module-body">
             <PaymentsCreditsProvider>
-              <CreditsSelected />
+              <CreditsSelected excludedColumns={['billDate']} />
             </PaymentsCreditsProvider>
           </div>
         </div>

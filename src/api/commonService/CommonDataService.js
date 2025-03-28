@@ -60,11 +60,23 @@ const useOrganizationLogo = (logUrl, practiceId) => {
   );
 };
 
+async function resetPassword() {
+  const url = `${ApiRoutes.RESET_PASSWORD()}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, {}, {
+    'Content-Type': 'application/json'
+  });
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
+
 const CommonDataService = Object.freeze({
   getOrganizationList,
   getOrganizationListAsOptions,
   getOrganizationListAsPublic,
-  useOrganizationLogo
+  useOrganizationLogo,
+  resetPassword
 });
 
 export default CommonDataService;

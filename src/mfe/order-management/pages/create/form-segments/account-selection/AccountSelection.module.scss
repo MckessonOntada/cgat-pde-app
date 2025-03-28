@@ -25,6 +25,7 @@
     .address span {
       margin-right: var(--spacing-03);
     }
+
     .btnAccount {
       margin-top: var(--spacing-03);
     }
@@ -34,12 +35,14 @@
 .controls {
   display: flex;
   gap: var(--spacing-03);
-  justify-content: end;
+  justify-content: flex-end;
   align-items: flex-end;
+
   div {
     font-size: var(--brand-font-size--default);
   }
 }
+
 .inventoryControl {
   display: flex;
   justify-content: space-between;
