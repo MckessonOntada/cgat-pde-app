@@ -525,7 +525,10 @@ function ReviewPayments() {
                   direction="column"
                   id="radio-button-order-therapy-props.id"
                   items={getRadioItems()}
-                  onChangeValue={(e) => setPaymentOption(e)}
+                  onChangeValue={(e) => {
+                    setSelectedSpecificDate('');
+                    setPaymentOption(e);
+                  }}
                   onOtherTextChange={() => {}}
                   onSubRadioFieldChange={() => {}}
                   radioBtnWidth="auto"
