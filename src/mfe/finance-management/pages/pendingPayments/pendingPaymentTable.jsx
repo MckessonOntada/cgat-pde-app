@@ -17,6 +17,7 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { useAccountContext } from '../../context/AccountContext';
 import useSnackbar from '@src/hooks/useSnackbar';
+import dayjs from 'dayjs';
 
 export default function PendingPaymentTable() {
   const { t } = useTranslate();
@@ -31,7 +32,7 @@ export default function PendingPaymentTable() {
       selector: (row) => `${row.confirmationNo}`,
       sortable: true,
       wrap: true,
-      minWidth: '110px',
+      minWidth: '210px',
       showInMobileHeader: true,
       cardHeader: true,
       cell: (props) => (
@@ -49,7 +50,7 @@ export default function PendingPaymentTable() {
       id: 'paymentMethod',
       name: t('paymentInvoices.history.table.paymentMethod'),
       selector: (row) => row.paymentMethod,
-      minWidth: '400px',
+      minWidth: '350px',
       sortable: true,
       wrap: true,
       cell: (props) => <div>{props.paymentMethod}</div>
@@ -67,7 +68,7 @@ export default function PendingPaymentTable() {
       id: 'authorizedAmt',
       name: t('pendingPayments.table.totalAuthorizedPaymentAmt'),
       selector: (row) => row.authorizedAmt,
-      minWidth: '200px',
+      minWidth: '305px',
       sortable: true,
       wrap: true,
       cell: (props) => (
@@ -79,13 +80,13 @@ export default function PendingPaymentTable() {
     },
     {
       name: t('paymentInvoices.history.table.Actions'),
-      minWidth: '100px',
+      minWidth: '200px',
       sortable: false,
       wrap: true,
       center: true,
       isAction: true,
       cell: (props) => {
-        const isFutureDate = CommonUtils.isFutureDate(props.payOn);
+        const isFutureDate = CommonUtils.isFutureDate(dayjs(props.payOn, 'DD/MM/YYYY').format('MM/DD/YYYY'));
         return (
           <Tooltip body={!isFutureDate ? t('pendingPayments.cancel.tooltip') : ''}>
             <span>

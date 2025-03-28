@@ -66,10 +66,10 @@ export const CustomerStatementsProvider = ({ children }) => {
   };
 
   const filterData = async (filters) => {
-    if (JSON.stringify(filters.dateRange) !== JSON.stringify(previousFilterConfig.dateRange)) {
-      await refetch();
-      setPreviousFilterConfig(filters);
-    }
+    // if (JSON.stringify(filters.dateRange) !== JSON.stringify(previousFilterConfig.dateRange)) {
+    //   await refetch();
+    //   setPreviousFilterConfig(filters);
+    // }
     let _data = [...[], ...actualData];
     let _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery
@@ -109,6 +109,9 @@ export const CustomerStatementsProvider = ({ children }) => {
 
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
       if (!res.data?.statements) {
+        setData([]);
+        setUnSlicedData([]);
+        setActualData([]);
         return [];
       }
       if (res.data) {
@@ -149,7 +152,7 @@ export const CustomerStatementsProvider = ({ children }) => {
     if (JSON.stringify(sortConfig) !== JSON.stringify(INITIAL_SORT_STATE)) {
       sortData(sortConfig);
     }
-  }, [filterConfig, paginationConfig.pageNumber]);
+  }, [paginationConfig.pageNumber, sortConfig]);
 
   const clearFilters = () => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
