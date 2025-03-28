@@ -15,6 +15,7 @@ import { getTabs, ORDER_STATUS, ORDER_TABS } from './config';
 import { showAlert } from '@src/store/reducer/alertReducer';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
+import useOrderCount from './useOrderCount';
 
 const OrderIndex = () => {
   const { t } = useTranslate();
@@ -30,6 +31,27 @@ const OrderIndex = () => {
     });
     return allTabs;
   });
+
+  const { data: orderCounts } = useOrderCount();
+  React.useEffect(() => {
+    const allTabs = getTabs();
+    allTabs.forEach((tab) => {
+      let countClass = '';
+      if ([ORDER_TABS.SUBMITTED_BUY_AND_BILL].includes(tab.id)) {
+        countClass = 'green';
+      } else if ([ORDER_TABS.PENDING_SUBMISSION].includes(tab.id)) {
+        countClass = 'orange';
+      }
+      let orderCount = orderCounts?.[tab.id] || 0;
+      if (orderCount > 99) orderCount = '99+';
+      tab.configName = (
+        <div className={`tab-count-header ${countClass}`} data-label={orderCount}>
+          {t(tab.configName)}
+        </div>
+      );
+    });
+    setTabList(allTabs);
+  }, [orderCounts]);
 
   const navigate = useNavigate();
   const location = useLocation();

@@ -1199,3 +1199,41 @@ div[role="row"] {
     }
   }
 }
+
+.tab-count-header {
+  position: relative;
+  margin-right: var(--spacing-05);
+
+  &::after {
+    position: absolute;
+    top: 0%;
+    right: -8px;
+    margin-left: var(--spacing-02);
+    transform: translate(100%, -50%);
+    content: attr(data-label);
+    // display: block;
+    font-weight: bold;
+    margin-top: 10px;
+    font-size: var(--brand-font-size--extra-small);
+    line-height: var(--brand-font-size--default);
+    font-weight: var(--brand-font-weight-600);
+    border-radius: var(--spacing-03);
+    background-color: #1E394E;
+    color: white;
+    padding: 6px 8px;
+
+  }
+
+  &.green {
+    &::after {
+      background-color: #2E8540;
+    }
+  }
+
+  &.orange {
+    &::after {
+      background-color: #D3722E;
+    }
+  }
+
+}

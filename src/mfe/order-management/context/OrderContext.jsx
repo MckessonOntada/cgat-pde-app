@@ -29,7 +29,7 @@ export const useOrders = () => {
 };
 
 export const OrderProvider = ({ children }) => {
-  const [orderView, changeOrderView] = React.useState(null);
+  const [orderView, setOrderView] = React.useState(null);
   const [filterConfig, setFilterConfig] = React.useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = React.useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = React.useState(INITIAL_SORT_STATE);
@@ -42,7 +42,6 @@ export const OrderProvider = ({ children }) => {
       pageSize: paginationConfig.pageSize,
       sortBy: sortConfig.sortBy || 'createdAt',
       sortOrder: sortConfig.sortOrder || 'desc',
-      showMyOrders: false,
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       statuses: filterConfig.status || TAB_FILTERS[tabVariant].join(','),
       showMyOrders: orderView === ORDER_VIEW.ALL_ORDERS ? false : true
@@ -106,6 +105,11 @@ export const OrderProvider = ({ children }) => {
     setFilterConfig({ ...INITIAL_FILTER_STATE });
     setCurrentPage(1);
     setTabVariant(tabType);
+  };
+
+  const changeOrderView = (view) => {
+    setCurrentPage(1);
+    setOrderView(view);
   };
 
   return (
