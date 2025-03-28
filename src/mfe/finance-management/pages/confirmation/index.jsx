@@ -34,9 +34,6 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
       page-break-inside: avoid;
       page-break-after: auto;
     }
-      .print-screen-empty{
-          height: 50px !important;
-      }
     `);
 
   const invoiceDetails = {

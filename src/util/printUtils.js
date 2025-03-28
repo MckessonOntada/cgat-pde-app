@@ -22,12 +22,6 @@ export const useCustomPrint = (contentRef, pageStyle = '', ...rest) => {
     .fieldValue .overflowing {
       white-space: wrap  !important;
     }
-    .hidden-on-print{
-      display:none !important;
-    }
-    .print_screen{
-      display: block !important;
-    }
   `;
 
   return useReactToPrint({
