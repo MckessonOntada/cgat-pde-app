@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styles from './PatientDetails.module.scss';
-import { Button, Alert, Divider } from '@mckesson/mcp-component-library';
+import { Button, Alert } from '@mckesson/mcp-component-library';
 import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -228,7 +228,6 @@ const PatientDetails = () => {
                 <div className={styles.wrapper}>
                   <div className="MCP-panel-container">
                     <PatientDetailsForm />
-                    <Divider />
                   </div>
                   <div className="footer-wrapper">
                     <div className="controls footer-controls">
