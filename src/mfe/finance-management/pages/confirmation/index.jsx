@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Heading, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -13,6 +13,7 @@ import dayjs from 'dayjs';
 import { useExportStatementPDF } from './actions/actions';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { GeographicUtils } from '@src/util/GeographicUtil';
+import { useCustomPrint } from '@src/util/printUtils';
 
 const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
   const { t } = useTranslate();
@@ -23,6 +24,8 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
   const { state } = location;
   const exportType = type;
   const { mutate: exportStatementPDF } = useExportStatementPDF(exportType);
+  const contentRef = useRef(null); 
+  const printPage = useCustomPrint(contentRef);
 
   const invoiceDetails = {
     'Account Number': selectedAccount?.accountNumber || '-',
@@ -114,9 +117,9 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
     <div className="footer-section">
       <Button
         variant="secondary"
-        onClick={type === PATHS.paymentHistory ? handleDownload : () => {}}
+        onClick={type === PATHS.paymentHistory ? handleDownload :  () => printPage()}
         size="md"
-        disabled={type !== PATHS.paymentHistory}>
+        >
         {type === PATHS.paymentHistory ? t('paymentInvoices.CS.ExportExcel') : t('paymentInvoices.history.filters.printSummary')}
       </Button>
       <Button onClick={type === PATHS.paymentHistory ? () => {} : handleExport} size="md" disabled={type === PATHS.paymentHistory}>
@@ -126,7 +129,7 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
   );
 
   return (
-    <div className="view-details-container">
+    <div className="view-details-container" ref={contentRef}>
       <div>{renderBackButton()}</div>
       <Heading as="h1">{`Confirmation - ${confirmationNumber}`}</Heading>
       <div className="details-card-wrapper">{renderMetricsCard()}</div>

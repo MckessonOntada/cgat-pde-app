@@ -59,7 +59,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.history.filters.startDate': 'Created Date (Start)',
   'paymentInvoices.history.filters.endDate': 'Created Date (End)',
   'paymentInvoices.history.filters.clearFilter': 'Clear Filter',
-  'paymentInvoices.history.filters.printSummary': 'Print Summary',
+  'paymentInvoices.history.filters.printSummary': 'Print',
   'paymentInvoices.history.filters.downloadExcel': 'Download Excel',
   'paymentInvoices.history.filters.paymentDetails': 'Payment Details',
   'paymentInvoices.history.table.emptyData': 'No Payment History Found',
