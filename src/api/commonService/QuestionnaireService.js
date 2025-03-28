@@ -98,6 +98,24 @@ async function uploadQuestionnaireDocument(payload) {
   return {};
 }
 
+async function uploadVariantDocument(payload) {
+  const { orderId, variantId, file } = payload;
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/variant/documents?variant=${variantId}`;
+
+  const res = await HttpResourceService.callRest(
+    url,
+    httpVerb.POST,
+    { file },
+    {
+      'Content-Type': 'multipart/form-data'
+    }
+  );
+
+  if (res.data) return res.data;
+
+  return {};
+}
+
 async function deLinkConfigureQuestionnaire(entityType, payload) {
   const apiUrl = `${ApiRoutes.QUESTIONNAIRE()}/configure/deLink?type=${entityType}`;
   const res = await HttpResourceService.callRest(apiUrl, httpVerb.DELETE, payload);
@@ -117,6 +135,7 @@ const QuestionnaireService = Object.freeze({
   deactivateQuestionnaireById,
   getConfiguredQuestionnaire,
   uploadQuestionnaireDocument,
+  uploadVariantDocument,
   deLinkConfigureQuestionnaire
 });
 
