@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Heading, AutoSuggestDropdown } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import InfoCards from '@src/components/infoCards/InfoCards';
@@ -20,6 +20,7 @@ import useSnackbar from '@src/hooks/useSnackbar';
 import CreditsSelected from '../reviewPayments/CreditsSelected';
 import dayjs from 'dayjs';
 import { GeographicUtils } from '@src/util/GeographicUtil';
+import { useCustomPrint } from '@src/util/printUtils';
 
 function ConfirmationPayments() {
   const { t } = useTranslate();
@@ -33,6 +34,8 @@ function ConfirmationPayments() {
   const { selectedAccount } = useAccountContext();
   const { showSnackbar } = useSnackbar();
   const [mergedData, setMergedData] = useState([]);
+  const contentRef = useRef(null); 
+  const printPage = useCustomPrint(contentRef);
 
   const { data: paymentMethodsData = [], isError } = useQuery({
     queryKey: ['paymentMethodsreviewPayments'],
@@ -122,7 +125,7 @@ function ConfirmationPayments() {
 
   return (
     <div className="PreviewPayments">
-      <div className="reviewPaymentsContent">
+      <div className="reviewPaymentsContent" ref={contentRef}>
         <div className="backNavigation">
           <Button className="backButton" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={backButtonClick} size="md">
             {t('paymentInvoices.Details.backToManageInvoices')}
@@ -188,7 +191,7 @@ function ConfirmationPayments() {
         </div>
       </div>
       <div className="footer-section">
-        <Button variant="secondary" onClick={() => {}} size="md" disabled>
+        <Button variant="secondary" onClick={() => printPage()} size="md">
           {t('paymentInvoices.history.filters.printSummary')}
         </Button>
         <Button

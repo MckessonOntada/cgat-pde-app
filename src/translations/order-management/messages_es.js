@@ -23,7 +23,7 @@ export const MessageEs = {
   'captions.btnSelect': 'S_Select',
   'captions.btnViewComments': 'S_View Comments',
   'captions.btnSelecttherapy': 'S_Select Therapy',
-  'captions.btnPrintSummary': 'S_Print Summary',
+  'captions.btnPrintSummary': 'S_Print',
   'captions.btnGoToOrders': 'S_Go to orders',
   'captions.btnSaveAndContinue': 'S_Save and Continue',
   'captions.btnBackToManageOrder': 'S_Back to Manage Order',
