@@ -199,6 +199,7 @@ div.disable-all {
   .ctrl-search-box {
     flex-grow: 1;
     width: 100%;
+
     @include mixins.respond(md) {
       max-width: 460px;
     }
