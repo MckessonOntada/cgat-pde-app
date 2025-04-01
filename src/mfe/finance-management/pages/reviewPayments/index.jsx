@@ -198,9 +198,9 @@ function ReviewPayments() {
     if (value && (!dayjs(value).isValid() || !dayjs().isBefore(dayjs(value, 'MM/DD/YYYY')))) {
       setSpecificDateError(`Selected date should not be the past date`);
     }
-    if (value && !dayjs(value, 'MM/DD/YYYY').isBefore(dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY'))) {
+    if (value && dayjs(value, 'MM/DD/YYYY').isAfter(dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY'))) {
       let _formatDate = dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY');
-      setSpecificDateError(`Selected date should be before due date: ${_formatDate}`);
+      setSpecificDateError(`Selected date should be on or before  due date: ${_formatDate}`);
     }
   };
 
@@ -230,13 +230,9 @@ function ReviewPayments() {
             onSubTypeChange: (value) => {
               setSelectedSpecificDate(value);
               setSpecificDateError('');
-              if (
-                value &&
-                dayjs(value).isValid() &&
-                !dayjs(value, 'MM/DD/YYYY').isBefore(dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY'))
-              ) {
+              if (value && dayjs(value).isValid() && dayjs(value, 'MM/DD/YYYY').isAfter(dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY'))) {
                 let _formatDate = dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY');
-                setSpecificDateError(`Selected date should be before due date: ${_formatDate}`);
+                setSpecificDateError(`Selected date should be on or before due date: ${_formatDate}`);
               }
             },
             disablePast: true,

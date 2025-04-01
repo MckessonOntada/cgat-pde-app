@@ -25,6 +25,7 @@ export default function PendingPaymentTable() {
   const { selectedAccount } = useAccountContext();
   const showCardView = useResponsiveView();
   const { showSnackbar } = useSnackbar();
+
   const columns = [
     {
       id: 'confirmationNo',
@@ -86,9 +87,16 @@ export default function PendingPaymentTable() {
       center: true,
       isAction: true,
       cell: (props) => {
-        const isFutureDate = CommonUtils.isFutureDate(dayjs(props.payOn, 'DD/MM/YYYY').format('MM/DD/YYYY'));
+        const today = new Date().getTime();
+        const payOnDate = new Date(dayjs(props.payOn, 'DD/MM/YYYY').format('MM/DD/YYYY')).getTime();
+        const earliestDueDate = props.invoices?.reduce((min, inv) => {
+          const date = dayjs(inv.dueDate, 'DD/MM/YYYY');
+          return !min || date.isBefore(min) ? date : min;
+        }, null);
+        const dueDate = earliestDueDate?.valueOf();
+        const isValidDate = payOnDate >= today && payOnDate <= dueDate;
         return (
-          <Tooltip body={!isFutureDate ? t('pendingPayments.cancel.tooltip') : ''}>
+          <Tooltip body={!isValidDate ? t('pendingPayments.cancel.tooltip') : ''}>
             <span>
               <Button
                 className="cancel-button-control"
@@ -96,7 +104,7 @@ export default function PendingPaymentTable() {
                 Icon={() => <CrossIcon />}
                 onClick={() => onCancelPaymentClick(props.confirmationNo)}
                 size="md"
-                disabled={!isFutureDate}>
+                disabled={!isValidDate}>
                 {t('pendingPayments.table.cancelPayment')}
               </Button>
             </span>

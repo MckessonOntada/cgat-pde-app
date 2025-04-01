@@ -24,8 +24,10 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
   const { state } = location;
   const exportType = type;
   const { mutate: exportStatementPDF } = useExportStatementPDF(exportType);
-  const contentRef = useRef(null); 
-  const printPage = useCustomPrint(contentRef, `
+  const contentRef = useRef(null);
+  const printPage = useCustomPrint(
+    contentRef,
+    `
     .table-card-container {
       page-break-inside: avoid;
       page-break-after: auto;
@@ -34,12 +36,13 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
       page-break-inside: avoid;
       page-break-after: auto;
     }
-    `);
+    `
+  );
 
   const invoiceDetails = {
     'Account Number': selectedAccount?.accountNumber || '-',
     'Payment Method': state?.paymentMethod,
-    'Pay On': (type === PATHS.paymentHistory ? state?.paymentTypeText : state?.payOn) || '-',
+    'Pay On': (type === PATHS.paymentHistory ? state?.paymentTypeText : dayjs(state?.payOn, 'DD/MM/YYYY').format('MM/DD/YYYY')) || '-',
     'Payment Initiated By': state?.userName || state?.initiatedBy || '-'
   };
   const formatCurrency = (amount) => {
@@ -124,14 +127,10 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
 
   const renderFooterButtons = () => (
     <div className="footer-section">
-      <Button
-        variant="secondary"
-        onClick={type === PATHS.paymentHistory ? handleDownload :  () => printPage()}
-        size="md"
-        >
+      <Button variant="secondary" onClick={type === PATHS.paymentHistory ? handleDownload : () => printPage()} size="md">
         {type === PATHS.paymentHistory ? t('paymentInvoices.CS.ExportExcel') : t('paymentInvoices.history.filters.printSummary')}
       </Button>
-      <Button onClick={type === PATHS.paymentHistory ? () => printPage() : handleExport} size="md" >
+      <Button onClick={type === PATHS.paymentHistory ? () => printPage() : handleExport} size="md">
         {type === PATHS.paymentHistory ? t('paymentInvoices.Details.print') : t('paymentInvoices.history.filters.downloadExcel')}
       </Button>
     </div>
