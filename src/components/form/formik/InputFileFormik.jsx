@@ -12,11 +12,12 @@ import { Link } from 'react-router-dom';
 import CommonUtils from '@src/util/CommonUtils';
 
 function InputFileFormik(props) {
-  const { field, form, onFileChange, primaryButtonCaption } = props;
+  const { field, form, onFileChange, primaryButtonCaption, fileInputRef: parentFileInputRef } = props;
   const { setFieldError, values } = useFormikContext();
   const [errorFile, setErrorFile] = useState(false);
   const { label, value, validateOnChange, attachmentValue } = props;
-  const fileInputRef = React.useRef(value || null);
+  const internalFileInputRef = React.useRef(value || null);
+  const fileInputRef = parentFileInputRef || internalFileInputRef;
   const { t } = useTranslate();
   const [file, setFile] = React.useState(null);
   const { errors, touched, setFieldValue } = form;

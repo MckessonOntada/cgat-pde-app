@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Button, Heading, Alert, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
@@ -10,6 +10,7 @@ import Components from '@src/components/form/Components';
 function UploadFile({ label, subHeading, isLoading, alert, handleAlertClose, downloadTemplate, handleUpload, validateFile }) {
   const { t } = useTranslate();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
   return (
     <React.Fragment>
       {isLoading && <Loader type="screen" />}
@@ -32,6 +33,7 @@ function UploadFile({ label, subHeading, isLoading, alert, handleAlertClose, dow
           onSubmit={(values, { setFieldValue }) => {
             handleUpload(values);
             setFieldValue('file', null);
+            fileInputRef.current.value = '';
           }}>
           {({ setFieldValue, values, resetForm }) => (
             <Form>
@@ -45,6 +47,7 @@ function UploadFile({ label, subHeading, isLoading, alert, handleAlertClose, dow
                   attachmentValue={values.file}
                   setFieldValue={setFieldValue}
                   primaryButtonCaption={t('button.upload.browse')}
+                  fileInputRef={fileInputRef}
                 />
               </div>
               <div className="controls uploadControls">
