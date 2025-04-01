@@ -74,7 +74,7 @@ const PaymentsInvoices = () => {
             <TabList
               options={tabs}
               alignment="left"
-              onTabClick={(e) => handleTabSwitch(e)}
+              onTabClick={handleTabSwitch}
               showShadow={false}
               variant={'text'}
               useAsButton={true}
