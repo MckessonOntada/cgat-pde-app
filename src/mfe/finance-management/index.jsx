@@ -41,12 +41,13 @@ const PaymentsInvoices = () => {
     setTabs(updatedTabs);
   }, []);
 
-  const handleTabSwitch = (e)=>{
+  const handleTabSwitch = (e) => {
     const updatedTabs = tabListData.map((item) => {
+      const isActive = e.path.includes(item.path);
       return {
         ...item,
-        isActiveTab: e.path.includes(item.path),
-        ariaSelected: e.path.includes(item.path) ? 'true' : 'false',
+        isActiveTab: isActive,
+        ariaSelected: isActive ? 'true' : 'false',
         configName: t('paymentInvoices.tabs.' + item.configName)
       };
     });
