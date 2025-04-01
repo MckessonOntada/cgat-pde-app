@@ -39,7 +39,21 @@ const PaymentsInvoices = () => {
     });
 
     setTabs(updatedTabs);
-  }, [location.pathname]);
+  }, []);
+
+  const handleTabSwitch = (e) => {
+    const updatedTabs = tabListData.map((item) => {
+      const isActive = e.path.includes(item.path);
+      return {
+        ...item,
+        isActiveTab: isActive,
+        ariaSelected: isActive ? 'true' : 'false',
+        configName: t('paymentInvoices.tabs.' + item.configName)
+      };
+    });
+    navigate(e.path);
+    setTabs(updatedTabs);
+  }
 
   if (isLoading || !CommonUtils.isNonEmptyObject(selectedAccount)) {
     return <EmptyUI isLoading={isLoading} isEmpty={!CommonUtils.isNonEmptyObject(selectedAccount)} />;
@@ -60,9 +74,7 @@ const PaymentsInvoices = () => {
             <TabList
               options={tabs}
               alignment="left"
-              onTabClick={(e) => {
-                navigate(e.path);
-              }}
+              onTabClick={handleTabSwitch}
               showShadow={false}
               variant={'text'}
               useAsButton={true}
