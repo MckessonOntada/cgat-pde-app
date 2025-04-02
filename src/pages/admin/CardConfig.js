@@ -3,6 +3,7 @@ import { ReactComponent as ApproverGroupIcon } from '../../assets/svg/approvergr
 import { ReactComponent as CatalogueIcon } from '../../assets/svg/catalogue-circle.svg';
 import { ReactComponent as UserIcon } from '../../assets/svg/user-circle.svg';
 import { ReactComponent as LinkIcon } from '../../assets/svg/link-circle.svg';
+import { ReactComponent as ProviderIcon } from '../../assets/svg/ProviderEmblem.svg';
 import AppRoutes from '../../routes/AppRoutes';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 const { USER_MANAGEMENT, ORDER_MANAGEMENT } = PERMISSIONS_ENUM;
@@ -30,6 +31,14 @@ const cardList = [
     icon: ApproverGroupIcon,
     details: 'approver_management_description',
     path: AppRoutes.pathApproverManagement,
+    permissions: ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP
+  },
+  {
+    name: 'ManageProviders',
+    label: 'manage_providers',
+    icon: ProviderIcon,
+    details: 'manage_provider_description',
+    path: AppRoutes.pathManageProviders,
     permissions: ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP
   }
 ];

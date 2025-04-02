@@ -20,8 +20,9 @@ export const DashboardEN = {
     'Streamline role assignments and permissions, allowing you to define, edit, and review user roles efficiently.',
   'dashboard.card.systemAdministrator': 'System Administrator',
   'dashboard.card.manage_approver_groups': 'Manage Approver Groups',
+  'dashboard.card.manage_providers': 'Manage Providers',
   'dashboard.card.approver_management_description': 'Enables you to efficiently create, review and manage approver groups.',
-
+  'dashboard.card.manage_provider_description': 'Enables you to efficiently create, review and manage providers.',
   'dashboard.card.system_configuration': 'System Configuration',
   'dashboard.card.system_configuration_card_description': 'Enables you to efficiently create and manage all the system configurations.',
   'dashboard.card.system_config_manage_material': 'Manage Material',

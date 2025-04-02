@@ -21,7 +21,8 @@ import { SystemConfiguration } from '@src/mfe/order-management/pages/system-conf
 import { AccountProvider } from '@src/mfe/finance-management/context/AccountContext';
 import Footer from '@src/components/footer';
 import ErrorWrapper from './ErrorWrapper';
-import AccountSetting from "@src/components/AccountSetting";
+import AccountSetting from '@src/components/AccountSetting';
+import ManageProviders from '@src/mfe/order-management/manageProviders';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
@@ -32,7 +33,7 @@ function MainLayout() {
     <div id={debugIds(ID.MAIN)} className={styles.appContainer}>
       <Header />
       <ErrorWrapper>
-        <div className={`${styles['app-wrapper']}`}  id={debugIds(ID.APP_WRAPPER)}>
+        <div className={`${styles['app-wrapper']}`} id={debugIds(ID.APP_WRAPPER)}>
           <div className={`${styles.home} max-container`} id={debugIds(ID.HOME)}>
             <ScrollToTop containerId={debugIds(ID.APP_WRAPPER)} />
             <Suspense fallback={<Loader type="screen" />}>
@@ -78,34 +79,37 @@ function MainLayout() {
                       </ProtectedRoute>
                     }
                   />
-                  <Route
-                    path={`/admin/organization/roles/*`}
-                    element={
-                      <ProtectedRoute permissions={routePermissionConfig.roles}>
-                        <Role />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path={`/admin/approver-group/*`}
-                    element={
-                      <ProtectedRoute permissions={routePermissionConfig.approvergroups}>
-                        <ManageApprovers />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path={'/admin/organization/*'}
-                    element={
-                      AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() ? (
-                        <Navigate to={'/'} />
-                      ) : (
-                        <ProtectedRoute permissions={routePermissionConfig.organization}>
-                          <OrgEntryPoint />
+                  <Route path="/admin/*">
+                    <Route path={'providers/*'} element={<ManageProviders />} />
+                    <Route
+                      path={`organization/roles/*`}
+                      element={
+                        <ProtectedRoute permissions={routePermissionConfig.roles}>
+                          <Role />
                         </ProtectedRoute>
-                      )
-                    }
-                  />
+                      }
+                    />
+                    <Route
+                      path={`approver-group/*`}
+                      element={
+                        <ProtectedRoute permissions={routePermissionConfig.approvergroups}>
+                          <ManageApprovers />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path={'organization/*'}
+                      element={
+                        AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() ? (
+                          <Navigate to={'/'} />
+                        ) : (
+                          <ProtectedRoute permissions={routePermissionConfig.organization}>
+                            <OrgEntryPoint />
+                          </ProtectedRoute>
+                        )
+                      }
+                    />
+                  </Route>
                   <Route
                     path={'/record/*'}
                     element={
