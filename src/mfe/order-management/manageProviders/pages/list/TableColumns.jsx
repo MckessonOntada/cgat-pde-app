@@ -55,8 +55,12 @@ const columns = [
     cell: () => (
       <MenuList
         menuIcon={<EllipsisIcon />}
-        handleSelect={() => {}}
-        options={[{ label: 'Deactivate', value: 'Deactivate' }]}
+        handleSelect={(e) => {}}
+        options={[
+          { label: 'Edit', value: 'edit' },
+          { label: 'Deactivate', value: 'Deactivate' },
+          { label: 'Link SP Account', value: 'linkSPAccount' }
+        ]}
         aria-label="Order options"
       />
     )
