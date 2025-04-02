@@ -8,7 +8,7 @@ import { routeConstants } from './routes/constants';
 import { useLocation, useNavigate } from 'react-router-dom';
 import OrgAccountsSelect from '../../../components/orgAccountSelection/OrgAccountsSelect';
 import { useSPAccountContext } from './context/SPAccountContext';
-import SPAccountDataTable from './pages/SPAccountDataTable';
+import SPAccountDataTable from './pages/SPAccounts/SPAccountDataTable';
 
 function ManageSPAccount() {
   const { t } = useTranslate();
@@ -36,11 +36,27 @@ function ManageSPAccount() {
     label: t(`dashboard.card.${item.label}`)
   }));
 
+  const showAlert = (type, message) => {
+    setAlert({ type: type, message: message });
+  };
+
+  const handleAlertClose = () => {
+    setAlert({ type: null, message: null });
+    navigate(location.pathname, { replace: true, state: { ...location.state, isSuccess: false } });
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      showAlert('success', t('manageSPAccount.message.addsuccess'));
+    }
+  }, [isSuccess, location.pathname, location.state, navigate]);
+
   return (
     <div className="MCP-module-wrapper">
       <Breadcrumbs items={translatedBreadcrumbs} />
       <div className="MCP-module-body">
         <Heading as="h1">{t('manageSPAccount.heading')}</Heading>
+        {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
         <div className="MCP-panel-container">
           <OrgAccountsSelect handleAccountChange={() => {}} showAccountsSelect={false} />
           <div class="MCP-panel-container">

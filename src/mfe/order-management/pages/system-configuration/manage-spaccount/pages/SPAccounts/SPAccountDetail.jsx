@@ -19,12 +19,12 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import UserAccounts from '@src/components/Accounts/Accounts';
 import PermittedComponent from '@src/components/permitted-component';
-import { routeConstants } from '../routes/constants';
+import { routeConstants } from '../../routes/constants';
 import DetailSegment from '@src/components/DetailSegment';
 import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import SPAccountService from '@src/api/commonService/SPAccountService';
-import ShippingLocationsDataTable from './ShippingLocationsDataTable';
-import { ShippingLocationProvider } from '../context/ShippingLocationContext';
+import ShippingLocationsDataTable from '../ShippingLocations/ShippingLocationsDataTable';
+import { ShippingLocationProvider } from '../../context/ShippingLocationContext';
 
 const SPAccountDetail = () => {
   const { t } = useTranslate();

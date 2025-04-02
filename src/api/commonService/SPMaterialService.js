@@ -18,8 +18,8 @@ export const getSPMaterialList = async (requestParams) => {
 
   return {
     data: result.default.content || [],
-    totalElements: result.default.content?.totalElements,
-    totalPages: result.default.content?.totalPages
+    totalElements: result.default.totalElements,
+    totalPages: result.default.totalPages
   };
 };
 

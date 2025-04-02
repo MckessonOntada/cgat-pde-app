@@ -61,18 +61,18 @@ export const SPMaterialProvider = ({ children }) => {
     queryKey: ['SPMaterials', requestParams],
     queryFn: async () => {
       const result = await SPMaterialService.getSPMaterialList(requestParams);
-      return result;
-    },
-    select: (result) => result.data,
-    onSuccess: (result) => {
-      // result is what queryFn returns
       const { totalElements, totalPages } = result;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
         ...(totalElements && { totalElements }),
         ...(totalPages && { totalPages })
       }));
+      return result.data?.slice(
+        (paginationConfig.pageNumber - 1) * paginationConfig.pageSize,
+        paginationConfig.pageNumber * paginationConfig.pageSize
+      );
     },
+
     refetchOnWindowFocus: false
   });
 

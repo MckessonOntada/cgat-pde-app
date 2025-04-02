@@ -130,7 +130,7 @@ function SPMaterialDataTable(onActionSuccess) {
       name: t('manageSPMaterial.table.ndc'),
       selector: (row) => {},
       minWidth: '200px',
-      sortable: true,
+      sortable: false,
       sortKey: 'ndc',
       wrap: true,
       cell: (props) => <div>{props?.ndc || '-'}</div>
@@ -149,7 +149,6 @@ function SPMaterialDataTable(onActionSuccess) {
       id: 'status',
       name: t('manageSPMaterial.table.status'),
       selector: (row) => {},
-      minWidth: '100px',
       sortable: true,
       sortKey: 'status',
       wrap: true,

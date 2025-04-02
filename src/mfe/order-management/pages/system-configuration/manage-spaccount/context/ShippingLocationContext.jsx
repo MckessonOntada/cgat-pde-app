@@ -1,32 +1,91 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
-
-const RECORDS_PER_PAGE = 8;
+import ShippingLocationService from '@src/api/commonService/ShippingLocationService';
 
 const ShippingLocationContext = createContext();
 
-export const useShippingLocationContext = () => {
+export const useShippingLocation = () => {
   const context = useContext(ShippingLocationContext);
   if (!context) {
-    throw new Error('UseShippingLocation must be used within a ShippingLocationProvider.');
+    throw new Error('useShippingLocation must be used within a ShippingLocationProvider.');
   }
   return context;
 };
 
-const INITIAL_PAGINATION_STATE = {
+const INITIAL_FILTER_STATE = {
+  searchQuery: '',
+  status: []
+};
+
+const INITIAL_SORT_STATE = {
+  sortBy: null,
+  sortOrder: null
+};
+
+const INITIAL_PAGINATION_CONFIG = {
   totalElements: 0,
-  pageSize: RECORDS_PER_PAGE,
+  pageSize: 8,
   totalPages: 0,
   pageNumber: 1
 };
 
-const INITIAL_FILTER_STATE = {
-  searchQuery: ''
-};
-
 export const ShippingLocationProvider = ({ children }) => {
-  const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
+  const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
+  const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
+
+  const updateFilterState = useCallback((field, value) => {
+    setFilterState((prevState) => ({
+      ...prevState,
+      [field]: value
+    }));
+  }, []);
+
+  const requestParams = useMemo(
+    () => ({
+      pageNo: paginationConfig.pageNumber - 1,
+      pageSize: paginationConfig.pageSize,
+      sortBy: sortConfig.sortBy,
+      sortOrder: sortConfig.sortOrder,
+      ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
+      ...(filterConfig?.status?.length && { status: [filterConfig.status] })
+    }),
+    [filterConfig, paginationConfig.pageNumber, sortConfig]
+  );
+
+  const { isLoading, isError, error, data, refetch } = useQuery({
+    queryKey: ['ShippingLocations', requestParams],
+    queryFn: async () => {
+      const result = await ShippingLocationService.getShippingLocationList(requestParams);
+      const { totalElements, totalPages } = result;
+      setPaginationConfig((prevConfig) => ({
+        ...prevConfig,
+        ...(totalElements && { totalElements }),
+        ...(totalPages && { totalPages })
+      }));
+      return result.data?.slice(
+        (paginationConfig.pageNumber - 1) * paginationConfig.pageSize,
+        paginationConfig.pageNumber * paginationConfig.pageSize
+      );
+    },
+
+    refetchOnWindowFocus: false
+  });
+
+  const clearFilters = () => {
+    setFilterConfig(INITIAL_FILTER_STATE);
+  };
+
+  useEffect(() => {
+    refetch();
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
+
+  const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
+
+  const applyFilters = (filters) => {
+    setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
+    setFilterConfig({ ...filters });
+  };
 
   const setPageNumber = (pageNumber) => {
     setPaginationConfig((prevConfig) => ({
@@ -35,21 +94,22 @@ export const ShippingLocationProvider = ({ children }) => {
     }));
   };
 
-  const applyFilters = (filters) => {
-    setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
-    setFilterConfig((prevFilters) => ({
-      ...prevFilters,
-      ...filters
-    }));
-  };
-
-  const clearFilters = () => setFilterConfig(INITIAL_FILTER_STATE);
-
-  const contextValue = {
-    paginationConfig,
-    setPageNumber,
-    clearFilters,
-    applyFilters
-  };
-  return <ShippingLocationContext.Provider value={contextValue}>{children}</ShippingLocationContext.Provider>;
+  const ctxValue = useMemo(
+    () => ({
+      data: data || [],
+      isLoading,
+      isError,
+      error,
+      filterConfig,
+      paginationConfig,
+      setFilterConfig,
+      clearFilters,
+      applyFilters,
+      applySort,
+      setPageNumber,
+      refreshData: refetch
+    }),
+    [updateFilterState, clearFilters, isLoading, isError, data, refetch]
+  );
+  return <ShippingLocationContext.Provider value={ctxValue}>{children}</ShippingLocationContext.Provider>;
 };

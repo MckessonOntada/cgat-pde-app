@@ -72,6 +72,17 @@ function ManageSPMaterial() {
           { label: 'Inactive', value: 'inactive' },
           { label: 'Active', value: 'active' }
         ]
+      },
+      {
+        type: 'dropdown',
+        name: 'siteName',
+        label: t('manageSPMaterial.drawer.details.body.siteName'),
+        placeholder: t('placeholders.search'),
+        options: [
+          { label: 'All', value: 'all' },
+          { label: 'Inactive', value: 'inactive' },
+          { label: 'Active', value: 'active' }
+        ]
       }
     ];
   }, []);

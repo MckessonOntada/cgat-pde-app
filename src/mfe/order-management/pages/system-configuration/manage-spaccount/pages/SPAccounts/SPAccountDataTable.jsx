@@ -1,17 +1,17 @@
 import { useTranslate } from '@src/translations/useTranslation';
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { CustomDataTable } from '@mckesson/mcp-component-library';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import { useSPAccountContext } from '../context/SPAccountContext';
+import { useSPAccountContext } from '../../context/SPAccountContext';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { getAddress } from '@src/mfe/order-management/questionnaire/util';
 import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import { ReactComponent as UploadSVG } from '@src/assets/image/upload_bottom.svg';
 import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
-import { routeConstants } from '../routes/constants';
+import { routeConstants } from '../../routes/constants';
 
 function SPAccountDataTable(props) {
   const { t } = useTranslate();
@@ -46,9 +46,7 @@ function SPAccountDataTable(props) {
       name: t('table.columns.captions.address'),
       selector: (row) => row.accountNumber || '',
       maxWidth: '450px',
-      cell: (props) => <EclipsesTextcss str={getAddress(props.address)} maxWidth={450} />,
-      sortable: true,
-      sortKey: 'accountNumber'
+      cell: (props) => <EclipsesTextcss str={getAddress(props.address)} maxWidth={450} />
     }
   ];
 

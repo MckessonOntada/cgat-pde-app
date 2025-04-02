@@ -2,7 +2,10 @@ import { ReactComponent as SystemConfigurationManageAccount } from '@src/assets/
 import { ReactComponent as SystemConfigurationManageCatalog } from '@src/assets/svg/system_config_manage_catalog.svg';
 import { ReactComponent as SystemConfigurationManageMaterial } from '@src/assets/svg/system_config_manage_material.svg';
 import { ReactComponent as SystemConfigurationManageQuestionnaire } from '@src/assets/svg/system_config_manage_questionnaire.svg';
-
+import { ReactComponent as SystemConfigurationSPCatalog } from '@src/assets/svg/SPCatalog.svg';
+import { ReactComponent as SystemConfigurationSPAccounts } from '@src/assets/svg/SPAccounts.svg';
+import { ReactComponent as SystemConfigurationMaterialCrosswalk } from '@src/assets/svg/Material-Crosswalk.svg';
+import { ReactComponent as SystemConfigurationSPMaterial } from '@src/assets/svg/SPMaterial.svg';
 const BREADCRUMB_ITEMS = [
   {
     label: 'systemAdministrator',
@@ -61,7 +64,7 @@ const CARDS = [
     heading: 'dashboard.card.system_config_sp_settings',
     name: 'SystemConfig_ManageSPMaterial',
     label: 'system_config_manage_spmaterial',
-    icon: SystemConfigurationManageMaterial,
+    icon: SystemConfigurationSPMaterial,
     details: 'system_config_description_manage_material',
     path: CONFIG_MODULE_ROUTES.MANAGE_SPMATERIAL
   },
@@ -69,7 +72,7 @@ const CARDS = [
     heading: 'dashboard.card.system_config_sp_settings',
     name: 'SystemConfig_MaterialCrossWalk',
     label: 'system_config_manage_materialcrosswalk',
-    icon: SystemConfigurationManageCatalog,
+    icon: SystemConfigurationMaterialCrosswalk,
     details: 'system_config_description_manage_catalog',
     path: CONFIG_MODULE_ROUTES.MATERIAL_CROSSWALK
   },
@@ -77,7 +80,7 @@ const CARDS = [
     heading: 'dashboard.card.system_config_sp_settings',
     name: 'SystemConfig_ManageSPCatalog',
     label: 'system_config_manage_spcatalog',
-    icon: SystemConfigurationManageQuestionnaire,
+    icon: SystemConfigurationSPCatalog,
     details: 'system_config_description_manage_questionnaire',
     path: CONFIG_MODULE_ROUTES.MANAGE_SPCATALOG
   },
@@ -85,7 +88,7 @@ const CARDS = [
     heading: 'dashboard.card.system_config_sp_settings',
     name: 'SystemConfig_ManageSPAccount',
     label: 'system_config_manage_spaccount',
-    icon: SystemConfigurationManageAccount,
+    icon: SystemConfigurationSPAccounts,
     details: 'system_config_description_manage_account',
     path: CONFIG_MODULE_ROUTES.MANAGE_SPACCOUNT
   }
