@@ -30,12 +30,8 @@ export const SPMaterialDetailsConstants = [
   }
 ];
 
-function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, viewSPMaterial, setViewSPMaterial, showAlert }) {
-  const navigate = useNavigate();
+function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, viewSPMaterial, setViewSPMaterial }) {
   const { t } = useTranslate();
-  const { showSnackbar } = useSnackbar();
-  const { hasPermission } = usePermission();
-  const isCustomerCenter = AuthUtils.isCustomerCenter();
 
   const handleCloseDrawer = () => {
     setOpenSPMaterialDetails((state) => !state);
@@ -60,13 +56,6 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
               </div>
             </React.Fragment>
           ))}
-
-          <div className="Questionnaire-li">
-            <div className="Questionnaire-key">{t('manageSPMaterial.drawer.details.configuration.heading.Configurations')}</div>
-            <div className="Questionnaire-value">
-              <div>{t('manageSPMaterial.drawer.details.configuration.actions.preview')}</div>
-            </div>
-          </div>
         </div>
       </div>
     </FloatingDrawer>

@@ -1,99 +1,22 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { CustomDataTable, Loader, Alert, Button, Badge, MenuList } from '@mckesson/mcp-component-library';
+import { Link } from 'react-router-dom';
+import { CustomDataTable, Loader, Badge } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import TableHeading from '@src/components/tableHeading/TableHeading';
-import AuthUtils from '@src/util/AuthUtils';
-import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 import { useSPMaterial } from '../context/SPMaterialContext';
-import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
-import { routeConstants } from '../routes/constants';
-import { renderModal } from '@src/util/ModalUtil';
-import { useMutation } from 'react-query';
 import SPMaterialDetails from './SPMaterialDetails';
 
 function SPMaterialDataTable(onActionSuccess) {
   const { t } = useTranslate();
-  const navigate = useNavigate();
-
   const { paginationConfig, data, setPageNumber, isLoading, refreshData } = useSPMaterial();
   const [selectedSPMaterials, setSelectedSPMaterials] = useState([]);
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
-  const isCustomerCenter = AuthUtils.isCustomerCenter();
-
-  const handleDeactivateSPMaterial = async () => {
-    //Implement APi CAll
-  };
-
-  const handleOnOptionSelection = (value, row) => {
-    if (value == 'edit') {
-      navigate(`${routeConstants.EDIT_SPMATERIAL}/${row.id}`);
-    } else {
-      renderModalforDeactivate(row);
-    }
-  };
-
-  const handleDeactivate = () => {
-    renderModalforDeactivate();
-  };
-
-  const renderModalforDeactivate = (row) => {
-    renderModal({
-      title: t('messages.header.confirmation'),
-      bodyContent: (
-        <div className="MCP-modal-body">
-          <p>{t('manageSPMaterial.message.deactivateConfirmaiton')}</p>
-        </div>
-      ),
-      footerActions: {
-        cancel: {
-          label: t('manageSPMaterial.button.cancel')
-        },
-        confirm: {
-          label: t('manageSPMaterial.button.confirm'),
-          action: () => {
-            handleDeactivateSPMaterial(row);
-          }
-        }
-      }
-    });
-  };
-
-  const { mutate } = useMutation({
-    mutationFn: handleDeactivateSPMaterial,
-    onSuccess: (response) => {
-      refreshData();
-      const isSuccess = true;
-      const message = t('manageSPMaterial.message.deactivate_success');
-      onActionSuccess(isSuccess, message);
-    },
-    onError: (error) => {
-      const isSuccess = false;
-      const message = t('manageSPMaterial.message.deactivate_failure');
-      onActionSuccess(isSuccess, message);
-    }
-  });
 
   const columns = [
-    {
-      id: 'checkbox',
-      name: renderTableCheckBox(
-        { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
-        data,
-        'id',
-        paginationConfig,
-        selectedSPMaterials,
-        setSelectedSPMaterials
-      ),
-      sortable: false,
-      cell: (row, index) => renderTableCheckBox(row, data, 'id', paginationConfig, selectedSPMaterials, setSelectedSPMaterials),
-      width: '50px',
-      omit: isCustomerCenter
-    },
     {
       name: t('manageSPMaterial.table.spproductId'),
       id: 'spProductID',
@@ -153,32 +76,12 @@ function SPMaterialDataTable(onActionSuccess) {
       sortKey: 'status',
       wrap: true,
       center: true,
-      cell: (props) => (props.status == 'ACTIVE' ? <Badge text="Active" type="success" /> : <Badge text="Inactive" type="info-default" />)
-    },
-    {
-      id: 'action',
-      center: true,
-      name: t('manageSPMaterial.table.action'),
-      cell: (row) => (
-        <MenuList
-          menuIcon={<IconEllipsis key={'menu-list-spmaterial-table'} />}
-          handleSelect={(value) => handleOnOptionSelection(value, row)}
-          options={[
-            {
-              label: t('manageSPMaterial.button.Edit'),
-              value: 'edit'
-            },
-            {
-              label: t('manageSPMaterial.button.Deactivate'),
-              value: 'deactivate'
-            }
-          ]}
-          isDisabled={selectedSPMaterials.length > 0}
-        />
-      ),
-
-      omit: isCustomerCenter,
-      isAction: true
+      cell: (props) =>
+        props.status == 'ACTIVE' ? (
+          <Badge customStyle={{ minWidth: '110px' }} text="Active" type="success" />
+        ) : (
+          <Badge customStyle={{ minWidth: '110px' }} text="Inactive" type="info-default" />
+        )
     }
   ];
 
@@ -188,20 +91,9 @@ function SPMaterialDataTable(onActionSuccess) {
 
   return (
     <div>
-      <TableHeading
-        heading={t('manageSPMaterial.heading.materialListing')}
-        secondaryView={selectedSPMaterials?.length}
-        secondaryViewHeading={`${selectedSPMaterials?.length} ${t('orgManagement.selected_items')}`}
-        secondaryViewControls={
-          <Button variant="secondary" onClick={handleDeactivate}>
-            {t('manageSPMaterial.button.Deactivate')}
-          </Button>
-        }
-        style={{ marginBottom: '16px' }}
-      />
-
+      <TableHeading heading={t('manageSPMaterial.heading.materialListing')} style={{ marginBottom: '16px' }} />
       <CustomDataTable
-        id="my-data-table"
+        id="sp-material-table"
         type="normal"
         columns={columns}
         data={data}
@@ -209,7 +101,7 @@ function SPMaterialDataTable(onActionSuccess) {
         totalPageCount={paginationConfig.totalPages}
         pagination={true}
         handleChangePage={handleChangePage}
-        totalRocords={paginationConfig.totalElements} // Corrected typo here
+        totalRocords={paginationConfig.totalElements}
         recordsPerPage={paginationConfig.pageSize}
         paginationTotalRecorsMessage={t('orgManagement.results')}
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
@@ -240,7 +132,6 @@ function SPMaterialDataTable(onActionSuccess) {
         setOpenSPMaterialDetails={setOpenSPMaterialDetails}
         viewSPMaterial={viewSPMaterial}
         setViewSPMaterial={setViewSPMaterial}
-        showAlert={() => {}}
       />
     </div>
   );

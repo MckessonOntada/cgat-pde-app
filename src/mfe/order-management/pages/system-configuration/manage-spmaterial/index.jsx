@@ -91,33 +91,7 @@ function ManageSPMaterial() {
     <div className="MCP-module-wrapper catalog-module">
       <Breadcrumbs items={translatedBreadcrumbs} />
       <div className="MCP-module-body">
-        <ModuleHeader
-          heading={<Heading as="h1">{t('manageSPMaterial.heading')}</Heading>}
-          controls={
-            <div className="controls">
-              {
-                <Button
-                  Icon={add_circle_bold}
-                  className="button-icon"
-                  variant="primary"
-                  size="md"
-                  onClick={() => navigate(`${routeConstants.ADD_SPMATERIAL}`)}>
-                  {t('manageSPMaterial.heading.addSPMaterial')}
-                </Button>
-              }
-              {
-                <Button
-                  Icon={UploadSVG}
-                  className="button-icon"
-                  variant="primary"
-                  size="md"
-                  onClick={() => navigate(`${routeConstants.UPLOAD_SPMATERIAL}`)}>
-                  {t('manageSPMaterial.heading.uploadspMaterial')}
-                </Button>
-              }
-            </div>
-          }
-        />
+        <ModuleHeader heading={<Heading as="h1">{t('manageSPMaterial.heading')}</Heading>} />
         {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
         <div className="MCP-panel-container">
           <div class="MCP-panel-container">

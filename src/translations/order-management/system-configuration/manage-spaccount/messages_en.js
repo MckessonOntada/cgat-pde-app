@@ -96,6 +96,9 @@ export const ManageSPAccountMessagesEN = {
   'manageSPAccount.table.DEANumber': 'DEA Number',
   'manageSPAccount.table.NPINumber': 'NPI Number',
 
+  'messages.confirmation.discard': 'Discard Changes',
+  'messages.confirmation.cancel': 'Are you sure you want to Cancel?',
+
   'manageSPAccount.headings.shippinglocationdetails': 'Shipping Location Details',
   'manageSPAccount.headings.addshippinglocation': 'Add Shipping Location',
   'manageSPAccount.table.shippingaddress': 'Shipping Address',
@@ -134,11 +137,13 @@ export const ManageSPAccountMessagesEN = {
   'manageSPAccount.message.removeShippingLocation': 'Are you sure, you want to remove this Shipping Location?',
   'manageSPAccount.message.addshippinglocation.success': 'Shipping Location has been added successfully.',
   'manageSPAccount.message.addshippinglocation.error': 'Error Occured when adding Shipping Location.',
+  'manageSPAccount.message.removeshippinglocation.error': 'An error occurred while removing the Shipping Location. Please try again later.',
 
   'manageSPAccount.button.create': 'Create SP Account',
   'manageSPAccount.button.saveandupdate': 'Save and Update',
   'manageSPAccount.button.cancel': 'Cancel',
   'manageSPAccount.button.confirm': 'Confirm',
+  'manageSPAccount.button.save': 'Save',
   'manageSPAccount.button.Edit': 'Edit',
   'manageSPAccount.button.remove': 'Remove',
   'manageSPAccount.button.setspaccounts': 'Set Associated SP Accounts',

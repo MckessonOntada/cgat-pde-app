@@ -17,14 +17,16 @@ import { getShippingLocationColumns } from './ShippingLocationColumns';
 import { useMutation } from 'react-query';
 import { renderModal } from '@src/util/ModalUtil';
 import ShippingLocationService from '@src/api/commonService/ShippingLocationService';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
 function ShippingLocationsDataTable() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { paginationConfig, setPageNumber, applyFilters, clearFilters, data } = useShippingLocation();
+  const { paginationConfig, setPageNumber, applyFilters, clearFilters, data, refreshData } = useShippingLocation();
   const [openShippingDrawer, setOpenShippingDrawer] = useState(false);
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const [alert, setAlert] = useState(null);
+  const [selectedShippingLocation, setSelectedShippingLocation] = useState([]);
 
   const handleOnOptionSelection = (value, row) => {
     if (value == 'edit') {
@@ -33,7 +35,17 @@ function ShippingLocationsDataTable() {
       renderModelforRemove(row);
     }
   };
-  const columns = getShippingLocationColumns(t, handleOnOptionSelection, isCustomerCenter);
+
+  const columns = getShippingLocationColumns(
+    t,
+    data,
+    paginationConfig,
+    handleOnOptionSelection,
+    isCustomerCenter,
+    selectedShippingLocation,
+    setSelectedShippingLocation
+  );
+
   const renderModelforRemove = (row) => {
     renderModal({
       title: t('messages.header.confirmation'),
@@ -67,7 +79,7 @@ function ShippingLocationsDataTable() {
       showAlert('success', t('manageSPAccount.message.addshippinglocation.success'));
     },
     onError: (error) => {
-      showAlert('error', t('manageSPAccount.message.addshippinglocation.error'));
+      showAlert('error', t('manageSPAccount.message.removeshippinglocation.error'));
     }
   });
 
@@ -111,6 +123,18 @@ function ShippingLocationsDataTable() {
                 initialData={[]}
               />
             </div>
+            {selectedShippingLocation?.length > 0 && (
+              <TableHeading
+                heading={[]}
+                secondaryView={selectedShippingLocation?.length}
+                secondaryViewHeading={`${selectedShippingLocation?.length} ${t('orgManagement.selected_items')}`}
+                secondaryViewControls={
+                  <Button variant="secondary" onClick={() => handleOnOptionSelection('remove')}>
+                    {t('manageSPAccount.button.remove')}
+                  </Button>
+                }
+              />
+            )}
             <CustomDataTable
               id="my-data-table"
               type="normal"
