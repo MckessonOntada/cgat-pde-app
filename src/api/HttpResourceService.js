@@ -87,7 +87,8 @@ const callRest = function (
     (err) => {
       if (err.response && err.response.status === 401) {
         //AuthService.routeToLogin(); TODO: Route to Login
-        logOutUnAuthorizedUser(err);
+        //logOutUnAuthorizedUser(err);
+        console.log(endpoint, err);
       }
       errorCallback(err);
     }

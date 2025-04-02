@@ -21,7 +21,7 @@ export const tabListData = [
   {
     id: 2,
     configName: 'CREDITS',
-    isActive: false,
+    isActive: true,
     isActiveTab: false,
     sequence: 2,
     labelForMobile: 'CREDITS',
@@ -30,7 +30,7 @@ export const tabListData = [
   {
     id: 3,
     configName: 'PENDING PAYMENTS',
-    isActive: false,
+    isActive: true,
     isActiveTab: false,
     sequence: 3,
     labelForMobile: 'PENDING PAYMENTS',
@@ -39,7 +39,7 @@ export const tabListData = [
   {
     id: 4,
     configName: 'PAYMENT HISTORY',
-    isActive: false,
+    isActive: true,
     isActiveTab: false,
     sequence: 4,
     labelForMobile: 'PAYMENT HISTORY',
@@ -48,7 +48,7 @@ export const tabListData = [
   {
     id: 5,
     configName: 'CUSTOMER STATEMENTS',
-    isActive: false,
+    isActive: true,
     isActiveTab: false,
     sequence: 5,
     labelForMobile: 'CUSTOMER STATEMENTS',
@@ -57,7 +57,7 @@ export const tabListData = [
   {
     id: 6,
     configName: 'PAYMENT METHODS',
-    isActive: false,
+    isActive: true,
     isActiveTab: false,
     sequence: 6,
     labelForMobile: 'PAYMENT METHODS',

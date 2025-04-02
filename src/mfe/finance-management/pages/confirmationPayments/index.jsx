@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Heading, AutoSuggestDropdown } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import InfoCards from '@src/components/infoCards/InfoCards';
@@ -20,6 +20,7 @@ import useSnackbar from '@src/hooks/useSnackbar';
 import CreditsSelected from '../reviewPayments/CreditsSelected';
 import dayjs from 'dayjs';
 import { GeographicUtils } from '@src/util/GeographicUtil';
+import { useCustomPrint } from '@src/util/printUtils';
 
 function ConfirmationPayments() {
   const { t } = useTranslate();
@@ -33,6 +34,8 @@ function ConfirmationPayments() {
   const { selectedAccount } = useAccountContext();
   const { showSnackbar } = useSnackbar();
   const [mergedData, setMergedData] = useState([]);
+  const contentRef = useRef(null); 
+  const printPage = useCustomPrint(contentRef);
 
   const { data: paymentMethodsData = [], isError } = useQuery({
     queryKey: ['paymentMethodsreviewPayments'],
@@ -82,12 +85,10 @@ function ConfirmationPayments() {
     [t('paymentInvoices.reviewPayments.paymentInitiatedDate')]: dayjs().format('MM/DD/YYYY'),
     [t('paymentInvoices.reviewPayments.paymentType')]: location.state?.paymentOption,
     [t('paymentInvoices.reviewPayments.paymentDate')]: dayjs(location.state.paymentDate, 'YYYY-MM-DD').format('MM/DD/YYYY'),
-    [t('paymentInvoices.Details.Account')]: `${
-      location.state?.selectedPayment?.number?.slice(-4) || location.state.selectedPayment?.accountNumber?.slice(-4)
-    } - ${GeographicUtils.addressAggregator(selectedAccount)}`,
-    [t('paymentInvoices.reviewPayments.paymentMethod')]: `${
-      location.state?.selectedPayment?.number?.slice(-4) || location.state.selectedPayment?.accountNumber?.slice(-4)
-    } - ${location.state?.selectedPayment?.userDefinedName || location.state?.selectedPayment?.name}`
+    [t('paymentInvoices.Details.Account')]: `${selectedAccount?.accountNumber} - ${GeographicUtils.addressAggregator(selectedAccount)}`,
+    [t('paymentInvoices.reviewPayments.paymentMethod')]: `${location.state?.selectedPayment?.accountNumber?.slice(-4)} - ${
+      location.state?.selectedPayment?.userDefinedName || location.state?.selectedPayment?.name
+    }`
   };
 
   const backButtonClick = () => {
@@ -124,7 +125,7 @@ function ConfirmationPayments() {
 
   return (
     <div className="PreviewPayments">
-      <div className="reviewPaymentsContent">
+      <div className="reviewPaymentsContent" ref={contentRef}>
         <div className="backNavigation">
           <Button className="backButton" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={backButtonClick} size="md">
             {t('paymentInvoices.Details.backToManageInvoices')}
@@ -168,7 +169,11 @@ function ConfirmationPayments() {
         </div>
         <Heading as="h2">{t('paymentInvoices.reviewPayments.invoices')}</Heading>
         <div>
-          <SelectedInvoiceList selectedInvoices={selectedInvoices} setSelectedInvoices={setSelectedInvoices} />
+          <SelectedInvoiceList
+            omitColumns={['description']}
+            selectedInvoices={selectedInvoices}
+            setSelectedInvoices={setSelectedInvoices}
+          />
         </div>
 
         <div className="MCP-module-wrapper">
@@ -177,7 +182,7 @@ function ConfirmationPayments() {
           </div>
           <div id="tablist-container" className="MCP-module-body">
             <PaymentsCreditsProvider>
-              <CreditsSelected />
+              <CreditsSelected excludedColumns={['billDate']} />
             </PaymentsCreditsProvider>
           </div>
         </div>
@@ -186,7 +191,7 @@ function ConfirmationPayments() {
         </div>
       </div>
       <div className="footer-section">
-        <Button variant="secondary" onClick={() => {}} size="md" disabled>
+        <Button variant="secondary" onClick={() => printPage()} size="md">
           {t('paymentInvoices.history.filters.printSummary')}
         </Button>
         <Button

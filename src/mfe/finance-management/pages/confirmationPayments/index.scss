@@ -21,6 +21,7 @@
       display: flex;
       gap: 16px;
       flex-direction: column;
+      align-items: flex-start;
 
       @include mixins.respond("md") {
         flex-direction: row;
@@ -60,6 +61,7 @@
         background: #fff;
         justify-content: space-between;
         flex-direction: column;
+        flex-wrap: wrap;
         @include mixins.respond("md") {
           flex-direction: row;
         }

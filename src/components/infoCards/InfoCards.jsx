@@ -3,7 +3,7 @@ import { Tooltip } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconInfo } from '@src/assets/svg/info.svg';
 import './assets/styles/InfoCards.scss';
 
-const InfoCards = ({ title, value, infoText }) => {
+const InfoCards = ({ title, value = '', infoText }) => {
   return (
     <div className="info-card">
       <div className="card-header">
@@ -19,7 +19,14 @@ const InfoCards = ({ title, value, infoText }) => {
         )}
       </div>
       <div className="card-value">
-        { value.startsWith('$') ? ( <div><span className='currencySymbol'>$</span>{value.slice(1)}</div>  ) : (  value || 'NA' ) }
+        {value?.startsWith('$') ? (
+          <div>
+            <span className="currencySymbol">$</span>
+            {value.slice(1)}
+          </div>
+        ) : (
+          value || 'NA'
+        )}
       </div>
     </div>
   );

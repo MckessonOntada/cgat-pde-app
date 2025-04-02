@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Heading, CheckboxGroup, RadioGroup, Loader, Alert, TextError } from '@mckesson/mcp-component-library';
+import { Button, Heading, CheckboxGroup, RadioGroup, Loader, TextError } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -304,8 +304,29 @@ function AdditionalDetails() {
     }
   );
 
+  const { data: uploadVariantDocumentResponse, mutate: uploadVariantDocument } = useMutation(
+    async ({ fieldName, file }) => {
+      return QuestionnaireService.uploadVariantDocument({ orderId, variantId: variant.variant, file });
+    },
+    {
+      onSuccess: (result, variables) => {
+        const { file, fieldName, setFieldValue } = variables;
+        const { name, size } = file;
+        const document = { url: result, name, size };
+        setFieldValue(`${fieldName}.document`, document);
+      },
+      onError: (error) => {
+        showAlert({ description: error.message, type: 'error', anchorEl: alertContainerId });
+      }
+    }
+  );
+
   const handleOnDocumentChange = (fieldName, file, setFieldValue) => {
     uploadDocument({ fieldName, file, setFieldValue });
+  };
+
+  const handleOnVariantDocumentChange = (fieldName, file, setFieldValue) => {
+    uploadVariantDocument({ fieldName, file, setFieldValue });
   };
 
   const handleOnRemoveDocument = (fieldName) => {
@@ -455,6 +476,7 @@ function AdditionalDetails() {
     }
     setFieldValue('variant', variant);
     setFieldTouched('variant', true, false);
+    setFieldValue('variantAcknowledgement', false);
     setVariantAcknowledgement((prevState) => ({
       ...prevState,
       isChecked: false
@@ -485,7 +507,7 @@ function AdditionalDetails() {
   if (isLoader) {
     return isLoader;
   }
-  console.log(initialFormValues?.variant?.document);
+
   return (
     <div className="MCP-module-wrapper">
       {isSaving && <Loader type={'screen'} />}
@@ -510,6 +532,7 @@ function AdditionalDetails() {
           useEffect(() => {
             setIsDirty(dirty);
           }, [dirty]);
+
           return (
             <Form>
               <div className="MCP-module-body">
@@ -551,7 +574,7 @@ function AdditionalDetails() {
                             onChange={(variant) => handleOnVariantChange(variant, setErrors, errors, setFieldValue, setFieldTouched)}
                             data={variantsData.content}
                           />
-                          {errors?.variant && touched?.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />}
+                          {touched?.variant && !values.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />}
                         </div>
                         <div className="agreement-checkbox-control">
                           <Field name="variant-acknowledgement">
@@ -581,8 +604,9 @@ function AdditionalDetails() {
                             name="variant.document"
                             component={Components['inputFile']}
                             setFieldValue={setFieldValue}
+                            disabled={Boolean(!variant)}
                             attachmentValue={values?.variant?.document || null}
-                            onFileChange={(file) => handleOnDocumentChange('variant', file, setFieldValue)}
+                            onFileChange={(file) => handleOnVariantDocumentChange('variant', file, setFieldValue)}
                           />
                         </div>
                       </div>

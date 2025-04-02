@@ -24,13 +24,12 @@ import Confirmation from '../pages/confirmation';
 
 const Routes = () => {
   const { selectedAccount } = useAccountContext();
-  // const navigate = useNavigate();
-  // useEffect(() => {
-  //   if (CommonUtils.isNonEmptyObject(selectedAccount)) {
-  //     navigate('/record/invoice');
-  //   }
-  // }, [selectedAccount]);
-  return CommonUtils.isNonEmptyObject(selectedAccount) ? (
+
+  if (!CommonUtils.isNonEmptyObject(selectedAccount)) {
+    return null;
+  }
+
+  return (
     <ReactRoutes>
       <Route index element={<Navigate to={PATHS.invoices}></Navigate>} />
       <Route
@@ -125,7 +124,7 @@ const Routes = () => {
 
       <Route path={'*'} element={<NotFound />} />
     </ReactRoutes>
-  ) : null;
+  );
 };
 
 export default Routes;

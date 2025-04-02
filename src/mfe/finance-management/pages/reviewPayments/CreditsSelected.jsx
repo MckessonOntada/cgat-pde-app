@@ -115,7 +115,7 @@ function CreditsSelected(props) {
       <CustomDataTable
         id="my-data-table"
         type="normal"
-        columns={columns}
+        columns={columns.filter((col) => !props.excludedColumns?.includes(col.id))}
         data={data || []}
         showCardView={showCardView}
         defaultExpandedCardView={false}

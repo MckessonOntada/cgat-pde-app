@@ -115,8 +115,8 @@ function ReviewPayments() {
     }
     state?.selectedPayment && setSelectedData(state.selectedPayment);
     state?.paymentOption && setPaymentOption(state.paymentOption);
-    state.totalCreditsCount && settotalCreditsCount(state.totalCreditsCount);
-    state.selectedSpecificDate && setSelectedSpecificDate(state.selectedSpecificDate);
+    state?.totalCreditsCount && settotalCreditsCount(state.totalCreditsCount);
+    state?.selectedSpecificDate && setSelectedSpecificDate(state.selectedSpecificDate);
     if (REVIEW_MODE) {
       setSelectedInvoices(state.invoices || []);
     }
@@ -162,7 +162,7 @@ function ReviewPayments() {
       let _totalAmount = 0;
       let _totalpaymentAmount = 0;
       selectedInvoices?.map((item) => {
-        _totalAmount = _totalAmount + parseFloat(item.billAmount);
+        _totalAmount = _totalAmount + parseFloat(item.openAmount);
         _totalpaymentAmount = _totalpaymentAmount + parseFloat(item.paymentAmount);
       });
       return _totalpaymentAmount < _totalAmount ? true : false;
@@ -171,7 +171,7 @@ function ReviewPayments() {
     }
   }, [selectedInvoices]);
 
-  const invoicesSum = useMemo(() => {
+  const paymentAmountSum = useMemo(() => {
     const _sum = selectedInvoices
       .filter((i) => i.paymentAmount)
       .reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.paymentAmount), 0);
@@ -190,17 +190,17 @@ function ReviewPayments() {
   }, [selectedCredits]);
 
   const totalAmount = useMemo(() => {
-    let _total = invoicesSum - creditsSum;
+    let _total = paymentAmountSum - creditsSum;
     return parseFloat(_total > 0 ? _total : 0).toFixed(2);
-  }, [invoicesSum, creditsSum]);
+  }, [paymentAmountSum, creditsSum]);
 
   const validateSpecificDate = (value) => {
     if (value && (!dayjs(value).isValid() || !dayjs().isBefore(dayjs(value, 'MM/DD/YYYY')))) {
       setSpecificDateError(`Selected date should not be the past date`);
     }
-    if (value && !dayjs(value, 'MM/DD/YYYY').isBefore(dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY'))) {
+    if (value && dayjs(value, 'MM/DD/YYYY').isAfter(dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY'))) {
       let _formatDate = dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY');
-      setSpecificDateError(`Selected date should be before due date: ${_formatDate}`);
+      setSpecificDateError(`Selected date should be on or before  due date: ${_formatDate}`);
     }
   };
 
@@ -222,7 +222,7 @@ function ReviewPayments() {
             subLabel: t('paymentInvoices.reviewPayments.payDuedateDesc')
           },
           {
-            isDisabled: dueDateIsInPast || isPartialPayment || parseFloat(creditsSum) > parseFloat(invoicesSum),
+            isDisabled: dueDateIsInPast || isPartialPayment || parseFloat(creditsSum) > parseFloat(paymentAmountSum),
             label: t('paymentInvoices.reviewPayments.paySpecfic'),
             value: t('paymentInvoices.reviewPayments.paySpecfic'),
             subLabel: t('paymentInvoices.reviewPayments.paySpecficDesc'),
@@ -230,13 +230,9 @@ function ReviewPayments() {
             onSubTypeChange: (value) => {
               setSelectedSpecificDate(value);
               setSpecificDateError('');
-              if (
-                value &&
-                dayjs(value).isValid() &&
-                !dayjs(value, 'MM/DD/YYYY').isBefore(dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY'))
-              ) {
+              if (value && dayjs(value).isValid() && dayjs(value, 'MM/DD/YYYY').isAfter(dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY'))) {
                 let _formatDate = dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY');
-                setSpecificDateError(`Selected date should be before due date: ${_formatDate}`);
+                setSpecificDateError(`Selected date should be on or before due date: ${_formatDate}`);
               }
             },
             disablePast: true,
@@ -301,7 +297,7 @@ function ReviewPayments() {
               creditsSelected: selectedCredits,
               selectedPayment: selectedData,
               paymentOption: paymentOption,
-              amount: FinanceUtils.formatCurrency(invoicesSum),
+              amount: FinanceUtils.formatCurrency(paymentAmountSum),
               creditAmount: FinanceUtils.formatCurrency(creditsSum),
               amountPaid: FinanceUtils.formatCurrency(totalAmount),
               reviewMode: true,
@@ -456,14 +452,14 @@ function ReviewPayments() {
           <div className="sectionHeader">
             {REVIEW_MODE ? t('paymentInvoices.reviewPayments.invoiceSelected') : t('paymentInvoices.reviewPayments.invoice')}
           </div>
-          <SelectedInvoiceList selectedInvoices={selectedInvoices} setSelectedInvoices={setSelectedInvoices} />
+          <SelectedInvoiceList omitColumns={['billDate']} selectedInvoices={selectedInvoices} setSelectedInvoices={setSelectedInvoices} />
         </div>
         {!REVIEW_MODE && (
           <div className="invoice-sum-container">
             <div className="label"> {t('paymentInvoices.reviewPayments.selectedInvoice', { count: selectedInvoices.length })}</div>
             <div className="value">
               <span className="currencySymbol">$</span>
-              {`${FinanceUtils.formatCurrency(invoicesSum).slice(1)}`}
+              {`${FinanceUtils.formatCurrency(paymentAmountSum).slice(1)}`}
             </div>
           </div>
         )}
@@ -525,7 +521,10 @@ function ReviewPayments() {
                   direction="column"
                   id="radio-button-order-therapy-props.id"
                   items={getRadioItems()}
-                  onChangeValue={(e) => setPaymentOption(e)}
+                  onChangeValue={(e) => {
+                    setSelectedSpecificDate('');
+                    setPaymentOption(e);
+                  }}
                   onOtherTextChange={() => {}}
                   onSubRadioFieldChange={() => {}}
                   radioBtnWidth="auto"

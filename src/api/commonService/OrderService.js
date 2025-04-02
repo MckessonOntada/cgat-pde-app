@@ -281,6 +281,22 @@ async function getOrderStatusFromSAP(sapOrderId, salesOrgId) {
   return {};
 }
 
+async function downloadDocument(url) {
+  if (!url) throw new Error('Document url is missing. Document url is required to download the document.');
+
+  try {
+    const documentUrl = `${ApiRoutes.ORDERS()}/documents/download?documentPath=${url}`;
+    const res = await HttpResourceService.callRest(documentUrl, httpVerb.GET);
+
+    return res;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+
+  return {};
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -305,7 +321,8 @@ const OrderService = Object.freeze({
   simulateOrder,
   updateTherapy,
   getOrderStatusFromSAP,
-  discardCurrentOrderVersion
+  discardCurrentOrderVersion,
+  downloadDocument
 });
 
 export default OrderService;

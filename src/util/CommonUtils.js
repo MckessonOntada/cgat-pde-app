@@ -407,8 +407,8 @@ export function gettenYearDate(y) {
 }
 
 export function isFutureDate(dateStr) {
-  const today = new Date();
-  const date = new Date(dateStr);
+  const today = new Date().getTime();
+  const date = new Date(dateStr).getTime();
   return date > today;
 }
 
