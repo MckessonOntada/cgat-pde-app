@@ -29,6 +29,7 @@ import useSapOrder from './useSapOrder';
 import useTimedArray from './useTimedArray';
 import AttachmentCard from './AttachmentCard';
 import { QUESTION_TYPE } from '@src/mfe/order-management/questionnaire/AddQuestionnaire';
+import { InventoryIndicatorStatus } from '../Constants';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -560,11 +561,15 @@ const Summary = () => {
                 {status === StatusEnum.SUBMITTED && <DetailSegment label={t('labels.pdeId')} value={orderId} />}
                 <DetailSegment
                   label={t('labels.materialDescription')}
-                  tooltip={therapy?.materialDescription}
+                  noTooltip={true}
                   value={
                     <div className="row-space-between-center">
-                      {therapy?.materialDescription}
-                      <InventoryIndicator status={inventoryStatus} />
+                      <Tooltip body={therapy?.materialDescription}>{therapy?.materialDescription}</Tooltip>
+                      <Tooltip body={InventoryIndicatorStatus(inventoryStatus, t)}>
+                        <span>
+                          <InventoryIndicator status={inventoryStatus} />
+                        </span>
+                      </Tooltip>
                     </div>
                   }
                 />
