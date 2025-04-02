@@ -39,7 +39,7 @@ const PaymentsInvoices = () => {
     });
 
     setTabs(updatedTabs);
-  }, []);
+  }, [location.pathname]);
 
   const handleTabSwitch = (e) => {
     const updatedTabs = tabListData.map((item) => {
