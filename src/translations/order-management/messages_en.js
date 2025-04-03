@@ -444,5 +444,10 @@ export const MessageEn = {
   'labels.OrderProcesing.SAPOrderStatus.Completed': 'COMPLETED',
   'errors.orders_index_additional_details.po_number_1_practice_id_1': 'PO Number already exists.',
   'labels.pap': 'PAP',
-  'labels.pap.order': 'PAP ORDER'
+  'labels.pap.order': 'PAP ORDER',
+  'tooltip.material.status.PENDING': 'Pending',
+  'tooltip.material.status.AVAILABLE': 'Therapy Available',
+  'tooltip.material.status.DROP_SHIP': 'Dropship',
+  'tooltip.material.status.OUT_OF_STOCK': 'Low Inventory',
+  'tooltip.material.status.CHECKING': 'Checking'
 };
