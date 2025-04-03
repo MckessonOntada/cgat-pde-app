@@ -165,6 +165,7 @@ export const MessageEn = {
   'messages.noShippingAddressFound': 'No shipping address found',
   'labels.orderActions.resume': 'Resume',
   'labels.orderActions.delete': 'Delete',
+  'labels.orderActions.discard': 'Discard',
   'labels.orderActions.review': 'Review',
   'labels.orderActions.view': 'View Details',
   'labels.orderActions.edit': 'Edit Order',
