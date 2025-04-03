@@ -27,9 +27,10 @@ function UploadFile({
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
+  if (isLoading) return <Loader type="screen" />;
+
   return (
     <React.Fragment>
-      {isLoading && <Loader type="screen" />}
       <div className="MCP-module-wrapper">
         <ModuleHeader
           heading={<Heading as="h1">{`Upload ${primaryHeading}`}</Heading>}
