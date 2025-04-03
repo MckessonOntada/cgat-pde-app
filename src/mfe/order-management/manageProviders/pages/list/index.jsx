@@ -11,8 +11,8 @@ import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
 import { useNavigate } from 'react-router-dom';
 import CommonFilters from '@src/components/Filters';
 import { PROVIDER_STATUS } from '../../config';
-import columns from './TableColumns';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import columns from './TableColumns';
 
 const data = [
   {
@@ -73,10 +73,18 @@ const List = () => {
         heading={<Heading as="h1">{t('headings.providers')}</Heading>}
         controls={
           <div className="controls">
-            <Button Icon={FileUploadIcon} className="button-icon" onClick={handleOnClick('upload-providers')} size="md">
+            <Button
+              Icon={FileUploadIcon}
+              className="button-icon"
+              onClick={handleOnClick('upload-providers')}
+              size="md">
               {t('controls.uploadProviders')}
             </Button>
-            <Button Icon={AddCircleFilled} className="button-icon" onClick={handleOnClick('create')} size="md">
+            <Button
+              Icon={AddCircleFilled}
+              className="button-icon"
+              onClick={handleOnClick('create')}
+              size="md">
               {t('controls.addProvider')}
             </Button>
           </div>
@@ -85,7 +93,14 @@ const List = () => {
       {items && items.length > 0 && (
         <div className="MCP-module-body">
           {items.map((item, index) => {
-            return <Alert key={item.id} description={item.description} onClose={() => remove(item.id)} type={item.type} />;
+            return (
+              <Alert
+                key={item.id}
+                description={item.description}
+                onClose={() => remove(item.id)}
+                type={item.type}
+              />
+            );
           })}
         </div>
       )}
