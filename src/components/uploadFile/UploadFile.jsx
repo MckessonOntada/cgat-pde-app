@@ -1,47 +1,80 @@
 import React, { useRef, useState } from 'react';
-import { Button, Heading, Alert, Loader } from '@mckesson/mcp-component-library';
+import {
+  Button,
+  Heading,
+  Alert,
+  Loader
+} from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
-import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import Components from '@src/components/form/Components';
 
-function UploadFile({ label, subHeading, isLoading, alert, handleAlertClose, downloadTemplate, handleUpload, validateFile }) {
+function UploadFile({
+  primaryHeading,
+  controlHeading,
+  isLoading,
+  messages,
+  onCloseAlert,
+  downloadTemplate,
+  upload,
+  onFileSelection,
+  prefixChildren = false,
+  children
+}) {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
+
   return (
     <React.Fragment>
       {isLoading && <Loader type="screen" />}
       <div className="MCP-module-wrapper">
         <ModuleHeader
-          heading={<Heading as="h1">{`Upload ${label}`}</Heading>}
+          heading={<Heading as="h1">{`Upload ${primaryHeading}`}</Heading>}
           controls={
             downloadTemplate && (
               <div className="controls">
-                <Button className="button-icon" variant="secondary" size="md" onClick={downloadTemplate}>
-                  {t('file.download.csv')}
+                <Button
+                  className="button-icon"
+                  variant="secondary"
+                  size="md"
+                  onClick={downloadTemplate.fn}>
+                  {downloadTemplate.caption}
                 </Button>
               </div>
             )
           }
         />
-        {alert.isAlertVisible && <Alert description={alert.description} onClose={handleAlertClose} type={alert.type} />}
+
+        {messages.map((message) => {
+          if (!message) return;
+          return (
+            <Alert
+              description={message.description}
+              onClose={onCloseAlert}
+              type={message.type}
+            />
+          );
+        })}
         <Formik
           initialValues={{ file: null }}
           onSubmit={(values, { setFieldValue }) => {
-            handleUpload(values);
+            upload.fn(values);
             setFieldValue('file', null);
             fileInputRef.current.value = '';
           }}>
           {({ setFieldValue, values, resetForm }) => (
             <Form>
               <div className="MCP-panel-container">
-                {subHeading && <Heading as="h3">{subHeading}</Heading>}
+                {controlHeading && <Heading as="h3">{controlHeading}</Heading>}
+
+                {prefixChildren && children}
+
                 <Field
                   name="file"
-                  validateOnChange={validateFile}
+                  validateOnChange={onFileSelection}
                   label={t('labels.upload.csv')}
                   component={Components['inputFile']}
                   attachmentValue={values.file}
@@ -49,13 +82,19 @@ function UploadFile({ label, subHeading, isLoading, alert, handleAlertClose, dow
                   primaryButtonCaption={t('button.upload.browse')}
                   fileInputRef={fileInputRef}
                 />
+
+                {!prefixChildren && children}
               </div>
               <div className="controls uploadControls">
-                <Button variant="secondary" type="button" onClick={() => navigate(-1)} size={'md'}>
+                <Button
+                  variant="secondary"
+                  type="button"
+                  onClick={() => navigate(-1)}
+                  size={'md'}>
                   {t('Cancel')}
                 </Button>
                 <Button type="submit" size={'md'}>
-                  {`Add ${label}`}
+                  {upload.caption}
                 </Button>
               </div>
             </Form>
