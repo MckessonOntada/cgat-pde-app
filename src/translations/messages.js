@@ -25,7 +25,10 @@ import { ManageCatalogMessagesEN } from './order-management/system-configuration
 import { ManageCatalogMessagesES } from './order-management/system-configuration/manage-catalog/messages_es';
 import { ManageAccountMessagesEN } from './order-management/system-configuration/manage-account/messages_en';
 import { ManageAccountMessagesES } from './order-management/system-configuration/manage-account/messages_es';
-
+import { ManageSPMateriaMessagesEN } from './order-management/system-configuration/manage-spmaterial/messages_en';
+import { ManageSPMaterialMessagesES } from './order-management/system-configuration/manage-spmaterial/messages_es';
+import { ManageSPAccountMessagesEN } from './order-management/system-configuration/manage-spaccount/messages_en';
+import { ManageSPAccountMessagesES } from './order-management/system-configuration/manage-spaccount/messages_es';
 export const messages = {
   [LOCALES.ENGLISH]: {
     ...LoginMessagesEN,
@@ -40,7 +43,9 @@ export const messages = {
     ...approverGroupMessagesEn,
     ...SystemConfigurationEN,
     ...ManageCatalogMessagesEN,
-    ...ManageAccountMessagesEN
+    ...ManageAccountMessagesEN,
+    ...ManageSPMateriaMessagesEN,
+    ...ManageSPAccountMessagesEN
   },
   [LOCALES.SPANISH]: {
     ...LoginMessagesES,
@@ -55,6 +60,8 @@ export const messages = {
     ...approverGroupMessagesEs,
     ...SystemConfigurationES,
     ...ManageCatalogMessagesES,
-    ...ManageAccountMessagesES
+    ...ManageAccountMessagesES,
+    ...ManageSPMaterialMessagesES,
+    ...ManageSPAccountMessagesEN
   }
 };

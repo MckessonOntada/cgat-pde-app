@@ -38,9 +38,25 @@ export const DashboardEN = {
   'dashboard.card.system_config_description_manage_account':
     'Enables you to review and define questionnaire templates to be used as configuration in various system workflows.',
 
+  'dashboard.card.system_config_manage_spmaterial': 'Manage SP Material',
+  'dashboard.card.system_config_manage_spcatalog': 'Manage SP Catalog',
+  'dashboard.card.system_config_manage_materialcrosswalk': 'Material Cross Walk',
+  'dashboard.card.system_config_manage_spaccount': 'Manage SP Account',
+  'dashboard.card.system_config_description_manage_spmaterial':
+    'Enables you to efficiently review and manage SP materials master and related configurations.',
+  'dashboard.card.system_config_description_manage_spcatalog':
+    'Enables you to efficiently review and manage SP catalog master and related configurations.',
+  'dashboard.card.system_config_description_material_crosswalk':
+    'Enables you to review and define questionnaire templates to be used as configuration in various system workflows.',
+  'dashboard.card.system_config_description_manage_spaccount':
+    'Enables you to review and define questionnaire templates to be used as configuration in various system workflows.',
+
   // Secondary Header routing tabs
   'header.tabs.dashboard': 'Dashboard',
   'header.tabs.paymentAndInvoices': 'Payments and Invoices',
   'header.tabs.orders': 'Orders',
-  'header.tabs.admin': 'Admin'
+  'header.tabs.admin': 'Admin',
+
+  'dashboard.card.system_config_standard_settings': 'Standard Settings',
+  'dashboard.card.system_config_sp_settings': 'SP Settings'
 };

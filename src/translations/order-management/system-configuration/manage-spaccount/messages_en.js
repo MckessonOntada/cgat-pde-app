@@ -1,0 +1,168 @@
+export const ManageSPAccountMessagesEN = {
+  'manageSPAccount.heading': 'Manage SP Account',
+  'manageSPAccount.heading.AccountListing': 'SP Account Listing',
+  'manageSPAccount.breadcrumbs.systemAdministrator': 'System Administrator',
+  'manageSPAccount.breadcrumbs.systemConfiguration': 'System Configuration',
+  'manageSPAccount.breadcrumbs.manageSPAccount': 'Manage SP Account',
+  'manageSPAccount.filters.searchPlaceholder': 'Search by Account Number, Account Name, Address...',
+  'manageSPAccount.table.spproductId': 'SP Product ID',
+  'manageSPAccount.table.productname': 'Product Name',
+  'manageSPAccount.table.ndc': 'NDC',
+  'manageSPAccount.table.sitename': 'Site Name',
+  'manageSPAccount.table.status': 'Status',
+  'manageSPAccount.table.action': 'Action',
+  'manageSPAccount.table.pagination.totalRecords': 'results',
+  'manageSPAccount.table.pagination.perPage': 'per page',
+  'manageSPAccount.table.error': 'Something went wrong! Please try again',
+  'manageSPAccount.table.emptyData': 'No SP Accounts Found',
+  'manageSPAccount.table.emptyDataDescription': 'You need to select organization to see SP Account Listing.',
+  'manageSPAccount.table.header.text': 'Item(s) Selected',
+  'manageSPAccount.table.header.button.configure': 'Configure',
+  'manageSPAccount.data.fetch.error': 'Error fetching SP Account listing',
+
+  'manageSPAccount.heading.addSPAccount': 'Add SP Account',
+  'manageSPAccount.heading.uploadSPAccount': 'Upload SP Account',
+  'manageSPAccount.heading.editSPAccount': 'Edit SP Account',
+  'manageSPAccount.heading.spAccountDetails': 'SP Account Details',
+  'manageSPAccount.heading.editSPAccountdetails': 'Edit Account Details',
+
+  'manageSPAccount.spaccount.inputLabel.accountName': 'Account Name',
+  'manageSPAccount.spaccount.inputLabel.accountName.required': 'Please enter Account Name',
+  'manageSPAccount.spaccount.inputLabel.accountName_validate': 'Account Name can only contain letters, numbers, spaces, "&", and "-"',
+  'manageSPAccount.spaccount.inputLabel.accountName.trimError': 'Account Name cannot start or end with a space',
+
+  'manageSPAccount.spaccount.inputLabel.firstName': 'First Name',
+  'manageSPAccount.spaccount.inputLabel.firstName.required': 'Please enter First Name',
+  'manageSPAccount.spaccount.inputLabel.firstName.validate': 'First Name can only contain alphabets, spaces, ".", and "-"',
+  'manageSPAccount.spaccount.inputLabel.firstName.trimError': 'First Name cannot start or end with a space',
+
+  'manageSPAccount.spaccount.inputLabel.middleName': 'Middle Name',
+  'manageSPAccount.spaccount.inputLabel.middleName.validate': 'Middle Name can only contain alphabets and "."',
+  'manageSPAccount.spaccount.inputLabel.middleName.trimError': 'Middle Name cannot start or end with a space',
+
+  'manageSPAccount.spaccount.inputLabel.lastName': 'Last Name',
+  'manageSPAccount.spaccount.inputLabel.lastName.required': 'Please enter Last Name',
+  'manageSPAccount.spaccount.inputLabel.lastName.validate': 'Last Name can only contain alphabets',
+  'manageSPAccount.spaccount.inputLabel.lastName.trimError': 'Last Name cannot start or end with a space',
+
+  'manageSPAccount.spaccount.inputLabel.email': 'Email ID',
+  'manageSPAccount.spaccount.inputLabel.email.required': 'Please enter Email ID',
+  'manageSPAccount.spaccount.inputLabel.email.validate': 'Please enter a valid Email ID',
+
+  'manageSPAccount.spaccount.inputLabel.phone': 'Phone Number',
+  'manageSPAccount.spaccount.inputLabel.phone.required': 'Please enter Phone Number',
+  'manageSPAccount.spaccount.inputLabel.phone.validate': 'Please enter a valid Phone Number',
+
+  'manageSPAccount.spaccount.inputLabel.fax': 'Fax',
+  'manageSPAccount.spaccount.inputLabel.fax.validate': 'Fax number cannot contain spaces or special characters',
+  'manageSPAccount.spaccount.inputLabel.fax.length': ' Fax number should be between 6 to 15 digits',
+
+  'manageSPAccount.spaccount.inputLabel.address_1': 'Address 1',
+  'manageSPAccount.spaccount.inputLabel.address_1.required': 'Please enter Address 1',
+  'manageSPAccount.spaccount.inputLabel.address_1_validate':
+    'Address 1 can only contain letters, numbers, spaces, commas, dots, slashes, and hyphens',
+  'manageSPAccount.spaccount.inputLabel.address_1.trimError': 'Address 1 cannot start or end with a space',
+
+  'manageSPAccount.spaccount.inputLabel.address_2': 'Address 2',
+  'manageSPAccount.spaccount.inputLabel.address_2_validate':
+    'Address 2 can only contain letters, numbers, spaces, commas, dots, slashes, and hyphens',
+  'manageSPAccount.spaccount.inputLabel.address_2.trimError': 'Address 2 cannot start or end with a space',
+
+  'manageSPAccount.spaccount.inputLabel.city': 'City',
+  'manageSPAccount.spaccount.inputLabel.city.required': 'Please enter City',
+  'manageSPAccount.spaccount.inputLabel.city.validate': 'City can only contain letters and spaces',
+  'manageSPAccount.spaccount.inputLabel.city.trimError': 'City cannot start or end with a space',
+
+  'manageSPAccount.spaccount.inputLabel.zip': 'Zip',
+  'manageSPAccount.spaccount.inputLabel.zip.required': 'Please enter Zip Code',
+  'manageSPAccount.spaccount.inputLabel.zip.validate': 'Please enter a valid Zip Code',
+
+  'manageSPAccount.spaccount.inputLabel.state': 'State',
+  'manageSPAccount.spaccount.inputLabel.state.required': 'Please select a State',
+
+  'manageSPAccount.shippinglocation.button.addshippinglocations': 'Add Shipping Locations',
+  'manageSPAccount.heading.shippinglocations': 'Shipping Locations',
+  'manageSPAccount.table.shippingaddress': 'Shipping Address',
+  'manageSPAccount.table.shippingAccountNumber': 'Shipping Account Number',
+  'manageSPAccount.table.shippingaccountName': 'Shipping Account Name',
+  'manageSPAccount.table.shippinglocations.emptyData': 'Add Locations',
+  'manageSPAccount.tables.shippinglocations.emptyDataDescription': 'You need to add locations to see data in this table.',
+
+  'manageSPAccount.heading.providers': 'Providers',
+  'manageSPAccount.providers.button.linkProviders': 'Link Providers',
+  'manageSPAccount.providers.search': 'Search by Provider Name, Address, DEA Number, NPI Number',
+  'manageSPAccount.table.providerName': 'Provider Name',
+  'manageSPAccount.table.provideraddress': 'Provider Address',
+  'manageSPAccount.table.DEANumber': 'DEA Number',
+  'manageSPAccount.table.NPINumber': 'NPI Number',
+
+  'messages.confirmation.discard': 'Discard Changes',
+  'messages.confirmation.cancel': 'Are you sure you want to Cancel?',
+
+  'manageSPAccount.headings.shippinglocationdetails': 'Shipping Location Details',
+  'manageSPAccount.headings.addshippinglocation': 'Add Shipping Location',
+  'manageSPAccount.table.shippingaddress': 'Shipping Address',
+  'manageSPAccount.table.shippingAccountNumber': 'Shipping Account Number',
+  'manageSPAccount.table.shippingaccountName': 'Shipping Account Name',
+
+  'manageSPAccount.shippingLocation.inputLabel.locationName': 'Location Name',
+  'manageSPAccount.shippingLocation.inputLabel.locationName.required': 'Please enter Location Name',
+
+  'manageSPAccount.shippingLocation.inputLabel.address_1': 'Address 1',
+  'manageSPAccount.shippingLocation.inputLabel.address_1.required': 'Please enter Address 1',
+  'manageSPAccount.shippingLocation.inputLabel.address_1_validate': 'Address 1 cannot contain special characters like @, #, $, etc',
+  'manageSPAccount.shippingLocation.inputLabel.address_1.trimError': 'Address 1 cannot start or end with a space',
+
+  'manageSPAccount.shippingLocation.inputLabel.address_2': 'Address 2',
+  'manageSPAccount.shippingLocation.inputLabel.address_2_validate': 'Address 2 cannot contain special characters like @, #, $, etc',
+  'manageSPAccount.shippingLocation.inputLabel.address_2.trimError': 'Address 2  cannot start or end with a space',
+
+  'manageSPAccount.shippingLocation.inputLabel.city': 'City',
+  'manageSPAccount.shippingLocation.inputLabel.city.required': 'Please enter City',
+  'manageSPAccount.shippingLocation.inputLabel.city.validate': 'City name can only contain alphabets and spaces',
+  'manageSPAccount.shippingLocation.inputLabel.city.trimError': 'City cannot start or end with a space',
+
+  'manageSPAccount.shippingLocation.inputLabel.state': 'State',
+  'manageSPAccount.shippingLocation.inputLabel.state.required': 'Please enter the State',
+
+  'manageSPAccount.shippingLocation.inputLabel.zip': 'Zip',
+  'manageSPAccount.shippingLocation.inputLabel.zip.required': 'Please enter the Zip Code',
+  'manageSPAccount.shippingLocation.inputLabel.zip.validate': 'Please enter a valid Zip Code format',
+
+  'manageSPAccount.heading.AccountDetails': 'Account Details',
+  'manageSPAccount.heading.ContactDetails': 'Contact Details',
+  'manageSPAccount.heading.AddressDetails': 'Address Details',
+  'manageSPAccount.heading.organization': 'Organization',
+
+  'manageSPAccount.message.removeShippingLocation': 'Are you sure, you want to remove this Shipping Location?',
+  'manageSPAccount.message.addshippinglocation.success': 'Shipping Location has been added successfully.',
+  'manageSPAccount.message.addshippinglocation.error': 'Error Occured when adding Shipping Location.',
+  'manageSPAccount.message.removeshippinglocation.error': 'An error occurred while removing the Shipping Location. Please try again later.',
+
+  'manageSPAccount.button.create': 'Create SP Account',
+  'manageSPAccount.button.saveandupdate': 'Save and Update',
+  'manageSPAccount.button.cancel': 'Cancel',
+  'manageSPAccount.button.confirm': 'Confirm',
+  'manageSPAccount.button.save': 'Save',
+  'manageSPAccount.button.Edit': 'Edit',
+  'manageSPAccount.button.remove': 'Remove',
+  'manageSPAccount.button.setspaccounts': 'Set Associated SP Accounts',
+  'manageSPAccount.message.addsuccess': 'SP Account has been created successfully.',
+  'manageSPAccount.message.deactivateConfirmaiton': 'Are you sure, you want to deactivate this SP Account?',
+  'manageSPAccount.message.deactivate_success': 'SP Account(s) have been Deactivated successfully.',
+  'manageSPAccount.message.deactivate_failure': 'Failed to Deactivate the SP Account(s).',
+  'errors.default': 'An unexpected error occurred.',
+
+  'manageSPAccount.labels.accountNumber': 'Account Number',
+  'manageSPAccount.labels.accountName': 'Account Name',
+  'manageSPAccount.labels.accountAddress': 'Account Address',
+  'manageSPAccount.labels.contactPerson': 'Contact Person Name',
+  'manageSPAccount.labels.emaild': 'Email ID',
+  'manageSPAccount.labels.phoneNumber': 'Phone Number',
+  'manageSPAccount.labels.fax': 'Fax',
+
+  'manageSPAccount.BacktoPage': 'BACK TO MANAGE SP Accounts Page',
+
+  'messages.confirmation.deleteConfiguration': 'Are you sure you want to delete the configuration ?',
+  'manageSPAccount.drawer.configuration.alert.error': 'Please select Required Field'
+};

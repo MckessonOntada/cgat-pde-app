@@ -4,6 +4,7 @@ export const PATHS = {
   createUser: "create-user",
   editUser:"edit-user",
   userPermissions:"user-permissions",
-  addAccounts:"add-accounts",
-  accountSetting: 'account-setting'
+  addAccounts:"add-accounts", 
+  uploadUser:"upload-user",
+  accountSetting: 'account-setting' 
 };
