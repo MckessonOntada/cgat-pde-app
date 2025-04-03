@@ -28,13 +28,3 @@ export const FormList = (t) => [
     label: t('labels.summary')
   }
 ];
-export const InventoryIndicatorStatus = (status, t) => {
-  const statusMap = {
-    PENDING: t('tooltip.material.status.PENDING'),
-    AVAILABLE: t('tooltip.material.status.AVAILABLE'),
-    DROP_SHIP: t('tooltip.material.status.DROP_SHIP'),
-    OUT_OF_STOCK: t('tooltip.material.status.OUT_OF_STOCK'),
-    CHECKING: t('tooltip.material.status.CHECKING')
-  };
-  return statusMap[status];
-};

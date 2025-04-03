@@ -565,7 +565,7 @@ const Summary = () => {
                   value={
                     <div className="row-space-between-center">
                       <Tooltip body={therapy?.materialDescription}>{therapy?.materialDescription}</Tooltip>
-                      <Tooltip body={InventoryIndicatorStatus(inventoryStatus, t)}>
+                      <Tooltip isDisabled={!inventoryStatus} body={t(`tooltip.material.status.${inventoryStatus}`)}>
                         <span>
                           <InventoryIndicator status={inventoryStatus} />
                         </span>
