@@ -29,7 +29,6 @@ import useSapOrder from './useSapOrder';
 import useTimedArray from './useTimedArray';
 import AttachmentCard from './AttachmentCard';
 import { QUESTION_TYPE } from '@src/mfe/order-management/questionnaire/AddQuestionnaire';
-import { InventoryIndicatorStatus } from '../Constants';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -565,7 +564,7 @@ const Summary = () => {
                   value={
                     <div className="row-space-between-center">
                       <Tooltip body={therapy?.materialDescription}>{therapy?.materialDescription}</Tooltip>
-                      <Tooltip body={InventoryIndicatorStatus(inventoryStatus, t)}>
+                      <Tooltip isDisabled={!inventoryStatus} body={t(`tooltip.material.status.${inventoryStatus}`)}>
                         <span>
                           <InventoryIndicator status={inventoryStatus} />
                         </span>
