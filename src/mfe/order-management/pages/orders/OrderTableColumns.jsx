@@ -180,7 +180,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
             value: 'resume'
           },
           {
-            label: t(`labels.orderActions.delete`),
+            label: t(`labels.orderActions.discard`),
             value: 'delete'
           }
         );

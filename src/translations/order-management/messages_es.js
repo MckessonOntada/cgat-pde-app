@@ -163,6 +163,7 @@ export const MessageEs = {
   'messages.noShippingAddressFound': 'S_No shipping address found',
   'labels.orderActions.resume': 'S_Resume',
   'labels.orderActions.delete': 'S_Delete',
+  'labels.orderActions.discard': 'S_Discard',
   'labels.orderActions.review': 'S_Review',
   'labels.orderActions.view': 'S_View Details',
   'labels.orderActions.edit': 'S_Edit Order',
