@@ -18,7 +18,7 @@ export const useOrgAccountSelectionContext = () => {
 
 const ACCOUNTS_PER_SEARCH = 20;
 
-export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enableAcct = true }) => {
+export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enableAcct = true, defaultFirstOrgSelected = false }) => {
   const dispatch = useDispatch();
   const [searchOrgText, setSearchOrgText] = useState('');
   const [selectedOrganization, setSelectedOrganization] = useState(null);
@@ -48,10 +48,14 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
             label: item.name,
             value: item.id
           }));
+          if (defaultFirstOrgSelected && !selectedOrganization) {
+            setSelectedOrganization(content[0]);
+          }
           if (selectedOrganization) {
             let findOrg = data.find((item) => item.value == selectedOrganization.id);
             !findOrg && data.unshift({ index: 0, label: selectedOrganization.name, value: selectedOrganization.id });
           }
+
           setOptions(data);
         }
         return content;
