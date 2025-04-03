@@ -54,14 +54,14 @@ export default function PaymentHistoryTable() {
         </div>
       )
     },
-    {
-      id: 'purchaseOrderNo',
-      name: t('paymentInvoices.history.table.purchaseOrderNumber'),
-      maxWidth: '180px',
-      sortable: true,
-      selector: (row) => `${row.purchaseOrderNo}`,
-      cell: (props) => <EclipsesTextcss str={props.purchaseOrderNo} maxWidth={170} />
-    },
+    // {
+    //   id: 'purchaseOrderNo',
+    //   name: t('paymentInvoices.history.table.purchaseOrderNumber'),
+    //   maxWidth: '180px',
+    //   sortable: true,
+    //   selector: (row) => `${row.purchaseOrderNo}`,
+    //   cell: (props) => <EclipsesTextcss str={props.purchaseOrderNo} maxWidth={170} />
+    // },
     {
       id: 'paymentMethod',
       name: t('paymentInvoices.history.table.paymentMethod'),
@@ -78,8 +78,8 @@ export default function PaymentHistoryTable() {
       id: 'paymentInitiationDate',
       name: t('paymentInvoices.history.table.paymentInitiationDate'),
       selector: (row) => `${row.paymentInitiationDate}`,
-      width: '140px',
-      // maxWidth: '180px',
+      // width: '140px',
+      maxWidth: '230px',
       sortable: true,
       cell: (props) => CommonUtils.convertDateStringFormat(props?.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
