@@ -220,8 +220,10 @@ function UserTable({ onActionSuccess }) {
         selector: (row) => row.contact.role.name || '',
         center: true,
         wrap: true,
+        sortable: isSystemAdminView,
+        sortKey: 'role_id',
         minWidth: '120px',
-        maxWidth: '180px',
+        maxWidth: '185px',
         cell: (props) =>
           props.role?.name ? (
             <Tooltip body={props.role?.name}>
@@ -231,8 +233,7 @@ function UserTable({ onActionSuccess }) {
             </Tooltip>
           ) : (
             '-'
-          ),
-        omit: isSystemAdminView || activeTab === 2
+          )
       },
       {
         id: 'status',
