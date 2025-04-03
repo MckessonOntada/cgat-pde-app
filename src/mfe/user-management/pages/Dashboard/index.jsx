@@ -108,7 +108,7 @@ export default function Dashboard() {
 
   const AdditionalFiltersConfig = useMemo(() => {
     let config = [];
-    if (!isSystemAdminView && activeTab === 1) {
+    if (activeTab === 1) {
       config.push({
         type: 'dropdown',
         name: 'role',
