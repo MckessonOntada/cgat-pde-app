@@ -29,7 +29,6 @@ import useSapOrder from './useSapOrder';
 import useTimedArray from './useTimedArray';
 import AttachmentCard from './AttachmentCard';
 import { QUESTION_TYPE } from '@src/mfe/order-management/questionnaire/AddQuestionnaire';
-import { InventoryIndicatorStatus } from '../Constants';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
