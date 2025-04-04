@@ -6,18 +6,18 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { useSPAccountContext } from '../../context/SPAccountContext';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
-import { getAddress } from '@src/mfe/order-management/questionnaire/util';
 import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
 import { ReactComponent as UploadSVG } from '@src/assets/image/upload_bottom.svg';
 import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
 import { routeConstants } from '../../routes/constants';
+import { getAddress } from '../../util';
 
-function SPAccountDataTable(props) {
+function SPAccountDataTable() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { paginationConfig, SPAccountList: data, setPageNumber, isLoading } = useSPAccountContext();
-
+  const { paginationConfig, SPAccountList, setPageNumber, isLoading } = useSPAccountContext();
+  console.log(' SPAccountList: data', SPAccountList);
   const columns = [
     {
       id: 'accountNumber',
@@ -79,7 +79,7 @@ function SPAccountDataTable(props) {
         id="my-data-table"
         type="normal"
         columns={columns}
-        data={data}
+        data={SPAccountList}
         currentPage={paginationConfig.pageNumber}
         totalPageCount={paginationConfig.totalPages}
         pagination={true}

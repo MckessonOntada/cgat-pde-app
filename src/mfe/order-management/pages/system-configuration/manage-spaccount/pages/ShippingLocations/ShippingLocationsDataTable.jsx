@@ -27,9 +27,11 @@ function ShippingLocationsDataTable() {
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const [alert, setAlert] = useState(null);
   const [selectedShippingLocation, setSelectedShippingLocation] = useState([]);
+  const [spLocation, setSPLocation] = useState([]);
 
   const handleOnOptionSelection = (value, row) => {
     if (value == 'edit') {
+      setSPLocation(row);
       setOpenShippingDrawer(true);
     } else {
       renderModelforRemove(row);
@@ -69,14 +71,14 @@ function ShippingLocationsDataTable() {
   };
   const handleRemoveShippingLocation = async (row) => {
     ShippingLocationService.removeShippingLocation(row);
-    showAlert('success', t('manageSPAccount.message.addshippinglocation.success'));
+    showAlert('success', t('manageSPAccount.message.removeshippinglocation.success'));
   };
 
   const { mutate } = useMutation({
     mutationFn: handleRemoveShippingLocation,
     onSuccess: (response) => {
       refreshData();
-      showAlert('success', t('manageSPAccount.message.addshippinglocation.success'));
+      showAlert('success', t('manageSPAccount.message.removeshippinglocation.success'));
     },
     onError: (error) => {
       showAlert('error', t('manageSPAccount.message.removeshippinglocation.error'));
@@ -85,6 +87,12 @@ function ShippingLocationsDataTable() {
 
   const handleChangePage = (e, newPage) => {
     setPageNumber(newPage);
+  };
+
+  const handleFormSubmitResult = (type, message) => {
+    showAlert(type, message);
+    refreshData();
+    setOpenShippingDrawer(false);
   };
 
   const showAlert = (type, message) => {
@@ -106,7 +114,15 @@ function ShippingLocationsDataTable() {
               </div>
             }
             controls={
-              <Button Icon={EditPencil} variant="secondary" className="button-icon" size="md" onClick={() => setOpenShippingDrawer(true)}>
+              <Button
+                Icon={EditPencil}
+                variant="secondary"
+                className="button-icon"
+                size="md"
+                onClick={() => {
+                  setSPLocation(null);
+                  setOpenShippingDrawer(true);
+                }}>
                 {t('manageSPAccount.shippinglocation.button.addshippinglocations')}
               </Button>
             }
@@ -159,7 +175,14 @@ function ShippingLocationsDataTable() {
           </div>
         </div>
 
-        {openShippingDrawer && <AddShippingDetails open={openShippingDrawer} onClose={() => setOpenShippingDrawer(false)} />}
+        {openShippingDrawer && (
+          <AddShippingDetails
+            open={openShippingDrawer}
+            onClose={() => setOpenShippingDrawer(false)}
+            row={spLocation}
+            onFormSubmit={handleFormSubmitResult}
+          />
+        )}
       </ShippingLocationProvider>
     </div>
   );

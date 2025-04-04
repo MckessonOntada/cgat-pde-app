@@ -1,8 +1,9 @@
 import React from 'react';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
-import { MenuList } from '@mckesson/mcp-component-library';
+import { MenuList, Tooltip } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
+import { getAddress } from '../../util';
 
 export const getShippingLocationColumns = (
   t,
@@ -32,16 +33,16 @@ export const getShippingLocationColumns = (
     id: 'shippingAddress',
     name: t('manageSPAccount.table.shippingaddress'),
     selector: (row) => row.shippingAddress || '',
-    maxWidth: '350px',
-    cell: (props) => <EclipsesTextcss str={props.shippingAddress} maxWidth={240} />,
-    sortable: true,
+    minWidth: '450px',
+    cell: (props) => <EclipsesTextcss str={getAddress(props.address)} maxWidth={350} />,
+    sortable: false,
     sortKey: 'shippingAddress'
   },
   {
     id: 'shippingAccountNumber',
     name: t('manageSPAccount.table.shippingAccountNumber'),
     selector: (row) => row.shippingAccountNumber || '',
-    maxWidth: '350px',
+    minWidth: '410px',
     cell: (props) => props.shippingAccountNumber,
     sortable: true,
     sortKey: 'shippingAccountNumber'
@@ -50,8 +51,8 @@ export const getShippingLocationColumns = (
     id: 'shippingaccountName',
     name: t('manageSPAccount.table.shippingaccountName'),
     selector: (row) => row.shippingAccountName || '',
-    maxWidth: '350px',
-    cell: (props) => <EclipsesTextcss str={props.shippingAccountName} maxWidth={240} />,
+    minWidth: '410px',
+    cell: (props) => <EclipsesTextcss str={props.shippingAccountName} maxWidth={300} />,
     sortable: true,
     sortKey: 'shippingaccountName'
   },
@@ -70,7 +71,12 @@ export const getShippingLocationColumns = (
           handleSelect={(value) => handleOnOptionSelection(value, row)}
           options={[
             {
-              label: t('manageSPAccount.button.Edit'),
+              label: (
+                <Tooltip body={!allowAction ? t('manageSPAccount.shippingLocation.onerecordEdit') : ''}>
+                  <div>{t('manageSPAccount.button.Edit')}</div>
+                </Tooltip>
+              ),
+
               value: 'edit',
               disabled: !allowAction
             },
