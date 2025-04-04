@@ -44,8 +44,7 @@ export const DashboardEN = {
 
   'dashboard.card.system_config_manage_spmaterial': 'Manage SP Material',
   'dashboard.card.system_config_manage_spcatalog': 'Manage SP Catalog',
-  'dashboard.card.system_config_manage_materialcrosswalk':
-    'Material Cross Walk',
+  'dashboard.card.system_config_manage_materialcrosswalk': 'Material Crosswalk',
   'dashboard.card.system_config_manage_spaccount': 'Manage SP Account',
   'dashboard.card.system_config_description_manage_spmaterial':
     'Use this screen to view, upload, and manage SP materials while ensuring files meet requirements and are properly categorized for efficiency.',

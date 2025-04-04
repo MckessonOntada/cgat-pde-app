@@ -30,7 +30,7 @@ const data = [
     address: '123 Main St',
     deaNumber: 'AB1234567',
     npiNumber: '1234567890',
-    status: 'ACTIVE'
+    isActive: true
   },
   {
     id: 2,
@@ -38,7 +38,7 @@ const data = [
     address: '456 Elm St',
     deaNumber: 'CD9876543',
     npiNumber: '0987654321',
-    status: 'INACTIVE'
+    isActive: false
   }
 ];
 

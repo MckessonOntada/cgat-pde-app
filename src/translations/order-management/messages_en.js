@@ -274,16 +274,16 @@ export const MessageEn = {
   'label.yes': 'Yes',
   'label.no': 'No',
   'messages.formNotFound': 'Form Not Found',
-<<<<<<< HEAD
   'messages.orderSuccessApprovalPending':
     'Your order has been submitted successfully and is now pending for approval.',
   'messages.orderApprovalSuccess':
     'Your order has been approved successfully and is in line for the fulfillment.',
-=======
-  'messages.orderSuccess': 'Your order has been submitted successfully and is in line for the fulfillment.',
-  'messages.orderSuccessApprovalPending': 'Your order has been submitted successfully and is now pending for approval.',
-  'messages.orderApprovalSuccess': 'Your order has been approved & submitted successfully and is in line for the fulfillment.',
->>>>>>> 28bbce6e43b0e7cc0b95393e4b3c6c221dd283e2
+  'messages.orderSuccess':
+    'Your order has been submitted successfully and is in line for the fulfillment.',
+  'messages.orderSuccessApprovalPending':
+    'Your order has been submitted successfully and is now pending for approval.',
+  'messages.orderApprovalSuccess':
+    'Your order has been approved & submitted successfully and is in line for the fulfillment.',
   'messages.accountSelect': 'Please select the account to buy the therapy for',
   'messages.selectAnAccountForShippingAddress':
     'Select an account to view the list of shipping addresses',
@@ -524,8 +524,9 @@ export const MessageEn = {
     'PO Number already exists.',
   'labels.pap': 'PAP',
   'labels.pap.order': 'PAP ORDER',
-<<<<<<< HEAD
 
+  'label.status.active': 'Active',
+  'label.status.inactive': 'Inactive',
   'label.providers': 'Manage Provider',
   'breadcrumb.admin': 'Admin',
   'breadcrumb.systemAdmin': 'System Admin',
@@ -568,12 +569,17 @@ export const MessageEn = {
     'You need to add SP Products to see data in this table',
   'controls.uploadCatalog': 'Upload Catalog',
   'label.uploadCatalogListCSV': 'Upload Catalog List CSV',
-  'label.backSpCatalog': 'Back to manage sp catalog page'
-=======
+  'label.backSpCatalog': 'Back to manage sp catalog page',
+  'label.deactivateRecord': 'Deactivate Record',
+  'label.deactivateRecordDescription':
+    'Are you sure you want to deactivate this record?',
+  'label.unlinkRecord': 'Unlink Record?',
+  'label.unlinkRecordDescription':
+    'Are you sure you want to unlink this record?',
+
   'tooltip.material.status.PENDING': 'Pending',
   'tooltip.material.status.AVAILABLE': 'Therapy Available',
   'tooltip.material.status.DROP_SHIP': 'Dropship',
   'tooltip.material.status.OUT_OF_STOCK': 'Low Inventory',
   'tooltip.material.status.CHECKING': 'Checking'
->>>>>>> 28bbce6e43b0e7cc0b95393e4b3c6c221dd283e2
 };

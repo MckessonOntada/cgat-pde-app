@@ -8,11 +8,11 @@ import { ReactComponent as EllipsisIcon } from '@src/assets/svg/ellipsis.svg';
 import { useSelection } from '@src/mfe/core-config/manage-providers/context/TableContext';
 
 const PROVIDER_COLUMNS = {
-  PROVIDER_NAME: 'PROVIDER_NAME',
-  ADDRESS: 'ADDRESS',
-  DEA_NUMBER: 'DEA_NUMBER',
-  NPI_NUMBER: 'NPI_NUMBER',
-  STATUS: 'STATUS',
+  SP_PRODUCT_ID: 'PROVIDER_NAME',
+  PRODUCT_NAME: 'PRODUCT_NAME',
+  NDC: 'NDC',
+  DIST_CHANNEL: 'DIST_CHANNEL',
+  ACCOUNT_NUMBER: 'ACCOUNT_NUMBER',
   ACTION: 'ACTION'
 };
 
@@ -33,7 +33,7 @@ export const getColumns = () => {
               onChange: () => toggleRowSelection(props.id),
               value: props.id,
               isChecked: selectedRows.has(props.id),
-              isDisabled: props.status === 'INACTIVE'
+              isDisabled: !props.isActive
             }
           ]}
         />
@@ -78,7 +78,7 @@ export const getColumns = () => {
       minWidth: '160px',
       cell: (props) => (
         <Badge
-          text={`labels.status.${props.status.toLowerCase()}`}
+          text={`label.status.${props.status ? 'active' : 'inactive'}`}
           type={'success'}
         />
       )
