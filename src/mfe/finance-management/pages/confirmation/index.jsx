@@ -131,7 +131,7 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
         {type === PATHS.paymentHistory ? t('paymentInvoices.CS.ExportExcel') : t('paymentInvoices.history.filters.printSummary')}
       </Button>
       <Button onClick={type === PATHS.paymentHistory ? () => printPage() : handleExport} size="md">
-        {type === PATHS.paymentHistory ? t('paymentInvoices.Details.print') : t('paymentInvoices.history.filters.downloadExcel')}
+        {type === PATHS.paymentHistory ? t('paymentInvoices.Details.print') : t('paymentInvoices.CS.ExportExcel')}
       </Button>
     </div>
   );

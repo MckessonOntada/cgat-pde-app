@@ -48,13 +48,13 @@ export const DashboardEN = {
     'Material Cross Walk',
   'dashboard.card.system_config_manage_spaccount': 'Manage SP Account',
   'dashboard.card.system_config_description_manage_spmaterial':
-    'Enables you to efficiently review and manage SP materials master and related configurations.',
+    'Use this screen to view, upload, and manage SP materials while ensuring files meet requirements and are properly categorized for efficiency.',
   'dashboard.card.system_config_description_manage_spcatalog':
-    'Enables you to efficiently review and manage SP catalog master and related configurations.',
+    'Enables you to efficiently review and manage SP catalog and related configurations.',
   'dashboard.card.system_config_description_material_crosswalk':
-    'Enables you to review and define questionnaire templates to be used as configuration in various system workflows.',
+    'Seamlessly link Buy & Bill materials with SP materials, ensuring accurate mapping for consistency, proper alignment, and maintaining data integrity.',
   'dashboard.card.system_config_description_manage_spaccount':
-    'Enables you to review and define questionnaire templates to be used as configuration in various system workflows.',
+    'Add accounts, define their shipping locations, and link providers. Ensure all details are accurate before saving.',
 
   // Secondary Header routing tabs
   'header.tabs.dashboard': 'Dashboard',

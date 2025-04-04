@@ -13,6 +13,8 @@ import {
   FIRST_NAME_REGEX,
   ALPHA_NUMERIC_WITH_SPECIALCHARS
 } from '@src/components/form/ValidationRegExp';
+import CommonUtils from '@src/util/CommonUtils';
+import { US_STATES } from '@src/components/form/util';
 
 export const validationSchemaforSPAccount = (t) => {
   return Yup.object({
@@ -110,65 +112,95 @@ export const validationSchemaforSPAccount = (t) => {
   });
 };
 
-export const initialValuesforSPAccount = {
-  accountName: '',
-  name: {
-    firstName: '',
-    middleName: '',
-    lastName: ''
-  },
-  contact: {
-    email: '',
-    phone: '',
-    fax: ''
-  },
-  address: {
-    address1: '',
-    address2: '',
-    city: '',
-    zip: '',
-    state: ''
-  }
+export const initialValuesforSPAccount = (data = null) => {
+  return {
+    accountName: data?.accountName || '',
+    name: {
+      firstName: data?.name.firstName || '',
+      middleName: data?.name.firstName || '',
+      lastName: data?.name.lastName || ''
+    },
+    contact: {
+      email: data?.contact.email || '',
+      phone: data?.contact.phone || '',
+      fax: data?.contact.fax || ''
+    },
+    address: {
+      address1: data?.address?.address1 || '',
+      address2: data?.address?.address2 || '',
+      city: data?.address?.city || '',
+      state: data?.address?.state || '',
+      zip: data?.address?.zip || ''
+    }
+  };
 };
 
 export const validationSchemaforShippingAddress = (t) => {
   return Yup.object({
     locationName: Yup.string().required('Please enter Location Name'),
-    address1: Yup.string()
-      .required(t('manageSPAccount.shippingLocation.inputLabel.address_1.required'))
-      .test(
-        'no-leading-trailing-spaces',
-        t('manageSPAccount.shippingLocation.inputLabel.address_1.trimError'),
-        (value) => value === undefined || value.trim().length === value.length
-      )
-      .matches(CUSTOM_ADDRESS_REGEX, t('manageSPAccount.shippingLocation.inputLabel.address_1_validate')),
-    address2: Yup.string()
-      .test(
-        'no-leading-trailing-spaces',
-        t('manageSPAccount.shippingLocation.inputLabel.address_2.trimError'),
-        (value) => value === undefined || value.trim().length === value.length
-      )
-      .matches(CUSTOM_ADDRESS_REGEX, t('manageSPAccount.shippingLocation.inputLabel.address_2_validate')),
-    city: Yup.string()
-      .required(t('manageSPAccount.shippingLocation.inputLabel.city.required'))
-      .test(
-        'no-leading-trailing-spaces',
-        t('manageSPAccount.shippingLocation.inputLabel.city.trimError'),
-        (value) => value === undefined || value.trim().length === value.length
-      )
-      .matches(ALPHABETIC_WITH_SPACE, t('manageSPAccount.shippingLocation.inputLabel.city.validate')),
-    zip: Yup.string()
-      .required(t('manageSPAccount.shippingLocation.inputLabel.zip.required'))
-      .matches(ZIP_REGEX, t('manageSPAccount.shippingLocation.inputLabel.zip.validate')),
-    state: Yup.string().required(t('manageSPAccount.shippingLocation.inputLabel.state.required'))
+    address: Yup.object({
+      address1: Yup.string()
+        .required(t('manageSPAccount.shippingLocation.inputLabel.address_1.required'))
+        .test(
+          'no-leading-trailing-spaces',
+          t('manageSPAccount.shippingLocation.inputLabel.address_1.trimError'),
+          (value) => value === undefined || value.trim().length === value.length
+        )
+        .matches(CUSTOM_ADDRESS_REGEX, t('manageSPAccount.shippingLocation.inputLabel.address_1_validate')),
+      address2: Yup.string()
+        .test(
+          'no-leading-trailing-spaces',
+          t('manageSPAccount.shippingLocation.inputLabel.address_2.trimError'),
+          (value) => value === undefined || value.trim().length === value.length
+        )
+        .matches(CUSTOM_ADDRESS_REGEX, t('manageSPAccount.shippingLocation.inputLabel.address_2_validate')),
+      city: Yup.string()
+        .required(t('manageSPAccount.shippingLocation.inputLabel.city.required'))
+        .test(
+          'no-leading-trailing-spaces',
+          t('manageSPAccount.shippingLocation.inputLabel.city.trimError'),
+          (value) => value === undefined || value.trim().length === value.length
+        )
+        .matches(ALPHABETIC_WITH_SPACE, t('manageSPAccount.shippingLocation.inputLabel.city.validate')),
+      zip: Yup.string()
+        .required(t('manageSPAccount.shippingLocation.inputLabel.zip.required'))
+        .matches(ZIP_REGEX, t('manageSPAccount.shippingLocation.inputLabel.zip.validate')),
+      state: Yup.string().required(t('manageSPAccount.shippingLocation.inputLabel.state.required'))
+    })
   });
 };
 
-export const initialValuesforShippingAddress = {
-  locationName: '',
-  address1: '',
-  address2: '',
-  city: '',
-  zip: '',
-  state: ''
+export const initialValuesforShippingAddress = (data = null) => {
+  if (!data) {
+    return {
+      locationName: '',
+      address: {
+        address1: '',
+        address2: '',
+        city: '',
+        state: '',
+        zip: ''
+      }
+    };
+  }
+
+  return {
+    locationName: data.shippingAccountName || '',
+    address: {
+      address1: data.address?.address1 || '',
+      address2: data.address?.address2 || '',
+      city: data.address?.city || '',
+      state: data.address?.state || '',
+      zip: data.address?.zip || ''
+    }
+  };
 };
+
+export const getAddress = (account) => {
+  const sanitizedAccount = CommonUtils.sanitizeValue(account);
+  return [sanitizedAccount.address1, sanitizedAccount.address2, sanitizedAccount.city, sanitizedAccount.state, sanitizedAccount.zipCode]
+    .filter(Boolean)
+    .join(', ');
+};
+
+export const stateOptions = US_STATES();

@@ -4,17 +4,10 @@ import Components from '@src/components/form/Components';
 import { Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { US_STATES } from '@src/components/form/util';
-import StateDropdown from '@src/components/form/StateDropdown';
+import { stateOptions } from '../../util';
 
 const SPAccountFormSegment = ({ comment }) => {
   const { t } = useTranslate();
-
-  const options = US_STATES();
-  options.unshift({
-    isDisabled: true,
-    value: '',
-    label: t('orgManagement.create_org.option.please_select')
-  });
 
   return (
     <div className="MCP-module-wrapper">
@@ -133,11 +126,9 @@ const SPAccountFormSegment = ({ comment }) => {
               placeholder=" "
               component={Components['stateDropdown']}
               isRequired
-              options={options}
+              options={stateOptions}
             />
           </div>
-
-          {/* <StateDropdown /> */}
         </div>
         {comment && (
           <div className="commentWrap">

@@ -42,7 +42,7 @@ function SPMaterialDataTable(onActionSuccess) {
       id: 'productName',
       name: t('manageSPMaterial.table.productname'),
       selector: (row) => {},
-      minWidth: '300px',
+      minWidth: '350px',
       sortable: true,
       sortKey: 'productName',
       wrap: true,
@@ -52,7 +52,7 @@ function SPMaterialDataTable(onActionSuccess) {
       id: 'ndc',
       name: t('manageSPMaterial.table.ndc'),
       selector: (row) => {},
-      minWidth: '200px',
+      minWidth: '250px',
       sortable: false,
       sortKey: 'ndc',
       wrap: true,
@@ -62,7 +62,7 @@ function SPMaterialDataTable(onActionSuccess) {
       id: 'siteName',
       name: t('manageSPMaterial.table.sitename'),
       selector: (row) => {},
-      minWidth: '200px',
+      minWidth: '250px',
       sortable: true,
       sortKey: 'siteName',
       wrap: true,
@@ -74,13 +74,13 @@ function SPMaterialDataTable(onActionSuccess) {
       selector: (row) => {},
       sortable: true,
       sortKey: 'status',
-      wrap: true,
+      minWidth: '100px',
       center: true,
       cell: (props) =>
         props.status == 'ACTIVE' ? (
-          <Badge customStyle={{ minWidth: '110px' }} text="Active" type="success" />
+          <Badge customStyle={{ minWidth: '120px' }} text="Active" type="success" />
         ) : (
-          <Badge customStyle={{ minWidth: '110px' }} text="Inactive" type="info-default" />
+          <Badge customStyle={{ minWidth: '120px' }} text="Inactive" type="info-default" />
         )
     }
   ];

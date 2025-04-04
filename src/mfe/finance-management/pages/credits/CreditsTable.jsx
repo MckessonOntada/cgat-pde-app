@@ -73,21 +73,8 @@ export default function CreditsTable(props) {
       cell: (props) => <div>{props?.soldToSite || '-'}</div>
     },
     {
-      id: 'description',
-      name: t('paymentInvoices.credits.table.description'),
-      selector: (row) => row.description,
-      minWidth: '340px',
-      sortable: true,
-      wrap: true,
-      cell: (props) => (
-        <div>
-          <EclipsesTextcss str={props?.description} maxWidth={280} />
-        </div>
-      )
-    },
-    {
       id: 'dueDate',
-      name: t('paymentInvoices.credits.table.validfrom'),
+      name: t('paymentInvoices.credits.table.credit.date'),
       selector: (row) => row.dueDate,
       sortable: true,
       wrap: true,

@@ -65,7 +65,7 @@ const CARDS = [
     name: 'SystemConfig_ManageSPMaterial',
     label: 'system_config_manage_spmaterial',
     icon: SystemConfigurationSPMaterial,
-    details: 'system_config_description_manage_material',
+    details: 'system_config_description_manage_spmaterial',
     path: CONFIG_MODULE_ROUTES.MANAGE_SPMATERIAL
   },
   {
@@ -73,7 +73,7 @@ const CARDS = [
     name: 'SystemConfig_MaterialCrossWalk',
     label: 'system_config_manage_materialcrosswalk',
     icon: SystemConfigurationMaterialCrosswalk,
-    details: 'system_config_description_manage_catalog',
+    details: 'system_config_description_material_crosswalk',
     path: CONFIG_MODULE_ROUTES.MATERIAL_CROSSWALK
   },
   {
@@ -81,7 +81,7 @@ const CARDS = [
     name: 'SystemConfig_ManageSPCatalog',
     label: 'system_config_manage_spcatalog',
     icon: SystemConfigurationSPCatalog,
-    details: 'system_config_description_manage_questionnaire',
+    details: 'system_config_description_manage_spcatalog',
     path: CONFIG_MODULE_ROUTES.MANAGE_SPCATALOG
   },
   {
@@ -89,7 +89,7 @@ const CARDS = [
     name: 'SystemConfig_ManageSPAccount',
     label: 'system_config_manage_spaccount',
     icon: SystemConfigurationSPAccounts,
-    details: 'system_config_description_manage_account',
+    details: 'system_config_description_manage_spaccount',
     path: CONFIG_MODULE_ROUTES.MANAGE_SPACCOUNT
   }
 ];
