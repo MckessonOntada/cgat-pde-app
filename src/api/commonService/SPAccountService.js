@@ -4,12 +4,19 @@ import ApiRoutes from '../ApiRoutes';
 import HttpResourceService, { httpVerb } from '../HttpResourceService';
 
 export const getSPAccountList = async (requestParams, selectedOrgId) => {
-  const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrgId}/accounts?${serializeParams(requestParams)}`; //TO DO
-  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-  if (res.data) {
-    return res.data.content;
-  }
-  return [];
+  // const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrgId}/accounts?${serializeParams(requestParams)}`; //TO DO
+  // const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  // if (res.data) {
+  //   return res.data.content;
+  // }
+  // return [];
+  const result = await import('../../mfe/order-management/pages/system-configuration/manage-spaccount/mockData/SPAccountData');
+
+  return {
+    data: result.default.content || [],
+    totalElements: result.default.totalElements,
+    totalPages: result.default.totalPages
+  };
 };
 
 async function getSPAccountListById(SPAccountId, selectedOrgId) {

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
@@ -33,6 +33,8 @@ const SPAccountDetail = () => {
   const { selectedOrganization } = useOrgAccountSelectionContext();
   const practiceId = selectedOrganization?.id;
   const location = useLocation();
+  const [alert, setAlert] = useState(null);
+  const isSuccess = location.state?.isSuccess || false;
 
   const { isLoading, data, refetch } = useQuery({
     queryKey: ['Account', spAccountId],
@@ -41,6 +43,17 @@ const SPAccountDetail = () => {
     refetchOnWindowFocus: false,
     onError: (error) => {}
   });
+
+  useEffect(() => {
+    if (isSuccess) {
+      setAlert({ type: 'success', message: t('manageSPAccount.message.updatesuccess') });
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [isSuccess, location.state, location.pathname, navigate]);
+
+  const handleAlertClose = () => {
+    setAlert({ type: null, message: null });
+  };
 
   const goBack = () => {
     navigate('/orders/system-configuration/manage-spaccount');
@@ -76,7 +89,7 @@ const SPAccountDetail = () => {
             </Button>
           }
         />
-
+        {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
         <div className="MCP-CardContainer">
           <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-3`}>
             <DetailSegment label={t('manageSPAccount.labels.accountNumber')} value={data.accountNumber || '-'} />

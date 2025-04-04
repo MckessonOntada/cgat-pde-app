@@ -12,6 +12,7 @@ import { initialValuesforSPAccount, validationSchemaforSPAccount } from '../../u
 import SPAccountFormSegment from './SPAccountFormSegment';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import { routeConstants } from '../../routes/constants';
+import { SPAccountData } from '../../mockData/SPAccountData';
 
 const AddSPAccount = () => {
   const { t } = useTranslate();
@@ -22,11 +23,25 @@ const AddSPAccount = () => {
   const [isDirty, setIsDirty] = React.useState(false);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
 
+  const [selectedAccount, setSelectedAccount] = useState(null);
+
+  useEffect(() => {
+    if (spAccountId) {
+      const match = SPAccountData.find((item) => item.id === spAccountId);
+      setSelectedAccount(match);
+    }
+  }, [spAccountId]);
+
   const goBack = () => {
     navigate('/orders/system-configuration/manage-spaccount');
   };
+
   const handleSubmit = (values) => {
-    navigate('/orders/system-configuration/manage-spaccount', { state: { isSuccess: true } });
+    if (!!spAccountId) {
+      navigate(`../${routeConstants.VIEW_SPACCOUNT.replace(':spAccountId', spAccountId)}`, { state: { isSuccess: true } });
+    } else {
+      navigate('/orders/system-configuration/manage-spaccount', { state: { isSuccess: true } });
+    }
   };
 
   const handleCancel = () => {
@@ -62,7 +77,7 @@ const AddSPAccount = () => {
         />
 
         <Formik
-          initialValues={initialValuesforSPAccount}
+          initialValues={initialValuesforSPAccount(selectedAccount)}
           validationSchema={validationSchemaforSPAccount(t)}
           enableReinitialize
           onSubmit={(values, actions) => {

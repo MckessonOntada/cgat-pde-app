@@ -25,7 +25,8 @@ export const ManageSPAccountMessagesEN = {
   'manageSPAccount.heading.editSPAccount': 'Edit SP Account',
   'manageSPAccount.heading.spAccountDetails': 'SP Account Details',
   'manageSPAccount.heading.editSPAccountdetails': 'Edit Account Details',
-
+  'manageSPAccount.button.addLocation': 'Add Location',
+  'manageSPAccount.button.updateLocation': 'Update Location',
   'manageSPAccount.spaccount.inputLabel.accountName': 'Account Name',
   'manageSPAccount.spaccount.inputLabel.accountName.required': 'Please enter Account Name',
   'manageSPAccount.spaccount.inputLabel.accountName_validate': 'Account Name can only contain letters, numbers, spaces, "&", and "-"',
@@ -104,6 +105,7 @@ export const ManageSPAccountMessagesEN = {
   'manageSPAccount.table.shippingaddress': 'Shipping Address',
   'manageSPAccount.table.shippingAccountNumber': 'Shipping Account Number',
   'manageSPAccount.table.shippingaccountName': 'Shipping Account Name',
+  'manageSPAccount.shippingLocation.onerecordEdit': 'Only one record can be edited at a time.',
 
   'manageSPAccount.shippingLocation.inputLabel.locationName': 'Location Name',
   'manageSPAccount.shippingLocation.inputLabel.locationName.required': 'Please enter Location Name',
@@ -136,7 +138,9 @@ export const ManageSPAccountMessagesEN = {
 
   'manageSPAccount.message.removeShippingLocation': 'Are you sure, you want to remove this Shipping Location?',
   'manageSPAccount.message.addshippinglocation.success': 'Shipping Location has been added successfully.',
-  'manageSPAccount.message.addshippinglocation.error': 'Error Occured when adding Shipping Location.',
+  'manageSPAccount.message.updateshippinglocation.success': 'Shipping Location has been updated successfully.',
+  'manageSPAccount.message.removeshippinglocation.success': 'Shipping Location has been removed successfully.',
+  'manageSPAccount.message.addshippinglocation.error': 'An error occurred while adding the Shipping Location. Please try again later.',
   'manageSPAccount.message.removeshippinglocation.error': 'An error occurred while removing the Shipping Location. Please try again later.',
 
   'manageSPAccount.button.create': 'Create SP Account',
@@ -148,6 +152,7 @@ export const ManageSPAccountMessagesEN = {
   'manageSPAccount.button.remove': 'Remove',
   'manageSPAccount.button.setspaccounts': 'Set Associated SP Accounts',
   'manageSPAccount.message.addsuccess': 'SP Account has been created successfully.',
+  'manageSPAccount.message.updatesuccess': 'SP Account has been updated successfully.',
   'manageSPAccount.message.deactivateConfirmaiton': 'Are you sure, you want to deactivate this SP Account?',
   'manageSPAccount.message.deactivate_success': 'SP Account(s) have been Deactivated successfully.',
   'manageSPAccount.message.deactivate_failure': 'Failed to Deactivate the SP Account(s).',

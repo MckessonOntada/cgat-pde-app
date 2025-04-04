@@ -1,41 +1,67 @@
 import FloatingDrawer from '@src/components/floating-drawer';
 import { Field, Formik, Form } from 'formik';
-import React, { useTransition } from 'react';
-import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
+import React from 'react';
+import { Heading, Button } from '@mckesson/mcp-component-library';
 import Components from '@src/components/form/Components';
-import { US_STATES } from '@src/components/form/util';
 import { useTranslate } from '@src/translations/useTranslation';
-import { initialValuesforShippingAddress, validationSchemaforShippingAddress } from '../../util';
+import { initialValuesforShippingAddress, stateOptions, validationSchemaforShippingAddress } from '../../util';
 
-const stateOptions = US_STATES();
-function AddShippingDetails({ open, onClose }) {
+function AddShippingDetails({ open, onClose, row, onFormSubmit }) {
   const { t } = useTranslate();
-
+  console.log('row', row);
   const onSubmitHandler = (values) => {
-    console.log('Shipping Location Submitted:', values);
+    try {
+      console.log('Shipping Location Submitted:', values);
+
+      //  API call
+
+      if (onFormSubmit) {
+        onFormSubmit(
+          'success',
+          t(
+            !!row && Object.keys(row).length > 0
+              ? 'manageSPAccount.message.updateshippinglocation.success'
+              : 'manageSPAccount.message.addshippinglocation.success'
+          )
+        );
+      }
+    } catch (error) {
+      if (onFormSubmit) {
+        onFormSubmit('error', t('manageSPAccount.message.addshippinglocation.error'));
+      }
+    }
     onClose();
   };
 
   return (
-    <Formik initialValues={initialValuesforShippingAddress} validationSchema={validationSchemaforShippingAddress(t)} onSubmit={() => {}}>
+    <Formik
+      initialValues={initialValuesforShippingAddress(row)}
+      validationSchema={validationSchemaforShippingAddress(t)}
+      onSubmit={(values, actions) => {
+        onSubmitHandler(values);
+        actions.setSubmitting(false);
+      }}>
       {() => (
         <Form>
           <FloatingDrawer
             open={open}
             anchor="right"
             onClose={onClose}
-            heading="Shipping Location Details"
+            heading={t('manageSPAccount.headings.addshippinglocation')}
             controls={
               <div className="controls">
                 <Button variant="secondary" onClick={onClose}>
                   Cancel
                 </Button>
-                <Button type="submit">Add Location</Button>
+                <Button type="submit">{t('manageSPAccount.button.addLocation')}</Button>
               </div>
             }>
             <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 align-items-baseline">
               <div className="headingBox firstHeading">
-                <Heading as="h3">{t('manageSPAccount.headings.addshippinglocation')}</Heading>
+                <div className="styled-heading">
+                  <Heading as="h4">{t('manageSPAccount.headings.shippinglocationdetails')}</Heading>
+                </div>
+
                 <p className="form-instruction">
                   <span className="required">* </span> {t('userManagement.create_user.required')}
                 </p>
@@ -47,7 +73,7 @@ function AddShippingDetails({ open, onClose }) {
                 component={Components['input']}
               />
               <Field
-                name="address1"
+                name="address.address1"
                 label={t('manageSPAccount.shippingLocation.inputLabel.address_1')}
                 placeholder=" "
                 isRequired
@@ -55,14 +81,14 @@ function AddShippingDetails({ open, onClose }) {
                 maxLength={100}
               />
               <Field
-                name="address2"
+                name="address.address2"
                 label={t('manageSPAccount.shippingLocation.inputLabel.address_2')}
                 placeholder=" "
                 component={Components['input']}
                 maxLength={100}
               />
               <Field
-                name="city"
+                name="address.city"
                 label={t('manageSPAccount.shippingLocation.inputLabel.city')}
                 placeholder=" "
                 isRequired
@@ -70,7 +96,7 @@ function AddShippingDetails({ open, onClose }) {
                 maxLength={50}
               />
               <Field
-                name="zip"
+                name="address.zip"
                 label={t('manageSPAccount.shippingLocation.inputLabel.zip')}
                 placeholder=" "
                 isRequired
@@ -79,7 +105,7 @@ function AddShippingDetails({ open, onClose }) {
               />
               <div className="corrected-dropdown">
                 <Field
-                  name="state"
+                  name="address.state"
                   label={t('manageSPAccount.shippingLocation.inputLabel.state')}
                   placeholder=" "
                   component={Components['stateDropdown']}

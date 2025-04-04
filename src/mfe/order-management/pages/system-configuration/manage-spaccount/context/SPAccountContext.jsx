@@ -74,20 +74,21 @@ export const SPAccountProvider = ({ children }) => {
     refetch: refetchSPAccountList
   } = useQuery({
     queryKey: ['SPAccounts', selectedOrganization?.id, requestParams],
-    queryFn: async () => SPAccountService.getSPAccountList(requestParams, selectedOrganization?.id),
-    onSuccess: (result) => {
-      const { totalElements, totalPages, content: data } = result;
+    queryFn: async () => {
+      const result = await SPAccountService.getSPAccountList(requestParams);
+      const { totalElements, totalPages } = result;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
         ...(totalElements && { totalElements }),
         ...(totalPages && { totalPages })
       }));
-      return data;
-    },
-    enabled: selectedOrganization?.id ? true : false,
-    refetchOnWindowFocus: false
+      return result.data?.slice(
+        (paginationConfig.pageNumber - 1) * paginationConfig.pageSize,
+        paginationConfig.pageNumber * paginationConfig.pageSize
+      );
+    }
   });
-
+  console.log('SPACcountList', SPAccountList);
   useEffect(() => {
     refetchSPAccountList();
   }, [paginationConfig.pageNumber, filterConfig]);
