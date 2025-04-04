@@ -560,11 +560,15 @@ const Summary = () => {
                 {status === StatusEnum.SUBMITTED && <DetailSegment label={t('labels.pdeId')} value={orderId} />}
                 <DetailSegment
                   label={t('labels.materialDescription')}
-                  tooltip={therapy?.materialDescription}
+                  noTooltip={true}
                   value={
                     <div className="row-space-between-center">
-                      {therapy?.materialDescription}
-                      <InventoryIndicator status={inventoryStatus} />
+                      <Tooltip body={therapy?.materialDescription}>{therapy?.materialDescription}</Tooltip>
+                      <Tooltip isDisabled={!inventoryStatus} body={t(`tooltip.material.status.${inventoryStatus}`)}>
+                        <span>
+                          <InventoryIndicator status={inventoryStatus} />
+                        </span>
+                      </Tooltip>
                     </div>
                   }
                 />

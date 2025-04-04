@@ -37,7 +37,7 @@ export const MessageEn = {
   'captions.btnEdit': 'Edit',
   'captions.btnRetry': 'Retry',
   'captions.btnSubmitOrder': 'Submit Order',
-  'captions.btnApproveOrder': 'Approve Order',
+  'captions.btnApproveOrder': 'Approve and Submit',
   'captions.btnRejectOrder': 'Reject Order',
   'captions.btnInventoryCheck': 'Inventory Check',
   'captions.emptyTableTitle': 'No Order found',
@@ -165,6 +165,7 @@ export const MessageEn = {
   'messages.noShippingAddressFound': 'No shipping address found',
   'labels.orderActions.resume': 'Resume',
   'labels.orderActions.delete': 'Delete',
+  'labels.orderActions.discard': 'Discard',
   'labels.orderActions.review': 'Review',
   'labels.orderActions.view': 'View Details',
   'labels.orderActions.edit': 'Edit Order',
@@ -255,8 +256,9 @@ export const MessageEn = {
   'label.yes': 'Yes',
   'label.no': 'No',
   'messages.formNotFound': 'Form Not Found',
+  'messages.orderSuccess': 'Your order has been submitted successfully and is in line for the fulfillment.',
   'messages.orderSuccessApprovalPending': 'Your order has been submitted successfully and is now pending for approval.',
-  'messages.orderApprovalSuccess': 'Your order has been approved successfully and is in line for the fulfillment.',
+  'messages.orderApprovalSuccess': 'Your order has been approved & submitted successfully and is in line for the fulfillment.',
   'messages.accountSelect': 'Please select the account to buy the therapy for',
   'messages.selectAnAccountForShippingAddress': 'Select an account to view the list of shipping addresses',
   'messages.orderPlacementAcknowledgement':
@@ -443,5 +445,10 @@ export const MessageEn = {
   'labels.OrderProcesing.SAPOrderStatus.Completed': 'COMPLETED',
   'errors.orders_index_additional_details.po_number_1_practice_id_1': 'PO Number already exists.',
   'labels.pap': 'PAP',
-  'labels.pap.order': 'PAP ORDER'
+  'labels.pap.order': 'PAP ORDER',
+  'tooltip.material.status.PENDING': 'Pending',
+  'tooltip.material.status.AVAILABLE': 'Therapy Available',
+  'tooltip.material.status.DROP_SHIP': 'Dropship',
+  'tooltip.material.status.OUT_OF_STOCK': 'Low Inventory',
+  'tooltip.material.status.CHECKING': 'Checking'
 };

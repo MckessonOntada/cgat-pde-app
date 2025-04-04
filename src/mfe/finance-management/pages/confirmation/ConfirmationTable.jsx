@@ -85,16 +85,6 @@ const createColumns = (t, type) => {
   const creditColumns = [
     ...commonColumns,
     {
-      name: t('paymentInvoices.credits.table.description'),
-      selector: (row) => row.description,
-      sortable: true,
-      id: 'description',
-      wrap: true,
-      minWidth: '180px',
-      // cell: (props) => <div>{props?.description || '-'}</div>
-      cell: (props) => <EclipsesTextcss str={props?.description || '-'} maxWidth={170} />
-    },
-    {
       name: t('paymentInvoices.history.table.usedDate'),
       selector: (row) => row.usedDate,
       width: '150px',

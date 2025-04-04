@@ -36,7 +36,7 @@ function PaymentDetails() {
           {t('paymentInvoices.history.filters.printSummary')}
         </Button>
         <Button variant="primary" onClick={() => {}} size="md">
-          {t('paymentInvoices.history.filters.downloadExcel')}
+          {t('paymentInvoices.CS.ExportExcel')}
         </Button>
       </div>
     </div>

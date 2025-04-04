@@ -163,6 +163,7 @@ export const MessageEs = {
   'messages.noShippingAddressFound': 'S_No shipping address found',
   'labels.orderActions.resume': 'S_Resume',
   'labels.orderActions.delete': 'S_Delete',
+  'labels.orderActions.discard': 'S_Discard',
   'labels.orderActions.review': 'S_Review',
   'labels.orderActions.view': 'S_View Details',
   'labels.orderActions.edit': 'S_Edit Order',
@@ -442,5 +443,11 @@ export const MessageEs = {
   'labels.OrderProcesing.SAPOrderStatus.Open': 'S_OPEN',
   'labels.OrderProcesing.SAPOrderStatus.Cancelled': 'S_CANCELLED',
   'labels.OrderProcesing.SAPOrderStatus.Completed': 'S_COMPLETED',
-  'errors.orders_index_additional_details.po_number_1_practice_id_1': 'S_PO Number already exists.'
+  'errors.orders_index_additional_details.po_number_1_practice_id_1': 'S_PO Number already exists.',
+  'labels.pap.order': 'S_PAP ORDER',
+  'tooltip.material.status.PENDING': 'S_Pending',
+  'tooltip.material.status.AVAILABLE': 'S_Therapy Available',
+  'tooltip.material.status.DROP_SHIP': 'S_Dropship',
+  'tooltip.material.status.OUT_OF_STOCK': 'S_Low Inventory',
+  'tooltip.material.status.CHECKING': 'S_Checking'
 };
