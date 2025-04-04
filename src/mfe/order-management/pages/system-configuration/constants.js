@@ -22,9 +22,9 @@ const CONFIG_MODULE_ROUTES = {
   MANAGE_MATERIAL: 'manage-material',
   MANAGE_QUESTIONNAIRE: 'questionnaire',
   MANAGE_SPACCOUNT: 'manage-spaccount',
-  MANAGE_SPCATALOG: 'manage-spcatalog',
+  MANAGE_SPCATALOG: '/admin/sp-catalog',
   MANAGE_SPMATERIAL: 'manage-spmaterial',
-  MATERIAL_CROSSWALK: 'material-crosswalk'
+  MATERIAL_CROSSWALK: '/admin/crosswalk'
 };
 
 const CARDS = [

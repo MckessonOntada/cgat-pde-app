@@ -33,7 +33,7 @@ function UploadFile({
     <React.Fragment>
       <div className="MCP-module-wrapper">
         <ModuleHeader
-          heading={<Heading as="h1">{`Upload ${primaryHeading}`}</Heading>}
+          heading={<Heading as="h1">{primaryHeading}</Heading>}
           controls={
             downloadTemplate && (
               <div className="controls">

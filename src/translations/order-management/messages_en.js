@@ -44,7 +44,8 @@ export const MessageEn = {
   'captions.lblRejectOrder': 'Reject Order',
   'captions.reasonForRejection': 'Reason For Rejection',
   'captions.lblReason': 'Reason',
-  'captions.emptyTableSubtitle': 'You need to add Order to see data in this table.',
+  'captions.emptyTableSubtitle':
+    'You need to add Order to see data in this table.',
   'captions.btnSelectYourAccount': 'Select Your Account',
   'labels.orderDetails': 'Order Details',
   'labels.variant': 'Variant',
@@ -53,7 +54,8 @@ export const MessageEn = {
   'labels.orderQuantity': 'Order Quantity',
   'labels.provideSlotNumber': 'Please provide the Slot Number',
   'labels.providePONumber': 'Please provide the PO Number',
-  'labels.provideDateOfAdministration': 'Please provide the Date of Administration',
+  'labels.provideDateOfAdministration':
+    'Please provide the Date of Administration',
   'labels.uploadDocument': 'Upload Document',
   'labels.accountSelection': 'Account Selection',
   'labels.customerIndicator': 'Customer Indicator',
@@ -61,8 +63,10 @@ export const MessageEn = {
   'labels.results': 'results',
   'labels.perPage': 'Per page',
   'labels.needAssistanceSelectingAccount': 'Need assistance',
-  'labels.orderAssistance.selectChannel': 'Please select channel to place the order.',
-  'labels.orderAssistance.selectProgram': 'Are you here to order through any of the below programs?',
+  'labels.orderAssistance.selectChannel':
+    'Please select channel to place the order.',
+  'labels.orderAssistance.selectProgram':
+    'Are you here to order through any of the below programs?',
   'labels.therapySelection': 'Therapy Selection',
   'labels.patientDetails': 'Patient Details',
   'labels.additionalDetails': 'Additional Details',
@@ -119,16 +123,23 @@ export const MessageEn = {
   'labels.COIIdRequired': 'COI ID is required',
   'labels.orderQuantityRequired': 'Order Quantity is required',
   'labels.slotNumberRequired': 'Slot Number is required',
-  'labels.slotNumberLengthError': 'Slot Number length can not be greater than 20',
+  'labels.slotNumberLengthError':
+    'Slot Number length can not be greater than 20',
   'labels.PONumberRequired': 'PO Number is required',
   'labels.PONumberLengthError': 'PO Number can not be greater than 35',
   'labels.DateOfAdministrationRequired': 'Date of Administration is required',
-  'labels.dateOfAdministrationFutureDateOnly': 'Date of Administration must be in the future',
-  'controls.placeholder.searchOrderPlaceholder': 'Search by Order ID, Patient name, Account',
-  'controls.placeholders.autoSearch': 'Search by Order ID, Patient name, Account',
-  'controls.placeholder.shippingAddress.search': 'Search by Account name or Number',
-  'controls.placeholder.therapySelection.search': 'Search Therapy by Name, NDC...',
-  'controls.placeholder.material.search': 'Search by Name, NDC, Material Number...',
+  'labels.dateOfAdministrationFutureDateOnly':
+    'Date of Administration must be in the future',
+  'controls.placeholder.searchOrderPlaceholder':
+    'Search by Order ID, Patient name, Account',
+  'controls.placeholders.autoSearch':
+    'Search by Order ID, Patient name, Account',
+  'controls.placeholder.shippingAddress.search':
+    'Search by Account name or Number',
+  'controls.placeholder.therapySelection.search':
+    'Search Therapy by Name, NDC...',
+  'controls.placeholder.material.search':
+    'Search by Name, NDC, Material Number...',
   'controls.placeholder.Accounts.search': 'Search by Account Name, NDC, UDI...',
   'controls.placeholder.Catalogs.search': 'Search by Catalog Name, NDC, UDI...',
   'controls.placeholder.selectOption': 'Select Option',
@@ -161,7 +172,8 @@ export const MessageEn = {
   'table.actions.resumeOrder': 'Resume Order',
   'table.actions.viewDetail': 'View Detail',
   'table.labels.therapySelectionNoDataAvailable': 'No data available',
-  'table.labels.therapySelectionNoDataAvailableDescription': 'No therapy found, please try adding one',
+  'table.labels.therapySelectionNoDataAvailableDescription':
+    'No therapy found, please try adding one',
   'messages.noShippingAddressFound': 'No shipping address found',
   'labels.orderActions.resume': 'Resume',
   'labels.orderActions.delete': 'Delete',
@@ -172,8 +184,10 @@ export const MessageEn = {
   'labels.orderActions.assignToMe': 'Assign to me',
   'labels.orderActions.unassignToMe': 'Unassign',
   'labels.orderActions.approve': 'Approve Order',
-  'labels.orderActions.deletemessage': 'Are you sure you wish to Delete this Order ?',
-  'labels.orderActions.cancelmessage': 'Please reach out to customer support at 1800XXXXXXX for any updation or cancellation in the order.',
+  'labels.orderActions.deletemessage':
+    'Are you sure you wish to Delete this Order ?',
+  'labels.orderActions.cancelmessage':
+    'Please reach out to customer support at 1800XXXXXXX for any updation or cancellation in the order.',
   'labels.orderActions.OK': 'OK',
   'labels.information': 'Information',
   'labels.confirmation': 'Confirmation',
@@ -226,12 +240,16 @@ export const MessageEn = {
   'labels.therapyDescription': 'Therapy Description',
   'labels.therapyNumber': 'Therapy Number',
   'labels.COI_IdExceedDigits': 'COI Id cannot exceed 10 characters.',
-  'labels.COI_IdMustValidNumber': 'COI Id is not valid, it must contains alphabets and number',
+  'labels.COI_IdMustValidNumber':
+    'COI Id is not valid, it must contains alphabets and number',
   'labels.OrderQuantityShouldPositive': 'Order quantity must be a number',
-  'labels.OrderQuantityShouldGreaterThanZero': 'Order quantity must be greater than zero',
+  'labels.OrderQuantityShouldGreaterThanZero':
+    'Order quantity must be greater than zero',
   'labels.OrderQuantityMustBeInteger': 'Order quantity must be an integer',
-  'labels.slotNumberExtraSpaceError': 'Slot number must not contain leading or trailing spaces',
-  'labels.poNumberExtraSpaceError': 'PO Number must not contain leading or trailing spaces',
+  'labels.slotNumberExtraSpaceError':
+    'Slot number must not contain leading or trailing spaces',
+  'labels.poNumberExtraSpaceError':
+    'PO Number must not contain leading or trailing spaces',
   'labels.status.in_draft': 'In Draft',
   'labels.status.approval_pending': 'Approval Pending',
   'labels.status.submitted': 'Submitted',
@@ -255,26 +273,35 @@ export const MessageEn = {
   'label.yes': 'Yes',
   'label.no': 'No',
   'messages.formNotFound': 'Form Not Found',
-  'messages.orderSuccessApprovalPending': 'Your order has been submitted successfully and is now pending for approval.',
-  'messages.orderApprovalSuccess': 'Your order has been approved successfully and is in line for the fulfillment.',
+  'messages.orderSuccessApprovalPending':
+    'Your order has been submitted successfully and is now pending for approval.',
+  'messages.orderApprovalSuccess':
+    'Your order has been approved successfully and is in line for the fulfillment.',
   'messages.accountSelect': 'Please select the account to buy the therapy for',
-  'messages.selectAnAccountForShippingAddress': 'Select an account to view the list of shipping addresses',
+  'messages.selectAnAccountForShippingAddress':
+    'Select an account to view the list of shipping addresses',
   'messages.orderPlacementAcknowledgement':
     'I hereby acknowledge that the information mentioned above is correct. All details provided are accurate.',
-  'messages.variantAcknowledgement': 'Please acknowledge that you have verified and selected the correct Variant.',
-  'messages.selectAccountToBuyTherapy': 'Please select the account to buy the therapy for',
+  'messages.variantAcknowledgement':
+    'Please acknowledge that you have verified and selected the correct Variant.',
+  'messages.selectAccountToBuyTherapy':
+    'Please select the account to buy the therapy for',
   'messages.selectAccount': 'Please select account',
   'messages.selectshippingAddress': 'Please select the shipping address',
-  'messages.patientConcent': 'Please acknowledge if Patient Consent has been taken',
-  'messages.selectAcknowledgementError': 'Please select checkbox to acknowledge the order',
+  'messages.patientConcent':
+    'Please acknowledge if Patient Consent has been taken',
+  'messages.selectAcknowledgementError':
+    'Please select checkbox to acknowledge the order',
   'messages.inventoryCheck.success': 'The selected therapy is in stock.',
   'messages.inventoryCheck.error':
     'The selected therapy is not in stock right now, however you can place the order. The order will be fulfilled once the therapy is available in stock',
   'modal.action.continue': 'Continue',
   'modal.action.cancel': 'Cancel',
   'modal.title.duplicateOrder': 'Duplicate Order',
-  'modal.body.duplicateOrder.line_1': 'This therapy has already been ordered for this patient (Order ID #$order_id).',
-  'modal.body.duplicateOrder.line_2': 'Please confirm if you still want to place this order.',
+  'modal.body.duplicateOrder.line_1':
+    'This therapy has already been ordered for this patient (Order ID #$order_id).',
+  'modal.body.duplicateOrder.line_2':
+    'Please confirm if you still want to place this order.',
   // order management patient details screen
 
   'orderManagement.patientDetails.inputLabel.email': 'Email',
@@ -288,63 +315,95 @@ export const MessageEn = {
   'orderManagement.patientDetails.inputLabel.middle_name': 'Middle Name',
   'orderManagement.patientDetails.inputLabel.last_name': 'Last Name',
   'orderManagement.patientDetails.inputLabel.gender': 'Gender',
-  'orderManagement.patientDetails.inputLabel.patientIdentifier': 'Patient Identifier',
+  'orderManagement.patientDetails.inputLabel.patientIdentifier':
+    'Patient Identifier',
   'orderManagement.patientDetails.contact_details': 'Contact Details',
   'orderManagement.patientDetails.address_details': 'Address Details',
   'orderManagement.patientDetails.patient_details': 'Patient Details',
   'orderManagement.patientDetails.required': 'Required',
-  'orderManagement.patientDetails.validation.first_name_max': 'First name cannot exceed 50 characters.',
-  'orderManagement.patientDetails.validation.middle_name_max': 'Middle name cannot exceed 50 characters.',
-  'orderManagement.patientDetails.validation.last_name_max': 'Last name cannot exceed 50 characters.',
-  'orderManagement.patientDetails.validation.invalid_email': 'Please enter a valid email address.',
-  'orderManagement.patientDetails.dob.must.be.past': 'Date of Birth must be in the Past.',
+  'orderManagement.patientDetails.validation.first_name_max':
+    'First name cannot exceed 50 characters.',
+  'orderManagement.patientDetails.validation.middle_name_max':
+    'Middle name cannot exceed 50 characters.',
+  'orderManagement.patientDetails.validation.last_name_max':
+    'Last name cannot exceed 50 characters.',
+  'orderManagement.patientDetails.validation.invalid_email':
+    'Please enter a valid email address.',
+  'orderManagement.patientDetails.dob.must.be.past':
+    'Date of Birth must be in the Past.',
   'orderManagement.patientDetails.validation.invalid_date': 'Invalid date',
-  'orderManagement.patientDetails.validation.email_max': 'Email cannot exceed 50 characters.',
-  'orderManagement.patientDetails.validation.phone_invalid': 'Please enter a valid phone number.',
-  'orderManagement.patientDetails.validation.phone_max': 'Phone number cannot exceed 15 digits.',
-  'orderManagement.patientDetails.validation.address_1_max': 'Address Line 1 cannot exceed 100 characters.',
-  'orderManagement.patientDetails.validation.address_2_max': 'Address Line 2 cannot exceed 100 characters.',
-  'orderManagement.patientDetails.validation.city_max': 'City cannot exceed 15 characters.',
-  'orderManagement.patientDetails.validation.zip_invalid': 'Please enter a valid zip code.',
-  'orderManagement.patientDetails.validation.zip_max': 'Zip code cannot exceed 8 digits.',
-  'orderManagement.patientDetails.validation.patient_identifier_required': 'Patient identifier is required.',
-  'orderManagement.patientDetails.validation.patient_identifier_must_number': 'Patient identifier must be a number.',
-  'orderManagement.patientDetails.validation.patient_identifier_max': 'Patient identifier cannot exceed 20 characters.',
+  'orderManagement.patientDetails.validation.email_max':
+    'Email cannot exceed 50 characters.',
+  'orderManagement.patientDetails.validation.phone_invalid':
+    'Please enter a valid phone number.',
+  'orderManagement.patientDetails.validation.phone_max':
+    'Phone number cannot exceed 15 digits.',
+  'orderManagement.patientDetails.validation.address_1_max':
+    'Address Line 1 cannot exceed 100 characters.',
+  'orderManagement.patientDetails.validation.address_2_max':
+    'Address Line 2 cannot exceed 100 characters.',
+  'orderManagement.patientDetails.validation.city_max':
+    'City cannot exceed 15 characters.',
+  'orderManagement.patientDetails.validation.zip_invalid':
+    'Please enter a valid zip code.',
+  'orderManagement.patientDetails.validation.zip_max':
+    'Zip code cannot exceed 8 digits.',
+  'orderManagement.patientDetails.validation.patient_identifier_required':
+    'Patient identifier is required.',
+  'orderManagement.patientDetails.validation.patient_identifier_must_number':
+    'Patient identifier must be a number.',
+  'orderManagement.patientDetails.validation.patient_identifier_max':
+    'Patient identifier cannot exceed 20 characters.',
   'orderManagement.patientDetails.inputLabel.date_of_birth': 'Date of birth',
   'orderManagement.patientDetails.option.please_select': 'Please select',
 
-  'labels.description.approval': 'Order is reviewed and confirmed for accuracy and payment',
-  'labels.description.fulfillment': 'Items are picked, packed, and prepared for shipment',
-  'labels.description.shipment': 'Order is dispatched and tracked during transit',
-  'labels.description.finalDelivery': 'Order is delivered to your specified address',
+  'labels.description.approval':
+    'Order is reviewed and confirmed for accuracy and payment',
+  'labels.description.fulfillment':
+    'Items are picked, packed, and prepared for shipment',
+  'labels.description.shipment':
+    'Order is dispatched and tracked during transit',
+  'labels.description.finalDelivery':
+    'Order is delivered to your specified address',
 
   'messages.confirmation.discardheader': 'Discard Changes',
-  'messages.confirmation.account': 'You have changed Account details. Do you still want to go back? Your changes will be discarded!',
-  'messages.confirmation.therapy': 'You have changed Therapy details. Do you still want to go back? Your changes will be discarded!',
-  'messages.confirmation.addition': 'You have changed Addtional details. Do you still want to go back? Your changes will be discarded!',
-  'messages.confirmation.patient': 'You have changed Patient details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.account':
+    'You have changed Account details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.therapy':
+    'You have changed Therapy details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.addition':
+    'You have changed Addtional details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.patient':
+    'You have changed Patient details. Do you still want to go back? Your changes will be discarded!',
 
   'messages.header.confirmation': 'Confirmation!',
   'messages.header.warning': 'Warning!',
 
   'messages.confirmation.reject': 'Are you sure you want to reject this order',
-  'messages.confirmation.approve': 'Are you sure you want to approve this order',
+  'messages.confirmation.approve':
+    'Are you sure you want to approve this order',
   'messages.success.delete': 'Order Deleted Successfully.',
   'messages.success.release': 'Order Released Successfully.',
   'messages.success.assign': 'Order Assigned Successfully.',
-  'errors.There is no Approver Group assigned to the order': 'There is no Approver Group assigned to the order.',
+  'errors.There is no Approver Group assigned to the order':
+    'There is no Approver Group assigned to the order.',
   'errors.default': 'An unexpected error occurred.',
   'order.label.admin': 'Admin',
   'order.label.manageOrder': 'Manage Order',
-  'message.errorShortComment': 'Comment is very short, try to add detailed comment.',
-  'message.errorCommentExceedMaxLength': 'Comment can not be more than {{length}} characters.',
-  'message.errorCommentRequiredToRejectOrder': 'Comment is required to reject the order. Please provide reason for rejection.',
+  'message.errorShortComment':
+    'Comment is very short, try to add detailed comment.',
+  'message.errorCommentExceedMaxLength':
+    'Comment can not be more than {{length}} characters.',
+  'message.errorCommentRequiredToRejectOrder':
+    'Comment is required to reject the order. Please provide reason for rejection.',
   'captions.btnReSubmitOrder': 'Re-Submit Order',
   'labels.orderActions.discardChangesByMe': 'Discard changes by me',
   'message.success.discardVersionChanges': 'Discarded changes made by you.',
   'prompt.title.alert': 'Alert!',
-  'prompt.message.submitOrder': 'Do you wish to order this therapy under PAP program?',
-  'prompt.subMessage.submitOrder': "Select 'Yes' to proceed with PAP benefits or 'No' to submit as a regular order.",
+  'prompt.message.submitOrder':
+    'Do you wish to order this therapy under PAP program?',
+  'prompt.subMessage.submitOrder':
+    "Select 'Yes' to proceed with PAP benefits or 'No' to submit as a regular order.",
   'prompt.option.papOrder': 'PAP Order',
   'prompt.option.nonPapOrder': 'Non-PAP Order',
   'prompt.action.submit': 'Submit',
@@ -362,19 +421,25 @@ export const MessageEn = {
   'headings.seletCatalog': 'Select Catalog',
   'headings.seletAccount': 'Select Account',
   'label.addquestionnaire': 'Add Questionnaire',
-  'messages.confirmation.success_config_material': 'Questionnaire has been successfully configured to Material.',
-  'messages.confirmation.success_config_catalog': 'Questionnaire has been successfully configured to Catalog.',
-  'messages.confirmation.success_config_account': 'Questionnaire has been successfully configured to Account.',
+  'messages.confirmation.success_config_material':
+    'Questionnaire has been successfully configured to Material.',
+  'messages.confirmation.success_config_catalog':
+    'Questionnaire has been successfully configured to Catalog.',
+  'messages.confirmation.success_config_account':
+    'Questionnaire has been successfully configured to Account.',
   'labels.salesOrg': 'Sales Org',
   'labels.distChannel': 'Dist Channel',
   'labels.program': 'Program',
   'labels.SapmaterialID': 'SAP Material ID',
   'captions.questionnaire.emptyTableTitle': 'No Templates found',
-  'captions.questionnaire.emptyTableSubtitle': 'You need to add Questionnaire templates to see data in this table.',
+  'captions.questionnaire.emptyTableSubtitle':
+    'You need to add Questionnaire templates to see data in this table.',
   'captions.questionnaire.material.emptyTableTitle': 'No Materials found',
-  'captions.questionnaire.material.emptyTableSubtitle': 'You need to add Materials to see data in this table.',
+  'captions.questionnaire.material.emptyTableSubtitle':
+    'You need to add Materials to see data in this table.',
   'captions.questionnaire.catalog.emptyTableTitle': 'No Catalogs found',
-  'captions.questionnaire.catalog.emptyTableSubtitle': 'You need to select accounts or add catalogs to account to see data in this table.',
+  'captions.questionnaire.catalog.emptyTableSubtitle':
+    'You need to select accounts or add catalogs to account to see data in this table.',
   'captions.questionnaire.account.emptyTableTitle': 'No Accounts found',
   'captions.questionnaire.account.emptyTableSubtitle':
     'You need to select organizations or add Accounts to organizations to see data in this table.',
@@ -382,9 +447,12 @@ export const MessageEn = {
   'table.ariaLabel.materialList': 'Material listing',
   'table.ariaLabel.catalogList': 'Catalog listing',
   'table.ariaLabel.accountList': 'Account listing',
-  'messages.error_config_material': 'Please select Material(s) to Add Questionnaire.',
-  'messages.error_config_catalog': 'Please select Catalog(s) to Add Questionnaire.',
-  'messages.error_config_account': 'Please select Account(s) to Add Questionnaire.',
+  'messages.error_config_material':
+    'Please select Material(s) to Add Questionnaire.',
+  'messages.error_config_catalog':
+    'Please select Catalog(s) to Add Questionnaire.',
+  'messages.error_config_account':
+    'Please select Account(s) to Add Questionnaire.',
 
   'button.caption.backQuestionnaireBuilder': 'Back to Questionnaire Builder',
   'heading.addQuestionnaire': 'Add Questionnaire',
@@ -402,8 +470,10 @@ export const MessageEn = {
   'label.type': 'Type',
   'label.templateName': 'Template Name',
   'message.questionnaire.templateNameRequired': 'Template name is required',
-  'message.questionnaire.templateNameMinWidth': 'Template name must be at least 2 characters',
-  'message.questionnaire.templateNameMaxWidth': 'Template name must be at most 24 characters',
+  'message.questionnaire.templateNameMinWidth':
+    'Template name must be at least 2 characters',
+  'message.questionnaire.templateNameMaxWidth':
+    'Template name must be at most 24 characters',
   'message.questionnaire.selectTemplateType': 'You must select a template type',
   'message.questionnaire.provideQuestionText': 'You must provide question text',
   'message.questionnaire.optionValueRequired': 'Option value is required',
@@ -412,7 +482,8 @@ export const MessageEn = {
   'labels.soldTo': 'Sold to account',
   'labels.shipTo': 'Ship to account',
   'button.caption.change': 'Change',
-  'label.selectContent': 'Select master you want to apply this questionnaire for:',
+  'label.selectContent':
+    'Select master you want to apply this questionnaire for:',
   'label.Material': 'Material',
   'label.Catalog': 'Catalog',
   'label.Account': 'Account',
@@ -425,7 +496,8 @@ export const MessageEn = {
   'controls.placeholder.searchQuestionnaire': 'Search by Template Name',
   'labels.configurationPreview': 'Configuration Preview',
   'labels.confirmationmessage': 'Confirmation message',
-  'labels.template_deactivateConfirmation': 'Do you want to deactivate selected questionnaire template ?',
+  'labels.template_deactivateConfirmation':
+    'Do you want to deactivate selected questionnaire template ?',
   'message.error.notAValidDocument': 'Not a valid document.',
   'control.label.uploadFile': 'Upload File',
   'button.caption.selectFile': 'Select File',
@@ -441,7 +513,52 @@ export const MessageEn = {
   'labels.OrderProcesing.SAPOrderStatus.Open': 'OPEN',
   'labels.OrderProcesing.SAPOrderStatus.Cancelled': 'CANCELLED',
   'labels.OrderProcesing.SAPOrderStatus.Completed': 'COMPLETED',
-  'errors.orders_index_additional_details.po_number_1_practice_id_1': 'PO Number already exists.',
+  'errors.orders_index_additional_details.po_number_1_practice_id_1':
+    'PO Number already exists.',
   'labels.pap': 'PAP',
-  'labels.pap.order': 'PAP ORDER'
+  'labels.pap.order': 'PAP ORDER',
+
+  'label.providers': 'Manage Provider',
+  'breadcrumb.admin': 'Admin',
+  'breadcrumb.systemAdmin': 'System Admin',
+  'breadcrumb.systemConfiguration': 'System Configuration',
+  'providerStatus.ACTIVE': 'Active',
+  'providerStatus.INACTIVE': 'Inactive',
+  'controls.uploadProviders': 'Upload Providers',
+  'label.providerListing': 'Provider Listing',
+  'heading.uploadProviderListCSV': 'Upload Provider List CSV',
+  'controls.addProviders': 'Add Provider',
+  'controls.downloadCSVTemplate': 'Download CSV Template',
+  'controls.placeholder.searchProviderPlaceholder':
+    'Search by Provider Name, NPI Number, DEA Number, Address ',
+  'label.emptyProviderTableDescription':
+    'You need to select organization to see SP Account Listing',
+  'label.materialCrosswalk': 'Material Crosswalk',
+  'controls.addCrosswalk': 'Add Crosswalk',
+  'controls.uploadCrosswalk': 'Upload Crosswalk',
+  'controls.placeholder.materialCrosswalk':
+    'Search by Description, NDC, Product Name ID...',
+  'label.emptyMaterialCrosswalkTableDescription': 'Something went wrong',
+  'controls.addMaterialCrosswalk': 'Add Material Crosswalk',
+  'heading.uploadMaterialCrosswalkListCSV':
+    'Upload Material Crosswalk List CSV',
+  'controls.uploadMaterialCrosswalk': 'Upload Material Crosswalk',
+  'label.manageSpCatalog': 'Manage SP Catalog',
+  'label.materialCrosswalkListing': 'Material Crosswalk Listing',
+  'label.uploadOption.full': 'Full',
+  'label.uploadOption.partial': 'Partial',
+  'button.caption.unlink': 'Unlink',
+  'control.selectUploadOption': 'Please select option to upload.',
+  'control.selectUploadOption.helperText':
+    'Uploads the entire dataset, replacing existing records. Use this option if you want to completely refresh the data.',
+  'label.sPCatalogListing': 'SP Catalog Listing',
+  'controls.downloadList': 'Download List',
+  'controls.uploadCatalog': 'Upload Catalog',
+  'controls.linkCatalog': 'Link Catalog',
+  'label.addSPProducts': 'Add SP Products',
+  'label.emptySPCatalogTableDescription':
+    'You need to add SP Products to see data in this table',
+  'controls.uploadCatalog': 'Upload Catalog',
+  'label.uploadCatalogListCSV': 'Upload Catalog List CSV',
+  'label.backSpCatalog': 'Back to manage sp catalog page'
 };
