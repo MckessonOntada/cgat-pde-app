@@ -347,4 +347,7 @@ export const UserManagementES = {
   'lebal.users': 'S_Users',
   'lebal.backToManage' : 'S_Back to Manage',
   'lebal.add' : 'S_Add',
+  'userManagement.uploadUsers': 'S_Upload Users',
+  'userManagement.uploadUsersListCSV': 'S_Upload Users List CSV',
+  'userManagement.button.addUsers': 'S_Add Users',
 };
