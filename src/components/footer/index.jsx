@@ -1,13 +1,13 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import style from './assets/Footer.module.scss';
 import { Heading } from '@mckesson/mcp-component-library';
-import useSessionFeatures from "@src/hooks/useSessionFeatures";
-import CommonDataService from "@src/api/commonService/CommonDataService";
-import AuthUtils from "@src/util/AuthUtils";
+import useSessionFeatures from '@src/hooks/useSessionFeatures';
+import CommonDataService from '@src/api/commonService/CommonDataService';
+import AuthUtils from '@src/util/AuthUtils';
 import { ReactComponent as AppLogo } from '@src/assets/image/app-logo.svg';
-import footerLinks from "@src/components/footer/data/footerLinks.json";
+import footerLinks from '@src/components/footer/data/footerLinks.json';
 
 const Footer = () => {
   const { t } = useTranslate();
@@ -47,7 +47,7 @@ const Footer = () => {
               </Link>
             )}
           </div>
-          <p>{t('footer.copyright').replace('{{year}}', new Date().getFullYear())}</p>
+          <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
         </div>
       </div>
     </footer>
