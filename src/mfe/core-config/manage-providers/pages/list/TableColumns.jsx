@@ -1,11 +1,16 @@
 import React from 'react';
 import {
   Badge,
+  Button,
   MenuList,
   CheckboxGroup
 } from '@mckesson/mcp-component-library';
 import { ReactComponent as EllipsisIcon } from '@src/assets/svg/ellipsis.svg';
 import { useSelection } from '../../context/TableContext';
+import { useNavigate } from 'react-router-dom';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+import { useDispatch } from 'react-redux';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const PROVIDER_COLUMNS = {
   PROVIDER_NAME: 'PROVIDER_NAME',
@@ -19,8 +24,46 @@ const PROVIDER_COLUMNS = {
 export const getColumns = () => {
   const { selectedRows, toggleRowSelection, selectAll, deselectAll } =
     useSelection();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { t } = useTranslate();
 
-  const handleOnMenuClick = (value) => {};
+  const confirmDeactivation = (id) => {
+    const state = {};
+    state.title = `${t('label.deactivateRecord')}?`;
+    state.body = (
+      <div className="MCP-modal-body">
+        <p>{t('label.deactivateRecordDescription')}</p>
+      </div>
+    );
+    state.footer = (
+      <div className="controls">
+        <Button
+          size="md"
+          variant="secondary"
+          onClick={() => dispatch(closeModal())}>
+          {t('button.caption.no')}
+        </Button>
+        <Button
+          size="md"
+          variant="primary"
+          onClick={() => console.log('Changes confirmed')}>
+          {t('button.caption.yes')}
+        </Button>
+      </div>
+    );
+    dispatch(openModal(state));
+  };
+
+  const handleOnMenuClick = (id) => (value) => {
+    if (value === 'edit') {
+      navigate(`edit/${id}`);
+    } else if (value === 'linkSPAccount') {
+      navigate(`link-sp-account/${id}`);
+    } else if (value === 'deactivate') {
+      confirmDeactivation(id);
+    }
+  };
 
   return [
     {
@@ -36,7 +79,7 @@ export const getColumns = () => {
               onChange: () => toggleRowSelection(props.id),
               value: props.id,
               isChecked: selectedRows.has(props.id),
-              isDisabled: props.status === 'INACTIVE'
+              isDisabled: !props.isActive
             }
           ]}
         />
@@ -74,30 +117,34 @@ export const getColumns = () => {
       minWidth: '160px',
       cell: (props) => <div>{props?.npiNumber || '-'}</div>
     },
-    // {
-    //   id: PROVIDER_COLUMNS.STATUS,
-    //   name: 'Status',
-    //   selector: (row) => row.status,
-    //   minWidth: '160px',
-    //   cell: (props) => (
-    //     <Badge
-    //       text={`labels.status.${props.status.toLowerCase()}`}
-    //       type={'success'}
-    //     />
-    //   )
-    // },
+    {
+      id: PROVIDER_COLUMNS.STATUS,
+      name: 'Status',
+      selector: (row) => row.status,
+      minWidth: '160px',
+      cell: (props) => (
+        <Badge
+          text={`label.status.${props.isActive ? 'active' : 'inactive'}`}
+          type={'success'}
+        />
+      )
+    },
     {
       id: PROVIDER_COLUMNS.ACTION,
       name: 'Action',
       selector: () => {},
       minWidth: '160px',
-      cell: () => (
+      cell: (props) => (
         <MenuList
           menuIcon={<EllipsisIcon />}
-          handleSelect={handleOnMenuClick}
+          handleSelect={handleOnMenuClick(props.id)}
           options={[
             { label: 'Edit', value: 'edit' },
-            { label: 'Deactivate', value: 'Deactivate' },
+            {
+              label: 'Deactivate',
+              value: 'deactivate',
+              disabled: !props.isActive
+            },
             { label: 'Link SP Account', value: 'linkSPAccount' }
           ]}
         />

@@ -23,7 +23,7 @@ import { PROVIDER_STATUS } from '@src/mfe/core-config/manage-providers/config';
 
 const data = [
   {
-    materialId: 'BBM001',
+    id: 'BBM001',
     materialDescription: 'Chemotherapy Drug A',
     materialNdc: '12345-6789-01',
     spProductId: 'SP001',
@@ -31,7 +31,7 @@ const data = [
     spProductNdc: '98765-4321-01'
   },
   {
-    materialId: 'BBM002',
+    id: 'BBM002',
     materialDescription: 'Pain Reliever B',
     materialNdc: '22345-6789-02',
     spProductId: 'SP002',

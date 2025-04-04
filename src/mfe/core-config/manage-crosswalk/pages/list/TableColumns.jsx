@@ -2,6 +2,9 @@ import React from 'react';
 import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as LinkIcon } from '@src/assets/svg/link.svg';
 import { useTranslate } from '@src/translations/useTranslation';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 const MATERIAL_CROSSWALK_COLUMNS = {
   BUY_AND_BILL_MATERIAL_ID: 'BUY_AND_BILL_MATERIAL_ID',
@@ -15,30 +18,62 @@ const MATERIAL_CROSSWALK_COLUMNS = {
 
 export const getColumns = () => {
   const { t } = useTranslate();
+  const dispatch = useDispatch();
+  const confirmationUnlink = (id) => () => {
+    const state = {};
+    state.title = `${t('label.unlinkRecord')}?`;
+    state.body = (
+      <div className="MCP-modal-body">
+        <p>{t('label.unlinkRecordDescription')}</p>
+      </div>
+    );
+    state.footer = (
+      <div className="controls">
+        <Button
+          size="md"
+          variant="secondary"
+          onClick={() => dispatch(closeModal())}>
+          {t('button.caption.no')}
+        </Button>
+        <Button
+          size="md"
+          variant="primary"
+          onClick={() => console.log('Changes confirmed')}>
+          {t('button.caption.yes')}
+        </Button>
+      </div>
+    );
+    dispatch(openModal(state));
+  };
   return [
     {
       id: MATERIAL_CROSSWALK_COLUMNS.BUY_AND_BILL_MATERIAL_ID,
       name: 'Buy & Bill Material ID',
-      selector: (row) => row.providerName,
       minWidth: '160px',
       sortable: true,
       sortKey: 'materialId',
-      cell: (props) => <div>{props?.materialId || '-'}</div>
+      cell: (props) => <div>{props?.id || '-'}</div>
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.BUY_AND_BILL_MATERIAL_DESCRIPTION,
       name: 'Buy & Bill Material Description',
-      selector: (row) => row.address,
       minWidth: '160px',
       sortable: true,
       sortKey: 'materialDescription',
-      cell: (props) => <div>{props?.materialDescription || '-'}</div>
+      cell: (props) => (
+        <div>
+          {(
+            <Link className="MCP-table-link" to={`?material=${props.id}`}>
+              {props?.materialDescription}
+            </Link>
+          ) || '-'}
+        </div>
+      )
     },
 
     {
       id: MATERIAL_CROSSWALK_COLUMNS.BUY_AND_BILL_NDC,
       name: 'Buy & Bill Material NDC',
-      selector: (row) => row.deaNumber,
       minWidth: '160px',
       sortable: true,
       sortKey: 'materialNdc',
@@ -47,7 +82,6 @@ export const getColumns = () => {
     {
       id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_ID,
       name: 'SP Product ID',
-      selector: (row) => row.npiNumber,
       minWidth: '160px',
       sortable: true,
       sortKey: 'spProductId',
@@ -56,16 +90,20 @@ export const getColumns = () => {
     {
       id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_NAME,
       name: 'SP Product Name',
-      selector: (row) => row.npiNumber,
       minWidth: '160px',
       sortable: true,
       sortKey: 'spProductName',
-      cell: (props) => <div>{props?.spProductName || '-'}</div>
+      cell: (props) => (
+        <div>
+          <Link className="MCP-table-link" to={`?product=${props.id}`}>
+            {props?.spProductName}
+          </Link>
+        </div>
+      )
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_NDC,
       name: 'SP Product NDC',
-      selector: (row) => row.npiNumber,
       minWidth: '160px',
       sortable: true,
       sortKey: 'spProductNdc',
@@ -75,15 +113,14 @@ export const getColumns = () => {
     {
       id: MATERIAL_CROSSWALK_COLUMNS.ACTION,
       name: 'Action',
-      selector: () => {},
       minWidth: '160px',
-      cell: () => (
+      cell: (props) => (
         <div className="styled-icon-button">
           <Button
             size="md"
             Icon={LinkIcon}
             variant="tertiary"
-            onClick={() => {}}>
+            onClick={confirmationUnlink(props.id)}>
             {t('button.caption.unlink')}
           </Button>
         </div>
