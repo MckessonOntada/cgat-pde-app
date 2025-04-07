@@ -296,7 +296,6 @@ function ReviewPayments() {
               invoices: selectedInvoices,
               creditsSelected: selectedCredits,
               selectedPayment: selectedData,
-              paymentOption: paymentOption,
               amount: FinanceUtils.formatCurrency(paymentAmountSum),
               creditAmount: FinanceUtils.formatCurrency(creditsSum),
               amountPaid: FinanceUtils.formatCurrency(totalAmount),
@@ -417,7 +416,7 @@ function ReviewPayments() {
           </Button>
         </div>
         {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
-        <div className="header">
+        <div>
           <Heading as="h1" className="heading">
             {t('paymentInvoices.heading.ReviewAndPay')}
           </Heading>
