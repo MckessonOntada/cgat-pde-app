@@ -312,7 +312,8 @@ function ReviewPayments() {
       onError: (error) => {
         dispatch(closeModal());
         showAlert('error', 'review-pay: Error while communicating backend service');
-      }
+      },
+      retry: false
     }
   );
 
