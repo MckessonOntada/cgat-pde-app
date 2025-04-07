@@ -2,7 +2,7 @@ import React from 'react';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 import { getAddress } from '../../util';
-import { Button } from '@mckesson/mcp-component-library';
+import { IconButton } from '@mckesson/mcp-component-library';
 
 
 export const getLinkProviderColumns = (
@@ -31,7 +31,7 @@ export const getLinkProviderColumns = (
     id: 'providerName',
     name: t('manageSPAccount.column.providerName'),
     selector: (row) => row.providerName || '',
-    minWidth: '410px',
+    minWidth: '180px',
     cell: (props) => props.providerName,
     sortable: true,
     sortKey: 'providerName'
@@ -40,8 +40,8 @@ export const getLinkProviderColumns = (
     id: 'address',
     name: t('manageSPAccount.column.providers.address'),
     selector: (row) => row.address || '',
-    minWidth: '450px',
-    cell: (props) => <EclipsesTextcss str={getAddress(props.address)} maxWidth={350} />,
+    minWidth: '400px',
+    cell: (props) => <EclipsesTextcss str={getAddress(props.address)} maxWidth={380} />,
     sortable: false,
     sortKey: 'address'
   },
@@ -49,7 +49,7 @@ export const getLinkProviderColumns = (
     id: 'deaNumber',
     name: t('manageSPAccount.column.providers.deaNumber'),
     selector: (row) => row.deaNumber || '',
-    minWidth: '410px',
+    minWidth: '200px',
     cell: (props) => <EclipsesTextcss str={props.deaNumber} maxWidth={300} />,
     sortable: true,
     sortKey: 'deaNumber'
@@ -58,7 +58,7 @@ export const getLinkProviderColumns = (
     id: 'npiNumber',
     name: t('manageSPAccount.column.providers.npiNumber'),
     selector: (row) => row.npiNumber || '',
-    minWidth: '410px',
+    minWidth: '200px',
     cell: (props) => <EclipsesTextcss str={props.npiNumber} maxWidth={300} />,
     sortable: true,
     sortKey: 'npiNumber'
@@ -72,7 +72,14 @@ export const getLinkProviderColumns = (
       const isOnlyOneSelected = selectedLinkProvider.length === 1;
     //   const allowAction = selectedLinkProvider?.length === 0 || (isRowSelected && isOnlyOneSelected);
       return (
-        <Button onClick={() => handleOnOptionSelection(row)}>{t('manageSPAccount.providers.column.unlink')}</Button>
+         <IconButton
+            label= {t('manageSPAccount.providers.column.unlink')}
+            size="lg"
+            iconButton={false}
+            textButton={true}
+            // Icon={EditIcon}
+            onClick={() => handleOnOptionSelection(row)}
+          />
       );
     },
     isAction: true
