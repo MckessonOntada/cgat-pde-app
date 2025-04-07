@@ -35,18 +35,7 @@ const Footer = () => {
         </div>
         <div className={style.footerBase}>
           <div className={style.branding}>
-            {!isSystemAdminView ? (
-              <McKessonLogo aria-hidden="true" focusable="false" title={t('company.logoAltText')} />
-            ) : (
-              <Link className={`${style.customheader}`}>
-                {organizationLogo && (
-                  <div className={`${style.logoContainer}`}>
-                    <img src={organizationLogo || ''} alt="Organization Logo" />
-                  </div>
-                )}
-                <h2>{selectedOrganization.name}</h2>
-              </Link>
-            )}
+            <McKessonLogo aria-hidden="true" focusable="false" title={t('company.logoAltText')} />
           </div>
           <p>{t('footer.copyright').replace('{{year}}', new Date().getFullYear())}</p>
         </div>
