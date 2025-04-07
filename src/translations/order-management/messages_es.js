@@ -171,7 +171,7 @@ export const MessageEs = {
   'labels.orderActions.assignToMe': 'S_Assign to me',
   'labels.orderActions.unassignToMe': 'S_Unassign',
   'labels.orderActions.approve': 'S_Approve Order',
-  'labels.orderActions.deletemessage': 'S_Are you sure you wish to Delete this Order ?',
+  'labels.orderActions.deletemessage': 'S_Are you sure you wish to Discard this Order ?',
   'labels.orderActions.cancelmessage':
     'S_Please reach out to customer support at 1800XXXXXXX for any updation or cancellation in the order.',
   'labels.orderActions.OK': 'S_OK',
