@@ -8,6 +8,7 @@ import CommonDataService from "@src/api/commonService/CommonDataService";
 import AuthUtils from "@src/util/AuthUtils";
 import { ReactComponent as AppLogo } from '@src/assets/image/app-logo.svg';
 import footerLinks from "@src/components/footer/data/footerLinks.json";
+import { ReactComponent as McKessonLogo } from '@src/assets/image/mckesson-logo-colored.svg';
 
 const Footer = () => {
   const { t } = useTranslate();
@@ -34,8 +35,8 @@ const Footer = () => {
         </div>
         <div className={style.footerBase}>
           <div className={style.branding}>
-            {isSystemAdminView ? (
-              <AppLogo aria-hidden="true" focusable="false" title="PDE Logo" />
+            {!isSystemAdminView ? (
+              <McKessonLogo aria-hidden="true" focusable="false" title={t('company.logoAltText')} />
             ) : (
               <Link className={`${style.customheader}`}>
                 {organizationLogo && (
