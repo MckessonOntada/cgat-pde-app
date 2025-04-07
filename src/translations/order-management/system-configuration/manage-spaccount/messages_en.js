@@ -169,5 +169,13 @@ export const ManageSPAccountMessagesEN = {
   'manageSPAccount.BacktoPage': 'BACK TO MANAGE SP Accounts Page',
 
   'messages.confirmation.deleteConfiguration': 'Are you sure you want to delete the configuration ?',
-  'manageSPAccount.drawer.configuration.alert.error': 'Please select Required Field'
+  'manageSPAccount.drawer.configuration.alert.error': 'Please select Required Field',
+  'manageSPAccount.heading.providers': 'Providers', 
+  'manageSPAccount.button.providers.linkProviders': 'link providers', 
+  'manageSPAccount.column.providerName': 'Provider Name', 
+  'manageSPAccount.column.providers.address': 'Address', 
+  'manageSPAccount.column.providers.deaNumber': 'DEA Number', 
+  'manageSPAccount.column.providers.npiNumber': 'NPI Number', 
+  'manageSPAccount.providers.search.placeholder': 'Search by Provider Name, NPI Number, DEA Number, Address', 
+  'manageSPAccount.providers.column.unlink': 'UNLINK', 
 };
