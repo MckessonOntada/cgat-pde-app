@@ -282,7 +282,6 @@ async function getOrderStatusFromSAP(sapOrderId, salesOrgId) {
   return {};
 }
 
-
 async function getOrderCountByStatus() {
   try {
     const tabs = Object.keys(ORDER_TABS);
@@ -307,8 +306,12 @@ async function getOrderCountByStatus() {
     });
 
     return orderCount;
+  } catch (error) {
+    console.error('Error fetching order counts:', error);
+    throw error;
   }
 }
+
 async function downloadDocument(url) {
   if (!url) throw new Error('Document url is missing. Document url is required to download the document.');
 
