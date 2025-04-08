@@ -6,11 +6,15 @@ import {
   CheckboxGroup
 } from '@mckesson/mcp-component-library';
 import { ReactComponent as EllipsisIcon } from '@src/assets/svg/ellipsis.svg';
-import { useSelection } from '../../context/TableContext';
-import { useNavigate } from 'react-router-dom';
+import { useSelection, useTable } from '../../context/TableContext';
+import { Link, useNavigate } from 'react-router-dom';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
 import { useTranslate } from '@src/translations/useTranslation';
+import { useMutation } from 'react-query';
+import ProviderService from '@src/api/commonService/ProviderService';
+import CommonUtils from '@src/util/CommonUtils';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 const PROVIDER_COLUMNS = {
   PROVIDER_NAME: 'PROVIDER_NAME',
@@ -21,19 +25,72 @@ const PROVIDER_COLUMNS = {
   ACTION: 'ACTION'
 };
 
-export const getColumns = () => {
+export const getColumns = (add) => {
   const { selectedRows, toggleRowSelection, selectAll, deselectAll } =
     useSelection();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslate();
+  const { refreshTable } = useTable();
 
-  const confirmDeactivation = (id) => {
+  const { mutate: activateProvider } = useMutation(
+    async (id) => ProviderService.activateProvider(id),
+    {
+      onSuccess: () => {
+        add({
+          description: 'Provider activated successfully',
+          type: 'success'
+        });
+        refreshTable();
+      },
+      onError: () => {
+        add({
+          description: 'Failed to activate provider. Please try again.',
+          type: 'error'
+        });
+      }
+    }
+  );
+
+  const { mutate: deactivateProvider } = useMutation(
+    async (id) => ProviderService.deactivateProvider(id),
+    {
+      onSuccess: () => {
+        add({
+          description: 'Provider deactivated successfully',
+          type: 'success'
+        });
+        refreshTable();
+      },
+      onError: () => {
+        add({
+          description: 'Failed to deactivate provider. Please try again.',
+          type: 'error'
+        });
+      }
+    }
+  );
+
+  const handleOnConfirmation = (id, ops) => {
+    if (ops === 'activate') {
+      activateProvider(id);
+    } else if (ops === 'deactivate') {
+      deactivateProvider(id);
+    }
+  };
+
+  const confirmDeactivation = (provider, ops) => {
     const state = {};
-    state.title = `${t('label.deactivateRecord')}?`;
+    state.title = provider.isActive
+      ? `${t('providers.label.deactivateProvider')}`
+      : `${t('providers.label.activateProvider')}`;
     state.body = (
       <div className="MCP-modal-body">
-        <p>{t('label.deactivateRecordDescription')}</p>
+        <p>
+          {provider.isActive
+            ? t('providers.label.deactivateRecordDescription')
+            : t('providers.label.activateRecordDescription')}
+        </p>
       </div>
     );
     state.footer = (
@@ -47,7 +104,10 @@ export const getColumns = () => {
         <Button
           size="md"
           variant="primary"
-          onClick={() => console.log('Changes confirmed')}>
+          onClick={() => {
+            dispatch(closeModal());
+            handleOnConfirmation(provider.id, ops);
+          }}>
           {t('button.caption.yes')}
         </Button>
       </div>
@@ -55,13 +115,13 @@ export const getColumns = () => {
     dispatch(openModal(state));
   };
 
-  const handleOnMenuClick = (id) => (value) => {
+  const handleOnMenuClick = (props) => (value) => {
     if (value === 'edit') {
-      navigate(`edit/${id}`);
+      navigate(`edit/${props.id}`);
     } else if (value === 'linkSPAccount') {
-      navigate(`link-sp-account/${id}`);
-    } else if (value === 'deactivate') {
-      confirmDeactivation(id);
+      navigate(`link-sp-account/${props.id}`);
+    } else if (value === 'activate' || value === 'deactivate') {
+      confirmDeactivation(props, value);
     }
   };
 
@@ -89,61 +149,73 @@ export const getColumns = () => {
     },
     {
       id: PROVIDER_COLUMNS.PROVIDER_NAME,
-      name: 'Provider Name',
+      name: t('providers.columnCaption.providerName'),
       selector: (row) => row.providerName,
-      minWidth: '160px',
+      minWidth: '130px',
       sortable: true,
       sortKey: 'providerName',
-      cell: (props) => <div>{props?.providerName || '-'}</div>
+      cell: (props) =>
+        props?.name ? (
+          <Link className="MCP-table-link" to={`${props.id}`}>
+            <EclipsesTextcss
+              str={CommonUtils.getFullName(props?.name) || '-'}
+              maxWidth={150}
+            />
+          </Link>
+        ) : (
+          '-'
+        )
     },
     {
       id: PROVIDER_COLUMNS.ADDRESS,
-      name: 'Address',
+      name: t('providers.columnCaption.address'),
       selector: (row) => row.address,
       minWidth: '160px',
-      cell: (props) => <div>{props?.address || '-'}</div>
+      cell: (props) => (
+        <div>{CommonUtils.getAddress(props?.address) || '-'}</div>
+      )
     },
     {
       id: PROVIDER_COLUMNS.DEA_NUMBER,
-      name: 'DEA Number',
-      selector: (row) => row.deaNumber,
+      name: t('providers.columnCaption.deaNumber'),
+      selector: (row) => row.dea,
       minWidth: '160px',
-      cell: (props) => <div>{props?.deaNumber || '-'}</div>
+      cell: (props) => <div>{props?.dea || '-'}</div>
     },
     {
       id: PROVIDER_COLUMNS.NPI_NUMBER,
-      name: 'NPI Number',
-      selector: (row) => row.npiNumber,
+      name: t('providers.columnCaption.npiNumber'),
+      selector: (row) => row.npi,
       minWidth: '160px',
-      cell: (props) => <div>{props?.npiNumber || '-'}</div>
+      cell: (props) => <div>{props?.npi || '-'}</div>
     },
     {
       id: PROVIDER_COLUMNS.STATUS,
-      name: 'Status',
+      name: t('providers.columnCaption.status'),
       selector: (row) => row.status,
       minWidth: '160px',
+      center: true,
       cell: (props) => (
         <Badge
-          text={`label.status.${props.isActive ? 'active' : 'inactive'}`}
+          text={t(`label.status.${props.isActive ? 'active' : 'inactive'}`)}
           type={'success'}
         />
       )
     },
     {
       id: PROVIDER_COLUMNS.ACTION,
-      name: 'Action',
+      name: t('providers.columnCaption.action'),
       selector: () => {},
       minWidth: '160px',
       cell: (props) => (
         <MenuList
           menuIcon={<EllipsisIcon />}
-          handleSelect={handleOnMenuClick(props.id)}
+          handleSelect={handleOnMenuClick(props)}
           options={[
             { label: 'Edit', value: 'edit' },
             {
-              label: 'Deactivate',
-              value: 'deactivate',
-              disabled: !props.isActive
+              label: props.isActive ? 'Deactivate' : 'Activate',
+              value: props.isActive ? 'deactivate' : 'activate'
             },
             { label: 'Link SP Account', value: 'linkSPAccount' }
           ]}

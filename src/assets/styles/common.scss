@@ -1226,3 +1226,17 @@ div.disable-all {
 .form-instruction {
   font-size: var(--brand-font-size--small);
 }
+
+.error-banner-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 360px;
+}
+
+.alert-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-02);
+}

@@ -10,8 +10,16 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import AuthUtils from '@src/util/AuthUtils';
 import { serializeParams } from '@src/util/ApiUtils';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
+import { PERMISSIONS_ENUM } from './permissionsEnum';
 
-const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleSelect, editRoleId, isRolePage, defaultRole }) => {
+const PermissionForm = ({
+  enabledPermissions,
+  setEnabledPermissions,
+  handleRoleSelect,
+  editRoleId,
+  isRolePage,
+  defaultRole
+}) => {
   const { t } = useTranslate();
   const [selectedRole, setSelectedRole] = useState(editRoleId || '');
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -37,7 +45,11 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
   } = useQuery({
     queryKey: [`users/getAll}`],
     queryFn: async () => {
-      const res = await HttpResourceService.callRest(`${ApiRoutes.GET_ROLES()}?${serializeParams(getParams())}`, httpVerb.GET, {});
+      const res = await HttpResourceService.callRest(
+        `${ApiRoutes.GET_ROLES()}?${serializeParams(getParams())}`,
+        httpVerb.GET,
+        {}
+      );
 
       if (res.data?.content) {
         const roles = res.data?.content?.map((role) => ({
@@ -61,7 +73,11 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
   const { data: permissionsData } = useQuery({
     queryKey: ['users/permissions'],
     queryFn: async () => {
-      const res = await HttpResourceService.callRest(`${ApiRoutes.GET_PERMISSIONS(userType)}`, httpVerb.GET, {});
+      const res = await HttpResourceService.callRest(
+        `${ApiRoutes.GET_PERMISSIONS(userType)}`,
+        httpVerb.GET,
+        {}
+      );
       const rawPermissions = res.data || [];
       // grouped format
       const groupedPermissions = {
@@ -70,8 +86,10 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
         ORGANIZATION_MANAGEMENT: {},
         ORDER_MANAGEMENT: {},
         SYSTEM_CONFIGURATION: {},
-        PAYMENT_INVOICING: {}
+        PAYMENT_INVOICING: {},
+        MANAGE_PROVIDERS: {}
       };
+
       //filter the data according to group
       rawPermissions.forEach((permission) => {
         if (
@@ -99,7 +117,14 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
           ].includes(permission)
         ) {
           groupedPermissions.ADMIN_MANAGEMENT[permission] = permission;
-        } else if (['MANAGE_ORGANIZATION_SCREEN', 'ADD_ORGANIZATION', 'EDIT_ORGANIZATION', 'VIEW_ORGANIZATION'].includes(permission)) {
+        } else if (
+          [
+            'MANAGE_ORGANIZATION_SCREEN',
+            'ADD_ORGANIZATION',
+            'EDIT_ORGANIZATION',
+            'VIEW_ORGANIZATION'
+          ].includes(permission)
+        ) {
           groupedPermissions.ORGANIZATION_MANAGEMENT[permission] = permission;
         } else if (
           [
@@ -154,9 +179,14 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
           groupedPermissions.PAYMENT_INVOICING[permission] = permission;
         }
       });
+
+      groupedPermissions.MANAGE_PROVIDERS = PERMISSIONS_ENUM.MANAGE_PROVIDERS;
+      console.log('groupedPermissions', groupedPermissions);
       // remove empty data
       const filteredPermissions = Object.fromEntries(
-        Object.entries(groupedPermissions).filter(([key, value]) => Object.keys(value).length > 0)
+        Object.entries(groupedPermissions).filter(
+          ([key, value]) => Object.keys(value).length > 0
+        )
       );
       return filteredPermissions;
     },
@@ -166,9 +196,16 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
 
   const filteredPermissionsEnum = isSystemAdminView
     ? permissionsData || {}
-    : Object.fromEntries(Object.entries(permissionsData || {}).filter(([key]) => key !== 'ORGANIZATION_MANAGEMENT'));
+    : Object.fromEntries(
+        Object.entries(permissionsData || {}).filter(
+          ([key]) => key !== 'ORGANIZATION_MANAGEMENT'
+        )
+      );
 
-  const getAllPermissions = () => Object.values(filteredPermissionsEnum).flatMap((permissions) => Object.values(permissions));
+  const getAllPermissions = () =>
+    Object.values(filteredPermissionsEnum).flatMap((permissions) =>
+      Object.values(permissions)
+    );
 
   const enableAllPermissions = () => {
     const allPermissions = getAllPermissions();
@@ -203,14 +240,23 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
   };
 
   const isPermissionEnabled = (permission) => {
-    return Array.isArray(enabledPermissions) && enabledPermissions.includes(permission);
+    return (
+      Array.isArray(enabledPermissions) &&
+      enabledPermissions.includes(permission)
+    );
   };
 
   return (
     <div className="MCP-module-wrapper">
       {
         <Fragment>
-          <ModuleHeader heading={<Heading as="h2">{t('userManagement.user_permissions.select_role')}</Heading>} />
+          <ModuleHeader
+            heading={
+              <Heading as="h2">
+                {t('userManagement.user_permissions.select_role')}
+              </Heading>
+            }
+          />
 
           <div className="MCP-panel-container">
             <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
@@ -236,14 +282,24 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
       }
       <div className="MCP-module-body">
         <ModuleHeader
-          heading={<Heading as="h2">{t('userManagement.user_permissions.managePermissions')}</Heading>}
+          heading={
+            <Heading as="h2">
+              {t('userManagement.user_permissions.managePermissions')}
+            </Heading>
+          }
           controls={
             !isSystemAdminView && (
               <div className="controls">
-                <Button size="md" variant="secondary" onClick={resetPermissions}>
+                <Button
+                  size="md"
+                  variant="secondary"
+                  onClick={resetPermissions}>
                   {t('userManagement.user_permissions.button.reset')}
                 </Button>
-                <Button size="md" variant="secondary" onClick={enableAllPermissions}>
+                <Button
+                  size="md"
+                  variant="secondary"
+                  onClick={enableAllPermissions}>
                   {t('userManagement.user_permissions.button.applyall')}
                 </Button>
               </div>
@@ -252,39 +308,57 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
         />
         <div className="MCP-panel-container grid grid-gap-16">
           {filteredPermissionsEnum &&
-            Object.entries(filteredPermissionsEnum).map(([category, permissions]) => (
-              <div key={category} className="MCP-module-body permission-category">
-                <Heading as="h3">{t(category)}</Heading>
-                <div className="permission-category">
-                  <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 permission-list">
-                    {Object.entries(permissions).map(([key, permission], idx) => (
-                      <React.Fragment key={idx}>
-                        <div key={key} className="flex items-center justify-between permission-item">
-                          <div className="permission-info">
-                            <div className="permission-info-header">{t(`${category}.${key}`)}</div>
-                            <p>{t(`${category}.${key}.DESCRIPTION`)}</p>
-                          </div>
-                          <div className="permission-toggle">
-                            <Switch
-                              id={`toggle-${category}-${key}`}
-                              label={!isSystemAdminView ? (isPermissionEnabled(permission) ? 'Enabled' : 'Disabled') : undefined}
-                              disabled={isSystemAdminView}
-                              labelPosition="right"
-                              size="lg"
-                              checked={isPermissionEnabled(permission)}
-                              onChange={() => togglePermission(permission)}
-                            />
-                          </div>
-                        </div>
-                        {idx % 2 === 0 && idx !== Object.keys(filteredPermissionsEnum[category]).length - 1 && (
-                          <div className="divider"></div>
-                        )}
-                      </React.Fragment>
-                    ))}
+            Object.entries(filteredPermissionsEnum).map(
+              ([category, permissions]) => (
+                <div
+                  key={category}
+                  className="MCP-module-body permission-category">
+                  <Heading as="h3">{t(category)}</Heading>
+                  <div className="permission-category">
+                    <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 permission-list">
+                      {Object.entries(permissions).map(
+                        ([key, permission], idx) => (
+                          <React.Fragment key={idx}>
+                            <div
+                              key={key}
+                              className="flex items-center justify-between permission-item">
+                              <div className="permission-info">
+                                <div className="permission-info-header">
+                                  {t(`${category}.${key}`)}
+                                </div>
+                                <p>{t(`${category}.${key}.DESCRIPTION`)}</p>
+                              </div>
+                              <div className="permission-toggle">
+                                <Switch
+                                  id={`toggle-${category}-${key}`}
+                                  label={
+                                    !isSystemAdminView
+                                      ? isPermissionEnabled(permission)
+                                        ? 'Enabled'
+                                        : 'Disabled'
+                                      : undefined
+                                  }
+                                  disabled={isSystemAdminView}
+                                  labelPosition="right"
+                                  size="lg"
+                                  checked={isPermissionEnabled(permission)}
+                                  onChange={() => togglePermission(permission)}
+                                />
+                              </div>
+                            </div>
+                            {idx % 2 === 0 &&
+                              idx !==
+                                Object.keys(filteredPermissionsEnum[category])
+                                  .length -
+                                  1 && <div className="divider"></div>}
+                          </React.Fragment>
+                        )
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            )}
         </div>
       </div>
     </div>

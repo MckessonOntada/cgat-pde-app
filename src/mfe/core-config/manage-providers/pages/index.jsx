@@ -11,7 +11,8 @@ const Index = () => {
   return (
     <TableProvider
       defaultFilters={defaultFilters}
-      fetchFn={ProviderService.getProviders}>
+      allowedSort={['first_name']}
+      fetchFn={ProviderService.getAllProviders}>
       <List />
     </TableProvider>
   );
