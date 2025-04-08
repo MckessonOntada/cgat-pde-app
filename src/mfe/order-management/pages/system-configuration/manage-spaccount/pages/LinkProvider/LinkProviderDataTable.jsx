@@ -1,6 +1,6 @@
 import { useTranslate } from '@src/translations/useTranslation';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { CustomDataTable } from '@mckesson/mcp-component-library';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
@@ -14,9 +14,12 @@ import LinkProviderService from '@src/api/commonService/LinkProviderService';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import LinkProviderDetailsDrawer from './LinkProviderDetailsDrawer';
 import { renderModal } from '@src/util/ModalUtil';
+import { routeConstants } from '../../routes/constants';
 
 function LinkProviderDataTable() {
   const { t } = useTranslate();
+  const navigate = useNavigate();
+  const { spAccountId } = useParams();
   const { paginationConfig, setPageNumber, applyFilters, clearFilters, data, refreshData } = useLinkProvider();
   const [alert, setAlert] = useState(null);
   const [selectedLinkProvider, setSelectedLinkProvider] = useState([]);
@@ -122,6 +125,7 @@ function LinkProviderDataTable() {
                 variant="secondary"
                 className="button-icon"
                 size="md"
+                onClick={() => navigate(`../${routeConstants.ADD_LINK_PROVIDER}/${spAccountId}`)}
               >
                 {t('manageSPAccount.button.providers.linkProviders')}
               </Button>
