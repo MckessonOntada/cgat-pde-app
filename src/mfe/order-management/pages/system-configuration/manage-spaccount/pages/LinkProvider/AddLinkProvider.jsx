@@ -5,17 +5,14 @@ import ModuleHeader from '@src/components/module-header';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import Accounts from '@src/components/Accounts/Accounts';
+import LinkProviderTable from './LinkProviderTable';
+import { LinkProviderProvider } from '../../context/LinkProviderContext';
 
 const AddLinkProvider = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const [selectedAccounts, setSelectedAccounts] = useState([]);
-  const [alertConfig, setAlertConfig] = React.useState(null);
 
-  const handleGoBack = () => {
-    navigate(-1);
-  };
-
+  const handleGoBack = () => { navigate(-1) };
   const handleAddAccounts = () => {};
 
   return (
@@ -30,17 +27,19 @@ const AddLinkProvider = () => {
           {t('Back to sp account details page')}
         </Button>
       </div>
-
       <ModuleHeader
         heading={<Heading as="h1">{t('Link Providers')}</Heading>}
       />
-      <Accounts />
-
+      <LinkProviderProvider>
+        <LinkProviderTable
+          isAddLinkProvider= {true}
+        />
+      </LinkProviderProvider>
       <div className={'buttonGroup'}>
         <Button
           variant="primary"
           type="button"
-          onClick={handleAddAccounts}
+          onClick={handleGoBack}
           size={'md'}>
           {t('cancel')}
         </Button>

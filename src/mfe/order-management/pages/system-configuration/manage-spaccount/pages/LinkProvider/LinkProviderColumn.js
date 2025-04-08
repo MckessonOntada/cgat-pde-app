@@ -11,12 +11,13 @@ export const getLinkProviderColumns = (
   t,
   data,
   paginationConfig,
-  handleOnOptionSelection,
+  unLinkProvider,
   selectedLinkProvider,
   setSelectedLinkProvider,
   setOpenProviderDetails,
   setDrawerDetails,
-  formatProviderDetails
+  formatProviderDetails,
+  isAddLinkProvider
 ) => [
   {
     id: 'checkbox',
@@ -83,6 +84,7 @@ export const getLinkProviderColumns = (
     id: 'action',
     center: true,
     name: t('manageSPAccount.table.action'),
+    isAction: true,
     cell: (row) => {
       return (
          <IconButton
@@ -91,10 +93,10 @@ export const getLinkProviderColumns = (
             iconButton={false}
             textButton={true}
             Icon={linkIcon}
-            onClick={() => handleOnOptionSelection(row)}
+            onClick={() => unLinkProvider(row)}
           />
       );
     },
-    isAction: true
+    omit: isAddLinkProvider
   }
 ];

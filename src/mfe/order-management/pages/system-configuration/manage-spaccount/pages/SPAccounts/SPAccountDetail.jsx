@@ -25,8 +25,8 @@ import { useOrgAccountSelectionContext } from '@src/mfe/order-management/compone
 import SPAccountService from '@src/api/commonService/SPAccountService';
 import ShippingLocationsDataTable from '../ShippingLocations/ShippingLocationsDataTable';
 import { ShippingLocationProvider } from '../../context/ShippingLocationContext';
-import LinkProviderDataTable from '../LinkProvider/LinkProviderDataTable';
 import { LinkProviderProvider } from '../../context/LinkProviderContext';
+import LinkProviderListing from '../LinkProvider/LinkProviderListing';
 
 const SPAccountDetail = () => {
   const { t } = useTranslate();
@@ -109,7 +109,7 @@ const SPAccountDetail = () => {
           <ShippingLocationsDataTable />
         </ShippingLocationProvider>
         <LinkProviderProvider>
-          <LinkProviderDataTable />
+          <LinkProviderListing/>
         </LinkProviderProvider>
         <div className="MCP-CardContainer"></div>
       </div>
