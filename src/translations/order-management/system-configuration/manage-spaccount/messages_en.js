@@ -178,4 +178,7 @@ export const ManageSPAccountMessagesEN = {
   'manageSPAccount.column.providers.npiNumber': 'NPI Number', 
   'manageSPAccount.providers.search.placeholder': 'Search by Provider Name, NPI Number, DEA Number, Address', 
   'manageSPAccount.providers.column.unlink': 'UNLINK', 
+  'manageSPAccount.providers.details': 'Provider Details', 
+  'manageSPAccount.message.removelinkprovider.success' : 'Provider has been removed successfully.',
+  'manageSPAccount.message.remove.linkprovider': 'Are you sure, you want to remove this Provider?',
 };

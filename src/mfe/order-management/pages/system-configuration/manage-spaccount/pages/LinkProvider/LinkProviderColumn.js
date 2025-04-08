@@ -3,6 +3,8 @@ import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 import { getAddress } from '../../util';
 import { IconButton } from '@mckesson/mcp-component-library';
+import { ReactComponent as linkIcon } from '@src/assets/svg/link.svg';
+import { Link } from 'react-router-dom';
 
 
 export const getLinkProviderColumns = (
@@ -11,7 +13,10 @@ export const getLinkProviderColumns = (
   paginationConfig,
   handleOnOptionSelection,
   selectedLinkProvider,
-  setSelectedLinkProvider
+  setSelectedLinkProvider,
+  setOpenProviderDetails,
+  setDrawerDetails,
+  formatProviderDetails
 ) => [
   {
     id: 'checkbox',
@@ -32,9 +37,20 @@ export const getLinkProviderColumns = (
     name: t('manageSPAccount.column.providerName'),
     selector: (row) => row.providerName || '',
     minWidth: '180px',
-    cell: (props) => props.providerName,
     sortable: true,
-    sortKey: 'providerName'
+    sortKey: 'providerName',
+    cell: (props) => (
+      <div className="cellEllipse">
+        <Link
+          style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
+          onClick={() => {
+            setOpenProviderDetails(true);
+            setDrawerDetails(formatProviderDetails(props));
+          }}>
+          {props?.providerName || '-'}
+        </Link>
+      </div>
+    ),
   },
   {
     id: 'address',
@@ -49,7 +65,7 @@ export const getLinkProviderColumns = (
     id: 'deaNumber',
     name: t('manageSPAccount.column.providers.deaNumber'),
     selector: (row) => row.deaNumber || '',
-    minWidth: '200px',
+    minWidth: '150px',
     cell: (props) => <EclipsesTextcss str={props.deaNumber} maxWidth={300} />,
     sortable: true,
     sortKey: 'deaNumber'
@@ -58,7 +74,7 @@ export const getLinkProviderColumns = (
     id: 'npiNumber',
     name: t('manageSPAccount.column.providers.npiNumber'),
     selector: (row) => row.npiNumber || '',
-    minWidth: '200px',
+    minWidth: '150px',
     cell: (props) => <EclipsesTextcss str={props.npiNumber} maxWidth={300} />,
     sortable: true,
     sortKey: 'npiNumber'
@@ -68,16 +84,13 @@ export const getLinkProviderColumns = (
     center: true,
     name: t('manageSPAccount.table.action'),
     cell: (row) => {
-      const isRowSelected = selectedLinkProvider.some((item) => item.id === row.id);
-      const isOnlyOneSelected = selectedLinkProvider.length === 1;
-    //   const allowAction = selectedLinkProvider?.length === 0 || (isRowSelected && isOnlyOneSelected);
       return (
          <IconButton
             label= {t('manageSPAccount.providers.column.unlink')}
             size="lg"
             iconButton={false}
             textButton={true}
-            // Icon={EditIcon}
+            Icon={linkIcon}
             onClick={() => handleOnOptionSelection(row)}
           />
       );

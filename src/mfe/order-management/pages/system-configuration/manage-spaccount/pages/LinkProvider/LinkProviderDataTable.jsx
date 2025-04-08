@@ -12,25 +12,83 @@ import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg'
 import { getLinkProviderColumns } from './LinkProviderColumn';
 import LinkProviderService from '@src/api/commonService/LinkProviderService';
 import TableHeading from '@src/components/tableHeading/TableHeading';
+import LinkProviderDetailsDrawer from './LinkProviderDetailsDrawer';
+import { renderModal } from '@src/util/ModalUtil';
 
 function LinkProviderDataTable() {
   const { t } = useTranslate();
   const { paginationConfig, setPageNumber, applyFilters, clearFilters, data, refreshData } = useLinkProvider();
   const [alert, setAlert] = useState(null);
   const [selectedLinkProvider, setSelectedLinkProvider] = useState([]);
-
-  const handleOnOptionSelection = (row) => {
-    handleRemoveLinkProvider(row);
+  const [openProviderDetails, setOpenProviderDetails] = useState(false);
+  const [drawerDetails, setDrawerDetails] = useState('')  
+  const formatProviderDetails = (data) => {
+    const {
+      id,
+      providerName,
+      deaNumber,
+      npiNumber,
+      contactNo,
+      address
+    } = data;
+  
+    const fullAddress = `${address.address1}${address.address2 ? ', ' + address.address2 : ''}, ${address.city}, ${address.state} ${address.zip}`;
+  
+    return [
+      {
+        sectionHeading: 'Details',
+        sectionData: [
+          { label: 'ID', value: id },
+          { label: 'Provider Name', value: providerName },
+          { label: 'DEA Number', value: deaNumber },
+          { label: 'NPI Number', value: npiNumber }
+        ]
+      },
+      {
+        sectionHeading: 'Contact',
+        sectionData: [
+          { label: 'Contact No', value: contactNo },
+          { label: 'Address', value: fullAddress },
+        ]
+      }
+    ];
   };
-
+  const handleOnOptionSelection = (row) => {
+    renderModelforRemove(row)
+  };
   const columns = getLinkProviderColumns(
     t,
     data,
     paginationConfig,
     handleOnOptionSelection,
     selectedLinkProvider,
-    setSelectedLinkProvider
+    setSelectedLinkProvider,
+    setOpenProviderDetails,
+    setDrawerDetails,
+    formatProviderDetails
   );
+  const renderModelforRemove = (row) => {
+    renderModal({
+      title: t('messages.header.confirmation'),
+      bodyContent: (
+        <div className="MCP-modal-body">
+          <p>{t('manageSPAccount.message.remove.linkprovider')}</p>
+        </div>
+      ),
+      footerActions: {
+        cancel: {
+          label: t('manageSPAccount.button.cancel'),
+        },
+        confirm: {
+          label: t('manageSPAccount.button.confirm'),
+          action: () => {
+            handleRemoveLinkProvider(row);
+          }
+        }
+      }
+    });
+  };
+
   const handleRemoveLinkProvider = async (row) => {
     LinkProviderService.removeLinkProvider(row);
     showAlert('success', t('manageSPAccount.message.removelinkprovider.success'));
@@ -55,7 +113,7 @@ function LinkProviderDataTable() {
           <ModuleHeader
             heading={
               <div className="subheader-text">
-                <Heading as="h2">{t('manageSPAccount.heading.linkproviders')}</Heading>
+                <Heading as="h2">{t('manageSPAccount.heading.providers')}</Heading>
               </div>
             }
             controls={
@@ -116,6 +174,14 @@ function LinkProviderDataTable() {
             />
           </div>
         </div>
+        {openProviderDetails &&
+          <LinkProviderDetailsDrawer
+            open={openProviderDetails}
+            onClose={() => setOpenProviderDetails(false)}
+            details={drawerDetails}
+            title={t('manageSPAccount.providers.details')}
+          />        
+        }
       </LinkProviderProvider>
     </div>
   );
