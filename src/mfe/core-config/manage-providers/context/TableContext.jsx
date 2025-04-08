@@ -133,7 +133,7 @@ export const TableProvider = ({
           params['query'] = value?.toLowerCase();
           return;
         }
-        params[key] = value?.toLowerCase();
+        params[key] = value;
       }
     });
 

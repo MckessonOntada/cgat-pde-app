@@ -54,7 +54,7 @@ const List = () => {
         label: t('captions.status'),
         options: Object.entries(PROVIDER_STATUS).map(([key, value]) => ({
           label: t(`providerStatus.${key}`),
-          value: value
+          value: value.toUpperCase()
         }))
       }
     ];

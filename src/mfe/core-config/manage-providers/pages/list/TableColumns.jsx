@@ -157,10 +157,7 @@ export const getColumns = (add) => {
       cell: (props) =>
         props?.name ? (
           <Link className="MCP-table-link" to={`${props.id}`}>
-            <EclipsesTextcss
-              str={CommonUtils.getFullName(props?.name) || '-'}
-              maxWidth={150}
-            />
+            {CommonUtils.getFullName(props?.name)}
           </Link>
         ) : (
           '-'
@@ -172,7 +169,10 @@ export const getColumns = (add) => {
       selector: (row) => row.address,
       minWidth: '160px',
       cell: (props) => (
-        <div>{CommonUtils.getAddress(props?.address) || '-'}</div>
+        <EclipsesTextcss
+          str={CommonUtils.getAddress(props?.address) || '-'}
+          maxWidth={110}
+        />
       )
     },
     {
