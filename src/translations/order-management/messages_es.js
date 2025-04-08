@@ -23,7 +23,7 @@ export const MessageEs = {
   'captions.btnSelect': 'S_Select',
   'captions.btnViewComments': 'S_View Comments',
   'captions.btnSelecttherapy': 'S_Select Therapy',
-  'captions.btnPrintSummary': 'S_Print Summary',
+  'captions.btnPrintSummary': 'S_Print',
   'captions.btnGoToOrders': 'S_Go to orders',
   'captions.btnSaveAndContinue': 'S_Save and Continue',
   'captions.btnBackToManageOrder': 'S_Back to Manage Order',
@@ -166,6 +166,7 @@ export const MessageEs = {
   'messages.noShippingAddressFound': 'S_No shipping address found',
   'labels.orderActions.resume': 'S_Resume',
   'labels.orderActions.delete': 'S_Delete',
+  'labels.orderActions.discard': 'S_Discard',
   'labels.orderActions.review': 'S_Review',
   'labels.orderActions.view': 'S_View Details',
   'labels.orderActions.edit': 'S_Edit Order',
@@ -173,7 +174,7 @@ export const MessageEs = {
   'labels.orderActions.assignToMe': 'S_Assign to me',
   'labels.orderActions.unassignToMe': 'S_Unassign',
   'labels.orderActions.approve': 'S_Approve Order',
-  'labels.orderActions.deletemessage': 'S_Are you sure you wish to Delete this Order ?',
+  'labels.orderActions.deletemessage': 'S_Are you sure you wish to Discard this Order ?',
   'labels.orderActions.cancelmessage':
     'S_Please reach out to customer support at 1800XXXXXXX for any updation or cancellation in the order.',
   'labels.orderActions.OK': 'S_OK',
@@ -447,11 +448,16 @@ export const MessageEs = {
   'labels.OrderProcesing.SAPOrderStatus.Cancelled': 'S_CANCELLED',
   'labels.OrderProcesing.SAPOrderStatus.Completed': 'S_COMPLETED',
   'errors.orders_index_additional_details.po_number_1_practice_id_1': 'S_PO Number already exists.',
-
   'labels.caption.ALL': 'All',
   'labels.caption.IN_DRAFT': 'In Draft',
   'labels.caption.DELETED': 'Deleted',
   'labels.caption.REJECTED': 'Rejected',
   'labels.caption.SUBMITTED': 'Submitted',
-  'labels.caption.APPROVAL_PENDING': 'Approval Pending'
+  'labels.caption.APPROVAL_PENDING': 'Approval Pending',
+  'labels.pap.order': 'S_PAP ORDER',
+  'tooltip.material.status.PENDING': 'S_Pending',
+  'tooltip.material.status.AVAILABLE': 'S_Therapy Available',
+  'tooltip.material.status.DROP_SHIP': 'S_Dropship',
+  'tooltip.material.status.OUT_OF_STOCK': 'S_Low Inventory',
+  'tooltip.material.status.CHECKING': 'S_Checking'
 };

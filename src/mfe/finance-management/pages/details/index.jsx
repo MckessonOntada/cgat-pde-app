@@ -89,7 +89,7 @@ function Details(props) {
       : {
           [t('paymentInvoices.Details.CreditAmount')]: `$${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
           [t('paymentInvoices.Details.CreditRemaining')]: '',
-          [t('paymentInvoices.Details.ValidFrom')]: CommonUtils.convertDateStringFormat(res.data.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
+          [t('paymentInvoices.credits.table.credit.date')]: CommonUtils.convertDateStringFormat(res.data.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
         };
     setBillDates(_invoiceDue);
   };
@@ -127,15 +127,6 @@ function Details(props) {
             </Link>
           </div>
         )
-      },
-      {
-        name: t('paymentInvoices.Details.Description'),
-        id: '',
-        selector: (row) => {},
-        wrap: true,
-        minWidth: '140px',
-        maxWidth: '180px',
-        cell: (props) => <EclipsesTextcss str={props.therapyDescription} maxWidth={170} />
       },
       {
         name: t('paymentInvoices.Details.referenceDocument'),

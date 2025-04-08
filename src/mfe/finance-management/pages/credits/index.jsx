@@ -22,8 +22,8 @@ export default function Credits(props) {
       {
         type: 'dateRangePicker',
         name: 'dueDate',
-        startDateLabel: t('paymentInvoices.credits.filters.ValidFromstart'),
-        endDateLabel: t('paymentInvoices.credits.filters.ValidFromend')
+        startDateLabel: t('paymentInvoices.credits.filters.credit.dateStart'),
+        endDateLabel: t('paymentInvoices.credits.filters.credit.dateEnd')
       }
     ];
   }, []);

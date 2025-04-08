@@ -24,7 +24,7 @@ export const MessageEn = {
   'captions.btnSelect': 'Select',
   'captions.btnViewComments': 'View Comments',
   'captions.btnSelecttherapy': 'Select Therapy',
-  'captions.btnPrintSummary': 'Print Summary',
+  'captions.btnPrintSummary': 'Print',
   'captions.btnGoToOrders': 'Go to orders',
   'captions.btnSaveAndContinue': 'Save and Continue',
   'captions.btnBackToManageOrder': 'Back to Manage Order',
@@ -37,7 +37,7 @@ export const MessageEn = {
   'captions.btnEdit': 'Edit',
   'captions.btnRetry': 'Retry',
   'captions.btnSubmitOrder': 'Submit Order',
-  'captions.btnApproveOrder': 'Approve Order',
+  'captions.btnApproveOrder': 'Approve and Submit',
   'captions.btnRejectOrder': 'Reject Order',
   'captions.btnInventoryCheck': 'Inventory Check',
   'captions.emptyTableTitle': 'No Order found',
@@ -178,6 +178,7 @@ export const MessageEn = {
   'messages.noShippingAddressFound': 'No shipping address found',
   'labels.orderActions.resume': 'Resume',
   'labels.orderActions.delete': 'Delete',
+  'labels.orderActions.discard': 'Discard',
   'labels.orderActions.review': 'Review',
   'labels.orderActions.view': 'View Details',
   'labels.orderActions.edit': 'Edit Order',
@@ -185,7 +186,7 @@ export const MessageEn = {
   'labels.orderActions.assignToMe': 'Assign to me',
   'labels.orderActions.unassignToMe': 'Unassign',
   'labels.orderActions.approve': 'Approve Order',
-  'labels.orderActions.deletemessage': 'Are you sure you wish to Delete this Order ?',
+  'labels.orderActions.deletemessage': 'Are you sure you wish to Discard this Order ?',
   'labels.orderActions.cancelmessage': 'Please reach out to customer support at 1800XXXXXXX for any updation or cancellation in the order.',
   'labels.orderActions.OK': 'OK',
   'labels.information': 'Information',
@@ -268,8 +269,9 @@ export const MessageEn = {
   'label.yes': 'Yes',
   'label.no': 'No',
   'messages.formNotFound': 'Form Not Found',
+  'messages.orderSuccess': 'Your order has been submitted successfully and is in line for the fulfillment.',
   'messages.orderSuccessApprovalPending': 'Your order has been submitted successfully and is now pending for approval.',
-  'messages.orderApprovalSuccess': 'Your order has been approved successfully and is in line for the fulfillment.',
+  'messages.orderApprovalSuccess': 'Your order has been approved & submitted successfully and is in line for the fulfillment.',
   'messages.accountSelect': 'Please select the account to buy the therapy for',
   'messages.selectAnAccountForShippingAddress': 'Select an account to view the list of shipping addresses',
   'messages.orderPlacementAcknowledgement':
@@ -465,5 +467,10 @@ export const MessageEn = {
   'labels.caption.APPROVAL_PENDING': 'Approval Pending',
 
   'labels.pap': 'PAP',
-  'labels.pap.order': 'PAP ORDER'
+  'labels.pap.order': 'PAP ORDER',
+  'tooltip.material.status.PENDING': 'Pending',
+  'tooltip.material.status.AVAILABLE': 'Therapy Available',
+  'tooltip.material.status.DROP_SHIP': 'Dropship',
+  'tooltip.material.status.OUT_OF_STOCK': 'Low Inventory',
+  'tooltip.material.status.CHECKING': 'Checking'
 };

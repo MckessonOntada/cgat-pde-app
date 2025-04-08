@@ -30,7 +30,9 @@ const OrderStatus = () => {
     }`
   );
 
-  const { therapy = {}, orderCost, patient, status: orderStatus, backendOrderId } = orderDetails || {};
+  const { therapy = {}, orderCost, patient, status: orderStatus, backendOrderId, approver } = orderDetails || {};
+
+  const isApprover = approver && typeof approver === 'object' && approver.id != null;
 
   const backToOrders = () => navigate('/orders');
 
@@ -60,16 +62,16 @@ const OrderStatus = () => {
               <IconTick />
             </div>
             <div className={styles.content}>
-              {orderStatus && orderStatus !== 'SUBMITTED' && (
+              {orderStatus && (
                 <>
                   <Heading as={'h1'}>{t('headings.orderSubmitted')}</Heading>
-                  <p className={styles.orderSubmitDescription}>{t('messages.orderSuccessApprovalPending')}</p>
-                </>
-              )}
-              {orderStatus === 'SUBMITTED' && (
-                <>
-                  <Heading as={'h1'}>{t('headings.orderApproved')}</Heading>
-                  <p className={styles.orderSubmitDescription}>{t('messages.orderApprovalSuccess')}</p>
+                  <p className={styles.orderSubmitDescription}>
+                    {t(
+                      orderStatus === 'SUBMITTED'
+                        ? isApprover ? 'messages.orderApprovalSuccess' : 'messages.orderSuccess'
+                        : 'messages.orderSuccessApprovalPending'
+                    )}
+                  </p>
                 </>
               )}
             </div>

@@ -107,7 +107,10 @@ const Summary = () => {
         handleInventoryDetailsResponse(response.data);
       }
     } catch (error) {
-      addNotification({ description: 'Something went wrong while checking inventory. Please try again later.', type: 'error' });
+      addNotification({
+        description: 'Something went wrong while checking inventory. Please try again later.',
+        type: 'error'
+      });
       setInventoryStatus('PENDING');
     }
   };
@@ -130,20 +133,20 @@ const Summary = () => {
     const { erroredItems, warningMessages } = data.inventoryCheckResponse || {};
     if (erroredItems?.length > 0 || warningMessages?.length > 0) {
       if (erroredItems && erroredItems.length > 0) {
-        addNotification(
-          ...erroredItems.map((err) => ({
+        erroredItems.forEach((err) => {
+          addNotification({
             description: err.errorMessage,
             type: 'error'
-          }))
-        );
+          });
+        });
       }
       if (warningMessages && warningMessages.length > 0) {
-        addNotification(
-          ...warningMessages.map((warn) => ({
+        warningMessages.forEach((warn) => {
+          addNotification({
             description: warn.value,
             type: 'warning'
-          }))
-        );
+          });
+        });
       }
       setInventoryStatus('OUT_OF_STOCK');
     } else {
@@ -203,15 +206,29 @@ const Summary = () => {
       const infoMessages = result.infoMessages?.map((msg) => msg.value) || [];
 
       if (warningMessages.length > 0) {
-        addNotification(...warningMessages.map((msg) => ({ description: msg, type: 'warning' })));
+        warningMessages.forEach((msg) => {
+          addNotification({
+            description: msg,
+            type: 'warning'
+          });
+        });
       }
 
       if (infoMessages.length > 0) {
-        addNotification(...warningMessages.map((msg) => ({ description: msg, type: 'info' })));
+        infoMessages.forEach((msg) => {
+          addNotification({
+            description: msg,
+            type: 'info'
+          });
+        });
       }
     },
     onError: (error) => {
-      showAlert({ description: error?.response?.data?.message, type: 'error', anchorEl: ALERT_CONTAINER_ID });
+      showAlert({
+        description: error?.response?.data?.message,
+        type: 'error',
+        anchorEl: ALERT_CONTAINER_ID
+      });
     }
   });
 
@@ -222,12 +239,19 @@ const Summary = () => {
         if (action === BUTTON_ACTIONS.SUBMIT) {
           navigate(`../${orderId}/order-confirmed`);
         } else {
-          navigate(`../${orderId}/order-confirmed`, { state: { isApproved: true } });
+          navigate(`../${orderId}/order-confirmed`, {
+            state: { isApproved: true }
+          });
         }
       },
       onError: (err) => {
-        showAlert({ description: err.message, type: 'error', anchorEl: ALERT_CONTAINER_ID });
-      }
+        showAlert({
+          description: err.message,
+          type: 'error',
+          anchorEl: ALERT_CONTAINER_ID
+        });
+      },
+      retry: false
     }
   );
 
@@ -240,7 +264,10 @@ const Summary = () => {
 
   const handleChange = () => {
     setOrderAgreementCheckboxError(null);
-    setAgreeCheckboxOptions({ ...agreeCheckboxOptions, isChecked: !agreeCheckboxOptions.isChecked });
+    setAgreeCheckboxOptions({
+      ...agreeCheckboxOptions,
+      isChecked: !agreeCheckboxOptions.isChecked
+    });
   };
 
   const handleOnBackButtonClick = () => {
@@ -508,7 +535,13 @@ const Summary = () => {
                   <span>{t('labels.summary')}</span>
                   {paporder && (
                     <span className={styles.pap}>
-                      <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('labels.pap.order')} />
+                      <Badge
+                        customStyle={{
+                          color: '#005483',
+                          backgroundColor: '#F2F6FA'
+                        }}
+                        text={t('labels.pap.order')}
+                      />
                     </span>
                   )}
                 </Heading>
@@ -561,11 +594,15 @@ const Summary = () => {
                 {status === StatusEnum.SUBMITTED && <DetailSegment label={t('labels.pdeId')} value={orderId} />}
                 <DetailSegment
                   label={t('labels.materialDescription')}
-                  tooltip={therapy?.materialDescription}
+                  noTooltip={true}
                   value={
                     <div className="row-space-between-center">
-                      {therapy?.materialDescription}
-                      <InventoryIndicator status={inventoryStatus} />
+                      <Tooltip body={therapy?.materialDescription}>{therapy?.materialDescription}</Tooltip>
+                      <Tooltip isDisabled={!inventoryStatus} body={t(`tooltip.material.status.${inventoryStatus}`)}>
+                        <span>
+                          <InventoryIndicator status={inventoryStatus} />
+                        </span>
+                      </Tooltip>
                     </div>
                   }
                 />

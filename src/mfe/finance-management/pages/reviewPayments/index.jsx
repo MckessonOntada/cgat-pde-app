@@ -115,8 +115,8 @@ function ReviewPayments() {
     }
     state?.selectedPayment && setSelectedData(state.selectedPayment);
     state?.paymentOption && setPaymentOption(state.paymentOption);
-    state.totalCreditsCount && settotalCreditsCount(state.totalCreditsCount);
-    state.selectedSpecificDate && setSelectedSpecificDate(state.selectedSpecificDate);
+    state?.totalCreditsCount && settotalCreditsCount(state.totalCreditsCount);
+    state?.selectedSpecificDate && setSelectedSpecificDate(state.selectedSpecificDate);
     if (REVIEW_MODE) {
       setSelectedInvoices(state.invoices || []);
     }
@@ -198,9 +198,9 @@ function ReviewPayments() {
     if (value && (!dayjs(value).isValid() || !dayjs().isBefore(dayjs(value, 'MM/DD/YYYY')))) {
       setSpecificDateError(`Selected date should not be the past date`);
     }
-    if (value && !dayjs(value, 'MM/DD/YYYY').isBefore(dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY'))) {
+    if (value && dayjs(value, 'MM/DD/YYYY').isAfter(dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY'))) {
       let _formatDate = dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY');
-      setSpecificDateError(`Selected date should be before due date: ${_formatDate}`);
+      setSpecificDateError(`Selected date should be on or before  due date: ${_formatDate}`);
     }
   };
 
@@ -230,13 +230,9 @@ function ReviewPayments() {
             onSubTypeChange: (value) => {
               setSelectedSpecificDate(value);
               setSpecificDateError('');
-              if (
-                value &&
-                dayjs(value).isValid() &&
-                !dayjs(value, 'MM/DD/YYYY').isBefore(dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY'))
-              ) {
+              if (value && dayjs(value).isValid() && dayjs(value, 'MM/DD/YYYY').isAfter(dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY'))) {
                 let _formatDate = dayjs(leastDueDateInvoice.dueDate, 'DD/MM/YYYY').format('MM/DD/YYYY');
-                setSpecificDateError(`Selected date should be before due date: ${_formatDate}`);
+                setSpecificDateError(`Selected date should be on or before due date: ${_formatDate}`);
               }
             },
             disablePast: true,
@@ -300,7 +296,6 @@ function ReviewPayments() {
               invoices: selectedInvoices,
               creditsSelected: selectedCredits,
               selectedPayment: selectedData,
-              paymentOption: paymentOption,
               amount: FinanceUtils.formatCurrency(paymentAmountSum),
               creditAmount: FinanceUtils.formatCurrency(creditsSum),
               amountPaid: FinanceUtils.formatCurrency(totalAmount),
@@ -316,7 +311,8 @@ function ReviewPayments() {
       onError: (error) => {
         dispatch(closeModal());
         showAlert('error', 'review-pay: Error while communicating backend service');
-      }
+      },
+      retry: false
     }
   );
 
@@ -420,7 +416,7 @@ function ReviewPayments() {
           </Button>
         </div>
         {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
-        <div className="header">
+        <div>
           <Heading as="h1" className="heading">
             {t('paymentInvoices.heading.ReviewAndPay')}
           </Heading>
@@ -525,7 +521,10 @@ function ReviewPayments() {
                   direction="column"
                   id="radio-button-order-therapy-props.id"
                   items={getRadioItems()}
-                  onChangeValue={(e) => setPaymentOption(e)}
+                  onChangeValue={(e) => {
+                    setSelectedSpecificDate('');
+                    setPaymentOption(e);
+                  }}
                   onOtherTextChange={() => {}}
                   onSubRadioFieldChange={() => {}}
                   radioBtnWidth="auto"

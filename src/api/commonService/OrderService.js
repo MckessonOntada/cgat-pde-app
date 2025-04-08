@@ -282,6 +282,7 @@ async function getOrderStatusFromSAP(sapOrderId, salesOrgId) {
   return {};
 }
 
+
 async function getOrderCountByStatus() {
   try {
     const tabs = Object.keys(ORDER_TABS);
@@ -306,10 +307,21 @@ async function getOrderCountByStatus() {
     });
 
     return orderCount;
+  }
+}
+async function downloadDocument(url) {
+  if (!url) throw new Error('Document url is missing. Document url is required to download the document.');
+
+  try {
+    const documentUrl = `${ApiRoutes.ORDERS()}/documents/download?documentPath=${url}`;
+    const res = await HttpResourceService.callRest(documentUrl, httpVerb.GET);
+
+    return res;
   } catch (err) {
     console.error(err);
     throw err;
   }
+  return {};
 }
 
 const OrderService = Object.freeze({
@@ -337,7 +349,8 @@ const OrderService = Object.freeze({
   updateTherapy,
   getOrderStatusFromSAP,
   discardCurrentOrderVersion,
-  getOrderCountByStatus
+  getOrderCountByStatus,
+  downloadDocument
 });
 
 export default OrderService;

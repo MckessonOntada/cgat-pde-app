@@ -71,6 +71,7 @@ export default function CustomerStatementTable() {
       selector: (row) => row,
       maxWidth: '150px',
       sortable: true,
+      center: true,
       wrap: true,
       isAction: true,
       isContextMenu: false,
@@ -79,7 +80,7 @@ export default function CustomerStatementTable() {
           className="back-button-control"
           variant="tertiary"
           Icon={() => <PDFicon />}
-          disabled = {!props.isPdfAvailable}
+          disabled={!props.isPdfAvailable}
           onClick={() => {
             exportPDF(
               `${ApiRoutes.EXPORT_CUSTOMER_STATEMENTS({ docNo: props.docNo, accountNumber: selectedAccount?.accountNumber })}`,

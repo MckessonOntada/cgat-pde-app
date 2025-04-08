@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Heading, AutoSuggestDropdown } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import InfoCards from '@src/components/infoCards/InfoCards';
@@ -20,6 +20,7 @@ import useSnackbar from '@src/hooks/useSnackbar';
 import CreditsSelected from '../reviewPayments/CreditsSelected';
 import dayjs from 'dayjs';
 import { GeographicUtils } from '@src/util/GeographicUtil';
+import { useCustomPrint } from '@src/util/printUtils';
 
 function ConfirmationPayments() {
   const { t } = useTranslate();
@@ -33,6 +34,8 @@ function ConfirmationPayments() {
   const { selectedAccount } = useAccountContext();
   const { showSnackbar } = useSnackbar();
   const [mergedData, setMergedData] = useState([]);
+  const contentRef = useRef(null); 
+  const printPage = useCustomPrint(contentRef);
 
   const { data: paymentMethodsData = [], isError } = useQuery({
     queryKey: ['paymentMethodsreviewPayments'],
@@ -122,13 +125,13 @@ function ConfirmationPayments() {
 
   return (
     <div className="PreviewPayments">
-      <div className="reviewPaymentsContent">
+      <div className="reviewPaymentsContent" ref={contentRef}>
         <div className="backNavigation">
           <Button className="backButton" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={backButtonClick} size="md">
             {t('paymentInvoices.Details.backToManageInvoices')}
           </Button>
         </div>
-        <div className="header">
+        <div className="headerWrapper">
           <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M51.1959 8.78584C45.54 3.11165 37.9988 0 30 0C21.9829 0 14.4417 3.11165 8.78584 8.78584C3.11165 14.4417 0 21.9829 0 30C0 38.0171 3.11165 45.54 8.78584 51.2142C14.4417 56.87 21.9829 60 30 60C38.0171 60 45.54 56.8883 51.2142 51.2142C56.87 45.5583 60 38.0171 60 30C59.9817 21.9829 56.87 14.4417 51.1959 8.78584Z"
@@ -188,7 +191,7 @@ function ConfirmationPayments() {
         </div>
       </div>
       <div className="footer-section">
-        <Button variant="secondary" onClick={() => {}} size="md" disabled>
+        <Button variant="secondary" onClick={() => printPage()} size="md">
           {t('paymentInvoices.history.filters.printSummary')}
         </Button>
         <Button
