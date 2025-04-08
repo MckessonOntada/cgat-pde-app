@@ -144,7 +144,7 @@ function OrderManagementRoutes() {
       <Route
         path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_SPACCOUNT}/*`}
         element={
-          <OrgAccountSelectionProvider defaultFirstOrgSelected={true} showAccountsSelect={true}>
+          <OrgAccountSelectionProvider enableAcct={false} defaultFirstOrgSelected={true}>
             <ManageSPAccountRoute />
           </OrgAccountSelectionProvider>
         }

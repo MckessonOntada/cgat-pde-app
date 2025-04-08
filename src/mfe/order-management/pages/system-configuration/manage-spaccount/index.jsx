@@ -1,10 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs.jsx';
 import { useTranslate } from '@src/translations/useTranslation';
-import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
+import { Heading, Alert } from '@mckesson/mcp-component-library';
 import CommonFilters from '@src/components/Filters';
-
-import { routeConstants } from './routes/constants';
 import { useLocation, useNavigate } from 'react-router-dom';
 import OrgAccountsSelect from '../../../components/orgAccountSelection/OrgAccountsSelect';
 import { useSPAccountContext } from './context/SPAccountContext';
@@ -13,7 +11,7 @@ import SPAccountDataTable from './pages/SPAccounts/SPAccountDataTable';
 function ManageSPAccount() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { applyFilters, clearFilters, filterConfig } = useSPAccountContext();
+  const { applyFilters, clearFilters, refetchSPAccountList } = useSPAccountContext();
 
   const [alert, setAlert] = useState(null);
   const location = useLocation();
@@ -48,6 +46,7 @@ function ManageSPAccount() {
   useEffect(() => {
     if (isSuccess) {
       showAlert('success', t('manageSPAccount.message.addsuccess'));
+      refetchSPAccountList();
     }
   }, [isSuccess, location.pathname, location.state, navigate]);
 
@@ -65,8 +64,6 @@ function ManageSPAccount() {
               onClearFilters={clearFilters}
               additionalFilters={[]}
               searchPlaceholder={t('manageSPAccount.filters.searchPlaceholder')}
-              actualData={[]}
-              initialData={[]}
             />
           </div>
           <SPAccountDataTable />

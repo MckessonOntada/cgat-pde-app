@@ -22,9 +22,11 @@ import PermittedComponent from '@src/components/permitted-component';
 import { routeConstants } from '../../routes/constants';
 import DetailSegment from '@src/components/DetailSegment';
 import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
-import SPAccountService from '@src/api/commonService/SPAccountService';
+import SPAccountService from '@src/api/commonService/AccountService';
 import ShippingLocationsDataTable from '../ShippingLocations/ShippingLocationsDataTable';
 import { ShippingLocationProvider } from '../../context/ShippingLocationContext';
+import AccountService from '@src/api/commonService/AccountService';
+import { getAddress } from '@src/mfe/order-management/questionnaire/util';
 
 const SPAccountDetail = () => {
   const { t } = useTranslate();
@@ -38,12 +40,13 @@ const SPAccountDetail = () => {
 
   const { isLoading, data, refetch } = useQuery({
     queryKey: ['Account', spAccountId],
-    queryFn: async () => SPAccountService.getSPAccountListById(spAccountId, selectedOrganization?.id),
+    queryFn: async () => AccountService.getAccountListById(spAccountId, selectedOrganization?.id),
     enabled: !!spAccountId ? true : false,
     refetchOnWindowFocus: false,
     onError: (error) => {}
   });
 
+  console.log('data', data);
   useEffect(() => {
     if (isSuccess) {
       setAlert({ type: 'success', message: t('manageSPAccount.message.updatesuccess') });
@@ -62,6 +65,8 @@ const SPAccountDetail = () => {
   if (isLoading) {
     return <Loader type={'screen'} />;
   }
+
+  const contactFullName = data?.name ? `${data?.name.firstName} ${data?.name.lastName} ${data?.name.middleName}` : '-';
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -91,19 +96,22 @@ const SPAccountDetail = () => {
         />
         {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
         <div className="MCP-CardContainer">
-          <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-3`}>
+          <div className={`grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4`}>
             <DetailSegment label={t('manageSPAccount.labels.accountNumber')} value={data.accountNumber || '-'} />
             <DetailSegment label={t('manageSPAccount.labels.accountName')} value={data.accountName || '-'} />
-            <DetailSegment label={t('manageSPAccount.labels.accountAddress')} value={data.accountName || '-'} />
-            <DetailSegment label={t('manageSPAccount.labels.contactPerson')} value={data.accountName || '-'} />
-            <DetailSegment label={t('manageSPAccount.labels.emaild')} value={data?.emailId || '-'} />
-            <DetailSegment label={t('manageSPAccount.labels.phoneNumber')} value={data?.PhoneNo || '-'} />
-            <DetailSegment label={t('manageSPAccount.labels.fax')} value={data?.Fax || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.accountAddress')} value={getAddress(data.address) || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.contactPerson')} value={contactFullName || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.emaild')} value={data?.address.email || '-'} />
+            <DetailSegment
+              label={t('manageSPAccount.labels.phoneNumber')}
+              value={CommonUtils.formatPhoneNumber(data?.address.telephone) || '-'}
+            />
+            <DetailSegment label={t('manageSPAccount.labels.fax')} value={data?.address.fax || '-'} />
           </div>
         </div>
       </div>
       <div className="MCP-module-body">
-        <ShippingLocationProvider>
+        <ShippingLocationProvider accountId={spAccountId}>
           <ShippingLocationsDataTable />
         </ShippingLocationProvider>
         <div className="MCP-CardContainer"></div>

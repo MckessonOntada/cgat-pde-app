@@ -9,22 +9,21 @@ import { useSPMaterial } from '../context/SPMaterialContext';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import SPMaterialDetails from './SPMaterialDetails';
 
-function SPMaterialDataTable(onActionSuccess) {
+function SPMaterialDataTable() {
   const { t } = useTranslate();
-  const { paginationConfig, data, setPageNumber, isLoading, refreshData } = useSPMaterial();
-  const [selectedSPMaterials, setSelectedSPMaterials] = useState([]);
+  const { paginationConfig, data, setPageNumber, isLoading, refreshData, applySort } = useSPMaterial();
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
 
   const columns = [
     {
       name: t('manageSPMaterial.table.spproductId'),
-      id: 'spProductID',
+      id: 'material_number',
       selector: (row) => {},
       wrap: true,
       minWidth: '220px',
       sortable: true,
-      sortKey: 'spProductID',
+      sortKey: 'material_number',
       cell: (props) => (
         <div className="cellEllipse">
           <Link
@@ -33,30 +32,30 @@ function SPMaterialDataTable(onActionSuccess) {
               setViewSPMaterial(props);
               setOpenSPMaterialDetails(true);
             }}>
-            <EclipsesTextcss str={props?.spProductID} maxWidth={280} />
+            <EclipsesTextcss str={props?.materialNumber} maxWidth={280} />
           </Link>
         </div>
       )
     },
     {
-      id: 'productName',
+      id: 'genericName',
       name: t('manageSPMaterial.table.productname'),
       selector: (row) => {},
       minWidth: '350px',
       sortable: true,
-      sortKey: 'productName',
+      sortKey: 'generic_name',
       wrap: true,
-      cell: (props) => <EclipsesTextcss str={props?.productName} maxWidth={350} />
+      cell: (props) => <EclipsesTextcss str={props?.genericName} maxWidth={350} />
     },
     {
-      id: 'ndc',
+      id: 'ndcNumber',
       name: t('manageSPMaterial.table.ndc'),
       selector: (row) => {},
       minWidth: '250px',
       sortable: false,
-      sortKey: 'ndc',
+      sortKey: 'ndc_number',
       wrap: true,
-      cell: (props) => <div>{props?.ndc || '-'}</div>
+      cell: (props) => <div>{props?.ndcNumber || '-'}</div>
     },
     {
       id: 'siteName',
@@ -64,7 +63,7 @@ function SPMaterialDataTable(onActionSuccess) {
       selector: (row) => {},
       minWidth: '250px',
       sortable: true,
-      sortKey: 'siteName',
+      sortKey: 'site_name',
       wrap: true,
       cell: (props) => <div>{props?.siteName || '-'}</div>
     },
@@ -72,21 +71,24 @@ function SPMaterialDataTable(onActionSuccess) {
       id: 'status',
       name: t('manageSPMaterial.table.status'),
       selector: (row) => {},
-      sortable: true,
       sortKey: 'status',
       minWidth: '100px',
       center: true,
-      cell: (props) =>
-        props.status == 'ACTIVE' ? (
-          <Badge customStyle={{ minWidth: '120px' }} text="Active" type="success" />
-        ) : (
-          <Badge customStyle={{ minWidth: '120px' }} text="Inactive" type="info-default" />
-        )
+      cell: (props) => (
+        // props.status == 'ACTIVE' ? (
+        <Badge customStyle={{ minWidth: '120px' }} text="Active" type="success" />
+      )
+      // ) : (
+      //   <Badge customStyle={{ minWidth: '120px' }} text="Inactive" type="info-default" />
+      // )
     }
   ];
 
   const handleChangePage = (e, newPage) => {
     setPageNumber(newPage);
+  };
+  const handleOnSortIconClick = (selectedColumn, sortDirection) => {
+    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
   return (
@@ -97,6 +99,7 @@ function SPMaterialDataTable(onActionSuccess) {
         type="normal"
         columns={columns}
         data={data}
+        onSortIconClick={handleOnSortIconClick}
         currentPage={paginationConfig.pageNumber}
         totalPageCount={paginationConfig.totalPages}
         pagination={true}
@@ -131,7 +134,6 @@ function SPMaterialDataTable(onActionSuccess) {
         openSPMaterialDetails={openSPMaterialDetails}
         setOpenSPMaterialDetails={setOpenSPMaterialDetails}
         viewSPMaterial={viewSPMaterial}
-        setViewSPMaterial={setViewSPMaterial}
       />
     </div>
   );

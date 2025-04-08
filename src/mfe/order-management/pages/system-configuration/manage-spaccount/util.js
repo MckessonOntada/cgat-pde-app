@@ -27,34 +27,34 @@ export const validationSchemaforSPAccount = (t) => {
       )
       .matches(ALPHA_NUMERIC_WITH_SPECIALCHARS, t('manageSPAccount.spaccount.inputLabel.accountName_validate')),
 
-    name: Yup.object({
-      firstName: Yup.string()
-        .required(t('manageSPAccount.spaccount.inputLabel.firstName.required'))
-        .test(
-          'no-leading-trailing-spaces',
-          t('manageSPAccount.spaccount.inputLabel.firstName.trimError'),
-          (value) => value === undefined || value.trim().length === value.length
-        )
-        .matches(FIRST_NAME_REGEX, t('manageSPAccount.spaccount.inputLabel.firstName.validate')),
+    // name: Yup.object({
+    firstName: Yup.string()
+      .required(t('manageSPAccount.spaccount.inputLabel.firstName.required'))
+      .test(
+        'no-leading-trailing-spaces',
+        t('manageSPAccount.spaccount.inputLabel.firstName.trimError'),
+        (value) => value === undefined || value.trim().length === value.length
+      )
+      .matches(FIRST_NAME_REGEX, t('manageSPAccount.spaccount.inputLabel.firstName.validate')),
 
-      middleName: Yup.string()
-        .nullable()
-        .test(
-          'no-leading-trailing-spaces',
-          t('manageSPAccount.spaccount.inputLabel.middleName.trimError'),
-          (value) => value === null || value === undefined || value.trim().length === value.length
-        )
-        .matches(MIDDLE_NAME_REGEX, t('manageSPAccount.spaccount.inputLabel.middleName.validate')),
+    middleName: Yup.string()
+      .nullable()
+      .test(
+        'no-leading-trailing-spaces',
+        t('manageSPAccount.spaccount.inputLabel.middleName.trimError'),
+        (value) => value === null || value === undefined || value.trim().length === value.length
+      )
+      .matches(MIDDLE_NAME_REGEX, t('manageSPAccount.spaccount.inputLabel.middleName.validate')),
 
-      lastName: Yup.string()
-        .required(t('manageSPAccount.spaccount.inputLabel.lastName.required'))
-        .test(
-          'no-leading-trailing-spaces',
-          t('manageSPAccount.spaccount.inputLabel.lastName.trimError'),
-          (value) => value === undefined || value.trim().length === value.length
-        )
-        .matches(ALPHABETIC_ONLY, t('manageSPAccount.spaccount.inputLabel.lastName.validate'))
-    }),
+    lastName: Yup.string()
+      .required(t('manageSPAccount.spaccount.inputLabel.lastName.required'))
+      .test(
+        'no-leading-trailing-spaces',
+        t('manageSPAccount.spaccount.inputLabel.lastName.trimError'),
+        (value) => value === undefined || value.trim().length === value.length
+      )
+      .matches(ALPHABETIC_WITH_SPECIAL, t('manageSPAccount.spaccount.inputLabel.lastName.validate')),
+    //}),
 
     contact: Yup.object({
       email: Yup.string()
@@ -115,29 +115,27 @@ export const validationSchemaforSPAccount = (t) => {
 export const initialValuesforSPAccount = (data = null) => {
   return {
     accountName: data?.accountName || '',
-    name: {
-      firstName: data?.name.firstName || '',
-      middleName: data?.name.firstName || '',
-      lastName: data?.name.lastName || ''
-    },
+    firstName: data?.firstName || data?.name.firstName || '',
+    middleName: data?.middleName || data?.name.middleName || '',
+    lastName: data?.lastName || data?.name.lastName || '',
     contact: {
-      email: data?.contact.email || '',
-      phone: data?.contact.phone || '',
-      fax: data?.contact.fax || ''
+      email: data?.address.email || '',
+      phone: data?.address.telephone || '',
+      fax: data?.address.fax || ''
     },
     address: {
-      address1: data?.address?.address1 || '',
-      address2: data?.address?.address2 || '',
+      address1: data?.address?.street || '',
+      address2: data?.address?.street2 || '',
       city: data?.address?.city || '',
       state: data?.address?.state || '',
-      zip: data?.address?.zip || ''
+      zip: data?.address?.zipCode || ''
     }
   };
 };
 
 export const validationSchemaforShippingAddress = (t) => {
   return Yup.object({
-    locationName: Yup.string().required('Please enter Location Name'),
+    name: Yup.string().required('Please enter Location Name'),
     address: Yup.object({
       address1: Yup.string()
         .required(t('manageSPAccount.shippingLocation.inputLabel.address_1.required'))
@@ -171,27 +169,14 @@ export const validationSchemaforShippingAddress = (t) => {
 };
 
 export const initialValuesforShippingAddress = (data = null) => {
-  if (!data) {
-    return {
-      locationName: '',
-      address: {
-        address1: '',
-        address2: '',
-        city: '',
-        state: '',
-        zip: ''
-      }
-    };
-  }
-
   return {
-    locationName: data.shippingAccountName || '',
+    name: data?.name || '',
     address: {
-      address1: data.address?.address1 || '',
-      address2: data.address?.address2 || '',
-      city: data.address?.city || '',
-      state: data.address?.state || '',
-      zip: data.address?.zip || ''
+      address1: data?.address?.address1 || '',
+      address2: data?.address?.address2 || '',
+      city: data?.address?.city || '',
+      state: data?.address?.state || '',
+      zip: data?.address?.zip || ''
     }
   };
 };
@@ -204,3 +189,8 @@ export const getAddress = (account) => {
 };
 
 export const stateOptions = US_STATES();
+
+export const ChannelType = {
+  BUY_AND_BILL: 'BUY_AND_BILL',
+  SPECIALITY_PHARMA: 'SPECIALITY_PHARMA'
+};

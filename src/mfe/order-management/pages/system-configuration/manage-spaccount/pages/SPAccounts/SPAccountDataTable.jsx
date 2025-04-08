@@ -11,13 +11,13 @@ import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_
 import { ReactComponent as UploadSVG } from '@src/assets/image/upload_bottom.svg';
 import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
 import { routeConstants } from '../../routes/constants';
-import { getAddress } from '../../util';
+import { getAddress } from '@src/mfe/order-management/questionnaire/util';
 
 function SPAccountDataTable() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { paginationConfig, SPAccountList, setPageNumber, isLoading } = useSPAccountContext();
-  console.log(' SPAccountList: data', SPAccountList);
+  const { paginationConfig, SPAccountList, setPageNumber, isLoading, applySort } = useSPAccountContext();
+
   const columns = [
     {
       id: 'accountNumber',
@@ -30,7 +30,7 @@ function SPAccountDataTable() {
         </Link>
       ),
       sortable: true,
-      sortKey: 'accountNumber'
+      sortKey: 'sap_partner'
     },
     {
       id: 'accountName',
@@ -39,12 +39,12 @@ function SPAccountDataTable() {
       maxWidth: '350px',
       cell: (props) => props.accountName,
       sortable: true,
-      sortKey: 'accountName'
+      sortKey: 'name_1'
     },
     {
       id: 'address',
       name: t('table.columns.captions.address'),
-      selector: (row) => row.accountNumber || '',
+      selector: (row) => row.address || '',
       maxWidth: '450px',
       cell: (props) => <EclipsesTextcss str={getAddress(props.address)} maxWidth={450} />
     }
@@ -52,6 +52,10 @@ function SPAccountDataTable() {
 
   const handleChangePage = (e, newPage) => {
     setPageNumber(newPage);
+  };
+
+  const handleOnSortIconClick = (selectedColumn, sortDirection) => {
+    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
   return (
@@ -83,6 +87,7 @@ function SPAccountDataTable() {
         currentPage={paginationConfig.pageNumber}
         totalPageCount={paginationConfig.totalPages}
         pagination={true}
+        onSortIconClick={handleOnSortIconClick}
         handleChangePage={handleChangePage}
         totalRocords={paginationConfig.totalElements}
         recordsPerPage={paginationConfig.pageSize}
@@ -90,6 +95,7 @@ function SPAccountDataTable() {
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         noDataComponent={
           <EmptyDataTable
+            isLoading={isLoading}
             image={EmptyDataImage}
             heading={t('manageSPAccount.table.emptyData')}
             description={t('manageSPAccount.table.emptyDataDescription')}

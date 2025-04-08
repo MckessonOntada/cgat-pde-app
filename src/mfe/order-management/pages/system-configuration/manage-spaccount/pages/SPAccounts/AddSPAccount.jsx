@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
-import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
-import { Badge, Button, Heading, Switch, Alert, Modal, CheckboxGroup, IconButton, Loader } from '@mckesson/mcp-component-library';
+import { Badge, Button, Heading, Alert, Loader } from '@mckesson/mcp-component-library';
 import { Formik, Form } from 'formik';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -12,7 +11,9 @@ import { initialValuesforSPAccount, validationSchemaforSPAccount } from '../../u
 import SPAccountFormSegment from './SPAccountFormSegment';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import { routeConstants } from '../../routes/constants';
-import { SPAccountData } from '../../mockData/SPAccountData';
+import AccountService from '@src/api/commonService/AccountService';
+import { handleApiError } from '@src/util/ApiUtils';
+import { useMutation, useQuery } from 'react-query';
 
 const AddSPAccount = () => {
   const { t } = useTranslate();
@@ -22,27 +23,61 @@ const AddSPAccount = () => {
   const location = useLocation();
   const [isDirty, setIsDirty] = React.useState(false);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
+  const [alert, setAlert] = useState(null);
 
-  const [selectedAccount, setSelectedAccount] = useState(null);
-
-  useEffect(() => {
-    if (spAccountId) {
-      const match = SPAccountData.find((item) => item.id === spAccountId);
-      setSelectedAccount(match);
-    }
-  }, [spAccountId]);
+  const {
+    isLoading,
+    data: selectedAccount,
+    refetch
+  } = useQuery({
+    queryKey: ['Account', spAccountId],
+    queryFn: async () => AccountService.getAccountListById(spAccountId, selectedOrganization?.id),
+    enabled: !!spAccountId ? true : false,
+    refetchOnWindowFocus: false,
+    onError: (error) => {}
+  });
 
   const goBack = () => {
     navigate('/orders/system-configuration/manage-spaccount');
   };
 
   const handleSubmit = (values) => {
-    if (!!spAccountId) {
-      navigate(`../${routeConstants.VIEW_SPACCOUNT.replace(':spAccountId', spAccountId)}`, { state: { isSuccess: true } });
-    } else {
-      navigate('/orders/system-configuration/manage-spaccount', { state: { isSuccess: true } });
-    }
+    const payload = {
+      ...values,
+      practiceId: selectedOrganization?.id
+    };
+
+    saveOrUpdateSPAccount({
+      payload,
+      isEdit: !!spAccountId,
+      spAccountId
+    });
   };
+  const handleError = (err) => {
+    const errorKey = handleApiError(err);
+    setAlert({ type: 'error', message: t(errorKey) });
+  };
+
+  const { isLoading: isSavingOrUpdating, mutate: saveOrUpdateSPAccount } = useMutation(
+    async ({ payload, isEdit, spAccountId }) => {
+      if (isEdit) {
+        return await AccountService.updateSPAccount(payload, spAccountId);
+      } else {
+        return await AccountService.saveSPAccountDetails(payload);
+      }
+    },
+    {
+      onSuccess: (result, variables) => {
+        const { isEdit, spAccountId } = variables;
+        const redirectPath = isEdit
+          ? `../${routeConstants.VIEW_SPACCOUNT.replace(':spAccountId', spAccountId)}`
+          : '/orders/system-configuration/manage-spaccount';
+
+        navigate(redirectPath, { state: { isSuccess: true } });
+      },
+      onError: handleError
+    }
+  );
 
   const handleCancel = () => {
     if (!!spAccountId) {
@@ -50,6 +85,11 @@ const AddSPAccount = () => {
     } else {
       isDirty ? setModalSuccessCallback('list') : navigate('/orders/system-configuration/manage-spaccount');
     }
+  };
+
+  const handleAlertClose = () => {
+    setAlert({ type: null, message: null });
+    navigate(location.pathname, { replace: true, state: { ...location.state, isSuccess: false } });
   };
 
   const handleNavigate = () => {
@@ -60,60 +100,67 @@ const AddSPAccount = () => {
     }
   };
 
+  if (isLoading) {
+    <Loader type="screen" />;
+  }
+
   return (
-    <div className="MCP-module-wrapper">
-      <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={goBack} size="md">
-          {t('manageSPAccount.BacktoPage')}
-        </Button>
+    <>
+      {isSavingOrUpdating && <Loader type="screen" />}
+      <div className="MCP-module-wrapper">
+        <div>
+          <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={goBack} size="md">
+            {t('manageSPAccount.BacktoPage')}
+          </Button>
+        </div>
+
+        <div className="MCP-module-body">
+          <ModuleHeader
+            heading={
+              <Heading as="h1">{t(spAccountId ? 'manageSPAccount.heading.editSPAccount' : 'manageSPAccount.heading.addSPAccount')}</Heading>
+            }
+            controls={<Heading as="h2">{`${t('manageSPAccount.heading.organization')} - ${selectedOrganization?.name}`}</Heading>}
+          />
+          {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
+          <Formik
+            initialValues={initialValuesforSPAccount(selectedAccount)}
+            validationSchema={validationSchemaforSPAccount(t)}
+            enableReinitialize
+            onSubmit={(values, actions) => {
+              handleSubmit(values);
+            }}>
+            {({ values, isValid, dirty }) => {
+              useEffect(() => {
+                setIsDirty(dirty);
+              }, [dirty]);
+              return (
+                <Form>
+                  <div className="MCP-panel-container">
+                    <SPAccountFormSegment spAccountId={spAccountId} />
+                  </div>
+                  <div className={'buttonGroup'}>
+                    <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>
+                      {t('manageSPAccount.button.cancel')}
+                    </Button>
+
+                    <Button type="submit" size={'md'}>
+                      {t(spAccountId ? 'manageSPAccount.button.save' : 'manageSPAccount.button.create')}
+                    </Button>
+                  </div>
+                </Form>
+              );
+            }}
+          </Formik>
+          <DiscardChangesModal
+            heading={t('messages.confirmation.discard')}
+            description={t('messages.confirmation.cancel')}
+            isOpen={Boolean(modalSuccessCallback)}
+            onClose={() => setModalSuccessCallback(null)}
+            onConfirm={handleNavigate}
+          />
+        </div>
       </div>
-
-      <div className="MCP-module-body">
-        <ModuleHeader
-          heading={
-            <Heading as="h1">{t(spAccountId ? 'manageSPAccount.heading.editSPAccount' : 'manageSPAccount.heading.addSPAccount')}</Heading>
-          }
-          controls={<Heading as="h2">{`${t('manageSPAccount.heading.organization')} - ${selectedOrganization?.name}`}</Heading>}
-        />
-
-        <Formik
-          initialValues={initialValuesforSPAccount(selectedAccount)}
-          validationSchema={validationSchemaforSPAccount(t)}
-          enableReinitialize
-          onSubmit={(values, actions) => {
-            handleSubmit(values);
-          }}>
-          {({ values, isValid, dirty }) => {
-            useEffect(() => {
-              setIsDirty(dirty);
-            }, [dirty]);
-            return (
-              <Form>
-                <div className="MCP-panel-container">
-                  <SPAccountFormSegment />
-                </div>
-                <div className={'buttonGroup'}>
-                  <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>
-                    {t('manageSPAccount.button.cancel')}
-                  </Button>
-
-                  <Button type="submit" size={'md'}>
-                    {t(spAccountId ? 'manageSPAccount.button.save' : 'manageSPAccount.button.create')}
-                  </Button>
-                </div>
-              </Form>
-            );
-          }}
-        </Formik>
-        <DiscardChangesModal
-          heading={t('messages.confirmation.discard')}
-          description={t('messages.confirmation.cancel')}
-          isOpen={Boolean(modalSuccessCallback)}
-          onClose={() => setModalSuccessCallback(null)}
-          onConfirm={handleNavigate}
-        />
-      </div>
-    </div>
+    </>
   );
 };
 

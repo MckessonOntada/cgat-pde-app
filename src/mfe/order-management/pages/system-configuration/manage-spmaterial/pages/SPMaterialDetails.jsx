@@ -1,64 +1,78 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import FloatingDrawer from '@src/components/floating-drawer';
-import { ReactComponent as DeleteIcon } from '@src/assets/svg/bin-red.svg';
-import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
-import { Loader, Heading, Button } from '@mckesson/mcp-component-library';
-import { useMutation } from 'react-query';
-import ApiRoutes from '@src/api/ApiRoutes';
-import { serializeParams } from '@src/util/ApiUtils';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import { useNavigate } from 'react-router-dom';
-import useSnackbar from '@src/hooks/useSnackbar';
+import { Loader, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import { PREVIEW_URL, ROUTE_CONFIG } from '@src/mfe/order-management/questionnaire/constants';
-import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
-import { renderModal } from '@src/util/ModalUtil';
-import usePermission from '@src/hooks/usePermissions';
-import AuthUtils from '@src/util/AuthUtils';
 import '../manageSPMaterial.scss';
+import { useQuery } from 'react-query';
+import MaterialService from '@src/api/commonService/MaterialService';
 
 export const SPMaterialDetailsConstants = [
   {
     sectionHeading: 'Details',
     sectionData: [
-      { label: 'id', value: 'id' },
-      { label: 'productName', value: 'productName' },
+      { label: 'id', value: 'materialNumber' },
+      { label: 'productName', value: 'genericName' },
       { label: 'siteName', value: 'siteName' },
-      { label: 'systemQuant', value: 'systemQuant' },
-      { label: 'NDC', value: 'ndc' }
+      { label: 'NDC', value: 'ndcNumber' }
     ]
   }
 ];
 
-function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, viewSPMaterial, setViewSPMaterial }) {
+function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, viewSPMaterial }) {
   const { t } = useTranslate();
+  const requestParams = {
+    channelType: 'SPECIALITY_PHARMA'
+  };
+  const { isLoading, isError, data } = useQuery({
+    queryKey: ['SPMaterial', viewSPMaterial?.materialNumber],
+    queryFn: async () => {
+      const result = await MaterialService.getSPMaterialById(viewSPMaterial?.materialNumber, requestParams);
+      return result;
+    },
+    enabled: !!viewSPMaterial && viewSPMaterial?.id ? true : false,
+    refetchOnWindowFocus: false
+  });
 
   const handleCloseDrawer = () => {
     setOpenSPMaterialDetails((state) => !state);
   };
 
+  if (isLoading) {
+    return <Loader type={'screen'} />;
+  }
   return (
-    <FloatingDrawer open={openSPMaterialDetails} anchor="right" onClose={handleCloseDrawer} heading={t('manageSPMaterial.drawer.heading')}>
-      <div className="details-main-wrapper">
-        <div className={'details-body'}>
-          {SPMaterialDetailsConstants.map((item, index) => (
-            <React.Fragment>
-              <div className="styled-heading">
-                <Heading as="h4">{t(`manageSPMaterial.drawer.${item.sectionHeading}`)}</Heading>
-              </div>
-              <div className="details-ul">
-                {item.sectionData.map((item, index) => (
-                  <div className="details-li">
-                    <div className="details-key">{t(`manageSPMaterial.drawer.details.body.${item.label}`)}</div>
-                    <div className="details-value">{'-'}</div>
+    <React.Fragment>
+      {data && (
+        <FloatingDrawer
+          open={openSPMaterialDetails}
+          anchor="right"
+          onClose={handleCloseDrawer}
+          heading={t('manageSPMaterial.drawer.heading')}>
+          <div className="details-main-wrapper">
+            <div className={'details-body'}>
+              {SPMaterialDetailsConstants.map((item, index) => (
+                <React.Fragment>
+                  <div className="styled-heading">
+                    <Heading as="h4">{t(`manageSPMaterial.drawer.${item.sectionHeading}`)}</Heading>
                   </div>
-                ))}
-              </div>
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
-    </FloatingDrawer>
+                  <div className="details-ul">
+                    {item.sectionData.map((item, index) => {
+                      let value = data?.therapy[item.value] || '-';
+                      return (
+                        <div className="details-li">
+                          <div className="details-key">{t(`manageSPMaterial.drawer.details.body.${item.label}`)}</div>
+                          <div className="details-value">{value}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+        </FloatingDrawer>
+      )}
+    </React.Fragment>
   );
 }
 export default SPMaterialDetails;
