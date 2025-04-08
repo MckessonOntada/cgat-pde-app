@@ -38,5 +38,5 @@ export const LoginMessagesEN = {
   'reset.password.ok':'OK',
   'reset.password.account.settings':'Account Settings',
   'reset.password.login.userInformation':'User Information',
-  'reset.password.error':'Failed to sent reset passwrd email',
+  'reset.password.error':'Failed to sent reset password email',
 };
