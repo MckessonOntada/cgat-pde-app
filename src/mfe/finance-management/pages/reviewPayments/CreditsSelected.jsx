@@ -98,12 +98,12 @@ function CreditsSelected(props) {
     {
       id: 'billAmount',
       name: t('paymentInvoices.credits.table.amount'),
-      selector: (row) => row.billAmount,
+      selector: (row) => row.openAmount,
       minWidth: '144px',
       wrap: true,
       cell: (props) => (
         <div className="status-container align-items-right">
-          <FormattedNumber value={props?.billAmount} style="currency" currency="USD" />
+          <FormattedNumber value={props?.openAmount} style="currency" currency="USD" />
         </div>
       ),
       right: true
