@@ -18,7 +18,7 @@ const PatientDetailsForm = () => {
                 <h2>{t(section.sectionTitle)}</h2>
                 {sectionIndex === 0 && (
                   <p className="form-instruction">
-                    <span className='required'>*</span> {t('orderManagement.patientDetails.required')}
+                    <span className="required">*</span> {t('orderManagement.patientDetails.required')}
                   </p>
                 )}
               </div>

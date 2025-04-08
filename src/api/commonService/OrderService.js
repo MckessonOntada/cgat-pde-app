@@ -1,6 +1,7 @@
 import { serializeParams } from '@src/util/ApiUtils';
 import ApiRoutes from '../ApiRoutes';
 import HttpResourceService, { httpVerb } from '../HttpResourceService';
+import { ORDER_TABS, TAB_FILTERS } from '@src/mfe/order-management/pages/orders/config';
 
 async function createOrder(payload) {
   const url = `${ApiRoutes.ORDERS()}`;
@@ -281,6 +282,33 @@ async function getOrderStatusFromSAP(sapOrderId, salesOrgId) {
   return {};
 }
 
+
+async function getOrderCountByStatus() {
+  try {
+    const tabs = Object.keys(ORDER_TABS);
+
+    const results = await Promise.allSettled(
+      tabs.map((tab) => {
+        const params = {
+          pageNo: 0,
+          pageSize: 8,
+          sortBy: 'createdAt',
+          sortOrder: 'desc',
+          statuses: TAB_FILTERS[tab].join(','),
+          showMyOrders: false
+        };
+        return getOrders(params);
+      })
+    );
+
+    const orderCount = {};
+    results.forEach((result, index) => {
+      orderCount[tabs[index]] = result.status === 'fulfilled' ? result.value?.totalElements : 0;
+    });
+
+    return orderCount;
+  }
+}
 async function downloadDocument(url) {
   if (!url) throw new Error('Document url is missing. Document url is required to download the document.');
 
@@ -293,7 +321,6 @@ async function downloadDocument(url) {
     console.error(err);
     throw err;
   }
-
   return {};
 }
 
@@ -322,6 +349,7 @@ const OrderService = Object.freeze({
   updateTherapy,
   getOrderStatusFromSAP,
   discardCurrentOrderVersion,
+  getOrderCountByStatus,
   downloadDocument
 });
 
