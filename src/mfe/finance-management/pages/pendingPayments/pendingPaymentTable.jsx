@@ -94,9 +94,18 @@ export default function PendingPaymentTable() {
           return !min || date.isBefore(min) ? date : min;
         }, null);
         const dueDate = earliestDueDate?.valueOf();
-        const isValidDate = payOnDate >= today && payOnDate <= dueDate;
+        const isValidDate = payOnDate >= today && today <= dueDate;
+
+        const payOnDateFormatted = dayjs(payOnDate).format('MM/DD/YYYY');
+        const todayFormatted = dayjs(today).format('MM/DD/YYYY');
+        const dueDateFormatted = dayjs(dueDate).format('MM/DD/YYYY');
+
+        const tooltipMessage =
+          `Pay On date (${payOnDateFormatted}) should be today (${todayFormatted}) or later.\n` +
+          `Today's date (${todayFormatted}) must not be after the due date (${dueDateFormatted}).`;
         return (
-          <Tooltip body={!isValidDate ? t('pendingPayments.cancel.tooltip') : ''}>
+          //  Tooltip component not accepting styles/classnames
+          <Tooltip body={!isValidDate ? tooltipMessage : ''} width="450px">
             <span>
               <Button
                 className="cancel-button-control"
