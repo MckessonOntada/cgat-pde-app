@@ -12,5 +12,6 @@ export const RoutePaths = {
   pathOrganizationRoles: '/admin/organization/roles',
   pathSystemAdminManagement: '/admin/user', //'/system-admin',
   pathSignup: '/signup',
-  pathSignin: '/signin'
+  pathSignin: '/signin',
+  pathManageProviders: '/admin/providers'
 };

@@ -108,6 +108,30 @@ div.disable-all {
   }
 }
 
+.table-notification {
+  margin: var(--spacing-05) 0;
+  max-width: 280px;
+  text-align: center;
+  box-sizing: border-box;
+
+  padding: var(--spacing-03);
+
+  .MCP-module-body {
+    align-items: center;
+  }
+
+  font-weight: var(--brand-font-weight-400);
+  font-size: var(--brand-font-size--15);
+  line-height: var(--brand-font-size--24);
+  color: var(--brand-color-background-light-slate);
+
+  .heading {
+    font-weight: var(--brand-font-weight-700);
+    font-size: var(--brand-font-size--24);
+    line-height: 100%;
+  }
+}
+
 .MCP-table-cell {
   &.radio-button-wrapper {
     fieldset {
@@ -641,6 +665,10 @@ div.disable-all {
   margin: 0px auto;
 }
 
+.dashboard-card-wrapper {
+  margin-bottom: var(--spacing-02);
+}
+
 .dashboard-card {
   text-decoration: none;
   display: inline-flex;
@@ -1100,7 +1128,9 @@ div.disable-all {
   margin: 0 5px;
   width: 24px;
   aspect-ratio: 4;
-  background: radial-gradient(circle closest-side, var(--brand-color-text-blue) 90%, #0000) 0 / calc(100% / 3) 100% space;
+  background: radial-gradient(circle closest-side,
+      var(--brand-color-text-blue) 90%,
+      #0000) 0 / calc(100% / 3) 100% space;
   clip-path: inset(0 100% 0 0);
   animation: l1 1s steps(4) infinite;
 }
@@ -1124,7 +1154,6 @@ div.disable-all {
     gap: var(--spacing-03);
   }
 }
-
 
 div[role="row"] {
   div[role="cell"] {
@@ -1229,22 +1258,42 @@ div[role="row"] {
     line-height: var(--brand-font-size--default);
     font-weight: var(--brand-font-weight-600);
     border-radius: var(--spacing-03);
-    background-color: #1E394E;
+    background-color: #1e394e;
     color: white;
     padding: 6px 8px;
-
   }
 
   &.green {
     &::after {
-      background-color: #2E8540;
+      background-color: #2e8540;
     }
   }
 
   &.orange {
     &::after {
-      background-color: #D3722E;
+      background-color: #d3722e;
     }
   }
+}
 
+.uploadControls {
+  margin-top: var(--spacing-05);
+}
+
+.form-instruction {
+  font-size: var(--brand-font-size--small);
+}
+
+.error-banner-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 360px;
+}
+
+.alert-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-02);
 }

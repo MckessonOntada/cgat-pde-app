@@ -11,7 +11,12 @@ function getOrganizationList(requestParams) {
       httpVerb.GET,
       {}
     );
-    res.data.content = res.data?.content?.map((item) => ({ ...item, label: item.name, value: item.id, isChecked: false }));
+    res.data.content = res.data?.content?.map((item) => ({
+      ...item,
+      label: item.name,
+      value: item.id,
+      isChecked: false
+    }));
     // dispatch(updateOrganizationList(res.data))
     return res.data;
   };
@@ -23,17 +28,29 @@ async function getOrganizationListAsOptions(requestParams) {
     httpVerb.GET,
     {}
   );
-  res.data.content = res.data?.content?.map((item) => ({ ...item, label: item.name, value: item.id, isChecked: false }));
+  res.data.content = res.data?.content?.map((item) => ({
+    ...item,
+    label: item.name,
+    value: item.id,
+    isChecked: false
+  }));
   return res.data;
 }
 
 async function getOrganizationListAsPublic(requestParams) {
   const res = await HttpResourceService.callRest(
-    `${ApiRoutes.USERS_PROVISIONING_ORGLIST_PUBLIC}?${serializeParams(requestParams)}`,
+    `${ApiRoutes.USERS_PROVISIONING_ORGLIST_PUBLIC}?${serializeParams(
+      requestParams
+    )}`,
     httpVerb.GET,
     {}
   );
-  res.data.content = res.data?.content?.map((item) => ({ ...item, label: item.name, value: item.name, isChecked: false }));
+  res.data.content = res.data?.content?.map((item) => ({
+    ...item,
+    label: item.name,
+    value: item.name,
+    isChecked: false
+  }));
   return res.data;
 }
 
@@ -62,9 +79,14 @@ const useOrganizationLogo = (logUrl, practiceId) => {
 
 async function resetPassword() {
   const url = `${ApiRoutes.RESET_PASSWORD()}`;
-  const res = await HttpResourceService.callRest(url, httpVerb.POST, {}, {
-    'Content-Type': 'application/json'
-  });
+  const res = await HttpResourceService.callRest(
+    url,
+    httpVerb.POST,
+    {},
+    {
+      'Content-Type': 'application/json'
+    }
+  );
   if (res.data) {
     return res.data;
   }

@@ -24,6 +24,9 @@ import ManageMaterial from '../pages/system-configuration/manageMaterial/ManageM
 import { ManageMaterialProvider } from '../context/ManageMaterialContext';
 import Questionnaire from '../questionnaire';
 import { QuestionnaireProvider } from '../context/QuestionnaireContext';
+import ManageSPMaterialRoute from '../pages/system-configuration/manage-spmaterial/routes/Routes';
+import { SPMaterialProvider } from '../pages/system-configuration/manage-spmaterial/context/SPMaterialContext';
+import ManageSPAccountRoute from '../pages/system-configuration/manage-spaccount/routes/Routes';
 
 function OrderManagementRoutes() {
   const addEditPermission = [PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS];
@@ -57,7 +60,6 @@ function OrderManagementRoutes() {
           </ProtectedRoute>
         }
       />
-
       <Route
         path={`:orderId/accounts`}
         element={
@@ -66,7 +68,6 @@ function OrderManagementRoutes() {
           </ProtectedRoute>
         }
       />
-
       <Route
         path={`:orderId/patient`}
         element={
@@ -131,7 +132,23 @@ function OrderManagementRoutes() {
           </OrgAccountSelectionProvider>
         }
       />
+      <Route
+        path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_SPMATERIAL}/*`}
+        element={
+          <SPMaterialProvider>
+            <ManageSPMaterialRoute />
+          </SPMaterialProvider>
+        }
+      />
 
+      <Route
+        path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_SPACCOUNT}/*`}
+        element={
+          <OrgAccountSelectionProvider enableAcct={false} defaultFirstOrgSelected={true}>
+            <ManageSPAccountRoute />
+          </OrgAccountSelectionProvider>
+        }
+      />
       <Route path={routesConfig.viewDetails} element={<OrderSummary />} />
       <Route path={routesConfig.reviewOrder} element={<div></div>} />
       <Route path={'*'} element={<NotFound />} />

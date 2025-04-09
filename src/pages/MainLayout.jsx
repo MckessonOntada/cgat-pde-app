@@ -21,10 +21,16 @@ import { SystemConfiguration } from '@src/mfe/order-management/pages/system-conf
 import { AccountProvider } from '@src/mfe/finance-management/context/AccountContext';
 import Footer from '@src/components/footer';
 import ErrorWrapper from './ErrorWrapper';
-import AccountSetting from "@src/components/AccountSetting";
+import AccountSetting from '@src/components/AccountSetting';
+import ManageProviders from '@src/mfe/core-config/manage-providers';
+import ManageCrossWalk from '@src/mfe/core-config/manage-crosswalk';
+import ManageSPCatalog from '@src/mfe/core-config/manage-sp-catalog';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
-const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
+const OrderManagementEntryPoint = React.lazy(() =>
+  import('@src/mfe/order-management')
+);
 const OrgEntryPoint = React.lazy(() => import('@src/mfe/org-management'));
 
 function MainLayout() {
@@ -32,11 +38,17 @@ function MainLayout() {
     <div id={debugIds(ID.MAIN)} className={styles.appContainer}>
       <Header />
       <ErrorWrapper>
-        <div className={`${styles['app-wrapper']}`}  id={debugIds(ID.APP_WRAPPER)}>
-          <div className={`${styles.home} max-container`} id={debugIds(ID.HOME)}>
+        <div
+          className={`${styles['app-wrapper']}`}
+          id={debugIds(ID.APP_WRAPPER)}>
+          <div
+            className={`${styles.home} max-container`}
+            id={debugIds(ID.HOME)}>
             <ScrollToTop containerId={debugIds(ID.APP_WRAPPER)} />
             <Suspense fallback={<Loader type="screen" />}>
-              <div className={styles.routeContent} id={debugIds(ID.HOME, ID.ROUTE_CONTENT)}>
+              <div
+                className={styles.routeContent}
+                id={debugIds(ID.HOME, ID.ROUTE_CONTENT)}>
                 <Routes className={styles.routes}>
                   {AppRoutes.routes.map((route, idx) => {
                     return route.element ? (
@@ -64,7 +76,11 @@ function MainLayout() {
                   <Route
                     path={'orders/*'}
                     element={
-                      <ProtectedRoute permissions={[...routePermissionConfig.orders, ...routePermissionConfig.systemConfiguration]}>
+                      <ProtectedRoute
+                        permissions={[
+                          ...routePermissionConfig.orders,
+                          ...routePermissionConfig.systemConfiguration
+                        ]}>
                         <OrderManagementEntryPoint />
                       </ProtectedRoute>
                     }
@@ -78,38 +94,61 @@ function MainLayout() {
                       </ProtectedRoute>
                     }
                   />
-                  <Route
-                    path={`/admin/organization/roles/*`}
-                    element={
-                      <ProtectedRoute permissions={routePermissionConfig.roles}>
-                        <Role />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path={`/admin/approver-group/*`}
-                    element={
-                      <ProtectedRoute permissions={routePermissionConfig.approvergroups}>
-                        <ManageApprovers />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path={'/admin/organization/*'}
-                    element={
-                      AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() ? (
-                        <Navigate to={'/'} />
-                      ) : (
-                        <ProtectedRoute permissions={routePermissionConfig.organization}>
-                          <OrgEntryPoint />
+                  <Route path="/admin/*">
+                    <Route
+                      path={'providers/*'}
+                      element={
+                        <ProtectedRoute
+                          permissions={Object.values(
+                            PERMISSIONS_ENUM.MANAGE_PROVIDERS
+                          )}>
+                          <ManageProviders />
                         </ProtectedRoute>
-                      )
-                    }
-                  />
+                      }
+                    />
+                    <Route path={'crosswalk/*'} element={<ManageCrossWalk />} />
+                    <Route
+                      path={'sp-catalog/*'}
+                      element={<ManageSPCatalog />}
+                    />
+                    <Route
+                      path={`organization/roles/*`}
+                      element={
+                        <ProtectedRoute
+                          permissions={routePermissionConfig.roles}>
+                          <Role />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path={`approver-group/*`}
+                      element={
+                        <ProtectedRoute
+                          permissions={routePermissionConfig.approvergroups}>
+                          <ManageApprovers />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path={'organization/*'}
+                      element={
+                        AuthUtils.isSystemAdmin() &&
+                        !AuthUtils.isSystemAdminView() ? (
+                          <Navigate to={'/'} />
+                        ) : (
+                          <ProtectedRoute
+                            permissions={routePermissionConfig.organization}>
+                            <OrgEntryPoint />
+                          </ProtectedRoute>
+                        )
+                      }
+                    />
+                  </Route>
                   <Route
                     path={'/record/*'}
                     element={
-                      <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
+                      <ProtectedRoute
+                        permissions={routePermissionConfig.paymentInvoices}>
                         <AccountProvider>
                           <RecordsMainRoutes />
                         </AccountProvider>
