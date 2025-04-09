@@ -70,7 +70,7 @@ export const PaymentOptionsControls = (props) => {
                       key={value}
                       id={id + '-sub-radio-field-' + index}
                       name={item.value}
-                      value={item.subTypeValue}
+                      value={item.value === value && item.subTypeValue}
                       onChangeFn={(e) => item.onSubTypeChange(e)}
                       isDisabled={item.isDisabled || item.value !== value}
                       isShowLabel={false}
