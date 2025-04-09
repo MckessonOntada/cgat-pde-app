@@ -115,7 +115,7 @@ function ReviewPayments() {
     }
     state?.selectedPayment && setSelectedData(state.selectedPayment);
     state?.paymentOption && setPaymentOption(state.paymentOption);
-    state?.totalCreditsCount && settotalCreditsCount(state.totalCreditsCount);
+    state?.totalCreditsCount && settotalCreditsCount(state?.totalCreditsCount);
     state?.selectedSpecificDate && setSelectedSpecificDate(state.selectedSpecificDate);
     if (REVIEW_MODE) {
       setSelectedInvoices(state.invoices || []);
