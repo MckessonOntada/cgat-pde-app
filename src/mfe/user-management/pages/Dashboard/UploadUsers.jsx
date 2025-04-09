@@ -22,11 +22,15 @@ function UploadUsers() {
   const navigate = useNavigate();
   const { refreshData } = useUser();
   const { t } = useTranslate();
-  const [alert, setAlert] = useState({ type: '', description: '', isAlertVisible: false });
+  const [alert, setAlert] = useState(null);
 
   const showAlert = createAlertHandler(setAlert);
 
-  const downloadTemplate = () => handleDownload('/templates/upload_users_template.csv', 'upload_users_template.csv');
+  const downloadTemplate = () =>
+    handleDownload(
+      '/templates/upload_users_template.csv',
+      'upload_users_template.csv'
+    );
 
   const { mutate: uploadBulkUser, isLoading } = useMutation(
     async ({ url, payload }) => {
@@ -71,19 +75,31 @@ function UploadUsers() {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={() => navigate(-1)} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={() => navigate(-1)}
+          size="md">
           {t('userManagement.user.backmessage')}
         </Button>
       </div>
       <UploadFile
-        label={t('lebal.users')}
+        primaryHeading={t('userManagement.uploadUsers')}
+        controlHeading={t('userManagement.uploadUsersListCSV')}
         isLoading={isLoading}
-        alert={alert}
+        messages={[alert]}
         showAlert={showAlert}
-        handleAlertClose={handleAlertClose}
-        downloadTemplate={downloadTemplate}
-        handleUpload={handleUpload}
-        validateFile={(file) => validateFile(file, ['text/csv'])}
+        onAlertClose={handleAlertClose}
+        downloadTemplate={{
+          caption: t('file.download.csv'),
+          fn: downloadTemplate
+        }}
+        upload={{
+          caption: t('userManagement.button.addUsers'),
+          fn: handleUpload
+        }}
+        onFileSelection={(file) => validateFile(file, ['text/csv'])}
       />
     </div>
   );

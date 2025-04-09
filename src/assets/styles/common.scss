@@ -42,10 +42,10 @@
 }
 
 .custom-date-range-picker {
-  > div {
-    > div {
-      > div {
-        > div {
+  >div {
+    >div {
+      >div {
+        >div {
           width: unset;
           min-width: 160px;
           flex-grow: 1;
@@ -106,6 +106,32 @@ div.disable-all {
       scrollbar-width: thin;
     }
   }
+}
+
+.table-notification {
+  margin: var(--spacing-05) 0;
+  max-width: 280px;
+  text-align: center;
+  box-sizing: border-box;
+
+  padding: var(--spacing-03);
+
+  .MCP-module-body {
+    align-items: center;
+
+  }
+
+  font-weight: var(--brand-font-weight-400);
+  font-size: var(--brand-font-size--15);
+  line-height: var(--brand-font-size--24);
+  color:var(--brand-color-background-light-slate);
+
+  .heading {
+    font-weight: var(--brand-font-weight-700);
+    font-size: var(--brand-font-size--24);
+    line-height: 100%;
+  }
+
 }
 
 .MCP-table-cell {
@@ -664,11 +690,9 @@ div.disable-all {
   }
 }
 
-@media only screen and (min-width: 576px) {
-}
+@media only screen and (min-width: 576px) {}
 
-@media only screen and (min-width: 992px) {
-}
+@media only screen and (min-width: 992px) {}
 
 @media only screen and (min-width: 1200px) {
   .max-container {
@@ -723,6 +747,7 @@ div.disable-all {
 }
 
 .styled-heading {
+
   //module primary heading
   h1 {
     font-size: var(--brand-font-size--28) !important;
@@ -749,12 +774,12 @@ div.disable-all {
 }
 
 .styled-form-field {
+
   .label-heading,
   label[class*="TextareaInput-module--label"],
   label[class*="InputField-module--labelText"],
   fieldset legend[class*="CheckboxGroup-module--captionWrap"],
-  fieldset legend[class*="labelContainer"] {
-  }
+  fieldset legend[class*="labelContainer"] {}
 
   div[class*="RadioGroup-module"] {
     label {
@@ -853,7 +878,7 @@ div.disable-all {
   flex-direction: column;
   height: 100vh;
 
-  > div {
+  >div {
     padding: var(--spacing-03);
     flex: 0 0 auto;
   }
@@ -874,6 +899,7 @@ div.disable-all {
   }
 
   #secondaryNavPanel {
+
     button,
     a {
       font-size: var(--brand-font-size--small);
@@ -884,6 +910,7 @@ div.disable-all {
 }
 
 .questionnaire-template-question-list {
+
   .label-heading,
   label[class*="TextareaInput-module--label"],
   label[class*="InputField-module--labelText"],
@@ -1191,6 +1218,7 @@ div.disable-all {
     }
   }
 }
+
 .uploadControls {
   margin-top: var(--spacing-05);
 }

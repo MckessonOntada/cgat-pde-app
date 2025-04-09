@@ -1,0 +1,6 @@
+const PROVIDER_STATUS = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE'
+};
+
+export default PROVIDER_STATUS;

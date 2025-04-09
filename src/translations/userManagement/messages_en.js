@@ -408,7 +408,10 @@ export const UserManagementEN = {
   'errors.messages.default': 'An unexpected error occurred. Please try again.',
   'label.comment': 'Comment',
   'file.download.csv': 'Download CSV Template',
-  'lebal.users': 'Users',
-  'lebal.backToManage': 'Back to Manage',
-  'lebal.add': 'Add'
+  'lebal.users': 'Users', 
+  'lebal.backToManage' : 'Back to Manage',
+  'lebal.add' : 'Add',
+  'userManagement.uploadUsers': 'Upload Users',
+  'userManagement.uploadUsersListCSV': 'Upload Users List CSV',
+  'userManagement.button.addUsers': 'Add Users',
 };
