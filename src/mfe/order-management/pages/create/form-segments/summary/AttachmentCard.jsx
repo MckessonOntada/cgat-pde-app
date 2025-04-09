@@ -31,6 +31,7 @@ function getFileIcon(extension) {
 function AttachmentCard(props) {
   const { fileName, fileSize, url } = props;
   const fileType = fileName.split('.').pop();
+  const fileIcon = getFileIcon(fileType);
   const handleOnClick = async () => {
     const response = await OrderService.downloadDocument(url); //Prio1
 
@@ -52,7 +53,7 @@ function AttachmentCard(props) {
   };
   return (
     <div className="attachment-wrapper" onClick={Boolean(url) && handleOnClick}>
-      {getFileIcon(fileType)}
+      {fileIcon}
       <div className="meta">
         <p className="name">{fileName}</p>
         <p className="size">{CommonUtils.getFileSize(fileSize)}</p>
