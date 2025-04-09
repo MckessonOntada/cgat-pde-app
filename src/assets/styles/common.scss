@@ -42,10 +42,10 @@
 }
 
 .custom-date-range-picker {
-  > div {
-    > div {
-      > div {
-        > div {
+  >div {
+    >div {
+      >div {
+        >div {
           width: unset;
           min-width: 160px;
           flex-grow: 1;
@@ -694,11 +694,9 @@ div.disable-all {
   }
 }
 
-@media only screen and (min-width: 576px) {
-}
+@media only screen and (min-width: 576px) {}
 
-@media only screen and (min-width: 992px) {
-}
+@media only screen and (min-width: 992px) {}
 
 @media only screen and (min-width: 1200px) {
   .max-container {
@@ -753,6 +751,7 @@ div.disable-all {
 }
 
 .styled-heading {
+
   //module primary heading
   h1 {
     font-size: var(--brand-font-size--28) !important;
@@ -779,12 +778,12 @@ div.disable-all {
 }
 
 .styled-form-field {
+
   .label-heading,
   label[class*="TextareaInput-module--label"],
   label[class*="InputField-module--labelText"],
   fieldset legend[class*="CheckboxGroup-module--captionWrap"],
-  fieldset legend[class*="labelContainer"] {
-  }
+  fieldset legend[class*="labelContainer"] {}
 
   div[class*="RadioGroup-module"] {
     label {
@@ -883,7 +882,7 @@ div.disable-all {
   flex-direction: column;
   height: 100vh;
 
-  > div {
+  >div {
     padding: var(--spacing-03);
     flex: 0 0 auto;
   }
@@ -904,6 +903,7 @@ div.disable-all {
   }
 
   #secondaryNavPanel {
+
     button,
     a {
       font-size: var(--brand-font-size--small);
@@ -914,6 +914,7 @@ div.disable-all {
 }
 
 .questionnaire-template-question-list {
+
   .label-heading,
   label[class*="TextareaInput-module--label"],
   label[class*="InputField-module--labelText"],
@@ -1127,12 +1128,9 @@ div.disable-all {
   margin: 0 5px;
   width: 24px;
   aspect-ratio: 4;
-  background: radial-gradient(
-      circle closest-side,
+  background: radial-gradient(circle closest-side,
       var(--brand-color-text-blue) 90%,
-      #0000
-    )
-    0 / calc(100% / 3) 100% space;
+      #0000) 0 / calc(100% / 3) 100% space;
   clip-path: inset(0 100% 0 0);
   animation: l1 1s steps(4) infinite;
 }
@@ -1284,4 +1282,18 @@ div[role="row"] {
 
 .form-instruction {
   font-size: var(--brand-font-size--small);
+}
+
+.error-banner-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 360px;
+}
+
+.alert-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-02);
 }

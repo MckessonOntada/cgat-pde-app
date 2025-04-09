@@ -6,11 +6,21 @@ import {
   CheckboxGroup
 } from '@mckesson/mcp-component-library';
 import { ReactComponent as EllipsisIcon } from '@src/assets/svg/ellipsis.svg';
-import { useSelection } from '../../context/TableContext';
-import { useNavigate } from 'react-router-dom';
+import {
+  usePagination,
+  useSelection,
+  useTable
+} from '../../context/TableContext';
+import { Link, useNavigate } from 'react-router-dom';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
 import { useTranslate } from '@src/translations/useTranslation';
+import { useMutation } from 'react-query';
+import ProviderService from '@src/api/commonService/ProviderService';
+import CommonUtils from '@src/util/CommonUtils';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import usePermission from '@src/hooks/usePermissions';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 
 const PROVIDER_COLUMNS = {
   PROVIDER_NAME: 'PROVIDER_NAME',
@@ -21,19 +31,89 @@ const PROVIDER_COLUMNS = {
   ACTION: 'ACTION'
 };
 
-export const getColumns = () => {
+export const getColumns = (add) => {
   const { selectedRows, toggleRowSelection, selectAll, deselectAll } =
     useSelection();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslate();
+  const { refreshTable } = useTable();
+  const { pagination, changePage } = usePagination();
 
-  const confirmDeactivation = (id) => {
+  const { mutate: activateProvider } = useMutation(
+    async (id) => ProviderService.activateProvider(id),
+    {
+      onSuccess: () => {
+        add({
+          description: t('provider.activationSuccess'),
+          type: 'success'
+        });
+        const { pageNo, totalElements, totalPages, pageSize } = pagination;
+        const isLastPage = pageNo === Math.ceil(totalElements / pageSize);
+        const isLastRecordFromPage = totalElements % totalPages === 1;
+
+        if (isLastPage && isLastRecordFromPage) {
+          changePage(pageNo - 1);
+        } else {
+          refreshTable();
+        }
+      },
+      onError: () => {
+        add({
+          description: t('provider.activationFailure'),
+          type: 'error'
+        });
+      }
+    }
+  );
+
+  const { mutate: deactivateProvider } = useMutation(
+    async (id) => ProviderService.deactivateProvider(id),
+    {
+      onSuccess: () => {
+        add({
+          description: t('provider.deactivationSuccess'),
+          type: 'success'
+        });
+        const { pageNo, totalElements, totalPages, pageSize } = pagination;
+        const isLastPage = pageNo === Math.ceil(totalElements / pageSize);
+        const isLastRecordFromPage = totalElements % totalPages === 1;
+
+        if (isLastPage && isLastRecordFromPage) {
+          changePage(pageNo - 1);
+        } else {
+          refreshTable();
+        }
+      },
+      onError: () => {
+        add({
+          description: t('provider.deactivationFailure'),
+          type: 'error'
+        });
+      }
+    }
+  );
+
+  const handleOnConfirmation = (id, ops) => {
+    if (ops === 'activate') {
+      activateProvider(id);
+    } else if (ops === 'deactivate') {
+      deactivateProvider(id);
+    }
+  };
+
+  const confirmDeactivation = (provider, ops) => {
     const state = {};
-    state.title = `${t('label.deactivateRecord')}?`;
+    state.title = provider.isActive
+      ? `${t('providers.label.deactivateProvider')}`
+      : `${t('providers.label.activateProvider')}`;
     state.body = (
       <div className="MCP-modal-body">
-        <p>{t('label.deactivateRecordDescription')}</p>
+        <p>
+          {provider.isActive
+            ? t('providers.label.deactivateRecordDescription')
+            : t('providers.label.activateRecordDescription')}
+        </p>
       </div>
     );
     state.footer = (
@@ -47,21 +127,40 @@ export const getColumns = () => {
         <Button
           size="md"
           variant="primary"
-          onClick={() => console.log('Changes confirmed')}>
+          onClick={() => {
+            dispatch(closeModal());
+            handleOnConfirmation(provider.id, ops);
+          }}>
           {t('button.caption.yes')}
         </Button>
       </div>
     );
     dispatch(openModal(state));
   };
+  const { hasPermission, hasAnyPermission } = usePermission();
 
-  const handleOnMenuClick = (id) => (value) => {
+  const getMenuOption = (props) => {
+    const options = [];
+
+    if (hasPermission(PERMISSIONS_ENUM.MANAGE_PROVIDERS.EDIT_PROVIDER)) {
+      options.push({ label: 'Edit', value: 'edit' });
+      options.push({
+        label: props.isActive ? 'Deactivate' : 'Activate',
+        value: props.isActive ? 'deactivate' : 'activate'
+      });
+      options.push({ label: 'Link SP Account', value: 'linkSPAccount' });
+    }
+
+    return options;
+  };
+
+  const handleOnMenuClick = (props) => (value) => {
     if (value === 'edit') {
-      navigate(`edit/${id}`);
+      navigate(`edit/${props.id}`);
     } else if (value === 'linkSPAccount') {
-      navigate(`link-sp-account/${id}`);
-    } else if (value === 'deactivate') {
-      confirmDeactivation(id);
+      navigate(`link-sp-account/${props.id}`);
+    } else if (value === 'activate' || value === 'deactivate') {
+      confirmDeactivation(props, value);
     }
   };
 
@@ -89,66 +188,85 @@ export const getColumns = () => {
     },
     {
       id: PROVIDER_COLUMNS.PROVIDER_NAME,
-      name: 'Provider Name',
+      name: t('providers.columnCaption.providerName'),
       selector: (row) => row.providerName,
-      minWidth: '160px',
+      minWidth: '130px',
       sortable: true,
       sortKey: 'providerName',
-      cell: (props) => <div>{props?.providerName || '-'}</div>
+      cell: (props) => {
+        const isAllowed = hasPermission(
+          PERMISSIONS_ENUM.MANAGE_PROVIDERS.VIEW_PROVIDER
+        );
+        return props?.name ? (
+          <Link className="MCP-table-link" to={`${isAllowed ? props.id : ''}`}>
+            {CommonUtils.getFullName(props?.name)}
+          </Link>
+        ) : (
+          '-'
+        );
+      }
     },
     {
       id: PROVIDER_COLUMNS.ADDRESS,
-      name: 'Address',
+      name: t('providers.columnCaption.address'),
       selector: (row) => row.address,
       minWidth: '160px',
-      cell: (props) => <div>{props?.address || '-'}</div>
+      cell: (props) => (
+        <EclipsesTextcss
+          str={CommonUtils.getAddress(props?.address) || '-'}
+          maxWidth={110}
+        />
+      )
     },
     {
       id: PROVIDER_COLUMNS.DEA_NUMBER,
-      name: 'DEA Number',
-      selector: (row) => row.deaNumber,
+      name: t('providers.columnCaption.deaNumber'),
+      selector: (row) => row.dea,
       minWidth: '160px',
-      cell: (props) => <div>{props?.deaNumber || '-'}</div>
+      cell: (props) => <div>{props?.dea || '-'}</div>
     },
     {
       id: PROVIDER_COLUMNS.NPI_NUMBER,
-      name: 'NPI Number',
-      selector: (row) => row.npiNumber,
+      name: t('providers.columnCaption.npiNumber'),
+      selector: (row) => row.npi,
       minWidth: '160px',
-      cell: (props) => <div>{props?.npiNumber || '-'}</div>
+      cell: (props) => <div>{props?.npi || '-'}</div>
     },
     {
       id: PROVIDER_COLUMNS.STATUS,
-      name: 'Status',
+      name: t('providers.columnCaption.status'),
       selector: (row) => row.status,
       minWidth: '160px',
+      center: true,
       cell: (props) => (
         <Badge
-          text={`label.status.${props.isActive ? 'active' : 'inactive'}`}
-          type={'success'}
+          text={t(`label.status.${props.isActive ? 'active' : 'inactive'}`)}
+          type={props.isActive ? 'success' : 'error'}
         />
       )
     },
     {
       id: PROVIDER_COLUMNS.ACTION,
-      name: 'Action',
+      name: t('providers.columnCaption.action'),
       selector: () => {},
       minWidth: '160px',
-      cell: (props) => (
-        <MenuList
-          menuIcon={<EllipsisIcon />}
-          handleSelect={handleOnMenuClick(props.id)}
-          options={[
-            { label: 'Edit', value: 'edit' },
-            {
-              label: 'Deactivate',
-              value: 'deactivate',
-              disabled: !props.isActive
-            },
-            { label: 'Link SP Account', value: 'linkSPAccount' }
-          ]}
-        />
-      )
+      cell: (props) => {
+        const anyOperationPermission = hasAnyPermission([
+          PERMISSIONS_ENUM.MANAGE_PROVIDERS.EDIT_PROVIDER
+        ]);
+
+        if (anyOperationPermission) {
+          return (
+            <MenuList
+              menuIcon={<EllipsisIcon />}
+              handleSelect={handleOnMenuClick(props)}
+              options={getMenuOption(props)}
+            />
+          );
+        } else {
+          return '-';
+        }
+      }
     }
   ];
 };
