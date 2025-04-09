@@ -70,8 +70,10 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
         ORGANIZATION_MANAGEMENT: {},
         ORDER_MANAGEMENT: {},
         SYSTEM_CONFIGURATION: {},
-        PAYMENT_INVOICING: {}
+        PAYMENT_INVOICING: {},
+        MANAGE_PROVIDERS: {}
       };
+
       //filter the data according to group
       rawPermissions.forEach((permission) => {
         if (
@@ -127,7 +129,17 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
             'MANAGE_MATERIAL',
             'VIEW_MATERIAL',
             'MANAGE_CATALOG',
-            'VIEW_CATALOG'
+            'VIEW_CATALOG',
+            'MANAGE_CATALOG',
+            'VIEW_CATALOG',
+            'VIEW_SP_MATERIAL',
+            'VIEW_CROSSWALK',
+            'ADD_CROSSWALK',
+            'UPLOAD_CROSSWALK',
+            'MANAGE_SP_ACCOUNT',
+            'ADD_SP_ACCOUNT',
+            'MANAGE_SP_CATALOG',
+            'VIEW_SP_CATALOG'
           ].includes(permission)
         ) {
           groupedPermissions.SYSTEM_CONFIGURATION[permission] = permission;
@@ -152,12 +164,15 @@ const PermissionForm = ({ enabledPermissions, setEnabledPermissions, handleRoleS
           ].includes(permission)
         ) {
           groupedPermissions.PAYMENT_INVOICING[permission] = permission;
+        } else if (['MANAGE_PROVIDERS_SCREEN', 'VIEW_PROVIDER', 'ADD_PROVIDER', 'EDIT_PROVIDER', 'UPLOAD_PROVIDER'].includes(permission)) {
+          groupedPermissions.MANAGE_PROVIDERS[permission] = permission;
         }
       });
       // remove empty data
       const filteredPermissions = Object.fromEntries(
         Object.entries(groupedPermissions).filter(([key, value]) => Object.keys(value).length > 0)
       );
+
       return filteredPermissions;
     },
     enabled: true,

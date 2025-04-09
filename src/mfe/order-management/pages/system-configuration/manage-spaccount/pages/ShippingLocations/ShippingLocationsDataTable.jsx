@@ -125,17 +125,19 @@ function ShippingLocationsDataTable() {
             </div>
           }
           controls={
-            <Button
-              Icon={EditPencil}
-              variant="secondary"
-              className="button-icon"
-              size="md"
-              onClick={() => {
-                setSPLocation(null);
-                setOpenShippingDrawer(true);
-              }}>
-              {t('manageSPAccount.shippinglocation.button.addshippinglocations')}
-            </Button>
+            !isCustomerCenter && (
+              <Button
+                Icon={EditPencil}
+                variant="secondary"
+                className="button-icon"
+                size="md"
+                onClick={() => {
+                  setSPLocation(null);
+                  setOpenShippingDrawer(true);
+                }}>
+                {t('manageSPAccount.shippinglocation.button.addshippinglocations')}
+              </Button>
+            )
           }
         />
         {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}

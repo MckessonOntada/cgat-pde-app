@@ -38,7 +38,7 @@ const AddSPAccount = () => {
   });
 
   const goBack = () => {
-    navigate('/orders/system-configuration/manage-spaccount');
+    navigate('/orders/system-configuration/manage-spaccount', { state: { isSuccess: true } });
   };
 
   const handleSubmit = (values) => {
@@ -69,11 +69,10 @@ const AddSPAccount = () => {
     {
       onSuccess: (result, variables) => {
         const { isEdit, spAccountId } = variables;
-        const redirectPath = isEdit
-          ? `../${routeConstants.VIEW_SPACCOUNT.replace(':spAccountId', spAccountId)}`
-          : '/orders/system-configuration/manage-spaccount';
-
-        navigate(redirectPath, { state: { isSuccess: true } });
+        const idToRedirect = isEdit ? spAccountId : result?.id;
+        const redirectPath = `../${routeConstants.VIEW_SPACCOUNT.replace(':spAccountId', idToRedirect)}`;
+        const state = isEdit ? { isUpdate: true } : { isCreate: true };
+        navigate(redirectPath, { state });
       },
       onError: handleError
     }
