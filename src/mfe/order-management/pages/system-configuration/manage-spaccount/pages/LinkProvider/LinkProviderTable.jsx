@@ -11,6 +11,7 @@ import TableHeading from '@src/components/tableHeading/TableHeading';
 import LinkProviderDetailsDrawer from './LinkProviderDetailsDrawer';
 import './LinkProvider.module.scss';
 import SelectedAccounts from '@src/components/Accounts/SelectedAccounts';
+import { getAddress } from '@src/mfe/order-management/pages/system-configuration/manage-spaccount/util.js';
 
 function LinkProviderTable({unLinkProvider, isAddLinkProvider}) {
   const { t } = useTranslate();
@@ -25,20 +26,13 @@ function LinkProviderTable({unLinkProvider, isAddLinkProvider}) {
       setTableHeight(eleHeight);
     }, 100);
   }, [data]);
-  const selectedRows = [];
-  const onRemoveSelectedAccount = () =>{};
+  const onRemoveSelectedAccount = (item) =>{
+    setSelectedLinkProvider(prev =>
+      prev.filter(provider => provider.id !== item.id)
+    );
+  };
   const formatProviderDetails = (data) => {
-    const {
-      id,
-      providerName,
-      deaNumber,
-      npiNumber,
-      contactNo,
-      address
-    } = data;
-  
-    const fullAddress = `${address.address1}${address.address2 ? ', ' + address.address2 : ''}, ${address.city}, ${address.state} ${address.zip}`;
-  
+    const { id, providerName, deaNumber, npiNumber, contactNo, address } = data;
     return [
       {
         sectionHeading: 'Details',
@@ -53,7 +47,7 @@ function LinkProviderTable({unLinkProvider, isAddLinkProvider}) {
         sectionHeading: 'Contact',
         sectionData: [
           { label: 'Contact No', value: contactNo },
-          { label: 'Address', value: fullAddress },
+          { label: 'Address', value: getAddress(address) },
         ]
       }
     ];
@@ -93,8 +87,8 @@ function LinkProviderTable({unLinkProvider, isAddLinkProvider}) {
           secondaryView={selectedLinkProvider?.length}
           secondaryViewHeading={`${selectedLinkProvider?.length} ${t('orgManagement.selected_items')}`}
           secondaryViewControls={
-            <Button variant="secondary" onClick={() => {}}>
-            {t('manageSPAccount.providers.column.unlink')}
+            <Button variant="secondary" onClick={()=>{unLinkProvider(selectedLinkProvider)}}>
+              {t('manageSPAccount.providers.column.unlink')}
             </Button>
           }
         />
@@ -125,7 +119,7 @@ function LinkProviderTable({unLinkProvider, isAddLinkProvider}) {
           </div>
           {isAddLinkProvider && (
             <div className="selected-account-box"  style={{ height: tableHeight }}>
-              <SelectedAccounts selectedAccounts={selectedRows} onRemoveAccount={onRemoveSelectedAccount} />
+              <SelectedAccounts selectedAccounts={selectedLinkProvider} onRemoveAccount={onRemoveSelectedAccount} />
             </div>
           )}
         </div>

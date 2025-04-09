@@ -108,10 +108,11 @@ const SPAccountDetail = () => {
         <ShippingLocationProvider>
           <ShippingLocationsDataTable />
         </ShippingLocationProvider>
+      </div>
+      <div className="MCP-module-body">
         <LinkProviderProvider>
           <LinkProviderListing/>
         </LinkProviderProvider>
-        <div className="MCP-CardContainer"></div>
       </div>
     </div>
   );

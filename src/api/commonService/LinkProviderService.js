@@ -1,4 +1,4 @@
-import HttpResourceService from '../HttpResourceService';
+import HttpResourceService, { httpVerb } from '../HttpResourceService';
 
 export const getLinkProviderList = async (requestParams) => {
   const result = await import('../../mfe/order-management/pages/system-configuration/manage-spaccount/mockData/LinkProviderData');
