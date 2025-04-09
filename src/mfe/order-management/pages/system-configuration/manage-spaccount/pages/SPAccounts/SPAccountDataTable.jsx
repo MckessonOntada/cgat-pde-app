@@ -1,6 +1,6 @@
 import { useTranslate } from '@src/translations/useTranslation';
-import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { CustomDataTable } from '@mckesson/mcp-component-library';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
@@ -8,16 +8,16 @@ import { useSPAccountContext } from '../../context/SPAccountContext';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
-import { ReactComponent as UploadSVG } from '@src/assets/image/upload_bottom.svg';
 import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
 import { routeConstants } from '../../routes/constants';
-import { getAddress } from '../../util';
+import { getAddress } from '@src/mfe/order-management/questionnaire/util';
+import AuthUtils from '@src/util/AuthUtils';
 
 function SPAccountDataTable() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { paginationConfig, SPAccountList, setPageNumber, isLoading } = useSPAccountContext();
-  console.log(' SPAccountList: data', SPAccountList);
+  const { paginationConfig, SPAccountList, setPageNumber, isLoading, applySort } = useSPAccountContext();
+  const isCustomerCenter = AuthUtils.isCustomerCenter();
   const columns = [
     {
       id: 'accountNumber',
@@ -30,7 +30,7 @@ function SPAccountDataTable() {
         </Link>
       ),
       sortable: true,
-      sortKey: 'accountNumber'
+      sortKey: 'sap_partner'
     },
     {
       id: 'accountName',
@@ -39,12 +39,12 @@ function SPAccountDataTable() {
       maxWidth: '350px',
       cell: (props) => props.accountName,
       sortable: true,
-      sortKey: 'accountName'
+      sortKey: 'name_1'
     },
     {
       id: 'address',
       name: t('table.columns.captions.address'),
-      selector: (row) => row.accountNumber || '',
+      selector: (row) => row.address || '',
       maxWidth: '450px',
       cell: (props) => <EclipsesTextcss str={getAddress(props.address)} maxWidth={450} />
     }
@@ -54,24 +54,30 @@ function SPAccountDataTable() {
     setPageNumber(newPage);
   };
 
+  const handleOnSortIconClick = (selectedColumn, sortDirection) => {
+    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+  };
+
   return (
     <div>
       <div style={{ marginBottom: '24px', marginTop: '16px' }}>
         <ModuleHeader
           heading={<Heading as="h2">{t('manageSPAccount.heading.AccountListing')}</Heading>}
           controls={
-            <div className="controls">
-              {
-                <Button
-                  Icon={add_circle_bold}
-                  className="button-icon"
-                  variant="primary"
-                  size="md"
-                  onClick={() => navigate(`${routeConstants.ADD_SPACCOUNT}`)}>
-                  {t('manageSPAccount.heading.addSPAccount')}
-                </Button>
-              }
-            </div>
+            !isCustomerCenter && (
+              <div className="controls">
+                {
+                  <Button
+                    Icon={add_circle_bold}
+                    className="button-icon"
+                    variant="primary"
+                    size="md"
+                    onClick={() => navigate(`${routeConstants.ADD_SPACCOUNT}`)}>
+                    {t('manageSPAccount.heading.addSPAccount')}
+                  </Button>
+                }
+              </div>
+            )
           }
         />
       </div>
@@ -83,6 +89,7 @@ function SPAccountDataTable() {
         currentPage={paginationConfig.pageNumber}
         totalPageCount={paginationConfig.totalPages}
         pagination={true}
+        onSortIconClick={handleOnSortIconClick}
         handleChangePage={handleChangePage}
         totalRocords={paginationConfig.totalElements}
         recordsPerPage={paginationConfig.pageSize}
@@ -90,6 +97,7 @@ function SPAccountDataTable() {
         paginationRecordsPerPageMessage={t('orgManagement.per_page')}
         noDataComponent={
           <EmptyDataTable
+            isLoading={isLoading}
             image={EmptyDataImage}
             heading={t('manageSPAccount.table.emptyData')}
             description={t('manageSPAccount.table.emptyDataDescription')}

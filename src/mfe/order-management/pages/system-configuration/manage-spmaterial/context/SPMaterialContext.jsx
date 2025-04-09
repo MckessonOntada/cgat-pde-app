@@ -1,10 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import ApiRoutes from '@src/api/ApiRoutes';
-import { serializeParams } from '@src/util/ApiUtils';
-import spMaterialData from '../mockData/SPMaterialData';
-import SPMaterialService from '@src/api/commonService/SPMaterialService';
+import MaterialService from '@src/api/commonService/MaterialService';
 
 const SPMaterialContext = createContext();
 
@@ -22,8 +18,8 @@ const INITIAL_FILTER_STATE = {
 };
 
 const INITIAL_SORT_STATE = {
-  sortBy: null,
-  sortOrder: null
+  sortBy: 'material_number',
+  sortOrder: 'desc'
 };
 
 const INITIAL_PAGINATION_CONFIG = {
@@ -49,8 +45,9 @@ export const SPMaterialProvider = ({ children }) => {
     () => ({
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
-      sortBy: sortConfig.sortBy,
-      sortOrder: sortConfig.sortOrder,
+      sortBy: sortConfig.sortBy || 'material_number',
+      sortOrder: sortConfig.sortOrder || 'desc',
+      channelTypes: 'SPECIALITY_PHARMA',
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       ...(filterConfig?.status?.length && { status: [filterConfig.status] })
     }),
@@ -60,17 +57,14 @@ export const SPMaterialProvider = ({ children }) => {
   const { isLoading, isError, error, data, refetch } = useQuery({
     queryKey: ['SPMaterials', requestParams],
     queryFn: async () => {
-      const result = await SPMaterialService.getSPMaterialList(requestParams);
-      const { totalElements, totalPages } = result;
+      const result = await MaterialService.getMaterialList(requestParams);
+      const { content: data, totalElements, totalPages } = result;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
         ...(totalElements && { totalElements }),
         ...(totalPages && { totalPages })
       }));
-      return result.data?.slice(
-        (paginationConfig.pageNumber - 1) * paginationConfig.pageSize,
-        paginationConfig.pageNumber * paginationConfig.pageSize
-      );
+      return data;
     },
 
     refetchOnWindowFocus: false
