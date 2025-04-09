@@ -404,6 +404,11 @@ export const UserManagementEN = {
   'userManagement.edit_sysadmin': 'Edit System Administrator',
   'userManagement.edit_organization_user': 'Edit Organization User',
 
+  'labels.caption.ALL': 'All',
+  'labels.caption.IN_DRAFT': 'In Draft',
+  'labels.caption.DELETED': 'Deleted',
+  'labels.caption.REJECTED': 'Rejected',
+
   'errors.messages.dateRange': "Either enter both dates or none for the filter as it's part of a date range.",
   'errors.messages.default': 'An unexpected error occurred. Please try again.',
   'label.comment': 'Comment',

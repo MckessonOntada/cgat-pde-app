@@ -117,6 +117,16 @@ export const MessageEn = {
   'labels.actions.view': 'View',
   'labels.actions.edit': 'Edit',
   'labels.tabs.pendingSubmission': 'PENDING SUBMISSION',
+
+  'labels.tabs.submittedBuyAndBill': 'Submitted (buy & bill)',
+  'labels.tabs.submittedSp': 'Submitted (sp)',
+  'labels.tabs.pendingSubmission': 'Pending Submission',
+  'labels.tabs.pendingApproval': 'Pending Approval',
+
+  'labels.tabs.switch.myOrders': 'My Orders',
+  'labels.tabs.switch.allOrders': 'All Orders',
+  'labels.tabs.switch.assignedToMe': 'Assigned To Me',
+
   'labels.tabs.submitted': 'SUBMITTED',
   'labels.therapyDescription': 'Therapy Description',
   'labels.accountDetails': 'Account Details',
@@ -155,6 +165,9 @@ export const MessageEn = {
   'labels.pdeId': 'PDE ID',
   'labels.sapId': 'SAP ID',
   'labels.therapy': 'Therapy',
+  'labels.orderView.MY_ORDERS': 'My Orders',
+  'labels.orderView.ALL_ORDERS': 'All Orders',
+  'labels.orderView.ASSIGNED_TO_ME': 'Assigned to Me',
   'table.columns.captions.author': 'Author',
   'table.columns.captions.assignee': 'Assignee',
   'table.columns.captions.createdOn': 'Created On',
@@ -186,7 +199,7 @@ export const MessageEn = {
   'labels.orderActions.unassignToMe': 'Unassign',
   'labels.orderActions.approve': 'Approve Order',
   'labels.orderActions.deletemessage':
-    'Are you sure you wish to Delete this Order ?',
+    'Are you sure you wish to Discard this Order ?',
   'labels.orderActions.cancelmessage':
     'Please reach out to customer support at 1800XXXXXXX for any updation or cancellation in the order.',
   'labels.orderActions.OK': 'OK',
@@ -318,6 +331,8 @@ export const MessageEn = {
   'orderManagement.patientDetails.inputLabel.city': 'City',
   'orderManagement.patientDetails.inputLabel.zip': 'Zip Code',
   'orderManagement.patientDetails.inputLabel.state': 'State',
+  'orderManagement.patientDetails.inputLabel.providerDetails':
+    'Provider Details',
   'orderManagement.patientDetails.inputLabel.first_name': 'First Name',
   'orderManagement.patientDetails.inputLabel.middle_name': 'Middle Name',
   'orderManagement.patientDetails.inputLabel.last_name': 'Last Name',
@@ -522,6 +537,14 @@ export const MessageEn = {
   'labels.OrderProcesing.SAPOrderStatus.Completed': 'COMPLETED',
   'errors.orders_index_additional_details.po_number_1_practice_id_1':
     'PO Number already exists.',
+
+  'labels.caption.ALL': 'All',
+  'labels.caption.IN_DRAFT': 'In Draft',
+  'labels.caption.DELETED': 'Deleted',
+  'labels.caption.REJECTED': 'Rejected',
+  'labels.caption.SUBMITTED': 'Submitted',
+  'labels.caption.APPROVAL_PENDING': 'Approval Pending',
+
   'labels.pap': 'PAP',
   'labels.pap.order': 'PAP ORDER',
 

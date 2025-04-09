@@ -30,7 +30,9 @@ const OrderStatus = () => {
     }`
   );
 
-  const { therapy = {}, orderCost, patient, status: orderStatus, backendOrderId, paporder } = orderDetails || {};
+  const { therapy = {}, orderCost, patient, status: orderStatus, backendOrderId, approver } = orderDetails || {};
+
+  const isApprover = approver && typeof approver === 'object' && approver.id != null;
 
   const backToOrders = () => navigate('/orders');
 
@@ -66,10 +68,8 @@ const OrderStatus = () => {
                   <p className={styles.orderSubmitDescription}>
                     {t(
                       orderStatus === 'SUBMITTED'
-                        ? 'messages.orderApprovalSuccess'
-                        : paporder
-                        ? 'messages.orderSuccessApprovalPending'
-                        : 'messages.orderSuccess'
+                        ? isApprover ? 'messages.orderApprovalSuccess' : 'messages.orderSuccess'
+                        : 'messages.orderSuccessApprovalPending'
                     )}
                   </p>
                 </>
