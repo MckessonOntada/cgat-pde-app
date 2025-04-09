@@ -94,7 +94,7 @@ export default function PendingPaymentTable() {
           return !min || date.isBefore(min) ? date : min;
         }, null);
         const dueDate = earliestDueDate?.valueOf();
-        const isValidDate = payOnDate >= today && payOnDate <= dueDate;
+        const isValidDate = payOnDate >= today && today <= dueDate;
         return (
           <Tooltip body={!isValidDate ? t('pendingPayments.cancel.tooltip') : ''}>
             <span>
