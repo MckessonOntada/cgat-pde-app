@@ -176,6 +176,7 @@ function ReviewPayments() {
       .filter((i) => i.paymentAmount)
       .reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue.paymentAmount), 0);
     setPaymentOption('');
+    setSpecificDateError('');
     return parseFloat(_sum).toFixed(2);
   }, [selectedInvoices]);
 
@@ -186,6 +187,7 @@ function ReviewPayments() {
         return parseFloat(currentValue.openAmount), accumulator + parseFloat(currentValue.openAmount);
       }, 0);
     setPaymentOption('');
+    setSpecificDateError('');
     return parseFloat(_sum).toFixed(2);
   }, [selectedCredits]);
 
@@ -382,6 +384,7 @@ function ReviewPayments() {
     let _data = mergedData.find((ele) => ele.value == value);
     setSelectedData(_data);
     setPaymentOption('');
+    setSpecificDateError('');
   };
   const getOptions = useMemo(() => {
     let _data = [];
@@ -522,6 +525,7 @@ function ReviewPayments() {
                   id="radio-button-order-therapy-props.id"
                   items={getRadioItems()}
                   onChangeValue={(e) => {
+                    setSpecificDateError('');
                     setSelectedSpecificDate('');
                     setPaymentOption(e);
                   }}
