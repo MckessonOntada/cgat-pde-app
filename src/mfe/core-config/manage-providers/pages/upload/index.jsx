@@ -88,7 +88,12 @@ const Upload = () => {
         add({ type: 'error', description: errorResponse.data.message });
       });
   };
-  const handleOnDownloadTemplate = () => {};
+  const handleOnDownloadTemplate = () => {
+    handleDownload(
+      '/templates/upload_providers_template.csv',
+      'upload_providers_template.csv'
+    );
+  };
 
   return (
     <div className="MCP-module-wrapper">

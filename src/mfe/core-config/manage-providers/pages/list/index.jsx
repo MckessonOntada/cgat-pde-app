@@ -26,6 +26,7 @@ import { getColumns } from './TableColumns';
 import { ReactComponent as EmptyProviderTable } from '@src/assets/svg/EmptyProviderTable.svg';
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
 import CommonUtils from '@src/util/CommonUtils';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 
 const List = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -33,7 +34,7 @@ const List = () => {
   const navigate = useNavigate();
   const { items, add, remove } = useTimedArray(10000);
   const { filters, applyFilters, clearFilters } = useFilters();
-  const { data = [], loading, error } = useTable();
+  const { data = [] } = useTable();
   const { pagination, changePage } = usePagination();
   const breadcrumbItems = React.useMemo(() => {
     return [
@@ -60,29 +61,32 @@ const List = () => {
     ];
   }, []);
   const handleOnClick = (url) => () => navigate(url);
-  console.log(pagination);
+  const { pageNo, totalElements, totalPages, pageSize } = pagination;
   return (
     <div className="MCP-module-wrapper">
       <Breadcrumbs items={breadcrumbItems} />
       <ModuleHeader
         heading={<Heading as="h1">{t('label.providers')}</Heading>}
         controls={
-          <div className="controls">
-            <Button
-              Icon={FileUploadIcon}
-              className="button-icon"
-              onClick={handleOnClick('upload-providers')}
-              size="md">
-              {t('controls.uploadProviders')}
-            </Button>
-            <Button
-              Icon={AddCircleFilled}
-              className="button-icon"
-              onClick={handleOnClick('create')}
-              size="md">
-              {t('controls.addProviders')}
-            </Button>
-          </div>
+          <PermittedComponent
+            permissions={PERMISSIONS_ENUM.MANAGE_PROVIDERS.ADD_PROVIDER}>
+            <div className="controls">
+              <Button
+                Icon={FileUploadIcon}
+                className="button-icon"
+                onClick={handleOnClick('upload-providers')}
+                size="md">
+                {t('controls.uploadProviders')}
+              </Button>
+              <Button
+                Icon={AddCircleFilled}
+                className="button-icon"
+                onClick={handleOnClick('create')}
+                size="md">
+                {t('controls.addProviders')}
+              </Button>
+            </div>
+          </PermittedComponent>
         }
       />
       {items && items.length > 0 && (
@@ -121,10 +125,10 @@ const List = () => {
           handleChangePage={(_event, pageIndex) => changePage(pageIndex)}
           onSortIconClick={() => {}}
           pagination={true}
-          currentPage={pagination.pageNumber}
-          totalPageCount={pagination.totalPages}
-          totalRocords={pagination.totalElements}
-          recordsPerPage={pagination.pageSize}
+          currentPage={pageNo}
+          totalPageCount={totalPages}
+          totalRocords={totalElements}
+          recordsPerPage={pageSize}
           paginationRecordsPerPageMessage={t('labels.perPage')}
           paginationTotalRecorsMessage={t('labels.results')}
           noDataComponent={

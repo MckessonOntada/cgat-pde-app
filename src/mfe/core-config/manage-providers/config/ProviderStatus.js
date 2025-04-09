@@ -1,4 +1,5 @@
 const PROVIDER_STATUS = {
+  ALL: '',
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE'
 };

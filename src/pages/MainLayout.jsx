@@ -25,6 +25,7 @@ import AccountSetting from '@src/components/AccountSetting';
 import ManageProviders from '@src/mfe/core-config/manage-providers';
 import ManageCrossWalk from '@src/mfe/core-config/manage-crosswalk';
 import ManageSPCatalog from '@src/mfe/core-config/manage-sp-catalog';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() =>
@@ -94,7 +95,17 @@ function MainLayout() {
                     }
                   />
                   <Route path="/admin/*">
-                    <Route path={'providers/*'} element={<ManageProviders />} />
+                    <Route
+                      path={'providers/*'}
+                      element={
+                        <ProtectedRoute
+                          permissions={Object.values(
+                            PERMISSIONS_ENUM.MANAGE_PROVIDERS
+                          )}>
+                          <ManageProviders />
+                        </ProtectedRoute>
+                      }
+                    />
                     <Route path={'crosswalk/*'} element={<ManageCrossWalk />} />
                     <Route
                       path={'sp-catalog/*'}

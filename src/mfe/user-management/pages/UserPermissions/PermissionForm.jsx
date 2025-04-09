@@ -180,7 +180,6 @@ const PermissionForm = ({
         }
       });
 
-      groupedPermissions.MANAGE_PROVIDERS = PERMISSIONS_ENUM.MANAGE_PROVIDERS;
       console.log('groupedPermissions', groupedPermissions);
       // remove empty data
       const filteredPermissions = Object.fromEntries(

@@ -9,7 +9,8 @@ import { ReactComponent as CatalogueIcon } from '../../assets/svg/catalogue-circ
 import { ReactComponent as LinkIcon } from '../../assets/svg/link-circle.svg';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 
-const { USER_MANAGEMENT, ORGANIZATION_MANAGEMENT, SYSTEM_CONFIGURATION } = PERMISSIONS_ENUM;
+const { USER_MANAGEMENT, ORGANIZATION_MANAGEMENT, SYSTEM_CONFIGURATION } =
+  PERMISSIONS_ENUM;
 
 const SYSTEM_ADMIN_CARDS_DATA = [
   {

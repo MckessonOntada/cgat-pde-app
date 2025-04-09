@@ -177,7 +177,7 @@ export const TableProvider = ({
 
   useEffect(() => {
     fetchData();
-  }, [filters, pagination.pageNo, pagination.pageSize]);
+  }, [filters, pagination.pageNo]);
 
   const toggleRowSelection = (id) => {
     setSelectedRows((prev) => {

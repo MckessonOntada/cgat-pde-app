@@ -14,5 +14,8 @@ export const ConfigurationMessagesEN = {
   'providers.columnCaption.deaNumber': 'DEA Number',
   'providers.columnCaption.npiNumber': 'NPI Number',
   'providers.columnCaption.status': 'Status',
-  'providers.columnCaption.action': 'action'
+  'providers.columnCaption.action': 'Action',
+  'providerStatus.ACTIVE': 'Active',
+  'providerStatus.INACTIVE': 'Inactive',
+  'providerStatus.ALL': 'All'
 };

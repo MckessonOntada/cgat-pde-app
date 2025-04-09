@@ -531,8 +531,7 @@ export const MessageEn = {
   'breadcrumb.admin': 'Admin',
   'breadcrumb.systemAdmin': 'System Admin',
   'breadcrumb.systemConfiguration': 'System Configuration',
-  'providerStatus.ACTIVE': 'Active',
-  'providerStatus.INACTIVE': 'Inactive',
+
   'controls.uploadProviders': 'Upload Providers',
   'label.providerListing': 'Provider Listing',
   'heading.uploadProviderListCSV': 'Upload Provider List CSV',
