@@ -54,7 +54,9 @@ function UploadFile({
           return (
             <Alert
               description={message.description}
-              onClose={onCloseAlert}
+              onClose={() => {
+                onCloseAlert && onCloseAlert(message.id);
+              }}
               type={message.type}
             />
           );

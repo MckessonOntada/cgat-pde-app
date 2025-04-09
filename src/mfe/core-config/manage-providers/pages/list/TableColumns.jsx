@@ -45,7 +45,7 @@ export const getColumns = (add) => {
     {
       onSuccess: () => {
         add({
-          description: 'Provider activated successfully',
+          description: t('provider.activationSuccess'),
           type: 'success'
         });
         const { pageNo, totalElements, totalPages, pageSize } = pagination;
@@ -60,7 +60,7 @@ export const getColumns = (add) => {
       },
       onError: () => {
         add({
-          description: 'Failed to activate provider. Please try again.',
+          description: t('provider.activationFailure'),
           type: 'error'
         });
       }
@@ -72,7 +72,7 @@ export const getColumns = (add) => {
     {
       onSuccess: () => {
         add({
-          description: 'Provider deactivated successfully',
+          description: t('provider.deactivationSuccess'),
           type: 'success'
         });
         const { pageNo, totalElements, totalPages, pageSize } = pagination;
@@ -87,7 +87,7 @@ export const getColumns = (add) => {
       },
       onError: () => {
         add({
-          description: 'Failed to deactivate provider. Please try again.',
+          description: t('provider.deactivationFailure'),
           type: 'error'
         });
       }
@@ -241,7 +241,7 @@ export const getColumns = (add) => {
       cell: (props) => (
         <Badge
           text={t(`label.status.${props.isActive ? 'active' : 'inactive'}`)}
-          type={'success'}
+          type={props.isActive ? 'success' : 'error'}
         />
       )
     },

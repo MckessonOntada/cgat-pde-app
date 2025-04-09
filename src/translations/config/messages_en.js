@@ -1,7 +1,10 @@
 export const ConfigurationMessagesEN = {
   'providers.errorMessage.fileUploadRequired': 'Please select file to upload.',
   'providers.message.fileUploadSuccess':
-    'File uploaded successfully, though few records could not be validate. Please download error log file below for more details.',
+    'An unexpected error occurred during the upload. Please try again later.',
+  'providers.message.fileUploadSuccess': 'File processing completed.',
+  'providers.message.fileUploadPartialSuccess':
+    'File processing completed, Some records were not processed successfully. Please review the downloaded error report',
   'providers.errorMessage.fileUploadFailed': 'Please select file to upload.',
   'providers.label.activateProvider': 'Activate Provider?',
   'providers.label.deactivateProvider': 'Deactivate Provider?',
@@ -17,5 +20,11 @@ export const ConfigurationMessagesEN = {
   'providers.columnCaption.action': 'Action',
   'providerStatus.ACTIVE': 'Active',
   'providerStatus.INACTIVE': 'Inactive',
-  'providerStatus.ALL': 'All'
+  'providerStatus.ALL': 'All',
+  'provider.activationSuccess': 'Provider has been activated successfully.',
+  'provider.activationFailure':
+    'Failed to activate provider. Please try again.',
+  'provider.deactivationSuccess': 'Provider has been deactivated successfully.',
+  'provider.deactivationFailure':
+    'Failed to deactivate provider. Please try again.'
 };

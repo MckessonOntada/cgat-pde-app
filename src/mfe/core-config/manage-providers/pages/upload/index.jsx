@@ -65,10 +65,10 @@ const Upload = () => {
         } else if (response.status === 206) {
           const downloadErrorFile = () => downloadCSV(response.data);
           add({
-            type: 'success',
+            type: 'info',
             description: (
               <div className="alert-controls">
-                <p>{t('providers.message.fileUploadSuccess')}</p>
+                <p>{t('providers.message.fileUploadPartialSuccess')}</p>
                 <div>
                   <Button
                     variant="secondary"
@@ -85,7 +85,10 @@ const Upload = () => {
       })
       .catch((error) => {
         const { response: errorResponse } = error;
-        add({ type: 'error', description: errorResponse.data.message });
+        add({
+          type: 'error',
+          description: 'providers.message.fileUploadFailure'
+        });
       });
   };
   const handleOnDownloadTemplate = () => {
@@ -103,7 +106,7 @@ const Upload = () => {
         controlHeading={t('heading.uploadProviderListCSV')}
         isLoading={false}
         messages={items}
-        onAlertClose={() => {}}
+        onCloseAlert={remove}
         downloadTemplate={{
           caption: t('controls.downloadCSVTemplate'),
           fn: handleOnDownloadTemplate
