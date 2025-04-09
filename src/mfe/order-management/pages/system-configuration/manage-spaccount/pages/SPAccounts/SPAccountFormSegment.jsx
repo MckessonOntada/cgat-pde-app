@@ -6,7 +6,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { US_STATES } from '@src/components/form/util';
 import { stateOptions } from '../../util';
 
-const SPAccountFormSegment = ({ comment }) => {
+const SPAccountFormSegment = ({ spAccountId }) => {
   const { t } = useTranslate();
 
   return (
@@ -34,8 +34,8 @@ const SPAccountFormSegment = ({ comment }) => {
         </div>
         <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline">
           <Field
-            id="name.firstName"
-            name="name.firstName"
+            id="firstName"
+            name="firstName"
             label={t('userManagement.create_user.inputLabel.first_name')}
             placeholder=" "
             isRequired
@@ -43,15 +43,15 @@ const SPAccountFormSegment = ({ comment }) => {
             maxLength={50}
           />
           <Field
-            id="name.middleName"
-            name="name.middleName"
+            id="middleName"
+            name="middleName"
             label={t('userManagement.create_user.inputLabel.middle_name')}
             placeholder=" "
             component={Components['input']}
             maxLength={50}
           />
           <Field
-            name="name.lastName"
+            name="lastName"
             label={t('userManagement.create_user.inputLabel.last_name')}
             placeholder=" "
             isRequired
@@ -130,12 +130,6 @@ const SPAccountFormSegment = ({ comment }) => {
             />
           </div>
         </div>
-        {comment && (
-          <div className="commentWrap">
-            <span>{t('label.comment')}</span>
-            <p>{comment}</p>
-          </div>
-        )}
       </div>
     </div>
   );

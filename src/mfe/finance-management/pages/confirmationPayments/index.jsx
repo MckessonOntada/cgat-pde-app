@@ -131,7 +131,7 @@ function ConfirmationPayments() {
             {t('paymentInvoices.Details.backToManageInvoices')}
           </Button>
         </div>
-        <div className="header">
+        <div className="headerWrapper">
           <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M51.1959 8.78584C45.54 3.11165 37.9988 0 30 0C21.9829 0 14.4417 3.11165 8.78584 8.78584C3.11165 14.4417 0 21.9829 0 30C0 38.0171 3.11165 45.54 8.78584 51.2142C14.4417 56.87 21.9829 60 30 60C38.0171 60 45.54 56.8883 51.2142 51.2142C56.87 45.5583 60 38.0171 60 30C59.9817 21.9829 56.87 14.4417 51.1959 8.78584Z"

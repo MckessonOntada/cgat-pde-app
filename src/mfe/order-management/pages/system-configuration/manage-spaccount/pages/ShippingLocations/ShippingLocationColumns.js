@@ -39,22 +39,22 @@ export const getShippingLocationColumns = (
     sortKey: 'shippingAddress'
   },
   {
-    id: 'shippingAccountNumber',
+    id: 'id',
     name: t('manageSPAccount.table.shippingAccountNumber'),
-    selector: (row) => row.shippingAccountNumber || '',
+    selector: (row) => row.id || '',
     minWidth: '410px',
-    cell: (props) => props.shippingAccountNumber,
+    cell: (props) => props.id,
     sortable: true,
-    sortKey: 'shippingAccountNumber'
+    sortKey: 'id'
   },
   {
-    id: 'shippingaccountName',
+    id: 'name',
     name: t('manageSPAccount.table.shippingaccountName'),
-    selector: (row) => row.shippingAccountName || '',
+    selector: (row) => row.name || '',
     minWidth: '410px',
-    cell: (props) => <EclipsesTextcss str={props.shippingAccountName} maxWidth={300} />,
+    cell: (props) => <EclipsesTextcss str={props.name} maxWidth={300} />,
     sortable: true,
-    sortKey: 'shippingaccountName'
+    sortKey: 'name'
   },
   {
     id: 'action',

@@ -107,13 +107,16 @@ const Summary = () => {
         handleInventoryDetailsResponse(response.data);
       }
     } catch (error) {
-      addNotification({ description: 'Something went wrong while checking inventory. Please try again later.', type: 'error' });
+      addNotification({
+        description: 'Something went wrong while checking inventory. Please try again later.',
+        type: 'error'
+      });
       setInventoryStatus('PENDING');
     }
   };
 
   React.useEffect(() => {
-    if (!orderDetails.id || status === StatusEnum.SUBMITTED || status === StatusEnum.REJECTED) {
+    if (!orderDetails.id || status === StatusEnum.SUBMITTED || status === StatusEnum.REJECTED || status === 'DELETED') {
       return;
     }
     if (catalog.inventoryType === 'T') {
@@ -130,20 +133,20 @@ const Summary = () => {
     const { erroredItems, warningMessages } = data.inventoryCheckResponse || {};
     if (erroredItems?.length > 0 || warningMessages?.length > 0) {
       if (erroredItems && erroredItems.length > 0) {
-        addNotification(
-          ...erroredItems.map((err) => ({
+        erroredItems.forEach((err) => {
+          addNotification({
             description: err.errorMessage,
             type: 'error'
-          }))
-        );
+          });
+        });
       }
       if (warningMessages && warningMessages.length > 0) {
-        addNotification(
-          ...warningMessages.map((warn) => ({
+        warningMessages.forEach((warn) => {
+          addNotification({
             description: warn.value,
             type: 'warning'
-          }))
-        );
+          });
+        });
       }
       setInventoryStatus('OUT_OF_STOCK');
     } else {
@@ -161,6 +164,7 @@ const Summary = () => {
 
   const variantDetails = additionalDetails?.variantDetails || {};
   const isRejected = status === 'REJECTED';
+  const isDeleted = status === 'DELETED';
   const isSubmitted = status === StatusEnum.SUBMITTED;
   const contentRef = useRef(null);
   const printPage = useCustomPrint(
@@ -195,22 +199,36 @@ const Summary = () => {
     queryFn: async () => {
       return await OrderService.simulateOrder(orderId);
     },
-    enabled: !status ? false : !(status === StatusEnum.REJECTED || status === StatusEnum.SUBMITTED),
+    enabled: !status ? false : !(status === StatusEnum.REJECTED || status === StatusEnum.SUBMITTED || status === 'DELETED'),
     refetchOnWindowFocus: false,
     onSuccess: (result) => {
       const warningMessages = result.warningMessages?.map((msg) => msg.value) || [];
       const infoMessages = result.infoMessages?.map((msg) => msg.value) || [];
 
       if (warningMessages.length > 0) {
-        addNotification(...warningMessages.map((msg) => ({ description: msg, type: 'warning' })));
+        warningMessages.forEach((msg) => {
+          addNotification({
+            description: msg,
+            type: 'warning'
+          });
+        });
       }
 
       if (infoMessages.length > 0) {
-        addNotification(...warningMessages.map((msg) => ({ description: msg, type: 'info' })));
+        infoMessages.forEach((msg) => {
+          addNotification({
+            description: msg,
+            type: 'info'
+          });
+        });
       }
     },
     onError: (error) => {
-      showAlert({ description: error?.response?.data?.message, type: 'error', anchorEl: ALERT_CONTAINER_ID });
+      showAlert({
+        description: error?.response?.data?.message,
+        type: 'error',
+        anchorEl: ALERT_CONTAINER_ID
+      });
     }
   });
 
@@ -221,12 +239,19 @@ const Summary = () => {
         if (action === BUTTON_ACTIONS.SUBMIT) {
           navigate(`../${orderId}/order-confirmed`);
         } else {
-          navigate(`../${orderId}/order-confirmed`, { state: { isApproved: true } });
+          navigate(`../${orderId}/order-confirmed`, {
+            state: { isApproved: true }
+          });
         }
       },
       onError: (err) => {
-        showAlert({ description: err.message, type: 'error', anchorEl: ALERT_CONTAINER_ID });
-      }
+        showAlert({
+          description: err.message,
+          type: 'error',
+          anchorEl: ALERT_CONTAINER_ID
+        });
+      },
+      retry: false
     }
   );
 
@@ -239,7 +264,10 @@ const Summary = () => {
 
   const handleChange = () => {
     setOrderAgreementCheckboxError(null);
-    setAgreeCheckboxOptions({ ...agreeCheckboxOptions, isChecked: !agreeCheckboxOptions.isChecked });
+    setAgreeCheckboxOptions({
+      ...agreeCheckboxOptions,
+      isChecked: !agreeCheckboxOptions.isChecked
+    });
   };
 
   const handleOnBackButtonClick = () => {
@@ -426,7 +454,7 @@ const Summary = () => {
   if (patient.patientInfo) patient.fullName = CommonUtils.getFullName(patient.patientInfo);
 
   const isAgreed = agreeCheckboxOptions.isChecked,
-    hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected;
+    hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected || isDeleted;
 
   if (isSaving) {
     return <Loader type={'screen'} />;
@@ -483,7 +511,7 @@ const Summary = () => {
       )}
 
       <div className="MCP-module-body" ref={contentRef}>
-        {!hideControls && !isRejected && (
+        {!hideControls && !isRejected && !isDeleted && (
           <div className="order-stepper-wrapper">
             <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} />
           </div>
@@ -507,7 +535,13 @@ const Summary = () => {
                   <span>{t('labels.summary')}</span>
                   {paporder && (
                     <span className={styles.pap}>
-                      <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('labels.pap.order')} />
+                      <Badge
+                        customStyle={{
+                          color: '#005483',
+                          backgroundColor: '#F2F6FA'
+                        }}
+                        text={t('labels.pap.order')}
+                      />
                     </span>
                   )}
                 </Heading>
@@ -525,7 +559,7 @@ const Summary = () => {
               ) : isSubmitted ? (
                 <div className="row-space-between-center">
                   <Label className={styles.lblProcessing}>{t('labels.OrderProcesing')}</Label>
-                  {isLoadingSapOrderStatus && <div className="dot-loader"></div>}
+                  {isLoadingSapOrderStatus && <InventoryIndicator status={'CHECKING'} />}
 
                   {!isLoadingSapOrderStatus &&
                     (sapOrderDetails?.finalStatus ? (

@@ -61,10 +61,10 @@ const PrimaryHeader = () => {
   const { isLoading, data, isError, refetch } = useQuery({
     queryKey: ['organizationListOptions'],
     queryFn: async () => {
-      if (!isSystemAdminView) return {};
       const res = await CommonDataService.getOrganizationListAsPublic(requestParams);
       return res.content;
     },
+    enabled: !isSystemAdminView,
     refetchOnWindowFocus: false
   });
 
@@ -125,16 +125,16 @@ const PrimaryHeader = () => {
 
   const RightSideView = () => {
     const currentLanguage = HeaderConfig.languages.find((lang) => lang.value == currentLocale);
-    const handleSelectOption = (option)=>{
-      navigate(option)
-    }
+    const handleSelectOption = (option) => {
+      navigate(option);
+    };
     const quickLinks = [
       <Link className={styles.actionLink} to={'notifications'} aria-label="View notifications">
         <span>{t('header.label.notifications')}</span>
         <IconNotification />
       </Link>,
 
-      <MenuList handleSelect={(e)=>handleSelectOption(e)} options={HeaderConfig.profileOptions} aria-label="Profile options">
+      <MenuList handleSelect={(e) => handleSelectOption(e)} options={HeaderConfig.profileOptions} aria-label="Profile options">
         <div className={styles.actionLink} aria-label="Account options">
           <span>
             <EclipsesTextcss str={userName || 'Anonymous'} maxWidth={textMaxWidth} />
@@ -199,12 +199,7 @@ const PrimaryHeader = () => {
             <ul className={styles.quickLinksInner} role="navigation" aria-label="Quick access links">
               {HeaderConfig.profileOptions.map((item, index) => (
                 <li key={`quick-links-item-${index}`}>
-                  <Link
-                    onClick={() => onClose()}
-                    className={styles.actionLink}
-                    to={item.value}
-                    aria-label={item.label}
-                  >
+                  <Link onClick={() => onClose()} className={styles.actionLink} to={item.value} aria-label={item.label}>
                     {item.label}
                   </Link>
                 </li>
@@ -213,12 +208,7 @@ const PrimaryHeader = () => {
           </div>
         </li>
         <li>
-          <Link
-            onClick={() => onClose()}
-            className={styles.actionLink}
-            to={'notifications'}
-            aria-label="View notifications"
-          >
+          <Link onClick={() => onClose()} className={styles.actionLink} to={'notifications'} aria-label="View notifications">
             <span>{t('header.label.notifications')}</span>
             <IconNotification />
           </Link>
@@ -252,9 +242,9 @@ const PrimaryHeader = () => {
             <Button variant="tertiary" className={styles.hamburger} onClick={toggleDrawer} aria-label="Open drawer menu">
               <IconMenu />
             </Button>
-            <FloatingDrawer 
-              anchor="right" 
-              open={drawerOpen} 
+            <FloatingDrawer
+              anchor="right"
+              open={drawerOpen}
               onClose={toggleDrawer}
               heading={
                 <Link className={`${styles.appLogo} ${styles.actionLink}`} to={''} id={''} aria-label="dashboard">
@@ -274,12 +264,10 @@ const PrimaryHeader = () => {
                   variant="primary"
                   onClick={() => {
                     logout();
-                  }}
-                >
+                  }}>
                   {t('header.label.logout')}
                 </Button>
-              }
-            >
+              }>
               <RightSideMobile onClose={() => setDrawerOpen(false)} />
             </FloatingDrawer>
           </div>

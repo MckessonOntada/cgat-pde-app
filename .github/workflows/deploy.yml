@@ -10,6 +10,7 @@ on:
         - uat
         - dev
         - qa
+        - stage
         - qa2
         - prod
         required: true

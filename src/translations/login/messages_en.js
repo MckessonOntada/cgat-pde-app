@@ -6,14 +6,16 @@ export const LoginMessagesEN = {
   'header.label.systemAdminView': 'System Admin View',
   'header.label.loggedInAs': 'Logged in as {impersonatedUsername}',
   'button.captions.exitUserView': 'Exit User View',
-  'widget.footer.contextmessage': 'If you need further assistance, please contact support at help@mckesson.com',
+  'widget.footer.contextmessage':
+    'If you need further assistance, please contact support at help@mckesson.com',
   'login.header.1': 'Advancing',
   'login.header.2': 'Health Outcomes for All',
   'login.page.desc.1': 'Solutions for your pharmacy, hospital,',
   'login.page.desc.2': 'Organization or biopharma company',
   'login.welcome': 'Welcome !',
   'login.ordringPortal': 'Ordering Portal',
-  'login.details': 'Welcome to our Cell & Gene Therapy platform, where excellence in patient care meets cutting-edge innovation.',
+  'login.details':
+    'Welcome to our Cell & Gene Therapy platform, where excellence in patient care meets cutting-edge innovation.',
   'login.note': 'Note',
   'footer.terms': 'Terms',
   'footer.privacy': 'Privacy Notice',
@@ -22,13 +24,16 @@ export const LoginMessagesEN = {
   'footer.help.content': 'User Help Content',
   'footer.contant': 'Contact',
   'footer.contant.no': 'Contact us at: 1-855-887-6788',
-  'footer.copyright': '© {year} McKesson Corporation Health Technology Products LLC.',
-  'message.exitUserViewConfirmation': 'Do you wish to exit working as {{username}}?',
+  'footer.copyright':
+    '© {year} McKesson Corporation Health Technology Products LLC.',
+  'message.exitUserViewConfirmation':
+    'Do you wish to exit working as {{username}}?',
   'button.caption.no': 'No',
   'button.caption.yes': 'Yes',
   'forgot.password': 'Forgot Password?',
   'forgot.password.submit': 'Forgot Password',
-  'forgot.password.success': 'Your request to reset your password has been successfully submitted, Please check your email.',
+  'forgot.password.success':
+    'Your request to reset your password has been successfully submitted, Please check your email.',
   'forgot.password.error': 'Error sending password reset email.',
   'forgot.terms.agreement': 'Terms of use and Patient Agreement',
   'reset.password.user.email': 'User Name / Email Address',
@@ -39,5 +44,5 @@ export const LoginMessagesEN = {
   'reset.password.ok': 'OK',
   'reset.password.account.settings': 'Account Settings',
   'reset.password.login.userInformation': 'User Information',
-  'reset.password.error': 'Failed to sent reset passwrd email'
+  'reset.password.error': 'Failed to sent reset password email'
 };

@@ -1,10 +1,8 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
-import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import ApiRoutes from '@src/api/ApiRoutes';
-import { serializeParams } from '@src/util/ApiUtils';
 import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
-import SPAccountService from '@src/api/commonService/SPAccountService';
+import AccountService from '@src/api/commonService/AccountService';
+import { ChannelType } from '../util';
 
 const RECORDS_PER_PAGE = 8;
 
@@ -29,13 +27,20 @@ const INITIAL_FILTER_STATE = {
   searchQuery: ''
 };
 
+const INITIAL_SORT_STATE = {
+  sortBy: 'sap_partner',
+  sortOrder: 'desc'
+};
+
 export const SPAccountProvider = ({ children }) => {
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const { selectedOrganization } = useOrgAccountSelectionContext();
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
+  const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
 
   useEffect(() => {
     clearFilters();
+    setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
   }, [selectedOrganization]);
 
   const setPageNumber = (pageNumber) => {
@@ -59,13 +64,16 @@ export const SPAccountProvider = ({ children }) => {
     const baseParams = {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
+      sortBy: sortConfig.sortBy,
+      sortOrder: sortConfig.sortOrder,
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       practiceId: selectedOrganization?.id,
-      partnerFunction: 'SOLD_TO'
+      partnerFunction: 'SOLD_TO',
+      channelType: ChannelType.SPECIALITY_PHARMA
     };
 
     return baseParams;
-  }, [filterConfig, paginationConfig.pageNumber, selectedOrganization?.id]);
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig, selectedOrganization?.id]);
 
   const {
     isLoading: isLoading,
@@ -75,23 +83,25 @@ export const SPAccountProvider = ({ children }) => {
   } = useQuery({
     queryKey: ['SPAccounts', selectedOrganization?.id, requestParams],
     queryFn: async () => {
-      const result = await SPAccountService.getSPAccountList(requestParams);
-      const { totalElements, totalPages } = result;
+      if (!selectedOrganization?.id) return [];
+      const result = await AccountService.getAccountList(requestParams, selectedOrganization?.id);
+      const { content: data, totalElements, totalPages } = result;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
         ...(totalElements && { totalElements }),
         ...(totalPages && { totalPages })
       }));
-      return result.data?.slice(
-        (paginationConfig.pageNumber - 1) * paginationConfig.pageSize,
-        paginationConfig.pageNumber * paginationConfig.pageSize
-      );
-    }
+      return data;
+    },
+    refetchOnWindowFocus: false,
+    enabled: Boolean(selectedOrganization?.id)
   });
-  console.log('SPACcountList', SPAccountList);
+
   useEffect(() => {
     refetchSPAccountList();
-  }, [paginationConfig.pageNumber, filterConfig]);
+  }, [paginationConfig.pageNumber, sortConfig, filterConfig]);
+
+  const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
 
   const contextValue = {
     paginationConfig,
@@ -101,7 +111,9 @@ export const SPAccountProvider = ({ children }) => {
     applyFilters,
     isLoading,
     isError,
-    filterConfig
+    filterConfig,
+    refetchSPAccountList,
+    applySort
   };
   return <SPAccountContext.Provider value={contextValue}>{children}</SPAccountContext.Provider>;
 };

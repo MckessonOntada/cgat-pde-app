@@ -181,9 +181,9 @@ function ReviewPayments() {
 
   const creditsSum = useMemo(() => {
     let _sum = selectedCredits
-      .filter((i) => i.billAmount)
+      .filter((i) => i.openAmount)
       .reduce((accumulator, currentValue) => {
-        return parseFloat(currentValue.billAmount), accumulator + parseFloat(currentValue.billAmount);
+        return parseFloat(currentValue.openAmount), accumulator + parseFloat(currentValue.openAmount);
       }, 0);
     setPaymentOption('');
     return parseFloat(_sum).toFixed(2);
@@ -296,12 +296,11 @@ function ReviewPayments() {
               invoices: selectedInvoices,
               creditsSelected: selectedCredits,
               selectedPayment: selectedData,
-              paymentOption: paymentOption,
               amount: FinanceUtils.formatCurrency(paymentAmountSum),
               creditAmount: FinanceUtils.formatCurrency(creditsSum),
               amountPaid: FinanceUtils.formatCurrency(totalAmount),
               reviewMode: true,
-              totalCreditAmount: FinanceUtils.formatCurrency(selectedCredits.reduce((sum, bill) => sum + bill.billAmount, 0))
+              totalCreditAmount: FinanceUtils.formatCurrency(selectedCredits.reduce((sum, bill) => sum + bill.openAmount, 0))
             },
             replace: true
           });
@@ -312,7 +311,8 @@ function ReviewPayments() {
       onError: (error) => {
         dispatch(closeModal());
         showAlert('error', 'review-pay: Error while communicating backend service');
-      }
+      },
+      retry: false
     }
   );
 
@@ -416,7 +416,7 @@ function ReviewPayments() {
           </Button>
         </div>
         {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
-        <div className="header">
+        <div>
           <Heading as="h1" className="heading">
             {t('paymentInvoices.heading.ReviewAndPay')}
           </Heading>

@@ -85,26 +85,22 @@ function UploadUsers() {
         </Button>
       </div>
       <UploadFile
-        primaryHeading={t('lebal.users')}
-        controlHeading={'Upload Users List CSV'}
+        primaryHeading={t('userManagement.uploadUsers')}
+        controlHeading={t('userManagement.uploadUsersListCSV')}
         isLoading={isLoading}
         messages={[alert]}
         showAlert={showAlert}
         onAlertClose={handleAlertClose}
         downloadTemplate={{
-          caption: t('label.download_template'),
+          caption: t('file.download.csv'),
           fn: downloadTemplate
         }}
         upload={{
-          caption: t('label.upload_file'),
+          caption: t('userManagement.button.addUsers'),
           fn: handleUpload
         }}
         onFileSelection={(file) => validateFile(file, ['text/csv'])}
-        prefixChildren={true}>
-        <div>
-          <input type="text" name="file key" />
-        </div>
-      </UploadFile>
+      />
     </div>
   );
 }

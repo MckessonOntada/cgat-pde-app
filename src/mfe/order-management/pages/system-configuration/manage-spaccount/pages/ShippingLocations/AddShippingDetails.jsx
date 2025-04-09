@@ -5,33 +5,51 @@ import { Heading, Button } from '@mckesson/mcp-component-library';
 import Components from '@src/components/form/Components';
 import { useTranslate } from '@src/translations/useTranslation';
 import { initialValuesforShippingAddress, stateOptions, validationSchemaforShippingAddress } from '../../util';
+import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import { useShippingLocation } from '../../context/ShippingLocationContext';
+import ShippingLocationService from '@src/api/commonService/ShippingLocationService';
+import { useMutation } from 'react-query';
 
 function AddShippingDetails({ open, onClose, row, onFormSubmit }) {
   const { t } = useTranslate();
-  console.log('row', row);
+  const { selectedOrganization } = useOrgAccountSelectionContext();
+  const { accountId } = useShippingLocation();
+
   const onSubmitHandler = (values) => {
-    try {
-      console.log('Shipping Location Submitted:', values);
+    const payload = {
+      ...values,
+      practiceId: selectedOrganization?.id,
+      accountId: accountId
+    };
+    const isUpdate = row && Object.keys(row).length > 0;
+    const shippingLocationId = row?.id;
 
-      //  API call
+    const successMessageKey = isUpdate
+      ? 'manageSPAccount.message.updateshippinglocation.success'
+      : 'manageSPAccount.message.addshippinglocation.success';
 
-      if (onFormSubmit) {
-        onFormSubmit(
-          'success',
-          t(
-            !!row && Object.keys(row).length > 0
-              ? 'manageSPAccount.message.updateshippinglocation.success'
-              : 'manageSPAccount.message.addshippinglocation.success'
-          )
-        );
+    addShippingLocation(
+      { payload, isUpdate, shippingLocationId },
+      {
+        onSuccess: () => {
+          onFormSubmit?.('success', t(successMessageKey));
+          onClose?.();
+        },
+        onError: () => {
+          onFormSubmit?.('error', t('manageSPAccount.message.addshippinglocation.error'));
+        }
       }
-    } catch (error) {
-      if (onFormSubmit) {
-        onFormSubmit('error', t('manageSPAccount.message.addshippinglocation.error'));
-      }
-    }
-    onClose();
+    );
   };
+
+  const { isLoading: isSaving, mutate: addShippingLocation } = useMutation(async (data) => {
+    const { payload, isUpdate, shippingLocationId } = data;
+    if (isUpdate && shippingLocationId) {
+      return await ShippingLocationService.updateShippingLocation(shippingLocationId, payload);
+    } else {
+      return await ShippingLocationService.saveShippingLocation(payload);
+    }
+  });
 
   return (
     <Formik
@@ -67,10 +85,12 @@ function AddShippingDetails({ open, onClose, row, onFormSubmit }) {
                 </p>
               </div>
               <Field
-                name="locationName"
+                name="name"
                 label={t('manageSPAccount.shippingLocation.inputLabel.locationName')}
+                placeholder=" "
                 isRequired
                 component={Components['input']}
+                maxLength={100}
               />
               <Field
                 name="address.address1"
