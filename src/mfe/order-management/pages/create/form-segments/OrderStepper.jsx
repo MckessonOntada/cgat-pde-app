@@ -32,12 +32,14 @@ function OrderStepper({ status, patientDetailsRequired = false }) {
   const activeIndex = currentStage[status] || 1;
 
   return (
-    <Stepper
-      activeIndex={activeIndex}
-      dividerText="of"
-      mobileLabel={t('labels.steps')}
-      stepHeaders={filteredStepperItems.map((f) => ({ label: f.label }))}
-    />
+    <div onClick={handleOnStepClick}>
+      <Stepper
+        activeIndex={activeIndex}
+        dividerText="of"
+        mobileLabel={t('labels.steps')}
+        stepHeaders={filteredStepperItems.map((f) => ({ label: f.label }))}
+      />
+    </div>
   );
 }
 
