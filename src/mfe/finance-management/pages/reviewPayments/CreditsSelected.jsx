@@ -38,8 +38,7 @@ function CreditsSelected(props) {
         <div className="cellEllipse">
           <Link
             style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
-            // to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
-          >
+            to={`/record/${PATHS.credits}/${props?.billNumber}/details`}>
             {`${props?.billNumber}`}
           </Link>
         </div>
