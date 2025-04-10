@@ -19,18 +19,26 @@ export function SystemConfiguration(props) {
         <Heading as="h1">{t('dashboard.card.system_configuration')}</Heading>
         {uniqueHeadings.map((heading, idx) => (
           <>
-            <Heading as="h2">{t(heading)}</Heading>
+            {/* <Heading as="h2">{t(heading)}</Heading> */}
             <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 dashboard-card-wrapper">
-              {CARDS.filter((card) => card.heading === heading).map((card, index) => {
-                const Icon = card.icon;
-                return (
-                  <Link id={`${card.label}-${card.index}`} className={'dashboard-card'} to={card.path} key={index}>
-                    <Icon />
-                    <p className="card-heading">{t(`dashboard.card.${card.label}`)}</p>
-                    <p>{t(`dashboard.card.${card.details}`)}</p>
-                  </Link>
-                );
-              })}
+              {CARDS.filter((card) => card.heading === heading).map(
+                (card, index) => {
+                  const Icon = card.icon;
+                  return (
+                    <Link
+                      id={`${card.label}-${card.index}`}
+                      className={'dashboard-card'}
+                      to={card.path}
+                      key={index}>
+                      <Icon />
+                      <p className="card-heading">
+                        {t(`dashboard.card.${card.label}`)}
+                      </p>
+                      <p>{t(`dashboard.card.${card.details}`)}</p>
+                    </Link>
+                  );
+                }
+              )}
             </div>
           </>
         ))}

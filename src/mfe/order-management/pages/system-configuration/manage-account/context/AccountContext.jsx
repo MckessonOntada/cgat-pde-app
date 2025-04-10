@@ -1,4 +1,11 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
@@ -32,7 +39,9 @@ const INITIAL_FILTER_STATE = {
 };
 
 export const AccountProvider = ({ children }) => {
-  const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
+  const [paginationConfig, setPaginationConfig] = useState(
+    INITIAL_PAGINATION_STATE
+  );
   const { selectedOrganization } = useOrgAccountSelectionContext();
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
 
@@ -63,8 +72,7 @@ export const AccountProvider = ({ children }) => {
       pageSize: paginationConfig.pageSize,
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       practiceId: selectedOrganization?.id,
-      partnerFunction: 'SOLD_TO',
-      channelType: ChannelType.BUY_AND_BILL
+      partnerFunction: 'SOLD_TO'
     };
 
     return baseParams;
@@ -78,7 +86,9 @@ export const AccountProvider = ({ children }) => {
   } = useQuery({
     queryKey: ['Accounts', selectedOrganization?.id, requestParams],
     queryFn: async () => {
-      const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrganization.id}/accounts?${serializeParams(requestParams)}`;
+      const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${
+        selectedOrganization.id
+      }/accounts?${serializeParams(requestParams)}`;
 
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       if (!res.data) {
@@ -110,5 +120,9 @@ export const AccountProvider = ({ children }) => {
     isError,
     filterConfig
   };
-  return <AccountContext.Provider value={contextValue}>{children}</AccountContext.Provider>;
+  return (
+    <AccountContext.Provider value={contextValue}>
+      {children}
+    </AccountContext.Provider>
+  );
 };

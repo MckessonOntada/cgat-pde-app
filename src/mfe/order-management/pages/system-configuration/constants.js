@@ -59,39 +59,40 @@ const CARDS = [
     icon: SystemConfigurationManageAccount,
     details: 'system_config_description_manage_account',
     path: CONFIG_MODULE_ROUTES.MANAGE_ACCOUNT
-  },
-  {
-    heading: 'dashboard.card.system_config_sp_settings',
-    name: 'SystemConfig_ManageSPMaterial',
-    label: 'system_config_manage_spmaterial',
-    icon: SystemConfigurationSPMaterial,
-    details: 'system_config_description_manage_spmaterial',
-    path: CONFIG_MODULE_ROUTES.MANAGE_SPMATERIAL
-  },
-  {
-    heading: 'dashboard.card.system_config_sp_settings',
-    name: 'SystemConfig_MaterialCrossWalk',
-    label: 'system_config_manage_materialcrosswalk',
-    icon: SystemConfigurationMaterialCrosswalk,
-    details: 'system_config_description_material_crosswalk',
-    path: CONFIG_MODULE_ROUTES.MATERIAL_CROSSWALK
-  },
-  {
-    heading: 'dashboard.card.system_config_sp_settings',
-    name: 'SystemConfig_ManageSPCatalog',
-    label: 'system_config_manage_spcatalog',
-    icon: SystemConfigurationSPCatalog,
-    details: 'system_config_description_manage_spcatalog',
-    path: CONFIG_MODULE_ROUTES.MANAGE_SPCATALOG
-  },
-  {
-    heading: 'dashboard.card.system_config_sp_settings',
-    name: 'SystemConfig_ManageSPAccount',
-    label: 'system_config_manage_spaccount',
-    icon: SystemConfigurationSPAccounts,
-    details: 'system_config_description_manage_spaccount',
-    path: CONFIG_MODULE_ROUTES.MANAGE_SPACCOUNT
   }
+  //,
+  // {
+  //   heading: 'dashboard.card.system_config_sp_settings',
+  //   name: 'SystemConfig_ManageSPMaterial',
+  //   label: 'system_config_manage_spmaterial',
+  //   icon: SystemConfigurationSPMaterial,
+  //   details: 'system_config_description_manage_spmaterial',
+  //   path: CONFIG_MODULE_ROUTES.MANAGE_SPMATERIAL
+  // },
+  // {
+  //   heading: 'dashboard.card.system_config_sp_settings',
+  //   name: 'SystemConfig_MaterialCrossWalk',
+  //   label: 'system_config_manage_materialcrosswalk',
+  //   icon: SystemConfigurationMaterialCrosswalk,
+  //   details: 'system_config_description_material_crosswalk',
+  //   path: CONFIG_MODULE_ROUTES.MATERIAL_CROSSWALK
+  // },
+  // {
+  //   heading: 'dashboard.card.system_config_sp_settings',
+  //   name: 'SystemConfig_ManageSPCatalog',
+  //   label: 'system_config_manage_spcatalog',
+  //   icon: SystemConfigurationSPCatalog,
+  //   details: 'system_config_description_manage_spcatalog',
+  //   path: CONFIG_MODULE_ROUTES.MANAGE_SPCATALOG
+  // },
+  // {
+  //   heading: 'dashboard.card.system_config_sp_settings',
+  //   name: 'SystemConfig_ManageSPAccount',
+  //   label: 'system_config_manage_spaccount',
+  //   icon: SystemConfigurationSPAccounts,
+  //   details: 'system_config_description_manage_spaccount',
+  //   path: CONFIG_MODULE_ROUTES.MANAGE_SPACCOUNT
+  // }
 ];
 
 export { BREADCRUMB_ITEMS, CARDS, CONFIG_MODULE_ROUTES };

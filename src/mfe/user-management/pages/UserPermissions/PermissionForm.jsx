@@ -86,8 +86,8 @@ const PermissionForm = ({
         ORGANIZATION_MANAGEMENT: {},
         ORDER_MANAGEMENT: {},
         SYSTEM_CONFIGURATION: {},
-        PAYMENT_INVOICING: {},
-        MANAGE_PROVIDERS: {}
+        PAYMENT_INVOICING: {}
+        //MANAGE_PROVIDERS: {}
       };
 
       //filter the data according to group
@@ -154,15 +154,15 @@ const PermissionForm = ({
             'MANAGE_CATALOG',
             'VIEW_CATALOG',
             'MANAGE_CATALOG',
-            'VIEW_CATALOG',
-            'VIEW_SP_MATERIAL',
-            'VIEW_CROSSWALK',
-            'ADD_CROSSWALK',
-            'UPLOAD_CROSSWALK',
-            'MANAGE_SP_ACCOUNT',
-            'ADD_SP_ACCOUNT',
-            'MANAGE_SP_CATALOG',
-            'VIEW_SP_CATALOG'
+            'VIEW_CATALOG'
+            // 'VIEW_SP_MATERIAL',
+            // 'VIEW_CROSSWALK',
+            // 'ADD_CROSSWALK',
+            // 'UPLOAD_CROSSWALK',
+            // 'MANAGE_SP_ACCOUNT',
+            // 'ADD_SP_ACCOUNT',
+            // 'MANAGE_SP_CATALOG',
+            // 'VIEW_SP_CATALOG'
           ].includes(permission)
         ) {
           groupedPermissions.SYSTEM_CONFIGURATION[permission] = permission;
@@ -187,9 +187,10 @@ const PermissionForm = ({
           ].includes(permission)
         ) {
           groupedPermissions.PAYMENT_INVOICING[permission] = permission;
-        } else if (['MANAGE_PROVIDERS_SCREEN', 'VIEW_PROVIDER', 'ADD_PROVIDER', 'EDIT_PROVIDER', 'UPLOAD_PROVIDER'].includes(permission)) {
-          groupedPermissions.MANAGE_PROVIDERS[permission] = permission;
         }
+        // else if (['MANAGE_PROVIDERS_SCREEN', 'VIEW_PROVIDER', 'ADD_PROVIDER', 'EDIT_PROVIDER', 'UPLOAD_PROVIDER'].includes(permission)) {
+        //   groupedPermissions.MANAGE_PROVIDERS[permission] = permission;
+        // }
       });
 
       console.log('groupedPermissions', groupedPermissions);
