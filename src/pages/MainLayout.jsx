@@ -95,7 +95,7 @@ function MainLayout() {
                     }
                   />
                   <Route path="/admin/*">
-                    <Route
+                    {/* <Route
                       path={'providers/*'}
                       element={
                         <ProtectedRoute
@@ -105,12 +105,12 @@ function MainLayout() {
                           <ManageProviders />
                         </ProtectedRoute>
                       }
-                    />
-                    <Route path={'crosswalk/*'} element={<ManageCrossWalk />} />
-                    <Route
+                    /> */}
+                    {/* <Route path={'crosswalk/*'} element={<ManageCrossWalk />} /> */}
+                    {/* <Route
                       path={'sp-catalog/*'}
                       element={<ManageSPCatalog />}
-                    />
+                    /> */}
                     <Route
                       path={`organization/roles/*`}
                       element={
