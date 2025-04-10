@@ -189,10 +189,10 @@ export const getColumns = (add) => {
     {
       id: PROVIDER_COLUMNS.PROVIDER_NAME,
       name: t('providers.columnCaption.providerName'),
-      selector: (row) => row.providerName,
       minWidth: '130px',
+      selector: () => {},
       sortable: true,
-      sortKey: 'providerName',
+      sortKey: 'first name',
       cell: (props) => {
         const isAllowed = hasPermission(
           PERMISSIONS_ENUM.MANAGE_PROVIDERS.VIEW_PROVIDER

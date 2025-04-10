@@ -60,6 +60,9 @@ const List = () => {
       }
     ];
   }, []);
+  const handleOnSort = (sortKey, sortDirection) => {
+    console.log(sortKey, sortDirection);
+  };
   const handleOnClick = (url) => () => navigate(url);
   const { pageNo, totalElements, totalPages, pageSize } = pagination;
   return (
@@ -123,7 +126,7 @@ const List = () => {
           columns={getColumns(add)}
           data={data}
           handleChangePage={(_event, pageIndex) => changePage(pageIndex)}
-          onSortIconClick={() => {}}
+          onSortIconClick={handleOnSort}
           pagination={true}
           currentPage={pageNo}
           totalPageCount={totalPages}
