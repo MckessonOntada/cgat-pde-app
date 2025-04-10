@@ -1,5 +1,5 @@
 import { useTranslate } from '@src/translations/useTranslation';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { CustomDataTable } from '@mckesson/mcp-component-library';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
@@ -12,8 +12,9 @@ import LinkProviderDetailsDrawer from './LinkProviderDetailsDrawer';
 import './LinkProvider.module.scss';
 import SelectedAccounts from '@src/components/Accounts/SelectedAccounts';
 import { getAddress } from '@src/mfe/order-management/pages/system-configuration/manage-spaccount/util.js';
+import { renderModal } from '@src/util/ModalUtil';
 
-function LinkProviderTable({unLinkProvider, isAddLinkProvider}) {
+function LinkProviderTable({ handleRemoveLinkProvider, isAddLinkProvider,  setSelectedProvidersCount }) {
   const { t } = useTranslate();
   const { paginationConfig, setPageNumber, applyFilters, clearFilters, data, refreshData } = useLinkProvider();
   const [selectedLinkProvider, setSelectedLinkProvider] = useState([]);
@@ -31,7 +32,7 @@ function LinkProviderTable({unLinkProvider, isAddLinkProvider}) {
       prev.filter(provider => provider.id !== item.id)
     );
   };
-  const formatProviderDetails = (data) => {
+  const formatProviderDetails = useCallback((data) => {
     const { id, providerName, deaNumber, npiNumber, contactNo, address } = data;
     return [
       {
@@ -51,19 +52,46 @@ function LinkProviderTable({unLinkProvider, isAddLinkProvider}) {
         ]
       }
     ];
+  }, []);  
+  const unLinkProvider = (row) => {
+    renderModal({
+      title: t('messages.header.confirmation'),
+      bodyContent: (
+        <div className="MCP-modal-body">
+          <p>{t('manageSPAccount.message.remove.linkprovider')}</p>
+        </div>
+      ),
+      footerActions: {
+        cancel: {
+          label: t('manageSPAccount.button.cancel'),
+        },
+        confirm: {
+          label: t('manageSPAccount.button.confirm'),
+          action: () => {
+            handleRemoveLinkProvider(row);
+            setSelectedLinkProvider([])
+          }
+        }
+      }
+    });
   };
-  const columns = getLinkProviderColumns(
-    t,
-    data,
-    paginationConfig,
-    unLinkProvider,
-    selectedLinkProvider,
-    setSelectedLinkProvider,
-    setOpenProviderDetails,
-    setDrawerDetails,
-    formatProviderDetails,
-    isAddLinkProvider
-  );
+  function onSelectProvider(data){
+    setSelectedLinkProvider(data)
+    if (isAddLinkProvider) setSelectedProvidersCount(data.length);
+  }
+  const columns = useMemo(() =>
+    getLinkProviderColumns(
+      t,
+      data,
+      paginationConfig,
+      unLinkProvider,
+      selectedLinkProvider,
+      onSelectProvider,
+      setOpenProviderDetails,
+      setDrawerDetails,
+      formatProviderDetails,
+      isAddLinkProvider
+  ), [ data, paginationConfig, selectedLinkProvider, isAddLinkProvider]);
 
   const handleChangePage = (e, newPage) => {
     setPageNumber(newPage);

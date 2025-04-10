@@ -93,6 +93,7 @@ export const getLinkProviderColumns = (
             iconButton={false}
             textButton={true}
             Icon={linkIcon}
+            disabled= {selectedLinkProvider.length > 0}
             onClick={() => unLinkProvider(row)}
           />
       );

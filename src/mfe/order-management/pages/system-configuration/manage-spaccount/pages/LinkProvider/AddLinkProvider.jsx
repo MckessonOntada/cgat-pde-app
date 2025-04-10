@@ -2,18 +2,21 @@ import React, { useState } from 'react';
 import { Heading, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
-import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
-import Accounts from '@src/components/Accounts/Accounts';
 import LinkProviderTable from './LinkProviderTable';
 import { LinkProviderProvider } from '../../context/LinkProviderContext';
 
 const AddLinkProvider = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
+  const { spAccountId } = useParams();
+  const [selectedProvidersCount, setSelectedProvidersCount] = useState([]);
 
   const handleGoBack = () => { navigate(-1) };
-  const handleAddAccounts = () => {};
+  const handleAddAccounts = () => {
+    navigate(`/orders/system-configuration/manage-spaccount/${spAccountId}`, { state: { type: 'success', messages : `${selectedProvidersCount} Provider has been linked successfully.` } });
+  };
 
   return (
     <div className="MCP-module-wrapper">
@@ -33,6 +36,7 @@ const AddLinkProvider = () => {
       <LinkProviderProvider>
         <LinkProviderTable
           isAddLinkProvider= {true}
+          setSelectedProvidersCount= {setSelectedProvidersCount}
         />
       </LinkProviderProvider>
       <div className={'buttonGroup'}>
