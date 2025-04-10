@@ -11,6 +11,7 @@ import { FormattedNumber } from 'react-intl';
 import CommonUtils from '@src/util/CommonUtils';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import { PATHS } from '../../routes/constants';
 
 function CreditsSelected(props) {
   const { t } = useTranslate();
