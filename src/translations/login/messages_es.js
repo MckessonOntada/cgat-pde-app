@@ -10,7 +10,7 @@ export const LoginMessagesES = {
   'login.header.1': 'S_Advancing',
   'login.header.2': 'S_Health Outcomes for All',
   'login.page.desc.1': 'S_Solutions for your pharmacy, hospital,',
-  'login.page.desc.2': 'S_Organization or biopharma company',
+  'login.page.desc.2': 'S_organization or biopharma company',
   'login.welcome': 'S_Welcome !',
   'login.ordringPortal': 'S_Ordering Portal',
   'login.details': 'S_Welcome to our Cell & Gene Therapy platform, where excellence in patient care meets cutting-edge innovation.',
