@@ -22,7 +22,7 @@ const getColorByStatus = (status) => {
     [StatusEnum.IN_DRAFT]: 'info',
     [StatusEnum.APPROVAL_PENDING]: 'info',
     [StatusEnum.SUBMITTED]: 'success',
-    [StatusEnum.CANCELLED]: 'error',
+    [StatusEnum.DELETED]: 'error',
     [StatusEnum.REJECTED]: 'error'
   };
   return statusColors[status] || 'info';
@@ -33,7 +33,7 @@ const getLinkByStatus = ({ status, id }, t) => {
     [StatusEnum.IN_DRAFT]: { path: `${routesConfig.createNew}/${id}`, label: t('table.actions.resumeOrder') },
     [StatusEnum.APPROVAL_PENDING]: { path: `${routesConfig.reviewOrder}/${id}`, label: t('table.actions.reviewOrder') },
     [StatusEnum.SUBMITTED]: { path: `${routesConfig.summary}/${id}`, label: t('table.actions.viewDetail') },
-    [StatusEnum.CANCELLED]: { path: `${routesConfig.summary}/${id}`, label: t('table.actions.viewDetail') }
+    [StatusEnum.DELETED]: { path: `${routesConfig.summary}/${id}`, label: t('table.actions.viewDetail') }
   };
   const { path = '#', label } = routes[status.toLowerCase()] || {};
   return <Link to={path}>{label}</Link>;
@@ -44,7 +44,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
   const navigate = useNavigate();
   const loggedinUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
-  const { refreshData, assginedGroupsData } = useOrders();
+  const { refreshData, assignedGroupsData } = useOrders();
   const { hasPermission } = usePermission();
   const assignMutation = useMutation(() => OrderService.setOrderAssignToMe(id), {
     onSuccess: (result) => {
@@ -93,10 +93,9 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
     deleteMutation.mutate();
   };
 
-  const doesApproverGroupExist = (approverGroupIds, assginedGroupsData) => {
-    console.log('assginedGroupsData', CommonUtils.isNonEmptyObject(assginedGroupsData)); // Loggind to check issue
-    if (!approverGroupIds || !assginedGroupsData || !CommonUtils.isNonEmptyObject(assginedGroupsData)) return false;
-    const groupDataArray = Array.isArray(assginedGroupsData) ? assginedGroupsData : [];
+  const doesApproverGroupExist = (approverGroupIds, assignedGroupsData) => {
+    if (!approverGroupIds || !assignedGroupsData || !CommonUtils.isNonEmptyObject(assignedGroupsData)) return false;
+    const groupDataArray = Array.isArray(assignedGroupsData) ? assignedGroupsData : [];
     return approverGroupIds.some((id) => groupDataArray?.includes(id));
   };
 
@@ -168,7 +167,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
   if (tab === 1) {
     if (!status) return null;
 
-    if (status === StatusEnum.PENDING || status === StatusEnum.CANCELLED) {
+    if (status === StatusEnum.PENDING || status === StatusEnum.DELETED) {
       return null;
     }
 
@@ -191,7 +190,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
         value: 'review'
       });
     } else if (status === StatusEnum.APPROVAL_PENDING) {
-      if ((!props.approver || props.approver?.id === null) && doesApproverGroupExist(props.approverGroupIds, assginedGroupsData)) {
+      if ((!props.approver || props.approver?.id === null) && doesApproverGroupExist(props.approverGroupIds, assignedGroupsData)) {
         options.push({
           label: t(`labels.orderActions.assignToMe`),
           value: 'assign'

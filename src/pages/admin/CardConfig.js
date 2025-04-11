@@ -6,7 +6,8 @@ import { ReactComponent as LinkIcon } from '../../assets/svg/link-circle.svg';
 import { ReactComponent as ProviderIcon } from '../../assets/svg/ProviderEmblem.svg';
 import AppRoutes from '../../routes/AppRoutes';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
-const { USER_MANAGEMENT, ORDER_MANAGEMENT } = PERMISSIONS_ENUM;
+const { USER_MANAGEMENT, ORDER_MANAGEMENT, MANAGE_PROVIDERS } =
+  PERMISSIONS_ENUM;
 
 const cardList = [
   {
@@ -39,7 +40,7 @@ const cardList = [
     icon: ProviderIcon,
     details: 'manage_provider_description',
     path: AppRoutes.pathManageProviders,
-    permissions: ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP
+    permissions: MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN
   }
 ];
 

@@ -82,15 +82,15 @@ export default function CreditsTable(props) {
       cell: (props) => CommonUtils.convertDateStringFormat(props.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
-      id: 'billAmount',
+      id: 'openAmount',
       name: selectableRows ? t('paymentInvoices.credits.table.billamount') : t('paymentInvoices.credits.table.amount'),
-      selector: (row) => row.billAmount,
+      selector: (row) => row.openAmount,
       maxWidth: '240px',
       sortable: true,
       wrap: true,
       cell: (props) => (
         <div className="status-container align-items-right">
-          <FormattedNumber value={props?.billAmount} style="currency" currency="USD" />
+          <FormattedNumber value={props?.openAmount} style="currency" currency="USD" />
         </div>
       ),
       right: true

@@ -94,7 +94,7 @@ const INITIAL_PAGINATION_STATE = {
   totalElements: 0,
   pageSize: 8,
   totalPages: 0,
-  pageNumber: 1
+  pageNo: 1
 };
 
 const INITIAL_SORT_STATE = {
@@ -106,6 +106,7 @@ export const TableProvider = ({
   fetchFn,
   defaultFilters,
   columns,
+  allowedSort = [],
   children
 }) => {
   const [data, setData] = useState([]);
@@ -113,12 +114,16 @@ export const TableProvider = ({
   const [selectedRows, setSelectedRows] = useState(new Set());
   const [pagination, setPagination] = useState(INITIAL_PAGINATION_STATE);
   const [sort, setSort] = React.useState(INITIAL_SORT_STATE);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const requestParams = React.useMemo(() => {
     const params = {
-      pageNo: pagination.pageNumber - 1,
+      pageNo: pagination.pageNo - 1,
       pageSize: pagination.pageSize,
-      sortBy: sort.sortBy || 'createdAt',
+      sortBy: allowedSort.includes(sort.sortBy)
+        ? sort.sortBy
+        : allowedSort[0] || null,
       sortOrder: sort.sortOrder || 'desc'
     };
 
@@ -128,26 +133,41 @@ export const TableProvider = ({
           params['query'] = value?.toLowerCase();
           return;
         }
-        params[key] = value?.toLowerCase();
+        params[key] = value;
       }
     });
 
     return params;
-  }, [filters, pagination.pageNumber, sort]);
+  }, [filters, pagination.pageNo, sort]);
 
   const fetchData = () => {
     if (!fetchFn) return;
 
     try {
       const dataFetchPromise = new Promise(async (resolve, reject) => {
-        const response = await fetchFn(requestParams);
+        setLoading(true);
+        try {
+          const response = await fetchFn(requestParams);
+          resolve(response);
+        } catch (error) {
+          reject(error);
+        }
       });
 
       dataFetchPromise
         .then((result) => {
+          setLoading(false);
           setData(result.content);
+          const { totalElements, totalPages } = result;
+          setPagination({
+            ...pagination,
+            totalElements,
+            totalPages
+          });
         })
         .catch((error) => {
+          setLoading(false);
+          setError(error);
           //setError
         });
     } catch (error) {
@@ -157,7 +177,7 @@ export const TableProvider = ({
 
   useEffect(() => {
     fetchData();
-  }, [filters, pagination.page, pagination.pageSize]);
+  }, [filters, pagination.pageNo]);
 
   const toggleRowSelection = (id) => {
     setSelectedRows((prev) => {
@@ -180,7 +200,7 @@ export const TableProvider = ({
   };
 
   const applyFilters = (filters) => {
-    setPagination((prev) => ({ ...prev, pageNumber: 1 }));
+    setPagination((prev) => ({ ...prev, pageNo: 1 }));
     setFilters({ ...filters });
   };
 
@@ -195,15 +215,17 @@ export const TableProvider = ({
     setFilters(defaultFilters || { query: '' });
   };
 
-  const changePage = (pageNumber) => {
+  const changePage = (pageNo) => {
     setPagination((prevState) => ({
       ...prevState,
-      pageNumber: pageNumber
+      pageNo
     }));
   };
 
   const context = {
     data,
+    loading,
+    error,
     filters,
     pagination,
     columns,
@@ -216,7 +238,8 @@ export const TableProvider = ({
     applySort,
     applyFilters,
     clearFilters,
-    changePage
+    changePage,
+    refreshTable: fetchData
   };
 
   return (

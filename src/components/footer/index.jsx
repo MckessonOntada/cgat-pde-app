@@ -8,6 +8,7 @@ import CommonDataService from '@src/api/commonService/CommonDataService';
 import AuthUtils from '@src/util/AuthUtils';
 import { ReactComponent as AppLogo } from '@src/assets/image/app-logo.svg';
 import footerLinks from '@src/components/footer/data/footerLinks.json';
+import { ReactComponent as McKessonLogo } from '@src/assets/image/mckesson-logo-colored.svg';
 
 const Footer = () => {
   const { t } = useTranslate();
@@ -15,7 +16,10 @@ const Footer = () => {
     organization: { selectedOrganization }
   } = useSessionFeatures();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const { data: organizationLogo } = CommonDataService.useOrganizationLogo(selectedOrganization.logoUrl, selectedOrganization.id);
+  const { data: organizationLogo } = CommonDataService.useOrganizationLogo(
+    selectedOrganization.logoUrl,
+    selectedOrganization.id
+  );
 
   return (
     <footer className={style.footer}>
@@ -34,18 +38,11 @@ const Footer = () => {
         </div>
         <div className={style.footerBase}>
           <div className={style.branding}>
-            {isSystemAdminView ? (
-              <AppLogo aria-hidden="true" focusable="false" title="PDE Logo" />
-            ) : (
-              <Link className={`${style.customheader}`}>
-                {organizationLogo && (
-                  <div className={`${style.logoContainer}`}>
-                    <img src={organizationLogo || ''} alt="Organization Logo" />
-                  </div>
-                )}
-                <h2>{selectedOrganization.name}</h2>
-              </Link>
-            )}
+            <McKessonLogo
+              aria-hidden="true"
+              focusable="false"
+              title={t('company.logoAltText')}
+            />
           </div>
           <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
         </div>

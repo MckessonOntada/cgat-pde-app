@@ -7,22 +7,23 @@ import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import ModuleHeader from '@src/components/module-header';
 import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
-import { ShippingLocationProvider, useShippingLocation } from '../../context/ShippingLocationContext';
+import { useShippingLocation } from '../../context/ShippingLocationContext';
 import CommonFilters from '@src/components/Filters';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
 import AddShippingDetails from './AddShippingDetails';
 import AuthUtils from '@src/util/AuthUtils';
-import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 import { getShippingLocationColumns } from './ShippingLocationColumns';
 import { useMutation } from 'react-query';
 import { renderModal } from '@src/util/ModalUtil';
 import ShippingLocationService from '@src/api/commonService/ShippingLocationService';
 import TableHeading from '@src/components/tableHeading/TableHeading';
+import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
 
 function ShippingLocationsDataTable() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { paginationConfig, setPageNumber, applyFilters, clearFilters, data, refreshData } = useShippingLocation();
+  const { paginationConfig, setPageNumber, applyFilters, clearFilters, data, refreshData, applySort, accountId } = useShippingLocation();
+  const { selectedOrganization } = useOrgAccountSelectionContext();
   const [openShippingDrawer, setOpenShippingDrawer] = useState(false);
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const [alert, setAlert] = useState(null);
@@ -48,7 +49,10 @@ function ShippingLocationsDataTable() {
     setSelectedShippingLocation
   );
 
-  const renderModelforRemove = (row) => {
+  const renderModelforRemove = (rowParam) => {
+    const rows = Array.isArray(rowParam) ? rowParam : rowParam ? [rowParam] : selectedShippingLocation;
+    const ids = rows.map((r) => r.id).filter(Boolean);
+
     renderModal({
       title: t('messages.header.confirmation'),
       bodyContent: (
@@ -63,21 +67,25 @@ function ShippingLocationsDataTable() {
         confirm: {
           label: t('manageSPAccount.button.confirm'),
           action: () => {
-            handleRemoveShippingLocation(row);
+            mutate({
+              ids,
+              selectedOrgId: selectedOrganization?.id,
+              accid: accountId
+            });
           }
         }
       }
     });
   };
-  const handleRemoveShippingLocation = async (row) => {
-    ShippingLocationService.removeShippingLocation(row);
-    showAlert('success', t('manageSPAccount.message.removeshippinglocation.success'));
+  const handleRemoveShippingLocation = async ({ ids, selectedOrgId, accid }) => {
+    return await ShippingLocationService.removeShippingLocation(ids, selectedOrgId, accid);
   };
 
   const { mutate } = useMutation({
     mutationFn: handleRemoveShippingLocation,
     onSuccess: (response) => {
       refreshData();
+      setSelectedShippingLocation([]);
       showAlert('success', t('manageSPAccount.message.removeshippinglocation.success'));
     },
     onError: (error) => {
@@ -92,6 +100,7 @@ function ShippingLocationsDataTable() {
   const handleFormSubmitResult = (type, message) => {
     showAlert(type, message);
     refreshData();
+    setSelectedShippingLocation([]);
     setOpenShippingDrawer(false);
   };
 
@@ -103,17 +112,20 @@ function ShippingLocationsDataTable() {
     setAlert({ type: null, message: null });
   };
 
+  const handleOnSortIconClick = (selectedColumn, sortDirection) => {
+    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+  };
   return (
     <div>
-      <ShippingLocationProvider>
-        <div className="MCP-module-body">
-          <ModuleHeader
-            heading={
-              <div className="subheader-text">
-                <Heading as="h2">{t('manageSPAccount.heading.shippinglocations')}</Heading>
-              </div>
-            }
-            controls={
+      <div className="MCP-module-body">
+        <ModuleHeader
+          heading={
+            <div className="subheader-text">
+              <Heading as="h2">{t('manageSPAccount.heading.shippinglocations')}</Heading>
+            </div>
+          }
+          controls={
+            !isCustomerCenter && (
               <Button
                 Icon={EditPencil}
                 variant="secondary"
@@ -125,65 +137,66 @@ function ShippingLocationsDataTable() {
                 }}>
                 {t('manageSPAccount.shippinglocation.button.addshippinglocations')}
               </Button>
-            }
-          />
-          {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
-          <div className="MCP-panel-container">
-            <div class="MCP-panel-container">
-              <CommonFilters
-                onApplyFilters={applyFilters}
-                onClearFilters={clearFilters}
-                additionalFilters={[]}
-                searchPlaceholder={t('manageSPAccount.filters.searchPlaceholder')}
-                actualData={[]}
-                initialData={[]}
-              />
-            </div>
-            {selectedShippingLocation?.length > 0 && (
-              <TableHeading
-                heading={[]}
-                secondaryView={selectedShippingLocation?.length}
-                secondaryViewHeading={`${selectedShippingLocation?.length} ${t('orgManagement.selected_items')}`}
-                secondaryViewControls={
-                  <Button variant="secondary" onClick={() => handleOnOptionSelection('remove')}>
-                    {t('manageSPAccount.button.remove')}
-                  </Button>
-                }
-              />
-            )}
-            <CustomDataTable
-              id="my-data-table"
-              type="normal"
-              columns={columns}
-              data={data}
-              currentPage={paginationConfig.pageNumber}
-              totalPageCount={paginationConfig.totalPages}
-              pagination={true}
-              handleChangePage={handleChangePage}
-              totalRocords={paginationConfig.totalElements}
-              recordsPerPage={paginationConfig.pageSize}
-              paginationTotalRecorsMessage={t('orgManagement.results')}
-              paginationRecordsPerPageMessage={t('orgManagement.per_page')}
-              noDataComponent={
-                <EmptyDataTable
-                  image={EmptyDataImage}
-                  heading={t('manageSPAccount.table.shippinglocations.emptyData')}
-                  description={t('manageSPAccount.tables.shippinglocations.emptyDataDescription')}
-                />
-              }
+            )
+          }
+        />
+        {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
+        <div className="MCP-panel-container">
+          <div class="MCP-panel-container">
+            <CommonFilters
+              onApplyFilters={applyFilters}
+              onClearFilters={clearFilters}
+              additionalFilters={[]}
+              searchPlaceholder={t('manageSPAccount.filters.searchPlaceholder')}
+              actualData={[]}
+              initialData={[]}
             />
           </div>
-        </div>
-
-        {openShippingDrawer && (
-          <AddShippingDetails
-            open={openShippingDrawer}
-            onClose={() => setOpenShippingDrawer(false)}
-            row={spLocation}
-            onFormSubmit={handleFormSubmitResult}
+          {selectedShippingLocation?.length > 0 && (
+            <TableHeading
+              heading={[]}
+              secondaryView={selectedShippingLocation?.length}
+              secondaryViewHeading={`${selectedShippingLocation?.length} ${t('orgManagement.selected_items')}`}
+              secondaryViewControls={
+                <Button variant="secondary" onClick={() => handleOnOptionSelection('remove')}>
+                  {t('manageSPAccount.button.remove')}
+                </Button>
+              }
+            />
+          )}
+          <CustomDataTable
+            id="my-data-table"
+            type="normal"
+            columns={columns}
+            data={data}
+            currentPage={paginationConfig.pageNumber}
+            totalPageCount={paginationConfig.totalPages}
+            onSortIconClick={handleOnSortIconClick}
+            pagination={true}
+            handleChangePage={handleChangePage}
+            totalRocords={paginationConfig.totalElements}
+            recordsPerPage={paginationConfig.pageSize}
+            paginationTotalRecorsMessage={t('orgManagement.results')}
+            paginationRecordsPerPageMessage={t('orgManagement.per_page')}
+            noDataComponent={
+              <EmptyDataTable
+                image={EmptyDataImage}
+                heading={t('manageSPAccount.table.shippinglocations.emptyData')}
+                description={t('manageSPAccount.tables.shippinglocations.emptyDataDescription')}
+              />
+            }
           />
-        )}
-      </ShippingLocationProvider>
+        </div>
+      </div>
+
+      {openShippingDrawer && (
+        <AddShippingDetails
+          open={openShippingDrawer}
+          onClose={() => setOpenShippingDrawer(false)}
+          row={spLocation}
+          onFormSubmit={handleFormSubmitResult}
+        />
+      )}
     </div>
   );
 }

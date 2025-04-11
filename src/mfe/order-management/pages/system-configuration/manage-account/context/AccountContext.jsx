@@ -4,6 +4,7 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import { ChannelType } from '../../manage-spaccount/util';
 
 const RECORDS_PER_PAGE = 8;
 
@@ -62,7 +63,8 @@ export const AccountProvider = ({ children }) => {
       pageSize: paginationConfig.pageSize,
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       practiceId: selectedOrganization?.id,
-      partnerFunction: 'SOLD_TO'
+      partnerFunction: 'SOLD_TO',
+      channelType: ChannelType.BUY_AND_BILL
     };
 
     return baseParams;

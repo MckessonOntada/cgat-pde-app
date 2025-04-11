@@ -118,20 +118,18 @@ div.disable-all {
 
   .MCP-module-body {
     align-items: center;
-
   }
 
   font-weight: var(--brand-font-weight-400);
   font-size: var(--brand-font-size--15);
   line-height: var(--brand-font-size--24);
-  color:var(--brand-color-background-light-slate);
+  color: var(--brand-color-background-light-slate);
 
   .heading {
     font-weight: var(--brand-font-weight-700);
     font-size: var(--brand-font-size--24);
     line-height: 100%;
   }
-
 }
 
 .MCP-table-cell {
@@ -548,6 +546,12 @@ div.disable-all {
     white-space: nowrap;
     overflow: hidden;
   }
+}
+
+.MCP-table-link {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .row-space-between-center {
@@ -1124,7 +1128,9 @@ div.disable-all {
   margin: 0 5px;
   width: 24px;
   aspect-ratio: 4;
-  background: radial-gradient(circle closest-side, var(--brand-color-text-blue) 90%, #0000) 0 / calc(100% / 3) 100% space;
+  background: radial-gradient(circle closest-side,
+      var(--brand-color-text-blue) 90%,
+      #0000) 0 / calc(100% / 3) 100% space;
   clip-path: inset(0 100% 0 0);
   animation: l1 1s steps(4) infinite;
 }
@@ -1146,6 +1152,21 @@ div.disable-all {
     align-items: center;
     flex-wrap: wrap;
     gap: var(--spacing-03);
+  }
+}
+
+div[role="row"] {
+  div[role="cell"] {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-02);
+
+    span {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
   }
 }
 
@@ -1219,10 +1240,60 @@ div.disable-all {
   }
 }
 
+.tab-count-header {
+  position: relative;
+  margin-right: var(--spacing-05);
+
+  &::after {
+    position: absolute;
+    top: 0%;
+    right: -8px;
+    margin-left: var(--spacing-02);
+    transform: translate(100%, -50%);
+    content: attr(data-label);
+    // display: block;
+    font-weight: bold;
+    margin-top: 10px;
+    font-size: var(--brand-font-size--extra-small);
+    line-height: var(--brand-font-size--default);
+    font-weight: var(--brand-font-weight-600);
+    border-radius: var(--spacing-03);
+    background-color: #1e394e;
+    color: white;
+    padding: 6px 8px;
+  }
+
+  &.green {
+    &::after {
+      background-color: #2e8540;
+    }
+  }
+
+  &.orange {
+    &::after {
+      background-color: #d3722e;
+    }
+  }
+}
+
 .uploadControls {
   margin-top: var(--spacing-05);
 }
 
 .form-instruction {
   font-size: var(--brand-font-size--small);
+}
+
+.error-banner-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 360px;
+}
+
+.alert-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-02);
 }

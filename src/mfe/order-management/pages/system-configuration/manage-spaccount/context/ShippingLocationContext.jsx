@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import ShippingLocationService from '@src/api/commonService/ShippingLocationService';
+import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
 
 const ShippingLocationContext = createContext();
 
@@ -18,8 +19,8 @@ const INITIAL_FILTER_STATE = {
 };
 
 const INITIAL_SORT_STATE = {
-  sortBy: null,
-  sortOrder: null
+  sortBy: 'id',
+  sortOrder: 'desc'
 };
 
 const INITIAL_PAGINATION_CONFIG = {
@@ -29,10 +30,11 @@ const INITIAL_PAGINATION_CONFIG = {
   pageNumber: 1
 };
 
-export const ShippingLocationProvider = ({ children }) => {
+export const ShippingLocationProvider = ({ children, accountId }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
+  const { selectedOrganization } = useOrgAccountSelectionContext();
 
   const updateFilterState = useCallback((field, value) => {
     setFilterState((prevState) => ({
@@ -54,21 +56,18 @@ export const ShippingLocationProvider = ({ children }) => {
   );
 
   const { isLoading, isError, error, data, refetch } = useQuery({
-    queryKey: ['ShippingLocations', requestParams],
+    queryKey: ['ShippingLocations', requestParams, accountId, selectedOrganization?.id],
     queryFn: async () => {
-      const result = await ShippingLocationService.getShippingLocationList(requestParams);
-      const { totalElements, totalPages } = result;
+      const result = await ShippingLocationService.getShippingLocationList(requestParams, accountId, selectedOrganization?.id);
+      const { content: data, totalElements, totalPages } = result;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
         ...(totalElements && { totalElements }),
         ...(totalPages && { totalPages })
       }));
-      return result.data?.slice(
-        (paginationConfig.pageNumber - 1) * paginationConfig.pageSize,
-        paginationConfig.pageNumber * paginationConfig.pageSize
-      );
+      return data;
     },
-
+    enabled: !!accountId && !!selectedOrganization?.id,
     refetchOnWindowFocus: false
   });
 
@@ -77,8 +76,10 @@ export const ShippingLocationProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    refetch();
-  }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
+    if (accountId && selectedOrganization?.id) {
+      refetch();
+    }
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig, accountId, selectedOrganization?.id]);
 
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
 
@@ -100,6 +101,7 @@ export const ShippingLocationProvider = ({ children }) => {
       isLoading,
       isError,
       error,
+      accountId,
       filterConfig,
       paginationConfig,
       setFilterConfig,
@@ -109,7 +111,7 @@ export const ShippingLocationProvider = ({ children }) => {
       setPageNumber,
       refreshData: refetch
     }),
-    [updateFilterState, clearFilters, isLoading, isError, data, refetch]
+    [updateFilterState, clearFilters, isLoading, isError, error, data, refetch, accountId, filterConfig, paginationConfig]
   );
   return <ShippingLocationContext.Provider value={ctxValue}>{children}</ShippingLocationContext.Provider>;
 };

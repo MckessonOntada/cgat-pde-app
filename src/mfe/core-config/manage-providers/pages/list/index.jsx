@@ -3,7 +3,12 @@ import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bo
 import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
 import PermittedComponent from '@src/components/permitted-component';
 import React from 'react';
-import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
+import {
+  Button,
+  Heading,
+  Alert,
+  Loader
+} from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import AuthUtils from '@src/util/AuthUtils';
@@ -13,34 +18,15 @@ import CommonFilters from '@src/components/Filters';
 import { PROVIDER_STATUS } from '../../config';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import {
-  useColumns,
   useFilters,
   usePagination,
   useTable
 } from '../../context/TableContext';
 import { getColumns } from './TableColumns';
-import EmptyDataTable from '@src/components/EmptyTable';
 import { ReactComponent as EmptyProviderTable } from '@src/assets/svg/EmptyProviderTable.svg';
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
-
-const data = [
-  {
-    id: 1,
-    providerName: 'Provider A',
-    address: '123 Main St',
-    deaNumber: 'AB1234567',
-    npiNumber: '1234567890',
-    isActive: true
-  },
-  {
-    id: 2,
-    providerName: 'Provider B',
-    address: '456 Elm St',
-    deaNumber: 'CD9876543',
-    npiNumber: '0987654321',
-    isActive: false
-  }
-];
+import CommonUtils from '@src/util/CommonUtils';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 
 const List = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -48,6 +34,7 @@ const List = () => {
   const navigate = useNavigate();
   const { items, add, remove } = useTimedArray(10000);
   const { filters, applyFilters, clearFilters } = useFilters();
+  const { data = [] } = useTable();
   const { pagination, changePage } = usePagination();
   const breadcrumbItems = React.useMemo(() => {
     return [
@@ -68,35 +55,38 @@ const List = () => {
         label: t('captions.status'),
         options: Object.entries(PROVIDER_STATUS).map(([key, value]) => ({
           label: t(`providerStatus.${key}`),
-          value: value
+          value: value.toUpperCase()
         }))
       }
     ];
   }, []);
   const handleOnClick = (url) => () => navigate(url);
-
+  const { pageNo, totalElements, totalPages, pageSize } = pagination;
   return (
     <div className="MCP-module-wrapper">
       <Breadcrumbs items={breadcrumbItems} />
       <ModuleHeader
         heading={<Heading as="h1">{t('label.providers')}</Heading>}
         controls={
-          <div className="controls">
-            <Button
-              Icon={FileUploadIcon}
-              className="button-icon"
-              onClick={handleOnClick('upload-providers')}
-              size="md">
-              {t('controls.uploadProviders')}
-            </Button>
-            <Button
-              Icon={AddCircleFilled}
-              className="button-icon"
-              onClick={handleOnClick('create')}
-              size="md">
-              {t('controls.addProviders')}
-            </Button>
-          </div>
+          <PermittedComponent
+            permissions={PERMISSIONS_ENUM.MANAGE_PROVIDERS.ADD_PROVIDER}>
+            <div className="controls">
+              <Button
+                Icon={FileUploadIcon}
+                className="button-icon"
+                onClick={handleOnClick('upload-providers')}
+                size="md">
+                {t('controls.uploadProviders')}
+              </Button>
+              <Button
+                Icon={AddCircleFilled}
+                className="button-icon"
+                onClick={handleOnClick('create')}
+                size="md">
+                {t('controls.addProviders')}
+              </Button>
+            </div>
+          </PermittedComponent>
         }
       />
       {items && items.length > 0 && (
@@ -130,15 +120,15 @@ const List = () => {
         />
         <CustomDataTable
           id="provider-list-table"
-          columns={getColumns()}
+          columns={getColumns(add)}
           data={data}
-          handleChangePage={changePage}
+          handleChangePage={(_event, pageIndex) => changePage(pageIndex)}
           onSortIconClick={() => {}}
           pagination={true}
-          currentPage={pagination.pageNumber}
-          totalPageCount={pagination.totalPages}
-          totalRocords={pagination.totalElements}
-          recordsPerPage={pagination.pageSize}
+          currentPage={pageNo}
+          totalPageCount={totalPages}
+          totalRocords={totalElements}
+          recordsPerPage={pageSize}
           paginationRecordsPerPageMessage={t('labels.perPage')}
           paginationTotalRecorsMessage={t('labels.results')}
           noDataComponent={
@@ -157,16 +147,18 @@ const List = () => {
 export default List;
 
 const ErrorBanner = ({ heading, description, image }) => {
-  const { isLoading, isError, error } = useTable();
-  if (isLoading) {
+  const { loading, error } = useTable();
+  if (loading) {
     return (
-      <div className="dashboard-loader">
-        <Loader variant="circular" />
+      <div className="error-banner-wrapper">
+        <div className="dashboard-loader">
+          <Loader variant="circular" />
+        </div>
       </div>
     );
   }
   let headingContent, descriptionContent, thumbnail;
-  if (isError) {
+  if (error && CommonUtils.isNonEmptyObject(error)) {
     headingContent = 'Some error has occurred';
     descriptionContent = error.message;
     thumbnail = <ErrorIcon />;
@@ -176,12 +168,14 @@ const ErrorBanner = ({ heading, description, image }) => {
     thumbnail = image;
   }
   return (
-    <div className="table-notification">
-      <div className="MCP-module-wrapper">
-        <div className="MCP-module-body">
-          {thumbnail}
-          <p className="heading">{headingContent}</p>
-          <p>{descriptionContent}</p>
+    <div className="error-banner-wrapper">
+      <div className="table-notification">
+        <div className="MCP-module-wrapper">
+          <div className="MCP-module-body">
+            {thumbnail}
+            <p className="heading">{headingContent}</p>
+            <p>{descriptionContent}</p>
+          </div>
         </div>
       </div>
     </div>
