@@ -545,6 +545,18 @@ export const MessageEn = {
   'labels.caption.SUBMITTED': 'Submitted',
   'labels.caption.APPROVAL_PENDING': 'Approval Pending',
 
+  'labels.caption.currentMonth': 'Current Month',
+  'labels.caption.lastMonth': 'Last Month',
+  'labels.caption.last3Months': 'Last 3 Months',
+  'labels.caption.last6Months': 'Last 6 Months',
+  'labels.caption.customRange': 'Custom Range',
+
+  'labels.caption.3pl': '3 PL',
+  'labels.caption.mpb': 'MPB',
+
+  'labels.startDate': 'Start Date',
+  'labels.endDate': 'End Date',
+
   'labels.pap': 'PAP',
   'labels.pap.order': 'PAP ORDER',
 

@@ -11,18 +11,31 @@ import { useOrders } from '../../context/OrderContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import PermittedComponent from '@src/components/permitted-component';
 import usePermission from '@src/hooks/usePermissions';
-import { getTabs, ORDER_STATUS, ORDER_TABS } from './config';
+import {
+  DiSTRIBUTION_CHANNEL_OPTIONS,
+  getTabs,
+  ORDER_DATE_FILTER_OPTIONS,
+  ORDER_STATUS,
+  ORDER_TABS
+} from './config';
 import { showAlert } from '@src/store/reducer/alertReducer';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import useOrderCount from './useOrderCount';
+import { useFormikContext } from 'formik';
 
 const OrderIndex = () => {
   const { t } = useTranslate();
   const { hasPermission } = usePermission();
-  const isPendingTab = hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_PENDING_ORDERS);
-  const isSubmittedTab = hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS);
-  const { applyFilters, clearFilters, changeTab, tabVariant, isError, error } = useOrders();
+
+  const isPendingTab = hasPermission(
+    PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_PENDING_ORDERS
+  );
+  const isSubmittedTab = hasPermission(
+    PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS
+  );
+  const { applyFilters, clearFilters, changeTab, tabVariant, isError, error } =
+    useOrders();
   const [tabList, setTabList] = React.useState(() => {
     const allTabs = getTabs();
     allTabs.forEach((tab) => {
@@ -45,7 +58,9 @@ const OrderIndex = () => {
       let orderCount = orderCounts?.[tab.id] || 0;
       if (orderCount > 99) orderCount = '99+';
       tab.configName = (
-        <div className={`tab-count-header ${countClass}`} data-label={orderCount}>
+        <div
+          className={`tab-count-header ${countClass}`}
+          data-label={orderCount}>
           {t(tab.configName)}
         </div>
       );
@@ -57,22 +72,68 @@ const OrderIndex = () => {
   const location = useLocation();
   const activeTabFromState = location.state?.activeTab;
   const activeTab = tabList.find((tab) => tab.id === tabVariant);
-  const [tabKey, setTabKey] = React.useState(activeTabFromState || activeTab?.id);
+  const [tabKey, setTabKey] = React.useState(
+    activeTabFromState || activeTab?.id
+  );
   const { showAlert } = useAlert();
   const alertContainerId = 'summary-alert-container';
 
   const additionalFiltersConfig = React.useMemo(() => {
     let filters = [];
+    if (tabVariant !== ORDER_TABS.PENDING_APPROVAL) {
+      filters.push({
+        type: 'dropdown',
+        name: 'distributionchannel',
+        label: t('labels.distributionChannel'),
+        options: DiSTRIBUTION_CHANNEL_OPTIONS.map((opt) => ({
+          label: t(`labels.caption.${opt.value}`),
+          value: opt.value
+        }))
+      });
+    }
+
     if (tabVariant === ORDER_TABS.PENDING_SUBMISSION) {
-      const options = [ORDER_STATUS.ALL, ORDER_STATUS.IN_DRAFT, ORDER_STATUS.DELETED, ORDER_STATUS.REJECTED];
+      const options = [
+        ORDER_STATUS.ALL,
+        ORDER_STATUS.IN_DRAFT,
+        ORDER_STATUS.DELETED,
+        ORDER_STATUS.REJECTED,
+        ORDER_STATUS.CANCELLED
+      ];
+
       filters.push({
         type: 'dropdown',
         name: 'status',
         label: t('userManagement.table.status'),
-        options: options.map((opt) => ({ label: t(`labels.caption.${opt}`), value: opt }))
+        options: options.map((opt) => ({
+          label: t(`labels.caption.${opt}`),
+          value: opt
+        }))
       });
     }
-
+    if (tabVariant !== ORDER_TABS.PENDING_APPROVAL) {
+      filters.push({
+        type: 'dropdown',
+        name: 'orderdate',
+        label: 'Order Date',
+        options: ORDER_DATE_FILTER_OPTIONS.map((opt) => ({
+          label: t(`labels.caption.${opt.value}`),
+          value: opt.value
+        })),
+        linkedFilters: (value) =>
+          value === 'customRange'
+            ? [
+                {
+                  type: 'dateRangePicker',
+                  name: 'dateRange',
+                  startDateLabel: t('labels.startDate'),
+                  endDateLabel: t('labels.endDate'),
+                  required: true
+                }
+              ]
+            : []
+      });
+    }
     return filters;
   }, [activeTab]);
 
@@ -100,11 +161,16 @@ const OrderIndex = () => {
   React.useEffect(() => {
     if (error) {
       console.log(error);
-      showAlert({ description: t(handleApiError(error)), type: 'error', anchorEl: alertContainerId });
+      showAlert({
+        description: t(handleApiError(error)),
+        type: 'error',
+        anchorEl: alertContainerId
+      });
     }
   }, [error]);
 
-  const currentTab = (tabList && tabList.find((tab) => tab?.['isActiveTab'])) || {};
+  const currentTab =
+    (tabList && tabList.find((tab) => tab?.['isActiveTab'])) || {};
 
   return (
     <div className="MCP-module-wrapper">
@@ -113,7 +179,8 @@ const OrderIndex = () => {
           heading={<Heading as="h1">{t('headings.orders')}</Heading>}
           controls={
             <div className="controls">
-              <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS}>
+              <PermittedComponent
+                permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS}>
                 <Button
                   Icon={AddCircleFilled}
                   className="button-icon"
@@ -147,11 +214,16 @@ const OrderIndex = () => {
                 onApplyFilters={applyFilters}
                 onClearFilters={clearFilters}
                 additionalFilters={additionalFiltersConfig}
-                searchPlaceholder={t('controls.placeholder.searchOrderPlaceholder')}
+                searchPlaceholder={t(
+                  'controls.placeholder.searchOrderPlaceholder'
+                )}
               />
             </div>
             <div className="MCP-table-wrapper">
-              <OrderDataTable tab={activeTab && activeTab.id} alertContainerId={alertContainerId} />
+              <OrderDataTable
+                tab={activeTab && activeTab.id}
+                alertContainerId={alertContainerId}
+              />
             </div>
           </div>
         </div>

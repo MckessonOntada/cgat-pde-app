@@ -402,6 +402,25 @@ function getDateRange(gapYear) {
   return [convertDate(prevDate), convertDate(date)];
 }
 
+export const getDateRangeValidationError = (start, end, isRequired = false) => {
+  if (isRequired && (!start || !end)) {
+    return 'Please select a valid date range.';
+  }
+
+  if (start && end) {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    const maxAllowedDate = new Date(startDate);
+    maxAllowedDate.setMonth(startDate.getMonth() + 6);
+    if (endDate >= maxAllowedDate) {
+      return 'Date range must not exceed 6 months.';
+    }
+  }
+
+  return undefined;
+};
+
 export const validateDateRange = (
   value,
   messages = {},
@@ -595,6 +614,7 @@ const CommonUtils = Object.freeze({
   areArraysEqual,
   deepEqual,
   getDateRange,
+  getDateRangeValidationError,
   validateDateRange,
   truncateString,
   formatPhoneNumber,

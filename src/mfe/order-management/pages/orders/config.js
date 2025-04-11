@@ -12,13 +12,18 @@ export const ORDER_STATUS = Object.freeze({
   SUBMITTED: 'SUBMITTED',
   DELETED: 'DELETED',
   REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED',
   ALL: 'ALL'
 });
 
 export const TAB_FILTERS = Object.freeze({
   [ORDER_TABS.SUBMITTED_BUY_AND_BILL]: [ORDER_STATUS.SUBMITTED],
   [ORDER_TABS.SUBMITTED_SP]: [],
-  [ORDER_TABS.PENDING_SUBMISSION]: [ORDER_STATUS.IN_DRAFT, ORDER_STATUS.REJECTED, ORDER_STATUS.DELETED],
+  [ORDER_TABS.PENDING_SUBMISSION]: [
+    ORDER_STATUS.IN_DRAFT,
+    ORDER_STATUS.REJECTED,
+    ORDER_STATUS.DELETED
+  ],
   [ORDER_TABS.PENDING_APPROVAL]: [ORDER_STATUS.APPROVAL_PENDING]
 });
 
@@ -29,10 +34,19 @@ export const ORDER_VIEW = Object.freeze({
 });
 
 export const TOGGLE_FILTERS = {
-  [ORDER_TABS.SUBMITTED_BUY_AND_BILL]: [ORDER_VIEW.MY_ORDERS, ORDER_VIEW.ALL_ORDERS],
+  [ORDER_TABS.SUBMITTED_BUY_AND_BILL]: [
+    ORDER_VIEW.MY_ORDERS,
+    ORDER_VIEW.ALL_ORDERS
+  ],
   [ORDER_TABS.SUBMITTED_SP]: [ORDER_VIEW.MY_ORDERS, ORDER_VIEW.ALL_ORDERS],
-  [ORDER_TABS.PENDING_SUBMISSION]: [ORDER_VIEW.MY_ORDERS, ORDER_VIEW.ALL_ORDERS],
-  [ORDER_TABS.PENDING_APPROVAL]: [ORDER_VIEW.ASSIGNED_TO_ME, ORDER_VIEW.ALL_ORDERS]
+  [ORDER_TABS.PENDING_SUBMISSION]: [
+    ORDER_VIEW.MY_ORDERS,
+    ORDER_VIEW.ALL_ORDERS
+  ],
+  [ORDER_TABS.PENDING_APPROVAL]: [
+    ORDER_VIEW.ASSIGNED_TO_ME,
+    ORDER_VIEW.ALL_ORDERS
+  ]
 };
 
 export const COLUMNS = {
@@ -135,4 +149,17 @@ export const getTabs = () => [
     sequence: 4,
     labelForMobile: 'labels.tabs.pendingApproval'
   }
+];
+
+export const ORDER_DATE_FILTER_OPTIONS = [
+  { label: 'Current Month', value: 'currentMonth' },
+  { label: 'Last Month', value: 'lastMonth' },
+  { label: 'Last 3 Months', value: 'last3Months' },
+  { label: 'Last 6 Months', value: 'last6Months' },
+  { label: 'Custom Range', value: 'customRange' }
+];
+
+export const DiSTRIBUTION_CHANNEL_OPTIONS = [
+  { label: '3 PL', value: '3pl' },
+  { label: 'MPB', value: 'mpb' }
 ];
