@@ -1,6 +1,7 @@
 export const ROUTE_PATHS = Object.freeze({
   DASHBOARD: '',
-  DETAILS: 'details/:id',
+  VIEW: '/view',
   CREATE: 'create',
+  EDIT: '/edit',
   UPLOAD_PROVIDERS: 'upload-providers'
 });

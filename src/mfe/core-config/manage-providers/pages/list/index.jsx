@@ -13,7 +13,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import AuthUtils from '@src/util/AuthUtils';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CommonFilters from '@src/components/Filters';
 import { PROVIDER_STATUS } from '../../config';
 import { CustomDataTable } from '@src/components/dataTableComponent';
@@ -32,6 +32,7 @@ const List = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const { t } = useTranslate();
   const navigate = useNavigate();
+  const location = useLocation();
   const { items, add, remove } = useTimedArray(10000);
   const { filters, applyFilters, clearFilters } = useFilters();
   const { data = [] } = useTable();
@@ -63,6 +64,16 @@ const List = () => {
   const handleOnSort = (sortKey, sortDirection) => {
     console.log(sortKey, sortDirection);
   };
+  React.useEffect(() => {
+    const { state } = location;
+    if (state?.items) {
+      state.items.map((item) => {
+        add({ ...item });
+      });
+      navigate(location.pathname, { replace: true });
+    }
+  }, []);
+
   const handleOnClick = (url) => () => navigate(url);
   const { pageNo, totalElements, totalPages, pageSize } = pagination;
   return (

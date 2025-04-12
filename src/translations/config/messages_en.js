@@ -26,5 +26,18 @@ export const ConfigurationMessagesEN = {
     'Failed to activate provider. Please try again.',
   'provider.deactivationSuccess': 'Provider has been deactivated successfully.',
   'provider.deactivationFailure':
-    'Failed to deactivate provider. Please try again.'
+    'Failed to deactivate provider. Please try again.',
+
+  'provider.name': 'Name',
+  'provider.address': 'Name',
+  'provider.deaNumber': 'DEA Number',
+  'provider.npiNumber': 'NPI Number',
+  'provider.phoneNumber': 'Phone Number',
+
+  'provider.btnEditProviderDetails': 'Edit Provider Details',
+  'provider.btnLinkSpAccounts': 'Link SP Accounts',
+  'provider.linkSpAccount': 'Link SP Account',
+  'provider.providerDetails': 'Provider Details',
+  'provider.providerInformation': 'Provider Information',
+  'provider.linkedSpAccounts': 'Linked SP Accounts'
 };
