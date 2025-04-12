@@ -5,32 +5,32 @@ const getStates = () => {
   options.unshift({
     isDisabled: true,
     value: '',
-    label: 'Select'
+    label: 'provider.placeholder.select'
   });
   return options;
 };
 
 export const sections = [
   {
-    title: 'Provider Details',
+    title: 'provider.providerDetails',
     isRequired: true,
     rows: [
       {
         grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
         controls: [
           {
-            label: 'First Name',
+            label: 'provider.firstName',
             type: 'input',
             name: 'firstName',
             isRequired: true
           },
           {
-            label: 'Middle Name',
+            label: 'provider.middleName',
             type: 'input',
             name: 'middleName'
           },
           {
-            label: 'Last Name',
+            label: 'provider.lastName',
             type: 'input',
             name: 'lastName',
             isRequired: true
@@ -41,13 +41,13 @@ export const sections = [
         grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
         controls: [
           {
-            label: 'DEA Number',
+            label: 'provider.deaNumber',
             type: 'input',
             name: 'deaNumber',
             isRequired: true
           },
           {
-            label: 'NPI Number',
+            label: 'provider.npiNumber',
             type: 'input',
             name: 'npiNumber',
             isRequired: true
@@ -57,19 +57,19 @@ export const sections = [
     ]
   },
   {
-    title: 'Contact Details',
+    title: 'provider.contactDetails',
     rows: [
       {
         grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start',
         controls: [
           {
-            label: 'Address 1',
+            label: 'provider.address1',
             type: 'input',
             name: 'address1',
             isRequired: true
           },
           {
-            label: 'Address 2',
+            label: 'provider.address2',
             type: 'input',
             name: 'address2'
           }
@@ -78,10 +78,20 @@ export const sections = [
       {
         grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
         controls: [
-          { label: 'City', type: 'input', name: 'city', isRequired: true },
-          { label: 'Zip', type: 'input', name: 'zip', isRequired: true },
           {
-            label: 'State',
+            label: 'provider.city',
+            type: 'input',
+            name: 'city',
+            isRequired: true
+          },
+          {
+            label: 'provider.zip',
+            type: 'input',
+            name: 'zip',
+            isRequired: true
+          },
+          {
+            label: 'provider.state',
             type: 'dropdown',
             name: 'state',
             options: getStates(),
@@ -93,7 +103,7 @@ export const sections = [
         grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
         controls: [
           {
-            label: 'Phone Number',
+            label: 'provider.phoneNumber',
             type: 'input',
             name: 'phoneNumber',
             isRequired: true

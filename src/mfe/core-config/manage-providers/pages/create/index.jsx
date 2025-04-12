@@ -6,7 +6,7 @@ import ProviderService from '@src/api/commonService/ProviderService';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as SpinnerIcon } from '@src/assets/svg/spinner.svg';
-import { providerSchema } from '../../forms/provider.schema';
+import { getProviderSchema } from '../../forms/provider.schema';
 import FormRenderer from '../../forms/FormRenderer';
 import { sections } from '../../forms/provider.config';
 import { useQuery } from 'react-query';
@@ -41,7 +41,8 @@ const ProviderForm = (props) => {
   } = useQuery({
     queryKey: ['provider', 'provider-details', id],
     queryFn: ProviderService.getProviderDetailsById.bind(null, id),
-    onSuccess: setInitialValues
+    onSuccess: setInitialValues,
+    enabled: isEditOperation
   });
 
   const handleSubmit = (values) => {
@@ -118,10 +119,12 @@ const ProviderForm = (props) => {
     }
   };
 
+  const isLoading = isProviderDetailsLoading || isProviderDetailsFetching;
+
   return (
     <div>
       <Formik
-        validationSchema={providerSchema}
+        validationSchema={getProviderSchema(t)}
         initialValues={initialValues}
         onSubmit={handleSubmit}
         enableReinitialize={true}>
@@ -131,7 +134,7 @@ const ProviderForm = (props) => {
               <Heading as="h1">
                 {isEditOperation ? 'Edit Provider' : 'Add Provider'}
               </Heading>
-              {isProviderDetailsError && providerDetailsError ? (
+              {isEditOperation && isProviderDetailsError ? (
                 <Alert
                   description={providerDetailsError.message}
                   type={'error'}
@@ -155,7 +158,7 @@ const ProviderForm = (props) => {
                     </div>
                   )}
                   <div className="MCP-CardContainer">
-                    {isProviderDetailsLoading || isProviderDetailsFetching ? (
+                    {isEditOperation && isLoading ? (
                       <div className="spinner-wrapper md">
                         <SpinnerIcon />
                       </div>
@@ -163,9 +166,7 @@ const ProviderForm = (props) => {
                       <FormRenderer sections={sections} />
                     )}
                   </div>
-                  {(!isEditOperation ||
-                    !isProviderDetailsLoading ||
-                    !isProviderDetailsFetching) && (
+                  {(!isEditOperation || !isLoading) && (
                     <div className="controls">
                       <Button
                         type="submit"
@@ -174,12 +175,14 @@ const ProviderForm = (props) => {
                         onClick={() => {
                           navigate(-1);
                         }}>
-                        Cancel
+                        {t('provider.btnCancel')}
                       </Button>
                       <Button type="submit" size="md">
-                        {isEditOperation
-                          ? 'Update Provider'
-                          : 'Create Provider'}
+                        {t(
+                          isEditOperation
+                            ? 'provider.btnUpdateProvider'
+                            : 'provider.btnCreateProvider'
+                        )}
                       </Button>
                     </div>
                   )}
