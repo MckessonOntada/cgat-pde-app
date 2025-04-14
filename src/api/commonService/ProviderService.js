@@ -95,11 +95,12 @@ async function getProviderDetailsById(id) {
       middleName: sanitizeString(name.middleName),
       lastName: sanitizeString(name.lastName),
       deaNumber: sanitizeString(name.dea),
+      deaNumber: dea,
       npiNumber: npi,
       phoneNumber: phone,
-      city: sanitizeString(name.city),
-      zip: sanitizeString(name.zip),
-      state: sanitizeString(name.state)
+      city: sanitizeString(address?.city),
+      zip: sanitizeString(address?.zip),
+      state: sanitizeString(address?.state)
     };
 
     return sanitizedResponse;

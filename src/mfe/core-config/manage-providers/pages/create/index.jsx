@@ -10,6 +10,8 @@ import { getProviderSchema } from '../../forms/provider.schema';
 import FormRenderer from '../../forms/FormRenderer';
 import { sections } from '../../forms/provider.config';
 import { useQuery } from 'react-query';
+import AuthUtils from '@src/util/AuthUtils';
+import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
 
 const INITIAL_VALUES = {
   firstName: '',
@@ -27,12 +29,29 @@ const INITIAL_VALUES = {
 
 const ProviderForm = (props) => {
   const { values, isEditOperation } = props;
+  const isSystemAdminView = AuthUtils.isSystemAdminView();
   const navigate = useNavigate();
   const { t } = useTranslate();
   const { items, add, remove } = useTimedArray(10000);
   const { id } = useParams();
   const [initialValues, setInitialValues] = React.useState(INITIAL_VALUES);
-
+  const breadcrumbItems = React.useMemo(() => {
+    return [
+      {
+        label: t('breadcrumb.admin'),
+        url: isSystemAdminView ? '/' : '/admin'
+      },
+      {
+        label: t('label.providers'),
+        url: isSystemAdminView ? '/' : '/admin/providers'
+      },
+      {
+        label: t(
+          isEditOperation ? `provider.editProvider` : `provider.addProvider`
+        )
+      }
+    ];
+  }, [isSystemAdminView]);
   const {
     isFetching: isProviderDetailsFetching,
     isLoading: isProviderDetailsLoading,
@@ -91,8 +110,9 @@ const ProviderForm = (props) => {
           });
         })
         .catch((error) => {
+          const { response } = error;
           add({
-            description: error.message,
+            description: response?.data?.message || error.message,
             type: 'error'
           });
         });
@@ -111,8 +131,9 @@ const ProviderForm = (props) => {
           });
         })
         .catch((error) => {
+          const { response } = error;
           add({
-            description: error.message,
+            description: response?.data?.message || error.message,
             type: 'error'
           });
         });
@@ -130,10 +151,15 @@ const ProviderForm = (props) => {
         enableReinitialize={true}>
         <Form>
           <div className="MCP-module-wrapper">
+            <Breadcrumbs items={breadcrumbItems} />
+            <Heading as="h1">
+              {t(
+                isEditOperation
+                  ? `provider.editProvider`
+                  : `provider.addProvider`
+              )}
+            </Heading>
             <div className="MCP-module-body">
-              <Heading as="h1">
-                {isEditOperation ? 'Edit Provider' : 'Add Provider'}
-              </Heading>
               {isEditOperation && isProviderDetailsError ? (
                 <Alert
                   description={providerDetailsError.message}

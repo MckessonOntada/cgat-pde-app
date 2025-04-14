@@ -10,6 +10,7 @@ import CommonUtils from '@src/util/CommonUtils';
 import DetailSegment from '@src/components/DetailSegment';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
+import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 
 const ProviderDetails = () => {
   const { id } = useParams();
@@ -43,8 +44,18 @@ const ProviderDetails = () => {
 
   return (
     <div className="MCP-module-wrapper">
+      <div>
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={() => navigate(`admin/providers`)}
+          size="md">
+          {t('captions.btnBackToManageOrder')}
+        </Button>
+      </div>
+      <Heading as="h1">{t('provider.providerDetails')}</Heading>
       <div className="MCP-module-body">
-        <Heading as="h1">{t('provider.providerDetails')}</Heading>
         <div className="MCP-module-body">
           <ModuleHeader
             heading={

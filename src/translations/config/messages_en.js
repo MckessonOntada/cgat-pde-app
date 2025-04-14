@@ -109,5 +109,8 @@ export const ConfigurationMessagesEN = {
   'provider.phone': 'Phone Number',
   'provider.phone.required': 'Please enter your Phone Number.',
   'provider.phone.format':
-    'Phone Number should be exactly 10 digits and cannot start with 0 or contain symbols or spaces.'
+    'Phone Number should be exactly 10 digits and cannot start with 0 or contain symbols or spaces.',
+
+  'provider.addProvider': 'Add Provider',
+  'provider.editProvider': 'Edit Provider'
 };

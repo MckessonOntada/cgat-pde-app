@@ -20,6 +20,7 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import {
   useFilters,
   usePagination,
+  useSort,
   useTable
 } from '../../context/TableContext';
 import { getColumns } from './TableColumns';
@@ -35,6 +36,7 @@ const List = () => {
   const location = useLocation();
   const { items, add, remove } = useTimedArray(10000);
   const { filters, applyFilters, clearFilters } = useFilters();
+  const { applySort } = useSort();
   const { data = [] } = useTable();
   const { pagination, changePage } = usePagination();
   const breadcrumbItems = React.useMemo(() => {
@@ -61,8 +63,8 @@ const List = () => {
       }
     ];
   }, []);
-  const handleOnSort = (sortKey, sortDirection) => {
-    console.log(sortKey, sortDirection);
+  const handleOnSort = (column, sortDirection) => {
+    applySort(column.sortKey, sortDirection);
   };
   React.useEffect(() => {
     const { state } = location;

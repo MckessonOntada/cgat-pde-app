@@ -21,6 +21,7 @@ import CommonUtils from '@src/util/CommonUtils';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import usePermission from '@src/hooks/usePermissions';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import { ROUTE_PATHS } from '../../routes/constants';
 
 const PROVIDER_COLUMNS = {
   PROVIDER_NAME: 'PROVIDER_NAME',
@@ -190,7 +191,6 @@ export const getColumns = (add) => {
       id: PROVIDER_COLUMNS.PROVIDER_NAME,
       name: t('providers.columnCaption.providerName'),
       minWidth: '130px',
-      selector: () => {},
       sortable: true,
       sortKey: 'first name',
       cell: (props) => {
@@ -198,7 +198,9 @@ export const getColumns = (add) => {
           PERMISSIONS_ENUM.MANAGE_PROVIDERS.VIEW_PROVIDER
         );
         return props?.name ? (
-          <Link className="MCP-table-link" to={`${isAllowed ? props.id : ''}`}>
+          <Link
+            className="MCP-table-link"
+            to={`${isAllowed ? `${ROUTE_PATHS.VIEW}/${props.id}` : ''}`}>
             {CommonUtils.getFullName(props?.name)}
           </Link>
         ) : (
