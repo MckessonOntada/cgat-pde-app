@@ -142,9 +142,13 @@ export const getColumns = (add) => {
 
   const getMenuOption = (props) => {
     const options = [];
-
+    const { selectedRows } = useSelection();
     if (hasPermission(PERMISSIONS_ENUM.MANAGE_PROVIDERS.EDIT_PROVIDER)) {
-      options.push({ label: 'Edit', value: 'edit' });
+      options.push({
+        label: 'Edit',
+        value: 'edit',
+        disabled: selectedRows.size > 1
+      });
       options.push({
         label: props.isActive ? 'Deactivate' : 'Activate',
         value: props.isActive ? 'deactivate' : 'activate'

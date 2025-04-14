@@ -20,6 +20,7 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import {
   useFilters,
   usePagination,
+  useSelection,
   useSort,
   useTable
 } from '../../context/TableContext';
@@ -36,6 +37,7 @@ const List = () => {
   const location = useLocation();
   const { items, add, remove } = useTimedArray(10000);
   const { filters, applyFilters, clearFilters } = useFilters();
+  const { selectedRows } = useSelection();
   const { applySort } = useSort();
   const { data = [] } = useTable();
   const { pagination, changePage } = usePagination();
@@ -134,6 +136,21 @@ const List = () => {
         <ModuleHeader
           heading={<Heading as="h2">{t('label.providerListing')}</Heading>}
         />
+        {selectedRows.size > 0 && (
+          <div className="table-selection-ribbon">
+            <p>
+              {`${selectedRows.size} Item${
+                selectedRows.size > 1 ? 's' : ''
+              } selected`}
+            </p>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => navigate('link-sp-accounts/')}>
+              {t('provider.linkedSpAccounts')}
+            </Button>
+          </div>
+        )}
         <CustomDataTable
           id="provider-list-table"
           columns={getColumns(add)}
