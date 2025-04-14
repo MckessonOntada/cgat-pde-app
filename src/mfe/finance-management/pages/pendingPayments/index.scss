@@ -153,3 +153,11 @@
     }
   }
 }
+
+#data-table-pending_payments_table {
+  div[role="row"] {
+    div[role="cell"] {
+      flex-wrap: nowrap;
+    }
+  }
+}

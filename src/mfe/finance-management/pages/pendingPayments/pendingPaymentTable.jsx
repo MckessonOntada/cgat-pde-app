@@ -21,7 +21,15 @@ import dayjs from 'dayjs';
 
 export default function PendingPaymentTable() {
   const { t } = useTranslate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, refetch } = usePendingPayments();
+  const {
+    data,
+    isFetching,
+    paginationConfig,
+    setPageNumber,
+    applySort,
+    isError,
+    refetch
+  } = usePendingPayments();
   const { selectedAccount } = useAccountContext();
   const showCardView = useResponsiveView();
   const { showSnackbar } = useSnackbar();
@@ -39,7 +47,11 @@ export default function PendingPaymentTable() {
       cell: (props) => (
         <div className="cellEllipse">
           <Link
-            style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
+            style={{
+              color: 'var(--brand-color-primary)',
+              fontWeight: '600',
+              textDecoration: 'none'
+            }}
             to={`/record/${PATHS.pendingPayments}/${props.confirmationNo}/confirmation`}
             state={{ ...props }}>
             {props.confirmationNo}
@@ -63,7 +75,12 @@ export default function PendingPaymentTable() {
       sortable: true,
       wrap: true,
       maxWidth: '160px',
-      cell: (props) => CommonUtils.convertDateStringFormat(props.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
+      cell: (props) =>
+        CommonUtils.convertDateStringFormat(
+          props.paymentInitiationDate,
+          'MM/DD/YYYY',
+          'DD/MM/YYYY'
+        )
     },
     {
       id: 'authorizedAmt',
@@ -74,7 +91,11 @@ export default function PendingPaymentTable() {
       wrap: true,
       cell: (props) => (
         <div className="cellEllipse align-items-right">
-          <FormattedNumber value={props?.authorizedAmt} style="currency" currency="USD" />
+          <FormattedNumber
+            value={props?.authorizedAmt}
+            style="currency"
+            currency="USD"
+          />
         </div>
       ),
       right: true
@@ -87,16 +108,27 @@ export default function PendingPaymentTable() {
       center: true,
       isAction: true,
       cell: (props) => {
-        const today = new Date().getTime();
-        const payOnDate = new Date(dayjs(props.payOn, 'DD/MM/YYYY').format('MM/DD/YYYY')).getTime();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const payOnDate = dayjs(props.payOn, 'DD/MM/YYYY').toDate().getTime();
         const earliestDueDate = props.invoices?.reduce((min, inv) => {
           const date = dayjs(inv.dueDate, 'DD/MM/YYYY');
           return !min || date.isBefore(min) ? date : min;
         }, null);
         const dueDate = earliestDueDate?.valueOf();
-        const isValidDate = payOnDate >= today && payOnDate <= dueDate;
+        const isValidDate =
+          payOnDate >= today.getTime() && today.getTime() <= dueDate;
+
+        const payOnDateFormatted = dayjs(payOnDate).format('MM/DD/YYYY');
+        const todayFormatted = dayjs(today).format('MM/DD/YYYY');
+        const dueDateFormatted = dayjs(dueDate).format('MM/DD/YYYY');
+
+        const tooltipMessage =
+          `Pay On date (${payOnDateFormatted}) should be today (${todayFormatted}) or later.\n` +
+          `Today's date (${todayFormatted}) must not be after the due date (${dueDateFormatted}).`;
         return (
-          <Tooltip body={!isValidDate ? t('pendingPayments.cancel.tooltip') : ''}>
+          //  Tooltip component not accepting styles/classnames
+          <Tooltip body={!isValidDate ? tooltipMessage : ''} width="450px">
             <span>
               <Button
                 className="cancel-button-control"
@@ -114,7 +146,8 @@ export default function PendingPaymentTable() {
     }
   ];
   const handleSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
+    if (selectedColumn.id)
+      applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
   };
 
   const handleChangePage = (e, newPage) => {
@@ -145,17 +178,29 @@ export default function PendingPaymentTable() {
 
   const { mutate } = useMutation(
     async ({ confirmationNo }) => {
-      const apiUrl = `${ApiRoutes.PENDING_PAYMENTS_LISTING(selectedAccount?.id)}/${selectedAccount.companyCode}/${confirmationNo}`;
-      const res = await HttpResourceService.callRest(apiUrl, httpVerb.DELETE, {});
+      const apiUrl = `${ApiRoutes.PENDING_PAYMENTS_LISTING(
+        selectedAccount?.id
+      )}/${selectedAccount.companyCode}/${confirmationNo}`;
+      const res = await HttpResourceService.callRest(
+        apiUrl,
+        httpVerb.DELETE,
+        {}
+      );
       return res;
     },
     {
       onSuccess: (response) => {
         refetch();
-        showSnackbar({ description: t('pendingPayments.cancel.success'), type: 'success' });
+        showSnackbar({
+          description: t('pendingPayments.cancel.success'),
+          type: 'success'
+        });
       },
       onError: (error) => {
-        showSnackbar({ description: t('pendingPayments.cancel.failed'), type: 'error' });
+        showSnackbar({
+          description: t('pendingPayments.cancel.failed'),
+          type: 'error'
+        });
       }
     }
   );
@@ -164,7 +209,7 @@ export default function PendingPaymentTable() {
     <React.Fragment>
       {/* <DataTable columns={columns} rows={filteredData} responsive /> */}
       <CustomDataTable
-        id="my-data-table"
+        id="pending_payments_table"
         type="normal"
         columns={columns}
         data={data || []}
@@ -185,7 +230,9 @@ export default function PendingPaymentTable() {
             isLoading={isFetching}
             image={EmptyDataImage}
             heading={t('pendingPayments.table.bankAccount.emptyData')}
-            description={t('paymentInvoices.history.table.emptyDataDescription')}
+            description={t(
+              'paymentInvoices.history.table.emptyDataDescription'
+            )}
           />
         }
         progressComponent={

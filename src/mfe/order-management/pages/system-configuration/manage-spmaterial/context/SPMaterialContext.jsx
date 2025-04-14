@@ -1,4 +1,11 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import { useQuery } from 'react-query';
 import MaterialService from '@src/api/commonService/MaterialService';
 
@@ -31,7 +38,9 @@ const INITIAL_PAGINATION_CONFIG = {
 
 export const SPMaterialProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
-  const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
+  const [paginationConfig, setPaginationConfig] = useState(
+    INITIAL_PAGINATION_CONFIG
+  );
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
 
   const updateFilterState = useCallback((field, value) => {
@@ -41,18 +50,26 @@ export const SPMaterialProvider = ({ children }) => {
     }));
   }, []);
 
-  const requestParams = useMemo(
-    () => ({
+  const requestParams = useMemo(() => {
+    const statusFilter = filterConfig?.status;
+
+    const statusParam =
+      statusFilter === 'all'
+        ? ['active', 'inactive']
+        : statusFilter
+        ? [statusFilter]
+        : 'active';
+
+    return {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
       sortBy: sortConfig.sortBy || 'material_number',
       sortOrder: sortConfig.sortOrder || 'desc',
       channelTypes: 'SPECIALITY_PHARMA',
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      ...(filterConfig?.status?.length && { status: [filterConfig.status] })
-    }),
-    [filterConfig, paginationConfig.pageNumber, sortConfig]
-  );
+      ...(statusParam && { status: statusParam })
+    };
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
 
   const { isLoading, isError, error, data, refetch } = useQuery({
     queryKey: ['SPMaterials', requestParams],
@@ -109,5 +126,9 @@ export const SPMaterialProvider = ({ children }) => {
     }),
     [updateFilterState, clearFilters, isLoading, isError, data, refetch]
   );
-  return <SPMaterialContext.Provider value={ctxValue}>{children}</SPMaterialContext.Provider>;
+  return (
+    <SPMaterialContext.Provider value={ctxValue}>
+      {children}
+    </SPMaterialContext.Provider>
+  );
 };

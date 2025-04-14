@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CustomDataTable, Loader, Badge } from '@mckesson/mcp-component-library';
+import {
+  CustomDataTable,
+  Loader,
+  Badge
+} from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
@@ -11,7 +15,14 @@ import SPMaterialDetails from './SPMaterialDetails';
 
 function SPMaterialDataTable() {
   const { t } = useTranslate();
-  const { paginationConfig, data, setPageNumber, isLoading, refreshData, applySort } = useSPMaterial();
+  const {
+    paginationConfig,
+    data,
+    setPageNumber,
+    isLoading,
+    refreshData,
+    applySort
+  } = useSPMaterial();
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
 
@@ -27,7 +38,11 @@ function SPMaterialDataTable() {
       cell: (props) => (
         <div className="cellEllipse">
           <Link
-            style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
+            style={{
+              color: '#007bff',
+              fontWeight: '600',
+              textDecoration: 'none'
+            }}
             onClick={() => {
               setViewSPMaterial(props);
               setOpenSPMaterialDetails(true);
@@ -43,9 +58,11 @@ function SPMaterialDataTable() {
       selector: (row) => {},
       minWidth: '350px',
       sortable: true,
-      sortKey: 'generic_name',
+      sortKey: 'material_description',
       wrap: true,
-      cell: (props) => <EclipsesTextcss str={props?.genericName} maxWidth={350} />
+      cell: (props) => (
+        <EclipsesTextcss str={props?.materialDescription} maxWidth={350} />
+      )
     },
     {
       id: 'ndcNumber',
@@ -74,13 +91,20 @@ function SPMaterialDataTable() {
       sortKey: 'status',
       minWidth: '100px',
       center: true,
-      cell: (props) => (
-        // props.status == 'ACTIVE' ? (
-        <Badge customStyle={{ minWidth: '120px' }} text="Active" type="success" />
-      )
-      // ) : (
-      //   <Badge customStyle={{ minWidth: '120px' }} text="Inactive" type="info-default" />
-      // )
+      cell: (props) =>
+        props.itemStatus === 'A' ? (
+          <Badge
+            customStyle={{ minWidth: '120px' }}
+            text="Active"
+            type="success"
+          />
+        ) : (
+          <Badge
+            customStyle={{ minWidth: '120px' }}
+            text="Inactive"
+            type="info-default"
+          />
+        )
     }
   ];
 
@@ -88,12 +112,16 @@ function SPMaterialDataTable() {
     setPageNumber(newPage);
   };
   const handleOnSortIconClick = (selectedColumn, sortDirection) => {
-    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    if (selectedColumn.sortKey)
+      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
   return (
     <div>
-      <TableHeading heading={t('manageSPMaterial.heading.materialListing')} style={{ marginBottom: '16px' }} />
+      <TableHeading
+        heading={t('manageSPMaterial.heading.materialListing')}
+        style={{ marginBottom: '16px' }}
+      />
       <CustomDataTable
         id="sp-material-table"
         type="normal"

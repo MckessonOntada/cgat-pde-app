@@ -254,7 +254,7 @@ export const PaymentInvoicesEN = {
   'pendingPayments.table.confirmationDialogue': 'Are you sure you want to cancel this payment?',
   'pendingPayments.cancel.failed': 'Error occurred while cancelling the pending payment.',
   'pendingPayments.cancel.success': 'Payment Cancelled Succesfully.',
-  'pendingPayments.cancel.tooltip': 'This Payment can not be cancelled.',
+  'pendingPayments.cancel.tooltip': 'Pay On date should be today or later, and current date must not be after the due date.',
 
   // No data found
   'paymentInvoices.dataLoading': 'Fetching Accounts...',
