@@ -112,5 +112,6 @@ export const ConfigurationMessagesEN = {
     'Phone Number should be exactly 10 digits and cannot start with 0 or contain symbols or spaces.',
 
   'provider.addProvider': 'Add Provider',
-  'provider.editProvider': 'Edit Provider'
+  'provider.editProvider': 'Edit Provider',
+  'provider.btnBackToProviders': 'Back to manage providers page'
 };

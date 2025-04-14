@@ -49,9 +49,9 @@ const ProviderDetails = () => {
           className="back-button-control"
           variant="tertiary"
           Icon={() => <IconArrowLeft />}
-          onClick={() => navigate(`admin/providers`)}
+          onClick={() => navigate(`/admin/providers`)}
           size="md">
-          {t('captions.btnBackToManageOrder')}
+          {t('provider.btnBackToProviders')}
         </Button>
       </div>
       <Heading as="h1">{t('provider.providerDetails')}</Heading>
