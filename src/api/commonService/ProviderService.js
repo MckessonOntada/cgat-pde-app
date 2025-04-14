@@ -6,12 +6,12 @@ function sanitizeString(input) {
   if (typeof input !== 'string' || !input) return '';
 
   return input
-    .trim() // remove leading/trailing spaces
-    .replace(/</g, '&lt;') // escape <
-    .replace(/>/g, '&gt;') // escape >
-    .replace(/"/g, '&quot;') // escape "
-    .replace(/'/g, '&#39;') // escape '
-    .replace(/&/g, '&amp;'); // escape &
+    .trim()
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/&/g, '&amp;');
 }
 
 async function getAllProviders(params) {
@@ -64,7 +64,7 @@ async function updateProvider(id, payload) {
     throw new Error('Payload is required to update provider.');
   }
 
-  const url = `${ApiRoutes.ORGANIZATION_BASE}providers/${id}/`;
+  const url = `${ApiRoutes.ORGANIZATION_BASE}providers/${id}`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload, {
     'Content-Type': 'application/json;charset=utf-8',
     accept: 'application/json'
@@ -112,7 +112,7 @@ async function addProvider(payload) {
     throw new Error('Payload is required to add provider.');
   }
 
-  const url = `${ApiRoutes.ORGANIZATION_BASE}providers/`;
+  const url = `${ApiRoutes.ORGANIZATION_BASE}providers`;
   const res = await HttpResourceService.callRest(url, httpVerb.POST, payload, {
     'Content-Type': 'application/json;charset=utf-8',
     accept: 'application/json'
