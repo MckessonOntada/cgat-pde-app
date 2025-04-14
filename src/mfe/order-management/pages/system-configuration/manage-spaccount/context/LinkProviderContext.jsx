@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import LinkProviderService from '@src/api/commonService/LinkProviderService';
+import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
 
 const LinkProviderContext = createContext();
 
@@ -18,8 +19,8 @@ const INITIAL_FILTER_STATE = {
 };
 
 const INITIAL_SORT_STATE = {
-  sortBy: null,
-  sortOrder: null
+  sortBy: 'first_name',
+  sortOrder: 'asc'
 };
 
 const INITIAL_PAGINATION_CONFIG = {
@@ -33,6 +34,7 @@ export const LinkProviderProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
+  const { selectedOrganization } = useOrgAccountSelectionContext();
 
   const updateFilterState = useCallback((field, value) => {
     setFilterState((prevState) => ({
@@ -54,9 +56,9 @@ export const LinkProviderProvider = ({ children }) => {
   );
 
   const { isLoading, isError, error, data, refetch } = useQuery({
-    queryKey: ['LinkProviders', requestParams],
+    queryKey: ['LinkProviders', requestParams, selectedOrganization?.id],
     queryFn: async () => {
-      const result = await LinkProviderService.getLinkProviderList(requestParams);
+      const result = await LinkProviderService.getProviderList(requestParams, selectedOrganization?.id);
       const { totalElements, totalPages } = result;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
