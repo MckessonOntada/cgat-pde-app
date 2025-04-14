@@ -17,6 +17,7 @@ function OrderStepper({ status, patientDetailsRequired = false }) {
   });
 
   const currentStage = {
+    THERAPY_SELECTION: 1,
     ACCOUNT_DETAILS: 2,
     PATIENT_DETAILS: 3,
     ADDITIONAL_DETAILS: 4,
