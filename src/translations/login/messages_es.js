@@ -39,5 +39,5 @@ export const LoginMessagesES = {
   'reset.password.ok': 'S_OK',
   'reset.password.account.settings': 'S_Account Settings',
   'reset.password.login.userInformation': 'S_User Information',
-  'reset.password.error': 'S_Failed to sent reset passwrd email'
+  'reset.password.error': 'S_Failed to sent reset password email'
 };
