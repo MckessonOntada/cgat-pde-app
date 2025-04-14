@@ -17,10 +17,6 @@ export default function DateRangePickerFormik({ minDate, maxDate, ...props }) {
     const fromDate = min ? new Date(min) : null;
     const toDate = max ? new Date(max) : null;
 
-    if (fromDate) {
-      setPickerMinDate(fromDate);
-    }
-
     // if ((!fromDate && toDate) || (fromDate && !toDate)) {
     //   error = 'Please select a valid date range.';
     // } else if (fromDate && toDate && fromDate > toDate) {
