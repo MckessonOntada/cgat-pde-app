@@ -27,7 +27,7 @@ const AccountSetting = () => {
       },
       onError: () => {
         addNotification({
-          description: 'Failed to sent reset passwrd email.',
+          description: t('reset.password.error'),
           type: 'error',
         });
       }

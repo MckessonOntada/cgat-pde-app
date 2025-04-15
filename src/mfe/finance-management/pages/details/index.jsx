@@ -40,7 +40,8 @@ function Details(props) {
   const locationParams = useLocation();
   const showCardView = useResponsiveView();
 
-  const { state: { invoices = [], selectedCredit = [] } = {} } = locationParams;
+  const { state = {} } = locationParams;
+  const { invoices = [], selectedCredit = [] } = state || {};
   const source = invoices[0] || selectedCredit[0];
   const onBackToPaymentsInvoices = () => {
     navigate(-1);
@@ -89,7 +90,11 @@ function Details(props) {
       : {
           [t('paymentInvoices.Details.CreditAmount')]: `$${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
           [t('paymentInvoices.Details.CreditRemaining')]: '',
-          [t('paymentInvoices.credits.table.credit.date')]: CommonUtils.convertDateStringFormat(res.data.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
+          [t('paymentInvoices.credits.table.credit.date')]: CommonUtils.convertDateStringFormat(
+            res.data.dueDate,
+            'MM/DD/YYYY',
+            'DD/MM/YYYY'
+          )
         };
     setBillDates(_invoiceDue);
   };

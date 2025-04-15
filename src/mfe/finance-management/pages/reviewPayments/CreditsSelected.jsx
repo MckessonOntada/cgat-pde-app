@@ -11,6 +11,7 @@ import { FormattedNumber } from 'react-intl';
 import CommonUtils from '@src/util/CommonUtils';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import { PATHS } from '../../routes/constants';
 
 function CreditsSelected(props) {
   const { t } = useTranslate();
@@ -38,6 +39,7 @@ function CreditsSelected(props) {
         <div className="cellEllipse">
           <Link
             style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
+            state={{ ...state, selectedCredit: [...[], props] }}
             to={`/record/${PATHS.credits}/${props?.billNumber}/details`}>
             {`${props?.billNumber}`}
           </Link>

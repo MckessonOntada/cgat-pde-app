@@ -41,13 +41,15 @@ const AccountCard = ({ options = [], onChange, isFetching }) => {
           option.zipCode,
           option.country
         ]
-          .filter((segment) => Boolean(segment))
+          .filter((segment) => Boolean(segment?.trim()))
           .join(', ');
 
         return (
           <label
             key={index}
-            className={`${styles.card} ${selected === option.id ? styles.selected : null}`}
+            className={`${styles.card} ${
+              selected === option.id ? styles.selected : null
+            }`}
             onClick={() => handleSelect(option.id)}>
             <input
               type="radio"
