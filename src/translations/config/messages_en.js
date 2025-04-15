@@ -113,5 +113,10 @@ export const ConfigurationMessagesEN = {
 
   'provider.addProvider': 'Add Provider',
   'provider.editProvider': 'Edit Provider',
-  'provider.btnBackToProviders': 'Back to manage providers page'
+  'provider.btnBackToProviders': 'Back to manage providers page',
+
+  'provider.option.ALL': 'All',
+  'provider.option.ALL': 'SUBMITTED_BUY_AND_BILL',
+  'provider.orderType': 'Order Type',
+  'provider.assignee': 'Assignee'
 };
