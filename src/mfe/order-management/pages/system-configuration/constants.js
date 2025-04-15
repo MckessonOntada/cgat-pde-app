@@ -68,22 +68,22 @@ const CARDS = [
     details: 'system_config_description_manage_spmaterial',
     path: CONFIG_MODULE_ROUTES.MANAGE_SPMATERIAL
   },
-  {
-    heading: 'dashboard.card.system_config_sp_settings',
-    name: 'SystemConfig_MaterialCrossWalk',
-    label: 'system_config_manage_materialcrosswalk',
-    icon: SystemConfigurationMaterialCrosswalk,
-    details: 'system_config_description_material_crosswalk',
-    path: CONFIG_MODULE_ROUTES.MATERIAL_CROSSWALK
-  },
-  {
-    heading: 'dashboard.card.system_config_sp_settings',
-    name: 'SystemConfig_ManageSPCatalog',
-    label: 'system_config_manage_spcatalog',
-    icon: SystemConfigurationSPCatalog,
-    details: 'system_config_description_manage_spcatalog',
-    path: CONFIG_MODULE_ROUTES.MANAGE_SPCATALOG
-  },
+  // {
+  //   heading: 'dashboard.card.system_config_sp_settings',
+  //   name: 'SystemConfig_MaterialCrossWalk',
+  //   label: 'system_config_manage_materialcrosswalk',
+  //   icon: SystemConfigurationMaterialCrosswalk,
+  //   details: 'system_config_description_material_crosswalk',
+  //   path: CONFIG_MODULE_ROUTES.MATERIAL_CROSSWALK
+  // },
+  // {
+  //   heading: 'dashboard.card.system_config_sp_settings',
+  //   name: 'SystemConfig_ManageSPCatalog',
+  //   label: 'system_config_manage_spcatalog',
+  //   icon: SystemConfigurationSPCatalog,
+  //   details: 'system_config_description_manage_spcatalog',
+  //   path: CONFIG_MODULE_ROUTES.MANAGE_SPCATALOG
+  // },
   {
     heading: 'dashboard.card.system_config_sp_settings',
     name: 'SystemConfig_ManageSPAccount',

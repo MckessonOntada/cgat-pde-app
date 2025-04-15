@@ -7,6 +7,7 @@
     gap: var(--spacing-03);
     .details-ul {
       margin-top: 0px !important;
+      word-break: break-word;
       .details-li {
         display: flex;
         align-items: center;

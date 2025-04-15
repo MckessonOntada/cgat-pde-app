@@ -13,13 +13,15 @@ import { useTranslate } from '@src/translations/useTranslation';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import AuthUtils from '@src/util/AuthUtils';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CommonFilters from '@src/components/Filters';
 import { PROVIDER_STATUS } from '../../config';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import {
   useFilters,
   usePagination,
+  useSelection,
+  useSort,
   useTable
 } from '../../context/TableContext';
 import { getColumns } from './TableColumns';
@@ -32,8 +34,11 @@ const List = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const { t } = useTranslate();
   const navigate = useNavigate();
+  const location = useLocation();
   const { items, add, remove } = useTimedArray(10000);
   const { filters, applyFilters, clearFilters } = useFilters();
+  const { selectedRows } = useSelection();
+  const { applySort } = useSort();
   const { data = [] } = useTable();
   const { pagination, changePage } = usePagination();
   const breadcrumbItems = React.useMemo(() => {
@@ -60,6 +65,19 @@ const List = () => {
       }
     ];
   }, []);
+  const handleOnSort = (column, sortDirection) => {
+    applySort(column.sortKey, sortDirection);
+  };
+  React.useEffect(() => {
+    const { state } = location;
+    if (state?.items) {
+      state.items.map((item) => {
+        add({ ...item });
+      });
+      navigate(location.pathname, { replace: true });
+    }
+  }, []);
+
   const handleOnClick = (url) => () => navigate(url);
   const { pageNo, totalElements, totalPages, pageSize } = pagination;
   return (
@@ -118,12 +136,27 @@ const List = () => {
         <ModuleHeader
           heading={<Heading as="h2">{t('label.providerListing')}</Heading>}
         />
+        {selectedRows.size > 0 && (
+          <div className="table-selection-ribbon">
+            <p>
+              {`${selectedRows.size} Item${
+                selectedRows.size > 1 ? 's' : ''
+              } selected`}
+            </p>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => navigate('link-sp-accounts/')}>
+              {t('provider.linkedSpAccounts')}
+            </Button>
+          </div>
+        )}
         <CustomDataTable
           id="provider-list-table"
           columns={getColumns(add)}
           data={data}
           handleChangePage={(_event, pageIndex) => changePage(pageIndex)}
-          onSortIconClick={() => {}}
+          onSortIconClick={handleOnSort}
           pagination={true}
           currentPage={pageNo}
           totalPageCount={totalPages}

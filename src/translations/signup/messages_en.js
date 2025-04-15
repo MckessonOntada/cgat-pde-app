@@ -21,7 +21,7 @@ export const SignupEN = {
   'banner.mainHeading': '',
   'banner.Heading': 'Advancing',
   'banner.subHeading': 'Health Outcomes for All',
-  'banner.subHeadline': 'Solutions for your pharmacy, hospital, Organization or biopharma company',
+  'banner.subHeadline': 'Solutions for your pharmacy, hospital, organization or biopharma company',
 
   'loginrequest.content':
     'Your request to create a new account has been submitted successfully. Please hold on while our admin reviews your information and approves your request. We will send your login credentials to the email address and phone number you provided.',
