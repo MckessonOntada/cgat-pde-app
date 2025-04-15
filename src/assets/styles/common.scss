@@ -132,6 +132,19 @@ div.disable-all {
   }
 }
 
+.table-selection-ribbon {
+  font-size: var(--brand-font-size--default);
+  font-weight: var(--brand-font-weight-600);
+  line-height: var(--brand-line-height--m-large);
+  padding: var(--spacing-02) var(--spacing-04);
+  text-align: left;
+  background: var(--brand-color-patient-primary-1);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .MCP-table-cell {
   &.radio-button-wrapper {
     fieldset {
@@ -1296,4 +1309,38 @@ div[role="row"] {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-02);
+}
+
+.MCP-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-03);
+
+  .form-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-03);
+
+    .form-section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+  }
+}
+
+.spinner-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-04);
+
+  &.sm {
+    padding: var(--spacing-02);
+  }
+
+  &.lg {
+    padding: var(--spacing-08);
+  }
 }
