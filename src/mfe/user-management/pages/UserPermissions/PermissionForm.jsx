@@ -154,15 +154,15 @@ const PermissionForm = ({
             'MANAGE_CATALOG',
             'VIEW_CATALOG',
             'MANAGE_CATALOG',
-            'VIEW_CATALOG'
-            // 'VIEW_SP_MATERIAL',
-            // 'VIEW_CROSSWALK',
-            // 'ADD_CROSSWALK',
-            // 'UPLOAD_CROSSWALK',
-            // 'MANAGE_SP_ACCOUNT',
-            // 'ADD_SP_ACCOUNT',
-            // 'MANAGE_SP_CATALOG',
-            // 'VIEW_SP_CATALOG'
+            'VIEW_CATALOG',
+            'VIEW_SP_MATERIAL',
+            'VIEW_CROSSWALK',
+            'ADD_CROSSWALK',
+            'UPLOAD_CROSSWALK',
+            'MANAGE_SP_ACCOUNT',
+            'ADD_SP_ACCOUNT',
+            'MANAGE_SP_CATALOG',
+            'VIEW_SP_CATALOG'
           ].includes(permission)
         ) {
           groupedPermissions.SYSTEM_CONFIGURATION[permission] = permission;

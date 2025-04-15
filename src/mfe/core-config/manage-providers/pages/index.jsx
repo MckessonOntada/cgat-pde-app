@@ -8,6 +8,7 @@ const Index = () => {
     search: '',
     status: ''
   };
+
   return (
     <TableProvider
       defaultFilters={defaultFilters}
