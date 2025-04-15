@@ -7,11 +7,6 @@ function sanitizeString(input) {
 
   return input
     .trim()
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-    .replace(/&/g, '&amp;');
 }
 
 async function getAllProviders(params) {
