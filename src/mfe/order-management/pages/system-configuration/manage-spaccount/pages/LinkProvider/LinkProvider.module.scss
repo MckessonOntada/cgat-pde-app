@@ -1,63 +1,23 @@
 @use "@src/assets/styles/abstracts/mixins";
 
-.account-box {
+.accountBox {
   display: flex;
   gap: var(--spacing-04);
-  // border: 1px solid var(--brand-color-patient-primary-3);
-  // border-radius: var(--brand-border-radius--6);
-  // padding: var(--spacing-03);
   overflow-x: hidden;
-}
-
-.customTable-box {
-  flex: 1;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-}
-
-.selected-account-chips {
-  display: block;
-
-  @include mixins.respond("lg") {
+  .customTableBox {
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  .selectedAccountBox {
     display: none;
+    min-height: 250px;
+  
+    @include mixins.respond("lg") {
+      width: 25%;
+      align-self: stretch;
+      display: block;
+    }
   }
-}
-
-.selected-account-box {
-  display: none;
-  min-height: 250px;
-
-  @include mixins.respond("lg") {
-    width: 25%;
-    align-self: stretch;
-    display: block;
-  }
-}
-
-.account-ID {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: var(--brand-color-primary);
-}
-
-.table-scroll-container {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.accounts-container {
-  width: 100%;
-  overflow: auto;
-  border: 1px solid var(--brand-color-patient-primary-3);
-  border-radius: var(--brand-border-radius--6);
-  padding: var(--spacing-03);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-04);
-}
-
-.accounts-wrapper {
-  overflow: auto;
 }

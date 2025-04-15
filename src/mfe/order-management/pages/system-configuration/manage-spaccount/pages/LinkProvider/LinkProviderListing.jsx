@@ -69,7 +69,6 @@ function LinkProviderListing() {
           )}
           <LinkProviderTable 
             handleRemoveLinkProvider={handleRemoveLinkProvider}
-            isAddLinkProvider= {false}
           />
         </div>
       </LinkProviderProvider>

@@ -21,16 +21,33 @@ const AddLinkProvider = () => {
   const { selectedOrganization } = useOrgAccountSelectionContext();
 
   const onSubmitHandler = () => {
+    console.log(selectedProviders);
+    if (!selectedProviders || selectedProviders.length === 0) {
+      addNotification({
+        type: 'error',
+        description: t('manageSPAccount.error.message.selectProvider')
+      });
+      return;
+    }
+    const selectedProviderIds = selectedProviders.map( p => Number(p.id) );
     handleAddAccounts(
-      { selectedProviders },
+      { selectedProviderIds },
       {
         onSuccess: () => {
-          navigate(`/orders/system-configuration/manage-spaccount/${spAccountId}`, { state: { type: 'success', messages : `${selectedProviders.length} Provider has been linked successfully.` } });
+          navigate(
+            `/orders/system-configuration/manage-spaccount/${spAccountId}`, 
+            { state: 
+              { type: 'success', 
+                messages : `${selectedProviders.length} ${t('manageSPAccount.success.message.addProvider')}`
+              }
+            }
+          );
         },
         onError: () => {
+          setSelectedProviders([])
           addNotification({
             type: 'error',
-            description: t('Unable to link provider')
+            description: t('manageSPAccount.error.message.unableToAddProvider')
           });
         }
       }
@@ -38,8 +55,8 @@ const AddLinkProvider = () => {
   };
 
   const { isLoading, mutate: handleAddAccounts } = useMutation(async (data) => {
-    const { selectedProviders } = data;
-    return await LinkProviderService.linkProvidersToAccount( selectedOrganization ,spAccountId, selectedProviders);
+    const { selectedProviderIds } = data;
+    return await LinkProviderService.linkProvidersToAccount( selectedOrganization ,spAccountId, selectedProviderIds);
   });
 
   if (isLoading) return <Loader type="screen" />;
@@ -53,42 +70,43 @@ const AddLinkProvider = () => {
           Icon={() => <IconArrowLeft />}
           onClick={handleGoBack}
           size="md">
-          {t('Back to sp account details page')}
+          {t('manageSPAccount.btn.backToSpAccount')}
         </Button>
       </div>
       <ModuleHeader
-        heading={<Heading as="h1">{t('Link Providers')}</Heading>}
+        heading={<Heading as="h1">{t('manageSPAccount..heading.linkProviders')}</Heading>}
       />
-      {notifications?.length > 0 && (
-        <div className="alert-container">
-          <div className="MCP-module-body">
-            {notifications.map((item, index) => (
-              <Alert key={item.id} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
-            ))}
+      <div className="MCP-module-body">
+        {notifications?.length > 0 && (
+          <div className="alert-container">
+            <div className="MCP-module-body">
+              {notifications.map((item, index) => (
+                <Alert key={item.id} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
+              ))}
+            </div>
           </div>
+        )}
+        <LinkProviderProvider>
+          <LinkProviderTable
+            setSelectedProviders= {setSelectedProviders}
+          />
+        </LinkProviderProvider>
+        <div className={'buttonGroup'}>
+          <Button
+            variant="primary"
+            type="button"
+            onClick={handleGoBack}
+            size={'md'}>
+            {t('manageSPAccount.button.cancel')}
+          </Button>
+          <Button
+            variant="primary"
+            type="button"
+            onClick={onSubmitHandler}
+            size={'md'}>
+            {t('manageSPAccount.button.saveandupdate')}
+          </Button>
         </div>
-      )}
-      <LinkProviderProvider>
-        <LinkProviderTable
-          isAddLinkProvider= {true}
-          setSelectedProviders= {setSelectedProviders}
-        />
-      </LinkProviderProvider>
-      <div className={'buttonGroup'}>
-        <Button
-          variant="primary"
-          type="button"
-          onClick={handleGoBack}
-          size={'md'}>
-          {t('cancel')}
-        </Button>
-        <Button
-          variant="primary"
-          type="button"
-          onClick={onSubmitHandler}
-          size={'md'}>
-          {t('save and update')}
-        </Button>
       </div>
     </div>
   );

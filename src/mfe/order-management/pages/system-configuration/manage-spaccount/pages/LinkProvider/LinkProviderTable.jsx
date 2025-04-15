@@ -9,14 +9,14 @@ import CommonFilters from '@src/components/Filters';
 import { getLinkProviderColumns } from './LinkProviderColumn';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import LinkProviderDetailsDrawer from './LinkProviderDetailsDrawer';
-import './LinkProvider.module.scss';
+import style from './LinkProvider.module.scss';
 import SelectedAccounts from '@src/components/Accounts/SelectedAccounts';
 import { getAddress } from '@src/mfe/order-management/pages/system-configuration/manage-spaccount/util.js';
 import { renderModal } from '@src/util/ModalUtil';
 
-function LinkProviderTable({ handleRemoveLinkProvider, isAddLinkProvider,  setSelectedProviders }) {
+function LinkProviderTable({ handleRemoveLinkProvider,  setSelectedProviders }) {
   const { t } = useTranslate();
-  const { paginationConfig, setPageNumber, applyFilters, clearFilters, data, refreshData } = useLinkProvider();
+  const { paginationConfig, setPageNumber, applyFilters, clearFilters, data, refreshData, isAddLinkProvider } = useLinkProvider();
   const [selectedLinkProvider, setSelectedLinkProvider] = useState([]);
   const [openProviderDetails, setOpenProviderDetails] = useState(false);
   const [drawerDetails, setDrawerDetails] = useState('')  
@@ -99,7 +99,7 @@ function LinkProviderTable({ handleRemoveLinkProvider, isAddLinkProvider,  setSe
 
   return (
     <div className="MCP-panel-container">
-      <div class="MCP-panel-container">
+      <div className="MCP-panel-container">
         <CommonFilters
         onApplyFilters={applyFilters}
         onClearFilters={clearFilters}
@@ -121,8 +121,8 @@ function LinkProviderTable({ handleRemoveLinkProvider, isAddLinkProvider,  setSe
           }
         />
       )}
-        <div className="account-box">
-          <div className="customTable-box">
+        <div className={style.accountBox}>
+          <div className={style.customTableBox}>
             <CustomDataTable
               id="my-data-table"
               type="normal"
@@ -139,14 +139,14 @@ function LinkProviderTable({ handleRemoveLinkProvider, isAddLinkProvider,  setSe
               noDataComponent={
               <EmptyDataTable
                   image={EmptyDataImage}
-                  heading={t('manageSPAccount.table.linkproviders.emptyData')}
-                  description={t('manageSPAccount.tables.linkproviders.emptyDataDescription')}
+                  heading={t('manageSPAccount.button.providers.linkProviders')}
+                  description={t('manageSPAccount.table.error.providers.listing')}  
               />
               }
             />
           </div>
           {isAddLinkProvider && (
-            <div className="selected-account-box"  style={{ height: tableHeight }}>
+            <div className={style.selectedAccountBox}  style={{ height: tableHeight }}>
               <SelectedAccounts selectedAccounts={selectedLinkProvider} onRemoveAccount={onRemoveSelectedAccount} />
             </div>
           )}

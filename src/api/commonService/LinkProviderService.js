@@ -37,7 +37,7 @@ async function getProviderDetailsById(id, selectedOrganization) {
 }
 
 async function getProviderListByAccount(requestParams, selectedOrganization, accountId) {
-  const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrganization}/providers?accountId=${accountId}${serializeParams(requestParams)}`;
+  const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrganization}/providers?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {
     'Content-Type': 'application/json'
   });

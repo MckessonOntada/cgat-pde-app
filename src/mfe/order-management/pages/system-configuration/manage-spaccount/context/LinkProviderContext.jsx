@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import { useQuery } from 'react-query';
 import LinkProviderService from '@src/api/commonService/LinkProviderService';
 import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 const LinkProviderContext = createContext();
 
@@ -36,24 +36,34 @@ export const LinkProviderProvider = ({ children }) => {
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const { selectedOrganization } = useOrgAccountSelectionContext();
+  const { spAccountId } = useParams();
+  const location = useLocation();
+
+  const isAddLinkProvider = useMemo(() => {
+    return location.pathname.includes('link-provider');
+  }, [location.pathname]);
 
   const requestParams = useMemo(
     () => ({
-      accountId : spAccountId ? spAccountId : '',
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
       sortBy: sortConfig.sortBy,
       sortOrder: sortConfig.sortOrder,
+      ...( !isAddLinkProvider && { accountId: spAccountId} ),
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       ...(filterConfig?.status?.length && { status: [filterConfig.status] })
     }),
     [filterConfig, paginationConfig.pageNumber, sortConfig]
   );
-
   const { isLoading, isError, error, data, refetch } = useQuery({
     queryKey: ['LinkProviders', requestParams, selectedOrganization?.id],
     queryFn: async () => {
-      const result = await LinkProviderService.getProviderList(requestParams, selectedOrganization?.id);
+      let result;
+      if(isAddLinkProvider){
+        result = await LinkProviderService.getProviderList(requestParams, selectedOrganization?.id, spAccountId);
+      }else{
+        result = await LinkProviderService.getProviderListByAccount(requestParams, selectedOrganization?.id, spAccountId);
+      }
       const { totalElements, totalPages } = result;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
@@ -111,7 +121,8 @@ export const LinkProviderProvider = ({ children }) => {
       applyFilters,
       applySort,
       setPageNumber,
-      refreshData: refetch
+      refreshData: refetch,
+      isAddLinkProvider
     }),
     [updateFilterState, clearFilters, isLoading, isError, data, refetch]
   );
