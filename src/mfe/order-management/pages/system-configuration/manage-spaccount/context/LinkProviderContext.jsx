@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import { useQuery } from 'react-query';
 import LinkProviderService from '@src/api/commonService/LinkProviderService';
 import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import { useParams } from 'react-router-dom';
 
 const LinkProviderContext = createContext();
 
@@ -36,15 +37,9 @@ export const LinkProviderProvider = ({ children }) => {
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const { selectedOrganization } = useOrgAccountSelectionContext();
 
-  const updateFilterState = useCallback((field, value) => {
-    setFilterState((prevState) => ({
-      ...prevState,
-      [field]: value
-    }));
-  }, []);
-
   const requestParams = useMemo(
     () => ({
+      accountId : spAccountId ? spAccountId : '',
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
       sortBy: sortConfig.sortBy,
@@ -74,16 +69,23 @@ export const LinkProviderProvider = ({ children }) => {
     refetchOnWindowFocus: false
   });
 
-  const clearFilters = () => {
-    setFilterConfig(INITIAL_FILTER_STATE);
-  };
-
   useEffect(() => {
     refetch();
   }, [filterConfig, paginationConfig.pageNumber, sortConfig]);
 
+  const updateFilterState = useCallback((field, value) => {
+    setFilterState((prevState) => ({
+      ...prevState,
+      [field]: value
+    }));
+  }, []);
+
+
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
 
+  const clearFilters = () => {
+    setFilterConfig(INITIAL_FILTER_STATE);
+  };
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig({ ...filters });

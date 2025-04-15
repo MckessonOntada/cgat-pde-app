@@ -29,7 +29,7 @@ function LinkProviderListing() {
   }, [location, navigate]);
 
   const handleRemoveLinkProvider = (row) => {
-    LinkProviderService.removeLinkProvider(row.id);
+    LinkProviderService.removeLinkProvider(spAccountId, row.id);
     addNotification({
       type: 'success',
       description: t('manageSPAccount.message.removelinkprovider.success')
@@ -69,6 +69,7 @@ function LinkProviderListing() {
           )}
           <LinkProviderTable 
             handleRemoveLinkProvider={handleRemoveLinkProvider}
+            isAddLinkProvider= {false}
           />
         </div>
       </LinkProviderProvider>

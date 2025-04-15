@@ -14,7 +14,7 @@ import SelectedAccounts from '@src/components/Accounts/SelectedAccounts';
 import { getAddress } from '@src/mfe/order-management/pages/system-configuration/manage-spaccount/util.js';
 import { renderModal } from '@src/util/ModalUtil';
 
-function LinkProviderTable({ handleRemoveLinkProvider, isAddLinkProvider,  setSelectedProvidersCount }) {
+function LinkProviderTable({ handleRemoveLinkProvider, isAddLinkProvider,  setSelectedProviders }) {
   const { t } = useTranslate();
   const { paginationConfig, setPageNumber, applyFilters, clearFilters, data, refreshData } = useLinkProvider();
   const [selectedLinkProvider, setSelectedLinkProvider] = useState([]);
@@ -77,7 +77,7 @@ function LinkProviderTable({ handleRemoveLinkProvider, isAddLinkProvider,  setSe
   };
   function onSelectProvider(data){
     setSelectedLinkProvider(data)
-    if (isAddLinkProvider) setSelectedProvidersCount(data.length);
+    if (isAddLinkProvider) setSelectedProviders(data);
   }
   const columns = useMemo(() =>
     getLinkProviderColumns(
