@@ -20,9 +20,14 @@ import useOrderCount from './useOrderCount';
 const OrderIndex = () => {
   const { t } = useTranslate();
   const { hasPermission } = usePermission();
-  const isPendingTab = hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_PENDING_ORDERS);
-  const isSubmittedTab = hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS);
-  const { applyFilters, clearFilters, changeTab, tabVariant, isError, error } = useOrders();
+  const isPendingTab = hasPermission(
+    PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_PENDING_ORDERS
+  );
+  const isSubmittedTab = hasPermission(
+    PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS
+  );
+  const { applyFilters, clearFilters, changeTab, tabVariant, isError, error } =
+    useOrders();
   const [tabList, setTabList] = React.useState(() => {
     const allTabs = getTabs();
     allTabs.forEach((tab) => {
@@ -32,7 +37,7 @@ const OrderIndex = () => {
     return allTabs;
   });
 
-  const { data: orderCounts } = useOrderCount();
+  const orderCounts = useOrderCount();
   React.useEffect(() => {
     const allTabs = getTabs();
     allTabs.forEach((tab) => {
@@ -45,7 +50,9 @@ const OrderIndex = () => {
       let orderCount = orderCounts?.[tab.id] || 0;
       if (orderCount > 99) orderCount = '99+';
       tab.configName = (
-        <div className={`tab-count-header ${countClass}`} data-label={orderCount}>
+        <div
+          className={`tab-count-header ${countClass}`}
+          data-label={orderCount}>
           {t(tab.configName)}
         </div>
       );
@@ -57,19 +64,29 @@ const OrderIndex = () => {
   const location = useLocation();
   const activeTabFromState = location.state?.activeTab;
   const activeTab = tabList.find((tab) => tab.id === tabVariant);
-  const [tabKey, setTabKey] = React.useState(activeTabFromState || activeTab?.id);
+  const [tabKey, setTabKey] = React.useState(
+    activeTabFromState || activeTab?.id
+  );
   const { showAlert } = useAlert();
   const alertContainerId = 'summary-alert-container';
 
   const additionalFiltersConfig = React.useMemo(() => {
     let filters = [];
     if (tabVariant === ORDER_TABS.PENDING_SUBMISSION) {
-      const options = [ORDER_STATUS.ALL, ORDER_STATUS.IN_DRAFT, ORDER_STATUS.DELETED, ORDER_STATUS.REJECTED];
+      const options = [
+        ORDER_STATUS.ALL,
+        ORDER_STATUS.IN_DRAFT,
+        ORDER_STATUS.DELETED,
+        ORDER_STATUS.REJECTED
+      ];
       filters.push({
         type: 'dropdown',
         name: 'status',
         label: t('userManagement.table.status'),
-        options: options.map((opt) => ({ label: t(`labels.caption.${opt}`), value: opt }))
+        options: options.map((opt) => ({
+          label: t(`labels.caption.${opt}`),
+          value: opt
+        }))
       });
     }
 
@@ -100,11 +117,16 @@ const OrderIndex = () => {
   React.useEffect(() => {
     if (error) {
       console.log(error);
-      showAlert({ description: t(handleApiError(error)), type: 'error', anchorEl: alertContainerId });
+      showAlert({
+        description: t(handleApiError(error)),
+        type: 'error',
+        anchorEl: alertContainerId
+      });
     }
   }, [error]);
 
-  const currentTab = (tabList && tabList.find((tab) => tab?.['isActiveTab'])) || {};
+  const currentTab =
+    (tabList && tabList.find((tab) => tab?.['isActiveTab'])) || {};
 
   return (
     <div className="MCP-module-wrapper">
@@ -113,7 +135,8 @@ const OrderIndex = () => {
           heading={<Heading as="h1">{t('headings.orders')}</Heading>}
           controls={
             <div className="controls">
-              <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS}>
+              <PermittedComponent
+                permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS}>
                 <Button
                   Icon={AddCircleFilled}
                   className="button-icon"
@@ -147,11 +170,16 @@ const OrderIndex = () => {
                 onApplyFilters={applyFilters}
                 onClearFilters={clearFilters}
                 additionalFilters={additionalFiltersConfig}
-                searchPlaceholder={t('controls.placeholder.searchOrderPlaceholder')}
+                searchPlaceholder={t(
+                  'controls.placeholder.searchOrderPlaceholder'
+                )}
               />
             </div>
             <div className="MCP-table-wrapper">
-              <OrderDataTable tab={activeTab && activeTab.id} alertContainerId={alertContainerId} />
+              <OrderDataTable
+                tab={activeTab && activeTab.id}
+                alertContainerId={alertContainerId}
+              />
             </div>
           </div>
         </div>
