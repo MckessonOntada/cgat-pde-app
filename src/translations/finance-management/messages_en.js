@@ -125,6 +125,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.Details.Description': 'Description',
   'paymentInvoices.Details.referenceDocument': 'Reference Document',
   'paymentInvoices.Details.Quantity': 'Quantity',
+  'paymentInvoices.Details.taxAmount': 'Tax Amount',
   'paymentInvoices.Details.Unit': 'Unit',
   'paymentInvoices.Details.netPrice': 'Net Value',
   'paymentInvoices.Details.grossPrice': 'Gross Value',

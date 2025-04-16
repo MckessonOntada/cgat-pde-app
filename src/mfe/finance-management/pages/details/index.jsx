@@ -106,7 +106,7 @@ function Details(props) {
         id: 'item',
         selector: (row) => `${row.item}`,
         wrap: true,
-        minWidth: '100px',
+        minWidth: '80px',
         cell: (props) => <div className="cellEllipse">{props.item || '-'}</div>
       },
       {
@@ -140,7 +140,7 @@ function Details(props) {
           row.referenceDocument;
         },
         wrap: true,
-        minWidth: '100px',
+        minWidth: '185px',
         maxWidth: '220px',
         cardHeader: true,
         showInMobileHeader: true,
@@ -175,6 +175,25 @@ function Details(props) {
         )
       },
       {
+        name: t('paymentInvoices.Details.taxAmount'),
+        id: 'taxAmount',
+        selector: (row) => {
+          row.taxAmount;
+        },
+        wrap: true,
+        right: true,
+        minWidth: '150px',
+        cell: (props) => (
+          <div className="cellEllipse align-items-right">
+            <FormattedNumber
+              value={JSON.stringify(props.taxAmount)}
+              style="currency"
+              currency="USD"
+            />
+          </div>
+        )
+      },
+      {
         name: t('paymentInvoices.Details.netPrice'),
         id: 'netPrice',
         selector: (row) => {
@@ -182,7 +201,7 @@ function Details(props) {
         },
         wrap: true,
         right: true,
-        minWidth: '130px',
+        minWidth: '150px',
         cell: (props) => (
           <div className="cellEllipse align-items-right">
             <FormattedNumber value={JSON.stringify(props.netPrice)} style="currency" currency="USD" />
@@ -195,11 +214,15 @@ function Details(props) {
         selector: (row) => {
           row.grossPrice;
         },
-        minWidth: '130px',
+        minWidth: '150px',
         right: true,
         cell: (props) => (
           <div className="cellEllipse align-items-right">
-            <FormattedNumber value={props.grossPrice} style="currency" currency="USD" />
+            <FormattedNumber
+              value={props.grossPrice}
+              style="currency"
+              currency="USD"
+            />
           </div>
         )
       }
