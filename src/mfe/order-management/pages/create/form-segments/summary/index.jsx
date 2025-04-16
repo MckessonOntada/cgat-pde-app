@@ -982,6 +982,10 @@ const Summary = () => {
                     label={t('labels.dateOfAdministration')}
                     value={additionalDetails?.dateOfAdministration || '-'}
                   />
+                  <DetailSegment
+                    label={t('labels.orderQuantity')}
+                    value={additionalDetails?.orderQuantity || '-'}
+                  />
                 </div>
               </div>
             </div>
