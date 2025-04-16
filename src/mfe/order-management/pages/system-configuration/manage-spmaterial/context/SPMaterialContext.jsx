@@ -88,6 +88,7 @@ export const SPMaterialProvider = ({ children }) => {
   });
 
   const clearFilters = () => {
+    setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig(INITIAL_FILTER_STATE);
   };
 
