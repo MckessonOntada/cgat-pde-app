@@ -21,6 +21,7 @@ import CommonUtils from '@src/util/CommonUtils';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import usePermission from '@src/hooks/usePermissions';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import { ROUTE_PATHS } from '../../routes/constants';
 
 const PROVIDER_COLUMNS = {
   PROVIDER_NAME: 'PROVIDER_NAME',
@@ -141,9 +142,13 @@ export const getColumns = (add) => {
 
   const getMenuOption = (props) => {
     const options = [];
-
+    const { selectedRows } = useSelection();
     if (hasPermission(PERMISSIONS_ENUM.MANAGE_PROVIDERS.EDIT_PROVIDER)) {
-      options.push({ label: 'Edit', value: 'edit' });
+      options.push({
+        label: 'Edit',
+        value: 'edit',
+        disabled: selectedRows.size > 1
+      });
       options.push({
         label: props.isActive ? 'Deactivate' : 'Activate',
         value: props.isActive ? 'deactivate' : 'activate'
@@ -189,16 +194,17 @@ export const getColumns = (add) => {
     {
       id: PROVIDER_COLUMNS.PROVIDER_NAME,
       name: t('providers.columnCaption.providerName'),
-      selector: (row) => row.providerName,
       minWidth: '130px',
       sortable: true,
-      sortKey: 'providerName',
+      sortKey: 'first name',
       cell: (props) => {
         const isAllowed = hasPermission(
           PERMISSIONS_ENUM.MANAGE_PROVIDERS.VIEW_PROVIDER
         );
         return props?.name ? (
-          <Link className="MCP-table-link" to={`${isAllowed ? props.id : ''}`}>
+          <Link
+            className="MCP-table-link"
+            to={`${isAllowed ? `${ROUTE_PATHS.VIEW}/${props.id}` : ''}`}>
             {CommonUtils.getFullName(props?.name)}
           </Link>
         ) : (

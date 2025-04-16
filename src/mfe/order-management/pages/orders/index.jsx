@@ -27,7 +27,6 @@ import { useFormikContext } from 'formik';
 const OrderIndex = () => {
   const { t } = useTranslate();
   const { hasPermission } = usePermission();
-
   const isPendingTab = hasPermission(
     PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_PENDING_ORDERS
   );
@@ -45,7 +44,7 @@ const OrderIndex = () => {
     return allTabs;
   });
 
-  const { data: orderCounts } = useOrderCount();
+  const orderCounts = useOrderCount();
   React.useEffect(() => {
     const allTabs = getTabs();
     allTabs.forEach((tab) => {
@@ -108,7 +107,7 @@ const OrderIndex = () => {
         options: options.map((opt) => ({
           label: t(`labels.caption.${opt}`),
           value: opt
-        }))
+        })) 
       });
     }
     if (tabVariant !== ORDER_TABS.PENDING_APPROVAL) {
@@ -131,7 +130,7 @@ const OrderIndex = () => {
                   required: true
                 }
               ]
-            : []
+            : [] 
       });
     }
     return filters;

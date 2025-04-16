@@ -4,7 +4,11 @@ import { useOrgAccountSelectionContext } from './context/OrgAccountSelectionCont
 import './styles.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 
-function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsSelect = true }) {
+function OrgAccountsSelect({
+  handleOrgChange,
+  handleAccountChange,
+  showAccountsSelect = true
+}) {
   const { t } = useTranslate();
   const {
     organizationOptions,
@@ -37,7 +41,10 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
         if (ele.isChecked) {
           if (!eleExist) _checkedOptions.push(ele);
         } else {
-          if (eleExist) _checkedOptions = _checkedOptions.filter((i) => i.value != ele.value);
+          if (eleExist)
+            _checkedOptions = _checkedOptions.filter(
+              (i) => i.value != ele.value
+            );
         }
       });
       setCheckedAccounts(_checkedOptions);
@@ -63,7 +70,12 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
           isSortEnable={false}
           value={selectedOrganization?.id.toString() || ''}
           fieldDisplayValue={
-            selectedOrganization?.name ? { label: selectedOrganization.name, value: selectedOrganization.id.toString() } : undefined
+            selectedOrganization?.name
+              ? {
+                  label: selectedOrganization.name,
+                  value: selectedOrganization.id.toString()
+                }
+              : undefined
           }
         />
       </div>
@@ -80,6 +92,7 @@ function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsS
             onSearch={(event) => searchAccountList(event)}
             recordsCountToEnableSearch={5}
             size="md"
+            noSelectedCountMessage={t('ManageCatalog.SelectAccount')}
           />
         </div>
       )}

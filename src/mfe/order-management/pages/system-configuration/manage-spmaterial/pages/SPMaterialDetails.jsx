@@ -11,14 +11,18 @@ export const SPMaterialDetailsConstants = [
     sectionHeading: 'Details',
     sectionData: [
       { label: 'id', value: 'materialNumber' },
-      { label: 'productName', value: 'genericName' },
+      { label: 'productName', value: 'materialDescription' },
       { label: 'siteName', value: 'siteName' },
       { label: 'NDC', value: 'ndcNumber' }
     ]
   }
 ];
 
-function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, viewSPMaterial }) {
+function SPMaterialDetails({
+  openSPMaterialDetails,
+  setOpenSPMaterialDetails,
+  viewSPMaterial
+}) {
   const { t } = useTranslate();
   const requestParams = {
     channelType: 'SPECIALITY_PHARMA'
@@ -26,7 +30,10 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
   const { isLoading, isError, data } = useQuery({
     queryKey: ['SPMaterial', viewSPMaterial?.materialNumber],
     queryFn: async () => {
-      const result = await MaterialService.getSPMaterialById(viewSPMaterial?.materialNumber, requestParams);
+      const result = await MaterialService.getSPMaterialById(
+        viewSPMaterial?.materialNumber,
+        requestParams
+      );
       return result;
     },
     enabled: !!viewSPMaterial && viewSPMaterial?.id ? true : false,
@@ -53,14 +60,20 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
               {SPMaterialDetailsConstants.map((item, index) => (
                 <React.Fragment>
                   <div className="styled-heading">
-                    <Heading as="h4">{t(`manageSPMaterial.drawer.${item.sectionHeading}`)}</Heading>
+                    <Heading as="h4">
+                      {t(`manageSPMaterial.drawer.${item.sectionHeading}`)}
+                    </Heading>
                   </div>
                   <div className="details-ul">
                     {item.sectionData.map((item, index) => {
                       let value = data?.therapy[item.value] || '-';
                       return (
                         <div className="details-li">
-                          <div className="details-key">{t(`manageSPMaterial.drawer.details.body.${item.label}`)}</div>
+                          <div className="details-key">
+                            {t(
+                              `manageSPMaterial.drawer.details.body.${item.label}`
+                            )}
+                          </div>
                           <div className="details-value">{value}</div>
                         </div>
                       );

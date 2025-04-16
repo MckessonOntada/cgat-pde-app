@@ -108,39 +108,17 @@ export default function PendingPaymentTable() {
       center: true,
       isAction: true,
       cell: (props) => {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const payOnDate = dayjs(props.payOn, 'DD/MM/YYYY').toDate().getTime();
-        const earliestDueDate = props.invoices?.reduce((min, inv) => {
-          const date = dayjs(inv.dueDate, 'DD/MM/YYYY');
-          return !min || date.isBefore(min) ? date : min;
-        }, null);
-        const dueDate = earliestDueDate?.valueOf();
-        const isValidDate =
-          payOnDate >= today.getTime() && today.getTime() <= dueDate;
-
-        const payOnDateFormatted = dayjs(payOnDate).format('MM/DD/YYYY');
-        const todayFormatted = dayjs(today).format('MM/DD/YYYY');
-        const dueDateFormatted = dayjs(dueDate).format('MM/DD/YYYY');
-
-        const tooltipMessage =
-          `Pay On date (${payOnDateFormatted}) should be today (${todayFormatted}) or later.\n` +
-          `Today's date (${todayFormatted}) must not be after the due date (${dueDateFormatted}).`;
         return (
-          //  Tooltip component not accepting styles/classnames
-          <Tooltip body={!isValidDate ? tooltipMessage : ''} width="450px">
-            <span>
-              <Button
-                className="cancel-button-control"
-                variant="tertiary"
-                Icon={() => <CrossIcon />}
-                onClick={() => onCancelPaymentClick(props.confirmationNo)}
-                size="md"
-                disabled={!isValidDate}>
-                {t('pendingPayments.table.cancelPayment')}
-              </Button>
-            </span>
-          </Tooltip>
+          <span>
+            <Button
+              className="cancel-button-control"
+              variant="tertiary"
+              Icon={() => <CrossIcon />}
+              onClick={() => onCancelPaymentClick(props.confirmationNo)}
+              size="md">
+              {t('pendingPayments.table.cancelPayment')}
+            </Button>
+          </span>
         );
       }
     }
