@@ -13,6 +13,8 @@ import DetailSegment from '@src/components/DetailSegment';
 import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import ShippingLocationsDataTable from '../ShippingLocations/ShippingLocationsDataTable';
 import { ShippingLocationProvider } from '../../context/ShippingLocationContext';
+import { LinkProviderProvider } from '../../context/LinkProviderContext';
+import LinkProviderListing from '../LinkProvider/LinkProviderListing';
 import AccountService from '@src/api/commonService/AccountService';
 import { getAddress } from '@src/mfe/order-management/questionnaire/util';
 
@@ -107,6 +109,11 @@ const SPAccountDetail = () => {
         <ShippingLocationProvider accountId={spAccountId}>
           <ShippingLocationsDataTable />
         </ShippingLocationProvider>
+      </div>
+      <div className="MCP-module-body">
+        <LinkProviderProvider>
+          <LinkProviderListing/>
+        </LinkProviderProvider>
       </div>
     </div>
   );
