@@ -17,6 +17,7 @@ import { useMutation } from 'react-query';
 import LinkProviderService from '@src/api/commonService/LinkProviderService';
 import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import CommonUtils from '@src/util/CommonUtils';
+import AuthUtils from '@src/util/AuthUtils';
 
 function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
   const { t } = useTranslate();
@@ -34,6 +35,8 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
   const [drawerDetails, setDrawerDetails] = useState('');
   const [tableHeight, setTableHeight] = useState('100%');
   const { selectedOrganization } = useOrgAccountSelectionContext();
+  const isCustomerCenter = AuthUtils.isCustomerCenter();
+  
   useEffect(() => {
     setTimeout(() => {
       let eleHeight = document.getElementById(
@@ -123,7 +126,8 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
         selectedLinkProvider,
         onSelectProvider,
         handleProviderDetails,
-        isAddLinkProvider
+        isAddLinkProvider,
+        isCustomerCenter
       ),
     [data, paginationConfig, selectedLinkProvider, isAddLinkProvider]
   );

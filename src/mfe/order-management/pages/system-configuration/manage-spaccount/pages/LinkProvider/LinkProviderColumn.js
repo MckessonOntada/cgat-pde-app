@@ -15,7 +15,8 @@ export const getLinkProviderColumns = (
   selectedLinkProvider,
   setSelectedLinkProvider,
   handleProviderDetails,
-  isAddLinkProvider
+  isAddLinkProvider,
+  isCustomerCenter
 ) => [
   {
     id: 'checkbox',
@@ -107,6 +108,6 @@ export const getLinkProviderColumns = (
         />
       );
     },
-    omit: isAddLinkProvider
+    omit: isCustomerCenter || isAddLinkProvider 
   }
 ];
