@@ -16,12 +16,15 @@ import LinkProviderTable from './LinkProviderTable';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import { useMutation } from 'react-query';
 import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import AuthUtils from '@src/util/AuthUtils';
 
 function LinkProviderListing() {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { spAccountId } = useParams();
   const location = useLocation();
+  const isCustomerCenter = AuthUtils.isCustomerCenter();
+
   const {
     items: notifications,
     add: addNotification,
@@ -77,18 +80,20 @@ function LinkProviderListing() {
               </div>
             }
             controls={
-              <Button
-                Icon={EditPencil}
-                variant="secondary"
-                className="button-icon"
-                size="md"
-                onClick={() =>
-                  navigate(
-                    `../${routeConstants.ADD_LINK_PROVIDER}/${spAccountId}`
-                  )
-                }>
-                {t('manageSPAccount.button.providers.linkProviders')}
-              </Button>
+              !isCustomerCenter && (
+                <Button
+                  Icon={EditPencil}
+                  variant="secondary"
+                  className="button-icon"
+                  size="md"
+                  onClick={() =>
+                    navigate(
+                      `../${routeConstants.ADD_LINK_PROVIDER}/${spAccountId}`
+                    )
+                  }>
+                  {t('manageSPAccount.button.providers.linkProviders')}
+                </Button>
+              )
             }
           />
           {notifications?.length > 0 && (
