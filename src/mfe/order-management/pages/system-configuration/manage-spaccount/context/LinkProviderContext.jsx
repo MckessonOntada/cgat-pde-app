@@ -1,4 +1,11 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import { useQuery } from 'react-query';
 import LinkProviderService from '@src/api/commonService/LinkProviderService';
 import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
@@ -9,7 +16,9 @@ const LinkProviderContext = createContext();
 export const useLinkProvider = () => {
   const context = useContext(LinkProviderContext);
   if (!context) {
-    throw new Error('useLinkProvider must be used within a LinkProviderProvider.');
+    throw new Error(
+      'useLinkProvider must be used within a LinkProviderProvider.'
+    );
   }
   return context;
 };
@@ -33,7 +42,9 @@ const INITIAL_PAGINATION_CONFIG = {
 
 export const LinkProviderProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
-  const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
+  const [paginationConfig, setPaginationConfig] = useState(
+    INITIAL_PAGINATION_CONFIG
+  );
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const { selectedOrganization } = useOrgAccountSelectionContext();
   const { spAccountId } = useParams();
@@ -49,7 +60,7 @@ export const LinkProviderProvider = ({ children }) => {
       pageSize: paginationConfig.pageSize,
       sortBy: sortConfig.sortBy,
       sortOrder: sortConfig.sortOrder,
-      ...( !isAddLinkProvider && { accountId: spAccountId} ),
+      ...(!isAddLinkProvider && { accountId: spAccountId }),
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       ...(filterConfig?.status?.length && { status: [filterConfig.status] })
     }),
@@ -59,21 +70,25 @@ export const LinkProviderProvider = ({ children }) => {
     queryKey: ['LinkProviders', requestParams, selectedOrganization?.id],
     queryFn: async () => {
       let result;
-      if(isAddLinkProvider){
-        result = await LinkProviderService.getProviderList(requestParams, selectedOrganization?.id, spAccountId);
-      }else{
-        result = await LinkProviderService.getProviderListByAccount(requestParams, selectedOrganization?.id, spAccountId);
+      if (isAddLinkProvider) {
+        result = await LinkProviderService.getProviderList(
+          requestParams,
+          selectedOrganization?.id,
+          spAccountId
+        );
+      } else {
+        result = await LinkProviderService.getProviderListByAccount(
+          requestParams,
+          selectedOrganization?.id
+        );
       }
-      const { totalElements, totalPages } = result;
+      const { content: data, totalElements, totalPages } = result;
       setPaginationConfig((prevConfig) => ({
         ...prevConfig,
         ...(totalElements && { totalElements }),
         ...(totalPages && { totalPages })
       }));
-      return result.data?.slice(
-        (paginationConfig.pageNumber - 1) * paginationConfig.pageSize,
-        paginationConfig.pageNumber * paginationConfig.pageSize
-      );
+      return data;
     },
 
     refetchOnWindowFocus: false
@@ -89,7 +104,6 @@ export const LinkProviderProvider = ({ children }) => {
       [field]: value
     }));
   }, []);
-
 
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
 
@@ -126,5 +140,9 @@ export const LinkProviderProvider = ({ children }) => {
     }),
     [updateFilterState, clearFilters, isLoading, isError, data, refetch]
   );
-  return <LinkProviderContext.Provider value={ctxValue}>{children}</LinkProviderContext.Provider>;
+  return (
+    <LinkProviderContext.Provider value={ctxValue}>
+      {children}
+    </LinkProviderContext.Provider>
+  );
 };

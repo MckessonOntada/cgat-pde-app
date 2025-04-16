@@ -5,7 +5,7 @@ import { getAddress } from '../../util';
 import { IconButton } from '@mckesson/mcp-component-library';
 import { ReactComponent as linkIcon } from '@src/assets/svg/link.svg';
 import { Link } from 'react-router-dom';
-
+import CommonUtils from '@src/util/CommonUtils';
 
 export const getLinkProviderColumns = (
   t,
@@ -14,9 +14,7 @@ export const getLinkProviderColumns = (
   unLinkProvider,
   selectedLinkProvider,
   setSelectedLinkProvider,
-  setOpenProviderDetails,
-  setDrawerDetails,
-  formatProviderDetails,
+  handleProviderDetails,
   isAddLinkProvider
 ) => [
   {
@@ -30,55 +28,65 @@ export const getLinkProviderColumns = (
       setSelectedLinkProvider
     ),
     sortable: false,
-    cell: (row, index) => renderTableCheckBox(row, data, 'id', paginationConfig, selectedLinkProvider, setSelectedLinkProvider),
-    width: '50px',
+    cell: (row, index) =>
+      renderTableCheckBox(
+        row,
+        data,
+        'id',
+        paginationConfig,
+        selectedLinkProvider,
+        setSelectedLinkProvider
+      ),
+    width: '50px'
   },
   {
-    id: 'providerName',
+    id: 'name',
     name: t('manageSPAccount.column.providerName'),
-    selector: (row) => row.providerName || '',
+    selector: (row) => row.name || '',
     minWidth: '180px',
     sortable: true,
-    sortKey: 'providerName',
+    sortKey: 'name',
     cell: (props) => (
       <div className="cellEllipse">
         <Link
-          style={{ color: '#007bff', fontWeight: '600', textDecoration: 'none' }}
+          style={{
+            color: '#007bff',
+            fontWeight: '600',
+            textDecoration: 'none'
+          }}
           onClick={() => {
-            setOpenProviderDetails(true);
-            setDrawerDetails(formatProviderDetails(props));
+            handleProviderDetails(props.id);
           }}>
-          {props?.providerName || '-'}
+          {CommonUtils.getFullName(props?.name) || '-'}
         </Link>
       </div>
-    ),
+    )
   },
   {
     id: 'address',
     name: t('manageSPAccount.column.providers.address'),
     selector: (row) => row.address || '',
     minWidth: '400px',
-    cell: (props) => <EclipsesTextcss str={getAddress(props.address)} maxWidth={380} />,
-    sortable: false,
-    sortKey: 'address'
+    cell: (props) => (
+      <EclipsesTextcss str={getAddress(props.address)} maxWidth={380} />
+    ),
+    sortable: false
   },
   {
-    id: 'deaNumber',
+    id: 'dea',
     name: t('manageSPAccount.column.providers.deaNumber'),
-    selector: (row) => row.deaNumber || '',
+    selector: (row) => row.dea || '',
     minWidth: '150px',
-    cell: (props) => <EclipsesTextcss str={props.deaNumber} maxWidth={300} />,
-    sortable: true,
-    sortKey: 'deaNumber'
+    cell: (props) => <EclipsesTextcss str={props.dea} maxWidth={300} />,
+    sortable: false
   },
   {
-    id: 'npiNumber',
+    id: 'npi',
     name: t('manageSPAccount.column.providers.npiNumber'),
-    selector: (row) => row.npiNumber || '',
+    selector: (row) => row.npi || '',
     minWidth: '150px',
-    cell: (props) => <EclipsesTextcss str={props.npiNumber} maxWidth={300} />,
-    sortable: true,
-    sortKey: 'npiNumber'
+    cell: (props) => <EclipsesTextcss str={props.npi} maxWidth={300} />,
+    sortable: false
   },
   {
     id: 'action',
@@ -87,15 +95,15 @@ export const getLinkProviderColumns = (
     isAction: true,
     cell: (row) => {
       return (
-         <IconButton
-            label= {t('manageSPAccount.providers.column.unlink')}
-            size="lg"
-            iconButton={false}
-            textButton={true}
-            Icon={linkIcon}
-            disabled= {selectedLinkProvider.length > 0}
-            onClick={() => unLinkProvider(row)}
-          />
+        <IconButton
+          label={t('manageSPAccount.providers.column.unlink')}
+          size="lg"
+          iconButton={false}
+          textButton={true}
+          Icon={linkIcon}
+          disabled={selectedLinkProvider.length > 0}
+          onClick={() => unLinkProvider(row)}
+        />
       );
     },
     omit: isAddLinkProvider

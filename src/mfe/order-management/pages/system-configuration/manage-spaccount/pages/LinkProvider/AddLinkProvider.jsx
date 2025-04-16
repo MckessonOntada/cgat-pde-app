@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import { Heading, Button, Alert, Loader  } from '@mckesson/mcp-component-library';
+import {
+  Heading,
+  Button,
+  Alert,
+  Loader
+} from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -16,12 +21,17 @@ const AddLinkProvider = () => {
   const navigate = useNavigate();
   const { spAccountId } = useParams();
   const [selectedProviders, setSelectedProviders] = useState([]);
-  const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
-  const handleGoBack = () => { navigate(-1) };
+  const {
+    items: notifications,
+    add: addNotification,
+    remove: removeNotification
+  } = useTimedArray(10000);
+  const handleGoBack = () => {
+    navigate(-1);
+  };
   const { selectedOrganization } = useOrgAccountSelectionContext();
 
   const onSubmitHandler = () => {
-    console.log(selectedProviders);
     if (!selectedProviders || selectedProviders.length === 0) {
       addNotification({
         type: 'error',
@@ -29,35 +39,42 @@ const AddLinkProvider = () => {
       });
       return;
     }
-    const selectedProviderIds = selectedProviders.map( p => Number(p.id) );
-    handleAddAccounts(
-      { selectedProviderIds },
-      {
-        onSuccess: () => {
-          navigate(
-            `/orders/system-configuration/manage-spaccount/${spAccountId}`, 
-            { state: 
-              { type: 'success', 
-                messages : `${selectedProviders.length} ${t('manageSPAccount.success.message.addProvider')}`
-              }
-            }
-          );
-        },
-        onError: () => {
-          setSelectedProviders([])
-          addNotification({
-            type: 'error',
-            description: t('manageSPAccount.error.message.unableToAddProvider')
-          });
-        }
-      }
-    );
+
+    const selectedProviderIds = selectedProviders.map((p) => Number(p.id));
+    handleAddAccounts(selectedProviderIds);
   };
 
-  const { isLoading, mutate: handleAddAccounts } = useMutation(async (data) => {
-    const { selectedProviderIds } = data;
-    return await LinkProviderService.linkProvidersToAccount( selectedOrganization ,spAccountId, selectedProviderIds);
-  });
+  const { isLoading, mutate: handleAddAccounts } = useMutation(
+    async (selectedProviderIds) => {
+      return LinkProviderService.linkProvidersToAccount(
+        selectedOrganization.id,
+        spAccountId,
+        selectedProviderIds
+      );
+    },
+    {
+      onSuccess: (_, selectedProviderIds) => {
+        navigate(
+          `/orders/system-configuration/manage-spaccount/${spAccountId}`,
+          {
+            state: {
+              type: 'success',
+              messages: `${selectedProviderIds.length} ${t(
+                'manageSPAccount.success.message.addProvider'
+              )}`
+            }
+          }
+        );
+      },
+      onError: () => {
+        setSelectedProviders([]);
+        addNotification({
+          type: 'error',
+          description: t('manageSPAccount.error.message.unableToAddProvider')
+        });
+      }
+    }
+  );
 
   if (isLoading) return <Loader type="screen" />;
 
@@ -74,22 +91,29 @@ const AddLinkProvider = () => {
         </Button>
       </div>
       <ModuleHeader
-        heading={<Heading as="h1">{t('manageSPAccount..heading.linkProviders')}</Heading>}
+        heading={
+          <Heading as="h1">
+            {t('manageSPAccount..heading.linkProviders')}
+          </Heading>
+        }
       />
       <div className="MCP-module-body">
         {notifications?.length > 0 && (
           <div className="alert-container">
             <div className="MCP-module-body">
               {notifications.map((item, index) => (
-                <Alert key={item.id} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
+                <Alert
+                  key={item.id}
+                  description={item.description}
+                  onClose={() => removeNotification(item.id)}
+                  type={item.type}
+                />
               ))}
             </div>
           </div>
         )}
         <LinkProviderProvider>
-          <LinkProviderTable
-            setSelectedProviders= {setSelectedProviders}
-          />
+          <LinkProviderTable setSelectedProviders={setSelectedProviders} />
         </LinkProviderProvider>
         <div className={'buttonGroup'}>
           <Button

@@ -13,46 +13,60 @@ import style from './LinkProvider.module.scss';
 import SelectedAccounts from '@src/components/Accounts/SelectedAccounts';
 import { getAddress } from '@src/mfe/order-management/pages/system-configuration/manage-spaccount/util.js';
 import { renderModal } from '@src/util/ModalUtil';
+import { useMutation } from 'react-query';
+import LinkProviderService from '@src/api/commonService/LinkProviderService';
+import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import CommonUtils from '@src/util/CommonUtils';
 
-function LinkProviderTable({ handleRemoveLinkProvider,  setSelectedProviders }) {
+function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
   const { t } = useTranslate();
-  const { paginationConfig, setPageNumber, applyFilters, clearFilters, data, refreshData, isAddLinkProvider } = useLinkProvider();
+  const {
+    paginationConfig,
+    setPageNumber,
+    applyFilters,
+    clearFilters,
+    data,
+    refreshData,
+    isAddLinkProvider
+  } = useLinkProvider();
   const [selectedLinkProvider, setSelectedLinkProvider] = useState([]);
   const [openProviderDetails, setOpenProviderDetails] = useState(false);
-  const [drawerDetails, setDrawerDetails] = useState('')  
+  const [drawerDetails, setDrawerDetails] = useState('');
   const [tableHeight, setTableHeight] = useState('100%');
+  const { selectedOrganization } = useOrgAccountSelectionContext();
   useEffect(() => {
     setTimeout(() => {
-      let eleHeight = document.getElementById('data-table-my-data-table')?.offsetHeight;
+      let eleHeight = document.getElementById(
+        'data-table-my-data-table'
+      )?.offsetHeight;
       setTableHeight(eleHeight);
     }, 100);
   }, [data]);
-  const onRemoveSelectedAccount = (item) =>{
-    setSelectedLinkProvider(prev =>
-      prev.filter(provider => provider.id !== item.id)
+  const onRemoveSelectedAccount = (item) => {
+    setSelectedLinkProvider((prev) =>
+      prev.filter((provider) => provider.id !== item.id)
     );
   };
   const formatProviderDetails = useCallback((data) => {
-    const { id, providerName, deaNumber, npiNumber, contactNo, address } = data;
+    const { name, dea, npi, phone, address } = data;
     return [
       {
         sectionHeading: 'Details',
         sectionData: [
-          { label: 'ID', value: id },
-          { label: 'Provider Name', value: providerName },
-          { label: 'DEA Number', value: deaNumber },
-          { label: 'NPI Number', value: npiNumber }
+          { label: 'Provider Name', value: CommonUtils.getFullName(name) },
+          { label: 'DEA Number', value: dea },
+          { label: 'NPI Number', value: npi }
         ]
       },
       {
         sectionHeading: 'Contact',
         sectionData: [
-          { label: 'Contact No', value: contactNo },
-          { label: 'Address', value: getAddress(address) },
+          { label: 'Contact No', value: phone },
+          { label: 'Address', value: getAddress(address) }
         ]
       }
     ];
-  }, []);  
+  }, []);
   const unLinkProvider = (row) => {
     renderModal({
       title: t('messages.header.confirmation'),
@@ -63,35 +77,56 @@ function LinkProviderTable({ handleRemoveLinkProvider,  setSelectedProviders }) 
       ),
       footerActions: {
         cancel: {
-          label: t('manageSPAccount.button.cancel'),
+          label: t('manageSPAccount.button.cancel')
         },
         confirm: {
           label: t('manageSPAccount.button.confirm'),
           action: () => {
-            handleRemoveLinkProvider(row);
-            setSelectedLinkProvider([])
+            handleUnlinkProvider(row.id);
           }
         }
       }
     });
   };
-  function onSelectProvider(data){
-    setSelectedLinkProvider(data)
+  function onSelectProvider(data) {
+    setSelectedLinkProvider(data);
     if (isAddLinkProvider) setSelectedProviders(data);
   }
-  const columns = useMemo(() =>
-    getLinkProviderColumns(
-      t,
-      data,
-      paginationConfig,
-      unLinkProvider,
-      selectedLinkProvider,
-      onSelectProvider,
-      setOpenProviderDetails,
-      setDrawerDetails,
-      formatProviderDetails,
-      isAddLinkProvider
-  ), [ data, paginationConfig, selectedLinkProvider, isAddLinkProvider]);
+  const { mutate: handleProviderDetails } = useMutation(
+    async (providerId) => {
+      return LinkProviderService.getProviderDetailsById(
+        providerId,
+        selectedOrganization.id
+      );
+    },
+    {
+      onSuccess: (data) => {
+        setDrawerDetails(formatProviderDetails(data));
+        setOpenProviderDetails(true);
+      },
+      onError: () => {
+        addNotification({
+          type: 'error',
+          description: t('manageSPAccount.error.message.failedToOpenDetails')
+        });
+      }
+    }
+  );
+
+  const columns = useMemo(
+    () =>
+      getLinkProviderColumns(
+        t,
+        data,
+        paginationConfig,
+        unLinkProvider,
+        selectedLinkProvider,
+        onSelectProvider,
+        handleProviderDetails,
+        isAddLinkProvider
+      ),
+    [data, paginationConfig, selectedLinkProvider, isAddLinkProvider]
+  );
 
   const handleChangePage = (e, newPage) => {
     setPageNumber(newPage);
@@ -101,15 +136,15 @@ function LinkProviderTable({ handleRemoveLinkProvider,  setSelectedProviders }) 
     <div className="MCP-panel-container">
       <div className="MCP-panel-container">
         <CommonFilters
-        onApplyFilters={applyFilters}
-        onClearFilters={clearFilters}
-        additionalFilters={[]}
-        searchPlaceholder={t('manageSPAccount.providers.search.placeholder')}
-        actualData={[]}
-        initialData={[]}
+          onApplyFilters={applyFilters}
+          onClearFilters={clearFilters}
+          additionalFilters={[]}
+          searchPlaceholder={t('manageSPAccount.providers.search.placeholder')}
+          actualData={[]}
+          initialData={[]}
         />
       </div>
-      {selectedLinkProvider?.length > 0 && !isAddLinkProvider  && (
+      {/* {selectedLinkProvider?.length > 0 && !isAddLinkProvider  && (
         <TableHeading
           heading={[]}
           secondaryView={selectedLinkProvider?.length}
@@ -120,45 +155,50 @@ function LinkProviderTable({ handleRemoveLinkProvider,  setSelectedProviders }) 
             </Button>
           }
         />
-      )}
-        <div className={style.accountBox}>
-          <div className={style.customTableBox}>
-            <CustomDataTable
-              id="my-data-table"
-              type="normal"
-              columns={columns}
-              data={data}
-              currentPage={paginationConfig.pageNumber}
-              totalPageCount={paginationConfig.totalPages}
-              pagination={true}
-              handleChangePage={handleChangePage}
-              totalRocords={paginationConfig.totalElements}
-              recordsPerPage={paginationConfig.pageSize}
-              paginationTotalRecorsMessage={t('orgManagement.results')}
-              paginationRecordsPerPageMessage={t('orgManagement.per_page')}
-              noDataComponent={
+      )} */}
+      <div className={style.accountBox}>
+        <div className={style.customTableBox}>
+          <CustomDataTable
+            id="my-data-table"
+            type="normal"
+            columns={columns}
+            data={data}
+            currentPage={paginationConfig.pageNumber}
+            totalPageCount={paginationConfig.totalPages}
+            pagination={true}
+            handleChangePage={handleChangePage}
+            totalRocords={paginationConfig.totalElements}
+            recordsPerPage={paginationConfig.pageSize}
+            paginationTotalRecorsMessage={t('orgManagement.results')}
+            paginationRecordsPerPageMessage={t('orgManagement.per_page')}
+            noDataComponent={
               <EmptyDataTable
-                  image={EmptyDataImage}
-                  heading={t('manageSPAccount.button.providers.linkProviders')}
-                  description={t('manageSPAccount.table.error.providers.listing')}  
+                image={EmptyDataImage}
+                heading={t('manageSPAccount.button.providers.linkProviders')}
+                description={t('manageSPAccount.table.error.providers.listing')}
               />
-              }
+            }
+          />
+        </div>
+        {isAddLinkProvider && (
+          <div
+            className={style.selectedAccountBox}
+            style={{ height: tableHeight }}>
+            <SelectedAccounts
+              selectedAccounts={selectedLinkProvider}
+              onRemoveAccount={onRemoveSelectedAccount}
             />
           </div>
-          {isAddLinkProvider && (
-            <div className={style.selectedAccountBox}  style={{ height: tableHeight }}>
-              <SelectedAccounts selectedAccounts={selectedLinkProvider} onRemoveAccount={onRemoveSelectedAccount} />
-            </div>
-          )}
-        </div>
-        {openProviderDetails &&
-          <LinkProviderDetailsDrawer
-            open={openProviderDetails}
-            onClose={() => setOpenProviderDetails(false)}
-            details={drawerDetails}
-            title={t('manageSPAccount.providers.details')}
-          />        
-        }
+        )}
+      </div>
+      {openProviderDetails && (
+        <LinkProviderDetailsDrawer
+          open={openProviderDetails}
+          onClose={() => setOpenProviderDetails(false)}
+          details={drawerDetails}
+          title={t('manageSPAccount.providers.details')}
+        />
+      )}
     </div>
   );
 }

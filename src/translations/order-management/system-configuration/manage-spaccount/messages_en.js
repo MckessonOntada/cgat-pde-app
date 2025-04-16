@@ -184,7 +184,9 @@ export const ManageSPAccountMessagesEN = {
   'manageSPAccount.message.removelinkprovider.success' : 'Provider has been removed successfully.',
   'manageSPAccount.message.remove.linkprovider': 'Are you sure, you want to remove this Provider?',
   'manageSPAccount.btn.backToSpAccount': 'Back to sp account details page',
-  'manageSPAccount.error.message.selectProvider': 'Please select provider',
-  'manageSPAccount.error.message.unableToAddProvider': 'Unable to Add Provider',
+  'manageSPAccount.error.message.selectProvider': 'Please select provider(s)',
+  'manageSPAccount.error.message.unableToAddProvider': 'Unable to Add Provider(s)',
+  'manageSPAccount.error.message.unableToUnlinkProvider': 'Unable to unlink provider(s)',
+  'manageSPAccount.error.message.failedToOpenDetails' : 'Failed to open provider details. Please try again.',
   'manageSPAccount.success.message.addProvider': 'Provider has been linked successfully',
 };
