@@ -26,8 +26,8 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
     applyFilters,
     clearFilters,
     data,
-    refreshData,
-    isAddLinkProvider
+    isAddLinkProvider,
+    applySort
   } = useLinkProvider();
   const [selectedLinkProvider, setSelectedLinkProvider] = useState([]);
   const [openProviderDetails, setOpenProviderDetails] = useState(false);
@@ -131,6 +131,9 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
   const handleChangePage = (e, newPage) => {
     setPageNumber(newPage);
   };
+  const handleOnSortIconClick = (selectedColumn, sortDirection) => {
+    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+  };
 
   return (
     <div className="MCP-panel-container">
@@ -166,6 +169,7 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
             currentPage={paginationConfig.pageNumber}
             totalPageCount={paginationConfig.totalPages}
             pagination={true}
+            onSortIconClick={handleOnSortIconClick}
             handleChangePage={handleChangePage}
             totalRocords={paginationConfig.totalElements}
             recordsPerPage={paginationConfig.pageSize}

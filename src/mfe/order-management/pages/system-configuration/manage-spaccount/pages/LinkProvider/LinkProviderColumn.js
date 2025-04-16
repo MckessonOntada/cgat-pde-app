@@ -45,7 +45,7 @@ export const getLinkProviderColumns = (
     selector: (row) => row.name || '',
     minWidth: '180px',
     sortable: true,
-    sortKey: 'name',
+    sortKey: 'full_name',
     cell: (props) => (
       <div className="cellEllipse">
         <Link
@@ -70,7 +70,6 @@ export const getLinkProviderColumns = (
     cell: (props) => (
       <EclipsesTextcss str={getAddress(props.address)} maxWidth={380} />
     ),
-    sortable: false
   },
   {
     id: 'dea',
@@ -78,7 +77,8 @@ export const getLinkProviderColumns = (
     selector: (row) => row.dea || '',
     minWidth: '150px',
     cell: (props) => <EclipsesTextcss str={props.dea} maxWidth={300} />,
-    sortable: false
+     sortable: true,
+    sortKey: 'dea',
   },
   {
     id: 'npi',
@@ -86,7 +86,8 @@ export const getLinkProviderColumns = (
     selector: (row) => row.npi || '',
     minWidth: '150px',
     cell: (props) => <EclipsesTextcss str={props.npi} maxWidth={300} />,
-    sortable: false
+    sortable: true,
+    sortKey:'npi'
   },
   {
     id: 'action',

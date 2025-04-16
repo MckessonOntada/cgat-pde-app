@@ -30,7 +30,7 @@ const INITIAL_FILTER_STATE = {
 
 const INITIAL_SORT_STATE = {
   sortBy: 'first_name',
-  sortOrder: 'asc'
+  sortOrder: 'desc'
 };
 
 const INITIAL_PAGINATION_CONFIG = {
