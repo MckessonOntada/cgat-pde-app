@@ -29,7 +29,10 @@ import { SPMaterialProvider } from '../pages/system-configuration/manage-spmater
 import ManageSPAccountRoute from '../pages/system-configuration/manage-spaccount/routes/Routes';
 
 function OrderManagementRoutes() {
-  const addEditPermission = [PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS];
+  const addEditPermission = [
+    PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS,
+    PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS
+  ];
   return (
     <Routes>
       <Route
@@ -43,7 +46,8 @@ function OrderManagementRoutes() {
       <Route
         path={`create-order`}
         element={
-          <ProtectedRoute permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS]}>
+          <ProtectedRoute
+            permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS]}>
             <TherapyProvider>
               <TherapySelection />
             </TherapyProvider>
@@ -53,7 +57,8 @@ function OrderManagementRoutes() {
       <Route
         path={`edit-order/:orderId`}
         element={
-          <ProtectedRoute permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS]}>
+          <ProtectedRoute
+            permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS]}>
             <TherapyProvider>
               <TherapySelection />
             </TherapyProvider>
@@ -144,7 +149,9 @@ function OrderManagementRoutes() {
       <Route
         path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_SPACCOUNT}/*`}
         element={
-          <OrgAccountSelectionProvider enableAcct={false} defaultFirstOrgSelected={true}>
+          <OrgAccountSelectionProvider
+            enableAcct={false}
+            defaultFirstOrgSelected={true}>
             <ManageSPAccountRoute />
           </OrgAccountSelectionProvider>
         }

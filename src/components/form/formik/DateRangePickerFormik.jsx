@@ -10,16 +10,12 @@ export default function DateRangePickerFormik({ minDate, maxDate, ...props }) {
     const min = value?.[0] || '';
     const max = value?.[1] || '';
 
-    const prevMin = field?.value?.[0] || '';
-    const prevMax = field?.value?.[1] || '';
+    // const prevMin = field?.value?.[0] || '';
+    // const prevMax = field?.value?.[1] || '';
 
     let error = '';
     const fromDate = min ? new Date(min) : null;
     const toDate = max ? new Date(max) : null;
-
-    if (fromDate) {
-      setPickerMinDate(fromDate);
-    }
 
     // if ((!fromDate && toDate) || (fromDate && !toDate)) {
     //   error = 'Please select a valid date range.';
@@ -33,8 +29,7 @@ export default function DateRangePickerFormik({ minDate, maxDate, ...props }) {
       (!fromDate && toDate) || (fromDate && !toDate) || (fromDate && toDate && fromDate > toDate)
         ? 'Please select a valid date range.'
         : '';
-
-    form.setFieldValue(field.name, [min || prevMin, max || prevMax]);
+    form.setFieldValue(field.name, [min , max]);
     form.setFieldError(field.name, error || undefined);
   };
 
