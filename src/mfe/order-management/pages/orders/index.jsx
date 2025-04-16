@@ -80,17 +80,6 @@ const OrderIndex = () => {
 
   const additionalFiltersConfig = React.useMemo(() => {
     let filters = [];
-    if (tabVariant !== ORDER_TABS.PENDING_APPROVAL) {
-      filters.push({
-        type: 'dropdown',
-        name: 'distributionchannel',
-        label: t('labels.distributionChannel'),
-        options: DiSTRIBUTION_CHANNEL_OPTIONS.map((opt) => ({
-          label: t(`labels.caption.${opt.value}`),
-          value: opt.value
-        }))
-      });
-    }
 
     if (tabVariant === ORDER_TABS.PENDING_SUBMISSION) {
       const options = [
