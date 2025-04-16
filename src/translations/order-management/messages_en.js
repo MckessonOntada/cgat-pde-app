@@ -603,5 +603,7 @@ export const MessageEn = {
   'tooltip.material.status.AVAILABLE': 'Therapy Available',
   'tooltip.material.status.DROP_SHIP': 'Dropship',
   'tooltip.material.status.OUT_OF_STOCK': 'Low Inventory',
-  'tooltip.material.status.CHECKING': 'Checking'
+  'tooltip.material.status.CHECKING': 'Checking',
+
+  'labels.orderQuantity': 'Order Quantity'
 };
