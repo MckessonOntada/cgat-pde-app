@@ -57,6 +57,7 @@ function UploadFile({
               onClose={() => {
                 onCloseAlert && onCloseAlert(message.id);
               }}
+              isSticky={message.isSticky || message.type === 'error'}
               type={message.type}
             />
           );
