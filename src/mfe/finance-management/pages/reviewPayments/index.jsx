@@ -218,13 +218,14 @@ function ReviewPayments() {
             subLabel: t('paymentInvoices.reviewPayments.payTodayDesc')
           },
           {
-            isDisabled: dueDateIsInPast || isPartialPayment || parseFloat(totalAmount) <= 0,
+            isDisabled: dueDateIsInPast || isPartialPayment || parseFloat(totalAmount) <= 0 || parseFloat(creditsSum) > 0,
             label: t('paymentInvoices.reviewPayments.payDuedate'),
             value: t('paymentInvoices.reviewPayments.payDuedate'),
             subLabel: t('paymentInvoices.reviewPayments.payDuedateDesc')
           },
           {
-            isDisabled: dueDateIsInPast || isPartialPayment || parseFloat(creditsSum) > parseFloat(paymentAmountSum),
+            isDisabled:
+              dueDateIsInPast || isPartialPayment || parseFloat(creditsSum) > parseFloat(paymentAmountSum) || parseFloat(creditsSum) > 0,
             label: t('paymentInvoices.reviewPayments.paySpecfic'),
             value: t('paymentInvoices.reviewPayments.paySpecfic'),
             subLabel: t('paymentInvoices.reviewPayments.paySpecficDesc'),
