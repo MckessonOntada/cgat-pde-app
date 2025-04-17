@@ -11,11 +11,18 @@ import { useOrders } from '../../context/OrderContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import PermittedComponent from '@src/components/permitted-component';
 import usePermission from '@src/hooks/usePermissions';
-import { getTabs, ORDER_STATUS, ORDER_TABS } from './config';
+import {
+  DiSTRIBUTION_CHANNEL_OPTIONS,
+  getTabs,
+  ORDER_DATE_FILTER_OPTIONS,
+  ORDER_STATUS,
+  ORDER_TABS
+} from './config';
 import { showAlert } from '@src/store/reducer/alertReducer';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import useOrderCount from './useOrderCount';
+import { useFormikContext } from 'formik';
 
 const OrderIndex = () => {
   const { t } = useTranslate();
@@ -72,6 +79,7 @@ const OrderIndex = () => {
 
   const additionalFiltersConfig = React.useMemo(() => {
     let filters = [];
+
     if (tabVariant === ORDER_TABS.PENDING_SUBMISSION) {
       const options = [
         ORDER_STATUS.ALL,
@@ -79,6 +87,7 @@ const OrderIndex = () => {
         ORDER_STATUS.DELETED,
         ORDER_STATUS.REJECTED
       ];
+
       filters.push({
         type: 'dropdown',
         name: 'status',
@@ -89,7 +98,29 @@ const OrderIndex = () => {
         }))
       });
     }
-
+    if (tabVariant !== ORDER_TABS.PENDING_APPROVAL) {
+      filters.push({
+        type: 'dropdown',
+        name: 'orderdate',
+        label: 'Order Date',
+        options: ORDER_DATE_FILTER_OPTIONS.map((opt) => ({
+          label: t(`labels.caption.${opt.value}`),
+          value: opt.value
+        })),
+        linkedFilters: (value) =>
+          value === 'customRange'
+            ? [
+                {
+                  type: 'dateRangePicker',
+                  name: 'dateRange',
+                  startDateLabel: t('labels.startDate'),
+                  endDateLabel: t('labels.endDate'),
+                  required: true
+                }
+              ]
+            : []
+      });
+    }
     return filters;
   }, [activeTab]);
 
