@@ -17,6 +17,7 @@ function UploadFile({
   isLoading,
   messages,
   onCloseAlert,
+  customDownload,
   downloadTemplate,
   upload,
   onFileSelection,
@@ -35,17 +36,20 @@ function UploadFile({
         <ModuleHeader
           heading={<Heading as="h1">{primaryHeading}</Heading>}
           controls={
-            downloadTemplate && (
-              <div className="controls">
-                <Button
-                  className="button-icon"
-                  variant="secondary"
-                  size="md"
-                  onClick={downloadTemplate.fn}>
-                  {downloadTemplate.caption}
-                </Button>
-              </div>
-            )
+            <React.Fragment>
+              {customDownload}
+              {downloadTemplate && (
+                <div className="controls">
+                  <Button
+                    className="button-icon"
+                    variant="secondary"
+                    size="md"
+                    onClick={downloadTemplate.fn}>
+                    {downloadTemplate.caption}
+                  </Button>
+                </div>
+              )}
+            </React.Fragment>
           }
         />
 

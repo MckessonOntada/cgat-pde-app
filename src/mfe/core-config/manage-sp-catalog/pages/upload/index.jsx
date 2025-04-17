@@ -11,6 +11,13 @@ import {
 } from '@src/components/uploadFile/uploadUtils';
 import SPCatalogService from '@src/api/commonService/SPCatalogService';
 import CommonUtils, { downloadFile } from '@src/util/CommonUtils';
+import ContextMenu from '../context-menu';
+
+const DOWNLOAD_CONTEXT_OPTIONS = {
+  DOWNLOAD_TEMPLATE: 'Download Template',
+  DOWNLOAD_SP_ACCOUNT_DATA: 'Download SP Account Data',
+  DOWNLOAD_SP_MATERIAL_DATA: 'Download SP Material DATA'
+};
 
 const Upload = () => {
   const { t } = useTranslate();
@@ -71,32 +78,37 @@ const Upload = () => {
         });
       });
   };
-  const handleOnDownloadTemplate = () => {
-    Promise.all([
-      SPCatalogService.downloadAPAccountTemplate(),
-      SPCatalogService.downloadAPMaterialTemplate()
-    ])
-      .then(([accountTemplate, materialTemplate]) => {
-        if (accountTemplate) {
-          CommonUtils.downloadFile(
-            new Blob([accountTemplate], { type: 'text/csv;charset=utf-8;' }),
-            'Accounts'
-          );
-        }
-        if (materialTemplate) {
-          CommonUtils.downloadFile(
-            new Blob([materialTemplate], { type: 'text/csv;charset=utf-8;' }),
-            'Material'
-          );
-        }
+
+  const handleOnDownload = (option) => {
+    switch (option) {
+      case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_TEMPLATE: {
         handleDownload(
-          '/templates/upload_providers_template.csv',
+          '/templates/upload_sp_catalog_template.csv',
           'upload_sp_catalog_template.csv'
         );
-      })
-      .catch((error) => {
-        console.error('One or both API calls failed', error);
-      });
+        break;
+      }
+      case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_SP_ACCOUNT_DATA: {
+        SPCatalogService.downloadAPAccountTemplate().then((response) => {
+          CommonUtils.downloadFile(
+            new Blob([response.data], { type: 'text/csv;charset=utf-8;' }),
+            'Accounts'
+          );
+        });
+        break;
+      }
+      case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_SP_MATERIAL_DATA: {
+        SPCatalogService.downloadAPMaterialTemplate().then((response) => {
+          CommonUtils.downloadFile(
+            new Blob([response.data], { type: 'text/csv;charset=utf-8;' }),
+            'Material'
+          );
+        });
+        break;
+      }
+      default:
+        return;
+    }
   };
 
   return (
@@ -117,10 +129,18 @@ const Upload = () => {
         isLoading={false}
         messages={items}
         onCloseAlert={remove}
-        downloadTemplate={{
-          caption: t('controls.downloadCSVTemplate'),
-          fn: handleOnDownloadTemplate
-        }}
+        customDownload={
+          <ContextMenu
+            items={Object.values(DOWNLOAD_CONTEXT_OPTIONS)}
+            onSelect={handleOnDownload}>
+            <Button
+              size="md"
+              variant={'secondary'}
+              className="context-menu__button">
+              {t('controls.downloadCSVTemplate')}
+            </Button>
+          </ContextMenu>
+        }
         upload={{
           caption: t('controls.uploadCatalog'),
           fn: handleOnUpload
