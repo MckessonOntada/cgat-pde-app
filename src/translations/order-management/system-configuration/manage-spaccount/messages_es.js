@@ -181,7 +181,7 @@ export const ManageSPAccountMessagesES = {
   'manageSPAccount.heading.organization': 'S_Organization',
 
   'manageSPAccount.message.removeShippingLocation':
-    'S_Are you sure, you want to remove this Shipping Location?',
+    'S_Are you sure, you want to remove this Shipping Location(s)?',
   'manageSPAccount.message.addshippinglocation.success':
     'S_Shipping Location has been added successfully.',
   'manageSPAccount.message.updateshippinglocation.success':
@@ -240,7 +240,7 @@ export const ManageSPAccountMessagesES = {
   'manageSPAccount.providers.column.unlink': 'S_UNLINK', 
   'manageSPAccount.providers.details': 'S_Provider Details', 
   'manageSPAccount.message.removelinkprovider.success' : 'S_Provider(s) has been unlinked successfully.',
-  'manageSPAccount.message.remove.linkprovider': 'S_Are you sure, you want to unlink this Provider?',
+  'manageSPAccount.message.remove.linkprovider': 'S_Are you sure, you want to unlink this Provider(s)?',
   'manageSPAccount.btn.backToSpAccount': 'S_Back to sp account details page',
   'manageSPAccount.error.message.selectProvider': 'S_Please select provider(s).',
   'manageSPAccount.error.message.unableToAddProvider': 'S_Unable to Add Provider(s).',

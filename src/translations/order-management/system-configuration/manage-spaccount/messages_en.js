@@ -136,10 +136,10 @@ export const ManageSPAccountMessagesEN = {
   'manageSPAccount.heading.AddressDetails': 'Address Details',
   'manageSPAccount.heading.organization': 'Organization',
 
-  'manageSPAccount.message.removeShippingLocation': 'Are you sure, you want to remove this Shipping Location?',
+  'manageSPAccount.message.removeShippingLocation': 'Are you sure, you want to remove this Shipping Location(s)?',
   'manageSPAccount.message.addshippinglocation.success': 'Shipping Location has been added successfully.',
   'manageSPAccount.message.updateshippinglocation.success': 'Shipping Location has been updated successfully.',
-  'manageSPAccount.message.removeshippinglocation.success': 'Shipping Location has been removed successfully.',
+  'manageSPAccount.message.removeshippinglocation.success': 'Shipping Location(s) has been removed successfully.',
   'manageSPAccount.message.addshippinglocation.error': 'An error occurred while adding the Shipping Location. Please try again later.',
   'manageSPAccount.message.removeshippinglocation.error': 'An error occurred while removing the Shipping Location. Please try again later.',
 
@@ -182,7 +182,7 @@ export const ManageSPAccountMessagesEN = {
   'manageSPAccount.providers.column.unlink': 'UNLINK', 
   'manageSPAccount.providers.details': 'Provider Details', 
   'manageSPAccount.message.removelinkprovider.success' : 'Provider(s) has been unlinked successfully.',
-  'manageSPAccount.message.remove.linkprovider': 'Are you sure, you want to unlink this Provider?',
+  'manageSPAccount.message.remove.linkprovider': 'Are you sure, you want to unlink this Provider(s)?',
   'manageSPAccount.btn.backToSpAccount': 'Back to sp account details page',
   'manageSPAccount.error.message.selectProvider': 'Please select provider(s).',
   'manageSPAccount.error.message.unableToAddProvider': 'Unable to Add Provider(s).',
