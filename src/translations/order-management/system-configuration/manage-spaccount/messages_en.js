@@ -188,5 +188,5 @@ export const ManageSPAccountMessagesEN = {
   'manageSPAccount.error.message.unableToAddProvider': 'Unable to Add Provider(s)',
   'manageSPAccount.error.message.unableToUnlinkProvider': 'Unable to unlink provider(s)',
   'manageSPAccount.error.message.failedToOpenDetails' : 'Failed to open provider details. Please try again.',
-  'manageSPAccount.success.message.addProvider': 'Provider has been linked successfully',
+  'manageSPAccount.success.message.addProvider': 'Provider(s) has been linked successfully',
 };

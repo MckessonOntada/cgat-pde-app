@@ -55,7 +55,8 @@ export const getLinkProviderColumns = (
             fontWeight: '600',
             textDecoration: 'none'
           }}
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             handleProviderDetails(props.id);
           }}>
           {CommonUtils.getFullName(props?.name) || '-'}
