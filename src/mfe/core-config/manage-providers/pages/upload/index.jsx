@@ -10,17 +10,8 @@ import {
   handleDownload,
   validateFile
 } from '@src/components/uploadFile/uploadUtils';
-import { Provider } from 'react-redux';
 import ProviderService from '@src/api/commonService/ProviderService';
-
-const downloadCSV = (data) => {
-  const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.setAttribute('href', url);
-  link.setAttribute('download', 'sample_data.csv');
-  link.click();
-};
+import { downloadFile } from '@src/util/CommonUtils';
 
 const Upload = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -63,7 +54,12 @@ const Upload = () => {
             description: t('providers.message.fileUploadSuccess')
           });
         } else if (response.status === 206) {
-          const downloadErrorFile = () => downloadCSV(response.data);
+          const downloadErrorFile = () => {
+            const blob = new Blob([response.data], {
+              type: 'text/csv;charset=utf-8;'
+            });
+            downloadFile(blob, 'Provider_Upload_Log');
+          };
           add({
             type: 'info',
             description: (
