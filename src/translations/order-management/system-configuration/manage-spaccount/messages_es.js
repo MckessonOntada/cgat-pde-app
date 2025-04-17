@@ -226,5 +226,25 @@ export const ManageSPAccountMessagesES = {
   'messages.confirmation.deleteConfiguration':
     'S_Are you sure you want to delete the configuration ?',
   'manageSPAccount.drawer.configuration.alert.error':
-    'S_Please select Required Field'
+    'S_Please select Required Field',
+  
+  'manageSPAccount.heading.providers': 'S_Providers', 
+  'manageSPAccount.button.providers.linkProviders': 'S_Link Providers', 
+  'manageSPAccount..heading.linkProviders': 'S_Link Providers', 
+  'manageSPAccount.column.providerName': 'S_Provider Name', 
+  'manageSPAccount.column.providers.address': 'S_Address', 
+  'manageSPAccount.column.providers.deaNumber': 'S_DEA Number', 
+  'manageSPAccount.column.providers.npiNumber': 'S_NPI Number', 
+  'manageSPAccount.table.error.providers.listing': 'S_You need to add providers to see data in this table', 
+  'manageSPAccount.providers.search.placeholder': 'S_Search by Provider Name, NPI Number, DEA Number, Address', 
+  'manageSPAccount.providers.column.unlink': 'S_UNLINK', 
+  'manageSPAccount.providers.details': 'S_Provider Details', 
+  'manageSPAccount.message.removelinkprovider.success' : 'S_Provider has been unlinked successfully.',
+  'manageSPAccount.message.remove.linkprovider': 'S_Are you sure, you want to unlink this Provider?',
+  'manageSPAccount.btn.backToSpAccount': 'S_Back to sp account details page',
+  'manageSPAccount.error.message.selectProvider': 'S_Please select provider(s)',
+  'manageSPAccount.error.message.unableToAddProvider': 'S_Unable to Add Provider(s)',
+  'manageSPAccount.error.message.unableToUnlinkProvider': 'S_Unable to unlink provider(s)',
+  'manageSPAccount.error.message.failedToOpenDetails' : 'S_Failed to open provider details. Please try again.',
+  'manageSPAccount.success.message.addProvider': 'S_Provider(s) has been linked successfully',
 };
