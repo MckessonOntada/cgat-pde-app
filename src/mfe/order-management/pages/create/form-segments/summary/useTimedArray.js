@@ -36,6 +36,8 @@ const useTimedArray = (timeout) => {
     }
   }, []);
 
+  const removeAll = useCallback(() => setItems([]));
+
   useEffect(() => {
     return () => {
       timers.current.forEach(clearTimeout);
@@ -43,7 +45,7 @@ const useTimedArray = (timeout) => {
     };
   }, []);
 
-  return { items, add, remove };
+  return { items, add, remove, removeAll };
 };
 
 export default useTimedArray;
