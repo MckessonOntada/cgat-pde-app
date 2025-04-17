@@ -21,7 +21,8 @@ import {
   ADDRESS_REGEX,
   ZIP_REGEX,
   PHONE_REGEX,
-  FAX_REGEX
+  FAX_REGEX,
+  ALPHABETIC_WITH_SPECIAL_AND_ACCENTED
 } from '@src/components/form/ValidationRegExp';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import CommonUtils from '@src/util/CommonUtils';
@@ -148,17 +149,17 @@ const CreateUser = () => {
   const validationSchema = Yup.object({
     name: Yup.object({
       firstName: Yup.string()
-        .matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.first_name')) // Only alphabets
+        .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t('userManagement.create_user.validation.first_name'))
         .min(2, t('userManagement.create_user.validation.first_name_min_max'))
         .required(t('userManagement.create_user.validation.first_name_required'))
         .max(50, t('userManagement.create_user.validation.first_name_min_max')),
       middleName: Yup.string()
-        .matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.middle_name'))
+        .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t('userManagement.create_user.validation.middle_name'))
         .min(2, t('userManagement.create_user.validation.middle_name_min_max'))
         .max(50, t('userManagement.create_user.validation.middle_name_min_max'))
         .nullable(),
       lastName: Yup.string()
-        .matches(ALPHABETIC_WITH_SPECIAL, t('userManagement.create_user.validation.last_name')) // Only alphabets
+        .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t('userManagement.create_user.validation.last_name'))
         .min(2, t('userManagement.create_user.validation.last_name_min_max'))
         .max(50, t('userManagement.create_user.validation.last_name_min_max'))
         .required(t('userManagement.create_user.validation.last_name_required'))
