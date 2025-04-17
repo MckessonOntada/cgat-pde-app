@@ -251,7 +251,8 @@ const Summary = () => {
         warningMessages.forEach((msg) => {
           addNotification({
             description: msg,
-            type: 'warning'
+            type: 'warning',
+            isSticky: true
           });
         });
       }
