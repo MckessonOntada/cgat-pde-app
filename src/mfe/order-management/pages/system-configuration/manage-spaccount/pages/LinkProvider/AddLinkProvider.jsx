@@ -7,7 +7,7 @@ import {
 } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import LinkProviderTable from './LinkProviderTable';
 import { LinkProviderProvider } from '../../context/LinkProviderContext';
@@ -29,7 +29,8 @@ const AddLinkProvider = () => {
   const handleGoBack = () => {
     navigate(-1);
   };
-  const { selectedOrganization } = useOrgAccountSelectionContext();
+  const [searchParams] = useSearchParams();
+  const selectedOrganization = searchParams.get('orgId');
 
   const onSubmitHandler = () => {
     if (!selectedProviders || selectedProviders.length === 0) {
@@ -47,7 +48,7 @@ const AddLinkProvider = () => {
   const { isLoading, mutate: handleAddAccounts } = useMutation(
     async (selectedProviderIds) => {
       return LinkProviderService.linkProvidersToAccount(
-        selectedOrganization.id,
+        selectedOrganization,
         spAccountId,
         selectedProviderIds
       );
@@ -55,7 +56,7 @@ const AddLinkProvider = () => {
     {
       onSuccess: (_, selectedProviderIds) => {
         navigate(
-          `/orders/system-configuration/manage-spaccount/${spAccountId}`,
+          `/orders/system-configuration/manage-spaccount/${spAccountId}?orgId=${selectedOrganization}`,
           {
             state: {
               type: 'success',

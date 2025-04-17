@@ -18,6 +18,7 @@ import LinkProviderService from '@src/api/commonService/LinkProviderService';
 import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import CommonUtils from '@src/util/CommonUtils';
 import AuthUtils from '@src/util/AuthUtils';
+import { useSearchParams } from 'react-router-dom';
 
 function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
   const { t } = useTranslate();
@@ -34,7 +35,8 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
   const [openProviderDetails, setOpenProviderDetails] = useState(false);
   const [drawerDetails, setDrawerDetails] = useState('');
   const [tableHeight, setTableHeight] = useState('100%');
-  const { selectedOrganization } = useOrgAccountSelectionContext();
+  const [searchParams] = useSearchParams();
+  const selectedOrganization = searchParams.get('orgId');
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   
   useEffect(() => {
@@ -99,7 +101,7 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
     async (providerId) => {
       return LinkProviderService.getProviderDetailsById(
         providerId,
-        selectedOrganization.id
+        selectedOrganization
       );
     },
     {

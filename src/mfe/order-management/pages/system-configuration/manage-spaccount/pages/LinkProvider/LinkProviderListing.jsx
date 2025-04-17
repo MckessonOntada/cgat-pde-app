@@ -1,6 +1,6 @@
 import { useTranslate } from '@src/translations/useTranslation';
 import React, { useEffect } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
 import {
   Heading,
@@ -15,7 +15,6 @@ import { routeConstants } from '../../routes/constants';
 import LinkProviderTable from './LinkProviderTable';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import { useMutation } from 'react-query';
-import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import AuthUtils from '@src/util/AuthUtils';
 
 function LinkProviderListing() {
@@ -30,7 +29,8 @@ function LinkProviderListing() {
     add: addNotification,
     remove: removeNotification
   } = useTimedArray(10000);
-  const { selectedOrganization } = useOrgAccountSelectionContext();
+  const [searchParams] = useSearchParams();
+  const selectedOrganization = searchParams.get('orgId');
 
   useEffect(() => {
     if (location.state?.type && location.state?.messages) {
@@ -38,14 +38,14 @@ function LinkProviderListing() {
         type: location.state.type,
         description: location.state.messages
       });
-      navigate(location.pathname, { replace: true, state: null });
+      navigate(`${location.pathname}${location.search}`, { replace: true, state: null });
     }
   }, [location, navigate]);
   
   const { isLoading, mutate: handleUnlinkProvider } = useMutation(
     async (providerId) => {
       return await LinkProviderService.removeLinkProvider(
-        selectedOrganization.id,
+        selectedOrganization,
         spAccountId,
         providerId
       );
@@ -88,7 +88,7 @@ function LinkProviderListing() {
                   size="md"
                   onClick={() =>
                     navigate(
-                      `../${routeConstants.ADD_LINK_PROVIDER}/${spAccountId}`
+                      `../${routeConstants.ADD_LINK_PROVIDER}/${spAccountId}?orgId=${selectedOrganization}`
                     )
                   }>
                   {t('manageSPAccount.button.providers.linkProviders')}
