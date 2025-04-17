@@ -11,7 +11,7 @@ export const LoginMessagesEN = {
   'login.header.1': 'Advancing',
   'login.header.2': 'Health Outcomes for All',
   'login.page.desc.1': 'Solutions for your pharmacy, hospital,',
-  'login.page.desc.2': 'Organization or biopharma company',
+  'login.page.desc.2': 'organization or biopharma company',
   'login.welcome': 'Welcome !',
   'login.ordringPortal': 'Ordering Portal',
   'login.details':

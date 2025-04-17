@@ -137,16 +137,16 @@ function OrderManagementRoutes() {
           </OrgAccountSelectionProvider>
         }
       />
-      {/* <Route
+      <Route
         path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_SPMATERIAL}/*`}
         element={
           <SPMaterialProvider>
             <ManageSPMaterialRoute />
           </SPMaterialProvider>
         }
-      /> */}
+      />
 
-      {/* <Route
+      <Route
         path={`system-configuration/${CONFIG_MODULE_ROUTES.MANAGE_SPACCOUNT}/*`}
         element={
           <OrgAccountSelectionProvider
@@ -155,7 +155,7 @@ function OrderManagementRoutes() {
             <ManageSPAccountRoute />
           </OrgAccountSelectionProvider>
         }
-      /> */}
+      />
       <Route path={routesConfig.viewDetails} element={<OrderSummary />} />
       <Route path={routesConfig.reviewOrder} element={<div></div>} />
       <Route path={'*'} element={<NotFound />} />

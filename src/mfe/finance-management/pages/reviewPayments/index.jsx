@@ -218,7 +218,7 @@ function ReviewPayments() {
             subLabel: t('paymentInvoices.reviewPayments.payTodayDesc')
           },
           {
-            isDisabled: dueDateIsInPast || isPartialPayment,
+            isDisabled: dueDateIsInPast || isPartialPayment || parseFloat(totalAmount) <= 0,
             label: t('paymentInvoices.reviewPayments.payDuedate'),
             value: t('paymentInvoices.reviewPayments.payDuedate'),
             subLabel: t('paymentInvoices.reviewPayments.payDuedateDesc')

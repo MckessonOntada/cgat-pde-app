@@ -58,9 +58,9 @@ export const useSort = () => {
     throw new TableContextError('useSort must be used within a TableProvider.');
   }
 
-  const { sort, setSort } = context;
+  const { sort, applySort } = context;
 
-  return { sort, setSort };
+  return { sort, applySort };
 };
 
 export const useFilters = () => {
@@ -177,7 +177,7 @@ export const TableProvider = ({
 
   useEffect(() => {
     fetchData();
-  }, [filters, pagination.pageNo]);
+  }, [filters, pagination.pageNo, sort]);
 
   const toggleRowSelection = (id) => {
     setSelectedRows((prev) => {
@@ -204,10 +204,10 @@ export const TableProvider = ({
     setFilters({ ...filters });
   };
 
-  const applySort = (sort) => {
+  const applySort = (sortBy, sortDirection) => {
     setSort({
-      sortBy: sort.by,
-      sortOrder: sort.order
+      sortBy: sortBy,
+      sortOrder: sortDirection
     });
   };
 

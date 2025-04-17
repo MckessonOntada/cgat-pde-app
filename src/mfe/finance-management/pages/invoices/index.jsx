@@ -4,10 +4,12 @@ import InvoicesTable from './InvoicesTable';
 import './index.scss';
 import { usePaymentInvoices } from '../../context/PaymentsInvoicesContext';
 import { useTranslate } from '@src/translations/useTranslation';
+import { useAccountContext } from '../../context/AccountContext';
 
 export default function Invoices(params) {
   const { t } = useTranslate();
   const { applyFilters, clearFilters, statusOptions, setStatusOptions } = usePaymentInvoices();
+  const {selectedAccount} = useAccountContext();
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
@@ -37,7 +39,7 @@ export default function Invoices(params) {
     ];
   }, [statusOptions]);
   return (
-    <React.Fragment>
+    <React.Fragment key={selectedAccount.id}>
       <div className="MCP-CardContainer invoices-container">
         <CommonFilters
           onApplyFilters={applyFilters}

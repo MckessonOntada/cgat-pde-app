@@ -28,13 +28,17 @@ function SelectedInvoiceList(props) {
       id: 'billNumber',
       selector: (row) => `${row.billNumber}`,
       wrap: true,
-      minWidth: '112px',
+      minWidth: '100px',
       showInMobileHeader: true,
       showColumnNameInHeader: true,
       cell: (props) => (
         <div className="cellEllipse">
           <Link
-            style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
+            style={{
+              color: 'var(--brand-color-primary)',
+              fontWeight: '600',
+              textDecoration: 'none'
+            }}
             // to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
             to={`/record/${PATHS.invoices}/${props?.billNumber}/details`}
             state={{ ...state }}>
@@ -47,7 +51,7 @@ function SelectedInvoiceList(props) {
       id: 'soldToSite',
       name: t('paymentInvoices.history.table.SoldToSite'),
       selector: (row) => row.soldToSite,
-      minWidth: '160px',
+      minWidth: '120px',
       wrap: true,
       cell: (props) => <div>{props?.soldToSite || '-'}</div>
     },
@@ -66,56 +70,89 @@ function SelectedInvoiceList(props) {
       selector: (row) => row?.billDate,
       minWidth: '150px',
       id: 'billDate',
-      cell: (props) => <div>{CommonUtils.convertDateStringFormat(props?.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
+      cell: (props) => (
+        <div>
+          {CommonUtils.convertDateStringFormat(
+            props?.billDate,
+            'MM/DD/YYYY',
+            'DD/MM/YYYY'
+          )}
+        </div>
+      )
     },
     {
       name: t('paymentInvoices.history.table.DueDate'),
       selector: (row) => row.dueDate,
       maxWidth: '130px',
+      minWidth: '105px',
       wrap: true,
       id: 'dueDate',
-      cell: (props) => <div>{CommonUtils.convertDateStringFormat(props?.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')}</div>
+      cell: (props) => (
+        <div>
+          {CommonUtils.convertDateStringFormat(
+            props?.dueDate,
+            'MM/DD/YYYY',
+            'DD/MM/YYYY'
+          )}
+        </div>
+      )
     },
     {
       name: t('paymentInvoices.history.table.BillAmount'),
       selector: (row) => row?.billAmount,
-      minWidth: '140px',
+      minWidth: '160px',
       right: true,
       id: 'billAmount',
       cell: (props) => (
         <div className="cellEllipse align-items-right ">
-          <FormattedNumber value={props?.billAmount || 0} style="currency" currency="USD" />
+          <FormattedNumber
+            value={props?.billAmount || 0}
+            style="currency"
+            currency="USD"
+          />
         </div>
       )
     },
     {
       name: t('paymentInvoices.history.table.OpenAmount'),
       selector: (row) => row.openAmount,
-      minWidth: '144px',
+      minWidth: '160px',
       wrap: true,
       id: 'openAmount',
       cell: (props) => (
         <div className="cellEllipse align-items-right ">
-          <FormattedNumber value={props?.openAmount || 0} style="currency" currency="USD" />
+          <FormattedNumber
+            value={props?.openAmount || 0}
+            style="currency"
+            currency="USD"
+          />
         </div>
       ),
       right: true
     },
     {
       name: t('paymentInvoices.reviewPayments.paymentAmount'),
-      minWidth: '240px',
+      minWidth: '180px',
       id: 'paymentAmount',
       right: true,
       cell: (props, index) =>
         REVIEW_MODE ? (
           <div className="cellEllipse align-items-right ">
-            <FormattedNumber value={props.paymentAmount || 0} style="currency" currency="USD" />
+            <FormattedNumber
+              value={props.paymentAmount || 0}
+              style="currency"
+              currency="USD"
+            />
           </div>
         ) : (
           <input
             type="number"
             className={`paymenyAmount-input ${
-              props.paymentAmount > props.openAmount || props.paymentAmount <= 0 || !props.paymentAmount ? `error-input` : ``
+              props.paymentAmount > props.openAmount ||
+              props.paymentAmount <= 0 ||
+              !props.paymentAmount
+                ? `error-input`
+                : ``
             }`}
             value={props.paymentAmount}
             onChange={(e) => onChangePayAmount(e, index)}
@@ -126,10 +163,13 @@ function SelectedInvoiceList(props) {
     },
     {
       name: t('paymentInvoices.history.table.Actions'),
-      minWidth: '160px',
       id: 'paymentAmount',
       cell: (props, index) => (
-        <div className={`action-container ${selectedInvoices.length <= 1 ? `in-active` : ``}`} onClick={() => onRemoveInvoice(index)}>
+        <div
+          className={`action-container ${
+            selectedInvoices.length <= 1 ? `in-active` : ``
+          }`}
+          onClick={() => onRemoveInvoice(index)}>
           <RemoveCircle disabled /> {t('paymentInvoices.reviewPayments.remove')}
         </div>
       ),

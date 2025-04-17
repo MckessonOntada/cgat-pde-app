@@ -19,6 +19,7 @@ export const getAddress = (account) => {
   return [
     sanitizedAccount.houseNumber,
     sanitizedAccount.street,
+    sanitizedAccount.street2,
     sanitizedAccount.district,
     sanitizedAccount.city,
     sanitizedAccount.state,

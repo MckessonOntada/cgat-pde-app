@@ -3,6 +3,7 @@ import { ReactComponent as DeleteIcon } from '@src/assets/image/delete.svg';
 import { Divider, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import './SelectedAccounts.scss';
+import { getAddress } from '@src/mfe/order-management/pages/system-configuration/manage-spaccount/util';
 
 export default function SelectedAccounts({ selectedAccounts, onRemoveAccount }) {
   const { t } = useTranslate();
@@ -14,8 +15,9 @@ export default function SelectedAccounts({ selectedAccounts, onRemoveAccount }) 
         {selectedAccounts?.map((item) => (
           <div key={item.id} className="selected-account">
             <div>
-              <p className="selected-account-label">{item.accountName}</p>
-              <p className="selected-account-label">({item.accountNumber})</p>
+              { item.accountName && <p className="selected-account-label">{item.accountName}</p> }
+              { item.accountNumber && <p className="selected-account-label">( {item.accountNumber} )</p>}
+              { item.address && <p className="selected-account-label">{ getAddress(item.address) }</p>}
             </div>
             <Button
               Icon={DeleteIcon}

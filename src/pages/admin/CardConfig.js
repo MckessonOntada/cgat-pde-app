@@ -33,15 +33,15 @@ const cardList = [
     details: 'approver_management_description',
     path: AppRoutes.pathApproverManagement,
     permissions: ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP
+  },
+  {
+    name: 'ManageProviders',
+    label: 'manage_providers',
+    icon: ProviderIcon,
+    details: 'manage_provider_description',
+    path: AppRoutes.pathManageProviders,
+    permissions: MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN
   }
-  // {
-  //   name: 'ManageProviders',
-  //   label: 'manage_providers',
-  //   icon: ProviderIcon,
-  //   details: 'manage_provider_description',
-  //   path: AppRoutes.pathManageProviders,
-  //   permissions: MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN
-  // }
 ];
 
 export default cardList;
