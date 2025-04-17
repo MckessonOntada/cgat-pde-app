@@ -109,13 +109,7 @@ const ProviderForm = (props) => {
             }
           });
         })
-        .catch((error) => {
-          const { response } = error;
-          add({
-            description: response?.data?.message || error.message,
-            type: 'error'
-          });
-        });
+        .catch(handleServerError);
     } else {
       ProviderService.addProvider(payload)
         .then((response) => {
@@ -130,13 +124,25 @@ const ProviderForm = (props) => {
             }
           });
         })
-        .catch((error) => {
-          const { response } = error;
-          add({
-            description: response?.data?.message || error.message,
-            type: 'error'
-          });
+        .catch(handleServerError);
+    }
+  };
+
+  const handleServerError = (error) => {
+    const { response = {} } = error;
+    const errorFromServer = response.data?.errorCodes;
+    if (
+      errorFromServer &&
+      Array.isArray(errorFromServer) &&
+      errorFromServer.length > 0
+    ) {
+      errorFromServer.forEach((error) => {
+        add({
+          description: t(`serverResponse.${error}`),
+          type: 'error',
+          isSticky: true
         });
+      });
     }
   };
 
