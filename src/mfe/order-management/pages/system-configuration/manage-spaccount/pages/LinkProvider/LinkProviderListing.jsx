@@ -43,11 +43,12 @@ function LinkProviderListing() {
   }, [location, navigate]);
   
   const { isLoading, mutate: handleUnlinkProvider } = useMutation(
-    async (providerId) => {
+    async (selectedProviders) => {
+      const selectedProviderIds = selectedProviders.map((p) => Number(p.id));
       return await LinkProviderService.removeLinkProvider(
         selectedOrganization,
         spAccountId,
-        providerId
+        selectedProviderIds
       );
     },
     {
