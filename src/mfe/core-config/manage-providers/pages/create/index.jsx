@@ -32,7 +32,7 @@ const ProviderForm = (props) => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const navigate = useNavigate();
   const { t } = useTranslate();
-  const { items, add, remove } = useTimedArray(10000);
+  const { items, add, remove, removeAll } = useTimedArray(10000);
   const { id } = useParams();
   const [initialValues, setInitialValues] = React.useState(INITIAL_VALUES);
   const breadcrumbItems = React.useMemo(() => {
@@ -95,6 +95,7 @@ const ProviderForm = (props) => {
         zip
       }
     };
+    removeAll();
     if (isEditOperation) {
       ProviderService.updateProvider(id, payload)
         .then((response) => {
