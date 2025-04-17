@@ -8,8 +8,7 @@ import React, {
 } from 'react';
 import { useQuery } from 'react-query';
 import LinkProviderService from '@src/api/commonService/LinkProviderService';
-import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 
 const LinkProviderContext = createContext();
 
@@ -46,7 +45,8 @@ export const LinkProviderProvider = ({ children }) => {
     INITIAL_PAGINATION_CONFIG
   );
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
-  const { selectedOrganization } = useOrgAccountSelectionContext();
+  const [searchParams] = useSearchParams();
+  const selectedOrganization = searchParams.get('orgId');
   const { spAccountId } = useParams();
   const location = useLocation();
 
@@ -67,19 +67,19 @@ export const LinkProviderProvider = ({ children }) => {
     [filterConfig, paginationConfig.pageNumber, sortConfig]
   );
   const { isLoading, isError, error, data, refetch } = useQuery({
-    queryKey: ['LinkProviders', requestParams, selectedOrganization?.id],
+    queryKey: ['LinkProviders', requestParams, selectedOrganization],
     queryFn: async () => {
       let result;
       if (isAddLinkProvider) {
         result = await LinkProviderService.getProviderList(
           requestParams,
-          selectedOrganization?.id,
+          selectedOrganization,
           spAccountId
         );
       } else {
         result = await LinkProviderService.getProviderListByAccount(
           requestParams,
-          selectedOrganization?.id
+          selectedOrganization
         );
       }
       const { content: data, totalElements, totalPages } = result;

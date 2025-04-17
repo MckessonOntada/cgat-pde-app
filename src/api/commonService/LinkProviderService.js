@@ -9,9 +9,7 @@ export const getProviderList = async (
 ) => {
   const url = `${
     ApiRoutes.PUBLIC_ORGANIZATIONS
-  }/${selectedOrganization}/accounts/${accId}/non-linked-providers?${serializeParams(
-    requestParams
-  )}`;
+  }/${selectedOrganization}/accounts/${accId}/providers?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {
     'Content-Type': 'application/json;charset=utf-8',
     accept: 'application/json'
