@@ -85,8 +85,7 @@ const OrderIndex = () => {
         ORDER_STATUS.ALL,
         ORDER_STATUS.IN_DRAFT,
         ORDER_STATUS.DELETED,
-        ORDER_STATUS.REJECTED,
-        ORDER_STATUS.CANCELLED
+        ORDER_STATUS.REJECTED
       ];
 
       filters.push({
@@ -96,7 +95,7 @@ const OrderIndex = () => {
         options: options.map((opt) => ({
           label: t(`labels.caption.${opt}`),
           value: opt
-        })) 
+        }))
       });
     }
     if (tabVariant !== ORDER_TABS.PENDING_APPROVAL) {
@@ -119,7 +118,7 @@ const OrderIndex = () => {
                   required: true
                 }
               ]
-            : [] 
+            : []
       });
     }
     return filters;
