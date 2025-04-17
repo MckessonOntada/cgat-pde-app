@@ -16,7 +16,7 @@ import ContextMenu from '../context-menu';
 const DOWNLOAD_CONTEXT_OPTIONS = {
   DOWNLOAD_TEMPLATE: 'Download Template',
   DOWNLOAD_SP_ACCOUNT_DATA: 'Download SP Account Data',
-  DOWNLOAD_SP_MATERIAL_DATA: 'Download SP Material DATA'
+  DOWNLOAD_SP_MATERIAL_DATA: 'Download SP Material Data'
 };
 
 const Upload = () => {
@@ -71,11 +71,15 @@ const Upload = () => {
         }
       })
       .catch((error) => {
-        const { response: errorResponse } = error;
-        add({
-          type: 'error',
-          description: 'providers.message.fileUploadFailure'
-        });
+        const { response: errorResponse = {} } = error;
+        if (errorResponse.data?.message) {
+          add({
+            type: 'error',
+            description:
+              errorResponse.data?.message ||
+              t('providers.message.fileUploadFailure')
+          });
+        }
       });
   };
 
