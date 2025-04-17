@@ -118,5 +118,8 @@ export const ConfigurationMessagesEN = {
   'provider.option.ALL': 'All',
   'provider.option.ALL': 'SUBMITTED_BUY_AND_BILL',
   'provider.orderType': 'Order Type',
-  'provider.assignee': 'Assignee'
+  'provider.assignee': 'Assignee',
+
+  'serverResponse.provider.dea.conflict': 'DEA number already exist',
+  'serverResponse.provider.npi.conflict': 'NPI number already exist'
 };

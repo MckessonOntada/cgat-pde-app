@@ -5,7 +5,7 @@ const getStates = () => {
   options.unshift({
     isDisabled: true,
     value: '',
-    label: 'provider.placeholder.select'
+    label: 'Select'
   });
   return options;
 };
