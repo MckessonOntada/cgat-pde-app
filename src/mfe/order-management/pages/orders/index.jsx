@@ -10,29 +10,20 @@ import CommonFilters from '@src/components/Filters';
 import { useOrders } from '../../context/OrderContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import PermittedComponent from '@src/components/permitted-component';
-import usePermission from '@src/hooks/usePermissions';
 import {
-  DiSTRIBUTION_CHANNEL_OPTIONS,
   getTabs,
   ORDER_DATE_FILTER_OPTIONS,
   ORDER_STATUS,
   ORDER_TABS
 } from './config';
-import { showAlert } from '@src/store/reducer/alertReducer';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import useOrderCount from './useOrderCount';
-import { useFormikContext } from 'formik';
+import CommonUtils from '@src/util/CommonUtils';
 
 const OrderIndex = () => {
   const { t } = useTranslate();
-  const { hasPermission } = usePermission();
-  const isPendingTab = hasPermission(
-    PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_PENDING_ORDERS
-  );
-  const isSubmittedTab = hasPermission(
-    PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS
-  );
+  const [_isOrderCountAdded, setIsOrderCountAdded] = React.useState(false);
   const { applyFilters, clearFilters, changeTab, tabVariant, isError, error } =
     useOrders();
   const [tabList, setTabList] = React.useState(() => {
@@ -46,6 +37,7 @@ const OrderIndex = () => {
 
   const orderCounts = useOrderCount();
   React.useEffect(() => {
+    if (_isOrderCountAdded) return;
     const allTabs = getTabs();
     allTabs.forEach((tab) => {
       let countClass = '';
@@ -65,15 +57,15 @@ const OrderIndex = () => {
       );
     });
     setTabList(allTabs);
+    if (orderCounts && CommonUtils.isNonEmptyObject(orderCounts)) {
+      setIsOrderCountAdded(true);
+    }
   }, [orderCounts]);
 
   const navigate = useNavigate();
   const location = useLocation();
   const activeTabFromState = location.state?.activeTab;
   const activeTab = tabList.find((tab) => tab.id === tabVariant);
-  const [tabKey, setTabKey] = React.useState(
-    activeTabFromState || activeTab?.id
-  );
   const { showAlert } = useAlert();
   const alertContainerId = 'summary-alert-container';
 

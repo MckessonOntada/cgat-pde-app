@@ -194,7 +194,7 @@ export const getColumns = (add) => {
     {
       id: PROVIDER_COLUMNS.PROVIDER_NAME,
       name: t('providers.columnCaption.providerName'),
-      minWidth: '130px',
+      minWidth: '140px',
       sortable: true,
       sortKey: 'first name',
       cell: (props) => {
@@ -205,7 +205,10 @@ export const getColumns = (add) => {
           <Link
             className="MCP-table-link"
             to={`${isAllowed ? `${ROUTE_PATHS.VIEW}/${props.id}` : ''}`}>
-            {CommonUtils.getFullName(props?.name)}
+            <EclipsesTextcss
+              str={CommonUtils.getFullName(props?.name)}
+              maxWidth={130}
+            />
           </Link>
         ) : (
           '-'
@@ -220,7 +223,7 @@ export const getColumns = (add) => {
       cell: (props) => (
         <EclipsesTextcss
           str={CommonUtils.getAddress(props?.address) || '-'}
-          maxWidth={110}
+          maxWidth={160}
         />
       )
     },

@@ -16,7 +16,7 @@ import { downloadFile } from '@src/util/CommonUtils';
 const Upload = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const { t } = useTranslate();
-  const { items, add, remove } = useTimedArray(10000);
+  const { items, add, remove, removeAll } = useTimedArray(10000);
   const breadcrumbItems = React.useMemo(() => {
     return [
       {
@@ -34,6 +34,7 @@ const Upload = () => {
   }, [isSystemAdminView]);
 
   const handleOnUpload = (values) => {
+    removeAll();
     const { file } = values;
     if (!file) {
       add({
@@ -58,7 +59,7 @@ const Upload = () => {
             const blob = new Blob([response.data], {
               type: 'text/csv;charset=utf-8;'
             });
-            downloadFile(blob, 'Provider_Upload_Log');
+            downloadFile(blob, 'SP_Providers_Log.csv');
           };
           add({
             type: 'info',
