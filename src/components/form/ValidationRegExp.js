@@ -17,3 +17,4 @@ export const FAX_REGEX_WITHOUTSPECIAL = /^\d{6,15}$/;
 export const FIRST_NAME_REGEX = /^[a-zA-Z\u00C0-\u017F.\-\s]+$/; //can only contain alphabets , spaces, ".", and "-",ancented
 //export const MIDDLE_NAME_REGEX = /^[a-zA-Z.]+$/; //can only contain alphabets ,  "."
 export const MIDDLE_NAME_REGEX = /^[a-zA-Z\u00C0-\u017F.\s]+$/; //can only contain alphabets ,space  ".",ancented
+export const ALPHABETIC_WITH_SPECIAL_AND_ACCENTED =  /^(?!\s)[\p{L}\p{M}\p{P}\p{S}\p{Zs}0-9]*?(?<!\s)$/u;
