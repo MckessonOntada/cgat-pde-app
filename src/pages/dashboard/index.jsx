@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Heading } from '@mckesson/mcp-component-library';
 import styles from './Dashboard.module.scss';
@@ -7,6 +7,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import AuthUtils from '@src/util/AuthUtils';
 import usePermission from '@src/hooks/usePermissions';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import NotFound from '../error-pages/NotFound';
 
 const Dashboard = () => {
   const { t } = useTranslate();
@@ -19,10 +20,8 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const isExpelled = Boolean(queryParams.get('expelled'));
-
+  let navigateToUrl = '';
   React.useEffect(() => {
-    let navigateToUrl = '';
-
     if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ADMIN_MANAGEMENT))) navigateToUrl = '/admin';
     else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ORDER_MANAGEMENT))) navigateToUrl = '/orders';
     else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.PAYMENT_INVOICING))) navigateToUrl = '/record';
@@ -33,8 +32,14 @@ const Dashboard = () => {
       else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ADMIN_MANAGEMENT))) navigateToUrl = '/admin';
     }
 
-    if (!isSystemAdminView && navigateToUrl) navigate(navigateToUrl, { replace: true });
+    if (!isSystemAdminView && navigateToUrl) {
+      navigate(navigateToUrl, { replace: true });
+    }
   }, []);
+
+  if (!isSystemAdminView && !navigateToUrl) {
+    return <NotFound />;
+  }
 
   React.useEffect(() => {
     if (isExpelled) {
