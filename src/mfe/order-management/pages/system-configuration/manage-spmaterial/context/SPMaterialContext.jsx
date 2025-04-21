@@ -21,7 +21,7 @@ export const useSPMaterial = () => {
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
-  status: []
+  status: 'all'
 };
 
 const INITIAL_SORT_STATE = {

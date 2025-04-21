@@ -107,7 +107,7 @@ export default function InvoicesTable() {
     {
       name: <span className="statusCenter">{t('paymentInvoices.history.table.status')}</span>,
       selector: (row) => row.status,
-      minWidth: '170px',
+      minWidth: '195px',
       sortable: true,
       center: true,
       wrap: true,
@@ -119,8 +119,7 @@ export default function InvoicesTable() {
           {props.status ? (
             <Badge
               text={DUE_STATUS[props.status]?.label}
-              type={'info-default'}
-              customStyle={{ color: `${DUE_STATUS[props.status]?.color}`, border: `1px solid ${DUE_STATUS[props.status]?.color}` }}
+              customStyle={{ backgroundColor: `${DUE_STATUS[props.status]?.color}` }}
             />
           ) : (
             '-'

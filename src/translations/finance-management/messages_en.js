@@ -25,7 +25,7 @@ export const PaymentInvoicesEN = {
     'Summation of all open credits currently available to use towards open invoices.',
   'paymentInvoices.metrics.pastDueBalance.tooltipText': 'Summation of all past due invoices (debit only) as of current date.',
   // Balance Card
-  'paymentInvoices.balanceCard.due': 'Due',
+  'paymentInvoices.balanceCard.due': 'Payment Due',
   'paymentInvoices.balanceCard.1_30_DAYS_OVERDUE': '1-30 days over',
   'paymentInvoices.balanceCard.31_60_DAYS_OVERDUE': '31-60 days over',
   'paymentInvoices.balanceCard.61_90_DAYS_OVERDUE': '61-90 days over',
@@ -275,7 +275,7 @@ export const PaymentInvoicesEN = {
 
   'paymentInvoices.paymentMethods.achForm.description':
     'Enrollment form in a PDF format for user to fill in offline and submit to the respective bank',
-  'paymentInvoices.table.paymentPending': 'Payment Pending',
+  'paymentInvoices.table.paymentPending': 'Pending Payment',
   'paymentInvoices.table.paymentHistory': 'Payment History',
   'paymentInvoices.table.customerStatement': 'Customer Statement',
   'paymentInvoices.table.savedBankAccount': 'Saved Bank Accounts',

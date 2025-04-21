@@ -72,7 +72,7 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
       }
     ];
   }, []);
-  const unLinkProvider = (row) => {
+  const unLinkProvider = (selectedProviders) => {
     renderModal({
       title: t('messages.header.confirmation'),
       bodyContent: (
@@ -87,7 +87,7 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
         confirm: {
           label: t('manageSPAccount.button.confirm'),
           action: () => {
-            handleUnlinkProvider(row.id);
+            handleUnlinkProvider(selectedProviders);
           }
         }
       }
@@ -153,7 +153,7 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
           initialData={[]}
         />
       </div>
-      {/* {selectedLinkProvider?.length > 0 && !isAddLinkProvider  && (
+      {selectedLinkProvider?.length > 0 && !isAddLinkProvider  && (
         <TableHeading
           heading={[]}
           secondaryView={selectedLinkProvider?.length}
@@ -164,7 +164,7 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
             </Button>
           }
         />
-      )} */}
+      )}
       <div className={style.accountBox}>
         <div className={style.customTableBox}>
           <CustomDataTable

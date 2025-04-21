@@ -375,6 +375,8 @@ export const UserManagementEN = {
 
   'messages.user_deactivate_success': 'User has been Deactivated successfully.',
   'messages.user_deactivate_failure': 'Failed to Deactivate the User.',
+  'messages.user_activate_success': 'User has been Activated successfully.',
+  'messages.user_activate_failure': 'Failed to Activate the User.',
   'messages.user_create_success': 'User has been created successfully.',
   'messages.pending_user_reject_success': 'Pending User has been rejected.',
   'messages.user_self_register_success': 'User has been registered successfully.',
@@ -399,6 +401,7 @@ export const UserManagementEN = {
     'By confirming, you acknowledge that all actions taken will be logged and attributed to your account.',
   'userManagement.breadcrumb.admin': 'Admin',
   'popup.userDeactivation.question': 'Are you sure you wish to Deactivate this User?',
+  'popup.userActivation.question': 'Are you sure you wish to Activate this User?',
   'userManagement.confirmationMessage': 'Confirmation message',
   'userManagement.message.DeactivateUser': 'Are you sure you wish to Deactivate this User ?',
   'userManagement.edit_sysadmin': 'Edit System Administrator',
@@ -413,10 +416,10 @@ export const UserManagementEN = {
   'errors.messages.default': 'An unexpected error occurred. Please try again.',
   'label.comment': 'Comment',
   'file.download.csv': 'Download CSV Template',
-  'lebal.users': 'Users', 
-  'lebal.backToManage' : 'Back to Manage',
-  'lebal.add' : 'Add',
+  'lebal.users': 'Users',
+  'lebal.backToManage': 'Back to Manage',
+  'lebal.add': 'Add',
   'userManagement.uploadUsers': 'Upload Users',
   'userManagement.uploadUsersListCSV': 'Upload Users List CSV',
-  'userManagement.button.addUsers': 'Add Users',
+  'userManagement.button.addUsers': 'Add Users'
 };

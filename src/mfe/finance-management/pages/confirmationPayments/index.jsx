@@ -1,23 +1,17 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Button, Heading, AutoSuggestDropdown } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import InfoCards from '@src/components/infoCards/InfoCards';
 import CommonUtils from '@src/util/CommonUtils';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import './index.scss';
-import SelectedInvoiceList from '../reviewPayments/SelectedInvoiceList';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Credits from '../credits';
-import { PaymentsCreditsProvider } from '../../context/PaymentsCreditsContext';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
-// import { useLocation } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import ApiRoutes from '../../../../api/ApiRoutes';
 import { useAccountContext } from '../../context/AccountContext';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import useSnackbar from '@src/hooks/useSnackbar';
-import CreditsSelected from '../reviewPayments/CreditsSelected';
 import dayjs from 'dayjs';
 import { GeographicUtils } from '@src/util/GeographicUtil';
 import { useCustomPrint } from '@src/util/printUtils';
@@ -159,32 +153,6 @@ function ConfirmationPayments() {
                 </div>
               </>
             ))}
-        </div>
-        <div className="section">
-          {/* <div className="sectionHeader">{t('paymentInvoices.reviewPayments.paymentSummary')}</div> */}
-          <div className="sectionCard">
-            {CommonUtils.isNonEmptyObject(paymentCard) &&
-              Object.entries(paymentCard).map(([key, value]) => <InfoCards title={key} value={value} />)}
-          </div>
-        </div>
-        <Heading as="h2">{t('paymentInvoices.reviewPayments.invoices')}</Heading>
-        <div>
-          <SelectedInvoiceList
-            omitColumns={['description']}
-            selectedInvoices={selectedInvoices}
-            setSelectedInvoices={setSelectedInvoices}
-          />
-        </div>
-
-        <div className="MCP-module-wrapper">
-          <div>
-            <Heading as="h2">{t('paymentInvoices.reviewPayments.credits')}</Heading>
-          </div>
-          <div id="tablist-container" className="MCP-module-body">
-            <PaymentsCreditsProvider>
-              <CreditsSelected excludedColumns={['billDate']} />
-            </PaymentsCreditsProvider>
-          </div>
         </div>
         <div className="confirmationNote">
           <strong>Note:</strong> {t('paymentInvoices.Details.ConfirmationNote')}

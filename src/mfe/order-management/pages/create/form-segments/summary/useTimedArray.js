@@ -43,7 +43,9 @@ const useTimedArray = (timeout) => {
     };
   }, []);
 
-  return { items, add, remove };
+  const removeAll = () => setItems([]);
+
+  return { items, add, remove, removeAll };
 };
 
 export default useTimedArray;

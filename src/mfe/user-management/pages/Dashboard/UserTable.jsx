@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Button, Badge, CheckboxGroup, Modal, Tooltip, MenuList } from '@mckesson/mcp-component-library';
 import './index.scss';
-import Actions from './Actions';
 import { useTranslate } from '@src/translations/useTranslation';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
 import { useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
@@ -39,12 +38,16 @@ function UserTable({ onActionSuccess }) {
   const [selectedRows, setSelectedRows] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const isSystemAdmin = AuthUtils.isSystemAdmin();
   const { isLoading, isError, error, data, activeTab, paginationConfig, applySort, refreshData, setPageNumber } = useUser();
+  const location = useLocation();
+  const { isBack = false } = location.state || {};
   const userPermissions = AuthUtils.getUserPermissions();
   const currentUserId = AuthUtils.getUserId();
   const { hasPermission, hasAnyPermission } = usePermission();
   const showCardView = useResponsiveView();
   const navigate = useNavigate();
+  const [selectedUserInfo, setSelectedUserInfo] = useState({ userId: null, isActive: false });
 
   const handleRowSelected = ({ selectedRows }) => {
     setSelectedRows(selectedRows);
@@ -54,28 +57,33 @@ function UserTable({ onActionSuccess }) {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
 
-  const handleDeactivateUser = async (userId) => {
-    const res = await HttpResourceService.callRest(
-      `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`,
-      httpVerb.DELETE,
-      null
-    );
+  const handleActivateDeactivateUser = async ({ userId, isActive }) => {
+    let res;
+    if (isActive) {
+      res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.DELETE, null);
+    } else {
+      res = await HttpResourceService.callRest(
+        `${ApiRoutes.USERS()}/${userId}/activate?${serializeParams(requestParams)}`,
+        httpVerb.PATCH,
+        null
+      );
+    }
     return res.data;
   };
 
   const { mutate } = useMutation({
-    mutationFn: handleDeactivateUser,
+    mutationFn: handleActivateDeactivateUser,
     onSuccess: (response) => {
       refreshData();
       setSelectedRows(null);
       const isSuccess = true;
-      const message = t('messages.user_deactivate_success');
+      const message = t(selectedUserInfo?.isActive ? 'messages.user_deactivate_success' : 'messages.user_activate_success');
       onActionSuccess(isSuccess, message); // callback
     },
     onError: (error) => {
       console.error(`Failed to deactivate user:`, error);
       const isSuccess = false;
-      const message = t('messages.user_deactivate_failure');
+      const message = t(selectedUserInfo?.isActive ? 'messages.user_deactivate_failure' : 'messages.user_activate_failure');
       onActionSuccess(isSuccess, message);
     }
   });
@@ -88,13 +96,13 @@ function UserTable({ onActionSuccess }) {
     if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
-  const handleDeactivate = () => {
+  const handleActivateDeactivate = () => {
     setIsOpen(true);
   };
 
-  const handleConfirmDeactivate = () => {
+  const handleConfirmActivateDeactivate = () => {
     setIsOpen(false);
-    mutate(selectedRows);
+    mutate(selectedUserInfo);
   };
 
   const handleConfirmCancel = () => {
@@ -102,9 +110,9 @@ function UserTable({ onActionSuccess }) {
     setSelectedRows(null);
   };
 
-  // useEffect(() => {
-  //   refreshData();
-  // }, []);
+  useEffect(() => {
+    if (isBack) refreshData();
+  }, [location.pathname, location.state, navigate]);
 
   const {
     mutate: rejectUser,
@@ -153,10 +161,13 @@ function UserTable({ onActionSuccess }) {
             caption=""
             items={[
               {
-                onChange: (event) => setSelectedRows(event.target.checked ? row.id : null),
+                onChange: (event) => {
+                  setSelectedUserInfo({ userId: row?.id, isActive: row?.isActive });
+                  setSelectedRows(event.target.checked ? row.id : null);
+                },
                 value: row.id,
                 isChecked: selectedRows === row.id,
-                isDisabled: !row.isActive
+                isDisabled: !isSystemAdmin && !row?.isActive // !row.isActive
               }
             ]}
           />
@@ -312,8 +323,8 @@ function UserTable({ onActionSuccess }) {
         secondaryView={!!selectedRows}
         secondaryViewHeading={`1 ${t('userManagement.selected_items')}`}
         secondaryViewControls={
-          <Button variant="secondary" onClick={handleDeactivate} disabled={selectedRows == currentUserId ? true : false}>
-            {t('userManagement.button.deactivate')}
+          <Button variant="secondary" onClick={handleActivateDeactivate} disabled={selectedRows == currentUserId ? true : false}>
+            {t(selectedUserInfo?.isActive ? 'userManagement.button.deactivate' : 'userManagement.button.activate')}
           </Button>
         }
         style={{ marginBottom: '16px' }}
@@ -361,7 +372,7 @@ function UserTable({ onActionSuccess }) {
           modalTitle: t('userManagement.confirmationMessage'),
           modalBody: (
             <div className="MCP-modal-body">
-              <p>{t('userManagement.message.DeactivateUser')}</p>
+              <p>{t(selectedUserInfo?.isActive ? 'popup.userDeactivation.question' : 'popup.userActivation.question')}</p>
             </div>
           ),
           modalFooter: (
@@ -369,8 +380,8 @@ function UserTable({ onActionSuccess }) {
               <Button onClick={handleConfirmCancel} variant="secondary" size="md">
                 {t('userManagement.label.cancel')}
               </Button>
-              <Button size="md" onClick={handleConfirmDeactivate}>
-                {t('userManagement.button.deactivate')}
+              <Button size="md" onClick={handleConfirmActivateDeactivate}>
+                {t(selectedUserInfo?.isActive ? 'userManagement.button.deactivate' : 'userManagement.button.activate')}
               </Button>
             </React.Fragment>
           ),

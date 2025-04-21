@@ -21,7 +21,8 @@ import {
   ALPHABETIC_WITH_SPECIAL,
   FAX_REGEX,
   PHONE_REGEX,
-  ZIP_REGEX
+  ZIP_REGEX,
+  ALPHABETIC_WITH_SPECIAL_AND_ACCENTED
 } from '@src/components/form/ValidationRegExp';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import { handleApiError } from '@src/util/ApiUtils';
