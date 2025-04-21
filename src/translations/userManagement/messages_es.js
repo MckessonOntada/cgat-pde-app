@@ -169,6 +169,7 @@ export const UserManagementES = {
   PAYMENT_INVOICING: 'S_Payment & Invoicing',
   SYSTEM_CONFIGURATION: 'S_System Configuration',
   ADMIN_MANAGEMENT: 'S_System Admin Permissions',
+  MANAGE_PROVIDERS: 'S_Manage Providers',
 
   'AUTHENTICATION_FLOW.LOGIN_SCREEN': 'S_Login Screen',
   'AUTHENTICATION_FLOW.LOGIN_SCREEN.DESCRIPTION': 'S_Allows user to login',
@@ -226,6 +227,17 @@ export const UserManagementES = {
   'ORGANIZATION_MANAGEMENT.VIEW_ORGANIZATION': 'S_View Organization',
   'ORGANIZATION_MANAGEMENT.VIEW_ORGANIZATION.DESCRIPTION': 'S_Allows user to view organization',
 
+  'MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN': 'S_Deactivate/Link sp account',
+  'MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN.DESCRIPTION': 'S_Allow user to manage provider , enable deactivate and link sp account button ',
+  'MANAGE_PROVIDERS.VIEW_PROVIDER': 'S_View Provider',
+  'MANAGE_PROVIDERS.VIEW_PROVIDER.DESCRIPTION': 'S_Allows user to view provider page',
+  'MANAGE_PROVIDERS.ADD_PROVIDER': 'S_Add Provider',
+  'MANAGE_PROVIDERS.ADD_PROVIDER.DESCRIPTION': 'S_Allows user to add provider, enable add button ',
+  'MANAGE_PROVIDERS.UPLOAD_PROVIDER': 'S_Upload Provider',
+  'MANAGE_PROVIDERS.UPLOAD_PROVIDER.DESCRIPTION': 'S_Allows user to upload provider and download the csv file, enables upload button',
+  'MANAGE_PROVIDERS.EDIT_PROVIDER': 'S_Edit Provider',
+  'MANAGE_PROVIDERS.EDIT_PROVIDER.DESCRIPTION': 'S_Allows user to edit provider details, enable edit button',
+
   'ORDER_MANAGEMENT.MANAGE_ORDERS': 'S_Manage Orders',
   'ORDER_MANAGEMENT.MANAGE_ORDERS.DESCRIPTION': 'S_Allows to Perform Delete action, Enable delete option',
   'ORDER_MANAGEMENT.EDIT_ORDERS': 'S_Edit Orders',
@@ -267,6 +279,28 @@ export const UserManagementES = {
   'SYSTEM_CONFIGURATION.MANAGE_CATALOG.DESCRIPTION': 'S_Allows user to configure catalog, enables Configure button',
   'SYSTEM_CONFIGURATION.VIEW_CATALOG': 'S_View Catalog',
   'SYSTEM_CONFIGURATION.VIEW_CATALOG.DESCRIPTION': 'S_Allows user to view Catalog listing page, enables view access',
+
+  'SYSTEM_CONFIGURATION.VIEW_SP_MATERIAL': 'S_View SP Material',
+  'SYSTEM_CONFIGURATION.VIEW_SP_MATERIAL.DESCRIPTION': 'S_Allows User to view SP Material',
+
+  'SYSTEM_CONFIGURATION.VIEW_CROSSWALK': 'S_View Crosswalk',
+  'SYSTEM_CONFIGURATION.VIEW_CROSSWALK.DESCRIPTION': 'S_Allow user to View Crosswalk Screen',
+  'SYSTEM_CONFIGURATION.ADD_CROSSWALK': 'S_Add Crosswalk',
+  'SYSTEM_CONFIGURATION.ADD_CROSSWALK.DESCRIPTION': 'S_Allows user to add Crosswalk Material, enable add button',
+  'SYSTEM_CONFIGURATION.UPLOAD_CROSSWALK': 'S_Upload Crosswalk',
+  'SYSTEM_CONFIGURATION.UPLOAD_CROSSWALK.DESCRIPTION': 'S_Allows user to  upload crosswalk file, enable upload button',
+
+  'SYSTEM_CONFIGURATION.MANAGE_SP_ACCOUNT': 'S_Manage SP Account ',
+  'SYSTEM_CONFIGURATION.MANAGE_SP_ACCOUNT.DESCRIPTION': 'S_Allow user to view SP account listing page',
+  'SYSTEM_CONFIGURATION.ADD_SP_ACCOUNT': 'S_Add SP Account',
+  'SYSTEM_CONFIGURATION.ADD_SP_ACCOUNT.DESCRIPTION': 'S_Allow user to add account, enable add button ',
+
+  'SYSTEM_CONFIGURATION.MANAGE_SP_CATALOG': 'S_Manage SP Catalog',
+  'SYSTEM_CONFIGURATION.MANAGE_SP_CATALOG.DESCRIPTION':
+    'S_Allows user to Download the list of Catalog (Download List), Upload Catalog (Upload Catalog), Link catalog (Link Catalog action) and  Unlink Catalog (Unlink action against each record and global action on multi select.)',
+
+  'SYSTEM_CONFIGURATION.VIEW_SP_CATALOG': 'S_View SP Catalog',
+  'SYSTEM_CONFIGURATION.VIEW_SP_CATALOG.DESCRIPTION': 'S_Allow user to view Catalog page, Dowload the list of catalog (download List)',
 
   'PAYMENT_INVOICING.MANAGE_INVOICES': 'S_Manage Invoices',
   'PAYMENT_INVOICING.MANAGE_INVOICES.DESCRIPTION': 'S_Allows to Export to Excel and PDF, enables Export Excel button and Export PDF option',
@@ -342,6 +376,16 @@ export const UserManagementES = {
   'userManagement.edit_organization_user': 'S_Edit Organization User',
   'errors.messages.dateRange': "S_Either enter both dates or none for the filter as it's part of a date range.",
   'errors.messages.emptyDataDescription': 'S_An unexpected error occurred. Please try again.',
-  'label.comment': 'S_Comment',
-  'userManagement.header.review_user': 'S_Review Organization User'
+  'label.comment': 'S_Comment', 
+  'userManagement.header.review_user': 'S_Review Organization User' 
+  'file.download.csv': 'S_Download CSV Template',
+  'lebal.users': 'S_Users',
+  'lebal.backToManage': 'S_Back to Manage',
+  'lebal.add': 'S_Add',
+  'userManagement.uploadUsers': 'S_Upload Users',
+  'userManagement.uploadUsersListCSV': 'S_Upload Users List CSV',
+  'userManagement.button.addUsers': 'S_Add Users',
+  'messages.user_activate_success': 'S_User has been Activated successfully.',
+  'messages.user_activate_failure': 'S_Failed to Activate the User.',
+  'popup.userActivation.question': 'Are you sure you wish to Activate this User?' 
 };

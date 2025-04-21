@@ -5,72 +5,124 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { routesConfig } from './../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '../../../../components/module-header';
-import { getTabs } from './constants';
 import OrderDataTable from './OrderDataTable';
 import CommonFilters from '@src/components/Filters';
 import { useOrders } from '../../context/OrderContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import PermittedComponent from '@src/components/permitted-component';
-import usePermission from '@src/hooks/usePermissions';
+import {
+  getTabs,
+  ORDER_DATE_FILTER_OPTIONS,
+  ORDER_STATUS,
+  ORDER_TABS
+} from './config';
+import useAlert from '@src/hooks/useAlert';
+import { handleApiError } from '@src/util/ApiUtils';
+import useOrderCount from './useOrderCount';
+import CommonUtils from '@src/util/CommonUtils';
 
 const OrderIndex = () => {
   const { t } = useTranslate();
-  const { hasPermission } = usePermission();
-  const isPendingTab = hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_PENDING_ORDERS);
-  const isSubmittedTab = hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS);
-  const { applyFilters, clearFilters, changeTab, tabVariant, setTabVariant } = useOrders();
+  const [_isOrderCountAdded, setIsOrderCountAdded] = React.useState(false);
+  const { applyFilters, clearFilters, changeTab, tabVariant, isError, error } =
+    useOrders();
   const [tabList, setTabList] = React.useState(() => {
-    const allTabs = getTabs(t);
-    return allTabs.filter((tab) => {
-      if (tab.id === 1 && isPendingTab) {
-        setTabVariant(1);
-        return true;
-      }
-      if (tab.id === 2 && isSubmittedTab) {
-        setTabVariant(2);
-        return true;
-      }
-      return false;
+    const allTabs = getTabs();
+    allTabs.forEach((tab) => {
+      tab.configName = t(tab.configName);
+      tab.labelForMobile = t(tab.labelForMobile);
     });
+    return allTabs;
   });
+
+  const orderCounts = useOrderCount();
+  React.useEffect(() => {
+    if (_isOrderCountAdded) return;
+    const allTabs = getTabs();
+    allTabs.forEach((tab) => {
+      let countClass = '';
+      if ([ORDER_TABS.SUBMITTED_BUY_AND_BILL].includes(tab.id)) {
+        countClass = 'green';
+      } else if ([ORDER_TABS.PENDING_SUBMISSION].includes(tab.id)) {
+        countClass = 'orange';
+      }
+      let orderCount = orderCounts?.[tab.id] || 0;
+      if (orderCount > 99) orderCount = '99+';
+      tab.configName = (
+        <div
+          className={`tab-count-header ${countClass}`}
+          data-label={orderCount}>
+          {t(tab.configName)}
+        </div>
+      );
+    });
+    setTabList(allTabs);
+    if (orderCounts && CommonUtils.isNonEmptyObject(orderCounts)) {
+      setIsOrderCountAdded(true);
+    }
+  }, [orderCounts]);
 
   const navigate = useNavigate();
   const location = useLocation();
   const activeTabFromState = location.state?.activeTab;
   const activeTab = tabList.find((tab) => tab.id === tabVariant);
-  const [tabKey, setTabKey] = React.useState(activeTabFromState || activeTab?.id);
-
+  const { showAlert } = useAlert();
   const alertContainerId = 'summary-alert-container';
-  const additionalFiltersConfig = React.useMemo(() => {
-    if (activeTab?.id === 2) return [];
 
-    return [
-      {
+  const additionalFiltersConfig = React.useMemo(() => {
+    let filters = [];
+
+    if (tabVariant === ORDER_TABS.PENDING_SUBMISSION) {
+      const options = [
+        ORDER_STATUS.ALL,
+        ORDER_STATUS.IN_DRAFT,
+        ORDER_STATUS.DELETED,
+        ORDER_STATUS.REJECTED
+      ];
+
+      filters.push({
         type: 'dropdown',
         name: 'status',
         label: t('userManagement.table.status'),
-        options: [
-          { label: 'ALL', value: 'ALL' },
-          { label: 'IN DRAFT', value: 'IN_DRAFT' },
-          { label: 'APPROVAL PENDING', value: 'APPROVAL_PENDING' }
-        ]
-      }
-    ];
+        options: options.map((opt) => ({
+          label: t(`labels.caption.${opt}`),
+          value: opt
+        }))
+      });
+    }
+    if (tabVariant !== ORDER_TABS.PENDING_APPROVAL) {
+      filters.push({
+        type: 'dropdown',
+        name: 'orderdate',
+        label: 'Order Date',
+        options: ORDER_DATE_FILTER_OPTIONS.map((opt) => ({
+          label: t(`labels.caption.${opt.value}`),
+          value: opt.value
+        })),
+        linkedFilters: (value) =>
+          value === 'customRange'
+            ? [
+                {
+                  type: 'dateRangePicker',
+                  name: 'dateRange',
+                  startDateLabel: t('labels.startDate'),
+                  endDateLabel: t('labels.endDate'),
+                  required: true
+                }
+              ]
+            : []
+      });
+    }
+    return filters;
   }, [activeTab]);
 
-  const setActiveTab = (activeTab) => {
-    setTabList(
-      tabList.map((tab) => ({
-        ...tab,
-        isActiveTab: tab.id === activeTab
-      }))
-    );
-  };
-
-  const handleOnTabChange = (tab) => {
-    setActiveTab(tab.id);
-    setTabKey(tab.id);
-    changeTab(tab.id);
+  const handleOnTabChange = (newTab) => {
+    const newTabs = tabList.map((tab) => ({
+      ...tab,
+      isActiveTab: tab.id === newTab.id
+    }));
+    setTabList(newTabs);
+    changeTab(newTab.id);
   };
 
   const handleOnClick = () => {
@@ -79,18 +131,25 @@ const OrderIndex = () => {
 
   React.useEffect(() => {
     if (activeTabFromState) {
-      setActiveTab(activeTabFromState);
-      setTabVariant(2); // Set the tab from state
+      changeTab(ORDER_TABS.SUBMITTED_BUY_AND_BILL);
     } else {
-      if (isPendingTab || (isPendingTab && isSubmittedTab)) {
-        setActiveTab(1);
-        setTabVariant(1);
-      } else if (isSubmittedTab) {
-        setActiveTab(2);
-        setTabVariant(2);
-      }
+      changeTab(ORDER_TABS.SUBMITTED_BUY_AND_BILL);
     }
   }, [activeTabFromState]);
+
+  React.useEffect(() => {
+    if (error) {
+      console.log(error);
+      showAlert({
+        description: t(handleApiError(error)),
+        type: 'error',
+        anchorEl: alertContainerId
+      });
+    }
+  }, [error]);
+
+  const currentTab =
+    (tabList && tabList.find((tab) => tab?.['isActiveTab'])) || {};
 
   return (
     <div className="MCP-module-wrapper">
@@ -99,7 +158,8 @@ const OrderIndex = () => {
           heading={<Heading as="h1">{t('headings.orders')}</Heading>}
           controls={
             <div className="controls">
-              <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS}>
+              <PermittedComponent
+                permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS}>
                 <Button
                   Icon={AddCircleFilled}
                   className="button-icon"
@@ -128,16 +188,21 @@ const OrderIndex = () => {
                 aria-label={t('controls.ariaLabels.orderTabList')}
               />
             </div>
-            <div className="MCP-CardContainer" key={tabKey}>
+            <div className="MCP-CardContainer" key={currentTab.id}>
               <CommonFilters
                 onApplyFilters={applyFilters}
                 onClearFilters={clearFilters}
                 additionalFilters={additionalFiltersConfig}
-                searchPlaceholder={t('controls.placeholder.searchOrderPlaceholder')}
+                searchPlaceholder={t(
+                  'controls.placeholder.searchOrderPlaceholder'
+                )}
               />
             </div>
             <div className="MCP-table-wrapper">
-              <OrderDataTable tab={activeTab && activeTab.id} alertContainerId={alertContainerId} />
+              <OrderDataTable
+                tab={activeTab && activeTab.id}
+                alertContainerId={alertContainerId}
+              />
             </div>
           </div>
         </div>

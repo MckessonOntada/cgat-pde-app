@@ -56,6 +56,7 @@ const UserDetail = () => {
   const location = useLocation();
   const { isSuccess = false, isPending = false } = location.state || {};
   const isSystemAdminView = AuthUtils.isSystemAdminView();
+  const isSystemAdmin = AuthUtils.isSystemAdmin();
   const [isOpen, setIsOpen] = useState(false);
   const [isDeactivate, setIsDeactivate] = useState(false);
   const [isProvisioned, setIsProvisioned] = useState(false);
@@ -64,16 +65,18 @@ const UserDetail = () => {
   const isSelf = userId === AuthUtils.getUserId();
   const [duration, setDuration] = React.useState(10000);
   const disablePay = useRef(false);
+  const [selectedUserInfo, setSelectedUserInfo] = useState({ userId: null, isActive: false });
+
   const requestParams = {
     userType: isSystemAdminView ? 'ADMIN' : 'GENERAL'
   };
-  
+
   const handleClickLogin = () => {
     if (disablePay.current) return;
     disablePay.current = setTimeout(() => {
-      setIsConsentModalOpen(true)
+      setIsConsentModalOpen(true);
       disablePay.current = null;
-    }, 500);    
+    }, 500);
   };
 
   const { isLoading, isError, data, refetch } = useQuery({
@@ -155,7 +158,7 @@ const UserDetail = () => {
   };
 
   const goBack = () => {
-    navigate(isSystemAdminView ? RoutePaths.pathSystemAdminManagement : RoutePaths.pathUserManagement);
+    navigate(isSystemAdminView ? RoutePaths.pathSystemAdminManagement : RoutePaths.pathUserManagement, { state: { isBack: true } });
   };
 
   const handleRetry = () => {
@@ -175,23 +178,28 @@ const UserDetail = () => {
     setSearchText(inputValue);
   };
 
-  const handleDeactivateUser = async (userId) => {
-    const res = await HttpResourceService.callRest(
-      `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`,
-      httpVerb.DELETE,
-      null
-    );
+  const handleActivateDeactivateUser = async ({ userId, isActive }) => {
+    let res;
+    if (isActive) {
+      res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.DELETE, null);
+    } else {
+      res = await HttpResourceService.callRest(
+        `${ApiRoutes.USERS()}/${userId}/activate?${serializeParams(requestParams)}`,
+        httpVerb.PATCH,
+        null
+      );
+    }
     return res.data;
   };
 
   const { mutate } = useMutation({
-    mutationFn: handleDeactivateUser,
+    mutationFn: handleActivateDeactivateUser,
     onSuccess: (response) => {
       refetch();
       setIsDeactivate(true);
       setIsAlertVisible(true);
       setAlertType('success');
-      setAlertDescription(t('messages.user_deactivate_success'));
+      setAlertDescription(t(selectedUserInfo?.isActive ? 'messages.user_deactivate_success' : 'messages.user_activate_success'));
       setDuration(10000);
     },
     onError: (error) => {
@@ -200,17 +208,17 @@ const UserDetail = () => {
       setIsAlertVisible(true);
       setAlertType('error');
       setDuration(10000);
-      setAlertDescription(t('messages.user_deactivate_failure'));
+      setAlertDescription(t(selectedUserInfo?.isActive ? 'messages.user_deactivate_failure' : 'messages.user_activate_failure'));
     }
   });
 
-  const handleDeactivate = () => {
+  const handleActivateDeactivate = () => {
     setIsOpen(true);
   };
 
-  const handleConfirmDeactivate = () => {
+  const handleConfirmActivateDeactivate = () => {
     setIsOpen(false);
-    mutate(userId);
+    mutate(selectedUserInfo);
   };
 
   const handleConfirmCancel = () => {
@@ -332,9 +340,12 @@ const UserDetail = () => {
               </span>
               <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
                 <Switch
-                  handleToggle={handleDeactivate}
+                  handleToggle={() => {
+                    setSelectedUserInfo({ userId: data?.id, isActive: data?.isActive });
+                    handleActivateDeactivate();
+                  }}
                   id="id"
-                  disabled={!data?.isActive || isSelf}
+                  disabled={(!isSystemAdmin && !data?.isActive) || (isSystemAdmin && isSelf && data?.isActive)}
                   label={data?.isActive ? t('userManagement.status.active') : ''}
                   labelPosition="right"
                   name="Toggle"
@@ -490,7 +501,7 @@ const UserDetail = () => {
           modalTitle: t('userManagement.confirmationMessage'),
           modalBody: (
             <div className="MCP-modal-body">
-              <p>{t('popup.userDeactivation.question')}</p>
+              <p>{t(selectedUserInfo?.isActive ? 'popup.userDeactivation.question' : 'popup.userActivation.question')}</p>
             </div>
           ),
           modalFooter: (
@@ -498,8 +509,8 @@ const UserDetail = () => {
               <Button size="md" onClick={handleConfirmCancel} variant="secondary">
                 {t('userManagement.label.cancel')}
               </Button>
-              <Button size="md" onClick={handleConfirmDeactivate}>
-                {t('userManagement.button.deactivate')}
+              <Button size="md" onClick={handleConfirmActivateDeactivate}>
+                {t(selectedUserInfo?.isActive ? 'userManagement.button.deactivate' : 'userManagement.button.activate')}
               </Button>
             </React.Fragment>
           ),

@@ -169,6 +169,7 @@ export const UserManagementEN = {
   PAYMENT_INVOICING: 'Payment & Invoicing',
   SYSTEM_CONFIGURATION: 'System Configuration',
   ADMIN_MANAGEMENT: 'System Admin Permissions',
+  MANAGE_PROVIDERS: 'Manage Providers',
 
   'AUTHENTICATION_FLOW.LOGIN_SCREEN': 'Login Screen',
   'AUTHENTICATION_FLOW.LOGIN_SCREEN.DESCRIPTION': 'Allows user to login',
@@ -226,6 +227,17 @@ export const UserManagementEN = {
   'ORGANIZATION_MANAGEMENT.VIEW_ORGANIZATION': 'View Organization',
   'ORGANIZATION_MANAGEMENT.VIEW_ORGANIZATION.DESCRIPTION': 'Allows user to view organization',
 
+  'MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN': 'Deactivate/Link sp account',
+  'MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN.DESCRIPTION': 'Allow user to manage provider , enable deactivate and link sp account button ',
+  'MANAGE_PROVIDERS.VIEW_PROVIDER': 'View Provider',
+  'MANAGE_PROVIDERS.VIEW_PROVIDER.DESCRIPTION': 'Allows user to view provider page',
+  'MANAGE_PROVIDERS.ADD_PROVIDER': 'Add Provider',
+  'MANAGE_PROVIDERS.ADD_PROVIDER.DESCRIPTION': 'Allows user to add provider, enable add button ',
+  'MANAGE_PROVIDERS.UPLOAD_PROVIDER': 'Upload Provider',
+  'MANAGE_PROVIDERS.UPLOAD_PROVIDER.DESCRIPTION': 'Allows user to upload provider and download the csv file, enables upload button',
+  'MANAGE_PROVIDERS.EDIT_PROVIDER': 'Edit Provider',
+  'MANAGE_PROVIDERS.EDIT_PROVIDER.DESCRIPTION': 'Allows user to edit provider details, enable edit button',
+
   'ORDER_MANAGEMENT.MANAGE_ORDERS': 'Manage Orders',
   'ORDER_MANAGEMENT.MANAGE_ORDERS.DESCRIPTION': 'Allows to Perform Delete action, Enable delete option',
   'ORDER_MANAGEMENT.EDIT_ORDERS': 'Edit Orders',
@@ -267,6 +279,28 @@ export const UserManagementEN = {
   'SYSTEM_CONFIGURATION.MANAGE_CATALOG.DESCRIPTION': 'Allows user to configure catalog, enables Configure button',
   'SYSTEM_CONFIGURATION.VIEW_CATALOG': 'View Catalog',
   'SYSTEM_CONFIGURATION.VIEW_CATALOG.DESCRIPTION': 'Allows user to view Catalog listing page, enables view access',
+
+  'SYSTEM_CONFIGURATION.VIEW_SP_MATERIAL': 'View SP Material',
+  'SYSTEM_CONFIGURATION.VIEW_SP_MATERIAL.DESCRIPTION': 'Allows User to view SP Material',
+
+  'SYSTEM_CONFIGURATION.VIEW_CROSSWALK': 'View Crosswalk',
+  'SYSTEM_CONFIGURATION.VIEW_CROSSWALK.DESCRIPTION': 'Allow user to View Crosswalk Screen',
+  'SYSTEM_CONFIGURATION.ADD_CROSSWALK': 'Add Crosswalk',
+  'SYSTEM_CONFIGURATION.ADD_CROSSWALK.DESCRIPTION': 'Allows user to add Crosswalk Material, enable add button',
+  'SYSTEM_CONFIGURATION.UPLOAD_CROSSWALK': 'Upload Crosswalk',
+  'SYSTEM_CONFIGURATION.UPLOAD_CROSSWALK.DESCRIPTION': 'Allows user to  upload crosswalk file, enable upload button',
+
+  'SYSTEM_CONFIGURATION.MANAGE_SP_ACCOUNT': 'Manage SP Account ',
+  'SYSTEM_CONFIGURATION.MANAGE_SP_ACCOUNT.DESCRIPTION': 'Allow user to view SP account listing page',
+  'SYSTEM_CONFIGURATION.ADD_SP_ACCOUNT': 'Add SP Account',
+  'SYSTEM_CONFIGURATION.ADD_SP_ACCOUNT.DESCRIPTION': 'Allow user to add account, enable add button ',
+
+  'SYSTEM_CONFIGURATION.MANAGE_SP_CATALOG': 'Manage SP Catalog',
+  'SYSTEM_CONFIGURATION.MANAGE_SP_CATALOG.DESCRIPTION':
+    'Allows user to Download the list of Catalog (Download List), Upload Catalog (Upload Catalog), Link catalog (Link Catalog action) and  Unlink Catalog (Unlink action against each record and global action on multi select.)',
+
+  'SYSTEM_CONFIGURATION.VIEW_SP_CATALOG': 'View SP Catalog',
+  'SYSTEM_CONFIGURATION.VIEW_SP_CATALOG.DESCRIPTION': 'Allow user to view Catalog page, Dowload the list of catalog (download List)',
 
   'PAYMENT_INVOICING.MANAGE_INVOICES': 'Manage Invoices',
   'PAYMENT_INVOICING.MANAGE_INVOICES.DESCRIPTION': 'Allows to Export to Excel and PDF, enables Export Excel button and Export PDF option',
@@ -341,6 +375,8 @@ export const UserManagementEN = {
 
   'messages.user_deactivate_success': 'User has been Deactivated successfully.',
   'messages.user_deactivate_failure': 'Failed to Deactivate the User.',
+  'messages.user_activate_success': 'User has been Activated successfully.',
+  'messages.user_activate_failure': 'Failed to Activate the User.',
   'messages.user_create_success': 'User has been created successfully.',
   'messages.pending_user_reject_success': 'Pending User has been rejected.',
   'messages.user_self_register_success': 'User has been registered successfully.',
@@ -365,14 +401,26 @@ export const UserManagementEN = {
     'By confirming, you acknowledge that all actions taken will be logged and attributed to your account.',
   'userManagement.breadcrumb.admin': 'Admin',
   'popup.userDeactivation.question': 'Are you sure you wish to Deactivate this User?',
+  'popup.userActivation.question': 'Are you sure you wish to Activate this User?',
   'userManagement.confirmationMessage': 'Confirmation message',
   'userManagement.message.DeactivateUser': 'Are you sure you wish to Deactivate this User ?',
   'userManagement.edit_sysadmin': 'Edit System Administrator',
   'userManagement.edit_organization_user': 'Edit Organization User',
 
+  'labels.caption.ALL': 'All',
+  'labels.caption.IN_DRAFT': 'In Draft',
+  'labels.caption.DELETED': 'Deleted',
+  'labels.caption.REJECTED': 'Rejected',
+
   'errors.messages.dateRange': "Either enter both dates or none for the filter as it's part of a date range.",
   'errors.messages.default': 'An unexpected error occurred. Please try again.',
-  'label.comment': 'Comment',
-
-  'userManagement.header.review_user': 'Review Organization User'
+  'label.comment': 'Comment', 
+  'userManagement.header.review_user': 'Review Organization User', 
+  'file.download.csv': 'Download CSV Template',
+  'lebal.users': 'Users',
+  'lebal.backToManage': 'Back to Manage',
+  'lebal.add': 'Add',
+  'userManagement.uploadUsers': 'Upload Users',
+  'userManagement.uploadUsersListCSV': 'Upload Users List CSV',
+  'userManagement.button.addUsers': 'Add Users' 
 };

@@ -22,7 +22,7 @@ const getColorByStatus = (status) => {
     [StatusEnum.IN_DRAFT]: 'info',
     [StatusEnum.APPROVAL_PENDING]: 'info',
     [StatusEnum.SUBMITTED]: 'success',
-    [StatusEnum.CANCELLED]: 'error',
+    [StatusEnum.DELETED]: 'error',
     [StatusEnum.REJECTED]: 'error'
   };
   return statusColors[status] || 'info';
@@ -33,7 +33,7 @@ const getLinkByStatus = ({ status, id }, t) => {
     [StatusEnum.IN_DRAFT]: { path: `${routesConfig.createNew}/${id}`, label: t('table.actions.resumeOrder') },
     [StatusEnum.APPROVAL_PENDING]: { path: `${routesConfig.reviewOrder}/${id}`, label: t('table.actions.reviewOrder') },
     [StatusEnum.SUBMITTED]: { path: `${routesConfig.summary}/${id}`, label: t('table.actions.viewDetail') },
-    [StatusEnum.CANCELLED]: { path: `${routesConfig.summary}/${id}`, label: t('table.actions.viewDetail') }
+    [StatusEnum.DELETED]: { path: `${routesConfig.summary}/${id}`, label: t('table.actions.viewDetail') }
   };
   const { path = '#', label } = routes[status.toLowerCase()] || {};
   return <Link to={path}>{label}</Link>;
@@ -44,7 +44,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
   const navigate = useNavigate();
   const loggedinUserId = AuthUtils.getUserId();
   const { showAlert } = useAlert();
-  const { refreshData, assginedGroupsData } = useOrders();
+  const { refreshData, assignedGroupsData } = useOrders();
   const { hasPermission } = usePermission();
   const assignMutation = useMutation(() => OrderService.setOrderAssignToMe(id), {
     onSuccess: (result) => {
@@ -93,10 +93,9 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
     deleteMutation.mutate();
   };
 
-  const doesApproverGroupExist = (approverGroupIds, assginedGroupsData) => {
-    console.log('assginedGroupsData', CommonUtils.isNonEmptyObject(assginedGroupsData)); // Loggind to check issue
-    if (!approverGroupIds || !assginedGroupsData || !CommonUtils.isNonEmptyObject(assginedGroupsData)) return false;
-    const groupDataArray = Array.isArray(assginedGroupsData) ? assginedGroupsData : [];
+  const doesApproverGroupExist = (approverGroupIds, assignedGroupsData) => {
+    if (!approverGroupIds || !assignedGroupsData || !CommonUtils.isNonEmptyObject(assignedGroupsData)) return false;
+    const groupDataArray = Array.isArray(assignedGroupsData) ? assignedGroupsData : [];
     return approverGroupIds.some((id) => groupDataArray?.includes(id));
   };
 
@@ -168,7 +167,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
   if (tab === 1) {
     if (!status) return null;
 
-    if (status === StatusEnum.PENDING || status === StatusEnum.CANCELLED) {
+    if (status === StatusEnum.PENDING || status === StatusEnum.DELETED) {
       return null;
     }
 
@@ -180,7 +179,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
             value: 'resume'
           },
           {
-            label: t(`labels.orderActions.delete`),
+            label: t(`labels.orderActions.discard`),
             value: 'delete'
           }
         );
@@ -191,7 +190,7 @@ const getOptionsByStatus = (props, status, t, tab, id, alertContainerId) => {
         value: 'review'
       });
     } else if (status === StatusEnum.APPROVAL_PENDING) {
-      if ((!props.approver || props.approver?.id === null) && doesApproverGroupExist(props.approverGroupIds, assginedGroupsData)) {
+      if ((!props.approver || props.approver?.id === null) && doesApproverGroupExist(props.approverGroupIds, assignedGroupsData)) {
         options.push({
           label: t(`labels.orderActions.assignToMe`),
           value: 'assign'
@@ -291,7 +290,7 @@ const getPatientName = (patientInfo) => {
   return [lastName, patientInfo?.firstName, patientInfo?.middleName].join(' ');
 };
 
-export const createColumns = (t, navigate, activeTab, alertContainerId) => [
+export const createColumns = (t, navigate, activeTab, alertContainerId, calculateMinWidth, setCharSide) => [
   {
     id: 'paporder',
     name: '',
@@ -337,7 +336,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     sortKey: 'id',
     showInMobileHeader: true,
     showColumnNameInHeader: true,
-    minWidth: '140px',
+    minWidth: '120px',
     cell: (props) =>
       activeTab !== 2 ? (
         <Link
@@ -346,10 +345,10 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
           //state={props.currentStage === 'ORDER_SUMMARY' && props.status === StatusEnum.SUBMITTED ? { ...props, isEdit: true } : { ...props }}
           state={getState(props)}
           aria-label={t('labels.orderId')}>
-          <EclipsesTextcss str={props.id} maxWidth={130} />
+          <EclipsesTextcss str={props.id} maxWidth={110} />
         </Link>
       ) : (
-        <EclipsesTextcss str={props.id} maxWidth={130} />
+        <EclipsesTextcss str={props.id} maxWidth={110} />
       )
   },
   {
@@ -412,8 +411,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'createdAt',
-    minWidth: '80px',
-    maxWidth: '135px',
+    width: '135px',
     cell: (props) => (
       <span aria-label={t('table.columns.captions.createdOn')}>
         {CommonUtils.convertDateStringFormat(props.updatedAt || props.createdAt, 'MM-DD-YYYY')}
@@ -428,7 +426,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'submittedBy.name',
-    maxWidth: '140px',
+    minWidth: '160px',
     cell: (props) => (
       <EclipsesTextcss tooltip={props.submittedBy?.userName} str={props.submittedBy?.name} maxWidth={130} className={'MCP-table-cell'} />
     ),
@@ -440,7 +438,7 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: true,
     sortKey: 'submittedOn',
-    width: '100px',
+    width: '160px',
     cell: (props) => <span>{props.submittedOn ? CommonUtils.convertDateStringFormat(props.submittedOn, 'MM-DD-YYYY') : '-'}</span>,
     omit: activeTab !== 2
   },
@@ -469,13 +467,21 @@ export const createColumns = (t, navigate, activeTab, alertContainerId) => [
     selector: () => {},
     sortable: false,
     right: true,
-    selector: 'orderCost',
-    cell: (props) => (
-      <div className="cellEllipse align-items-right ">
-        {props.orderCost ? <FormattedNumber value={props.orderCost} style="currency" currency="USD" /> : ''}
-      </div>
-    )
-  },
+    width: calculateMinWidth,
+    cell: (props) => {
+      let char_count = props.orderCost ? props.orderCost.toString().length : 0;
+      setCharSide((prev)=> char_count > prev ? char_count : prev);
+      return (
+        <div className="cellEllipse align-items-right">
+          {props.orderCost ? (
+            <FormattedNumber value={props.orderCost} style="currency" currency="USD" />
+          ) : (
+            ''
+          )}
+        </div>
+      );
+    }
+  },  
   {
     id: 'actions',
     name: t('table.columns.captions.actions'),

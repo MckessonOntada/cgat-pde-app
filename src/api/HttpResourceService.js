@@ -1,8 +1,13 @@
+import React from 'react';
 import axios from 'axios';
 import ApiRoutes from './ApiRoutes';
 import AuthUtils from '@src/util/AuthUtils';
+import store from '@src/store/store';
+import { openModal } from '@src/store/reducer/modalReducer';
+import { Button } from '@mckesson/mcp-component-library';
 
 const axiosInstance = axios.create({});
+const channel = new BroadcastChannel('auth_channel');
 
 export const httpVerb = {
   GET: 'get',
@@ -31,7 +36,9 @@ export const authToken = (noHeader, noSidHeader) => {
   }
 
   const headers = {
-    Authorization: sessionStorage.getItem('APP_AUTH_TOKEN') ? `${sessionStorage.getItem('APP_AUTH_TOKEN')}` : ''
+    Authorization: sessionStorage.getItem('APP_AUTH_TOKEN')
+      ? `${sessionStorage.getItem('APP_AUTH_TOKEN')}`
+      : ''
   };
 
   const sessionId = sessionStorage.getItem('sid');
@@ -82,12 +89,48 @@ const callRest = function (
     (err) => {
       if (err.response && err.response.status === 401) {
         //AuthService.routeToLogin(); TODO: Route to Login
+        //logOutUnAuthorizedUser(err);
+        console.log(endpoint, err);
       }
       errorCallback(err);
     }
   );
 
   return response;
+};
+
+const logOutUnAuthorizedUser = (err) => {
+  let ignorableURLs = [ApiRoutes.GET_CURRENT_USER];
+  let _ignoreLogout = ignorableURLs.some(
+    (item) => item === err.request.responseURL
+  );
+  if (!_ignoreLogout) {
+    const state = {
+      title: 'Alert Message',
+      body: (
+        <div className="MCP-modal-body">
+          <p>Your session has expired. Please log in again.</p>
+        </div>
+      ),
+      footer: (
+        <div className="controls">
+          <Button
+            size="md"
+            variant="primary"
+            onClick={() => {
+              channel.postMessage({ type: 'LOGOUT' });
+            }}>
+            OK
+          </Button>
+        </div>
+      ),
+      onClose: () => {
+        channel.postMessage({ type: 'LOGOUT' });
+      }
+    };
+
+    store.dispatch(openModal(state));
+  }
 };
 
 const HttpResourceService = Object.freeze({

@@ -18,7 +18,9 @@ const LoginCallback = () => {
 
   const { refetch: onPostUserLogin } = useFetchQueryRetry(
     [`postUserLogin`],
-    () => { /* Post login */ },
+    () => {
+      /* Post login */
+    },
     {
       enabled: false,
       retry: 5
@@ -28,12 +30,9 @@ const LoginCallback = () => {
   const checkUserRole = async (response) => {
     try {
       const accessToken = response.accessToken;
-      sessionStorage.setItem(
-        'APP_AUTH_TOKEN',
-        `${accessToken.tokenType} ${accessToken.accessToken}`
-      );
+      sessionStorage.setItem('APP_AUTH_TOKEN', `${accessToken.tokenType} ${accessToken.accessToken}`);
 
-      const decodedResponse = await CommonService.getJwtDecode();
+      const decodedResponse = await CommonService.getLoggedInUser();
       if (!decodedResponse) {
         setIsFetched(true);
         setError({ ...error, isError: true });
@@ -77,8 +76,7 @@ const LoginCallback = () => {
           setError({
             ...error,
             isError: true,
-            header:
-              'Login failed, new user on shared device detected. Please close and re-open the browser to continue.'
+            header: 'Login failed, new user on shared device detected. Please close and re-open the browser to continue.'
           });
           setIsFetched(true);
           return;

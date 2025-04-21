@@ -30,12 +30,26 @@ const AccountCard = ({ options = [], onChange, isFetching }) => {
       </div>
       {options.map((option, index) => {
         const { accountName, accountNumber } = option;
-        const address = [option.houseNumber, option.street, option.district, option.city, option.state, option.zipCode].join(', ');
+        const address = [
+          option.houseNumber,
+          option.street,
+          option.street2,
+          option.street3,
+          option.district,
+          option.city,
+          option.state,
+          option.zipCode,
+          option.country
+        ]
+          .filter((segment) => Boolean(segment?.trim()))
+          .join(', ');
 
         return (
           <label
             key={index}
-            className={`${styles.card} ${selected === option.id ? styles.selected : null}`}
+            className={`${styles.card} ${
+              selected === option.id ? styles.selected : null
+            }`}
             onClick={() => handleSelect(option.id)}>
             <input
               type="radio"

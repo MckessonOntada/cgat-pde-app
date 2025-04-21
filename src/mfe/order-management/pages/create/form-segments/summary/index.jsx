@@ -2,7 +2,17 @@ import React, { useRef } from 'react';
 import styles from './Summary.module.scss';
 import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg';
 import ModuleHeader from '@src/components/module-header';
-import { Button, Modal, CheckboxGroup, Heading, Loader, Badge, Tooltip, Alert, Label } from '@mckesson/mcp-component-library';
+import {
+  Button,
+  Modal,
+  CheckboxGroup,
+  Heading,
+  Loader,
+  Badge,
+  Tooltip,
+  Alert,
+  Label
+} from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
@@ -23,10 +33,14 @@ import OrderStepper from '../OrderStepper';
 import useOrder from '../../../orders/useOrder';
 import { useCustomPrint } from '@src/util/printUtils';
 import CommonUtils from '@src/util/CommonUtils';
-import { CUSTOMER_CENTRE, SYSTEM_ADMIN } from '@src/api/commonService/CommonService';
+import {
+  CUSTOMER_CENTRE,
+  SYSTEM_ADMIN
+} from '@src/api/commonService/CommonService';
 import { InventoryIndicator } from '../InventoryIndicator';
 import useSapOrder from './useSapOrder';
 import useTimedArray from './useTimedArray';
+import AttachmentCard from './AttachmentCard';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -39,19 +53,42 @@ const ORDER_TYPES = {
   NON_PAP_ORDER: 'NON PAP ORDER'
 };
 
+const getOrderCost = (originalOrderCost, updatedOrderCost) => {
+  let orderCost = originalOrderCost;
+
+  if (!updatedOrderCost || isNaN(updatedOrderCost))
+    orderCost = originalOrderCost;
+  else if (parseFloat(orderCost) !== parseFloat(updatedOrderCost))
+    orderCost = updatedOrderCost;
+
+  return CommonUtils.formatNumberWithoutSymbol(orderCost);
+};
+
 const Summary = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
   const { orderId } = useParams();
   const { showAlert } = useAlert();
-  const { data: orderDetails = {}, isFetching, isError, error, isLoader } = useOrder(orderId);
-  const [isPAPOrderConfirmModalOpen, setIsPAPOrderConfirmModalOpen] = React.useState(false);
+  const {
+    data: orderDetails = {},
+    isFetching,
+    isError,
+    error,
+    isLoader
+  } = useOrder(orderId);
+  const [isPAPOrderConfirmModalOpen, setIsPAPOrderConfirmModalOpen] =
+    React.useState(false);
   const { isApprover = false, isSimulate = false } = location.state || {};
-  const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] = React.useState(null);
+  const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] =
+    React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
   const [alertMessages, setAlertMessages] = React.useState([]);
-  const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
+  const {
+    items: notifications,
+    add: addNotification,
+    remove: removeNotification
+  } = useTimedArray(10000);
   const [sapStatus, setSapStatus] = React.useState(null);
   const [inventoryStatus, setInventoryStatus] = React.useState(null);
   const {
@@ -82,7 +119,8 @@ const Summary = () => {
     (status) => setSapStatus(status),
     (error) => {
       addNotification({
-        description: 'Something went wrong while checking SAP order status. Please try again later.',
+        description:
+          'Something went wrong while checking SAP order status. Please try again later.',
         type: 'error',
         kind: 'SAP_ORDER_STATUS'
       });
@@ -96,13 +134,22 @@ const Summary = () => {
         handleInventoryDetailsResponse(response.data);
       }
     } catch (error) {
-      addNotification({ description: 'Something went wrong while checking inventory. Please try again later.', type: 'error' });
+      addNotification({
+        description:
+          'Something went wrong while checking inventory. Please try again later.',
+        type: 'error'
+      });
       setInventoryStatus('PENDING');
     }
   };
 
   React.useEffect(() => {
-    if (!orderDetails.id || status === StatusEnum.SUBMITTED || status === StatusEnum.REJECTED) {
+    if (
+      !orderDetails.id ||
+      status === StatusEnum.SUBMITTED ||
+      status === StatusEnum.REJECTED ||
+      status === 'DELETED'
+    ) {
       return;
     }
     if (catalog.inventoryType === 'T') {
@@ -119,20 +166,20 @@ const Summary = () => {
     const { erroredItems, warningMessages } = data.inventoryCheckResponse || {};
     if (erroredItems?.length > 0 || warningMessages?.length > 0) {
       if (erroredItems && erroredItems.length > 0) {
-        addNotification(
-          ...erroredItems.map((err) => ({
+        erroredItems.forEach((err) => {
+          addNotification({
             description: err.errorMessage,
             type: 'error'
-          }))
-        );
+          });
+        });
       }
       if (warningMessages && warningMessages.length > 0) {
-        addNotification(
-          ...warningMessages.map((warn) => ({
+        warningMessages.forEach((warn) => {
+          addNotification({
             description: warn.value,
             type: 'warning'
-          }))
-        );
+          });
+        });
       }
       setInventoryStatus('OUT_OF_STOCK');
     } else {
@@ -141,7 +188,9 @@ const Summary = () => {
   };
 
   const handleRetrySAPOrderStatus = () => {
-    const sapOrderStatusAlerts = notifications.find((item) => item.kind === 'SAP_ORDER_STATUS');
+    const sapOrderStatusAlerts = notifications.find(
+      (item) => item.kind === 'SAP_ORDER_STATUS'
+    );
     if (sapOrderStatusAlerts && sapOrderStatusAlerts.length > 0) {
       sapOrderStatusAlerts.forEach((item) => removeNotification(item.id));
     }
@@ -150,6 +199,7 @@ const Summary = () => {
 
   const variantDetails = additionalDetails?.variantDetails || {};
   const isRejected = status === 'REJECTED';
+  const isDeleted = status === 'DELETED';
   const isSubmitted = status === StatusEnum.SUBMITTED;
   const contentRef = useRef(null);
   const printPage = useCustomPrint(
@@ -184,38 +234,68 @@ const Summary = () => {
     queryFn: async () => {
       return await OrderService.simulateOrder(orderId);
     },
-    enabled: !status ? false : !(status === StatusEnum.REJECTED || status === StatusEnum.SUBMITTED),
+    enabled: !status
+      ? false
+      : !(
+          status === StatusEnum.REJECTED ||
+          status === StatusEnum.SUBMITTED ||
+          status === 'DELETED'
+        ),
     refetchOnWindowFocus: false,
     onSuccess: (result) => {
-      const warningMessages = result.warningMessages?.map((msg) => msg.value) || [];
+      const warningMessages =
+        result.warningMessages?.map((msg) => msg.value) || [];
       const infoMessages = result.infoMessages?.map((msg) => msg.value) || [];
 
       if (warningMessages.length > 0) {
-        addNotification(...warningMessages.map((msg) => ({ description: msg, type: 'warning' })));
+        warningMessages.forEach((msg) => {
+          addNotification({
+            description: msg,
+            type: 'warning',
+            isSticky: true
+          });
+        });
       }
 
       if (infoMessages.length > 0) {
-        addNotification(...warningMessages.map((msg) => ({ description: msg, type: 'info' })));
+        infoMessages.forEach((msg) => {
+          addNotification({
+            description: msg,
+            type: 'info'
+          });
+        });
       }
     },
     onError: (error) => {
-      showAlert({ description: error?.response?.data?.message, type: 'error', anchorEl: ALERT_CONTAINER_ID });
+      showAlert({
+        description: error?.response?.data?.message,
+        type: 'error',
+        anchorEl: ALERT_CONTAINER_ID
+      });
     }
   });
 
   const { isLoading: isSaving, mutate: submitOrder } = useMutation(
-    async ({ action, isPAPOrder }) => await OrderService.submitOrder(orderId, isPAPOrder),
+    async ({ action, isPAPOrder }) =>
+      await OrderService.submitOrder(orderId, isPAPOrder),
     {
       onSuccess: (_result, { action }) => {
         if (action === BUTTON_ACTIONS.SUBMIT) {
           navigate(`../${orderId}/order-confirmed`);
         } else {
-          navigate(`../${orderId}/order-confirmed`, { state: { isApproved: true } });
+          navigate(`../${orderId}/order-confirmed`, {
+            state: { isApproved: true }
+          });
         }
       },
       onError: (err) => {
-        showAlert({ description: err.message, type: 'error', anchorEl: ALERT_CONTAINER_ID });
-      }
+        showAlert({
+          description: err.message,
+          type: 'error',
+          anchorEl: ALERT_CONTAINER_ID
+        });
+      },
+      retry: false
     }
   );
 
@@ -228,7 +308,10 @@ const Summary = () => {
 
   const handleChange = () => {
     setOrderAgreementCheckboxError(null);
-    setAgreeCheckboxOptions({ ...agreeCheckboxOptions, isChecked: !agreeCheckboxOptions.isChecked });
+    setAgreeCheckboxOptions({
+      ...agreeCheckboxOptions,
+      isChecked: !agreeCheckboxOptions.isChecked
+    });
   };
 
   const handleOnBackButtonClick = () => {
@@ -247,7 +330,11 @@ const Summary = () => {
 
   const isImpersonatedAdmin = () => {
     const impersonatedByUser = AuthUtils.getImpersonatedByUser();
-    if (impersonatedByUser && (impersonatedByUser.role?.name === SYSTEM_ADMIN || impersonatedByUser.role?.name === CUSTOMER_CENTRE)) {
+    if (
+      impersonatedByUser &&
+      (impersonatedByUser.role?.name === SYSTEM_ADMIN ||
+        impersonatedByUser.role?.name === CUSTOMER_CENTRE)
+    ) {
       return true;
     }
     return false;
@@ -374,24 +461,42 @@ const Summary = () => {
     );
 
     const controlSubmitOrder = (
-      <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS, PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS]}>
-        <Button size={'md'} variant="primary" type="submit" onClick={handleOnSubmit}>
+      <PermittedComponent
+        permissions={[
+          PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS,
+          PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS
+        ]}>
+        <Button
+          size={'md'}
+          variant="primary"
+          type="submit"
+          onClick={handleOnSubmit}>
           {t('captions.btnSubmitOrder')}
         </Button>
       </PermittedComponent>
     );
 
     const controlRejectOrder = (
-      <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REJECT_ORDER]}>
-        <Button size={'md'} variant="primary" type="submit" onClick={handleReject}>
+      <PermittedComponent
+        permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.REJECT_ORDER]}>
+        <Button
+          size={'md'}
+          variant="primary"
+          type="submit"
+          onClick={handleReject}>
           {t('captions.btnRejectOrder')}
         </Button>
       </PermittedComponent>
     );
 
     const controlApproveOrder = (
-      <PermittedComponent permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.APPROVE_ORDERS]}>
-        <Button size={'md'} variant="primary" type="submit" onClick={handleOnApprove}>
+      <PermittedComponent
+        permissions={[PERMISSIONS_ENUM.ORDER_MANAGEMENT.APPROVE_ORDERS]}>
+        <Button
+          size={'md'}
+          variant="primary"
+          type="submit"
+          onClick={handleOnApprove}>
           {t('captions.btnApproveOrder')}
         </Button>
       </PermittedComponent>
@@ -399,7 +504,11 @@ const Summary = () => {
 
     if (status === StatusEnum.REJECTED) {
       controls.push(controlPrintSummary); //, controlCancel, controlReSubmitOrder);
-    } else if (!isApprover && status !== StatusEnum.SUBMITTED && status !== StatusEnum.APPROVAL_PENDING) {
+    } else if (
+      !isApprover &&
+      status !== StatusEnum.SUBMITTED &&
+      status !== StatusEnum.APPROVAL_PENDING
+    ) {
       controls.push(controlPrintSummary, controlCancel, controlSubmitOrder);
     } else if (isApprover) {
       controls.push(controlBack, controlRejectOrder, controlApproveOrder);
@@ -412,38 +521,92 @@ const Summary = () => {
     return isLoader;
   }
 
-  if (patient.patientInfo) patient.fullName = CommonUtils.getFullName(patient.patientInfo);
+  if (patient.patientInfo)
+    patient.fullName = CommonUtils.getFullName(patient.patientInfo);
 
   const isAgreed = agreeCheckboxOptions.isChecked,
-    hideControls = status === StatusEnum.SUBMITTED || (status === StatusEnum.APPROVAL_PENDING && !isApprover) || isRejected;
+    hideControls =
+      status === StatusEnum.SUBMITTED ||
+      (status === StatusEnum.APPROVAL_PENDING && !isApprover) ||
+      isRejected ||
+      isDeleted;
 
   if (isSaving) {
     return <Loader type={'screen'} />;
   }
 
+  let variantAttachment = null,
+    configuredQuestionnaires = [];
+
+  if (additionalDetails.variantDetails?.variantDocumentPath) {
+    try {
+      variantAttachment = JSON.parse(
+        additionalDetails.variantDetails.variantDocumentPath
+      );
+    } catch (error) {}
+  }
+
+  if (
+    additionalDetails.configuredQuestionnaires &&
+    additionalDetails.configuredQuestionnaires.length > 0
+  ) {
+    additionalDetails.configuredQuestionnaires.forEach((template) => {
+      if (template?.questions && template.questions.length > 0) {
+        template.questions.forEach((question) => {
+          if (question.value) {
+            const details = {
+              text: question.text.en,
+              value: question.value
+            };
+            if (question.document) {
+              details.attachment = {
+                name: question.document.name,
+                size: question.document.size,
+                url: question.document.url
+              };
+            }
+            configuredQuestionnaires.push(details);
+          }
+        });
+      }
+    });
+  }
   return (
     <div className="MCP-module-wrapper order-summary-container">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={handleOnBackToOrders}
+          size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
-      {orderDetails?.status === StatusEnum.IN_DRAFT && <PageHeader heading={t('headings.createNewOrder')} />}
-      {isApprover && 
+      {orderDetails?.status === StatusEnum.IN_DRAFT && (
+        <PageHeader heading={t('headings.createNewOrder')} />
+      )}
+      {isApprover && (
         <div className={styles.pageHeadingReview}>
           <PageHeader heading={t('headings.reviewOrder')} />
           {paporder && (
             <span className={styles.pap}>
-              <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('labels.pap.order')} />
+              <Badge
+                customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }}
+                text={t('labels.pap.order')}
+              />
             </span>
           )}
         </div>
-      }
+      )}
 
       <div className="MCP-module-body" ref={contentRef}>
-        {!hideControls && !isRejected && (
+        {!hideControls && !isRejected && !isDeleted && (
           <div className="order-stepper-wrapper">
-            <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} />
+            <OrderStepper
+              status={orderDetails?.currentStage}
+              patientDetailsRequired={orderDetails?.patientDetailsRequired}
+            />
           </div>
         )}
         <div id={ALERT_CONTAINER_ID} />
@@ -451,7 +614,12 @@ const Summary = () => {
           <div className="alert-container">
             <div className="MCP-module-body">
               {notifications.map((item, index) => (
-                <Alert key={item.id} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
+                <Alert
+                  key={item.id}
+                  description={item.description}
+                  onClose={() => removeNotification(item.id)}
+                  type={item.type}
+                />
               ))}
             </div>
           </div>
@@ -460,12 +628,18 @@ const Summary = () => {
         <div className={'MCP-module-wrapper'}>
           <ModuleHeader
             heading={
-              !isApprover &&(
+              !isApprover && (
                 <Heading className={styles.orderSummaryHeading} as="h2">
                   <span>{t('labels.summary')}</span>
                   {paporder && (
                     <span className={styles.pap}>
-                      <Badge customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }} text={t('labels.pap.order')} />
+                      <Badge
+                        customStyle={{
+                          color: '#005483',
+                          backgroundColor: '#F2F6FA'
+                        }}
+                        text={t('labels.pap.order')}
+                      />
                     </span>
                   )}
                 </Heading>
@@ -475,32 +649,62 @@ const Summary = () => {
             controls={
               isRejected ? (
                 <div className="row-space-between-center">
-                  <Badge text={t(`labels.status.${status.toLowerCase()}`)} type="error" />
-                  <Button size="md" variant="tertiary" onClick={() => setIsCommentPanelOpen(true)}>
+                  <Badge
+                    text={t(`labels.status.${status.toLowerCase()}`)}
+                    type="error"
+                  />
+                  <Button
+                    size="md"
+                    variant="tertiary"
+                    onClick={() => setIsCommentPanelOpen(true)}>
                     {t('captions.btnViewComments')}
                   </Button>
                 </div>
               ) : isSubmitted ? (
                 <div className="row-space-between-center">
-                  <Label className={styles.lblProcessing}>{t('labels.OrderProcesing')}</Label>
-                  {isLoadingSapOrderStatus && <div className="dot-loader"></div>}
+                  <Label className={styles.lblProcessing}>
+                    {t('labels.OrderProcesing')}
+                  </Label>
+                  {isLoadingSapOrderStatus && (
+                    <InventoryIndicator status={'CHECKING'} />
+                  )}
 
                   {!isLoadingSapOrderStatus &&
                     (sapOrderDetails?.finalStatus ? (
                       <>
-                        {sapOrderDetails.finalStatus.toLowerCase() === SAPOrderStatusEnum.OPEN.toLowerCase() ? (
-                          <Badge text={t('labels.OrderProcesing.SAPOrderStatus.Open')} type="info" />
-                        ) : sapOrderDetails.finalStatus.toLowerCase() === SAPOrderStatusEnum.CANCELLED.toLowerCase() ? (
-                          <Badge text={t('labels.OrderProcesing.SAPOrderStatus.Cancelled')} type="error" />
+                        {sapOrderDetails.finalStatus.toLowerCase() ===
+                        SAPOrderStatusEnum.OPEN.toLowerCase() ? (
+                          <Badge
+                            text={t(
+                              'labels.OrderProcesing.SAPOrderStatus.Open'
+                            )}
+                            type="info"
+                          />
+                        ) : sapOrderDetails.finalStatus.toLowerCase() ===
+                          SAPOrderStatusEnum.CANCELLED.toLowerCase() ? (
+                          <Badge
+                            text={t(
+                              'labels.OrderProcesing.SAPOrderStatus.Cancelled'
+                            )}
+                            type="error"
+                          />
                         ) : (
-                          <Badge text={t('labels.OrderProcesing.SAPOrderStatus.Completed')} type="success" />
+                          <Badge
+                            text={t(
+                              'labels.OrderProcesing.SAPOrderStatus.Completed'
+                            )}
+                            type="success"
+                          />
                         )}
                       </>
                     ) : (
                       <div className={styles.orderProcessing}>
                         <InventoryIndicator status={'OUT_OF_STOCK'} />
                         <div className="styled-icon-button">
-                          <Button variant="tertiary" size="lg" onClick={handleRetrySAPOrderStatus}>
+                          <Button
+                            variant="tertiary"
+                            size="lg"
+                            onClick={handleRetrySAPOrderStatus}>
                             {t('captions.btnRetry')}
                           </Button>
                         </div>
@@ -512,17 +716,35 @@ const Summary = () => {
           />
           <div className={'MCP-module-body'}>
             <div className="MCP-CardContainer">
-              <ModuleHeader className={styles.panelHeader} heading={<Heading as="h3">{t('labels.priceDetails')}</Heading>} />
+              <ModuleHeader
+                className={styles.panelHeader}
+                heading={<Heading as="h3">{t('labels.priceDetails')}</Heading>}
+              />
               <div class={styles.flexPanel}>
-                {status === StatusEnum.SUBMITTED && <DetailSegment label={t('labels.sapId')} value={backendOrderId} />}
-                {status === StatusEnum.SUBMITTED && <DetailSegment label={t('labels.pdeId')} value={orderId} />}
+                {status === StatusEnum.SUBMITTED && (
+                  <DetailSegment
+                    label={t('labels.sapId')}
+                    value={backendOrderId}
+                  />
+                )}
+                {status === StatusEnum.SUBMITTED && (
+                  <DetailSegment label={t('labels.pdeId')} value={orderId} />
+                )}
                 <DetailSegment
                   label={t('labels.materialDescription')}
-                  tooltip={therapy?.materialDescription}
+                  noTooltip={true}
                   value={
                     <div className="row-space-between-center">
-                      {therapy?.materialDescription}
-                      <InventoryIndicator status={inventoryStatus} />
+                      <Tooltip body={therapy?.materialDescription}>
+                        {therapy?.materialDescription}
+                      </Tooltip>
+                      <Tooltip
+                        isDisabled={!inventoryStatus}
+                        body={t(`tooltip.material.status.${inventoryStatus}`)}>
+                        <span>
+                          <InventoryIndicator status={inventoryStatus} />
+                        </span>
+                      </Tooltip>
                     </div>
                   }
                 />
@@ -532,14 +754,17 @@ const Summary = () => {
                     value={
                       <span className="dollarSign ">
                         <span>$</span>
-                        {CommonUtils.formatNumberWithoutSymbol(orderCost)}
+                        {getOrderCost(orderCost, simulationData.updatedCost)}
                       </span>
                     }
                   />
                 </p>
               </div>
             </div>
-            <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'}>
+            <div
+              className={
+                'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'
+              }>
               <div className="MCP-module-body">
                 <div className="MCP-CardContainer">
                   <ModuleHeader
@@ -547,11 +772,18 @@ const Summary = () => {
                     heading={<Heading as="h3">{t('labels.therapy')}</Heading>}
                     controls={
                       !hideControls && (
-                        <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                        <PermittedComponent
+                          permissions={
+                            PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS
+                          }>
                           <Button
                             size="md"
                             variant="tertiary"
-                            onClick={() => handleOnEditSection(ORDER_STAGES.THERAPY_SELECTION)}
+                            onClick={() =>
+                              handleOnEditSection(
+                                ORDER_STAGES.THERAPY_SELECTION
+                              )
+                            }
                             Icon={() => <IconEditField />}>
                             {t('captions.btnEdit')}
                           </Button>
@@ -559,20 +791,26 @@ const Summary = () => {
                       )
                     }
                   />
-                  <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
-                    <DetailSegment label={t('labels.nationalDrugCode')} value={therapy.ndcNumber} />
-                    <DetailSegment label={t('labels.UDI')} value={catalog?.udi || '-'} />
+                  <div
+                    className={`grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
                     <DetailSegment
-                      label={t('labels.distributionChannel')}
-                      value={accountDetails?.shipToAccount?.distributionChannel || '-'}
+                      label={t('labels.nationalDrugCode')}
+                      value={therapy.ndcNumber}
                     />
-                    <DetailSegment label={t('labels.salesOrganization')} value={accountDetails?.shipToAccount?.accountName} />
+                    <DetailSegment
+                      label={t('labels.salesOrganization')}
+                      value={accountDetails?.shipToAccount?.accountName}
+                    />
                     <DetailSegment
                       label={t('labels.netPrice')}
                       value={
                         <span className="dollarSign">
                           <span>$</span>
-                          {catalog?.netPrice ? CommonUtils.formatNumberWithoutSymbol(catalog?.netPrice) : '-'}
+                          {catalog?.netPrice
+                            ? CommonUtils.formatNumberWithoutSymbol(
+                                catalog?.netPrice
+                              )
+                            : '-'}
                         </span>
                       }
                     />
@@ -583,14 +821,21 @@ const Summary = () => {
                 <div className="MCP-CardContainer">
                   <ModuleHeader
                     className={styles.panelHeader}
-                    heading={<Heading as="h3">{t('labels.accountDetails')}</Heading>}
+                    heading={
+                      <Heading as="h3">{t('labels.accountDetails')}</Heading>
+                    }
                     controls={
                       !hideControls && (
-                        <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                        <PermittedComponent
+                          permissions={
+                            PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS
+                          }>
                           <Button
                             size="md"
                             variant="tertiary"
-                            onClick={() => handleOnEditSection(ORDER_STAGES.ACCOUNT_DETAILS)}
+                            onClick={() =>
+                              handleOnEditSection(ORDER_STAGES.ACCOUNT_DETAILS)
+                            }
                             Icon={() => <IconEditField />}>
                             {t('captions.btnEdit')}
                           </Button>
@@ -598,27 +843,123 @@ const Summary = () => {
                       )
                     }
                   />
-                  <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2`}>
-                    <DetailSegment label={t('labels.accountName')} value={accountDetails?.soldToAccount?.accountName} />
-                    <DetailSegment label={t('labels.accountNo')} value={accountDetails?.soldToAccount?.accountNumber} />
-                    <DetailSegment label={t('labels.shippingAccountName')} value={accountDetails?.shipToAccount?.accountName} />
-                    <DetailSegment label={t('labels.shippingAccountNo')} value={accountDetails?.shipToAccount?.accountNumber} />
+                  <div
+                    className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2`}>
+                    <DetailSegment
+                      label={t('labels.accountName')}
+                      value={accountDetails?.soldToAccount?.accountName}
+                    />
+                    <DetailSegment
+                      label={t('labels.accountNo')}
+                      value={accountDetails?.soldToAccount?.accountNumber}
+                    />
+                    <DetailSegment
+                      label={t('labels.shippingAccountName')}
+                      value={accountDetails?.shipToAccount?.accountName}
+                    />
+                    <DetailSegment
+                      label={t('labels.shippingAccountNo')}
+                      value={accountDetails?.shipToAccount?.accountNumber}
+                    />
                   </div>
                 </div>
               </div>
             </div>
-            {patientDetailsRequired && (
+
+            <div
+              className={
+                'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'
+              }>
+              {patientDetailsRequired && (
+                <div className="MCP-CardContainer">
+                  <ModuleHeader
+                    className={styles.panelHeader}
+                    heading={
+                      <Heading as="h3">{t('labels.patientDetails')}</Heading>
+                    }
+                    controls={
+                      !hideControls && (
+                        <PermittedComponent
+                          permissions={
+                            PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS
+                          }>
+                          <Button
+                            size="md"
+                            variant="tertiary"
+                            onClick={() =>
+                              handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)
+                            }
+                            Icon={() => <IconEditField />}>
+                            {t('captions.btnEdit')}
+                          </Button>
+                        </PermittedComponent>
+                      )
+                    }
+                  />
+                  <div
+                    className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2`}>
+                    <DetailSegment
+                      label={t('labels.patientIdentifier')}
+                      value={patient?.patientIdentifier || '-'}
+                    />
+                    <DetailSegment
+                      label={t('labels.patientName')}
+                      value={
+                        patient.fullName ? (
+                          <Tooltip body={patient.fullName}>
+                            <span className="overflowing">
+                              {patient.fullName}
+                            </span>
+                          </Tooltip>
+                        ) : (
+                          '-'
+                        )
+                      }
+                    />
+                    <DetailSegment
+                      label={t('labels.DOB')}
+                      value={patient?.patientInfo?.dateOfBirth || '-'}
+                    />
+
+                    <DetailSegment
+                      label={t('labels.emailId')}
+                      value={
+                        patient?.contact?.emailId ? (
+                          <Tooltip body={patient.contact.emailId}>
+                            <span className="overflowing">
+                              {patient.contact.emailId}
+                            </span>
+                          </Tooltip>
+                        ) : (
+                          '-'
+                        )
+                      }
+                    />
+                    <DetailSegment
+                      label={t('labels.gender')}
+                      value={patient?.patientInfo?.gender || '-'}
+                    />
+                  </div>
+                </div>
+              )}
               <div className="MCP-CardContainer">
                 <ModuleHeader
                   className={styles.panelHeader}
-                  heading={<Heading as="h3">{t('labels.patientDetails')}</Heading>}
+                  heading={
+                    <Heading as="h3">{t('labels.additionalDetails')}</Heading>
+                  }
                   controls={
                     !hideControls && (
-                      <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
+                      <PermittedComponent
+                        permissions={
+                          PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS
+                        }>
                         <Button
                           size="md"
                           variant="tertiary"
-                          onClick={() => handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)}
+                          onClick={() =>
+                            handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)
+                          }
                           Icon={() => <IconEditField />}>
                           {t('captions.btnEdit')}
                         </Button>
@@ -626,65 +967,143 @@ const Summary = () => {
                     )
                   }
                 />
-                <div className={`grid grid-gap-16 grid-cols-1 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-5`}>
-                  <DetailSegment label={t('labels.patientIdentifier')} value={patient?.patientIdentifier || '-'} />
+                <div
+                  className={
+                    'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'
+                  }>
                   <DetailSegment
-                    label={t('labels.patientName')}
-                    value={
-                      patient.fullName ? (
-                        <Tooltip body={patient.fullName}>
-                          <span className="overflowing">{patient.fullName}</span>
-                        </Tooltip>
-                      ) : (
-                        '-'
-                      )
-                    }
+                    label={t('labels.slotNo')}
+                    value={additionalDetails?.slotNumber}
                   />
-                  <DetailSegment label={t('labels.DOB')} value={patient?.patientInfo?.dateOfBirth || '-'} />
+                  <DetailSegment
+                    label={t('labels.poNo')}
+                    value={additionalDetails?.poNumber}
+                  />
+                  <DetailSegment
+                    label={t('labels.dateOfAdministration')}
+                    value={additionalDetails?.dateOfAdministration || '-'}
+                  />
+                  <DetailSegment
+                    label={t('labels.orderQuantity')}
+                    value={additionalDetails?.orderQuantity || '-'}
+                  />
+                </div>
+              </div>
+            </div>
 
-                  <DetailSegment
-                    label={t('labels.emailId')}
-                    value={
-                      patient?.contact?.emailId ? (
-                        <Tooltip body={patient.contact.emailId}>
-                          <span className="overflowing">{patient.contact.emailId}</span>
-                        </Tooltip>
-                      ) : (
-                        '-'
-                      )
-                    }
-                  />
-                  <DetailSegment label={t('labels.gender')} value={patient?.patientInfo?.gender || '-'} />
+            {additionalDetails.variantDetails && (
+              <div className="MCP-CardContainer">
+                <ModuleHeader
+                  className={styles.panelHeader}
+                  heading={<Heading as="h3">{t('labels.variant')}</Heading>}
+                  controls={
+                    !hideControls && (
+                      <PermittedComponent
+                        permissions={
+                          PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS
+                        }>
+                        <Button
+                          size="md"
+                          variant="tertiary"
+                          onClick={() =>
+                            handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)
+                          }
+                          Icon={() => <IconEditField />}>
+                          {t('captions.btnEdit')}
+                        </Button>
+                      </PermittedComponent>
+                    )
+                  }
+                />
+                <div className="MCP-module-body">
+                  <div
+                    className={
+                      'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'
+                    }>
+                    <DetailSegment
+                      label={'Variant'}
+                      value={additionalDetails?.variantDetails?.variant}
+                    />
+                    {variantAttachment && (
+                      <AttachmentCard
+                        url={variantAttachment.url}
+                        fileName={variantAttachment.name}
+                        fileSize={variantAttachment.size}
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
             )}
-            <div className="MCP-CardContainer">
-              <ModuleHeader
-                className={styles.panelHeader}
-                heading={<Heading as="h3">{t('labels.additionalDetails')}</Heading>}
-                controls={
-                  !hideControls && (
-                    <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS}>
-                      <Button
-                        size="md"
-                        variant="tertiary"
-                        onClick={() => handleOnEditSection(ORDER_STAGES.ADDITIONAL_DETAILS)}
-                        Icon={() => <IconEditField />}>
-                        {t('captions.btnEdit')}
-                      </Button>
-                    </PermittedComponent>
-                  )
-                }
-              />
-              <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-6 lg:grid-cols-6 xl:grid-cols-6'}>
-                <DetailSegment label={t('labels.slotNo')} value={additionalDetails?.slotNumber} />
-                <DetailSegment label={t('labels.poNo')} value={additionalDetails?.poNumber} />
-                <DetailSegment label={t('labels.dateOfAdministration')} value={additionalDetails?.dateOfAdministration || '-'} />
-                <DetailSegment label={t('labels.selectVariant')} value={variantDetails.variant || '-'} />
-                <DetailSegment label={t('labels.variantDescription')} value={variantDetails.variantDescription || '-'} />
-                <DetailSegment label={t('labels.patientConsent')} value={additionalDetails?.patientConsentTaken ? 'Yes' : '-'} />
-              </div>
-            </div>
+
+            {additionalDetails.configuredQuestionnaires &&
+              additionalDetails.configuredQuestionnaires.length > 0 && (
+                <div className="MCP-CardContainer">
+                  <ModuleHeader
+                    className={styles.panelHeader}
+                    heading={
+                      <Heading as="h3">
+                        {t('labels.configuredQuestionnaires')}
+                      </Heading>
+                    }
+                    controls={
+                      !hideControls && (
+                        <PermittedComponent
+                          permissions={
+                            PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS
+                          }>
+                          <Button
+                            size="md"
+                            variant="tertiary"
+                            onClick={() =>
+                              handleOnEditSection(
+                                ORDER_STAGES.ADDITIONAL_DETAILS
+                              )
+                            }
+                            Icon={() => <IconEditField />}>
+                            {t('captions.btnEdit')}
+                          </Button>
+                        </PermittedComponent>
+                      )
+                    }
+                  />
+                  <div className="MCP-module-body">
+                    <div className="summary-question-list">
+                      {configuredQuestionnaires.map((question) => {
+                        return (
+                          <div
+                            className={
+                              'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'
+                            }>
+                            <DetailSegment
+                              label={question.text}
+                              value={
+                                question.value &&
+                                Array.isArray(question.value) ? (
+                                  <div>
+                                    {question.value.map((val) => (
+                                      <div>{val.replace(/_/g, ' ')}</div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  question.value
+                                )
+                              }
+                            />
+                            {question.attachment && (
+                              <AttachmentCard
+                                url={question.attachment?.url}
+                                fileName={question.attachment.name}
+                                fileSize={question.attachment.size}
+                              />
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )}
           </div>
           {!hideControls && (
             <div className="agreement-checkbox-control">
@@ -693,13 +1112,17 @@ const Summary = () => {
                 name="order-agreement"
                 error={Boolean(orderAgreementCheckboxError)}
                 errorMessage={orderAgreementCheckboxError}
-                items={[{ ...agreeCheckboxOptions, onChange: () => handleChange() }]}
+                items={[
+                  { ...agreeCheckboxOptions, onChange: () => handleChange() }
+                ]}
                 size="md"
               />
             </div>
           )}
           <div className="footer-wrapper">
-            <div className="controls footer-controls">{getAllowedControls()}</div>
+            <div className="controls footer-controls">
+              {getAllowedControls()}
+            </div>
           </div>
         </div>
       </div>
@@ -713,7 +1136,10 @@ const Summary = () => {
         />
       )}
       {isPAPOrderConfirmModalOpen && (
-        <PAPOrderTypeConfirmModal onClose={() => setIsPAPOrderConfirmModalOpen(false)} onSubmit={handleOnSubmitPapOrder} />
+        <PAPOrderTypeConfirmModal
+          onClose={() => setIsPAPOrderConfirmModalOpen(false)}
+          onSubmit={handleOnSubmitPapOrder}
+        />
       )}
     </div>
   );
@@ -734,7 +1160,10 @@ const PAPOrderTypeConfirmModal = ({ onClose, onSubmit }) => {
       }
       modalFooter={
         <React.Fragment>
-          <Button size="md" onClick={() => onSubmit(ORDER_TYPES.NON_PAP_ORDER)} variant="secondary">
+          <Button
+            size="md"
+            onClick={() => onSubmit(ORDER_TYPES.NON_PAP_ORDER)}
+            variant="secondary">
             {t('captions.btnNo')}
           </Button>
           <Button size="md" onClick={() => onSubmit(ORDER_TYPES.PAP_ORDER)}>

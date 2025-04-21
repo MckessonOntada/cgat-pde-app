@@ -17,13 +17,23 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { useAccountContext } from '../../context/AccountContext';
 import useSnackbar from '@src/hooks/useSnackbar';
+import dayjs from 'dayjs';
 
 export default function PendingPaymentTable() {
   const { t } = useTranslate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, refetch } = usePendingPayments();
+  const {
+    data,
+    isFetching,
+    paginationConfig,
+    setPageNumber,
+    applySort,
+    isError,
+    refetch
+  } = usePendingPayments();
   const { selectedAccount } = useAccountContext();
   const showCardView = useResponsiveView();
   const { showSnackbar } = useSnackbar();
+
   const columns = [
     {
       id: 'confirmationNo',
@@ -31,13 +41,17 @@ export default function PendingPaymentTable() {
       selector: (row) => `${row.confirmationNo}`,
       sortable: true,
       wrap: true,
-      minWidth: '110px',
+      minWidth: '210px',
       showInMobileHeader: true,
       cardHeader: true,
       cell: (props) => (
         <div className="cellEllipse">
           <Link
-            style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
+            style={{
+              color: 'var(--brand-color-primary)',
+              fontWeight: '600',
+              textDecoration: 'none'
+            }}
             to={`/record/${PATHS.pendingPayments}/${props.confirmationNo}/confirmation`}
             state={{ ...props }}>
             {props.confirmationNo}
@@ -49,7 +63,7 @@ export default function PendingPaymentTable() {
       id: 'paymentMethod',
       name: t('paymentInvoices.history.table.paymentMethod'),
       selector: (row) => row.paymentMethod,
-      minWidth: '400px',
+      minWidth: '350px',
       sortable: true,
       wrap: true,
       cell: (props) => <div>{props.paymentMethod}</div>
@@ -61,50 +75,57 @@ export default function PendingPaymentTable() {
       sortable: true,
       wrap: true,
       maxWidth: '160px',
-      cell: (props) => CommonUtils.convertDateStringFormat(props.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
+      cell: (props) =>
+        CommonUtils.convertDateStringFormat(
+          props.paymentInitiationDate,
+          'MM/DD/YYYY',
+          'DD/MM/YYYY'
+        )
     },
     {
       id: 'authorizedAmt',
       name: t('pendingPayments.table.totalAuthorizedPaymentAmt'),
       selector: (row) => row.authorizedAmt,
-      minWidth: '200px',
+      minWidth: '305px',
       sortable: true,
       wrap: true,
       cell: (props) => (
         <div className="cellEllipse align-items-right">
-          <FormattedNumber value={props?.authorizedAmt} style="currency" currency="USD" />
+          <FormattedNumber
+            value={props?.authorizedAmt}
+            style="currency"
+            currency="USD"
+          />
         </div>
       ),
       right: true
     },
     {
       name: t('paymentInvoices.history.table.Actions'),
-      minWidth: '100px',
+      minWidth: '200px',
       sortable: false,
       wrap: true,
       center: true,
+      isAction: true,
       cell: (props) => {
-        const isFutureDate = CommonUtils.isFutureDate(props.payOn);
         return (
-          <Tooltip body={!isFutureDate ? t('pendingPayments.cancel.tooltip') : ''}>
-            <span>
-              <Button
-                className="cancel-button-control"
-                variant="tertiary"
-                Icon={() => <CrossIcon />}
-                onClick={() => onCancelPaymentClick(props.confirmationNo)}
-                size="md"
-                disabled={!isFutureDate}>
-                {t('pendingPayments.table.cancelPayment')}
-              </Button>
-            </span>
-          </Tooltip>
+          <span>
+            <Button
+              className="cancel-button-control"
+              variant="tertiary"
+              Icon={() => <CrossIcon />}
+              onClick={() => onCancelPaymentClick(props.confirmationNo)}
+              size="md">
+              {t('pendingPayments.table.cancelPayment')}
+            </Button>
+          </span>
         );
       }
     }
   ];
   const handleSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
+    if (selectedColumn.id)
+      applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
   };
 
   const handleChangePage = (e, newPage) => {
@@ -135,17 +156,29 @@ export default function PendingPaymentTable() {
 
   const { mutate } = useMutation(
     async ({ confirmationNo }) => {
-      const apiUrl = `${ApiRoutes.PENDING_PAYMENTS_LISTING(selectedAccount?.id)}/${selectedAccount.companyCode}/${confirmationNo}`;
-      const res = await HttpResourceService.callRest(apiUrl, httpVerb.DELETE, {});
+      const apiUrl = `${ApiRoutes.PENDING_PAYMENTS_LISTING(
+        selectedAccount?.id
+      )}/${selectedAccount.companyCode}/${confirmationNo}`;
+      const res = await HttpResourceService.callRest(
+        apiUrl,
+        httpVerb.DELETE,
+        {}
+      );
       return res;
     },
     {
       onSuccess: (response) => {
         refetch();
-        showSnackbar({ description: t('pendingPayments.cancel.success'), type: 'success' });
+        showSnackbar({
+          description: t('pendingPayments.cancel.success'),
+          type: 'success'
+        });
       },
       onError: (error) => {
-        showSnackbar({ description: t('pendingPayments.cancel.failed'), type: 'error' });
+        showSnackbar({
+          description: t('pendingPayments.cancel.failed'),
+          type: 'error'
+        });
       }
     }
   );
@@ -154,7 +187,7 @@ export default function PendingPaymentTable() {
     <React.Fragment>
       {/* <DataTable columns={columns} rows={filteredData} responsive /> */}
       <CustomDataTable
-        id="my-data-table"
+        id="pending_payments_table"
         type="normal"
         columns={columns}
         data={data || []}
@@ -175,7 +208,9 @@ export default function PendingPaymentTable() {
             isLoading={isFetching}
             image={EmptyDataImage}
             heading={t('pendingPayments.table.bankAccount.emptyData')}
-            description={t('paymentInvoices.history.table.emptyDataDescription')}
+            description={t(
+              'paymentInvoices.history.table.emptyDataDescription'
+            )}
           />
         }
         progressComponent={

@@ -17,9 +17,15 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import CommonUtils from '@src/util/CommonUtils';
 
 const PAYMENT_STATUS = {
-  PENDING: { label: 'Pending', color: 'warning' },
   PROCESSED: { label: 'Processed', color: 'success' },
-  FAILED: { label: 'Failed', color: 'error' }
+  PENDING: { label: 'Pending', color: 'info' },
+  'IN PROCESS': { label: 'In Process', color: 'info' },
+  SCHEDULED: { label: 'Scheduled', color: 'info' },
+  'PENDING REVIEW': { label: 'Pending Review', color: 'info' },
+  PROCESSING: { label: 'Processing', color: 'info' },
+  FAILED: { label: 'Failed', color: 'error' },
+  CANCELLED: { label: 'Cancelled', color: 'error' },
+  'ON HOLD': { label: 'On Hold', color: 'warning' }
 };
 
 export default function PaymentHistoryTable() {
@@ -48,14 +54,14 @@ export default function PaymentHistoryTable() {
         </div>
       )
     },
-    {
-      id: 'purchaseOrderNo',
-      name: t('paymentInvoices.history.table.purchaseOrderNumber'),
-      maxWidth: '180px',
-      sortable: true,
-      selector: (row) => `${row.purchaseOrderNo}`,
-      cell: (props) => <EclipsesTextcss str={props.purchaseOrderNo} maxWidth={170} />
-    },
+    // {
+    //   id: 'purchaseOrderNo',
+    //   name: t('paymentInvoices.history.table.purchaseOrderNumber'),
+    //   maxWidth: '180px',
+    //   sortable: true,
+    //   selector: (row) => `${row.purchaseOrderNo}`,
+    //   cell: (props) => <EclipsesTextcss str={props.purchaseOrderNo} maxWidth={170} />
+    // },
     {
       id: 'paymentMethod',
       name: t('paymentInvoices.history.table.paymentMethod'),
@@ -72,8 +78,8 @@ export default function PaymentHistoryTable() {
       id: 'paymentInitiationDate',
       name: t('paymentInvoices.history.table.paymentInitiationDate'),
       selector: (row) => `${row.paymentInitiationDate}`,
-      width: '140px',
-      // maxWidth: '180px',
+      // width: '140px',
+      maxWidth: '230px',
       sortable: true,
       cell: (props) => CommonUtils.convertDateStringFormat(props?.paymentInitiationDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },

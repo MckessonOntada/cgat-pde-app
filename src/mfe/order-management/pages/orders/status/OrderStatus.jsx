@@ -14,7 +14,7 @@ import CommonUtils from '@src/util/CommonUtils';
 
 const OrderStatus = () => {
   const { t } = useTranslate();
-  const { backendOrderId, orderId } = useParams();
+  const { orderId } = useParams();
   const navigate = useNavigate();
   const { data: orderDetails = {}, isFetching, isError, error, isLoader } = useOrder(orderId);
   const contentRef = useRef(null);
@@ -29,13 +29,12 @@ const OrderStatus = () => {
       width: 180px;
     }`
   );
-  const orderStatus = orderDetails?.status;
 
-  const { therapy = {}, orderCost, patient } = orderDetails || {};
+  const { therapy = {}, orderCost, patient, status: orderStatus, backendOrderId, approver } = orderDetails || {};
 
-  const backToOrders = () => {
-    navigate('/orders');
-  };
+  const isApprover = approver && typeof approver === 'object' && approver.id != null;
+
+  const backToOrders = () => navigate('/orders');
 
   if (isLoader) {
     return isLoader;
@@ -63,16 +62,16 @@ const OrderStatus = () => {
               <IconTick />
             </div>
             <div className={styles.content}>
-              {orderStatus && orderStatus !== 'SUBMITTED' && (
+              {orderStatus && (
                 <>
                   <Heading as={'h1'}>{t('headings.orderSubmitted')}</Heading>
-                  <p className={styles.orderSubmitDescription}>{t('messages.orderSuccessApprovalPending')}</p>
-                </>
-              )}
-              {orderStatus === 'SUBMITTED' && (
-                <>
-                  <Heading as={'h1'}>{t('headings.orderApproved')}</Heading>
-                  <p className={styles.orderSubmitDescription}>{t('messages.orderApprovalSuccess')}</p>
+                  <p className={styles.orderSubmitDescription}>
+                    {t(
+                      orderStatus === 'SUBMITTED'
+                        ? isApprover ? 'messages.orderApprovalSuccess' : 'messages.orderSuccess'
+                        : 'messages.orderSuccessApprovalPending'
+                    )}
+                  </p>
                 </>
               )}
             </div>
@@ -82,16 +81,17 @@ const OrderStatus = () => {
       <div className={'MCP-module-body'}>
         <div className="MCP-CardContainer">
           <div className="grid grid-gap-12 sm:grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 print-div">
-            <DetailSegment
-              label={orderStatus === 'SUBMITTED' ? t('labels.sapId') : t('labels.pdeId')}
-              value={orderStatus === 'SUBMITTED' ? backendOrderId : orderId}
-            />
+            {orderStatus === 'SUBMITTED' ? (
+              <DetailSegment label={t('labels.sapId')} value={backendOrderId} />
+            ) : (
+              <DetailSegment label={t('labels.pdeId')} value={orderId} />
+            )}
             <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
             <DetailSegment
               label={t('labels.patientName')}
               value={
                 [patient?.patientInfo?.firstName, patient?.patientInfo?.middleName, patient?.patientInfo?.lastName]
-                  .filter(Boolean) // Filters out null, undefined, or empty strings
+                  .filter(Boolean)
                   .join(' ') || '-'
               }
             />

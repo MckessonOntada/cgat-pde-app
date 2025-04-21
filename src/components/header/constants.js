@@ -67,13 +67,9 @@ const HeaderConfig = {
   ],
   profileOptions: [
     {
-      label: 'My Profile',
-      value: 'my_profile'
+      label: 'Account Setting',
+      value: '/account-setting',
     },
-    {
-      label: 'Payment Method',
-      value: 'payment_method'
-    }
   ],
   languages: [
     {

@@ -11,6 +11,7 @@ import { FormattedNumber } from 'react-intl';
 import CommonUtils from '@src/util/CommonUtils';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import { PATHS } from '../../routes/constants';
 
 function CreditsSelected(props) {
   const { t } = useTranslate();
@@ -38,8 +39,8 @@ function CreditsSelected(props) {
         <div className="cellEllipse">
           <Link
             style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
-            // to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
-          >
+            state={{ ...state, selectedCredit: [...[], props] }}
+            to={`/record/${PATHS.credits}/${props?.billNumber}/details`}>
             {`${props?.billNumber}`}
           </Link>
         </div>
@@ -98,12 +99,12 @@ function CreditsSelected(props) {
     {
       id: 'billAmount',
       name: t('paymentInvoices.credits.table.amount'),
-      selector: (row) => row.billAmount,
+      selector: (row) => row.openAmount,
       minWidth: '144px',
       wrap: true,
       cell: (props) => (
         <div className="status-container align-items-right">
-          <FormattedNumber value={props?.billAmount} style="currency" currency="USD" />
+          <FormattedNumber value={props?.openAmount} style="currency" currency="USD" />
         </div>
       ),
       right: true
@@ -115,7 +116,7 @@ function CreditsSelected(props) {
       <CustomDataTable
         id="my-data-table"
         type="normal"
-        columns={columns}
+        columns={columns.filter((col) => !props.excludedColumns?.includes(col.id))}
         data={data || []}
         showCardView={showCardView}
         defaultExpandedCardView={false}

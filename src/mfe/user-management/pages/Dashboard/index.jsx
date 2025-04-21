@@ -15,6 +15,7 @@ import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import CommonFilters from '@src/components/Filters';
 import usePermission from '@src/hooks/usePermissions';
 import UploadUsers from './UploadUsers';
+import { ReactComponent as UploadSVG } from '@src/assets/image/upload_bottom.svg';
 
 export default function Dashboard() {
   const { t } = useTranslate();
@@ -109,7 +110,7 @@ export default function Dashboard() {
 
   const AdditionalFiltersConfig = useMemo(() => {
     let config = [];
-    if (!isSystemAdminView && activeTab === 1) {
+    if (activeTab === 1) {
       config.push({
         type: 'dropdown',
         name: 'role',
@@ -175,7 +176,15 @@ export default function Dashboard() {
                   {t(isSystemAdminView ? 'userManagement.button.addsystemadmin' : 'userManagement.button.adduser')}
                 </Button>
               )}
-              {!isSystemAdminView && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.UPLOAD_USERS) && <UploadUsers showAlert={showAlert} />}
+              {!isSystemAdminView && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.UPLOAD_USERS) && (
+                <div className="upload-userBtn">
+                  <Button Icon={UploadSVG} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.uploadUser}`)}>
+                    <label htmlFor="fileInput">
+                      {t('userManagement.button.uploadUsers')}
+                    </label>
+                  </Button>
+                </div>
+              )}
             </div>
           }
         />

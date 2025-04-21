@@ -16,11 +16,12 @@
       }
     }
 
-    .header {
+    .headerWrapper {
       width: 100%;
       display: flex;
       gap: 16px;
       flex-direction: column;
+      align-items: flex-start;
 
       @include mixins.respond("md") {
         flex-direction: row;
@@ -60,6 +61,7 @@
         background: #fff;
         justify-content: space-between;
         flex-direction: column;
+        flex-wrap: wrap;
         @include mixins.respond("md") {
           flex-direction: row;
         }
@@ -81,7 +83,7 @@
 
 // selected Invoices table - css
 .paymenyAmount-input {
-  width: 70%;
+  width: 90%;
   height: 26px;
   text-align: end;
   border: 1px solid #627386;
@@ -139,7 +141,10 @@
   font-size: var(--typography-text-size-body-font-x-small, 12px);
   font-style: normal;
   font-weight: 400;
-  line-height: var(--typography-line-height-body-font-x-small, 16px); /* 133.333% */
+  line-height: var(
+    --typography-line-height-body-font-x-small,
+    16px
+  ); /* 133.333% */
   letter-spacing: 0.012px;
   padding-bottom: 4px;
 }
@@ -190,7 +195,7 @@
     left: 0px;
     flex-direction: column;
     background: var(--brand-color-background-white);
-    box-shadow: 0px 2px 8px 0px rgba(38, 44, 54, 0.30);
+    box-shadow: 0px 2px 8px 0px rgba(38, 44, 54, 0.3);
   }
 }
 .paymentSuccesfull {
@@ -200,7 +205,10 @@
   font-size: var(--typography-text-size-title-headline-md, 28px);
   font-style: normal;
   font-weight: 700;
-  line-height: var(--typography-line-height-title-headline-md, 32px); /* 114.286% */
+  line-height: var(
+    --typography-line-height-title-headline-md,
+    32px
+  ); /* 114.286% */
   letter-spacing: -0.112px;
 }
 

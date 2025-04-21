@@ -101,13 +101,20 @@ const FloatingDrawer = ({ open, onClose, anchor = 'left', swipeable = false, hea
         aria-describedby="drawer-content"
       >
         <div className={styles.drawerWrapper} style={width ? { width: width } : {}}>
-          {heading && 
+          {heading ? (
             <div className={styles.header}>
               <Heading as="h3">{heading}</Heading>
               <Button variant="tertiary" onClick={handleClose} textButton IconClose>
                 <IconClose />
               </Button>
             </div>
+          ) : (
+            <div className={styles.secondryHeader}>
+              <Button variant="tertiary" onClick={handleClose} textButton IconClose>
+                <IconClose />
+              </Button>
+            </div>
+          )
           }
           <div className={styles.body}>
             {children} 

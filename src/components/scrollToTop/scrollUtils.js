@@ -1,7 +1,7 @@
 import { debugIds, ID } from '@src/constants/id';
 
 export const scrollToTopUtil = (containerId) => {
-  const element = document.getElementById(containerId || debugIds(ID.HOME));
+  const element = document.getElementById(containerId || debugIds(ID.APP_WRAPPER));
   if (element) {
     window.requestAnimationFrame(() => {
       element.scrollTo({

@@ -7,19 +7,23 @@ export default function DetailSegment({
   className,
   customLabelStyles,
   customValueStyles,
-  isTooltipRequired = true
+  noTooltip
 }) {
   return (
     <div className={className}>
-      <div className={`fieldName ${customLabelStyles ? customLabelStyles : ``}`}>{label}</div>
-      <div className={`fieldValue ${customValueStyles ? customValueStyles : ``}`}>
-        {isTooltipRequired ? (
-          <div className="overflowing">
+      <div
+        className={`fieldName ${customLabelStyles ? customLabelStyles : ``}`}>
+        {label}
+      </div>
+      <div
+        className={`fieldValue ${customValueStyles ? customValueStyles : ``}`}>
+        <div className="overflowing">
+          {noTooltip ? (
+            value
+          ) : (
             <Tooltip body={tooltip || value}>{value}</Tooltip>
-          </div>
-        ) : (
-          value
-        )}
+          )}
+        </div> 
       </div>
     </div>
   );

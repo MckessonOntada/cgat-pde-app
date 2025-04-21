@@ -90,9 +90,12 @@ const AccountSelection = () => {
     setOpen(true);
   };
 
-  const isDirty =
-    JSON.stringify(selectedAccount) !== JSON.stringify(initialSelectedAccount) ||
-    JSON.stringify(selectedShippingAddress) !== JSON.stringify(initialSelectedShippingAddress);
+  const isDirty = useMemo(() => {
+    return (
+      JSON.stringify(selectedAccount) !== JSON.stringify(initialSelectedAccount) ||
+      JSON.stringify(selectedShippingAddress) !== JSON.stringify(initialSelectedShippingAddress)
+    );
+  }, [selectedAccount, initialSelectedAccount, selectedShippingAddress, initialSelectedShippingAddress]);
 
   const handleOnBack = () => {
     if (isDirty) {
@@ -229,7 +232,7 @@ const AccountSelection = () => {
                 }
               />
               <div className="MCP-CardContainer">
-                <div className={'grid grid-gap-12 sm:grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3'}>
+                <div className={'grid grid-gap-12 sm:grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
                   <div className={styles.account}>
                     <div className={styles.accountDetails}>
                       {selectedAccount ? (
@@ -260,10 +263,12 @@ const AccountSelection = () => {
                     </div>
                   </div>
                   {selectedAccount && (
-                    <div className={styles.controls}>
-                      <Button variant="tertiary" onClick={handleOnClick}>
-                        {t('button.caption.change')}
-                      </Button>
+                    <div className={`${styles.controls} left-floating-control`}>
+                      <div className="styled-icon-button">
+                        <Button variant="tertiary" onClick={handleOnClick}>
+                          {t('button.caption.change')}
+                        </Button>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -278,7 +283,7 @@ const AccountSelection = () => {
               </ShippingAddressProvider>
             )}
           </div>
-          <div className='footer-wrapper'>
+          <div className="footer-wrapper">
             <div className="controls footer-controls">
               <Button size="md" onClick={handleOnBack} variant="secondary">
                 {t('captions.btnBack')}
@@ -289,7 +294,12 @@ const AccountSelection = () => {
             </div>
           </div>
           {open && (
-            <AccountSelectionUserGuide  openDrawer={open}  therapyId={therapyId} onSubmit={handleOnAccountSelection} onClose={handleOnClose} />
+            <AccountSelectionUserGuide
+              openDrawer={open}
+              therapyId={therapyId}
+              onSubmit={handleOnAccountSelection}
+              onClose={handleOnClose}
+            />
           )}
         </div>
       </div>

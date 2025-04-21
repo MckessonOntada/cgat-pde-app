@@ -11,7 +11,8 @@ export const DashboardEN = {
     'Efficiently streamline user management for seamless experience.',
   'dashboard.card.manage_organization': 'Manage Organization',
   'dashboard.card.manage_system_admin': 'Manage System Admin',
-  'dashboard.card.organization_card_description': 'Enables you to efficiently create, review and manage organization.',
+  'dashboard.card.organization_card_description':
+    'Enables you to efficiently create, review and manage organization.',
   'dashboard.card.order_card_description':
     'Manage and track orders efficiently, ensuring seamless updates and status visibility throughout the process.',
   'dashboard.card.systemAdmin_card_description':
@@ -20,10 +21,14 @@ export const DashboardEN = {
     'Streamline role assignments and permissions, allowing you to define, edit, and review user roles efficiently.',
   'dashboard.card.systemAdministrator': 'System Administrator',
   'dashboard.card.manage_approver_groups': 'Manage Approver Groups',
-  'dashboard.card.approver_management_description': 'Enables you to efficiently create, review and manage approver groups.',
-
+  'dashboard.card.manage_providers': 'Manage Providers',
+  'dashboard.card.approver_management_description':
+    'Enables you to efficiently create, review and manage approver groups.',
+  'dashboard.card.manage_provider_description':
+    'Enables you to efficiently create, review and manage providers.',
   'dashboard.card.system_configuration': 'System Configuration',
-  'dashboard.card.system_configuration_card_description': 'Enables you to efficiently create and manage all the system configurations.',
+  'dashboard.card.system_configuration_card_description':
+    'Enables you to efficiently create and manage all the system configurations.',
   'dashboard.card.system_config_manage_material': 'Manage Material',
   'dashboard.card.system_config_manage_catalog': 'Manage Catalog',
   'dashboard.card.system_config_manage_questionnaire': 'Manage Questionnaire',
@@ -37,9 +42,25 @@ export const DashboardEN = {
   'dashboard.card.system_config_description_manage_account':
     'Enables you to review and define questionnaire templates to be used as configuration in various system workflows.',
 
+  'dashboard.card.system_config_manage_spmaterial': 'Manage SP Material',
+  'dashboard.card.system_config_manage_spcatalog': 'Manage SP Catalog',
+  'dashboard.card.system_config_manage_materialcrosswalk': 'Material Crosswalk',
+  'dashboard.card.system_config_manage_spaccount': 'Manage SP Account',
+  'dashboard.card.system_config_description_manage_spmaterial':
+    'Use this screen to view, upload, and manage SP materials while ensuring files meet requirements and are properly categorized for efficiency.',
+  'dashboard.card.system_config_description_manage_spcatalog':
+    'Enables you to efficiently review and manage SP catalog and related configurations.',
+  'dashboard.card.system_config_description_material_crosswalk':
+    'Seamlessly link Buy & Bill materials with SP materials, ensuring accurate mapping for consistency, proper alignment, and maintaining data integrity.',
+  'dashboard.card.system_config_description_manage_spaccount':
+    'Add accounts, define their shipping locations, and link providers. Ensure all details are accurate before saving.',
+
   // Secondary Header routing tabs
   'header.tabs.dashboard': 'Dashboard',
   'header.tabs.paymentAndInvoices': 'Payments and Invoices',
   'header.tabs.orders': 'Orders',
-  'header.tabs.admin': 'Admin'
+  'header.tabs.admin': 'Admin',
+
+  'dashboard.card.system_config_standard_settings': 'Standard Settings',
+  'dashboard.card.system_config_sp_settings': 'SP Settings'
 };

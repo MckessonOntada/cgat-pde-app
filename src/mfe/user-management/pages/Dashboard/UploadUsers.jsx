@@ -1,102 +1,108 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { TabList, Alert, Button, Tooltip } from '@mckesson/mcp-component-library';
+import React, { useState } from 'react';
 import './index.scss';
-import { PATHS } from '../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
+import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
+import { Button } from '@mckesson/mcp-component-library';
 import { useUser } from '../../context/UserContext';
-import UserTable from './UserTable';
-import Breadcrumb from '@src/components/breadCrumbs/Breadcrumbs';
-import { debugIds, ID } from '@src/constants/id';
-import { ReactComponent as add_circle_bold } from '@src/assets/image/add_circle_bold.svg';
-import { ReactComponent as UploadSVG } from '@src/assets/image/upload_bottom.svg';
-import { ReactComponent as DownloadSVG } from '@src/assets/svg/downloadArrow.svg';
 import CommonUtils from '@src/util/CommonUtils';
 import { useMutation } from 'react-query';
 import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
-import useSnackbar from '@src/hooks/useSnackbar';
+import { useNavigate } from 'react-router-dom';
+import UploadFile from '@src/components/uploadFile/UploadFile.jsx';
+import {
+  buildUploadFormData,
+  createAlertHandler,
+  handleDownload,
+  validateFile,
+  handleAlertClose
+} from '@src/components/uploadFile/uploadUtils';
 
-function UploadUsers({ showAlert }) {
-  const [inputKey, setInputKey] = useState(0);
-  const { showSnackbar } = useSnackbar();
+function UploadUsers() {
+  const navigate = useNavigate();
   const { refreshData } = useUser();
   const { t } = useTranslate();
+  const [alert, setAlert] = useState(null);
 
-  const handleDownload = () => {
-    const fileUrl = '/templates/upload_users_template.csv';
-    fetch(fileUrl)
-      .then((response) => response.blob())
-      .then((blob) => {
-        CommonUtils.downloadFile(blob, 'upload_users_template.csv');
-      })
-      .catch((error) => console.error('Error downloading file:', error));
-  };
+  const showAlert = createAlertHandler(setAlert);
 
-  const {
-    mutate: uploadBulkUser,
-    isLoading,
-    isSuccess,
-    data
-  } = useMutation(
-    async (data) => {
-      const { url, payload, type } = data;
+  const downloadTemplate = () =>
+    handleDownload(
+      '/templates/upload_users_template.csv',
+      'upload_users_template.csv'
+    );
+
+  const { mutate: uploadBulkUser, isLoading } = useMutation(
+    async ({ url, payload }) => {
       return await HttpResourceService.callRest(url, httpVerb.POST, payload, {
         'Content-Type': 'multipart/form-data'
       });
     },
     {
-      onSuccess: async (response, variables) => {
-        if (response.status == 200) {
+      onSuccess: async (response) => {
+        if (response.status === 200) {
           showAlert('success', t('userManagement.button.uploadSuccess'));
-        } else if (response.status == 206) {
+        } else if (response.status === 206) {
           const csvContent = response.data;
           const blob = new Blob([csvContent], { type: 'text/csv' });
-          let download = CommonUtils.downloadFile(blob, 'bulk users.csv');
-          if (download.status == 'success') {
+          const download = CommonUtils.downloadFile(blob, 'bulk users.csv');
+          if (download.status === 'success') {
             showAlert('error', t('userManagement.button.uploadConflict'));
           } else {
-            showSnackbar({ description: t('userManagement.button.downloadFail'), type: 'error' });
+            showAlert('error', t('userManagement.button.downloadFail'));
           }
         } else {
-          showSnackbar({ description: t('userManagement.button.uploadError'), type: 'error' });
+          showAlert('error', t('userManagement.button.uploadError'));
         }
         refreshData();
       },
-      onError: (error) => {
-        showSnackbar({ description: t('userManagement.button.uploadError'), type: 'error' });
+      onError: () => {
+        showAlert('error', t('userManagement.button.uploadError'));
       }
     }
   );
 
-  const handleFileChange = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  const handleUpload = (values) => {
+    if (!values.file) {
+      showAlert('error', t('userManagement.button.uploadError'));
+      return;
+    }
     const url = `${ApiRoutes.USERS()}/upload?userType=GENERAL`;
-    const formData = new FormData();
-    formData.append('userData', file);
-    uploadBulkUser({ url, payload: formData, type: 'csv' });
-    setInputKey(inputKey + 1);
+    const formData = buildUploadFormData(values.file, 'userData');
+    uploadBulkUser({ url, payload: formData });
   };
+
   return (
-    <React.Fragment>
-      <div className="upload-userBtn">
-        <input type="file" key={inputKey} id="fileInput" onChange={handleFileChange} style={{ display: 'none' }} accept=".csv" />
-        <Button Icon={UploadSVG} className="button-icon" variant="primary" size="md" onClick={(e) => e.stopPropagation()}>
-          <label htmlFor="fileInput">
-            {isLoading ? t('userManagement.button.uploadingUsers') : t('userManagement.button.uploadUsers')}
-          </label>
+    <div className="MCP-module-wrapper">
+      <div>
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={() => navigate(-1)}
+          size="md">
+          {t('userManagement.user.backmessage')}
         </Button>
       </div>
-
-      <Tooltip
-        body={t('userManagement.button.downloadTemplateDescription')}
-        title={t('userManagement.button.downloadTemplate')}
-        placement="top-end">
-        <div className="download-Icon" onClick={handleDownload}>
-          <DownloadSVG />
-        </div>
-      </Tooltip>
-    </React.Fragment>
+      <UploadFile
+        primaryHeading={t('userManagement.uploadUsers')}
+        controlHeading={t('userManagement.uploadUsersListCSV')}
+        isLoading={isLoading}
+        messages={[alert]}
+        showAlert={showAlert}
+        onAlertClose={handleAlertClose}
+        downloadTemplate={{
+          caption: t('file.download.csv'),
+          fn: downloadTemplate
+        }}
+        upload={{
+          caption: t('userManagement.button.addUsers'),
+          fn: handleUpload
+        }}
+        onFileSelection={(file) => validateFile(file, ['text/csv'])}
+      />
+    </div>
   );
 }
+
 export default UploadUsers;

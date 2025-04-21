@@ -176,7 +176,7 @@ const CreateApproverGroup = () => {
       </div>
 
       <ModuleHeader
-        heading={<Heading as="h1">{t(isEditMode ? 'approvergroup.edit.label' : 'approvergroup.create_approvergroup')}</Heading>}
+        heading={<Heading as="h1">{t(isEditMode ? 'approvergroup.edit.label' : 'approvergroup.create_addapprovergroup')}</Heading>}
       />
 
       {isAlertVisible && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}

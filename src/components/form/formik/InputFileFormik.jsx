@@ -12,11 +12,12 @@ import { Link } from 'react-router-dom';
 import CommonUtils from '@src/util/CommonUtils';
 
 function InputFileFormik(props) {
-  const { field, form, onFileChange, primaryButtonCaption } = props;
-  const { setFieldError } = useFormikContext();
+  const { field, form, onFileChange, primaryButtonCaption, fileInputRef: parentFileInputRef } = props;
+  const { setFieldError, values } = useFormikContext();
   const [errorFile, setErrorFile] = useState(false);
   const { label, value, validateOnChange, attachmentValue } = props;
-  const fileInputRef = React.useRef(value || null);
+  const internalFileInputRef = React.useRef(value || null);
+  const fileInputRef = parentFileInputRef || internalFileInputRef;
   const { t } = useTranslate();
   const [file, setFile] = React.useState(null);
   const { errors, touched, setFieldValue } = form;
@@ -54,6 +55,7 @@ function InputFileFormik(props) {
     const droppedFile = event.dataTransfer.files[0];
     if (validateBeforeChange(droppedFile, event))
       if (droppedFile) {
+        setFieldValue(field.name, droppedFile);
         setFile(droppedFile);
         onFileChange && onFileChange(droppedFile);
       }
@@ -76,8 +78,14 @@ function InputFileFormik(props) {
   const { name, size, url } = file || {};
 
   React.useEffect(() => {
-    if (attachmentValue) setFile(attachmentValue);
+    setFile(attachmentValue);
   }, [attachmentValue]);
+
+  React.useEffect(() => {
+    if (!attachmentValue) {
+      setFile(values[field.name]);
+    }
+  }, []);
 
   return (
     <div className={`${styles['component-wrapper']} ${errorMessage ? styles['has-error'] : null}`}>

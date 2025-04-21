@@ -7,10 +7,16 @@ const useTimedArray = (timeout) => {
 
   const add = useCallback(
     (obj) => {
-      const id = CommonUtils.generateUniqueCode(obj.description + Math.random());
+      const id = CommonUtils.generateUniqueCode(
+        obj.description + Math.random()
+      );
       const newObj = { ...obj, id };
 
       setItems((prev) => [...prev, newObj]);
+
+      if (obj.isSticky) {
+        return;
+      }
 
       const timer = setTimeout(() => {
         setItems((prev) => prev.filter((item) => item.id !== id));
@@ -37,7 +43,9 @@ const useTimedArray = (timeout) => {
     };
   }, []);
 
-  return { items, add, remove };
+  const removeAll = () => setItems([]);
+
+  return { items, add, remove, removeAll };
 };
 
 export default useTimedArray;

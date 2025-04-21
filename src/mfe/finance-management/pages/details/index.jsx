@@ -21,6 +21,7 @@ import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import { TherapyDetailsConstants } from './assets/constants/TherapyDetailsConstants';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import { FormattedNumber } from 'react-intl';
 
 function Details(props) {
   const { billNumber } = useParams();
@@ -28,6 +29,7 @@ function Details(props) {
   const { selectedAccount } = useAccountContext();
   const { t } = useTranslate();
   const INVOICES_SCREEN = type === PATHS.invoices;
+  const CREDITS_SCREEN = type === PATHS.credits;
   const [invoiceDetails, setInvoiceDetails] = useState({});
   const [billDates, setBillDates] = useState({});
   const [therapy, setTherapy] = useState(null);
@@ -39,8 +41,9 @@ function Details(props) {
   const locationParams = useLocation();
   const showCardView = useResponsiveView();
 
-  const { state: { invoices: [selectedInvoice] = [] } = {} } = locationParams;
-
+  const { state = {} } = locationParams;
+  const { invoices = [], selectedCredit = [] } = state || {};
+  const source = invoices[0] || selectedCredit[0];
   const onBackToPaymentsInvoices = () => {
     navigate(-1);
   };
@@ -55,9 +58,9 @@ function Details(props) {
           salesOrg: selectedAccount?.salesOrg,
           payerAccountNumber: selectedAccount?.accountNumber,
           userName: '',
-          fiscalYear: selectedInvoice?.fiscalYear,
-          lineItem: selectedInvoice?.lineItem,
-          referenceDocumentNumber: selectedInvoice?.referenceDocumentNumber
+          fiscalYear: source?.fiscalYear,
+          lineItem: source?.lineItem,
+          referenceDocumentNumber: source?.referenceDocumentNumber
         };
         const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
         if (res.data) {
@@ -70,24 +73,32 @@ function Details(props) {
             [t('paymentInvoices.Details.PO')]: res.data.poNumber
           }));
           // bill bates
-          let _invoiceDue = INVOICES_SCREEN
-            ? {
-                [t('paymentInvoices.Details.AmountDue')]: `${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
-                [t('paymentInvoices.Details.DueDate')]: res.data.dueDate,
-                [t('paymentInvoices.Details.BillDate')]: res.data.billDate
-              }
-            : {
-                [t('paymentInvoices.Details.CreditAmount')]: `${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
-                [t('paymentInvoices.Details.CreditRemaining')]: '',
-                [t('paymentInvoices.Details.ValidFrom')]: res.data.dueDate
-              };
-          setBillDates(_invoiceDue);
+          updateBillDates(res);
           return res.data;
         }
       }
     },
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    retry: 1
   });
+  const updateBillDates = (res) => {
+    let _invoiceDue = INVOICES_SCREEN
+      ? {
+          [t('paymentInvoices.Details.AmountDue')]: `$${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
+          [t('paymentInvoices.Details.DueDate')]: CommonUtils.convertDateStringFormat(res.data.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY'),
+          [t('paymentInvoices.Details.BillDate')]: CommonUtils.convertDateStringFormat(res.data.billDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
+        }
+      : {
+          [t('paymentInvoices.Details.CreditAmount')]: `$${CommonUtils.formatNumberWithoutSymbol(res.data.amountDue)}`,
+          [t('paymentInvoices.Details.CreditRemaining')]: '',
+          [t('paymentInvoices.credits.table.credit.date')]: CommonUtils.convertDateStringFormat(
+            res.data.dueDate,
+            'MM/DD/YYYY',
+            'DD/MM/YYYY'
+          )
+        };
+    setBillDates(_invoiceDue);
+  };
 
   const columns = useMemo(
     () => [
@@ -96,7 +107,7 @@ function Details(props) {
         id: 'item',
         selector: (row) => `${row.item}`,
         wrap: true,
-        minWidth: '100px',
+        minWidth: '80px',
         cell: (props) => <div className="cellEllipse">{props.item || '-'}</div>
       },
       {
@@ -124,22 +135,13 @@ function Details(props) {
         )
       },
       {
-        name: t('paymentInvoices.Details.Description'),
-        id: '',
-        selector: (row) => {},
-        wrap: true,
-        minWidth: '140px',
-        maxWidth: '180px',
-        cell: (props) => <EclipsesTextcss str={'-'} maxWidth={170} />
-      },
-      {
         name: t('paymentInvoices.Details.referenceDocument'),
         id: 'referenceDocument',
         selector: (row) => {
           row.referenceDocument;
         },
         wrap: true,
-        minWidth: '100px',
+        minWidth: '185px',
         maxWidth: '220px',
         cardHeader: true,
         showInMobileHeader: true,
@@ -174,6 +176,21 @@ function Details(props) {
         )
       },
       {
+        name: t('paymentInvoices.Details.taxAmount'),
+        id: 'taxAmount',
+        selector: (row) => {
+          row.taxAmount;
+        },
+        wrap: true,
+        right: true,
+        minWidth: '150px',
+        cell: (props) => (
+          <div className="cellEllipse align-items-right">
+            <FormattedNumber value={JSON.stringify(props.taxAmount)} style="currency" currency="USD" />
+          </div>
+        )
+      },
+      {
         name: t('paymentInvoices.Details.netPrice'),
         id: 'netPrice',
         selector: (row) => {
@@ -181,8 +198,12 @@ function Details(props) {
         },
         wrap: true,
         right: true,
-        width: '120px',
-        cell: (props) => <div className="cellEllipse align-items-right">{props.netPrice || '-'}</div>
+        minWidth: '150px',
+        cell: (props) => (
+          <div className="cellEllipse align-items-right">
+            <FormattedNumber value={JSON.stringify(props.netPrice)} style="currency" currency="USD" />
+          </div>
+        )
       },
       {
         name: t('paymentInvoices.Details.grossPrice'),
@@ -190,9 +211,13 @@ function Details(props) {
         selector: (row) => {
           row.grossPrice;
         },
-        width: '120px',
+        minWidth: '150px',
         right: true,
-        cell: (props) => <div className="cellEllipse align-items-right">{props.grossPrice || '-'}</div>
+        cell: (props) => (
+          <div className="cellEllipse align-items-right">
+            <FormattedNumber value={props.grossPrice} style="currency" currency="USD" />
+          </div>
+        )
       }
     ],
     [data]
@@ -266,7 +291,7 @@ function Details(props) {
         </div>
       </div>
       <div className="footer-section">
-        {!locationParams?.state?.reviewPay && (
+        {!CREDITS_SCREEN && !locationParams?.state?.reviewPay && (
           <React.Fragment>
             {CommonUtils.enableReviewAndPay(selectedAccount) && (
               <Button
@@ -290,6 +315,7 @@ function Details(props) {
           therapyData={TherapyDetailsConstants}
           showFooter={false}
           heading={t('labels.therapyDetails')}
+          useUserService={true}
         />
       )}
     </div>

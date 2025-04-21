@@ -10,7 +10,7 @@ export const LoginMessagesES = {
   'login.header.1': 'S_Advancing',
   'login.header.2': 'S_Health Outcomes for All',
   'login.page.desc.1': 'S_Solutions for your pharmacy, hospital,',
-  'login.page.desc.2': 'S_Organization or biopharma company',
+  'login.page.desc.2': 'S_organization or biopharma company',
   'login.welcome': 'S_Welcome !',
   'login.ordringPortal': 'S_Ordering Portal',
   'login.details': 'S_Welcome to our Cell & Gene Therapy platform, where excellence in patient care meets cutting-edge innovation.',
@@ -22,7 +22,7 @@ export const LoginMessagesES = {
   'footer.help.content': 'S_User Help Content',
   'footer.contant': 'S_Contact',
   'footer.contant.no': 'S_Contact us at: 1-855-887-6788',
-  'footer.copyright': 'S_© 2024 McKesson Corporation Health Technology Products LLC.',
+  'footer.copyright': 'S_© {year} McKesson Corporation Health Technology Products LLC.',
   'message.exitUserViewConfirmation': 'S_Do you wish to exit working as {{username}}?',
   'button.caption.no': 'S_No',
   'button.caption.yes': 'S_Yes',
@@ -31,4 +31,13 @@ export const LoginMessagesES = {
   'forgot.password.success': 'S_Your request to reset your password has been successfully submitted, Please check your email.',
   'forgot.password.error': 'S_Error sending password reset email.',
   'forgot.terms.agreement': 'S_Terms of use and Patient Agreement',
+  'reset.password.user.email': 'S_User Name / Email Address',
+  'reset.password.password': 'S_Password',
+  'reset.password.change.password': 'S_Change Password',
+  'reset.password.confirmation.message':
+    'S_An email has been sent to your registered email address with the link and instructions to reset your password.',
+  'reset.password.ok': 'S_OK',
+  'reset.password.account.settings': 'S_Account Settings',
+  'reset.password.login.userInformation': 'S_User Information',
+  'reset.password.error': 'S_Failed to sent reset password email'
 };

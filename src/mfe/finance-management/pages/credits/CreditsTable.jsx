@@ -54,7 +54,7 @@ export default function CreditsTable(props) {
           <Link
             style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
             to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
-            state={{ ...state }}>
+            state={{ ...state, selectedCredit: [...[], props] }}>
             {`${props?.billNumber}`}
           </Link>
         </div>
@@ -73,21 +73,8 @@ export default function CreditsTable(props) {
       cell: (props) => <div>{props?.soldToSite || '-'}</div>
     },
     {
-      id: 'description',
-      name: t('paymentInvoices.credits.table.description'),
-      selector: (row) => row.description,
-      minWidth: '340px',
-      sortable: true,
-      wrap: true,
-      cell: (props) => (
-        <div>
-          <EclipsesTextcss str={props?.description} maxWidth={280} />
-        </div>
-      )
-    },
-    {
       id: 'dueDate',
-      name: t('paymentInvoices.credits.table.validfrom'),
+      name: t('paymentInvoices.credits.table.credit.date'),
       selector: (row) => row.dueDate,
       sortable: true,
       wrap: true,
@@ -95,15 +82,15 @@ export default function CreditsTable(props) {
       cell: (props) => CommonUtils.convertDateStringFormat(props.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
     },
     {
-      id: 'billAmount',
+      id: 'openAmount',
       name: selectableRows ? t('paymentInvoices.credits.table.billamount') : t('paymentInvoices.credits.table.amount'),
-      selector: (row) => row.billAmount,
+      selector: (row) => row.openAmount,
       maxWidth: '240px',
       sortable: true,
       wrap: true,
       cell: (props) => (
         <div className="status-container align-items-right">
-          <FormattedNumber value={props?.billAmount} style="currency" currency="USD" />
+          <FormattedNumber value={props?.openAmount} style="currency" currency="USD" />
         </div>
       ),
       right: true

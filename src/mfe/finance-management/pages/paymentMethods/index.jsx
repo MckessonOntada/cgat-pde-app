@@ -54,9 +54,9 @@ const PaymentMethods = () => {
             duration={10000}
           />
         )}
-        {/* <div id="tablist-container" className="tablist-container">
+        <div id="tablist-container" className="tablist-container">
           <div className="customTab">
-            <TabList
+            {/* <TabList
               options={tabs}
               alignment="left"
               onTabClick={(e) => {
@@ -66,14 +66,14 @@ const PaymentMethods = () => {
               variant={'text'}
               useAsButton={true}
               aria-label={'record-tab-list'}
-            />
+            /> */}
           </div>
           {isBankTabActive && (
             <Button Icon={AddCircle} size={buttonSize} onClick={handleDownloadACHForm}>
               {t('paymentInvoices.paymentMethods.table.bankAccount.addBank')}
             </Button>
           )}
-        </div> */}
+        </div>
         <Routes />
       </div>
     </React.Fragment>

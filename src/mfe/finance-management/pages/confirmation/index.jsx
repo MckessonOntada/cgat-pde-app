@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Heading, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -13,6 +13,7 @@ import dayjs from 'dayjs';
 import { useExportStatementPDF } from './actions/actions';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { GeographicUtils } from '@src/util/GeographicUtil';
+import { useCustomPrint } from '@src/util/printUtils';
 
 const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
   const { t } = useTranslate();
@@ -23,11 +24,25 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
   const { state } = location;
   const exportType = type;
   const { mutate: exportStatementPDF } = useExportStatementPDF(exportType);
+  const contentRef = useRef(null);
+  const printPage = useCustomPrint(
+    contentRef,
+    `
+    .table-card-container {
+      page-break-inside: avoid;
+      page-break-after: auto;
+    }
+    .details-table{
+      page-break-inside: avoid;
+      page-break-after: auto;
+    }
+    `
+  );
 
   const invoiceDetails = {
     'Account Number': selectedAccount?.accountNumber || '-',
     'Payment Method': state?.paymentMethod,
-    'Pay On': (type === PATHS.paymentHistory ? state?.paymentTypeText : state?.payOn) || '-',
+    'Pay On': (type === PATHS.paymentHistory ? state?.paymentTypeText : dayjs(state?.payOn, 'DD/MM/YYYY').format('MM/DD/YYYY')) || '-',
     'Payment Initiated By': state?.userName || state?.initiatedBy || '-'
   };
   const formatCurrency = (amount) => {
@@ -112,21 +127,17 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
 
   const renderFooterButtons = () => (
     <div className="footer-section">
-      <Button
-        variant="secondary"
-        onClick={type === PATHS.paymentHistory ? handleDownload : () => {}}
-        size="md"
-        disabled={type !== PATHS.paymentHistory}>
+      <Button variant="secondary" onClick={type === PATHS.paymentHistory ? handleDownload : () => printPage()} size="md">
         {type === PATHS.paymentHistory ? t('paymentInvoices.CS.ExportExcel') : t('paymentInvoices.history.filters.printSummary')}
       </Button>
-      <Button onClick={type === PATHS.paymentHistory ? () => {} : handleExport} size="md" disabled={type === PATHS.paymentHistory}>
-        {type === PATHS.paymentHistory ? t('paymentInvoices.Details.print') : t('paymentInvoices.history.filters.downloadExcel')}
+      <Button onClick={type === PATHS.paymentHistory ? () => printPage() : handleExport} size="md">
+        {type === PATHS.paymentHistory ? t('paymentInvoices.Details.print') : t('paymentInvoices.CS.ExportExcel')}
       </Button>
     </div>
   );
 
   return (
-    <div className="view-details-container">
+    <div className="view-details-container" ref={contentRef}>
       <div>{renderBackButton()}</div>
       <Heading as="h1">{`Confirmation - ${confirmationNumber}`}</Heading>
       <div className="details-card-wrapper">{renderMetricsCard()}</div>

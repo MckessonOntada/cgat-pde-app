@@ -6,6 +6,9 @@
   bottom: 0;
   z-index: 1000;
   background-color: rgba(0, 0, 0, 0.2);
+  @media only screen and (max-width: 768px) {
+    top: 0px;
+  }
 }
 .drawerModule {
   position: fixed;
@@ -18,6 +21,11 @@
   display: flex;
   margin-top: 87px;
   border-radius: var(--spacing-01);
+  @media only screen and (max-width: 768px) {
+    height: 100vh;
+    margin-top: 0px;
+    padding-bottom: var(--spacing-08);
+  }
   @media only screen and (max-width: 576px) {
     width: 100% !important;
     border-radius: 0px;
@@ -26,6 +34,10 @@
     display: flex;
     flex-direction: column;
     width: 450px;
+    position: relative;
+    @media only screen and (max-width: 576px) {
+      width: 100% !important;
+    }
     .header {
       display: flex;
       flex-direction: row;
@@ -40,14 +52,24 @@
         font-size: var(--brand-font-size--20) !important;
       }
     }
+    .secondryHeader{
+      padding: 13px var(--spacing-03);
+      button{
+        justify-content: flex-end !important;
+      }
+    }
     .body{
       padding: var(--spacing-03);
-      flex: 1 1 auto;
+      padding-bottom: var(--spacing-16);
       overflow-y: auto;
     }
     .footer{
       border-top: 1px solid var(--brand-color-text-cool-grey);
       padding: var(--spacing-03)  var(--spacing-05);
+      position: absolute;
+      bottom: 0px;
+      width: 100%;
+      background: var(--brand-color-background-white);
     }
   }
 }
