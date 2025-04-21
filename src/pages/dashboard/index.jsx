@@ -14,14 +14,21 @@ const Dashboard = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
-
+  const userPermissions = AuthUtils.getUserPermissions();
   const { hasPermission, hasAnyPermission } = usePermission();
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const isExpelled = Boolean(queryParams.get('expelled'));
-  let navigateToUrl = '';
+
+  const hasValidPermissions = Array.isArray(userPermissions) && userPermissions.some((perm) => perm && perm.trim() !== '');
+  if (!hasValidPermissions) {
+    return <NotFound />;
+  }
+
   React.useEffect(() => {
+    let navigateToUrl = '';
+
     if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ADMIN_MANAGEMENT))) navigateToUrl = '/admin';
     else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ORDER_MANAGEMENT))) navigateToUrl = '/orders';
     else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.PAYMENT_INVOICING))) navigateToUrl = '/record';
@@ -32,14 +39,8 @@ const Dashboard = () => {
       else if (hasAnyPermission(Object.values(PERMISSIONS_ENUM.ADMIN_MANAGEMENT))) navigateToUrl = '/admin';
     }
 
-    if (!isSystemAdminView && navigateToUrl) {
-      navigate(navigateToUrl, { replace: true });
-    }
+    if (!isSystemAdminView && navigateToUrl) navigate(navigateToUrl, { replace: true });
   }, []);
-
-  if (!isSystemAdminView && !navigateToUrl) {
-    return <NotFound />;
-  }
 
   React.useEffect(() => {
     if (isExpelled) {
