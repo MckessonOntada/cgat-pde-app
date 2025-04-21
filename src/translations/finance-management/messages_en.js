@@ -275,7 +275,7 @@ export const PaymentInvoicesEN = {
 
   'paymentInvoices.paymentMethods.achForm.description':
     'Enrollment form in a PDF format for user to fill in offline and submit to the respective bank',
-  'paymentInvoices.table.paymentPending': 'Payment Pending',
+  'paymentInvoices.table.paymentPending': 'Pending Payment',
   'paymentInvoices.table.paymentHistory': 'Payment History',
   'paymentInvoices.table.customerStatement': 'Customer Statement',
   'paymentInvoices.table.savedBankAccount': 'Saved Bank Accounts',
