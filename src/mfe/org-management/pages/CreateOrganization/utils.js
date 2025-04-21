@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { ALPHA_NUMERIC_WITH_SPECIAL, ALPHA_NUMERIC, ALPHABETIC_ONLY, ALPHABETIC_WITH_SPACE, ADDRESS_REGEX, ZIP_REGEX, PHONE_REGEX, FAX_REGEX } from '../../../../components/form/ValidationRegExp';
+import { ALPHA_NUMERIC_WITH_SPECIAL, ALPHA_NUMERIC, ALPHABETIC_ONLY, ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, ALPHABETIC_WITH_SPACE, ADDRESS_REGEX, ZIP_REGEX, PHONE_REGEX, FAX_REGEX } from '../../../../components/form/ValidationRegExp';
 
 export const INITIAL_VALUES = {
   name: '',
@@ -34,13 +34,13 @@ export const getValidationSchema = (t) => {
     contactPerson: Yup.object({
       firstName: Yup.string()
         .required(t('orgManagement.create_org.validation.first_name_required'))
-        .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.contact_person_first_name_invalid'))
+        .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t('orgManagement.create_org.validation.contact_person_first_name_invalid'))
         .min(2, t('orgManagement.create_org.validation.first_name_min'))
         .max(50, t('orgManagement.create_org.validation.first_name_max')),
-      middleName: Yup.string().matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.middle_name_invalid')).min(2, t('orgManagement.create_org.validation.middle_name_min')).max(50, t('orgManagement.create_org.validation.middle_name_max')),
+      middleName: Yup.string().matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t('orgManagement.create_org.validation.middle_name_invalid')).min(2, t('orgManagement.create_org.validation.middle_name_min')).max(50, t('orgManagement.create_org.validation.middle_name_max')),
       lastName: Yup.string()
         .required(t('orgManagement.create_org.validation.last_name_required'))
-        .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.contact_person_last_name_invalid'))
+        .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t('orgManagement.create_org.validation.contact_person_last_name_invalid'))
         .min(2, t('orgManagement.create_org.validation.last_name_min'))
         .max(50, t('orgManagement.create_org.validation.last_name_max'))
     }),
