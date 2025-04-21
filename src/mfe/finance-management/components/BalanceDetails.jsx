@@ -42,11 +42,11 @@ export default function BalanceDetails() {
   const formatChartData = (data) => {
     if (data) {
       const formattedData = [
-        { key: 'DUE', label: t('paymentInvoices.balanceCard.due'), color: '#2E8540' },
-        { key: 'OVERDUE', label: t('paymentInvoices.balanceCard.1_30_DAYS_OVERDUE'), color: '#1E394E' },
-        { key: 'PLUS_31_DAYS_OVERDUE', label: t('paymentInvoices.balanceCard.31_60_DAYS_OVERDUE'), color: '#005483' },
-        { key: 'PLUS_61_DAYS_OVERDUE', label: t('paymentInvoices.balanceCard.61_90_DAYS_OVERDUE'), color: '#D3722E' },
-        { key: 'PLUS_91_DAYS_OVERDUE', label: t('paymentInvoices.balanceCard.PLUS_91_DAYS_OVERDUE'), color: '#DB3A29' }
+        { key: 'DUE', label: t('paymentInvoices.balanceCard.due'), color: '#F7C91E80' },
+        { key: 'OVERDUE', label: t('paymentInvoices.balanceCard.1_30_DAYS_OVERDUE'), color: '#EFA22180' },
+        { key: 'PLUS_31_DAYS_OVERDUE', label: t('paymentInvoices.balanceCard.31_60_DAYS_OVERDUE'), color: '#EA882380' },
+        { key: 'PLUS_61_DAYS_OVERDUE', label: t('paymentInvoices.balanceCard.61_90_DAYS_OVERDUE'), color: '#E3612680' },
+        { key: 'PLUS_91_DAYS_OVERDUE', label: t('paymentInvoices.balanceCard.PLUS_91_DAYS_OVERDUE'), color: '#DB3A2980' }
       ];
 
       return formattedData.map(({ key, label, color }) => ({
