@@ -5,12 +5,11 @@ import HttpResourceService, { httpVerb } from '../HttpResourceService';
 function sanitizeString(input) {
   if (typeof input !== 'string' || !input) return '';
 
-  return input
-    .trim()
+  return input.trim();
 }
 
 async function getAllProviders(params) {
-  const url = `${ApiRoutes.ORGANIZATION_BASE}providers?${serializeParams(
+  const url = `${ApiRoutes.ORGANIZATION_BASE()}providers?${serializeParams(
     params
   )}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, null, {
@@ -27,7 +26,7 @@ async function activateProvider(id) {
   if (!id) {
     throw new Error('Provider ID is required to activate a provider.');
   }
-  const url = `${ApiRoutes.ORGANIZATION_BASE}providers/${id}/activate`;
+  const url = `${ApiRoutes.ORGANIZATION_BASE()}providers/${id}/activate`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, {
     accept: 'application/json'
   });
@@ -41,7 +40,7 @@ async function deactivateProvider(id) {
   if (!id) {
     throw new Error('Provider ID is required to deactivate a provider.');
   }
-  const url = `${ApiRoutes.ORGANIZATION_BASE}providers/${id}/deactivate`;
+  const url = `${ApiRoutes.ORGANIZATION_BASE()}providers/${id}/deactivate`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, {
     accept: 'application/json'
   });
@@ -59,7 +58,7 @@ async function updateProvider(id, payload) {
     throw new Error('Payload is required to update provider.');
   }
 
-  const url = `${ApiRoutes.ORGANIZATION_BASE}providers/${id}`;
+  const url = `${ApiRoutes.ORGANIZATION_BASE()}providers/${id}`;
   const res = await HttpResourceService.callRest(url, httpVerb.PATCH, payload, {
     'Content-Type': 'application/json;charset=utf-8',
     accept: 'application/json'
@@ -75,7 +74,7 @@ async function getProviderDetailsById(id) {
     throw new Error('Provider ID is required to get provider details.');
   }
 
-  const url = `${ApiRoutes.ORGANIZATION_BASE}providers/${id}`;
+  const url = `${ApiRoutes.ORGANIZATION_BASE()}providers/${id}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {
     accept: 'application/json'
   });
@@ -108,7 +107,7 @@ async function addProvider(payload) {
     throw new Error('Payload is required to add provider.');
   }
 
-  const url = `${ApiRoutes.ORGANIZATION_BASE}providers`;
+  const url = `${ApiRoutes.ORGANIZATION_BASE()}providers`;
   const res = await HttpResourceService.callRest(url, httpVerb.POST, payload, {
     'Content-Type': 'application/json;charset=utf-8',
     accept: 'application/json'
@@ -120,7 +119,7 @@ async function addProvider(payload) {
 }
 
 async function uploadProvider(payload) {
-  const url = `${ApiRoutes.ORGANIZATION_BASE}providers/upload`;
+  const url = `${ApiRoutes.ORGANIZATION_BASE()}providers/upload`;
 
   const response = await HttpResourceService.callRest(
     url,
