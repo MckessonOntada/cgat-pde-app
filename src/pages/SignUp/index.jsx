@@ -107,7 +107,7 @@ const SignUp = () => {
   const validationSchema = Yup.object({
     name: Yup.object({
       firstName: Yup.string()
-        .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t('userManagement.create_user.validation.first_name')) // Only alphabets
+        .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t('userManagement.create_user.validation.first_name'))
         .min(2, t('userManagement.create_user.validation.first_name_min_max'))
         .required(t('userManagement.create_user.validation.first_name_required')),
       middleName: Yup.string()
@@ -115,7 +115,7 @@ const SignUp = () => {
         .min(2, t('userManagement.create_user.validation.middle_name_min_max'))
         .nullable(),
       lastName: Yup.string()
-        .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t('userManagement.create_user.validation.last_name')) // Only alphabets
+        .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t('userManagement.create_user.validation.last_name'))
         .min(2, t('userManagement.create_user.validation.last_name_min_max'))
         .required(t('userManagement.create_user.validation.last_name_required'))
     }),
