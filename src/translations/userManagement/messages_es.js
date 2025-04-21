@@ -378,10 +378,13 @@ export const UserManagementES = {
   'errors.messages.emptyDataDescription': 'S_An unexpected error occurred. Please try again.',
   'label.comment': 'S_Comment',
   'file.download.csv': 'S_Download CSV Template',
-  'lebal.users': 'S_Users', 
-  'lebal.backToManage' : 'S_Back to Manage',
-  'lebal.add' : 'S_Add',
+  'lebal.users': 'S_Users',
+  'lebal.backToManage': 'S_Back to Manage',
+  'lebal.add': 'S_Add',
   'userManagement.uploadUsers': 'S_Upload Users',
   'userManagement.uploadUsersListCSV': 'S_Upload Users List CSV',
-  'userManagement.button.addUsers': 'S_Add Users' 
+  'userManagement.button.addUsers': 'S_Add Users',
+  'messages.user_activate_success': 'S_User has been Activated successfully.',
+  'messages.user_activate_failure': 'S_Failed to Activate the User.',
+  'popup.userActivation.question': 'Are you sure you wish to Activate this User?'
 };
