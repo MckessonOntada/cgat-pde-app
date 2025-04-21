@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Button, Heading, AutoSuggestDropdown } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import InfoCards from '@src/components/infoCards/InfoCards';
 import CommonUtils from '@src/util/CommonUtils';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import './index.scss';
@@ -159,32 +158,6 @@ function ConfirmationPayments() {
                 </div>
               </>
             ))}
-        </div>
-        <div className="section">
-          {/* <div className="sectionHeader">{t('paymentInvoices.reviewPayments.paymentSummary')}</div> */}
-          <div className="sectionCard">
-            {CommonUtils.isNonEmptyObject(paymentCard) &&
-              Object.entries(paymentCard).map(([key, value]) => <InfoCards title={key} value={value} />)}
-          </div>
-        </div>
-        <Heading as="h2">{t('paymentInvoices.reviewPayments.invoices')}</Heading>
-        <div>
-          <SelectedInvoiceList
-            omitColumns={['description']}
-            selectedInvoices={selectedInvoices}
-            setSelectedInvoices={setSelectedInvoices}
-          />
-        </div>
-
-        <div className="MCP-module-wrapper">
-          <div>
-            <Heading as="h2">{t('paymentInvoices.reviewPayments.credits')}</Heading>
-          </div>
-          <div id="tablist-container" className="MCP-module-body">
-            <PaymentsCreditsProvider>
-              <CreditsSelected excludedColumns={['billDate']} />
-            </PaymentsCreditsProvider>
-          </div>
         </div>
         <div className="confirmationNote">
           <strong>Note:</strong> {t('paymentInvoices.Details.ConfirmationNote')}
