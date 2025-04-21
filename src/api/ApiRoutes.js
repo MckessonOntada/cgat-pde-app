@@ -56,7 +56,7 @@ const ApiRoutes = Object.freeze({
   GET_PERMISSIONS: (userType) =>
     constructUserManagementServicePublicUrl(`global/permissions/${userType}`),
   ORGANIZATIONS: constructUserManagementServiceUrl('practices'),
-  ORGANIZATION_BASE: constructUserManagementServiceUrl(''),
+  ORGANIZATION_BASE: () => constructUserManagementServiceUrl(''),
   PUBLIC_ORGANIZATIONS: constructUserManagementServicePublicUrl('practices'),
   ACCOUNTS: constructUserManagementServiceUrl('accounts'),
   PAY_TO_ACCOUNTS: () =>
