@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import { ADDRESS_REGEX, ALPHABETIC_ONLY, ALPHABETIC_WITH_SPACE, PHONE_REGEX, ZIP_REGEX, ALPHABETIC_WITH_SPECIAL_AND_ACCENTED } from '@src/components/form/ValidationRegExp';
 import { US_STATES } from '@src/components/form/util';
+import CommonUtils from '@src/util/CommonUtils';
 
 const stateOptions = US_STATES();
 
@@ -139,24 +140,9 @@ export const getValidationSchema = (t) => {
   return Yup.object().shape({
     patientInfo: Yup.object()
       .shape({
-        firstName: Yup.string()
-          .nullable()
-          .trim()
-          .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t('orgManagement.create_org.validation.contact_person_first_name_invalid'))
-          .min(2, t('orgManagement.create_org.validation.first_name_min'))
-          .max(50, t('orgManagement.create_org.validation.first_name_max')),
-        middleName: Yup.string()
-          .nullable()
-          .trim()
-          .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t('orgManagement.create_org.validation.middle_name_invalid'))
-          .min(2, t('orgManagement.create_org.validation.middle_name_min'))
-          .max(50, t('orgManagement.create_org.validation.middle_name_max')),
-        lastName: Yup.string()
-          .nullable()
-          .trim()
-          .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t('orgManagement.create_org.validation.contact_person_last_name_invalid'))
-          .min(2, t('orgManagement.create_org.validation.last_name_min'))
-          .max(50, t('orgManagement.create_org.validation.last_name_max')),
+        firstName: CommonUtils.getNameValidation(t, { field: 'first_name' }),
+        middleName: CommonUtils.getNameValidation(t, { field: 'middle_name' }),
+        lastName: CommonUtils.getNameValidation(t, { field: 'last_name' }),
         gender: Yup.string().nullable(),
         dateOfBirth: Yup.date()
           .nullable()

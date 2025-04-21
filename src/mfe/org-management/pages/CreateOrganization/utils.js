@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
-import { ALPHA_NUMERIC_WITH_SPECIAL, ALPHA_NUMERIC, ALPHABETIC_ONLY, ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, ALPHABETIC_WITH_SPACE, ADDRESS_REGEX, ZIP_REGEX, PHONE_REGEX, FAX_REGEX } from '../../../../components/form/ValidationRegExp';
+import { ALPHA_NUMERIC_WITH_SPECIAL, ALPHA_NUMERIC, ALPHABETIC_ONLY, ALPHABETIC_WITH_SPACE, ADDRESS_REGEX, ZIP_REGEX, PHONE_REGEX, FAX_REGEX } from '../../../../components/form/ValidationRegExp';
+import CommonUtils from '@src/util/CommonUtils';
 
 export const INITIAL_VALUES = {
   name: '',
@@ -32,17 +33,17 @@ export const getValidationSchema = (t) => {
       .min(2, t('orgManagement.create_org.validation.org_name_min'))
       .max(100, t('orgManagement.create_org.validation.org_name_max')),
     contactPerson: Yup.object({
-      firstName: Yup.string()
-        .required(t('orgManagement.create_org.validation.first_name_required'))
-        .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t('orgManagement.create_org.validation.contact_person_first_name_invalid'))
-        .min(2, t('orgManagement.create_org.validation.first_name_min'))
-        .max(50, t('orgManagement.create_org.validation.first_name_max')),
-      middleName: Yup.string().matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t('orgManagement.create_org.validation.middle_name_invalid')).min(2, t('orgManagement.create_org.validation.middle_name_min')).max(50, t('orgManagement.create_org.validation.middle_name_max')),
-      lastName: Yup.string()
-        .required(t('orgManagement.create_org.validation.last_name_required'))
-        .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t('orgManagement.create_org.validation.contact_person_last_name_invalid'))
-        .min(2, t('orgManagement.create_org.validation.last_name_min'))
-        .max(50, t('orgManagement.create_org.validation.last_name_max'))
+      firstName: CommonUtils.getNameValidation(t, {
+        field: 'first_name',
+        required: true
+      }),
+      middleName: CommonUtils.getNameValidation(t, {
+        field: 'middle_name',
+      }),
+      lastName: CommonUtils.getNameValidation(t, {
+        field: 'last_name',
+        required: true
+      }),
     }),
     address: Yup.object({
       address1: Yup.string()

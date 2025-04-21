@@ -5,6 +5,9 @@ import timezone from 'dayjs/plugin/timezone';
 import parse from 'html-react-parser';
 import DOMPurify from 'dompurify';
 import useSnackbar from '@src/hooks/useSnackbar';
+import * as Yup from 'yup';
+import { ALPHABETIC_WITH_SPECIAL_AND_ACCENTED } from '@src/components/form/ValidationRegExp';
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -587,6 +590,25 @@ const getCamelCase = (str) =>
     match.replace(/[-_]/, '').toUpperCase()
   );
 
+const getNameValidation = (
+  t,
+  {
+    field='',
+    min = 2,
+    max = 50,
+    required = false,
+    invalidKey,
+  } = {}
+) => {
+  let schema = Yup.string()
+    .nullable()
+    .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t(invalidKey || `userManagement.create_user.validation.${field}`))
+    .min(min, t(`orgManagement.create_org.validation.${field}_min`))
+    .max(max, t(`orgManagement.create_org.validation.${field}_max`));
+
+  return required ? schema.required(t(`userManagement.create_user.validation.${field}_required`)) : schema;
+};
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -628,7 +650,8 @@ const CommonUtils = Object.freeze({
   getFileSize,
   gettenYearDate,
   isFutureDate,
-  getAddress
+  getAddress,
+  getNameValidation
 });
 
 export default CommonUtils;
