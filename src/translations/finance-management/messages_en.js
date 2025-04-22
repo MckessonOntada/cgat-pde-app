@@ -193,7 +193,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.reviewPayments.credits': 'Credits',
   'paymentInvoices.reviewPayments.invoices': 'Invoices',
   'paymentInvoices.reviewPayments.paymentSuccess': 'Payment Successful',
-  'paymentInvoices.reviewPayments.thankyouforpayment': 'Thank you for your payment',
+  'paymentInvoices.reviewPayments.thankyouforpayment': 'Your payment request is processed successfully.',
   'paymentInvoices.reviewPayments.paymentSummary': 'Payment Summary',
   'paymentInvoices.reviewPayments.confirmationDialogue': 'Are you sure you want to leave Review and Pay screen?',
   'paymentInvoices.reviewPayments.confirm': 'Confirm',
@@ -279,5 +279,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.table.paymentHistory': 'Payment History',
   'paymentInvoices.table.customerStatement': 'Customer Statement',
   'paymentInvoices.table.savedBankAccount': 'Saved Bank Accounts',
-  'paymentInvoices.table.savedCards': 'Saved Cards'
+  'paymentInvoices.table.savedCards': 'Saved Cards',
+
+  'paymentInvoices.reviewPayments.processing': 'Please do not hit close or navigate back while your payment request is processing.'
 };

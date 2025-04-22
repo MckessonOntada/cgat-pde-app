@@ -1,7 +1,24 @@
 @use "@src/assets/styles/abstracts/mixins";
 
 //  @include mixins.respond(sm) {}
+.loaderWrapper {
+  align-items: center;
+  display: flex;
+  height: 50vh;
+  justify-content: center;
+  position: relative;
 
+  .loaderText {
+    position: absolute;
+    font-size: 24px;
+    font-weight: 600;
+    top: 38%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
+  }
+}
 .reviewPayments {
   @media only screen and (max-width: 576px) {
     padding-bottom: var(--spacing-14);

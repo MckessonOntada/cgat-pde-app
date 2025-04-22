@@ -398,14 +398,9 @@ function ReviewPayments() {
 
   if (isLoading) {
     return (
-      <div
-        style={{
-          alignItems: 'center',
-          display: 'flex',
-          height: '50vh',
-          justifyContent: 'center'
-        }}>
-        <Loader loaderText="Loading..." />
+      <div className='loaderWrapper' >
+        <p className='loaderText'>{t('paymentInvoices.reviewPayments.processing')}</p>
+        <Loader loaderText={''}/>
       </div>
     );
   }
