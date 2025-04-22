@@ -21,6 +21,9 @@ export const ConfigurationMessagesEN = {
   'providerStatus.ACTIVE': 'Active',
   'providerStatus.INACTIVE': 'Inactive',
   'providerStatus.ALL': 'All',
+  'labels.caption.All': 'All',
+  'labels.caption.SUBMITTED_BUY_AND_BILL': 'Buy and Bill',
+  'placeholder.selectAssignee': 'Search assignee',
   'provider.activationSuccess': 'Provider has been activated successfully.',
   'provider.activationFailure':
     'Failed to activate provider. Please try again.',
