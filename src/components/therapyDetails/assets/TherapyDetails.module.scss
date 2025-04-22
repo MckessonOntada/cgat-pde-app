@@ -9,6 +9,7 @@
     padding: var(--spacing-02) var(--spacing-03);
     font-size: var(--brand-font-size--small);
     font-weight: var(--brand-font-weight-600);
+
     h3 {
       font-size: 22px !important;
     }
@@ -33,6 +34,11 @@
         flex-direction: column;
         gap: var(--spacing-04);
 
+        .details {
+          padding-bottom: var(--spacing-02);
+          padding-top: var(--spacing-02);
+        }
+
         .configurationHeader {
           display: flex;
           width: 100%;
@@ -43,20 +49,23 @@
             display: flex;
           }
 
-          .sectionHeadingkey{ 
-              font-size: var(--brand-font-size--default);
-              font-weight: var(--brand-font-weight-700);
-              color: var(--brand-color-primary--hover);
-              width: 60%;
-              padding-bottom:var(--spacing-02);
+          .sectionHeadingkey {
+            font-size: var(--brand-font-size--default);
+            font-weight: var(--brand-font-weight-700);
+            color: var(--brand-color-primary--hover);
+            width: 60%;
+            padding-bottom: var(--spacing-02);
           }
+
           .actions {
             display: flex;
             align-items: center;
             gap: var(--spacing-03);
             justify-content: end;
+
             button,
-            a, svg {
+            a,
+            svg {
               cursor: pointer;
             }
           }
