@@ -70,7 +70,7 @@ export const OrderProvider = ({ children }) => {
           : false,
       showPAPOrders: Boolean(orderView === ORDER_VIEW.PAP_ORDERS)
     };
-    const orderDateSelection = filterConfig?.orderdate;
+    const orderDateSelection = filterConfig?.orderDate;
     if (orderDateSelection) {
       const dateRange = getDateRangeFromSelection(orderDateSelection);
       if (dateRange) {
