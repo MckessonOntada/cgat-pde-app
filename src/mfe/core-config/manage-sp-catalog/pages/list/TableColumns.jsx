@@ -1,11 +1,9 @@
 import React from 'react';
-import {
-  Badge,
-  MenuList,
-  CheckboxGroup
-} from '@mckesson/mcp-component-library';
+import { Badge, MenuList, CheckboxGroup } from '@mckesson/mcp-component-library';
 import { ReactComponent as EllipsisIcon } from '@src/assets/svg/ellipsis.svg';
 import { useSelection } from '@src/mfe/core-config/manage-providers/context/TableContext';
+import { Link } from 'react-router-dom';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 const PROVIDER_COLUMNS = {
   SP_PRODUCT_ID: 'PROVIDER_NAME',
@@ -16,9 +14,8 @@ const PROVIDER_COLUMNS = {
   ACTION: 'ACTION'
 };
 
-export const getColumns = () => {
-  const { selectedRows, toggleRowSelection, selectAll, deselectAll } =
-    useSelection();
+export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial }) => {
+  const { selectedRows, toggleRowSelection, selectAll, deselectAll } = useSelection();
   return [
     {
       id: 'checkbox',
@@ -48,7 +45,23 @@ export const getColumns = () => {
       minWidth: '160px',
       sortable: true,
       sortKey: 'providerName',
-      cell: (props) => <div>{props?.providerName || '-'}</div>
+      cell: (props) => (
+        <div className="cellEllipse">
+          <Link
+            style={{
+              color: '#007bff',
+              fontWeight: '600',
+              textDecoration: 'none'
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              setViewSPMaterial(props);
+              setOpenSPMaterialDetails(true);
+            }}>
+            <EclipsesTextcss str={props?.providerName} maxWidth={280} />
+          </Link>
+        </div>
+      )
     },
     {
       id: PROVIDER_COLUMNS.ADDRESS,
@@ -76,12 +89,7 @@ export const getColumns = () => {
       name: 'Status',
       selector: (row) => row.status,
       minWidth: '160px',
-      cell: (props) => (
-        <Badge
-          text={`label.status.${props.status ? 'active' : 'inactive'}`}
-          type={'success'}
-        />
-      )
+      cell: (props) => <Badge text={`label.status.${props.status ? 'active' : 'inactive'}`} type={'success'} />
     },
     {
       id: PROVIDER_COLUMNS.ACTION,

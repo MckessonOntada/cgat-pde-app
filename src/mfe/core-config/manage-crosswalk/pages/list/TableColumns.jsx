@@ -5,6 +5,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 const MATERIAL_CROSSWALK_COLUMNS = {
   BUY_AND_BILL_MATERIAL_ID: 'BUY_AND_BILL_MATERIAL_ID',
@@ -16,7 +17,7 @@ const MATERIAL_CROSSWALK_COLUMNS = {
   ACTION: 'ACTION'
 };
 
-export const getColumns = () => {
+export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMaterialDetails, setViewSPMaterial }) => {
   const { t } = useTranslate();
   const dispatch = useDispatch();
   const confirmationUnlink = (id) => () => {
@@ -29,16 +30,10 @@ export const getColumns = () => {
     );
     state.footer = (
       <div className="controls">
-        <Button
-          size="md"
-          variant="secondary"
-          onClick={() => dispatch(closeModal())}>
+        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
           {t('button.caption.no')}
         </Button>
-        <Button
-          size="md"
-          variant="primary"
-          onClick={() => console.log('Changes confirmed')}>
+        <Button size="md" variant="primary" onClick={() => console.log('Changes confirmed')}>
           {t('button.caption.yes')}
         </Button>
       </div>
@@ -63,7 +58,13 @@ export const getColumns = () => {
       cell: (props) => (
         <div>
           {(
-            <Link className="MCP-table-link" to={`?material=${props.id}`}>
+            <Link
+              className="MCP-table-link"
+              onClick={(e) => {
+                e.preventDefault();
+                setOpenDetails(true);
+                setMaterialNumber(props?.id);
+              }}>
               {props?.materialDescription}
             </Link>
           ) || '-'}
@@ -94,9 +95,19 @@ export const getColumns = () => {
       sortable: true,
       sortKey: 'spProductName',
       cell: (props) => (
-        <div>
-          <Link className="MCP-table-link" to={`?product=${props.id}`}>
-            {props?.spProductName}
+        <div className="cellEllipse">
+          <Link
+            style={{
+              color: '#007bff',
+              fontWeight: '600',
+              textDecoration: 'none'
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              setViewSPMaterial(props);
+              setOpenSPMaterialDetails(true);
+            }}>
+            <EclipsesTextcss str={props?.spProductName} maxWidth={280} />
           </Link>
         </div>
       )
@@ -116,11 +127,7 @@ export const getColumns = () => {
       minWidth: '160px',
       cell: (props) => (
         <div className="styled-icon-button">
-          <Button
-            size="md"
-            Icon={LinkIcon}
-            variant="tertiary"
-            onClick={confirmationUnlink(props.id)}>
+          <Button size="md" Icon={LinkIcon} variant="tertiary" onClick={confirmationUnlink(props.id)}>
             {t('button.caption.unlink')}
           </Button>
         </div>

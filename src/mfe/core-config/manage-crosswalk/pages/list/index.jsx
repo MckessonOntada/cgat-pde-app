@@ -2,7 +2,7 @@ import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bold.svg';
 import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
 import PermittedComponent from '@src/components/permitted-component';
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
@@ -11,15 +11,17 @@ import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
 import { useNavigate } from 'react-router-dom';
 import CommonFilters from '@src/components/Filters';
 import { CustomDataTable } from '@src/components/dataTableComponent';
-import {
-  useFilters,
-  usePagination,
-  useTable
-} from '../../../manage-providers/context/TableContext';
+import { useFilters, usePagination, useTable } from '../../../manage-providers/context/TableContext';
 import { getColumns } from './TableColumns';
 import { ReactComponent as EmptyProviderTable } from '@src/assets/svg/EmptyProviderTable.svg';
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
 import { PROVIDER_STATUS } from '@src/mfe/core-config/manage-providers/config';
+import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
+import {
+  ConfigConstants,
+  MaterialDetailsConstants
+} from '@src/mfe/order-management/pages/system-configuration/manageMaterial/assets/constants/MaterialConstants';
+import SPMaterialDetails from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/pages/SPMaterialDetails';
 
 const data = [
   {
@@ -47,6 +49,11 @@ const List = () => {
   const { items, add, remove } = useTimedArray(10000);
   const { filters, applyFilters, clearFilters } = useFilters();
   const { pagination, changePage } = usePagination();
+  const [openDetails, setOpenDetails] = useState(false);
+  const [materialNumber, setMaterialNumber] = useState(null);
+  const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
+  const [viewSPMaterial, setViewSPMaterial] = useState(null);
+  const isCustomerCenter = AuthUtils.isCustomerCenter();
   const breadcrumbItems = React.useMemo(() => {
     return [
       {
@@ -71,18 +78,10 @@ const List = () => {
         heading={<Heading as="h1">{t('label.materialCrosswalk')}</Heading>}
         controls={
           <div className="controls">
-            <Button
-              Icon={AddCircleFilled}
-              className="button-icon"
-              onClick={handleOnClick('create')}
-              size="md">
+            <Button Icon={AddCircleFilled} className="button-icon" onClick={handleOnClick('create')} size="md">
               {t('controls.addCrosswalk')}
             </Button>
-            <Button
-              Icon={FileUploadIcon}
-              className="button-icon"
-              onClick={handleOnClick('upload')}
-              size="md">
+            <Button Icon={FileUploadIcon} className="button-icon" onClick={handleOnClick('upload')} size="md">
               {t('controls.uploadCrosswalk')}
             </Button>
           </div>
@@ -91,14 +90,7 @@ const List = () => {
       {items && items.length > 0 && (
         <div className="MCP-module-body">
           {items.map((item, index) => {
-            return (
-              <Alert
-                key={item.id}
-                description={item.description}
-                onClose={() => remove(item.id)}
-                type={item.type}
-              />
-            );
+            return <Alert key={item.id} description={item.description} onClose={() => remove(item.id)} type={item.type} />;
           })}
         </div>
       )}
@@ -112,14 +104,10 @@ const List = () => {
             searchPlaceholder={t('controls.placeholder.materialCrosswalk')}
           />
         </div>
-        <ModuleHeader
-          heading={
-            <Heading as="h2">{t('label.materialCrosswalkListing')}</Heading>
-          }
-        />
+        <ModuleHeader heading={<Heading as="h2">{t('label.materialCrosswalkListing')}</Heading>} />
         <CustomDataTable
           id="provider-list-table"
-          columns={getColumns()}
+          columns={getColumns({ setOpenDetails, setMaterialNumber, setOpenSPMaterialDetails, setViewSPMaterial })}
           data={data}
           handleChangePage={changePage}
           onSortIconClick={() => {}}
@@ -137,6 +125,26 @@ const List = () => {
               description={t('label.emptyMaterialCrosswalkTableDescription')}
             />
           }
+        />
+
+        {openDetails && (
+          <TherapyDetails
+            therapyId="000000000002888816"
+            therapyData={MaterialDetailsConstants}
+            configurationData={ConfigConstants}
+            onClose={() => setOpenDetails(!openDetails)}
+            showFooter={false}
+            isMaterialConfiguration={false}
+            useMaterialService={true}
+            hasDeleteConfigAccess={!isCustomerCenter}
+            heading={t('manageMaterial.drawer.heading')}
+          />
+        )}
+
+        <SPMaterialDetails
+          openSPMaterialDetails={openSPMaterialDetails}
+          setOpenSPMaterialDetails={setOpenSPMaterialDetails}
+          viewSPMaterial={viewSPMaterial}
         />
       </div>
     </div>

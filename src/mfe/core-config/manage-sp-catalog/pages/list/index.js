@@ -2,7 +2,7 @@ import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bold.svg';
 import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
 import PermittedComponent from '@src/components/permitted-component';
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
@@ -16,13 +16,10 @@ import { getColumns } from './TableColumns';
 import { ReactComponent as EmptyProviderTable } from '@src/assets/svg/EmptyProviderTable.svg';
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
 import { PROVIDER_STATUS } from '@src/mfe/core-config/manage-providers/config';
-import {
-  useFilters,
-  usePagination,
-  useTable
-} from '@src/mfe/core-config/manage-providers/context/TableContext';
+import { useFilters, usePagination, useTable } from '@src/mfe/core-config/manage-providers/context/TableContext';
 import OrgAccountsSelect from '@src/mfe/order-management/components/orgAccountSelection/OrgAccountsSelect';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
+import SPMaterialDetails from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/pages/SPMaterialDetails';
 
 const data = [
   {
@@ -50,6 +47,8 @@ const List = () => {
   const { items, add, remove } = useTimedArray(10000);
   const { filters, applyFilters, clearFilters } = useFilters();
   const { pagination, changePage } = usePagination();
+  const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
+  const [viewSPMaterial, setViewSPMaterial] = useState(null);
   const breadcrumbItems = React.useMemo(() => {
     return [
       {
@@ -83,20 +82,11 @@ const List = () => {
   return (
     <div className="MCP-module-wrapper">
       <Breadcrumbs items={breadcrumbItems} />
-      <ModuleHeader
-        heading={<Heading as="h1">{t('label.manageSpCatalog')}</Heading>}
-      />
+      <ModuleHeader heading={<Heading as="h1">{t('label.manageSpCatalog')}</Heading>} />
       {items && items.length > 0 && (
         <div className="MCP-module-body">
           {items.map((item, index) => {
-            return (
-              <Alert
-                key={item.id}
-                description={item.description}
-                onClose={() => remove(item.id)}
-                type={item.type}
-              />
-            );
+            return <Alert key={item.id} description={item.description} onClose={() => remove(item.id)} type={item.type} />;
           })}
         </div>
       )}
@@ -149,34 +139,20 @@ const List = () => {
             onApplyFilters={applyFilters}
             onClearFilters={clearFilters}
             additionalFilters={additionalFiltersConfig}
-            searchPlaceholder={t(
-              'controls.placeholder.searchProviderPlaceholder'
-            )}
+            searchPlaceholder={t('controls.placeholder.searchProviderPlaceholder')}
           />
         </div>
         <ModuleHeader
           heading={<Heading as="h2">{t('label.sPCatalogListing')}</Heading>}
           controls={
             <div className="controls">
-              <Button
-                variant="secondary"
-                className="button-icon"
-                onClick={handleOnClick('upload')}
-                size="md">
+              <Button variant="secondary" className="button-icon" onClick={handleOnClick('upload')} size="md">
                 {t('controls.downloadList')}
               </Button>
-              <Button
-                Icon={FileUploadIcon}
-                className="button-icon"
-                onClick={handleOnClick('upload')}
-                size="md">
+              <Button Icon={FileUploadIcon} className="button-icon" onClick={handleOnClick('upload')} size="md">
                 {t('controls.uploadCatalog')}
               </Button>
-              <Button
-                Icon={AddCircleFilled}
-                className="button-icon"
-                onClick={handleOnClick('create')}
-                size="md">
+              <Button Icon={AddCircleFilled} className="button-icon" onClick={handleOnClick('create')} size="md">
                 {t('controls.linkCatalog')}
               </Button>
             </div>
@@ -184,7 +160,7 @@ const List = () => {
         />
         <CustomDataTable
           id="provider-list-table"
-          columns={getColumns()}
+          columns={getColumns({ setOpenSPMaterialDetails, setViewSPMaterial })}
           data={data}
           handleChangePage={changePage}
           onSortIconClick={() => {}}
@@ -202,6 +178,11 @@ const List = () => {
               description={t('label.emptySPCatalogTableDescription')}
             />
           }
+        />
+        <SPMaterialDetails
+          openSPMaterialDetails={openSPMaterialDetails}
+          setOpenSPMaterialDetails={setOpenSPMaterialDetails}
+          viewSPMaterial={viewSPMaterial}
         />
       </div>
     </div>
