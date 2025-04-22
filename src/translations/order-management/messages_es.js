@@ -314,6 +314,7 @@ export const MessageEs = {
   'orderManagement.patientDetails.validation.zip_max': 'S_Zip code cannot exceed 8 digits.',
   'orderManagement.patientDetails.validation.patient_identifier_required': 'S_Patient identifier is required.',
   'orderManagement.patientDetails.validation.patient_identifier_required': 'S_Patient identifier is required.',
+  'orderManagement.patientDetails.validation.patient_identifier_must_number': 'S_Patient Identifier must be alphanumeric.',
   'orderManagement.patientDetails.validation.patient_identifier_max': 'S_Patient identifier cannot exceed 20 characters.',
   'orderManagement.patientDetails.inputLabel.date_of_birth': 'S_Date of birth',
   'orderManagement.patientDetails.option.please_select': 'S_Please select',

@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { ADDRESS_REGEX, ALPHABETIC_ONLY, ALPHABETIC_WITH_SPACE, PHONE_REGEX, ZIP_REGEX, ALPHABETIC_WITH_SPECIAL_AND_ACCENTED } from '@src/components/form/ValidationRegExp';
+import { ADDRESS_REGEX, ALPHABETIC_ONLY, ALPHABETIC_WITH_SPACE, PHONE_REGEX, ZIP_REGEX, ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, ALPHA_NUMERIC_ONLY } from '@src/components/form/ValidationRegExp';
 import { US_STATES } from '@src/components/form/util';
 import CommonUtils from '@src/util/CommonUtils';
 
@@ -194,7 +194,7 @@ export const getValidationSchema = (t) => {
       .nullable(),
     patientIdentifier: Yup.string()
       .trim()
-      .matches(/^\d{1,20}$/, t('orderManagement.patientDetails.validation.patient_identifier_must_number'))
+      .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.patient_identifier_must_number'))
       .required(t('orderManagement.patientDetails.validation.patient_identifier_required'))
       .max(20, t('orderManagement.patientDetails.validation.patient_identifier_max'))
   });

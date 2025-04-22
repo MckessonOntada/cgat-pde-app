@@ -373,7 +373,7 @@ export const MessageEn = {
   'orderManagement.patientDetails.validation.patient_identifier_required':
     'Patient identifier is required.',
   'orderManagement.patientDetails.validation.patient_identifier_must_number':
-    'Patient identifier must be a number.',
+    'Patient Identifier must be alphanumeric.',
   'orderManagement.patientDetails.validation.patient_identifier_max':
     'Patient identifier cannot exceed 20 characters.',
   'orderManagement.patientDetails.inputLabel.date_of_birth': 'Date of birth',
