@@ -168,6 +168,7 @@ export const MessageEn = {
   'labels.orderView.MY_ORDERS': 'My Orders',
   'labels.orderView.ALL_ORDERS': 'All Orders',
   'labels.orderView.ASSIGNED_TO_ME': 'Assigned to Me',
+  'labels.orderView.PAP_ORDERS': 'PAP Orders',
   'table.columns.captions.author': 'Author',
   'table.columns.captions.assignee': 'Assignee',
   'table.columns.captions.createdOn': 'Created On',
