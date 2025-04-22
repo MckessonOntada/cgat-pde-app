@@ -51,6 +51,13 @@ export const OrderProvider = ({ children }) => {
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       statuses: filterConfig.status || TAB_FILTERS[tabVariant].join(','),
       //distributionchannel: filterConfig.distributionchannel,
+      ...(filterConfig?.assigneeIds && {
+        assigneeIds: filterConfig.assigneeIds
+      }),
+      ...(filterConfig?.orderType && {
+        orderType: filterConfig.orderType
+      }),
+
       showMyOrders: orderView === ORDER_VIEW.ALL_ORDERS ? false : true
     };
     const orderDateSelection = filterConfig?.orderdate;

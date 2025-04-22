@@ -14,18 +14,27 @@ import {
   getTabs,
   ORDER_DATE_FILTER_OPTIONS,
   ORDER_STATUS,
-  ORDER_TABS
+  ORDER_TABS,
+  ORDER_VIEW
 } from './config';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import useOrderCount from './useOrderCount';
 import CommonUtils from '@src/util/CommonUtils';
+import useAssignee from './useAssignee';
 
 const OrderIndex = () => {
   const { t } = useTranslate();
   const [_isOrderCountAdded, setIsOrderCountAdded] = React.useState(false);
-  const { applyFilters, clearFilters, changeTab, tabVariant, isError, error } =
-    useOrders();
+  const {
+    applyFilters,
+    clearFilters,
+    changeTab,
+    tabVariant,
+    orderView,
+    isError,
+    error
+  } = useOrders();
   const [tabList, setTabList] = React.useState(() => {
     const allTabs = getTabs();
     allTabs.forEach((tab) => {
@@ -61,14 +70,22 @@ const OrderIndex = () => {
       setIsOrderCountAdded(true);
     }
   }, [orderCounts]);
+  const [assigneeQueryText, setAssigneeQueryText] = React.useState('');
+  const [checkedAssignee, setCheckedAssignee] = React.useState([]);
 
+  const { data: assignee = [] } = useAssignee(tabVariant, {
+    userType: 'GENERAL',
+    query: assigneeQueryText
+  });
   const navigate = useNavigate();
   const location = useLocation();
   const activeTabFromState = location.state?.activeTab;
   const activeTab = tabList.find((tab) => tab.id === tabVariant);
   const { showAlert } = useAlert();
   const alertContainerId = 'summary-alert-container';
-
+  const handleOnAssigneeChange = (options) => {
+    setCheckedAssignee(options.filter((item) => item.isChecked));
+  };
   const additionalFiltersConfig = React.useMemo(() => {
     let filters = [];
 
@@ -90,10 +107,38 @@ const OrderIndex = () => {
         }))
       });
     }
+    if (tabVariant === ORDER_TABS.PENDING_APPROVAL) {
+      const orderTypes = ['All', ORDER_TABS.SUBMITTED_BUY_AND_BILL];
+      filters.push({
+        type: 'dropdown',
+        name: 'orderType',
+        label: t('labels.orderType'),
+        options: orderTypes.map((opt) => ({
+          label: t(`labels.caption.${opt}`),
+          value: opt
+        }))
+      });
+      if (orderView === ORDER_VIEW.ALL_ORDERS) {
+        filters.push({
+          type: 'multiSelectDropdown',
+          name: 'assigneeIds',
+          isMultiSelect: true,
+          placeholder: 'placeholder.selectAssignee',
+          label: t('labels.assignee'),
+          onChange: handleOnAssigneeChange,
+          options: [...checkedAssignee, ...assignee],
+          variant: 'async',
+          onSearch: setAssigneeQueryText,
+          recordsCountToEnableSearch: 2,
+          size: 'lg'
+        });
+      }
+    }
+
     if (tabVariant !== ORDER_TABS.PENDING_APPROVAL) {
       filters.push({
         type: 'dropdown',
-        name: 'orderdate',
+        name: 'orderDate',
         label: 'Order Date',
         options: ORDER_DATE_FILTER_OPTIONS.map((opt) => ({
           label: t(`labels.caption.${opt.value}`),
@@ -114,8 +159,8 @@ const OrderIndex = () => {
       });
     }
     return filters;
-  }, [activeTab]);
-
+  }, [activeTab, assignee, orderView]);
+  console.log(checkedAssignee);
   const handleOnTabChange = (newTab) => {
     const newTabs = tabList.map((tab) => ({
       ...tab,
