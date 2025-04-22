@@ -33,7 +33,10 @@ const OrderIndex = () => {
     tabVariant,
     orderView,
     isError,
-    error
+    assigneeList,
+    error,
+    searchAssigneeByTest,
+    setAssigneeOnChange
   } = useOrders();
   const [tabList, setTabList] = React.useState(() => {
     const allTabs = getTabs();
@@ -71,21 +74,14 @@ const OrderIndex = () => {
     }
   }, [orderCounts]);
   const [assigneeQueryText, setAssigneeQueryText] = React.useState('');
-  const [checkedAssignee, setCheckedAssignee] = React.useState([]);
 
-  const { data: assignee = [] } = useAssignee(tabVariant, {
-    userType: 'GENERAL',
-    query: assigneeQueryText
-  });
   const navigate = useNavigate();
   const location = useLocation();
   const activeTabFromState = location.state?.activeTab;
   const activeTab = tabList.find((tab) => tab.id === tabVariant);
   const { showAlert } = useAlert();
   const alertContainerId = 'summary-alert-container';
-  const handleOnAssigneeChange = (options) => {
-    setCheckedAssignee(options.filter((item) => item.isChecked));
-  };
+
   const additionalFiltersConfig = React.useMemo(() => {
     let filters = [];
 
@@ -125,11 +121,15 @@ const OrderIndex = () => {
           isMultiSelect: true,
           placeholder: 'placeholder.selectAssignee',
           label: t('labels.assignee'),
-          onChange: handleOnAssigneeChange,
-          options: [...checkedAssignee, ...assignee],
+          options: assigneeList,
           variant: 'async',
-          onSearch: setAssigneeQueryText,
+          onSearch: searchAssigneeByTest,
           recordsCountToEnableSearch: 2,
+          getUpdatedOptions: (e) => {
+            if (e.length > 0) {
+              setAssigneeOnChange(e);
+            }
+          },
           size: 'lg'
         });
       }
@@ -159,8 +159,8 @@ const OrderIndex = () => {
       });
     }
     return filters;
-  }, [activeTab, assignee, orderView]);
-  console.log(checkedAssignee);
+  }, [activeTab, orderView, assigneeList]);
+
   const handleOnTabChange = (newTab) => {
     const newTabs = tabList.map((tab) => ({
       ...tab,
