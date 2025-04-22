@@ -113,7 +113,7 @@ export default function PaymentHistoryTable() {
       sortable: true,
       cell: (props) => (
         <div className="cellEllipse align-items-right">
-          <FormattedNumber value={props?.totalAuthorizedPaymentAmount || '-'} style="currency" currency="USD" />
+          <FormattedNumber value={props?.totalAuthorizedPaymentAmount || 0} style="currency" currency="USD" />
         </div>
       ),
       right: true
