@@ -354,7 +354,7 @@ const UserDetail = () => {
                     handleActivateDeactivate();
                   }}
                   id="id"
-                  disabled={(!isSystemAdmin && !data?.isActive) || (isSystemAdmin && isSelf && data?.isActive)}
+                  disabled={(!isSystemAdmin && !data?.isActive) || (isSystemAdmin && isSelf && data?.isActive) || isSelf}
                   label={data?.isActive ? t('userManagement.status.active') : ''}
                   labelPosition="right"
                   name="Toggle"
