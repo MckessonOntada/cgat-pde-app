@@ -283,6 +283,7 @@ function ReviewPayments() {
     async (payload) => {
       const url = `${ApiRoutes.GET_PAY_AMOUNT_URL(selectedAccount.accountNumber)}`;
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+      console.log('response', res)
       return res.data;
     },
     {
@@ -310,10 +311,19 @@ function ReviewPayments() {
           showAlert('error', 'Something went wrong while processing payment');
         }
       },
-      onError: (error) => {
+      onError: (error, payload) => {
         dispatch(closeModal());
-        showAlert('error', 'review-pay: Error while communicating backend service');
+        let _paymentDate = Object.values(payload.paymentSchedule);
+        navigate('/record/invoices/confirmationPayments', {
+          state: {
+            ...state,
+            paymentDate: _paymentDate && _paymentDate[0],
+            selectedPayment: selectedData,
+            paymentError: true,
+          },
+        });
       },
+      
       retry: false
     }
   );

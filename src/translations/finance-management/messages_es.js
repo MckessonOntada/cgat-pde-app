@@ -188,6 +188,8 @@ export const PaymentInvoicesES = {
   'paymentInvoices.reviewPayments.invoices': 'S_Invoices',
   'paymentInvoices.reviewPayments.paymentSuccess': 'S_Payment Successful',
   'paymentInvoices.reviewPayments.thankyouforpayment': 'S_Your payment request is processed successfully.',
+  'paymentInvoices.reviewPayments.paymentFailed': 'S_Payment Failed',
+  'paymentInvoices.reviewPayments.paymentFailedMessage': 'S_Your payment request could not be processed. Please try again later.',
   'paymentInvoices.reviewPayments.paymentSummary': 'S_Payment Summary',
   'paymentInvoices.reviewPayments.confirmationDialogue': 'S_Are you sure you want to leave Review and Pay screen?',
   'paymentInvoices.reviewPayments.confirm': 'S_Confirm',
