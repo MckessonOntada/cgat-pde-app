@@ -119,7 +119,7 @@ const OrderIndex = () => {
           type: 'multiSelectDropdown',
           name: 'assigneeIds',
           isMultiSelect: true,
-          placeholder: 'placeholder.selectAssignee',
+          placeholder: t('placeholder.selectAssignee'),
           label: t('labels.assignee'),
           options: assigneeList,
           variant: 'async',
