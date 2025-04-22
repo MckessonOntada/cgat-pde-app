@@ -283,7 +283,6 @@ function ReviewPayments() {
     async (payload) => {
       const url = `${ApiRoutes.GET_PAY_AMOUNT_URL(selectedAccount.accountNumber)}`;
       const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
-      console.log('response', res)
       return res.data;
     },
     {
