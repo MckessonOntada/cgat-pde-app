@@ -31,7 +31,6 @@ export const useOrders = () => {
 };
 
 export const OrderProvider = ({ children }) => {
-  const [orderView, setOrderView] = React.useState(null);
   const [filterConfig, setFilterConfig] = React.useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = React.useState(
     INITIAL_PAGINATION_STATE
@@ -41,6 +40,7 @@ export const OrderProvider = ({ children }) => {
   const [tabVariant, setTabVariant] = React.useState(
     ORDER_TABS.SUBMITTED_BUY_AND_BILL
   );
+  const [orderView, setOrderView] = React.useState(ORDER_VIEW.MY_ORDERS);
 
   const requestParams = React.useMemo(() => {
     const params = {
@@ -51,7 +51,12 @@ export const OrderProvider = ({ children }) => {
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       statuses: filterConfig.status || TAB_FILTERS[tabVariant].join(','),
       //distributionchannel: filterConfig.distributionchannel,
-      showMyOrders: orderView === ORDER_VIEW.ALL_ORDERS ? false : true
+      showMyOrders:
+        orderView === ORDER_VIEW.MY_ORDERS ||
+        orderView === ORDER_VIEW.ASSIGNED_TO_ME
+          ? true
+          : false,
+      showPAPOrders: Boolean(orderView === ORDER_VIEW.PAP_ORDERS)
     };
     const orderDateSelection = filterConfig?.orderdate;
     if (orderDateSelection) {
@@ -124,9 +129,6 @@ export const OrderProvider = ({ children }) => {
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig({ ...filterConfig, ...filters });
-    // if (filters.status && !Array.isArray(filters.status)) {
-    //   filters.status = [filters.status];
-    // }
   };
 
   const clearFilters = () => {
@@ -144,6 +146,9 @@ export const OrderProvider = ({ children }) => {
     setDataState(INITIAL_DATA_STATE);
     setFilterConfig({ ...INITIAL_FILTER_STATE });
     setCurrentPage(1);
+    if (tabVariant === ORDER_TABS.PENDING_APPROVAL)
+      setOrderView(ORDER_VIEW.ASSIGNED_TO_ME);
+    else setOrderView(ORDER_VIEW.MY_ORDERS);
     setTabVariant(tabType);
   };
 
