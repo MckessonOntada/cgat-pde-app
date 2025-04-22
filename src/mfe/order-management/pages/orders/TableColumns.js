@@ -319,7 +319,7 @@ const jsxColumns = [
     selector: () => {},
     sortable: true,
     sortKey: 'submittedBy.name',
-    maxWidth: '160px',
+    maxWidth: '140px',
     cell: function (props) {
       return (
         <EclipsesTextCss tooltip={props.submittedBy?.userName} str={props.submittedBy?.name} maxWidth={130} className={'MCP-table-cell'} />
@@ -332,7 +332,7 @@ const jsxColumns = [
     selector: () => {},
     sortable: true,
     sortKey: 'submittedOn',
-    minwidth: '155px',
+    minwidth: '160px',
     cell: function (props) {
       return <span>{props.submittedOn ? CommonUtils.convertDateStringFormat(props.submittedOn, 'MM-DD-YYYY') : '-'}</span>;
     }
