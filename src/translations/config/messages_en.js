@@ -9,9 +9,9 @@ export const ConfigurationMessagesEN = {
   'providers.label.activateProvider': 'Activate Provider?',
   'providers.label.deactivateProvider': 'Deactivate Provider?',
   'providers.label.activateRecordDescription':
-    'Do you want to activate this provider?',
+    'Are you sure you want to activate this provider?',
   'providers.label.deactivateRecordDescription':
-    'Do you want to deactivate this provider?',
+    'Are you sure you want to deactivate this provider?',
   'providers.columnCaption.providerName': 'Provider Name',
   'providers.columnCaption.address': 'Address',
   'providers.columnCaption.deaNumber': 'DEA Number',
@@ -124,5 +124,8 @@ export const ConfigurationMessagesEN = {
   'provider.assignee': 'Assignee',
 
   'serverResponse.provider.dea.conflict': 'DEA number already exist',
-  'serverResponse.provider.npi.conflict': 'NPI number already exist'
+  'serverResponse.provider.npi.conflict': 'NPI number already exist',
+
+  'button.caption.confirm': 'Confirm',
+  'button.caption.cancel': 'Cancel'
 };
