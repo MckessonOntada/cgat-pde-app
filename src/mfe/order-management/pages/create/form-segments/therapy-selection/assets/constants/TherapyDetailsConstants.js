@@ -32,10 +32,10 @@ export const TherapyDetailsConstantsForSP = [
   {
     sectionHeading: 'labels.therapy.generalDetails',
     sectionData: [
-      { label: 'id', value: 'materialNumber' },
-      { label: 'productName', value: 'materialDescription' },
-      { label: 'siteName', value: 'siteName' },
-      { label: 'NDC', value: 'ndcNumber' }
+      { label: 'labels.therapy.id', value: 'materialNumber' },
+      { label: 'labels.therapy.productName', value: 'materialDescription' },
+      { label: 'labels.therapy.siteName', value: 'siteName' },
+      { label: 'labels.therapy.ndc', value: 'ndcNumber' }
     ]
   }
 ];

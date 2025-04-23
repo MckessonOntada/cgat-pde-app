@@ -98,3 +98,22 @@
     }
   }
 }
+
+
+.cardToggleWrapper {
+  margin-top: var(--spacing-03)
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-03) 0px;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 1px solid var(--brand-color-dark-grey);
+  border-top: 1px solid var(--brand-color-dark-grey);
+}
+
+.cardHeader :global(.text-wrap) {
+  margin-left: var(--spacing-03);
+}

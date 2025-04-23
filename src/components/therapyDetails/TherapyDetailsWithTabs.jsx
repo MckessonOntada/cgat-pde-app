@@ -6,13 +6,16 @@ import {
   Loader,
   Heading,
   Button,
-  TabList
+  TabList,
+  IconButton
 } from '@mckesson/mcp-component-library';
+import { ReactComponent as arrow_right } from '@src/assets/image/arrow_right_small.svg';
+import { ReactComponent as arrow_down } from '@src/assets/image/arrow_down_small.svg';
 import OrderService from '@src/api/commonService/OrderService';
 import FloatingDrawer from '@src/components/floating-drawer';
 
 export const THERAPY_TABS = {
-  BUY_AND_BILL: 'BUY AND BILL',
+  BUY_AND_BILL: 'BUY & BILL',
   SP: 'SP'
 };
 
@@ -27,14 +30,14 @@ function TherapyDetailsWithTabs({
 }) {
   const { t } = useTranslate();
   const [selectedTab, setSelectedTab] = useState(THERAPY_TABS.BUY_AND_BILL);
-
+  const [isCardExpanded, setIsCardExpanded] = useState(false);
   const getTabs = () => {
     const tabs = [];
 
     if (buyAndBillTherapyData) {
       tabs.push({
         id: THERAPY_TABS.BUY_AND_BILL,
-        configName: 'BUY AND BILL',
+        configName: 'BUY & BILL',
         isActiveTab: selectedTab === THERAPY_TABS.BUY_AND_BILL,
         sequence: 1,
         labelForMobile: 'BUY AND BILL'
@@ -52,6 +55,10 @@ function TherapyDetailsWithTabs({
     }
 
     return tabs;
+  };
+
+  const handleExpandCard = () => {
+    setIsCardExpanded(!isCardExpanded);
   };
 
   const {
@@ -121,17 +128,60 @@ function TherapyDetailsWithTabs({
         ) : (
           <div className={styles.body}>
             {therapyDetails && (
-              <DetailsPanel
-                details={therapyDetails}
-                handleSelect={handleSelect}
-                onClose={onClose}
-                therapyData={
-                  selectedTab === THERAPY_TABS.BUY_AND_BILL
-                    ? buyAndBillTherapyData
-                    : spTherapyData
-                }
-                refetch={refetch}
-              />
+              <>
+                {selectedTab === THERAPY_TABS.SP ? (
+                  <div className={styles.cardToggleWrapper}>
+                    <div className={styles.cardHeader}>
+                      <IconButton
+                        label={
+                          therapyDetails?.productName || 'SP Therapy Details'
+                        }
+                        size="lg"
+                        iconButton={false}
+                        textButton={true}
+                        Icon={isCardExpanded ? arrow_down : arrow_right}
+                        onClick={handleExpandCard}></IconButton>
+
+                      {/* <Button
+                        variant="tertiary"
+                        type="button"
+                        onClick={handleExpandCard}
+                        className={styles.toggleBtn}>
+                        <img
+                          src={isCardExpanded ? arrow_down : arrow_right}
+                          alt="toggle-icon"
+                        />
+                        {therapyDetails?.productName || 'SP Therapy Details'}
+                      </Button> */}
+                      {/* <Button
+                        variant="tertiary"
+                        type="button"
+                        onClick={handleExpandCard}
+                        size="lg">
+                        {therapyDetails?.productName || 'SP Therapy Details'}
+                      </Button> */}
+                    </div>
+
+                    {isCardExpanded && (
+                      <DetailsPanel
+                        details={therapyDetails}
+                        handleSelect={handleSelect}
+                        onClose={onClose}
+                        therapyData={spTherapyData}
+                        refetch={refetch}
+                      />
+                    )}
+                  </div>
+                ) : (
+                  <DetailsPanel
+                    details={therapyDetails}
+                    handleSelect={handleSelect}
+                    onClose={onClose}
+                    therapyData={buyAndBillTherapyData}
+                    refetch={refetch}
+                  />
+                )}
+              </>
             )}
           </div>
         )}
