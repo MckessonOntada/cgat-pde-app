@@ -26,17 +26,21 @@ async function uploadSPCrosswalk(payload) {
   return {};
 }
 
-async function downloadSPProductInfo() {
-  return [];
-}
+async function downloadAssetTemplate(resourceName) {
+  try {
+    const documentUrl = `${ApiRoutes.THERAPIES()}/download?channelType=${resourceName}`;
+    const res = await HttpResourceService.callRest(documentUrl, httpVerb.GET);
 
-async function downloadMaterialInfo() {
-  return [];
+    return res;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+  return {};
 }
 
 export default Object.freeze({
   getAllSPCrosswalk,
   uploadSPCrosswalk,
-  downloadSPProductInfo,
-  downloadMaterialInfo
+  downloadAssetTemplate
 });

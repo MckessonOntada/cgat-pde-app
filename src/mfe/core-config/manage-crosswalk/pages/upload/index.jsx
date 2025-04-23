@@ -11,11 +11,12 @@ import {
   validateFile
 } from '@src/components/uploadFile/uploadUtils';
 import { useNavigate } from 'react-router-dom';
+import CommonUtils from '@src/util/CommonUtils';
 
 const DOWNLOAD_CONTEXT_OPTIONS = {
   DOWNLOAD_TEMPLATE: 'Download Template',
   DOWNLOAD_SP_PRODUCT_INFO: 'Download SP Product Info',
-  DOWNLOAD_MATERIAL_DATA: 'Download Material Info'
+  DOWNLOAD_MATERIAL_INFO: 'Download Material Info'
 };
 
 const Upload = () => {
@@ -91,22 +92,26 @@ const Upload = () => {
         );
         break;
       }
-      case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_SP_ACCOUNT_DATA: {
-        SPCrosswalkService.downloadSPProductInfo().then((response) => {
-          CommonUtils.downloadFile(
-            new Blob([response.data], { type: 'text/csv;charset=utf-8;' }),
-            'Accounts'
-          );
-        });
+      case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_SP_PRODUCT_INFO: {
+        SPCrosswalkService.downloadAssetTemplate('SPECIALITY_PHARMA').then(
+          (response) => {
+            CommonUtils.downloadFile(
+              new Blob([response.data], { type: 'text/csv;charset=utf-8;' }),
+              'Product Info'
+            );
+          }
+        );
         break;
       }
-      case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_SP_MATERIAL_DATA: {
-        SPCatalogService.downloadMaterialInfo().then((response) => {
-          CommonUtils.downloadFile(
-            new Blob([response.data], { type: 'text/csv;charset=utf-8;' }),
-            'Material'
-          );
-        });
+      case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_MATERIAL_INFO: {
+        SPCrosswalkService.downloadAssetTemplate('BUY_AND_BILL').then(
+          (response) => {
+            CommonUtils.downloadFile(
+              new Blob([response.data], { type: 'text/csv;charset=utf-8;' }),
+              'Material Info'
+            );
+          }
+        );
         break;
       }
       default:
