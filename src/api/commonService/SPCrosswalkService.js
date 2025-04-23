@@ -14,6 +14,19 @@ async function getAllSPCrosswalk(requestParams) {
   return {};
 }
 
+async function uploadSPCrosswalk(payload) {
+  const url = `${ApiRoutes.USER_SERVICE_BASE}cross-walk/upload`;
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, payload, {
+    'Content-Type': 'multipart/form-data'
+  });
+
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
+
 export default Object.freeze({
-  getAllSPCrosswalk
+  getAllSPCrosswalk,
+  uploadSPCrosswalk
 });
