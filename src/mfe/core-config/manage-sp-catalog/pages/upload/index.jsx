@@ -12,6 +12,7 @@ import {
 import SPCatalogService from '@src/api/commonService/SPCatalogService';
 import CommonUtils, { downloadFile } from '@src/util/CommonUtils';
 import ContextMenu from '../context-menu';
+import { useNavigate } from 'react-router-dom';
 
 const DOWNLOAD_CONTEXT_OPTIONS = {
   DOWNLOAD_TEMPLATE: 'Download Template',
@@ -22,7 +23,7 @@ const DOWNLOAD_CONTEXT_OPTIONS = {
 const Upload = () => {
   const { t } = useTranslate();
   const { items, add, removeAll, remove } = useTimedArray(10000);
-
+  const navigate = useNavigate();
   const handleOnUpload = (values) => {
     removeAll();
     const { file } = values;
@@ -122,7 +123,7 @@ const Upload = () => {
           className="back-button-control"
           variant="tertiary"
           Icon={() => <IconArrowLeft />}
-          onClick={() => {}}
+          onClick={() => navigate('/admin/sp-catalog')}
           size="md">
           {t('label.backSpCatalog')}
         </Button>
