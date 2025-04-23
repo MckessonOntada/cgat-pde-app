@@ -15,7 +15,6 @@ const MATERIAL_CROSSWALK_COLUMNS = {
   SP_PRODUCT_NDC: 'SP_PRODUCT_NDC',
   ACTION: 'ACTION'
 };
-
 export const getColumns = () => {
   const { t } = useTranslate();
   const dispatch = useDispatch();
@@ -45,13 +44,14 @@ export const getColumns = () => {
     );
     dispatch(openModal(state));
   };
+
   return [
     {
       id: MATERIAL_CROSSWALK_COLUMNS.BUY_AND_BILL_MATERIAL_ID,
       name: 'Buy & Bill Material ID',
       minWidth: '160px',
       sortable: true,
-      sortKey: 'materialId',
+      sortKey: 'bnbMaterialNumber',
       cell: (props) => <div>{props?.id || '-'}</div>
     },
     {
@@ -59,7 +59,7 @@ export const getColumns = () => {
       name: 'Buy & Bill Material Description',
       minWidth: '160px',
       sortable: true,
-      sortKey: 'materialDescription',
+      sortKey: 'bnbMaterialDescription',
       cell: (props) => (
         <div>
           {(
