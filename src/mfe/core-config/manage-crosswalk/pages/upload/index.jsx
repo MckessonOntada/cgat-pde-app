@@ -6,7 +6,10 @@ import { Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import ContextMenu from '@src/mfe/core-config/manage-sp-catalog/pages/context-menu';
 import SPCrosswalkService from '@src/api/commonService/SPCrosswalkService';
-import { validateFile } from '@src/components/uploadFile/uploadUtils';
+import {
+  handleDownload,
+  validateFile
+} from '@src/components/uploadFile/uploadUtils';
 
 const DOWNLOAD_CONTEXT_OPTIONS = {
   DOWNLOAD_TEMPLATE: 'Download Template',
@@ -78,7 +81,38 @@ const Upload = () => {
       });
   };
 
-  const handleOnDownload = () => {};
+  const handleOnDownload = (option) => {
+    switch (option) {
+      case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_TEMPLATE: {
+        handleDownload(
+          '/templates/upload_sp_crosswalk_template.csv',
+          'upload_sp_crosswalk_template.csv'
+        );
+        break;
+      }
+      case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_SP_ACCOUNT_DATA: {
+        SPCrosswalkService.downloadSPProductInfo().then((response) => {
+          CommonUtils.downloadFile(
+            new Blob([response.data], { type: 'text/csv;charset=utf-8;' }),
+            'Accounts'
+          );
+        });
+        break;
+      }
+      case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_SP_MATERIAL_DATA: {
+        SPCatalogService.downloadMaterialInfo().then((response) => {
+          CommonUtils.downloadFile(
+            new Blob([response.data], { type: 'text/csv;charset=utf-8;' }),
+            'Material'
+          );
+        });
+        break;
+      }
+      default:
+        return;
+    }
+  };
+
   return (
     <div className="MCP-module-wrapper">
       <div>

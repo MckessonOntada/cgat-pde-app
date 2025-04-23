@@ -26,7 +26,17 @@ async function uploadSPCrosswalk(payload) {
   return {};
 }
 
+async function downloadSPProductInfo() {
+  return [];
+}
+
+async function downloadMaterialInfo() {
+  return [];
+}
+
 export default Object.freeze({
   getAllSPCrosswalk,
-  uploadSPCrosswalk
+  uploadSPCrosswalk,
+  downloadSPProductInfo,
+  downloadMaterialInfo
 });
