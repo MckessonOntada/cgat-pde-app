@@ -42,46 +42,27 @@ export const getColumns = () => {
       width: '40px'
     },
     {
-      id: PROVIDER_COLUMNS.PROVIDER_NAME,
-      name: 'Provider Name',
-      selector: (row) => row.providerName,
+      id: 'SP_PRODUCT_ID',
+      name: 'Product Name',
+      selector: (row) => row.productName,
       minWidth: '160px',
       sortable: true,
-      sortKey: 'providerName',
-      cell: (props) => <div>{props?.providerName || '-'}</div>
+      sortKey: 'productName',
+      cell: (props) => <div>{props?.productName || '-'}</div>
     },
     {
-      id: PROVIDER_COLUMNS.ADDRESS,
-      name: 'Address',
-      selector: (row) => row.address,
+      id: 'NDC',
+      name: 'ndc',
+      selector: (row) => row.ndc,
       minWidth: '160px',
-      cell: (props) => <div>{props?.address || '-'}</div>
+      cell: (props) => <div>{props?.ndc || '-'}</div>
     },
     {
-      id: PROVIDER_COLUMNS.DEA_NUMBER,
-      name: 'DEA Number',
-      selector: (row) => row.deaNumber,
+      id: 'ACCOUNT_NUMBER',
+      name: 'Account Number',
+      selector: (row) => row.accountNumber,
       minWidth: '160px',
-      cell: (props) => <div>{props?.deaNumber || '-'}</div>
-    },
-    {
-      id: PROVIDER_COLUMNS.NPI_NUMBER,
-      name: 'NPI Number',
-      selector: (row) => row.npiNumber,
-      minWidth: '160px',
-      cell: (props) => <div>{props?.npiNumber || '-'}</div>
-    },
-    {
-      id: PROVIDER_COLUMNS.STATUS,
-      name: 'Status',
-      selector: (row) => row.status,
-      minWidth: '160px',
-      cell: (props) => (
-        <Badge
-          text={`label.status.${props.status ? 'active' : 'inactive'}`}
-          type={'success'}
-        />
-      )
+      cell: (props) => <div>{props?.accountNumber || '-'}</div>
     },
     {
       id: PROVIDER_COLUMNS.ACTION,

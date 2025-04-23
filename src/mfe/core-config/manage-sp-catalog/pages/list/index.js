@@ -39,6 +39,7 @@ const List = () => {
   const [organizationQuery, setOrganizationQuery] = React.useState('');
   const [accountList, setAccountList] = React.useState([]);
   const [accountQuery, setAccountQuery] = React.useState('');
+  const [selectedOrganizations, setSelectedOrganization] = React.useState([]);
   const [selectedAccounts, setSelectedAccount] = React.useState([]);
 
   React.useEffect(() => {
@@ -47,14 +48,22 @@ const List = () => {
       query: organizationQuery
     };
     SPCatalogService.getOrganizations(payload).then((response) => {
-      setOrganizationList(response.content);
+      setOrganizationList([
+        ...selectedOrganizations,
+        ...response.content.filter(
+          (item) => !selectedOrganizations.some((org) => org.id === item.id)
+        )
+      ]);
     });
   }, [organizationQuery]);
 
   const handleOnOrganizationSelectionChange = (changedOrgList) => {
-    const practiceIds = changedOrgList
-      .filter((item) => item.isChecked)
-      .map((item) => item.value);
+    const selectedOrganizations = changedOrgList.filter(
+      (item) => item.isChecked
+    );
+
+    setSelectedOrganization(selectedOrganizations);
+    const practiceIds = selectedOrganizations.map((item) => item.value);
 
     if (practiceIds.length > 0) {
       const payload = {
@@ -130,11 +139,6 @@ const List = () => {
                 size="md"
                 isSortEnable={false}
                 value={''}
-                getUpdatedOptions={(e) => {
-                  if (e.length > 0) {
-                    setOrganizationQuery(e);
-                  }
-                }}
               />
             </div>
             <div className="account-select">
@@ -147,11 +151,6 @@ const List = () => {
                 options={accountList}
                 variant={'async'}
                 onSearch={setAccountQuery}
-                getUpdatedOptions={(e) => {
-                  if (e.length > 0) {
-                    setAccountList(e);
-                  }
-                }}
                 recordsCountToEnableSearch={5}
                 size="md"
               />
