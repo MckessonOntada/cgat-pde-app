@@ -43,39 +43,7 @@ const Upload = () => {
           fn: handleOnUpload
         }}
         onFileSelection={(file) => console.log(`validating ${file.filename}`)}
-        prefixChildren={true}>
-        <div>
-          <Field
-            id="upload-option"
-            name="upload-option"
-            caption={t('control.selectUploadOption')}
-            placeholder=" "
-            isRequired
-            component={Components['radioGroup']}
-            maxLength={50}
-            direction="row"
-            itemCustomStyles={{
-              fontSize: '14px',
-              marginRight: '24px',
-              fontWeight: '400'
-            }}
-            items={[
-              {
-                label: t('label.uploadOption.full'),
-                value: 'Full'
-              },
-              {
-                label: t('label.uploadOption.partial'),
-                value: 'Partial'
-              }
-            ]}
-            labelCustomStyles={{ marginBottom: '8px', fontSize: '14px' }}
-          />
-          <div className="control-helper-text">
-            {t('control.selectUploadOption.helperText')}
-          </div>
-        </div>
-      </UploadFile>
+        prefixChildren={true}></UploadFile>
     </div>
   );
 };
