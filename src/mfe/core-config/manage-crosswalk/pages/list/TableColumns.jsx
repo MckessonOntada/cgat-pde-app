@@ -5,6 +5,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 
 const MATERIAL_CROSSWALK_COLUMNS = {
   BUY_AND_BILL_MATERIAL_ID: 'BUY_AND_BILL_MATERIAL_ID',
@@ -52,7 +53,7 @@ export const getColumns = () => {
       minWidth: '160px',
       sortable: true,
       sortKey: 'bnbMaterialNumber',
-      cell: (props) => <div>{props?.id || '-'}</div>
+      cell: (props) => <div>{props?.bnbMaterialNumber || '-'}</div>
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.BUY_AND_BILL_MATERIAL_DESCRIPTION,
@@ -64,7 +65,7 @@ export const getColumns = () => {
         <div>
           {(
             <Link className="MCP-table-link" to={`?material=${props.id}`}>
-              {props?.materialDescription}
+              {props?.bnbMaterialDescription}
             </Link>
           ) || '-'}
         </div>
@@ -77,7 +78,7 @@ export const getColumns = () => {
       minWidth: '160px',
       sortable: true,
       sortKey: 'materialNdc',
-      cell: (props) => <div>{props?.materialNdc || '-'}</div>
+      cell: (props) => <div>{props?.bnbNdc || '-'}</div>
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_ID,
@@ -85,7 +86,13 @@ export const getColumns = () => {
       minWidth: '160px',
       sortable: true,
       sortKey: 'spProductId',
-      cell: (props) => <div>{props?.spProductId || '-'}</div>
+      cell: (props) => {
+        if (props?.spProductId) {
+          return <EclipsesText str={props?.spProductId} maxLength={140} />;
+        } else {
+          return <div>{'-'}</div>;
+        }
+      }
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_NAME,
@@ -107,7 +114,7 @@ export const getColumns = () => {
       minWidth: '160px',
       sortable: true,
       sortKey: 'spProductNdc',
-      cell: (props) => <div>{props?.spProductNdc || '-'}</div>
+      cell: (props) => <div>{props?.spNdc || '-'}</div>
     },
 
     {

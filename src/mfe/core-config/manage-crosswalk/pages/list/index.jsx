@@ -14,6 +14,7 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import {
   useFilters,
   usePagination,
+  useSort,
   useTable
 } from '../../../manage-providers/context/TableContext';
 import { getColumns } from './TableColumns';
@@ -29,6 +30,7 @@ const List = () => {
   const { filters, applyFilters, clearFilters } = useFilters();
   const { pagination, changePage } = usePagination();
   const { data = [] } = useTable();
+  const { applySort } = useSort();
   const breadcrumbItems = React.useMemo(() => {
     return [
       {
@@ -45,6 +47,13 @@ const List = () => {
     ];
   }, [isSystemAdminView]);
   const handleOnClick = (url) => () => navigate(url);
+
+  const handleOnSort = (data, direction) => {
+    const { sortKey } = data;
+    if (sortKey && direction) {
+      applySort(sortKey, direction);
+    }
+  };
 
   return (
     <div className="MCP-module-wrapper">
@@ -105,7 +114,7 @@ const List = () => {
           columns={getColumns()}
           data={data}
           handleChangePage={changePage}
-          onSortIconClick={() => {}}
+          onSortIconClick={handleOnSort}
           pagination={true}
           currentPage={pagination.pageNumber}
           totalPageCount={pagination.totalPages}
