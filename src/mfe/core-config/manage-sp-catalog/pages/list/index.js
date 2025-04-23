@@ -87,6 +87,7 @@ const List = () => {
     return {
       search: '',
       status: '',
+      sortBy: 'sap_material',
       accountNumbers: selectedAccounts
     };
   }, [selectedAccounts]);
