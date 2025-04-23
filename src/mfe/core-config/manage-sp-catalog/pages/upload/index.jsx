@@ -73,12 +73,22 @@ const Upload = () => {
       })
       .catch((error) => {
         const { response: errorResponse = {} } = error;
-        if (errorResponse.data?.message) {
+
+        if (errorResponse.data?.errorCodes) {
+          errorResponse.data?.errorCodes.forEach((element) => {
+            add({
+              type: 'error',
+              description: t(element),
+              isSticky: true
+            });
+          });
+        } else {
           add({
             type: 'error',
             description:
               errorResponse.data?.message ||
-              t('providers.message.fileUploadFailure')
+              t('providers.message.fileUploadFailure'),
+            isSticky: true
           });
         }
       });

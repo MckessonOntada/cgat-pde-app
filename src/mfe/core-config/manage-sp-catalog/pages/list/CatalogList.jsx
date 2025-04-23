@@ -18,24 +18,16 @@ import {
 } from '@src/mfe/core-config/manage-providers/context/TableContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
+import { useNavigate } from 'react-router-dom';
 
 const CatalogList = () => {
   const { filters, applyFilters, clearFilters } = useFilters();
+  const navigate = useNavigate();
   const { pagination, changePage } = usePagination();
   const { t } = useTranslate();
   const { data = [] } = useTable();
   const additionalFiltersConfig = React.useMemo(() => {
-    return [
-      {
-        type: 'dropdown',
-        name: 'statuses',
-        label: t('captions.status'),
-        options: Object.entries(PROVIDER_STATUS).map(([key, value]) => ({
-          label: t(`providerStatus.${key}`),
-          value: value
-        }))
-      }
-    ];
+    return [];
   }, []);
   const handleOnClick = (url) => () => navigate(url);
   return (
