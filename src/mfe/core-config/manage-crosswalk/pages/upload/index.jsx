@@ -10,6 +10,7 @@ import {
   handleDownload,
   validateFile
 } from '@src/components/uploadFile/uploadUtils';
+import { useNavigate } from 'react-router-dom';
 
 const DOWNLOAD_CONTEXT_OPTIONS = {
   DOWNLOAD_TEMPLATE: 'Download Template',
@@ -20,7 +21,7 @@ const DOWNLOAD_CONTEXT_OPTIONS = {
 const Upload = () => {
   const { t } = useTranslate();
   const { items, add, remove, removeAll } = useTimedArray(10000);
-
+  const navigate = useNavigate();
   const handleOnUpload = (values) => {
     removeAll();
     const { file } = values;
@@ -120,7 +121,7 @@ const Upload = () => {
           className="back-button-control"
           variant="tertiary"
           Icon={() => <IconArrowLeft />}
-          onClick={() => {}}
+          onClick={() => navigate('/admin/crosswalk')}
           size="md">
           {t('label.backSpCrosswalk')}
         </Button>
