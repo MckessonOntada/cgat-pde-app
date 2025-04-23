@@ -43,12 +43,21 @@ export const getColumns = () => {
     },
     {
       id: 'SP_PRODUCT_ID',
+      name: 'SP Product Id',
+      selector: (row) => row.productName,
+      minWidth: '160px',
+      sortable: true,
+      sortKey: 'spProductId',
+      cell: (props) => <div>{props?.spProductId || '-'}</div>
+    },
+    {
+      id: 'PRODUCT_NAME',
       name: 'Product Name',
       selector: (row) => row.productName,
       minWidth: '160px',
       sortable: true,
       sortKey: 'productName',
-      cell: (props) => <div>{props?.productName || '-'}</div>
+      cell: (props) => <div>{props?.spProductName || '-'}</div>
     },
     {
       id: 'NDC',
