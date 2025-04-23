@@ -127,5 +127,6 @@ export const ConfigurationMessagesEN = {
   'serverResponse.provider.npi.conflict': 'NPI number already exist',
 
   'button.caption.confirm': 'Confirm',
-  'button.caption.cancel': 'Cancel'
+  'button.caption.cancel': 'Cancel',
+  'label.backSpCrosswalk': 'Back to Manage Crosswalk Material'
 };

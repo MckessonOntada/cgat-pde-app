@@ -88,7 +88,7 @@ const Upload = () => {
           Icon={() => <IconArrowLeft />}
           onClick={() => {}}
           size="md">
-          {t('label.backSpCatalog')}
+          {t('label.backSpCrosswalk')}
         </Button>
       </div>
       <UploadFile
