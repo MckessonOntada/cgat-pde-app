@@ -14,6 +14,8 @@ import { PROVIDER_STATUS } from '@src/mfe/core-config/manage-providers/config';
 import {
   useFilters,
   usePagination,
+  useSelection,
+  useSort,
   useTable
 } from '@src/mfe/core-config/manage-providers/context/TableContext';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -26,10 +28,18 @@ const CatalogList = () => {
   const { pagination, changePage } = usePagination();
   const { t } = useTranslate();
   const { data = [] } = useTable();
+  const { applySort } = useSort();
+  const { selectedRows } = useSelection();
   const additionalFiltersConfig = React.useMemo(() => {
     return [];
   }, []);
   const handleOnClick = (url) => () => navigate(url);
+  const handleOnSort = (field, direction) => {
+    const { sortKey } = field;
+    if (sortKey && direction) {
+      applySort(sortKey, direction);
+    }
+  };
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-CardContainer">
@@ -70,12 +80,27 @@ const CatalogList = () => {
           </div>
         }
       />
+      {selectedRows.size > 0 && (
+        <div className="table-selection-ribbon">
+          <p>
+            {`${selectedRows.size} Item${
+              selectedRows.size > 1 ? 's' : ''
+            } selected`}
+          </p>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => navigate('link-sp-accounts/')}>
+            {t('provider.btnUnlink')}
+          </Button>
+        </div>
+      )}
       <CustomDataTable
         id="provider-list-table"
         columns={getColumns()}
         data={data}
         handleChangePage={changePage}
-        onSortIconClick={() => {}}
+        onSortIconClick={handleOnSort}
         pagination={true}
         currentPage={pagination.pageNumber}
         totalPageCount={pagination.totalPages}

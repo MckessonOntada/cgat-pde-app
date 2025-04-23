@@ -97,6 +97,7 @@ const List = () => {
       search: '',
       status: '',
       sortBy: 'sap_material',
+      channelType: 'SPECIALITY_PHARMA',
       accountNumbers: selectedAccounts
     };
   }, [selectedAccounts]);
@@ -161,6 +162,11 @@ const List = () => {
         <TableProvider
           key={selectedAccounts.join('-') || 1}
           defaultFilters={defaultFilters}
+          allowedSort={[
+            'sap_material',
+            'material_description_in_language_en',
+            'sold_to_customer'
+          ]}
           fetchFn={
             selectedAccounts?.length > 0 ? SPCatalogService.getAllCatalog : null
           }>
