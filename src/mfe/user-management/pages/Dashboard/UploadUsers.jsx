@@ -99,7 +99,7 @@ function UploadUsers() {
           caption: t('userManagement.button.addUsers'),
           fn: handleUpload
         }}
-        onFileSelection={(file) => validateFile(file, ['text/csv'])}
+        onFileSelection={(file) => validateFile(t, file, ['text/csv'])}
       />
     </div>
   );

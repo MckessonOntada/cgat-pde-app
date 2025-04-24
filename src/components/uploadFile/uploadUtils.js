@@ -1,15 +1,18 @@
 import CommonUtils from '@src/util/CommonUtils';
 
-export const validateFile = (file, allowedTypes = ['text/csv']) => {
+export const validateFile = (t, file, allowedTypes = ['text/csv']) => {
   if (!allowedTypes.includes(file.type)) {
+    const displayTypes = allowedTypes.map(type => {
+      if (type === 'text/csv') return 'csv';
+      return type;
+    });
+
     return {
       isValid: false,
-      message: `Unsupported file type. Please upload one of: ${allowedTypes.join(
-        ', '
-      )}`
+      message: t('upload.file.error.unsupportedFile').replace('{{file}}', displayTypes.join(', '))
     };
   }
-  return { isValid: true, message: 'File is valid.' };
+  return { isValid: true, message: t('upload.file.success.validFile') };
 };
 
 export const handleDownload = (filePath, fileName) => {
