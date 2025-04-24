@@ -27,7 +27,7 @@ const List = () => {
       },
       {
         label: t('breadcrumb.systemConfiguration'),
-        url: '/admin/system-configuration'
+        url: '/orders/system-configuration'
       },
       {
         label: t('label.manageSpCatalog')
