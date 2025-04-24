@@ -99,7 +99,7 @@ const INITIAL_PAGINATION_STATE = {
 
 const INITIAL_SORT_STATE = {
   sortBy: null,
-  sortOrder: null
+  sortOrder: 'asc'
 };
 
 export const TableProvider = ({

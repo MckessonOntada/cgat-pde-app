@@ -1,6 +1,5 @@
 import React from 'react';
-import { Badge, MenuList, CheckboxGroup, Button } from '@mckesson/mcp-component-library';
-import { ReactComponent as EllipsisIcon } from '@src/assets/svg/ellipsis.svg';
+import { Badge, MenuList, CheckboxGroup, Button, IconButton } from '@mckesson/mcp-component-library';
 import { useSelection } from '@src/mfe/core-config/manage-providers/context/TableContext';
 import { Link } from 'react-router-dom';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
@@ -46,7 +45,7 @@ export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial }) => {
       id: 'SP_PRODUCT_ID',
       name: 'SP Product Id',
       selector: (row) => row.sapMaterial,
-      minWidth: '160px',
+      minWidth: '120px',
       sortable: true,
       sortKey: 'sap_material',
       cell: (props) => (
@@ -75,24 +74,31 @@ export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial }) => {
       sortable: true,
       sortKey: 'material_description_in_language_en',
       cell: (props) => (
-        <div>{props?.materialDescriptionInLanguageEn || '-'}</div>
+        <EclipsesTextcss
+          str={props?.materialDescriptionInLanguageEn || '-'}
+          maxWidth={150}
+        />
       )
     },
     {
       id: 'NDC',
       name: 'NDC',
       selector: (row) => row.ndc,
-      minWidth: '160px',
-      cell: (props) => <div>{props?.ndc || '-'}</div>
+      minWidth: '120px',
+      cell: (props) => (
+        <EclipsesTextcss str={props?.ndc || '-'} maxWidth={110} />
+      )
     },
     {
       id: 'ACCOUNT_NUMBER',
       name: 'Account Number',
       selector: (row) => row.soldToCustomer,
-      minWidth: '160px',
+      minWidth: '120px',
       sortable: true,
       sortKey: 'sold_to_customer',
-      cell: (props) => <div>{props?.soldToCustomer || '-'}</div>
+      cell: (props) => (
+        <EclipsesTextcss str={props?.soldToCustomer || '-'} maxWidth={110} />
+      )
     },
     {
       id: PROVIDER_COLUMNS.ACTION,
@@ -100,15 +106,15 @@ export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial }) => {
       selector: () => {},
       minWidth: '160px',
       cell: () => (
-        <div className="styled-icon-button">
-          <Button
-            onClick={() => {}}
-            variant="tertiary"
-            size="md"
-            Icon={LinkIcon}>
-            {t('provider.btnUnlink')}
-          </Button>
-        </div>
+        <IconButton
+          variant="tertiary"
+          label={t('button.caption.unlink')}
+          size="lg"
+          iconButton={false}
+          textButton={true}
+          Icon={LinkIcon}
+          onClick={() => {}}
+        />
       )
     }
   ];

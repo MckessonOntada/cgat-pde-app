@@ -131,5 +131,11 @@ export const ConfigurationMessagesEN = {
   'label.backSpCrosswalk': 'Back to Manage Crosswalk Material',
   'invalid.csv.file.headers.missing':
     'File is invalid. Please select valid file to upload.',
-  'provider.btnUnlink': 'Unlink'
+  'provider.btnUnlink': 'Unlink',
+  'fileUpload.crosswalk.success':
+    'File processed successfully, No errors were found.',
+  'fileUpload.crosswalk.partialSuccess':
+    'File processing completed, Some records were not processed successfully. Please review the downloaded error report.',
+  'label.spCatalogDataGrid': 'SP Catalog',
+  'label.spCatalogDataGridDescription': 'No data found'
 };

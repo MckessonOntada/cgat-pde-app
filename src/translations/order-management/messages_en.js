@@ -582,7 +582,7 @@ export const MessageEn = {
   'controls.uploadCrosswalk': 'Upload Crosswalk',
   'controls.placeholder.materialCrosswalk':
     'Search by Description, NDC, Product Name ID...',
-  'label.emptyMaterialCrosswalkTableDescription': 'Something went wrong',
+  'label.emptyMaterialCrosswalkTableDescription': 'No records found.',
   'controls.addMaterialCrosswalk': 'Add Material Crosswalk',
   'heading.uploadMaterialCrosswalkListCSV':
     'Upload Material Crosswalk List CSV',
@@ -591,7 +591,7 @@ export const MessageEn = {
   'label.materialCrosswalkListing': 'Material Crosswalk Listing',
   'label.uploadOption.full': 'Full',
   'label.uploadOption.partial': 'Partial',
-  'button.caption.unlink': 'Unlink',
+  'button.caption.unlink': 'UNLINK',
   'control.selectUploadOption': 'Please select option to upload.',
   'control.selectUploadOption.helperText':
     'Uploads the entire dataset, replacing existing records. Use this option if you want to completely refresh the data.',
@@ -611,6 +611,9 @@ export const MessageEn = {
   'label.unlinkRecord': 'Unlink Record?',
   'label.unlinkRecordDescription':
     'Are you sure you want to unlink this record?',
+  'label.unlinkCrosswalk': 'Unlink Crosswalk?',
+  'label.unlinkCrosswalkDescription':
+    'Are you sure you want to unlink this crosswalk?',
 
   'tooltip.material.status.PENDING': 'Pending',
   'tooltip.material.status.AVAILABLE': 'Therapy Available',
@@ -620,5 +623,11 @@ export const MessageEn = {
 
   'labels.orderQuantity': 'Order Quantity',
   'labels.orderType': 'Order Type',
-  'labels.assignee': 'Assignee'
+  'labels.assignee': 'Assignee',
+
+  'invalid.csv.file.type':
+    'The uploaded file is invalid. Please upload a valid file',
+  'invalid.csv.file.headers.missing':
+    'The uploaded file is invalid. It missing required columns. Please upload a valid file',
+  'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file'
 };

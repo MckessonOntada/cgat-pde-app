@@ -11,7 +11,7 @@ import {
   validateFile
 } from '@src/components/uploadFile/uploadUtils';
 import { useNavigate } from 'react-router-dom';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { downloadFile } from '@src/util/CommonUtils';
 
 const DOWNLOAD_CONTEXT_OPTIONS = {
   DOWNLOAD_TEMPLATE: 'Download Template',
@@ -42,20 +42,20 @@ const Upload = () => {
         if (response.status == 200) {
           add({
             type: 'success',
-            description: t('providers.message.fileUploadSuccess')
+            description: t('fileUpload.crosswalk.success')
           });
         } else if (response.status === 206) {
           const downloadErrorFile = () => {
             const blob = new Blob([response.data], {
               type: 'text/csv;charset=utf-8;'
             });
-            downloadFile(blob, 'SP_Catalog_Upload_Log');
+            downloadFile(blob, 'SP_Crosswalk_Upload_Log');
           };
           add({
             type: 'info',
             description: (
               <div className="alert-controls">
-                <p>{t('providers.message.fileUploadPartialSuccess')}</p>
+                <p>{t('fileUpload.crosswalk.partialSuccess')}</p>
                 <div>
                   <Button
                     variant="secondary"
@@ -72,12 +72,21 @@ const Upload = () => {
       })
       .catch((error) => {
         const { response: errorResponse = {} } = error;
-        if (errorResponse.data?.message) {
+        if (errorResponse.data?.errorCodes) {
+          errorResponse.data?.errorCodes.forEach((element) => {
+            add({
+              type: 'error',
+              description: t(element),
+              isSticky: true
+            });
+          });
+        } else {
           add({
             type: 'error',
             description:
               errorResponse.data?.message ||
-              t('providers.message.fileUploadFailure')
+              t('providers.message.fileUploadFailure'),
+            isSticky: true
           });
         }
       });
@@ -148,11 +157,7 @@ const Upload = () => {
             </Button>
           </ContextMenu>
         }
-        onAlertClose={() => {}}
-        // downloadTemplate={{
-        //   caption: t('controls.downloadCSVTemplate'),
-        //   fn: handleOnDownloadTemplate
-        // }}
+        onCloseAlert={remove}
         upload={{
           caption: t('controls.uploadMaterialCrosswalk'),
           fn: handleOnUpload

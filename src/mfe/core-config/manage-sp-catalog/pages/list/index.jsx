@@ -27,7 +27,7 @@ const List = () => {
       },
       {
         label: t('breadcrumb.systemConfiguration'),
-        url: '/admin/system-configuration'
+        url: '/orders/system-configuration'
       },
       {
         label: t('label.manageSpCatalog')
@@ -43,11 +43,12 @@ const List = () => {
   const [selectedAccounts, setSelectedAccount] = React.useState([]);
 
   React.useEffect(() => {
-    console.log(organizationQuery);
     const payload = {
       query: organizationQuery
     };
     SPCatalogService.getOrganizations(payload).then((response) => {
+      debugger;
+
       setOrganizationList([
         ...selectedOrganizations,
         ...response.content.filter(
@@ -56,6 +57,28 @@ const List = () => {
       ]);
     });
   }, [organizationQuery]);
+
+  React.useEffect(() => {
+    const practiceIds = selectedOrganizations.map((item) => item.value);
+    if (!practiceIds || practiceIds.length === 0) return;
+    const payload = {
+      query: accountQuery,
+      partnerFunction: 'SOLD_TO',
+      practiceIdList: practiceIds
+    };
+    SPCatalogService.getAccountList(payload).then((response) => {
+      const accounts = response.content.map((item) => ({
+        value: item.id,
+        label: item.accountName
+      }));
+      setAccountList([
+        ...selectedAccounts,
+        ...accounts.filter(
+          (item) => !selectedAccounts.some((acc) => acc.value === item.value)
+        )
+      ]);
+    });
+  }, [accountQuery]);
 
   const handleOnOrganizationSelectionChange = (changedOrgList) => {
     const selectedOrganizations = changedOrgList.filter(
@@ -80,15 +103,12 @@ const List = () => {
         setAccountList(accounts);
       });
     } else {
-      setAccountList([]);
+      setAccountList([...selectedAccounts]);
     }
   };
 
   const handleOnAccountSelectionChange = (changedAccounts) => {
-    const selectedAccounts = changedAccounts
-      .filter((item) => item.isChecked)
-      .map((item) => item.value);
-
+    const selectedAccounts = changedAccounts.filter((item) => item.isChecked);
     setSelectedAccount(selectedAccounts);
   };
 
@@ -98,7 +118,7 @@ const List = () => {
       status: '',
       sortBy: 'sap_material',
       channelType: 'SPECIALITY_PHARMA',
-      accountNumbers: selectedAccounts
+      accountNumbers: selectedAccounts.map((item) => item.value)
     };
   }, [selectedAccounts]);
 

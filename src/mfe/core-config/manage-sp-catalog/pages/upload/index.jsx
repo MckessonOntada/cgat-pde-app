@@ -104,7 +104,7 @@ const Upload = () => {
         break;
       }
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_SP_ACCOUNT_DATA: {
-        SPCatalogService.downloadAPAccountTemplate().then((response) => {
+        SPCatalogService.downloadSPAccountTemplate().then((response) => {
           CommonUtils.downloadFile(
             new Blob([response.data], { type: 'text/csv;charset=utf-8;' }),
             'Accounts'
@@ -113,7 +113,7 @@ const Upload = () => {
         break;
       }
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_SP_MATERIAL_DATA: {
-        SPCatalogService.downloadAPMaterialTemplate().then((response) => {
+        SPCatalogService.downloadSPMaterialTemplate().then((response) => {
           CommonUtils.downloadFile(
             new Blob([response.data], { type: 'text/csv;charset=utf-8;' }),
             'Material'

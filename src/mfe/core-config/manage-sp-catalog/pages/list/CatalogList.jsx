@@ -63,6 +63,7 @@ const CatalogList = () => {
               variant="secondary"
               className="button-icon"
               onClick={handleOnClick('upload')}
+              disabled={true}
               size="md">
               {t('controls.downloadList')}
             </Button>
@@ -77,6 +78,7 @@ const CatalogList = () => {
               Icon={AddCircleFilled}
               className="button-icon"
               onClick={handleOnClick('create')}
+              disabled={true}
               size="md">
               {t('controls.linkCatalog')}
             </Button>
@@ -114,8 +116,8 @@ const CatalogList = () => {
         noDataComponent={
           <ErrorBanner
             image={<EmptyProviderTable />}
-            heading={t('label.noSPAccountSelectedTitle')}
-            description={t('label.noSPAccountSelectedDescription')}
+            heading={t('label.spCatalogDataGrid')}
+            description={t('label.spCatalogDataGridDescription')}
           />
         }
       />
