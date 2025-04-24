@@ -4,7 +4,9 @@ export const validateFile = (file, allowedTypes = ['text/csv']) => {
   if (!allowedTypes.includes(file.type)) {
     return {
       isValid: false,
-      message: `Unsupported file type. Please upload one of: ${allowedTypes.join(', ')}`
+      message: `Unsupported file type. Please upload one of: ${allowedTypes.join(
+        ', '
+      )}`
     };
   }
   return { isValid: true, message: 'File is valid.' };
@@ -27,7 +29,8 @@ export const createAlertHandler = (setAlert) => (type, message) => {
   return () => clearTimeout(timer);
 };
 
-const handleAlertClose = () => setAlert({ type: '', description: '', isAlertVisible: false });
+export const handleAlertClose = () =>
+  setAlert({ type: '', description: '', isAlertVisible: false });
 
 export const buildUploadFormData = (file, key = 'file') => {
   const formData = new FormData();

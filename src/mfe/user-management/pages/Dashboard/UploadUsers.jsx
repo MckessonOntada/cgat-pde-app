@@ -90,7 +90,7 @@ function UploadUsers() {
         isLoading={isLoading}
         messages={[alert]}
         showAlert={showAlert}
-        onAlertClose={handleAlertClose}
+        onCloseAlert={handleAlertClose}
         downloadTemplate={{
           caption: t('file.download.csv'),
           fn: downloadTemplate
