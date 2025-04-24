@@ -112,7 +112,7 @@ const Upload = () => {
           caption: t('controls.uploadProviders'),
           fn: handleOnUpload
         }}
-        onFileSelection={(file) => validateFile(file, ['text/csv'])}
+        onFileSelection={(file) => validateFile(t, file, ['text/csv'])}
         prefixChildren={true}></UploadFile>
     </div>
   );

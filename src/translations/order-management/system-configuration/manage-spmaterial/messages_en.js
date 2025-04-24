@@ -64,5 +64,7 @@ export const ManageSPMateriaMessagesEN = {
   'manageSPMaterial.messages.button.uploadConflict':
     'Issue in Uploading SP Materials. Some or all user records might have failed. The errors are listed in the downloaded file. Please review and try again.',
   'manageSPMaterial.messages.button.uploadSuccess': 'SP Materials have uploaded succesfully ',
-  'manageSPMaterial.messages.button.downloadFail': 'Failed while downloading CSV'
+  'manageSPMaterial.messages.button.downloadFail': 'Failed while downloading CSV',
+  'upload.file.error.unsupportedFile': 'Unsupported file type. Please upload one of: {{file}}',
+  'upload.file.success.validFile': 'File is valid.',
 };

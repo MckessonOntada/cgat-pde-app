@@ -161,7 +161,7 @@ const Upload = () => {
           fn: handleOnUpload
         }}
         onFileSelection={(file) =>
-          validateFile(file, ['text/csv'])
+          validateFile(t, file, ['text/csv'])
         }></UploadFile>
     </div>
   );
