@@ -64,12 +64,10 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
               onClick={(e) => {
                 e.preventDefault();
                 setOpenDetails(true);
-                setMaterialNumber(props?.id);
+                setMaterialNumber(props?.bnbMaterialNumber);
               }}>
-              {props?.bnbMaterialDescription} </Link>
-            // <Link className="MCP-table-link" to={`?material=${props.id}`}>
-            //   {props?.bnbMaterialDescription}
-            // </Link>
+              {props?.bnbMaterialDescription} 
+            </Link>
           ) || '-'}
         </div>
       )

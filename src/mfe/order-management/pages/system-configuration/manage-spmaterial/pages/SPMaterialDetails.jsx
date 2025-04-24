@@ -34,11 +34,11 @@ function SPMaterialDetails({
   const { isLoading, isError, data } = useQuery({
     queryKey: [
       'SPMaterial',
-      viewSPMaterial?.materialNumber || viewSPMaterial?.spProductId
+      viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId
     ],
     queryFn: async () => {
       const result = await MaterialService.getSPMaterialById(
-        viewSPMaterial?.materialNumber || viewSPMaterial?.spProductId,
+        viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId,
         requestParams
       );
       return result;

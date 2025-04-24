@@ -149,7 +149,7 @@ const List = () => {
 
         {openDetails && (
           <TherapyDetails
-            therapyId="000000000002888816"
+            therapyId={materialNumber}
             therapyData={MaterialDetailsConstants}
             configurationData={ConfigConstants}
             onClose={() => setOpenDetails(!openDetails)}
