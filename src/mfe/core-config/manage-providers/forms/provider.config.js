@@ -88,7 +88,8 @@ export const sections = [
             label: 'provider.zip',
             type: 'input',
             name: 'zip',
-            isRequired: true
+            isRequired: true,
+            maxLength: 9
           },
           {
             label: 'provider.state',
@@ -106,7 +107,8 @@ export const sections = [
             label: 'provider.phoneNumber',
             type: 'input',
             name: 'phoneNumber',
-            isRequired: true
+            isRequired: true,
+            maxLength: 10
           }
         ]
       }
