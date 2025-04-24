@@ -11,7 +11,7 @@ import {
   validateFile
 } from '@src/components/uploadFile/uploadUtils';
 import { useNavigate } from 'react-router-dom';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { downloadFile } from '@src/util/CommonUtils';
 
 const DOWNLOAD_CONTEXT_OPTIONS = {
   DOWNLOAD_TEMPLATE: 'Download Template',
@@ -49,7 +49,7 @@ const Upload = () => {
             const blob = new Blob([response.data], {
               type: 'text/csv;charset=utf-8;'
             });
-            downloadFile(blob, 'SP_Catalog_Upload_Log');
+            downloadFile(blob, 'SP_Crosswalk_Upload_Log');
           };
           add({
             type: 'info',
@@ -148,7 +148,7 @@ const Upload = () => {
             </Button>
           </ContextMenu>
         }
-        onAlertClose={() => {}}
+        onCloseAlert={remove}
         // downloadTemplate={{
         //   caption: t('controls.downloadCSVTemplate'),
         //   fn: handleOnDownloadTemplate

@@ -611,6 +611,9 @@ export const MessageEn = {
   'label.unlinkRecord': 'Unlink Record?',
   'label.unlinkRecordDescription':
     'Are you sure you want to unlink this record?',
+  'label.unlinkCrosswalk': 'Unlink Crosswalk?',
+  'label.unlinkCrosswalkDescription':
+    'Are you sure you want to unlink this crosswalk?',
 
   'tooltip.material.status.PENDING': 'Pending',
   'tooltip.material.status.AVAILABLE': 'Therapy Available',

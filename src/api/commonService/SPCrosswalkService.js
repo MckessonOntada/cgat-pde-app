@@ -16,14 +16,16 @@ async function getAllSPCrosswalk(requestParams) {
 
 async function uploadSPCrosswalk(payload) {
   const url = `${ApiRoutes.USER_SERVICE_BASE}cross-walk/upload`;
-  const res = await HttpResourceService.callRest(url, httpVerb.POST, payload, {
-    'Content-Type': 'multipart/form-data'
-  });
+  const response = await HttpResourceService.callRest(
+    url,
+    httpVerb.POST,
+    payload,
+    {
+      'Content-Type': 'multipart/form-data'
+    }
+  );
 
-  if (res.data) {
-    return res.data;
-  }
-  return {};
+  return response;
 }
 
 async function downloadAssetTemplate(resourceName) {
