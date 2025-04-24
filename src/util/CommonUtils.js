@@ -505,6 +505,24 @@ export const getAddress = (account) => {
     .join(', ');
 };
 
+const getDetailedAddress = (address) => {
+  const sanitizedAddress = CommonUtils.sanitizeValue(address);
+
+  return [
+    sanitizedAddress.houseNumber,
+    sanitizedAddress.street,
+    sanitizedAddress.street2,
+    sanitizedAddress.street3,
+    sanitizedAddress.city,
+    sanitizedAddress.district,
+    sanitizedAddress.state,
+    sanitizedAddress.zipCode,
+    sanitizedAddress.country
+  ]
+    .filter(Boolean)
+    .join(', ');
+};
+
 const getFileSize = (sizeInBytes) => {
   const kb = sizeInBytes / 1024;
   return kb < 1024 ? `${kb.toFixed(2)} KB` : `${(kb / 1024).toFixed(2)} MB`;
@@ -592,21 +610,22 @@ const getCamelCase = (str) =>
 
 const getNameValidation = (
   t,
-  {
-    field='',
-    min = 2,
-    max = 50,
-    required = false,
-    invalidKey,
-  } = {}
+  { field = '', min = 2, max = 50, required = false, invalidKey } = {}
 ) => {
   let schema = Yup.string()
     .nullable()
-    .matches(ALPHABETIC_WITH_SPECIAL_AND_ACCENTED, t(invalidKey || `userManagement.create_user.validation.${field}`))
+    .matches(
+      ALPHABETIC_WITH_SPECIAL_AND_ACCENTED,
+      t(invalidKey || `userManagement.create_user.validation.${field}`)
+    )
     .min(min, t(`orgManagement.create_org.validation.${field}_min`))
     .max(max, t(`orgManagement.create_org.validation.${field}_max`));
 
-  return required ? schema.required(t(`userManagement.create_user.validation.${field}_required`)) : schema;
+  return required
+    ? schema.required(
+        t(`userManagement.create_user.validation.${field}_required`)
+      )
+    : schema;
 };
 
 const CommonUtils = Object.freeze({
@@ -651,6 +670,7 @@ const CommonUtils = Object.freeze({
   gettenYearDate,
   isFutureDate,
   getAddress,
+  getDetailedAddress,
   getNameValidation
 });
 
