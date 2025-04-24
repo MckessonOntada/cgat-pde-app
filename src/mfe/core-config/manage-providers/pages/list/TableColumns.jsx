@@ -105,9 +105,7 @@ export const getColumns = (add) => {
 
   const confirmDeactivation = (provider, ops) => {
     const state = {};
-    state.title = provider.isActive
-      ? `${t('providers.label.deactivateProvider')}`
-      : `${t('providers.label.activateProvider')}`;
+    state.title = `${t(t('messages.header.confirmation'))}`;
     state.body = (
       <div className="MCP-modal-body">
         <p>
@@ -123,7 +121,7 @@ export const getColumns = (add) => {
           size="md"
           variant="secondary"
           onClick={() => dispatch(closeModal())}>
-          {t('button.caption.no')}
+          {t('button.caption.cancel')}
         </Button>
         <Button
           size="md"
@@ -132,7 +130,7 @@ export const getColumns = (add) => {
             dispatch(closeModal());
             handleOnConfirmation(provider.id, ops);
           }}>
-          {t('button.caption.yes')}
+          {t('button.caption.confirm')}
         </Button>
       </div>
     );

@@ -1,9 +1,11 @@
 import React from 'react';
-import { Badge, MenuList, CheckboxGroup } from '@mckesson/mcp-component-library';
+import { Badge, MenuList, CheckboxGroup, Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as EllipsisIcon } from '@src/assets/svg/ellipsis.svg';
 import { useSelection } from '@src/mfe/core-config/manage-providers/context/TableContext';
 import { Link } from 'react-router-dom';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import { ReactComponent as LinkIcon } from '@src/assets/svg/link.svg';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const PROVIDER_COLUMNS = {
   SP_PRODUCT_ID: 'PROVIDER_NAME',
@@ -15,7 +17,10 @@ const PROVIDER_COLUMNS = {
 };
 
 export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial }) => {
-  const { selectedRows, toggleRowSelection, selectAll, deselectAll } = useSelection();
+  const { selectedRows, toggleRowSelection, selectAll, deselectAll } = 
+    useSelection();
+  const { t } = useTranslate();
+
   return [
     {
       id: 'checkbox',
@@ -29,8 +34,7 @@ export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial }) => {
             {
               onChange: () => toggleRowSelection(props.id),
               value: props.id,
-              isChecked: selectedRows.has(props.id),
-              isDisabled: !props.isActive
+              isChecked: selectedRows.has(props.id)
             }
           ]}
         />
@@ -39,12 +43,12 @@ export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial }) => {
       width: '40px'
     },
     {
-      id: PROVIDER_COLUMNS.PROVIDER_NAME,
-      name: 'Provider Name',
-      selector: (row) => row.providerName,
+      id: 'SP_PRODUCT_ID',
+      name: 'SP Product Id',
+      selector: (row) => row.sapMaterial,
       minWidth: '160px',
       sortable: true,
-      sortKey: 'providerName',
+      sortKey: 'sap_material',
       cell: (props) => (
         <div className="cellEllipse">
           <Link
@@ -58,38 +62,37 @@ export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial }) => {
               setViewSPMaterial(props);
               setOpenSPMaterialDetails(true);
             }}>
-            <EclipsesTextcss str={props?.providerName} maxWidth={280} />
+            <EclipsesTextcss str={props?.sapMaterial || '-'} maxWidth={280} />
           </Link>
         </div>
       )
     },
     {
-      id: PROVIDER_COLUMNS.ADDRESS,
-      name: 'Address',
-      selector: (row) => row.address,
+      id: 'PRODUCT_NAME',
+      name: 'Product Name',
+      selector: (row) => row.materialDescriptionInLanguageEn,
       minWidth: '160px',
-      cell: (props) => <div>{props?.address || '-'}</div>
+      sortable: true,
+      sortKey: 'material_description_in_language_en',
+      cell: (props) => (
+        <div>{props?.materialDescriptionInLanguageEn || '-'}</div>
+      )
     },
     {
-      id: PROVIDER_COLUMNS.DEA_NUMBER,
-      name: 'DEA Number',
-      selector: (row) => row.deaNumber,
+      id: 'NDC',
+      name: 'NDC',
+      selector: (row) => row.ndc,
       minWidth: '160px',
-      cell: (props) => <div>{props?.deaNumber || '-'}</div>
+      cell: (props) => <div>{props?.ndc || '-'}</div>
     },
     {
-      id: PROVIDER_COLUMNS.NPI_NUMBER,
-      name: 'NPI Number',
-      selector: (row) => row.npiNumber,
+      id: 'ACCOUNT_NUMBER',
+      name: 'Account Number',
+      selector: (row) => row.soldToCustomer,
       minWidth: '160px',
-      cell: (props) => <div>{props?.npiNumber || '-'}</div>
-    },
-    {
-      id: PROVIDER_COLUMNS.STATUS,
-      name: 'Status',
-      selector: (row) => row.status,
-      minWidth: '160px',
-      cell: (props) => <Badge text={`label.status.${props.status ? 'active' : 'inactive'}`} type={'success'} />
+      sortable: true,
+      sortKey: 'sold_to_customer',
+      cell: (props) => <div>{props?.soldToCustomer || '-'}</div>
     },
     {
       id: PROVIDER_COLUMNS.ACTION,
@@ -97,15 +100,15 @@ export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial }) => {
       selector: () => {},
       minWidth: '160px',
       cell: () => (
-        <MenuList
-          menuIcon={<EllipsisIcon />}
-          handleSelect={(e) => {}}
-          options={[
-            { label: 'Edit', value: 'edit' },
-            { label: 'Deactivate', value: 'Deactivate' },
-            { label: 'Link SP Account', value: 'linkSPAccount' }
-          ]}
-        />
+        <div className="styled-icon-button">
+          <Button
+            onClick={() => {}}
+            variant="tertiary"
+            size="md"
+            Icon={LinkIcon}>
+            {t('provider.btnUnlink')}
+          </Button>
+        </div>
       )
     }
   ];

@@ -168,6 +168,7 @@ export const MessageEn = {
   'labels.orderView.MY_ORDERS': 'My Orders',
   'labels.orderView.ALL_ORDERS': 'All Orders',
   'labels.orderView.ASSIGNED_TO_ME': 'Assigned to Me',
+  'labels.orderView.PAP_ORDERS': 'PAP Orders',
   'table.columns.captions.author': 'Author',
   'table.columns.captions.assignee': 'Assignee',
   'table.columns.captions.createdOn': 'Created On',
@@ -373,7 +374,7 @@ export const MessageEn = {
   'orderManagement.patientDetails.validation.patient_identifier_required':
     'Patient identifier is required.',
   'orderManagement.patientDetails.validation.patient_identifier_must_number':
-    'Patient identifier must be a number.',
+    'Patient Identifier must be alphanumeric.',
   'orderManagement.patientDetails.validation.patient_identifier_max':
     'Patient identifier cannot exceed 20 characters.',
   'orderManagement.patientDetails.inputLabel.date_of_birth': 'Date of birth',
@@ -617,5 +618,7 @@ export const MessageEn = {
   'tooltip.material.status.OUT_OF_STOCK': 'Low Inventory',
   'tooltip.material.status.CHECKING': 'Checking',
 
-  'labels.orderQuantity': 'Order Quantity'
+  'labels.orderQuantity': 'Order Quantity',
+  'labels.orderType': 'Order Type',
+  'labels.assignee': 'Assignee'
 };

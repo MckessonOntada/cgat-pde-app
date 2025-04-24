@@ -48,20 +48,19 @@ async function getProviderListByAccount(requestParams, selectedOrganization) {
   return [];
 }
 
-async function removeLinkProvider(selectedOrganization, accId, providerId) {
-  if (!providerId)
-    throw new Error(
-      'Provider id is missing. Provider id is required to unlink the provider.'
-    );
-  const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrganization}/accounts/${accId}/providers/${providerId}`;
-  const res = await HttpResourceService.callRest(url, httpVerb.DELETE, {
-    'Content-Type': 'application/json',
-    accept: 'application/json'
-  });
-  if (res.data) {
-    return res.data;
-  }
-  return {};
+async function removeLinkProvider(selectedOrganization, accId, providerIds) {
+  if (!Array.isArray(providerIds)) {throw new Error('Provider Ids must be an array.')}
+  const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrganization}/accounts/${accId}/providers`;
+  const res = await HttpResourceService.callRest(
+    url, 
+    httpVerb.DELETE, 
+    providerIds,
+    {
+      'Content-Type': 'application/json',
+      accept: 'application/json'
+    }
+  );
+  return res.data || {};
 }
 
 async function linkProvidersToAccount(

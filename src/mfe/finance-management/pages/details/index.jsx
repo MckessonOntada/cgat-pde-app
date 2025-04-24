@@ -29,6 +29,7 @@ function Details(props) {
   const { selectedAccount } = useAccountContext();
   const { t } = useTranslate();
   const INVOICES_SCREEN = type === PATHS.invoices;
+  const CREDITS_SCREEN = type === PATHS.credits;
   const [invoiceDetails, setInvoiceDetails] = useState({});
   const [billDates, setBillDates] = useState({});
   const [therapy, setTherapy] = useState(null);
@@ -185,11 +186,7 @@ function Details(props) {
         minWidth: '150px',
         cell: (props) => (
           <div className="cellEllipse align-items-right">
-            <FormattedNumber
-              value={JSON.stringify(props.taxAmount)}
-              style="currency"
-              currency="USD"
-            />
+            <FormattedNumber value={JSON.stringify(props.taxAmount)} style="currency" currency="USD" />
           </div>
         )
       },
@@ -218,11 +215,7 @@ function Details(props) {
         right: true,
         cell: (props) => (
           <div className="cellEllipse align-items-right">
-            <FormattedNumber
-              value={props.grossPrice}
-              style="currency"
-              currency="USD"
-            />
+            <FormattedNumber value={props.grossPrice} style="currency" currency="USD" />
           </div>
         )
       }
@@ -298,7 +291,7 @@ function Details(props) {
         </div>
       </div>
       <div className="footer-section">
-        {!locationParams?.state?.reviewPay && (
+        {!CREDITS_SCREEN && !locationParams?.state?.reviewPay && (
           <React.Fragment>
             {CommonUtils.enableReviewAndPay(selectedAccount) && (
               <Button

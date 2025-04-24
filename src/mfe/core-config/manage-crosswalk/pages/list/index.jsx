@@ -14,6 +14,7 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import {
   useFilters,
   usePagination,
+  useSort,
   useTable
 } from '../../../manage-providers/context/TableContext';
 import { getColumns } from './TableColumns';
@@ -27,25 +28,6 @@ import {
 } from '@src/mfe/order-management/pages/system-configuration/manageMaterial/assets/constants/MaterialConstants';
 import SPMaterialDetails from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/pages/SPMaterialDetails';
 
-const data = [
-  {
-    id: 'BBM001',
-    materialDescription: 'Chemotherapy Drug A',
-    materialNdc: '12345-6789-01',
-    spProductId: 'SP001',
-    spProductName: 'Specialty Med A',
-    spProductNdc: '98765-4321-01'
-  },
-  {
-    id: 'BBM002',
-    materialDescription: 'Pain Reliever B',
-    materialNdc: '22345-6789-02',
-    spProductId: 'SP002',
-    spProductName: 'Specialty Med B',
-    spProductNdc: '88765-4321-02'
-  }
-];
-
 const List = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const { t } = useTranslate();
@@ -58,6 +40,8 @@ const List = () => {
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
   const isCustomerCenter = AuthUtils.isCustomerCenter();
+  const { data = [] } = useTable();
+  const { applySort } = useSort();
   const breadcrumbItems = React.useMemo(() => {
     return [
       {
@@ -75,6 +59,13 @@ const List = () => {
   }, [isSystemAdminView]);
   const handleOnClick = (url) => () => navigate(url);
 
+  const handleOnSort = (data, direction) => {
+    const { sortKey } = data;
+    if (sortKey && direction) {
+      applySort(sortKey, direction);
+    }
+  };
+
   return (
     <div className="MCP-module-wrapper">
       <Breadcrumbs items={breadcrumbItems} />
@@ -86,6 +77,7 @@ const List = () => {
               Icon={AddCircleFilled}
               className="button-icon"
               onClick={handleOnClick('create')}
+              disabled={true}
               size="md">
               {t('controls.addCrosswalk')}
             </Button>
@@ -138,7 +130,7 @@ const List = () => {
           })}
           data={data}
           handleChangePage={changePage}
-          onSortIconClick={() => {}}
+          onSortIconClick={handleOnSort}
           pagination={true}
           currentPage={pagination.pageNumber}
           totalPageCount={pagination.totalPages}

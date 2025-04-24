@@ -21,7 +21,7 @@ export const useSPMaterial = () => {
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
-  status: []
+  status: 'all'
 };
 
 const INITIAL_SORT_STATE = {
@@ -54,11 +54,9 @@ export const SPMaterialProvider = ({ children }) => {
     const statusFilter = filterConfig?.status;
 
     const statusParam =
-      statusFilter === 'all'
+      !statusFilter || statusFilter === 'all'
         ? ['active', 'inactive']
-        : statusFilter
-        ? [statusFilter]
-        : 'active';
+        : [statusFilter];
 
     return {
       pageNo: paginationConfig.pageNumber - 1,

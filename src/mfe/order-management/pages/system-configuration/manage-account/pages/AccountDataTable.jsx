@@ -40,7 +40,7 @@ function AccountDataTable(props) {
       name: t('table.columns.captions.accountName'),
       selector: (row) => row.accountName || '',
       maxWidth: '350px',
-      cell: (props) => props.accountName
+      cell: (props) => <EclipsesTextcss str={props.accountName} maxWidth={240} />
     },
     {
       id: 'address',

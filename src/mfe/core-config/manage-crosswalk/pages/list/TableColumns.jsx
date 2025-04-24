@@ -6,6 +6,7 @@ import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 
 const MATERIAL_CROSSWALK_COLUMNS = {
   BUY_AND_BILL_MATERIAL_ID: 'BUY_AND_BILL_MATERIAL_ID',
@@ -16,7 +17,6 @@ const MATERIAL_CROSSWALK_COLUMNS = {
   SP_PRODUCT_NDC: 'SP_PRODUCT_NDC',
   ACTION: 'ACTION'
 };
-
 export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMaterialDetails, setViewSPMaterial }) => {
   const { t } = useTranslate();
   const dispatch = useDispatch();
@@ -40,21 +40,22 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
     );
     dispatch(openModal(state));
   };
+
   return [
     {
       id: MATERIAL_CROSSWALK_COLUMNS.BUY_AND_BILL_MATERIAL_ID,
       name: 'Buy & Bill Material ID',
       minWidth: '160px',
       sortable: true,
-      sortKey: 'materialId',
-      cell: (props) => <div>{props?.id || '-'}</div>
+      sortKey: 'bnbMaterialNumber',
+      cell: (props) => <div>{props?.bnbMaterialNumber || '-'}</div>
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.BUY_AND_BILL_MATERIAL_DESCRIPTION,
       name: 'Buy & Bill Material Description',
       minWidth: '160px',
       sortable: true,
-      sortKey: 'materialDescription',
+      sortKey: 'bnbMaterialDescription',
       cell: (props) => (
         <div>
           {(
@@ -65,8 +66,10 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
                 setOpenDetails(true);
                 setMaterialNumber(props?.id);
               }}>
-              {props?.materialDescription}
-            </Link>
+              {props?.bnbMaterialDescription} </Link>
+            // <Link className="MCP-table-link" to={`?material=${props.id}`}>
+            //   {props?.bnbMaterialDescription}
+            // </Link>
           ) || '-'}
         </div>
       )
@@ -78,7 +81,7 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
       minWidth: '160px',
       sortable: true,
       sortKey: 'materialNdc',
-      cell: (props) => <div>{props?.materialNdc || '-'}</div>
+      cell: (props) => <div>{props?.bnbNdc || '-'}</div>
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_ID,
@@ -86,7 +89,13 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
       minWidth: '160px',
       sortable: true,
       sortKey: 'spProductId',
-      cell: (props) => <div>{props?.spProductId || '-'}</div>
+      cell: (props) => {
+        if (props?.spProductId) {
+          return <EclipsesText str={props?.spProductId} maxLength={140} />;
+        } else {
+          return <div>{'-'}</div>;
+        }
+      }
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_NAME,
@@ -118,7 +127,7 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
       minWidth: '160px',
       sortable: true,
       sortKey: 'spProductNdc',
-      cell: (props) => <div>{props?.spProductNdc || '-'}</div>
+      cell: (props) => <div>{props?.spNdc || '-'}</div>
     },
 
     {
