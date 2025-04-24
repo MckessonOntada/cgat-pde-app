@@ -111,8 +111,8 @@ const CatalogList = () => {
         noDataComponent={
           <ErrorBanner
             image={<EmptyProviderTable />}
-            heading={t('label.noSPAccountSelectedTitle')}
-            description={t('label.noSPAccountSelectedDescription')}
+            heading={t('label.spCatalogDataGrid')}
+            description={t('label.spCatalogDataGridDescription')}
           />
         }
       />

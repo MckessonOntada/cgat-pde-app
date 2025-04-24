@@ -12,9 +12,9 @@ const Index = () => {
     <TableProvider
       defaultFilters={defaultFilters}
       allowedSort={[
+        'bnbMaterialNumber',
         'spProductId',
         'spProductName',
-        'bnbMaterialNumber',
         'bnbMaterialDescription'
       ]}
       fetchFn={SPCrosswalkService.getAllSPCrosswalk}>

@@ -1,10 +1,10 @@
 import React from 'react';
-import { CheckboxGroup } from '@mckesson/mcp-component-library';
-import { ReactComponent as EllipsisIcon } from '@src/assets/svg/ellipsis.svg';
+import { CheckboxGroup, IconButton } from '@mckesson/mcp-component-library';
 import { useSelection } from '@src/mfe/core-config/manage-providers/context/TableContext';
 import { ReactComponent as LinkIcon } from '@src/assets/svg/link.svg';
-import { Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
+import { Link } from 'react-router-dom';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 const PROVIDER_COLUMNS = {
   SP_PRODUCT_ID: 'PROVIDER_NAME',
@@ -44,10 +44,14 @@ export const getColumns = () => {
       id: 'SP_PRODUCT_ID',
       name: 'SP Product Id',
       selector: (row) => row.sapMaterial,
-      minWidth: '160px',
+      minWidth: '120px',
       sortable: true,
       sortKey: 'sap_material',
-      cell: (props) => <div>{props?.sapMaterial || '-'}</div>
+      cell: (props) => (
+        <Link to={`link-sp-account/${props.id}`} className="MCP-table-link">
+          <EclipsesTextcss str={props?.sapMaterial || '-'} maxWidth={110} />
+        </Link>
+      ) //Link
     },
     {
       id: 'PRODUCT_NAME',
@@ -57,24 +61,31 @@ export const getColumns = () => {
       sortable: true,
       sortKey: 'material_description_in_language_en',
       cell: (props) => (
-        <div>{props?.materialDescriptionInLanguageEn || '-'}</div>
+        <EclipsesTextcss
+          str={props?.materialDescriptionInLanguageEn || '-'}
+          maxWidth={150}
+        />
       )
     },
     {
       id: 'NDC',
       name: 'NDC',
       selector: (row) => row.ndc,
-      minWidth: '160px',
-      cell: (props) => <div>{props?.ndc || '-'}</div>
+      minWidth: '120px',
+      cell: (props) => (
+        <EclipsesTextcss str={props?.ndc || '-'} maxWidth={110} />
+      )
     },
     {
       id: 'ACCOUNT_NUMBER',
       name: 'Account Number',
       selector: (row) => row.soldToCustomer,
-      minWidth: '160px',
+      minWidth: '120px',
       sortable: true,
       sortKey: 'sold_to_customer',
-      cell: (props) => <div>{props?.soldToCustomer || '-'}</div>
+      cell: (props) => (
+        <EclipsesTextcss str={props?.soldToCustomer || '-'} maxWidth={110} />
+      )
     },
     {
       id: PROVIDER_COLUMNS.ACTION,
@@ -82,15 +93,15 @@ export const getColumns = () => {
       selector: () => {},
       minWidth: '160px',
       cell: () => (
-        <div className="styled-icon-button">
-          <Button
-            onClick={() => {}}
-            variant="tertiary"
-            size="md"
-            Icon={LinkIcon}>
-            {t('provider.btnUnlink')}
-          </Button>
-        </div>
+        <IconButton
+          variant="tertiary"
+          label={t('provider.btnUnlink')}
+          size="lg"
+          iconButton={false}
+          textButton={true}
+          Icon={LinkIcon}
+          onClick={() => {}}
+        />
       )
     }
   ];

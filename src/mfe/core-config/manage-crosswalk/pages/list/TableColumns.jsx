@@ -60,25 +60,22 @@ export const getColumns = () => {
     {
       id: MATERIAL_CROSSWALK_COLUMNS.BUY_AND_BILL_MATERIAL_DESCRIPTION,
       name: 'Buy & Bill Material Description',
-      minWidth: '100px',
+      minWidth: '160px',
       sortable: true,
       sortKey: 'bnbMaterialDescription',
       cell: (props) => (
-        <Tooltip body={props?.bnbMaterialDescription}>
-          <div>
-            <Link className="MCP-table-link" to={`?material=${props.id}`}>
-              {props?.bnbMaterialDescription || '-'}
-            </Link>
-          </div>
-        </Tooltip>
+        <Link className="MCP-table-link" to={`?material=${props.id}`}>
+          <EclipsesTextcss
+            str={props?.bnbMaterialDescription || '-'}
+            maxWidth={150}
+          />
+        </Link>
       )
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.BUY_AND_BILL_NDC,
       name: 'Buy & Bill Material NDC',
       minWidth: '80px',
-      sortable: true,
-      sortKey: 'materialNdc',
       cell: (props) => (
         <EclipsesTextcss str={props?.bnbNdc || '-'} maxWidth={90} />
       )
@@ -104,21 +101,15 @@ export const getColumns = () => {
       sortable: true,
       sortKey: 'spProductName',
       cell: (props) => (
-        <Tooltip body={props?.spProductName}>
-          <div>
-            <Link className="MCP-table-link" to={`?product=${props.id}`}>
-              {props?.spProductName}
-            </Link>
-          </div>
-        </Tooltip>
+        <Link className="MCP-table-link" to={`?product=${props.id}`}>
+          <EclipsesTextcss str={props?.spProductName || '-'} maxWidth={150} />
+        </Link>
       )
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_NDC,
       name: 'SP Product NDC',
       minWidth: '90px',
-      sortable: true,
-      sortKey: 'spProductNdc',
       cell: (props) => (
         <EclipsesTextcss str={props?.spNdc || '-'} maxWidth={80} />
       )

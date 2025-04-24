@@ -582,7 +582,7 @@ export const MessageEn = {
   'controls.uploadCrosswalk': 'Upload Crosswalk',
   'controls.placeholder.materialCrosswalk':
     'Search by Description, NDC, Product Name ID...',
-  'label.emptyMaterialCrosswalkTableDescription': 'Something went wrong',
+  'label.emptyMaterialCrosswalkTableDescription': 'No records found.',
   'controls.addMaterialCrosswalk': 'Add Material Crosswalk',
   'heading.uploadMaterialCrosswalkListCSV':
     'Upload Material Crosswalk List CSV',
@@ -623,5 +623,11 @@ export const MessageEn = {
 
   'labels.orderQuantity': 'Order Quantity',
   'labels.orderType': 'Order Type',
-  'labels.assignee': 'Assignee'
+  'labels.assignee': 'Assignee',
+
+  'invalid.csv.file.type':
+    'The uploaded file is invalid. Please upload a valid file',
+  'invalid.csv.file.headers.missing':
+    'The uploaded file is invalid. It missing required columns. Please upload a valid file',
+  'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file'
 };
