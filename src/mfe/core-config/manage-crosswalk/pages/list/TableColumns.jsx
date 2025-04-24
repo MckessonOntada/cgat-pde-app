@@ -16,7 +16,7 @@ const MATERIAL_CROSSWALK_COLUMNS = {
   SP_PRODUCT_NDC: 'SP_PRODUCT_NDC',
   ACTION: 'ACTION'
 };
-export const getColumns = () => {
+export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMaterialDetails, setViewSPMaterial }) => {
   const { t } = useTranslate();
   const dispatch = useDispatch();
   const confirmationUnlink = (id) => () => {
@@ -29,16 +29,10 @@ export const getColumns = () => {
     );
     state.footer = (
       <div className="controls">
-        <Button
-          size="md"
-          variant="secondary"
-          onClick={() => dispatch(closeModal())}>
+        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
           {t('button.caption.no')}
         </Button>
-        <Button
-          size="md"
-          variant="primary"
-          onClick={() => console.log('Changes confirmed')}>
+        <Button size="md" variant="primary" onClick={() => console.log('Changes confirmed')}>
           {t('button.caption.yes')}
         </Button>
       </div>
@@ -64,12 +58,19 @@ export const getColumns = () => {
       sortable: true,
       sortKey: 'bnbMaterialDescription',
       cell: (props) => (
-        <Link className="MCP-table-link" to={`?material=${props.id}`}>
-          <EclipsesTextcss
-            str={props?.bnbMaterialDescription || '-'}
-            maxWidth={150}
-          />
-        </Link>
+        <div>
+          {(
+            <Link
+              className="MCP-table-link"
+              onClick={(e) => {
+                e.preventDefault();
+                setOpenDetails(true);
+                setMaterialNumber(props?.bnbMaterialNumber);
+              }}>
+                <EclipsesTextcss str={props?.bnbMaterialDescription} maxWidth={180} />
+            </Link>
+          ) || '-'}
+        </div>
       )
     },
     {
@@ -101,8 +102,14 @@ export const getColumns = () => {
       sortable: true,
       sortKey: 'spProductName',
       cell: (props) => (
-        <Link className="MCP-table-link" to={`?product=${props.id}`}>
-          <EclipsesTextcss str={props?.spProductName || '-'} maxWidth={150} />
+        <Link
+          className="MCP-table-link"
+          onClick={(e) => {
+            e.preventDefault();
+            setViewSPMaterial(props);
+            setOpenSPMaterialDetails(true);
+          }}>
+          <EclipsesTextcss str={props?.spProductName} maxWidth={280} />
         </Link>
       )
     },

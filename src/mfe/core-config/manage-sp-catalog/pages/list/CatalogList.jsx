@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import CommonFilters from '@src/components/Filters';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { Heading, Button } from '@mckesson/mcp-component-library';
@@ -21,10 +21,13 @@ import {
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { useNavigate } from 'react-router-dom';
+import SPMaterialDetails from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/pages/SPMaterialDetails';
 
 const CatalogList = () => {
   const { filters, applyFilters, clearFilters } = useFilters();
   const navigate = useNavigate();
+  const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
+  const [viewSPMaterial, setViewSPMaterial] = useState(null);
   const { pagination, changePage } = usePagination();
   const { t } = useTranslate();
   const { data = [] } = useTable();
@@ -99,7 +102,7 @@ const CatalogList = () => {
       )}
       <CustomDataTable
         id="provider-list-table"
-        columns={getColumns()}
+        columns={getColumns({ setOpenSPMaterialDetails, setViewSPMaterial })}
         data={data}
         handleChangePage={changePage}
         onSortIconClick={handleOnSort}
@@ -117,6 +120,11 @@ const CatalogList = () => {
             description={t('label.spCatalogDataGridDescription')}
           />
         }
+      />
+      <SPMaterialDetails
+        openSPMaterialDetails={openSPMaterialDetails}
+        setOpenSPMaterialDetails={setOpenSPMaterialDetails}
+        viewSPMaterial={viewSPMaterial}
       />
     </div>
   );

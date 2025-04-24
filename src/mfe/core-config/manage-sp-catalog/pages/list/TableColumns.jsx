@@ -1,10 +1,10 @@
 import React from 'react';
-import { CheckboxGroup, IconButton } from '@mckesson/mcp-component-library';
+import { Badge, MenuList, CheckboxGroup, Button, IconButton } from '@mckesson/mcp-component-library';
 import { useSelection } from '@src/mfe/core-config/manage-providers/context/TableContext';
-import { ReactComponent as LinkIcon } from '@src/assets/svg/link.svg';
-import { useTranslate } from '@src/translations/useTranslation';
 import { Link } from 'react-router-dom';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import { ReactComponent as LinkIcon } from '@src/assets/svg/link.svg';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const PROVIDER_COLUMNS = {
   SP_PRODUCT_ID: 'PROVIDER_NAME',
@@ -15,10 +15,11 @@ const PROVIDER_COLUMNS = {
   ACTION: 'ACTION'
 };
 
-export const getColumns = () => {
-  const { selectedRows, toggleRowSelection, selectAll, deselectAll } =
+export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial }) => {
+  const { selectedRows, toggleRowSelection, selectAll, deselectAll } = 
     useSelection();
   const { t } = useTranslate();
+
   return [
     {
       id: 'checkbox',
@@ -48,10 +49,22 @@ export const getColumns = () => {
       sortable: true,
       sortKey: 'sap_material',
       cell: (props) => (
-        <Link to={`link-sp-account/${props.id}`} className="MCP-table-link">
-          <EclipsesTextcss str={props?.sapMaterial || '-'} maxWidth={110} />
-        </Link>
-      ) //Link
+        <div className="cellEllipse">
+          <Link
+            style={{
+              color: '#007bff',
+              fontWeight: '600',
+              textDecoration: 'none'
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              setViewSPMaterial(props);
+              setOpenSPMaterialDetails(true);
+            }}>
+            <EclipsesTextcss str={props?.sapMaterial || '-'} maxWidth={280} />
+          </Link>
+        </div>
+      )
     },
     {
       id: 'PRODUCT_NAME',
@@ -95,7 +108,7 @@ export const getColumns = () => {
       cell: () => (
         <IconButton
           variant="tertiary"
-          label={t('provider.btnUnlink')}
+          label={t('button.caption.unlink')}
           size="lg"
           iconButton={false}
           textButton={true}
