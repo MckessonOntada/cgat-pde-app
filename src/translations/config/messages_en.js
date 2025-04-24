@@ -132,6 +132,8 @@ export const ConfigurationMessagesEN = {
   'button.caption.confirm': 'Confirm',
   'button.caption.cancel': 'Cancel',
   'label.backSpCrosswalk': 'Back to Manage Crosswalk Material',
+  'invalid.csv.file.headers.unstructured':
+    'File is invalid. Please select valid file to upload.',
   'invalid.csv.file.headers.missing':
     'File is invalid. Please select valid file to upload.',
   'provider.btnUnlink': 'Unlink',
