@@ -99,7 +99,7 @@ const INITIAL_PAGINATION_STATE = {
 
 const INITIAL_SORT_STATE = {
   sortBy: null,
-  sortOrder: null
+  sortOrder: 'asc'
 };
 
 export const TableProvider = ({
@@ -118,7 +118,18 @@ export const TableProvider = ({
   const [loading, setLoading] = useState(false);
 
   const requestParams = React.useMemo(() => {
-    const params = {
+    const filterParams = {};
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) {
+        if (key === 'searchQuery') {
+          filterParams['query'] = value?.toLowerCase();
+          return;
+        }
+        filterParams[key] = value;
+      }
+    });
+
+    const otherParams = {
       pageNo: pagination.pageNo - 1,
       pageSize: pagination.pageSize,
       sortBy: allowedSort.includes(sort.sortBy)
@@ -127,17 +138,10 @@ export const TableProvider = ({
       sortOrder: sort.sortOrder || 'desc'
     };
 
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value) {
-        if (key === 'searchQuery') {
-          params['query'] = value?.toLowerCase();
-          return;
-        }
-        params[key] = value;
-      }
-    });
-
-    return params;
+    return {
+      ...filterParams,
+      ...otherParams
+    };
   }, [filters, pagination.pageNo, sort]);
 
   const fetchData = () => {
@@ -201,7 +205,7 @@ export const TableProvider = ({
 
   const applyFilters = (filters) => {
     setPagination((prev) => ({ ...prev, pageNo: 1 }));
-    setFilters({ ...filters });
+    setFilters({ ...defaultFilters, ...filters });
   };
 
   const applySort = (sortBy, sortDirection) => {

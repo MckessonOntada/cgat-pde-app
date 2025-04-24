@@ -130,5 +130,15 @@ export const ConfigurationMessagesEN = {
   'serverResponse.provider.dea.conflict.provider.npi.conflict':
     'A provider with this DEA Number and NPI Number already exists. Please verify and enter unique details.',
   'button.caption.confirm': 'Confirm',
-  'button.caption.cancel': 'Cancel'
+  'button.caption.cancel': 'Cancel',
+  'label.backSpCrosswalk': 'Back to Manage Crosswalk Material',
+  'invalid.csv.file.headers.missing':
+    'File is invalid. Please select valid file to upload.',
+  'provider.btnUnlink': 'Unlink',
+  'fileUpload.crosswalk.success':
+    'File processed successfully, No errors were found.',
+  'fileUpload.crosswalk.partialSuccess':
+    'File processing completed, Some records were not processed successfully. Please review the downloaded error report.',
+  'label.spCatalogDataGrid': 'SP Catalog',
+  'label.spCatalogDataGridDescription': 'No data found'
 };

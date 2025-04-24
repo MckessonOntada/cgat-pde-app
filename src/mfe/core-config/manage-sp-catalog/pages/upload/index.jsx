@@ -12,6 +12,7 @@ import {
 import SPCatalogService from '@src/api/commonService/SPCatalogService';
 import CommonUtils, { downloadFile } from '@src/util/CommonUtils';
 import ContextMenu from '../context-menu';
+import { useNavigate } from 'react-router-dom';
 
 const DOWNLOAD_CONTEXT_OPTIONS = {
   DOWNLOAD_TEMPLATE: 'Download Template',
@@ -22,7 +23,7 @@ const DOWNLOAD_CONTEXT_OPTIONS = {
 const Upload = () => {
   const { t } = useTranslate();
   const { items, add, removeAll, remove } = useTimedArray(10000);
-
+  const navigate = useNavigate();
   const handleOnUpload = (values) => {
     removeAll();
     const { file } = values;
@@ -72,12 +73,22 @@ const Upload = () => {
       })
       .catch((error) => {
         const { response: errorResponse = {} } = error;
-        if (errorResponse.data?.message) {
+
+        if (errorResponse.data?.errorCodes) {
+          errorResponse.data?.errorCodes.forEach((element) => {
+            add({
+              type: 'error',
+              description: t(element),
+              isSticky: true
+            });
+          });
+        } else {
           add({
             type: 'error',
             description:
               errorResponse.data?.message ||
-              t('providers.message.fileUploadFailure')
+              t('providers.message.fileUploadFailure'),
+            isSticky: true
           });
         }
       });
@@ -93,7 +104,7 @@ const Upload = () => {
         break;
       }
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_SP_ACCOUNT_DATA: {
-        SPCatalogService.downloadAPAccountTemplate().then((response) => {
+        SPCatalogService.downloadSPAccountTemplate().then((response) => {
           CommonUtils.downloadFile(
             new Blob([response.data], { type: 'text/csv;charset=utf-8;' }),
             'Accounts'
@@ -102,7 +113,7 @@ const Upload = () => {
         break;
       }
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_SP_MATERIAL_DATA: {
-        SPCatalogService.downloadAPMaterialTemplate().then((response) => {
+        SPCatalogService.downloadSPMaterialTemplate().then((response) => {
           CommonUtils.downloadFile(
             new Blob([response.data], { type: 'text/csv;charset=utf-8;' }),
             'Material'
@@ -122,7 +133,7 @@ const Upload = () => {
           className="back-button-control"
           variant="tertiary"
           Icon={() => <IconArrowLeft />}
-          onClick={() => {}}
+          onClick={() => navigate('/admin/sp-catalog')}
           size="md">
           {t('label.backSpCatalog')}
         </Button>
