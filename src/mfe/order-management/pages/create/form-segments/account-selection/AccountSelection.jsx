@@ -28,16 +28,33 @@ const AccountSelection = () => {
   const navigate = useNavigate();
   const { orderId } = useParams();
   const location = useLocation();
-  const { isEdit = false, isApprover = false, alertState, isTherapyChanged = false } = location.state || {};
+  const {
+    isEdit = false,
+    isApprover = false,
+    alertState,
+    isTherapyChanged = false
+  } = location.state || {};
   const [updateState, setUpdateState] = useState({ isTherapyChanged });
   const [selectedAccount, setSelectedAccount] = React.useState(null);
   const [accountSearchString, setAccountSearchString] = React.useState('');
-  const [selectedShippingAddress, setSelectedShippingAddress] = React.useState('');
-  const [initialSelectedAccount, setInitialSelectedAccount] = React.useState(null);
-  const [initialSelectedShippingAddress, setInitialSelectedShippingAddress] = React.useState('');
+  const [selectedShippingAddress, setSelectedShippingAddress] =
+    React.useState('');
+  const [initialSelectedAccount, setInitialSelectedAccount] =
+    React.useState(null);
+  const [initialSelectedShippingAddress, setInitialSelectedShippingAddress] =
+    React.useState('');
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-  const [accountError, setAccountError] = useState({ isError: false, message: '' });
-  const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
+  const [accountError, setAccountError] = useState({
+    isError: false,
+    message: ''
+  });
+  const {
+    data: orderDetails,
+    isFetching: isFetchingOrderDetails,
+    isError,
+    error,
+    isLoader
+  } = useOrder(orderId);
   const therapyId = orderDetails?.therapy?.materialNumber;
   const { data: priceDetails } = useOrderPrice({
     therapyId: therapyId,
@@ -55,31 +72,50 @@ const AccountSelection = () => {
 
   const { isLoading, data: accountsListData = {} } = useQuery({
     queryKey: ['order', 'therapy', therapyId, accountSearchString],
-    queryFn: async () => OrderService.getSoldToAccounts(therapyId, serializeParams({ query: accountSearchString })),
+    queryFn: async () =>
+      OrderService.getSoldToAccounts(
+        therapyId,
+        serializeParams({ query: accountSearchString })
+      ),
     enabled: !!therapyId && !!orderDetails.accountDetails.soldToAccount,
     refetchOnWindowFocus: false,
     onError: (error) => {
-      showAlert({ description: error.message, type: 'error', anchorEl: alertContainerId });
+      showAlert({
+        description: error.message,
+        type: 'error',
+        anchorEl: alertContainerId
+      });
     }
   });
 
-  const { isLoading: isSaving, mutate: saveAccount } = useMutation(async (data) => OrderService.saveAccount(orderId, data), {
-    onSuccess: async (result) => {
-      const { id } = result;
-      try {
-        if (result.patientDetailsRequired) {
-          navigate(`../${id}/patient`, { state: { alertState, isEdit: false, isApprover: isApprover } });
-        } else {
-          navigate(`../${id}/additional-details`, { state: { alertState, isEdit: false, isApprover: isApprover } });
+  const { isLoading: isSaving, mutate: saveAccount } = useMutation(
+    async (data) => OrderService.saveAccount(orderId, data),
+    {
+      onSuccess: async (result) => {
+        const { id } = result;
+        try {
+          if (result.patientDetailsRequired) {
+            navigate(`../${id}/patient`, {
+              state: { alertState, isEdit: false, isApprover: isApprover }
+            });
+          } else {
+            navigate(`../${id}/additional-details`, {
+              state: { alertState, isEdit: false, isApprover: isApprover }
+            });
+          }
+        } catch (err) {
+          console.error(err);
         }
-      } catch (err) {
-        console.error(err);
+      },
+      onError: (error) => {
+        showAlert({
+          description: error.message,
+          type: 'error',
+          anchorEl: alertContainerId
+        });
       }
-    },
-    onError: (error) => {
-      showAlert({ description: error.message, type: 'error', anchorEl: alertContainerId });
     }
-  });
+  );
 
   const handleOnClose = () => {
     setOpen(false);
@@ -92,10 +128,17 @@ const AccountSelection = () => {
 
   const isDirty = useMemo(() => {
     return (
-      JSON.stringify(selectedAccount) !== JSON.stringify(initialSelectedAccount) ||
-      JSON.stringify(selectedShippingAddress) !== JSON.stringify(initialSelectedShippingAddress)
+      JSON.stringify(selectedAccount) !==
+        JSON.stringify(initialSelectedAccount) ||
+      JSON.stringify(selectedShippingAddress) !==
+        JSON.stringify(initialSelectedShippingAddress)
     );
-  }, [selectedAccount, initialSelectedAccount, selectedShippingAddress, initialSelectedShippingAddress]);
+  }, [
+    selectedAccount,
+    initialSelectedAccount,
+    selectedShippingAddress,
+    initialSelectedShippingAddress
+  ]);
 
   const handleOnBack = () => {
     if (isDirty) {
@@ -104,23 +147,41 @@ const AccountSelection = () => {
     }
 
     if (isEdit) {
-      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, {
+        state: { isEdit: isEdit, isApprover: isApprover }
+      });
     } else {
-      navigate(`../edit-order/${orderId}`, { state: { isEdit: false, isApprover: isApprover, isBack: true } });
+      navigate(`../edit-order/${orderId}`, {
+        state: { isEdit: false, isApprover: isApprover, isBack: true }
+      });
     }
   };
 
   React.useEffect(() => {
-    showAlert({ description: accountError.message, type: 'error', anchorEl: alertContainerId });
+    showAlert({
+      description: accountError.message,
+      type: 'error',
+      anchorEl: alertContainerId
+    });
   }, [accountError]);
 
   const handleOnSubmit = async () => {
     if (!selectedShippingAddress || !selectedAccount || isSaving) {
       if (!selectedShippingAddress && selectedAccount) {
-        setAccountError({ isError: true, message: t('messages.selectshippingAddress') });
+        setAccountError({
+          isError: true,
+          message: t('messages.selectshippingAddress')
+        });
       } else if (!selectedAccount) {
-        setAccountError({ isError: true, message: t('messages.selectAccount') });
-      } else setAccountError({ isError: true, message: t('messages.selectAccount') });
+        setAccountError({
+          isError: true,
+          message: t('messages.selectAccount')
+        });
+      } else
+        setAccountError({
+          isError: true,
+          message: t('messages.selectAccount')
+        });
 
       return;
     }
@@ -135,7 +196,10 @@ const AccountSelection = () => {
       saveAccount(payload);
     } else {
       if (!selectedAccount) {
-        setAccountError({ isError: true, message: 'Please select an account before proceeding.' });
+        setAccountError({
+          isError: true,
+          message: 'Please select an account before proceeding.'
+        });
         return;
       }
     }
@@ -152,14 +216,27 @@ const AccountSelection = () => {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'details') {
-      navigate(`../edit-order/${orderId}`, { state: { isEdit: false, isApprover: isApprover, isBack: true } });
+      navigate(`../edit-order/${orderId}`, {
+        state: { isEdit: false, isApprover: isApprover, isBack: true }
+      });
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, { state: { isEdit: false, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, {
+        state: { isEdit: false, isApprover: isApprover }
+      });
     }
   };
 
   const getAddress = (acc) => {
-    return [acc.houseNumber, acc.street, acc.district, acc.city, acc.state, acc.zipCode].filter(Boolean).join(', ');
+    return [
+      acc.houseNumber,
+      acc.street,
+      acc.district,
+      acc.city,
+      acc.state,
+      acc.zipCode
+    ]
+      .filter(Boolean)
+      .join(', ');
   };
 
   const handleOnAccountSelection = (selectedAccount) => {
@@ -175,8 +252,11 @@ const AccountSelection = () => {
       if (accountDetails) {
         const { soldToAccount, shipToAccount } = accountDetails;
         if (soldToAccount) {
-          const originalSelectedAccount = accountsListData?.content?.filter((acc) => acc.accountNumber === soldToAccount.accountNumber)[0];
-          if (originalSelectedAccount) setSelectedAccount(originalSelectedAccount);
+          const originalSelectedAccount = accountsListData?.content?.filter(
+            (acc) => acc.accountNumber === soldToAccount.accountNumber
+          )[0];
+          if (originalSelectedAccount)
+            setSelectedAccount(originalSelectedAccount);
 
           setInitialSelectedAccount(originalSelectedAccount); // Set initial value;
         } else {
@@ -209,17 +289,32 @@ const AccountSelection = () => {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={handleOnBackToOrders}
+          size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
 
-      <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
+      <PageHeader
+        heading={
+          isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')
+        }
+      />
 
       <div className="MCP-module-body">
-        <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} />
+        <OrderStepper
+          status={orderDetails?.currentStage}
+          patientDetailsRequired={orderDetails?.patientDetailsRequired}
+        />
         <div className={`MCP-module-wrapper`}>
-          <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
+          <OrderHeaderDetails
+            orderDetails={orderDetails}
+            priceDetails={priceDetails}
+          />
           {accountError.isError && <div id={alertContainerId} />}
           <div className="MCP-panel-container">
             <div className={`MCP-module-body`}>
@@ -227,12 +322,17 @@ const AccountSelection = () => {
                 heading={
                   <div>
                     <Heading as="h2">{t('labels.accountSelection')}</Heading>
-                    <p className="dull-text">{t('messages.selectAccountToBuyTherapy')}</p>
+                    <p className="dull-text">
+                      {t('messages.selectAccountToBuyTherapy')}
+                    </p>
                   </div>
                 }
               />
               <div className="MCP-CardContainer">
-                <div className={'grid grid-gap-12 sm:grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
+                <div
+                  className={
+                    'grid grid-gap-12 sm:grid-gap-24 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'
+                  }>
                   <div className={styles.account}>
                     <div className={styles.accountDetails}>
                       {selectedAccount ? (
@@ -240,21 +340,26 @@ const AccountSelection = () => {
                           <p className={styles.name}>
                             <b>{selectedAccount.accountName}</b>
                           </p>
-                          <p className={styles.address}>{getAddress(selectedAccount)}</p>
+                          <p className={styles.address}>
+                            {getAddress(selectedAccount)}
+                          </p>
                           <p className={styles.address}>
                             <span>
-                              {t('labels.distributionChannel')} - {selectedAccount?.distributionChannel}
-                            </span>
-                            <span>
-                              {t('labels.program')} - {selectedAccount?.cgatIdentifier}
+                              {t('labels.program')} -{' '}
+                              {selectedAccount?.cgatIdentifier}
                             </span>
                           </p>
                         </React.Fragment>
                       ) : (
                         <React.Fragment>
-                          <Heading as="h3">{t('labels.pleaseSelectAccount')}</Heading>
+                          <Heading as="h3">
+                            {t('labels.pleaseSelectAccount')}
+                          </Heading>
                           <div className={styles.btnAccount}>
-                            <Button size="md" onClick={handleOnClick} variant="secondary">
+                            <Button
+                              size="md"
+                              onClick={handleOnClick}
+                              variant="secondary">
                               {t('captions.btnSelectYourAccount')}
                             </Button>
                           </div>
@@ -275,7 +380,8 @@ const AccountSelection = () => {
               </div>
             </div>
             {selectedAccount && (
-              <ShippingAddressProvider accountDetails={{ therapyId, selectedAccount }}>
+              <ShippingAddressProvider
+                accountDetails={{ therapyId, selectedAccount }}>
                 <ShippingAddress
                   selectedShippingAddress={selectedShippingAddress}
                   setSelectedShippingAddress={setSelectedShippingAddress}
@@ -288,7 +394,11 @@ const AccountSelection = () => {
               <Button size="md" onClick={handleOnBack} variant="secondary">
                 {t('captions.btnBack')}
               </Button>
-              <Button size="md" onClick={handleOnSubmit} variant="primary" type="submit">
+              <Button
+                size="md"
+                onClick={handleOnSubmit}
+                variant="primary"
+                type="submit">
                 {t('captions.btnSaveAndContinue')}
               </Button>
             </div>
