@@ -44,13 +44,15 @@ export const sections = [
             label: 'provider.deaNumber',
             type: 'input',
             name: 'deaNumber',
-            isRequired: true
+            isRequired: true,
+            maxLength: 9
           },
           {
             label: 'provider.npiNumber',
             type: 'input',
             name: 'npiNumber',
-            isRequired: true
+            isRequired: true,
+            maxLength: 10
           }
         ]
       }
