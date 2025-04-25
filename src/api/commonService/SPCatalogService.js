@@ -51,7 +51,7 @@ async function getAllCatalog(requestParams) {
 
 async function downloadSPAccountTemplate() {
   try {
-    const documentUrl = `${ApiRoutes.THERAPIES()}/download`;
+    const documentUrl = `${ApiRoutes.PUBLIC_ACCOUNTS}/download`;
     const res = await HttpResourceService.callRest(documentUrl, httpVerb.GET);
 
     return res;
@@ -64,7 +64,7 @@ async function downloadSPAccountTemplate() {
 
 async function downloadSPMaterialTemplate() {
   try {
-    const documentUrl = `${ApiRoutes.PUBLIC_ACCOUNTS}/download`;
+    const documentUrl = `${ApiRoutes.THERAPIES()}/download`;
     const res = await HttpResourceService.callRest(documentUrl, httpVerb.GET);
 
     return res;
