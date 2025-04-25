@@ -88,10 +88,10 @@ export const sections = [
           },
           {
             label: 'provider.zip',
-            type: 'input',
+            type: 'zipInput',
             name: 'zip',
             isRequired: true,
-            maxLength: 9
+            maxLength: 10
           },
           {
             label: 'provider.state',
