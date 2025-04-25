@@ -165,6 +165,7 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
           }
         />
       )}
+      {isAddLinkProvider  && ( <TableHeading heading={t('label.providerListing')} /> )}
       <div className={style.accountBox}>
         <div className={style.customTableBox}>
           <CustomDataTable
