@@ -200,7 +200,7 @@ const ProviderForm = (props) => {
                   {(!isEditOperation || !isLoading) && (
                     <div className="controls">
                       <Button
-                        type="submit"
+                        type="button"
                         variant="secondary"
                         size="md"
                         onClick={() => {
