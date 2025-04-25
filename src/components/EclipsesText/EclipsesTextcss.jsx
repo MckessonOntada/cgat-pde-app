@@ -1,18 +1,21 @@
 import React from 'react';
 import { Tooltip } from '@mckesson/mcp-component-library';
 
-function EclipsesTextcss({ tooltip, str, maxWidth = 100 }) {
+function EclipsesTextcss({ tooltip, str, maxWidth }) {
+
+  const style = {
+    ...( maxWidth ? { maxWidth: `${maxWidth}px` } : {} ),
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    textAlign: 'left',
+    display: 'inline-block'
+  }
+
   return (
     <Tooltip body={tooltip || str}>
       <span
-        style={{
-          maxWidth: `${maxWidth}px`,
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          textAlign: 'left',
-          display: 'inline-block'
-        }}>
+        style={style}>
         {str || '-'}
       </span>
     </Tooltip>

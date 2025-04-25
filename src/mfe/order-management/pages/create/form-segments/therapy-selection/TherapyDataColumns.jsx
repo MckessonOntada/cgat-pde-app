@@ -54,7 +54,7 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     showColumnNameInHeader: true,
     cell: (props) => (
       <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?therapy-details=${props.id}`}>
-        <EclipsesTextcss str={props.therapyDescription} maxWidth={220}/>
+        <EclipsesTextcss str={props.therapyDescription}/>
       </Link>
     )
   },
