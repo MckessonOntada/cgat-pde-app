@@ -84,22 +84,28 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer })
   const handleAlertClose = () => {
     setAlertMsg(false);
   };
+  const getProgramDisabled = (program, selectedChannel) =>
+      !programs.includes(program) || !channels.includes("BUY_AND_BILL") || selectedChannel === 'SPECIALITY_PHARMA';
 
-  const { programs = [], channels = [] } = programChannelConfig;
-  const testChannels = ["Buy & Bill", "Specialty Pharmacy"]
+  // const { programs = [], channels = [] } = programChannelConfig;
+
+  const channels = ["BUY_AND_BILL", "SPECIALITY_PHARMA"];
+  const programs = ['WAC', '340'];
   
-  const programList = [
-      {
-          "label": "Buy & Bill",
-          "value": "Buy & Bill",
-          "isDisabled" : !testChannels.includes("Buy & Bill")
-      },
-      {
-          "label": "Specialty Pharmacy",
-          "value": "Specialty Pharmacy",
-          "isDisabled" : !testChannels.includes("Specialty Pharmacy")
-      }
-    ]
+  const channelList = [
+    { label: t('labels.BUY_AND_BILL'), value: "BUY_AND_BILL" },
+    { label: t('labels.SPECIALITY_PHARMA'), value: "SPECIALITY_PHARMA" }
+  ].map(channel => ({
+    ...channel,
+    isDisabled: !channels.includes(channel.value)
+  }));
+
+  const programList = ["WAC", "340", "GOV"].map(program => ({
+    label: t(`labels.${program}`),
+    value: program,
+    isDisabled: getProgramDisabled(program, selectedChannel)
+  }));  
+
   return (
     <FloatingDrawer 
       open={openDrawer} 
@@ -135,7 +141,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer })
                 <RadioGroup
                   direction="row"
                   id="order-channel-options"
-                  items={programList}
+                  items={channelList}
                   onChangeValue={(value) => {
                     setAlertMsg(false);
                     setChannel(value);
@@ -152,11 +158,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer })
                 <RadioGroup
                   direction="row"
                   id="order-program-options"
-                  items={programs.map((v) => ({ 
-                    label: v, 
-                    value: v, 
-                    isDisabled: selectedChannel.includes("Specialty Pharmacy")
-                  }))}
+                  items={programList}
                   onChangeValue={(value) => {
                     setAlertMsg(false);
                     setProgram(value);
