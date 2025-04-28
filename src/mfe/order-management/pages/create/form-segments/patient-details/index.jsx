@@ -29,16 +29,28 @@ const PatientDetails = () => {
   const alertContainerId = 'patintDetails-alert-container';
   const { showAlert } = useAlert();
   const location = useLocation();
-  const { isEdit = false, isApprover = false, alertState } = location.state || {};
+  const {
+    isEdit = false,
+    isApprover = false,
+    alertState
+  } = location.state || {};
 
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
 
-  const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
+  const {
+    data: orderDetails,
+    isFetching: isFetchingOrderDetails,
+    isError,
+    error,
+    isLoader
+  } = useOrder(orderId);
 
   const therapyId = orderDetails?.therapy?.materialNumber;
-  const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
-  const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
+  const soldToAccountId =
+    orderDetails?.accountDetails?.soldToAccount?.accountNumber;
+  const shipToAccountId =
+    orderDetails?.accountDetails?.shipToAccount?.accountNumber;
   const { data: priceDetails } = useOrderPrice({
     therapyId,
     soldToAccountId,
@@ -82,11 +94,12 @@ const PatientDetails = () => {
     showAlert({ ...alertState, anchorEl: alertContainerId });
   }, []);
 
+  const isSPAccountSelected = true;
   React.useEffect(() => {
     if (!orderDetails) {
       return;
     }
-    if (!orderDetails.patientDetailsRequired) {
+    if (!(orderDetails.patientDetailsRequired || isSPAccountSelected)) {
       navigate(`../${orderId}/additional-details`);
     }
   }, [orderDetails]);
@@ -120,17 +133,24 @@ const PatientDetails = () => {
   };
 
   const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(
-    async ({ payload, skipDuplicateCheck }) => OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck),
+    async ({ payload, skipDuplicateCheck }) =>
+      OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck),
     {
       onSuccess: (result) => {
         const { id } = result;
-        navigate(`../${id}/additional-details`, { state: { isEdit: false, isApprover: isApprover } });
+        navigate(`../${id}/additional-details`, {
+          state: { isEdit: false, isApprover: isApprover }
+        });
       },
       onError: ({ err, payload }) => {
         if (err.status === 409) {
           openDuplicateConfirmationModal(payload);
         } else {
-          showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
+          showAlert({
+            description: err.message,
+            type: 'error',
+            anchorEl: alertContainerId
+          });
         }
       }
     }
@@ -143,9 +163,13 @@ const PatientDetails = () => {
     }
 
     if (isEdit) {
-      navigate(`../${orderId}/summary`, { state: { isEdit: true, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, {
+        state: { isEdit: true, isApprover: isApprover }
+      });
     } else {
-      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isApprover: isApprover } });
+      navigate(`../${orderId}/accounts`, {
+        state: { isEdit: isEdit, isApprover: isApprover }
+      });
     }
   };
 
@@ -154,7 +178,10 @@ const PatientDetails = () => {
     const payload = CommonUtils.cleanObject(form);
 
     if (patientInfo && patientInfo.dateOfBirth) {
-      payload.dateOfBirth = CommonUtils.convertDateStringFormat(patientInfo.dateOfBirth, 'MM-DD-YYYY');
+      payload.dateOfBirth = CommonUtils.convertDateStringFormat(
+        patientInfo.dateOfBirth,
+        'MM-DD-YYYY'
+      );
     }
     if (isApprover) {
       skipDuplicateCheck = true;
@@ -174,9 +201,13 @@ const PatientDetails = () => {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, {
+        state: { isEdit: isEdit, isApprover: isApprover }
+      });
     } else if (modalSuccessCallback === 'account') {
-      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isApprover: isApprover } });
+      navigate(`../${orderId}/accounts`, {
+        state: { isEdit: isEdit, isApprover: isApprover }
+      });
     }
   };
   if (isLoader) {
@@ -188,18 +219,33 @@ const PatientDetails = () => {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={handleOnBackToOrders}
+          size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
 
-      <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
+      <PageHeader
+        heading={
+          isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')
+        }
+      />
 
       <div className="MCP-module-body">
-        <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} />
+        <OrderStepper
+          status={orderDetails?.currentStage}
+          patientDetailsRequired={orderDetails?.patientDetailsRequired}
+        />
 
         <div className={styles.wrapper}>
-          <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
+          <OrderHeaderDetails
+            orderDetails={orderDetails}
+            priceDetails={priceDetails}
+          />
           <div id={alertContainerId} />
 
           {isError && <Alert showTitle title={error} type={'error'} />}
@@ -231,7 +277,10 @@ const PatientDetails = () => {
                   </div>
                   <div className="footer-wrapper">
                     <div className="controls footer-controls">
-                      <Button size="md" variant="secondary" onClick={handleOnBack}>
+                      <Button
+                        size="md"
+                        variant="secondary"
+                        onClick={handleOnBack}>
                         {t('captions.btnBack')}
                       </Button>
                       <Button size="md" variant="primary" type="submit">

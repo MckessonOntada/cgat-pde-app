@@ -88,13 +88,14 @@ const AccountSelection = () => {
     }
   });
 
+  const isSPAccountSelected = true;
   const { isLoading: isSaving, mutate: saveAccount } = useMutation(
     async (data) => OrderService.saveAccount(orderId, data),
     {
       onSuccess: async (result) => {
         const { id } = result;
         try {
-          if (result.patientDetailsRequired) {
+          if (result.patientDetailsRequired || isSPAccountSelected) {
             navigate(`../${id}/patient`, {
               state: { alertState, isEdit: false, isApprover: isApprover }
             });
