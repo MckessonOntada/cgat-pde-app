@@ -113,7 +113,7 @@ export const sections = [
         controls: [
           {
             label: 'provider.phoneNumber',
-            type: 'input',
+            type: 'phoneInput',
             name: 'phoneNumber',
             isRequired: true,
             maxLength: 10
