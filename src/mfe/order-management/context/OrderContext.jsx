@@ -4,6 +4,7 @@ import { useQuery } from 'react-query';
 import { ORDER_TABS, ORDER_VIEW, TAB_FILTERS } from '../pages/orders/config';
 import { getDateRangeFromSelection } from '../pages/orders/dateRangeUtils';
 import { DateUtils } from '@src/util/DateUtil';
+import UserService from '@src/api/commonService/UserService';
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
@@ -31,7 +32,6 @@ export const useOrders = () => {
 };
 
 export const OrderProvider = ({ children }) => {
-  const [orderView, setOrderView] = React.useState(null);
   const [filterConfig, setFilterConfig] = React.useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = React.useState(
     INITIAL_PAGINATION_STATE
@@ -41,6 +41,11 @@ export const OrderProvider = ({ children }) => {
   const [tabVariant, setTabVariant] = React.useState(
     ORDER_TABS.SUBMITTED_BUY_AND_BILL
   );
+  const [assigneeList, setAssigneeList] = React.useState([]);
+  const [assigneeRequestParams, setAssigneeRequestParams] = React.useState({
+    userType: 'GENERAL'
+  });
+  const [orderView, setOrderView] = React.useState(ORDER_VIEW.MY_ORDERS);
 
   const requestParams = React.useMemo(() => {
     const params = {
@@ -51,9 +56,21 @@ export const OrderProvider = ({ children }) => {
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       statuses: filterConfig.status || TAB_FILTERS[tabVariant].join(','),
       //distributionchannel: filterConfig.distributionchannel,
-      showMyOrders: orderView === ORDER_VIEW.ALL_ORDERS ? false : true
+      ...(filterConfig?.assigneeIds && {
+        assigneeIds: filterConfig.assigneeIds
+      }),
+      ...(filterConfig?.orderType && {
+        orderType: filterConfig.orderType
+      }),
+
+      showMyOrders:
+        orderView === ORDER_VIEW.MY_ORDERS ||
+        orderView === ORDER_VIEW.ASSIGNED_TO_ME
+          ? true
+          : false,
+      showPAPOrders: Boolean(orderView === ORDER_VIEW.PAP_ORDERS)
     };
-    const orderDateSelection = filterConfig?.orderdate;
+    const orderDateSelection = filterConfig?.orderDate;
     if (orderDateSelection) {
       const dateRange = getDateRangeFromSelection(orderDateSelection);
       if (dateRange) {
@@ -100,6 +117,21 @@ export const OrderProvider = ({ children }) => {
     }
   });
 
+  const { refetch: refreshAssignee } = useQuery({
+    queryKey: ['assignee', assigneeRequestParams],
+    queryFn: async () => UserService.getAssignee(assigneeRequestParams),
+    onSuccess: (result = []) => {
+      const alreadySelected =
+        assigneeList.filter((item) => item.isChecked) || [];
+      setAssigneeList([...alreadySelected, ...result]);
+    },
+    enable: Boolean(
+      tabVariant &&
+        tabVariant === ORDER_TABS.PENDING_APPROVAL &&
+        orderView !== ORDER_VIEW.ASSIGNED_TO_ME
+    )
+  });
+
   const { data: assignedGroupsData = {} } = useQuery({
     queryKey: ['order', 'approver-group'],
     queryFn: async () => {
@@ -121,12 +153,24 @@ export const OrderProvider = ({ children }) => {
 
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
 
+  const searchAssigneeByTest = (text) => {
+    setAssigneeRequestParams({
+      ...assigneeRequestParams,
+      query: text
+    });
+  };
+
+  React.useEffect(() => {
+    refreshAssignee();
+  }, [assigneeRequestParams]);
+
+  const setAssigneeOnChange = (list) => {
+    setAssigneeList(list);
+  };
+
   const applyFilters = (filters) => {
     setPaginationConfig((prev) => ({ ...prev, pageNumber: 1 }));
     setFilterConfig({ ...filterConfig, ...filters });
-    // if (filters.status && !Array.isArray(filters.status)) {
-    //   filters.status = [filters.status];
-    // }
   };
 
   const clearFilters = () => {
@@ -144,6 +188,9 @@ export const OrderProvider = ({ children }) => {
     setDataState(INITIAL_DATA_STATE);
     setFilterConfig({ ...INITIAL_FILTER_STATE });
     setCurrentPage(1);
+    if (tabVariant === ORDER_TABS.PENDING_APPROVAL)
+      setOrderView(ORDER_VIEW.ASSIGNED_TO_ME);
+    else setOrderView(ORDER_VIEW.MY_ORDERS);
     setTabVariant(tabType);
   };
 
@@ -170,7 +217,10 @@ export const OrderProvider = ({ children }) => {
         setTabVariant,
         assignedGroupsData: assignedGroupsData,
         orderView,
-        changeOrderView
+        changeOrderView,
+        assigneeList,
+        searchAssigneeByTest,
+        setAssigneeOnChange
       }}>
       {children}
     </OrderContext.Provider>

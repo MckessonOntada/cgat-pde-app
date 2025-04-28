@@ -137,12 +137,10 @@ const ProviderForm = (props) => {
       Array.isArray(errorFromServer) &&
       errorFromServer.length > 0
     ) {
-      errorFromServer.forEach((error) => {
-        add({
-          description: t(`serverResponse.${error}`),
-          type: 'error',
-          isSticky: true
-        });
+      add({
+        description: t(`serverResponse.${errorFromServer.sort().join('.')}`),
+        type: 'error',
+        isSticky: true
       });
     }
   };
@@ -202,7 +200,7 @@ const ProviderForm = (props) => {
                   {(!isEditOperation || !isLoading) && (
                     <div className="controls">
                       <Button
-                        type="submit"
+                        type="button"
                         variant="secondary"
                         size="md"
                         onClick={() => {

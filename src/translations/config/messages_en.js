@@ -9,9 +9,9 @@ export const ConfigurationMessagesEN = {
   'providers.label.activateProvider': 'Activate Provider?',
   'providers.label.deactivateProvider': 'Deactivate Provider?',
   'providers.label.activateRecordDescription':
-    'Do you want to activate this provider?',
+    'Are you sure you want to activate this provider?',
   'providers.label.deactivateRecordDescription':
-    'Do you want to deactivate this provider?',
+    'Are you sure you want to deactivate this provider?',
   'providers.columnCaption.providerName': 'Provider Name',
   'providers.columnCaption.address': 'Address',
   'providers.columnCaption.deaNumber': 'DEA Number',
@@ -21,6 +21,9 @@ export const ConfigurationMessagesEN = {
   'providerStatus.ACTIVE': 'Active',
   'providerStatus.INACTIVE': 'Inactive',
   'providerStatus.ALL': 'All',
+  'labels.caption.All': 'All',
+  'labels.caption.SUBMITTED_BUY_AND_BILL': 'Buy and Bill',
+  'placeholder.selectAssignee': 'Search assignee',
   'provider.activationSuccess': 'Provider has been activated successfully.',
   'provider.activationFailure':
     'Failed to activate provider. Please try again.',
@@ -120,6 +123,24 @@ export const ConfigurationMessagesEN = {
   'provider.orderType': 'Order Type',
   'provider.assignee': 'Assignee',
 
-  'serverResponse.provider.dea.conflict': 'DEA number already exist',
-  'serverResponse.provider.npi.conflict': 'NPI number already exist'
+  'serverResponse.provider.dea.conflict':
+    'A provider with this DEA Number already exists. Please enter a unique DEA Number.',
+  'serverResponse.provider.npi.conflict':
+    'A provider with this NPI Number already exists. Please enter a unique NPI Number.',
+  'serverResponse.provider.dea.conflict.provider.npi.conflict':
+    'A provider with this DEA Number and NPI Number already exists. Please verify and enter unique details.',
+  'button.caption.confirm': 'Confirm',
+  'button.caption.cancel': 'Cancel',
+  'label.backSpCrosswalk': 'Back to Manage Crosswalk Material',
+  'invalid.csv.file.headers.unstructured':
+    'File is invalid. Please select valid file to upload.',
+  'invalid.csv.file.headers.missing':
+    'File is invalid. Please select valid file to upload.',
+  'provider.btnUnlink': 'Unlink',
+  'fileUpload.crosswalk.success':
+    'File processed successfully, No errors were found.',
+  'fileUpload.crosswalk.partialSuccess':
+    'File processing completed, Some records were not processed successfully. Please review the downloaded error report.',
+  'label.spCatalogDataGrid': 'SP Catalog',
+  'label.spCatalogDataGridDescription': 'No data found'
 };

@@ -35,7 +35,6 @@
     .configure-li {
       display: flex;
       justify-content: space-between;
-      padding: 24px 0px;
       // border-bottom: 1px solid var(--brand-color-dark-grey);
 
       .details-key {
@@ -60,7 +59,6 @@
     .Questionnaire-li {
       display: flex;
       justify-content: space-between;
-      padding: 16px 0px;
 
       .Questionnaire-key {
         font-size: var(--brand-font-size--default);

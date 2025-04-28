@@ -32,3 +32,8 @@ radio-option-caption {
     margin-bottom: '8px';
     font-size: '14px';
 }
+div[role="row"] {
+    div[role="cell"] {
+      flex-wrap: initial;
+    }
+}

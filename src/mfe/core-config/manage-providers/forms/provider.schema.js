@@ -1,3 +1,4 @@
+import { ZIP_REGEX } from '@src/components/form/ValidationRegExp';
 import * as yup from 'yup';
 
 const nameRegex = /^[A-Za-z\s.-]+$/;
@@ -96,7 +97,7 @@ export const getProviderSchema = (t) =>
     zip: yup
       .string()
       .required(t('provider.zip.required'))
-      .matches(zipRegex, t('provider.zip.format'))
+      .matches(ZIP_REGEX, t('provider.zip.format'))
       .test(
         'no-spaces',
         t('provider.zip.noSpaces'),

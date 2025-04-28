@@ -806,9 +806,11 @@ const Summary = () => {
                       value={
                         <span className="dollarSign">
                           <span>$</span>
-                          {catalog?.netPrice
+                          {catalog?.netPrice ||
+                          simulationData?.updatedCatalogNetPrice
                             ? CommonUtils.formatNumberWithoutSymbol(
-                                catalog?.netPrice
+                                simulationData.updatedCatalogNetPrice ||
+                                  catalog.netPrice
                               )
                             : '-'}
                         </span>
