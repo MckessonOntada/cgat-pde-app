@@ -86,6 +86,20 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer })
   };
 
   const { programs = [], channels = [] } = programChannelConfig;
+  const testChannels = ["Buy & Bill", "Specialty Pharmacy"]
+  
+  const programList = [
+      {
+          "label": "Buy & Bill",
+          "value": "Buy & Bill",
+          "isDisabled" : !testChannels.includes("Buy & Bill")
+      },
+      {
+          "label": "Specialty Pharmacy",
+          "value": "Specialty Pharmacy",
+          "isDisabled" : !testChannels.includes("Specialty Pharmacy")
+      }
+    ]
   return (
     <FloatingDrawer 
       open={openDrawer} 
@@ -121,7 +135,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer })
                 <RadioGroup
                   direction="row"
                   id="order-channel-options"
-                  items={channels.map((v) => ({ label: v, value: v }))}
+                  items={programList}
                   onChangeValue={(value) => {
                     setAlertMsg(false);
                     setChannel(value);
@@ -138,7 +152,11 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer })
                 <RadioGroup
                   direction="row"
                   id="order-program-options"
-                  items={programs.map((v) => ({ label: v, value: v }))}
+                  items={programs.map((v) => ({ 
+                    label: v, 
+                    value: v, 
+                    isDisabled: selectedChannel.includes("Specialty Pharmacy")
+                  }))}
                   onChangeValue={(value) => {
                     setAlertMsg(false);
                     setProgram(value);
