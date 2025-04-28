@@ -22,18 +22,21 @@ export const sections = [
             label: 'provider.firstName',
             type: 'input',
             name: 'firstName',
-            isRequired: true
+            isRequired: true,
+            maxLength: 50
           },
           {
             label: 'provider.middleName',
             type: 'input',
-            name: 'middleName'
+            name: 'middleName',
+            maxLength: 50
           },
           {
             label: 'provider.lastName',
             type: 'input',
             name: 'lastName',
-            isRequired: true
+            isRequired: true,
+            maxLength: 50
           }
         ]
       },
@@ -68,12 +71,14 @@ export const sections = [
             label: 'provider.address1',
             type: 'input',
             name: 'address1',
-            isRequired: true
+            isRequired: true,
+            maxLength: 100
           },
           {
             label: 'provider.address2',
             type: 'input',
-            name: 'address2'
+            name: 'address2',
+            maxLength: 100
           }
         ]
       },
@@ -84,7 +89,8 @@ export const sections = [
             label: 'provider.city',
             type: 'input',
             name: 'city',
-            isRequired: true
+            isRequired: true,
+            maxLength: 50
           },
           {
             label: 'provider.zip',
