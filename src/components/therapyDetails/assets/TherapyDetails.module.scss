@@ -99,6 +99,9 @@
   }
 }
 
+.bodyPadding {
+  padding: 0px var(--spacing-03)
+}
 
 .cardToggleWrapper {
   margin-top: var(--spacing-03)
@@ -107,10 +110,13 @@
 .cardHeader {
   display: flex;
   align-items: center;
-  padding: var(--spacing-03) 0px;
+  padding: var(--spacing-03) var(--spacing-03);
   font-weight: 600;
   cursor: pointer;
   border-bottom: 1px solid var(--brand-color-dark-grey);
+}
+
+.cardHeaderWithTopBorder {
   border-top: 1px solid var(--brand-color-dark-grey);
 }
 

@@ -620,5 +620,7 @@ export const MessageEn = {
   'tooltip.material.status.OUT_OF_STOCK': 'Low Inventory',
   'tooltip.material.status.CHECKING': 'Checking',
 
-  'labels.orderQuantity': 'Order Quantity'
+  'labels.orderQuantity': 'Order Quantity',
+  'labels.BuyNBill': 'BUY & BILL',
+  'labels.SP': 'SP'
 };

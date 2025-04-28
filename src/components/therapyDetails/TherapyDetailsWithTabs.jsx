@@ -2,13 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './assets/TherapyDetails.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useQuery } from 'react-query';
-import {
-  Loader,
-  Heading,
-  Button,
-  TabList,
-  IconButton
-} from '@mckesson/mcp-component-library';
+import { Loader, Heading, Button, TabList, IconButton } from '@mckesson/mcp-component-library';
 import { ReactComponent as arrow_right } from '@src/assets/image/arrow_right_small.svg';
 import { ReactComponent as arrow_down } from '@src/assets/image/arrow_down_small.svg';
 import OrderService from '@src/api/commonService/OrderService';
@@ -16,67 +10,80 @@ import FloatingDrawer from '@src/components/floating-drawer';
 
 export const THERAPY_TABS = {
   BUY_AND_BILL: 'BUY & BILL',
-  SP: 'SP'
+  SP: 'SPECIALITY_PHARMA'
 };
 
 function TherapyDetailsWithTabs({
   therapyId,
   onClose,
   onSelect,
-  buyAndBillTherapyData,
-  spTherapyData,
+  buyAndBillTherapyConstants,
+  spTherapyConstants,
   showFooter = true,
   heading
 }) {
   const { t } = useTranslate();
   const [selectedTab, setSelectedTab] = useState(THERAPY_TABS.BUY_AND_BILL);
-  const [isCardExpanded, setIsCardExpanded] = useState(false);
+  const [isCardExpanded, setIsCardExpanded] = useState(true);
+  const {
+    isLoading,
+    data: therapyDetails = {},
+    error
+  } = useQuery({
+    queryKey: ['therapy', therapyId],
+    queryFn: async () => {
+      return await OrderService.getTherapyDetailsByCrossWalkId(therapyId);
+    },
+    enabled: Boolean(therapyId),
+    refetchOnWindowFocus: false
+  });
+
+  const showBuyAndBillTab = therapyDetails?.primaryTherapyChannelType === THERAPY_TABS.BUY_AND_BILL;
+  const showSPTab =
+    therapyDetails?.primaryTherapyChannelType === THERAPY_TABS.SP ||
+    (therapyDetails?.primaryTherapyChannelType === THERAPY_TABS.BUY_AND_BILL &&
+      therapyDetails?.isCrosswalked &&
+      therapyDetails?.crosswalkedTherapies?.length > 0);
+
+  useEffect(() => {
+    if (therapyDetails?.primaryTherapyChannelType) {
+      if (therapyDetails.primaryTherapyChannelType === THERAPY_TABS.SP) {
+        setSelectedTab(THERAPY_TABS.SP);
+      } else if (therapyDetails.primaryTherapyChannelType === THERAPY_TABS.BUY_AND_BILL) {
+        setSelectedTab(THERAPY_TABS.BUY_AND_BILL);
+      }
+    }
+  }, [therapyDetails]);
+
   const getTabs = () => {
     const tabs = [];
 
-    if (buyAndBillTherapyData) {
+    if (showBuyAndBillTab) {
       tabs.push({
         id: THERAPY_TABS.BUY_AND_BILL,
-        configName: 'BUY & BILL',
+        configName: t('labels.BuyNBill'),
         isActiveTab: selectedTab === THERAPY_TABS.BUY_AND_BILL,
         sequence: 1,
-        labelForMobile: 'BUY AND BILL'
+        labelForMobile: t('labels.BuyNBill')
       });
     }
 
-    if (spTherapyData) {
+    if (showSPTab) {
       tabs.push({
         id: THERAPY_TABS.SP,
-        configName: 'SP',
+        configName: t('labels.SP'),
         isActiveTab: selectedTab === THERAPY_TABS.SP,
         sequence: 2,
-        labelForMobile: 'SP'
+        labelForMobile: t('labels.SP')
       });
     }
 
     return tabs;
   };
 
-  const handleExpandCard = () => {
-    setIsCardExpanded(!isCardExpanded);
+  const handleExpandCard = (id) => {
+    setIsCardExpanded((prevId) => (prevId === id ? null : id));
   };
-
-  const {
-    isLoading,
-    data: therapyDetails = {},
-    error,
-    refetch
-  } = useQuery({
-    queryKey: ['therapy', therapyId, selectedTab],
-    queryFn: async () => {
-      if (selectedTab === THERAPY_TABS.SP) {
-        return await OrderService.getTherapyDetailsById(therapyId);
-      }
-      return await OrderService.getTherapyDetailsById(therapyId);
-    },
-    enabled: Boolean(therapyId),
-    refetchOnWindowFocus: false
-  });
 
   const handleSelect = () => {
     if (onSelect && therapyDetails) {
@@ -91,16 +98,11 @@ function TherapyDetailsWithTabs({
       anchor="right"
       onClose={onClose}
       heading={heading}
+      bodyPadding="var(--spacing-03) 0px var(--spacing-16)"
       controls={
         showFooter && (
           <div className="controls">
-            <Button
-              label={t('captions.btnCancel')}
-              onClick={onClose}
-              variant="secondary"
-              size="md"
-              aria-label={t('captions.cancel')}
-            />
+            <Button label={t('captions.btnCancel')} onClick={onClose} variant="secondary" size="md" aria-label={t('captions.cancel')} />
             <Button
               label={t('captions.btnSelecttherapy')}
               onClick={handleSelect}
@@ -112,7 +114,7 @@ function TherapyDetailsWithTabs({
         )
       }>
       <div className={styles.wrapper}>
-        <div className="customTab">
+        <div className="customTab" style={{ padding: '0px 16px' }}>
           <TabList
             options={getTabs()}
             alignment="left"
@@ -126,50 +128,45 @@ function TherapyDetailsWithTabs({
         {isLoading ? (
           <Loader variant="circular" />
         ) : (
-          <div className={styles.body}>
+          <div className={`${styles.body}`}>
             {therapyDetails && (
               <>
                 {selectedTab === THERAPY_TABS.SP ? (
                   <div className={styles.cardToggleWrapper}>
-                    <div className={styles.cardHeader}>
-                      <IconButton
-                        label={
-                          therapyDetails?.productName || 'SP Therapy Details'
-                        }
-                        size="lg"
-                        iconButton={false}
-                        textButton={true}
-                        Icon={isCardExpanded ? arrow_down : arrow_right}
-                        onClick={handleExpandCard}></IconButton>
+                    {therapyDetails?.primaryTherapyChannelType === THERAPY_TABS.BUY_AND_BILL &&
+                    therapyDetails?.isCrosswalked &&
+                    therapyDetails?.crosswalkedTherapies?.length > 0 ? (
+                      therapyDetails.crosswalkedTherapies.map((therapy, index) => (
+                        <div key={therapy.id || index} className={styles.therapyCard}>
+                          <div className={`${styles.cardHeader} ${index === 0 ? styles.cardHeaderWithTopBorder : ''}`}>
+                            <IconButton
+                              label={therapy?.materialDescription}
+                              size="lg"
+                              iconButton={false}
+                              textButton={true}
+                              Icon={isCardExpanded === therapy.id ? arrow_down : arrow_right}
+                              onClick={() => handleExpandCard(therapy.id)}
+                            />
+                          </div>
 
-                      {/* <Button
-                        variant="tertiary"
-                        type="button"
-                        onClick={handleExpandCard}
-                        className={styles.toggleBtn}>
-                        <img
-                          src={isCardExpanded ? arrow_down : arrow_right}
-                          alt="toggle-icon"
-                        />
-                        {therapyDetails?.productName || 'SP Therapy Details'}
-                      </Button> */}
-                      {/* <Button
-                        variant="tertiary"
-                        type="button"
-                        onClick={handleExpandCard}
-                        size="lg">
-                        {therapyDetails?.productName || 'SP Therapy Details'}
-                      </Button> */}
-                    </div>
+                          {isCardExpanded === therapy.id && <DetailsPanel details={therapy} therapyData={spTherapyConstants} />}
+                        </div>
+                      ))
+                    ) : (
+                      <>
+                        <div className={`${styles.cardHeader} ${styles.cardHeaderWithTopBorder}`}>
+                          <IconButton
+                            label={therapyDetails?.materialDescription}
+                            size="lg"
+                            iconButton={false}
+                            textButton={true}
+                            Icon={isCardExpanded === therapyDetails.id ? arrow_down : arrow_right}
+                            onClick={() => handleExpandCard(therapyDetails.id)}
+                          />
+                        </div>
 
-                    {isCardExpanded && (
-                      <DetailsPanel
-                        details={therapyDetails}
-                        handleSelect={handleSelect}
-                        onClose={onClose}
-                        therapyData={spTherapyData}
-                        refetch={refetch}
-                      />
+                        {isCardExpanded === therapyDetails.id && <DetailsPanel details={therapyDetails} therapyData={spTherapyConstants} />}
+                      </>
                     )}
                   </div>
                 ) : (
@@ -177,8 +174,7 @@ function TherapyDetailsWithTabs({
                     details={therapyDetails}
                     handleSelect={handleSelect}
                     onClose={onClose}
-                    therapyData={buyAndBillTherapyData}
-                    refetch={refetch}
+                    therapyData={buyAndBillTherapyConstants}
                   />
                 )}
               </>
@@ -193,12 +189,10 @@ function TherapyDetailsWithTabs({
 function DetailsPanel({ details, therapyData }) {
   const { t } = useTranslate();
   const renderDetails = (fields, details) =>
-    fields.map(({ label, value }) => (
-      <DetailItem key={label} label={t(label)} value={details[value] || '-'} />
-    ));
+    fields.map(({ label, value }) => <DetailItem key={label} label={t(label)} value={details[value] || '-'} />);
   return (
     <div className={styles.detailsPanel}>
-      <div className={styles.drawerBodyContent}>
+      <div className={`${styles.drawerBodyContent} ${styles.bodyPadding}`}>
         {therapyData?.map((section, index) => (
           <div key={index}>
             <Heading as="h3" className={styles.details}>

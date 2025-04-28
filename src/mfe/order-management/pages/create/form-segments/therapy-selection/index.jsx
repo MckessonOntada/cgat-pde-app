@@ -246,8 +246,8 @@ function TherapySelection() {
               therapyId={therapyDetails}
               onSelect={handleOnDrawerSelect}
               onClose={handleOnClose}
-              buyAndBillTherapyData={TherapyDetailsConstantsForBB}
-              spTherapyData={TherapyDetailsConstantsForSP}
+              buyAndBillTherapyConstants={TherapyDetailsConstantsForBB}
+              spTherapyConstants={TherapyDetailsConstantsForSP}
               heading={t('manageMaterial.drawer.heading')}
             />
           )}

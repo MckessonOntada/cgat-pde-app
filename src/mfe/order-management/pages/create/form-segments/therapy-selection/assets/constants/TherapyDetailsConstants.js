@@ -19,10 +19,6 @@ export const TherapyDetailsConstantsForBB = [
       {
         label: 'labels.therapy.productLevelPricing',
         value: 'productLevelPricing'
-      },
-      {
-        label: 'labels.therapy.minimumOrderQuantity',
-        value: 'minOrdrQuantity'
       }
     ]
   }
