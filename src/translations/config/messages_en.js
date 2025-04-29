@@ -143,7 +143,6 @@ export const ConfigurationMessagesEN = {
     'File processing completed, Some records were not processed successfully. Please review the downloaded error report.',
   'fileUpload.error.timeoutOrSystemError':
     'An unexpected error occurred during the upload. Please try again later.',
-
   'invalid.csv.file.headers.empty':
     'Error: The uploaded file is invalid. Please upload a valid file.',
   'invalid.csv.file.headers.unstructured':
