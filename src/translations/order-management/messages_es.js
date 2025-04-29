@@ -130,6 +130,8 @@ export const MessageEs = {
     'S_Date of administration must be in the future',
   'controls.placeholder.searchOrderPlaceholder':
     'S_Search by Order ID, Patient name, Account',
+  'controls.placeholder.searchSPOrderPlaceholder':
+    'S_Search by Order ID, Therapy, Submitted By',
   'controls.placeholders.autoSearch':
     'S_Search by Order ID, Patient name, Account',
   'controls.placeholder.shippingAddress.search':

@@ -55,6 +55,8 @@ const OrderIndex = () => {
       let countClass = '';
       if ([ORDER_TABS.SUBMITTED_BUY_AND_BILL].includes(tab.id)) {
         countClass = 'green';
+      } else if ([ORDER_TABS.SUBMITTED_SP].includes(tab.id)) {
+        countClass = 'green';
       } else if ([ORDER_TABS.PENDING_SUBMISSION].includes(tab.id)) {
         countClass = 'orange';
       }
@@ -103,8 +105,15 @@ const OrderIndex = () => {
         }))
       });
     }
-    if (tabVariant === ORDER_TABS.PENDING_APPROVAL) {
-      const orderTypes = ['All', ORDER_TABS.SUBMITTED_BUY_AND_BILL];
+    if (
+      tabVariant === ORDER_TABS.PENDING_APPROVAL ||
+      tabVariant === ORDER_TABS.PENDING_SUBMISSION
+    ) {
+      const orderTypes = [
+        'All',
+        ORDER_TABS.SUBMITTED_BUY_AND_BILL,
+        ORDER_TABS.SUBMITTED_SP
+      ];
       filters.push({
         type: 'dropdown',
         name: 'orderType',
@@ -239,7 +248,9 @@ const OrderIndex = () => {
                 onClearFilters={clearFilters}
                 additionalFilters={additionalFiltersConfig}
                 searchPlaceholder={t(
-                  'controls.placeholder.searchOrderPlaceholder'
+                  tabVariant === ORDER_TABS.SUBMITTED_SP
+                    ? 'controls.placeholder.searchSPOrderPlaceholder'
+                    : 'controls.placeholder.searchOrderPlaceholder'
                 )}
               />
             </div>

@@ -1,6 +1,6 @@
 export const ORDER_TABS = {
   SUBMITTED_BUY_AND_BILL: 'SUBMITTED_BUY_AND_BILL',
-  // SUBMITTED_SP: 'SUBMITTED_SP',
+  SUBMITTED_SP: 'SUBMITTED_SP',
   PENDING_SUBMISSION: 'PENDING_SUBMISSION',
   PENDING_APPROVAL: 'PENDING_APPROVAL'
 };
@@ -18,7 +18,7 @@ export const ORDER_STATUS = Object.freeze({
 
 export const TAB_FILTERS = Object.freeze({
   [ORDER_TABS.SUBMITTED_BUY_AND_BILL]: [ORDER_STATUS.SUBMITTED],
-  [ORDER_TABS.SUBMITTED_SP]: [],
+  [ORDER_TABS.SUBMITTED_SP]: [ORDER_STATUS.SUBMITTED],
   [ORDER_TABS.PENDING_SUBMISSION]: [
     ORDER_STATUS.IN_DRAFT,
     ORDER_STATUS.REJECTED,
@@ -42,8 +42,8 @@ export const TOGGLE_FILTERS = {
   ],
   [ORDER_TABS.SUBMITTED_SP]: [
     ORDER_VIEW.MY_ORDERS,
-    ORDER_VIEW.ALL_ORDERS,
-    ORDER_VIEW.PAP_ORDERS
+    ORDER_VIEW.ALL_ORDERS //,
+    //ORDER_VIEW.PAP_ORDERS
   ],
   [ORDER_TABS.PENDING_SUBMISSION]: [
     ORDER_VIEW.MY_ORDERS,
@@ -92,7 +92,7 @@ export const TABLE_COLUMNS = {
     COLUMNS.SUBMITTED_BY,
     COLUMNS.SUBMITTED_ON,
     COLUMNS.STATUS,
-    COLUMNS.PRICE,
+    // COLUMNS.PRICE,
     COLUMNS.ACTION
   ],
   [ORDER_TABS.PENDING_SUBMISSION]: [
@@ -136,13 +136,13 @@ export const getTabs = () => [
     sequence: 1,
     labelForMobile: 'labels.tabs.submittedBuyAndBill'
   },
-  // {
-  //   id: ORDER_TABS.SUBMITTED_SP,
-  //   configName: 'labels.tabs.submittedSp',
-  //   isActiveTab: false,
-  //   sequence: 2,
-  //   labelForMobile: 'labels.tabs.submittedSp'
-  // },
+  {
+    id: ORDER_TABS.SUBMITTED_SP,
+    configName: 'labels.tabs.submittedSp',
+    isActiveTab: false,
+    sequence: 2,
+    labelForMobile: 'labels.tabs.submittedSp'
+  },
   {
     id: ORDER_TABS.PENDING_SUBMISSION,
     configName: 'labels.tabs.pendingSubmission',
@@ -171,3 +171,8 @@ export const DiSTRIBUTION_CHANNEL_OPTIONS = [
   { label: '3 PL', value: '3pl' },
   { label: 'MPB', value: 'mpb' }
 ];
+
+export const ChannelType = {
+  BUY_AND_BILL: 'BUY_AND_BILL',
+  SPECIALITY_PHARMA: 'SPECIALITY_PHARMA'
+};

@@ -13,6 +13,7 @@ const useOrderCount = () => {
   if (data && !isError) {
     const statusMap = {
       [ORDER_TABS.SUBMITTED_BUY_AND_BILL]: ['SUBMITTED'],
+      [ORDER_TABS.SUBMITTED_SP]: ['SUBMITTED'],
       [ORDER_TABS.PENDING_APPROVAL]: ['APPROVAL_PENDING'],
       [ORDER_TABS.PENDING_SUBMISSION]: ['DELETED', 'REJECTED', 'IN_DRAFT']
     };
