@@ -122,6 +122,7 @@ const List = () => {
         />
         <CustomDataTable
           id="provider-list-table"
+          type={'normal'}
           columns={getColumns({
             setOpenDetails,
             setMaterialNumber,
@@ -129,7 +130,9 @@ const List = () => {
             setViewSPMaterial
           })}
           data={data}
-          handleChangePage={changePage}
+          handleChangePage={(_event, pageIndex) => {
+            changePage(pageIndex);
+          }}
           onSortIconClick={handleOnSort}
           pagination={true}
           currentPage={pagination.pageNumber}
