@@ -9,7 +9,7 @@ import ModuleHeader from '@src/components/module-header';
 import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
 import { useShippingLocation } from '../../context/ShippingLocationContext';
 import CommonFilters from '@src/components/Filters';
-import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
+import { ReactComponent as AddIcon } from '@src/assets/svg/add-icon.svg';
 import AddShippingDetails from './AddShippingDetails';
 import AuthUtils from '@src/util/AuthUtils';
 import { getShippingLocationColumns } from './ShippingLocationColumns';
@@ -127,7 +127,7 @@ function ShippingLocationsDataTable() {
           controls={
             !isCustomerCenter && (
               <Button
-                Icon={EditPencil}
+                Icon={AddIcon}
                 variant="secondary"
                 className="button-icon"
                 size="md"
