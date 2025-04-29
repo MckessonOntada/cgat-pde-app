@@ -87,7 +87,6 @@ export const renderTableCheckBox = (
   };
 
   const getindeterminate = () => {
-    debugger;
     const allDataIncluded = data.every((element) =>
       selectedData.some((item) => item[dataKey] === element[dataKey])
     );
