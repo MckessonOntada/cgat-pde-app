@@ -8,7 +8,6 @@ import PageHeader from '@src/components/pageHeader';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import PatientDetailsForm from './PatientDetailsForm';
 import { Form, Formik } from 'formik';
-import { getValidationSchema } from './PatientDetailsFormUtils';
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation } from 'react-query';
 import CommonUtils from '@src/util/CommonUtils';
@@ -22,6 +21,26 @@ import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
 import { Loader } from '@mckesson/mcp-component-library';
 
+import { sections } from './forms/patient-details.config';
+import FormRenderer from '@src/mfe/core-config/manage-providers/forms/FormRenderer';
+import { providerSections } from './forms/providers.config';
+import { getValidationSchema } from './forms/validation-schema';
+
+export const getFilteredSections = (channelType) => {
+  return sections.map((section) => ({
+    ...section,
+    rows: section.rows.map((row) => ({
+      ...row,
+      controls: row.controls.filter((control) => {
+        if (typeof control.if === 'function') {
+          return control.if(channelType);
+        }
+        return true;
+      })
+    }))
+  }));
+};
+
 const PatientDetails = () => {
   const { t } = useTranslate();
   const { orderId } = useParams();
@@ -29,6 +48,7 @@ const PatientDetails = () => {
   const alertContainerId = 'patintDetails-alert-container';
   const { showAlert } = useAlert();
   const location = useLocation();
+  const filteredSections = getFilteredSections(false);
   const {
     isEdit = false,
     isApprover = false,
@@ -57,24 +77,18 @@ const PatientDetails = () => {
     shipToAccountId
   });
   const INITIAL_VALUES = {
-    patientInfo: {
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      gender: '',
-      dateOfBirth: ''
-    },
-    contact: {
-      emailId: '',
-      phoneNumber: ''
-    },
-    patientAddress: {
-      addressLine1: '',
-      addressLine2: '',
-      city: '',
-      zipCode: '',
-      state: ''
-    },
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    gender: '',
+    dateOfBirth: '',
+    emailId: '',
+    phoneNumber: '',
+    addressLine1: '',
+    addressLine2: '',
+    city: '',
+    zipCode: '',
+    state: '',
     patientIdentifier: ''
   };
 
@@ -273,7 +287,12 @@ const PatientDetails = () => {
               <Form>
                 <div className={styles.wrapper}>
                   <div className="MCP-panel-container">
-                    <PatientDetailsForm />
+                    {/* <PatientDetailsForm /> */}
+                    <FormRenderer sections={filteredSections} />
+                    <hr />
+                    <div>
+                      <FormRenderer sections={providerSections} />
+                    </div>
                   </div>
                   <div className="footer-wrapper">
                     <div className="controls footer-controls">

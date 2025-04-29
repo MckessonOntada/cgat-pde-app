@@ -95,6 +95,12 @@ const AccountSelection = () => {
       onSuccess: async (result) => {
         const { id } = result;
         try {
+          // temp code start
+          navigate(`../${id}/patient`, {
+            state: { alertState, isEdit: false, isApprover: isApprover }
+          });
+          return;
+          // temp code end
           if (result.patientDetailsRequired || isSPAccountSelected) {
             navigate(`../${id}/patient`, {
               state: { alertState, isEdit: false, isApprover: isApprover }

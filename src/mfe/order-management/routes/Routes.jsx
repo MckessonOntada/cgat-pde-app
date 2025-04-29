@@ -27,6 +27,7 @@ import { QuestionnaireProvider } from '../context/QuestionnaireContext';
 import ManageSPMaterialRoute from '../pages/system-configuration/manage-spmaterial/routes/Routes';
 import { SPMaterialProvider } from '../pages/system-configuration/manage-spmaterial/context/SPMaterialContext';
 import ManageSPAccountRoute from '../pages/system-configuration/manage-spaccount/routes/Routes';
+import PayerDetails from '../pages/create/form-segments/payers-details';
 
 function OrderManagementRoutes() {
   const addEditPermission = [
@@ -81,6 +82,7 @@ function OrderManagementRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route path={`:orderId/payer`} element={<PayerDetails />} />
       <Route
         path={`:orderId/additional-details`}
         element={

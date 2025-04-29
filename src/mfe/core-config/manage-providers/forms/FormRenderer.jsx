@@ -13,11 +13,16 @@ const FormRenderer = ({ sections }) => {
           {sections.map((section, sectionIndex) => (
             <div key={sectionIndex} className="form-section">
               <div className="form-section-heading">
-                <Heading as="h2">{t(section.title)}</Heading>
+                {section.title && <Heading as="h2">{t(section.title)}</Heading>}
                 {section.isRequired && (
                   <p className="form-instruction">
                     <span className="required">*</span> {t('labels.required')}
                   </p>
+                )}
+              </div>
+              <div classname="form-section-heading">
+                {section.subTitle && (
+                  <Heading as="h5">{t(section.subTitle)}</Heading>
                 )}
               </div>
 
