@@ -9,7 +9,7 @@ import OrderService from '@src/api/commonService/OrderService';
 import FloatingDrawer from '@src/components/floating-drawer';
 
 export const THERAPY_TABS = {
-  BUY_AND_BILL: 'BUY & BILL',
+  BUY_AND_BILL: 'BUY_AND_BILL',
   SP: 'SPECIALITY_PHARMA'
 };
 
