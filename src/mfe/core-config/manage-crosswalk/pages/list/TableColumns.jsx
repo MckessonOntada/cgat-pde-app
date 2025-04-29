@@ -48,7 +48,7 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
       sortable: true,
       sortKey: 'bnbMaterialNumber',
       cell: (props) => (
-        <EclipsesTextcss str={props?.bnbMaterialNumber || '-'} maxWidth={110} />
+        <EclipsesTextcss str={props?.bnbMaterialNumber || '-'} />
       )
     },
     {
@@ -78,7 +78,7 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
       name: 'Buy & Bill Material NDC',
       minWidth: '80px',
       cell: (props) => (
-        <EclipsesTextcss str={props?.bnbNdc || '-'} maxWidth={90} />
+        <EclipsesTextcss str={props?.bnbNdc || '-'} />
       )
     },
     {
@@ -118,7 +118,7 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
       name: 'SP Product NDC',
       minWidth: '90px',
       cell: (props) => (
-        <EclipsesTextcss str={props?.spNdc || '-'} maxWidth={80} />
+        <EclipsesTextcss str={props?.spNdc || '-'} />
       )
     },
 
