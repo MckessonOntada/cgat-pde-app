@@ -541,5 +541,7 @@ export const MessageEs = {
   'tooltip.material.status.AVAILABLE': 'S_Therapy Available',
   'tooltip.material.status.DROP_SHIP': 'S_Dropship',
   'tooltip.material.status.OUT_OF_STOCK': 'S_Low Inventory',
-  'tooltip.material.status.CHECKING': 'S_Checking'
+  'tooltip.material.status.CHECKING': 'S_Checking',
+  'labels.BuyNBill': 'S_BUY & BILL',
+  'labels.SP': 'S_SP'
 };

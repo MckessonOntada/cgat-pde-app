@@ -245,6 +245,9 @@ export const MessageEn = {
   'labels.therapy.baseUnitOfMeasure': 'Base Unit of Measure',
   'labels.therapy.cgatIdentifier': 'CGAT Identifier',
   'labels.therapy.productLevelPricing': 'Product Level Pricing',
+  'labels.therapy.productName': 'Product Name',
+  'labels.therapy.siteName': 'Site Name',
+  'labels.therapy.id': 'ID',
   'labels.therapy.minimumOrderQuantity': 'Minimum Order Quantity',
   'labels.therapy.configuration': 'Configuration',
   'labels.therapy.preview': 'Preview',
@@ -620,14 +623,15 @@ export const MessageEn = {
   'tooltip.material.status.DROP_SHIP': 'Dropship',
   'tooltip.material.status.OUT_OF_STOCK': 'Low Inventory',
   'tooltip.material.status.CHECKING': 'Checking',
-
-  'labels.orderQuantity': 'Order Quantity',
+  'labels.orderQuantity': 'Order Quantity', 
+  'labels.BuyNBill': 'BUY & BILL',
+  'labels.SP': 'SP', 
   'labels.orderType': 'Order Type',
   'labels.assignee': 'Assignee',
-
   'invalid.csv.file.type':
     'The uploaded file is invalid. Please upload a valid file',
   'invalid.csv.file.headers.missing':
     'The uploaded file is invalid. It missing required columns. Please upload a valid file',
   'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file'
+ 
 };
