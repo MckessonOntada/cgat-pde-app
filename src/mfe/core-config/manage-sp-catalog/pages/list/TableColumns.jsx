@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Badge,
-  MenuList,
-  CheckboxGroup,
-  Button,
-  IconButton
-} from '@mckesson/mcp-component-library';
+import { IconButton } from '@mckesson/mcp-component-library';
 import {
   usePagination,
   useSelection,
@@ -15,10 +9,6 @@ import { Link } from 'react-router-dom';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as LinkIcon } from '@src/assets/svg/link.svg';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useDispatch } from 'react-redux';
-import { closeModal, openModal } from '@src/store/reducer/modalReducer';
-import SPCatalogService from '@src/api/commonService/SPCatalogService';
-import { useMutation } from 'react-query';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 
 const PROVIDER_COLUMNS = {
@@ -33,74 +23,19 @@ const PROVIDER_COLUMNS = {
 export const getColumns = ({
   setOpenSPMaterialDetails,
   setViewSPMaterial,
-  add,
-  refresh
+  onDeLinkConfirmation
 }) => {
   const { selectedRows, setSelection } = useSelection();
   const { pagination } = usePagination();
   const { data } = useTable();
-  const dispatch = useDispatch();
   const { t } = useTranslate();
-  const { mutate } = useMutation({
-    mutationFn: (payload) => SPCatalogService.deLinkCatalogs(payload),
-    onSuccess: (response, variables) => {},
-    onError: (error, variables) => {}
-  });
+
   const handleOnDeLink = (data) => {
-    const state = {};
-    state.title = t('SPCatalog.deLinkConfirmationTitle');
-    state.body = (
-      <div className="MCP-modal-body">
-        {t('SPCatalog.deLinkConfirmationDescription')}
-      </div>
-    );
-    state.footer = (
-      <div className="controls">
-        <Button
-          onClick={() => dispatch(closeModal())}
-          variant="secondary"
-          size="md">
-          {t('provider.btnCancel')}
-        </Button>
-        <Button
-          onClick={() => {
-            const { sapMaterial, soldToCustomer } = data;
-            dispatch(closeModal());
-            mutate([
-              {
-                sapMaterial,
-                soldToCustomer
-              }
-            ]);
-          }}
-          size="md">
-          {t('provider.btnDeLink')}
-        </Button>
-      </div>
-    );
-    dispatch(openModal(state));
+    const { sapMaterial, soldToCustomer } = data;
+    const payload = [{ sapMaterial, soldToCustomer }];
+    onDeLinkConfirmation(payload);
   };
   return [
-    // {
-    //   id: 'checkbox',
-    //   name: '',
-    //   showInMobileHeader: true,
-    //   cell: (props) => (
-    //     <CheckboxGroup
-    //       id={'default'}
-    //       caption=""
-    //       items={[
-    //         {
-    //           onChange: () => toggleRowSelection(props.id),
-    //           value: props.id,
-    //           isChecked: selectedRows.has(props.id)
-    //         }
-    //       ]}
-    //     />
-    //   ),
-    //   wrap: true,
-    //   width: '40px'
-    // },
     {
       id: 'checkbox',
       name: renderTableCheckBox(

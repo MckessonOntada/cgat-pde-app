@@ -152,5 +152,9 @@ export const ConfigurationMessagesEN = {
   'invalid.csv.file.headers.unstructured':
     'Error: The uploaded file is invalid. Please upload a valid file.',
   'invalid.csv.file.headers.missing':
-    'Error: The uploaded file is invalid. Please upload a valid file.'
+    'Error: The uploaded file is invalid. Please upload a valid file.',
+
+  // catalog
+
+  'SPCatalog.deLinkSuccess': 'Catalog(s) de-linked successfully.'
 };

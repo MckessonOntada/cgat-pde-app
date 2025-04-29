@@ -55,10 +55,7 @@ async function deLinkCatalogs(payload) {
     httpVerb.DELETE,
     payload
   );
-  if (res.data) {
-    return res.data;
-  }
-  return {};
+  return res;
 }
 
 async function downloadSPAccountTemplate() {

@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import CommonFilters from '@src/components/Filters';
 import { CustomDataTable } from '@src/components/dataTableComponent';
-import { Heading, Button } from '@mckesson/mcp-component-library';
+import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
 import { getColumns } from './TableColumns';
 import { ReactComponent as EmptyProviderTable } from '@src/assets/svg/EmptyProviderTable.svg';
-import CommonDataService from '@src/api/commonService/CommonDataService';
-import OrgAccountsSelect from '@src/mfe/order-management/components/orgAccountSelection/OrgAccountsSelect';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bold.svg';
 import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
-import PermittedComponent from '@src/components/permitted-component';
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
-import { PROVIDER_STATUS } from '@src/mfe/core-config/manage-providers/config';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+
 import {
   useFilters,
   usePagination,
@@ -22,6 +20,10 @@ import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { useNavigate } from 'react-router-dom';
 import SPMaterialDetails from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/pages/SPMaterialDetails';
+import { useDispatch } from 'react-redux';
+import { useMutation } from 'react-query';
+import SPCatalogService from '@src/api/commonService/SPCatalogService';
+import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 
 const CatalogList = () => {
   const { filters, applyFilters, clearFilters } = useFilters();
@@ -30,9 +32,10 @@ const CatalogList = () => {
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
   const { pagination, changePage } = usePagination();
   const { t } = useTranslate();
-  const { data = [] } = useTable();
+  const { data = [], refreshTable } = useTable();
   const { applySort } = useSort();
-  const { selectedRows } = useSelection();
+  const dispatch = useDispatch();
+  const { selectedRows, deselectAll } = useSelection();
   const additionalFiltersConfig = React.useMemo(() => {
     return [];
   }, []);
@@ -43,6 +46,78 @@ const CatalogList = () => {
       applySort(sortKey, direction);
     }
   };
+  const {
+    items: notifications,
+    add: addNotification,
+    remove: removeNotification
+  } = useTimedArray(10000);
+  const { mutate } = useMutation({
+    mutationFn: (payload) => SPCatalogService.deLinkCatalogs(payload),
+    onSuccess: (response) => {
+      if (response.status == 200) {
+        addNotification({
+          type: 'success',
+          description: t('SPCatalog.deLinkSuccess')
+        });
+      }
+      deselectAll();
+      refreshTable();
+    },
+    onError: (error) => {
+      const { response: errorResponse } = error;
+      if (
+        errorResponse.response.data?.errorCodes &&
+        errorResponse.response.data?.errorCodes.length > 0
+      ) {
+        errorResponse.response.data.errorCodes.forEach((error) => {
+          addNotification({
+            type: 'error',
+            description: t(`SPCatalog.deLinkFailure.${error}`)
+          });
+        });
+      }
+    }
+  });
+  const onDeLinkConfirmation = (payload) => {
+    const state = {};
+    state.title = t('SPCatalog.deLinkConfirmationTitle');
+    state.body = (
+      <div className="MCP-modal-body">
+        {t('SPCatalog.deLinkConfirmationDescription')}
+      </div>
+    );
+    state.footer = (
+      <div className="controls">
+        <Button
+          onClick={() => dispatch(closeModal())}
+          variant="secondary"
+          size="md">
+          {t('provider.btnCancel')}
+        </Button>
+        <Button
+          onClick={() => {
+            dispatch(closeModal());
+            mutate(payload);
+          }}
+          size="md">
+          {t('provider.btnDeLink')}
+        </Button>
+      </div>
+    );
+    dispatch(openModal(state));
+  };
+
+  const handleOnDeLink = () => {
+    const payload = Array.from(selectedRows).map((id) => {
+      const row = data.find((item) => item.id === id);
+      return {
+        sapMaterial: row.sapMaterial,
+        soldToCustomer: row.soldToCustomer
+      };
+    });
+    onDeLinkConfirmation(payload);
+  };
+
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-CardContainer">
@@ -85,6 +160,20 @@ const CatalogList = () => {
           </div>
         }
       />
+      {notifications?.length > 0 && (
+        <div className="alert-container">
+          <div className="MCP-module-body">
+            {notifications.map((item, index) => (
+              <Alert
+                key={item.id}
+                description={item.description}
+                onClose={() => removeNotification(item.id)}
+                type={item.type}
+              />
+            ))}
+          </div>
+        </div>
+      )}
       {selectedRows.size > 0 && (
         <div className="table-selection-ribbon">
           <p>
@@ -92,17 +181,18 @@ const CatalogList = () => {
               selectedRows.size > 1 ? 's' : ''
             } selected`}
           </p>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => alert('UN Link sp')}>
+          <Button variant="secondary" size="sm" onClick={handleOnDeLink}>
             {t('provider.btnUnlink')}
           </Button>
         </div>
       )}
       <CustomDataTable
         id="provider-list-table"
-        columns={getColumns({ setOpenSPMaterialDetails, setViewSPMaterial })}
+        columns={getColumns({
+          setOpenSPMaterialDetails,
+          setViewSPMaterial,
+          onDeLinkConfirmation
+        })}
         data={data}
         handleChangePage={changePage}
         onSortIconClick={handleOnSort}
