@@ -78,6 +78,11 @@ const List = () => {
     }
   }, []);
 
+  const handleOnLinkSpAccounts = () => {
+    const searchParams = Array.from(selectedRows).join(',');
+    navigate(`link-sp-accounts?accounts=${searchParams}`);
+  };
+
   const handleOnClick = (url) => () => navigate(url);
   const { pageNo, totalElements, totalPages, pageSize } = pagination;
   return (
@@ -146,8 +151,8 @@ const List = () => {
             <Button
               variant="secondary"
               size="sm"
-              onClick={() => navigate('link-sp-accounts/')}>
-              {t('provider.linkedSpAccounts')}
+              onClick={handleOnLinkSpAccounts}>
+              {t('provider.linkSpAccounts')}
             </Button>
           </div>
         )}

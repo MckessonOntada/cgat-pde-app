@@ -6,9 +6,18 @@ export const CUSTOM_TABLE_TYPE = Object.freeze({
   COMPACT: 'compact'
 });
 
-export const renderTableCheckBox = (row, data, dataKey, paginationConfig, selectedData, setSelectedData) => {
+export const renderTableCheckBox = (
+  row,
+  data,
+  dataKey,
+  paginationConfig,
+  selectedData,
+  setSelectedData
+) => {
   const isCheckboxDisabled = () => {
-    let isDisbled = row.id === 'ALL_ITEMS_' + paginationConfig.pageNumber && !CommonUtils.isNonEmptyArray(data);
+    let isDisbled =
+      row.id === 'ALL_ITEMS_' + paginationConfig.pageNumber &&
+      !CommonUtils.isNonEmptyArray(data);
     return isDisbled;
   };
 
@@ -24,14 +33,28 @@ export const renderTableCheckBox = (row, data, dataKey, paginationConfig, select
     const currentPageMaterialNumbers = data.map((item) => item[dataKey]);
 
     if (isAllChecked()) {
-      setSelectedData(selectedData.filter((item) => !currentPageMaterialNumbers.includes(item[dataKey])));
+      setSelectedData(
+        selectedData.filter(
+          (item) => !currentPageMaterialNumbers.includes(item[dataKey])
+        )
+      );
     } else {
-      const allDataIncluded = data.every((item) => selectedData.some((includedItem) => includedItem[dataKey] === item[dataKey]));
+      const allDataIncluded = data.every((item) =>
+        selectedData.some(
+          (includedItem) => includedItem[dataKey] === item[dataKey]
+        )
+      );
       if (!allDataIncluded) {
-        const newSelections = data.filter((ele) => !selectedData.some((item) => item[dataKey] === ele[dataKey]));
+        const newSelections = data.filter(
+          (ele) => !selectedData.some((item) => item[dataKey] === ele[dataKey])
+        );
         setSelectedData([...selectedData, ...newSelections]);
       } else {
-        setSelectedData(selectedData.filter((item) => !currentPageMaterialNumbers.includes(item[dataKey])));
+        setSelectedData(
+          selectedData.filter(
+            (item) => !currentPageMaterialNumbers.includes(item[dataKey])
+          )
+        );
       }
     }
   };
@@ -42,7 +65,9 @@ export const renderTableCheckBox = (row, data, dataKey, paginationConfig, select
 
   const handleIndividualCheck = () => {
     if (selectedData.find((item) => item[dataKey] === row[dataKey])) {
-      setSelectedData(selectedData.filter((item) => item[dataKey] !== row[dataKey]));
+      setSelectedData(
+        selectedData.filter((item) => item[dataKey] !== row[dataKey])
+      );
       return;
     }
     setSelectedData([...selectedData, ...[row]]);
@@ -55,12 +80,16 @@ export const renderTableCheckBox = (row, data, dataKey, paginationConfig, select
       }
       return getindeterminate();
     }
-    let availableRow = selectedData.find((item) => item[dataKey] === row[dataKey]);
+    let availableRow = selectedData.find(
+      (item) => item[dataKey] === row[dataKey]
+    );
     return !!availableRow;
   };
 
   const getindeterminate = () => {
-    const allDataIncluded = data.every((element) => selectedData.some((item) => item[dataKey] === element[dataKey]));
+    const allDataIncluded = data.every((element) =>
+      selectedData.some((item) => item[dataKey] === element[dataKey])
+    );
     return allDataIncluded;
   };
 
