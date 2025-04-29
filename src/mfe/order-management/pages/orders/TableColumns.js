@@ -22,6 +22,7 @@ import { useMutation } from 'react-query';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import { useTranslate } from '@src/translations/useTranslation';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import { FormattedNumber } from 'react-intl';
 
 const getColorByStatus = (status) => {
   const statusColors = {
@@ -528,10 +529,16 @@ const jsxColumns = [
     sortable: false,
     right: true,
     selector: 'orderCost',
+    minWidth: '120px',
     cell: function (props) {
       return (
-        <div className="cellEllipse align-items-right ">
-          {props.orderCost && `$${parseFloat(props.orderCost).toFixed(2)}`}
+
+        <div className="cellEllipse align-items-right">
+          {props.orderCost ? (
+            <FormattedNumber value={props.orderCost} style="currency" currency="USD" />
+          ) : (
+            ''
+          )}
         </div>
       );
     }
