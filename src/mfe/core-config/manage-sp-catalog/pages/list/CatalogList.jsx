@@ -95,7 +95,7 @@ const CatalogList = () => {
           <Button
             variant="secondary"
             size="sm"
-            onClick={() => navigate('link-sp-accounts/')}>
+            onClick={() => alert('UN Link sp')}>
             {t('provider.btnUnlink')}
           </Button>
         </div>

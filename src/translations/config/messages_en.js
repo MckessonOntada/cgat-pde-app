@@ -45,8 +45,12 @@ export const ConfigurationMessagesEN = {
   'provider.providerInformation': 'Provider Information',
   'provider.linkedSpAccounts': 'Linked SP Accounts',
   'provider.btnCancel': 'Cancel',
+  'provider.btnDeLink': 'De-Link',
   'provider.btnCreateProvider': 'Create Provider',
   'provider.btnUpdateProvider': 'Update Provider',
+  'SPCatalog.deLinkConfirmationDescription':
+    'Do you want to de-link the selected SP Catalogs?',
+  'SPCatalog.deLinkConfirmationTitle': 'De-link Catalogs?',
 
   'provider.firstName': 'First Name',
   'provider.firstName.required': 'Please Enter First Name',

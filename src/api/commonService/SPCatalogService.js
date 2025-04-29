@@ -49,6 +49,18 @@ async function getAllCatalog(requestParams) {
   return {};
 }
 
+async function deLinkCatalogs(payload) {
+  const res = await HttpResourceService.callRest(
+    `${ApiRoutes.USER_SERVICE_BASE}catalogs/specialityPharma/deLink`,
+    httpVerb.DELETE,
+    payload
+  );
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
+
 async function downloadSPAccountTemplate() {
   try {
     const documentUrl = `${ApiRoutes.PUBLIC_ACCOUNTS}/download`;
@@ -96,7 +108,8 @@ const SPCatalogService = Object.freeze({
   uploadCatalogData,
   getOrganizations,
   getAccountList,
-  getAllCatalog
+  getAllCatalog,
+  deLinkCatalogs
 });
 
 export default SPCatalogService;
