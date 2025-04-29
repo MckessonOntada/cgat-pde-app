@@ -11,6 +11,9 @@ const Index = () => {
   return (
     <TableProvider
       defaultFilters={defaultFilters}
+      defaultSort={{
+        sortOrder: 'desc'
+      }}
       allowedSort={[
         'bnbMaterialNumber',
         'spProductId',
