@@ -148,5 +148,10 @@ export const ConfigurationMessagesEN = {
   'invalid.csv.file.headers.unstructured':
     'Error: The uploaded file is invalid. Please upload a valid file.',
   'invalid.csv.file.headers.missing':
-    'Error: The uploaded file is invalid. Please upload a valid file.'
+    'Error: The uploaded file is invalid. Please upload a valid file.',
+
+  'SPCrosswalk.unlinkCrosswalkSuccess':
+    'Crosswalk has been unlinked successfully.',
+  'SPCrosswalk.deLinkFailure.generic':
+    'Failed to unlink crosswalk. Please try again.'
 };
