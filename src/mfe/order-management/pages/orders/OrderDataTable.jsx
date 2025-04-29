@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { CustomDataTable } from '../../../../components/dataTableComponent';
 import { useOrders } from '../../context/OrderContext';
 import { useTranslate } from '@src/translations/useTranslation';
-import { createColumns } from './OrderTableColumns';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import './OrderDataTable.module.scss';
