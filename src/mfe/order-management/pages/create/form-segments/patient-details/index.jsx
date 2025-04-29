@@ -25,6 +25,7 @@ import { sections } from './forms/patient-details.config';
 import FormRenderer from '@src/mfe/core-config/manage-providers/forms/FormRenderer';
 import { providerSections } from './forms/providers.config';
 import { getValidationSchema } from './forms/validation-schema';
+import ProviderService from '@src/api/commonService/ProviderService';
 
 export const getFilteredSections = (channelType) => {
   return sections.map((section) => ({
@@ -76,6 +77,7 @@ const PatientDetails = () => {
     soldToAccountId,
     shipToAccountId
   });
+  const [providers, setProviders] = React.useState([]);
   const INITIAL_VALUES = {
     firstName: '',
     middleName: '',
@@ -224,12 +226,25 @@ const PatientDetails = () => {
       });
     }
   };
+
+  React.useEffect(() => {
+    if (orderDetails) {
+      const params = {
+        accountId: orderDetails.accountDetails.soldToAccount?.id
+      };
+      ProviderService.getAllProviders(params).then((response) => {
+        console.log(response);
+      });
+    }
+  }, [orderDetails]);
+
   if (isLoader) {
     return isLoader;
   }
   if (isSaving) {
     return <Loader type={'screen'} />;
   }
+
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -291,7 +306,9 @@ const PatientDetails = () => {
                     <FormRenderer sections={filteredSections} />
                     <hr />
                     <div>
-                      <FormRenderer sections={providerSections} />
+                      <FormRenderer
+                        sections={providerSections({ providers })}
+                      />
                     </div>
                   </div>
                   <div className="footer-wrapper">
