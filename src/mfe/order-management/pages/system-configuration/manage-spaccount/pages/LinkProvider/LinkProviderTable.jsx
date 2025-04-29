@@ -55,18 +55,18 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
     const { name, dea, npi, phone, address } = data;
     return [
       {
-        sectionHeading: t('manageSPMaterial.drawer.Details'),
+        sectionHeading: 'manageSPMaterial.drawer.Details',
         sectionData: [
-          { label: t('provider.name'), value: CommonUtils.getFullName(name) },
-          { label: t('manageSPAccount.table.DEANumber'), value: dea },
-          { label: t('manageSPAccount.table.NPINumber'), value: npi }
+          { label: 'provider.name', value: CommonUtils.getFullName(name) },
+          { label: 'manageSPAccount.table.DEANumber', value: dea },
+          { label: 'manageSPAccount.table.NPINumber', value: npi }
         ]
       },
       {
-        sectionHeading: t('provider.contactDetails'),
+        sectionHeading: 'provider.contactDetails',
         sectionData: [
-          { label: t('provider.phone'), value: phone },
-          { label: t('account.address'), value: getAddress(address) }
+          { label: 'provider.phone', value: phone },
+          { label: 'account.address', value: getAddress(address) }
         ]
       }
     ];
