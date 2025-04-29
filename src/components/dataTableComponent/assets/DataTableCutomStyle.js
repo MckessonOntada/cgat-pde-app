@@ -31,8 +31,10 @@ export const customStylesNormal = {
       fontWeight: `var(--brand-font-weight-400)`,
       fontSize: `var(--brand-font-size--small)`,
       lineHeight: `var(--brand-line-height--large)`,
-      color: `var(--brand-color-background-dark-slate)`
-      // padding: 0
+      color: `var(--brand-color-background-dark-slate)`,
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis"
     }
   }
 };
