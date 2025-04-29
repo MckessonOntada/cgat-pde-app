@@ -147,7 +147,7 @@ const List = () => {
               variant="secondary"
               size="sm"
               onClick={() => navigate('link-sp-accounts/')}>
-              {t('provider.linkedSpAccounts')}
+              {t('provider.linkSpAccounts')}
             </Button>
           </div>
         )}
