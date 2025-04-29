@@ -46,9 +46,21 @@ export const useSelection = () => {
     );
   }
 
-  const { selectedRows, toggleRowSelection, selectAll, deselectAll } = context;
+  const {
+    selectedRows,
+    setSelection,
+    toggleRowSelection,
+    selectAll,
+    deselectAll
+  } = context;
 
-  return { selectedRows, toggleRowSelection, selectAll, deselectAll };
+  return {
+    selectedRows,
+    toggleRowSelection,
+    setSelection,
+    selectAll,
+    deselectAll
+  };
 };
 
 export const useSort = () => {
@@ -199,6 +211,10 @@ export const TableProvider = ({
     setSelectedRows(new Set(data.map((row) => row.id)));
   };
 
+  const setSelection = (val = []) => {
+    setSelectedRows(new Set(val.map((row) => row.id)));
+  };
+
   const deselectAll = () => {
     setSelectedRows(new Set());
   };
@@ -235,6 +251,7 @@ export const TableProvider = ({
     columns,
     sort,
     selectedRows,
+    setSelection,
     setPagination,
     toggleRowSelection,
     selectAll,

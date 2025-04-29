@@ -19,6 +19,8 @@ const DOWNLOAD_CONTEXT_OPTIONS = {
   DOWNLOAD_MATERIAL_INFO: 'Download Material Info'
 };
 
+const errorStatusCodes = [408, 500, 502, 503, 504];
+
 const Upload = () => {
   const { t } = useTranslate();
   const { items, add, remove, removeAll } = useTimedArray(10000);
@@ -72,7 +74,13 @@ const Upload = () => {
       })
       .catch((error) => {
         const { response: errorResponse = {} } = error;
-        if (errorResponse.data?.errorCodes) {
+        if (timeoutStatusCodes.includes(errorResponse.status)) {
+          add({
+            type: 'error',
+            description: t('fileUpload.error.timeoutOrSystemError'),
+            isSticky: true
+          });
+        } else if (errorResponse.data?.errorCodes) {
           errorResponse.data?.errorCodes.forEach((element) => {
             add({
               type: 'error',
