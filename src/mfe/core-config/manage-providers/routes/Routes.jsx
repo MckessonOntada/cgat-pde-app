@@ -17,6 +17,7 @@ const ProviderRouter = () => {
         element={<Provider isEditOperation={true} />}
       />
       <Route path={ROUTE_PATHS.UPLOAD_PROVIDERS} element={<Upload />} />
+      <Route path={ROUTE_PATHS.LINK_SP_ACCOUNTS} element={<div>Waiting</div>} />
     </Routes>
   );
 };
