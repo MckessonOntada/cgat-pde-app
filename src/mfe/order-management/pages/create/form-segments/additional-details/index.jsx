@@ -27,6 +27,7 @@ import { useOrderPrice } from './useOrderPrice';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import Components from '@src/components/form/Components';
+import { ChannelType } from '../Constants';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -50,7 +51,6 @@ function AdditionalDetails() {
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
   const [validationSchema, setValidationSchema] = React.useState(null);
-  const variantsApiRequestParam = { pageNo: 0, pageSize: 10 };
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
   const [questionnaireTemplateConfig, setQuestionnaireTemplateConfig] = React.useState(null);
@@ -69,12 +69,20 @@ function AdditionalDetails() {
   const therapyId = orderDetails.therapy?.materialNumber;
   const soldToAccountId = orderDetails.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails.accountDetails?.shipToAccount?.accountNumber;
+  const channelType = orderDetails.accountDetails?.soldToAccount?.channelType || ChannelType.BUY_AND_BILL;
+  const variantsApiRequestParam = {
+    pageNo: 0,
+    pageSize: 10,
+    channelType: channelType
+  };
+
   const { data: priceDetails = {} } = useOrderPrice(
     {
       therapyId,
       soldToAccountId,
       shipToAccountId,
-      ...(variant && { variant: variant.variant })
+      ...(variant && { variant: variant.variant }),
+      channelType
     },
     null,
     null
@@ -403,7 +411,10 @@ function AdditionalDetails() {
           variant: variant.variant,
           variantDescription: variant.variantDescription,
           variantAcknowledgment: variantAcknowledgement.isChecked,
-          variantDocumentPath: values.variant?.document && JSON.stringify(values.variant?.document)
+          variantDocumentPath: values.variant?.document && JSON.stringify(values.variant?.document),
+          therapy: {
+            id: therapyId
+          }
         }
       : null;
 

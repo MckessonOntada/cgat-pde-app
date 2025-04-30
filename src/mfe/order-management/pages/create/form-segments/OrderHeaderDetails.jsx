@@ -4,6 +4,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import { InventoryIndicator } from './InventoryIndicator';
 import './orderHeaderDetails.scss';
+import { ChannelType } from './Constants';
 
 function OrderHeaderDetails({ orderDetails, priceDetails = {}, status }) {
   const { t } = useTranslate();
@@ -24,12 +25,22 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status }) {
   );
   if (accountDetails && accountDetails.soldToAccount) {
     detailsSegments.push(
-      <DetailSegment key={'sold-to-account'} className='textCapitalize' label={t('labels.orderByAccountNumber')} value={accountDetails.soldToAccount.accountNumber} />
+      <DetailSegment
+        key={'sold-to-account'}
+        className="textCapitalize"
+        label={t('labels.orderByAccountNumber')}
+        value={accountDetails.soldToAccount.accountNumber}
+      />
     );
   }
   if (accountDetails && accountDetails.shipToAccount) {
     detailsSegments.push(
-      <DetailSegment key={'ship-to-account'} className='textCapitalize' label={t('labels.shipToAccountNumber')} value={accountDetails.shipToAccount.accountNumber} />
+      <DetailSegment
+        key={'ship-to-account'}
+        className="textCapitalize"
+        label={t('labels.shipToAccountNumber')}
+        value={accountDetails.shipToAccount.accountNumber}
+      />
     );
   }
   if (patientDetailsRequired && patient) {
@@ -42,10 +53,14 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status }) {
       <DetailSegment
         label={t('labels.price')}
         value={
-          <span className="dollarSign">
-            <span>$</span>
-            {priceDetails?.netPrice ? CommonUtils.formatNumberWithoutSymbol(priceDetails?.netPrice) : '----'}
-          </span>
+          accountDetails?.channelType === ChannelType.BUY_AND_BILL ? (
+            <span className="dollarSign">
+              <span>$</span>
+              {priceDetails?.netPrice ? CommonUtils.formatNumberWithoutSymbol(priceDetails?.netPrice) : '----'}
+            </span>
+          ) : (
+            'N/A'
+          )
         }
       />
     </div>

@@ -39,10 +39,12 @@ const PatientDetails = () => {
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
+  const channelType = orderDetails.accountDetails?.soldToAccount?.channelType || ChannelType.BUY_AND_BILL;
   const { data: priceDetails } = useOrderPrice({
     therapyId,
     soldToAccountId,
-    shipToAccountId
+    shipToAccountId,
+    channelType
   });
   const INITIAL_VALUES = {
     patientInfo: {
@@ -124,13 +126,19 @@ const PatientDetails = () => {
     {
       onSuccess: (result) => {
         const { id } = result;
-        navigate(`../${id}/additional-details`, { state: { isEdit: false, isApprover: isApprover } });
+        navigate(`../${id}/additional-details`, {
+          state: { isEdit: false, isApprover: isApprover }
+        });
       },
       onError: ({ err, payload }) => {
         if (err.status === 409) {
           openDuplicateConfirmationModal(payload);
         } else {
-          showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
+          showAlert({
+            description: err.message,
+            type: 'error',
+            anchorEl: alertContainerId
+          });
         }
       }
     }
@@ -143,9 +151,13 @@ const PatientDetails = () => {
     }
 
     if (isEdit) {
-      navigate(`../${orderId}/summary`, { state: { isEdit: true, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, {
+        state: { isEdit: true, isApprover: isApprover }
+      });
     } else {
-      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isApprover: isApprover } });
+      navigate(`../${orderId}/accounts`, {
+        state: { isEdit: isEdit, isApprover: isApprover }
+      });
     }
   };
 
@@ -174,9 +186,13 @@ const PatientDetails = () => {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, {
+        state: { isEdit: isEdit, isApprover: isApprover }
+      });
     } else if (modalSuccessCallback === 'account') {
-      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isApprover: isApprover } });
+      navigate(`../${orderId}/accounts`, {
+        state: { isEdit: isEdit, isApprover: isApprover }
+      });
     }
   };
   if (isLoader) {
