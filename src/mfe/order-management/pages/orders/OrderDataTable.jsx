@@ -49,7 +49,8 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
   };
 
   const handleOnSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    if (selectedColumn.sortKey)
+      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
   const columns = getTableColumns(tab, t, alertContainerId);
@@ -62,7 +63,10 @@ const OrderDataTable = ({ tab, alertContainerId }) => {
         heading={<TableHeading heading={t('table.ariaLabel.orderList')} />}
         controls={
           <div>
-            <ToggleButtonGroup value={orderView} onChange={handleOnViewChange} exclusive>
+            <ToggleButtonGroup
+              value={orderView}
+              onChange={handleOnViewChange}
+              exclusive>
               {toggleFilters.map((filter, index) => (
                 <ToggleButton key={index} value={filter}>
                   {t(`labels.orderView.${filter}`)}

@@ -45,8 +45,12 @@ export const ConfigurationMessagesEN = {
   'provider.providerInformation': 'Provider Information',
   'provider.linkSpAccounts': 'Link SP Accounts',
   'provider.btnCancel': 'Cancel',
+  'provider.btnDeLink': 'De-Link',
   'provider.btnCreateProvider': 'Create Provider',
   'provider.btnUpdateProvider': 'Update Provider',
+  'SPCatalog.deLinkConfirmationDescription':
+    'Do you want to de-link the selected SP Catalogs?',
+  'SPCatalog.deLinkConfirmationTitle': 'De-link Catalogs?',
 
   'provider.firstName': 'First Name',
   'provider.firstName.required': 'Please Enter First Name',
@@ -148,5 +152,9 @@ export const ConfigurationMessagesEN = {
   'invalid.csv.file.headers.unstructured':
     'Error: The uploaded file is invalid. Please upload a valid file.',
   'invalid.csv.file.headers.missing':
-    'Error: The uploaded file is invalid. Please upload a valid file.'
+    'Error: The uploaded file is invalid. Please upload a valid file.',
+
+  // catalog
+
+  'SPCatalog.deLinkSuccess': 'Catalog(s) de-linked successfully.'
 };
