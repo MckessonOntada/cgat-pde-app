@@ -44,7 +44,7 @@ export const getLinkProviderColumns = (
     id: 'name',
     name: t('manageSPAccount.column.providerName'),
     selector: (row) => row.name || '',
-    minWidth: '180px',
+    minWidth: '320px',
     sortable: true,
     sortKey: 'full_name',
     cell: (props) => (
@@ -59,7 +59,7 @@ export const getLinkProviderColumns = (
             e.preventDefault();
             handleProviderDetails(props.id);
           }}>
-          {CommonUtils.getFullName(props?.name) || '-'}
+          <EclipsesTextcss str={CommonUtils.getFullName(props?.name) || '-'} maxWidth={300} />
         </Link>
       </div>
     )
@@ -77,7 +77,7 @@ export const getLinkProviderColumns = (
     id: 'dea',
     name: t('manageSPAccount.column.providers.deaNumber'),
     selector: (row) => row.dea || '',
-    minWidth: '150px',
+    maxWidth: '180px',
     cell: (props) => <EclipsesTextcss str={props.dea} maxWidth={300} />,
      sortable: true,
     sortKey: 'dea',
@@ -86,7 +86,7 @@ export const getLinkProviderColumns = (
     id: 'npi',
     name: t('manageSPAccount.column.providers.npiNumber'),
     selector: (row) => row.npi || '',
-    minWidth: '150px',
+    maxWidth: '180px',
     cell: (props) => <EclipsesTextcss str={props.npi} maxWidth={300} />,
     sortable: true,
     sortKey:'npi'
@@ -96,6 +96,7 @@ export const getLinkProviderColumns = (
     center: true,
     name: t('manageSPAccount.table.action'),
     isAction: true,
+    width: '200px',
     cell: (row) => {
       return (
         <IconButton

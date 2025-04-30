@@ -22,6 +22,7 @@ import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import usePermission from '@src/hooks/usePermissions';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import { ROUTE_PATHS } from '../../routes/constants';
+import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 
 const PROVIDER_COLUMNS = {
   PROVIDER_NAME: 'PROVIDER_NAME',
@@ -33,13 +34,13 @@ const PROVIDER_COLUMNS = {
 };
 
 export const getColumns = (add) => {
-  const { selectedRows, toggleRowSelection, selectAll, deselectAll } =
-    useSelection();
+  const { selectedRows, toggleRowSelection, setSelection } = useSelection();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslate();
   const { refreshTable } = useTable();
   const { pagination, changePage } = usePagination();
+  const { data } = useTable();
 
   const { mutate: activateProvider } = useMutation(
     async (id) => ProviderService.activateProvider(id),
@@ -161,7 +162,7 @@ export const getColumns = (add) => {
     if (value === 'edit') {
       navigate(`edit/${props.id}`);
     } else if (value === 'linkSPAccount') {
-      navigate(`link-sp-account/${props.id}`);
+      navigate(`link-sp-account?accounts=${props.id}`);
     } else if (value === 'activate' || value === 'deactivate') {
       confirmDeactivation(props, value);
     }
@@ -170,25 +171,56 @@ export const getColumns = (add) => {
   return [
     {
       id: 'checkbox',
-      name: '',
-      showInMobileHeader: true,
-      cell: (props) => (
-        <CheckboxGroup
-          id={'default'}
-          caption=""
-          items={[
-            {
-              onChange: () => toggleRowSelection(props.id),
-              value: props.id,
-              isChecked: selectedRows.has(props.id),
-              isDisabled: !props.isActive
-            }
-          ]}
-        />
+      name: renderTableCheckBox(
+        { id: 'ALL_ITEMS_' + pagination.pageNumber },
+        data,
+        'id',
+        pagination,
+        [
+          ...Array.from(selectedRows).map((val) => ({
+            id: val
+          }))
+        ],
+        setSelection
       ),
-      wrap: true,
-      width: '40px'
+      sortable: false,
+      cell: (row, index) =>
+        renderTableCheckBox(
+          row,
+          data,
+          'id',
+          pagination,
+          [
+            ...Array.from(selectedRows).map((val) => ({
+              id: val
+            }))
+          ],
+
+          setSelection
+        ),
+      width: '50px'
     },
+    // {
+    //   id: 'checkbox',
+    //   name: '',
+    //   showInMobileHeader: true,
+    //   cell: (props) => (
+    //     <CheckboxGroup
+    //       id={'default'}
+    //       caption=""
+    //       items={[
+    //         {
+    //           onChange: () => toggleRowSelection(props.id),
+    //           value: props.id,
+    //           isChecked: selectedRows.has(props.id),
+    //           isDisabled: !props.isActive
+    //         }
+    //       ]}
+    //     />
+    //   ),
+    //   wrap: true,
+    //   width: '40px'
+    // },
     {
       id: PROVIDER_COLUMNS.PROVIDER_NAME,
       name: t('providers.columnCaption.providerName'),

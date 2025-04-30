@@ -46,9 +46,21 @@ export const useSelection = () => {
     );
   }
 
-  const { selectedRows, toggleRowSelection, selectAll, deselectAll } = context;
+  const {
+    selectedRows,
+    setSelection,
+    toggleRowSelection,
+    selectAll,
+    deselectAll
+  } = context;
 
-  return { selectedRows, toggleRowSelection, selectAll, deselectAll };
+  return {
+    selectedRows,
+    toggleRowSelection,
+    setSelection,
+    selectAll,
+    deselectAll
+  };
 };
 
 export const useSort = () => {
@@ -105,6 +117,7 @@ const INITIAL_SORT_STATE = {
 export const TableProvider = ({
   fetchFn,
   defaultFilters,
+  defaultSort,
   columns,
   allowedSort = [],
   children
@@ -113,7 +126,12 @@ export const TableProvider = ({
   const [filters, setFilters] = useState(defaultFilters || { query: '' });
   const [selectedRows, setSelectedRows] = useState(new Set());
   const [pagination, setPagination] = useState(INITIAL_PAGINATION_STATE);
-  const [sort, setSort] = React.useState(INITIAL_SORT_STATE);
+  const [sort, setSort] = React.useState(() => {
+    return {
+      ...INITIAL_SORT_STATE,
+      ...defaultSort
+    };
+  });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -199,6 +217,10 @@ export const TableProvider = ({
     setSelectedRows(new Set(data.map((row) => row.id)));
   };
 
+  const setSelection = (val = []) => {
+    setSelectedRows(new Set(val.map((row) => row.id)));
+  };
+
   const deselectAll = () => {
     setSelectedRows(new Set());
   };
@@ -209,9 +231,27 @@ export const TableProvider = ({
   };
 
   const applySort = (sortBy, sortDirection) => {
+    const newSort = { ...sort };
+
+    if (sortBy !== sort.sortBy) {
+      newSort.sortBy = sortBy;
+      newSort.sortOrder = sortDirection;
+    } else {
+      if (!sort.sortOrder) {
+        newSort.sortOrder = sortDirection;
+      } else {
+        newSort.sortOrder = sort.sortOrder === 'asc' ? 'desc' : 'asc';
+      }
+      setSort({ ...newSort });
+    }
+
     setSort({
       sortBy: sortBy,
-      sortOrder: sortDirection
+      sortOrder: !sort.sortOrder
+        ? sortDirection
+        : sort.sortOrder === 'asc'
+        ? 'desc'
+        : 'asc'
     });
   };
 
@@ -235,6 +275,7 @@ export const TableProvider = ({
     columns,
     sort,
     selectedRows,
+    setSelection,
     setPagination,
     toggleRowSelection,
     selectAll,
