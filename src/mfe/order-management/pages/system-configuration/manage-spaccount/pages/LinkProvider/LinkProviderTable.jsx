@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import { useLinkProvider } from '../../context/LinkProviderContext';
 import CommonFilters from '@src/components/Filters';
 import { getLinkProviderColumns } from './LinkProviderColumn';
@@ -15,7 +15,6 @@ import { getAddress } from '@src/mfe/order-management/pages/system-configuration
 import { renderModal } from '@src/util/ModalUtil';
 import { useMutation } from 'react-query';
 import LinkProviderService from '@src/api/commonService/LinkProviderService';
-import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import CommonUtils from '@src/util/CommonUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import { useSearchParams } from 'react-router-dom';
@@ -56,18 +55,18 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
     const { name, dea, npi, phone, address } = data;
     return [
       {
-        sectionHeading: 'Details',
+        sectionHeading: 'manageSPMaterial.drawer.Details',
         sectionData: [
-          { label: 'Provider Name', value: CommonUtils.getFullName(name) },
-          { label: 'DEA Number', value: dea },
-          { label: 'NPI Number', value: npi }
+          { label: 'provider.name', value: CommonUtils.getFullName(name) },
+          { label: 'manageSPAccount.table.DEANumber', value: dea },
+          { label: 'manageSPAccount.table.NPINumber', value: npi }
         ]
       },
       {
-        sectionHeading: 'Contact',
+        sectionHeading: 'provider.contactDetails',
         sectionData: [
-          { label: 'Contact No', value: phone },
-          { label: 'Address', value: getAddress(address) }
+          { label: 'provider.phone', value: phone },
+          { label: 'account.address', value: getAddress(address) }
         ]
       }
     ];
