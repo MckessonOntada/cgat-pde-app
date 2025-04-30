@@ -544,7 +544,7 @@ export const MessageEn = {
 
   'labels.caption.ALL': 'All',
   'labels.caption.IN_DRAFT': 'In Draft',
-  'labels.caption.DELETED': 'Deleted',
+  'labels.caption.DELETED': 'Discarded',
   'labels.caption.REJECTED': 'Rejected',
   'labels.caption.SUBMITTED': 'Submitted',
   'labels.caption.APPROVAL_PENDING': 'Approval Pending',

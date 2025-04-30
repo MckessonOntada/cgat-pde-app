@@ -43,10 +43,14 @@ export const ConfigurationMessagesEN = {
   'provider.providerDetails': 'Provider Details',
   'provider.contactDetails': 'Contact Details',
   'provider.providerInformation': 'Provider Information',
-  'provider.linkedSpAccounts': 'Linked SP Accounts',
+  'provider.linkSpAccounts': 'Link SP Accounts',
   'provider.btnCancel': 'Cancel',
+  'provider.btnDeLink': 'De-Link',
   'provider.btnCreateProvider': 'Create Provider',
   'provider.btnUpdateProvider': 'Update Provider',
+  'SPCatalog.deLinkConfirmationDescription':
+    'Do you want to de-link the selected SP Catalogs?',
+  'SPCatalog.deLinkConfirmationTitle': 'De-link Catalogs?',
 
   'provider.firstName': 'First Name',
   'provider.firstName.required': 'Please Enter First Name',
@@ -132,15 +136,30 @@ export const ConfigurationMessagesEN = {
   'button.caption.confirm': 'Confirm',
   'button.caption.cancel': 'Cancel',
   'label.backSpCrosswalk': 'Back to Manage Crosswalk Material',
-  'invalid.csv.file.headers.unstructured':
-    'File is invalid. Please select valid file to upload.',
-  'invalid.csv.file.headers.missing':
-    'File is invalid. Please select valid file to upload.',
+
   'provider.btnUnlink': 'Unlink',
+  'label.spCatalogDataGrid': 'SP Catalog',
+  'label.spCatalogDataGridDescription': 'No data found',
+
   'fileUpload.crosswalk.success':
     'File processed successfully, No errors were found.',
   'fileUpload.crosswalk.partialSuccess':
     'File processing completed, Some records were not processed successfully. Please review the downloaded error report.',
-  'label.spCatalogDataGrid': 'SP Catalog',
-  'label.spCatalogDataGridDescription': 'No data found'
+  'fileUpload.error.timeoutOrSystemError':
+    'An unexpected error occurred during the upload. Please try again later.',
+  'invalid.csv.file.headers.empty':
+    'Error: The uploaded file is invalid. Please upload a valid file.',
+  'invalid.csv.file.headers.unstructured':
+    'Error: The uploaded file is invalid. Please upload a valid file.',
+  'invalid.csv.file.headers.missing':
+    'Error: The uploaded file is invalid. Please upload a valid file.',
+
+  // catalog
+
+  'SPCatalog.deLinkSuccess': 'Catalog(s) de-linked successfully.',
+
+  'SPCrosswalk.unlinkCrosswalkSuccess':
+    'Crosswalk has been unlinked successfully.',
+  'SPCrosswalk.deLinkFailure.generic':
+    'Failed to unlink crosswalk. Please try again.'
 };

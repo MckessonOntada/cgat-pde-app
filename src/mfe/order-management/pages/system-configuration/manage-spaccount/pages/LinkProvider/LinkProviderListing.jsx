@@ -9,7 +9,7 @@ import {
   Loader
 } from '@mckesson/mcp-component-library';
 import { LinkProviderProvider } from '../../context/LinkProviderContext';
-import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
+import { ReactComponent as AddIcon } from '@src/assets/svg/add-icon.svg';
 import LinkProviderService from '@src/api/commonService/LinkProviderService';
 import { routeConstants } from '../../routes/constants';
 import LinkProviderTable from './LinkProviderTable';
@@ -83,7 +83,7 @@ function LinkProviderListing() {
             controls={
               !isCustomerCenter && (
                 <Button
-                  Icon={EditPencil}
+                  Icon={AddIcon}
                   variant="secondary"
                   className="button-icon"
                   size="md"
