@@ -397,6 +397,12 @@ async function downloadDocument(url) {
   return {};
 }
 
+async function getTherapyDetailsByCrossWalkId(therapyId) {
+  const url = `${ApiRoutes.USERS()}/current/therapies/therapyDetails/${therapyId}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+  return res.data || {};
+}
+
 const OrderService = Object.freeze({
   createOrder,
   getOrders,
@@ -423,7 +429,8 @@ const OrderService = Object.freeze({
   getOrderStatusFromSAP,
   discardCurrentOrderVersion,
   getOrderCountByStatus,
-  downloadDocument
+  downloadDocument,
+  getTherapyDetailsByCrossWalkId
 });
 
 export default OrderService;
