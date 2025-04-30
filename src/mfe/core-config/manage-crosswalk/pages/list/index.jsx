@@ -1,7 +1,6 @@
 import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bold.svg';
 import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
-import PermittedComponent from '@src/components/permitted-component';
 import React, { useState } from 'react';
 import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -20,19 +19,20 @@ import {
 import { getColumns } from './TableColumns';
 import { ReactComponent as EmptyProviderTable } from '@src/assets/svg/EmptyProviderTable.svg';
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
-import { PROVIDER_STATUS } from '@src/mfe/core-config/manage-providers/config';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import {
   ConfigConstants,
   MaterialDetailsConstants
 } from '@src/mfe/order-management/pages/system-configuration/manageMaterial/assets/constants/MaterialConstants';
 import SPMaterialDetails from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/pages/SPMaterialDetails';
+import SPCrosswalkService from '@src/api/commonService/SPCrosswalkService';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+import { useDispatch } from 'react-redux';
 
 const List = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { items, add, remove } = useTimedArray(10000);
   const { filters, applyFilters, clearFilters } = useFilters();
   const { pagination, changePage } = usePagination();
   const [openDetails, setOpenDetails] = useState(false);
@@ -40,8 +40,15 @@ const List = () => {
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
   const isCustomerCenter = AuthUtils.isCustomerCenter();
-  const { data = [] } = useTable();
+  const { data = [], refreshTable } = useTable();
+  const dispatch = useDispatch();
   const { applySort } = useSort();
+  const {
+    items: notifications,
+    remove: removeNotification,
+    removeAll,
+    add: addNotification
+  } = useTimedArray(10000);
   const breadcrumbItems = React.useMemo(() => {
     return [
       {
@@ -64,6 +71,67 @@ const List = () => {
     if (sortKey && direction) {
       applySort(sortKey, direction);
     }
+  };
+  console.log(notifications);
+  const handleOnConfirmation = (id) => {
+    SPCrosswalkService.deLinkCrosswalk(id)
+      .then((response) => {
+        if (response.status === 200) {
+          addNotification({
+            type: 'success',
+            description: t('SPCrosswalk.unlinkCrosswalkSuccess')
+          });
+          refreshTable();
+        }
+      })
+      .catch((error) => {
+        const { response: errorResponse } = error;
+        if (
+          errorResponse.response.data?.errorCodes &&
+          errorResponse.response.data?.errorCodes.length > 0
+        ) {
+          errorResponse.response.data.errorCodes.forEach((error) => {
+            addNotification({
+              type: 'error',
+              description: t(`SPCrosswalk.deLinkFailure.${error}`)
+            });
+          });
+        } else {
+          addNotification({
+            type: 'error',
+            description: t(`SPCrosswalk.deLinkFailure.generic`)
+          });
+        }
+      });
+  };
+  const confirmationUnlink = (id) => () => {
+    const state = {};
+    state.title = `${t('label.unlinkCrosswalk')}?`;
+    state.body = (
+      <div className="MCP-modal-body">
+        <p>{t('label.unlinkCrosswalkDescription')}</p>
+      </div>
+    );
+    state.footer = (
+      <div className="controls">
+        <Button
+          size="md"
+          variant="secondary"
+          onClick={() => dispatch(closeModal())}>
+          {t('button.caption.no')}
+        </Button>
+        <Button
+          size="md"
+          variant="primary"
+          onClick={() => {
+            handleOnConfirmation(id);
+            dispatch(closeModal());
+          }}>
+          {t('button.caption.yes')}
+        </Button>
+      </div>
+    );
+    dispatch(openModal(state));
   };
 
   return (
@@ -91,14 +159,14 @@ const List = () => {
           </div>
         }
       />
-      {items && items.length > 0 && (
+      {notifications && notifications.length > 0 && (
         <div className="MCP-module-body">
-          {items.map((item, index) => {
+          {notifications.map((item, index) => {
             return (
               <Alert
                 key={item.id}
                 description={item.description}
-                onClose={() => remove(item.id)}
+                onClose={() => removeNotification(item.id)}
                 type={item.type}
               />
             );
@@ -127,7 +195,8 @@ const List = () => {
             setOpenDetails,
             setMaterialNumber,
             setOpenSPMaterialDetails,
-            setViewSPMaterial
+            setViewSPMaterial,
+            confirmationUnlink
           })}
           data={data}
           handleChangePage={(_event, pageIndex) => {

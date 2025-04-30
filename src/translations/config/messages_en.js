@@ -156,5 +156,10 @@ export const ConfigurationMessagesEN = {
 
   // catalog
 
-  'SPCatalog.deLinkSuccess': 'Catalog(s) de-linked successfully.'
+  'SPCatalog.deLinkSuccess': 'Catalog(s) de-linked successfully.',
+
+  'SPCrosswalk.unlinkCrosswalkSuccess':
+    'Crosswalk has been unlinked successfully.',
+  'SPCrosswalk.deLinkFailure.generic':
+    'Failed to unlink crosswalk. Please try again.'
 };
