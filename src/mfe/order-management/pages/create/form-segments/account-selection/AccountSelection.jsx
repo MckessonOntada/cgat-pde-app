@@ -21,6 +21,7 @@ import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/Disca
 import useOrder from '../../../orders/useOrder';
 import { Loader } from '@mckesson/mcp-component-library';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
+import { ChannelType } from '../Constants';
 
 const AccountSelection = () => {
   const { t } = useTranslate();
@@ -59,7 +60,8 @@ const AccountSelection = () => {
   const { data: priceDetails } = useOrderPrice({
     therapyId: therapyId,
     soldToAccountId: selectedAccount?.accountNumber,
-    shipToAccountId: selectedShippingAddress?.accountNumber
+    shipToAccountId: selectedShippingAddress?.accountNumber,
+    channelType: selectedAccount?.channelType || ChannelType.BUY_AND_BILL
   });
 
   const alertContainerId = 'accountSelection-alert-Container';
