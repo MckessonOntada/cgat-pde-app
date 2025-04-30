@@ -1,6 +1,6 @@
 import { useTranslate } from '@src/translations/useTranslation';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { CustomDataTable } from '@mckesson/mcp-component-library';
+import { CustomDataTable } from '@src/components/dataTableComponent';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { Heading, Button, Alert } from '@mckesson/mcp-component-library';

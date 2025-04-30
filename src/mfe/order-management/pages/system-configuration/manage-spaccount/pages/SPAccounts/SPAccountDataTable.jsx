@@ -1,7 +1,7 @@
 import { useTranslate } from '@src/translations/useTranslation';
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { CustomDataTable } from '@mckesson/mcp-component-library';
+import { CustomDataTable } from '@src/components/dataTableComponent';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { useSPAccountContext } from '../../context/SPAccountContext';
@@ -48,7 +48,7 @@ function SPAccountDataTable() {
       name: t('table.columns.captions.accountName'),
       selector: (row) => row.accountName || '',
       maxWidth: '350px',
-      cell: (props) => props.accountName,
+      cell: (props) => <EclipsesTextcss str={props.accountName} maxWidth={330} />,
       sortable: true,
       sortKey: 'name_1'
     },
@@ -58,7 +58,7 @@ function SPAccountDataTable() {
       selector: (row) => row.address || '',
       maxWidth: '450px',
       cell: (props) => (
-        <EclipsesTextcss str={getAddress(props.address)} maxWidth={450} />
+        <EclipsesTextcss str={getAddress(props.address)} maxWidth={430} />
       )
     }
   ];
