@@ -91,9 +91,9 @@ const List = () => {
       <ModuleHeader
         heading={<Heading as="h1">{t('label.providers')}</Heading>}
         controls={
-          <PermittedComponent
-            permissions={PERMISSIONS_ENUM.MANAGE_PROVIDERS.ADD_PROVIDER}>
-            <div className="controls">
+          <div className="controls">
+            <PermittedComponent
+              permissions={PERMISSIONS_ENUM.MANAGE_PROVIDERS.UPLOAD_PROVIDER}>
               <Button
                 Icon={FileUploadIcon}
                 className="button-icon"
@@ -101,6 +101,9 @@ const List = () => {
                 size="md">
                 {t('controls.uploadProviders')}
               </Button>
+            </PermittedComponent>
+            <PermittedComponent
+              permissions={PERMISSIONS_ENUM.MANAGE_PROVIDERS.ADD_PROVIDER}>
               <Button
                 Icon={AddCircleFilled}
                 className="button-icon"
@@ -108,8 +111,8 @@ const List = () => {
                 size="md">
                 {t('controls.addProviders')}
               </Button>
-            </div>
-          </PermittedComponent>
+            </PermittedComponent>
+          </div>
         }
       />
       {items && items.length > 0 && (
@@ -148,12 +151,17 @@ const List = () => {
                 selectedRows.size > 1 ? 's' : ''
               } selected`}
             </p>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={handleOnLinkSpAccounts}>
-              {t('provider.linkSpAccounts')}
-            </Button>
+            <PermittedComponent
+              permissions={[
+                PERMISSIONS_ENUM.MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN
+              ]}>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleOnLinkSpAccounts}>
+                {t('provider.linkSpAccounts')}
+              </Button>
+            </PermittedComponent>
           </div>
         )}
         <CustomDataTable
