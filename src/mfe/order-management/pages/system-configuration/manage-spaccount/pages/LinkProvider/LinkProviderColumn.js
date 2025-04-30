@@ -44,7 +44,7 @@ export const getLinkProviderColumns = (
     id: 'name',
     name: t('manageSPAccount.column.providerName'),
     selector: (row) => row.name || '',
-    minWidth: '180px',
+    minWidth: '320px',
     sortable: true,
     sortKey: 'full_name',
     cell: (props) => (
@@ -59,7 +59,7 @@ export const getLinkProviderColumns = (
             e.preventDefault();
             handleProviderDetails(props.id);
           }}>
-          <EclipsesTextcss str={CommonUtils.getFullName(props?.name) || '-'} />
+          <EclipsesTextcss str={CommonUtils.getFullName(props?.name) || '-'} maxWidth={300} />
         </Link>
       </div>
     )

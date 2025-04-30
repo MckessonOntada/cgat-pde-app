@@ -43,7 +43,7 @@ export const getShippingLocationColumns = (
     name: t('manageSPAccount.table.shippingAccountNumber'),
     selector: (row) => row.id || '',
     minWidth: '250px',
-    cell: (props) => props.id,
+    cell: (props) => <EclipsesTextcss str={props.id} maxWidth={230} />,
     sortable: true,
     sortKey: 'id'
   },

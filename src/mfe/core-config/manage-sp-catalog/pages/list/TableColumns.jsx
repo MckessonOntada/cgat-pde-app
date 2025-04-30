@@ -1,10 +1,15 @@
 import React from 'react';
-import { Badge, MenuList, CheckboxGroup, Button, IconButton } from '@mckesson/mcp-component-library';
-import { useSelection } from '@src/mfe/core-config/manage-providers/context/TableContext';
+import { IconButton } from '@mckesson/mcp-component-library';
+import {
+  usePagination,
+  useSelection,
+  useTable
+} from '@src/mfe/core-config/manage-providers/context/TableContext';
 import { Link } from 'react-router-dom';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as LinkIcon } from '@src/assets/svg/link.svg';
 import { useTranslate } from '@src/translations/useTranslation';
+import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 
 const PROVIDER_COLUMNS = {
   SP_PRODUCT_ID: 'PROVIDER_NAME',
@@ -15,31 +20,52 @@ const PROVIDER_COLUMNS = {
   ACTION: 'ACTION'
 };
 
-export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial }) => {
-  const { selectedRows, toggleRowSelection, selectAll, deselectAll } = 
-    useSelection();
+export const getColumns = ({
+  setOpenSPMaterialDetails,
+  setViewSPMaterial,
+  onDeLinkConfirmation
+}) => {
+  const { selectedRows, setSelection } = useSelection();
+  const { pagination } = usePagination();
+  const { data } = useTable();
   const { t } = useTranslate();
 
+  const handleOnDeLink = (data) => {
+    const { sapMaterial, soldToCustomer } = data;
+    const payload = [{ sapMaterial, soldToCustomer }];
+    onDeLinkConfirmation(payload);
+  };
   return [
     {
       id: 'checkbox',
-      name: '',
-      showInMobileHeader: true,
-      cell: (props) => (
-        <CheckboxGroup
-          id={'default'}
-          caption=""
-          items={[
-            {
-              onChange: () => toggleRowSelection(props.id),
-              value: props.id,
-              isChecked: selectedRows.has(props.id)
-            }
-          ]}
-        />
+      name: renderTableCheckBox(
+        { id: 'ALL_ITEMS_' + pagination.pageNumber },
+        data,
+        'id',
+        pagination,
+        [
+          ...Array.from(selectedRows).map((val) => ({
+            id: val
+          }))
+        ],
+        setSelection
       ),
-      wrap: true,
-      width: '40px'
+      sortable: false,
+      cell: (row, index) =>
+        renderTableCheckBox(
+          row,
+          data,
+          'id',
+          pagination,
+          [
+            ...Array.from(selectedRows).map((val) => ({
+              id: val
+            }))
+          ],
+
+          setSelection
+        ),
+      width: '50px'
     },
     {
       id: 'SP_PRODUCT_ID',
@@ -105,7 +131,7 @@ export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial }) => {
       name: 'Action',
       selector: () => {},
       minWidth: '160px',
-      cell: () => (
+      cell: (props) => (
         <IconButton
           variant="tertiary"
           label={t('button.caption.unlink')}
@@ -113,7 +139,7 @@ export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial }) => {
           iconButton={false}
           textButton={true}
           Icon={LinkIcon}
-          onClick={() => {}}
+          onClick={() => handleOnDeLink(props)}
         />
       )
     }
