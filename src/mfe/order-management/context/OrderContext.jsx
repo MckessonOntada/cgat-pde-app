@@ -1,14 +1,20 @@
 import OrderService from '@src/api/commonService/OrderService';
 import React, { createContext, useContext, useState } from 'react';
 import { useQuery } from 'react-query';
-import { ORDER_TABS, ORDER_VIEW, TAB_FILTERS } from '../pages/orders/config';
+import {
+  ChannelType,
+  ORDER_TABS,
+  ORDER_VIEW,
+  TAB_FILTERS
+} from '../pages/orders/config';
 import { getDateRangeFromSelection } from '../pages/orders/dateRangeUtils';
 import { DateUtils } from '@src/util/DateUtil';
 import UserService from '@src/api/commonService/UserService';
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
-  status: null
+  status: null,
+  orderType: 'all'
 };
 
 const INITIAL_PAGINATION_STATE = {
@@ -30,6 +36,14 @@ const OrderContext = createContext();
 export const useOrders = () => {
   return useContext(OrderContext);
 };
+
+function getChannelTypeFromOrderType(orderType) {
+  if (orderType === ORDER_TABS.SUBMITTED_BUY_AND_BILL)
+    return ChannelType.BUY_AND_BILL;
+  if (orderType === ORDER_TABS.SUBMITTED_SP)
+    return ChannelType.SPECIALITY_PHARMA;
+  return null;
+}
 
 export const OrderProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = React.useState(INITIAL_FILTER_STATE);
@@ -55,21 +69,28 @@ export const OrderProvider = ({ children }) => {
       sortOrder: sortConfig.sortOrder || 'desc',
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       statuses: filterConfig.status || TAB_FILTERS[tabVariant].join(','),
-      //distributionchannel: filterConfig.distributionchannel,
       ...(filterConfig?.assigneeIds && {
         assigneeIds: filterConfig.assigneeIds
       }),
-      ...(filterConfig?.orderType && {
-        orderType: filterConfig.orderType
-      }),
+      ...(filterConfig?.orderType &&
+        getChannelTypeFromOrderType(filterConfig?.orderType) && {
+          channelType: getChannelTypeFromOrderType(filterConfig?.orderType)
+        }),
 
       showMyOrders:
         orderView === ORDER_VIEW.MY_ORDERS ||
         orderView === ORDER_VIEW.ASSIGNED_TO_ME
           ? true
           : false,
-      showPAPOrders: Boolean(orderView === ORDER_VIEW.PAP_ORDERS)
+      showPAPOrders: Boolean(orderView === ORDER_VIEW.PAP_ORDERS),
+      ...(tabVariant === ORDER_TABS.SUBMITTED_SP && {
+        channelType: ChannelType.SPECIALITY_PHARMA
+      }),
+      ...(tabVariant === ORDER_TABS.SUBMITTED_BUY_AND_BILL && {
+        channelType: ChannelType.BUY_AND_BILL
+      })
     };
+
     const orderDateSelection = filterConfig?.orderDate;
     if (orderDateSelection) {
       const dateRange = getDateRangeFromSelection(orderDateSelection);
@@ -183,8 +204,13 @@ export const OrderProvider = ({ children }) => {
       pageNumber: pageNumber
     }));
   };
+  const resetAssigneeList = assigneeList.map((item) => ({
+    ...item,
+    isChecked: false
+  }));
 
   const changeTab = (tabType = ORDER_TABS.SUBMITTED_BUY_AND_BILL) => {
+    setAssigneeList(resetAssigneeList);
     setDataState(INITIAL_DATA_STATE);
     setFilterConfig({ ...INITIAL_FILTER_STATE });
     setCurrentPage(1);
