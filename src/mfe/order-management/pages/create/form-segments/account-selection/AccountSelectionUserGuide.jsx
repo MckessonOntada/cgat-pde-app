@@ -87,10 +87,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer })
   const getProgramDisabled = (program, selectedChannel) =>
       !programs.includes(program) || !channels.includes("BUY_AND_BILL") || selectedChannel === 'SPECIALITY_PHARMA';
 
-  // const { programs = [], channels = [] } = programChannelConfig;
-
-  const channels = ["BUY_AND_BILL", "SPECIALITY_PHARMA"];
-  const programs = ['WAC', '340'];
+  const { programs = [], channels = [] } = programChannelConfig;
   
   const channelList = [
     { label: t('labels.BUY_AND_BILL'), value: "BUY_AND_BILL" },

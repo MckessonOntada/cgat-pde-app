@@ -345,8 +345,8 @@ const AccountSelection = () => {
                           </p>
                           <p className={styles.address}>
                             <span>
-                              {t('labels.program')} -{' '}
-                              {selectedAccount?.cgatIdentifier}
+                            {t('Distribution Channel')} -{' '}
+                            {t(`labels.${selectedAccount?.channelType}`)}
                             </span>
                           </p>
                         </React.Fragment>

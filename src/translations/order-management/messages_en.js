@@ -636,4 +636,6 @@ export const MessageEn = {
   'labels.WAC':'WAC',
   'labels.340':'340',
   'labels.GOV':'GOV',
+  'labels.BUY_AND_BILL': 'Buy & Bill',
+  'labels.SPECIALITY_PHARMA': 'Speciality Pharma',
 };
