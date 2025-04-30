@@ -640,5 +640,15 @@ export const MessageEn = {
   'labels.GOV':'GOV',
   'labels.BUY_AND_BILL': 'Buy & Bill',
   'labels.SPECIALITY_PHARMA': 'Speciality Pharma',
-  'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file' 
+  'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file',
+  'labels.Strength': 'Strength',
+  'labels.Dosage' : 'Dosage',
+  'labels.orderChannel' : 'Order Channel',
+  'labels.name' : 'Name',
+  'labels.policyNumber' : 'Policy Number',
+  'labels.effectiveDate' : 'Effective Date',
+  'labels.groupNumber' : 'Group Number',
+  'labels.rxPcnNumber' : 'Rx PCN Number',
+  'labels.rxIdNumber' : 'Rx ID Number',
+  'labels.payerDetails' : 'Payer Details',
 };
