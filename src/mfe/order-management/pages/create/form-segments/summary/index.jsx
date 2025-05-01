@@ -108,6 +108,8 @@ const Summary = () => {
     payerDetails
   } = orderDetails || {};
 
+  const spOrder = accountDetails?.soldToAccount?.channelType === 'SPECIALITY_PHARMA';
+
   const {
     data: sapOrderDetails,
     isLoading: isLoadingSapOrderStatus,
@@ -236,13 +238,15 @@ const Summary = () => {
     queryFn: async () => {
       return await OrderService.simulateOrder(orderId);
     },
-    enabled: !status
-      ? false
-      : !(
-          status === StatusEnum.REJECTED ||
-          status === StatusEnum.SUBMITTED ||
-          status === 'DELETED'
-        ),
+    enabled: spOrder 
+      ? false 
+      : !status
+        ? false
+        : !(
+            status === StatusEnum.REJECTED ||
+            status === StatusEnum.SUBMITTED ||
+            status === 'DELETED'
+          ),
     refetchOnWindowFocus: false,
     onSuccess: (result) => {
       const warningMessages =
@@ -754,10 +758,14 @@ const Summary = () => {
                   <DetailSegment
                     label={t('labels.orderCost')}
                     value={
-                      <span className="dollarSign ">
-                        <span>$</span>
-                        {getOrderCost(orderCost, simulationData.updatedCost)}
-                      </span>
+                     spOrder ? (
+                        'N/A'
+                      ) : (
+                        <span className="dollarSign ">
+                          <span>$</span>
+                          {getOrderCost(orderCost, simulationData.updatedCost)}
+                        </span>
+                      )
                     }
                   />
                 </p>
@@ -822,16 +830,19 @@ const Summary = () => {
                     <DetailSegment
                       label={t('labels.netPrice')}
                       value={
-                        <span className="dollarSign">
-                          <span>$</span>
-                          {catalog?.netPrice ||
-                          simulationData?.updatedCatalogNetPrice
-                            ? CommonUtils.formatNumberWithoutSymbol(
-                                simulationData.updatedCatalogNetPrice ||
-                                  catalog.netPrice
-                              )
-                            : '-'}
-                        </span>
+                        spOrder ? (
+                          '-'
+                        ) : (
+                          <span className="dollarSign">
+                            <span>$</span>
+                            {catalog?.netPrice ||
+                            simulationData?.updatedCatalogNetPrice
+                              ? CommonUtils.formatNumberWithoutSymbol(
+                                  simulationData.updatedCatalogNetPrice || catalog.netPrice
+                                )
+                              : '-'}
+                          </span>
+                        )
                       }
                     />
                   </div>
