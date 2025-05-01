@@ -1,5 +1,8 @@
 import { US_STATES } from '@src/components/form/util';
 
+export const PATIENT_RELATIONSHIP = ['Self', 'Spouse', 'Father', 'Mother'];
+export const PLAN_TYPES = ['HMO', 'PPO', 'EPO', 'POS', 'HDHP'];
+
 const getStates = () => {
   const options = US_STATES();
   options.unshift({
@@ -13,7 +16,7 @@ const getStates = () => {
 const payerPersonalDetailsTemplate = () => {
   return [
     {
-      grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
+      grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
       controls: [
         {
           id: 'payer-info-firstName',
@@ -24,19 +27,19 @@ const payerPersonalDetailsTemplate = () => {
           maxLength: 50
         },
         {
-          id: 'payer-info-middleName',
-          name: 'middleName',
-          label: 'orderManagement.patientDetails.inputLabel.middle_name',
-          placeholder: ' ',
-          type: 'input',
-          maxLength: 50
-        },
-        {
           id: 'payer-info-lastName',
           name: 'lastName',
           label: 'orderManagement.patientDetails.inputLabel.last_name',
           placeholder: ' ',
           type: 'input',
+          maxLength: 50
+        },
+        {
+          id: 'payer-info-phone-number',
+          name: 'phoneNumber',
+          label: 'orderManagement.patientDetails.inputLabel.phone_number',
+          placeholder: ' ',
+          type: 'phoneInput',
           maxLength: 50
         }
       ]
@@ -63,7 +66,7 @@ const payerPersonalDetailsTemplate = () => {
       ]
     },
     {
-      grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
+      grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
       controls: [
         {
           id: 'payer-info-zip-code',
@@ -97,7 +100,7 @@ const payerPersonalDetailsTemplate = () => {
 const insuranceCoverageDetailsTemplate = () => {
   return [
     {
-      grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
+      grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
       controls: [
         {
           id: 'insurance-coverage-patient-relationship-to-subscriber',
@@ -105,7 +108,10 @@ const insuranceCoverageDetailsTemplate = () => {
           label: 'formControl.insuranceCoverageSubscriber',
           placeholder: ' ',
           type: 'dropdown',
-          options: [],
+          options: PATIENT_RELATIONSHIP.map((item) => ({
+            label: item,
+            value: item.toLowerCase()
+          })),
           isRequired: true,
           maxLength: 50
         },
@@ -129,14 +135,18 @@ const insuranceCoverageDetailsTemplate = () => {
       ]
     },
     {
-      grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start',
+      grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
       controls: [
         {
           id: 'insurance-plan-type',
           name: 'insurancePlanType',
           label: 'formControl.insurancePlanType',
           placeholder: ' ',
-          type: 'input',
+          type: 'dropdown',
+          options: PLAN_TYPES.map((item) => ({
+            label: item,
+            value: item.toLowerCase()
+          })),
           maxLength: 100
         },
         {
@@ -145,7 +155,8 @@ const insuranceCoverageDetailsTemplate = () => {
           label: 'formControl.insuranceEffectiveDate',
           placeholder: ' ',
           maxLength: 100,
-          type: 'datePicker'
+          type: 'datePicker',
+          isRequired: true
         },
         {
           id: 'insurance-rx-pcn-number',
@@ -158,7 +169,7 @@ const insuranceCoverageDetailsTemplate = () => {
       ]
     },
     {
-      grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
+      grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
       controls: [
         {
           id: 'insurance-grp-pcn-number',
@@ -199,5 +210,12 @@ export const sections = [
   {
     subTitle: 'Primary Insurance Coverage',
     rows: insuranceCoverageDetailsTemplate()
+  }
+];
+
+export const insuranceCompanySections = [
+  {
+    subTitle: 'Drug Benefit Insurance Company',
+    rows: payerPersonalDetailsTemplate()
   }
 ];

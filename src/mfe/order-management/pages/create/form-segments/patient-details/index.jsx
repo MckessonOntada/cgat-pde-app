@@ -26,6 +26,7 @@ import FormRenderer from '@src/mfe/core-config/manage-providers/forms/FormRender
 import { providerSections } from './forms/providers.config';
 import { getValidationSchema } from './forms/validation-schema';
 import ProviderService from '@src/api/commonService/ProviderService';
+import { CHANNEL_TYPE } from '../Constants';
 
 export const getFilteredSections = (channelType) => {
   return sections.map((section) => ({
@@ -60,7 +61,7 @@ const PatientDetails = () => {
   const [isDirty, setIsDirty] = React.useState(false);
 
   const {
-    data: orderDetails,
+    data: orderDetails = {},
     isFetching: isFetchingOrderDetails,
     isError,
     error,
@@ -230,13 +231,14 @@ const PatientDetails = () => {
   React.useEffect(() => {
     if (orderDetails) {
       const params = {
-        accountId: orderDetails.accountDetails.soldToAccount?.id
+        accountId: orderDetails.accountDetails?.soldToAccount?.id
       };
       ProviderService.getAllProviders(params).then((response) => {
         console.log(response);
       });
     }
   }, [orderDetails]);
+  const channelType = orderDetails.accountDetails?.shipToAccount?.channelType;
 
   if (isLoader) {
     return isLoader;
@@ -268,6 +270,7 @@ const PatientDetails = () => {
         <OrderStepper
           status={orderDetails?.currentStage}
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
+          channelType={channelType}
         />
 
         <div className={styles.wrapper}>
@@ -303,12 +306,16 @@ const PatientDetails = () => {
                 <div className={styles.wrapper}>
                   <div className="MCP-panel-container">
                     {/* <PatientDetailsForm /> */}
-                    <FormRenderer sections={filteredSections} />
-                    <hr />
-                    <div>
-                      <FormRenderer
-                        sections={providerSections({ providers })}
-                      />
+                    <div className="MCP-module-body">
+                      <FormRenderer sections={filteredSections} />
+                      {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
+                        <React.Fragment>
+                          <hr />
+                          <FormRenderer
+                            sections={providerSections({ providers })}
+                          />
+                        </React.Fragment>
+                      )}
                     </div>
                   </div>
                   <div className="footer-wrapper">

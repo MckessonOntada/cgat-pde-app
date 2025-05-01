@@ -30,6 +30,124 @@ async function getOrderById(orderId) {
   const res = await HttpResourceService.callRest(url, httpVerb.GET);
   if (res.data) {
     return res.data;
+    // return {
+    //   createdAt: '2025-04-30T10:13:05.914',
+    //   createdBy: {
+    //     id: '5442',
+    //     role: 'Organization Admin',
+    //     roleId: '2523',
+    //     name: 'Freddy Zoe Macdonald Rogers',
+    //     userName: 'freddy_rogers@yopmail.com',
+    //     impersonatedBy: {
+    //       id: '12554',
+    //       role: 'System Admin',
+    //       roleId: '1',
+    //       name: 'kapil sin',
+    //       userName: 'kapilSuperUser@yopmail.com',
+    //       impersonatedBy: null
+    //     }
+    //   },
+    //   updatedAt: '2025-04-30T13:38:14.533',
+    //   updatedBy: {
+    //     id: '5442',
+    //     role: 'Organization Admin',
+    //     roleId: '2523',
+    //     name: 'Freddy Zoe Macdonald Rogers',
+    //     userName: 'freddy_rogers@yopmail.com',
+    //     impersonatedBy: {
+    //       id: '1',
+    //       role: 'System Admin',
+    //       roleId: '1',
+    //       name: 'DEFAULT DEFAULT',
+    //       userName: 'cgat.admin@yopmail.com',
+    //       impersonatedBy: null
+    //     }
+    //   },
+    //   id: '9148f867-aa97-4aec-8966-0995914e6e55',
+    //   practiceId: '1882',
+    //   practiceName: 'Adah Bergstrom',
+    //   therapy: {
+    //     strength: '40mg',
+    //     dropshipIndicator: null,
+    //     id: '15',
+    //     materialDescription: 'Pantop',
+    //     materialNumber: '5',
+    //     ndcNumber: 'C002'
+    //   },
+    //   accountDetails: {
+    //     soldToAccount: {
+    //       id: '53',
+    //       accountName: 'account 53',
+    //       accountNumber: 'sc53',
+    //       address: {
+    //         email: 'account53@mckesson.com',
+    //         telephone: 'telephone 53',
+    //         houseNumber: 'hn53',
+    //         street: 'street 53',
+    //         street2: 'street_53 53',
+    //         street3: 'street_53 53',
+    //         city: 'city53',
+    //         district: 'district 53',
+    //         state: 's',
+    //         country: 'c',
+    //         zipCode: 'zip 53'
+    //       },
+    //       distributionChannel: '20',
+    //       division: 'dv',
+    //       companyCode: '881e',
+    //       channelType: 'SPECIALTY_PHARMA',
+    //       cgatIdentifier: 'i53',
+    //       salesOrg: '1100'
+    //     },
+    //     shipToAccount: {
+    //       id: '166',
+    //       accountName: 'account166',
+    //       accountNumber: 'sc166',
+    //       address: {
+    //         email: 'account166@mckesson.com',
+    //         telephone: 'tel 161',
+    //         houseNumber: 'hn161',
+    //         street: 'street 161',
+    //         street2: null,
+    //         street3: null,
+    //         city: 'city161',
+    //         district: 'district161',
+    //         state: 's',
+    //         country: 'c',
+    //         zipCode: 'zip161'
+    //       },
+    //       distributionChannel: '20',
+    //       division: 'dv',
+    //       companyCode: '6a51',
+    //       channelType: 'SPECIALTY_PHARMA',
+    //       cgatIdentifier: null,
+    //       salesOrg: 'so61'
+    //     }
+    //   },
+    //   patientId: null,
+    //   patient: null,
+    //   additionalDetails: null,
+    //   catalog: null,
+    //   orderCost: null,
+    //   status: 'IN_DRAFT',
+    //   submittedBy: null,
+    //   submittedOn: null,
+    //   currentStage: 'PATIENT_DETAILS',
+    //   patientDetailsRequired: false,
+    //   backendOrderId: null,
+    //   approverGroupIds: [],
+    //   approver: null,
+    //   rejectionDetails: null,
+    //   version: 2,
+    //   simulatedOn: null,
+    //   orderVersion: 0,
+    //   versionOwner: null,
+    //   isCoiIdRequired: false,
+    //   catalogConfiguration: null,
+    //   payerDetails: null,
+    //   orderPriceUpdated: false,
+    //   paporder: false
+    // };
   }
   return {};
 }

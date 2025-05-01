@@ -106,7 +106,7 @@ const List = () => {
   };
   const confirmationUnlink = (id) => () => {
     const state = {};
-    state.title = `${t('label.unlinkCrosswalk')}?`;
+    state.title = `${t('label.unlinkCrosswalk')}`;
     state.body = (
       <div className="MCP-modal-body">
         <p>{t('label.unlinkCrosswalkDescription')}</p>

@@ -325,6 +325,7 @@ export const MessageEn = {
     'Please confirm if you still want to place this order.',
   // order management patient details screen
 
+  'orderManagement.patientDetails.inputLabel.phone_number': 'Phone Number',
   'orderManagement.patientDetails.inputLabel.email': 'Email',
   'orderManagement.patientDetails.inputLabel.phone_no': 'Phone Number',
   'orderManagement.patientDetails.inputLabel.address_1': 'Address Line 1',
@@ -635,5 +636,27 @@ export const MessageEn = {
   'formControl.workPhone': 'Work Phone',
   'formControl.homePhone': 'Home Phone',
   'formControl.preferredMethodOfContact': 'Preferred Method Of Contact',
-  'formSections.provider-details': 'Provider Details'
+  'formSections.provider-details': 'Provider Details',
+
+  'stepper.label.THERAPY_SELECTION': 'Therapy Selection',
+  'stepper.label.ACCOUNT_SELECTION': 'Account Selection',
+  'stepper.label.PATIENT_DETAILS': 'Patient Details',
+  'stepper.label.PATIENT_AND_PROVIDER_DETAILS': 'Patient & Provider Details',
+  'stepper.label.PAYER_DETAILS': 'Payer Details',
+  'stepper.label.ADDITIONAL_DETAILS': 'Additional Details',
+  'stepper.label.ORDER_SUMMARY': 'Order Summary',
+
+  'formControl.insuranceCoverageSubscriber':
+    'Patient Relationship to Subscriber',
+  'formControl.insurancePolicyNumber': 'Policy Number',
+  'formControl.insuranceGroupNumber': 'Group Number',
+  'formControl.insurancePlanType': 'Plan Type',
+  'formControl.insuranceEffectiveDate': 'Effective Date',
+  'formControl.insuranceRxPcnNumber': 'Rx PCN Number',
+  'formControl.insuranceGrpPcnNumber': 'Rx GRP Number',
+  'formControl.insuranceRxIdNumber': 'Rx Id Number',
+  'formControl.insuranceRxBinNumber': 'Rx BIN Number',
+  'button.caption.addSecondaryPayer': 'Add Secondary Payer',
+  'button.caption.addDrugBenefitInsuranceCompany':
+    'Add Drug Benefit Insurance Company'
 };
