@@ -3,7 +3,7 @@ import {
   Badge,
   Button,
   MenuList,
-  CheckboxGroup
+  Tooltip
 } from '@mckesson/mcp-component-library';
 import { ReactComponent as EllipsisIcon } from '@src/assets/svg/ellipsis.svg';
 import {
@@ -144,7 +144,16 @@ export const getColumns = (add) => {
     const { selectedRows } = useSelection();
     if (hasPermission(PERMISSIONS_ENUM.MANAGE_PROVIDERS.EDIT_PROVIDER)) {
       options.push({
-        label: 'Edit',
+        label: (
+          <Tooltip
+            body={
+              selectedRows.size > 1
+                ? t('provider.disabledEditOnMultiSelect')
+                : ''
+            }>
+            <div>{t('provider.contextMenu.optionEdit')}</div>
+          </Tooltip>
+        ),
         value: 'edit',
         disabled: selectedRows.size > 1 || props.isActive === false
       });
@@ -154,10 +163,17 @@ export const getColumns = (add) => {
       hasPermission(PERMISSIONS_ENUM.MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN)
     ) {
       options.push({
-        label: props.isActive ? 'Deactivate' : 'Activate',
+        label: t(
+          props.isActive
+            ? 'provider.contextMenu.optionActivate'
+            : 'provider.contextMenu.optionDeactivate'
+        ),
         value: props.isActive ? 'deactivate' : 'activate'
       });
-      options.push({ label: 'Link SP Account', value: 'linkSPAccount' });
+      options.push({
+        label: t('provider.contextMenu.optionLinkSPAccount'),
+        value: 'linkSPAccount'
+      });
     }
 
     return options;
