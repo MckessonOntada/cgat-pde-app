@@ -75,12 +75,12 @@ const PatientDetails = () => {
     orderDetails?.accountDetails?.shipToAccount?.accountNumber;
   const channelType =
     orderDetails.accountDetails?.soldToAccount?.channelType ||
-    ChannelType.BUY_AND_BILL;
+    CHANNEL_TYPE.BUY_AND_BILL;
+
   const { data: priceDetails } = useOrderPrice({
     therapyId,
     soldToAccountId,
-    shipToAccountId,
-    channelType
+    shipToAccountId
   });
   const [providers, setProviders] = React.useState([]);
   const INITIAL_VALUES = {
@@ -242,7 +242,6 @@ const PatientDetails = () => {
       });
     }
   }, [orderDetails]);
-  const channelType = orderDetails.accountDetails?.shipToAccount?.channelType;
 
   if (isLoader) {
     return isLoader;
