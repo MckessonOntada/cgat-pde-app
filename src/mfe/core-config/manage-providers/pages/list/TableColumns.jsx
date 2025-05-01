@@ -146,7 +146,7 @@ export const getColumns = (add) => {
       options.push({
         label: 'Edit',
         value: 'edit',
-        disabled: selectedRows.size > 1 || !props.isActive
+        disabled: selectedRows.size > 1 || props.isActive === false
       });
     }
 
