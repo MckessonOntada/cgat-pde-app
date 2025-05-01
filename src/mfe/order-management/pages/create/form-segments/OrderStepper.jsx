@@ -6,15 +6,25 @@ import { useNavigate, useParams } from 'react-router-dom';
 import CommonUtils from '@src/util/CommonUtils';
 import style from './OrderStepper.module.scss';
 import useOrder from '../../orders/useOrder';
+import { current } from '@reduxjs/toolkit';
 
 function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
   const { t } = useTranslate();
+  const { orderId } = useParams();
+  const navLinks = React.useMemo(() => {
+    return {
+      ACCOUNT_SELECTION: `/orders/${orderId}/accounts`,
+      PATIENT_DETAILS: `/orders/${orderId}/patient`,
+      PAYER_DETAILS: `/orders/${orderId}/payer`,
+      ADDITIONAL_DETAILS: `/orders/${orderId}/additional-details`,
+      ORDER_SUMMARY: `/orders/${orderId}/summary`
+    };
+  }, []);
   const forms = React.useMemo(() => {
     const stageNames = [
       ORDER_STAGES.THERAPY_SELECTION,
       ORDER_STAGES.ACCOUNT_SELECTION
     ];
-    debugger;
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
       stageNames.push(ORDER_STAGES.PATIENT_AND_PROVIDER_DETAILS);
       stageNames.push(ORDER_STAGES.PAYER_DETAILS);
@@ -47,10 +57,12 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
 
   const currentStage = {
     THERAPY_SELECTION: 1,
+    ACCOUNT_SELECTION: 2,
     ACCOUNT_DETAILS: 2,
     PATIENT_DETAILS: 3,
-    ADDITIONAL_DETAILS: 4,
-    ORDER_SUMMARY: 5
+    PAYER_DETAILS: 4,
+    ADDITIONAL_DETAILS: 5,
+    ORDER_SUMMARY: 6
   };
 
   if (!patientDetailsRequired) {
@@ -67,24 +79,22 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
   const handleOnStepClick = (e) => {
     const nearestListItem = e.target.closest('li');
     if (nearestListItem) {
-      const ulElement = nearestListItem.parentElement;
-      const index = Array.from(ulElement.children).indexOf(nearestListItem) + 1;
-
-      if (index > 0 && index !== activeIndex) {
-        e.preventDefault();
-        const newState = Object.keys(currentStage).find(
-          (key) => currentStage[key] === index
-        );
-        if (currentStage[newState] < currentStage[status]) {
-          if (index === 1) navigate(`/orders/edit-order/${orderId}`);
-          else {
-            const navLink = {
-              ACCOUNT_DETAILS: `/orders/${orderId}/accounts`,
-              PATIENT_DETAILS: `/orders/${orderId}/patient`,
-              ADDITIONAL_DETAILS: `/orders/${orderId}/additional-details`,
-              ORDER_SUMMARY: `/orders/${orderId}/summary`
-            }[newState];
-            navigate(navLink);
+      const stepItemTitle = nearestListItem.querySelector(
+        '[class*="Stepper-module--stepsItemTitle"]'
+      );
+      if (stepItemTitle) {
+        const stepByTitle = stepItemTitle.innerText
+          ?.toUpperCase()
+          .split(' ')
+          .join('_');
+        if (stepByTitle) {
+          if (currentStage[stepByTitle] <= currentStage[status]) {
+            const newNavLink = navLinks[stepByTitle];
+            if (currentStage[status] > 1 && stepByTitle === 'THERAPY_SELECTION')
+              navigate(`/orders/edit-order/${orderId}`);
+            else {
+              navigate(newNavLink);
+            }
           }
         }
       }

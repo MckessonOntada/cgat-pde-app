@@ -5,8 +5,6 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { Heading } from '@mckesson/mcp-component-library';
 
 const FormRenderer = ({ fieldPrefix = '', sections = [] }) => {
-  console.log(sections);
-
   const { t } = useTranslate();
   return (
     <div className="MCP-module-wrapper">

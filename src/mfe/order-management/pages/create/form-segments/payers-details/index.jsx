@@ -19,252 +19,239 @@ import useOrder from '../../../orders/useOrder';
 import { useLocation, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
+import { useMutation } from 'react-query';
+import OrderService from '@src/api/commonService/OrderService';
 
-const initialValues = {
-  firstName: '',
-  middleName: '',
-  phoneNumber: '',
-  addressLine1: '',
-  addressLine2: '',
-  zipCode: '',
+function toggleProperties(a, b, flag) {
+  if (flag) {
+    return { ...a, ...b };
+  } else {
+    const keysToRemove = new Set(Object.keys(b));
+    return Object.fromEntries(
+      Object.entries(a).filter(([key]) => !keysToRemove.has(key))
+    );
+  }
+}
+
+const INITIAL_VALUES = {
+  'first-name': '',
+  'last-name': '',
+  'phone-number': '',
+  'address-line-1': '',
+  'address-line-2': '',
+  zip: '',
   city: '',
   state: '',
 
-  insuranceCoverageSubscriber: '',
-  policyNumber: '',
-  groupNumber: '',
-  insurancePlanType: '',
-  insuranceEffectiveDate: '',
-  insuranceRxPcnNumber: '',
-  insuranceGrpPcnNumber: '',
-  insuranceRxIdNumber: '',
-  insuranceRxBinNumber: '',
-
-  'secondaryPayer-firstName': '',
-  'secondaryPayer-middleName': '',
-  'secondaryPayer-phoneNumber': '',
-  'secondaryPayer-addressLine1': '',
-  'secondaryPayer-addressLine2': '',
-  'secondaryPayer-zipCode': '',
-  'secondaryPayer-city': '',
-  'secondaryPayer-state': '',
-
-  'benefit-insurance-company-firstName': '',
-  'benefit-insurance-company-middleName': '',
-  'benefit-insurance-company-phoneNumber': '',
-  'benefit-insurance-company-addressLine1': '',
-  'benefit-insurance-company-addressLine2': '',
-  'benefit-insurance-company-zipCode': '',
-  'benefit-insurance-company-city': '',
-  'benefit-insurance-company-state': ''
+  'patient-relationship': '',
+  'policy-number': '',
+  'group-number': '',
+  'plan-type': '',
+  'effective-date': '',
+  'rx-pcn-number': '',
+  'rx-grp-number': '',
+  'rx-id-number': '',
+  'rx-bin-number': ''
+};
+const SECONDARY_PAYER_INITIAL_VALUES = {
+  'secondary-payer-first-name': '',
+  'secondary-payer-last-name': '',
+  'secondary-payer-phone-number': '',
+  'secondary-payer-address-line-1': '',
+  'secondary-payer-address-line-2': '',
+  'secondary-payer-zip': '',
+  'secondary-payer-city': '',
+  'secondary-payer-state': ''
+};
+const INSURANCE_COMPANY_DETAILS = {
+  'insurance-company-first-name': '',
+  'insurance-company-last-name': '',
+  'insurance-company-phone-number': '',
+  'insurance-company-address-line-1': '',
+  'insurance-company-address-line-2': '',
+  'insurance-company-zip': '',
+  'insurance-company-city': '',
+  'insurance-company-state': ''
 };
 
-const validationSchema = Yup.object().shape({
-  firstName: Yup.string()
+const INITIAL_VALIDATION_SCHEMA = Yup.object().shape({
+  'first-name': Yup.string()
     .required('Please enter the First Name.')
     .max(50, 'First Name should not exceed 50 characters.')
     .matches(
       /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/,
       'First Name should contain alphabets only and cannot include special characters or numbers.'
     ),
-
-  lastName: Yup.string()
+  'last-name': Yup.string()
     .max(50, 'Last Name should not exceed 50 characters.')
     .matches(
       /^[A-Za-zÀ-ÖØ-öø-ÿ\s]*$/,
       'Last Name should contain alphabets only and cannot include special characters or numbers.'
     ),
-
-  phoneNumber: Yup.string()
+  'phone-number': Yup.string()
     .max(50, 'Phone Number should not exceed 50 characters.')
     .matches(/^\d*$/, 'Phone Number must contain valid digits only.'),
-
-  address1: Yup.string()
+  'address-line-1': Yup.string()
     .max(100, 'Address 1 should not exceed 100 characters.')
     .matches(
       /^[^@#%]*$/,
       'Address 1 cannot contain special characters like @, #, %, etc.'
     ),
-
-  address2: Yup.string()
+  'address-line-2': Yup.string()
     .max(100, 'Address 2 should not exceed 100 characters.')
     .matches(
       /^[^@#%]*$/,
       'Address 2 cannot contain special characters like @, #, %, etc.'
     ),
-
   zip: Yup.string().matches(
     /^\d{5}(-\d{4})?$/,
     'Zip Code should follow US format: 12345 or 12345-6789.'
   ),
-
   city: Yup.string()
     .max(15, 'City should not exceed 15 characters.')
     .matches(
       /^[A-Za-zÀ-ÖØ-öø-ÿ\s]*$/,
       'City should contain alphabets only and cannot include numbers or special characters.'
     ),
-
   state: Yup.string().nullable().notOneOf([''], 'Please select a valid State'),
-  patientRelationship: Yup.string()
+  'patient-relationship': Yup.string()
     .required("Please select the patient's relationship to the subscriber.")
     .notOneOf([''], 'Please select relationship to the subscriber.')
     .oneOf(PATIENT_RELATIONSHIP, 'Please select a valid relationship.'),
-  policyNumber: Yup.string()
+  'policy-number': Yup.string()
     .required('Please enter the Policy Number.')
     .max(30, 'Policy Number should not exceed 30 characters.')
     .matches(
       /^[A-Za-z0-9]+$/,
       'Policy Number should only contain letters and numbers.'
     ),
-  groupNumber: Yup.string()
+  'group-number': Yup.string()
     .max(30, 'Group Number should not exceed 30 characters.')
     .matches(
       /^[A-Za-z0-9]*$/,
       'Group Number should only contain letters and numbers.'
     ),
-
-  planType: Yup.string()
+  'plan-type': Yup.string()
     .nullable()
     .notOneOf([''], 'Please select a valid Plan Type')
     .oneOf(PLAN_TYPES, 'Please select a valid Plan Type'),
-
-  effectiveDate: Yup.date()
+  'effective-date': Yup.date()
     .required('Please enter the Effective Date.')
     .max(new Date(), 'Effective Date cannot be in the future.')
     .typeError('Please select a valid date.'),
-
-  rxPCNNumber: Yup.string()
+  'rx-pcn-number': Yup.string()
     .max(30, 'Rx PCN Number should not exceed 30 digits.')
     .matches(/^\d*$/, 'Rx PCN Number must contain numbers only.'),
-
-  rxGRPNumber: Yup.string()
+  'rx-grp-number': Yup.string()
     .max(30, 'Rx GRP Number should not exceed 30 digits.')
     .matches(/^\d*$/, 'Rx GRP Number must contain numbers only.'),
-
-  rxIDNumber: Yup.string()
+  'rx-id-number': Yup.string()
     .max(30, 'Rx ID Number should not exceed 30 digits.')
     .matches(/^\d*$/, 'Rx ID Number must contain numbers only.'),
-
-  rxBINNumber: Yup.string()
+  'rx-bin-number': Yup.string()
     .max(30, 'Rx BIN Number should not exceed 30 digits.')
-    .matches(/^\d*$/, 'Rx BIN Number must contain numbers only.'),
+    .matches(/^\d*$/, 'Rx BIN Number must contain numbers only.')
+});
 
-  'secondary-payer-firstName': Yup.string()
+const SECONDARY_PAYER_VALIDATION_SCHEMA = Yup.object().shape({
+  'secondary-payer-first-name': Yup.string()
     .required('Please enter the First Name.')
     .max(50, 'First Name should not exceed 50 characters.')
     .matches(
       /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/,
       'First Name should contain alphabets only and cannot include special characters or numbers.'
     ),
-
-  'secondary-payer-lastName': Yup.string()
+  'secondary-payer-last-name': Yup.string()
     .max(50, 'Last Name should not exceed 50 characters.')
     .matches(
       /^[A-Za-zÀ-ÖØ-öø-ÿ\s]*$/,
       'Last Name should contain alphabets only and cannot include special characters or numbers.'
     ),
-
-  'secondary-payer-phoneNumber': Yup.string()
+  'secondary-payer-phone-number': Yup.string()
     .max(50, 'Phone Number should not exceed 50 characters.')
     .matches(/^\d*$/, 'Phone Number must contain valid digits only.'),
-
-  'secondary-payer-address1': Yup.string()
+  'secondary-payer-address-line-1': Yup.string()
     .max(100, 'Address 1 should not exceed 100 characters.')
     .matches(
       /^[^@#%]*$/,
       'Address 1 cannot contain special characters like @, #, %, etc.'
     ),
-
-  'secondary-payer-address2': Yup.string()
+  'secondary-payer-address-line-2': Yup.string()
     .max(100, 'Address 2 should not exceed 100 characters.')
     .matches(
       /^[^@#%]*$/,
       'Address 2 cannot contain special characters like @, #, %, etc.'
     ),
-
   'secondary-payer-zip': Yup.string().matches(
     /^\d{5}(-\d{4})?$/,
     'Zip Code should follow US format: 12345 or 12345-6789.'
   ),
-
   'secondary-payer-city': Yup.string()
     .max(15, 'City should not exceed 15 characters.')
     .matches(
       /^[A-Za-zÀ-ÖØ-öø-ÿ\s]*$/,
       'City should contain alphabets only and cannot include numbers or special characters.'
     ),
-
   'secondary-payer-state': Yup.string()
     .nullable()
-    .notOneOf([''], 'Please select a valid State'),
+    .notOneOf([''], 'Please select a valid State')
+});
 
-  'benefit-insurance-company-firstName': Yup.string()
+const INSURANCE_COMPANY_VALIDATION_SCHEMA = Yup.object().shape({
+  'insurance-company-first-name': Yup.string()
     .required('Please enter the First Name.')
     .max(50, 'First Name should not exceed 50 characters.')
     .matches(
       /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/,
       'First Name should contain alphabets only and cannot include special characters or numbers.'
     ),
-
-  'benefit-insurance-company-lastName': Yup.string()
+  'insurance-company-last-name': Yup.string()
     .max(50, 'Last Name should not exceed 50 characters.')
     .matches(
       /^[A-Za-zÀ-ÖØ-öø-ÿ\s]*$/,
       'Last Name should contain alphabets only and cannot include special characters or numbers.'
     ),
-
-  'benefit-insurance-company-phoneNumber': Yup.string()
+  'insurance-company-phone-number': Yup.string()
     .max(50, 'Phone Number should not exceed 50 characters.')
     .matches(/^\d*$/, 'Phone Number must contain valid digits only.'),
-
-  'benefit-insurance-company-address1': Yup.string()
+  'insurance-company-address-line-1': Yup.string()
     .max(100, 'Address 1 should not exceed 100 characters.')
     .matches(
       /^[^@#%]*$/,
       'Address 1 cannot contain special characters like @, #, %, etc.'
     ),
-
-  'benefit-insurance-company-address2': Yup.string()
+  'insurance-company-address-line-2': Yup.string()
     .max(100, 'Address 2 should not exceed 100 characters.')
     .matches(
       /^[^@#%]*$/,
       'Address 2 cannot contain special characters like @, #, %, etc.'
     ),
-
-  'benefit-insurance-company-zip': Yup.string().matches(
+  'insurance-company-zip': Yup.string().matches(
     /^\d{5}(-\d{4})?$/,
     'Zip Code should follow US format: 12345 or 12345-6789.'
   ),
-
-  'benefit-insurance-company-city': Yup.string()
+  'insurance-company-city': Yup.string()
     .max(15, 'City should not exceed 15 characters.')
     .matches(
       /^[A-Za-zÀ-ÖØ-öø-ÿ\s]*$/,
       'City should contain alphabets only and cannot include numbers or special characters.'
     ),
-
-  'benefit-insurance-company-state': Yup.string()
+  'insurance-company-state': Yup.string()
     .nullable()
     .notOneOf([''], 'Please select a valid State')
 });
 
 const PayerDetails = () => {
+  const [formValues, setFormValues] = React.useState(INITIAL_VALUES);
+  const [validationSchema, setValidationSchema] = React.useState(
+    INITIAL_VALIDATION_SCHEMA
+  );
   const { t } = useTranslate();
   const { orderId } = useParams();
   const location = useLocation();
-  const {
-    isEdit = false,
-    isApprover = false,
-    alertState
-  } = location.state || {};
-  const {
-    data: orderDetails = {},
-    isFetching: isFetchingOrderDetails,
-    isError,
-    error,
-    isLoader
-  } = useOrder(orderId);
+  const { isApprover = false } = location.state || {};
+  const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } =
+    useOrder(orderId);
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId =
     orderDetails?.accountDetails?.soldToAccount?.accountNumber;
@@ -275,21 +262,55 @@ const PayerDetails = () => {
     soldToAccountId,
     shipToAccountId
   });
-  const [isSecondaryPayerVisible, setIsSecondaryPayerVisible] =
+  const { mutate: savePayerDetails } = useMutation({
+    mutationFn: async (payload) =>
+      OrderService.savePayerDetails(orderId, payload),
+    onSuccess: console.log,
+    onError: console.error
+  });
+
+  const [showSecondaryPayer, setShowSecondaryPayer] = React.useState(false);
+  const [showDrugBenefitInsurer, setShowDrugBenefitInsurer] =
     React.useState(false);
-  const [
-    isDrugBenefitInsuranceCompanyVisible,
-    setIsDrugBenefitInsuranceCompanyVisible
-  ] = React.useState(false);
 
   const handleOnAddSecondaryPayer = (state) => {
-    setIsSecondaryPayerVisible(state);
+    setShowSecondaryPayer(state);
   };
+  React.useEffect(() => {
+    const newInitialFormValues = toggleProperties(
+      formValues,
+      SECONDARY_PAYER_INITIAL_VALUES,
+      showSecondaryPayer
+    );
+    setFormValues({ ...newInitialFormValues });
+  }, [showSecondaryPayer]);
+  React.useEffect(() => {
+    const newInitialFormValues = toggleProperties(
+      formValues,
+      INSURANCE_COMPANY_DETAILS,
+      showDrugBenefitInsurer
+    );
+    setFormValues({ ...newInitialFormValues });
+  }, [showDrugBenefitInsurer]);
+
+  React.useEffect(() => {
+    let schema = INITIAL_VALIDATION_SCHEMA;
+
+    if (showSecondaryPayer) {
+      schema = schema.concat(SECONDARY_PAYER_VALIDATION_SCHEMA);
+    }
+    if (showDrugBenefitInsurer) {
+      schema = schema.concat(INSURANCE_COMPANY_VALIDATION_SCHEMA);
+    }
+
+    setValidationSchema(schema);
+  }, [showSecondaryPayer, showDrugBenefitInsurer]);
+
   const handleOnAddDrugBenefitInsuranceCompany = (state) => {
-    setIsDrugBenefitInsuranceCompanyVisible(state);
+    setShowDrugBenefitInsurer(state);
   };
   const secondaryPayerSection = React.useMemo(() => {
-    if (!isSecondaryPayerVisible) return null;
+    if (!showSecondaryPayer) return null;
     const filteredSections = [
       {
         ...sections[0],
@@ -300,10 +321,10 @@ const PayerDetails = () => {
     ];
 
     return filteredSections;
-  }, [isSecondaryPayerVisible]);
+  }, [showSecondaryPayer]);
 
   const insuranceCompanySectionsWithActions = React.useMemo(() => {
-    if (!isDrugBenefitInsuranceCompanyVisible) return null;
+    if (!showDrugBenefitInsurer) return null;
     const filteredSection = [
       {
         ...insuranceCompanySections[0],
@@ -323,7 +344,69 @@ const PayerDetails = () => {
       }
     ];
     return filteredSection;
-  }, [isDrugBenefitInsuranceCompanyVisible]);
+  }, [showDrugBenefitInsurer]);
+
+  const handleOnSubmit = (formValues) => {
+    const payload = {
+      primaryInsuranceCompany: {
+        name: {
+          firstName: formValues['first-name'],
+          middleName: '', // Assuming not available in formValues
+          lastName: formValues['last-name']
+        },
+        phone: formValues['phone-number'],
+        address: {
+          address1: formValues['address-line-1'],
+          address2: formValues['address-line-2'],
+          zip: formValues['zip'],
+          state: formValues['state'],
+          city: formValues['city']
+        }
+      },
+      primaryInsuranceCoverage: {
+        patientSubscriberRelationship: formValues['patient-relationship'],
+        policyNumber: formValues['policy-number'],
+        groupNumber: formValues['group-number'],
+        planType: formValues['plan-type'],
+        effectiveDate: formValues['effective-date'],
+        pcnNumber: formValues['rx-pcn-number'],
+        grpNumber: formValues['rx-grp-number'],
+        idNumber: formValues['rx-id-number'],
+        binNumber: formValues['rx-bin-number']
+      },
+      secondaryInsuranceCompany: {
+        name: {
+          firstName: formValues['secondary-payer-first-name'],
+          middleName: '', // Optional fallback
+          lastName: formValues['secondary-payer-last-name']
+        },
+        phone: formValues['secondary-payer-phone-number'],
+        address: {
+          address1: formValues['secondary-payer-address-line-1'],
+          address2: formValues['secondary-payer-address-line-2'],
+          zip: formValues['secondary-payer-zip'],
+          state: formValues['secondary-payer-state'],
+          city: formValues['secondary-payer-city']
+        }
+      },
+      drugBenefitInsuranceCompany: {
+        name: {
+          firstName: formValues['insurance-company-first-name'],
+          middleName: '',
+          lastName: formValues['insurance-company-last-name']
+        },
+        phone: formValues['insurance-company-phone-number'],
+        address: {
+          address1: formValues['insurance-company-address-line-1'],
+          address2: formValues['insurance-company-address-line-2'],
+          zip: formValues['insurance-company-zip'],
+          state: formValues['insurance-company-state'],
+          city: formValues['insurance-company-city']
+        }
+      }
+    };
+    savePayerDetails(payload);
+  };
 
   const handleOnBackToOrders = () => {};
 
@@ -357,65 +440,76 @@ const PayerDetails = () => {
         />
       </div>
       <Formik
-        initialValues={initialValues}
+        initialValues={formValues}
         validationSchema={validationSchema}
-        enableReinitialize
-        onSubmit={(values, actions) => {
-          console.log('payer details values', values);
-        }}>
-        <Form>
-          <div className="MCP-module-body">
-            <div className="MCP-CardContainer">
-              <FormRenderer sections={sections} />
-              <hr />
-              <div>
-                {isSecondaryPayerVisible ? (
-                  <FormRenderer
-                    sections={secondaryPayerSection}
-                    fieldPrefix="secondary-payer-"
-                  />
-                ) : (
-                  <IconButton
-                    variant="tertiary"
-                    label={t('button.caption.addSecondaryPayer')}
-                    size="lg"
-                    iconButton={false}
-                    textButton={true}
-                    Icon={AddIcon}
-                    onClick={() => handleOnAddSecondaryPayer(true)}
-                  />
-                )}
+        enableReinitialize={true}
+        onError={console.log}
+        onSubmit={handleOnSubmit}>
+        {({ values }) => {
+          React.useEffect(() => {
+            setFormValues(values);
+          }, [values]);
+
+          return (
+            <Form>
+              <div className="MCP-module-body">
+                <div className="MCP-CardContainer">
+                  <FormRenderer sections={sections} />
+                  <hr />
+                  <div>
+                    {showSecondaryPayer ? (
+                      <FormRenderer
+                        sections={secondaryPayerSection}
+                        fieldPrefix="secondary-payer-"
+                      />
+                    ) : (
+                      <IconButton
+                        variant="tertiary"
+                        label={t('button.caption.addSecondaryPayer')}
+                        size="lg"
+                        iconButton={false}
+                        textButton={true}
+                        Icon={AddIcon}
+                        onClick={() => handleOnAddSecondaryPayer(true)}
+                      />
+                    )}
+                  </div>
+                  <hr />
+                  <div>
+                    {showDrugBenefitInsurer ? (
+                      <FormRenderer
+                        fieldPrefix="insurance-company-"
+                        sections={insuranceCompanySectionsWithActions || []}
+                      />
+                    ) : (
+                      <IconButton
+                        variant="tertiary"
+                        label={t(
+                          'button.caption.addDrugBenefitInsuranceCompany'
+                        )}
+                        size="lg"
+                        iconButton={false}
+                        textButton={true}
+                        Icon={AddIcon}
+                        onClick={() =>
+                          handleOnAddDrugBenefitInsuranceCompany(true)
+                        }
+                      />
+                    )}
+                  </div>
+                </div>
+                <div className="controls">
+                  <Button size="md" variant="secondary" onClick={() => {}}>
+                    {t('captions.btnBack')}
+                  </Button>
+                  <Button size="md" variant="primary" type="submit">
+                    {t('captions.btnSaveAndContinue')}
+                  </Button>
+                </div>
               </div>
-              <hr />
-              <div>
-                {isDrugBenefitInsuranceCompanyVisible ? (
-                  <FormRenderer
-                    fieldPrefix="benefit-insurance-company-"
-                    sections={insuranceCompanySectionsWithActions || []}
-                  />
-                ) : (
-                  <IconButton
-                    variant="tertiary"
-                    label={t('button.caption.addDrugBenefitInsuranceCompany')}
-                    size="lg"
-                    iconButton={false}
-                    textButton={true}
-                    Icon={AddIcon}
-                    onClick={() => handleOnAddDrugBenefitInsuranceCompany(true)}
-                  />
-                )}
-              </div>
-            </div>
-            <div className="controls">
-              <Button size="md" variant="secondary" onClick={() => {}}>
-                {t('captions.btnBack')}
-              </Button>
-              <Button size="md" variant="primary" type="submit">
-                {t('captions.btnSaveAndContinue')}
-              </Button>
-            </div>
-          </div>
-        </Form>
+            </Form>
+          );
+        }}
       </Formik>
     </div>
   );

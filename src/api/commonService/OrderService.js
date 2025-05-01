@@ -177,6 +177,27 @@ async function savePatientDetails(
   }
 }
 
+async function savePayerDetails(orderId, payload) {
+  if (!orderId)
+    throw new Error(
+      'Order id is missing. Order id is required to save payer details'
+    );
+
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/payer`;
+  try {
+    const res = await HttpResourceService.callRest(
+      url,
+      httpVerb.PATCH,
+      payload
+    );
+    if (res.data) {
+      return res.data;
+    }
+  } catch (err) {
+    throw { err, payload };
+  }
+}
+
 async function saveAdditionalDetails(orderId, payload) {
   if (!orderId)
     throw new Error(
