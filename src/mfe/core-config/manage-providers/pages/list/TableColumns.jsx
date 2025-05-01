@@ -3,7 +3,7 @@ import {
   Badge,
   Button,
   MenuList,
-  CheckboxGroup
+  Tooltip
 } from '@mckesson/mcp-component-library';
 import { ReactComponent as EllipsisIcon } from '@src/assets/svg/ellipsis.svg';
 import {
@@ -144,15 +144,31 @@ export const getColumns = (add) => {
     const { selectedRows } = useSelection();
     if (hasPermission(PERMISSIONS_ENUM.MANAGE_PROVIDERS.EDIT_PROVIDER)) {
       options.push({
-        label: 'Edit',
+        label: (
+          <Tooltip
+            body={
+              selectedRows.size > 1
+                ? t('provider.disabledEditOnMultiSelect')
+                : ''
+            }>
+            <div>{t('provider.contextMenu.optionEdit')}</div>
+          </Tooltip>
+        ),
         value: 'edit',
         disabled: selectedRows.size > 1
       });
       options.push({
-        label: props.isActive ? 'Deactivate' : 'Activate',
+        label: t(
+          props.isActive
+            ? 'provider.contextMenu.optionActivate'
+            : 'provider.contextMenu.optionDeactivate'
+        ),
         value: props.isActive ? 'deactivate' : 'activate'
       });
-      options.push({ label: 'Link SP Account', value: 'linkSPAccount' });
+      options.push({
+        label: t('provider.contextMenu.optionLinkSPAccount'),
+        value: 'linkSPAccount'
+      });
     }
 
     return options;
@@ -200,27 +216,6 @@ export const getColumns = (add) => {
         ),
       width: '50px'
     },
-    // {
-    //   id: 'checkbox',
-    //   name: '',
-    //   showInMobileHeader: true,
-    //   cell: (props) => (
-    //     <CheckboxGroup
-    //       id={'default'}
-    //       caption=""
-    //       items={[
-    //         {
-    //           onChange: () => toggleRowSelection(props.id),
-    //           value: props.id,
-    //           isChecked: selectedRows.has(props.id),
-    //           isDisabled: !props.isActive
-    //         }
-    //       ]}
-    //     />
-    //   ),
-    //   wrap: true,
-    //   width: '40px'
-    // },
     {
       id: PROVIDER_COLUMNS.PROVIDER_NAME,
       name: t('providers.columnCaption.providerName'),
