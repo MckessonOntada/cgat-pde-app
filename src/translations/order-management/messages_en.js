@@ -581,7 +581,7 @@ export const MessageEn = {
   'controls.placeholder.searchProviderPlaceholder':
     'Search by Provider Name, NPI Number, DEA Number, Address ',
   'label.emptyProviderTableDescription':
-    'You need to select organization to see SP Account Listing',
+    'You need to add providers to see data in this table',
   'label.materialCrosswalk': 'Material Crosswalk',
   'controls.addCrosswalk': 'Add Crosswalk',
   'controls.uploadCrosswalk': 'Upload Crosswalk',
