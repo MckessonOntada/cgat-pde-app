@@ -35,3 +35,8 @@ export const FormList = (t) => [
     label: t('labels.summary')
   }
 ];
+
+export const ChannelType = {
+  BUY_AND_BILL: 'BUY_AND_BILL',
+  SPECIALITY_PHARMA: 'SPECIALITY_PHARMA'
+};

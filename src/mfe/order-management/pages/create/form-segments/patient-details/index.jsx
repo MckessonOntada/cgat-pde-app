@@ -73,10 +73,14 @@ const PatientDetails = () => {
     orderDetails?.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId =
     orderDetails?.accountDetails?.shipToAccount?.accountNumber;
+  const channelType =
+    orderDetails.accountDetails?.soldToAccount?.channelType ||
+    ChannelType.BUY_AND_BILL;
   const { data: priceDetails } = useOrderPrice({
     therapyId,
     soldToAccountId,
-    shipToAccountId
+    shipToAccountId,
+    channelType
   });
   const [providers, setProviders] = React.useState([]);
   const INITIAL_VALUES = {

@@ -541,5 +541,14 @@ export const MessageEs = {
   'tooltip.material.status.AVAILABLE': 'S_Therapy Available',
   'tooltip.material.status.DROP_SHIP': 'S_Dropship',
   'tooltip.material.status.OUT_OF_STOCK': 'S_Low Inventory',
-  'tooltip.material.status.CHECKING': 'S_Checking'
+  'tooltip.material.status.CHECKING': 'S_Checking',
+  'labels.SPECIALITY_PHARMA':'S_Specialty Pharmacy',
+  'labels.BUY_AND_BILL':'S_Buy & Bill',
+  'labels.WAC':'S_WAC',
+  'labels.340':'S_340',
+  'labels.GOV':'S_GOV',
+  'labels.BUY_AND_BILL': 'S_Buy & Bill',
+  'labels.SPECIALITY_PHARMA': 'S_Speciality Pharma',
+  'labels.BuyNBill': 'S_BUY & BILL',
+  'labels.SP': 'S_SP'
 };

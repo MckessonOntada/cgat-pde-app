@@ -46,6 +46,7 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
 
   const requestParams = useMemo(
     () => ({
+      ...(selectedAccount?.channelType && {channelType : selectedAccount?.channelType}),
       pageNumber: pageConfig.pageNumber - 1,
       pageSize: pageConfig.pageSize,
       ...(filterState?.searchQuery && { query: filterState.searchQuery }),

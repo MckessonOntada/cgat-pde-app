@@ -7,7 +7,17 @@ import { Heading, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 
 const SM_BREAKPOINT = 576;
-const FloatingDrawer = ({ open, onClose, anchor = 'left', swipeable = false, heading= false, width, controls= false, children }) => {
+const FloatingDrawer = ({
+  open,
+  onClose,
+  anchor = 'left',
+  swipeable = false,
+  heading = false,
+  width,
+  controls = false,
+  bodyPadding,
+  children
+}) => {
   const drawerRef = useRef();
   const windowSize = useWindowSize();
   const isMobileView = windowSize.width < SM_BREAKPOINT;
@@ -98,8 +108,7 @@ const FloatingDrawer = ({ open, onClose, anchor = 'left', swipeable = false, hea
         aria-modal="true"
         role="dialog"
         aria-labelledby="drawer-title"
-        aria-describedby="drawer-content"
-      >
+        aria-describedby="drawer-content">
         <div className={styles.drawerWrapper} style={width ? { width: width } : {}}>
           {heading ? (
             <div className={styles.header}>
@@ -114,16 +123,11 @@ const FloatingDrawer = ({ open, onClose, anchor = 'left', swipeable = false, hea
                 <IconClose />
               </Button>
             </div>
-          )
-          }
-          <div className={styles.body}>
-            {children} 
+          )}
+          <div className={styles.body} style={bodyPadding ? { padding: bodyPadding } : {}}>
+            {children}
           </div>
-          {controls && 
-            <div className={styles.footer}>
-              {controls}
-            </div>
-          }
+          {controls && <div className={styles.footer}>{controls}</div>}
         </div>
       </aside>
     </>
