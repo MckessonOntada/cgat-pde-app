@@ -550,5 +550,7 @@ export const MessageEs = {
   'labels.BUY_AND_BILL': 'S_Buy & Bill',
   'labels.SPECIALITY_PHARMA': 'S_Speciality Pharma',
   'labels.BuyNBill': 'S_BUY & BILL',
-  'labels.SP': 'S_SP'
+  'labels.SP': 'S_SP',
+  'label.emptyProviderTableDescription':
+    'S_You need to add providers to see data in this table',
 };
