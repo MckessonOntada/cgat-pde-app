@@ -9,7 +9,7 @@ import OrderService from '@src/api/commonService/OrderService';
 import { serializeParams } from '@src/util/ApiUtils';
 import FloatingDrawer from '@src/components/floating-drawer';
 
-const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer }) => {
+const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer, therapChannelType }) => {
   const { t } = useTranslate();
   const [selectedProgram, setProgram] = useState('');
   const [selectedChannel, setChannel] = useState('');
@@ -23,7 +23,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer })
     error
   } = useQuery({
     queryKey: ['order', 'therapy', therapyId, 'program-channel-config'],
-    queryFn: async () => OrderService.getProgramAndChannelConfig(therapyId),
+    queryFn: async () => OrderService.getProgramAndChannelConfig(therapyId, {channelType: therapChannelType}),
     enabled: !!therapyId,
     refetchOnWindowFocus: false
   });
@@ -34,7 +34,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer })
     refetch: fetchAccountsByProgramAndChannel
   } = useQuery({
     queryKey: ['order', 'therapy', therapyId, 'program-channel-config-accounts', selectedChannel, selectedProgram],
-    queryFn: async () => OrderService.getSoldToAccounts(therapyId, serializeParams({ program: selectedProgram, channel: selectedChannel })),
+    queryFn: async () => OrderService.getSoldToAccounts(therapyId, serializeParams({ program: selectedProgram, channelType: selectedChannel })),
     enabled: !!(selectedChannel || selectedProgram),
     refetchOnWindowFocus: false
   });
