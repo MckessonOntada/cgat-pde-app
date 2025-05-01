@@ -82,7 +82,7 @@ function InputFileFormik(props) {
   }, [attachmentValue]);
 
   React.useEffect(() => {
-    if (!attachmentValue) {
+    if (!attachmentValue && values) {
       setFile(values[field.name]);
     }
   }, []);
