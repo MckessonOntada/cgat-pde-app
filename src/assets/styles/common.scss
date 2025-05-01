@@ -444,6 +444,9 @@ div.disable-all {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  @media only screen and (max-width: 576px) {
+    justify-content: flex-start;
+  }
 
   .fieldName {
     justify-content: flex-end;

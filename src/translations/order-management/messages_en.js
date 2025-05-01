@@ -651,4 +651,10 @@ export const MessageEn = {
   'labels.rxPcnNumber' : 'Rx PCN Number',
   'labels.rxIdNumber' : 'Rx ID Number',
   'labels.payerDetails' : 'Payer Details',
+  'labels.providerDetails': 'Provider Details',
+  'labels.zip': 'ZIP',
+  'labels.address': 'Address',
+  'labels.phoneNumber': 'Phone Number',
+  'labels.deaNumber': 'DEA Number',
+  'labels.npiNumber': 'NPI Number',
 };

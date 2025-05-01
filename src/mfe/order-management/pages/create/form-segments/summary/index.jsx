@@ -32,7 +32,7 @@ import AuthUtils from '@src/util/AuthUtils';
 import OrderStepper from '../OrderStepper';
 import useOrder from '../../../orders/useOrder';
 import { useCustomPrint } from '@src/util/printUtils';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { getAddress } from '@src/util/CommonUtils';
 import {
   CUSTOMER_CENTRE,
   SYSTEM_ADMIN
@@ -980,7 +980,91 @@ const Summary = () => {
                 </div>
               </div>
             )}
-
+            {provider && (
+              <div className="MCP-CardContainer">
+                <ModuleHeader
+                  className={styles.panelHeader}
+                  heading={
+                    <Heading as="h3">{t('labels.providerDetails')}</Heading>
+                  }
+                  controls={
+                    !hideControls && (
+                      <PermittedComponent
+                        permissions={
+                          PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS
+                        }>
+                        <Button
+                          size="md"
+                          variant="tertiary"
+                          onClick={() =>
+                            handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)
+                          }
+                          Icon={() => <IconEditField />}>
+                          {t('captions.btnEdit')}
+                        </Button>
+                      </PermittedComponent>
+                    )
+                  }
+                />
+                <div
+                  className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-6`}>
+                  <DetailSegment
+                    label={t('labels.name')}
+                    value={
+                      <Tooltip body={getFullName(provider?.name)}>
+                        <span className="overflowing">
+                          {getFullName(provider?.name)|| '-'}
+                        </span>
+                      </Tooltip>
+                    }
+                  />
+                  <DetailSegment
+                    label={t('labels.zip')}
+                    value={provider?.address.zip || '-'}
+                  />
+                  <DetailSegment
+                    label={t('labels.address')}
+                    value={
+                      <Tooltip body={getAddress(provider?.address || '-')}>
+                        <span className="overflowing">
+                          {getAddress(provider?.address || '-')}
+                        </span>
+                      </Tooltip>
+                    }
+                  />
+                  <DetailSegment
+                    label={t('labels.phoneNumber')}
+                    value={
+                      <Tooltip body={provider?.phone || '-'}>
+                        <span className="overflowing">
+                          {provider?.phone || '-'}
+                        </span>
+                      </Tooltip>
+                    }
+                  />
+                  <DetailSegment
+                    label={t('labels.deaNumber')}
+                    value={
+                      <Tooltip body={provider?.dea || '-'}>
+                        <span className="overflowing">
+                          {provider?.dea || '-'}
+                        </span>
+                      </Tooltip>
+                    }
+                  />
+                  <DetailSegment
+                    label={t('labels.npiNumber')}
+                    value={
+                      <Tooltip body={provider?.npi || '-'}>
+                        <span className="overflowing">
+                          {provider?.npi || '-'}
+                        </span>
+                      </Tooltip>
+                    }
+                  />
+                </div>
+              </div>
+            )}
             {payerDetails && (
               <div className="MCP-CardContainer">
                 <ModuleHeader
