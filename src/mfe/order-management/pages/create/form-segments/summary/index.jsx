@@ -105,7 +105,8 @@ const Summary = () => {
     backendOrderId,
     status,
     paporder,
-    payerDetails
+    payerDetails,
+    provider
   } = orderDetails || {};
 
   const spOrder = accountDetails?.soldToAccount?.channelType === 'SPECIALITY_PHARMA';
@@ -717,7 +718,7 @@ const Summary = () => {
                       </div>
                     ))}
                 </div>
-              ) : null
+              ) : null 
             }
           />
           <div className={'MCP-module-body'}>
@@ -744,13 +745,15 @@ const Summary = () => {
                       <Tooltip body={therapy?.materialDescription}>
                         {therapy?.materialDescription}
                       </Tooltip>
-                      <Tooltip
-                        isDisabled={!inventoryStatus}
-                        body={t(`tooltip.material.status.${inventoryStatus}`)}>
-                        <span>
-                          <InventoryIndicator status={inventoryStatus} />
-                        </span>
-                      </Tooltip>
+                      {!spOrder &&
+                        <Tooltip
+                          isDisabled={!inventoryStatus}
+                          body={t(`tooltip.material.status.${inventoryStatus}`)}>
+                          <span>
+                            <InventoryIndicator status={inventoryStatus} />
+                          </span>
+                        </Tooltip>
+                      }
                     </div>
                   }
                 />
