@@ -14,6 +14,12 @@ async function getAllSPCrosswalk(requestParams) {
   return {};
 }
 
+async function deLinkCrosswalk(id) {
+  const url = `${ApiRoutes.USER_SERVICE_BASE}cross-walk/${id}/deLink`;
+  const res = await HttpResourceService.callRest(url, httpVerb.DELETE);
+  return res;
+}
+
 async function uploadSPCrosswalk(payload) {
   const url = `${ApiRoutes.USER_SERVICE_BASE}cross-walk/upload`;
   const response = await HttpResourceService.callRest(
@@ -44,5 +50,6 @@ async function downloadAssetTemplate(resourceName) {
 export default Object.freeze({
   getAllSPCrosswalk,
   uploadSPCrosswalk,
-  downloadAssetTemplate
+  downloadAssetTemplate,
+  deLinkCrosswalk
 });

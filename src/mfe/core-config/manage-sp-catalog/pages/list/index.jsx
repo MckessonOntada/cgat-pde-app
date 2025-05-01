@@ -47,8 +47,6 @@ const List = () => {
       query: organizationQuery
     };
     SPCatalogService.getOrganizations(payload).then((response) => {
-      debugger;
-
       setOrganizationList([
         ...selectedOrganizations,
         ...response.content.filter(

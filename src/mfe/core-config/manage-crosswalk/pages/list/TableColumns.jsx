@@ -6,6 +6,7 @@ import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import SPCrosswalkService from '@src/api/commonService/SPCrosswalkService';
 
 const MATERIAL_CROSSWALK_COLUMNS = {
   BUY_AND_BILL_MATERIAL_ID: 'BUY_AND_BILL_MATERIAL_ID',
@@ -16,29 +17,15 @@ const MATERIAL_CROSSWALK_COLUMNS = {
   SP_PRODUCT_NDC: 'SP_PRODUCT_NDC',
   ACTION: 'ACTION'
 };
-export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMaterialDetails, setViewSPMaterial }) => {
+export const getColumns = ({
+  setOpenDetails,
+  setMaterialNumber,
+  setOpenSPMaterialDetails,
+  setViewSPMaterial,
+  confirmationUnlink
+}) => {
   const { t } = useTranslate();
   const dispatch = useDispatch();
-  const confirmationUnlink = (id) => () => {
-    const state = {};
-    state.title = `${t('label.unlinkCrosswalk')}?`;
-    state.body = (
-      <div className="MCP-modal-body">
-        <p>{t('label.unlinkCrosswalkDescription')}</p>
-      </div>
-    );
-    state.footer = (
-      <div className="controls">
-        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
-          {t('button.caption.no')}
-        </Button>
-        <Button size="md" variant="primary" onClick={() => console.log('Changes confirmed')}>
-          {t('button.caption.yes')}
-        </Button>
-      </div>
-    );
-    dispatch(openModal(state));
-  };
 
   return [
     {
@@ -47,9 +34,7 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
       minWidth: '120px',
       sortable: true,
       sortKey: 'bnbMaterialNumber',
-      cell: (props) => (
-        <EclipsesTextcss str={props?.bnbMaterialNumber || '-'} maxWidth={110} />
-      )
+      cell: (props) => <EclipsesTextcss str={props?.bnbMaterialNumber || '-'} />
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.BUY_AND_BILL_MATERIAL_DESCRIPTION,
@@ -67,7 +52,10 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
                 setOpenDetails(true);
                 setMaterialNumber(props?.bnbMaterialNumber);
               }}>
-                <EclipsesTextcss str={props?.bnbMaterialDescription} maxWidth={180} />
+              <EclipsesTextcss
+                str={props?.bnbMaterialDescription}
+                maxWidth={180}
+              />
             </Link>
           ) || '-'}
         </div>
@@ -77,9 +65,7 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
       id: MATERIAL_CROSSWALK_COLUMNS.BUY_AND_BILL_NDC,
       name: 'Buy & Bill Material NDC',
       minWidth: '80px',
-      cell: (props) => (
-        <EclipsesTextcss str={props?.bnbNdc || '-'} maxWidth={90} />
-      )
+      cell: (props) => <EclipsesTextcss str={props?.bnbNdc || '-'} />
     },
     {
       id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_ID,
@@ -117,9 +103,7 @@ export const getColumns = ({ setOpenDetails, setMaterialNumber, setOpenSPMateria
       id: MATERIAL_CROSSWALK_COLUMNS.SP_PRODUCT_NDC,
       name: 'SP Product NDC',
       minWidth: '90px',
-      cell: (props) => (
-        <EclipsesTextcss str={props?.spNdc || '-'} maxWidth={80} />
-      )
+      cell: (props) => <EclipsesTextcss str={props?.spNdc || '-'} />
     },
 
     {
