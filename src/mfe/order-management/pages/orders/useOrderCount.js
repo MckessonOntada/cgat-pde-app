@@ -1,7 +1,6 @@
-import React from 'react';
 import OrderService from '@src/api/commonService/OrderService';
 import { useQuery } from 'react-query';
-import { ORDER_TABS } from './config';
+import { ChannelType, ORDER_STATUS, ORDER_TABS } from './config';
 
 const useOrderCount = () => {
   const { data, isError } = useQuery({
@@ -11,20 +10,39 @@ const useOrderCount = () => {
   });
 
   if (data && !isError) {
-    const statusMap = {
-      [ORDER_TABS.SUBMITTED_BUY_AND_BILL]: ['SUBMITTED'],
-      [ORDER_TABS.SUBMITTED_SP]: ['SUBMITTED'],
-      [ORDER_TABS.PENDING_APPROVAL]: ['APPROVAL_PENDING'],
-      [ORDER_TABS.PENDING_SUBMISSION]: ['DELETED', 'REJECTED', 'IN_DRAFT']
+    const result = {
+      [ORDER_TABS.SUBMITTED_BUY_AND_BILL]: 0,
+      [ORDER_TABS.SUBMITTED_SP]: 0,
+      [ORDER_TABS.PENDING_APPROVAL]: 0,
+      [ORDER_TABS.PENDING_SUBMISSION]: 0
     };
 
-    const result = Object.entries(statusMap).reduce((acc, [key, statuses]) => {
-      acc[key] = statuses.reduce((sum, status) => {
-        const entry = data.find((item) => item.status === status);
-        return sum + (entry?.count || 0);
-      }, 0);
-      return acc;
-    }, {});
+    data.forEach(
+      ({ status, channelType = ChannelType.BUY_AND_BILL, count }) => {
+        switch (status) {
+          case ORDER_STATUS.SUBMITTED:
+            if (channelType === ChannelType.BUY_AND_BILL) {
+              result[ORDER_TABS.SUBMITTED_BUY_AND_BILL] += count;
+            } else if (channelType === ChannelType.SPECIALITY_PHARMA) {
+              result[ORDER_TABS.SUBMITTED_SP] += count;
+            }
+            break;
+
+          case ORDER_STATUS.APPROVAL_PENDING:
+            result[ORDER_TABS.PENDING_APPROVAL] += count;
+            break;
+
+          case ORDER_STATUS.IN_DRAFT:
+          case ORDER_STATUS.DELETED:
+          case ORDER_STATUS.REJECTED:
+            result[ORDER_TABS.PENDING_SUBMISSION] += count;
+            break;
+
+          default:
+            break;
+        }
+      }
+    );
 
     return result;
   }
