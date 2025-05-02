@@ -38,7 +38,7 @@ export const getValidationSchema = (t) => {
         20,
         t('orderManagement.patientDetails.validation.patient_identifier_max')
       ),
-    emailAddress: Yup.string()
+    emailId: Yup.string()
       .nullable()
       .trim()
       .email(t('orderManagement.patientDetails.validation.invalid_email'))

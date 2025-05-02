@@ -32,6 +32,7 @@ import {
 import ProviderService from '@src/api/commonService/ProviderService';
 import { CHANNEL_TYPE } from '../Constants';
 import ProviderDetailsCard from './ProviderDetailsCard';
+import DetailSegment from '@src/components/DetailSegment';
 
 export const getFilteredSections = (channelType) => {
   return sections.map((section) => ({
@@ -74,9 +75,7 @@ const PatientDetails = () => {
   const [validationSchema, setValidationSchema] = React.useState(
     getValidationSchema(t)
   );
-  const [selectedProvider, setSelectedProvider] = React.useState({
-    name: 'Alice Whitman'
-  });
+  const [selectedProvider, setSelectedProvider] = React.useState(null);
   const [initialValues, setInitialValues] = React.useState(INITIAL_VALUES);
   const { orderId } = useParams();
   const navigate = useNavigate();
@@ -99,6 +98,17 @@ const PatientDetails = () => {
     error,
     isLoader
   } = useOrder(orderId);
+
+  React.useEffect(() => {
+    if (orderDetails.channelType) {
+      if (
+        orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL &&
+        !orderDetails.patientDetailsRequired
+      )
+        navigate(`/orders/${orderId}/additional-details`);
+    }
+  }, [orderDetails]);
+
   const filteredSections = getFilteredSections(orderDetails.channelType);
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId =
@@ -114,11 +124,17 @@ const PatientDetails = () => {
     soldToAccountId,
     shipToAccountId
   });
-  const [providers, setProviders] = React.useState([]);
+  const [providers, setProviders] = React.useState([
+    { label: 'A', value: 'a' }
+  ]);
 
   React.useEffect(() => {
     if (orderDetails.patient) {
-      setInitialValues(orderDetails.patient);
+      const patientDetails = CommonUtils.flattenToRoot(
+        orderDetails.patient,
+        {}
+      );
+      setInitialValues(patientDetails);
     }
   }, [orderDetails]);
 
@@ -148,16 +164,6 @@ const PatientDetails = () => {
     }
     showAlert({ ...alertState, anchorEl: alertContainerId });
   }, []);
-
-  const isSPAccountSelected = true;
-  React.useEffect(() => {
-    if (!orderDetails) {
-      return;
-    }
-    if (!(orderDetails.patientDetailsRequired || isSPAccountSelected)) {
-      navigate(`../${orderId}/additional-details`);
-    }
-  }, [orderDetails]);
 
   const openDuplicateConfirmationModal = (payload) => {
     renderModal({
@@ -243,8 +249,7 @@ const PatientDetails = () => {
     const { patientInfo } = form;
     const cleanedFormValues = CommonUtils.cleanObject(form);
     const payload = {
-      id: cleanedFormValues.id,
-      practiceId: cleanedFormValues.practiceId,
+      ...orderDetails,
       patient: {
         patientInfo: {
           firstName: cleanedFormValues.firstName,
@@ -254,7 +259,7 @@ const PatientDetails = () => {
           dateOfBirth: cleanedFormValues.dateOfBirth
         },
         contact: {
-          emailId: cleanedFormValues.emailAddress,
+          emailId: cleanedFormValues.emailId,
           phoneNumber: cleanedFormValues.phoneNumber,
           homePhone: cleanedFormValues.homePhone,
           workPhone: cleanedFormValues.workPhone,
@@ -269,8 +274,9 @@ const PatientDetails = () => {
         },
         patientIdentifier: cleanedFormValues.patientIdentifier
       },
-      providerId: cleanedFormValues.provider
+      providerId: selectedProvider?.id
     };
+
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
       payload.workPhone = cleanedFormValues.workPhone;
       payload.homePhone = cleanedFormValues.homePhone;
@@ -298,7 +304,6 @@ const PatientDetails = () => {
       navigate(RoutePaths.pathOrderManagement);
     }
   };
-  console.log(initialValues, validationSchema);
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
@@ -314,12 +319,16 @@ const PatientDetails = () => {
   };
 
   React.useEffect(() => {
-    if (orderDetails) {
+    if (
+      orderDetails &&
+      orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+    ) {
       const params = {
         accountId: orderDetails.accountDetails?.soldToAccount?.id
       };
       ProviderService.getAllProviders(params).then((response) => {
-        console.log(response);
+        if (response.content && Array.isArray(response.content))
+          setProviders(response.content);
       });
     }
   }, [orderDetails]);
@@ -369,7 +378,7 @@ const PatientDetails = () => {
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
-          enableReinitialize
+          enableReinitialize={true}
           validate={(values) => {
             const errors = {};
             if (!values.patientIdentifier) {
@@ -383,8 +392,13 @@ const PatientDetails = () => {
           }}>
           {({ values, isValid, dirty }) => {
             React.useEffect(() => {
+              const { provider } = values;
+              const selectedProvider = providers.find(
+                (item) => item.id === provider
+              );
+              setSelectedProvider(selectedProvider);
               setIsDirty(dirty);
-            }, [dirty]);
+            }, [values]);
             return (
               <Form>
                 <div className={styles.wrapper}>
@@ -399,18 +413,28 @@ const PatientDetails = () => {
                             <div className="MCP-module-body">
                               <Heading as="h2">Provider Details</Heading>
                               <FormRenderer
-                                sections={providerSections({ providers })}
+                                sections={providerSections({
+                                  providers: providers.map((item) => ({
+                                    label: CommonUtils.getFullName(item.name),
+                                    value: item.id
+                                  }))
+                                })}
                               />
                             </div>
                             {selectedProvider && (
-                              <div className="">
-                                <div className="MCP-CardContainer">
-                                  <Heading as="h3">
-                                    {selectedProvider.name}
-                                  </Heading>
-                                  <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-[1fr_2fr] align-items-start">
-                                    details
-                                  </div>
+                              <div className="MCP-CardContainer">
+                                <Heading as="h3">
+                                  {CommonUtils.getFullName(
+                                    selectedProvider.name
+                                  )}
+                                </Heading>
+                                <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-[1fr_2fr] align-items-start">
+                                  <DetailSegment
+                                    label=""
+                                    value={CommonUtils.getDetailedAddress(
+                                      selectedProvider.address
+                                    )}
+                                  />
                                 </div>
                               </div>
                             )}

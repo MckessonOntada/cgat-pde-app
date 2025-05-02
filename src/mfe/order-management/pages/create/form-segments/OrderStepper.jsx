@@ -65,16 +65,25 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
     ORDER_SUMMARY: 6
   };
 
-  if (!patientDetailsRequired) {
-    if (status === ORDER_STAGES.PATIENT_DETAILS) {
-      status = ORDER_STAGES.ADDITIONAL_DETAILS;
-    }
-    currentStage.PATIENT_DETAILS = -1;
-    currentStage.ADDITIONAL_DETAILS = 3;
-    currentStage.ORDER_SUMMARY = 4;
-  }
+  // if (!patientDetailsRequired) {
+  //   if (status === ORDER_STAGES.PATIENT_DETAILS) {
+  //     status = ORDER_STAGES.ADDITIONAL_DETAILS;
+  //   }
+  //   currentStage.PATIENT_DETAILS = -1;
+  //   currentStage.ADDITIONAL_DETAILS = 3;
+  //   currentStage.ORDER_SUMMARY = 4;
+  // }
 
-  const activeIndex = currentStage[status] || 1;
+  if (
+    channelType === CHANNEL_TYPE.SPECIALTY_PHARMA &&
+    status === ORDER_STAGES.PATIENT_DETAILS
+  )
+    status = ORDER_STAGES.PATIENT_AND_PROVIDER_DETAILS;
+
+  const activeIndex =
+    filteredStepperItems.find((step) => step.name === status)?.order || 1;
+
+  // currentStage[status] || 1;
 
   const handleOnStepClick = (e) => {
     const nearestListItem = e.target.closest('li');

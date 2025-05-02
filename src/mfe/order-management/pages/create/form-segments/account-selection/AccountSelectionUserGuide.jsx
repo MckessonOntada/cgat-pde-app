@@ -66,12 +66,16 @@ const AccountSelectionUserGuide = ({
           therapyChannelType: therapChannelType
         })
       ),
-    enabled: !!(selectedChannel || selectedProgram),
+    enabled:
+      Boolean(selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA) ||
+      Boolean(selectedProgram),
     refetchOnWindowFocus: false
   });
+  console.log(selectedChannel, selectedProgram);
 
   React.useEffect(() => {
-    fetchAccountsByProgramAndChannel();
+    if (selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA || selectedProgram)
+      fetchAccountsByProgramAndChannel();
   }, [selectedChannel, selectedProgram]);
 
   const handleAccountChange = (selectedAccount) => {

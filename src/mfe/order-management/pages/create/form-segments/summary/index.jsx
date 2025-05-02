@@ -922,79 +922,79 @@ const Summary = () => {
               </div>
             </div>
 
-            {patientDetailsRequired ||
-              (orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
-                <div className="MCP-CardContainer">
-                  <ModuleHeader
-                    className={styles.panelHeader}
-                    heading={
-                      <Heading as="h3">{t('labels.patientDetails')}</Heading>
-                    }
-                    controls={
-                      !hideControls && (
-                        <PermittedComponent
-                          permissions={
-                            PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS
-                          }>
-                          <Button
-                            size="md"
-                            variant="tertiary"
-                            onClick={() =>
-                              handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)
-                            }
-                            Icon={() => <IconEditField />}>
-                            {t('captions.btnEdit')}
-                          </Button>
-                        </PermittedComponent>
+            {(patientDetailsRequired ||
+              orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) && (
+              <div className="MCP-CardContainer">
+                <ModuleHeader
+                  className={styles.panelHeader}
+                  heading={
+                    <Heading as="h3">{t('labels.patientDetails')}</Heading>
+                  }
+                  controls={
+                    !hideControls && (
+                      <PermittedComponent
+                        permissions={
+                          PERMISSIONS_ENUM.ORDER_MANAGEMENT.EDIT_ORDERS
+                        }>
+                        <Button
+                          size="md"
+                          variant="tertiary"
+                          onClick={() =>
+                            handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)
+                          }
+                          Icon={() => <IconEditField />}>
+                          {t('captions.btnEdit')}
+                        </Button>
+                      </PermittedComponent>
+                    )
+                  }
+                />
+                <div
+                  className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5`}>
+                  <DetailSegment
+                    label={t('labels.patientIdentifier')}
+                    value={patient?.patientIdentifier || '-'}
+                  />
+                  <DetailSegment
+                    label={t('labels.patientName')}
+                    value={
+                      patient.fullName ? (
+                        <Tooltip body={patient.fullName}>
+                          <span className="overflowing">
+                            {patient.fullName}
+                          </span>
+                        </Tooltip>
+                      ) : (
+                        '-'
                       )
                     }
                   />
-                  <div
-                    className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5`}>
-                    <DetailSegment
-                      label={t('labels.patientIdentifier')}
-                      value={patient?.patientIdentifier || '-'}
-                    />
-                    <DetailSegment
-                      label={t('labels.patientName')}
-                      value={
-                        patient.fullName ? (
-                          <Tooltip body={patient.fullName}>
-                            <span className="overflowing">
-                              {patient.fullName}
-                            </span>
-                          </Tooltip>
-                        ) : (
-                          '-'
-                        )
-                      }
-                    />
-                    <DetailSegment
-                      label={t('labels.DOB')}
-                      value={patient?.patientInfo?.dateOfBirth || '-'}
-                    />
+                  <DetailSegment
+                    label={t('labels.DOB')}
+                    value={patient?.patientInfo?.dateOfBirth || '-'}
+                  />
 
-                    <DetailSegment
-                      label={t('labels.emailId')}
-                      value={
-                        patient?.contact?.emailId ? (
-                          <Tooltip body={patient.contact.emailId}>
-                            <span className="overflowing">
-                              {patient.contact.emailId}
-                            </span>
-                          </Tooltip>
-                        ) : (
-                          '-'
-                        )
-                      }
-                    />
-                    <DetailSegment
-                      label={t('labels.gender')}
-                      value={patient?.patientInfo?.gender || '-'}
-                    />
-                  </div>
+                  <DetailSegment
+                    label={t('labels.emailId')}
+                    value={
+                      patient?.contact?.emailId ? (
+                        <Tooltip body={patient.contact.emailId}>
+                          <span className="overflowing">
+                            {patient.contact.emailId}
+                          </span>
+                        </Tooltip>
+                      ) : (
+                        '-'
+                      )
+                    }
+                  />
+                  <DetailSegment
+                    label={t('labels.gender')}
+                    value={patient?.patientInfo?.gender || '-'}
+                  />
                 </div>
-              ))}
+              </div>
+            )}
             {orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA &&
               provider && (
                 <div className="MCP-CardContainer">

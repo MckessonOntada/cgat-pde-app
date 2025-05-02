@@ -517,7 +517,7 @@ function AdditionalDetails() {
             values.variant?.document &&
             JSON.stringify(values.variant?.document),
           therapy: {
-            id: orderDetails?.therapy?.id
+            id: variant.therapyId
           }
         }
       : null;

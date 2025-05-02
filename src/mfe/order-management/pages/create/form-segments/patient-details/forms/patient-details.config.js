@@ -169,7 +169,7 @@ export const sections = [
           },
           {
             id: 'patient-info-email-address',
-            name: 'emailAddress',
+            name: 'emailId',
             label: 'orderManagement.patientDetails.inputLabel.email',
             placeholder: ' ',
             type: 'input',
