@@ -62,7 +62,8 @@ const AccountSelectionUserGuide = ({
         therapyId,
         serializeParams({
           program: selectedProgram,
-          channelType: selectedChannel
+          channelType: selectedChannel,
+          therapyChannelType: therapChannelType
         })
       ),
     enabled: !!(selectedChannel || selectedProgram),
