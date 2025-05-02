@@ -240,25 +240,31 @@ const PatientDetails = () => {
     const payload = {
       id: cleanedFormValues.id,
       practiceId: cleanedFormValues.practiceId,
-      patientInfo: {
-        firstName: cleanedFormValues.firstName,
-        middleName: cleanedFormValues.middleName,
-        lastName: cleanedFormValues.lastName,
-        gender: cleanedFormValues.gender,
-        dateOfBirth: cleanedFormValues.dateOfBirth
+      patient: {
+        patientInfo: {
+          firstName: cleanedFormValues.firstName,
+          middleName: cleanedFormValues.middleName,
+          lastName: cleanedFormValues.lastName,
+          gender: cleanedFormValues.gender,
+          dateOfBirth: cleanedFormValues.dateOfBirth
+        },
+        contact: {
+          emailId: cleanedFormValues.emailAddress,
+          phoneNumber: cleanedFormValues.phoneNumber,
+          homePhone: cleanedFormValues.homePhone,
+          workPhone: cleanedFormValues.workPhone,
+          preferedMethodOfContact: cleanedFormValues.preferredContactMethod
+        },
+        patientAddress: {
+          addressLine1: cleanedFormValues.addressLine1,
+          addressLine2: cleanedFormValues.addressLine2,
+          city: cleanedFormValues.city,
+          zipCode: cleanedFormValues.zipCode,
+          state: cleanedFormValues.state
+        },
+        patientIdentifier: cleanedFormValues.patientIdentifier
       },
-      contact: {
-        emailId: cleanedFormValues.emailAddress,
-        phoneNumber: cleanedFormValues.mobileNumber
-      },
-      patientAddress: {
-        addressLine1: cleanedFormValues.addressLine1,
-        addressLine2: cleanedFormValues.addressLine2,
-        city: cleanedFormValues.city,
-        zipCode: cleanedFormValues.zipCode,
-        state: cleanedFormValues.state
-      },
-      patientIdentifier: cleanedFormValues.patientIdentifier
+      providerId: cleanedFormValues.provider
     };
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
       payload.workPhone = cleanedFormValues.workPhone;

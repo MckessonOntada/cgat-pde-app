@@ -133,15 +133,15 @@ export const sections = [
       {
         grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
         controls: [
-          {
-            id: 'patient-info-home-phone',
-            name: 'phoneNumber',
-            label: 'orderManagement.patientDetails.inputLabel.phone_no',
-            placeholder: ' ',
-            type: 'phoneInput',
-            maxLength: 15,
-            if: (channelType) => channelType !== CHANNEL_TYPE.SPECIALTY_PHARMA
-          },
+          // {
+          //   id: 'patient-info-home-phone',
+          //   name: 'phoneNumber',
+          //   label: 'orderManagement.patientDetails.inputLabel.phone_no',
+          //   placeholder: ' ',
+          //   type: 'phoneInput',
+          //   maxLength: 15,
+          //   if: (channelType) => channelType !== CHANNEL_TYPE.SPECIALTY_PHARMA
+          // },
           {
             id: 'patient-info-home-phone',
             name: 'homePhone',
@@ -155,9 +155,9 @@ export const sections = [
             id: 'patient-info-mobile-number',
             label: 'orderManagement.patientDetails.inputLabel.mobileNumber',
             type: 'phoneInput',
-            name: 'mobileNumber',
-            maxLength: 10,
-            if: (channelType) => channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+            name: 'phoneNumber',
+            maxLength: 10
+            // if: (channelType) => channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           {
             id: 'patient-info-work-phone',
