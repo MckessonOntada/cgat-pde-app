@@ -19,14 +19,18 @@ import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/Disca
 import { renderModal } from '@src/util/ModalUtil';
 import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
-import { Loader } from '@mckesson/mcp-component-library';
+import { Loader, Heading } from '@mckesson/mcp-component-library';
 
 import { sections } from './forms/patient-details.config';
 import FormRenderer from '@src/mfe/core-config/manage-providers/forms/FormRenderer';
 import { providerSections } from './forms/providers.config';
-import { getValidationSchema } from './forms/validation-schema';
+import {
+  getAdditionalContactSchema,
+  getValidationSchema
+} from './forms/validation-schema';
 import ProviderService from '@src/api/commonService/ProviderService';
 import { CHANNEL_TYPE } from '../Constants';
+import ProviderDetailsCard from './ProviderDetailsCard';
 
 export const getFilteredSections = (channelType) => {
   return sections.map((section) => ({
@@ -42,15 +46,39 @@ export const getFilteredSections = (channelType) => {
     }))
   }));
 };
-
+const INITIAL_VALUES = {
+  firstName: '',
+  middleName: '',
+  lastName: '',
+  gender: '',
+  dateOfBirth: '',
+  emailId: '',
+  phoneNumber: '',
+  addressLine1: '',
+  addressLine2: '',
+  city: '',
+  zipCode: '',
+  state: '',
+  patientIdentifier: ''
+};
+const ADDITIONAL_VALUES = {
+  homePhone: '',
+  mobileNumber: '',
+  workPhone: '',
+  provider: '',
+  preferredMethodOfContact: ''
+};
 const PatientDetails = () => {
   const { t } = useTranslate();
+  const [validationSchema, setValidationSchema] = React.useState(
+    getValidationSchema(t)
+  );
+  const [initialValues, setInitialValues] = React.useState(INITIAL_VALUES);
   const { orderId } = useParams();
   const navigate = useNavigate();
   const alertContainerId = 'patintDetails-alert-container';
   const { showAlert } = useAlert();
   const location = useLocation();
-  const filteredSections = getFilteredSections(false);
   const {
     isEdit = false,
     isApprover = false,
@@ -67,7 +95,7 @@ const PatientDetails = () => {
     error,
     isLoader
   } = useOrder(orderId);
-
+  const filteredSections = getFilteredSections(orderDetails.channelType);
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId =
     orderDetails?.accountDetails?.soldToAccount?.accountNumber;
@@ -83,24 +111,26 @@ const PatientDetails = () => {
     shipToAccountId
   });
   const [providers, setProviders] = React.useState([]);
-  const INITIAL_VALUES = {
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    gender: '',
-    dateOfBirth: '',
-    emailId: '',
-    phoneNumber: '',
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    zipCode: '',
-    state: '',
-    patientIdentifier: ''
-  };
 
-  const initialValues = React.useMemo(() => {
-    return orderDetails?.patient ? { ...orderDetails.patient } : INITIAL_VALUES;
+  React.useEffect(() => {
+    if (orderDetails.patient) {
+      setInitialValues(orderDetails.patient);
+    }
+  }, [orderDetails]);
+
+  React.useEffect(() => {
+    if (orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+      const baseSchema = getValidationSchema(t);
+      const additionalSchema = getAdditionalContactSchema(t);
+      const combinedSchema = baseSchema.concat(additionalSchema);
+      setValidationSchema(combinedSchema);
+
+      let newInitialValue = { ...INITIAL_VALUES, ...ADDITIONAL_VALUES };
+      if (orderDetails.patient) {
+        newInitialValue = { ...newInitialValue, ...orderDetails.patient };
+      }
+      setInitialValues(newInitialValue);
+    }
   }, [orderDetails]);
 
   React.useEffect(() => {
@@ -196,8 +226,37 @@ const PatientDetails = () => {
 
   const handleSubmit = (form, skipDuplicateCheck) => {
     const { patientInfo } = form;
-    const payload = CommonUtils.cleanObject(form);
-
+    const cleanedFormValues = CommonUtils.cleanObject(form);
+    const payload = {
+      id: formValues.id,
+      practiceId: formValues.practiceId,
+      patientInfo: {
+        firstName: formValues.firstName,
+        middleName: formValues.middleName,
+        lastName: formValues.lastName,
+        gender: formValues.gender,
+        dateOfBirth: formValues.dateOfBirth
+      },
+      contact: {
+        emailId: formValues.emailAddress,
+        phoneNumber: formValues.mobileNumber
+      },
+      patientAddress: {
+        addressLine1: formValues.addressLine1,
+        addressLine2: formValues.addressLine2,
+        city: formValues.city,
+        zipCode: formValues.zipCode,
+        state: formValues.state
+      },
+      patientIdentifier: formValues.patientIdentifier
+    };
+    if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+      payload.workPhone = formValues.workPhone;
+      payload.homePhone = formValues.homePhone;
+      payload.mobileNumber = formValues.mobileNumber;
+      payload.preferredMethodOfContact = formValues.preferredContactMethod;
+      payload.selectedProvider = '';
+    }
     if (patientInfo && patientInfo.dateOfBirth) {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(
         patientInfo.dateOfBirth,
@@ -217,7 +276,7 @@ const PatientDetails = () => {
       navigate(RoutePaths.pathOrderManagement);
     }
   };
-
+  console.log(initialValues, validationSchema);
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
@@ -287,7 +346,7 @@ const PatientDetails = () => {
         </div>
         <Formik
           initialValues={initialValues}
-          validationSchema={getValidationSchema(t)}
+          validationSchema={validationSchema}
           enableReinitialize
           validate={(values) => {
             const errors = {};
@@ -314,9 +373,25 @@ const PatientDetails = () => {
                       {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
                         <React.Fragment>
                           <hr />
-                          <FormRenderer
-                            sections={providerSections({ providers })}
-                          />
+                          <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start">
+                            <FormRenderer
+                              sections={providerSections({ providers })}
+                            />
+                            <div
+                              style={{
+                                flexGrow: 1,
+                                border: '1px solid red'
+                              }}>
+                              <div className="MCP-CardContainer">
+                                {/* <Heading as="h3">{name}</Heading>
+                                <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start">
+                                  {detailsArray.map((detail) => {
+                                    <p>{detail}</p>;
+                                  })}
+                                </div> */}
+                              </div>
+                            </div>
+                          </div>
                         </React.Fragment>
                       )}
                     </div>

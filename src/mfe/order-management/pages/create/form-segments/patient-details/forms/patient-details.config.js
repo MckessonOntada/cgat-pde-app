@@ -1,4 +1,5 @@
 import { US_STATES } from '@src/components/form/util';
+import { CHANNEL_TYPE } from '../../Constants';
 
 const getStates = () => {
   const options = US_STATES();
@@ -15,7 +16,7 @@ export const sections = [
     title: 'orderManagement.patientDetails.patient_details',
     rows: [
       {
-        grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
+        grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
         controls: [
           {
             id: 'patient-info-firstName',
@@ -44,7 +45,7 @@ export const sections = [
         ]
       },
       {
-        grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
+        grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
         controls: [
           {
             id: 'patient-info-gender',
@@ -80,7 +81,7 @@ export const sections = [
         ]
       },
       {
-        grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start',
+        grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-2 align-items-start',
         controls: [
           {
             id: 'patient-info-addressLine1',
@@ -134,37 +135,37 @@ export const sections = [
         controls: [
           {
             id: 'patient-info-home-phone',
-            name: 'formControl.phone',
+            name: 'phoneNumber',
             label: 'orderManagement.patientDetails.inputLabel.phone_no',
             placeholder: ' ',
             type: 'phoneInput',
             maxLength: 15,
-            if: (channelType) => channelType !== 'SP'
+            if: (channelType) => channelType !== CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           {
             id: 'patient-info-home-phone',
-            name: 'formControl.homePhone',
+            name: 'homePhone',
             label: 'orderManagement.patientDetails.inputLabel.phone_no',
             placeholder: ' ',
             type: 'phoneInput',
             maxLength: 15,
-            if: (channelType) => channelType === 'SP'
+            if: (channelType) => channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           {
             id: 'patient-info-mobile-number',
-            label: 'formControl.mobileNumber',
+            label: 'mobileNumber',
             type: 'phoneInput',
-            name: 'phoneNumber',
+            name: 'mobileNumber',
             maxLength: 10,
-            if: (channelType) => channelType === 'SP'
+            if: (channelType) => channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           {
             id: 'patient-info-work-phone',
-            label: 'formControl.workPhone',
+            label: 'workPhone',
             type: 'phoneInput',
-            name: 'phoneNumber',
+            name: 'workPhone',
             maxLength: 10,
-            if: (channelType) => channelType === 'SP'
+            if: (channelType) => channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           {
             id: 'patient-info-email-address',
@@ -176,7 +177,7 @@ export const sections = [
           },
           {
             id: 'patient-info-preferred-method-of-contact',
-            label: 'formControl.preferredMethodOfContact',
+            label: 'preferredMethodOfContact',
             type: 'dropdown',
             options: ['Mobile', 'Fax'].map((item) => ({
               label: item,
@@ -184,7 +185,7 @@ export const sections = [
             })),
             name: 'preferredContactMethod',
             maxLength: 10,
-            if: (channelType) => channelType === 'SP'
+            if: (channelType) => channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           }
         ]
       }

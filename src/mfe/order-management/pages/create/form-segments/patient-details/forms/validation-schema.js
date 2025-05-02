@@ -83,14 +83,19 @@ export const getValidationSchema = (t) => {
       .trim()
       .matches(ZIP_REGEX, t('orgManagement.create_org.validation.zip_invalid'))
       .max(10, t('orgManagement.create_account.validation.zip_max')),
-    state: Yup.string().nullable(),
+    state: Yup.string().nullable()
+  });
+};
+
+export const getAdditionalContactSchema = (t) => {
+  return Yup.object().shape({
+    homePhone: Yup.string().matches(PHONE_REGEX, t('validation.phone_no')),
+    mobileNumber: Yup.string().matches(PHONE_REGEX, t('validation.phone_no')),
+    workPhone: Yup.string().matches(PHONE_REGEX, t('validation.phone_no')),
     preferredMethodOfContact: Yup.string().oneOf(
       ['Mobile', 'Fax'],
       'Preferred method of contact must be either Mobile or Fax'
     ),
-    homePhone: Yup.string().matches(PHONE_REGEX, t('validation.phone_no')),
-    mobileNumber: Yup.string().matches(PHONE_REGEX, t('validation.phone_no')),
-    workPhone: Yup.string().matches(PHONE_REGEX, t('validation.phone_no')),
     provider: Yup.string().nullable()
   });
 };
