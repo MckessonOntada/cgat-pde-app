@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Heading, Button } from '@mckesson/mcp-component-library';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from './AccountSelection.module.scss';
-import FloatingDrawer from '@src/components/floating-drawer';
 import AccountSelectionUserGuide from './AccountSelectionUserGuide';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import ModuleHeader from '@src/components/module-header';
@@ -21,7 +20,7 @@ import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/Disca
 import useOrder from '../../../orders/useOrder';
 import { Loader } from '@mckesson/mcp-component-library';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
-import { ChannelType } from '../Constants';
+import { CHANNEL_TYPE } from '../Constants';
 
 const AccountSelection = () => {
   const { t } = useTranslate();
@@ -57,12 +56,12 @@ const AccountSelection = () => {
     isLoader
   } = useOrder(orderId);
   const therapyId = orderDetails?.therapy?.materialNumber;
-  const therapChannelType = orderDetails?.therapy?.channelType
+  const therapChannelType = orderDetails?.therapy?.channelType;
   const { data: priceDetails } = useOrderPrice({
     therapyId: therapyId,
     soldToAccountId: selectedAccount?.accountNumber,
     shipToAccountId: selectedShippingAddress?.accountNumber,
-    channelType: selectedAccount?.channelType || ChannelType.BUY_AND_BILL
+    channelType: selectedAccount?.channelType || CHANNEL_TYPE.BUY_AND_BILL
   });
 
   const alertContainerId = 'accountSelection-alert-Container';
@@ -355,8 +354,8 @@ const AccountSelection = () => {
                           </p>
                           <p className={styles.address}>
                             <span>
-                            {t('Distribution Channel')} -{' '}
-                            {t(`labels.${selectedAccount?.channelType}`)}
+                              {t('Distribution Channel')} -{' '}
+                              {t(`labels.${selectedAccount?.channelType}`)}
                             </span>
                           </p>
                         </React.Fragment>

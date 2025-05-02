@@ -1,6 +1,12 @@
 import OrderService from '@src/api/commonService/OrderService';
 import AuthUtils from '@src/util/AuthUtils';
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import { useQuery } from 'react-query';
 
 const initialFilterState = {
@@ -31,7 +37,17 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
     const tableData = [];
 
     _data.forEach((d) => {
-      const address = [d.houseNumber, d.street, d.street2, d.street3, d.district, d.city, d.state, d.country, d.zipCode]
+      const address = [
+        d.houseNumber,
+        d.street,
+        d.street2,
+        d.street3,
+        d.district,
+        d.city,
+        d.state,
+        d.country,
+        d.zipCode
+      ]
         .filter(Boolean)
         .join(', ');
       const accountNumber = d.accountNumber;
@@ -49,10 +65,16 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
       pageNo: pageConfig.pageNumber - 1,
       pageSize: pageConfig.pageSize,
       ...(filterState?.searchQuery && { query: filterState.searchQuery }),
-      ...(filterState?.accNum && filterState?.accNum.length > 0 && { accNum: [...filterState.accNum] }),
-      ...(filterState?.accName && filterState?.accName.length > 0 && { accName: [...filterState.accName] }) //,
+      ...(filterState?.accNum &&
+        filterState?.accNum.length > 0 && { accNum: [...filterState.accNum] }),
+      ...(filterState?.accName &&
+        filterState?.accName.length > 0 && {
+          accName: [...filterState.accName]
+        }),
+      ...(selectedAccount?.channelType && {
+        channelType: selectedAccount?.channelType
+      })
     }),
-    ...(selectedAccount?.channelType && {channelType : selectedAccount?.channelType}),
     [filterState, pageConfig.currentPage]
   );
 
@@ -62,8 +84,18 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
     error,
     refetch: refreshData
   } = useQuery({
-    queryKey: ['Shipping', requestParams, selectedAccount?.accountNumber, therapyId],
-    queryFn: async () => OrderService.getShippingAddressForTherapyByAccountId(therapyId, selectedAccount?.accountNumber, requestParams),
+    queryKey: [
+      'Shipping',
+      requestParams,
+      selectedAccount?.accountNumber,
+      therapyId
+    ],
+    queryFn: async () =>
+      OrderService.getShippingAddressForTherapyByAccountId(
+        therapyId,
+        selectedAccount?.accountNumber,
+        requestParams
+      ),
     onSuccess: (result) => {
       if (result.content) {
         const { content: data, totalElements, totalPages } = result;

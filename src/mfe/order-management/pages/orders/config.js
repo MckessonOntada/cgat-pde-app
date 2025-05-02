@@ -170,8 +170,3 @@ export const DiSTRIBUTION_CHANNEL_OPTIONS = [
   { label: '3 PL', value: '3pl' },
   { label: 'MPB', value: 'mpb' }
 ];
-
-export const ChannelType = {
-  BUY_AND_BILL: 'BUY_AND_BILL',
-  SPECIALITY_PHARMA: 'SPECIALITY_PHARMA'
-};

@@ -1,6 +1,7 @@
 import OrderService from '@src/api/commonService/OrderService';
 import { useQuery } from 'react-query';
-import { ChannelType, ORDER_STATUS, ORDER_TABS } from './config';
+import { ORDER_STATUS, ORDER_TABS } from './config';
+import { CHANNEL_TYPE } from '../create/form-segments/Constants';
 
 const useOrderCount = () => {
   const { data, isError } = useQuery({
@@ -18,12 +19,12 @@ const useOrderCount = () => {
     };
 
     data.forEach(
-      ({ status, channelType = ChannelType.BUY_AND_BILL, count }) => {
+      ({ status, channelType = CHANNEL_TYPE.BUY_AND_BILL, count }) => {
         switch (status) {
           case ORDER_STATUS.SUBMITTED:
-            if (channelType === ChannelType.BUY_AND_BILL) {
+            if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
               result[ORDER_TABS.SUBMITTED_BUY_AND_BILL] += count;
-            } else if (channelType === ChannelType.SPECIALITY_PHARMA) {
+            } else if (channelType === CHANNEL_TYPE.SPECIALITY_PHARMA) {
               result[ORDER_TABS.SUBMITTED_SP] += count;
             }
             break;

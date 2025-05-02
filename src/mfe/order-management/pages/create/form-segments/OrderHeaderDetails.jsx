@@ -4,20 +4,29 @@ import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
 import { InventoryIndicator } from './InventoryIndicator';
 import './orderHeaderDetails.scss';
-import { ChannelType } from './Constants';
+import { CHANNEL_TYPE } from './Constants';
 
 function OrderHeaderDetails({ orderDetails, priceDetails = {}, status }) {
   const { t } = useTranslate();
 
   const detailsSegments = [];
-  const { therapy, author, accountDetails, patient, patientDetailsRequired, orderCost } = orderDetails || {};
+  const {
+    therapy,
+    author,
+    accountDetails,
+    patient,
+    patientDetailsRequired,
+    orderCost
+  } = orderDetails || {};
   detailsSegments.push(
     <DetailSegment
       key={'therapy-description'}
       label={t('labels.therapyDescription')}
       value={
         <div className="row-space-between-center therapy-description-wrapper">
-          <div className="overflowing">{therapy?.materialDescription || '-'}</div>
+          <div className="overflowing">
+            {therapy?.materialDescription || '-'}
+          </div>
           <InventoryIndicator status={status} />
         </div>
       }
@@ -44,8 +53,17 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status }) {
     );
   }
   if (patientDetailsRequired && patient) {
-    const patientFullName = [patient.lastName, patient.firstName, patient.middleName].filter(Boolean).join(' ') || '-';
-    detailsSegments.push(<DetailSegment key={'patient-name'} label={t('labels.patientName')} value={patientFullName} />);
+    const patientFullName =
+      [patient.lastName, patient.firstName, patient.middleName]
+        .filter(Boolean)
+        .join(' ') || '-';
+    detailsSegments.push(
+      <DetailSegment
+        key={'patient-name'}
+        label={t('labels.patientName')}
+        value={patientFullName}
+      />
+    );
   }
 
   detailsSegments.push(
@@ -53,10 +71,12 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status }) {
       <DetailSegment
         label={t('labels.price')}
         value={
-          accountDetails?.channelType === ChannelType.BUY_AND_BILL ? (
+          accountDetails?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? (
             <span className="dollarSign">
               <span>$</span>
-              {priceDetails?.netPrice ? CommonUtils.formatNumberWithoutSymbol(priceDetails?.netPrice) : '----'}
+              {priceDetails?.netPrice
+                ? CommonUtils.formatNumberWithoutSymbol(priceDetails?.netPrice)
+                : '----'}
             </span>
           ) : (
             'N/A'
