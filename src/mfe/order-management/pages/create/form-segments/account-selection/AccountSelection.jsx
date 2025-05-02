@@ -318,6 +318,7 @@ const AccountSelection = () => {
         <OrderStepper
           status={orderDetails?.currentStage}
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
+          channelType={orderDetails.channelType}
         />
         <div className={`MCP-module-wrapper`}>
           <OrderHeaderDetails
