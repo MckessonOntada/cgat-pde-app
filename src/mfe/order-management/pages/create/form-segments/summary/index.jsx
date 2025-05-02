@@ -986,7 +986,7 @@ const Summary = () => {
                 </div>
               </div>
             )}
-            {provider && (
+            {patientDetailsRequired && provider && (
               <div className="MCP-CardContainer">
                 <ModuleHeader
                   className={styles.panelHeader}
@@ -1016,13 +1016,7 @@ const Summary = () => {
                   className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-6`}>
                   <DetailSegment
                     label={t('labels.name')}
-                    value={
-                      <Tooltip body={getFullName(provider?.name)}>
-                        <span className="overflowing">
-                          {getFullName(provider?.name)|| '-'}
-                        </span>
-                      </Tooltip>
-                    }
+                    value={getFullName(provider?.name)|| '-'}
                   />
                   <DetailSegment
                     label={t('labels.zip')}
@@ -1030,48 +1024,25 @@ const Summary = () => {
                   />
                   <DetailSegment
                     label={t('labels.address')}
-                    value={
-                      <Tooltip body={getAddress(provider?.address || '-')}>
-                        <span className="overflowing">
-                          {getAddress(provider?.address || '-')}
-                        </span>
-                      </Tooltip>
-                    }
+                    value={getAddress(provider?.address || '-')}
                   />
                   <DetailSegment
                     label={t('labels.phoneNumber')}
-                    value={
-                      <Tooltip body={provider?.phone || '-'}>
-                        <span className="overflowing">
-                          {provider?.phone || '-'}
-                        </span>
-                      </Tooltip>
-                    }
+                    value={provider?.phone || '-'}
                   />
                   <DetailSegment
                     label={t('labels.deaNumber')}
-                    value={
-                      <Tooltip body={provider?.dea || '-'}>
-                        <span className="overflowing">
-                          {provider?.dea || '-'}
-                        </span>
-                      </Tooltip>
-                    }
+                    value={provider?.dea || '-'}
                   />
                   <DetailSegment
                     label={t('labels.npiNumber')}
-                    value={
-                      <Tooltip body={provider?.npi || '-'}>
-                        <span className="overflowing">
-                          {provider?.npi || '-'}
-                        </span>
-                      </Tooltip>
-                    }
+                    value={provider?.npi || '-'}
                   />
                 </div>
               </div>
             )}
-            {payerDetails && (
+
+            {patientDetailsRequired && payerDetails && (
               <div className="MCP-CardContainer">
                 <ModuleHeader
                   className={styles.panelHeader}
