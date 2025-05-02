@@ -274,7 +274,7 @@ const PatientDetails = () => {
         },
         patientIdentifier: cleanedFormValues.patientIdentifier
       },
-      providerId: selectedProvider.id
+      providerId: selectedProvider?.id
     };
 
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
@@ -398,7 +398,7 @@ const PatientDetails = () => {
               );
               setSelectedProvider(selectedProvider);
               setIsDirty(dirty);
-            }, [dirty]);
+            }, [values]);
             return (
               <Form>
                 <div className={styles.wrapper}>
