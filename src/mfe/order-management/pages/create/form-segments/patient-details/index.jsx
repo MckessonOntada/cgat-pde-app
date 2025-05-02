@@ -8,7 +8,6 @@ import PageHeader from '@src/components/pageHeader';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import PatientDetailsForm from './PatientDetailsForm';
 import { Form, Formik } from 'formik';
-import { getValidationSchema } from './PatientDetailsFormUtils';
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation } from 'react-query';
 import CommonUtils from '@src/util/CommonUtils';
@@ -20,57 +19,122 @@ import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/Disca
 import { renderModal } from '@src/util/ModalUtil';
 import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
-import { Loader } from '@mckesson/mcp-component-library';
+import { Loader, Heading } from '@mckesson/mcp-component-library';
 import { ChannelType } from '../Constants';
 
+import { sections } from './forms/patient-details.config';
+import FormRenderer from '@src/mfe/core-config/manage-providers/forms/FormRenderer';
+import { providerSections } from './forms/providers.config';
+import {
+  getAdditionalContactSchema,
+  getValidationSchema
+} from './forms/validation-schema';
+import ProviderService from '@src/api/commonService/ProviderService';
+import { CHANNEL_TYPE } from '../Constants';
+import ProviderDetailsCard from './ProviderDetailsCard';
+
+export const getFilteredSections = (channelType) => {
+  return sections.map((section) => ({
+    ...section,
+    rows: section.rows.map((row) => ({
+      ...row,
+      controls: row.controls.filter((control) => {
+        if (typeof control.if === 'function') {
+          return control.if(channelType);
+        }
+        return true;
+      })
+    }))
+  }));
+};
+const INITIAL_VALUES = {
+  firstName: '',
+  middleName: '',
+  lastName: '',
+  gender: '',
+  dateOfBirth: '',
+  emailId: '',
+  phoneNumber: '',
+  addressLine1: '',
+  addressLine2: '',
+  city: '',
+  zipCode: '',
+  state: '',
+  patientIdentifier: ''
+};
+const ADDITIONAL_VALUES = {
+  homePhone: '',
+  mobileNumber: '',
+  workPhone: '',
+  provider: '',
+  preferredMethodOfContact: ''
+};
 const PatientDetails = () => {
   const { t } = useTranslate();
+  const [validationSchema, setValidationSchema] = React.useState(
+    getValidationSchema(t)
+  );
+  const [selectedProvider, setSelectedProvider] = React.useState({
+    name: 'Alice Whitman'
+  });
+  const [initialValues, setInitialValues] = React.useState(INITIAL_VALUES);
   const { orderId } = useParams();
   const navigate = useNavigate();
   const alertContainerId = 'patintDetails-alert-container';
   const { showAlert } = useAlert();
   const location = useLocation();
-  const { isEdit = false, isApprover = false, alertState } = location.state || {};
+  const {
+    isEdit = false,
+    isApprover = false,
+    alertState
+  } = location.state || {};
 
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
 
-  const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
-
+  const {
+    data: orderDetails = {},
+    isFetching: isFetchingOrderDetails,
+    isError,
+    error,
+    isLoader
+  } = useOrder(orderId);
+  const filteredSections = getFilteredSections(orderDetails.channelType);
   const therapyId = orderDetails?.therapy?.materialNumber;
-  const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
-  const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
-  const channelType = orderDetails?.accountDetails?.soldToAccount?.channelType || ChannelType.BUY_AND_BILL;
+  const soldToAccountId =
+    orderDetails?.accountDetails?.soldToAccount?.accountNumber;
+  const shipToAccountId =
+    orderDetails?.accountDetails?.shipToAccount?.accountNumber;
+  const channelType =
+    orderDetails?.accountDetails?.soldToAccount?.channelType ||
+    CHANNEL_TYPE.BUY_AND_BILL;
+
   const { data: priceDetails } = useOrderPrice({
     therapyId,
     soldToAccountId,
-    shipToAccountId,
-    channelType
+    shipToAccountId
   });
-  const INITIAL_VALUES = {
-    patientInfo: {
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      gender: '',
-      dateOfBirth: ''
-    },
-    contact: {
-      emailId: '',
-      phoneNumber: ''
-    },
-    patientAddress: {
-      addressLine1: '',
-      addressLine2: '',
-      city: '',
-      zipCode: '',
-      state: ''
-    },
-    patientIdentifier: ''
-  };
+  const [providers, setProviders] = React.useState([]);
 
-  const initialValues = React.useMemo(() => {
-    return orderDetails?.patient ? { ...orderDetails.patient } : INITIAL_VALUES;
+  React.useEffect(() => {
+    if (orderDetails.patient) {
+      setInitialValues(orderDetails.patient);
+    }
+  }, [orderDetails]);
+
+  React.useEffect(() => {
+    if (orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+      const baseSchema = getValidationSchema(t);
+      const additionalSchema = getAdditionalContactSchema(t);
+      const combinedSchema = baseSchema.concat(additionalSchema);
+      setValidationSchema(combinedSchema);
+
+      let newInitialValue = { ...INITIAL_VALUES, ...ADDITIONAL_VALUES };
+      if (orderDetails.patient) {
+        newInitialValue = { ...newInitialValue, ...orderDetails.patient };
+      }
+      setInitialValues(newInitialValue);
+    }
   }, [orderDetails]);
 
   React.useEffect(() => {
@@ -85,11 +149,12 @@ const PatientDetails = () => {
     showAlert({ ...alertState, anchorEl: alertContainerId });
   }, []);
 
+  const isSPAccountSelected = true;
   React.useEffect(() => {
     if (!orderDetails) {
       return;
     }
-    if (!orderDetails.patientDetailsRequired) {
+    if (!(orderDetails.patientDetailsRequired || isSPAccountSelected)) {
       navigate(`../${orderId}/additional-details`);
     }
   }, [orderDetails]);
@@ -123,13 +188,20 @@ const PatientDetails = () => {
   };
 
   const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(
-    async ({ payload, skipDuplicateCheck }) => OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck),
+    async ({ payload, skipDuplicateCheck }) =>
+      OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck),
     {
       onSuccess: (result) => {
         const { id } = result;
-        navigate(`../${id}/additional-details`, {
-          state: { isEdit: false, isApprover: isApprover }
-        });
+        if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+          navigate(`../${id}/payer`, {
+            state: { isEdit: false, isApprover: isApprover }
+          });
+        } else {
+          navigate(`../${id}/additional-details`, {
+            state: { isEdit: false, isApprover: isApprover }
+          });
+        }
       },
       onError: ({ err, payload }) => {
         if (err.status === 409) {
@@ -164,10 +236,49 @@ const PatientDetails = () => {
 
   const handleSubmit = (form, skipDuplicateCheck) => {
     const { patientInfo } = form;
-    const payload = CommonUtils.cleanObject(form);
-
-    if (patientInfo && patientInfo.dateOfBirth) {
-      payload.dateOfBirth = CommonUtils.convertDateStringFormat(patientInfo.dateOfBirth, 'MM-DD-YYYY');
+    const cleanedFormValues = CommonUtils.cleanObject(form);
+    const payload = {
+      id: cleanedFormValues.id,
+      practiceId: cleanedFormValues.practiceId,
+      patient: {
+        patientInfo: {
+          firstName: cleanedFormValues.firstName,
+          middleName: cleanedFormValues.middleName,
+          lastName: cleanedFormValues.lastName,
+          gender: cleanedFormValues.gender,
+          dateOfBirth: cleanedFormValues.dateOfBirth
+        },
+        contact: {
+          emailId: cleanedFormValues.emailAddress,
+          phoneNumber: cleanedFormValues.phoneNumber,
+          homePhone: cleanedFormValues.homePhone,
+          workPhone: cleanedFormValues.workPhone,
+          preferedMethodOfContact: cleanedFormValues.preferredContactMethod
+        },
+        patientAddress: {
+          addressLine1: cleanedFormValues.addressLine1,
+          addressLine2: cleanedFormValues.addressLine2,
+          city: cleanedFormValues.city,
+          zipCode: cleanedFormValues.zipCode,
+          state: cleanedFormValues.state
+        },
+        patientIdentifier: cleanedFormValues.patientIdentifier
+      },
+      providerId: cleanedFormValues.provider
+    };
+    if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+      payload.workPhone = cleanedFormValues.workPhone;
+      payload.homePhone = cleanedFormValues.homePhone;
+      payload.mobileNumber = cleanedFormValues.mobileNumber;
+      payload.preferredMethodOfContact =
+        cleanedFormValues.preferredContactMethod;
+      payload.selectedProvider = '';
+    }
+    if (cleanedFormValues.dateOfBirth) {
+      payload.dateOfBirth = CommonUtils.convertDateStringFormat(
+        cleanedFormValues.dateOfBirth,
+        'MM-DD-YYYY'
+      );
     }
     if (isApprover) {
       skipDuplicateCheck = true;
@@ -182,7 +293,7 @@ const PatientDetails = () => {
       navigate(RoutePaths.pathOrderManagement);
     }
   };
-
+  console.log(initialValues, validationSchema);
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
@@ -196,34 +307,63 @@ const PatientDetails = () => {
       });
     }
   };
+
+  React.useEffect(() => {
+    if (orderDetails) {
+      const params = {
+        accountId: orderDetails.accountDetails?.soldToAccount?.id
+      };
+      ProviderService.getAllProviders(params).then((response) => {
+        console.log(response);
+      });
+    }
+  }, [orderDetails]);
+
   if (isLoader) {
     return isLoader;
   }
   if (isSaving) {
     return <Loader type={'screen'} />;
   }
+
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={handleOnBackToOrders}
+          size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
 
-      <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
+      <PageHeader
+        heading={
+          isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')
+        }
+      />
 
       <div className="MCP-module-body">
-        <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} />
+        <OrderStepper
+          status={orderDetails?.currentStage}
+          patientDetailsRequired={orderDetails?.patientDetailsRequired}
+          channelType={channelType}
+        />
 
         <div className={styles.wrapper}>
-          <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
+          <OrderHeaderDetails
+            orderDetails={orderDetails}
+            priceDetails={priceDetails}
+          />
           <div id={alertContainerId} />
 
           {isError && <Alert showTitle title={error} type={'error'} />}
         </div>
         <Formik
           initialValues={initialValues}
-          validationSchema={getValidationSchema(t)}
+          validationSchema={validationSchema}
           enableReinitialize
           validate={(values) => {
             const errors = {};
@@ -244,11 +384,42 @@ const PatientDetails = () => {
               <Form>
                 <div className={styles.wrapper}>
                   <div className="MCP-panel-container">
-                    <PatientDetailsForm />
+                    {/* <PatientDetailsForm /> */}
+                    <div className="MCP-module-body">
+                      <FormRenderer sections={filteredSections} />
+                      {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
+                        <React.Fragment>
+                          <hr />
+                          <div className="selected-provider">
+                            <div className="MCP-module-body">
+                              <Heading as="h2">Provider Details</Heading>
+                              <FormRenderer
+                                sections={providerSections({ providers })}
+                              />
+                            </div>
+                            {selectedProvider && (
+                              <div className="">
+                                <div className="MCP-CardContainer">
+                                  <Heading as="h3">
+                                    {selectedProvider.name}
+                                  </Heading>
+                                  <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-[1fr_2fr] align-items-start">
+                                    details
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </React.Fragment>
+                      )}
+                    </div>
                   </div>
                   <div className="footer-wrapper">
                     <div className="controls footer-controls">
-                      <Button size="md" variant="secondary" onClick={handleOnBack}>
+                      <Button
+                        size="md"
+                        variant="secondary"
+                        onClick={handleOnBack}>
                         {t('captions.btnBack')}
                       </Button>
                       <Button size="md" variant="primary" type="submit">

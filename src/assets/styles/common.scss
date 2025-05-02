@@ -1185,7 +1185,8 @@ div[role="row"] {
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
-      &.radio-button-wrapper{
+
+      &.radio-button-wrapper {
         overflow: initial;
       }
     }
@@ -1351,5 +1352,15 @@ div[role="row"] {
 
   &.lg {
     padding: var(--spacing-08);
+  }
+}
+
+.selected-provider {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+
+  @include mixins.respond(md) {
+    grid-template-columns: 1fr 2fr;
   }
 }

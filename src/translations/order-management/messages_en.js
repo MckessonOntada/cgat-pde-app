@@ -330,6 +330,7 @@ export const MessageEn = {
     'Please confirm if you still want to place this order.',
   // order management patient details screen
 
+  'orderManagement.patientDetails.inputLabel.phone_number': 'Phone Number',
   'orderManagement.patientDetails.inputLabel.email': 'Email',
   'orderManagement.patientDetails.inputLabel.phone_no': 'Phone Number',
   'orderManagement.patientDetails.inputLabel.address_1': 'Address Line 1',
@@ -343,6 +344,12 @@ export const MessageEn = {
   'orderManagement.patientDetails.inputLabel.middle_name': 'Middle Name',
   'orderManagement.patientDetails.inputLabel.last_name': 'Last Name',
   'orderManagement.patientDetails.inputLabel.gender': 'Gender',
+  'orderManagement.patientDetails.inputLabel.homePhone': 'Home Phone',
+  'orderManagement.patientDetails.inputLabel.mobileNumber': 'Mobile Number',
+  'orderManagement.patientDetails.inputLabel.workPhone': 'Work Phone',
+  'orderManagement.patientDetails.inputLabel.preferredMethodOfContact':
+    'Preferred Method of Contact',
+
   'orderManagement.patientDetails.inputLabel.patientIdentifier':
     'Patient Identifier',
   'orderManagement.patientDetails.contact_details': 'Contact Details',
@@ -625,38 +632,225 @@ export const MessageEn = {
   'tooltip.material.status.DROP_SHIP': 'Dropship',
   'tooltip.material.status.OUT_OF_STOCK': 'Low Inventory',
   'tooltip.material.status.CHECKING': 'Checking',
-  'labels.orderQuantity': 'Order Quantity', 
+  'labels.orderQuantity': 'Order Quantity',
   'labels.BuyNBill': 'BUY & BILL',
-  'labels.SP': 'SP', 
+  'labels.SP': 'SP',
   'labels.orderType': 'Order Type',
   'labels.assignee': 'Assignee',
   'invalid.csv.file.type':
     'The uploaded file is invalid. Please upload a valid file',
   'invalid.csv.file.headers.missing':
     'The uploaded file is invalid. It missing required columns. Please upload a valid file',
-  'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file',
-  'labels.SPECIALITY_PHARMA':'Specialty Pharmacy',
-  'labels.BUY_AND_BILL':'Buy & Bill',
-  'labels.WAC':'WAC',
-  'labels.340':'340',
-  'labels.GOV':'GOV',
+  'invalid.csv.file.empty':
+    'Uploaded file is empty. Please upload a valid file',
+  'labels.SPECIALITY_PHARMA': 'Specialty Pharmacy',
+  'labels.BUY_AND_BILL': 'Buy & Bill',
+  'labels.WAC': 'WAC',
+  'labels.340': '340',
+  'labels.GOV': 'GOV',
   'labels.BUY_AND_BILL': 'Buy & Bill',
   'labels.SPECIALITY_PHARMA': 'Speciality Pharma',
-  'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file',
+  'invalid.csv.file.empty':
+    'Uploaded file is empty. Please upload a valid file',
   'labels.Strength': 'Strength',
-  'labels.Dosage' : 'Dosage',
-  'labels.orderChannel' : 'Order Channel',
-  'labels.name' : 'Name',
-  'labels.policyNumber' : 'Policy Number',
-  'labels.effectiveDate' : 'Effective Date',
-  'labels.groupNumber' : 'Group Number',
-  'labels.rxPcnNumber' : 'Rx PCN Number',
-  'labels.rxIdNumber' : 'Rx ID Number',
-  'labels.payerDetails' : 'Payer Details',
+  'labels.Dosage': 'Dosage',
+  'labels.orderChannel': 'Order Channel',
+  'labels.name': 'Name',
+  'labels.policyNumber': 'Policy Number',
+  'labels.effectiveDate': 'Effective Date',
+  'labels.groupNumber': 'Group Number',
+  'labels.rxPcnNumber': 'Rx PCN Number',
+  'labels.rxIdNumber': 'Rx ID Number',
+  'labels.payerDetails': 'Payer Details',
   'labels.providerDetails': 'Provider Details',
   'labels.zip': 'ZIP',
   'labels.address': 'Address',
   'labels.phoneNumber': 'Phone Number',
   'labels.deaNumber': 'DEA Number',
   'labels.npiNumber': 'NPI Number',
+
+  'invalid.csv.file.empty':
+    'Uploaded file is empty. Please upload a valid file',
+  'formControl.mobileNumber': 'Mobile Number',
+  'formControl.workPhone': 'Work Phone',
+  'formControl.homePhone': 'Home Phone',
+  'formControl.preferredMethodOfContact': 'Preferred Method Of Contact',
+  'formSections.provider-details': 'Provider Details',
+
+  'stepper.label.THERAPY_SELECTION': 'Therapy Selection',
+  'stepper.label.ACCOUNT_SELECTION': 'Account Selection',
+  'stepper.label.PATIENT_DETAILS': 'Patient Details',
+  'stepper.label.PATIENT_AND_PROVIDER_DETAILS': 'Patient & Provider Details',
+  'stepper.label.PAYER_DETAILS': 'Payer Details',
+  'stepper.label.ADDITIONAL_DETAILS': 'Additional Details',
+  'stepper.label.ORDER_SUMMARY': 'Order Summary',
+
+  'formControl.insuranceCoverageSubscriber':
+    'Patient Relationship to Subscriber',
+  'formControl.insurancePolicyNumber': 'Policy Number',
+  'formControl.insuranceGroupNumber': 'Group Number',
+  'formControl.insurancePlanType': 'Plan Type',
+  'formControl.insuranceEffectiveDate': 'Effective Date',
+  'formControl.insuranceRxPcnNumber': 'Rx PCN Number',
+  'formControl.insuranceGrpPcnNumber': 'Rx GRP Number',
+  'formControl.insuranceRxIdNumber': 'Rx Id Number',
+  'formControl.insuranceRxBinNumber': 'Rx BIN Number',
+  'button.caption.addSecondaryPayer': 'Add Secondary Payer',
+  'button.caption.addDrugBenefitInsuranceCompany':
+    'Add Drug Benefit Insurance Company',
+
+  'formControl.patientRelationship': 'Patient Relationship to Subscriber',
+  'formControl.policyNumber': 'Policy Number',
+  'formControl.groupNumber': 'Group Number',
+  'formControl.planType': 'Plan Type',
+  'formControl.effectiveDate': 'Effective Date',
+  'formControl.rxPCNNumber': 'Rx PCN Number',
+  'formControl.rxGRPNumber': 'Rx GRP Number',
+  'formControl.rxIDNumber': 'Rx ID Number',
+  'formControl.rxBINNumber': 'Rx BIN Number',
+  'payer.form.insuranceCompanyFirstNameRequired':
+    'Please enter the First Name.',
+  'payer.form.insuranceCompanyFirstNameMaxCharacters':
+    'First Name should not exceed 50 characters.',
+  'payer.form.insuranceCompanyFirstNameContains':
+    'First Name should contain alphabets only and cannot include special characters or numbers.',
+  'payer.form.insuranceCompanyLastNameMaxCharacters':
+    'Last Name should not exceed 50 characters.',
+  'payer.form.insuranceCompanyLastNameContains':
+    'Last Name should contain alphabets only and cannot include special characters or numbers.',
+  'payer.form.insuranceCompanyPhoneNumberMaxCharacters':
+    'Phone Number should not exceed 50 characters.',
+  'payer.form.insuranceCompanyPhoneNumberDigitsOnly':
+    'Phone Number must contain valid digits only.',
+
+  'payer.form.insuranceCompanyAddressLine1MaxCharacters':
+    'Address 1 should not exceed 100 characters.',
+  'payer.form.insuranceCompanyAddressLine1NoSpecialChars':
+    'Address 1 cannot contain special characters like @, #, %, etc.',
+
+  'payer.form.insuranceCompanyAddressLine2MaxCharacters':
+    'Address 2 should not exceed 100 characters.',
+  'payer.form.insuranceCompanyAddressLine2NoSpecialChars':
+    'Address 2 cannot contain special characters like @, #, %, etc.',
+
+  'payer.form.insuranceCompanyZipCodeFormat':
+    'Zip Code should follow US format: 12345 or 12345-6789.',
+
+  'payer.form.insuranceCompanyCityMaxCharacters':
+    'City should not exceed 15 characters.',
+  'payer.form.insuranceCompanyCityAlphaOnly':
+    'City should contain alphabets only and cannot include numbers or special characters.',
+
+  'payer.form.insuranceCompanyStateRequired': 'Please select a valid State.',
+  'payer.form.secondaryPayerFirstNameRequired': 'Please enter the First Name.',
+  'payer.form.secondaryPayerFirstNameMaxCharacters':
+    'First Name should not exceed 50 characters.',
+  'payer.form.secondaryPayerFirstNameAlphaOnly':
+    'First Name should contain alphabets only and cannot include special characters or numbers.',
+
+  'payer.form.secondaryPayerLastNameMaxCharacters':
+    'Last Name should not exceed 50 characters.',
+  'payer.form.secondaryPayerLastNameAlphaOnly':
+    'Last Name should contain alphabets only and cannot include special characters or numbers.',
+
+  'payer.form.secondaryPayerPhoneNumberMaxCharacters':
+    'Phone Number should not exceed 50 characters.',
+  'payer.form.secondaryPayerPhoneNumberDigitsOnly':
+    'Phone Number must contain valid digits only.',
+
+  'payer.form.secondaryPayerAddressLine1MaxCharacters':
+    'Address 1 should not exceed 100 characters.',
+  'payer.form.secondaryPayerAddressLine1NoSpecialChars':
+    'Address 1 cannot contain special characters like @, #, %, etc.',
+
+  'payer.form.secondaryPayerAddressLine2MaxCharacters':
+    'Address 2 should not exceed 100 characters.',
+  'payer.form.secondaryPayerAddressLine2NoSpecialChars':
+    'Address 2 cannot contain special characters like @, #, %, etc.',
+
+  'payer.form.secondaryPayerZipCodeFormat':
+    'Zip Code should follow US format: 12345 or 12345-6789.',
+
+  'payer.form.secondaryPayerCityMaxCharacters':
+    'City should not exceed 15 characters.',
+  'payer.form.secondaryPayerCityAlphaOnly':
+    'City should contain alphabets only and cannot include numbers or special characters.',
+
+  'payer.form.secondaryPayerStateRequired': 'Please select a valid State.',
+  'payer.form.firstNameRequired': 'Please enter the First Name.',
+  'payer.form.firstNameMaxCharacters':
+    'First Name should not exceed 50 characters.',
+  'payer.form.firstNameAlphaOnly':
+    'First Name should contain alphabets only and cannot include special characters or numbers.',
+
+  'payer.form.lastNameMaxCharacters':
+    'Last Name should not exceed 50 characters.',
+  'payer.form.lastNameAlphaOnly':
+    'Last Name should contain alphabets only and cannot include special characters or numbers.',
+
+  'payer.form.phoneNumberMaxCharacters':
+    'Phone Number should not exceed 50 characters.',
+  'payer.form.phoneNumberDigitsOnly':
+    'Phone Number must contain valid digits only.',
+
+  'payer.form.addressLine1MaxCharacters':
+    'Address 1 should not exceed 100 characters.',
+  'payer.form.addressLine1NoSpecialChars':
+    'Address 1 cannot contain special characters like @, #, %, etc.',
+
+  'payer.form.addressLine2MaxCharacters':
+    'Address 2 should not exceed 100 characters.',
+  'payer.form.addressLine2NoSpecialChars':
+    'Address 2 cannot contain special characters like @, #, %, etc.',
+
+  'payer.form.zipCodeFormat':
+    'Zip Code should follow US format: 12345 or 12345-6789.',
+
+  'payer.form.cityMaxCharacters': 'City should not exceed 15 characters.',
+  'payer.form.cityAlphaOnly':
+    'City should contain alphabets only and cannot include numbers or special characters.',
+
+  'payer.form.stateRequired': 'Please select a valid State.',
+
+  'payer.form.patientRelationshipRequired':
+    "Please select the patient's relationship to the subscriber.",
+  'payer.form.patientRelationshipInvalid':
+    'Please select relationship to the subscriber.',
+  'payer.form.patientRelationshipOneOf': 'Please select a valid relationship.',
+
+  'payer.form.policyNumberRequired': 'Please enter the Policy Number.',
+  'payer.form.policyNumberMaxCharacters':
+    'Policy Number should not exceed 30 characters.',
+  'payer.form.policyNumberAlphanumeric':
+    'Policy Number should only contain letters and numbers.',
+
+  'payer.form.groupNumberMaxCharacters':
+    'Group Number should not exceed 30 characters.',
+  'payer.form.groupNumberAlphanumeric':
+    'Group Number should only contain letters and numbers.',
+
+  'payer.form.planTypeRequired': 'Please select a valid Plan Type',
+  'payer.form.planTypeOneOf': 'Please select a valid Plan Type',
+
+  'payer.form.effectiveDateRequired': 'Please enter the Effective Date.',
+  'payer.form.effectiveDateMax': 'Effective Date cannot be in the future.',
+  'payer.form.effectiveDateTypeError': 'Please select a valid date.',
+
+  'payer.form.rxPcnNumberMaxCharacters':
+    'Rx PCN Number should not exceed 30 digits.',
+  'payer.form.rxPcnNumberDigitsOnly':
+    'Rx PCN Number must contain numbers only.',
+
+  'payer.form.rxGrpNumberMaxCharacters':
+    'Rx GRP Number should not exceed 30 digits.',
+  'payer.form.rxGrpNumberDigitsOnly':
+    'Rx GRP Number must contain numbers only.',
+
+  'payer.form.rxIdNumberMaxCharacters':
+    'Rx ID Number should not exceed 30 digits.',
+  'payer.form.rxIdNumberDigitsOnly': 'Rx ID Number must contain numbers only.',
+
+  'payer.form.rxBinNumberMaxCharacters':
+    'Rx BIN Number should not exceed 30 digits.',
+  'payer.form.rxBinNumberDigitsOnly': 'Rx BIN Number must contain numbers only.'
 };

@@ -532,10 +532,13 @@ const jsxColumns = [
     minWidth: '120px',
     cell: function (props) {
       return (
-
         <div className="cellEllipse align-items-right">
           {props.orderCost ? (
-            <FormattedNumber value={props.orderCost} style="currency" currency="USD" />
+            <FormattedNumber
+              value={props.orderCost}
+              style="currency"
+              currency="USD"
+            />
           ) : (
             ''
           )}
