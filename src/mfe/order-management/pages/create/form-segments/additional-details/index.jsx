@@ -1,5 +1,12 @@
 import React, { useEffect } from 'react';
-import { Button, Heading, CheckboxGroup, RadioGroup, Loader, TextError } from '@mckesson/mcp-component-library';
+import {
+  Button,
+  Heading,
+  CheckboxGroup,
+  RadioGroup,
+  Loader,
+  TextError
+} from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -21,13 +28,16 @@ import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import QuestionnaireTemplate from '@src/mfe/order-management/questionnaire/QuestionnaireTemplate';
-import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/order-management/questionnaire/AddQuestionnaire';
+import {
+  LANGUAGE,
+  QUESTION_TYPE
+} from '@src/mfe/order-management/questionnaire/AddQuestionnaire';
 import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from './useOrderPrice';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import Components from '@src/components/form/Components';
-import { ChannelType } from '../Constants';
+import { CHANNEL_TYPE } from '../Constants';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -47,29 +57,46 @@ function AdditionalDetails() {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const { isEdit = false, isApprover = false, alertState } = location.state || {};
+  const {
+    isEdit = false,
+    isApprover = false,
+    alertState
+  } = location.state || {};
   const { orderId } = useParams();
-  const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
+  const [initialFormValues, setInitialFormValues] =
+    React.useState(INITIAL_VALUES);
   const [validationSchema, setValidationSchema] = React.useState(null);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
-  const [questionnaireTemplateConfig, setQuestionnaireTemplateConfig] = React.useState(null);
+  const [questionnaireTemplateConfig, setQuestionnaireTemplateConfig] =
+    React.useState(null);
   const [variantAcknowledgement, setVariantAcknowledgement] = React.useState({
     isDisabled: false,
     isChecked: false,
     label: t('messages.variantAcknowledgement'),
     value: false
   });
-  const [agreementCheckboxError, setAgreementCheckboxError] = React.useState(null);
+  const [agreementCheckboxError, setAgreementCheckboxError] =
+    React.useState(null);
   const [variant, setVariant] = React.useState();
   const { showAlert } = useAlert();
   const alertContainerId = 'additionalDetails-alert-container';
-  const { data: orderDetails = {}, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
+  const {
+    data: orderDetails = {},
+    isFetching: isFetchingOrderDetails,
+    isError,
+    error,
+    isLoader
+  } = useOrder(orderId);
   const { isCoiIdRequired, patientDetailsRequired } = orderDetails || {};
   const therapyId = orderDetails.therapy?.materialNumber;
-  const soldToAccountId = orderDetails.accountDetails?.soldToAccount?.accountNumber;
-  const shipToAccountId = orderDetails.accountDetails?.shipToAccount?.accountNumber;
-  const channelType = orderDetails.accountDetails?.soldToAccount?.channelType || ChannelType.BUY_AND_BILL;
+  const soldToAccountId =
+    orderDetails.accountDetails?.soldToAccount?.accountNumber;
+  const shipToAccountId =
+    orderDetails.accountDetails?.shipToAccount?.accountNumber;
+  const channelType =
+    orderDetails.accountDetails?.soldToAccount?.channelType ||
+    CHANNEL_TYPE.BUY_AND_BILL;
   const variantsApiRequestParam = {
     pageNo: 0,
     pageSize: 10,
@@ -111,14 +138,17 @@ function AdditionalDetails() {
         .required(t('labels.PONumberRequired'))
         .max(35, t('labels.PONumberLengthError'))
         .trim(t('labels.poNumberExtraSpaceError')),
-      dateOfAdministration: Yup.date().min(new Date(), t('labels.dateOfAdministrationFutureDateOnly')).nullable(),
+      dateOfAdministration: Yup.date()
+        .min(new Date(), t('labels.dateOfAdministrationFutureDateOnly'))
+        .nullable(),
 
       // Conditionally Require Variant
       variant: Yup.object()
         .shape({
           variant: Yup.string().when([], {
             is: () => isVariantRequired,
-            then: (schema) => schema.required('Please select at least one variant'),
+            then: (schema) =>
+              schema.required('Please select at least one variant'),
             otherwise: (schema) => schema.nullable()
           }),
           variantDescription: Yup.string().nullable(),
@@ -144,19 +174,31 @@ function AdditionalDetails() {
 
   const { isLoading, data: variantsData = {} } = useQuery({
     queryKey: ['order', 'variants', orderId],
-    queryFn: async () => OrderService.getVariants(therapyId, soldToAccountId, shipToAccountId, variantsApiRequestParam),
+    queryFn: async () =>
+      OrderService.getVariants(
+        therapyId,
+        soldToAccountId,
+        shipToAccountId,
+        variantsApiRequestParam
+      ),
     enabled: !!therapyId && !!soldToAccountId && !!shipToAccountId,
     refetchOnWindowFocus: false,
     onSuccess: (result) => {},
     onError: (error) => {
       const errorKey = handleApiError(error);
-      showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
+      showAlert({
+        description: t(errorKey),
+        type: 'error',
+        anchorEl: alertContainerId
+      });
     }
   });
 
   React.useEffect(() => {
     // To check if variant selection is required
-    const isVariantRequired = !!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content);
+    const isVariantRequired =
+      !!variantsData?.content &&
+      CommonUtils.isNonEmptyObject(variantsData?.content);
 
     // Get the Initial Validation Schema based on Variant Required
     const updatedValidationSchema = initialValidationSchema(isVariantRequired);
@@ -166,12 +208,16 @@ function AdditionalDetails() {
     let questionnaireFields = {};
 
     if (questionnaireTemplateConfig) {
-      const { validationSchema, fields } = prepareQuestionnaire(questionnaireTemplateConfig);
+      const { validationSchema, fields } = prepareQuestionnaire(
+        questionnaireTemplateConfig
+      );
       questionnaireValidationSchema = validationSchema;
       questionnaireFields = fields;
     }
 
-    const finalValidationSchema = updatedValidationSchema.concat(questionnaireValidationSchema);
+    const finalValidationSchema = updatedValidationSchema.concat(
+      questionnaireValidationSchema
+    );
     setValidationSchema(finalValidationSchema);
     setInitialFormValues((prevState) => ({
       ...prevState,
@@ -189,11 +235,17 @@ function AdditionalDetails() {
     {
       onSuccess: (result) => {
         const { id } = result;
-        navigate(`../${id}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
+        navigate(`../${id}/summary`, {
+          state: { isEdit: isEdit, isApprover: isApprover }
+        });
       },
       onError: (error) => {
         const errorKey = handleApiError(error);
-        showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
+        showAlert({
+          description: t(errorKey),
+          type: 'error',
+          anchorEl: alertContainerId
+        });
       }
     }
   );
@@ -216,7 +268,9 @@ function AdditionalDetails() {
 
     result.forEach((template) => {
       template.questions.forEach((question) => {
-        const fieldName = CommonUtils.generateUniqueCode(`${template.id}#${question.text[LANGUAGE.ENGLISH]}`);
+        const fieldName = CommonUtils.generateUniqueCode(
+          `${template.id}#${question.text[LANGUAGE.ENGLISH]}`
+        );
         questionnaireFields[fieldName] = {
           value: question.value
         };
@@ -227,7 +281,8 @@ function AdditionalDetails() {
 
         validationSchemaFields[fieldName] = Yup.object({
           value:
-            question.type === QUESTION_TYPE.INPUT || question.type === QUESTION_TYPE.DROPDOWN
+            question.type === QUESTION_TYPE.INPUT ||
+            question.type === QUESTION_TYPE.DROPDOWN
               ? question.isMandatory
                 ? Yup.string().required('Value is required')
                 : Yup.string().nullable()
@@ -240,10 +295,16 @@ function AdditionalDetails() {
                 ? Yup.array()
                     .of(Yup.string())
                     .min(1, 'Select at least one option')
-                    .test('not-empty', 'Select at least one option', (value) => Array.isArray(value) && value.length > 0)
+                    .test(
+                      'not-empty',
+                      'Select at least one option',
+                      (value) => Array.isArray(value) && value.length > 0
+                    )
                 : Yup.array().of(Yup.string()).nullable()
               : question.isMandatory
-              ? Yup.array().of(Yup.string()).min(1, 'Select at least one option')
+              ? Yup.array()
+                  .of(Yup.string())
+                  .min(1, 'Select at least one option')
               : Yup.array().of(Yup.string()).nullable(),
 
           document: Yup.object()
@@ -290,14 +351,22 @@ function AdditionalDetails() {
       result && prepareQuestionnaire(result);
     },
     onError: (error) => {
-      showAlert({ description: error.message, type: 'error', anchorEl: alertContainerId });
+      showAlert({
+        description: error.message,
+        type: 'error',
+        anchorEl: alertContainerId
+      });
     }
   });
 
   const { data: uploadDocumentResponse, mutate: uploadDocument } = useMutation(
     async ({ fieldName, file }) => {
       const [templateId] = fieldName.split('#');
-      return QuestionnaireService.uploadQuestionnaireDocument({ orderId, templateId, file });
+      return QuestionnaireService.uploadQuestionnaireDocument({
+        orderId,
+        templateId,
+        file
+      });
     },
     {
       onSuccess: (result, variables) => {
@@ -307,27 +376,40 @@ function AdditionalDetails() {
         setFieldValue(`${fieldName}.document`, document);
       },
       onError: (error) => {
-        showAlert({ description: error.message, type: 'error', anchorEl: alertContainerId });
+        showAlert({
+          description: error.message,
+          type: 'error',
+          anchorEl: alertContainerId
+        });
       }
     }
   );
 
-  const { data: uploadVariantDocumentResponse, mutate: uploadVariantDocument } = useMutation(
-    async ({ fieldName, file }) => {
-      return QuestionnaireService.uploadVariantDocument({ orderId, variantId: variant.variant, file });
-    },
-    {
-      onSuccess: (result, variables) => {
-        const { file, fieldName, setFieldValue } = variables;
-        const { name, size } = file;
-        const document = { url: result, name, size };
-        setFieldValue(`${fieldName}.document`, document);
+  const { data: uploadVariantDocumentResponse, mutate: uploadVariantDocument } =
+    useMutation(
+      async ({ fieldName, file }) => {
+        return QuestionnaireService.uploadVariantDocument({
+          orderId,
+          variantId: variant.variant,
+          file
+        });
       },
-      onError: (error) => {
-        showAlert({ description: error.message, type: 'error', anchorEl: alertContainerId });
+      {
+        onSuccess: (result, variables) => {
+          const { file, fieldName, setFieldValue } = variables;
+          const { name, size } = file;
+          const document = { url: result, name, size };
+          setFieldValue(`${fieldName}.document`, document);
+        },
+        onError: (error) => {
+          showAlert({
+            description: error.message,
+            type: 'error',
+            anchorEl: alertContainerId
+          });
+        }
       }
-    }
-  );
+    );
 
   const handleOnDocumentChange = (fieldName, file, setFieldValue) => {
     uploadDocument({ fieldName, file, setFieldValue });
@@ -365,12 +447,15 @@ function AdditionalDetails() {
         slotNumber,
         variant: {
           ...otherDetails,
-          document: variantDocumentPath ? JSON.parse(variantDocumentPath) : undefined
+          document: variantDocumentPath
+            ? JSON.parse(variantDocumentPath)
+            : undefined
         },
         variantAcknowledgement: patientConsentTaken
       };
 
-      configuredQuestionnaires && prepareQuestionnaire(configuredQuestionnaires);
+      configuredQuestionnaires &&
+        prepareQuestionnaire(configuredQuestionnaires);
 
       setInitialFormValues((prevState) => ({
         ...prevState,
@@ -381,26 +466,43 @@ function AdditionalDetails() {
         return;
       }
 
-      const targetVariant = variantsData.content?.find((v) => variantDetails.variant === v.variant);
+      const targetVariant = variantsData.content?.find(
+        (v) => variantDetails.variant === v.variant
+      );
       setVariant({
         ...targetVariant
       });
-      setVariantAcknowledgement((prev) => ({ ...prev, isChecked: patientConsentTaken }));
+      setVariantAcknowledgement((prev) => ({
+        ...prev,
+        isChecked: patientConsentTaken
+      }));
     }
   }, [orderDetails, variantsData]);
 
   const handleOnBack = () => {
     if (isDirty) {
-      setModalSuccessCallback(isEdit ? 'summary' : orderDetails?.patientDetailsRequired ? 'patient' : 'account');
+      setModalSuccessCallback(
+        isEdit
+          ? 'summary'
+          : orderDetails?.patientDetailsRequired
+          ? 'patient'
+          : 'account'
+      );
       return;
     }
     if (isEdit) {
-      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, {
+        state: { isEdit: isEdit, isApprover: isApprover }
+      });
     } else {
       if (orderDetails?.patientDetailsRequired) {
-        navigate(`../${orderId}/patient`, { state: { isEdit: false, isApprover: isApprover } });
+        navigate(`../${orderId}/patient`, {
+          state: { isEdit: false, isApprover: isApprover }
+        });
       } else {
-        navigate(`../${orderId}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
+        navigate(`../${orderId}/accounts`, {
+          state: { isEdit: false, isApprover: isApprover }
+        });
       }
     }
   };
@@ -411,7 +513,9 @@ function AdditionalDetails() {
           variant: variant.variant,
           variantDescription: variant.variantDescription,
           variantAcknowledgment: variantAcknowledgement.isChecked,
-          variantDocumentPath: values.variant?.document && JSON.stringify(values.variant?.document),
+          variantDocumentPath:
+            values.variant?.document &&
+            JSON.stringify(values.variant?.document),
           therapy: {
             id: therapyId
           }
@@ -430,13 +534,22 @@ function AdditionalDetails() {
       response: [...questionnaireTemplateConfig],
       dependencies: questionnaireDependencies
     };
-    const { coiId, orderQuantity, slotNumber, poNumber, dateOfAdministration, ...rest } = values;
+    const {
+      coiId,
+      orderQuantity,
+      slotNumber,
+      poNumber,
+      dateOfAdministration,
+      ...rest
+    } = values;
 
     questionnaireTemplateConfig.forEach((template) => {
       if (!template.questions) return;
 
       template.questions.forEach((question) => {
-        const fieldName = CommonUtils.generateUniqueCode(`${template.id}#${question.text[LANGUAGE.ENGLISH]}`);
+        const fieldName = CommonUtils.generateUniqueCode(
+          `${template.id}#${question.text[LANGUAGE.ENGLISH]}`
+        );
         const fieldValue = values[fieldName];
         if (!fieldName) return;
 
@@ -452,7 +565,9 @@ function AdditionalDetails() {
       poNumber,
       dateOfAdministration,
       variantDetails: variantDetails,
-      patientConsentTaken: !!variant ? variantDetails.variantAcknowledgment : false,
+      patientConsentTaken: !!variant
+        ? variantDetails.variantAcknowledgment
+        : false,
       configuredQuestionnaires: questionnaireTemplateConfig
     };
 
@@ -471,15 +586,27 @@ function AdditionalDetails() {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, {
+        state: { isEdit: isEdit, isApprover: isApprover }
+      });
     } else if (modalSuccessCallback === 'patient') {
-      navigate(`../${orderId}/patient`, { state: { isEdit: false, isApprover: isApprover } });
+      navigate(`../${orderId}/patient`, {
+        state: { isEdit: false, isApprover: isApprover }
+      });
     } else if (modalSuccessCallback === 'account') {
-      navigate(`../${orderId}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
+      navigate(`../${orderId}/accounts`, {
+        state: { isEdit: false, isApprover: isApprover }
+      });
     }
   };
 
-  const handleOnVariantChange = (variant, setErrors, errors, setFieldValue, setFieldTouched) => {
+  const handleOnVariantChange = (
+    variant,
+    setErrors,
+    errors,
+    setFieldValue,
+    setFieldTouched
+  ) => {
     setAgreementCheckboxError(null);
     if (errors && errors.variant) {
       const { variant, ...newErrors } = errors;
@@ -497,16 +624,28 @@ function AdditionalDetails() {
   };
 
   React.useEffect(() => {
-    if (orderDetails && !orderDetails.additionalDetails?.configuredQuestionnaires) {
-      const { soldToAccount, shipToAccount } = orderDetails.accountDetails || {};
+    if (
+      orderDetails &&
+      !orderDetails.additionalDetails?.configuredQuestionnaires
+    ) {
+      const { soldToAccount, shipToAccount } =
+        orderDetails.accountDetails || {};
       if (soldToAccount && shipToAccount) {
         fetchConfiguredQuestions();
       }
     }
   }, [variant, orderDetails]);
 
-  const handleOnAcknowledgmentChange = (setErrors, errors, setFieldValue, setFieldTouched) => {
-    const updatedOptions = { ...variantAcknowledgement, isChecked: !variantAcknowledgement.isChecked };
+  const handleOnAcknowledgmentChange = (
+    setErrors,
+    errors,
+    setFieldValue,
+    setFieldTouched
+  ) => {
+    const updatedOptions = {
+      ...variantAcknowledgement,
+      isChecked: !variantAcknowledgement.isChecked
+    };
     if (errors && errors.variantAcknowledgement) {
       const { variantAcknowledgement, ...newErrors } = errors;
       setErrors(newErrors);
@@ -523,12 +662,21 @@ function AdditionalDetails() {
     <div className="MCP-module-wrapper">
       {isSaving && <Loader type={'screen'} />}
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={handleOnBackToOrders}
+          size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
 
-      <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
+      <PageHeader
+        heading={
+          isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')
+        }
+      />
       <Formik
         initialValues={initialFormValues}
         enableReinitialize={true}
@@ -539,7 +687,15 @@ function AdditionalDetails() {
         onSubmit={(values) => {
           handleOnSubmit(values);
         }}>
-        {({ dirty, errors, values, setFieldValue, setErrors, setFieldTouched, touched }) => {
+        {({
+          dirty,
+          errors,
+          values,
+          setFieldValue,
+          setErrors,
+          setFieldTouched,
+          touched
+        }) => {
           useEffect(() => {
             setIsDirty(dirty);
           }, [dirty]);
@@ -547,9 +703,15 @@ function AdditionalDetails() {
           return (
             <Form>
               <div className="MCP-module-body">
-                <OrderStepper patientDetailsRequired={patientDetailsRequired} status={orderDetails?.currentStage} />
+                <OrderStepper
+                  patientDetailsRequired={patientDetailsRequired}
+                  status={orderDetails?.currentStage}
+                />
 
-                <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
+                <OrderHeaderDetails
+                  orderDetails={orderDetails}
+                  priceDetails={priceDetails}
+                />
                 <div id={alertContainerId} />
 
                 <div className="MCP-panel-container">
@@ -561,7 +723,18 @@ function AdditionalDetails() {
                   </div>
                   <div className="grid grid-gap-16 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 align-items-baseline">
                     {getFormFields(t, { isCoiIdRequired }, setFieldValue).map(
-                      ({ name, label, placeholder, isRequired, component, maxLength, ...otherProps }, index) => (
+                      (
+                        {
+                          name,
+                          label,
+                          placeholder,
+                          isRequired,
+                          component,
+                          maxLength,
+                          ...otherProps
+                        },
+                        index
+                      ) => (
                         <Field
                           key={index}
                           name={name}
@@ -575,73 +748,111 @@ function AdditionalDetails() {
                       )
                     )}
                   </div>
-                  {!!variantsData?.content && CommonUtils.isNonEmptyObject(variantsData?.content) && (
-                    <div>
-                      <div className="MCP-module-body">
-                        <Heading as="h3">{t('labels.selectVariant')}</Heading>
-                        <div>
-                          <VariantTable
-                            variant={variant}
-                            onChange={(variant) => handleOnVariantChange(variant, setErrors, errors, setFieldValue, setFieldTouched)}
-                            data={variantsData.content}
-                          />
-                          {touched?.variant && !values.variant && <TextError errorMessage={errors.variant.variant} showErrorIcon={true} />}
-                        </div>
-                        <div className="agreement-checkbox-control">
-                          <Field name="variant-acknowledgement">
-                            {({ field, form }) => (
-                              <CheckboxGroup
-                                id={'default'}
-                                name="variant-acknowledgement"
-                                items={[
-                                  {
-                                    ...variantAcknowledgement,
-                                    onChange: () => handleOnAcknowledgmentChange(setErrors, errors, setFieldValue)
-                                  }
-                                ]}
-                                error={
-                                  errors.variantAcknowledgement && touched?.variantAcknowledgement
-                                    ? Boolean(!values.variantAcknowledgement)
-                                    : false
-                                }
-                                errorMessage={touched?.variantAcknowledgement && errors.variantAcknowledgement}
-                                size="md"
+                  {!!variantsData?.content &&
+                    CommonUtils.isNonEmptyObject(variantsData?.content) && (
+                      <div>
+                        <div className="MCP-module-body">
+                          <Heading as="h3">{t('labels.selectVariant')}</Heading>
+                          <div>
+                            <VariantTable
+                              variant={variant}
+                              onChange={(variant) =>
+                                handleOnVariantChange(
+                                  variant,
+                                  setErrors,
+                                  errors,
+                                  setFieldValue,
+                                  setFieldTouched
+                                )
+                              }
+                              data={variantsData.content}
+                            />
+                            {touched?.variant && !values.variant && (
+                              <TextError
+                                errorMessage={errors.variant.variant}
+                                showErrorIcon={true}
                               />
                             )}
-                          </Field>
+                          </div>
+                          <div className="agreement-checkbox-control">
+                            <Field name="variant-acknowledgement">
+                              {({ field, form }) => (
+                                <CheckboxGroup
+                                  id={'default'}
+                                  name="variant-acknowledgement"
+                                  items={[
+                                    {
+                                      ...variantAcknowledgement,
+                                      onChange: () =>
+                                        handleOnAcknowledgmentChange(
+                                          setErrors,
+                                          errors,
+                                          setFieldValue
+                                        )
+                                    }
+                                  ]}
+                                  error={
+                                    errors.variantAcknowledgement &&
+                                    touched?.variantAcknowledgement
+                                      ? Boolean(!values.variantAcknowledgement)
+                                      : false
+                                  }
+                                  errorMessage={
+                                    touched?.variantAcknowledgement &&
+                                    errors.variantAcknowledgement
+                                  }
+                                  size="md"
+                                />
+                              )}
+                            </Field>
+                          </div>
+                          <div>
+                            <Field
+                              name="variant.document"
+                              component={Components['inputFile']}
+                              setFieldValue={setFieldValue}
+                              disabled={Boolean(!variant)}
+                              attachmentValue={
+                                values?.variant?.document || null
+                              }
+                              onFileChange={(file) =>
+                                handleOnVariantDocumentChange(
+                                  'variant',
+                                  file,
+                                  setFieldValue
+                                )
+                              }
+                            />
+                          </div>
                         </div>
-                        <div>
-                          <Field
-                            name="variant.document"
-                            component={Components['inputFile']}
-                            setFieldValue={setFieldValue}
-                            disabled={Boolean(!variant)}
-                            attachmentValue={values?.variant?.document || null}
-                            onFileChange={(file) => handleOnVariantDocumentChange('variant', file, setFieldValue)}
+                      </div>
+                    )}
+
+                  {questionnaireTemplateConfig &&
+                    Array.isArray(questionnaireTemplateConfig) &&
+                    questionnaireTemplateConfig.length > 0 && (
+                      <div className="configured-questionnaire-form">
+                        <div className="MCP-module-body">
+                          <Heading as="h3">
+                            {t('labels.configuredQuestionnaires')}
+                          </Heading>
+                          <QuestionnaireTemplate
+                            onRemoveDocument={handleOnRemoveDocument}
+                            onDocumentChange={handleOnDocumentChange}
+                            config={questionnaireTemplateConfig}
+                            isPreview={false}
                           />
                         </div>
                       </div>
-                    </div>
-                  )}
-
-                  {questionnaireTemplateConfig && Array.isArray(questionnaireTemplateConfig) && questionnaireTemplateConfig.length > 0 && (
-                    <div className="configured-questionnaire-form">
-                      <div className="MCP-module-body">
-                        <Heading as="h3">{t('labels.configuredQuestionnaires')}</Heading>
-                        <QuestionnaireTemplate
-                          onRemoveDocument={handleOnRemoveDocument}
-                          onDocumentChange={handleOnDocumentChange}
-                          config={questionnaireTemplateConfig}
-                          isPreview={false}
-                        />
-                      </div>
-                    </div>
-                  )}
+                    )}
                 </div>
 
                 <div className="footer-wrapper">
                   <div className="controls footer-controls">
-                    <Button size="md" variant="secondary" onClick={handleOnBack}>
+                    <Button
+                      size="md"
+                      variant="secondary"
+                      onClick={handleOnBack}>
                       {t('captions.btnBack')}
                     </Button>
                     <Button size="md" variant="primary" type="submit">
@@ -719,7 +930,11 @@ const VariantTable = ({ variant, onChange, data }) => {
     },
     {
       id: 'variantDescription',
-      name: <div className="variant-table-cell">{t('labels.variantDescription')}</div>,
+      name: (
+        <div className="variant-table-cell">
+          {t('labels.variantDescription')}
+        </div>
+      ),
       minWidth: '300px',
       selector: () => {},
       sortable: false,

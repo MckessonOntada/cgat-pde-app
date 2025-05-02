@@ -1,15 +1,11 @@
 import OrderService from '@src/api/commonService/OrderService';
 import React, { createContext, useContext, useState } from 'react';
 import { useQuery } from 'react-query';
-import {
-  ChannelType,
-  ORDER_TABS,
-  ORDER_VIEW,
-  TAB_FILTERS
-} from '../pages/orders/config';
+import { ORDER_TABS, ORDER_VIEW, TAB_FILTERS } from '../pages/orders/config';
 import { getDateRangeFromSelection } from '../pages/orders/dateRangeUtils';
 import { DateUtils } from '@src/util/DateUtil';
 import UserService from '@src/api/commonService/UserService';
+import { CHANNEL_TYPE } from '../pages/create/form-segments/Constants';
 
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
@@ -39,9 +35,9 @@ export const useOrders = () => {
 
 function getChannelTypeFromOrderType(orderType) {
   if (orderType === ORDER_TABS.SUBMITTED_BUY_AND_BILL)
-    return ChannelType.BUY_AND_BILL;
+    return CHANNEL_TYPE.BUY_AND_BILL;
   if (orderType === ORDER_TABS.SUBMITTED_SP)
-    return ChannelType.SPECIALITY_PHARMA;
+    return CHANNEL_TYPE.SPECIALITY_PHARMA;
   return null;
 }
 
@@ -84,10 +80,10 @@ export const OrderProvider = ({ children }) => {
           : false,
       showPAPOrders: Boolean(orderView === ORDER_VIEW.PAP_ORDERS),
       ...(tabVariant === ORDER_TABS.SUBMITTED_SP && {
-        channelType: ChannelType.SPECIALITY_PHARMA
+        channelType: CHANNEL_TYPE.SPECIALITY_PHARMA
       }),
       ...(tabVariant === ORDER_TABS.SUBMITTED_BUY_AND_BILL && {
-        channelType: ChannelType.BUY_AND_BILL
+        channelType: CHANNEL_TYPE.BUY_AND_BILL
       })
     };
 
