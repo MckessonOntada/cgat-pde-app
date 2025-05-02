@@ -12,29 +12,38 @@ const FormRenderer = ({ fieldPrefix = '', sections = [] }) => {
         <div className="MCP-form">
           {sections.map((section, sectionIndex) => (
             <div key={sectionIndex} className="form-section">
-              <div className={'row-space-between-center'}>
-                <div className="form-section-heading">
-                  {section.title && (
-                    <Heading as="h1">{t(section.title)}</Heading>
-                  )}
-                </div>
-                <div className="controls">
-                  {section.primaryAction}
-                  {section.isRequired && (
-                    <p className="form-instruction">
-                      <span className="required">*</span> {t('labels.required')}
-                    </p>
-                  )}
-                </div>
-              </div>
-              <div className={'row-space-between-center'}>
-                <div classname="form-section-heading">
-                  {section.subTitle && (
-                    <Heading as="h3">{t(section.subTitle)}</Heading>
-                  )}
-                </div>
-                <div className="controls">{section.secondaryActions}</div>
-              </div>
+              {section.title ||
+                section.primaryAction ||
+                (section.isRequired && (
+                  <div className={'row-space-between-center'}>
+                    <div className="form-section-heading">
+                      {section.title && (
+                        <Heading as="h1">{t(section.title)}</Heading>
+                      )}
+                    </div>
+                    <div className="controls">
+                      {section.primaryAction}
+                      {section.isRequired && (
+                        <p className="form-instruction">
+                          <span className="required">*</span>{' '}
+                          {t('labels.required')}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+              {section.subTitle ||
+                (section.secondaryActions && (
+                  <div className={'row-space-between-center'}>
+                    <div classname="form-section-heading">
+                      {section.subTitle && (
+                        <Heading as="h3">{t(section.subTitle)}</Heading>
+                      )}
+                    </div>
+                    <div className="controls">{section.secondaryActions}</div>
+                  </div>
+                ))}
 
               {section.rows.map((row, rowIndex) => (
                 <div className="form-control-row">

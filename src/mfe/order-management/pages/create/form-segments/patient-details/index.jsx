@@ -73,7 +73,9 @@ const PatientDetails = () => {
   const [validationSchema, setValidationSchema] = React.useState(
     getValidationSchema(t)
   );
-  const [selectedProvider, setSelectedProvider] = React.useState(null);
+  const [selectedProvider, setSelectedProvider] = React.useState({
+    name: 'Alice Whitman'
+  });
   const [initialValues, setInitialValues] = React.useState(INITIAL_VALUES);
   const { orderId } = useParams();
   const navigate = useNavigate();
@@ -236,37 +238,38 @@ const PatientDetails = () => {
     const cleanedFormValues = CommonUtils.cleanObject(form);
     const payload = {
       id: formValues.id,
-      practiceId: formValues.practiceId,
+      practiceId: cleanedFormValues.practiceId,
       patientInfo: {
-        firstName: formValues.firstName,
-        middleName: formValues.middleName,
-        lastName: formValues.lastName,
-        gender: formValues.gender,
-        dateOfBirth: formValues.dateOfBirth
+        firstName: cleanedFormValues.firstName,
+        middleName: cleanedFormValues.middleName,
+        lastName: cleanedFormValues.lastName,
+        gender: cleanedFormValues.gender,
+        dateOfBirth: cleanedFormValues.dateOfBirth
       },
       contact: {
-        emailId: formValues.emailAddress,
-        phoneNumber: formValues.mobileNumber
+        emailId: cleanedFormValues.emailAddress,
+        phoneNumber: cleanedFormValues.mobileNumber
       },
       patientAddress: {
-        addressLine1: formValues.addressLine1,
-        addressLine2: formValues.addressLine2,
-        city: formValues.city,
-        zipCode: formValues.zipCode,
-        state: formValues.state
+        addressLine1: cleanedFormValues.addressLine1,
+        addressLine2: cleanedFormValues.addressLine2,
+        city: cleanedFormValues.city,
+        zipCode: cleanedFormValues.zipCode,
+        state: cleanedFormValues.state
       },
-      patientIdentifier: formValues.patientIdentifier
+      patientIdentifier: cleanedFormValues.patientIdentifier
     };
     if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
-      payload.workPhone = formValues.workPhone;
-      payload.homePhone = formValues.homePhone;
-      payload.mobileNumber = formValues.mobileNumber;
-      payload.preferredMethodOfContact = formValues.preferredContactMethod;
+      payload.workPhone = cleanedFormValues.workPhone;
+      payload.homePhone = cleanedFormValues.homePhone;
+      payload.mobileNumber = cleanedFormValues.mobileNumber;
+      payload.preferredMethodOfContact =
+        cleanedFormValues.preferredContactMethod;
       payload.selectedProvider = '';
     }
-    if (patientInfo && patientInfo.dateOfBirth) {
+    if (cleanedFormValues.dateOfBirth) {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(
-        patientInfo.dateOfBirth,
+        cleanedFormValues.dateOfBirth,
         'MM-DD-YYYY'
       );
     }
@@ -380,22 +383,20 @@ const PatientDetails = () => {
                       {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
                         <React.Fragment>
                           <hr />
-                          <Heading as="h2">Provider Details</Heading>
-                          <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start">
-                            <FormRenderer
-                              sections={providerSections({ providers })}
-                            />
+                          <div className="selected-provider">
+                            <div className="MCP-module-body">
+                              <Heading as="h2">Provider Details</Heading>
+                              <FormRenderer
+                                sections={providerSections({ providers })}
+                              />
+                            </div>
                             {selectedProvider && (
-                              <div
-                                style={{
-                                  flexGrow: 1,
-                                  border: '1px solid red'
-                                }}>
+                              <div className="">
                                 <div className="MCP-CardContainer">
                                   <Heading as="h3">
                                     {selectedProvider.name}
                                   </Heading>
-                                  <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start">
+                                  <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-[1fr_2fr] align-items-start">
                                     details
                                   </div>
                                 </div>
