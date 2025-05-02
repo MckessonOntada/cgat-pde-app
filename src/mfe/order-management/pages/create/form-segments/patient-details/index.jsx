@@ -73,6 +73,7 @@ const PatientDetails = () => {
   const [validationSchema, setValidationSchema] = React.useState(
     getValidationSchema(t)
   );
+  const [selectedProvider, setSelectedProvider] = React.useState(null);
   const [initialValues, setInitialValues] = React.useState(INITIAL_VALUES);
   const { orderId } = useParams();
   const navigate = useNavigate();
@@ -189,9 +190,15 @@ const PatientDetails = () => {
     {
       onSuccess: (result) => {
         const { id } = result;
-        navigate(`../${id}/additional-details`, {
-          state: { isEdit: false, isApprover: isApprover }
-        });
+        if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+          navigate(`../${id}/payer`, {
+            state: { isEdit: false, isApprover: isApprover }
+          });
+        } else {
+          navigate(`../${id}/additional-details`, {
+            state: { isEdit: false, isApprover: isApprover }
+          });
+        }
       },
       onError: ({ err, payload }) => {
         if (err.status === 409) {
@@ -373,24 +380,27 @@ const PatientDetails = () => {
                       {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
                         <React.Fragment>
                           <hr />
+                          <Heading as="h2">Provider Details</Heading>
                           <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start">
                             <FormRenderer
                               sections={providerSections({ providers })}
                             />
-                            <div
-                              style={{
-                                flexGrow: 1,
-                                border: '1px solid red'
-                              }}>
-                              <div className="MCP-CardContainer">
-                                {/* <Heading as="h3">{name}</Heading>
-                                <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start">
-                                  {detailsArray.map((detail) => {
-                                    <p>{detail}</p>;
-                                  })}
-                                </div> */}
+                            {selectedProvider && (
+                              <div
+                                style={{
+                                  flexGrow: 1,
+                                  border: '1px solid red'
+                                }}>
+                                <div className="MCP-CardContainer">
+                                  <Heading as="h3">
+                                    {selectedProvider.name}
+                                  </Heading>
+                                  <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start">
+                                    details
+                                  </div>
+                                </div>
                               </div>
-                            </div>
+                            )}
                           </div>
                         </React.Fragment>
                       )}
