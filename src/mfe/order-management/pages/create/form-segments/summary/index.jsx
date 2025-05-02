@@ -354,7 +354,7 @@ const Summary = () => {
     }
 
     if (agreeCheckboxOptions.isChecked) {
-      if (isImpersonatedAdmin()) {
+      if ( !spOrder && isImpersonatedAdmin() ) {
         setIsPAPOrderConfirmModalOpen(true);
       } else {
         submitOrder({ action: BUTTON_ACTIONS.SUBMIT });
@@ -727,7 +727,11 @@ const Summary = () => {
                 className={styles.panelHeader}
                 heading={<Heading as="h3">{t('labels.priceDetails')}</Heading>}
               />
-              <div class={styles.flexPanel}>
+              <div 
+                className={`grid grid-gap-16 grid-cols-1 md:grid-cols-1 ${
+                  status === StatusEnum.SUBMITTED ? 'lg:grid-cols-4 xl:grid-cols-4' : 'lg:grid-cols-2 xl:grid-cols-2'
+                }`
+              }>
                 {status === StatusEnum.SUBMITTED && (
                   <DetailSegment
                     label={t('labels.sapId')}
@@ -741,10 +745,12 @@ const Summary = () => {
                   label={t('labels.materialDescription')}
                   noTooltip={true}
                   value={
-                    <div className="row-space-between-center">
-                      <Tooltip body={therapy?.materialDescription}>
-                        {therapy?.materialDescription}
-                      </Tooltip>
+                    <div  className={styles.materialDescription}>
+                      <div className="overflowing">
+                        <Tooltip body={therapy?.materialDescription}>
+                          {therapy?.materialDescription}
+                        </Tooltip>
+                      </div>
                       {!spOrder &&
                         <Tooltip
                           isDisabled={!inventoryStatus}
