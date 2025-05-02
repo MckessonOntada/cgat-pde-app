@@ -24,7 +24,7 @@ const useOrderCount = () => {
           case ORDER_STATUS.SUBMITTED:
             if (channelType === CHANNEL_TYPE.BUY_AND_BILL) {
               result[ORDER_TABS.SUBMITTED_BUY_AND_BILL] += count;
-            } else if (channelType === CHANNEL_TYPE.SPECIALITY_PHARMA) {
+            } else if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
               result[ORDER_TABS.SUBMITTED_SP] += count;
             }
             break;

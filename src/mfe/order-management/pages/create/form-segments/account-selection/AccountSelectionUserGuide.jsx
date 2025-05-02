@@ -82,7 +82,10 @@ const AccountSelectionUserGuide = ({
     if (selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA && !account) {
       setAlertMsg(true);
       return;
-    } else if (!account || !selectedProgram) {
+    } else if (
+      (!account || !selectedProgram) &&
+      selectedChannel === CHANNEL_TYPE.BUY_AND_BILL
+    ) {
       setAlertMsg(true);
       return;
     }
