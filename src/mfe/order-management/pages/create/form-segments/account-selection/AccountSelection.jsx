@@ -57,6 +57,7 @@ const AccountSelection = () => {
     isLoader
   } = useOrder(orderId);
   const therapyId = orderDetails?.therapy?.materialNumber;
+  const therapChannelType = orderDetails?.therapy?.channelType
   const { data: priceDetails } = useOrderPrice({
     therapyId: therapyId,
     soldToAccountId: selectedAccount?.accountNumber,
@@ -418,6 +419,7 @@ const AccountSelection = () => {
               therapyId={therapyId}
               onSubmit={handleOnAccountSelection}
               onClose={handleOnClose}
+              therapChannelType={therapChannelType}
             />
           )}
         </div>

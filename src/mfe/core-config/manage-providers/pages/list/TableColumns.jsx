@@ -3,7 +3,7 @@ import {
   Badge,
   Button,
   MenuList,
-  CheckboxGroup
+  Tooltip
 } from '@mckesson/mcp-component-library';
 import { ReactComponent as EllipsisIcon } from '@src/assets/svg/ellipsis.svg';
 import {
@@ -144,15 +144,36 @@ export const getColumns = (add) => {
     const { selectedRows } = useSelection();
     if (hasPermission(PERMISSIONS_ENUM.MANAGE_PROVIDERS.EDIT_PROVIDER)) {
       options.push({
-        label: 'Edit',
+        label: (
+          <Tooltip
+            body={
+              selectedRows.size > 1
+                ? t('provider.disabledEditOnMultiSelect')
+                : ''
+            }>
+            <div>{t('provider.contextMenu.optionEdit')}</div>
+          </Tooltip>
+        ),
         value: 'edit',
-        disabled: selectedRows.size > 1
+        disabled: selectedRows.size > 1 || props.isActive === false
       });
+    }
+
+    if (
+      hasPermission(PERMISSIONS_ENUM.MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN)
+    ) {
       options.push({
-        label: props.isActive ? 'Deactivate' : 'Activate',
+        label: t(
+          props.isActive
+            ? 'provider.contextMenu.optionActivate'
+            : 'provider.contextMenu.optionDeactivate'
+        ),
         value: props.isActive ? 'deactivate' : 'activate'
       });
-      options.push({ label: 'Link SP Account', value: 'linkSPAccount' });
+      options.push({
+        label: t('provider.contextMenu.optionLinkSPAccount'),
+        value: 'linkSPAccount'
+      });
     }
 
     return options;
@@ -160,7 +181,7 @@ export const getColumns = (add) => {
 
   const handleOnMenuClick = (props) => (value) => {
     if (value === 'edit') {
-      navigate(`edit/${props.id}`);
+      navigate(`${props.id}/edit`);
     } else if (value === 'linkSPAccount') {
       navigate(`link-sp-account?accounts=${props.id}`);
     } else if (value === 'activate' || value === 'deactivate') {
@@ -200,27 +221,6 @@ export const getColumns = (add) => {
         ),
       width: '50px'
     },
-    // {
-    //   id: 'checkbox',
-    //   name: '',
-    //   showInMobileHeader: true,
-    //   cell: (props) => (
-    //     <CheckboxGroup
-    //       id={'default'}
-    //       caption=""
-    //       items={[
-    //         {
-    //           onChange: () => toggleRowSelection(props.id),
-    //           value: props.id,
-    //           isChecked: selectedRows.has(props.id),
-    //           isDisabled: !props.isActive
-    //         }
-    //       ]}
-    //     />
-    //   ),
-    //   wrap: true,
-    //   width: '40px'
-    // },
     {
       id: PROVIDER_COLUMNS.PROVIDER_NAME,
       name: t('providers.columnCaption.providerName'),
@@ -228,21 +228,24 @@ export const getColumns = (add) => {
       sortable: true,
       sortKey: 'first name',
       cell: (props) => {
+        debugger;
         const isAllowed = hasPermission(
           PERMISSIONS_ENUM.MANAGE_PROVIDERS.VIEW_PROVIDER
         );
-        return props?.name ? (
-          <Link
-            className="MCP-table-link"
-            to={`${isAllowed ? `${ROUTE_PATHS.VIEW}/${props.id}` : ''}`}>
-            <EclipsesTextcss
-              str={CommonUtils.getFullName(props?.name)}
-              maxWidth={130}
-            />
-          </Link>
-        ) : (
-          '-'
-        );
+        const linkText = props?.name
+          ? CommonUtils.getFullName(props.name)
+          : '-';
+        if (isAllowed) {
+          return (
+            <Link
+              className="MCP-table-link"
+              to={`${ROUTE_PATHS.VIEW}/${props.id}`}>
+              <EclipsesTextcss str={linkText} maxWidth={130} />
+            </Link>
+          );
+        }
+
+        return linkText;
       }
     },
     {
@@ -290,21 +293,15 @@ export const getColumns = (add) => {
       selector: () => {},
       minWidth: '160px',
       cell: (props) => {
-        const anyOperationPermission = hasAnyPermission([
-          PERMISSIONS_ENUM.MANAGE_PROVIDERS.EDIT_PROVIDER
-        ]);
-
-        if (anyOperationPermission) {
-          return (
-            <MenuList
-              menuIcon={<EllipsisIcon />}
-              handleSelect={handleOnMenuClick(props)}
-              options={getMenuOption(props)}
-            />
-          );
-        } else {
-          return '-';
-        }
+        const contextMenuOptions = getMenuOption(props);
+        if (!contextMenuOptions || contextMenuOptions.length === 0) return;
+        return (
+          <MenuList
+            menuIcon={<EllipsisIcon />}
+            handleSelect={handleOnMenuClick(props)}
+            options={contextMenuOptions}
+          />
+        );
       }
     }
   ];

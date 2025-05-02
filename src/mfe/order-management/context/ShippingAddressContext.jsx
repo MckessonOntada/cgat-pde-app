@@ -46,13 +46,13 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
 
   const requestParams = useMemo(
     () => ({
-      ...(selectedAccount?.channelType && {channelType : selectedAccount?.channelType}),
-      pageNumber: pageConfig.pageNumber - 1,
+      pageNo: pageConfig.pageNumber - 1,
       pageSize: pageConfig.pageSize,
       ...(filterState?.searchQuery && { query: filterState.searchQuery }),
       ...(filterState?.accNum && filterState?.accNum.length > 0 && { accNum: [...filterState.accNum] }),
       ...(filterState?.accName && filterState?.accName.length > 0 && { accName: [...filterState.accName] }) //,
     }),
+    ...(selectedAccount?.channelType && {channelType : selectedAccount?.channelType}),
     [filterState, pageConfig.currentPage]
   );
 

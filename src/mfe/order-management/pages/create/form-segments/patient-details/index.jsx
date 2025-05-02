@@ -20,6 +20,7 @@ import { renderModal } from '@src/util/ModalUtil';
 import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
 import { Loader, Heading } from '@mckesson/mcp-component-library';
+import { ChannelType } from '../Constants';
 
 import { sections } from './forms/patient-details.config';
 import FormRenderer from '@src/mfe/core-config/manage-providers/forms/FormRenderer';
@@ -105,7 +106,7 @@ const PatientDetails = () => {
   const shipToAccountId =
     orderDetails?.accountDetails?.shipToAccount?.accountNumber;
   const channelType =
-    orderDetails.accountDetails?.soldToAccount?.channelType ||
+    orderDetails?.accountDetails?.soldToAccount?.channelType ||
     CHANNEL_TYPE.BUY_AND_BILL;
 
   const { data: priceDetails } = useOrderPrice({

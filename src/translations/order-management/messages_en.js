@@ -142,6 +142,8 @@ export const MessageEn = {
     'Date of Administration must be in the future',
   'controls.placeholder.searchOrderPlaceholder':
     'Search by Order ID, Patient name, Account',
+  'controls.placeholder.searchSPOrderPlaceholder':
+    'Search by Order ID, Therapy, Submitted By',
   'controls.placeholders.autoSearch':
     'Search by Order ID, Patient name, Account',
   'controls.placeholder.shippingAddress.search':
@@ -586,7 +588,7 @@ export const MessageEn = {
   'controls.placeholder.searchProviderPlaceholder':
     'Search by Provider Name, NPI Number, DEA Number, Address ',
   'label.emptyProviderTableDescription':
-    'You need to select organization to see SP Account Listing',
+    'You need to add providers to see data in this table',
   'label.materialCrosswalk': 'Material Crosswalk',
   'controls.addCrosswalk': 'Add Crosswalk',
   'controls.uploadCrosswalk': 'Upload Crosswalk',
@@ -648,6 +650,25 @@ export const MessageEn = {
   'labels.GOV': 'GOV',
   'labels.BUY_AND_BILL': 'Buy & Bill',
   'labels.SPECIALITY_PHARMA': 'Speciality Pharma',
+  'invalid.csv.file.empty':
+    'Uploaded file is empty. Please upload a valid file',
+  'labels.Strength': 'Strength',
+  'labels.Dosage': 'Dosage',
+  'labels.orderChannel': 'Order Channel',
+  'labels.name': 'Name',
+  'labels.policyNumber': 'Policy Number',
+  'labels.effectiveDate': 'Effective Date',
+  'labels.groupNumber': 'Group Number',
+  'labels.rxPcnNumber': 'Rx PCN Number',
+  'labels.rxIdNumber': 'Rx ID Number',
+  'labels.payerDetails': 'Payer Details',
+  'labels.providerDetails': 'Provider Details',
+  'labels.zip': 'ZIP',
+  'labels.address': 'Address',
+  'labels.phoneNumber': 'Phone Number',
+  'labels.deaNumber': 'DEA Number',
+  'labels.npiNumber': 'NPI Number',
+
   'invalid.csv.file.empty':
     'Uploaded file is empty. Please upload a valid file',
   'formControl.mobileNumber': 'Mobile Number',
