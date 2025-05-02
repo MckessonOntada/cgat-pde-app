@@ -1,6 +1,7 @@
 import { serializeParams } from '@src/util/ApiUtils';
 import ApiRoutes from '../ApiRoutes';
 import HttpResourceService, { httpVerb } from '../HttpResourceService';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
 async function createOrder(payload) {
   const url = `${ApiRoutes.ORDERS()}`;
@@ -155,14 +156,22 @@ async function getOrderById(orderId) {
 async function savePatientDetails(
   orderId,
   payload,
-  skipDuplicateCheck = false
+  skipDuplicateCheck = false,
+  channelType
 ) {
   if (!orderId)
     throw new Error(
       'Order id is missing. Order id is required to fetch details.'
     );
-
-  const url = `${ApiRoutes.ORDERS()}/${orderId}/patient?skipDuplicateCheck=${skipDuplicateCheck}`;
+  const params = {
+    skipDuplicateCheck
+  };
+  if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+    params.channelType = channelType;
+  }
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/patient?${serializeParams(
+    params
+  )}`;
   try {
     const res = await HttpResourceService.callRest(
       url,
@@ -177,13 +186,20 @@ async function savePatientDetails(
   }
 }
 
-async function savePayerDetails(orderId, payload) {
+async function savePayerDetails(orderId, payload, channelType) {
   if (!orderId)
     throw new Error(
       'Order id is missing. Order id is required to save payer details'
     );
 
-  const url = `${ApiRoutes.ORDERS()}/${orderId}/payer`;
+  const params = {};
+  if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+    params.channelType = channelType;
+  }
+
+  const url = `${ApiRoutes.ORDERS()}/${orderId}/payer?${serializeParams(
+    params
+  )}`;
   try {
     const res = await HttpResourceService.callRest(
       url,
@@ -555,6 +571,7 @@ const OrderService = Object.freeze({
   getInventoryStatus,
   savePatientDetails,
   saveAdditionalDetails,
+  savePayerDetails,
   saveAccount,
   getProgramAndChannelConfig,
   submitOrder,

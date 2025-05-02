@@ -99,7 +99,7 @@ const PayerDetails = () => {
   });
   const { mutate: savePayerDetails } = useMutation({
     mutationFn: async (payload) =>
-      OrderService.savePayerDetails(orderId, payload),
+      OrderService.savePayerDetails(orderId, payload, orderDetails.channelType),
     onSuccess: console.log,
     onError: console.error
   });
