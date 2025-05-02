@@ -189,7 +189,12 @@ const PatientDetails = () => {
 
   const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(
     async ({ payload, skipDuplicateCheck }) =>
-      OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck),
+      OrderService.savePatientDetails(
+        orderId,
+        payload,
+        skipDuplicateCheck,
+        orderDetails.channelType
+      ),
     {
       onSuccess: (result) => {
         const { id } = result;
