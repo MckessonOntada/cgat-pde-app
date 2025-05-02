@@ -30,7 +30,8 @@ const OrderStatus = () => {
     }`
   );
 
-  const { therapy = {}, orderCost, patient, status: orderStatus, backendOrderId, approver } = orderDetails || {};
+  const { therapy = {}, orderCost, patient, status: orderStatus, backendOrderId, approver, accountDetails  } = orderDetails || {};
+  const spOrder = accountDetails?.soldToAccount?.channelType === 'SPECIALITY_PHARMA';
 
   const isApprover = approver && typeof approver === 'object' && approver.id != null;
 
@@ -108,13 +109,17 @@ const OrderStatus = () => {
               customValueStyles={styles.orderCostItem}
               value={
                 <p className="dollarSign">
-                  {orderCost ? (
-                    <>
-                      <span className={`${styles.currencySymbol}`}>$</span>
-                      {CommonUtils.formatNumberWithoutSymbol(orderCost)}
-                    </>
+                  { spOrder ? (
+                    orderCost ? (
+                      <>
+                        <span className={`${styles.currencySymbol}`}>$</span>
+                        {CommonUtils.formatNumberWithoutSymbol(orderCost)}
+                      </>
+                    ) : (
+                      '-'
+                    )
                   ) : (
-                    '-'
+                    'N/A'
                   )}
                 </p>
               }

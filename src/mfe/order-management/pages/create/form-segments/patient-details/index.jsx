@@ -21,6 +21,7 @@ import { renderModal } from '@src/util/ModalUtil';
 import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
 import { Loader } from '@mckesson/mcp-component-library';
+import { ChannelType } from '../Constants';
 
 const PatientDetails = () => {
   const { t } = useTranslate();
@@ -39,7 +40,7 @@ const PatientDetails = () => {
   const therapyId = orderDetails?.therapy?.materialNumber;
   const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
-  const channelType = orderDetails.accountDetails?.soldToAccount?.channelType || ChannelType.BUY_AND_BILL;
+  const channelType = orderDetails?.accountDetails?.soldToAccount?.channelType || ChannelType.BUY_AND_BILL;
   const { data: priceDetails } = useOrderPrice({
     therapyId,
     soldToAccountId,
