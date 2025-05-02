@@ -145,7 +145,7 @@ export const sections = [
           {
             id: 'patient-info-home-phone',
             name: 'homePhone',
-            label: 'orderManagement.patientDetails.inputLabel.phone_no',
+            label: 'orderManagement.patientDetails.inputLabel.homePhone',
             placeholder: ' ',
             type: 'phoneInput',
             maxLength: 15,
@@ -153,7 +153,7 @@ export const sections = [
           },
           {
             id: 'patient-info-mobile-number',
-            label: 'mobileNumber',
+            label: 'orderManagement.patientDetails.inputLabel.mobileNumber',
             type: 'phoneInput',
             name: 'mobileNumber',
             maxLength: 10,
@@ -161,7 +161,7 @@ export const sections = [
           },
           {
             id: 'patient-info-work-phone',
-            label: 'workPhone',
+            label: 'orderManagement.patientDetails.inputLabel.workPhone',
             type: 'phoneInput',
             name: 'workPhone',
             maxLength: 10,
@@ -177,7 +177,8 @@ export const sections = [
           },
           {
             id: 'patient-info-preferred-method-of-contact',
-            label: 'preferredMethodOfContact',
+            label:
+              'orderManagement.patientDetails.inputLabel.preferredMethodOfContact',
             type: 'dropdown',
             options: ['Mobile', 'Fax'].map((item) => ({
               label: item,

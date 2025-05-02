@@ -342,6 +342,12 @@ export const MessageEn = {
   'orderManagement.patientDetails.inputLabel.middle_name': 'Middle Name',
   'orderManagement.patientDetails.inputLabel.last_name': 'Last Name',
   'orderManagement.patientDetails.inputLabel.gender': 'Gender',
+  'orderManagement.patientDetails.inputLabel.homePhone': 'Home Phone',
+  'orderManagement.patientDetails.inputLabel.mobileNumber': 'Mobile Number',
+  'orderManagement.patientDetails.inputLabel.workPhone': 'Work Phone',
+  'orderManagement.patientDetails.inputLabel.preferredMethodOfContact':
+    'Preferred Method of Contact',
+
   'orderManagement.patientDetails.inputLabel.patientIdentifier':
     'Patient Identifier',
   'orderManagement.patientDetails.contact_details': 'Contact Details',

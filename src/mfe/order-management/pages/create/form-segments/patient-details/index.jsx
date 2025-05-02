@@ -237,7 +237,7 @@ const PatientDetails = () => {
     const { patientInfo } = form;
     const cleanedFormValues = CommonUtils.cleanObject(form);
     const payload = {
-      id: formValues.id,
+      id: cleanedFormValues.id,
       practiceId: cleanedFormValues.practiceId,
       patientInfo: {
         firstName: cleanedFormValues.firstName,
