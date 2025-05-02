@@ -444,12 +444,14 @@ div.disable-all {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+
   @media only screen and (max-width: 992px) {
     justify-content: flex-start;
   }
 
   .fieldName {
     justify-content: flex-end;
+
     @media only screen and (max-width:992px) {
       justify-content: flex-start;
     }
@@ -1355,6 +1357,13 @@ div[role="row"] {
   }
 }
 
+
+.inline-text-overflow {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 .selected-provider {
   display: grid;
   gap: 16px;
@@ -1363,4 +1372,28 @@ div[role="row"] {
   @include mixins.respond(md) {
     grid-template-columns: 1fr 2fr;
   }
+
+  .details-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-02);
+    padding: var(--spacing-04);
+    border: 1px solid var(--brand-color-patient-primary-3);
+    border-radius: var(--brand-border-radius--8);
+    background-color: var(--brand-color-background-white);
+
+    .details-title {
+      font-weight: var(--brand-font-weight-700);
+      font-size: var(--brand-font-size--default);
+      line-height: var(--brand-line-height--x-large);
+    }
+
+    .detail-segment {
+      font-size: var(--brand-font-size--small);
+      font-weight: var(--brand-font-weight-400);
+      line-height: (--brand-line-height--large);
+      color: var(--brand-color-black);
+    }
+  }
+
 }

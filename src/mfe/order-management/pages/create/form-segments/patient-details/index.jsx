@@ -1,12 +1,16 @@
 import React, { useEffect } from 'react';
 import styles from './PatientDetails.module.scss';
-import { Button, Alert } from '@mckesson/mcp-component-library';
-import ModuleHeader from '@src/components/module-header';
+import {
+  Button,
+  Alert,
+  Tooltip,
+  Loader,
+  Heading
+} from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import PatientDetailsForm from './PatientDetailsForm';
 import { Form, Formik } from 'formik';
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation } from 'react-query';
@@ -19,9 +23,6 @@ import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/Disca
 import { renderModal } from '@src/util/ModalUtil';
 import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
-import { Loader, Heading } from '@mckesson/mcp-component-library';
-import { ChannelType } from '../Constants';
-
 import { sections } from './forms/patient-details.config';
 import FormRenderer from '@src/mfe/core-config/manage-providers/forms/FormRenderer';
 import { providerSections } from './forms/providers.config';
@@ -31,8 +32,6 @@ import {
 } from './forms/validation-schema';
 import ProviderService from '@src/api/commonService/ProviderService';
 import { CHANNEL_TYPE } from '../Constants';
-import ProviderDetailsCard from './ProviderDetailsCard';
-import DetailSegment from '@src/components/DetailSegment';
 
 export const getFilteredSections = (channelType) => {
   return sections.map((section) => ({
@@ -327,8 +326,17 @@ const PatientDetails = () => {
         accountId: orderDetails.accountDetails?.soldToAccount?.id
       };
       ProviderService.getAllProviders(params).then((response) => {
-        if (response.content && Array.isArray(response.content))
-          setProviders(response.content);
+        if (response.content && Array.isArray(response.content)) {
+          const beautifiedProviders = response.content.map((provider) => {
+            const { name, address } = provider;
+            return {
+              ...provider,
+              fullname: CommonUtils.getFullName(name),
+              detailedAddress: CommonUtils.getDetailedAddress(address)
+            };
+          });
+          setProviders(beautifiedProviders);
+        }
       });
     }
   }, [orderDetails]);
@@ -339,6 +347,8 @@ const PatientDetails = () => {
   if (isSaving) {
     return <Loader type={'screen'} />;
   }
+
+  console.log(selectedProvider);
 
   return (
     <div className="MCP-module-wrapper">
@@ -422,19 +432,27 @@ const PatientDetails = () => {
                               />
                             </div>
                             {selectedProvider && (
-                              <div className="MCP-CardContainer">
-                                <Heading as="h3">
-                                  {CommonUtils.getFullName(
-                                    selectedProvider.name
-                                  )}
+                              <div className="details-card">
+                                <Heading className="details-title" as="h3">
+                                  {selectedProvider.fullname}
                                 </Heading>
-                                <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-[1fr_2fr] align-items-start">
-                                  <DetailSegment
-                                    label=""
-                                    value={CommonUtils.getDetailedAddress(
-                                      selectedProvider.address
-                                    )}
-                                  />
+                                <div className="grid grid-gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start">
+                                  <Tooltip
+                                    body={selectedProvider.detailedAddress}>
+                                    <p className="detail-segment inline-text-overflow">
+                                      {selectedProvider.detailedAddress}
+                                    </p>
+                                  </Tooltip>
+                                  {['dea', 'npi', 'phone'].map((key) => {
+                                    const value = selectedProvider[key];
+                                    return (
+                                      <Tooltip body={value}>
+                                        <p className="detail-segment inline-text-overflow">
+                                          {value}
+                                        </p>
+                                      </Tooltip>
+                                    );
+                                  })}
                                 </div>
                               </div>
                             )}

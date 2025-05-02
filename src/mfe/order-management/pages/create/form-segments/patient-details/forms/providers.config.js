@@ -12,7 +12,7 @@ export const providerSections = ({ providers = [] }) => {
               id: 'patient-info-provider',
               name: 'provider',
               label: '',
-              placeholder: ' ',
+              placeholder: 'Select Provider',
               type: 'dropdown',
               options: providers,
               maxLength: 50
