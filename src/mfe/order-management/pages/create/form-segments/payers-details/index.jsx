@@ -13,7 +13,7 @@ import OrderStepper from '../OrderStepper';
 import OrderHeaderDetails from '../OrderHeaderDetails';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
 import useOrder from '../../../orders/useOrder';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
 import { useMutation } from 'react-query';
@@ -23,6 +23,7 @@ import {
   INSURANCE_COMPANY_VALIDATION_SCHEMA,
   SECONDARY_PAYER_VALIDATION_SCHEMA
 } from './forms/validation.schema';
+import CommonUtils from '@src/util/CommonUtils';
 
 function toggleProperties(a, b, flag) {
   if (flag) {
@@ -84,6 +85,7 @@ const PayerDetails = () => {
   );
   const { orderId } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const { isApprover = false } = location.state || {};
   const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } =
     useOrder(orderId);
@@ -100,7 +102,9 @@ const PayerDetails = () => {
   const { mutate: savePayerDetails } = useMutation({
     mutationFn: async (payload) =>
       OrderService.savePayerDetails(orderId, payload, orderDetails.channelType),
-    onSuccess: console.log,
+    onSuccess: (response) => {
+      navigate(`/orders/${orderId}/additional-details`);
+    },
     onError: console.error
   });
 
@@ -198,7 +202,8 @@ const PayerDetails = () => {
         }
       },
       primaryInsuranceCoverage: {
-        patientSubscriberRelationship: formValues['patient-relationship'],
+        patientSubscriberRelationship:
+          formValues['patient-relationship']?.toUpperCase(),
         policyNumber: formValues['policy-number'],
         groupNumber: formValues['group-number'],
         planType: formValues['plan-type'],
@@ -239,7 +244,8 @@ const PayerDetails = () => {
         }
       }
     };
-    savePayerDetails(payload);
+    const finePayload = CommonUtils.cleanObject(payload);
+    savePayerDetails(finePayload);
   };
 
   const handleOnBackToOrders = () => {};

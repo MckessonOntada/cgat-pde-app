@@ -628,6 +628,39 @@ const getNameValidation = (
     : schema;
 };
 
+function flattenObject(obj, parentKey = '', result = {}) {
+  for (let key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+
+    const newKey = parentKey ? key : key;
+
+    if (
+      typeof obj[key] === 'object' &&
+      obj[key] !== null &&
+      !Array.isArray(obj[key])
+    ) {
+      flattenObject(obj[key], newKey, result);
+    } else {
+      result[newKey] = obj[key];
+    }
+  }
+  return result;
+}
+
+function flattenToRoot(obj, result = {}) {
+  for (let key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+
+    const value = obj[key];
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      flattenToRoot(value, result); // Recurse deeper
+    } else {
+      result[key] = value; // Add to root
+    }
+  }
+  return result;
+}
+
 const CommonUtils = Object.freeze({
   isNonEmptyArray,
   isNonEmptyObject,
@@ -671,7 +704,9 @@ const CommonUtils = Object.freeze({
   isFutureDate,
   getAddress,
   getDetailedAddress,
-  getNameValidation
+  getNameValidation,
+  flattenObject,
+  flattenToRoot
 });
 
 export default CommonUtils;

@@ -1,6 +1,7 @@
 import ProviderService from '@src/api/commonService/ProviderService';
 
 export const providerSections = ({ providers = [] }) => {
+  console.log(providers);
   return [
     {
       rows: [
@@ -13,7 +14,7 @@ export const providerSections = ({ providers = [] }) => {
               label: '',
               placeholder: ' ',
               type: 'dropdown',
-              option: providers,
+              options: providers,
               maxLength: 50
             }
           ]
