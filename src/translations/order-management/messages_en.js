@@ -697,5 +697,160 @@ export const MessageEn = {
   'formControl.insuranceRxBinNumber': 'Rx BIN Number',
   'button.caption.addSecondaryPayer': 'Add Secondary Payer',
   'button.caption.addDrugBenefitInsuranceCompany':
-    'Add Drug Benefit Insurance Company'
+    'Add Drug Benefit Insurance Company',
+
+  'formControl.patientRelationship': 'Patient Relationship to Subscriber',
+  'formControl.policyNumber': 'Policy Number',
+  'formControl.groupNumber': 'Group Number',
+  'formControl.planType': 'Plan Type',
+  'formControl.effectiveDate': 'Effective Date',
+  'formControl.rxPCNNumber': 'Rx PCN Number',
+  'formControl.rxGRPNumber': 'Rx GRP Number',
+  'formControl.rxIDNumber': 'Rx ID Number',
+  'formControl.rxBINNumber': 'Rx BIN Number',
+  'payer.form.insuranceCompanyFirstNameRequired':
+    'Please enter the First Name.',
+  'payer.form.insuranceCompanyFirstNameMaxCharacters':
+    'First Name should not exceed 50 characters.',
+  'payer.form.insuranceCompanyFirstNameContains':
+    'First Name should contain alphabets only and cannot include special characters or numbers.',
+  'payer.form.insuranceCompanyLastNameMaxCharacters':
+    'Last Name should not exceed 50 characters.',
+  'payer.form.insuranceCompanyLastNameContains':
+    'Last Name should contain alphabets only and cannot include special characters or numbers.',
+  'payer.form.insuranceCompanyPhoneNumberMaxCharacters':
+    'Phone Number should not exceed 50 characters.',
+  'payer.form.insuranceCompanyPhoneNumberDigitsOnly':
+    'Phone Number must contain valid digits only.',
+
+  'payer.form.insuranceCompanyAddressLine1MaxCharacters':
+    'Address 1 should not exceed 100 characters.',
+  'payer.form.insuranceCompanyAddressLine1NoSpecialChars':
+    'Address 1 cannot contain special characters like @, #, %, etc.',
+
+  'payer.form.insuranceCompanyAddressLine2MaxCharacters':
+    'Address 2 should not exceed 100 characters.',
+  'payer.form.insuranceCompanyAddressLine2NoSpecialChars':
+    'Address 2 cannot contain special characters like @, #, %, etc.',
+
+  'payer.form.insuranceCompanyZipCodeFormat':
+    'Zip Code should follow US format: 12345 or 12345-6789.',
+
+  'payer.form.insuranceCompanyCityMaxCharacters':
+    'City should not exceed 15 characters.',
+  'payer.form.insuranceCompanyCityAlphaOnly':
+    'City should contain alphabets only and cannot include numbers or special characters.',
+
+  'payer.form.insuranceCompanyStateRequired': 'Please select a valid State.',
+  'payer.form.secondaryPayerFirstNameRequired': 'Please enter the First Name.',
+  'payer.form.secondaryPayerFirstNameMaxCharacters':
+    'First Name should not exceed 50 characters.',
+  'payer.form.secondaryPayerFirstNameAlphaOnly':
+    'First Name should contain alphabets only and cannot include special characters or numbers.',
+
+  'payer.form.secondaryPayerLastNameMaxCharacters':
+    'Last Name should not exceed 50 characters.',
+  'payer.form.secondaryPayerLastNameAlphaOnly':
+    'Last Name should contain alphabets only and cannot include special characters or numbers.',
+
+  'payer.form.secondaryPayerPhoneNumberMaxCharacters':
+    'Phone Number should not exceed 50 characters.',
+  'payer.form.secondaryPayerPhoneNumberDigitsOnly':
+    'Phone Number must contain valid digits only.',
+
+  'payer.form.secondaryPayerAddressLine1MaxCharacters':
+    'Address 1 should not exceed 100 characters.',
+  'payer.form.secondaryPayerAddressLine1NoSpecialChars':
+    'Address 1 cannot contain special characters like @, #, %, etc.',
+
+  'payer.form.secondaryPayerAddressLine2MaxCharacters':
+    'Address 2 should not exceed 100 characters.',
+  'payer.form.secondaryPayerAddressLine2NoSpecialChars':
+    'Address 2 cannot contain special characters like @, #, %, etc.',
+
+  'payer.form.secondaryPayerZipCodeFormat':
+    'Zip Code should follow US format: 12345 or 12345-6789.',
+
+  'payer.form.secondaryPayerCityMaxCharacters':
+    'City should not exceed 15 characters.',
+  'payer.form.secondaryPayerCityAlphaOnly':
+    'City should contain alphabets only and cannot include numbers or special characters.',
+
+  'payer.form.secondaryPayerStateRequired': 'Please select a valid State.',
+  'payer.form.firstNameRequired': 'Please enter the First Name.',
+  'payer.form.firstNameMaxCharacters':
+    'First Name should not exceed 50 characters.',
+  'payer.form.firstNameAlphaOnly':
+    'First Name should contain alphabets only and cannot include special characters or numbers.',
+
+  'payer.form.lastNameMaxCharacters':
+    'Last Name should not exceed 50 characters.',
+  'payer.form.lastNameAlphaOnly':
+    'Last Name should contain alphabets only and cannot include special characters or numbers.',
+
+  'payer.form.phoneNumberMaxCharacters':
+    'Phone Number should not exceed 50 characters.',
+  'payer.form.phoneNumberDigitsOnly':
+    'Phone Number must contain valid digits only.',
+
+  'payer.form.addressLine1MaxCharacters':
+    'Address 1 should not exceed 100 characters.',
+  'payer.form.addressLine1NoSpecialChars':
+    'Address 1 cannot contain special characters like @, #, %, etc.',
+
+  'payer.form.addressLine2MaxCharacters':
+    'Address 2 should not exceed 100 characters.',
+  'payer.form.addressLine2NoSpecialChars':
+    'Address 2 cannot contain special characters like @, #, %, etc.',
+
+  'payer.form.zipCodeFormat':
+    'Zip Code should follow US format: 12345 or 12345-6789.',
+
+  'payer.form.cityMaxCharacters': 'City should not exceed 15 characters.',
+  'payer.form.cityAlphaOnly':
+    'City should contain alphabets only and cannot include numbers or special characters.',
+
+  'payer.form.stateRequired': 'Please select a valid State.',
+
+  'payer.form.patientRelationshipRequired':
+    "Please select the patient's relationship to the subscriber.",
+  'payer.form.patientRelationshipInvalid':
+    'Please select relationship to the subscriber.',
+  'payer.form.patientRelationshipOneOf': 'Please select a valid relationship.',
+
+  'payer.form.policyNumberRequired': 'Please enter the Policy Number.',
+  'payer.form.policyNumberMaxCharacters':
+    'Policy Number should not exceed 30 characters.',
+  'payer.form.policyNumberAlphanumeric':
+    'Policy Number should only contain letters and numbers.',
+
+  'payer.form.groupNumberMaxCharacters':
+    'Group Number should not exceed 30 characters.',
+  'payer.form.groupNumberAlphanumeric':
+    'Group Number should only contain letters and numbers.',
+
+  'payer.form.planTypeRequired': 'Please select a valid Plan Type',
+  'payer.form.planTypeOneOf': 'Please select a valid Plan Type',
+
+  'payer.form.effectiveDateRequired': 'Please enter the Effective Date.',
+  'payer.form.effectiveDateMax': 'Effective Date cannot be in the future.',
+  'payer.form.effectiveDateTypeError': 'Please select a valid date.',
+
+  'payer.form.rxPcnNumberMaxCharacters':
+    'Rx PCN Number should not exceed 30 digits.',
+  'payer.form.rxPcnNumberDigitsOnly':
+    'Rx PCN Number must contain numbers only.',
+
+  'payer.form.rxGrpNumberMaxCharacters':
+    'Rx GRP Number should not exceed 30 digits.',
+  'payer.form.rxGrpNumberDigitsOnly':
+    'Rx GRP Number must contain numbers only.',
+
+  'payer.form.rxIdNumberMaxCharacters':
+    'Rx ID Number should not exceed 30 digits.',
+  'payer.form.rxIdNumberDigitsOnly': 'Rx ID Number must contain numbers only.',
+
+  'payer.form.rxBinNumberMaxCharacters':
+    'Rx BIN Number should not exceed 30 digits.',
+  'payer.form.rxBinNumberDigitsOnly': 'Rx BIN Number must contain numbers only.'
 };

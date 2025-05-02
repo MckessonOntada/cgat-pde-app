@@ -1,10 +1,7 @@
 import React from 'react';
-import * as Yup from 'yup';
 import FormRenderer from '@src/mfe/core-config/manage-providers/forms/FormRenderer';
 import {
   insuranceCompanySections,
-  PATIENT_RELATIONSHIP,
-  PLAN_TYPES,
   sections
 } from './forms/payer-details.config';
 import { Form, Formik } from 'formik';
@@ -21,6 +18,11 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 import PageHeader from '@src/components/pageHeader';
 import { useMutation } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
+import {
+  INITIAL_VALIDATION_SCHEMA,
+  INSURANCE_COMPANY_VALIDATION_SCHEMA,
+  SECONDARY_PAYER_VALIDATION_SCHEMA
+} from './forms/validation.schema';
 
 function toggleProperties(a, b, flag) {
   if (flag) {
@@ -74,179 +76,12 @@ const INSURANCE_COMPANY_DETAILS = {
   'insurance-company-state': ''
 };
 
-const INITIAL_VALIDATION_SCHEMA = Yup.object().shape({
-  'first-name': Yup.string()
-    .required('Please enter the First Name.')
-    .max(50, 'First Name should not exceed 50 characters.')
-    .matches(
-      /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/,
-      'First Name should contain alphabets only and cannot include special characters or numbers.'
-    ),
-  'last-name': Yup.string()
-    .max(50, 'Last Name should not exceed 50 characters.')
-    .matches(
-      /^[A-Za-zÀ-ÖØ-öø-ÿ\s]*$/,
-      'Last Name should contain alphabets only and cannot include special characters or numbers.'
-    ),
-  'phone-number': Yup.string()
-    .max(50, 'Phone Number should not exceed 50 characters.')
-    .matches(/^\d*$/, 'Phone Number must contain valid digits only.'),
-  'address-line-1': Yup.string()
-    .max(100, 'Address 1 should not exceed 100 characters.')
-    .matches(
-      /^[^@#%]*$/,
-      'Address 1 cannot contain special characters like @, #, %, etc.'
-    ),
-  'address-line-2': Yup.string()
-    .max(100, 'Address 2 should not exceed 100 characters.')
-    .matches(
-      /^[^@#%]*$/,
-      'Address 2 cannot contain special characters like @, #, %, etc.'
-    ),
-  zip: Yup.string().matches(
-    /^\d{5}(-\d{4})?$/,
-    'Zip Code should follow US format: 12345 or 12345-6789.'
-  ),
-  city: Yup.string()
-    .max(15, 'City should not exceed 15 characters.')
-    .matches(
-      /^[A-Za-zÀ-ÖØ-öø-ÿ\s]*$/,
-      'City should contain alphabets only and cannot include numbers or special characters.'
-    ),
-  state: Yup.string().nullable().notOneOf([''], 'Please select a valid State'),
-  'patient-relationship': Yup.string()
-    .required("Please select the patient's relationship to the subscriber.")
-    .notOneOf([''], 'Please select relationship to the subscriber.')
-    .oneOf(PATIENT_RELATIONSHIP, 'Please select a valid relationship.'),
-  'policy-number': Yup.string()
-    .required('Please enter the Policy Number.')
-    .max(30, 'Policy Number should not exceed 30 characters.')
-    .matches(
-      /^[A-Za-z0-9]+$/,
-      'Policy Number should only contain letters and numbers.'
-    ),
-  'group-number': Yup.string()
-    .max(30, 'Group Number should not exceed 30 characters.')
-    .matches(
-      /^[A-Za-z0-9]*$/,
-      'Group Number should only contain letters and numbers.'
-    ),
-  'plan-type': Yup.string()
-    .nullable()
-    .notOneOf([''], 'Please select a valid Plan Type')
-    .oneOf(PLAN_TYPES, 'Please select a valid Plan Type'),
-  'effective-date': Yup.date()
-    .required('Please enter the Effective Date.')
-    .max(new Date(), 'Effective Date cannot be in the future.')
-    .typeError('Please select a valid date.'),
-  'rx-pcn-number': Yup.string()
-    .max(30, 'Rx PCN Number should not exceed 30 digits.')
-    .matches(/^\d*$/, 'Rx PCN Number must contain numbers only.'),
-  'rx-grp-number': Yup.string()
-    .max(30, 'Rx GRP Number should not exceed 30 digits.')
-    .matches(/^\d*$/, 'Rx GRP Number must contain numbers only.'),
-  'rx-id-number': Yup.string()
-    .max(30, 'Rx ID Number should not exceed 30 digits.')
-    .matches(/^\d*$/, 'Rx ID Number must contain numbers only.'),
-  'rx-bin-number': Yup.string()
-    .max(30, 'Rx BIN Number should not exceed 30 digits.')
-    .matches(/^\d*$/, 'Rx BIN Number must contain numbers only.')
-});
-
-const SECONDARY_PAYER_VALIDATION_SCHEMA = Yup.object().shape({
-  'secondary-payer-first-name': Yup.string()
-    .required('Please enter the First Name.')
-    .max(50, 'First Name should not exceed 50 characters.')
-    .matches(
-      /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/,
-      'First Name should contain alphabets only and cannot include special characters or numbers.'
-    ),
-  'secondary-payer-last-name': Yup.string()
-    .max(50, 'Last Name should not exceed 50 characters.')
-    .matches(
-      /^[A-Za-zÀ-ÖØ-öø-ÿ\s]*$/,
-      'Last Name should contain alphabets only and cannot include special characters or numbers.'
-    ),
-  'secondary-payer-phone-number': Yup.string()
-    .max(50, 'Phone Number should not exceed 50 characters.')
-    .matches(/^\d*$/, 'Phone Number must contain valid digits only.'),
-  'secondary-payer-address-line-1': Yup.string()
-    .max(100, 'Address 1 should not exceed 100 characters.')
-    .matches(
-      /^[^@#%]*$/,
-      'Address 1 cannot contain special characters like @, #, %, etc.'
-    ),
-  'secondary-payer-address-line-2': Yup.string()
-    .max(100, 'Address 2 should not exceed 100 characters.')
-    .matches(
-      /^[^@#%]*$/,
-      'Address 2 cannot contain special characters like @, #, %, etc.'
-    ),
-  'secondary-payer-zip': Yup.string().matches(
-    /^\d{5}(-\d{4})?$/,
-    'Zip Code should follow US format: 12345 or 12345-6789.'
-  ),
-  'secondary-payer-city': Yup.string()
-    .max(15, 'City should not exceed 15 characters.')
-    .matches(
-      /^[A-Za-zÀ-ÖØ-öø-ÿ\s]*$/,
-      'City should contain alphabets only and cannot include numbers or special characters.'
-    ),
-  'secondary-payer-state': Yup.string()
-    .nullable()
-    .notOneOf([''], 'Please select a valid State')
-});
-
-const INSURANCE_COMPANY_VALIDATION_SCHEMA = Yup.object().shape({
-  'insurance-company-first-name': Yup.string()
-    .required('Please enter the First Name.')
-    .max(50, 'First Name should not exceed 50 characters.')
-    .matches(
-      /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/,
-      'First Name should contain alphabets only and cannot include special characters or numbers.'
-    ),
-  'insurance-company-last-name': Yup.string()
-    .max(50, 'Last Name should not exceed 50 characters.')
-    .matches(
-      /^[A-Za-zÀ-ÖØ-öø-ÿ\s]*$/,
-      'Last Name should contain alphabets only and cannot include special characters or numbers.'
-    ),
-  'insurance-company-phone-number': Yup.string()
-    .max(50, 'Phone Number should not exceed 50 characters.')
-    .matches(/^\d*$/, 'Phone Number must contain valid digits only.'),
-  'insurance-company-address-line-1': Yup.string()
-    .max(100, 'Address 1 should not exceed 100 characters.')
-    .matches(
-      /^[^@#%]*$/,
-      'Address 1 cannot contain special characters like @, #, %, etc.'
-    ),
-  'insurance-company-address-line-2': Yup.string()
-    .max(100, 'Address 2 should not exceed 100 characters.')
-    .matches(
-      /^[^@#%]*$/,
-      'Address 2 cannot contain special characters like @, #, %, etc.'
-    ),
-  'insurance-company-zip': Yup.string().matches(
-    /^\d{5}(-\d{4})?$/,
-    'Zip Code should follow US format: 12345 or 12345-6789.'
-  ),
-  'insurance-company-city': Yup.string()
-    .max(15, 'City should not exceed 15 characters.')
-    .matches(
-      /^[A-Za-zÀ-ÖØ-öø-ÿ\s]*$/,
-      'City should contain alphabets only and cannot include numbers or special characters.'
-    ),
-  'insurance-company-state': Yup.string()
-    .nullable()
-    .notOneOf([''], 'Please select a valid State')
-});
-
 const PayerDetails = () => {
+  const { t } = useTranslate();
   const [formValues, setFormValues] = React.useState(INITIAL_VALUES);
   const [validationSchema, setValidationSchema] = React.useState(
-    INITIAL_VALIDATION_SCHEMA
+    INITIAL_VALIDATION_SCHEMA(t)
   );
-  const { t } = useTranslate();
   const { orderId } = useParams();
   const location = useLocation();
   const { isApprover = false } = location.state || {};
@@ -294,13 +129,13 @@ const PayerDetails = () => {
   }, [showDrugBenefitInsurer]);
 
   React.useEffect(() => {
-    let schema = INITIAL_VALIDATION_SCHEMA;
+    let schema = INITIAL_VALIDATION_SCHEMA(t);
 
     if (showSecondaryPayer) {
-      schema = schema.concat(SECONDARY_PAYER_VALIDATION_SCHEMA);
+      schema = schema.concat(SECONDARY_PAYER_VALIDATION_SCHEMA(t));
     }
     if (showDrugBenefitInsurer) {
-      schema = schema.concat(INSURANCE_COMPANY_VALIDATION_SCHEMA);
+      schema = schema.concat(INSURANCE_COMPANY_VALIDATION_SCHEMA(t));
     }
 
     setValidationSchema(schema);
@@ -351,7 +186,6 @@ const PayerDetails = () => {
       primaryInsuranceCompany: {
         name: {
           firstName: formValues['first-name'],
-          middleName: '', // Assuming not available in formValues
           lastName: formValues['last-name']
         },
         phone: formValues['phone-number'],
