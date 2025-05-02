@@ -8,13 +8,14 @@ import CommonUtils from '@src/util/CommonUtils';
 
 export default function SelectedAccounts({
   selectedAccounts,
-  onRemoveAccount
+  onRemoveAccount,
+  header = ''
 }) {
   const { t } = useTranslate();
   return (
     <div className="selected-accounts-display">
       <h2 className="selected-account-heading">
-        {t('account.selected.account')}
+        {header ? header : t('account.selected.account')}
       </h2>
       <Divider className="selected-account-divider" />
       <div className="selected-account-container">

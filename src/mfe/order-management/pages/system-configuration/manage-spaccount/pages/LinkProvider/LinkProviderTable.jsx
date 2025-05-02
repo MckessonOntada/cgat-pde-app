@@ -37,7 +37,7 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
   const [searchParams] = useSearchParams();
   const selectedOrganization = searchParams.get('orgId');
   const isCustomerCenter = AuthUtils.isCustomerCenter();
-  
+
   useEffect(() => {
     setTimeout(() => {
       let eleHeight = document.getElementById(
@@ -46,11 +46,18 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
       setTableHeight(eleHeight);
     }, 100);
   }, [data]);
-  const onRemoveSelectedAccount = (item) => {
-    setSelectedLinkProvider((prev) =>
-      prev.filter((provider) => provider.id !== item.id)
-    );
-  };
+
+  const onRemoveSelectedAccount = useCallback(
+    (item) => {
+      const updatedList = selectedLinkProvider.filter(
+        (provider) => provider.id !== item.id
+      );
+      setSelectedLinkProvider(updatedList);
+      if (isAddLinkProvider) setSelectedProviders(updatedList);
+    },
+    [selectedLinkProvider, isAddLinkProvider, setSelectedProviders]
+  );
+
   const formatProviderDetails = useCallback((data) => {
     const { name, dea, npi, phone, address } = data;
     return [
@@ -137,7 +144,8 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
     setPageNumber(newPage);
   };
   const handleOnSortIconClick = (selectedColumn, sortDirection) => {
-    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    if (selectedColumn.sortKey)
+      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
   return (
@@ -152,19 +160,27 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
           initialData={[]}
         />
       </div>
-      {selectedLinkProvider?.length > 0 && !isAddLinkProvider  && (
+      {selectedLinkProvider?.length > 0 && !isAddLinkProvider && (
         <TableHeading
           heading={[]}
           secondaryView={selectedLinkProvider?.length}
-          secondaryViewHeading={`${selectedLinkProvider?.length} ${t('orgManagement.selected_items')}`}
+          secondaryViewHeading={`${selectedLinkProvider?.length} ${t(
+            'orgManagement.selected_items'
+          )}`}
           secondaryViewControls={
-            <Button variant="secondary" onClick={()=>{unLinkProvider(selectedLinkProvider)}}>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                unLinkProvider(selectedLinkProvider);
+              }}>
               {t('manageSPAccount.providers.column.unlink')}
             </Button>
           }
         />
       )}
-      {isAddLinkProvider  && ( <TableHeading heading={t('label.providerListing')} /> )}
+      {isAddLinkProvider && (
+        <TableHeading heading={t('label.providerListing')} />
+      )}
       <div className={style.accountBox}>
         <div className={style.customTableBox}>
           <CustomDataTable
@@ -197,6 +213,7 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
             <SelectedAccounts
               selectedAccounts={selectedLinkProvider}
               onRemoveAccount={onRemoveSelectedAccount}
+              header={t('manageSPAccount.providers.selectedProviders')}
             />
           </div>
         )}

@@ -118,7 +118,7 @@ const AddLinkProvider = () => {
         </LinkProviderProvider>
         <div className={'buttonGroup'}>
           <Button
-            variant="primary"
+            variant="secondary"
             type="button"
             onClick={handleGoBack}
             size={'md'}>
