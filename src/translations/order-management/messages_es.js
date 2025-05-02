@@ -130,6 +130,8 @@ export const MessageEs = {
     'S_Date of administration must be in the future',
   'controls.placeholder.searchOrderPlaceholder':
     'S_Search by Order ID, Patient name, Account',
+  'controls.placeholder.searchSPOrderPlaceholder':
+    'S_Search by Order ID, Therapy, Submitted By',
   'controls.placeholders.autoSearch':
     'S_Search by Order ID, Patient name, Account',
   'controls.placeholder.shippingAddress.search':
@@ -551,6 +553,8 @@ export const MessageEs = {
   'labels.SPECIALITY_PHARMA': 'S_Speciality Pharma',
   'labels.BuyNBill': 'S_BUY & BILL',
   'labels.SP': 'S_SP',
+  'label.emptyProviderTableDescription':
+      'S_You need to add providers to see data in this table',
   'labels.Strength': 'S_Strength',
   'labels.Dosage' : 'S_Dosage',
   'labels.orderChannel' : 'S_Order Channel',
@@ -567,4 +571,5 @@ export const MessageEs = {
   'labels.phoneNumber': 'S_Phone Number',
   'labels.deaNumber': 'S_DEA Number',
   'labels.npiNumber': 'S_NPI Number',
+  
 };

@@ -23,6 +23,7 @@ export const ConfigurationMessagesEN = {
   'providerStatus.ALL': 'All',
   'labels.caption.All': 'All',
   'labels.caption.SUBMITTED_BUY_AND_BILL': 'Buy and Bill',
+  'labels.caption.SUBMITTED_SP': 'SP',
   'placeholder.selectAssignee': 'Search assignee',
   'provider.activationSuccess': 'Provider has been activated successfully.',
   'provider.activationFailure':
@@ -45,13 +46,14 @@ export const ConfigurationMessagesEN = {
   'provider.providerInformation': 'Provider Information',
   'provider.linkSpAccounts': 'Link SP Accounts',
   'provider.btnCancel': 'Cancel',
-  'provider.btnDeLink': 'De-Link',
+  'provider.btnDeLink': 'Unlink',
   'provider.btnCreateProvider': 'Create Provider',
   'provider.btnUpdateProvider': 'Update Provider',
   'SPCatalog.deLinkConfirmationDescription':
-    'Do you want to de-link the selected SP Catalogs?',
-  'SPCatalog.deLinkConfirmationTitle': 'De-link Catalogs?',
-
+    'Do you want to unlink the selected SP Catalogs?',
+  'SPCatalog.deLinkConfirmationTitle': 'Unlink Catalogs?',
+  'provider.disabledEditOnMultiSelect':
+    'Only one record can be edited at a time',
   'provider.firstName': 'First Name',
   'provider.firstName.required': 'Please Enter First Name',
   'provider.firstName.max': 'First Name should not exceed 50 characters.',
@@ -126,6 +128,10 @@ export const ConfigurationMessagesEN = {
   'provider.option.ALL': 'SUBMITTED_BUY_AND_BILL',
   'provider.orderType': 'Order Type',
   'provider.assignee': 'Assignee',
+  'provider.contextMenu.optionEdit': 'Edit',
+  'provider.contextMenu.optionActivate': 'Activate',
+  'provider.contextMenu.optionDeactivate': 'Deactivate',
+  'provider.contextMenu.optionLinkSPAccount': 'Link SP Account',
 
   'serverResponse.provider.dea.conflict':
     'A provider with this DEA Number already exists. Please enter a unique DEA Number.',

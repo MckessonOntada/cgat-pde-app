@@ -62,13 +62,13 @@ module.exports = {
       //   test: /\.(woff|woff2|ttf|eot|jpg|gif)$/i,
       //   use: ['file-loader']
       // },
-      {
-        test: /\.(woff|woff2|ttf|eot|jpg|gif)$/i,
-        type: 'asset/resource', // Webpack 5 handles fonts natively
-        generator: {
-          filename: 'assets/fonts/[name][ext]' // Specify where fonts should be output
-        }
-      },
+      // {
+      //   test: /\.(woff|woff2|ttf|eot|jpg|gif)$/i,
+      //   type: 'asset/resource', // Webpack 5 handles fonts natively
+      //   generator: {
+      //     filename: 'public/fonts/[name][ext]' // Specify where fonts should be output
+      //   }
+      // },
       {
         test: /\.(svg|png)$/,
         issuer: /\.[jt]sx?$/,
@@ -143,7 +143,7 @@ module.exports = {
   resolve: {
     alias: {
       '@src': path.resolve(__dirname, 'src/'),
-      '@fonts': path.resolve(__dirname, 'src/assets/fonts') // Alias to refer to fonts folder easily
+      '@fonts': path.resolve(__dirname, 'public/fonts/') // Alias to refer to fonts folder easily
     }
   }
 };

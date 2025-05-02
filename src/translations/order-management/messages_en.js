@@ -142,6 +142,8 @@ export const MessageEn = {
     'Date of Administration must be in the future',
   'controls.placeholder.searchOrderPlaceholder':
     'Search by Order ID, Patient name, Account',
+  'controls.placeholder.searchSPOrderPlaceholder':
+    'Search by Order ID, Therapy, Submitted By',
   'controls.placeholders.autoSearch':
     'Search by Order ID, Patient name, Account',
   'controls.placeholder.shippingAddress.search':
@@ -579,7 +581,7 @@ export const MessageEn = {
   'controls.placeholder.searchProviderPlaceholder':
     'Search by Provider Name, NPI Number, DEA Number, Address ',
   'label.emptyProviderTableDescription':
-    'You need to select organization to see SP Account Listing',
+    'You need to add providers to see data in this table',
   'label.materialCrosswalk': 'Material Crosswalk',
   'controls.addCrosswalk': 'Add Crosswalk',
   'controls.uploadCrosswalk': 'Upload Crosswalk',
