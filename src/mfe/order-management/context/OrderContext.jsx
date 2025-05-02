@@ -37,7 +37,7 @@ function getChannelTypeFromOrderType(orderType) {
   if (orderType === ORDER_TABS.SUBMITTED_BUY_AND_BILL)
     return CHANNEL_TYPE.BUY_AND_BILL;
   if (orderType === ORDER_TABS.SUBMITTED_SP)
-    return CHANNEL_TYPE.SPECIALITY_PHARMA;
+    return CHANNEL_TYPE.SPECIALTY_PHARMA;
   return null;
 }
 
@@ -80,7 +80,7 @@ export const OrderProvider = ({ children }) => {
           : false,
       showPAPOrders: Boolean(orderView === ORDER_VIEW.PAP_ORDERS),
       ...(tabVariant === ORDER_TABS.SUBMITTED_SP && {
-        channelType: CHANNEL_TYPE.SPECIALITY_PHARMA
+        channelType: CHANNEL_TYPE.SPECIALTY_PHARMA
       }),
       ...(tabVariant === ORDER_TABS.SUBMITTED_BUY_AND_BILL && {
         channelType: CHANNEL_TYPE.BUY_AND_BILL

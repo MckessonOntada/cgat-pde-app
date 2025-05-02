@@ -10,7 +10,7 @@ export const ORDER_STAGES = {
 
 export const CHANNEL_TYPE = {
   BUY_AND_BILL: 'BUY_AND_BILL',
-  SPECIALTY_PHARMA: 'SPECIALTY_PHARMA'
+  SPECIALTY_PHARMA: 'SPECIALITY_PHARMA'
 };
 
 export const FormList = (t) => [
