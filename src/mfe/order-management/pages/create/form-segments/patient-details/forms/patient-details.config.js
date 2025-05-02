@@ -20,7 +20,7 @@ export const sections = [
         controls: [
           {
             id: 'patient-info-firstName',
-            name: 'firstName',
+            name: 'patient.patientInfo.firstName',
             label: 'orderManagement.patientDetails.inputLabel.first_name',
             placeholder: ' ',
             type: 'input',
@@ -28,7 +28,7 @@ export const sections = [
           },
           {
             id: 'patient-info-middleName',
-            name: 'middleName',
+            name: 'patient.patientInfo.middleName',
             label: 'orderManagement.patientDetails.inputLabel.middle_name',
             placeholder: ' ',
             type: 'input',
@@ -36,7 +36,7 @@ export const sections = [
           },
           {
             id: 'patient-info-lastName',
-            name: 'lastName',
+            name: 'patient.patientInfo.lastName',
             label: 'orderManagement.patientDetails.inputLabel.last_name',
             placeholder: ' ',
             type: 'input',
@@ -49,19 +49,18 @@ export const sections = [
         controls: [
           {
             id: 'patient-info-gender',
-            name: 'gender',
+            name: 'patient.gender',
             label: 'orderManagement.patientDetails.inputLabel.gender',
             placeholder: ' ',
             type: 'dropdown',
-            options: [
-              { value: 'Male', label: 'Male' },
-              { value: 'Female', label: 'Female' },
-              { value: 'Other', label: 'Other' }
-            ]
+            options: ['Male', 'Female', 'Other'].map((item) => ({
+              label: item,
+              value: item.toUpperCase()
+            }))
           },
           {
             id: 'patient-info-dateOfBirth',
-            name: 'dateOfBirth',
+            name: 'patient.dateOfBirth',
             label: 'orderManagement.patientDetails.inputLabel.date_of_birth',
             placeholder: ' ',
             type: 'datePicker',
@@ -70,7 +69,7 @@ export const sections = [
           },
           {
             id: 'patient-info-identifier',
-            name: 'patientIdentifier',
+            name: 'patient.patientIdentifier',
             label:
               'orderManagement.patientDetails.inputLabel.patientIdentifier',
             placeholder: ' ',
@@ -85,7 +84,7 @@ export const sections = [
         controls: [
           {
             id: 'patient-info-addressLine1',
-            name: 'addressLine1',
+            name: 'patient.patientAddress.addressLine1',
             label: 'orderManagement.patientDetails.inputLabel.address_1',
             placeholder: ' ',
             type: 'input',
@@ -93,7 +92,7 @@ export const sections = [
           },
           {
             id: 'patient-info-addressLine2',
-            name: 'addressLine2',
+            name: 'patient.patientAddress.addressLine2',
             label: 'orderManagement.patientDetails.inputLabel.address_2',
             placeholder: ' ',
             maxLength: 100,
@@ -106,7 +105,7 @@ export const sections = [
         controls: [
           {
             id: 'patient-info-city',
-            name: 'city',
+            name: 'patient.patientAddress.city',
             label: 'orderManagement.patientDetails.inputLabel.city',
             placeholder: ' ',
             type: 'input',
@@ -114,7 +113,7 @@ export const sections = [
           },
           {
             id: 'patient-info-zip-code',
-            name: 'zipCode',
+            name: 'patient.patientAddress.zipCode',
             label: 'orderManagement.patientDetails.inputLabel.zip',
             placeholder: ' ',
             type: 'zipInput',
@@ -122,7 +121,7 @@ export const sections = [
           },
           {
             id: 'patient-info-state',
-            name: 'state',
+            name: 'patient.patientAddress.state',
             label: 'orderManagement.patientDetails.inputLabel.state',
             placeholder: ' ',
             type: 'dropdown',
@@ -133,18 +132,9 @@ export const sections = [
       {
         grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
         controls: [
-          // {
-          //   id: 'patient-info-home-phone',
-          //   name: 'phoneNumber',
-          //   label: 'orderManagement.patientDetails.inputLabel.phone_no',
-          //   placeholder: ' ',
-          //   type: 'phoneInput',
-          //   maxLength: 15,
-          //   if: (channelType) => channelType !== CHANNEL_TYPE.SPECIALTY_PHARMA
-          // },
           {
             id: 'patient-info-home-phone',
-            name: 'homePhone',
+            name: 'patient.contact.homePhone',
             label: 'orderManagement.patientDetails.inputLabel.homePhone',
             placeholder: ' ',
             type: 'phoneInput',
@@ -153,23 +143,22 @@ export const sections = [
           },
           {
             id: 'patient-info-mobile-number',
+            name: 'patient.contact.phoneNumber',
             label: 'orderManagement.patientDetails.inputLabel.mobileNumber',
             type: 'phoneInput',
-            name: 'phoneNumber',
             maxLength: 10
-            // if: (channelType) => channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           {
             id: 'patient-info-work-phone',
+            name: 'patient.contact.workPhone',
             label: 'orderManagement.patientDetails.inputLabel.workPhone',
             type: 'phoneInput',
-            name: 'workPhone',
             maxLength: 10,
             if: (channelType) => channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           },
           {
             id: 'patient-info-email-address',
-            name: 'emailId',
+            name: 'patient.contact.emailId',
             label: 'orderManagement.patientDetails.inputLabel.email',
             placeholder: ' ',
             type: 'input',
@@ -177,14 +166,14 @@ export const sections = [
           },
           {
             id: 'patient-info-preferred-method-of-contact',
+            name: 'patient.contact.preferredContactMethod',
             label:
               'orderManagement.patientDetails.inputLabel.preferredMethodOfContact',
             type: 'dropdown',
             options: ['Mobile', 'Fax'].map((item) => ({
               label: item,
-              value: item
+              value: item.toUpperCase()
             })),
-            name: 'preferredContactMethod',
             maxLength: 10,
             if: (channelType) => channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           }

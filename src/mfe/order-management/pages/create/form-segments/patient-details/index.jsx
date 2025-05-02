@@ -27,7 +27,7 @@ import { sections } from './forms/patient-details.config';
 import FormRenderer from '@src/mfe/core-config/manage-providers/forms/FormRenderer';
 import { providerSections } from './forms/providers.config';
 import {
-  getAdditionalContactSchema,
+  getInitialValues,
   getValidationSchema
 } from './forms/validation-schema';
 import ProviderService from '@src/api/commonService/ProviderService';
@@ -47,35 +47,11 @@ export const getFilteredSections = (channelType) => {
     }))
   }));
 };
-const INITIAL_VALUES = {
-  firstName: '',
-  middleName: '',
-  lastName: '',
-  gender: '',
-  dateOfBirth: '',
-  emailId: '',
-  phoneNumber: '',
-  addressLine1: '',
-  addressLine2: '',
-  city: '',
-  zipCode: '',
-  state: '',
-  patientIdentifier: ''
-};
-const ADDITIONAL_VALUES = {
-  homePhone: '',
-  mobileNumber: '',
-  workPhone: '',
-  provider: '',
-  preferredMethodOfContact: ''
-};
+
 const PatientDetails = () => {
   const { t } = useTranslate();
-  const [validationSchema, setValidationSchema] = React.useState(
-    getValidationSchema(t)
-  );
   const [selectedProvider, setSelectedProvider] = React.useState(null);
-  const [initialValues, setInitialValues] = React.useState(INITIAL_VALUES);
+  const [initialValues, setInitialValues] = React.useState(getInitialValues());
   const { orderId } = useParams();
   const navigate = useNavigate();
   const alertContainerId = 'patintDetails-alert-container';
@@ -123,32 +99,14 @@ const PatientDetails = () => {
     soldToAccountId,
     shipToAccountId
   });
-  const [providers, setProviders] = React.useState([
-    { label: 'A', value: 'a' }
-  ]);
+  const [providers, setProviders] = React.useState([]);
 
   React.useEffect(() => {
     if (orderDetails.patient) {
-      const patientDetails = CommonUtils.flattenToRoot(
-        orderDetails.patient,
-        {}
-      );
-      setInitialValues(patientDetails);
-    }
-  }, [orderDetails]);
-
-  React.useEffect(() => {
-    if (orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
-      const baseSchema = getValidationSchema(t);
-      const additionalSchema = getAdditionalContactSchema(t);
-      const combinedSchema = baseSchema.concat(additionalSchema);
-      setValidationSchema(combinedSchema);
-
-      let newInitialValue = { ...INITIAL_VALUES, ...ADDITIONAL_VALUES };
-      if (orderDetails.patient) {
-        newInitialValue = { ...newInitialValue, ...orderDetails.patient };
-      }
-      setInitialValues(newInitialValue);
+      setInitialValues({
+        patient: orderDetails.patient,
+        providerId: orderDetails.providerId
+      });
     }
   }, [orderDetails]);
 
@@ -245,48 +203,11 @@ const PatientDetails = () => {
   };
 
   const handleSubmit = (form, skipDuplicateCheck) => {
-    const { patientInfo } = form;
-    const cleanedFormValues = CommonUtils.cleanObject(form);
-    const payload = {
-      ...orderDetails,
-      patient: {
-        patientInfo: {
-          firstName: cleanedFormValues.firstName,
-          middleName: cleanedFormValues.middleName,
-          lastName: cleanedFormValues.lastName,
-          gender: cleanedFormValues.gender,
-          dateOfBirth: cleanedFormValues.dateOfBirth
-        },
-        contact: {
-          emailId: cleanedFormValues.emailId,
-          phoneNumber: cleanedFormValues.phoneNumber,
-          homePhone: cleanedFormValues.homePhone,
-          workPhone: cleanedFormValues.workPhone,
-          preferedMethodOfContact: cleanedFormValues.preferredContactMethod
-        },
-        patientAddress: {
-          addressLine1: cleanedFormValues.addressLine1,
-          addressLine2: cleanedFormValues.addressLine2,
-          city: cleanedFormValues.city,
-          zipCode: cleanedFormValues.zipCode,
-          state: cleanedFormValues.state
-        },
-        patientIdentifier: cleanedFormValues.patientIdentifier
-      },
-      providerId: selectedProvider?.id
-    };
+    const payload = CommonUtils.cleanObject(form);
 
-    if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
-      payload.workPhone = cleanedFormValues.workPhone;
-      payload.homePhone = cleanedFormValues.homePhone;
-      payload.mobileNumber = cleanedFormValues.mobileNumber;
-      payload.preferredMethodOfContact =
-        cleanedFormValues.preferredContactMethod;
-      payload.selectedProvider = '';
-    }
-    if (cleanedFormValues.dateOfBirth) {
+    if (form.dateOfBirth) {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(
-        cleanedFormValues.dateOfBirth,
+        form.dateOfBirth,
         'MM-DD-YYYY'
       );
     }
@@ -348,8 +269,6 @@ const PatientDetails = () => {
     return <Loader type={'screen'} />;
   }
 
-  console.log(selectedProvider);
-
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -387,25 +306,19 @@ const PatientDetails = () => {
         </div>
         <Formik
           initialValues={initialValues}
-          validationSchema={validationSchema}
+          validationSchema={getValidationSchema(t)}
           enableReinitialize={true}
-          validate={(values) => {
-            const errors = {};
-            if (!values.patientIdentifier) {
-              errors['patientIdentifier'] = 'Patient Identifier is required';
-            }
-            return errors;
-          }}
           onSubmit={(values, actions) => {
             handleSubmit(values);
             actions.setSubmitting(false);
           }}>
-          {({ values, isValid, dirty }) => {
+          {({ values, isValid, errors, dirty }) => {
             React.useEffect(() => {
-              const { provider } = values;
+              const { providerId } = values;
               const selectedProvider = providers.find(
-                (item) => item.id === provider
+                (item) => item.id === providerId
               );
+              console.log(errors);
               setSelectedProvider(selectedProvider);
               setIsDirty(dirty);
             }, [values]);
