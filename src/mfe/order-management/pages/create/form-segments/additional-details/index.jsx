@@ -706,6 +706,7 @@ function AdditionalDetails() {
                 <OrderStepper
                   patientDetailsRequired={patientDetailsRequired}
                   status={orderDetails?.currentStage}
+                  channelType={orderDetails.channelType}
                 />
 
                 <OrderHeaderDetails

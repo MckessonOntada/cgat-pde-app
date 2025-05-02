@@ -5,8 +5,6 @@ import { CHANNEL_TYPE, FormList, ORDER_STAGES } from './Constants';
 import { useNavigate, useParams } from 'react-router-dom';
 import CommonUtils from '@src/util/CommonUtils';
 import style from './OrderStepper.module.scss';
-import useOrder from '../../orders/useOrder';
-import { current } from '@reduxjs/toolkit';
 
 function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
   const { t } = useTranslate();
@@ -15,6 +13,7 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
     return {
       ACCOUNT_SELECTION: `/orders/${orderId}/accounts`,
       PATIENT_DETAILS: `/orders/${orderId}/patient`,
+      'PATIENT_&_PROVIDER_DETAILS': `/orders/${orderId}/patient`,
       PAYER_DETAILS: `/orders/${orderId}/payer`,
       ADDITIONAL_DETAILS: `/orders/${orderId}/additional-details`,
       ORDER_SUMMARY: `/orders/${orderId}/summary`
@@ -60,19 +59,11 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
     ACCOUNT_SELECTION: 2,
     ACCOUNT_DETAILS: 2,
     PATIENT_DETAILS: 3,
+    'PATIENT_&_PROVIDER_DETAILS': 3,
     PAYER_DETAILS: 4,
     ADDITIONAL_DETAILS: 5,
     ORDER_SUMMARY: 6
   };
-
-  // if (!patientDetailsRequired) {
-  //   if (status === ORDER_STAGES.PATIENT_DETAILS) {
-  //     status = ORDER_STAGES.ADDITIONAL_DETAILS;
-  //   }
-  //   currentStage.PATIENT_DETAILS = -1;
-  //   currentStage.ADDITIONAL_DETAILS = 3;
-  //   currentStage.ORDER_SUMMARY = 4;
-  // }
 
   if (
     channelType === CHANNEL_TYPE.SPECIALTY_PHARMA &&
@@ -82,8 +73,6 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
 
   const activeIndex =
     filteredStepperItems.find((step) => step.name === status)?.order || 1;
-
-  // currentStage[status] || 1;
 
   const handleOnStepClick = (e) => {
     const nearestListItem = e.target.closest('li');

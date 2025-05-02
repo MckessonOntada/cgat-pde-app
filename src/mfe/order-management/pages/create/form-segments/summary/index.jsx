@@ -72,20 +72,13 @@ const Summary = () => {
   const location = useLocation();
   const { orderId } = useParams();
   const { showAlert } = useAlert();
-  const {
-    data: orderDetails = {},
-    isFetching,
-    isError,
-    error,
-    isLoader
-  } = useOrder(orderId);
+  const { data: orderDetails = {}, isLoader } = useOrder(orderId);
   const [isPAPOrderConfirmModalOpen, setIsPAPOrderConfirmModalOpen] =
     React.useState(false);
   const { isApprover = false, isSimulate = false } = location.state || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] =
     React.useState(null);
   const [isCommentPanelOpen, setIsCommentPanelOpen] = React.useState(false);
-  const [alertMessages, setAlertMessages] = React.useState([]);
   const {
     items: notifications,
     add: addNotification,
@@ -615,6 +608,7 @@ const Summary = () => {
             <OrderStepper
               status={orderDetails?.currentStage}
               patientDetailsRequired={orderDetails?.patientDetailsRequired}
+              channelType={orderDetails.channelType}
             />
           </div>
         )}
