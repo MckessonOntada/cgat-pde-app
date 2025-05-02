@@ -1,4 +1,11 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
@@ -39,7 +46,9 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_STATE);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortCriteria, setSortCriteria] = useState(INITIAL_SORT_PARAMS);
-  const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
+  const [paginationConfig, setPaginationConfig] = useState(
+    INITIAL_PAGINATION_STATE
+  );
 
   const updateFilterState = useCallback((field, value) => {
     setFilterConfig((prevState) => ({
@@ -64,19 +73,26 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
       pageSize: paginationConfig.pageSize,
       sortBy: sortCriteria.sortBy,
       sortOrder: sortCriteria.sortOrder,
-      practiceId,
+      ...(practiceId && { practiceId }),
       partnerFunction: 'SOLD_TO',
       ...(filterConfig.searchQuery && { query: filterConfig.searchQuery }),
       ...(filterConfig.status && { status: filterConfig.status }),
-      ...(filterConfig.distChannels && { distChannels: filterConfig.distChannels }),
-      ...(filterConfig.salesOrg && { salesOrg: filterConfig.salesOrg })
+      ...(filterConfig.distChannels && {
+        distChannels: filterConfig.distChannels
+      }),
+      ...(filterConfig.salesOrg && { salesOrg: filterConfig.salesOrg }),
+      ...(practiceId && { channelType: 'ALL' })
     };
 
     if (userId) {
-      return `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/users/${userId}/accounts?${serializeParams(params)}`;
+      return `${
+        ApiRoutes.PUBLIC_ORGANIZATIONS
+      }/${practiceId}/users/${userId}/accounts?${serializeParams(params)}`;
     }
     return practiceId
-      ? `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${practiceId}/accounts?${serializeParams(params)}`
+      ? `${
+          ApiRoutes.PUBLIC_ORGANIZATIONS
+        }/${practiceId}/accounts?${serializeParams(params)}`
       : `${ApiRoutes.PUBLIC_ACCOUNTS}?${serializeParams(params)}`;
   }, [filterConfig, paginationConfig, sortCriteria, practiceId]);
 
@@ -84,7 +100,11 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
   const { isLoading, data, isError, refetch } = useQuery({
     queryKey: [apiUrl],
     queryFn: async () => {
-      const response = await HttpResourceService.callRest(`${apiUrl}`, httpVerb.GET, {});
+      const response = await HttpResourceService.callRest(
+        `${apiUrl}`,
+        httpVerb.GET,
+        {}
+      );
       if (response) {
         const { content, totalElements, totalPages } = response.data;
 
@@ -154,5 +174,9 @@ export const AccountsProvider = ({ children, practiceId, userId }) => {
     ]
   );
 
-  return <AccountsContext.Provider value={ctxValue}>{children}</AccountsContext.Provider>;
+  return (
+    <AccountsContext.Provider value={ctxValue}>
+      {children}
+    </AccountsContext.Provider>
+  );
 };
