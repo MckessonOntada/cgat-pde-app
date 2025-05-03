@@ -13,7 +13,9 @@ export const getInitialValues = () => ({
     patientInfo: {
       firstName: '',
       middleName: '',
-      lastName: ''
+      lastName: '',
+      gender: '',
+      dateOfBirth: ''
     },
     contact: {
       emailId: '',
@@ -42,7 +44,10 @@ export const getValidationSchema = (t) => {
         middleName: CommonUtils.getNameValidation(t, {
           field: 'middle_name'
         }),
-        lastName: CommonUtils.getNameValidation(t, { field: 'last_name' })
+        lastName: CommonUtils.getNameValidation(t, { field: 'last_name' }),
+        gender: Yup.string()
+          .nullable()
+          .oneOf(['Male', 'Female', 'Other'], 'Invalid gender selection')
       }),
       contact: Yup.object().shape({
         emailId: Yup.string()
@@ -60,7 +65,9 @@ export const getValidationSchema = (t) => {
           .max(15, t('orderManagement.patientDetails.validation.phone_max')),
         homePhone: Yup.string().nullable(),
         workPhone: Yup.string().nullable(),
-        preferedMethodOfContact: Yup.string().nullable()
+        preferedMethodOfContact: Yup.string()
+          .nullable()
+          .oneOf(['Mobile', 'Fax'], 'Select valid method of contact.')
       }),
       patientAddress: Yup.object().shape({
         addressLine1: Yup.string()

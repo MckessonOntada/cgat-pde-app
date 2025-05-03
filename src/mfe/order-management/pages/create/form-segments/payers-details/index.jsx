@@ -150,7 +150,7 @@ const PayerDetails = () => {
     return filteredSections;
   }, [showSecondaryPayer]);
 
-  const insuranceCompanySectionsWithActions = React.useMemo(() => {
+  const insuranceCompanySectionsWithActions = () => {
     if (!showDrugBenefitInsurer) return null;
     const filteredSection = [
       {
@@ -172,7 +172,7 @@ const PayerDetails = () => {
       }
     ];
     return filteredSection;
-  }, [showDrugBenefitInsurer]);
+  };
 
   const handleOnSubmit = (formValues) => {
     savePayerDetails(CommonUtils.cleanObject(formValues));
@@ -215,10 +215,10 @@ const PayerDetails = () => {
         enableReinitialize={true}
         onError={console.log}
         onSubmit={handleOnSubmit}>
-        {({ errors }) => {
+        {({ values, errors }) => {
           React.useEffect(() => {
-            console.log(errors);
-          }, []);
+            console.log(values, errors);
+          }, [values]);
           return (
             <Form>
               <div className="MCP-module-body">
@@ -244,7 +244,7 @@ const PayerDetails = () => {
                   <div>
                     {showDrugBenefitInsurer ? (
                       <FormRenderer
-                        sections={insuranceCompanySectionsWithActions || []}
+                        sections={insuranceCompanySectionsWithActions() || []}
                       />
                     ) : (
                       <IconButton

@@ -105,8 +105,16 @@ const PatientDetails = () => {
     if (orderDetails.patient) {
       setInitialValues({
         patient: orderDetails.patient,
-        providerId: orderDetails.providerId
+        providerId: orderDetails.provider?.id
       });
+      if (orderDetails.provider) {
+        const { name, address } = orderDetails.provider || {};
+        setSelectedProvider({
+          fullname: CommonUtils.getFullName(name),
+          detailedAddress: CommonUtils.getDetailedAddress(address),
+          ...orderDetails.provider
+        });
+      }
     }
   }, [orderDetails]);
 
@@ -251,6 +259,7 @@ const PatientDetails = () => {
           const beautifiedProviders = response.content.map((provider) => {
             const { name, address } = provider;
             return {
+              id: provider.id?.toString(),
               ...provider,
               fullname: CommonUtils.getFullName(name),
               detailedAddress: CommonUtils.getDetailedAddress(address)
@@ -316,17 +325,17 @@ const PatientDetails = () => {
             React.useEffect(() => {
               const { providerId } = values;
               const selectedProvider = providers.find(
-                (item) => item.id === providerId
+                (item) => item.id?.toString() === providerId
               );
-              console.log(errors);
-              setSelectedProvider(selectedProvider);
+              if (selectedProvider) {
+                setSelectedProvider(selectedProvider);
+              }
               setIsDirty(dirty);
             }, [values]);
             return (
               <Form>
                 <div className={styles.wrapper}>
                   <div className="MCP-panel-container">
-                    {/* <PatientDetailsForm /> */}
                     <div className="MCP-module-body">
                       <FormRenderer sections={filteredSections} />
                       {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
@@ -338,8 +347,9 @@ const PatientDetails = () => {
                               <FormRenderer
                                 sections={providerSections({
                                   providers: providers.map((item) => ({
-                                    label: CommonUtils.getFullName(item.name),
-                                    value: item.id
+                                    label: item.fullname,
+                                    subLabel: item.detailedAddress,
+                                    value: item.id.toString()
                                   }))
                                 })}
                               />

@@ -49,18 +49,18 @@ export const sections = [
         controls: [
           {
             id: 'patient-info-gender',
-            name: 'patient.gender',
+            name: 'patient.patientInfo.gender',
             label: 'orderManagement.patientDetails.inputLabel.gender',
             placeholder: ' ',
             type: 'dropdown',
             options: ['Male', 'Female', 'Other'].map((item) => ({
               label: item,
-              value: item.toUpperCase()
+              value: item
             }))
           },
           {
             id: 'patient-info-dateOfBirth',
-            name: 'patient.dateOfBirth',
+            name: 'patient.patientInfo.dateOfBirth',
             label: 'orderManagement.patientDetails.inputLabel.date_of_birth',
             placeholder: ' ',
             type: 'datePicker',
@@ -166,13 +166,13 @@ export const sections = [
           },
           {
             id: 'patient-info-preferred-method-of-contact',
-            name: 'patient.contact.preferredContactMethod',
+            name: 'patient.contact.preferedMethodOfContact',
             label:
               'orderManagement.patientDetails.inputLabel.preferredMethodOfContact',
             type: 'dropdown',
             options: ['Mobile', 'Fax'].map((item) => ({
               label: item,
-              value: item.toUpperCase()
+              value: item
             })),
             maxLength: 10,
             if: (channelType) => channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
