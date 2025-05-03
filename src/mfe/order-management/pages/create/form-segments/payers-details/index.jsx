@@ -1,7 +1,6 @@
 import React from 'react';
 import FormRenderer from '@src/mfe/core-config/manage-providers/forms/FormRenderer';
 import {
-  insuranceCompanySections,
   payerPersonalDetailsTemplate,
   sections
 } from './forms/payer-details.config';
@@ -88,18 +87,6 @@ const PayerDetails = () => {
   };
   React.useEffect(() => {
     const newValues = {};
-    newValues.secondaryInsuranceCompany =
-      showSecondaryPayer && !formValues.secondaryInsuranceCompany
-        ? getPersonalDetailsTemplate()
-        : undefined;
-    newValues.drugBenefitInsuranceCompany =
-      showDrugBenefitInsurer && formValues.drugBenefitInsuranceCompany
-        ? getPersonalDetailsTemplate()
-        : undefined;
-    setFormValues({ ...newValues, ...formValues });
-  }, [showSecondaryPayer, showDrugBenefitInsurer]);
-
-  React.useEffect(() => {
     const schemaShape = {
       primaryInsuranceCompany: insuranceCompanySchema(t),
       primaryInsuranceCoverage: insuranceCoverageSchema(t),
@@ -109,11 +96,21 @@ const PayerDetails = () => {
 
     if (showSecondaryPayer) {
       schemaShape.secondaryInsuranceCompany = insuranceCompanySchema(t);
+      if (!formValues.secondaryInsuranceCompany) {
+        newValues.secondaryInsuranceCompany = getPersonalDetailsTemplate();
+      }
+    } else {
+      formValues.secondaryInsuranceCompany = undefined;
     }
     if (showDrugBenefitInsurer) {
       schemaShape.drugBenefitInsuranceCompany = insuranceCompanySchema(t);
+      if (!formValues.drugBenefitInsuranceCompany) {
+        newValues.drugBenefitInsuranceCompany = getPersonalDetailsTemplate();
+      }
+    } else {
+      formValues.drugBenefitInsuranceCompany = undefined;
     }
-
+    setFormValues({ ...newValues, ...formValues });
     setValidationSchema(Yup.object(schemaShape));
   }, [showSecondaryPayer, showDrugBenefitInsurer]);
 
@@ -161,6 +158,7 @@ const PayerDetails = () => {
             <Button
               Icon={BinRedIcon}
               size="md"
+              class="IonButton-module"
               variant="tertiary"
               color="error"
               type="button"
@@ -177,7 +175,6 @@ const PayerDetails = () => {
   const handleOnSubmit = (formValues) => {
     savePayerDetails(CommonUtils.cleanObject(formValues));
   };
-  console.log(formValues);
   const handleOnBackToOrders = () => {};
 
   return (
