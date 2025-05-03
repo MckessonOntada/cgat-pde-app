@@ -32,6 +32,7 @@ import {
 } from './forms/validation-schema';
 import ProviderService from '@src/api/commonService/ProviderService';
 import { CHANNEL_TYPE } from '../Constants';
+import useTimedArray from '../summary/useTimedArray';
 
 export const getFilteredSections = (channelType) => {
   return sections.map((section) => ({
@@ -83,6 +84,11 @@ const PatientDetails = () => {
         navigate(`/orders/${orderId}/additional-details`);
     }
   }, [orderDetails]);
+  const {
+    items: notifications,
+    add: addNotification,
+    remove: removeNotification
+  } = useTimedArray(10000);
 
   const filteredSections = getFilteredSections(orderDetails.channelType);
   const therapyId = orderDetails?.therapy?.materialNumber;
@@ -183,10 +189,9 @@ const PatientDetails = () => {
         if (err.status === 409) {
           openDuplicateConfirmationModal(payload);
         } else {
-          showAlert({
+          addNotification({
             description: err.message,
-            type: 'error',
-            anchorEl: alertContainerId
+            type: 'error'
           });
         }
       }
@@ -304,6 +309,21 @@ const PatientDetails = () => {
           channelType={channelType}
         />
 
+        {notifications?.length > 0 && (
+          <div className="alert-container">
+            <div className="MCP-module-body">
+              {notifications.map((item, index) => (
+                <Alert
+                  key={item.id}
+                  description={item.description}
+                  onClose={() => removeNotification(item.id)}
+                  type={item.type}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className={styles.wrapper}>
           <OrderHeaderDetails
             orderDetails={orderDetails}
@@ -317,10 +337,7 @@ const PatientDetails = () => {
           initialValues={initialValues}
           validationSchema={getValidationSchema(t)}
           enableReinitialize={true}
-          onSubmit={(values, actions) => {
-            handleSubmit(values);
-            actions.setSubmitting(false);
-          }}>
+          onSubmit={handleSubmit}>
           {({ values, isValid, errors, dirty }) => {
             React.useEffect(() => {
               const { providerId } = values;

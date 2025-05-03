@@ -45,6 +45,9 @@ export const getValidationSchema = (t) => {
           field: 'middle_name'
         }),
         lastName: CommonUtils.getNameValidation(t, { field: 'last_name' }),
+        dateOfBirth: Yup.date()
+          .nullable()
+          .max(new Date(), 'Date of birth can not be greater than today.'),
         gender: Yup.string()
           .nullable()
           .oneOf(['Male', 'Female', 'Other'], 'Invalid gender selection')
