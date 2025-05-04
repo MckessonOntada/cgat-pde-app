@@ -2,7 +2,7 @@ export const ALPHA_NUMERIC = /^[a-zA-Z0-9-_ ]*$/;
 export const ALPHA_NUMERIC_ONLY_UPPERCASE = /^[A-Z0-9]*$/;
 export const ALPHA_NUMERIC_ONLY = /^[a-zA-Z0-9]*$/;
 export const ALPHA_NUMERIC_WITH_SPECIAL =
-  /^[a-zA-Z0-9\u00C0-\u017F]+([-_ ]?[a-zA-Z0-9\u00C0-\u017F]+)*$/;
+  /^[a-zA-Z0-9\u00C0-\u017F]+(?:[-_ ][a-zA-Z0-9\u00C0-\u017F]+)*$/;
 export const ALPHABETIC_WITH_SPECIAL =
   /^[a-zA-Z\u00C0-\u017F]+(\s[a-zA-Z\u00C0-\u017F]+)*$/;
 export const ALPHABETIC_ONLY = /^[a-zA-Z]+$/;
