@@ -1,7 +1,6 @@
 import ProviderService from '@src/api/commonService/ProviderService';
 
 export const providerSections = ({ providers = [] }) => {
-  console.log(providers);
   return [
     {
       rows: [
@@ -10,9 +9,9 @@ export const providerSections = ({ providers = [] }) => {
           controls: [
             {
               id: 'patient-info-provider',
-              name: 'provider',
+              name: 'providerId',
               label: '',
-              placeholder: ' ',
+              placeholder: 'Select Provider',
               type: 'dropdown',
               options: providers,
               maxLength: 50

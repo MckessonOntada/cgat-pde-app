@@ -1,7 +1,7 @@
 import React from 'react';
 import FormRenderer from '@src/mfe/core-config/manage-providers/forms/FormRenderer';
 import {
-  insuranceCompanySections,
+  payerPersonalDetailsTemplate,
   sections
 } from './forms/payer-details.config';
 import { Form, Formik } from 'formik';
@@ -18,10 +18,13 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 import PageHeader from '@src/components/pageHeader';
 import { useMutation } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
+import * as Yup from 'yup';
+
 import {
-  INITIAL_VALIDATION_SCHEMA,
-  INSURANCE_COMPANY_VALIDATION_SCHEMA,
-  SECONDARY_PAYER_VALIDATION_SCHEMA
+  getInsuranceCoverageDetailsTemplate,
+  getPersonalDetailsTemplate,
+  insuranceCompanySchema,
+  insuranceCoverageSchema
 } from './forms/validation.schema';
 import CommonUtils from '@src/util/CommonUtils';
 
@@ -36,53 +39,20 @@ function toggleProperties(a, b, flag) {
   }
 }
 
-const INITIAL_VALUES = {
-  'first-name': '',
-  'last-name': '',
-  'phone-number': '',
-  'address-line-1': '',
-  'address-line-2': '',
-  zip: '',
-  city: '',
-  state: '',
-
-  'patient-relationship': '',
-  'policy-number': '',
-  'group-number': '',
-  'plan-type': '',
-  'effective-date': '',
-  'rx-pcn-number': '',
-  'rx-grp-number': '',
-  'rx-id-number': '',
-  'rx-bin-number': ''
-};
-const SECONDARY_PAYER_INITIAL_VALUES = {
-  'secondary-payer-first-name': '',
-  'secondary-payer-last-name': '',
-  'secondary-payer-phone-number': '',
-  'secondary-payer-address-line-1': '',
-  'secondary-payer-address-line-2': '',
-  'secondary-payer-zip': '',
-  'secondary-payer-city': '',
-  'secondary-payer-state': ''
-};
-const INSURANCE_COMPANY_DETAILS = {
-  'insurance-company-first-name': '',
-  'insurance-company-last-name': '',
-  'insurance-company-phone-number': '',
-  'insurance-company-address-line-1': '',
-  'insurance-company-address-line-2': '',
-  'insurance-company-zip': '',
-  'insurance-company-city': '',
-  'insurance-company-state': ''
-};
-
 const PayerDetails = () => {
   const { t } = useTranslate();
-  const [formValues, setFormValues] = React.useState(INITIAL_VALUES);
-  const [validationSchema, setValidationSchema] = React.useState(
-    INITIAL_VALIDATION_SCHEMA(t)
-  );
+  const [formValues, setFormValues] = React.useState(() => {
+    return {
+      primaryInsuranceCompany: getPersonalDetailsTemplate(),
+      primaryInsuranceCoverage: getInsuranceCoverageDetailsTemplate()
+    };
+  });
+  const [validationSchema, setValidationSchema] = React.useState(() => {
+    return Yup.object({
+      primaryInsuranceCompany: insuranceCompanySchema(t),
+      primaryInsuranceCoverage: insuranceCoverageSchema(t)
+    });
+  });
   const { orderId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -116,43 +86,58 @@ const PayerDetails = () => {
     setShowSecondaryPayer(state);
   };
   React.useEffect(() => {
-    const newInitialFormValues = toggleProperties(
-      formValues,
-      SECONDARY_PAYER_INITIAL_VALUES,
-      showSecondaryPayer
-    );
-    setFormValues({ ...newInitialFormValues });
-  }, [showSecondaryPayer]);
-  React.useEffect(() => {
-    const newInitialFormValues = toggleProperties(
-      formValues,
-      INSURANCE_COMPANY_DETAILS,
-      showDrugBenefitInsurer
-    );
-    setFormValues({ ...newInitialFormValues });
-  }, [showDrugBenefitInsurer]);
-
-  React.useEffect(() => {
-    let schema = INITIAL_VALIDATION_SCHEMA(t);
+    const newValues = {};
+    const schemaShape = {
+      primaryInsuranceCompany: insuranceCompanySchema(t),
+      primaryInsuranceCoverage: insuranceCoverageSchema(t),
+      secondaryInsuranceCompany: undefined,
+      drugBenefitInsuranceCompany: undefined
+    };
 
     if (showSecondaryPayer) {
-      schema = schema.concat(SECONDARY_PAYER_VALIDATION_SCHEMA(t));
+      schemaShape.secondaryInsuranceCompany = insuranceCompanySchema(t);
+      if (!formValues.secondaryInsuranceCompany) {
+        newValues.secondaryInsuranceCompany = getPersonalDetailsTemplate();
+      }
+    } else {
+      formValues.secondaryInsuranceCompany = undefined;
     }
     if (showDrugBenefitInsurer) {
-      schema = schema.concat(INSURANCE_COMPANY_VALIDATION_SCHEMA(t));
+      schemaShape.drugBenefitInsuranceCompany = insuranceCompanySchema(t);
+      if (!formValues.drugBenefitInsuranceCompany) {
+        newValues.drugBenefitInsuranceCompany = getPersonalDetailsTemplate();
+      }
+    } else {
+      formValues.drugBenefitInsuranceCompany = undefined;
+    }
+    setFormValues({ ...newValues, ...formValues });
+    setValidationSchema(Yup.object(schemaShape));
+  }, [showSecondaryPayer, showDrugBenefitInsurer]);
+
+  React.useEffect(() => {
+    const { secondaryInsuranceCompany, drugBenefitInsuranceCompany } =
+      orderDetails.payerDetails || {};
+    if (secondaryInsuranceCompany) {
+      setShowSecondaryPayer(true);
+    }
+    if (drugBenefitInsuranceCompany) {
+      setShowDrugBenefitInsurer(true);
     }
 
-    setValidationSchema(schema);
-  }, [showSecondaryPayer, showDrugBenefitInsurer]);
+    if (orderDetails.payerDetails) {
+      setFormValues({ ...orderDetails.payerDetails });
+    }
+  }, [orderDetails]);
 
   const handleOnAddDrugBenefitInsuranceCompany = (state) => {
     setShowDrugBenefitInsurer(state);
   };
+
   const secondaryPayerSection = React.useMemo(() => {
     if (!showSecondaryPayer) return null;
     const filteredSections = [
       {
-        ...sections[0],
+        rows: payerPersonalDetailsTemplate('secondaryInsuranceCompany'),
         title: null,
         subTitle: 'Secondary Payer Details',
         isRequired: false
@@ -162,16 +147,18 @@ const PayerDetails = () => {
     return filteredSections;
   }, [showSecondaryPayer]);
 
-  const insuranceCompanySectionsWithActions = React.useMemo(() => {
+  const insuranceCompanySectionsWithActions = () => {
     if (!showDrugBenefitInsurer) return null;
     const filteredSection = [
       {
-        ...insuranceCompanySections[0],
+        rows: payerPersonalDetailsTemplate('drugBenefitInsuranceCompany'),
+        subTitle: 'Drug Benefit Insurance Company',
         secondaryActions: (
           <div className="styled-icon-button">
             <Button
               Icon={BinRedIcon}
               size="md"
+              class="IonButton-module"
               variant="tertiary"
               color="error"
               type="button"
@@ -183,71 +170,11 @@ const PayerDetails = () => {
       }
     ];
     return filteredSection;
-  }, [showDrugBenefitInsurer]);
-
-  const handleOnSubmit = (formValues) => {
-    const payload = {
-      primaryInsuranceCompany: {
-        name: {
-          firstName: formValues['first-name'],
-          lastName: formValues['last-name']
-        },
-        phone: formValues['phone-number'],
-        address: {
-          address1: formValues['address-line-1'],
-          address2: formValues['address-line-2'],
-          zip: formValues['zip'],
-          state: formValues['state'],
-          city: formValues['city']
-        }
-      },
-      primaryInsuranceCoverage: {
-        patientSubscriberRelationship:
-          formValues['patient-relationship']?.toUpperCase(),
-        policyNumber: formValues['policy-number'],
-        groupNumber: formValues['group-number'],
-        planType: formValues['plan-type'],
-        effectiveDate: formValues['effective-date'],
-        pcnNumber: formValues['rx-pcn-number'],
-        grpNumber: formValues['rx-grp-number'],
-        idNumber: formValues['rx-id-number'],
-        binNumber: formValues['rx-bin-number']
-      },
-      secondaryInsuranceCompany: {
-        name: {
-          firstName: formValues['secondary-payer-first-name'],
-          middleName: '', // Optional fallback
-          lastName: formValues['secondary-payer-last-name']
-        },
-        phone: formValues['secondary-payer-phone-number'],
-        address: {
-          address1: formValues['secondary-payer-address-line-1'],
-          address2: formValues['secondary-payer-address-line-2'],
-          zip: formValues['secondary-payer-zip'],
-          state: formValues['secondary-payer-state'],
-          city: formValues['secondary-payer-city']
-        }
-      },
-      drugBenefitInsuranceCompany: {
-        name: {
-          firstName: formValues['insurance-company-first-name'],
-          middleName: '',
-          lastName: formValues['insurance-company-last-name']
-        },
-        phone: formValues['insurance-company-phone-number'],
-        address: {
-          address1: formValues['insurance-company-address-line-1'],
-          address2: formValues['insurance-company-address-line-2'],
-          zip: formValues['insurance-company-zip'],
-          state: formValues['insurance-company-state'],
-          city: formValues['insurance-company-city']
-        }
-      }
-    };
-    const finePayload = CommonUtils.cleanObject(payload);
-    savePayerDetails(finePayload);
   };
 
+  const handleOnSubmit = (formValues) => {
+    savePayerDetails(CommonUtils.cleanObject(formValues));
+  };
   const handleOnBackToOrders = () => {};
 
   return (
@@ -285,11 +212,10 @@ const PayerDetails = () => {
         enableReinitialize={true}
         onError={console.log}
         onSubmit={handleOnSubmit}>
-        {({ values }) => {
+        {({ values, errors }) => {
           React.useEffect(() => {
-            setFormValues(values);
+            console.log(values, errors);
           }, [values]);
-
           return (
             <Form>
               <div className="MCP-module-body">
@@ -298,10 +224,7 @@ const PayerDetails = () => {
                   <hr />
                   <div>
                     {showSecondaryPayer ? (
-                      <FormRenderer
-                        sections={secondaryPayerSection}
-                        fieldPrefix="secondary-payer-"
-                      />
+                      <FormRenderer sections={secondaryPayerSection} />
                     ) : (
                       <IconButton
                         variant="tertiary"
@@ -318,8 +241,7 @@ const PayerDetails = () => {
                   <div>
                     {showDrugBenefitInsurer ? (
                       <FormRenderer
-                        fieldPrefix="insurance-company-"
-                        sections={insuranceCompanySectionsWithActions || []}
+                        sections={insuranceCompanySectionsWithActions() || []}
                       />
                     ) : (
                       <IconButton

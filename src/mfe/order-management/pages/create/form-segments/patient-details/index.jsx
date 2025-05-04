@@ -1,12 +1,16 @@
 import React, { useEffect } from 'react';
 import styles from './PatientDetails.module.scss';
-import { Button, Alert } from '@mckesson/mcp-component-library';
-import ModuleHeader from '@src/components/module-header';
+import {
+  Button,
+  Alert,
+  Tooltip,
+  Loader,
+  Heading
+} from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import PatientDetailsForm from './PatientDetailsForm';
 import { Form, Formik } from 'formik';
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation } from 'react-query';
@@ -19,20 +23,16 @@ import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/Disca
 import { renderModal } from '@src/util/ModalUtil';
 import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
-import { Loader, Heading } from '@mckesson/mcp-component-library';
-import { ChannelType } from '../Constants';
-
 import { sections } from './forms/patient-details.config';
 import FormRenderer from '@src/mfe/core-config/manage-providers/forms/FormRenderer';
 import { providerSections } from './forms/providers.config';
 import {
-  getAdditionalContactSchema,
+  getInitialValues,
   getValidationSchema
 } from './forms/validation-schema';
 import ProviderService from '@src/api/commonService/ProviderService';
 import { CHANNEL_TYPE } from '../Constants';
-import ProviderDetailsCard from './ProviderDetailsCard';
-import DetailSegment from '@src/components/DetailSegment';
+import useTimedArray from '../summary/useTimedArray';
 
 export const getFilteredSections = (channelType) => {
   return sections.map((section) => ({
@@ -48,35 +48,11 @@ export const getFilteredSections = (channelType) => {
     }))
   }));
 };
-const INITIAL_VALUES = {
-  firstName: '',
-  middleName: '',
-  lastName: '',
-  gender: '',
-  dateOfBirth: '',
-  emailId: '',
-  phoneNumber: '',
-  addressLine1: '',
-  addressLine2: '',
-  city: '',
-  zipCode: '',
-  state: '',
-  patientIdentifier: ''
-};
-const ADDITIONAL_VALUES = {
-  homePhone: '',
-  mobileNumber: '',
-  workPhone: '',
-  provider: '',
-  preferredMethodOfContact: ''
-};
+
 const PatientDetails = () => {
   const { t } = useTranslate();
-  const [validationSchema, setValidationSchema] = React.useState(
-    getValidationSchema(t)
-  );
   const [selectedProvider, setSelectedProvider] = React.useState(null);
-  const [initialValues, setInitialValues] = React.useState(INITIAL_VALUES);
+  const [initialValues, setInitialValues] = React.useState(getInitialValues());
   const { orderId } = useParams();
   const navigate = useNavigate();
   const alertContainerId = 'patintDetails-alert-container';
@@ -108,6 +84,11 @@ const PatientDetails = () => {
         navigate(`/orders/${orderId}/additional-details`);
     }
   }, [orderDetails]);
+  const {
+    items: notifications,
+    add: addNotification,
+    remove: removeNotification
+  } = useTimedArray(10000);
 
   const filteredSections = getFilteredSections(orderDetails.channelType);
   const therapyId = orderDetails?.therapy?.materialNumber;
@@ -124,32 +105,22 @@ const PatientDetails = () => {
     soldToAccountId,
     shipToAccountId
   });
-  const [providers, setProviders] = React.useState([
-    { label: 'A', value: 'a' }
-  ]);
+  const [providers, setProviders] = React.useState([]);
 
   React.useEffect(() => {
     if (orderDetails.patient) {
-      const patientDetails = CommonUtils.flattenToRoot(
-        orderDetails.patient,
-        {}
-      );
-      setInitialValues(patientDetails);
-    }
-  }, [orderDetails]);
-
-  React.useEffect(() => {
-    if (orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
-      const baseSchema = getValidationSchema(t);
-      const additionalSchema = getAdditionalContactSchema(t);
-      const combinedSchema = baseSchema.concat(additionalSchema);
-      setValidationSchema(combinedSchema);
-
-      let newInitialValue = { ...INITIAL_VALUES, ...ADDITIONAL_VALUES };
-      if (orderDetails.patient) {
-        newInitialValue = { ...newInitialValue, ...orderDetails.patient };
+      setInitialValues({
+        patient: orderDetails.patient,
+        providerId: orderDetails.provider?.id
+      });
+      if (orderDetails.provider) {
+        const { name, address } = orderDetails.provider || {};
+        setSelectedProvider({
+          fullname: CommonUtils.getFullName(name),
+          detailedAddress: CommonUtils.getDetailedAddress(address),
+          ...orderDetails.provider
+        });
       }
-      setInitialValues(newInitialValue);
     }
   }, [orderDetails]);
 
@@ -218,10 +189,9 @@ const PatientDetails = () => {
         if (err.status === 409) {
           openDuplicateConfirmationModal(payload);
         } else {
-          showAlert({
+          addNotification({
             description: err.message,
-            type: 'error',
-            anchorEl: alertContainerId
+            type: 'error'
           });
         }
       }
@@ -246,48 +216,11 @@ const PatientDetails = () => {
   };
 
   const handleSubmit = (form, skipDuplicateCheck) => {
-    const { patientInfo } = form;
-    const cleanedFormValues = CommonUtils.cleanObject(form);
-    const payload = {
-      ...orderDetails,
-      patient: {
-        patientInfo: {
-          firstName: cleanedFormValues.firstName,
-          middleName: cleanedFormValues.middleName,
-          lastName: cleanedFormValues.lastName,
-          gender: cleanedFormValues.gender,
-          dateOfBirth: cleanedFormValues.dateOfBirth
-        },
-        contact: {
-          emailId: cleanedFormValues.emailId,
-          phoneNumber: cleanedFormValues.phoneNumber,
-          homePhone: cleanedFormValues.homePhone,
-          workPhone: cleanedFormValues.workPhone,
-          preferedMethodOfContact: cleanedFormValues.preferredContactMethod
-        },
-        patientAddress: {
-          addressLine1: cleanedFormValues.addressLine1,
-          addressLine2: cleanedFormValues.addressLine2,
-          city: cleanedFormValues.city,
-          zipCode: cleanedFormValues.zipCode,
-          state: cleanedFormValues.state
-        },
-        patientIdentifier: cleanedFormValues.patientIdentifier
-      },
-      providerId: selectedProvider?.id
-    };
+    const payload = CommonUtils.cleanObject(form);
 
-    if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
-      payload.workPhone = cleanedFormValues.workPhone;
-      payload.homePhone = cleanedFormValues.homePhone;
-      payload.mobileNumber = cleanedFormValues.mobileNumber;
-      payload.preferredMethodOfContact =
-        cleanedFormValues.preferredContactMethod;
-      payload.selectedProvider = '';
-    }
-    if (cleanedFormValues.dateOfBirth) {
+    if (form.dateOfBirth) {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(
-        cleanedFormValues.dateOfBirth,
+        form.dateOfBirth,
         'MM-DD-YYYY'
       );
     }
@@ -327,8 +260,18 @@ const PatientDetails = () => {
         accountId: orderDetails.accountDetails?.soldToAccount?.id
       };
       ProviderService.getAllProviders(params).then((response) => {
-        if (response.content && Array.isArray(response.content))
-          setProviders(response.content);
+        if (response.content && Array.isArray(response.content)) {
+          const beautifiedProviders = response.content.map((provider) => {
+            const { name, address } = provider;
+            return {
+              id: provider.id?.toString(),
+              ...provider,
+              fullname: CommonUtils.getFullName(name),
+              detailedAddress: CommonUtils.getDetailedAddress(address)
+            };
+          });
+          setProviders(beautifiedProviders);
+        }
       });
     }
   }, [orderDetails]);
@@ -366,6 +309,21 @@ const PatientDetails = () => {
           channelType={channelType}
         />
 
+        {notifications?.length > 0 && (
+          <div className="alert-container">
+            <div className="MCP-module-body">
+              {notifications.map((item, index) => (
+                <Alert
+                  key={item.id}
+                  description={item.description}
+                  onClose={() => removeNotification(item.id)}
+                  type={item.type}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className={styles.wrapper}>
           <OrderHeaderDetails
             orderDetails={orderDetails}
@@ -377,33 +335,24 @@ const PatientDetails = () => {
         </div>
         <Formik
           initialValues={initialValues}
-          validationSchema={validationSchema}
+          validationSchema={getValidationSchema(t)}
           enableReinitialize={true}
-          validate={(values) => {
-            const errors = {};
-            if (!values.patientIdentifier) {
-              errors['patientIdentifier'] = 'Patient Identifier is required';
-            }
-            return errors;
-          }}
-          onSubmit={(values, actions) => {
-            handleSubmit(values);
-            actions.setSubmitting(false);
-          }}>
-          {({ values, isValid, dirty }) => {
+          onSubmit={handleSubmit}>
+          {({ values, isValid, errors, dirty }) => {
             React.useEffect(() => {
-              const { provider } = values;
+              const { providerId } = values;
               const selectedProvider = providers.find(
-                (item) => item.id === provider
+                (item) => item.id?.toString() === providerId
               );
-              setSelectedProvider(selectedProvider);
+              if (selectedProvider) {
+                setSelectedProvider(selectedProvider);
+              }
               setIsDirty(dirty);
             }, [values]);
             return (
               <Form>
                 <div className={styles.wrapper}>
                   <div className="MCP-panel-container">
-                    {/* <PatientDetailsForm /> */}
                     <div className="MCP-module-body">
                       <FormRenderer sections={filteredSections} />
                       {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
@@ -415,26 +364,35 @@ const PatientDetails = () => {
                               <FormRenderer
                                 sections={providerSections({
                                   providers: providers.map((item) => ({
-                                    label: CommonUtils.getFullName(item.name),
-                                    value: item.id
+                                    label: item.fullname,
+                                    subLabel: item.detailedAddress,
+                                    value: item.id.toString()
                                   }))
                                 })}
                               />
                             </div>
                             {selectedProvider && (
-                              <div className="MCP-CardContainer">
-                                <Heading as="h3">
-                                  {CommonUtils.getFullName(
-                                    selectedProvider.name
-                                  )}
+                              <div className="details-card">
+                                <Heading className="details-title" as="h3">
+                                  {selectedProvider.fullname}
                                 </Heading>
-                                <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-[1fr_2fr] align-items-start">
-                                  <DetailSegment
-                                    label=""
-                                    value={CommonUtils.getDetailedAddress(
-                                      selectedProvider.address
-                                    )}
-                                  />
+                                <div className="grid grid-gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start">
+                                  <Tooltip
+                                    body={selectedProvider.detailedAddress}>
+                                    <p className="detail-segment inline-text-overflow">
+                                      {selectedProvider.detailedAddress}
+                                    </p>
+                                  </Tooltip>
+                                  {['dea', 'npi', 'phone'].map((key) => {
+                                    const value = selectedProvider[key];
+                                    return (
+                                      <Tooltip body={value}>
+                                        <p className="detail-segment inline-text-overflow">
+                                          {value}
+                                        </p>
+                                      </Tooltip>
+                                    );
+                                  })}
                                 </div>
                               </div>
                             )}

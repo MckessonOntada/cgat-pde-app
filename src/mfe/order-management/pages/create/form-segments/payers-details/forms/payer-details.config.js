@@ -13,14 +13,16 @@ const getStates = () => {
   return options;
 };
 
-const payerPersonalDetailsTemplate = () => {
+export const payerPersonalDetailsTemplate = (parentKey) => {
+  console.log(parentKey);
   return [
     {
       grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
       controls: [
         {
           id: 'payer-info-firstName',
-          name: 'first-name',
+          name: `${parentKey}.name.firstName`,
+          value: `${parentKey}.name.firstName`,
           label: 'orderManagement.patientDetails.inputLabel.first_name',
           placeholder: ' ',
           type: 'input',
@@ -29,7 +31,7 @@ const payerPersonalDetailsTemplate = () => {
         },
         {
           id: 'payer-info-lastName',
-          name: 'last-name',
+          name: `${parentKey}.name.lastName`,
           label: 'orderManagement.patientDetails.inputLabel.last_name',
           placeholder: ' ',
           type: 'input',
@@ -37,7 +39,7 @@ const payerPersonalDetailsTemplate = () => {
         },
         {
           id: 'payer-info-phone-number',
-          name: 'phone-number',
+          name: `${parentKey}.phone`,
           label: 'orderManagement.patientDetails.inputLabel.phone_number',
           placeholder: ' ',
           type: 'phoneInput',
@@ -50,7 +52,7 @@ const payerPersonalDetailsTemplate = () => {
       controls: [
         {
           id: 'payer-info-addressLine1',
-          name: 'address-line-1',
+          name: `${parentKey}.address.address1`,
           label: 'orderManagement.patientDetails.inputLabel.address_1',
           placeholder: ' ',
           type: 'input',
@@ -58,7 +60,7 @@ const payerPersonalDetailsTemplate = () => {
         },
         {
           id: 'payer-info-addressLine2',
-          name: 'address-line-2',
+          name: `${parentKey}.address.address2`,
           label: 'orderManagement.patientDetails.inputLabel.address_2',
           placeholder: ' ',
           maxLength: 100,
@@ -71,7 +73,7 @@ const payerPersonalDetailsTemplate = () => {
       controls: [
         {
           id: 'payer-info-zip-code',
-          name: 'zip',
+          name: `${parentKey}.address.zip`,
           label: 'orderManagement.patientDetails.inputLabel.zip',
           placeholder: ' ',
           type: 'zipInput',
@@ -79,7 +81,7 @@ const payerPersonalDetailsTemplate = () => {
         },
         {
           id: 'payer-info-city',
-          name: 'city',
+          name: `${parentKey}.address.city`,
           label: 'orderManagement.patientDetails.inputLabel.city',
           placeholder: ' ',
           type: 'input',
@@ -87,7 +89,7 @@ const payerPersonalDetailsTemplate = () => {
         },
         {
           id: 'payer-info-state',
-          name: 'state',
+          name: `${parentKey}.address.state`,
           label: 'orderManagement.patientDetails.inputLabel.state',
           placeholder: ' ',
           type: 'dropdown',
@@ -98,27 +100,27 @@ const payerPersonalDetailsTemplate = () => {
   ];
 };
 
-const insuranceCoverageDetailsTemplate = () => {
+export const insuranceCoverageDetailsTemplate = () => {
   return [
     {
       grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
       controls: [
         {
           id: 'insurance-coverage-patient-relationship-to-subscriber',
-          name: 'patient-relationship',
+          name: 'primaryInsuranceCoverage.patientSubscriberRelationship',
           label: 'formControl.patientRelationship',
           placeholder: ' ',
           type: 'dropdown',
           options: PATIENT_RELATIONSHIP.map((item) => ({
             label: item,
-            value: item
+            value: item.toUpperCase()
           })),
           isRequired: true,
           maxLength: 50
         },
         {
           id: 'policy-number',
-          name: 'policy-number',
+          name: 'primaryInsuranceCoverage.policyNumber',
           label: 'formControl.policyNumber',
           placeholder: ' ',
           type: 'input',
@@ -127,7 +129,7 @@ const insuranceCoverageDetailsTemplate = () => {
         },
         {
           id: 'group-number',
-          name: 'group-number',
+          name: 'primaryInsuranceCoverage.groupNumber',
           label: 'formControl.groupNumber',
           placeholder: ' ',
           type: 'input',
@@ -140,7 +142,7 @@ const insuranceCoverageDetailsTemplate = () => {
       controls: [
         {
           id: 'insurance-plan-type',
-          name: 'plan-type',
+          name: 'primaryInsuranceCoverage.planType',
           label: 'formControl.planType',
           placeholder: ' ',
           type: 'dropdown',
@@ -152,7 +154,7 @@ const insuranceCoverageDetailsTemplate = () => {
         },
         {
           id: 'insurance-effective-date',
-          name: 'effective-date',
+          name: 'primaryInsuranceCoverage.effectiveDate',
           label: 'formControl.effectiveDate',
           placeholder: ' ',
           maxLength: 100,
@@ -161,7 +163,7 @@ const insuranceCoverageDetailsTemplate = () => {
         },
         {
           id: 'insurance-rx-pcn-number',
-          name: 'rx-pcn-number',
+          name: 'primaryInsuranceCoverage.pcnNumber',
           label: 'formControl.rxPCNNumber',
           placeholder: ' ',
           maxLength: 100,
@@ -174,7 +176,7 @@ const insuranceCoverageDetailsTemplate = () => {
       controls: [
         {
           id: 'insurance-grp-pcn-number',
-          name: 'rx-grp-number',
+          name: 'primaryInsuranceCoverage.grpNumber',
           label: 'formControl.rxGRPNumber',
           placeholder: ' ',
           maxLength: 100,
@@ -182,7 +184,7 @@ const insuranceCoverageDetailsTemplate = () => {
         },
         {
           id: 'insurance-rx-id-number',
-          name: 'rx-id-number',
+          name: 'primaryInsuranceCoverage.idNumber',
           label: 'formControl.rxIDNumber',
           placeholder: ' ',
           maxLength: 100,
@@ -190,7 +192,7 @@ const insuranceCoverageDetailsTemplate = () => {
         },
         {
           id: 'insurance-rx-bin-number',
-          name: 'rx-bin-number',
+          name: 'primaryInsuranceCoverage.binNumber',
           label: 'formControl.rxBINNumber',
           placeholder: ' ',
           maxLength: 100,
@@ -206,7 +208,7 @@ export const sections = [
     title: 'provider.providerDetails',
     subTitle: 'Primary Insurance Company',
     isRequired: true,
-    rows: payerPersonalDetailsTemplate()
+    rows: payerPersonalDetailsTemplate('primaryInsuranceCompany')
   },
   {
     subTitle: 'Primary Insurance Coverage',
@@ -214,9 +216,7 @@ export const sections = [
   }
 ];
 
-export const insuranceCompanySections = [
-  {
-    subTitle: 'Drug Benefit Insurance Company',
-    rows: payerPersonalDetailsTemplate()
-  }
-];
+export const insuranceCompanySections = () => ({
+  subTitle: 'Drug Benefit Insurance Company',
+  rows: payerPersonalDetailsTemplate('drugBenefitInsuranceCompany')
+});

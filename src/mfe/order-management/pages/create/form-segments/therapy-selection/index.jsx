@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Alert } from '@mckesson/mcp-component-library';
 import styles from './TherapySelection.module.scss';
-import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
-import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import TherapyDataTable from './TherapyDataTable';
@@ -34,7 +32,7 @@ function TherapySelection() {
   const { clearFilters, applyFilters } = useTherapy();
   const [initialSelectedTherapy, setInitialSelectedTherapy] =
     React.useState(null);
-  const { data: orderDetails } = useOrder(orderId);
+  const { data: orderDetails = {} } = useOrder(orderId);
   const [therapy, setTherapy] = useState(orderDetails?.therapy);
   const searchParams = new URLSearchParams(location.search);
   const therapyDetails = searchParams.get('therapy-details');
@@ -202,6 +200,7 @@ function TherapySelection() {
         <OrderStepper
           status={orderDetails?.currentStage}
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
+          channelType={orderDetails.channelType}
         />
         <div id={alertContainerId} />
         <div className={styles.wrapper}>
