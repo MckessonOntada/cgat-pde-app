@@ -75,7 +75,7 @@ export const ShippingAddressProvider = ({ children, accountDetails }) => {
         channelType: selectedAccount?.channelType
       })
     }),
-    [filterState, pageConfig.currentPage, selectedAccount]
+    [filterState, pageConfig.currentPage, selectedAccount?.channelType]
   );
 
   const {
