@@ -215,9 +215,9 @@ const PatientDetails = () => {
     }
   };
 
-  const handleSubmit = (form, skipDuplicateCheck) => {
+  const handleSubmit = (form) => {
     const payload = CommonUtils.cleanObject(form);
-
+    let skipDuplicateCheck = false;
     if (form.dateOfBirth) {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(
         form.dateOfBirth,
