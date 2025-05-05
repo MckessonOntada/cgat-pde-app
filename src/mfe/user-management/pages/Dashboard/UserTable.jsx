@@ -47,7 +47,10 @@ function UserTable({ onActionSuccess }) {
   const { hasPermission, hasAnyPermission } = usePermission();
   const showCardView = useResponsiveView();
   const navigate = useNavigate();
-  const [selectedUserInfo, setSelectedUserInfo] = useState({ userId: null, isActive: false });
+  const [selectedUserInfo, setSelectedUserInfo] = useState({
+    userId: null,
+    isActive: false
+  });
 
   const handleRowSelected = ({ selectedRows }) => {
     setSelectedRows(selectedRows);
@@ -111,7 +114,10 @@ function UserTable({ onActionSuccess }) {
   };
 
   useEffect(() => {
-    if (isBack) refreshData();
+    if (isBack) {
+      refreshData();
+      navigate(location.pathname, { replace: true, state: {} });
+    }
   }, [location.pathname, location.state, navigate]);
 
   const {
@@ -141,7 +147,10 @@ function UserTable({ onActionSuccess }) {
         { userId: row.id },
         {
           onSuccess: (response) => {
-            navigate(RoutePaths.pathUserManagement, { state: { isReject: true, isSuccess: true }, replace: true });
+            navigate(RoutePaths.pathUserManagement, {
+              state: { isReject: true, isSuccess: true },
+              replace: true
+            });
           },
           onError: (error) => {
             console.log('error: ', error);
@@ -164,7 +173,10 @@ function UserTable({ onActionSuccess }) {
             items={[
               {
                 onChange: (event) => {
-                  setSelectedUserInfo({ userId: row?.id, isActive: row?.isActive });
+                  setSelectedUserInfo({
+                    userId: row?.id,
+                    isActive: row?.isActive
+                  });
                   setSelectedRows(event.target.checked ? row.id : null);
                 },
                 value: row.id,
