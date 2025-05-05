@@ -215,9 +215,8 @@ const PatientDetails = () => {
     }
   };
 
-  const handleSubmit = (form) => {
+  const handleSubmit = (form, skipDuplicateCheck = false) => {
     const payload = CommonUtils.cleanObject(form);
-    let skipDuplicateCheck = false;
     if (form.dateOfBirth) {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(
         form.dateOfBirth,
@@ -340,7 +339,7 @@ const PatientDetails = () => {
             orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
           )}
           enableReinitialize={true}
-          onSubmit={handleSubmit}>
+          onSubmit={(values) => handleSubmit(values)}>
           {({ values, isValid, errors, dirty }) => {
             React.useEffect(() => {
               const { providerId } = values;
