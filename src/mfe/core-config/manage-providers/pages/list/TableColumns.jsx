@@ -164,7 +164,7 @@ export const getColumns = (add) => {
     ) {
       options.push({
         label: t(
-          props.isActive
+          !props.isActive
             ? 'provider.contextMenu.optionActivate'
             : 'provider.contextMenu.optionDeactivate'
         ),
@@ -172,7 +172,8 @@ export const getColumns = (add) => {
       });
       options.push({
         label: t('provider.contextMenu.optionLinkSPAccount'),
-        value: 'linkSPAccount'
+        value: 'linkSPAccount',
+        disabled: props.isActive === false
       });
     }
 
@@ -228,7 +229,6 @@ export const getColumns = (add) => {
       sortable: true,
       sortKey: 'first name',
       cell: (props) => {
-        debugger;
         const isAllowed = hasPermission(
           PERMISSIONS_ENUM.MANAGE_PROVIDERS.VIEW_PROVIDER
         );
