@@ -77,7 +77,7 @@ const AccountSelection = () => {
     queryFn: async () =>
       OrderService.getSoldToAccounts(
         therapyId,
-        serializeParams({ query: accountSearchString })
+        serializeParams({ query: accountSearchString, channelType : orderDetails?.accountDetails?.soldToAccount?.channelType })
       ),
     enabled: !!therapyId && !!orderDetails.accountDetails.soldToAccount,
     refetchOnWindowFocus: false,
