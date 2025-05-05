@@ -585,6 +585,8 @@ export const MessageEn = {
   'heading.uploadProviderListCSV': 'Upload Provider List CSV',
   'controls.addProviders': 'Add Provider',
   'controls.downloadCSVTemplate': 'Download CSV Template',
+  'controls.placeholder.searchSPCatalogPlaceholder':
+    'Search by ID, Name, NDC, Account Number...',
   'controls.placeholder.searchProviderPlaceholder':
     'Search by Provider Name, NPI Number, DEA Number, Address ',
   'label.emptyProviderTableDescription':
