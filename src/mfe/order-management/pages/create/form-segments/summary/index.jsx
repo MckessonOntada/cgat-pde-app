@@ -138,7 +138,8 @@ const Summary = () => {
       addNotification({
         description:
           'Something went wrong while checking inventory. Please try again later.',
-        type: 'error'
+        type: 'error',
+        isSticky: true
       });
       setInventoryStatus('PENDING');
     }
@@ -170,7 +171,8 @@ const Summary = () => {
         erroredItems.forEach((err) => {
           addNotification({
             description: err.errorMessage,
-            type: 'error'
+            type: 'error',
+            isSticky: true
           });
         });
       }
@@ -178,7 +180,8 @@ const Summary = () => {
         warningMessages.forEach((warn) => {
           addNotification({
             description: warn.value,
-            type: 'warning'
+            type: 'warning',
+            isSticky: true
           });
         });
       }
@@ -835,7 +838,9 @@ const Summary = () => {
                     />
                     <DetailSegment
                       label={t('labels.distributionsChannel')}
-                      value={t(`labels.${accountDetails?.soldToAccount?.channelType}`)}
+                      value={t(
+                        `labels.${accountDetails?.soldToAccount?.channelType}`
+                      )}
                     />
                     <DetailSegment
                       label={t('labels.netPrice')}
@@ -911,7 +916,9 @@ const Summary = () => {
                     />
                     <DetailSegment
                       label={t('labels.program')}
-                      value={accountDetails?.soldToAccount?.cgatIdentifier || '-'}
+                      value={
+                        accountDetails?.soldToAccount?.cgatIdentifier || '-'
+                      }
                     />
                   </div>
                 </div>
