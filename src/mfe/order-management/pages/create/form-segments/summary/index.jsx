@@ -115,7 +115,7 @@ const Summary = () => {
       sapOrderId: backendOrderId,
       salesOrgId: accountDetails.soldToAccount?.salesOrg,
       status,
-      isSPOrder : spOrder
+      isSPOrder: spOrder
     },
     (status) => setSapStatus(status),
     (error) => {
@@ -731,17 +731,22 @@ const Summary = () => {
               <div
                 className={`grid grid-gap-16 grid-cols-1 md:grid-cols-1 ${
                   status === StatusEnum.SUBMITTED
-                    ? !spOrder ? 'lg:grid-cols-4 xl:grid-cols-4' : 'lg:grid-cols-3 xl:grid-cols-3'
+                    ? !spOrder
+                      ? 'lg:grid-cols-4 xl:grid-cols-4'
+                      : 'lg:grid-cols-3 xl:grid-cols-3'
                     : 'lg:grid-cols-2 xl:grid-cols-2'
                 }`}>
-                {status === StatusEnum.SUBMITTED && !spOrder &&(
+                {status === StatusEnum.SUBMITTED && !spOrder && (
                   <DetailSegment
                     label={t('labels.sapId')}
                     value={backendOrderId}
                   />
                 )}
                 {status === StatusEnum.SUBMITTED && (
-                  <DetailSegment label={t(!spOrder ? 'labels.pdeId' : 'labels.orderId')} value={orderId} />
+                  <DetailSegment
+                    label={t(!spOrder ? 'labels.pdeId' : 'labels.orderId')}
+                    value={orderId}
+                  />
                 )}
                 <DetailSegment
                   label={t('labels.materialDescription')}
@@ -906,7 +911,11 @@ const Summary = () => {
                     />
                     <DetailSegment
                       label={t('labels.shippingAccountNo')}
-                      value={accountDetails?.shipToAccount?.accountNumber}
+                      value={
+                        spOrder
+                          ? accountDetails?.shipToAccount?.id
+                          : accountDetails?.shipToAccount?.accountNumber
+                      }
                     />
                     <DetailSegment
                       label={t('labels.orderChannel')}
@@ -914,12 +923,12 @@ const Summary = () => {
                         `labels.${accountDetails?.soldToAccount?.channelType}`
                       )}
                     />
-                    <DetailSegment
-                      label={t('labels.program')}
-                      value={
-                        accountDetails?.soldToAccount?.cgatIdentifier || '-'
-                      }
-                    />
+                    {!spOrder && (
+                      <DetailSegment
+                        label={t('labels.program')}
+                        value={accountDetails?.soldToAccount?.cgatIdentifier}
+                      />
+                    )}
                   </div>
                 </div>
               </div>

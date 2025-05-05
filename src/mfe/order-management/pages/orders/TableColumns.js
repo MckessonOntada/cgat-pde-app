@@ -259,7 +259,10 @@ function getOptionsByStatus(props) {
       ),
       value: ORDER_ENTITY_ACTION.REVIEW
     });
-  } else if (tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL) {
+  } else if (
+    tab === ORDER_TABS.SUBMITTED_BUY_AND_BILL ||
+    tab === ORDER_TABS.SUBMITTED_SP
+  ) {
     if (hasPermission(PERMISSIONS_ENUM.ORDER_MANAGEMENT.VIEW_ORDERS)) {
       options.push({
         label: translate(`labels.orderActions.view`),
@@ -333,7 +336,7 @@ const jsxColumns = [
     name: 'labels.sapId',
     selector: () => {},
     sortable: true,
-    sortKey: 'backendOrderId',
+    sortKey: 'backend_order_id',
     minWidth: '130px',
     cell: function (props) {
       return (
@@ -380,7 +383,7 @@ const jsxColumns = [
     name: 'labels.patientName',
     selector: () => {},
     sortable: true,
-    sortKey: 'patient.patientInfo',
+    sortKey: 'patient_details.patient_info.first_name',
     cell: function (props) {
       const patientInfo = props.patient && props.patient.patientInfo;
       if (!patientInfo) return 'N/A';
@@ -397,7 +400,7 @@ const jsxColumns = [
     name: 'labels.therapy',
     selector: () => {},
     sortable: true,
-    sortKey: 'therapy.materialDescription',
+    sortKey: 'therapy.therapy_description',
     maxWidth: '115px',
     showInMobileHeader: true,
     cardHeader: true,
