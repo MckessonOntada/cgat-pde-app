@@ -126,7 +126,7 @@ const CatalogList = () => {
           onClearFilters={clearFilters}
           additionalFilters={additionalFiltersConfig}
           searchPlaceholder={t(
-            'controls.placeholder.searchProviderPlaceholder'
+            'controls.placeholder.searchSPCatalogPlaceholder'
           )}
         />
       </div>
