@@ -419,6 +419,7 @@ const Summary = () => {
       [ORDER_STAGES.THERAPY_SELECTION]: `../edit-order/${orderId}`,
       [ORDER_STAGES.ACCOUNT_DETAILS]: `../${orderId}/accounts`,
       [ORDER_STAGES.PATIENT_DETAILS]: `../${orderId}/patient`,
+      [ORDER_STAGES.PAYER_DETAILS]: `../${orderId}/payer`,
       [ORDER_STAGES.ADDITIONAL_DETAILS]: `../${orderId}/additional-details`
     };
 
@@ -1064,7 +1065,7 @@ const Summary = () => {
                             size="md"
                             variant="tertiary"
                             onClick={() =>
-                              handleOnEditSection(ORDER_STAGES.PATIENT_DETAILS)
+                              handleOnEditSection(ORDER_STAGES.PAYER_DETAILS)
                             }
                             Icon={() => <IconEditField />}>
                             {t('captions.btnEdit')}
