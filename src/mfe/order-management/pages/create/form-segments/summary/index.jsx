@@ -830,11 +830,11 @@ const Summary = () => {
                     />
                     <DetailSegment
                       label={t('labels.salesOrganization')}
-                      value={accountDetails?.shipToAccount?.accountName}
+                      value={accountDetails?.shipToAccount?.accountName || '-'}
                     />
                     <DetailSegment
                       label={t('labels.distributionsChannel')}
-                      value={accountDetails?.shipToAccount?.distributionChannel}
+                      value={t(`labels.${accountDetails?.soldToAccount?.channelType}`)}
                     />
                     <DetailSegment
                       label={t('labels.netPrice')}
@@ -910,7 +910,7 @@ const Summary = () => {
                     />
                     <DetailSegment
                       label={t('labels.program')}
-                      value={accountDetails?.soldToAccount?.cgatIdentifier}
+                      value={accountDetails?.soldToAccount?.cgatIdentifier || '-'}
                     />
                   </div>
                 </div>
