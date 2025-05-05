@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
-import { Badge, Button, Heading, Switch, Alert, Modal, CheckboxGroup, IconButton, Loader } from '@mckesson/mcp-component-library';
+import { Badge, Button, Heading, Switch, Alert, Modal, CheckboxGroup, IconButton, Loader, Tooltip } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
@@ -283,9 +283,18 @@ const UserDetail = () => {
           controls={
             prePermissions && (
               <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
-                <Button variant="primary" size="md" onClick={(e) => handleClickLogin(e)}>
-                  {t('button.label.loginAsThisUser')}
-                </Button>
+                <Tooltip
+                  body={data?.role == null || data?.permissions?.length === 0 ? 'User must have a role and at least one permission.' : ''}>
+                  <span>
+                    <Button
+                      variant="primary"
+                      size="md"
+                      onClick={(e) => handleClickLogin(e)}
+                      disabled={data?.role == null || data?.permissions?.length === 0}>
+                      {t('button.label.loginAsThisUser')}
+                    </Button>
+                  </span>
+                </Tooltip>
               </PermittedComponent>
             )
           }
@@ -345,7 +354,7 @@ const UserDetail = () => {
                     handleActivateDeactivate();
                   }}
                   id="id"
-                  disabled={(!isSystemAdmin && !data?.isActive) || (isSystemAdmin && isSelf && data?.isActive)}
+                  disabled={(!isSystemAdmin && !data?.isActive) || (isSystemAdmin && isSelf && data?.isActive) || isSelf}
                   label={data?.isActive ? t('userManagement.status.active') : ''}
                   labelPosition="right"
                   name="Toggle"

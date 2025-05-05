@@ -1,11 +1,15 @@
 import React from 'react';
+import { IconButton } from '@mckesson/mcp-component-library';
 import {
-  Badge,
-  MenuList,
-  CheckboxGroup
-} from '@mckesson/mcp-component-library';
-import { ReactComponent as EllipsisIcon } from '@src/assets/svg/ellipsis.svg';
-import { useSelection } from '@src/mfe/core-config/manage-providers/context/TableContext';
+  usePagination,
+  useSelection,
+  useTable
+} from '@src/mfe/core-config/manage-providers/context/TableContext';
+import { Link } from 'react-router-dom';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
+import { ReactComponent as LinkIcon } from '@src/assets/svg/link.svg';
+import { useTranslate } from '@src/translations/useTranslation';
+import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 
 const PROVIDER_COLUMNS = {
   SP_PRODUCT_ID: 'PROVIDER_NAME',
@@ -16,71 +20,110 @@ const PROVIDER_COLUMNS = {
   ACTION: 'ACTION'
 };
 
-export const getColumns = () => {
-  const { selectedRows, toggleRowSelection, selectAll, deselectAll } =
-    useSelection();
+export const getColumns = ({
+  setOpenSPMaterialDetails,
+  setViewSPMaterial,
+  onDeLinkConfirmation
+}) => {
+  const { selectedRows, setSelection } = useSelection();
+  const { pagination } = usePagination();
+  const { data } = useTable();
+  const { t } = useTranslate();
+
+  const handleOnDeLink = (data) => {
+    const { sapMaterial, soldToCustomer } = data;
+    const payload = [{ sapMaterial, soldToCustomer }];
+    onDeLinkConfirmation(payload);
+  };
   return [
     {
       id: 'checkbox',
-      name: '',
-      showInMobileHeader: true,
-      cell: (props) => (
-        <CheckboxGroup
-          id={'default'}
-          caption=""
-          items={[
-            {
-              onChange: () => toggleRowSelection(props.id),
-              value: props.id,
-              isChecked: selectedRows.has(props.id),
-              isDisabled: !props.isActive
-            }
-          ]}
-        />
+      name: renderTableCheckBox(
+        { id: 'ALL_ITEMS_' + pagination.pageNumber },
+        data,
+        'id',
+        pagination,
+        [
+          ...Array.from(selectedRows).map((val) => ({
+            id: val
+          }))
+        ],
+        setSelection
       ),
-      wrap: true,
-      width: '40px'
+      sortable: false,
+      cell: (row, index) =>
+        renderTableCheckBox(
+          row,
+          data,
+          'id',
+          pagination,
+          [
+            ...Array.from(selectedRows).map((val) => ({
+              id: val
+            }))
+          ],
+
+          setSelection
+        ),
+      width: '50px'
     },
     {
-      id: PROVIDER_COLUMNS.PROVIDER_NAME,
-      name: 'Provider Name',
-      selector: (row) => row.providerName,
+      id: 'SP_PRODUCT_ID',
+      name: 'SP Product Id',
+      selector: (row) => row.sapMaterial,
+      minWidth: '120px',
+      sortable: true,
+      sortKey: 'sap_material',
+      cell: (props) => (
+        <div className="cellEllipse">
+          <Link
+            style={{
+              color: '#007bff',
+              fontWeight: '600',
+              textDecoration: 'none'
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              setViewSPMaterial(props);
+              setOpenSPMaterialDetails(true);
+            }}>
+            <EclipsesTextcss str={props?.sapMaterial || '-'} maxWidth={280} />
+          </Link>
+        </div>
+      )
+    },
+    {
+      id: 'PRODUCT_NAME',
+      name: 'Product Name',
+      selector: (row) => row.materialDescriptionInLanguageEn,
       minWidth: '160px',
       sortable: true,
-      sortKey: 'providerName',
-      cell: (props) => <div>{props?.providerName || '-'}</div>
-    },
-    {
-      id: PROVIDER_COLUMNS.ADDRESS,
-      name: 'Address',
-      selector: (row) => row.address,
-      minWidth: '160px',
-      cell: (props) => <div>{props?.address || '-'}</div>
-    },
-    {
-      id: PROVIDER_COLUMNS.DEA_NUMBER,
-      name: 'DEA Number',
-      selector: (row) => row.deaNumber,
-      minWidth: '160px',
-      cell: (props) => <div>{props?.deaNumber || '-'}</div>
-    },
-    {
-      id: PROVIDER_COLUMNS.NPI_NUMBER,
-      name: 'NPI Number',
-      selector: (row) => row.npiNumber,
-      minWidth: '160px',
-      cell: (props) => <div>{props?.npiNumber || '-'}</div>
-    },
-    {
-      id: PROVIDER_COLUMNS.STATUS,
-      name: 'Status',
-      selector: (row) => row.status,
-      minWidth: '160px',
+      sortKey: 'material_description_in_language_en',
       cell: (props) => (
-        <Badge
-          text={`label.status.${props.status ? 'active' : 'inactive'}`}
-          type={'success'}
+        <EclipsesTextcss
+          str={props?.materialDescriptionInLanguageEn || '-'}
+          maxWidth={150}
         />
+      )
+    },
+    {
+      id: 'NDC',
+      name: 'NDC',
+      selector: (row) => row.ndc,
+      minWidth: '120px',
+      cell: (props) => (
+        <EclipsesTextcss str={props?.ndc || '-'} maxWidth={110} />
+      )
+    },
+    {
+      id: 'ACCOUNT_NUMBER',
+      name: 'Account Number',
+      selector: (row) => row.soldToCustomer,
+      minWidth: '120px',
+      sortable: true,
+      sortKey: 'sold_to_customer',
+      cell: (props) => (
+        <EclipsesTextcss str={props?.soldToCustomer || '-'} maxWidth={110} />
       )
     },
     {
@@ -88,15 +131,15 @@ export const getColumns = () => {
       name: 'Action',
       selector: () => {},
       minWidth: '160px',
-      cell: () => (
-        <MenuList
-          menuIcon={<EllipsisIcon />}
-          handleSelect={(e) => {}}
-          options={[
-            { label: 'Edit', value: 'edit' },
-            { label: 'Deactivate', value: 'Deactivate' },
-            { label: 'Link SP Account', value: 'linkSPAccount' }
-          ]}
+      cell: (props) => (
+        <IconButton
+          variant="tertiary"
+          label={t('button.caption.unlink')}
+          size="lg"
+          iconButton={false}
+          textButton={true}
+          Icon={LinkIcon}
+          onClick={() => handleOnDeLink(props)}
         />
       )
     }

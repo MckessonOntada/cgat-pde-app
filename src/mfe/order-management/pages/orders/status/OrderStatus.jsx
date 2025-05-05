@@ -30,7 +30,8 @@ const OrderStatus = () => {
     }`
   );
 
-  const { therapy = {}, orderCost, patient, status: orderStatus, backendOrderId, approver } = orderDetails || {};
+  const { therapy = {}, orderCost, patient, status: orderStatus, backendOrderId, approver, accountDetails  } = orderDetails || {};
+  const spOrder = accountDetails?.soldToAccount?.channelType === 'SPECIALITY_PHARMA';
 
   const isApprover = approver && typeof approver === 'object' && approver.id != null;
 
@@ -82,9 +83,9 @@ const OrderStatus = () => {
         <div className="MCP-CardContainer">
           <div className="grid grid-gap-12 sm:grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 print-div">
             {orderStatus === 'SUBMITTED' ? (
-              <DetailSegment label={t('labels.sapId')} value={backendOrderId} />
+              <DetailSegment label={t(!spOrder ? 'labels.sapId' : 'labels.orderId')} value={backendOrderId} />
             ) : (
-              <DetailSegment label={t('labels.pdeId')} value={orderId} />
+              <DetailSegment label={t(!spOrder ? 'labels.pdeId' : 'labels.orderId')} value={orderId} />
             )}
             <DetailSegment label={t('labels.materialDescription')} value={therapy?.materialDescription} />
             <DetailSegment
@@ -108,13 +109,17 @@ const OrderStatus = () => {
               customValueStyles={styles.orderCostItem}
               value={
                 <p className="dollarSign">
-                  {orderCost ? (
-                    <>
-                      <span className={`${styles.currencySymbol}`}>$</span>
-                      {CommonUtils.formatNumberWithoutSymbol(orderCost)}
-                    </>
+                  { !spOrder ? (
+                    orderCost ? (
+                      <>
+                        <span className={`${styles.currencySymbol}`}>$</span>
+                        {CommonUtils.formatNumberWithoutSymbol(orderCost)}
+                      </>
+                    ) : (
+                      '-'
+                    )
                   ) : (
-                    '-'
+                    'N/A'
                   )}
                 </p>
               }

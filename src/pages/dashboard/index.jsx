@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Heading } from '@mckesson/mcp-component-library';
 import styles from './Dashboard.module.scss';
@@ -7,18 +7,24 @@ import { useTranslate } from '@src/translations/useTranslation';
 import AuthUtils from '@src/util/AuthUtils';
 import usePermission from '@src/hooks/usePermissions';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import NotFound from '../error-pages/NotFound';
 
 const Dashboard = () => {
   const { t } = useTranslate();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
-
+  const userPermissions = AuthUtils.getUserPermissions();
   const { hasPermission, hasAnyPermission } = usePermission();
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const isExpelled = Boolean(queryParams.get('expelled'));
+
+  const hasValidPermissions = Array.isArray(userPermissions) && userPermissions.some((perm) => perm && perm.trim() !== '');
+  if (!hasValidPermissions) {
+    return <NotFound />;
+  }
 
   React.useEffect(() => {
     let navigateToUrl = '';

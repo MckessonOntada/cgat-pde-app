@@ -7,15 +7,17 @@ export const routesConfig = {
   summary: 'summary',
   confirmation: 'order-confirmed',
   status: 'status',
-  systemConfiguration : 'system-configuration'
+  systemConfiguration: 'system-configuration'
 };
 
 export const ORDER_STAGES = {
-  THERAPY_SELECTION: 0,
-  ACCOUNT_DETAILS: 1,
-  PATIENT_DETAILS: 2,
-  ADDITIONAL_DETAILS: 3,
-  ORDER_SUMMARY: 4
+  THERAPY_SELECTION: 1,
+  ACCOUNT_SELECTION: 2,
+  ACCOUNT_DETAILS: 2,
+  PATIENT_DETAILS: 3,
+  PAYER_DETAILS: 4,
+  ADDITIONAL_DETAILS: 5,
+  ORDER_SUMMARY: 6
 };
 export const ORDER_MODE = {
   CREATE: 0,

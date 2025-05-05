@@ -9,9 +9,9 @@ export const ConfigurationMessagesEN = {
   'providers.label.activateProvider': 'Activate Provider?',
   'providers.label.deactivateProvider': 'Deactivate Provider?',
   'providers.label.activateRecordDescription':
-    'Do you want to activate this provider?',
+    'Are you sure you want to activate this provider?',
   'providers.label.deactivateRecordDescription':
-    'Do you want to deactivate this provider?',
+    'Are you sure you want to deactivate this provider?',
   'providers.columnCaption.providerName': 'Provider Name',
   'providers.columnCaption.address': 'Address',
   'providers.columnCaption.deaNumber': 'DEA Number',
@@ -21,6 +21,10 @@ export const ConfigurationMessagesEN = {
   'providerStatus.ACTIVE': 'Active',
   'providerStatus.INACTIVE': 'Inactive',
   'providerStatus.ALL': 'All',
+  'labels.caption.All': 'All',
+  'labels.caption.SUBMITTED_BUY_AND_BILL': 'Buy and Bill',
+  'labels.caption.SUBMITTED_SP': 'SP',
+  'placeholder.selectAssignee': 'Search assignee',
   'provider.activationSuccess': 'Provider has been activated successfully.',
   'provider.activationFailure':
     'Failed to activate provider. Please try again.',
@@ -40,11 +44,16 @@ export const ConfigurationMessagesEN = {
   'provider.providerDetails': 'Provider Details',
   'provider.contactDetails': 'Contact Details',
   'provider.providerInformation': 'Provider Information',
-  'provider.linkedSpAccounts': 'Linked SP Accounts',
+  'provider.linkSpAccounts': 'Link SP Accounts',
   'provider.btnCancel': 'Cancel',
+  'provider.btnDeLink': 'Unlink',
   'provider.btnCreateProvider': 'Create Provider',
   'provider.btnUpdateProvider': 'Update Provider',
-
+  'SPCatalog.deLinkConfirmationDescription':
+    'Do you want to unlink the selected SP Catalogs?',
+  'SPCatalog.deLinkConfirmationTitle': 'Unlink Catalogs?',
+  'provider.disabledEditOnMultiSelect':
+    'Only one record can be edited at a time',
   'provider.firstName': 'First Name',
   'provider.firstName.required': 'Please Enter First Name',
   'provider.firstName.max': 'First Name should not exceed 50 characters.',
@@ -119,7 +128,45 @@ export const ConfigurationMessagesEN = {
   'provider.option.ALL': 'SUBMITTED_BUY_AND_BILL',
   'provider.orderType': 'Order Type',
   'provider.assignee': 'Assignee',
+  'provider.contextMenu.optionEdit': 'Edit',
+  'provider.contextMenu.optionActivate': 'Activate',
+  'provider.contextMenu.optionDeactivate': 'Deactivate',
+  'provider.contextMenu.optionLinkSPAccount': 'Link SP Account',
 
-  'serverResponse.provider.dea.conflict': 'DEA number already exist',
-  'serverResponse.provider.npi.conflict': 'NPI number already exist'
+  'serverResponse.provider.dea.conflict':
+    'A provider with this DEA Number already exists. Please enter a unique DEA Number.',
+  'serverResponse.provider.npi.conflict':
+    'A provider with this NPI Number already exists. Please enter a unique NPI Number.',
+  'serverResponse.provider.dea.conflict.provider.npi.conflict':
+    'A provider with this DEA Number and NPI Number already exists. Please verify and enter unique details.',
+  'button.caption.confirm': 'Confirm',
+  'button.caption.cancel': 'Cancel',
+  'label.backSpCrosswalk': 'Back to Manage Crosswalk Material',
+
+  'provider.btnUnlink': 'Unlink',
+  'label.spCatalogDataGrid': 'SP Catalog',
+  'label.spCatalogDataGridDescription': 'No data found',
+
+  'fileUpload.crosswalk.success':
+    'File processed successfully, No errors were found.',
+  'fileUpload.crosswalk.partialSuccess':
+    'File processing completed, Some records were not processed successfully. Please review the downloaded error report.',
+  'fileUpload.error.timeoutOrSystemError':
+    'Error: An unexpected error occurred during the upload. Please try again later.',
+  'invalid.csv.file.headers.empty':
+    'Error: The uploaded file is invalid. Please upload a valid file.',
+  'invalid.csv.file.headers.unstructured':
+    'Error: The uploaded file is invalid. Please upload a valid file.',
+  'invalid.csv.file.headers.missing':
+    'Error: The uploaded file is invalid. Please upload a valid file.',
+  'providers.message.fileUploadFailure':
+    'Something went wrong please try again later.',
+  // catalog
+
+  'SPCatalog.deLinkSuccess': 'Catalog(s) de-linked successfully.',
+
+  'SPCrosswalk.unlinkCrosswalkSuccess':
+    'Crosswalk has been unlinked successfully.',
+  'SPCrosswalk.deLinkFailure.generic':
+    'Failed to unlink crosswalk. Please try again.'
 };

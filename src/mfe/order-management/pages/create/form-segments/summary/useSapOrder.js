@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import { StatusEnum } from '../../../orders/constants';
 
 function useSapOrder(payload, onSuccess, onError) {
-  const { sapOrderId, salesOrgId, status } = payload;
+  const { sapOrderId, salesOrgId, status, isSPOrder } = payload;
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['sap-order-status', sapOrderId, salesOrgId],
@@ -16,7 +16,7 @@ function useSapOrder(payload, onSuccess, onError) {
     onError: () => {
       onError();
     },
-    enabled: Boolean(sapOrderId && salesOrgId && status === StatusEnum.SUBMITTED),
+    enabled: Boolean(!isSPOrder && sapOrderId && salesOrgId && status === StatusEnum.SUBMITTED),
     refetchOnWindowFocus: false
   });
 

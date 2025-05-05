@@ -4,20 +4,39 @@ import { Divider, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import './SelectedAccounts.scss';
 import { getAddress } from '@src/mfe/order-management/pages/system-configuration/manage-spaccount/util';
+import CommonUtils from '@src/util/CommonUtils';
 
-export default function SelectedAccounts({ selectedAccounts, onRemoveAccount }) {
+export default function SelectedAccounts({
+  selectedAccounts,
+  onRemoveAccount,
+  header = ''
+}) {
   const { t } = useTranslate();
   return (
     <div className="selected-accounts-display">
-      <h2 className="selected-account-heading">{t('account.selected.account')}</h2>
+      <h2 className="selected-account-heading">
+        {header ? header : t('account.selected.account')}
+      </h2>
       <Divider className="selected-account-divider" />
       <div className="selected-account-container">
         {selectedAccounts?.map((item) => (
           <div key={item.id} className="selected-account">
             <div>
-              { item.accountName && <p className="selected-account-label">{item.accountName}</p> }
-              { item.accountNumber && <p className="selected-account-label">( {item.accountNumber} )</p>}
-              { item.address && <p className="selected-account-label">{ getAddress(item.address) }</p>}
+              {item.accountName && (
+                <p className="selected-account-label">{item.accountName}</p>
+              )}
+              {item.accountNumber && (
+                <p className="selected-account-label">
+                  ( {item.accountNumber} )
+                </p>
+              )}
+              {item.address && (
+                <p className="selected-account-label">
+                  {`${CommonUtils.getFullName(item?.name) || ''}, ${
+                    item?.address ? getAddress(item.address) : ''
+                  }`}
+                </p>
+              )}
             </div>
             <Button
               Icon={DeleteIcon}

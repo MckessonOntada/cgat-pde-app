@@ -84,7 +84,7 @@ const UploadSPMaterial = () => {
         handleAlertClose={handleAlertClose}
         downloadTemplate={downloadTemplate}
         handleUpload={handleUpload}
-        validateFile={(file) => validateFile(file, ['text/csv'])}
+        validateFile={(file) => validateFile(t, file, ['text/csv'])}
       />
     </div>
   );

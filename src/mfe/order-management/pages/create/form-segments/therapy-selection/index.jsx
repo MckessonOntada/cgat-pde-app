@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Alert } from '@mckesson/mcp-component-library';
 import styles from './TherapySelection.module.scss';
-import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
-import ModuleHeader from '@src/components/module-header';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import TherapyDataTable from './TherapyDataTable';
@@ -15,12 +13,16 @@ import OrderService from '@src/api/commonService/OrderService';
 import OrderStepper from '../OrderStepper';
 import { RoutePaths } from '@src/routes/constants';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
-import { TherapyDetailsConstants } from './assets/constants/TherapyDetailsConstants';
+import {
+  TherapyDetailsConstantsForBB,
+  TherapyDetailsConstantsForSP
+} from './assets/constants/TherapyDetailsConstants';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import useOrder from '../../../orders/useOrder';
 import { Loader } from '@mckesson/mcp-component-library';
+import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
 
 function TherapySelection() {
   const { t } = useTranslate();
@@ -28,15 +30,21 @@ function TherapySelection() {
   const location = useLocation();
   const { orderId } = useParams();
   const { clearFilters, applyFilters } = useTherapy();
-  const [initialSelectedTherapy, setInitialSelectedTherapy] = React.useState(null);
-  const { data: orderDetails } = useOrder(orderId);
+  const [initialSelectedTherapy, setInitialSelectedTherapy] =
+    React.useState(null);
+  const { data: orderDetails = {} } = useOrder(orderId);
   const [therapy, setTherapy] = useState(orderDetails?.therapy);
   const searchParams = new URLSearchParams(location.search);
   const therapyDetails = searchParams.get('therapy-details');
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
-  const { isEdit = false, isApprover = false, isBack = false } = location.state || {};
+  const {
+    isEdit = false,
+    isApprover = false,
+    isBack = false
+  } = location.state || {};
   const alertContainerId = 'alert-container';
-  const [therapySelectionMessage, setTherapySelectionMessage] = React.useState(null);
+  const [therapySelectionMessage, setTherapySelectionMessage] =
+    React.useState(null);
   const { showAlert } = useAlert();
 
   React.useEffect(() => {
@@ -60,16 +68,25 @@ function TherapySelection() {
     });
   };
 
-  const { isLoading: isSaving, mutate: createNewOrder } = useMutation(async (data) => OrderService.createOrder(data), {
-    onSuccess: (result) => {
-      const { id } = result;
-      navigate(`../${id}/accounts`, { state: { isEdit: false, isApprover: isApprover } });
-    },
-    onError: (err) => {
-      const errorKey = handleApiError(err);
-      showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
+  const { isLoading: isSaving, mutate: createNewOrder } = useMutation(
+    async (data) => OrderService.createOrder(data),
+    {
+      onSuccess: (result) => {
+        const { id } = result;
+        navigate(`../${id}/accounts`, {
+          state: { isEdit: false, isApprover: isApprover }
+        });
+      },
+      onError: (err) => {
+        const errorKey = handleApiError(err);
+        showAlert({
+          description: t(errorKey),
+          type: 'error',
+          anchorEl: alertContainerId
+        });
+      }
     }
-  });
+  );
 
   const { isLoading: isUpdating, mutate: updateTherapy } = useMutation(
     async ({ orderId, payload }) => {
@@ -82,20 +99,29 @@ function TherapySelection() {
           state: {
             isEdit: false,
             isApprover: isApprover,
-            isTherapyChanged: Number(therapy?.therapyId) !== Number(initialSelectedTherapy?.materialNumber)
+            isTherapyChanged:
+              Number(therapy?.therapyId) !==
+              Number(initialSelectedTherapy?.materialNumber)
           }
         });
       },
       onError: (err) => {
         const errorKey = handleApiError(err);
-        showAlert({ description: t(errorKey), type: 'error', anchorEl: alertContainerId });
+        showAlert({
+          description: t(errorKey),
+          type: 'error',
+          anchorEl: alertContainerId
+        });
       }
     }
   );
 
   const handleOnSubmit = () => {
     if (!therapy || isSaving) {
-      setTherapySelectionMessage({ description: 'Select therapy to create order', type: 'error' });
+      setTherapySelectionMessage({
+        description: 'Select therapy to create order',
+        type: 'error'
+      });
       return;
     }
 
@@ -110,7 +136,8 @@ function TherapySelection() {
       }
     }
   };
-  const isDirty = JSON.stringify(therapy) !== JSON.stringify(initialSelectedTherapy);
+  const isDirty =
+    JSON.stringify(therapy) !== JSON.stringify(initialSelectedTherapy);
 
   const handleOnBackToOrders = () => {
     if (isDirty) {
@@ -126,7 +153,9 @@ function TherapySelection() {
       return;
     }
     if (isEdit) {
-      navigate(`../${orderId}/summary`, { state: { isEdit: true, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, {
+        state: { isEdit: true, isApprover: isApprover }
+      });
     } else {
       navigate(RoutePaths.pathOrderManagement);
     }
@@ -136,7 +165,9 @@ function TherapySelection() {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, { state: { isEdit: true, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, {
+        state: { isEdit: true, isApprover: isApprover }
+      });
     }
   };
 
@@ -144,20 +175,33 @@ function TherapySelection() {
     setTherapy(therapy);
   };
   if (isSaving) {
-    return  <Loader type={'screen'} />;
+    return <Loader type={'screen'} />;
   }
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={handleOnBackToOrders}
+          size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
 
-      <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
+      <PageHeader
+        heading={
+          isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')
+        }
+      />
 
       <div className="MCP-module-body">
-        <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} />
+        <OrderStepper
+          status={orderDetails?.currentStage}
+          patientDetailsRequired={orderDetails?.patientDetailsRequired}
+          channelType={orderDetails.channelType}
+        />
         <div id={alertContainerId} />
         <div className={styles.wrapper}>
           <div className="MCP-panel-container">
@@ -166,7 +210,9 @@ function TherapySelection() {
                 onApplyFilters={applyFilters}
                 onClearFilters={clearFilters}
                 additionalFilters={[]}
-                searchPlaceholder={t('controls.placeholder.therapySelection.search')}
+                searchPlaceholder={t(
+                  'controls.placeholder.therapySelection.search'
+                )}
               />
             </div>
             <TableHeading heading={t('labels.therapySelection')} />
@@ -180,23 +226,28 @@ function TherapySelection() {
             )}
             <TherapyDataTable therapy={therapy} onChange={setTherapy} />
           </div>
-          <div className='footer-wrapper'>
+          <div className="footer-wrapper">
             <div className="controls footer-controls">
               <Button size="md" variant="secondary" onClick={handleCancel}>
                 {t('captions.btnCancel')}
               </Button>
-              <Button size="md" variant="primary" type="submit" onClick={handleOnSubmit}>
-                { t('captions.btnSaveAndContinue')}
+              <Button
+                size="md"
+                variant="primary"
+                type="submit"
+                onClick={handleOnSubmit}>
+                {t('captions.btnSaveAndContinue')}
               </Button>
             </div>
           </div>
           {therapyDetails && (
-            <TherapyDetails
+            <TherapyDetailsWithTabs
               therapyId={therapyDetails}
               onSelect={handleOnDrawerSelect}
               onClose={handleOnClose}
-              therapyData={TherapyDetailsConstants}
-              heading={t('labels.therapyDetails')}
+              buyAndBillTherapyConstants={TherapyDetailsConstantsForBB}
+              spTherapyConstants={TherapyDetailsConstantsForSP}
+              heading={t('manageMaterial.drawer.heading')}
             />
           )}
         </div>

@@ -5,14 +5,14 @@ export const ConfigurationMessagesES = {
     'S_An unexpected error occurred during the upload. Please try again later.',
   'providers.message.fileUploadSuccess': 'S_File processing completed.',
   'providers.message.fileUploadPartialSuccess':
-    'S_File processing completed, Some records were not processed successfully. Please review the downloaded error report',
+    'S_File processing completed, Some records were not processed successfully. Please review the downloaded error report.',
   'providers.errorMessage.fileUploadFailed': 'S_Please select file to upload.',
   'providers.label.activateProvider': 'S_Activate Provider?',
   'providers.label.deactivateProvider': 'S_Deactivate Provider?',
   'providers.label.activateRecordDescription':
-    'S_Do you want to activate this provider?',
+    'S_Are you sure you want to activate this provider??',
   'providers.label.deactivateRecordDescription':
-    'S_Do you want to deactivate this provider?',
+    'S_Are you sure you want to deactivate this provider??',
   'providers.columnCaption.providerName': 'S_Provider Name',
   'providers.columnCaption.address': 'S_Address',
   'providers.columnCaption.deaNumber': 'S_DEA Number',
@@ -28,5 +28,8 @@ export const ConfigurationMessagesES = {
   'provider.deactivationSuccess':
     'S_Provider has been deactivated successfully.',
   'provider.deactivationFailure':
-    'S_Failed to deactivate provider. Please try again.'
+    'S_Failed to deactivate provider. Please try again.',
+
+  'button.caption.confirm': 'Confirm',
+  'button.caption.cancel': 'Cancel'
 };

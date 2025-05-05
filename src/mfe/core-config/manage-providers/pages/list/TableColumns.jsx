@@ -3,7 +3,7 @@ import {
   Badge,
   Button,
   MenuList,
-  CheckboxGroup
+  Tooltip
 } from '@mckesson/mcp-component-library';
 import { ReactComponent as EllipsisIcon } from '@src/assets/svg/ellipsis.svg';
 import {
@@ -22,6 +22,7 @@ import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import usePermission from '@src/hooks/usePermissions';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import { ROUTE_PATHS } from '../../routes/constants';
+import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 
 const PROVIDER_COLUMNS = {
   PROVIDER_NAME: 'PROVIDER_NAME',
@@ -33,13 +34,13 @@ const PROVIDER_COLUMNS = {
 };
 
 export const getColumns = (add) => {
-  const { selectedRows, toggleRowSelection, selectAll, deselectAll } =
-    useSelection();
+  const { selectedRows, toggleRowSelection, setSelection } = useSelection();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslate();
   const { refreshTable } = useTable();
   const { pagination, changePage } = usePagination();
+  const { data } = useTable();
 
   const { mutate: activateProvider } = useMutation(
     async (id) => ProviderService.activateProvider(id),
@@ -105,9 +106,7 @@ export const getColumns = (add) => {
 
   const confirmDeactivation = (provider, ops) => {
     const state = {};
-    state.title = provider.isActive
-      ? `${t('providers.label.deactivateProvider')}`
-      : `${t('providers.label.activateProvider')}`;
+    state.title = `${t(t('messages.header.confirmation'))}`;
     state.body = (
       <div className="MCP-modal-body">
         <p>
@@ -123,7 +122,7 @@ export const getColumns = (add) => {
           size="md"
           variant="secondary"
           onClick={() => dispatch(closeModal())}>
-          {t('button.caption.no')}
+          {t('button.caption.cancel')}
         </Button>
         <Button
           size="md"
@@ -132,7 +131,7 @@ export const getColumns = (add) => {
             dispatch(closeModal());
             handleOnConfirmation(provider.id, ops);
           }}>
-          {t('button.caption.yes')}
+          {t('button.caption.confirm')}
         </Button>
       </div>
     );
@@ -145,15 +144,37 @@ export const getColumns = (add) => {
     const { selectedRows } = useSelection();
     if (hasPermission(PERMISSIONS_ENUM.MANAGE_PROVIDERS.EDIT_PROVIDER)) {
       options.push({
-        label: 'Edit',
+        label: (
+          <Tooltip
+            body={
+              selectedRows.size > 1
+                ? t('provider.disabledEditOnMultiSelect')
+                : ''
+            }>
+            <div>{t('provider.contextMenu.optionEdit')}</div>
+          </Tooltip>
+        ),
         value: 'edit',
-        disabled: selectedRows.size > 1
+        disabled: selectedRows.size > 1 || props.isActive === false
       });
+    }
+
+    if (
+      hasPermission(PERMISSIONS_ENUM.MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN)
+    ) {
       options.push({
-        label: props.isActive ? 'Deactivate' : 'Activate',
+        label: t(
+          !props.isActive
+            ? 'provider.contextMenu.optionActivate'
+            : 'provider.contextMenu.optionDeactivate'
+        ),
         value: props.isActive ? 'deactivate' : 'activate'
       });
-      options.push({ label: 'Link SP Account', value: 'linkSPAccount' });
+      options.push({
+        label: t('provider.contextMenu.optionLinkSPAccount'),
+        value: 'linkSPAccount',
+        disabled: props.isActive === false
+      });
     }
 
     return options;
@@ -161,9 +182,9 @@ export const getColumns = (add) => {
 
   const handleOnMenuClick = (props) => (value) => {
     if (value === 'edit') {
-      navigate(`edit/${props.id}`);
+      navigate(`${props.id}/edit`);
     } else if (value === 'linkSPAccount') {
-      navigate(`link-sp-account/${props.id}`);
+      navigate(`link-sp-account?accounts=${props.id}`);
     } else if (value === 'activate' || value === 'deactivate') {
       confirmDeactivation(props, value);
     }
@@ -172,24 +193,34 @@ export const getColumns = (add) => {
   return [
     {
       id: 'checkbox',
-      name: '',
-      showInMobileHeader: true,
-      cell: (props) => (
-        <CheckboxGroup
-          id={'default'}
-          caption=""
-          items={[
-            {
-              onChange: () => toggleRowSelection(props.id),
-              value: props.id,
-              isChecked: selectedRows.has(props.id),
-              isDisabled: !props.isActive
-            }
-          ]}
-        />
+      name: renderTableCheckBox(
+        { id: 'ALL_ITEMS_' + pagination.pageNumber },
+        data,
+        'id',
+        pagination,
+        [
+          ...Array.from(selectedRows).map((val) => ({
+            id: val
+          }))
+        ],
+        setSelection
       ),
-      wrap: true,
-      width: '40px'
+      sortable: false,
+      cell: (row, index) =>
+        renderTableCheckBox(
+          row,
+          data,
+          'id',
+          pagination,
+          [
+            ...Array.from(selectedRows).map((val) => ({
+              id: val
+            }))
+          ],
+
+          setSelection
+        ),
+      width: '50px'
     },
     {
       id: PROVIDER_COLUMNS.PROVIDER_NAME,
@@ -201,18 +232,20 @@ export const getColumns = (add) => {
         const isAllowed = hasPermission(
           PERMISSIONS_ENUM.MANAGE_PROVIDERS.VIEW_PROVIDER
         );
-        return props?.name ? (
-          <Link
-            className="MCP-table-link"
-            to={`${isAllowed ? `${ROUTE_PATHS.VIEW}/${props.id}` : ''}`}>
-            <EclipsesTextcss
-              str={CommonUtils.getFullName(props?.name)}
-              maxWidth={130}
-            />
-          </Link>
-        ) : (
-          '-'
-        );
+        const linkText = props?.name
+          ? CommonUtils.getFullName(props.name)
+          : '-';
+        if (isAllowed) {
+          return (
+            <Link
+              className="MCP-table-link"
+              to={`${ROUTE_PATHS.VIEW}/${props.id}`}>
+              <EclipsesTextcss str={linkText} maxWidth={130} />
+            </Link>
+          );
+        }
+
+        return linkText;
       }
     },
     {
@@ -260,21 +293,15 @@ export const getColumns = (add) => {
       selector: () => {},
       minWidth: '160px',
       cell: (props) => {
-        const anyOperationPermission = hasAnyPermission([
-          PERMISSIONS_ENUM.MANAGE_PROVIDERS.EDIT_PROVIDER
-        ]);
-
-        if (anyOperationPermission) {
-          return (
-            <MenuList
-              menuIcon={<EllipsisIcon />}
-              handleSelect={handleOnMenuClick(props)}
-              options={getMenuOption(props)}
-            />
-          );
-        } else {
-          return '-';
-        }
+        const contextMenuOptions = getMenuOption(props);
+        if (!contextMenuOptions || contextMenuOptions.length === 0) return;
+        return (
+          <MenuList
+            menuIcon={<EllipsisIcon />}
+            handleSelect={handleOnMenuClick(props)}
+            options={contextMenuOptions}
+          />
+        );
       }
     }
   ];

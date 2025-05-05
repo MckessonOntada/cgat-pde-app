@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import EmptyDataTable from '@src/components/EmptyTable';
 import { Badge, DropdownMenu, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -135,8 +135,36 @@ function SelectedInvoiceList(props) {
       minWidth: '180px',
       id: 'paymentAmount',
       right: true,
-      cell: (props, index) =>
-        REVIEW_MODE ? (
+      cell: (props, index) => {
+        const [inputValue, setInputValue] = useState(props.paymentAmount);
+
+        useEffect(() => {
+          setInputValue(props.paymentAmount);
+        }, [props.paymentAmount]);
+
+        const handleChange = (e) => {
+          setInputValue(e.target.value);
+          let _invoices = [...[], ...selectedInvoices];
+          _invoices[index].paymentAmount = e.target.value;
+          setSelectedInvoices(_invoices)
+        };
+
+        const handleBlur = (e) => {
+          const val = parseFloat(e.target.value);
+          const finalVal = val > 0 && val <= props.openAmount ? val : props.openAmount;
+          let _invoices = [...selectedInvoices];
+          _invoices[index].paymentAmount = finalVal;
+          setInputValue(finalVal);
+          setSelectedInvoices(_invoices);
+        };
+
+        const isError =
+          inputValue > props.openAmount ||
+          inputValue <= 0 ||
+          inputValue === '' ||
+          inputValue === null;
+
+        return REVIEW_MODE ? (
           <div className="cellEllipse align-items-right ">
             <FormattedNumber
               value={props.paymentAmount || 0}
@@ -147,19 +175,14 @@ function SelectedInvoiceList(props) {
         ) : (
           <input
             type="number"
-            className={`paymenyAmount-input ${
-              props.paymentAmount > props.openAmount ||
-              props.paymentAmount <= 0 ||
-              !props.paymentAmount
-                ? `error-input`
-                : ``
-            }`}
-            value={props.paymentAmount}
-            onChange={(e) => onChangePayAmount(e, index)}
+            className={`paymenyAmount-input ${isError ? 'error-input' : ''}`}
+            value={inputValue}
+            onChange={handleChange}
             min={0}
-            onBlur={(e) => onBlurPayAmount(e, index, props)}
+            onBlur={handleBlur}
           />
         )
+      }
     },
     {
       name: t('paymentInvoices.history.table.Actions'),
@@ -177,20 +200,6 @@ function SelectedInvoiceList(props) {
       isAction: true
     }
   ];
-
-  const onChangePayAmount = (event, index) => {
-    let _invoices = [...[], ...selectedInvoices];
-    _invoices[index].paymentAmount = event.target.value;
-    setSelectedInvoices(_invoices);
-  };
-
-  const onBlurPayAmount = (event, index, rowData) => {
-    if (event.target.value <= 0 || event.target.value > rowData.openAmount) {
-      let _invoices = [...[], ...selectedInvoices];
-      _invoices[index].paymentAmount = rowData.openAmount;
-      setSelectedInvoices(_invoices);
-    }
-  };
 
   const onRemoveInvoice = (index) => {
     if (selectedInvoices.length <= 1) {

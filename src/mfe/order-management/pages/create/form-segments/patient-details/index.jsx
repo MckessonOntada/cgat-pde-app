@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react';
 import styles from './PatientDetails.module.scss';
-import { Button, Alert } from '@mckesson/mcp-component-library';
-import ModuleHeader from '@src/components/module-header';
+import {
+  Button,
+  Alert,
+  Tooltip,
+  Loader,
+  Heading
+} from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import PatientDetailsForm from './PatientDetailsForm';
 import { Form, Formik } from 'formik';
-import { getValidationSchema } from './PatientDetailsFormUtils';
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation } from 'react-query';
 import CommonUtils from '@src/util/CommonUtils';
@@ -20,54 +23,105 @@ import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/Disca
 import { renderModal } from '@src/util/ModalUtil';
 import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
-import { Loader } from '@mckesson/mcp-component-library';
+import { sections } from './forms/patient-details.config';
+import FormRenderer from '@src/mfe/core-config/manage-providers/forms/FormRenderer';
+import { providerSections } from './forms/providers.config';
+import {
+  getInitialValues,
+  getValidationSchema
+} from './forms/validation-schema';
+import ProviderService from '@src/api/commonService/ProviderService';
+import { CHANNEL_TYPE } from '../Constants';
+import useTimedArray from '../summary/useTimedArray';
+
+export const getFilteredSections = (channelType) => {
+  return sections.map((section) => ({
+    ...section,
+    rows: section.rows.map((row) => ({
+      ...row,
+      controls: row.controls.filter((control) => {
+        if (typeof control.if === 'function') {
+          return control.if(channelType);
+        }
+        return true;
+      })
+    }))
+  }));
+};
 
 const PatientDetails = () => {
   const { t } = useTranslate();
+  const [selectedProvider, setSelectedProvider] = React.useState(null);
+  const [initialValues, setInitialValues] = React.useState(getInitialValues());
   const { orderId } = useParams();
   const navigate = useNavigate();
   const alertContainerId = 'patintDetails-alert-container';
   const { showAlert } = useAlert();
   const location = useLocation();
-  const { isEdit = false, isApprover = false, alertState } = location.state || {};
+  const {
+    isEdit = false,
+    isApprover = false,
+    alertState
+  } = location.state || {};
 
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
 
-  const { data: orderDetails, isFetching: isFetchingOrderDetails, isError, error, isLoader } = useOrder(orderId);
+  const {
+    data: orderDetails = {},
+    isFetching: isFetchingOrderDetails,
+    isError,
+    error,
+    isLoader
+  } = useOrder(orderId);
 
+  React.useEffect(() => {
+    if (orderDetails.channelType) {
+      if (
+        orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL &&
+        !orderDetails.patientDetailsRequired
+      )
+        navigate(`/orders/${orderId}/additional-details`);
+    }
+  }, [orderDetails]);
+  const {
+    items: notifications,
+    add: addNotification,
+    remove: removeNotification
+  } = useTimedArray(10000);
+
+  const filteredSections = getFilteredSections(orderDetails.channelType);
   const therapyId = orderDetails?.therapy?.materialNumber;
-  const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
-  const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
+  const soldToAccountId =
+    orderDetails?.accountDetails?.soldToAccount?.accountNumber;
+  const shipToAccountId =
+    orderDetails?.accountDetails?.shipToAccount?.accountNumber;
+  const channelType =
+    orderDetails?.accountDetails?.soldToAccount?.channelType ||
+    CHANNEL_TYPE.BUY_AND_BILL;
+
   const { data: priceDetails } = useOrderPrice({
     therapyId,
     soldToAccountId,
     shipToAccountId
   });
-  const INITIAL_VALUES = {
-    patientInfo: {
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      gender: '',
-      dateOfBirth: ''
-    },
-    contact: {
-      emailId: '',
-      phoneNumber: ''
-    },
-    patientAddress: {
-      addressLine1: '',
-      addressLine2: '',
-      city: '',
-      zipCode: '',
-      state: ''
-    },
-    patientIdentifier: ''
-  };
+  const [providers, setProviders] = React.useState([]);
 
-  const initialValues = React.useMemo(() => {
-    return orderDetails?.patient ? { ...orderDetails.patient } : INITIAL_VALUES;
+  React.useEffect(() => {
+    if (orderDetails.patient) {
+      setInitialValues({
+        patient: orderDetails.patient,
+        providerId: orderDetails.provider?.id
+      });
+      if (orderDetails.provider) {
+        const { name, address } = orderDetails.provider || {};
+        setSelectedProvider({
+          fullname: CommonUtils.getFullName(name),
+          detailedAddress: CommonUtils.getDetailedAddress(address),
+          ...orderDetails.provider
+        });
+      }
+    }
   }, [orderDetails]);
 
   React.useEffect(() => {
@@ -81,15 +135,6 @@ const PatientDetails = () => {
     }
     showAlert({ ...alertState, anchorEl: alertContainerId });
   }, []);
-
-  React.useEffect(() => {
-    if (!orderDetails) {
-      return;
-    }
-    if (!orderDetails.patientDetailsRequired) {
-      navigate(`../${orderId}/additional-details`);
-    }
-  }, [orderDetails]);
 
   const openDuplicateConfirmationModal = (payload) => {
     renderModal({
@@ -120,17 +165,34 @@ const PatientDetails = () => {
   };
 
   const { isLoading: isSaving, mutate: savePatientDetails } = useMutation(
-    async ({ payload, skipDuplicateCheck }) => OrderService.savePatientDetails(orderId, payload, skipDuplicateCheck),
+    async ({ payload, skipDuplicateCheck }) =>
+      OrderService.savePatientDetails(
+        orderId,
+        payload,
+        skipDuplicateCheck,
+        orderDetails.channelType
+      ),
     {
       onSuccess: (result) => {
         const { id } = result;
-        navigate(`../${id}/additional-details`, { state: { isEdit: false, isApprover: isApprover } });
+        if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
+          navigate(`../${id}/payer`, {
+            state: { isEdit: false, isApprover: isApprover }
+          });
+        } else {
+          navigate(`../${id}/additional-details`, {
+            state: { isEdit: false, isApprover: isApprover }
+          });
+        }
       },
       onError: ({ err, payload }) => {
         if (err.status === 409) {
           openDuplicateConfirmationModal(payload);
         } else {
-          showAlert({ description: err.message, type: 'error', anchorEl: alertContainerId });
+          addNotification({
+            description: err.message,
+            type: 'error'
+          });
         }
       }
     }
@@ -143,18 +205,23 @@ const PatientDetails = () => {
     }
 
     if (isEdit) {
-      navigate(`../${orderId}/summary`, { state: { isEdit: true, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, {
+        state: { isEdit: true, isApprover: isApprover }
+      });
     } else {
-      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isApprover: isApprover } });
+      navigate(`../${orderId}/accounts`, {
+        state: { isEdit: isEdit, isApprover: isApprover }
+      });
     }
   };
 
-  const handleSubmit = (form, skipDuplicateCheck) => {
-    const { patientInfo } = form;
+  const handleSubmit = (form, skipDuplicateCheck = false) => {
     const payload = CommonUtils.cleanObject(form);
-
-    if (patientInfo && patientInfo.dateOfBirth) {
-      payload.dateOfBirth = CommonUtils.convertDateStringFormat(patientInfo.dateOfBirth, 'MM-DD-YYYY');
+    if (form.dateOfBirth) {
+      payload.dateOfBirth = CommonUtils.convertDateStringFormat(
+        form.dateOfBirth,
+        'MM-DD-YYYY'
+      );
     }
     if (isApprover) {
       skipDuplicateCheck = true;
@@ -169,69 +236,179 @@ const PatientDetails = () => {
       navigate(RoutePaths.pathOrderManagement);
     }
   };
-
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
     } else if (modalSuccessCallback === 'summary') {
-      navigate(`../${orderId}/summary`, { state: { isEdit: isEdit, isApprover: isApprover } });
+      navigate(`../${orderId}/summary`, {
+        state: { isEdit: isEdit, isApprover: isApprover }
+      });
     } else if (modalSuccessCallback === 'account') {
-      navigate(`../${orderId}/accounts`, { state: { isEdit: isEdit, isApprover: isApprover } });
+      navigate(`../${orderId}/accounts`, {
+        state: { isEdit: isEdit, isApprover: isApprover }
+      });
     }
   };
+
+  React.useEffect(() => {
+    if (
+      orderDetails &&
+      orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+    ) {
+      const params = {
+        accountId: orderDetails.accountDetails?.soldToAccount?.id
+      };
+      ProviderService.getAllProviders(params).then((response) => {
+        if (response.content && Array.isArray(response.content)) {
+          const beautifiedProviders = response.content.map((provider) => {
+            const { name, address } = provider;
+            return {
+              id: provider.id?.toString(),
+              ...provider,
+              fullname: CommonUtils.getFullName(name),
+              detailedAddress: CommonUtils.getDetailedAddress(address)
+            };
+          });
+          setProviders(beautifiedProviders);
+        }
+      });
+    }
+  }, [orderDetails]);
+
   if (isLoader) {
     return isLoader;
   }
   if (isSaving) {
     return <Loader type={'screen'} />;
   }
+
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={handleOnBackToOrders}
+          size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
 
-      <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
+      <PageHeader
+        heading={
+          isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')
+        }
+      />
 
       <div className="MCP-module-body">
-        <OrderStepper status={orderDetails?.currentStage} patientDetailsRequired={orderDetails?.patientDetailsRequired} />
+        <OrderStepper
+          status={orderDetails?.currentStage}
+          patientDetailsRequired={orderDetails?.patientDetailsRequired}
+          channelType={channelType}
+        />
+
+        {notifications?.length > 0 && (
+          <div className="alert-container">
+            <div className="MCP-module-body">
+              {notifications.map((item, index) => (
+                <Alert
+                  key={item.id}
+                  description={item.description}
+                  onClose={() => removeNotification(item.id)}
+                  type={item.type}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className={styles.wrapper}>
-          <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
+          <OrderHeaderDetails
+            orderDetails={orderDetails}
+            priceDetails={priceDetails}
+          />
           <div id={alertContainerId} />
 
           {isError && <Alert showTitle title={error} type={'error'} />}
         </div>
         <Formik
           initialValues={initialValues}
-          validationSchema={getValidationSchema(t)}
-          enableReinitialize
-          validate={(values) => {
-            const errors = {};
-            if (!values.patientIdentifier) {
-              errors['patientIdentifier'] = 'Patient Identifier is required';
-            }
-            return errors;
-          }}
-          onSubmit={(values, actions) => {
-            handleSubmit(values);
-            actions.setSubmitting(false);
-          }}>
-          {({ values, isValid, dirty }) => {
+          validationSchema={getValidationSchema(
+            t,
+            orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+          )}
+          enableReinitialize={true}
+          onSubmit={(values) => handleSubmit(values)}>
+          {({ values, isValid, errors, dirty }) => {
             React.useEffect(() => {
+              const { providerId } = values;
+              const selectedProvider = providers.find(
+                (item) => item.id?.toString() === providerId
+              );
+              if (selectedProvider) {
+                setSelectedProvider(selectedProvider);
+              }
               setIsDirty(dirty);
-            }, [dirty]);
+            }, [values]);
             return (
               <Form>
                 <div className={styles.wrapper}>
                   <div className="MCP-panel-container">
-                    <PatientDetailsForm />
+                    <div className="MCP-module-body">
+                      <FormRenderer sections={filteredSections} />
+                      {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
+                        <React.Fragment>
+                          <hr />
+                          <div className="selected-provider">
+                            <div className="MCP-module-body">
+                              <Heading as="h2">Provider Details</Heading>
+                              <FormRenderer
+                                sections={providerSections({
+                                  providers: providers.map((item) => ({
+                                    label: item.fullname,
+                                    subLabel: item.detailedAddress,
+                                    value: item.id.toString()
+                                  }))
+                                })}
+                              />
+                            </div>
+                            {selectedProvider && (
+                              <div className="details-card">
+                                <Heading className="details-title" as="h3">
+                                  {selectedProvider.fullname}
+                                </Heading>
+                                <div className="grid grid-gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start">
+                                  <Tooltip
+                                    body={selectedProvider.detailedAddress}>
+                                    <p className="detail-segment inline-text-overflow">
+                                      {selectedProvider.detailedAddress}
+                                    </p>
+                                  </Tooltip>
+                                  {['dea', 'npi', 'phone'].map((key) => {
+                                    const value = selectedProvider[key];
+                                    return (
+                                      <Tooltip body={value}>
+                                        <p className="detail-segment inline-text-overflow">
+                                          {value}
+                                        </p>
+                                      </Tooltip>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </React.Fragment>
+                      )}
+                    </div>
                   </div>
                   <div className="footer-wrapper">
                     <div className="controls footer-controls">
-                      <Button size="md" variant="secondary" onClick={handleOnBack}>
+                      <Button
+                        size="md"
+                        variant="secondary"
+                        onClick={handleOnBack}>
                         {t('captions.btnBack')}
                       </Button>
                       <Button size="md" variant="primary" type="submit">

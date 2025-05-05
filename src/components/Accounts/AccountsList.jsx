@@ -39,7 +39,9 @@ export default function AccountsList(props) {
 
   useEffect(() => {
     setTimeout(() => {
-      let eleHeight = document.getElementById('data-table-my-data-table')?.offsetHeight;
+      let eleHeight = document.getElementById(
+        'data-table-my-data-table'
+      )?.offsetHeight;
       setTableHeight(eleHeight);
     }, 100);
   }, [data, isLoading]);
@@ -94,11 +96,10 @@ export default function AccountsList(props) {
         id: 'address',
         name: t('account.address'),
         cell: (row) => {
-          const sanitizedAddress = CommonUtils.sanitizeValue(row.address);
           return (
             <div>
               <EclipsesTextcss
-                str={`${sanitizedAddress.houseNumber} ${sanitizedAddress.street} ${sanitizedAddress.street2} ${sanitizedAddress.street3} ${sanitizedAddress.city} ${sanitizedAddress.district} ${sanitizedAddress.state} ${sanitizedAddress.country}  ${sanitizedAddress.zipCode}`}
+                str={CommonUtils.getDetailedAddress(row.address)}
                 maxWidth={140}
               />
             </div>
@@ -118,7 +119,14 @@ export default function AccountsList(props) {
         id: 'action',
         center: true,
         name: t('account.action'),
-        cell: (row) => <Actions row={row} userId={userId} practiceId={practiceId} refetch={refetch} />,
+        cell: (row) => (
+          <Actions
+            row={row}
+            userId={userId}
+            practiceId={practiceId}
+            refetch={refetch}
+          />
+        ),
         width: '120px',
         omit: !isAuthorized || omitColumns.includes('action'),
         isAction: true
@@ -137,11 +145,14 @@ export default function AccountsList(props) {
                   if (event.target.checked) {
                     setSelectedRows([...selectedRows, row]);
                   } else {
-                    setSelectedRows(selectedRows.filter((item) => item.id !== row.id));
+                    setSelectedRows(
+                      selectedRows.filter((item) => item.id !== row.id)
+                    );
                   }
                 },
                 value: '',
-                isChecked: !!selectedRows.filter((item) => item.id === row.id).length
+                isChecked: !!selectedRows.filter((item) => item.id === row.id)
+                  .length
               }
             ]}
           />
@@ -169,7 +180,10 @@ export default function AccountsList(props) {
       {/* {true && <Loader type={'screen'} />} */}
       {showSelectedAccounts && (
         <div className="selected-account-chips">
-          <SelectedAccountChips selectedAccounts={selectedRows} onRemoveAccount={onRemoveSelectedAccount} />
+          <SelectedAccountChips
+            selectedAccounts={selectedRows}
+            onRemoveAccount={onRemoveSelectedAccount}
+          />
         </div>
       )}
       <div className="account-box">
@@ -204,7 +218,10 @@ export default function AccountsList(props) {
         </div>
         {showSelectedAccounts && (
           <div className="selected-account-box" style={{ height: tableHeight }}>
-            <SelectedAccounts selectedAccounts={selectedRows} onRemoveAccount={onRemoveSelectedAccount} />
+            <SelectedAccounts
+              selectedAccounts={selectedRows}
+              onRemoveAccount={onRemoveSelectedAccount}
+            />
           </div>
         )}
       </div>

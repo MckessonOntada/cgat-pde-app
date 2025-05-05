@@ -1,9 +1,9 @@
 import { useTranslate } from '@src/translations/useTranslation';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { CustomDataTable } from '@mckesson/mcp-component-library';
+import { CustomDataTable } from '@src/components/dataTableComponent';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
+import { Button } from '@mckesson/mcp-component-library';
 import { useLinkProvider } from '../../context/LinkProviderContext';
 import CommonFilters from '@src/components/Filters';
 import { getLinkProviderColumns } from './LinkProviderColumn';
@@ -15,7 +15,6 @@ import { getAddress } from '@src/mfe/order-management/pages/system-configuration
 import { renderModal } from '@src/util/ModalUtil';
 import { useMutation } from 'react-query';
 import LinkProviderService from '@src/api/commonService/LinkProviderService';
-import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import CommonUtils from '@src/util/CommonUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import { useSearchParams } from 'react-router-dom';
@@ -38,7 +37,7 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
   const [searchParams] = useSearchParams();
   const selectedOrganization = searchParams.get('orgId');
   const isCustomerCenter = AuthUtils.isCustomerCenter();
-  
+
   useEffect(() => {
     setTimeout(() => {
       let eleHeight = document.getElementById(
@@ -47,27 +46,34 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
       setTableHeight(eleHeight);
     }, 100);
   }, [data]);
-  const onRemoveSelectedAccount = (item) => {
-    setSelectedLinkProvider((prev) =>
-      prev.filter((provider) => provider.id !== item.id)
-    );
-  };
+
+  const onRemoveSelectedAccount = useCallback(
+    (item) => {
+      const updatedList = selectedLinkProvider.filter(
+        (provider) => provider.id !== item.id
+      );
+      setSelectedLinkProvider(updatedList);
+      if (isAddLinkProvider) setSelectedProviders(updatedList);
+    },
+    [selectedLinkProvider, isAddLinkProvider, setSelectedProviders]
+  );
+
   const formatProviderDetails = useCallback((data) => {
     const { name, dea, npi, phone, address } = data;
     return [
       {
-        sectionHeading: 'Details',
+        sectionHeading: 'manageSPMaterial.drawer.Details',
         sectionData: [
-          { label: 'Provider Name', value: CommonUtils.getFullName(name) },
-          { label: 'DEA Number', value: dea },
-          { label: 'NPI Number', value: npi }
+          { label: 'provider.name', value: CommonUtils.getFullName(name) },
+          { label: 'manageSPAccount.table.DEANumber', value: dea },
+          { label: 'manageSPAccount.table.NPINumber', value: npi }
         ]
       },
       {
-        sectionHeading: 'Contact',
+        sectionHeading: 'provider.contactDetails',
         sectionData: [
-          { label: 'Contact No', value: phone },
-          { label: 'Address', value: getAddress(address) }
+          { label: 'provider.phone', value: phone },
+          { label: 'account.address', value: getAddress(address) }
         ]
       }
     ];
@@ -138,7 +144,8 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
     setPageNumber(newPage);
   };
   const handleOnSortIconClick = (selectedColumn, sortDirection) => {
-    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    if (selectedColumn.sortKey)
+      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
   return (
@@ -153,17 +160,26 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
           initialData={[]}
         />
       </div>
-      {selectedLinkProvider?.length > 0 && !isAddLinkProvider  && (
+      {selectedLinkProvider?.length > 0 && !isAddLinkProvider && (
         <TableHeading
           heading={[]}
           secondaryView={selectedLinkProvider?.length}
-          secondaryViewHeading={`${selectedLinkProvider?.length} ${t('orgManagement.selected_items')}`}
+          secondaryViewHeading={`${selectedLinkProvider?.length} ${t(
+            'orgManagement.selected_items'
+          )}`}
           secondaryViewControls={
-            <Button variant="secondary" onClick={()=>{unLinkProvider(selectedLinkProvider)}}>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                unLinkProvider(selectedLinkProvider);
+              }}>
               {t('manageSPAccount.providers.column.unlink')}
             </Button>
           }
         />
+      )}
+      {isAddLinkProvider && (
+        <TableHeading heading={t('label.providerListing')} />
       )}
       <div className={style.accountBox}>
         <div className={style.customTableBox}>
@@ -197,6 +213,7 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
             <SelectedAccounts
               selectedAccounts={selectedLinkProvider}
               onRemoveAccount={onRemoveSelectedAccount}
+              header={t('manageSPAccount.providers.selectedProviders')}
             />
           </div>
         )}

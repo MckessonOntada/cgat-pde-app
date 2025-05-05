@@ -53,8 +53,11 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     showInMobileHeader: true,
     showColumnNameInHeader: true,
     cell: (props) => (
-      <Link className="MCP-table-link" aria-label={t('labels.therapyDescription')} to={`?therapy-details=${props.id}`}>
-        <EclipsesTextcss str={props.therapyDescription} maxWidth={220}/>
+      <Link
+        className="MCP-table-link"
+        aria-label={t('labels.therapyDescription')}
+        to={`?therapy-details=${props.id}`}>
+        <EclipsesTextcss str={props.therapyDescription} />
       </Link>
     )
   },
@@ -65,7 +68,9 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     sortable: true,
     minWidth: '200px',
     sortKey: 'material_Number',
-    cell: (props) => <span aria-label={t('labels.therapyNumber')}>{props.therapyId}</span>
+    cell: (props) => (
+      <span aria-label={t('labels.therapyNumber')}>{props.therapyId}</span>
+    )
   },
   {
     id: 'ndc',
@@ -73,7 +78,7 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     selector: () => {},
     minWidth: '120px',
     sortable: true,
-    sortKey: 'ndc_number',
+    sortKey: 'ndc',
     showInMobileHeader: true,
     showColumnNameInHeader: true,
     cardHeader: true,
@@ -89,7 +94,11 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     selector: () => {},
     width: '100px',
     sortable: false,
-    cell: (props) => <span aria-label={t('table.columns.captions.strength')}>{props.strength}</span>
+    cell: (props) => (
+      <span aria-label={t('table.columns.captions.strength')}>
+        {props.strength}
+      </span>
+    )
   },
   {
     id: 'dosage',
@@ -97,6 +106,10 @@ export const createColumns = (t, navigate, therapy, onChange) => [
     selector: () => {},
     width: '100px',
     sortable: false,
-    cell: (props) => <span aria-label={t('table.columns.captions.dosage')}>{props.dosage}</span>
+    cell: (props) => (
+      <span aria-label={t('table.columns.captions.dosage')}>
+        {props.dosage}
+      </span>
+    )
   }
 ];

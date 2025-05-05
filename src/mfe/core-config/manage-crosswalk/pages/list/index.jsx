@@ -1,8 +1,7 @@
 import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bold.svg';
 import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
-import PermittedComponent from '@src/components/permitted-component';
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
@@ -14,39 +13,42 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import {
   useFilters,
   usePagination,
+  useSort,
   useTable
 } from '../../../manage-providers/context/TableContext';
 import { getColumns } from './TableColumns';
 import { ReactComponent as EmptyProviderTable } from '@src/assets/svg/EmptyProviderTable.svg';
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
-import { PROVIDER_STATUS } from '@src/mfe/core-config/manage-providers/config';
-
-const data = [
-  {
-    id: 'BBM001',
-    materialDescription: 'Chemotherapy Drug A',
-    materialNdc: '12345-6789-01',
-    spProductId: 'SP001',
-    spProductName: 'Specialty Med A',
-    spProductNdc: '98765-4321-01'
-  },
-  {
-    id: 'BBM002',
-    materialDescription: 'Pain Reliever B',
-    materialNdc: '22345-6789-02',
-    spProductId: 'SP002',
-    spProductName: 'Specialty Med B',
-    spProductNdc: '88765-4321-02'
-  }
-];
+import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
+import {
+  ConfigConstants,
+  MaterialDetailsConstants
+} from '@src/mfe/order-management/pages/system-configuration/manageMaterial/assets/constants/MaterialConstants';
+import SPMaterialDetails from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/pages/SPMaterialDetails';
+import SPCrosswalkService from '@src/api/commonService/SPCrosswalkService';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+import { useDispatch } from 'react-redux';
 
 const List = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { items, add, remove } = useTimedArray(10000);
   const { filters, applyFilters, clearFilters } = useFilters();
   const { pagination, changePage } = usePagination();
+  const [openDetails, setOpenDetails] = useState(false);
+  const [materialNumber, setMaterialNumber] = useState(null);
+  const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
+  const [viewSPMaterial, setViewSPMaterial] = useState(null);
+  const isCustomerCenter = AuthUtils.isCustomerCenter();
+  const { data = [], refreshTable } = useTable();
+  const dispatch = useDispatch();
+  const { applySort } = useSort();
+  const {
+    items: notifications,
+    remove: removeNotification,
+    removeAll,
+    add: addNotification
+  } = useTimedArray(10000);
   const breadcrumbItems = React.useMemo(() => {
     return [
       {
@@ -64,6 +66,74 @@ const List = () => {
   }, [isSystemAdminView]);
   const handleOnClick = (url) => () => navigate(url);
 
+  const handleOnSort = (data, direction) => {
+    const { sortKey } = data;
+    if (sortKey && direction) {
+      applySort(sortKey, direction);
+    }
+  };
+  console.log(notifications);
+  const handleOnConfirmation = (id) => {
+    SPCrosswalkService.deLinkCrosswalk(id)
+      .then((response) => {
+        if (response.status === 200) {
+          addNotification({
+            type: 'success',
+            description: t('SPCrosswalk.unlinkCrosswalkSuccess')
+          });
+          refreshTable();
+        }
+      })
+      .catch((error) => {
+        const { response: errorResponse } = error;
+        if (
+          errorResponse.response.data?.errorCodes &&
+          errorResponse.response.data?.errorCodes.length > 0
+        ) {
+          errorResponse.response.data.errorCodes.forEach((error) => {
+            addNotification({
+              type: 'error',
+              description: t(`SPCrosswalk.deLinkFailure.${error}`)
+            });
+          });
+        } else {
+          addNotification({
+            type: 'error',
+            description: t(`SPCrosswalk.deLinkFailure.generic`)
+          });
+        }
+      });
+  };
+  const confirmationUnlink = (id) => () => {
+    const state = {};
+    state.title = `${t('label.unlinkCrosswalk')}`;
+    state.body = (
+      <div className="MCP-modal-body">
+        <p>{t('label.unlinkCrosswalkDescription')}</p>
+      </div>
+    );
+    state.footer = (
+      <div className="controls">
+        <Button
+          size="md"
+          variant="secondary"
+          onClick={() => dispatch(closeModal())}>
+          {t('button.caption.no')}
+        </Button>
+        <Button
+          size="md"
+          variant="primary"
+          onClick={() => {
+            handleOnConfirmation(id);
+            dispatch(closeModal());
+          }}>
+          {t('button.caption.yes')}
+        </Button>
+      </div>
+    );
+    dispatch(openModal(state));
+  };
+
   return (
     <div className="MCP-module-wrapper">
       <Breadcrumbs items={breadcrumbItems} />
@@ -75,6 +145,7 @@ const List = () => {
               Icon={AddCircleFilled}
               className="button-icon"
               onClick={handleOnClick('create')}
+              disabled={true}
               size="md">
               {t('controls.addCrosswalk')}
             </Button>
@@ -88,14 +159,14 @@ const List = () => {
           </div>
         }
       />
-      {items && items.length > 0 && (
+      {notifications && notifications.length > 0 && (
         <div className="MCP-module-body">
-          {items.map((item, index) => {
+          {notifications.map((item, index) => {
             return (
               <Alert
                 key={item.id}
                 description={item.description}
-                onClose={() => remove(item.id)}
+                onClose={() => removeNotification(item.id)}
                 type={item.type}
               />
             );
@@ -119,10 +190,19 @@ const List = () => {
         />
         <CustomDataTable
           id="provider-list-table"
-          columns={getColumns()}
+          type={'normal'}
+          columns={getColumns({
+            setOpenDetails,
+            setMaterialNumber,
+            setOpenSPMaterialDetails,
+            setViewSPMaterial,
+            confirmationUnlink
+          })}
           data={data}
-          handleChangePage={changePage}
-          onSortIconClick={() => {}}
+          handleChangePage={(_event, pageIndex) => {
+            changePage(pageIndex);
+          }}
+          onSortIconClick={handleOnSort}
           pagination={true}
           currentPage={pagination.pageNumber}
           totalPageCount={pagination.totalPages}
@@ -137,6 +217,26 @@ const List = () => {
               description={t('label.emptyMaterialCrosswalkTableDescription')}
             />
           }
+        />
+
+        {openDetails && (
+          <TherapyDetails
+            therapyId={materialNumber}
+            therapyData={MaterialDetailsConstants}
+            configurationData={ConfigConstants}
+            onClose={() => setOpenDetails(!openDetails)}
+            showFooter={false}
+            isMaterialConfiguration={true}
+            useMaterialService={true}
+            hasDeleteConfigAccess={!isCustomerCenter}
+            heading={t('manageMaterial.drawer.heading')}
+          />
+        )}
+
+        <SPMaterialDetails
+          openSPMaterialDetails={openSPMaterialDetails}
+          setOpenSPMaterialDetails={setOpenSPMaterialDetails}
+          viewSPMaterial={viewSPMaterial}
         />
       </div>
     </div>

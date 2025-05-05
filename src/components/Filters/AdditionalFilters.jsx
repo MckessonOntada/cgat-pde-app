@@ -18,6 +18,7 @@ export default function AdditionalFilters({ filtersConfig }) {
       minDate={gettenYearDate(-15)}
       maxDate={gettenYearDate(15)}
       isRequired={item.required || false}
+      {...item}
       {...(item.getUpdatedOptions
         ? { getUpdatedOptions: item.getUpdatedOptions }
         : {})}

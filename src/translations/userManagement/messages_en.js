@@ -32,12 +32,14 @@ export const UserManagementEN = {
   'userManagement.table.action.reject': 'Reject',
   'userManagement.button.rejectrequest': 'Reject Request',
   'userManagement.table.action.view': 'VIEW',
-  'userManagement.empty_table.description': 'You need to add Users to see data in this table.',
+  'userManagement.empty_table.description':
+    'You need to add Users to see data in this table.',
   'userManagement.add.label': 'Add User',
   'userManagement.placeholder.searchByNameAndemail': 'Select by Name and Email',
   'userManagement.filter.label': 'Filter By',
   'userManagement.table.warning': 'Warning',
-  'userManagement.snackbar.fileWarning': 'File has warning. Please check the file and re-upload',
+  'userManagement.snackbar.fileWarning':
+    'File has warning. Please check the file and re-upload',
   'userManagement.snackbar.fileSuccess': 'File upload Success',
   'userManagement.download.template': 'Download CSV Template',
   'userManagement.upload.header.label': 'Upload User List CSV',
@@ -47,8 +49,10 @@ export const UserManagementEN = {
   'userManagement.upload.new.label': 'Upload New',
   'userManagement.upload.confirm.label': 'Confirm Upload',
   'userManagement.upload.cancel.label': 'Cancel Upload',
-  'userManagement.upload.error.uploadError': 'Error uploading the file. Please try again later.',
-  'userManagement.upload.error.fileError': 'File error/s. Please correct and upload again.',
+  'userManagement.upload.error.uploadError':
+    'Error uploading the file. Please try again later.',
+  'userManagement.upload.error.fileError':
+    'File error/s. Please correct and upload again.',
   'userManagement.label.role': 'Role',
   'userManagement.label.cancel': 'Cancel',
   'userManagement.label.save': 'Save',
@@ -56,7 +60,8 @@ export const UserManagementEN = {
   'userManagement.label.description': 'Description',
   'userManagement.label.createdOn': 'Created On',
   'userManagement.label.emptyPermissionListTitle': 'No permissions available',
-  'userManagement.label.emptyPermissionListSubtitle': 'Please assign permission to see it here',
+  'userManagement.label.emptyPermissionListSubtitle':
+    'Please assign permission to see it here',
   'userManagement.status.active': 'Active',
   'userManagement.status.inactive': 'Inactive',
   'userManagement.manageUser.breadCrumb.lable.allUser': 'All Users',
@@ -74,13 +79,17 @@ export const UserManagementEN = {
   'userManagement.button.adduser': 'Add User',
   'userManagement.button.uploadUsers': 'Upload Users',
   'userManagement.button.uploadingUsers': 'Uploading...',
-  'userManagement.button.downloadTemplateDescription': 'Download sample template for uploading bulk users.',
+  'userManagement.button.downloadTemplateDescription':
+    'Download sample template for uploading bulk users.',
   'userManagement.button.downloadTemplate': 'Bulk Upload User Template',
-  'userManagement.button.uploadError': 'Error while creating Organization users',
+  'userManagement.button.uploadError':
+    'Error while creating Organization users',
   'userManagement.button.uploadConflict':
     'Issue in uploading users. Some or all user records might have failed. The errors are listed in the downloaded file. Please review and try again.',
-  'userManagement.button.uploadSuccess': 'Organization users has been successfully created',
-  'userManagement.button.downloadFail': 'Organization users has been successfully created',
+  'userManagement.button.uploadSuccess':
+    'Organization users has been successfully created',
+  'userManagement.button.downloadFail':
+    'Organization users has been successfully created',
   'userManagement.button.downloadTemplate': 'Download Template',
   'userManagement.button.addsystemadmin': 'Add System Administrator',
   'userManagement.button.add_accounts': 'Add Accounts',
@@ -89,14 +98,17 @@ export const UserManagementEN = {
   'userManagement.button.unlink': 'Unlink Account',
   'userManagement.user.backmessage': 'Back to Manage Users',
   'userManagement.sysadmin.backmessage': 'Back to Manage System Admin Page',
-  'userManagement.provision.message': 'User is not provisioned in Okta. {click} to Provision the User in Okta.',
+  'userManagement.provision.message':
+    'User is not provisioned in Okta. {click} to Provision the User in Okta.',
   'userManagement.button.clickhere': 'Click here',
   'userManagement.create_user': 'Add User',
   'userManagement.edit_user': 'Edit User',
   'userManagement.create_organization_user': 'Add Organization User',
   'userManagement.create_sysadmin': 'Add System Administrator',
-  'userManagement.create_user.details_to_create_user': 'Please check the details to create a organization user.',
-  'userManagement.create_user.details_to_create_sysadmin': 'Please complete the form to register a new system administrator.',
+  'userManagement.create_user.details_to_create_user':
+    'Please check the details to create a organization user.',
+  'userManagement.create_user.details_to_create_sysadmin':
+    'Please complete the form to register a new system administrator.',
   'userManagement.create_user.personal_details': 'Personal Details',
   'userManagement.create_user.contact_details': 'Contact Details',
   'userManagement.create_user.required': 'Required',
@@ -111,37 +123,57 @@ export const UserManagementEN = {
   'userManagement.create_user.inputLabel.email': 'Email Id',
   'userManagement.create_user.inputLabel.phone_no': 'Phone Number',
   'userManagement.create_user.inputLabel.fax': 'Fax',
-  'userManagement.create_user.validation.first_name_required': 'First Name is required',
-  'userManagement.create_user.validation.first_name': 'First Name must only contain alphabets.',
-  'userManagement.create_user.validation.first_name_min_max': 'First Name must be between 2 and 50 characters.',
-  'userManagement.create_user.validation.middle_name': 'Middle name must only contain alphabets.',
-  'userManagement.create_user.validation.middle_name_min_max': 'Middle name must be between 2 and 50 characters.',
-  'userManagement.create_user.validation.last_name_required': 'Last Name is required',
-  'userManagement.create_user.validation.last_name': 'Last Name must only contain alphabets.',
-  'userManagement.create_user.validation.last_name_min_max': 'Last Name must be between 2 and 50 characters.',
-  'userManagement.create_user.validation.address_1_required': 'Address1 is required.',
-  'userManagement.create_user.validation.address_1': 'Enter Valid Details for Address1.',
-  'userManagement.create_user.validation.address_1_min_max': 'Address1 must be between 2 and 100 characters.',
+  'userManagement.create_user.validation.first_name_required':
+    'First Name is required',
+  'userManagement.create_user.validation.first_name':
+    'Please enter a valid first name.',
+  'userManagement.create_user.validation.first_name_min_max':
+    'First Name must be between 2 and 50 characters.',
+  'userManagement.create_user.validation.middle_name':
+    'Please enter a valid middle name.',
+  'userManagement.create_user.validation.middle_name_min_max':
+    'Middle name must be between 2 and 50 characters.',
+  'userManagement.create_user.validation.last_name_required':
+    'Last Name is required',
+  'userManagement.create_user.validation.last_name':
+    'Please enter a valid last name.',
+  'userManagement.create_user.validation.last_name_min_max':
+    'Last Name must be between 2 and 50 characters.',
+  'userManagement.create_user.validation.address_1_required':
+    'Address1 is required.',
+  'userManagement.create_user.validation.address_1':
+    'Enter Valid Details for Address1.',
+  'userManagement.create_user.validation.address_1_min_max':
+    'Address1 must be between 2 and 100 characters.',
   'userManagement.create_user.validation.city_required': 'City is required',
-  'userManagement.create_user.validation.city_min_max': 'City must be between 2 and 50 characters.',
+  'userManagement.create_user.validation.city_min_max':
+    'City must be between 2 and 50 characters.',
   'userManagement.create_user.validation.zip_required': 'Zip Code is required',
-  'userManagement.create_user.validation.city': 'City must only contain alphabets.',
+  'userManagement.create_user.validation.city':
+    'City must only contain alphabets.',
   'userManagement.create_user.validation.zip': 'Enter a valid Zip Code.',
-  'userManagement.create_account.validation.zip_max': 'zip can be a maximum of 15 characters',
+  'userManagement.create_account.validation.zip_max':
+    'zip can be a maximum of 15 characters',
   'userManagement.create_user.validation.state_required': 'State is required',
-  'userManagement.create_user.validation.email_required': 'Email Id is required',
-  'userManagement.create_user.validation.invalid_email': 'Enter a valid Email Address',
-  'userManagement.create_user.validation.phone_no_required': 'Phone Number is required..',
-  'userManagement.create_user.validation.phone_no': 'Enter a valid Phone Number.',
+  'userManagement.create_user.validation.email_required':
+    'Email Id is required',
+  'userManagement.create_user.validation.invalid_email':
+    'Enter a valid Email Address',
+  'userManagement.create_user.validation.phone_no_required':
+    'Phone Number is required..',
+  'userManagement.create_user.validation.phone_no':
+    'Enter a valid Phone Number.',
   'userManagement.create_user.validation.fax': 'Fax must be a valid format.',
-  'userManagement.create_user.validation.fax_max': 'Fax can be a maximum of 15 characters',
+  'userManagement.create_user.validation.fax_max':
+    'Fax can be a maximum of 15 characters',
   'userManagement.create_user.option.please_select': 'Please Select',
 
   'userManagement.userDetails.userAddress': 'User Address',
   'userManagement.userDetails.lastUpdatedOn': 'Last Updated On:',
 
   'userManagement.stepper.option.user_details': 'User Details',
-  'userManagement.stepper.option.roles_and_permissions': 'Roles and Permissions',
+  'userManagement.stepper.option.roles_and_permissions':
+    'Roles and Permissions',
   'userManagement.stepper.option.associate_accounts': 'Associate Accounts',
 
   'userManagement.header.view.edit_user': 'User Details',
@@ -149,10 +181,14 @@ export const UserManagementEN = {
   'userManagement.header.view.permissions_granted': 'Permissions Granted',
   'userManagement.message.userEmptyTableTitle': 'No Users Found',
   'userManagement.message.sysadminEmptyTableTitle': 'No System Admins Found',
-  'userManagement.messages.userEmptyTableSubtitle': 'Data is unavailable. Please add an user to view the table content.',
-  'userManagement.messages.sysadminEmptyTableSubtitle': 'Data is unavailable. Please add a System Admin to view the table content.',
-  'userManagement.messages.emptysubtitle': 'Data is unavailable. Please add Permission(s) to view the content.',
-  'userManagement.message.userPermissionEmptyTableTitle': 'No Permissions Found.',
+  'userManagement.messages.userEmptyTableSubtitle':
+    'Data is unavailable. Please add an user to view the table content.',
+  'userManagement.messages.sysadminEmptyTableSubtitle':
+    'Data is unavailable. Please add a System Admin to view the table content.',
+  'userManagement.messages.emptysubtitle':
+    'Data is unavailable. Please add Permission(s) to view the content.',
+  'userManagement.message.userPermissionEmptyTableTitle':
+    'No Permissions Found.',
   'userManagement.header.view.linked_accounts': 'Linked Accounts',
 
   'userManagement.user_permissions.managePermissions': 'Manage Permissions',
@@ -174,42 +210,58 @@ export const UserManagementEN = {
   'AUTHENTICATION_FLOW.LOGIN_SCREEN': 'Login Screen',
   'AUTHENTICATION_FLOW.LOGIN_SCREEN.DESCRIPTION': 'Allows user to login',
   'AUTHENTICATION_FLOW.SYSTEM_ADMIN_LANDING_PAGE': 'System Admin Landing Page',
-  'AUTHENTICATION_FLOW.SYSTEM_ADMIN_LANDING_PAGE.DESCRIPTION': 'Allows system admin to land on the landing page',
+  'AUTHENTICATION_FLOW.SYSTEM_ADMIN_LANDING_PAGE.DESCRIPTION':
+    'Allows system admin to land on the landing page',
 
   'USER_MANAGEMENT.MANAGE_USERS_SCREEN': 'Manage Users',
-  'USER_MANAGEMENT.MANAGE_USERS_SCREEN.DESCRIPTION': 'Allows deactivating users and enables the deactivate option',
+  'USER_MANAGEMENT.MANAGE_USERS_SCREEN.DESCRIPTION':
+    'Allows deactivating users and enables the deactivate option',
   'USER_MANAGEMENT.EDIT_USERS': 'Edit Users',
-  'USER_MANAGEMENT.EDIT_USERS.DESCRIPTION': 'Allows editing user information, enabling the edit icon',
-  'USER_MANAGEMENT.APPROVE_PENDING_USER_REQUEST': 'Approve Pending User Request',
-  'USER_MANAGEMENT.APPROVE_PENDING_USER_REQUEST.DESCRIPTION': 'Allows approving new user requests, enabling the approve action',
-  'USER_MANAGEMENT.CREATE_USER_FOR_PENDING_USER_REQUEST': 'Approve Pending User Request',
+  'USER_MANAGEMENT.EDIT_USERS.DESCRIPTION':
+    'Allows editing user information, enabling the edit icon',
+  'USER_MANAGEMENT.APPROVE_PENDING_USER_REQUEST':
+    'Approve Pending User Request',
+  'USER_MANAGEMENT.APPROVE_PENDING_USER_REQUEST.DESCRIPTION':
+    'Allows approving new user requests, enabling the approve action',
+  'USER_MANAGEMENT.CREATE_USER_FOR_PENDING_USER_REQUEST':
+    'Approve Pending User Request',
   'USER_MANAGEMENT.CREATE_USER_FOR_PENDING_USER_REQUEST.DESCRIPTION':
     'Allows to Approve new users request , Enables the view for Pending request Tab   ',
   'USER_MANAGEMENT.ADD_USERS': 'Add Users',
-  'USER_MANAGEMENT.ADD_USERS.DESCRIPTION': 'Allows creating a new user, enabling the create user button',
+  'USER_MANAGEMENT.ADD_USERS.DESCRIPTION':
+    'Allows creating a new user, enabling the create user button',
   'USER_MANAGEMENT.VIEW_USERS': 'View Users',
   'USER_MANAGEMENT.VIEW_USERS.DESCRIPTION': 'Allows to view the user',
   'USER_MANAGEMENT.UPLOAD_USERS': 'Upload Users',
-  'USER_MANAGEMENT.UPLOAD_USERS.DESCRIPTION': 'Allows bulk uploading users, enabling the upload user button',
+  'USER_MANAGEMENT.UPLOAD_USERS.DESCRIPTION':
+    'Allows bulk uploading users, enabling the upload user button',
 
   'ADMIN_MANAGEMENT.MANAGE_SYSTEM_ADMINISTRATOR_SCREEN': 'Manage System Admin',
-  'ADMIN_MANAGEMENT.MANAGE_SYSTEM_ADMINISTRATOR_SCREEN.DESCRIPTION': 'Allows managing system admins, enabling deactivate options',
+  'ADMIN_MANAGEMENT.MANAGE_SYSTEM_ADMINISTRATOR_SCREEN.DESCRIPTION':
+    'Allows managing system admins, enabling deactivate options',
   'ADMIN_MANAGEMENT.VIEW_SYSTEM_ADMINISTRATOR': 'View System Admin',
-  'ADMIN_MANAGEMENT.VIEW_SYSTEM_ADMINISTRATOR.DESCRIPTION': 'Allows managing system admins, enabling deactivate options',
+  'ADMIN_MANAGEMENT.VIEW_SYSTEM_ADMINISTRATOR.DESCRIPTION':
+    'Allows managing system admins, enabling deactivate options',
   'ADMIN_MANAGEMENT.MANAGE_SYSTEM_ADMIN': 'Manage System Admin',
-  'ADMIN_MANAGEMENT.MANAGE_SYSTEM_ADMIN.DESCRIPTION': 'Allows managing system admins, enabling deactivate options',
+  'ADMIN_MANAGEMENT.MANAGE_SYSTEM_ADMIN.DESCRIPTION':
+    'Allows managing system admins, enabling deactivate options',
   'ADMIN_MANAGEMENT.ADD_SYSTEM_ADMINISTRATOR': 'Add System Admin',
-  'ADMIN_MANAGEMENT.ADD_SYSTEM_ADMINISTRATOR.DESCRIPTION': 'Allows adding a system admin, enabling the create system admin button',
+  'ADMIN_MANAGEMENT.ADD_SYSTEM_ADMINISTRATOR.DESCRIPTION':
+    'Allows adding a system admin, enabling the create system admin button',
 
   'ADMIN_MANAGEMENT.EDIT_SYSTEM_ADMINISTRATOR': 'Edit System Admin',
-  'ADMIN_MANAGEMENT.EDIT_SYSTEM_ADMINISTRATOR.DESCRIPTION': 'Allows editing system admin information, enabling the edit option',
+  'ADMIN_MANAGEMENT.EDIT_SYSTEM_ADMINISTRATOR.DESCRIPTION':
+    'Allows editing system admin information, enabling the edit option',
 
   'USER_MANAGEMENT.ADD_ROLES': 'Add Roles',
-  'USER_MANAGEMENT.ADD_ROLES.DESCRIPTION': 'Allows adding roles, enabling the create role button',
+  'USER_MANAGEMENT.ADD_ROLES.DESCRIPTION':
+    'Allows adding roles, enabling the create role button',
   'USER_MANAGEMENT.EDIT_ROLES': 'Edit Roles',
-  'USER_MANAGEMENT.EDIT_ROLES.DESCRIPTION': 'Allows to edit roles, Enable edit button',
+  'USER_MANAGEMENT.EDIT_ROLES.DESCRIPTION':
+    'Allows to edit roles, Enable edit button',
   'USER_MANAGEMENT.MANAGE_ROLES_SCREEN': 'Manage Roles',
-  'USER_MANAGEMENT.MANAGE_ROLES_SCREEN.DESCRIPTION': 'Allows editing and deactivating roles, enabling the edit and deactivate options',
+  'USER_MANAGEMENT.MANAGE_ROLES_SCREEN.DESCRIPTION':
+    'Allows editing and deactivating roles, enabling the edit and deactivate options',
   'USER_MANAGEMENT.VIEW_ROLES': 'View Roles',
   'USER_MANAGEMENT.VIEW_ROLES.DESCRIPTION': 'Allows user to view the screen',
   'USER_MANAGEMENT.ON_BEHALF_OF_USER': 'On Behalf of User',
@@ -223,148 +275,217 @@ export const UserManagementEN = {
   'ORGANIZATION_MANAGEMENT.EDIT_ORGANIZATION.DESCRIPTION':
     'Allows editing and deactivating the organization, enabling edit and deactivate options',
   'ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION': 'Add Organization',
-  'ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION.DESCRIPTION': 'Allows adding an organization, enabling the create organization button',
+  'ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION.DESCRIPTION':
+    'Allows adding an organization, enabling the create organization button',
   'ORGANIZATION_MANAGEMENT.VIEW_ORGANIZATION': 'View Organization',
-  'ORGANIZATION_MANAGEMENT.VIEW_ORGANIZATION.DESCRIPTION': 'Allows user to view organization',
+  'ORGANIZATION_MANAGEMENT.VIEW_ORGANIZATION.DESCRIPTION':
+    'Allows user to view organization',
 
   'MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN': 'Deactivate/Link sp account',
-  'MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN.DESCRIPTION': 'Allow user to manage provider , enable deactivate and link sp account button ',
+  'MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN.DESCRIPTION':
+    'Allow user to manage provider , enable deactivate and link sp account button ',
   'MANAGE_PROVIDERS.VIEW_PROVIDER': 'View Provider',
-  'MANAGE_PROVIDERS.VIEW_PROVIDER.DESCRIPTION': 'Allows user to view provider page',
+  'MANAGE_PROVIDERS.VIEW_PROVIDER.DESCRIPTION':
+    'Allows user to view provider page',
   'MANAGE_PROVIDERS.ADD_PROVIDER': 'Add Provider',
-  'MANAGE_PROVIDERS.ADD_PROVIDER.DESCRIPTION': 'Allows user to add provider, enable add button ',
+  'MANAGE_PROVIDERS.ADD_PROVIDER.DESCRIPTION':
+    'Allows user to add provider, enable add button ',
   'MANAGE_PROVIDERS.UPLOAD_PROVIDER': 'Upload Provider',
-  'MANAGE_PROVIDERS.UPLOAD_PROVIDER.DESCRIPTION': 'Allows user to upload provider and download the csv file, enables upload button',
+  'MANAGE_PROVIDERS.UPLOAD_PROVIDER.DESCRIPTION':
+    'Allows user to upload provider and download the csv file, enables upload button',
   'MANAGE_PROVIDERS.EDIT_PROVIDER': 'Edit Provider',
-  'MANAGE_PROVIDERS.EDIT_PROVIDER.DESCRIPTION': 'Allows user to edit provider details, enable edit button',
+  'MANAGE_PROVIDERS.EDIT_PROVIDER.DESCRIPTION':
+    'Allows user to edit provider details, enable edit button',
 
   'ORDER_MANAGEMENT.MANAGE_ORDERS': 'Manage Orders',
-  'ORDER_MANAGEMENT.MANAGE_ORDERS.DESCRIPTION': 'Allows to Perform Delete action, Enable delete option',
+  'ORDER_MANAGEMENT.MANAGE_ORDERS.DESCRIPTION':
+    'Allows to Perform Delete action, Enable delete option',
   'ORDER_MANAGEMENT.EDIT_ORDERS': 'Edit Orders',
-  'ORDER_MANAGEMENT.EDIT_ORDERS.DESCRIPTION': 'Allows user to edit the order, Enable Edit order option',
+  'ORDER_MANAGEMENT.EDIT_ORDERS.DESCRIPTION':
+    'Allows user to edit the order, Enable Edit order option',
   'ORDER_MANAGEMENT.VIEW_ORDERS': 'View Orders',
-  'ORDER_MANAGEMENT.VIEW_ORDERS.DESCRIPTION': 'Allows User to View Submitted orders, Enables submitted tab',
+  'ORDER_MANAGEMENT.VIEW_ORDERS.DESCRIPTION':
+    'Allows User to View Submitted orders, Enables submitted tab',
   'ORDER_MANAGEMENT.APPROVE_ORDERS': 'Approve Orders',
-  'ORDER_MANAGEMENT.APPROVE_ORDERS.DESCRIPTION': 'Allows approval of orders, enabling the approve order button',
+  'ORDER_MANAGEMENT.APPROVE_ORDERS.DESCRIPTION':
+    'Allows approval of orders, enabling the approve order button',
   'ORDER_MANAGEMENT.ADD_ORDERS': 'Add Orders',
-  'ORDER_MANAGEMENT.ADD_ORDERS.DESCRIPTION': 'Allows to create order, enable create new order button',
+  'ORDER_MANAGEMENT.ADD_ORDERS.DESCRIPTION':
+    'Allows to create order, enable create new order button',
   'ORDER_MANAGEMENT.CANCEL_ORDER': 'Cancel Order',
-  'ORDER_MANAGEMENT.CANCEL_ORDER.DESCRIPTION': 'Allows user to cancel the order, Enables cancel option',
+  'ORDER_MANAGEMENT.CANCEL_ORDER.DESCRIPTION':
+    'Allows user to cancel the order, Enables cancel option',
   'ORDER_MANAGEMENT.REJECT_ORDER': 'Reject Order',
-  'ORDER_MANAGEMENT.REJECT_ORDER.DESCRIPTION': 'Allows user to Reject the order, Enables Reject order button',
+  'ORDER_MANAGEMENT.REJECT_ORDER.DESCRIPTION':
+    'Allows user to Reject the order, Enables Reject order button',
   'ORDER_MANAGEMENT.ADD_APPROVER_GROUP': 'Add Approver Group',
-  'ORDER_MANAGEMENT.ADD_APPROVER_GROUP.DESCRIPTION': 'Allows user to Add new group, Enables Add New Group Button',
+  'ORDER_MANAGEMENT.ADD_APPROVER_GROUP.DESCRIPTION':
+    'Allows user to Add new group, Enables Add New Group Button',
   'ORDER_MANAGEMENT.VIEW_APPROVER_GROUP': 'View Approver Group',
-  'ORDER_MANAGEMENT.VIEW_APPROVER_GROUP.DESCRIPTION': 'Allows user to View Group listing and page access',
+  'ORDER_MANAGEMENT.VIEW_APPROVER_GROUP.DESCRIPTION':
+    'Allows user to View Group listing and page access',
   'ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP': 'Manage Approver Group',
-  'ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP.DESCRIPTION': 'Allows user to activate and deactivate the approver group',
+  'ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP.DESCRIPTION':
+    'Allows user to activate and deactivate the approver group',
   'ORDER_MANAGEMENT.EDIT_APPROVER_GROUP': 'Edit Approver Group',
-  'ORDER_MANAGEMENT.EDIT_APPROVER_GROUP.DESCRIPTION': 'Allows user to edit Approver Group, Enable Edit option',
+  'ORDER_MANAGEMENT.EDIT_APPROVER_GROUP.DESCRIPTION':
+    'Allows user to edit Approver Group, Enable Edit option',
   'ORDER_MANAGEMENT.VIEW_PENDING_ORDERS': 'View Pending Orders',
-  'ORDER_MANAGEMENT.VIEW_PENDING_ORDERS.DESCRIPTION': 'Allows User to View Pending order, Enables pending tab',
+  'ORDER_MANAGEMENT.VIEW_PENDING_ORDERS.DESCRIPTION':
+    'Allows User to View Pending order, Enables pending tab',
 
   'SYSTEM_CONFIGURATION.ADD_QUESTIONNAIRE': 'Add Questionnaire',
-  'SYSTEM_CONFIGURATION.ADD_QUESTIONNAIRE.DESCRIPTION': 'Allows to create questionnaire, enables Add Questionnaire button',
+  'SYSTEM_CONFIGURATION.ADD_QUESTIONNAIRE.DESCRIPTION':
+    'Allows to create questionnaire, enables Add Questionnaire button',
   'SYSTEM_CONFIGURATION.VIEW_QUESTIONNAIRE': 'View Questionnaire',
-  'SYSTEM_CONFIGURATION.VIEW_QUESTIONNAIRE.DESCRIPTION': 'Allows user to view questionnaire, enables view access',
+  'SYSTEM_CONFIGURATION.VIEW_QUESTIONNAIRE.DESCRIPTION':
+    'Allows user to view questionnaire, enables view access',
   'SYSTEM_CONFIGURATION.CONFIGURE_QUESTIONNAIRE': 'Configure Questionnaire',
-  'SYSTEM_CONFIGURATION.CONFIGURE_QUESTIONNAIRE.DESCRIPTION': 'Allows user to configure questionnaire, enables Configure button',
+  'SYSTEM_CONFIGURATION.CONFIGURE_QUESTIONNAIRE.DESCRIPTION':
+    'Allows user to configure questionnaire, enables Configure button',
   'SYSTEM_CONFIGURATION.DEACTIVATE_QUESTIONNAIRE': 'Deactivate Questionnaire',
-  'SYSTEM_CONFIGURATION.DEACTIVATE_QUESTIONNAIRE.DESCRIPTION': 'Allows user to deactivate questionnaire, enables Deactivate button',
+  'SYSTEM_CONFIGURATION.DEACTIVATE_QUESTIONNAIRE.DESCRIPTION':
+    'Allows user to deactivate questionnaire, enables Deactivate button',
   'SYSTEM_CONFIGURATION.MANAGE_MATERIAL': 'Manage Material',
-  'SYSTEM_CONFIGURATION.MANAGE_MATERIAL.DESCRIPTION': 'Allows user to configure the Material, enables Configure button',
+  'SYSTEM_CONFIGURATION.MANAGE_MATERIAL.DESCRIPTION':
+    'Allows user to configure the Material, enables Configure button',
   'SYSTEM_CONFIGURATION.VIEW_MATERIAL': 'View Material',
-  'SYSTEM_CONFIGURATION.VIEW_MATERIAL.DESCRIPTION': 'Allows user to view Material listing page, enables view access',
+  'SYSTEM_CONFIGURATION.VIEW_MATERIAL.DESCRIPTION':
+    'Allows user to view Material listing page, enables view access',
   'SYSTEM_CONFIGURATION.MANAGE_CATALOG': 'Manage Catalog',
-  'SYSTEM_CONFIGURATION.MANAGE_CATALOG.DESCRIPTION': 'Allows user to configure catalog, enables Configure button',
+  'SYSTEM_CONFIGURATION.MANAGE_CATALOG.DESCRIPTION':
+    'Allows user to configure catalog, enables Configure button',
   'SYSTEM_CONFIGURATION.VIEW_CATALOG': 'View Catalog',
-  'SYSTEM_CONFIGURATION.VIEW_CATALOG.DESCRIPTION': 'Allows user to view Catalog listing page, enables view access',
+  'SYSTEM_CONFIGURATION.VIEW_CATALOG.DESCRIPTION':
+    'Allows user to view Catalog listing page, enables view access',
 
   'SYSTEM_CONFIGURATION.VIEW_SP_MATERIAL': 'View SP Material',
-  'SYSTEM_CONFIGURATION.VIEW_SP_MATERIAL.DESCRIPTION': 'Allows User to view SP Material',
+  'SYSTEM_CONFIGURATION.VIEW_SP_MATERIAL.DESCRIPTION':
+    'Allows User to view SP Material',
 
   'SYSTEM_CONFIGURATION.VIEW_CROSSWALK': 'View Crosswalk',
-  'SYSTEM_CONFIGURATION.VIEW_CROSSWALK.DESCRIPTION': 'Allow user to View Crosswalk Screen',
+  'SYSTEM_CONFIGURATION.VIEW_CROSSWALK.DESCRIPTION':
+    'Allow user to View Crosswalk Screen',
   'SYSTEM_CONFIGURATION.ADD_CROSSWALK': 'Add Crosswalk',
-  'SYSTEM_CONFIGURATION.ADD_CROSSWALK.DESCRIPTION': 'Allows user to add Crosswalk Material, enable add button',
+  'SYSTEM_CONFIGURATION.ADD_CROSSWALK.DESCRIPTION':
+    'Allows user to add Crosswalk Material, enable add button',
   'SYSTEM_CONFIGURATION.UPLOAD_CROSSWALK': 'Upload Crosswalk',
-  'SYSTEM_CONFIGURATION.UPLOAD_CROSSWALK.DESCRIPTION': 'Allows user to  upload crosswalk file, enable upload button',
+  'SYSTEM_CONFIGURATION.UPLOAD_CROSSWALK.DESCRIPTION':
+    'Allows user to  upload crosswalk file, enable upload button',
 
   'SYSTEM_CONFIGURATION.MANAGE_SP_ACCOUNT': 'Manage SP Account ',
-  'SYSTEM_CONFIGURATION.MANAGE_SP_ACCOUNT.DESCRIPTION': 'Allow user to view SP account listing page',
+  'SYSTEM_CONFIGURATION.MANAGE_SP_ACCOUNT.DESCRIPTION':
+    'Allow user to view SP account listing page',
   'SYSTEM_CONFIGURATION.ADD_SP_ACCOUNT': 'Add SP Account',
-  'SYSTEM_CONFIGURATION.ADD_SP_ACCOUNT.DESCRIPTION': 'Allow user to add account, enable add button ',
+  'SYSTEM_CONFIGURATION.ADD_SP_ACCOUNT.DESCRIPTION':
+    'Allow user to add account, enable add button ',
 
   'SYSTEM_CONFIGURATION.MANAGE_SP_CATALOG': 'Manage SP Catalog',
   'SYSTEM_CONFIGURATION.MANAGE_SP_CATALOG.DESCRIPTION':
     'Allows user to Download the list of Catalog (Download List), Upload Catalog (Upload Catalog), Link catalog (Link Catalog action) and  Unlink Catalog (Unlink action against each record and global action on multi select.)',
 
   'SYSTEM_CONFIGURATION.VIEW_SP_CATALOG': 'View SP Catalog',
-  'SYSTEM_CONFIGURATION.VIEW_SP_CATALOG.DESCRIPTION': 'Allow user to view Catalog page, Dowload the list of catalog (download List)',
+  'SYSTEM_CONFIGURATION.VIEW_SP_CATALOG.DESCRIPTION':
+    'Allow user to view Catalog page, Dowload the list of catalog (download List)',
 
   'PAYMENT_INVOICING.MANAGE_INVOICES': 'Manage Invoices',
-  'PAYMENT_INVOICING.MANAGE_INVOICES.DESCRIPTION': 'Allows to Export to Excel and PDF, enables Export Excel button and Export PDF option',
+  'PAYMENT_INVOICING.MANAGE_INVOICES.DESCRIPTION':
+    'Allows to Export to Excel and PDF, enables Export Excel button and Export PDF option',
   'PAYMENT_INVOICING.VIEW_INVOICES': 'View Invoices',
-  'PAYMENT_INVOICING.VIEW_INVOICES.DESCRIPTION': 'Allows to view Payment and Invoices dashboard',
+  'PAYMENT_INVOICING.VIEW_INVOICES.DESCRIPTION':
+    'Allows to view Payment and Invoices dashboard',
   'PAYMENT_INVOICING.PAY_INVOICES': 'Pay Invoices',
-  'PAYMENT_INVOICING.PAY_INVOICES.DESCRIPTION': 'Allows to pay for the billed amount, enables Pay Now and Review and Pay buttons',
+  'PAYMENT_INVOICING.PAY_INVOICES.DESCRIPTION':
+    'Allows to pay for the billed amount, enables Pay Now and Review and Pay buttons',
   'PAYMENT_INVOICING.VIEW_PAYMENT_HISTORY': 'View Payment History',
-  'PAYMENT_INVOICING.VIEW_PAYMENT_HISTORY.DESCRIPTION': 'Allows to view payment history, enables Payment History page view',
+  'PAYMENT_INVOICING.VIEW_PAYMENT_HISTORY.DESCRIPTION':
+    'Allows to view payment history, enables Payment History page view',
 
   'PAYMENT_INVOICING.MANAGE_CUSTOMER_STATEMENT': 'Manage Customer Statement',
   'PAYMENT_INVOICING.MANAGE_CUSTOMER_STATEMENT.DESCRIPTION':
     'Allows user to Export to PDF and Excel, enables Export Excel button and Export PDF option',
   'PAYMENT_INVOICING.VIEW_CUSTOMER_STATEMENT': 'View Customer Statement',
-  'PAYMENT_INVOICING.VIEW_CUSTOMER_STATEMENT.DESCRIPTION': 'Allows to view customer statement, enables Customer Statement view',
+  'PAYMENT_INVOICING.VIEW_CUSTOMER_STATEMENT.DESCRIPTION':
+    'Allows to view customer statement, enables Customer Statement view',
 
   'PAYMENT_INVOICING.VIEW_PAYMENT_METHOD_CARD': 'View Payment Method (Card)',
-  'PAYMENT_INVOICING.VIEW_PAYMENT_METHOD_CARD.DESCRIPTION': 'Allows to view payment method, enables page view and Set as Default option',
+  'PAYMENT_INVOICING.VIEW_PAYMENT_METHOD_CARD.DESCRIPTION':
+    'Allows to view payment method, enables page view and Set as Default option',
   'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_CARD': 'Add Payment Method (Card)',
-  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_CARD.DESCRIPTION': 'Allows to add payment method, enables Add New Card button',
-  'PAYMENT_INVOICING.MANAGE_PAYMENT_METHOD_CARD': 'Manage Payment Methods (Card)',
-  'PAYMENT_INVOICING.MANAGE_PAYMENT_METHOD_CARD.DESCRIPTION': 'Allows to edit payment method, enables Edit option',
-  'PAYMENT_INVOICING.DELETE_PAYMENT_METHOD_CARD': 'Delete Payment Methods (Card)',
-  'PAYMENT_INVOICING.DELETE_PAYMENT_METHOD_CARD.DESCRIPTION': 'Allows to delete the payment method, enables Delete option',
+  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_CARD.DESCRIPTION':
+    'Allows to add payment method, enables Add New Card button',
+  'PAYMENT_INVOICING.MANAGE_PAYMENT_METHOD_CARD':
+    'Manage Payment Methods (Card)',
+  'PAYMENT_INVOICING.MANAGE_PAYMENT_METHOD_CARD.DESCRIPTION':
+    'Allows to edit payment method, enables Edit option',
+  'PAYMENT_INVOICING.DELETE_PAYMENT_METHOD_CARD':
+    'Delete Payment Methods (Card)',
+  'PAYMENT_INVOICING.DELETE_PAYMENT_METHOD_CARD.DESCRIPTION':
+    'Allows to delete the payment method, enables Delete option',
 
-  'PAYMENT_INVOICING.VIEW_PAYMENT_METHOD_BANK': 'View Payment Method (Bank Account)',
-  'PAYMENT_INVOICING.VIEW_PAYMENT_METHOD_BANK.DESCRIPTION': 'Allows to view payment method, enables page view and Set as Default option',
-  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_BANK': 'Add Payment Method (Bank Account)',
-  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_BANK.DESCRIPTION': 'Allows to add payment method, enables Add Bank Account button',
-  'PAYMENT_INVOICING.MANAGE_PAYMENT_METHOD_BANK': 'Manage Payment Methods (Bank Account)',
-  'PAYMENT_INVOICING.MANAGE_PAYMENT_METHOD_BANK.DESCRIPTION': 'Allows to edit payment method, enables Edit option',
-  'PAYMENT_INVOICING.DELETE_PAYMENT_METHOD_BANK': 'Delete Payment Methods (Bank Account)',
-  'PAYMENT_INVOICING.DELETE_PAYMENT_METHOD_BANK.DESCRIPTION': 'Allows to delete the payment method, enables Delete option',
-  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_BANK': 'Add Payment Method (Bank Account)',
-  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_BANK.DESCRIPTION': 'Allows to add payment method , enable Add  Bank Account Button',
+  'PAYMENT_INVOICING.VIEW_PAYMENT_METHOD_BANK':
+    'View Payment Method (Bank Account)',
+  'PAYMENT_INVOICING.VIEW_PAYMENT_METHOD_BANK.DESCRIPTION':
+    'Allows to view payment method, enables page view and Set as Default option',
+  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_BANK':
+    'Add Payment Method (Bank Account)',
+  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_BANK.DESCRIPTION':
+    'Allows to add payment method, enables Add Bank Account button',
+  'PAYMENT_INVOICING.MANAGE_PAYMENT_METHOD_BANK':
+    'Manage Payment Methods (Bank Account)',
+  'PAYMENT_INVOICING.MANAGE_PAYMENT_METHOD_BANK.DESCRIPTION':
+    'Allows to edit payment method, enables Edit option',
+  'PAYMENT_INVOICING.DELETE_PAYMENT_METHOD_BANK':
+    'Delete Payment Methods (Bank Account)',
+  'PAYMENT_INVOICING.DELETE_PAYMENT_METHOD_BANK.DESCRIPTION':
+    'Allows to delete the payment method, enables Delete option',
+  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_BANK':
+    'Add Payment Method (Bank Account)',
+  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_BANK.DESCRIPTION':
+    'Allows to add payment method , enable Add  Bank Account Button',
 
   'PAYMENT_INVOICING.CANCEL_PAYMENT': 'Cancel Payment',
-  'PAYMENT_INVOICING.CANCEL_PAYMENT.DESCRIPTION': 'Allows user to cancel payment, enables Cancel Payment option',
+  'PAYMENT_INVOICING.CANCEL_PAYMENT.DESCRIPTION':
+    'Allows user to cancel payment, enables Cancel Payment option',
   'PAYMENT_INVOICING.VIEW_CREDIT_LISTING': 'View Credit Listing',
-  'PAYMENT_INVOICING.VIEW_CREDIT_LISTING.DESCRIPTION': 'Allows user to view Credit listing',
+  'PAYMENT_INVOICING.VIEW_CREDIT_LISTING.DESCRIPTION':
+    'Allows user to view Credit listing',
 
-  'APPLICATION_SETTING.MANAGE_CATALOG_CONFIGURATIONS': 'Manage Catalog Configurations',
+  'APPLICATION_SETTING.MANAGE_CATALOG_CONFIGURATIONS':
+    'Manage Catalog Configurations',
   'APPLICATION_SETTING.MANAGE_CATALOG_CONFIGURATIONS.DESCRIPTION':
     'Allows managing catalog details and configuration, enabling both buttons',
   'APPLICATION_SETTING.CREATE_QUESTIONNAIRE': 'Create Questionnaire',
-  'APPLICATION_SETTING.CREATE_QUESTIONNAIRE.DESCRIPTION': 'Allows creating a questionnaire, enabling the create button',
-  'APPLICATION_SETTING.MANAGE_SYSTEM_CONFIGURATIONS': 'Manage System Configurations',
-  'APPLICATION_SETTING.MANAGE_SYSTEM_CONFIGURATIONS.DESCRIPTION': 'Allows access to system configuration settings',
+  'APPLICATION_SETTING.CREATE_QUESTIONNAIRE.DESCRIPTION':
+    'Allows creating a questionnaire, enabling the create button',
+  'APPLICATION_SETTING.MANAGE_SYSTEM_CONFIGURATIONS':
+    'Manage System Configurations',
+  'APPLICATION_SETTING.MANAGE_SYSTEM_CONFIGURATIONS.DESCRIPTION':
+    'Allows access to system configuration settings',
   'APPLICATION_SETTING.VIEW_ACCOUNTS': 'View Accounts',
-  'APPLICATION_SETTING.VIEW_ACCOUNTS.DESCRIPTION': 'Allows viewing linked accounts',
+  'APPLICATION_SETTING.VIEW_ACCOUNTS.DESCRIPTION':
+    'Allows viewing linked accounts',
   'APPLICATION_SETTING.VIEW_INVOICES': 'View Invoices',
-  'APPLICATION_SETTING.VIEW_INVOICES.DESCRIPTION': 'Allows viewing invoices, enabling the view button',
+  'APPLICATION_SETTING.VIEW_INVOICES.DESCRIPTION':
+    'Allows viewing invoices, enabling the view button',
   'APPLICATION_SETTING.MANAGE_INVOICES': 'Manage Invoices',
-  'APPLICATION_SETTING.MANAGE_INVOICES.DESCRIPTION': 'Allows exporting to PDF and editing invoices, enabling export and edit options',
+  'APPLICATION_SETTING.MANAGE_INVOICES.DESCRIPTION':
+    'Allows exporting to PDF and editing invoices, enabling export and edit options',
   'APPLICATION_SETTING.VIEW_CUSTOMER_STATEMENT': 'View Customer Statement',
-  'APPLICATION_SETTING.VIEW_CUSTOMER_STATEMENT.DESCRIPTION': 'Allows viewing the customer statement, enabling view option',
+  'APPLICATION_SETTING.VIEW_CUSTOMER_STATEMENT.DESCRIPTION':
+    'Allows viewing the customer statement, enabling view option',
   'APPLICATION_SETTING.ADD_PAYMENT_METHOD': 'Add Payment Method',
-  'APPLICATION_SETTING.ADD_PAYMENT_METHOD.DESCRIPTION': 'Allows adding payment methods, enabling the add option',
+  'APPLICATION_SETTING.ADD_PAYMENT_METHOD.DESCRIPTION':
+    'Allows adding payment methods, enabling the add option',
   'APPLICATION_SETTING.CREATE_INVOICES': 'Create Invoices',
-  'APPLICATION_SETTING.CREATE_INVOICES.DESCRIPTION': 'Allows creating invoices, enabling the create button',
+  'APPLICATION_SETTING.CREATE_INVOICES.DESCRIPTION':
+    'Allows creating invoices, enabling the create button',
   'APPLICATION_SETTING.VIEW_PAYMENT_HISTORY': 'View Payment History',
-  'APPLICATION_SETTING.VIEW_PAYMENT_HISTORY.DESCRIPTION': 'Allows viewing payment history, enabling the view option',
+  'APPLICATION_SETTING.VIEW_PAYMENT_HISTORY.DESCRIPTION':
+    'Allows viewing payment history, enabling the view option',
   'APPLICATION_SETTING.VIEW_PAYMENT_METHOD': 'View Payment Method',
-  'APPLICATION_SETTING.VIEW_PAYMENT_METHOD.DESCRIPTION': 'Allows viewing payment methods, enabling the view option',
+  'APPLICATION_SETTING.VIEW_PAYMENT_METHOD.DESCRIPTION':
+    'Allows viewing payment methods, enabling the view option',
   'APPLICATION_SETTING.MANAGE_PAYMENT_METHODS': 'Manage Payment Methods',
   'APPLICATION_SETTING.MANAGE_PAYMENT_METHODS.DESCRIPTION':
     'Allows editing and deactivating payment methods, enabling edit and deactivate options',
@@ -379,9 +500,12 @@ export const UserManagementEN = {
   'messages.user_activate_failure': 'Failed to Activate the User.',
   'messages.user_create_success': 'User has been created successfully.',
   'messages.pending_user_reject_success': 'Pending User has been rejected.',
-  'messages.user_self_register_success': 'User has been registered successfully.',
-  'messages.sysadmin_create_success': 'System Admin has been created successfully.',
-  'messages.accountlinkSuccess': 'new account(s) has been successfully linked to this user.',
+  'messages.user_self_register_success':
+    'User has been registered successfully.',
+  'messages.sysadmin_create_success':
+    'System Admin has been created successfully.',
+  'messages.accountlinkSuccess':
+    'new account(s) has been successfully linked to this user.',
   'messages.provisionedsuccess': 'User provisioned in Okta successfully.',
   'messages.provisionederrror': 'Unable to provision the user in Okta.',
 
@@ -394,16 +518,20 @@ export const UserManagementEN = {
   'placeholders.search': 'Search',
   'button.label.loginAsThisUser': 'Login as this user',
   'popup.title.alert': 'Alert!',
-  'popup.message.wishToContinueLoginAsThisUserQuestion': 'Do you wish to continue?',
+  'popup.message.wishToContinueLoginAsThisUserQuestion':
+    'Do you wish to continue?',
   'popup.message.wishToContinueLoginAsThisUserDescription':
     'You are about to perform actions on behalf of {{targetUser}}. Please confirm that you have verified the identity of the requesting user the necessary permissions and that you understand the implications of proceeding with this task.',
   'popup.message.wishToContinueLoginAsThisUserCheckBoxConsent':
     'By confirming, you acknowledge that all actions taken will be logged and attributed to your account.',
   'userManagement.breadcrumb.admin': 'Admin',
-  'popup.userDeactivation.question': 'Are you sure you wish to Deactivate this User?',
-  'popup.userActivation.question': 'Are you sure you wish to Activate this User?',
+  'popup.userDeactivation.question':
+    'Are you sure you wish to Deactivate this User?',
+  'popup.userActivation.question':
+    'Are you sure you wish to Activate this User?',
   'userManagement.confirmationMessage': 'Confirmation message',
-  'userManagement.message.DeactivateUser': 'Are you sure you wish to Deactivate this User ?',
+  'userManagement.message.DeactivateUser':
+    'Are you sure you wish to Deactivate this User ?',
   'userManagement.edit_sysadmin': 'Edit System Administrator',
   'userManagement.edit_organization_user': 'Edit Organization User',
 
@@ -412,7 +540,8 @@ export const UserManagementEN = {
   'labels.caption.DELETED': 'Deleted',
   'labels.caption.REJECTED': 'Rejected',
 
-  'errors.messages.dateRange': "Either enter both dates or none for the filter as it's part of a date range.",
+  'errors.messages.dateRange':
+    "Either enter both dates or none for the filter as it's part of a date range.",
   'errors.messages.default': 'An unexpected error occurred. Please try again.',
   'label.comment': 'Comment', 
   'userManagement.header.review_user': 'Review Organization User', 

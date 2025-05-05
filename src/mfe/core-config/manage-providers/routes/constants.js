@@ -3,5 +3,6 @@ export const ROUTE_PATHS = Object.freeze({
   VIEW: 'details',
   CREATE: 'create',
   EDIT: 'edit',
-  UPLOAD_PROVIDERS: 'upload-providers'
+  UPLOAD_PROVIDERS: 'upload-providers',
+  LINK_SP_ACCOUNTS: 'link-sp-accounts'
 });

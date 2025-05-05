@@ -14,18 +14,30 @@ import {
   getTabs,
   ORDER_DATE_FILTER_OPTIONS,
   ORDER_STATUS,
-  ORDER_TABS
+  ORDER_TABS,
+  ORDER_VIEW
 } from './config';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import useOrderCount from './useOrderCount';
 import CommonUtils from '@src/util/CommonUtils';
+import useAssignee from './useAssignee';
 
 const OrderIndex = () => {
   const { t } = useTranslate();
   const [_isOrderCountAdded, setIsOrderCountAdded] = React.useState(false);
-  const { applyFilters, clearFilters, changeTab, tabVariant, isError, error } =
-    useOrders();
+  const {
+    applyFilters,
+    clearFilters,
+    changeTab,
+    tabVariant,
+    orderView,
+    isError,
+    assigneeList,
+    error,
+    searchAssigneeByTest,
+    setAssigneeOnChange
+  } = useOrders();
   const [tabList, setTabList] = React.useState(() => {
     const allTabs = getTabs();
     allTabs.forEach((tab) => {
@@ -42,6 +54,8 @@ const OrderIndex = () => {
     allTabs.forEach((tab) => {
       let countClass = '';
       if ([ORDER_TABS.SUBMITTED_BUY_AND_BILL].includes(tab.id)) {
+        countClass = 'green';
+      } else if ([ORDER_TABS.SUBMITTED_SP].includes(tab.id)) {
         countClass = 'green';
       } else if ([ORDER_TABS.PENDING_SUBMISSION].includes(tab.id)) {
         countClass = 'orange';
@@ -61,6 +75,7 @@ const OrderIndex = () => {
       setIsOrderCountAdded(true);
     }
   }, [orderCounts]);
+  const [assigneeQueryText, setAssigneeQueryText] = React.useState('');
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -90,10 +105,49 @@ const OrderIndex = () => {
         }))
       });
     }
+    if (
+      tabVariant === ORDER_TABS.PENDING_APPROVAL ||
+      tabVariant === ORDER_TABS.PENDING_SUBMISSION
+    ) {
+      const orderTypes = [
+        'All',
+        ORDER_TABS.SUBMITTED_BUY_AND_BILL,
+        ORDER_TABS.SUBMITTED_SP
+      ];
+      filters.push({
+        type: 'dropdown',
+        name: 'orderType',
+        label: t('labels.orderType'),
+        options: orderTypes.map((opt) => ({
+          label: t(`labels.caption.${opt}`),
+          value: opt
+        }))
+      });
+      if (orderView === ORDER_VIEW.ALL_ORDERS) {
+        filters.push({
+          type: 'multiSelectDropdown',
+          name: 'assigneeIds',
+          isMultiSelect: true,
+          placeholder: t('placeholder.selectAssignee'),
+          label: t('labels.assignee'),
+          options: assigneeList,
+          variant: 'async',
+          onSearch: searchAssigneeByTest,
+          recordsCountToEnableSearch: 2,
+          getUpdatedOptions: (e) => {
+            if (e.length > 0) {
+              setAssigneeOnChange(e);
+            }
+          },
+          size: 'lg'
+        });
+      }
+    }
+
     if (tabVariant !== ORDER_TABS.PENDING_APPROVAL) {
       filters.push({
         type: 'dropdown',
-        name: 'orderdate',
+        name: 'orderDate',
         label: 'Order Date',
         options: ORDER_DATE_FILTER_OPTIONS.map((opt) => ({
           label: t(`labels.caption.${opt.value}`),
@@ -114,7 +168,7 @@ const OrderIndex = () => {
       });
     }
     return filters;
-  }, [activeTab]);
+  }, [activeTab, orderView, assigneeList]);
 
   const handleOnTabChange = (newTab) => {
     const newTabs = tabList.map((tab) => ({
@@ -194,7 +248,9 @@ const OrderIndex = () => {
                 onClearFilters={clearFilters}
                 additionalFilters={additionalFiltersConfig}
                 searchPlaceholder={t(
-                  'controls.placeholder.searchOrderPlaceholder'
+                  tabVariant === ORDER_TABS.SUBMITTED_SP
+                    ? 'controls.placeholder.searchSPOrderPlaceholder'
+                    : 'controls.placeholder.searchOrderPlaceholder'
                 )}
               />
             </div>

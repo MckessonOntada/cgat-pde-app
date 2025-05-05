@@ -1,7 +1,7 @@
 import React from 'react';
 import List from './list';
-import ProviderService from '@src/api/commonService/ProviderService';
 import { TableProvider } from '../../manage-providers/context/TableContext';
+import SPCrosswalkService from '@src/api/commonService/SPCrosswalkService';
 
 const Index = () => {
   const defaultFilters = {
@@ -11,7 +11,16 @@ const Index = () => {
   return (
     <TableProvider
       defaultFilters={defaultFilters}
-      fetchFn={ProviderService.getProviders}>
+      defaultSort={{
+        sortOrder: 'desc'
+      }}
+      allowedSort={[
+        'bnbMaterialNumber',
+        'spProductId',
+        'spProductName',
+        'bnbMaterialDescription'
+      ]}
+      fetchFn={SPCrosswalkService.getAllSPCrosswalk}>
       <List />
     </TableProvider>
   );

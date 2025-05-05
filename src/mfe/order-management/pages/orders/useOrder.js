@@ -22,6 +22,11 @@ const useOrder = (orderId) => {
         result.data[key] = undefined;
       }
     });
+    if (result.data.accountDetails?.soldToAccount?.channelType) {
+      result.data.channelType =
+        result.data.accountDetails.soldToAccount.channelType;
+      // 'SPECIALTY_PHARMA';
+    }
   }
 
   return result;

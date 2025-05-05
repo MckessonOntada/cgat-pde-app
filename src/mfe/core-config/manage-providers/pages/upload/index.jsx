@@ -12,6 +12,7 @@ import {
 } from '@src/components/uploadFile/uploadUtils';
 import ProviderService from '@src/api/commonService/ProviderService';
 import { downloadFile } from '@src/util/CommonUtils';
+import { errorStatusCodes } from '@src/util/ApiUtils';
 
 const Upload = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -81,11 +82,30 @@ const Upload = () => {
         }
       })
       .catch((error) => {
-        const { response: errorResponse } = error;
-        add({
-          type: 'error',
-          description: 'providers.message.fileUploadFailure'
-        });
+        const { response: errorResponse = {} } = error;
+        if (errorStatusCodes.includes(errorResponse.status)) {
+          add({
+            type: 'error',
+            description: t('fileUpload.error.timeoutOrSystemError'),
+            isSticky: true
+          });
+        } else if (errorResponse.data?.errorCodes) {
+          errorResponse.data?.errorCodes.forEach((element) => {
+            add({
+              type: 'error',
+              description: t(element),
+              isSticky: true
+            });
+          });
+        } else {
+          add({
+            type: 'error',
+            description:
+              errorResponse.data?.message ||
+              t('providers.message.fileUploadFailure'),
+            isSticky: true
+          });
+        }
       });
   };
   const handleOnDownloadTemplate = () => {
@@ -112,7 +132,7 @@ const Upload = () => {
           caption: t('controls.uploadProviders'),
           fn: handleOnUpload
         }}
-        onFileSelection={(file) => validateFile(file, ['text/csv'])}
+        onFileSelection={(file) => validateFile(t, file, ['text/csv'])}
         prefixChildren={true}></UploadFile>
     </div>
   );

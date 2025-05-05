@@ -63,6 +63,7 @@ const ApiRoutes = Object.freeze({
     constructUserManagementServiceUrl('users/current/paytoaccounts'),
   PUBLIC_ACCOUNTS: constructUserManagementServicePublicUrl('accounts'),
   ORDER: (userId) => constructUserManagementServiceUrl(`users/${userId}`),
+  USER_SERVICE_BASE: constructUserManagementServicePublicUrl(''),
   INVOICES_CREDITS_LISTING: (accountNumber, filterCredits) =>
     constructOrderManagementServiceUrl(
       `account/${accountNumber}/open-invoices?filterCredits=${filterCredits}`
