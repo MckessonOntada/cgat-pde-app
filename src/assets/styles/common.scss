@@ -461,7 +461,7 @@ div.disable-all {
     font-size: var(--brand-font-size--large);
     justify-content: flex-end;
 
-    @media only screen and (max-width: 576px) {
+    @media only screen and (max-width: 992px) {
       justify-content: flex-start;
     }
   }

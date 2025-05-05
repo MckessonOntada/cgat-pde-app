@@ -585,6 +585,8 @@ export const MessageEn = {
   'heading.uploadProviderListCSV': 'Upload Provider List CSV',
   'controls.addProviders': 'Add Provider',
   'controls.downloadCSVTemplate': 'Download CSV Template',
+  'controls.placeholder.searchSPCatalogPlaceholder':
+    'Search by ID, Name, NDC, Account Number...',
   'controls.placeholder.searchProviderPlaceholder':
     'Search by Provider Name, NPI Number, DEA Number, Address ',
   'label.emptyProviderTableDescription':
@@ -639,6 +641,8 @@ export const MessageEn = {
   'labels.assignee': 'Assignee',
   'invalid.csv.file.type':
     'The uploaded file is invalid. Please upload a valid file',
+  'providers.message.fileUploadFailure':
+    'Something went wrong please try again later.',
   'invalid.csv.file.headers.missing':
     'The uploaded file is invalid. It missing required columns. Please upload a valid file',
   'invalid.csv.file.empty':

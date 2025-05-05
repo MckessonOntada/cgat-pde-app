@@ -126,7 +126,7 @@ const CatalogList = () => {
           onClearFilters={clearFilters}
           additionalFilters={additionalFiltersConfig}
           searchPlaceholder={t(
-            'controls.placeholder.searchProviderPlaceholder'
+            'controls.placeholder.searchSPCatalogPlaceholder'
           )}
         />
       </div>
@@ -194,7 +194,7 @@ const CatalogList = () => {
           onDeLinkConfirmation
         })}
         data={data}
-        handleChangePage={changePage}
+        handleChangePage={(_event, pageNumber) => changePage(pageNumber)}
         onSortIconClick={handleOnSort}
         pagination={true}
         currentPage={pagination.pageNumber}
