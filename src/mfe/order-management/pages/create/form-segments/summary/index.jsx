@@ -114,7 +114,8 @@ const Summary = () => {
     {
       sapOrderId: backendOrderId,
       salesOrgId: accountDetails.soldToAccount?.salesOrg,
-      status
+      status,
+      isSPOrder : spOrder
     },
     (status) => setSapStatus(status),
     (error) => {
@@ -664,7 +665,7 @@ const Summary = () => {
                     {t('captions.btnViewComments')}
                   </Button>
                 </div>
-              ) : isSubmitted ? (
+              ) : isSubmitted && !spOrder ? (
                 <div className="row-space-between-center">
                   <Label className={styles.lblProcessing}>
                     {t('labels.OrderProcesing')}
@@ -727,17 +728,17 @@ const Summary = () => {
               <div
                 className={`grid grid-gap-16 grid-cols-1 md:grid-cols-1 ${
                   status === StatusEnum.SUBMITTED
-                    ? 'lg:grid-cols-4 xl:grid-cols-4'
+                    ? !spOrder ? 'lg:grid-cols-4 xl:grid-cols-4' : 'lg:grid-cols-3 xl:grid-cols-3'
                     : 'lg:grid-cols-2 xl:grid-cols-2'
                 }`}>
-                {status === StatusEnum.SUBMITTED && (
+                {status === StatusEnum.SUBMITTED && !spOrder &&(
                   <DetailSegment
                     label={t('labels.sapId')}
                     value={backendOrderId}
                   />
                 )}
                 {status === StatusEnum.SUBMITTED && (
-                  <DetailSegment label={t('labels.pdeId')} value={orderId} />
+                  <DetailSegment label={t(!spOrder ? 'labels.pdeId' : 'labels.orderId')} value={orderId} />
                 )}
                 <DetailSegment
                   label={t('labels.materialDescription')}

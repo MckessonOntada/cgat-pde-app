@@ -61,7 +61,7 @@ const AccountSelectionUserGuide = ({
       OrderService.getSoldToAccounts(
         therapyId,
         serializeParams({
-          program: selectedProgram,
+          ...( selectedChannel === CHANNEL_TYPE.BUY_AND_BILL ? {program: selectedProgram} : {}),
           channelType: selectedChannel,
           therapyChannelType: therapChannelType
         })
