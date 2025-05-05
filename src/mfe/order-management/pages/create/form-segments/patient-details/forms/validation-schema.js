@@ -36,80 +36,86 @@ export const getInitialValues = () => ({
   providerId: ''
 });
 
-export const getValidationSchema = (t) => {
+export const getValidationSchema = (t, isProviderRequired) => {
   return Yup.object().shape({
     patient: Yup.object().shape({
-      patientInfo: Yup.object().shape({
-        firstName: CommonUtils.getNameValidation(t, { field: 'first_name' }),
-        middleName: CommonUtils.getNameValidation(t, {
-          field: 'middle_name'
+      patientInfo: Yup.object()
+        .nullable()
+        .shape({
+          firstName: CommonUtils.getNameValidation(t, { field: 'first_name' }),
+          middleName: CommonUtils.getNameValidation(t, {
+            field: 'middle_name'
+          }),
+          lastName: CommonUtils.getNameValidation(t, { field: 'last_name' }),
+          dateOfBirth: Yup.date()
+            .nullable()
+            .max(new Date(), 'Date of birth can not be greater than today.'),
+          gender: Yup.string()
+            .nullable()
+            .oneOf(['Male', 'Female', 'Other'], 'Invalid gender selection')
         }),
-        lastName: CommonUtils.getNameValidation(t, { field: 'last_name' }),
-        dateOfBirth: Yup.date()
-          .nullable()
-          .max(new Date(), 'Date of birth can not be greater than today.'),
-        gender: Yup.string()
-          .nullable()
-          .oneOf(['Male', 'Female', 'Other'], 'Invalid gender selection')
-      }),
-      contact: Yup.object().shape({
-        emailId: Yup.string()
-          .nullable()
-          .trim()
-          .email(t('orderManagement.patientDetails.validation.invalid_email'))
-          .max(50, t('orderManagement.patientDetails.validation.email_max')),
-        phoneNumber: Yup.string()
-          .nullable()
-          .trim()
-          .matches(
-            PHONE_REGEX,
-            t('orderManagement.patientDetails.validation.phone_invalid')
-          )
-          .max(15, t('orderManagement.patientDetails.validation.phone_max')),
-        homePhone: Yup.string().nullable(),
-        workPhone: Yup.string().nullable(),
-        preferedMethodOfContact: Yup.string()
-          .nullable()
-          .oneOf(['Mobile', 'Fax'], 'Select valid method of contact.')
-      }),
-      patientAddress: Yup.object().shape({
-        addressLine1: Yup.string()
-          .nullable()
-          .trim()
-          .matches(
-            ADDRESS_REGEX,
-            t('orgManagement.create_org.validation.address_1_invalid')
-          )
-          .min(2, t('orgManagement.create_org.validation.address_1_min'))
-          .max(100, t('orgManagement.create_org.validation.address_1_max')),
-        addressLine2: Yup.string()
-          .nullable()
-          .trim()
-          .matches(
-            ADDRESS_REGEX,
-            t('orgManagement.create_org.validation.address_2_invalid')
-          )
-          .min(2, t('orgManagement.create_org.validation.address_2_min'))
-          .max(100, t('orgManagement.create_org.validation.address_2_max')),
-        city: Yup.string()
-          .nullable()
-          .trim()
-          .matches(
-            ALPHABETIC_WITH_SPACE,
-            t('orgManagement.create_org.validation.city_invalid')
-          )
-          .min(2, t('orgManagement.create_org.validation.city_min'))
-          .max(15, t('orgManagement.create_org.validation.city_max')),
-        zipCode: Yup.string()
-          .nullable()
-          .trim()
-          .matches(
-            ZIP_REGEX,
-            t('orgManagement.create_org.validation.zip_invalid')
-          )
-          .max(10, t('orgManagement.create_account.validation.zip_max')),
-        state: Yup.string().nullable()
-      }),
+      contact: Yup.object()
+        .nullable()
+        .shape({
+          emailId: Yup.string()
+            .nullable()
+            .trim()
+            .email(t('orderManagement.patientDetails.validation.invalid_email'))
+            .max(50, t('orderManagement.patientDetails.validation.email_max')),
+          phoneNumber: Yup.string()
+            .nullable()
+            .trim()
+            .matches(
+              PHONE_REGEX,
+              t('orderManagement.patientDetails.validation.phone_invalid')
+            )
+            .max(15, t('orderManagement.patientDetails.validation.phone_max')),
+          homePhone: Yup.string().nullable(),
+          workPhone: Yup.string().nullable(),
+          preferedMethodOfContact: Yup.string()
+            .nullable()
+            .oneOf(['Mobile', 'Fax'], 'Select valid method of contact.')
+        }),
+      patientAddress: Yup.object()
+        .nullable()
+        .shape({
+          addressLine1: Yup.string()
+            .nullable()
+            .trim()
+            .matches(
+              ADDRESS_REGEX,
+              t('orgManagement.create_org.validation.address_1_invalid')
+            )
+            .min(2, t('orgManagement.create_org.validation.address_1_min'))
+            .max(100, t('orgManagement.create_org.validation.address_1_max')),
+          addressLine2: Yup.string()
+            .nullable()
+            .trim()
+            .matches(
+              ADDRESS_REGEX,
+              t('orgManagement.create_org.validation.address_2_invalid')
+            )
+            .min(2, t('orgManagement.create_org.validation.address_2_min'))
+            .max(100, t('orgManagement.create_org.validation.address_2_max')),
+          city: Yup.string()
+            .nullable()
+            .trim()
+            .matches(
+              ALPHABETIC_WITH_SPACE,
+              t('orgManagement.create_org.validation.city_invalid')
+            )
+            .min(2, t('orgManagement.create_org.validation.city_min'))
+            .max(15, t('orgManagement.create_org.validation.city_max')),
+          zipCode: Yup.string()
+            .nullable()
+            .trim()
+            .matches(
+              ZIP_REGEX,
+              t('orgManagement.create_org.validation.zip_invalid')
+            )
+            .max(10, t('orgManagement.create_account.validation.zip_max')),
+          state: Yup.string().nullable()
+        }),
       patientIdentifier: Yup.string()
         .trim()
         .matches(
@@ -128,7 +134,11 @@ export const getValidationSchema = (t) => {
           t('orderManagement.patientDetails.validation.patient_identifier_max')
         )
     }),
-    providerId: Yup.string().nullable()
+    providerId: Yup.string().when([], {
+      is: () => isProviderRequired,
+      then: (schema) => schema.required('Please select provider.'),
+      otherwise: (schema) => schema.notRequired()
+    })
   });
 };
 

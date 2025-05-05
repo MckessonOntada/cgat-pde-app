@@ -175,7 +175,8 @@ const PayerDetails = () => {
   const handleOnSubmit = (formValues) => {
     savePayerDetails(CommonUtils.cleanObject(formValues));
   };
-  const handleOnBackToOrders = () => {};
+  const handleOnBackToOrders = () => navigate('/orders');
+  const handleOnBackClick = () => navigate(`/orders/${orderId}/patient`);
 
   return (
     <div className="MCP-module-wrapper">
@@ -261,7 +262,10 @@ const PayerDetails = () => {
                   </div>
                 </div>
                 <div className="controls">
-                  <Button size="md" variant="secondary" onClick={() => {}}>
+                  <Button
+                    size="md"
+                    variant="secondary"
+                    onClick={handleOnBackClick}>
                     {t('captions.btnBack')}
                   </Button>
                   <Button size="md" variant="primary" type="submit">
