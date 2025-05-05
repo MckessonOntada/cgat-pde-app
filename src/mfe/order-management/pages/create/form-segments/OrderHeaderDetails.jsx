@@ -48,7 +48,11 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status }) {
         key={'ship-to-account'}
         className="textCapitalize"
         label={t('labels.shipToAccountNumber')}
-        value={accountDetails.shipToAccount.accountNumber}
+        value={
+          orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+            ? accountDetails?.shipToAccount?.id
+            : accountDetails?.shipToAccount?.accountNumber
+        }
       />
     );
   }
@@ -71,7 +75,7 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status }) {
       <DetailSegment
         label={t('labels.price')}
         value={
-          accountDetails?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? (
+          orderDetails?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? (
             <span className="dollarSign">
               <span>$</span>
               {priceDetails?.netPrice

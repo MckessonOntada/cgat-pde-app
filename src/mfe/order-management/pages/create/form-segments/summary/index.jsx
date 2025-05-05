@@ -900,7 +900,11 @@ const Summary = () => {
                     />
                     <DetailSegment
                       label={t('labels.shippingAccountNo')}
-                      value={accountDetails?.shipToAccount?.accountNumber}
+                      value={
+                        spOrder
+                          ? accountDetails?.shipToAccount?.id
+                          : accountDetails?.shipToAccount?.accountNumber
+                      }
                     />
                     <DetailSegment
                       label={t('labels.orderChannel')}
@@ -908,10 +912,12 @@ const Summary = () => {
                         `labels.${accountDetails?.soldToAccount?.channelType}`
                       )}
                     />
-                    <DetailSegment
-                      label={t('labels.program')}
-                      value={accountDetails?.soldToAccount?.cgatIdentifier}
-                    />
+                    {!spOrder && (
+                      <DetailSegment
+                        label={t('labels.program')}
+                        value={accountDetails?.soldToAccount?.cgatIdentifier}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
