@@ -81,7 +81,7 @@ function UserTable({ onActionSuccess }) {
       setSelectedRows(null);
       const isSuccess = true;
       const message = t(selectedUserInfo?.isActive ? 'messages.user_deactivate_success' : 'messages.user_activate_success');
-      onActionSuccess(isSuccess, message); // callback
+      onActionSuccess(isSuccess, message);
     },
     onError: (error) => {
       console.error(`Failed to deactivate user:`, error);
