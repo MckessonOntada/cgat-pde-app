@@ -12,8 +12,10 @@ export const PaymentInvoicesES = {
   'paymentInvoices.accountSearch.applyBtn': 'S_Apply',
   'paymentInvoices.accountSearch.setAsDefaultBtn': 'S_Set as Default',
   'paymentInvoices.getAccountsAPI.error': 'S_Error fetching accounts list.',
-  'paymentInvoices.setDefaultAccountAPI.success': 'S_Default account set successfully.',
-  'paymentInvoices.setDefaultAccountAPI.error': 'S_Error setting default account.',
+  'paymentInvoices.setDefaultAccountAPI.success':
+    'S_Default account set successfully.',
+  'paymentInvoices.setDefaultAccountAPI.error':
+    'S_Error setting default account.',
   // Metrics Card
   'paymentInvoices.metrics.totalDebitBalance': 'S_Total Debit Balance',
   'paymentInvoices.metrics.totalCreditBalance': 'S_Total Credit Balance',
@@ -22,7 +24,8 @@ export const PaymentInvoicesES = {
     'S_Summation of all past due & future due invoices, basically the summation of all the outstanding invoices as of today.',
   'paymentInvoices.metrics.totalCreditBalance.tooltipText':
     'S_Summation of all open credits currently available to use towards open invoices.',
-  'paymentInvoices.metrics.pastDueBalance.tooltipText': 'S_Summation of all past due invoices (debit only) as of current date.',
+  'paymentInvoices.metrics.pastDueBalance.tooltipText':
+    'S_Summation of all past due invoices (debit only) as of current date.',
   // Balance Card
   'paymentInvoices.balanceCard.due': 'S_Payment Due',
   'paymentInvoices.balanceCard.1_30_DAYS_OVERDUE': 'S_1-30 days over',
@@ -38,18 +41,23 @@ export const PaymentInvoicesES = {
   'paymentInvoices.invoicesTable.filter.dueDateEnd': 'S_Due Date (End)',
   'paymentInvoices.invoicesTable.filter.dueDateStart': 's_Due Date (Start)',
   'paymentInvoices.invoicesTable.filter.dueDateEnd': 's_Due Date (End)',
-  'paymentInvoices.pendingPayments.filter.dueDateStart': 's_Initiation Date (Start)',
-  'paymentInvoices.pendingPayments.filter.dueDateEnd': 's_Initiation Date (End)',
+  'paymentInvoices.pendingPayments.filter.dueDateStart':
+    's_Initiation Date (Start)',
+  'paymentInvoices.pendingPayments.filter.dueDateEnd':
+    's_Initiation Date (End)',
   'paymentInvoices.invoicesTable.filter.validFromEnd': 'S_Bill Date (End)',
   'paymentInvoices.invoicesTable.filter.validFromStart': 'S_Bill Date (Start)',
   // Payment History
   'paymentInvoices.history.table.confirmationNumber': 'S_Confirmation No.',
-  'paymentInvoices.history.table.purchaseOrderNumber': 'S_Purchase Order Number',
+  'paymentInvoices.history.table.purchaseOrderNumber':
+    'S_Purchase Order Number',
   'paymentInvoices.history.table.paymentMethod': 'S_Method',
   'paymentInvoices.history.table.paymentStatus': 'S_Status',
   'paymentInvoices.history.table.paymentInitiationDate': 'S_Initiation Date',
-  'paymentInvoices.history.table.totalAuthorizedPaymentAmt': 'S_Total Authorization Payment Amount',
-  'paymentInvoices.history.filters.autoSearch': 'S_Search by Confirmation No., Payment Method',
+  'paymentInvoices.history.table.totalAuthorizedPaymentAmt':
+    'S_Total Authorization Payment Amount',
+  'paymentInvoices.history.filters.autoSearch':
+    'S_Search by Confirmation No., Payment Method',
   'paymentInvoices.history.filters.filterBtn': 'S_Filter',
   'paymentInvoices.history.filters.status': 'S_Payment Status',
   'paymentInvoices.history.filters.method': 'S_Payment Method',
@@ -60,14 +68,16 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.filters.downloadExcel': 'S_Download Excel',
   'paymentInvoices.history.filters.paymentDetails': 'S_Payment Details',
   'paymentInvoices.history.table.emptyData': 'S_No Payment History Found',
-  'paymentInvoices.history.table.emptyDataDescription': 'S_Please try again later',
+  'paymentInvoices.history.table.emptyDataDescription':
+    'S_Please try again later',
   'paymentInvoices.history.table.authorizedPayment': 'S_Authorized Payment',
   'paymentInvoices.history.table.authorizedAmount': 'Authorized Amount',
   'paymentInvoices.history.table.usedDate': 'S_Used Date',
   'paymentInvoices.history.table.creditUsed': 'S_Credit Used',
   'paymentInvoices.Details.print': 'S_Print',
   'paymentInvoices.table.therapyInfo': 'S_Therapy Info',
-  'paymentInvoices.history.confirm.backToPaymentHistory': 'S_BACK TO PAYMENT HISTORY',
+  'paymentInvoices.history.confirm.backToPaymentHistory':
+    'S_BACK TO PAYMENT HISTORY',
 
   // Customer Statements
   'paymentInvoices.CS.filters.autoSearch': 'S_Search by Bill No.',
@@ -115,9 +125,11 @@ export const PaymentInvoicesES = {
   'paymentInvoices.Actions.payment': 'S_Payment',
   'paymentInvoices.Actions.exportPDF': 'S_Export PDF',
   'paymentInvoices.history.table.status': 'S_Status',
-  'paymentInvoices.paymentMethods.filter.search.placeholder': 'S_Select by name or number',
+  'paymentInvoices.paymentMethods.filter.search.placeholder':
+    'S_Select by name or number',
   'paymentInvoices.invoice.table.emptyData': 'S_No Invoice Found',
-  'paymentInvoices.Details.backToManageInvoices': 'S_BACK TO MANAGE INVOICES PAGE',
+  'paymentInvoices.Details.backToManageInvoices':
+    'S_BACK TO MANAGE INVOICES PAGE',
   'paymentInvoices.Details.backToReviewAndPay': 'BACK TO REVIEW PAYMENTS PAGE',
   'paymentInvoices.Details.Invoice': 'S_Invoice',
   'paymentInvoices.Details.DownloadPDF': 'S_DOWNLOAD PDF',
@@ -131,7 +143,8 @@ export const PaymentInvoicesES = {
   'paymentInvoices.details.contractInfo': 'S_Contract Info',
   'paymentInvoices.details.ContractNumber': 'S_Contract Number',
   'paymentInvoices.details.ContractType': 'S_Contract Type',
-  'paymentInvoices.details.ContractTypeDescription': 'S_Contract Type Description',
+  'paymentInvoices.details.ContractTypeDescription':
+    'S_Contract Type Description',
   'paymentInvoices.details.ContractValidFrom': 'S_Contract Valid From',
   'paymentInvoices.details.ContractValidTill': 'S_Contract Valid Till',
   'paymentInvoices.details.Identifier340B': 'S_340B Identifier',
@@ -154,11 +167,14 @@ export const PaymentInvoicesES = {
     'S_The payment will be processed immediately. Once processed, this payment cannot be stopped or reversed.',
   'paymentInvoices.heading.ReviewAndPay': 'S_Review and Pay',
   'paymentInvoices.Details.Account': 'S_Account',
-  'paymentInvoices.reviewPayments.BackToManagePayments': 'S_BACK TO MANAGE PAYMENTS',
-  'paymentInvoices.reviewPayments.invoiceSelected': 'S_Invoices Selected for Payment',
+  'paymentInvoices.reviewPayments.BackToManagePayments':
+    'S_BACK TO MANAGE PAYMENTS',
+  'paymentInvoices.reviewPayments.invoiceSelected':
+    'S_Invoices Selected for Payment',
   'paymentInvoices.reviewPayments.invoice': 'S_Invoices Selected',
   'paymentInvoices.reviewPayments.selectMethod': 'S_Select a method',
-  'paymentInvoices.reviewPayments.invoiceDesc': 'S_Amount to be charged to your Payment account:',
+  'paymentInvoices.reviewPayments.invoiceDesc':
+    'S_Amount to be charged to your Payment account:',
   'paymentInvoices.reviewPayments.previewPayment': 'S_Preview Payment',
   'paymentInvoices.reviewPayments.creditsAvail': 'S_Credits Available',
   'paymentInvoices.reviewPayments.creditsSelected': 'S_Credits Selected',
@@ -177,26 +193,32 @@ export const PaymentInvoicesES = {
   'paymentInvoices.reviewPayments.paymentMethod': 'S_Payment Method',
   'paymentInvoices.reviewPayments.netAmount': 'S_Net amount to be charged',
   'paymentInvoices.reviewPayments.scheduleOption': 'S_Schedule option',
-  'paymentInvoices.reviewPayments.totalCredit': 'S_Total Credits Amount Applied',
+  'paymentInvoices.reviewPayments.totalCredit':
+    'S_Total Credits Amount Applied',
   'paymentInvoices.reviewPayments.creditRemaing': 'S_Credit Amount Remaining',
   'paymentInvoices.reviewPayments.amountPaid': 'S_Amount Paid',
   'paymentInvoices.reviewPayments.mckessonId': 'S_McKesson Confirmation ID',
-  'paymentInvoices.reviewPayments.paymentInitiatedDate': 'S_Payment Initiated Date',
+  'paymentInvoices.reviewPayments.paymentInitiatedDate':
+    'S_Payment Initiated Date',
   'paymentInvoices.reviewPayments.paymentType': 'S_Payment Type',
   'paymentInvoices.reviewPayments.paymentDate': 'S_Payment Date',
   'paymentInvoices.reviewPayments.credits': 'S_Credits',
   'paymentInvoices.reviewPayments.invoices': 'S_Invoices',
   'paymentInvoices.reviewPayments.paymentSuccess': 'S_Payment Successful',
-  'paymentInvoices.reviewPayments.thankyouforpayment': 'S_Your payment request is processed successfully.',
+  'paymentInvoices.reviewPayments.thankyouforpayment':
+    'S_Your payment request is processed successfully.',
   'paymentInvoices.reviewPayments.paymentFailed': 'S_Payment Failed',
-  'paymentInvoices.reviewPayments.paymentFailedMessage': 'S_Your payment request could not be processed. Please try again later.',
+  'paymentInvoices.reviewPayments.paymentFailedMessage':
+    'S_Your payment request could not be processed. Please try again later.',
   'paymentInvoices.reviewPayments.paymentSummary': 'S_Payment Summary',
-  'paymentInvoices.reviewPayments.confirmationDialogue': 'S_Are you sure you want to leave Review and Pay screen?',
+  'paymentInvoices.reviewPayments.confirmationDialogue':
+    'S_Are you sure you want to leave Review and Pay screen?',
   'paymentInvoices.reviewPayments.confirm': 'S_Confirm',
   'paymentInvoices.reviewPayments.OK': 'S_OK',
   'paymentInvoices.reviewPayments.remove': 'S_REMOVE',
   'paymentInvoices.reviewPayments.pay': 'S_PAY',
-  'paymentInvoices.reviewPayments.selectedInvoice': '{count} S_invoice(s), amount to be paid:',
+  'paymentInvoices.reviewPayments.selectedInvoice':
+    '{count} S_invoice(s), amount to be paid:',
 
   //Credits
   'paymentInvoices.credits.table.description': 'S_Description',
@@ -211,63 +233,86 @@ export const PaymentInvoicesES = {
   'paymentInvoices.credits.filters.ValidFromend': 'S_Valid From (End)',
   'paymentInvoices.credits.filters.credit.dateStart': 'S_Credit Date (Start)',
   'paymentInvoices.credits.filters.credit.dateEnd': 'S_Credit Date (End)',
-  'paymentInvoices.Details.backToManageCredits': 'S_BACK TO MANAGE CREDITS PAGE',
+  'paymentInvoices.Details.backToManageCredits':
+    'S_BACK TO MANAGE CREDITS PAGE',
   'paymentInvoices.Details.Credit': 'S_Credit',
 
   //payment methods - bank account
-  'paymentInvoices.paymentMethods.banks.filter.search.label': 'S_Search bank accounts',
-  'paymentInvoices.paymentMethods.filter.search.placeholder': 'S_Select by name or number',
-  'paymentInvoices.paymentMethods.table.bankAccount.addnewcard': 'S_add new card',
-  'paymentInvoices.paymentMethods.table.bankAccount.addnewcard': 'S_add bank account',
+  'paymentInvoices.paymentMethods.banks.filter.search.label':
+    'S_Search bank accounts',
+  'paymentInvoices.paymentMethods.filter.search.placeholder':
+    'S_Select by name or number',
+  'paymentInvoices.paymentMethods.table.bankAccount.addnewcard':
+    'S_add new card',
+  'paymentInvoices.paymentMethods.table.bankAccount.addnewcard':
+    'S_add bank account',
   'paymentInvoices.paymentMethods.table.bankAccount.bankName': 'S_Bank Name',
-  'paymentInvoices.paymentMethods.table.bankAccount.routingNumber': 'S_Routing Number',
-  'paymentInvoices.paymentMethods.table.bankAccount.bankAccNumber': 'S_Bank Account Number',
+  'paymentInvoices.paymentMethods.table.bankAccount.routingNumber':
+    'S_Routing Number',
+  'paymentInvoices.paymentMethods.table.bankAccount.bankAccNumber':
+    'S_Bank Account Number',
   'paymentInvoices.paymentMethods.table.bankAccount.bankCountry': 'S_Country',
-  'paymentInvoices.paymentMethods.table.bankAccount.companyCode': 'S_Company Code',
-  'paymentInvoices.paymentMethods.table.bankAccount.emptyData': 'S_No Bank Accounts Found',
-  'paymentInvoices.paymentMethods.cards.filter.search.label': 'S_Search Credit Cards',
-  'paymentInvoices.paymentMethods.filter.search.placeholder': 'S_Select by name or number',
-  'paymentInvoices.paymentMethods.api.error': 'S_Error fetching payment methods',
+  'paymentInvoices.paymentMethods.table.bankAccount.companyCode':
+    'S_Company Code',
+  'paymentInvoices.paymentMethods.table.bankAccount.emptyData':
+    'S_No Bank Accounts Found',
+  'paymentInvoices.paymentMethods.cards.filter.search.label':
+    'S_Search Credit Cards',
+  'paymentInvoices.paymentMethods.filter.search.placeholder':
+    'S_Select by name or number',
+  'paymentInvoices.paymentMethods.api.error':
+    'S_Error fetching payment methods',
   'paymentInvoices.paymentMethods.table.cards.cardType': 'S_Card Type',
   'paymentInvoices.paymentMethods.table.cards.nameOnCard': 'S_Name on Card',
   'paymentInvoices.paymentMethods.table.cards.cardNumber': 'S_Card Number',
   'paymentInvoices.paymentMethods.table.cards.cardValidity': 'S_Card Validity',
   'paymentInvoices.paymentMethods.table.cards.zipCode': 'S_Zip Code',
   'paymentInvoices.paymentMethods.table.cards.action': 'S_Action',
-  'paymentInvoices.paymentMethods.table.cards.emptyData': 'S_No Credit Cards Found',
+  'paymentInvoices.paymentMethods.table.cards.emptyData':
+    'S_No Credit Cards Found',
   'paymentInvoices.paymentMethods.tabs.bankAccount': 'S_Bank Accounts',
   'paymentInvoices.paymentMethods.tabs.CreditCards': 'S_Credit Cards',
   'paymentInvoices.history.table.selectedAccount': 'S_Item Selected',
 
   //Pending Payments
-  'pendingPayments.filters.autoSearch': 'S_Search by Confirmation No., Payment Method',
+  'pendingPayments.filters.autoSearch':
+    'S_Search by Confirmation No., Payment Method',
   'pendingPayments.table.confirmationNumber': 'S_Confirmation Number',
-  'pendingPayments.table.totalAuthorizedPaymentAmt': 'S_Total Authorized Payment Amount',
+  'pendingPayments.table.totalAuthorizedPaymentAmt':
+    'S_Total Authorized Payment Amount',
   'pendingPayments.table.cancelPayment': 'S_CANCEL PAYMENT',
   'pendingPayments.table.paymentMethod.subHeader': `S_To view all payments, navigate to the 'Payment History'.`,
   'pendingPayments.table.bankAccount.emptyData': 'S_No Pending Payments Found',
   'pendingPayments.table.paymentStatus': 'S_Payment Status',
   'pendingPayments.table.billDate': 'S_Bill Date',
   'pendingPayments.confirm.BackToPendingPayments': 'S_BACK TO PENDING PAYMENTS',
-  'pendingPayments.table.confirmationDialogue': 'S_Are you sure you want to cancel this payment?',
-  'pendingPayments.cancel.failed': 'S_Error occurred while cancelling the pending payment.',
+  'pendingPayments.table.confirmationDialogue':
+    'S_Are you sure you want to cancel this payment?',
+  'pendingPayments.cancel.failed':
+    'S_Error occurred while cancelling the pending payment.',
   'pendingPayments.cancel.success': 'S_Payment Cancelled Succesfully.',
   'pendingPayments.cancel.tooltip': 'S_This Payment can not be cancelled.',
 
   // No data found
   'paymentInvoices.dataLoading': 'S_Fetching Accounts...',
   'paymentInvoices.EmptyData.heading': 'S_No Data Found',
-  'paymentInvoices.EmptyData.description': 'S_No accounts found linked with user',
+  'paymentInvoices.EmptyData.description':
+    'S_No accounts found linked with user',
 
-  'paymentInvoices.reviewPayments.selectedInvoice': 'S_{count} invoice(s), amount to be paid:',
+  'paymentInvoices.reviewPayments.selectedInvoice':
+    'S_{count} invoice(s), amount to be paid:',
   'paymentInvoices.CS.export.success': 'S_Customer Statement exported.',
   'paymentInvoices.CS.export.error': 'S_Error exporting statement.',
-  'paymentInvoices.paymentHistory.export.success': 'S_Payment History exported.',
-  'paymentInvoices.paymentHistory.export.error': 'S_Error exporting Payment history.',
+  'paymentInvoices.paymentHistory.export.success':
+    'S_Payment History exported.',
+  'paymentInvoices.paymentHistory.export.error':
+    'S_Error exporting Payment history.',
   'paymentInvoices.excel.export.success': 'S_Excel exported.',
   'paymentInvoices.excel.export.error': 'S_Error exporting excel.',
-  'paymentInvoices.pendingPaynemt.export.success': 'S_Pending Payment exported.',
-  'paymentInvoices.pendingPaynemt.export.error': 'S_Pending exporting Payment .',
+  'paymentInvoices.pendingPaynemt.export.success':
+    'S_Pending Payment exported.',
+  'paymentInvoices.pendingPaynemt.export.error':
+    'S_Pending exporting Payment .',
   'paymentInvoices.history.table.bill.id': 'S_BILL ID',
   'paymentInvoices.paymentMethods.achForm.description':
     'S_Enrollment form in a PDF format for user to fill in offline and submit to the respective bank',
@@ -277,5 +322,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.table.savedBankAccount': 'S_Saved Bank Accounts',
   'paymentInvoices.table.savedCards': 'S_Saved Cards',
 
-  'paymentInvoices.reviewPayments.processing': 'Please do not hit close or navigate back while your payment request is processing.'
+  'paymentInvoices.reviewPayments.processing':
+    'Please do not hit close or navigate back while your payment request is processing.',
+  'paymentInvoices.header.manageInvoices': 'Manage Invoices and Payments'
 };
