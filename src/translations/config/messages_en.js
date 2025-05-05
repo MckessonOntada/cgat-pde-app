@@ -152,14 +152,15 @@ export const ConfigurationMessagesEN = {
   'fileUpload.crosswalk.partialSuccess':
     'File processing completed, Some records were not processed successfully. Please review the downloaded error report.',
   'fileUpload.error.timeoutOrSystemError':
-    'An unexpected error occurred during the upload. Please try again later.',
+    'Error: An unexpected error occurred during the upload. Please try again later.',
   'invalid.csv.file.headers.empty':
     'Error: The uploaded file is invalid. Please upload a valid file.',
   'invalid.csv.file.headers.unstructured':
     'Error: The uploaded file is invalid. Please upload a valid file.',
   'invalid.csv.file.headers.missing':
     'Error: The uploaded file is invalid. Please upload a valid file.',
-
+  'providers.message.fileUploadFailure':
+    'Something went wrong please try again later.',
   // catalog
 
   'SPCatalog.deLinkSuccess': 'Catalog(s) de-linked successfully.',

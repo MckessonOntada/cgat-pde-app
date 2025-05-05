@@ -12,14 +12,13 @@ import {
 } from '@src/components/uploadFile/uploadUtils';
 import { useNavigate } from 'react-router-dom';
 import CommonUtils, { downloadFile } from '@src/util/CommonUtils';
+import { errorStatusCodes } from '@src/util/ApiUtils';
 
 const DOWNLOAD_CONTEXT_OPTIONS = {
   DOWNLOAD_TEMPLATE: 'Download Template',
   DOWNLOAD_SP_PRODUCT_INFO: 'Download SP Product Info',
   DOWNLOAD_MATERIAL_INFO: 'Download Material Info'
 };
-
-const errorStatusCodes = [408, 500, 502, 503, 504];
 
 const Upload = () => {
   const { t } = useTranslate();
@@ -74,7 +73,7 @@ const Upload = () => {
       })
       .catch((error) => {
         const { response: errorResponse = {} } = error;
-        if (timeoutStatusCodes.includes(errorResponse.status)) {
+        if (errorStatusCodes.includes(errorResponse.status)) {
           add({
             type: 'error',
             description: t('fileUpload.error.timeoutOrSystemError'),

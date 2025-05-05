@@ -13,6 +13,7 @@ import SPCatalogService from '@src/api/commonService/SPCatalogService';
 import CommonUtils, { downloadFile } from '@src/util/CommonUtils';
 import ContextMenu from '../context-menu';
 import { useNavigate } from 'react-router-dom';
+import { errorStatusCodes } from '@src/util/ApiUtils';
 
 const DOWNLOAD_CONTEXT_OPTIONS = {
   DOWNLOAD_TEMPLATE: 'Download Template',
@@ -73,8 +74,13 @@ const Upload = () => {
       })
       .catch((error) => {
         const { response: errorResponse = {} } = error;
-
-        if (errorResponse.data?.errorCodes) {
+        if (errorStatusCodes.includes(errorResponse.status)) {
+          add({
+            type: 'error',
+            description: t('fileUpload.error.timeoutOrSystemError'),
+            isSticky: true
+          });
+        } else if (errorResponse.data?.errorCodes) {
           errorResponse.data?.errorCodes.forEach((element) => {
             add({
               type: 'error',
