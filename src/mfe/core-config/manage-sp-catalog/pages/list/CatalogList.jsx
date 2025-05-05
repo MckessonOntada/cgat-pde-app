@@ -194,7 +194,7 @@ const CatalogList = () => {
           onDeLinkConfirmation
         })}
         data={data}
-        handleChangePage={changePage}
+        handleChangePage={(_event, pageNumber) => changePage(pageNumber)}
         onSortIconClick={handleOnSort}
         pagination={true}
         currentPage={pagination.pageNumber}

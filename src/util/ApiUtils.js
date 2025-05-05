@@ -17,7 +17,11 @@ export const handleApiError = (errorData, setAlert) => {
   }
   const hasSpecialChars = /[:']/g.test(message);
   const keyMatch = hasSpecialChars ? message.match(/'(.+?)'/) : message;
-  return keyMatch ? (hasSpecialChars ? `errors.${keyMatch[1]}` : `errors.${keyMatch}`) : 'errors.default';
+  return keyMatch
+    ? hasSpecialChars
+      ? `errors.${keyMatch[1]}`
+      : `errors.${keyMatch}`
+    : 'errors.default';
 };
 
 export const ExtractErrorfromAPIResponse = (errorMessage) => {
@@ -39,3 +43,5 @@ export const ExtractErrorfromAPIResponse = (errorMessage) => {
   } catch (error) {}
   return errorMessage; // Return original message if format doesn't match
 };
+
+export const errorStatusCodes = [408, 500, 502, 503, 504];
