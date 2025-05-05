@@ -335,7 +335,10 @@ const PatientDetails = () => {
         </div>
         <Formik
           initialValues={initialValues}
-          validationSchema={getValidationSchema(t)}
+          validationSchema={getValidationSchema(
+            t,
+            orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+          )}
           enableReinitialize={true}
           onSubmit={handleSubmit}>
           {({ values, isValid, errors, dirty }) => {
