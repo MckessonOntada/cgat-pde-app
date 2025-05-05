@@ -215,9 +215,8 @@ const PatientDetails = () => {
     }
   };
 
-  const handleSubmit = (form) => {
+  const handleSubmit = (form, skipDuplicateCheck = false) => {
     const payload = CommonUtils.cleanObject(form);
-    let skipDuplicateCheck = false;
     if (form.dateOfBirth) {
       payload.dateOfBirth = CommonUtils.convertDateStringFormat(
         form.dateOfBirth,
@@ -337,7 +336,7 @@ const PatientDetails = () => {
           initialValues={initialValues}
           validationSchema={getValidationSchema(t)}
           enableReinitialize={true}
-          onSubmit={handleSubmit}>
+          onSubmit={(values) => handleSubmit(values)}>
           {({ values, isValid, errors, dirty }) => {
             React.useEffect(() => {
               const { providerId } = values;
