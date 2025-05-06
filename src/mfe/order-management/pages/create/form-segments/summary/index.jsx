@@ -544,7 +544,7 @@ const Summary = () => {
   }
 
   if (patient.patientInfo)
-    patient.fullName = CommonUtils.getFullName(patient.patientInfo);
+    patient.fullName = CommonUtils.getUSFullName(patient.patientInfo);
 
   const isAgreed = agreeCheckboxOptions.isChecked,
     hideControls =
@@ -1165,11 +1165,11 @@ const Summary = () => {
                       label={t('labels.name')}
                       value={
                         <Tooltip
-                          body={getFullName(
+                          body={CommonUtils.getUSFullName(
                             payerDetails?.primaryInsuranceCompany?.name || '-'
                           )}>
                           <span className="overflowing">
-                            {getFullName(
+                            {CommonUtils.getUSFullName(
                               payerDetails?.primaryInsuranceCompany?.name || '-'
                             )}
                           </span>

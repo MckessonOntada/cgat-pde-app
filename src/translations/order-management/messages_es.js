@@ -579,5 +579,9 @@ export const MessageEs = {
   'labels.address': 'S_Address',
   'labels.phoneNumber': 'S_Phone Number',
   'labels.deaNumber': 'S_DEA Number',
-  'labels.npiNumber': 'S_NPI Number'
+  'labels.npiNumber': 'S_NPI Number',
+  'table.columns.captions.createdBy': 'S_Created by',
+  'labels.orderView.No_Cost_Therapy': 'S_No Cost Therapy',
+  'labels.orderView.internalOrderId': 'S_Internal Order Id',
+  'table.columns.captions.createdDate': 'S_Created Date'
 };
