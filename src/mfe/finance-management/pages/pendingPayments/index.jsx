@@ -9,7 +9,8 @@ import ModuleHeader from '@src/components/module-header';
 
 export default function PendingPayments(params) {
   const { t } = useTranslate();
-  const { actualData, applyFilters, clearFilters, exportPDF } = usePendingPayments();
+  const { actualData, applyFilters, clearFilters, exportPDF, data } =
+    usePendingPayments();
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
@@ -30,8 +31,12 @@ export default function PendingPayments(params) {
       {
         type: 'dateRangePicker',
         name: 'paymentInitiationDate',
-        startDateLabel: t('paymentInvoices.pendingPayments.filter.initiationDateStart'),
-        endDateLabel: t('paymentInvoices.pendingPayments.filter.initiationDateEnd')
+        startDateLabel: t(
+          'paymentInvoices.pendingPayments.filter.initiationDateStart'
+        ),
+        endDateLabel: t(
+          'paymentInvoices.pendingPayments.filter.initiationDateEnd'
+        )
       }
     ];
   }, []);
@@ -48,10 +53,18 @@ export default function PendingPayments(params) {
       </div>
       <div className="MCP-table-wrapper">
         <ModuleHeader
-          heading={<Heading as="h2">{t('paymentInvoices.table.paymentPending')}</Heading>}
+          heading={
+            <Heading as="h2">
+              {t('paymentInvoices.table.paymentPending')}
+            </Heading>
+          }
           controls={
             <div className="table-header">
-              <Button variant="secondary" onClick={() => exportPDF()} size="sm">
+              <Button
+                variant="secondary"
+                onClick={() => exportPDF()}
+                disabled={data.length === 0}
+                size="sm">
                 {t('paymentInvoices.CS.ExportExcel')}
               </Button>
             </div>
