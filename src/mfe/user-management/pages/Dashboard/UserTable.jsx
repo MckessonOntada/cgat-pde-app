@@ -47,10 +47,7 @@ function UserTable({ onActionSuccess }) {
   const { hasPermission, hasAnyPermission } = usePermission();
   const showCardView = useResponsiveView();
   const navigate = useNavigate();
-  const [selectedUserInfo, setSelectedUserInfo] = useState({
-    userId: null,
-    isActive: false
-  });
+  const [selectedUserInfo, setSelectedUserInfo] = useState({ userId: null, isActive: false });
 
   const handleRowSelected = ({ selectedRows }) => {
     setSelectedRows(selectedRows);
@@ -81,7 +78,7 @@ function UserTable({ onActionSuccess }) {
       setSelectedRows(null);
       const isSuccess = true;
       const message = t(selectedUserInfo?.isActive ? 'messages.user_deactivate_success' : 'messages.user_activate_success');
-      onActionSuccess(isSuccess, message);
+      onActionSuccess(isSuccess, message); // callback
     },
     onError: (error) => {
       console.error(`Failed to deactivate user:`, error);
@@ -114,10 +111,7 @@ function UserTable({ onActionSuccess }) {
   };
 
   useEffect(() => {
-    if (isBack) {
-      refreshData();
-      navigate(location.pathname, { replace: true, state: {} });
-    }
+    if (isBack) refreshData();
   }, [location.pathname, location.state, navigate]);
 
   const {
@@ -139,18 +133,13 @@ function UserTable({ onActionSuccess }) {
 
   const handleOnOptionSelection = (value, row) => {
     if (value == 'review') {
-      navigate(row.status == 'PENDING' ? `../${PATHS.editUser}/${row.id}` : `../${PATHS.reviewUser}/${row.id}`, {
-        state: { isPending: true }
-      });
+      navigate(`../${PATHS.editUser}/${row.id}`, { state: { isPending: true } });
     } else {
       rejectUser(
         { userId: row.id },
         {
           onSuccess: (response) => {
-            navigate(RoutePaths.pathUserManagement, {
-              state: { isReject: true, isSuccess: true },
-              replace: true
-            });
+            navigate(RoutePaths.pathUserManagement, { state: { isReject: true, isSuccess: true }, replace: true });
           },
           onError: (error) => {
             console.log('error: ', error);
@@ -173,10 +162,7 @@ function UserTable({ onActionSuccess }) {
             items={[
               {
                 onChange: (event) => {
-                  setSelectedUserInfo({
-                    userId: row?.id,
-                    isActive: row?.isActive
-                  });
+                  setSelectedUserInfo({ userId: row?.id, isActive: row?.isActive });
                   setSelectedRows(event.target.checked ? row.id : null);
                 },
                 value: row.id,
@@ -271,11 +257,7 @@ function UserTable({ onActionSuccess }) {
         cell: (props) => (
           <div>
             {activeTab === 2 ? (
-              props.status == 'PENDING' ? (
-                <Badge text="PENDING" type="info-default" />
-              ) : (
-                <Badge text="REJECTED" type="error" />
-              )
+              <Badge text="Pending" type="info-default" />
             ) : props.isActive ? (
               <Badge text="Active" type="success" />
             ) : (
@@ -320,14 +302,10 @@ function UserTable({ onActionSuccess }) {
                   label: t('userManagement.table.action.review'),
                   value: 'review'
                 },
-                ...(row.status !== 'REJECTED'
-                  ? [
-                      {
-                        label: t('userManagement.button.rejectrequest'),
-                        value: 'reject'
-                      }
-                    ]
-                  : [])
+                {
+                  label: t('userManagement.button.rejectrequest'),
+                  value: 'reject'
+                }
               ]}
               aria-label="Order options"
             />
