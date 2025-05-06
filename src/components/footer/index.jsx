@@ -10,10 +10,10 @@ import { ReactComponent as AppLogo } from '@src/assets/image/app-logo.svg';
 import footerLinks from '@src/components/footer/data/footerLinks.json';
 import { ReactComponent as McKessonLogo } from '@src/assets/image/mckesson-logo-colored.svg';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
+import { useQuery } from 'react-query';
 
 const Footer = () => {
   const { t } = useTranslate();
-  const [footerData, setFooterData] = useState(null);
   const {
     organization: { selectedOrganization }
   } = useSessionFeatures();
@@ -23,13 +23,10 @@ const Footer = () => {
     selectedOrganization.id
   );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await QuestionnaireService.getGlobalFooterLinks();
-      setFooterData(data);
-    };
-    fetchData();
-  }, []);
+  const { data: footerData } = useQuery({
+    queryKey: ['globalFooterLinks'],
+    queryFn: () => QuestionnaireService.getGlobalFooterLinks()
+  });
 
   return (
     <footer className={style.footer}>
