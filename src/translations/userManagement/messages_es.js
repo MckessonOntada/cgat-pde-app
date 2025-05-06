@@ -377,7 +377,6 @@ export const UserManagementES = {
   'errors.messages.dateRange': "S_Either enter both dates or none for the filter as it's part of a date range.",
   'errors.messages.emptyDataDescription': 'S_An unexpected error occurred. Please try again.',
   'label.comment': 'S_Comment',
-  'userManagement.header.review_user': 'S_Review Organization User',
   'file.download.csv': 'S_Download CSV Template',
   'lebal.users': 'S_Users',
   'lebal.backToManage': 'S_Back to Manage',
