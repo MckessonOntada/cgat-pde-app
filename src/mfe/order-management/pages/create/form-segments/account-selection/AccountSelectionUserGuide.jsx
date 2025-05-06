@@ -15,7 +15,7 @@ import { useQuery } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
 import { serializeParams } from '@src/util/ApiUtils';
 import FloatingDrawer from '@src/components/floating-drawer';
-import { CHANNEL_TYPE } from '../Constants';
+import { CHANNEL_TYPE, PROGRAM_LIST } from '../Constants';
 
 const AccountSelectionUserGuide = ({
   therapyId,
@@ -157,20 +157,23 @@ const AccountSelectionUserGuide = ({
   };
   const getProgramDisabled = (program, selectedChannel) =>
     !programs.includes(program) ||
-    !channels.includes('BUY_AND_BILL') ||
-    selectedChannel === 'SPECIALITY_PHARMA';
+    !channels.includes(CHANNEL_TYPE.BUY_AND_BILL) ||
+    selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA;
 
   const { programs = [], channels = [] } = programChannelConfig;
 
   const channelList = [
-    { label: t('labels.BUY_AND_BILL'), value: 'BUY_AND_BILL' },
-    { label: t('labels.SPECIALITY_PHARMA'), value: 'SPECIALITY_PHARMA' }
+    { label: t('labels.BUY_AND_BILL'), value: CHANNEL_TYPE.BUY_AND_BILL },
+    {
+      label: t('labels.SPECIALITY_PHARMA'),
+      value: CHANNEL_TYPE.SPECIALTY_PHARMA
+    }
   ].map((channel) => ({
     ...channel,
     isDisabled: !channels.includes(channel.value)
   }));
 
-  const programList = ['WAC', '340B', 'GOV'].map((program) => ({
+  const programList = PROGRAM_LIST.map((program) => ({
     label: t(`labels.${program}`),
     value: program,
     isDisabled: getProgramDisabled(program, selectedChannel)
@@ -253,7 +256,7 @@ const AccountSelectionUserGuide = ({
               </div>
             </div>
             {selectedProgram === '340B' &&
-              selectedChannel === 'BUY_AND_BILL' && (
+              selectedChannel === CHANNEL_TYPE.BUY_AND_BILL && (
                 <CheckboxGroup
                   id={'default'}
                   items={checkboxOptions.map((item) => ({
