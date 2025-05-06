@@ -53,15 +53,26 @@ const PaymentsInvoices = () => {
     });
     navigate(e.path);
     setTabs(updatedTabs);
-  }
+  };
 
   if (isLoading || !CommonUtils.isNonEmptyObject(selectedAccount)) {
-    return <EmptyUI isLoading={isLoading} isEmpty={!CommonUtils.isNonEmptyObject(selectedAccount)} />;
+    return (
+      <EmptyUI
+        isLoading={isLoading}
+        isEmpty={!CommonUtils.isNonEmptyObject(selectedAccount)}
+      />
+    );
   }
 
   return (
     <div className="MCP-module-wrapper">
-      <ModuleHeader heading={<Heading as="h1">{t('paymentInvoices.header.managePayments')}</Heading>} />
+      <ModuleHeader
+        heading={
+          <Heading as="h1">
+            {t('paymentInvoices.header.manageInvoices')}
+          </Heading>
+        }
+      />
       <RecordDetails />
 
       <BalanceProvider>

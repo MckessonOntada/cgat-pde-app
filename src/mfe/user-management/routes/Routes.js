@@ -10,7 +10,7 @@ import UserPermissions from '../pages/UserPermissions';
 import AddAccounts from '../pages/AddAccounts';
 import NotFound from '../../../pages/error-pages/NotFound';
 import UploadUsers from '../pages/Dashboard/UploadUsers';
-
+ 
 const Routes = () => {
   return (
     <ReactRoutes>
@@ -24,10 +24,9 @@ const Routes = () => {
         element={<UserPermissions />}
       />
       <Route path={`${PATHS.addAccounts}/:userId`} element={<AddAccounts />} />
-      <Route path={`${PATHS.reviewUser}/:userId`} element={<ReviewUser />} />
       <Route path={'*'} element={<NotFound />} />
     </ReactRoutes>
   );
 };
 
-export default Routes;
+export default Routes; 

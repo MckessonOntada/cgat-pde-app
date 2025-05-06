@@ -13,7 +13,14 @@ import ModuleHeader from '@src/components/module-header';
 
 export default function CustomerSatements(params) {
   const { t } = useTranslate();
-  const { applyFilters, clearFilters, actualData, filterConfig, exportPDF } = useCustomerStatements();
+  const {
+    applyFilters,
+    clearFilters,
+    actualData,
+    filterConfig,
+    exportPDF,
+    data
+  } = useCustomerStatements();
   const { selectedAccount } = useAccountContext();
 
   const AdditionalFiltersConfig = useMemo(() => {
@@ -29,7 +36,9 @@ export default function CustomerSatements(params) {
 
   const onExportStatements = () => {
     exportPDF(
-      `${ApiRoutes.EXPORT_CUSTOMER_STATEMENTS_EXCEL(selectedAccount.accountNumber)}`,
+      `${ApiRoutes.EXPORT_CUSTOMER_STATEMENTS_EXCEL(
+        selectedAccount.accountNumber
+      )}`,
       {
         companyCode: selectedAccount?.companyCode,
         salesOrg: selectedAccount?.salesOrg,
@@ -42,8 +51,12 @@ export default function CustomerSatements(params) {
           name: selectedAccount?.accountName,
           address: GeographicUtils.addressAggregator(selectedAccount)
         },
-        dateFrom: dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY') || null,
-        dateTo: dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY') || null
+        dateFrom:
+          dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY') ||
+          null,
+        dateTo:
+          dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY') ||
+          null
       },
       'xlsx'
     );
@@ -62,10 +75,18 @@ export default function CustomerSatements(params) {
       </div>
       <div className="MCP-table-wrapper">
         <ModuleHeader
-          heading={<Heading as="h2">{t('paymentInvoices.table.customerStatement')}</Heading>}
+          heading={
+            <Heading as="h2">
+              {t('paymentInvoices.table.customerStatement')}
+            </Heading>
+          }
           controls={
             <div className="table-header">
-              <Button variant="secondary" onClick={() => onExportStatements()} size="sm">
+              <Button
+                variant="secondary"
+                disabled={data.length === 0}
+                onClick={() => onExportStatements()}
+                size="sm">
                 {t('paymentInvoices.CS.ExportExcel')}
               </Button>
             </div>

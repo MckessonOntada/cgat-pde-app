@@ -55,7 +55,7 @@ export const OrderProvider = ({ children }) => {
   const [assigneeRequestParams, setAssigneeRequestParams] = React.useState({
     userType: 'GENERAL'
   });
-  const [orderView, setOrderView] = React.useState(ORDER_VIEW.MY_ORDERS);
+  const [orderView, setOrderView] = React.useState(ORDER_VIEW.ALL_ORDERS);
 
   const requestParams = React.useMemo(() => {
     const params = {
@@ -210,9 +210,7 @@ export const OrderProvider = ({ children }) => {
     setDataState(INITIAL_DATA_STATE);
     setFilterConfig({ ...INITIAL_FILTER_STATE });
     setCurrentPage(1);
-    if (tabVariant === ORDER_TABS.PENDING_APPROVAL)
-      setOrderView(ORDER_VIEW.ASSIGNED_TO_ME);
-    else setOrderView(ORDER_VIEW.MY_ORDERS);
+    setOrderView(ORDER_VIEW.ALL_ORDERS);
     setTabVariant(tabType);
   };
 
