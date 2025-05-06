@@ -144,7 +144,8 @@ const ApiRoutes = Object.freeze({
   DELETE_MATERIAL_CONFIG: (materialId) =>
     constructUserManagementServicePublicUrl(`therapies/config/${materialId}`),
   RESET_PASSWORD: () =>
-    constructUserManagementServiceUrl(`users/current/reset-password`)
+    constructUserManagementServiceUrl(`users/current/reset-password`),
+  GLOBAL_FOOTER: () => constructUserManagementServicePublicUrl(`global-footer`)
 });
 
 export default ApiRoutes;
