@@ -44,6 +44,11 @@ const INITIAL_PAGINATION_CONFIG = {
   pageNumber: 1
 };
 
+const UserProvisioningStatusEnum = {
+  PENDING: 'PENDING',
+  REJECTED: 'REJECTED'
+};
+
 export const UserProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(
@@ -59,7 +64,7 @@ export const UserProvider = ({ children }) => {
     }));
   }, []);
 
- const requestParams = useMemo(() => {
+  const requestParams = useMemo(() => {
     let statusArray = [];
 
     if (activeTab === 2) {
