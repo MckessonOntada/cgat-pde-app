@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import style from './assets/Footer.module.scss';
@@ -9,9 +9,11 @@ import AuthUtils from '@src/util/AuthUtils';
 import { ReactComponent as AppLogo } from '@src/assets/image/app-logo.svg';
 import footerLinks from '@src/components/footer/data/footerLinks.json';
 import { ReactComponent as McKessonLogo } from '@src/assets/image/mckesson-logo-colored.svg';
+import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 
 const Footer = () => {
   const { t } = useTranslate();
+  const [footerData, setFooterData] = useState(null);
   const {
     organization: { selectedOrganization }
   } = useSessionFeatures();
@@ -21,20 +23,29 @@ const Footer = () => {
     selectedOrganization.id
   );
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await QuestionnaireService.getGlobalFooterLinks();
+      setFooterData(data);
+    };
+    fetchData();
+  }, []);
+
   return (
     <footer className={style.footer}>
       <div className={`max-container ${style.footerWrapper}`}>
         <div className={style.footerContent}>
-          {footerLinks.sections.map((section, index) => (
-            <div key={index}>
-              <Heading as="h2">{t(section.heading)}</Heading>
-              {section.links.map((link, linkIndex) => (
-                <Link key={linkIndex} to={link.url} target="_blank">
-                  {t(link.text)}
-                </Link>
-              ))}
-            </div>
-          ))}
+          {footerData &&
+            footerData?.sections?.map((section, index) => (
+              <div key={index}>
+                <Heading as="h2">{t(section.heading)}</Heading>
+                {section.links.map((link, linkIndex) => (
+                  <Link key={linkIndex} to={link.url} target="_blank">
+                    {t(link.text)}
+                  </Link>
+                ))}
+              </div>
+            ))}
         </div>
         <div className={style.footerBase}>
           <div className={style.branding}>
