@@ -856,5 +856,10 @@ export const MessageEn = {
 
   'payer.form.rxBinNumberMaxCharacters':
     'Rx BIN Number should not exceed 30 digits.',
-  'payer.form.rxBinNumberDigitsOnly': 'Rx BIN Number must contain numbers only.'
+  'payer.form.rxBinNumberDigitsOnly':
+    'Rx BIN Number must contain numbers only.',
+  'table.columns.captions.createdBy': 'Created by',
+  'labels.orderView.No_Cost_Therapy': 'No Cost Therapy',
+  'labels.orderView.internalOrderId': 'Internal Order Id',
+  'table.columns.captions.createdDate': 'Created Date'
 };

@@ -333,7 +333,7 @@ const getState = (props) => {
 const jsxColumns = [
   {
     id: COLUMNS.SAP_ID,
-    name: 'labels.sapId',
+    name: 'labels.orderId',
     selector: () => {},
     sortable: true,
     sortKey: 'backend_order_id',
@@ -349,20 +349,20 @@ const jsxColumns = [
       );
     }
   },
-  {
-    id: COLUMNS.PDE_ID,
-    name: 'labels.pdeId',
-    selector: () => {},
-    sortable: true,
-    sortKey: 'id',
-    showInMobileHeader: true,
-    showColumnNameInHeader: true,
-    minWidth: '140px',
-    cell: (props) => <Tooltip body={props.id}>{props.id}</Tooltip>
-  },
+  // {
+  //   id: COLUMNS.PDE_ID,
+  //   name: 'labels.pdeId',
+  //   selector: () => {},
+  //   sortable: true,
+  //   sortKey: 'id',
+  //   showInMobileHeader: true,
+  //   showColumnNameInHeader: true,
+  //   minWidth: '140px',
+  //   cell: (props) => <Tooltip body={props.id}>{props.id}</Tooltip>
+  // },
   {
     id: COLUMNS.ORDER_ID,
-    name: 'labels.orderId',
+    name: 'labels.orderView.internalOrderId',
     selector: () => {},
     sortable: true,
     sortKey: 'id',
@@ -416,11 +416,12 @@ const jsxColumns = [
   },
   {
     id: COLUMNS.AUTHOR,
-    name: 'table.columns.captions.author',
+    name: 'table.columns.captions.createdBy',
     selector: () => {},
     sortable: true,
     sortKey: 'createdBy.name',
-    maxWidth: '130px',
+    maxWidth: '150px',
+    minWidth: '130px',
     cell: (props) => (
       <Tooltip body={props.createdBy?.userName}>
         {props.createdBy?.userName}
@@ -445,12 +446,11 @@ const jsxColumns = [
   },
   {
     id: COLUMNS.CREATED_ON,
-    name: 'table.columns.captions.createdOn',
+    name: 'table.columns.captions.createdDate',
     selector: () => {},
     sortable: true,
     sortKey: 'createdAt',
-    minWidth: '80px',
-    maxWidth: '135px',
+    width: '150px',
     cell: function (props) {
       return (
         <span>
