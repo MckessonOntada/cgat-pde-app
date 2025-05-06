@@ -574,5 +574,6 @@ export const MessageEs = {
   'table.columns.captions.createdBy': 'S_Created by',
   'labels.orderView.No_Cost_Therapy': 'S_No Cost Therapy',
   'labels.orderView.internalOrderId': 'S_Internal Order Id',
-  'table.columns.captions.createdDate': 'S_Created Date'
+  'table.columns.captions.createdDate': 'S_Created Date',
+  'labels.select-account.coveredEntity': "S_I'm a covered Entity."
 };

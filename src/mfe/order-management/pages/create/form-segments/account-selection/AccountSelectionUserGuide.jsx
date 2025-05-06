@@ -33,10 +33,13 @@ const AccountSelectionUserGuide = ({
     {
       isDisabled: false,
       isChecked: false,
-      label: 'I am a covered entity.',
+      label: t('labels.select-account.coveredEntity'),
       value: 'covered_entity'
     }
   ]);
+  const captionStyle = {
+    fontSize: '16px'
+  };
 
   const handleSelectChange = (value) => {
     const updatedOptions = checkboxOptions.map((item) =>
@@ -257,6 +260,7 @@ const AccountSelectionUserGuide = ({
                     ...item,
                     onChange: () => handleSelectChange(item.value)
                   }))}
+                  itemCustomStyles={captionStyle}
                 />
               )}
             {(selectedProgram !== '340B' ||
