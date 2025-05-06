@@ -47,6 +47,7 @@ function UserTable({ onActionSuccess }) {
   const { hasPermission, hasAnyPermission } = usePermission();
   const showCardView = useResponsiveView();
   const navigate = useNavigate();
+
   const [selectedUserInfo, setSelectedUserInfo] = useState({
     userId: null,
     isActive: false
