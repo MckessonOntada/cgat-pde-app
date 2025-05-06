@@ -3,9 +3,8 @@ import { Field, useFormikContext } from 'formik';
 import Components from '../form/Components';
 import { gettenYearDate } from '@src/util/CommonUtils';
 
-export default function AdditionalFilters({ filtersConfig }) {
-  const { values } = useFormikContext();
-
+export default function AdditionalFilters({ filtersConfig }) { 
+  const { values } = useFormikContext(); 
   const renderField = (item) => (
     <Field
       key={item.name}
@@ -23,11 +22,11 @@ export default function AdditionalFilters({ filtersConfig }) {
       {...(item.getUpdatedOptions
         ? { getUpdatedOptions: item.getUpdatedOptions }
         : {})}
-    />
+      {...(item.selected ? { selected: item.selected } : {})}
+    /> 
   );
 
   const baseFields = filtersConfig.map(renderField);
-
   const linkedFields = filtersConfig
     .flatMap((item) => item.linkedFilters?.(values[item.name] || '') || [])
     .map(renderField);

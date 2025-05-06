@@ -37,6 +37,11 @@ const INITIAL_PAGINATION_CONFIG = {
   pageNumber: 1
 };
 
+const UserProvisioningStatusEnum = {
+  PENDING: 'PENDING',
+  REJECTED: 'REJECTED'
+};
+
 export const UserProvider = ({ children }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
@@ -50,22 +55,32 @@ export const UserProvider = ({ children }) => {
     }));
   }, []);
 
-  // Use from context
-  const requestParams = useMemo(
-    () => ({
+  const requestParams = useMemo(() => {
+    let statusArray = [];
+
+    if (activeTab === 2) {
+      if (filterConfig?.status === 'all') {
+        statusArray = [UserProvisioningStatusEnum.PENDING, UserProvisioningStatusEnum.REJECTED];
+      } else if (filterConfig?.status) {
+        statusArray = [filterConfig.status];
+      }
+    } else if (filterConfig?.status) {
+      statusArray = [filterConfig.status];
+    }
+
+    return {
       pageNo: paginationConfig.pageNumber - 1,
       pageSize: paginationConfig.pageSize,
       sortBy: sortConfig.sortBy || 'first_name',
       sortOrder: sortConfig.sortOrder || 'asc',
-      userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL',
+      ...(activeTab === 1 && { userType: AuthUtils.isSystemAdminView() ? 'ADMIN' : 'GENERAL' }),
+      ...(activeTab === 1 && filterConfig?.role && { roleIds: [filterConfig.role] }),
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      ...(filterConfig?.status?.length && { status: [filterConfig.status] }), // Until add multiselect
-      ...(filterConfig?.role && { roleIds: [filterConfig.role] }), // Until add multiselect
+      ...(activeTab === 1 ? statusArray.length && { status: statusArray } : statusArray.length && { provisioningStatuses: statusArray }),
       ...(filterConfig?.dateRange?.[0] && { startDate: DateUtils.formatDate(filterConfig.dateRange[0], 'dd/mm/yyyy') }),
       ...(filterConfig?.dateRange?.[1] && { endDate: DateUtils.formatDate(filterConfig.dateRange[1], 'dd/mm/yyyy') })
-    }),
-    [filterConfig, paginationConfig.pageNumber, sortConfig, activeTab]
-  );
+    };
+  }, [filterConfig, paginationConfig.pageNumber, sortConfig, activeTab]);
 
   const { isLoading, isError, error, data, refetch } = useQuery({
     queryKey: ['users', activeTab, requestParams],

@@ -76,6 +76,7 @@ export default function Dashboard() {
   const handleTabClick = (tab) => {
     setActiveTab(tab.id);
     setPageNumber(1);
+    clearFilters();
   };
 
   const tabs = [
@@ -128,6 +129,20 @@ export default function Dashboard() {
           { label: 'Inactive', value: 'inactive' },
           { label: 'Active', value: 'active' }
         ]
+      });
+    }
+    if (activeTab === 2) {
+      config.push({
+        type: 'dropdown',
+        name: 'status',
+        label: t('userManagement.table.status'),
+        placeholder: t('placeholders.search'),
+        options: [
+          { label: 'All', value: 'all' },
+          { label: 'Pending', value: 'PENDING' },
+          { label: 'Rejected', value: 'REJECTED' }
+        ],
+        selected: 'PENDING'
       });
     }
     return [
