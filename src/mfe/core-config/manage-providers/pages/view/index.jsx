@@ -66,7 +66,7 @@ const ProviderDetails = () => {
                 variant="secondary"
                 size="md"
                 Icon={EditIcon}
-                onClick={() => navigate(`../edit/${id}`)}
+                onClick={() => navigate(`../${id}/edit`)}
                 disabled={
                   isProviderDetailsLoading ||
                   isProviderDetailsFetching ||
