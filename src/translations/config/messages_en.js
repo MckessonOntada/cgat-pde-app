@@ -45,6 +45,7 @@ export const ConfigurationMessagesEN = {
   'provider.contactDetails': 'Contact Details',
   'provider.providerInformation': 'Provider Information',
   'provider.linkSpAccounts': 'Link SP Accounts',
+  'provider.linkedSpAccounts': 'Lined SP Accounts',
   'provider.btnCancel': 'Cancel',
   'provider.btnDeLink': 'Unlink',
   'provider.btnCreateProvider': 'Create Provider',

@@ -11,6 +11,9 @@ import DetailSegment from '@src/components/DetailSegment';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
+import PermittedComponent from '@src/components/permitted-component';
+import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import usePermission from '@src/hooks/usePermissions';
 
 const ProviderDetails = () => {
   const { id } = useParams();
@@ -41,6 +44,11 @@ const ProviderDetails = () => {
     },
     enabled: Boolean(id)
   });
+  const { hasPermission } = usePermission();
+
+  const canEditDetails = hasPermission(
+    PERMISSIONS_ENUM.MANAGE_PROVIDERS.EDIT_PROVIDER
+  );
 
   return (
     <div className="MCP-module-wrapper">
@@ -66,11 +74,12 @@ const ProviderDetails = () => {
                 variant="secondary"
                 size="md"
                 Icon={EditIcon}
-                onClick={() => navigate(`../edit/${id}`)}
+                onClick={() => navigate(`../${id}/edit`)}
                 disabled={
                   isProviderDetailsLoading ||
                   isProviderDetailsFetching ||
-                  isProviderDetailsError
+                  isProviderDetailsError ||
+                  !canEditDetails
                 }>
                 {t('provider.btnEditProviderDetails')}
               </Button>
