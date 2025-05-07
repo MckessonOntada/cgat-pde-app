@@ -256,7 +256,7 @@ export const MessageEn = {
   'labels.therapy.slotNumber': 'Slot Number',
   'labels.therapy.patientConsent': 'Patient Consent',
   'labels.patientConsent': 'Patient Consent',
-  'labels.pleaseSelectAccount': 'Please Select Account',
+  'labels.pleaseSelectAccount': 'Please Select Sold to Account',
   'labels.therapyDescription': 'Therapy Description',
   'labels.therapyNumber': 'Therapy Number',
   'labels.COI_IdExceedDigits': 'COI Id cannot exceed 10 characters.',
@@ -658,11 +658,6 @@ export const MessageEn = {
     'Uploaded file is empty. Please upload a valid file',
   'labels.SPECIALITY_PHARMA': 'Specialty Pharmacy',
   'labels.BUY_AND_BILL': 'Buy & Bill',
-  'labels.WAC': 'WAC',
-  'labels.340': '340',
-  'labels.GOV': 'GOV',
-  'labels.BUY_AND_BILL': 'Buy & Bill',
-  'labels.SPECIALITY_PHARMA': 'Speciality Pharma',
   'invalid.csv.file.empty':
     'Uploaded file is empty. Please upload a valid file',
   'labels.Strength': 'Strength',
@@ -870,5 +865,6 @@ export const MessageEn = {
   'table.columns.captions.createdBy': 'Created by',
   'labels.orderView.No_Cost_Therapy': 'No Cost Therapy',
   'labels.orderView.internalOrderId': 'Internal Order Id',
-  'table.columns.captions.createdDate': 'Created Date'
+  'table.columns.captions.createdDate': 'Created Date',
+  'labels.select-account.coveredEntity': "I'm a covered Entity."
 };

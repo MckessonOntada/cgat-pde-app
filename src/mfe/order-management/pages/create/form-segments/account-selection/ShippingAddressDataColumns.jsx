@@ -1,6 +1,11 @@
 import React from 'react';
 import { RadioGroup } from '@mckesson/mcp-component-library';
-export const createColumns = (t, navigate, selectedShippingAddress, setSelectedShippingAddress) => [
+export const createColumns = (
+  t,
+  navigate,
+  selectedShippingAddress,
+  setSelectedShippingAddress
+) => [
   {
     id: 'shippingAddressId',
     name: '',
@@ -26,11 +31,25 @@ export const createColumns = (t, navigate, selectedShippingAddress, setSelectedS
             onOtherTextChange={() => {}}
             onSubRadioFieldChange={() => {}}
             radioBtnWidth="auto"
-            value={selectedShippingAddress && selectedShippingAddress.id === props.id ? props.id : ' '}
+            value={
+              selectedShippingAddress && selectedShippingAddress.id === props.id
+                ? props.id
+                : ' '
+            }
           />
         </span>
       );
     }
+  },
+  {
+    id: 'shippingAccountName',
+    name: t('table.columns.captions.shippingAccountName'),
+    selector: () => {},
+    sortable: false,
+    width: '25%',
+    cell: (props) => (
+      <span className={'MCP-table-cell'}> {props.accountName}</span>
+    )
   },
   {
     id: 'shippingAddress',
@@ -51,14 +70,8 @@ export const createColumns = (t, navigate, selectedShippingAddress, setSelectedS
     width: '25%',
     showInMobileHeader: true,
     showColumnNameInHeader: true,
-    cell: (props) => <span className={'MCP-table-cell'}> {props.accountNumber}</span>
-  },
-  {
-    id: 'shippingAccountName',
-    name: t('table.columns.captions.shippingAccountName'),
-    selector: () => {},
-    sortable: false,
-    width: '25%',
-    cell: (props) => <span className={'MCP-table-cell'}> {props.accountName}</span>
+    cell: (props) => (
+      <span className={'MCP-table-cell'}> {props.accountNumber}</span>
+    )
   }
 ];

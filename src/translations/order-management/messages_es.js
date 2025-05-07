@@ -244,7 +244,7 @@ export const MessageEs = {
   'labels.therapy.slotNumber': 'S_Slot Number',
   'labels.therapy.patientConsent': 'S_Patient Consent',
   'labels.patientConsent': 'S_Patient Consent',
-  'labels.pleaseSelectAccount': 'S_Please Select Account',
+  'labels.pleaseSelectAccount': 'S_Please Select Sold to Account',
   'labels.therapyDescription': 'S_Therapy Description',
   'labels.therapyNumber': 'S_Therapy Number',
   'labels.COI_IdExceedDigits': 'S_COI Id cannot exceed 10 characters.',
@@ -555,11 +555,6 @@ export const MessageEs = {
   'tooltip.material.status.CHECKING': 'S_Checking',
   'labels.SPECIALITY_PHARMA': 'S_Specialty Pharmacy',
   'labels.BUY_AND_BILL': 'S_Buy & Bill',
-  'labels.WAC': 'S_WAC',
-  'labels.340': 'S_340',
-  'labels.GOV': 'S_GOV',
-  'labels.BUY_AND_BILL': 'S_Buy & Bill',
-  'labels.SPECIALITY_PHARMA': 'S_Speciality Pharma',
   'labels.BuyNBill': 'S_BUY & BILL',
   'labels.SP': 'S_SP',
   'label.emptyProviderTableDescription':
@@ -583,5 +578,6 @@ export const MessageEs = {
   'table.columns.captions.createdBy': 'S_Created by',
   'labels.orderView.No_Cost_Therapy': 'S_No Cost Therapy',
   'labels.orderView.internalOrderId': 'S_Internal Order Id',
-  'table.columns.captions.createdDate': 'S_Created Date'
+  'table.columns.captions.createdDate': 'S_Created Date',
+  'labels.select-account.coveredEntity': "S_I'm a covered Entity."
 };
