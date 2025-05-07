@@ -1,0 +1,11 @@
+.create-crosswalk-container {
+    display: grid;
+    grid-template-columns: 9fr 3fr;
+    gap: var(--spacing-03);
+
+    .listing {
+        display: grid;
+        grid-template-columns: 6fr 6fr;
+        gap: var(--spacing-03)
+    }
+}

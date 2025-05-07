@@ -143,6 +143,12 @@ export const ConfigurationMessagesEN = {
   'button.caption.confirm': 'Confirm',
   'button.caption.cancel': 'Cancel',
   'label.backSpCrosswalk': 'Back to Manage Crosswalk Material',
+  'label.backToMaterialCrosswalk': 'Back to Material Crosswalk',
+  'label.createCrosswalk': 'Create Crosswalk',
+  'label.createCrosswalkSubtitle':
+    'Map fields across Buy & Bill and SP to standardize data, ensure consistency, and streamline integration.',
+  'label.materialListing': 'Material Listing',
+  'label.spProductListing': 'SP Product Listing',
 
   'provider.btnUnlink': 'Unlink',
   'label.spCatalogDataGrid': 'SP Catalog',

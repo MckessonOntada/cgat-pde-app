@@ -145,7 +145,6 @@ const List = () => {
               Icon={AddCircleFilled}
               className="button-icon"
               onClick={handleOnClick('create')}
-              disabled={true}
               size="md">
               {t('controls.addCrosswalk')}
             </Button>
