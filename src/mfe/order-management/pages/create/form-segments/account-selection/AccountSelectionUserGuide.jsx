@@ -5,7 +5,8 @@ import {
   Button,
   Loader,
   Heading,
-  Alert
+  Alert,
+  CheckboxGroup
 } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
 import AccountCard from './AccountCard';
@@ -14,7 +15,7 @@ import { useQuery } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
 import { serializeParams } from '@src/util/ApiUtils';
 import FloatingDrawer from '@src/components/floating-drawer';
-import { CHANNEL_TYPE } from '../Constants';
+import { CHANNEL_TYPE, PROGRAM_LIST } from '../Constants';
 
 const AccountSelectionUserGuide = ({
   therapyId,
@@ -28,6 +29,34 @@ const AccountSelectionUserGuide = ({
   const [selectedChannel, setChannel] = useState('');
   const [account, setAccount] = useState(null);
   const [alertMsg, setAlertMsg] = useState(false);
+  const [checkboxOptions, setCheckboxOptions] = useState([
+    {
+      isDisabled: false,
+      isChecked: false,
+      label: t('labels.select-account.coveredEntity'),
+      value: 'covered_entity'
+    }
+  ]);
+  const captionStyle = {
+    fontSize: '16px'
+  };
+
+  const handleSelectChange = (value) => {
+    const updatedOptions = checkboxOptions.map((item) =>
+      item.value === value
+        ? {
+            ...item,
+            isChecked: !item.isChecked
+          }
+        : item
+    );
+    setCheckboxOptions(updatedOptions);
+  };
+  const handleCheckboxChange = () => {
+    const updatedOptions = [...checkboxOptions];
+    updatedOptions[0].isChecked = false;
+    setCheckboxOptions(updatedOptions);
+  };
 
   const {
     isFetching: isFetchingConfig,
@@ -61,7 +90,9 @@ const AccountSelectionUserGuide = ({
       OrderService.getSoldToAccounts(
         therapyId,
         serializeParams({
-          ...( selectedChannel === CHANNEL_TYPE.BUY_AND_BILL ? {program: selectedProgram} : {}),
+          ...(selectedChannel === CHANNEL_TYPE.BUY_AND_BILL
+            ? { program: selectedProgram }
+            : {}),
           channelType: selectedChannel,
           therapyChannelType: therapChannelType
         })
@@ -71,7 +102,6 @@ const AccountSelectionUserGuide = ({
       Boolean(selectedProgram),
     refetchOnWindowFocus: false
   });
-  console.log(selectedChannel, selectedProgram);
 
   React.useEffect(() => {
     if (selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA || selectedProgram)
@@ -127,21 +157,24 @@ const AccountSelectionUserGuide = ({
   };
   const getProgramDisabled = (program, selectedChannel) =>
     !programs.includes(program) ||
-    !channels.includes('BUY_AND_BILL') ||
-    selectedChannel === 'SPECIALITY_PHARMA';
+    !channels.includes(CHANNEL_TYPE.BUY_AND_BILL) ||
+    selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA;
 
   const { programs = [], channels = [] } = programChannelConfig;
 
   const channelList = [
-    { label: t('labels.BUY_AND_BILL'), value: 'BUY_AND_BILL' },
-    { label: t('labels.SPECIALITY_PHARMA'), value: 'SPECIALITY_PHARMA' }
+    { label: t('labels.BUY_AND_BILL'), value: CHANNEL_TYPE.BUY_AND_BILL },
+    {
+      label: t('labels.SPECIALITY_PHARMA'),
+      value: CHANNEL_TYPE.SPECIALTY_PHARMA
+    }
   ].map((channel) => ({
     ...channel,
     isDisabled: !channels.includes(channel.value)
   }));
 
-  const programList = ['WAC', '340', 'GOV'].map((program) => ({
-    label: t(`labels.${program}`),
+  const programList = PROGRAM_LIST.map((program) => ({
+    label: program,
     value: program,
     isDisabled: getProgramDisabled(program, selectedChannel)
   }));
@@ -197,6 +230,7 @@ const AccountSelectionUserGuide = ({
                   onChangeValue={(value) => {
                     setAlertMsg(false);
                     setChannel(value);
+                    handleCheckboxChange();
                   }}
                   value={selectedChannel}
                   radioBtnWidth="auto"
@@ -214,18 +248,33 @@ const AccountSelectionUserGuide = ({
                   onChangeValue={(value) => {
                     setAlertMsg(false);
                     setProgram(value);
+                    handleCheckboxChange();
                   }}
                   value={selectedProgram}
                   radioBtnWidth="auto"
                 />
               </div>
             </div>
-
-            <AccountCard
-              options={accountList.content}
-              onChange={handleAccountChange}
-              isFetching={isFetchingAccount}
-            />
+            {selectedProgram === '340B' &&
+              selectedChannel === CHANNEL_TYPE.BUY_AND_BILL && (
+                <CheckboxGroup
+                  id={'default'}
+                  items={checkboxOptions.map((item) => ({
+                    ...item,
+                    onChange: () => handleSelectChange(item.value)
+                  }))}
+                  itemCustomStyles={captionStyle}
+                />
+              )}
+            {(selectedProgram !== '340B' ||
+              (selectedProgram === '340B' &&
+                checkboxOptions[0]?.isChecked)) && (
+              <AccountCard
+                options={accountList.content}
+                onChange={handleAccountChange}
+                isFetching={isFetchingAccount}
+              />
+            )}
           </div>
         </div>
       </div>

@@ -9,7 +9,8 @@ import ModuleHeader from '@src/components/module-header';
 
 export default function Credits(props) {
   const { t } = useTranslate();
-  const { applyFilters, clearFilters, actualData, exportExcel } = usePaymentCredits();
+  const { applyFilters, clearFilters, actualData, exportExcel, data } =
+    usePaymentCredits();
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
@@ -43,10 +44,18 @@ export default function Credits(props) {
         {!props.selectableRows && (
           <div className="credit-heading">
             <ModuleHeader
-              heading={<Heading as="h2">{t('paymentInvoices.table.creditHeading')}</Heading>}
+              heading={
+                <Heading as="h2">
+                  {t('paymentInvoices.table.creditHeading')}
+                </Heading>
+              }
               controls={
                 <div className="table-header">
-                  <Button variant="secondary" onClick={() => exportExcel()} size="sm">
+                  <Button
+                    variant="secondary"
+                    onClick={() => exportExcel()}
+                    disabled={data.length === 0}
+                    size="sm">
                     {t('paymentInvoices.CS.ExportExcel')}
                   </Button>
                 </div>
