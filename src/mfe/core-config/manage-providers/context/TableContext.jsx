@@ -152,7 +152,7 @@ export const TableProvider = ({
       pageSize: pagination.pageSize,
       sortBy: allowedSort.includes(sort.sortBy)
         ? sort.sortBy
-        : allowedSort[0] || null,
+        : allowedSort[0] || '',
       sortOrder: sort.sortOrder || 'desc'
     };
 

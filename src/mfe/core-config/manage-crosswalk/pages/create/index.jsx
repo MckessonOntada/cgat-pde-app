@@ -5,8 +5,11 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { useNavigate } from 'react-router-dom';
 import PageHeader from '@src/components/pageHeader';
 import style from './style.module.scss';
-import { Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
+import { TableProvider } from '@src/mfe/core-config/manage-providers/context/TableContext';
+import MaterialService from '@src/api/commonService/MaterialService';
+import Materials from './Materials';
 
 const INITIAL_STATE = {
   material: '',
@@ -25,6 +28,8 @@ const CreateCrosswalk = () => {
   const [schema, setSchema] = React.useState(VALIDATION_SCHEMA);
   const [material, setMaterial] = React.useState(null);
   const [spProduct, setSpProduct] = React.useState(null);
+
+  const handleOnSubmit = () => {};
 
   return (
     <div className="MCP-module-wrapper" id="create-crosswalk">
@@ -56,6 +61,9 @@ const CreateCrosswalk = () => {
                     <div className="MCP-module-body">
                       <div className="MCP-CardContainer"></div>
                       <Heading as="h3">{t('label.materialListing')}</Heading>
+                      <TableProvider fetchFn={MaterialService.getMaterialList}>
+                        <Materials />
+                      </TableProvider>
                     </div>
                   </div>
                   <div className={style['col']}>
