@@ -148,6 +148,7 @@ function UserTable({ onActionSuccess }) {
   useEffect(() => {
     if (isBack) {
       refreshData();
+      setPageNumber(1);
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location.pathname, location.state, navigate]);
