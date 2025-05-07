@@ -799,7 +799,7 @@ const Summary = () => {
                 }`}>
                 {status === StatusEnum.SUBMITTED && !spOrder && (
                   <DetailSegment
-                    label={t('labels.sapId')}
+                    label={t('labels.orderId')}
                     value={backendOrderId}
                   />
                 )}
