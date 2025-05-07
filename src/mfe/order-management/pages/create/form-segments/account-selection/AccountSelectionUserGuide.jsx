@@ -174,7 +174,7 @@ const AccountSelectionUserGuide = ({
   }));
 
   const programList = PROGRAM_LIST.map((program) => ({
-    label: t(`labels.${program}`),
+    label: program,
     value: program,
     isDisabled: getProgramDisabled(program, selectedChannel)
   }));

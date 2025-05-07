@@ -546,11 +546,6 @@ export const MessageEs = {
   'tooltip.material.status.CHECKING': 'S_Checking',
   'labels.SPECIALITY_PHARMA': 'S_Specialty Pharmacy',
   'labels.BUY_AND_BILL': 'S_Buy & Bill',
-  'labels.WAC': 'S_WAC',
-  'labels.340B': 'S_340B',
-  'labels.GOV': 'S_GOV',
-  'labels.BUY_AND_BILL': 'S_Buy & Bill',
-  'labels.SPECIALITY_PHARMA': 'S_Speciality Pharma',
   'labels.BuyNBill': 'S_BUY & BILL',
   'labels.SP': 'S_SP',
   'label.emptyProviderTableDescription':

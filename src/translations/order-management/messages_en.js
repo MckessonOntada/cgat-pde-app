@@ -649,11 +649,6 @@ export const MessageEn = {
     'Uploaded file is empty. Please upload a valid file',
   'labels.SPECIALITY_PHARMA': 'Specialty Pharmacy',
   'labels.BUY_AND_BILL': 'Buy & Bill',
-  'labels.WAC': 'WAC',
-  'labels.340B': '340B',
-  'labels.GOV': 'GOV',
-  'labels.BUY_AND_BILL': 'Buy & Bill',
-  'labels.SPECIALITY_PHARMA': 'Speciality Pharma',
   'invalid.csv.file.empty':
     'Uploaded file is empty. Please upload a valid file',
   'labels.Strength': 'Strength',
