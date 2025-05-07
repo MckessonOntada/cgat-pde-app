@@ -59,6 +59,7 @@ export default function Dashboard() {
   useEffect(() => {
     if (isSuccess) {
       refreshData();
+      setPageNumber(1);
       let message = isReject
         ? t('messages.pending_user_reject_success')
         : isSystemAdminView
