@@ -10,6 +10,9 @@ import * as Yup from 'yup';
 import { TableProvider } from '@src/mfe/core-config/manage-providers/context/TableContext';
 import MaterialService from '@src/api/commonService/MaterialService';
 import Materials from './Materials';
+import Products from './Products';
+import { ChannelType } from '@src/mfe/order-management/pages/system-configuration/manage-spaccount/util';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
 const INITIAL_STATE = {
   material: '',
@@ -70,8 +73,12 @@ const CreateCrosswalk = () => {
                     <div className="MCP-module-body">
                       <div className="MCP-CardContainer"></div>
                       <Heading as="h3">{t('label.spProductListing')}</Heading>
-                      <TableProvider fetchFn={MaterialService.getMaterialList}>
-                        <Materials />
+                      <TableProvider
+                        defaultFilters={{
+                          ChannelType: CHANNEL_TYPE.SPECIALTY_PHARMA
+                        }}
+                        fetchFn={MaterialService.getMaterialList}>
+                        <Products />
                       </TableProvider>
                     </div>
                   </div>

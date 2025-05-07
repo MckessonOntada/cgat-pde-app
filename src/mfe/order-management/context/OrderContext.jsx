@@ -131,7 +131,8 @@ export const OrderProvider = ({ children }) => {
       if (result.content) {
         setDataState(result.content);
       }
-    }
+    },
+    onError: console.log
   });
 
   const { refetch: refreshAssignee } = useQuery({

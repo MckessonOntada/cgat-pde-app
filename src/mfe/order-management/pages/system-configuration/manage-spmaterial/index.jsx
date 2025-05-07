@@ -48,14 +48,18 @@ function ManageSPMaterial() {
     <div className="MCP-module-wrapper catalog-module">
       <Breadcrumbs items={translatedBreadcrumbs} />
       <div className="MCP-module-body">
-        <ModuleHeader heading={<Heading as="h1">{t('manageSPMaterial.heading')}</Heading>} />
+        <ModuleHeader
+          heading={<Heading as="h1">{t('manageSPMaterial.heading')}</Heading>}
+        />
         <div className="MCP-panel-container">
           <div class="MCP-panel-container">
             <CommonFilters
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}
               additionalFilters={AdditionalFiltersConfig}
-              searchPlaceholder={t('manageSPMaterial.filters.searchPlaceholder')}
+              searchPlaceholder={t(
+                'manageSPMaterial.filters.searchPlaceholder'
+              )}
             />
           </div>
           <SPMaterialDataTable />
