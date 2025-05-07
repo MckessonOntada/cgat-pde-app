@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { TabList, Alert, Button, Heading } from '@mckesson/mcp-component-library';
+import {
+  TabList,
+  Alert,
+  Button,
+  Heading
+} from '@mckesson/mcp-component-library';
 import './index.scss';
 import { PATHS } from '../../routes/constants';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -20,7 +25,15 @@ import { ReactComponent as UploadSVG } from '@src/assets/image/upload_bottom.svg
 export default function Dashboard() {
   const { t } = useTranslate();
   const navigate = useNavigate();
-  const { activeTab, setActiveTab, refreshData, clearFilters, applyFilters, roleList, setPageNumber } = useUser();
+  const {
+    activeTab,
+    setActiveTab,
+    refreshData,
+    clearFilters,
+    applyFilters,
+    roleList,
+    setPageNumber
+  } = useUser();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const location = useLocation();
   const isSuccess = location.state?.isSuccess || false;
@@ -46,6 +59,7 @@ export default function Dashboard() {
   useEffect(() => {
     if (isSuccess) {
       refreshData();
+      setPageNumber(1);
       let message = isReject
         ? t('messages.pending_user_reject_success')
         : isSystemAdminView
@@ -70,12 +84,16 @@ export default function Dashboard() {
 
   const handleAlertClose = () => {
     setIsAlertVisible(false);
-    navigate(location.pathname, { replace: true, state: { ...location.state, isSuccess: false, isReject: false } });
+    navigate(location.pathname, {
+      replace: true,
+      state: { ...location.state, isSuccess: false, isReject: false }
+    });
   };
 
   const handleTabClick = (tab) => {
     setActiveTab(tab.id);
     setPageNumber(1);
+    clearFilters();
   };
 
   const tabs = [
@@ -103,7 +121,9 @@ export default function Dashboard() {
       url: isSystemAdminView ? '/' : '/admin'
     },
     {
-      label: isSystemAdminView ? t('userManagement.header.systemadminlisting.label') : t('userManagement.header.listing.label')
+      label: isSystemAdminView
+        ? t('userManagement.header.systemadminlisting.label')
+        : t('userManagement.header.listing.label')
     }
   ];
 
@@ -130,13 +150,31 @@ export default function Dashboard() {
         ]
       });
     }
+    if (activeTab === 2) {
+      config.push({
+        type: 'dropdown',
+        name: 'status',
+        label: t('userManagement.table.status'),
+        placeholder: t('placeholders.search'),
+        options: [
+          { label: 'All', value: 'all' },
+          { label: 'Pending', value: 'PENDING' },
+          { label: 'Rejected', value: 'REJECTED' }
+        ],
+        selected: 'PENDING'
+      });
+    }
     return [
       ...config,
       {
         type: 'dateRangePicker',
         name: 'dateRange',
-        startDateLabel: isSystemAdminView ? t('labels.startDate') : t('labels.updatedDateFrom'),
-        endDateLabel: isSystemAdminView ? t('labels.endDate') : t('labels.updatedDateTo')
+        startDateLabel: isSystemAdminView
+          ? t('labels.startDate')
+          : t('labels.updatedDateFrom'),
+        endDateLabel: isSystemAdminView
+          ? t('labels.endDate')
+          : t('labels.updatedDateTo')
       }
     ];
   }, [isSystemAdminView, roleList, activeTab]);
@@ -147,7 +185,13 @@ export default function Dashboard() {
       <div className="MCP-module-body">
         <ModuleHeader
           heading={
-            <Heading as="h1">{t(isSystemAdminView ? 'userManagement.header.systemadmin.label' : 'userManagement.header.label')}</Heading>
+            <Heading as="h1">
+              {t(
+                isSystemAdminView
+                  ? 'userManagement.header.systemadmin.label'
+                  : 'userManagement.header.label'
+              )}
+            </Heading>
           }
           controls={
             <div className="controls">
@@ -158,23 +202,44 @@ export default function Dashboard() {
                   variant="primary"
                   size="md"
                   onClick={() => navigate(`${PATHS.createUser}`)}>
-                  {t(isSystemAdminView ? 'userManagement.button.addsystemadmin' : 'userManagement.button.adduser')}
+                  {t(
+                    isSystemAdminView
+                      ? 'userManagement.button.addsystemadmin'
+                      : 'userManagement.button.adduser'
+                  )}
                 </Button>
               )}
-              {!isSystemAdminView && hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.UPLOAD_USERS) && (
-                <div className="upload-userBtn">
-                  <Button Icon={UploadSVG} className="button-icon" variant="primary" size="md" onClick={() => navigate(`${PATHS.uploadUser}`)}>
-                    <label htmlFor="fileInput">
-                      {t('userManagement.button.uploadUsers')}
-                    </label>
-                  </Button>
-                </div>
-              )}
+              {!isSystemAdminView &&
+                hasPermission(
+                  PERMISSIONS_ENUM.USER_MANAGEMENT.UPLOAD_USERS
+                ) && (
+                  <div className="upload-userBtn">
+                    <Button
+                      Icon={UploadSVG}
+                      className="button-icon"
+                      variant="primary"
+                      size="md"
+                      onClick={() => navigate(`${PATHS.uploadUser}`)}>
+                      <label htmlFor="fileInput">
+                        {t('userManagement.button.uploadUsers')}
+                      </label>
+                    </Button>
+                  </div>
+                )}
             </div>
           }
         />
-        {isAlertVisible && <Alert description={alertDescription} onClose={handleAlertClose} type={alert.type} duration={10000} />}
-        <div className="MCP-panel-container" id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
+        {isAlertVisible && (
+          <Alert
+            description={alertDescription}
+            onClose={handleAlertClose}
+            type={alert.type}
+            duration={10000}
+          />
+        )}
+        <div
+          className="MCP-panel-container"
+          id={debugIds(ID.FILTERS, ID.FILTER_CONTAINER)}>
           <div className="MCP-CardContainer">
             <CommonFilters
               onApplyFilters={applyFilters}
@@ -186,11 +251,23 @@ export default function Dashboard() {
 
           {!isSystemAdminView && (
             <div className="customTab">
-              <TabList options={tabs} alignment="left" onTabClick={handleTabClick} showShadow={false} variant={'text'} useAsButton={true} />
+              <TabList
+                options={tabs}
+                alignment="left"
+                onTabClick={handleTabClick}
+                showShadow={false}
+                variant={'text'}
+                useAsButton={true}
+              />
             </div>
           )}
           <div className="userList">
-            {activeTab === 1 && <UserTable selectableRows={true} onActionSuccess={handleSuccess} />}
+            {activeTab === 1 && (
+              <UserTable
+                selectableRows={true}
+                onActionSuccess={handleSuccess}
+              />
+            )}
             {activeTab === 2 && <UserTable selectableRows={false} />}
           </div>
         </div>

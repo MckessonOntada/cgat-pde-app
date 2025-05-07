@@ -492,6 +492,23 @@ export const getFullName = (name) => {
   return `${lastName || ''}, ${firstName || ''} ${middleName || ''}`.trim();
 };
 
+export function getUSFullName({ firstName, lastName, middleName }) {
+  const fName = firstName?.trim();
+  const lName = lastName?.trim();
+  const mName = middleName?.trim();
+
+  if (!fName && !lName && !mName) return '';
+
+  const rightSide = [fName, mName].filter(Boolean).join(' ');
+
+  if (lName && rightSide) {
+    return `${lName}, ${rightSide}`;
+  } else if (lName) {
+    return lName;
+  } else {
+    return rightSide;
+  }
+}
 export const getAddress = (account) => {
   const sanitizedAccount = CommonUtils.sanitizeValue(account);
   return [
@@ -693,6 +710,7 @@ const CommonUtils = Object.freeze({
   truncateString,
   formatPhoneNumber,
   getFullName,
+  getUSFullName,
   downloadFile,
   enableReviewAndPay,
   generateUniqueCode,

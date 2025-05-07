@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Button, Badge, CheckboxGroup, Modal, Tooltip, MenuList } from '@mckesson/mcp-component-library';
+import {
+  Button,
+  Badge,
+  CheckboxGroup,
+  Modal,
+  Tooltip,
+  MenuList
+} from '@mckesson/mcp-component-library';
 import './index.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
@@ -39,7 +46,17 @@ function UserTable({ onActionSuccess }) {
   const [isOpen, setIsOpen] = useState(false);
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();
-  const { isLoading, isError, error, data, activeTab, paginationConfig, applySort, refreshData, setPageNumber } = useUser();
+  const {
+    isLoading,
+    isError,
+    error,
+    data,
+    activeTab,
+    paginationConfig,
+    applySort,
+    refreshData,
+    setPageNumber
+  } = useUser();
   const location = useLocation();
   const { isBack = false } = location.state || {};
   const userPermissions = AuthUtils.getUserPermissions();
@@ -47,7 +64,10 @@ function UserTable({ onActionSuccess }) {
   const { hasPermission, hasAnyPermission } = usePermission();
   const showCardView = useResponsiveView();
   const navigate = useNavigate();
-  const [selectedUserInfo, setSelectedUserInfo] = useState({ userId: null, isActive: false });
+  const [selectedUserInfo, setSelectedUserInfo] = useState({
+    userId: null,
+    isActive: false
+  });
 
   const handleRowSelected = ({ selectedRows }) => {
     setSelectedRows(selectedRows);
@@ -60,10 +80,16 @@ function UserTable({ onActionSuccess }) {
   const handleActivateDeactivateUser = async ({ userId, isActive }) => {
     let res;
     if (isActive) {
-      res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.DELETE, null);
+      res = await HttpResourceService.callRest(
+        `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`,
+        httpVerb.DELETE,
+        null
+      );
     } else {
       res = await HttpResourceService.callRest(
-        `${ApiRoutes.USERS()}/${userId}/activate?${serializeParams(requestParams)}`,
+        `${ApiRoutes.USERS()}/${userId}/activate?${serializeParams(
+          requestParams
+        )}`,
         httpVerb.PATCH,
         null
       );
@@ -77,13 +103,21 @@ function UserTable({ onActionSuccess }) {
       refreshData();
       setSelectedRows(null);
       const isSuccess = true;
-      const message = t(selectedUserInfo?.isActive ? 'messages.user_deactivate_success' : 'messages.user_activate_success');
-      onActionSuccess(isSuccess, message); // callback
+      const message = t(
+        selectedUserInfo?.isActive
+          ? 'messages.user_deactivate_success'
+          : 'messages.user_activate_success'
+      );
+      onActionSuccess(isSuccess, message);
     },
     onError: (error) => {
       console.error(`Failed to deactivate user:`, error);
       const isSuccess = false;
-      const message = t(selectedUserInfo?.isActive ? 'messages.user_deactivate_failure' : 'messages.user_activate_failure');
+      const message = t(
+        selectedUserInfo?.isActive
+          ? 'messages.user_deactivate_failure'
+          : 'messages.user_activate_failure'
+      );
       onActionSuccess(isSuccess, message);
     }
   });
@@ -93,7 +127,8 @@ function UserTable({ onActionSuccess }) {
   };
 
   const handleOnSortIconClick = (selectedColumn, sortDirection) => {
-    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    if (selectedColumn.sortKey)
+      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
   const handleActivateDeactivate = () => {
@@ -111,7 +146,11 @@ function UserTable({ onActionSuccess }) {
   };
 
   useEffect(() => {
-    if (isBack) refreshData();
+    if (isBack) {
+      refreshData();
+      setPageNumber(1);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
   }, [location.pathname, location.state, navigate]);
 
   const {
@@ -124,7 +163,9 @@ function UserTable({ onActionSuccess }) {
       status: 'REJECTED'
     };
     const rejectResponse = await HttpResourceService.callRest(
-      `${ApiRoutes.USERS_PROVISIONING()}/${userId}/status?${serializeParams(reqParams)}`,
+      `${ApiRoutes.USERS_PROVISIONING()}/${userId}/status?${serializeParams(
+        reqParams
+      )}`,
       httpVerb.PATCH,
       {}
     );
@@ -133,13 +174,23 @@ function UserTable({ onActionSuccess }) {
 
   const handleOnOptionSelection = (value, row) => {
     if (value == 'review') {
-      navigate(`../${PATHS.editUser}/${row.id}`, { state: { isPending: true } });
+      navigate(
+        row.status == 'PENDING'
+          ? `../${PATHS.editUser}/${row.id}`
+          : `../${PATHS.reviewUser}/${row.id}`,
+        {
+          state: { isPending: true }
+        }
+      );
     } else {
       rejectUser(
         { userId: row.id },
         {
           onSuccess: (response) => {
-            navigate(RoutePaths.pathUserManagement, { state: { isReject: true, isSuccess: true }, replace: true });
+            navigate(RoutePaths.pathUserManagement, {
+              state: { isReject: true, isSuccess: true },
+              replace: true
+            });
           },
           onError: (error) => {
             console.log('error: ', error);
@@ -162,7 +213,10 @@ function UserTable({ onActionSuccess }) {
             items={[
               {
                 onChange: (event) => {
-                  setSelectedUserInfo({ userId: row?.id, isActive: row?.isActive });
+                  setSelectedUserInfo({
+                    userId: row?.id,
+                    isActive: row?.isActive
+                  });
                   setSelectedRows(event.target.checked ? row.id : null);
                 },
                 value: row.id,
@@ -176,7 +230,10 @@ function UserTable({ onActionSuccess }) {
         width: '40px',
         omit:
           activeTab === 2 ||
-          !hasAnyPermission([PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_USERS, PERMISSIONS_ENUM.ADMIN_MANAGEMENT.ADD_SYSTEM_ADMINISTRATOR])
+          !hasAnyPermission([
+            PERMISSIONS_ENUM.USER_MANAGEMENT.ADD_USERS,
+            PERMISSIONS_ENUM.ADMIN_MANAGEMENT.ADD_SYSTEM_ADMINISTRATOR
+          ])
       },
       // { name: 'ID', selector: 'id', sortable: true, omit: true },
       {
@@ -190,7 +247,12 @@ function UserTable({ onActionSuccess }) {
         cell: (props) => (
           <div>
             {activeTab === 2 ? (
-              <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName || ''}`} maxWidth={140} />
+              <EclipsesTextcss
+                str={`${props.name.lastName}, ${props.name.firstName} ${
+                  props.name.middleName || ''
+                }`}
+                maxWidth={140}
+              />
             ) : (
               <React.Fragment>
                 {hasPermission(PERMISSIONS_ENUM.USER_MANAGEMENT.VIEW_USERS) ? (
@@ -198,12 +260,19 @@ function UserTable({ onActionSuccess }) {
                     to={`${props.id}`} // dynamically constructs the URL with userId
                     className="MCP-table-link">
                     <EclipsesTextcss
-                      str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName || ''}`}
+                      str={`${props.name.lastName}, ${props.name.firstName} ${
+                        props.name.middleName || ''
+                      }`}
                       maxWidth={140}
                     />
                   </Link>
                 ) : (
-                  <EclipsesTextcss str={`${props.name.lastName}, ${props.name.firstName} ${props.name.middleName || ''}`} maxWidth={300} />
+                  <EclipsesTextcss
+                    str={`${props.name.lastName}, ${props.name.firstName} ${
+                      props.name.middleName || ''
+                    }`}
+                    maxWidth={300}
+                  />
                 )}
               </React.Fragment>
             )}
@@ -239,7 +308,10 @@ function UserTable({ onActionSuccess }) {
           props.role?.name ? (
             <Tooltip body={props.role?.name}>
               <span className="ellipsis-center">
-                <Badge text={props.role?.name} type={getBackgroundColorByRole(props.role?.name)} />
+                <Badge
+                  text={props.role?.name}
+                  type={getBackgroundColorByRole(props.role?.name)}
+                />
               </span>
             </Tooltip>
           ) : (
@@ -248,7 +320,11 @@ function UserTable({ onActionSuccess }) {
       },
       {
         id: 'status',
-        name: <span className="statusCenter">{t('userManagement.table.status')}</span>,
+        name: (
+          <span className="statusCenter">
+            {t('userManagement.table.status')}
+          </span>
+        ),
         selector: () => {},
         sortable: true,
         sortKey: 'is_active',
@@ -257,7 +333,11 @@ function UserTable({ onActionSuccess }) {
         cell: (props) => (
           <div>
             {activeTab === 2 ? (
-              <Badge text="Pending" type="info-default" />
+              props.status == 'PENDING' ? (
+                <Badge text="PENDING" type="info-default" />
+              ) : (
+                <Badge text="REJECTED" type="error" />
+              )
             ) : props.isActive ? (
               <Badge text="Active" type="success" />
             ) : (
@@ -268,14 +348,22 @@ function UserTable({ onActionSuccess }) {
       },
       {
         id: 'dataAdded',
-        name: isSystemAdminView ? t('userManagement.table.dateAdded') : t('userManagement.table.dateAddedUpdated'),
-        selector: (row) => (isSystemAdminView ? row.updated_At : row.updated_At || row.created_At),
+        name: isSystemAdminView
+          ? t('userManagement.table.dateAdded')
+          : t('userManagement.table.dateAddedUpdated'),
+        selector: (row) =>
+          isSystemAdminView ? row.updated_At : row.updated_At || row.created_At,
         wrap: true,
         sortable: true,
         sortKey: isSystemAdminView ? 'created_At' : 'updated_At',
         minWidth: '100px',
         cell: (props) =>
-          CommonUtils.convertDateStringFormat(isSystemAdminView ? props.createdAt : props.updatedAt || props.createdAt, 'MM-DD-YYYY')
+          CommonUtils.convertDateStringFormat(
+            isSystemAdminView
+              ? props.createdAt
+              : props.updatedAt || props.createdAt,
+            'MM-DD-YYYY'
+          )
       },
       {
         id: 'dataUpdated',
@@ -285,7 +373,8 @@ function UserTable({ onActionSuccess }) {
         sortable: true,
         sortKey: 'updated_At',
         minWidth: '100px',
-        cell: (props) => CommonUtils.convertDateStringFormat(props.updatedAt, 'MM-DD-YYYY'),
+        cell: (props) =>
+          CommonUtils.convertDateStringFormat(props.updatedAt, 'MM-DD-YYYY'),
         omit: !isSystemAdminView
       },
       {
@@ -302,10 +391,14 @@ function UserTable({ onActionSuccess }) {
                   label: t('userManagement.table.action.review'),
                   value: 'review'
                 },
-                {
-                  label: t('userManagement.button.rejectrequest'),
-                  value: 'reject'
-                }
+                ...(row.status !== 'REJECTED'
+                  ? [
+                      {
+                        label: t('userManagement.button.rejectrequest'),
+                        value: 'reject'
+                      }
+                    ]
+                  : [])
               ]}
               aria-label="Order options"
             />
@@ -319,12 +412,23 @@ function UserTable({ onActionSuccess }) {
   return (
     <div>
       <TableHeading
-        heading={isSystemAdminView ? t('userManagement.table.systemadminlisting.label') : t('userManagement.table.userlisting.label')}
+        heading={
+          isSystemAdminView
+            ? t('userManagement.table.systemadminlisting.label')
+            : t('userManagement.table.userlisting.label')
+        }
         secondaryView={!!selectedRows}
         secondaryViewHeading={`1 ${t('userManagement.selected_items')}`}
         secondaryViewControls={
-          <Button variant="secondary" onClick={handleActivateDeactivate} disabled={selectedRows == currentUserId ? true : false}>
-            {t(selectedUserInfo?.isActive ? 'userManagement.button.deactivate' : 'userManagement.button.activate')}
+          <Button
+            variant="secondary"
+            onClick={handleActivateDeactivate}
+            disabled={selectedRows == currentUserId ? true : false}>
+            {t(
+              selectedUserInfo?.isActive
+                ? 'userManagement.button.deactivate'
+                : 'userManagement.button.activate'
+            )}
           </Button>
         }
         style={{ marginBottom: '16px' }}
@@ -354,7 +458,9 @@ function UserTable({ onActionSuccess }) {
             isLoading={isLoading}
             image={EmptyDataImage}
             heading={
-              isSystemAdminView ? t('userManagement.message.sysadminEmptyTableTitle') : t('userManagement.message.userEmptyTableTitle')
+              isSystemAdminView
+                ? t('userManagement.message.sysadminEmptyTableTitle')
+                : t('userManagement.message.userEmptyTableTitle')
             }
             description={
               isSystemAdminView
@@ -372,16 +478,29 @@ function UserTable({ onActionSuccess }) {
           modalTitle: t('userManagement.confirmationMessage'),
           modalBody: (
             <div className="MCP-modal-body">
-              <p>{t(selectedUserInfo?.isActive ? 'popup.userDeactivation.question' : 'popup.userActivation.question')}</p>
+              <p>
+                {t(
+                  selectedUserInfo?.isActive
+                    ? 'popup.userDeactivation.question'
+                    : 'popup.userActivation.question'
+                )}
+              </p>
             </div>
           ),
           modalFooter: (
             <React.Fragment>
-              <Button onClick={handleConfirmCancel} variant="secondary" size="md">
+              <Button
+                onClick={handleConfirmCancel}
+                variant="secondary"
+                size="md">
                 {t('userManagement.label.cancel')}
               </Button>
               <Button size="md" onClick={handleConfirmActivateDeactivate}>
-                {t(selectedUserInfo?.isActive ? 'userManagement.button.deactivate' : 'userManagement.button.activate')}
+                {t(
+                  selectedUserInfo?.isActive
+                    ? 'userManagement.button.deactivate'
+                    : 'userManagement.button.activate'
+                )}
               </Button>
             </React.Fragment>
           ),
