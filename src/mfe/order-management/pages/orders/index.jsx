@@ -21,7 +21,6 @@ import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import useOrderCount from './useOrderCount';
 import CommonUtils from '@src/util/CommonUtils';
-import useAssignee from './useAssignee';
 
 const OrderIndex = () => {
   const { t } = useTranslate();
@@ -49,28 +48,33 @@ const OrderIndex = () => {
 
   const orderCounts = useOrderCount();
   React.useEffect(() => {
-    if (_isOrderCountAdded) return;
-    const allTabs = getTabs();
-    allTabs.forEach((tab) => {
-      let countClass = '';
-      if ([ORDER_TABS.SUBMITTED_BUY_AND_BILL].includes(tab.id)) {
-        countClass = 'green';
-      } else if ([ORDER_TABS.SUBMITTED_SP].includes(tab.id)) {
-        countClass = 'green';
-      } else if ([ORDER_TABS.PENDING_SUBMISSION].includes(tab.id)) {
-        countClass = 'orange';
-      }
-      let orderCount = orderCounts?.[tab.id] || 0;
-      if (orderCount > 99) orderCount = '99+';
-      tab.configName = (
-        <div
-          className={`tab-count-header ${countClass}`}
-          data-label={orderCount}>
-          {t(tab.configName)}
-        </div>
-      );
-    });
-    setTabList(allTabs);
+    if (
+      !_isOrderCountAdded &&
+      orderCounts &&
+      CommonUtils.isNonEmptyObject(orderCounts)
+    ) {
+      const allTabs = getTabs();
+      allTabs.forEach((tab) => {
+        let countClass = '';
+        if ([ORDER_TABS.SUBMITTED_BUY_AND_BILL].includes(tab.id)) {
+          countClass = 'green';
+        } else if ([ORDER_TABS.SUBMITTED_SP].includes(tab.id)) {
+          countClass = 'green';
+        } else if ([ORDER_TABS.PENDING_SUBMISSION].includes(tab.id)) {
+          countClass = 'orange';
+        }
+        let orderCount = orderCounts?.[tab.id] || 0;
+        if (orderCount > 99) orderCount = '99+';
+        tab.configName = (
+          <div
+            className={`tab-count-header ${countClass}`}
+            data-label={orderCount}>
+            {t(tab.configName)}
+          </div>
+        );
+      });
+      setTabList(allTabs);
+    }
     if (orderCounts && CommonUtils.isNonEmptyObject(orderCounts)) {
       setIsOrderCountAdded(true);
     }
