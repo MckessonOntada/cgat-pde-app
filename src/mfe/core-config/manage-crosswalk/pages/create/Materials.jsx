@@ -66,7 +66,7 @@ const Materials = () => {
   const { t } = useTranslate();
   const { data } = useTable();
   const { pagination, changePage } = usePagination();
-  console.log(data);
+
   return (
     <div>
       <CustomDataTable

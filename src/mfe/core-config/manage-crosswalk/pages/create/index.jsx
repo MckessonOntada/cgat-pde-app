@@ -70,6 +70,9 @@ const CreateCrosswalk = () => {
                     <div className="MCP-module-body">
                       <div className="MCP-CardContainer"></div>
                       <Heading as="h3">{t('label.spProductListing')}</Heading>
+                      <TableProvider fetchFn={MaterialService.getMaterialList}>
+                        <Materials />
+                      </TableProvider>
                     </div>
                   </div>
                 </div>
