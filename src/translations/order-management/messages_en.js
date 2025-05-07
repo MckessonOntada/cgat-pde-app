@@ -544,7 +544,7 @@ export const MessageEn = {
   'message.acknowldge': 'Please acknowledge to Save and Continue',
   'errors.uq_template_name_lower': 'Template Name already exists',
   'messages.required_Details': 'Please select required details',
-  'labels.OrderProcesing': 'Order Processing',
+  'labels.OrderProcesing': 'Order Processing Status',
   'labels.OrderProcesing.SAPOrderStatus.Open': 'OPEN',
   'labels.OrderProcesing.SAPOrderStatus.Cancelled': 'CANCELLED',
   'labels.OrderProcesing.SAPOrderStatus.Completed': 'COMPLETED',
@@ -572,6 +572,15 @@ export const MessageEn = {
 
   'labels.pap': 'PAP',
   'labels.pap.order': 'PAP ORDER',
+
+  'labels.SubmittedBy': 'Submitted By',
+  'labels.SubmittedOn': 'Submitted On',
+  'labels.Approver_Name': 'Approver Name',
+  'labels.Approval_Date_and_Time': 'Approval Date and Time',
+  'labels.soldToAccountName': 'Sold to Account Name',
+  'labels.soldToAccountAddress': 'Sold to Account Address',
+  'labels.shipToAccountName': 'Ship to Account Name',
+  'labels.shipToAccountAddress': 'Ship to Account Address',
 
   'label.status.active': 'Active',
   'label.status.inactive': 'Inactive',
