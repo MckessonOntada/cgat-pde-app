@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import styles from './Summary.module.scss';
 import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg';
 import ModuleHeader from '@src/components/module-header';
@@ -16,7 +16,7 @@ import {
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import DetailSegment from '@src/components/DetailSegment';
 import { ORDER_STAGES } from '@src/mfe/order-management/routes/constants';
 import useAlert from '@src/hooks/useAlert';
@@ -43,6 +43,15 @@ import useTimedArray from './useTimedArray';
 import AttachmentCard from './AttachmentCard';
 import { getFullName } from '@src/util/CommonUtils';
 import { CHANNEL_TYPE } from '../Constants';
+import dayjs from 'dayjs';
+import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
+import {
+  TherapyDetailsConstantsForBB,
+  TherapyDetailsConstantsForSP
+} from '../therapy-selection/assets/constants/TherapyDetailsConstants';
+import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
+import { ConfigConstants } from '../../../system-configuration/manageMaterial/assets/constants/MaterialConstants';
+import SPMaterialDetails from '../../../system-configuration/manage-spmaterial/pages/SPMaterialDetails';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -100,9 +109,11 @@ const Summary = () => {
     status,
     paporder,
     payerDetails,
-    provider
+    provider,
+    submittedBy
   } = orderDetails || {};
 
+  const [openDetails, setOpenDetails] = React.useState(false);
   const spOrder =
     accountDetails?.soldToAccount?.channelType === 'SPECIALITY_PHARMA';
 
@@ -199,6 +210,10 @@ const Summary = () => {
       sapOrderStatusAlerts.forEach((item) => removeNotification(item.id));
     }
     retrySapOrderStatus();
+  };
+
+  const handleOpenDetails = (therapy) => {
+    setOpenDetails(true);
   };
 
   const variantDetails = additionalDetails?.variantDetails || {};
@@ -529,7 +544,7 @@ const Summary = () => {
   }
 
   if (patient.patientInfo)
-    patient.fullName = CommonUtils.getFullName(patient.patientInfo);
+    patient.fullName = CommonUtils.getUSFullName(patient.patientInfo);
 
   const isAgreed = agreeCheckboxOptions.isChecked,
     hideControls =
@@ -723,29 +738,69 @@ const Summary = () => {
             }
           />
           <div className={'MCP-module-body'}>
+            {(status === StatusEnum.SUBMITTED ||
+              status === StatusEnum.APPROVAL_PENDING) &&
+              ((spOrder && (submittedBy?.name || orderDetails?.submittedOn)) ||
+                (!spOrder &&
+                  (orderDetails?.approver || orderDetails?.submittedOn))) && (
+                <div className="MCP-CardContainer">
+                  <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-4 xl:grid-cols-4">
+                    {spOrder ? (
+                      <>
+                        <DetailSegment
+                          label={t('labels.SubmittedBy')}
+                          value={submittedBy?.name || '-'}
+                        />
+                        <DetailSegment
+                          label={t('labels.SubmittedOn')}
+                          value={
+                            orderDetails?.submittedOn
+                              ? dayjs(orderDetails.submittedOn).format(
+                                  'MM/DD/YYYY, HH:mm'
+                                )
+                              : '-'
+                          }
+                        />
+                      </>
+                    ) : (
+                      <>
+                        {orderDetails?.approver && (
+                          <DetailSegment
+                            label={t('labels.Approver_Name')}
+                            value={orderDetails.approver.name || '-'}
+                          />
+                        )}
+                        {orderDetails?.submittedOn && (
+                          <DetailSegment
+                            label={t('labels.Approval_Date_and_Time')}
+                            value={dayjs(orderDetails.submittedOn).format(
+                              'MM/DD/YYYY, HH:mm'
+                            )}
+                          />
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+
             <div className="MCP-CardContainer">
               <ModuleHeader
                 className={styles.panelHeader}
-                heading={<Heading as="h3">{t('labels.priceDetails')}</Heading>}
+                heading={<Heading as="h3">{t('labels.orderDetails')}</Heading>}
               />
               <div
                 className={`grid grid-gap-16 grid-cols-1 md:grid-cols-1 ${
                   status === StatusEnum.SUBMITTED
                     ? !spOrder
-                      ? 'lg:grid-cols-4 xl:grid-cols-4'
-                      : 'lg:grid-cols-3 xl:grid-cols-3'
+                      ? 'lg:grid-cols-3 xl:grid-cols-3'
+                      : 'lg:grid-cols-2 xl:grid-cols-2'
                     : 'lg:grid-cols-2 xl:grid-cols-2'
                 }`}>
                 {status === StatusEnum.SUBMITTED && !spOrder && (
                   <DetailSegment
                     label={t('labels.sapId')}
                     value={backendOrderId}
-                  />
-                )}
-                {status === StatusEnum.SUBMITTED && (
-                  <DetailSegment
-                    label={t(!spOrder ? 'labels.pdeId' : 'labels.orderId')}
-                    value={orderId}
                   />
                 )}
                 <DetailSegment
@@ -755,10 +810,19 @@ const Summary = () => {
                     <div className={styles.materialDescription}>
                       <div className="overflowing">
                         <Tooltip body={therapy?.materialDescription}>
-                          {therapy?.materialDescription}
+                          {!spOrder ? (
+                            <Link
+                              className="MCP-table-link"
+                              aria-label={t('labels.therapyDescription')}
+                              onClick={() => handleOpenDetails(therapy)}>
+                              {therapy?.materialDescription}
+                            </Link>
+                          ) : (
+                            therapy?.materialDescription
+                          )}
                         </Tooltip>
                       </div>
-                      {!spOrder && (
+                      {!spOrder && inventoryStatus && (
                         <Tooltip
                           isDisabled={!inventoryStatus}
                           body={t(
@@ -898,23 +962,27 @@ const Summary = () => {
                   <div
                     className={`grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2`}>
                     <DetailSegment
-                      label={t('labels.accountName')}
+                      label={t('labels.soldToAccountName')}
                       value={accountDetails?.soldToAccount?.accountName}
                     />
                     <DetailSegment
-                      label={t('labels.accountNo')}
-                      value={accountDetails?.soldToAccount?.accountNumber}
+                      label={t('labels.soldToAccountAddress')}
+                      value={CommonUtils.getDetailedAddress(
+                        accountDetails?.soldToAccount?.address
+                      )}
                     />
                     <DetailSegment
-                      label={t('labels.shippingAccountName')}
+                      label={t('labels.shipToAccountName')}
                       value={accountDetails?.shipToAccount?.accountName}
                     />
                     <DetailSegment
-                      label={t('labels.shippingAccountNo')}
+                      label={t('labels.shipToAccountAddress')}
                       value={
                         spOrder
                           ? accountDetails?.shipToAccount?.id
-                          : accountDetails?.shipToAccount?.accountNumber
+                          : CommonUtils.getDetailedAddress(
+                              accountDetails?.shipToAccount?.address
+                            )
                       }
                     />
                     <DetailSegment
@@ -1097,11 +1165,11 @@ const Summary = () => {
                       label={t('labels.name')}
                       value={
                         <Tooltip
-                          body={getFullName(
+                          body={CommonUtils.getUSFullName(
                             payerDetails?.primaryInsuranceCompany?.name || '-'
                           )}>
                           <span className="overflowing">
-                            {getFullName(
+                            {CommonUtils.getUSFullName(
                               payerDetails?.primaryInsuranceCompany?.name || '-'
                             )}
                           </span>
@@ -1346,6 +1414,25 @@ const Summary = () => {
         <PAPOrderTypeConfirmModal
           onClose={() => setIsPAPOrderConfirmModalOpen(false)}
           onSubmit={handleOnSubmitPapOrder}
+        />
+      )}
+
+      {openDetails && !spOrder && (
+        // (spOrder ? (
+        //   <SPMaterialDetails
+        //     openSPMaterialDetails={openDetails}
+        //     setOpenSPMaterialDetails={setOpenDetails}
+        //     viewSPMaterial={therapy}
+        //   />
+        // ) : (
+        <TherapyDetails
+          therapyId={therapy.materialNumber}
+          therapyData={TherapyDetailsConstantsForBB}
+          onClose={() => setOpenDetails(!openDetails)}
+          showFooter={false}
+          isMaterialConfiguration={true}
+          useMaterialService={true}
+          heading={t('labels.therapyDetails')}
         />
       )}
     </div>

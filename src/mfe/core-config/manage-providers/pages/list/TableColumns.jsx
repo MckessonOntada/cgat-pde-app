@@ -239,7 +239,7 @@ export const getColumns = (add) => {
           return (
             <Link
               className="MCP-table-link"
-              to={`${ROUTE_PATHS.VIEW}/${props.id}`}>
+              to={`${props.id}/${ROUTE_PATHS.VIEW}`}>
               <EclipsesTextcss str={linkText} maxWidth={130} />
             </Link>
           );

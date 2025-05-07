@@ -1,12 +1,5 @@
 @use "../../../../assets/styles/abstracts/mixins";
 
-.dashboard-container {
-  padding: var(--spacing-02);
-  display: grid;
-  gap: var(--spacing-01);
-  max-height: 100vh;
-}
-
 .userCardContainer {
   display: grid;
   gap: var(--spacing-04);
@@ -15,235 +8,83 @@
   border-radius: var(--brand-border-radius--6);
 }
 
-.userList {
-  overflow-x: auto; /* Enable horizontal scrolling */
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-  overflow-y: hidden;
-  white-space: nowrap;
-  // Hide scrollbar on non-mobile devices
-  scrollbar-width: thin;
-  &::-webkit-scrollbar {
-    display: none; /* For Chrome, Safari, and Opera */
-  }
+.view_label {
+  font-size: var(--brand-font-size--small);
+  line-height: var(--spacing-04);
+  color: #767e94; // Color is missing in Design System
 }
 
-.filterBox {
-  display: grid;
-  padding: var(--spacing-04);
-  border: 1px solid var(--brand-color-patient-primary-3);
-  border-radius: var(--brand-border-radius--6);
-}
-.toggle-container {
-  display: grid;
+.user-header {
+  display: flex;
   justify-content: space-between;
-  gap: var(--spacing-03);
   align-items: center;
-
-  @include mixins.respond("sm") {
-    display: flex;
-  }
 }
 
-.py4 {
-  padding-top: var(--spacing-04);
-  padding-bottom: var(--spacing-04);
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-02);
 }
 
-.py3 {
-  padding-top: var(--spacing-03);
-  padding-bottom: var(--spacing-03);
+.label-text {
+  font-size: var(--brand-font-size--default);
+  font-weight: var(--brand-font-weight-500);
+  line-height: var(--brand-line-height--large);
+
+  white-space: nowrap;
+  text-wrap: wrap;
+  word-break: break-word;
 }
 
 .py2 {
   padding-top: var(--spacing-02);
-  padding-bottom: var(--spacing-02);
 }
 
-.autoSuggestSearch-container {
-  width: 100%;
-  @include mixins.respond(lg) {
-    width: 460px;
-  }
-}
-
-.LabelBox {
-  @include mixins.respond(md) {
-    display: flex;
-    align-items: flex-end;
-    padding-bottom: var(--spacing-02);
-    gap: var(--spacing-04);
-  }
-}
-
-.filter-btn {
-  width: 100%;
-  @include mixins.respond(md) {
-    width: auto;
-  }
-}
-
-.txtbtn {
-  padding: var(--spacing-01);
-}
-
-.actionEditIcon {
-  color: var(--brand-color-primary);
-}
-
-.actionsBox {
+.user-status {
   display: flex;
   align-items: center;
-  justify-self: flex-end;
-  gap: var(--spacing-03);
-
-  @include mixins.respond(xs) {
-    justify-self: flex-start;
-  }
-
-  @include mixins.respond(lg) {
-    justify-self: flex-end;
-  }
+  gap: 10px;
 }
 
-.actionmenu {
-  position: relative;
-  overflow: visible;
+.userdetailsContainer {
+  display: grid;
+  gap: var(--spacing-04);
+  padding: var(--spacing-04);
+  border: 1px solid var(--brand-color-patient-primary-3);
+  border-radius: var(--brand-border-radius--6);
 }
 
-.display-block {
-  display: block;
-  width: 100%;
+.checkboxGroup fieldset div {
+  align-items: flex-start;
 }
 
-.right-aligned {
-  text-align: right;
-  justify-content: flex-end;
-}
-
-.toggle-box {
-  display: flex;
-  align-items: center;
-}
-
-.search-width {
-  width: 65rem;
-}
-
-.icon-align {
-  margin-right: var(--spacing-04);
-}
-
-.icon-color {
-  color: var(--brand-color-primary);
-}
-
-.button-icon svg {
-  width: 16px;
-  height: 16px;
-  margin-right: 2px;
-}
-
-.actionsBox > div > ul {
-  left: 10px;
-}
-
-.actionsBox > div > button {
-  border: none;
-  background: none;
-}
-
-.actionsBox > div > ul > li {
-  background: var(--brand-color-background-white);
-}
-
-.actionsBox > div > ul > li:hover {
-  background: var(--brand-color-secondary--hover);
-}
-
-.userCardContainer > div > nav > ul > li > button {
-  background: none;
-  border: none;
-}
-
-.expanded-content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-04, 32px);
-  margin-top: var(--spacing-04, 32px);
-}
-
-.cellEllipses {
-  width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-align: left;
+.checkboxGroup fieldset div input {
+  margin-top: 2px;
 }
 
 @media (max-width: 600px) {
-  [class^="CustomDataTable-module--d_flex--"] {
-    display: flex;
-    gap: var(--spacing-02);
-    flex-direction: row;
-    align-items: center;
+  .user-header {
+    flex-direction: column;
+    /* Stack items vertically */
+    align-items: flex-start;
+    /* Align items to the start for better readability */
+    gap: var(--spacing-03);
+    white-space: nowrap;
+  }
+
+  .user-info {
+    width: 100%;
+    /* Ensure items take full width if needed */
   }
 }
 
-.selected-item-alert {
-  display: flex;
-  margin-block: var(--spacing-02);
-  padding: var(--spacing-01);
-  border-radius: var(--brand-border-radius--3);
-  justify-content: space-between;
-  background-color: var(--brand-color-patient-primary-1);
-  padding: var(--spacing-02);
-  padding-inline: var(--spacing-04);
-  align-items: center;
+.lblStatus {
+  font-size: var(--brand-font-size--default);
+  font-weight: var(--brand-font-weight-400);
+  color: var(--brand-color-black);
+  padding-right: var(--spacing-03);
 }
 
-.selected-item-text {
-  font-size: 18px;
-}
-
-.title-style {
-  font-size: 28px;
-  font-weight: 600;
-}
-
-.upload-userBtn {
-  #ProgressButton-default {
-    height: var(--spacing-05) !important;
-    padding-left: 18px;
-    padding-right: 18px;
-    outline-offset: 0px;
-    border-radius: 6px;
-    outline: 2px solid var(--brand-color-primary-blue, #007cc1);
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
-  label {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    cursor: pointer !important;
-  }
-}
-
-.download-Icon {
-  height: var(--spacing-05) !important;
-  padding-left: 12px;
-  padding-right: 12px;
-  outline-offset: 0px;
-  border-radius: 6px;
-  outline: 2px solid var(--brand-color-primary-blue, #007cc1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-.ellipsis-center{
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.lblStatusDetails {
+  margin-top: var(--spacing-03);
 }

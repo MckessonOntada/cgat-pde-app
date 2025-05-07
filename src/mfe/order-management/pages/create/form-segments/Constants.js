@@ -35,3 +35,4 @@ export const FormList = (t) => [
     label: t('labels.summary')
   }
 ];
+export const PROGRAM_LIST = ['WAC', '340B', 'GOV'];

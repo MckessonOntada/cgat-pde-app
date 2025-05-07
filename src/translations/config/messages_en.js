@@ -33,7 +33,7 @@ export const ConfigurationMessagesEN = {
     'Failed to deactivate provider. Please try again.',
 
   'provider.name': 'Name',
-  'provider.address': 'Name',
+  'provider.address': 'Address',
   'provider.deaNumber': 'DEA Number',
   'provider.npiNumber': 'NPI Number',
   'provider.phoneNumber': 'Phone Number',
@@ -45,6 +45,7 @@ export const ConfigurationMessagesEN = {
   'provider.contactDetails': 'Contact Details',
   'provider.providerInformation': 'Provider Information',
   'provider.linkSpAccounts': 'Link SP Accounts',
+  'provider.linkedSpAccounts': 'Lined SP Accounts',
   'provider.btnCancel': 'Cancel',
   'provider.btnDeLink': 'Unlink',
   'provider.btnCreateProvider': 'Create Provider',

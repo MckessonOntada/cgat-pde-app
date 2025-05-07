@@ -13,7 +13,8 @@ import { DUE_STATUS } from '../invoices/InvoiceConstants';
 
 export default function PaymentHistory(params) {
   const { t } = useTranslate();
-  const { applyFilters, clearFilters, actualData, exportPDF } = usePaymentHistory();
+  const { applyFilters, clearFilters, actualData, exportPDF, data } =
+    usePaymentHistory();
 
   const [statusOptions, setStatusOptions] = useState([]);
   const [methodOptions, setMethodOptions] = useState([]);
@@ -28,7 +29,9 @@ export default function PaymentHistory(params) {
   }, [actualData]);
 
   const updateOptions = (key, setState) => {
-    let currentFilterData = [...new Set(actualData.map((e) => e[key]).filter((e) => e))];
+    let currentFilterData = [
+      ...new Set(actualData.map((e) => e[key]).filter((e) => e))
+    ];
     let _options = currentFilterData.map((item) => {
       return { value: item, label: item, isDisabled: false };
     });
@@ -63,8 +66,12 @@ export default function PaymentHistory(params) {
       {
         type: 'dateRangePicker',
         name: 'dateRange',
-        startDateLabel: t('paymentInvoices.pendingPayments.filter.initiationDateStart'),
-        endDateLabel: t('paymentInvoices.pendingPayments.filter.initiationDateEnd'),
+        startDateLabel: t(
+          'paymentInvoices.pendingPayments.filter.initiationDateStart'
+        ),
+        endDateLabel: t(
+          'paymentInvoices.pendingPayments.filter.initiationDateEnd'
+        ),
         minDate: dayjs().subtract(180, 'days').toDate(),
         maxDate: new Date()
       }
@@ -82,7 +89,9 @@ export default function PaymentHistory(params) {
         />
       </div>
       <ModuleHeader
-        heading={<Heading as="h2">{t('paymentInvoices.table.paymentHistory')}</Heading>}
+        heading={
+          <Heading as="h2">{t('paymentInvoices.table.paymentHistory')}</Heading>
+        }
         controls={
           <div className="table-header">
             <Button
@@ -90,6 +99,7 @@ export default function PaymentHistory(params) {
               onClick={() => {
                 exportPDF();
               }}
+              disabled={data.length === 0}
               size="sm">
               {t('paymentInvoices.CS.ExportExcel')}
             </Button>
