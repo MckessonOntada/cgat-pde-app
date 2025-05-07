@@ -44,7 +44,8 @@ const getColumns = ({ t, material, onChange = () => {} }) => {
       id: 'materialDescription',
       selector: (row) => row.materialDescription,
       wrap: true,
-      minWidth: '220px',
+      minWidth: '240px',
+      maxWidth: '240px',
       cell: (props) => (
         <div className="cellEllipse">{props?.materialDescription || '-'}</div>
       )
@@ -54,7 +55,8 @@ const getColumns = ({ t, material, onChange = () => {} }) => {
       id: 'ndcNumber',
       selector: (row) => row.ndcNumber,
       wrap: true,
-      minWidth: '214px',
+      minWidth: '140px',
+      maxWidth: '140px',
       cell: (props) => (
         <div className="cellEllipse">{props?.ndcNumber || '-'}</div>
       )

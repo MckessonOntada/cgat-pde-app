@@ -1,11 +1,42 @@
 .create-crosswalk-container {
     display: grid;
-    grid-template-columns: 3fr 1fr;
+    grid-template-columns: minmax(auto, 3fr) minmax(auto, 1fr);
+    width: 100%;
     gap: var(--spacing-03);
 
     .listing {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: var(--spacing-03)
+        grid-template-columns: minmax(auto, 1fr) minmax(auto, 1fr);
+        gap: var(--spacing-03);
+    }
+
+    .summary-wrapper {}
+}
+
+.bucket-list-wrapper {
+    min-width: 240px;
+    border: 1px solid var(--brand-color-grey-scale-cool-1);
+    background-color: var(--brand-color-background-white);
+    border-radius: var(--spacing-02);
+    overflow: hidden;
+
+    .list-header {
+        padding: 14px 16px;
+        height: 48px;
+        background-color: var(--brand-color-cool-grey-2);
+        font-size: var(--brand-font-size--default);
+        font-weight: var(--brand-font-weight-700);
+        color: var(--brand-color-background-dark-slate);
+
+    }
+
+    .list {
+        .item {
+            padding: 16px 12px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
     }
 }
