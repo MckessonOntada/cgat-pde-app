@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   Button,
   Heading,
@@ -38,6 +38,7 @@ import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import Components from '@src/components/form/Components';
 import { CHANNEL_TYPE } from '../Constants';
+import { FooterContext } from '@src/components/footer/FooterContext';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -57,6 +58,8 @@ function AdditionalDetails() {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
+  const { isFooterVisible } = useContext(FooterContext);
+
   const {
     isEdit = false,
     isApprover = false,
@@ -849,7 +852,9 @@ function AdditionalDetails() {
                 </div>
 
                 <div className="footer-wrapper">
-                  <div className="controls footer-controls">
+                  <div
+                    className="controls footer-controls"
+                    style={isFooterVisible}>
                     <Button
                       size="md"
                       variant="secondary"

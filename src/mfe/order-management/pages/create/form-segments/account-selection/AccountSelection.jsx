@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { Heading, Button } from '@mckesson/mcp-component-library';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from './AccountSelection.module.scss';
@@ -21,6 +21,7 @@ import useOrder from '../../../orders/useOrder';
 import { Loader } from '@mckesson/mcp-component-library';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
 import { CHANNEL_TYPE } from '../Constants';
+import { FooterContext } from '@src/components/footer/FooterContext';
 
 const AccountSelection = () => {
   const { t } = useTranslate();
@@ -28,6 +29,7 @@ const AccountSelection = () => {
   const navigate = useNavigate();
   const { orderId } = useParams();
   const location = useLocation();
+  const { isFooterVisible } = useContext(FooterContext);
   const {
     isEdit = false,
     isApprover = false,
@@ -77,7 +79,10 @@ const AccountSelection = () => {
     queryFn: async () =>
       OrderService.getSoldToAccounts(
         therapyId,
-        serializeParams({ query: accountSearchString, channelType : orderDetails?.accountDetails?.soldToAccount?.channelType })
+        serializeParams({
+          query: accountSearchString,
+          channelType: orderDetails?.accountDetails?.soldToAccount?.channelType
+        })
       ),
     enabled: !!therapyId && !!orderDetails.accountDetails.soldToAccount,
     refetchOnWindowFocus: false,
@@ -400,7 +405,7 @@ const AccountSelection = () => {
             )}
           </div>
           <div className="footer-wrapper">
-            <div className="controls footer-controls">
+            <div className="controls footer-controls" style={isFooterVisible}>
               <Button size="md" onClick={handleOnBack} variant="secondary">
                 {t('captions.btnBack')}
               </Button>

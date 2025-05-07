@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import styles from './Summary.module.scss';
 import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg';
 import ModuleHeader from '@src/components/module-header';
@@ -52,6 +52,7 @@ import {
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import { ConfigConstants } from '../../../system-configuration/manageMaterial/assets/constants/MaterialConstants';
 import SPMaterialDetails from '../../../system-configuration/manage-spmaterial/pages/SPMaterialDetails';
+import { FooterContext } from '@src/components/footer/FooterContext';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -81,6 +82,7 @@ const Summary = () => {
   const location = useLocation();
   const { orderId } = useParams();
   const { showAlert } = useAlert();
+  const { isFooterVisible } = useContext(FooterContext);
   const { data: orderDetails = {}, isLoader } = useOrder(orderId);
   const [isPAPOrderConfirmModalOpen, setIsPAPOrderConfirmModalOpen] =
     React.useState(false);
@@ -1395,7 +1397,7 @@ const Summary = () => {
             </div>
           )}
           <div className="footer-wrapper">
-            <div className="controls footer-controls">
+            <div className="controls footer-controls" style={isFooterVisible}>
               {getAllowedControls()}
             </div>
           </div>
