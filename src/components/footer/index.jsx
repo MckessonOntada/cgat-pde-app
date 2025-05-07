@@ -17,7 +17,6 @@ import useWindowSize from '@src/hooks/UseWindowSize';
 const Footer = () => {
   const { t } = useTranslate();
   const { setIsFooterVisible } = useContext(FooterContext);
-  // const windowSize =
 
   const {
     organization: { selectedOrganization }

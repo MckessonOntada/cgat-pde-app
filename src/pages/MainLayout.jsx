@@ -91,8 +91,7 @@ function MainLayout() {
                     <Route
                       path={`${AppRoutes.pathUserManagement}/*`}
                       element={
-                        <ProtectedRoute
-                          permissions={routePermissionConfig.users}>
+                        <ProtectedRoute permissions={routePermissionConfig.users}>
                           <UsersEntryPoint />
                         </ProtectedRoute>
                       }
@@ -109,10 +108,7 @@ function MainLayout() {
                           </ProtectedRoute>
                         }
                       />
-                      <Route
-                        path={'crosswalk/*'}
-                        element={<ManageCrossWalk />}
-                      />
+                      <Route path={'crosswalk/*'} element={<ManageCrossWalk />} />
 
                       <Route
                         path={'sp-catalog/*'}
@@ -180,10 +176,7 @@ function MainLayout() {
                         )
                       }
                     />
-                    <Route
-                      path="/account-setting"
-                      element={<AccountSetting />}
-                    />
+                    <Route path="/account-setting" element={<AccountSetting />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </div>
