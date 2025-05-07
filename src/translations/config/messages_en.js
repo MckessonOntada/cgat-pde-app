@@ -33,7 +33,7 @@ export const ConfigurationMessagesEN = {
     'Failed to deactivate provider. Please try again.',
 
   'provider.name': 'Name',
-  'provider.address': 'Name',
+  'provider.address': 'Address',
   'provider.deaNumber': 'DEA Number',
   'provider.npiNumber': 'NPI Number',
   'provider.phoneNumber': 'Phone Number',

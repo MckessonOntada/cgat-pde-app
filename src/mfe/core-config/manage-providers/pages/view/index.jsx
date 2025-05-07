@@ -148,6 +148,8 @@ const DetailsPanel = ({ details }) => {
       middleName: details.middleName,
       lastName: details.lastName
     }),
+    deaNumber: details.deaNumber,
+    npiNumber: details.npiNumber,
     address: CommonUtils.getAddress({
       address1: details.address1,
       address2: details.address2,
@@ -155,8 +157,6 @@ const DetailsPanel = ({ details }) => {
       state: details.state,
       zipCode: details.zipCode
     }),
-    deaNumber: details.deaNumber,
-    npiNumber: details.npiNumber,
     phoneNumber: details.phoneNumber
   };
 
