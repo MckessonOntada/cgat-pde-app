@@ -48,8 +48,7 @@ export const onConfirmPayment = (selectedAccount, state, payInvoices, t, selecte
     });
   }
 
-  if (state.creditsSelected && state.creditsSelected.length > 0) {
-    debugger;
+  if (state.creditsSelected && state.creditsSelected.length > 0) { 
     state.creditsSelected.map((item) => {
       payload.credits.push({
         billNumber: item.billNumber,
