@@ -241,6 +241,7 @@ export const MessageEn = {
   'labels.therapy.strength': 'Strength',
   'labels.therapy.dosage': 'Dosage',
   'labels.therapy.sellingUnitCode': 'Selling Unit Code',
+  'labels.therapy.manufacturerName': 'Manufacturer Name',
   'labels.therapy.vendorName': 'Vendor Name',
   'labels.therapy.upcCode': 'UPC Code',
   'labels.therapy.dropshipIndicator': 'Dropship Indicator',
