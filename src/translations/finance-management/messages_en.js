@@ -93,6 +93,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.CS.ExportExcel': 'Export Excel',
   'paymentInvoices.CS.table.billNumber': 'Bill No',
   'paymentInvoices.CS.table.accountnumber': 'Account Number',
+  'paymentInvoices.CS.table.customerStatementNumber': 'Customer Statement Number',
   'paymentInvoices.CS.table.date': 'Date',
   'paymentInvoices.CS.table.statementBalance': 'Statement Balance',
   'paymentInvoices.CS.table.actions': 'Action(s)',
