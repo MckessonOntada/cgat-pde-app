@@ -13,8 +13,10 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Link } from 'react-router-dom';
 import style from './style.module.scss';
+import { useGenericContext } from '../../config/GenericContext';
 
 const getColumns = ({ t, material, setMaterial }) => {
+  const { state, setValue } = useGenericContext();
   return [
     {
       id: 'id',
@@ -35,13 +37,11 @@ const getColumns = ({ t, material, setMaterial }) => {
                 value: props.id
               }
             ]}
-            onChangeValue={() => {
-              setMaterial(props);
-            }}
+            onChangeValue={() => setValue('material', props)}
             onOtherTextChange={() => {}}
             onSubRadioFieldChange={() => {}}
             radioBtnWidth="auto"
-            value={material?.id == props.id ? props.id : ''}
+            value={state.material?.id == props.id ? props.id : ''}
           />
         </div>
       )
@@ -77,7 +77,7 @@ const getColumns = ({ t, material, setMaterial }) => {
   ];
 };
 
-const Materials = ({ material, setMaterial }) => {
+const Materials = () => {
   const { t } = useTranslate();
   const { data } = useTable();
   const { pagination, changePage } = usePagination();
@@ -93,33 +93,35 @@ const Materials = ({ material, setMaterial }) => {
     }
   };
   return (
-    <div className={style['col']}>
-      <div className={`MCP-module-body ${style['header']}`}>
-        <div className="MCP-CardContainer">
-          <InputField
-            value={materialQuery}
-            errors={{}}
-            placeholder={'Search by Description, NDC'}
-            id="material-search-field"
-            name="materialQuery"
-            onBlurFn={() => {}}
-            onChangeFn={() => {}}
-            onInputBlur={() => {}}
-            onInputChange={handleOnChange}
-            preventCharacters={[]}
-            register={() => {}}
-            tooltipText="Search Material"
-            useRegister={false}
-            validationFn={() => {}}
-          />
+    <React.Fragment>
+      <div className={style['grid-item']}>
+        <div className={`MCP-module-body ${style['header']}`}>
+          <div className="MCP-CardContainer">
+            <InputField
+              value={materialQuery}
+              errors={{}}
+              placeholder={'Search by Description, NDC'}
+              id="material-search-field"
+              name="materialQuery"
+              onBlurFn={() => {}}
+              onChangeFn={() => {}}
+              onInputBlur={() => {}}
+              onInputChange={handleOnChange}
+              preventCharacters={[]}
+              register={() => {}}
+              tooltipText="Search Material"
+              useRegister={false}
+              validationFn={() => {}}
+            />
+          </div>
+          <Heading as="h3">{t('label.materialListing')}</Heading>
         </div>
-        <Heading as="h3">{t('label.materialListing')}</Heading>
       </div>
-      <div className={`${style['body']}`}>
+      <div className={style['grid-item']}>
         <CustomDataTable
           id="manage-material-table"
           type="normal"
-          columns={getColumns({ t, material, setMaterial })}
+          columns={getColumns({ t })}
           data={data}
           currentPage={pagination.pageNo}
           totalPageCount={pagination.totalPages}
@@ -138,7 +140,7 @@ const Materials = ({ material, setMaterial }) => {
           defaultExpandedCardView={true}
         />
       </div>
-    </div>
+    </React.Fragment>
   );
 };
 

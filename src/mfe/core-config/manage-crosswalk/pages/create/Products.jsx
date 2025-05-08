@@ -2,26 +2,26 @@ import React from 'react';
 import {
   useFilters,
   usePagination,
-  useSelection,
   useTable
 } from '@src/mfe/core-config/manage-providers/context/TableContext';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { useTranslate } from '@src/translations/useTranslation';
-import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
-import { InputField, Heading, Button } from '@mckesson/mcp-component-library';
+import { InputField, Heading } from '@mckesson/mcp-component-library';
 import Summary from './Summary';
 import style from './style.module.scss';
-import CommonUtils from '@src/util/CommonUtils';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import SPMaterialDetails from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/pages/SPMaterialDetails';
+import { useGenericContext } from '../../config/GenericContext';
 
-const getColumns = ({ t, pagination, data }) => {
-  const { selectedRows, setSelection } = useSelection();
-  const alteredSelectedRows = [
-    ...Array.from(selectedRows).map((val) => ({
-      id: val
-    }))
-  ];
+const getColumns = ({ t }) => {
+  const { state, setValue } = useGenericContext();
+  const { pagination } = usePagination();
+  const { data } = useTable();
+  const onSelectProduct = (products) => {
+    setValue('selectedProducts', products);
+  };
+
   return [
     {
       id: 'checkbox',
@@ -30,8 +30,8 @@ const getColumns = ({ t, pagination, data }) => {
         data,
         'id',
         pagination,
-        alteredSelectedRows,
-        setSelection
+        state.selectedProducts || [],
+        onSelectProduct
       ),
       cell: (row, index) =>
         renderTableCheckBox(
@@ -39,8 +39,8 @@ const getColumns = ({ t, pagination, data }) => {
           data,
           'id',
           pagination,
-          alteredSelectedRows,
-          setSelection
+          state.selectedProducts || [],
+          onSelectProduct
         ),
       selector: (row) => row.materialNumber,
       width: '50px',
@@ -73,13 +73,16 @@ const getColumns = ({ t, pagination, data }) => {
   ];
 };
 
-const Products = ({ setSelection, selection }) => {
+const Products = () => {
   const { t } = useTranslate();
   const { data } = useTable();
+  const navigate = useNavigate();
   const { pagination, changePage } = usePagination();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const catalog = searchParams.get('catalog');
   const [spProductQuery, setSpProductQuery] = React.useState(null);
   const { applyFilters } = useFilters();
-  const { selectedRows } = useSelection();
   const handleOnChange = (event) => {
     const value = event.target.value;
     if (value !== null || value !== undefined) {
@@ -91,15 +94,18 @@ const Products = ({ setSelection, selection }) => {
     }
   };
 
-  const handleOnLinkMaterials = () => {
-    const materials = data.filter((item) =>
-      Array.from(selectedRows).includes(item.id)
-    );
-    setSelection(materials);
+  const handleOnDetailsPanelClose = () => {
+    const params = new URLSearchParams(location.search);
+    params.delete('catalog');
+
+    const newSearch = params.toString();
+    navigate(`${location.pathname}${newSearch ? `?${newSearch}` : ''}`, {
+      replace: true
+    });
   };
   return (
     <React.Fragment>
-      <div className={style['col']}>
+      <div className={style['grid-item']}>
         <div className={`MCP-module-body ${style['header']}`}>
           <div className="MCP-CardContainer">
             <InputField
@@ -121,53 +127,44 @@ const Products = ({ setSelection, selection }) => {
           </div>
           <Heading as="h3">{t('label.spProductListing')}</Heading>
         </div>
-        <div className={`${style['body']}`}>
-          <CustomDataTable
-            siblingBreakpoint="md"
-            totalCount={5}
-            id="manage-material-table"
-            type="normal"
-            columns={getColumns({
-              t,
-              pagination,
-              selectedMaterials: [],
-              setSelectedMaterials: () => {},
-              data
-            })}
-            data={data}
-            currentPage={pagination.pageNo}
-            totalPageCount={pagination.totalPages}
-            pagination={true}
-            totalRocords={pagination.totalElements}
-            handleChangePage={(_event, pageNumber) => changePage(pageNumber)}
-            recordsPerPage={pagination.pageSize}
-            paginationTotalRecorsMessage={t(
-              'manageMaterial.table.pagination.totalRecords'
-            )}
-            paginationRecordsPerPageMessage={t(
-              'manageMaterial.table.pagination.perPage'
-            )}
-            responsive={true}
-            showCardView={false}
-            defaultExpandedCardView={true}
-          />
-        </div>
       </div>
-      <div className={`${style['col']} ${style['summary-wrapper']}`}>
-        <div className={`MCP-module-body ${style['header']}`}>
-          <div></div>
-        </div>
-        <div className={`MCP-module-body ${style['body']}`}>
-          <Summary items={selection} />
-          <div className="controls">
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={handleOnLinkMaterials}>
-              Link Materials
-            </Button>
-          </div>
-        </div>
+      <div className={style['grid-item']}>
+        <CustomDataTable
+          siblingBreakpoint="md"
+          totalCount={5}
+          id="manage-material-table"
+          type="normal"
+          columns={getColumns({
+            t,
+            pagination,
+            selectedMaterials: [],
+            setSelectedMaterials: () => {},
+            data
+          })}
+          data={data}
+          currentPage={pagination.pageNo}
+          totalPageCount={pagination.totalPages}
+          pagination={true}
+          totalRocords={pagination.totalElements}
+          handleChangePage={(_event, pageNumber) => changePage(pageNumber)}
+          recordsPerPage={pagination.pageSize}
+          paginationTotalRecorsMessage={t(
+            'manageMaterial.table.pagination.totalRecords'
+          )}
+          paginationRecordsPerPageMessage={t(
+            'manageMaterial.table.pagination.perPage'
+          )}
+          responsive={true}
+          showCardView={false}
+          defaultExpandedCardView={true}
+        />
+        {catalog && (
+          <SPMaterialDetails
+            openSPMaterialDetails={true}
+            setOpenSPMaterialDetails={handleOnDetailsPanelClose}
+            viewSPMaterial={data.find((item) => item.id == catalog)}
+          />
+        )}
       </div>
     </React.Fragment>
   );

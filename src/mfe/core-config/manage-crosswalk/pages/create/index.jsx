@@ -19,6 +19,7 @@ import {
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import SPCrosswalkService from '@src/api/commonService/SPCrosswalkService';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
+import Summary from './Summary';
 
 const CreateCrosswalk = () => {
   const navigate = useNavigate();
@@ -26,7 +27,6 @@ const CreateCrosswalk = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const material = searchParams.get('material');
-  const catalog = searchParams.get('material');
   const dispatch = useDispatch();
   const [selectedMaterial, setSelectedMaterial] = React.useState(null);
   const [selectedItems, setSelectedItems] = React.useState([]);
@@ -53,6 +53,8 @@ const CreateCrosswalk = () => {
               type: 'success',
               description: `${response.data} new crosswalk linked`
             });
+            setSelectedMaterial(null);
+            setSelectedItems([]);
           }
         })
         .catch((error) => {
@@ -98,7 +100,6 @@ const CreateCrosswalk = () => {
   const handleOnDetailsPanelClose = () => {
     const params = new URLSearchParams(location.search);
     params.delete('material');
-    params.delete('catalog');
 
     const newSearch = params.toString();
     navigate(`${location.pathname}${newSearch ? `?${newSearch}` : ''}`, {
@@ -137,28 +138,27 @@ const CreateCrosswalk = () => {
             })}
           </div>
         )}
-        <div className="MCP-CardContainer">
-          <div className={style['create-crosswalk-container']}>
-            <div className={style['listing']}>
-              <TableProvider fetchFn={MaterialService.getMaterialList}>
-                <Materials
-                  material={selectedMaterial}
-                  setMaterial={setSelectedMaterial}
-                />
-              </TableProvider>
 
-              <TableProvider
-                defaultFilters={{
-                  channelTypes: CHANNEL_TYPE.SPECIALTY_PHARMA,
-                  showNonCrosswalked: true
-                }}
-                fetchFn={MaterialService.getMaterialList}>
-                <Products
-                  selection={selectedItems}
-                  setSelection={setSelectedItems}
-                />
-              </TableProvider>
-            </div>
+        <div className="MCP-CardContainer">
+          <div className={style['grid-container']}>
+            <TableProvider fetchFn={MaterialService.getMaterialList}>
+              <Materials
+                material={selectedMaterial}
+                setMaterial={setSelectedMaterial}
+              />
+            </TableProvider>
+            <TableProvider
+              defaultFilters={{
+                channelTypes: CHANNEL_TYPE.SPECIALTY_PHARMA,
+                showNonCrosswalked: true
+              }}
+              fetchFn={MaterialService.getMaterialList}>
+              <Products
+                selection={selectedItems}
+                setSelection={setSelectedItems}
+              />
+            </TableProvider>
+            <Summary />
           </div>
         </div>
         <div className="controls">
@@ -171,18 +171,6 @@ const CreateCrosswalk = () => {
         </div>
 
         {material && (
-          <TherapyDetails
-            therapyId={material}
-            therapyData={MaterialDetailsConstants}
-            configurationData={ConfigConstants}
-            onClose={handleOnDetailsPanelClose}
-            showFooter={false}
-            isMaterialConfiguration={true}
-            useMaterialService={true}
-            heading={t('manageMaterial.drawer.heading')}
-          />
-        )}
-        {catalog && (
           <TherapyDetails
             therapyId={material}
             therapyData={MaterialDetailsConstants}
