@@ -27,7 +27,7 @@ import { FooterContext } from '@src/components/footer/FooterContext';
 
 function TherapySelection() {
   const { t } = useTranslate();
-  const { isFooterVisible } = useContext(FooterContext);
+  const { controlRef } = useContext(FooterContext);
   const navigate = useNavigate();
   const location = useLocation();
   const { orderId } = useParams();
@@ -228,8 +228,8 @@ function TherapySelection() {
             )}
             <TherapyDataTable therapy={therapy} onChange={setTherapy} />
           </div>
-          <div className="footer-wrapper">
-            <div className="controls footer-controls" style={isFooterVisible}>
+          <div className="footer-wrapper" ref={controlRef}>
+            <div className="controls footer-controls">
               <Button size="md" variant="secondary" onClick={handleCancel}>
                 {t('captions.btnCancel')}
               </Button>

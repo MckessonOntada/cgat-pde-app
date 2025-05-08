@@ -25,7 +25,7 @@ const OrderStatus = () => {
     isLoader
   } = useOrder(orderId);
   const contentRef = useRef(null);
-  const { isFooterVisible } = useContext(FooterContext);
+  const { controlRef } = useContext(FooterContext);
 
   const printPage = useCustomPrint(
     contentRef,
@@ -179,8 +179,8 @@ const OrderStatus = () => {
           />
         )}
       </div>
-      <div className="footer-wrapper">
-        <div className={'controls footer-controls'} style={isFooterVisible}>
+      <div className="footer-wrapper" ref={controlRef}>
+        <div className={'controls footer-controls'}>
           <Button size="md" variant="secondary" onClick={() => printPage()}>
             {t('captions.btnPrintSummary')}
           </Button>

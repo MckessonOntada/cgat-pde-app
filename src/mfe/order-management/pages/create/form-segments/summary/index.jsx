@@ -82,7 +82,7 @@ const Summary = () => {
   const location = useLocation();
   const { orderId } = useParams();
   const { showAlert } = useAlert();
-  const { isFooterVisible } = useContext(FooterContext);
+  const { controlRef } = useContext(FooterContext);
   const { data: orderDetails = {}, isLoader } = useOrder(orderId);
   const [isPAPOrderConfirmModalOpen, setIsPAPOrderConfirmModalOpen] =
     React.useState(false);
@@ -1396,8 +1396,8 @@ const Summary = () => {
               />
             </div>
           )}
-          <div className="footer-wrapper">
-            <div className="controls footer-controls" style={isFooterVisible}>
+          <div className="footer-wrapper" ref={controlRef}>
+            <div className="controls footer-controls">
               {getAllowedControls()}
             </div>
           </div>

@@ -29,7 +29,7 @@ const AccountSelection = () => {
   const navigate = useNavigate();
   const { orderId } = useParams();
   const location = useLocation();
-  const { isFooterVisible } = useContext(FooterContext);
+  const { controlRef } = useContext(FooterContext);
   const {
     isEdit = false,
     isApprover = false,
@@ -404,8 +404,8 @@ const AccountSelection = () => {
               </ShippingAddressProvider>
             )}
           </div>
-          <div className="footer-wrapper">
-            <div className="controls footer-controls" style={isFooterVisible}>
+          <div className="footer-wrapper" ref={controlRef}>
+            <div className="controls footer-controls">
               <Button size="md" onClick={handleOnBack} variant="secondary">
                 {t('captions.btnBack')}
               </Button>

@@ -16,26 +16,9 @@ import useWindowSize from '@src/hooks/UseWindowSize';
 
 const Footer = () => {
   const { t } = useTranslate();
-  const { setIsFooterVisible } = useContext(FooterContext);
-
-  const {
-    organization: { selectedOrganization }
-  } = useSessionFeatures();
-  const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const { data: organizationLogo } = CommonDataService.useOrganizationLogo(
-    selectedOrganization.logoUrl,
-    selectedOrganization.id
-  );
+  const { controlRef } = useContext(FooterContext);
+  
   const isMobileView = window.innerWidth <= 576;
-
-  const styleNonStickey = {
-    position: 'absolute',
-    bottom: '-42px',
-    boxShadow: '0px -8px 16px -4px #262c3633'
-  };
-  const styleStickey = {
-    position: 'fixed'
-  };
 
   const { data: footerData } = useQuery({
     queryKey: ['globalFooterLinks'],
@@ -45,9 +28,8 @@ const Footer = () => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsFooterVisible(
-          !entry.isIntersecting ? styleStickey : styleNonStickey
-        );
+        controlRef.current.classList.add(!entry.isIntersecting ? 'styleStickey' : 'styleNonStickey')
+        controlRef.current.classList.remove(!entry.isIntersecting ? 'styleNonStickey' : 'styleStickey')
       },
       {
         root: null,
@@ -57,8 +39,6 @@ const Footer = () => {
 
     if (isMobileView) {
       observer.observe(footerRef.current);
-    } else {
-      setIsFooterVisible({});
     }
 
     return () => {

@@ -57,7 +57,7 @@ const PatientDetails = () => {
   const { orderId } = useParams();
   const navigate = useNavigate();
   const alertContainerId = 'patintDetails-alert-container';
-  const { isFooterVisible } = useContext(FooterContext);
+  const { controlRef } = useContext(FooterContext);
   const { showAlert } = useAlert();
   const location = useLocation();
   const {
@@ -405,10 +405,9 @@ const PatientDetails = () => {
                       )}
                     </div>
                   </div>
-                  <div className="footer-wrapper">
+                  <div className="footer-wrapper" ref={controlRef}>
                     <div
-                      className="controls footer-controls"
-                      style={isFooterVisible}>
+                      className="controls footer-controls">
                       <Button
                         size="md"
                         variant="secondary"

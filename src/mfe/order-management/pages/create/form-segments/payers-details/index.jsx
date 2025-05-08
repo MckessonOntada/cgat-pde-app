@@ -57,7 +57,7 @@ const PayerDetails = () => {
   const { orderId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { isFooterVisible } = useContext(FooterContext);
+  const { controlRef } = useContext(FooterContext);
   const { isApprover = false } = location.state || {};
   const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } =
     useOrder(orderId);
@@ -263,8 +263,8 @@ const PayerDetails = () => {
                     )}
                   </div>
                 </div>
-                <div className="footer-wrapper">
-                  <div className="controls footer-controls" style={isFooterVisible}>
+                <div className="footer-wrapper" ref={controlRef}>
+                  <div className="controls footer-controls">
                     <Button
                       size="md"
                       variant="secondary"
