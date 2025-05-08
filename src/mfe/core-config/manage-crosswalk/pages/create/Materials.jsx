@@ -1,13 +1,20 @@
 import React from 'react';
 import {
+  useFilters,
   usePagination,
   useTable
 } from '@src/mfe/core-config/manage-providers/context/TableContext';
-import { RadioGroup } from '@mckesson/mcp-component-library';
+import {
+  RadioGroup,
+  InputField,
+  Heading
+} from '@mckesson/mcp-component-library';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { useTranslate } from '@src/translations/useTranslation';
+import { Link } from 'react-router-dom';
+import style from './style.module.scss';
 
-const getColumns = ({ t, material, onChange = () => {} }) => {
+const getColumns = ({ t, material, setMaterial }) => {
   return [
     {
       id: 'id',
@@ -29,7 +36,7 @@ const getColumns = ({ t, material, onChange = () => {} }) => {
               }
             ]}
             onChangeValue={() => {
-              onChange(props);
+              setMaterial(props);
             }}
             onOtherTextChange={() => {}}
             onSubRadioFieldChange={() => {}}
@@ -46,8 +53,14 @@ const getColumns = ({ t, material, onChange = () => {} }) => {
       wrap: true,
       minWidth: '240px',
       maxWidth: '240px',
+      sortable: true,
+      sortKey: 'materialDescription',
       cell: (props) => (
-        <div className="cellEllipse">{props?.materialDescription || '-'}</div>
+        <Link
+          to={`?material=${props.materialNumber}`}
+          className="MCP-table-link">
+          {props?.materialDescription || '-'}
+        </Link>
       )
     },
     {
@@ -64,34 +77,67 @@ const getColumns = ({ t, material, onChange = () => {} }) => {
   ];
 };
 
-const Materials = () => {
+const Materials = ({ material, setMaterial }) => {
   const { t } = useTranslate();
   const { data } = useTable();
   const { pagination, changePage } = usePagination();
-
+  const { applyFilters } = useFilters();
+  const [materialQuery, setMaterialQuery] = React.useState(null);
+  const handleOnChange = (event) => {
+    const value = event.target.value;
+    if (value !== null || value !== undefined) {
+      setMaterialQuery(value);
+      applyFilters({
+        query: value
+      });
+    }
+  };
   return (
-    <div>
-      <CustomDataTable
-        id="manage-material-table"
-        type="normal"
-        columns={getColumns({ t, onChange: () => {} })}
-        data={data}
-        currentPage={pagination.pageNo}
-        totalPageCount={pagination.totalPages}
-        pagination={true}
-        totalRocords={pagination.totalElements}
-        handleChangePage={(_event, pageNumber) => changePage(pageNumber)}
-        recordsPerPage={pagination.pageSize}
-        paginationTotalRecorsMessage={t(
-          'manageMaterial.table.pagination.totalRecords'
-        )}
-        paginationRecordsPerPageMessage={t(
-          'manageMaterial.table.pagination.perPage'
-        )}
-        responsive={true}
-        showCardView={false}
-        defaultExpandedCardView={true}
-      />
+    <div className={style['col']}>
+      <div className={`MCP-module-body ${style['header']}`}>
+        <div className="MCP-CardContainer">
+          <InputField
+            value={materialQuery}
+            errors={{}}
+            placeholder={'Search by Description, NDC'}
+            id="material-search-field"
+            name="materialQuery"
+            onBlurFn={() => {}}
+            onChangeFn={() => {}}
+            onInputBlur={() => {}}
+            onInputChange={handleOnChange}
+            preventCharacters={[]}
+            register={() => {}}
+            tooltipText="Search Material"
+            useRegister={false}
+            validationFn={() => {}}
+          />
+        </div>
+        <Heading as="h3">{t('label.materialListing')}</Heading>
+      </div>
+      <div className={`${style['body']}`}>
+        <CustomDataTable
+          id="manage-material-table"
+          type="normal"
+          columns={getColumns({ t, material, setMaterial })}
+          data={data}
+          currentPage={pagination.pageNo}
+          totalPageCount={pagination.totalPages}
+          pagination={true}
+          totalRocords={pagination.totalElements}
+          handleChangePage={(_event, pageNumber) => changePage(pageNumber)}
+          recordsPerPage={pagination.pageSize}
+          paginationTotalRecorsMessage={t(
+            'manageMaterial.table.pagination.totalRecords'
+          )}
+          paginationRecordsPerPageMessage={t(
+            'manageMaterial.table.pagination.perPage'
+          )}
+          responsive={true}
+          showCardView={false}
+          defaultExpandedCardView={true}
+        />
+      </div>
     </div>
   );
 };

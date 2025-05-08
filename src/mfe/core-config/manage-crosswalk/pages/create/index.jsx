@@ -1,43 +1,62 @@
 import React from 'react';
-import { Button, Heading } from '@mckesson/mcp-component-library';
+import { Button, Alert } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import PageHeader from '@src/components/pageHeader';
 import style from './style.module.scss';
-import { Form, Formik } from 'formik';
-import * as Yup from 'yup';
 import { TableProvider } from '@src/mfe/core-config/manage-providers/context/TableContext';
 import MaterialService from '@src/api/commonService/MaterialService';
 import Materials from './Materials';
 import Products from './Products';
-import { ChannelType } from '@src/mfe/order-management/pages/system-configuration/manage-spaccount/util';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
-import Summary from './Summary';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
-
-const INITIAL_STATE = {
-  material: '',
-  spProduct: ''
-};
-
-const VALIDATION_SCHEMA = Yup.object().shape({
-  material: Yup.string().nullable(),
-  spProduct: Yup.string().nullable()
-});
+import {
+  ConfigConstants,
+  MaterialDetailsConstants
+} from '@src/mfe/order-management/pages/system-configuration/manageMaterial/assets/constants/MaterialConstants';
+import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
+import SPCrosswalkService from '@src/api/commonService/SPCrosswalkService';
+import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 
 const CreateCrosswalk = () => {
   const navigate = useNavigate();
   const { t } = useTranslate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const material = searchParams.get('material');
+  const catalog = searchParams.get('material');
   const dispatch = useDispatch();
-  const [formState, setForState] = React.useState(INITIAL_STATE);
-  const [schema, setSchema] = React.useState(VALIDATION_SCHEMA);
-  const [material, setMaterial] = React.useState(null);
-  const [spProduct, setSpProduct] = React.useState(null);
+  const [selectedMaterial, setSelectedMaterial] = React.useState(null);
+  const [selectedItems, setSelectedItems] = React.useState([]);
+  const {
+    items: notifications,
+    add: addNotification,
+    remove: removeNotification
+  } = useTimedArray(10000);
 
-  const handleOnSubmit = () => {};
+  React.useState(() => {});
+
   const handleOnLinkMaterial = () => {};
+  const handleOnSubmit = () => {
+    if (selectedMaterial && selectedItems.length > 0) {
+      const payload = {
+        bnbMaterialNumber: selectedMaterial.materialNumber,
+        spProductIds: selectedItems.map((item) => item.materialNumber)
+      };
+
+      SPCrosswalkService.createCrosswalk(payload)
+        .then((response) => {})
+        .catch((error) => {
+          addNotification({
+            type: 'error',
+            description: error.message,
+            isSticky: true
+          });
+        });
+    }
+  };
   const confirmLinkMaterials = () => {
     const state = {
       title: 'Confirmation',
@@ -58,7 +77,7 @@ const CreateCrosswalk = () => {
             size="md"
             variant="primary"
             onClick={() => {
-              handleOnConfirmation(id);
+              handleOnSubmit();
               dispatch(closeModal());
             }}>
             {t('button.caption.yes')}
@@ -67,6 +86,17 @@ const CreateCrosswalk = () => {
       )
     };
     dispatch(openModal(state));
+  };
+
+  const handleOnDetailsPanelClose = () => {
+    const params = new URLSearchParams(location.search);
+    params.delete('material');
+    params.delete('catalog');
+
+    const newSearch = params.toString();
+    navigate(`${location.pathname}${newSearch ? `?${newSearch}` : ''}`, {
+      replace: true
+    });
   };
 
   return (
@@ -86,62 +116,43 @@ const CreateCrosswalk = () => {
           heading={t('label.createCrosswalk')}
           subheading={t('label.createCrosswalkSubtitle')}
         />
-        <Formik
-          initialValues={formState}
-          validationSchema={schema}
-          enableReinitialize={true}
-          onSubmit={handleOnSubmit}>
-          <Form>
-            <div className="MCP-CardContainer">
-              <div className={style['create-crosswalk-container']}>
-                <div className={style['listing']}>
-                  <div className={style['col']}>
-                    <div className="MCP-module-body">
-                      <div className="MCP-CardContainer"></div>
-                      <Heading as="h3">{t('label.materialListing')}</Heading>
-                    </div>
-                  </div>
-                  <div className={style['col']}>
-                    <div className="MCP-module-body">
-                      <div className="MCP-CardContainer"></div>
-                      <Heading as="h3">{t('label.spProductListing')}</Heading>
-                    </div>
-                  </div>
-                </div>
-                <div className="MCP-module-body"></div>
-              </div>
-              <div className={style['create-crosswalk-container']}>
-                <div className={style['listing']}>
-                  <div className={style['col']}>
-                    <TableProvider fetchFn={MaterialService.getMaterialList}>
-                      <Materials />
-                    </TableProvider>
-                  </div>
-                  <div className={style['col']}>
-                    <TableProvider
-                      defaultFilters={{
-                        channelTypes: CHANNEL_TYPE.SPECIALTY_PHARMA
-                      }}
-                      fetchFn={MaterialService.getMaterialList}>
-                      <Products />
-                    </TableProvider>
-                  </div>
-                </div>
-                <div className={`MCP-module-body ${style['summary-wrapper']}`}>
-                  <Summary />
-                  <div className="controls">
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={handleOnLinkMaterial}>
-                      Link Materials
-                    </Button>
-                  </div>
-                </div>
-              </div>
+        {notifications && notifications.length > 0 && (
+          <div className="MCP-module-body">
+            {notifications.map((item, index) => {
+              return (
+                <Alert
+                  key={item.id}
+                  description={item.description}
+                  onClose={() => removeNotification(item.id)}
+                  type={item.type}
+                />
+              );
+            })}
+          </div>
+        )}
+        <div className="MCP-CardContainer">
+          <div className={style['create-crosswalk-container']}>
+            <div className={style['listing']}>
+              <TableProvider fetchFn={MaterialService.getMaterialList}>
+                <Materials
+                  material={selectedMaterial}
+                  setMaterial={setSelectedMaterial}
+                />
+              </TableProvider>
+
+              <TableProvider
+                defaultFilters={{
+                  channelTypes: CHANNEL_TYPE.SPECIALTY_PHARMA
+                }}
+                fetchFn={MaterialService.getMaterialList}>
+                <Products
+                  selection={selectedItems}
+                  setSelection={setSelectedItems}
+                />
+              </TableProvider>
             </div>
-          </Form>
-        </Formik>
+          </div>
+        </div>
         <div className="controls">
           <Button size="md" variant="secondary">
             Cancel
@@ -150,6 +161,31 @@ const CreateCrosswalk = () => {
             Submit
           </Button>
         </div>
+
+        {material && (
+          <TherapyDetails
+            therapyId={material}
+            therapyData={MaterialDetailsConstants}
+            configurationData={ConfigConstants}
+            onClose={handleOnDetailsPanelClose}
+            showFooter={false}
+            isMaterialConfiguration={true}
+            useMaterialService={true}
+            heading={t('manageMaterial.drawer.heading')}
+          />
+        )}
+        {catalog && (
+          <TherapyDetails
+            therapyId={material}
+            therapyData={MaterialDetailsConstants}
+            configurationData={ConfigConstants}
+            onClose={handleOnDetailsPanelClose}
+            showFooter={false}
+            isMaterialConfiguration={true}
+            useMaterialService={true}
+            heading={t('manageMaterial.drawer.heading')}
+          />
+        )}
       </div>
     </div>
   );

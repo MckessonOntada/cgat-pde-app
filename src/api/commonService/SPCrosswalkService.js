@@ -47,9 +47,20 @@ async function downloadAssetTemplate(resourceName) {
   return {};
 }
 
+async function createCrosswalk(payload) {
+  const url = `${ApiRoutes.USER_SERVICE_BASE}cross-walk`;
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
+
 export default Object.freeze({
   getAllSPCrosswalk,
   uploadSPCrosswalk,
   downloadAssetTemplate,
-  deLinkCrosswalk
+  deLinkCrosswalk,
+  createCrosswalk
 });

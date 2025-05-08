@@ -1,16 +1,29 @@
 .create-crosswalk-container {
-    display: grid;
-    grid-template-columns: minmax(auto, 3fr) minmax(auto, 1fr);
-    width: 100%;
-    gap: var(--spacing-03);
 
     .listing {
         display: grid;
-        grid-template-columns: minmax(auto, 1fr) minmax(auto, 1fr);
-        gap: var(--spacing-03);
-    }
+        grid-template-columns: 6fr 6fr 5fr;
+        grid-template-rows: auto auto;
+        gap: var(--spacing-02);
 
-    .summary-wrapper {}
+        .col {
+            display: contents;
+        }
+
+        .block {
+            padding: 10px;
+        }
+
+        .header {
+            @extend .block;
+            grid-row: 1;
+        }
+
+        .body {
+            @extend .block;
+            grid-row: 2;
+        }
+    }
 }
 
 .bucket-list-wrapper {
@@ -21,7 +34,7 @@
     overflow: hidden;
 
     .list-header {
-        padding: 14px 16px;
+        padding: 10px 16px;
         height: 48px;
         background-color: var(--brand-color-cool-grey-2);
         font-size: var(--brand-font-size--default);
@@ -31,6 +44,9 @@
     }
 
     .list {
+        min-height: 320px;
+
+
         .item {
             padding: 16px 12px;
             display: flex;
