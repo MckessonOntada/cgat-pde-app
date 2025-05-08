@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
@@ -17,6 +17,7 @@ import { GeographicUtils } from '@src/util/GeographicUtil';
 import { useCustomPrint } from '@src/util/printUtils';
 import { ReactComponent as Scuccess } from '@src/assets/svg/success.svg';
 import { ReactComponent as Failed } from '@src/assets/svg/failed.svg';
+import { FooterContext } from '@src/components/footer/FooterContext';
 
 function ConfirmationPayments() {
   const { t } = useTranslate();
@@ -29,6 +30,7 @@ function ConfirmationPayments() {
   const contentRef = useRef(null); 
   const printPage = useCustomPrint(contentRef);
   const paymentFailed = location.state?.paymentError || false;
+  const { controlRef } = useContext(FooterContext);
 
   const { data: paymentMethodsData = [], isError } = useQuery({
     queryKey: ['paymentMethodsreviewPayments'],
@@ -135,17 +137,19 @@ function ConfirmationPayments() {
           </div>
         )} 
       </div>
-      <div className="footer-section">
-        <Button variant="secondary" onClick={() => printPage()} size="md">
-          {t('paymentInvoices.history.filters.printSummary')}
-        </Button>
-        <Button
-          size="md"
-          onClick={() => {
-            navigate(`/record/invoices`);
-          }}>
-          {t('paymentInvoices.Details.GoToManagePayments')}
-        </Button>
+      <div className="footer-wrapper" ref={controlRef}>
+        <div className="controls footer-controls">
+          <Button variant="secondary" onClick={() => printPage()} size="md">
+            {t('paymentInvoices.history.filters.printSummary')}
+          </Button>
+          <Button
+            size="md"
+            onClick={() => {
+              navigate(`/record/invoices`);
+            }}>
+            {t('paymentInvoices.Details.GoToManagePayments')}
+          </Button>
+        </div>
       </div>
     </div>
   );

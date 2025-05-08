@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import style from './assets/Footer.module.scss';
@@ -11,25 +11,45 @@ import footerLinks from '@src/components/footer/data/footerLinks.json';
 import { ReactComponent as McKessonLogo } from '@src/assets/image/mckesson-logo-colored.svg';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { useQuery } from 'react-query';
+import { FooterContext } from '@src/components/footer/FooterContext';
+import useWindowSize from '@src/hooks/UseWindowSize';
 
 const Footer = () => {
   const { t } = useTranslate();
-  const {
-    organization: { selectedOrganization }
-  } = useSessionFeatures();
-  const isSystemAdminView = AuthUtils.isSystemAdminView();
-  const { data: organizationLogo } = CommonDataService.useOrganizationLogo(
-    selectedOrganization.logoUrl,
-    selectedOrganization.id
-  );
+  const { controlRef } = useContext(FooterContext);
+  
+  const isMobileView = window.innerWidth <= 576;
 
   const { data: footerData } = useQuery({
     queryKey: ['globalFooterLinks'],
     queryFn: () => QuestionnaireService.getGlobalFooterLinks()
   });
+  const footerRef = useRef();
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        controlRef.current.classList.add(!entry.isIntersecting ? 'styleStickey' : 'styleNonStickey')
+        controlRef.current.classList.remove(!entry.isIntersecting ? 'styleNonStickey' : 'styleStickey')
+      },
+      {
+        root: null,
+        threshold: 0.1
+      }
+    );
+
+    if (isMobileView) {
+      observer.observe(footerRef.current);
+    }
+
+    return () => {
+      if (footerRef.current) {
+        observer.unobserve(footerRef.current);
+      }
+    };
+  }, []);
 
   return (
-    <footer className={style.footer}>
+    <footer className={style.footer} ref={footerRef}>
       <div className={`max-container ${style.footerWrapper}`}>
         <div className={style.footerContent}>
           {footerData &&

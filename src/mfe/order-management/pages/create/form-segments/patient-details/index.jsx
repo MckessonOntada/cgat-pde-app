@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import styles from './PatientDetails.module.scss';
 import {
   Button,
@@ -33,6 +33,7 @@ import {
 import ProviderService from '@src/api/commonService/ProviderService';
 import { CHANNEL_TYPE } from '../Constants';
 import useTimedArray from '../summary/useTimedArray';
+import { FooterContext } from '@src/components/footer/FooterContext';
 
 export const getFilteredSections = (channelType) => {
   return sections.map((section) => ({
@@ -56,6 +57,7 @@ const PatientDetails = () => {
   const { orderId } = useParams();
   const navigate = useNavigate();
   const alertContainerId = 'patintDetails-alert-container';
+  const { controlRef } = useContext(FooterContext);
   const { showAlert } = useAlert();
   const location = useLocation();
   const {
@@ -403,8 +405,9 @@ const PatientDetails = () => {
                       )}
                     </div>
                   </div>
-                  <div className="footer-wrapper">
-                    <div className="controls footer-controls">
+                  <div className="footer-wrapper" ref={controlRef}>
+                    <div
+                      className="controls footer-controls">
                       <Button
                         size="md"
                         variant="secondary"

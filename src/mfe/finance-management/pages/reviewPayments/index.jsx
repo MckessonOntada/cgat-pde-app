@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Heading, AutoSuggestDropdown, Alert, Loader } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import CommonUtils from '@src/util/CommonUtils';
@@ -26,6 +26,7 @@ import { paymentMethod } from '../utils/constants';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import SelectCreditsListing from './SelectCreditsListing';
 import EmptyUI from '../../EmptyUI';
+import { FooterContext } from '@src/components/footer/FooterContext';
 
 function ReviewPayments() {
   const { t } = useTranslate();
@@ -49,6 +50,7 @@ function ReviewPayments() {
   const [totalCreditsCount, settotalCreditsCount] = useState(0);
   const disablePay = useRef(false);
   const [SpecificDateError, setSpecificDateError] = useState('');
+   const { controlRef } = useContext(FooterContext);
 
   const showAlert = (type, message) => {
     setAlert({ type });
@@ -550,19 +552,21 @@ function ReviewPayments() {
           </div>
         </div>
       )}
-      <div className="footer-section">
-        <Button variant="secondary" onClick={() => navigate('../')} size="md">
-          {t('paymentInvoices.reviewPayments.cancel')}
-        </Button>
-        {REVIEW_MODE ? (
-          <Button onClick={onPreviewPayment} size="md">
-            {`${t('paymentInvoices.reviewPayments.pay')} ${FinanceUtils.formatCurrency(totalAmount)}`}
+      <div  className="footer-wrapper" ref={controlRef}>
+        <div className="footer-section controls footer-controls">
+          <Button variant="secondary" onClick={() => navigate('../')} size="md">
+            {t('paymentInvoices.reviewPayments.cancel')}
           </Button>
-        ) : (
-          <Button onClick={onPreviewPayment} size="md" disabled={disablePreview()}>
-            {t('paymentInvoices.reviewPayments.previewPayment')}
-          </Button>
-        )}
+          {REVIEW_MODE ? (
+            <Button onClick={onPreviewPayment} size="md">
+              {`${t('paymentInvoices.reviewPayments.pay')} ${FinanceUtils.formatCurrency(totalAmount)}`}
+            </Button>
+          ) : (
+            <Button onClick={onPreviewPayment} size="md" disabled={disablePreview()}>
+              {t('paymentInvoices.reviewPayments.previewPayment')}
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
