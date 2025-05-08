@@ -178,7 +178,7 @@ export const ManageSPAccountMessagesEN = {
   'manageSPAccount.column.providers.deaNumber': 'DEA Number',
   'manageSPAccount.column.providers.npiNumber': 'NPI Number',
   'manageSPAccount.table.error.providers.listing': 'You need to add providers to see data in this table',
-  'manageSPAccount.providers.search.placeholder': 'Search by Provider Name, NPI Number, DEA Number, Address',
+  'manageSPAccount.providers.search.placeholder': 'Search by Provider Name, NPI, DEA, Address',
   'manageSPAccount.providers.column.unlink': 'UNLINK',
   'manageSPAccount.providers.details': 'Provider Details',
   'manageSPAccount.providers.selectedProviders': 'Selected Providers',

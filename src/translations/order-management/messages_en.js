@@ -598,7 +598,7 @@ export const MessageEn = {
   'controls.placeholder.searchSPCatalogPlaceholder':
     'Search by ID, Name, NDC, Account Number...',
   'controls.placeholder.searchProviderPlaceholder':
-    'Search by Provider Name, NPI Number, DEA Number, Address ',
+    'Search by Provider Name, NPI, DEA, Address',
   'label.emptyProviderTableDescription':
     'You need to add providers to see data in this table',
   'label.materialCrosswalk': 'Material Crosswalk',
