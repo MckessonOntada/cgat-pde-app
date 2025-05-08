@@ -6,6 +6,7 @@ import AuthUtils from '@src/util/AuthUtils';
 
 export const SYSTEM_ADMIN = 'System Admin';
 export const CUSTOMER_CENTRE = 'Customer Centre';
+export const CUSTOMER_SERVICE = 'Customer Service';
 
 const getUserDetails = () => {
   return sessionStorage.getItem(SESSION_CONST.USERNAME);
