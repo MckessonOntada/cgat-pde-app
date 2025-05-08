@@ -11,6 +11,7 @@ import AuthUtils from '@src/util/AuthUtils';
 import { serializeParams } from '@src/util/ApiUtils';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import { PERMISSIONS_ENUM } from './permissionsEnum';
+import { CUSTOMER_CENTRE, CUSTOMER_SERVICE } from '@src/api/commonService/CommonService';
 
 const PermissionForm = ({
   enabledPermissions,
@@ -54,7 +55,7 @@ const PermissionForm = ({
       if (res.data?.content) {
         const roles = res.data?.content?.map((role) => ({
           ...role,
-          label: role.name, //  `role.name` for the label
+          label: role.name === CUSTOMER_CENTRE ? CUSTOMER_SERVICE : role.name, //  `role.name` for the label
           value: role.id //  `role.id` for the value
         }));
         return roles;
