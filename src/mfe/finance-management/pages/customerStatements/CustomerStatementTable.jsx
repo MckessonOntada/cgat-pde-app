@@ -21,11 +21,11 @@ export default function CustomerStatementTable() {
   const columns = [
     {
       id: 'docNo',
-      name: t('paymentInvoices.CS.table.billNumber'),
+      name: t('paymentInvoices.CS.table.customerStatementNumber'),
       selector: (row) => `${row.docNo}`,
       sortable: true,
       wrap: true,
-      minWidth: '140px',
+      minWidth: '265px',
       showInMobileHeader: true,
       cardHeader: true,
       mobileStyles: { fontSize: 'var(--brand-font-size--default)' },
