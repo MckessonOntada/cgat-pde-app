@@ -46,13 +46,16 @@
     .list {
         min-height: 320px;
 
-
         .item {
-            padding: 16px 12px;
+            margin: 16px 12px 0px;
+            padding-bottom: 16px;
             display: flex;
             flex-direction: row;
             align-items: center;
             justify-content: space-between;
+            font-size: var(--brand-font-size--small);
+            font-weight: var(--brand-font-weight-400);
+            border-bottom: 1px solid var(--brand-color-text-cool-grey)
         }
     }
 }

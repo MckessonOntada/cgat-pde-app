@@ -47,11 +47,18 @@ const CreateCrosswalk = () => {
       };
 
       SPCrosswalkService.createCrosswalk(payload)
-        .then((response) => {})
+        .then((response) => {
+          if (response.status === 200) {
+            addNotification({
+              type: 'success',
+              description: `${response.data} new crosswalk linked`
+            });
+          }
+        })
         .catch((error) => {
           addNotification({
             type: 'error',
-            description: error.message,
+            description: error.response?.data?.message || error.message,
             isSticky: true
           });
         });
@@ -142,7 +149,8 @@ const CreateCrosswalk = () => {
 
               <TableProvider
                 defaultFilters={{
-                  channelTypes: CHANNEL_TYPE.SPECIALTY_PHARMA
+                  channelTypes: CHANNEL_TYPE.SPECIALTY_PHARMA,
+                  showNonCrosswalked: true
                 }}
                 fetchFn={MaterialService.getMaterialList}>
                 <Products
