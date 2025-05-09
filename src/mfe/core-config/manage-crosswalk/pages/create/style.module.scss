@@ -62,6 +62,7 @@
 
     .list {
         height: 336px;
+        overflow-y: scroll;
 
         .item {
             margin: 16px 12px 0px;

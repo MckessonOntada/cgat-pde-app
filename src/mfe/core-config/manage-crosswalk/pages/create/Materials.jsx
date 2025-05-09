@@ -16,7 +16,8 @@ import { Link } from 'react-router-dom';
 import style from './style.module.scss';
 import { useGenericContext } from '../../config/GenericContext';
 import CommonUtils from '@src/util/CommonUtils';
-
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import EmptyDataTable from '@src/components/EmptyTable';
 const getColumns = ({ t }) => {
   const { state, setValue } = useGenericContext();
   return [
@@ -81,7 +82,7 @@ const getColumns = ({ t }) => {
 
 const Materials = () => {
   const { t } = useTranslate();
-  const { data } = useTable();
+  const { data, error, isLoading } = useTable();
   const { pagination, changePage } = usePagination();
   const { applyFilters } = useFilters();
   const { applySort } = useSort();
@@ -150,6 +151,15 @@ const Materials = () => {
           responsive={true}
           showCardView={false}
           defaultExpandedCardView={true}
+          noDataComponent={
+            <EmptyDataTable
+              isLoading={isLoading}
+              error={error}
+              image={EmptyDataImage}
+              heading={t('captions.emptyTableTitle')}
+              description={t('captions.emptyTableSubtitle')}
+            />
+          }
         />
       </div>
     </React.Fragment>

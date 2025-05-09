@@ -3,8 +3,10 @@ import React from 'react';
 import { Heading, Button } from '@mckesson/mcp-component-library';
 import style from './style.module.scss';
 import { useGenericContext } from '../../config/GenericContext';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const Summary = () => {
+  const { t } = useTranslate();
   const { state, setValue } = useGenericContext();
   const [list, setList] = React.useState(state.selectedProducts || []);
 
@@ -35,14 +37,14 @@ const Summary = () => {
         <div className="MCP-module-body">
           <div className={style['bucket-list-wrapper']}>
             <div className={style['list-header']}>
-              <Heading as="h3">Summary</Heading>
+              <Heading as="h3">{t('crosswalk.label.summary')}</Heading>
             </div>
             <div className={style['list']}>
               {list.map((item) => {
                 return (
                   <div className={style['item']}>
                     <p>{item.materialNumber}</p>
-                    <div className="styled-icon-button">
+                    <div className="styled-icon-button error-button">
                       <Button
                         Icon={BinRedIcon}
                         size="md"
@@ -62,7 +64,7 @@ const Summary = () => {
               size="sm"
               variant="secondary"
               onClick={handleOnLinkMaterials}>
-              Link Materials
+              {t('crosswalk.btnLinkMaterials')}
             </Button>
           </div>
         </div>

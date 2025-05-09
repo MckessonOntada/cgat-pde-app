@@ -48,6 +48,7 @@ export const ConfigurationMessagesEN = {
   'provider.linkedSpAccounts': 'Lined SP Accounts',
   'provider.btnCancel': 'Cancel',
   'provider.btnDeLink': 'Unlink',
+  'provider.btnSubmit': 'Submit',
   'provider.btnCreateProvider': 'Create Provider',
   'provider.btnUpdateProvider': 'Update Provider',
   'SPCatalog.deLinkConfirmationDescription':
@@ -175,5 +176,11 @@ export const ConfigurationMessagesEN = {
   'SPCrosswalk.unlinkCrosswalkSuccess':
     'Crosswalk has been unlinked successfully.',
   'SPCrosswalk.deLinkFailure.generic':
-    'Failed to unlink crosswalk. Please try again.'
+    'Failed to unlink crosswalk. Please try again.',
+  'crosswalk.submitConfirmationTitle': 'Confirmation',
+  'crosswalk.submitConfirmationMessage': 'Are you sure you want to submit?',
+  'crosswalk.label.summary': 'Summary',
+  'crosswalk.btnLinkMaterials': 'Link Materials',
+  'crosswalk.product.searchPlaceholder': 'Search by Product Name, NDC',
+  'crosswalk.product.searchProductTooltip': 'Search Products'
 };

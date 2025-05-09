@@ -14,12 +14,13 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import SPMaterialDetails from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/pages/SPMaterialDetails';
 import { useGenericContext } from '../../config/GenericContext';
 import CommonUtils from '@src/util/CommonUtils';
+import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
+import EmptyDataTable from '@src/components/EmptyTable';
 
 const getColumns = ({ t }) => {
   const { state, setValue } = useGenericContext();
   const { pagination } = usePagination();
   const { data } = useTable();
-  debugger;
   const onSelectProduct = (products) => {
     setValue('selectedProducts', products);
   };
@@ -76,7 +77,7 @@ const getColumns = ({ t }) => {
 
 const Products = () => {
   const { t } = useTranslate();
-  const { data } = useTable();
+  const { data, isLoading, error } = useTable();
   const navigate = useNavigate();
   const { pagination, changePage } = usePagination();
   const { applySort } = useSort();
@@ -122,7 +123,7 @@ const Products = () => {
               value={spProductQuery}
               errors={{}}
               id="sp-product-search-field"
-              placeholder={'Search by Product Name, NDC'}
+              placeholder={t('crosswalk.provider.searchPlaceholder')}
               name="spProductQuery"
               onBlurFn={() => {}}
               onChangeFn={() => {}}
@@ -130,7 +131,7 @@ const Products = () => {
               onInputChange={handleOnChange}
               preventCharacters={[]}
               register={() => {}}
-              tooltipText="Search Material"
+              tooltipText={t('crosswalk.product.searchProductTooltip')}
               useRegister={false}
               validationFn={() => {}}
             />
@@ -168,6 +169,15 @@ const Products = () => {
           responsive={true}
           showCardView={false}
           defaultExpandedCardView={true}
+          noDataComponent={
+            <EmptyDataTable
+              isLoading={isLoading}
+              error={error}
+              image={EmptyDataImage}
+              heading={t('captions.emptyTableTitle')}
+              description={t('captions.emptyTableSubtitle')}
+            />
+          }
         />
         {catalog && (
           <SPMaterialDetails

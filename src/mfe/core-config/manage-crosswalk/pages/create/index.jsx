@@ -49,11 +49,17 @@ const CreateCrosswalk = () => {
       SPCrosswalkService.createCrosswalk(payload)
         .then((response) => {
           if (response.status === 200) {
-            addNotification({
-              type: 'success',
-              description: `${response.data} new crosswalk linked`
-            });
             reset();
+            navigate('/admin/crosswalk', {
+              state: {
+                items: [
+                  {
+                    description: `${response.data} new crosswalk linked`,
+                    type: 'success'
+                  }
+                ]
+              }
+            });
           }
         })
         .catch((error) => {
@@ -66,13 +72,14 @@ const CreateCrosswalk = () => {
     }
   };
   const confirmLinkMaterials = () => {
+    const { material, selectedProducts } = state;
     if (!material || !selectedProducts || selectedProducts.length === 0) return;
 
-    const state = {
-      title: 'Confirmation',
+    const modalState = {
+      title: t('crosswalk.submitConfirmationTitle'),
       body: (
         <div className="MCP-modal-body">
-          <p>Are you sure you want to submit?</p>
+          <p>{t('crosswalk.submitConfirmationMessage')}</p>
         </div>
       ),
       footer: (
@@ -95,7 +102,7 @@ const CreateCrosswalk = () => {
         </div>
       )
     };
-    dispatch(openModal(state));
+    dispatch(openModal(modalState));
   };
 
   const handleOnDetailsPanelClose = () => {
@@ -164,10 +171,10 @@ const CreateCrosswalk = () => {
         </div>
         <div className="controls">
           <Button size="md" variant="secondary">
-            Cancel
+            {t('provider.btnCancel')}
           </Button>
           <Button onClick={confirmLinkMaterials} size="md" variant="primary">
-            Submit
+            {t('provider.btnSubmit')}
           </Button>
         </div>
 
