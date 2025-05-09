@@ -42,11 +42,8 @@ export const LinkedCatalogService = (materials, accounts) => {
     unlinkMaterial(id) {
       __combinedData = __combinedData.filter((item) => item.id !== id);
     },
-    prepareTransformedData() {
-      return __combinedData.map((item) => ({
-        spProductId: item.materialNumber,
-        spAccountNumber: item.accountNumber
-      }));
+    getCombinedData() {
+      return __combinedData;
     }
   };
 };

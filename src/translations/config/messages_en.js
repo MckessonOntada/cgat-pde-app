@@ -135,8 +135,7 @@ export const ConfigurationMessagesEN = {
   'label.spCatalogDataGridDescription': 'No data found',
 
   'fileUpload.crosswalk.success': 'File processed successfully, No errors were found.',
-  'fileUpload.crosswalk.partialSuccess':
-    'File processing completed, Some records were not processed successfully. Please review the downloaded error report.',
+  'fileUpload.crosswalk.partialSuccess': 'File processing completed, Some records were not processed successfully. Please review the downloaded error report.',
   'fileUpload.error.timeoutOrSystemError': 'Error: An unexpected error occurred during the upload. Please try again later.',
   'invalid.csv.file.headers.empty': 'Error: The uploaded file is invalid. Please upload a valid file.',
   'invalid.csv.file.headers.unstructured': 'Error: The uploaded file is invalid. Please upload a valid file.',
@@ -159,7 +158,9 @@ export const ConfigurationMessagesEN = {
   'SPCatalog.btnBack': 'Back to manage SP Catalog page',
   'SPCatalog.Link.Success': 'SP Catalog for {{count}} Accounts has been updated successfully.',
   'SPCatalog.unlink.SPMaterial.confirmation': 'Are you sure you want to unlink this SP Material?',
+  'SPCatalog.unlink.SPMaterial.success': 'SP Material(s) unlinked successfully.',
+  'SPCatalog.unlink.SPMaterial.error': 'Failed to unlink SP Material(s).',
   'SPCatalog.button.updatecatalog': 'update catalog',
-  'SPCatalog.error.RequiredMissing': 'Required details are missing to update catalog',
+  'SPCatalog.error.RequiredMissing': 'You have removed all the data, Go back to Link SP Material Page to continue',
   'SPCatalog.error.PeaseSelectRequired': 'Please select the required details to continue'
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CommonFilters from '@src/components/Filters';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { Button, Alert } from '@mckesson/mcp-component-library';
@@ -16,7 +16,7 @@ import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import TableHeading from '@src/components/tableHeading/TableHeading';
 import { renderModal } from '@src/util/ModalUtil';
 
-const ReviewCatalogList = ({ service }) => {
+const ReviewCatalogList = ({ service, sendNotification }) => {
   const { applyFilters, clearFilters } = useFilters();
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
@@ -25,7 +25,7 @@ const ReviewCatalogList = ({ service }) => {
   const { data, refreshTable } = useTable();
   const { applySort } = useSort();
   const { selectedRows, setSelection } = useSelection();
-
+  const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
   const additionalFiltersConfig = React.useMemo(() => {
     return [];
   }, []);
@@ -134,8 +134,7 @@ const ReviewCatalogList = ({ service }) => {
           textButton={true}
           Icon={linkIcon}
           onClick={() => {
-            service.unlinkMaterial(row.id);
-            refreshTable();
+            handleUnlink(row.id);
           }}
         />
       ),
@@ -146,16 +145,24 @@ const ReviewCatalogList = ({ service }) => {
   const handleUnlinkSPMaterial = async (ids) => {
     try {
       for (const id of ids) {
-        console.log(`Unlinking material with ID: ${id}`);
         await service.unlinkMaterial(id);
       }
-      refreshTable();
+      setSelection([]);
+      const updatedData = service.getCombinedData();
+      refreshTable(updatedData);
+      sendNotification({
+        type: 'success',
+        description: t('SPCatalog.unlink.SPMaterial.success')
+      });
     } catch (error) {
-      console.error('Failed to unlink materials:', error);
+      sendNotification({
+        type: 'error',
+        description: t('SPCatalog.unlink.SPMaterial.error')
+      });
     }
   };
 
-  const handleUnlink = (id) => {
+  const handleUnlink = (ids, type) => {
     renderModal({
       title: t('messages.header.confirmation'),
       bodyContent: (
@@ -170,12 +177,25 @@ const ReviewCatalogList = ({ service }) => {
         confirm: {
           label: t('manageSPAccount.button.confirm'),
           action: () => {
-            const allSelectedIds = Array.from(selectedRows);
-            handleUnlinkSPMaterial(allSelectedIds);
+            if (type === 'bulk') {
+              const allSelectedIds = Array.isArray(ids) ? ids : [ids];
+              handleUnlinkSPMaterial(allSelectedIds);
+            } else {
+              service.unlinkMaterial(ids);
+              const updatedData = service.getCombinedData();
+              refreshTable(updatedData);
+            }
           }
         }
       }
     });
+  };
+
+  const handleBulkUnlink = () => {
+    const allSelectedIds = Array.from(selectedRows);
+    if (allSelectedIds.length > 0) {
+      handleUnlink(allSelectedIds, 'bulk');
+    }
   };
 
   return (
@@ -192,9 +212,9 @@ const ReviewCatalogList = ({ service }) => {
       <TableHeading
         heading={t('label.sPCatalogListing')}
         secondaryView={selectedRows.size > 0}
-        secondaryViewHeading={`1 ${t('userManagement.selected_items')}`}
+        secondaryViewHeading={`${selectedRows.size} ${t('userManagement.selected_items')}`}
         secondaryViewControls={
-          <Button variant="secondary" onClick={handleUnlink}>
+          <Button variant="secondary" onClick={handleBulkUnlink}>
             {t('manageSPAccount.providers.column.unlink')}
           </Button>
         }
@@ -214,18 +234,10 @@ const ReviewCatalogList = ({ service }) => {
         paginationRecordsPerPageMessage={t('labels.perPage')}
         paginationTotalRecorsMessage={t('labels.results')}
         noDataComponent={
-          <ErrorBanner
-            image={<EmptyProviderTable />}
-            heading={t('label.spCatalogDataGrid')}
-            description={t('label.spCatalogDataGridDescription')}
-          />
+          <ErrorBanner image={<EmptyProviderTable />} heading={t('label.spCatalogDataGrid')} description={t('label.spCatalogDataGridDescription')} />
         }
       />
-      <SPMaterialDetails
-        openSPMaterialDetails={openSPMaterialDetails}
-        setOpenSPMaterialDetails={setOpenSPMaterialDetails}
-        viewSPMaterial={viewSPMaterial}
-      />
+      <SPMaterialDetails openSPMaterialDetails={openSPMaterialDetails} setOpenSPMaterialDetails={setOpenSPMaterialDetails} viewSPMaterial={viewSPMaterial} />
     </div>
   );
 };

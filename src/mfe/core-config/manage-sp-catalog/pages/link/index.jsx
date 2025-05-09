@@ -23,122 +23,7 @@ const LinkSPMaterial = () => {
   const location = useLocation();
   const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
   const { applyFilters, clearFilters, selectedSPMaterial } = useSPMaterial();
-  const {
-    selectedAccount,
-    selectedOrganization,
-    setSelectedOrganization,
-    setSelectedAccount,
-    setOptions,
-    setAccountOptions,
-    options,
-    accountOptions
-  } = useOrgAccountsMultiSelectionContext();
-  const lastAccountOptionsRef = useRef(accountOptions);
-  // useEffect(() => {
-  //   const hydratedOrg =
-  //     selectedOrganization?.length === 0 && location.state?.selectedOrganization
-  //       ? location.state.selectedOrganization
-  //       : selectedOrganization;
-
-  //   const hydratedAcc =
-  //     selectedAccount?.length === 0 && location.state?.selectedAccount
-  //       ? location.state.selectedAccount
-  //       : selectedAccount?.map((account) => {
-  //           const matchingStateAccount = location.state?.selectedAccount?.find(
-  //             (stateAcc) => stateAcc.accountNumber === account.accountNumber
-  //           );
-
-  //           return matchingStateAccount ? { ...account, isChecked: matchingStateAccount.isChecked } : account;
-  //         });
-
-  //   if (selectedOrganization?.length === 0 && hydratedOrg?.length > 0) {
-  //     setSelectedOrganization(hydratedOrg);
-  //   }
-
-  //   if (selectedAccount?.length === 0 && hydratedAcc?.length > 0) {
-  //     setSelectedAccount(hydratedAcc);
-  //   }
-
-  //   if (hydratedOrg?.length > 0 && options.length > 0) {
-  //     const updatedOptions = options.map((opt) => ({
-  //       ...opt,
-  //       isChecked: hydratedOrg.some((org) => org.value === opt.value)
-  //     }));
-
-  //     if (JSON.stringify(updatedOptions) !== JSON.stringify(options)) {
-  //       setOptions(updatedOptions);
-  //     }
-  //   }
-
-  //   if (hydratedAcc?.length > 0 && accountOptions.length > 0) {
-  //     const updatedAccountOptions = accountOptions.map((opt) => {
-  //       const matchingAccount = hydratedAcc.find((account) => account.value === opt.value);
-  //       return {
-  //         ...opt,
-  //         isChecked: matchingAccount ? matchingAccount.isChecked || opt.isChecked : opt.isChecked
-  //       };
-  //     });
-
-  //     if (JSON.stringify(updatedAccountOptions) !== JSON.stringify(lastAccountOptionsRef.current)) {
-  //       setAccountOptions(updatedAccountOptions);
-  //       lastAccountOptionsRef.current = updatedAccountOptions;
-  //     }
-  //   }
-  // }, [location.state, options.length, accountOptions?.length, selectedAccount, selectedOrganization]);
-
-  useEffect(() => {
-    const hydratedOrg =
-      selectedOrganization?.length === 0 && location.state?.selectedOrganization
-        ? location.state.selectedOrganization
-        : selectedOrganization;
-
-    if (selectedOrganization?.length === 0 && hydratedOrg?.length > 0) {
-      setSelectedOrganization(hydratedOrg);
-    }
-
-    if (hydratedOrg?.length > 0 && options.length > 0) {
-      const updatedOptions = options.map((opt) => ({
-        ...opt,
-        isChecked: hydratedOrg.some((org) => org.value === opt.value)
-      }));
-
-      if (JSON.stringify(updatedOptions) !== JSON.stringify(options)) {
-        setOptions(updatedOptions);
-      }
-    }
-  }, [location.state, options.length]);
-
-  useEffect(() => {
-    const hydratedAcc =
-      selectedAccount?.length === 0 && location.state?.selectedAccount
-        ? location.state.selectedAccount
-        : selectedAccount?.map((account) => {
-            const matchingStateAccount = location.state?.selectedAccount?.find(
-              (stateAcc) => stateAcc.accountNumber === account.accountNumber
-            );
-
-            return matchingStateAccount ? { ...account, isChecked: matchingStateAccount.isChecked } : account;
-          });
-
-    if (selectedAccount?.length === 0 && hydratedAcc?.length > 0) {
-      setSelectedAccount(hydratedAcc);
-    }
-
-    if (hydratedAcc?.length > 0 && accountOptions.length > 0) {
-      const updatedAccountOptions = accountOptions.map((opt) => {
-        const matchingAccount = hydratedAcc.find((account) => account.value === opt.value);
-        return {
-          ...opt,
-          isChecked: matchingAccount ? matchingAccount.isChecked || opt.isChecked : opt.isChecked
-        };
-      });
-
-      if (JSON.stringify(updatedAccountOptions) !== JSON.stringify(lastAccountOptionsRef.current)) {
-        setAccountOptions(updatedAccountOptions);
-        lastAccountOptionsRef.current = updatedAccountOptions;
-      }
-    }
-  }, [location.state, accountOptions?.length]);
+  const { selectedAccount, selectedOrganization } = useOrgAccountsMultiSelectionContext();
 
   const goBack = () => {
     navigate('..', {
@@ -154,7 +39,7 @@ const LinkSPMaterial = () => {
     if (selectedSPMaterial.length === 0) {
       addNotification({
         type: 'error',
-        description: t('SPCatalog.error.RequiredMissing')
+        description: t('SPCatalog.error.PeaseSelectRequired')
       });
       return;
     }

@@ -19,26 +19,15 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 import { useMutation } from 'react-query';
 import SPCatalogService from '@src/api/commonService/SPCatalogService';
 import { handleApiError } from '@src/util/ApiUtils';
-import { useMultiSelectionfromState } from '../useMultiSelection.';
-import { ROUTE_PATHS } from '../../routes/constants';
-import { RoutePaths } from '@src/routes/constants';
+
 const ReviewCatalog = () => {
-  const isSystemAdminView = AuthUtils.isSystemAdminView();
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
   const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
   const { selectedSPMaterial } = useSPMaterial();
-  const {
-    selectedAccount,
-    selectedOrganization,
-    setSelectedOrganization,
-    setSelectedAccount,
-    setOptions,
-    setAccountOptions,
-    options,
-    accountOptions
-  } = useOrgAccountsMultiSelectionContext();
+  const { selectedAccount, selectedOrganization, setSelectedOrganization, setSelectedAccount, setOptions, setAccountOptions, options, accountOptions } =
+    useOrgAccountsMultiSelectionContext();
 
   const service = LinkedCatalogService(selectedSPMaterial, selectedAccount);
 
@@ -52,14 +41,21 @@ const ReviewCatalog = () => {
 
   const handleSave = async () => {
     const catalogService = LinkedCatalogService(selectedSPMaterial, selectedAccount);
-    const transformedData = catalogService.prepareTransformedData();
-    if (transformedData.length === 0) {
+    const updatedData = catalogService.getCombinedData;
+    if (updatedData.length === 0) {
       addNotification({
         type: 'error',
-        description: t('SPCatalog.error.PeaseSelectRequired')
+        description: t('SPCatalog.error.RequiredMissing')
       });
       return;
     }
+    const transformedData = updatedData?.map((item) => ({
+      spProductId: item.materialNumber,
+      spAccountNumber: item.accountNumber
+    }));
+    if (transformedData.length === 0) {
+    }
+
     LinkCatalog({ payload: transformedData });
   };
 
@@ -91,7 +87,9 @@ const ReviewCatalog = () => {
       }
     }
   );
-
+  const handleNotification = (notification) => {
+    addNotification(notification);
+  };
   return (
     <div className="MCP-module-wrapper catalog-module">
       <div>
@@ -115,12 +113,8 @@ const ReviewCatalog = () => {
             <OrgAccountsMultiSelect />
           </div>
 
-          <TableProvider
-            key={1}
-            defaultFilters={[]}
-            allowedSort={['materialNumber', 'productName', 'accountNumber']}
-            fetchFn={service.getAllData}>
-            <ReviewCatalogList service={service} />
+          <TableProvider key={1} defaultFilters={[]} allowedSort={['materialNumber', 'productName', 'accountNumber']} fetchFn={service.getAllData}>
+            <ReviewCatalogList service={service} sendNotification={handleNotification} />
           </TableProvider>
           <div className={'buttonGroup'}>
             <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>
