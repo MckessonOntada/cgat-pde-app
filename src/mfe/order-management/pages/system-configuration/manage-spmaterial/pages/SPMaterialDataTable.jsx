@@ -17,8 +17,7 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 
 function SPMaterialDataTable({ isLinkCatalog = false }) {
   const { t } = useTranslate();
-  const { paginationConfig, data, setPageNumber, isLoading, refreshData, applySort, selectedSPMaterial, setSelectedSPMaterial } =
-    useSPMaterial();
+  const { paginationConfig, data, setPageNumber, isLoading, refreshData, applySort, selectedSPMaterial, setSelectedSPMaterial } = useSPMaterial();
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
   const isCustomerCenter = AuthUtils.isCustomerCenter();
@@ -26,14 +25,7 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
   const columns = [
     {
       id: 'checkbox',
-      name: renderTableCheckBox(
-        { id: 'ALL_ITEMS_' + paginationConfig.pageNumber },
-        data,
-        'id',
-        paginationConfig,
-        selectedSPMaterial,
-        setSelectedSPMaterial
-      ),
+      name: renderTableCheckBox({ id: 'ALL_ITEMS_' + paginationConfig.pageNumber }, data, 'id', paginationConfig, selectedSPMaterial, setSelectedSPMaterial),
       sortable: false,
       cell: (row, index) => renderTableCheckBox(row, data, 'id', paginationConfig, selectedSPMaterial, setSelectedSPMaterial),
       width: '50px',
@@ -213,17 +205,13 @@ function SPMaterialDataTable({ isLinkCatalog = false }) {
             <SelectedAccounts
               selectedAccounts={selectedSPMaterial}
               onRemoveAccount={onRemoveSelectedSPMaterial}
-              header={t('manageSPAccount.providers.selectedProviders')}
+              header={t('SPCatalog.SelectedMaterial')}
               isLinkCatalog={true}
             />
           </div>
         )}
       </div>
-      <SPMaterialDetails
-        openSPMaterialDetails={openSPMaterialDetails}
-        setOpenSPMaterialDetails={setOpenSPMaterialDetails}
-        viewSPMaterial={viewSPMaterial}
-      />
+      <SPMaterialDetails openSPMaterialDetails={openSPMaterialDetails} setOpenSPMaterialDetails={setOpenSPMaterialDetails} viewSPMaterial={viewSPMaterial} />
     </div>
   );
 }

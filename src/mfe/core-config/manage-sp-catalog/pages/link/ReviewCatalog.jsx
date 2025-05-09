@@ -26,10 +26,15 @@ const ReviewCatalog = () => {
   const location = useLocation();
   const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
   const { selectedSPMaterial } = useSPMaterial();
-  const { selectedAccount, selectedOrganization, setSelectedOrganization, setSelectedAccount, setOptions, setAccountOptions, options, accountOptions } =
-    useOrgAccountsMultiSelectionContext();
+  const { selectedAccount, selectedOrganization } = useOrgAccountsMultiSelectionContext();
 
   const service = LinkedCatalogService(selectedSPMaterial, selectedAccount);
+
+  useEffect(() => {
+    if (!selectedAccount && !selectedOrganization) {
+      navigate('/admin/sp-catalog');
+    }
+  }, [selectedAccount, selectedOrganization, navigate]);
 
   const goBack = () => {
     navigate('/admin/sp-catalog');

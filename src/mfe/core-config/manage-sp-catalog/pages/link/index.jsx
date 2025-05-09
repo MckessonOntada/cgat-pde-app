@@ -25,6 +25,12 @@ const LinkSPMaterial = () => {
   const { applyFilters, clearFilters, selectedSPMaterial } = useSPMaterial();
   const { selectedAccount, selectedOrganization } = useOrgAccountsMultiSelectionContext();
 
+  useEffect(() => {
+    if (!selectedAccount && !selectedOrganization) {
+      navigate('/admin/sp-catalog');
+    }
+  }, [selectedAccount, selectedOrganization, navigate]);
+
   const goBack = () => {
     navigate('..', {
       state: { isSuccess: true }
