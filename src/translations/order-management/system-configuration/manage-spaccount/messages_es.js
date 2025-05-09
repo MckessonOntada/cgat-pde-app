@@ -256,5 +256,6 @@ export const ManageSPAccountMessagesES = {
   'manageSPAccount.error.message.failedToOpenDetails':
     'S_Failed to open provider details. Please try again.',
   'manageSPAccount.success.message.addProvider':
-    'S_Provider(s) has been linked successfully.'
+    'S_Provider(s) has been linked successfully.',
+  'manageSPAccount.providers.noData': 'S_No Providers found'
 };
