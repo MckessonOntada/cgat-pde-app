@@ -99,6 +99,17 @@ async function uploadCatalogData(payload) {
   return response;
 }
 
+async function downloadSpCatalogList(requestParams) {
+  const res = await HttpResourceService.callRest(
+    `${ApiRoutes.USER_SERVICE_BASE}catalogs/download?${serializeParams(requestParams)}`,
+    httpVerb.GET,
+    {}
+  );
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
 const SPCatalogService = Object.freeze({
   downloadSPAccountTemplate,
   downloadSPMaterialTemplate,
@@ -106,7 +117,8 @@ const SPCatalogService = Object.freeze({
   getOrganizations,
   getAccountList,
   getAllCatalog,
-  deLinkCatalogs
+  deLinkCatalogs,
+  downloadSpCatalogList
 });
 
 export default SPCatalogService;
