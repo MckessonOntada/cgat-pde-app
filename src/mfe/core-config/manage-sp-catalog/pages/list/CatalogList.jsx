@@ -118,11 +118,11 @@ const CatalogList = () => {
     });
     onDeLinkConfirmation(payload);
   };
-  const exportList = ()=>{
+  const exportList = () => {
     requestParams.accountIds = requestParams.accountNumbers;
     delete requestParams.accountNumbers;
-    handleexportList(requestParams)
-  }
+    handleexportList(requestParams);
+  };
   const { mutate: handleexportList } = useMutation(
     async (requestParams) => {
       return SPCatalogService.downloadSpCatalogList(requestParams);
@@ -135,7 +135,7 @@ const CatalogList = () => {
         });
         CommonUtils.downloadFile(
           new Blob([response], { type: 'text/csv;charset=utf-8;' }),
-          'Accounts'
+          'Catalog_list'
         );
       },
       onError: () => {
