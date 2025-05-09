@@ -2,6 +2,7 @@ import React from 'react';
 import {
   useFilters,
   usePagination,
+  useSort,
   useTable
 } from '@src/mfe/core-config/manage-providers/context/TableContext';
 import {
@@ -16,7 +17,7 @@ import style from './style.module.scss';
 import { useGenericContext } from '../../config/GenericContext';
 import CommonUtils from '@src/util/CommonUtils';
 
-const getColumns = ({ t, material, setMaterial }) => {
+const getColumns = ({ t }) => {
   const { state, setValue } = useGenericContext();
   return [
     {
@@ -83,6 +84,8 @@ const Materials = () => {
   const { data } = useTable();
   const { pagination, changePage } = usePagination();
   const { applyFilters } = useFilters();
+  const { applySort } = useSort();
+
   const [materialQuery, setMaterialQuery] = React.useState(null);
   const debouncedApplyFilter = CommonUtils.debounce((value) => {
     applyFilters({
@@ -95,6 +98,10 @@ const Materials = () => {
       setMaterialQuery(value);
       debouncedApplyFilter(value);
     }
+  };
+  const handleOnSort = (selectedColumn, sortDirection) => {
+    if (selectedColumn.sortKey)
+      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
   return (
     <React.Fragment>
@@ -131,6 +138,7 @@ const Materials = () => {
           totalPageCount={pagination.totalPages}
           pagination={true}
           totalRocords={pagination.totalElements}
+          onSortIconClick={handleOnSort}
           handleChangePage={(_event, pageNumber) => changePage(pageNumber)}
           recordsPerPage={pagination.pageSize}
           paginationTotalRecorsMessage={t(

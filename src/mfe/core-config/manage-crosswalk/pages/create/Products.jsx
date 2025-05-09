@@ -2,13 +2,13 @@ import React from 'react';
 import {
   useFilters,
   usePagination,
+  useSort,
   useTable
 } from '@src/mfe/core-config/manage-providers/context/TableContext';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { useTranslate } from '@src/translations/useTranslation';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 import { InputField, Heading } from '@mckesson/mcp-component-library';
-import Summary from './Summary';
 import style from './style.module.scss';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import SPMaterialDetails from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/pages/SPMaterialDetails';
@@ -19,6 +19,7 @@ const getColumns = ({ t }) => {
   const { state, setValue } = useGenericContext();
   const { pagination } = usePagination();
   const { data } = useTable();
+  debugger;
   const onSelectProduct = (products) => {
     setValue('selectedProducts', products);
   };
@@ -27,7 +28,7 @@ const getColumns = ({ t }) => {
     {
       id: 'checkbox',
       name: renderTableCheckBox(
-        { id: 'ALL_ITEMS_' + pagination.pageNo },
+        { id: 'ALL_ITEMS_' + pagination.pageNumber },
         data,
         'id',
         pagination,
@@ -67,7 +68,6 @@ const getColumns = ({ t }) => {
       selector: (row) => {},
       minWidth: '140px',
       sortable: false,
-      sortKey: 'ndc_number',
       wrap: true,
       cell: (props) => <div>{props?.ndcNumber || '-'}</div>
     }
@@ -79,6 +79,7 @@ const Products = () => {
   const { data } = useTable();
   const navigate = useNavigate();
   const { pagination, changePage } = usePagination();
+  const { applySort } = useSort();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const catalog = searchParams.get('catalog');
@@ -106,6 +107,12 @@ const Products = () => {
       replace: true
     });
   };
+
+  const handleOnSort = (selectedColumn, sortDirection) => {
+    if (selectedColumn.sortKey)
+      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+  };
+
   return (
     <React.Fragment>
       <div className={style['grid-item']}>
@@ -145,6 +152,7 @@ const Products = () => {
             data
           })}
           data={data}
+          onSortIconClick={handleOnSort}
           currentPage={pagination.pageNo}
           totalPageCount={pagination.totalPages}
           pagination={true}

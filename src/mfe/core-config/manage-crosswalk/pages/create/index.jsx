@@ -66,6 +66,8 @@ const CreateCrosswalk = () => {
     }
   };
   const confirmLinkMaterials = () => {
+    if (!material || !selectedProducts || selectedProducts.length === 0) return;
+
     const state = {
       title: 'Confirmation',
       body: (
