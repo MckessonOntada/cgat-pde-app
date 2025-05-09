@@ -180,7 +180,7 @@ const List = () => {
           noDataComponent={
             <ErrorBanner
               image={<EmptyProviderTable />}
-              heading={t('controls.addProviders')}
+              heading={t('manageSPAccount.providers.noData')}
               description={t('label.emptyProviderTableDescription')}
             />
           }
