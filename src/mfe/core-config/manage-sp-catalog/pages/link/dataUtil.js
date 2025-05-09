@@ -42,6 +42,14 @@ export const LinkedCatalogService = (materials, accounts) => {
     unlinkMaterial(id) {
       __combinedData = __combinedData.filter((item) => item.id !== id);
     },
+    unlinkMaterials(ids) {
+      if (!ids) {
+        return;
+      }
+      const idList = Array.isArray(ids) ? ids : [ids];
+      const updatedData = __combinedData.filter((item) => !idList.includes(item.id));
+      __combinedData = updatedData;
+    },
     getCombinedData() {
       return __combinedData;
     }

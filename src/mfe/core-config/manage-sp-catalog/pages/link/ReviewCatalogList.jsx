@@ -144,9 +144,7 @@ const ReviewCatalogList = ({ service, sendNotification }) => {
 
   const handleUnlinkSPMaterial = async (ids) => {
     try {
-      for (const id of ids) {
-        await service.unlinkMaterial(id);
-      }
+      await service.unlinkMaterials(ids);
       setSelection([]);
       const updatedData = service.getCombinedData();
       refreshTable(updatedData);

@@ -17,9 +17,10 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
     setAccountOptions,
     setCheckedAccounts,
     checkedAccounts,
-    refetchAccounts
+    refetchAccounts,
+    checkedOrganizations,
+    setCheckedOrganizations
   } = useOrgAccountsMultiSelectionContext();
-  const [persistedOrgSelection, setPersistedOrgSelection] = useState([]);
 
   const onOrganizationChange = async (selectedValue) => {
     if (!Array.isArray(selectedValue)) {
@@ -58,7 +59,7 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
       });
       return _selected;
     });
-
+    setCheckedOrganizations(_selected);
     if (_selected.length > 0) {
       setOptions((prevOptions) => {
         const updatedOptions = prevOptions.map((opt) => {
@@ -115,7 +116,10 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
           size="md"
           isSortEnable={false}
           noSelectedCountMessage={t('forms.labels.organization')}
-          clearAllSelectedValues={() => {}}
+          clearAllSelectedValues={() => {
+            setCheckedOrganizations([]);
+            setSelectedAccount([]);
+          }}
         />
       </div>
 

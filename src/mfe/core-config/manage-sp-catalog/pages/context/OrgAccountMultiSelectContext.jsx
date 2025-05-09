@@ -24,14 +24,14 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
   const [options, setOptions] = useState([]);
   const [accountOptions, setAccountOptions] = useState();
   const [checkedAccounts, setCheckedAccounts] = useState([]);
-
+  const [checkedOrganizations, setCheckedOrganizations] = useState([]);
   // Organization List configuration
   const orgPayload = {
     pageNo: 0,
     pageSize: ACCOUNTS_PER_SEARCH,
     query: searchOrgText
   };
-  const { data: organizationOptions } = useQuery({
+  const { data: organizationOptions, refetch: refetchOrgs } = useQuery({
     queryKey: [searchOrgText],
     queryFn: async () => {
       const response = await SPCatalogService.getOrganizations(orgPayload);
@@ -40,11 +40,11 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
           index: index + 1,
           label: item.name,
           value: item.id,
-          isChecked: false
+          isChecked: checkedOrganizations.length > 0 && checkedOrganizations.find((ele) => ele.value == item.id) ? true : false
         }));
-
-        setOptions(data);
-        return data;
+        const mergedData = [...data, ...checkedOrganizations.filter((checkedOrg) => !data.some((newOrg) => newOrg.value === checkedOrg.value))];
+        setOptions(mergedData);
+        return mergedData;
       }
       setOptions([]);
       return [];
@@ -83,9 +83,12 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
             value: item.accountNumber,
             isChecked: checkedAccounts.length > 0 && checkedAccounts.find((ele) => ele.accountNumber == item.accountNumber) ? true : false
           })) || [];
-        setAccountOptions(_opt);
 
-        setSelectedAccount(_opt);
+        const mergedAcc = [..._opt, ...checkedAccounts.filter((acc) => !_opt.some((newacc) => newacc.value === acc.value))];
+
+        setAccountOptions(mergedAcc);
+
+        setSelectedAccount(mergedAcc);
         return content || [];
       }
       return [];
@@ -124,7 +127,10 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
     setAccountOptions,
     checkedAccounts,
     setCheckedAccounts,
-    refetchAccounts
+    refetchAccounts,
+    refetchOrgs,
+    checkedOrganizations,
+    setCheckedOrganizations
   };
   return <orgAccountsMultiSelectionContext.Provider value={contextValue}>{children}</orgAccountsMultiSelectionContext.Provider>;
 };

@@ -4,16 +4,14 @@ import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
-import AuthUtils from '@src/util/AuthUtils';
-import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { TableProvider, usePagination } from '@src/mfe/core-config/manage-providers/context/TableContext';
+import { TableProvider } from '@src/mfe/core-config/manage-providers/context/TableContext';
 
 import OrgAccountsMultiSelect from '../orgAccountMultiSelect';
 import { useOrgAccountsMultiSelectionContext } from '../context/OrgAccountMultiselectContext';
 
 import ReviewCatalogList from './ReviewCatalogList';
-import { LinkedCatalogService, prepareCombinedData } from './dataUtil';
+import { LinkedCatalogService } from './dataUtil';
 import { useSPMaterial } from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/context/SPMaterialContext';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useMutation } from 'react-query';
@@ -45,8 +43,7 @@ const ReviewCatalog = () => {
   };
 
   const handleSave = async () => {
-    const catalogService = LinkedCatalogService(selectedSPMaterial, selectedAccount);
-    const updatedData = catalogService.getCombinedData;
+    const updatedData = service.getCombinedData();
     if (updatedData.length === 0) {
       addNotification({
         type: 'error',
@@ -58,8 +55,6 @@ const ReviewCatalog = () => {
       spProductId: item.materialNumber,
       spAccountNumber: item.accountNumber
     }));
-    if (transformedData.length === 0) {
-    }
 
     LinkCatalog({ payload: transformedData });
   };
