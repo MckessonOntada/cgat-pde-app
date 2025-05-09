@@ -71,6 +71,8 @@ const getColumns = ({ t }) => {
       id: 'ndcNumber',
       selector: (row) => row.ndcNumber,
       wrap: true,
+      sortable: true,
+      sortKey: 'ndc',
       minWidth: '140px',
       maxWidth: '140px',
       cell: (props) => (

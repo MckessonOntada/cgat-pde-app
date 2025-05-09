@@ -68,7 +68,8 @@ const getColumns = ({ t }) => {
       name: t('manageSPMaterial.table.ndc'),
       selector: (row) => {},
       minWidth: '140px',
-      sortable: false,
+      sortable: true,
+      sortKey: 'ndc',
       wrap: true,
       cell: (props) => <div>{props?.ndcNumber || '-'}</div>
     }
