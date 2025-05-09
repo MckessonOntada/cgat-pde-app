@@ -13,6 +13,7 @@ import style from './style.module.scss';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import SPMaterialDetails from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/pages/SPMaterialDetails';
 import { useGenericContext } from '../../config/GenericContext';
+import CommonUtils from '@src/util/CommonUtils';
 
 const getColumns = ({ t }) => {
   const { state, setValue } = useGenericContext();
@@ -83,14 +84,16 @@ const Products = () => {
   const catalog = searchParams.get('catalog');
   const [spProductQuery, setSpProductQuery] = React.useState(null);
   const { applyFilters } = useFilters();
+  const debouncedApplyFilter = CommonUtils.debounce((value) => {
+    applyFilters({
+      query: value
+    });
+  }, 1000);
   const handleOnChange = (event) => {
     const value = event.target.value;
     if (value !== null || value !== undefined) {
       setSpProductQuery(value);
-
-      applyFilters({
-        query: value
-      });
+      debouncedApplyFilter(value);
     }
   };
 

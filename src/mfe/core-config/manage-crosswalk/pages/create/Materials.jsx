@@ -14,6 +14,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { Link } from 'react-router-dom';
 import style from './style.module.scss';
 import { useGenericContext } from '../../config/GenericContext';
+import CommonUtils from '@src/util/CommonUtils';
 
 const getColumns = ({ t, material, setMaterial }) => {
   const { state, setValue } = useGenericContext();
@@ -83,13 +84,16 @@ const Materials = () => {
   const { pagination, changePage } = usePagination();
   const { applyFilters } = useFilters();
   const [materialQuery, setMaterialQuery] = React.useState(null);
+  const debouncedApplyFilter = CommonUtils.debounce((value) => {
+    applyFilters({
+      query: value
+    });
+  }, 1000);
   const handleOnChange = (event) => {
     const value = event.target.value;
     if (value !== null || value !== undefined) {
       setMaterialQuery(value);
-      applyFilters({
-        query: value
-      });
+      debouncedApplyFilter(value);
     }
   };
   return (

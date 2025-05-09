@@ -8,9 +8,16 @@ const Summary = () => {
   const { state, setValue } = useGenericContext();
   const [list, setList] = React.useState(state.selectedProducts || []);
 
+  React.useEffect(() => {
+    if (!state.selectedProducts) {
+      setList([]);
+    }
+  }, [state.selectedProducts]);
+
   const handleOnLinkMaterials = () => {
     setList(state.selectedProducts || []);
   };
+
   const handleOnRemove = (id) => {
     const { selectedProducts } = state;
     if (selectedProducts) {
@@ -39,7 +46,7 @@ const Summary = () => {
                       <Button
                         Icon={BinRedIcon}
                         size="md"
-                        class="IonButton-module"
+                        className="IonButton-module"
                         variant="tertiary"
                         color="error"
                         type="button"

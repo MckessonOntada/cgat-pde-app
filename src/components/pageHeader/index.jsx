@@ -2,26 +2,30 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './PageHeader.module.scss';
 
-const PageHeader = ({ heading = '', subheading = '', children }) => {
-   
-    return (
-        <div className={styles.headerSegment}>
-            {/* Responsive mobile ui title, controls in column direction */}
-            <div className={`${styles.headings}`}>
-                {heading && <h1 className={styles.primaryHeading}>{heading}</h1>}
-                {subheading && <h2 className={styles.subheading}>{subheading}</h2>}
-            </div>
-        </div>
-    );
+const PageHeader = ({
+  heading = '',
+  subheading = '',
+  description,
+  children
+}) => {
+  return (
+    <div className={styles.headerSegment}>
+      {/* Responsive mobile ui title, controls in column direction */}
+      <div className={`${styles.headings}`}>
+        {heading && <h1 className={styles.primaryHeading}>{heading}</h1>}
+        {subheading && <h2 className={styles.subheading}>{subheading}</h2>}
+        {description && <p className={styles.description}>{description}</p>}
+      </div>
+    </div>
+  );
 };
 
 PageHeader.propTypes = {
-    heading: PropTypes.string.isRequired,
-    subheading: PropTypes.string,
+  heading: PropTypes.string.isRequired,
+  subheading: PropTypes.string
 };
 
 export default PageHeader;
-
 
 // import React from 'react';
 // import { useNavigate } from 'react-router-dom';
@@ -35,7 +39,7 @@ export default PageHeader;
 // function PageHeader(props) {
 //   const { t } = useTranslate();
 //   const navigate = useNavigate();
-  
+
 //   const handleClick = () => {
 //     const { navigateTo, state } = props;
 //     navigate(navigateTo, state ? { state } : {});
@@ -44,7 +48,7 @@ export default PageHeader;
 //   return (
 //     <div className="flexBox spaceBetween py3">
 //       <h1 className="title-style">{props.title}</h1>
-//       <div className="flexBox"> 
+//       <div className="flexBox">
 //         {props.buttonLabels?.add && (
 //           <Button Icon={add_circle_bold} className="button-icon" onClick={handleClick} size={'md'}>
 //             {props.buttonLabels.add}

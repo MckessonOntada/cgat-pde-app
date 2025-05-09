@@ -20,6 +20,7 @@ import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import SPCrosswalkService from '@src/api/commonService/SPCrosswalkService';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import Summary from './Summary';
+import { useGenericContext } from '../../config/GenericContext';
 
 const CreateCrosswalk = () => {
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ const CreateCrosswalk = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const material = searchParams.get('material');
+  const { state, reset } = useGenericContext();
   const dispatch = useDispatch();
   const [selectedMaterial, setSelectedMaterial] = React.useState(null);
   const [selectedItems, setSelectedItems] = React.useState([]);
@@ -36,14 +38,12 @@ const CreateCrosswalk = () => {
     remove: removeNotification
   } = useTimedArray(10000);
 
-  React.useState(() => {});
-
-  const handleOnLinkMaterial = () => {};
   const handleOnSubmit = () => {
-    if (selectedMaterial && selectedItems.length > 0) {
+    const { material, selectedProducts } = state;
+    if (material && selectedProducts.length > 0) {
       const payload = {
-        bnbMaterialNumber: selectedMaterial.materialNumber,
-        spProductIds: selectedItems.map((item) => item.materialNumber)
+        bnbMaterialNumber: material.materialNumber,
+        spProductIds: selectedProducts.map((item) => item.materialNumber)
       };
 
       SPCrosswalkService.createCrosswalk(payload)
@@ -53,8 +53,7 @@ const CreateCrosswalk = () => {
               type: 'success',
               description: `${response.data} new crosswalk linked`
             });
-            setSelectedMaterial(null);
-            setSelectedItems([]);
+            reset();
           }
         })
         .catch((error) => {
@@ -122,7 +121,7 @@ const CreateCrosswalk = () => {
       <div className="MCP-module-body">
         <PageHeader
           heading={t('label.createCrosswalk')}
-          subheading={t('label.createCrosswalkSubtitle')}
+          description={t('label.createCrosswalkSubtitle')}
         />
         {notifications && notifications.length > 0 && (
           <div className="MCP-module-body">
