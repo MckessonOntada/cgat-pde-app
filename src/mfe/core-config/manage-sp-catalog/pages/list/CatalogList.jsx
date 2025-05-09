@@ -19,6 +19,7 @@ import { useMutation } from 'react-query';
 import SPCatalogService from '@src/api/commonService/SPCatalogService';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import { useOrgAccountsMultiSelectionContext } from '../context/OrgAccountMultiSelectContext';
+import CommonUtils from '@src/util/CommonUtils';
 
 const CatalogList = ({ selectedAccount, selectedOrganization }) => {
   const { filters, applyFilters, clearFilters } = useFilters();
@@ -27,7 +28,7 @@ const CatalogList = ({ selectedAccount, selectedOrganization }) => {
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
   const { pagination, changePage } = usePagination();
   const { t } = useTranslate();
-  const { data = [], refreshTable } = useTable();
+  const { data = [], refreshTable, requestParams } = useTable();
   const { applySort } = useSort();
   const dispatch = useDispatch();
   const { selectedRows, deselectAll } = useSelection();
@@ -100,7 +101,31 @@ const CatalogList = ({ selectedAccount, selectedOrganization }) => {
     });
     onDeLinkConfirmation(payload);
   };
-
+  const exportList = () => {
+    requestParams.accountIds = requestParams.accountNumbers;
+    delete requestParams.accountNumbers;
+    handleexportList(requestParams);
+  };
+  const { mutate: handleexportList } = useMutation(
+    async (requestParams) => {
+      return SPCatalogService.downloadSpCatalogList(requestParams);
+    },
+    {
+      onSuccess: (response) => {
+        addNotification({
+          type: 'success',
+          description: t('label.sPCatalogListingDownload')
+        });
+        CommonUtils.downloadFile(new Blob([response], { type: 'text/csv;charset=utf-8;' }), 'Catalog_list');
+      },
+      onError: () => {
+        addNotification({
+          type: 'error',
+          description: t('manageSPMaterial.messages.button.downloadFail')
+        });
+      }
+    }
+  );
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-CardContainer">
@@ -115,7 +140,7 @@ const CatalogList = ({ selectedAccount, selectedOrganization }) => {
         heading={<Heading as="h2">{t('label.sPCatalogListing')}</Heading>}
         controls={
           <div className="controls">
-            <Button variant="secondary" className="button-icon" onClick={handleOnClick('upload')} disabled={true} size="md">
+            <Button variant="secondary" className="button-icon" onClick={exportList} disabled={!(data.length > 0)} size="md">
               {t('controls.downloadList')}
             </Button>
             <Button Icon={FileUploadIcon} className="button-icon" onClick={handleOnClick('upload')} size="md">
@@ -162,18 +187,10 @@ const CatalogList = ({ selectedAccount, selectedOrganization }) => {
         paginationRecordsPerPageMessage={t('labels.perPage')}
         paginationTotalRecorsMessage={t('labels.results')}
         noDataComponent={
-          <ErrorBanner
-            image={<EmptyProviderTable />}
-            heading={t('label.spCatalogDataGrid')}
-            description={t('label.spCatalogDataGridDescription')}
-          />
+          <ErrorBanner image={<EmptyProviderTable />} heading={t('label.spCatalogDataGrid')} description={t('label.spCatalogDataGridDescription')} />
         }
       />
-      <SPMaterialDetails
-        openSPMaterialDetails={openSPMaterialDetails}
-        setOpenSPMaterialDetails={setOpenSPMaterialDetails}
-        viewSPMaterial={viewSPMaterial}
-      />
+      <SPMaterialDetails openSPMaterialDetails={openSPMaterialDetails} setOpenSPMaterialDetails={setOpenSPMaterialDetails} viewSPMaterial={viewSPMaterial} />
     </div>
   );
 };

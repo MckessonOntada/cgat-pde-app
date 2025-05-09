@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, Alert } from '@mckesson/mcp-component-library';
 import styles from './TherapySelection.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -23,9 +23,11 @@ import TableHeading from '@src/components/tableHeading/TableHeading';
 import useOrder from '../../../orders/useOrder';
 import { Loader } from '@mckesson/mcp-component-library';
 import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
+import { FooterContext } from '@src/components/footer/FooterContext';
 
 function TherapySelection() {
   const { t } = useTranslate();
+  const { controlRef } = useContext(FooterContext);
   const navigate = useNavigate();
   const location = useLocation();
   const { orderId } = useParams();
@@ -226,7 +228,7 @@ function TherapySelection() {
             )}
             <TherapyDataTable therapy={therapy} onChange={setTherapy} />
           </div>
-          <div className="footer-wrapper">
+          <div className="footer-wrapper" ref={controlRef}>
             <div className="controls footer-controls">
               <Button size="md" variant="secondary" onClick={handleCancel}>
                 {t('captions.btnCancel')}

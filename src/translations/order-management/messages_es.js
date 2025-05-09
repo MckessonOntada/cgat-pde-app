@@ -232,6 +232,7 @@ export const MessageEs = {
   'labels.therapy.strength': 'S_Strength',
   'labels.therapy.dosage': 'S_Dosage',
   'labels.therapy.sellingUnitCode': 'S_Selling Unit Code',
+  'labels.therapy.manufacturerName': 'S_Manufacturer Name',
   'labels.therapy.vendorName': 'S_Vendor Name',
   'labels.therapy.upcCode': 'S_UPC Code',
   'labels.therapy.dropshipIndicator': 'S_Dropship Indicator',
@@ -579,5 +580,6 @@ export const MessageEs = {
   'labels.orderView.No_Cost_Therapy': 'S_No Cost Therapy',
   'labels.orderView.internalOrderId': 'S_Internal Order Id',
   'table.columns.captions.createdDate': 'S_Created Date',
-  'labels.select-account.coveredEntity': "S_I'm a covered Entity."
+  'labels.select-account.coveredEntity': "S_I'm a covered Entity.",
+  'label.sPCatalogListingDownload': 'S_File downloaded successfully.',
 };

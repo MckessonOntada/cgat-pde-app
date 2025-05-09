@@ -21,7 +21,6 @@ import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import useOrderCount from './useOrderCount';
 import CommonUtils from '@src/util/CommonUtils';
-import useAssignee from './useAssignee';
 
 const OrderIndex = () => {
   const { t } = useTranslate();
@@ -47,19 +46,23 @@ const OrderIndex = () => {
     return allTabs;
   });
 
-  const orderCounts = useOrderCount();
+  const orderCounts = {}; // useOrderCount();
   React.useEffect(() => {
-    if (_isOrderCountAdded) return;
-    const allTabs = getTabs();
-    allTabs.forEach((tab) => {
-      tab.configName = t(tab.configName);
-    });
-    setTabList(allTabs);
+    if (
+      !_isOrderCountAdded &&
+      orderCounts &&
+      CommonUtils.isNonEmptyObject(orderCounts)
+    ) {
+      const allTabs = getTabs();
+      allTabs.forEach((tab) => {
+        tab.configName = ( t(tab.configName) );
+      });
+      setTabList(allTabs);
+    }
     if (orderCounts && CommonUtils.isNonEmptyObject(orderCounts)) {
       setIsOrderCountAdded(true);
     }
   }, [orderCounts]);
-  const [assigneeQueryText, setAssigneeQueryText] = React.useState('');
 
   const navigate = useNavigate();
   const location = useLocation();

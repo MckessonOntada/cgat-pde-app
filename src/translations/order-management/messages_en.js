@@ -241,6 +241,7 @@ export const MessageEn = {
   'labels.therapy.strength': 'Strength',
   'labels.therapy.dosage': 'Dosage',
   'labels.therapy.sellingUnitCode': 'Selling Unit Code',
+  'labels.therapy.manufacturerName': 'Manufacturer Name',
   'labels.therapy.vendorName': 'Vendor Name',
   'labels.therapy.upcCode': 'UPC Code',
   'labels.therapy.dropshipIndicator': 'Dropship Indicator',
@@ -597,7 +598,7 @@ export const MessageEn = {
   'controls.placeholder.searchSPCatalogPlaceholder':
     'Search by ID, Name, NDC, Account Number...',
   'controls.placeholder.searchProviderPlaceholder':
-    'Search by Provider Name, NPI Number, DEA Number, Address ',
+    'Search by Provider Name, NPI, DEA, Address',
   'label.emptyProviderTableDescription':
     'You need to add providers to see data in this table',
   'label.materialCrosswalk': 'Material Crosswalk',
@@ -866,5 +867,7 @@ export const MessageEn = {
   'labels.orderView.No_Cost_Therapy': 'No Cost Therapy',
   'labels.orderView.internalOrderId': 'Internal Order Id',
   'table.columns.captions.createdDate': 'Created Date',
-  'labels.select-account.coveredEntity': "I'm a covered Entity."
+  'labels.select-account.coveredEntity': "I'm a covered Entity.",
+  'label.sPCatalogListingDownload': 'File downloaded successfully.',
+
 };

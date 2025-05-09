@@ -31,11 +31,7 @@ async function getAccountList(requestParams) {
 }
 
 async function getAllCatalog(requestParams) {
-  const res = await HttpResourceService.callRest(
-    `${ApiRoutes.USER_SERVICE_BASE}catalogs?${serializeParams(requestParams)}`,
-    httpVerb.GET,
-    {}
-  );
+  const res = await HttpResourceService.callRest(`${ApiRoutes.USER_SERVICE_BASE}catalogs?${serializeParams(requestParams)}`, httpVerb.GET, {});
   if (res.data) {
     return res.data;
   }
@@ -43,11 +39,7 @@ async function getAllCatalog(requestParams) {
 }
 
 async function deLinkCatalogs(payload) {
-  const res = await HttpResourceService.callRest(
-    `${ApiRoutes.USER_SERVICE_BASE}catalogs/specialityPharma/deLink`,
-    httpVerb.DELETE,
-    payload
-  );
+  const res = await HttpResourceService.callRest(`${ApiRoutes.USER_SERVICE_BASE}catalogs/specialityPharma/deLink`, httpVerb.DELETE, payload);
   return res;
 }
 
@@ -96,6 +88,13 @@ async function linkCatalog(payload) {
   return {};
 }
 
+async function downloadSpCatalogList(requestParams) {
+  const res = await HttpResourceService.callRest(`${ApiRoutes.USER_SERVICE_BASE}catalogs/download?${serializeParams(requestParams)}`, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
 const SPCatalogService = Object.freeze({
   downloadSPAccountTemplate,
   downloadSPMaterialTemplate,
@@ -104,7 +103,8 @@ const SPCatalogService = Object.freeze({
   getAccountList,
   getAllCatalog,
   deLinkCatalogs,
-  linkCatalog
+  linkCatalog,
+  downloadSpCatalogList
 });
 
 export default SPCatalogService;

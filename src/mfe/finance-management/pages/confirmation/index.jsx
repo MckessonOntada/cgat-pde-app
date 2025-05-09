@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useContext, useRef } from 'react';
 import { Heading, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
@@ -14,6 +14,7 @@ import { useExportStatementPDF } from './actions/actions';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { GeographicUtils } from '@src/util/GeographicUtil';
 import { useCustomPrint } from '@src/util/printUtils';
+import { FooterContext } from '@src/components/footer/FooterContext';
 
 const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
   const { t } = useTranslate();
@@ -25,6 +26,7 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
   const exportType = type;
   const { mutate: exportStatementPDF } = useExportStatementPDF(exportType);
   const contentRef = useRef(null);
+  const { controlRef } = useContext(FooterContext);
   const printPage = useCustomPrint(
     contentRef,
     `
@@ -126,13 +128,15 @@ const Confirmation = ({ type, backText, paginationConfig, isFetching }) => {
   };
 
   const renderFooterButtons = () => (
-    <div className="footer-section">
-      <Button variant="secondary" onClick={type === PATHS.paymentHistory ? handleDownload : () => printPage()} size="md">
-        {type === PATHS.paymentHistory ? t('paymentInvoices.CS.ExportExcel') : t('paymentInvoices.history.filters.printSummary')}
-      </Button>
-      <Button onClick={type === PATHS.paymentHistory ? () => printPage() : handleExport} size="md">
-        {type === PATHS.paymentHistory ? t('paymentInvoices.Details.print') : t('paymentInvoices.CS.ExportExcel')}
-      </Button>
+    <div className="footer-wrapper" ref={controlRef}>
+      <div className="controls footer-controls">
+        <Button variant="secondary" onClick={type === PATHS.paymentHistory ? handleDownload : () => printPage()} size="md">
+          {type === PATHS.paymentHistory ? t('paymentInvoices.CS.ExportExcel') : t('paymentInvoices.history.filters.printSummary')}
+        </Button>
+        <Button onClick={type === PATHS.paymentHistory ? () => printPage() : handleExport} size="md">
+          {type === PATHS.paymentHistory ? t('paymentInvoices.Details.print') : t('paymentInvoices.CS.ExportExcel')}
+        </Button>
+      </div>
     </div>
   );
 

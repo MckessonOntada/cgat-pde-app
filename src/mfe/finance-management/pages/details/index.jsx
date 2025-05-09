@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useAccountContext } from '../../context/AccountContext';
 import { Heading, Button } from '@mckesson/mcp-component-library';
@@ -22,6 +22,7 @@ import { TherapyDetailsConstants } from './assets/constants/TherapyDetailsConsta
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { FormattedNumber } from 'react-intl';
+import { FooterContext } from '@src/components/footer/FooterContext';
 
 function Details(props) {
   const { billNumber } = useParams();
@@ -34,6 +35,7 @@ function Details(props) {
   const [billDates, setBillDates] = useState({});
   const [therapy, setTherapy] = useState(null);
   const searchParams = new URLSearchParams(location.search);
+  const { controlRef } = useContext(FooterContext);
 
   const [open, setOpen] = useState(false);
   const therapyDetails = searchParams.get('therapy-details');
@@ -290,10 +292,11 @@ function Details(props) {
           />
         </div>
       </div>
-      <div className="footer-section">
-        {!CREDITS_SCREEN && !locationParams?.state?.reviewPay && (
-          <React.Fragment>
-            {CommonUtils.enableReviewAndPay(selectedAccount) && (
+      {!CREDITS_SCREEN && !locationParams?.state?.reviewPay && (
+        <React.Fragment>
+          {CommonUtils.enableReviewAndPay(selectedAccount) && (
+            <div className="footer-wrapper" ref={controlRef}>
+              <div className="controls footer-controls">
               <Button
                 size="md"
                 variant="primary"
@@ -303,10 +306,11 @@ function Details(props) {
                 }}>
                 {t('paymentInvoices.Details.ReviewAndPay')}
               </Button>
-            )}
-          </React.Fragment>
-        )}
-      </div>
+              </div>
+            </div>
+          )}
+        </React.Fragment>
+      )}
       {open && (
         <TherapyDetails
           therapyId={therapy}

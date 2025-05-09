@@ -6,21 +6,30 @@
     .headings {
         display: flex;
         flex-direction: column;
-        
+
         .primaryHeading {
             font-size: var(--brand-font-size--28);
             font-weight: var(--brand-font-weight-600);
             margin: 0;
             color: var(--brand-color-text-dark-slate);
         }
-        
+
         .subheading {
             font-size: var(--brand-font-size--20);
             font-weight: var(--brand-font-weight-400);
             color: var(--brand-color-primary-slate);
             margin: 0;
         }
+
+        .description {
+            font-size: var(--brand-font-size--extra-small);
+            font-weight: var(--brand-font-weight-400);
+            line-height: var(--brand-line-height--large);
+            font-style: italic;
+            color: var(--brand-color-black)
+        }
     }
+
 
     .headerControls {
         display: flex;

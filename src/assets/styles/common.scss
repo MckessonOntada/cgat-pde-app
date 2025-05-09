@@ -452,7 +452,7 @@ div.disable-all {
   .fieldName {
     justify-content: flex-end;
 
-    @media only screen and (max-width:992px) {
+    @media only screen and (max-width: 992px) {
       justify-content: flex-start;
     }
   }
@@ -1202,22 +1202,40 @@ div[role="row"] {
 
 .footer-wrapper {
   @media only screen and (max-width: 576px) {
-    height: var(--spacing-14);
+    height: var(--spacing-06);
   }
 
   .footer-controls {
     @media only screen and (max-width: 576px) {
-      position: fixed;
-      bottom: 0px;
       padding: var(--spacing-03);
       left: 0px;
       background: var(--brand-color-background-white);
-      box-shadow: 0px 2px 8px 0px rgba(38, 44, 54, 0.3);
       width: 100%;
       flex-wrap: wrap;
     }
   }
 }
+
+.styleStickey {
+  .footer-controls {
+    @media only screen and (max-width: 576px) {
+      position: fixed;
+      bottom: 0px;
+      box-shadow: 0px 2px 8px 0px rgba(38, 44, 54, 0.3);
+    }
+  }
+}
+
+.styleNonStickey {
+  .footer-controls {
+    @media only screen and (max-width: 576px) {
+      position: absolute;
+      bottom: -42px;
+      box-shadow: 0px -8px 16px -4px #262c3633;
+    }
+  }
+}
+
 
 .statusCenter {
   @include mixins.respond(md) {
@@ -1339,7 +1357,6 @@ div[role="row"] {
       align-items: center;
       justify-content: space-between;
     }
-
   }
 }
 
@@ -1357,7 +1374,6 @@ div[role="row"] {
     padding: var(--spacing-08);
   }
 }
-
 
 .inline-text-overflow {
   text-overflow: ellipsis;
@@ -1396,7 +1412,6 @@ div[role="row"] {
       color: var(--brand-color-black);
     }
   }
-
 }
 
 .disabled-div {

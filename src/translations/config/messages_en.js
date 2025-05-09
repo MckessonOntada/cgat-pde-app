@@ -28,7 +28,7 @@ export const ConfigurationMessagesEN = {
   'provider.deactivationFailure': 'Failed to deactivate provider. Please try again.',
 
   'provider.name': 'Name',
-  'provider.address': 'Name',
+  'provider.address': 'Address',
   'provider.deaNumber': 'DEA Number',
   'provider.npiNumber': 'NPI Number',
   'provider.phoneNumber': 'Phone Number',
@@ -40,9 +40,10 @@ export const ConfigurationMessagesEN = {
   'provider.contactDetails': 'Contact Details',
   'provider.providerInformation': 'Provider Information',
   'provider.linkSpAccounts': 'Link SP Accounts',
-  'provider.linkedSpAccounts': 'Lined SP Accounts',
+  'provider.linkedSpAccounts': 'Linked SP Accounts',
   'provider.btnCancel': 'Cancel',
   'provider.btnDeLink': 'Unlink',
+  'provider.btnSubmit': 'Submit',
   'provider.btnCreateProvider': 'Create Provider',
   'provider.btnUpdateProvider': 'Update Provider',
   'SPCatalog.deLinkConfirmationDescription': 'Do you want to unlink the selected SP Catalogs?',
@@ -129,6 +130,11 @@ export const ConfigurationMessagesEN = {
   'button.caption.confirm': 'Confirm',
   'button.caption.cancel': 'Cancel',
   'label.backSpCrosswalk': 'Back to Manage Crosswalk Material',
+  'label.backToMaterialCrosswalk': 'Back to Material Crosswalk',
+  'label.createCrosswalk': 'Create Crosswalk',
+  'label.createCrosswalkSubtitle': 'Map fields across Buy & Bill and SP to standardize data, ensure consistency, and streamline integration.',
+  'label.materialListing': 'Material Listing',
+  'label.spProductListing': 'SP Product Listing',
 
   'provider.btnUnlink': 'Unlink',
   'label.spCatalogDataGrid': 'SP Catalog',
@@ -146,6 +152,7 @@ export const ConfigurationMessagesEN = {
   'SPCatalog.deLinkSuccess': 'Catalog(s) de-linked successfully.',
 
   'SPCrosswalk.unlinkCrosswalkSuccess': 'Crosswalk has been unlinked successfully.',
+
   'SPCrosswalk.deLinkFailure.generic': 'Failed to unlink crosswalk. Please try again.',
 
   'SPCatalog.LinkSPMaterial': 'Link SP Material',
@@ -162,5 +169,12 @@ export const ConfigurationMessagesEN = {
   'SPCatalog.unlink.SPMaterial.error': 'Failed to unlink SP Material(s).',
   'SPCatalog.button.updatecatalog': 'update catalog',
   'SPCatalog.error.RequiredMissing': 'You have removed all the data, Go back to Link SP Material Page to continue',
-  'SPCatalog.error.PeaseSelectRequired': 'Please select the required details to continue'
+  'SPCatalog.error.PeaseSelectRequired': 'Please select the required details to continue',
+
+  'crosswalk.submitConfirmationTitle': 'Confirmation',
+  'crosswalk.submitConfirmationMessage': 'Are you sure you want to submit?',
+  'crosswalk.label.summary': 'Summary',
+  'crosswalk.btnLinkMaterials': 'Link Materials',
+  'crosswalk.product.searchPlaceholder': 'Search by Product Name, NDC',
+  'crosswalk.product.searchProductTooltip': 'Search Products'
 };

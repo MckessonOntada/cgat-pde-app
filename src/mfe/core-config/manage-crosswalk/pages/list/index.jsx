@@ -7,7 +7,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import AuthUtils from '@src/util/AuthUtils';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CommonFilters from '@src/components/Filters';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import {
@@ -33,6 +33,7 @@ const List = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const { t } = useTranslate();
   const navigate = useNavigate();
+  const location = useLocation();
   const { filters, applyFilters, clearFilters } = useFilters();
   const { pagination, changePage } = usePagination();
   const [openDetails, setOpenDetails] = useState(false);
@@ -64,6 +65,17 @@ const List = () => {
       }
     ];
   }, [isSystemAdminView]);
+
+  React.useEffect(() => {
+    const { state } = location;
+    if (state?.items) {
+      state.items.map((item) => {
+        addNotification({ ...item });
+      });
+      navigate(location.pathname, { replace: true });
+    }
+  }, []);
+
   const handleOnClick = (url) => () => navigate(url);
 
   const handleOnSort = (data, direction) => {
@@ -72,7 +84,7 @@ const List = () => {
       applySort(sortKey, direction);
     }
   };
-  console.log(notifications);
+
   const handleOnConfirmation = (id) => {
     SPCrosswalkService.deLinkCrosswalk(id)
       .then((response) => {
@@ -104,6 +116,7 @@ const List = () => {
         }
       });
   };
+
   const confirmationUnlink = (id) => () => {
     const state = {};
     state.title = `${t('label.unlinkCrosswalk')}`;
@@ -145,7 +158,6 @@ const List = () => {
               Icon={AddCircleFilled}
               className="button-icon"
               onClick={handleOnClick('create')}
-              disabled={true}
               size="md">
               {t('controls.addCrosswalk')}
             </Button>

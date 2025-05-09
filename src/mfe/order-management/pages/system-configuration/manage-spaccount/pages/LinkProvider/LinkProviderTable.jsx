@@ -200,7 +200,7 @@ function LinkProviderTable({ handleUnlinkProvider, setSelectedProviders }) {
             noDataComponent={
               <EmptyDataTable
                 image={EmptyDataImage}
-                heading={t('manageSPAccount.button.providers.linkProviders')}
+                heading={t('manageSPAccount.providers.noData')}
                 description={t('manageSPAccount.table.error.providers.listing')}
               />
             }

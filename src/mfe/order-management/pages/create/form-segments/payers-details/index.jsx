@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import FormRenderer from '@src/mfe/core-config/manage-providers/forms/FormRenderer';
 import {
   payerPersonalDetailsTemplate,
@@ -19,6 +19,7 @@ import PageHeader from '@src/components/pageHeader';
 import { useMutation } from 'react-query';
 import OrderService from '@src/api/commonService/OrderService';
 import * as Yup from 'yup';
+import { FooterContext } from '@src/components/footer/FooterContext';
 
 import {
   getInsuranceCoverageDetailsTemplate,
@@ -56,6 +57,7 @@ const PayerDetails = () => {
   const { orderId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const { controlRef } = useContext(FooterContext);
   const { isApprover = false } = location.state || {};
   const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } =
     useOrder(orderId);
@@ -261,16 +263,18 @@ const PayerDetails = () => {
                     )}
                   </div>
                 </div>
-                <div className="controls">
-                  <Button
-                    size="md"
-                    variant="secondary"
-                    onClick={handleOnBackClick}>
-                    {t('captions.btnBack')}
-                  </Button>
-                  <Button size="md" variant="primary" type="submit">
-                    {t('captions.btnSaveAndContinue')}
-                  </Button>
+                <div className="footer-wrapper" ref={controlRef}>
+                  <div className="controls footer-controls">
+                    <Button
+                      size="md"
+                      variant="secondary"
+                      onClick={handleOnBackClick}>
+                      {t('captions.btnBack')}
+                    </Button>
+                    <Button size="md" variant="primary" type="submit">
+                      {t('captions.btnSaveAndContinue')}
+                    </Button>
+                  </div>
                 </div>
               </div>
             </Form>

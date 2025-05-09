@@ -48,7 +48,7 @@ const useOrderCount = () => {
     return result;
   }
 
-  return {};
+  return null;
 };
 
 export default useOrderCount;

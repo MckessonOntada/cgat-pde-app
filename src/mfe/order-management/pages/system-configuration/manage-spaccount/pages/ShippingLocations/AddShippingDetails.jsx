@@ -1,7 +1,7 @@
 import FloatingDrawer from '@src/components/floating-drawer';
 import { Field, Formik, Form } from 'formik';
 import React from 'react';
-import { Heading, Button } from '@mckesson/mcp-component-library';
+import { Heading, Button, Loader } from '@mckesson/mcp-component-library';
 import Components from '@src/components/form/Components';
 import { useTranslate } from '@src/translations/useTranslation';
 import { initialValuesforShippingAddress, stateOptions, validationSchemaforShippingAddress } from '../../util';
@@ -42,7 +42,7 @@ function AddShippingDetails({ open, onClose, row, onFormSubmit }) {
     );
   };
 
-  const { isLoading: isSaving, mutate: addShippingLocation } = useMutation(async (data) => {
+  const { isLoading, mutate: addShippingLocation } = useMutation(async (data) => {
     const { payload, isUpdate, shippingLocationId } = data;
     if (isUpdate && shippingLocationId) {
       return await ShippingLocationService.updateShippingLocation(shippingLocationId, payload);
@@ -50,7 +50,7 @@ function AddShippingDetails({ open, onClose, row, onFormSubmit }) {
       return await ShippingLocationService.saveShippingLocation(payload);
     }
   });
-
+  if (isLoading) return <Loader type="screen" />;
   return (
     <Formik
       initialValues={initialValuesforShippingAddress(row)}
