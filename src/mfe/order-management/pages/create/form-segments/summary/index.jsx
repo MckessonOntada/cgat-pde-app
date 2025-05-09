@@ -456,9 +456,13 @@ const Summary = () => {
   const getAllowedControls = () => {
     const controls = [];
     const controlPrintSummary = (
-      <Button size={'md'} variant="secondary" onClick={() => printPage()}>
-        {t('captions.btnPrintSummary')}
-      </Button>
+      <div className="footer-wrapper" ref={controlRef}>
+        <div className="controls footer-controls">
+          <Button size={'md'} variant="secondary" onClick={() => printPage()}>
+            {t('captions.btnPrintSummary')}
+          </Button>
+        </div>
+      </div>
     );
 
     const controlCancel = (
@@ -1396,11 +1400,7 @@ const Summary = () => {
               />
             </div>
           )}
-          <div className="footer-wrapper" ref={controlRef}>
-            <div className="controls footer-controls">
-              {getAllowedControls()}
-            </div>
-          </div>
+          {getAllowedControls()}
         </div>
       </div>
       {isCommentPanelOpen && (
