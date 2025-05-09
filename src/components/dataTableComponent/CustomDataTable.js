@@ -2,9 +2,19 @@ import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import DataTable from 'react-data-table-component';
 import styles from './assets/CustomDataTable.module.scss';
-import { Divider, Dropdown, Button, Paginate, Loader } from '@mckesson/mcp-component-library';
+import {
+  Divider,
+  Dropdown,
+  Button,
+  Paginate,
+  Loader
+} from '@mckesson/mcp-component-library';
 import './assets/DataTableCssOverride.scss';
-import { customStylesNormal, customStylesCompact, isEqual } from './assets/DataTableCutomStyle.js';
+import {
+  customStylesNormal,
+  customStylesCompact,
+  isEqual
+} from './assets/DataTableCutomStyle.js';
 // import { Paginate, Loader } from '@mckesson/mcp-component-library';
 // import { Loader } from '@mckesson/mcp-component-library';
 import { CUSTOM_TABLE_TYPE } from './assets/constants/CustomTableConstants';
@@ -46,11 +56,13 @@ export const CustomDataTable = (props) => {
     selectedRowId,
     rowSelectCritera,
     selectedRowIds,
-    showCardView
+    showCardView,
+    siblingBreakpoint = 'lg'
   } = props;
 
   const pageChangeEvent = (e, newPage) => {
-    if (!showCardView) document.querySelector(`#data-table-${id} > *:first-child`).scrollTop = 0;
+    if (!showCardView)
+      document.querySelector(`#data-table-${id} > *:first-child`).scrollTop = 0;
     handleChangePage(e, newPage);
   };
 
@@ -74,12 +86,20 @@ export const CustomDataTable = (props) => {
       return (
         <div
           data-testid={'table-pagination-' + id}
-          className={isStickyPagination ? styles.paginationWrapperSticky : styles.paginationWrapper}>
+          className={
+            isStickyPagination
+              ? styles.paginationWrapperSticky
+              : styles.paginationWrapper
+          }>
           <div className={styles.d_flex}>
             <div className={styles.totalRecords}>
               {totalRocords} {paginationTotalRecorsMessage}
             </div>
-            <Divider className={styles.verticalLine} orientation="vertical" role="presentation" />
+            <Divider
+              className={styles.verticalLine}
+              orientation="vertical"
+              role="presentation"
+            />
             <div className={styles.pagination}>
               <Paginate
                 currentPage={currentPage}
@@ -88,7 +108,11 @@ export const CustomDataTable = (props) => {
                 pageSize={recordsPerPage}
               />
             </div>
-            <Divider className={styles.verticalLine} orientation="vertical" role="presentation" />
+            <Divider
+              className={styles.verticalLine}
+              orientation="vertical"
+              role="presentation"
+            />
             <div className={styles.recordPerPage}>
               {recordsPerPage} {paginationRecordsPerPageMessage}
             </div>
@@ -96,12 +120,19 @@ export const CustomDataTable = (props) => {
         </div>
       );
     }
-    if (isAdmin && CommonUtils.isNonEmptyArray(data) && totalRocords <= recordsPerPage) {
+    if (
+      isAdmin &&
+      CommonUtils.isNonEmptyArray(data) &&
+      totalRocords <= recordsPerPage
+    ) {
       return (
         <div className={styles.paginationWrapper}>
           <div className={styles.d_flex}>
             <div className={styles.totalRecords}>
-              {totalRocords} {totalRocords == 1 ? paginationTotalRecorsMessage.slice(0, -1) : paginationTotalRecorsMessage}
+              {totalRocords}{' '}
+              {totalRocords == 1
+                ? paginationTotalRecorsMessage.slice(0, -1)
+                : paginationTotalRecorsMessage}
             </div>
           </div>
         </div>
@@ -115,7 +146,10 @@ export const CustomDataTable = (props) => {
     }
     return [
       {
-        when: (row) => (selectableRows ? !!selectedRowIds?.includes(row.id) : row.id === selectedRowId),
+        when: (row) =>
+          selectableRows
+            ? !!selectedRowIds?.includes(row.id)
+            : row.id === selectedRowId,
         style: {
           backgroundColor: 'var(--brand-color-secondary-active-yellow-2)'
         }
@@ -130,7 +164,9 @@ export const CustomDataTable = (props) => {
       ) : (
         <div
           className={`${styles.tableContainer} ${getTypeClasses()} ${
-            progressPending || !data || data?.length == 0 ? styles.noDataTable : ''
+            progressPending || !data || data?.length == 0
+              ? styles.noDataTable
+              : ''
           }`}
           id={`data-table-${id}`}>
           <DataTable
@@ -138,16 +174,24 @@ export const CustomDataTable = (props) => {
             data={data}
             defaultSortFieldId={defaultSortColumn}
             sortServer={true}
-            onSort={(selectedColumn, sortDirection, sortedRows) => onSortIconClick(selectedColumn, sortDirection, sortedRows)}
+            onSort={(selectedColumn, sortDirection, sortedRows) =>
+              onSortIconClick(selectedColumn, sortDirection, sortedRows)
+            }
             pagination={false}
             sortIcon={sortIcon ? sortIcon : ''}
-            customStyles={type === CUSTOM_TABLE_TYPE.NORMAL ? customStylesNormal : customStylesCompact}
+            customStyles={
+              type === CUSTOM_TABLE_TYPE.NORMAL
+                ? customStylesNormal
+                : customStylesCompact
+            }
             fixedHeader={stickyHeader}
             persistTableHead={true}
             noDataComponent={noDataComponent}
             selectableRows={selectableRows}
             onSelectedRowsChange={handleRowSelected}
-            fixedHeaderScrollHeight={fixedHeaderScrollHeight ? fixedHeaderScrollHeight : '590px'}
+            fixedHeaderScrollHeight={
+              fixedHeaderScrollHeight ? fixedHeaderScrollHeight : '590px'
+            }
             progressComponent={
               <div className="dataTable-loader">
                 <Loader variant="circular" />
@@ -159,6 +203,7 @@ export const CustomDataTable = (props) => {
             responsive={responsive}
             conditionalRowStyles={getConditionalRowStyles()}
             selectableRowSelected={rowSelectCritera}
+            siblingBreakpoint={siblingBreakpoint}
           />
         </div>
       )}

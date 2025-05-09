@@ -48,6 +48,7 @@ export const ConfigurationMessagesEN = {
   'provider.linkedSpAccounts': 'Linked SP Accounts',
   'provider.btnCancel': 'Cancel',
   'provider.btnDeLink': 'Unlink',
+  'provider.btnSubmit': 'Submit',
   'provider.btnCreateProvider': 'Create Provider',
   'provider.btnUpdateProvider': 'Update Provider',
   'SPCatalog.deLinkConfirmationDescription':
@@ -143,6 +144,12 @@ export const ConfigurationMessagesEN = {
   'button.caption.confirm': 'Confirm',
   'button.caption.cancel': 'Cancel',
   'label.backSpCrosswalk': 'Back to Manage Crosswalk Material',
+  'label.backToMaterialCrosswalk': 'Back to Material Crosswalk',
+  'label.createCrosswalk': 'Create Crosswalk',
+  'label.createCrosswalkSubtitle':
+    'Map fields across Buy & Bill and SP to standardize data, ensure consistency, and streamline integration.',
+  'label.materialListing': 'Material Listing',
+  'label.spProductListing': 'SP Product Listing',
 
   'provider.btnUnlink': 'Unlink',
   'label.spCatalogDataGrid': 'SP Catalog',
@@ -169,5 +176,11 @@ export const ConfigurationMessagesEN = {
   'SPCrosswalk.unlinkCrosswalkSuccess':
     'Crosswalk has been unlinked successfully.',
   'SPCrosswalk.deLinkFailure.generic':
-    'Failed to unlink crosswalk. Please try again.'
+    'Failed to unlink crosswalk. Please try again.',
+  'crosswalk.submitConfirmationTitle': 'Confirmation',
+  'crosswalk.submitConfirmationMessage': 'Are you sure you want to submit?',
+  'crosswalk.label.summary': 'Summary',
+  'crosswalk.btnLinkMaterials': 'Link Materials',
+  'crosswalk.product.searchPlaceholder': 'Search by Product Name, NDC',
+  'crosswalk.product.searchProductTooltip': 'Search Products'
 };

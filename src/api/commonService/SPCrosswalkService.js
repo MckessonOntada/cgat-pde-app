@@ -2,6 +2,19 @@ import { serializeParams } from '@src/util/ApiUtils';
 import HttpResourceService, { httpVerb } from '../HttpResourceService';
 import ApiRoutes from '../ApiRoutes';
 
+function formatApiResponse(response) {
+  const successStatusCodes = [200, 206];
+  const isSuccess = successStatusCodes.includes(response?.status);
+
+  return {
+    isSuccess,
+    data: isSuccess ? response.data : null,
+    message: isSuccess
+      ? 'Success'
+      : response?.data?.message || response?.statusText || 'An error occurred'
+  };
+}
+
 async function getAllSPCrosswalk(requestParams) {
   const url = `${ApiRoutes.USER_SERVICE_BASE}cross-walk?${serializeParams(
     requestParams
@@ -47,9 +60,17 @@ async function downloadAssetTemplate(resourceName) {
   return {};
 }
 
+async function createCrosswalk(payload) {
+  const url = `${ApiRoutes.USER_SERVICE_BASE}cross-walk`;
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+
+  return res;
+}
+
 export default Object.freeze({
   getAllSPCrosswalk,
   uploadSPCrosswalk,
   downloadAssetTemplate,
-  deLinkCrosswalk
+  deLinkCrosswalk,
+  createCrosswalk
 });

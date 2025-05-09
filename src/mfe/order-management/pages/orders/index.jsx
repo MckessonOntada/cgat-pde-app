@@ -46,7 +46,7 @@ const OrderIndex = () => {
     return allTabs;
   });
 
-  const orderCounts = useOrderCount();
+  const orderCounts = {}; // useOrderCount();
   React.useEffect(() => {
     if (
       !_isOrderCountAdded &&
@@ -63,7 +63,6 @@ const OrderIndex = () => {
       setIsOrderCountAdded(true);
     }
   }, [orderCounts]);
-  const [assigneeQueryText, setAssigneeQueryText] = React.useState('');
 
   const navigate = useNavigate();
   const location = useLocation();
