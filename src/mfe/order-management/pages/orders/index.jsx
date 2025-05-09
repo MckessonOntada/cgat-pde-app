@@ -55,23 +55,7 @@ const OrderIndex = () => {
     ) {
       const allTabs = getTabs();
       allTabs.forEach((tab) => {
-        let countClass = '';
-        if ([ORDER_TABS.SUBMITTED_BUY_AND_BILL].includes(tab.id)) {
-          countClass = 'green';
-        } else if ([ORDER_TABS.SUBMITTED_SP].includes(tab.id)) {
-          countClass = 'green';
-        } else if ([ORDER_TABS.PENDING_SUBMISSION].includes(tab.id)) {
-          countClass = 'orange';
-        }
-        let orderCount = orderCounts?.[tab.id] || 0;
-        if (orderCount > 99) orderCount = '99+';
-        tab.configName = (
-          <div
-            className={`tab-count-header ${countClass}`}
-            data-label={orderCount}>
-            {t(tab.configName)}
-          </div>
-        );
+        tab.configName = ( t(tab.configName) );
       });
       setTabList(allTabs);
     }

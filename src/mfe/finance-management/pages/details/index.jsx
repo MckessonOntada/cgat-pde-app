@@ -292,25 +292,25 @@ function Details(props) {
           />
         </div>
       </div>
-      <div className="footer-wrapper" ref={controlRef}>
-        <div className="controls footer-controls">
-          {!CREDITS_SCREEN && !locationParams?.state?.reviewPay && (
-            <React.Fragment>
-              {CommonUtils.enableReviewAndPay(selectedAccount) && (
-                <Button
-                  size="md"
-                  variant="primary"
-                  type="submit"
-                  onClick={() => {
-                    navigate(`/record/invoices/reviewPayments`, { state: { ...locationParams.state, reviewPay: true } });
-                  }}>
-                  {t('paymentInvoices.Details.ReviewAndPay')}
-                </Button>
-              )}
-            </React.Fragment>
+      {!CREDITS_SCREEN && !locationParams?.state?.reviewPay && (
+        <React.Fragment>
+          {CommonUtils.enableReviewAndPay(selectedAccount) && (
+            <div className="footer-wrapper" ref={controlRef}>
+              <div className="controls footer-controls">
+              <Button
+                size="md"
+                variant="primary"
+                type="submit"
+                onClick={() => {
+                  navigate(`/record/invoices/reviewPayments`, { state: { ...locationParams.state, reviewPay: true } });
+                }}>
+                {t('paymentInvoices.Details.ReviewAndPay')}
+              </Button>
+              </div>
+            </div>
           )}
-        </div>
-      </div>
+        </React.Fragment>
+      )}
       {open && (
         <TherapyDetails
           therapyId={therapy}
