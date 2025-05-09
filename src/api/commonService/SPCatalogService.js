@@ -3,11 +3,7 @@ import ApiRoutes from '../ApiRoutes';
 import HttpResourceService, { httpVerb } from '../HttpResourceService';
 
 async function getOrganizations(requestParams) {
-  const res = await HttpResourceService.callRest(
-    `${ApiRoutes.PUBLIC_ORGANIZATIONS}?${serializeParams(requestParams)}`,
-    httpVerb.GET,
-    {}
-  );
+  const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}?${serializeParams(requestParams)}`, httpVerb.GET, {});
   res.data.content = res.data?.content?.map((item) => ({
     ...item,
     label: item.name,
@@ -18,13 +14,10 @@ async function getOrganizations(requestParams) {
 }
 
 async function getAccountList(requestParams) {
-  if (!requestParams.practiceIdList)
-    throw new Error('Missing practice id list');
+  if (!requestParams.practiceIdList) throw new Error('Missing practice id list');
 
   const res = await HttpResourceService.callRest(
-    `${ApiRoutes.USER_SERVICE_BASE}accounts/for-organizations?${serializeParams(
-      requestParams
-    )}`,
+    `${ApiRoutes.USER_SERVICE_BASE}accounts/for-organizations?${serializeParams(requestParams)}`,
     httpVerb.GET,
     {}
   );
@@ -87,16 +80,20 @@ async function downloadSPMaterialTemplate() {
 async function uploadCatalogData(payload) {
   const url = `${ApiRoutes.CATALOGS()}/upload`;
 
-  const response = await HttpResourceService.callRest(
-    url,
-    httpVerb.POST,
-    payload,
-    {
-      'Content-Type': 'multipart/form-data'
-    }
-  );
+  const response = await HttpResourceService.callRest(url, httpVerb.POST, payload, {
+    'Content-Type': 'multipart/form-data'
+  });
 
   return response;
+}
+
+async function linkCatalog(payload) {
+  const url = `${ApiRoutes.CATALOGS()}/specialityPharma`;
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+  if (res.data) {
+    return res.data;
+  }
+  return {};
 }
 
 const SPCatalogService = Object.freeze({
@@ -106,7 +103,8 @@ const SPCatalogService = Object.freeze({
   getOrganizations,
   getAccountList,
   getAllCatalog,
-  deLinkCatalogs
+  deLinkCatalogs,
+  linkCatalog
 });
 
 export default SPCatalogService;

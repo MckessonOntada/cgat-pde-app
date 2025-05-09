@@ -1,11 +1,4 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import MaterialService from '@src/api/commonService/MaterialService';
 
@@ -36,13 +29,11 @@ const INITIAL_PAGINATION_CONFIG = {
   pageNumber: 1
 };
 
-export const SPMaterialProvider = ({ children }) => {
+export const SPMaterialProvider = ({ children, isLinkCatalog = false }) => {
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
-  const [paginationConfig, setPaginationConfig] = useState(
-    INITIAL_PAGINATION_CONFIG
-  );
+  const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_CONFIG);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
-
+  const [selectedSPMaterial, setSelectedSPMaterial] = useState([]);
   const updateFilterState = useCallback((field, value) => {
     setFilterState((prevState) => ({
       ...prevState,
@@ -53,10 +44,7 @@ export const SPMaterialProvider = ({ children }) => {
   const requestParams = useMemo(() => {
     const statusFilter = filterConfig?.status;
 
-    const statusParam =
-      !statusFilter || statusFilter === 'all'
-        ? ['active', 'inactive']
-        : [statusFilter];
+    const statusParam = isLinkCatalog ? 'active' : !statusFilter || statusFilter === 'all' ? ['active', 'inactive'] : [statusFilter];
 
     return {
       pageNo: paginationConfig.pageNumber - 1,
@@ -121,13 +109,11 @@ export const SPMaterialProvider = ({ children }) => {
       applyFilters,
       applySort,
       setPageNumber,
-      refreshData: refetch
+      refreshData: refetch,
+      selectedSPMaterial,
+      setSelectedSPMaterial
     }),
     [updateFilterState, clearFilters, isLoading, isError, data, refetch]
   );
-  return (
-    <SPMaterialContext.Provider value={ctxValue}>
-      {children}
-    </SPMaterialContext.Provider>
-  );
+  return <SPMaterialContext.Provider value={ctxValue}>{children}</SPMaterialContext.Provider>;
 };

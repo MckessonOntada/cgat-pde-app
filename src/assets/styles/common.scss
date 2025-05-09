@@ -1398,3 +1398,9 @@ div[role="row"] {
   }
 
 }
+
+.disabled-div {
+  opacity: 0.5;
+  pointer-events: none;
+  background-color: #f5f5f5;
+}

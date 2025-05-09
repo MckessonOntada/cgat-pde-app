@@ -1,0 +1,140 @@
+import React, { useEffect, useState } from 'react';
+import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
+import { useTranslate } from '@src/translations/useTranslation';
+import { useOrgAccountMultiSelectionContext, useOrgAccountsMultiSelectionContext } from './context/OrgAccountMultiselectContext';
+
+function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
+  const { t } = useTranslate();
+  const {
+    searchOrgList,
+    selectedOrganization,
+    setSelectedOrganization,
+    searchAccountList,
+    setSelectedAccount,
+    options,
+    setOptions,
+    accountOptions,
+    setAccountOptions,
+    setCheckedAccounts,
+    checkedAccounts,
+    refetchAccounts
+  } = useOrgAccountsMultiSelectionContext();
+  const [persistedOrgSelection, setPersistedOrgSelection] = useState([]);
+
+  const onOrganizationChange = async (selectedValue) => {
+    if (!Array.isArray(selectedValue)) {
+      return;
+    }
+
+    const _selected = selectedValue.filter((item) => item.isChecked);
+
+    if (_selected.length > selectedOrganization?.length) {
+      const newOrg = _selected.find((org) => !selectedOrganization.some((existing) => existing.value === org.value));
+
+      if (newOrg) {
+        await refetchAccounts();
+      }
+    }
+
+    setSelectedOrganization((prev) => {
+      if (!Array.isArray(prev)) {
+        return [];
+      }
+      const unselectedOrgs = prev.filter((org) => !_selected.some((sel) => sel.value === org.value));
+      unselectedOrgs.forEach((org) => {
+        setCheckedAccounts((prev) => {
+          if (!Array.isArray(prev)) {
+            return [];
+          }
+          return prev.filter((acc) => acc.practiceId !== org.value);
+        });
+
+        setAccountOptions((prev) => {
+          if (!Array.isArray(prev)) {
+            return [];
+          }
+          return prev.filter((acc) => acc.practiceId !== org.value);
+        });
+      });
+      return _selected;
+    });
+
+    if (_selected.length > 0) {
+      setOptions((prevOptions) => {
+        const updatedOptions = prevOptions.map((opt) => {
+          const isChecked = _selected.some((org) => org.value === opt.value);
+          if (opt.isChecked !== isChecked) {
+            return { ...opt, isChecked };
+          }
+          return opt;
+        });
+
+        const isDifferent = updatedOptions.some((opt, idx) => {
+          return opt.isChecked !== prevOptions[idx].isChecked;
+        });
+
+        if (isDifferent) {
+          return updatedOptions;
+        }
+
+        return prevOptions;
+      });
+    }
+  };
+
+  const onAccountChange = (selectedValue) => {
+    if (selectedValue.length > 0) {
+      let _checkedOptions = [...[], ...checkedAccounts];
+      selectedValue.map((ele) => {
+        let eleExist = checkedAccounts.find((item) => item.value == ele.value);
+        if (ele.isChecked) {
+          if (!eleExist) _checkedOptions.push(ele);
+        } else {
+          if (eleExist) _checkedOptions = _checkedOptions.filter((i) => i.value != ele.value);
+        }
+      });
+      setCheckedAccounts(_checkedOptions);
+      setSelectedAccount(selectedValue);
+      setAccountOptions(selectedValue);
+    }
+  };
+
+  return (
+    <div className="actions-container">
+      <div className="org-select">
+        <MultiSelectDropdown
+          id={'select-org-search'}
+          label={t('ManageCatalog.SelectOrganization')}
+          isMultiSelect={true}
+          placeholder={t('ManageCatalog.SelectOrganization')}
+          onChange={onOrganizationChange}
+          options={options}
+          variant={'async'}
+          onSearch={(event) => searchOrgList(event)}
+          recordsCountToEnableSearch={5}
+          size="md"
+          isSortEnable={false}
+          noSelectedCountMessage={t('forms.labels.organization')}
+          clearAllSelectedValues={() => {}}
+        />
+      </div>
+
+      <div className="account-select">
+        <MultiSelectDropdown
+          id={'select-account-search'}
+          label={t('ManageCatalog.SelectAccount')}
+          isMultiSelect={true}
+          placeholder={t('ManageCatalog.SelectAccount')}
+          onChange={onAccountChange}
+          options={accountOptions || []}
+          variant={'async'}
+          onSearch={(event) => searchAccountList(event)}
+          recordsCountToEnableSearch={5}
+          size="md"
+          noSelectedCountMessage={t('ManageCatalog.SelectAccount')}
+        />
+      </div>
+    </div>
+  );
+}
+export default OrgAccountsMultiSelect;
