@@ -284,7 +284,8 @@ export const TableProvider = ({
     applyFilters,
     clearFilters,
     changePage,
-    refreshTable: fetchData
+    refreshTable: fetchData,
+    requestParams
   };
 
   return (

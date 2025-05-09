@@ -580,5 +580,6 @@ export const MessageEs = {
   'labels.orderView.No_Cost_Therapy': 'S_No Cost Therapy',
   'labels.orderView.internalOrderId': 'S_Internal Order Id',
   'table.columns.captions.createdDate': 'S_Created Date',
-  'labels.select-account.coveredEntity': "S_I'm a covered Entity."
+  'labels.select-account.coveredEntity': "S_I'm a covered Entity.",
+  'label.sPCatalogListingDownload': 'S_File downloaded successfully.',
 };

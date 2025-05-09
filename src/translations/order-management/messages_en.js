@@ -867,5 +867,7 @@ export const MessageEn = {
   'labels.orderView.No_Cost_Therapy': 'No Cost Therapy',
   'labels.orderView.internalOrderId': 'Internal Order Id',
   'table.columns.captions.createdDate': 'Created Date',
-  'labels.select-account.coveredEntity': "I'm a covered Entity."
+  'labels.select-account.coveredEntity': "I'm a covered Entity.",
+  'label.sPCatalogListingDownload': 'File downloaded successfully.',
+
 };

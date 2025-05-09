@@ -24,6 +24,7 @@ import { useDispatch } from 'react-redux';
 import { useMutation } from 'react-query';
 import SPCatalogService from '@src/api/commonService/SPCatalogService';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
+import CommonUtils from '@src/util/CommonUtils';
 
 const CatalogList = () => {
   const { filters, applyFilters, clearFilters } = useFilters();
@@ -32,7 +33,7 @@ const CatalogList = () => {
   const [viewSPMaterial, setViewSPMaterial] = useState(null);
   const { pagination, changePage } = usePagination();
   const { t } = useTranslate();
-  const { data = [], refreshTable } = useTable();
+  const { data = [], refreshTable, requestParams } = useTable();
   const { applySort } = useSort();
   const dispatch = useDispatch();
   const { selectedRows, deselectAll } = useSelection();
@@ -117,7 +118,34 @@ const CatalogList = () => {
     });
     onDeLinkConfirmation(payload);
   };
-
+  const exportList = () => {
+    requestParams.accountIds = requestParams.accountNumbers;
+    delete requestParams.accountNumbers;
+    handleexportList(requestParams);
+  };
+  const { mutate: handleexportList } = useMutation(
+    async (requestParams) => {
+      return SPCatalogService.downloadSpCatalogList(requestParams);
+    },
+    {
+      onSuccess: (response) => {
+        addNotification({
+          type: 'success',
+          description: t('label.sPCatalogListingDownload')
+        });
+        CommonUtils.downloadFile(
+          new Blob([response], { type: 'text/csv;charset=utf-8;' }),
+          'Catalog_list'
+        );
+      },
+      onError: () => {
+        addNotification({
+          type: 'error',
+          description: t('manageSPMaterial.messages.button.downloadFail')
+        });
+      }
+    }
+  );
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-CardContainer">
@@ -137,8 +165,8 @@ const CatalogList = () => {
             <Button
               variant="secondary"
               className="button-icon"
-              onClick={handleOnClick('upload')}
-              disabled={true}
+              onClick={exportList}
+              disabled={!(data.length > 0)}
               size="md">
               {t('controls.downloadList')}
             </Button>
