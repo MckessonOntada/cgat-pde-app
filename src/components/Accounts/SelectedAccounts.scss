@@ -40,6 +40,7 @@
   padding-bottom: 12px;
   gap: var(--spacing-03);
   border-bottom: 1px solid var(--brand-color-grey-scale-cool-1);
+  align-items: center;
 
   &:nth-last-child(-n + 1) {
     border-bottom: none;
@@ -55,7 +56,6 @@
 .label-word-break {
   word-break: break-word;
 }
-
 
 .delete-icon {
   padding: 20px;
