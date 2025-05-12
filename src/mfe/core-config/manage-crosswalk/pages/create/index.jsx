@@ -77,7 +77,7 @@ const CreateCrosswalk = () => {
     if (!material || !selectedProducts || selectedProducts.length === 0) {
       addNotification({
         type: 'error',
-        description: 'crosswalk.create.noSelectionError',
+        description: t('crosswalk.create.noSelectionError'),
         isSticky: true
       });
       return;
