@@ -314,26 +314,22 @@ const UserDetail = () => {
       setIsConsentModalOpen(false);
     }
   });
-
-  const handleOnConsentConfirm = () => {
-    const selectedUserId = data.id;
-    if (selectedUserId) {
-      impersonatePromise(selectedUserId)
-        .then((message) => {
-          OnBehalfNotification(null, {
-            onSuccess: () => {
-              navigate('/?expelled=true');
-            },
-            onError: (error) => {
-              console.log(`error ${error}`);
-            }
-          });
-        })
-        .catch((error) => {
-          console.log(`error ${error}`);
+  const handleOnConsentConfirm = async (selectedUserId) => {
+    try {
+      await impersonatePromise(selectedUserId);
+      await new Promise((resolve, reject) => {
+        OnBehalfNotification(null, {
+          onSuccess: () => {
+            navigate('/?expelled=true');
+            resolve();
+          },
+          onError: (error) => {
+            reject(error);
+          }
         });
-    } else {
-      throw new Error(
+      });
+    } catch (error) {
+      console.log(
         'Something went wrong. Missing user identifier or invalid permission list.'
       );
     }
@@ -737,7 +733,7 @@ const UserDetail = () => {
       {isConsentModalOpen && (
         <ConsentModal
           userFullName={userFullName}
-          onYes={handleOnConsentConfirm}
+          onYes={() => handleOnConsentConfirm(data.id)}
           onNo={() => setIsConsentModalOpen(false)}
         />
       )}
