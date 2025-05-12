@@ -51,7 +51,7 @@ export const LinkedCatalogService = (materials, accounts) => {
       __combinedData = updatedData;
     },
     getCombinedData() {
-      return __combinedData;
+      return [...__combinedData];
     }
   };
 };
