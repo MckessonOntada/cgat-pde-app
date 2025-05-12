@@ -12,8 +12,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.accountSearch.applyBtn': 'S_Apply',
   'paymentInvoices.accountSearch.setAsDefaultBtn': 'S_Set as Default',
   'paymentInvoices.getAccountsAPI.error': 'S_Error fetching accounts list.',
-  'paymentInvoices.setDefaultAccountAPI.success':
-    'S_Default account set successfully.',
+  'paymentInvoices.setDefaultAccountAPI.success': 'S_Default account set to:.',
   'paymentInvoices.setDefaultAccountAPI.error':
     'S_Error setting default account.',
   // Metrics Card
@@ -88,7 +87,8 @@ export const PaymentInvoicesES = {
   'paymentInvoices.CS.ExportExcel': 'S_Export Excel',
   'paymentInvoices.CS.table.billNumber': 'S_Bill No',
   'paymentInvoices.CS.table.accountnumber': 'S_Account Number',
-  'paymentInvoices.CS.table.customerStatementNumber': 'S_Customer Statement Number',
+  'paymentInvoices.CS.table.customerStatementNumber':
+    'S_Customer Statement Number',
   'paymentInvoices.CS.table.date': 'S_Date',
   'paymentInvoices.CS.table.statementBalance': 'S_Statement Balance',
   'paymentInvoices.CS.table.actions': 'S_Action(s)',
