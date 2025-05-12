@@ -113,10 +113,6 @@ const PatientDetails = () => {
 
   React.useEffect(() => {
     if (orderDetails.patient) {
-      setInitialValues({
-        patient: orderDetails.patient,
-        providerId: +orderDetails.provider?.id
-      });
       if (orderDetails.provider) {
         const { name, address } = orderDetails.provider || {};
         setProvider({
@@ -125,6 +121,10 @@ const PatientDetails = () => {
           ...orderDetails.provider
         });
       }
+      setInitialValues({
+        patient: orderDetails.patient,
+        providerId: orderDetails.provider?.id
+      });
     }
   }, [orderDetails]);
 
@@ -259,46 +259,15 @@ const PatientDetails = () => {
   const [providerQuery, setProviderQuery] = React.useState('');
 
   const { providers, isFetching, totalProviders } = useProvider({
-    channelType: orderDetails.channelType,
+    orderDetails,
     query: providerQuery
   });
 
-  const __finalProviders = React.useMemo(() => {
-    const { provider } = orderDetails;
-    if (
-      providers &&
-      Array.isArray(providers) &&
-      providers.length > 0 &&
-      provider
-    ) {
-      const inList = providers.find(
-        (item) => item.id.toString() === provider.id
-      );
-      if (!inList)
-        return [
-          ...[],
-          {
-            ...provider,
-            fullName: CommonUtils.getFullName(provider.name),
-            detailedAddress: CommonUtils.getDetailedAddress(provider.address),
-            id: +provider.id
-          },
-          ...providers
-        ];
-      else return providers;
-    }
-    return providers;
-  }, [providers, orderDetails]);
-
-  console.log(__finalProviders);
-
   const handleOnSelection = (value, setFieldValue) => {
-    let provider = providers.find((item) => item.id == value);
+    let provider = providers.find((item) => item.id === value);
     setProvider(provider);
     setFieldValue('providerId', value);
   };
-
-  console.log(provider);
 
   const debouncedSearch = React.useCallback(
     CommonUtils.debounce((query) => setProviderQuery(query)),
@@ -389,17 +358,11 @@ const PatientDetails = () => {
                           <hr />
                           <div className="selected-provider">
                             <div className="MCP-module-body">
-                              <Heading as="h2">Provider Details</Heading>
-                              {/* <FormRenderer
-                                sections={providerSections({
-                                  providers: providers.map((item) => ({
-                                    label: item.fullname,
-                                    subLabel: item.detailedAddress,
-                                    value: item.id.toString()
-                                  }))
-                                })}
-                              /> */}
-
+                              <Heading as="h2">
+                                {t(
+                                  'orderManagement.patientDetails.inputLabel.providerDetails'
+                                )}
+                              </Heading>
                               <Field
                                 component={Components['multiSelectDropdown']}
                                 id={'patient-info-provider'}
@@ -410,17 +373,16 @@ const PatientDetails = () => {
                                 onChange={(value) =>
                                   handleOnSelection(value, setFieldValue)
                                 }
-                                options={__finalProviders.map((item) => ({
+                                options={providers.map((item) => ({
                                   label: item.fullname,
-                                  subLabel: item.detailedAddress,
+                                  labelDescription: item.detailedAddress,
                                   value: item.id
                                 }))}
                                 value={provider?.id.toString()}
                                 variant={'async'}
-                                onSearch={(event) => onSearchProvider(event)}
+                                onSearch={setProviderQuery}
                                 recordsCountToEnableSearch={5}
                                 size="lg"
-                                // value={provider?.id || ''}
                                 fieldDisplayValue={
                                   CommonUtils.isNonEmptyObject(provider)
                                     ? provider

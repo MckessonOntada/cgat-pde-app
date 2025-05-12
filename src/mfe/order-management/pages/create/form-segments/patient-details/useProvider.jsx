@@ -5,17 +5,22 @@ import ProviderService from '@src/api/commonService/ProviderService';
 import CommonUtils from '@src/util/CommonUtils';
 
 function useProvider(params) {
-  const { channelType } = params;
+  const { orderDetails, query } = params;
   const {
     data: providers = [],
     isFetching,
     refetch
   } = useQuery({
-    queryKey: `fetch-providers-${JSON.stringify(params)}`,
-    queryFn: async () => ProviderService.getAllProviders(params),
+    queryKey: `fetch-providers-${orderDetails.id}-${query}`,
+    queryFn: async () =>
+      ProviderService.getAllProviders({
+        channelType: orderDetails.channelType,
+        query
+      }),
     select: (response) => {
-      if (response.content && Array.isArray(response.content)) {
-        const beautifiedProviders = response.content.map((provider) => {
+      const { content = null } = response;
+      if (content && Array.isArray(content)) {
+        const transformedProviders = content.map((provider) => {
           const { name, address } = provider;
           return {
             id: provider.id,
@@ -24,11 +29,23 @@ function useProvider(params) {
             detailedAddress: CommonUtils.getDetailedAddress(address)
           };
         });
-        return beautifiedProviders;
+        if (orderDetails.provider) {
+          const { name, address } = orderDetails.provider;
+          const preselectedProvider = {
+            ...orderDetails.provider,
+            fullname: CommonUtils.getFullName(name),
+            detailedAddress: CommonUtils.getDetailedAddress(address)
+          };
+          transformedProviders.unshift(preselectedProvider);
+        }
+        return transformedProviders;
       }
       return [];
     },
-    enabled: Boolean(channelType === CHANNEL_TYPE.SPECIALTY_PHARMA)
+    enabled: Boolean(
+      orderDetails.id &&
+        orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
+    )
   });
 
   return {
