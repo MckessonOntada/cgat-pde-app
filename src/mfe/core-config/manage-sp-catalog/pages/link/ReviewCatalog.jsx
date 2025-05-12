@@ -26,10 +26,7 @@ const ReviewCatalog = () => {
   const { selectedSPMaterial } = useSPMaterial();
   const { selectedAccount, selectedOrganization } = useOrgAccountsMultiSelectionContext();
 
-  // const service = LinkedCatalogService(selectedSPMaterial, selectedAccount);
-
   const serviceRef = React.useRef(null);
-
   if (!serviceRef.current) {
     serviceRef.current = LinkedCatalogService(selectedSPMaterial, selectedAccount);
   }
@@ -37,7 +34,6 @@ const ReviewCatalog = () => {
   const service = serviceRef.current;
   const fetchFn = React.useCallback(
     (params) => {
-      // 🛡️ Force the fetch to use the current in-memory state
       return service.getAllData(params);
     },
     [service]

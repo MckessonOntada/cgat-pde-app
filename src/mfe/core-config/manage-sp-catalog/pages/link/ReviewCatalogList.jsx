@@ -142,11 +142,42 @@ const ReviewCatalogList = ({ service, sendNotification }) => {
     }
   ];
 
+  const handlePaginationAfterUnlink = ({ service, pagination, pageSize = 8, refreshTable, changePage }) => {
+    const updatedData = service.getCombinedData();
+    const totalRecords = updatedData.length;
+    const totalPages = Math.ceil(totalRecords / pageSize);
+    let { pageNo } = pagination;
+
+    if (pageNo >= totalPages) {
+      pageNo = totalPages || 0;
+    }
+
+    const startIdx = pageNo * pageSize;
+    const endIdx = Math.min(startIdx + pageSize, totalRecords);
+    const recordsOnPage = updatedData.slice(startIdx, endIdx);
+    if (recordsOnPage.length === 0 && pageNo > 0) {
+      changePage(pageNo || 0);
+    }
+    refreshTable({
+      pageSize,
+      pageNo: Math.min(pageNo, totalPages - 1),
+      query: '',
+      sortBy: 'materialNumber',
+      sortOrder: 'asc'
+    });
+  };
+
   const handleUnlinkSPMaterial = async (ids) => {
     try {
       await service.unlinkMaterials(ids);
       setSelection([]);
-      refreshTable({ pageSize: 8, pageNo: 0, query: '', sortBy: 'materialNumber', sortOrder: 'asc' });
+      handlePaginationAfterUnlink({
+        service,
+        pagination,
+        pageSize: 8,
+        refreshTable,
+        changePage
+      });
 
       sendNotification({
         type: 'success',
@@ -160,7 +191,7 @@ const ReviewCatalogList = ({ service, sendNotification }) => {
     }
   };
 
-  const handleUnlink = (ids, type) => {
+  const handleUnlink = (ids) => {
     renderModal({
       title: t('messages.header.confirmation'),
       bodyContent: (
@@ -175,14 +206,8 @@ const ReviewCatalogList = ({ service, sendNotification }) => {
         confirm: {
           label: t('manageSPAccount.button.confirm'),
           action: () => {
-            if (type === 'bulk') {
-              const allSelectedIds = Array.isArray(ids) ? ids : [ids];
-              handleUnlinkSPMaterial(allSelectedIds);
-            } else {
-              service.unlinkMaterial(ids);
-              const updatedData = service.getCombinedData();
-              refreshTable(updatedData);
-            }
+            const allSelectedIds = Array.isArray(ids) ? ids : [ids];
+            handleUnlinkSPMaterial(allSelectedIds);
           }
         }
       }
@@ -192,7 +217,7 @@ const ReviewCatalogList = ({ service, sendNotification }) => {
   const handleBulkUnlink = () => {
     const allSelectedIds = Array.from(selectedRows);
     if (allSelectedIds.length > 0) {
-      handleUnlink(allSelectedIds, 'bulk');
+      handleUnlink(allSelectedIds);
     }
   };
 
