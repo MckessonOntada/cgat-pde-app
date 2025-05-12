@@ -21,6 +21,7 @@ import SPCrosswalkService from '@src/api/commonService/SPCrosswalkService';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import Summary from './Summary';
 import { useGenericContext } from '../../config/GenericContext';
+import { errorStatusCodes } from '@src/util/ApiUtils';
 
 const CreateCrosswalk = () => {
   const navigate = useNavigate();
@@ -55,7 +56,8 @@ const CreateCrosswalk = () => {
                 items: [
                   {
                     description: `${response.data} new crosswalk linked`,
-                    type: 'success'
+                    type: 'success',
+                    isSticky: true
                   }
                 ]
               }
@@ -63,11 +65,18 @@ const CreateCrosswalk = () => {
           }
         })
         .catch((error) => {
-          addNotification({
-            type: 'error',
-            description: error.response?.data?.message || error.message,
-            isSticky: true
-          });
+          if (errorStatusCodes.includes(error.status)) {
+            addNotification({
+              type: 'error',
+              description: error.response?.data?.message || error.message,
+              isSticky: true
+            });
+          } else {
+            addNotification({
+              type: 'error',
+              description: error.response?.data?.message || error.message
+            });
+          }
         });
     }
   };
@@ -157,13 +166,18 @@ const CreateCrosswalk = () => {
 
         <div className="MCP-CardContainer">
           <div className={style['grid-container']}>
-            <TableProvider fetchFn={MaterialService.getMaterialList}>
+            <TableProvider
+              defaultSort={{ sortBy: 'material_description' }}
+              allowedSort={['material_description', 'ndc']}
+              fetchFn={MaterialService.getMaterialList}>
               <Materials
                 material={selectedMaterial}
                 setMaterial={setSelectedMaterial}
               />
             </TableProvider>
             <TableProvider
+              defaultSort={{ sortBy: 'material_description' }}
+              allowedSort={['material_description', 'ndc']}
               defaultFilters={{
                 channelTypes: CHANNEL_TYPE.SPECIALTY_PHARMA,
                 showNonCrosswalked: true
