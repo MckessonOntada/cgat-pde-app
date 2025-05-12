@@ -14,7 +14,6 @@ const getStates = () => {
 };
 
 export const payerPersonalDetailsTemplate = (parentKey) => {
-  console.log(parentKey);
   return [
     {
       grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
