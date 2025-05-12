@@ -146,8 +146,8 @@ const ReviewCatalogList = ({ service, sendNotification }) => {
     try {
       await service.unlinkMaterials(ids);
       setSelection([]);
-      const updatedData = service.getCombinedData();
-      refreshTable(updatedData);
+      refreshTable({ pageSize: 8, pageNo: 0, query: '', sortBy: 'materialNumber', sortOrder: 'asc' });
+
       sendNotification({
         type: 'success',
         description: t('SPCatalog.unlink.SPMaterial.success')

@@ -26,7 +26,22 @@ const ReviewCatalog = () => {
   const { selectedSPMaterial } = useSPMaterial();
   const { selectedAccount, selectedOrganization } = useOrgAccountsMultiSelectionContext();
 
-  const service = LinkedCatalogService(selectedSPMaterial, selectedAccount);
+  // const service = LinkedCatalogService(selectedSPMaterial, selectedAccount);
+
+  const serviceRef = React.useRef(null);
+
+  if (!serviceRef.current) {
+    serviceRef.current = LinkedCatalogService(selectedSPMaterial, selectedAccount);
+  }
+
+  const service = serviceRef.current;
+  const fetchFn = React.useCallback(
+    (params) => {
+      // 🛡️ Force the fetch to use the current in-memory state
+      return service.getAllData(params);
+    },
+    [service]
+  );
 
   useEffect(() => {
     if (!selectedAccount && !selectedOrganization) {
@@ -113,7 +128,7 @@ const ReviewCatalog = () => {
             <OrgAccountsMultiSelect />
           </div>
 
-          <TableProvider key={1} defaultFilters={[]} allowedSort={['materialNumber', 'productName', 'accountNumber']} fetchFn={service.getAllData}>
+          <TableProvider key={1} defaultFilters={[]} allowedSort={['materialNumber', 'productName', 'accountNumber']} fetchFn={fetchFn}>
             <ReviewCatalogList service={service} sendNotification={handleNotification} />
           </TableProvider>
           <div className={'buttonGroup'}>
