@@ -7,7 +7,7 @@
     max-width: 100%;
     width: 100%;
     box-sizing: border-box;
-    overflow-x: hidden;
+    // overflow-x: hidden;
 
     .grid-item {
         grid-column: 1 / -1;
@@ -17,7 +17,7 @@
         min-width: 0;
         max-width: 100%;
         width: 100%;
-        overflow: hidden;
+        // overflow: hidden;
     }
 
     @include mixins.respond(md) {
