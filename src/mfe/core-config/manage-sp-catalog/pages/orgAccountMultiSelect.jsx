@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useOrgAccountMultiSelectionContext, useOrgAccountsMultiSelectionContext } from './context/OrgAccountMultiselectContext';
+import { useOrgAccountsMultiSelectionContext } from './context/OrgAccountMultiSelectContext';
 
 function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
   const { t } = useTranslate();

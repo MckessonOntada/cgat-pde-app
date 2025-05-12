@@ -3,11 +3,11 @@ import { Routes, Route } from 'react-router-dom';
 import { ROUTE_PATHS } from './constants';
 import Index from '../pages';
 import Upload from '../pages/upload';
-import { OrgAccountMultiSelectionProvider } from '../pages/context/OrgAccountMultiselectContext';
 import LinkSPMaterial from '../pages/link';
 import { OrgAccountSelectionProvider } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import { SPMaterialProvider } from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/context/SPMaterialContext';
 import ReviewCatalogList from '../pages/link/ReviewCatalog';
+import { OrgAccountMultiSelectionProvider } from '../pages/context/OrgAccountMultiSelectContext';
 
 const SPCatalogRouter = () => {
   return (
