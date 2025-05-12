@@ -133,6 +133,7 @@ function RenderControls({ attributeType = CONTROL_OPTIONS.Price, name, isAttribu
       const fetchData = queryResult?.data?.map((item) => ({
         value: item.value,
         label: item.label,
+        channelType: item.channelType,
         isChecked:
           sourceData?.rules
             ?.find((rule) => rule.attributeType === attributeType)
@@ -144,10 +145,16 @@ function RenderControls({ attributeType = CONTROL_OPTIONS.Price, name, isAttribu
       setSelectedData((prevState) => {
         const updatedState = { ...prevState };
         if (shouldFetchPrice) updatedState.price = '';
-        if (shouldFetchAccounts) updatedState.accounts = fetchData;
+        if (shouldFetchAccounts) {
+          updatedState.accounts = fetchData;
+          setFieldValue("accounts", fetchData); //Hidden value
+        }
         if (shouldFetchUserRole) updatedState.roles = fetchData;
         if (shouldFetchUserNames) updatedState.users = fetchData;
-        if (shouldFetchCatalog) updatedState.categories = fetchData;
+        if (shouldFetchCatalog){
+          updatedState.categories = fetchData;
+          setFieldValue("catalogs", fetchData); //Hidden value
+        }
         return updatedState;
       });
 
