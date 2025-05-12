@@ -23,7 +23,8 @@ export const useCatalogData = (shouldFetch) => {
       return (
         res.data?.content?.map((item) => ({
           label: item.therapyDescription,
-          value: item.therapyId
+          value: item.therapyId,
+          channelType: item.channelType
         })) || []
       );
     },
@@ -46,7 +47,8 @@ export const useAccountData = (shouldFetch) => {
       return (
         res.data?.content?.map((item) => ({
           label: item.accountName,
-          value: item.accountNumber
+          value: item.accountNumber,
+          channelType: item.channelType
         })) || []
       );
     },
