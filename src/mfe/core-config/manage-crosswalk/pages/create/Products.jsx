@@ -16,6 +16,7 @@ import { useGenericContext } from '../../config/GenericContext';
 import CommonUtils from '@src/util/CommonUtils';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
+import EclipsesText from '@src/components/EclipsesText/EclipsesText';
 
 const getColumns = ({ t }) => {
   const { state, setValue } = useGenericContext();
@@ -53,13 +54,13 @@ const getColumns = ({ t }) => {
       id: 'genericName',
       name: t('manageSPMaterial.table.productname'),
       selector: (row) => {},
-      minWidth: '240px',
+      maxWidth: '240px',
       sortable: true,
       sortKey: 'material_description',
       wrap: true,
       cell: (props) => (
         <Link to={`?catalog=${props.id}`} className="MCP-table-link">
-          {props?.materialDescription}
+          <EclipsesText str={props?.materialDescription}></EclipsesText>
         </Link>
       )
     },
@@ -67,11 +68,13 @@ const getColumns = ({ t }) => {
       id: 'ndcNumber',
       name: t('manageSPMaterial.table.ndc'),
       selector: (row) => {},
-      minWidth: '140px',
+      maxWidth: '140px',
       sortable: true,
       sortKey: 'ndc',
       wrap: true,
-      cell: (props) => <div>{props?.ndcNumber || '-'}</div>
+      cell: (props) => (
+        <EclipsesText str={props?.ndcNumber || '-'}></EclipsesText>
+      )
     }
   ];
 };
@@ -124,7 +127,7 @@ const Products = () => {
               value={spProductQuery}
               errors={{}}
               id="sp-product-search-field"
-              placeholder={t('crosswalk.provider.searchPlaceholder')}
+              placeholder={t('crosswalk.product.searchPlaceholder')}
               name="spProductQuery"
               onBlurFn={() => {}}
               onChangeFn={() => {}}
