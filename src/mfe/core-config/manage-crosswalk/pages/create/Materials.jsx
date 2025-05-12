@@ -19,6 +19,7 @@ import CommonUtils from '@src/util/CommonUtils';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EclipsesText from '@src/components/EclipsesText/EclipsesText';
+import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 const getColumns = ({ t }) => {
   const { state, setValue } = useGenericContext();
   return [
@@ -62,7 +63,10 @@ const getColumns = ({ t }) => {
         <Link
           to={`?material=${props.materialNumber}`}
           className="MCP-table-link">
-          <EclipsesText str={props?.materialDescription || '-'} />
+          <EclipsesTextcss
+            maxLength={240}
+            str={props?.materialDescription || '-'}
+          />
         </Link>
       )
     },
@@ -74,7 +78,9 @@ const getColumns = ({ t }) => {
       sortable: true,
       sortKey: 'ndc',
       maxWidth: '140px',
-      cell: (props) => <EclipsesText str={props?.ndcNumber || '-'} />
+      cell: (props) => (
+        <EclipsesTextcss maxLength={140} str={props?.ndcNumber || '-'} />
+      )
     }
   ];
 };
