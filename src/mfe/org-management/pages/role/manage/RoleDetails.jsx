@@ -1,6 +1,11 @@
 import React from 'react';
 import * as Yup from 'yup';
-import { Required, Button, Heading } from '@mckesson/mcp-component-library';
+import {
+  Required,
+  Button,
+  Heading,
+  Loader
+} from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ModuleHeader from '@src/components/module-header';
@@ -20,7 +25,10 @@ const getRoleValidationSchema = (t) =>
       .required(t('orgManagement.form.errors.roleNameRequired'))
       .min(2, t('orgManagement.form.errors.roleNameMinLength'))
       .max(50, t('orgManagement.form.errors.roleNameMaxLength'))
-      .matches(/^[A-Za-z\s]+$/, t('orgManagement.form.errors.roleNamevalidation')),
+      .matches(
+        /^[A-Za-z\s]+$/,
+        t('orgManagement.form.errors.roleNamevalidation')
+      ),
     roleDescription: Yup.string()
       .min(10, t('orgManagement.form.errors.roleDescriptionMinLength'))
       .max(100, t('orgManagement.form.errors.roleDescriptionMaxLength'))
@@ -74,7 +82,7 @@ const RoleDetails = () => {
 
   const roleValidationSchema = getRoleValidationSchema(t);
 
-  const mutation = useMutation(
+  const { mutate, isLoading } = useMutation(
     async (data) => {
       let apiUrl = ApiRoutes.GET_ROLES();
       let actionSpecificHttpVerb = httpVerb.POST;
@@ -83,7 +91,11 @@ const RoleDetails = () => {
         apiUrl += `/${roleId}`;
         actionSpecificHttpVerb = httpVerb.PATCH;
       }
-      const res = await HttpResourceService.callRest(apiUrl, actionSpecificHttpVerb, data);
+      const res = await HttpResourceService.callRest(
+        apiUrl,
+        actionSpecificHttpVerb,
+        data
+      );
       return res;
     },
     {
@@ -95,9 +107,14 @@ const RoleDetails = () => {
           const { name, description } = data;
 
           refreshData();
-          navigate(isEdit ? `${moduleBasePath}/${roleId}` : `${moduleBasePath}/${id}/permissions`, {
-            state: isEdit ? { ...row, name, description } : { data: data }
-          });
+          navigate(
+            isEdit
+              ? `${moduleBasePath}/${roleId}`
+              : `${moduleBasePath}/${id}/permissions`,
+            {
+              state: isEdit ? { ...row, name, description } : { data: data }
+            }
+          );
         }
       },
       onError: (error) => {
@@ -114,7 +131,7 @@ const RoleDetails = () => {
     if (roleId) {
       payload.id = roleId;
     }
-    mutation.mutate(payload);
+    mutate(payload);
   };
 
   const handleNavigate = () => {
@@ -136,16 +153,25 @@ const RoleDetails = () => {
     ],
     [t]
   );
-
+  if (isLoading) {
+    return <Loader type={'screen'} />;
+  }
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleGoBack} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={handleGoBack}
+          size="md">
           {t('orgManagement.role.captionsBtnBackToManageRoles')}
         </Button>
       </div>
 
-      <ModuleHeader heading={<PageHeader heading={t('orgManagement.role.labelAddRole')} />} />
+      <ModuleHeader
+        heading={<PageHeader heading={t('orgManagement.role.labelAddRole')} />}
+      />
 
       <div className="MCP-module-body">
         {/* {!isEdit && (
@@ -158,7 +184,11 @@ const RoleDetails = () => {
         )} */}
 
         <div>
-          <Formik initialValues={formData} validationSchema={roleValidationSchema} onSubmit={handleOnSubmit} enableReinitialize>
+          <Formik
+            initialValues={formData}
+            validationSchema={roleValidationSchema}
+            onSubmit={handleOnSubmit}
+            enableReinitialize>
             {({ values, isValid }) => {
               React.useEffect(() => {
                 setFormData({ ...values });
@@ -169,10 +199,15 @@ const RoleDetails = () => {
                   <div className="MCP-module-wrapper">
                     <div className="MCP-panel-container">
                       <ModuleHeader
-                        heading={<Heading as="h2">{t('orgManagement.role.headingPermissionDetails')}</Heading>}
+                        heading={
+                          <Heading as="h2">
+                            {t('orgManagement.role.headingPermissionDetails')}
+                          </Heading>
+                        }
                         controls={
                           <p>
-                            <span className="required">*</span> {t('orgManagement.create_org.required')}
+                            <span className="required">*</span>{' '}
+                            {t('orgManagement.create_org.required')}
                           </p>
                         }
                       />
@@ -192,8 +227,12 @@ const RoleDetails = () => {
                             name="roleDescription"
                             placeholder=" "
                             component={Components['textarea']}
-                            fieldlabel={t('orgManagement.role.labelRoleDescription')}
-                            maxCharHelperText={t('ManageCatalog.input.validation.text')}
+                            fieldlabel={t(
+                              'orgManagement.role.labelRoleDescription'
+                            )}
+                            maxCharHelperText={t(
+                              'ManageCatalog.input.validation.text'
+                            )}
                             maxCharLimit={5000}
                           />
                         </div>
@@ -202,7 +241,10 @@ const RoleDetails = () => {
                     <ModuleHeader
                       controls={
                         <div className="controls">
-                          <Button size="md" variant="secondary" onClick={handleOnBackButtonClick}>
+                          <Button
+                            size="md"
+                            variant="secondary"
+                            onClick={handleOnBackButtonClick}>
                             {t('orgManagement.button.cancel')}
                           </Button>
                           <Button size="md" variant="primary" type="submit">
