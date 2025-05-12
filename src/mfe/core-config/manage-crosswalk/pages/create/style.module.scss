@@ -1,50 +1,63 @@
+@use './../../../../../assets/styles/abstracts/mixins';
+
 .grid-container {
     display: grid;
-    grid-template-columns: 6fr 6fr 4fr;
-    grid-template-rows: auto auto;
+    grid-template-columns: 1fr;
     gap: 10px;
     max-width: 100%;
+    width: 100%;
     box-sizing: border-box;
+    // overflow-x: hidden;
 
     .grid-item {
+        grid-column: 1 / -1;
         align-self: stretch;
         box-sizing: border-box;
         word-break: break-word;
+        min-width: 0;
+        max-width: 100%;
+        width: 100%;
+        // overflow: hidden;
     }
 
-    .grid-item:nth-child(1) {
-        grid-column: 1;
-        grid-row: 1;
-    }
+    @include mixins.respond(md) {
+        grid-template-columns: 6fr 6fr 4fr;
+        grid-template-rows: auto auto;
 
-    .grid-item:nth-child(2) {
-        grid-column: 1;
-        grid-row: 2;
-    }
+        .grid-item:nth-child(1) {
+            grid-column: 1;
+            grid-row: 1;
+        }
 
-    .grid-item:nth-child(3) {
-        grid-column: 2;
-        grid-row: 1;
-    }
+        .grid-item:nth-child(2) {
+            grid-column: 1;
+            grid-row: 2;
+        }
 
-    .grid-item:nth-child(4) {
-        grid-column: 2;
-        grid-row: 2;
-    }
+        .grid-item:nth-child(3) {
+            grid-column: 2;
+            grid-row: 1;
+        }
 
-    .grid-item:nth-child(5) {
-        grid-column: 3;
-        grid-row: 1;
-    }
+        .grid-item:nth-child(4) {
+            grid-column: 2;
+            grid-row: 2;
+        }
 
-    .grid-item:nth-child(6) {
-        grid-column: 3;
-        grid-row: 2;
+        .grid-item:nth-child(5) {
+            grid-column: 3;
+            grid-row: 1;
+        }
+
+        .grid-item:nth-child(6) {
+            grid-column: 3;
+            grid-row: 2;
+        }
     }
 }
 
 .bucket-list-wrapper {
-    min-width: 240px;
+
     border: 1px solid var(--brand-color-grey-scale-cool-1);
     background-color: var(--brand-color-background-white);
     border-radius: var(--spacing-02);
@@ -77,4 +90,9 @@
             border-bottom: 1px solid var(--brand-color-text-cool-grey)
         }
     }
+}
+
+.list-controls {
+    display: inline-block;
+    margin: 1px;
 }
