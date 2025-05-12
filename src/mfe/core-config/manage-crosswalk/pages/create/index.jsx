@@ -72,8 +72,16 @@ const CreateCrosswalk = () => {
     }
   };
   const confirmLinkMaterials = () => {
+    removeNotification();
     const { material, selectedProducts } = state;
-    if (!material || !selectedProducts || selectedProducts.length === 0) return;
+    if (!material || !selectedProducts || selectedProducts.length === 0) {
+      addNotification({
+        type: 'error',
+        description: 'crosswalk.create.noSelectionError',
+        isSticky: true
+      });
+      return;
+    }
 
     const modalState = {
       title: t('crosswalk.submitConfirmationTitle'),

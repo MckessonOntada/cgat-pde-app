@@ -182,5 +182,7 @@ export const ConfigurationMessagesEN = {
   'crosswalk.label.summary': 'Summary',
   'crosswalk.btnLinkMaterials': 'Link Materials',
   'crosswalk.product.searchPlaceholder': 'Search by Product Name, NDC',
-  'crosswalk.product.searchProductTooltip': 'Search Products'
+  'crosswalk.product.searchProductTooltip': 'Search Products',
+  'crosswalk.create.noSelectionError':
+    'Invalid selection. Please make sure you have selected material and product.'
 };
