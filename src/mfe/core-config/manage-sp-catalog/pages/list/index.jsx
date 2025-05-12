@@ -13,7 +13,7 @@ import CatalogList from './CatalogList';
 import { TableProvider } from '@src/mfe/core-config/manage-providers/context/TableContext';
 
 import OrgAccountsMultiSelect from '../orgAccountMultiSelect';
-import { useOrgAccountsMultiSelectionContext } from '../context/OrgAccountMultiselectContext';
+import { useOrgAccountsMultiSelectionContext } from '../context/OrgAccountMultiSelectContext';
 
 const List = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();

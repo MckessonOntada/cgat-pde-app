@@ -8,7 +8,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { TableProvider } from '@src/mfe/core-config/manage-providers/context/TableContext';
 
 import OrgAccountsMultiSelect from '../orgAccountMultiSelect';
-import { useOrgAccountsMultiSelectionContext } from '../context/OrgAccountMultiselectContext';
 
 import ReviewCatalogList from './ReviewCatalogList';
 import { LinkedCatalogService } from './dataUtil';
@@ -17,6 +16,7 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 import { useMutation } from 'react-query';
 import SPCatalogService from '@src/api/commonService/SPCatalogService';
 import { handleApiError } from '@src/util/ApiUtils';
+import { useOrgAccountsMultiSelectionContext } from '../context/OrgAccountMultiSelectContext';
 
 const ReviewCatalog = () => {
   const { t } = useTranslate();

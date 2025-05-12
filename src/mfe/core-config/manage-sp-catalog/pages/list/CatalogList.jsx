@@ -18,7 +18,6 @@ import { useDispatch } from 'react-redux';
 import { useMutation } from 'react-query';
 import SPCatalogService from '@src/api/commonService/SPCatalogService';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
-import { useOrgAccountsMultiSelectionContext } from '../context/OrgAccountMultiSelectContext';
 import CommonUtils from '@src/util/CommonUtils';
 
 const CatalogList = ({ selectedAccount, selectedOrganization }) => {
