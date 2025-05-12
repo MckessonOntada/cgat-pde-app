@@ -205,7 +205,7 @@ export const insuranceCoverageDetailsTemplate = () => {
 
 export const sections = [
   {
-    title: 'provider.providerDetails',
+    title: 'provider.payerDetails',
     subTitle: 'Primary Insurance Company',
     isRequired: true,
     rows: payerPersonalDetailsTemplate('primaryInsuranceCompany')

@@ -42,6 +42,7 @@ export const ConfigurationMessagesEN = {
   'provider.btnLinkSpAccounts': 'Link SP Accounts',
   'provider.linkSpAccount': 'Link SP Account',
   'provider.providerDetails': 'Provider Details',
+  'provider.payerDetails': 'Payer Details',
   'provider.contactDetails': 'Contact Details',
   'provider.providerInformation': 'Provider Information',
   'provider.linkSpAccounts': 'Link SP Accounts',
