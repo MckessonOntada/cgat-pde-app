@@ -55,7 +55,7 @@ const OrderIndex = () => {
     ) {
       const allTabs = getTabs();
       allTabs.forEach((tab) => {
-        tab.configName = ( t(tab.configName) );
+        tab.configName = t(tab.configName);
       });
       setTabList(allTabs);
     }
@@ -172,9 +172,11 @@ const OrderIndex = () => {
 
   React.useEffect(() => {
     if (activeTabFromState) {
-      changeTab(ORDER_TABS.SUBMITTED_BUY_AND_BILL);
-    } else {
-      changeTab(ORDER_TABS.SUBMITTED_BUY_AND_BILL);
+      tabList.forEach((tab) => {
+        tab.isActiveTab = tab.id === activeTabFromState;
+      });
+      setTabList(tabList);
+      changeTab(activeTabFromState);
     }
   }, [activeTabFromState]);
 

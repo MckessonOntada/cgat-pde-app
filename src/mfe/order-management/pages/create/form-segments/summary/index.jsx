@@ -420,7 +420,9 @@ const Summary = () => {
   };
 
   const handleOnBackToOrders = () => {
-    navigate(RoutePaths.pathOrderManagement);
+    navigate(RoutePaths.pathOrderManagement, {
+      state: { activeTab: location?.state?.fromTab }
+    });
   };
 
   const handleOnEditSection = (stage) => {
@@ -456,10 +458,9 @@ const Summary = () => {
   const getAllowedControls = () => {
     const controls = [];
     const controlPrintSummary = (
-     
-          <Button size={'md'} variant="secondary" onClick={() => printPage()}>
-            {t('captions.btnPrintSummary')}
-          </Button>
+      <Button size={'md'} variant="secondary" onClick={() => printPage()}>
+        {t('captions.btnPrintSummary')}
+      </Button>
     );
 
     const controlCancel = (
@@ -1397,10 +1398,10 @@ const Summary = () => {
               />
             </div>
           )}
-           <div className="footer-wrapper" ref={controlRef}>
-           <div className="controls footer-controls">
-          {getAllowedControls()}
-          </div>
+          <div className="footer-wrapper" ref={controlRef}>
+            <div className="controls footer-controls">
+              {getAllowedControls()}
+            </div>
           </div>
         </div>
       </div>

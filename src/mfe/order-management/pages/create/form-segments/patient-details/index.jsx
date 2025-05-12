@@ -235,7 +235,9 @@ const PatientDetails = () => {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      navigate(RoutePaths.pathOrderManagement);
+      navigate(RoutePaths.pathOrderManagement, {
+        state: { activeTab: location?.state?.fromTab }
+      });
     }
   };
   const handleNavigate = () => {
@@ -406,8 +408,7 @@ const PatientDetails = () => {
                     </div>
                   </div>
                   <div className="footer-wrapper" ref={controlRef}>
-                    <div
-                      className="controls footer-controls">
+                    <div className="controls footer-controls">
                       <Button
                         size="md"
                         variant="secondary"

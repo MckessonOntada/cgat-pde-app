@@ -177,7 +177,10 @@ const PayerDetails = () => {
   const handleOnSubmit = (formValues) => {
     savePayerDetails(CommonUtils.cleanObject(formValues));
   };
-  const handleOnBackToOrders = () => navigate('/orders');
+  const handleOnBackToOrders = () =>
+    navigate('/orders', {
+      state: { activeTab: location?.state?.fromTab }
+    });
   const handleOnBackClick = () => navigate(`/orders/${orderId}/patient`);
 
   return (
