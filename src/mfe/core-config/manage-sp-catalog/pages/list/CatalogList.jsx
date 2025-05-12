@@ -19,8 +19,9 @@ import { useMutation } from 'react-query';
 import SPCatalogService from '@src/api/commonService/SPCatalogService';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import CommonUtils from '@src/util/CommonUtils';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
-const CatalogList = ({ selectedAccount, selectedOrganization }) => {
+const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }) => {
   const { filters, applyFilters, clearFilters } = useFilters();
   const navigate = useNavigate();
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
@@ -48,7 +49,7 @@ const CatalogList = ({ selectedAccount, selectedOrganization }) => {
     mutationFn: (payload) => SPCatalogService.deLinkCatalogs(payload),
     onSuccess: (response) => {
       if (response.status == 200) {
-        addNotification({
+        sendNotification({
           type: 'success',
           description: t('SPCatalog.deLinkSuccess')
         });
@@ -60,7 +61,7 @@ const CatalogList = ({ selectedAccount, selectedOrganization }) => {
       const { response: errorResponse } = error;
       if (errorResponse.response.data?.errorCodes && errorResponse.response.data?.errorCodes.length > 0) {
         errorResponse.response.data.errorCodes.forEach((error) => {
-          addNotification({
+          sendNotification({
             type: 'error',
             description: t(`SPCatalog.deLinkFailure.${error}`)
           });
@@ -111,14 +112,14 @@ const CatalogList = ({ selectedAccount, selectedOrganization }) => {
     },
     {
       onSuccess: (response) => {
-        addNotification({
+        sendNotification({
           type: 'success',
           description: t('label.sPCatalogListingDownload')
         });
         CommonUtils.downloadFile(new Blob([response], { type: 'text/csv;charset=utf-8;' }), 'Catalog_list');
       },
       onError: () => {
-        addNotification({
+        sendNotification({
           type: 'error',
           description: t('manageSPMaterial.messages.button.downloadFail')
         });
@@ -135,8 +136,9 @@ const CatalogList = ({ selectedAccount, selectedOrganization }) => {
           searchPlaceholder={t('controls.placeholder.searchSPCatalogPlaceholder')}
         />
       </div>
-      <ModuleHeader
-        heading={<Heading as="h2">{t('label.sPCatalogListing')}</Heading>}
+
+      <TableHeading
+        heading={t('label.sPCatalogListing')}
         controls={
           <div className="controls">
             <Button variant="secondary" className="button-icon" onClick={exportList} disabled={!(data.length > 0)} size="md">
@@ -150,24 +152,15 @@ const CatalogList = ({ selectedAccount, selectedOrganization }) => {
             </Button>
           </div>
         }
-      />
-      {notifications?.length > 0 && (
-        <div className="alert-container">
-          <div className="MCP-module-body">
-            {notifications.map((item, index) => (
-              <Alert key={item.id} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
-            ))}
-          </div>
-        </div>
-      )}
-      {selectedRows.size > 0 && (
-        <div className="table-selection-ribbon">
-          <p>{`${selectedRows.size} Item${selectedRows.size > 1 ? 's' : ''} selected`}</p>
-          <Button variant="secondary" size="sm" onClick={handleOnDeLink}>
+        secondaryView={selectedRows.size > 0}
+        secondaryViewHeading={`${selectedRows.size} ${t('userManagement.selected_items')}`}
+        secondaryViewControls={
+          <Button variant="secondary" onClick={handleOnDeLink}>
             {t('provider.btnUnlink')}
           </Button>
-        </div>
-      )}
+        }
+      />
+
       <CustomDataTable
         id="provider-list-table"
         columns={getColumns({

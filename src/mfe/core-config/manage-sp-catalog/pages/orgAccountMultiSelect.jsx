@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import MultiSelectDropdown from '@src/components/form/MultiSelectDropdown';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useOrgAccountsMultiSelectionContext } from './context/OrgAccountMultiSelectContext';
-
+import './styles.scss';
 function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
   const { t } = useTranslate();
   const {
@@ -30,7 +30,10 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
     const _selected = selectedValue.filter((item) => item.isChecked);
 
     if (_selected.length > selectedOrganization?.length) {
-      const newOrg = _selected.find((org) => !selectedOrganization.some((existing) => existing.value === org.value));
+      const newOrg = _selected.find(
+        (org) =>
+          !selectedOrganization.some((existing) => existing.value === org.value)
+      );
 
       if (newOrg) {
         await refetchAccounts();
@@ -41,7 +44,9 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
       if (!Array.isArray(prev)) {
         return [];
       }
-      const unselectedOrgs = prev.filter((org) => !_selected.some((sel) => sel.value === org.value));
+      const unselectedOrgs = prev.filter(
+        (org) => !_selected.some((sel) => sel.value === org.value)
+      );
       unselectedOrgs.forEach((org) => {
         setCheckedAccounts((prev) => {
           if (!Array.isArray(prev)) {
@@ -91,7 +96,10 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
         if (ele.isChecked) {
           if (!eleExist) _checkedOptions.push(ele);
         } else {
-          if (eleExist) _checkedOptions = _checkedOptions.filter((i) => i.value != ele.value);
+          if (eleExist)
+            _checkedOptions = _checkedOptions.filter(
+              (i) => i.value != ele.value
+            );
         }
       });
       setCheckedAccounts(_checkedOptions);

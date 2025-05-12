@@ -61,6 +61,10 @@ const List = () => {
     };
   }, [_accNumber]);
 
+  const handleNotification = (notification) => {
+    addNotification(notification);
+  };
+
   return (
     <div className="MCP-module-wrapper">
       <Breadcrumbs items={breadcrumbItems} />
@@ -80,7 +84,7 @@ const List = () => {
           defaultFilters={defaultFilters}
           allowedSort={['sap_material', 'material_description_in_language_en', 'sold_to_customer']}
           fetchFn={_accNumber?.length > 0 ? SPCatalogService.getAllCatalog : null}>
-          <CatalogList selectedAccount={selectedAccount} selectedOrganization={selectedOrganization} />
+          <CatalogList selectedAccount={selectedAccount} selectedOrganization={selectedOrganization} sendNotification={handleNotification} />
         </TableProvider>
       </div>
     </div>
