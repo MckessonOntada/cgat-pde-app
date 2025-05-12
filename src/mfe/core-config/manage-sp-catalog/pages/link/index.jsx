@@ -8,11 +8,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useOrgAccountsMultiSelectionContext } from '../context/OrgAccountMultiSelectContext';
 import OrgAccountsMultiSelect from '../orgAccountMultiSelect';
-
-import OrgAccountsSelect from '@src/mfe/order-management/components/orgAccountSelection/OrgAccountsSelect';
-import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import { useSPMaterial } from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/context/SPMaterialContext';
-
 import CommonFilters from '@src/components/Filters';
 import SPMaterialDataTable from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/pages/SPMaterialDataTable';
 
@@ -20,9 +16,14 @@ const LinkSPMaterial = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const location = useLocation();
-  const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
+  const {
+    items: notifications,
+    add: addNotification,
+    remove: removeNotification
+  } = useTimedArray(10000);
   const { applyFilters, clearFilters, selectedSPMaterial } = useSPMaterial();
-  const { selectedAccount, selectedOrganization } = useOrgAccountsMultiSelectionContext();
+  const { selectedAccount, selectedOrganization } =
+    useOrgAccountsMultiSelectionContext();
 
   useEffect(() => {
     if (!selectedAccount && !selectedOrganization) {
@@ -37,7 +38,9 @@ const LinkSPMaterial = () => {
   };
 
   const handleCancel = () => {
-    navigate('..', { state: { selectedSPMaterial, selectedAccount, selectedOrganization } });
+    navigate('..', {
+      state: { selectedSPMaterial, selectedAccount, selectedOrganization }
+    });
   };
 
   const handleSave = () => {
@@ -48,24 +51,38 @@ const LinkSPMaterial = () => {
       });
       return;
     }
-    navigate('../review-catalog', { state: { selectedSPMaterial, selectedAccount, selectedOrganization } });
+    navigate('../review-catalog', {
+      state: { selectedSPMaterial, selectedAccount, selectedOrganization }
+    });
   };
 
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={goBack} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={goBack}
+          size="md">
           {t('SPCatalog.btnBack')}
         </Button>
       </div>
 
       <div className="MCP-module-body">
-        <ModuleHeader heading={<Heading as="h1">{t('SPCatalog.LinkSPMaterial')}</Heading>} />
+        <ModuleHeader
+          heading={<Heading as="h1">{t('SPCatalog.LinkSPMaterial')}</Heading>}
+        />
         {notifications?.length > 0 && (
           <div className="alert-container">
             <div className="MCP-module-body">
               {notifications.map((item, index) => (
-                <Alert key={item.id} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />
+                <Alert
+                  key={item.id}
+                  description={item.description}
+                  onClose={() => removeNotification(item.id)}
+                  type={item.type}
+                />
               ))}
             </div>
           </div>
@@ -84,7 +101,11 @@ const LinkSPMaterial = () => {
           </div>
           <SPMaterialDataTable isLinkCatalog={true} />
           <div className={'buttonGroup'}>
-            <Button variant="secondary" type="button" onClick={handleCancel} size={'md'}>
+            <Button
+              variant="secondary"
+              type="button"
+              onClick={handleCancel}
+              size={'md'}>
               {t('manageSPAccount.button.cancel')}
             </Button>
 
