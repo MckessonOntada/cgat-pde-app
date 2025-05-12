@@ -93,11 +93,14 @@ const Materials = () => {
   const { applySort } = useSort();
 
   const [materialQuery, setMaterialQuery] = React.useState(null);
-  const debouncedApplyFilter = CommonUtils.debounce((value) => {
-    applyFilters({
-      query: value
-    });
-  }, 1000);
+  const debouncedApplyFilter = React.useCallback(
+    CommonUtils.debounce((value) => {
+      applyFilters({
+        query: value
+      });
+    }, 1000),
+    []
+  );
   const handleOnChange = (event) => {
     const value = event.target.value;
     if (value !== null || value !== undefined) {

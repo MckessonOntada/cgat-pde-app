@@ -16,8 +16,6 @@ import { useGenericContext } from '../../config/GenericContext';
 import CommonUtils from '@src/util/CommonUtils';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
-import EclipsesText from '@src/components/EclipsesText/EclipsesText';
-import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 
 const getColumns = ({ t }) => {
   const { state, setValue } = useGenericContext();
@@ -55,13 +53,13 @@ const getColumns = ({ t }) => {
       id: 'genericName',
       name: t('manageSPMaterial.table.productname'),
       selector: (row) => {},
-      maxWidth: '240px',
+      minWidth: '240px',
       sortable: true,
       sortKey: 'material_description',
       wrap: true,
       cell: (props) => (
         <Link to={`?catalog=${props.id}`} className="MCP-table-link">
-          <EclipsesTextcss maxLength={240} str={props?.materialDescription} />
+          {props?.materialDescription}
         </Link>
       )
     },
@@ -69,13 +67,11 @@ const getColumns = ({ t }) => {
       id: 'ndcNumber',
       name: t('manageSPMaterial.table.ndc'),
       selector: (row) => {},
-      maxWidth: '140px',
+      minWidth: '140px',
       sortable: true,
       sortKey: 'ndc',
       wrap: true,
-      cell: (props) => (
-        <EclipsesTextcss maxLength={140} str={props?.ndcNumber || '-'} />
-      )
+      cell: (props) => <div>{props?.ndcNumber || '-'}</div>
     }
   ];
 };
@@ -91,11 +87,16 @@ const Products = () => {
   const catalog = searchParams.get('catalog');
   const [spProductQuery, setSpProductQuery] = React.useState(null);
   const { applyFilters } = useFilters();
-  const debouncedApplyFilter = CommonUtils.debounce((value) => {
-    applyFilters({
-      query: value
-    });
-  }, 1000);
+
+  const debouncedApplyFilter = React.useCallback(
+    CommonUtils.debounce((value) => {
+      applyFilters({
+        query: value
+      });
+    }, 500),
+    []
+  );
+
   const handleOnChange = (event) => {
     const value = event.target.value;
     if (value !== null || value !== undefined) {
