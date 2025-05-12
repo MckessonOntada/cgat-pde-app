@@ -5,9 +5,11 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-03);
+
     .details-ul {
       margin-top: 0px !important;
       word-break: break-word;
+
       .details-li {
         display: flex;
         align-items: center;
@@ -43,6 +45,7 @@
         width: 40%;
         color: #1e394e;
       }
+
       .details-value {
         width: 55%;
         text-align: end;
@@ -67,6 +70,7 @@
         // padding: var(--spacing-04) 0px var(--spacing-02) 0px;
         width: 60%;
       }
+
       .Questionnaire-value {
         width: 40%;
         text-align: end;
@@ -100,12 +104,39 @@
     }
   }
 }
+
 .alert-container {
   margin-bottom: var(--spacing-03);
 }
+
 .inputTextDesc {
   text-align: end;
   margin-top: -16px;
   font-size: var(--brand-font-size--extra-small);
   font-weight: var(--brand-font-weight-400);
+}
+
+
+.accountBox {
+  display: flex;
+  gap: var(--spacing-04);
+  overflow-x: hidden;
+
+  .customTableBox {
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .selectedAccountBox {
+    display: none;
+    min-height: 250px;
+
+    @include mixins.respond("lg") {
+      width: 25%;
+      align-self: stretch;
+      display: block;
+    }
+  }
 }

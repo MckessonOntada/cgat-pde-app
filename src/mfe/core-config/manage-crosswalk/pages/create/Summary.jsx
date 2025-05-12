@@ -62,6 +62,7 @@ const Summary = () => {
           <div className="controls">
             <Button
               size="sm"
+              className={style['list-controls']}
               variant="secondary"
               onClick={handleOnLinkMaterials}>
               {t('crosswalk.btnLinkMaterials')}
