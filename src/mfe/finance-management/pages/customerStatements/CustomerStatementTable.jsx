@@ -15,7 +15,15 @@ import CommonUtils from '@src/util/CommonUtils';
 
 export default function CustomerStatementTable() {
   const { t } = useTranslate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError, exportPDF } = useCustomerStatements();
+  const {
+    data,
+    isFetching,
+    paginationConfig,
+    setPageNumber,
+    applySort,
+    isError,
+    exportPDF
+  } = useCustomerStatements();
   const { selectedAccount } = useAccountContext();
   const showCardView = useResponsiveView();
   const columns = [
@@ -50,7 +58,12 @@ export default function CustomerStatementTable() {
       width: '100px',
       sortable: true,
       wrap: true,
-      cell: (props) => CommonUtils.convertDateStringFormat(props.date, 'MM/DD/YYYY', 'DD/MM/YYYY')
+      cell: (props) =>
+        CommonUtils.convertDateStringFormat(
+          props.date,
+          'MM/DD/YYYY',
+          'DD/MM/YYYY'
+        )
     },
     {
       id: 'statementBalance',
@@ -61,7 +74,11 @@ export default function CustomerStatementTable() {
       maxWidth: '220px',
       cell: (props) => (
         <div className="status-container align-items-right">
-          <FormattedNumber value={props?.statementBalance} style="currency" currency="USD" />
+          <FormattedNumber
+            value={props?.statementBalance}
+            style="currency"
+            currency="USD"
+          />
         </div>
       ),
       right: true
@@ -75,32 +92,36 @@ export default function CustomerStatementTable() {
       wrap: true,
       isAction: true,
       isContextMenu: false,
-      cell: (props) => (
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <PDFicon />}
-          disabled={!props.isPdfAvailable}
-          onClick={() => {
-            exportPDF(
-              `${ApiRoutes.EXPORT_CUSTOMER_STATEMENTS({ docNo: props.docNo, accountNumber: selectedAccount?.accountNumber })}`,
-              {
-                companyCode: selectedAccount?.companyCode,
-                salesOrg: selectedAccount?.salesOrg,
-                payerAccountNumber: selectedAccount?.accountNumber,
-                documentDate: props?.date
-              },
-              'pdf'
-            );
-          }}
-          size="md">
-          {t('paymentInvoices.CS.table.exportPdf')}
-        </Button>
-      )
+      cell: (props) =>
+        props.isPdfAvailable && (
+          <Button
+            className="back-button-control"
+            variant="tertiary"
+            Icon={() => <PDFicon />}
+            onClick={() => {
+              exportPDF(
+                `${ApiRoutes.EXPORT_CUSTOMER_STATEMENTS({
+                  docNo: props.docNo,
+                  accountNumber: selectedAccount?.accountNumber
+                })}`,
+                {
+                  companyCode: selectedAccount?.companyCode,
+                  salesOrg: selectedAccount?.salesOrg,
+                  payerAccountNumber: selectedAccount?.accountNumber,
+                  documentDate: props?.date
+                },
+                'pdf'
+              );
+            }}
+            size="md">
+            {t('paymentInvoices.CS.table.exportPdf')}
+          </Button>
+        )
     }
   ];
   const handleSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
+    if (selectedColumn.id)
+      applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
   };
 
   const handleChangePage = (e, newPage) => {
@@ -131,7 +152,9 @@ export default function CustomerStatementTable() {
             // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
             heading={t('paymentInvoices.CS.table.emptyData')}
-            description={t('paymentInvoices.history.table.emptyDataDescription')}
+            description={t(
+              'paymentInvoices.history.table.emptyDataDescription'
+            )}
           />
         }
         progressComponent={
