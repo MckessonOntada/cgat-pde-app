@@ -295,19 +295,41 @@ const UserDetail = () => {
 
     return groupedPermissions;
   };
+  const handleonBehalfNotifcaiton = async () => {
+    const res = await HttpResourceService.callRest(
+      `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${data?.practiceId}/on-behalf-notification`,
+      httpVerb.POST
+    );
+    return res.data;
+  };
 
-  const handleOnConsentConfirm = () => {
-    const selectedUserId = data.id;
-    if (selectedUserId) {
-      impersonatePromise(selectedUserId)
-        .then((message) => {
-          navigate('/?expelled=true');
-        })
-        .catch((error) => {
-          console.log(`error ${error}`);
+  const { mutate: OnBehalfNotification } = useMutation({
+    mutationFn: handleonBehalfNotifcaiton,
+    onSuccess: (response) => {},
+    onError: (error) => {
+      setIsAlertVisible(true);
+      setAlertType('error');
+      setDuration(10000);
+      setAlertDescription(t('errors.default'));
+      setIsConsentModalOpen(false);
+    }
+  });
+  const handleOnConsentConfirm = async (selectedUserId) => {
+    try {
+      await impersonatePromise(selectedUserId);
+      await new Promise((resolve, reject) => {
+        OnBehalfNotification(null, {
+          onSuccess: () => {
+            navigate('/?expelled=true');
+            resolve();
+          },
+          onError: (error) => {
+            reject(error);
+          }
         });
-    } else {
-      throw new Error(
+      });
+    } catch (error) {
+      console.log(
         'Something went wrong. Missing user identifier or invalid permission list.'
       );
     }
@@ -346,14 +368,15 @@ const UserDetail = () => {
           )}
         </Button>
       </div>
-      {(isDeactivate || isProvisioned) && isAlertVisible && (
-        <Alert
-          description={alertDescription}
-          onClose={handleAlertClose}
-          type={alertType}
-          duration={duration}
-        />
-      )}
+      {((isDeactivate || isProvisioned) && isAlertVisible) ||
+        (isAlertVisible && (
+          <Alert
+            description={alertDescription}
+            onClose={handleAlertClose}
+            type={alertType}
+            duration={duration}
+          />
+        ))}
       <div className="MCP-module-body">
         <ModuleHeader
           heading={
@@ -710,7 +733,7 @@ const UserDetail = () => {
       {isConsentModalOpen && (
         <ConsentModal
           userFullName={userFullName}
-          onYes={handleOnConsentConfirm}
+          onYes={() => handleOnConsentConfirm(data.id)}
           onNo={() => setIsConsentModalOpen(false)}
         />
       )}
