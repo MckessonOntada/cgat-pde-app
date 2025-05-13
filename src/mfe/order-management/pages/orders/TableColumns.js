@@ -469,7 +469,7 @@ const jsxColumns = [
     selector: () => {},
     sortable: true,
     sortKey: 'submittedBy.name',
-    maxWidth: '140px',
+    maxWidth: '156px',
     cell: function (props) {
       return (
         <EclipsesTextCss
