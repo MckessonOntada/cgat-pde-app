@@ -50,7 +50,7 @@ export const FormProvider = ({ children }) => {
         });
       if (therapies)
         transformedRules.push({
-          attributeType: CONTROL_OPTIONS.Catalog,
+          attributeType: CONTROL_OPTIONS.Material,
           value: therapies.map((item) => item.therapyId)
         });
       if (roles)

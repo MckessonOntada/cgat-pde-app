@@ -82,7 +82,7 @@ export const ApproverManagementES = {
   'approvergroup.messages.approvergroup_create_success': 'S_Approver Group has been created successfully.',
   'rules.price': 'S_Price',
   'rules.accounts': 'S_Account',
-  'rules.therapies': 'S_Catalog',
+  'rules.therapies': 'S_Material',
   'rules.users': 'S_User',
   'rules.roles': 'S_Roles',
 

@@ -19,7 +19,7 @@ const AttributeFieldRenderer = ({ caption, helperText, attributeType, name, loca
         </div>
       );
 
-    case CONTROL_OPTIONS.Catalog:
+    case CONTROL_OPTIONS.Material:
     case CONTROL_OPTIONS.Account:
       return (
         <div>

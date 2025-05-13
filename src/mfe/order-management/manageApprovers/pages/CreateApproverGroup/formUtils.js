@@ -3,16 +3,16 @@ import { ALPHA_NUMERIC } from '@src/components/form/ValidationRegExp';
 import { CONTROL_OPTIONS } from '../ApproverGroupDetail/RulesConfig';
 
 export const transformAttributesToRules = (values, practiceId) => {
-  const { name, approverUsers, approverUsers_augmented, rules, catalogs, accounts } = values;
+  const { name, approverUsers, approverUsers_augmented, rules, materials, accounts } = values;
   const result = {
     name: name.trim() || 'default',
     practiceId: practiceId || 0,
     rules: {},
     approverUsers: []
   };
-  
-  const getChannelType = (catalog, value, name) => {
-    const data = catalog.find((item) => item.value === value && item.label === name);
+
+  const getChannelType = (attributeType, value, name) => {
+    const data = attributeType.find((item) => item.value === value && item.label === name);
     return data ? data.channelType : null;
   };
 
@@ -21,11 +21,11 @@ export const transformAttributesToRules = (values, practiceId) => {
       case CONTROL_OPTIONS.Price:
         result.rules.price = parseInt(rule.value, 10);
         break;
-      case CONTROL_OPTIONS.Catalog: // Therapies
+      case CONTROL_OPTIONS.Material: // Therapies
         result.rules.therapies = rule.value_augmented.map((therapy) => ({
           therapyId: therapy.value,
           therapyName: therapy.name,
-          channelType: getChannelType(catalogs, therapy.value, therapy.name)
+          channelType: getChannelType(materials, therapy.value, therapy.name)
         }));
         break;
       case CONTROL_OPTIONS.Account:
@@ -86,7 +86,7 @@ export const getValidationSchema = (t) => {
               [
                 CONTROL_OPTIONS.Price,
                 CONTROL_OPTIONS.Account,
-                CONTROL_OPTIONS.Catalog,
+                CONTROL_OPTIONS.Material,
                 CONTROL_OPTIONS['User Name'],
                 CONTROL_OPTIONS['User Role']
               ],
@@ -99,14 +99,22 @@ export const getValidationSchema = (t) => {
 
               if (Array.isArray(value)) {
                 if (value.length === 0) {
-                  if (attributeType === CONTROL_OPTIONS.Catalog) {
-                    return this.createError({ message: t('approvergroup.create.validation.therapy_required') });
+                  if (attributeType === CONTROL_OPTIONS.Material) {
+                    return this.createError({
+                      message: t('approvergroup.create.validation.therapy_required')
+                    });
                   } else if (attributeType === CONTROL_OPTIONS.Account) {
-                    return this.createError({ message: t('approvergroup.create.validation.account_required') });
+                    return this.createError({
+                      message: t('approvergroup.create.validation.account_required')
+                    });
                   } else if (attributeType === CONTROL_OPTIONS['User Role']) {
-                    return this.createError({ message: t('approvergroup.create.validation.user_role_required') });
+                    return this.createError({
+                      message: t('approvergroup.create.validation.user_role_required')
+                    });
                   } else if (attributeType === CONTROL_OPTIONS['User Name']) {
-                    return this.createError({ message: t('approvergroup.create.validation.user_name_required') });
+                    return this.createError({
+                      message: t('approvergroup.create.validation.user_name_required')
+                    });
                   }
                 }
                 return true;
@@ -116,7 +124,7 @@ export const getValidationSchema = (t) => {
               }
 
               if (
-                [CONTROL_OPTIONS.Account, CONTROL_OPTIONS.Catalog, CONTROL_OPTIONS['User Name'], CONTROL_OPTIONS['User Role']].includes(
+                [CONTROL_OPTIONS.Account, CONTROL_OPTIONS.Material, CONTROL_OPTIONS['User Name'], CONTROL_OPTIONS['User Role']].includes(
                   attributeType
                 )
               ) {

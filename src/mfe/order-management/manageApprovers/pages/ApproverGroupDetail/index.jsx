@@ -129,7 +129,7 @@ function ApproverGroupDetails() {
           <span className="rule-item-value">${value}</span>
         </div>
       );
-      if (key === 'price') {
+      if (key === 'price' && value) {
         rules.push(
           <div key={index} className="rule-wrapper">
             <div className="condition attribute-text-segment">{t('rules.clauseIf.if')}</div>
