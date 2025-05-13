@@ -170,7 +170,6 @@ export const MessageEn = {
   'labels.orderView.MY_ORDERS': 'My Orders',
   'labels.orderView.ALL_ORDERS': 'All Orders',
   'labels.orderView.ASSIGNED_TO_ME': 'Assigned to Me',
-  'labels.orderView.PAP_ORDERS': 'PAP Orders',
   'table.columns.captions.author': 'Author',
   'table.columns.captions.assignee': 'Assignee',
   'table.columns.captions.createdOn': 'Created On',
@@ -309,6 +308,7 @@ export const MessageEn = {
     'Select an account to view the list of shipping addresses',
   'messages.orderPlacementAcknowledgement':
     'I hereby acknowledge that the information mentioned above is correct. All details provided are accurate.',
+  'messages.papOrderPlacementAcknowledgement': 'No Cost Therapy Order',
   'messages.variantAcknowledgement':
     'Please acknowledge that you have verified and selected the correct Variant.',
   'messages.selectAccountToBuyTherapy':
@@ -440,9 +440,7 @@ export const MessageEn = {
     'Do you wish to order this therapy under PAP program?',
   'prompt.subMessage.submitOrder':
     "Select 'Yes' to proceed with PAP benefits or 'No' to submit as a regular order.",
-  'prompt.option.papOrder': 'PAP Order',
   'label.noCostTherapy': 'No Cost Therapy',
-  'prompt.option.nonPapOrder': 'Non-PAP Order',
   'prompt.action.submit': 'Submit',
   'message.error.papOrderCanNotEdit':
     "You can't edit this order, If you wish to make any changes to the order, please call the customer center",
@@ -571,9 +569,6 @@ export const MessageEn = {
 
   'labels.startDate': 'Start Date',
   'labels.endDate': 'End Date',
-
-  'labels.pap': 'PAP',
-  'labels.pap.order': 'PAP ORDER',
 
   'labels.SubmittedBy': 'Submitted By',
   'labels.SubmittedOn': 'Submitted On',
