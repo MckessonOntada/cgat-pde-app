@@ -145,7 +145,9 @@ function TherapySelection() {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      navigate(RoutePaths.pathOrderManagement);
+      navigate(RoutePaths.pathOrderManagement, {
+        state: { activeTab: location?.state?.fromTab }
+      });
     }
   };
 

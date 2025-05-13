@@ -312,21 +312,22 @@ const getPathByOrderStage = ({ currentStage, id, patientDetailsRequired }) => {
 
 const getState = (props) => {
   const { status, approver } = props;
+  const { tabVariant } = useOrders();
   if (!status) throw new Error('Order status not found, to get state.');
 
   const loggedInUserId = AuthUtils.getUserId();
   if (status === ORDER_STATUS.SUBMITTED) {
-    return props;
+    return { ...props, fromTab: tabVariant };
   } else if (status === ORDER_STATUS.APPROVAL_PENDING) {
     if (approver?.id === loggedInUserId) {
-      return { isEdit: true, isApprover: true };
+      return { isEdit: true, isApprover: true, props, fromTab: tabVariant };
     } else {
-      return { isApprover: false };
+      return { isApprover: false, props, fromTab: tabVariant };
     }
   } else if (status === ORDER_STATUS.IN_DRAFT) {
-    return { isSimulate: true };
+    return { isSimulate: true, props, fromTab: tabVariant };
   } else {
-    return props;
+    return { props, props, fromTab: tabVariant };
   }
 };
 

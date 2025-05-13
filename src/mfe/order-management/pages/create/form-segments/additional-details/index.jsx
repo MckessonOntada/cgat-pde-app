@@ -230,7 +230,8 @@ function AdditionalDetails() {
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
-    if (isPapOrder) navigate('/orders');
+    if (isPapOrder)
+      navigate('/orders', { state: { activeTab: location?.state?.fromTab } });
   }, [orderDetails]);
 
   const { isLoading: isSaving, mutate: saveAdditionalDetails } = useMutation(
@@ -239,7 +240,11 @@ function AdditionalDetails() {
       onSuccess: (result) => {
         const { id } = result;
         navigate(`../${id}/summary`, {
-          state: { isEdit: isEdit, isApprover: isApprover }
+          state: {
+            activeTab: location?.state?.fromTab,
+            isEdit: isEdit,
+            isApprover: isApprover
+          }
         });
       },
       onError: (error) => {
@@ -495,16 +500,28 @@ function AdditionalDetails() {
     }
     if (isEdit) {
       navigate(`../${orderId}/summary`, {
-        state: { isEdit: isEdit, isApprover: isApprover }
+        state: {
+          fromTab: location?.state?.fromTab,
+          isEdit: isEdit,
+          isApprover: isApprover
+        }
       });
     } else {
       if (orderDetails?.patientDetailsRequired) {
         navigate(`../${orderId}/patient`, {
-          state: { isEdit: false, isApprover: isApprover }
+          state: {
+            fromTab: location?.state?.fromTab,
+            isEdit: false,
+            isApprover: isApprover
+          }
         });
       } else {
         navigate(`../${orderId}/accounts`, {
-          state: { isEdit: false, isApprover: isApprover }
+          state: {
+            fromTab: location?.state?.fromTab,
+            isEdit: false,
+            isApprover: isApprover
+          }
         });
       }
     }
@@ -581,24 +598,40 @@ function AdditionalDetails() {
     if (isDirty) {
       setModalSuccessCallback('list');
     } else {
-      navigate(RoutePaths.pathOrderManagement);
+      navigate(RoutePaths.pathOrderManagement, {
+        state: { activeTab: location?.state?.fromTab }
+      });
     }
   };
 
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
-      navigate(RoutePaths.pathOrderManagement);
+      navigate(RoutePaths.pathOrderManagement, {
+        state: { activeTab: location?.state?.fromTab }
+      });
     } else if (modalSuccessCallback === 'summary') {
       navigate(`../${orderId}/summary`, {
-        state: { isEdit: isEdit, isApprover: isApprover }
+        state: {
+          fromTab: location?.state?.fromTab,
+          isEdit: isEdit,
+          isApprover: isApprover
+        }
       });
     } else if (modalSuccessCallback === 'patient') {
       navigate(`../${orderId}/patient`, {
-        state: { isEdit: false, isApprover: isApprover }
+        state: {
+          fromTab: location?.state?.fromTab,
+          isEdit: false,
+          isApprover: isApprover
+        }
       });
     } else if (modalSuccessCallback === 'account') {
       navigate(`../${orderId}/accounts`, {
-        state: { isEdit: false, isApprover: isApprover }
+        state: {
+          fromTab: location?.state?.fromTab,
+          isEdit: false,
+          isApprover: isApprover
+        }
       });
     }
   };
@@ -852,8 +885,7 @@ function AdditionalDetails() {
                 </div>
 
                 <div className="footer-wrapper" ref={controlRef}>
-                  <div
-                    className="controls footer-controls">
+                  <div className="controls footer-controls">
                     <Button
                       size="md"
                       variant="secondary"

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Stepper } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { CHANNEL_TYPE, FormList, ORDER_STAGES } from './Constants';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import CommonUtils from '@src/util/CommonUtils';
 import style from './OrderStepper.module.scss';
 
@@ -46,6 +46,7 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
   }, [channelType, patientDetailsRequired]);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const filteredStepperItems = forms.filter((form) => {
     if (!patientDetailsRequired && form.name === ORDER_STAGES.PATIENT_DETAILS) {
@@ -60,6 +61,7 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
     ACCOUNT_DETAILS: 2,
     PATIENT_DETAILS: 3,
     'PATIENT_&_PROVIDER_DETAILS': 3,
+    PATIENT_AND_PROVIDER_DETAILS: 3,
     PAYER_DETAILS: 4,
     ADDITIONAL_DETAILS: 5,
     ORDER_SUMMARY: 6
@@ -89,9 +91,13 @@ function OrderStepper({ status, patientDetailsRequired = false, channelType }) {
           if (currentStage[stepByTitle] <= currentStage[status]) {
             const newNavLink = navLinks[stepByTitle];
             if (currentStage[status] > 1 && stepByTitle === 'THERAPY_SELECTION')
-              navigate(`/orders/edit-order/${orderId}`);
+              navigate(`/orders/edit-order/${orderId}`, {
+                state: { fromTab: location?.state?.fromTab }
+              });
             else {
-              navigate(newNavLink);
+              navigate(newNavLink, {
+                state: { fromTab: location?.state?.fromTab }
+              });
             }
           }
         }

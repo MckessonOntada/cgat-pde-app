@@ -441,6 +441,7 @@ export const MessageEn = {
   'prompt.subMessage.submitOrder':
     "Select 'Yes' to proceed with PAP benefits or 'No' to submit as a regular order.",
   'prompt.option.papOrder': 'PAP Order',
+  'label.noCostTherapy': 'No Cost Therapy',
   'prompt.option.nonPapOrder': 'Non-PAP Order',
   'prompt.action.submit': 'Submit',
   'message.error.papOrderCanNotEdit':
@@ -868,6 +869,5 @@ export const MessageEn = {
   'labels.orderView.internalOrderId': 'Internal Order Id',
   'table.columns.captions.createdDate': 'Created Date',
   'labels.select-account.coveredEntity': "I'm a covered Entity.",
-  'label.sPCatalogListingDownload': 'File downloaded successfully.',
-
+  'label.sPCatalogListingDownload': 'File downloaded successfully.'
 };
