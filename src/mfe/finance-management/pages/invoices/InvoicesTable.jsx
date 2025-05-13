@@ -67,7 +67,7 @@ export default function InvoicesTable() {
       omit: !CommonUtils.enableReviewAndPay(selectedAccount)
     },
     {
-      name: t('paymentInvoices.history.table.billNumber'),
+      name: t('paymentInvoices.history.table.invoiceNumber'),
       id: 'billNumber',
       selector: (row) => `${row.billNumber}`,
       sortable: true,
@@ -93,7 +93,7 @@ export default function InvoicesTable() {
     },
     {
       id: 'soldToSite',
-      name: t('paymentInvoices.history.table.SoldToSite'),
+      name: t('paymentInvoices.history.table.SoldToAccountNo'),
       selector: (row) => row.soldToSite,
       maxWidth: '140px',
       minWidth: '140px',
@@ -106,7 +106,7 @@ export default function InvoicesTable() {
       )
     },
     {
-      name: t('paymentInvoices.history.table.PostingDate'),
+      name: t('paymentInvoices.history.table.invoiceDate'),
       selector: (row) => row.billDate,
       sortable: true,
       id: 'billDate',
@@ -178,7 +178,7 @@ export default function InvoicesTable() {
       )
     },
     {
-      name: t('paymentInvoices.history.table.BillAmount'),
+      name: t('paymentInvoices.history.table.invoiceAmount'),
       selector: (row) => row?.billAmount,
       minWidth: '140px',
       sortable: true,

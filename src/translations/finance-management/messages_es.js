@@ -117,8 +117,12 @@ export const PaymentInvoicesES = {
 
   // Invoices
   'paymentInvoices.history.table.billNumber': 'S_Number',
+  'paymentInvoices.history.table.invoiceNumber': 'S_Invoice Number',
   'paymentInvoices.history.table.SoldToSite': 'S_Sold To Site',
+  'paymentInvoices.history.table.SoldToAccountNo': 'S_Sold To Account Number',
   'paymentInvoices.history.table.PostingDate': 'S_Bill Date',
+  'paymentInvoices.history.table.invoiceAmount': 'S_Invoice Amount',
+  'paymentInvoices.history.table.invoiceDate': 'S_Invoice Date',
   'paymentInvoices.history.table.PaymentTerm': 'S_Payment Term',
   'paymentInvoices.history.table.DueDate': 'S_Due Date',
   'paymentInvoices.history.table.OpenAmount': 'S_Open Amount',
@@ -164,6 +168,7 @@ export const PaymentInvoicesES = {
   'paymentInvoices.table.invoiceHeading': 'S_Invoice List',
   'paymentInvoices.table.creditHeading': 'S_Credit List',
   'paymentInvoices.filter.search': 'S_Search by Bill No.',
+  'paymentInvoices.filter.searchInvoice': 'S_Search by Invoice Number',
   'paymentInvoices.Details.GoToManagePayments': 'S_GO TO MANAGE PAYMENTS',
   'paymentInvoices.Details.ConfirmationNote':
     'S_The payment will be processed immediately. Once processed, this payment cannot be stopped or reversed.',
