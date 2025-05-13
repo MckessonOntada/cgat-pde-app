@@ -665,7 +665,7 @@ const Summary = () => {
                           color: '#005483',
                           backgroundColor: '#F2F6FA'
                         }}
-                        text={t('labels.pap.order')}
+                        text={t('label.noCostTherapy')}
                       />
                     </span>
                   )}

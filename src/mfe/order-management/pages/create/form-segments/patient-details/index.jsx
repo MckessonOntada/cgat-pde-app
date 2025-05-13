@@ -83,7 +83,9 @@ const PatientDetails = () => {
         orderDetails.channelType === CHANNEL_TYPE.BUY_AND_BILL &&
         !orderDetails.patientDetailsRequired
       )
-        navigate(`/orders/${orderId}/additional-details`);
+        navigate(`/orders/${orderId}/additional-details`, {
+          state: { ...location.state }
+        });
     }
   }, [orderDetails]);
   const {
@@ -128,7 +130,8 @@ const PatientDetails = () => {
 
   React.useEffect(() => {
     const { paporder: isPapOrder } = orderDetails || {};
-    if (isPapOrder) navigate('/orders');
+    if (isPapOrder)
+      navigate('/orders', { state: { activeTab: location?.state?.fromTab } });
   }, [orderDetails]);
 
   useEffect(() => {
@@ -179,11 +182,19 @@ const PatientDetails = () => {
         const { id } = result;
         if (channelType === CHANNEL_TYPE.SPECIALTY_PHARMA) {
           navigate(`../${id}/payer`, {
-            state: { isEdit: false, isApprover: isApprover }
+            state: {
+              fromTab: location?.state?.fromTab,
+              isEdit: false,
+              isApprover: isApprover
+            }
           });
         } else {
           navigate(`../${id}/additional-details`, {
-            state: { isEdit: false, isApprover: isApprover }
+            state: {
+              fromTab: location?.state?.fromTab,
+              isEdit: false,
+              isApprover: isApprover
+            }
           });
         }
       },
@@ -208,11 +219,19 @@ const PatientDetails = () => {
 
     if (isEdit) {
       navigate(`../${orderId}/summary`, {
-        state: { isEdit: true, isApprover: isApprover }
+        state: {
+          fromTab: location?.state?.fromTab,
+          isEdit: true,
+          isApprover: isApprover
+        }
       });
     } else {
       navigate(`../${orderId}/accounts`, {
-        state: { isEdit: isEdit, isApprover: isApprover }
+        state: {
+          fromTab: location?.state?.fromTab,
+          isEdit: isEdit,
+          isApprover: isApprover
+        }
       });
     }
   };
@@ -242,14 +261,24 @@ const PatientDetails = () => {
   };
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
-      navigate(RoutePaths.pathOrderManagement);
+      navigate(RoutePaths.pathOrderManagement, {
+        state: { activeTab: location?.state?.fromTab }
+      });
     } else if (modalSuccessCallback === 'summary') {
       navigate(`../${orderId}/summary`, {
-        state: { isEdit: isEdit, isApprover: isApprover }
+        state: {
+          fromTab: location?.state?.fromTab,
+          isEdit: isEdit,
+          isApprover: isApprover
+        }
       });
     } else if (modalSuccessCallback === 'account') {
       navigate(`../${orderId}/accounts`, {
-        state: { isEdit: isEdit, isApprover: isApprover }
+        state: {
+          fromTab: location?.state?.fromTab,
+          isEdit: isEdit,
+          isApprover: isApprover
+        }
       });
     }
   };
