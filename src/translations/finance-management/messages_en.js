@@ -103,8 +103,12 @@ export const PaymentInvoicesEN = {
 
   // Invoices
   'paymentInvoices.history.table.billNumber': 'Bill Number',
+  'paymentInvoices.history.table.invoiceNumber': 'Invoice Number',
   'paymentInvoices.history.table.SoldToSite': 'Sold To Site',
+  'paymentInvoices.history.table.SoldToAccountNo': 'Sold To Account Number',
   'paymentInvoices.history.table.PostingDate': 'Bill Date',
+  'paymentInvoices.history.table.invoiceAmount': 'Invoice Amount',
+  'paymentInvoices.history.table.invoiceDate': 'Invoice Date',
   'paymentInvoices.history.table.PaymentTerm': 'Payment Term',
   'paymentInvoices.history.table.DueDate': 'Due Date',
   'paymentInvoices.history.table.OpenAmount': 'Open Amount',
@@ -171,6 +175,7 @@ export const PaymentInvoicesEN = {
   'paymentInvoices.table.creditHeading': 'Credit List',
   'paymentInvoices.table.therapyInfo': 'Therapy Info',
   'paymentInvoices.filter.search': 'Search by Bill No.',
+  'paymentInvoices.filter.searchInvoice': 'Search by Invoice Number.',
   'paymentInvoices.heading.ReviewAndPay': 'Review and Pay',
   'paymentInvoices.Details.Account': 'Account',
   'paymentInvoices.reviewPayments.BackToManagePayments':

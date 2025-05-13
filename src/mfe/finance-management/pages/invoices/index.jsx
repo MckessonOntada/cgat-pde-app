@@ -8,8 +8,9 @@ import { useAccountContext } from '../../context/AccountContext';
 
 export default function Invoices(params) {
   const { t } = useTranslate();
-  const { applyFilters, clearFilters, statusOptions, setStatusOptions } = usePaymentInvoices();
-  const {selectedAccount} = useAccountContext();
+  const { applyFilters, clearFilters, statusOptions, setStatusOptions } =
+    usePaymentInvoices();
+  const { selectedAccount } = useAccountContext();
 
   const AdditionalFiltersConfig = useMemo(() => {
     return [
@@ -45,7 +46,7 @@ export default function Invoices(params) {
           onApplyFilters={applyFilters}
           onClearFilters={clearFilters}
           additionalFilters={AdditionalFiltersConfig}
-          searchPlaceholder={t('paymentInvoices.filter.search')}
+          searchPlaceholder={t('paymentInvoices.filter.searchInvoice')}
         />
       </div>
       <div className="MCP-table-wrapper table-wrapper">
