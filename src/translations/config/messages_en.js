@@ -1,8 +1,7 @@
 export const ConfigurationMessagesEN = {
   'providers.errorMessage.fileUploadRequired': 'Please select file to upload.',
   'providers.message.fileUploadSuccess':
-    'An unexpected error occurred during the upload. Please try again later.',
-  'providers.message.fileUploadSuccess': 'File processing completed.',
+    'File processed successfully, No error errors were found',
   'providers.message.fileUploadPartialSuccess':
     'File processing completed, Some records were not processed successfully. Please review the downloaded error report',
   'providers.errorMessage.fileUploadFailed': 'Please select file to upload.',
