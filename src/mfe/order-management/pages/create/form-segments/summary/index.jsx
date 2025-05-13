@@ -456,13 +456,10 @@ const Summary = () => {
   const getAllowedControls = () => {
     const controls = [];
     const controlPrintSummary = (
-      <div className="footer-wrapper" ref={controlRef}>
-        <div className="controls footer-controls">
+     
           <Button size={'md'} variant="secondary" onClick={() => printPage()}>
             {t('captions.btnPrintSummary')}
           </Button>
-        </div>
-      </div>
     );
 
     const controlCancel = (
@@ -751,7 +748,7 @@ const Summary = () => {
                   (orderDetails?.approver || orderDetails?.submittedOn))) && (
                 <div className="MCP-CardContainer">
                   <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-4 xl:grid-cols-4">
-                    {spOrder ? (
+                    {spOrder || !orderDetails?.approver ? (
                       <>
                         <DetailSegment
                           label={t('labels.SubmittedBy')}
@@ -1400,7 +1397,11 @@ const Summary = () => {
               />
             </div>
           )}
+           <div className="footer-wrapper" ref={controlRef}>
+           <div className="controls footer-controls">
           {getAllowedControls()}
+          </div>
+          </div>
         </div>
       </div>
       {isCommentPanelOpen && (

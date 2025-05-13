@@ -87,11 +87,16 @@ const Products = () => {
   const catalog = searchParams.get('catalog');
   const [spProductQuery, setSpProductQuery] = React.useState(null);
   const { applyFilters } = useFilters();
-  const debouncedApplyFilter = CommonUtils.debounce((value) => {
-    applyFilters({
-      query: value
-    });
-  }, 1000);
+
+  const debouncedApplyFilter = React.useCallback(
+    CommonUtils.debounce((value) => {
+      applyFilters({
+        query: value
+      });
+    }, 500),
+    []
+  );
+
   const handleOnChange = (event) => {
     const value = event.target.value;
     if (value !== null || value !== undefined) {
@@ -124,7 +129,7 @@ const Products = () => {
               value={spProductQuery}
               errors={{}}
               id="sp-product-search-field"
-              placeholder={t('crosswalk.provider.searchPlaceholder')}
+              placeholder={t('crosswalk.product.searchPlaceholder')}
               name="spProductQuery"
               onBlurFn={() => {}}
               onChangeFn={() => {}}

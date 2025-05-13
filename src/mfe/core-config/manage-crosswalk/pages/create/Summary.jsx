@@ -43,7 +43,7 @@ const Summary = () => {
               {list.map((item) => {
                 return (
                   <div className={style['item']}>
-                    <p>{item.materialNumber}</p>
+                    <p>{item.materialDescription}</p>
                     <div className="styled-icon-button error-button">
                       <Button
                         Icon={BinRedIcon}
@@ -62,6 +62,7 @@ const Summary = () => {
           <div className="controls">
             <Button
               size="sm"
+              className={style['list-controls']}
               variant="secondary"
               onClick={handleOnLinkMaterials}>
               {t('crosswalk.btnLinkMaterials')}

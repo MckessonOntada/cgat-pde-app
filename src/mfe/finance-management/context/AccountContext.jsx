@@ -74,7 +74,10 @@ export const AccountProvider = ({ children }) => {
 
   useEffect(() => {
     if (errorFetchingAccounts) {
-      showSnackbar({ description: t('paymentInvoices.getAccountsAPI.error'), type: 'error' });
+      showSnackbar({
+        description: t('paymentInvoices.getAccountsAPI.error'),
+        type: 'error'
+      });
     }
   }, [errorFetchingAccounts]);
 
@@ -120,7 +123,9 @@ export const AccountProvider = ({ children }) => {
         if (CommonUtils.isNonEmptyObject(response)) {
           refetchPayToAccountsData();
           showSnackbar({
-            description: `${t('paymentInvoices.setDefaultAccountAPI.success')} ${selectedAccount?.accountNumber}`,
+            description: `${t('paymentInvoices.setDefaultAccountAPI.success')} ${selectedAccount?.accountName} (${
+              selectedAccount?.accountNumber
+            })`,
             type: 'success'
           });
         }

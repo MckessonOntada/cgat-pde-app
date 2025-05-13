@@ -175,12 +175,38 @@ export const ConfigurationMessagesEN = {
 
   'SPCrosswalk.unlinkCrosswalkSuccess':
     'Crosswalk has been unlinked successfully.',
+
   'SPCrosswalk.deLinkFailure.generic':
     'Failed to unlink crosswalk. Please try again.',
+
+  'SPCatalog.LinkSPMaterial': 'Link SP Material',
+  'SPCatalog.continue': 'Continue',
+  'SPCatalog.SelectSPMaterial': 'Select SP Material',
+  'SPCatalog.SelectedMaterial': 'Selected Material',
+  'SPCatalog.Material.Placeholder':
+    'Search By SP Product ID, Product Name, NDC',
+  'SPCatalog.Material.selectall': 'select all',
+  'SPCatalog.Material.clearall': 'Clear all',
+  'SPCatalog.btnBack': 'Back to manage SP Catalog page',
+  'SPCatalog.Link.Success':
+    'SP Catalog for {{count}} Accounts has been updated successfully.',
+  'SPCatalog.unlink.SPMaterial.confirmation':
+    'Are you sure you want to unlink this SP Material?',
+  'SPCatalog.unlink.SPMaterial.success':
+    'SP Material(s) unlinked successfully.',
+  'SPCatalog.unlink.SPMaterial.error': 'Failed to unlink SP Material(s).',
+  'SPCatalog.button.updatecatalog': 'update catalog',
+  'SPCatalog.error.RequiredMissing':
+    'You have removed all the data, Go back to Link SP Material Page to continue',
+  'SPCatalog.error.PeaseSelectRequired':
+    'Please select the required details to continue',
+
   'crosswalk.submitConfirmationTitle': 'Confirmation',
   'crosswalk.submitConfirmationMessage': 'Are you sure you want to submit?',
   'crosswalk.label.summary': 'Summary',
   'crosswalk.btnLinkMaterials': 'Link Materials',
   'crosswalk.product.searchPlaceholder': 'Search by Product Name, NDC',
-  'crosswalk.product.searchProductTooltip': 'Search Products'
+  'crosswalk.product.searchProductTooltip': 'Search Products',
+  'crosswalk.create.noSelectionError':
+    'Invalid selection. Please make sure you have selected material and product.'
 };

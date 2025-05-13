@@ -3,11 +3,7 @@ import ApiRoutes from '../ApiRoutes';
 import HttpResourceService, { httpVerb } from '../HttpResourceService';
 
 async function getOrganizations(requestParams) {
-  const res = await HttpResourceService.callRest(
-    `${ApiRoutes.PUBLIC_ORGANIZATIONS}?${serializeParams(requestParams)}`,
-    httpVerb.GET,
-    {}
-  );
+  const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}?${serializeParams(requestParams)}`, httpVerb.GET, {});
   res.data.content = res.data?.content?.map((item) => ({
     ...item,
     label: item.name,
@@ -18,13 +14,10 @@ async function getOrganizations(requestParams) {
 }
 
 async function getAccountList(requestParams) {
-  if (!requestParams.practiceIdList)
-    throw new Error('Missing practice id list');
+  if (!requestParams.practiceIdList) throw new Error('Missing practice id list');
 
   const res = await HttpResourceService.callRest(
-    `${ApiRoutes.USER_SERVICE_BASE}accounts/for-organizations?${serializeParams(
-      requestParams
-    )}`,
+    `${ApiRoutes.USER_SERVICE_BASE}accounts/for-organizations?${serializeParams(requestParams)}`,
     httpVerb.GET,
     {}
   );
@@ -38,11 +31,7 @@ async function getAccountList(requestParams) {
 }
 
 async function getAllCatalog(requestParams) {
-  const res = await HttpResourceService.callRest(
-    `${ApiRoutes.USER_SERVICE_BASE}catalogs?${serializeParams(requestParams)}`,
-    httpVerb.GET,
-    {}
-  );
+  const res = await HttpResourceService.callRest(`${ApiRoutes.USER_SERVICE_BASE}catalogs?${serializeParams(requestParams)}`, httpVerb.GET, {});
   if (res.data) {
     return res.data;
   }
@@ -50,11 +39,7 @@ async function getAllCatalog(requestParams) {
 }
 
 async function deLinkCatalogs(payload) {
-  const res = await HttpResourceService.callRest(
-    `${ApiRoutes.USER_SERVICE_BASE}catalogs/specialityPharma/deLink`,
-    httpVerb.DELETE,
-    payload
-  );
+  const res = await HttpResourceService.callRest(`${ApiRoutes.USER_SERVICE_BASE}catalogs/specialityPharma/deLink`, httpVerb.DELETE, payload);
   return res;
 }
 
@@ -87,24 +72,24 @@ async function downloadSPMaterialTemplate() {
 async function uploadCatalogData(payload) {
   const url = `${ApiRoutes.CATALOGS()}/upload`;
 
-  const response = await HttpResourceService.callRest(
-    url,
-    httpVerb.POST,
-    payload,
-    {
-      'Content-Type': 'multipart/form-data'
-    }
-  );
+  const response = await HttpResourceService.callRest(url, httpVerb.POST, payload, {
+    'Content-Type': 'multipart/form-data'
+  });
 
   return response;
 }
 
+async function linkCatalog(payload) {
+  const url = `${ApiRoutes.CATALOGS()}/specialityPharma`;
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
+
 async function downloadSpCatalogList(requestParams) {
-  const res = await HttpResourceService.callRest(
-    `${ApiRoutes.USER_SERVICE_BASE}catalogs/download?${serializeParams(requestParams)}`,
-    httpVerb.GET,
-    {}
-  );
+  const res = await HttpResourceService.callRest(`${ApiRoutes.USER_SERVICE_BASE}catalogs/download?${serializeParams(requestParams)}`, httpVerb.GET, {});
   if (res.data) {
     return res.data;
   }
@@ -118,6 +103,7 @@ const SPCatalogService = Object.freeze({
   getAccountList,
   getAllCatalog,
   deLinkCatalogs,
+  linkCatalog,
   downloadSpCatalogList
 });
 

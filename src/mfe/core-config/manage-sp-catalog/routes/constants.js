@@ -2,5 +2,7 @@ export const ROUTE_PATHS = Object.freeze({
   DASHBOARD: '',
   DETAILS: 'details/:id',
   CREATE: 'create',
-  UPLOAD: 'upload'
+  UPLOAD: 'upload',
+  LINK: 'link-sp-material',
+  REVIEW: 'review-catalog'
 });

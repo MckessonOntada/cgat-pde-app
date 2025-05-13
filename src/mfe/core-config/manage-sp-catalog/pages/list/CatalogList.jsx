@@ -9,13 +9,7 @@ import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 
-import {
-  useFilters,
-  usePagination,
-  useSelection,
-  useSort,
-  useTable
-} from '@src/mfe/core-config/manage-providers/context/TableContext';
+import { useFilters, usePagination, useSelection, useSort, useTable } from '@src/mfe/core-config/manage-providers/context/TableContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { useNavigate } from 'react-router-dom';
@@ -25,8 +19,9 @@ import { useMutation } from 'react-query';
 import SPCatalogService from '@src/api/commonService/SPCatalogService';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import CommonUtils from '@src/util/CommonUtils';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
-const CatalogList = () => {
+const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }) => {
   const { filters, applyFilters, clearFilters } = useFilters();
   const navigate = useNavigate();
   const [openSPMaterialDetails, setOpenSPMaterialDetails] = useState(false);
@@ -37,26 +32,24 @@ const CatalogList = () => {
   const { applySort } = useSort();
   const dispatch = useDispatch();
   const { selectedRows, deselectAll } = useSelection();
+
   const additionalFiltersConfig = React.useMemo(() => {
     return [];
   }, []);
-  const handleOnClick = (url) => () => navigate(url);
+
+  const handleOnClick = (url) => () => navigate(url, { state: { selectedAccount, selectedOrganization } });
   const handleOnSort = (field, direction) => {
     const { sortKey } = field;
     if (sortKey && direction) {
       applySort(sortKey, direction);
     }
   };
-  const {
-    items: notifications,
-    add: addNotification,
-    remove: removeNotification
-  } = useTimedArray(10000);
+  const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
   const { mutate } = useMutation({
     mutationFn: (payload) => SPCatalogService.deLinkCatalogs(payload),
     onSuccess: (response) => {
       if (response.status == 200) {
-        addNotification({
+        sendNotification({
           type: 'success',
           description: t('SPCatalog.deLinkSuccess')
         });
@@ -66,12 +59,9 @@ const CatalogList = () => {
     },
     onError: (error) => {
       const { response: errorResponse } = error;
-      if (
-        errorResponse.response.data?.errorCodes &&
-        errorResponse.response.data?.errorCodes.length > 0
-      ) {
+      if (errorResponse.response.data?.errorCodes && errorResponse.response.data?.errorCodes.length > 0) {
         errorResponse.response.data.errorCodes.forEach((error) => {
-          addNotification({
+          sendNotification({
             type: 'error',
             description: t(`SPCatalog.deLinkFailure.${error}`)
           });
@@ -82,17 +72,10 @@ const CatalogList = () => {
   const onDeLinkConfirmation = (payload) => {
     const state = {};
     state.title = t('SPCatalog.deLinkConfirmationTitle');
-    state.body = (
-      <div className="MCP-modal-body">
-        {t('SPCatalog.deLinkConfirmationDescription')}
-      </div>
-    );
+    state.body = <div className="MCP-modal-body">{t('SPCatalog.deLinkConfirmationDescription')}</div>;
     state.footer = (
       <div className="controls">
-        <Button
-          onClick={() => dispatch(closeModal())}
-          variant="secondary"
-          size="md">
+        <Button onClick={() => dispatch(closeModal())} variant="secondary" size="md">
           {t('provider.btnCancel')}
         </Button>
         <Button
@@ -129,17 +112,14 @@ const CatalogList = () => {
     },
     {
       onSuccess: (response) => {
-        addNotification({
+        sendNotification({
           type: 'success',
           description: t('label.sPCatalogListingDownload')
         });
-        CommonUtils.downloadFile(
-          new Blob([response], { type: 'text/csv;charset=utf-8;' }),
-          'Catalog_list'
-        );
+        CommonUtils.downloadFile(new Blob([response], { type: 'text/csv;charset=utf-8;' }), 'Catalog_list');
       },
       onError: () => {
-        addNotification({
+        sendNotification({
           type: 'error',
           description: t('manageSPMaterial.messages.button.downloadFail')
         });
@@ -153,67 +133,34 @@ const CatalogList = () => {
           onApplyFilters={applyFilters}
           onClearFilters={clearFilters}
           additionalFilters={additionalFiltersConfig}
-          searchPlaceholder={t(
-            'controls.placeholder.searchSPCatalogPlaceholder'
-          )}
+          searchPlaceholder={t('controls.placeholder.searchSPCatalogPlaceholder')}
         />
       </div>
-      <ModuleHeader
-        heading={<Heading as="h2">{t('label.sPCatalogListing')}</Heading>}
+
+      <TableHeading
+        heading={t('label.sPCatalogListing')}
         controls={
           <div className="controls">
-            <Button
-              variant="secondary"
-              className="button-icon"
-              onClick={exportList}
-              disabled={!(data.length > 0)}
-              size="md">
+            <Button variant="secondary" className="button-icon" onClick={exportList} disabled={!(data.length > 0)} size="md">
               {t('controls.downloadList')}
             </Button>
-            <Button
-              Icon={FileUploadIcon}
-              className="button-icon"
-              onClick={handleOnClick('upload')}
-              size="md">
+            <Button Icon={FileUploadIcon} className="button-icon" onClick={handleOnClick('upload')} size="md">
               {t('controls.uploadCatalog')}
             </Button>
-            <Button
-              Icon={AddCircleFilled}
-              className="button-icon"
-              onClick={handleOnClick('create')}
-              disabled={true}
-              size="md">
+            <Button Icon={AddCircleFilled} className="button-icon" onClick={handleOnClick('link-sp-material')} disabled={false} size="md">
               {t('controls.linkCatalog')}
             </Button>
           </div>
         }
-      />
-      {notifications?.length > 0 && (
-        <div className="alert-container">
-          <div className="MCP-module-body">
-            {notifications.map((item, index) => (
-              <Alert
-                key={item.id}
-                description={item.description}
-                onClose={() => removeNotification(item.id)}
-                type={item.type}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-      {selectedRows.size > 0 && (
-        <div className="table-selection-ribbon">
-          <p>
-            {`${selectedRows.size} Item${
-              selectedRows.size > 1 ? 's' : ''
-            } selected`}
-          </p>
-          <Button variant="secondary" size="sm" onClick={handleOnDeLink}>
+        secondaryView={selectedRows.size > 0}
+        secondaryViewHeading={`${selectedRows.size} ${t('userManagement.selected_items')}`}
+        secondaryViewControls={
+          <Button variant="secondary" onClick={handleOnDeLink}>
             {t('provider.btnUnlink')}
           </Button>
-        </div>
-      )}
+        }
+      />
+
       <CustomDataTable
         id="provider-list-table"
         columns={getColumns({
@@ -232,18 +179,10 @@ const CatalogList = () => {
         paginationRecordsPerPageMessage={t('labels.perPage')}
         paginationTotalRecorsMessage={t('labels.results')}
         noDataComponent={
-          <ErrorBanner
-            image={<EmptyProviderTable />}
-            heading={t('label.spCatalogDataGrid')}
-            description={t('label.spCatalogDataGridDescription')}
-          />
+          <ErrorBanner image={<EmptyProviderTable />} heading={t('label.spCatalogDataGrid')} description={t('label.spCatalogDataGridDescription')} />
         }
       />
-      <SPMaterialDetails
-        openSPMaterialDetails={openSPMaterialDetails}
-        setOpenSPMaterialDetails={setOpenSPMaterialDetails}
-        viewSPMaterial={viewSPMaterial}
-      />
+      <SPMaterialDetails openSPMaterialDetails={openSPMaterialDetails} setOpenSPMaterialDetails={setOpenSPMaterialDetails} viewSPMaterial={viewSPMaterial} />
     </div>
   );
 };

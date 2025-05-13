@@ -3,12 +3,17 @@ import { ALPHA_NUMERIC } from '@src/components/form/ValidationRegExp';
 import { CONTROL_OPTIONS } from '../ApproverGroupDetail/RulesConfig';
 
 export const transformAttributesToRules = (values, practiceId) => {
-  const { name, approverUsers, approverUsers_augmented, rules } = values;
+  const { name, approverUsers, approverUsers_augmented, rules, catalogs, accounts } = values;
   const result = {
     name: name.trim() || 'default',
     practiceId: practiceId || 0,
     rules: {},
     approverUsers: []
+  };
+  
+  const getChannelType = (catalog, value, name) => {
+    const data = catalog.find((item) => item.value === value && item.label === name);
+    return data ? data.channelType : null;
   };
 
   rules.forEach((rule) => {
@@ -19,13 +24,15 @@ export const transformAttributesToRules = (values, practiceId) => {
       case CONTROL_OPTIONS.Catalog: // Therapies
         result.rules.therapies = rule.value_augmented.map((therapy) => ({
           therapyId: therapy.value,
-          therapyName: therapy.name
+          therapyName: therapy.name,
+          channelType: getChannelType(catalogs, therapy.value, therapy.name)
         }));
         break;
       case CONTROL_OPTIONS.Account:
         result.rules.accounts = rule.value_augmented.map((account) => ({
           accountId: account.value,
-          accountName: account.name
+          accountName: account.name,
+          channelType: getChannelType(accounts, account.value, account.name)
         }));
         break;
       case CONTROL_OPTIONS['User Role']:
