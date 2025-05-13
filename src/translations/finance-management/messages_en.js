@@ -322,5 +322,9 @@ export const PaymentInvoicesEN = {
 
   'paymentInvoices.reviewPayments.processing':
     'Please do not hit close or navigate back while your payment request is processing.',
-  'paymentInvoices.header.manageInvoices': 'Manage Invoices and Payments'
+  'paymentInvoices.header.manageInvoices': 'Manage Invoices and Payments',
+  'paymentInvoices.filter.searchCreditNo': 'search by Credit Number',
+  'paymentInvoices.table.column.CreditNo': 'Credit Number',
+  'paymentInvoices.table.column.soldToAccount': 'Sold To Account Number',
+  'paymentInvoices.table.column.creditAmount': 'Credit Amount'
 };

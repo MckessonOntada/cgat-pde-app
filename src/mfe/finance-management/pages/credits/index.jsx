@@ -35,7 +35,7 @@ export default function Credits(props) {
           onApplyFilters={applyFilters}
           onClearFilters={clearFilters}
           additionalFilters={AdditionalFiltersConfig}
-          searchPlaceholder={t('paymentInvoices.filter.search')}
+          searchPlaceholder={t('paymentInvoices.filter.searchCreditNo')}
           actualData={actualData}
         />
       </div>

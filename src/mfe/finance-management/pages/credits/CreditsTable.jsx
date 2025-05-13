@@ -16,7 +16,14 @@ import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/c
 
 export default function CreditsTable(props) {
   const { t } = useTranslate();
-  const { data, isFetching, paginationConfig, setPageNumber, applySort, isError } = usePaymentCredits();
+  const {
+    data,
+    isFetching,
+    paginationConfig,
+    setPageNumber,
+    applySort,
+    isError
+  } = usePaymentCredits();
   const { selectedRows, setSelectedRows, selectableRows } = props;
   const location = useLocation();
   const { state } = location;
@@ -34,7 +41,15 @@ export default function CreditsTable(props) {
         setSelectedRows
       ),
       sortable: false,
-      cell: (row, index) => renderTableCheckBox(row, data, 'billNumber', paginationConfig, selectedRows, setSelectedRows),
+      cell: (row, index) =>
+        renderTableCheckBox(
+          row,
+          data,
+          'billNumber',
+          paginationConfig,
+          selectedRows,
+          setSelectedRows
+        ),
       selector: (row) => row.MRN,
       width: '48px',
       omit: !selectableRows,
@@ -42,7 +57,7 @@ export default function CreditsTable(props) {
     },
     {
       id: 'billNumber',
-      name: t('paymentInvoices.history.table.billNumber'),
+      name: t('paymentInvoices.table.column.CreditNo'),
       selector: (row) => `${row.billNumber}`,
       sortable: true,
       wrap: true,
@@ -52,7 +67,11 @@ export default function CreditsTable(props) {
       cell: (props) => (
         <div className="cellEllipse">
           <Link
-            style={{ color: 'var(--brand-color-primary)', fontWeight: '600', textDecoration: 'none' }}
+            style={{
+              color: 'var(--brand-color-primary)',
+              fontWeight: '600',
+              textDecoration: 'none'
+            }}
             to={`/record/${PATHS.credits}/${props?.billNumber}/details`}
             state={{ ...state, selectedCredit: [...[], props] }}>
             {`${props?.billNumber}`}
@@ -62,7 +81,7 @@ export default function CreditsTable(props) {
     },
     {
       id: 'soldToSite',
-      name: t('paymentInvoices.history.table.SoldToSite'),
+      name: t('paymentInvoices.table.column.soldToAccount'),
       selector: () => {},
       minWidth: '180px',
       sortable: true,
@@ -79,18 +98,29 @@ export default function CreditsTable(props) {
       sortable: true,
       wrap: true,
       width: '140px',
-      cell: (props) => CommonUtils.convertDateStringFormat(props.dueDate, 'MM/DD/YYYY', 'DD/MM/YYYY')
+      cell: (props) =>
+        CommonUtils.convertDateStringFormat(
+          props.dueDate,
+          'MM/DD/YYYY',
+          'DD/MM/YYYY'
+        )
     },
     {
       id: 'openAmount',
-      name: selectableRows ? t('paymentInvoices.credits.table.billamount') : t('paymentInvoices.credits.table.amount'),
+      name: selectableRows
+        ? t('paymentInvoices.credits.table.billamount')
+        : t('paymentInvoices.table.column.creditAmount'),
       selector: (row) => row.openAmount,
       maxWidth: '240px',
       sortable: true,
       wrap: true,
       cell: (props) => (
         <div className="status-container align-items-right">
-          <FormattedNumber value={props?.openAmount} style="currency" currency="USD" />
+          <FormattedNumber
+            value={props?.openAmount}
+            style="currency"
+            currency="USD"
+          />
         </div>
       ),
       right: true
@@ -110,7 +140,8 @@ export default function CreditsTable(props) {
     // }
   ];
   const handleSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.id) applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
+    if (selectedColumn.id)
+      applySort({ sortBy: selectedColumn.id, sortOrder: sortDirection });
   };
 
   const handleChangePage = (e, newPage) => {
@@ -141,7 +172,9 @@ export default function CreditsTable(props) {
             // error={isError ? 'Something went wrong! Please try again' : null}
             image={EmptyDataImage}
             heading={t('paymentInvoices.credits.table.emptyData')}
-            description={t('paymentInvoices.history.table.emptyDataDescription')}
+            description={t(
+              'paymentInvoices.history.table.emptyDataDescription'
+            )}
           />
         }
         progressComponent={
