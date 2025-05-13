@@ -4,7 +4,6 @@ import { ReactComponent as IconEditField } from '@src/assets/svg/edit-field.svg'
 import ModuleHeader from '@src/components/module-header';
 import {
   Button,
-  Modal,
   CheckboxGroup,
   Heading,
   Loader,
@@ -44,14 +43,8 @@ import AttachmentCard from './AttachmentCard';
 import { getFullName } from '@src/util/CommonUtils';
 import { CHANNEL_TYPE } from '../Constants';
 import dayjs from 'dayjs';
-import TherapyDetailsWithTabs from '@src/components/therapyDetails/TherapyDetailsWithTabs';
-import {
-  TherapyDetailsConstantsForBB,
-  TherapyDetailsConstantsForSP
-} from '../therapy-selection/assets/constants/TherapyDetailsConstants';
+import { TherapyDetailsConstantsForBB } from '../therapy-selection/assets/constants/TherapyDetailsConstants';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
-import { ConfigConstants } from '../../../system-configuration/manageMaterial/assets/constants/MaterialConstants';
-import SPMaterialDetails from '../../../system-configuration/manage-spmaterial/pages/SPMaterialDetails';
 import { FooterContext } from '@src/components/footer/FooterContext';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
@@ -59,10 +52,6 @@ const BUTTON_ACTIONS = {
   SUBMIT: 'submit',
   APPROVE: 'approve',
   REJECT: 'reject'
-};
-const ORDER_TYPES = {
-  PAP_ORDER: 'PAP ORDER',
-  NON_PAP_ORDER: 'NON PAP ORDER'
 };
 
 const getOrderCost = (originalOrderCost, updatedOrderCost) => {
@@ -84,8 +73,6 @@ const Summary = () => {
   const { showAlert } = useAlert();
   const { controlRef } = useContext(FooterContext);
   const { data: orderDetails = {}, isLoader } = useOrder(orderId);
-  const [isPAPOrderConfirmModalOpen, setIsPAPOrderConfirmModalOpen] =
-    React.useState(false);
   const { isApprover = false, isSimulate = false } = location.state || {};
   const [orderAgreementCheckboxError, setOrderAgreementCheckboxError] =
     React.useState(null);
@@ -109,15 +96,13 @@ const Summary = () => {
     paporder: isPapOrder,
     backendOrderId,
     status,
-    paporder,
     payerDetails,
     provider,
     submittedBy
   } = orderDetails || {};
 
   const [openDetails, setOpenDetails] = React.useState(false);
-  const spOrder =
-    accountDetails?.soldToAccount?.channelType === 'SPECIALITY_PHARMA';
+  const spOrder = orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
 
   const {
     data: sapOrderDetails,
@@ -218,7 +203,6 @@ const Summary = () => {
     setOpenDetails(true);
   };
 
-  const variantDetails = additionalDetails?.variantDetails || {};
   const isRejected = status === 'REJECTED';
   const isDeleted = status === 'DELETED';
   const isSubmitted = status === StatusEnum.SUBMITTED;
@@ -250,7 +234,7 @@ const Summary = () => {
     }`
   );
 
-  const { isLoading, data: simulationData = {} } = useQuery({
+  const { data: simulationData = {} } = useQuery({
     queryKey: ['orderDetails', orderId],
     queryFn: async () => {
       return await OrderService.simulateOrder(orderId);
@@ -329,11 +313,25 @@ const Summary = () => {
     value: false
   });
 
+  const [papOrderOptions, setPapOrderOptions] = React.useState({
+    isDisabled: false,
+    isChecked: false,
+    label: t('messages.papOrderPlacementAcknowledgement'),
+    value: false
+  });
+
   const handleChange = () => {
     setOrderAgreementCheckboxError(null);
     setAgreeCheckboxOptions({
       ...agreeCheckboxOptions,
       isChecked: !agreeCheckboxOptions.isChecked
+    });
+  };
+
+  const handlePapOrderSelectionChange = () => {
+    setPapOrderOptions({
+      ...papOrderOptions,
+      isChecked: !papOrderOptions.isChecked
     });
   };
 
@@ -343,12 +341,6 @@ const Summary = () => {
     } else {
       navigate(`../${orderId}/additional-details`);
     }
-  };
-
-  const handleOnSubmitPapOrder = (orderType) => {
-    const isPAPOrder = orderType === ORDER_TYPES.PAP_ORDER;
-    setIsPAPOrderConfirmModalOpen(false);
-    submitOrder({ action: BUTTON_ACTIONS.SUBMIT, isPAPOrder });
   };
 
   const isImpersonatedAdmin = () => {
@@ -371,7 +363,10 @@ const Summary = () => {
 
     if (agreeCheckboxOptions.isChecked) {
       if (!spOrder && isImpersonatedAdmin()) {
-        setIsPAPOrderConfirmModalOpen(true);
+        submitOrder({
+          action: BUTTON_ACTIONS.SUBMIT,
+          isPAPOrder: papOrderOptions.isChecked
+        });
       } else {
         submitOrder({ action: BUTTON_ACTIONS.SUBMIT });
       }
@@ -427,7 +422,7 @@ const Summary = () => {
 
   const handleOnEditSection = (stage) => {
     if (isPapOrder) {
-      console.log('This is a PAP Order, Hence can not be edited.');
+      console.log('This is a No Cost Therapy Order, Hence can not be edited.');
       renderModal({
         title: t('prompt.title.alert'),
         bodyContent: (
@@ -550,12 +545,11 @@ const Summary = () => {
   if (patient.patientInfo)
     patient.fullName = CommonUtils.getUSFullName(patient.patientInfo);
 
-  const isAgreed = agreeCheckboxOptions.isChecked,
-    hideControls =
-      status === StatusEnum.SUBMITTED ||
-      (status === StatusEnum.APPROVAL_PENDING && !isApprover) ||
-      isRejected ||
-      isDeleted;
+  const hideControls =
+    status === StatusEnum.SUBMITTED ||
+    (status === StatusEnum.APPROVAL_PENDING && !isApprover) ||
+    isRejected ||
+    isDeleted;
 
   if (isSaving) {
     return <Loader type={'screen'} />;
@@ -597,6 +591,9 @@ const Summary = () => {
       }
     });
   }
+
+  const askForPapOrder = Boolean(!spOrder && isImpersonatedAdmin());
+
   return (
     <div className="MCP-module-wrapper order-summary-container">
       <div>
@@ -615,11 +612,11 @@ const Summary = () => {
       {isApprover && (
         <div className={styles.pageHeadingReview}>
           <PageHeader heading={t('headings.reviewOrder')} />
-          {paporder && (
+          {isPapOrder && (
             <span className={styles.pap}>
               <Badge
                 customStyle={{ color: '#005483', backgroundColor: '#F2F6FA' }}
-                text={t('labels.pap.order')}
+                text={t('label.noCostTherapy')}
               />
             </span>
           )}
@@ -658,7 +655,7 @@ const Summary = () => {
               !isApprover && (
                 <Heading className={styles.orderSummaryHeading} as="h2">
                   <span>{t('labels.summary')}</span>
-                  {paporder && (
+                  {isPapOrder && (
                     <span className={styles.pap}>
                       <Badge
                         customStyle={{
@@ -1385,19 +1382,36 @@ const Summary = () => {
               )}
           </div>
           {!hideControls && (
-            <div className="agreement-checkbox-control">
+            <div className="MCP-module-body agreement-checkbox-control">
               <CheckboxGroup
                 id={'default'}
                 name="order-agreement"
                 error={Boolean(orderAgreementCheckboxError)}
                 errorMessage={orderAgreementCheckboxError}
                 items={[
-                  { ...agreeCheckboxOptions, onChange: () => handleChange() }
+                  {
+                    ...agreeCheckboxOptions,
+                    onChange: () => handleChange()
+                  }
                 ]}
                 size="md"
               />
+              {askForPapOrder && (
+                <CheckboxGroup
+                  id={'pap-order'}
+                  name="pap-order"
+                  items={[
+                    {
+                      ...papOrderOptions,
+                      onChange: () => handlePapOrderSelectionChange()
+                    }
+                  ]}
+                  size="md"
+                />
+              )}
             </div>
           )}
+
           <div className="footer-wrapper" ref={controlRef}>
             <div className="controls footer-controls">
               {getAllowedControls()}
@@ -1412,12 +1426,6 @@ const Summary = () => {
           onSuccess={handleAfterRejectOrder}
           onClose={() => setIsCommentPanelOpen(false)}
           openDrawer={isCommentPanelOpen}
-        />
-      )}
-      {isPAPOrderConfirmModalOpen && (
-        <PAPOrderTypeConfirmModal
-          onClose={() => setIsPAPOrderConfirmModalOpen(false)}
-          onSubmit={handleOnSubmitPapOrder}
         />
       )}
 
@@ -1440,37 +1448,6 @@ const Summary = () => {
         />
       )}
     </div>
-  );
-};
-
-const PAPOrderTypeConfirmModal = ({ onClose, onSubmit }) => {
-  const { t } = useTranslate();
-  return (
-    <Modal
-      isOpen={true}
-      onClose={onClose}
-      modalTitle={t('prompt.title.alert')}
-      modalBody={
-        <div className={styles.papOptions}>
-          <p className={styles.title}>{t('prompt.message.submitOrder')}</p>
-          <p>{t('prompt.subMessage.submitOrder')}</p>
-        </div>
-      }
-      modalFooter={
-        <React.Fragment>
-          <Button
-            size="md"
-            onClick={() => onSubmit(ORDER_TYPES.NON_PAP_ORDER)}
-            variant="secondary">
-            {t('captions.btnNo')}
-          </Button>
-          <Button size="md" onClick={() => onSubmit(ORDER_TYPES.PAP_ORDER)}>
-            {t('captions.btnYes')}
-          </Button>
-        </React.Fragment>
-      }
-      modalSize="md"
-    />
   );
 };
 

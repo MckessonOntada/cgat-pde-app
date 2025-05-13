@@ -419,8 +419,6 @@ export const MessageEs = {
     'S_Do you wish to order this therapy under PAP program?',
   'prompt.subMessage.submitOrder':
     "Select 'Yes' to proceed with PAP benefits or 'No' to submit as a regular order.",
-  'prompt.option.papOrder': 'S_PAP Order',
-  'prompt.option.nonPapOrder': 'S_Non-PAP Order',
   'prompt.action.submit': 'S_Submit',
   'message.error.papOrderCanNotEdit':
     "You can't edit this order, If you wish to make any changes to the order, please call the customer center",
@@ -539,7 +537,6 @@ export const MessageEs = {
   'labels.caption.REJECTED': 'Rejected',
   'labels.caption.SUBMITTED': 'Submitted',
   'labels.caption.APPROVAL_PENDING': 'Approval Pending',
-  'labels.pap.order': 'S_PAP ORDER',
   'labels.SubmittedBy': 'S_Submitted By',
   'labels.SubmittedOn': 'S_Submitted On',
   'labels.Approver_Name': 'S_Approver Name',
@@ -581,5 +578,5 @@ export const MessageEs = {
   'labels.orderView.internalOrderId': 'S_Internal Order Id',
   'table.columns.captions.createdDate': 'S_Created Date',
   'labels.select-account.coveredEntity': "S_I'm a covered Entity.",
-  'label.sPCatalogListingDownload': 'S_File downloaded successfully.',
+  'label.sPCatalogListingDownload': 'S_File downloaded successfully.'
 };
