@@ -60,7 +60,7 @@ function RenderControls({ attributeType = CONTROL_OPTIONS.Price, name, isAttribu
 
   React.useEffect(() => {}, [attributeType]);
 
-  const shouldFetchCatalog = attributeType === CONTROL_OPTIONS.Catalog;
+  const shouldFetchCatalog = attributeType === CONTROL_OPTIONS.Material;
   const shouldFetchAccounts = attributeType === CONTROL_OPTIONS.Account;
   const shouldFetchUserRole = attributeType === CONTROL_OPTIONS['User Role'];
   const shouldFetchUserNames = attributeType === CONTROL_OPTIONS['User Name'];
@@ -147,13 +147,13 @@ function RenderControls({ attributeType = CONTROL_OPTIONS.Price, name, isAttribu
         if (shouldFetchPrice) updatedState.price = '';
         if (shouldFetchAccounts) {
           updatedState.accounts = fetchData;
-          setFieldValue("accounts", fetchData); //Hidden value
+          setFieldValue('accounts', fetchData); //Hidden value
         }
         if (shouldFetchUserRole) updatedState.roles = fetchData;
         if (shouldFetchUserNames) updatedState.users = fetchData;
-        if (shouldFetchCatalog){
+        if (shouldFetchCatalog) {
           updatedState.categories = fetchData;
-          setFieldValue("catalogs", fetchData); //Hidden value
+          setFieldValue('materials', fetchData); //Hidden value
         }
         return updatedState;
       });

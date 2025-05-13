@@ -11,7 +11,7 @@ export const RulesConfig = [
   },
   {
     key: 'therapies',
-    label: 'Catalog',
+    label: 'Material',
     valueKey: 'therapyName'
   },
   {
@@ -37,7 +37,7 @@ export const RuleKeys = {
 export const RuleLabels = {
   PRICE: 'Price',
   ACCOUNT: 'Account',
-  CATALOG: 'Catalog',
+  CATALOG: 'Material',
   USER_ROLE: 'User Role',
   USER_NAME: 'User Name'
 };
@@ -53,14 +53,14 @@ export const RuleValueKeys = {
 export const CONTROL_OPTIONS = {
   Price: 'Price',
   Account: 'Account',
-  Catalog: 'Catalog',
+  Material: 'Material',
   'User Role': 'User Role',
   'User Name': 'User Name'
 };
 
 export const getRuleOperator = (key, t, isViewMode) =>
   ({
-    Catalog: isViewMode ? t('rules.operator.matchesofAny') : t('rules.operator.orderedOfAny'),
+    Material: isViewMode ? t('rules.operator.matchesofAny') : t('rules.operator.orderedOfAny'),
     Price: t('rules.operator.greaterThan'),
     Account: isViewMode ? t('rules.operator.matchesofAny') : t('rules.operator.selectedAnyOf'),
     'User Role': isViewMode ? t('rules.operator.matchesofAny') : t('rules.operator.selectedAnyOf'),

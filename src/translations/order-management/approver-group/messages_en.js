@@ -86,7 +86,7 @@ export const ApproverManagementEN = {
   'approvergroup.messages.approvergroup_create_success': 'Approver Group has been created successfully.',
   'rules.price': 'Price',
   'rules.accounts': 'Account',
-  'rules.therapies': 'Catalog',
+  'rules.therapies': 'Material',
   'rules.users': 'User',
   'rules.roles': 'Roles',
 
@@ -105,8 +105,8 @@ export const ApproverManagementEN = {
 
   'rules.value.price.caption': 'Amount',
   'rules.value.price.helperText': 'Please enter the amount greater than for the approver group.',
-  'rules.value.catalog.caption': 'Select Therapy',
-  'rules.value.catalog.helperText': 'Please select the therapy(s) for the approver group.',
+  'rules.value.material.caption': 'Select Therapy',
+  'rules.value.material.helperText': 'Please select the therapy(s) for the approver group.',
   'rules.value.account.caption': 'Select Account',
   'rules.value.account.helperText': 'Please select the account(s) for the approver group.',
   'rules.value.user_role.caption': 'Select Role',
