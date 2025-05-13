@@ -330,6 +330,10 @@ export const PaymentInvoicesES = {
   'paymentInvoices.table.savedCards': 'S_Saved Cards',
 
   'paymentInvoices.reviewPayments.processing':
-    'Please do not hit close or navigate back while your payment request is processing.',
-  'paymentInvoices.header.manageInvoices': 'Manage Invoices and Payments'
+    'S_Please do not hit close or navigate back while your payment request is processing.',
+  'paymentInvoices.header.manageInvoices': 'S_Manage Invoices and Payments',
+  'paymentInvoices.filter.searchCreditNo': 'S_search by Credit Number',
+  'paymentInvoices.table.column.CreditNo': 'S_Credit Number',
+  'paymentInvoices.table.column.soldToAccount': 'S_Sold To Account Number',
+  'paymentInvoices.table.column.creditAmount': 'S_Credit Amount'
 };
