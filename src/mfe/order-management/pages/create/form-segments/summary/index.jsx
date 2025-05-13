@@ -759,9 +759,10 @@ const Summary = () => {
                           label={t('labels.SubmittedOn')}
                           value={
                             orderDetails?.submittedOn
-                              ? dayjs(orderDetails.submittedOn).format(
-                                  'MM/DD/YYYY, HH:mm'
-                                )
+                              ? dayjs
+                                  .utc(orderDetails.submittedOn)
+                                  .tz(dayjs.tz.guess())
+                                  .format('MM/DD/YYYY, HH:mm')
                               : '-'
                           }
                         />
@@ -777,9 +778,10 @@ const Summary = () => {
                         {orderDetails?.submittedOn && (
                           <DetailSegment
                             label={t('labels.Approval_Date_and_Time')}
-                            value={dayjs(orderDetails.submittedOn).format(
-                              'MM/DD/YYYY, HH:mm'
-                            )}
+                            value={dayjs
+                              .utc(orderDetails.submittedOn)
+                              .tz(dayjs.tz.guess())
+                              .format('MM/DD/YYYY, HH:mm')}
                           />
                         )}
                       </>
