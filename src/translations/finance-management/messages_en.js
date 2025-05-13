@@ -185,6 +185,7 @@ export const PaymentInvoicesEN = {
     'Invoices Selected for Payment',
   'paymentInvoices.reviewPayments.invoice': 'Invoices Selected',
   'paymentInvoices.reviewPayments.selectMethod': 'Select a method',
+  'paymentInvoices.reviewPayments.selectMethodInfo': 'For other payment methods, please contact Customer Care.',
   'paymentInvoices.reviewPayments.invoiceDesc':
     'Amount to be charged to your Payment account:',
   'paymentInvoices.reviewPayments.previewPayment': 'Preview Payment',
