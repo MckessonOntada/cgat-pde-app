@@ -79,6 +79,7 @@ export const MessageEs = {
   'labels.shipToAccountNumber': 'S_Ship to Account Number',
   'labels.therapyDescription': 'S_Therapy Description',
   'labels.priceDetails': 'S_Price Details',
+  'labels.estimatedPrice': 'S_Estimated Price',
   'labels.therapy': 'S_Therapy',
   'labels.therapyDetails': 'S_Therapy Details',
   'labels.price': 'S_Price',
@@ -328,7 +329,8 @@ export const MessageEs = {
   'orderManagement.patientDetails.inputLabel.last_name': 'S_Last Name',
   'orderManagement.patientDetails.inputLabel.gender': 'S_Gender',
   'orderManagement.patientDetails.inputLabel.patientIdentifier':
-    'S_Patient Identifier',
+    'S_Manufacturer Patient ID',
+  'orderManagement.patientDetails.inputLabel.mrn': 'MRN',
   'orderManagement.patientDetails.contact_details': 'S_Contact Details',
   'orderManagement.patientDetails.address_details': 'S_Address Details',
   'orderManagement.patientDetails.patient_details': 'S_Patient Details',
@@ -366,6 +368,8 @@ export const MessageEs = {
     'S_Patient identifier is required.',
   'orderManagement.patientDetails.validation.patient_identifier_must_number':
     'S_Patient Identifier must be alphanumeric.',
+  'orderManagement.patientDetails.validation.mrn_must_alphanumeric':
+    'S_MRN must be alphanumeric.',
   'orderManagement.patientDetails.validation.patient_identifier_max':
     'S_Patient identifier cannot exceed 20 characters.',
   'orderManagement.patientDetails.inputLabel.date_of_birth': 'S_Date of birth',

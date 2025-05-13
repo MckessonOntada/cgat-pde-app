@@ -81,6 +81,7 @@ export const MessageEn = {
   'labels.shipToAccountNumber': 'Ship to Account Number',
   'labels.therapyDescription': 'Therapy Description',
   'labels.priceDetails': 'Price Details',
+  'labels.estimatedPrice': 'Estimated Price',
   'labels.therapy': 'Therapy',
   'labels.therapyDetails': 'Therapy Details',
   'labels.price': 'Price',
@@ -352,7 +353,9 @@ export const MessageEn = {
     'Preferred Method of Contact',
 
   'orderManagement.patientDetails.inputLabel.patientIdentifier':
-    'Patient Identifier',
+    'Manufacturer Patient ID',
+
+  'orderManagement.patientDetails.inputLabel.mrn': 'MRN',
   'orderManagement.patientDetails.contact_details': 'Contact Details',
   'orderManagement.patientDetails.address_details': 'Address Details',
   'orderManagement.patientDetails.patient_details': 'Patient Details',
@@ -388,6 +391,8 @@ export const MessageEn = {
     'Patient identifier is required.',
   'orderManagement.patientDetails.validation.patient_identifier_must_number':
     'Patient Identifier must be alphanumeric.',
+  'orderManagement.patientDetails.validation.mrn_must_alphanumeric':
+    'MRN must be alphanumeric.',
   'orderManagement.patientDetails.validation.patient_identifier_max':
     'Patient identifier cannot exceed 20 characters.',
   'orderManagement.patientDetails.inputLabel.date_of_birth': 'Date of birth',

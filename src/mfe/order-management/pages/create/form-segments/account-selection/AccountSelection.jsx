@@ -57,6 +57,7 @@ const AccountSelection = () => {
     error,
     isLoader
   } = useOrder(orderId);
+
   const therapyId = orderDetails?.therapy?.materialNumber;
   const therapChannelType = orderDetails?.therapy?.channelType;
   const { data: priceDetails } = useOrderPrice({
@@ -262,6 +263,27 @@ const AccountSelection = () => {
     setOpen(false);
   };
 
+  const transformSoldToAccount = (account) => {
+    if (!account) return null;
+
+    return {
+      ...account,
+      address: {
+        email: account.email || null,
+        telephone: account.telephone || null,
+        houseNumber: account.houseNumber || null,
+        street: account.street || null,
+        street2: account.street2 || null,
+        street3: account.street3 || null,
+        city: account.city || null,
+        district: account.district || null,
+        state: account.state || null,
+        zipCode: account.zipCode || null,
+        country: account.country || null
+      }
+    };
+  };
+
   React.useEffect(() => {
     if (accountsListData && orderDetails) {
       const { accountDetails } = orderDetails;
@@ -331,6 +353,10 @@ const AccountSelection = () => {
           <OrderHeaderDetails
             orderDetails={orderDetails}
             priceDetails={priceDetails}
+            selectedAccount={{
+              shipToAccount: selectedShippingAddress,
+              soldToAccount: transformSoldToAccount(selectedAccount)
+            }}
           />
           {accountError.isError && <div id={alertContainerId} />}
           <div className="MCP-panel-container">
