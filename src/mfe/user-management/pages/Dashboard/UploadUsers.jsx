@@ -17,6 +17,12 @@ import {
   validateFile,
   handleAlertClose
 } from '@src/components/uploadFile/uploadUtils';
+import ContextMenu from '@src/mfe/core-config/manage-sp-catalog/pages/context-menu';
+
+const DOWNLOAD_CONTEXT_OPTIONS = {
+  DOWNLOAD_TEMPLATE: 'Download Template',
+  DOWNLOAD__INFO: 'Download Instruction File'
+};
 
 function UploadUsers() {
   const navigate = useNavigate();
@@ -26,12 +32,23 @@ function UploadUsers() {
 
   const showAlert = createAlertHandler(setAlert);
 
-  const downloadTemplate = () =>
-    handleDownload(
-      '/templates/upload_users_template.csv',
-      'upload_users_template.csv'
-    );
-
+  const downloadTemplate = (option) => {
+    switch (option) {
+      case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_TEMPLATE: {
+        handleDownload(
+          '/templates/upload_users_template.csv',
+          'upload_users_template.csv'
+        );
+        break;
+      }
+      case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD__INFO: {
+        handleDownload('/templates/Instruction.txt', 'Instruction.txt');
+        break;
+      }
+      default:
+        return;
+    }
+  };
   const { mutate: uploadBulkUser, isLoading } = useMutation(
     async ({ url, payload }) => {
       return await HttpResourceService.callRest(url, httpVerb.POST, payload, {
@@ -89,12 +106,20 @@ function UploadUsers() {
         controlHeading={t('userManagement.uploadUsersListCSV')}
         isLoading={isLoading}
         messages={[alert]}
-        showAlert={showAlert}
         onCloseAlert={handleAlertClose}
-        downloadTemplate={{
-          caption: t('file.download.csv'),
-          fn: downloadTemplate
-        }}
+        infoHeader={t('userManagement.upload-info')}
+        customDownload={
+          <ContextMenu
+            items={Object.values(DOWNLOAD_CONTEXT_OPTIONS)}
+            onSelect={downloadTemplate}>
+            <Button
+              size="md"
+              variant={'secondary'}
+              className="context-menu__button">
+              {t('controls.downloadCSVTemplate')}
+            </Button>
+          </ContextMenu>
+        }
         upload={{
           caption: t('userManagement.button.addUsers'),
           fn: handleUpload

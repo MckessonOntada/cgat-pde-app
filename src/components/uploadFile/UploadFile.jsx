@@ -22,6 +22,7 @@ function UploadFile({
   upload,
   onFileSelection,
   prefixChildren = false,
+  infoHeader,
   children
 }) {
   const { t } = useTranslate();
@@ -32,27 +33,29 @@ function UploadFile({
 
   return (
     <React.Fragment>
-      <div className="MCP-module-wrapper">
-        <ModuleHeader
-          heading={<Heading as="h1">{primaryHeading}</Heading>}
-          controls={
-            <React.Fragment>
-              {customDownload}
-              {downloadTemplate && (
-                <div className="controls">
-                  <Button
-                    className="button-icon"
-                    variant="secondary"
-                    size="md"
-                    onClick={downloadTemplate.fn}>
-                    {downloadTemplate.caption}
-                  </Button>
-                </div>
-              )}
-            </React.Fragment>
-          }
-        />
-
+      <div className="MCP-module-body">
+        <div>
+          <ModuleHeader
+            heading={<Heading as="h1">{primaryHeading}</Heading>}
+            controls={
+              <React.Fragment>
+                {customDownload}
+                {downloadTemplate && (
+                  <div className="controls">
+                    <Button
+                      className="button-icon"
+                      variant="secondary"
+                      size="md"
+                      onClick={downloadTemplate.fn}>
+                      {downloadTemplate.caption}
+                    </Button>
+                  </div>
+                )}
+              </React.Fragment>
+            }
+          />
+          {infoHeader && <span className="info-upload">{infoHeader}</span>}
+        </div>
         {messages.map((message) => {
           if (!message) return;
           return (
