@@ -114,12 +114,11 @@ const AccountSelectionUserGuide = ({
   };
 
   const handleOnSubmit = () => {
-    if (selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA && !account) {
-      setAlertMsg(true);
-      return;
-    } else if (
-      (!account || !selectedProgram) &&
-      selectedChannel === CHANNEL_TYPE.BUY_AND_BILL
+    if (
+      !selectedChannel ||
+      (selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA && !account) ||
+      (selectedChannel === CHANNEL_TYPE.BUY_AND_BILL &&
+        (!account || !selectedProgram))
     ) {
       setAlertMsg(true);
       return;
