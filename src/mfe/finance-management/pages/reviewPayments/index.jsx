@@ -508,22 +508,25 @@ function ReviewPayments() {
           <div className="paymentSectionHeader">{t('paymentInvoices.reviewPayments.payment')}</div>
           <div className="payment">
             <div className="paymentOptionWrappee">
-              <div className="paymentMethodContainer">
-                <MultiSelectDropdown
-                  id={'select-payment-search'}
-                  label={t('paymentInvoices.reviewPayments.selectMethod')}
-                  isMultiSelect={false}
-                  placeholder={'Search payment method'}
-                  onChange={onChangePayment}
-                  options={getOptions}
-                  variant={'async'}
-                  onSearch={(event) => setSearchKey(event)}
-                  recordsCountToEnableSearch={5}
-                  size="md"
-                  isSortEnable={false}
-                  value={selectedData?.value.toString() || ''}
-                  fieldDisplayValue={selectedData?.label ? selectedData : undefined}
-                />
+              <div>
+                <div className="paymentMethodContainer">
+                  <MultiSelectDropdown
+                    id={'select-payment-search'}
+                    label={t('paymentInvoices.reviewPayments.selectMethod')}
+                    isMultiSelect={false}
+                    placeholder={'Search payment method'}
+                    onChange={onChangePayment}
+                    options={getOptions}
+                    variant={'async'}
+                    onSearch={(event) => setSearchKey(event)}
+                    recordsCountToEnableSearch={5}
+                    size="md"
+                    isSortEnable={false}
+                    value={selectedData?.value.toString() || ''}
+                    fieldDisplayValue={selectedData?.label ? selectedData : undefined}
+                  />
+                </div>
+                <span className='selectMethodInfo'>{t('paymentInvoices.reviewPayments.selectMethodInfo')}</span>
               </div>
               <div className="paymentOptionContainer">
                 <PaymentOptionsControls

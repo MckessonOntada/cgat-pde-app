@@ -180,6 +180,7 @@ export const PaymentInvoicesES = {
     'S_Invoices Selected for Payment',
   'paymentInvoices.reviewPayments.invoice': 'S_Invoices Selected',
   'paymentInvoices.reviewPayments.selectMethod': 'S_Select a method',
+    'paymentInvoices.reviewPayments.selectMethodInfo': 'S_For other payment methods, please contact Customer Care.',
   'paymentInvoices.reviewPayments.invoiceDesc':
     'S_Amount to be charged to your Payment account:',
   'paymentInvoices.reviewPayments.previewPayment': 'S_Preview Payment',
