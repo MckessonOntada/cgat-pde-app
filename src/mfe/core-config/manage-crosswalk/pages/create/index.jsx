@@ -149,7 +149,16 @@ const CreateCrosswalk = () => {
 
         <div className="MCP-CardContainer">
           <div className={style['grid-container']}>
-            <TableProvider fetchFn={MaterialService.getMaterialList}>
+            <TableProvider
+              defaultFilters={{
+                status: 'active'
+              }}
+              defaultSort={{
+                sortBy: 'material_description',
+                sortOrder: 'ASC'
+              }}
+              allowedSort={['material_description']}
+              fetchFn={MaterialService.getMaterialList}>
               <Materials
                 material={selectedMaterial}
                 setMaterial={setSelectedMaterial}
@@ -158,8 +167,14 @@ const CreateCrosswalk = () => {
             <TableProvider
               defaultFilters={{
                 channelTypes: CHANNEL_TYPE.SPECIALTY_PHARMA,
-                showNonCrosswalked: true
+                showNonCrosswalked: true,
+                status: 'active'
               }}
+              defaultSort={{
+                sortBy: 'material_description',
+                sortOrder: 'ASC'
+              }}
+              allowedSort={['material_description']}
               fetchFn={MaterialService.getMaterialList}>
               <Products
                 selection={selectedItems}
