@@ -8,25 +8,30 @@ const useOrder = (orderId) => {
     queryKey: ['summary', orderId],
     queryFn: async () => OrderService.getOrderById(orderId),
     cacheTime: 0,
-    enabled: Boolean(orderId)
+    enabled: Boolean(orderId),
+    select: (result) => {
+      if (result) {
+        Object.entries(result).forEach((entry) => {
+          const [key, value] = entry;
+          if (value === null) {
+            result[key] = undefined;
+          }
+        });
+        const { accountDetails, provider } = result;
+        if (accountDetails?.soldToAccount?.channelType) {
+          result.channelType = accountDetails.soldToAccount.channelType;
+        }
+        if (provider) {
+          provider.id = +provider.id;
+        }
+      }
+
+      return result;
+    }
   });
 
   if (result.isFetching) {
     return { isLoader: <Loader type={'screen'} /> };
-  }
-
-  if (result.data) {
-    Object.entries(result.data).forEach((entry) => {
-      const [key, value] = entry;
-      if (value === null) {
-        result.data[key] = undefined;
-      }
-    });
-    if (result.data.accountDetails?.soldToAccount?.channelType) {
-      result.data.channelType =
-        result.data.accountDetails.soldToAccount.channelType;
-      // 'SPECIALTY_PHARMA';
-    }
   }
 
   return result;

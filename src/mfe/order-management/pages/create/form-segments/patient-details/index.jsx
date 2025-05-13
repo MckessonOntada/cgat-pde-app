@@ -5,13 +5,14 @@ import {
   Alert,
   Tooltip,
   Loader,
+  MultiSelectDropdown,
   Heading
 } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Form, Formik } from 'formik';
+import { Field, Form, Formik } from 'formik';
 import OrderService from '@src/api/commonService/OrderService';
 import { useMutation } from 'react-query';
 import CommonUtils from '@src/util/CommonUtils';
@@ -34,6 +35,8 @@ import ProviderService from '@src/api/commonService/ProviderService';
 import { CHANNEL_TYPE } from '../Constants';
 import useTimedArray from '../summary/useTimedArray';
 import { FooterContext } from '@src/components/footer/FooterContext';
+import Components from '@src/components/form/Components';
+import useProvider from './useProvider';
 
 export const getFilteredSections = (channelType) => {
   return sections.map((section) => ({
@@ -107,22 +110,21 @@ const PatientDetails = () => {
     soldToAccountId,
     shipToAccountId
   });
-  const [providers, setProviders] = React.useState([]);
 
   React.useEffect(() => {
     if (orderDetails.patient) {
-      setInitialValues({
-        patient: orderDetails.patient,
-        providerId: orderDetails.provider?.id
-      });
       if (orderDetails.provider) {
         const { name, address } = orderDetails.provider || {};
-        setSelectedProvider({
+        setProvider({
           fullname: CommonUtils.getFullName(name),
           detailedAddress: CommonUtils.getDetailedAddress(address),
           ...orderDetails.provider
         });
       }
+      setInitialValues({
+        patient: orderDetails.patient,
+        providerId: orderDetails.provider?.id
+      });
     }
   }, [orderDetails]);
 
@@ -238,6 +240,7 @@ const PatientDetails = () => {
       navigate(RoutePaths.pathOrderManagement);
     }
   };
+
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
       navigate(RoutePaths.pathOrderManagement);
@@ -252,30 +255,28 @@ const PatientDetails = () => {
     }
   };
 
-  React.useEffect(() => {
-    if (
-      orderDetails &&
-      orderDetails.channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-    ) {
-      const params = {
-        accountId: orderDetails.accountDetails?.soldToAccount?.id
-      };
-      ProviderService.getAllProviders(params).then((response) => {
-        if (response.content && Array.isArray(response.content)) {
-          const beautifiedProviders = response.content.map((provider) => {
-            const { name, address } = provider;
-            return {
-              id: provider.id?.toString(),
-              ...provider,
-              fullname: CommonUtils.getFullName(name),
-              detailedAddress: CommonUtils.getDetailedAddress(address)
-            };
-          });
-          setProviders(beautifiedProviders);
-        }
-      });
-    }
-  }, [orderDetails]);
+  const [provider, setProvider] = React.useState(null);
+  const [providerQuery, setProviderQuery] = React.useState('');
+
+  const { providers, isFetching, totalProviders } = useProvider({
+    orderDetails,
+    query: providerQuery
+  });
+
+  const handleOnSelection = (value, setFieldValue) => {
+    let provider = providers.find((item) => item.id === value);
+    setProvider(provider);
+    setFieldValue('providerId', value);
+  };
+
+  const debouncedSearch = React.useCallback(
+    CommonUtils.debounce((query) => setProviderQuery(query)),
+    500
+  );
+
+  const onSearchProvider = (query) => {
+    debouncedSearch(query);
+  };
 
   if (isLoader) {
     return isLoader;
@@ -342,15 +343,8 @@ const PatientDetails = () => {
           )}
           enableReinitialize={true}
           onSubmit={(values) => handleSubmit(values)}>
-          {({ values, isValid, errors, dirty }) => {
+          {({ values, isValid, errors, dirty, setFieldValue }) => {
             React.useEffect(() => {
-              const { providerId } = values;
-              const selectedProvider = providers.find(
-                (item) => item.id?.toString() === providerId
-              );
-              if (selectedProvider) {
-                setSelectedProvider(selectedProvider);
-              }
               setIsDirty(dirty);
             }, [values]);
             return (
@@ -364,31 +358,61 @@ const PatientDetails = () => {
                           <hr />
                           <div className="selected-provider">
                             <div className="MCP-module-body">
-                              <Heading as="h2">Provider Details</Heading>
-                              <FormRenderer
-                                sections={providerSections({
-                                  providers: providers.map((item) => ({
-                                    label: item.fullname,
-                                    subLabel: item.detailedAddress,
-                                    value: item.id.toString()
-                                  }))
-                                })}
+                              <Heading as="h2">
+                                {t(
+                                  'orderManagement.patientDetails.inputLabel.providerDetails'
+                                )}
+                              </Heading>
+                              <Field
+                                component={Components['multiSelectDropdown']}
+                                id={'patient-info-provider'}
+                                name={'providerId'}
+                                label={' '}
+                                isMultiSelect={false}
+                                placeholder={'Select Provider'}
+                                onChange={(value) =>
+                                  handleOnSelection(value, setFieldValue)
+                                }
+                                options={providers.map((item) => ({
+                                  label: item.fullname,
+                                  labelDescription: item.detailedAddress,
+                                  value: item.id
+                                }))}
+                                value={provider?.id.toString()}
+                                variant={'async'}
+                                onSearch={setProviderQuery}
+                                recordsCountToEnableSearch={5}
+                                size="lg"
+                                fieldDisplayValue={
+                                  CommonUtils.isNonEmptyObject(provider)
+                                    ? provider
+                                    : undefined
+                                }
+                                isAsyncLoading={isFetching}
+                                refineFilterMessage={[
+                                  t(
+                                    'paymentInvoices.accountSearch.moreRecordsExist'
+                                  ),
+                                  t(
+                                    'paymentInvoices.accountSearch.searchToRefine'
+                                  )
+                                ]}
+                                asyncRecordsFound={totalProviders}
                               />
                             </div>
-                            {selectedProvider && (
+                            {provider && (
                               <div className="details-card">
                                 <Heading className="details-title" as="h3">
-                                  {selectedProvider.fullname}
+                                  {provider.fullname}
                                 </Heading>
                                 <div className="grid grid-gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 align-items-start">
-                                  <Tooltip
-                                    body={selectedProvider.detailedAddress}>
+                                  <Tooltip body={provider.detailedAddress}>
                                     <p className="detail-segment inline-text-overflow">
-                                      {selectedProvider.detailedAddress}
+                                      {provider.detailedAddress}
                                     </p>
                                   </Tooltip>
                                   {['dea', 'npi', 'phone'].map((key) => {
-                                    const value = selectedProvider[key];
+                                    const value = provider[key];
                                     return (
                                       <Tooltip body={value}>
                                         <p className="detail-segment inline-text-overflow">
@@ -406,8 +430,7 @@ const PatientDetails = () => {
                     </div>
                   </div>
                   <div className="footer-wrapper" ref={controlRef}>
-                    <div
-                      className="controls footer-controls">
+                    <div className="controls footer-controls">
                       <Button
                         size="md"
                         variant="secondary"
