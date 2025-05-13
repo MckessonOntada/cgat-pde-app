@@ -1,0 +1,78 @@
+Bulk Upload Template - Instructions
+
+Please follow the guidelines below to correctly fill in each column of the bulk upload template.
+
+1. FIRST NAME
+   - Mandatory.
+   - Enter the user's first name (e.g., John).
+
+2. MIDDLE NAME
+   - Optional.
+   - Enter the user's middle name if applicable.
+
+3. LAST NAME
+   - Mandatory.
+   - Enter the user's last name (e.g., Doe).
+
+4. ADDRESS1
+   - Mandatory.
+   - Enter the primary street address (e.g., 123 Main St).
+
+5. ADDRESS2
+   - Optional.
+   - Enter secondary address information (e.g., Apartment or Suite number).
+
+6. ZIP
+   - Mandatory.
+   - Enter the ZIP or postal code in proper format (e.g., 10001 or 560001).
+
+7. CITY
+   - Mandatory.
+   - Enter the city name (e.g., New York, Mumbai).
+
+8. STATE
+   - Mandatory.
+   - Enter the full state/province name (e.g., California, Karnataka).
+
+9. EMAIL
+   - Mandatory.
+   - Enter a valid email address (e.g., user@example.com).
+
+11. PHONE
+    - Mandatory.
+    - Enter only the numeric part of the phone number (exclude country code).
+    - No special characters or spaces (e.g., 9876543210).
+
+12. FAX
+    - Optional.
+    - Enter the fax number if available, following the same rules as for Phone.
+
+13. USER ROLE
+    - Mandatory.
+    - Accepted values (case-sensitive):
+      - Organization Admin
+      - Organization User
+
+14. ACCOUNT NUMBERS
+    - Mandatory.
+    - Comma-separated list of account numbers associated with the user.
+    - Example: 10012345,10067890
+
+-------------------------
+
+✅ VALID EXAMPLE ROW:
+
+| First Name | Middle Name  | Last Name | Address1     | Address2  | Zip     | City    | State      | Email              | Country Code  | Phone      | Fax        | User Role | Account Numbers      |
+|------------|--------------|-----------|--------------|-----------|---------|---------|------------|--------------------|---------------|------------|------------|-----------|----------------------|
+| John       | A.           | Doe       | 123 Main St  | Apt 4B    | 10001   | New York| New York   | john.doe@email.com | +1            | 5551234567 | 5559876543 | Org Admin | 10012345,10067890    |
+
+-------------------------
+
+IMPORTANT NOTES:
+- Do not change or rename the column headers in the template.
+- Make sure required fields are filled to avoid upload errors.
+- Incorrect role format will result in a validation failure.
+- Refer to this file before uploading to reduce errors.
+
+For support, contact your system administrator.
+

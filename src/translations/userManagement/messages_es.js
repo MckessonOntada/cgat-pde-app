@@ -493,16 +493,18 @@ export const UserManagementES = {
     'S_Are you sure you wish to Deactivate this User?',
   'userManagement.confirmationMessage': 'S_Confirmation message',
   'userManagement.edit_sysadmin': 'S_Edit System Administrator',
-  'userManagement.edit_organization_user': 'S_Edit Organization User',  
+  'userManagement.edit_organization_user': 'S_Edit Organization User',
   'errors.messages.dateRange':
     "S_S_Either enter both dates or none for the filter as it's part of a date range.",
   'errors.messages.emptyDataDescription':
     'S_S_An unexpected error occurred. Please try again.',
   'label.comment': 'S_S_Comment',
-  'userManagement.header.review_user': 'S_Review Organization User', 
-  'errors.messages.dateRange': "S_Either enter both dates or none for the filter as it's part of a date range.",
-  'errors.messages.emptyDataDescription': 'S_An unexpected error occurred. Please try again.',
-  'label.comment': 'S_Comment', 
+  'userManagement.header.review_user': 'S_Review Organization User',
+  'errors.messages.dateRange':
+    "S_Either enter both dates or none for the filter as it's part of a date range.",
+  'errors.messages.emptyDataDescription':
+    'S_An unexpected error occurred. Please try again.',
+  'label.comment': 'S_Comment',
   'file.download.csv': 'S_Download CSV Template',
   'lebal.users': 'S_Users',
   'lebal.backToManage': 'S_Back to Manage',
@@ -513,5 +515,7 @@ export const UserManagementES = {
   'messages.user_activate_success': 'S_User has been Activated successfully.',
   'messages.user_activate_failure': 'S_Failed to Activate the User.',
   'popup.userActivation.question':
-    'Are you sure you wish to Activate this User?'
+    'Are you sure you wish to Activate this User?',
+  'userManagement.upload-info':
+    'S_For filling up the user’s template, please refer to the instruction file.'
 };

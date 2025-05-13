@@ -543,13 +543,15 @@ export const UserManagementEN = {
   'errors.messages.dateRange':
     "Either enter both dates or none for the filter as it's part of a date range.",
   'errors.messages.default': 'An unexpected error occurred. Please try again.',
-  'label.comment': 'Comment', 
-  'userManagement.header.review_user': 'Review Organization User', 
+  'label.comment': 'Comment',
+  'userManagement.header.review_user': 'Review Organization User',
   'file.download.csv': 'Download CSV Template',
   'lebal.users': 'Users',
   'lebal.backToManage': 'Back to Manage',
   'lebal.add': 'Add',
   'userManagement.uploadUsers': 'Upload Users',
   'userManagement.uploadUsersListCSV': 'Upload Users List CSV',
-  'userManagement.button.addUsers': 'Add Users'
+  'userManagement.button.addUsers': 'Add Users',
+  'userManagement.upload-info':
+    'For filling up the user’s template, please refer to the instruction file.'
 };
