@@ -39,18 +39,20 @@ import Components from '@src/components/form/Components';
 import useProvider from './useProvider';
 
 export const getFilteredSections = (channelType) => {
-  return sections.map((section) => ({
-    ...section,
-    rows: section.rows.map((row) => ({
-      ...row,
-      controls: row.controls.filter((control) => {
-        if (typeof control.if === 'function') {
-          return control.if(channelType);
-        }
-        return true;
-      })
-    }))
-  }));
+  return sections(channelType === CHANNEL_TYPE.SPECIALTY_PHARMA).map(
+    (section) => ({
+      ...section,
+      rows: section.rows.map((row) => ({
+        ...row,
+        controls: row.controls.filter((control) => {
+          if (typeof control.if === 'function') {
+            return control.if(channelType);
+          }
+          return true;
+        })
+      }))
+    })
+  );
 };
 
 const PatientDetails = () => {

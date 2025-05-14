@@ -39,17 +39,18 @@ export const nameSchema = (t) =>
       .required(t('Please enter the First Name.'))
       .max(50, t('First Name should not exceed 50 characters.'))
       .matches(
-        /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/,
+        /^[A-Za-zÀ-ÖØ-öø-ÿ'-]+(?: [A-Za-zÀ-ÖØ-öø-ÿ'-]+)*$/,
         t('First Name must contain alphabets only.')
       ),
     middleName: Yup.string()
-      .nullable()
+      .nonNullable()
       .max(50, t('Middle Name should not exceed 50 characters.')),
     lastName: Yup.string()
       .nullable()
+      .required(t('Please enter the Last Name.'))
       .max(50, t('Last Name should not exceed 50 characters.'))
       .matches(
-        /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/,
+        /^[A-Za-zÀ-ÖØ-öø-ÿ'-]+(?: [A-Za-zÀ-ÖØ-öø-ÿ'-]+)*$/,
         t('Last Name must contain alphabets only.')
       )
   });
@@ -108,33 +109,33 @@ export const insuranceCoverageSchema = (t) =>
         t('Policy Number should only contain letters and numbers.')
       ),
     groupNumber: Yup.string()
-      .nullable()
+      .required(t('Please enter the Group Number'))
       .max(30, t('Group Number should not exceed 30 characters.'))
       .matches(
         /^[A-Za-z0-9]*$/,
         t('Group Number should only contain letters and numbers.')
       ),
     planType: Yup.string()
-      .nullable()
+      .required(t('Please Select the Plan Type'))
       .oneOf(PLAN_TYPES, t('Please select a valid Plan Type.')),
     effectiveDate: Yup.date()
       .nullable()
       .required(t('Please enter the Effective Date.'))
       .max(new Date(), t('Effective Date cannot be in the future.')),
     pcnNumber: Yup.string()
-      .nullable()
+      .required(t('Please enter the PCN Number'))
       .max(30, t('PCN Number should not exceed 30 characters.'))
       .matches(/^\d*$/, t('PCN Number must contain numbers only.')),
     grpNumber: Yup.string()
-      .nullable()
+      .required(t('Please enter the GRP Number'))
       .max(30, t('GRP Number should not exceed 30 characters.'))
       .matches(/^\d*$/, t('GRP Number must contain numbers only.')),
     idNumber: Yup.string()
-      .nullable()
+      .required(t('Please enter the ID Number'))
       .max(30, t('ID Number should not exceed 30 characters.'))
       .matches(/^\d*$/, t('ID Number must contain numbers only.')),
     binNumber: Yup.string()
-      .nullable()
+      .required(t('Please enter the BIN Number'))
       .max(30, t('BIN Number should not exceed 30 characters.'))
       .matches(/^\d*$/, t('BIN Number must contain numbers only.'))
   });
