@@ -7,6 +7,7 @@ import { useMutation, useQuery } from 'react-query';
 import MaterialService from '@src/api/commonService/MaterialService';
 import AuthUtils from '@src/util/AuthUtils';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
+import SPCatalogService from '@src/api/commonService/SPCatalogService';
 
 export const SPMaterialDetailsConstants = [
   {
@@ -20,11 +21,19 @@ export const SPMaterialDetailsConstants = [
   }
 ];
 
-function SPMaterialDetails({
-  openSPMaterialDetails,
-  setOpenSPMaterialDetails,
-  viewSPMaterial
-}) {
+export const SPCatalogDetailsConstants = [
+  {
+    sectionHeading: 'Details',
+    sectionData: [
+      { label: 'id', value: 'sapMaterial' },
+      { label: 'productName', value: 'materialDescriptionInLanguageEn' },
+      { label: 'siteName', value: 'siteName' },
+      { label: 'NDC', value: 'ndc' }
+    ]
+  }
+];
+
+function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, viewSPMaterial, isSPCatalog = false }) {
   const { t } = useTranslate();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
 
@@ -32,10 +41,7 @@ function SPMaterialDetails({
     channelType: 'SPECIALITY_PHARMA'
   };
   const { isLoading, isError, data } = useQuery({
-    queryKey: [
-      'SPMaterial',
-      viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId || viewSPMaterial?.materialNumber,
-    ],
+    queryKey: ['SPMaterial', viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId || viewSPMaterial?.materialNumber],
     queryFn: async () => {
       const result = await MaterialService.getSPMaterialById(
         viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId || viewSPMaterial?.materialNumber,
@@ -43,7 +49,30 @@ function SPMaterialDetails({
       );
       return result;
     },
-    enabled: !!viewSPMaterial && viewSPMaterial?.id ? true : false,
+    enabled: !!viewSPMaterial && viewSPMaterial?.id && !isSPCatalog ? true : false,
+    refetchOnWindowFocus: false
+  });
+
+  const requestSPCatalogParams = () => {
+    return {
+      materialId: viewSPMaterial.sapMaterial,
+      variant: viewSPMaterial.variant || '',
+      shipToAccount: viewSPMaterial.shipToCustomer,
+      soldToAccount: viewSPMaterial.soldToCustomer,
+      channelType: 'SPECIALITY_PHARMA'
+    };
+  };
+  const {
+    isLoading: isSPCatalogDataLoading,
+    isError: isSPCatalogError,
+    data: SPCatalogData
+  } = useQuery({
+    queryKey: ['SPMaterial', viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId || viewSPMaterial?.materialNumber],
+    queryFn: async () => {
+      const result = await SPCatalogService.getSPProductDetailsByMN(requestSPCatalogParams);
+      return result;
+    },
+    enabled: !!viewSPMaterial && viewSPMaterial?.id && isSPCatalog ? true : false,
     refetchOnWindowFocus: false
   });
 
@@ -76,30 +105,48 @@ function SPMaterialDetails({
     });
   };
 
-  const { mutate: delinkQuestionnaire, isLoading: isDelinkLoading } =
-    useMutation(
-      async (payload) => {
-        await QuestionnaireService.deLinkConfigureQuestionnaire(
-          'Material',
-          payload
-        );
+  const { mutate: delinkQuestionnaire, isLoading: isDelinkLoading } = useMutation(
+    async (payload) => {
+      await QuestionnaireService.deLinkConfigureQuestionnaire('Material', payload);
+    },
+    {
+      onSuccess: (response) => {
+        refetch();
       },
-      {
-        onSuccess: (response) => {
-          refetch();
-        },
-        onError: (error) => {
-          showSnackbar({
-            description: t('manageMaterial.delink.error'),
-            type: 'error'
-          });
-        }
+      onError: (error) => {
+        showSnackbar({
+          description: t('manageMaterial.delink.error'),
+          type: 'error'
+        });
       }
-    );
+    }
+  );
 
   if (isLoading) {
     return <Loader type={'screen'} />;
   }
+
+  const renderDetails = (constants, dataSource) => {
+    return constants.map((item, index) => (
+      <React.Fragment key={index}>
+        <div className="styled-heading">
+          <Heading as="h4">{t(`manageSPMaterial.drawer.${item.sectionHeading}`)}</Heading>
+        </div>
+        <div className="details-ul">
+          {item.sectionData.map((subItem, subIndex) => {
+            const value = subItem.value === 'siteName' ? data?.siteName || '-' : data?.[dataSource]?.[subItem.value] || '-';
+            return (
+              <div className="details-li" key={subIndex}>
+                <div className="details-key">{t(`manageSPMaterial.drawer.details.body.${subItem.label}`)}</div>
+                <div className="details-value">{value}</div>
+              </div>
+            );
+          })}
+        </div>
+      </React.Fragment>
+    ));
+  };
+
   return (
     <React.Fragment>
       {data && (
@@ -110,43 +157,19 @@ function SPMaterialDetails({
           heading={t('manageSPMaterial.drawer.heading')}>
           <div className="details-main-wrapper">
             <div className={'details-body'}>
-              {SPMaterialDetailsConstants.map((item, index) => (
-                <React.Fragment>
-                  <div className="styled-heading">
-                    <Heading as="h4">
-                      {t(`manageSPMaterial.drawer.${item.sectionHeading}`)}
-                    </Heading>
-                  </div>
-                  <div className="details-ul">
-                    {item.sectionData.map((item, index) => {
-                      let value = data?.therapy[item.value] || '-';
-                      return (
-                        <div className="details-li">
-                          <div className="details-key">
-                            {t(
-                              `manageSPMaterial.drawer.details.body.${item.label}`
-                            )}
-                          </div>
-                          <div className="details-value">{value}</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </React.Fragment>
-              ))}
-
+              {!isSPCatalog
+                ? renderDetails(SPMaterialDetailsConstants, 'therapy')
+                : renderDetails(SPCatalogDetailsConstants, 'catalogPrice')}
               {data?.questionnaireList?.length > 0 && (
                 <>
                   <div className="Questionnaire-li">
-                    <div className="Questionnaire-key">
-                      {t('ManageAccount.questionnaireConfiguration')}
-                    </div>
+                    <div className="Questionnaire-key">{t('ManageAccount.questionnaireConfiguration')}</div>
                     <div className="Questionnaire-value">
                       <div
                         onClick={() =>
                           navigate(PREVIEW_URL, {
                             state: {
-                              isAccount: true,
+                              isSPMaterial: true,
                               questionnaire: data?.questionnaireList
                             }
                           })
@@ -159,13 +182,9 @@ function SPMaterialDetails({
                     {data?.questionnaireList.map((item, index) => {
                       return (
                         <div key={index} className="Questionnairedetails-li">
-                          <div className="Questionnairedetails-key">
-                            {item.templateName}
-                          </div>
+                          <div className="Questionnairedetails-key">{item.templateName}</div>
                           {!isCustomerCenter && (
-                            <div
-                              className="delete-button"
-                              onClick={() => OnDeleteClick(item.id)}>
+                            <div className="delete-button" onClick={() => OnDeleteClick(item.id)}>
                               <DeleteIcon />
                             </div>
                           )}

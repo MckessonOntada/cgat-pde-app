@@ -18,7 +18,7 @@ export const useOrgAccountSelectionContext = () => {
 
 const ACCOUNTS_PER_SEARCH = 20;
 
-export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enableAcct = true, defaultFirstOrgSelected = false }) => {
+export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enableAcct = true, defaultFirstOrgSelected = false, enableConfigure = false }) => {
   const dispatch = useDispatch();
   const [searchOrgText, setSearchOrgText] = useState('');
   const [selectedOrganization, setSelectedOrganization] = useState(null);
@@ -53,7 +53,12 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
           }
           if (selectedOrganization) {
             let findOrg = data.find((item) => item.value == selectedOrganization.id);
-            !findOrg && data.unshift({ index: 0, label: selectedOrganization.name, value: selectedOrganization.id });
+            !findOrg &&
+              data.unshift({
+                index: 0,
+                label: selectedOrganization.name,
+                value: selectedOrganization.id
+              });
           }
 
           setOptions(data);
@@ -80,7 +85,8 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
       pageSize: ACCOUNTS_PER_SEARCH,
       practiceId: selectedOrganization.id,
       partnerFunction: 'SOLD_TO',
-      query: searchAccountText
+      query: searchAccountText,
+      ...(enableConfigure ? { channelType: 'ALL' } : {})
     };
   };
   const { data: accountsList, refetch: refetchAccounts } = useQuery({
@@ -99,13 +105,7 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
             label: item.accountName,
             value: item.accountNumber,
             isChecked:
-              checkedAccounts.length > 0
-                ? checkedAccounts.find((ele) => ele.accountNumber == item.accountNumber)
-                  ? true
-                  : false
-                : index == 0
-                ? true
-                : false
+              checkedAccounts.length > 0 ? (checkedAccounts.find((ele) => ele.accountNumber == item.accountNumber) ? true : false) : index == 0 ? true : false
           })) || [];
         setAccountOptions(_opt);
         setSelectedAccount(_opt);
