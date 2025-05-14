@@ -161,6 +161,12 @@ const Summary = () => {
     } else {
       console.log('Inventory type not supported');
     }
+    if (orderDetails.id) {
+      setPapOrderOptions((prevState) => ({
+        ...prevState,
+        isChecked: Boolean(orderDetails.paporder)
+      }));
+    }
   }, [orderDetails]);
 
   const handleInventoryDetailsResponse = (data = {}) => {
@@ -316,7 +322,7 @@ const Summary = () => {
 
   const [papOrderOptions, setPapOrderOptions] = React.useState({
     isDisabled: false,
-    isChecked: false,
+    isChecked: isPapOrder,
     label: t('messages.papOrderPlacementAcknowledgement'),
     value: false
   });
@@ -430,7 +436,12 @@ const Summary = () => {
           <div className="MCP-modal-body">
             <p>{t('prompt.message.editRestriction')}</p>
           </div>
-        )
+        ),
+        footerActions: {
+          cancel: {
+            label: t('label.ok')
+          }
+        }
       });
       return;
     }

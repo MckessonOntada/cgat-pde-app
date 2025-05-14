@@ -293,6 +293,7 @@ export const MessageEn = {
   'table.columns.captions.shippingAccountName': 'Shipping Account Name',
   'label.yes': 'Yes',
   'label.no': 'No',
+  'label.ok': 'Ok',
   'messages.formNotFound': 'Form Not Found',
   'messages.orderSuccessApprovalPending':
     'Your order has been submitted successfully and is now pending for approval.',
