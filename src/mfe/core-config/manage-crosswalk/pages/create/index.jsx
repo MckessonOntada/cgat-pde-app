@@ -36,7 +36,8 @@ const CreateCrosswalk = () => {
   const {
     items: notifications,
     add: addNotification,
-    remove: removeNotification
+    remove: removeNotification,
+    removeAll: removeAllNotification
   } = useTimedArray(10000);
 
   const handleOnSubmit = () => {
@@ -81,7 +82,7 @@ const CreateCrosswalk = () => {
     }
   };
   const confirmLinkMaterials = () => {
-    removeNotification();
+    removeAllNotification();
     const { material, selectedProducts } = state;
     if (!material || !selectedProducts || selectedProducts.length === 0) {
       addNotification({
