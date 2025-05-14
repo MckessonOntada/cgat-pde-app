@@ -10,6 +10,7 @@ import { FinanceUtils } from '@src/util/FinanceUtil';
 
 export default function BalanceDetails() {
   const { t } = useTranslate();
+  const currencyUnit = '$';
   const { balanceData, isMutating: isLoadingBalance } = useBalanceContext();
   const { selectedAccount } = useAccountContext();
 
@@ -22,12 +23,16 @@ export default function BalanceDetails() {
         {
           label: t('paymentInvoices.metrics.totalDebitBalance'),
           value: `${Math.abs(totalDebitBalance) || '0.00'}`,
-          tooltipText: t('paymentInvoices.metrics.totalDebitBalance.tooltipText')
+          tooltipText: t(
+            'paymentInvoices.metrics.totalDebitBalance.tooltipText'
+          )
         },
         {
           label: t('paymentInvoices.metrics.totalCreditBalance'),
           value: `${Math.abs(totalCreditBalance) || '0.00'}`,
-          tooltipText: t('paymentInvoices.metrics.totalCreditBalance.tooltipText')
+          tooltipText: t(
+            'paymentInvoices.metrics.totalCreditBalance.tooltipText'
+          )
         },
         {
           label: t('paymentInvoices.metrics.pastDueBalance'),
@@ -42,18 +47,39 @@ export default function BalanceDetails() {
   const formatChartData = (data) => {
     if (data) {
       const formattedData = [
-        { key: 'DUE', label: t('paymentInvoices.balanceCard.due'), color: '#F7C91E80' },
-        { key: 'OVERDUE', label: t('paymentInvoices.balanceCard.1_30_DAYS_OVERDUE'), color: '#EFA22180' },
-        { key: 'PLUS_31_DAYS_OVERDUE', label: t('paymentInvoices.balanceCard.31_60_DAYS_OVERDUE'), color: '#EA882380' },
-        { key: 'PLUS_61_DAYS_OVERDUE', label: t('paymentInvoices.balanceCard.61_90_DAYS_OVERDUE'), color: '#E3612680' },
-        { key: 'PLUS_91_DAYS_OVERDUE', label: t('paymentInvoices.balanceCard.PLUS_91_DAYS_OVERDUE'), color: '#DB3A2980' }
+        {
+          key: 'DUE',
+          label: t('paymentInvoices.balanceCard.due'),
+          color: '#F7C91E80'
+        },
+        {
+          key: 'OVERDUE',
+          label: t('paymentInvoices.balanceCard.1_30_DAYS_OVERDUE'),
+          color: '#EFA22180'
+        },
+        {
+          key: 'PLUS_31_DAYS_OVERDUE',
+          label: t('paymentInvoices.balanceCard.31_60_DAYS_OVERDUE'),
+          color: '#EA882380'
+        },
+        {
+          key: 'PLUS_61_DAYS_OVERDUE',
+          label: t('paymentInvoices.balanceCard.61_90_DAYS_OVERDUE'),
+          color: '#E3612680'
+        },
+        {
+          key: 'PLUS_91_DAYS_OVERDUE',
+          label: t('paymentInvoices.balanceCard.PLUS_91_DAYS_OVERDUE'),
+          color: '#DB3A2980'
+        }
       ];
 
       return formattedData.map(({ key, label, color }) => ({
         label,
         segmentValue: Math.abs(data[key] || 0),
-        displayValue: FinanceUtils.formatCurrency(parseFloat(Math.abs(data[key] || 0))),
-        color
+        displayValue: FinanceUtils.formatAmount(data[key] || 0),
+        color,
+        tooltipText: `${currencyUnit}${Math.abs(data[key] || 0)} (${label})`
       }));
     }
   };
@@ -68,15 +94,24 @@ export default function BalanceDetails() {
             <div className="metrics">
               {formatBalanceData(balanceData).map((data, index) => (
                 <div key={index} className="info-cards-container">
-                  <InfoCards title={data.label} value={FinanceUtils.formatCurrency(parseFloat(data.value))} infoText={data.tooltipText} />
+                  <InfoCards
+                    title={data.label}
+                    value={FinanceUtils.formatCurrency(parseFloat(data.value))}
+                    infoText={data.tooltipText}
+                  />
                 </div>
               ))}
             </div>
           </div>
-          {!CommonUtils.isNonEmptyObject(balanceData) ? null : <Divider className="divider-style" />}
+          {!CommonUtils.isNonEmptyObject(balanceData) ? null : (
+            <Divider className="divider-style" />
+          )}
           {!CommonUtils.isNonEmptyObject(balanceData) ? null : (
             <div className="metrics-chart">
-              <LinearSegmentChart data={formatChartData(balanceData.overDueAmountByStatus)} />
+              <LinearSegmentChart
+                data={formatChartData(balanceData.overDueAmountByStatus)}
+                unit={currencyUnit}
+              />
             </div>
           )}
         </div>
