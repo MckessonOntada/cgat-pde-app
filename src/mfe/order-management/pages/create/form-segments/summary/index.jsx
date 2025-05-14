@@ -896,17 +896,17 @@ const Summary = () => {
                       label={t('labels.nationalDrugCode')}
                       value={therapy.ndcNumber || '-'}
                     />
-                    {/* <DetailSegment
+                    <DetailSegment
                       label={t('labels.Strength')}
                       value={therapy.strength || '-'}
                     />
                     <DetailSegment
                       label={t('labels.Dosage')}
                       value={therapy.dosage || '-'}
-                    /> */}
+                    />
                     <DetailSegment
                       label={t('labels.salesOrganization')}
-                      value={accountDetails?.shipToAccount?.accountName || '-'}
+                      value={accountDetails?.shipToAccount?.salesOrg || '-'}
                     />
                     <DetailSegment
                       label={t('labels.distributionsChannel')}
