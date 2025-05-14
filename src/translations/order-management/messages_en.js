@@ -293,6 +293,7 @@ export const MessageEn = {
   'table.columns.captions.shippingAccountName': 'Shipping Account Name',
   'label.yes': 'Yes',
   'label.no': 'No',
+  'label.ok': 'Ok',
   'messages.formNotFound': 'Form Not Found',
   'messages.orderSuccessApprovalPending':
     'Your order has been submitted successfully and is now pending for approval.',
@@ -450,7 +451,7 @@ export const MessageEn = {
   'message.error.papOrderCanNotEdit':
     "You can't edit this order, If you wish to make any changes to the order, please call the customer center",
   'prompt.message.editRestriction':
-    "You can't edit this order, If you wish to make any changes to the order, please contact the customer support 1800-XXX-XXXX",
+    "You can't edit this order. If you wish to make any changes to this order, please reject this order and create a new order.",
 
   'captions.btnBackToManageQuestionnaire': 'Back to Manage Questionnaire',
   'headings.manageQuestionnaire': 'Manage Questionnaire',

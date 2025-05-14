@@ -613,7 +613,7 @@ div.disable-all {
       }
 
       input {
-        margin-top: var(--spacing-01);
+        // margin-top: var(--spacing-01);
       }
     }
   }
@@ -1422,6 +1422,7 @@ div[role="row"] {
 .info-upload {
   font-style: italic;
   font-size: var(--brand-font-size--extra-small);
+
 }
 
 .equal-height-grid {

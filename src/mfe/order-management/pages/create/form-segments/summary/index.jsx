@@ -12,6 +12,7 @@ import {
   Alert,
   Label
 } from '@mckesson/mcp-component-library';
+import { ReactComponent as InfoIcon } from '@src/assets/svg/info_round.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
@@ -159,6 +160,12 @@ const Summary = () => {
       getInventoryStatus();
     } else {
       console.log('Inventory type not supported');
+    }
+    if (orderDetails.id) {
+      setPapOrderOptions((prevState) => ({
+        ...prevState,
+        isChecked: Boolean(orderDetails.paporder)
+      }));
     }
   }, [orderDetails]);
 
@@ -315,7 +322,7 @@ const Summary = () => {
 
   const [papOrderOptions, setPapOrderOptions] = React.useState({
     isDisabled: false,
-    isChecked: false,
+    isChecked: isPapOrder,
     label: t('messages.papOrderPlacementAcknowledgement'),
     value: false
   });
@@ -429,7 +436,12 @@ const Summary = () => {
           <div className="MCP-modal-body">
             <p>{t('prompt.message.editRestriction')}</p>
           </div>
-        )
+        ),
+        footerActions: {
+          cancel: {
+            label: t('label.ok')
+          }
+        }
       });
       return;
     }
@@ -1399,17 +1411,24 @@ const Summary = () => {
                 size="md"
               />
               {askForPapOrder && (
-                <CheckboxGroup
-                  id={'pap-order'}
-                  name="pap-order"
-                  items={[
-                    {
-                      ...papOrderOptions,
-                      onChange: () => handlePapOrderSelectionChange()
-                    }
-                  ]}
-                  size="md"
-                />
+                <div className={styles['pap-order-selection-control']}>
+                  <CheckboxGroup
+                    id={'pap-order'}
+                    name="pap-order"
+                    items={[
+                      {
+                        ...papOrderOptions,
+                        onChange: () => handlePapOrderSelectionChange()
+                      }
+                    ]}
+                    size="md"
+                  />
+                  <Tooltip body={'This will create a No Cost Therapy order'}>
+                    <div className={styles['info-icon']}>
+                      <InfoIcon />
+                    </div>
+                  </Tooltip>
+                </div>
               )}
             </div>
           )}

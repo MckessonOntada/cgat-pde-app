@@ -51,7 +51,7 @@ const getColumns = ({ t }) => {
     },
     {
       id: 'genericName',
-      name: t('manageSPMaterial.table.productname'),
+      name: t('manageMaterial.table.spProductName'),
       selector: (row) => {},
       minWidth: '240px',
       sortable: true,
@@ -65,7 +65,7 @@ const getColumns = ({ t }) => {
     },
     {
       id: 'ndcNumber',
-      name: t('manageSPMaterial.table.ndc'),
+      name: t('manageMaterial.table.spNDC'),
       selector: (row) => {},
       minWidth: '140px',
       sortable: false,
