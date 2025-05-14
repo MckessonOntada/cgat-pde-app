@@ -380,6 +380,24 @@ const jsxColumns = [
     )
   },
   {
+    id: COLUMNS.ORDER_ID_SP,
+    name: 'labels.orderId',
+    selector: () => {},
+    sortable: true,
+    sortKey: 'id',
+    showInMobileHeader: true,
+    showColumnNameInHeader: true,
+    minWidth: '140px',
+    cell: (props) => (
+      <Link
+        className="MCP-table-link"
+        to={getPathByOrderStage(props)}
+        state={getState(props)}>
+        <Tooltip body={props.id}>{props.id}</Tooltip>
+      </Link>
+    )
+  },
+  {
     id: COLUMNS.PATIENT_NAME,
     name: 'labels.patientName',
     selector: () => {},
