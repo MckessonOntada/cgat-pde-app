@@ -540,13 +540,14 @@ const getDetailedAddress = (address) => {
     .join(', ');
 };
 
-export const formatAddress = (addressObject) => {
-  const { address1, address2 } = addressObject;
-  const fullAddress = [address1, address2]
-    .map((item) => item && item.trim())
+export const formatFields = (object, fields) => {
+  if (!object || !fields || fields.length === 0) return '';
+
+  return fields
+    .map((key) => object[key])
     .filter(Boolean)
+    .map((item) => item.trim())
     .join(', ');
-  return fullAddress;
 };
 
 const getFileSize = (sizeInBytes) => {
@@ -734,7 +735,7 @@ const CommonUtils = Object.freeze({
   getNameValidation,
   flattenObject,
   flattenToRoot,
-  formatAddress
+  formatFields
 });
 
 export default CommonUtils;
