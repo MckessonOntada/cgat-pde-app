@@ -38,22 +38,22 @@ Please follow the guidelines below to correctly fill in each column of the bulk 
    - Mandatory.
    - Enter a valid email address (e.g., user@example.com).
 
-11. PHONE
+10. PHONE
     - Mandatory.
     - Enter only the numeric part of the phone number (exclude country code).
     - No special characters or spaces (e.g., 9876543210).
 
-12. FAX
+11. FAX
     - Optional.
     - Enter the fax number if available, following the same rules as for Phone.
 
-13. USER ROLE
+12. USER ROLE
     - Mandatory.
     - Accepted values (case-sensitive):
       - Organization Admin
       - Organization User
 
-14. ACCOUNT NUMBERS
+13. ACCOUNT NUMBERS
     - Mandatory.
     - Comma-separated list of account numbers associated with the user.
     - Example: 10012345,10067890
@@ -62,9 +62,9 @@ Please follow the guidelines below to correctly fill in each column of the bulk 
 
 ✅ VALID EXAMPLE ROW:
 
-| First Name | Middle Name  | Last Name | Address1     | Address2  | Zip     | City    | State      | Email              | Country Code  | Phone      | Fax        | User Role | Account Numbers      |
-|------------|--------------|-----------|--------------|-----------|---------|---------|------------|--------------------|---------------|------------|------------|-----------|----------------------|
-| John       | A.           | Doe       | 123 Main St  | Apt 4B    | 10001   | New York| New York   | john.doe@email.com | +1            | 5551234567 | 5559876543 | Org Admin | 10012345,10067890    |
+| First Name | Middle Name  | Last Name | Address1     | Address2  | Zip     | City    | State      | Email              | Phone      | Fax        | User Role | Account Numbers      |
+|------------|--------------|-----------|--------------|-----------|---------|---------|------------|--------------------|------------|------------|-----------|----------------------|
+| John       | A.           | Doe       | 123 Main St  | Apt 4B    | 10001   | New York| New York   | john.doe@email.com | 5551234567 | 5559876543 | Org Admin | 10012345,10067890    |
 
 -------------------------
 
