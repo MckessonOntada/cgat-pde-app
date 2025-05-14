@@ -870,7 +870,7 @@ const Summary = () => {
             </div>
             <div
               className={
-                'grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'
+                'equal-height-grid grid grid-gap-16 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'
               }>
               <div className="MCP-module-body">
                 <div className="MCP-CardContainer">
@@ -899,7 +899,7 @@ const Summary = () => {
                     }
                   />
                   <div
-                    className={`grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
+                    className={` grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3`}>
                     <DetailSegment
                       label={t('labels.therapyDescription')}
                       value={therapy.materialDescription || '-'}
@@ -918,7 +918,7 @@ const Summary = () => {
                     />
                     <DetailSegment
                       label={t('labels.salesOrganization')}
-                      value={accountDetails?.shipToAccount?.accountName || '-'}
+                      value={accountDetails?.shipToAccount?.salesOrg || '-'}
                     />
                     <DetailSegment
                       label={t('labels.distributionsChannel')}

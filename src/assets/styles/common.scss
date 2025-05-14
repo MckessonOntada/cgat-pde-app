@@ -1422,4 +1422,17 @@ div[role="row"] {
 .info-upload {
   font-style: italic;
   font-size: var(--brand-font-size--extra-small);
+
+}
+
+.equal-height-grid {
+  align-items: stretch;
+
+  .MCP-module-body {
+    height: 100%;
+
+    .MCP-CardContainer {
+      height: 100%;
+    }
+  }
 }
