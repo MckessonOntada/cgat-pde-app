@@ -25,7 +25,7 @@ import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
 import { serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
-import CommonUtils from '@src/util/CommonUtils.js';
+import CommonUtils, { formatAddress } from '@src/util/CommonUtils.js';
 import { RoutePaths } from '@src/routes/constants';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import EmptyDataTable from '@src/components/EmptyTable';
@@ -510,9 +510,7 @@ const UserDetail = () => {
               <span className="view_label">
                 {t('userManagement.userDetails.userAddress')}
               </span>
-              <p className="label-text">
-                {data?.address.address1}, {data?.address.address2}
-              </p>
+              <p className="label-text"> {formatAddress(data?.address)}</p>
             </div>
 
             <div>
