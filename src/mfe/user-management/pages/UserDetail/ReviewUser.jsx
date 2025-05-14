@@ -14,7 +14,7 @@ import ModuleHeader from '@src/components/module-header';
 import { useQuery, useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
-import CommonUtils from '@src/util/CommonUtils.js';
+import CommonUtils, { formatFields } from '@src/util/CommonUtils.js';
 import { RoutePaths } from '@src/routes/constants';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import DetailSegment from '@src/components/DetailSegment';
@@ -45,7 +45,7 @@ const ReviewUser = () => {
   const userFullName = `${data?.name.lastName} ${data?.name.firstName}${
     data?.name.middleName ? `, ${data?.name.middleName}` : ''
   }`;
-  const fullAddress = `${data?.address.address1}, ${data?.address.address2}`;
+  const fullAddress = formatFields(data?.address, ['address1', 'address2']);
   return (
     <div className="MCP-module-wrapper">
       <div>
