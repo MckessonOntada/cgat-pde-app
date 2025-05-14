@@ -390,6 +390,10 @@ export const MessageEn = {
     'Zip code cannot exceed 8 digits.',
   'orderManagement.patientDetails.validation.patient_identifier_required':
     'Patient identifier is required.',
+  'orderManagement.patientDetails.validation.gender':
+    'Gender is required.',
+  'orderManagement.patientDetails.validation.dateOfBirth':
+    'Date Of Birth is required.',
   'orderManagement.patientDetails.validation.patient_identifier_must_number':
     'Patient Identifier must be alphanumeric.',
   'orderManagement.patientDetails.validation.mrn_must_alphanumeric':

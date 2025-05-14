@@ -23,17 +23,37 @@ export const getValidationSchema = (t, isProviderRequired) => {
       patientInfo: Yup.object()
         .nullable()
         .shape({
-          firstName: CommonUtils.getNameValidation(t, { field: 'first_name' }),
+          firstName: CommonUtils.getNameValidation(t, {
+            field: 'first_name',
+            required: isProviderRequired ? true : false
+          }),
           middleName: CommonUtils.getNameValidation(t, {
             field: 'middle_name'
           }),
-          lastName: CommonUtils.getNameValidation(t, { field: 'last_name' }),
+          lastName: CommonUtils.getNameValidation(t, {
+            field: 'last_name',
+            required: isProviderRequired ? true : false
+          }),
           dateOfBirth: Yup.date()
-            .nullable()
-            .max(new Date(), 'Date of birth can not be greater than today.'),
+            .max(new Date(), 'Date of birth can not be greater than today.')
+            .when([], {
+              is: () => isProviderRequired,
+              then: (schema) =>
+                schema.required(
+                  t('orderManagement.patientDetails.validation.dateOfBirth')
+                ),
+              otherwise: (schema) => schema.nullable()
+            }),
           gender: Yup.string()
-            .nullable()
             .oneOf(['Male', 'Female', 'Other'], 'Invalid gender selection')
+            .when([], {
+              is: () => isProviderRequired,
+              then: (schema) =>
+                schema.required(
+                  t('orderManagement.patientDetails.validation.gender')
+                ),
+              otherwise: (schema) => schema.nullable()
+            })
         }),
       patientIdentifier: Yup.string()
         .trim()

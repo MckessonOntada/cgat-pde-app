@@ -34,6 +34,7 @@ export const payerPersonalDetailsTemplate = (parentKey) => {
           label: 'orderManagement.patientDetails.inputLabel.last_name',
           placeholder: ' ',
           type: 'input',
+          isRequired: true,
           maxLength: 50
         },
         {
@@ -130,6 +131,7 @@ export const insuranceCoverageDetailsTemplate = () => {
           id: 'group-number',
           name: 'primaryInsuranceCoverage.groupNumber',
           label: 'formControl.groupNumber',
+          isRequired: true,
           placeholder: ' ',
           type: 'input',
           maxLength: 50
@@ -149,7 +151,8 @@ export const insuranceCoverageDetailsTemplate = () => {
             label: item,
             value: item
           })),
-          maxLength: 100
+          maxLength: 100,
+          isRequired: true,
         },
         {
           id: 'insurance-effective-date',
@@ -158,7 +161,7 @@ export const insuranceCoverageDetailsTemplate = () => {
           placeholder: ' ',
           maxLength: 100,
           type: 'datePicker',
-          isRequired: true
+          isRequired: true,
         },
         {
           id: 'insurance-rx-pcn-number',
@@ -166,7 +169,8 @@ export const insuranceCoverageDetailsTemplate = () => {
           label: 'formControl.rxPCNNumber',
           placeholder: ' ',
           maxLength: 100,
-          type: 'input'
+          type: 'input',
+          isRequired: true,
         }
       ]
     },
@@ -179,7 +183,8 @@ export const insuranceCoverageDetailsTemplate = () => {
           label: 'formControl.rxGRPNumber',
           placeholder: ' ',
           maxLength: 100,
-          type: 'input'
+          type: 'input',
+          isRequired: true,
         },
         {
           id: 'insurance-rx-id-number',
@@ -187,7 +192,8 @@ export const insuranceCoverageDetailsTemplate = () => {
           label: 'formControl.rxIDNumber',
           placeholder: ' ',
           maxLength: 100,
-          type: 'input'
+          type: 'input',
+          isRequired: true,
         },
         {
           id: 'insurance-rx-bin-number',
@@ -195,7 +201,8 @@ export const insuranceCoverageDetailsTemplate = () => {
           label: 'formControl.rxBINNumber',
           placeholder: ' ',
           maxLength: 100,
-          type: 'input'
+          type: 'input',
+          isRequired: true,
         }
       ]
     }
