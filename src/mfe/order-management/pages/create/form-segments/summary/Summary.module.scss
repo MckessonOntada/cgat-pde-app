@@ -19,11 +19,13 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+
   @media only screen and (max-width: 576px) {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px; //spacing is not avilable for 12px
   }
+
   .price-wrapper {
     .fieldValue {
       @media only screen and (max-width: 576px) {
@@ -36,6 +38,7 @@
 .price {
   font-size: var(--brand-font-size--32);
   font-weight: var(--brand-font-weight-600);
+
   span {
     top: -1em;
     font-size: var(--brand-font-size--small);
@@ -81,7 +84,7 @@
   padding-right: var(--spacing-03);
 }
 
-.pap{
+.pap {
   margin-left: var(--spacing-03);
 }
 
@@ -91,20 +94,24 @@
   gap: var(--spacing-02);
   justify-content: "flex-end";
 }
-.pageHeadingReview{
+
+.pageHeadingReview {
   display: flex;
   align-items: center;
   gap: 10px;
+
   @media only screen and (max-width: 576px) {
     justify-content: space-between;
   }
 }
-.orderSummary{
-  > div:first-child{
+
+.orderSummary {
+  >div:first-child {
     @media only screen and (max-width: 768px) {
       width: 100%;
     }
-    h2{
+
+    h2 {
       @media only screen and (max-width: 768px) {
         display: flex;
         justify-content: space-between;
@@ -112,6 +119,30 @@
     }
   }
 }
-.materialDescription{
+
+.materialDescription {
   display: flex;
+}
+
+.pap-order-selection-control {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-01);
+
+}
+
+.info-icon {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+
+  svg {
+    width: 18px;
+    height: 18px;
+
+    path {
+      fill: var(--brand-color-background-blue-3)
+    }
+  }
 }

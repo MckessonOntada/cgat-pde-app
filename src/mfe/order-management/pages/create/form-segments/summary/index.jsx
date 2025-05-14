@@ -12,6 +12,7 @@ import {
   Alert,
   Label
 } from '@mckesson/mcp-component-library';
+import { ReactComponent as InfoIcon } from '@src/assets/svg/info_round.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import PageHeader from '@src/components/pageHeader';
@@ -1399,17 +1400,24 @@ const Summary = () => {
                 size="md"
               />
               {askForPapOrder && (
-                <CheckboxGroup
-                  id={'pap-order'}
-                  name="pap-order"
-                  items={[
-                    {
-                      ...papOrderOptions,
-                      onChange: () => handlePapOrderSelectionChange()
-                    }
-                  ]}
-                  size="md"
-                />
+                <div className={styles['pap-order-selection-control']}>
+                  <CheckboxGroup
+                    id={'pap-order'}
+                    name="pap-order"
+                    items={[
+                      {
+                        ...papOrderOptions,
+                        onChange: () => handlePapOrderSelectionChange()
+                      }
+                    ]}
+                    size="md"
+                  />
+                  <Tooltip body={'This will create a No Cost Therapy order'}>
+                    <div className={styles['info-icon']}>
+                      <InfoIcon />
+                    </div>
+                  </Tooltip>
+                </div>
               )}
             </div>
           )}

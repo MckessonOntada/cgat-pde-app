@@ -182,8 +182,6 @@ const CreateCrosswalk = () => {
               />
             </TableProvider>
             <TableProvider
-              defaultSort={{ sortBy: 'material_description' }}
-              allowedSort={['material_description', 'ndc']}
               defaultFilters={{
                 channelTypes: CHANNEL_TYPE.SPECIALTY_PHARMA,
                 showNonCrosswalked: true,
@@ -204,7 +202,10 @@ const CreateCrosswalk = () => {
           </div>
         </div>
         <div className="controls">
-          <Button size="md" variant="secondary">
+          <Button
+            size="md"
+            variant="secondary"
+            onClick={() => navigate('/admin/crosswalk')}>
             {t('provider.btnCancel')}
           </Button>
           <Button onClick={confirmLinkMaterials} size="md" variant="primary">

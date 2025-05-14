@@ -427,7 +427,7 @@ export const MessageEs = {
   'message.error.papOrderCanNotEdit':
     "You can't edit this order, If you wish to make any changes to the order, please call the customer center",
   'prompt.message.editRestriction':
-    "You can't edit this order, If you wish to make any changes to the order, please contact the customer support 1800-XXX-XXXX",
+    "S_You can't edit this order. If you wish to make any changes to this order, please reject this order and create a new order.",
 
   'captions.btnBackToManageQuestionnaire': 'S_Back to Manage Questionnaire',
   'headings.manageQuestionnaire': 'S_Manage Questionnaire',

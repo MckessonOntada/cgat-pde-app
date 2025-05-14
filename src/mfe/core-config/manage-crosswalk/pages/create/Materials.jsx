@@ -52,7 +52,7 @@ const getColumns = ({ t }) => {
       )
     },
     {
-      name: t('manageMaterial.table.materialDescription'),
+      name: t('manageMaterial.table.bnbMaterialDescription'),
       id: 'materialDescription',
       selector: (row) => row.materialDescription,
       wrap: true,
@@ -71,7 +71,7 @@ const getColumns = ({ t }) => {
       )
     },
     {
-      name: t('manageMaterial.table.nationalDrugCode'),
+      name: t('manageMaterial.table.bnbNDC'),
       id: 'ndcNumber',
       selector: (row) => row.ndcNumber,
       wrap: true,
