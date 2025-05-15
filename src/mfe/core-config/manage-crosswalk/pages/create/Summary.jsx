@@ -9,7 +9,6 @@ const Summary = () => {
   const { t } = useTranslate();
   const { state, setValue } = useGenericContext();
   const [list, setList] = React.useState(state.selectedProducts || []);
-
   React.useEffect(() => {
     if (!state.selectedProducts) {
       setList([]);
@@ -30,6 +29,9 @@ const Summary = () => {
       setList(filteredProducts);
     }
   };
+
+  const { material } = state;
+
   return (
     <React.Fragment>
       <div className={style['grid-item']}></div>
@@ -43,7 +45,7 @@ const Summary = () => {
               {list.map((item) => {
                 return (
                   <div className={style['item']}>
-                    <p>{item.materialDescription}</p>
+                    <p>{`${material.materialDescription}-${item.materialDescription}`}</p>
                     <div className="styled-icon-button error-button">
                       <Button
                         Icon={BinRedIcon}
