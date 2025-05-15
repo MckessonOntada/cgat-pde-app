@@ -281,6 +281,10 @@ function getOptionsByStatus(props) {
         value: ORDER_ENTITY_ACTION.CANCEL
       });
     }
+    options.push({
+      label: translate(`labels.orderActions.uploadDocuments`),
+      value: ORDER_ENTITY_ACTION.UPLOAD_DOCUMENT
+    });
   }
 
   return (

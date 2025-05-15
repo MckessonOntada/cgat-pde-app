@@ -188,6 +188,7 @@ export const MessageEs = {
   'labels.orderActions.review': 'S_Review',
   'labels.orderActions.view': 'S_View Details',
   'labels.orderActions.edit': 'S_Edit Order',
+  'labels.orderActions.uploadDocument': 'S_Upload Document',
   'labels.orderActions.cancel': 'S_Cancel Order',
   'labels.orderActions.assignToMe': 'S_Assign to me',
   'labels.orderActions.unassignToMe': 'S_Unassign',
@@ -364,8 +365,7 @@ export const MessageEs = {
     'S_Zip code cannot exceed 8 digits.',
   'orderManagement.patientDetails.validation.patient_identifier_required':
     'S_Patient identifier is required.',
-  'orderManagement.patientDetails.validation.gender':
-    'S_Gender is required.',
+  'orderManagement.patientDetails.validation.gender': 'S_Gender is required.',
   'orderManagement.patientDetails.validation.dateOfBirth':
     'S_Date Of Birth is required.',
   'orderManagement.patientDetails.validation.patient_identifier_must_number':
