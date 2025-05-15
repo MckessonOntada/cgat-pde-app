@@ -74,6 +74,7 @@ export const getValidationSchema = (t, isProviderRequired) => {
         ),
       medicalRecordNumber: Yup.string()
         .trim()
+        .nullable()
         .matches(
           ALPHA_NUMERIC_ONLY,
           t('orderManagement.patientDetails.validation.mrn_must_alphanumeric')
