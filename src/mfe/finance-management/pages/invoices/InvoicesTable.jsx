@@ -134,7 +134,7 @@ export default function InvoicesTable() {
     {
       name: t('paymentInvoices.history.table.OpenAmount'),
       selector: (row) => row.openAmount,
-      minWidth: '155px',
+      minWidth: '175px',
       sortable: true,
       id: 'openAmount',
       cell: (props) => (
@@ -180,7 +180,7 @@ export default function InvoicesTable() {
     {
       name: t('paymentInvoices.history.table.invoiceAmount'),
       selector: (row) => row?.billAmount,
-      minWidth: '140px',
+      minWidth: '175px',
       sortable: true,
       right: true,
       id: 'billAmount',

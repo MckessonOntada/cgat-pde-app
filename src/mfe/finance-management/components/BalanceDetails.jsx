@@ -79,7 +79,7 @@ export default function BalanceDetails() {
         segmentValue: Math.abs(data[key] || 0),
         displayValue: FinanceUtils.formatAmount(data[key] || 0),
         color,
-        tooltipText: `${currencyUnit}${Math.abs(data[key] || 0)} (${label})`
+        tooltipText: `${FinanceUtils.formatCurrency(data[key] || 0)} (${label})`
       }));
     }
   };
