@@ -104,8 +104,8 @@ const Upload = () => {
     switch (option) {
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_TEMPLATE: {
         handleDownload(
-          '/templates/upload_sp_catalog_template.csv',
-          'upload_sp_catalog_template.csv'
+          '/templates/upload_sp_catalog.zip',
+          'Upload SP Catalog.zip'
         );
         break;
       }
