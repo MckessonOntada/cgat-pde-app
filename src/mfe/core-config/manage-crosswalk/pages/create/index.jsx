@@ -81,6 +81,7 @@ const CreateCrosswalk = () => {
         });
     }
   };
+
   const confirmLinkMaterials = () => {
     removeAllNotification();
     const { material, selectedProducts } = state;
@@ -132,6 +133,12 @@ const CreateCrosswalk = () => {
       replace: true
     });
   };
+
+  React.useEffect(() => {
+    return () => {
+      reset();
+    };
+  }, []);
 
   return (
     <div className="MCP-module-wrapper" id="create-crosswalk">
