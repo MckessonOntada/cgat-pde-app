@@ -6,18 +6,17 @@ import { ReactComponent as LinkIcon } from '../../assets/svg/link-circle.svg';
 import { ReactComponent as ProviderIcon } from '../../assets/svg/ProviderEmblem.svg';
 import AppRoutes from '../../routes/AppRoutes';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
-const { USER_MANAGEMENT, ORDER_MANAGEMENT, MANAGE_PROVIDERS } =
-  PERMISSIONS_ENUM;
+const { USER_MANAGEMENT, ORDER_MANAGEMENT, MANAGE_PROVIDERS } = PERMISSIONS_ENUM;
 
 const cardList = [
-  {
-    name: 'ManageUsers',
-    label: 'manage_users',
-    icon: UserIcon,
-    details: 'efficiently_streamline_user_management_for_seamless_experience',
-    path: AppRoutes.pathUserManagement,
-    permissions: USER_MANAGEMENT.MANAGE_USERS_SCREEN
-  },
+  // {
+  //   name: 'ManageUsers',
+  //   label: 'manage_users',
+  //   icon: UserIcon,
+  //   details: 'efficiently_streamline_user_management_for_seamless_experience',
+  //   path: AppRoutes.pathUserManagement,
+  //   permissions: USER_MANAGEMENT.MANAGE_USERS_SCREEN
+  // },
   {
     name: 'ManageRoles',
     label: 'manage_roles',

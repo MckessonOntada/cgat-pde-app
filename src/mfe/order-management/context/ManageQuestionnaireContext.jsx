@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from 'react';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
-import { getEntityTypeFlags, MasterEntityType } from '../../core-config/questionnaire/util';
+import { getEntityTypeFlags, MasterEntityType } from '../../core-config/system-admin/manage-questionnaire/util';
 import { serializeParams } from '@src/util/ApiUtils';
 import { OrgAccountSelectionProvider, useOrgAccountSelectionContext } from '../components/orgAccountSelection/context/OrgAccountSelectionContext';
 const INITIAL_FILTER_STATE = {

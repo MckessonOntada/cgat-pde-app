@@ -7,6 +7,7 @@ import { Heading } from '@mckesson/mcp-component-library';
 import { Link } from 'react-router-dom';
 
 function AdminLayout() {
+  console.log('adminindex');
   const { hasPermission } = usePermission();
   const { t } = useTranslate();
 

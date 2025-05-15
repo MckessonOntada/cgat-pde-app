@@ -3,7 +3,7 @@ import { ReactComponent as DeleteIcon } from '@src/assets/image/delete.svg';
 import { Divider, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import './SelectedAccounts.scss';
-import { getAddress } from '@src/mfe/core-config/manage-sp-account/util';
+import { getAddress } from '@src/mfe/core-config/system-admin/manage-sp-account/util';
 import CommonUtils from '@src/util/CommonUtils';
 
 export default function SelectedAccounts({ selectedAccounts, onRemoveAccount, header = '', isLinkCatalog = false }) {

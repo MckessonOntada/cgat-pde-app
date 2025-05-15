@@ -3,7 +3,7 @@ import { Button, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
-import QuestionnaireTemplate from '../../core-config/questionnaire/QuestionnaireTemplate';
+import QuestionnaireTemplate from '../../core-config/system-admin/manage-questionnaire/QuestionnaireTemplate';
 import { Form, Formik } from 'formik';
 
 function ConfigurationPreview() {

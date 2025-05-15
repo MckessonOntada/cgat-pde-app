@@ -10,7 +10,7 @@ import UserService from '@src/api/commonService/UserService';
 import useSnackbar from '@src/hooks/useSnackbar';
 import MaterialService from '@src/api/commonService/MaterialService';
 import { useNavigate } from 'react-router-dom';
-import { PREVIEW_URL } from '@src/mfe/core-config/questionnaire/constants';
+import { PREVIEW_URL } from '@src/mfe/core-config/system-admin/manage-questionnaire/constants';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { renderModal } from '@src/util/ModalUtil';
 import FloatingDrawer from '@src/components/floating-drawer';

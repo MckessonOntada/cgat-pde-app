@@ -5,7 +5,7 @@ import CommonUtils from '@src/util/CommonUtils';
 import { InventoryIndicator } from './InventoryIndicator';
 import './orderHeaderDetails.scss';
 import { CHANNEL_TYPE } from './Constants';
-import { getAddress } from '@src/mfe/core-config/questionnaire/util';
+import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnaire/util';
 
 function OrderHeaderDetails({ orderDetails, priceDetails = {}, status, selectedAccount = {} }) {
   const { t } = useTranslate();

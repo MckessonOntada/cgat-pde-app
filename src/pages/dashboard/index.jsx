@@ -10,6 +10,7 @@ import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions
 import NotFound from '../error-pages/NotFound';
 
 const Dashboard = () => {
+  console.log('dashboardindex');
   const { t } = useTranslate();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isSystemAdmin = AuthUtils.isSystemAdmin();

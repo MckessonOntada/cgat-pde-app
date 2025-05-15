@@ -17,26 +17,15 @@ import ScrollToTop from '@src/components/scrollToTop/ScrollToTop';
 import ManageApprovers from '@src/mfe/order-management/manageApprovers';
 import RecordsMainRoutes from '@src/mfe/finance-management/RecordsMainRoutes';
 import AdminLayout from './admin';
-import { SystemConfiguration } from '@src/mfe/core-config';
+
 import { AccountProvider } from '@src/mfe/finance-management/context/AccountContext';
 import Footer from '@src/components/footer';
 import ErrorWrapper from './ErrorWrapper';
 import AccountSetting from '@src/components/AccountSetting';
-import ManageProviders from '@src/mfe/core-config/manage-providers';
-import ManageCrossWalk from '@src/mfe/core-config/manage-crosswalk';
-import ManageSPCatalog from '@src/mfe/core-config/manage-sp-catalog';
+import ManageProviders from '@src/mfe/core-config/admin/manage-providers';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import { FooterProvider } from '@src/components/footer/FooterContext';
-import { OrgAccountSelectionProvider } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
-import { SPMaterialProvider } from '@src/mfe/core-config/manage-sp-material/context/SPMaterialContext';
-import { QuestionnaireProvider } from '@src/mfe/order-management/context/QuestionnaireContext';
-import { ManageMaterialProvider } from '@src/mfe/order-management/context/ManageMaterialContext';
-import ManageCatalogRoute from '@src/mfe/core-config/manage-catalog/routes/Routes';
-import ManageMaterial from '@src/mfe/core-config/manage-material/ManageMaterial';
-import ManageAccountRoute from '@src/mfe/core-config/manage-account/routes/Routes';
-import ManageSPMaterialRoute from '@src/mfe/core-config/manage-sp-material/routes/Routes';
-import ManageSPAccountRoute from '@src/mfe/core-config/manage-sp-account/routes/Routes';
-import Questionnaire from '@src/mfe/core-config/questionnaire';
+import SystemConfiguration from '@src/mfe/core-config/system-admin';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
@@ -69,7 +58,7 @@ function MainLayout() {
                     })}
 
                     <Route
-                      path={AppRoutes.pathSystemConfiguration}
+                      path={'system-admin/*'}
                       element={
                         <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
                           <SystemConfiguration />
@@ -94,106 +83,13 @@ function MainLayout() {
                         </ProtectedRoute>
                       }
                     />
+
                     <Route path="/admin/*">
                       <Route
-                        path={'providers/*'}
-                        element={
-                          <ProtectedRoute permissions={Object.values(PERMISSIONS_ENUM.MANAGE_PROVIDERS)}>
-                            <ManageProviders />
-                          </ProtectedRoute>
-                        }
-                      />
-                      <Route
-                        path={'crosswalk/*'}
+                        path={'system-admin/*'}
                         element={
                           <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
-                            <ManageCrossWalk />
-                          </ProtectedRoute>
-                        }
-                      />
-
-                      <Route
-                        path={'sp-catalog/*'}
-                        element={
-                          <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
-                            <ManageSPCatalog />
-                          </ProtectedRoute>
-                        }
-                      />
-                      <Route
-                        path={'manage-material/*'}
-                        element={
-                          <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
-                            <ManageMaterialProvider>
-                              <ManageMaterial />
-                            </ManageMaterialProvider>
-                          </ProtectedRoute>
-                        }
-                      />
-                      <Route
-                        path={'manage-catalog/*'}
-                        element={
-                          <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
-                            <OrgAccountSelectionProvider showAccountsSelect={true}>
-                              <ManageCatalogRoute />
-                            </OrgAccountSelectionProvider>
-                          </ProtectedRoute>
-                        }
-                      />
-                      <Route
-                        path={`questionnaire/*`}
-                        element={
-                          <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
-                            <QuestionnaireProvider>
-                              <Questionnaire />
-                            </QuestionnaireProvider>
-                          </ProtectedRoute>
-                        }
-                      />
-                      <Route
-                        path={'manage-account/*'}
-                        element={
-                          <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
-                            <OrgAccountSelectionProvider showAccountsSelect={true}>
-                              <ManageAccountRoute />
-                            </OrgAccountSelectionProvider>
-                          </ProtectedRoute>
-                        }
-                      />
-                      <Route
-                        path={'manage-sp-material/*'}
-                        element={
-                          <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
-                            <SPMaterialProvider>
-                              <ManageSPMaterialRoute />
-                            </SPMaterialProvider>
-                          </ProtectedRoute>
-                        }
-                      />
-
-                      <Route
-                        path={'manage-sp-account/*'}
-                        element={
-                          <ProtectedRoute permissions={routePermissionConfig.systemConfiguration}>
-                            <OrgAccountSelectionProvider enableAcct={false} defaultFirstOrgSelected={true}>
-                              <ManageSPAccountRoute />
-                            </OrgAccountSelectionProvider>
-                          </ProtectedRoute>
-                        }
-                      />
-                      <Route
-                        path={`organization/roles/*`}
-                        element={
-                          <ProtectedRoute permissions={routePermissionConfig.roles}>
-                            <Role />
-                          </ProtectedRoute>
-                        }
-                      />
-                      <Route
-                        path={`approver-group/*`}
-                        element={
-                          <ProtectedRoute permissions={routePermissionConfig.approvergroups}>
-                            <ManageApprovers />
+                            <SystemConfiguration />
                           </ProtectedRoute>
                         }
                       />

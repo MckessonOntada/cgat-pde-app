@@ -20,8 +20,8 @@ import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/Disca
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
-import QuestionnaireTemplate from '@src/mfe/core-config/questionnaire/QuestionnaireTemplate';
-import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/core-config/questionnaire/AddQuestionnaire';
+import QuestionnaireTemplate from '@src/mfe/core-config/system-admin/manage-questionnaire/QuestionnaireTemplate';
+import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/core-config/system-admin/manage-questionnaire/AddQuestionnaire';
 import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from './useOrderPrice';
 import useResponsiveView from '@src/hooks/useResponsiveView';

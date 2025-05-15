@@ -17,14 +17,14 @@ const BREADCRUMB_ITEMS = [
 ];
 
 const CONFIG_MODULE_ROUTES = {
-  MANAGE_ACCOUNT: '/admin/manage-account',
-  MANAGE_CATALOG: '/admin/manage-catalog',
-  MANAGE_MATERIAL: '/admin/manage-material',
-  MANAGE_QUESTIONNAIRE: '/admin/questionnaire',
-  MANAGE_SPACCOUNT: '/admin/manage-sp-account',
-  MANAGE_SPCATALOG: '/admin/sp-catalog',
-  MANAGE_SPMATERIAL: '/admin/manage-sp-material',
-  MATERIAL_CROSSWALK: '/admin/crosswalk'
+  MANAGE_ACCOUNT: 'manage-account',
+  MANAGE_CATALOG: 'manage-catalog',
+  MANAGE_MATERIAL: 'manage-material',
+  MANAGE_QUESTIONNAIRE: 'questionnaire',
+  MANAGE_SP_ACCOUNT: 'manage-sp-account',
+  MANAGE_SP_CATALOG: 'sp-catalog',
+  MANAGE_SP_MATERIAL: 'manage-sp-material',
+  MATERIAL_CROSSWALK: 'crosswalk'
 };
 
 const CARDS = [
@@ -66,7 +66,7 @@ const CARDS = [
     label: 'system_config_manage_spmaterial',
     icon: SystemConfigurationSPMaterial,
     details: 'system_config_description_manage_spmaterial',
-    path: CONFIG_MODULE_ROUTES.MANAGE_SPMATERIAL
+    path: CONFIG_MODULE_ROUTES.MANAGE_SP_MATERIAL
   },
   {
     heading: 'dashboard.card.system_config_sp_settings',
@@ -82,7 +82,7 @@ const CARDS = [
     label: 'system_config_manage_spcatalog',
     icon: SystemConfigurationSPCatalog,
     details: 'system_config_description_manage_spcatalog',
-    path: CONFIG_MODULE_ROUTES.MANAGE_SPCATALOG
+    path: CONFIG_MODULE_ROUTES.MANAGE_SP_CATALOG
   },
   {
     heading: 'dashboard.card.system_config_sp_settings',
@@ -90,7 +90,7 @@ const CARDS = [
     label: 'system_config_manage_spaccount',
     icon: SystemConfigurationSPAccounts,
     details: 'system_config_description_manage_spaccount',
-    path: CONFIG_MODULE_ROUTES.MANAGE_SPACCOUNT
+    path: CONFIG_MODULE_ROUTES.MANAGE_SP_ACCOUNT
   }
 ];
 
