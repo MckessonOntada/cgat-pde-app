@@ -28,6 +28,7 @@ import ManageSPMaterialRoute from '../pages/system-configuration/manage-spmateri
 import { SPMaterialProvider } from '../pages/system-configuration/manage-spmaterial/context/SPMaterialContext';
 import ManageSPAccountRoute from '../pages/system-configuration/manage-spaccount/routes/Routes';
 import PayerDetails from '../pages/create/form-segments/payers-details';
+import UploadOrderDocument from '../pages/create/form-segments/upload-document';
 
 function OrderManagementRoutes() {
   const addEditPermission = [
@@ -104,6 +105,14 @@ function OrderManagementRoutes() {
         element={
           <ProtectedRoute permissions={[]}>
             <OrderStatus />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={`:orderId/upload-document`}
+        element={
+          <ProtectedRoute permissions={[]}>
+            <UploadOrderDocument />
           </ProtectedRoute>
         }
       />

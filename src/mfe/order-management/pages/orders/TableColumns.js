@@ -188,6 +188,9 @@ function getOptionsByStatus(props) {
       case ORDER_ENTITY_ACTION.DISCARD_MY_CHANGES:
         discardVersion(props.id);
         break;
+      case ORDER_ENTITY_ACTION.UPLOAD_DOCUMENT:
+        navigate(`${props.id}/upload-document`);
+        break;
       default:
         break;
     }
@@ -282,7 +285,7 @@ function getOptionsByStatus(props) {
       });
     }
     options.push({
-      label: translate(`labels.orderActions.uploadDocuments`),
+      label: translate(`labels.orderActions.uploadDocument`),
       value: ORDER_ENTITY_ACTION.UPLOAD_DOCUMENT
     });
   }
