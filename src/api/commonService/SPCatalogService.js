@@ -95,6 +95,15 @@ async function downloadSpCatalogList(requestParams) {
   }
   return {};
 }
+
+async function getSPProductDetailsByMN(requestParams) {
+  const apiUrl = `${ApiRoutes.GET_CATALOG_DATA()}/configuration?${serializeParams(requestParams())}`;
+  const res = await HttpResourceService.callRest(apiUrl, httpVerb.GET, {});
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
 const SPCatalogService = Object.freeze({
   downloadSPAccountTemplate,
   downloadSPMaterialTemplate,
@@ -104,7 +113,8 @@ const SPCatalogService = Object.freeze({
   getAllCatalog,
   deLinkCatalogs,
   linkCatalog,
-  downloadSpCatalogList
+  downloadSpCatalogList,
+  getSPProductDetailsByMN
 });
 
 export default SPCatalogService;

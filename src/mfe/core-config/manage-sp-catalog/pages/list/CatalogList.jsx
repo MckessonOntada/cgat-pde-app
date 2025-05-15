@@ -182,7 +182,12 @@ const CatalogList = ({ selectedAccount, selectedOrganization, sendNotification }
           <ErrorBanner image={<EmptyProviderTable />} heading={t('label.spCatalogDataGrid')} description={t('label.spCatalogDataGridDescription')} />
         }
       />
-      <SPMaterialDetails openSPMaterialDetails={openSPMaterialDetails} setOpenSPMaterialDetails={setOpenSPMaterialDetails} viewSPMaterial={viewSPMaterial} />
+      <SPMaterialDetails
+        openSPMaterialDetails={openSPMaterialDetails}
+        setOpenSPMaterialDetails={setOpenSPMaterialDetails}
+        viewSPMaterial={viewSPMaterial}
+        isSPCatalog={true}
+      />
     </div>
   );
 };

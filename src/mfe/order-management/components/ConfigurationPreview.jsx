@@ -10,7 +10,15 @@ function ConfigurationPreview() {
   const { t } = useTranslate();
   const location = useLocation();
   const navigate = useNavigate();
-  const { isMaterial = false, isCatalog = false, isAccount = false, questionnaire = [] } = location.state || false;
+  const {
+    isMaterial = false,
+    isCatalog = false,
+    isAccount = false,
+    questionnaire = [],
+    isSPMaterial = false,
+    isSPCatalog = false,
+    isSPAccount = false
+  } = location.state || false;
 
   const handleOnBackToQuestionnaire = () => {
     navigate(-1);
@@ -18,18 +26,17 @@ function ConfigurationPreview() {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={handleOnBackToQuestionnaire}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToQuestionnaire} size="md">
           {isMaterial
             ? t('manageMaterial.BacktoPage')
             : isCatalog
             ? t('ManageCatalog.BacktoPage')
             : isAccount
             ? t('ManageAccount.BacktoPage')
+            : isSPAccount
+            ? t('manageSPAccount.btn.backToSpAccount')
+            : isSPMaterial
+            ? t('manageSPMaterial.BacktoPage')
             : ''}
         </Button>
       </div>
@@ -42,7 +49,7 @@ function ConfigurationPreview() {
         <div className="row-space-between-center styled-heading">
           <Heading as="h3">{t('labels.additionalDetails')}</Heading>
           <p className="tertiaryHeading">
-          <span className='required'>*</span> {t('userManagement.create_user.required')}
+            <span className="required">*</span> {t('userManagement.create_user.required')}
           </p>
         </div>
         <Formik>

@@ -36,7 +36,7 @@ function Questionnaire() {
         <Route
           path={ROUTE_CONFIG.MAP_QUESTIONNAIRE}
           element={
-            <OrgAccountSelectionProvider enableOrg={handleOrg()} enableAcct={handleAccount()}>
+            <OrgAccountSelectionProvider enableOrg={handleOrg()} enableAcct={handleAccount()} enableConfigure={true}>
               <ManageQuestionnaireProvider>
                 <MapQuestionnaire />
               </ManageQuestionnaireProvider>

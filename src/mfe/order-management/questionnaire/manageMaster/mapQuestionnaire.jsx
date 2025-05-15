@@ -15,6 +15,7 @@ import { useMutation } from 'react-query';
 import { handleApiError } from '@src/util/ApiUtils';
 import './index.scss';
 import TableHeading from '@src/components/tableHeading/TableHeading';
+import { ChannelType } from '../../pages/system-configuration/manage-spaccount/util';
 
 export default function mapQuestionnaire() {
   const { t } = useTranslate();
@@ -69,18 +70,48 @@ export default function mapQuestionnaire() {
       : [firstTemplate, secondTemplate].filter(Boolean).join(', ');
 
   function buildPayload({ isMaterial, isCatalog, isAccount, selectedRows = [] }) {
+    const buyAndBillPayload = {
+      materialNumberList: isMaterial
+        ? selectedRows.filter((row) => row.channelType === ChannelType.BUY_AND_BILL).map((row) => row.materialNumber)
+        : [],
+      accountNumberList: isAccount
+        ? selectedRows.filter((row) => row.channelType === ChannelType.BUY_AND_BILL).map((row) => row.accountNumber)
+        : [],
+      catalogIdAttributes: isCatalog
+        ? selectedRows
+            .filter((row) => row.channelType === ChannelType.BUY_AND_BILL)
+            .map((row) => ({
+              sapMaterial: row.sapMaterial.toString(),
+              soldToCustomer: row.soldToCustomer,
+              shipToCustomer: row.shipToCustomer,
+              variant: row.variant
+            }))
+        : []
+    };
+
+    const specialtyPharmaPayload = {
+      materialNumberList: isMaterial
+        ? selectedRows.filter((row) => row.channelType === ChannelType.SPECIALITY_PHARMA).map((row) => row.materialNumber)
+        : [],
+      accountNumberList: isAccount
+        ? selectedRows.filter((row) => row.channelType === ChannelType.SPECIALITY_PHARMA).map((row) => row.accountNumber)
+        : [],
+      catalogIdAttributes: isCatalog
+        ? selectedRows
+            .filter((row) => row.channelType === ChannelType.SPECIALITY_PHARMA)
+            .map((row) => ({
+              sapMaterial: row.sapMaterial.toString(),
+              soldToCustomer: row.soldToCustomer,
+              shipToCustomer: row.shipToCustomer,
+              variant: row.variant
+            }))
+        : []
+    };
+
     return {
       questionnaireIds: selectedTemplates.map((template) => template.id),
-      materialNumberList: isMaterial ? selectedRows.map((row) => row.materialNumber) : [],
-      accountNumberList: isAccount ? selectedRows.map((row) => row.accountNumber) : [],
-      catalogIdAttributes: isCatalog
-        ? selectedRows.map((row) => ({
-            sapMaterial: row.sapMaterial.toString(),
-            soldToCustomer: row.soldToCustomer,
-            shipToCustomer: row.shipToCustomer,
-            variant: row.variant
-          }))
-        : []
+      bnbConfigs: buyAndBillPayload,
+      spConfigs: specialtyPharmaPayload
     };
   }
 
