@@ -1,0 +1,55 @@
+@use "../../assets/styles/abstracts/mixins";
+
+.notifications-container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 16px;
+
+  .top-nav {
+    display: flex;
+    width: 100%;
+  }
+
+  .notifications-header {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap:16px;
+    flex-direction: column;
+
+    @include mixins.respond(lg) {
+      flex-direction: row;
+    }
+
+    .heading {
+      width: 100%;
+      display: flex;
+    }
+  }
+
+  .notifications-info {
+    display: flex;
+    width: 100%;
+  }
+
+  .notifications-content {
+    display: flex;
+    width: 100%;
+    max-height: 912px;
+    gap: 12px;
+
+    .notifications-list {
+      display: flex;
+      width: 412px;
+      max-height: 912px;
+    }
+
+    .notification-detail {
+      display: flex;
+      width: 100%;
+      max-height: 912px;
+    }
+  }
+}

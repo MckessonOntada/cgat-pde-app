@@ -31,6 +31,8 @@ import { ManageSPAccountMessagesEN } from './order-management/system-configurati
 import { ManageSPAccountMessagesES } from './order-management/system-configuration/manage-spaccount/messages_es';
 import { ConfigurationMessagesEN } from './config/messages_en';
 import { ConfigurationMessagesES } from './config/messages_es';
+import { NotificationMessagesEN } from './notification-mfe/messages_en';
+import { NotificationMessagesES } from './notification-mfe/messages_es';
 export const messages = {
   [LOCALES.ENGLISH]: {
     ...LoginMessagesEN,
@@ -48,7 +50,8 @@ export const messages = {
     ...ManageAccountMessagesEN,
     ...ManageSPMateriaMessagesEN,
     ...ManageSPAccountMessagesEN,
-    ...ConfigurationMessagesEN
+    ...ConfigurationMessagesEN,
+    ...NotificationMessagesEN
   },
   [LOCALES.SPANISH]: {
     ...LoginMessagesES,
@@ -66,6 +69,7 @@ export const messages = {
     ...ManageAccountMessagesES,
     ...ManageSPMaterialMessagesES,
     ...ManageSPAccountMessagesEN,
-    ...ConfigurationMessagesES
+    ...ConfigurationMessagesES,
+    ...NotificationMessagesES
   }
 };

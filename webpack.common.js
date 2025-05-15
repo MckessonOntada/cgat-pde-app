@@ -158,11 +158,11 @@ module.exports = {
     alias: {
       '@src': path.resolve(__dirname, 'src/'),
       '@fonts': path.resolve(__dirname, 'public/fonts/'), // Alias to refer to fonts folder easily
-      '@mckesson/mcp-component-library': path.resolve(
+      "@mckesson/mcp-component-library": path.resolve(
         __dirname,
-        'node_modules/@mckesson/mcp-component-library/dist/index.esm.js'
-      )
+        "node_modules/@mckesson/mcp-component-library/dist/index.esm.js"
+      ),
     },
-    extensions: ['.js', '.jsx', '.json', '.esm.js']
+    extensions: [".js", ".jsx", ".json", ".esm.js"],
   }
 };

@@ -27,6 +27,7 @@ import ManageCrossWalk from '@src/mfe/core-config/manage-crosswalk';
 import ManageSPCatalog from '@src/mfe/core-config/manage-sp-catalog';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import { FooterProvider } from '@src/components/footer/FooterContext';
+import Notifications from '@src/mfe/notification-mfe';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() =>
@@ -177,6 +178,7 @@ function MainLayout() {
                       }
                     />
                     <Route path="/account-setting" element={<AccountSetting />} />
+                    <Route path="/notifications" element={<Notifications />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </div>

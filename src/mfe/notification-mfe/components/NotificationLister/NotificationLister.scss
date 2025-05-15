@@ -1,0 +1,157 @@
+.notification-lister-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .notification-lister-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .date-display {
+            color: var(--text-dark-slate-body-hover-state, #1E394E);
+
+            /* Body/SemiBold L */
+            font-family: var(--typography-font-family-body, Nunito);
+            font-size: var(--typography-text-size-body-font-large, 18px);
+            font-style: normal;
+            font-weight: 600;
+            line-height: var(--typography-line-height-body-font-large, 22px);
+            /* 122.222% */
+            letter-spacing: -0.036px;
+        }
+    }
+
+    .notification-lister-content {
+        display: flex;
+        width: 412px;
+        flex-direction: column;
+        gap: 12px;
+        max-height: 912px;
+        overflow-y: auto;
+
+        /* Custom scrollbar styles: 8px width, invisible arrows */
+        scrollbar-width: thin;
+        scrollbar-color: #bfc9d9 transparent;
+
+        &::-webkit-scrollbar {
+            width: 8px;
+            background: #f4f6fa;
+        }
+
+        // Fade effect on top and bottom when scrolling
+        position: relative;
+
+        &::before,
+        &::after {
+            content: '';
+            position: sticky;
+            left: 0;
+            right: 0;
+            height: 24px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        &::before {
+            top: 0;
+            background: linear-gradient(to bottom, #f4f6fa 80%, transparent);
+        }
+
+        &::after {
+            bottom: 0;
+            background: linear-gradient(to top, #f4f6fa 80%, transparent);
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #bfc9d9;
+            border-radius: 8px;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+            background: #a5b3c9;
+        }
+
+        &::-webkit-scrollbar-corner {
+            background: #f4f6fa;
+        }
+
+        &::-webkit-scrollbar-button {
+            display: none;
+            height: 0;
+            width: 0;
+        }
+
+        .notification-list-card {
+            display: flex;
+            flex-direction: column;
+            width: 400px;
+            gap: 4px;
+            padding: 12px;
+            cursor: pointer;
+
+            .notification-title-row {
+                display: flex;
+                align-items: center;
+                width: 100%;
+                gap: 8px;
+            }
+
+            .notification-title {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                flex: 1 1 auto;
+                color: var(--text-black, #181818);
+                font-family: Nunito;
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 700;
+                line-height: 20px;
+            }
+
+            .notification-unread-dot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background: #007CC1;
+                display: inline-block;
+                margin-left: 4px;
+                flex-shrink: 0;
+            }
+
+            .notification-description {
+                overflow: hidden;
+                color: #3C5C6E;
+                text-overflow: ellipsis;
+                font-family: Nunito;
+                font-size: 14px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 18px;
+                /* 128.571% */
+                white-space: nowrap;
+                max-width: 100%;
+            }
+
+            .notification-date {
+                color: #181818;
+                /* Body/SemiBold XS */
+                font-family: var(--typography-font-family-body, Nunito);
+                font-size: var(--typography-text-size-body-font-x-small, 12px);
+                font-style: normal;
+                font-weight: 600;
+                line-height: var(--typography-line-height-body-font-x-small, 16px);
+                /* 133.333% */
+                letter-spacing: 0.012px;
+                text-align: end;
+            }
+        }
+
+        .notification-list-card.active {
+            border-radius: 8px;
+            border: 1px solid #007CC1;
+            background: #E9F0F5;
+        }
+    }
+}
