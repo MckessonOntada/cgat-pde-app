@@ -13,7 +13,7 @@ import { useFilters, usePagination, useSelection, useSort, useTable } from '@src
 import { useTranslate } from '@src/translations/useTranslation';
 import ModuleHeader from '@src/components/module-header';
 import { useNavigate } from 'react-router-dom';
-import SPMaterialDetails from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/pages/SPMaterialDetails';
+import SPMaterialDetails from '@src/mfe/core-config/manage-sp-material/pages/SPMaterialDetails';
 import { useDispatch } from 'react-redux';
 import { useMutation } from 'react-query';
 import SPCatalogService from '@src/api/commonService/SPCatalogService';

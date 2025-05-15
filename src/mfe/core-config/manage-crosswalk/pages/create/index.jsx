@@ -12,10 +12,7 @@ import Products from './Products';
 import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 import { useDispatch } from 'react-redux';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
-import {
-  ConfigConstants,
-  MaterialDetailsConstants
-} from '@src/mfe/order-management/pages/system-configuration/manageMaterial/assets/constants/MaterialConstants';
+import { ConfigConstants, MaterialDetailsConstants } from '@src/mfe/core-config/manage-material/assets/constants/MaterialConstants';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import SPCrosswalkService from '@src/api/commonService/SPCrosswalkService';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
@@ -33,12 +30,7 @@ const CreateCrosswalk = () => {
   const dispatch = useDispatch();
   const [selectedMaterial, setSelectedMaterial] = React.useState(null);
   const [selectedItems, setSelectedItems] = React.useState([]);
-  const {
-    items: notifications,
-    add: addNotification,
-    remove: removeNotification,
-    removeAll: removeAllNotification
-  } = useTimedArray(10000);
+  const { items: notifications, add: addNotification, remove: removeNotification, removeAll: removeAllNotification } = useTimedArray(10000);
 
   const handleOnSubmit = () => {
     const { material, selectedProducts } = state;
@@ -102,10 +94,7 @@ const CreateCrosswalk = () => {
       ),
       footer: (
         <div className="controls">
-          <Button
-            size="md"
-            variant="secondary"
-            onClick={() => dispatch(closeModal())}>
+          <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
             {t('button.caption.no')}
           </Button>
           <Button
@@ -136,31 +125,16 @@ const CreateCrosswalk = () => {
   return (
     <div className="MCP-module-wrapper" id="create-crosswalk">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={() => navigate('/admin/crosswalk')}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={() => navigate('/admin/crosswalk')} size="md">
           {t('label.backToMaterialCrosswalk')}
         </Button>
       </div>
-      <PageHeader
-        heading={t('label.createCrosswalk')}
-        description={t('label.createCrosswalkSubtitle')}
-      />
+      <PageHeader heading={t('label.createCrosswalk')} description={t('label.createCrosswalkSubtitle')} />
       <div className="MCP-module-body">
         {notifications && notifications.length > 0 && (
           <div className="MCP-module-body">
             {notifications.map((item, index) => {
-              return (
-                <Alert
-                  key={item.id}
-                  description={item.description}
-                  onClose={() => removeNotification(item.id)}
-                  type={item.type}
-                />
-              );
+              return <Alert key={item.id} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />;
             })}
           </div>
         )}
@@ -177,10 +151,7 @@ const CreateCrosswalk = () => {
               }}
               allowedSort={['material_description']}
               fetchFn={MaterialService.getMaterialList}>
-              <Materials
-                material={selectedMaterial}
-                setMaterial={setSelectedMaterial}
-              />
+              <Materials material={selectedMaterial} setMaterial={setSelectedMaterial} />
             </TableProvider>
             <TableProvider
               defaultFilters={{
@@ -194,19 +165,13 @@ const CreateCrosswalk = () => {
               }}
               allowedSort={['material_description']}
               fetchFn={MaterialService.getMaterialList}>
-              <Products
-                selection={selectedItems}
-                setSelection={setSelectedItems}
-              />
+              <Products selection={selectedItems} setSelection={setSelectedItems} />
             </TableProvider>
             <Summary />
           </div>
         </div>
         <div className="controls">
-          <Button
-            size="md"
-            variant="secondary"
-            onClick={() => navigate('/admin/crosswalk')}>
+          <Button size="md" variant="secondary" onClick={() => navigate('/admin/crosswalk')}>
             {t('provider.btnCancel')}
           </Button>
           <Button onClick={confirmLinkMaterials} size="md" variant="primary">

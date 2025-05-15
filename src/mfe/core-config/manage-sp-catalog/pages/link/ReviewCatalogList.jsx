@@ -7,7 +7,7 @@ import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.s
 import { useFilters, usePagination, useSelection, useSort, useTable } from '@src/mfe/core-config/manage-providers/context/TableContext';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Link, useNavigate } from 'react-router-dom';
-import SPMaterialDetails from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/pages/SPMaterialDetails';
+import SPMaterialDetails from '@src/mfe/core-config/manage-sp-material/pages/SPMaterialDetails';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import { IconButton } from '@mckesson/mcp-component-library';
 import { ReactComponent as linkIcon } from '@src/assets/svg/link.svg';

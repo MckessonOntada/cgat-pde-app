@@ -3,7 +3,7 @@ import { Button, Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
-import QuestionnaireTemplate from '../questionnaire/QuestionnaireTemplate';
+import QuestionnaireTemplate from '../../core-config/questionnaire/QuestionnaireTemplate';
 import { Form, Formik } from 'formik';
 
 function ConfigurationPreview() {
@@ -18,19 +18,8 @@ function ConfigurationPreview() {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={handleOnBackToQuestionnaire}
-          size="md">
-          {isMaterial
-            ? t('manageMaterial.BacktoPage')
-            : isCatalog
-            ? t('ManageCatalog.BacktoPage')
-            : isAccount
-            ? t('ManageAccount.BacktoPage')
-            : ''}
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToQuestionnaire} size="md">
+          {isMaterial ? t('manageMaterial.BacktoPage') : isCatalog ? t('ManageCatalog.BacktoPage') : isAccount ? t('ManageAccount.BacktoPage') : ''}
         </Button>
       </div>
       <div className="row-space-between-center">
@@ -42,7 +31,7 @@ function ConfigurationPreview() {
         <div className="row-space-between-center styled-heading">
           <Heading as="h3">{t('labels.additionalDetails')}</Heading>
           <p className="tertiaryHeading">
-          <span className='required'>*</span> {t('userManagement.create_user.required')}
+            <span className="required">*</span> {t('userManagement.create_user.required')}
           </p>
         </div>
         <Formik>

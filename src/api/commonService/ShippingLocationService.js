@@ -4,12 +4,6 @@ import ApiRoutes from '../ApiRoutes';
 import HttpResourceService, { httpVerb } from '../HttpResourceService';
 
 export const getShippingLocationList = async (requestParams, accid, selectedOrgId) => {
-  // const result = await import('../../mfe/order-management/pages/system-configuration/manage-spaccount/mockData/ShippingLocationData');
-  // return {
-  //   data: result.default.content || [],
-  //   totalElements: result.default.totalElements,
-  //   totalPages: result.default.totalPages
-  // };
   const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrgId}/accounts/${accid}/shipping-locations?${serializeParams(requestParams)}`;
   const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
   if (res.data) {

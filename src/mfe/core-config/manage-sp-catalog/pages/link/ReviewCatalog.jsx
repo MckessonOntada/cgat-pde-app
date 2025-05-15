@@ -11,7 +11,7 @@ import OrgAccountsMultiSelect from '../orgAccountMultiSelect';
 
 import ReviewCatalogList from './ReviewCatalogList';
 import { LinkedCatalogService } from './dataUtil';
-import { useSPMaterial } from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/context/SPMaterialContext';
+import { useSPMaterial } from '@src/mfe/core-config/manage-sp-material/context/SPMaterialContext';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { useMutation } from 'react-query';
 import SPCatalogService from '@src/api/commonService/SPCatalogService';

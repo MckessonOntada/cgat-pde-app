@@ -1,17 +1,12 @@
 import React from 'react';
-import {
-  useFilters,
-  usePagination,
-  useSort,
-  useTable
-} from '@src/mfe/core-config/manage-providers/context/TableContext';
+import { useFilters, usePagination, useSort, useTable } from '@src/mfe/core-config/manage-providers/context/TableContext';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { useTranslate } from '@src/translations/useTranslation';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 import { InputField, Heading } from '@mckesson/mcp-component-library';
 import style from './style.module.scss';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import SPMaterialDetails from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/pages/SPMaterialDetails';
+import SPMaterialDetails from '@src/mfe/core-config/manage-sp-material/pages/SPMaterialDetails';
 import { useGenericContext } from '../../config/GenericContext';
 import CommonUtils from '@src/util/CommonUtils';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
@@ -28,23 +23,8 @@ const getColumns = ({ t }) => {
   return [
     {
       id: 'checkbox',
-      name: renderTableCheckBox(
-        { id: 'ALL_ITEMS_' + pagination.pageNumber },
-        data,
-        'id',
-        pagination,
-        state.selectedProducts || [],
-        onSelectProduct
-      ),
-      cell: (row, index) =>
-        renderTableCheckBox(
-          row,
-          data,
-          'id',
-          pagination,
-          state.selectedProducts || [],
-          onSelectProduct
-        ),
+      name: renderTableCheckBox({ id: 'ALL_ITEMS_' + pagination.pageNumber }, data, 'id', pagination, state.selectedProducts || [], onSelectProduct),
+      cell: (row, index) => renderTableCheckBox(row, data, 'id', pagination, state.selectedProducts || [], onSelectProduct),
       selector: (row) => row.materialNumber,
       width: '50px',
       showInMobileHeader: true
@@ -115,8 +95,7 @@ const Products = () => {
   };
 
   const handleOnSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.sortKey)
-      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
   return (
@@ -165,12 +144,8 @@ const Products = () => {
           totalRocords={pagination.totalElements}
           handleChangePage={(_event, pageNumber) => changePage(pageNumber)}
           recordsPerPage={pagination.pageSize}
-          paginationTotalRecorsMessage={t(
-            'manageMaterial.table.pagination.totalRecords'
-          )}
-          paginationRecordsPerPageMessage={t(
-            'manageMaterial.table.pagination.perPage'
-          )}
+          paginationTotalRecorsMessage={t('manageMaterial.table.pagination.totalRecords')}
+          paginationRecordsPerPageMessage={t('manageMaterial.table.pagination.perPage')}
           responsive={true}
           showCardView={false}
           defaultExpandedCardView={true}

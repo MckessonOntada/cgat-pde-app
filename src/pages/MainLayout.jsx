@@ -17,7 +17,7 @@ import ScrollToTop from '@src/components/scrollToTop/ScrollToTop';
 import ManageApprovers from '@src/mfe/order-management/manageApprovers';
 import RecordsMainRoutes from '@src/mfe/finance-management/RecordsMainRoutes';
 import AdminLayout from './admin';
-import { SystemConfiguration } from '@src/mfe/order-management/pages/system-configuration';
+import { SystemConfiguration } from '@src/mfe/core-config';
 import { AccountProvider } from '@src/mfe/finance-management/context/AccountContext';
 import Footer from '@src/components/footer';
 import ErrorWrapper from './ErrorWrapper';
@@ -27,11 +27,20 @@ import ManageCrossWalk from '@src/mfe/core-config/manage-crosswalk';
 import ManageSPCatalog from '@src/mfe/core-config/manage-sp-catalog';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import { FooterProvider } from '@src/components/footer/FooterContext';
+import { OrgAccountSelectionProvider } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import { SPMaterialProvider } from '@src/mfe/core-config/manage-sp-material/context/SPMaterialContext';
+import { QuestionnaireProvider } from '@src/mfe/order-management/context/QuestionnaireContext';
+import { ManageMaterialProvider } from '@src/mfe/order-management/context/ManageMaterialContext';
+import ManageCatalogRoute from '@src/mfe/core-config/manage-catalog/routes/Routes';
+import ManageMaterial from '@src/mfe/core-config/manage-material/ManageMaterial';
+import ManageAccountRoute from '@src/mfe/core-config/manage-account/routes/Routes';
+import ManageSPMaterialRoute from '@src/mfe/core-config/manage-sp-material/routes/Routes';
+import ManageSPAccountRoute from '@src/mfe/core-config/manage-sp-account/routes/Routes';
+import { CONFIG_MODULE_ROUTES } from '@src/mfe/core-config/constants';
+import Questionnaire from '@src/mfe/core-config/questionnaire';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
-const OrderManagementEntryPoint = React.lazy(() =>
-  import('@src/mfe/order-management')
-);
+const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
 const OrgEntryPoint = React.lazy(() => import('@src/mfe/org-management'));
 
 function MainLayout() {
@@ -39,18 +48,12 @@ function MainLayout() {
     <div id={debugIds(ID.MAIN)} className={styles.appContainer}>
       <Header />
       <ErrorWrapper>
-        <div
-          className={`${styles['app-wrapper']}`}
-          id={debugIds(ID.APP_WRAPPER)}>
+        <div className={`${styles['app-wrapper']}`} id={debugIds(ID.APP_WRAPPER)}>
           <FooterProvider>
-            <div
-              className={`${styles.home} max-container`}
-              id={debugIds(ID.HOME)}>
+            <div className={`${styles.home} max-container`} id={debugIds(ID.HOME)}>
               <ScrollToTop containerId={debugIds(ID.APP_WRAPPER)} />
               <Suspense fallback={<Loader type="screen" />}>
-                <div
-                  className={styles.routeContent}
-                  id={debugIds(ID.HOME, ID.ROUTE_CONTENT)}>
+                <div className={styles.routeContent} id={debugIds(ID.HOME, ID.ROUTE_CONTENT)}>
                   <Routes className={styles.routes}>
                     {AppRoutes.routes.map((route, idx) => {
                       return route.element ? (
@@ -78,11 +81,7 @@ function MainLayout() {
                     <Route
                       path={'orders/*'}
                       element={
-                        <ProtectedRoute
-                          permissions={[
-                            ...routePermissionConfig.orders,
-                            ...routePermissionConfig.systemConfiguration
-                          ]}>
+                        <ProtectedRoute permissions={[...routePermissionConfig.orders, ...routePermissionConfig.systemConfiguration]}>
                           <OrderManagementEntryPoint />
                         </ProtectedRoute>
                       }
@@ -100,25 +99,67 @@ function MainLayout() {
                       <Route
                         path={'providers/*'}
                         element={
-                          <ProtectedRoute
-                            permissions={Object.values(
-                              PERMISSIONS_ENUM.MANAGE_PROVIDERS
-                            )}>
+                          <ProtectedRoute permissions={Object.values(PERMISSIONS_ENUM.MANAGE_PROVIDERS)}>
                             <ManageProviders />
                           </ProtectedRoute>
                         }
                       />
                       <Route path={'crosswalk/*'} element={<ManageCrossWalk />} />
 
+                      <Route path={'sp-catalog/*'} element={<ManageSPCatalog />} />
                       <Route
-                        path={'sp-catalog/*'}
-                        element={<ManageSPCatalog />}
+                        path={'manage-material/*'}
+                        element={
+                          <ManageMaterialProvider>
+                            <ManageMaterial />
+                          </ManageMaterialProvider>
+                        }
+                      />
+                      <Route
+                        path={'manage-catalog/*'}
+                        element={
+                          <OrgAccountSelectionProvider showAccountsSelect={true}>
+                            <ManageCatalogRoute />
+                          </OrgAccountSelectionProvider>
+                        }
+                      />
+                      <Route
+                        path={`questionnaire/*`}
+                        element={
+                          <QuestionnaireProvider>
+                            <Questionnaire />
+                          </QuestionnaireProvider>
+                        }
+                      />
+                      <Route
+                        path={'manage-account/*'}
+                        element={
+                          <OrgAccountSelectionProvider showAccountsSelect={true}>
+                            <ManageAccountRoute />
+                          </OrgAccountSelectionProvider>
+                        }
+                      />
+                      <Route
+                        path={'manage-sp-material/*'}
+                        element={
+                          <SPMaterialProvider>
+                            <ManageSPMaterialRoute />
+                          </SPMaterialProvider>
+                        }
+                      />
+
+                      <Route
+                        path={'manage-sp-account/*'}
+                        element={
+                          <OrgAccountSelectionProvider enableAcct={false} defaultFirstOrgSelected={true}>
+                            <ManageSPAccountRoute />
+                          </OrgAccountSelectionProvider>
+                        }
                       />
                       <Route
                         path={`organization/roles/*`}
                         element={
-                          <ProtectedRoute
-                            permissions={routePermissionConfig.roles}>
+                          <ProtectedRoute permissions={routePermissionConfig.roles}>
                             <Role />
                           </ProtectedRoute>
                         }
@@ -126,8 +167,7 @@ function MainLayout() {
                       <Route
                         path={`approver-group/*`}
                         element={
-                          <ProtectedRoute
-                            permissions={routePermissionConfig.approvergroups}>
+                          <ProtectedRoute permissions={routePermissionConfig.approvergroups}>
                             <ManageApprovers />
                           </ProtectedRoute>
                         }
@@ -135,12 +175,10 @@ function MainLayout() {
                       <Route
                         path={'organization/*'}
                         element={
-                          AuthUtils.isSystemAdmin() &&
-                          !AuthUtils.isSystemAdminView() ? (
+                          AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView() ? (
                             <Navigate to={'/'} />
                           ) : (
-                            <ProtectedRoute
-                              permissions={routePermissionConfig.organization}>
+                            <ProtectedRoute permissions={routePermissionConfig.organization}>
                               <OrgEntryPoint />
                             </ProtectedRoute>
                           )
@@ -150,8 +188,7 @@ function MainLayout() {
                     <Route
                       path={'/record/*'}
                       element={
-                        <ProtectedRoute
-                          permissions={routePermissionConfig.paymentInvoices}>
+                        <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
                           <AccountProvider>
                             <RecordsMainRoutes />
                           </AccountProvider>
@@ -164,11 +201,7 @@ function MainLayout() {
                       element={
                         !AuthUtils.isSystemAdminView() ? (
                           <ProtectedRoute
-                            permissions={[
-                              ...routePermissionConfig.approvergroups,
-                              ...routePermissionConfig.roles,
-                              ...routePermissionConfig.users
-                            ]}>
+                            permissions={[...routePermissionConfig.approvergroups, ...routePermissionConfig.roles, ...routePermissionConfig.users]}>
                             <AdminLayout />
                           </ProtectedRoute>
                         ) : (

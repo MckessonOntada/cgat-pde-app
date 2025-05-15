@@ -5,7 +5,7 @@ import Index from '../pages';
 import Upload from '../pages/upload';
 import LinkSPMaterial from '../pages/link';
 import { OrgAccountSelectionProvider } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
-import { SPMaterialProvider } from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/context/SPMaterialContext';
+import { SPMaterialProvider } from '@src/mfe/core-config/manage-sp-material/context/SPMaterialContext';
 import ReviewCatalogList from '../pages/link/ReviewCatalog';
 import { OrgAccountMultiSelectionProvider } from '../pages/context/OrgAccountMultiSelectContext';
 

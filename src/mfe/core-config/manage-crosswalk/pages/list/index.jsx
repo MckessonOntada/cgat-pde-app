@@ -10,24 +10,17 @@ import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
 import { useLocation, useNavigate } from 'react-router-dom';
 import CommonFilters from '@src/components/Filters';
 import { CustomDataTable } from '@src/components/dataTableComponent';
-import {
-  useFilters,
-  usePagination,
-  useSort,
-  useTable
-} from '../../../manage-providers/context/TableContext';
+import { useFilters, usePagination, useSort, useTable } from '../../../manage-providers/context/TableContext';
 import { getColumns } from './TableColumns';
 import { ReactComponent as EmptyProviderTable } from '@src/assets/svg/EmptyProviderTable.svg';
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
-import {
-  ConfigConstants,
-  MaterialDetailsConstants
-} from '@src/mfe/order-management/pages/system-configuration/manageMaterial/assets/constants/MaterialConstants';
-import SPMaterialDetails from '@src/mfe/order-management/pages/system-configuration/manage-spmaterial/pages/SPMaterialDetails';
+import { ConfigConstants, MaterialDetailsConstants } from '@src/mfe/core-config/manage-material/assets/constants/MaterialConstants';
+
 import SPCrosswalkService from '@src/api/commonService/SPCrosswalkService';
 import { closeModal, openModal } from '@src/store/reducer/modalReducer';
 import { useDispatch } from 'react-redux';
+import SPMaterialDetails from '@src/mfe/core-config/manage-sp-material/pages/SPMaterialDetails';
 
 const List = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -44,12 +37,7 @@ const List = () => {
   const { data = [], refreshTable } = useTable();
   const dispatch = useDispatch();
   const { applySort } = useSort();
-  const {
-    items: notifications,
-    remove: removeNotification,
-    removeAll,
-    add: addNotification
-  } = useTimedArray(10000);
+  const { items: notifications, remove: removeNotification, removeAll, add: addNotification } = useTimedArray(10000);
   const breadcrumbItems = React.useMemo(() => {
     return [
       {
@@ -58,7 +46,7 @@ const List = () => {
       },
       {
         label: t('breadcrumb.systemConfiguration'),
-        url: '/orders/system-configuration'
+        url: '/admin/core-config'
       },
       {
         label: t('label.materialCrosswalk')
@@ -98,10 +86,7 @@ const List = () => {
       })
       .catch((error) => {
         const { response: errorResponse } = error;
-        if (
-          errorResponse.response.data?.errorCodes &&
-          errorResponse.response.data?.errorCodes.length > 0
-        ) {
+        if (errorResponse.response.data?.errorCodes && errorResponse.response.data?.errorCodes.length > 0) {
           errorResponse.response.data.errorCodes.forEach((error) => {
             addNotification({
               type: 'error',
@@ -127,10 +112,7 @@ const List = () => {
     );
     state.footer = (
       <div className="controls">
-        <Button
-          size="md"
-          variant="secondary"
-          onClick={() => dispatch(closeModal())}>
+        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
           {t('button.caption.no')}
         </Button>
         <Button
@@ -154,18 +136,10 @@ const List = () => {
         heading={<Heading as="h1">{t('label.materialCrosswalk')}</Heading>}
         controls={
           <div className="controls">
-            <Button
-              Icon={AddCircleFilled}
-              className="button-icon"
-              onClick={handleOnClick('create')}
-              size="md">
+            <Button Icon={AddCircleFilled} className="button-icon" onClick={handleOnClick('create')} size="md">
               {t('controls.addCrosswalk')}
             </Button>
-            <Button
-              Icon={FileUploadIcon}
-              className="button-icon"
-              onClick={handleOnClick('upload')}
-              size="md">
+            <Button Icon={FileUploadIcon} className="button-icon" onClick={handleOnClick('upload')} size="md">
               {t('controls.uploadCrosswalk')}
             </Button>
           </div>
@@ -174,14 +148,7 @@ const List = () => {
       {notifications && notifications.length > 0 && (
         <div className="MCP-module-body">
           {notifications.map((item, index) => {
-            return (
-              <Alert
-                key={item.id}
-                description={item.description}
-                onClose={() => removeNotification(item.id)}
-                type={item.type}
-              />
-            );
+            return <Alert key={item.id} description={item.description} onClose={() => removeNotification(item.id)} type={item.type} />;
           })}
         </div>
       )}
@@ -195,11 +162,7 @@ const List = () => {
             searchPlaceholder={t('controls.placeholder.materialCrosswalk')}
           />
         </div>
-        <ModuleHeader
-          heading={
-            <Heading as="h2">{t('label.materialCrosswalkListing')}</Heading>
-          }
-        />
+        <ModuleHeader heading={<Heading as="h2">{t('label.materialCrosswalkListing')}</Heading>} />
         <CustomDataTable
           id="provider-list-table"
           type={'normal'}
@@ -245,11 +208,7 @@ const List = () => {
           />
         )}
 
-        <SPMaterialDetails
-          openSPMaterialDetails={openSPMaterialDetails}
-          setOpenSPMaterialDetails={setOpenSPMaterialDetails}
-          viewSPMaterial={viewSPMaterial}
-        />
+        <SPMaterialDetails openSPMaterialDetails={openSPMaterialDetails} setOpenSPMaterialDetails={setOpenSPMaterialDetails} viewSPMaterial={viewSPMaterial} />
       </div>
     </div>
   );

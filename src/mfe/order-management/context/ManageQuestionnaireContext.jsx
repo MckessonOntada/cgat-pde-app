@@ -2,12 +2,9 @@ import React, { createContext, useContext, useState } from 'react';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
-import { getEntityTypeFlags, MasterEntityType } from '../questionnaire/util';
+import { getEntityTypeFlags, MasterEntityType } from '../../core-config/questionnaire/util';
 import { serializeParams } from '@src/util/ApiUtils';
-import {
-  OrgAccountSelectionProvider,
-  useOrgAccountSelectionContext
-} from '../components/orgAccountSelection/context/OrgAccountSelectionContext';
+import { OrgAccountSelectionProvider, useOrgAccountSelectionContext } from '../components/orgAccountSelection/context/OrgAccountSelectionContext';
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
   status: []
@@ -34,21 +31,21 @@ export const useManagerQuestionnaire = () => {
 };
 
 export const ManageQuestionnaireProvider = ({ children }) => {
-  const { selectedOrganization, selectedAccount,setSelectedOrganization,setSelectedAccount } = useOrgAccountSelectionContext(); 
+  const { selectedOrganization, selectedAccount, setSelectedOrganization, setSelectedAccount } = useOrgAccountSelectionContext();
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
   const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
-  const [entityType, setEntityType] = useState(null); 
-   let _accNumber; 
-   if (selectedAccount && selectedAccount.length > 0) {
-     _accNumber = selectedAccount
-       ?.map((i) => {
-         if (i.isChecked) {
-           return i.accountNumber;
-         }
-       })
-       .filter((ele) => !!ele);
-   }
+  const [entityType, setEntityType] = useState(null);
+  let _accNumber;
+  if (selectedAccount && selectedAccount.length > 0) {
+    _accNumber = selectedAccount
+      ?.map((i) => {
+        if (i.isChecked) {
+          return i.accountNumber;
+        }
+      })
+      .filter((ele) => !!ele);
+  }
 
   const requestParams = React.useMemo(() => {
     const baseParams = {
@@ -86,7 +83,7 @@ export const ManageQuestionnaireProvider = ({ children }) => {
     data: MaterialData,
     refetch: refetchMaterialData
   } = useQuery({
-    queryKey: ['Material', entityType,requestParams],
+    queryKey: ['Material', entityType, requestParams],
     queryFn: async () => {
       const url = `${ApiRoutes.THERAPIES()}?${serializeParams(requestParams)}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
@@ -155,20 +152,19 @@ export const ManageQuestionnaireProvider = ({ children }) => {
     enabled: !!selectedOrganization && entityType === MasterEntityType.Account
   });
 
-  React.useEffect(() => { 
-     getRefetch(entityType);
+  React.useEffect(() => {
+    getRefetch(entityType);
   }, [filterConfig, paginationConfig.pageNumber, sortConfig, entityType]);
 
   const getRefetch = (entityType) => {
     const { isMaterial, isCatalog, isAccount } = getEntityTypeFlags(entityType);
     if (isAccount) {
-      refetchAccountsData();  
+      refetchAccountsData();
     } else if (isMaterial) {
-      refetchMaterialData(); 
+      refetchMaterialData();
     } else if (isCatalog) {
       refetchCatalogData();
-    } 
-   
+    }
   };
 
   const applySort = (sortConfig) => setSortConfig({ ...sortConfig });
@@ -183,7 +179,7 @@ export const ManageQuestionnaireProvider = ({ children }) => {
   };
 
   const setCurrentPage = (pageNumber) => {
-    setPaginationConfig((prevState) => ({ ...prevState, pageNumber: pageNumber })); 
+    setPaginationConfig((prevState) => ({ ...prevState, pageNumber: pageNumber }));
   };
 
   const setEntity = (entity) => {
