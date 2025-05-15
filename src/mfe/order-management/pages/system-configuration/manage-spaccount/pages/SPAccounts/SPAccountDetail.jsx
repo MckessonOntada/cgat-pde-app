@@ -2,12 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
-import {
-  Button,
-  Heading,
-  Alert,
-  Loader
-} from '@mckesson/mcp-component-library';
+import { Button, Heading, Alert, Loader } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import ModuleHeader from '@src/components/module-header';
 import { useQuery } from 'react-query';
@@ -33,21 +28,14 @@ const SPAccountDetail = () => {
   const [alert, setAlert] = useState(null);
   const { isUpdate, isCreate } = location.state || {};
   const isCustomerCenter = AuthUtils.isCustomerCenter();
-  const { setSelectedOrganization, selectedOrganization, organizationOptions } =
-    useOrgAccountSelectionContext();
+  const { setSelectedOrganization, selectedOrganization, organizationOptions } = useOrgAccountSelectionContext();
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const orgId = queryParams.get('orgId');
 
-    if (
-      orgId &&
-      organizationOptions.length > 0 &&
-      (!selectedOrganization || selectedOrganization.id !== orgId)
-    ) {
-      const matchedOrg = organizationOptions.find(
-        (org) => org.id === Number(orgId)
-      );
+    if (orgId && organizationOptions.length > 0 && (!selectedOrganization || selectedOrganization.id !== orgId)) {
+      const matchedOrg = organizationOptions.find((org) => org.id === Number(orgId));
       if (matchedOrg) {
         setSelectedOrganization(matchedOrg);
       }
@@ -56,11 +44,7 @@ const SPAccountDetail = () => {
 
   const { isLoading, data, refetch } = useQuery({
     queryKey: ['Account', spAccountId],
-    queryFn: async () =>
-      AccountService.getAccountListConfigurationById(
-        53,
-        selectedOrganization?.id
-      ),
+    queryFn: async () => AccountService.getAccountListConfigurationById(spAccountId, selectedOrganization?.id),
     enabled: !!spAccountId ? true : false,
     refetchOnWindowFocus: false,
     onError: (error) => {}
@@ -103,43 +87,21 @@ const SPAccountDetail = () => {
     return <Loader type={'screen'} />;
   }
 
-  const contactFullName = data?.account.name
-    ? `${data?.account?.name.firstName} ${data?.account?.name.lastName} ${data?.account?.name.middleName}`
-    : '-';
+  const contactFullName = data?.account.name ? `${data?.account?.name.firstName} ${data?.account?.name.lastName} ${data?.account?.name.middleName}` : '-';
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={goBack}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={goBack} size="md">
           {t('manageSPAccount.BacktoPage')}
         </Button>
       </div>
-      {alert && alert.type && (
-        <Alert
-          description={alert.message}
-          onClose={handleAlertClose}
-          type={alert.type}
-          duration={10000}
-        />
-      )}
+      {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
       <div className="MCP-module-body">
-        <ModuleHeader
-          heading={
-            <Heading as="h1">
-              {t('manageSPAccount.heading.spAccountDetails')}
-            </Heading>
-          }
-        />
+        <ModuleHeader heading={<Heading as="h1">{t('manageSPAccount.heading.spAccountDetails')}</Heading>} />
         <ModuleHeader
           heading={
             <div className="subheader-text">
-              <Heading as="h2">
-                {t('manageSPAccount.heading.AccountDetails')}
-              </Heading>
+              <Heading as="h2">{t('manageSPAccount.heading.AccountDetails')}</Heading>
             </div>
           }
           controls={
@@ -150,12 +112,9 @@ const SPAccountDetail = () => {
                 className="button-icon"
                 size="md"
                 onClick={() =>
-                  navigate(
-                    `../${routeConstants.EDIT_SPACCOUNT}/${spAccountId}?orgId=${selectedOrganization?.id}`,
-                    {
-                      state: { isEdit: true }
-                    }
-                  )
+                  navigate(`../${routeConstants.EDIT_SPACCOUNT}/${spAccountId}?orgId=${selectedOrganization?.id}`, {
+                    state: { isEdit: true }
+                  })
                 }>
                 {t('manageSPAccount.heading.editSPAccountdetails')}
               </Button>
@@ -164,40 +123,14 @@ const SPAccountDetail = () => {
         />
 
         <div className="MCP-CardContainer">
-          <div
-            className={`grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4`}>
-            <DetailSegment
-              label={t('manageSPAccount.labels.accountNumber')}
-              value={data.account.accountNumber || '-'}
-            />
-            <DetailSegment
-              label={t('manageSPAccount.labels.accountName')}
-              value={data.account.accountName || '-'}
-            />
-            <DetailSegment
-              label={t('manageSPAccount.labels.accountAddress')}
-              value={getAddress(data.account.address) || '-'}
-            />
-            <DetailSegment
-              label={t('manageSPAccount.labels.contactPerson')}
-              value={contactFullName || '-'}
-            />
-            <DetailSegment
-              label={t('manageSPAccount.labels.emaild')}
-              value={data?.account.address.email || '-'}
-            />
-            <DetailSegment
-              label={t('manageSPAccount.labels.phoneNumber')}
-              value={
-                CommonUtils.formatPhoneNumber(
-                  data?.account?.address.telephone
-                ) || '-'
-              }
-            />
-            <DetailSegment
-              label={t('manageSPAccount.labels.fax')}
-              value={data?.account?.address.fax || '-'}
-            />
+          <div className={`grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4`}>
+            <DetailSegment label={t('manageSPAccount.labels.accountNumber')} value={data.account.accountNumber || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.accountName')} value={data.account.accountName || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.accountAddress')} value={getAddress(data.account.address) || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.contactPerson')} value={contactFullName || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.emaild')} value={data?.account.address.email || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.phoneNumber')} value={CommonUtils.formatPhoneNumber(data?.account?.address.telephone) || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.fax')} value={data?.account?.address.fax || '-'} />
           </div>
         </div>
       </div>

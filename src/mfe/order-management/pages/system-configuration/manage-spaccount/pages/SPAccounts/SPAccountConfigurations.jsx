@@ -10,6 +10,7 @@ import './index.scss';
 import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { PREVIEW_URL } from '@src/mfe/order-management/questionnaire/constants';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
 
 function SPAccountConfigurations({ data, refetch }) {
   const { t } = useTranslate();
@@ -20,7 +21,8 @@ function SPAccountConfigurations({ data, refetch }) {
   const OnDeleteClick = (id) => {
     const payload = {
       questionnaireId: id,
-      accountNumber: data.account.accountNumber
+      accountNumber: data.account.accountNumber,
+      channelType: CHANNEL_TYPE.SPECIALTY_PHARMA
     };
     renderModal({
       title: t('messages.header.confirmation'),

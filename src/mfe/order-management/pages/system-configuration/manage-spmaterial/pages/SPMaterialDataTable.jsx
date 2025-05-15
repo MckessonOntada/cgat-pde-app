@@ -14,6 +14,7 @@ import '../manageSPMaterial.scss';
 import ModuleHeader from '@src/components/module-header';
 import AuthUtils from '@src/util/AuthUtils';
 import { CustomDataTable } from '@src/components/dataTableComponent';
+import { CHANNEL_TYPE } from '../../../create/form-segments/Constants';
 
 function SPMaterialDataTable({ isLinkCatalog = false }) {
   const { t } = useTranslate();
