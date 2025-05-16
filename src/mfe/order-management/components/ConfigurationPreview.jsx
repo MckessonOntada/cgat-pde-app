@@ -37,6 +37,8 @@ function ConfigurationPreview() {
             ? t('manageSPAccount.btn.backToSpAccount')
             : isSPMaterial
             ? t('manageSPMaterial.BacktoPage')
+            : isSPCatalog
+            ? t('label.backSpCatalog')
             : ''}
         </Button>
       </div>

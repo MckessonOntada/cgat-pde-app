@@ -94,13 +94,22 @@ const EntityDataTable = ({ EntityType, setSelectedRows, showAlert }) => {
             <SPMaterialDetails openSPMaterialDetails={openDetails} setOpenSPMaterialDetails={setOpenDetails} viewSPMaterial={selectedDetails} />
           )
         ) : isCatalog ? (
-          <CatalogDetails
-            openCatalogDetails={openDetails}
-            setOpenCatalogDetails={setOpenDetails}
-            viewCatalog={selectedDetails}
-            setViewCatalog={setSelectedDetails}
-            showAlert={showAlert}
-          />
+          selectedDetails?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? (
+            <CatalogDetails
+              openCatalogDetails={openDetails}
+              setOpenCatalogDetails={setOpenDetails}
+              viewCatalog={selectedDetails}
+              setViewCatalog={setSelectedDetails}
+              showAlert={showAlert}
+            />
+          ) : (
+            <SPMaterialDetails
+              openSPMaterialDetails={openDetails}
+              setOpenSPMaterialDetails={setOpenDetails}
+              viewSPMaterial={selectedDetails}
+              isSPCatalog={true}
+            />
+          )
         ) : isAccount ? (
           <AccountDetails openDetails={openDetails} setOpenDetails={setOpenDetails} viewAccount={selectedDetails} setViewAccount={setSelectedDetails} />
         ) : null)}

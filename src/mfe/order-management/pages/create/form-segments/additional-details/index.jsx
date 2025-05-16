@@ -39,6 +39,7 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import Components from '@src/components/form/Components';
 import { CHANNEL_TYPE } from '../Constants';
 import { FooterContext } from '@src/components/footer/FooterContext';
+import { ChannelType } from '../../../system-configuration/manage-spaccount/util';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -100,6 +101,16 @@ function AdditionalDetails() {
   const channelType =
     orderDetails.accountDetails?.soldToAccount?.channelType ||
     CHANNEL_TYPE.BUY_AND_BILL;
+  const therapyChannelType =
+    orderDetails.therapy?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
+
+  const isSPCrossWalked =
+    therapyChannelType === CHANNEL_TYPE.BUY_AND_BILL &&
+    channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
+  const isSPNonCrossWalked =
+    therapyChannelType === CHANNEL_TYPE.SPECIALTY_PHARMA &&
+    channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
+
   const variantsApiRequestParam = {
     pageNo: 0,
     pageSize: 10,
@@ -332,7 +343,9 @@ function AdditionalDetails() {
     };
   };
 
-  const variantType = variant?.variant;
+  const variantType =
+    isSPCrossWalked || isSPNonCrossWalked ? null : variant?.variant;
+
   const {
     data: configuredQuestions,
     isFetching: isFetchingConfiguredQuestions,
@@ -346,10 +359,17 @@ function AdditionalDetails() {
       if (orderDetails.additionalDetails?.configuredQuestionnaires) return;
 
       const payload = {
-        variantType,
+        ...(variantType ? { variantType } : {}),
         soldToCustomer: accountDetails.soldToAccount?.accountNumber,
         shipToCustomer: accountDetails.shipToAccount?.accountNumber,
-        sapMaterial: therapy.materialNumber
+        sapMaterial:
+          isSPCrossWalked && !!variant
+            ? variant?.materialNumber
+            : therapy.materialNumber,
+        channelType:
+          isSPCrossWalked || isSPNonCrossWalked
+            ? CHANNEL_TYPE.SPECIALTY_PHARMA
+            : CHANNEL_TYPE.BUY_AND_BILL
       };
       return QuestionnaireService.getConfiguredQuestionnaire(payload);
     },
