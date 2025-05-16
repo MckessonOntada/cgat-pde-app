@@ -164,6 +164,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
     ));
   };
   const isCrosswalked = data?.therapy?.isCrosswalked;
+
   return (
     <React.Fragment>
       {data && (
@@ -194,17 +195,18 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
                       return (
                         <div key={index} className="Questionnairedetails-li">
                           <div className="Questionnairedetails-key">{item.templateName}</div>
-                          {!isCustomerCenter || isCrosswalked ? (
-                            <Tooltip body="Please refer to associated B&B material to remove the configured questionnaire for this material.">
-                              <div className="delete-button disabled-div">
+                          {!isCustomerCenter &&
+                            (!isCrosswalked ? (
+                              <div className="delete-button" onClick={() => OnDeleteClick(item.id)}>
                                 <DeleteIcon />
                               </div>
-                            </Tooltip>
-                          ) : (
-                            <div className="delete-button" onClick={() => OnDeleteClick(item.id)}>
-                              <DeleteIcon />
-                            </div>
-                          )}
+                            ) : (
+                              <Tooltip body={t('unlink.tooltip.disabledtext')}>
+                                <div className="delete-button" style={{ opacity: 0.5 }}>
+                                  <DeleteIcon />
+                                </div>
+                              </Tooltip>
+                            ))}
                         </div>
                       );
                     })}
