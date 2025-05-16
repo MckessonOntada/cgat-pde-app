@@ -124,15 +124,29 @@ module.exports = {
     new webpack.DefinePlugin({
       __CURRENT_ENV__: JSON.stringify(process.env.REACT_APP_ENVIRONMENT),
       __MAIN_BASE_URL__: JSON.stringify(process.env.REACT_APP_PUBLIC_PATH),
-      __USERMANAGEMENT_SERVICE_BASE_URL__: JSON.stringify(process.env.REACT_APP_USERMANAGEMENT_SERVICE_BASE_URL),
-      __ORDERMANAGEMENT_SERVICE_BASE_URL__: JSON.stringify(process.env.REACT_APP_ORDERMANAGEMENT_SERVICE_BASE_URL),
-      __DATA_ABSTRACTION_SERVICE_BASE_URL__: JSON.stringify(process.env.REACT_APP_DATA_ABSTRACTION_SERVICE_BASE_URL),
+      __USERMANAGEMENT_SERVICE_BASE_URL__: JSON.stringify(
+        process.env.REACT_APP_USERMANAGEMENT_SERVICE_BASE_URL
+      ),
+      __ORDERMANAGEMENT_SERVICE_BASE_URL__: JSON.stringify(
+        process.env.REACT_APP_ORDERMANAGEMENT_SERVICE_BASE_URL
+      ),
+      __DATA_ABSTRACTION_SERVICE_BASE_URL__: JSON.stringify(
+        process.env.REACT_APP_DATA_ABSTRACTION_SERVICE_BASE_URL
+      ),
       __INACTIVITY_TIMEOUT__: process.env.REACT_APP_INACTIVITY_TIMEOUT,
-      __SERVICE_NOW_URL__: JSON.stringify(process.env.REACT_APP_SERVICE_NOW_URL),
-      __SERVICE_NOW_IT_SUPPORT_URL__: JSON.stringify(process.env.REACT_APP_SERVICE_NOW_IT_SUPPORT_URL),
+      __SERVICE_NOW_URL__: JSON.stringify(
+        process.env.REACT_APP_SERVICE_NOW_URL
+      ),
+      __SERVICE_NOW_IT_SUPPORT_URL__: JSON.stringify(
+        process.env.REACT_APP_SERVICE_NOW_IT_SUPPORT_URL
+      ),
       __IKM_BASE_URL__: JSON.stringify(process.env.REACT_APP_IKM_BASE_URL),
-      __STUDY_MANAGEMENT_SERVICE_BASE_URL__: JSON.stringify(process.env.REACT_APP_STUDY_MANAGEMENT_SERVICE_BASE_URL),
-      __CONTENT_SERVICE_BASE_URL__: JSON.stringify(process.env.REACT_APP_CONTENT_SERVICE_BASE_URL),
+      __STUDY_MANAGEMENT_SERVICE_BASE_URL__: JSON.stringify(
+        process.env.REACT_APP_STUDY_MANAGEMENT_SERVICE_BASE_URL
+      ),
+      __CONTENT_SERVICE_BASE_URL__: JSON.stringify(
+        process.env.REACT_APP_CONTENT_SERVICE_BASE_URL
+      ),
       __IPV_VIEWER_URL__: JSON.stringify(process.env.IPV_VIEWER_URL),
       __FS_ORG_ID__: JSON.stringify(process.env.REACT_APP_FS_ORG_ID)
     }),
@@ -143,7 +157,12 @@ module.exports = {
   resolve: {
     alias: {
       '@src': path.resolve(__dirname, 'src/'),
-      '@fonts': path.resolve(__dirname, 'public/fonts/') // Alias to refer to fonts folder easily
-    }
+      '@fonts': path.resolve(__dirname, 'public/fonts/'), // Alias to refer to fonts folder easily
+      '@mckesson/mcp-component-library': path.resolve(
+        __dirname,
+        'node_modules/@mckesson/mcp-component-library/dist/index.esm.js'
+      )
+    },
+    extensions: ['.js', '.jsx', '.json', '.esm.js']
   }
 };

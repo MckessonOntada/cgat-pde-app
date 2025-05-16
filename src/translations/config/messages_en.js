@@ -171,7 +171,7 @@ export const ConfigurationMessagesEN = {
     'Something went wrong please try again later.',
   // catalog
 
-  'SPCatalog.deLinkSuccess': 'Catalog(s) de-linked successfully.',
+  'SPCatalog.deLinkSuccess': 'Catalog(s) unlinked successfully.',
 
   'SPCrosswalk.unlinkCrosswalkSuccess':
     'Crosswalk has been unlinked successfully.',

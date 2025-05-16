@@ -36,7 +36,8 @@ const CreateCrosswalk = () => {
   const {
     items: notifications,
     add: addNotification,
-    remove: removeNotification
+    remove: removeNotification,
+    removeAll: removeAllNotification
   } = useTimedArray(10000);
 
   const handleOnSubmit = () => {
@@ -80,8 +81,9 @@ const CreateCrosswalk = () => {
         });
     }
   };
+
   const confirmLinkMaterials = () => {
-    removeNotification();
+    removeAllNotification();
     const { material, selectedProducts } = state;
     if (!material || !selectedProducts || selectedProducts.length === 0) {
       addNotification({
@@ -131,6 +133,12 @@ const CreateCrosswalk = () => {
       replace: true
     });
   };
+
+  React.useEffect(() => {
+    return () => {
+      reset();
+    };
+  }, []);
 
   return (
     <div className="MCP-module-wrapper" id="create-crosswalk">
@@ -182,8 +190,6 @@ const CreateCrosswalk = () => {
               />
             </TableProvider>
             <TableProvider
-              defaultSort={{ sortBy: 'material_description' }}
-              allowedSort={['material_description', 'ndc']}
               defaultFilters={{
                 channelTypes: CHANNEL_TYPE.SPECIALTY_PHARMA,
                 showNonCrosswalked: true,
@@ -204,7 +210,10 @@ const CreateCrosswalk = () => {
           </div>
         </div>
         <div className="controls">
-          <Button size="md" variant="secondary">
+          <Button
+            size="md"
+            variant="secondary"
+            onClick={() => navigate('/admin/crosswalk')}>
             {t('provider.btnCancel')}
           </Button>
           <Button onClick={confirmLinkMaterials} size="md" variant="primary">

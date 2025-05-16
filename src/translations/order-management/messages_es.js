@@ -364,8 +364,10 @@ export const MessageEs = {
     'S_Zip code cannot exceed 8 digits.',
   'orderManagement.patientDetails.validation.patient_identifier_required':
     'S_Patient identifier is required.',
-  'orderManagement.patientDetails.validation.patient_identifier_required':
-    'S_Patient identifier is required.',
+  'orderManagement.patientDetails.validation.gender':
+    'S_Gender is required.',
+  'orderManagement.patientDetails.validation.dateOfBirth':
+    'S_Date Of Birth is required.',
   'orderManagement.patientDetails.validation.patient_identifier_must_number':
     'S_Patient Identifier must be alphanumeric.',
   'orderManagement.patientDetails.validation.mrn_must_alphanumeric':
@@ -427,7 +429,7 @@ export const MessageEs = {
   'message.error.papOrderCanNotEdit':
     "You can't edit this order, If you wish to make any changes to the order, please call the customer center",
   'prompt.message.editRestriction':
-    "You can't edit this order, If you wish to make any changes to the order, please contact the customer support 1800-XXX-XXXX",
+    "S_You can't edit this order. If you wish to make any changes to this order, please reject this order and create a new order.",
 
   'captions.btnBackToManageQuestionnaire': 'S_Back to Manage Questionnaire',
   'headings.manageQuestionnaire': 'S_Manage Questionnaire',

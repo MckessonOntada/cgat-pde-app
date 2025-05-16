@@ -293,6 +293,7 @@ export const MessageEn = {
   'table.columns.captions.shippingAccountName': 'Shipping Account Name',
   'label.yes': 'Yes',
   'label.no': 'No',
+  'label.ok': 'Ok',
   'messages.formNotFound': 'Form Not Found',
   'messages.orderSuccessApprovalPending':
     'Your order has been submitted successfully and is now pending for approval.',
@@ -389,6 +390,10 @@ export const MessageEn = {
     'Zip code cannot exceed 8 digits.',
   'orderManagement.patientDetails.validation.patient_identifier_required':
     'Patient identifier is required.',
+  'orderManagement.patientDetails.validation.gender':
+    'Gender is required.',
+  'orderManagement.patientDetails.validation.dateOfBirth':
+    'Date Of Birth is required.',
   'orderManagement.patientDetails.validation.patient_identifier_must_number':
     'Patient Identifier must be alphanumeric.',
   'orderManagement.patientDetails.validation.mrn_must_alphanumeric':
@@ -450,7 +455,7 @@ export const MessageEn = {
   'message.error.papOrderCanNotEdit':
     "You can't edit this order, If you wish to make any changes to the order, please call the customer center",
   'prompt.message.editRestriction':
-    "You can't edit this order, If you wish to make any changes to the order, please contact the customer support 1800-XXX-XXXX",
+    "You can't edit this order. If you wish to make any changes to this order, please reject this order and create a new order.",
 
   'captions.btnBackToManageQuestionnaire': 'Back to Manage Questionnaire',
   'headings.manageQuestionnaire': 'Manage Questionnaire',

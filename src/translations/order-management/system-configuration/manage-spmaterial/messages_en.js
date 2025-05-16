@@ -43,7 +43,7 @@ export const ManageSPMateriaMessagesEN = {
 
   'manageSPMaterial.drawer.heading': 'SP Product Details',
   'manageSPMaterial.drawer.Details': 'Details',
-  'manageSPMaterial.drawer.details.body.id': 'Id',
+  'manageSPMaterial.drawer.details.body.id': 'ID',
   'manageSPMaterial.drawer.details.body.systemQuant': 'System Quant',
   'manageSPMaterial.drawer.details.body.productName': 'Product Name',
   'manageSPMaterial.drawer.details.body.siteName': 'Site Name',
