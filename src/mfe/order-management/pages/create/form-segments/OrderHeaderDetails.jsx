@@ -24,11 +24,6 @@ function OrderHeaderDetails({
   const channelType = accountDetails?.soldToAccount?.channelType
     ? accountDetails?.soldToAccount?.channelType
     : selectedAccount?.channelType;
-  console.log(
-    'selectedAccountDetails',
-    accountDetails,
-    orderDetails?.accountDetails
-  );
 
   const detailsSegments = [
     therapy?.materialDescription && (

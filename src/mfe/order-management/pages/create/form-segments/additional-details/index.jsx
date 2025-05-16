@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Button,
   Heading,
@@ -69,6 +69,7 @@ function AdditionalDetails() {
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] =
     React.useState(INITIAL_VALUES);
+  const [storedValue, setStoredValue] = useState([]);
   const [validationSchema, setValidationSchema] = React.useState(null);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
@@ -232,11 +233,12 @@ function AdditionalDetails() {
     const finalValidationSchema = updatedValidationSchema.concat(
       questionnaireValidationSchema
     );
-    setValidationSchema(finalValidationSchema);
-    setInitialFormValues((prevState) => ({
-      ...prevState,
+    setInitialFormValues((pre) => ({
+      ...pre,
+      ...storedValue,
       ...questionnaireFields
     }));
+    setValidationSchema(finalValidationSchema);
   }, [variantsData, questionnaireTemplateConfig]);
 
   React.useEffect(() => {
@@ -489,7 +491,10 @@ function AdditionalDetails() {
         ...prevState,
         ...initialValues
       }));
-
+      setStoredValue((prevState) => ({
+        ...prevState,
+        ...initialValues
+      }));
       if (!variantsData?.content || !variantDetails) {
         return;
       }
@@ -754,7 +759,8 @@ function AdditionalDetails() {
         }) => {
           useEffect(() => {
             setIsDirty(dirty);
-          }, [dirty]);
+            setStoredValue(values);
+          }, [dirty, values]);
 
           return (
             <Form>
