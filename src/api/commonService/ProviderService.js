@@ -133,6 +133,26 @@ async function uploadProvider(payload) {
   return response;
 }
 
+async function linkProvidersToAccount(providerIds, accountIds) {
+  if (!Array.isArray(providerIds))
+    throw new Error('Provider Ids must be an array.');
+  if (!Array.isArray(accountIds))
+    throw new Error('Account Ids must be an array.');
+
+  const url = `${ApiRoutes.ORGANIZATION_BASE()}providers/link-accounts`;
+  const res = await HttpResourceService.callRest(
+    url,
+    httpVerb.PATCH,
+    providerIds,
+    accountIds,
+    {
+      'Content-Type': 'application/json',
+      accept: 'application/json'
+    }
+  );
+
+  return res.data || {};
+}
 const ProviderService = Object.freeze({
   getAllProviders,
   activateProvider,
@@ -140,7 +160,8 @@ const ProviderService = Object.freeze({
   updateProvider,
   getProviderDetailsById,
   addProvider,
-  uploadProvider
+  uploadProvider,
+  linkProvidersToAccount
 });
 
 export default ProviderService;

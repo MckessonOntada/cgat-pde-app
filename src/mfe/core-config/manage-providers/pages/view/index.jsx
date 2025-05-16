@@ -14,6 +14,8 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 import PermittedComponent from '@src/components/permitted-component';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
+import { LinkSpAccountProvider } from '../../context/LinkSpAccountContext';
+import SpAccountTable from '../link/SpAccountTable';
 
 const ProviderDetails = () => {
   const { id } = useParams();
@@ -31,25 +33,14 @@ const ProviderDetails = () => {
     enabled: Boolean(id)
   });
 
-  const {
-    data: linkedSpAccounts,
-    isLoading: isLinkedAccountsLoading,
-    isFetching: isLinkedAccountsFetching,
-    isError: isLinkedAccountsError,
-    error: linkedAccountError
-  } = useQuery({
-    queryKey: ['providers', 'sp-linked-accounts', id],
-    queryFn: async () => {
-      throw new Error('No data found');
-    },
-    enabled: Boolean(id)
-  });
   const { hasPermission } = usePermission();
 
   const canEditDetails = hasPermission(
     PERMISSIONS_ENUM.MANAGE_PROVIDERS.EDIT_PROVIDER
   );
-
+  const handleUnlinkSpAccount = (selectedProviders) => {
+    console.log(selectedProviders);
+  };
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -113,34 +104,18 @@ const ProviderDetails = () => {
             <Button
               variant="secondary"
               size="md"
-              Icon={AddCircleFilled}
-              disabled={
-                isLinkedAccountsLoading ||
-                isLinkedAccountsFetching ||
-                isLinkedAccountsError
-              }>
+              onClick={() => navigate(`../link-sp-accounts?accounts=${id}`)}
+              Icon={AddCircleFilled}>
               {t('provider.btnLinkSpAccounts')}
             </Button>
           }
         />
-        {isLinkedAccountsError && linkedAccountError ? (
-          <Alert
-            description={linkedAccountError.message}
-            type={'error'}
-            duration={0}
-            showCloseIcon={false}
+        <LinkSpAccountProvider>
+          <SpAccountTable
+            isAddSpAccount={false}
+            handleUnlinkSpAccount={handleUnlinkSpAccount}
           />
-        ) : (
-          <div className="MCP-CardContainer">
-            {isLinkedAccountsLoading || isLinkedAccountsFetching ? (
-              <div className="spinner-wrapper md">
-                <SpinnerIcon />
-              </div>
-            ) : (
-              <div>Linked Accounts</div>
-            )}
-          </div>
-        )}
+        </LinkSpAccountProvider>
       </div>
     </div>
   );
