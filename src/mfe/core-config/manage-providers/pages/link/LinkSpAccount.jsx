@@ -22,7 +22,6 @@ function LinkSpAccount() {
   const [searchParams] = useSearchParams();
   const providerIds =
     searchParams.get('accounts')?.split(',').map(Number) || [];
-  console.log('providerIds', providerIds);
   const [spAccount, setSpAccount] = useState([]);
   const {
     items: notifications,
@@ -31,7 +30,6 @@ function LinkSpAccount() {
   } = useTimedArray(10000);
 
   const onSubmitHandler = () => {
-    console.log(spAccount);
     if (!spAccount?.length) {
       addNotification({
         type: 'error',
@@ -53,9 +51,9 @@ function LinkSpAccount() {
         navigate(`/admin/providers`, {
           state: {
             type: 'success',
-            messages: `${variables.accountIds.length} ${t(
-              'manageSPAccount.success.message.addProvider'
-            )}`
+            messages: `${providerIds.length} ${t(
+              'Provider(s) has been successfully linked with '
+            )} ${spAccount.length} ${t('SP Account.')}`
           }
         });
       },
@@ -63,7 +61,7 @@ function LinkSpAccount() {
         setSelectedProviders([]);
         addNotification({
           type: 'error',
-          description: t('manageSPAccount.error.message.unableToAddProvider')
+          description: t('Unable to link SP Account(s)')
         });
       }
     }

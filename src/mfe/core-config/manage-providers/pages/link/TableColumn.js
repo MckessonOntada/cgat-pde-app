@@ -35,7 +35,8 @@ export const getTableColumn = (
         selectedSpAccount,
         setSelectedSpAccount
       ),
-    width: '50px'
+    width: '50px',
+    omit: !isAddLinkProvider
   },
   {
     id: 'accountName',

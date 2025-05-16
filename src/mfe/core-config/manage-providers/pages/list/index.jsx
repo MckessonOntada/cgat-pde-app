@@ -2,7 +2,7 @@ import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bold.svg';
 import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
 import PermittedComponent from '@src/components/permitted-component';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Button,
   Heading,
@@ -65,6 +65,18 @@ const List = () => {
       }
     ];
   }, []);
+  useEffect(() => {
+    if (location.state?.type && location.state?.messages) {
+      add({
+        type: location.state.type,
+        description: location.state.messages
+      });
+      navigate(`${location.pathname}${location.search}`, {
+        replace: true,
+        state: null
+      });
+    }
+  }, [location, navigate]);
   const handleOnSort = (column, sortDirection) => {
     applySort(column.sortKey, sortDirection);
   };

@@ -143,8 +143,7 @@ async function linkProvidersToAccount(providerIds, accountIds) {
   const res = await HttpResourceService.callRest(
     url,
     httpVerb.PATCH,
-    providerIds,
-    accountIds,
+    { providerIds, accountIds },
     {
       'Content-Type': 'application/json',
       accept: 'application/json'
