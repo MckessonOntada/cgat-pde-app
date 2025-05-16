@@ -29,6 +29,7 @@ import { ReactComponent as EmptyProviderTable } from '@src/assets/svg/EmptyProvi
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
 import CommonUtils from '@src/util/CommonUtils';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
 const List = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -153,16 +154,13 @@ const List = () => {
             )}
           />
         </div>
-        <ModuleHeader
-          heading={<Heading as="h2">{t('label.providerListing')}</Heading>}
-        />
-        {selectedRows.size > 0 && (
-          <div className="table-selection-ribbon">
-            <p>
-              {`${selectedRows.size} Item${
-                selectedRows.size > 1 ? 's' : ''
-              } selected`}
-            </p>
+        <TableHeading
+          heading={t('label.providerListing')}
+          secondaryView={selectedRows.size > 0}
+          secondaryViewHeading={`${selectedRows.size} ${t(
+            'orgManagement.selected_items'
+          )}`}
+          secondaryViewControls={
             <PermittedComponent
               permissions={[
                 PERMISSIONS_ENUM.MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN
@@ -174,8 +172,8 @@ const List = () => {
                 {t('provider.linkSpAccounts')}
               </Button>
             </PermittedComponent>
-          </div>
-        )}
+          }
+        />
         <CustomDataTable
           id="provider-list-table"
           columns={getColumns(add)}
