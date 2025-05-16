@@ -364,8 +364,7 @@ export const MessageEs = {
     'S_Zip code cannot exceed 8 digits.',
   'orderManagement.patientDetails.validation.patient_identifier_required':
     'S_Patient identifier is required.',
-  'orderManagement.patientDetails.validation.gender':
-    'S_Gender is required.',
+  'orderManagement.patientDetails.validation.gender': 'S_Gender is required.',
   'orderManagement.patientDetails.validation.dateOfBirth':
     'S_Date Of Birth is required.',
   'orderManagement.patientDetails.validation.patient_identifier_must_number':
@@ -584,5 +583,6 @@ export const MessageEs = {
   'labels.orderView.internalOrderId': 'S_Internal Order Id',
   'table.columns.captions.createdDate': 'S_Created Date',
   'labels.select-account.coveredEntity': "S_I'm a covered Entity.",
-  'label.sPCatalogListingDownload': 'S_File downloaded successfully.'
+  'label.sPCatalogListingDownload': 'S_File downloaded successfully.',
+  'labels.therapyDetails': 'S_Therapy Details'
 };
