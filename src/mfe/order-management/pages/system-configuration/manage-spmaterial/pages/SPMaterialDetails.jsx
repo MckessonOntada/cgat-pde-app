@@ -181,7 +181,8 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
                         onClick={() =>
                           navigate(PREVIEW_URL, {
                             state: {
-                              isSPMaterial: true,
+                              isSPCatalog: isSPCatalog ? true : false,
+                              isSPMaterial: !isSPCatalog,
                               questionnaire: data?.questionnaires
                             }
                           })
