@@ -18,7 +18,8 @@ import { errorStatusCodes } from '@src/util/ApiUtils';
 const DOWNLOAD_CONTEXT_OPTIONS = {
   DOWNLOAD_TEMPLATE: 'Download Template',
   DOWNLOAD_SP_ACCOUNT_DATA: 'Download SP Account Data',
-  DOWNLOAD_SP_MATERIAL_DATA: 'Download SP Material Data'
+  DOWNLOAD_SP_MATERIAL_DATA: 'Download SP Material Data',
+  DOWNLOAD__INFO: 'Download Instruction File'
 };
 
 const Upload = () => {
@@ -125,6 +126,13 @@ const Upload = () => {
             'Material'
           );
         });
+        break;
+      }
+      case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD__INFO: {
+        handleDownload(
+          '/templates/Instruction.txt',
+          'Catalog_upload_instruction.txt'
+        );
         break;
       }
       default:
