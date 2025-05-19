@@ -63,10 +63,8 @@ export const ManageSPMaterialMessagesES = {
   'manageSPMaterial.BacktoPage': 'S_BACK TO MANAGE SP MATERIAL',
   'manageSPMaterial.messageemptyTableTitle': 'S_No SP Materials Found',
   'manageSPMaterial.messages.emptyTableSubtitle':
-    'S_Please add SP Materials to view the table content.',
-
-  'messages.confirmation.deleteConfiguration':
-    'S_Are you sure you want to delete the configuration ?',
-  'manageSPMaterial.drawer.configuration.alert.error':
-    'S_Please select Required Field'
+    'S_Please add SP Materials to view the table content.', 
+  'messages.confirmation.deleteConfiguration': 'S_Are you sure you want to delete the configuration ?',
+  'manageSPMaterial.drawer.configuration.alert.error': 'S_Please select Required Field',
+  'unlink.tooltip.disabledtext': 'Please refer to associated B&B material to remove the configured questionnaire for this material.' 
 };

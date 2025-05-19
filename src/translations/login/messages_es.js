@@ -1,7 +1,8 @@
 export const LoginMessagesES = {
   'login.label.LOGIN': 's_LOG IN',
   'header.label.logout': 's_Logout',
-  'widget.footer.contextmessage': 'S_If you need further assistance, please contact support at help@mckesson.com',
+  'widget.footer.contextmessage':
+    'S_If you need further assistance, please contact support at help@mckesson.com',
   'header.label.notifications': 'S_Notifications',
   'header.label.help': 'S_Help',
   'header.label.systemAdminView': 'S_System Admin View',
@@ -13,7 +14,8 @@ export const LoginMessagesES = {
   'login.page.desc.2': 'S_organization or biopharma company',
   'login.welcome': 'S_Welcome !',
   'login.ordringPortal': 'S_Ordering Portal',
-  'login.details': 'S_Welcome to our Cell & Gene Therapy platform, where excellence in patient care meets cutting-edge innovation.',
+  'login.details':
+    'S_Welcome to our Cell & Gene Therapy platform, where excellence in patient care meets cutting-edge innovation.',
   'login.note': 'S_Note',
   'footer.terms': 'S_Terms',
   'footer.privacy': 'S_Privacy Notice',
@@ -22,13 +24,15 @@ export const LoginMessagesES = {
   'footer.help.content': 'S_User Help Content',
   'footer.contant': 'S_Contact',
   'footer.contant.no': 'S_Contact us at: 1-855-887-6788',
-  'footer.copyright': 'S_© {year} McKesson Corporation Health Technology Products LLC.',
-  'message.exitUserViewConfirmation': 'S_Do you wish to exit working as {{username}}?',
+  'footer.copyright':
+    'S_© {year} McKesson Corporation Health Technology Products LLC.',
+  'message.exitUserViewConfirmation': 'S_Do you wish to exit working as',
   'button.caption.no': 'S_No',
   'button.caption.yes': 'S_Yes',
   'forgot.password': 'S_Forgot Password?',
   'forgot.password.submit': 'S_Forgot Password',
-  'forgot.password.success': 'S_Your request to reset your password has been successfully submitted, Please check your email.',
+  'forgot.password.success':
+    'S_Your request to reset your password has been successfully submitted, Please check your email.',
   'forgot.password.error': 'S_Error sending password reset email.',
   'forgot.terms.agreement': 'S_Terms of use and Patient Agreement',
   'reset.password.user.email': 'S_User Name / Email Address',

@@ -29,7 +29,9 @@ const SecondaryHeader = ({ navLinks }) => {
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const isCustomerCenterView = AuthUtils.isCustomerCenterView();
-  const impersonatedUsername = sessionStorage.getItem(SESSION_CONST.IMPERSONATE_USERNAME);
+  const impersonatedUsername = sessionStorage.getItem(
+    SESSION_CONST.IMPERSONATE_USERNAME
+  );
   const dispatch = useDispatch();
 
   const location = useLocation();
@@ -70,13 +72,19 @@ const SecondaryHeader = ({ navLinks }) => {
         .map((item) => {
           if (
             item.configName === 'Dashboard' ||
-            (item.configName !== 'Dashboard' && AuthUtils.userHasRoutePermission(item.permittedRoute))
+            (item.configName !== 'Dashboard' &&
+              AuthUtils.userHasRoutePermission(item.permittedRoute))
           ) {
             let isActiveTab = false;
 
-            if (item.configName === 'Dashboard' && location.pathname === '/') isActiveTab = true;
+            if (item.configName === 'Dashboard' && location.pathname === '/')
+              isActiveTab = true;
 
-            if (item.configName !== 'Dashboard' && location.pathname.includes(item.path)) isActiveTab = true;
+            if (
+              item.configName !== 'Dashboard' &&
+              location.pathname.includes(item.path)
+            )
+              isActiveTab = true;
 
             if (item.configName === 'Orders' && isSystemAdmin) {
               return false;
@@ -97,7 +105,9 @@ const SecondaryHeader = ({ navLinks }) => {
 
   const LeftSideView = () => {
     return (
-      <div className={`${styles.navItemsLeft} ${styles.secondaryNav}`} aria-label="Navigation tabs">
+      <div
+        className={`${styles.navItemsLeft} ${styles.secondaryNav}`}
+        aria-label="Navigation tabs">
         <TabList
           className={styles.compactTablist}
           type="link"
@@ -128,12 +138,19 @@ const SecondaryHeader = ({ navLinks }) => {
       state.title = `${t('button.captions.exitUserView')}?`;
       state.body = (
         <div className="MCP-modal-body">
-          <p>{t('message.exitUserViewConfirmation').replace('{{username}}', impersonatedUsername)}</p>
+          <p>
+            <p>{`${t(
+              'message.exitUserViewConfirmation'
+            )} ${impersonatedUsername}?`}</p>
+          </p>
         </div>
       );
       state.footer = (
         <div className="controls">
-          <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+          <Button
+            size="md"
+            variant="secondary"
+            onClick={() => dispatch(closeModal())}>
             {t('button.caption.no')}
           </Button>
           <Button size="md" variant="primary" onClick={exitUserView}>
@@ -146,7 +163,9 @@ const SecondaryHeader = ({ navLinks }) => {
     if (impersonatedUsername) {
       return (
         <div className="impersonate-info-panel">
-          <p className="logged-in-label">{t('header.label.loggedInAs', { impersonatedUsername })}</p>
+          <p className="logged-in-label">
+            {t('header.label.loggedInAs', { impersonatedUsername })}
+          </p>
           <Button color="secondary" onClick={handleOnExitUserView}>
             {t('button.captions.exitUserView')}
           </Button>
@@ -157,7 +176,8 @@ const SecondaryHeader = ({ navLinks }) => {
 
   const showSystemAdminViewBtn = () => {
     return (
-      (AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView()) || (AuthUtils.isCustomerCenter() && !AuthUtils.isCustomerCenterView())
+      (AuthUtils.isSystemAdmin() && !AuthUtils.isSystemAdminView()) ||
+      (AuthUtils.isCustomerCenter() && !AuthUtils.isCustomerCenterView())
     );
   };
 
@@ -166,7 +186,9 @@ const SecondaryHeader = ({ navLinks }) => {
       return null;
     }
     return (
-      <div className={styles.navItemsRight} aria-label="System administration view">
+      <div
+        className={styles.navItemsRight}
+        aria-label="System administration view">
         <div className={styles.navOptions}>
           {/* 
             The button is only visible for system admin.
@@ -184,7 +206,9 @@ const SecondaryHeader = ({ navLinks }) => {
   };
 
   return (
-    <div className={`${styles.navContainer} ${styles.secondary}`} aria-label="Secondary header">
+    <div
+      className={`${styles.navContainer} ${styles.secondary}`}
+      aria-label="Secondary header">
       <div className="max-container">
         <div className={styles.wrapper}>
           <LeftSideView />

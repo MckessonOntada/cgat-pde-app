@@ -876,7 +876,9 @@ const Summary = () => {
                 <div className="MCP-CardContainer">
                   <ModuleHeader
                     className={styles.panelHeader}
-                    heading={<Heading as="h3">{t('labels.therapy')}</Heading>}
+                    heading={
+                      <Heading as="h3">{t('labels.therapyDetails')}</Heading>
+                    }
                     controls={
                       !hideControls && (
                         <PermittedComponent
