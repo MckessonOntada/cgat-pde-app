@@ -6,11 +6,23 @@ import ManageProviders from './manage-providers';
 import Role from '@src/mfe/org-management/pages/role';
 import ManageApprovers from '@src/mfe/order-management/manageApprovers';
 import { routePermissionConfig } from '@src/routes/RoutePermissionConstats';
+import AdminLayout from '@src/mfe/core-config/admin/AdminIndex';
+import NotFound from '@src/pages/error-pages/NotFound';
+const UsersEntryPoint = React.lazy(() => import('@src/mfe/user-management'));
 
 function AdminRoutes() {
   return (
     <Routes>
-      <Route index element={''}></Route>
+      <Route index element={<AdminLayout />}></Route>
+      <Route
+        path={'user/*'}
+        element={
+          <ProtectedRoute permissions={routePermissionConfig.users}>
+            <UsersEntryPoint />
+          </ProtectedRoute>
+        }
+      />
+
       <Route
         path={'providers/*'}
         element={
@@ -35,6 +47,7 @@ function AdminRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route path={'*'} element={<NotFound />} />
     </Routes>
   );
 }

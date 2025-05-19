@@ -46,7 +46,7 @@ const List = () => {
       },
       {
         label: t('breadcrumb.systemConfiguration'),
-        url: '/system-admin'
+        url: '/system-admin/config'
       },
       {
         label: t('label.materialCrosswalk')

@@ -20,7 +20,7 @@ function ManageCatalog(props) {
     },
     {
       label: 'system_configuration',
-      url: '/system-admin'
+      url: '/system-admin/config'
     },
     {
       label: 'manage_catalog'

@@ -24,7 +24,7 @@ function ManageQuestionnaire() {
     },
     {
       label: 'System Configuration',
-      url: '/system-admin'
+      url: '/system-admin/config'
     },
     {
       label: 'Questionnaire Builder'

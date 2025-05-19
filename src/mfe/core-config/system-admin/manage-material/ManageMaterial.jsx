@@ -18,7 +18,7 @@ function ManageMaterial() {
     },
     {
       label: t('manageMaterial.breadcrumbs.systemConfiguration'),
-      url: '/system-admin'
+      url: '/system-admin/config'
     },
     {
       label: t('manageMaterial.breadcrumbs.manageMaterial')

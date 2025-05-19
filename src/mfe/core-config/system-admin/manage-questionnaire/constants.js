@@ -1,4 +1,4 @@
-import { CONFIG_MODULE_ROUTES } from '../../constants';
+import { CONFIG_MODULE_ROUTES } from '../constants';
 import { routesConfig } from '../../../order-management/routes/constants';
 
 export const ROUTE_CONFIG = {

@@ -18,7 +18,7 @@ function ManageSPMaterial() {
     },
     {
       label: 'system_configuration',
-      url: '/system-admin'
+      url: '/system-admin/config'
     },
     {
       label: 'system_config_manage_spmaterial'
