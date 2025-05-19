@@ -56,7 +56,7 @@ const getColumns = ({ t }) => {
       id: 'materialDescription',
       selector: (row) => row.materialDescription,
       wrap: true,
-      maxWidth: '240px',
+      minWidth: '275px',
       sortable: true,
       sortKey: 'materialDescription',
       cell: (props) => (
@@ -76,7 +76,7 @@ const getColumns = ({ t }) => {
       selector: (row) => row.ndcNumber,
       wrap: true,
       sortable: false,
-      maxWidth: '140px',
+      minWidth: '155px',
       cell: (props) => (
         <EclipsesTextcss maxLength={140} str={props?.ndcNumber || '-'} />
       )
