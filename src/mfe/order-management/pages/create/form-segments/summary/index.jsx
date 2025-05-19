@@ -346,7 +346,7 @@ const Summary = () => {
     if (isApprover || isSimulate) {
       navigate(RoutePaths.pathOrderManagement);
     } else {
-      navigate(`../${orderId}/additional-details`);
+      navigate('/orders');
     }
   };
 
