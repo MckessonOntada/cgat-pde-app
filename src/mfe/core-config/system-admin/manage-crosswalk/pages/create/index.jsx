@@ -44,7 +44,7 @@ const CreateCrosswalk = () => {
         .then((response) => {
           if (response.status === 200) {
             reset();
-            navigate('/system-admin/crosswalk', {
+            navigate('/system-admin/config/crosswalk', {
               state: {
                 items: [
                   {
@@ -73,6 +73,7 @@ const CreateCrosswalk = () => {
         });
     }
   };
+
   const confirmLinkMaterials = () => {
     removeAllNotification();
     const { material, selectedProducts } = state;
@@ -122,10 +123,21 @@ const CreateCrosswalk = () => {
     });
   };
 
+  React.useEffect(() => {
+    return () => {
+      reset();
+    };
+  }, []);
+
   return (
     <div className="MCP-module-wrapper" id="create-crosswalk">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={() => navigate('/system-admin/crosswalk')} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={() => navigate('/system-admin/config/crosswalk')}
+          size="md">
           {t('label.backToMaterialCrosswalk')}
         </Button>
       </div>
@@ -171,7 +183,7 @@ const CreateCrosswalk = () => {
           </div>
         </div>
         <div className="controls">
-          <Button size="md" variant="secondary" onClick={() => navigate('/system-admin/crosswalk')}>
+          <Button size="md" variant="secondary" onClick={() => navigate('/system-admin/config/crosswalk')}>
             {t('provider.btnCancel')}
           </Button>
           <Button onClick={confirmLinkMaterials} size="md" variant="primary">

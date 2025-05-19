@@ -351,7 +351,7 @@ function AddQuestionnaire() {
       setMode(MODE.VIEW);
       getQuestionnaireDetails();
     } else {
-      navigate('/system-admin/questionnaire');
+      navigate('/system-admin/config/questionnaire');
     }
   };
 
@@ -371,7 +371,7 @@ function AddQuestionnaire() {
                 <div className="MCP-module-wrapper">
                   <div className="MCP-module-header">
                     <div className="styled-icon-button">
-                      <Button onClick={() => navigate('/system-admin/questionnaire')} variant="tertiary" size="md" Icon={ArrowLeftIcon}>
+                      <Button onClick={() => navigate('/system-admin/config/questionnaire')} variant="tertiary" size="md" Icon={ArrowLeftIcon}>
                         {t('button.caption.backQuestionnaireBuilder')}
                       </Button>
                     </div>

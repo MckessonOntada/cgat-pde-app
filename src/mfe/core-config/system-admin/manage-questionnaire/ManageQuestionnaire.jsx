@@ -6,7 +6,7 @@ import { ReactComponent as AddCircleIcon } from '@src/assets/svg/add-circle.svg'
 import TemplateList from './TemplateList';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getEntityTypeFlags } from './util';
-import { useQuestionnaire } from '../../../order-management/context/QuestionnaireContext';
+import { useQuestionnaire } from './context/QuestionnaireContext';
 import ModuleHeader from '@src/components/module-header';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';

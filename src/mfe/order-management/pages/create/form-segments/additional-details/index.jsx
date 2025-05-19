@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, Heading, CheckboxGroup, RadioGroup, Loader, TextError } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -20,7 +20,6 @@ import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/Disca
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
-import QuestionnaireTemplate from '@src/mfe/core-config/system-admin/manage-questionnaire/QuestionnaireTemplate';
 import { LANGUAGE, QUESTION_TYPE } from '@src/mfe/core-config/system-admin/manage-questionnaire/AddQuestionnaire';
 import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from './useOrderPrice';
@@ -29,6 +28,7 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import Components from '@src/components/form/Components';
 import { CHANNEL_TYPE } from '../Constants';
 import { FooterContext } from '@src/components/footer/FooterContext';
+import QuestionnaireTemplate from '@src/mfe/core-config/system-admin/manage-questionnaire/QuestionnaireTemplate';
 
 const INITIAL_VALUES = {
   coiId: '',
@@ -53,6 +53,7 @@ function AdditionalDetails() {
   const { isEdit = false, isApprover = false, alertState } = location.state || {};
   const { orderId } = useParams();
   const [initialFormValues, setInitialFormValues] = React.useState(INITIAL_VALUES);
+  const [storedValue, setStoredValue] = useState([]);
   const [validationSchema, setValidationSchema] = React.useState(null);
   const [modalSuccessCallback, setModalSuccessCallback] = React.useState(null);
   const [isDirty, setIsDirty] = React.useState(false);
@@ -73,6 +74,11 @@ function AdditionalDetails() {
   const soldToAccountId = orderDetails.accountDetails?.soldToAccount?.accountNumber;
   const shipToAccountId = orderDetails.accountDetails?.shipToAccount?.accountNumber;
   const channelType = orderDetails.accountDetails?.soldToAccount?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
+  const therapyChannelType = orderDetails.therapy?.channelType || CHANNEL_TYPE.BUY_AND_BILL;
+
+  const isSPCrossWalked = therapyChannelType === CHANNEL_TYPE.BUY_AND_BILL && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
+  const isSPNonCrossWalked = therapyChannelType === CHANNEL_TYPE.SPECIALTY_PHARMA && channelType === CHANNEL_TYPE.SPECIALTY_PHARMA;
+
   const variantsApiRequestParam = {
     pageNo: 0,
     pageSize: 10,
@@ -173,11 +179,12 @@ function AdditionalDetails() {
     }
 
     const finalValidationSchema = updatedValidationSchema.concat(questionnaireValidationSchema);
-    setValidationSchema(finalValidationSchema);
-    setInitialFormValues((prevState) => ({
-      ...prevState,
+    setInitialFormValues((pre) => ({
+      ...pre,
+      ...storedValue,
       ...questionnaireFields
     }));
+    setValidationSchema(finalValidationSchema);
   }, [variantsData, questionnaireTemplateConfig]);
 
   React.useEffect(() => {
@@ -271,7 +278,8 @@ function AdditionalDetails() {
     };
   };
 
-  const variantType = variant?.variant;
+  const variantType = isSPCrossWalked || isSPNonCrossWalked ? null : variant?.variant;
+
   const {
     data: configuredQuestions,
     isFetching: isFetchingConfiguredQuestions,
@@ -285,10 +293,11 @@ function AdditionalDetails() {
       if (orderDetails.additionalDetails?.configuredQuestionnaires) return;
 
       const payload = {
-        variantType,
+        ...(variantType ? { variantType } : {}),
         soldToCustomer: accountDetails.soldToAccount?.accountNumber,
         shipToCustomer: accountDetails.shipToAccount?.accountNumber,
-        sapMaterial: therapy.materialNumber
+        sapMaterial: isSPCrossWalked && !!variant ? variant?.materialNumber : therapy.materialNumber,
+        channelType: isSPCrossWalked || isSPNonCrossWalked ? CHANNEL_TYPE.SPECIALTY_PHARMA : CHANNEL_TYPE.BUY_AND_BILL
       };
       return QuestionnaireService.getConfiguredQuestionnaire(payload);
     },
@@ -404,7 +413,10 @@ function AdditionalDetails() {
         ...prevState,
         ...initialValues
       }));
-
+      setStoredValue((prevState) => ({
+        ...prevState,
+        ...initialValues
+      }));
       if (!variantsData?.content || !variantDetails) {
         return;
       }
@@ -616,7 +628,8 @@ function AdditionalDetails() {
         {({ dirty, errors, values, setFieldValue, setErrors, setFieldTouched, touched }) => {
           useEffect(() => {
             setIsDirty(dirty);
-          }, [dirty]);
+            setStoredValue(values);
+          }, [dirty, values]);
 
           return (
             <Form>

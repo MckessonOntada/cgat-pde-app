@@ -2,7 +2,7 @@ import React from 'react';
 import { Loader, Button, Alert } from '@mckesson/mcp-component-library';
 import EmptyDataTable from '@src/components/EmptyTable';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useManageMaterial } from '@src/mfe/order-management/context/ManageMaterialContext';
+import { useManageMaterial } from '@src/mfe/core-config/system-admin/manage-material/context/ManageMaterialContext';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { Link } from 'react-router-dom';
 import FloatingDrawer from '@src/components/floating-drawer';
@@ -104,20 +104,10 @@ function ManageMaterialTable({ ...props }) {
   return (
     <React.Fragment>
       {configureSuccess && (
-        <Alert
-          description={t('manageMaterial.drawer.controls.apply.success')}
-          onClose={() => setConfigureSuccess(false)}
-          type="success"
-          duration={3000}
-        />
+        <Alert description={t('manageMaterial.drawer.controls.apply.success')} onClose={() => setConfigureSuccess(false)} type="success" duration={3000} />
       )}
       {configureError && (
-        <Alert
-          description={t('manageMaterial.drawer.controls.apply.error')}
-          onClose={() => setConfigureError(false)}
-          type="error"
-          duration={3000}
-        />
+        <Alert description={t('manageMaterial.drawer.controls.apply.error')} onClose={() => setConfigureError(false)} type="error" duration={3000} />
       )}
       <TableHeading
         heading={'Material Listing'}

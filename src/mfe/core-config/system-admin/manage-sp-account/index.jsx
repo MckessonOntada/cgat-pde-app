@@ -4,7 +4,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { Heading } from '@mckesson/mcp-component-library';
 import CommonFilters from '@src/components/Filters';
 import { useLocation, useNavigate } from 'react-router-dom';
-import OrgAccountsSelect from '../../../order-management/components/orgAccountSelection/OrgAccountsSelect';
+import OrgAccountsSelect from '../manage-questionnaire/components/orgAccountSelection/OrgAccountsSelect';
 import { useSPAccountContext } from './context/SPAccountContext';
 import SPAccountDataTable from './pages/SPAccounts/SPAccountDataTable';
 

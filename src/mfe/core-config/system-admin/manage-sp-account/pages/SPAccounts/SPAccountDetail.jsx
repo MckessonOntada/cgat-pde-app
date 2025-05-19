@@ -10,13 +10,14 @@ import AuthUtils from '@src/util/AuthUtils';
 import CommonUtils from '@src/util/CommonUtils.js';
 import { routeConstants } from '../../routes/constants';
 import DetailSegment from '@src/components/DetailSegment';
-import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import ShippingLocationsDataTable from '../ShippingLocations/ShippingLocationsDataTable';
 import { ShippingLocationProvider } from '../../context/ShippingLocationContext';
 import { LinkProviderProvider } from '../../context/LinkProviderContext';
-import LinkProviderListing from '../LinkProvider/LinkProviderListing';
 import AccountService from '@src/api/commonService/AccountService';
-import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnaire/util';
+import SPAccountConfigurations from './SPAccountConfigurations';
+import LinkProviderListing from '../LinkProvider/LinkProviderListing';
+import { getAddress } from '../../../manage-questionnaire/util';
 
 const SPAccountDetail = () => {
   const { t } = useTranslate();
@@ -43,7 +44,7 @@ const SPAccountDetail = () => {
 
   const { isLoading, data, refetch } = useQuery({
     queryKey: ['Account', spAccountId],
-    queryFn: async () => AccountService.getAccountListById(spAccountId, selectedOrganization?.id),
+    queryFn: async () => AccountService.getAccountListConfigurationById(spAccountId, selectedOrganization?.id),
     enabled: !!spAccountId ? true : false,
     refetchOnWindowFocus: false,
     onError: (error) => {}
@@ -77,7 +78,7 @@ const SPAccountDetail = () => {
   };
 
   const goBack = () => {
-    navigate('/system-admin/manage-sp-account', {
+    navigate('/system-admin/config/manage-sp-account', {
       state: { isSuccess: true }
     });
   };
@@ -86,7 +87,7 @@ const SPAccountDetail = () => {
     return <Loader type={'screen'} />;
   }
 
-  const contactFullName = data?.name ? `${data?.name.firstName} ${data?.name.lastName} ${data?.name.middleName}` : '-';
+  const contactFullName = data?.account.name ? `${data?.account?.name.firstName} ${data?.account?.name.lastName} ${data?.account?.name.middleName}` : '-';
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -110,7 +111,11 @@ const SPAccountDetail = () => {
                 variant="secondary"
                 className="button-icon"
                 size="md"
-                onClick={() => navigate(`../${routeConstants.EDIT_SPACCOUNT}/${spAccountId}?orgId=${selectedOrganization?.id}`, { state: { isEdit: true } })}>
+                onClick={() =>
+                  navigate(`../${routeConstants.EDIT_SPACCOUNT}/${spAccountId}?orgId=${selectedOrganization?.id}`, {
+                    state: { isEdit: true }
+                  })
+                }>
                 {t('manageSPAccount.heading.editSPAccountdetails')}
               </Button>
             )
@@ -119,13 +124,13 @@ const SPAccountDetail = () => {
 
         <div className="MCP-CardContainer">
           <div className={`grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4`}>
-            <DetailSegment label={t('manageSPAccount.labels.accountNumber')} value={data.accountNumber || '-'} />
-            <DetailSegment label={t('manageSPAccount.labels.accountName')} value={data.accountName || '-'} />
-            <DetailSegment label={t('manageSPAccount.labels.accountAddress')} value={getAddress(data.address) || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.accountNumber')} value={data.account.accountNumber || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.accountName')} value={data.account.accountName || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.accountAddress')} value={getAddress(data.account.address) || '-'} />
             <DetailSegment label={t('manageSPAccount.labels.contactPerson')} value={contactFullName || '-'} />
-            <DetailSegment label={t('manageSPAccount.labels.emaild')} value={data?.address.email || '-'} />
-            <DetailSegment label={t('manageSPAccount.labels.phoneNumber')} value={CommonUtils.formatPhoneNumber(data?.address.telephone) || '-'} />
-            <DetailSegment label={t('manageSPAccount.labels.fax')} value={data?.address.fax || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.emaild')} value={data?.account.address.email || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.phoneNumber')} value={CommonUtils.formatPhoneNumber(data?.account?.address.telephone) || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.fax')} value={data?.account?.address.fax || '-'} />
           </div>
         </div>
       </div>
@@ -139,6 +144,11 @@ const SPAccountDetail = () => {
           <LinkProviderListing />
         </LinkProviderProvider>
       </div>
+      {data?.questionnaireList?.length > 0 && (
+        <div className="MCP-module-body">
+          <SPAccountConfigurations data={data} refetch={refetch} />
+        </div>
+      )}
     </div>
   );
 };

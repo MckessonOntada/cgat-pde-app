@@ -17,7 +17,7 @@ import { useMutation } from 'react-query';
 import { renderModal } from '@src/util/ModalUtil';
 import ShippingLocationService from '@src/api/commonService/ShippingLocationService';
 import TableHeading from '@src/components/tableHeading/TableHeading';
-import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
 
 function ShippingLocationsDataTable() {
   const { t } = useTranslate();
@@ -190,12 +190,7 @@ function ShippingLocationsDataTable() {
       </div>
 
       {openShippingDrawer && (
-        <AddShippingDetails
-          open={openShippingDrawer}
-          onClose={() => setOpenShippingDrawer(false)}
-          row={spLocation}
-          onFormSubmit={handleFormSubmitResult}
-        />
+        <AddShippingDetails open={openShippingDrawer} onClose={() => setOpenShippingDrawer(false)} row={spLocation} onFormSubmit={handleFormSubmitResult} />
       )}
     </div>
   );

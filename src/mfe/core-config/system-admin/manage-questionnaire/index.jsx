@@ -5,11 +5,11 @@ import AddQuestionnaire from './AddQuestionnaire';
 import { ROUTE_CONFIG } from './constants';
 import MapQuestionnaire from './manage-master/mapQuestionnaire';
 import NotFound from '@src/pages/error-pages/NotFound';
-import { OrgAccountSelectionProvider } from '../../../order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
-import { ManageQuestionnaireProvider } from '../../../order-management/context/ManageQuestionnaireContext';
+import { OrgAccountSelectionProvider } from './components/orgAccountSelection/context/OrgAccountSelectionContext';
+import { ManageQuestionnaireProvider } from './context/ManageQuestionnaireContext';
 import { MasterEntityType } from './util';
-import { QuestionnaireProvider } from '../../../order-management/context/QuestionnaireContext';
-import ConfigurationPreview from '../../../order-management/components/ConfigurationPreview';
+import { QuestionnaireProvider } from './context/QuestionnaireContext';
+import ConfigurationPreview from './components/ConfigurationPreview';
 import usePermission from '@src/hooks/usePermissions';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 
@@ -36,7 +36,7 @@ function Questionnaire() {
         <Route
           path={ROUTE_CONFIG.MAP_QUESTIONNAIRE}
           element={
-            <OrgAccountSelectionProvider enableOrg={handleOrg()} enableAcct={handleAccount()}>
+            <OrgAccountSelectionProvider enableOrg={handleOrg()} enableAcct={handleAccount()} enableConfigure={true}>
               <ManageQuestionnaireProvider>
                 <MapQuestionnaire />
               </ManageQuestionnaireProvider>

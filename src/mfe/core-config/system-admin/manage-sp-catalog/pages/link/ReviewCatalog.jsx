@@ -41,16 +41,16 @@ const ReviewCatalog = () => {
 
   useEffect(() => {
     if (!selectedAccount && !selectedOrganization) {
-      navigate('/system-admin/sp-catalog');
+      navigate('/system-admin/config/sp-catalog');
     }
   }, [selectedAccount, selectedOrganization, navigate]);
 
   const goBack = () => {
-    navigate('/system-admin/sp-catalog');
+    navigate('/system-admin/config/sp-catalog');
   };
 
   const handleCancel = () => {
-    navigate('/system-admin/sp-catalog/link-sp-material', { state: { selectedSPMaterial, selectedAccount } });
+    navigate('/system-admin/config/sp-catalog/link-sp-material', { state: { selectedSPMaterial, selectedAccount } });
   };
 
   const handleSave = async () => {
@@ -77,7 +77,7 @@ const ReviewCatalog = () => {
     {
       onSuccess: (result, variables) => {
         const count = variables.payload.length;
-        navigate('/system-admin/sp-catalog', {
+        navigate('/system-admin/config/sp-catalog', {
           state: {
             items: [
               {

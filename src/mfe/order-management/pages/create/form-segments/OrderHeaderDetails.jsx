@@ -15,7 +15,6 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status, selectedA
   const patient = orderDetails?.patient ?? {};
   const patientDetailsRequired = orderDetails?.patientDetailsRequired ?? false;
   const channelType = accountDetails?.soldToAccount?.channelType ? accountDetails?.soldToAccount?.channelType : selectedAccount?.channelType;
-  console.log('selectedAccountDetails', accountDetails, orderDetails?.accountDetails);
 
   const detailsSegments = [
     therapy?.materialDescription && (

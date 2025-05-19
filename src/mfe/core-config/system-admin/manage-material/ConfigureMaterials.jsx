@@ -3,7 +3,7 @@ import styles from './assets/styles/ConfigureMaterials.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Heading, Button, RadioGroup, Label, Alert } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
-import { useManageMaterial } from '@src/mfe/order-management/context/ManageMaterialContext';
+import { useManageMaterial } from '@src/mfe/core-config/system-admin/manage-material/context/ManageMaterialContext';
 import { useMutation } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
@@ -15,7 +15,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
     patientInfoRequired: '',
     coiIdRequired: ''
   });
-  const [error, setError] = useState(false)
+  const [error, setError] = useState(false);
 
   const { selectedMaterials, refetch } = useManageMaterial();
 
@@ -63,32 +63,29 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
   const isApplyDisabled = formValues.patientInfoRequired && formValues.coiIdRequired;
 
   const handleApplyConfiguration = () => {
-    if(isApplyDisabled){
+    if (isApplyDisabled) {
       const configValues = {
         materialNumbers: selectedMaterials.map((material) => material.materialNumber),
         isPatientInformationRequired: formValues.patientInfoRequired === 'yes',
         isCoiIdRequired: formValues.coiIdRequired === 'yes'
       };
       applyConfiguration(configValues);
-    }else{
+    } else {
       setError(true);
     }
-    
   };
-  const handleAlertClose=()=>{
-    setError(false)
-  }
-
-  
+  const handleAlertClose = () => {
+    setError(false);
+  };
 
   return (
-    <FloatingDrawer 
-      open={true} 
-      anchor="right" 
-      onClose={onClose} 
+    <FloatingDrawer
+      open={true}
+      anchor="right"
+      onClose={onClose}
       heading={t('manageMaterial.drawer.configuration.heading')}
       controls={
-        <div className='controls'>
+        <div className="controls">
           <Button
             label={t('manageMaterial.drawer.controls.cancel')}
             onClick={onClose}
@@ -104,8 +101,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
             aria-label={t('manageMaterial.drawer.controls.apply')}
           />
         </div>
-      }
-    >
+      }>
       <div className={styles.wrapper}>
         <div className={styles.body}>
           {error && !isApplyDisabled && (
@@ -116,7 +112,7 @@ function ConfigureMaterials({ onClose, onSuccess, onError }) {
               <div className={styles.formField} key={index}>
                 <div className={styles.caption}>
                   <Label className={styles.label}>{field.caption}</Label>
-                  <span className='required'> *</span>
+                  <span className="required"> *</span>
                 </div>
                 <RadioGroup
                   direction="row"

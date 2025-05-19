@@ -12,7 +12,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { PREVIEW_URL } from '@src/mfe/core-config/system-admin/manage-questionnaire/constants';
 import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnaire/util';
-import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import { renderModal } from '@src/util/ModalUtil';
 import AuthUtils from '@src/util/AuthUtils';
 

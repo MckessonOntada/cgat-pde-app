@@ -15,7 +15,8 @@ import { errorStatusCodes } from '@src/util/ApiUtils';
 const DOWNLOAD_CONTEXT_OPTIONS = {
   DOWNLOAD_TEMPLATE: 'Download Template',
   DOWNLOAD_SP_ACCOUNT_DATA: 'Download SP Account Data',
-  DOWNLOAD_SP_MATERIAL_DATA: 'Download SP Material Data'
+  DOWNLOAD_SP_MATERIAL_DATA: 'Download SP Material Data',
+  DOWNLOAD__INFO: 'Download Instruction File'
 };
 
 const Upload = () => {
@@ -95,7 +96,7 @@ const Upload = () => {
   const handleOnDownload = (option) => {
     switch (option) {
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_TEMPLATE: {
-        handleDownload('/templates/upload_sp_catalog_template.csv', 'upload_sp_catalog_template.csv');
+        handleDownload('/templates/upload_sp_catalog.zip', 'Upload SP Catalog.zip');
         break;
       }
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_SP_ACCOUNT_DATA: {
@@ -110,6 +111,10 @@ const Upload = () => {
         });
         break;
       }
+      case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD__INFO: {
+        handleDownload('/templates/Instruction.txt', 'Catalog_upload_instruction.txt');
+        break;
+      }
       default:
         return;
     }
@@ -122,7 +127,7 @@ const Upload = () => {
           className="back-button-control"
           variant="tertiary"
           Icon={() => <IconArrowLeft />}
-          onClick={() => navigate('/system-admin/sp-catalog')}
+          onClick={() => navigate('/system-admin/config/sp-catalog')}
           size="md">
           {t('label.backSpCatalog')}
         </Button>

@@ -12,7 +12,7 @@ import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
 import { routeConstants } from '../../routes/constants';
 import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnaire/util';
 import AuthUtils from '@src/util/AuthUtils';
-import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
 
 function SPAccountDataTable() {
   const { t } = useTranslate();

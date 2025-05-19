@@ -22,7 +22,7 @@ const LinkSPMaterial = () => {
 
   useEffect(() => {
     if (!selectedAccount && !selectedOrganization) {
-      navigate('/system-admin/sp-catalog');
+      navigate('/system-admin/config/sp-catalog');
     }
   }, [selectedAccount, selectedOrganization, navigate]);
 

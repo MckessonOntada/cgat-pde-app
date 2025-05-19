@@ -2,9 +2,12 @@ import React, { createContext, useContext, useState } from 'react';
 import { useQuery } from 'react-query';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import ApiRoutes from '@src/api/ApiRoutes';
-import { getEntityTypeFlags, MasterEntityType } from '../../core-config/system-admin/manage-questionnaire/util';
+import { getEntityTypeFlags, MasterEntityType } from '../util';
 import { serializeParams } from '@src/util/ApiUtils';
-import { OrgAccountSelectionProvider, useOrgAccountSelectionContext } from '../components/orgAccountSelection/context/OrgAccountSelectionContext';
+import {
+  useOrgAccountSelectionContext,
+  OrgAccountSelectionProvider
+} from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
 const INITIAL_FILTER_STATE = {
   searchQuery: '',
   status: []
@@ -59,17 +62,20 @@ export const ManageQuestionnaireProvider = ({ children }) => {
     switch (entityType) {
       case MasterEntityType.Material:
         return {
-          ...baseParams
+          ...baseParams,
+          ignoreCrosswalkedSP: true
         };
       case MasterEntityType.Catalog:
         return {
           ...baseParams,
-          accountNumbers: _accNumber
+          accountNumbers: _accNumber,
+          channelType: 'ALL'
         };
       case MasterEntityType.Account:
         return {
           ...baseParams,
           practiceId: selectedOrganization?.id,
+          channelType: 'ALL',
           partnerFunction: 'SOLD_TO'
         };
       default:
@@ -135,23 +141,27 @@ export const ManageQuestionnaireProvider = ({ children }) => {
   } = useQuery({
     queryKey: ['Accounts', entityType, selectedOrganization?.id, requestParams],
     queryFn: async () => {
-      const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrganization.id}/accounts?${serializeParams(requestParams)}`; // TODo
-      const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
-      if (!res.data) {
-        return [];
+      if (selectedOrganization?.id) {
+        const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrganization?.id}/accounts?${serializeParams(requestParams)}`; // TODo
+        const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+        if (!res.data) {
+          return [];
+        }
+        const { content: data, totalElements, totalPages } = res.data;
+        setPaginationConfig((prevConfig) => ({
+          ...prevConfig,
+          ...(totalElements && { totalElements }),
+          ...(totalPages && { totalPages })
+        }));
+        return data;
       }
-      const { content: data, totalElements, totalPages } = res.data;
-      setPaginationConfig((prevConfig) => ({
-        ...prevConfig,
-        ...(totalElements && { totalElements }),
-        ...(totalPages && { totalPages })
-      }));
-      return data;
+      return [];
     },
     refetchOnWindowFocus: false,
     enabled: !!selectedOrganization && entityType === MasterEntityType.Account
   });
 
+  console.log();
   React.useEffect(() => {
     getRefetch(entityType);
   }, [filterConfig, paginationConfig.pageNumber, sortConfig, entityType]);
@@ -179,7 +189,10 @@ export const ManageQuestionnaireProvider = ({ children }) => {
   };
 
   const setCurrentPage = (pageNumber) => {
-    setPaginationConfig((prevState) => ({ ...prevState, pageNumber: pageNumber }));
+    setPaginationConfig((prevState) => ({
+      ...prevState,
+      pageNumber: pageNumber
+    }));
   };
 
   const setEntity = (entity) => {

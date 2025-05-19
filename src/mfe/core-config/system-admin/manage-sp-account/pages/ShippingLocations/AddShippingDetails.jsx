@@ -5,7 +5,7 @@ import { Heading, Button, Loader } from '@mckesson/mcp-component-library';
 import Components from '@src/components/form/Components';
 import { useTranslate } from '@src/translations/useTranslation';
 import { initialValuesforShippingAddress, stateOptions, validationSchemaforShippingAddress } from '../../util';
-import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import { useShippingLocation } from '../../context/ShippingLocationContext';
 import ShippingLocationService from '@src/api/commonService/ShippingLocationService';
 import { useMutation } from 'react-query';
@@ -24,9 +24,7 @@ function AddShippingDetails({ open, onClose, row, onFormSubmit }) {
     const isUpdate = row && Object.keys(row).length > 0;
     const shippingLocationId = row?.id;
 
-    const successMessageKey = isUpdate
-      ? 'manageSPAccount.message.updateshippinglocation.success'
-      : 'manageSPAccount.message.addshippinglocation.success';
+    const successMessageKey = isUpdate ? 'manageSPAccount.message.updateshippinglocation.success' : 'manageSPAccount.message.addshippinglocation.success';
 
     addShippingLocation(
       { payload, isUpdate, shippingLocationId },

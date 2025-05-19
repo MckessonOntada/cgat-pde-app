@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import { useManagerQuestionnaire } from '../../../../order-management/context/ManageQuestionnaireContext';
 import { getColumnsByEntityType } from './tableColumns';
 import { useNavigate } from 'react-router-dom';
 import EmptyDataTable from '@src/components/EmptyTable';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { useTranslate } from '@src/translations/useTranslation';
 import { MasterEntityType } from '../util';
-import FloatingDrawer from '@src/components/floating-drawer';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
-
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import CatalogDetails from '@src/mfe/core-config/system-admin/manage-catalog/pages/CatalogDetails';
 import AccountDetails from '@src/mfe/core-config/system-admin/manage-account/pages/AccountDetails';
 import { ConfigConstants, MaterialDetailsConstants } from '@src/mfe/core-config/system-admin/manage-material/assets/constants/MaterialConstants';
+import { useManagerQuestionnaire } from '@src/mfe/core-config/system-admin/manage-questionnaire/context/ManageQuestionnaireContext';
+import { CHANNEL_TYPE } from '@src/mfe/order-management/pages/create/form-segments/Constants';
+import SPMaterialDetails from '../../manage-sp-material/pages/SPMaterialDetails';
 
 const EntityDataTable = ({ EntityType, setSelectedRows, showAlert }) => {
   const { t } = useTranslate();
@@ -78,24 +78,37 @@ const EntityDataTable = ({ EntityType, setSelectedRows, showAlert }) => {
       />
       {openDetails &&
         (isMaterial ? (
-          <TherapyDetails
-            therapyId={selectedDetails?.materialNumber}
-            therapyData={MaterialDetailsConstants}
-            configurationData={ConfigConstants}
-            onClose={() => setOpenDetails(!openDetails)}
-            showFooter={false}
-            isMaterialConfiguration={true}
-            useMaterialService={true}
-            heading={t('manageMaterial.drawer.heading')}
-          />
+          selectedDetails?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? (
+            <TherapyDetails
+              therapyId={selectedDetails?.materialNumber}
+              therapyData={MaterialDetailsConstants}
+              configurationData={ConfigConstants}
+              onClose={() => setOpenDetails(!openDetails)}
+              showFooter={false}
+              isMaterialConfiguration={true}
+              useMaterialService={true}
+              heading={t('manageMaterial.drawer.heading')}
+            />
+          ) : (
+            <SPMaterialDetails openSPMaterialDetails={openDetails} setOpenSPMaterialDetails={setOpenDetails} viewSPMaterial={selectedDetails} />
+          )
         ) : isCatalog ? (
-          <CatalogDetails
-            openCatalogDetails={openDetails}
-            setOpenCatalogDetails={setOpenDetails}
-            viewCatalog={selectedDetails}
-            setViewCatalog={setSelectedDetails}
-            showAlert={showAlert}
-          />
+          selectedDetails?.channelType === CHANNEL_TYPE.BUY_AND_BILL ? (
+            <CatalogDetails
+              openCatalogDetails={openDetails}
+              setOpenCatalogDetails={setOpenDetails}
+              viewCatalog={selectedDetails}
+              setViewCatalog={setSelectedDetails}
+              showAlert={showAlert}
+            />
+          ) : (
+            <SPMaterialDetails
+              openSPMaterialDetails={openDetails}
+              setOpenSPMaterialDetails={setOpenDetails}
+              viewSPMaterial={selectedDetails}
+              isSPCatalog={true}
+            />
+          )
         ) : isAccount ? (
           <AccountDetails openDetails={openDetails} setOpenDetails={setOpenDetails} viewAccount={selectedDetails} setViewAccount={setSelectedDetails} />
         ) : null)}

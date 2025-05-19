@@ -11,7 +11,7 @@ import TableHeading from '@src/components/tableHeading/TableHeading';
 import { Button, Heading, RadioGroup, Badge } from '@mckesson/mcp-component-library';
 import FloatingDrawer from '@src/components/floating-drawer';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useQuestionnaire } from '../../../order-management/context/QuestionnaireContext';
+import { useQuestionnaire } from './context/QuestionnaireContext';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
 import { useMultiCheckBox } from './useMultiCheckBox';
 import useResponsiveView from '@src/hooks/useResponsiveView';

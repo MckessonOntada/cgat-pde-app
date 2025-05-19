@@ -5,16 +5,17 @@ import { debugIds, ID } from '@src/constants/id';
 import { useLocation, useNavigate } from 'react-router-dom';
 import CommonFilters from '@src/components/Filters';
 import EntityDataTable from './EntityDataTable';
-import { useManagerQuestionnaire } from '../../../../order-management/context/ManageQuestionnaireContext';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import { getEntityTypeFlags } from '../util';
-import OrgAccountsSelect from '../../../../order-management/components/orgAccountSelection/OrgAccountsSelect';
-import { useQuestionnaire } from '../../../../order-management/context/QuestionnaireContext';
+import OrgAccountsSelect from '../components/orgAccountSelection/OrgAccountsSelect';
+import { useQuestionnaire } from '../context/QuestionnaireContext';
 import QuestionnaireConfig from '@src/api/commonService/QuestionnaireService';
 import { useMutation } from 'react-query';
 import { handleApiError } from '@src/util/ApiUtils';
 import './index.scss';
 import TableHeading from '@src/components/tableHeading/TableHeading';
+import { ChannelType } from '../../manage-sp-account/util';
+import { useManagerQuestionnaire } from '@src/mfe/core-config/system-admin/manage-questionnaire/context/ManageQuestionnaireContext';
 
 export default function mapQuestionnaire() {
   const { t } = useTranslate();
@@ -63,18 +64,40 @@ export default function mapQuestionnaire() {
       : [firstTemplate, secondTemplate].filter(Boolean).join(', ');
 
   function buildPayload({ isMaterial, isCatalog, isAccount, selectedRows = [] }) {
+    const buyAndBillPayload = {
+      materialNumberList: isMaterial ? selectedRows.filter((row) => row.channelType === ChannelType.BUY_AND_BILL).map((row) => row.materialNumber) : [],
+      accountNumberList: isAccount ? selectedRows.filter((row) => row.channelType === ChannelType.BUY_AND_BILL).map((row) => row.accountNumber) : [],
+      catalogIdAttributes: isCatalog
+        ? selectedRows
+            .filter((row) => row.channelType === ChannelType.BUY_AND_BILL)
+            .map((row) => ({
+              sapMaterial: row.sapMaterial.toString(),
+              soldToCustomer: row.soldToCustomer,
+              shipToCustomer: row.shipToCustomer,
+              variant: row.variant
+            }))
+        : []
+    };
+
+    const specialtyPharmaPayload = {
+      materialNumberList: isMaterial ? selectedRows.filter((row) => row.channelType === ChannelType.SPECIALITY_PHARMA).map((row) => row.materialNumber) : [],
+      accountNumberList: isAccount ? selectedRows.filter((row) => row.channelType === ChannelType.SPECIALITY_PHARMA).map((row) => row.accountNumber) : [],
+      catalogIdAttributes: isCatalog
+        ? selectedRows
+            .filter((row) => row.channelType === ChannelType.SPECIALITY_PHARMA)
+            .map((row) => ({
+              sapMaterial: row.sapMaterial.toString(),
+              soldToCustomer: row.soldToCustomer,
+              shipToCustomer: row.shipToCustomer,
+              variant: row.variant
+            }))
+        : []
+    };
+
     return {
       questionnaireIds: selectedTemplates.map((template) => template.id),
-      materialNumberList: isMaterial ? selectedRows.map((row) => row.materialNumber) : [],
-      accountNumberList: isAccount ? selectedRows.map((row) => row.accountNumber) : [],
-      catalogIdAttributes: isCatalog
-        ? selectedRows.map((row) => ({
-            sapMaterial: row.sapMaterial.toString(),
-            soldToCustomer: row.soldToCustomer,
-            shipToCustomer: row.shipToCustomer,
-            variant: row.variant
-          }))
-        : []
+      bnbConfigs: buyAndBillPayload,
+      spConfigs: specialtyPharmaPayload
     };
   }
 

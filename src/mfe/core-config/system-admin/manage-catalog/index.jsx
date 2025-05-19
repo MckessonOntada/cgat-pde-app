@@ -5,7 +5,7 @@ import { Heading } from '@mckesson/mcp-component-library';
 import CatalogDataTable from './pages/CatalogDataTable';
 import CommonFilters from '@src/components/Filters';
 import './manageCatalog.scss';
-import OrgAccountsSelect from '../../../order-management/components/orgAccountSelection/OrgAccountsSelect';
+import OrgAccountsSelect from '../manage-questionnaire/components/orgAccountSelection/OrgAccountsSelect';
 import { CatalogProvider, useCatalogContext } from './context/CatalogContext';
 import ViewConfiguration from './pages/viewConfiguration/ViewConfiguration';
 

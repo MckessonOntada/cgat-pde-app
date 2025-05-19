@@ -22,6 +22,17 @@ async function getAccountListById(SPAccountId, selectedOrgId) {
   return {};
 }
 
+async function getAccountListConfigurationById(SPAccountId, selectedOrgId) {
+  if (!SPAccountId) throw new Error('SP Account id is missing. SP Account id is required to fetch details.');
+  const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrgId}/accounts/configuration/${SPAccountId}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
+
+  if (res.data) {
+    return res.data;
+  }
+  return {};
+}
+
 async function saveSPAccountDetails(payload) {
   const { practiceId: selectedOrgId } = payload;
   const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrgId}/accounts`;
@@ -59,6 +70,7 @@ async function updateSPAccount(payload, spAccountId) {
 const AccountService = Object.freeze({
   getAccountList,
   getAccountListById,
+  getAccountListConfigurationById,
   saveSPAccountDetails,
   deactivateSPAccount,
   updateSPAccount

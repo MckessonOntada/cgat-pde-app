@@ -117,7 +117,12 @@ const Upload = () => {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={() => navigate('/system-admin/crosswalk')} size="md">
+        <Button
+          className="back-button-control"
+          variant="tertiary"
+          Icon={() => <IconArrowLeft />}
+          onClick={() => navigate('/system-admin/config/crosswalk')}
+          size="md">
           {t('label.backSpCrosswalk')}
         </Button>
       </div>

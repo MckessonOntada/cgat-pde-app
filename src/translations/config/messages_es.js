@@ -29,6 +29,7 @@ export const ConfigurationMessagesES = {
   'provider.deactivationFailure':
     'S_Failed to deactivate provider. Please try again.',
 
-  'button.caption.confirm': 'Confirm',
-  'button.caption.cancel': 'Cancel'
+  'button.caption.confirm': 'S_Confirm',
+  'button.caption.cancel': 'S_Cancel',
+  'SPCatalog.deLinkSuccess': 'S_Catalog(s) unlinked successfully.'
 };

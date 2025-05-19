@@ -6,7 +6,7 @@ import { Formik, Form } from 'formik';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import ModuleHeader from '@src/components/module-header';
-import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import { initialValuesforSPAccount, validationSchemaforSPAccount } from '../../util';
 import SPAccountFormSegment from './SPAccountFormSegment';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
@@ -50,7 +50,7 @@ const AddSPAccount = () => {
   });
 
   const goBack = () => {
-    navigate('/system-admin/manage-sp-account', {
+    navigate('/system-admin/config/manage-sp-account', {
       state: { isSuccess: true }
     });
   };
@@ -98,7 +98,7 @@ const AddSPAccount = () => {
         ? setModalSuccessCallback('details')
         : navigate(`../${routeConstants.VIEW_SPACCOUNT.replace(':spAccountId', spAccountId)}?orgId=${selectedOrganization?.id}`);
     } else {
-      isDirty ? setModalSuccessCallback('list') : navigate('/admin/manage-sp-account');
+      isDirty ? setModalSuccessCallback('list') : navigate('/system-admin/config/manage-sp-account');
     }
   };
 
@@ -112,7 +112,7 @@ const AddSPAccount = () => {
 
   const handleNavigate = () => {
     if (modalSuccessCallback === 'list') {
-      navigate('/system-admin/manage-sp-account');
+      navigate('/system-admin/config/manage-sp-account');
     } else if (modalSuccessCallback === 'details') {
       const redirectPath = `../${routeConstants.VIEW_SPACCOUNT.replace(':spAccountId', idToRedirect)}?orgId=${selectedOrganization?.id}`;
       navigate(redirectPath);

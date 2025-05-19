@@ -33,4 +33,5 @@ const SYSTEM_ADMIN_CARDS_DATA = [
   }
 ];
 
-export { SYSTEM_ADMIN_CARDS_DATA };
+const CARDS_DATA = [];
+export { SYSTEM_ADMIN_CARDS_DATA, CARDS_DATA };

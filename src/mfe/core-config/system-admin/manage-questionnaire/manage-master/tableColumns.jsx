@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAddress, MasterEntityType } from '../util';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
-import { useManagerQuestionnaire } from '../../../../order-management/context/ManageQuestionnaireContext';
+import { useManagerQuestionnaire } from '../context/ManageQuestionnaireContext';
 import { useMultiCheckBox } from '../useMultiCheckBox';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
 

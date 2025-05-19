@@ -4,7 +4,7 @@ import styles from './assets/styles/ManageMaterial.module.scss';
 import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
 import { Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import { useManageMaterial } from '@src/mfe/order-management/context/ManageMaterialContext';
+import { useManageMaterial } from '@src/mfe/core-config/system-admin/manage-material/context/ManageMaterialContext';
 import ManageMaterialTable from './ManageMaterialTable';
 
 function ManageMaterial() {

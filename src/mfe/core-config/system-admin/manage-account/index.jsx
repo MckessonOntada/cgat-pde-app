@@ -5,7 +5,7 @@ import { Heading } from '@mckesson/mcp-component-library';
 import AccountDataTable from './pages/AccountDataTable';
 import CommonFilters from '@src/components/Filters';
 import './manageAccount.scss';
-import OrgAccountsSelect from '../../../order-management/components/orgAccountSelection/OrgAccountsSelect';
+import OrgAccountsSelect from '../manage-questionnaire/components/orgAccountSelection/OrgAccountsSelect';
 import { useAccountContext } from './context/AccountContext';
 
 function ManageAccount(props) {

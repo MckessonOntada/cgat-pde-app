@@ -9,7 +9,7 @@ import { LinkProviderProvider } from '../../context/LinkProviderContext';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import LinkProviderService from '@src/api/commonService/LinkProviderService';
 import { useMutation } from 'react-query';
-import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
+import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
 
 const AddLinkProvider = () => {
   const { t } = useTranslate();
@@ -42,7 +42,7 @@ const AddLinkProvider = () => {
     },
     {
       onSuccess: (_, selectedProviderIds) => {
-        navigate(`/system-admin/manage-sp-account/${spAccountId}?orgId=${selectedOrganization}`, {
+        navigate(`/system-admin/config/manage-sp-account/${spAccountId}?orgId=${selectedOrganization}`, {
           state: {
             type: 'success',
             messages: `${selectedProviderIds.length} ${t('manageSPAccount.success.message.addProvider')}`

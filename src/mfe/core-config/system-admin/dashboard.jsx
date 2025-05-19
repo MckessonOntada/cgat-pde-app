@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { SYSTEM_ADMIN_CARDS_DATA } from './DashboardCards';
+import { CARDS_DATA, SYSTEM_ADMIN_CARDS_DATA } from './DashboardCards';
 import { useTranslate } from '@src/translations/useTranslation';
 import AuthUtils from '@src/util/AuthUtils';
 import usePermission from '@src/hooks/usePermissions';
@@ -50,6 +50,11 @@ const Dashboard = () => {
 
   const cards = useMemo(() => {
     if (isSystemAdminView) return SYSTEM_ADMIN_CARDS_DATA;
+    let _cards = CARDS_DATA.filter((card) => {
+      let _hasAccess = hasAnyPermission(card.permissions);
+      return _hasAccess;
+    });
+    return _cards;
   }, [isExpelled]);
 
   return (
