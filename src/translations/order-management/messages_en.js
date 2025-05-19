@@ -874,5 +874,22 @@ export const MessageEn = {
   'table.columns.captions.createdDate': 'Created Date',
   'labels.select-account.coveredEntity': "I'm a covered Entity.",
   'label.sPCatalogListingDownload': 'File downloaded successfully.',
-  'labels.therapyDetails': 'Therapy Details'
+  'labels.therapyDetails': 'Therapy Details',
+  'order.account.selection.wac.info':
+    'WAC is the manufacturer’s list price for a drug when sold to wholesalers or direct buyers in the U.S., before any discounts, rebates, or chargebacks. It is used as a benchmark in pricing, reimbursement, and market analysis.',
+  'order.account.selection.wac.info.header':
+    'WAC Program Eligibility Requirements',
+  'order.account.selection.gov.info.header':
+    'GOV Program Eligibility Requirements',
+  'order.account.selection.gov.info':
+    'GOV refers to discounted drug prices available to government agencies  (e.g., VA, Medicaid, DoD) under federal programs. These are typically lower than commercial prices and follow statutory pricing formulas.',
+  'order.account.selection.340b.info.header':
+    '340B Program Eligibility Requirements',
+  'order.account.selection.340b.checkboxHeading': 'I hereby certify that:',
+  'order.account.selection.340b.checkboxinfo1':
+    'The patient meets all 340B program eligibility requirements',
+  'order.account.selection.340b.checkboxinfo2':
+    'The prescribed therapy will be administered to an eligible patient at a qualified outpatient facility',
+  'order.no.cost.therapy.info':
+    'No Cost Therapy program provided for eligible patients under manufacturer-supported programs.'
 };
