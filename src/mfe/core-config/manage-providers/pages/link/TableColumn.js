@@ -13,7 +13,8 @@ export const getTableColumn = (
   selectedSpAccount,
   setSelectedSpAccount,
   isAddLinkProvider,
-  unLinkSpAccount
+  unLinkSpAccount,
+  handleProviderDetails
 ) => [
   {
     id: 'checkbox',
@@ -55,6 +56,7 @@ export const getTableColumn = (
           }}
           onClick={(e) => {
             e.preventDefault();
+            handleProviderDetails(props?.accountNumber);
           }}>
           <EclipsesTextcss str={props?.accountName || '-'} maxWidth={300} />
         </Link>

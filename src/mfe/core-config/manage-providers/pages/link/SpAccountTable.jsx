@@ -12,10 +12,17 @@ import CommonFilters from '@src/components/Filters';
 import { getTableColumn } from './TableColumn';
 import { useLinkSpAccountContext } from '../../context/LinkSpAccountContext';
 import { renderModal } from '@src/util/ModalUtil';
+import LinkSPDetailsDrawer from './LinkSPDetailsDrawer';
+import { useMutation } from 'react-query';
+import AuthUtils from '@src/util/AuthUtils';
+import AccountService from '@src/api/commonService/AccountService';
 
 const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
   const [tableHeight, setTableHeight] = useState('100%');
   const [selectedSpAccount, setSelectedSpAccount] = useState([]);
+  const [drawerDetails, setDrawerDetails] = useState('');
+  const [openSPDetails, setOpenSPDetails] = useState(false);
+  const practiceId = AuthUtils.getPracticeId();
   const { t } = useTranslate();
   const navigate = useNavigate();
   useEffect(() => {
@@ -26,6 +33,50 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
       setTableHeight(eleHeight);
     }, 100);
   }, []);
+
+  const formatSPDetails = useCallback((data) => {
+    console.log(data, '====');
+
+    const { accountName, accountNumber, name, phone, address } = data;
+    return [
+      {
+        sectionHeading: 'manageSPMaterial.drawer.Details',
+        sectionData: [
+          { label: 'Organization', value: '' },
+          { label: 'Account Name', value: accountName },
+          { label: 'Account Number', value: accountNumber }
+        ]
+      },
+      {
+        sectionHeading: 'provider.contactDetails',
+        sectionData: [
+          { label: 'Contact Person Name', value: name.fullName },
+          { label: 'Email-ID', value: address.email },
+          { label: 'Phone Number', value: address.telephone },
+          { label: 'Fax Number', value: address.fax }
+        ]
+      }
+    ];
+  }, []);
+
+  const { mutate: handleProviderDetails } = useMutation(
+    async (spAccountId) => {
+      return AccountService.getAccountListById(spAccountId, practiceId);
+    },
+    {
+      onSuccess: (data) => {
+        setDrawerDetails(formatSPDetails(data));
+        setOpenSPDetails(true);
+      },
+      onError: () => {
+        addNotification({
+          type: 'error',
+          description: t('manageSPAccount.error.message.failedToOpenDetails')
+        });
+      }
+    }
+  );
+
   const {
     paginationConfig,
     setPageNumber,
@@ -66,7 +117,8 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
         selectedSpAccount,
         onSelectSpAccount,
         isAddSpAccount,
-        unLinkSpAccount
+        unLinkSpAccount,
+        handleProviderDetails
       ),
     [data, paginationConfig, selectedSpAccount]
   );
@@ -161,6 +213,14 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
               header={t('manageSPAccount.providers.selectedProviders')}
             />
           </div>
+        )}
+        {openSPDetails && (
+          <LinkSPDetailsDrawer
+            open={openSPDetails}
+            onClose={() => setOpenSPDetails(false)}
+            details={drawerDetails}
+            title={t('manageSPAccount.providers.details')}
+          />
         )}
       </div>
     </div>
