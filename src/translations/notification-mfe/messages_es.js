@@ -5,4 +5,5 @@ export const NotificationMessagesES = {
   'notifications.cta.markAll': 'MARCAR TODO COMO LEÍDO',
   'notifications.filter.all': 'Todas',
   'notifications.cta.apply': 'APLICAR',
+  'notifications.cta.seeAllNotifications': 'VER TODAS LAS NOTIFICACIONES',
 };

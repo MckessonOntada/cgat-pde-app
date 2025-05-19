@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
-import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { Loader } from '@mckesson/mcp-component-library';
 import { debugIds, ID } from '@src/constants/id';
@@ -28,6 +28,8 @@ import ManageSPCatalog from '@src/mfe/core-config/manage-sp-catalog';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import { FooterProvider } from '@src/components/footer/FooterContext';
 import Notifications from '@src/mfe/notification-mfe';
+import { NotificationDrawer } from '@src/mfe/notification-mfe/components/NotificationDrawer/NotificationDrawer';
+import { useNotifications } from '@src/mfe/notification-mfe/context/NotificationsContext';
 
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
 const OrderManagementEntryPoint = React.lazy(() =>
@@ -36,9 +38,17 @@ const OrderManagementEntryPoint = React.lazy(() =>
 const OrgEntryPoint = React.lazy(() => import('@src/mfe/org-management'));
 
 function MainLayout() {
+  const { notificationDrawerOpen, setNotificationDrawerOpen } =
+    useNotifications();
+
   return (
     <div id={debugIds(ID.MAIN)} className={styles.appContainer}>
-      <Header />
+      <Header
+        onNotificationClick={() =>
+          setNotificationDrawerOpen(!notificationDrawerOpen)
+        }
+      />
+      <NotificationDrawer />
       <ErrorWrapper>
         <div
           className={`${styles['app-wrapper']}`}
@@ -92,7 +102,8 @@ function MainLayout() {
                     <Route
                       path={`${AppRoutes.pathUserManagement}/*`}
                       element={
-                        <ProtectedRoute permissions={routePermissionConfig.users}>
+                        <ProtectedRoute
+                          permissions={routePermissionConfig.users}>
                           <UsersEntryPoint />
                         </ProtectedRoute>
                       }
@@ -109,7 +120,10 @@ function MainLayout() {
                           </ProtectedRoute>
                         }
                       />
-                      <Route path={'crosswalk/*'} element={<ManageCrossWalk />} />
+                      <Route
+                        path={'crosswalk/*'}
+                        element={<ManageCrossWalk />}
+                      />
 
                       <Route
                         path={'sp-catalog/*'}
@@ -177,7 +191,10 @@ function MainLayout() {
                         )
                       }
                     />
-                    <Route path="/account-setting" element={<AccountSetting />} />
+                    <Route
+                      path="/account-setting"
+                      element={<AccountSetting />}
+                    />
                     <Route path="/notifications" element={<Notifications />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
@@ -192,5 +209,5 @@ function MainLayout() {
   );
 }
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = () => ({});
 export default connect(mapStateToProps, {})(MainLayout);

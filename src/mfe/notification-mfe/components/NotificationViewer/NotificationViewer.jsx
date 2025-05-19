@@ -1,8 +1,11 @@
 import React from 'react';
 import styles from './NotificationViewer.module.scss';
+import { useNotifications } from '../../context/NotificationsContext';
 
-const NotificationViewer = ({ notification }) => {
-  if (!notification) {
+const NotificationViewer = () => {
+  const { selectedNotification } = useNotifications();
+
+  if (!selectedNotification) {
     return (
       <div
         className={`${styles.notificationViewer} ${styles.notificationViewerEmpty}`}>
@@ -17,19 +20,19 @@ const NotificationViewer = ({ notification }) => {
     <div className={styles.notificationViewer}>
       <div className={styles.notificationViewerHeaderRow}>
         <span className={styles.notificationViewerSection}>
-          {notification.details?.section}
+          {selectedNotification.details?.section}
         </span>
         <span className={styles.notificationViewerDate}>
-          {notification.details?.timeAgo} {notification.date}
+          {selectedNotification.details?.timeAgo} {selectedNotification.date}
         </span>
       </div>
       <div className={styles.notificationViewerTitleRow}>
         <span className={styles.notificationViewerTitle}>
-          {notification.title}
+          {selectedNotification.title}
         </span>
       </div>
       <div className={styles.notificationViewerDesc}>
-        {notification.description}
+        {selectedNotification.description}
       </div>
     </div>
   );

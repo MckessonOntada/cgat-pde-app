@@ -4,7 +4,6 @@ import { ReactComponent as IconNotification } from '@src/assets/svg/bell.svg';
 import { ReactComponent as IconLogout } from '@src/assets/svg/logout.svg';
 import { ReactComponent as IconMenu } from '@src/assets/svg/burger-menu.svg';
 import { ReactComponent as IconArrowDown } from '@src/assets/svg/arrow-down-filled.svg';
-import { ReactComponent as IconHelp } from '@src/assets/svg/help-circle-filled.svg';
 import { connect } from 'react-redux';
 import { setUserData } from '@src/store/reducer/userReducer';
 import { debugIds, ID } from '@src/constants/id';
@@ -23,7 +22,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { currentLocale } from '@src/translations/i18n';
 import EclipsesTextcss from '../EclipsesText/EclipsesTextcss';
 
-const PrimaryHeader = () => {
+const PrimaryHeader = ({ onNotificationClick }) => {
   const { t } = useTranslate();
   const { oktaAuth, authState } = useOktaAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -108,6 +107,15 @@ const PrimaryHeader = () => {
     AuthService.userLogout(oktaAuth);
   };
 
+  const handleNotificationClick = (closeDrawer) => {
+    if (onNotificationClick) {
+      onNotificationClick();
+      if (closeDrawer) {
+        setDrawerOpen(false);
+      }
+    }
+  };
+
   const LeftSideView = (props) => {
     return (
       <div className={`${styles.navItemsLeft}`} id={''}>
@@ -135,7 +143,7 @@ const PrimaryHeader = () => {
     );
   };
 
-  const RightSideView = ({ notificationCount }) => {
+  const RightSideView = ({ notificationCount, handleNotificationClick }) => {
     const currentLanguage = HeaderConfig.languages.find(
       (lang) => lang.value == currentLocale
     );
@@ -143,14 +151,24 @@ const PrimaryHeader = () => {
       navigate(option);
     };
     const quickLinks = [
-      <Link
-        className={styles.actionLink}
-        to={'notifications'}
-        aria-label="View notifications">
-        <span>{t('header.label.notifications')}</span>
-        <IconNotification />
-        <span className={styles.notificationCount}>{notificationCount}+</span>
-      </Link>,
+      // Only show notifications button if not on /notifications
+      location.pathname !== '/notifications' && (
+        <button
+          type="button"
+          className={styles.actionLink}
+          aria-label="View notifications"
+          onClick={handleNotificationClick}
+          style={{
+            background: 'none',
+            border: 'none',
+            padding: 0,
+            cursor: 'pointer'
+          }}>
+          <span>{t('header.label.notifications')}</span>
+          <IconNotification />
+          <span className={styles.notificationCount}>{notificationCount}+</span>
+        </button>
+      ),
 
       <MenuList
         handleSelect={(e) => handleSelectOption(e)}
@@ -198,7 +216,7 @@ const PrimaryHeader = () => {
         }}>
         {t('header.label.logout')}
       </Button>
-    ];
+    ].filter(Boolean);
     return (
       <div className={styles.navItemsRight} id={''}>
         <ul
@@ -219,7 +237,11 @@ const PrimaryHeader = () => {
     );
   };
 
-  const RightSideMobile = ({ onClose, notificationCount }) => {
+  const RightSideMobile = ({
+    onClose,
+    notificationCount,
+    handleNotificationClick
+  }) => {
     return (
       <ul
         className={styles.quickLinksMobile}
@@ -251,9 +273,9 @@ const PrimaryHeader = () => {
         </li>
         <li>
           <Link
-            onClick={() => onClose()}
+            onClick={() => handleNotificationClick(true)}
             className={styles.actionLink}
-            to={'notifications'}
+            // to={'notifications'}
             aria-label="View notifications">
             <span>{t('header.label.notifications')}</span>
             <IconNotification />
@@ -275,16 +297,17 @@ const PrimaryHeader = () => {
             </LeftSideView>
           ) : (
             <div className={styles.navItemsLeft} id={''}>
-              {' '}
               <div className={styles.branding}>
-                {' '}
-                <AppLogo />{' '}
+                <AppLogo />
               </div>
             </div>
           )}
           {authState?.isAuthenticated && (
             <div className={styles.desktopOnly}>
-              <RightSideView notificationCount={notificationCount} />
+              <RightSideView
+                notificationCount={notificationCount}
+                handleNotificationClick={handleNotificationClick}
+              />
             </div>
           )}
           <div className={styles.mobileOnly}>
@@ -334,6 +357,7 @@ const PrimaryHeader = () => {
               <RightSideMobile
                 onClose={() => setDrawerOpen(false)}
                 notificationCount={notificationCount}
+                handleNotificationClick={handleNotificationClick}
               />
             </FloatingDrawer>
           </div>

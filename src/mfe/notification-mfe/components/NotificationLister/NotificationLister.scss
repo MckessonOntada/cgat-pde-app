@@ -24,68 +24,47 @@
 
     .notification-lister-content {
         display: flex;
-        width: 412px;
+        // width: 412px;
         flex-direction: column;
         gap: 12px;
         max-height: 912px;
         overflow-y: auto;
 
-        /* Custom scrollbar styles: 8px width, invisible arrows */
-        scrollbar-width: thin;
-        scrollbar-color: #bfc9d9 transparent;
+        // /* Custom scrollbar styles: 8px width, invisible arrows */
+        // scrollbar-width: thin;
+        // scrollbar-color: #bfc9d9 transparent;
 
-        &::-webkit-scrollbar {
-            width: 8px;
-            background: #f4f6fa;
-        }
+        // &::-webkit-scrollbar {
+        //     width: 8px;
+        //     background: #f4f6fa;
+        // }
 
-        // Fade effect on top and bottom when scrolling
-        position: relative;
+        // // Fade effect on top and bottom when scrolling
+        // position: relative;
 
-        &::before,
-        &::after {
-            content: '';
-            position: sticky;
-            left: 0;
-            right: 0;
-            height: 24px;
-            pointer-events: none;
-            z-index: 1;
-        }
+        // &::-webkit-scrollbar-thumb {
+        //     background: #bfc9d9;
+        //     border-radius: 8px;
+        // }
 
-        &::before {
-            top: 0;
-            background: linear-gradient(to bottom, #f4f6fa 80%, transparent);
-        }
+        // &::-webkit-scrollbar-thumb:hover {
+        //     background: #a5b3c9;
+        // }
 
-        &::after {
-            bottom: 0;
-            background: linear-gradient(to top, #f4f6fa 80%, transparent);
-        }
+        // &::-webkit-scrollbar-corner {
+        //     background: #f4f6fa;
+        // }
 
-        &::-webkit-scrollbar-thumb {
-            background: #bfc9d9;
-            border-radius: 8px;
-        }
-
-        &::-webkit-scrollbar-thumb:hover {
-            background: #a5b3c9;
-        }
-
-        &::-webkit-scrollbar-corner {
-            background: #f4f6fa;
-        }
-
-        &::-webkit-scrollbar-button {
-            display: none;
-            height: 0;
-            width: 0;
-        }
+        // &::-webkit-scrollbar-button {
+        //     display: none;
+        //     height: 0;
+        //     width: 0;
+        // }
 
         .notification-list-card {
             display: flex;
             flex-direction: column;
-            width: 400px;
+            // width: 400px;
             gap: 4px;
             padding: 12px;
             cursor: pointer;

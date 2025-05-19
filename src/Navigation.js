@@ -20,6 +20,7 @@ import NotFound from './pages/error-pages/NotFound';
 import ForgotPassword from './pages/forgot-password/forgot-password';
 import PublicRoute from './routes/PublicRoute';
 import BroadcastHandler from './BroadcastHandler';
+import { NotificationsProvider } from './mfe/notification-mfe/context/NotificationsContext';
 
 function AuthorizedRoute({ children }) {
   let { authState } = useOktaAuth();
@@ -49,7 +50,8 @@ function IdleTimer({ children, timeout }) {
       try {
         token = await oktaAuth.tokenManager.getTokens();
         if (token && token.accessToken) {
-          expiresIn = token.accessToken.expiresAt - Math.floor(Date.now() / 1000);
+          expiresIn =
+            token.accessToken.expiresAt - Math.floor(Date.now() / 1000);
           refreshToken();
           tokenInterval = setInterval(getToken, (expiresIn + 1) * 1000);
         }
@@ -60,7 +62,10 @@ function IdleTimer({ children, timeout }) {
 
     const refreshToken = () => {
       console.info('renew token');
-      sessionStorage.setItem('APP_AUTH_TOKEN', `${token.accessToken.tokenType} ${token.accessToken.accessToken}`);
+      sessionStorage.setItem(
+        'APP_AUTH_TOKEN',
+        `${token.accessToken.tokenType} ${token.accessToken.accessToken}`
+      );
     };
 
     getToken();
@@ -115,10 +120,22 @@ const Navigation = () => {
         }>
         <BroadcastHandler />
         <Routes>
-          <Route exact path={`${AppRoutes.pathPageLogin}`} element={<Login />} />
-          <Route exact path={AppRoutes.pathPageLoginCallback} element={<LoginCallback />} />
+          <Route
+            exact
+            path={`${AppRoutes.pathPageLogin}`}
+            element={<Login />}
+          />
+          <Route
+            exact
+            path={AppRoutes.pathPageLoginCallback}
+            element={<LoginCallback />}
+          />
           <Route element={<PublicRoute />}>
-            <Route exact path={`${AppRoutes.pathPageForgotPassword}`} element={<ForgotPassword />} />
+            <Route
+              exact
+              path={`${AppRoutes.pathPageForgotPassword}`}
+              element={<ForgotPassword />}
+            />
             <Route path={AppRoutes.pathSignup} element={<SignUp />} />
             <Route path={`${AppRoutes.pathSignin}`} element={<SignIn />} />
           </Route>
@@ -129,7 +146,9 @@ const Navigation = () => {
             element={
               <AuthorizedRoute>
                 <IdleTimer timeout={timeout}>
-                  <MainLayout />
+                  <NotificationsProvider>
+                    <MainLayout />
+                  </NotificationsProvider>
                 </IdleTimer>
               </AuthorizedRoute>
             }

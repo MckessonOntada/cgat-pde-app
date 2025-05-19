@@ -4,5 +4,6 @@ export const NotificationMessagesEN = {
   'notifications.info.cleared': 'Notifications that have been older than 90 days will be automatically cleared.',
   'notifications.cta.markAll': 'MARK ALL AS READ',
   'notifications.filter.all': 'All',
-  'notifications.cta.apply': 'APPLY'
+  'notifications.cta.apply': 'APPLY',
+  'notifications.cta.seeAllNotifications': 'SEE ALL NOTIFICATIONS',
 };
