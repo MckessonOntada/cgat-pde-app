@@ -1,5 +1,10 @@
 import React, { useEffect } from 'react';
-import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
+import {
+  Button,
+  Heading,
+  Alert,
+  Loader
+} from '@mckesson/mcp-component-library';
 import { useMutation, useQuery } from 'react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as SpinnerIcon } from '@src/assets/svg/spinner.svg';
@@ -61,29 +66,33 @@ const ProviderDetails = () => {
     PERMISSIONS_ENUM.MANAGE_PROVIDERS.EDIT_PROVIDER
   );
 
-  const { isLoading, mutate: handleUnlinkSpAccount } = useMutation(
-    async (spAccountId) => {
-      return await LinkProviderService.removeLinkProvider(
-        practiceId,
-        spAccountId[0].accountNumber,
-        [id]
-      );
-    },
-    {
-      onSuccess: () => {
-        addNotification({
-          type: 'success',
-          description: t('provider.sp.account.unlinkSuccessfully')
-        });
+  const { isLoading: unlinkLoading, mutate: handleUnlinkSpAccount } =
+    useMutation(
+      async (spAccountId) => {
+        return await LinkProviderService.removeLinkProvider(
+          practiceId,
+          spAccountId[0].accountNumber,
+          [id]
+        );
       },
-      onError: () => {
-        addNotification({
-          type: 'error',
-          description: t('provider.sp.account.unabletounlink')
-        });
+      {
+        onSuccess: () => {
+          addNotification({
+            type: 'success',
+            description: t('provider.sp.account.unlinkSuccessfully')
+          });
+        },
+        onError: () => {
+          addNotification({
+            type: 'error',
+            description: t('provider.sp.account.unabletounlink')
+          });
+        }
       }
-    }
-  );
+    );
+  if (unlinkLoading) {
+    return <Loader type={'screen'} />;
+  }
   return (
     <div className="MCP-module-wrapper">
       <div>

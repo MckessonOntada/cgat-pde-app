@@ -25,7 +25,6 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
   const [openSPDetails, setOpenSPDetails] = useState(false);
   const practiceId = AuthUtils.getPracticeId();
   const { t } = useTranslate();
-  const navigate = useNavigate();
   const {
     organization: { selectedOrganization }
   } = useSessionFeatures();
@@ -36,7 +35,7 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
         'data-table-my-data-table'
       )?.offsetHeight;
       setTableHeight(eleHeight);
-    }, 100);
+    }, 500);
   }, []);
 
   const formatSPDetails = useCallback((data) => {
@@ -132,7 +131,7 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
         unLinkSpAccount,
         handleProviderDetails
       ),
-    [data, paginationConfig, selectedSpAccount]
+    [data, paginationConfig, selectedSpAccount, isAddSpAccount]
   );
   function onSelectSpAccount(data) {
     setSelectedSpAccount(data);
@@ -222,6 +221,7 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
             <SelectedAccounts
               selectedAccounts={selectedSpAccount}
               onRemoveAccount={onRemoveSelectedAccount}
+              isLinkSpAccount={true}
               header={t('manageSPAccount.providers.selectedProviders')}
             />
           </div>

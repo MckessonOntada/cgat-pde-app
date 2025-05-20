@@ -3,7 +3,13 @@ import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import ModuleHeader from '@src/components/module-header';
-import { Button, Heading, Alert, Label } from '@mckesson/mcp-component-library';
+import {
+  Button,
+  Heading,
+  Alert,
+  Label,
+  Loader
+} from '@mckesson/mcp-component-library';
 import { LinkSpAccountProvider } from '../../context/LinkSpAccountContext';
 import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 import { useMutation } from 'react-query';
@@ -81,7 +87,9 @@ function LinkSpAccount() {
   const handleGoBack = () => {
     navigate(-1);
   };
-
+  if (isLoading) {
+    return <Loader type={'screen'} />;
+  }
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -100,14 +108,16 @@ function LinkSpAccount() {
             <Heading as="h1">{t('provider.sp.account.linkSPAccounts')}</Heading>
           }
           controls={
-            <div className={style.alignMultiple}>
-              <Label className={style.spnTemplate}>
-                {providerIds.join(', ') || ''}
-              </Label>
-              <Button onClick={goBack} variant="tertiary" size="md">
-                {t('button.caption.change')}
-              </Button>
-            </div>
+            !isEdit && (
+              <div className={style.alignMultiple}>
+                <Label className={style.spnTemplate}>
+                  {providerIds.join(', ') || ''}
+                </Label>
+                <Button onClick={goBack} variant="tertiary" size="md">
+                  {t('button.caption.change')}
+                </Button>
+              </div>
+            )
           }
         />
         {notifications?.length > 0 && (
