@@ -47,6 +47,7 @@ import dayjs from 'dayjs';
 import { TherapyDetailsConstantsForBB } from '../therapy-selection/assets/constants/TherapyDetailsConstants';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import { FooterContext } from '@src/components/footer/FooterContext';
+import InfoModel from '@src/components/InfoModel/indix';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -346,7 +347,7 @@ const Summary = () => {
     if (isApprover || isSimulate) {
       navigate(RoutePaths.pathOrderManagement);
     } else {
-      navigate(`../${orderId}/additional-details`);
+      navigate('/orders');
     }
   };
 
@@ -876,7 +877,9 @@ const Summary = () => {
                 <div className="MCP-CardContainer">
                   <ModuleHeader
                     className={styles.panelHeader}
-                    heading={<Heading as="h3">{t('labels.therapy')}</Heading>}
+                    heading={
+                      <Heading as="h3">{t('labels.therapyDetails')}</Heading>
+                    }
                     controls={
                       !hideControls && (
                         <PermittedComponent
@@ -1423,11 +1426,12 @@ const Summary = () => {
                     ]}
                     size="md"
                   />
-                  <Tooltip body={'This will create a No Cost Therapy order'}>
-                    <div className={styles['info-icon']}>
-                      <InfoIcon />
+                  <InfoModel
+                    title={t('messages.papOrderPlacementAcknowledgement')}>
+                    <div className="MCP-modal-body">
+                      {t('order.no.cost.therapy.info')}
                     </div>
-                  </Tooltip>
+                  </InfoModel>
                 </div>
               )}
             </div>

@@ -4,32 +4,39 @@
   display: flex;
   flex-wrap: wrap;
   width: 100%;
+
   .element-row {
     width: calc(100%);
+
     @include mixins.respond("lg") {
       width: calc(50%);
     }
+
     .list-item {
       display: flex;
       justify-content: space-between;
       padding-top: 12px;
       padding-bottom: 12px;
       font-size: 14px;
+
       .label {
         font-weight: 400;
         text-wrap: nowrap;
       }
+
       .value {
         font-weight: 600;
         text-align: right;
         text-transform: capitalize;
       }
     }
+
     .border-separator {
       width: 100%;
       border-top: 1px solid #d9d8d7;
     }
   }
+
   .left-column {
     @include mixins.respond("lg") {
       padding: 0px 30px 0px 0px;
@@ -37,6 +44,7 @@
       //   width: calc(50%);
     }
   }
+
   .right-column {
     @include mixins.respond("lg") {
       padding: 0px 0px 0px 30px;

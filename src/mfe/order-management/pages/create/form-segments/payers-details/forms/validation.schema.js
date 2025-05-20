@@ -35,7 +35,6 @@ export const getInsuranceCoverageDetailsTemplate = () => ({
 export const nameSchema = (t) =>
   Yup.object({
     firstName: Yup.string()
-      .nonNullable()
       .required(t('Please enter the First Name.'))
       .max(50, t('First Name should not exceed 50 characters.'))
       .matches(
@@ -43,10 +42,9 @@ export const nameSchema = (t) =>
         t('First Name must contain alphabets only.')
       ),
     middleName: Yup.string()
-      .nonNullable()
+      .nullable()
       .max(50, t('Middle Name should not exceed 50 characters.')),
     lastName: Yup.string()
-      .nullable()
       .required(t('Please enter the Last Name.'))
       .max(50, t('Last Name should not exceed 50 characters.'))
       .matches(

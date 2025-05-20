@@ -50,10 +50,9 @@ export const MessageEs = {
   'labels.variant': 'S_Variant',
   'labels.coiId': 'S_COI ID',
   'labels.orderQuantity': 'S_Order Quantity',
-  'labels.provideSlotNumber': 'S_Please provide the Slot Number',
-  'labels.providePONumber': 'S_Please provide the PO Number',
-  'labels.provideDateOfAdministration':
-    'S_Please provide the Date of Administration',
+  'labels.provideSlotNumber': 'S_Slot Number',
+  'labels.providePONumber': 'S_PO Number',
+  'labels.provideDateOfAdministration': 'S_Date of Administration',
   'labels.uploadDocument': 'S_Upload Document',
   'labels.accountSelection': 'S_Account Selection',
   'labels.customerIndicator': 'S_Customer Indicator',
@@ -364,8 +363,7 @@ export const MessageEs = {
     'S_Zip code cannot exceed 8 digits.',
   'orderManagement.patientDetails.validation.patient_identifier_required':
     'S_Patient identifier is required.',
-  'orderManagement.patientDetails.validation.gender':
-    'S_Gender is required.',
+  'orderManagement.patientDetails.validation.gender': 'S_Gender is required.',
   'orderManagement.patientDetails.validation.dateOfBirth':
     'S_Date Of Birth is required.',
   'orderManagement.patientDetails.validation.patient_identifier_must_number':
@@ -584,5 +582,45 @@ export const MessageEs = {
   'labels.orderView.internalOrderId': 'S_Internal Order Id',
   'table.columns.captions.createdDate': 'S_Created Date',
   'labels.select-account.coveredEntity': "S_I'm a covered Entity.",
-  'label.sPCatalogListingDownload': 'S_File downloaded successfully.'
+  'label.sPCatalogListingDownload': 'S_File downloaded successfully.',
+  'labels.therapyDetails': 'S_Therapy Details',
+  'order.account.selection.wac.info':
+    'S_WAC is the manufacturer’s list price for a drug when sold to wholesalers or direct buyers in the U.S., before any discounts, rebates, or chargebacks. It is used as a benchmark in pricing, reimbursement, and market analysis.',
+  'order.account.selection.wac.info.header':
+    'S_WAC Program Eligibility Requirements',
+  'order.account.selection.gov.info.header':
+    'S_GOV Program Eligibility Requirements',
+  'order.account.selection.gov.info':
+    'S_GOV refers to discounted drug prices available to government agencies  (e.g., VA, Medicaid, DoD) under federal programs. These are typically lower than commercial prices and follow statutory pricing formulas.',
+  'order.account.selection.340b.info.header':
+    'S_340B Program Eligibility Requirements',
+  'order.account.selection.340b.checkboxHeading': 'S_I hereby certify that:',
+  'order.account.selection.340b.checkboxinfo1':
+    'S_The patient meets all 340B program eligibility requirements',
+  'order.account.selection.340b.checkboxinfo2':
+    'S_The prescribed therapy will be administered to an eligible patient at a qualified outpatient facility',
+  'order.no.cost.therapy.info':
+    'S_No Cost Therapy program provided for eligible patients under manufacturer-supported programs.',
+  'order.account.selection.eligibility.patient.title':
+    'S_Patient Eligibility Requirements',
+  'order.account.selection.eligibility.patient.info':
+    'S_An individual is a "340B eligible patient" only if ALL of the following criteria are met:',
+  'order.account.selection.eligibility.patient.requirement1':
+    "S_The covered entity has established a relationship with the patient, with records of the patient's health care maintained by the covered entity.",
+  'order.account.selection.eligibility.patient.requirement2':
+    'S_The patient receives health care services from a professional who is employed by the covered entity or provides services under contractual arrangement with the covered entity.',
+
+  'order.account.selection.eligibility.facility.title':
+    'S_Facility Eligibility Requirements',
+  'order.account.selection.eligibility.facility.info':
+    'S_For a facility to be eligible to participate in the 340B program, it must:',
+  'order.account.selection.eligibility.facility.requirement1':
+    'S_Be registered in the 340B Office of Pharmacy Affairs Information System (OPAIS).',
+  'order.account.selection.eligibility.facility.requirement2':
+    "S_For hospital outpatient facilities, be listed as reimbursable on the hospital's most recently filed Medicare cost report.",
+
+  'order.account.selection.compliance.requirements.title':
+    'S_Compliance Requirements',
+  'order.account.selection.compliance.requirements.requirement1':
+    'S_Covered entities must maintain auditable records that demonstrate compliance with all 340B program requirements, including patient eligibility.'
 };

@@ -10,14 +10,8 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { useNavigate } from 'react-router-dom';
 import UploadFile from '@src/components/uploadFile/UploadFile.jsx';
-import {
-  buildUploadFormData,
-  createAlertHandler,
-  handleDownload,
-  validateFile,
-  handleAlertClose
-} from '@src/components/uploadFile/uploadUtils';
-import ContextMenu from '@src/mfe/core-config/manage-sp-catalog/pages/context-menu';
+import { buildUploadFormData, createAlertHandler, handleDownload, validateFile, handleAlertClose } from '@src/components/uploadFile/uploadUtils';
+import ContextMenu from '@src/mfe/core-config/system-admin/manage-sp-catalog/pages/context-menu';
 
 const DOWNLOAD_CONTEXT_OPTIONS = {
   DOWNLOAD_TEMPLATE: 'Download Template',
@@ -35,10 +29,7 @@ function UploadUsers() {
   const downloadTemplate = (option) => {
     switch (option) {
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_TEMPLATE: {
-        handleDownload(
-          '/templates/upload_users_template.csv',
-          'upload_users_template.csv'
-        );
+        handleDownload('/templates/upload_users_template.csv', 'upload_users_template.csv');
         break;
       }
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD__INFO: {
@@ -92,12 +83,7 @@ function UploadUsers() {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={() => navigate(-1)}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={() => navigate(-1)} size="md">
           {t('userManagement.user.backmessage')}
         </Button>
       </div>
@@ -109,13 +95,8 @@ function UploadUsers() {
         onCloseAlert={handleAlertClose}
         infoHeader={t('userManagement.upload-info')}
         customDownload={
-          <ContextMenu
-            items={Object.values(DOWNLOAD_CONTEXT_OPTIONS)}
-            onSelect={downloadTemplate}>
-            <Button
-              size="md"
-              variant={'secondary'}
-              className="context-menu__button">
+          <ContextMenu items={Object.values(DOWNLOAD_CONTEXT_OPTIONS)} onSelect={downloadTemplate}>
+            <Button size="md" variant={'secondary'} className="context-menu__button">
               {t('controls.downloadCSVTemplate')}
             </Button>
           </ContextMenu>

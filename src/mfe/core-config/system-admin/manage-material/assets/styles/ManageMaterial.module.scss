@@ -1,0 +1,26 @@
+@use "@src/assets/styles/abstracts/mixins";
+
+.manageMaterial {
+  display: flex;
+  width: 100%;
+  padding: 24px;
+
+  border-radius: 8px;
+  border: 1px solid var(--uiwarm-patient-warm-gray-1, #d9d8d7);
+  background: var(--background-white-base-bkg-texts, #fff);
+
+  @include mixins.respond("lg") {
+    padding: 32px;
+  }
+}
+
+.cardContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-03);
+  padding: var(--spacing-04);
+  border: 1px solid var(--brand-color-patient-primary-3);
+  border-radius: var(--brand-border-radius--8);
+  background-color: var(--brand-color-background-white);
+  width: 100%;
+}

@@ -28,7 +28,7 @@ export default function CustomerSatements(params) {
       {
         type: 'dateRangePicker',
         name: 'dateRange',
-        minDate: dayjs().subtract(180, 'days').toDate(),
+        minDate: dayjs().subtract(179, 'days').toDate(),
         maxDate: new Date()
       }
     ];
@@ -77,7 +77,7 @@ export default function CustomerSatements(params) {
         <ModuleHeader
           heading={
             <Heading as="h2">
-              {t('paymentInvoices.table.customerStatement')}
+              {t('paymentInvoices.table.statementListing')}
             </Heading>
           }
           controls={

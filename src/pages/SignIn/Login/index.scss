@@ -1,30 +1,33 @@
 @use "@src/assets/styles/abstracts/mixins";
+
+
 .box {
-    border: 1px solid var(--brand-color-grey-scale-warm-1) ;//#D9D8D7;
-    max-width: 388px; 
+    border: 1px solid var(--brand-color-grey-scale-warm-1); //#D9D8D7;
+    max-width: 388px;
     max-height: 299px;
-    padding: var(--spacing-04); 
+    padding: var(--spacing-04);
     border-radius: var(--brand-border-radius--8);
-     @include mixins.respond(sm) {
+
+    @include mixins.respond(sm) {
         box-shadow: 0px var(--spacing-01) var(--spacing-02) 0px #262C3626; //0px 4px 8px 0px var(--brand-color-dark-box-shadow-1);//0px 4px 8px 0px #262C3626;  
-        max-width: 500px; 
+        max-width: 500px;
         height: 279px;
         border: none;
     }
-    
+
 }
 
 .boxHeader {
-    font-size:  var(--brand-font-size--24); //26px
-    font-weight:var(--brand-font-weight-700);
-    line-height: var( --brand-line-height--32); //35.46px;
+    font-size: var(--brand-font-size--24); //26px
+    font-weight: var(--brand-font-weight-700);
+    line-height: var(--brand-line-height--32); //35.46px;
     letter-spacing: 0.001em;
     text-align: left;
 }
 
 .box-padding {
     padding-bottom: var(--spacing-03);
-    padding-top:  var(--spacing-03);
+    padding-top: var(--spacing-03);
 }
 
 .boxContent {

@@ -13,7 +13,9 @@ const CustomerStatementsContext = createContext();
 export const useCustomerStatements = () => {
   const context = useContext(CustomerStatementsContext);
   if (!context) {
-    throw new Error('useCustomerStatements must be used within a CustomerStatementsContext.');
+    throw new Error(
+      'useCustomerStatements must be used within a CustomerStatementsContext.'
+    );
   }
   return context;
 };
@@ -23,7 +25,10 @@ const INITIAL_FILTER_STATE = {
   searchQuery: '',
   billNumber: [],
   soldToSite: [],
-  dateRange: [dayjs().subtract(180, 'day').format('MM/DD/YYYY'), dayjs().format('MM/DD/YYYY')]
+  dateRange: [
+    dayjs().subtract(179, 'day').format('MM/DD/YYYY'),
+    dayjs().format('MM/DD/YYYY')
+  ]
 };
 
 const INITIAL_SORT_STATE = {
@@ -43,8 +48,11 @@ export const CustomerStatementsProvider = ({ children }) => {
   const [data, setData] = useState([]);
   const [unSlicedData, setUnSlicedData] = useState([]);
   const [filterConfig, setFilterConfig] = useState(INITIAL_FILTER_STATE);
-  const [previousFilterConfig, setPreviousFilterConfig] = useState(INITIAL_FILTER_STATE);
-  const [paginationConfig, setPaginationConfig] = useState(INITIAL_PAGINATION_STATE);
+  const [previousFilterConfig, setPreviousFilterConfig] =
+    useState(INITIAL_FILTER_STATE);
+  const [paginationConfig, setPaginationConfig] = useState(
+    INITIAL_PAGINATION_STATE
+  );
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
   const { showSnackbar } = useSnackbar();
   const { selectedAccount } = useAccountContext();
@@ -53,7 +61,7 @@ export const CustomerStatementsProvider = ({ children }) => {
   const applyFilters = (filters) => {
     const formattedStartDate = filters.dateRange[0]
       ? dayjs(filters.dateRange[0], 'MM/DD/YYYY').format('MM/DD/YYYY')
-      : dayjs().subtract(180, 'day').format('MM/DD/YYYY');
+      : dayjs().subtract(179, 'day').format('MM/DD/YYYY');
     const formattedEndDate = filters.dateRange[1]
       ? dayjs(filters.dateRange[1], 'MM/DD/YYYY').format('MM/DD/YYYY')
       : dayjs().format('MM/DD/YYYY');
@@ -73,15 +81,28 @@ export const CustomerStatementsProvider = ({ children }) => {
     let _data = [...[], ...actualData];
     let _modifiedData = _data.filter((item) => {
       const matchesSearchQuery = filters?.searchQuery
-        ? item.docNo?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item.accountNumber?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item.date?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-          item.statementBalance?.toString().toLowerCase().includes(filters.searchQuery.toLowerCase())
+        ? item.docNo
+            ?.toString()
+            .toLowerCase()
+            .includes(filters.searchQuery.toLowerCase()) ||
+          item.accountNumber
+            ?.toString()
+            .toLowerCase()
+            .includes(filters.searchQuery.toLowerCase()) ||
+          item.date
+            ?.toString()
+            .toLowerCase()
+            .includes(filters.searchQuery.toLowerCase()) ||
+          item.statementBalance
+            ?.toString()
+            .toLowerCase()
+            .includes(filters.searchQuery.toLowerCase())
         : true;
       return matchesSearchQuery;
     });
 
-    const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
+    const startIndex =
+      (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
     const endIndex = startIndex + paginationConfig.pageSize;
     // Updating the page count and total records
     setPaginationConfig((state) => ({
@@ -97,17 +118,27 @@ export const CustomerStatementsProvider = ({ children }) => {
     queryKey: ['CustomerStatements', selectedAccount?.id, filterConfig],
     queryFn: async () => {
       if (!selectedAccount?.id) return;
-      const url = `${ApiRoutes.CUSTOMER_STATEMENTS_LISTING(selectedAccount?.id)}`;
+      const url = `${ApiRoutes.CUSTOMER_STATEMENTS_LISTING(
+        selectedAccount?.id
+      )}`;
       let payload = {
         companyCode: selectedAccount?.companyCode,
         salesOrg: selectedAccount?.salesOrg,
         payerAccountNumber: selectedAccount?.accountNumber,
-        dateFrom: dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY').format('DD/MM/YYYY'),
-        dateTo: dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format('DD/MM/YYYY'),
+        dateFrom: dayjs(filterConfig.dateRange[0], 'MM/DD/YYYY').format(
+          'DD/MM/YYYY'
+        ),
+        dateTo: dayjs(filterConfig.dateRange[1], 'MM/DD/YYYY').format(
+          'DD/MM/YYYY'
+        ),
         validDateRange: true
       };
 
-      const res = await HttpResourceService.callRest(url, httpVerb.POST, payload);
+      const res = await HttpResourceService.callRest(
+        url,
+        httpVerb.POST,
+        payload
+      );
       if (!res.data?.statements) {
         setData([]);
         setUnSlicedData([]);
@@ -115,15 +146,28 @@ export const CustomerStatementsProvider = ({ children }) => {
         return [];
       }
       if (res.data) {
-        const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
+        const startIndex =
+          (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
         const endIndex = startIndex + paginationConfig.pageSize;
         let _data = [...[], ...res.data.statements];
         let _modifiedData = _data.filter((item) => {
           const matchesSearchQuery = filterConfig?.searchQuery
-            ? item.docNo?.toString().toLowerCase().includes(filterConfig.searchQuery.toLowerCase()) ||
-              item.accountNumber?.toString().toLowerCase().includes(filterConfig.searchQuery.toLowerCase()) ||
-              item.date?.toString().toLowerCase().includes(filterConfig.searchQuery.toLowerCase()) ||
-              item.statementBalance?.toString().toLowerCase().includes(filterConfig.searchQuery.toLowerCase())
+            ? item.docNo
+                ?.toString()
+                .toLowerCase()
+                .includes(filterConfig.searchQuery.toLowerCase()) ||
+              item.accountNumber
+                ?.toString()
+                .toLowerCase()
+                .includes(filterConfig.searchQuery.toLowerCase()) ||
+              item.date
+                ?.toString()
+                .toLowerCase()
+                .includes(filterConfig.searchQuery.toLowerCase()) ||
+              item.statementBalance
+                ?.toString()
+                .toLowerCase()
+                .includes(filterConfig.searchQuery.toLowerCase())
             : true;
           return matchesSearchQuery;
         });
@@ -133,7 +177,9 @@ export const CustomerStatementsProvider = ({ children }) => {
         setActualData(res.data?.statements);
         setPaginationConfig((state) => ({
           ...state,
-          totalPages: Math.ceil(_modifiedData.length / paginationConfig.pageSize),
+          totalPages: Math.ceil(
+            _modifiedData.length / paginationConfig.pageSize
+          ),
           totalElements: _modifiedData.length
         }));
       }
@@ -142,7 +188,8 @@ export const CustomerStatementsProvider = ({ children }) => {
     retry: 1,
     onError: (error) => {
       const { response } = error;
-      let errorMsg = response?.data?.message || 'Error fetching customer statements listing';
+      let errorMsg =
+        response?.data?.message || 'Error fetching customer statements listing';
       showSnackbar({ description: errorMsg, type: 'error' });
     }
   });
@@ -174,8 +221,14 @@ export const CustomerStatementsProvider = ({ children }) => {
       const valA = a[newSortConfig.sortBy];
       const valB = b[newSortConfig.sortBy];
 
-      if (typeof valA === 'string' && typeof valB === 'string' && newSortConfig.sortBy !== 'date') {
-        return newSortConfig.sortOrder === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      if (
+        typeof valA === 'string' &&
+        typeof valB === 'string' &&
+        newSortConfig.sortBy !== 'date'
+      ) {
+        return newSortConfig.sortOrder === 'asc'
+          ? valA.localeCompare(valB)
+          : valB.localeCompare(valA);
       } else if (typeof valA === 'number' && typeof valB === 'number') {
         return newSortConfig.sortOrder === 'asc' ? valA - valB : valB - valA;
       } else if (newSortConfig.sortBy === 'date') {
@@ -184,12 +237,15 @@ export const CustomerStatementsProvider = ({ children }) => {
         if (!dateA.isValid() || !dateB.isValid()) {
           return 0;
         }
-        return newSortConfig.sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+        return newSortConfig.sortOrder === 'asc'
+          ? dateA - dateB
+          : dateB - dateA;
       } else {
         return 0;
       }
     });
-    const startIndex = (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
+    const startIndex =
+      (paginationConfig.pageNumber - 1) * paginationConfig.pageSize;
     const endIndex = startIndex + paginationConfig.pageSize;
 
     setData(_modifiedData.slice(startIndex, endIndex));
@@ -220,11 +276,16 @@ export const CustomerStatementsProvider = ({ children }) => {
         const { type } = variables;
         if (response && response.data) {
           // Get the content-disposition header
-          const contentDisposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
+          const contentDisposition =
+            response.headers['content-disposition'] ||
+            response.headers['Content-Disposition'];
           let fileName = 'Customer Statement.' + type; // Default name
 
           // Try to extract the file name from the header
-          if (contentDisposition && contentDisposition.indexOf('filename=') !== -1) {
+          if (
+            contentDisposition &&
+            contentDisposition.indexOf('filename=') !== -1
+          ) {
             const matches = contentDisposition.match(/filename="([^"]+)"/);
             if (matches && matches[1]) {
               fileName = matches[1];
@@ -232,7 +293,9 @@ export const CustomerStatementsProvider = ({ children }) => {
           }
 
           // Create a blob from the response data
-          const blob = new Blob([response.data], { type: 'application/' + type });
+          const blob = new Blob([response.data], {
+            type: 'application/' + type
+          });
 
           // Create a download link
           const link = document.createElement('a');
@@ -248,9 +311,16 @@ export const CustomerStatementsProvider = ({ children }) => {
         }
       },
       onError: (error) => {
-        if (error && error.response && error.response.data && error.response.data) {
+        if (
+          error &&
+          error.response &&
+          error.response.data &&
+          error.response.data
+        ) {
           showSnackbar({
-            description: CommonUtils.isNonEmptyString(error.response.data.message)
+            description: CommonUtils.isNonEmptyString(
+              error.response.data.message
+            )
               ? error.response.data.message
               : t('paymentInvoices.CS.export.error'),
             type: 'error'
@@ -278,5 +348,9 @@ export const CustomerStatementsProvider = ({ children }) => {
     setPageNumber,
     exportPDF
   };
-  return <CustomerStatementsContext.Provider value={contextValue}>{children}</CustomerStatementsContext.Provider>;
+  return (
+    <CustomerStatementsContext.Provider value={contextValue}>
+      {children}
+    </CustomerStatementsContext.Provider>
+  );
 };
