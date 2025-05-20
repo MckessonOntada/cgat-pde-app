@@ -1,0 +1,31 @@
+@use "@src/assets/styles/abstracts/mixins";
+
+
+.actions-container {
+    display: flex;
+    width: 100%;
+    height: auto;
+    gap: var(--spacing-04);
+    padding: var(--spacing-04);
+    border: 1px solid var(--brand-color-patient-primary-3);
+    border-radius: var(--brand-border-radius--8);
+    background-color: var(--brand-color-background-white);
+    flex-direction: column;
+
+    @include mixins.respond(sm) {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .org-select {
+        @include mixins.respond(sm) {
+            width: 50%;
+        }
+    }
+
+    .account-select {
+        @include mixins.respond(sm) {
+            width: 50%;
+        }
+    }
+}

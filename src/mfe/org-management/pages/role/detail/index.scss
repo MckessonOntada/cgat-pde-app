@@ -1,4 +1,4 @@
-@use "../../../../../assets/styles/abstracts/mixins";
+@use "@src/assets/styles/abstracts/mixins";
 
 .view_label {
   font-size: var(--brand-font-size--small);
@@ -93,6 +93,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .role-status {
   display: flex;
   align-items: center;
