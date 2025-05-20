@@ -9,6 +9,7 @@ export default function DetailSegment({
   customValueStyles,
   noTooltip
 }) {
+  const calculatedTooltip = tooltip || value;
   return (
     <div className={className}>
       <div
@@ -20,8 +21,13 @@ export default function DetailSegment({
         <div className="overflowing">
           {noTooltip ? (
             value
+          ) : typeof calculatedTooltip === 'string' ? (
+            <Tooltip
+              body={typeof calculatedTooltip === 'string' && calculatedTooltip}>
+              {value}
+            </Tooltip>
           ) : (
-            <Tooltip body={tooltip || value}>{value}</Tooltip>
+            value
           )}
         </div>
       </div>
