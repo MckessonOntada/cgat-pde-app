@@ -7,7 +7,8 @@ import {
   Dropdown,
   Button,
   Paginate,
-  Loader
+  Loader,
+  IconButton
 } from '@mckesson/mcp-component-library';
 import './assets/DataTableCssOverride.scss';
 import {
@@ -46,6 +47,7 @@ export const CustomDataTable = (props) => {
     recordsPerPage,
     sortIcon,
     pagination,
+    StepperControls,
     progressPending,
     progressComponent,
     handleRowClicked,
@@ -139,7 +141,35 @@ export const CustomDataTable = (props) => {
       );
     }
   };
-
+  const renderStepperControls = () => {
+    if (CommonUtils.isNonEmptyArray(data) && totalRocords > recordsPerPage) {
+      console.log('currentPage', currentPage);
+      console.log('totalPageCount', totalPageCount);
+      console.log('recordsPerPage', recordsPerPage);
+      return (
+        <div className={styles.stepperControlsWrap}>
+          <IconButton
+            label={'Pre'}
+            size="sm"
+            iconButton={false}
+            textButton={true}
+            Icon={''}
+            onClick={() => {}}
+            disabled={false}
+          />
+          <IconButton
+            label={'Next'}
+            size="sm"
+            iconButton={false}
+            textButton={true}
+            Icon={''}
+            onClick={() => {}}
+            disabled={false}
+          />
+        </div>
+      );
+    }
+  };
   const getConditionalRowStyles = () => {
     if (!selectedRowId && !selectedRowIds) {
       return [];
@@ -210,6 +240,7 @@ export const CustomDataTable = (props) => {
 
       {/* Since we are already having pagination component, we are using our custom pagination*/}
       {pagination && renderPagination()}
+      {StepperControls && renderStepperControls()}
     </>
   );
 };

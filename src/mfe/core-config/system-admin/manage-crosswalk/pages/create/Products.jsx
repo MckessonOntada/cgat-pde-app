@@ -1,5 +1,10 @@
 import React from 'react';
-import { useFilters, usePagination, useSort, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import {
+  useFilters,
+  usePagination,
+  useSort,
+  useTable
+} from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { useTranslate } from '@src/translations/useTranslation';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
@@ -23,8 +28,23 @@ const getColumns = ({ t }) => {
   return [
     {
       id: 'checkbox',
-      name: renderTableCheckBox({ id: 'ALL_ITEMS_' + pagination.pageNumber }, data, 'id', pagination, state.selectedProducts || [], onSelectProduct),
-      cell: (row, index) => renderTableCheckBox(row, data, 'id', pagination, state.selectedProducts || [], onSelectProduct),
+      name: renderTableCheckBox(
+        { id: 'ALL_ITEMS_' + pagination.pageNumber },
+        data,
+        'id',
+        pagination,
+        state.selectedProducts || [],
+        onSelectProduct
+      ),
+      cell: (row, index) =>
+        renderTableCheckBox(
+          row,
+          data,
+          'id',
+          pagination,
+          state.selectedProducts || [],
+          onSelectProduct
+        ),
       selector: (row) => row.materialNumber,
       width: '50px',
       showInMobileHeader: true
@@ -95,7 +115,8 @@ const Products = () => {
   };
 
   const handleOnSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    if (selectedColumn.sortKey)
+      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
 
   return (
@@ -140,12 +161,17 @@ const Products = () => {
           onSortIconClick={handleOnSort}
           currentPage={pagination.pageNo}
           totalPageCount={pagination.totalPages}
-          pagination={true}
+          pagination={false}
+          StepperControls={true}
           totalRocords={pagination.totalElements}
           handleChangePage={(_event, pageNumber) => changePage(pageNumber)}
           recordsPerPage={pagination.pageSize}
-          paginationTotalRecorsMessage={t('manageMaterial.table.pagination.totalRecords')}
-          paginationRecordsPerPageMessage={t('manageMaterial.table.pagination.perPage')}
+          paginationTotalRecorsMessage={t(
+            'manageMaterial.table.pagination.totalRecords'
+          )}
+          paginationRecordsPerPageMessage={t(
+            'manageMaterial.table.pagination.perPage'
+          )}
           responsive={true}
           showCardView={false}
           defaultExpandedCardView={true}
