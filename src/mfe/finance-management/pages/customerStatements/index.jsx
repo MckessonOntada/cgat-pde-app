@@ -77,7 +77,7 @@ export default function CustomerSatements(params) {
         <ModuleHeader
           heading={
             <Heading as="h2">
-              {t('paymentInvoices.table.customerStatement')}
+              {t('paymentInvoices.table.statementListing')}
             </Heading>
           }
           controls={
