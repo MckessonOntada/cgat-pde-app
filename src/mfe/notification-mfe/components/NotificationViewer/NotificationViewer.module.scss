@@ -1,4 +1,4 @@
-@use "../../../../assets/styles/abstracts/mixins";
+@use "../../../../assets/styles/abstracts/mixins" as mixins;
 
 .notificationViewer {
     width: 100%;
@@ -9,10 +9,9 @@
 
     @include mixins.respond(md) {
         padding: 24px;
-
-        @include mixins.respond(lg) {
-            padding: 32px;
-        }
+    }
+    @include mixins.respond(lg) {
+        padding: 32px;
     }
 
     min-height: 711px;
@@ -30,7 +29,7 @@
         gap: 8px;
 
         @include mixins.respond(lg) {
-        flex-direction: row;
+            flex-direction: row;
         }
 
         .notificationViewerSection,

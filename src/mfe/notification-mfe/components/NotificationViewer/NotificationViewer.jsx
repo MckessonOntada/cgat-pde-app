@@ -34,6 +34,14 @@ const NotificationViewer = () => {
       <div className={styles.notificationViewerDesc}>
         {selectedNotification.description}
       </div>
+      <div className={styles.notificationContent}>
+        {selectedNotification.content && (
+          <div
+            className={styles.notificationHtmlContent}
+            dangerouslySetInnerHTML={{ __html: selectedNotification.content }}
+          />
+        )}
+      </div>
     </div>
   );
 };
