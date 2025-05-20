@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import DetailSegment from '@src/components/DetailSegment';
 import { useTranslate } from '@src/translations/useTranslation';
-import CommonUtils from '@src/util/CommonUtils';
+import CommonUtils, { getFullName } from '@src/util/CommonUtils';
 import { InventoryIndicator } from './InventoryIndicator';
 import './orderHeaderDetails.scss';
 import { CHANNEL_TYPE } from './Constants';
@@ -24,11 +24,6 @@ function OrderHeaderDetails({
   const channelType = accountDetails?.soldToAccount?.channelType
     ? accountDetails?.soldToAccount?.channelType
     : selectedAccount?.channelType;
-  console.log(
-    'selectedAccountDetails',
-    accountDetails,
-    orderDetails?.accountDetails
-  );
 
   const detailsSegments = [
     therapy?.materialDescription && (
@@ -73,17 +68,15 @@ function OrderHeaderDetails({
         <DetailSegment
           key={'patient-name'}
           label={t('labels.patientDetails')}
-          value={
-            [
-              patient?.patientInfo?.lastName,
-              patient?.patientInfo?.firstName,
-              patient?.patientInfo?.middleName,
-              patient.patientIdentifier,
-              patient.medicalRecordNumber
-            ]
-              .filter(Boolean)
-              .join(' ') || '-'
-          }
+          value={`${
+            patient?.patientInfo ? `${getFullName(patient.patientInfo)}, ` : ''
+          }${
+            patient?.patientIdentifier ? `ID: ${patient.patientIdentifier}` : ''
+          }${
+            patient?.medicalRecordNumber
+              ? `, MRN: ${patient.medicalRecordNumber}`
+              : ''
+          }`}
         />
       ),
     priceDetails && Object.keys(priceDetails).length > 0 && (

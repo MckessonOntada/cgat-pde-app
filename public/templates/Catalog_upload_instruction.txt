@@ -1,0 +1,47 @@
+------------------------------------
+Catalog  Mapping Section
+------------------------------------
+
+Please use the following format when uploading SP Catalog information. Fields marked with 'M' are Mandatory and must be filled. Fields marked with 'O' are Optional.
+
+1. ACCOUNT NAME (O)
+   - Optional.
+   - Enter the display name of the account (e.g., XYZ Medicals).
+
+2. ACCOUNT NUMBER (M)
+   - Mandatory.
+   - Unique identifier for the account (e.g., 10012345).
+
+3. SP PRODUCT ID (M)
+   - Mandatory.
+   - Product ID Should be unique identifier ( can be checked from Product Master file) (e.g., SP-78965).
+
+4. SP PRODUCT NAME (O)
+   - Optional.
+   - Name of the specialty product (e.g., Humira).
+
+5. SP NDC (O)
+   - Optional.
+   - National Drug Code for the SP product (e.g., 12345-6789-00).
+
+6. STATUS (M)
+   - Mandatory.
+   - Accepted values:
+     - Link
+     - Unlink
+
+-------------------------
+
+✅ VALID EXAMPLE ROW:
+
+| Account Name | Account Number | SP Product ID  | SP Product Name  | SP NDC       | Status  |
+|--------------|----------------|----------------|------------------|--------------|---------|
+| XYZ Medicals | 10012345       | SP-78965       | Humira           | 12345-6789-00| Link    |
+
+-------------------------
+
+IMPORTANT:
+- Do not leave any mandatory (M) field blank.
+- Do not rename the column headers.
+- Use the correct format for all fields to avoid upload errors.
+

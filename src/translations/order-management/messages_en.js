@@ -874,5 +874,6 @@ export const MessageEn = {
   'labels.orderView.internalOrderId': 'Internal Order Id',
   'table.columns.captions.createdDate': 'Created Date',
   'labels.select-account.coveredEntity': "I'm a covered Entity.",
-  'label.sPCatalogListingDownload': 'File downloaded successfully.'
+  'label.sPCatalogListingDownload': 'File downloaded successfully.',
+  'labels.therapyDetails': 'Therapy Details'
 };

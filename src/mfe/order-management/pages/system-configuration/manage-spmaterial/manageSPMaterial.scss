@@ -116,6 +116,11 @@
   font-weight: var(--brand-font-weight-400);
 }
 
+.disabled-div {
+  pointer-events: none;
+  opacity: 0.5;
+  user-select: none;
+}
 
 .accountBox {
   display: flex;
