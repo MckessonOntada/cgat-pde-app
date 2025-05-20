@@ -196,6 +196,7 @@ export const MessageEn = {
   'labels.orderActions.review': 'Review',
   'labels.orderActions.view': 'View Details',
   'labels.orderActions.edit': 'Edit Order',
+  'labels.orderActions.uploadDocument': 'Upload Document',
   'labels.orderActions.cancel': 'Cancel Order',
   'labels.orderActions.assignToMe': 'Assign to me',
   'labels.orderActions.unassignToMe': 'Unassign',
@@ -595,6 +596,7 @@ export const MessageEn = {
   'breadcrumb.systemConfiguration': 'System Configuration',
 
   'controls.uploadProviders': 'Upload Providers',
+  'controls.updateOrder': 'Update Order',
   'label.providerListing': 'Provider Listing',
   'heading.uploadProviderListCSV': 'Upload Provider List CSV',
   'controls.addProviders': 'Add Provider',

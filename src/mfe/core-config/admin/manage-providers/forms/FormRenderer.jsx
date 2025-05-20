@@ -45,7 +45,7 @@ const FormRenderer = ({ fieldPrefix = '', sections = [] }) => {
               )}
 
               {section.rows.map((row, rowIndex) => (
-                <div className="form-control-row">
+                <div key={rowIndex} className="form-control-row">
                   <div key={rowIndex} className={`${row.grid}`}>
                     {row.controls.map((control, controlIndex) => {
                       const Component = Components[control.type]; // dynamic component
@@ -54,7 +54,7 @@ const FormRenderer = ({ fieldPrefix = '', sections = [] }) => {
                       return (
                         <Field
                           id={`${fieldPrefix}${control.name}`}
-                          key={`${fieldPrefix}${control.name}`}
+                          key={`${fieldPrefix}_${control.name}_${controlIndex}`}
                           name={`${fieldPrefix}${control.name}`}
                           label={t(control.label)}
                           placeholder={control.placeholder || ' '}
