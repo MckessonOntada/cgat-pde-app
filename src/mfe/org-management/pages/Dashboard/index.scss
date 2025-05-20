@@ -23,18 +23,22 @@
 .actionEditIcon {
   color: var(--brand-color-primary);
 }
+
 .actionsBox {
   display: flex;
   align-items: center;
   gap: var(--spacing-02);
 }
+
 .view-label {
   font-size: 14px;
   color: var(--brand-color-primary);
   font-weight: 800;
 }
+
 .addOrgBtn {
   justify-self: start;
+
   @include mixins.respond(sm) {
     justify-self: end;
   }
@@ -75,14 +79,18 @@
 }
 
 .orgList {
-  overflow-x: auto; /* Enable horizontal scrolling */
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  overflow-x: auto;
+  /* Enable horizontal scrolling */
+  -webkit-overflow-scrolling: touch;
+  /* Smooth scrolling on iOS */
   overflow-y: hidden;
 
   // Hide scrollbar on non-mobile devices
   scrollbar-width: thin;
+
   &::-webkit-scrollbar {
-    display: none; /* For Chrome, Safari, and Opera */
+    display: none;
+    /* For Chrome, Safari, and Opera */
   }
 }
 
@@ -97,6 +105,7 @@
 
 .autoSuggestSearch-container {
   width: 100%;
+
   @include mixins.respond(lg) {
     width: 460px;
   }
@@ -107,6 +116,7 @@
   gap: var(--spacing-04);
   justify-content: center;
   align-self: center;
+
   @include mixins.respond("md") {
     justify-content: left;
     padding-top: var(--spacing-04);
@@ -115,6 +125,7 @@
 
 .filter-btn {
   width: 100%;
+
   @include mixins.respond(md) {
     width: auto;
   }
@@ -161,6 +172,7 @@
   height: 16px;
   margin-right: 2px;
 }
+
 .organization-module {
   .cellEllipse {
     text-align: center;

@@ -1,4 +1,5 @@
-@use "../../../../assets/styles/abstracts/mixins";
+@use "@src/assets/styles/abstracts/mixins";
+
 
 .userCardContainer {
   display: grid;
@@ -94,6 +95,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .actionIcon {
   overflow: visible !important;
 }
@@ -135,12 +137,14 @@
     }
   }
 }
+
 .credit-table-container {
   .rdt_TableCol {
     padding-right: var(--spacing-03);
   }
+
   .credit-heading {
-    > div:first-of-type {
+    >div:first-of-type {
       grid-template-columns: 1fr 1fr;
       gap: var(--spacing-02);
     }

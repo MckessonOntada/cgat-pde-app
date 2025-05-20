@@ -52,10 +52,9 @@ export const MessageEn = {
   'labels.configuredQuestionnaires': 'Configured Questionnaires',
   'labels.coiId': 'COI ID',
   'labels.orderQuantity': 'Order Quantity',
-  'labels.provideSlotNumber': 'Please provide the Slot Number',
-  'labels.providePONumber': 'Please provide the PO Number',
-  'labels.provideDateOfAdministration':
-    'Please provide the Date of Administration',
+  'labels.provideSlotNumber': 'Slot Number',
+  'labels.providePONumber': 'PO Number',
+  'labels.provideDateOfAdministration': 'Date of Administration',
   'labels.uploadDocument': 'Upload Document',
   'labels.accountSelection': 'Account Selection',
   'labels.customerIndicator': 'Customer Indicator',
@@ -876,5 +875,44 @@ export const MessageEn = {
   'table.columns.captions.createdDate': 'Created Date',
   'labels.select-account.coveredEntity': "I'm a covered Entity.",
   'label.sPCatalogListingDownload': 'File downloaded successfully.',
-  'labels.therapyDetails': 'Therapy Details'
+  'labels.therapyDetails': 'Therapy Details',
+  'order.account.selection.wac.info':
+    'WAC is the manufacturer’s list price for a drug when sold to wholesalers or direct buyers in the U.S., before any discounts, rebates, or chargebacks. It is used as a benchmark in pricing, reimbursement, and market analysis.',
+  'order.account.selection.wac.info.header':
+    'WAC Program Eligibility Requirements',
+  'order.account.selection.gov.info.header':
+    'GOV Program Eligibility Requirements',
+  'order.account.selection.gov.info':
+    'GOV refers to discounted drug prices available to government agencies  (e.g., VA, Medicaid, DoD) under federal programs. These are typically lower than commercial prices and follow statutory pricing formulas.',
+  'order.account.selection.340b.info.header':
+    '340B Program Eligibility Requirements',
+  'order.account.selection.340b.checkboxHeading': 'I hereby certify that:',
+  'order.account.selection.340b.checkboxinfo1':
+    'The patient meets all 340B program eligibility requirements',
+  'order.account.selection.340b.checkboxinfo2':
+    'The prescribed therapy will be administered to an eligible patient at a qualified outpatient facility',
+  'order.no.cost.therapy.info':
+    'No Cost Therapy program provided for eligible patients under manufacturer-supported programs.',
+  'order.account.selection.eligibility.patient.title':
+    'Patient Eligibility Requirements',
+  'order.account.selection.eligibility.patient.info':
+    'An individual is a "340B eligible patient" only if ALL of the following criteria are mot',
+  'order.account.selection.eligibility.patient.requirement1':
+    "The covered entity has established a relationship with the patient, with records of the patient's health care maintained by the covered entity.",
+  'order.account.selection.eligibility.patient.requirement2':
+    'The patient receives health care services from a professional who is employed by the covered entity or provides services under contractual arrangement with the covered entity.',
+
+  'order.account.selection.eligibility.facility.title':
+    'Facility Eligibility Requirements',
+  'order.account.selection.eligibility.facility.info':
+    'For a facility to be eligible to participate in the 340B program, it must:',
+  'order.account.selection.eligibility.facility.requirement1':
+    'Be registered in the 340B Office of Pharmacy Affairs Information System (OPAIS).',
+  'order.account.selection.eligibility.facility.requirement2':
+    "For hospital outpatient facilities, be listed as reimbursable on the hospital's most recently filed Medicare cost report.",
+
+  'order.account.selection.compliance.requirements.title':
+    'Compliance Requirements',
+  'order.account.selection.compliance.requirements.requirement1':
+    'Covered entities must maintain auditable records that demonstrate compliance with all 340B program requirements, including patient eligibility.'
 };

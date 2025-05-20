@@ -9,11 +9,13 @@
   align-items: center;
   justify-content: flex-start;
   gap: var(--spacing-03);
+
   @media only screen and (max-width: 576px) {
     align-items: flex-start;
     gap: var(--spacing-02);
   }
-  svg{
+
+  svg {
     @media only screen and (max-width: 576px) {
       transform: scale(0.7);
     }
@@ -23,6 +25,7 @@
 
 .customModuleHeader {
   margin: var(--spacing-04) 0px;
+
   @media only screen and (max-width: 576px) {
     margin: 0px
   }
@@ -43,11 +46,12 @@
 .price {
   font-size: var(--brand-font-size--32);
   font-weight: var(--brand-font-weight-600);
-    .currencySymbol {
-      top: -10px !important;
-      font-size: var(--brand-font-size--default) !important;
-      position: relative;
-      left: -1px;
+
+  .currencySymbol {
+    top: -10px !important;
+    font-size: var(--brand-font-size--default) !important;
+    position: relative;
+    left: -1px;
   }
 }
 

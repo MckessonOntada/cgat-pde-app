@@ -185,7 +185,8 @@ export const PaymentInvoicesEN = {
     'Invoices Selected for Payment',
   'paymentInvoices.reviewPayments.invoice': 'Invoices Selected',
   'paymentInvoices.reviewPayments.selectMethod': 'Select a method',
-  'paymentInvoices.reviewPayments.selectMethodInfo': 'For other payment methods, please contact Customer Care.',
+  'paymentInvoices.reviewPayments.selectMethodInfo':
+    'For other payment methods, please contact Customer Care.',
   'paymentInvoices.reviewPayments.invoiceDesc':
     'Amount to be charged to your Payment account:',
   'paymentInvoices.reviewPayments.previewPayment': 'Preview Payment',
@@ -321,9 +322,10 @@ export const PaymentInvoicesEN = {
 
   'paymentInvoices.paymentMethods.achForm.description':
     'Enrollment form in a PDF format for user to fill in offline and submit to the respective bank',
-  'paymentInvoices.table.paymentPending': 'Pending Payment',
+  'paymentInvoices.table.paymentPending': 'Pending Payments',
   'paymentInvoices.table.paymentHistory': 'Payment History',
   'paymentInvoices.table.customerStatement': 'Customer Statement',
+  'paymentInvoices.table.statementListing': 'Statement Listing',
   'paymentInvoices.table.savedBankAccount': 'Saved Bank Accounts',
   'paymentInvoices.table.savedCards': 'Saved Cards',
 

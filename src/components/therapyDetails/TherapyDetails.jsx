@@ -10,7 +10,7 @@ import UserService from '@src/api/commonService/UserService';
 import useSnackbar from '@src/hooks/useSnackbar';
 import MaterialService from '@src/api/commonService/MaterialService';
 import { useNavigate } from 'react-router-dom';
-import { PREVIEW_URL } from '@src/mfe/order-management/questionnaire/constants';
+import { PREVIEW_URL } from '@src/mfe/core-config/system-admin/manage-questionnaire/constants';
 import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
 import { renderModal } from '@src/util/ModalUtil';
 import FloatingDrawer from '@src/components/floating-drawer';
@@ -101,13 +101,7 @@ function TherapyDetails({
         showFooter && (
           <div className="controls">
             <Button label={t('captions.btnCancel')} onClick={onClose} variant="secondary" size="md" aria-label={t('captions.cancel')} />
-            <Button
-              label={t('captions.btnSelecttherapy')}
-              onClick={handleSelect}
-              variant="primary"
-              size="md"
-              aria-label={t('captions.selectAccount')}
-            />
+            <Button label={t('captions.btnSelecttherapy')} onClick={handleSelect} variant="primary" size="md" aria-label={t('captions.selectAccount')} />
           </div>
         )
       }>
@@ -137,15 +131,7 @@ function TherapyDetails({
   );
 }
 
-function DetailsPanel({
-  details,
-  therapyData,
-  configurationData,
-  isMaterialConfiguration,
-  onDeleteConfig,
-  refetch = { refetch },
-  hasDeleteConfigAccess
-}) {
+function DetailsPanel({ details, therapyData, configurationData, isMaterialConfiguration, onDeleteConfig, refetch = { refetch }, hasDeleteConfigAccess }) {
   const { t } = useTranslate();
   const { showSnackbar } = useSnackbar();
 
@@ -298,11 +284,7 @@ function QuestionnaireItem({ templateName, section, onDelete, showHeader, questi
           <div className={styles.sectionHeadingkey}>{t(section.sectionHeading)}</div>
           <div className={styles.actions}>
             {section.actions?.map((action) => (
-              <Button
-                key={action.id}
-                size="md"
-                textButton
-                onClick={() => navigate(PREVIEW_URL, { state: { isMaterial: true, questionnaire: questionnaire } })}>
+              <Button key={action.id} size="md" textButton onClick={() => navigate(PREVIEW_URL, { state: { isMaterial: true, questionnaire: questionnaire } })}>
                 {t(action.label)}
               </Button>
             ))}
