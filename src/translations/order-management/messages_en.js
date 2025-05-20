@@ -597,6 +597,7 @@ export const MessageEn = {
   'breadcrumb.systemConfiguration': 'System Configuration',
 
   'controls.uploadProviders': 'Upload Providers',
+  'controls.updateOrder': 'Update Order',
   'label.providerListing': 'Provider Listing',
   'heading.uploadProviderListCSV': 'Upload Provider List CSV',
   'controls.addProviders': 'Add Provider',

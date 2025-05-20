@@ -1,20 +1,24 @@
 import React from 'react';
-import OrderHeaderDetails from '../OrderHeaderDetails';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
 import PageHeader from '@src/components/pageHeader';
 import { ReactComponent as SpinnerIcon } from '@src/assets/svg/spinner.svg';
 import UploadFile from '@src/components/uploadFile/UploadFile';
-import { Field, Form, Formik } from 'formik';
-import Components from '@src/components/form/Components';
+import { Heading } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
-import { validateFile } from '@src/components/uploadFile/uploadUtils';
+import Textarea from '@src/components/form/Textarea';
+import { RoutePaths } from '@src/routes/constants';
+import DetailSegment from '@src/components/DetailSegment';
+import styles from './style.module.scss';
 
 const COMMENT_MAX_LENGTH = 5000;
 function UploadOrderDocument() {
   const { orderId } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
   const { t } = useTranslate();
+  const [comment, setComment] = React.useState('');
   const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } =
     useOrder(orderId);
 
@@ -28,50 +32,86 @@ function UploadOrderDocument() {
     soldToAccountId,
     shipToAccountId
   });
-  const handleOnUpload = () => {};
+  const handleOnUpload = (values, setFieldValue) => {
+    if (!values.file) {
+      setFieldValue('file', 'Please select document');
+      return;
+    }
+  };
+  const handleOnCancel = () => {
+    navigate(RoutePaths.pathOrderManagement, {
+      state: { activeTab: location?.state?.fromTab }
+    });
+  };
+
   return (
     <div className="MCP-module-wrapper">
+      <PageHeader heading={'Upload Documents'} />
       <div className="MCP-CardContainer">
-        <PageHeader heading={'Order Details'} />
-        {true ? (
+        <Heading as="h3">Order Details</Heading>
+        {isFetchingOrderDetails ? (
           <div className="spinner-wrapper md">
             <SpinnerIcon />
           </div>
         ) : (
-          <div></div>
+          <div>
+            <div
+              className={`grid grid-gap-12 sm:grid-gap-32 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4`}>
+              <DetailSegment
+                key={'sap_id'}
+                label="SAP ID"
+                value={orderDetails.id}
+              />
+              <DetailSegment
+                key={'therapy_name'}
+                label="Therapy"
+                value={orderDetails.therapy?.materialDescription}
+              />
+              <div></div>
+              <DetailSegment
+                key={'order_cost'}
+                label="Order Cost"
+                value={
+                  orderDetails.orderCost ? (
+                    <div className={styles['price-text']}>
+                      <span>$</span>
+                      {orderDetails.orderCost}
+                    </div>
+                  ) : (
+                    '-'
+                  )
+                }
+              />
+            </div>
+          </div>
         )}
       </div>
       <div className="MCP-module-body">
-        <div className="MCP-CardContainer">
-          <Formik
-            initialValues={{
-              document: '',
-              'document-comment': ''
-            }}>
-            <Form>
-              <UploadFile
-                primaryHeading={t('controls.uploadProviders')}
-                controlHeading={t('heading.uploadProviderListCSV')}
-                isLoading={false}
-                messages={[]}
-                onCloseAlert={() => {}}
-                upload={{
-                  caption: t('controls.uploadProviders'),
-                  fn: handleOnUpload
-                }}
-                onFileSelection={(file) => validateFile(t, file, ['text/csv'])}
-                prefixChildren={true}
-              />
-              <Field
-                name="document-comment"
-                fieldlabel={t('label.comment')}
-                placeholder=" "
-                isRequired
-                component={Components['textarea']}
-                maxCharHelperText={t('forms.placeholder.max_5000_chars')}
-                maxCharLimit={COMMENT_MAX_LENGTH}></Field>
-            </Form>
-          </Formik>
+        <div className="">
+          <UploadFile
+            isLoading={false}
+            messages={[]}
+            onCloseAlert={() => {}}
+            upload={{
+              caption: t('controls.updateOrder'),
+              fn: handleOnUpload
+            }}
+            cancel={{
+              fn: handleOnCancel
+            }}
+            isRequired={true}
+            uploadLabel={'labels.upload.document'}
+            suffixChildren={true}>
+            <Textarea
+              name="document-comment"
+              label={t('label.comments')}
+              placeholder=" "
+              value={comment}
+              onChange={setComment}
+              maxCharHelperText={t('forms.placeholder.max_5000_chars')}
+              maxCharLimit={COMMENT_MAX_LENGTH}
+            />
+          </UploadFile>
         </div>
       </div>
     </div>
