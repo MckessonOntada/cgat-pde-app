@@ -30,7 +30,7 @@ export const defaultHeaders = {
   userId: 1
 };
 
-export const authToken = (noHeader, noSidHeader) => {
+export const authToken = (noHeader, noSidHeader, noImpersonation) => {
   if (noHeader) {
     return {};
   }
@@ -45,7 +45,7 @@ export const authToken = (noHeader, noSidHeader) => {
 
   const impersonateId = AuthUtils.getImpersonateId();
   if (impersonateId) {
-    headers['x-imp-user-id'] = impersonateId;
+    if (!noImpersonation) headers['x-imp-user-id'] = impersonateId;
   }
 
   if (!noSidHeader && sessionId) {
@@ -62,6 +62,7 @@ const callRest = function (
   headers,
   noHeader = false,
   noSidHeader = false,
+  noImpersonation = false,
   responseType = 'json',
   successCallback = (resp) => resp,
   errorCallback = (err) => {
@@ -73,7 +74,7 @@ const callRest = function (
   headers = {
     ...defaultHeaders,
     ...customHeaders,
-    ...authToken(noHeader, noSidHeader)
+    ...authToken(noHeader, noSidHeader, noImpersonation)
   };
 
   const response = axios.request({
