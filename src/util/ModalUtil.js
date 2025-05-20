@@ -7,32 +7,38 @@ import store from '../store/store';
 export function renderModal({ title, bodyContent, footerActions, modalClose }) {
   const modalBody = <div>{bodyContent}</div>;
 
-  const modalFooter = footerActions?.custom ? (
-    footerActions.custom
-  ) : (
-    <>
-      {footerActions?.cancel && (
-        <Button variant="secondary" size="md" isModalButton={true} onClick={() => store.dispatch(closeModal())}>
-          {footerActions.cancel.label || 'Cancel'}
-        </Button>
-      )}
-      {footerActions?.confirm && (
-        <Button
-          dataTestId={'apply-confirm'}
-          size={'md'}
-          isModalButton={true}
-          variant="primary"
-          onClick={() => {
-            try {
-              footerActions.confirm.action();
-              store.dispatch(closeModal());
-            } catch (err) {}
-          }}>
-          {footerActions.confirm.label || 'Confirm'}
-        </Button>
-      )}
-    </>
-  );
+  const modalFooter = footerActions ? (
+    footerActions?.custom ? (
+      footerActions.custom
+    ) : (
+      <>
+        {footerActions?.cancel && (
+          <Button
+            variant="secondary"
+            size="md"
+            isModalButton={true}
+            onClick={() => store.dispatch(closeModal())}>
+            {footerActions.cancel.label || 'Cancel'}
+          </Button>
+        )}
+        {footerActions?.confirm && (
+          <Button
+            dataTestId={'apply-confirm'}
+            size={'md'}
+            isModalButton={true}
+            variant="primary"
+            onClick={() => {
+              try {
+                footerActions.confirm.action();
+                store.dispatch(closeModal());
+              } catch (err) {}
+            }}>
+            {footerActions.confirm.label || 'Confirm'}
+          </Button>
+        )}
+      </>
+    )
+  ) : null;
 
   store.dispatch(
     openModal({

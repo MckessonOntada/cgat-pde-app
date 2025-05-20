@@ -180,7 +180,8 @@ export const PaymentInvoicesES = {
     'S_Invoices Selected for Payment',
   'paymentInvoices.reviewPayments.invoice': 'S_Invoices Selected',
   'paymentInvoices.reviewPayments.selectMethod': 'S_Select a method',
-    'paymentInvoices.reviewPayments.selectMethodInfo': 'S_For other payment methods, please contact Customer Care.',
+  'paymentInvoices.reviewPayments.selectMethodInfo':
+    'S_For other payment methods, please contact Customer Care.',
   'paymentInvoices.reviewPayments.invoiceDesc':
     'S_Amount to be charged to your Payment account:',
   'paymentInvoices.reviewPayments.previewPayment': 'S_Preview Payment',
@@ -324,9 +325,10 @@ export const PaymentInvoicesES = {
   'paymentInvoices.history.table.bill.id': 'S_BILL ID',
   'paymentInvoices.paymentMethods.achForm.description':
     'S_Enrollment form in a PDF format for user to fill in offline and submit to the respective bank',
-  'paymentInvoices.table.paymentPending': 'S_Pending Payment',
+  'paymentInvoices.table.paymentPending': 'S_Pending Payments',
   'paymentInvoices.table.paymentHistory': 'S_Payment History',
   'paymentInvoices.table.customerStatement': 'S_Customer Statement',
+  'paymentInvoices.table.statementListing': 'S_Statement Listing',
   'paymentInvoices.table.savedBankAccount': 'S_Saved Bank Accounts',
   'paymentInvoices.table.savedCards': 'S_Saved Cards',
 

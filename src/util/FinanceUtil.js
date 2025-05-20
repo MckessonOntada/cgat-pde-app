@@ -22,17 +22,27 @@ const formatCurrency = (value) => {
   function formatAmount(value) {
     const abs = Math.abs(value);
 
+    const truncateToTwoDecimals = (num) => {
+      return Math.trunc(num * 100) / 100;
+    };
+
+    const format = (num, suffix) => {
+      const truncated = truncateToTwoDecimals(num);
+      return truncated.toString() + suffix;
+    };
+
     if (abs >= 1e9) {
-      return (value / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
+      return format(value / 1e9, 'B');
     }
     if (abs >= 1e6) {
-      return (value / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
+      return format(value / 1e6, 'M');
     }
     if (abs >= 1e3) {
-      return (value / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
+      return format(value / 1e3, 'K');
     }
     return value.toString();
   }
+
 
   export const FinanceUtils = Object.freeze({
     maskBankNumber,
