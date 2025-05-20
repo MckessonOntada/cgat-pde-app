@@ -20,14 +20,19 @@ function UploadFile({
   customDownload,
   downloadTemplate,
   upload,
+  cancel,
   onFileSelection,
   prefixChildren = false,
+  suffixChildren = false,
+  uploadLabel = null,
+  isRequired = false,
   infoHeader,
   children
 }) {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
+  const cancelFunction = cancel.fn ? cancel.fn : () => navigate(-1);
 
   if (isLoading) return <Loader type="screen" />;
 
@@ -72,7 +77,7 @@ function UploadFile({
         <Formik
           initialValues={{ file: null }}
           onSubmit={(values, { setFieldValue }) => {
-            upload.fn(values);
+            upload.fn(values, setFieldValue);
             setFieldValue('file', null);
             fileInputRef.current.value = '';
           }}>
@@ -81,28 +86,29 @@ function UploadFile({
               <div className="MCP-panel-container">
                 {controlHeading && <Heading as="h3">{controlHeading}</Heading>}
 
-                {prefixChildren && children}
+                {prefixChildren && !suffixChildren && children}
 
                 <Field
                   name="file"
                   validateOnChange={onFileSelection}
-                  label={t('labels.upload.csv')}
+                  label={t(uploadLabel || 'labels.upload.csv')}
                   component={Components['inputFile']}
                   attachmentValue={values.file}
                   setFieldValue={setFieldValue}
+                  isRequired={isRequired}
                   primaryButtonCaption={t('button.upload.browse')}
                   fileInputRef={fileInputRef}
                 />
 
-                {!prefixChildren && children}
+                {!prefixChildren && suffixChildren && children}
               </div>
               <div className="controls uploadControls">
                 <Button
                   variant="secondary"
                   type="button"
-                  onClick={() => navigate(-1)}
+                  onClick={cancelFunction}
                   size={'md'}>
-                  {t('Cancel')}
+                  {t(cancel.caption || 'Cancel')}
                 </Button>
                 <Button type="submit" size={'md'}>
                   {upload.caption}

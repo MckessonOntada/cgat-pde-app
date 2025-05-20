@@ -22,6 +22,7 @@ import AuthUtils from '../../util/AuthUtils';
 import { useTranslate } from '@src/translations/useTranslation';
 import { currentLocale } from '@src/translations/i18n';
 import EclipsesTextcss from '../EclipsesText/EclipsesTextcss';
+import { getFullName } from '@src/util/CommonUtils';
 
 const PrimaryHeader = () => {
   const { t } = useTranslate();
@@ -36,10 +37,14 @@ const PrimaryHeader = () => {
   const userName = AuthUtils.getFullName();
   const [textMaxWidth, setTextMaxWidth] = useState('');
   const channel = new BroadcastChannel('auth_channel');
+  const impersonatedByUser = AuthUtils.getImpersonatedByUser();
+  const impersonatedUserName = getFullName(impersonatedByUser?.name);
 
   useEffect(() => {
     const handleResize = () => {
-      setTextMaxWidth(window.innerWidth <= 992 && window.innerWidth >= 768 ? 160 : '');
+      setTextMaxWidth(
+        window.innerWidth <= 992 && window.innerWidth >= 768 ? 160 : ''
+      );
     };
 
     window.addEventListener('resize', handleResize);
@@ -61,7 +66,9 @@ const PrimaryHeader = () => {
   const { isLoading, data, isError, refetch } = useQuery({
     queryKey: ['organizationListOptions'],
     queryFn: async () => {
-      const res = await CommonDataService.getOrganizationListAsPublic(requestParams);
+      const res = await CommonDataService.getOrganizationListAsPublic(
+        requestParams
+      );
       return res.content;
     },
     enabled: !isSystemAdminView,
@@ -72,7 +79,10 @@ const PrimaryHeader = () => {
     organization: { setOrganization, selectedOrganization }
   } = useSessionFeatures();
 
-  const { data: organizationLogo } = CommonDataService.useOrganizationLogo(selectedOrganization.logoUrl, selectedOrganization.id);
+  const { data: organizationLogo } = CommonDataService.useOrganizationLogo(
+    selectedOrganization.logoUrl,
+    selectedOrganization.id
+  );
 
   const handleChange = (value) => {
     setSelectedOrg(value);
@@ -105,7 +115,11 @@ const PrimaryHeader = () => {
       <div className={`${styles.navItemsLeft}`} id={''}>
         <div className={styles.branding}>
           {isSystemAdminView ? (
-            <Link className={`${styles.appLogo} ${styles.actionLink}`} to={''} id={''} aria-label="dashboard">
+            <Link
+              className={`${styles.appLogo} ${styles.actionLink}`}
+              to={''}
+              id={''}
+              aria-label="dashboard">
               {props.children}
             </Link>
           ) : (
@@ -124,20 +138,29 @@ const PrimaryHeader = () => {
   };
 
   const RightSideView = () => {
-    const currentLanguage = HeaderConfig.languages.find((lang) => lang.value == currentLocale);
+    const currentLanguage = HeaderConfig.languages.find(
+      (lang) => lang.value == currentLocale
+    );
     const handleSelectOption = (option) => {
       navigate(option);
     };
     const quickLinks = [
-      <Link className={styles.actionLink} to={'notifications'} aria-label="View notifications">
+      <Link
+        className={styles.actionLink}
+        to={'notifications'}
+        aria-label="View notifications">
         <span>{t('header.label.notifications')}</span>
         <IconNotification />
       </Link>,
 
-      <MenuList handleSelect={(e) => handleSelectOption(e)} options={HeaderConfig.profileOptions} aria-label="Profile options">
+      <MenuList
+        size="md"
+        handleSelect={(e) => handleSelectOption(e)}
+        options={HeaderConfig.profileOptions}
+        aria-label="Profile options">
         <div className={styles.actionLink} aria-label="Account options">
-          <span>
-            <EclipsesTextcss str={userName || 'Anonymous'} maxWidth={textMaxWidth} />
+          <span> 
+            <EclipsesTextcss str={impersonatedUserName || userName || 'Anonymous'} maxWidth={textMaxWidth} /> 
           </span>
           <IconArrowDown />
         </div>
@@ -177,10 +200,15 @@ const PrimaryHeader = () => {
     ];
     return (
       <div className={styles.navItemsRight} id={''}>
-        <ul className={styles.quickLinks} role="navigation" aria-label="Quick access links">
+        <ul
+          className={styles.quickLinks}
+          role="navigation"
+          aria-label="Quick access links">
           {quickLinks.map((item, index) => {
             return (
-              <li className={styles.linkWrapper} key={`quick-links-item-${index}`}>
+              <li
+                className={styles.linkWrapper}
+                key={`quick-links-item-${index}`}>
                 {item}
               </li>
             );
@@ -192,14 +220,27 @@ const PrimaryHeader = () => {
 
   const RightSideMobile = ({ onClose }) => {
     return (
-      <ul className={styles.quickLinksMobile} role="navigation" aria-label="Quick access links">
+      <ul
+        className={styles.quickLinksMobile}
+        role="navigation"
+        aria-label="Quick access links">
         <li className={styles.linkWrapperMobile}>
           <div aria-label="Account options">
-            <EclipsesTextcss str={userName || 'Anonymous'} maxWidth={textMaxWidth} />
-            <ul className={styles.quickLinksInner} role="navigation" aria-label="Quick access links">
+            <EclipsesTextcss
+              str={userName || 'Anonymous'}
+              maxWidth={textMaxWidth}
+            />
+            <ul
+              className={styles.quickLinksInner}
+              role="navigation"
+              aria-label="Quick access links">
               {HeaderConfig.profileOptions.map((item, index) => (
                 <li key={`quick-links-item-${index}`}>
-                  <Link onClick={() => onClose()} className={styles.actionLink} to={item.value} aria-label={item.label}>
+                  <Link
+                    onClick={() => onClose()}
+                    className={styles.actionLink}
+                    to={item.value}
+                    aria-label={item.label}>
                     {item.label}
                   </Link>
                 </li>
@@ -208,7 +249,11 @@ const PrimaryHeader = () => {
           </div>
         </li>
         <li>
-          <Link onClick={() => onClose()} className={styles.actionLink} to={'notifications'} aria-label="View notifications">
+          <Link
+            onClick={() => onClose()}
+            className={styles.actionLink}
+            to={'notifications'}
+            aria-label="View notifications">
             <span>{t('header.label.notifications')}</span>
             <IconNotification />
           </Link>
@@ -239,7 +284,11 @@ const PrimaryHeader = () => {
             </div>
           )}
           <div className={styles.mobileOnly}>
-            <Button variant="tertiary" className={styles.hamburger} onClick={toggleDrawer} aria-label="Open drawer menu">
+            <Button
+              variant="tertiary"
+              className={styles.hamburger}
+              onClick={toggleDrawer}
+              aria-label="Open drawer menu">
               <IconMenu />
             </Button>
             <FloatingDrawer
@@ -247,7 +296,11 @@ const PrimaryHeader = () => {
               open={drawerOpen}
               onClose={toggleDrawer}
               heading={
-                <Link className={`${styles.appLogo} ${styles.actionLink}`} to={''} id={''} aria-label="dashboard">
+                <Link
+                  className={`${styles.appLogo} ${styles.actionLink}`}
+                  to={''}
+                  id={''}
+                  aria-label="dashboard">
                   <AppLogo />
                 </Link>
               }
@@ -258,7 +311,13 @@ const PrimaryHeader = () => {
                   aria-label="Log out of account"
                   Icon={IconLogout}
                   iconPosition="right"
-                  id={debugIds(ID.HEADER, ID.NAV, ID.RIGHT, ID.BUTTON, ID.LOGOUT)}
+                  id={debugIds(
+                    ID.HEADER,
+                    ID.NAV,
+                    ID.RIGHT,
+                    ID.BUTTON,
+                    ID.LOGOUT
+                  )}
                   data-testid={'LOGOUT'}
                   size="md"
                   variant="primary"
@@ -279,11 +338,18 @@ const PrimaryHeader = () => {
           isOpen,
           onClose: () => setIsOpen(false),
           modalTitle: t('orgManagement.confirmationmessage'),
-          modalBody: <div className="MCP-modal-body">{t('orgManagement.Orgchangemessage')}</div>,
+          modalBody: (
+            <div className="MCP-modal-body">
+              {t('orgManagement.Orgchangemessage')}
+            </div>
+          ),
 
           modalFooter: (
             <React.Fragment>
-              <Button onClick={onCancelOrganizationChange} variant="secondary" size="md">
+              <Button
+                onClick={onCancelOrganizationChange}
+                variant="secondary"
+                size="md">
                 {t('orgManagement.button.cancel')}
               </Button>
               <Button onClick={confirmChangeOrganization} size="md">

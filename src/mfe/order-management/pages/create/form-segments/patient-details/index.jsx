@@ -25,7 +25,7 @@ import { renderModal } from '@src/util/ModalUtil';
 import useOrder from '../../../orders/useOrder';
 import { useOrderPrice } from '../additional-details/useOrderPrice';
 import { sections } from './forms/patient-details.config';
-import FormRenderer from '@src/mfe/core-config/manage-providers/forms/FormRenderer';
+import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
 import { providerSections } from './forms/providers.config';
 import {
   getInitialValues,
@@ -300,15 +300,6 @@ const PatientDetails = () => {
     let provider = providers.find((item) => item.id === value);
     setProvider(provider);
     setFieldValue('providerId', value);
-  };
-
-  const debouncedSearch = React.useCallback(
-    CommonUtils.debounce((query) => setProviderQuery(query)),
-    500
-  );
-
-  const onSearchProvider = (query) => {
-    debouncedSearch(query);
   };
 
   if (isLoader) {

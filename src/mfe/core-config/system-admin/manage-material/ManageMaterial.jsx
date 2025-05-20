@@ -1,0 +1,50 @@
+import React from 'react';
+import CommonFilters from '@src/components/Filters';
+import styles from './assets/styles/ManageMaterial.module.scss';
+import Breadcrumbs from '@src/components/breadCrumbs/Breadcrumbs';
+import { Heading } from '@mckesson/mcp-component-library';
+import { useTranslate } from '@src/translations/useTranslation';
+import { useManageMaterial } from '@src/mfe/core-config/system-admin/manage-material/context/ManageMaterialContext';
+import ManageMaterialTable from './ManageMaterialTable';
+
+function ManageMaterial() {
+  const { t } = useTranslate();
+  const { actualData, applyFilters, clearFilters } = useManageMaterial();
+
+  const breadcrumbItems = [
+    {
+      label: t('manageMaterial.breadcrumbs.systemAdministrator'),
+      url: '/'
+    },
+    {
+      label: t('manageMaterial.breadcrumbs.systemConfiguration'),
+      url: '/system-admin/config'
+    },
+    {
+      label: t('manageMaterial.breadcrumbs.manageMaterial')
+    }
+  ];
+
+  return (
+    <div className="MCP-module-wrapper">
+      <Breadcrumbs items={breadcrumbItems} />
+      <div className="MCP-module-body">
+        <Heading as="h1">{t('manageMaterial.heading')}</Heading>
+        <div className={`${styles.cardContainer}`}>
+          <div className={`${styles.cardContainer}`}>
+            <CommonFilters
+              additionalFilters={[]}
+              onApplyFilters={applyFilters}
+              onClearFilters={clearFilters}
+              searchPlaceholder={t('manageMaterial.filters.searchPlaceholder')}
+              actualData={actualData}
+            />
+          </div>
+          <ManageMaterialTable className={styles.manageMaterialTable} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default ManageMaterial;

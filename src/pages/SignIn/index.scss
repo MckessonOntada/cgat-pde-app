@@ -72,6 +72,7 @@
             justify-content: left;
             padding-top: var(--spacing-05);
             padding-bottom: var(--spacing-05);
+
             @include mixins.respond(md) {
                 flex: 1;
                 display: flex;
@@ -86,7 +87,7 @@
         justify-content: flex-end;
         display: flex;
         flex-direction: column;
-        padding: var(--spacing-04); 
+        padding: var(--spacing-04);
     }
 
 }

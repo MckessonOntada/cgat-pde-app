@@ -26,14 +26,17 @@
   flex-wrap: wrap;
   gap: 0px var(--spacing-03);
   align-items: flex-start;
+
   .dropdown-container {
     margin-top: 5px;
   }
-  .filter-control-buttons{
+
+  .filter-control-buttons {
     margin-top: 30px; //spacing is not avilable
   }
 }
-.filter-control-buttons{
+
+.filter-control-buttons {
   @media only screen and (max-width: 768px) {
     display: flex;
     justify-content: space-between;
@@ -41,11 +44,13 @@
     flex-direction: row !important;
     width: 100%;
   }
-  button{
+
+  button {
     width: fit-content;
     text-wrap-mode: nowrap;
   }
 }
+
 .filterRow {
   display: flex;
   justify-content: left;

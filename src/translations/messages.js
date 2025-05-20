@@ -19,18 +19,18 @@ import { SignupEN } from './signup/messages_en';
 import { SignupES } from './signup/messages_es';
 import { filtersEN } from './filters/messages_en';
 import { filtersES } from './filters/messages_es';
-import { SystemConfigurationEN } from './order-management/system-configuration/manage-material/messages_en';
-import { SystemConfigurationES } from './order-management/system-configuration/manage-material/messages_es';
-import { ManageCatalogMessagesEN } from './order-management/system-configuration/manage-catalog/messages_en';
-import { ManageCatalogMessagesES } from './order-management/system-configuration/manage-catalog/messages_es';
-import { ManageAccountMessagesEN } from './order-management/system-configuration/manage-account/messages_en';
-import { ManageAccountMessagesES } from './order-management/system-configuration/manage-account/messages_es';
-import { ManageSPMateriaMessagesEN } from './order-management/system-configuration/manage-spmaterial/messages_en';
-import { ManageSPMaterialMessagesES } from './order-management/system-configuration/manage-spmaterial/messages_es';
-import { ManageSPAccountMessagesEN } from './order-management/system-configuration/manage-spaccount/messages_en';
-import { ManageSPAccountMessagesES } from './order-management/system-configuration/manage-spaccount/messages_es';
-import { ConfigurationMessagesEN } from './config/messages_en';
-import { ConfigurationMessagesES } from './config/messages_es';
+import { SystemConfigurationEN } from '@src/translations/config/manage-material/messages_en';
+import { SystemConfigurationES } from '@src/translations/config/manage-material/messages_es';
+import { ManageCatalogMessagesEN } from '@src/translations/config/manage-catalog/messages_en';
+import { ManageCatalogMessagesES } from '@src/translations/config/manage-catalog/messages_es';
+import { ManageAccountMessagesEN } from '@src/translations/config/manage-account/messages_en';
+import { ManageAccountMessagesES } from '@src/translations/config/manage-account/messages_es';
+import { ManageSPMateriaMessagesEN } from '@src/translations/config/manage-sp-material/messages_en';
+import { ManageSPMaterialMessagesES } from '@src/translations/config/manage-sp-material/messages_es';
+import { ManageSPAccountMessagesEN } from '@src/translations/config/manage-sp-account/messages_en';
+import { ManageSPAccountMessagesES } from '@src/translations/config/manage-sp-account/messages_es';
+import { ConfigurationMessagesEN } from '@src/translations/config/messages_en';
+import { ConfigurationMessagesES } from '@src/translations/config/messages_es';
 export const messages = {
   [LOCALES.ENGLISH]: {
     ...LoginMessagesEN,
@@ -65,7 +65,7 @@ export const messages = {
     ...ManageCatalogMessagesES,
     ...ManageAccountMessagesES,
     ...ManageSPMaterialMessagesES,
-    ...ManageSPAccountMessagesEN,
+    ...ManageSPAccountMessagesES,
     ...ConfigurationMessagesES
   }
 };

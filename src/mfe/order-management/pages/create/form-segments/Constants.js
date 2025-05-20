@@ -36,3 +36,28 @@ export const FormList = (t) => [
   }
 ];
 export const PROGRAM_LIST = ['WAC', '340B', 'GOV'];
+
+export const INFO_340B = [
+  {
+    title: 'order.account.selection.eligibility.patient.title',
+    info: 'order.account.selection.eligibility.patient.info',
+    requirements: [
+      'order.account.selection.eligibility.patient.requirement1',
+      'order.account.selection.eligibility.patient.requirement2'
+    ]
+  },
+  {
+    title: 'order.account.selection.eligibility.facility.title',
+    info: 'order.account.selection.eligibility.facility.info',
+    requirements: [
+      'order.account.selection.eligibility.facility.requirement1',
+      'order.account.selection.eligibility.facility.requirement2'
+    ]
+  },
+  {
+    title: 'order.account.selection.compliance.requirements.title',
+    requirements: [
+      'order.account.selection.compliance.requirements.requirement1'
+    ]
+  }
+];
