@@ -1,7 +1,6 @@
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import { Navigate, Route, Routes } from 'react-router-dom';
-
 import { Loader } from '@mckesson/mcp-component-library';
 import { debugIds, ID } from '@src/constants/id';
 import styles from '../../src/assets/styles/MainLayout.module.scss';
@@ -18,16 +17,17 @@ import Footer from '@src/components/footer';
 import ErrorWrapper from './ErrorWrapper';
 import AccountSetting from '@src/components/AccountSetting';
 import { FooterProvider } from '@src/components/footer/FooterContext';
-
+import Dashboard from '@src/mfe/core-config/system-admin';
+import AdminRoutes from '@src/mfe/core-config/admin';
+import Notifications from '@src/mfe/notification-mfe';
+import { NotificationDrawer } from '@src/mfe/notification-mfe/components/NotificationDrawer/NotificationDrawer';
+import { useNotifications } from '@src/mfe/notification-mfe/context/NotificationsContext';
 const UsersEntryPoint = React.lazy(() => import('../mfe/user-management'));
-const OrderManagementEntryPoint = React.lazy(() =>
-  import('@src/mfe/order-management')
-);
+const OrderManagementEntryPoint = React.lazy(() => import('@src/mfe/order-management'));
 const OrgEntryPoint = React.lazy(() => import('@src/mfe/org-management'));
 
 function MainLayout() {
-  const { notificationDrawerOpen, setNotificationDrawerOpen } =
-    useNotifications();
+  const { notificationDrawerOpen, setNotificationDrawerOpen } = useNotifications();
 
   return (
     <div id={debugIds(ID.MAIN)} className={styles.appContainer}>
@@ -78,69 +78,6 @@ function MainLayout() {
                     />
 
                     <Route
-                      path={`${AppRoutes.pathUserManagement}/*`}
-                      element={
-                        <ProtectedRoute
-                          permissions={routePermissionConfig.users}>
-                          <UsersEntryPoint />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route path="/admin/*">
-                      <Route
-                        path={'providers/*'}
-                        element={
-                          <ProtectedRoute
-                            permissions={Object.values(
-                              PERMISSIONS_ENUM.MANAGE_PROVIDERS
-                            )}>
-                            <ManageProviders />
-                          </ProtectedRoute>
-                        }
-                      />
-                      <Route
-                        path={'crosswalk/*'}
-                        element={<ManageCrossWalk />}
-                      />
-
-                      <Route
-                        path={'sp-catalog/*'}
-                        element={<ManageSPCatalog />}
-                      />
-                      <Route
-                        path={`organization/roles/*`}
-                        element={
-                          <ProtectedRoute
-                            permissions={routePermissionConfig.roles}>
-                            <Role />
-                          </ProtectedRoute>
-                        }
-                      />
-                      <Route
-                        path={`approver-group/*`}
-                        element={
-                          <ProtectedRoute
-                            permissions={routePermissionConfig.approvergroups}>
-                            <ManageApprovers />
-                          </ProtectedRoute>
-                        }
-                      />
-                      <Route
-                        path={'organization/*'}
-                        element={
-                          AuthUtils.isSystemAdmin() &&
-                          !AuthUtils.isSystemAdminView() ? (
-                            <Navigate to={'/'} />
-                          ) : (
-                            <ProtectedRoute
-                              permissions={routePermissionConfig.organization}>
-                              <OrgEntryPoint />
-                            </ProtectedRoute>
-                          )
-                        }
-                      />
-                    </Route>
-                    <Route
                       path={'/record/*'}
                       element={
                         <ProtectedRoute permissions={routePermissionConfig.paymentInvoices}>
@@ -164,10 +101,7 @@ function MainLayout() {
                         )
                       }
                     />
-                    <Route
-                      path="/account-setting"
-                      element={<AccountSetting />}
-                    />
+                    <Route path="/account-setting" element={<AccountSetting />} />
                     <Route path="/notifications" element={<Notifications />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
@@ -182,5 +116,5 @@ function MainLayout() {
   );
 }
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state) => ({});
 export default connect(mapStateToProps, {})(MainLayout);
