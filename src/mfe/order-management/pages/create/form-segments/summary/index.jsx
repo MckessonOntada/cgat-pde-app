@@ -852,7 +852,7 @@ const Summary = () => {
                     </div>
                   }
                 />
-                <p className="price-wrapper">
+                <div className="price-wrapper">
                   <DetailSegment
                     label={t('labels.orderCost')}
                     value={
@@ -866,7 +866,7 @@ const Summary = () => {
                       )
                     }
                   />
-                </p>
+                </div>
               </div>
             </div>
             <div
