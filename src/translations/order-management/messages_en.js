@@ -52,10 +52,9 @@ export const MessageEn = {
   'labels.configuredQuestionnaires': 'Configured Questionnaires',
   'labels.coiId': 'COI ID',
   'labels.orderQuantity': 'Order Quantity',
-  'labels.provideSlotNumber': 'Please provide the Slot Number',
-  'labels.providePONumber': 'Please provide the PO Number',
-  'labels.provideDateOfAdministration':
-    'Please provide the Date of Administration',
+  'labels.provideSlotNumber': 'Slot Number',
+  'labels.providePONumber': 'PO Number',
+  'labels.provideDateOfAdministration': 'Date of Administration',
   'labels.uploadDocument': 'Upload Document',
   'labels.accountSelection': 'Account Selection',
   'labels.customerIndicator': 'Customer Indicator',

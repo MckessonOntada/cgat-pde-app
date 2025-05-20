@@ -1,9 +1,6 @@
 import React, { useContext } from 'react';
-import FormRenderer from '@src/mfe/core-config/manage-providers/forms/FormRenderer';
-import {
-  payerPersonalDetailsTemplate,
-  sections
-} from './forms/payer-details.config';
+import FormRenderer from '@src/mfe/core-config/admin/manage-providers/forms/FormRenderer';
+import { payerPersonalDetailsTemplate, sections } from './forms/payer-details.config';
 import { Form, Formik } from 'formik';
 import { IconButton, Button } from '@mckesson/mcp-component-library';
 import { ReactComponent as AddIcon } from '@src/assets/svg/add-circle-bold.svg';
@@ -21,12 +18,7 @@ import OrderService from '@src/api/commonService/OrderService';
 import * as Yup from 'yup';
 import { FooterContext } from '@src/components/footer/FooterContext';
 
-import {
-  getInsuranceCoverageDetailsTemplate,
-  getPersonalDetailsTemplate,
-  insuranceCompanySchema,
-  insuranceCoverageSchema
-} from './forms/validation.schema';
+import { getInsuranceCoverageDetailsTemplate, getPersonalDetailsTemplate, insuranceCompanySchema, insuranceCoverageSchema } from './forms/validation.schema';
 import CommonUtils from '@src/util/CommonUtils';
 
 function toggleProperties(a, b, flag) {
@@ -34,9 +26,7 @@ function toggleProperties(a, b, flag) {
     return { ...a, ...b };
   } else {
     const keysToRemove = new Set(Object.keys(b));
-    return Object.fromEntries(
-      Object.entries(a).filter(([key]) => !keysToRemove.has(key))
-    );
+    return Object.fromEntries(Object.entries(a).filter(([key]) => !keysToRemove.has(key)));
   }
 }
 
@@ -59,21 +49,17 @@ const PayerDetails = () => {
   const navigate = useNavigate();
   const { controlRef } = useContext(FooterContext);
   const { isApprover = false } = location.state || {};
-  const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } =
-    useOrder(orderId);
+  const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } = useOrder(orderId);
   const therapyId = orderDetails?.therapy?.materialNumber;
-  const soldToAccountId =
-    orderDetails?.accountDetails?.soldToAccount?.accountNumber;
-  const shipToAccountId =
-    orderDetails?.accountDetails?.shipToAccount?.accountNumber;
+  const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
+  const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
   const { data: priceDetails } = useOrderPrice({
     therapyId,
     soldToAccountId,
     shipToAccountId
   });
   const { mutate: savePayerDetails } = useMutation({
-    mutationFn: async (payload) =>
-      OrderService.savePayerDetails(orderId, payload, orderDetails.channelType),
+    mutationFn: async (payload) => OrderService.savePayerDetails(orderId, payload, orderDetails.channelType),
     onSuccess: (response) => {
       navigate(`/orders/${orderId}/additional-details`);
     },
@@ -81,8 +67,7 @@ const PayerDetails = () => {
   });
 
   const [showSecondaryPayer, setShowSecondaryPayer] = React.useState(false);
-  const [showDrugBenefitInsurer, setShowDrugBenefitInsurer] =
-    React.useState(false);
+  const [showDrugBenefitInsurer, setShowDrugBenefitInsurer] = React.useState(false);
 
   const handleOnAddSecondaryPayer = (state) => {
     setShowSecondaryPayer(state);
@@ -117,8 +102,7 @@ const PayerDetails = () => {
   }, [showSecondaryPayer, showDrugBenefitInsurer]);
 
   React.useEffect(() => {
-    const { secondaryInsuranceCompany, drugBenefitInsuranceCompany } =
-      orderDetails.payerDetails || {};
+    const { secondaryInsuranceCompany, drugBenefitInsuranceCompany } = orderDetails.payerDetails || {};
     if (secondaryInsuranceCompany) {
       setShowSecondaryPayer(true);
     }
@@ -164,9 +148,7 @@ const PayerDetails = () => {
               variant="tertiary"
               color="error"
               type="button"
-              onClick={() =>
-                handleOnAddDrugBenefitInsuranceCompany(false)
-              }></Button>
+              onClick={() => handleOnAddDrugBenefitInsuranceCompany(false)}></Button>
           </div>
         )
       }
@@ -186,38 +168,21 @@ const PayerDetails = () => {
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={handleOnBackToOrders}
-          size="md">
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={handleOnBackToOrders} size="md">
           {t('captions.btnBackToManageOrder')}
         </Button>
       </div>
 
-      <PageHeader
-        heading={
-          isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')
-        }
-      />
+      <PageHeader heading={isApprover ? t('headings.reviewOrder') : t('headings.createNewOrder')} />
       <div className="MCP-module-body">
         <OrderStepper
           status={orderDetails?.currentStage}
           patientDetailsRequired={orderDetails?.patientDetailsRequired}
           channelType={orderDetails?.channelType}
         />
-        <OrderHeaderDetails
-          orderDetails={orderDetails}
-          priceDetails={priceDetails}
-        />
+        <OrderHeaderDetails orderDetails={orderDetails} priceDetails={priceDetails} />
       </div>
-      <Formik
-        initialValues={formValues}
-        validationSchema={validationSchema}
-        enableReinitialize={true}
-        onError={console.log}
-        onSubmit={handleOnSubmit}>
+      <Formik initialValues={formValues} validationSchema={validationSchema} enableReinitialize={true} onError={console.log} onSubmit={handleOnSubmit}>
         {({ values, errors }) => {
           React.useEffect(() => {
             console.log(values, errors);
@@ -246,32 +211,23 @@ const PayerDetails = () => {
                   <hr />
                   <div>
                     {showDrugBenefitInsurer ? (
-                      <FormRenderer
-                        sections={insuranceCompanySectionsWithActions() || []}
-                      />
+                      <FormRenderer sections={insuranceCompanySectionsWithActions() || []} />
                     ) : (
                       <IconButton
                         variant="tertiary"
-                        label={t(
-                          'button.caption.addDrugBenefitInsuranceCompany'
-                        )}
+                        label={t('button.caption.addDrugBenefitInsuranceCompany')}
                         size="lg"
                         iconButton={false}
                         textButton={true}
                         Icon={AddIcon}
-                        onClick={() =>
-                          handleOnAddDrugBenefitInsuranceCompany(true)
-                        }
+                        onClick={() => handleOnAddDrugBenefitInsuranceCompany(true)}
                       />
                     )}
                   </div>
                 </div>
                 <div className="footer-wrapper" ref={controlRef}>
                   <div className="controls footer-controls">
-                    <Button
-                      size="md"
-                      variant="secondary"
-                      onClick={handleOnBackClick}>
+                    <Button size="md" variant="secondary" onClick={handleOnBackClick}>
                       {t('captions.btnBack')}
                     </Button>
                     <Button size="md" variant="primary" type="submit">

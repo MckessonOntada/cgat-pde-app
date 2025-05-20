@@ -5,25 +5,16 @@ import CommonUtils, { getFullName } from '@src/util/CommonUtils';
 import { InventoryIndicator } from './InventoryIndicator';
 import './orderHeaderDetails.scss';
 import { CHANNEL_TYPE } from './Constants';
-import { getAddress } from '@src/mfe/order-management/questionnaire/util';
+import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnaire/util';
 
-function OrderHeaderDetails({
-  orderDetails,
-  priceDetails = {},
-  status,
-  selectedAccount = {}
-}) {
+function OrderHeaderDetails({ orderDetails, priceDetails = {}, status, selectedAccount = {} }) {
   const { t } = useTranslate();
 
   const therapy = orderDetails?.therapy ?? {};
-  const accountDetails = isValidAccount(selectedAccount)
-    ? selectedAccount
-    : orderDetails?.accountDetails;
+  const accountDetails = isValidAccount(selectedAccount) ? selectedAccount : orderDetails?.accountDetails;
   const patient = orderDetails?.patient ?? {};
   const patientDetailsRequired = orderDetails?.patientDetailsRequired ?? false;
-  const channelType = accountDetails?.soldToAccount?.channelType
-    ? accountDetails?.soldToAccount?.channelType
-    : selectedAccount?.channelType;
+  const channelType = accountDetails?.soldToAccount?.channelType ? accountDetails?.soldToAccount?.channelType : selectedAccount?.channelType;
 
   const detailsSegments = [
     therapy?.materialDescription && (
@@ -32,9 +23,7 @@ function OrderHeaderDetails({
         label={t('labels.therapyDescription')}
         value={
           <div className="row-space-between-center therapy-description-wrapper">
-            <div className="overflowing">
-              {therapy.materialDescription || '-'}
-            </div>
+            <div className="overflowing">{therapy.materialDescription || '-'}</div>
             <InventoryIndicator status={status} />
           </div>
         }
@@ -60,6 +49,7 @@ function OrderHeaderDetails({
         }
       />
     ),
+ 
     accountDetails?.soldToAccount &&
       accountDetails?.shipToAccount &&
       patientDetailsRequired &&
@@ -79,6 +69,7 @@ function OrderHeaderDetails({
           }`}
         />
       ),
+ 
     priceDetails && Object.keys(priceDetails).length > 0 && (
       <div key={'price-details'} className={`price-wrap-container`}>
         <DetailSegment
@@ -86,9 +77,7 @@ function OrderHeaderDetails({
           value={
             <span className="dollarSign">
               <span>$</span>
-              {priceDetails?.netPrice
-                ? CommonUtils.formatNumberWithoutSymbol(priceDetails.netPrice)
-                : '----'}
+              {priceDetails?.netPrice ? CommonUtils.formatNumberWithoutSymbol(priceDetails.netPrice) : '----'}
             </span>
           }
         />
@@ -111,16 +100,10 @@ const isValidAccount = (account) => {
     return false;
   }
   // Check if shipToAccount exists and is an object
-  const isShipToValid =
-    account.shipToAccount &&
-    typeof account.shipToAccount === 'object' &&
-    Object.keys(account.shipToAccount).length > 0;
+  const isShipToValid = account.shipToAccount && typeof account.shipToAccount === 'object' && Object.keys(account.shipToAccount).length > 0;
 
   // Check if soldToAccount exists and is an object
-  const isSoldToValid =
-    account.soldToAccount &&
-    typeof account.soldToAccount === 'object' &&
-    Object.keys(account.soldToAccount).length > 0;
+  const isSoldToValid = account.soldToAccount && typeof account.soldToAccount === 'object' && Object.keys(account.soldToAccount).length > 0;
 
   return isShipToValid && isSoldToValid;
 };

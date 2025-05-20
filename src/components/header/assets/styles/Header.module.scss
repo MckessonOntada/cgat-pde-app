@@ -1,12 +1,14 @@
-@use "../../../../assets/styles/abstracts/mixins";
+@use "@src/assets/styles/abstracts/mixins";
 
 .navContainer {
   &.primary {
     background-color: var(--brand-color-patient-primary-1);
     padding-right: 10px;
+
     @media only screen and (max-width: 768px) {
       padding-right: 0px;
     }
+
     .navItemsLeft {
       padding: var(--spacing-02) 0px;
       padding-right: var(--spacing-02);
@@ -96,9 +98,11 @@
   justify-content: space-between;
   margin: 0px var(--spacing-04);
   height: 43px; //size is not avilable
+
   @media only screen and (max-width: 768px) {
     margin: 0px var(--spacing-03);
   }
+
   .branding {
     .appLogo {
       display: inline-block;
@@ -118,13 +122,15 @@
     gap: var(--spacing-02);
     align-items: center;
     align-self: stretch;
-    .navOptions{
-      button{
-        color:var(--brand-color-black);
+
+    .navOptions {
+      button {
+        color: var(--brand-color-black);
         background-color: var(--brand-color-secondary);
         box-shadow: 0 0 0 2px var(--brand-color-secondary, --brand-color-secondary);
       }
     }
+
     .languageSelect {
       ul {
         li {
@@ -155,6 +161,7 @@
   li:last-child {
     border-right: none;
     padding-right: 20px;
+
     @include mixins.respond(sm) {
       padding-right: 0;
     }
@@ -169,7 +176,7 @@
   .centerSelector {
     min-width: 80px;
 
-    > div {
+    >div {
       margin-top: 0px !important;
     }
 
@@ -198,18 +205,21 @@
       flex-direction: column;
       gap: var(--spacing-03);
       align-items: flex-start;
-      li{
+
+      li {
         border-right: unset;
         justify-content: flex-start;
         align-self: unset;
         padding: 0px;
         width: 100%;
-        span{
+
+        span {
           color: var(--brand-color-font-black);
           font-size: var(--brand-font-size--default);
           font-weight: var(--brand-font-weight-600);
         }
-        a{
+
+        a {
           text-decoration: none;
           color: var(--brand-color-font-black);
           display: flex;
@@ -217,25 +227,29 @@
           gap: var(--spacing-01);
         }
       }
-      .linkWrapperMobile{
+
+      .linkWrapperMobile {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         border-bottom: 1px solid var(--brand-color-grey-scale-cool-1);
       }
-      .quickLinksInner{
+
+      .quickLinksInner {
         padding: var(--spacing-04) 0px;
         display: flex;
         flex-direction: column;
         gap: var(--spacing-03);
-        a{
+
+        a {
           color: #1E394E;
           font-size: var(--brand-font-size--small);
         }
       }
 
     }
-    .hamburger{
+
+    .hamburger {
       padding: 0px;
       justify-content: flex-end !important;
     }
@@ -284,6 +298,6 @@
   padding-right: 10px;
 }
 
-.logoutBtnMobile{
+.logoutBtnMobile {
   width: 100%;
 }

@@ -50,10 +50,9 @@ export const MessageEs = {
   'labels.variant': 'S_Variant',
   'labels.coiId': 'S_COI ID',
   'labels.orderQuantity': 'S_Order Quantity',
-  'labels.provideSlotNumber': 'S_Please provide the Slot Number',
-  'labels.providePONumber': 'S_Please provide the PO Number',
-  'labels.provideDateOfAdministration':
-    'S_Please provide the Date of Administration',
+  'labels.provideSlotNumber': 'S_Slot Number',
+  'labels.providePONumber': 'S_PO Number',
+  'labels.provideDateOfAdministration': 'S_Date of Administration',
   'labels.uploadDocument': 'S_Upload Document',
   'labels.accountSelection': 'S_Account Selection',
   'labels.customerIndicator': 'S_Customer Indicator',

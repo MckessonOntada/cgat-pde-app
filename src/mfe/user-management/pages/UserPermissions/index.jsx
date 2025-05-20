@@ -79,7 +79,7 @@ const UserPermissions = () => {
         onSuccess: (response) => {
           console.log('User created/updated successfully:', response);
           if (isSystemAdminView) {
-            navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : RoutePaths.pathUserManagement, {
+            navigate(isEdit ? `../${PATHS.userDetail.replace(':userId', userId)}` : RoutePaths.pathSystemAdminManagement, {
               state: { isSuccess: true }
             });
           } else {

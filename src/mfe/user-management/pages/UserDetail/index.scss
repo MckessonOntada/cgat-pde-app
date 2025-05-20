@@ -1,4 +1,4 @@
-@use "../../../../assets/styles/abstracts/mixins";
+@use "@src/assets/styles/abstracts/mixins";
 
 .userCardContainer {
   display: grid;
@@ -53,21 +53,27 @@
   border: 1px solid var(--brand-color-patient-primary-3);
   border-radius: var(--brand-border-radius--6);
 }
-.checkboxGroup fieldset div{
+
+.checkboxGroup fieldset div {
   align-items: flex-start;
 }
-.checkboxGroup fieldset div input{
+
+.checkboxGroup fieldset div input {
   margin-top: 2px;
 }
+
 @media (max-width: 600px) {
   .user-header {
-    flex-direction: column; /* Stack items vertically */
-    align-items: flex-start; /* Align items to the start for better readability */
+    flex-direction: column;
+    /* Stack items vertically */
+    align-items: flex-start;
+    /* Align items to the start for better readability */
     gap: var(--spacing-03);
     white-space: nowrap;
   }
 
   .user-info {
-    width: 100%; /* Ensure items take full width if needed */
+    width: 100%;
+    /* Ensure items take full width if needed */
   }
 }

@@ -15,14 +15,7 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import { handleApiError, serializeParams } from '@src/util/ApiUtils';
 import AuthUtils from '@src/util/AuthUtils';
 import { RoutePaths } from '@src/routes/constants';
-import {
-  ALPHABETIC_WITH_SPECIAL,
-  ALPHABETIC_WITH_SPACE,
-  ADDRESS_REGEX,
-  ZIP_REGEX,
-  PHONE_REGEX,
-  FAX_REGEX,
-} from '@src/components/form/ValidationRegExp';
+import { ALPHABETIC_WITH_SPECIAL, ALPHABETIC_WITH_SPACE, ADDRESS_REGEX, ZIP_REGEX, PHONE_REGEX, FAX_REGEX } from '@src/components/form/ValidationRegExp';
 import DiscardChangesModal from '@src/mfe/org-management/pages/role/manage/DiscardChangesModel';
 import CommonUtils from '@src/util/CommonUtils';
 
@@ -65,9 +58,7 @@ const CreateUser = () => {
   } = useQuery({
     queryKey: [`users/${userId}`],
     queryFn: async () => {
-      const url = !isPending
-        ? `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`
-        : `${ApiRoutes.USERS_PROVISIONING()}/${userId}`;
+      const url = !isPending ? `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}` : `${ApiRoutes.USERS_PROVISIONING()}/${userId}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
 
       return res.data;
@@ -78,11 +69,7 @@ const CreateUser = () => {
 
   const { mutate, isLoading, isError, data } = useMutation(async ({ payload, isReject }) => {
     if (isEdit || isBack) {
-      const updateUser = await HttpResourceService.callRest(
-        `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`,
-        httpVerb.PATCH,
-        payload
-      );
+      const updateUser = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.PATCH, payload);
       return updateUser.data;
     } else if (isPending) {
       const reqParams = {
@@ -90,11 +77,7 @@ const CreateUser = () => {
       };
       if (!isReject) {
         // For approval, first create the user
-        const createUserResponse = await HttpResourceService.callRest(
-          `${ApiRoutes.USERS()}?${serializeParams(requestParams)}`,
-          httpVerb.POST,
-          payload
-        );
+        const createUserResponse = await HttpResourceService.callRest(`${ApiRoutes.USERS()}?${serializeParams(requestParams)}`, httpVerb.POST, payload);
         // Then, approve the user
         const approveResponse = await HttpResourceService.callRest(
           `${ApiRoutes.USERS_PROVISIONING()}/${userId}/status?${serializeParams(reqParams)}`,
@@ -115,11 +98,7 @@ const CreateUser = () => {
       );
       return rejectResponse.data;
     } else {
-      const createUserResponse = await HttpResourceService.callRest(
-        `${ApiRoutes.USERS()}?${serializeParams(requestParams)}`,
-        httpVerb.POST,
-        payload
-      );
+      const createUserResponse = await HttpResourceService.callRest(`${ApiRoutes.USERS()}?${serializeParams(requestParams)}`, httpVerb.POST, payload);
       return {
         createUser: createUserResponse.data
       };
@@ -152,24 +131,20 @@ const CreateUser = () => {
         required: true
       }),
       middleName: CommonUtils.getNameValidation(t, {
-        field: 'middle_name',
+        field: 'middle_name'
       }),
       lastName: CommonUtils.getNameValidation(t, {
         field: 'last_name',
         required: true
-      }),
+      })
     }),
 
     contact: Yup.object({
-      email: Yup.string()
-        .email(t('userManagement.create_user.validation.invalid_email'))
-        .required(t('userManagement.create_user.validation.email_required')),
+      email: Yup.string().email(t('userManagement.create_user.validation.invalid_email')).required(t('userManagement.create_user.validation.email_required')),
       phone: Yup.string()
         .matches(PHONE_REGEX, t('userManagement.create_user.validation.phone_no')) // 10 digits only
         .required(t('userManagement.create_user.validation.phone_no_required')),
-      fax: Yup.string()
-        .matches(FAX_REGEX, t('userManagement.create_user.validation.fax'))
-        .max(15, t('userManagement.create_user.validation.fax_max'))
+      fax: Yup.string().matches(FAX_REGEX, t('userManagement.create_user.validation.fax')).max(15, t('userManagement.create_user.validation.fax_max'))
     }),
 
     address: Yup.object({
@@ -222,7 +197,9 @@ const CreateUser = () => {
           console.log('User created/updated successfully:', response);
           navigate(
             isEdit
-              ? `/admin/user/${response?.createUser?.id ? response.createUser?.id : userId}`
+              ? isSystemAdmin
+                ? `/system-admin/user/${response?.createUser?.id ? response.createUser?.id : userId}`
+                : `/admin/user/${response?.createUser?.id ? response.createUser?.id : userId}`
               : `../${PATHS.userPermissions}/${response?.createUser?.id ? response.createUser?.id : userId}`,
             {
               state: { permissionsData: permissionsData }

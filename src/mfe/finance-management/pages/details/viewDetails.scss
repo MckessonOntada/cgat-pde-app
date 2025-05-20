@@ -4,10 +4,12 @@
 .view-details-container {
   display: grid;
   gap: var(--spacing-04);
+
   .details-card-wrapper {
     gap: var(--spacing-03);
     display: grid;
     background-color: var(--brand-color-background-white);
+
     @include mixins.respond("sm") {
       border: 1px solid var(--brand-color-patient-primary-3, #b3c2c9);
       gap: 32px;
@@ -15,6 +17,7 @@
       padding: 24px;
       border-radius: 8px;
     }
+
     .details-header-card {
       @media only screen and (max-width: 576px) {
         width: 100%;
@@ -25,6 +28,7 @@
         padding: var(--spacing-03);
       }
     }
+
     .details-card-container {
       background: var(--brand-color-background-white, #fff);
       width: 100%;
@@ -78,8 +82,10 @@
         gap: var(--spacing-03);
       }
     }
+
     .datatable-container {
       overflow: auto;
+
       @media only screen and (max-width: 576px) {
         gap: var(--spacing-03);
         display: flex;
@@ -87,16 +93,19 @@
       }
     }
   }
+
   .footer-section {
     display: flex;
     justify-content: end;
     width: 100%;
     gap: var(--spacing-03);
+
     @include mixins.respond("sm") {
       // justify-content: end;
     }
   }
 }
+
 .details-table {
   overflow: auto;
 }
