@@ -43,9 +43,11 @@ export const authToken = (noHeader, noSidHeader, noImpersonation) => {
 
   const sessionId = sessionStorage.getItem('sid');
 
-  const impersonateId = AuthUtils.getImpersonateId();
-  if (impersonateId) {
-    if (!noImpersonation) headers['x-imp-user-id'] = impersonateId;
+  if (!noImpersonation) {
+    const impersonateId = AuthUtils.getImpersonateId();
+    if (impersonateId) {
+      headers['x-imp-user-id'] = impersonateId;
+    }
   }
 
   if (!noSidHeader && sessionId) {
