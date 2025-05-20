@@ -171,10 +171,6 @@ const UserDetail = () => {
       setAlertDescription(
         `${location.state.recCount} ${t('messages.accountlinkSuccess')}.`
       );
-
-      const timer = setTimeout(handleAlertClose, 10000);
-
-      return () => clearTimeout(timer);
     }
   }, [isSuccess, location.pathname, location.state, navigate]);
 
@@ -376,7 +372,6 @@ const UserDetail = () => {
           description={alertDescription}
           onClose={handleAlertClose}
           type={alertType}
-          duration={duration}
         />
       )}
       <div className="MCP-module-body">
@@ -679,7 +674,6 @@ const UserDetail = () => {
                 description={alertDescription}
                 onClose={handleAlertClose}
                 type="success"
-                duration={10000}
               />
             )}
             {data?.practiceId && (
