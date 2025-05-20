@@ -73,7 +73,7 @@ function SPAccountConfigurations({ data, refetch }) {
   const handleAlertClose = () => {
     setAlert({ type: null, message: null });
   };
-  console.log('data?.questionnaireList?.length', data?.questionnaireList?.length);
+
   return (
     <div>
       <div className="MCP-module-body">
