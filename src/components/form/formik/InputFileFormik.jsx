@@ -168,11 +168,17 @@ function InputFileFormik(props) {
             <div className={styles['file-info']}>
               <div>
                 {file.type?.startsWith('image/') ? (
-                  <img
-                    src={URL.createObjectURL(file)}
-                    alt="Preview"
-                    className={styles['image-preview']}
-                  />
+                  file.type.startsWith('image/') ? (
+                    <img
+                      src={URL.createObjectURL(file)}
+                      alt="Preview"
+                      className={styles['image-preview']}
+                    />
+                  ) : (
+                    <p className={styles['error-message']}>
+                      {t('file.browsInput.error.invalidFileType')}
+                    </p>
+                  )
                 ) : (
                   <FileUploadIcon width={20} />
                 )}
