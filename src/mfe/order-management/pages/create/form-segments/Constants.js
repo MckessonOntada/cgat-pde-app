@@ -39,25 +39,25 @@ export const PROGRAM_LIST = ['WAC', '340B', 'GOV'];
 
 export const INFO_340B = [
   {
-    title: 'Patient Eligibility Requirements',
-    info: 'An individual is a "340B eligible patient" only if ALL of the following criteria are mot:',
+    title: 'order.account.selection.eligibility.patient.title',
+    info: 'order.account.selection.eligibility.patient.info',
     requirements: [
-      "The covered entity has established a relationship with the patient, with records of the patient's health care maintained by the covered entity.",
-      'The patient receives health care services from a professional who is employed by the covered entity or provides services under contractual arrangement with the covered entity.'
+      'order.account.selection.eligibility.patient.requirement1',
+      'order.account.selection.eligibility.patient.requirement2'
     ]
   },
   {
-    title: 'Facility Eligibility Requirements',
-    info: 'For a facility to be eligible to participate in the 340B program, it must:',
+    title: 'order.account.selection.eligibility.facility.title',
+    info: 'order.account.selection.eligibility.facility.info',
     requirements: [
-      'Be registered in the 340B Office of Pharmacy Affairs Information System (OPAIS).',
-      "For hospital outpatient facilities, be listed as reimbursable on the hospital's most recently filed Medicare cost report."
+      'order.account.selection.eligibility.facility.requirement1',
+      'order.account.selection.eligibility.facility.requirement2'
     ]
   },
   {
-    title: 'Compliance Requirements',
+    title: 'order.account.selection.compliance.requirements.title',
     requirements: [
-      'Covered entities must maintain auditable records that demonstrate compliance with all 340B program requirements, including patient eligibility.'
+      'order.account.selection.compliance.requirements.requirement1'
     ]
   }
 ];

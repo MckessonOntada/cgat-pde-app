@@ -202,7 +202,7 @@ const AccountSelectionUserGuide = ({
                   <div className="styled-heading">
                     <Heading as="h4">{t(section.title)}</Heading>
                   </div>
-                  {section.info && <p>{section.info}</p>}
+                  {section.info && <p>{t(section.info)}</p>}
                   <ol className="details-info">
                     {section.requirements.map((detail, idx) => (
                       <li className="details-li" key={idx}>

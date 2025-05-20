@@ -601,5 +601,27 @@ export const MessageEs = {
   'order.account.selection.340b.checkboxinfo2':
     'S_The prescribed therapy will be administered to an eligible patient at a qualified outpatient facility',
   'order.no.cost.therapy.info':
-    'S_No Cost Therapy program provided for eligible patients under manufacturer-supported programs.'
+    'S_No Cost Therapy program provided for eligible patients under manufacturer-supported programs.',
+  'order.account.selection.eligibility.patient.title':
+    'S_Patient Eligibility Requirements',
+  'order.account.selection.eligibility.patient.info':
+    'S_An individual is a "340B eligible patient" only if ALL of the following criteria are met:',
+  'order.account.selection.eligibility.patient.requirement1':
+    "S_The covered entity has established a relationship with the patient, with records of the patient's health care maintained by the covered entity.",
+  'order.account.selection.eligibility.patient.requirement2':
+    'S_The patient receives health care services from a professional who is employed by the covered entity or provides services under contractual arrangement with the covered entity.',
+
+  'order.account.selection.eligibility.facility.title':
+    'S_Facility Eligibility Requirements',
+  'order.account.selection.eligibility.facility.info':
+    'S_For a facility to be eligible to participate in the 340B program, it must:',
+  'order.account.selection.eligibility.facility.requirement1':
+    'S_Be registered in the 340B Office of Pharmacy Affairs Information System (OPAIS).',
+  'order.account.selection.eligibility.facility.requirement2':
+    "S_For hospital outpatient facilities, be listed as reimbursable on the hospital's most recently filed Medicare cost report.",
+
+  'order.account.selection.compliance.requirements.title':
+    'S_Compliance Requirements',
+  'order.account.selection.compliance.requirements.requirement1':
+    'S_Covered entities must maintain auditable records that demonstrate compliance with all 340B program requirements, including patient eligibility.'
 };
