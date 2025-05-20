@@ -30,7 +30,12 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
 
   // Organization List configuration
   const orgParams = () => {
-    return { pageNo: 0, pageSize: ACCOUNTS_PER_SEARCH, query: searchOrgText };
+    return {
+      pageNo: 0,
+      pageSize: ACCOUNTS_PER_SEARCH,
+      query: searchOrgText,
+      status: 'active'
+    };
   };
   const { data: organizationOptions, refetch: refetchOrgList } = useQuery({
     queryKey: [searchOrgText],
@@ -85,6 +90,7 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
       pageSize: ACCOUNTS_PER_SEARCH,
       practiceId: selectedOrganization.id,
       partnerFunction: 'SOLD_TO',
+      status: 'active',
       query: searchAccountText,
       ...(enableConfigure ? { channelType: 'ALL' } : {})
     };

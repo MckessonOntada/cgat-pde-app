@@ -29,6 +29,7 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
   const orgPayload = {
     pageNo: 0,
     pageSize: ACCOUNTS_PER_SEARCH,
+    status: 'active',
     query: searchOrgText
   };
   const { data: organizationOptions, refetch: refetchOrgs } = useQuery({
@@ -67,6 +68,7 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
     pageNo: 0,
     pageSize: ACCOUNTS_PER_SEARCH,
     query: searchAccountText,
+    status: 'active',
     partnerFunction: 'SOLD_TO',
     practiceIdList: practiceIds
   };
