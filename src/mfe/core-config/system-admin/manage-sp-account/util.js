@@ -57,9 +57,7 @@ export const validationSchemaforSPAccount = (t) => {
     //}),
 
     contact: Yup.object({
-      email: Yup.string()
-        .email(t('manageSPAccount.spaccount.inputLabel.email.validate'))
-        .required(t('manageSPAccount.spaccount.inputLabel.email.required')),
+      email: Yup.string().email(t('manageSPAccount.spaccount.inputLabel.email.validate')).required(t('manageSPAccount.spaccount.inputLabel.email.required')),
 
       phone: Yup.string()
         .required(t('manageSPAccount.spaccount.inputLabel.phone.required'))
@@ -112,23 +110,25 @@ export const validationSchemaforSPAccount = (t) => {
   });
 };
 
-export const initialValuesforSPAccount = (data = null) => {
+export const initialValuesforSPAccount = (data = {}) => {
+  const { accountName = '', name = {}, address = {} } = data;
+
   return {
-    accountName: data?.accountName || '',
-    firstName: data?.firstName || data?.name.firstName || '',
-    middleName: data?.middleName || data?.name.middleName || '',
-    lastName: data?.lastName || data?.name.lastName || '',
+    accountName,
+    firstName: name.firstName || '',
+    middleName: name.middleName || '',
+    lastName: name.lastName || '',
     contact: {
-      email: data?.address.email || '',
-      phone: data?.address.telephone || '',
-      fax: data?.address.fax || ''
+      email: address.email || '',
+      phone: address.telephone || '',
+      fax: address.fax || ''
     },
     address: {
-      address1: data?.address?.street || '',
-      address2: data?.address?.street2 || '',
-      city: data?.address?.city || '',
-      state: data?.address?.state || '',
-      zip: data?.address?.zipCode || ''
+      address1: address.street || '',
+      address2: address.street2 || '',
+      city: address.city || '',
+      state: address.state || '',
+      zip: address.zipCode || ''
     }
   };
 };
