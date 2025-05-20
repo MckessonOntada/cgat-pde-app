@@ -8,8 +8,9 @@ import './FilterToolbar.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useNotifications } from '../../context/NotificationsContext';
 
-const FilterToolbar = () => {
+const FilterToolbar = ({ isMobileView }) => {
   const { t } = useTranslate();
+  const elementSize = isMobileView ? 'sm' : 'md';
   const { dropdownOptions, filterState, setFilterState } = useNotifications();
   const [dropdownValue, setDropdownValue] = React.useState(
     filterState.notificationDropdownValue
@@ -43,16 +44,16 @@ const FilterToolbar = () => {
         id="notification-filter-date-range"
         dateRange={filterState.notificationDateRange}
         onChange={setDateRange}
-        size="lg"
+        size={elementSize}
       />
       <Dropdown
         id="notification-filter-dropdown"
         options={dropdownOptions}
         value={filterState.notificationDropdownValue}
         onChange={onDropdownChange}
-        size="lg"
+        size={elementSize}
       />
-      <Button size="lg" variant="secondary" onClick={onApply}>
+      <Button size={elementSize} variant="secondary" onClick={onApply}>
         {t('notifications.cta.apply')}
       </Button>
     </div>

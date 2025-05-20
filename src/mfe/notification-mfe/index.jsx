@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import useWindowSize from '@src/hooks/UseWindowSize';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
 import NotificationLister from './components/NotificationLister/NotificationLister';
@@ -8,13 +9,25 @@ import { useNotifications } from './context/NotificationsContext';
 import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
 import './index.scss';
 
+const TABLET_BREAKPOINT = 768;
+
 const Notifications = () => {
+  const windowSize = useWindowSize();
+  const isMobileView = windowSize.width < TABLET_BREAKPOINT;
   const { t } = useTranslate();
+
+  const elementSize = isMobileView ? 'sm' : 'md';
 
   const { notificationsCount } = useNotifications();
 
+  const [isDetailView, setIsDetailView] = useState(false);
+
   const onBackTo = () => {
-    window.history.back();
+    if (!isMobileView) {
+      window.history.back();
+    } else {
+      isDetailView ? setIsDetailView(false) : window.history.back();
+    }
   };
 
   return (
@@ -27,8 +40,8 @@ const Notifications = () => {
               variant="tertiary"
               Icon={IconArrowLeft}
               onClick={onBackTo}
-              size="md">
-              {t('notifications.cta.back')}
+              size={elementSize}>
+              {isMobileView ? t('notifications.cta.backMobile') : t('notifications.cta.back')}
             </Button>
           </div>
           <div className="notifications-header">
@@ -38,7 +51,7 @@ const Notifications = () => {
                 <span className="count">({notificationsCount})</span>
               </Heading>
             </div>
-            <FilterToolbar />
+            <FilterToolbar isMobileView={isMobileView} />
           </div>
           <div className="notifications-info">
             <Alert
@@ -48,14 +61,27 @@ const Notifications = () => {
               size="sm"
             />
           </div>
-          <div className="notifications-content">
+          {!isMobileView ? (
+            <div className="notifications-content">
+              <div className="notifications-list">
+                <NotificationLister isMobileView={isMobileView} />
+              </div>
+              <div className="notification-detail">
+                <NotificationViewer isMobileView={isMobileView} />
+              </div>
+            </div>
+          ) : !isDetailView ? (
             <div className="notifications-list">
-              <NotificationLister />
+              <NotificationLister
+                isMobileView={isMobileView}
+                setIsDetailView={setIsDetailView}
+              />
             </div>
+          ) : (
             <div className="notification-detail">
-              <NotificationViewer />
+              <NotificationViewer isMobileView={isMobileView} />
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

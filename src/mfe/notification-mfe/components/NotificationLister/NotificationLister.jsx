@@ -5,9 +5,15 @@ import { CustomCard, Button } from '@mckesson/mcp-component-library';
 import './NotificationLister.scss';
 import { useNotifications } from '../../context/NotificationsContext';
 
-const NotificationLister = ({ isDrawerView = false, closeDrawer }) => {
+const NotificationLister = ({
+  isDrawerView = false,
+  closeDrawer,
+  isMobileView,
+  setIsDetailView
+}) => {
   const { t } = useTranslate();
   const navigate = useNavigate();
+  const elementSize = isMobileView ? 'sm' : 'md';
 
   const {
     notifications,
@@ -32,12 +38,15 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer }) => {
       if (typeof closeDrawer === 'function') closeDrawer();
       navigate('/notifications');
     }
+    if (isMobileView && setIsDetailView) {
+     setIsDetailView(true);
+    }
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (notification) => (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      handleClick();
+      handleClick(notification);
     }
   };
 
@@ -54,7 +63,7 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer }) => {
           <Button
             id="mark-all-btn"
             variant="tertiary"
-            size="md"
+            size={elementSize}
             onClick={markAllNotificationsAsRead}>
             {t('notifications.cta.markAll')}
           </Button>
@@ -63,7 +72,7 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer }) => {
       <div className="notification-lister-content">
         {displayedNotifications.map((notification) => {
           const isActive =
-            selectedNotification && selectedNotification.id === notification.id;
+            !isMobileView && selectedNotification && selectedNotification.id === notification.id;
           return (
             <div
               key={notification.id}
@@ -72,7 +81,7 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer }) => {
               aria-pressed={isActive}
               className="notification-list-card-wrapper"
               onClick={() => handleClick(notification)}
-              onKeyDown={handleKeyDown}>
+              onKeyDown={handleKeyDown(notification)}>
               <CustomCard
                 className={`notification-list-card${
                   !isDrawerView && isActive ? ' active' : ''

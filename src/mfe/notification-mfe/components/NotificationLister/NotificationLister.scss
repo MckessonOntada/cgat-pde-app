@@ -1,3 +1,5 @@
+@use "../../../../assets/styles/abstracts/mixins";
+
 .notification-lister-container {
     display: flex;
     flex-direction: column;
@@ -30,36 +32,26 @@
         max-height: 912px;
         overflow-y: auto;
 
-        // /* Custom scrollbar styles: 8px width, invisible arrows */
-        // scrollbar-width: thin;
-        // scrollbar-color: #bfc9d9 transparent;
+        @media (max-width: 767px) {
+            /* Hide scrollbar for all browsers */
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE and Edge */
 
-        // &::-webkit-scrollbar {
-        //     width: 8px;
-        //     background: #f4f6fa;
-        // }
+            &::-webkit-scrollbar {
+                display: none;
+                /* Chrome, Safari, and Opera */
+            }
+        }
 
-        // // Fade effect on top and bottom when scrolling
-        // position: relative;
+        @include mixins.respond(md) {
+            width: 300px;
 
-        // &::-webkit-scrollbar-thumb {
-        //     background: #bfc9d9;
-        //     border-radius: 8px;
-        // }
-
-        // &::-webkit-scrollbar-thumb:hover {
-        //     background: #a5b3c9;
-        // }
-
-        // &::-webkit-scrollbar-corner {
-        //     background: #f4f6fa;
-        // }
-
-        // &::-webkit-scrollbar-button {
-        //     display: none;
-        //     height: 0;
-        //     width: 0;
-        // }
+            @include mixins.respond(lg) {
+                width: auto;
+            }
+        }
 
         .notification-list-card {
             display: flex;
