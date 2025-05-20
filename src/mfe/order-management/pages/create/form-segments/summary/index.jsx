@@ -47,6 +47,7 @@ import dayjs from 'dayjs';
 import { TherapyDetailsConstantsForBB } from '../therapy-selection/assets/constants/TherapyDetailsConstants';
 import TherapyDetails from '@src/components/therapyDetails/TherapyDetails';
 import { FooterContext } from '@src/components/footer/FooterContext';
+import InfoModel from '@src/components/InfoModel/indix';
 
 const ALERT_CONTAINER_ID = 'summary-alert-container';
 const BUTTON_ACTIONS = {
@@ -1425,11 +1426,12 @@ const Summary = () => {
                     ]}
                     size="md"
                   />
-                  <Tooltip body={'This will create a No Cost Therapy order'}>
-                    <div className={styles['info-icon']}>
-                      <InfoIcon />
+                  <InfoModel
+                    title={t('messages.papOrderPlacementAcknowledgement')}>
+                    <div className="MCP-modal-body">
+                      {t('order.no.cost.therapy.info')}
                     </div>
-                  </Tooltip>
+                  </InfoModel>
                 </div>
               )}
             </div>
