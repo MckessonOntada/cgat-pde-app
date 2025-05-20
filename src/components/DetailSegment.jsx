@@ -24,7 +24,7 @@ export default function DetailSegment({
           ) : typeof calculatedTooltip === 'string' ? (
             <Tooltip
               body={typeof calculatedTooltip === 'string' && calculatedTooltip}>
-              {value}
+              {typeof value === 'string' ? <div>{value}</div> : value}
             </Tooltip>
           ) : (
             value
