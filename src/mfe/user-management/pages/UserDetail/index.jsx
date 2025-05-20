@@ -75,6 +75,7 @@ const UserDetail = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDeactivate, setIsDeactivate] = useState(false);
   const [isProvisioned, setIsProvisioned] = useState(false);
+  const [isConsentError, setIsConsentError] = useState(false);
   const [isConsentModalOpen, setIsConsentModalOpen] = React.useState(false);
   const isImpersonateLoggedIn = Boolean(AuthUtils.getImpersonateId());
   const isSelf = userId === AuthUtils.getUserId();
@@ -165,15 +166,16 @@ const UserDetail = () => {
 
   useEffect(() => {
     if (!isSuccess) return;
+    if (!isSystemAdminView) {
+      setIsAlertVisible(true);
+      setAlertDescription(
+        `${location.state.recCount} ${t('messages.accountlinkSuccess')}.`
+      );
 
-    setIsAlertVisible(true);
-    setAlertDescription(
-      `${location.state.recCount} ${t('messages.accountlinkSuccess')}.`
-    );
+      const timer = setTimeout(handleAlertClose, 10000);
 
-    const timer = setTimeout(handleAlertClose, 10000);
-
-    return () => clearTimeout(timer);
+      return () => clearTimeout(timer);
+    }
   }, [isSuccess, location.pathname, location.state, navigate]);
 
   const handleAlertClose = () => {
@@ -312,6 +314,7 @@ const UserDetail = () => {
       setDuration(10000);
       setAlertDescription(t('errors.default'));
       setIsConsentModalOpen(false);
+      setIsConsentError(true);
     }
   });
   const handleOnConsentConfirm = async (selectedUserId) => {
@@ -368,15 +371,14 @@ const UserDetail = () => {
           )}
         </Button>
       </div>
-      {((isDeactivate || isProvisioned) && isAlertVisible) ||
-        (isAlertVisible && (
-          <Alert
-            description={alertDescription}
-            onClose={handleAlertClose}
-            type={alertType}
-            duration={duration}
-          />
-        ))}
+      {(isDeactivate || isProvisioned || isConsentError) && isAlertVisible && (
+        <Alert
+          description={alertDescription}
+          onClose={handleAlertClose}
+          type={alertType}
+          duration={duration}
+        />
+      )}
       <div className="MCP-module-body">
         <ModuleHeader
           heading={
@@ -672,9 +674,9 @@ const UserDetail = () => {
                 </PermittedComponent>
               }
             />
-            {isSuccess && isAlertVisible && (
+            {isSuccess && isAlertVisible && !isSystemAdminView && (
               <Alert
-                description={alertDescription} //Number should be dynamic --To Do
+                description={alertDescription}
                 onClose={handleAlertClose}
                 type="success"
                 duration={10000}
