@@ -31,5 +31,27 @@ export const ConfigurationMessagesES = {
 
   'button.caption.confirm': 'S_Confirm',
   'button.caption.cancel': 'S_Cancel',
-  'SPCatalog.deLinkSuccess': 'S_Catalog(s) unlinked successfully.'
+  'SPCatalog.deLinkSuccess': 'S_Catalog(s) unlinked successfully.',
+
+  'provider.sp.account.unlinkSuccessfully': 'S_SP Account Unlink Successfully.',
+  'provider.sp.account.unabletounlink': 'S_Unable to unlink SP Account.',
+  'provider.sp.account.selectSP': 'S_Please select SP Accounts.',
+  'provider.sp.account.linkSP_1':
+    'S_Provider(s) has been successfully linked with ',
+  'provider.sp.account.linkSP_2': 'S_SP Account.',
+  'provider.sp.account.unableToLink': 'S_Unable to link SP Account(s).',
+  'provider.sp.account.linkSPAccounts': 'S_Link SP Accounts',
+  'provider.sp.account.fax': 'S_Fax Number',
+  'provider.sp.account.email': 'S_Email-ID',
+  'manageSPAccount.error.message.failedToOpenSPDetails':
+    'S_Failed to open SA Account details. Please try again.',
+  'provider.sp.account.wantToUnlink_account':
+    'S_Are you sure you want to unlink this SP Account?',
+  'provider.sp.account.searchPlaceholderLinkSp':
+    'S_Search by Account Name, Number,...',
+  'provider.sp.account.spAccountListing': 'SP Account Listing',
+  'provider.sp.account.needToAddAccount':
+    'S_You need to add account to see data in this table',
+  'provider.sp.account.haslinkedsuccessfully':
+    'S_SP Account(s) has been linked successfully.'
 };

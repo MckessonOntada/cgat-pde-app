@@ -16,6 +16,7 @@ import LinkSPDetailsDrawer from './LinkSPDetailsDrawer';
 import { useMutation } from 'react-query';
 import AuthUtils from '@src/util/AuthUtils';
 import AccountService from '@src/api/commonService/AccountService';
+import useSessionFeatures from '@src/hooks/useSessionFeatures';
 
 const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
   const [tableHeight, setTableHeight] = useState('100%');
@@ -25,6 +26,10 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
   const practiceId = AuthUtils.getPracticeId();
   const { t } = useTranslate();
   const navigate = useNavigate();
+  const {
+    organization: { selectedOrganization }
+  } = useSessionFeatures();
+
   useEffect(() => {
     setTimeout(() => {
       let eleHeight = document.getElementById(
@@ -35,25 +40,32 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
   }, []);
 
   const formatSPDetails = useCallback((data) => {
-    console.log(data, '====');
-
-    const { accountName, accountNumber, name, phone, address } = data;
+    const { accountName, accountNumber, name, address } = data;
     return [
       {
         sectionHeading: 'manageSPMaterial.drawer.Details',
         sectionData: [
-          { label: 'Organization', value: '' },
-          { label: 'Account Name', value: accountName },
-          { label: 'Account Number', value: accountNumber }
+          {
+            label: 'manageSPAccount.heading.organization',
+            value: selectedOrganization.label
+          },
+          { label: 'labels.accountName', value: accountName },
+          {
+            label: 'paymentInvoices.CS.table.accountnumber',
+            value: accountNumber
+          }
         ]
       },
       {
         sectionHeading: 'provider.contactDetails',
         sectionData: [
-          { label: 'Contact Person Name', value: name.fullName },
-          { label: 'Email-ID', value: address.email },
-          { label: 'Phone Number', value: address.telephone },
-          { label: 'Fax Number', value: address.fax }
+          {
+            label: 'manageSPAccount.labels.contactPerson',
+            value: name.fullName
+          },
+          { label: 'provider.sp.account.email', value: address.email },
+          { label: 'provider.phone', value: address.telephone },
+          { label: 'provider.sp.account.fax', value: address.fax }
         ]
       }
     ];
@@ -71,7 +83,7 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
       onError: () => {
         addNotification({
           type: 'error',
-          description: t('manageSPAccount.error.message.failedToOpenDetails')
+          description: t('manageSPAccount.error.message.failedToOpenSPDetails')
         });
       }
     }
@@ -92,7 +104,7 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
       title: t('messages.header.confirmation'),
       bodyContent: (
         <div className="MCP-modal-body">
-          <p>{t('Are you sure you want to unlink this SP Account(s)?')}</p>
+          <p>{t('provider.sp.account.wantToUnlink_account')}</p>
         </div>
       ),
       footerActions: {
@@ -151,7 +163,7 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
           onApplyFilters={applyFilters}
           onClearFilters={clearFilters}
           additionalFilters={[]}
-          searchPlaceholder={t('Search by Account Name, Number,...')}
+          searchPlaceholder={t('provider.sp.account.searchPlaceholderLinkSp')}
           actualData={[]}
           initialData={[]}
         />
@@ -174,7 +186,9 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
           }
         />
       )}
-      {isAddSpAccount && <TableHeading heading={'SP Account Listing'} />}
+      {isAddSpAccount && (
+        <TableHeading heading={t('provider.sp.account.spAccountListing')} />
+      )}
 
       <div className={style.accountBox}>
         <div className={style.customTableBox}>
@@ -195,10 +209,8 @@ const SpAccountTable = ({ setSpAccount, handleUnlinkSpAccount }) => {
             noDataComponent={
               <EmptyDataTable
                 image={EmptyDataImage}
-                heading={t('No Accounts found')}
-                description={t(
-                  'You need to add account to see data in this table'
-                )}
+                heading={t('captions.questionnaire.account.emptyTableTitle')}
+                description={t('provider.sp.account.needToAddAccount')}
               />
             }
           />

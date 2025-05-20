@@ -1,4 +1,5 @@
 import AccountService from '@src/api/commonService/AccountService';
+import ProviderService from '@src/api/commonService/ProviderService';
 import { useOrgAccountSelectionContext } from '@src/mfe/order-management/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import { ChannelType } from '@src/mfe/order-management/pages/system-configuration/manage-spaccount/util';
 import AuthUtils from '@src/util/AuthUtils';
@@ -11,7 +12,7 @@ import React, {
   useState
 } from 'react';
 import { useQuery } from 'react-query';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 
 const LinkSpAccountContext = createContext();
 
@@ -52,6 +53,7 @@ export const LinkSpAccountProvider = ({ children }) => {
     return location.pathname.includes('link-sp-accounts');
   }, [location.pathname]);
 
+  const { id: providerId } = useParams();
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
 
   const requestParams = useMemo(
@@ -68,13 +70,16 @@ export const LinkSpAccountProvider = ({ children }) => {
     [filterConfig, paginationConfig.pageNumber, sortConfig]
   );
   const { isLoading, isError, error, data, refetch } = useQuery({
-    queryKey: ['sp-account', requestParams, practiceId],
+    queryKey: ['sp-account', requestParams, practiceId, providerId],
     queryFn: async () => {
       let result;
       if (isAddSpAccount) {
         result = await AccountService.getAccountList(requestParams, practiceId);
       } else {
-        result = await AccountService.getAccountList(requestParams, practiceId);
+        result = await ProviderService.getSpAccountListByProviderId(
+          providerId,
+          requestParams
+        );
       }
       const { content: data, totalElements, totalPages } = result;
       setPaginationConfig((prevConfig) => ({

@@ -152,6 +152,18 @@ async function linkProvidersToAccount(providerIds, accountIds) {
 
   return res.data || {};
 }
+async function getSpAccountListByProviderId(providerId, requestParams) {
+  const url = `${ApiRoutes.ORGANIZATION_BASE()}providers/${providerId}/accounts?${serializeParams(
+    requestParams
+  )}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {
+    'Content-Type': 'application/json'
+  });
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
 const ProviderService = Object.freeze({
   getAllProviders,
   activateProvider,
@@ -160,7 +172,8 @@ const ProviderService = Object.freeze({
   getProviderDetailsById,
   addProvider,
   uploadProvider,
-  linkProvidersToAccount
+  linkProvidersToAccount,
+  getSpAccountListByProviderId
 });
 
 export default ProviderService;
