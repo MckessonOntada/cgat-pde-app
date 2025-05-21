@@ -7,6 +7,8 @@ import Provider from '../pages/create';
 import ProviderDetails from '../pages/view';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import ProtectedRoute from '@src/routes/ProtectedRoute';
+import LinkSpAccount from '../pages/link/LinkSpAccount';
+import { LinkSpAccountProvider } from '../context/LinkSpAccountContext';
 
 const ProviderRouter = () => {
   return (
@@ -48,7 +50,14 @@ const ProviderRouter = () => {
           </ProtectedRoute>
         }
       />
-      <Route path={ROUTE_PATHS.LINK_SP_ACCOUNTS} element={<div>Waiting</div>} />
+      <Route
+        path={ROUTE_PATHS.LINK_SP_ACCOUNTS}
+        element={
+          <LinkSpAccountProvider>
+            <LinkSpAccount />
+          </LinkSpAccountProvider>
+        }
+      />
     </Routes>
   );
 };

@@ -184,7 +184,7 @@ export const getColumns = (add) => {
     if (value === 'edit') {
       navigate(`${props.id}/edit`);
     } else if (value === 'linkSPAccount') {
-      navigate(`link-sp-account?accounts=${props.id}`);
+      navigate(`link-sp-accounts?accounts=${props.id}`);
     } else if (value === 'activate' || value === 'deactivate') {
       confirmDeactivation(props, value);
     }
