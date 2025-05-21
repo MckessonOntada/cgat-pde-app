@@ -7,7 +7,8 @@ import {
   Dropdown,
   Button,
   Paginate,
-  Loader
+  Loader,
+  IconButton
 } from '@mckesson/mcp-component-library';
 import './assets/DataTableCssOverride.scss';
 import {
@@ -23,6 +24,8 @@ import CommonUtils from '@src/util/CommonUtils';
 import CustomCard from './CustomCards';
 import { ReactComponent as arrowThickUp } from './assets/svg/arrowThickUp.svg';
 import TableCardView from './TableCardView';
+import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
+import { ReactComponent as IconArrowRight } from '@src/assets/svg/arrow-right.svg';
 
 export const CustomDataTable = (props) => {
   const {
@@ -46,6 +49,7 @@ export const CustomDataTable = (props) => {
     recordsPerPage,
     sortIcon,
     pagination,
+    StepperControls,
     progressPending,
     progressComponent,
     handleRowClicked,
@@ -139,7 +143,36 @@ export const CustomDataTable = (props) => {
       );
     }
   };
-
+  const renderStepperControls = () => {
+    if (CommonUtils.isNonEmptyArray(data) && totalRocords > recordsPerPage) {
+      console.log('currentPage', currentPage);
+      console.log('totalPageCount', totalPageCount);
+      console.log('recordsPerPage', recordsPerPage);
+      return (
+        <div className={styles.stepperControlsWrap}>
+          <IconButton
+            label={'Pre'}
+            size="lg"
+            iconButton={false}
+            textButton={true}
+            Icon={IconArrowLeft}
+            onClick={(e) => pageChangeEvent(e, currentPage - 1)}
+            disabled={currentPage <= 1}
+          />
+          <IconButton
+            label={'Next'}
+            size="lg"
+            iconButton={false}
+            iconPosition='right'
+            textButton={true}
+            Icon={IconArrowRight}
+            onClick={(e) => pageChangeEvent(e, currentPage + 1)}
+            disabled={currentPage >= totalPageCount}
+          />
+        </div>
+      );
+    }
+  };
   const getConditionalRowStyles = () => {
     if (!selectedRowId && !selectedRowIds) {
       return [];
@@ -210,6 +243,7 @@ export const CustomDataTable = (props) => {
 
       {/* Since we are already having pagination component, we are using our custom pagination*/}
       {pagination && renderPagination()}
+      {StepperControls && renderStepperControls()}
     </>
   );
 };

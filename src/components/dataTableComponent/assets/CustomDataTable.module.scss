@@ -151,10 +151,15 @@
 }
 .cardSortIconButton {
   margin-bottom: var(--spacing-01);
-  margin-right:  var(--spacing-01);
+  margin-right: var(--spacing-01);
 }
 .cardSortIconButtonRotated {
   margin-bottom: var(--spacing-01);
-  margin-right:  var(--spacing-01);
+  margin-right: var(--spacing-01);
   transform: rotate(180deg);
+}
+.stepperControlsWrap {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
 }
