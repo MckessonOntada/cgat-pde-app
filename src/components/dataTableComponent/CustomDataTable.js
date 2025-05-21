@@ -149,22 +149,22 @@ export const CustomDataTable = (props) => {
       return (
         <div className={styles.stepperControlsWrap}>
           <IconButton
-            label={'Pre'}
+            label={'< Pre'}
             size="sm"
             iconButton={false}
             textButton={true}
             Icon={''}
-            onClick={() => {}}
-            disabled={false}
+            onClick={(e) => pageChangeEvent(e, currentPage - 1)}
+            disabled={currentPage <= 1}
           />
           <IconButton
-            label={'Next'}
+            label={'Next >'}
             size="sm"
             iconButton={false}
             textButton={true}
             Icon={''}
-            onClick={() => {}}
-            disabled={false}
+            onClick={(e) => pageChangeEvent(e, currentPage + 1)}
+            disabled={currentPage >= totalPageCount}
           />
         </div>
       );

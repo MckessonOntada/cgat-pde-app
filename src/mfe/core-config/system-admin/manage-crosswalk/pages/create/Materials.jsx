@@ -144,7 +144,8 @@ const Materials = () => {
           data={data}
           currentPage={pagination.pageNo}
           totalPageCount={pagination.totalPages}
-          pagination={true}
+          pagination={false}
+          StepperControls={true}
           totalRocords={pagination.totalElements}
           onSortIconClick={handleOnSort}
           handleChangePage={(_event, pageNumber) => changePage(pageNumber)}
