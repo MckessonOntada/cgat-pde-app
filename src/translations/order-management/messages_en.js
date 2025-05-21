@@ -44,8 +44,7 @@ export const MessageEn = {
   'captions.lblRejectOrder': 'Reject Order',
   'captions.reasonForRejection': 'Reason For Rejection',
   'captions.lblReason': 'Reason',
-  'captions.emptyTableSubtitle':
-    'You need to add Order to see data in this table.',
+  'captions.emptyTableSubtitle': 'You need to add Order to see data in this table.',
   'captions.btnSelectYourAccount': 'Select Your Account',
   'labels.orderDetails': 'Order Details',
   'labels.variant': 'Variant',
@@ -62,10 +61,8 @@ export const MessageEn = {
   'labels.results': 'results',
   'labels.perPage': 'Per page',
   'labels.needAssistanceSelectingAccount': 'Need assistance',
-  'labels.orderAssistance.selectChannel':
-    'Please select channel to place the order.',
-  'labels.orderAssistance.selectProgram':
-    'Are you here to order through any of the below programs?',
+  'labels.orderAssistance.selectChannel': 'Please select channel to place the order.',
+  'labels.orderAssistance.selectProgram': 'Are you here to order through any of the below programs?',
   'labels.therapySelection': 'Therapy Selection',
   'labels.patientDetails': 'Patient Details',
   'labels.additionalDetails': 'Additional Details',
@@ -133,25 +130,17 @@ export const MessageEn = {
   'labels.COIIdRequired': 'COI ID is required',
   'labels.orderQuantityRequired': 'Order Quantity is required',
   'labels.slotNumberRequired': 'Slot Number is required',
-  'labels.slotNumberLengthError':
-    'Slot Number length can not be greater than 20',
+  'labels.slotNumberLengthError': 'Slot Number length can not be greater than 20',
   'labels.PONumberRequired': 'PO Number is required',
   'labels.PONumberLengthError': 'PO Number can not be greater than 35',
   'labels.DateOfAdministrationRequired': 'Date of Administration is required',
-  'labels.dateOfAdministrationFutureDateOnly':
-    'Date of Administration must be in the future',
-  'controls.placeholder.searchOrderPlaceholder':
-    'Search by Order ID, Patient name, Account',
-  'controls.placeholder.searchSPOrderPlaceholder':
-    'Search by Order ID, Therapy, Submitted By',
-  'controls.placeholders.autoSearch':
-    'Search by Order ID, Patient name, Account',
-  'controls.placeholder.shippingAddress.search':
-    'Search by Account name or Number',
-  'controls.placeholder.therapySelection.search':
-    'Search Therapy by Name, NDC...',
-  'controls.placeholder.material.search':
-    'Search by Name, NDC, Material Number...',
+  'labels.dateOfAdministrationFutureDateOnly': 'Date of Administration must be in the future',
+  'controls.placeholder.searchOrderPlaceholder': 'Search by Order ID, Patient name, Account',
+  'controls.placeholder.searchSPOrderPlaceholder': 'Search by Order ID, Therapy, Submitted By',
+  'controls.placeholders.autoSearch': 'Search by Order ID, Patient name, Account',
+  'controls.placeholder.shippingAddress.search': 'Search by Account name or Number',
+  'controls.placeholder.therapySelection.search': 'Search Therapy by Name, NDC...',
+  'controls.placeholder.material.search': 'Search by Name, NDC, Material Number...',
   'controls.placeholder.Accounts.search': 'Search by Account Name, NDC, UDI...',
   'controls.placeholder.Catalogs.search': 'Search by Catalog Name, NDC, UDI...',
   'controls.placeholder.selectOption': 'Select Option',
@@ -187,8 +176,7 @@ export const MessageEn = {
   'table.actions.resumeOrder': 'Resume Order',
   'table.actions.viewDetail': 'View Detail',
   'table.labels.therapySelectionNoDataAvailable': 'No data available',
-  'table.labels.therapySelectionNoDataAvailableDescription':
-    'No therapy found, please try adding one',
+  'table.labels.therapySelectionNoDataAvailableDescription': 'No therapy found, please try adding one',
   'messages.noShippingAddressFound': 'No shipping address found',
   'labels.orderActions.resume': 'Resume',
   'labels.orderActions.delete': 'Delete',
@@ -201,10 +189,8 @@ export const MessageEn = {
   'labels.orderActions.assignToMe': 'Assign to me',
   'labels.orderActions.unassignToMe': 'Unassign',
   'labels.orderActions.approve': 'Approve Order',
-  'labels.orderActions.deletemessage':
-    'Are you sure you wish to Discard this Order ?',
-  'labels.orderActions.cancelmessage':
-    'Please reach out to customer support at 1800XXXXXXX for any updation or cancellation in the order.',
+  'labels.orderActions.deletemessage': 'Are you sure you wish to Discard this Order ?',
+  'labels.orderActions.cancelmessage': 'Please reach out to customer support at 1800XXXXXXX for any updation or cancellation in the order.',
   'labels.orderActions.OK': 'OK',
   'labels.information': 'Information',
   'labels.confirmation': 'Confirmation',
@@ -261,16 +247,12 @@ export const MessageEn = {
   'labels.therapyDescription': 'Therapy Description',
   'labels.therapyNumber': 'Therapy Number',
   'labels.COI_IdExceedDigits': 'COI Id cannot exceed 10 characters.',
-  'labels.COI_IdMustValidNumber':
-    'COI Id is not valid, it must contains alphabets and number',
+  'labels.COI_IdMustValidNumber': 'COI Id is not valid, it must contains alphabets and number',
   'labels.OrderQuantityShouldPositive': 'Order quantity must be a number',
-  'labels.OrderQuantityShouldGreaterThanZero':
-    'Order quantity must be greater than zero',
+  'labels.OrderQuantityShouldGreaterThanZero': 'Order quantity must be greater than zero',
   'labels.OrderQuantityMustBeInteger': 'Order quantity must be an integer',
-  'labels.slotNumberExtraSpaceError':
-    'Slot number must not contain leading or trailing spaces',
-  'labels.poNumberExtraSpaceError':
-    'PO Number must not contain leading or trailing spaces',
+  'labels.slotNumberExtraSpaceError': 'Slot number must not contain leading or trailing spaces',
+  'labels.poNumberExtraSpaceError': 'PO Number must not contain leading or trailing spaces',
   'labels.status.in_draft': 'In Draft',
   'labels.status.approval_pending': 'Approval Pending',
   'labels.status.submitted': 'Submitted',
@@ -295,42 +277,29 @@ export const MessageEn = {
   'label.no': 'No',
   'label.ok': 'Ok',
   'messages.formNotFound': 'Form Not Found',
-  'messages.orderSuccessApprovalPending':
-    'Your order has been submitted successfully and is now pending for approval.',
-  'messages.orderApprovalSuccess':
-    'Your order has been approved successfully and is in line for the fulfillment.',
-  'messages.orderSuccess':
-    'Your order has been submitted successfully and is in line for the fulfillment.',
-  'messages.orderSuccessApprovalPending':
-    'Your order has been submitted successfully and is now pending for approval.',
-  'messages.orderApprovalSuccess':
-    'Your order has been approved & submitted successfully and is in line for the fulfillment.',
+  'messages.orderSuccessApprovalPending': 'Your order has been submitted successfully and is now pending for approval.',
+  'messages.orderApprovalSuccess': 'Your order has been approved successfully and is in line for the fulfillment.',
+  'messages.orderSuccess': 'Your order has been submitted successfully and is in line for the fulfillment.',
+  'messages.orderSuccessApprovalPending': 'Your order has been submitted successfully and is now pending for approval.',
+  'messages.orderApprovalSuccess': 'Your order has been approved & submitted successfully and is in line for the fulfillment.',
   'messages.accountSelect': 'Please select the account to buy the therapy for',
-  'messages.selectAnAccountForShippingAddress':
-    'Select an account to view the list of shipping addresses',
-  'messages.orderPlacementAcknowledgement':
-    'I hereby acknowledge that the information mentioned above is correct. All details provided are accurate.',
+  'messages.selectAnAccountForShippingAddress': 'Select an account to view the list of shipping addresses',
+  'messages.orderPlacementAcknowledgement': 'I hereby acknowledge that the information mentioned above is correct. All details provided are accurate.',
   'messages.papOrderPlacementAcknowledgement': 'No Cost Therapy Order',
-  'messages.variantAcknowledgement':
-    'Please acknowledge that you have verified and selected the correct Variant.',
-  'messages.selectAccountToBuyTherapy':
-    'Please select the account to buy the therapy for',
+  'messages.variantAcknowledgement': 'Please acknowledge that you have verified and selected the correct Variant.',
+  'messages.selectAccountToBuyTherapy': 'Please select the account to buy the therapy for',
   'messages.selectAccount': 'Please select account',
   'messages.selectshippingAddress': 'Please select the shipping address',
-  'messages.patientConcent':
-    'Please acknowledge if Patient Consent has been taken',
-  'messages.selectAcknowledgementError':
-    'Please select checkbox to acknowledge the order',
+  'messages.patientConcent': 'Please acknowledge if Patient Consent has been taken',
+  'messages.selectAcknowledgementError': 'Please select checkbox to acknowledge the order',
   'messages.inventoryCheck.success': 'The selected therapy is in stock.',
   'messages.inventoryCheck.error':
     'The selected therapy is not in stock right now, however you can place the order. The order will be fulfilled once the therapy is available in stock',
   'modal.action.continue': 'Continue',
   'modal.action.cancel': 'Cancel',
   'modal.title.duplicateOrder': 'Duplicate Order',
-  'modal.body.duplicateOrder.line_1':
-    'This therapy has already been ordered for this patient (Order ID #$order_id).',
-  'modal.body.duplicateOrder.line_2':
-    'Please confirm if you still want to place this order.',
+  'modal.body.duplicateOrder.line_1': 'This therapy has already been ordered for this patient (Order ID #$order_id).',
+  'modal.body.duplicateOrder.line_2': 'Please confirm if you still want to place this order.',
   // order management patient details screen
 
   'orderManagement.patientDetails.inputLabel.phone_number': 'Phone Number',
@@ -341,8 +310,7 @@ export const MessageEn = {
   'orderManagement.patientDetails.inputLabel.city': 'City',
   'orderManagement.patientDetails.inputLabel.zip': 'Zip Code',
   'orderManagement.patientDetails.inputLabel.state': 'State',
-  'orderManagement.patientDetails.inputLabel.providerDetails':
-    'Provider Details',
+  'orderManagement.patientDetails.inputLabel.providerDetails': 'Provider Details',
   'orderManagement.patientDetails.inputLabel.first_name': 'First Name',
   'orderManagement.patientDetails.inputLabel.middle_name': 'Middle Name',
   'orderManagement.patientDetails.inputLabel.last_name': 'Last Name',
@@ -350,109 +318,73 @@ export const MessageEn = {
   'orderManagement.patientDetails.inputLabel.homePhone': 'Home Phone',
   'orderManagement.patientDetails.inputLabel.mobileNumber': 'Mobile Number',
   'orderManagement.patientDetails.inputLabel.workPhone': 'Work Phone',
-  'orderManagement.patientDetails.inputLabel.preferredMethodOfContact':
-    'Preferred Method of Contact',
+  'orderManagement.patientDetails.inputLabel.preferredMethodOfContact': 'Preferred Method of Contact',
 
-  'orderManagement.patientDetails.inputLabel.patientIdentifier':
-    'Manufacturer Patient ID',
+  'orderManagement.patientDetails.inputLabel.patientIdentifier': 'Manufacturer Patient ID',
 
   'orderManagement.patientDetails.inputLabel.mrn': 'MRN',
   'orderManagement.patientDetails.contact_details': 'Contact Details',
   'orderManagement.patientDetails.address_details': 'Address Details',
   'orderManagement.patientDetails.patient_details': 'Patient Details',
   'orderManagement.patientDetails.required': 'Required',
-  'orderManagement.patientDetails.validation.first_name_max':
-    'First name cannot exceed 50 characters.',
-  'orderManagement.patientDetails.validation.middle_name_max':
-    'Middle name cannot exceed 50 characters.',
-  'orderManagement.patientDetails.validation.last_name_max':
-    'Last name cannot exceed 50 characters.',
-  'orderManagement.patientDetails.validation.invalid_email':
-    'Please enter a valid email address.',
-  'orderManagement.patientDetails.dob.must.be.past':
-    'Date of Birth must be in the Past.',
+  'orderManagement.patientDetails.validation.first_name_max': 'First name cannot exceed 50 characters.',
+  'orderManagement.patientDetails.validation.middle_name_max': 'Middle name cannot exceed 50 characters.',
+  'orderManagement.patientDetails.validation.last_name_max': 'Last name cannot exceed 50 characters.',
+  'orderManagement.patientDetails.validation.invalid_email': 'Please enter a valid email address.',
+  'orderManagement.patientDetails.dob.must.be.past': 'Date of Birth must be in the Past.',
   'orderManagement.patientDetails.validation.invalid_date': 'Invalid date',
-  'orderManagement.patientDetails.validation.email_max':
-    'Email cannot exceed 50 characters.',
-  'orderManagement.patientDetails.validation.phone_invalid':
-    'Please enter a valid phone number.',
-  'orderManagement.patientDetails.validation.phone_max':
-    'Phone number cannot exceed 15 digits.',
-  'orderManagement.patientDetails.validation.address_1_max':
-    'Address Line 1 cannot exceed 100 characters.',
-  'orderManagement.patientDetails.validation.address_2_max':
-    'Address Line 2 cannot exceed 100 characters.',
-  'orderManagement.patientDetails.validation.city_max':
-    'City cannot exceed 15 characters.',
-  'orderManagement.patientDetails.validation.zip_invalid':
-    'Please enter a valid zip code.',
-  'orderManagement.patientDetails.validation.zip_max':
-    'Zip code cannot exceed 8 digits.',
-  'orderManagement.patientDetails.validation.patient_identifier_required':
-    'Patient identifier is required.',
+  'orderManagement.patientDetails.validation.email_max': 'Email cannot exceed 50 characters.',
+  'orderManagement.patientDetails.validation.phone_invalid': 'Please enter a valid phone number.',
+  'orderManagement.patientDetails.validation.phone_max': 'Phone number cannot exceed 15 digits.',
+  'orderManagement.patientDetails.validation.address_1_max': 'Address Line 1 cannot exceed 100 characters.',
+  'orderManagement.patientDetails.validation.address_2_max': 'Address Line 2 cannot exceed 100 characters.',
+  'orderManagement.patientDetails.validation.city_max': 'City cannot exceed 15 characters.',
+  'orderManagement.patientDetails.validation.zip_invalid': 'Please enter a valid zip code.',
+  'orderManagement.patientDetails.validation.zip_max': 'Zip code cannot exceed 8 digits.',
+  'orderManagement.patientDetails.validation.patient_identifier_required': 'Patient identifier is required.',
   'orderManagement.patientDetails.validation.gender': 'Gender is required.',
-  'orderManagement.patientDetails.validation.dateOfBirth':
-    'Date Of Birth is required.',
-  'orderManagement.patientDetails.validation.patient_identifier_must_number':
-    'Patient Identifier must be alphanumeric.',
-  'orderManagement.patientDetails.validation.mrn_must_alphanumeric':
-    'MRN must be alphanumeric.',
-  'orderManagement.patientDetails.validation.patient_identifier_max':
-    'Patient identifier cannot exceed 20 characters.',
+  'orderManagement.patientDetails.validation.dateOfBirth': 'Date Of Birth is required.',
+  'orderManagement.patientDetails.validation.patient_identifier_must_number': 'Patient Identifier must be alphanumeric.',
+  'orderManagement.patientDetails.validation.mrn_must_alphanumeric': 'MRN must be alphanumeric.',
+  'orderManagement.patientDetails.validation.patient_identifier_max': 'Patient identifier cannot exceed 20 characters.',
   'orderManagement.patientDetails.inputLabel.date_of_birth': 'Date of birth',
   'orderManagement.patientDetails.option.please_select': 'Please select',
 
-  'labels.description.approval':
-    'Order is reviewed and confirmed for accuracy and payment',
-  'labels.description.fulfillment':
-    'Items are picked, packed, and prepared for shipment',
-  'labels.description.shipment':
-    'Order is dispatched and tracked during transit',
-  'labels.description.finalDelivery':
-    'Order is delivered to your specified address',
+  'labels.description.approval': 'Order is reviewed and confirmed for accuracy and payment',
+  'labels.description.fulfillment': 'Items are picked, packed, and prepared for shipment',
+  'labels.description.shipment': 'Order is dispatched and tracked during transit',
+  'labels.description.finalDelivery': 'Order is delivered to your specified address',
 
   'messages.confirmation.discardheader': 'Discard Changes',
-  'messages.confirmation.account':
-    'You have changed Account details. Do you still want to go back? Your changes will be discarded!',
-  'messages.confirmation.therapy':
-    'You have changed Therapy details. Do you still want to go back? Your changes will be discarded!',
-  'messages.confirmation.addition':
-    'You have changed Addtional details. Do you still want to go back? Your changes will be discarded!',
-  'messages.confirmation.patient':
-    'You have changed Patient details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.account': 'You have changed Account details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.therapy': 'You have changed Therapy details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.addition': 'You have changed Addtional details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.patient': 'You have changed Patient details. Do you still want to go back? Your changes will be discarded!',
 
   'messages.header.confirmation': 'Confirmation!',
   'messages.header.warning': 'Warning!',
 
   'messages.confirmation.reject': 'Are you sure you want to reject this order',
-  'messages.confirmation.approve':
-    'Are you sure you want to approve this order',
+  'messages.confirmation.approve': 'Are you sure you want to approve this order',
   'messages.success.delete': 'Order Deleted Successfully.',
   'messages.success.release': 'Order Released Successfully.',
   'messages.success.assign': 'Order Assigned Successfully.',
-  'errors.There is no Approver Group assigned to the order':
-    'There is no Approver Group assigned to the order.',
+  'errors.There is no Approver Group assigned to the order': 'There is no Approver Group assigned to the order.',
   'errors.default': 'An unexpected error occurred.',
   'order.label.admin': 'Admin',
   'order.label.manageOrder': 'Manage Order',
-  'message.errorShortComment':
-    'Comment is very short, try to add detailed comment.',
-  'message.errorCommentExceedMaxLength':
-    'Comment can not be more than {{length}} characters.',
-  'message.errorCommentRequiredToRejectOrder':
-    'Comment is required to reject the order. Please provide reason for rejection.',
+  'message.errorShortComment': 'Comment is very short, try to add detailed comment.',
+  'message.errorCommentExceedMaxLength': 'Comment can not be more than {{length}} characters.',
+  'message.errorCommentRequiredToRejectOrder': 'Comment is required to reject the order. Please provide reason for rejection.',
   'captions.btnReSubmitOrder': 'Re-Submit Order',
   'labels.orderActions.discardChangesByMe': 'Discard changes by me',
   'message.success.discardVersionChanges': 'Discarded changes made by you.',
   'prompt.title.alert': 'Alert!',
-  'prompt.message.submitOrder':
-    'Do you wish to order this therapy under PAP program?',
-  'prompt.subMessage.submitOrder':
-    "Select 'Yes' to proceed with PAP benefits or 'No' to submit as a regular order.",
+  'prompt.message.submitOrder': 'Do you wish to order this therapy under PAP program?',
+  'prompt.subMessage.submitOrder': "Select 'Yes' to proceed with PAP benefits or 'No' to submit as a regular order.",
   'label.noCostTherapy': 'No Cost Therapy',
   'prompt.action.submit': 'Submit',
-  'message.error.papOrderCanNotEdit':
-    "You can't edit this order, If you wish to make any changes to the order, please call the customer center",
+  'message.error.papOrderCanNotEdit': "You can't edit this order, If you wish to make any changes to the order, please call the customer center",
   'prompt.message.editRestriction':
     "You can't edit this order. If you wish to make any changes to this order, please reject this order and create a new order.",
 
@@ -465,38 +397,28 @@ export const MessageEn = {
   'headings.seletCatalog': 'Select Catalog',
   'headings.seletAccount': 'Select Account',
   'label.addquestionnaire': 'Add Questionnaire',
-  'messages.confirmation.success_config_material':
-    'Questionnaire has been successfully configured to Material.',
-  'messages.confirmation.success_config_catalog':
-    'Questionnaire has been successfully configured to Catalog.',
-  'messages.confirmation.success_config_account':
-    'Questionnaire has been successfully configured to Account.',
+  'messages.confirmation.success_config_material': 'Questionnaire has been successfully configured to Material.',
+  'messages.confirmation.success_config_catalog': 'Questionnaire has been successfully configured to Catalog.',
+  'messages.confirmation.success_config_account': 'Questionnaire has been successfully configured to Account.',
   'labels.salesOrg': 'Sales Org',
   'labels.distChannel': 'Dist Channel',
   'labels.program': 'Program',
   'labels.SapmaterialID': 'SAP Material ID',
   'captions.questionnaire.emptyTableTitle': 'No Templates found',
-  'captions.questionnaire.emptyTableSubtitle':
-    'You need to add Questionnaire templates to see data in this table.',
+  'captions.questionnaire.emptyTableSubtitle': 'You need to add Questionnaire templates to see data in this table.',
   'captions.questionnaire.material.emptyTableTitle': 'No Materials found',
-  'captions.questionnaire.material.emptyTableSubtitle':
-    'You need to add Materials to see data in this table.',
+  'captions.questionnaire.material.emptyTableSubtitle': 'You need to add Materials to see data in this table.',
   'captions.questionnaire.catalog.emptyTableTitle': 'No Catalogs found',
-  'captions.questionnaire.catalog.emptyTableSubtitle':
-    'You need to select accounts or add catalogs to account to see data in this table.',
+  'captions.questionnaire.catalog.emptyTableSubtitle': 'You need to select accounts or add catalogs to account to see data in this table.',
   'captions.questionnaire.account.emptyTableTitle': 'No Accounts found',
-  'captions.questionnaire.account.emptyTableSubtitle':
-    'You need to select organizations or add Accounts to organizations to see data in this table.',
+  'captions.questionnaire.account.emptyTableSubtitle': 'You need to select organizations or add Accounts to organizations to see data in this table.',
   'table.ariaLabel.questionaaireList': 'Questionnaire listing',
   'table.ariaLabel.materialList': 'Material listing',
   'table.ariaLabel.catalogList': 'Catalog listing',
   'table.ariaLabel.accountList': 'Account listing',
-  'messages.error_config_material':
-    'Please select Material(s) to Add Questionnaire.',
-  'messages.error_config_catalog':
-    'Please select Catalog(s) to Add Questionnaire.',
-  'messages.error_config_account':
-    'Please select Account(s) to Add Questionnaire.',
+  'messages.error_config_material': 'Please select Material(s) to Add Questionnaire.',
+  'messages.error_config_catalog': 'Please select Catalog(s) to Add Questionnaire.',
+  'messages.error_config_account': 'Please select Account(s) to Add Questionnaire.',
 
   'button.caption.backQuestionnaireBuilder': 'Back to Questionnaire Builder',
   'heading.addQuestionnaire': 'Add Questionnaire',
@@ -514,10 +436,8 @@ export const MessageEn = {
   'label.type': 'Type',
   'label.templateName': 'Template Name',
   'message.questionnaire.templateNameRequired': 'Template name is required',
-  'message.questionnaire.templateNameMinWidth':
-    'Template name must be at least 2 characters',
-  'message.questionnaire.templateNameMaxWidth':
-    'Template name must be at most 24 characters',
+  'message.questionnaire.templateNameMinWidth': 'Template name must be at least 2 characters',
+  'message.questionnaire.templateNameMaxWidth': 'Template name must be at most 24 characters',
   'message.questionnaire.selectTemplateType': 'You must select a template type',
   'message.questionnaire.provideQuestionText': 'You must provide question text',
   'message.questionnaire.optionValueRequired': 'Option value is required',
@@ -526,8 +446,7 @@ export const MessageEn = {
   'labels.soldTo': 'Sold to account',
   'labels.shipTo': 'Ship to account',
   'button.caption.change': 'Change',
-  'label.selectContent':
-    'Select master you want to apply this questionnaire for:',
+  'label.selectContent': 'Select master you want to apply this questionnaire for:',
   'label.Material': 'Material',
   'label.Catalog': 'Catalog',
   'label.Account': 'Account',
@@ -540,8 +459,7 @@ export const MessageEn = {
   'controls.placeholder.searchQuestionnaire': 'Search by Template Name',
   'labels.configurationPreview': 'Configuration Preview',
   'labels.confirmationmessage': 'Confirmation message',
-  'labels.template_deactivateConfirmation':
-    'Do you want to deactivate selected questionnaire template ?',
+  'labels.template_deactivateConfirmation': 'Do you want to deactivate selected questionnaire template ?',
   'message.error.notAValidDocument': 'Not a valid document.',
   'control.label.uploadFile': 'Upload File',
   'button.caption.selectFile': 'Select File',
@@ -557,8 +475,7 @@ export const MessageEn = {
   'labels.OrderProcesing.SAPOrderStatus.Open': 'OPEN',
   'labels.OrderProcesing.SAPOrderStatus.Cancelled': 'CANCELLED',
   'labels.OrderProcesing.SAPOrderStatus.Completed': 'COMPLETED',
-  'errors.orders_index_additional_details.po_number_1_practice_id_1':
-    'PO Number already exists.',
+  'errors.orders_index_additional_details.po_number_1_practice_id_1': 'PO Number already exists.',
 
   'labels.caption.ALL': 'All',
   'labels.caption.IN_DRAFT': 'In Draft',
@@ -601,21 +518,16 @@ export const MessageEn = {
   'heading.uploadProviderListCSV': 'Upload Provider List CSV',
   'controls.addProviders': 'Add Provider',
   'controls.downloadCSVTemplate': 'Download CSV Template',
-  'controls.placeholder.searchSPCatalogPlaceholder':
-    'Search by ID, Name, NDC, Account Number...',
-  'controls.placeholder.searchProviderPlaceholder':
-    'Search by Provider Name, NPI, DEA, Address',
-  'label.emptyProviderTableDescription':
-    'You need to add providers to see data in this table',
+  'controls.placeholder.searchSPCatalogPlaceholder': 'Search by ID, Name, NDC, Account Number...',
+  'controls.placeholder.searchProviderPlaceholder': 'Search by Provider Name, NPI, DEA, Address',
+  'label.emptyProviderTableDescription': 'You need to add providers to see data in this table',
   'label.materialCrosswalk': 'Material Crosswalk',
   'controls.addCrosswalk': 'Add Crosswalk',
   'controls.uploadCrosswalk': 'Upload Crosswalk',
-  'controls.placeholder.materialCrosswalk':
-    'Search by Description, NDC, Product Name ID...',
+  'controls.placeholder.materialCrosswalk': 'Search by Description, NDC, Product Name ID...',
   'label.emptyMaterialCrosswalkTableDescription': 'No records found.',
   'controls.addMaterialCrosswalk': 'Add Material Crosswalk',
-  'heading.uploadMaterialCrosswalkListCSV':
-    'Upload Material Crosswalk List CSV',
+  'heading.uploadMaterialCrosswalkListCSV': 'Upload Material Crosswalk List CSV',
   'controls.uploadMaterialCrosswalk': 'Upload Material Crosswalk',
   'label.manageSpCatalog': 'Manage SP Catalog',
   'label.materialCrosswalkListing': 'Material Crosswalk Listing',
@@ -630,20 +542,16 @@ export const MessageEn = {
   'controls.uploadCatalog': 'Upload Catalog',
   'controls.linkCatalog': 'Link Catalog',
   'label.addSPProducts': 'Add SP Products',
-  'label.emptySPCatalogTableDescription':
-    'You need to add SP Products to see data in this table',
+  'label.emptySPCatalogTableDescription': 'You need to add SP Products to see data in this table',
   'controls.uploadCatalog': 'Upload Catalog',
   'label.uploadCatalogListCSV': 'Upload Catalog List CSV',
   'label.backSpCatalog': 'Back to manage sp catalog page',
   'label.deactivateRecord': 'Deactivate Record',
-  'label.deactivateRecordDescription':
-    'Are you sure you want to deactivate this record?',
+  'label.deactivateRecordDescription': 'Are you sure you want to deactivate this record?',
   'label.unlinkRecord': 'Unlink Record?',
-  'label.unlinkRecordDescription':
-    'Are you sure you want to unlink this record?',
+  'label.unlinkRecordDescription': 'Are you sure you want to unlink this record?',
   'label.unlinkCrosswalk': 'Unlink Crosswalk?',
-  'label.unlinkCrosswalkDescription':
-    'Are you sure you want to unlink this crosswalk?',
+  'label.unlinkCrosswalkDescription': 'Are you sure you want to unlink this crosswalk?',
 
   'tooltip.material.status.PENDING': 'Pending',
   'tooltip.material.status.AVAILABLE': 'Therapy Available',
@@ -655,18 +563,13 @@ export const MessageEn = {
   'labels.SP': 'SP',
   'labels.orderType': 'Order Type',
   'labels.assignee': 'Assignee',
-  'invalid.csv.file.type':
-    'The uploaded file is invalid. Please upload a valid file',
-  'providers.message.fileUploadFailure':
-    'Something went wrong please try again later.',
-  'invalid.csv.file.headers.missing':
-    'The uploaded file is invalid. It missing required columns. Please upload a valid file',
-  'invalid.csv.file.empty':
-    'Uploaded file is empty. Please upload a valid file',
+  'invalid.csv.file.type': 'The uploaded file is invalid. Please upload a valid file',
+  'providers.message.fileUploadFailure': 'Something went wrong please try again later.',
+  'invalid.csv.file.headers.missing': 'The uploaded file is invalid. It missing required columns. Please upload a valid file',
+  'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file',
   'labels.SPECIALITY_PHARMA': 'Specialty Pharmacy',
   'labels.BUY_AND_BILL': 'Buy & Bill',
-  'invalid.csv.file.empty':
-    'Uploaded file is empty. Please upload a valid file',
+  'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file',
   'labels.Strength': 'Strength',
   'labels.Dosage': 'Dosage',
   'labels.orderChannel': 'Order Channel',
@@ -684,8 +587,7 @@ export const MessageEn = {
   'labels.deaNumber': 'DEA Number',
   'labels.npiNumber': 'NPI Number',
 
-  'invalid.csv.file.empty':
-    'Uploaded file is empty. Please upload a valid file',
+  'invalid.csv.file.empty': 'Uploaded file is empty. Please upload a valid file',
   'formControl.mobileNumber': 'Mobile Number',
   'formControl.workPhone': 'Work Phone',
   'formControl.homePhone': 'Home Phone',
@@ -700,8 +602,7 @@ export const MessageEn = {
   'stepper.label.ADDITIONAL_DETAILS': 'Additional Details',
   'stepper.label.ORDER_SUMMARY': 'Order Summary',
 
-  'formControl.insuranceCoverageSubscriber':
-    'Patient Relationship to Subscriber',
+  'formControl.insuranceCoverageSubscriber': 'Patient Relationship to Subscriber',
   'formControl.insurancePolicyNumber': 'Policy Number',
   'formControl.insuranceGroupNumber': 'Group Number',
   'formControl.insurancePlanType': 'Plan Type',
@@ -711,8 +612,7 @@ export const MessageEn = {
   'formControl.insuranceRxIdNumber': 'Rx Id Number',
   'formControl.insuranceRxBinNumber': 'Rx BIN Number',
   'button.caption.addSecondaryPayer': 'Add Secondary Payer',
-  'button.caption.addDrugBenefitInsuranceCompany':
-    'Add Drug Benefit Insurance Company',
+  'button.caption.addDrugBenefitInsuranceCompany': 'Add Drug Benefit Insurance Company',
 
   'formControl.patientRelationship': 'Patient Relationship to Subscriber',
   'formControl.policyNumber': 'Policy Number',
@@ -723,126 +623,81 @@ export const MessageEn = {
   'formControl.rxGRPNumber': 'Rx GRP Number',
   'formControl.rxIDNumber': 'Rx ID Number',
   'formControl.rxBINNumber': 'Rx BIN Number',
-  'payer.form.insuranceCompanyFirstNameRequired':
-    'Please enter the First Name.',
-  'payer.form.insuranceCompanyFirstNameMaxCharacters':
-    'First Name should not exceed 50 characters.',
-  'payer.form.insuranceCompanyFirstNameContains':
-    'First Name should contain alphabets only and cannot include special characters or numbers.',
-  'payer.form.insuranceCompanyLastNameMaxCharacters':
-    'Last Name should not exceed 50 characters.',
-  'payer.form.insuranceCompanyLastNameContains':
-    'Last Name should contain alphabets only and cannot include special characters or numbers.',
-  'payer.form.insuranceCompanyPhoneNumberMaxCharacters':
-    'Phone Number should not exceed 50 characters.',
-  'payer.form.insuranceCompanyPhoneNumberDigitsOnly':
-    'Phone Number must contain valid digits only.',
+  'payer.form.insuranceCompanyFirstNameRequired': 'Please enter the First Name.',
+  'payer.form.insuranceCompanyFirstNameMaxCharacters': 'First Name should not exceed 50 characters.',
+  'payer.form.insuranceCompanyFirstNameContains': 'First Name should contain alphabets only and cannot include special characters or numbers.',
+  'payer.form.insuranceCompanyLastNameMaxCharacters': 'Last Name should not exceed 50 characters.',
+  'payer.form.insuranceCompanyLastNameContains': 'Last Name should contain alphabets only and cannot include special characters or numbers.',
+  'payer.form.insuranceCompanyPhoneNumberMaxCharacters': 'Phone Number should not exceed 50 characters.',
+  'payer.form.insuranceCompanyPhoneNumberDigitsOnly': 'Phone Number must contain valid digits only.',
 
-  'payer.form.insuranceCompanyAddressLine1MaxCharacters':
-    'Address 1 should not exceed 100 characters.',
-  'payer.form.insuranceCompanyAddressLine1NoSpecialChars':
-    'Address 1 cannot contain special characters like @, #, %, etc.',
+  'payer.form.insuranceCompanyAddressLine1MaxCharacters': 'Address 1 should not exceed 100 characters.',
+  'payer.form.insuranceCompanyAddressLine1NoSpecialChars': 'Address 1 cannot contain special characters like @, #, %, etc.',
 
-  'payer.form.insuranceCompanyAddressLine2MaxCharacters':
-    'Address 2 should not exceed 100 characters.',
-  'payer.form.insuranceCompanyAddressLine2NoSpecialChars':
-    'Address 2 cannot contain special characters like @, #, %, etc.',
+  'payer.form.insuranceCompanyAddressLine2MaxCharacters': 'Address 2 should not exceed 100 characters.',
+  'payer.form.insuranceCompanyAddressLine2NoSpecialChars': 'Address 2 cannot contain special characters like @, #, %, etc.',
 
-  'payer.form.insuranceCompanyZipCodeFormat':
-    'Zip Code should follow US format: 12345 or 12345-6789.',
+  'payer.form.insuranceCompanyZipCodeFormat': 'Zip Code should follow US format: 12345 or 12345-6789.',
 
-  'payer.form.insuranceCompanyCityMaxCharacters':
-    'City should not exceed 15 characters.',
-  'payer.form.insuranceCompanyCityAlphaOnly':
-    'City should contain alphabets only and cannot include numbers or special characters.',
+  'payer.form.insuranceCompanyCityMaxCharacters': 'City should not exceed 15 characters.',
+  'payer.form.insuranceCompanyCityAlphaOnly': 'City should contain alphabets only and cannot include numbers or special characters.',
 
   'payer.form.insuranceCompanyStateRequired': 'Please select a valid State.',
   'payer.form.secondaryPayerFirstNameRequired': 'Please enter the First Name.',
-  'payer.form.secondaryPayerFirstNameMaxCharacters':
-    'First Name should not exceed 50 characters.',
-  'payer.form.secondaryPayerFirstNameAlphaOnly':
-    'First Name should contain alphabets only and cannot include special characters or numbers.',
+  'payer.form.secondaryPayerFirstNameMaxCharacters': 'First Name should not exceed 50 characters.',
+  'payer.form.secondaryPayerFirstNameAlphaOnly': 'First Name should contain alphabets only and cannot include special characters or numbers.',
 
-  'payer.form.secondaryPayerLastNameMaxCharacters':
-    'Last Name should not exceed 50 characters.',
-  'payer.form.secondaryPayerLastNameAlphaOnly':
-    'Last Name should contain alphabets only and cannot include special characters or numbers.',
+  'payer.form.secondaryPayerLastNameMaxCharacters': 'Last Name should not exceed 50 characters.',
+  'payer.form.secondaryPayerLastNameAlphaOnly': 'Last Name should contain alphabets only and cannot include special characters or numbers.',
 
-  'payer.form.secondaryPayerPhoneNumberMaxCharacters':
-    'Phone Number should not exceed 50 characters.',
-  'payer.form.secondaryPayerPhoneNumberDigitsOnly':
-    'Phone Number must contain valid digits only.',
+  'payer.form.secondaryPayerPhoneNumberMaxCharacters': 'Phone Number should not exceed 50 characters.',
+  'payer.form.secondaryPayerPhoneNumberDigitsOnly': 'Phone Number must contain valid digits only.',
 
-  'payer.form.secondaryPayerAddressLine1MaxCharacters':
-    'Address 1 should not exceed 100 characters.',
-  'payer.form.secondaryPayerAddressLine1NoSpecialChars':
-    'Address 1 cannot contain special characters like @, #, %, etc.',
+  'payer.form.secondaryPayerAddressLine1MaxCharacters': 'Address 1 should not exceed 100 characters.',
+  'payer.form.secondaryPayerAddressLine1NoSpecialChars': 'Address 1 cannot contain special characters like @, #, %, etc.',
 
-  'payer.form.secondaryPayerAddressLine2MaxCharacters':
-    'Address 2 should not exceed 100 characters.',
-  'payer.form.secondaryPayerAddressLine2NoSpecialChars':
-    'Address 2 cannot contain special characters like @, #, %, etc.',
+  'payer.form.secondaryPayerAddressLine2MaxCharacters': 'Address 2 should not exceed 100 characters.',
+  'payer.form.secondaryPayerAddressLine2NoSpecialChars': 'Address 2 cannot contain special characters like @, #, %, etc.',
 
-  'payer.form.secondaryPayerZipCodeFormat':
-    'Zip Code should follow US format: 12345 or 12345-6789.',
+  'payer.form.secondaryPayerZipCodeFormat': 'Zip Code should follow US format: 12345 or 12345-6789.',
 
-  'payer.form.secondaryPayerCityMaxCharacters':
-    'City should not exceed 15 characters.',
-  'payer.form.secondaryPayerCityAlphaOnly':
-    'City should contain alphabets only and cannot include numbers or special characters.',
+  'payer.form.secondaryPayerCityMaxCharacters': 'City should not exceed 15 characters.',
+  'payer.form.secondaryPayerCityAlphaOnly': 'City should contain alphabets only and cannot include numbers or special characters.',
 
   'payer.form.secondaryPayerStateRequired': 'Please select a valid State.',
   'payer.form.firstNameRequired': 'Please enter the First Name.',
-  'payer.form.firstNameMaxCharacters':
-    'First Name should not exceed 50 characters.',
-  'payer.form.firstNameAlphaOnly':
-    'First Name should contain alphabets only and cannot include special characters or numbers.',
+  'payer.form.firstNameMaxCharacters': 'First Name should not exceed 50 characters.',
+  'payer.form.firstNameAlphaOnly': 'First Name should contain alphabets only and cannot include special characters or numbers.',
 
-  'payer.form.lastNameMaxCharacters':
-    'Last Name should not exceed 50 characters.',
-  'payer.form.lastNameAlphaOnly':
-    'Last Name should contain alphabets only and cannot include special characters or numbers.',
+  'payer.form.lastNameMaxCharacters': 'Last Name should not exceed 50 characters.',
+  'payer.form.lastNameAlphaOnly': 'Last Name should contain alphabets only and cannot include special characters or numbers.',
 
-  'payer.form.phoneNumberMaxCharacters':
-    'Phone Number should not exceed 50 characters.',
-  'payer.form.phoneNumberDigitsOnly':
-    'Phone Number must contain valid digits only.',
+  'payer.form.phoneNumberMaxCharacters': 'Phone Number should not exceed 50 characters.',
+  'payer.form.phoneNumberDigitsOnly': 'Phone Number must contain valid digits only.',
 
-  'payer.form.addressLine1MaxCharacters':
-    'Address 1 should not exceed 100 characters.',
-  'payer.form.addressLine1NoSpecialChars':
-    'Address 1 cannot contain special characters like @, #, %, etc.',
+  'payer.form.addressLine1MaxCharacters': 'Address 1 should not exceed 100 characters.',
+  'payer.form.addressLine1NoSpecialChars': 'Address 1 cannot contain special characters like @, #, %, etc.',
 
-  'payer.form.addressLine2MaxCharacters':
-    'Address 2 should not exceed 100 characters.',
-  'payer.form.addressLine2NoSpecialChars':
-    'Address 2 cannot contain special characters like @, #, %, etc.',
+  'payer.form.addressLine2MaxCharacters': 'Address 2 should not exceed 100 characters.',
+  'payer.form.addressLine2NoSpecialChars': 'Address 2 cannot contain special characters like @, #, %, etc.',
 
-  'payer.form.zipCodeFormat':
-    'Zip Code should follow US format: 12345 or 12345-6789.',
+  'payer.form.zipCodeFormat': 'Zip Code should follow US format: 12345 or 12345-6789.',
 
   'payer.form.cityMaxCharacters': 'City should not exceed 15 characters.',
-  'payer.form.cityAlphaOnly':
-    'City should contain alphabets only and cannot include numbers or special characters.',
+  'payer.form.cityAlphaOnly': 'City should contain alphabets only and cannot include numbers or special characters.',
 
   'payer.form.stateRequired': 'Please select a valid State.',
 
-  'payer.form.patientRelationshipRequired':
-    "Please select the patient's relationship to the subscriber.",
-  'payer.form.patientRelationshipInvalid':
-    'Please select relationship to the subscriber.',
+  'payer.form.patientRelationshipRequired': "Please select the patient's relationship to the subscriber.",
+  'payer.form.patientRelationshipInvalid': 'Please select relationship to the subscriber.',
   'payer.form.patientRelationshipOneOf': 'Please select a valid relationship.',
 
   'payer.form.policyNumberRequired': 'Please enter the Policy Number.',
-  'payer.form.policyNumberMaxCharacters':
-    'Policy Number should not exceed 30 characters.',
-  'payer.form.policyNumberAlphanumeric':
-    'Policy Number should only contain letters and numbers.',
+  'payer.form.policyNumberMaxCharacters': 'Policy Number should not exceed 30 characters.',
+  'payer.form.policyNumberAlphanumeric': 'Policy Number should only contain letters and numbers.',
 
-  'payer.form.groupNumberMaxCharacters':
-    'Group Number should not exceed 30 characters.',
-  'payer.form.groupNumberAlphanumeric':
-    'Group Number should only contain letters and numbers.',
+  'payer.form.groupNumberMaxCharacters': 'Group Number should not exceed 30 characters.',
+  'payer.form.groupNumberAlphanumeric': 'Group Number should only contain letters and numbers.',
 
   'payer.form.planTypeRequired': 'Please select a valid Plan Type',
   'payer.form.planTypeOneOf': 'Please select a valid Plan Type',
@@ -851,24 +706,17 @@ export const MessageEn = {
   'payer.form.effectiveDateMax': 'Effective Date cannot be in the future.',
   'payer.form.effectiveDateTypeError': 'Please select a valid date.',
 
-  'payer.form.rxPcnNumberMaxCharacters':
-    'Rx PCN Number should not exceed 30 digits.',
-  'payer.form.rxPcnNumberDigitsOnly':
-    'Rx PCN Number must contain numbers only.',
+  'payer.form.rxPcnNumberMaxCharacters': 'Rx PCN Number should not exceed 30 digits.',
+  'payer.form.rxPcnNumberDigitsOnly': 'Rx PCN Number must contain numbers only.',
 
-  'payer.form.rxGrpNumberMaxCharacters':
-    'Rx GRP Number should not exceed 30 digits.',
-  'payer.form.rxGrpNumberDigitsOnly':
-    'Rx GRP Number must contain numbers only.',
+  'payer.form.rxGrpNumberMaxCharacters': 'Rx GRP Number should not exceed 30 digits.',
+  'payer.form.rxGrpNumberDigitsOnly': 'Rx GRP Number must contain numbers only.',
 
-  'payer.form.rxIdNumberMaxCharacters':
-    'Rx ID Number should not exceed 30 digits.',
+  'payer.form.rxIdNumberMaxCharacters': 'Rx ID Number should not exceed 30 digits.',
   'payer.form.rxIdNumberDigitsOnly': 'Rx ID Number must contain numbers only.',
 
-  'payer.form.rxBinNumberMaxCharacters':
-    'Rx BIN Number should not exceed 30 digits.',
-  'payer.form.rxBinNumberDigitsOnly':
-    'Rx BIN Number must contain numbers only.',
+  'payer.form.rxBinNumberMaxCharacters': 'Rx BIN Number should not exceed 30 digits.',
+  'payer.form.rxBinNumberDigitsOnly': 'Rx BIN Number must contain numbers only.',
   'table.columns.captions.createdBy': 'Created by',
   'labels.orderView.No_Cost_Therapy': 'No Cost Therapy',
   'labels.orderView.internalOrderId': 'Internal Order Id',
@@ -878,41 +726,34 @@ export const MessageEn = {
   'labels.therapyDetails': 'Therapy Details',
   'order.account.selection.wac.info':
     'WAC is the manufacturer’s list price for a drug when sold to wholesalers or direct buyers in the U.S., before any discounts, rebates, or chargebacks. It is used as a benchmark in pricing, reimbursement, and market analysis.',
-  'order.account.selection.wac.info.header':
-    'WAC Program Eligibility Requirements',
-  'order.account.selection.gov.info.header':
-    'GOV Program Eligibility Requirements',
+  'order.account.selection.wac.info.header': 'WAC Program Eligibility Requirements',
+  'order.account.selection.gov.info.header': 'GOV Program Eligibility Requirements',
   'order.account.selection.gov.info':
     'GOV refers to discounted drug prices available to government agencies  (e.g., VA, Medicaid, DoD) under federal programs. These are typically lower than commercial prices and follow statutory pricing formulas.',
-  'order.account.selection.340b.info.header':
-    '340B Program Eligibility Requirements',
+  'order.account.selection.340b.info.header': '340B Program Eligibility Requirements',
   'order.account.selection.340b.checkboxHeading': 'I hereby certify that:',
-  'order.account.selection.340b.checkboxinfo1':
-    'The patient meets all 340B program eligibility requirements',
-  'order.account.selection.340b.checkboxinfo2':
-    'The prescribed therapy will be administered to an eligible patient at a qualified outpatient facility',
-  'order.no.cost.therapy.info':
-    'No Cost Therapy program provided for eligible patients under manufacturer-supported programs.',
-  'order.account.selection.eligibility.patient.title':
-    'Patient Eligibility Requirements',
-  'order.account.selection.eligibility.patient.info':
-    'An individual is a "340B eligible patient" only if ALL of the following criteria are mot',
+  'order.account.selection.340b.checkboxinfo1': 'The patient meets all 340B program eligibility requirements',
+  'order.account.selection.340b.checkboxinfo2': 'The prescribed therapy will be administered to an eligible patient at a qualified outpatient facility',
+  'order.no.cost.therapy.info': 'No Cost Therapy program provided for eligible patients under manufacturer-supported programs.',
+  'order.account.selection.eligibility.patient.title': 'Patient Eligibility Requirements',
+  'order.account.selection.eligibility.patient.info': 'An individual is a "340B eligible patient" only if ALL of the following criteria are mot',
   'order.account.selection.eligibility.patient.requirement1':
     "The covered entity has established a relationship with the patient, with records of the patient's health care maintained by the covered entity.",
   'order.account.selection.eligibility.patient.requirement2':
     'The patient receives health care services from a professional who is employed by the covered entity or provides services under contractual arrangement with the covered entity.',
 
-  'order.account.selection.eligibility.facility.title':
-    'Facility Eligibility Requirements',
-  'order.account.selection.eligibility.facility.info':
-    'For a facility to be eligible to participate in the 340B program, it must:',
-  'order.account.selection.eligibility.facility.requirement1':
-    'Be registered in the 340B Office of Pharmacy Affairs Information System (OPAIS).',
+  'order.account.selection.eligibility.facility.title': 'Facility Eligibility Requirements',
+  'order.account.selection.eligibility.facility.info': 'For a facility to be eligible to participate in the 340B program, it must:',
+  'order.account.selection.eligibility.facility.requirement1': 'Be registered in the 340B Office of Pharmacy Affairs Information System (OPAIS).',
   'order.account.selection.eligibility.facility.requirement2':
     "For hospital outpatient facilities, be listed as reimbursable on the hospital's most recently filed Medicare cost report.",
 
-  'order.account.selection.compliance.requirements.title':
-    'Compliance Requirements',
+  'order.account.selection.compliance.requirements.title': 'Compliance Requirements',
   'order.account.selection.compliance.requirements.requirement1':
-    'Covered entities must maintain auditable records that demonstrate compliance with all 340B program requirements, including patient eligibility.'
+    'Covered entities must maintain auditable records that demonstrate compliance with all 340B program requirements, including patient eligibility.',
+  'orderManagement.patientDetails.validation.address_1': 'Address is required.',
+  'orderManagement.patientDetails.validation.city': 'City is required.',
+  'orderManagement.patientDetails.validation.zip': 'Zip is required.',
+  'orderManagement.patientDetails.validation.state': 'State is required.',
+  'orderManagement.patientDetails.validation.phone_no': 'Mobile Number is required.'
 };
