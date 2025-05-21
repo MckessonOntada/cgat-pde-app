@@ -505,6 +505,7 @@ export const UserManagementES = {
   'errors.messages.emptyDataDescription':
     'S_An unexpected error occurred. Please try again.',
   'label.comment': 'S_Comment',
+  'label.comments': 'S_Comments',
   'file.download.csv': 'S_Download CSV Template',
   'lebal.users': 'S_Users',
   'lebal.backToManage': 'S_Back to Manage',

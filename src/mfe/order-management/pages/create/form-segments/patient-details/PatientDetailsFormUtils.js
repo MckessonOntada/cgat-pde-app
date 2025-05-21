@@ -73,6 +73,74 @@ export const formConfig = [
         maxLength: 20
       }
     ]
+  },
+  {
+    sectionTitle: 'orderManagement.patientDetails.contact_details',
+    grid: { base: 1, md: 3, lg: 2, xl: 3 },
+    fields: [
+      {
+        name: 'contact.emailId',
+        label: 'orderManagement.patientDetails.inputLabel.email',
+        placeholder: ' ',
+        component: 'input',
+        maxLength: 100
+      },
+      {
+        name: 'contact.phoneNumber',
+        label: 'orderManagement.patientDetails.inputLabel.phone_no',
+        placeholder: ' ',
+        component: 'phoneInput',
+        maxLength: 15,
+        className: 'phoneInput'
+      }
+    ]
+  },
+  {
+    sectionTitle: 'orderManagement.patientDetails.address_details',
+    grid: { base: 1, md: 1, lg: 2, xl: 2 },
+    fields: [
+      {
+        name: 'patientAddress.addressLine1',
+        label: 'orderManagement.patientDetails.inputLabel.address_1',
+        placeholder: ' ',
+        component: 'input',
+        maxLength: 100
+      },
+      {
+        name: 'patientAddress.addressLine2',
+        label: 'orderManagement.patientDetails.inputLabel.address_2',
+        placeholder: ' ',
+        component: 'input',
+        maxLength: 100
+      }
+    ]
+  },
+  {
+    sectionTitle: '',
+    grid: { base: 1, md: 2, lg: 3, xl: 3 },
+    fields: [
+      {
+        name: 'patientAddress.city',
+        label: 'orderManagement.patientDetails.inputLabel.city',
+        placeholder: ' ',
+        component: 'input',
+        maxLength: 15
+      },
+      {
+        name: 'patientAddress.zipCode',
+        label: 'orderManagement.patientDetails.inputLabel.zip',
+        placeholder: ' ',
+        component: 'zipInput',
+        maxLength: 8
+      },
+      {
+        name: 'patientAddress.state',
+        label: 'orderManagement.patientDetails.inputLabel.state',
+        placeholder: ' ',
+        component: 'dropdown',
+        options: stateOptions
+      }
+    ]
   }
 ];
 
@@ -90,6 +158,44 @@ export const getValidationSchema = (t) => {
           .typeError(t('orderManagement.patientDetails.validation.invalid_date'))
       })
       .nullable(),
+    contact: Yup.object().shape({
+      emailId: Yup.string()
+        .nullable()
+        .trim()
+        .email(t('orderManagement.patientDetails.validation.invalid_email'))
+        .max(50, t('orderManagement.patientDetails.validation.email_max')),
+      phoneNumber: Yup.string()
+        .nullable()
+        .trim()
+        .matches(PHONE_REGEX, t('orderManagement.patientDetails.validation.phone_invalid'))
+        .max(15, t('orderManagement.patientDetails.validation.phone_max'))
+    }),
+    patientAddress: Yup.object().shape({
+      addressLine1: Yup.string()
+        .nullable()
+        .trim()
+        .matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_1_invalid'))
+        .min(2, t('orgManagement.create_org.validation.address_1_min'))
+        .max(100, t('orgManagement.create_org.validation.address_1_max')),
+      addressLine2: Yup.string()
+        .nullable()
+        .trim()
+        .matches(ADDRESS_REGEX, t('orgManagement.create_org.validation.address_2_invalid'))
+        .min(2, t('orgManagement.create_org.validation.address_2_min'))
+        .max(100, t('orgManagement.create_org.validation.address_2_max')),
+      city: Yup.string()
+        .nullable()
+        .trim()
+        .matches(ALPHABETIC_WITH_SPACE, t('orgManagement.create_org.validation.city_invalid'))
+        .min(2, t('orgManagement.create_org.validation.city_min'))
+        .max(15, t('orgManagement.create_org.validation.city_max')),
+      zipCode: Yup.string()
+        .nullable()
+        .trim()
+        .matches(ZIP_REGEX, t('orgManagement.create_org.validation.zip_invalid'))
+        .max(10, t('orgManagement.create_account.validation.zip_max')),
+      state: Yup.string().nullable()
+    }),
     patientIdentifier: Yup.string()
       .trim()
       .matches(ALPHA_NUMERIC_ONLY, t('orderManagement.patientDetails.validation.patient_identifier_must_number'))

@@ -7,7 +7,7 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 import ModuleHeader from '@src/components/module-header';
 import { useQuery } from 'react-query';
 import AuthUtils from '@src/util/AuthUtils';
-import CommonUtils from '@src/util/CommonUtils.js';
+import CommonUtils, { getFullName } from '@src/util/CommonUtils.js';
 import { routeConstants } from '../../routes/constants';
 import DetailSegment from '@src/components/DetailSegment';
 import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
@@ -87,7 +87,8 @@ const SPAccountDetail = () => {
     return <Loader type={'screen'} />;
   }
 
-  const contactFullName = data?.account.name ? `${data?.account?.name.firstName} ${data?.account?.name.lastName} ${data?.account?.name.middleName}` : '-';
+  const { accountName = '', accountNumber = '', name = {}, address = {} } = data.account || data;
+
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -124,13 +125,13 @@ const SPAccountDetail = () => {
 
         <div className="MCP-CardContainer">
           <div className={`grid grid-gap-24 grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4`}>
-            <DetailSegment label={t('manageSPAccount.labels.accountNumber')} value={data.account.accountNumber || '-'} />
-            <DetailSegment label={t('manageSPAccount.labels.accountName')} value={data.account.accountName || '-'} />
-            <DetailSegment label={t('manageSPAccount.labels.accountAddress')} value={getAddress(data.account.address) || '-'} />
-            <DetailSegment label={t('manageSPAccount.labels.contactPerson')} value={contactFullName || '-'} />
-            <DetailSegment label={t('manageSPAccount.labels.emaild')} value={data?.account.address.email || '-'} />
-            <DetailSegment label={t('manageSPAccount.labels.phoneNumber')} value={CommonUtils.formatPhoneNumber(data?.account?.address.telephone) || '-'} />
-            <DetailSegment label={t('manageSPAccount.labels.fax')} value={data?.account?.address.fax || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.accountNumber')} value={accountNumber || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.accountName')} value={accountName || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.accountAddress')} value={getAddress(address) || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.contactPerson')} value={getFullName(name) || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.emaild')} value={address.email || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.phoneNumber')} value={CommonUtils.formatPhoneNumber(address.telephone) || '-'} />
+            <DetailSegment label={t('manageSPAccount.labels.fax')} value={address.fax || '-'} />
           </div>
         </div>
       </div>

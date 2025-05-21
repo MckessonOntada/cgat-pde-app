@@ -2,7 +2,7 @@ import ModuleHeader from '@src/components/module-header';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle-bold.svg';
 import { ReactComponent as FileUploadIcon } from '@src/assets/svg/upload.svg';
 import PermittedComponent from '@src/components/permitted-component';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Button,
   Heading,
@@ -29,6 +29,7 @@ import { ReactComponent as EmptyProviderTable } from '@src/assets/svg/EmptyProvi
 import { ReactComponent as ErrorIcon } from '@src/assets/svg/ErrorCircleFilled.svg';
 import CommonUtils from '@src/util/CommonUtils';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
+import TableHeading from '@src/components/tableHeading/TableHeading';
 
 const List = () => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
@@ -65,6 +66,18 @@ const List = () => {
       }
     ];
   }, []);
+  useEffect(() => {
+    if (location.state?.type && location.state?.messages) {
+      add({
+        type: location.state.type,
+        description: location.state.messages
+      });
+      navigate(`${location.pathname}${location.search}`, {
+        replace: true,
+        state: null
+      });
+    }
+  }, [location, navigate]);
   const handleOnSort = (column, sortDirection) => {
     applySort(column.sortKey, sortDirection);
   };
@@ -141,16 +154,13 @@ const List = () => {
             )}
           />
         </div>
-        <ModuleHeader
-          heading={<Heading as="h2">{t('label.providerListing')}</Heading>}
-        />
-        {selectedRows.size > 0 && (
-          <div className="table-selection-ribbon">
-            <p>
-              {`${selectedRows.size} Item${
-                selectedRows.size > 1 ? 's' : ''
-              } selected`}
-            </p>
+        <TableHeading
+          heading={t('label.providerListing')}
+          secondaryView={selectedRows.size > 0}
+          secondaryViewHeading={`${selectedRows.size} ${t(
+            'orgManagement.selected_items'
+          )}`}
+          secondaryViewControls={
             <PermittedComponent
               permissions={[
                 PERMISSIONS_ENUM.MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN
@@ -162,8 +172,8 @@ const List = () => {
                 {t('provider.linkSpAccounts')}
               </Button>
             </PermittedComponent>
-          </div>
-        )}
+          }
+        />
         <CustomDataTable
           id="provider-list-table"
           columns={getColumns(add)}

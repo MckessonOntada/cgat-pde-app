@@ -121,6 +121,7 @@ function getOptionsByStatus(props) {
   );
 
   const handleOnOptionSelection = (value) => {
+    const { tab = ORDER_TABS.SUBMITTED_BUY_AND_BILL } = this.__meta__ || {};
     switch (value) {
       case ORDER_ENTITY_ACTION.VIEW:
         navigate(`${id}/summary`, {
@@ -188,6 +189,10 @@ function getOptionsByStatus(props) {
       case ORDER_ENTITY_ACTION.DISCARD_MY_CHANGES:
         discardVersion(props.id);
         break;
+      case ORDER_ENTITY_ACTION.UPLOAD_DOCUMENT: {
+        navigate(`${props.id}/upload-document`, { state: { fromTab: tab } });
+        break;
+      }
       default:
         break;
     }
@@ -281,6 +286,10 @@ function getOptionsByStatus(props) {
         value: ORDER_ENTITY_ACTION.CANCEL
       });
     }
+    options.push({
+      label: translate(`labels.orderActions.uploadDocument`),
+      value: ORDER_ENTITY_ACTION.UPLOAD_DOCUMENT
+    });
   }
 
   return (

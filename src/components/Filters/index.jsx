@@ -152,7 +152,6 @@ const Filters = ({
         }
 
         onApplyFilters(values);
-        actions.setSubmitting(false);
       }}
       validateOnChange={false}
       validateOnBlur={false}>
