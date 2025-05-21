@@ -37,14 +37,14 @@ function ManageCatalog(props) {
         <Heading as="h1">{t('dashboard.card.manage_catalog')}</Heading>
         <div className="MCP-panel-container">
           <OrgAccountsSelect handleAccountChange={() => {}} />
-          <div class="MCP-panel-container">
+          <div className="MCP-panel-container">
             <CommonFilters
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}
               additionalFilters={[]}
               searchPlaceholder={t('ManageCatalog.SearchByMaterialId')}
               actualData={[]}
-              initialData={filterConfig}
+              initialData={filterConfig || {}}
             />
           </div>
           <CatalogDataTable />

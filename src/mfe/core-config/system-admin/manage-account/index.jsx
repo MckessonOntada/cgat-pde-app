@@ -36,7 +36,7 @@ function ManageAccount(props) {
         <Heading as="h1">{t('ManageAccount.headings.manageAccount')}</Heading>
         <div className="MCP-panel-container">
           <OrgAccountsSelect handleAccountChange={() => {}} showAccountsSelect={false} />
-          <div class="MCP-panel-container">
+          <div className="MCP-panel-container">
             <CommonFilters
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}

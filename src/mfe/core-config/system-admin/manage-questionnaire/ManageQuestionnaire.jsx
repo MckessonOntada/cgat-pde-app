@@ -69,7 +69,7 @@ function ManageQuestionnaire() {
 
   const handleAlertClose = () => {
     setAlertConfig(null);
-    navigate(location.pathname, { replace: true, state: { ...location.state.value } });
+    navigate(location.pathname, { replace: true, state: { ...location.state } });
   };
 
   return (

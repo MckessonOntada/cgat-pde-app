@@ -142,13 +142,13 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
           <div className="details-main-wrapper">
             <div className={'details-body'}>
               {CatalogDetailsConstants.map((item, index) => (
-                <React.Fragment>
+                <React.Fragment key={item.sectionHeading}>
                   <div className="styled-heading">
                     <Heading as="h4">{t(`ManageCatalog.${item.sectionHeading}`)}</Heading>
                   </div>
                   <div className="details-ul">
                     {item.sectionData.map((item, index) => (
-                      <div className="details-li">
+                      <div className="details-li" key={`${item.sectionHeading}-${item.label || idx}`}>
                         <div className="details-key">{t(`ManageCatalog.Details.${item.label}`)}</div>
                         <div className="details-value">{data?.catalogPrice[item.value] || '-'}</div>
                       </div>
@@ -182,7 +182,7 @@ function CatalogDetails({ openCatalogDetails, setOpenCatalogDetails, viewCatalog
                   <div className="Questionnairedetails-ul">
                     {data?.questionnaires.map((item, index) => {
                       return (
-                        <div key={index} className="Questionnairedetails-li">
+                        <div key={item.templateName} className="Questionnairedetails-li">
                           <div className="Questionnairedetails-key">{item.templateName}</div>
                           {!isCustomerCenter && (
                             <div className="delete-button" onClick={() => OnDeleteClick(item.id, 'questionnaire')}>

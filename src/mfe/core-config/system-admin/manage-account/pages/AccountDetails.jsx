@@ -100,7 +100,7 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
           <div className="details-main-wrapper">
             <div className={'details-body'}>
               {AccountDetailsConstants.map((item, index) => (
-                <React.Fragment>
+                <React.Fragment key={item.sectionHeading}>
                   <Heading as="h3">{t(`ManageCatalog.${item.sectionHeading}`)}</Heading>
                   <div className="details-ul">
                     {item.sectionData.map((sectionItem, sectionIndex) => {
@@ -109,7 +109,7 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
                         value = getAddress(data?.account.address);
                       }
                       return (
-                        <div key={sectionIndex} className="details-li">
+                        <div key={sectionItem.label} className="details-li">
                           <div className="details-key">{t(`ManageAccount.${sectionItem.label}`)}</div>
                           <div className="details-value">{value}</div>
                         </div>
@@ -132,7 +132,7 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
                   <div className="Questionnairedetails-ul">
                     {data?.questionnaireList.map((item, index) => {
                       return (
-                        <div key={index} className="Questionnairedetails-li">
+                        <div key={item.templateName} className="Questionnairedetails-li">
                           <div className="Questionnairedetails-key">{item.templateName}</div>
                           {!isCustomerCenter && (
                             <div className="delete-button" onClick={() => OnDeleteClick(item.id)}>

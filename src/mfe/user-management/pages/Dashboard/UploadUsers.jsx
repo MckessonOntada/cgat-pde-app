@@ -10,7 +10,7 @@ import ApiRoutes from '@src/api/ApiRoutes';
 import HttpResourceService, { httpVerb } from '@src/api/HttpResourceService';
 import { useNavigate } from 'react-router-dom';
 import UploadFile from '@src/components/uploadFile/UploadFile.jsx';
-import { buildUploadFormData, createAlertHandler, handleDownload, validateFile, handleAlertClose } from '@src/components/uploadFile/uploadUtils';
+import { buildUploadFormData, createAlertHandler, handleDownload, validateFile } from '@src/components/uploadFile/uploadUtils';
 import ContextMenu from '@src/mfe/core-config/system-admin/manage-sp-catalog/pages/context-menu';
 
 const DOWNLOAD_CONTEXT_OPTIONS = {
@@ -25,7 +25,6 @@ function UploadUsers() {
   const [alert, setAlert] = useState(null);
 
   const showAlert = createAlertHandler(setAlert);
-
   const downloadTemplate = (option) => {
     switch (option) {
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD_TEMPLATE: {
@@ -39,6 +38,9 @@ function UploadUsers() {
       default:
         return;
     }
+  };
+  const handleAlertClose = () => {
+    setAlert(null);
   };
   const { mutate: uploadBulkUser, isLoading } = useMutation(
     async ({ url, payload }) => {
