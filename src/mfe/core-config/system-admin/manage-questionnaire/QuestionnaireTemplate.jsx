@@ -1,6 +1,5 @@
 import React from 'react';
 import { LANGUAGE, QUESTION_TYPE } from './AddQuestionnaire';
-import styles from './QuestionnaireTemplate.module.scss';
 import { Field, useFormikContext } from 'formik';
 import Components from '@src/components/form/Components';
 import CheckBox from '@src/components/form/CheckBox';
@@ -84,7 +83,8 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
 
     if (type !== QUESTION_TYPE.INPUT) {
       const options =
-        additionalAttributes?.options.map((option) => ({
+        additionalAttributes?.options.map((option, index) => ({
+          key: `questionnaire-${id}-language-option-${index}`,
           isDisabled: false,
           label: option[activeLanguage] || option[LANGUAGE.ENGLISH],
           value: option[LANGUAGE.ENGLISH].replace(/ /g, '_')
@@ -97,6 +97,7 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
     if (type === QUESTION_TYPE.RADIO_BUTTON) {
       attributes.caption = questionLabel;
       attributes.id = `radio-button-${id}-${differentiator}`;
+      attributes.htmlFor = attributes.id;
       attributes.itemCustomStyles = { fontSize: '14px', marginRight: '24px', fontWeight: '400', display: 'inline' };
       attributes.labelCustomStyles = { marginBottom: '8px', fontSize: '14px' };
     }
@@ -112,7 +113,7 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
 
     const { document: attachmentValue } = formValues[fieldName] || {};
     const field = (
-      <div className={wrapperClass.join(' ')}>
+      <div key={`questionnaire-control-section-${differentiator}`} className={wrapperClass.join(' ')}>
         <div className="styled-control-wrapper">
           <div
             className={`grid grid-gap-16 ${
@@ -145,13 +146,15 @@ function QuestionnaireTemplate({ onDocumentChange, config, isPreview }) {
   let templateList = [];
   if (typeof config === 'object' && !Array.isArray(config)) {
     templateList.push(
-      <div className="template">{config.questions.map((question, questionIndex) => getControl(question, 1, questionIndex))}</div>
+      <div key={config.id} className="template">
+        {config.questions.map((question, questionIndex) => getControl(question, 1, questionIndex))}
+      </div>
     );
   } else if (Array.isArray(config)) {
     {
       config.map((template) => {
         templateList.push(
-          <div className="template">
+          <div key={template.id} className="template">
             {template.questions.map((question, questionIndex) => getControl(question, template.id, questionIndex))}
           </div>
         );

@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
 import styles from './AccountSelectionUserGuide.module.scss';
-import {
-  RadioGroup,
-  Button,
-  Loader,
-  Heading,
-  Alert,
-  CheckboxGroup
-} from '@mckesson/mcp-component-library';
+import { RadioGroup, Button, Loader, Heading, Alert, CheckboxGroup } from '@mckesson/mcp-component-library';
 import { ReactComponent as IconClose } from '@src/assets/svg/cross.svg';
 import AccountCard from './AccountCard';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -18,13 +11,7 @@ import FloatingDrawer from '@src/components/floating-drawer';
 import { CHANNEL_TYPE, INFO_340B, PROGRAM_LIST } from '../Constants';
 import InfoModel from '@src/components/InfoModel/indix';
 
-const AccountSelectionUserGuide = ({
-  therapyId,
-  onClose,
-  onSubmit,
-  openDrawer,
-  therapChannelType
-}) => {
+const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer, therapChannelType }) => {
   const { t } = useTranslate();
   const [selectedProgram, setProgram] = useState('');
   const [selectedChannel, setChannel] = useState('');
@@ -79,34 +66,22 @@ const AccountSelectionUserGuide = ({
     data: accountList = {},
     refetch: fetchAccountsByProgramAndChannel
   } = useQuery({
-    queryKey: [
-      'order',
-      'therapy',
-      therapyId,
-      'program-channel-config-accounts',
-      selectedChannel,
-      selectedProgram
-    ],
+    queryKey: ['order', 'therapy', therapyId, 'program-channel-config-accounts', selectedChannel, selectedProgram],
     queryFn: async () =>
       OrderService.getSoldToAccounts(
         therapyId,
         serializeParams({
-          ...(selectedChannel === CHANNEL_TYPE.BUY_AND_BILL
-            ? { program: selectedProgram }
-            : {}),
+          ...(selectedChannel === CHANNEL_TYPE.BUY_AND_BILL ? { program: selectedProgram } : {}),
           channelType: selectedChannel,
           therapyChannelType: therapChannelType
         })
       ),
-    enabled:
-      Boolean(selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA) ||
-      Boolean(selectedProgram),
+    enabled: Boolean(selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA) || Boolean(selectedProgram),
     refetchOnWindowFocus: false
   });
 
   React.useEffect(() => {
-    if (selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA || selectedProgram)
-      fetchAccountsByProgramAndChannel();
+    if (selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA || selectedProgram) fetchAccountsByProgramAndChannel();
   }, [selectedChannel, selectedProgram]);
 
   const handleAccountChange = (selectedAccount) => {
@@ -118,8 +93,7 @@ const AccountSelectionUserGuide = ({
     if (
       !selectedChannel ||
       (selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA && !account) ||
-      (selectedChannel === CHANNEL_TYPE.BUY_AND_BILL &&
-        (!account || !selectedProgram))
+      (selectedChannel === CHANNEL_TYPE.BUY_AND_BILL && (!account || !selectedProgram))
     ) {
       setAlertMsg(true);
       return;
@@ -156,9 +130,7 @@ const AccountSelectionUserGuide = ({
     setAlertMsg(false);
   };
   const getProgramDisabled = (program, selectedChannel) =>
-    !programs.includes(program) ||
-    !channels.includes(CHANNEL_TYPE.BUY_AND_BILL) ||
-    selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA;
+    !programs.includes(program) || !channels.includes(CHANNEL_TYPE.BUY_AND_BILL) || selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA;
 
   const { programs = [], channels = [] } = programChannelConfig;
 
@@ -188,9 +160,7 @@ const AccountSelectionUserGuide = ({
       case 'WAC':
         return (
           <InfoModel title={t('order.account.selection.wac.info.header')}>
-            <div className="MCP-modal-body">
-              {t('order.account.selection.wac.info')}
-            </div>
+            <div className="MCP-modal-body">{t('order.account.selection.wac.info')}</div>
           </InfoModel>
         );
       case '340B':
@@ -218,9 +188,7 @@ const AccountSelectionUserGuide = ({
       case 'GOV':
         return (
           <InfoModel title={t('order.account.selection.gov.info.header')}>
-            <div className="MCP-modal-body">
-              {t('order.account.selection.gov.info')}
-            </div>
+            <div className="MCP-modal-body">{t('order.account.selection.gov.info')}</div>
           </InfoModel>
         );
       default:
@@ -236,31 +204,14 @@ const AccountSelectionUserGuide = ({
       width={'520px'}
       controls={
         <div className="controls">
-          <Button
-            label={t('captions.btnCancel')}
-            onClick={onClose}
-            variant="secondary"
-            size="md"
-            aria-label={t('captions.btnCancel')}
-          />
-          <Button
-            label={t('captions.btnApply')}
-            onClick={() => handleOnSubmit(account)}
-            variant="primary"
-            size="md"
-            aria-label={t('captions.btnSelect')}
-          />
+          <Button label={t('captions.btnCancel')} onClick={onClose} variant="secondary" size="md" aria-label={t('captions.btnCancel')} />
+          <Button label={t('captions.btnApply')} onClick={() => handleOnSubmit(account)} variant="primary" size="md" aria-label={t('captions.btnSelect')} />
         </div>
       }>
       <div className={styles.wrapper}>
         {alertMsg && (
           <div className={styles.errorMessage}>
-            <Alert
-              onClose={handleAlertClose}
-              showTitle
-              title={t('messages.required_Details')}
-              type="error"
-            />
+            <Alert onClose={handleAlertClose} showTitle title={t('messages.required_Details')} type="error" />
           </div>
         )}
 
@@ -268,9 +219,7 @@ const AccountSelectionUserGuide = ({
           <div className={styles.topSect}>
             <div className="MCP-CardContainer">
               <div className={styles.selectionBlock}>
-                <p className={styles.caption}>
-                  {t('labels.orderAssistance.selectChannel')}
-                </p>
+                <p className={styles.caption}>{t('labels.orderAssistance.selectChannel')}</p>
                 <RadioGroup
                   direction="row"
                   id="order-channel-options"
@@ -290,16 +239,10 @@ const AccountSelectionUserGuide = ({
               <div className={styles.selectionBlock}>
                 <p>{t('labels.orderAssistance.selectProgram')}</p>
                 <div className="radio-btn-group">
-                  {programList.map((item) => (
-                    <div className="radio-info-group">
+                  {programList.map((item, index) => (
+                    <div key={`radio-option-${index}`} className="radio-info-group">
                       <label key={item.value} className="custom-radio">
-                        <input
-                          type="radio"
-                          name="priceType"
-                          value={item.value}
-                          disabled={item.isDisabled}
-                          onChange={handleChange}
-                        />
+                        <input type="radio" name="priceType" value={item.value} disabled={item.isDisabled} onChange={handleChange} />
                         <span class="checkmark"></span>
                         {item.label}
                       </label>
@@ -309,40 +252,29 @@ const AccountSelectionUserGuide = ({
                 </div>
               </div>
             </div>
-            {selectedProgram === '340B' &&
-              selectedChannel === CHANNEL_TYPE.BUY_AND_BILL && (
-                <div className="MCP-modal-body">
-                  <p>{t('order.account.selection.340b.checkboxHeading')}</p>
-                  <ol className="details-info">
-                    <li className="details-li">
-                      <div className="details-key">
-                        {t('order.account.selection.340b.checkboxinfo1')}
-                      </div>
-                    </li>
-                    <li className="details-li">
-                      <div className="details-key">
-                        {t('order.account.selection.340b.checkboxinfo2')}
-                      </div>
-                    </li>
-                  </ol>
-                  <CheckboxGroup
-                    id={'default'}
-                    items={checkboxOptions.map((item) => ({
-                      ...item,
-                      onChange: () => handleSelectChange(item.value)
-                    }))}
-                    itemCustomStyles={captionStyle}
-                  />
-                </div>
-              )}
-            {(selectedProgram !== '340B' ||
-              (selectedProgram === '340B' &&
-                checkboxOptions[0]?.isChecked)) && (
-              <AccountCard
-                options={accountList.content}
-                onChange={handleAccountChange}
-                isFetching={isFetchingAccount}
-              />
+            {selectedProgram === '340B' && selectedChannel === CHANNEL_TYPE.BUY_AND_BILL && (
+              <div className="MCP-modal-body">
+                <p>{t('order.account.selection.340b.checkboxHeading')}</p>
+                <ol className="details-info">
+                  <li className="details-li">
+                    <div className="details-key">{t('order.account.selection.340b.checkboxinfo1')}</div>
+                  </li>
+                  <li className="details-li">
+                    <div className="details-key">{t('order.account.selection.340b.checkboxinfo2')}</div>
+                  </li>
+                </ol>
+                <CheckboxGroup
+                  id={'default'}
+                  items={checkboxOptions.map((item) => ({
+                    ...item,
+                    onChange: () => handleSelectChange(item.value)
+                  }))}
+                  itemCustomStyles={captionStyle}
+                />
+              </div>
+            )}
+            {(selectedProgram !== '340B' || (selectedProgram === '340B' && checkboxOptions[0]?.isChecked)) && (
+              <AccountCard options={accountList.content} onChange={handleAccountChange} isFetching={isFetchingAccount} />
             )}
           </div>
         </div>
