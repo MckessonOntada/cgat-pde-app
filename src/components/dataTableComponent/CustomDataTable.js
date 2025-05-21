@@ -24,6 +24,8 @@ import CommonUtils from '@src/util/CommonUtils';
 import CustomCard from './CustomCards';
 import { ReactComponent as arrowThickUp } from './assets/svg/arrowThickUp.svg';
 import TableCardView from './TableCardView';
+import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg';
+import { ReactComponent as IconArrowRight } from '@src/assets/svg/arrow-right.svg';
 
 export const CustomDataTable = (props) => {
   const {
@@ -149,20 +151,21 @@ export const CustomDataTable = (props) => {
       return (
         <div className={styles.stepperControlsWrap}>
           <IconButton
-            label={'< Pre'}
-            size="sm"
+            label={'Pre'}
+            size="lg"
             iconButton={false}
             textButton={true}
-            Icon={''}
+            Icon={IconArrowLeft}
             onClick={(e) => pageChangeEvent(e, currentPage - 1)}
             disabled={currentPage <= 1}
           />
           <IconButton
-            label={'Next >'}
-            size="sm"
+            label={'Next'}
+            size="lg"
             iconButton={false}
+            iconPosition='right'
             textButton={true}
-            Icon={''}
+            Icon={IconArrowRight}
             onClick={(e) => pageChangeEvent(e, currentPage + 1)}
             disabled={currentPage >= totalPageCount}
           />
