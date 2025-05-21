@@ -20,7 +20,7 @@ function UploadFile({
   customDownload,
   downloadTemplate,
   upload,
-  cancel,
+  cancel= {},
   onFileSelection,
   prefixChildren = false,
   suffixChildren = false,

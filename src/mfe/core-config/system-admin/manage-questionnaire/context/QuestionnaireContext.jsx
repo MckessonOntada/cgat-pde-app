@@ -9,9 +9,7 @@ const QuestionnaireContext = createContext('Questionnaire Context');
 export const useQuestionnaire = () => {
   const context = useContext(QuestionnaireContext);
   if (!context) {
-    throw new Error(
-      'QuestionnaireContext can be only used inside QuestionnaireContextProvider. Please make sure parent component is wrapped within provider.'
-    );
+    throw new Error('QuestionnaireContext can be only used inside QuestionnaireContextProvider. Please make sure parent component is wrapped within provider.');
   }
   return context;
 };
@@ -52,6 +50,7 @@ export const QuestionnaireProvider = ({ children }) => {
       pageSize: paginationConfig.pageSize,
       sortBy: sortConfig.sortBy || 'created_at',
       sortOrder: sortConfig.sortOrder || 'desc',
+      status: ['active', 'inactive'],
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       ...(sortConfig?.sortBy && { sortBy: sortConfig.sortBy }),
       ...(sortConfig?.sortOrder && { sortOrder: sortConfig.sortOrder })

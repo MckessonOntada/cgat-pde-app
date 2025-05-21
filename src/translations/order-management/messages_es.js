@@ -43,8 +43,7 @@ export const MessageEs = {
   'captions.lblRejectOrder': 'S_Reject Order',
   'captions.reasonForRejection': 'S_Reason For Rejection',
   'captions.lblReason': 'S_Reason',
-  'captions.emptyTableSubtitle':
-    'S_You need to add Order to see data in this table.',
+  'captions.emptyTableSubtitle': 'S_You need to add Order to see data in this table.',
   'captions.btnSelectYourAccount': 'S_Select Your Account',
   'labels.orderDetails': 'S_Order Details',
   'labels.variant': 'S_Variant',
@@ -60,10 +59,8 @@ export const MessageEs = {
   'labels.results': 'S_results',
   'labels.perPage': 'S_Per page',
   'labels.needAssistanceSelectingAccount': 'S_Need assistance',
-  'labels.orderAssistance.selectChannel':
-    'S_Please select channel to place the order.',
-  'labels.orderAssistance.selectProgram':
-    'S_Are you here to order through any of the below programs?',
+  'labels.orderAssistance.selectChannel': 'S_Please select channel to place the order.',
+  'labels.orderAssistance.selectProgram': 'S_Are you here to order through any of the below programs?',
   'labels.therapySelection': 'S_Therapy Selection',
   'labels.patientDetails': 'S_Patient Details',
   'labels.additionalDetails': 'S_Additional Details',
@@ -121,29 +118,19 @@ export const MessageEs = {
   'labels.COIIdRequired': 'S_COI Id is required',
   'labels.orderQuantityRequired': 'S_Order Quantity is required',
   'labels.slotNumberRequired': 'S_Slot number is required',
-  'labels.slotNumberLengthError':
-    'S_Slot Number length can not be greater than 20',
+  'labels.slotNumberLengthError': 'S_Slot Number length can not be greater than 20',
   'labels.PONumberRequired': 'S_PO number is required',
   'labels.PONumberLengthError': 'S_PO Number can not be greater than 35',
   'labels.DateOfAdministrationRequired': 'S_Date of administration is required',
-  'labels.dateOfAdministrationFutureDateOnly':
-    'S_Date of administration must be in the future',
-  'controls.placeholder.searchOrderPlaceholder':
-    'S_Search by Order ID, Patient name, Account',
-  'controls.placeholder.searchSPOrderPlaceholder':
-    'S_Search by Order ID, Therapy, Submitted By',
-  'controls.placeholders.autoSearch':
-    'S_Search by Order ID, Patient name, Account',
-  'controls.placeholder.shippingAddress.search':
-    'S_Search by Account name or Number',
-  'controls.placeholder.therapySelection.search':
-    'S_Search Therapy by Name, NDC...',
-  'controls.placeholder.material.search':
-    'S_Search by Name, NDC, Material Number...',
-  'controls.placeholder.Accounts.search':
-    'S_Search by Account Name, NDC, UDI...',
-  'controls.placeholder.Catalogs.search':
-    'S_Search by Catalog Name, NDC, UDI...',
+  'labels.dateOfAdministrationFutureDateOnly': 'S_Date of administration must be in the future',
+  'controls.placeholder.searchOrderPlaceholder': 'S_Search by Order ID, Patient name, Account',
+  'controls.placeholder.searchSPOrderPlaceholder': 'S_Search by Order ID, Therapy, Submitted By',
+  'controls.placeholders.autoSearch': 'S_Search by Order ID, Patient name, Account',
+  'controls.placeholder.shippingAddress.search': 'S_Search by Account name or Number',
+  'controls.placeholder.therapySelection.search': 'S_Search Therapy by Name, NDC...',
+  'controls.placeholder.material.search': 'S_Search by Name, NDC, Material Number...',
+  'controls.placeholder.Accounts.search': 'S_Search by Account Name, NDC, UDI...',
+  'controls.placeholder.Catalogs.search': 'S_Search by Catalog Name, NDC, UDI...',
   'controls.placeholder.selectOption': 'S_Select Option',
   'controls.ariaLabels.searchOrders': 'S_Search Orders',
   'controls.ariaLabels.expandFilters': 'S_Expand Filters',
@@ -178,8 +165,7 @@ export const MessageEs = {
   'table.actions.resumeOrder': 'S_Resume Order',
   'table.actions.viewDetail': 'S_View Detail',
   'table.labels.therapySelectionNoDataAvailable': 'S_No data available',
-  'table.labels.therapySelectionNoDataAvailableDescription':
-    'S_No therapy found, please try adding one',
+  'table.labels.therapySelectionNoDataAvailableDescription': 'S_No therapy found, please try adding one',
   'messages.noShippingAddressFound': 'S_No shipping address found',
   'labels.orderActions.resume': 'S_Resume',
   'labels.orderActions.delete': 'S_Delete',
@@ -192,10 +178,8 @@ export const MessageEs = {
   'labels.orderActions.assignToMe': 'S_Assign to me',
   'labels.orderActions.unassignToMe': 'S_Unassign',
   'labels.orderActions.approve': 'S_Approve Order',
-  'labels.orderActions.deletemessage':
-    'S_Are you sure you wish to Discard this Order ?',
-  'labels.orderActions.cancelmessage':
-    'S_Please reach out to customer support at 1800XXXXXXX for any updation or cancellation in the order.',
+  'labels.orderActions.deletemessage': 'S_Are you sure you wish to Discard this Order ?',
+  'labels.orderActions.cancelmessage': 'S_Please reach out to customer support at 1800XXXXXXX for any updation or cancellation in the order.',
   'labels.orderActions.OK': 'S_OK',
   'labels.information': 'S_Information',
   'labels.confirmation': 'S_Confirmation',
@@ -250,16 +234,12 @@ export const MessageEs = {
   'labels.therapyDescription': 'S_Therapy Description',
   'labels.therapyNumber': 'S_Therapy Number',
   'labels.COI_IdExceedDigits': 'S_COI Id cannot exceed 10 characters.',
-  'labels.COI_IdMustValidNumber':
-    'S_COI Id is not valid, it must contains alphabets and number',
+  'labels.COI_IdMustValidNumber': 'S_COI Id is not valid, it must contains alphabets and number',
   'labels.OrderQuantityShouldPositive': 'S_Order quantity must be a number',
-  'labels.OrderQuantityShouldGreaterThanZero':
-    'S_Order quantity must be greater than zero',
+  'labels.OrderQuantityShouldGreaterThanZero': 'S_Order quantity must be greater than zero',
   'labels.OrderQuantityMustBeInteger': 'S_Order quantity must be an integer',
-  'labels.slotNumberExtraSpaceError':
-    'S_Slot number must not contain leading or trailing spaces',
-  'labels.poNumberExtraSpaceError':
-    'S_PO Number must not contain leading or trailing spaces',
+  'labels.slotNumberExtraSpaceError': 'S_Slot number must not contain leading or trailing spaces',
+  'labels.poNumberExtraSpaceError': 'S_PO Number must not contain leading or trailing spaces',
   'labels.status.in_draft': 'S_In Draft',
   'labels.status.approval_pending': 'S_Approval Pending',
   'labels.status.submitted': 'S_Submitted',
@@ -283,36 +263,25 @@ export const MessageEs = {
   'label.yes': 'S_Yes',
   'label.no': 'S_No',
   'messages.formNotFound': 'S_Form Not Found',
-  'messages.orderSuccessApprovalPending':
-    'S_Your order has been submitted successfully and is now pending for approval.',
-  'messages.orderApprovalSuccess':
-    'S_Your order has been approved successfully and is in line for the fulfillment.',
-  'messages.accountSelect':
-    'S_Please select the account to buy the therapy for',
-  'messages.selectAnAccountForShippingAddress':
-    'S_Select an account to view the list of shipping addresses',
-  'messages.orderPlacementAcknowledgement':
-    'I hereby acknowledge that the information mentioned above is correct. All details provided are accurate.',
-  'messages.variantAcknowledgement':
-    'S_Please acknowledge that you have verified and selected the correct Variant.',
-  'messages.selectAccountToBuyTherapy':
-    'S_Please select the account to buy the therapy for',
+  'messages.orderSuccessApprovalPending': 'S_Your order has been submitted successfully and is now pending for approval.',
+  'messages.orderApprovalSuccess': 'S_Your order has been approved successfully and is in line for the fulfillment.',
+  'messages.accountSelect': 'S_Please select the account to buy the therapy for',
+  'messages.selectAnAccountForShippingAddress': 'S_Select an account to view the list of shipping addresses',
+  'messages.orderPlacementAcknowledgement': 'I hereby acknowledge that the information mentioned above is correct. All details provided are accurate.',
+  'messages.variantAcknowledgement': 'S_Please acknowledge that you have verified and selected the correct Variant.',
+  'messages.selectAccountToBuyTherapy': 'S_Please select the account to buy the therapy for',
   'messages.selectAccount': 'S_Please select account',
   'messages.selectshippingAddress': 'S_Please select the shipping address',
-  'messages.patientConcent':
-    'S_Please acknowledge if Patient Consent has been taken',
-  'messages.selectAcknowledgementError':
-    'S_Please select checkbox to acknowledge the order',
+  'messages.patientConcent': 'S_Please acknowledge if Patient Consent has been taken',
+  'messages.selectAcknowledgementError': 'S_Please select checkbox to acknowledge the order',
   'messages.inventoryCheck.success': 'S_The selected therapy is in stock.',
   'messages.inventoryCheck.error':
     'The selected therapy is not in stock right now, however you can place the order. The order will be fulfilled once the therapy is available in stock',
   'modal.action.continue': 'S_Continue',
   'modal.action.cancel': 'S_Cancel',
   'modal.title.duplicateOrder': 'S_Duplicate Order',
-  'modal.body.duplicateOrder.line_1':
-    'S_This therapy has already been ordered for this patient (Order ID #$order_id).',
-  'modal.body.duplicateOrder.line_2':
-    'S_Please confirm if you still want to place this order.',
+  'modal.body.duplicateOrder.line_1': 'S_This therapy has already been ordered for this patient (Order ID #$order_id).',
+  'modal.body.duplicateOrder.line_2': 'S_Please confirm if you still want to place this order.',
   // order management patient details screen
 
   'orderManagement.patientDetails.inputLabel.email': 'S_Email',
@@ -322,111 +291,74 @@ export const MessageEs = {
   'orderManagement.patientDetails.inputLabel.city': 'S_City',
   'orderManagement.patientDetails.inputLabel.zip': 'S_Zip Code',
   'orderManagement.patientDetails.inputLabel.state': 'S_State',
-  'orderManagement.patientDetails.inputLabel.providerDetails':
-    'S_Provider Details',
+  'orderManagement.patientDetails.inputLabel.providerDetails': 'S_Provider Details',
   'orderManagement.patientDetails.inputLabel.first_name': 'S_First Name',
   'orderManagement.patientDetails.inputLabel.middle_name': 'S_Middle Name',
   'orderManagement.patientDetails.inputLabel.last_name': 'S_Last Name',
   'orderManagement.patientDetails.inputLabel.gender': 'S_Gender',
-  'orderManagement.patientDetails.inputLabel.patientIdentifier':
-    'S_Manufacturer Patient ID',
+  'orderManagement.patientDetails.inputLabel.patientIdentifier': 'S_Manufacturer Patient ID',
   'orderManagement.patientDetails.inputLabel.mrn': 'MRN',
   'orderManagement.patientDetails.contact_details': 'S_Contact Details',
   'orderManagement.patientDetails.address_details': 'S_Address Details',
   'orderManagement.patientDetails.patient_details': 'S_Patient Details',
   'orderManagement.patientDetails.required': 'S_Required',
-  'orderManagement.patientDetails.validation.first_name_max':
-    'S_First name cannot exceed 50 characters.',
-  'orderManagement.patientDetails.validation.middle_name_max':
-    'S_Middle name cannot exceed 50 characters.',
-  'orderManagement.patientDetails.validation.last_name_max':
-    'S_Last name cannot exceed 50 characters.',
-  'orderManagement.patientDetails.validation.invalid_email':
-    'S_Please enter a valid email address.',
-  'orderManagement.patientDetails.dob.must.be.past':
-    'S_Date of Birth must be in the Past.',
+  'orderManagement.patientDetails.validation.first_name_max': 'S_First name cannot exceed 50 characters.',
+  'orderManagement.patientDetails.validation.middle_name_max': 'S_Middle name cannot exceed 50 characters.',
+  'orderManagement.patientDetails.validation.last_name_max': 'S_Last name cannot exceed 50 characters.',
+  'orderManagement.patientDetails.validation.invalid_email': 'S_Please enter a valid email address.',
+  'orderManagement.patientDetails.dob.must.be.past': 'S_Date of Birth must be in the Past.',
   'orderManagement.patientDetails.validation.invalid_date': 'S_Invalid date',
-  'orderManagement.patientDetails.validation.email_max':
-    'S_Email cannot exceed 50 characters.',
-  'orderManagement.patientDetails.validation.phone_invalid':
-    'S_Please enter a valid phone number.',
-  'orderManagement.patientDetails.validation.phone_max':
-    'S_Phone number cannot exceed 15 digits.',
-  'orderManagement.patientDetails.validation.address_1_max':
-    'S_Address Line 1 cannot exceed 100 characters.',
-  'orderManagement.patientDetails.validation.address_2_max':
-    'S_Address Line 2 cannot exceed 100 characters.',
-  'orderManagement.patientDetails.validation.city_max':
-    'S_City cannot exceed 15 characters.',
-  'orderManagement.patientDetails.validation.zip_invalid':
-    'S_Please enter a valid zip code.',
-  'orderManagement.patientDetails.validation.zip_max':
-    'S_Zip code cannot exceed 8 digits.',
-  'orderManagement.patientDetails.validation.patient_identifier_required':
-    'S_Patient identifier is required.',
+  'orderManagement.patientDetails.validation.email_max': 'S_Email cannot exceed 50 characters.',
+  'orderManagement.patientDetails.validation.phone_invalid': 'S_Please enter a valid phone number.',
+  'orderManagement.patientDetails.validation.phone_max': 'S_Phone number cannot exceed 15 digits.',
+  'orderManagement.patientDetails.validation.address_1_max': 'S_Address Line 1 cannot exceed 100 characters.',
+  'orderManagement.patientDetails.validation.address_2_max': 'S_Address Line 2 cannot exceed 100 characters.',
+  'orderManagement.patientDetails.validation.city_max': 'S_City cannot exceed 15 characters.',
+  'orderManagement.patientDetails.validation.zip_invalid': 'S_Please enter a valid zip code.',
+  'orderManagement.patientDetails.validation.zip_max': 'S_Zip code cannot exceed 8 digits.',
+  'orderManagement.patientDetails.validation.patient_identifier_required': 'S_Patient identifier is required.',
   'orderManagement.patientDetails.validation.gender': 'S_Gender is required.',
-  'orderManagement.patientDetails.validation.dateOfBirth':
-    'S_Date Of Birth is required.',
-  'orderManagement.patientDetails.validation.patient_identifier_must_number':
-    'S_Patient Identifier must be alphanumeric.',
-  'orderManagement.patientDetails.validation.mrn_must_alphanumeric':
-    'S_MRN must be alphanumeric.',
-  'orderManagement.patientDetails.validation.patient_identifier_max':
-    'S_Patient identifier cannot exceed 20 characters.',
+  'orderManagement.patientDetails.validation.dateOfBirth': 'S_Date Of Birth is required.',
+  'orderManagement.patientDetails.validation.patient_identifier_must_number': 'S_Patient Identifier must be alphanumeric.',
+  'orderManagement.patientDetails.validation.mrn_must_alphanumeric': 'S_MRN must be alphanumeric.',
+  'orderManagement.patientDetails.validation.patient_identifier_max': 'S_Patient identifier cannot exceed 20 characters.',
   'orderManagement.patientDetails.inputLabel.date_of_birth': 'S_Date of birth',
   'orderManagement.patientDetails.option.please_select': 'S_Please select',
 
-  'labels.description.approval':
-    'S_Order is reviewed and confirmed for accuracy and payment',
-  'labels.description.fulfillment':
-    'S_Items are picked, packed, and prepared for shipment',
-  'labels.description.shipment':
-    'S_Order is dispatched and tracked during transit',
-  'labels.description.finalDelivery':
-    'S_Order is delivered to your specified address',
+  'labels.description.approval': 'S_Order is reviewed and confirmed for accuracy and payment',
+  'labels.description.fulfillment': 'S_Items are picked, packed, and prepared for shipment',
+  'labels.description.shipment': 'S_Order is dispatched and tracked during transit',
+  'labels.description.finalDelivery': 'S_Order is delivered to your specified address',
 
   'messages.confirmation.discardheader': 'S_Discard Changes',
-  'messages.confirmation.account':
-    'S_You have changed Account details. Do you still want to go back? Your changes will be discarded!',
-  'messages.confirmation.therapy':
-    'S_You have changed Therapy details. Do you still want to go back? Your changes will be discarded!',
-  'messages.confirmation.addition':
-    'S_You have changed Addtional details. Do you still want to go back? Your changes will be discarded!',
-  'messages.confirmation.patient':
-    'S_You have changed Patient details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.account': 'S_You have changed Account details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.therapy': 'S_You have changed Therapy details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.addition': 'S_You have changed Addtional details. Do you still want to go back? Your changes will be discarded!',
+  'messages.confirmation.patient': 'S_You have changed Patient details. Do you still want to go back? Your changes will be discarded!',
 
   'messages.header.confirmation': 'S_Confirmation!',
   'messages.header.warning': 'S_Warning!',
 
-  'messages.confirmation.reject':
-    'S_Are you sure you want to reject this order',
-  'messages.confirmation.approve':
-    'S_Are you sure you want to approve this order',
+  'messages.confirmation.reject': 'S_Are you sure you want to reject this order',
+  'messages.confirmation.approve': 'S_Are you sure you want to approve this order',
   'messages.success.delete': 'S_Order Deleted Successfully.',
   'messages.success.release': 'S_Order Released Successfully.',
   'messages.success.assign': 'S_Order Assigned Successfully.',
-  'errors.There is no Approver Group assigned to the order':
-    'S_There is no Approver Group assigned to the order.',
+  'errors.There is no Approver Group assigned to the order': 'S_There is no Approver Group assigned to the order.',
   'errors.default': 'S_An unexpected error occurred.',
   'order.label.admin': 'S_Admin',
   'order.label.manageOrder': 'S_Manage Order',
-  'message.errorShortComment':
-    'S_Comment is very short, try to add detailed comment.',
-  'message.errorCommentExceedMaxLength':
-    'S_Comment can not be more than {{length}} characters.',
-  'message.errorCommentRequiredToRejectOrder':
-    'S_Comment is required to reject the order. Please provide reason for rejection.',
+  'message.errorShortComment': 'S_Comment is very short, try to add detailed comment.',
+  'message.errorCommentExceedMaxLength': 'S_Comment can not be more than {{length}} characters.',
+  'message.errorCommentRequiredToRejectOrder': 'S_Comment is required to reject the order. Please provide reason for rejection.',
   'captions.btnReSubmitOrder': 'S_Re-Submit Order',
   'labels.orderActions.discardChangesByMe': 'S_Discard changes by me',
   'message.success.discardVersionChanges': 'S_Discarded changes made by you.',
   'prompt.title.alert': 'S_Alert!',
-  'prompt.message.submitOrder':
-    'S_Do you wish to order this therapy under PAP program?',
-  'prompt.subMessage.submitOrder':
-    "Select 'Yes' to proceed with PAP benefits or 'No' to submit as a regular order.",
+  'prompt.message.submitOrder': 'S_Do you wish to order this therapy under PAP program?',
+  'prompt.subMessage.submitOrder': "Select 'Yes' to proceed with PAP benefits or 'No' to submit as a regular order.",
   'prompt.action.submit': 'S_Submit',
-  'message.error.papOrderCanNotEdit':
-    "You can't edit this order, If you wish to make any changes to the order, please call the customer center",
+  'message.error.papOrderCanNotEdit': "You can't edit this order, If you wish to make any changes to the order, please call the customer center",
   'prompt.message.editRestriction':
     "S_You can't edit this order. If you wish to make any changes to this order, please reject this order and create a new order.",
 
@@ -439,38 +371,28 @@ export const MessageEs = {
   'headings.seletCatalog': 'S_Select Catalog',
   'headings.seletAccount': 'S_Select Account',
   'label.addquestionnaire': 'S_Add Questionnaire',
-  'messages.confirmation.success_config_material':
-    'S_Questionnaire has been successfully configured to Material.',
-  'messages.confirmation.success_config_catalog':
-    'S_Questionnaire has been successfully configured to Catalog.',
-  'messages.confirmation.success_config_account':
-    'S_Questionnaire has been successfully configured to Account.',
+  'messages.confirmation.success_config_material': 'S_Questionnaire has been successfully configured to Material.',
+  'messages.confirmation.success_config_catalog': 'S_Questionnaire has been successfully configured to Catalog.',
+  'messages.confirmation.success_config_account': 'S_Questionnaire has been successfully configured to Account.',
   'labels.salesOrg': 'S_Sales Org',
   'labels.distChannel': 'S_Dist Channel',
   'labels.program': 'S_Program',
   'labels.SapmaterialID': 'S_SAP Material ID',
   'captions.questionnaire.emptyTableTitle': 'S_No Templates found',
-  'captions.questionnaire.emptyTableSubtitle':
-    'S_You need to add Questionnaire templates to see data in this table.',
+  'captions.questionnaire.emptyTableSubtitle': 'S_You need to add Questionnaire templates to see data in this table.',
   'captions.questionnaire.material.emptyTableTitle': 'S_No Materials found',
-  'captions.questionnaire.material.emptyTableSubtitle':
-    'S_You need to add Materials to see data in this table.',
+  'captions.questionnaire.material.emptyTableSubtitle': 'S_You need to add Materials to see data in this table.',
   'captions.questionnaire.catalog.emptyTableTitle': 'S_No Catalogs found',
-  'captions.questionnaire.catalog.emptyTableSubtitle':
-    'S_You need to select accounts or add catalogs to account to see data in this table.',
+  'captions.questionnaire.catalog.emptyTableSubtitle': 'S_You need to select accounts or add catalogs to account to see data in this table.',
   'captions.questionnaire.account.emptyTableTitle': 'S_No Accounts found',
-  'captions.questionnaire.account.emptyTableSubtitle':
-    'S_You need to select organizations or add Accounts to organizations to see data in this table.',
+  'captions.questionnaire.account.emptyTableSubtitle': 'S_You need to select organizations or add Accounts to organizations to see data in this table.',
   'table.ariaLabel.questionaaireList': 'S_Questionnaire listing',
   'table.ariaLabel.materialList': 'S_Material listing',
   'table.ariaLabel.catalogList': 'S_Catalog listing',
   'table.ariaLabel.accountList': 'S_Account listing',
-  'messages.error_config_material':
-    'S_Please select Material(s) to Add Questionnaire.',
-  'messages.error_config_catalog':
-    'S_Please select Catalog(s) to Add Questionnaire.',
-  'messages.error_config_account':
-    'S_Please select Account(s) to Add Questionnaire.',
+  'messages.error_config_material': 'S_Please select Material(s) to Add Questionnaire.',
+  'messages.error_config_catalog': 'S_Please select Catalog(s) to Add Questionnaire.',
+  'messages.error_config_account': 'S_Please select Account(s) to Add Questionnaire.',
 
   'button.caption.backQuestionnaireBuilder': 'S_Back to Questionnaire Builder',
   'heading.addQuestionnaire': 'S_Add Questionnaire',
@@ -488,22 +410,17 @@ export const MessageEs = {
   'label.type': 'S_Type',
   'label.templateName': 'S_Template Name',
   'message.questionnaire.templateNameRequired': 'S_Template name is required',
-  'message.questionnaire.templateNameMinWidth':
-    'S_Template name must be at least 2 characters',
-  'message.questionnaire.templateNameMaxWidth':
-    'S_Template name must be at most 24 characters',
-  'message.questionnaire.selectTemplateType':
-    'S_You must select a template type',
-  'message.questionnaire.provideQuestionText':
-    'S_You must provide question text',
+  'message.questionnaire.templateNameMinWidth': 'S_Template name must be at least 2 characters',
+  'message.questionnaire.templateNameMaxWidth': 'S_Template name must be at most 24 characters',
+  'message.questionnaire.selectTemplateType': 'S_You must select a template type',
+  'message.questionnaire.provideQuestionText': 'S_You must provide question text',
   'message.questionnaire.optionValueRequired': 'S_Option value is required',
   'heading.manageQuestionnaire': 'S_Manage Questionnaire',
   'button.caption.addQuestionnaire': 'S_Add Questionnaire',
   'labels.soldTo': 'S_Sold to account',
   'labels.shipTo': 'S_Ship to account',
   'button.caption.change': 'S_Change',
-  'label.selectContent':
-    'S_Select master you want to apply this questionnaire for:',
+  'label.selectContent': 'S_Select master you want to apply this questionnaire for:',
   'label.Material': 'S_Material',
   'label.Catalog': 'S_Catalog',
   'label.Account': 'S_Account',
@@ -516,15 +433,13 @@ export const MessageEs = {
   'controls.placeholder.searchQuestionnaire': 'S_Search by Template Name',
   'labels.configurationPreview': 'S_Configuration Preview',
   'labels.confirmationmessage': 'S_Confirmation message',
-  'labels.template_deactivateConfirmation':
-    'S_Do you want to deactivate selected questionnaire template ?',
+  'labels.template_deactivateConfirmation': 'S_Do you want to deactivate selected questionnaire template ?',
   'message.error.notAValidDocument': 'S_Not a valid document.',
   'control.label.uploadFile': 'S_Upload File',
   'button.caption.selectFile': 'S_Select File',
   'message.questionnaireCreated': 'S_Questionnaire created successfully.',
   'message.questionnaireUpdated': 'S_Questionnaire updated successfully.',
-  'message.questionnaireDeactivated':
-    'S_Questionnaire deactivated successfully.',
+  'message.questionnaireDeactivated': 'S_Questionnaire deactivated successfully.',
   'message.questionTextRequired': 'S_Question text is required',
   'message.englishTextIsRequired': 'S_At least requires english text',
   'message.acknowldge': 'S_Please acknowledge to Save and Continue',
@@ -534,8 +449,7 @@ export const MessageEs = {
   'labels.OrderProcesing.SAPOrderStatus.Open': 'S_OPEN',
   'labels.OrderProcesing.SAPOrderStatus.Cancelled': 'S_CANCELLED',
   'labels.OrderProcesing.SAPOrderStatus.Completed': 'S_COMPLETED',
-  'errors.orders_index_additional_details.po_number_1_practice_id_1':
-    'S_PO Number already exists.',
+  'errors.orders_index_additional_details.po_number_1_practice_id_1': 'S_PO Number already exists.',
   'labels.caption.ALL': 'All',
   'labels.caption.IN_DRAFT': 'In Draft',
   'labels.caption.DELETED': 'Discarded',
@@ -560,8 +474,7 @@ export const MessageEs = {
   'labels.BUY_AND_BILL': 'S_Buy & Bill',
   'labels.BuyNBill': 'S_BUY & BILL',
   'labels.SP': 'S_SP',
-  'label.emptyProviderTableDescription':
-    'S_You need to add providers to see data in this table',
+  'label.emptyProviderTableDescription': 'S_You need to add providers to see data in this table',
   'labels.Strength': 'S_Strength',
   'labels.Dosage': 'S_Dosage',
   'labels.orderChannel': 'S_Order Channel',
@@ -587,41 +500,34 @@ export const MessageEs = {
   'labels.therapyDetails': 'S_Therapy Details',
   'order.account.selection.wac.info':
     'S_WAC is the manufacturer’s list price for a drug when sold to wholesalers or direct buyers in the U.S., before any discounts, rebates, or chargebacks. It is used as a benchmark in pricing, reimbursement, and market analysis.',
-  'order.account.selection.wac.info.header':
-    'S_WAC Program Eligibility Requirements',
-  'order.account.selection.gov.info.header':
-    'S_GOV Program Eligibility Requirements',
+  'order.account.selection.wac.info.header': 'S_WAC Program Eligibility Requirements',
+  'order.account.selection.gov.info.header': 'S_GOV Program Eligibility Requirements',
   'order.account.selection.gov.info':
     'S_GOV refers to discounted drug prices available to government agencies  (e.g., VA, Medicaid, DoD) under federal programs. These are typically lower than commercial prices and follow statutory pricing formulas.',
-  'order.account.selection.340b.info.header':
-    'S_340B Program Eligibility Requirements',
+  'order.account.selection.340b.info.header': 'S_340B Program Eligibility Requirements',
   'order.account.selection.340b.checkboxHeading': 'S_I hereby certify that:',
-  'order.account.selection.340b.checkboxinfo1':
-    'S_The patient meets all 340B program eligibility requirements',
-  'order.account.selection.340b.checkboxinfo2':
-    'S_The prescribed therapy will be administered to an eligible patient at a qualified outpatient facility',
-  'order.no.cost.therapy.info':
-    'S_No Cost Therapy program provided for eligible patients under manufacturer-supported programs.',
-  'order.account.selection.eligibility.patient.title':
-    'S_Patient Eligibility Requirements',
-  'order.account.selection.eligibility.patient.info':
-    'S_An individual is a "340B eligible patient" only if ALL of the following criteria are met:',
+  'order.account.selection.340b.checkboxinfo1': 'S_The patient meets all 340B program eligibility requirements',
+  'order.account.selection.340b.checkboxinfo2': 'S_The prescribed therapy will be administered to an eligible patient at a qualified outpatient facility',
+  'order.no.cost.therapy.info': 'S_No Cost Therapy program provided for eligible patients under manufacturer-supported programs.',
+  'order.account.selection.eligibility.patient.title': 'S_Patient Eligibility Requirements',
+  'order.account.selection.eligibility.patient.info': 'S_An individual is a "340B eligible patient" only if ALL of the following criteria are met:',
   'order.account.selection.eligibility.patient.requirement1':
     "S_The covered entity has established a relationship with the patient, with records of the patient's health care maintained by the covered entity.",
   'order.account.selection.eligibility.patient.requirement2':
     'S_The patient receives health care services from a professional who is employed by the covered entity or provides services under contractual arrangement with the covered entity.',
 
-  'order.account.selection.eligibility.facility.title':
-    'S_Facility Eligibility Requirements',
-  'order.account.selection.eligibility.facility.info':
-    'S_For a facility to be eligible to participate in the 340B program, it must:',
-  'order.account.selection.eligibility.facility.requirement1':
-    'S_Be registered in the 340B Office of Pharmacy Affairs Information System (OPAIS).',
+  'order.account.selection.eligibility.facility.title': 'S_Facility Eligibility Requirements',
+  'order.account.selection.eligibility.facility.info': 'S_For a facility to be eligible to participate in the 340B program, it must:',
+  'order.account.selection.eligibility.facility.requirement1': 'S_Be registered in the 340B Office of Pharmacy Affairs Information System (OPAIS).',
   'order.account.selection.eligibility.facility.requirement2':
     "S_For hospital outpatient facilities, be listed as reimbursable on the hospital's most recently filed Medicare cost report.",
 
-  'order.account.selection.compliance.requirements.title':
-    'S_Compliance Requirements',
+  'order.account.selection.compliance.requirements.title': 'S_Compliance Requirements',
   'order.account.selection.compliance.requirements.requirement1':
-    'S_Covered entities must maintain auditable records that demonstrate compliance with all 340B program requirements, including patient eligibility.'
+    'S_Covered entities must maintain auditable records that demonstrate compliance with all 340B program requirements, including patient eligibility.',
+  'orderManagement.patientDetails.validation.address_1': 'S_Address is required.',
+  'orderManagement.patientDetails.validation.city': 'S_City is required.',
+  'orderManagement.patientDetails.validation.zip': 'S_Zip is required.',
+  'orderManagement.patientDetails.validation.state': 'S_State is required.',
+  'orderManagement.patientDetails.validation.phone_no': 'S_Mobile Number is required.'
 };
