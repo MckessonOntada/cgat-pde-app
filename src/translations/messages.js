@@ -19,6 +19,7 @@ import { SignupEN } from './signup/messages_en';
 import { SignupES } from './signup/messages_es';
 import { filtersEN } from './filters/messages_en';
 import { filtersES } from './filters/messages_es';
+
 import { SystemConfigurationEN } from './config/manage-material/messages_en';
 import { SystemConfigurationES } from './config/manage-material/messages_es';
 import { ManageCatalogMessagesEN } from './config/manage-catalog/messages_en';
@@ -33,6 +34,7 @@ import { ConfigurationMessagesEN } from './config/messages_en';
 import { ConfigurationMessagesES } from './config/messages_es';
 import { NotificationMessagesEN } from './notification-mfe/messages_en';
 import { NotificationMessagesES } from './notification-mfe/messages_es';
+
 export const messages = {
   [LOCALES.ENGLISH]: {
     ...LoginMessagesEN,

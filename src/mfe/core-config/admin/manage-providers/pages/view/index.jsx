@@ -1,7 +1,12 @@
-import React from 'react';
-import { Button, Heading, Alert } from '@mckesson/mcp-component-library';
-import { useQuery } from 'react-query';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import {
+  Button,
+  Heading,
+  Alert,
+  Loader
+} from '@mckesson/mcp-component-library';
+import { useMutation, useQuery } from 'react-query';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ReactComponent as SpinnerIcon } from '@src/assets/svg/spinner.svg';
 import { ReactComponent as EditIcon } from '@src/assets/image/edit_pencil.svg';
 import { ReactComponent as AddCircleFilled } from '@src/assets/svg/add-circle.svg';
@@ -14,11 +19,35 @@ import { ReactComponent as IconArrowLeft } from '@src/assets/svg/arrow-left.svg'
 import PermittedComponent from '@src/components/permitted-component';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import usePermission from '@src/hooks/usePermissions';
+import { LinkSpAccountProvider } from '../../context/LinkSpAccountContext';
+import SpAccountTable from '../link/SpAccountTable';
+import LinkProviderService from '@src/api/commonService/LinkProviderService';
+import AuthUtils from '@src/util/AuthUtils';
+import useTimedArray from '@src/mfe/order-management/pages/create/form-segments/summary/useTimedArray';
 
 const ProviderDetails = () => {
   const { id } = useParams();
   const { t } = useTranslate();
   const navigate = useNavigate();
+  const location = useLocation();
+  const practiceId = AuthUtils.getPracticeId();
+  const {
+    items: notifications,
+    add: addNotification,
+    remove: removeNotification
+  } = useTimedArray(10000);
+  useEffect(() => {
+    if (location.state?.type && location.state?.messages) {
+      addNotification({
+        type: location.state.type,
+        description: location.state.messages
+      });
+      navigate(`${location.pathname}${location.search}`, {
+        replace: true,
+        state: null
+      });
+    }
+  }, [location, navigate]);
   const {
     data,
     isLoading: isProviderDetailsLoading,
@@ -31,25 +60,39 @@ const ProviderDetails = () => {
     enabled: Boolean(id)
   });
 
-  const {
-    data: linkedSpAccounts,
-    isLoading: isLinkedAccountsLoading,
-    isFetching: isLinkedAccountsFetching,
-    isError: isLinkedAccountsError,
-    error: linkedAccountError
-  } = useQuery({
-    queryKey: ['providers', 'sp-linked-accounts', id],
-    queryFn: async () => {
-      throw new Error('No data found');
-    },
-    enabled: Boolean(id)
-  });
   const { hasPermission } = usePermission();
 
   const canEditDetails = hasPermission(
     PERMISSIONS_ENUM.MANAGE_PROVIDERS.EDIT_PROVIDER
   );
 
+  const { isLoading: unlinkLoading, mutate: handleUnlinkSpAccount } =
+    useMutation(
+      async (spAccountId) => {
+        return await LinkProviderService.removeLinkProvider(
+          practiceId,
+          spAccountId[0].accountNumber,
+          [id]
+        );
+      },
+      {
+        onSuccess: () => {
+          addNotification({
+            type: 'success',
+            description: t('provider.sp.account.unlinkSuccessfully')
+          });
+        },
+        onError: () => {
+          addNotification({
+            type: 'error',
+            description: t('provider.sp.account.unabletounlink')
+          });
+        }
+      }
+    );
+  if (unlinkLoading) {
+    return <Loader type={'screen'} />;
+  }
   return (
     <div className="MCP-module-wrapper">
       <div>
@@ -113,34 +156,34 @@ const ProviderDetails = () => {
             <Button
               variant="secondary"
               size="md"
-              Icon={AddCircleFilled}
-              disabled={
-                isLinkedAccountsLoading ||
-                isLinkedAccountsFetching ||
-                isLinkedAccountsError
-              }>
+              onClick={() =>
+                navigate(`../link-sp-accounts?accounts=${id}&isEdit=true`)
+              }
+              Icon={AddCircleFilled}>
               {t('provider.btnLinkSpAccounts')}
             </Button>
           }
         />
-        {isLinkedAccountsError && linkedAccountError ? (
-          <Alert
-            description={linkedAccountError.message}
-            type={'error'}
-            duration={0}
-            showCloseIcon={false}
-          />
-        ) : (
-          <div className="MCP-CardContainer">
-            {isLinkedAccountsLoading || isLinkedAccountsFetching ? (
-              <div className="spinner-wrapper md">
-                <SpinnerIcon />
-              </div>
-            ) : (
-              <div>Linked Accounts</div>
-            )}
+        {notifications?.length > 0 && (
+          <div className="alert-container">
+            <div className="MCP-module-body">
+              {notifications.map((item, index) => (
+                <Alert
+                  key={item.id}
+                  description={item.description}
+                  onClose={() => removeNotification(item.id)}
+                  type={item.type}
+                />
+              ))}
+            </div>
           </div>
         )}
+        <LinkSpAccountProvider>
+          <SpAccountTable
+            isAddSpAccount={false}
+            handleUnlinkSpAccount={handleUnlinkSpAccount}
+          />
+        </LinkSpAccountProvider>
       </div>
     </div>
   );

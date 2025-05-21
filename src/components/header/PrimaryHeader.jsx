@@ -21,6 +21,7 @@ import AuthUtils from '../../util/AuthUtils';
 import { useTranslate } from '@src/translations/useTranslation';
 import { currentLocale } from '@src/translations/i18n';
 import EclipsesTextcss from '../EclipsesText/EclipsesTextcss';
+import { getFullName } from '@src/util/CommonUtils';
 
 const PrimaryHeader = ({ onNotificationClick }) => {
   const { t } = useTranslate();
@@ -36,6 +37,8 @@ const PrimaryHeader = ({ onNotificationClick }) => {
   const [textMaxWidth, setTextMaxWidth] = useState('');
   const channel = new BroadcastChannel('auth_channel');
   const [notificationCount, setNotificationCount] = useState(99); // Example default value
+  const impersonatedByUser = AuthUtils.getImpersonatedByUser();
+  const impersonatedUserName = getFullName(impersonatedByUser?.name);
 
   useEffect(() => {
     const handleResize = () => {
@@ -171,6 +174,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
       ),
 
       <MenuList
+      size="md"
         handleSelect={(e) => handleSelectOption(e)}
         options={HeaderConfig.profileOptions}
         aria-label="Profile options">
@@ -180,6 +184,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
               str={userName || 'Anonymous'}
               maxWidth={textMaxWidth}
             />
+
           </span>
           <IconArrowDown />
         </div>

@@ -133,6 +133,37 @@ async function uploadProvider(payload) {
   return response;
 }
 
+async function linkProvidersToAccount(providerIds, accountIds) {
+  if (!Array.isArray(providerIds))
+    throw new Error('Provider Ids must be an array.');
+  if (!Array.isArray(accountIds))
+    throw new Error('Account Ids must be an array.');
+
+  const url = `${ApiRoutes.ORGANIZATION_BASE()}providers/link-accounts`;
+  const res = await HttpResourceService.callRest(
+    url,
+    httpVerb.PATCH,
+    { providerIds, accountIds },
+    {
+      'Content-Type': 'application/json',
+      accept: 'application/json'
+    }
+  );
+
+  return res.data || {};
+}
+async function getSpAccountListByProviderId(providerId, requestParams) {
+  const url = `${ApiRoutes.ORGANIZATION_BASE()}providers/${providerId}/accounts?${serializeParams(
+    requestParams
+  )}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.GET, {
+    'Content-Type': 'application/json'
+  });
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
 const ProviderService = Object.freeze({
   getAllProviders,
   activateProvider,
@@ -140,7 +171,9 @@ const ProviderService = Object.freeze({
   updateProvider,
   getProviderDetailsById,
   addProvider,
-  uploadProvider
+  uploadProvider,
+  linkProvidersToAccount,
+  getSpAccountListByProviderId
 });
 
 export default ProviderService;

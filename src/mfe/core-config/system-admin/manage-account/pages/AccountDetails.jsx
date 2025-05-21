@@ -55,7 +55,8 @@ function AccountDetails({ openDetails, setOpenDetails, viewAccount, setViewAccou
   const OnDeleteClick = (id) => {
     const payload = {
       questionnaireId: id,
-      accountNumber: viewAccount.accountNumber
+      accountNumber: viewAccount.accountNumber,
+      channelType: viewAccount.channelType
     };
     renderModal({
       title: t('messages.header.confirmation'),

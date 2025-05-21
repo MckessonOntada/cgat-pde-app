@@ -85,7 +85,10 @@ async function resetPassword() {
     {},
     {
       'Content-Type': 'application/json'
-    }
+    },
+    false,
+    false,
+    true
   );
   if (res.data) {
     return res.data;

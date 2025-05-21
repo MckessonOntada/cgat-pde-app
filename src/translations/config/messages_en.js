@@ -208,5 +208,29 @@ export const ConfigurationMessagesEN = {
   'crosswalk.product.searchPlaceholder': 'Search by Product Name, NDC',
   'crosswalk.product.searchProductTooltip': 'Search Products',
   'crosswalk.create.noSelectionError':
-    'Invalid selection. Please make sure you have selected material and product.'
+    'Invalid selection. Please make sure you have selected material and product.',
+
+  'provider.sp.account.unlinkSuccessfully': 'SP Account Unlink Successfully.',
+  'provider.sp.account.unabletounlink': 'Unable to unlink SP Account.',
+  'provider.sp.account.selectSP': 'Please select SP Accounts.',
+  'provider.sp.account.linkSP_1':
+    'Provider(s) has been successfully linked with ',
+  'provider.sp.account.linkSP_2': 'SP Account.',
+  'provider.sp.account.unableToLink': 'Unable to link SP Account(s).',
+  'provider.sp.account.linkSPAccounts': 'Link SP Accounts',
+  'provider.sp.account.fax': 'Fax Number',
+  'provider.sp.account.email': 'Email-ID',
+  'manageSPAccount.error.message.failedToOpenSPDetails':
+    'Failed to open SA Account details. Please try again.',
+  'provider.sp.account.wantToUnlink_account':
+    'Are you sure you want to unlink this SP Account?',
+  'provider.sp.account.searchPlaceholderLinkSp':
+    'Search by Account Name, Number,...',
+  'provider.sp.account.spAccountListing': 'SP Account Listing',
+  'provider.sp.account.needToAddAccount':
+    'You need to add account to see data in this table',
+  'provider.sp.account.haslinkedsuccessfully':
+    'SP Account(s) has been linked successfully.',
+  'provider.sp.account.spAccount': 'SP Account(s).',
+  'provider.sp.account.selected': 'Selected',
 };
