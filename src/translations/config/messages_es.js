@@ -53,5 +53,7 @@ export const ConfigurationMessagesES = {
   'provider.sp.account.needToAddAccount':
     'S_You need to add account to see data in this table',
   'provider.sp.account.haslinkedsuccessfully':
-    'S_SP Account(s) has been linked successfully.'
+    'S_SP Account(s) has been linked successfully.',
+  'provider.sp.account.spAccount': 'S_SP Account(s).',
+  'provider.sp.account.selected': 'S_Selected',
 };

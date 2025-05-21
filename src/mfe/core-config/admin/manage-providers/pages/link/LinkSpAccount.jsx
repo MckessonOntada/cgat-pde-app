@@ -55,7 +55,7 @@ function LinkSpAccount() {
               type: 'success',
               messages: `${providerIds.length} ${t(
                 'provider.sp.account.linkSP_1'
-              )} ${spAccount.length} ${t('provider.sp.account.linkSP_1')}`
+              )} ${spAccount.length} ${t('provider.sp.account.spAccount')}`
             }
           });
         } else {
@@ -111,7 +111,7 @@ function LinkSpAccount() {
             !isEdit && (
               <div className={style.alignMultiple}>
                 <Label className={style.spnTemplate}>
-                  {providerIds.join(', ') || ''}
+                  {providerIds.length} {t('provider.sp.account.selected')}
                 </Label>
                 <Button onClick={goBack} variant="tertiary" size="md">
                   {t('button.caption.change')}
