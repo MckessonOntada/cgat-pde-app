@@ -74,7 +74,7 @@ const LinkSPMaterial = () => {
           <div style={{ marginBottom: '8px' }}>
             <OrgAccountsMultiSelect />
           </div>
-          <div class="MCP-panel-container">
+          <div className="MCP-panel-container">
             <CommonFilters
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}

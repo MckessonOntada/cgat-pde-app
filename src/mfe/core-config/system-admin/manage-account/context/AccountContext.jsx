@@ -77,7 +77,8 @@ export const AccountProvider = ({ children }) => {
   } = useQuery({
     queryKey: ['Accounts', selectedOrganization?.id, requestParams],
     queryFn: async () => {
-      const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrganization.id}/accounts?${serializeParams(requestParams)}`;
+      if (!selectedOrganization?.id) return [];
+      const url = `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${selectedOrganization?.id}/accounts?${serializeParams(requestParams)}`;
 
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       if (!res.data) {

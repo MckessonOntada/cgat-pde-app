@@ -2,18 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslate } from '@src/translations/useTranslation';
 import { ReactComponent as EditPencil } from '@src/assets/image/edit_pencil.svg';
-import {
-  Badge,
-  Button,
-  Heading,
-  Switch,
-  Alert,
-  Modal,
-  CheckboxGroup,
-  IconButton,
-  Loader,
-  Tooltip
-} from '@mckesson/mcp-component-library';
+import { Badge, Button, Heading, Switch, Alert, Modal, CheckboxGroup, IconButton, Loader, Tooltip } from '@mckesson/mcp-component-library';
 import './index.scss';
 import { PERMISSIONS_ENUM } from '../UserPermissions/permissionsEnum';
 import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
@@ -32,10 +21,7 @@ import EmptyDataTable from '@src/components/EmptyTable';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import UserAccounts from '@src/components/Accounts/Accounts';
 import PermittedComponent from '@src/components/permitted-component';
-import {
-  CUSTOMER_CENTRE,
-  CUSTOMER_SERVICE
-} from '@src/api/commonService/CommonService';
+import { CUSTOMER_CENTRE, CUSTOMER_SERVICE } from '@src/api/commonService/CommonService';
 
 function getBackgroundColorByRole(role) {
   switch (role) {
@@ -101,9 +87,7 @@ const UserDetail = () => {
   const { isLoading, isError, data, refetch } = useQuery({
     queryKey: [`users/${userId}`],
     queryFn: async () => {
-      const url = isPending
-        ? `${ApiRoutes.USERS_PROVISIONING()}/${userId}`
-        : `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`;
+      const url = isPending ? `${ApiRoutes.USERS_PROVISIONING()}/${userId}` : `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`;
       const res = await HttpResourceService.callRest(url, httpVerb.GET, {});
       return res.data;
     },
@@ -113,11 +97,7 @@ const UserDetail = () => {
 
   const mutation = useMutation(
     async () => {
-      const res = await HttpResourceService.callRest(
-        `${ApiRoutes.USERS()}/${userId}/retry-okta-provisioning`,
-        httpVerb.POST,
-        null
-      );
+      const res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}/retry-okta-provisioning`, httpVerb.POST, null);
       return res.data;
     },
     {
@@ -149,13 +129,7 @@ const UserDetail = () => {
           {t('userManagement.provision.message', {
             click: (
               <span>
-                <IconButton
-                  label={t('userManagement.button.clickhere')}
-                  size="lg"
-                  iconButton={false}
-                  textButton={true}
-                  onClick={handleRetry}
-                />
+                <IconButton label={t('userManagement.button.clickhere')} size="lg" iconButton={false} textButton={true} onClick={handleRetry} />
               </span>
             )
           })}
@@ -168,9 +142,7 @@ const UserDetail = () => {
     if (!isSuccess) return;
     if (!isSystemAdminView) {
       setIsAlertVisible(true);
-      setAlertDescription(
-        `${location.state.recCount} ${t('messages.accountlinkSuccess')}.`
-      );
+      setAlertDescription(`${location.state.recCount} ${t('messages.accountlinkSuccess')}.`);
     }
   }, [isSuccess, location.pathname, location.state, navigate]);
 
@@ -183,12 +155,7 @@ const UserDetail = () => {
   };
 
   const goBack = () => {
-    navigate(
-      isSystemAdminView
-        ? RoutePaths.pathSystemAdminManagement
-        : RoutePaths.pathUserManagement,
-      { state: { isBack: true } }
-    );
+    navigate(isSystemAdminView ? RoutePaths.pathSystemAdminManagement : RoutePaths.pathUserManagement, { state: { isBack: true } });
   };
 
   const handleRetry = () => {
@@ -199,9 +166,7 @@ const UserDetail = () => {
 
   const onRemoveAccount = useCallback(
     (item) => {
-      setSelectedAccounts(
-        selectedAccounts.filter((account) => account.id !== item.id)
-      );
+      setSelectedAccounts(selectedAccounts.filter((account) => account.id !== item.id));
     },
     [selectedAccounts, setSelectedAccounts]
   );
@@ -213,19 +178,9 @@ const UserDetail = () => {
   const handleActivateDeactivateUser = async ({ userId, isActive }) => {
     let res;
     if (isActive) {
-      res = await HttpResourceService.callRest(
-        `${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`,
-        httpVerb.DELETE,
-        null
-      );
+      res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}?${serializeParams(requestParams)}`, httpVerb.DELETE, null);
     } else {
-      res = await HttpResourceService.callRest(
-        `${ApiRoutes.USERS()}/${userId}/activate?${serializeParams(
-          requestParams
-        )}`,
-        httpVerb.PATCH,
-        null
-      );
+      res = await HttpResourceService.callRest(`${ApiRoutes.USERS()}/${userId}/activate?${serializeParams(requestParams)}`, httpVerb.PATCH, null);
     }
     return res.data;
   };
@@ -237,13 +192,7 @@ const UserDetail = () => {
       setIsDeactivate(true);
       setIsAlertVisible(true);
       setAlertType('success');
-      setAlertDescription(
-        t(
-          selectedUserInfo?.isActive
-            ? 'messages.user_deactivate_success'
-            : 'messages.user_activate_success'
-        )
-      );
+      setAlertDescription(t(selectedUserInfo?.isActive ? 'messages.user_deactivate_success' : 'messages.user_activate_success'));
       setDuration(10000);
     },
     onError: (error) => {
@@ -252,13 +201,7 @@ const UserDetail = () => {
       setIsAlertVisible(true);
       setAlertType('error');
       setDuration(10000);
-      setAlertDescription(
-        t(
-          selectedUserInfo?.isActive
-            ? 'messages.user_deactivate_failure'
-            : 'messages.user_activate_failure'
-        )
-      );
+      setAlertDescription(t(selectedUserInfo?.isActive ? 'messages.user_deactivate_failure' : 'messages.user_activate_failure'));
     }
   });
 
@@ -294,10 +237,7 @@ const UserDetail = () => {
     return groupedPermissions;
   };
   const handleonBehalfNotifcaiton = async () => {
-    const res = await HttpResourceService.callRest(
-      `${ApiRoutes.PUBLIC_ORGANIZATIONS}/${data?.practiceId}/on-behalf-notification`,
-      httpVerb.POST
-    );
+    const res = await HttpResourceService.callRest(`${ApiRoutes.PUBLIC_ORGANIZATIONS}/${data?.practiceId}/on-behalf-notification`, httpVerb.POST);
     return res.data;
   };
 
@@ -328,79 +268,37 @@ const UserDetail = () => {
         });
       });
     } catch (error) {
-      console.log(
-        'Something went wrong. Missing user identifier or invalid permission list.'
-      );
+      console.log('Something went wrong. Missing user identifier or invalid permission list.');
     }
   };
 
-  const groupedPermissions = groupPermissionsByCategory(
-    data?.permissions || [],
-    PERMISSIONS_ENUM
-  );
-  const userFullName = `${data?.name.lastName} ${data?.name.firstName}${
-    data?.name.middleName ? `, ${data?.name.middleName}` : ''
-  }`;
+  const groupedPermissions = groupPermissionsByCategory(data?.permissions || [], PERMISSIONS_ENUM);
+  const userFullName = `${data?.name.lastName} ${data?.name.firstName}${data?.name.middleName ? `, ${data?.name.middleName}` : ''}`;
   const loggedUserId = Number(AuthUtils.getUserId());
 
-  const prePermissions =
-    data?.isActive &&
-    data?.id !== loggedUserId &&
-    !isImpersonateLoggedIn &&
-    !isSystemAdminView;
+  const prePermissions = data?.isActive && data?.id !== loggedUserId && !isImpersonateLoggedIn && !isSystemAdminView;
   if (isLoading) {
     return <Loader type={'screen'} />;
   }
   return (
     <div className="MCP-module-wrapper">
       <div>
-        <Button
-          className="back-button-control"
-          variant="tertiary"
-          Icon={() => <IconArrowLeft />}
-          onClick={goBack}
-          size="md">
-          {t(
-            isSystemAdminView
-              ? 'userManagement.sysadmin.backmessage'
-              : 'userManagement.user.backmessage'
-          )}
+        <Button className="back-button-control" variant="tertiary" Icon={() => <IconArrowLeft />} onClick={goBack} size="md">
+          {t(isSystemAdminView ? 'userManagement.sysadmin.backmessage' : 'userManagement.user.backmessage')}
         </Button>
       </div>
       {(isDeactivate || isProvisioned || isConsentError) && isAlertVisible && (
-        <Alert
-          description={alertDescription}
-          onClose={handleAlertClose}
-          type={alertType}
-        />
+        <Alert description={alertDescription} onClose={handleAlertClose} type={alertType} />
       )}
       <div className="MCP-module-body">
         <ModuleHeader
-          heading={
-            <Heading as="h1">
-              {t('userManagement.header.view.edit_user')}
-            </Heading>
-          }
+          heading={<Heading as="h1">{t('userManagement.header.view.edit_user')}</Heading>}
           controls={
             prePermissions && (
-              <PermittedComponent
-                permissions={
-                  PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER
-                }>
-                <Tooltip
-                  body={
-                    data?.role == null || data?.permissions?.length === 0
-                      ? 'User must have a role and at least one permission.'
-                      : ''
-                  }>
+              <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.ON_BEHALF_OF_USER}>
+                <Tooltip body={data?.role == null || data?.permissions?.length === 0 ? 'User must have a role and at least one permission.' : ''}>
                   <span>
-                    <Button
-                      variant="primary"
-                      size="md"
-                      onClick={(e) => handleClickLogin(e)}
-                      disabled={
-                        data?.role == null || data?.permissions?.length === 0
-                      }>
+                    <Button variant="primary" size="md" onClick={(e) => handleClickLogin(e)} disabled={data?.role == null || data?.permissions?.length === 0}>
                       {t('button.label.loginAsThisUser')}
                     </Button>
                   </span>
@@ -418,8 +316,7 @@ const UserDetail = () => {
             </div>
           }
           controls={
-            <PermittedComponent
-              permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
+            <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
               <Button
                 Icon={EditPencil}
                 variant="secondary"
@@ -442,11 +339,7 @@ const UserDetail = () => {
             <div className="user-info">
               {data?.role?.name && (
                 <Badge
-                  text={
-                    data?.role?.name === CUSTOMER_CENTRE
-                      ? CUSTOMER_SERVICE
-                      : data?.role?.name
-                  }
+                  text={data?.role?.name === CUSTOMER_CENTRE ? CUSTOMER_SERVICE : data?.role?.name}
                   type={getBackgroundColorByRole(data?.role?.name)}
                   customStyle={{
                     background: '#DEEBF0',
@@ -456,26 +349,17 @@ const UserDetail = () => {
               )}
             </div>
             <div className="user-status">
-              <span className="view_label">
-                {t('userManagement.userDetails.lastUpdatedOn')}
-              </span>
+              <span className="view_label">{t('userManagement.userDetails.lastUpdatedOn')}</span>
 
               <span className="label-text">
                 {' '}
                 {data?.updatedAt
-                  ? CommonUtils.convertDateStringFormat(
-                      data.updatedAt,
-                      'MM-DD-YYYY'
-                    )
+                  ? CommonUtils.convertDateStringFormat(data.updatedAt, 'MM-DD-YYYY')
                   : data?.createdAt
-                  ? CommonUtils.convertDateStringFormat(
-                      data.createdAt,
-                      'MM-DD-YYYY'
-                    )
+                  ? CommonUtils.convertDateStringFormat(data.createdAt, 'MM-DD-YYYY')
                   : 'N/A'}
               </span>
-              <PermittedComponent
-                permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
+              <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
                 <Switch
                   handleToggle={() => {
                     setSelectedUserInfo({
@@ -485,14 +369,8 @@ const UserDetail = () => {
                     handleActivateDeactivate();
                   }}
                   id="id"
-                  disabled={
-                    (!isSystemAdmin && !data?.isActive) ||
-                    (isSystemAdmin && isSelf && data?.isActive) ||
-                    isSelf
-                  }
-                  label={
-                    data?.isActive ? t('userManagement.status.active') : ''
-                  }
+                  disabled={(!isSystemAdmin && !data?.isActive) || (isSystemAdmin && isSelf && data?.isActive) || isSelf}
+                  label={data?.isActive ? t('userManagement.status.active') : ''}
                   labelPosition="right"
                   name="Toggle"
                   size="lg"
@@ -504,72 +382,46 @@ const UserDetail = () => {
 
           <div className="userCardContainer grid grid-gap-24 grid-cols-1 md:grid-cols-4">
             <div>
-              <span className="view_label">
-                {t('userManagement.userDetails.userAddress')}
-              </span>
-              <p className="label-text">
-                {formatFields(data?.address, ['address1', 'address2'])}
-              </p>
+              <span className="view_label">{t('userManagement.userDetails.userAddress')}</span>
+              <p className="label-text">{formatFields(data?.address, ['address1', 'address2'])}</p>
             </div>
 
             <div>
-              <span className="view_label">
-                {t('userManagement.create_user.inputLabel.email')}
-              </span>
+              <span className="view_label">{t('userManagement.create_user.inputLabel.email')}</span>
               <p className="label-text">{data?.contact.email}</p>
             </div>
 
             <div>
-              <span className="view_label">
-                {t('userManagement.create_user.inputLabel.phone_no')}
-              </span>
-              <p className="label-text">
-                {' '}
-                {data?.contact.phone
-                  ? CommonUtils.formatPhoneNumber(data.contact.phone)
-                  : 'N/A'}{' '}
-              </p>
+              <span className="view_label">{t('userManagement.create_user.inputLabel.phone_no')}</span>
+              <p className="label-text"> {data?.contact.phone ? CommonUtils.formatPhoneNumber(data.contact.phone) : 'N/A'} </p>
             </div>
 
             <div>
-              <span className="view_label">
-                {t('userManagement.create_user.inputLabel.fax')}
-              </span>
+              <span className="view_label">{t('userManagement.create_user.inputLabel.fax')}</span>
               <p className="label-text">{data?.contact.fax || '-'}</p>
             </div>
 
             <div>
-              <span className="view_label">
-                {t('userManagement.create_user.inputLabel.city')}
-              </span>
+              <span className="view_label">{t('userManagement.create_user.inputLabel.city')}</span>
               <p className="label-text">{data?.address.city}</p>
             </div>
 
             <div>
-              <span className="view_label">
-                {t('userManagement.create_user.inputLabel.zip')}
-              </span>
+              <span className="view_label">{t('userManagement.create_user.inputLabel.zip')}</span>
               <p className="label-text"> {data?.address.zip}</p>
             </div>
 
             <div>
-              <span className="view_label">
-                {t('userManagement.create_user.inputLabel.state')}
-              </span>
+              <span className="view_label">{t('userManagement.create_user.inputLabel.state')}</span>
               <p className="label-text">{data?.address.state}</p>
             </div>
           </div>
         </div>
         <div className="secondryTitle">
           <ModuleHeader
-            heading={
-              <Heading as="h2">
-                {t('userManagement.header.view.permissions_granted')}
-              </Heading>
-            }
+            heading={<Heading as="h2">{t('userManagement.header.view.permissions_granted')}</Heading>}
             controls={
-              <PermittedComponent
-                permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
+              <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
                 <div className="controls">
                   <Button
                     Icon={EditPencil}
@@ -591,50 +443,36 @@ const UserDetail = () => {
         </div>
         <div className="MCP-panel-container grid grid-gap-16">
           {data?.permissions?.length > 0 ? (
-            Object.entries(groupedPermissions).map(
-              ([categoryKey, permissions]) => (
-                <div
-                  key={categoryKey}
-                  className="MCP-module-body permission-category">
-                  <div className="subheader-text">{t(categoryKey)}</div>
-                  <div className="permission-category">
-                    <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 permission-list">
-                      {permissions.map((permissionKey, idx) => {
-                        if (!PERMISSIONS_ENUM[categoryKey][permissionKey])
-                          return null; // Validate if permission exists
+            Object.entries(groupedPermissions).map(([categoryKey, permissions]) => (
+              <div key={categoryKey} className="MCP-module-body permission-category">
+                <div className="subheader-text">{t(categoryKey)}</div>
+                <div className="permission-category">
+                  <div className="grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 permission-list">
+                    {permissions.map((permissionKey, idx) => {
+                      if (!PERMISSIONS_ENUM[categoryKey][permissionKey]) return null; // Validate if permission exists
 
-                        return (
-                          <React.Fragment key={idx}>
-                            <div className="flex items-center justify-between permission-item">
-                              <div className="permission-info">
-                                <h4>{t(`${categoryKey}.${permissionKey}`)}</h4>
-                                <p>
-                                  {t(
-                                    `${categoryKey}.${permissionKey}.DESCRIPTION`
-                                  )}
-                                </p>
-                              </div>
+                      return (
+                        <React.Fragment key={idx}>
+                          <div className="flex items-center justify-between permission-item">
+                            <div className="permission-info">
+                              <h4>{t(`${categoryKey}.${permissionKey}`)}</h4>
+                              <p>{t(`${categoryKey}.${permissionKey}.DESCRIPTION`)}</p>
                             </div>
-                            {/* Add a divider dynamically */}
-                            {idx % 2 === 0 &&
-                              idx !== permissions.length - 1 && (
-                                <div className="divider"></div>
-                              )}
-                          </React.Fragment>
-                        );
-                      })}
-                    </div>
+                          </div>
+                          {/* Add a divider dynamically */}
+                          {idx % 2 === 0 && idx !== permissions.length - 1 && <div className="divider"></div>}
+                        </React.Fragment>
+                      );
+                    })}
                   </div>
                 </div>
-              )
-            )
+              </div>
+            ))
           ) : (
             <EmptyDataTable
               isLoading={isLoading}
               image={EmptyDataImage}
-              heading={t(
-                'userManagement.message.userPermissionEmptyTableTitle'
-              )}
+              heading={t('userManagement.message.userPermissionEmptyTableTitle')}
               description={t('userManagement.messages.emptysubtitle')}
             />
           )}
@@ -643,14 +481,9 @@ const UserDetail = () => {
         {!isSystemAdminView && (
           <div className="MCP-module-body">
             <ModuleHeader
-              heading={
-                <Heading as="h2">
-                  {t('userManagement.header.view.linked_accounts')}
-                </Heading>
-              }
+              heading={<Heading as="h2">{t('userManagement.header.view.linked_accounts')}</Heading>}
               controls={
-                <PermittedComponent
-                  permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
+                <PermittedComponent permissions={PERMISSIONS_ENUM.USER_MANAGEMENT.EDIT_USERS}>
                   <div className="controls">
                     <Button
                       Icon={EditPencil}
@@ -669,13 +502,7 @@ const UserDetail = () => {
                 </PermittedComponent>
               }
             />
-            {isSuccess && isAlertVisible && !isSystemAdminView && (
-              <Alert
-                description={alertDescription}
-                onClose={handleAlertClose}
-                type="success"
-              />
-            )}
+            {isSuccess && isAlertVisible && !isSystemAdminView && <Alert description={alertDescription} onClose={handleAlertClose} type="success" />}
             {data?.practiceId && (
               <UserAccounts
                 selectableRows={false}
@@ -697,29 +524,16 @@ const UserDetail = () => {
           modalTitle: t('userManagement.confirmationMessage'),
           modalBody: (
             <div className="MCP-modal-body">
-              <p>
-                {t(
-                  selectedUserInfo?.isActive
-                    ? 'popup.userDeactivation.question'
-                    : 'popup.userActivation.question'
-                )}
-              </p>
+              <p>{t(selectedUserInfo?.isActive ? 'popup.userDeactivation.question' : 'popup.userActivation.question')}</p>
             </div>
           ),
           modalFooter: (
             <React.Fragment>
-              <Button
-                size="md"
-                onClick={handleConfirmCancel}
-                variant="secondary">
+              <Button size="md" onClick={handleConfirmCancel} variant="secondary">
                 {t('userManagement.label.cancel')}
               </Button>
               <Button size="md" onClick={handleConfirmActivateDeactivate}>
-                {t(
-                  selectedUserInfo?.isActive
-                    ? 'userManagement.button.deactivate'
-                    : 'userManagement.button.activate'
-                )}
+                {t(selectedUserInfo?.isActive ? 'userManagement.button.deactivate' : 'userManagement.button.activate')}
               </Button>
             </React.Fragment>
           ),
@@ -727,11 +541,7 @@ const UserDetail = () => {
         }}
       />
       {isConsentModalOpen && (
-        <ConsentModal
-          userFullName={userFullName}
-          onYes={() => handleOnConsentConfirm(data.id)}
-          onNo={() => setIsConsentModalOpen(false)}
-        />
+        <ConsentModal userFullName={userFullName} onYes={() => handleOnConsentConfirm(data.id)} onNo={() => setIsConsentModalOpen(false)} />
       )}
     </div>
   );
@@ -763,14 +573,8 @@ const ConsentModal = ({ userFullName, onYes, onNo }) => {
         modalTitle: t('popup.title.alert'),
         modalBody: (
           <div className="MCP-modal-body">
-            <Heading as="h6">
-              {t('popup.message.wishToContinueLoginAsThisUserQuestion')}
-            </Heading>
-            <p>
-              {t(
-                'popup.message.wishToContinueLoginAsThisUserDescription'
-              ).replace('{{targetUser}}', userFullName)}
-            </p>
+            <Heading as="h6">{t('popup.message.wishToContinueLoginAsThisUserQuestion')}</Heading>
+            <p>{t('popup.message.wishToContinueLoginAsThisUserDescription', { targetUser: userFullName })}</p>
             <div className="checkboxGroup">
               <CheckboxGroup
                 id={'default'}
@@ -791,11 +595,7 @@ const ConsentModal = ({ userFullName, onYes, onNo }) => {
             <Button variant="secondary" size="md" onClick={onNo}>
               {t('label.no')}
             </Button>
-            <Button
-              variant="primary"
-              size="md"
-              onClick={onYes}
-              disabled={!consentCheckboxOption.isChecked}>
+            <Button variant="primary" size="md" onClick={onYes} disabled={!consentCheckboxOption.isChecked}>
               {t('label.yes')}
             </Button>
           </div>

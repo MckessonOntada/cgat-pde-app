@@ -28,7 +28,7 @@ function Questionnaire() {
   return (
     <QuestionnaireProvider>
       <Routes>
-        <Route path="" index element={<ManageQuestionnaire />} />
+        <Route index element={<ManageQuestionnaire />} />
         {hasPermission(PERMISSIONS_ENUM.SYSTEM_CONFIGURATION.ADD_QUESTIONNAIRE) && (
           <Route path={ROUTE_CONFIG.ADD_QUESTIONNAIRE} element={<AddQuestionnaire />} />
         )}

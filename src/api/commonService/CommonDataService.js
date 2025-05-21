@@ -38,13 +38,7 @@ async function getOrganizationListAsOptions(requestParams) {
 }
 
 async function getOrganizationListAsPublic(requestParams) {
-  const res = await HttpResourceService.callRest(
-    `${ApiRoutes.USERS_PROVISIONING_ORGLIST_PUBLIC}?${serializeParams(
-      requestParams
-    )}`,
-    httpVerb.GET,
-    {}
-  );
+  const res = await HttpResourceService.callRest(`${ApiRoutes.USERS_PROVISIONING_ORGLIST_PUBLIC}?${serializeParams(requestParams)}`, httpVerb.GET, {});
   res.data.content = res.data?.content?.map((item) => ({
     ...item,
     label: item.name,
@@ -58,21 +52,17 @@ const useOrganizationLogo = (logUrl, practiceId) => {
   return useQuery(
     [`organizationLogo_${practiceId}`, logUrl],
     async () => {
-      const response = await HttpResourceService.callRest(
-        `${ApiRoutes.LOGO}/${practiceId || 1}/logo`,
-        httpVerb.GET,
-        {},
-        {},
-        false,
-        false,
-        'blob'
-      );
+      const response = await HttpResourceService.callRest(`${ApiRoutes.LOGO}/${practiceId || 1}/logo`, httpVerb.GET, {}, {}, false, false, false, 'blob');
       const blob = response.data;
+      if (!(blob instanceof Blob)) {
+        console.log('Invalid blob received for organization logo.');
+        return;
+      }
       return URL.createObjectURL(blob);
     },
     {
       retry: 1,
-      enabled: !!practiceId
+      enabled: !!practiceId && !!logUrl
     }
   );
 };

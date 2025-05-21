@@ -142,7 +142,7 @@ function ShippingLocationsDataTable() {
         />
         {alert && alert.type && <Alert description={alert.message} onClose={handleAlertClose} type={alert.type} duration={10000} />}
         <div className="MCP-panel-container">
-          <div class="MCP-panel-container">
+          <div className="MCP-panel-container">
             <CommonFilters
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}
