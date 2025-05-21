@@ -595,7 +595,7 @@ export const MessageEn = {
   'formSections.provider-details': 'Provider Details',
 
   'stepper.label.THERAPY_SELECTION': 'Therapy Selection',
-  'stepper.label.ACCOUNT_SELECTION': 'Account Selection',
+  'stepper.label.ACCOUNT_DETAILS': 'Account Selection',
   'stepper.label.PATIENT_DETAILS': 'Patient Details',
   'stepper.label.PATIENT_AND_PROVIDER_DETAILS': 'Patient & Provider Details',
   'stepper.label.PAYER_DETAILS': 'Payer Details',

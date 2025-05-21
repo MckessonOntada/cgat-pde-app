@@ -12,7 +12,6 @@ export const routesConfig = {
 
 export const ORDER_STAGES = {
   THERAPY_SELECTION: 1,
-  ACCOUNT_SELECTION: 2,
   ACCOUNT_DETAILS: 2,
   PATIENT_DETAILS: 3,
   PAYER_DETAILS: 4,
