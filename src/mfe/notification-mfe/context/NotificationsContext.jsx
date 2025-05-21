@@ -153,14 +153,14 @@ export const NotificationsProvider = ({ children }) => {
       // For this example, we're using the mock data defined above
       setNotifications(notificationsMock);
       setNotificationsCount(
-        notificationsMock.map((notification) => notification.unread).length
+        notificationsMock.filter((notification) => notification.unread).length
       );
       // Set the initial state of the notification drawer
       setSelectedNotification(notificationsMock[0]);
     };
 
     fetchNotifications();
-  }, [notifications]);
+  }, []);
 
   useEffect(() => {
     setDropdownOptions(dropdownOptionsMock);
@@ -180,7 +180,7 @@ export const NotificationsProvider = ({ children }) => {
       notification.id === id ? { ...notification, unread: false } : notification
     );
     setNotifications(updatedNotifications);
-    setNotificationsCount((prevCount) => prevCount - 1);
+    setNotificationsCount(updatedNotifications.filter(n => n.unread).length);
   };
 
   return (

@@ -1,0 +1,20 @@
+.filterForm {
+    width: 100%;
+
+    .filterToolbar {
+        display: flex;
+        align-items: flex-end;
+        width: 100%;
+        gap: 16px;
+
+        .dateFilter {}
+
+        .dropdownFilter {
+            margin-bottom: 2px;
+        }
+
+        .filterCta {
+            margin-bottom: 8px;
+        }
+    }
+}

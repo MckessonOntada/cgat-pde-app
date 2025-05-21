@@ -1,62 +1,68 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   DateRangePicker,
   Dropdown,
   Button
 } from '@mckesson/mcp-component-library';
-import './FilterToolbar.scss';
+import styles from './FilterToolbar.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useNotifications } from '../../context/NotificationsContext';
+import { Formik, Form } from 'formik';
 
 const FilterToolbar = ({ isMobileView }) => {
   const { t } = useTranslate();
   const elementSize = isMobileView ? 'sm' : 'md';
+  const formRef = useRef(null);
   const { dropdownOptions, filterState, setFilterState } = useNotifications();
-  const [dropdownValue, setDropdownValue] = React.useState(
-    filterState.notificationDropdownValue
-  );
-
-  const setDateRange = (dateRange) => {
-    setFilterState((prevState) => ({
-      ...prevState,
-      notificationDateRange: dateRange
-    }));
-  };
-
-  const onDropdownChange = (value) => {
-    setFilterState((prevState) => ({
-      ...prevState,
-      notificationDropdownValue: value
-    }));
-  };
-
-  const onApply = () => {
-    setFilterState((prevState) => ({
-      ...prevState,
-      notificationDateRange: filterState.notificationDateRange,
-      notificationDropdownValue: filterState.notificationDropdownValue
-    }));
-  };
 
   return (
-    <div className="filter-toolbar">
-      <DateRangePicker
-        id="notification-filter-date-range"
-        dateRange={filterState.notificationDateRange}
-        onChange={setDateRange}
-        size={elementSize}
-      />
-      <Dropdown
-        id="notification-filter-dropdown"
-        options={dropdownOptions}
-        value={filterState.notificationDropdownValue}
-        onChange={onDropdownChange}
-        size={elementSize}
-      />
-      <Button size={elementSize} variant="secondary" onClick={onApply}>
-        {t('notifications.cta.apply')}
-      </Button>
-    </div>
+    <Formik
+      initialValues={{
+        notificationDateRange: filterState.notificationDateRange,
+        notificationDropdownValue: filterState.notificationDropdownValue
+      }}
+      enableReinitialize
+      onSubmit={(values) => {
+        setFilterState((prevState) => ({
+          ...prevState,
+          notificationDateRange: values.notificationDateRange,
+          notificationDropdownValue: values.notificationDropdownValue
+        }));
+      }}>
+      {({ values, setFieldValue }) => (
+        <Form ref={formRef} autoComplete="off" className={styles.filterForm}>
+          <div className={styles.filterToolbar}>
+            <div className={styles.dateFilter}>
+              <DateRangePicker
+                id="notification-filter-date-range"
+                dateRange={values.notificationDateRange}
+                onChange={(dateRange) =>
+                  setFieldValue('notificationDateRange', dateRange)
+                }
+                size={elementSize}
+                isRequired={false}
+              />
+            </div>
+            <div className={styles.dropdownFilter}>
+              <Dropdown
+                id="notification-filter-dropdown"
+                options={dropdownOptions}
+                value={values.notificationDropdownValue}
+                onChange={(value) =>
+                  setFieldValue('notificationDropdownValue', value)
+                }
+                size={elementSize}
+              />
+            </div>
+            <div className={styles.filterCta}>
+              <Button size={elementSize} variant="secondary" type="submit">
+                {t('notifications.cta.apply')}
+              </Button>
+            </div>
+          </div>
+        </Form>
+      )}
+    </Formik>
   );
 };
 
