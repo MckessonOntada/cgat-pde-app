@@ -70,7 +70,7 @@ export const messages = {
     ...ManageCatalogMessagesES,
     ...ManageAccountMessagesES,
     ...ManageSPMaterialMessagesES,
-    ...ManageSPAccountMessagesEN,
+    ...ManageSPAccountMessagesES,
     ...ConfigurationMessagesES,
     ...NotificationMessagesES
   }
