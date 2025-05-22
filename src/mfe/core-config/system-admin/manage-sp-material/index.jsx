@@ -50,7 +50,7 @@ function ManageSPMaterial() {
       <div className="MCP-module-body">
         <ModuleHeader heading={<Heading as="h1">{t('manageSPMaterial.heading')}</Heading>} />
         <div className="MCP-panel-container">
-          <div class="MCP-panel-container">
+          <div className="MCP-panel-container">
             <CommonFilters
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}

@@ -19,6 +19,7 @@ const LinkSPMaterial = () => {
   const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
   const { applyFilters, clearFilters, selectedSPMaterial } = useSPMaterial();
   const { selectedAccount, selectedOrganization } = useOrgAccountsMultiSelectionContext();
+  const isAccountSelected = Array.isArray(selectedAccount) && selectedAccount.some((acc) => acc.isChecked === true);
 
   useEffect(() => {
     if (!selectedAccount && !selectedOrganization) {
@@ -39,7 +40,7 @@ const LinkSPMaterial = () => {
   };
 
   const handleSave = () => {
-    if (selectedSPMaterial.length === 0) {
+    if (selectedSPMaterial.length === 0 || !isAccountSelected) {
       addNotification({
         type: 'error',
         description: t('SPCatalog.error.PeaseSelectRequired')
@@ -74,7 +75,7 @@ const LinkSPMaterial = () => {
           <div style={{ marginBottom: '8px' }}>
             <OrgAccountsMultiSelect />
           </div>
-          <div class="MCP-panel-container">
+          <div className="MCP-panel-container">
             <CommonFilters
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}

@@ -1,6 +1,15 @@
 import React from 'react';
-import { useFilters, usePagination, useSort, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
-import { RadioGroup, InputField, Heading } from '@mckesson/mcp-component-library';
+import {
+  useFilters,
+  usePagination,
+  useSort,
+  useTable
+} from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import {
+  RadioGroup,
+  InputField,
+  Heading
+} from '@mckesson/mcp-component-library';
 import { CustomDataTable } from '@src/components/dataTableComponent';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Link } from 'react-router-dom';
@@ -51,8 +60,13 @@ const getColumns = ({ t }) => {
       sortable: true,
       sortKey: 'materialDescription',
       cell: (props) => (
-        <Link to={`?material=${props.materialNumber}`} className="MCP-table-link">
-          <EclipsesTextcss maxLength={240} str={props?.materialDescription || '-'} />
+        <Link
+          to={`?material=${props.materialNumber}`}
+          className="MCP-table-link">
+          <EclipsesTextcss
+            maxLength={240}
+            str={props?.materialDescription || '-'}
+          />
         </Link>
       )
     },
@@ -63,7 +77,9 @@ const getColumns = ({ t }) => {
       wrap: true,
       sortable: false,
       minWidth: '155px',
-      cell: (props) => <EclipsesTextcss maxLength={140} str={props?.ndcNumber || '-'} />
+      cell: (props) => (
+        <EclipsesTextcss maxLength={140} str={props?.ndcNumber || '-'} />
+      )
     }
   ];
 };
@@ -92,7 +108,8 @@ const Materials = () => {
     }
   };
   const handleOnSort = (selectedColumn, sortDirection) => {
-    if (selectedColumn.sortKey) applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
+    if (selectedColumn.sortKey)
+      applySort({ sortBy: selectedColumn.sortKey, sortOrder: sortDirection });
   };
   return (
     <React.Fragment>
@@ -127,13 +144,18 @@ const Materials = () => {
           data={data}
           currentPage={pagination.pageNo}
           totalPageCount={pagination.totalPages}
-          pagination={true}
+          pagination={false}
+          StepperControls={true}
           totalRocords={pagination.totalElements}
           onSortIconClick={handleOnSort}
           handleChangePage={(_event, pageNumber) => changePage(pageNumber)}
           recordsPerPage={pagination.pageSize}
-          paginationTotalRecorsMessage={t('manageMaterial.table.pagination.totalRecords')}
-          paginationRecordsPerPageMessage={t('manageMaterial.table.pagination.perPage')}
+          paginationTotalRecorsMessage={t(
+            'manageMaterial.table.pagination.totalRecords'
+          )}
+          paginationRecordsPerPageMessage={t(
+            'manageMaterial.table.pagination.perPage'
+          )}
           responsive={true}
           showCardView={false}
           defaultExpandedCardView={true}

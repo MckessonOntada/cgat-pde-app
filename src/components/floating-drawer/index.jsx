@@ -7,17 +7,7 @@ import { Heading, Button } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
 
 const SM_BREAKPOINT = 576;
-const FloatingDrawer = ({
-  open,
-  onClose,
-  anchor = 'left',
-  swipeable = false,
-  heading = false,
-  width,
-  controls = false,
-  bodyPadding,
-  children
-}) => {
+const FloatingDrawer = ({ open, onClose, anchor = 'left', swipeable = false, heading = false, width, controls = false, bodyPadding, children }) => {
   const drawerRef = useRef();
   const windowSize = useWindowSize();
   const isMobileView = windowSize.width < SM_BREAKPOINT;
@@ -88,9 +78,7 @@ const FloatingDrawer = ({
 
   useEffect(() => {
     if (open && drawerRef.current) {
-      const focusableElements = drawerRef.current.querySelectorAll(
-        'button, a, input, textarea, select, details, [tabindex]:not([tabindex="-1"])'
-      );
+      const focusableElements = drawerRef.current.querySelectorAll('button, a, input, textarea, select, details, [tabindex]:not([tabindex="-1"])');
       if (focusableElements.length) focusableElements[0].focus();
     }
   }, [open]);
@@ -113,13 +101,13 @@ const FloatingDrawer = ({
           {heading ? (
             <div className={styles.header}>
               <Heading as="h3">{heading}</Heading>
-              <Button variant="tertiary" onClick={handleClose} textButton IconClose>
+              <Button variant="tertiary" onClick={handleClose} textButton>
                 <IconClose />
               </Button>
             </div>
           ) : (
             <div className={styles.secondryHeader}>
-              <Button variant="tertiary" onClick={handleClose} textButton IconClose>
+              <Button variant="tertiary" onClick={handleClose} textButton>
                 <IconClose />
               </Button>
             </div>

@@ -46,7 +46,7 @@ function ManageSPAccount() {
 
         <div className="MCP-panel-container">
           <OrgAccountsSelect handleAccountChange={() => {}} showAccountsSelect={false} />
-          <div class="MCP-panel-container">
+          <div className="MCP-panel-container">
             <CommonFilters
               onApplyFilters={applyFilters}
               onClearFilters={clearFilters}

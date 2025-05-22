@@ -32,15 +32,12 @@ export const UserManagementES = {
   'userManagement.table.action.reject': 'S_Reject',
   'userManagement.button.rejectrequest': 'S_Reject Request',
   'userManagement.table.action.view': 'S_VIEW',
-  'userManagement.empty_table.description':
-    'S_You need to add Users to see data in this table.',
+  'userManagement.empty_table.description': 'S_You need to add Users to see data in this table.',
   'userManagement.add.label': 'S_Add User',
-  'userManagement.placeholder.searchByNameAndemail':
-    'S_Select by Name and Email',
+  'userManagement.placeholder.searchByNameAndemail': 'S_Select by Name and Email',
   'userManagement.filter.label': 'S_Filter By',
   'userManagement.table.warning': 'S_Warning',
-  'userManagement.snackbar.fileWarning':
-    'S_File has warning. Please check the file and re-upload',
+  'userManagement.snackbar.fileWarning': 'S_File has warning. Please check the file and re-upload',
   'userManagement.snackbar.fileSuccess': 'S_File upload Success',
   'userManagement.download.template': 'S_Download CSV Template',
   'userManagement.upload.header.label': 'S_Upload User List CSV',
@@ -50,10 +47,8 @@ export const UserManagementES = {
   'userManagement.upload.new.label': 'S_Upload New',
   'userManagement.upload.confirm.label': 'S_Confirm Upload',
   'userManagement.upload.cancel.label': 'S_Cancel Upload',
-  'userManagement.upload.error.uploadError':
-    'S_Error uploading the file. Please try again later.',
-  'userManagement.upload.error.fileError':
-    'S_File error/s. Please correct and upload again.',
+  'userManagement.upload.error.uploadError': 'S_Error uploading the file. Please try again later.',
+  'userManagement.upload.error.fileError': 'S_File error/s. Please correct and upload again.',
   'userManagement.label.role': 'S_Role',
   'userManagement.label.cancel': 'S_Cancel',
   'userManagement.label.save': 'S_Save',
@@ -61,8 +56,7 @@ export const UserManagementES = {
   'userManagement.label.description': 'S_Description',
   'userManagement.label.createdOn': 'S_Created On',
   'userManagement.label.emptyPermissionListTitle': 'S_No permissions available',
-  'userManagement.label.emptyPermissionListSubtitle':
-    'S_Please assign permission to see it here',
+  'userManagement.label.emptyPermissionListSubtitle': 'S_Please assign permission to see it here',
   'userManagement.status.active': 'S_Active',
   'userManagement.status.inactive': 'S_Inactive',
   'userManagement.manageUser.breadCrumb.lable.allUser': 'S_All Users',
@@ -80,17 +74,13 @@ export const UserManagementES = {
   'userManagement.button.adduser': 'S_Add User',
   'userManagement.button.uploadUsers': 'S_Upload Users',
   'userManagement.button.uploadingUsers': 'S_Uploading...',
-  'userManagement.button.downloadTemplateDescription':
-    'S_Download sample template for uploading bulk users.',
+  'userManagement.button.downloadTemplateDescription': 'S_Download sample template for uploading bulk users.',
   'userManagement.button.downloadTemplate': 'S_Bulk Upload User Template',
-  'userManagement.button.uploadError':
-    'S_Error while creating Organization users',
+  'userManagement.button.uploadError': 'S_Error while creating Organization users',
   'userManagement.button.uploadConflict':
     'S_Issue in uploading users. Some or all user records might have failed. The errors are listed in the downloaded file. Please review and try again.',
-  'userManagement.button.uploadSuccess':
-    'S_Organization users has been successfully created',
-  'userManagement.button.downloadFail':
-    'S_Organization users has been successfully created',
+  'userManagement.button.uploadSuccess': 'S_Organization users has been successfully created',
+  'userManagement.button.downloadFail': 'S_Organization users has been successfully created',
   'userManagement.button.downloadTemplate': 'S_Download Template',
   'userManagement.button.addsystemadmin': 'S_Add System Administrator',
   'userManagement.button.add_accounts': 'S_Add Accounts',
@@ -99,17 +89,14 @@ export const UserManagementES = {
   'userManagement.button.unlink': 'S_Unlink Account',
   'userManagement.user.backmessage': 'S_Back to Manage Users',
   'userManagement.sysadmin.backmessage': 'S_Back to Manage System Admin Page',
-  'userManagement.provision.message':
-    'S_User is not provisioned in Okta. {click} to Provision the User in Okta.',
+  'userManagement.provision.message': 'S_User is not provisioned in Okta. {click} to Provision the User in Okta.',
   'userManagement.button.clickhere': 'S_Click here',
   'userManagement.create_user': 'S_Add User',
   'userManagement.edit_user': 'S_Edit User',
   'userManagement.create_organization_user': 'S_Add Organization User',
   'userManagement.create_sysadmin': 'S_Add System Administrator',
-  'userManagement.create_user.details_to_create_user':
-    'S_Please check the details to create a organization user.',
-  'userManagement.create_user.details_to_create_sysadmin':
-    'S_Please complete the form to register a new system administrator.',
+  'userManagement.create_user.details_to_create_user': 'S_Please check the details to create a organization user.',
+  'userManagement.create_user.details_to_create_sysadmin': 'S_Please complete the form to register a new system administrator.',
   'userManagement.create_user.personal_details': 'S_Personal Details',
   'userManagement.create_user.contact_details': 'S_Contact Details',
   'userManagement.create_user.required': 'S_Required',
@@ -124,58 +111,37 @@ export const UserManagementES = {
   'userManagement.create_user.inputLabel.email': 'S_Email Id',
   'userManagement.create_user.inputLabel.phone_no': 'S_Phone Number',
   'userManagement.create_user.inputLabel.fax': 'S_Fax',
-  'userManagement.create_user.validation.first_name_required':
-    'S_First Name is required',
-  'userManagement.create_user.validation.first_name':
-    'S_First Name must only contain alphabets.',
-  'userManagement.create_user.validation.first_name_min_max':
-    'S_First Name must be between 2 and 50 characters.',
-  'userManagement.create_user.validation.middle_name':
-    'S_Middle name must only contain alphabets.',
-  'userManagement.create_user.validation.middle_name_min_max':
-    'S_Middle name must be between 2 and 50 characters.',
-  'userManagement.create_user.validation.last_name_required':
-    'S_Last Name is required',
-  'userManagement.create_user.validation.last_name':
-    'S_Last Name must only contain alphabets.',
-  'userManagement.create_user.validation.last_name_min_max':
-    'S_Last Name must be between 2 and 50 characters.',
-  'userManagement.create_user.validation.address_1_required':
-    'S_Address1 is required.',
-  'userManagement.create_user.validation.address_1':
-    'S_Enter Valid Details for Address1.',
-  'userManagement.create_user.validation.address_1_min_max':
-    'S_Address1 must be between 2 and 100 characters.',
+  'userManagement.create_user.validation.first_name_required': 'S_First Name is required',
+  'userManagement.create_user.validation.first_name': 'S_First Name must only contain alphabets.',
+  'userManagement.create_user.validation.first_name_min_max': 'S_First Name must be between 2 and 50 characters.',
+  'userManagement.create_user.validation.middle_name': 'S_Middle name must only contain alphabets.',
+  'userManagement.create_user.validation.middle_name_min_max': 'S_Middle name must be between 2 and 50 characters.',
+  'userManagement.create_user.validation.last_name_required': 'S_Last Name is required',
+  'userManagement.create_user.validation.last_name': 'S_Last Name must only contain alphabets.',
+  'userManagement.create_user.validation.last_name_min_max': 'S_Last Name must be between 2 and 50 characters.',
+  'userManagement.create_user.validation.address_1_required': 'S_Address1 is required.',
+  'userManagement.create_user.validation.address_1': 'S_Enter Valid Details for Address1.',
+  'userManagement.create_user.validation.address_1_min_max': 'S_Address1 must be between 2 and 100 characters.',
   'userManagement.create_user.validation.city_required': 'S_City is required',
-  'userManagement.create_user.validation.city_min_max':
-    'S_City must be between 2 and 50 characters.',
-  'userManagement.create_user.validation.zip_required':
-    'S_Zip Code is required',
-  'userManagement.create_user.validation.city':
-    'S_City must only contain alphabets.',
+  'userManagement.create_user.validation.city_min_max': 'S_City must be between 2 and 50 characters.',
+  'userManagement.create_user.validation.zip_required': 'S_Zip Code is required',
+  'userManagement.create_user.validation.city': 'S_City must only contain alphabets.',
   'userManagement.create_user.validation.zip': 'S_Enter a valid Zip Code.',
-  'userManagement.create_account.validation.zip_max':
-    'S_zip can be a maximum of 15 characters',
+  'userManagement.create_account.validation.zip_max': 'S_zip can be a maximum of 15 characters',
   'userManagement.create_user.validation.state_required': 'S_State is required',
-  'userManagement.create_user.validation.email_required':
-    'S_Email Id is required',
-  'userManagement.create_user.validation.invalid_email':
-    'S_Enter a valid Email Address',
-  'userManagement.create_user.validation.phone_no_required':
-    'S_Phone Number is required..',
-  'userManagement.create_user.validation.phone_no':
-    'S_Enter a valid Phone Number.',
+  'userManagement.create_user.validation.email_required': 'S_Email Id is required',
+  'userManagement.create_user.validation.invalid_email': 'S_Enter a valid Email Address',
+  'userManagement.create_user.validation.phone_no_required': 'S_Phone Number is required..',
+  'userManagement.create_user.validation.phone_no': 'S_Enter a valid Phone Number.',
   'userManagement.create_user.validation.fax': 'S_Fax must be a valid format.',
-  'userManagement.create_user.validation.fax_max':
-    'S_Fax can be a maximum of 15 characters',
+  'userManagement.create_user.validation.fax_max': 'S_Fax can be a maximum of 15 characters',
   'userManagement.create_user.option.please_select': 'S_Please Select',
 
   'userManagement.userDetails.userAddress': 'S_User Address',
   'userManagement.userDetails.lastUpdatedOn': 'S_Last Updated On:',
 
   'userManagement.stepper.option.user_details': 'S_User Details',
-  'userManagement.stepper.option.roles_and_permissions':
-    'S_Roles and Permissions',
+  'userManagement.stepper.option.roles_and_permissions': 'S_Roles and Permissions',
   'userManagement.stepper.option.associate_accounts': 'S_Associate Accounts',
 
   'userManagement.header.view.edit_user': 'S_User Details',
@@ -183,14 +149,10 @@ export const UserManagementES = {
   'userManagement.header.view.permissions_granted': 'S_Permissions Granted',
   'userManagement.message.userEmptyTableTitle': 'S_No Users Found',
   'userManagement.message.sysadminEmptyTableTitle': 'S_No System Admins Found',
-  'userManagement.messages.userEmptyTableSubtitle':
-    'S_Data is unavailable. Please add an user to view the table content.',
-  'userManagement.messages.sysadminEmptyTableSubtitle':
-    'S_Data is unavailable. Please add a System Admin to view the table content.',
-  'userManagement.messages.emptysubtitle':
-    'S_Data is unavailable. Please add Permission(s) to view the content.',
-  'userManagement.message.userPermissionEmptyTableTitle':
-    'S_No Permissions Found.',
+  'userManagement.messages.userEmptyTableSubtitle': 'S_Data is unavailable. Please add an user to view the table content.',
+  'userManagement.messages.sysadminEmptyTableSubtitle': 'S_Data is unavailable. Please add a System Admin to view the table content.',
+  'userManagement.messages.emptysubtitle': 'S_Data is unavailable. Please add Permission(s) to view the content.',
+  'userManagement.message.userPermissionEmptyTableTitle': 'S_No Permissions Found.',
   'userManagement.header.view.linked_accounts': 'S_Linked Accounts',
 
   'userManagement.user_permissions.managePermissions': 'S_Manage Permissions',
@@ -198,8 +160,7 @@ export const UserManagementES = {
   'userManagement.user_permissions.button.applyall': 'S_Apply All',
   'userManagement.user_permissions.select_role': 'S_Select Role',
 
-  'userManagement.searchFilter.addaccount_label':
-    'S_Search By Name or location',
+  'userManagement.searchFilter.addaccount_label': 'S_Search By Name or location',
   'userManagement.add_accounts.labelheader': 'S_Select accounts',
 
   USER_MANAGEMENT: 'S_User and account Management',
@@ -212,265 +173,181 @@ export const UserManagementES = {
 
   'AUTHENTICATION_FLOW.LOGIN_SCREEN': 'S_Login Screen',
   'AUTHENTICATION_FLOW.LOGIN_SCREEN.DESCRIPTION': 'S_Allows user to login',
-  'AUTHENTICATION_FLOW.SYSTEM_ADMIN_LANDING_PAGE':
-    'S_System Admin Landing Page',
-  'AUTHENTICATION_FLOW.SYSTEM_ADMIN_LANDING_PAGE.DESCRIPTION':
-    'S_Allows system admin to land on the landing page',
+  'AUTHENTICATION_FLOW.SYSTEM_ADMIN_LANDING_PAGE': 'S_System Admin Landing Page',
+  'AUTHENTICATION_FLOW.SYSTEM_ADMIN_LANDING_PAGE.DESCRIPTION': 'S_Allows system admin to land on the landing page',
 
   'USER_MANAGEMENT.MANAGE_USERS_SCREEN': 'S_Manage Users',
-  'USER_MANAGEMENT.MANAGE_USERS_SCREEN.DESCRIPTION':
-    'S_Allows deactivating users and enables the deactivate option',
+  'USER_MANAGEMENT.MANAGE_USERS_SCREEN.DESCRIPTION': 'S_Allows deactivating users and enables the deactivate option',
   'USER_MANAGEMENT.EDIT_USERS': 'S_Edit Users',
-  'USER_MANAGEMENT.EDIT_USERS.DESCRIPTION':
-    'S_Allows editing user information, enabling the edit icon',
-  'USER_MANAGEMENT.APPROVE_PENDING_USER_REQUEST':
-    'S_Approve Pending User Request',
-  'USER_MANAGEMENT.APPROVE_PENDING_USER_REQUEST.DESCRIPTION':
-    'S_Allows approving new user requests, enabling the approve action',
-  'USER_MANAGEMENT.CREATE_USER_FOR_PENDING_USER_REQUEST':
-    'S_Approve Pending User Request',
-  'USER_MANAGEMENT.CREATE_USER_FOR_PENDING_USER_REQUEST.DESCRIPTION':
-    'S_Allows to Approve new users request , Enables the view for Pending request Tab   ',
+  'USER_MANAGEMENT.EDIT_USERS.DESCRIPTION': 'S_Allows editing user information, enabling the edit icon',
+  'USER_MANAGEMENT.APPROVE_PENDING_USER_REQUEST': 'S_Approve Pending User Request',
+  'USER_MANAGEMENT.APPROVE_PENDING_USER_REQUEST.DESCRIPTION': 'S_Allows approving new user requests, enabling the approve action',
+  'USER_MANAGEMENT.CREATE_USER_FOR_PENDING_USER_REQUEST': 'S_Approve Pending User Request',
+  'USER_MANAGEMENT.CREATE_USER_FOR_PENDING_USER_REQUEST.DESCRIPTION': 'S_Allows to Approve new users request , Enables the view for Pending request Tab   ',
   'USER_MANAGEMENT.ADD_USERS': 'S_Add Users',
-  'USER_MANAGEMENT.ADD_USERS.DESCRIPTION':
-    'S_Allows creating a new user, enabling the create user button',
+  'USER_MANAGEMENT.ADD_USERS.DESCRIPTION': 'S_Allows creating a new user, enabling the create user button',
   'USER_MANAGEMENT.VIEW_USERS': 'S_View Users',
   'USER_MANAGEMENT.VIEW_USERS.DESCRIPTION': 'S_Allows to view the user',
   'USER_MANAGEMENT.UPLOAD_USERS': 'S_Upload Users',
-  'USER_MANAGEMENT.UPLOAD_USERS.DESCRIPTION':
-    'S_Allows bulk uploading users, enabling the upload user button',
+  'USER_MANAGEMENT.UPLOAD_USERS.DESCRIPTION': 'S_Allows bulk uploading users, enabling the upload user button',
 
-  'ADMIN_MANAGEMENT.MANAGE_SYSTEM_ADMINISTRATOR_SCREEN':
-    'S_Manage System Admin',
-  'ADMIN_MANAGEMENT.MANAGE_SYSTEM_ADMINISTRATOR_SCREEN.DESCRIPTION':
-    'S_Allows managing system admins, enabling deactivate options',
+  'ADMIN_MANAGEMENT.MANAGE_SYSTEM_ADMINISTRATOR_SCREEN': 'S_Manage System Admin',
+  'ADMIN_MANAGEMENT.MANAGE_SYSTEM_ADMINISTRATOR_SCREEN.DESCRIPTION': 'S_Allows managing system admins, enabling deactivate options',
   'ADMIN_MANAGEMENT.VIEW_SYSTEM_ADMINISTRATOR': 'S_View System Admin',
-  'ADMIN_MANAGEMENT.VIEW_SYSTEM_ADMINISTRATOR.DESCRIPTION':
-    'S_Allows managing system admins, enabling deactivate options',
+  'ADMIN_MANAGEMENT.VIEW_SYSTEM_ADMINISTRATOR.DESCRIPTION': 'S_Allows managing system admins, enabling deactivate options',
   'ADMIN_MANAGEMENT.MANAGE_SYSTEM_ADMIN': 'S_Manage System Admin',
-  'ADMIN_MANAGEMENT.MANAGE_SYSTEM_ADMIN.DESCRIPTION':
-    'S_Allows managing system admins, enabling deactivate options',
+  'ADMIN_MANAGEMENT.MANAGE_SYSTEM_ADMIN.DESCRIPTION': 'S_Allows managing system admins, enabling deactivate options',
   'ADMIN_MANAGEMENT.ADD_SYSTEM_ADMINISTRATOR': 'S_Add System Admin',
-  'ADMIN_MANAGEMENT.ADD_SYSTEM_ADMINISTRATOR.DESCRIPTION':
-    'S_Allows adding a system admin, enabling the create system admin button',
+  'ADMIN_MANAGEMENT.ADD_SYSTEM_ADMINISTRATOR.DESCRIPTION': 'S_Allows adding a system admin, enabling the create system admin button',
 
   'ADMIN_MANAGEMENT.EDIT_SYSTEM_ADMINISTRATOR': 'S_Edit System Admin',
-  'ADMIN_MANAGEMENT.EDIT_SYSTEM_ADMINISTRATOR.DESCRIPTION':
-    'S_Allows editing system admin information, enabling the edit option',
+  'ADMIN_MANAGEMENT.EDIT_SYSTEM_ADMINISTRATOR.DESCRIPTION': 'S_Allows editing system admin information, enabling the edit option',
 
   'USER_MANAGEMENT.ADD_ROLES': 'S_Add Roles',
-  'USER_MANAGEMENT.ADD_ROLES.DESCRIPTION':
-    'S_Allows adding roles, enabling the create role button',
+  'USER_MANAGEMENT.ADD_ROLES.DESCRIPTION': 'S_Allows adding roles, enabling the create role button',
   'USER_MANAGEMENT.EDIT_ROLES': 'S_Edit Roles',
-  'USER_MANAGEMENT.EDIT_ROLES.DESCRIPTION':
-    'S_Allows to edit roles, Enable edit button',
+  'USER_MANAGEMENT.EDIT_ROLES.DESCRIPTION': 'S_Allows to edit roles, Enable edit button',
   'USER_MANAGEMENT.MANAGE_ROLES_SCREEN': 'S_Manage Roles',
-  'USER_MANAGEMENT.MANAGE_ROLES_SCREEN.DESCRIPTION':
-    'S_Allows editing and deactivating roles, enabling the edit and deactivate options',
+  'USER_MANAGEMENT.MANAGE_ROLES_SCREEN.DESCRIPTION': 'S_Allows editing and deactivating roles, enabling the edit and deactivate options',
   'USER_MANAGEMENT.VIEW_ROLES': 'S_View Roles',
   'USER_MANAGEMENT.VIEW_ROLES.DESCRIPTION': 'S_Allows user to view the screen',
   'USER_MANAGEMENT.ON_BEHALF_OF_USER': 'S_On Behalf of User',
-  'USER_MANAGEMENT.ON_BEHALF_OF_USER.DESCRIPTION':
-    "S_Allows admin to login on another user's behalf, enabling login from another user button",
+  'USER_MANAGEMENT.ON_BEHALF_OF_USER.DESCRIPTION': "S_Allows admin to login on another user's behalf, enabling login from another user button",
 
   'ORGANIZATION_MANAGEMENT.MANAGE_ORGANIZATION_SCREEN': 'S_Manage Organization',
-  'ORGANIZATION_MANAGEMENT.MANAGE_ORGANIZATION_SCREEN.DESCRIPTION':
-    'S_Allows editing and deactivating the organization, enabling edit and deactivate options',
+  'ORGANIZATION_MANAGEMENT.MANAGE_ORGANIZATION_SCREEN.DESCRIPTION': 'S_Allows editing and deactivating the organization, enabling edit and deactivate options',
   'ORGANIZATION_MANAGEMENT.EDIT_ORGANIZATION': 'S_Edit Organization',
-  'ORGANIZATION_MANAGEMENT.EDIT_ORGANIZATION.DESCRIPTION':
-    'S_Allows editing and deactivating the organization, enabling edit and deactivate options',
+  'ORGANIZATION_MANAGEMENT.EDIT_ORGANIZATION.DESCRIPTION': 'S_Allows editing and deactivating the organization, enabling edit and deactivate options',
   'ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION': 'S_Add Organization',
-  'ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION.DESCRIPTION':
-    'S_Allows adding an organization, enabling the create organization button',
+  'ORGANIZATION_MANAGEMENT.ADD_ORGANIZATION.DESCRIPTION': 'S_Allows adding an organization, enabling the create organization button',
   'ORGANIZATION_MANAGEMENT.VIEW_ORGANIZATION': 'S_View Organization',
-  'ORGANIZATION_MANAGEMENT.VIEW_ORGANIZATION.DESCRIPTION':
-    'S_Allows user to view organization',
+  'ORGANIZATION_MANAGEMENT.VIEW_ORGANIZATION.DESCRIPTION': 'S_Allows user to view organization',
 
   'MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN': 'S_Deactivate/Link sp account',
-  'MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN.DESCRIPTION':
-    'S_Allow user to manage provider , enable deactivate and link sp account button ',
+  'MANAGE_PROVIDERS.MANAGE_PROVIDERS_SCREEN.DESCRIPTION': 'S_Allow user to manage provider , enable deactivate and link sp account button ',
   'MANAGE_PROVIDERS.VIEW_PROVIDER': 'S_View Provider',
-  'MANAGE_PROVIDERS.VIEW_PROVIDER.DESCRIPTION':
-    'S_Allows user to view provider page',
+  'MANAGE_PROVIDERS.VIEW_PROVIDER.DESCRIPTION': 'S_Allows user to view provider page',
   'MANAGE_PROVIDERS.ADD_PROVIDER': 'S_Add Provider',
-  'MANAGE_PROVIDERS.ADD_PROVIDER.DESCRIPTION':
-    'S_Allows user to add provider, enable add button ',
+  'MANAGE_PROVIDERS.ADD_PROVIDER.DESCRIPTION': 'S_Allows user to add provider, enable add button ',
   'MANAGE_PROVIDERS.UPLOAD_PROVIDER': 'S_Upload Provider',
-  'MANAGE_PROVIDERS.UPLOAD_PROVIDER.DESCRIPTION':
-    'S_Allows user to upload provider and download the csv file, enables upload button',
+  'MANAGE_PROVIDERS.UPLOAD_PROVIDER.DESCRIPTION': 'S_Allows user to upload provider and download the csv file, enables upload button',
   'MANAGE_PROVIDERS.EDIT_PROVIDER': 'S_Edit Provider',
-  'MANAGE_PROVIDERS.EDIT_PROVIDER.DESCRIPTION':
-    'S_Allows user to edit provider details, enable edit button',
+  'MANAGE_PROVIDERS.EDIT_PROVIDER.DESCRIPTION': 'S_Allows user to edit provider details, enable edit button',
 
   'ORDER_MANAGEMENT.MANAGE_ORDERS': 'S_Manage Orders',
-  'ORDER_MANAGEMENT.MANAGE_ORDERS.DESCRIPTION':
-    'S_Allows to Perform Delete action, Enable delete option',
+  'ORDER_MANAGEMENT.MANAGE_ORDERS.DESCRIPTION': 'S_Allows to Perform Delete action, Enable delete option',
   'ORDER_MANAGEMENT.EDIT_ORDERS': 'S_Edit Orders',
-  'ORDER_MANAGEMENT.EDIT_ORDERS.DESCRIPTION':
-    'S_Allows user to edit the order, Enable Edit order option',
+  'ORDER_MANAGEMENT.EDIT_ORDERS.DESCRIPTION': 'S_Allows user to edit the order, Enable Edit order option',
   'ORDER_MANAGEMENT.VIEW_ORDERS': 'S_View Orders',
-  'ORDER_MANAGEMENT.VIEW_ORDERS.DESCRIPTION':
-    'S_Allows User to View Submitted orders, Enables submitted tab',
+  'ORDER_MANAGEMENT.VIEW_ORDERS.DESCRIPTION': 'S_Allows User to View Submitted orders, Enables submitted tab',
   'ORDER_MANAGEMENT.APPROVE_ORDERS': 'S_Approve Orders',
-  'ORDER_MANAGEMENT.APPROVE_ORDERS.DESCRIPTION':
-    'S_Allows approval of orders, enabling the approve order button',
+  'ORDER_MANAGEMENT.APPROVE_ORDERS.DESCRIPTION': 'S_Allows approval of orders, enabling the approve order button',
   'ORDER_MANAGEMENT.ADD_ORDERS': 'S_Add Orders',
-  'ORDER_MANAGEMENT.ADD_ORDERS.DESCRIPTION':
-    'S_Allows to create order, enable create new order button',
+  'ORDER_MANAGEMENT.ADD_ORDERS.DESCRIPTION': 'S_Allows to create order, enable create new order button',
   'ORDER_MANAGEMENT.CANCEL_ORDER': 'S_Cancel Order',
-  'ORDER_MANAGEMENT.CANCEL_ORDER.DESCRIPTION':
-    'S_Allows user to cancel the order, Enables cancel option',
+  'ORDER_MANAGEMENT.CANCEL_ORDER.DESCRIPTION': 'S_Allows user to cancel the order, Enables cancel option',
   'ORDER_MANAGEMENT.REJECT_ORDER': 'S_Reject Order',
-  'ORDER_MANAGEMENT.REJECT_ORDER.DESCRIPTION':
-    'S_Allows user to Reject the order, Enables Reject order button',
+  'ORDER_MANAGEMENT.REJECT_ORDER.DESCRIPTION': 'S_Allows user to Reject the order, Enables Reject order button',
   'ORDER_MANAGEMENT.ADD_APPROVER_GROUP': 'S_Add Approver Group',
-  'ORDER_MANAGEMENT.ADD_APPROVER_GROUP.DESCRIPTION':
-    'S_Allows user to Add new group, Enables Add New Group Button',
+  'ORDER_MANAGEMENT.ADD_APPROVER_GROUP.DESCRIPTION': 'S_Allows user to Add new group, Enables Add New Group Button',
   'ORDER_MANAGEMENT.VIEW_APPROVER_GROUP': 'S_View Approver Group',
-  'ORDER_MANAGEMENT.VIEW_APPROVER_GROUP.DESCRIPTION':
-    'S_Allows user to View Group listing and page access',
+  'ORDER_MANAGEMENT.VIEW_APPROVER_GROUP.DESCRIPTION': 'S_Allows user to View Group listing and page access',
   'ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP': 'S_Manage Approver Group',
-  'ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP.DESCRIPTION':
-    'S_Allows user to activate and deactivate the approver group',
+  'ORDER_MANAGEMENT.MANAGE_APPROVER_GROUP.DESCRIPTION': 'S_Allows user to activate and deactivate the approver group',
   'ORDER_MANAGEMENT.EDIT_APPROVER_GROUP': 'S_Edit Approver Group',
-  'ORDER_MANAGEMENT.EDIT_APPROVER_GROUP.DESCRIPTION':
-    'S_Allows user to edit Approver Group, Enable Edit option',
+  'ORDER_MANAGEMENT.EDIT_APPROVER_GROUP.DESCRIPTION': 'S_Allows user to edit Approver Group, Enable Edit option',
   'ORDER_MANAGEMENT.VIEW_PENDING_ORDERS': 'S_View Pending Orders',
-  'ORDER_MANAGEMENT.VIEW_PENDING_ORDERS.DESCRIPTION':
-    'S_Allows User to View Pending order, Enables pending tab',
+  'ORDER_MANAGEMENT.VIEW_PENDING_ORDERS.DESCRIPTION': 'S_Allows User to View Pending order, Enables pending tab',
 
   'SYSTEM_CONFIGURATION.ADD_QUESTIONNAIRE': 'S_Add Questionnaire',
-  'SYSTEM_CONFIGURATION.ADD_QUESTIONNAIRE.DESCRIPTION':
-    'S_Allows to create questionnaire, enables Add Questionnaire button',
+  'SYSTEM_CONFIGURATION.ADD_QUESTIONNAIRE.DESCRIPTION': 'S_Allows to create questionnaire, enables Add Questionnaire button',
   'SYSTEM_CONFIGURATION.VIEW_QUESTIONNAIRE': 'S_View Questionnaire',
-  'SYSTEM_CONFIGURATION.VIEW_QUESTIONNAIRE.DESCRIPTION':
-    'S_Allows user to view questionnaire, enables view access',
+  'SYSTEM_CONFIGURATION.VIEW_QUESTIONNAIRE.DESCRIPTION': 'S_Allows user to view questionnaire, enables view access',
   'SYSTEM_CONFIGURATION.CONFIGURE_QUESTIONNAIRE': 'S_Configure Questionnaire',
-  'SYSTEM_CONFIGURATION.CONFIGURE_QUESTIONNAIRE.DESCRIPTION':
-    'S_Allows user to configure questionnaire, enables Configure button',
+  'SYSTEM_CONFIGURATION.CONFIGURE_QUESTIONNAIRE.DESCRIPTION': 'S_Allows user to configure questionnaire, enables Configure button',
   'SYSTEM_CONFIGURATION.DEACTIVATE_QUESTIONNAIRE': 'S_Deactivate Questionnaire',
-  'SYSTEM_CONFIGURATION.DEACTIVATE_QUESTIONNAIRE.DESCRIPTION':
-    'S_Allows user to deactivate questionnaire, enables Deactivate button',
+  'SYSTEM_CONFIGURATION.DEACTIVATE_QUESTIONNAIRE.DESCRIPTION': 'S_Allows user to deactivate questionnaire, enables Deactivate button',
   'SYSTEM_CONFIGURATION.MANAGE_MATERIAL': 'S_Manage Material',
-  'SYSTEM_CONFIGURATION.MANAGE_MATERIAL.DESCRIPTION':
-    'S_Allows user to configure the Material, enables Configure button',
+  'SYSTEM_CONFIGURATION.MANAGE_MATERIAL.DESCRIPTION': 'S_Allows user to configure the Material, enables Configure button',
   'SYSTEM_CONFIGURATION.VIEW_MATERIAL': 'S_View Material',
-  'SYSTEM_CONFIGURATION.VIEW_MATERIAL.DESCRIPTION':
-    'S_Allows user to view Material listing page, enables view access',
+  'SYSTEM_CONFIGURATION.VIEW_MATERIAL.DESCRIPTION': 'S_Allows user to view Material listing page, enables view access',
   'SYSTEM_CONFIGURATION.MANAGE_CATALOG': 'S_Manage Catalog',
-  'SYSTEM_CONFIGURATION.MANAGE_CATALOG.DESCRIPTION':
-    'S_Allows user to configure catalog, enables Configure button',
+  'SYSTEM_CONFIGURATION.MANAGE_CATALOG.DESCRIPTION': 'S_Allows user to configure catalog, enables Configure button',
   'SYSTEM_CONFIGURATION.VIEW_CATALOG': 'S_View Catalog',
-  'SYSTEM_CONFIGURATION.VIEW_CATALOG.DESCRIPTION':
-    'S_Allows user to view Catalog listing page, enables view access',
+  'SYSTEM_CONFIGURATION.VIEW_CATALOG.DESCRIPTION': 'S_Allows user to view Catalog listing page, enables view access',
 
   'SYSTEM_CONFIGURATION.VIEW_SP_MATERIAL': 'S_View SP Material',
-  'SYSTEM_CONFIGURATION.VIEW_SP_MATERIAL.DESCRIPTION':
-    'S_Allows User to view SP Material',
+  'SYSTEM_CONFIGURATION.VIEW_SP_MATERIAL.DESCRIPTION': 'S_Allows User to view SP Material',
 
   'SYSTEM_CONFIGURATION.VIEW_CROSSWALK': 'S_View Crosswalk',
-  'SYSTEM_CONFIGURATION.VIEW_CROSSWALK.DESCRIPTION':
-    'S_Allow user to View Crosswalk Screen',
+  'SYSTEM_CONFIGURATION.VIEW_CROSSWALK.DESCRIPTION': 'S_Allow user to View Crosswalk Screen',
   'SYSTEM_CONFIGURATION.ADD_CROSSWALK': 'S_Add Crosswalk',
-  'SYSTEM_CONFIGURATION.ADD_CROSSWALK.DESCRIPTION':
-    'S_Allows user to add Crosswalk Material, enable add button',
+  'SYSTEM_CONFIGURATION.ADD_CROSSWALK.DESCRIPTION': 'S_Allows user to add Crosswalk Material, enable add button',
   'SYSTEM_CONFIGURATION.UPLOAD_CROSSWALK': 'S_Upload Crosswalk',
-  'SYSTEM_CONFIGURATION.UPLOAD_CROSSWALK.DESCRIPTION':
-    'S_Allows user to  upload crosswalk file, enable upload button',
+  'SYSTEM_CONFIGURATION.UPLOAD_CROSSWALK.DESCRIPTION': 'S_Allows user to  upload crosswalk file, enable upload button',
 
   'SYSTEM_CONFIGURATION.MANAGE_SP_ACCOUNT': 'S_Manage SP Account ',
-  'SYSTEM_CONFIGURATION.MANAGE_SP_ACCOUNT.DESCRIPTION':
-    'S_Allow user to view SP account listing page',
+  'SYSTEM_CONFIGURATION.MANAGE_SP_ACCOUNT.DESCRIPTION': 'S_Allow user to view SP account listing page',
   'SYSTEM_CONFIGURATION.ADD_SP_ACCOUNT': 'S_Add SP Account',
-  'SYSTEM_CONFIGURATION.ADD_SP_ACCOUNT.DESCRIPTION':
-    'S_Allow user to add account, enable add button ',
+  'SYSTEM_CONFIGURATION.ADD_SP_ACCOUNT.DESCRIPTION': 'S_Allow user to add account, enable add button ',
 
   'SYSTEM_CONFIGURATION.MANAGE_SP_CATALOG': 'S_Manage SP Catalog',
   'SYSTEM_CONFIGURATION.MANAGE_SP_CATALOG.DESCRIPTION':
     'S_Allows user to Download the list of Catalog (Download List), Upload Catalog (Upload Catalog), Link catalog (Link Catalog action) and  Unlink Catalog (Unlink action against each record and global action on multi select.)',
 
   'SYSTEM_CONFIGURATION.VIEW_SP_CATALOG': 'S_View SP Catalog',
-  'SYSTEM_CONFIGURATION.VIEW_SP_CATALOG.DESCRIPTION':
-    'S_Allow user to view Catalog page, Dowload the list of catalog (download List)',
+  'SYSTEM_CONFIGURATION.VIEW_SP_CATALOG.DESCRIPTION': 'S_Allow user to view Catalog page, Dowload the list of catalog (download List)',
 
   'PAYMENT_INVOICING.MANAGE_INVOICES': 'S_Manage Invoices',
-  'PAYMENT_INVOICING.MANAGE_INVOICES.DESCRIPTION':
-    'S_Allows to Export to Excel and PDF, enables Export Excel button and Export PDF option',
+  'PAYMENT_INVOICING.MANAGE_INVOICES.DESCRIPTION': 'S_Allows to Export to Excel and PDF, enables Export Excel button and Export PDF option',
   'PAYMENT_INVOICING.VIEW_INVOICES': 'S_View Invoices',
-  'PAYMENT_INVOICING.VIEW_INVOICES.DESCRIPTION':
-    'S_Allows to view Payment and Invoices dashboard',
+  'PAYMENT_INVOICING.VIEW_INVOICES.DESCRIPTION': 'S_Allows to view Payment and Invoices dashboard',
   'PAYMENT_INVOICING.PAY_INVOICES': 'S_Pay Invoices',
-  'PAYMENT_INVOICING.PAY_INVOICES.DESCRIPTION':
-    'S_Allows to pay for the billed amount, enables Pay Now and Review and Pay buttons',
+  'PAYMENT_INVOICING.PAY_INVOICES.DESCRIPTION': 'S_Allows to pay for the billed amount, enables Pay Now and Review and Pay buttons',
   'PAYMENT_INVOICING.VIEW_PAYMENT_HISTORY': 'S_View Payment History',
-  'PAYMENT_INVOICING.VIEW_PAYMENT_HISTORY.DESCRIPTION':
-    'S_Allows to view payment history, enables Payment History page view',
+  'PAYMENT_INVOICING.VIEW_PAYMENT_HISTORY.DESCRIPTION': 'S_Allows to view payment history, enables Payment History page view',
 
   'PAYMENT_INVOICING.MANAGE_CUSTOMER_STATEMENT': 'S_Manage Customer Statement',
-  'PAYMENT_INVOICING.MANAGE_CUSTOMER_STATEMENT.DESCRIPTION':
-    'S_Allows user to Export to PDF and Excel, enables Export Excel button and Export PDF option',
+  'PAYMENT_INVOICING.MANAGE_CUSTOMER_STATEMENT.DESCRIPTION': 'S_Allows user to Export to PDF and Excel, enables Export Excel button and Export PDF option',
   'PAYMENT_INVOICING.VIEW_CUSTOMER_STATEMENT': 'S_View Customer Statement',
-  'PAYMENT_INVOICING.VIEW_CUSTOMER_STATEMENT.DESCRIPTION':
-    'S_Allows to view customer statement, enables Customer Statement view',
+  'PAYMENT_INVOICING.VIEW_CUSTOMER_STATEMENT.DESCRIPTION': 'S_Allows to view customer statement, enables Customer Statement view',
 
   'PAYMENT_INVOICING.VIEW_PAYMENT_METHOD_CARD': 'S_View Payment Method (Card)',
-  'PAYMENT_INVOICING.VIEW_PAYMENT_METHOD_CARD.DESCRIPTION':
-    'S_Allows to view payment method, enables page view and Set as Default option',
+  'PAYMENT_INVOICING.VIEW_PAYMENT_METHOD_CARD.DESCRIPTION': 'S_Allows to view payment method, enables page view and Set as Default option',
   'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_CARD': 'S_Add Payment Method (Card)',
-  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_CARD.DESCRIPTION':
-    'S_Allows to add payment method, enables Add New Card button',
-  'PAYMENT_INVOICING.MANAGE_PAYMENT_METHOD_CARD':
-    'S_Manage Payment Methods (Card)',
-  'PAYMENT_INVOICING.MANAGE_PAYMENT_METHOD_CARD.DESCRIPTION':
-    'S_Allows to edit payment method, enables Edit option',
-  'PAYMENT_INVOICING.DELETE_PAYMENT_METHOD_CARD':
-    'S_Delete Payment Methods (Card)',
-  'PAYMENT_INVOICING.DELETE_PAYMENT_METHOD_CARD.DESCRIPTION':
-    'S_Allows to delete the payment method, enables Delete option',
+  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_CARD.DESCRIPTION': 'S_Allows to add payment method, enables Add New Card button',
+  'PAYMENT_INVOICING.MANAGE_PAYMENT_METHOD_CARD': 'S_Manage Payment Methods (Card)',
+  'PAYMENT_INVOICING.MANAGE_PAYMENT_METHOD_CARD.DESCRIPTION': 'S_Allows to edit payment method, enables Edit option',
+  'PAYMENT_INVOICING.DELETE_PAYMENT_METHOD_CARD': 'S_Delete Payment Methods (Card)',
+  'PAYMENT_INVOICING.DELETE_PAYMENT_METHOD_CARD.DESCRIPTION': 'S_Allows to delete the payment method, enables Delete option',
 
-  'PAYMENT_INVOICING.VIEW_PAYMENT_METHOD_BANK':
-    'S_View Payment Method (Bank Account)',
-  'PAYMENT_INVOICING.VIEW_PAYMENT_METHOD_BANK.DESCRIPTION':
-    'S_Allows to view payment method, enables page view and Set as Default option',
-  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_BANK':
-    'S_Add Payment Method (Bank Account)',
-  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_BANK.DESCRIPTION':
-    'S_Allows to add payment method, enables Add Bank Account button',
-  'PAYMENT_INVOICING.MANAGE_PAYMENT_METHOD_BANK':
-    'S_Manage Payment Methods (Bank Account)',
-  'PAYMENT_INVOICING.MANAGE_PAYMENT_METHOD_BANK.DESCRIPTION':
-    'S_Allows to edit payment method, enables Edit option',
-  'PAYMENT_INVOICING.DELETE_PAYMENT_METHOD_BANK':
-    'S_Delete Payment Methods (Bank Account)',
-  'PAYMENT_INVOICING.DELETE_PAYMENT_METHOD_BANK.DESCRIPTION':
-    'S_Allows to delete the payment method, enables Delete option',
-  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_BANK':
-    'S_Add Payment Method (Bank Account)',
-  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_BANK.DESCRIPTION':
-    'S_Allows to add payment method , enable Add  Bank Account Button',
+  'PAYMENT_INVOICING.VIEW_PAYMENT_METHOD_BANK': 'S_View Payment Method (Bank Account)',
+  'PAYMENT_INVOICING.VIEW_PAYMENT_METHOD_BANK.DESCRIPTION': 'S_Allows to view payment method, enables page view and Set as Default option',
+  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_BANK': 'S_Add Payment Method (Bank Account)',
+  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_BANK.DESCRIPTION': 'S_Allows to add payment method, enables Add Bank Account button',
+  'PAYMENT_INVOICING.MANAGE_PAYMENT_METHOD_BANK': 'S_Manage Payment Methods (Bank Account)',
+  'PAYMENT_INVOICING.MANAGE_PAYMENT_METHOD_BANK.DESCRIPTION': 'S_Allows to edit payment method, enables Edit option',
+  'PAYMENT_INVOICING.DELETE_PAYMENT_METHOD_BANK': 'S_Delete Payment Methods (Bank Account)',
+  'PAYMENT_INVOICING.DELETE_PAYMENT_METHOD_BANK.DESCRIPTION': 'S_Allows to delete the payment method, enables Delete option',
+  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_BANK': 'S_Add Payment Method (Bank Account)',
+  'PAYMENT_INVOICING.ADD_PAYMENT_METHOD_BANK.DESCRIPTION': 'S_Allows to add payment method , enable Add  Bank Account Button',
 
   'PAYMENT_INVOICING.CANCEL_PAYMENT': 'S_Cancel Payment',
-  'PAYMENT_INVOICING.CANCEL_PAYMENT.DESCRIPTION':
-    'S_Allows user to cancel payment, enables Cancel Payment option',
+  'PAYMENT_INVOICING.CANCEL_PAYMENT.DESCRIPTION': 'S_Allows user to cancel payment, enables Cancel Payment option',
   'PAYMENT_INVOICING.VIEW_CREDIT_LISTING': 'S_View Credit Listing',
-  'PAYMENT_INVOICING.VIEW_CREDIT_LISTING.DESCRIPTION':
-    'S_Allows user to view Credit listing',
+  'PAYMENT_INVOICING.VIEW_CREDIT_LISTING.DESCRIPTION': 'S_Allows user to view Credit listing',
 
   'errors.user_email_key': 'S_Email ID already exists in the System.',
   'errors.user_phone_key': 'S_Phone number already exists.',
   'errors.default': 'S_An unexpected error occurred.',
 
-  'messages.user_deactivate_success':
-    'S_User has been Deactivated successfully.',
+  'messages.user_deactivate_success': 'S_User has been Deactivated successfully.',
   'messages.user_deactivate_failure': 'S_Failed to Deactivate the User.',
   'messages.user_create_success': 'S_User has been created successfully.',
   'messages.pending_user_reject_success': 'S_Pending User has been rejected.',
-  'messages.user_self_register_success':
-    'S_User has been registered successfully.',
-  'messages.sysadmin_create_success':
-    'S_System Admin has been created successfully.',
-  'messages.accountlinkSuccess':
-    'S_new account(s) has been successfully linked to this user.',
+  'messages.user_self_register_success': 'S_User has been registered successfully.',
+  'messages.sysadmin_create_success': 'S_System Admin has been created successfully.',
+  'messages.accountlinkSuccess': 'S_new account(s) has been successfully linked to this user.',
   'messages.provisionedsuccess': 'S_User provisioned in Okta successfully.',
   'messages.provisionederrror': 'S_Unable to provision the user in Okta.',
   'Table.Tabs.ActiveUser': 'S_USERS',
@@ -482,28 +359,22 @@ export const UserManagementES = {
   'placeholders.search': 'S_Search',
   'button.label.loginAsThisUser': 'S_Login as this user',
   'popup.title.alert': 'S_Alert!',
-  'popup.message.wishToContinueLoginAsThisUserQuestion':
-    'S_Do you wish to continue?',
+  'popup.message.wishToContinueLoginAsThisUserQuestion': 'S_Do you wish to continue?',
   'popup.message.wishToContinueLoginAsThisUserDescription':
-    'S_You are about to perform actions on behalf of {{targetUser}}. Please confirm that you have verified the identity of the requesting user the necessary permissions and that you understand the implications of proceeding with this task.',
+    'S_You are about to perform actions on behalf of {targetUser}. Please confirm that you have verified the identity of the requesting user the necessary permissions and that you understand the implications of proceeding with this task.',
   'popup.message.wishToContinueLoginAsThisUserCheckBoxConsent':
     'S_By confirming, you acknowledge that all actions taken will be logged and attributed to your account.',
   'userManagement.breadcrumb.admin': 'S_Admin',
-  'popup.userDeactivation.question':
-    'S_Are you sure you wish to Deactivate this User?',
+  'popup.userDeactivation.question': 'S_Are you sure you wish to Deactivate this User?',
   'userManagement.confirmationMessage': 'S_Confirmation message',
   'userManagement.edit_sysadmin': 'S_Edit System Administrator',
   'userManagement.edit_organization_user': 'S_Edit Organization User',
-  'errors.messages.dateRange':
-    "S_S_Either enter both dates or none for the filter as it's part of a date range.",
-  'errors.messages.emptyDataDescription':
-    'S_S_An unexpected error occurred. Please try again.',
+  'errors.messages.dateRange': "S_S_Either enter both dates or none for the filter as it's part of a date range.",
+  'errors.messages.emptyDataDescription': 'S_S_An unexpected error occurred. Please try again.',
   'label.comment': 'S_S_Comment',
   'userManagement.header.review_user': 'S_Review Organization User',
-  'errors.messages.dateRange':
-    "S_Either enter both dates or none for the filter as it's part of a date range.",
-  'errors.messages.emptyDataDescription':
-    'S_An unexpected error occurred. Please try again.',
+  'errors.messages.dateRange': "S_Either enter both dates or none for the filter as it's part of a date range.",
+  'errors.messages.emptyDataDescription': 'S_An unexpected error occurred. Please try again.',
   'label.comment': 'S_Comment',
   'label.comments': 'S_Comments',
   'file.download.csv': 'S_Download CSV Template',
@@ -515,8 +386,6 @@ export const UserManagementES = {
   'userManagement.button.addUsers': 'S_Add Users',
   'messages.user_activate_success': 'S_User has been Activated successfully.',
   'messages.user_activate_failure': 'S_Failed to Activate the User.',
-  'popup.userActivation.question':
-    'Are you sure you wish to Activate this User?',
-  'userManagement.upload-info':
-    'S_For filling up the user’s template, please refer to the instruction file.'
+  'popup.userActivation.question': 'Are you sure you wish to Activate this User?',
+  'userManagement.upload-info': 'S_For filling up the user’s template, please refer to the instruction file.'
 };

@@ -1,6 +1,6 @@
 export const ORDER_STAGES = {
   THERAPY_SELECTION: 'THERAPY_SELECTION',
-  ACCOUNT_SELECTION: 'ACCOUNT_SELECTION',
+  ACCOUNT_DETAILS: 'ACCOUNT_DETAILS',
   PATIENT_DETAILS: 'PATIENT_DETAILS',
   PATIENT_AND_PROVIDER_DETAILS: 'PATIENT_AND_PROVIDER_DETAILS',
   PAYER_DETAILS: 'PAYER_DETAILS',
@@ -19,7 +19,7 @@ export const FormList = (t) => [
     label: t('labels.therapySelection')
   },
   {
-    name: ORDER_STAGES.ACCOUNT_SELECTION,
+    name: ORDER_STAGES.ACCOUNT_DETAILS,
     label: t('labels.accountSelection')
   },
   {
@@ -41,23 +41,15 @@ export const INFO_340B = [
   {
     title: 'order.account.selection.eligibility.patient.title',
     info: 'order.account.selection.eligibility.patient.info',
-    requirements: [
-      'order.account.selection.eligibility.patient.requirement1',
-      'order.account.selection.eligibility.patient.requirement2'
-    ]
+    requirements: ['order.account.selection.eligibility.patient.requirement1', 'order.account.selection.eligibility.patient.requirement2']
   },
   {
     title: 'order.account.selection.eligibility.facility.title',
     info: 'order.account.selection.eligibility.facility.info',
-    requirements: [
-      'order.account.selection.eligibility.facility.requirement1',
-      'order.account.selection.eligibility.facility.requirement2'
-    ]
+    requirements: ['order.account.selection.eligibility.facility.requirement1', 'order.account.selection.eligibility.facility.requirement2']
   },
   {
     title: 'order.account.selection.compliance.requirements.title',
-    requirements: [
-      'order.account.selection.compliance.requirements.requirement1'
-    ]
+    requirements: ['order.account.selection.compliance.requirements.requirement1']
   }
 ];

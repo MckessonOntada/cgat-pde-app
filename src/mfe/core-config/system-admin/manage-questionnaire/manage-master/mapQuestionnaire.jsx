@@ -112,7 +112,7 @@ export default function mapQuestionnaire() {
       },
       onError: (error) => {
         const errorKey = handleApiError(error);
-        showAlert('error', t(errorKey));
+        showAlert('error', t('errors.default'));
       }
     }
   );

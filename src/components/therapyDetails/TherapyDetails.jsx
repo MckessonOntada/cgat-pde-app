@@ -208,17 +208,17 @@ function DetailsPanel({ details, therapyData, configurationData, isMaterialConfi
     <div className={styles.detailsPanel}>
       <div className={styles.drawerBodyContent}>
         {therapyData?.map((section, index) => (
-          <div key={index}>
+          <div key={section.sectionHeading}>
             <Heading as="h3">{t(section.sectionHeading)}</Heading>
             <div>{renderDetails(section.sectionData, details)}</div>
           </div>
         ))}
         {isMaterialConfiguration &&
           configurationData?.map((section, index) => (
-            <>
+            <React.Fragment key={section.sectionHeading}>
               {!section.questionnaire ? (
                 details?.materialConfig ? (
-                  <div key={index}>
+                  <div key={section.sectionHeading}>
                     <div className={styles.configurationHeader}>
                       <div className={styles.sectionHeadingkey}>{t(section.sectionHeading)}</div>
                       <div className={styles.actions}>
@@ -239,7 +239,7 @@ function DetailsPanel({ details, therapyData, configurationData, isMaterialConfi
               ) : details.questionnaires.length > 0 ? (
                 <div> {renderQuestionnaire(details, section, hasDeleteConfigAccess)}</div>
               ) : null}
-            </>
+            </React.Fragment>
           ))}
       </div>
     </div>

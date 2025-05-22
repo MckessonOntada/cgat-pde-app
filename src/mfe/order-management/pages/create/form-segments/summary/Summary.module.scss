@@ -106,7 +106,7 @@
 }
 
 .orderSummary {
-  >div:first-child {
+  >div:first-of-type {
     @media only screen and (max-width: 768px) {
       width: 100%;
     }

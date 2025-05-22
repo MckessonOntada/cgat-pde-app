@@ -112,7 +112,7 @@ const Upload = () => {
         break;
       }
       case DOWNLOAD_CONTEXT_OPTIONS.DOWNLOAD__INFO: {
-        handleDownload('/templates/Instruction.txt', 'Catalog_upload_instruction.txt');
+        handleDownload('/templates/Catalog_upload_instruction.txt', 'Catalog_upload_instruction.txt');
         break;
       }
       default:

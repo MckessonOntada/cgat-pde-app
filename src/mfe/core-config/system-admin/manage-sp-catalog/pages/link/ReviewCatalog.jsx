@@ -25,7 +25,7 @@ const ReviewCatalog = () => {
   const { items: notifications, add: addNotification, remove: removeNotification } = useTimedArray(10000);
   const { selectedSPMaterial } = useSPMaterial();
   const { selectedAccount, selectedOrganization } = useOrgAccountsMultiSelectionContext();
-
+  const checkedCount = Array.isArray(selectedAccount) ? selectedAccount.filter((acc) => acc.isChecked === true).length : 0;
   const serviceRef = React.useRef(null);
   if (!serviceRef.current) {
     serviceRef.current = LinkedCatalogService(selectedSPMaterial, selectedAccount);
@@ -76,12 +76,11 @@ const ReviewCatalog = () => {
     },
     {
       onSuccess: (result, variables) => {
-        const count = variables.payload.length;
         navigate('/system-admin/config/sp-catalog', {
           state: {
             items: [
               {
-                description: `SP Catalog for ${count} Accounts has been updated successfully.`,
+                description: `SP Catalog for ${checkedCount} Accounts has been updated successfully.`,
                 type: 'success'
               }
             ]
