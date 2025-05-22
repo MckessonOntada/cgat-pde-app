@@ -145,9 +145,6 @@ export const CustomDataTable = (props) => {
   };
   const renderStepperControls = () => {
     if (CommonUtils.isNonEmptyArray(data) && totalRocords > recordsPerPage) {
-      console.log('currentPage', currentPage);
-      console.log('totalPageCount', totalPageCount);
-      console.log('recordsPerPage', recordsPerPage);
       return (
         <div className={styles.stepperControlsWrap}>
           <IconButton
