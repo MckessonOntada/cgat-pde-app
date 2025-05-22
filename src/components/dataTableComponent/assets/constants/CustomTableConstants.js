@@ -32,15 +32,15 @@ export const renderTableCheckBox = (
   };
 
   const handleHeaderCheck = () => {
-    const activeRows = data.filter((item) => item.active === true);
+    const activeRows = data.filter((item) => (item.active ?? true) === true);
     const currentPageMaterialNumbers = activeRows.map((item) => item[dataKey]);
 
     if (isAllChecked()) {
-      setSelectedData([
+      setSelectedData(
         selectedData.filter(
           (item) => !currentPageMaterialNumbers.includes(item[dataKey])
         )
-      ]);
+      );
     } else {
       const allDataIncluded = activeRows.every((item) =>
         selectedData.some(

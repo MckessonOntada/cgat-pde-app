@@ -244,11 +244,11 @@ function TemplateList({ onAlert }) {
           secondaryViewHeading={`${selectedTemplates.length} ${t('userManagement.selected_items')}`}
           secondaryViewControls={
             <div className="controls">
-              <Button onClick={() => handleOnDeactivateQuestionnaire()} size="sm" variant="secondary">
-                {t('captions.btndeactivate')}
-              </Button>
               <Button onClick={() => setIsDrawerOpen(true)} size="sm" variant="secondary">
                 {t('label.configure')}
+              </Button>
+              <Button onClick={() => handleOnDeactivateQuestionnaire()} size="sm" variant="secondary">
+                {t('captions.btndeactivate')}
               </Button>
             </div>
           }
