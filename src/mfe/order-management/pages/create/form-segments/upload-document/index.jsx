@@ -11,6 +11,7 @@ import Textarea from '@src/components/form/Textarea';
 import { RoutePaths } from '@src/routes/constants';
 import DetailSegment from '@src/components/DetailSegment';
 import styles from './style.module.scss';
+import OrderService from '@src/api/commonService/OrderService';
 
 const COMMENT_MAX_LENGTH = 5000;
 function UploadOrderDocument() {
@@ -19,25 +20,53 @@ function UploadOrderDocument() {
   const navigate = useNavigate();
   const { t } = useTranslate();
   const [comment, setComment] = React.useState('');
-  const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } =
-    useOrder(orderId);
+  const [url, setUrl] = React.useState('');
+  const { data: orderDetails = {}, isFetching: isFetchingOrderDetails } = useOrder(orderId);
 
   const therapyId = orderDetails?.therapy?.materialNumber;
-  const soldToAccountId =
-    orderDetails?.accountDetails?.soldToAccount?.accountNumber;
-  const shipToAccountId =
-    orderDetails?.accountDetails?.shipToAccount?.accountNumber;
+  const soldToAccountId = orderDetails?.accountDetails?.soldToAccount?.accountNumber;
+  const shipToAccountId = orderDetails?.accountDetails?.shipToAccount?.accountNumber;
   const { data: priceDetails } = useOrderPrice({
     therapyId,
     soldToAccountId,
     shipToAccountId
   });
   const handleOnUpload = (values, setFieldValue) => {
-    if (!values.file) {
+    const { file } = values;
+    if (!file) {
       setFieldValue('file', 'Please select document');
       return;
     }
+
+    const payload = {
+      orderId,
+      file
+    };
+    OrderService.uploadDocument(payload).then((response) => {
+      const documentDetails = {
+        url: response,
+        comment: comment,
+        name: file.name,
+        size: file.size
+      };
+
+      const payload = [documentDetails];
+
+      OrderService.uploadOrderDocument(orderId, payload).then((response) => {
+        navigate('/orders', {
+          state: {
+            alert: {
+              from: 'UPLOAD_ORDER_DOCUMENT',
+              type: 'success',
+              description: `Document has been successfully uploaded for Order ID: ${orderId}`
+            }
+          }
+        });
+      });
+    });
   };
+
+  const uploadDocument = async (file) => {};
   const handleOnCancel = () => {
     navigate(RoutePaths.pathOrderManagement, {
       state: { activeTab: location?.state?.fromTab }
@@ -55,18 +84,9 @@ function UploadOrderDocument() {
           </div>
         ) : (
           <div>
-            <div
-              className={`grid grid-gap-12 sm:grid-gap-32 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4`}>
-              <DetailSegment
-                key={'sap_id'}
-                label="SAP ID"
-                value={orderDetails.id}
-              />
-              <DetailSegment
-                key={'therapy_name'}
-                label="Therapy"
-                value={orderDetails.therapy?.materialDescription}
-              />
+            <div className={`grid grid-gap-12 sm:grid-gap-32 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4`}>
+              <DetailSegment key={'sap_id'} label="SAP ID" value={orderDetails.id} />
+              <DetailSegment key={'therapy_name'} label="Therapy" value={orderDetails.therapy?.materialDescription} />
               <div></div>
               <DetailSegment
                 key={'order_cost'}

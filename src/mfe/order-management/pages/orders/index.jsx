@@ -10,33 +10,18 @@ import CommonFilters from '@src/components/Filters';
 import { useOrders } from '../../context/OrderContext';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import PermittedComponent from '@src/components/permitted-component';
-import {
-  getTabs,
-  ORDER_DATE_FILTER_OPTIONS,
-  ORDER_STATUS,
-  ORDER_TABS,
-  ORDER_VIEW
-} from './config';
+import { getTabs, ORDER_DATE_FILTER_OPTIONS, ORDER_STATUS, ORDER_TABS, ORDER_VIEW } from './config';
 import useAlert from '@src/hooks/useAlert';
 import { handleApiError } from '@src/util/ApiUtils';
 import useOrderCount from './useOrderCount';
 import CommonUtils from '@src/util/CommonUtils';
+import Alert from '@src/components/alert/Alert';
 
 const OrderIndex = () => {
   const { t } = useTranslate();
   const [_isOrderCountAdded, setIsOrderCountAdded] = React.useState(false);
-  const {
-    applyFilters,
-    clearFilters,
-    changeTab,
-    tabVariant,
-    orderView,
-    isError,
-    assigneeList,
-    error,
-    searchAssigneeByTest,
-    setAssigneeOnChange
-  } = useOrders();
+  const { applyFilters, clearFilters, changeTab, tabVariant, orderView, isError, assigneeList, error, searchAssigneeByTest, setAssigneeOnChange } = useOrders();
+  const [alert, setAlert] = React.useState(null);
   const [tabList, setTabList] = React.useState(() => {
     const allTabs = getTabs();
     allTabs.forEach((tab) => {
@@ -48,11 +33,7 @@ const OrderIndex = () => {
 
   const orderCounts = {}; // useOrderCount();
   React.useEffect(() => {
-    if (
-      !_isOrderCountAdded &&
-      orderCounts &&
-      CommonUtils.isNonEmptyObject(orderCounts)
-    ) {
+    if (!_isOrderCountAdded && orderCounts && CommonUtils.isNonEmptyObject(orderCounts)) {
       const allTabs = getTabs();
       allTabs.forEach((tab) => {
         tab.configName = t(tab.configName);
@@ -75,12 +56,7 @@ const OrderIndex = () => {
     let filters = [];
 
     if (tabVariant === ORDER_TABS.PENDING_SUBMISSION) {
-      const options = [
-        ORDER_STATUS.ALL,
-        ORDER_STATUS.IN_DRAFT,
-        ORDER_STATUS.DELETED,
-        ORDER_STATUS.REJECTED
-      ];
+      const options = [ORDER_STATUS.ALL, ORDER_STATUS.IN_DRAFT, ORDER_STATUS.DELETED, ORDER_STATUS.REJECTED];
 
       filters.push({
         type: 'dropdown',
@@ -92,15 +68,8 @@ const OrderIndex = () => {
         }))
       });
     }
-    if (
-      tabVariant === ORDER_TABS.PENDING_APPROVAL ||
-      tabVariant === ORDER_TABS.PENDING_SUBMISSION
-    ) {
-      const orderTypes = [
-        'All',
-        ORDER_TABS.SUBMITTED_BUY_AND_BILL,
-        ORDER_TABS.SUBMITTED_SP
-      ];
+    if (tabVariant === ORDER_TABS.PENDING_APPROVAL || tabVariant === ORDER_TABS.PENDING_SUBMISSION) {
+      const orderTypes = ['All', ORDER_TABS.SUBMITTED_BUY_AND_BILL, ORDER_TABS.SUBMITTED_SP];
       filters.push({
         type: 'dropdown',
         name: 'orderType',
@@ -166,6 +135,16 @@ const OrderIndex = () => {
     changeTab(newTab.id);
   };
 
+  React.useEffect(() => {
+    const alert = location.state?.alert;
+    if (alert) {
+      setAlert({
+        type: alert.type,
+        description: alert.description
+      });
+    }
+  }, []);
+
   const handleOnClick = () => {
     navigate(routesConfig.createOrder);
   };
@@ -191,8 +170,7 @@ const OrderIndex = () => {
     }
   }, [error]);
 
-  const currentTab =
-    (tabList && tabList.find((tab) => tab?.['isActiveTab'])) || {};
+  const currentTab = (tabList && tabList.find((tab) => tab?.['isActiveTab'])) || {};
 
   return (
     <div className="MCP-module-wrapper">
@@ -201,14 +179,8 @@ const OrderIndex = () => {
           heading={<Heading as="h1">{t('headings.orders')}</Heading>}
           controls={
             <div className="controls">
-              <PermittedComponent
-                permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS}>
-                <Button
-                  Icon={AddCircleFilled}
-                  className="button-icon"
-                  onClick={handleOnClick}
-                  size="lg"
-                  aria-label={t('controls.createNewOrder')}>
+              <PermittedComponent permissions={PERMISSIONS_ENUM.ORDER_MANAGEMENT.ADD_ORDERS}>
+                <Button Icon={AddCircleFilled} className="button-icon" onClick={handleOnClick} size="lg" aria-label={t('controls.createNewOrder')}>
                   {t('controls.ariaLabels.createNewOrder')}
                 </Button>
               </PermittedComponent>
@@ -216,6 +188,7 @@ const OrderIndex = () => {
           }
         />
         <div id={alertContainerId} />
+        {alert && <Alert {...alert} onClose={() => setAlert(null)} />}
         {/* add alert here */}
 
         <div className="MCP-module-body">
@@ -237,17 +210,12 @@ const OrderIndex = () => {
                 onClearFilters={clearFilters}
                 additionalFilters={additionalFiltersConfig}
                 searchPlaceholder={t(
-                  tabVariant === ORDER_TABS.SUBMITTED_SP
-                    ? 'controls.placeholder.searchSPOrderPlaceholder'
-                    : 'controls.placeholder.searchOrderPlaceholder'
+                  tabVariant === ORDER_TABS.SUBMITTED_SP ? 'controls.placeholder.searchSPOrderPlaceholder' : 'controls.placeholder.searchOrderPlaceholder'
                 )}
               />
             </div>
             <div className="MCP-table-wrapper">
-              <OrderDataTable
-                tab={activeTab && activeTab.id}
-                alertContainerId={alertContainerId}
-              />
+              <OrderDataTable tab={activeTab && activeTab.id} alertContainerId={alertContainerId} />
             </div>
           </div>
         </div>
