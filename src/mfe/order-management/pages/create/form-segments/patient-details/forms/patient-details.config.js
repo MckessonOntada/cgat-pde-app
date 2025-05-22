@@ -144,6 +144,24 @@ export const sections = (channelType) => {
           }
         ]
       : []),
+    ...(!channelType
+      ? [
+          {
+            grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 align-items-start',
+            controls: [
+              {
+                id: 'patient-info-medicalRecordNumber',
+                name: 'patient.medicalRecordNumber',
+                label: 'orderManagement.patientDetails.inputLabel.mrn',
+                placeholder: ' ',
+                isRequired: false,
+                type: 'input',
+                maxLength: 20
+              }
+            ]
+          }
+        ]
+      : []),
     {
       grid: 'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 align-items-start',
       controls: [
@@ -193,15 +211,6 @@ export const sections = (channelType) => {
           })),
           maxLength: 10,
           if: (channelType) => channelType === CHANNEL_TYPE.SPECIALTY_PHARMA
-        },
-        {
-          id: 'patient-info-medicalRecordNumber',
-          name: 'patient.medicalRecordNumber',
-          label: 'orderManagement.patientDetails.inputLabel.mrn',
-          placeholder: ' ',
-          isRequired: false,
-          type: 'input',
-          maxLength: 20
         }
       ]
     }
@@ -210,6 +219,7 @@ export const sections = (channelType) => {
   return [
     {
       title: 'orderManagement.patientDetails.patient_details',
+      isRequired: true,
       rows
     }
   ];

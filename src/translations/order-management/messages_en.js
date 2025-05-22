@@ -303,12 +303,12 @@ export const MessageEn = {
   // order management patient details screen
 
   'orderManagement.patientDetails.inputLabel.phone_number': 'Phone Number',
-  'orderManagement.patientDetails.inputLabel.email': 'Email',
+  'orderManagement.patientDetails.inputLabel.email': 'Email Address',
   'orderManagement.patientDetails.inputLabel.phone_no': 'Phone Number',
   'orderManagement.patientDetails.inputLabel.address_1': 'Address Line 1',
   'orderManagement.patientDetails.inputLabel.address_2': 'Address Line 2',
   'orderManagement.patientDetails.inputLabel.city': 'City',
-  'orderManagement.patientDetails.inputLabel.zip': 'Zip Code',
+  'orderManagement.patientDetails.inputLabel.zip': 'Zip',
   'orderManagement.patientDetails.inputLabel.state': 'State',
   'orderManagement.patientDetails.inputLabel.providerDetails': 'Provider Details',
   'orderManagement.patientDetails.inputLabel.first_name': 'First Name',
@@ -320,7 +320,7 @@ export const MessageEn = {
   'orderManagement.patientDetails.inputLabel.workPhone': 'Work Phone',
   'orderManagement.patientDetails.inputLabel.preferredMethodOfContact': 'Preferred Method of Contact',
 
-  'orderManagement.patientDetails.inputLabel.patientIdentifier': 'Manufacturer Patient ID',
+  'orderManagement.patientDetails.inputLabel.patientIdentifier': 'Manufacturer Patient Identifier',
 
   'orderManagement.patientDetails.inputLabel.mrn': 'MRN',
   'orderManagement.patientDetails.contact_details': 'Contact Details',
@@ -347,7 +347,7 @@ export const MessageEn = {
   'orderManagement.patientDetails.validation.patient_identifier_must_number': 'Patient Identifier must be alphanumeric.',
   'orderManagement.patientDetails.validation.mrn_must_alphanumeric': 'MRN must be alphanumeric.',
   'orderManagement.patientDetails.validation.patient_identifier_max': 'Patient identifier cannot exceed 20 characters.',
-  'orderManagement.patientDetails.inputLabel.date_of_birth': 'Date of birth',
+  'orderManagement.patientDetails.inputLabel.date_of_birth': 'Date of Birth',
   'orderManagement.patientDetails.option.please_select': 'Please select',
 
   'labels.description.approval': 'Order is reviewed and confirmed for accuracy and payment',
