@@ -19,7 +19,9 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
     checkedAccounts,
     refetchAccounts,
     checkedOrganizations,
-    setCheckedOrganizations
+    setCheckedOrganizations,
+    totalOrgs,
+    totalAccs
   } = useOrgAccountsMultiSelectionContext();
 
   const onOrganizationChange = async (selectedValue) => {
@@ -30,10 +32,7 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
     const _selected = selectedValue.filter((item) => item.isChecked);
 
     if (_selected.length > selectedOrganization?.length) {
-      const newOrg = _selected.find(
-        (org) =>
-          !selectedOrganization.some((existing) => existing.value === org.value)
-      );
+      const newOrg = _selected.find((org) => !selectedOrganization.some((existing) => existing.value === org.value));
 
       if (newOrg) {
         await refetchAccounts();
@@ -44,9 +43,7 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
       if (!Array.isArray(prev)) {
         return [];
       }
-      const unselectedOrgs = prev.filter(
-        (org) => !_selected.some((sel) => sel.value === org.value)
-      );
+      const unselectedOrgs = prev.filter((org) => !_selected.some((sel) => sel.value === org.value));
       unselectedOrgs.forEach((org) => {
         setCheckedAccounts((prev) => {
           if (!Array.isArray(prev)) {
@@ -96,10 +93,7 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
         if (ele.isChecked) {
           if (!eleExist) _checkedOptions.push(ele);
         } else {
-          if (eleExist)
-            _checkedOptions = _checkedOptions.filter(
-              (i) => i.value != ele.value
-            );
+          if (eleExist) _checkedOptions = _checkedOptions.filter((i) => i.value != ele.value);
         }
       });
       setCheckedAccounts(_checkedOptions);
@@ -124,6 +118,8 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
           size="md"
           isSortEnable={false}
           noSelectedCountMessage={t('forms.labels.organization')}
+          refineFilterMessage={[t('refineFilter.message')]}
+          asyncRecordsFound={totalOrgs}
           clearAllSelectedValues={() => {
             setCheckedOrganizations([]);
             setSelectedAccount([]);
@@ -144,6 +140,8 @@ function OrgAccountsMultiSelect({ handleOrgChange, handleAccountChange }) {
           recordsCountToEnableSearch={5}
           size="md"
           noSelectedCountMessage={t('ManageCatalog.SelectAccount')}
+          refineFilterMessage={[t('refineFilter.message')]}
+          asyncRecordsFound={totalAccs}
         />
       </div>
     </div>

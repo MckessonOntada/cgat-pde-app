@@ -25,6 +25,8 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
   const [accountOptions, setAccountOptions] = useState();
   const [checkedAccounts, setCheckedAccounts] = useState([]);
   const [checkedOrganizations, setCheckedOrganizations] = useState([]);
+  const [totalOrgs, setTotalOrgs] = useState();
+  const [totalAccs, setTotalAccs] = useState();
   // Organization List configuration
   const orgPayload = {
     pageNo: 0,
@@ -37,6 +39,7 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
     queryFn: async () => {
       const response = await SPCatalogService.getOrganizations(orgPayload);
       if (response && response.content) {
+        setTotalOrgs(response.totalElements);
         let data = response.content.map((item, index) => ({
           index: index + 1,
           label: item.name,
@@ -77,7 +80,8 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
     queryFn: async () => {
       const response = await SPCatalogService.getAccountList(payload);
       if (response) {
-        const { content } = response;
+        const { content, totalElements } = response;
+        setTotalAccs(totalElements);
         let _opt =
           content.map((item, index) => ({
             ...item,
@@ -132,7 +136,9 @@ export const OrgAccountMultiSelectionProvider = ({ children, enableOrg = true, e
     refetchAccounts,
     refetchOrgs,
     checkedOrganizations,
-    setCheckedOrganizations
+    setCheckedOrganizations,
+    totalOrgs,
+    totalAccs
   };
   return <orgAccountsMultiSelectionContext.Provider value={contextValue}>{children}</orgAccountsMultiSelectionContext.Provider>;
 };

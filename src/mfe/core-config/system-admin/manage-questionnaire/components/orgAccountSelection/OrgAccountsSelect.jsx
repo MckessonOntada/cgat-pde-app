@@ -4,11 +4,7 @@ import { useOrgAccountSelectionContext } from './context/OrgAccountSelectionCont
 import './styles.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 
-function OrgAccountsSelect({
-  handleOrgChange,
-  handleAccountChange,
-  showAccountsSelect = true
-}) {
+function OrgAccountsSelect({ handleOrgChange, handleAccountChange, showAccountsSelect = true }) {
   const { t } = useTranslate();
   const {
     organizationOptions,
@@ -21,9 +17,11 @@ function OrgAccountsSelect({
     accountOptions,
     setAccountOptions,
     setCheckedAccounts,
-    checkedAccounts
+    checkedAccounts,
+    totalOrgs,
+    totalAccs
   } = useOrgAccountSelectionContext();
-
+  console.log('organizationOptions?.length', organizationOptions?.length);
   const onOrganizationChange = (selectedValue) => {
     let _selected = organizationOptions.find((ele) => ele.id == selectedValue);
     setSelectedOrganization(_selected);
@@ -41,10 +39,7 @@ function OrgAccountsSelect({
         if (ele.isChecked) {
           if (!eleExist) _checkedOptions.push(ele);
         } else {
-          if (eleExist)
-            _checkedOptions = _checkedOptions.filter(
-              (i) => i.value != ele.value
-            );
+          if (eleExist) _checkedOptions = _checkedOptions.filter((i) => i.value != ele.value);
         }
       });
       setCheckedAccounts(_checkedOptions);
@@ -69,6 +64,8 @@ function OrgAccountsSelect({
           size="md"
           isSortEnable={false}
           value={selectedOrganization?.id.toString() || ''}
+          refineFilterMessage={[t('refineFilter.message')]}
+          asyncRecordsFound={totalOrgs}
           fieldDisplayValue={
             selectedOrganization?.name
               ? {
@@ -93,6 +90,8 @@ function OrgAccountsSelect({
             recordsCountToEnableSearch={5}
             size="md"
             noSelectedCountMessage={t('ManageCatalog.SelectAccount')}
+            refineFilterMessage={[t('refineFilter.message')]}
+            asyncRecordsFound={totalAccs}
           />
         </div>
       )}
