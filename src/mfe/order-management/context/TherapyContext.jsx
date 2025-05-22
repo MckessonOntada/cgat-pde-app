@@ -11,8 +11,8 @@ const INITIAL_FILTER_STATE = {
 };
 
 const INITIAL_SORT_STATE = {
-  sortBy: null,
-  sortOrder: null
+  sortBy: 'material_Number',
+  sortOrder: 'desc'
 };
 
 const INITIAL_PAGINATION_CONFIG = {
@@ -41,8 +41,7 @@ export const TherapyProvider = ({ children }) => {
       pageSize: paginationConfig.pageSize,
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
       ...(filterConfig?.salesOrg && filterConfig?.salesOrg.length > 0 && { salesOrg: [...filterConfig.salesOrg] }),
-      ...(filterConfig?.customerIdentifier &&
-        filterConfig?.customerIdentifier.length > 0 && { customerIdentifier: [...filterConfig.customerIdentifier] }),
+      ...(filterConfig?.customerIdentifier && filterConfig?.customerIdentifier.length > 0 && { customerIdentifier: [...filterConfig.customerIdentifier] }),
 
       ...(sortConfig?.sortBy && { sortBy: sortConfig.sortBy }),
       ...(sortConfig?.sortOrder && { sortOrder: sortConfig.sortOrder })
