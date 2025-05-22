@@ -1,6 +1,7 @@
 import React from 'react';
-import { IconButton } from '@mckesson/mcp-component-library';
+import { IconButton, MenuList } from '@mckesson/mcp-component-library';
 import { usePagination, useSelection, useTable } from '@src/mfe/core-config/admin/manage-providers/context/TableContext';
+import { ReactComponent as IconEllipsis } from '@src/assets/svg/ellipsis.svg';
 import { Link } from 'react-router-dom';
 import EclipsesTextcss from '@src/components/EclipsesText/EclipsesTextcss';
 import { ReactComponent as LinkIcon } from '@src/assets/svg/link.svg';
@@ -16,8 +17,8 @@ const PROVIDER_COLUMNS = {
   ACTION: 'ACTION'
 };
 
-export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial, onDeLinkConfirmation }) => {
-  const { selectedRows, setSelection } = useSelection();
+export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial, onDeLinkConfirmation, handleOnOptionSelection, isCustomerCenter }) => {
+  const { selectedRows, setSelection, selectedRowObjects } = useSelection();
   const { pagination } = usePagination();
   const { data } = useTable();
   const { t } = useTranslate();
@@ -27,6 +28,7 @@ export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial, onDeLi
     const payload = [{ sapMaterial, soldToCustomer }];
     onDeLinkConfirmation(payload);
   };
+
   return [
     {
       id: 'checkbox',
@@ -110,21 +112,29 @@ export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial, onDeLi
       cell: (props) => <EclipsesTextcss str={props?.soldToCustomer || '-'} maxWidth={110} />
     },
     {
-      id: PROVIDER_COLUMNS.ACTION,
-      name: 'Action',
-      selector: () => {},
-      minWidth: '160px',
-      cell: (props) => (
-        <IconButton
-          variant="tertiary"
-          label={t('button.caption.unlink')}
-          size="lg"
-          iconButton={false}
-          textButton={true}
-          Icon={LinkIcon}
-          onClick={() => handleOnDeLink(props)}
-        />
-      )
+      id: 'action',
+      center: true,
+      name: t('manageSPAccount.table.action'),
+      cell: (row) => {
+        return (
+          <MenuList
+            menuIcon={<IconEllipsis key={'menu-list-shippinglocation-table'} />}
+            handleSelect={(value) => handleOnOptionSelection(value, row)}
+            options={[
+              {
+                label: t('provider.btnUnlink'),
+                value: 'unlink'
+              },
+              {
+                label: t('SPCatalog.Configuration'),
+                value: 'configure'
+              }
+            ]}
+          />
+        );
+      },
+      omit: isCustomerCenter,
+      isAction: true
     }
   ];
 };

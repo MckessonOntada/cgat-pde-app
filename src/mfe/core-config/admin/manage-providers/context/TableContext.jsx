@@ -49,6 +49,8 @@ export const useSelection = () => {
   const {
     selectedRows,
     setSelection,
+    selectedRowObjects,
+    setSelectedRowObjects,
     toggleRowSelection,
     selectAll,
     deselectAll
@@ -56,8 +58,10 @@ export const useSelection = () => {
 
   return {
     selectedRows,
+    selectedRowObjects,
     toggleRowSelection,
     setSelection,
+    setSelectedRowObjects,
     selectAll,
     deselectAll
   };
@@ -125,6 +129,7 @@ export const TableProvider = ({
   const [data, setData] = useState([]);
   const [filters, setFilters] = useState(defaultFilters || { query: '' });
   const [selectedRows, setSelectedRows] = useState(new Set());
+  const [selectedRowObjects, setSelectedRowObjects] = useState(new Set());
   const [pagination, setPagination] = useState(INITIAL_PAGINATION_STATE);
   const [sort, setSort] = React.useState(() => {
     return {
@@ -211,18 +216,33 @@ export const TableProvider = ({
       }
       return newSelection;
     });
+    setSelectedRowObjects((prev) => {
+      const newSet = new Set(prev);
+      const exists = [...newSet].some((r) => r.id === id);
+      if (exists) {
+        [...newSet].forEach((r) => {
+          if (r.id === id) newSet.delete(r);
+        });
+      } else {
+        newSet.add(row);
+      }
+      return newSet;
+    });
   };
 
   const selectAll = () => {
     setSelectedRows(new Set(data.map((row) => row.id)));
+    setSelectedRowObjects(new Set(data));
   };
 
   const setSelection = (val = []) => {
     setSelectedRows(new Set(val.map((row) => row.id)));
+    setSelectedRowObjects(new Set(val));
   };
 
   const deselectAll = () => {
     setSelectedRows(new Set());
+    setSelectedRowObjects(new Set());
   };
 
   const applyFilters = (filters) => {
@@ -275,6 +295,7 @@ export const TableProvider = ({
     columns,
     sort,
     selectedRows,
+    selectedRowObjects,
     setSelection,
     setPagination,
     toggleRowSelection,

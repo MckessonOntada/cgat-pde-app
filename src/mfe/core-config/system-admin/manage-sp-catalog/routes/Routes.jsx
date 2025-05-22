@@ -4,10 +4,11 @@ import { ROUTE_PATHS } from './constants';
 import Index from '../pages';
 import Upload from '../pages/upload';
 import LinkSPMaterial from '../pages/link';
-import { OrgAccountSelectionProvider } from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
 import { SPMaterialProvider } from '@src/mfe/core-config/system-admin/manage-sp-material/context/SPMaterialContext';
 import ReviewCatalogList from '../pages/link/ReviewCatalog';
 import { OrgAccountMultiSelectionProvider } from '../pages/context/OrgAccountMultiSelectContext';
+import ViewSPCatalogConfig from '../pages/ViewSPCatalogConfig';
+import ViewQuesionnairePreview from '../pages/ViewQuestionnairePreview';
 
 const SPCatalogRouter = () => {
   return (
@@ -16,6 +17,8 @@ const SPCatalogRouter = () => {
         <Route index path={ROUTE_PATHS.DASHBOARD} element={<Index />} />
         <Route path={ROUTE_PATHS.DETAILS} element={<div>Details</div>} />
         <Route path={ROUTE_PATHS.CREATE} element={<div>Create</div>} />
+        <Route path={ROUTE_PATHS.VIEWSPCATALOG} element={<ViewSPCatalogConfig />} />
+        <Route path={ROUTE_PATHS.VIEWQUESTIONNAIREPRIVIEW} element={<ViewQuesionnairePreview />} />
         <Route
           path={ROUTE_PATHS.LINK}
           element={

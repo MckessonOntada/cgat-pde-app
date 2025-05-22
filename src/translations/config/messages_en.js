@@ -170,7 +170,8 @@ export const ConfigurationMessagesEN = {
   'providers.message.fileUploadFailure':
     'Something went wrong please try again later.',
   // catalog
-
+  'SPCatalog.Configuration': 'Configuration',
+  'SPCatalog.CatalogConfiguration': 'SP Catalog Configuration',
   'SPCatalog.deLinkSuccess': 'Catalog(s) unlinked successfully.',
 
   'SPCrosswalk.unlinkCrosswalkSuccess':
@@ -232,5 +233,5 @@ export const ConfigurationMessagesEN = {
   'provider.sp.account.haslinkedsuccessfully':
     'SP Account(s) has been linked successfully.',
   'provider.sp.account.spAccount': 'SP Account(s).',
-  'provider.sp.account.selected': 'Selected',
+  'provider.sp.account.selected': 'Selected'
 };
