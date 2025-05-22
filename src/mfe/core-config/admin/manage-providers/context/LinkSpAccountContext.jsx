@@ -47,12 +47,15 @@ export const LinkSpAccountProvider = ({ children }) => {
     INITIAL_PAGINATION_CONFIG
   );
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const practiceId = AuthUtils.getPracticeId();
   const isAddSpAccount = useMemo(() => {
     return location.pathname.includes('link-sp-accounts');
   }, [location.pathname]);
 
   const { id: providerId } = useParams();
+  const providerIds =
+    searchParams.get('accounts')?.split(',').map(Number) || [];
   const [sortConfig, setSortConfig] = useState(INITIAL_SORT_STATE);
 
   const requestParams = useMemo(
@@ -62,18 +65,18 @@ export const LinkSpAccountProvider = ({ children }) => {
       sortBy: sortConfig.sortBy,
       sortOrder: sortConfig.sortOrder,
       ...(filterConfig?.searchQuery && { query: filterConfig.searchQuery }),
-      practiceId: practiceId,
-      partnerFunction: 'SOLD_TO',
-      channelType: CHANNEL_TYPE.SPECIALTY_PHARMA
+      ...(!isAddSpAccount && {practiceId: practiceId}),
+      ...(!isAddSpAccount && {partnerFunction: 'SOLD_TO'}),
+      ...(!isAddSpAccount && {channelType: CHANNEL_TYPE.SPECIALTY_PHARMA}), 
     }),
     [filterConfig, paginationConfig.pageNumber, sortConfig]
   );
   const { isLoading, isError, error, data, refetch } = useQuery({
-    queryKey: ['sp-account', requestParams, practiceId, providerId],
+    queryKey: ['sp-account', requestParams, providerId, providerIds],
     queryFn: async () => {
       let result;
       if (isAddSpAccount) {
-        result = await AccountService.getAccountList(requestParams, practiceId);
+        result = await ProviderService.getUnlinkSpAccountListByProviderId(requestParams, providerIds);
       } else {
         result = await ProviderService.getSpAccountListByProviderId(
           providerId,
