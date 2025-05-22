@@ -164,6 +164,18 @@ async function getSpAccountListByProviderId(providerId, requestParams) {
   }
   return [];
 }
+async function getUnlinkSpAccountListByProviderId( requestParams, providerIds) {
+  const url = `${ApiRoutes.ORGANIZATION_BASE()}providers/unlinked-accounts?${serializeParams(
+    requestParams
+  )}`;
+  const res = await HttpResourceService.callRest(url, httpVerb.POST, providerIds, {
+    'Content-Type': 'application/json'
+  });
+  if (res.data) {
+    return res.data;
+  }
+  return [];
+}
 const ProviderService = Object.freeze({
   getAllProviders,
   activateProvider,
@@ -173,7 +185,8 @@ const ProviderService = Object.freeze({
   addProvider,
   uploadProvider,
   linkProvidersToAccount,
-  getSpAccountListByProviderId
+  getSpAccountListByProviderId,
+  getUnlinkSpAccountListByProviderId
 });
 
 export default ProviderService;
