@@ -1,10 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { MockNotifications as notificationsMock } from '../data/MockNotifications';
 
 const NotificationsContext = createContext();
 
 export const useNotifications = () => useContext(NotificationsContext);
-
-
 
 const initialFilterState = {
   notificationDateRange: ['', ''],
