@@ -11,7 +11,7 @@ import FloatingDrawer from '@src/components/floating-drawer';
 import { CHANNEL_TYPE, INFO_340B, PROGRAM_LIST } from '../Constants';
 import InfoModel from '@src/components/InfoModel/indix';
 
-const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer, therapChannelType }) => {
+const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer, channelType = CHANNEL_TYPE.BUY_AND_BILL }) => {
   const { t } = useTranslate();
   const [selectedProgram, setProgram] = useState('');
   const [selectedChannel, setChannel] = useState('');
@@ -25,9 +25,6 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer, t
       value: 'covered_entity'
     }
   ]);
-  const captionStyle = {
-    fontSize: '16px'
-  };
 
   const handleSelectChange = (value) => {
     const updatedOptions = checkboxOptions.map((item) =>
@@ -55,7 +52,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer, t
     queryKey: ['order', 'therapy', therapyId, 'program-channel-config'],
     queryFn: async () =>
       OrderService.getProgramAndChannelConfig(therapyId, {
-        channelType: therapChannelType
+        channelType: channelType
       }),
     enabled: !!therapyId,
     refetchOnWindowFocus: false
@@ -73,7 +70,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer, t
         serializeParams({
           ...(selectedChannel === CHANNEL_TYPE.BUY_AND_BILL ? { program: selectedProgram } : {}),
           channelType: selectedChannel,
-          therapyChannelType: therapChannelType
+          therapyChannelType: channelType
         })
       ),
     enabled: Boolean(selectedChannel === CHANNEL_TYPE.SPECIALTY_PHARMA) || Boolean(selectedProgram),
@@ -98,7 +95,25 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer, t
       setAlertMsg(true);
       return;
     }
-    onSubmit(account);
+
+    const transformedAccount = {
+      ...account,
+      address: {
+        email: account.email || null,
+        telephone: account.telephone || null,
+        houseNumber: account.houseNumber || null,
+        street: account.street || null,
+        street2: account.street2 || null,
+        street3: account.street3 || null,
+        city: account.city || null,
+        district: account.district || null,
+        state: account.state || null,
+        zipCode: account.zipCode || null,
+        country: account.country || null
+      }
+    };
+
+    onSubmit(transformedAccount);
   };
 
   if (!therapyId) {
@@ -269,7 +284,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer, t
                     ...item,
                     onChange: () => handleSelectChange(item.value)
                   }))}
-                  itemCustomStyles={captionStyle}
+                  // itemCustomStyles={captionStyle}
                 />
               </div>
             )}
