@@ -2,7 +2,7 @@ import AuthUtils from '@src/util/AuthUtils';
 
 //import { MAIN_BASE_URL, USERMANAGEMENT_SERVICE_BASE_URL, ORDER_MANAGEMENT_SERVICE_BASE_URL } from '@src/config/AppConfig';
 
-import { MAIN_BASE_URL, USERMANAGEMENT_SERVICE_BASE_URL, ORDERMANAGEMENT_SERVICE_BASE_URL } from '@src/config/AppConfig';
+import { MAIN_BASE_URL, USERMANAGEMENT_SERVICE_BASE_URL, ORDERMANAGEMENT_SERVICE_BASE_URL, NOTIFICATION_SERVICE_BASE_URL } from '@src/config/AppConfig';
 
 const constructMainAppUrl = (uri) => `${MAIN_BASE_URL}${uri}`;
 
@@ -23,6 +23,10 @@ const constructOrderManagementServiceUrl = (uri) => {
   const isSystemAdminView = AuthUtils.isSystemAdminView();
   const practiceId = AuthUtils.getPracticeId();
   return `${ORDERMANAGEMENT_SERVICE_BASE_URL}api/practices/${isSystemAdminView ? 1 : practiceId}/${uri}`;
+};
+
+const constructNotificationServiceUrl = (uri) => {
+  return `${NOTIFICATION_SERVICE_BASE_URL}api/${uri}`;
 };
 
 const ApiRoutes = Object.freeze({
@@ -75,14 +79,17 @@ const ApiRoutes = Object.freeze({
   GET_CATALOG_DATA: () => constructUserManagementServicePublicUrl('catalogs'),
   CATALOGS: () => constructUserManagementServicePublicUrl(`catalogs`),
   THERAPIES: () => constructUserManagementServicePublicUrl(`therapies`),
-  QUESTIONNAIRE: () => constructUserManagementServicePublicUrl(`questionnaires`),
   GET_ALL_MATERIALS: () => constructUserManagementServicePublicUrl(`therapies`),
   GET_MATERIAL_BY_ID: (materialId) => constructUserManagementServicePublicUrl(`therapies/${materialId}`),
   GET_MATERIAL_CONFIG_BY_ID: (materials) => constructUserManagementServicePublicUrl(`therapies/config/${materials}`),
   CONFIGURE_MATERIALS: () => constructUserManagementServicePublicUrl(`therapies/config/update`),
   DELETE_MATERIAL_CONFIG: (materialId) => constructUserManagementServicePublicUrl(`therapies/config/${materialId}`),
   RESET_PASSWORD: () => constructUserManagementServiceUrl(`users/current/reset-password`),
-  GLOBAL_FOOTER: () => constructUserManagementServicePublicUrl(`global-footer`)
+  GLOBAL_FOOTER: () => constructUserManagementServicePublicUrl(`global-footer`),
+  NOTIFICATIONS: () => constructNotificationServiceUrl(`in-app-notification/fetch`),
+  NOTIFICATIONS_UNREAD_COUNT: () => constructNotificationServiceUrl(`in-app-notification/unread-count`),
+  NOTIFICATIONS_READ_ALL: () => constructNotificationServiceUrl(`in-app-notification/read-all`),
+  NOTIFICATIONS_READ_BY_ID: (id) => constructNotificationServiceUrl(`in-app-notification/read/${id}`)
 });
 
 export default ApiRoutes;

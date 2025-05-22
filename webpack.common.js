@@ -130,6 +130,9 @@ module.exports = {
       __ORDERMANAGEMENT_SERVICE_BASE_URL__: JSON.stringify(
         process.env.REACT_APP_ORDERMANAGEMENT_SERVICE_BASE_URL
       ),
+      __NOTIFICATION_SERVICE_BASE_URL__: JSON.stringify(
+        process.env.REACT_APP_NOTIFICATION_SERVICE_BASE_URL
+      ),
       __DATA_ABSTRACTION_SERVICE_BASE_URL__: JSON.stringify(
         process.env.REACT_APP_DATA_ABSTRACTION_SERVICE_BASE_URL
       ),
