@@ -139,7 +139,7 @@ function AddQuestionnaire() {
     isLoading: isDeactivating,
     isError: deactivateError,
     data: deactivateResponse
-  } = useMutation(async (id) => QuestionnaireService.deactivateQuestionnaireById(id), {
+  } = useMutation(async (id) => QuestionnaireService.deactivateQuestionnaireById([id]), {
     onSuccess: (response) => {
       setMode(MODE.VIEW);
       getQuestionnaireDetails();
