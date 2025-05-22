@@ -122,12 +122,12 @@ export const getColumns = ({ setOpenSPMaterialDetails, setViewSPMaterial, onDeLi
             handleSelect={(value) => handleOnOptionSelection(value, row)}
             options={[
               {
-                label: t('provider.btnUnlink'),
-                value: 'unlink'
-              },
-              {
                 label: t('SPCatalog.Configuration'),
                 value: 'configure'
+              },
+              {
+                label: t('provider.btnUnlink'),
+                value: 'unlink'
               }
             ]}
           />
