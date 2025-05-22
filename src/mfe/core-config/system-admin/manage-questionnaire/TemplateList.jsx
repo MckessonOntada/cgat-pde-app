@@ -13,7 +13,6 @@ import FloatingDrawer from '@src/components/floating-drawer';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useQuestionnaire } from './context/QuestionnaireContext';
 import EmptyDataImage from '@src/assets/image/EmptyDataTable.svg';
-import { useMultiCheckBox } from './useMultiCheckBox';
 import useResponsiveView from '@src/hooks/useResponsiveView';
 import CommonUtils from '@src/util/CommonUtils';
 import { ROUTE_CONFIG } from './constants';
@@ -21,11 +20,16 @@ import { CustomDataTable } from '@src/components/dataTableComponent';
 import usePermission from '@src/hooks/usePermissions';
 import { PERMISSIONS_ENUM } from '@src/mfe/user-management/pages/UserPermissions/permissionsEnum';
 import { renderTableCheckBox } from '@src/components/dataTableComponent/assets/constants/CustomTableConstants';
+import { useMutation } from 'react-query';
+import QuestionnaireService from '@src/api/commonService/QuestionnaireService';
+import { closeModal, openModal } from '@src/store/reducer/modalReducer';
+import { useDispatch } from 'react-redux';
 
-function TemplateList() {
+function TemplateList({ onAlert }) {
   const { t } = useTranslate();
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const showCardView = useResponsiveView();
   const {
     applyFilters,
@@ -169,6 +173,59 @@ function TemplateList() {
     navigate('map-questionnaire', { state: { value: entity, selectedTemplates: selectedTemplates } });
   };
 
+  const {
+    mutate: deactivateQuestionnaire,
+    isLoading: isDeactivating,
+    isError: deactivateError,
+    data: deactivateResponse
+  } = useMutation(async (id) => QuestionnaireService.deactivateQuestionnaireById(id), {
+    onSuccess: (response) => {
+      refetchTemplates();
+      setSelectedData([]);
+      setTemplates([]);
+      onAlert({
+        isVisible: true,
+        description: t('message.questionnaireDeactivated'),
+        type: 'success'
+      });
+    },
+    onError: (error) => {
+      onAlert({
+        isVisible: true,
+        description: t('errors.default'),
+        type: 'error'
+      });
+    }
+  });
+
+  const handleOnDeactivateQuestionnaire = () => {
+    const state = {};
+    state.title = t('labels.confirmationmessage');
+    state.body = (
+      <div className="MCP-modal-body">
+        <p>{t('labels.template_deactivateConfirmation')}</p>
+      </div>
+    );
+    state.footer = (
+      <div className="controls">
+        <Button size="md" variant="secondary" onClick={() => dispatch(closeModal())}>
+          Cancel
+        </Button>
+        <Button
+          size="md"
+          variant="primary"
+          onClick={() => {
+            const selectedIds = selectedData.map((item) => item.id);
+            deactivateQuestionnaire(selectedIds);
+            dispatch(closeModal());
+          }}>
+          Yes
+        </Button>
+      </div>
+    );
+    dispatch(openModal(state));
+  };
+
   return (
     <div className="MCP-module-wrapper">
       <div className="MCP-CardContainer">
@@ -186,9 +243,14 @@ function TemplateList() {
           secondaryView={selectedTemplates && selectedTemplates.length > 0}
           secondaryViewHeading={`${selectedTemplates.length} ${t('userManagement.selected_items')}`}
           secondaryViewControls={
-            <Button onClick={() => setIsDrawerOpen(true)} size="sm" variant="secondary">
-              {t('label.configure')}
-            </Button>
+            <div className="controls">
+              <Button onClick={() => handleOnDeactivateQuestionnaire()} size="sm" variant="secondary">
+                {t('captions.btndeactivate')}
+              </Button>
+              <Button onClick={() => setIsDrawerOpen(true)} size="sm" variant="secondary">
+                {t('label.configure')}
+              </Button>
+            </div>
           }
           style={{ marginBottom: '16px' }}
         />

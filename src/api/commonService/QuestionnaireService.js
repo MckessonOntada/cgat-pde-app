@@ -35,9 +35,9 @@ async function getQuestionnaireById(id) {
   return {};
 }
 
-async function deactivateQuestionnaireById(id) {
-  const url = `${ApiRoutes.QUESTIONNAIRE()}/${id}/deactivate`;
-  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, null);
+async function deactivateQuestionnaireById(requestBody) {
+  const url = `${ApiRoutes.QUESTIONNAIRE()}/deactivate`;
+  const res = await HttpResourceService.callRest(url, httpVerb.PATCH, requestBody);
   if (res.data) {
     return res.data;
   }
@@ -67,9 +67,7 @@ async function getConfiguredQuestionnaire(requestParams) {
   const { soldToCustomer, shipToCustomer, sapMaterial } = requestParams;
 
   if (soldToCustomer === undefined || shipToCustomer === undefined || sapMaterial === undefined) {
-    throw new Error(
-      "Invalid payload. Required properties: 'soldToCustomer', 'shipToCustomer', and 'sapMaterial '. Optional property: 'variant'."
-    );
+    throw new Error("Invalid payload. Required properties: 'soldToCustomer', 'shipToCustomer', and 'sapMaterial '. Optional property: 'variant'.");
   }
 
   const url = `${ApiRoutes.QUESTIONNAIRE()}/configured-questionnaire?${serializeParams(requestParams)}`;

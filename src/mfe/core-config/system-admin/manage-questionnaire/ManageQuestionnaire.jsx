@@ -93,7 +93,7 @@ function ManageQuestionnaire() {
             <Alert description={alertConfig.description} onClose={handleAlertClose} type={alertConfig.type} duration={10000} />
           )}
           <div className="MCP-CardContainer">
-            <TemplateList />
+            <TemplateList onAlert={setAlertConfig} />
           </div>
         </div>
       </div>
