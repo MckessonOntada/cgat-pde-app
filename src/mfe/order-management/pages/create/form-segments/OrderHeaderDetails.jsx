@@ -16,8 +16,9 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status, selectedA
   const patientDetailsRequired = orderDetails?.patientDetailsRequired ?? false;
   const channelType = accountDetails?.soldToAccount?.channelType ? accountDetails?.soldToAccount?.channelType : selectedAccount?.channelType;
 
-  const detailsSegments = [
-    therapy?.materialDescription && (
+  const detailsSegments = [];
+  if (therapy?.materialDescription) {
+    detailsSegments.push(
       <DetailSegment
         key={'therapy-description'}
         label={t('labels.therapyDescription')}
@@ -28,16 +29,24 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status, selectedA
           </div>
         }
       />
-    ),
-    accountDetails?.soldToAccount && accountDetails?.shipToAccount && (
+    );
+  } else {
+    detailsSegments.push(<div></div>);
+  }
+  if (accountDetails?.soldToAccount) {
+    detailsSegments.push(
       <DetailSegment
         key={'sold-to-account'}
         className="textCapitalize"
         label={t('labels.soldToAccountAddress')}
         value={getAddress(accountDetails.soldToAccount.address)}
       />
-    ),
-    accountDetails?.shipToAccount && (
+    );
+  } else {
+    detailsSegments.push(<div></div>);
+  }
+  if (accountDetails?.shipToAccount) {
+    detailsSegments.push(
       <DetailSegment
         key={'ship-to-account'}
         className="textCapitalize"
@@ -48,29 +57,27 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status, selectedA
             : getAddress(accountDetails?.shipToAccount?.address)
         }
       />
-    ),
- 
-    accountDetails?.soldToAccount &&
-      accountDetails?.shipToAccount &&
-      patientDetailsRequired &&
-      patient &&
-      Object.keys(patient).length > 0 && (
-        <DetailSegment
-          key={'patient-name'}
-          label={t('labels.patientDetails')}
-          value={`${
-            patient?.patientInfo ? `${getFullName(patient.patientInfo)}, ` : ''
-          }${
-            patient?.patientIdentifier ? `ID: ${patient.patientIdentifier}` : ''
-          }${
-            patient?.medicalRecordNumber
-              ? `, MRN: ${patient.medicalRecordNumber}`
-              : ''
-          }`}
-        />
-      ),
- 
-    priceDetails && Object.keys(priceDetails).length > 0 && (
+    );
+  } else {
+    detailsSegments.push(<div></div>);
+  }
+
+  if (accountDetails?.soldToAccount && accountDetails?.shipToAccount && patientDetailsRequired && patient && Object.keys(patient).length > 0) {
+    detailsSegments.push(
+      <DetailSegment
+        key={'patient-name'}
+        label={t('labels.patientDetails')}
+        value={`${patient?.patientInfo ? `${getFullName(patient.patientInfo)}, ` : ''}${patient?.patientIdentifier ? `ID: ${patient.patientIdentifier}` : ''}${
+          patient?.medicalRecordNumber ? `, MRN: ${patient.medicalRecordNumber}` : ''
+        }`}
+      />
+    );
+  } else {
+    detailsSegments.push(<div></div>);
+  }
+
+  if (priceDetails && Object.keys(priceDetails).length > 0) {
+    detailsSegments.push(
       <div key={'price-details'} className={`price-wrap-container`}>
         <DetailSegment
           label={t('labels.estimatedPrice')}
@@ -82,8 +89,10 @@ function OrderHeaderDetails({ orderDetails, priceDetails = {}, status, selectedA
           }
         />
       </div>
-    )
-  ].filter(Boolean);
+    );
+  } else {
+    detailsSegments.push(<div></div>);
+  }
 
   return (
     <div key={priceDetails?.netPrice} className="MCP-CardContainer">
@@ -99,12 +108,14 @@ const isValidAccount = (account) => {
   if (!account || typeof account !== 'object') {
     return false;
   }
+
+  const { shipToAccount, soldToAccount } = account;
   // Check if shipToAccount exists and is an object
-  const isShipToValid = account.shipToAccount && typeof account.shipToAccount === 'object' && Object.keys(account.shipToAccount).length > 0;
+  const isShipToValid = shipToAccount && typeof shipToAccount === 'object' && CommonUtils.isNonEmptyObject(shipToAccount);
 
   // Check if soldToAccount exists and is an object
-  const isSoldToValid = account.soldToAccount && typeof account.soldToAccount === 'object' && Object.keys(account.soldToAccount).length > 0;
+  const isSoldToValid = soldToAccount && typeof soldToAccount === 'object' && CommonUtils.isNonEmptyObject(soldToAccount);
 
-  return isShipToValid && isSoldToValid;
+  return isShipToValid || isSoldToValid;
 };
 export default OrderHeaderDetails;
