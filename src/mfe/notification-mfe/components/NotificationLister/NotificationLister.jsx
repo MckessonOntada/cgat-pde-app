@@ -41,8 +41,8 @@ const NotificationLister = ({ isDrawerView = false, closeDrawer, isMobileView, s
   };
 
   // Determine notifications to display based on isDrawerView and page size from env
-  const pageSize = parseInt(process.env.REACT_APP_NOTIFICATION_PAGE_SIZE, 10) || 10;
-  const displayedNotifications = isDrawerView ? notifications.slice(0, pageSize) : notifications;
+  const drawerPageSize = 8;
+  const displayedNotifications = isDrawerView ? notifications.slice(0, drawerPageSize) : notifications;
 
   return (
     <div className="notification-lister-container">
