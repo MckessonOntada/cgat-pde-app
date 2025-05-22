@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useWindowSize from '@src/hooks/UseWindowSize';
 import { useTranslate } from '@src/translations/useTranslation';
 import { Heading, Button, Alert } from '@mckesson/mcp-component-library';
@@ -18,9 +18,15 @@ const Notifications = () => {
 
   const elementSize = isMobileView ? 'sm' : 'md';
 
-  const { notificationsCount } = useNotifications();
+  const { notificationsCount, setSelectedNotification } = useNotifications();
 
   const [isDetailView, setIsDetailView] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      setSelectedNotification(null);
+    };
+  }, [setSelectedNotification]);
 
   const onBackTo = () => {
     if (!isMobileView) {

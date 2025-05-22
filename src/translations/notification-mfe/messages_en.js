@@ -7,4 +7,8 @@ export const NotificationMessagesEN = {
   'notifications.filter.all': 'All',
   'notifications.cta.apply': 'APPLY',
   'notifications.cta.seeAllNotifications': 'SEE ALL NOTIFICATIONS',
+  'notification.category': 'Category',
+  'notifications.empty': 'No Notifications',
+  'notifications.emptySubtext': 'When you have received notification, you’ll see them here.',
+  'notifications.emptySubtextFiltered': 'You have not received notification in selected Date range, please update to see.',
 };

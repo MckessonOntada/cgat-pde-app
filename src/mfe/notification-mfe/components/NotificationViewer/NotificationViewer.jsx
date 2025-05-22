@@ -1,8 +1,11 @@
 import React from 'react';
 import styles from './NotificationViewer.module.scss';
 import { useNotifications } from '../../context/NotificationsContext';
+import { useTranslate } from '@src/translations/useTranslation';
 
 const NotificationViewer = () => {
+
+  const { t } = useTranslate();
   const { selectedNotification } = useNotifications();
 
   if (!selectedNotification) {
@@ -20,7 +23,7 @@ const NotificationViewer = () => {
     <div className={styles.notificationViewer}>
       <div className={styles.notificationViewerHeaderRow}>
         <span className={styles.notificationViewerSection}>
-          {selectedNotification.details?.section}
+          {t('notification.category', 'Category')}: {selectedNotification?.section}
         </span>
         <span className={styles.notificationViewerDate}>
           {selectedNotification.details?.timeAgo} {selectedNotification.date}

@@ -11,18 +11,13 @@ export const NotificationDrawer = () => {
   const { t } = useTranslate();
   const navigate = useNavigate();
 
-  const {
-    notificationsCount,
-    notificationDrawerOpen,
-    setNotificationDrawerOpen,
-    setSelectedNotification,
-  } = useNotifications();
+  const { notificationsCount, notificationDrawerOpen, setNotificationDrawerOpen } = useNotifications();
 
   const handleClose = useCallback(() => {
     setNotificationDrawerOpen(false);
   }, []);
 
-  const onSeeAllNotificaitons = useCallback(() => {
+  const onSeeAllNotifications = useCallback(() => {
     setNotificationDrawerOpen(false);
     // Add logic to navigate to the notifications page
     navigate('/notifications');
@@ -39,7 +34,7 @@ export const NotificationDrawer = () => {
           <div className={styles.controls}>
             <Button
               label={t('notifications.cta.seeAllNotifications')}
-              onClick={onSeeAllNotificaitons}
+              onClick={onSeeAllNotifications}
               variant="secondary"
               size="md"
               buttonWidth={'100%'}
@@ -48,7 +43,7 @@ export const NotificationDrawer = () => {
           </div>
         }>
         <div className={styles.notificationDrawerContent}>
-          <NotificationLister isDrawerView={true} closeDrawer={handleClose}/>
+          <NotificationLister isDrawerView={true} closeDrawer={handleClose} />
         </div>
       </FloatingDrawer>
     </div>

@@ -1,9 +1,5 @@
 import React, { useRef } from 'react';
-import {
-  DateRangePicker,
-  Dropdown,
-  Button
-} from '@mckesson/mcp-component-library';
+import { DateRangePicker, Dropdown, Button } from '@mckesson/mcp-component-library';
 import styles from './FilterToolbar.module.scss';
 import { useTranslate } from '@src/translations/useTranslation';
 import { useNotifications } from '../../context/NotificationsContext';
@@ -36,9 +32,7 @@ const FilterToolbar = ({ isMobileView }) => {
               <DateRangePicker
                 id="notification-filter-date-range"
                 dateRange={values.notificationDateRange}
-                onChange={(dateRange) =>
-                  setFieldValue('notificationDateRange', dateRange)
-                }
+                onChange={(dateRange) => setFieldValue('notificationDateRange', dateRange)}
                 size={elementSize}
                 isRequired={false}
               />
@@ -48,9 +42,8 @@ const FilterToolbar = ({ isMobileView }) => {
                 id="notification-filter-dropdown"
                 options={dropdownOptions}
                 value={values.notificationDropdownValue}
-                onChange={(value) =>
-                  setFieldValue('notificationDropdownValue', value)
-                }
+                label={t('notification.category')}
+                onChange={(value) => setFieldValue('notificationDropdownValue', value)}
                 size={elementSize}
               />
             </div>

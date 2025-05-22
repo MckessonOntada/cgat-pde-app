@@ -7,4 +7,8 @@ export const NotificationMessagesES = {
   'notifications.filter.all': 'Todas',
   'notifications.cta.apply': 'APLICAR',
   'notifications.cta.seeAllNotifications': 'VER TODAS LAS NOTIFICACIONES',
+  'notification.category': 'Categoría',
+  'notifications.empty': 'Sin Notificaciones',
+  'notifications.emptySubtext': 'Cuando reciba una notificación, la verá aquí.',
+  'notifications.emptySubtextFiltered': 'No ha recibido notificaciones en el rango de fechas seleccionado, actualice para ver.',
 };

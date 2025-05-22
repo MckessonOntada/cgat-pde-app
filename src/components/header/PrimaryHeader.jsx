@@ -22,6 +22,7 @@ import { useTranslate } from '@src/translations/useTranslation';
 import { currentLocale } from '@src/translations/i18n';
 import EclipsesTextcss from '../EclipsesText/EclipsesTextcss';
 import { getFullName } from '@src/util/CommonUtils';
+import { useNotifications } from '@src/mfe/notification-mfe/context/NotificationsContext';
 
 const PrimaryHeader = ({ onNotificationClick }) => {
   const { t } = useTranslate();
@@ -36,15 +37,14 @@ const PrimaryHeader = ({ onNotificationClick }) => {
   const userName = AuthUtils.getFullName();
   const [textMaxWidth, setTextMaxWidth] = useState('');
   const channel = new BroadcastChannel('auth_channel');
-  const [notificationCount, setNotificationCount] = useState(99); // Example default value
   const impersonatedByUser = AuthUtils.getImpersonatedByUser();
   const impersonatedUserName = getFullName(impersonatedByUser?.name);
 
+  const { notificationsCount } = useNotifications();
+
   useEffect(() => {
     const handleResize = () => {
-      setTextMaxWidth(
-        window.innerWidth <= 992 && window.innerWidth >= 768 ? 160 : ''
-      );
+      setTextMaxWidth(window.innerWidth <= 992 && window.innerWidth >= 768 ? 160 : '');
     };
 
     window.addEventListener('resize', handleResize);
@@ -66,9 +66,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
   const { isLoading, data, isError, refetch } = useQuery({
     queryKey: ['organizationListOptions'],
     queryFn: async () => {
-      const res = await CommonDataService.getOrganizationListAsPublic(
-        requestParams
-      );
+      const res = await CommonDataService.getOrganizationListAsPublic(requestParams);
       return res.content;
     },
     enabled: !isSystemAdminView,
@@ -79,10 +77,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
     organization: { setOrganization, selectedOrganization }
   } = useSessionFeatures();
 
-  const { data: organizationLogo } = CommonDataService.useOrganizationLogo(
-    selectedOrganization.logoUrl,
-    selectedOrganization.id
-  );
+  const { data: organizationLogo } = CommonDataService.useOrganizationLogo(selectedOrganization.logoUrl, selectedOrganization.id);
 
   const handleChange = (value) => {
     setSelectedOrg(value);
@@ -124,11 +119,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
       <div className={`${styles.navItemsLeft}`} id={''}>
         <div className={styles.branding}>
           {isSystemAdminView ? (
-            <Link
-              className={`${styles.appLogo} ${styles.actionLink}`}
-              to={''}
-              id={''}
-              aria-label="dashboard">
+            <Link className={`${styles.appLogo} ${styles.actionLink}`} to={''} id={''} aria-label="dashboard">
               {props.children}
             </Link>
           ) : (
@@ -146,10 +137,8 @@ const PrimaryHeader = ({ onNotificationClick }) => {
     );
   };
 
-  const RightSideView = ({ notificationCount, handleNotificationClick }) => {
-    const currentLanguage = HeaderConfig.languages.find(
-      (lang) => lang.value == currentLocale
-    );
+  const RightSideView = ({ notificationsCount, handleNotificationClick }) => {
+    const currentLanguage = HeaderConfig.languages.find((lang) => lang.value == currentLocale);
     const handleSelectOption = (option) => {
       navigate(option);
     };
@@ -169,22 +158,14 @@ const PrimaryHeader = ({ onNotificationClick }) => {
           }}>
           <span>{t('header.label.notifications')}</span>
           <IconNotification />
-          <span className={styles.notificationCount}>{notificationCount}+</span>
+          {notificationsCount > 0 && <span className={styles.notificationsCount}>{notificationsCount > 99 ? '99+' : notificationsCount}</span>}
         </button>
       ),
 
-      <MenuList
-      size="md"
-        handleSelect={(e) => handleSelectOption(e)}
-        options={HeaderConfig.profileOptions}
-        aria-label="Profile options">
+      <MenuList size="md" handleSelect={(e) => handleSelectOption(e)} options={HeaderConfig.profileOptions} aria-label="Profile options">
         <div className={styles.actionLink} aria-label="Account options">
           <span>
-            <EclipsesTextcss
-              str={userName || 'Anonymous'}
-              maxWidth={textMaxWidth}
-            />
-
+            <EclipsesTextcss str={userName || 'Anonymous'} maxWidth={textMaxWidth} />
           </span>
           <IconArrowDown />
         </div>
@@ -224,15 +205,10 @@ const PrimaryHeader = ({ onNotificationClick }) => {
     ].filter(Boolean);
     return (
       <div className={styles.navItemsRight} id={''}>
-        <ul
-          className={styles.quickLinks}
-          role="navigation"
-          aria-label="Quick access links">
+        <ul className={styles.quickLinks} role="navigation" aria-label="Quick access links">
           {quickLinks.map((item, index) => {
             return (
-              <li
-                className={styles.linkWrapper}
-                key={`quick-links-item-${index}`}>
+              <li className={styles.linkWrapper} key={`quick-links-item-${index}`}>
                 {item}
               </li>
             );
@@ -242,33 +218,16 @@ const PrimaryHeader = ({ onNotificationClick }) => {
     );
   };
 
-  const RightSideMobile = ({
-    onClose,
-    notificationCount,
-    handleNotificationClick
-  }) => {
+  const RightSideMobile = ({ onClose, notificationsCount, handleNotificationClick }) => {
     return (
-      <ul
-        className={styles.quickLinksMobile}
-        role="navigation"
-        aria-label="Quick access links">
+      <ul className={styles.quickLinksMobile} role="navigation" aria-label="Quick access links">
         <li className={styles.linkWrapperMobile}>
           <div aria-label="Account options">
-            <EclipsesTextcss
-              str={userName || 'Anonymous'}
-              maxWidth={textMaxWidth}
-            />
-            <ul
-              className={styles.quickLinksInner}
-              role="navigation"
-              aria-label="Quick access links">
+            <EclipsesTextcss str={userName || 'Anonymous'} maxWidth={textMaxWidth} />
+            <ul className={styles.quickLinksInner} role="navigation" aria-label="Quick access links">
               {HeaderConfig.profileOptions.map((item, index) => (
                 <li key={`quick-links-item-${index}`}>
-                  <Link
-                    onClick={() => onClose()}
-                    className={styles.actionLink}
-                    to={item.value}
-                    aria-label={item.label}>
+                  <Link onClick={() => onClose()} className={styles.actionLink} to={item.value} aria-label={item.label}>
                     {item.label}
                   </Link>
                 </li>
@@ -284,9 +243,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
             aria-label="View notifications">
             <span>{t('header.label.notifications')}</span>
             <IconNotification />
-            <span className={styles.notificationCount}>
-              {notificationCount}+
-            </span>
+            {notificationsCount > 0 && <span className={styles.notificationsCount}>{notificationsCount > 99 ? '99+' : notificationsCount}</span>}
           </Link>
         </li>
       </ul>
@@ -309,18 +266,11 @@ const PrimaryHeader = ({ onNotificationClick }) => {
           )}
           {authState?.isAuthenticated && (
             <div className={styles.desktopOnly}>
-              <RightSideView
-                notificationCount={notificationCount}
-                handleNotificationClick={handleNotificationClick}
-              />
+              <RightSideView notificationsCount={notificationsCount} handleNotificationClick={handleNotificationClick} />
             </div>
           )}
           <div className={styles.mobileOnly}>
-            <Button
-              variant="tertiary"
-              className={styles.hamburger}
-              onClick={toggleDrawer}
-              aria-label="Open drawer menu">
+            <Button variant="tertiary" className={styles.hamburger} onClick={toggleDrawer} aria-label="Open drawer menu">
               <IconMenu />
             </Button>
             <FloatingDrawer
@@ -328,11 +278,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
               open={drawerOpen}
               onClose={toggleDrawer}
               heading={
-                <Link
-                  className={`${styles.appLogo} ${styles.actionLink}`}
-                  to={''}
-                  id={''}
-                  aria-label="dashboard">
+                <Link className={`${styles.appLogo} ${styles.actionLink}`} to={''} id={''} aria-label="dashboard">
                   <AppLogo />
                 </Link>
               }
@@ -343,13 +289,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
                   aria-label="Log out of account"
                   Icon={IconLogout}
                   iconPosition="right"
-                  id={debugIds(
-                    ID.HEADER,
-                    ID.NAV,
-                    ID.RIGHT,
-                    ID.BUTTON,
-                    ID.LOGOUT
-                  )}
+                  id={debugIds(ID.HEADER, ID.NAV, ID.RIGHT, ID.BUTTON, ID.LOGOUT)}
                   data-testid={'LOGOUT'}
                   size="md"
                   variant="primary"
@@ -359,11 +299,7 @@ const PrimaryHeader = ({ onNotificationClick }) => {
                   {t('header.label.logout')}
                 </Button>
               }>
-              <RightSideMobile
-                onClose={() => setDrawerOpen(false)}
-                notificationCount={notificationCount}
-                handleNotificationClick={handleNotificationClick}
-              />
+              <RightSideMobile onClose={() => setDrawerOpen(false)} notificationsCount={notificationsCount} handleNotificationClick={handleNotificationClick} />
             </FloatingDrawer>
           </div>
         </div>
@@ -374,18 +310,11 @@ const PrimaryHeader = ({ onNotificationClick }) => {
           isOpen,
           onClose: () => setIsOpen(false),
           modalTitle: t('orgManagement.confirmationmessage'),
-          modalBody: (
-            <div className="MCP-modal-body">
-              {t('orgManagement.Orgchangemessage')}
-            </div>
-          ),
+          modalBody: <div className="MCP-modal-body">{t('orgManagement.Orgchangemessage')}</div>,
 
           modalFooter: (
             <React.Fragment>
-              <Button
-                onClick={onCancelOrganizationChange}
-                variant="secondary"
-                size="md">
+              <Button onClick={onCancelOrganizationChange} variant="secondary" size="md">
                 {t('orgManagement.button.cancel')}
               </Button>
               <Button onClick={confirmChangeOrganization} size="md">
