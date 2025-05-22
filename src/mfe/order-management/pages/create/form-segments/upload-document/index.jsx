@@ -55,6 +55,7 @@ function UploadOrderDocument() {
       OrderService.uploadOrderDocument(orderId, payload).then((response) => {
         navigate('/orders', {
           state: {
+            activeTab: location.state?.fromTab,
             alert: {
               from: 'UPLOAD_ORDER_DOCUMENT',
               type: 'success',

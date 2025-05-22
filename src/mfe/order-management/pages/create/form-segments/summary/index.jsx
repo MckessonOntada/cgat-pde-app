@@ -74,7 +74,6 @@ const Summary = () => {
     accountDetails = {},
     patient = {},
     additionalDetails = {},
-    additionalDocuments = [],
     patientDetailsRequired = false,
     rejectionDetails,
     paporder: isPapOrder,
@@ -994,12 +993,12 @@ const Summary = () => {
               </div>
             )}
 
-            {additionalDocuments && additionalDocuments.length > 0 && (
+            {additionalDetails.additionalDocuments && additionalDetails.additionalDocuments?.length > 0 && (
               <div className="MCP-CardContainer">
                 <ModuleHeader className={styles.panelHeader} heading={<Heading as="h3">{t('labels.additionalDocuments')}</Heading>} />
                 <div className="MCP-module-body">
                   <div className="summary-question-list">
-                    {additionalDocuments.map((documentSegment) => {
+                    {additionalDetails.additionalDocuments?.map((documentSegment) => {
                       return (
                         <div className={'grid grid-gap-16 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2'}>
                           <div>
