@@ -254,7 +254,7 @@ const AccountSelection = () => {
                           <p className={styles.name}>
                             <b>{selectedSoldToAccount.accountName}</b>
                           </p>
-                          <p className={styles.address}>{getAddress(selectedSoldToAccount)}</p>
+                          <p className={styles.address}>{getAddress(selectedSoldToAccount.address)}</p>
                           <p className={styles.address}>
                             <span>
                               {t('Distribution Channel')} - {t(`labels.${selectedSoldToAccount?.channelType}`)}
