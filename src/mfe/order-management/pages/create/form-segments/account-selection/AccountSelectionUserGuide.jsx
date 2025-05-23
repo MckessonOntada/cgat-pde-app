@@ -180,7 +180,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer, c
         );
       case '340B':
         return (
-          <InfoModel title={t('order.account.selection.wac.info.header')}>
+          <InfoModel title={t('order.account.selection.340b.info.header')}>
             <div className="MCP-modal-body">
               {INFO_340B.map((section, index) => (
                 <div key={index}>
@@ -246,6 +246,7 @@ const AccountSelectionUserGuide = ({ therapyId, onClose, onSubmit, openDrawer, c
                   }}
                   value={selectedChannel}
                   radioBtnWidth="auto"
+                  size="lg"
                 />
               </div>
             </div>

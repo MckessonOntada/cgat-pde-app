@@ -35,6 +35,7 @@ export const MessageEn = {
   'captions.btnBacktoAccountSelection': 'Back To Account Selection',
   'captions.btnBacktoTherapySelection': 'Back To Therapy Selection',
   'captions.btnEdit': 'Edit',
+  'captions.btndeactivate': 'Deactivate',
   'captions.btnRetry': 'Retry',
   'captions.btnSubmitOrder': 'Submit Order',
   'captions.btnApproveOrder': 'Approve and Submit',
@@ -303,12 +304,12 @@ export const MessageEn = {
   // order management patient details screen
 
   'orderManagement.patientDetails.inputLabel.phone_number': 'Phone Number',
-  'orderManagement.patientDetails.inputLabel.email': 'Email',
+  'orderManagement.patientDetails.inputLabel.email': 'Email Address',
   'orderManagement.patientDetails.inputLabel.phone_no': 'Phone Number',
   'orderManagement.patientDetails.inputLabel.address_1': 'Address Line 1',
   'orderManagement.patientDetails.inputLabel.address_2': 'Address Line 2',
   'orderManagement.patientDetails.inputLabel.city': 'City',
-  'orderManagement.patientDetails.inputLabel.zip': 'Zip Code',
+  'orderManagement.patientDetails.inputLabel.zip': 'Zip',
   'orderManagement.patientDetails.inputLabel.state': 'State',
   'orderManagement.patientDetails.inputLabel.providerDetails': 'Provider Details',
   'orderManagement.patientDetails.inputLabel.first_name': 'First Name',
@@ -320,7 +321,7 @@ export const MessageEn = {
   'orderManagement.patientDetails.inputLabel.workPhone': 'Work Phone',
   'orderManagement.patientDetails.inputLabel.preferredMethodOfContact': 'Preferred Method of Contact',
 
-  'orderManagement.patientDetails.inputLabel.patientIdentifier': 'Manufacturer Patient ID',
+  'orderManagement.patientDetails.inputLabel.patientIdentifier': 'Manufacturer Patient Identifier',
 
   'orderManagement.patientDetails.inputLabel.mrn': 'MRN',
   'orderManagement.patientDetails.contact_details': 'Contact Details',
@@ -347,7 +348,7 @@ export const MessageEn = {
   'orderManagement.patientDetails.validation.patient_identifier_must_number': 'Patient Identifier must be alphanumeric.',
   'orderManagement.patientDetails.validation.mrn_must_alphanumeric': 'MRN must be alphanumeric.',
   'orderManagement.patientDetails.validation.patient_identifier_max': 'Patient identifier cannot exceed 20 characters.',
-  'orderManagement.patientDetails.inputLabel.date_of_birth': 'Date of birth',
+  'orderManagement.patientDetails.inputLabel.date_of_birth': 'Date of Birth',
   'orderManagement.patientDetails.option.please_select': 'Please select',
 
   'labels.description.approval': 'Order is reviewed and confirmed for accuracy and payment',
@@ -465,7 +466,7 @@ export const MessageEn = {
   'button.caption.selectFile': 'Select File',
   'message.questionnaireCreated': 'Questionnaire created successfully.',
   'message.questionnaireUpdated': 'Questionnaire updated successfully.',
-  'message.questionnaireDeactivated': 'Questionnaire deactivated successfully.',
+  'message.questionnaireDeactivated': 'Questionnaire(s) deactivated successfully.',
   'message.questionTextRequired': 'Question text is required',
   'message.englishTextIsRequired': 'At least requires english text',
   'message.acknowldge': 'Please acknowledge to Save and Continue',

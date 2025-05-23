@@ -308,14 +308,19 @@ const PatientDetails = () => {
               <Form>
                 <div className={styles.wrapper}>
                   <div className="MCP-panel-container">
-                    <div className="MCP-module-body">
+                    <div className="MCP-module-body test-shobhit">
                       <FormRenderer sections={filteredSections} />
                       {channelType === CHANNEL_TYPE.SPECIALTY_PHARMA && (
                         <React.Fragment>
                           <hr />
                           <div className="selected-provider">
-                            <div className="MCP-module-body">
+                            <div className="heading-provider">
                               <Heading as="h2">{t('orderManagement.patientDetails.inputLabel.providerDetails')}</Heading>
+                              <p className="form-instruction">
+                                <span className="required">*</span> {t('labels.required')}
+                              </p>
+                            </div>
+                            <div className="provider-field-wrap">
                               <Field
                                 component={Components['multiSelectDropdown']}
                                 id={'patient-info-provider'}

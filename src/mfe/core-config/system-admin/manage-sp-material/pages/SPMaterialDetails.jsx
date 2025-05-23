@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import FloatingDrawer from '@src/components/floating-drawer';
 import { Loader, Heading, Tooltip } from '@mckesson/mcp-component-library';
 import { useTranslate } from '@src/translations/useTranslation';
@@ -38,14 +38,19 @@ export const SPCatalogDetailsConstants = [
   }
 ];
 
-function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, viewSPMaterial, isSPCatalog = false }) {
+function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, viewSPMaterial, isSPCatalog = false, sendNotification }) {
   const { t } = useTranslate();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const navigate = useNavigate();
   const requestParams = {
     channelType: 'SPECIALITY_PHARMA'
   };
-  const { isLoading, isError, data, refetch } = useQuery({
+  const {
+    isLoading,
+    isError,
+    data: MaterialData,
+    refetch
+  } = useQuery({
     queryKey: ['SPMaterial', viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId || viewSPMaterial?.materialNumber],
     queryFn: async () => {
       const result = await MaterialService.getSPMaterialById(
@@ -73,7 +78,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
     data: SPCatalogData,
     refetch: refetchSPCatalogData
   } = useQuery({
-    queryKey: ['SPMaterial', viewSPMaterial?.sapMaterial || viewSPMaterial?.spProductId || viewSPMaterial?.materialNumber],
+    queryKey: ['SPMaterial', viewSPMaterial],
     queryFn: async () => {
       const result = await SPCatalogService.getSPProductDetailsByMN(requestSPCatalogParams);
       return result;
@@ -82,10 +87,17 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
     refetchOnWindowFocus: false
   });
 
+  useEffect(() => {
+    if (openSPMaterialDetails && isSPCatalog) {
+      refetchSPCatalogData();
+    }
+  }, [openSPMaterialDetails]);
+
   const handleCloseDrawer = () => {
     setOpenSPMaterialDetails((state) => !state);
   };
-  const OnDeleteClick = (id) => {
+
+  const OnDeleteClick = (id, actionId) => {
     const payload = {
       questionnaireId: id,
       materialNumber: viewSPMaterial.materialNumber,
@@ -105,7 +117,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
       title: t('messages.header.confirmation'),
       bodyContent: (
         <div className="MCP-modal-body">
-          <p>{t('messages.confirmation.delink')}</p>
+          <p>{t(actionId === 'questionnaire' ? 'messages.confirmation.delink' : 'messages.confirmation.deleteConfiguration')}</p>
         </div>
       ),
       footerActions: {
@@ -115,7 +127,11 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
         confirm: {
           label: t('label.yes'),
           action: () => {
-            delinkQuestionnaire(isSPCatalog ? catalogPayload : payload);
+            if (actionId === 'questionnaire') {
+              delinkQuestionnaire(isSPCatalog ? catalogPayload : payload);
+            } else if (actionId === 'config') {
+              deleteConfiguration(requestSPCatalogParams);
+            }
           }
         }
       }
@@ -129,11 +145,38 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
     {
       onSuccess: (response) => {
         isSPCatalog ? refetchSPCatalogData() : refetch();
+        sendNotification({
+          type: 'success',
+          description: t('ManageCatalog.delink.success')
+        });
       },
       onError: (error) => {
-        showSnackbar({
-          description: t('manageMaterial.delink.error'),
-          type: 'error'
+        sendNotification({
+          type: 'error',
+          description: t('ManageCatalog.delink.error')
+        });
+      }
+    }
+  );
+
+  const { mutate: deleteConfiguration, isLoading: isDeleteLoading } = useMutation(
+    async (payload) => {
+      await SPCatalogService.deleteConfigurationsForSPCatalogs(payload);
+    },
+    {
+      onSuccess: (response) => {
+        setOpenSPMaterialDetails(false);
+        isSPCatalog ? refetchSPCatalogData() : refetch();
+        sendNotification({
+          type: 'success',
+          description: t('ManageCatalog.configure.success')
+        });
+      },
+      onError: (error) => {
+        setOpenSPMaterialDetails(false);
+        sendNotification({
+          type: 'error',
+          description: t('ManageCatalog.configure.error')
         });
       }
     }
@@ -142,7 +185,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
   if (isLoading) {
     return <Loader type={'screen'} />;
   }
-
+  const data = isSPCatalog ? SPCatalogData : MaterialData;
   const renderDetails = (constants, dataSource) => {
     return constants.map((item, index) => (
       <React.Fragment key={index}>
@@ -172,6 +215,19 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
           <div className="details-main-wrapper">
             <div className={'details-body'}>
               {!isSPCatalog ? renderDetails(SPMaterialDetailsConstants, 'therapy') : renderDetails(SPCatalogDetailsConstants, 'catalogPrice')}
+              {data?.catalogConfiguration && (
+                <div className="configure-li">
+                  <div className="details-key">{t('ManageCatalog.Configurations')}</div>
+                  <div className="details-value">
+                    <div onClick={() => navigate('../sp-catalog/view-sp-catalog', { state: { configSteps: data?.catalogConfiguration } })}>PREVIEW</div>
+                    {!isCustomerCenter && (
+                      <div onClick={() => OnDeleteClick(data?.catalogConfiguration.id, 'config')}>
+                        <DeleteIcon />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
               {data?.questionnaires?.length > 0 && (
                 <>
                   <div className="Questionnaire-li">
@@ -179,18 +235,21 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
                     <div className="Questionnaire-value">
                       <div
                         onClick={() =>
-                          navigate(PREVIEW_URL, {
-                            state: {
-                              isSPCatalog: isSPCatalog ? true : false,
-                              isSPMaterial: !isSPCatalog,
-                              questionnaire: data?.questionnaires
-                            }
-                          })
+                          isSPCatalog
+                            ? navigate('../sp-catalog/questionnaire', { state: { questionnaire: data?.questionnaires, isSPCatalog } })
+                            : navigate(PREVIEW_URL, {
+                                state: {
+                                  isSPCatalog: isSPCatalog ? true : false,
+                                  isSPMaterial: !isSPCatalog,
+                                  questionnaire: data?.questionnaires
+                                }
+                              })
                         }>
                         {t('ManageCatalog.Preview')}
                       </div>
                     </div>
                   </div>
+
                   <div className="Questionnairedetails-ul">
                     {data?.questionnaires.map((item, index) => {
                       return (
@@ -198,7 +257,7 @@ function SPMaterialDetails({ openSPMaterialDetails, setOpenSPMaterialDetails, vi
                           <div className="Questionnairedetails-key">{item.templateName}</div>
                           {!isCustomerCenter &&
                             (!isCrosswalked ? (
-                              <div className="delete-button" onClick={() => OnDeleteClick(item.id)}>
+                              <div className="delete-button" onClick={() => OnDeleteClick(item.id, 'questionnaire')}>
                                 <DeleteIcon />
                               </div>
                             ) : (
