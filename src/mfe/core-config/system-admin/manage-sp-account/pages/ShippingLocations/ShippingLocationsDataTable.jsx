@@ -30,6 +30,9 @@ function ShippingLocationsDataTable() {
   const [selectedShippingLocation, setSelectedShippingLocation] = useState([]);
   const [spLocation, setSPLocation] = useState([]);
 
+  const practiceId = AuthUtils.getPracticeId();
+  const organizationId = selectedOrganization?.id || practiceId;
+
   const handleOnOptionSelection = (value, row) => {
     if (value == 'edit') {
       setSPLocation(row);
@@ -46,7 +49,8 @@ function ShippingLocationsDataTable() {
     handleOnOptionSelection,
     isCustomerCenter,
     selectedShippingLocation,
-    setSelectedShippingLocation
+    setSelectedShippingLocation,
+    practiceId
   );
 
   const renderModelforRemove = (rowParam) => {
@@ -69,7 +73,7 @@ function ShippingLocationsDataTable() {
           action: () => {
             mutate({
               ids,
-              selectedOrgId: selectedOrganization?.id,
+              selectedOrgId: organizationId,
               accid: accountId
             });
           }
@@ -125,7 +129,8 @@ function ShippingLocationsDataTable() {
             </div>
           }
           controls={
-            !isCustomerCenter && (
+            !isCustomerCenter &&
+            !practiceId && (
               <Button
                 Icon={AddIcon}
                 variant="secondary"

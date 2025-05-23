@@ -14,11 +14,11 @@ import { getAddress } from '@src/mfe/core-config/system-admin/manage-questionnai
 import AuthUtils from '@src/util/AuthUtils';
 import { useOrgAccountSelectionContext } from '@src/mfe/core-config/system-admin/manage-questionnaire/components/orgAccountSelection/context/OrgAccountSelectionContext';
 
-function SPAccountDataTable() {
+function SPAccountDataTable({ manageLinkedAccount }) {
   const { t } = useTranslate();
   const navigate = useNavigate();
   const { selectedOrganization } = useOrgAccountSelectionContext();
-  const { paginationConfig, SPAccountList, setPageNumber, isLoading, applySort } = useSPAccountContext();
+  const { paginationConfig, SPAccountList, setPageNumber, isLoading, applySort, organizationId } = useSPAccountContext();
   const isCustomerCenter = AuthUtils.isCustomerCenter();
   const columns = [
     {
@@ -27,7 +27,7 @@ function SPAccountDataTable() {
       selector: (row) => row.accountNumber || '',
       maxWidth: '350px',
       cell: (props) => (
-        <Link to={`${props.id}?orgId=${selectedOrganization?.id}`} className="MCP-table-link" aria-label={t('table.columns.captions.accountNumber')}>
+        <Link to={`${props.id}?orgId=${organizationId}`} className="MCP-table-link" aria-label={t('table.columns.captions.accountNumber')}>
           <EclipsesTextcss str={props.accountNumber} maxWidth={240} />
         </Link>
       ),
@@ -49,6 +49,20 @@ function SPAccountDataTable() {
       selector: (row) => row.address || '',
       maxWidth: '450px',
       cell: (props) => <EclipsesTextcss str={getAddress(props.address)} maxWidth={430} />
+    },
+    {
+      id: 'salesOrg',
+      name: t('account.sales_org'),
+      selector: (row) => row.salesOrg || '',
+      maxWidth: '450px',
+      cell: (props) => <EclipsesTextcss str={props.salesOrg} maxWidth={430} />
+    },
+    {
+      id: 'distributionChannel',
+      name: t('account.distribution'),
+      selector: (row) => row.distributionChannel || '',
+      maxWidth: '450px',
+      cell: (props) => <EclipsesTextcss str={props.distributionChannel} maxWidth={430} />
     }
   ];
 
@@ -64,9 +78,10 @@ function SPAccountDataTable() {
     <div>
       <div style={{ marginBottom: '24px', marginTop: '16px' }}>
         <ModuleHeader
-          heading={<Heading as="h2">{t('manageSPAccount.heading.AccountListing')}</Heading>}
+          heading={<Heading as="h2">{!manageLinkedAccount ? t('manageSPAccount.heading.AccountListing') : t('Account Listing')}</Heading>}
           controls={
-            !isCustomerCenter && (
+            !isCustomerCenter &&
+            !manageLinkedAccount && (
               <div className="controls">
                 {
                   <Button
@@ -74,7 +89,7 @@ function SPAccountDataTable() {
                     className="button-icon"
                     variant="primary"
                     size="md"
-                    onClick={() => navigate(`${routeConstants.ADD_SPACCOUNT}?orgId=${selectedOrganization?.id}`)}>
+                    onClick={() => navigate(`${routeConstants.ADD_SPACCOUNT}?orgId=${organizationId}`)}>
                     {t('manageSPAccount.heading.addSPAccount')}
                   </Button>
                 }
