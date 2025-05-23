@@ -27,6 +27,8 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
   const [options, setOptions] = useState([]);
   const [accountOptions, setAccountOptions] = useState();
   const [checkedAccounts, setCheckedAccounts] = useState([]);
+  const [totalOrgs, setTotalOrgs] = useState();
+  const [totalAccs, setTotalAccs] = useState();
 
   // Organization List configuration
   const orgParams = () => {
@@ -47,6 +49,7 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
       );
       if (response) {
         const { content, totalElements, totalPages } = response.data;
+        setTotalOrgs(totalElements);
         if (content.length > 0) {
           let data = content.map((item, index) => ({
             index: index + 1,
@@ -105,6 +108,7 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
       );
       if (response) {
         const { content, totalElements, totalPages } = response.data;
+        setTotalAccs(totalElements);
         let _opt =
           content.map((item, index) => ({
             ...item,
@@ -150,7 +154,9 @@ export const OrgAccountSelectionProvider = ({ children, enableOrg = true, enable
     accountOptions,
     setAccountOptions,
     checkedAccounts,
-    setCheckedAccounts
+    setCheckedAccounts,
+    totalOrgs,
+    totalAccs
   };
   return <orgAccountsSelectionContext.Provider value={contextValue}>{children}</orgAccountsSelectionContext.Provider>;
 };

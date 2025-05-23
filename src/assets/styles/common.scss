@@ -1149,12 +1149,7 @@ div.disable-all {
   margin: 0 5px;
   width: 24px;
   aspect-ratio: 4;
-  background: radial-gradient(
-      circle closest-side,
-      var(--brand-color-text-blue) 90%,
-      #0000
-    )
-    0 / calc(100% / 3) 100% space;
+  background: radial-gradient(circle closest-side, var(--brand-color-text-blue) 90%, #0000) 0 / calc(100% / 3) 100% space;
   clip-path: inset(0 100% 0 0);
   animation: l1 1s steps(4) infinite;
 }
@@ -1383,14 +1378,21 @@ div[role="row"] {
 }
 
 .selected-provider {
-  display: grid;
-  gap: 16px;
-  grid-template-columns: 1fr;
-
-  @include mixins.respond(md) {
-    grid-template-columns: 1fr 2fr;
+  display: flex;
+  flex-direction: column;
+  .heading-provider {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
   }
-
+  .provider-field-wrap {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+    @include mixins.respond(md) {
+      grid-template-columns: 1fr 2fr;
+    }
+  }
   .details-card {
     display: flex;
     flex-direction: column;

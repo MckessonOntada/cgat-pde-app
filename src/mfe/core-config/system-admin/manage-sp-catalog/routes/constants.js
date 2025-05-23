@@ -4,5 +4,7 @@ export const ROUTE_PATHS = Object.freeze({
   CREATE: 'create',
   UPLOAD: 'upload',
   LINK: 'link-sp-material',
-  REVIEW: 'review-catalog'
+  REVIEW: 'review-catalog',
+  VIEWSPCATALOG: 'view-sp-catalog',
+  VIEWQUESTIONNAIREPRIVIEW: 'questionnaire'
 });
